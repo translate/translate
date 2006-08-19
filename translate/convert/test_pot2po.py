@@ -114,6 +114,15 @@ class TestPOT2PO:
         newpo = self.convertpot(potsource, posource)
         newpounit = self.singleunit(newpo)
         assert str(newpounit) == poexpected
+
+    def test_merging_plurals(self):
+        """ensure that we can merge plural messages"""
+        potsource = '''msgid "One"\nmsgid_plural "Two"\nmsgstr[0] ""\nmsgstr[1] ""\n''' 
+        posource = '''msgid "One"\nmsgid_plural "Two"\nmsgstr[0] "Een"\nmsgstr[1] "Twee"\nmsgstr[2] "Drie"\n'''
+        newpo = self.convertpot(potsource, posource)
+        print newpo
+        newpounit = self.singleunit(newpo)
+        assert str(newpounit) == posource
         
     def test_merging_obsoleting_messages(self):
         """check that we obsolete messages no longer present in the new file"""
