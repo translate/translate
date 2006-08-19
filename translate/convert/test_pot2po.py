@@ -115,6 +115,25 @@ class TestPOT2PO:
         newpounit = self.singleunit(newpo)
         assert str(newpounit) == poexpected
 
+    def test_merging_msgidcomments(self):
+        """ensure that we can merge msgidcomments messages"""
+        potsource = r'''#: window.width
+msgid ""
+"_: Do not translate this.  Only change the numeric values if you need this dialogue box to appear bigger.\n"
+"36em"
+msgstr ""
+'''
+        posource = r'''#: window.width
+msgid ""
+"_: Do not translate this.  Only change the numeric values if you need this "
+"dialogue box to appear bigger.\n"
+"36em"
+msgstr "36em"
+'''
+        newpo = self.convertpot(potsource, posource)
+        newpounit = self.singleunit(newpo)
+        assert str(newpounit) == posource
+
     def test_merging_plurals(self):
         """ensure that we can merge plural messages"""
         potsource = '''msgid "One"\nmsgid_plural "Two"\nmsgstr[0] ""\nmsgstr[1] ""\n''' 
