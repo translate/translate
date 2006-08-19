@@ -355,7 +355,7 @@ class pounit(base.TranslationUnit):
       mergelists(self.visiblecomments, otherpo.visiblecomments)
       mergelists(self.msgidcomments, otherpo.msgidcomments)
     if self.isblankmsgstr() or overwrite:
-      self.target = sre.sub("_: .*?\\n", "", otherpo.target)
+      self.target = otherpo.target
       if self.source != otherpo.source:
         self.markfuzzy()
     elif otherpo.isblankmsgstr():
