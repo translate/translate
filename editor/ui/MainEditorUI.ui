@@ -59,24 +59,6 @@
     <addaction name="actionAbout" />
     <addaction name="actionAboutQT" />
    </widget>
-   <widget class="QMenu" name="menuEdit" >
-    <property name="title" >
-     <string>&amp;Edit</string>
-    </property>
-    <addaction name="actionUndo" />
-    <addaction name="actionRedo" />
-    <addaction name="separator" />
-    <addaction name="actionCut" />
-    <addaction name="actionCopy" />
-    <addaction name="actionPast" />
-    <addaction name="separator" />
-    <addaction name="actionFind" />
-    <addaction name="actionFindAgain" />
-    <addaction name="actionReplace" />
-    <addaction name="separator" />
-    <addaction name="actionCopySource2Target" />
-    <addaction name="actionToggleFuzzy" />
-   </widget>
    <widget class="QMenu" name="menuGo" >
     <property name="title" >
      <string>&amp;Go</string>
@@ -118,6 +100,24 @@
     </widget>
     <addaction name="menuToolView" />
     <addaction name="menuFilter" />
+   </widget>
+   <widget class="QMenu" name="menuEdit" >
+    <property name="title" >
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="actionUndo" />
+    <addaction name="actionRedo" />
+    <addaction name="separator" />
+    <addaction name="actionCut" />
+    <addaction name="actionCopy" />
+    <addaction name="actionPast" />
+    <addaction name="separator" />
+    <addaction name="actionFind" />
+    <addaction name="actionFindAgain" />
+    <addaction name="actionReplace" />
+    <addaction name="separator" />
+    <addaction name="actionCopySource2Target" />
+    <addaction name="actionToggleFuzzy" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
@@ -170,7 +170,6 @@
    <addaction name="actionPrevious" />
    <addaction name="actionNext" />
    <addaction name="actionLast" />
-   <addaction name="separator" />
   </widget>
   <action name="actionNew" >
    <property name="icon" >
