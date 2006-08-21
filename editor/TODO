@@ -1,0 +1,17 @@
+
+FIXME:
+
+- after opening of a file the first TU should be selected---------done
+- you need a way to revert to the previous content of target after you hit F2
+    (action with ESC key bound to it?) 
+- first and previous are disabled after loading a file even if I click in the overview 
+    to another entry
+- the actions for navigation are wrong placed in the edit menu and you should create also 
+    a toolbar for them-----------done
+- decrease the margins in the toolviews, you do not need so much space around the widgets    
+- set a minimum size for source and target so that the user can not make them disappear--------done
+- remove the word index from the header in overview, it not really carry meaning and it
+    looks ugly when I make the column small
+- Open in New Window: open dialog comes first, then the selected file loaded in the new window later.---------done
+- Status bar should be permanently displayed, even when we click on menu.
+- 

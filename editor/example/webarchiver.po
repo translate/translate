@@ -1,0 +1,140 @@
+# translation of webarchiver.po to khmer
+#
+# auk piseth <piseth_dv@khmeros.info>, 2006.
+# hok kakada <hokkakada@khmeros.info>, 2006.
+msgid ""
+msgstr ""
+"Project-Id-Version: webarchiver\n"
+"POT-Creation-Date: 2005-10-11 02:47+0200\n"
+"PO-Revision-Date: 2006-08-08 10:29+0700\n"
+"Last-Translator: hok kakada <hokkakada@khmeros.info>\n"
+"Language-Team: khmer <support@khmeros.info>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.2\n"
+
+#: archivedialog.cpp:90
+msgid "Unable to Open Web-Archive"
+msgstr "\t\tមិនអាច​បើក​ប័ណ្ណសារ​បណ្តាញ​"
+
+#: archivedialog.cpp:91
+msgid ""
+"Unable to open \n"
+" %1 \n"
+" for writing."
+msgstr ""
+"មិនអាច​បើក \n"
+" %1 \n"
+" សម្រាប់​ការ​សរសេរ​បាន​ទេ ។"
+
+#: archivedialog.cpp:125
+msgid "Could Not Open Temporary File"
+msgstr "មិនអាច​បើក​ឯកសារ​បណ្តោះអាសន្ន​បាន​ទេ"
+
+#: archivedialog.cpp:126
+msgid "Could not open a temporary file"
+msgstr "មិនអាច​បើក​ឯកសារ​បណ្តោះអាសន្ន​មួយ​បាន​ទេ"
+
+#: archivedialog.cpp:157
+msgid "Archiving webpage completed."
+msgstr "ទំព័រ​បណ្តាញ​​ប័ណ្ណ​សារ​បានបញ្ចប់​ទាំងស្រុង ។"
+
+#: archivedialog.cpp:450
+msgid "Downloading"
+msgstr "កំពុង​ទាញយក"
+
+#: archivedialog.cpp:465
+msgid "Ok"
+msgstr "យល់ព្រម"
+
+#: plugin_webarchiver.cpp:56
+msgid "Archive &Web Page..."
+msgstr "ទុក​ទំព័រ​បណ្តាញ..."
+
+#: plugin_webarchiver.cpp:89
+msgid "*.war *.tgz|Web Archives"
+msgstr "*.war *.tgz|ប័ណ្ណសារ​បណ្តាញ"
+
+#: plugin_webarchiver.cpp:90
+msgid "Save Page as Web-Archive"
+msgstr "រក្សាទុក​ទំព័រ​ជា​​ប័ណ្ណសារ​បណ្តាញ"
+
+#: plugin_webarchiver.cpp:95
+msgid "Invalid URL"
+msgstr "​URL មិន​ត្រឹមត្រូវ"
+
+#: plugin_webarchiver.cpp:96
+msgid ""
+"The URL\n"
+"%1\n"
+"is not valid."
+msgstr ""
+" URL\n"
+"%1\n"
+"គឺ​មិន​ត្រឹមត្រូវ ។"
+
+#: plugin_webarchiver.cpp:103
+msgid "File Exists"
+msgstr "​មាន​ឯកសារ​រួច​ហើយ"
+
+#: plugin_webarchiver.cpp:104
+msgid ""
+"Do you really want to overwrite:\n"
+"%1?"
+msgstr ""
+"តើ​អ្នក​ពិត​ជា​ចង់​សរសេរ​ជាន់​លើ ៖\n"
+"%1​ ទេ?"
+
+#: plugin_webarchiver.cpp:105
+msgid "Overwrite"
+msgstr "​សរសេរ​ជាន់​លើ"
+
+#. i18n: file plugin_webarchiver.rc line 8
+#: rc.cpp:6
+#, no-c-format
+msgid "Extra Toolbar"
+msgstr "​របារ​ឧបករណ៍​បន្ថែម"
+
+#. i18n: file archiveviewbase.ui line 16
+#: rc.cpp:9
+#, no-c-format
+msgid "Web Archiver"
+msgstr "កម្មវិធី​ទុក​វ៉េប​ក្នុង​ប័ណ្ណសារ"
+
+#. i18n: file archiveviewbase.ui line 43
+#: rc.cpp:12
+#, no-c-format
+msgid "Local File"
+msgstr "ឯកសារ​មូលដ្ឋាន"
+
+#. i18n: file archiveviewbase.ui line 51
+#: rc.cpp:15
+#, no-c-format
+msgid "To:"
+msgstr "​ទៅ ៖"
+
+#. i18n: file archiveviewbase.ui line 59
+#: rc.cpp:18
+#, no-c-format
+msgid "Archiving:"
+msgstr "ទុក​ក្នុង​ប័ណ្ណសារ ៖"
+
+#. i18n: file archiveviewbase.ui line 75
+#: rc.cpp:21
+#, no-c-format
+msgid "Original URL"
+msgstr "URL ដើម"
+
+#. i18n: file archiveviewbase.ui line 88
+#: rc.cpp:24
+#, no-c-format
+msgid "URL"
+msgstr "​URL"
+
+#. i18n: file archiveviewbase.ui line 99
+#: rc.cpp:27
+#, no-c-format
+msgid "State"
+msgstr "​សភាព"
+
