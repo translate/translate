@@ -21,6 +21,9 @@
   <property name="windowTitle" >
    <string>MainWindow</string>
   </property>
+  <property name="windowIcon" >
+   <iconset>../images/icon.png</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget" />
   <widget class="QMenuBar" name="menubar" >
    <property name="geometry" >
@@ -28,7 +31,7 @@
      <x>0</x>
      <y>0</y>
      <width>571</width>
-     <height>28</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile" >
@@ -68,6 +71,24 @@
     <addaction name="actionNext" />
     <addaction name="actionLast" />
    </widget>
+   <widget class="QMenu" name="menuEdit" >
+    <property name="title" >
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="actionUndo" />
+    <addaction name="actionRedo" />
+    <addaction name="separator" />
+    <addaction name="actionCut" />
+    <addaction name="actionCopy" />
+    <addaction name="actionPast" />
+    <addaction name="separator" />
+    <addaction name="actionFind" />
+    <addaction name="actionFindAgain" />
+    <addaction name="actionReplace" />
+    <addaction name="separator" />
+    <addaction name="actionCopySource2Target" />
+    <addaction name="actionToggleFuzzy" />
+   </widget>
    <widget class="QMenu" name="menuView" >
     <property name="title" >
      <string>&amp;View</string>
@@ -101,24 +122,6 @@
     <addaction name="menuToolView" />
     <addaction name="menuFilter" />
    </widget>
-   <widget class="QMenu" name="menuEdit" >
-    <property name="title" >
-     <string>&amp;Edit</string>
-    </property>
-    <addaction name="actionUndo" />
-    <addaction name="actionRedo" />
-    <addaction name="separator" />
-    <addaction name="actionCut" />
-    <addaction name="actionCopy" />
-    <addaction name="actionPast" />
-    <addaction name="separator" />
-    <addaction name="actionFind" />
-    <addaction name="actionFindAgain" />
-    <addaction name="actionReplace" />
-    <addaction name="separator" />
-    <addaction name="actionCopySource2Target" />
-    <addaction name="actionToggleFuzzy" />
-   </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
    <addaction name="menuGo" />
@@ -129,9 +132,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>455</y>
+     <y>456</y>
      <width>571</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
   </widget>
