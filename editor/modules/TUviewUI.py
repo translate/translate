@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Wed Aug 16 16:19:13 2006
+# Created: Mon Aug 21 11:10:01 2006
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -83,12 +83,13 @@ class Ui_TUview(object):
         palette.setColor(QtGui.QPalette.Disabled,QtGui.QPalette.ColorRole(15),QtGui.QColor(82,24,139))
         palette.setColor(QtGui.QPalette.Disabled,QtGui.QPalette.ColorRole(16),QtGui.QColor(232,232,232))
         self.txtSource.setPalette(palette)
+        self.txtSource.setTabChangesFocus(True)
+        self.txtSource.setUndoRedoEnabled(False)
         self.txtSource.setReadOnly(True)
         self.txtSource.setTabStopWidth(79)
         self.txtSource.setObjectName("txtSource")
 
         self.txtTarget = QtGui.QTextEdit(self.splitter)
-        self.txtTarget.setFocusPolicy(QtCore.Qt.ClickFocus)
         self.txtTarget.setObjectName("txtTarget")
         self.hboxlayout.addWidget(self.splitter)
 
@@ -102,6 +103,7 @@ class Ui_TUview(object):
 
         self.retranslateUi(TUview)
         QtCore.QMetaObject.connectSlotsByName(TUview)
+        TUview.setTabOrder(self.txtSource,self.txtTarget)
 
     def tr(self, string):
         return QtGui.QApplication.translate("TUview", string, None, QtGui.QApplication.UnicodeUTF8)
@@ -109,8 +111,6 @@ class Ui_TUview(object):
     def retranslateUi(self, TUview):
         TUview.setWindowTitle(self.tr("Ui_TUview"))
         self.splitter.setToolTip(self.tr("Click to change position"))
-        self.txtSource.setToolTip(self.tr("Source Display"))
-        self.txtTarget.setToolTip(self.tr("Target Editor"))
         self.fileScrollBar.setToolTip(self.tr("Navigate in your file"))
 
 

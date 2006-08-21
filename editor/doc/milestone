@@ -4,13 +4,13 @@ Editor
     1. Simple Editor: (Expected Release Date: 31/08/06)
         . Open      -- Done
         . Save      -- Done
-        . Save As
-        . Cut in Target/ Comment/ Overview
-        . Paste in Target/ Comment/ Overview
+        . Save As       -- 50%
+        . Cut in Target/ Comment/ Overview          --
+        . Paste in Target/ Comment/ Overview        --
         . Find (where to find: source, target, and comment; option: Case sensitive, From current position, Only whole words, find backwords, high light)
         . Replace (where to find: source, target, and comment; option: Case sensitive, From current position, Only whole words, find backwords, high light, ask before replacing)
-        . Filter (fuzzy, translated, untranslated, approved)
-        . Status
+        . Filter (fuzzy, translated, untranslated, approved)        -- 75%
+        . Status        -- 50%
         . Comment
         . Toggole Fuzzy         -- Done
         . Navigation        -- Done
@@ -19,7 +19,7 @@ Editor
         . Close File            -- Done
         . Copy Source 2 target          -- Done
         . Open in new window.  -- Done
-        . Application Icon
+        . Application Icon          -- 
         . Run it on Window
         . Create a first release
         

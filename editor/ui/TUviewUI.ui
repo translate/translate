@@ -314,8 +314,11 @@
         </disabled>
        </palette>
       </property>
-      <property name="toolTip" >
-       <string>Source Display</string>
+      <property name="tabChangesFocus" >
+       <bool>true</bool>
+      </property>
+      <property name="undoRedoEnabled" >
+       <bool>false</bool>
       </property>
       <property name="readOnly" >
        <bool>true</bool>
@@ -324,14 +327,7 @@
        <number>79</number>
       </property>
      </widget>
-     <widget class="QTextEdit" name="txtTarget" >
-      <property name="focusPolicy" >
-       <enum>Qt::ClickFocus</enum>
-      </property>
-      <property name="toolTip" >
-       <string>Target Editor</string>
-      </property>
-     </widget>
+     <widget class="QTextEdit" name="txtTarget" />
     </widget>
    </item>
    <item>
@@ -356,6 +352,10 @@
   </layout>
  </widget>
  <pixmapfunction></pixmapfunction>
+ <tabstops>
+  <tabstop>txtSource</tabstop>
+  <tabstop>txtTarget</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

@@ -104,6 +104,7 @@ class OverviewDock(QtGui.QDockWidget):
         self.disconnect(self.ui.treeOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitItemSelected)
         self.ui.treeOverview.setCurrentItem(item)
         self.connect(self.ui.treeOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitItemSelected)
+        
 
     def emitItemSelected(self):
         try:

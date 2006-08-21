@@ -28,16 +28,9 @@
      <x>0</x>
      <y>0</y>
      <width>571</width>
-     <height>29</height>
+     <height>28</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuHelp" >
-    <property name="title" >
-     <string>&amp;Help</string>
-    </property>
-    <addaction name="actionAbout" />
-    <addaction name="actionAboutQT" />
-   </widget>
    <widget class="QMenu" name="menuFile" >
     <property name="title" >
      <string>&amp;File</string>
@@ -58,6 +51,31 @@
     <addaction name="actionSaveas" />
     <addaction name="separator" />
     <addaction name="actionExit" />
+   </widget>
+   <widget class="QMenu" name="menuHelp" >
+    <property name="title" >
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="actionAbout" />
+    <addaction name="actionAboutQT" />
+   </widget>
+   <widget class="QMenu" name="menuEdit" >
+    <property name="title" >
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="actionUndo" />
+    <addaction name="actionRedo" />
+    <addaction name="separator" />
+    <addaction name="actionCut" />
+    <addaction name="actionCopy" />
+    <addaction name="actionPast" />
+    <addaction name="separator" />
+    <addaction name="actionFind" />
+    <addaction name="actionFindAgain" />
+    <addaction name="actionReplace" />
+    <addaction name="separator" />
+    <addaction name="actionCopySource2Target" />
+    <addaction name="actionToggleFuzzy" />
    </widget>
    <widget class="QMenu" name="menuGo" >
     <property name="title" >
@@ -89,25 +107,17 @@
       <string>ToolView</string>
      </property>
     </widget>
+    <widget class="QMenu" name="menuFilter" >
+     <property name="title" >
+      <string>Filter</string>
+     </property>
+     <addaction name="actionUnfiltered" />
+     <addaction name="actionFilterFuzzy" />
+     <addaction name="actionFilterTranslated" />
+     <addaction name="actionFilterUntranslated" />
+    </widget>
     <addaction name="menuToolView" />
-   </widget>
-   <widget class="QMenu" name="menuEdit" >
-    <property name="title" >
-     <string>&amp;Edit</string>
-    </property>
-    <addaction name="actionUndo" />
-    <addaction name="actionRedo" />
-    <addaction name="separator" />
-    <addaction name="actionCut" />
-    <addaction name="actionCopy" />
-    <addaction name="actionPast" />
-    <addaction name="separator" />
-    <addaction name="actionFind" />
-    <addaction name="actionFindAgain" />
-    <addaction name="actionReplace" />
-    <addaction name="separator" />
-    <addaction name="actionCopySource2Target" />
-    <addaction name="actionToggleFuzzy" />
+    <addaction name="menuFilter" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
@@ -119,9 +129,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>454</y>
+     <y>455</y>
      <width>571</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>
@@ -161,7 +171,6 @@
    <addaction name="actionNext" />
    <addaction name="actionLast" />
    <addaction name="separator" />
-   <addaction name="actionFilter" />
   </widget>
   <action name="actionNew" >
    <property name="icon" >
@@ -505,18 +514,51 @@
     <string>Open in New Window</string>
    </property>
   </action>
-  <action name="actionFilter" >
+  <action name="actionFilterFuzzy" >
    <property name="checkable" >
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="checked" >
     <bool>false</bool>
    </property>
    <property name="icon" >
-    <iconset>../images/filter.png</iconset>
+    <iconset/>
    </property>
    <property name="text" >
-    <string>Filter</string>
+    <string>Fuzzy</string>
+   </property>
+  </action>
+  <action name="actionFilterTranslated" >
+   <property name="checked" >
+    <bool>false</bool>
+   </property>
+   <property name="icon" >
+    <iconset/>
+   </property>
+   <property name="text" >
+    <string>Translated</string>
+   </property>
+  </action>
+  <action name="actionFilterUntranslated" >
+   <property name="icon" >
+    <iconset/>
+   </property>
+   <property name="text" >
+    <string>Untranslated</string>
+   </property>
+   <property name="iconText" >
+    <string>Untranslated</string>
+   </property>
+   <property name="toolTip" >
+    <string>Untranslated</string>
+   </property>
+  </action>
+  <action name="actionUnfiltered" >
+   <property name="icon" >
+    <iconset/>
+   </property>
+   <property name="text" >
+    <string>Unfiltered</string>
    </property>
   </action>
  </widget>

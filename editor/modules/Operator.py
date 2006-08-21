@@ -34,6 +34,7 @@ class status:
         self.numUntranslated  = self.numTotal - self.numTranslated
         
     def status(self):
+        self.numUntranslated = self.numTotal - self.numTranslated
         return "Total: "+ str(self.numTotal) + "  |  Fuzzy: " +  str(self.numFuzzy) + "  |  Translated: " +  str(self.numTranslated) + "  |  Untranslated: " + str(self.numUntranslated)
         
     def addNumFuzzy(self):
@@ -45,12 +46,6 @@ class status:
     def addNumTranslated(self):
         self.numTranslated += 1
 
-    def addNumUntranslated(self):
-        self.numUntranslated +=1
-    
-    def subNumUntranslated(self):
-        self.numUntranslated -=1
-        
     def subNumTranslated(self):
         self.numTranslated -= 1
 
@@ -197,16 +192,17 @@ class Operator(QtCore.QObject):
         unit = self.unitPointerList[self._unitpointer]
         currentUnit = self.store.units[unit]
         before_isuntranslated = not currentUnit.istranslated()
+        beforeIsFuzzy = currentUnit.isfuzzy()
         currentUnit.target = unicode(target)
         if (currentUnit.target != ''):
             currentUnit.marktranslated()
+            if (beforeIsFuzzy):
+                self.unitStatus.subNumFuzzy()
         after_istranslated = currentUnit.istranslated()
         if (before_isuntranslated and after_istranslated):
             self.unitStatus.addNumTranslated()
-            self.unitStatus.subNumUntranslated()
         elif (not before_isuntranslated and not after_istranslated):
             self.unitStatus.subNumTranslated()
-            self.unitStatus.addNumUntranslated()
         self.emitCurrentStatus()
         self._modified = True                
 
