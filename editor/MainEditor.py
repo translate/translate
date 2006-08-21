@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 #WordForge Translation Editor
-# (c) 2006 Open Forum of Cambodia, all rights reserved.
+# (c) 2006 WordForge Foundation, all rights reserved.
 #
 # Version 1.0 (10 June 2006)
 #
@@ -159,6 +159,8 @@ class MainWindow(QtGui.QMainWindow):
     def objectAvailable(self):
         if self.dockTUview.ui.txtTarget.hasFocus():
             return self.dockTUview.ui.txtTarget
+        elif self.dockTUview.ui.txtSource.hasFocus():
+            return self.dockTUview.ui.txtSource
         elif self.dockComment.ui.txtComment.hasFocus():
             return self.dockComment.ui.txtComment
         else:
@@ -196,6 +198,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionRedo.setEnabled(True)
         self.ui.actionCut.setEnabled(True)
         self.ui.actionCopy.setEnabled(True)
+##        if QClipboard.ownsClipboard():
         self.ui.actionPast.setEnabled(True)        
         self.ui.actionFind.setEnabled(True)
         self.disableFirstPrev()

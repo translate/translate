@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 # WordForge Translation Editor
-# (c) 2006 Open Forum of Cambodia, all rights reserved.
+# (c) 2006 WordForge Foundation, all rights reserved.
 #
 # Version 1.0
 #
