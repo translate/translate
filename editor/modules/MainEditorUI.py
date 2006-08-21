@@ -2,11 +2,11 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Mon Aug 21 08:37:16 2006
+# Created: Mon Aug 21 13:54:38 2006
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
- 
+
 import sys
 from PyQt4 import QtCore, QtGui
 
@@ -16,13 +16,14 @@ class Ui_MainWindow(object):
         MainWindow.setEnabled(True)
         MainWindow.resize(QtCore.QSize(QtCore.QRect(0,0,571,476).size()).expandedTo(MainWindow.minimumSizeHint()))
         MainWindow.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        MainWindow.setWindowIcon(QtGui.QIcon("./images/icon.png"))
 
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0,0,571,28))
+        self.menubar.setGeometry(QtCore.QRect(0,0,571,27))
         self.menubar.setObjectName("menubar")
 
         self.menuFile = QtGui.QMenu(self.menubar)
@@ -35,11 +36,11 @@ class Ui_MainWindow(object):
         self.menuHelp = QtGui.QMenu(self.menubar)
         self.menuHelp.setObjectName("menuHelp")
 
-        self.menuEdit = QtGui.QMenu(self.menubar)
-        self.menuEdit.setObjectName("menuEdit")
-
         self.menuGo = QtGui.QMenu(self.menubar)
         self.menuGo.setObjectName("menuGo")
+
+        self.menuEdit = QtGui.QMenu(self.menubar)
+        self.menuEdit.setObjectName("menuEdit")
 
         self.menuView = QtGui.QMenu(self.menubar)
         self.menuView.setObjectName("menuView")
@@ -58,7 +59,7 @@ class Ui_MainWindow(object):
         MainWindow.setMenuBar(self.menubar)
 
         self.statusbar = QtGui.QStatusBar(MainWindow)
-        self.statusbar.setGeometry(QtCore.QRect(0,455,571,21))
+        self.statusbar.setGeometry(QtCore.QRect(0,456,571,20))
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
@@ -232,6 +233,10 @@ class Ui_MainWindow(object):
         self.menuFile.addAction(self.actionExit)
         self.menuHelp.addAction(self.actionAbout)
         self.menuHelp.addAction(self.actionAboutQT)
+        self.menuGo.addAction(self.actionFirst)
+        self.menuGo.addAction(self.actionPrevious)
+        self.menuGo.addAction(self.actionNext)
+        self.menuGo.addAction(self.actionLast)
         self.menuEdit.addAction(self.actionUndo)
         self.menuEdit.addAction(self.actionRedo)
         self.menuEdit.addSeparator()
@@ -245,10 +250,6 @@ class Ui_MainWindow(object):
         self.menuEdit.addSeparator()
         self.menuEdit.addAction(self.actionCopySource2Target)
         self.menuEdit.addAction(self.actionToggleFuzzy)
-        self.menuGo.addAction(self.actionFirst)
-        self.menuGo.addAction(self.actionPrevious)
-        self.menuGo.addAction(self.actionNext)
-        self.menuGo.addAction(self.actionLast)
         self.menuToolBar.addAction(self.actionShow_MenuBar)
         self.menuToolBar.addAction(self.actionShow_TUview)
         self.menuFilter.addAction(self.actionUnfiltered)
@@ -276,7 +277,6 @@ class Ui_MainWindow(object):
         self.toolNavigation.addAction(self.actionPrevious)
         self.toolNavigation.addAction(self.actionNext)
         self.toolNavigation.addAction(self.actionLast)
-        self.toolNavigation.addSeparator()
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -289,8 +289,8 @@ class Ui_MainWindow(object):
         self.menuFile.setTitle(self.tr("&File"))
         self.menuOpen_Recent.setTitle(self.tr("Open &Recent"))
         self.menuHelp.setTitle(self.tr("&Help"))
-        self.menuEdit.setTitle(self.tr("&Edit"))
         self.menuGo.setTitle(self.tr("&Go"))
+        self.menuEdit.setTitle(self.tr("&Edit"))
         self.menuView.setTitle(self.tr("&View"))
         self.menuToolBar.setTitle(self.tr("ToolBar"))
         self.menuToolbar.setTitle(self.tr("Toolbar"))
