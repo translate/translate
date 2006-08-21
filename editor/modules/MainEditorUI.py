@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Wed Aug 16 16:54:20 2006
+# Created: Mon Aug 21 08:37:16 2006
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -22,11 +22,8 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0,0,571,29))
+        self.menubar.setGeometry(QtCore.QRect(0,0,571,28))
         self.menubar.setObjectName("menubar")
-
-        self.menuHelp = QtGui.QMenu(self.menubar)
-        self.menuHelp.setObjectName("menuHelp")
 
         self.menuFile = QtGui.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
@@ -34,6 +31,12 @@ class Ui_MainWindow(object):
         self.menuOpen_Recent = QtGui.QMenu(self.menuFile)
         self.menuOpen_Recent.setIcon(QtGui.QIcon("./images/open.png"))
         self.menuOpen_Recent.setObjectName("menuOpen_Recent")
+
+        self.menuHelp = QtGui.QMenu(self.menubar)
+        self.menuHelp.setObjectName("menuHelp")
+
+        self.menuEdit = QtGui.QMenu(self.menubar)
+        self.menuEdit.setObjectName("menuEdit")
 
         self.menuGo = QtGui.QMenu(self.menubar)
         self.menuGo.setObjectName("menuGo")
@@ -50,12 +53,12 @@ class Ui_MainWindow(object):
         self.menuToolView = QtGui.QMenu(self.menuView)
         self.menuToolView.setObjectName("menuToolView")
 
-        self.menuEdit = QtGui.QMenu(self.menubar)
-        self.menuEdit.setObjectName("menuEdit")
+        self.menuFilter = QtGui.QMenu(self.menuView)
+        self.menuFilter.setObjectName("menuFilter")
         MainWindow.setMenuBar(self.menubar)
 
         self.statusbar = QtGui.QStatusBar(MainWindow)
-        self.statusbar.setGeometry(QtCore.QRect(0,454,571,22))
+        self.statusbar.setGeometry(QtCore.QRect(0,455,571,21))
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
@@ -205,13 +208,20 @@ class Ui_MainWindow(object):
         self.actionOpenInNewWindow.setIcon(QtGui.QIcon("./images/window_new.png"))
         self.actionOpenInNewWindow.setObjectName("actionOpenInNewWindow")
 
-        self.actionFilter = QtGui.QAction(MainWindow)
-        self.actionFilter.setCheckable(True)
-        self.actionFilter.setChecked(False)
-        self.actionFilter.setIcon(QtGui.QIcon("./images/filter.png"))
-        self.actionFilter.setObjectName("actionFilter")
-        self.menuHelp.addAction(self.actionAbout)
-        self.menuHelp.addAction(self.actionAboutQT)
+        self.actionFilterFuzzy = QtGui.QAction(MainWindow)
+        self.actionFilterFuzzy.setCheckable(False)
+        self.actionFilterFuzzy.setChecked(False)
+        self.actionFilterFuzzy.setObjectName("actionFilterFuzzy")
+
+        self.actionFilterTranslated = QtGui.QAction(MainWindow)
+        self.actionFilterTranslated.setChecked(False)
+        self.actionFilterTranslated.setObjectName("actionFilterTranslated")
+
+        self.actionFilterUntranslated = QtGui.QAction(MainWindow)
+        self.actionFilterUntranslated.setObjectName("actionFilterUntranslated")
+
+        self.actionUnfiltered = QtGui.QAction(MainWindow)
+        self.actionUnfiltered.setObjectName("actionUnfiltered")
         self.menuFile.addAction(self.actionOpenInNewWindow)
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.menuOpen_Recent.menuAction())
@@ -220,13 +230,8 @@ class Ui_MainWindow(object):
         self.menuFile.addAction(self.actionSaveas)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionExit)
-        self.menuGo.addAction(self.actionFirst)
-        self.menuGo.addAction(self.actionPrevious)
-        self.menuGo.addAction(self.actionNext)
-        self.menuGo.addAction(self.actionLast)
-        self.menuToolBar.addAction(self.actionShow_MenuBar)
-        self.menuToolBar.addAction(self.actionShow_TUview)
-        self.menuView.addAction(self.menuToolView.menuAction())
+        self.menuHelp.addAction(self.actionAbout)
+        self.menuHelp.addAction(self.actionAboutQT)
         self.menuEdit.addAction(self.actionUndo)
         self.menuEdit.addAction(self.actionRedo)
         self.menuEdit.addSeparator()
@@ -240,6 +245,18 @@ class Ui_MainWindow(object):
         self.menuEdit.addSeparator()
         self.menuEdit.addAction(self.actionCopySource2Target)
         self.menuEdit.addAction(self.actionToggleFuzzy)
+        self.menuGo.addAction(self.actionFirst)
+        self.menuGo.addAction(self.actionPrevious)
+        self.menuGo.addAction(self.actionNext)
+        self.menuGo.addAction(self.actionLast)
+        self.menuToolBar.addAction(self.actionShow_MenuBar)
+        self.menuToolBar.addAction(self.actionShow_TUview)
+        self.menuFilter.addAction(self.actionUnfiltered)
+        self.menuFilter.addAction(self.actionFilterFuzzy)
+        self.menuFilter.addAction(self.actionFilterTranslated)
+        self.menuFilter.addAction(self.actionFilterUntranslated)
+        self.menuView.addAction(self.menuToolView.menuAction())
+        self.menuView.addAction(self.menuFilter.menuAction())
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
         self.menubar.addAction(self.menuGo.menuAction())
@@ -260,7 +277,6 @@ class Ui_MainWindow(object):
         self.toolNavigation.addAction(self.actionNext)
         self.toolNavigation.addAction(self.actionLast)
         self.toolNavigation.addSeparator()
-        self.toolNavigation.addAction(self.actionFilter)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -270,15 +286,16 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(self.tr("MainWindow"))
-        self.menuHelp.setTitle(self.tr("&Help"))
         self.menuFile.setTitle(self.tr("&File"))
         self.menuOpen_Recent.setTitle(self.tr("Open &Recent"))
+        self.menuHelp.setTitle(self.tr("&Help"))
+        self.menuEdit.setTitle(self.tr("&Edit"))
         self.menuGo.setTitle(self.tr("&Go"))
         self.menuView.setTitle(self.tr("&View"))
         self.menuToolBar.setTitle(self.tr("ToolBar"))
         self.menuToolbar.setTitle(self.tr("Toolbar"))
         self.menuToolView.setTitle(self.tr("ToolView"))
-        self.menuEdit.setTitle(self.tr("&Edit"))
+        self.menuFilter.setTitle(self.tr("Filter"))
         self.actionNew.setText(self.tr("&New"))
         self.actionNew.setShortcut(self.tr("Ctrl+N"))
         self.actionOpen.setText(self.tr("&Open"))
@@ -336,4 +353,18 @@ class Ui_MainWindow(object):
         self.actionFindAgain.setText(self.tr("Find Again"))
         self.actionFindAgain.setShortcut(self.tr("Ctrl+G"))
         self.actionOpenInNewWindow.setText(self.tr("Open in New Window"))
-        self.actionFilter.setText(self.tr("Filter"))
+        self.actionFilterFuzzy.setText(self.tr("Fuzzy"))
+        self.actionFilterTranslated.setText(self.tr("Translated"))
+        self.actionFilterUntranslated.setText(self.tr("Untranslated"))
+        self.actionFilterUntranslated.setIconText(self.tr("Untranslated"))
+        self.actionFilterUntranslated.setToolTip(self.tr("Untranslated"))
+        self.actionUnfiltered.setText(self.tr("Unfiltered"))
+
+
+if __name__ == "__main__":
+    app = QtGui.QApplication(sys.argv)
+    MainWindow = QtGui.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())

@@ -1,10 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
-
 #WordForge Translation Editor
 # (c) 2006 Open Forum of Cambodia, all rights reserved.
 #
-# Version 1.0 
+# Version 1.0 (10 June 2006)
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -19,10 +18,10 @@
 # This module is working on the main windows of Editor
 
 import sys
-##import os.path
-#### add a modules path in sys.path so the other module inside it is known during import
-##sys.path.append(os.path.join(sys.path[0] ,"modules"))
+import os.path
 
+## add a modules path in sys.path so the other module inside it is known during import
+sys.path.append(os.path.join(sys.path[0] ,"modules"))
 
 from PyQt4 import QtCore, QtGui
 from modules.MainEditorUI import Ui_MainWindow
@@ -45,8 +44,19 @@ class MainWindow(QtGui.QMainWindow):
         self.resize(800, 600)        
         self.ui.recentaction = []
         self.createRecentAction()                
-##        self.pasteAvailable()
 
+        # create radio selection for menu filter
+        filterGroup = QtGui.QActionGroup(self.ui.menuFilter)
+        self.ui.actionUnfiltered.setActionGroup(filterGroup)
+        self.ui.actionFilterFuzzy.setActionGroup(filterGroup)
+        self.ui.actionFilterTranslated.setActionGroup(filterGroup)
+        self.ui.actionFilterUntranslated.setActionGroup(filterGroup)
+        self.ui.actionUnfiltered.setCheckable(True)
+        self.ui.actionFilterFuzzy.setCheckable(True)
+        self.ui.actionFilterTranslated.setCheckable(True)
+        self.ui.actionFilterUntranslated.setCheckable(True)
+        self.ui.actionUnfiltered.setChecked(True)
+        
         #plug in overview widget
         self.dockOverview = OverviewDock()        
         self.addDockWidget(QtCore.Qt.TopDockWidgetArea, self.dockOverview)        
@@ -101,7 +111,10 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionLast, QtCore.SIGNAL("triggered()"), self.operator.last)
         self.connect(self.ui.actionCopySource2Target, QtCore.SIGNAL("triggered()"), self.dockTUview.source2target)
 
-        self.connect(self.ui.actionFilter, QtCore.SIGNAL("toggled(bool)"), self.toggleFilter)
+        self.connect(self.ui.actionUnfiltered, QtCore.SIGNAL("triggered()"), self.operator.emitNewUnits)
+        self.connect(self.ui.actionFilterFuzzy, QtCore.SIGNAL("triggered()"), self.filterFuzzy)
+        self.connect(self.ui.actionFilterTranslated, QtCore.SIGNAL("triggered()"), self.filterTranslated)
+        self.connect(self.ui.actionFilterUntranslated, QtCore.SIGNAL("triggered()"), self.filterUntranslated)        
         self.connect(self.ui.actionToggleFuzzy, QtCore.SIGNAL("triggered()"), self.operator.toggleFuzzy)
         
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockTUview.updateTUview)
@@ -117,26 +130,32 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
         self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.dockOverview.setTarget)
         
-        #self.connect(self.dockTUview, QtCore.SIGNAL("itemSelected"), self.operator.setCurrentUnit)
-        #self.connect(self.dockTUview, QtCore.SIGNAL("sliderChanged"), self.dockOverview.scrollToSlider)
-        
         self.connect(self.dockComment, QtCore.SIGNAL("commentChanged"), self.operator.setComment)
         self.connect(self.fileaction, QtCore.SIGNAL("fileName"), self.operator.saveStoreToFile)
-        self.connect(self.fileaction, QtCore.SIGNAL("fileName"), self.setTitle)        
+        self.connect(self.fileaction, QtCore.SIGNAL("fileName"), self.setTitle)
         self.connect(self.operator, QtCore.SIGNAL("firstUnit"), self.disableFirstPrev)
         self.connect(self.operator, QtCore.SIGNAL("firstUnit"), self.enableNextLast)
         self.connect(self.operator, QtCore.SIGNAL("lastUnit"), self.enableFirstPrev)
         self.connect(self.operator, QtCore.SIGNAL("lastUnit"), self.disableNextLast)
         self.connect(self.operator, QtCore.SIGNAL("middleUnit"), self.enableFirstPrev)
         self.connect(self.operator, QtCore.SIGNAL("middleUnit"), self.enableNextLast)        
-        self.connect(self.operator, QtCore.SIGNAL("newUnits"), self.dockOverview.refillItems)
+        self.connect(self.operator, QtCore.SIGNAL("newUnits"), self.dockOverview.slotNewUnits)
         self.connect(self.operator, QtCore.SIGNAL("newUnits"), self.dockTUview.slotNewUnits)
+        self.connect(self.operator, QtCore.SIGNAL("noUnit"), self.disableAll)
    
         self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.showCurrentStatus)
         self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.setOpening)  
         self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.showCurrentStatus)           
+    
+    def filterFuzzy(self):
+        self.operator.emitFilteredUnits('fuzzy')
+    
+    def filterTranslated(self):
+        self.operator.emitFilteredUnits('translated')
+    
+    def filterUntranslated(self):
+        self.operator.emitFilteredUnits('untranslated')
         
-            
     def objectAvailable(self):
         if self.dockTUview.ui.txtTarget.hasFocus():
             return self.dockTUview.ui.txtTarget
@@ -144,31 +163,15 @@ class MainWindow(QtGui.QMainWindow):
             return self.dockComment.ui.txtComment
         else:
             return
-            
-    def pasteAvailable(self):
-        objclipboard = QtGui.QClipboard()
-        if QtGui.QClipboard.ownsClipboard():
-            self.ui.actionPast.setEnabled(True)
-            
-    def selections(self):
-        object = self.objectAvailable()
-        try:
-            self.connect(object, QtCore.SIGNAL("selectionChanged()"), QtCore.SLOT("setEnabled"))
-        except TypeError:
-            return
-        self.ui.actionCut.setEnabled(True)
-        self.ui.actionCopy.setEnabled(True)
-    
+        
     def cutter(self):
         object = self.objectAvailable()
         self.operator.cutEdit(object)
-        self.ui.actionPast.setEnabled(True)
         
     def copier(self):
         object = self.objectAvailable()
         self.operator.copyEdit(object)
-        self.ui.actionPast.setEnabled(True)
-        
+            
     def paster(self):
         object = self.objectAvailable()
         object.paste()
@@ -180,17 +183,7 @@ class MainWindow(QtGui.QMainWindow):
     def undoer(self):
         object = self.objectAvailable()
         self.operator.undoEdit(object)
-        print object.isUndoRedoEnabled()
-##        if object.isUndoRedoEnabled():
-##            self.ui.actionUndo.setEnabled(False)
     
-         
-    def toggleFilter(self, filter):
-        if filter:
-            self.operator.emitFilteredUnits()
-        else:
-            self.operator.emitNewUnits() 
-
     def showCurrentStatus(self, status):
         self.statuslabel.setText(' ' + status + ' ')
 
@@ -201,14 +194,16 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionSaveas.setEnabled(True)
         self.ui.actionUndo.setEnabled(True)
         self.ui.actionRedo.setEnabled(True)
+        self.ui.actionCut.setEnabled(True)
+        self.ui.actionCopy.setEnabled(True)
+        self.ui.actionPast.setEnabled(True)        
         self.ui.actionFind.setEnabled(True)
         self.disableFirstPrev()
         self.enableNextLast()   
         settings = QtCore.QSettings("KhmerOS", "Translation Editor")
         files = settings.value("recentFileList").toStringList()
         files.removeAll(fileName)        
-        files.prepend(fileName)      
-        self.selections()
+        files.prepend(fileName)        
         while files.count() > MainWindow.MaxRecentFiles:
             files.removeAt(files.count()-1)        
         settings.setValue("recentFileList", QtCore.QVariant(files))
@@ -256,8 +251,8 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionPrevious.setDisabled(True)                                  
     
     def enableFirstPrev(self):        
-        self.ui.actionFirst.setEnabled(True)         
-        self.ui.actionPrevious.setEnabled(True)                                  
+        self.ui.actionFirst.setEnabled(True)
+        self.ui.actionPrevious.setEnabled(True)
     
     def disableNextLast(self):
         self.ui.actionNext.setDisabled(True)        
@@ -267,6 +262,12 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionNext.setEnabled(True)         
         self.ui.actionLast.setEnabled(True)                                  
 
+    def disableAll(self):
+        self.ui.actionFirst.setDisabled(True)
+        self.ui.actionPrevious.setDisabled(True)
+        self.ui.actionNext.setDisabled(True)
+        self.ui.actionLast.setDisabled(True)
+        
     def showFindBar(self):
         self.find.setVisible(True)             
         
@@ -275,7 +276,6 @@ class MainWindow(QtGui.QMainWindow):
         MainWindow.windowList.append(other) 
         other.fileaction.openFile()
         other.show()        
-        
     
     
 if __name__ == "__main__":

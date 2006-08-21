@@ -3,7 +3,7 @@
 #WordForge Translation Editor
 # (c) 2006 Open Forum of Cambodia, all rights reserved.
 #
-# Version 1.0
+# Version 1.0 (10 June 2006)
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -50,13 +50,13 @@ class TUview(QtGui.QDockWidget):
         self.setHidden(not self.isHidden())
 
     @QtCore.pyqtSignature("int")
-    def emitItemSelected(self, value):
+    def emitScrollbarPosition(self, value):
         self.emit(QtCore.SIGNAL("scrollbarPosition"), value)
 
     def updateScrollbar(self, value):
-        self.disconnect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitItemSelected)
+        self.disconnect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitScrollbarPosition)
         self.ui.fileScrollBar.setValue(value)
-        self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitItemSelected)
+        self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitScrollbarPosition)
 
     def slotNewUnits(self, units):
         """slot after new file was loaded"""
@@ -64,7 +64,7 @@ class TUview(QtGui.QDockWidget):
         self.units = units
         self.ui.fileScrollBar.setMaximum(len(units) - 1)
         self.ui.fileScrollBar.setEnabled(True)
-        self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitItemSelected)
+        self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitScrollbarPosition)
         
     def updateTUview(self, currentUnit):
         """ Update TUview """

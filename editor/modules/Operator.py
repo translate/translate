@@ -3,7 +3,7 @@
 # WordForge Translation Editor
 # (c) 2006 Open Forum of Cambodia, all rights reserved.
 #
-# Version 1.0
+# Version 1.0 (10 June 2006)
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -18,7 +18,6 @@
 
 from PyQt4 import QtCore
 from translate.storage import factory
-##from modules.Status import Status
 
 class status:
     def __init__(self, units):
@@ -55,6 +54,15 @@ class status:
     def subNumTranslated(self):
         self.numTranslated -= 1
 
+class emptyUnit:
+    def __init__(self):
+        self.source = ''
+        self.target = ''
+    
+    def getnotes(self):
+        return ''
+    
+
 class Operator(QtCore.QObject):
     def __init__(self):
         QtCore.QObject.__init__(self)
@@ -75,13 +83,17 @@ class Operator(QtCore.QObject):
         self.emitCurrentStatus()
 
     def emitCurrentUnit(self):
-        if (self._unitpointer == 0):
+        if (self.unitPointerList == []):
+            self.emptyUnit = emptyUnit()
+            self.emit(QtCore.SIGNAL("noUnit"))
+            return
+        elif (self._unitpointer == 0):
             self.firstUnit()
         elif (self._unitpointer == len(self.unitPointerList) - 1):
             self.lastUnit()
         else:
             self.middleUnit()
-            
+        
         currentUnit = self.unitPointerList[self._unitpointer]
         if (currentUnit != len(self.store.units)):
             self.emit(QtCore.SIGNAL("currentUnit"), self.store.units[currentUnit])
@@ -92,22 +104,42 @@ class Operator(QtCore.QObject):
         self.unitPointerList = range(len(self.store.units))
         self.emit(QtCore.SIGNAL("newUnits"), self.store.units)
 
-    def emitFilteredUnits(self):
-        numTotal = len(self.store.units)
+    def emitFilteredUnits(self, filter):
+        if (filter == 'fuzzy'):
+            filter = 1
+        elif (filter == 'translated'):
+            filter = 2
+        elif (filter == 'untranslated'):
+            filter = 3
+        else:
+            filter = 0
+        
         self._unitpointer = 0
         filteredUnits = []
         self.unitPointerList = []
-        for i in range(numTotal):
-            if (self.store.units[i].isfuzzy()):
-                filteredUnits.append(self.store.units[i])
-                self.unitPointerList.append(i)
+        for i in range(len(self.store.units)):
+
+            if (filter == 1):
+                if (self.store.units[i].isfuzzy()):
+                    filteredUnits.append(self.store.units[i])
+                    self.unitPointerList.append(i)
+            elif (filter == 2):
+                if (self.store.units[i].istranslated()):
+                    filteredUnits.append(self.store.units[i])
+                    self.unitPointerList.append(i)
+            elif (filter == 3):
+                if (not self.store.units[i].istranslated()):
+                    filteredUnits.append(self.store.units[i])
+                    self.unitPointerList.append(i)
+
         self.emit(QtCore.SIGNAL("newUnits"), filteredUnits)
+        #self.emitCurrentUnit()
 
     def emitUpdateUnit(self):
         if (self._unitpointer != None):            
             self.emit(QtCore.SIGNAL("updateUnit"))    
     
-    def firstUnit(self):    
+    def firstUnit(self):
         self.emit(QtCore.SIGNAL("firstUnit"))
     
     def lastUnit(self):
@@ -144,7 +176,7 @@ class Operator(QtCore.QObject):
     def saveStoreToFile(self, fileName):
         self.emitUpdateUnit()
         self.store.savefile(fileName)
-        self._saveDone = True        
+        self._saveDone = True
 
     def modified(self):
         self.emitUpdateUnit()
@@ -192,10 +224,10 @@ class Operator(QtCore.QObject):
         """toggle fuzzy state for current unit"""
         unit = self.unitPointerList[self._unitpointer]
         currentUnit = self.store.units[unit]
-        fuzzy = not currentUnit.isfuzzy()
-        currentUnit.markfuzzy(fuzzy)
+        boolFuzzy = not currentUnit.isfuzzy()
+        currentUnit.markfuzzy(boolFuzzy)
         self._modified = True
-        if (fuzzy):
+        if (boolFuzzy):
             self.unitStatus.addNumFuzzy()
         else:
             self.unitStatus.subNumFuzzy()
@@ -213,8 +245,7 @@ class Operator(QtCore.QObject):
         object.copy()
         
     def undoEdit(self, object):
-        object.document().undo()     
-##        return self.connect(object, QtCore.SIGNAL("undoAvailable(bool)"), QtCore.SLOT("setEnabled"))
+        object.document().undo()        
      
     def redoEdit(self, object):
         object.document().redo()

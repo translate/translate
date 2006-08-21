@@ -3,7 +3,7 @@
 # WordForge Translation Editor
 # (c) 2006 Open Forum of Cambodia, all rights reserved.
 #
-# Version 1.0
+# Version 1.0 (10 June 2006)
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -89,21 +89,21 @@ class OverviewDock(QtGui.QDockWidget):
         else:
             self.addItem(currentUnit)
 
-    def refillItems(self, units):
-        """Clear and fill the tree widget with units"""
+    def slotNewUnits(self, units):
+        """Initialize the list, clear and fill with units"""
         self.units = []
         self.items = []
         self.ui.treeOverview.clear()
         self.addItems(units)
+        # select the first item in list
+        if (units):
+            self.ui.treeOverview.setCurrentItem(self.items[0])
 
     def updateItem(self, value):
         item = self.items[value]
         self.disconnect(self.ui.treeOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitItemSelected)
         self.ui.treeOverview.setCurrentItem(item)
         self.connect(self.ui.treeOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitItemSelected)
-
-    def clear(self):
-        self.ui.treeOverview.clear()
 
     def emitItemSelected(self):
         try:
