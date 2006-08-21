@@ -6,7 +6,7 @@
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
-
+ 
 import sys
 from PyQt4 import QtCore, QtGui
 
