@@ -222,6 +222,20 @@ msgstr "Sertifikate"
         newpounit = self.singleunit(newpo)
         assert str(newpounit) == expected
 
+    def test_merging_resurect_obsolete_messages_into_msgidcomment(self):
+        """check that we can reuse old obsolete messages even if the recipient has a msgidcomment"""
+        potsource = '''#: resurect1.c\nmsgid ""\n"_: resurect1.c\\n"\n"About"\nmsgstr ""\n\n''' + \
+                    '''#: resurect2.c\nmsgid ""\n"_: resurect2.c\\n"\n"About"\nmsgstr ""\n'''
+        posource = '''#~ msgid "About"\n#~ msgstr "Omtrent"\n'''
+        expected1 = '''#: resurect1.c\nmsgid ""\n"_: resurect1.c\\n"\n"About"\nmsgstr "Omtrent"\n'''
+        expected2 = '''#: resurect2.c\nmsgid ""\n"_: resurect2.c\\n"\n"About"\nmsgstr "Omtrent"\n'''
+        newpo = self.convertpot(potsource, posource)
+        print newpo
+        assert len(newpo.units) == 3
+        assert newpo.units[0].isheader()
+        assert str(newpo.units[1]) == expected1
+        assert str(newpo.units[2]) == expected2
+
     def test_header_initialisation(self):
         """test to check that we initialise the header correctly"""
         potsource = r'''#, fuzzy
