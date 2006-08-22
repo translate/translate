@@ -22,9 +22,25 @@
 """converts gettext .pot template to .po translation files, merging in existing translations if present"""
 
 from translate.storage import po
+from translate.storage import factory
 from translate.search import match
 
-def convertpot(inputpotfile, outputpofile, templatepofile):
+# We don't want to reinitialise the TM each time, so let's store it here.
+tmmatcher = None
+
+def memory(tmfiles, max_candidates=1, min_similarity=75, max_length=1000):
+    """Returns the TM store to use. Only initialises on first call."""
+    global tmmatcher
+    # Only initialise first time
+    if tmmatcher is None:
+      if isinstance(tmfiles, list):
+        tmstore = [factory.getobject(tmfile) for tmfile in tmfiles]
+      else:
+        tmstore = factory.getobject(tmfiles)
+      tmmatcher = match.matcher(tmstore, max_candidates=max_candidates, min_similarity=min_similarity, max_length=max_length)
+    return tmmatcher
+
+def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similarity=75):
   """reads in inputpotfile, adjusts header, writes to outputpofile. if templatepofile exists, merge translations from it into outputpofile"""
   inputpot = po.pofile(inputpotfile)
   outputpo = po.pofile()
@@ -45,10 +61,10 @@ def convertpot(inputpotfile, outputpofile, templatepofile):
       if unit.isobsolete():
         unit.resurrect()
     try:
-      fuzzymatcher = match.matcher(templatepo, max_candidates=1, min_similarity=75, max_length=1000)
-      fuzzymatcher.addpercentage = False
+      fuzzyfilematcher = match.matcher(templatepo, max_candidates=1, min_similarity=75, max_length=1000)
+      fuzzyfilematcher.addpercentage = False
     except:
-      fuzzymatcher = None
+      fuzzyfilematcher = None
     templatepo.makeindex()
     templateheadervalues = templatepo.parseheader()
     for key, value in templateheadervalues.iteritems():
@@ -71,6 +87,11 @@ def convertpot(inputpotfile, outputpofile, templatepofile):
         plural_forms = value
       else:
         kwargs[key] = value
+  try:
+    fuzzyglobalmatcher = memory(tmfiles, max_candidates=1, min_similarity=75, max_length=1000)
+    fuzzyglobalmatcher.addpercentage = False
+  except:
+    fuzzyglobalmatcher = None
   inputheadervalues = inputpot.parseheader()
   for key, value in inputheadervalues.iteritems():
     if key in ("Project-Id-Version", "Last-Translator", "Language-Team", "PO-Revision-Date", "Content-Type", "Content-Transfer-Encoding", "Plural-Forms"):
@@ -112,13 +133,23 @@ def convertpot(inputpotfile, outputpofile, templatepofile):
             inputpotunit.merge(templatepounit)
             break
         else: 
-          if fuzzymatcher:
-            fuzzycandidates = fuzzymatcher.matches(inputpotunit.source)
+          if fuzzyfilematcher:
+            fuzzycandidates = fuzzyfilematcher.matches(inputpotunit.source)
             if fuzzycandidates:
               inputpotunit.merge(fuzzycandidates[0])
-              templatepo.findunit(fuzzycandidates[0].source).reused = True
+              original = templatepo.findunit(fuzzycandidates[0].source)
+              if original:
+                original.reused = True
+          if fuzzyglobalmatcher and not fuzzycandidates:
+            fuzzycandidates = fuzzyglobalmatcher.matches(inputpotunit.source)
+            if fuzzycandidates:
+              inputpotunit.merge(fuzzycandidates[0])
         outputpo.units.append(inputpotunit)
       else:
+        if fuzzyglobalmatcher:
+          fuzzycandidates = fuzzyglobalmatcher.matches(inputpotunit.source)
+          if fuzzycandidates:
+            inputpotunit.merge(fuzzycandidates[0])
         outputpo.units.append(inputpotunit)
 
   #Let's take care of obsoleted messages
@@ -139,5 +170,11 @@ def main(argv=None):
   from translate.convert import convert
   formats = {"pot": ("po", convertpot), ("pot", "po"): ("po", convertpot)}
   parser = convert.ConvertOptionParser(formats, usepots=True, usetemplates=True, description=__doc__)
+  parser.add_option("", "--tm", dest="tm", default=None,
+    help="The file to use as translation memory")
+  parser.passthrough.append("tm")
+  parser.add_option("-s", "--similarity", dest="min_similarity", default=75,
+    help="The minimum similarity for inclusion")
+  parser.passthrough.append("min_similarity")
   parser.run(argv)
 
