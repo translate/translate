@@ -66,7 +66,7 @@ class LevenshteinComparer:
         * Excecution time is O(len(a)*len(b))
     """
         l1, l2 = len(a), len(b)
-	if l1 == 0 or l2 == 0:
+        if l1 == 0 or l2 == 0:
             return 0
         #Let's make l1 the smallest
         if l1 > l2:
