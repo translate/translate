@@ -134,6 +134,43 @@ msgstr "36em"
         newpounit = self.singleunit(newpo)
         assert str(newpounit) == posource
 
+    def test_merging_msgid_with_msgidcomment(self):
+        """test that we can merge an otherwise identical string that has a different msgid"""
+        potsource = r'''#: pref.certs.title
+msgid ""
+"_: pref.certs.title\n"
+"Certificates"
+msgstr ""
+
+#: certs.label
+msgid ""
+"_: certs.label\n"
+"Certificates"
+msgstr ""
+'''
+        posource = r'''#: pref.certs.title
+msgid ""
+"_: pref.certs.title\n"
+"Certificates"
+msgstr ""
+
+#: certs.label
+msgid ""
+"_: certs.label\n"
+"Certificates"
+msgstr "Sertifikate"
+'''
+        expected = r'''#: pref.certs.title
+#, fuzzy
+msgid ""
+"_: pref.certs.title\n"
+"Certificates"
+msgstr "Sertifikate"
+'''
+        newpo = self.convertpot(potsource, posource)
+        newpounit = newpo.units[1]
+        assert str(newpounit) == expected
+
     def test_merging_plurals(self):
         """ensure that we can merge plural messages"""
         potsource = '''msgid "One"\nmsgid_plural "Two"\nmsgstr[0] ""\nmsgstr[1] ""\n''' 
