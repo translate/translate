@@ -142,7 +142,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("newUnits"), self.dockOverview.slotNewUnits)
         self.connect(self.operator, QtCore.SIGNAL("newUnits"), self.dockTUview.slotNewUnits)
         self.connect(self.operator, QtCore.SIGNAL("noUnit"), self.disableAll)
-   
+        
         self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.showCurrentStatus)
         self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.setOpening)  
         self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.showCurrentStatus)           

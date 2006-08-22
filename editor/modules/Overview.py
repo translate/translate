@@ -44,7 +44,7 @@ class OverviewDock(QtGui.QDockWidget):
         self.lastItem = None
         self.id = None
         self.connect(self.ui.treeOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitItemSelected)
-        
+
     def closeEvent(self, event):            
         self._actionShow.setText(self.tr("Show Overview"))
         
@@ -58,47 +58,47 @@ class OverviewDock(QtGui.QDockWidget):
             self._actionShow.setText(self.tr("Show Overview"))    
         self.setHidden(not self.isHidden())    
 
-    def getid(self, currentUnit):
-        """return id as integer.
-        If unit does not id, it return index of unit in list of units."""
-        try:
-            currentId = int(currentUnit.getid())
-            return currentId
-        except AttributeError:
-            # try unit index in units
-            #currentIndex = self.units.index(currentUnit)
-            #return currentIndex
-            return 0
+##    def getid(self, currentUnit):
+##        """return id as integer.
+##        If unit does not id, it return index of unit in list of units."""
+##        try:
+##            currentId = int(currentUnit.getid())
+##            return currentId
+##        except AttributeError:
+##            return None
 
-    def addItem(self, currentUnit):
+    def addItem(self, currentUnit, currentPointer):
         """Add one item to the list of source and target."""
-        #self.units.append(currentUnit)
         item = QtGui.QTreeWidgetItem(self.ui.treeOverview)
         self.items.append(item)
-        id = self.getid(currentUnit)
+        #id = self.getid(currentUnit)
+        #if (not id):
+        #    id = currentPointer
+        id = currentPointer
         item.setText(0, str(id))
         item.setText(1, currentUnit.source)
         item.setText(2, currentUnit.target)
         #item.setData(0, QtCore.Qt.UserRole, QtCore.QVariant(id))
         
-    def addItems(self, currentUnit):
+    def addItems(self, currentUnit, currentPointer):
         """Add an item or a list of items."""
         if isinstance(currentUnit, list):
-            for item in currentUnit:
-                self.addItem(item)
+            #for item in currentUnit:
+            #    self.addItem(item, pointer)
+            for i in range(len(currentUnit)):
+                self.addItem(currentUnit[i], currentPointer[i])
         else:
             self.addItem(currentUnit)
 
-    def slotNewUnits(self, units):
+    def slotNewUnits(self, units, unitsPointer):
         """Initialize the list, clear and fill with units"""
-        self.units = []
         self.items = []
         self.ui.treeOverview.clear()
-        self.addItems(units)
+        self.addItems(units, unitsPointer)
         # select the first item in list
         if (units):
             self.ui.treeOverview.setCurrentItem(self.items[0])
-
+    
     def updateItem(self, value):
         item = self.items[value]
         self.disconnect(self.ui.treeOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitItemSelected)

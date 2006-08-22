@@ -67,7 +67,7 @@ class Operator(QtCore.QObject):
         
         self._unitpointer = None
         self.unitPointerList = []
-
+    
     def getUnits(self, fileName):
         self.store = factory.getobject(fileName)
         
@@ -97,7 +97,7 @@ class Operator(QtCore.QObject):
     def emitNewUnits(self):
         self._unitpointer = 0
         self.unitPointerList = range(len(self.store.units))
-        self.emit(QtCore.SIGNAL("newUnits"), self.store.units)
+        self.emit(QtCore.SIGNAL("newUnits"), self.store.units, self.unitPointerList)
 
     def emitFilteredUnits(self, filter):
         if (filter == 'fuzzy'):
@@ -127,7 +127,7 @@ class Operator(QtCore.QObject):
                     filteredUnits.append(self.store.units[i])
                     self.unitPointerList.append(i)
 
-        self.emit(QtCore.SIGNAL("newUnits"), filteredUnits)
+        self.emit(QtCore.SIGNAL("newUnits"), filteredUnits, self.unitPointerList)
         #self.emitCurrentUnit()
 
     def emitUpdateUnit(self):

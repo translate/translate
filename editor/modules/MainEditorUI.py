@@ -56,6 +56,9 @@ class Ui_MainWindow(object):
 
         self.menuFilter = QtGui.QMenu(self.menuView)
         self.menuFilter.setObjectName("menuFilter")
+
+        self.menuEdit = QtGui.QMenu(self.menubar)
+        self.menuEdit.setObjectName("menuEdit")
         MainWindow.setMenuBar(self.menubar)
 
         self.statusbar = QtGui.QStatusBar(MainWindow)
@@ -233,6 +236,12 @@ class Ui_MainWindow(object):
         self.menuFile.addAction(self.actionExit)
         self.menuHelp.addAction(self.actionAbout)
         self.menuHelp.addAction(self.actionAboutQT)
+        self.menuFilter.addAction(self.actionUnfiltered)
+        self.menuFilter.addAction(self.actionFilterFuzzy)
+        self.menuFilter.addAction(self.actionFilterTranslated)
+        self.menuFilter.addAction(self.actionFilterUntranslated)
+        self.menuView.addAction(self.menuToolView.menuAction())
+        self.menuView.addAction(self.menuFilter.menuAction())
         self.menuGo.addAction(self.actionFirst)
         self.menuGo.addAction(self.actionPrevious)
         self.menuGo.addAction(self.actionNext)
@@ -296,6 +305,7 @@ class Ui_MainWindow(object):
         self.menuToolbar.setTitle(self.tr("Toolbar"))
         self.menuToolView.setTitle(self.tr("ToolView"))
         self.menuFilter.setTitle(self.tr("Filter"))
+        self.menuEdit.setTitle(self.tr("&Edit"))
         self.actionNew.setText(self.tr("&New"))
         self.actionNew.setShortcut(self.tr("Ctrl+N"))
         self.actionOpen.setText(self.tr("&Open"))
