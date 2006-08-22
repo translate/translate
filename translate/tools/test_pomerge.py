@@ -285,7 +285,7 @@ class TestPOMerge:
         """If we find a KDE comment in the translation and it is exactly the same as the English then do not merge it"""
         templatepo = '''msgid "_: KDE comment\\n"\n"File"\nmsgstr "File"\n\n'''
         mergepo = '''msgid "_: KDE comment\\n"\n"File"\nmsgstr "_: KDE comment\\n"\n"Ifayile"\n\n'''
-        expectedpo = '''msgid "_: KDE comment\\n"\n"File"\nmsgstr "Ifayile"\n'''
+        expectedpo = '''msgid ""\n"_: KDE comment\\n"\n"File"\nmsgstr "Ifayile"\n'''
         pofile = self.mergepo(templatepo, mergepo)
         assert str(pofile) == expectedpo
         
