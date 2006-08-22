@@ -13,5 +13,8 @@ FIXME:
 - remove the word index from the header in overview, it not really carry meaning and it
     looks ugly when I make the column small
 - Open in New Window: open dialog comes first, then the selected file loaded in the new window later.---------done
-- Status bar should be permanently displayed, even when we click on menu.
-- 
+- Status bar should be permanently displayed, even when we click on menu.----------done
+- Cannot markFuzzy, as long as the source is translated.
+- Whenever txtTarget is emptied, the untranslated num is decreased immediately with leaving txtTarget.
+- Similarly, once you copy from source2Target, the untranslated num is increased immediately with leaving txtTarget.
+-Ctrl+Alt+home/Ctrl+Alt+end: are not working with txtTarget
