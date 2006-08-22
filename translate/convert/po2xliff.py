@@ -76,12 +76,12 @@ class po2xliff:
       contexts.append(("linenumber", linenumber))
     return contexts
     
-  def convertfile(self, thepofile, templatefile=None):
+  def convertfile(self, thepofile, templatefile=None, **kwargs):
     """converts a .po file to .xliff format"""
     if templatefile is None: 
-      xlifffile = poxliff.PoXliffFile()
+      xlifffile = poxliff.PoXliffFile(**kwargs)
     else:
-      xlifffile = poxliff.PoXliffFile(templatefile)
+      xlifffile = poxliff.PoXliffFile(templatefile, **kwargs)
     filename = thepofile.filename
     for thepo in thepofile.units:
       if thepo.isblank():
