@@ -50,6 +50,7 @@ class CommentDock(QtGui.QDockWidget):
         self.setHidden(not self.isHidden()) 
  
     def updateComment(self, currentUnit):
+        currentUnit.setnotes()
         comment = currentUnit.getnotes()
         self.ui.txtComment.setPlainText(comment)
     
