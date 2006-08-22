@@ -56,15 +56,7 @@ class CommentDock(QtGui.QDockWidget):
     def checkModified(self):
         if self.ui.txtComment.document().isModified():
             self.emit(QtCore.SIGNAL("commentChanged"), self.ui.txtComment.toPlainText())
-            
-    def cutEdit(self):
-        self.connect(self.ui.txtComment, QtCore.SIGNAL("copyAvailable(bool)"), QtCore.SLOT("setEnabled"))
-        self.ui.txtComment.cut()
-    
-    def copyEdit(self):
-        self.connect(self.ui.txtComment, QtCore.SIGNAL("copyAvailable(bool)"), QtCore.SLOT("setEnabled"))
-        self.ui.txtComment.copy()
-    
+
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     comment = CommentDock()
