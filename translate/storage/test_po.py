@@ -327,6 +327,16 @@ msgstr[1] "Koeie"
         print "Result:\n%s" % pofile
         assert str(unit) == poexpected
 
+    def test_makeobsolete_untranslated(self):
+        """Tests making an untranslated unit obsolete"""
+        posource = '#. The automatic one\n#: test.c\nmsgid "test"\nmsgstr ""\n'
+        pofile = self.poparse(posource)
+        unit = pofile.units[0]
+        assert not unit.isobsolete()
+        unit.makeobsolete()
+        assert unit is None
+        assert str(unit) == ""
+
     def test_multiline_obsolete(self):
         """Tests for correct output of mulitline obsolete messages"""
         posource = '#~ msgid "Old thing\\n"\n#~ "Second old thing"\n#~ msgstr "Ou ding\\n"\n#~ "Tweede ou ding"\n'
