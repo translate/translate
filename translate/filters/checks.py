@@ -123,6 +123,7 @@ def fails(filterfunction, str1, str2):
   return not filterresult
 
 punctuation_chars = u'.,;:!?-@#$%^*_()[]{}/\\\'"<>\u2018\u2019\u201a\u201b\u201c\u201d\u201e\u201f\u2032\u2033\u2034\u2035\u2036\u2037\u2039\u203a\xab\xbb\xb1\xb3\xb9\xb2\xb0\xbf\xa9\xae\xd7\xa3\xa5\u2026'
+endpunctuation_chars = u'.:!?\u2026'
 # printf syntax based on http://en.wikipedia.org/wiki/Printf which doens't cover everything we leave \w instead of specifying the exact letters as
 # this should capture printf types defined in other platforms.
 printf_pat = sre.compile('%((?:(?P<ord>\d+)\$)*(?P<fullvar>[+#-]*(?:\d+)*(?:\.\d+)*(hh\|h\|l\|ll)*(?P<type>[\w%])+))')
@@ -139,7 +140,7 @@ common_canchangetags = [("img", "alt", None)]
 
 class CheckerConfig(object):
   """object representing the configuration of a checker"""
-  def __init__(self, targetlanguage=None, accelmarkers=None, varmatches=None, notranslatewords=None, musttranslatewords=None, validchars=None, punctuation=None, ignoretags=None, canchangetags=None):
+  def __init__(self, targetlanguage=None, accelmarkers=None, varmatches=None, notranslatewords=None, musttranslatewords=None, validchars=None, punctuation=None, endpunctuation=None, ignoretags=None, canchangetags=None):
     # make sure that we initialise empty lists properly (default arguments get reused!)
     if accelmarkers is None:
       accelmarkers = []
@@ -164,6 +165,11 @@ class CheckerConfig(object):
     elif punctuation is None:
       punctuation = punctuation_chars
     self.punctuation = punctuation
+    if isinstance(endpunctuation, str):
+      endpunctuation = endpunctuation.decode("utf-8")
+    elif endpunctuation is None:
+      endpunctuation = endpunctuation_chars
+    self.endpunctuation = endpunctuation
     if ignoretags is None:
       self.ignoretags = common_ignoretags
     else:
@@ -183,6 +189,7 @@ class CheckerConfig(object):
     self.musttranslatewords.update(otherconfig.musttranslatewords)
     self.validcharsmap.update(otherconfig.validcharsmap)
     self.punctuation += otherconfig.punctuation
+    self.endpunctuation += otherconfig.endpunctuation
     #TODO: consider also updating in the following cases:
     self.ignoretags = otherconfig.ignoretags
     self.canchangetags = otherconfig.canchangetags
@@ -551,7 +558,7 @@ class StandardChecker(TranslationChecker):
     """checks whether punctuation at the end of the strings match"""
     str1 = self.filteraccelerators(self.filtervariables(self.filterwordswithpunctuation(str1)))
     str2 = self.filteraccelerators(self.filtervariables(self.filterwordswithpunctuation(str2)))
-    return helpers.funcmatch(str1, str2, decoration.puncend, self.config.punctuation)
+    return helpers.funcmatch(str1, str2, decoration.puncend, self.config.endpunctuation)
 
   def purepunc(self, str1, str2):
     """checks that strings that are purely punctuation are not changed"""
