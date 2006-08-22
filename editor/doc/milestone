@@ -14,7 +14,7 @@ Editor
         . Comment
         . Toggole Fuzzy         -- Done
         . Navigation        -- Done
-        . Support XLIFF and Po
+        . Support XLIFF and Po      -- Done
         . Open Recent File      -- Done
         . Close File            -- Done
         . Copy Source 2 target          -- Done

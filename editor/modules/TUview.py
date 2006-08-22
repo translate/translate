@@ -1,16 +1,18 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
-#WordForge Translation Editor
-# (c) 2006 WordForge Foundation, all rights reserved.
+# WordForge Translation Editor
+# Copyright 2006 WordForge Foundation
 #
-# Version 1.0 
+# Version 1.0 (31 August 2006)
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2.1
 # of the License, or (at your option) any later version.
 #
-# See the LICENSE file for more details.
+# You should have received a copy of the GNU General Public License
+# along with translate; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # Developed by:
 #       Hok Kakada (hokkakada@khmeros.info)
@@ -58,8 +60,16 @@ class TUview(QtGui.QDockWidget):
         self.ui.fileScrollBar.setValue(value)
         self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitScrollbarPosition)
 
+    def takeoutUnit(self, value):
+        self.ui.fileScrollBar.setMaximum(self.ui.fileScrollBar.maximum() - 1)
+        
     def slotNewUnits(self, units):
         """slot after new file was loaded"""
+        if not units:
+            self.ui.txtSource.setPlainText("")
+            self.ui.txtTarget.setPlainText("")
+            self.ui.fileScrollBar.setMaximum(0)
+            return
         ## adjust the scrollbar
         self.units = units
         self.ui.fileScrollBar.setMaximum(len(units) - 1)
@@ -72,7 +82,7 @@ class TUview(QtGui.QDockWidget):
         self.ui.txtTarget.setPlainText(currentUnit.target)
     
     def checkModified(self):
-        if self.ui.txtTarget.document().isModified():            
+        if self.ui.txtTarget.document().isModified():
             self.emit(QtCore.SIGNAL("targetChanged"), self.ui.txtTarget.toPlainText())   
             
     def source2target(self):

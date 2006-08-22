@@ -1,16 +1,18 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
-#WordForge Translation Editor
-# (c) 2006 WordForge Foundation, all rights reserved.
+# WordForge Translation Editor
+# Copyright 2006 WordForge Foundation
 #
-# Version 1.0 (10 June 2006)
+# Version 1.0 (31 August 2006)
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2.1
 # of the License, or (at your option) any later version.
 #
-# See the LICENSE file for more details.
+# You should have received a copy of the GNU General Public License
+# along with translate; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # Developed by:
 #       Seth Chanratha (sethchanratha@khmeros.info)
@@ -45,6 +47,8 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.recentaction = []
         self.createRecentAction()                
 
+        self.filter = None
+        
         # create radio selection for menu filter
         filterGroup = QtGui.QActionGroup(self.ui.menuFilter)
         self.ui.actionUnfiltered.setActionGroup(filterGroup)
@@ -56,6 +60,11 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionFilterTranslated.setCheckable(True)
         self.ui.actionFilterUntranslated.setCheckable(True)
         self.ui.actionUnfiltered.setChecked(True)
+        # set disable
+        self.ui.actionUnfiltered.setDisabled(True)
+        self.ui.actionFilterFuzzy.setDisabled(True)
+        self.ui.actionFilterTranslated.setDisabled(True)
+        self.ui.actionFilterUntranslated.setDisabled(True)
         
         #plug in overview widget
         self.dockOverview = OverviewDock()        
@@ -111,7 +120,8 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionLast, QtCore.SIGNAL("triggered()"), self.operator.last)
         self.connect(self.ui.actionCopySource2Target, QtCore.SIGNAL("triggered()"), self.dockTUview.source2target)
 
-        self.connect(self.ui.actionUnfiltered, QtCore.SIGNAL("triggered()"), self.operator.emitNewUnits)
+        # action filter menu
+        self.connect(self.ui.actionUnfiltered, QtCore.SIGNAL("triggered()"), self.unfiltered)
         self.connect(self.ui.actionFilterFuzzy, QtCore.SIGNAL("triggered()"), self.filterFuzzy)
         self.connect(self.ui.actionFilterTranslated, QtCore.SIGNAL("triggered()"), self.filterTranslated)
         self.connect(self.ui.actionFilterUntranslated, QtCore.SIGNAL("triggered()"), self.filterUntranslated)        
@@ -120,6 +130,8 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockTUview.updateTUview)
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockComment.updateComment)        
 
+        self.connect(self.operator, QtCore.SIGNAL("takeoutUnit"), self.takeoutUnit)
+        
         self.connect(self.operator, QtCore.SIGNAL("currentPosition"), self.dockOverview.updateItem)
         self.connect(self.operator, QtCore.SIGNAL("currentPosition"), self.dockTUview.updateScrollbar)
         self.connect(self.dockTUview, QtCore.SIGNAL("scrollbarPosition"), self.operator.setCurrentPosition)
@@ -147,15 +159,28 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.setOpening)  
         self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.showCurrentStatus)           
     
+    def unfiltered(self):
+        self.filter = None
+        self.operator.emitNewUnits()
+    
     def filterFuzzy(self):
-        self.operator.emitFilteredUnits('fuzzy')
+        self.filter = 'fuzzy'
+        self.operator.emitFilteredUnits(self.filter)
     
     def filterTranslated(self):
-        self.operator.emitFilteredUnits('translated')
+        self.filter = 'translated'
+        self.operator.emitFilteredUnits(self.filter)
     
     def filterUntranslated(self):
-        self.operator.emitFilteredUnits('untranslated')
-        
+        self.filter = 'untranslated'
+        self.operator.emitFilteredUnits(self.filter)
+    
+    def takeoutUnit(self, value):
+        if (self.filter):
+            self.dockOverview.takeoutUnit(value)
+            self.dockTUview.takeoutUnit(value)
+            self.operator.takeoutUnit(value)
+    
     def objectAvailable(self):
         if self.dockTUview.ui.txtTarget.hasFocus():
             return self.dockTUview.ui.txtTarget
@@ -199,7 +224,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionCut.setEnabled(True)
         self.ui.actionCopy.setEnabled(True)
 ##        if QClipboard.ownsClipboard():
-        self.ui.actionPast.setEnabled(True)        
+        self.ui.actionPast.setEnabled(True)
         self.ui.actionFind.setEnabled(True)
         self.disableFirstPrev()
         self.enableNextLast()   
@@ -211,6 +236,11 @@ class MainWindow(QtGui.QMainWindow):
             files.removeAt(files.count()-1)        
         settings.setValue("recentFileList", QtCore.QVariant(files))
         self.updateRecentAction() 
+        
+        self.ui.actionUnfiltered.setEnabled(True)
+        self.ui.actionFilterFuzzy.setEnabled(True)
+        self.ui.actionFilterTranslated.setEnabled(True)
+        self.ui.actionFilterUntranslated.setEnabled(True)
         
     def startRecentAction(self):
         action = self.sender()

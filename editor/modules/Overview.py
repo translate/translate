@@ -1,16 +1,18 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 # WordForge Translation Editor
-# (c) 2006 WordForge Foundation, all rights reserved.
+# Copyright 2006 WordForge Foundation
 #
-# Version 1.0 (10 June 2006)
+# Version 1.0 (31 August 2006)
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2.1
 # of the License, or (at your option) any later version.
 #
-# See the LICENSE file for more details.
+# You should have received a copy of the GNU General Public License
+# along with translate; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # Developed by:
 #       San Titvirak (titvirak@khmeros.info)
@@ -92,25 +94,33 @@ class OverviewDock(QtGui.QDockWidget):
 
     def slotNewUnits(self, units, unitsPointer):
         """Initialize the list, clear and fill with units"""
+        if not units:
+            self.ui.treeOverview.clear()
+            return
         self.items = []
         self.ui.treeOverview.clear()
         self.addItems(units, unitsPointer)
         # select the first item in list
-        if (units):
-            self.ui.treeOverview.setCurrentItem(self.items[0])
+        self.ui.treeOverview.setCurrentItem(self.items[0])
     
     def updateItem(self, value):
+        if (not self.items):
+            return
         item = self.items[value]
         self.disconnect(self.ui.treeOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitItemSelected)
         self.ui.treeOverview.setCurrentItem(item)
         self.connect(self.ui.treeOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitItemSelected)
         
+    def takeoutUnit(self, value):
+        item = self.items[value]
+        self.items.pop(value)
+        self.ui.treeOverview.setItemHidden(item, True)
 
     def emitItemSelected(self):
         try:
             item = self.ui.treeOverview.selectedItems()[0]
         except IndexError:
-            return        
+            return
         self.id = int(item.text(0))
         ##self.id = item.data(0, QtCore.Qt.UserRole).toInt()[0]
         self.emit(QtCore.SIGNAL("itemSelected"), self.id)

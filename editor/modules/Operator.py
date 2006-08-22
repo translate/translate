@@ -1,16 +1,18 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 # WordForge Translation Editor
-# (c) 2006 WordForge Foundation, all rights reserved.
+# Copyright 2006 WordForge Foundation
 #
-# Version 1.0 (10 June 2006)
+# Version 1.0 (31 August 2006)
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2.1
 # of the License, or (at your option) any later version.
 #
-# See the LICENSE file for more details.
+# You should have received a copy of the GNU General Public License
+# along with translate; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # Developed by:
 #       Keo Sophon (keosophon@khmeros.info)about:blank
@@ -133,6 +135,9 @@ class Operator(QtCore.QObject):
     def emitUpdateUnit(self):
         if (self._unitpointer != None):            
             self.emit(QtCore.SIGNAL("updateUnit"))    
+
+    def takeoutUnit(self, value):
+        self.unitPointerList.pop(value)
     
     def firstUnit(self):
         self.emit(QtCore.SIGNAL("firstUnit"))
@@ -201,10 +206,16 @@ class Operator(QtCore.QObject):
         after_istranslated = currentUnit.istranslated()
         if (before_isuntranslated and after_istranslated):
             self.unitStatus.addNumTranslated()
+            # send takeout current unit signal
+            self.emit(QtCore.SIGNAL("takeoutUnit"), self._unitpointer)
         elif (not before_isuntranslated and not after_istranslated):
             self.unitStatus.subNumTranslated()
+            # send takeout current unit signal
+            self.emit(QtCore.SIGNAL("takeoutUnit"), self._unitpointer)
+
         self.emitCurrentStatus()
-        self._modified = True                
+        self._modified = True
+
 
     def setCurrentUnit(self, value):
         self.emitUpdateUnit()
@@ -227,6 +238,8 @@ class Operator(QtCore.QObject):
             self.unitStatus.addNumFuzzy()
         else:
             self.unitStatus.subNumFuzzy()
+            # send takeout current unit signal
+            self.emit(QtCore.SIGNAL("takeoutUnit"), self._unitpointer)
         self.emitCurrentStatus()
     
     def emitCurrentStatus(self):    
