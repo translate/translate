@@ -271,6 +271,17 @@ msgstr[0] "Sheep"
         assert pofile.units[0].sourcecomments == ["#: source comment\n"]
         assert pofile.units[0].typecomments == ["#, fuzzy\n"]
 
+    def test_fuzzy(self):
+        """checks that fuzzy functionality works as expected"""
+        posource = '#, fuzzy, python-format\nmsgid "ball"\nmsgstr "bal"\n'
+        expectednonfuzzy = '#, python-format\nmsgid "ball"\nmsgstr "bal"\n'
+        pofile = self.poparse(posource)
+        print pofile
+        assert pofile.units[0].isfuzzy()
+        pofile.units[0].markfuzzy(False)
+        assert not pofile.units[0].isfuzzy()
+        assert str(pofile) == expectednonfuzzy
+
     def test_obsolete(self):
         """Tests that obsolete messages work"""
         posource = '#~ msgid "Old thing"\n#~ msgstr "Ou ding"\n'
