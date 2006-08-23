@@ -273,6 +273,15 @@ msgstr[0] "Sheep"
 
     def test_fuzzy(self):
         """checks that fuzzy functionality works as expected"""
+        posource = '#, fuzzy\nmsgid "ball"\nmsgstr "bal"\n'
+        expectednonfuzzy = 'msgid "ball"\nmsgstr "bal"\n'
+        pofile = self.poparse(posource)
+        print pofile
+        assert pofile.units[0].isfuzzy()
+        pofile.units[0].markfuzzy(False)
+        assert not pofile.units[0].isfuzzy()
+        assert str(pofile) == expectednonfuzzy
+
         posource = '#, fuzzy, python-format\nmsgid "ball"\nmsgstr "bal"\n'
         expectednonfuzzy = '#, python-format\nmsgid "ball"\nmsgstr "bal"\n'
         pofile = self.poparse(posource)
