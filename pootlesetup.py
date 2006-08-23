@@ -28,7 +28,7 @@ infofiles = [(join(sitepackages,'Pootle'),
 initfiles = [(join(sitepackages,'Pootle'),[join('Pootle','__init__.py')])]
 
 packages = ["Pootle"]
-pootlescripts = [join('Pootle', 'PootleServer')]
+pootlescripts = [join('Pootle', 'PootleServer'), join('Pootle', 'tools', 'updatetm')]
 
 #Enter the codes for all languages that must be packaged here
 approvedlanguages = ['af', 'ar', 'eu', 'ca', 'zh_CN', 'hr', 'da', 'nl', 'fi', 'fr', 'fur', 'gl', 'de', 'hu', 'it', 'ja', 'lt', 'mt', 'pl', 'pt', 'ru', 'sr', 'sl', 'es', 'sv', 'tr', 'vi']
