@@ -400,7 +400,7 @@ class pounit(base.TranslationUnit):
         self.typecomments.append("#, %s\n" % typecomment)
       else:
         # this should handle word boundaries properly ...
-        typecomments = map(lambda tcline: sre.sub("\\b%s\\b[ \t]*" % typecomment, "", tcline), self.typecomments)
+        typecomments = map(lambda tcline: sre.sub("\\b%s\\b[ \t,]*" % typecomment, "", tcline), self.typecomments)
         self.typecomments = filter(lambda tcline: tcline.strip() != "#,", typecomments)
 
   def isfuzzy(self):
