@@ -156,7 +156,7 @@ def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similari
   if templatepofile:
     newlyobsoleted = []
     for unit in templatepo.units:
-      if not inputpot.findunit(unit.source) and not hasattr(unit, "reused"):
+      if unit.target and not (inputpot.findunit(unit.source) or hasattr(unit, "reused")):
         #not in .pot, make it obsolete
         unit.makeobsolete()
         newlyobsoleted.append(unit)
