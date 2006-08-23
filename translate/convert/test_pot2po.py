@@ -190,6 +190,15 @@ msgstr "Sertifikate"
         newpounit = self.singleunit(newpo)
         assert str(newpounit) == expected
 
+    def test_not_obsoleting_empty_messages(self):
+        """check that we don't obsolete (and keep) untranslated messages"""
+        potsource = ''
+        posource = '#: obsoleteme:10\nmsgid "One"\nmsgstr ""\n'
+        newpo = self.convertpot(potsource, posource)
+        print str(newpo)
+        # We should only have the header
+        assert len(newpo.units) == 1
+
     def test_merging_new_before_obsolete(self):
         """test to check that we place new blank message before obsolete messages"""
         potsource = '''#: newline.c\nmsgid "&About"\nmsgstr ""\n'''
