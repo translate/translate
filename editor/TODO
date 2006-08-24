@@ -18,3 +18,4 @@ FIXME:
 - Whenever txtTarget is emptied, the untranslated num is decreased immediately with leaving txtTarget.
 - Similarly, once you copy from source2Target, the untranslated num is increased immediately with leaving txtTarget.
 -Ctrl+Alt+home/Ctrl+Alt+end: are not working with txtTarget
+-for PO file,on top contains translator information and file header, so it should not be displayed in overview, Detail, or Comment.
