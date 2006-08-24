@@ -13,11 +13,11 @@
     <body>
       <trans-unit approved="yes" id="0" reformat="yes" translate="yes" xml:space="default">
         <source>Objects and Object-Orientation</source>
-        <target/>
+        <target state="translated">Objects and Object-Orientation</target>
         <prop-group>
           <prop prop-type="entryid">1150875516735</prop>
         </prop-group>
-      </trans-unit>
+      <note>aaaaaaaaaa,  ចម្រៀងខ្មែរ5</note></trans-unit>
       
       <trans-unit approved="yes" id="1" reformat="yes" translate="yes" xml:space="default">
         <source>Chapter 5</source>
@@ -25,31 +25,32 @@
         <prop-group>
           <prop prop-type="entryid">1150875516738</prop>
         </prop-group>
-      <note>tu1</note>
-      </trans-unit>
+      
+      <note>ចម្រៀងខ្មែរ5</note></trans-unit>
       <trans-unit approved="yes" id="2" reformat="yes" translate="yes" xml:space="default">
         <source>This chapter, and pretty much every chapter after this, deals with object-oriented <ph id="1">&amp;python;</ph> programming.</source>
         <target/>
         <prop-group>
           <prop prop-type="entryid">1150875516739</prop>
         </prop-group>
-      <note>TU2</note><note>finding note</note></trans-unit>
+      <note>finding note
+ccccccc</note></trans-unit>
       <trans-unit approved="yes" id="3" reformat="yes" translate="yes" xml:space="default">
         <source>Diving In</source>
         <target/>
         <prop-group>
           <prop prop-type="entryid">1150875516740</prop>
         </prop-group>
-      <note>TU 3</note><note>TU3</note></trans-unit>
+      <note>ddddd</note></trans-unit>
       <trans-unit approved="no" id="4" reformat="yes" translate="yes" xml:space="default">
         <source>Here is a complete, working <ph id="1">&amp;python;</ph> program.</source>
         <target/>
         <prop-group>
           <prop prop-type="entryid">1150875516741</prop>
         </prop-group>
-        <note annotates="general" from="" priority="1"/>
-        <note annotates="general" from="" priority="1"/>
-        <note annotates="general" from="" priority="1"/>
+        
+        
+        
       <note>Tu4</note></trans-unit>
       <trans-unit approved="no" id="5" reformat="yes" translate="yes" xml:space="default">
         <source>Read the <bpt id="1">&lt;link linkend=&quot;odbchelper.docstring&quot;&gt;</bpt>

@@ -1,10 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
+
 # WordForge Translation Editor
 # Copyright 2006 WordForge Foundation
 #
 # Version 1.0 (31 August 2006)
-#
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2.1

@@ -14,8 +14,8 @@ class Ui_TUview(object):
     def setupUi(self, TUview):
         TUview.setObjectName("TUview")
         TUview.setEnabled(True)
-        TUview.resize(QtCore.QSize(QtCore.QRect(0,0,370,283).size()).expandedTo(TUview.minimumSizeHint()))
-        TUview.setMinimumSize(QtCore.QSize(0,0))
+        TUview.resize(QtCore.QSize(QtCore.QRect(0,0,500,283).size()).expandedTo(TUview.minimumSizeHint()))
+        TUview.setMinimumSize(QtCore.QSize(500,283))
         TUview.setFocusPolicy(QtCore.Qt.StrongFocus)
         TUview.setAutoFillBackground(True)
 

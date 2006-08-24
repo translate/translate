@@ -14,10 +14,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.2\n"
 
+# ,មិនអាច​បើក​ប័ណ្ណសារ​
 #: archivedialog.cpp:90
 msgid "Unable to Open Web-Archive"
-msgstr "\t\tមិនអាច​បើក​ប័ណ្ណសារ​បណ្តាញ​"
+msgstr "មិនអាច​បើក​ប័ណ្ណសារ​បណ្តាញ​"
 
+# សម្រាប់​ការ​សរសេរ​បាន​ទេ ។
 #: archivedialog.cpp:91
 msgid ""
 "Unable to open \n"
@@ -137,4 +139,3 @@ msgstr "​URL"
 #, no-c-format
 msgid "State"
 msgstr "​សភាព"
-

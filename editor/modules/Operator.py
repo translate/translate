@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
+#
 # WordForge Translation Editor
 # Copyright 2006 WordForge Foundation
 #
@@ -188,7 +189,7 @@ class Operator(QtCore.QObject):
     def setComment(self, comment):
         """set the comment which is QString type to the current unit."""
         currentUnit = self.unitPointerList[self._unitpointer]
-##        self.store.units[currAentUnit].setnotes()
+        self.store.units[currentUnit].removenotes()
         self.store.units[currentUnit].addnote(unicode(comment))
         self._modified = True        
     
@@ -261,7 +262,10 @@ class Operator(QtCore.QObject):
         
         
     def undoEdit(self, object):
-        object.document().undo()        
+        if (object == None):
+            pass
+        else:
+            object.document().undo()    
      
     def redoEdit(self, object):
         object.document().redo()

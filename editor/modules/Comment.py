@@ -1,16 +1,19 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
-#WordForge Translation Editor
-# (c) 2006 WordForge Foundation, all rights reserved.
 #
-# Version 1.0
+# WordForge Translation Editor
+# Copyright 2006 WordForge Foundation
+#
+# Version 1.0 (31 August 2006)
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2.1
 # of the License, or (at your option) any later version.
 #
-# See the LICENSE file for more details.
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # Developed by:
 #       Hok Kakada (hokkakada@khmeros.info)
@@ -50,7 +53,6 @@ class CommentDock(QtGui.QDockWidget):
         self.setHidden(not self.isHidden()) 
  
     def updateComment(self, currentUnit):
-        currentUnit.setnotes()
         comment = currentUnit.getnotes()
         self.ui.txtComment.setPlainText(comment)
     

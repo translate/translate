@@ -22,7 +22,7 @@
    <string>MainWindow</string>
   </property>
   <property name="windowIcon" >
-   <iconset>../images/icon.png</iconset>
+   <iconset>../../../../../../../mnt/server/parrot.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget" />
   <widget class="QMenuBar" name="menubar" >

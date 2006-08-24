@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
+#
 # WordForge Translation Editor
 # Copyright 2006 WordForge Foundation
 #

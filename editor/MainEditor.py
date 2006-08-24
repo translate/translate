@@ -200,8 +200,11 @@ class MainWindow(QtGui.QMainWindow):
         self.operator.copyEdit(object)
             
     def paster(self):
-        object = self.objectAvailable()
-        object.paste()
+        try:
+            object = self.objectAvailable()
+            object.paste()
+        except AttributeError:
+            pass
         
     def redoer(self):
         object = self.objectAvailable()
