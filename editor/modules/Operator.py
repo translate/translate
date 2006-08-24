@@ -21,6 +21,7 @@
 
 from PyQt4 import QtCore
 from translate.storage import factory
+from translate.tools import pocount
 
 class Operator(QtCore.QObject):
     def __init__(self):
@@ -36,26 +37,10 @@ class Operator(QtCore.QObject):
         self.store = factory.getobject(fileName)
 
         # get status for units       
-        try:
-            from translate.tools import pocount
-            self.numFuzzy = pocount.fuzzymessages(self.store.units)
-            self.numTranslated = pocount.translatedmessages(self.store.units)
-            self.numUntranslated = pocount.untranslatedmessages(self.store.units)
-            self.numTotal = self.numTranslated + self.numUntranslated
-        
-        except AttributeError:
-            units = self.store.units
-            self.numFuzzy = 0
-            self.numTranslated = 0
-            self.numTotal = len(units)
-            for i in range(self.numTotal):
-                #count fuzzy TU
-                if units[i].isfuzzy():
-                    self.numFuzzy += 1
-                #cound translated TU
-                if units[i].istranslated():
-                    self.numTranslated += 1                
-            self.numUntranslated  = self.numTotal - self.numTranslated
+        self.numFuzzy = len(pocount.fuzzymessages(self.store.units))
+        self.numTranslated = len(pocount.translatedmessages(self.store.units))
+        self.numUntranslated = len(pocount.untranslatedmessages(self.store.units))
+        self.numTotal = self.numTranslated + self.numUntranslated
         
         self.emitNewUnits()
         self._unitpointer = 0
@@ -85,35 +70,26 @@ class Operator(QtCore.QObject):
 
     def emitFilteredUnits(self, filter):
         if (filter == 'fuzzy'):
-            filter = 1
+            filteredUnits = pocount.fuzzymessages(self.store.units)
         elif (filter == 'translated'):
-            filter = 2
+            filteredUnits = pocount.translatedmessages(self.store.units)
         elif (filter == 'untranslated'):
-            filter = 3
-        else:
-            filter = 0
+            filteredUnits = pocount.untranslatedmessages(self.store.units)
         
-        self._unitpointer = 0
-        filteredUnits = []
+        self._unitpointer = 0        
         self.unitPointerList = []
-        for i in range(len(self.store.units)):
-
-            if (filter == 1):
-                if (self.store.units[i].isfuzzy()):
-                    filteredUnits.append(self.store.units[i])
+        for funit in filteredUnits:
+            i = 0
+            for unit in self.store.units:
+                if (funit == unit):
                     self.unitPointerList.append(i)
-            elif (filter == 2):
-                if (self.store.units[i].istranslated()):
-                    filteredUnits.append(self.store.units[i])
-                    self.unitPointerList.append(i)
-            elif (filter == 3):
-                if (not self.store.units[i].istranslated()):
-                    filteredUnits.append(self.store.units[i])
-                    self.unitPointerList.append(i)
-
+                    break
+                i += 1
+            
+        #for unit in filteredUnits:
+            #self.unitPointerList.append(self.store.units.index(unit))
         self.emit(QtCore.SIGNAL("newUnits"), filteredUnits, self.unitPointerList)
-        #self.emitCurrentUnit()
-
+        
     def emitUpdateUnit(self):
         if (self._unitpointer != None):            
             self.emit(QtCore.SIGNAL("updateUnit"))    
