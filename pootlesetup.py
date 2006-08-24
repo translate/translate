@@ -226,6 +226,8 @@ def buildmanifest_in(file, scripts):
     print >>file, "include %s" % scriptname
   # wordlist, portal are in the source tree but unconnected to the python code
   print >>file, "prune wordlist"
+  print >>file, "prune editor"
+  print >>file, "prune lingua"
   print >>file, "prune portal"
   # translate toolkit is in the same source tree but distributed separately
   print >>file, "prune translate"
