@@ -31,7 +31,7 @@ class OverviewDock(QtGui.QDockWidget):
         self.form = QtGui.QWidget(self)
         self.ui = Ui_Form()
         self.ui.setupUi(self.form)        
-        self.setWidget(self.form)                     
+        self.setWidget(self.form)
         
         # create action for show/hide
         self._actionShow = QtGui.QAction(self)
@@ -43,7 +43,7 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.treeOverview.resizeColumnToContents(0)
         self.ui.treeOverview.header().setResizeMode(1, QtGui.QHeaderView.Stretch)
         self.ui.treeOverview.header().setResizeMode(2, QtGui.QHeaderView.Stretch)
-
+        
         self.lastItem = None
         self.id = None
         self.connect(self.ui.treeOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitItemSelected)
@@ -78,7 +78,9 @@ class OverviewDock(QtGui.QDockWidget):
         #if (not id):
         #    id = currentPointer
         id = currentPointer
-        item.setText(0, str(id))
+        item.setTextAlignment(0, QtCore.Qt.AlignRight)
+        # sorting needs leading space: '   1', '   2', '  10'.. rather than '1', '10', '2'
+        item.setText(0, str(id).rjust(4) + '  ')
         item.setText(1, currentUnit.source)
         item.setText(2, currentUnit.target)
         #item.setData(0, QtCore.Qt.UserRole, QtCore.QVariant(id))

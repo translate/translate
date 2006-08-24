@@ -22,45 +22,6 @@
 from PyQt4 import QtCore
 from translate.storage import factory
 
-class status:
-    def __init__(self, units):
-        self.numFuzzy = 0
-        self.numTranslated = 0
-        self.numTotal = len(units)
-        for i in range(self.numTotal):
-            #count fuzzy TU
-            if units[i].isfuzzy():
-                self.numFuzzy += 1
-            #cound translated TU
-            if units[i].istranslated():
-                self.numTranslated += 1                
-        self.numUntranslated  = self.numTotal - self.numTranslated
-        
-    def status(self):
-        self.numUntranslated = self.numTotal - self.numTranslated
-        return "Total: "+ str(self.numTotal) + "  |  Fuzzy: " +  str(self.numFuzzy) + "  |  Translated: " +  str(self.numTranslated) + "  |  Untranslated: " + str(self.numUntranslated)
-        
-    def addNumFuzzy(self):
-        self.numFuzzy += 1
-
-    def subNumFuzzy(self):
-        self.numFuzzy -= 1
-
-    def addNumTranslated(self):
-        self.numTranslated += 1
-
-    def subNumTranslated(self):
-        self.numTranslated -= 1
-
-class emptyUnit:
-    def __init__(self):
-        self.source = ''
-        self.target = ''
-    
-    def getnotes(self):
-        return ''
-    
-
 class Operator(QtCore.QObject):
     def __init__(self):
         QtCore.QObject.__init__(self)
@@ -73,16 +34,36 @@ class Operator(QtCore.QObject):
     
     def getUnits(self, fileName):
         self.store = factory.getobject(fileName)
+
+        # get status for units       
+        try:
+            from translate.tools import pocount
+            self.numFuzzy = pocount.fuzzymessages(self.store.units)
+            self.numTranslated = pocount.translatedmessages(self.store.units)
+            self.numUntranslated = pocount.untranslatedmessages(self.store.units)
+            self.numTotal = self.numTranslated + self.numUntranslated
         
-        self.unitStatus = status(self.store.units)
+        except AttributeError:
+            units = self.store.units
+            self.numFuzzy = 0
+            self.numTranslated = 0
+            self.numTotal = len(units)
+            for i in range(self.numTotal):
+                #count fuzzy TU
+                if units[i].isfuzzy():
+                    self.numFuzzy += 1
+                #cound translated TU
+                if units[i].istranslated():
+                    self.numTranslated += 1                
+            self.numUntranslated  = self.numTotal - self.numTranslated
+        
         self.emitNewUnits()
         self._unitpointer = 0
         self.emitCurrentUnit()
         self.emitCurrentStatus()
 
     def emitCurrentUnit(self):
-        if (self.unitPointerList == []):
-            self.emptyUnit = emptyUnit()
+        if (not self.unitPointerList):
             self.emit(QtCore.SIGNAL("noUnit"))
             return
         elif (self._unitpointer == 0):
@@ -203,14 +184,14 @@ class Operator(QtCore.QObject):
         if (currentUnit.target != ''):
             currentUnit.marktranslated()
             if (beforeIsFuzzy):
-                self.unitStatus.subNumFuzzy()
+                self.numFuzzy -= 1
         after_istranslated = currentUnit.istranslated()
         if (before_isuntranslated and after_istranslated):
-            self.unitStatus.addNumTranslated()
+            self.numTranslated += 1
             # send takeout current unit signal
             self.emit(QtCore.SIGNAL("takeoutUnit"), self._unitpointer)
         elif (not before_isuntranslated and not after_istranslated):
-            self.unitStatus.subNumTranslated()
+            self.numTranslated -= 1
             # send takeout current unit signal
             self.emit(QtCore.SIGNAL("takeoutUnit"), self._unitpointer)
 
@@ -236,15 +217,17 @@ class Operator(QtCore.QObject):
         currentUnit.markfuzzy(boolFuzzy)
         self._modified = True
         if (boolFuzzy):
-            self.unitStatus.addNumFuzzy()
+            self.numFuzzy += 1
         else:
-            self.unitStatus.subNumFuzzy()
+            self.numFuzzy -= 1
             # send takeout current unit signal
             self.emit(QtCore.SIGNAL("takeoutUnit"), self._unitpointer)
         self.emitCurrentStatus()
     
-    def emitCurrentStatus(self):    
-        self.emit(QtCore.SIGNAL("currentStatus"), self.unitStatus.status())
+    def emitCurrentStatus(self):
+        self.numUntranslated = self.numTotal - self.numTranslated
+        status = "Total: "+ str(self.numTotal) + "  |  Fuzzy: " +  str(self.numFuzzy) + "  |  Translated: " +  str(self.numTranslated) + "  |  Untranslated: " + str(self.numUntranslated)
+        self.emit(QtCore.SIGNAL("currentStatus"), status)
     
     def cutEdit(self, object):        
         try:
@@ -259,7 +242,6 @@ class Operator(QtCore.QObject):
             object.copy()
         except TypeError:
             pass
-        
         
     def undoEdit(self, object):
         if (object == None):

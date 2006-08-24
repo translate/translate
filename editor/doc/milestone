@@ -11,7 +11,7 @@ Editor
         . Replace (where to find: source, target, and comment; option: Case sensitive, From current position, Only whole words, find backwords, high light, ask before replacing)
         . Filter (fuzzy, translated, untranslated, approved)        -- 75%
         . Status        -- 50%
-        . Comment
+        . Comment       -- Done for xliff
         . Toggole Fuzzy         -- Done
         . Navigation        -- Done
         . Support XLIFF and Po      -- Done
