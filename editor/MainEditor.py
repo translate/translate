@@ -115,7 +115,8 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionPast, QtCore.SIGNAL("triggered()"), self.paster)                
         
         #Help menu of aboutQt        
-        self.connect(self.ui.actionAbout, QtCore.SIGNAL("triggered()"),  self.about)
+        self.aboutDialog = AboutEditor()        
+        self.connect(self.ui.actionAbout, QtCore.SIGNAL("triggered()"), self.aboutDialog, QtCore.SLOT("show()"))
         self.connect(self.ui.actionAboutQT, QtCore.SIGNAL("triggered()"), QtGui.qApp, QtCore.SLOT("aboutQt()"))
 
         # Other actions        
@@ -142,7 +143,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.dockTUview, QtCore.SIGNAL("scrollbarPosition"), self.operator.setCurrentPosition)
         self.connect(self.dockOverview, QtCore.SIGNAL("itemSelected"), self.operator.setCurrentUnit)
 
-        self.connect(self.operator, QtCore.SIGNAL("changetarget"), self.dockTUview.txtClear)
+##        self.connect(self.operator, QtCore.SIGNAL("changetarget"), self.dockTUview.txtClear)
         
         self.connect(self.operator, QtCore.SIGNAL("updateUnit"), self.dockTUview.checkModified)
         self.connect(self.operator, QtCore.SIGNAL("updateUnit"), self.dockComment.checkModified)
@@ -166,19 +167,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.setOpening)  
         self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.showCurrentStatus)       
     
-
-    def about(self):
-        app = QtGui.QApplication(sys.argv)
-        fileName = QtCore.QString()
-        
-        if len(sys.argv) >= 2:
-            fileName = sys.argv[1]
-        else:
-            fileName = ""
-    
-        tabdialog = AboutEditor(fileName)        
-        sys.exit(tabdialog.exec_())            
-
+       
     def unfiltered(self):
         self.filter = None
         self.operator.emitNewUnits()    
