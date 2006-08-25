@@ -1,3 +1,4 @@
+
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 # WordForge Translation Editor
@@ -27,13 +28,14 @@ sys.path.append(os.path.join(sys.path[0] ,"modules"))
 
 from PyQt4 import QtCore, QtGui
 from modules.MainEditorUI import Ui_MainWindow
-from translate.storage import factory
+##from translate.storage import factory
 from modules.TUview import TUview
 from modules.Overview import OverviewDock
 from modules.Comment import CommentDock
 from modules.Operator import Operator
 from modules.FileAction import FileAction
 from modules.Find import Find
+from modules.AboutEditor import AboutEditor
 
 class MainWindow(QtGui.QMainWindow):
     MaxRecentFiles = 10
@@ -72,7 +74,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.menuToolView.addAction(self.dockOverview.actionShow())        
         
         #plug in TUview widget
-        self.dockTUview = TUview()        
+        self.dockTUview = TUview()                        
         self.setCentralWidget(self.dockTUview)
         self.ui.menuToolView.addAction(self.dockTUview.actionShow())              
         
@@ -110,9 +112,12 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionRedo, QtCore.SIGNAL("triggered()"), self.redoer) 
         self.connect(self.ui.actionCut, QtCore.SIGNAL("triggered()"), self.cutter)
         self.connect(self.ui.actionCopy, QtCore.SIGNAL("triggered()"), self.copier)
-        self.connect(self.ui.actionPast, QtCore.SIGNAL("triggered()"), self.paster)        
-               
+        self.connect(self.ui.actionPast, QtCore.SIGNAL("triggered()"), self.paster)                
         
+        #Help menu of aboutQt        
+        self.connect(self.ui.actionAbout, QtCore.SIGNAL("triggered()"),  self.about)
+        self.connect(self.ui.actionAboutQT, QtCore.SIGNAL("triggered()"), QtGui.qApp, QtCore.SLOT("aboutQt()"))
+
         # Other actions        
         self.connect(self.ui.actionNext, QtCore.SIGNAL("triggered()"), self.operator.next)
         self.connect(self.ui.actionPrevious, QtCore.SIGNAL("triggered()"), self.operator.previous)
@@ -137,6 +142,8 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.dockTUview, QtCore.SIGNAL("scrollbarPosition"), self.operator.setCurrentPosition)
         self.connect(self.dockOverview, QtCore.SIGNAL("itemSelected"), self.operator.setCurrentUnit)
 
+        self.connect(self.operator, QtCore.SIGNAL("changetarget"), self.dockTUview.txtClear)
+        
         self.connect(self.operator, QtCore.SIGNAL("updateUnit"), self.dockTUview.checkModified)
         self.connect(self.operator, QtCore.SIGNAL("updateUnit"), self.dockComment.checkModified)
         self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
@@ -157,12 +164,25 @@ class MainWindow(QtGui.QMainWindow):
         
         self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.showCurrentStatus)
         self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.setOpening)  
-        self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.showCurrentStatus)           
+        self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.showCurrentStatus)       
     
+
+    def about(self):
+        app = QtGui.QApplication(sys.argv)
+        fileName = QtCore.QString()
+        
+        if len(sys.argv) >= 2:
+            fileName = sys.argv[1]
+        else:
+            fileName = ""
+    
+        tabdialog = AboutEditor(fileName)        
+        sys.exit(tabdialog.exec_())            
+
     def unfiltered(self):
         self.filter = None
-        self.operator.emitNewUnits()
-    
+        self.operator.emitNewUnits()    
+
     def filterFuzzy(self):
         self.filter = 'fuzzy'
         self.operator.emitFilteredUnits(self.filter)
@@ -194,6 +214,8 @@ class MainWindow(QtGui.QMainWindow):
     def cutter(self):
         object = self.objectAvailable()
         self.operator.cutEdit(object)
+        if self.dockTUview.ui.txtTarget ==None:
+            print "ssd"
         
     def copier(self):
         object = self.objectAvailable()
@@ -280,8 +302,14 @@ class MainWindow(QtGui.QMainWindow):
            
     def setTitle(self, title):
         shownName = QtCore.QFileInfo(title).fileName()
-        self.setWindowTitle(self.tr("%1[*] - %2").arg(shownName).arg(self.tr("Translation Editor")))
+        self.setWindowTitle(self.tr("%1[*] - %2").arg(shownName).arg(self.tr("Translation Editor")))        
     
+    def disableUndo(self):
+        self.ui.actionUndo.setVisible(True)
+        
+    def enableUndo(self):
+        self.ui.actionUndo.setEnabled(True)
+        
     def disableFirstPrev(self):        
         self.ui.actionFirst.setDisabled(True)        
         self.ui.actionPrevious.setDisabled(True)                                  
@@ -311,7 +339,8 @@ class MainWindow(QtGui.QMainWindow):
         other = MainWindow()
         MainWindow.windowList.append(other) 
         other.fileaction.openFile()
-        other.show()        
+        other.show()                   
+
     
     
 if __name__ == "__main__":
