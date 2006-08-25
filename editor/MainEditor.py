@@ -98,6 +98,11 @@ class MainWindow(QtGui.QMainWindow):
         
         # fileaction object of File menu
         self.fileaction = FileAction()
+        #Help menu of aboutQt        
+        self.aboutDialog = AboutEditor()        
+        self.connect(self.ui.actionAbout, QtCore.SIGNAL("triggered()"), self.aboutDialog, QtCore.SLOT("show()"))
+        self.connect(self.ui.actionAboutQT, QtCore.SIGNAL("triggered()"), QtGui.qApp, QtCore.SLOT("aboutQt()"))
+     
         
         # File menu action                
         self.connect(self.ui.actionOpen, QtCore.SIGNAL("triggered()"), self.fileaction.openFile)
@@ -114,11 +119,6 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionCopy, QtCore.SIGNAL("triggered()"), self.copier)
         self.connect(self.ui.actionPast, QtCore.SIGNAL("triggered()"), self.paster)                
         
-        #Help menu of aboutQt        
-        self.aboutDialog = AboutEditor()        
-        self.connect(self.ui.actionAbout, QtCore.SIGNAL("triggered()"), self.aboutDialog, QtCore.SLOT("show()"))
-        self.connect(self.ui.actionAboutQT, QtCore.SIGNAL("triggered()"), QtGui.qApp, QtCore.SLOT("aboutQt()"))
-
         # Other actions        
         self.connect(self.ui.actionNext, QtCore.SIGNAL("triggered()"), self.operator.next)
         self.connect(self.ui.actionPrevious, QtCore.SIGNAL("triggered()"), self.operator.previous)
@@ -283,6 +283,7 @@ class MainWindow(QtGui.QMainWindow):
             self.ui.recentaction[j].setVisible(False)
     
     def closeEvent(self, event):            
+        self.aboutDialog.closeAbout()
         if self.operator.modified():  
             if self.fileaction.aboutToSave(self):
                 event.accept()
@@ -336,4 +337,5 @@ if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     editor = MainWindow()
     editor.show()
+##    self.connect(self.ui.actionAbout, QtCore.SIGNAL("triggered()"), self.aboutDialog, QtCore.SLOT("show()"))
     sys.exit(app.exec_())

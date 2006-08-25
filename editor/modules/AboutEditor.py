@@ -15,12 +15,12 @@ class AboutEditor(QtGui.QDialog):
         tabWidget.addTab(ThanksTab(fileInfo), self.tr("Thanks To"))
         tabWidget.addTab(LicensesTab(fileInfo), self.tr("Licenses Agreement"))
         
-        okButton = QtGui.QPushButton(self.tr("OK"))
-        self.connect(okButton, QtCore.SIGNAL("clicked()"), QtCore.SLOT("accept()"))   
+        self.okButton = QtGui.QPushButton(self.tr("OK"))
+        self.connect(self.okButton, QtCore.SIGNAL("clicked()"), QtCore.SLOT("accept()"))   
         
         buttonLayout = QtGui.QHBoxLayout()
         buttonLayout.addStretch(1)
-        buttonLayout.addWidget(okButton)
+        buttonLayout.addWidget(self.okButton)
         
         mainLayout = QtGui.QVBoxLayout()
         mainLayout.addWidget(tabWidget)
@@ -30,6 +30,9 @@ class AboutEditor(QtGui.QDialog):
         self.setWindowTitle(self.tr("About Editor"))
 ##        self. setWindowIcon(QtGui.QIcon("/images/icon.png"))
         self.resize(400, 200)   
+    
+    def closeAbout(self):  
+        self.close()
     
         
         
