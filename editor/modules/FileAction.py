@@ -38,9 +38,10 @@ class FileAction(QtGui.QDialog):
         if not self.fileName.isEmpty():
             self.emitFileName()
 
-    def saveAs(self):      
+    def saveAs(self):
         (path, fileForSave) = os.path.split(str(self.fileName))
         ##detecting file type
+        # FIXME that does not work if my file ends with po but not with .po! Jens
         if (fileForSave.endswith("po")):
             extension = ".po"
             defaultFileType = "Po File (*.po);;"
@@ -51,20 +52,27 @@ class FileAction(QtGui.QDialog):
             otherFileType =  "Po File (*.po)"
         fileType = defaultFileType + otherFileType
         # TODO: set selected Filter to all support Files        
+        # FIXME how shall self.tr(fileType) work here? You can not translate what you only
+        # know at runtime! You must use the tr() in the lines above! Jens
         self.fileName = QtGui.QFileDialog.getSaveFileName(self, self.tr("Save As"),
                                                      QtCore.QDir.currentPath(), self.tr(fileType))
         # TODO: Detect which buttion is clicked (Save or Cancel)
         
         if not self.fileName.isEmpty():
+            # FIXME that does not work if my file ends with po or xlf but not with .po or .xlf! Jens
+            # You allow *.xliff in the filter but you do not test here for it! Jens
             if not (str(self.fileName).endswith("po") and str(self.fileName).endswith("xlf")):
                 self.fileName = self.fileName + extension
-                self.emitFileName()      
+                self.emitFileName()
+            # FIXME add a return value here. Jens
         else:
             return False
 ##            QtGui.QMessageBox.information(self,self.tr("Information") ,self.tr("Please specify the filename to save to"))
 ##            self.saveAs()
         
-    def aboutToSave(self, main):                    
+    # FIXME the name is wrong, you are about to close not about to save. Jens
+    def aboutToSave(self, main):
+      # FIXME indentation! Jens                    
             ret = QtGui.QMessageBox.question(main, self.tr("File Modified"),
                         self.tr("The file has been modified.\n"
                                 "Do you want to save your changes?"),

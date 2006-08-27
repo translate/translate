@@ -44,12 +44,15 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.treeOverview.header().setResizeMode(1, QtGui.QHeaderView.Stretch)
         self.ui.treeOverview.header().setResizeMode(2, QtGui.QHeaderView.Stretch)
         
+        # TODO do you really need this, maybe it is enough to just use the current item? Jens
         self.lastItem = None
+        # FIXME you do not need this member variable, remove it. Jens
         self.id = None
         self.connect(self.ui.treeOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitItemSelected)
 
     def closeEvent(self, event):            
         self._actionShow.setText(self.tr("Show Overview"))
+        # FIXME you need to call the parents implementation here. Jens
         
     def actionShow(self):
         return self._actionShow

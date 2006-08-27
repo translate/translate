@@ -96,6 +96,7 @@ class MainWindow(QtGui.QMainWindow):
         #create operator
         self.operator = Operator()        
         
+        # FIXME move this down where is actually used. Jens
         # fileaction object of File menu
         self.fileaction = FileAction()
         #Help menu of aboutQt        
@@ -110,6 +111,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionSave, QtCore.SIGNAL("triggered()"), self.fileaction.save)
         self.connect(self.ui.actionSaveas, QtCore.SIGNAL("triggered()"), self.fileaction.saveAs)
         self.connect(self.ui.actionExit, QtCore.SIGNAL("triggered()"), QtCore.SLOT("close()"))
+        # FIXME connect to setVisible directly. Jens
         self.connect(self.ui.actionFind, QtCore.SIGNAL("triggered()"), self.showFindBar)        
         
         # Edit menu action
@@ -163,11 +165,16 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("newUnits"), self.dockTUview.slotNewUnits)
         self.connect(self.operator, QtCore.SIGNAL("noUnit"), self.disableAll)
         
+        # FIXME why do you connect this here and two lines later again? Jens
+        # FIXME Connect directly to the slot of the statusbar. Jens
         self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.showCurrentStatus)
         self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.setOpening)  
         self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.showCurrentStatus)       
     
-       
+    # FIXME the next 4 slots should not be here. Move them into Operator
+    # And please do not use a string to define what you want to filter.
+    # You have to be able to select more than one category at the same time.
+    # How can you filter fuzzy and untranslated together? Jens
     def unfiltered(self):
         self.filter = None
         self.operator.emitNewUnits()    
@@ -184,12 +191,17 @@ class MainWindow(QtGui.QMainWindow):
         self.filter = 'untranslated'
         self.operator.emitFilteredUnits(self.filter)
     
+    # FIXME Why do you need to go thru MainEditor with this stuff?
+    # Please use slots in Overview and TUview and connect them to a signal in Operator
+    # and call takeoutUnit in Operator directly! Jens
     def takeoutUnit(self, value):
         if (self.filter):
             self.dockOverview.takeoutUnit(value)
             self.dockTUview.takeoutUnit(value)
             self.operator.takeoutUnit(value)
     
+    # FIXME this is not the right way to do it. If you add another view which can 
+    # do cut&paste you have to change the code again. Jens 
     def objectAvailable(self):
         if self.dockTUview.ui.txtTarget.hasFocus():
             return self.dockTUview.ui.txtTarget
@@ -225,6 +237,7 @@ class MainWindow(QtGui.QMainWindow):
         object = self.objectAvailable()
         self.operator.undoEdit(object)
     
+    # FIXME this needs to go away! Connect directly to the slot of the statusbar. Jens
     def showCurrentStatus(self, status):
         self.statuslabel.setText(' ' + status + ' ')
 
@@ -241,12 +254,14 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionPast.setEnabled(True)
         self.ui.actionFind.setEnabled(True)
         self.disableFirstPrev()
+        # FIXME what will happen if the file only contains 1 TU? Jens
         self.enableNextLast()   
         settings = QtCore.QSettings("KhmerOS", "Translation Editor")
         files = settings.value("recentFileList").toStringList()
         files.removeAll(fileName)        
         files.prepend(fileName)        
         while files.count() > MainWindow.MaxRecentFiles:
+            # FIXME use .removeLast() here. Jens
             files.removeAt(files.count()-1)        
         settings.setValue("recentFileList", QtCore.QVariant(files))
         self.updateRecentAction() 
@@ -269,12 +284,14 @@ class MainWindow(QtGui.QMainWindow):
             self.ui.menuOpen_Recent.addAction(self.ui.recentaction[i])
         self.updateRecentAction()                  
     
-    def updateRecentAction(self):        
+    def updateRecentAction(self):
+        # TODO do we want to have WordForge here instead of KhmerOS? Jens
         settings = QtCore.QSettings("KhmerOS", "Translation Editor")
         files = settings.value("recentFileList").toStringList()
         numRecentFiles = min(files.count(), MainWindow.MaxRecentFiles)             
 
-        for i in range(numRecentFiles):           
+        for i in range(numRecentFiles):
+            # FIXME make sure that the text does not get too long. Jens
             self.ui.recentaction[i].setText(files[i])          
             self.ui.recentaction[i].setData(QtCore.QVariant(files[i]))              
             self.ui.recentaction[i].setVisible(True)
@@ -283,6 +300,7 @@ class MainWindow(QtGui.QMainWindow):
             self.ui.recentaction[j].setVisible(False)
     
     def closeEvent(self, event):            
+        # FIXME make the about dialog modal then you do not need this here. Jens
         self.aboutDialog.closeAbout()
         if self.operator.modified():  
             if self.fileaction.aboutToSave(self):
@@ -299,7 +317,8 @@ class MainWindow(QtGui.QMainWindow):
         
     def enableUndo(self):
         self.ui.actionUndo.setEnabled(True)
-        
+    
+    # TODO think about combining these two methods by using a bool parameter. Jens
     def disableFirstPrev(self):        
         self.ui.actionFirst.setDisabled(True)        
         self.ui.actionPrevious.setDisabled(True)                                  
@@ -308,6 +327,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionFirst.setEnabled(True)
         self.ui.actionPrevious.setEnabled(True)
     
+    # TODO think about combining these two methods by using a bool parameter. Jens
     def disableNextLast(self):
         self.ui.actionNext.setDisabled(True)        
         self.ui.actionLast.setDisabled(True)                              
@@ -321,7 +341,8 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionPrevious.setDisabled(True)
         self.ui.actionNext.setDisabled(True)
         self.ui.actionLast.setDisabled(True)
-        
+    
+    # FIXME this should go away, you can connect directly to setVisible. Jens
     def showFindBar(self):
         self.find.setVisible(True)             
         
@@ -329,6 +350,7 @@ class MainWindow(QtGui.QMainWindow):
         other = MainWindow()
         MainWindow.windowList.append(other) 
         other.fileaction.openFile()
+        # FIXME what will happen if the user hit cancel? Jens
         other.show()                   
 
     

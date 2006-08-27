@@ -40,6 +40,7 @@ class TUview(QtGui.QDockWidget):
         
     def closeEvent(self, event):            
         self._actionShow.setText(self.tr("Show Detail"))
+        # FIXME you need to call the parents implementation here. Jens
         
     def actionShow(self):  
         return self._actionShow        
