@@ -77,6 +77,15 @@ msgstr ""'''
         print propfile
         assert propfile == [propexpected]
 
+    def test_merging_propertyless_template(self):
+        """check that when merging with a template with no property values that we copy the template"""
+        posource = ""
+        proptemplate = "# A comment\n"
+        propexpected = proptemplate
+        propfile = self.merge2prop(proptemplate, posource)
+        print propfile
+        assert propfile == [propexpected]
+
 class TestPO2PropCommand(test_convert.TestConvertCommand, TestPO2Prop):
     """Tests running actual po2prop commands on files"""
     convertmodule = po2prop
