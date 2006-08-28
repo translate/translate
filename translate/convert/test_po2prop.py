@@ -46,6 +46,19 @@ class TestPO2Prop:
         print propfile
         assert propfile == [propexpected]
 
+    def test_merging_blank_entries(self):
+        """check that we can correctly merge entries that are blank in the template"""
+        posource = '''#: accesskey-accept
+msgid ""
+"_: accesskey-accept\n"
+""
+msgstr ""'''
+        proptemplate = 'accesskey-accept=\n'
+        propexpected = 'accesskey-accept=\n'
+        propfile = self.merge2prop(proptemplate, posource)
+        print propfile
+        assert propfile == [propexpected]
+
 class TestPO2PropCommand(test_convert.TestConvertCommand, TestPO2Prop):
     """Tests running actual po2prop commands on files"""
     convertmodule = po2prop
