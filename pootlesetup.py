@@ -28,7 +28,18 @@ infofiles = [(join(sitepackages,'Pootle'),
 initfiles = [(join(sitepackages,'Pootle'),[join('Pootle','__init__.py')])]
 
 packages = ["Pootle"]
+subpackages = ["tools"]
 pootlescripts = [join('Pootle', 'PootleServer'), join('Pootle', 'tools', 'updatetm')]
+
+def addsubpackages(subpackages):
+  for subpackage in subpackages:
+    initfiles.append((join(sitepackages, 'Pootle', subpackage),
+                      [join('Pootle', subpackage, '__init__.py')]))
+    for infofile in ('README', 'TODO'):
+      infopath = join('translate', subpackage, infofile)
+      if os.path.exists(infopath):
+        infofiles.append((join(sitepackages, 'Pootle', subpackage), [infopath]))
+    packages.append("Pootle.%s" % subpackage)
 
 #Enter the codes for all languages that must be packaged here
 approvedlanguages = ['af', 'ar', 'eu', 'ca', 'zh_CN', 'zh_HK', 'da', 'nl', 'fi', 'fr', 'gl', 'de', 'hu', 'it', 'ja', 'mt',  'pt', 'sl', 'es', 'sv', 'vi']
@@ -288,6 +299,7 @@ def standardsetup(name, version, custompackages=[], customdatafiles=[]):
     manifest_in.close()
   except IOError, e:
     print >> sys.stderr, "warning: could not recreate MANIFEST.in, continuing anyway. Error was %s" % e
+  addsubpackages(subpackages)
   datafiles = getdatafiles()
   ext_modules = []
   dosetup(name, version, packages + custompackages, datafiles + customdatafiles, pootlescripts, ext_modules)
