@@ -74,6 +74,7 @@ class reprop:
     elif line.strip()[:1] == '#':
       returnline = quote.rstripeol(line)+eol
     else:
+      line = quote.rstripeol(line)
       equalspos = line.find('=')
       # if no equals, just repeat it
       if equalspos == -1:
