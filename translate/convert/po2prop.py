@@ -54,10 +54,10 @@ class reprop:
         # there may be more than one entity due to msguniq merge
         for entity in thepo.getlocations():
           propstring = thepo.target
-	  
+          
           # NOTE: triple-space as a string means leave it empty (special signal)
           if len(propstring.strip()) == 0 and propstring != "   ":
-	    propstring = thepo.source
+            propstring = thepo.source
           self.podict[entity] = propstring
 
   def convertline(self, line):
