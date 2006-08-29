@@ -161,7 +161,6 @@ msgid ""
 msgstr "Sertifikate"
 '''
         expected = r'''#: pref.certs.title
-#, fuzzy
 msgid ""
 "_: pref.certs.title\n"
 "Certificates"

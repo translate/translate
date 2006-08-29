@@ -129,7 +129,7 @@ def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similari
         if templatepounit:
           possiblematches.append(templatepounit)
         for templatepounit in possiblematches:
-          if inputpotunit.source == templatepounit.source:
+          if inputpotunit.source == templatepounit.source and templatepounit.target:
             inputpotunit.merge(templatepounit)
             break
         else: 
