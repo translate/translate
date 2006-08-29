@@ -84,7 +84,7 @@ class TestPOT2PO:
         """test that a change in the accelerator localtion still allows merging"""
         potsource = '''#: someline.c\nmsgid "A&bout"\nmsgstr ""\n'''
         posource = '''#: someline.c\nmsgid "&About"\nmsgstr "&Info"\n'''
-        poexpected = '''#: someline.c\n#, fuzzy\nmsgid "A&bout"\nmsgstr "&Info"\n'''
+        poexpected = '''#: someline.c\nmsgid "A&bout"\nmsgstr "&Info"\n'''
         newpo = self.convertpot(potsource, posource)
         print newpo
         assert str(self.singleunit(newpo)) == poexpected
