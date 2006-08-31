@@ -115,6 +115,15 @@ class TestPOT2PO:
         newpounit = self.singleunit(newpo)
         assert str(newpounit) == poexpected
 
+    def test_merging_comments_with_blank_comment_lines(self):
+        """test that when we merge a comment that has a blank line we keep the blank line"""
+        potsource = '''#: someline.c\nmsgid "About"\nmsgstr ""\n'''
+        posource = '''# comment1\n#\n# comment2\n#: someline.c\nmsgid "About"\nmsgstr "Omtrent"\n'''
+        poexpected = posource
+        newpo = self.convertpot(potsource, posource)
+        newpounit = self.singleunit(newpo)
+        assert str(newpounit) == poexpected
+
     def test_merging_msgidcomments(self):
         """ensure that we can merge msgidcomments messages"""
         potsource = r'''#: window.width
