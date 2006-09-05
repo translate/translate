@@ -347,13 +347,13 @@ class pounit(base.TranslationUnit):
       return
     if comments:
       mergelists(self.othercomments, otherpo.othercomments)
-      #We don't bring acros otherpo.automaticcomments as we consider ourself
-      #to be the authority.
+      # We don't bring across otherpo.automaticcomments as we consider ourself
+      # to be the the authority.  Same applies to otherpo.msgidcomments
       #self.automaticcomments = otherpo.automaticcomments
+      #mergelists(self.msgidcomments, otherpo.msgidcomments)
       mergelists(self.sourcecomments, otherpo.sourcecomments, split=True)
       mergelists(self.typecomments, otherpo.typecomments)
       mergelists(self.visiblecomments, otherpo.visiblecomments)
-      mergelists(self.msgidcomments, otherpo.msgidcomments)
     if self.isblankmsgstr() or overwrite:
       self.target = otherpo.target
       if self.source != otherpo.source:
