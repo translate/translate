@@ -1,0 +1,3 @@
+WordForge Translation Editor
+---------------------------------------
+31. August 2006, release of version 0.1
