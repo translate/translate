@@ -4,11 +4,11 @@
 # WordForge Translation Editor
 # Copyright 2006 WordForge Foundation
 #
-# Version 1.0 (31 August 2006)
+# Version 0.1 (31 August 2006)
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2.1
+# as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
 #
 # You should have received a copy of the GNU General Public License
@@ -64,15 +64,6 @@ class OverviewDock(QtGui.QDockWidget):
             self._actionShow.setText(self.tr("Show Overview"))    
         self.setHidden(not self.isHidden())    
 
-##    def getid(self, currentUnit):
-##        """return id as integer.
-##        If unit does not id, it return index of unit in list of units."""
-##        try:
-##            currentId = int(currentUnit.getid())
-##            return currentId
-##        except AttributeError:
-##            return None
-
     def addItem(self, currentUnit, currentPointer):
         """Add one item to the list of source and target."""
         item = QtGui.QTreeWidgetItem(self.ui.treeOverview)
@@ -103,19 +94,29 @@ class OverviewDock(QtGui.QDockWidget):
         if not units:
             self.ui.treeOverview.clear()
             return
+        self.lastItem = None
+        self.id = None
         self.items = []
         self.ui.treeOverview.clear()
         self.addItems(units, unitsPointer)
         # select the first item in list
-        self.ui.treeOverview.setCurrentItem(self.items[0])
-    
+        self.scrollToItem(self.items[0])
+        
+        
     def updateItem(self, value):
-        if (not self.items):
+        if (not self.items) or (value < 0) or (value >= len(self.items)):
             return
+        #print value
         item = self.items[value]
+        if (self.lastItem != item):
+            self.scrollToItem(item)
+            self.lastItem = item
+    
+    def scrollToItem(self, item):
         self.disconnect(self.ui.treeOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitItemSelected)
         self.ui.treeOverview.setCurrentItem(item)
         self.connect(self.ui.treeOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitItemSelected)
+        self.lastItem = item
         
     def takeoutUnit(self, value):
         item = self.items[value]
@@ -130,12 +131,12 @@ class OverviewDock(QtGui.QDockWidget):
         self.id = int(item.text(0))
         ##self.id = item.data(0, QtCore.Qt.UserRole).toInt()[0]
         self.emit(QtCore.SIGNAL("itemSelected"), self.id)
-        self.lastItem = item
+        
         
     def setTarget(self, target):
         if (self.lastItem):
             self.lastItem.setText(2, target)
-
+            
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

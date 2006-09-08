@@ -29,7 +29,7 @@
       <note>ចម្រៀងខ្មែរ5</note></trans-unit>
       <trans-unit approved="yes" id="2" reformat="yes" translate="yes" xml:space="default">
         <source>This chapter, and pretty much every chapter after this, deals with object-oriented <ph id="1">&amp;python;</ph> programming.</source>
-        <target/>
+        <target state="translated">This chapter, and pretty much every chapter after this, deals with object-oriented &amp;python; programming.</target>
         <prop-group>
           <prop prop-type="entryid">1150875516739</prop>
         </prop-group>
@@ -44,7 +44,7 @@ ccccccc</note></trans-unit>
       <note>ddddd</note></trans-unit>
       <trans-unit approved="no" id="4" reformat="yes" translate="yes" xml:space="default">
         <source>Here is a complete, working <ph id="1">&amp;python;</ph> program.</source>
-        <target/>
+        <target state="translated">Here is a complete, working &amp;python; program.</target>
         <prop-group>
           <prop prop-type="entryid">1150875516741</prop>
         </prop-group>

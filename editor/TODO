@@ -1,23 +1,92 @@
 
 FIXME:
 
+DONE:
+
 - after opening of a file the first TU should be selected---------done
-- you need a way to revert to the previous content of target after you hit F2
-    (action with ESC key bound to it?) 
 - first and previous are disabled after loading a file even if I click in the overview 
-    to another entry
+    to another entry-------done
 - the actions for navigation are wrong placed in the edit menu and you should create also 
     a toolbar for them-----------done
-- decrease the margins in the toolviews, you do not need so much space around the widgets    
 - set a minimum size for source and target so that the user can not make them disappear--------done
 - remove the word index from the header in overview, it not really carry meaning and it
-    looks ugly when I make the column small
+    looks ugly when I make the column small-------done
 - Open in New Window: open dialog comes first, then the selected file loaded in the new window later.---------done
 - Status bar should be permanently displayed, even when we click on menu.----------done
+- A keyboard shortcut is meant for actions the user would want to use 
+frequently. You have shortcuts for "About" and "About QT". These actions are 
+rarely used and do not deserve a shortcut. Please remove the shortcuts, they 
+are a precious resource. Do not waste them for this.
+--------done
+
+- after I start the editor the title is "Main Window"--------done
+
+- in the menu the entry "Find Again" should be better named "Find Next". And 
+could we have a "Find Previous" as well? --------done
+
+- I could not find a way to enable/disable the toolbars?
+not only toolbars, but also all three views come by default.
+---------done
+
+- in the Go menu you use "F3" and "shift + F3" for next and previous. I wonder 
+if it would be better to use "ctrl + alt + PageUp" and "ctrl + alt + 
+PageDown" instead? The reason is the keys are close to the other two 
+shortcuts and share the same modifier. 
+----------
+F3: Find Next
+Shift+F3: Find Previous
+Ctrl+PgUp: First
+Ctrl+PgDown: Last
+PgUp: Next
+PgDown: Previous
+-----------done
+
+- In the view menu you use "ToolView" which is rather technical. Can you find 
+a better name? Maybe just "Views" or if you want to keep "tool" maybe "Tool 
+Views"; see the plural here.-----------done
+
+- Move View|Filter up because it is more important.--------done
+- Ctrl + A : select all, not save As-----------------done
+- I really think that this is not yet version 1.0 as you claim in the about 
+dialog. This is far away from what we planned to implement, so better choose 
+a number below 1.0. Actually I would go with 0.1  ;-) 
+-------------ok
+
+- Open dialog crash whenever user choose file type.----done
+
+NOt YET:
+- decrease the margins in the toolviews, you do not need so much space around the widgets    
+
+- you need a way to revert to the previous content of target after you hit F2
+    (action with ESC key bound to it?) 
+    Use undo instead of F2
+
 - Cannot markFuzzy, as long as the source is translated.
+
 - Whenever txtTarget is emptied, the untranslated num is decreased immediately with leaving txtTarget.
+
 - Similarly, once you copy from source2Target, the untranslated num is increased immediately with leaving txtTarget.
--Ctrl+Alt+home/Ctrl+Alt+end: are not working with txtTarget
+
 -for PO file,on top contains translator information and file header, so it should not be displayed in overview, Detail, or Comment.
+<<<<<<< .mine
+
+- Edit tab order
+
+-undo/redo should follow kbabel style: track one char by one char regardless object.
+
+- Comment your code! It is not acceptable the way how it is right now! I 
+repeat myself here: you have to come to the point where coding and commenting 
+is one. Do not think you will add comments later, you won't do it and other 
+people want to read the code meanwhile too!
+
+- In find.py you should use a technic called lazy init. You create here a GUI 
+that is hidden initially. Instead of creating the GUI in the constructor you 
+should only create the action and on the first time the action is triggered 
+you would create the GUI. The benefit is that the construction of the class 
+if faster which makes the application start up quicker. 
+
+- Detect Save/Cancel button
+=======
 
 - Move the mainwindow class into a file in modules and make the filename of the main script only lowercase.
+>>>>>>> .r3892

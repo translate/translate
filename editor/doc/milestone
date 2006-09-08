@@ -5,13 +5,13 @@ Editor
         . Open      -- Done
         . Save      -- Done
         . Save As       -- 50%
-        . Cut in Target/ Comment/ Overview          --
-        . Paste in Target/ Comment/ Overview        --
+        . Cut in Target/ Comment/ Overview          --done
+        . Paste in Target/ Comment/ Overview        --done
         . Find (where to find: source, target, and comment; option: Case sensitive, From current position, Only whole words, find backwords, high light)
         . Replace (where to find: source, target, and comment; option: Case sensitive, From current position, Only whole words, find backwords, high light, ask before replacing)
-        . Filter (fuzzy, translated, untranslated, approved)        -- 75%
+        . Filter (fuzzy, translated, untranslated, approved)        -- 100%
         . Status        -- 50%
-        . Comment       -- Done for xliff
+        . Comment       -- Done
         . Toggole Fuzzy         -- Done
         . Navigation        -- Done
         . Support XLIFF and Po      -- Done
@@ -20,8 +20,9 @@ Editor
         . Copy Source 2 target          -- Done
         . Open in new window.  -- Done
         . Application Icon          -- 
-        . Run it on Window
-        . Create a first release
+        . Run it on Window  --
+        . Create a first release --
+        . Linux installer
         
     2. Second Editor (Expected Release Date: 30/09/06)
         . User Interface Profile
@@ -38,7 +39,7 @@ Editor
             . Automatic Save the target
             . save translation to memory
             . get translation from memory
-            . display translation to view           
+            . display translation to view
              
     3. Third Editor (Expected Release Date: 31/10/06)
         . Support more file format

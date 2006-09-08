@@ -4,10 +4,10 @@
 # WordForge Translation Editor
 # Copyright 2006 WordForge Foundation
 #
-# Version 1.0 (31 August 2006)
+# Version 0.1 (31 August 2006)
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2.1
+# as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
 #
 # You should have received a copy of the GNU General Public License
@@ -38,7 +38,8 @@ class TUview(QtGui.QDockWidget):
         self._actionShow.setText(self.tr("Hide Detail"))
         self.connect(self._actionShow, QtCore.SIGNAL("triggered()"), self.show)        
         
-    def closeEvent(self, event):            
+    def closeEvent(self, event):
+        """when close button is click, change caption to "Show Detail"""
         self._actionShow.setText(self.tr("Show Detail"))
         # FIXME you need to call the parents implementation here. Jens
         
@@ -46,6 +47,7 @@ class TUview(QtGui.QDockWidget):
         return self._actionShow        
         
     def show(self):
+        """toggle hide/show detail caption"""
         if self.isHidden():
             self._actionShow.setText(self.tr("Hide Detail"))    
         else:
@@ -88,10 +90,21 @@ class TUview(QtGui.QDockWidget):
             
     def source2target(self):
         """copy source to target"""
-        self.ui.txtTarget.setPlainText(self.ui.txtSource.toPlainText())
+        self.ui.txtTarget.setFocus()
+        self.ui.txtTarget.selectAll()
+        self.ui.txtTarget.insertPlainText(self.ui.txtSource.toPlainText())
         self.ui.txtTarget.document().setModified()
+
+    def getSourceToHighLight(self):
+        self.emitdocPointer(self.ui.txtSource.document())
+        
+    def getTargetToHighLight(self):
+        print 'target'
+        self.emitdocPointer(self.ui.txtTarget.document())
     
-  
+    def emitdocPointer(self, docPointer):
+        self.emit(QtCore.SIGNAL("highLight"), docPointer)
+        
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     Form = TUview()

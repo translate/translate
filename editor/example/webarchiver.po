@@ -1,23 +1,8 @@
-# translation of webarchiver.po to khmer
-#
-# auk piseth <piseth_dv@khmeros.info>, 2006.
-# hok kakada <hokkakada@khmeros.info>, 2006.
-msgid ""
-msgstr ""
-"Project-Id-Version: webarchiver\n"
-"POT-Creation-Date: 2005-10-11 02:47+0200\n"
-"PO-Revision-Date: 2006-08-08 10:29+0700\n"
-"Last-Translator: hok kakada <hokkakada@khmeros.info>\n"
-"Language-Team: khmer <support@khmeros.info>\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.2\n"
-
 # ,មិនអាច​បើក​ប័ណ្ណសារ​
 #: archivedialog.cpp:90
+#, fuzzy
 msgid "Unable to Open Web-Archive"
-msgstr "មិនអាច​បើក​ប័ណ្ណសារ​បណ្តាញ​"
+msgstr "Unable to Open Web-Archive"
 
 # សម្រាប់​ការ​សរសេរ​បាន​ទេ ។
 #: archivedialog.cpp:91
@@ -39,28 +24,33 @@ msgid "Could not open a temporary file"
 msgstr "មិនអាច​បើក​ឯកសារ​បណ្តោះអាសន្ន​មួយ​បាន​ទេ"
 
 #: archivedialog.cpp:157
+#, fuzzy
 msgid "Archiving webpage completed."
 msgstr "ទំព័រ​បណ្តាញ​​ប័ណ្ណ​សារ​បានបញ្ចប់​ទាំងស្រុង ។"
 
 #: archivedialog.cpp:450
+#, fuzzy
 msgid "Downloading"
 msgstr "កំពុង​ទាញយក"
 
 #: archivedialog.cpp:465
+#, fuzzy
 msgid "Ok"
 msgstr "យល់ព្រម"
 
 #: plugin_webarchiver.cpp:56
+#, fuzzy
 msgid "Archive &Web Page..."
 msgstr "ទុក​ទំព័រ​បណ្តាញ..."
 
 #: plugin_webarchiver.cpp:89
+#, fuzzy
 msgid "*.war *.tgz|Web Archives"
 msgstr "*.war *.tgz|ប័ណ្ណសារ​បណ្តាញ"
 
 #: plugin_webarchiver.cpp:90
 msgid "Save Page as Web-Archive"
-msgstr "រក្សាទុក​ទំព័រ​ជា​​ប័ណ្ណសារ​បណ្តាញ"
+msgstr ""
 
 #: plugin_webarchiver.cpp:95
 msgid "Invalid URL"
@@ -113,6 +103,7 @@ msgstr "ឯកសារ​មូលដ្ឋាន"
 #. i18n: file archiveviewbase.ui line 51
 #: rc.cpp:15
 #, no-c-format
+#, fuzzy
 msgid "To:"
 msgstr "​ទៅ ៖"
 
@@ -131,6 +122,7 @@ msgstr "URL ដើម"
 #. i18n: file archiveviewbase.ui line 88
 #: rc.cpp:24
 #, no-c-format
+#, fuzzy
 msgid "URL"
 msgstr "​URL"
 

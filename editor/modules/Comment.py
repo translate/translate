@@ -4,11 +4,11 @@
 # WordForge Translation Editor
 # Copyright 2006 WordForge Foundation
 #
-# Version 1.0 (31 August 2006)
+# Version 0.1 (31 August 2006)
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2.1
+# as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
 #
 # You should have received a copy of the GNU General Public License
@@ -55,11 +55,14 @@ class CommentDock(QtGui.QDockWidget):
  
     def updateComment(self, currentUnit):
         comment = currentUnit.getnotes()
-        self.ui.txtComment.setPlainText(comment)
+        self.ui.txtComment.setPlainText(unicode(comment))
     
     def checkModified(self):
         if self.ui.txtComment.document().isModified():
             self.emit(QtCore.SIGNAL("commentChanged"), self.ui.txtComment.toPlainText())
+
+    def getCommentToHighLight(self):                        
+        self.emit(QtCore.SIGNAL("highLight"), self.ui.txtComment.document())
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

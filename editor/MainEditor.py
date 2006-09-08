@@ -1,10 +1,9 @@
-
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 # WordForge Translation Editor
 # Copyright 2006 WordForge Foundation
 #
-# Version 1.0 (31 August 2006)
+# Version 0.1 (31 August 2006)
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -21,14 +20,13 @@
 # This module is working on the main windows of Editor
 
 import sys
-import os.path
 
 ## add a modules path in sys.path so the other module inside it is known during import
-sys.path.append(os.path.join(sys.path[0] ,"modules"))
+##import os.path
+##sys.path.append(os.path.join(sys.path[0] ,"modules"))
 
 from PyQt4 import QtCore, QtGui
 from modules.MainEditorUI import Ui_MainWindow
-##from translate.storage import factory
 from modules.TUview import TUview
 from modules.Overview import OverviewDock
 from modules.Comment import CommentDock
@@ -40,7 +38,7 @@ from modules.AboutEditor import AboutEditor
 class MainWindow(QtGui.QMainWindow):
     MaxRecentFiles = 10
     windowList = []
-##    self.dockTUview, self.dockComment = QtGui.QTextEdit()
+
     def __init__(self, parent = None):
         QtGui.QMainWindow.__init__(self, parent)       
         self.ui = Ui_MainWindow()
@@ -62,6 +60,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionFilterTranslated.setCheckable(True)
         self.ui.actionFilterUntranslated.setCheckable(True)
         self.ui.actionUnfiltered.setChecked(True)
+        
         # set disable
         self.ui.actionUnfiltered.setDisabled(True)
         self.ui.actionFilterFuzzy.setDisabled(True)
@@ -71,22 +70,17 @@ class MainWindow(QtGui.QMainWindow):
         #plug in overview widget
         self.dockOverview = OverviewDock()        
         self.addDockWidget(QtCore.Qt.TopDockWidgetArea, self.dockOverview)        
-        self.ui.menuToolView.addAction(self.dockOverview.actionShow())        
+        self.ui.menuViews.addAction(self.dockOverview.actionShow())        
         
         #plug in TUview widget
         self.dockTUview = TUview()                        
         self.setCentralWidget(self.dockTUview)
-        self.ui.menuToolView.addAction(self.dockTUview.actionShow())              
+        self.ui.menuViews.addAction(self.dockTUview.actionShow())              
         
         #plug in comment widget
         self.dockComment = CommentDock()        
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.dockComment)
-        self.ui.menuToolView.addAction(self.dockComment.actionShow())                          
-
-        #create Find widget
-        self.find = Find()        
-        self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.find)        
-        self.find.setVisible(False)      
+        self.ui.menuViews.addAction(self.dockComment.actionShow())                          
 
         #add widgets to statusbar
         #TODO: Decorate Status Bar
@@ -99,11 +93,11 @@ class MainWindow(QtGui.QMainWindow):
         # FIXME move this down where is actually used. Jens
         # fileaction object of File menu
         self.fileaction = FileAction()
+        
         #Help menu of aboutQt        
         self.aboutDialog = AboutEditor()        
         self.connect(self.ui.actionAbout, QtCore.SIGNAL("triggered()"), self.aboutDialog, QtCore.SLOT("show()"))
-        self.connect(self.ui.actionAboutQT, QtCore.SIGNAL("triggered()"), QtGui.qApp, QtCore.SLOT("aboutQt()"))
-     
+        self.connect(self.ui.actionAboutQT, QtCore.SIGNAL("triggered()"), QtGui.qApp, QtCore.SLOT("aboutQt()"))     
         
         # File menu action                
         self.connect(self.ui.actionOpen, QtCore.SIGNAL("triggered()"), self.fileaction.openFile)
@@ -119,7 +113,9 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionRedo, QtCore.SIGNAL("triggered()"), self.redoer) 
         self.connect(self.ui.actionCut, QtCore.SIGNAL("triggered()"), self.cutter)
         self.connect(self.ui.actionCopy, QtCore.SIGNAL("triggered()"), self.copier)
-        self.connect(self.ui.actionPast, QtCore.SIGNAL("triggered()"), self.paster)                
+        self.connect(self.ui.actionPast, QtCore.SIGNAL("triggered()"), self.paster)   
+        # Select All File
+        self.connect(self.ui.actionSelectAll , QtCore.SIGNAL("triggered()"), self.selectAll)   
         
         # Other actions        
         self.connect(self.ui.actionNext, QtCore.SIGNAL("triggered()"), self.operator.next)
@@ -144,6 +140,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("currentPosition"), self.dockTUview.updateScrollbar)
         self.connect(self.dockTUview, QtCore.SIGNAL("scrollbarPosition"), self.operator.setCurrentPosition)
         self.connect(self.dockOverview, QtCore.SIGNAL("itemSelected"), self.operator.setCurrentUnit)
+        self.connect(self.dockOverview, QtCore.SIGNAL("itemSelected"), self.dockTUview.ui.txtTarget.setFocus)
 
 ##        self.connect(self.operator, QtCore.SIGNAL("changetarget"), self.dockTUview.txtClear)
         
@@ -154,6 +151,8 @@ class MainWindow(QtGui.QMainWindow):
         
         self.connect(self.dockComment, QtCore.SIGNAL("commentChanged"), self.operator.setComment)
         self.connect(self.fileaction, QtCore.SIGNAL("fileName"), self.operator.saveStoreToFile)
+##        self.connect(self.fileaction, QtCore.SIGNAL("fileName"), self.disableSave)
+##        self.connect(self.fileaction, QtCore.SIGNAL("fileName"), self.enableSave)
         self.connect(self.fileaction, QtCore.SIGNAL("fileName"), self.setTitle)
         self.connect(self.operator, QtCore.SIGNAL("firstUnit"), self.disableFirstPrev)
         self.connect(self.operator, QtCore.SIGNAL("firstUnit"), self.enableNextLast)
@@ -200,42 +199,47 @@ class MainWindow(QtGui.QMainWindow):
             self.dockTUview.takeoutUnit(value)
             self.operator.takeoutUnit(value)
     
-    # FIXME this is not the right way to do it. If you add another view which can 
-    # do cut&paste you have to change the code again. Jens 
-    def objectAvailable(self):
-        if self.dockTUview.ui.txtTarget.hasFocus():
-            return self.dockTUview.ui.txtTarget
-        elif self.dockTUview.ui.txtSource.hasFocus():
-            return self.dockTUview.ui.txtSource
-        elif self.dockComment.ui.txtComment.hasFocus():
-            return self.dockComment.ui.txtComment
-        else:
-            return
-        
     def cutter(self):
-        object = self.objectAvailable()
-        self.operator.cutEdit(object)
-        if self.dockTUview.ui.txtTarget ==None:
-            print "ssd"
+        object = self.focusWidget()
+        try:
+            object.cut()
+        except AttributeError:
+            pass
         
     def copier(self):
-        object = self.objectAvailable()
-        self.operator.copyEdit(object)
-            
-    def paster(self):
+        object = self.focusWidget()
         try:
-            object = self.objectAvailable()
+            object.copy()
+        except AttributeError:
+            pass
+    
+    def paster(self):
+        object = self.focusWidget()
+        try:
             object.paste()
         except AttributeError:
             pass
         
     def redoer(self):
-        object = self.objectAvailable()
-        self.operator.redoEdit(object)
+        object = self.focusWidget()
+        try:
+            object.document().redo()
+        except AttributeError:
+            pass
         
     def undoer(self):
-        object = self.objectAvailable()
-        self.operator.undoEdit(object)
+        object = self.focusWidget()
+        try:
+            object.document().undo()
+        except AttributeError:
+            pass    
+        
+    def selectAll(self):
+        object = self.focusWidget()
+        try:
+            object.selectAll()
+        except AttributeError:
+            pass    
     
     # FIXME this needs to go away! Connect directly to the slot of the statusbar. Jens
     def showCurrentStatus(self, status):
@@ -250,8 +254,8 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionRedo.setEnabled(True)
         self.ui.actionCut.setEnabled(True)
         self.ui.actionCopy.setEnabled(True)
-##        if QClipboard.ownsClipboard():
         self.ui.actionPast.setEnabled(True)
+        self.ui.actionSelectAll.setEnabled(True)
         self.ui.actionFind.setEnabled(True)
         self.disableFirstPrev()
         # FIXME what will happen if the file only contains 1 TU? Jens
@@ -343,8 +347,33 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionLast.setDisabled(True)
     
     # FIXME this should go away, you can connect directly to setVisible. Jens
+    def disableSave(self):
+        self.ui.actionSave.setEnabled(False)
+        
+    def enableSave(self):
+        
+        if self.operator.modified():
+            self.ui.actionSave.setEnabled(True)
+            
     def showFindBar(self):
-        self.find.setVisible(True)             
+        #create Find widget
+        self.findBar = Find()        
+        self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.findBar)                
+        self.findBar.ui.lineEdit.setFocus()
+        
+        self.connect(self.findBar, QtCore.SIGNAL("textInputed"), self.operator.startSearch)
+        self.connect(self.findBar, QtCore.SIGNAL("seachInSource"), self.operator.toggleSourceSearch)
+        self.connect(self.findBar, QtCore.SIGNAL("seachInTarget"), self.operator.toggleTargetSearch)
+        self.connect(self.findBar, QtCore.SIGNAL("seachInComment"), self.operator.toggleCommentSearch)
+        self.connect(self.findBar, QtCore.SIGNAL("matchCase"), self.operator.toggleMatchCase)
+        
+        self.connect(self.findBar, QtCore.SIGNAL("findNext"), self.operator.searchNext)
+        self.connect(self.findBar, QtCore.SIGNAL("findPrevious"), self.operator.searchPrevious)
+        self.connect(self.operator, QtCore.SIGNAL("foundInSource"), self.dockTUview.getSourceToHighLight)
+        self.connect(self.operator, QtCore.SIGNAL("foundInTarget"), self.dockTUview.getTargetToHighLight)
+        self.connect(self.operator, QtCore.SIGNAL("foundInComment"), self.dockComment.getCommentToHighLight)
+        self.connect(self.dockTUview, QtCore.SIGNAL("highLight"), self.operator.setHighLight)
+        self.connect(self.dockComment, QtCore.SIGNAL("highLight"), self.operator.setHighLight)
         
     def StartInNewWindow(self):        
         other = MainWindow()
@@ -359,5 +388,4 @@ if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     editor = MainWindow()
     editor.show()
-##    self.connect(self.ui.actionAbout, QtCore.SIGNAL("triggered()"), self.aboutDialog, QtCore.SLOT("show()"))
     sys.exit(app.exec_())

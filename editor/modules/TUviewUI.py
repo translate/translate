@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Mon Aug 21 11:10:01 2006
+# Created: Mon Aug 28 17:12:17 2006
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -14,8 +14,8 @@ class Ui_TUview(object):
     def setupUi(self, TUview):
         TUview.setObjectName("TUview")
         TUview.setEnabled(True)
-        TUview.resize(QtCore.QSize(QtCore.QRect(0,0,500,283).size()).expandedTo(TUview.minimumSizeHint()))
-        TUview.setMinimumSize(QtCore.QSize(500,283))
+        TUview.resize(QtCore.QSize(QtCore.QRect(0,0,370,283).size()).expandedTo(TUview.minimumSizeHint()))
+        TUview.setMinimumSize(QtCore.QSize(200,200))
         TUview.setFocusPolicy(QtCore.Qt.StrongFocus)
         TUview.setAutoFillBackground(True)
 
@@ -90,6 +90,7 @@ class Ui_TUview(object):
         self.txtSource.setObjectName("txtSource")
 
         self.txtTarget = QtGui.QTextEdit(self.splitter)
+        self.txtTarget.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
         self.txtTarget.setObjectName("txtTarget")
         self.hboxlayout.addWidget(self.splitter)
 

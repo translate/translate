@@ -327,7 +327,11 @@
        <number>79</number>
       </property>
      </widget>
-     <widget class="QTextEdit" name="txtTarget" />
+     <widget class="QTextEdit" name="txtTarget" >
+      <property name="contextMenuPolicy" >
+       <enum>Qt::DefaultContextMenu</enum>
+      </property>
+     </widget>
     </widget>
    </item>
    <item>

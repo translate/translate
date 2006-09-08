@@ -16,13 +16,13 @@
    </rect>
   </property>
   <property name="contextMenuPolicy" >
-   <enum>Qt::CustomContextMenu</enum>
+   <enum>Qt::DefaultContextMenu</enum>
   </property>
   <property name="windowTitle" >
-   <string>MainWindow</string>
+   <string>WordForge Translation Editor</string>
   </property>
   <property name="windowIcon" >
-   <iconset>../../../../../../../mnt/server/parrot.png</iconset>
+   <iconset>../images/icon.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget" />
   <widget class="QMenuBar" name="menubar" >
@@ -31,9 +31,58 @@
      <x>0</x>
      <y>0</y>
      <width>571</width>
-     <height>27</height>
+     <height>29</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuHelp" >
+    <property name="title" >
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="actionAbout" />
+    <addaction name="actionAboutQT" />
+   </widget>
+   <widget class="QMenu" name="menuGo" >
+    <property name="title" >
+     <string>&amp;Go</string>
+    </property>
+    <addaction name="actionFirst" />
+    <addaction name="actionPrevious" />
+    <addaction name="actionNext" />
+    <addaction name="actionLast" />
+   </widget>
+   <widget class="QMenu" name="menuSettings" >
+    <property name="title" >
+     <string>&amp;Settings</string>
+    </property>
+    <widget class="QMenu" name="menuToolBar" >
+     <property name="title" >
+      <string>ToolBar</string>
+     </property>
+     <addaction name="actionShow_MenuBar" />
+     <addaction name="actionShow_TUview" />
+    </widget>
+    <widget class="QMenu" name="menuToolbar" >
+     <property name="title" >
+      <string>Toolbar</string>
+     </property>
+    </widget>
+    <widget class="QMenu" name="menuViews" >
+     <property name="title" >
+      <string>Views</string>
+     </property>
+    </widget>
+    <widget class="QMenu" name="menuFilter" >
+     <property name="title" >
+      <string>Filter</string>
+     </property>
+     <addaction name="actionUnfiltered" />
+     <addaction name="actionFilterFuzzy" />
+     <addaction name="actionFilterTranslated" />
+     <addaction name="actionFilterUntranslated" />
+    </widget>
+    <addaction name="menuFilter" />
+    <addaction name="menuViews" />
+   </widget>
    <widget class="QMenu" name="menuFile" >
     <property name="title" >
      <string>&amp;File</string>
@@ -55,22 +104,6 @@
     <addaction name="separator" />
     <addaction name="actionExit" />
    </widget>
-   <widget class="QMenu" name="menuHelp" >
-    <property name="title" >
-     <string>&amp;Help</string>
-    </property>
-    <addaction name="actionAbout" />
-    <addaction name="actionAboutQT" />
-   </widget>
-   <widget class="QMenu" name="menuGo" >
-    <property name="title" >
-     <string>&amp;Go</string>
-    </property>
-    <addaction name="actionFirst" />
-    <addaction name="actionPrevious" />
-    <addaction name="actionNext" />
-    <addaction name="actionLast" />
-   </widget>
    <widget class="QMenu" name="menuEdit" >
     <property name="title" >
      <string>&amp;Edit</string>
@@ -82,63 +115,36 @@
     <addaction name="actionCopy" />
     <addaction name="actionPast" />
     <addaction name="separator" />
+    <addaction name="actionSelectAll" />
+    <addaction name="separator" />
     <addaction name="actionFind" />
-    <addaction name="actionFindAgain" />
+    <addaction name="actionFindPrevious" />
+    <addaction name="actionFindNext" />
     <addaction name="actionReplace" />
     <addaction name="separator" />
     <addaction name="actionCopySource2Target" />
     <addaction name="actionToggleFuzzy" />
    </widget>
-   <widget class="QMenu" name="menuView" >
-    <property name="title" >
-     <string>&amp;View</string>
-    </property>
-    <widget class="QMenu" name="menuToolBar" >
-     <property name="title" >
-      <string>ToolBar</string>
-     </property>
-     <addaction name="actionShow_MenuBar" />
-     <addaction name="actionShow_TUview" />
-    </widget>
-    <widget class="QMenu" name="menuToolbar" >
-     <property name="title" >
-      <string>Toolbar</string>
-     </property>
-    </widget>
-    <widget class="QMenu" name="menuToolView" >
-     <property name="title" >
-      <string>ToolView</string>
-     </property>
-    </widget>
-    <widget class="QMenu" name="menuFilter" >
-     <property name="title" >
-      <string>Filter</string>
-     </property>
-     <addaction name="actionUnfiltered" />
-     <addaction name="actionFilterFuzzy" />
-     <addaction name="actionFilterTranslated" />
-     <addaction name="actionFilterUntranslated" />
-    </widget>
-    <addaction name="menuToolView" />
-    <addaction name="menuFilter" />
-   </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
    <addaction name="menuGo" />
-   <addaction name="menuView" />
+   <addaction name="menuSettings" />
    <addaction name="menuHelp" />
   </widget>
   <widget class="QStatusBar" name="statusbar" >
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>456</y>
+     <y>454</y>
      <width>571</width>
-     <height>20</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>
   <widget class="QToolBar" name="toolStandard" >
+   <property name="windowTitle" >
+    <string>Standard Toolbar</string>
+   </property>
    <property name="orientation" >
     <enum>Qt::Horizontal</enum>
    </property>
@@ -158,10 +164,13 @@
   </widget>
   <widget class="QToolBar" name="toolNavigation" >
    <property name="contextMenuPolicy" >
-    <enum>Qt::NoContextMenu</enum>
+    <enum>Qt::DefaultContextMenu</enum>
    </property>
    <property name="acceptDrops" >
     <bool>false</bool>
+   </property>
+   <property name="windowTitle" >
+    <string>Navigation Toolbar</string>
    </property>
    <property name="orientation" >
     <enum>Qt::Horizontal</enum>
@@ -221,7 +230,7 @@
     <string>Save &amp;As</string>
    </property>
    <property name="shortcut" >
-    <string>Ctrl+A</string>
+    <string/>
    </property>
   </action>
   <action name="actionExit" >
@@ -341,7 +350,7 @@
     <string>About</string>
    </property>
    <property name="shortcut" >
-    <string>Ctrl+B</string>
+    <string/>
    </property>
   </action>
   <action name="actionShowMenuBar" >
@@ -365,7 +374,7 @@
     <string>About QT</string>
    </property>
    <property name="shortcut" >
-    <string>Ctrl+T</string>
+    <string/>
    </property>
   </action>
   <action name="actionShow_MenuBar" >
@@ -389,7 +398,7 @@
     <string>&amp;First</string>
    </property>
    <property name="shortcut" >
-    <string>Ctrl+Alt+Home</string>
+    <string>Ctrl+PgUp</string>
    </property>
   </action>
   <action name="actionPrevious" >
@@ -403,7 +412,7 @@
     <string>&amp;Previous</string>
    </property>
    <property name="shortcut" >
-    <string>Shift+F3</string>
+    <string>PgUp</string>
    </property>
   </action>
   <action name="actionNext" >
@@ -417,7 +426,7 @@
     <string>&amp;Next</string>
    </property>
    <property name="shortcut" >
-    <string>F3</string>
+    <string>PgDown</string>
    </property>
   </action>
   <action name="actionLast" >
@@ -431,7 +440,7 @@
     <string>&amp;Last</string>
    </property>
    <property name="shortcut" >
-    <string>Ctrl+Alt+End</string>
+    <string>Ctrl+PgDown</string>
    </property>
   </action>
   <action name="actionShowDetail" >
@@ -497,15 +506,21 @@
     <string>Ctrl+R</string>
    </property>
   </action>
-  <action name="actionFindAgain" >
+  <action name="actionFindNext" >
    <property name="enabled" >
     <bool>false</bool>
    </property>
    <property name="text" >
-    <string>Find Again</string>
+    <string>Find Next</string>
+   </property>
+   <property name="iconText" >
+    <string>Find Next</string>
+   </property>
+   <property name="toolTip" >
+    <string>Find Next</string>
    </property>
    <property name="shortcut" >
-    <string>Ctrl+G</string>
+    <string>F3</string>
    </property>
   </action>
   <action name="actionOpenInNewWindow" >
@@ -561,6 +576,28 @@
    </property>
    <property name="text" >
     <string>Unfiltered</string>
+   </property>
+  </action>
+  <action name="actionFindPrevious" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
+   <property name="text" >
+    <string>Find Previous</string>
+   </property>
+   <property name="shortcut" >
+    <string>Shift+F3</string>
+   </property>
+  </action>
+  <action name="actionSelectAll" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
+   <property name="text" >
+    <string>Select &amp;All</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+A</string>
    </property>
   </action>
  </widget>
