@@ -23,7 +23,6 @@ Mail Archives: http://sourceforge.net/mailarchive/forum.php?forum=translate-poot
 
 Requirements/Installation
 -------------------------
-Please read http://translate.sourceforge.net/wiki/pootleadmin for the lastest instructions.
 
 WordForge Translation Editor requires the Translate Toolkit package from 
 http://translate.sourceforge.net as it uses most of the other modules.
@@ -41,7 +40,8 @@ For Linux User:
     python MainEditor.py
     
 For Windows User:
-
+    Not available yet.
+    
 Bug Reporting/Feature requests
 ------------------------------
 You can always report bugs or feature requests on the mailing list but because of the increase
