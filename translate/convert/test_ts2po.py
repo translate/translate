@@ -32,6 +32,7 @@ class TestTS2PO:
         assert pofile.units[1].source == "Project:"
         assert pofile.units[1].target == ""
         assert pofile.units[1].getlocations()[0].startswith("MainWindowBase")
+        assert not pofile.units[1].isfuzzy()
         
     def test_basic(self):
         """tests basic conversion"""
@@ -50,6 +51,25 @@ class TestTS2PO:
         assert pofile.units[1].source == "&About"
         assert pofile.units[1].target == "&Giới thiệu"
         assert pofile.units[1].getlocations()[0].startswith("AboutDialog")
+
+    def test_unfinished(self):
+        """tests unfinished conversion"""
+        tssource = '''<!DOCTYPE TS><TS>
+<context>
+    <name>MainWindowBase</name>
+    <message>
+        <source>Project:</source>
+        <translation type="unfinished">Projek vergardering</translation>
+    </message>
+</context>
+</TS>
+'''
+        pofile = self.ts2po(tssource)
+        assert len(pofile.units) == 2
+        assert pofile.units[1].source == "Project:"
+        assert pofile.units[1].target == "Projek vergardering"
+        assert pofile.units[1].getlocations()[0].startswith("MainWindowBase")
+        assert pofile.units[1].isfuzzy()
 
 class TestTS2POCommand(test_convert.TestConvertCommand, TestTS2PO):
     """Tests running actual ts2po commands on files"""
