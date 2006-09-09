@@ -14,6 +14,24 @@ class TestTS2PO:
         print "The generated po:"
         print str(outputpo)
         return outputpo
+
+    def test_blank(self):
+        """tests blank conversion"""
+        tssource = '''<!DOCTYPE TS><TS>
+<context>
+    <name>MainWindowBase</name>
+    <message>
+        <source>Project:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+</TS>
+'''
+        pofile = self.ts2po(tssource)
+        assert len(pofile.units) == 2
+        assert pofile.units[1].source == "Project:"
+        assert pofile.units[1].target == ""
+        assert pofile.units[1].getlocations()[0].startswith("MainWindowBase")
         
     def test_basic(self):
         """tests basic conversion"""
