@@ -31,7 +31,7 @@ class TestTS2PO:
         assert len(pofile.units) == 2
         assert pofile.units[1].source == "&About"
         assert pofile.units[1].target == "&Giới thiệu"
-        
+        assert pofile.units[1].getlocations()[0].startswith("AboutDialog")
 
 class TestTS2POCommand(test_convert.TestConvertCommand, TestTS2PO):
     """Tests running actual ts2po commands on files"""
