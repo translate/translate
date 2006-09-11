@@ -167,8 +167,8 @@ class MainWindow(QtGui.QMainWindow):
         # FIXME why do you connect this here and two lines later again? Jens
         # FIXME Connect directly to the slot of the statusbar. Jens
         self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.showCurrentStatus)
-        self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.setOpening)  
-        self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.showCurrentStatus)       
+        self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.setOpening)
+        self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.showCurrentStatus)
     
     # FIXME the next 4 slots should not be here. Move them into Operator
     # And please do not use a string to define what you want to filter.
@@ -215,12 +215,9 @@ class MainWindow(QtGui.QMainWindow):
     
     def paster(self):
         object = self.focusWidget()
-        try:
-            object.paste()
-        except AttributeError:
-            pass
+        object.paste()
         
-    def redoer(self):
+    def redoer(self):       
         object = self.focusWidget()
         try:
             object.document().redo()

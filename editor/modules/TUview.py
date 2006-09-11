@@ -36,8 +36,8 @@ class TUview(QtGui.QDockWidget):
         self._actionShow = QtGui.QAction(self)
         self._actionShow.setObjectName("actionShowDetail")        
         self._actionShow.setText(self.tr("Hide Detail"))
-        self.connect(self._actionShow, QtCore.SIGNAL("triggered()"), self.show)        
-        
+        self.connect(self._actionShow, QtCore.SIGNAL("triggered()"), self.show)
+
     def closeEvent(self, event):
         """when close button is click, change caption to "Show Detail"""
         self._actionShow.setText(self.tr("Show Detail"))
@@ -86,7 +86,7 @@ class TUview(QtGui.QDockWidget):
     
     def checkModified(self):
         if self.ui.txtTarget.document().isModified():
-            self.emit(QtCore.SIGNAL("targetChanged"), self.ui.txtTarget.toPlainText())   
+            self.emit(QtCore.SIGNAL("targetChanged"), self.ui.txtTarget.toPlainText())
             
     def source2target(self):
         """copy source to target"""

@@ -55,17 +55,15 @@ class Operator(QtCore.QObject):
         self.emitNewUnits()
         self._unitpointer = 0       
         self.emitCurrentStatus()
+        self.emitCurrentUnit()
 
     def emitCurrentUnit(self):
-        if (not self.unitPointerList):
-            self.emit(QtCore.SIGNAL("noUnit"))
-            return
-        elif (self._unitpointer == 0):
-            self.firstUnit()
+        if (self._unitpointer == 0):
+            self.emit(QtCore.SIGNAL("firstUnit"))
         elif (self._unitpointer == len(self.visibleUnits) - 1):
-            self.lastUnit()
+            self.emit(QtCore.SIGNAL("lastUnit"))
         else:
-            self.middleUnit()
+            self.emit(QtCore.SIGNAL("middleUnit"))
         
         currentUnit = self.getCurrentUnit()
         if (currentUnit != len(self.visibleUnits)):
@@ -74,10 +72,14 @@ class Operator(QtCore.QObject):
             print 'current position', self._unitpointer
 
     def getCurrentUnit(self):
-        if self._unitpointer < len(self.unitPointerList):
+        try:
             return self.unitPointerList[self._unitpointer]
-        else:
+        except IndexError:
             return 0
+        #if self._unitpointer < len(self.unitPointerList):
+        #    return self.unitPointerList[self._unitpointer]
+        #else:
+        #    return 0
         
     def emitNewUnits(self):
         self._unitpointer = 0
@@ -97,19 +99,15 @@ class Operator(QtCore.QObject):
         
         self._unitpointer = 0
         self.unitPointerList = []
-
-        if (len(self.visibleUnits) == 0):
-            self.emit(QtCore.SIGNAL("newUnits"), [], self.unitPointerList)
-            return
-        
-        for i in range(len(self.store.units)):
-            if ((filter == 'fuzzy') and (self.store.units[i].isfuzzy())) \
-            or ((filter == 'translated') and (self.store.units[i].istranslated())) \
-            or ((filter == 'untranslated') and (not self.store.units[i].istranslated())):
-                self.unitPointerList.append(i)
-        
-        if self.visibleUnits[0].isheader():
-            self.visibleUnits.pop(0)
+        if (len(self.visibleUnits) > 0):
+            for i in range(len(self.store.units)):
+                if ((filter == 'fuzzy') and (self.store.units[i].isfuzzy())) \
+                or ((filter == 'translated') and (self.store.units[i].istranslated())) \
+                or ((filter == 'untranslated') and (not self.store.units[i].istranslated())):
+                    self.unitPointerList.append(i)
+            
+            if self.visibleUnits[0].isheader():
+                self.visibleUnits.pop(0)
 
         self.emit(QtCore.SIGNAL("newUnits"), self.visibleUnits, self.unitPointerList)
         
@@ -124,15 +122,6 @@ class Operator(QtCore.QObject):
         if self.unitpointer < 0:
             self.unitpointer = 0
     
-    def firstUnit(self):
-        self.emit(QtCore.SIGNAL("firstUnit"))
-    
-    def lastUnit(self):
-        self.emit(QtCore.SIGNAL("lastUnit"))
-    
-    def middleUnit(self):
-        self.emit(QtCore.SIGNAL("middleUnit"))
-        
     def previous(self):
         if self._unitpointer > 0:
             self.emitUpdateUnit()
@@ -162,22 +151,18 @@ class Operator(QtCore.QObject):
         self.emitUpdateUnit()
         self.store.savefile(fileName)
         self._saveDone = True
-        
+
     def modified(self):
         self.emitUpdateUnit()
         if self._saveDone:
             self._modified = False
             self._saveDone = False
-        else:
-            self._modified = True
-            self._saveDone = True
-        print self._modified
         return self._modified
     
     def setComment(self, comment):
         """set the comment which is QString type to the current unit."""
         currentUnit = self.getCurrentUnit()
-        self.store.units[currentUnit].removenotes()
+        #self.store.units[currentUnit].removenotes()
         self.store.units[currentUnit].addnote(unicode(comment))
         self._modified = True        
     
@@ -237,6 +222,13 @@ class Operator(QtCore.QObject):
         status = "Total: "+ str(self.numTotal) + "  |  Fuzzy: " +  str(self.numFuzzy) + "  |  Translated: " +  str(self.numTranslated) + "  |  Untranslated: " + str(self.numUntranslated)
         self.emit(QtCore.SIGNAL("currentStatus"), status)
     
+    def cutEdit(self, object):        
+        try:
+            self.connect(object, QtCore.SIGNAL("copyAvailable(bool)"), QtCore.SLOT("setEnabled"))
+            object.cut()
+        except TypeError:
+            pass
+            
 
     def startSearch(self, text):                        
         self._offset = 0        
