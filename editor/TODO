@@ -51,34 +51,29 @@ Views"; see the plural here.-----------done
 dialog. This is far away from what we planned to implement, so better choose 
 a number below 1.0. Actually I would go with 0.1  ;-) 
 -------------ok
-
-- Open dialog crash whenever user choose file type.----done
-
-NOt YET:
-- decrease the margins in the toolviews, you do not need so much space around the widgets    
+-for PO file,on top contains translator information and file header, so it should not be displayed in overview, Detail, or Comment. --------done
 
 - you need a way to revert to the previous content of target after you hit F2
     (action with ESC key bound to it?) 
-    Use undo instead of F2
+    Use undo instead of Esc-------done
 
+
+
+
+NOt YET:
+- Open dialog crash whenever user choose file type
+- When we filter only xliff file, both po and xliff are displayed.
+- Disable button save once it was clicked.
+- decrease the margins in the toolviews, you do not need so much space around the widgets    
 - Cannot markFuzzy, as long as the source is translated.
-
 - Whenever txtTarget is emptied, the untranslated num is decreased immediately with leaving txtTarget.
-
 - Similarly, once you copy from source2Target, the untranslated num is increased immediately with leaving txtTarget.
-
--for PO file,on top contains translator information and file header, so it should not be displayed in overview, Detail, or Comment.
-<<<<<<< .mine
-
 - Edit tab order
-
 -undo/redo should follow kbabel style: track one char by one char regardless object.
-
 - Comment your code! It is not acceptable the way how it is right now! I 
 repeat myself here: you have to come to the point where coding and commenting 
 is one. Do not think you will add comments later, you won't do it and other 
 people want to read the code meanwhile too!
-
 - In find.py you should use a technic called lazy init. You create here a GUI 
 that is hidden initially. Instead of creating the GUI in the constructor you 
 should only create the action and on the first time the action is triggered 
@@ -86,7 +81,9 @@ you would create the GUI. The benefit is that the construction of the class
 if faster which makes the application start up quicker. 
 
 - Detect Save/Cancel button
-=======
 
 - Move the mainwindow class into a file in modules and make the filename of the main script only lowercase.
->>>>>>> .r3892
+
+- Fuzzy sometimes displays minus number (-2)
+- Fuzzy status is not saved to the file yet
+- About tab:  text needs updating
