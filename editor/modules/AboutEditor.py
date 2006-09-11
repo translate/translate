@@ -60,7 +60,7 @@ class AboutTab(QtGui.QWidget):
     def __init__(self, fileInfo, parent=None):
         QtGui.QWidget.__init__(self, parent)
         
-        fileNameLabel = QtGui.QLabel(self.tr("<center><br><br><br><b>  WordForge Translation Editor supports both Xliff and PO file.</b></br></center><center><br> Version 0.1 (31 August 2006)</br><br>Copyright 2006 WordForge Foundation.</br></center>"))
+        fileNameLabel = QtGui.QLabel(self.tr("<center><br><br><br><b>  WordForge Translation Editor </b></br></center><center><br> Version 0.1 (31 August 2006)</br><br>Copyright 2006 WordForge Foundation.</br></center>"))
 
         mainLayout = QtGui.QVBoxLayout()
         mainLayout.addWidget(fileNameLabel)
