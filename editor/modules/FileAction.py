@@ -29,11 +29,15 @@ class FileAction(QtGui.QDialog):
         
     def openFile(self):    
         #TODO: open one or more existing files selected
-        self.fileName = QtGui.QFileDialog.getOpenFileName(self, self.tr("Open Xliff File"),
-                                                     QtCore.QDir.currentPath(),
-                                                     self.tr("Po File (*.po);; XLIFF Files (*.xliff *.xlf);;Po Templet (*.pot)"))        
+        self.fileName = QtGui.QFileDialog.getOpenFileName(self, self.tr("Open File"),
+                        QtCore.QDir.currentPath(),
+                        self.tr("Supported Files (*.po *.pot *.xliff *.xlf)"))
+                        #self.tr("Po File (*.po);; XLIFF Files (*.xliff *.xlf);;Po Templet (*.pot)"))
         if not self.fileName.isEmpty():
             self.emitFileOpened()
+            return True
+        else:
+            return False
 
     def save(self):        
         if not self.fileName.isEmpty():
@@ -61,8 +65,7 @@ class FileAction(QtGui.QDialog):
         # TODO: set selected Filter to all support Files        
         # FIXME how shall self.tr(fileType) work here? You can not translate what you only
         # know at runtime! You must use the tr() in the lines above! Jens
-        self.fileForSave = QtGui.QFileDialog.getSaveFileName(self, self.tr("Save As"),
-                                                     QtCore.QDir.currentPath(), self.str(self.fileType()))
+        self.fileForSave = QtGui.QFileDialog.getSaveFileName(self, self.tr("Save As"), QtCore.QDir.currentPath(), self.tr(self.fileType()))
         # TODO: Detect which buttion is clicked (Save or Cancel)
         #save botton clicked
         if isinstance(self.fileForSave, QtCore.QString):

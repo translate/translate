@@ -174,10 +174,10 @@ class Operator(QtCore.QObject):
         beforeIsFuzzy = currentUnit.isfuzzy()
         currentUnit.target = unicode(target)
         if (currentUnit.target != ''):
-            currentUnit.marktranslated()
+            self.store.units[unit].marktranslated()
             if (beforeIsFuzzy):
                 self.numFuzzy -= 1
-                currentUnit.markfuzzy(False)
+                self.store.units[unit].markfuzzy(False)
         after_istranslated = currentUnit.istranslated()
         if (before_isuntranslated and after_istranslated):
             self.numTranslated += 1
@@ -205,9 +205,8 @@ class Operator(QtCore.QObject):
     def toggleFuzzy(self):
         """toggle fuzzy state for current unit"""
         unit = self.getCurrentUnit()
-        currentUnit = self.store.units[unit]
-        boolFuzzy = not currentUnit.isfuzzy()
-        currentUnit.markfuzzy(boolFuzzy)
+        boolFuzzy = not self.store.units[unit].isfuzzy()
+        self.store.units[unit].markfuzzy(boolFuzzy)
         self._modified = True
         if (boolFuzzy):
             self.numFuzzy += 1

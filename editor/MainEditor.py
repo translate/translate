@@ -101,7 +101,7 @@ class MainWindow(QtGui.QMainWindow):
         
         # File menu action                
         self.connect(self.ui.actionOpen, QtCore.SIGNAL("triggered()"), self.fileaction.openFile)
-        self.connect(self.ui.actionOpenInNewWindow, QtCore.SIGNAL("triggered()"), self.StartInNewWindow)
+        self.connect(self.ui.actionOpenInNewWindow, QtCore.SIGNAL("triggered()"), self.startInNewWindow)
         self.connect(self.ui.actionSave, QtCore.SIGNAL("triggered()"), self.fileaction.save)
         self.connect(self.ui.actionSaveas, QtCore.SIGNAL("triggered()"), self.fileaction.saveAs)
         self.connect(self.ui.actionExit, QtCore.SIGNAL("triggered()"), QtCore.SLOT("close()"))
@@ -372,14 +372,11 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.dockTUview, QtCore.SIGNAL("highLight"), self.operator.setHighLight)
         self.connect(self.dockComment, QtCore.SIGNAL("highLight"), self.operator.setHighLight)
         
-    def StartInNewWindow(self):        
+    def startInNewWindow(self):        
         other = MainWindow()
         MainWindow.windowList.append(other) 
-        other.fileaction.openFile()
-        # FIXME what will happen if the user hit cancel? Jens
-        other.show()                   
-
-    
+        if other.fileaction.openFile():
+            other.show()
     
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
