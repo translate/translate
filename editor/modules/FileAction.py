@@ -47,11 +47,11 @@ class FileAction(QtGui.QDialog):
         (path, openedFile) = os.path.split(str(self.fileName))
         ##detecting file type
         # FIXME that does not work if my file ends with po but not with .po! Jens
-        if (fileForSave.endswith("po")):
+        if (self.fileForSave.endswith("po")):
             extension = ".po"
             defaultFileType = "Po File (*.po);;"
             otherFileType = "XLIFF Files (*.xliff *.xlf);;Po TempleFile (*.pot)"
-        elif (openedFile.endswith("pot")):
+        elif (self.openedFile.endswith("pot")):
             self.extension = ".pot"
             defaultFileType = "Po TempleFile (*.pot);;"
             otherFileType = "XLIFF Files (*.xliff *.xlf);;Po File (*.po)"
@@ -65,7 +65,9 @@ class FileAction(QtGui.QDialog):
         # TODO: set selected Filter to all support Files        
         # FIXME how shall self.tr(fileType) work here? You can not translate what you only
         # know at runtime! You must use the tr() in the lines above! Jens
-        self.fileForSave = QtGui.QFileDialog.getSaveFileName(self, self.tr("Save As"), QtCore.QDir.currentPath(), self.tr(self.fileType()))
+        #self.fileForSave = QtGui.QFileDialog.getSaveFileName(self, self.tr("Save As"), QtCore.QDir.currentPath(), self.tr(self.fileType()))
+        self.fileForSave = QtGui.QFileDialog.getSaveFileName(self, self.tr("Save As"), QtCore.QDir.currentPath(), self.tr("Supported Files (*.*)"))
+        
         # TODO: Detect which buttion is clicked (Save or Cancel)
         #save botton clicked
         if isinstance(self.fileForSave, QtCore.QString):

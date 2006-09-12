@@ -269,19 +269,19 @@ class Operator(QtCore.QObject):
             self.displayMessageBox(unitpointer)            
                 
     def search(self, offset, unitpointer, text):
-        temp = None
-        searchString = ''
-
-        if (self._sourcesearch and self._insource):
-            searchString = self.visibleUnits[unitpointer].source           
-
-        if (self._commentsearch and self._incomment):
-            searchString = self.visibleUnits[unitpointer].getnotes()
-
-        if (self._targetsearch and self._intarget):
-            searchString = self.visibleUnits[unitpointer].target
-            
-        temp = self.searchedIndex(offset, searchString, text)
+        temp = None        
+        if (self.visibleUnits):
+            searchString = ''
+            if (self._sourcesearch and self._insource):
+                searchString = self.visibleUnits[unitpointer].source
+    
+            if (self._commentsearch and self._incomment):
+                searchString = self.visibleUnits[unitpointer].getnotes()
+    
+            if (self._targetsearch and self._intarget):
+                searchString = self.visibleUnits[unitpointer].target
+                
+            temp = self.searchedIndex(offset, searchString, text)
         # when found in source, comment or target, it will emit signal
         # in order to go to highlight place and put highlight.        
         if (temp != -1 and temp != None):

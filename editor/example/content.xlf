@@ -101,7 +101,7 @@ ccccccc</note></trans-unit>
       </trans-unit>
       <trans-unit approved="yes" id="11" reformat="yes" translate="yes" xml:space="default">
         <source>This is the output I got on my machine.</source>
-        <target state="translated" xml:lang="KM-KH"/>
+        <target state="needs-review-translation" state-qualifier="fuzzy-match">នេះ​គឺ​ជា</target>
         <prop-group>
           <prop prop-type="entryid">1150875516751</prop>
         </prop-group>
