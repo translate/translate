@@ -120,6 +120,13 @@ class xliffunit(lisa.LISAunit):
         """Returns the text from all the notes"""
         return lisa.getText(self.xmlelement.getElementsByTagName("note"))
 
+    def removenotes(self)
+        """Remove all the notes"""
+        # TODO: Do we really want to remove all the notes?
+        notes = self.xmlelement.getElementsByTagName("note")
+        for i in range(len(notes)):
+            self.xmlelement.removeChild(notes[i])    
+    
     def isapproved(self):
         return self.xmlelement.getAttribute("approved") == "yes"
 

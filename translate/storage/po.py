@@ -258,6 +258,10 @@ class pounit(base.TranslationUnit):
     text = text.split("\n")
     commentlist += [linestart + line + "\n" for line in text]
     
+  def removenotes(self):
+    """Remove all the translator's notes (other comments)"""
+    self.othercomments = []
+
   def copy(self):
     newpo = self.__class__()
     newpo.othercomments = self.othercomments[:]
