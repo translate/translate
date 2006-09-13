@@ -78,6 +78,12 @@ class TranslationUnit(object):
         Origin specifies who/where the comment comes from"""
         self.notes += text
 
+    def istranslated(self):
+        """Indicates whether this unit is translated. This should be used 
+        rather than deducing it from .target, to ensure that other classes can
+        implement more functionality (as XLIFF does)."""
+        return bool(self.target)
+
     def isfuzzy(self):
         """Indicates whether this unit is fuzzy"""
         return False
