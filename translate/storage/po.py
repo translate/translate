@@ -408,7 +408,7 @@ class pounit(base.TranslationUnit):
         self.typecomments = filter(lambda tcline: tcline.strip() != "#,", typecomments)
 
   def istranslated(self):
-    return super(pounit, self).istranslated and not self.isobsolete()
+    return super(pounit, self).istranslated() and not self.isobsolete()
 
   def isfuzzy(self):
     return self.hastypecomment("fuzzy")
