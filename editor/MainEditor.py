@@ -90,15 +90,14 @@ class MainWindow(QtGui.QMainWindow):
         #create operator
         self.operator = Operator()        
         
-        # FIXME move this down where is actually used. Jens
-        # fileaction object of File menu
-        self.fileaction = FileAction()
         
         #Help menu of aboutQt        
         self.aboutDialog = AboutEditor()        
         self.connect(self.ui.actionAbout, QtCore.SIGNAL("triggered()"), self.aboutDialog, QtCore.SLOT("show()"))
         self.connect(self.ui.actionAboutQT, QtCore.SIGNAL("triggered()"), QtGui.qApp, QtCore.SLOT("aboutQt()"))     
         
+        # fileaction object of File menu
+        self.fileaction = FileAction()
         # File menu action                
         self.connect(self.ui.actionOpen, QtCore.SIGNAL("triggered()"), self.fileaction.openFile)
         self.connect(self.ui.actionOpenInNewWindow, QtCore.SIGNAL("triggered()"), self.startInNewWindow)
@@ -151,7 +150,7 @@ class MainWindow(QtGui.QMainWindow):
         
         self.connect(self.dockComment, QtCore.SIGNAL("commentChanged"), self.operator.setComment)
         self.connect(self.fileaction, QtCore.SIGNAL("fileName"), self.operator.saveStoreToFile)
-##        self.connect(self.fileaction, QtCore.SIGNAL("fileName"), self.disableSave)
+        self.connect(self.fileaction, QtCore.SIGNAL("fileName"), self.disableSave)
 ##        self.connect(self.fileaction, QtCore.SIGNAL("fileName"), self.enableSave)
         self.connect(self.fileaction, QtCore.SIGNAL("fileName"), self.setTitle)
         self.connect(self.operator, QtCore.SIGNAL("firstUnit"), self.disableFirstPrev)
@@ -164,11 +163,10 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("newUnits"), self.dockTUview.slotNewUnits)
         self.connect(self.operator, QtCore.SIGNAL("noUnit"), self.disableAll)
         
-        # FIXME why do you connect this here and two lines later again? Jens
+        # FIXME why do you connect this here and two lines later again? Jens---done
         # FIXME Connect directly to the slot of the statusbar. Jens
         self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.showCurrentStatus)
         self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.setOpening)
-        self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.showCurrentStatus)
     
     # FIXME the next 4 slots should not be here. Move them into Operator
     # And please do not use a string to define what you want to filter.
@@ -263,7 +261,8 @@ class MainWindow(QtGui.QMainWindow):
         files.prepend(fileName)        
         while files.count() > MainWindow.MaxRecentFiles:
             # FIXME use .removeLast() here. Jens
-            files.removeAt(files.count()-1)        
+##            files.removeAt(files.count()-1)        
+                file.removeLast()
         settings.setValue("recentFileList", QtCore.QVariant(files))
         self.updateRecentAction() 
         
@@ -287,7 +286,7 @@ class MainWindow(QtGui.QMainWindow):
     
     def updateRecentAction(self):
         # TODO do we want to have WordForge here instead of KhmerOS? Jens
-        settings = QtCore.QSettings("KhmerOS", "Translation Editor")
+        settings = QtCore.QSettings("WordForge", "Translation Editor")
         files = settings.value("recentFileList").toStringList()
         numRecentFiles = min(files.count(), MainWindow.MaxRecentFiles)             
 
@@ -304,7 +303,7 @@ class MainWindow(QtGui.QMainWindow):
         # FIXME make the about dialog modal then you do not need this here. Jens
         self.aboutDialog.closeAbout()
         if self.operator.modified():  
-            if self.fileaction.aboutToSave(self):
+            if self.fileaction.aboutToClose(self):
                 event.accept()
             else:
                 event.ignore()
@@ -345,12 +344,15 @@ class MainWindow(QtGui.QMainWindow):
     
     # FIXME this should go away, you can connect directly to setVisible. Jens
     def disableSave(self):
-        self.ui.actionSave.setEnabled(False)
+            self.ui.actionSave.setEnabled(False)            
+            
+            
+       
+##    def enableSave(self):        
+##        self.operator.emitUpdateUnit()
+##        if self.operator._modified == True:
+##            self.ui.actionSave.setEnabled(False)        
         
-    def enableSave(self):
-        
-        if self.operator.modified():
-            self.ui.actionSave.setEnabled(True)
             
     def showFindBar(self):
         #create Find widget
