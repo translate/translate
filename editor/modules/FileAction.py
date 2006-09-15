@@ -65,36 +65,27 @@ class FileAction(QtGui.QDialog):
         # TODO: set selected Filter to all support Files        
         # FIXME how shall self.tr(fileType) work here? You can not translate what you only
         # know at runtime! You must use the tr() in the lines above! Jens
-        #self.fileForSave = QtGui.QFileDialog.getSaveFileName(self, self.tr("Save As"), QtCore.QDir.currentPath(), self.tr(self.fileType()))
+        #self.fileForSave = QtGui.QFileDialog.getSaveFileName(self, self.tr("Save As"), QtCore.QDir.currentPath(), self.fileType())
         self.fileForSave = QtGui.QFileDialog.getSaveFileName(self, self.tr("Save As"), QtCore.QDir.currentPath(), self.tr("Supported Files (*.po *.pot *.xliff *.xlf);;All Files(*.*)"))
-        
-        # TODO: Detect which buttion is clicked (Save or Cancel)
-        #save botton clicked
-        if isinstance(self.fileForSave, QtCore.QString):
-            print str(self.fileForSave)
-            if str(self.fileForSave) != " ":
-                print "non blank"
-                print self.fileName
+        #save button clicked
+        if iself.fileForSave.isNull():
+            if self.fileForSave.isEmpty():
                 (path, saveFile) = os.path.split(str(self.fileForSave))
                 ##detecting extension
                 # FIXME that does not work if my file ends with po or xlf but not with .po or .xlf! Jens
                 # You allow *.xliff in the filter but you do not test here for it! Jens
                 if not (saveFile.endswith("po") or saveFile.endswith("xlf")):
                     #adding extension auto according to existing open file
-                    print "something"
                     self.fileForSave = str(self.fileForSave) + str(self.extension)
-                print self.fileForSave
                 self.fileName = self.fileForSave
                 self.emitFileName()
             # FIXME add a return value here. Jens
             else:
-                print "blank"
-##                QtGui.QMessageBox.information(self,self.tr("Information") ,self.tr("Please specify the filename to save to"))
-##                self.saveAs()
-        #close buttion clicked
+                QtGui.QMessageBox.information(self,self.tr("Information") ,self.tr("Please specify the filename to save to"))
+                self.saveAs()
+        #close button clicked
         else:
-            print "cancel"
-            return                      
+            pass
             
     # FIXME the name is wrong, you are about to close not about to save. Jens
     def aboutToClose(self, main):
