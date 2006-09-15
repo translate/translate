@@ -104,16 +104,15 @@ class OverviewDock(QtGui.QDockWidget):
         self.highLightItem(0)
 
     def filteredList(self, fList):
-        # show only the item which are filtered
-        i = 0
-        for item in self.items:
-            if i in fList:
-                # take out from list once the item is shown
-                #fList.pop(i)
+        j = 0
+        for i in range(len(self.items)):
+            item = self.items[i]
+            if (j < len(fList)) and (i == fList[j]):
+                j += 1
+                # show only the item which are filtered
                 self.ui.treeOverview.setItemHidden(item, False)
             else:
                 self.ui.treeOverview.setItemHidden(item, True)
-            i += 1
         self.highLightItem(fList[0])
    
     def highLightItem(self, value):

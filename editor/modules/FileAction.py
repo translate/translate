@@ -47,15 +47,15 @@ class FileAction(QtGui.QDialog):
         (path, openedFile) = os.path.split(str(self.fileName))
         ##detecting file type
         # FIXME that does not work if my file ends with po but not with .po! Jens
-        if (self.fileForSave.endswith("po")):
+        if (self.fileForSave.endswith(".po")):
             extension = ".po"
             defaultFileType = "Po Files (*.po);;"
             otherFileType = "XLIFF Files (*.xliff *.xlf);;Po TemplateFiles (*.pot)"
-        elif (self.openedFile.endswith("pot")):
+        elif (self.openedFile.endswith(".pot")):
             self.extension = ".pot"
             defaultFileType = "Po TemplateFiles (*.pot);;"
             otherFileType = "XLIFF Files (*.xliff *.xlf);;Po Files (*.po)"
-        else:
+        elif (self.openedFile.endswith(".xlf")):
             self.extension = ".xlf"
             defaultFileType = "XLIFF Files (*.xliff *.xlf);;"
             otherFileType =  "Po Files (*.po);;XLIFF Files (*.xliff *.xlf)"
@@ -72,9 +72,8 @@ class FileAction(QtGui.QDialog):
             if self.fileForSave.isEmpty():
                 (path, saveFile) = os.path.split(str(self.fileForSave))
                 ##detecting extension
-                # FIXME that does not work if my file ends with po or xlf but not with .po or .xlf! Jens
-                # You allow *.xliff in the filter but you do not test here for it! Jens
-                if not (saveFile.endswith("po") or saveFile.endswith("xlf")):
+                # FIXME You allow *.xliff in the filter but you do not test here for it! Jens
+                if not (saveFile.endswith(".po") or saveFile.endswith(".xlf")):
                     #adding extension auto according to existing open file
                     self.fileForSave = str(self.fileForSave) + str(self.extension)
                 self.fileName = self.fileForSave
