@@ -56,10 +56,10 @@ def wordsinpoel(poel):
 def summarize(title, units, CSVstyle=False):
   # ignore totally blank or header units
   units = filter(lambda poel: not poel.isheader(), units)
-  translated = self.translatedmessages(units)
-  fuzzy = self.fuzzymessages(units)
+  translated = translatedmessages(units)
+  fuzzy = fuzzymessages(units)
   review = filter(lambda poel: poel.isreview(), units)
-  untranslated = self.untranslatedmessages(units)
+  untranslated = untranslatedmessages(units)
   wordcounts = dict(map(lambda poel: (poel, wordsinpoel(poel)), units))
   msgidwords = lambda elementlist: sum(map(lambda poel: wordcounts[poel][0], elementlist))
   msgstrwords = lambda elementlist: sum(map(lambda poel: wordcounts[poel][1], elementlist))
