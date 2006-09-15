@@ -17,7 +17,8 @@
         <prop-group>
           <prop prop-type="entryid">1150875516735</prop>
         </prop-group>
-      <note>aaaaaaaaaa,  ចម្រៀងខ្មែរ5</note></trans-unit>
+      <note>aaaaaaaaaa,  ចម្រៀងខ្មែរ5</note><note>aaaaaaaaaa,  ចម្រៀងខ្មែរ5
+Objects and Object-Orientation</note></trans-unit>
       
       <trans-unit approved="yes" id="1" reformat="yes" translate="yes" xml:space="default">
         <source>Chapter 5</source>
@@ -34,6 +35,9 @@
           <prop prop-type="entryid">1150875516739</prop>
         </prop-group>
       <note>finding note
+ccccccc</note><note>finding note
+ccccccc
+finding note
 ccccccc</note></trans-unit>
       <trans-unit approved="yes" id="3" reformat="yes" translate="yes" xml:space="default">
         <source>Diving In</source>

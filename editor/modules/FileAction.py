@@ -127,8 +127,6 @@ class FileAction(QtGui.QDialog):
     def emitFileOpened(self):
         '''emit signal fileOpened, with a filename as string'''
         self.emit(QtCore.SIGNAL("fileOpened"), str(self.fileName))              
-
-
     
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

@@ -20,11 +20,6 @@
 # This module is working on the main windows of Editor
 
 import sys
-
-## add a modules path in sys.path so the other module inside it is known during import
-##import os.path
-##sys.path.append(os.path.join(sys.path[0] ,"modules"))
-
 from PyQt4 import QtCore, QtGui
 from modules.MainEditorUI import Ui_MainWindow
 from modules.TUview import TUview
@@ -46,7 +41,6 @@ class MainWindow(QtGui.QMainWindow):
         self.resize(800, 600)        
         self.ui.recentaction = []
         self.createRecentAction()                
-
         self.filter = None
         
         # create radio selection for menu filter
@@ -88,25 +82,35 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.statusbar.addWidget(self.statuslabel)                
 
         #create operator
-        self.operator = Operator()        
-        
+        self.operator = Operator()                
         
         #Help menu of aboutQt        
         self.aboutDialog = AboutEditor()        
         self.connect(self.ui.actionAbout, QtCore.SIGNAL("triggered()"), self.aboutDialog, QtCore.SLOT("show()"))
         self.connect(self.ui.actionAboutQT, QtCore.SIGNAL("triggered()"), QtGui.qApp, QtCore.SLOT("aboutQt()"))     
         
-        # fileaction object of File menu
-        self.fileaction = FileAction()
-        # File menu action                
+        # create file action object and file action menu related signals
+        self.fileaction = FileAction()        
         self.connect(self.ui.actionOpen, QtCore.SIGNAL("triggered()"), self.fileaction.openFile)
         self.connect(self.ui.actionOpenInNewWindow, QtCore.SIGNAL("triggered()"), self.startInNewWindow)
         self.connect(self.ui.actionSave, QtCore.SIGNAL("triggered()"), self.fileaction.save)
         self.connect(self.ui.actionSaveas, QtCore.SIGNAL("triggered()"), self.fileaction.saveAs)
         self.connect(self.ui.actionExit, QtCore.SIGNAL("triggered()"), QtCore.SLOT("close()"))
-        # FIXME connect to setVisible directly. Jens
-        self.connect(self.ui.actionFind, QtCore.SIGNAL("triggered()"), self.showFindBar)        
         
+        # create Find widget and connect signals related to it        
+        self.findBar = Find()        
+        self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.findBar)      
+        self.findBar.ui.lineEdit.setFocus()
+        self.connect(self.ui.actionFind, QtCore.SIGNAL("triggered()"), self.findBar.show)                 
+        self.connect(self.findBar, QtCore.SIGNAL("startSearch"), self.operator.startSearch)
+        self.connect(self.findBar, QtCore.SIGNAL("findNext"), self.operator.searchNext)
+        self.connect(self.findBar, QtCore.SIGNAL("findPrevious"), self.operator.searchPrevious)
+        
+        # connect setHighLightSourcek setHighLightTarget, setHighLightComment by passing offset, and length
+        self.connect(self.operator, QtCore.SIGNAL("foundInSource"), self.dockTUview.setHighLightSource)
+        self.connect(self.operator, QtCore.SIGNAL("foundInTarget"), self.dockTUview.setHighLightTarget)
+        self.connect(self.operator, QtCore.SIGNAL("foundInComment"), self.dockComment.setHighLightComment)
+                
         # Edit menu action
         self.connect(self.ui.actionUndo, QtCore.SIGNAL("triggered()"), self.undoer)
         self.connect(self.ui.actionRedo, QtCore.SIGNAL("triggered()"), self.redoer) 
@@ -146,28 +150,25 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("updateUnit"), self.dockTUview.checkModified)
         self.connect(self.operator, QtCore.SIGNAL("updateUnit"), self.dockComment.checkModified)
         self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
-        self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.dockOverview.setTarget)
-        
+        self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.dockOverview.setTarget)        
         self.connect(self.dockComment, QtCore.SIGNAL("commentChanged"), self.operator.setComment)
         self.connect(self.fileaction, QtCore.SIGNAL("fileName"), self.operator.saveStoreToFile)
         self.connect(self.fileaction, QtCore.SIGNAL("fileName"), self.disableSave)
 ##        self.connect(self.fileaction, QtCore.SIGNAL("fileName"), self.enableSave)
+
         self.connect(self.fileaction, QtCore.SIGNAL("fileName"), self.setTitle)
-        self.connect(self.operator, QtCore.SIGNAL("firstUnit"), self.disableFirstPrev)
-        self.connect(self.operator, QtCore.SIGNAL("firstUnit"), self.enableNextLast)
-        self.connect(self.operator, QtCore.SIGNAL("lastUnit"), self.enableFirstPrev)
-        self.connect(self.operator, QtCore.SIGNAL("lastUnit"), self.disableNextLast)
-        self.connect(self.operator, QtCore.SIGNAL("middleUnit"), self.enableFirstPrev)
-        self.connect(self.operator, QtCore.SIGNAL("middleUnit"), self.enableNextLast)        
+        self.connect(self.operator, QtCore.SIGNAL("firstUnit"), self.setEnabledFirstPrev)                
+        self.connect(self.operator, QtCore.SIGNAL("lastUnit"), self.setEnabledNextLast)
+        self.connect(self.operator, QtCore.SIGNAL("middleUnit"), self.setEnabledFirstPrev)
+        self.connect(self.operator, QtCore.SIGNAL("middleUnit"), self.setEnabledNextLast)        
 
         self.connect(self.operator, QtCore.SIGNAL("newUnits"), self.dockOverview.slotNewUnits)
         self.connect(self.operator, QtCore.SIGNAL("newUnits"), self.dockTUview.slotNewUnits)
         self.connect(self.operator, QtCore.SIGNAL("filteredList"), self.dockOverview.filteredList)
         self.connect(self.operator, QtCore.SIGNAL("filteredList"), self.dockTUview.filteredList)
         
-        # FIXME why do you connect this here and two lines later again? Jens---done
-        # FIXME Connect directly to the slot of the statusbar. Jens
-        self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.showCurrentStatus)
+        # set file status information to text label of status bar
+        self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.statuslabel.setText)        
         self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.setOpening)
     
     # FIXME the next 4 slots should not be here. Move them into Operator
@@ -236,11 +237,7 @@ class MainWindow(QtGui.QMainWindow):
         try:
             object.selectAll()
         except AttributeError:
-            pass    
-    
-    # FIXME this needs to go away! Connect directly to the slot of the statusbar. Jens
-    def showCurrentStatus(self, status):
-        self.statuslabel.setText(' ' + status + ' ')
+            pass       
 
     def setOpening(self, fileName):        
         self.setTitle(fileName)
@@ -254,17 +251,15 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionPast.setEnabled(True)
         self.ui.actionSelectAll.setEnabled(True)
         self.ui.actionFind.setEnabled(True)
-        self.disableFirstPrev()
+        self.setEnabledFirstPrev(False)
         # FIXME what will happen if the file only contains 1 TU? Jens
-        self.enableNextLast()   
-        settings = QtCore.QSettings("KhmerOS", "Translation Editor")
+        self.setEnabledNextLast(True)   
+        settings = QtCore.QSettings("WordForge", "Translation Editor")
         files = settings.value("recentFileList").toStringList()
         files.removeAll(fileName)        
         files.prepend(fileName)        
         while files.count() > MainWindow.MaxRecentFiles:
-            # FIXME use .removeLast() here. Jens
-##            files.removeAt(files.count()-1)        
-                file.removeLast()
+            files.removeLast()
         settings.setValue("recentFileList", QtCore.QVariant(files))
         self.updateRecentAction() 
         
@@ -287,8 +282,7 @@ class MainWindow(QtGui.QMainWindow):
             self.ui.menuOpen_Recent.addAction(self.ui.recentaction[i])
         self.updateRecentAction()                  
     
-    def updateRecentAction(self):
-        # TODO do we want to have WordForge here instead of KhmerOS? Jens
+    def updateRecentAction(self):        
         settings = QtCore.QSettings("WordForge", "Translation Editor")
         files = settings.value("recentFileList").toStringList()
         numRecentFiles = min(files.count(), MainWindow.MaxRecentFiles)             
@@ -303,8 +297,6 @@ class MainWindow(QtGui.QMainWindow):
             self.ui.recentaction[j].setVisible(False)
     
     def closeEvent(self, event):            
-        # FIXME make the about dialog modal then you do not need this here. Jens
-        self.aboutDialog.closeAbout()
         if self.operator.modified():  
             if self.fileaction.aboutToClose(self):
                 event.accept()
@@ -319,26 +311,16 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionUndo.setVisible(True)
         
     def enableUndo(self):
-        self.ui.actionUndo.setEnabled(True)
+        self.ui.actionUndo.setEnabled(True)    
     
-    # TODO think about combining these two methods by using a bool parameter. Jens
-    def disableFirstPrev(self):        
-        self.ui.actionFirst.setDisabled(True)        
-        self.ui.actionPrevious.setDisabled(True)                                  
+    def setEnabledFirstPrev(self, bool):        
+        self.ui.actionFirst.setEnabled(bool)        
+        self.ui.actionPrevious.setEnabled(bool)                                             
     
-    def enableFirstPrev(self):        
-        self.ui.actionFirst.setEnabled(True)
-        self.ui.actionPrevious.setEnabled(True)
+    def setEnabledNextLast(self, bool):
+        self.ui.actionNext.setEnabled(bool)        
+        self.ui.actionLast.setEnabled(bool)                                
     
-    # TODO think about combining these two methods by using a bool parameter. Jens
-    def disableNextLast(self):
-        self.ui.actionNext.setDisabled(True)        
-        self.ui.actionLast.setDisabled(True)                              
-    
-    def enableNextLast(self):
-        self.ui.actionNext.setEnabled(True)         
-        self.ui.actionLast.setEnabled(True)                                  
-
     def disableAll(self):
         self.ui.actionFirst.setDisabled(True)
         self.ui.actionPrevious.setDisabled(True)
@@ -347,36 +329,13 @@ class MainWindow(QtGui.QMainWindow):
     
     # FIXME this should go away, you can connect directly to setVisible. Jens
     def disableSave(self):
-            self.ui.actionSave.setEnabled(False)            
+            self.ui.actionSave.setEnabled(False)                       
             
-            
-       
 ##    def enableSave(self):        
 ##        self.operator.emitUpdateUnit()
 ##        if self.operator._modified == True:
 ##            self.ui.actionSave.setEnabled(False)        
-        
-            
-    def showFindBar(self):
-        #create Find widget
-        self.findBar = Find()        
-        self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.findBar)                
-        self.findBar.ui.lineEdit.setFocus()
-        
-        self.connect(self.findBar, QtCore.SIGNAL("textInputed"), self.operator.startSearch)
-        self.connect(self.findBar, QtCore.SIGNAL("seachInSource"), self.operator.toggleSourceSearch)
-        self.connect(self.findBar, QtCore.SIGNAL("seachInTarget"), self.operator.toggleTargetSearch)
-        self.connect(self.findBar, QtCore.SIGNAL("seachInComment"), self.operator.toggleCommentSearch)
-        self.connect(self.findBar, QtCore.SIGNAL("matchCase"), self.operator.toggleMatchCase)
-        
-        self.connect(self.findBar, QtCore.SIGNAL("findNext"), self.operator.searchNext)
-        self.connect(self.findBar, QtCore.SIGNAL("findPrevious"), self.operator.searchPrevious)
-        self.connect(self.operator, QtCore.SIGNAL("foundInSource"), self.dockTUview.getSourceToHighLight)
-        self.connect(self.operator, QtCore.SIGNAL("foundInTarget"), self.dockTUview.getTargetToHighLight)
-        self.connect(self.operator, QtCore.SIGNAL("foundInComment"), self.dockComment.getCommentToHighLight)
-        self.connect(self.dockTUview, QtCore.SIGNAL("highLight"), self.operator.setHighLight)
-        self.connect(self.dockComment, QtCore.SIGNAL("highLight"), self.operator.setHighLight)
-        
+    
     def startInNewWindow(self):        
         other = MainWindow()
         MainWindow.windowList.append(other) 

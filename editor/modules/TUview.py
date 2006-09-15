@@ -107,17 +107,35 @@ class TUview(QtGui.QDockWidget):
         self.ui.txtTarget.setFocus()
         self.ui.txtTarget.selectAll()
         self.ui.txtTarget.insertPlainText(self.ui.txtSource.toPlainText())
-        self.ui.txtTarget.document().setModified()
+        self.ui.txtTarget.document().setModified()    
 
-    def getSourceToHighLight(self):
-        self.emitdocPointer(self.ui.txtSource.document())
+    def setHighLightSource(self, location):
+        '''call setHighLight by passing source document and location (offset, length)'''                
+        self.setHighLight(self.ui.txtSource.document(), location)
         
-    def getTargetToHighLight(self):
-        print 'target'
-        self.emitdocPointer(self.ui.txtTarget.document())
+    def setHighLightTarget(self, location):
+        '''call setHighLight by passing target document and location (offset, length)'''                
+        self.setHighLight(self.ui.txtTarget.document(), location)
     
-    def emitdocPointer(self, docPointer):
-        self.emit(QtCore.SIGNAL("highLight"), docPointer)
+    def setHighLight(self, doc, location):
+        '''HighLight on source or target depending on doc, and location (offset, and length)'''
+        offsetindoc = location[0]
+        length = location[1]        
+        overrides = []        
+        charformat = QtGui.QTextCharFormat()
+        charformat.setFontWeight(QtGui.QFont.Bold)
+        charformat.setForeground(QtCore.Qt.darkMagenta)                
+        block = doc.findBlock(offsetindoc)        
+        offsetinblock = offsetindoc - block.position()
+        range = QtGui.QTextLayout.FormatRange()
+        range.start = offsetinblock
+        range.length = length
+        range.format = charformat
+        layout = block.layout()
+        text = block.text()
+        overrides.append(range)
+        layout.setAdditionalFormats(overrides)
+        block.document().markContentsDirty(block.position(), block.length())               
         
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

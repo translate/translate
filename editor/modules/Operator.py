@@ -26,20 +26,10 @@ from translate.tools import pocount
 class Operator(QtCore.QObject):
     def __init__(self):
         QtCore.QObject.__init__(self)
-        self.store = None
-        self._offset = None
-        self._backward = None
-        self._insource = None
-        self._incomment = None
-        self._intarget = None
-        self._sourcesearch = None
-        self._targetsearch = None
-        self._commentsearch = None        
-        self._matchcase = None              
+        self.store = None       
         self.matchlength = None 
         self._modified = False
-        self._saveDone = False
-        
+        self._saveDone = False        
         self._unitpointer = None
     
     def getUnits(self, fileName):
@@ -60,11 +50,13 @@ class Operator(QtCore.QObject):
 
     def emitCurrentUnit(self):
         if (self._unitpointer == 0):
-            self.emit(QtCore.SIGNAL("firstUnit"))
+            self.emit(QtCore.SIGNAL("firstUnit"), False)
+            self.emit(QtCore.SIGNAL("lastUnit"), True)
         elif (self._unitpointer == len(self.filteredList) - 1):
-            self.emit(QtCore.SIGNAL("lastUnit"))
+            self.emit(QtCore.SIGNAL("firstUnit"), True)
+            self.emit(QtCore.SIGNAL("lastUnit"), False)
         else:
-            self.emit(QtCore.SIGNAL("middleUnit"))
+            self.emit(QtCore.SIGNAL("middleUnit"), True)
         currentUnit = self.getCurrentUnit()
         if (currentUnit != len(self.store.units)):
             self.emit(QtCore.SIGNAL("currentUnit"), self.store.units[currentUnit])
@@ -76,37 +68,6 @@ class Operator(QtCore.QObject):
             return self.filteredList[self._unitpointer]
         except IndexError:
             return 0
-##        
-##    def emitNewUnits(self, filter = None):
-##        self._unitpointer = 0
-##        self.unitPointerList = []
-##        self.visibleUnits = []
-##        if (filter == 'fuzzy'):
-##            #self.visibleUnits = pocount.fuzzymessages(self.store.units)
-##            for i in range(len(self.store.units)):
-##                if (self.store.units[i].isfuzzy()):
-##                    self.unitPointerList.append(i) # id
-##                    self.visibleUnits.append(self.store.units[i]) # unit
-##        elif (filter == 'translated'):
-##            #self.visibleUnits = pocount.translatedmessages(self.store.units)
-##            for i in range(len(self.store.units)):
-##                if (self.store.units[i].istranslated()):
-##                    self.unitPointerList.append(i)
-##                    self.visibleUnits.append(self.store.units[i]) # unit
-##        elif (filter == 'untranslated'):
-##            #self.visibleUnits = pocount.untranslatedmessages(self.store.units)
-##            for i in range(len(self.store.units)):
-##                if (not self.store.units[i].istranslated()):
-##                    self.unitPointerList.append(i)
-##                    self.visibleUnits.append(self.store.units[i]) # unit
-##        else:
-##            self.visibleUnits = self.store.units
-##            self.unitPointerList = range(len(self.visibleUnits))
-##        
-##        #if (len(self.visibleUnits) > 0) and (self.visibleUnits[0].isheader()):
-##        #    self.visibleUnits.pop(0)
-##        #print 'number of filtered units is', len(self.unitPointerList)
-##        self.emit(QtCore.SIGNAL("newUnits"), self.visibleUnits, self.unitPointerList)
 
     def emitFilteredList(self, filter):
         #pocount.fuzzymessages(self.store.units)
@@ -173,7 +134,7 @@ class Operator(QtCore.QObject):
     def setComment(self, comment):
         """set the comment which is QString type to the current unit."""
         currentUnit = self.getCurrentUnit()
-        #self.store.units[currentUnit].removenotes()
+        self.store.units[currentUnit].removenotes()
         self.store.units[currentUnit].addnote(unicode(comment))
         self._modified = True        
     
@@ -232,31 +193,39 @@ class Operator(QtCore.QObject):
     def emitCurrentStatus(self):
         self.numUntranslated = self.numTotal - self.numTranslated
         status = "Total: "+ str(self.numTotal) + "  |  Fuzzy: " +  str(self.numFuzzy) + "  |  Translated: " +  str(self.numTranslated) + "  |  Untranslated: " + str(self.numUntranslated)
-        self.emit(QtCore.SIGNAL("currentStatus"), status)
+        self.emit(QtCore.SIGNAL("currentStatus"), ' ' + status + ' ')
     
-    def startSearch(self, text):                        
-        self._offset = 0        
-        self._backward = False        
+    def setInitialSearch(self, options):
+        self._sourcesearch = options[0]
+        self._targetsearch = options[1]
+        self._commentsearch = options[2]
+        self._matchcase = options[3]
+        self._forward = options[4]
+        text = options[5]
+        return text
+    
+    def startSearch(self, options):
+        text = self.setInitialSearch(options)
         self._insource = True
         self._incomment = False
-        self._intarget = False   
-        #unit = self.getCurrentUnit()
+        self._intarget = False     
         unitpointer = self._unitpointer
+        
         while (( unitpointer <=  len(self.store.units) - 1) and unitpointer != None):                    
             unitpointer = self.search(0, unitpointer, text)                    
         else:                        
             self.displayMessageBox(unitpointer)
 
-    def searchNext(self, text):          
-        self._backward = False       
-        unitpointer = self._unitpointer
+    def searchNext(self, options):
+        text = self.setInitialSearch(options)
+        unitpointer = self._unitpointer        
         while (( unitpointer <=  len(self.filteredList) - 1) and unitpointer != None):
             unitpointer = self.search(self._offset + 1, unitpointer, text)
         else:
-            self.displayMessageBox(unitpointer)
-        
-    def searchPrevious(self, text):                
-        self._backward = True
+            self.displayMessageBox(unitpointer)            
+       
+    def searchPrevious(self, options):                   
+        text = self.setInitialSearch(options)
         unitpointer = self._unitpointer
         if (self._offset == 0):
             if (self._unitpointer != 0):                
@@ -270,7 +239,7 @@ class Operator(QtCore.QObject):
                     unitpointer = self._unitpointer - 1        
         while (unitpointer >= 0 and unitpointer != None):
             unitpointer = self.search(self._offset - 1, unitpointer, text)
-        else:
+        else:            
             self.displayMessageBox(unitpointer)            
                 
     def search(self, offset, unitpointer, text):
@@ -302,17 +271,17 @@ class Operator(QtCore.QObject):
         
         # when search not found, it will decrease/increase unit depending on search previous or next
         if (temp == -1 or temp == None):                     
-            if (self._backward):                
-                if (self._insource):                              
-                    unitpointer -= 1
-                self.setFlagsPrevious()                
-                self._offset = 0
-            else:
+            if (self._forward):                
                 if (self._intarget):
                     unitpointer += 1
                 self.setFlagsNext()
                 self._offset = -1
-            return unitpointer
+            else:
+                if (self._insource):                              
+                    unitpointer -= 1
+                self.setFlagsPrevious()                
+                self._offset = 0
+            return unitpointer    
             
     def setFlagsPrevious(self):
         if (self._intarget):             
@@ -347,74 +316,30 @@ class Operator(QtCore.QObject):
             regexp = QtCore.QRegExp(text)
         else:
             regexp = QtCore.QRegExp(text, QtCore.Qt.CaseInsensitive)
-        if (self._backward):
-            temp = regexp. lastIndexIn(stringofunit, offset)                        
+
+        if (self._forward):
+            temp = regexp.indexIn(stringofunit, offset)                                                    
         else:                      
-            temp = regexp.indexIn(stringofunit, offset)                                        
+            temp = regexp. lastIndexIn(stringofunit, offset)
         self._matchlength = regexp.matchedLength()        
         return temp  
     
-    def displayMessageBox(self, unit):        
+    def displayMessageBox(self, unit):                
         if (unit < 0 and unit != None):            
-            ret = QtGui.QMessageBox.information(None, self.tr("Search Not Found"), self.tr("Not Found, Search Reached The Beginning of First String"), QtGui.QMessageBox.Ok, QtGui.QMessageBox.NoButton, QtGui.QMessageBox.NoButton)                            
+            ret = QtGui.QMessageBox.information(None, self.tr("Search Not Found"), self.tr("Not Found, Search Reached The Beginning of First String"), QtGui.QMessageBox.Ok, QtGui.QMessageBox.NoButton, QtGui.QMessageBox.NoButton)
 
-        if (unit > (len(self.filteredList) - 1)):
-            ret = QtGui.QMessageBox.information(None, self.tr("Search Not Found"), self.tr("Not Found, Search Reached The End of Last String"), QtGui.QMessageBox.Ok, QtGui.QMessageBox.NoButton, QtGui.QMessageBox.NoButton)                
-    
-    def toggleSourceSearch(self, bool):
-        '''when source checkbox is checked, it will search in Source'''
-        self._sourcesearch = bool        
-             
-    
-    def toggleTargetSearch(self, bool):
-        '''when target checkbox is checked, it will search in Target'''
-        self._targetsearch = bool        
-    
-    def toggleCommentSearch(self, bool):
-        '''when comment checkbox is checked, it will search in Comment'''
-        self._commentsearch = bool        
-        
-    def toggleMatchCase(self, bool):
-        '''set Default case insensitive, if match case checked box it will case sensitive'''
-        self._matchcase = bool        
+        if (unit > (len(self.filteredList) - 1) and unit != None):                        
+            ret = QtGui.QMessageBox.information(None, self.tr("Search Not Found"), self.tr("Not Found, Search Reached The End of Last String"), QtGui.QMessageBox.Ok, QtGui.QMessageBox.NoButton, QtGui.QMessageBox.NoButton)                    
+
     
     def emitFoundInSource(self):        
         self.setCurrentUnit(self.filteredList[self._unitpointer])
-        self.emit(QtCore.SIGNAL("foundInSource"))        
+        self.emit(QtCore.SIGNAL("foundInSource"), [self._offset, self._matchlength])        
     
     def emitFoundInComment(self):        
         self.setCurrentUnit(self.filteredList[self._unitpointer])
-        self.emit(QtCore.SIGNAL("foundInComment"))
+        self.emit(QtCore.SIGNAL("foundInComment"), [self._offset, self._matchlength])
     
     def emitFoundInTarget(self):        
         self.setCurrentUnit(self.filteredList[self._unitpointer])
-        self.emit(QtCore.SIGNAL("foundInTarget"))
-        
-    def setHighLight(self, docPointer):               
-        self.highlight = HighLight(docPointer)                
-        self.highlight.setOffset(self._offset)
-        self.highlight.setMatchLength(self._matchlength)            
-       
-class HighLight(QtGui.QSyntaxHighlighter):
-    # TODO : Fix to unhighlight when not found
-    # TODO : Fix wrong highlight when have space at the beginning of text.
-    # TODO: Fix double highlight
-    # TODO: Clear when not highlight, return to the last state    
-    # TODO: Fix keyrelease Fixed
-    # TODO: When Pressed Enter Key Search Next
-    
-    def __init__(self, searchstring):            
-        QtGui.QSyntaxHighlighter.__init__(self, searchstring)                    
-    
-    def setOffset(self, offset):
-        self._offset = offset
-    
-    def setMatchLength(self, matchedLength):
-        self._matchlength = matchedLength
-    
-    def highlightBlock(self, searchstring):        
-        #print self.previousBlockState()
-        self.format = QtGui.QTextCharFormat ()
-        self.format.setFontWeight(QtGui.QFont.Bold)
-        self.format.setForeground(QtCore.Qt.darkMagenta)                
-        self.setFormat(self._offset, self._matchlength, self.format)         
+        self.emit(QtCore.SIGNAL("foundInTarget"), [self._offset, self._matchlength])        

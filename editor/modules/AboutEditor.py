@@ -50,11 +50,7 @@ class AboutEditor(QtGui.QDialog):
         self.setWindowTitle(self.tr("About Editor"))
 ##        self. setWindowIcon(QtGui.QIcon("/images/icon.png"))
         self.resize(400, 200)   
-    
-    def closeAbout(self):  
-        self.close()
-    
-        
+        self.setModal(True)        
         
 class AboutTab(QtGui.QWidget):
     def __init__(self, fileInfo, parent=None):

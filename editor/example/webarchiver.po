@@ -19,6 +19,7 @@ msgstr ""
 msgid "Could Not Open Temporary File"
 msgstr "មិនអាច​បើក​ឯកសារ​បណ្តោះអាសន្ន​បាន​ទេ"
 
+# open
 #: archivedialog.cpp:126
 msgid "Could not open a temporary file"
 msgstr "មិនអាច​បើក​ឯកសារ​បណ្តោះអាសន្ន​មួយ​បាន​ទេ"

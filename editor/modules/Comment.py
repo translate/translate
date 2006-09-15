@@ -60,10 +60,27 @@ class CommentDock(QtGui.QDockWidget):
     def checkModified(self):
         if self.ui.txtComment.document().isModified():
             self.emit(QtCore.SIGNAL("commentChanged"), self.ui.txtComment.toPlainText())
-
-    def getCommentToHighLight(self):                        
-        self.emit(QtCore.SIGNAL("highLight"), self.ui.txtComment.document())
-
+    
+    def setHighLightComment(self, location):
+        '''HighLight on comment depending on location (offset, and length)'''             
+        offsetindoc = location[0]
+        length = location[1]
+        overrides = []        
+        charformat = QtGui.QTextCharFormat()
+        charformat.setFontWeight(QtGui.QFont.Bold)
+        charformat.setForeground(QtCore.Qt.darkMagenta)        
+        block = self.ui.txtComment.document().findBlock(offsetindoc)        
+        offsetinblock = offsetindoc - block.position()
+        range = QtGui.QTextLayout.FormatRange()
+        range.start = offsetinblock
+        range.length = length
+        range.format = charformat
+        layout = block.layout()
+        text = block.text()
+        overrides.append(range)
+        layout.setAdditionalFormats(overrides)
+        block.document().markContentsDirty(block.position(), block.length())       
+        
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     comment = CommentDock()
