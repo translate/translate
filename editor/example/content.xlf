@@ -21,7 +21,7 @@
       
       <trans-unit approved="yes" id="1" reformat="yes" translate="yes" xml:space="default">
         <source>Chapter 5</source>
-        <target state="translated">ចម្រៀងខ្មែរ5</target>
+        <target state="needs-review-translation" state-qualifier="fuzzy-match">ចម្រៀងខ្មែរ5</target>
         <prop-group>
           <prop prop-type="entryid">1150875516738</prop>
         </prop-group>

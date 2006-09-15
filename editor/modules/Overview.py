@@ -46,8 +46,6 @@ class OverviewDock(QtGui.QDockWidget):
         
         # TODO do you really need this, maybe it is enough to just use the current item? Jens
         self.lastItem = None
-        # FIXME you do not need this member variable, remove it. Jens
-        self.id = None
         self.connect(self.ui.treeOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitItemSelected)
 
     def closeEvent(self, event):            
@@ -68,59 +66,68 @@ class OverviewDock(QtGui.QDockWidget):
         """Add one item to the list of source and target."""
         item = QtGui.QTreeWidgetItem(self.ui.treeOverview)
         self.items.append(item)
-        #id = self.getid(currentUnit)
-        #if (not id):
-        #    id = currentPointer
         id = currentPointer
         item.setTextAlignment(0, QtCore.Qt.AlignRight)
         # sorting needs leading space: '   1', '   2', '  10'.. rather than '1', '10', '2'
         item.setText(0, str(id).rjust(4) + '  ')
         item.setText(1, currentUnit.source)
         item.setText(2, currentUnit.target)
-        #item.setData(0, QtCore.Qt.UserRole, QtCore.QVariant(id))
         
-    def addItems(self, currentUnit, currentPointer):
-        """Add an item or a list of items."""
-        if isinstance(currentUnit, list):
-            #for item in currentUnit:
-            #    self.addItem(item, pointer)
-            for i in range(len(currentUnit)):
-                self.addItem(currentUnit[i], currentPointer[i])
-        else:
-            self.addItem(currentUnit)
+##    def addItems(self, currentUnit, currentPointer):
+##        """Add an item or a list of items."""
+##        if isinstance(currentUnit, list):
+##            #for item in currentUnit:
+##            #    self.addItem(item, pointer)
+##            for i in range(len(currentUnit)):
+##                self.addItem(currentUnit[i], currentPointer[i])
+##        else:
+##            self.addItem(currentUnit)
 
-    def slotNewUnits(self, units, unitsPointer):
+##    def slotNewUnits(self, units, unitsPointer):
+##        """Initialize the list, clear and fill with units"""
+##        self.lastItem = None
+##        self.items = []
+##        self.ui.treeOverview.clear()
+##        if units:
+##            self.addItems(units, unitsPointer)
+##            # select the first item in list
+##            self.highLightItem(0)
+
+    def slotNewUnits(self, units):
         """Initialize the list, clear and fill with units"""
-        if not units:
-            self.ui.treeOverview.clear()
-            return
         self.lastItem = None
-        self.id = None
         self.items = []
         self.ui.treeOverview.clear()
-        self.addItems(units, unitsPointer)
+        for i in range(len(units)):
+            self.addItem(units[i], i)
         # select the first item in list
-        self.scrollToItem(self.items[0])
-        
-        
-    def updateItem(self, value):
+        self.highLightItem(0)
+
+    def filteredList(self, fList):
+        # show only the item which are filtered
+        i = 0
+        for item in self.items:
+            if i in fList:
+                # take out from list once the item is shown
+                #fList.pop(i)
+                self.ui.treeOverview.setItemHidden(item, False)
+            else:
+                self.ui.treeOverview.setItemHidden(item, True)
+            i += 1
+        self.highLightItem(fList[0])
+   
+    def highLightItem(self, value):
         if (not self.items) or (value < 0) or (value >= len(self.items)):
             return
-        #print value
         item = self.items[value]
         if (self.lastItem != item):
-            self.scrollToItem(item)
+            self.disconnect(self.ui.treeOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitItemSelected)
+            self.ui.treeOverview.setCurrentItem(item)
+            self.connect(self.ui.treeOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitItemSelected)
             self.lastItem = item
     
-    def scrollToItem(self, item):
-        self.disconnect(self.ui.treeOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitItemSelected)
-        self.ui.treeOverview.setCurrentItem(item)
-        self.connect(self.ui.treeOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitItemSelected)
-        self.lastItem = item
-        
-    def takeoutUnit(self, value):
+    def hideItem(self, value):
         item = self.items[value]
-        self.items.pop(value)
         self.ui.treeOverview.setItemHidden(item, True)
 
     def emitItemSelected(self):
@@ -128,15 +135,12 @@ class OverviewDock(QtGui.QDockWidget):
             item = self.ui.treeOverview.selectedItems()[0]
         except IndexError:
             return
-        self.id = int(item.text(0))
-        ##self.id = item.data(0, QtCore.Qt.UserRole).toInt()[0]
-        self.emit(QtCore.SIGNAL("itemSelected"), self.id)
-        
+        id = int(item.text(0))
+        self.emit(QtCore.SIGNAL("currentId"), id)
         
     def setTarget(self, target):
         if (self.lastItem):
             self.lastItem.setText(2, target)
-            
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

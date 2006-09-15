@@ -135,11 +135,11 @@ class MainWindow(QtGui.QMainWindow):
 
         self.connect(self.operator, QtCore.SIGNAL("takeoutUnit"), self.takeoutUnit)
         
-        self.connect(self.operator, QtCore.SIGNAL("currentPosition"), self.dockOverview.updateItem)
-        self.connect(self.operator, QtCore.SIGNAL("currentPosition"), self.dockTUview.updateScrollbar)
-        self.connect(self.dockTUview, QtCore.SIGNAL("scrollbarPosition"), self.operator.setCurrentPosition)
-        self.connect(self.dockOverview, QtCore.SIGNAL("itemSelected"), self.operator.setCurrentUnit)
-        self.connect(self.dockOverview, QtCore.SIGNAL("itemSelected"), self.dockTUview.ui.txtTarget.setFocus)
+        self.connect(self.operator, QtCore.SIGNAL("currentPosition"), self.dockOverview.highLightItem)
+        self.connect(self.operator, QtCore.SIGNAL("currentPosition"), self.dockTUview.highLightScrollbar)
+        self.connect(self.dockTUview, QtCore.SIGNAL("currentId"), self.operator.setCurrentUnit)
+        self.connect(self.dockOverview, QtCore.SIGNAL("currentId"), self.operator.setCurrentUnit)
+        self.connect(self.dockOverview, QtCore.SIGNAL("currentId"), self.dockTUview.ui.txtTarget.setFocus)
 
 ##        self.connect(self.operator, QtCore.SIGNAL("changetarget"), self.dockTUview.txtClear)
         
@@ -159,9 +159,11 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("lastUnit"), self.disableNextLast)
         self.connect(self.operator, QtCore.SIGNAL("middleUnit"), self.enableFirstPrev)
         self.connect(self.operator, QtCore.SIGNAL("middleUnit"), self.enableNextLast)        
+
         self.connect(self.operator, QtCore.SIGNAL("newUnits"), self.dockOverview.slotNewUnits)
         self.connect(self.operator, QtCore.SIGNAL("newUnits"), self.dockTUview.slotNewUnits)
-        self.connect(self.operator, QtCore.SIGNAL("noUnit"), self.disableAll)
+        self.connect(self.operator, QtCore.SIGNAL("filteredList"), self.dockOverview.filteredList)
+        self.connect(self.operator, QtCore.SIGNAL("filteredList"), self.dockTUview.filteredList)
         
         # FIXME why do you connect this here and two lines later again? Jens---done
         # FIXME Connect directly to the slot of the statusbar. Jens
@@ -174,26 +176,26 @@ class MainWindow(QtGui.QMainWindow):
     # How can you filter fuzzy and untranslated together? Jens
     def unfiltered(self):
         self.filter = None
-        self.operator.emitNewUnits()    
+        self.operator.emitFilteredList(None)
 
     def filterFuzzy(self):
         self.filter = 'fuzzy'
-        self.operator.emitFilteredUnits(self.filter)
+        self.operator.emitFilteredList(self.filter)
     
     def filterTranslated(self):
         self.filter = 'translated'
-        self.operator.emitFilteredUnits(self.filter)
+        self.operator.emitFilteredList(self.filter)
     
     def filterUntranslated(self):
         self.filter = 'untranslated'
-        self.operator.emitFilteredUnits(self.filter)
+        self.operator.emitFilteredList(self.filter)
     
     # FIXME Why do you need to go thru MainEditor with this stuff?
     # Please use slots in Overview and TUview and connect them to a signal in Operator
     # and call takeoutUnit in Operator directly! Jens
     def takeoutUnit(self, value):
         if (self.filter):
-            self.dockOverview.takeoutUnit(value)
+            self.dockOverview.hideItem(value)
             self.dockTUview.takeoutUnit(value)
             self.operator.takeoutUnit(value)
     
@@ -270,6 +272,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionFilterFuzzy.setEnabled(True)
         self.ui.actionFilterTranslated.setEnabled(True)
         self.ui.actionFilterUntranslated.setEnabled(True)
+        self.ui.actionUnfiltered.setChecked(True)
         
     def startRecentAction(self):
         action = self.sender()
