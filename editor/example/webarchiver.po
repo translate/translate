@@ -1,8 +1,7 @@
 # ,មិនអាច​បើក​ប័ណ្ណសារ​
 #: archivedialog.cpp:90
-#, fuzzy
 msgid "Unable to Open Web-Archive"
-msgstr "Unable to Open Web-Archive"
+msgstr ""
 
 # សម្រាប់​ការ​សរសេរ​បាន​ទេ ។
 #: archivedialog.cpp:91
@@ -11,13 +10,12 @@ msgid ""
 " %1 \n"
 " for writing."
 msgstr ""
-"មិនអាច​បើក \n"
-" %1 \n"
-" សម្រាប់​ការ​សរសេរ​បាន​ទេ ។"
 
 #: archivedialog.cpp:125
 msgid "Could Not Open Temporary File"
-msgstr "មិនអាច​បើក​ឯកសារ​បណ្តោះអាសន្ន​បាន​ទេ"
+msgstr ""
+"មិនអាច​បើក​ឯកសារ​បណ្តោះអាសន្ន​បាន​ទេ\n"
+"jjjjj;afsda"
 
 # open
 #: archivedialog.cpp:126
@@ -25,9 +23,8 @@ msgid "Could not open a temporary file"
 msgstr "មិនអាច​បើក​ឯកសារ​បណ្តោះអាសន្ន​មួយ​បាន​ទេ"
 
 #: archivedialog.cpp:157
-#, fuzzy
 msgid "Archiving webpage completed."
-msgstr "ទំព័រ​បណ្តាញ​​ប័ណ្ណ​សារ​បានបញ្ចប់​ទាំងស្រុង ។"
+msgstr "ទំព័រ​បណ្តាញ​​ប័ណ្ណ​សារ​បានបញ្ចប់​ទាំងស្រុង ។sfasfasfsafas"
 
 #: archivedialog.cpp:450
 #, fuzzy

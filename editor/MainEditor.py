@@ -170,6 +170,7 @@ class MainWindow(QtGui.QMainWindow):
         # set file status information to text label of status bar
         self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.statuslabel.setText)        
         self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.setOpening)
+        
     
     # FIXME the next 4 slots should not be here. Move them into Operator
     # And please do not use a string to define what you want to filter.

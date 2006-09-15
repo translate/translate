@@ -128,7 +128,8 @@ class Operator(QtCore.QObject):
         self.emitUpdateUnit()
         if self._saveDone:
             self._modified = False
-            self._saveDone = False
+            print "hdhdh"
+##            self._saveDone = False
         return self._modified
     
     def setComment(self, comment):

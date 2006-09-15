@@ -31,8 +31,8 @@ class FileAction(QtGui.QDialog):
         #TODO: open one or more existing files selected
         self.fileName = QtGui.QFileDialog.getOpenFileName(self, self.tr("Open File"),
                         QtCore.QDir.currentPath(),
-                        self.tr("Supported Files (*.po *.pot *.xliff *.xlf)"))
-                        #self.tr("Po File (*.po);; XLIFF Files (*.xliff *.xlf);;Po Templet (*.pot)"))
+                        self.tr("Supported Files (*.po *.pot *.xliff *.xlf);;All Files(*.*)"))
+                        #self.tr("Po Files (*.po);; XLIFF Files (*.xliff *.xlf);;Po Templates (*.pot)"))
         if not self.fileName.isEmpty():
             self.emitFileOpened()
             return True
@@ -49,16 +49,16 @@ class FileAction(QtGui.QDialog):
         # FIXME that does not work if my file ends with po but not with .po! Jens
         if (self.fileForSave.endswith("po")):
             extension = ".po"
-            defaultFileType = "Po File (*.po);;"
-            otherFileType = "XLIFF Files (*.xliff *.xlf);;Po TempleFile (*.pot)"
+            defaultFileType = "Po Files (*.po);;"
+            otherFileType = "XLIFF Files (*.xliff *.xlf);;Po TemplateFiles (*.pot)"
         elif (self.openedFile.endswith("pot")):
             self.extension = ".pot"
-            defaultFileType = "Po TempleFile (*.pot);;"
-            otherFileType = "XLIFF Files (*.xliff *.xlf);;Po File (*.po)"
+            defaultFileType = "Po TemplateFiles (*.pot);;"
+            otherFileType = "XLIFF Files (*.xliff *.xlf);;Po Files (*.po)"
         else:
             self.extension = ".xlf"
             defaultFileType = "XLIFF Files (*.xliff *.xlf);;"
-            otherFileType =  "Po File (*.po);;XLIFF Files (*.xliff *.xlf)"
+            otherFileType =  "Po Files (*.po);;XLIFF Files (*.xliff *.xlf)"
         return defaultFileType + otherFileType
             
     def saveAs(self):      
@@ -66,7 +66,7 @@ class FileAction(QtGui.QDialog):
         # FIXME how shall self.tr(fileType) work here? You can not translate what you only
         # know at runtime! You must use the tr() in the lines above! Jens
         #self.fileForSave = QtGui.QFileDialog.getSaveFileName(self, self.tr("Save As"), QtCore.QDir.currentPath(), self.tr(self.fileType()))
-        self.fileForSave = QtGui.QFileDialog.getSaveFileName(self, self.tr("Save As"), QtCore.QDir.currentPath(), self.tr("Supported Files (*.*)"))
+        self.fileForSave = QtGui.QFileDialog.getSaveFileName(self, self.tr("Save As"), QtCore.QDir.currentPath(), self.tr("Supported Files (*.po *.pot *.xliff *.xlf);;All Files(*.*)"))
         
         # TODO: Detect which buttion is clicked (Save or Cancel)
         #save botton clicked
@@ -97,7 +97,7 @@ class FileAction(QtGui.QDialog):
             return                      
             
     # FIXME the name is wrong, you are about to close not about to save. Jens
-    def aboutToSave(self, main):
+    def aboutToClose(self, main):
       # FIXME indentation! Jens    ---done         
         ret = QtGui.QMessageBox.question(main, self.tr("File Modified"),
                     self.tr("The file has been modified.\n"
