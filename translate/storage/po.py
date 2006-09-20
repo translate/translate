@@ -231,7 +231,7 @@ class pounit(base.TranslationUnit):
       return
     if isinstance(target, multistring) and len(target.strings) > 1:
       target = target.strings
-    if not self.hasplural() and (isinstance(target,(dict, list))):
+    if not self.hasplural() and isinstance(target,(dict, list)) and len(target) > 1:
       raise ValueError("po msgid element has no plural but msgstr has %d elements (%s)" % (len(target), target))
     templates = self.msgstr
     if isinstance(templates, list):
@@ -654,10 +654,8 @@ class pounit(base.TranslationUnit):
     """add to sourcecomments"""
     self.sourcecomments.append("#: %s\n" % location)
 
-class pofile(base.TranslationStore):
-  """this represents a .po file containing various units"""
-  UnitClass = pounit
-  x_generator = "Translate Toolkit %s" % __version__.ver
+class poheader:
+  """This class implements functionality for manipulation of po file headers"""
   header_order = [
     "Project-Id-Version",
     "Report-Msgid-Bugs-To",
@@ -671,6 +669,26 @@ class pofile(base.TranslationStore):
     "Plural-Forms",
     "X-Generator",
     ]
+
+  def parse(cls, input):
+    """Parses an input string with the definition of a PO header and returns 
+    the interpreted values as a dictionary"""
+    headervalues = dictutils.ordereddict()
+    for line in input.split("\n"):
+      if not line or ":" not in line:
+        continue
+      key, value = line.split(":", 1)
+      #We don't want unicode keys
+      key = str(key.strip())
+      headervalues[key] = value.strip()
+    return headervalues
+  parse= classmethod(parse)
+
+
+class pofile(base.TranslationStore):
+  """this represents a .po file containing various units"""
+  UnitClass = pounit
+  x_generator = "Translate Toolkit %s" % __version__.ver
   def __init__(self, inputfile=None, encoding=None, unitclass=pounit):
     """construct a pofile, optionally reading in from inputfile.
     encoding can be specified but otherwise will be read from the PO header"""
@@ -744,7 +762,7 @@ class pofile(base.TranslationStore):
       "Plural-Forms":  plural_forms,
       "X-Generator": self.x_generator,
       }
-    for key in self.header_order:
+    for key in poheader.header_order:
       value = headerargs.pop(key, defaultargs[key])
       headeritems.append("%s: %s\\n" % (key, value))
     for key, value in headerargs.iteritems():
@@ -754,18 +772,10 @@ class pofile(base.TranslationStore):
 
   def parseheader(self):
     """parses the values in the header into a dictionary"""
-    headervalues = dictutils.ordereddict()
     header = self.header()
     if not header:
-      return headervalues
-    for entry in header.target.split("\n"):
-      if not entry or ":" not in entry: 
-        continue
-      key, value = entry.split(":", 1)
-      #We don't want unicode keys
-      key = str(key.strip())
-      headervalues[key] = value.strip()
-    return headervalues
+      return {}
+    return poheader.parse(header.target)
 
   def updateheader(self, add=False, **kwargs):
     """update field(s) in the PO header"""
@@ -785,7 +795,7 @@ class pofile(base.TranslationStore):
         if key.islower():
           key = key.title()
         fixedargs[key] = value
-      for key in self.header_order:
+      for key in poheader.header_order:
         if key in fixedargs:
           headerargs[key] = fixedargs.pop(key)
       for key in fixedargs:
