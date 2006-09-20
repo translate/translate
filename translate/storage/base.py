@@ -67,7 +67,7 @@ class TranslationUnit(object):
         else:
             self.addlocation(location)
 
-    def getnotes(self):
+    def getnotes(self, origin=None):
         """Returns all notes about this unit. It will probably be freeform text
         or something reasonable that can be synthesised by the format. It should
         not include location comments (see getlocations)"""
