@@ -74,7 +74,10 @@ class TestPOUnit(test_base.TestTranslationUnit):
         unit.addnote("Thank you", origin="translator")
         assert str(unit) == '# Which meaning of file?\n# Thank you\n#. Verb\nmsgid "File"\nmsgstr ""\n'
 
+        assert unit.getnotes("developer") == "Verb"
+        assert unit.getnotes("translator") == "Which meaning of file?\nThank you"
         assert unit.getnotes() == "Which meaning of file?\nThank you\nVerb"
+        assert raises(ValueError, unit.getnotes, "devteam")
 
     def test_notes_withcomments(self):
         """tests that when we add notes that look like comments that we treat them properly"""
