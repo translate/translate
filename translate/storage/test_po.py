@@ -5,6 +5,7 @@ from translate.storage import po
 from translate.storage import test_base
 from translate.misc.multistring import multistring
 from translate.misc import wStringIO
+from py.test import raises
 
 def test_roundtrip_quoting():
     specials = ['Fish & chips', 'five < six', 'six > five', 
@@ -81,7 +82,29 @@ class TestPOUnit(test_base.TestTranslationUnit):
         unit.addnote("# Double commented comment")
         assert str(unit) == '# # Double commented comment\nmsgid "File"\nmsgstr ""\n'
         assert unit.getnotes() == "# Double commented comment"
-        
+
+    def test_no_plural_settarget(self):
+	"""tests that target handling of file with no plural is correct"""
+	# plain text, no plural test
+	unit = self.UnitClass("Tree")
+	unit.target = "ki"
+	assert unit.target.strings == ["ki"]
+	assert unit.source.strings == ["Tree"]
+	assert unit.hasplural() == False
+
+	# plural test with multistring
+	unit.setsource(["Tree", "Trees"])
+	assert unit.source.strings == ["Tree", "Trees"]
+	assert unit.hasplural()
+	unit.target = multistring(["ki", "ni ki"])
+	assert unit.target.strings == ["ki", "ni ki"]
+
+	# test of msgid with no plural and msgstr with plural
+	unit = self.UnitClass("Tree")
+	assert raises(ValueError, unit.settarget, [u"ki", u"ni ki"])
+	assert unit.hasplural() == False
+ 
+
 class TestPO(test_base.TestTranslationStore):
     StoreClass = po.pofile
     def poparse(self, posource):
@@ -457,4 +480,3 @@ msgstr ""
         nplural, plural = pofile.getheaderplural()
         assert nplural == "3"
         assert plural == "(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)"
-
