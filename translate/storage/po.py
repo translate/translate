@@ -684,6 +684,30 @@ class poheader:
     return headervalues
   parse= classmethod(parse)
 
+  def update(cls, existing, add=False, **kwargs):
+    """Update an existing header with the values in kwargs, adding new values 
+    only if add is true. This returns the string representation."""
+    headerargs = dictutils.ordereddict()
+    fixedargs = dictutils.cidict()
+    for key, value in kwargs.items():
+      key = key.replace("_", "-")
+      if key.islower():
+        key = key.title()
+      fixedargs[key] = value
+    for key in self.header_order:
+      if key in fixedargs:
+        headerargs[key] = fixedargs.pop(key)
+    for key in fixedargs:
+      headerargs[key] = kwargs[key]
+    for key, value in headerargs.iteritems():
+      if existing.has_key(key) or add:
+        existing[key] = value
+    header = ""
+    for key, value in existing.items():
+      header += "%s: %s\n" % (key, value)
+    return header
+  update = classmethod(update)
+
 
 class pofile(base.TranslationStore):
   """this represents a .po file containing various units"""
@@ -786,27 +810,8 @@ class pofile(base.TranslationStore):
     if not header:
       header = self.makeheader(**kwargs)
       self.units.insert(0, header)
-      headeritems = self.parseheader()
     else:
-      headerargs = dictutils.ordereddict()
-      fixedargs = dictutils.cidict()
-      for key, value in kwargs.items():
-        key = key.replace("_", "-")
-        if key.islower():
-          key = key.title()
-        fixedargs[key] = value
-      for key in poheader.header_order:
-        if key in fixedargs:
-          headerargs[key] = fixedargs.pop(key)
-      for key in fixedargs:
-        headerargs[key] = kwargs[key]
-      for key, value in headerargs.iteritems():
-        if headeritems.has_key(key) or add:
-          headeritems[key] = value
-    headerlines = [""]
-    for key, value in headeritems.items():
-      headerlines.append("%s: %s\\n" % (key, value))
-    header.msgstr = [quote.quotestr(headerline) for headerline in headerlines]
+      header.target = poheader.update(headeritems, add, **kwargs)
     header.markfuzzy(False)
     return header
 
