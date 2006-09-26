@@ -63,7 +63,7 @@ def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similari
     try:
       fuzzyfilematcher = match.matcher(templatepo, max_candidates=1, min_similarity=75, max_length=1000)
       fuzzyfilematcher.addpercentage = False
-    except:
+    except ValueError:
       fuzzyfilematcher = None
     templatepo.makeindex()
     templateheadervalues = templatepo.parseheader()
@@ -88,9 +88,9 @@ def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similari
       else:
         kwargs[key] = value
   try:
-    fuzzyglobalmatcher = memory(tmfiles, max_candidates=1, min_similarity=75, max_length=1000)
+    fuzzyglobalmatcher = memory(tm, max_candidates=1, min_similarity=75, max_length=1000)
     fuzzyglobalmatcher.addpercentage = False
-  except:
+  except ValueError:
     fuzzyglobalmatcher = None
   inputheadervalues = inputpot.parseheader()
   for key, value in inputheadervalues.iteritems():
