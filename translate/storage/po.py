@@ -694,7 +694,7 @@ class poheader:
       if key.islower():
         key = key.title()
       fixedargs[key] = value
-    for key in self.header_order:
+    for key in poheader.header_order:
       if key in fixedargs:
         headerargs[key] = fixedargs.pop(key)
     for key in fixedargs:
