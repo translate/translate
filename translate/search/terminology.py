@@ -55,7 +55,7 @@ class TerminologyComparer:
         # many false positives. 
 
         # First remove a possible disambiguating bracket at the end
-        b = sre.sub("\s*\(.*\)\s*$", "", b)
+        b = sre.sub("\s+\(.*\)\s*$", "", b)
 
         if b in a[:self.MAX_LEN]:
             return 100

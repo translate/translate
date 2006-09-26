@@ -42,7 +42,7 @@ def getname(storefile):
     """returns the filename"""
     if not isinstance(storefile, basestring):
         if not hasattr(storefile, "name"):
-            raise Exception("Factory can only guess filetype from filename")
+            raise ValueError("Factory can only guess filetype from filename")
         else:
             storefilename = storefile.name
     else:
