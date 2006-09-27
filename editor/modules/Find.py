@@ -31,13 +31,13 @@ class Find(QtGui.QDockWidget):
         self.ui = Ui_Form()
         self.ui.setupUi(self.form)  
         self.setWidget(self.form)        
-        self.setFeatures(QtGui.QDockWidget.DockWidgetClosable)        
-        self.hide()
+        self.setFeatures(QtGui.QDockWidget.DockWidgetClosable)                
+        self.hide()        
         self.searchinsource = True
         self.searchintarget = False
         self.searchincomment = False
         self.matchcase = False
-        self.forward = True        
+        self.forward = True                
         
         # create action for show/hide
         self._actionShow = QtGui.QAction(self)
@@ -113,8 +113,7 @@ class Find(QtGui.QDockWidget):
     def findNext(self):            
         self.forward = True        
         self.emit(QtCore.SIGNAL("findNext"), self.getOptions())
-        self.ui.lineEdit.setFocus()
-        
+        self.ui.lineEdit.setFocus()        
     
     def findPrevious(self):                
         self.forward = False        

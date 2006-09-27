@@ -32,12 +32,13 @@ class CommentDock(QtGui.QDockWidget):
         self.ui = Ui_frmComment()
         self.ui.setupUi(self.form)        
         self.setWidget(self.form)
+        self.layout = QtGui.QTextLayout ()
         
         # create action for show/hide
         self._actionShow = QtGui.QAction(self)
         self._actionShow.setObjectName("actionShowComment")
         self._actionShow.setText(self.tr("Hide Comment"))    
-        self.connect(self._actionShow, QtCore.SIGNAL("triggered()"), self.show)           
+        self.connect(self._actionShow, QtCore.SIGNAL("triggered()"), self.show)         
         
     def closeEvent(self, event):            
         self._actionShow.setText(self.tr("Show Comment"))
@@ -75,12 +76,18 @@ class CommentDock(QtGui.QDockWidget):
         range.start = offsetinblock
         range.length = length
         range.format = charformat
-        layout = block.layout()
+        self.layout = block.layout()
         text = block.text()
         overrides.append(range)
-        layout.setAdditionalFormats(overrides)
-        block.document().markContentsDirty(block.position(), block.length())       
-        
+        self.layout.setAdditionalFormats(overrides)
+        block.document().markContentsDirty(block.position(), block.length())
+
+    def clearHighLight(self):
+        try:
+            self.layout. clearAdditionalFormats()
+        except:
+            pass
+            
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     comment = CommentDock()

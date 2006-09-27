@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # Developed by:
-#       Keo Sophon (keosophon@khmeros.info)about:blank
+#       Keo Sophon (keosophon@khmeros.info)
 #
 
 from PyQt4 import QtCore, QtGui
@@ -26,11 +26,9 @@ from translate.tools import pocount
 class Operator(QtCore.QObject):
     def __init__(self):
         QtCore.QObject.__init__(self)
-        self.store = None       
-        self.matchlength = None 
+        self.store = None               
         self._modified = False
         self._saveDone = False        
-        self._unitpointer = None
     
     def getUnits(self, fileName):
         self.store = factory.getobject(fileName)
@@ -60,8 +58,7 @@ class Operator(QtCore.QObject):
         currentUnit = self.getCurrentUnit()
         if (currentUnit != len(self.store.units)):
             self.emit(QtCore.SIGNAL("currentUnit"), self.store.units[currentUnit])
-            self.emit(QtCore.SIGNAL("currentPosition"), currentUnit)
-            print 'currentUnit', currentUnit
+            self.emit(QtCore.SIGNAL("currentPosition"), currentUnit)            
 
     def getCurrentUnit(self):
         try:
@@ -127,8 +124,7 @@ class Operator(QtCore.QObject):
     def modified(self):
         self.emitUpdateUnit()
         if self._saveDone:
-            self._modified = False
-            print "hdhdh"
+            self._modified = False            
 ##            self._saveDone = False
         return self._modified
     
@@ -137,7 +133,7 @@ class Operator(QtCore.QObject):
         currentUnit = self.getCurrentUnit()
         self.store.units[currentUnit].removenotes()
         self.store.units[currentUnit].addnote(unicode(comment))
-        self._modified = True        
+        self._modified = True
     
     def setTarget(self, target):
         """set the target which is QString type to the current unit."""
@@ -187,7 +183,7 @@ class Operator(QtCore.QObject):
             self.store.units[unit].markfuzzy(True)
             self.numFuzzy += 1
         
-        print 'after fuzzied:', self.store.units[unit].isfuzzy()           
+        print 'after fuzzied:', self.store.units[unit].isfuzzy()
         self._modified = True
         self.emitCurrentStatus()
     
@@ -196,151 +192,167 @@ class Operator(QtCore.QObject):
         status = "Total: "+ str(self.numTotal) + "  |  Fuzzy: " +  str(self.numFuzzy) + "  |  Translated: " +  str(self.numTranslated) + "  |  Untranslated: " + str(self.numUntranslated)
         self.emit(QtCore.SIGNAL("currentStatus"), ' ' + status + ' ')
     
-    def setInitialSearch(self, options):
+    def setSearchOptions(self, options):
         self._sourcesearch = options[0]
         self._targetsearch = options[1]
         self._commentsearch = options[2]
         self._matchcase = options[3]
         self._forward = options[4]
-        text = options[5]
-        return text
-    
+        self._text = options[5]
+
     def startSearch(self, options):
-        text = self.setInitialSearch(options)
         self._insource = True
         self._incomment = False
-        self._intarget = False     
-        unitpointer = self._unitpointer
-        
-        while (( unitpointer <=  len(self.store.units) - 1) and unitpointer != None):                    
-            unitpointer = self.search(0, unitpointer, text)                    
-        else:                        
-            self.displayMessageBox(unitpointer)
+        self._intarget = False
+        self._offset = -1
+##        self._searchFound = False 
+        self.searchNext(options)
 
     def searchNext(self, options):
-        text = self.setInitialSearch(options)
-        unitpointer = self._unitpointer        
-        while (( unitpointer <=  len(self.filteredList) - 1) and unitpointer != None):
-            unitpointer = self.search(self._offset + 1, unitpointer, text)
-        else:
-            self.displayMessageBox(unitpointer)            
-       
-    def searchPrevious(self, options):                   
-        text = self.setInitialSearch(options)
+        '''get a list of options such as where to search, direction and text to search'''        
+        self.setSearchOptions(options)
         unitpointer = self._unitpointer
+##        passedamount = 0        
+        while (unitpointer != None):
+            unitpointer = self.search(self._offset + 1, unitpointer)            
+            if ( unitpointer >  len(self.filteredList) - 1):
+                unitpointer = 0
+            
+##            if ((passedamount > len(self.filteredList) - 1) and not self._searchFound):                
+##                self.displayMessageBox()                
+##                break            
+            
+    def searchPrevious(self, options):
+        '''get a list of options such as where to search, direction and text to search'''
+        self.setSearchOptions(options)
+        unitpointer = self._unitpointer
+##        passedamount = 0        
         if (self._offset == 0):
-            if (self._unitpointer != 0):                
-                if (self._insource):                
+            if (self._unitpointer != 0):
+                if (self._insource):
                     unitpointer = self._unitpointer - 1
                 self.setFlagsPrevious()
             else:
-                if (not self._insource):                
+                if (not self._insource):
                     self.setFlagsPrevious()
                 else:
                     unitpointer = self._unitpointer - 1        
-        while (unitpointer >= 0 and unitpointer != None):
-            unitpointer = self.search(self._offset - 1, unitpointer, text)
-        else:            
-            self.displayMessageBox(unitpointer)            
-                
-    def search(self, offset, unitpointer, text):
-        temp = None        
+                    
+        while (unitpointer != None):            
+            unitpointer = self.search(self._offset - 1, unitpointer)            
+            if ( unitpointer < 0 and unitpointer != None):
+                unitpointer =   len(self.filteredList) - 1           
+            
+##            if ((passedamount > len(self.filteredList) - 1) and not self._searchFound):                
+##                self.displayMessageBox()                
+##                break            
+
+    def search(self, offset, unitpointer):
+        temp = None
         if (self.filteredList):
             searchString = ''
             if (self._sourcesearch and self._insource):
+                # FIXME: List index out of range
                 searchString = self.store.units[self.filteredList[unitpointer]].source
-    
+
             if (self._commentsearch and self._incomment):
+                # FIXME: List index out of range
                 searchString = self.store.units[self.filteredList[unitpointer]].getnotes()
-    
+
             if (self._targetsearch and self._intarget):
-                searchString = self.store.units[self.filteredList[unitpointer]].target
-                
-            temp = self.searchedIndex(offset, searchString, text)
+                # FIXME: List index out of range                
+                searchString = self.store.units[self.filteredList[unitpointer]].target                
+
+            temp = self.searchedIndex(offset, searchString)
         # when found in source, comment or target, it will emit signal
-        # in order to go to highlight place and put highlight.        
-        if (temp != -1 and temp != None):
+        # in order to go to highlight place and put highlight.
+        if (temp != -1 and temp != None):            
             self._offset = temp
             self._unitpointer = unitpointer
-            if (self._insource):                            
+##            self._searchFound = True
+            if (self._insource):
                 self.emitFoundInSource()
-            if (self._incomment):                            
+            if (self._incomment):
                 self.emitFoundInComment()
-            if (self._intarget):                                    
-                self.emitFoundInTarget()                                        
+            if (self._intarget):
+                self.emitFoundInTarget()
             return None
         
         # when search not found, it will decrease/increase unit depending on search previous or next
-        if (temp == -1 or temp == None):                     
+        if (temp == -1 or temp == None):
             if (self._forward):                
                 if (self._intarget):
-                    unitpointer += 1
-                self.setFlagsNext()
+                    unitpointer += 1                    
                 self._offset = -1
+                self.setFlagsNext()
             else:
-                if (self._insource):                              
-                    unitpointer -= 1
-                self.setFlagsPrevious()                
+                if (self._insource):
+                    unitpointer -= 1                    
+                self.setFlagsPrevious()
                 self._offset = 0
-            return unitpointer    
+            return unitpointer
             
-    def setFlagsPrevious(self):
-        if (self._intarget):             
+    def setFlagsPrevious(self):        
+        if (self._intarget):
             self._incomment = True
-            self._intarget = False                    
-            self._insource = False            
-        elif (self._incomment):                                
+            self._intarget = False                  
+            self._insource = False
+        elif (self._incomment):                        
             self._insource = True
             self._incomment = False
-            self._intarget = False                                                                
-        else:                                           
+            self._intarget = False
+        else:     
             self._intarget = True
             self._incomment = False
             self._insource = False
 
-    def setFlagsNext(self):
+    def setFlagsNext(self):        
         if (self._insource):
             self._incomment = True
             self._insource = False
-            self._intarget = False                    
-        elif (self._incomment):                    
+            self._intarget = False
+        elif (self._incomment):                
             self._intarget = True
             self._insource = False
-            self._incomment = False                    
-        else:                                    
+            self._incomment = False
+        else:
             self._insource = True
             self._incomment = False
-            self._intarget = False             
+            self._intarget = False
 
-    def searchedIndex(self, offset, stringofunit, text):
+    def searchedIndex(self, offset, stringofunit):
+        '''get offset to start searching, and string that it will be searched in'''
         if (self._matchcase):
-            regexp = QtCore.QRegExp(text)
+            regexp = QtCore.QRegExp(self._text)
         else:
-            regexp = QtCore.QRegExp(text, QtCore.Qt.CaseInsensitive)
+            regexp = QtCore.QRegExp(self._text, QtCore.Qt.CaseInsensitive)
 
         if (self._forward):
-            temp = regexp.indexIn(stringofunit, offset)                                                    
-        else:                      
+            temp = regexp.indexIn(stringofunit, offset)
+        else:
             temp = regexp. lastIndexIn(stringofunit, offset)
-        self._matchlength = regexp.matchedLength()        
-        return temp  
-    
-    def displayMessageBox(self, unit):                
-        if (unit < 0 and unit != None):            
-            ret = QtGui.QMessageBox.information(None, self.tr("Search Not Found"), self.tr("Not Found, Search Reached The Beginning of First String"), QtGui.QMessageBox.Ok, QtGui.QMessageBox.NoButton, QtGui.QMessageBox.NoButton)
-
-        if (unit > (len(self.filteredList) - 1) and unit != None):                        
-            ret = QtGui.QMessageBox.information(None, self.tr("Search Not Found"), self.tr("Not Found, Search Reached The End of Last String"), QtGui.QMessageBox.Ok, QtGui.QMessageBox.NoButton, QtGui.QMessageBox.NoButton)                    
-
-    
-    def emitFoundInSource(self):        
+        self._matchlength = regexp.matchedLength()
+        return temp
+   
+##    def displayMessageBox(self):        
+##        self.emitSearchNotFound()   
+##        ret = QtGui.QMessageBox.information(None, self.tr("Search"), self.tr("Search Not Found"), QtGui.QMessageBox.Ok, QtGui.QMessageBox.NoButton, QtGui.QMessageBox.NoButton)               
+            
+    def emitFoundInSource(self):
+        '''emit signal foundInSource with the a list of position the search found, and length'''
         self.setCurrentUnit(self.filteredList[self._unitpointer])
-        self.emit(QtCore.SIGNAL("foundInSource"), [self._offset, self._matchlength])        
+        self.emit(QtCore.SIGNAL("foundInSource"), [self._offset, self._matchlength])
     
-    def emitFoundInComment(self):        
+    def emitFoundInComment(self):
+        '''emit signal foundInComment with the a list of position the search found, and length'''
         self.setCurrentUnit(self.filteredList[self._unitpointer])
         self.emit(QtCore.SIGNAL("foundInComment"), [self._offset, self._matchlength])
     
-    def emitFoundInTarget(self):        
+    def emitFoundInTarget(self):
+        '''emit signal foundInTarget with the a list of position the search found, and length'''
         self.setCurrentUnit(self.filteredList[self._unitpointer])
-        self.emit(QtCore.SIGNAL("foundInTarget"), [self._offset, self._matchlength])        
+        self.emit(QtCore.SIGNAL("foundInTarget"), [self._offset, self._matchlength])
+
+    def emitSearchNotFound(self):
+        '''emit signal search not found in order to unhighlight'''
+        self.emit(QtCore.SIGNAL("searchNotFound"))

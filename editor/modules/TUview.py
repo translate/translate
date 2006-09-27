@@ -27,14 +27,15 @@ class TUview(QtGui.QDockWidget):
     def __init__(self):
         QtGui.QDockWidget.__init__(self)
         self.setWindowTitle(self.tr("Detail"))
-        self.form = QtGui.QWidget(self)        
+        self.form = QtGui.QWidget(self)
         self.ui = Ui_TUview()
         self.ui.setupUi(self.form)
         self.setWidget(self.form)
+        self.layout = QtGui.QTextLayout ()
                 
         # create action for show/hide
         self._actionShow = QtGui.QAction(self)
-        self._actionShow.setObjectName("actionShowDetail")        
+        self._actionShow.setObjectName("actionShowDetail")
         self._actionShow.setText(self.tr("Hide Detail"))
         self.connect(self._actionShow, QtCore.SIGNAL("triggered()"), self.show)
 
@@ -43,13 +44,13 @@ class TUview(QtGui.QDockWidget):
         self._actionShow.setText(self.tr("Show Detail"))
         # FIXME you need to call the parents implementation here. Jens
         
-    def actionShow(self):  
-        return self._actionShow        
+    def actionShow(self):
+        return self._actionShow
         
     def show(self):
         """toggle hide/show detail caption"""
         if self.isHidden():
-            self._actionShow.setText(self.tr("Hide Detail"))    
+            self._actionShow.setText(self.tr("Hide Detail"))
         else:
             self._actionShow.setText(self.tr("Show Detail"))    
         self.setHidden(not self.isHidden())
@@ -76,7 +77,7 @@ class TUview(QtGui.QDockWidget):
             self.ui.fileScrollBar.setMaximum(0)
             return
         ## adjust the scrollbar
-        self.ids = range(len(units))       
+        self.ids = range(len(units))
         self.ui.fileScrollBar.setMaximum(len(units) - 1)
         self.ui.fileScrollBar.setEnabled(True)
         self.ui.fileScrollBar.setSliderPosition(0)
@@ -107,21 +108,23 @@ class TUview(QtGui.QDockWidget):
         self.ui.txtTarget.setFocus()
         self.ui.txtTarget.selectAll()
         self.ui.txtTarget.insertPlainText(self.ui.txtSource.toPlainText())
-        self.ui.txtTarget.document().setModified()    
+        self.ui.txtTarget.document().setModified()
 
     def setHighLightSource(self, location):
-        '''call setHighLight by passing source document and location (offset, length)'''                
+        '''call setHighLight by passing source document and location (offset, length)'''
         self.setHighLight(self.ui.txtSource.document(), location)
+        self.highlighted = True
         
     def setHighLightTarget(self, location):
-        '''call setHighLight by passing target document and location (offset, length)'''                
+        '''call setHighLight by passing target document and location (offset, length)'''              
         self.setHighLight(self.ui.txtTarget.document(), location)
+        self.highlighted = True
     
     def setHighLight(self, doc, location):
         '''HighLight on source or target depending on doc, and location (offset, and length)'''
         offsetindoc = location[0]
-        length = location[1]        
-        overrides = []        
+        length = location[1]
+        overrides = []
         charformat = QtGui.QTextCharFormat()
         charformat.setFontWeight(QtGui.QFont.Bold)
         charformat.setForeground(QtCore.Qt.darkMagenta)                
@@ -131,12 +134,18 @@ class TUview(QtGui.QDockWidget):
         range.start = offsetinblock
         range.length = length
         range.format = charformat
-        layout = block.layout()
+        self.layout = block.layout()
         text = block.text()
         overrides.append(range)
-        layout.setAdditionalFormats(overrides)
+        self.layout.setAdditionalFormats(overrides)
         block.document().markContentsDirty(block.position(), block.length())               
-        
+    
+    def clearHighLight(self):
+        try:
+            self.layout.clearAdditionalFormats ()
+        except:
+            pass
+            
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     Form = TUview()

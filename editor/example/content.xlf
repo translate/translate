@@ -84,7 +84,7 @@ ccccccc</note></trans-unit>
         <source>
           <ph id="1">&amp;para_download;</ph>
         </source>
-        <target state="new" xml:lang="KM-KH"/>
+        <target state="translated">TU</target>
         <prop-group>
           <prop prop-type="entryid">1150875516745</prop>
         </prop-group>

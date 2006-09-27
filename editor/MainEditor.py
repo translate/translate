@@ -99,7 +99,7 @@ class MainWindow(QtGui.QMainWindow):
         
         # create Find widget and connect signals related to it        
         self.findBar = Find()        
-        self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.findBar)      
+        self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.findBar)              
         self.findBar.ui.lineEdit.setFocus()
         self.connect(self.ui.actionFind, QtCore.SIGNAL("triggered()"), self.findBar.show)                 
         self.connect(self.findBar, QtCore.SIGNAL("startSearch"), self.operator.startSearch)
@@ -110,6 +110,8 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("foundInSource"), self.dockTUview.setHighLightSource)
         self.connect(self.operator, QtCore.SIGNAL("foundInTarget"), self.dockTUview.setHighLightTarget)
         self.connect(self.operator, QtCore.SIGNAL("foundInComment"), self.dockComment.setHighLightComment)
+        self.connect(self.operator, QtCore.SIGNAL("searchNotFound"), self.dockComment.clearHighLight)
+        self.connect(self.operator, QtCore.SIGNAL("searchNotFound"), self.dockTUview.clearHighLight)
                 
         # Edit menu action
         self.connect(self.ui.actionUndo, QtCore.SIGNAL("triggered()"), self.undoer)
@@ -331,11 +333,6 @@ class MainWindow(QtGui.QMainWindow):
     # FIXME this should go away, you can connect directly to setVisible. Jens
     def disableSave(self):
             self.ui.actionSave.setEnabled(False)                       
-            
-##    def enableSave(self):        
-##        self.operator.emitUpdateUnit()
-##        if self.operator._modified == True:
-##            self.ui.actionSave.setEnabled(False)        
     
     def startInNewWindow(self):        
         other = MainWindow()
