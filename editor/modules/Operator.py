@@ -126,7 +126,7 @@ class Operator(QtCore.QObject):
         self.emitUpdateUnit()
         if self._saveDone:
             self._modified = False            
-##            self._saveDone = False
+            self._saveDone = False
         return self._modified
     
     def setComment(self, comment):
@@ -194,6 +194,7 @@ class Operator(QtCore.QObject):
         self.emit(QtCore.SIGNAL("currentStatus"), ' ' + status + ' ')
     
     def setSearchOptions(self, options):
+        '''set location to search, direction, matchcase, and searching text'''
         self._sourcesearch = options[0]
         self._targetsearch = options[1]
         self._commentsearch = options[2]
@@ -202,32 +203,37 @@ class Operator(QtCore.QObject):
         self._text = options[5]
 
     def startSearch(self, options):
+        '''set options to start searching when input'''
+        self._searchFound = False
+        self._cycled = False        
         self._insource = True
         self._incomment = False
-        self._intarget = False
-        self._offset = -1
-##        self._searchFound = False 
-        self.searchNext(options)
+        self._intarget = False                
+        self.setSearchOptions(options)
+        if (self._forward):
+            self._offset = -1
+            self.searchNext(options)
+        else:
+            self._offset = 0
+            self.searchPrevious(options)
 
-    def searchNext(self, options):
-        '''get a list of options such as where to search, direction and text to search'''        
+    def searchNext(self, options): 
         self.setSearchOptions(options)
         unitpointer = self._unitpointer
-##        passedamount = 0        
-        while (unitpointer != None):
-            unitpointer = self.search(self._offset + 1, unitpointer)            
+        startingpoint = self._unitpointer
+        while (unitpointer != None and (unitpointer < len(self.filteredList) and unitpointer > -1)):
+            unitpointer = self.search(self._offset + 1, unitpointer)
             if ( unitpointer >  len(self.filteredList) - 1):
                 unitpointer = 0
+                self._cycled = True
+            if (unitpointer == startingpoint and self._cycled and not self._searchFound):
+                self.displayMessageBox()
+                break
             
-##            if ((passedamount > len(self.filteredList) - 1) and not self._searchFound):                
-##                self.displayMessageBox()                
-##                break            
-            
-    def searchPrevious(self, options):
-        '''get a list of options such as where to search, direction and text to search'''
+    def searchPrevious(self, options):        
         self.setSearchOptions(options)
         unitpointer = self._unitpointer
-##        passedamount = 0        
+        startingpoint = self._unitpointer        
         if (self._offset == 0):
             if (self._unitpointer != 0):
                 if (self._insource):
@@ -237,40 +243,37 @@ class Operator(QtCore.QObject):
                 if (not self._insource):
                     self.setFlagsPrevious()
                 else:
-                    unitpointer = self._unitpointer - 1        
-                    
-        while (unitpointer != None):            
+                    unitpointer = len(self.filteredList) - 1
+        
+        while (unitpointer != None and (unitpointer < len(self.filteredList) and unitpointer > -1)):            
             unitpointer = self.search(self._offset - 1, unitpointer)            
-            if ( unitpointer < 0 and unitpointer != None):
-                unitpointer =   len(self.filteredList) - 1           
+            if ( unitpointer < 0 and unitpointer != None):                
+                unitpointer =   len(self.filteredList) - 1
+                self._cycled = True
+            if (unitpointer == startingpoint and self._cycled and not self._searchFound):
+                self.displayMessageBox()
+                break
             
-##            if ((passedamount > len(self.filteredList) - 1) and not self._searchFound):                
-##                self.displayMessageBox()                
-##                break            
-
     def search(self, offset, unitpointer):
         temp = None
         if (self.filteredList):
             searchString = ''
             if (self._sourcesearch and self._insource):
-                # FIXME: List index out of range
                 searchString = self.store.units[self.filteredList[unitpointer]].source
 
             if (self._commentsearch and self._incomment):
-                # FIXME: List index out of range
                 searchString = self.store.units[self.filteredList[unitpointer]].getnotes()
 
-            if (self._targetsearch and self._intarget):
-                # FIXME: List index out of range                
-                searchString = self.store.units[self.filteredList[unitpointer]].target                
+            if (self._targetsearch and self._intarget):                
+                searchString = self.store.units[self.filteredList[unitpointer]].target
 
             temp = self.searchedIndex(offset, searchString)
         # when found in source, comment or target, it will emit signal
         # in order to go to highlight place and put highlight.
-        if (temp != -1 and temp != None):            
+        if (temp != -1 and temp != None):
+            self._searchFound = True
             self._offset = temp
             self._unitpointer = unitpointer
-##            self._searchFound = True
             if (self._insource):
                 self.emitFoundInSource()
             if (self._incomment):
@@ -307,12 +310,12 @@ class Operator(QtCore.QObject):
             self._incomment = False
             self._insource = False
 
-    def setFlagsNext(self):        
+    def setFlagsNext(self):
         if (self._insource):
             self._incomment = True
             self._insource = False
             self._intarget = False
-        elif (self._incomment):                
+        elif (self._incomment):          
             self._intarget = True
             self._insource = False
             self._incomment = False
@@ -322,7 +325,7 @@ class Operator(QtCore.QObject):
             self._intarget = False
 
     def searchedIndex(self, offset, stringofunit):
-        '''get offset to start searching, and string that it will be searched in'''
+        '''get string that it will be searched in, and position to search from'''
         if (self._matchcase):
             regexp = QtCore.QRegExp(self._text)
         else:
@@ -335,22 +338,23 @@ class Operator(QtCore.QObject):
         self._matchlength = regexp.matchedLength()
         return temp
    
-##    def displayMessageBox(self):        
-##        self.emitSearchNotFound()   
-##        ret = QtGui.QMessageBox.information(None, self.tr("Search"), self.tr("Search Not Found"), QtGui.QMessageBox.Ok, QtGui.QMessageBox.NoButton, QtGui.QMessageBox.NoButton)               
+    def displayMessageBox(self):
+        '''clear hightlight and display message information when search not found'''
+        self.emitSearchNotFound()
+        ret = QtGui.QMessageBox.information(None, self.tr("Search"), self.tr("Search Not Found"), QtGui.QMessageBox.Ok, QtGui.QMessageBox.NoButton, QtGui.QMessageBox.NoButton) 
             
     def emitFoundInSource(self):
-        '''emit signal foundInSource with the a list of position the search found, and length'''
+        '''emit signal foundInSource with the a list of position the search found, and length in source'''
         self.setCurrentUnit(self.filteredList[self._unitpointer])
         self.emit(QtCore.SIGNAL("foundInSource"), [self._offset, self._matchlength])
     
     def emitFoundInComment(self):
-        '''emit signal foundInComment with the a list of position the search found, and length'''
+        '''emit signal foundInComment with the a list of position the search found, and length in comment'''
         self.setCurrentUnit(self.filteredList[self._unitpointer])
         self.emit(QtCore.SIGNAL("foundInComment"), [self._offset, self._matchlength])
     
     def emitFoundInTarget(self):
-        '''emit signal foundInTarget with the a list of position the search found, and length'''
+        '''emit signal foundInTarget with the a list of position the search found, and length to highlight in target'''
         self.setCurrentUnit(self.filteredList[self._unitpointer])
         self.emit(QtCore.SIGNAL("foundInTarget"), [self._offset, self._matchlength])
 
