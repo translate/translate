@@ -231,8 +231,11 @@ class pounit(base.TranslationUnit):
       return
     if isinstance(target, multistring) and len(target.strings) > 1:
       target = target.strings
-    if not self.hasplural() and isinstance(target,(dict, list)) and len(target) > 1:
-      raise ValueError("po msgid element has no plural but msgstr has %d elements (%s)" % (len(target), target))
+    if not self.hasplural() and isinstance(target,(dict, list)):
+      if len(target) == 1:
+        target = target[0]
+      else:
+        raise ValueError("po msgid element has no plural but msgstr has %d elements (%s)" % (len(target), target))
     templates = self.msgstr
     if isinstance(templates, list):
       templates = {0: templates}
