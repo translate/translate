@@ -340,15 +340,14 @@ class Operator(QtCore.QObject):
    
     def displayMessageBox(self):
         '''clear hightlight and display message information when search not found'''
-        self.emitSearchNotFound()
-        ret = QtGui.QMessageBox.information(None, self.tr("Search"), self.tr("Search Not Found"), QtGui.QMessageBox.Ok, QtGui.QMessageBox.NoButton, QtGui.QMessageBox.NoButton) 
+        self.emitSearchNotFound()        
             
     def emitFoundInSource(self):
         '''emit signal foundInSource with the a list of position the search found, and length in source'''
         self.setCurrentUnit(self.filteredList[self._unitpointer])
         self.emit(QtCore.SIGNAL("foundInSource"), [self._offset, self._matchlength])
     
-    def emitFoundInComment(self):
+    def emitFoundInsearchlabelComment(self):
         '''emit signal foundInComment with the a list of position the search found, and length in comment'''
         self.setCurrentUnit(self.filteredList[self._unitpointer])
         self.emit(QtCore.SIGNAL("foundInComment"), [self._offset, self._matchlength])
@@ -361,3 +360,4 @@ class Operator(QtCore.QObject):
     def emitSearchNotFound(self):
         '''emit signal search not found in order to unhighlight'''
         self.emit(QtCore.SIGNAL("searchNotFound"))
+        self.emit(QtCore.SIGNAL("phraseNotFound"), "Phrase Not Found")

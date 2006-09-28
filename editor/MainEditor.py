@@ -78,8 +78,11 @@ class MainWindow(QtGui.QMainWindow):
 
         #add widgets to statusbar
         #TODO: Decorate Status Bar
-        self.statuslabel = QtGui.QLabel()        
-        self.ui.statusbar.addWidget(self.statuslabel)                
+
+        self.statuslabel = QtGui.QLabel()
+        self.searchlabel = QtGui.QLabel()        
+        self.ui.statusbar.addWidget(self.statuslabel)
+        self.ui.statusbar.addPermanentWidget(self.searchlabel)
 
         #create operator
         self.operator = Operator()                
@@ -112,7 +115,8 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("foundInComment"), self.dockComment.setHighLightComment)
         self.connect(self.operator, QtCore.SIGNAL("searchNotFound"), self.dockComment.clearHighLight)
         self.connect(self.operator, QtCore.SIGNAL("searchNotFound"), self.dockTUview.clearHighLight)
-                
+        self.connect(self.operator, QtCore.SIGNAL("phraseNotFound"), self.searchlabel.setText)
+                        
         # Edit menu action
         self.connect(self.ui.actionUndo, QtCore.SIGNAL("triggered()"), self.undoer)
         self.connect(self.ui.actionRedo, QtCore.SIGNAL("triggered()"), self.redoer) 
@@ -170,7 +174,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("filteredList"), self.dockTUview.filteredList)
         
         # set file status information to text label of status bar
-        self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.statuslabel.setText)        
+        self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.statuslabel.setText)
         self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.setOpening)
         
     
