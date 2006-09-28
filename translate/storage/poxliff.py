@@ -300,7 +300,27 @@ class PoXliffFile(xliff.xlifffile):
                 return candidate
         else:
             return None
-    
+
+    def parseheader(self):
+        """parses the values in the PO style header into a dictionary"""
+        header = self.header()
+        if not header:
+            return {}
+        return po.poheader.parse(header.target)
+
+    def updateheader(self, add=False, **kwargs):
+        """Updates the fields in the PO style header. 
+        Remember that this is not present in XLIFF files in general"""
+        headeritems = self.parseheader()
+        if not headeritems and not add:
+           return
+        header = self.header()
+        # TODO: Should we add a header if there is none?
+        if header:
+            header.target = po.poheader.update(headeritems, add, **kwargs)
+            header.markfuzzy(False)
+        return header
+
     def addplural(self, source, target, filename, createifmissing=False):
         """This method should now be unnecessary, but is left for reference"""
         assert isinstance(source, multistring)
