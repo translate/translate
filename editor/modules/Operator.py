@@ -55,10 +55,11 @@ class Operator(QtCore.QObject):
             self.emit(QtCore.SIGNAL("lastUnit"), False)
         else:
             self.emit(QtCore.SIGNAL("middleUnit"), True)
-        currentUnit = self.getCurrentUnit()
-        if (currentUnit != len(self.store.units)):
-            self.emit(QtCore.SIGNAL("currentUnit"), self.store.units[currentUnit])
-            self.emit(QtCore.SIGNAL("currentPosition"), currentUnit)            
+        currentPosition = self.getCurrentUnit()
+        if (currentPosition != len(self.store.units)):
+            self.emit(QtCore.SIGNAL("currentUnit"), self.store.units[currentPosition])
+            self.emit(QtCore.SIGNAL("currentPosition"), currentPosition)
+            print 'currentPosition:', currentPosition
 
     def getCurrentUnit(self):
         try:
@@ -130,26 +131,26 @@ class Operator(QtCore.QObject):
     
     def setComment(self, comment):
         """set the comment which is QString type to the current unit."""
-        currentUnit = self.getCurrentUnit()
-        self.store.units[currentUnit].removenotes()
-        self.store.units[currentUnit].addnote(unicode(comment))
+        currentPosition = self.getCurrentUnit()
+        self.store.units[currentPosition].removenotes()
+        self.store.units[currentPosition].addnote(unicode(comment))
         self._modified = True
     
     def setTarget(self, target):
         """set the target which is QString type to the current unit."""
-        unit = self.getCurrentUnit()
-        currentUnit = self.store.units[unit]
+        currentPosition = self.getCurrentUnit()
+        currentUnit = self.store.units[currentPosition]
         before_isuntranslated = not currentUnit.istranslated()
         unitIsFuzzy = currentUnit.isfuzzy()
         currentUnit.target = unicode(target)
         if (currentUnit.target != ''):
             try:
-                self.store.units[unit].marktranslated()
+                self.store.units[currentPosition].marktranslated()
             except AttributeError:
                 pass
             if (unitIsFuzzy):
                 self.numFuzzy -= 1
-                self.store.units[unit].markfuzzy(False)
+                self.store.units[currentPosition].markfuzzy(False)
         after_istranslated = currentUnit.istranslated()
         if (before_isuntranslated and after_istranslated):
             self.numTranslated += 1
@@ -172,18 +173,18 @@ class Operator(QtCore.QObject):
    
     def toggleFuzzy(self):
         """toggle fuzzy state for current unit"""
-        unit = self.getCurrentUnit()
-        unitIsFuzzy = self.store.units[unit].isfuzzy()
+        currentPosition = self.getCurrentUnit()
+        unitIsFuzzy = self.store.units[currentPosition].isfuzzy()
         if (unitIsFuzzy):
-            self.store.units[unit].markfuzzy(False)
+            self.store.units[currentPosition].markfuzzy(False)
             self.numFuzzy -= 1
             # send takeout current unit signal
             self.emit(QtCore.SIGNAL("takeoutUnit"), self._unitpointer)
         else:
-            self.store.units[unit].markfuzzy(True)
+            self.store.units[currentPosition].markfuzzy(True)
             self.numFuzzy += 1
         
-        print 'after fuzzied:', self.store.units[unit].isfuzzy()
+        print 'after fuzzied:', self.store.units[currentPosition].isfuzzy()
         self._modified = True
         self.emitCurrentStatus()
     

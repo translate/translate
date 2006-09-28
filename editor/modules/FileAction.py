@@ -26,6 +26,8 @@ class FileAction(QtGui.QDialog):
     def __init__(self):
         QtGui.QDialog.__init__(self)        
         self.fileName = None
+        self.fileExtension = ""
+        self.fileDescription = ""
         
     def openFile(self):    
         #TODO: open one or more existing files selected
@@ -33,6 +35,7 @@ class FileAction(QtGui.QDialog):
                         QtCore.QDir.currentPath(),
                         self.tr("Supported Files (*.po *.pot *.xliff *.xlf);;All Files(*.*)"))
                         #self.tr("Po Files (*.po);; XLIFF Files (*.xliff *.xlf);;Po Templates (*.pot)"))
+
         if not self.fileName.isEmpty():
             self.emitFileOpened()
             return True
@@ -43,52 +46,25 @@ class FileAction(QtGui.QDialog):
         if not self.fileName.isEmpty():
             self.emitFileName()
 
-    def fileType(self):
-        (path, openedFile) = os.path.split(str(self.fileName))
-        ##detecting file type
-        # FIXME that does not work if my file ends with po but not with .po! Jens
-        if (self.fileForSave.endswith(".po")):
-            extension = ".po"
-            defaultFileType = "Po Files (*.po);;"
-            otherFileType = "XLIFF Files (*.xliff *.xlf);;Po TemplateFiles (*.pot)"
-        elif (self.openedFile.endswith(".pot")):
-            self.extension = ".pot"
-            defaultFileType = "Po TemplateFiles (*.pot);;"
-            otherFileType = "XLIFF Files (*.xliff *.xlf);;Po Files (*.po)"
-        elif (self.openedFile.endswith(".xlf")):
-            self.extension = ".xlf"
-            defaultFileType = "XLIFF Files (*.xliff *.xlf);;"
-            otherFileType =  "Po Files (*.po);;XLIFF Files (*.xliff *.xlf)"
-        return defaultFileType + otherFileType
-            
     def saveAs(self):      
-        # TODO: set selected Filter to all support Files        
-        # FIXME how shall self.tr(fileType) work here? You can not translate what you only
-        # know at runtime! You must use the tr() in the lines above! Jens
-        #self.fileForSave = QtGui.QFileDialog.getSaveFileName(self, self.tr("Save As"), QtCore.QDir.currentPath(), self.fileType())
-        self.fileForSave = QtGui.QFileDialog.getSaveFileName(self, self.tr("Save As"), QtCore.QDir.currentPath(), self.tr("Supported Files (*.po *.pot *.xliff *.xlf);;All Files(*.*)"))
-        #save button clicked
-        if iself.fileForSave.isNull():
-            if self.fileForSave.isEmpty():
-                (path, saveFile) = os.path.split(str(self.fileForSave))
-                ##detecting extension
-                # FIXME You allow *.xliff in the filter but you do not test here for it! Jens
-                if not (saveFile.endswith(".po") or saveFile.endswith(".xlf")):
-                    #adding extension auto according to existing open file
-                    self.fileForSave = str(self.fileForSave) + str(self.extension)
+        # TODO: set selected Filter to all support Files
+        labelSaveAs = self.tr("Save As")
+        labelAllFiles = self.tr("All Files")
+        self.fileForSave = QtGui.QFileDialog.getSaveFileName(self,
+            labelSaveAs, QtCore.QDir.currentPath(), 
+            self.fileDescription + " (*" + self.fileExtension + ");;" + labelAllFiles + " (*.*)")
+        
+        # perform save as only when there is filename
+        if not self.fileForSave.isNull():
+            (path, saveFile) = os.path.split(str(self.fileForSave))
+            if not (saveFile.endswith(self.fileExtension)):
+                # add extension according to existing open file
+                self.fileForSave = str(self.fileForSave) + self.fileExtension
                 self.fileName = self.fileForSave
-                self.emitFileName()
-            # FIXME add a return value here. Jens
-            else:
-                QtGui.QMessageBox.information(self,self.tr("Information") ,self.tr("Please specify the filename to save to"))
-                self.saveAs()
-        #close button clicked
-        else:
-            pass
-            
-    # FIXME the name is wrong, you are about to close not about to save. Jens
+            self.emitFileName()
+
     def aboutToClose(self, main):
-      # FIXME indentation! Jens    ---done         
+        """Action before closing the program when file has modified"""
         ret = QtGui.QMessageBox.question(main, self.tr("File Modified"),
                     self.tr("The file has been modified.\n"
                             "Do you want to save your changes?"),
@@ -108,15 +84,26 @@ class FileAction(QtGui.QDialog):
         self.emitFileOpened()
     
     def emitFileName(self):
-        '''emit signal fileName, with a filename as string'''
+        """emit signal fileName, with a filename as string"""
         self.emit(QtCore.SIGNAL("fileName"), str(self.fileName))               
     
     def emitStatus(self):
         self.emit(QtCore.SIGNAL("statusActivated"), str(self.fileName))
     
     def emitFileOpened(self):
-        '''emit signal fileOpened, with a filename as string'''
-        self.emit(QtCore.SIGNAL("fileOpened"), str(self.fileName))              
+        """emit signal fileOpened, with a filename as string"""
+        # get default file extension and description
+        (path, fileName) = os.path.split(str(self.fileName).lower())
+        if (fileName.endswith(".po")):
+            self.fileExtension = ".po"
+            self.fileDescription = "Po Files"
+        elif (fileName.endswith(".pot")):
+            self.fileExtension = ".pot"
+            self.fileDescription = "Po TemplateFiles"
+        elif (fileName.endswith(".xlf")):
+            self.fileExtension = ".xlf"
+            self.fileDescription = "XLIFF Files"
+        self.emit(QtCore.SIGNAL("fileOpened"), str(self.fileName))
     
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
