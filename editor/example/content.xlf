@@ -13,7 +13,7 @@
     <body>
       <trans-unit approved="yes" id="0" reformat="yes" translate="yes" xml:space="default">
         <source>Objects and Object-Orientation</source>
-        <target state="translated">Objects and Object-Orientation</target>
+        <target state="translated">Objects and Object-Orientationasdfafdas</target>
         <prop-group>
           <prop prop-type="entryid">1150875516735</prop>
         </prop-group>
@@ -22,12 +22,12 @@ Objects and Object-Orientation</note></trans-unit>
       
       <trans-unit approved="yes" id="1" reformat="yes" translate="yes" xml:space="default">
         <source>Chapter 5</source>
-        <target state="needs-review-translation" state-qualifier="fuzzy-match">ចម្រៀងខ្មែរ5</target>
+        <target state="translated">ចម្រៀងខ្មែរ5lkmkppo</target>
         <prop-group>
           <prop prop-type="entryid">1150875516738</prop>
         </prop-group>
       
-      <note>ចម្រៀងខ្មែរ5</note></trans-unit>
+      <note>ចម្រៀងខ្មែរ5[po[p[p</note></trans-unit>
       <trans-unit approved="yes" id="2" reformat="yes" translate="yes" xml:space="default">
         <source>This chapter, and pretty much every chapter after this, deals with object-oriented <ph id="1">&amp;python;</ph> programming.</source>
         <target state="translated">This chapter, and pretty much every chapter after this, deals with object-oriented &amp;python; programming.</target>

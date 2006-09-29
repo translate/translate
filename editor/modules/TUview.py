@@ -116,13 +116,11 @@ class TUview(QtGui.QDockWidget):
 
     def setHighLightSource(self, location):
         '''call setHighLight by passing source document and location (offset, length)'''
-        self.setHighLight(self.ui.txtSource.document(), location)
-        self.highlighted = True
+        self.setHighLight(self.ui.txtSource.document(), location)        
         
     def setHighLightTarget(self, location):
         '''call setHighLight by passing target document and location (offset, length)'''              
-        self.setHighLight(self.ui.txtTarget.document(), location)
-        self.highlighted = True
+        self.setHighLight(self.ui.txtTarget.document(), location)        
     
     def setHighLight(self, doc, location):
         '''HighLight on source or target depending on doc, and location (offset, and length)'''
@@ -146,10 +144,12 @@ class TUview(QtGui.QDockWidget):
     
     def clearHighLight(self):
         try:
-            self.layout.clearAdditionalFormats ()
+            self.layout.clearAdditionalFormats()
+            self.ui.txtSource.update()
+            self.ui.txtTarget.update()
         except:
-            pass
-            
+            pass        
+        
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     Form = TUview()

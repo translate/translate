@@ -29,6 +29,7 @@ class Operator(QtCore.QObject):
         self.store = None               
         self._modified = False
         self._saveDone = False        
+        self._unitpointer=None
     
     def getUnits(self, fileName):
         self.store = factory.getobject(fileName)
@@ -58,8 +59,7 @@ class Operator(QtCore.QObject):
         currentPosition = self.getCurrentUnit()
         if (currentPosition != len(self.store.units)):
             self.emit(QtCore.SIGNAL("currentUnit"), self.store.units[currentPosition])
-            self.emit(QtCore.SIGNAL("currentPosition"), currentPosition)
-            print 'currentPosition:', currentPosition
+            self.emit(QtCore.SIGNAL("currentPosition"), currentPosition)            
 
     def getCurrentUnit(self):
         try:
@@ -88,8 +88,11 @@ class Operator(QtCore.QObject):
 
     def emitHeader(self, fileName):
         self.store = factory.getobject(fileName)
-        self.emit(QtCore.SIGNAL("header"),self.store.header())
-           
+        try:
+            self.emit(QtCore.SIGNAL("header"),self.store.header())
+        except:
+            pass
+        
     def takeoutUnit(self, value):
         return
         self.unitpointer = value - 1
@@ -139,9 +142,7 @@ class Operator(QtCore.QObject):
         currentUnit = self.getCurrentUnit()
         self.store.units[currentUnit].removenotes()
         self.store.units[currentUnit].addnote(unicode(comment))
-        self._modified = True      
-##        self.setReadyForSave()
-
+        self._modified = True
     
     def setTarget(self, target):
         """set the target which is QString type to the current unit."""
@@ -169,7 +170,6 @@ class Operator(QtCore.QObject):
             self.emit(QtCore.SIGNAL("takeoutUnit"), self._unitpointer)
         self.emitCurrentStatus()
         self._modified = True
-##        self.setReadyForSave()    
     
     def setCurrentUnit(self, value):
         self.emitUpdateUnit()
@@ -192,7 +192,6 @@ class Operator(QtCore.QObject):
             self.store.units[currentPosition].markfuzzy(True)
             self.numFuzzy += 1
         
-        print 'after fuzzied:', self.store.units[currentPosition].isfuzzy()
         self._modified = True
         self.emitCurrentStatus()
     
@@ -235,7 +234,7 @@ class Operator(QtCore.QObject):
                 unitpointer = 0
                 self._cycled = True
             if (unitpointer == startingpoint and self._cycled and not self._searchFound):
-                self.displayMessageBox()
+                self.emitSearchNotFound()
                 break
             
     def searchPrevious(self, options):        
@@ -259,7 +258,7 @@ class Operator(QtCore.QObject):
                 unitpointer =   len(self.filteredList) - 1
                 self._cycled = True
             if (unitpointer == startingpoint and self._cycled and not self._searchFound):
-                self.displayMessageBox()
+                self.emitSearchNotFound()
                 break
             
     def search(self, offset, unitpointer):
@@ -344,18 +343,14 @@ class Operator(QtCore.QObject):
         else:
             temp = regexp. lastIndexIn(stringofunit, offset)
         self._matchlength = regexp.matchedLength()
-        return temp
-   
-    def displayMessageBox(self):
-        '''clear hightlight and display message information when search not found'''
-        self.emitSearchNotFound()        
+        return temp 
             
     def emitFoundInSource(self):
         '''emit signal foundInSource with the a list of position the search found, and length in source'''
         self.setCurrentUnit(self.filteredList[self._unitpointer])
         self.emit(QtCore.SIGNAL("foundInSource"), [self._offset, self._matchlength])
     
-    def emitFoundInsearchlabelComment(self):
+    def emitFoundInComment(self):
         '''emit signal foundInComment with the a list of position the search found, and length in comment'''
         self.setCurrentUnit(self.filteredList[self._unitpointer])
         self.emit(QtCore.SIGNAL("foundInComment"), [self._offset, self._matchlength])
@@ -367,5 +362,6 @@ class Operator(QtCore.QObject):
 
     def emitSearchNotFound(self):
         '''emit signal search not found in order to unhighlight'''
-        self.emit(QtCore.SIGNAL("searchNotFound"))
-        self.emit(QtCore.SIGNAL("phraseNotFound"), "Phrase Not Found")
+        self.emit(QtCore.SIGNAL("clearHighLight"))
+        self.emit(QtCore.SIGNAL("searchNotFound"), "search not found")
+        

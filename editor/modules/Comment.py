@@ -89,10 +89,11 @@ class CommentDock(QtGui.QDockWidget):
 
     def clearHighLight(self):
         try:
-            self.layout. clearAdditionalFormats()
+            self.layout.clearAdditionalFormats()
+            self.ui.txtComment.update()
         except:
-            pass
-            
+            pass        
+        
     def setReadyForSave(self):
       self.emit(QtCore.SIGNAL("readyForSave"), True)
 

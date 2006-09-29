@@ -114,10 +114,10 @@ class MainWindow(QtGui.QMainWindow):
         # connect setHighLightSourcek setHighLightTarget, setHighLightComment by passing offset, and length
         self.connect(self.operator, QtCore.SIGNAL("foundInSource"), self.dockTUview.setHighLightSource)
         self.connect(self.operator, QtCore.SIGNAL("foundInTarget"), self.dockTUview.setHighLightTarget)
-##        self.connect(self.operator, QtCore.SIGNAL("foundInComment"), self.dockComment.setHighLightComment)
-        self.connect(self.operator, QtCore.SIGNAL("searchNotFound"), self.dockComment.clearHighLight)
-        self.connect(self.operator, QtCore.SIGNAL("searchNotFound"), self.dockTUview.clearHighLight)
-        self.connect(self.operator, QtCore.SIGNAL("phraseNotFound"), self.searchlabel.setText)
+        self.connect(self.operator, QtCore.SIGNAL("foundInComment"), self.dockComment.setHighLightComment)
+        self.connect(self.operator, QtCore.SIGNAL("clearHighLight"), self.dockComment.clearHighLight)
+        self.connect(self.operator, QtCore.SIGNAL("clearHighLight"), self.dockTUview.clearHighLight)
+        self.connect(self.operator, QtCore.SIGNAL("searchNotFound"), self.searchlabel.setText)
                         
         # Edit menu action
         self.connect(self.ui.actionUndo, QtCore.SIGNAL("triggered()"), self.undoer)
