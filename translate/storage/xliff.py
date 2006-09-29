@@ -116,9 +116,18 @@ class xliffunit(lisa.LISAunit):
             note.setAttribute("from", origin)
         self.xmlelement.appendChild(note)        
 
-    def getnotes(self):
-        """Returns the text from all the notes"""
-        return lisa.getText(self.xmlelement.getElementsByTagName("note"))
+    def getnotes(self, origin=None):
+        """Returns the text from notes matching 'origin' or all notes"""
+        notenodes = self.xmlelement.getElementsByTagName("note")
+        if origin == None:
+          return lisa.getText(notenodes)
+        else:
+          length = len(notenodes)
+          notes = ""
+          for i in range(length):
+             if notenodes[i].getAttribute("from") == origin:
+                notes += lisa.getText(notenodes[i])
+          return notes
 
     def removenotes(self):
         """Remove all the notes"""
