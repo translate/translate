@@ -381,7 +381,6 @@ class Ui_MainWindow(object):
         self.actionSelectAll.setShortcut(self.tr("Ctrl+A"))
         self.actionEdit_Header.setText(self.tr("Edit Header."))
 
-
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     MainWindow = QtGui.QMainWindow()

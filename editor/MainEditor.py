@@ -103,10 +103,11 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionExit, QtCore.SIGNAL("triggered()"), QtCore.SLOT("close()"))
         
         # create Find widget and connect signals related to it        
-        self.findBar = Find()        
+        self.findBar = Find()      
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.findBar)              
         self.findBar.ui.lineEdit.setFocus()
-        self.connect(self.ui.actionFind, QtCore.SIGNAL("triggered()"), self.findBar.show)                 
+        self.connect(self.ui.actionFind, QtCore.SIGNAL("triggered()"), self.findBar.showFind)        
+        self.connect(self.ui.actionReplace, QtCore.SIGNAL("triggered()"), self.findBar.showReplace)        
         self.connect(self.findBar, QtCore.SIGNAL("startSearch"), self.operator.startSearch)
         self.connect(self.findBar, QtCore.SIGNAL("findNext"), self.operator.searchNext)
         self.connect(self.findBar, QtCore.SIGNAL("findPrevious"), self.operator.searchPrevious)
@@ -118,7 +119,8 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("clearHighLight"), self.dockComment.clearHighLight)
         self.connect(self.operator, QtCore.SIGNAL("clearHighLight"), self.dockTUview.clearHighLight)
         self.connect(self.operator, QtCore.SIGNAL("searchNotFound"), self.searchlabel.setText)
-                        
+        
+    
         # Edit menu action
         self.connect(self.ui.actionUndo, QtCore.SIGNAL("triggered()"), self.undoer)
         self.connect(self.ui.actionRedo, QtCore.SIGNAL("triggered()"), self.redoer) 
@@ -263,11 +265,10 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionSaveas.setEnabled(True)
         self.ui.actionUndo.setEnabled(True)
         self.ui.actionRedo.setEnabled(True)
-##        self.ui.actionCut.setEnabled(True)
-##        self.ui.actionCopy.setEnabled(True)
         self.ui.actionPast.setEnabled(True)
         self.ui.actionSelectAll.setEnabled(True)
         self.ui.actionFind.setEnabled(True)
+        self.ui.actionReplace.setEnabled(True)
         self.setEnabledFirstPrev(False)
         # FIXME what will happen if the file only contains 1 TU? Jens
         self.setEnabledNextLast(True)   
@@ -340,7 +341,6 @@ class MainWindow(QtGui.QMainWindow):
 
     def setEnabledSave(self, bool):
         self.ui.actionSave.setEnabled(bool)
-    
     
     def disableAll(self):
         self.ui.actionFirst.setDisabled(True)

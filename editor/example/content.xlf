@@ -35,10 +35,11 @@ Objects and Object-Orientation</note></trans-unit>
           <prop prop-type="entryid">1150875516739</prop>
         </prop-group>
       <note>finding note
-ccccccc</note><note>finding note
+cccccccfinding note
 ccccccc
 finding note
-ccccccc</note></trans-unit>
+ccccccc
+Object</note></trans-unit>
       <trans-unit approved="yes" id="3" reformat="yes" translate="yes" xml:space="default">
         <source>Diving In</source>
         <target/>

@@ -31,18 +31,16 @@ class Find(QtGui.QDockWidget):
         self.ui = Ui_Form()
         self.ui.setupUi(self.form)  
         self.setWidget(self.form)        
-        self.setFeatures(QtGui.QDockWidget.DockWidgetClosable)                
-        self.hide()        
-        self.searchinsource = True
-        self.searchintarget = False
-        self.searchincomment = False
+        self.setFeatures(QtGui.QDockWidget.DockWidgetClosable)        
         self.matchcase = False
-        self.forward = True                
+        self.forward = True        
+        self.setVisible(False)
+        
         
         # create action for show/hide
         self._actionShow = QtGui.QAction(self)
-        self._actionShow.setObjectName("actionShowOverview")        
-        self.connect(self._actionShow, QtCore.SIGNAL("triggered()"), self.show)        
+        self._actionShow.setObjectName("actionShowOverview")
+        self.connect(self._actionShow, QtCore.SIGNAL("triggered()"), self.show)
         self.connect(self.ui.findNext, QtCore.SIGNAL("clicked()"), self.findNext)
         self.connect(self.ui.findPrevious, QtCore.SIGNAL("clicked()"), self.findPrevious)        
         self.connect(self.ui.insource, QtCore.SIGNAL("stateChanged(int)"), self.emitSeachInSource)
@@ -103,8 +101,8 @@ class Find(QtGui.QDockWidget):
     
     def checkBoxCheckedStatus(self):
         if ((not self.ui.insource.isChecked()) and (not self.ui.intarget.isChecked()) and (not self.ui.incomment.isChecked())):
-            ret = QtGui.QMessageBox.warning(self, self.tr("No CheckBox Selected"), 
-                            self.tr("You have to select at least one checkbox\n in order to search."), 
+            ret = QtGui.QMessageBox.warning(self, self.tr("No Searching Location Selected"), 
+                            self.tr("You have to specify at least one location to search in."), 
                             QtGui.QMessageBox.Ok, QtGui.QMessageBox.NoButton, QtGui.QMessageBox.NoButton)
             return False
         else:
@@ -122,6 +120,34 @@ class Find(QtGui.QDockWidget):
     
     def getOptions(self):
         return [self.searchinsource, self.searchintarget, self.searchincomment, self.matchcase, self.forward, self.ui.lineEdit.text()]
+    
+    def showFind(self):
+        self.ui.insource.setChecked(True)
+        self.ui.insource.setEnabled(True)
+        self.ui.incomment.setChecked(False)
+        self.ui.intarget.setChecked(False)
+        self.searchinsource = True
+        self.searchintarget = False
+        self.searchincomment = False
+        self.ui.lineEdit_2.setEnabled(False)
+        self.ui.replace.setEnabled(False)
+        self.ui.replaceAll.setEnabled(False)
+        if (not self.isVisible()):
+            self.show()
+    
+    def showReplace(self):
+        self.ui.incomment.setChecked(True)
+        self.ui.insource.setChecked(False)        
+        self.ui.intarget.setChecked(False)
+        self.searchinsource = False
+        self.searchincomment = True
+        self.searchintarget = False
+        self.ui.insource.setEnabled(False)
+        self.ui.lineEdit_2.setEnabled(True)        
+        self.ui.replace.setEnabled(False)
+        self.ui.replaceAll.setEnabled(False)
+        if (not self.isVisible()):
+            self.show()
     
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

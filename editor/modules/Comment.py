@@ -40,7 +40,6 @@ class CommentDock(QtGui.QDockWidget):
         self._actionShow.setText(self.tr("Hide Comment"))    
         self.connect(self._actionShow, QtCore.SIGNAL("triggered()"), self.show)
         self.connect(self.ui.txtComment, QtCore.SIGNAL("textChanged ()"), self.setReadyForSave)
-
         
     def closeEvent(self, event):            
         self._actionShow.setText(self.tr("Show Comment"))
