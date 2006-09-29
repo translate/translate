@@ -32,7 +32,7 @@ class Operator(QtCore.QObject):
     
     def getUnits(self, fileName):
         self.store = factory.getobject(fileName)
-
+##        print self.store.getheaderplural()
         # get status for units       
         self.numFuzzy = len(pocount.fuzzymessages(self.store.units))
         self.numTranslated = len(pocount.translatedmessages(self.store.units))
@@ -86,6 +86,10 @@ class Operator(QtCore.QObject):
         if (self._unitpointer != None):
             self.emit(QtCore.SIGNAL("updateUnit"))    
 
+    def emitHeader(self, fileName):
+        self.store = factory.getobject(fileName)
+        self.emit(QtCore.SIGNAL("header"),self.store.header())
+           
     def takeoutUnit(self, value):
         return
         self.unitpointer = value - 1
@@ -121,20 +125,23 @@ class Operator(QtCore.QObject):
         self.emitUpdateUnit()
         self.store.savefile(fileName)
         self._saveDone = True
+        self.emit(QtCore.SIGNAL("savedAlready"), False) 
 
     def modified(self):
         self.emitUpdateUnit()
         if self._saveDone:
-            self._modified = False            
+            self._modified = False
             self._saveDone = False
         return self._modified
     
     def setComment(self, comment):
         """set the comment which is QString type to the current unit."""
-        currentPosition = self.getCurrentUnit()
-        self.store.units[currentPosition].removenotes()
-        self.store.units[currentPosition].addnote(unicode(comment))
-        self._modified = True
+        currentUnit = self.getCurrentUnit()
+        self.store.units[currentUnit].removenotes()
+        self.store.units[currentUnit].addnote(unicode(comment))
+        self._modified = True      
+##        self.setReadyForSave()
+
     
     def setTarget(self, target):
         """set the target which is QString type to the current unit."""
@@ -162,7 +169,8 @@ class Operator(QtCore.QObject):
             self.emit(QtCore.SIGNAL("takeoutUnit"), self._unitpointer)
         self.emitCurrentStatus()
         self._modified = True
-
+##        self.setReadyForSave()    
+    
     def setCurrentUnit(self, value):
         self.emitUpdateUnit()
         try:

@@ -1,9 +1,9 @@
-# ,មិនអាច​បើក​ប័ណ្ណសារ​
+# ,មិនអាច​បើក​ប័ណ្ណសារ​sfasfaasfsfaewrqsfasfa
 #: archivedialog.cpp:90
 msgid "Unable to Open Web-Archive"
-msgstr ""
+msgstr "safsfdsg"
 
-# សម្រាប់​ការ​សរសេរ​បាន​ទេ ។
+# សម្រាប់​ការ​សរសេរ​បាន​ទេ ។sfasfssfasasfasfsfsfasfsfsf
 #: archivedialog.cpp:91
 msgid ""
 "Unable to open \n"
@@ -11,16 +11,19 @@ msgid ""
 " for writing."
 msgstr ""
 
+# werwerw
 #: archivedialog.cpp:125
 msgid "Could Not Open Temporary File"
 msgstr ""
-"មិនអាច​បើក​ឯកសារ​បណ្តោះអាសន្ន​បាន​ទេ\n"
+"មិនអាច​បើក​ឯកសារ​បណ្តោះអាសន្ន​បាន​ទេsdfa\n"
 "jjjjj;afsda"
+"xcasdsadsf"
+"asfsfd"
 
-# open
+# opensfasa
 #: archivedialog.cpp:126
 msgid "Could not open a temporary file"
-msgstr "មិនអាច​បើក​ឯកសារ​បណ្តោះអាសន្ន​មួយ​បាន​ទេ"
+msgstr "មិនអាច​បើក​ឯកសារ​បណ្តោះអាសន្ន​មួយ​បាន​ទេsaf"
 
 #: archivedialog.cpp:157
 msgid "Archiving webpage completed."
@@ -54,16 +57,19 @@ msgstr ""
 msgid "Invalid URL"
 msgstr "​URL មិន​ត្រឹមត្រូវ"
 
+# sfsa
 #: plugin_webarchiver.cpp:96
 msgid ""
 "The URL\n"
 "%1\n"
 "is not valid."
 msgstr ""
+"sfa"
 " URL\n"
 "%1\n"
-"គឺ​មិន​ត្រឹមត្រូវ ។"
+"គឺ​មិន​ត្រឹមត្រូវ ។"
 
+# sfa
 #: plugin_webarchiver.cpp:103
 msgid "File Exists"
 msgstr "​មាន​ឯកសារ​រួច​ហើយ"

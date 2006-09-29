@@ -1,9 +1,8 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Wed Aug 30 09:18:58 2006
+# Created: Wed Sep 27 09:29:41 2006
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -24,7 +23,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0,0,571,29))
+        self.menubar.setGeometry(QtCore.QRect(0,0,571,27))
         self.menubar.setObjectName("menubar")
 
         self.menuHelp = QtGui.QMenu(self.menubar)
@@ -60,7 +59,7 @@ class Ui_MainWindow(object):
         MainWindow.setMenuBar(self.menubar)
 
         self.statusbar = QtGui.QStatusBar(MainWindow)
-        self.statusbar.setGeometry(QtCore.QRect(0,454,571,22))
+        self.statusbar.setGeometry(QtCore.QRect(0,456,571,20))
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
@@ -232,6 +231,9 @@ class Ui_MainWindow(object):
         self.actionSelectAll = QtGui.QAction(MainWindow)
         self.actionSelectAll.setEnabled(False)
         self.actionSelectAll.setObjectName("actionSelectAll")
+
+        self.actionEdit_Header = QtGui.QAction(MainWindow)
+        self.actionEdit_Header.setObjectName("actionEdit_Header")
         self.menuHelp.addAction(self.actionAbout)
         self.menuHelp.addAction(self.actionAboutQT)
         self.menuGo.addAction(self.actionFirst)
@@ -270,6 +272,7 @@ class Ui_MainWindow(object):
         self.menuEdit.addSeparator()
         self.menuEdit.addAction(self.actionCopySource2Target)
         self.menuEdit.addAction(self.actionToggleFuzzy)
+        self.menuEdit.addAction(self.actionEdit_Header)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
         self.menubar.addAction(self.menuGo.menuAction())
@@ -376,6 +379,7 @@ class Ui_MainWindow(object):
         self.actionFindPrevious.setShortcut(self.tr("Shift+F3"))
         self.actionSelectAll.setText(self.tr("Select &All"))
         self.actionSelectAll.setShortcut(self.tr("Ctrl+A"))
+        self.actionEdit_Header.setText(self.tr("Edit Header."))
 
 
 if __name__ == "__main__":

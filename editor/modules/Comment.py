@@ -38,7 +38,9 @@ class CommentDock(QtGui.QDockWidget):
         self._actionShow = QtGui.QAction(self)
         self._actionShow.setObjectName("actionShowComment")
         self._actionShow.setText(self.tr("Hide Comment"))    
-        self.connect(self._actionShow, QtCore.SIGNAL("triggered()"), self.show)         
+        self.connect(self._actionShow, QtCore.SIGNAL("triggered()"), self.show)
+        self.connect(self.ui.txtComment, QtCore.SIGNAL("textChanged ()"), self.setReadyForSave)
+
         
     def closeEvent(self, event):            
         self._actionShow.setText(self.tr("Show Comment"))
@@ -61,7 +63,10 @@ class CommentDock(QtGui.QDockWidget):
     def checkModified(self):
         if self.ui.txtComment.document().isModified():
             self.emit(QtCore.SIGNAL("commentChanged"), self.ui.txtComment.toPlainText())
-    
+
+    def getCommentToHighLight(self):                        
+        self.emit(QtCore.SIGNAL("highLight"), self.ui.txtComment.document())
+  
     def setHighLightComment(self, location):
         '''HighLight on comment depending on location (offset, and length)'''             
         offsetindoc = location[0]
@@ -88,6 +93,9 @@ class CommentDock(QtGui.QDockWidget):
         except:
             pass
             
+    def setReadyForSave(self):
+      self.emit(QtCore.SIGNAL("readyForSave"), True)
+
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     comment = CommentDock()

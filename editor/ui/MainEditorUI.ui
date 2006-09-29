@@ -31,7 +31,7 @@
      <x>0</x>
      <y>0</y>
      <width>571</width>
-     <height>29</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuHelp" >
@@ -124,6 +124,7 @@
     <addaction name="separator" />
     <addaction name="actionCopySource2Target" />
     <addaction name="actionToggleFuzzy" />
+    <addaction name="actionEdit_Header" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
@@ -135,9 +136,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>454</y>
+     <y>456</y>
      <width>571</width>
-     <height>22</height>
+     <height>20</height>
     </rect>
    </property>
   </widget>
@@ -598,6 +599,11 @@
    </property>
    <property name="shortcut" >
     <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="actionEdit_Header" >
+   <property name="text" >
+    <string>Edit Header...</string>
    </property>
   </action>
  </widget>

@@ -61,7 +61,15 @@ class FileAction(QtGui.QDialog):
                 # add extension according to existing open file
                 self.fileForSave = str(self.fileForSave) + self.fileExtension
                 self.fileName = self.fileForSave
-            self.emitFileName()
+                self.emitFileName()
+            # FIXME add a return value here. Jens
+            else:
+                QtGui.QMessageBox.information(self,self.tr("Information") ,self.tr("Please specify the filename to save to"))
+                self.saveAs()
+        #close button clicked
+        else:
+            pass
+            
 
     def aboutToClose(self, main):
         """Action before closing the program when file has modified"""
@@ -85,7 +93,7 @@ class FileAction(QtGui.QDialog):
     
     def emitFileName(self):
         """emit signal fileName, with a filename as string"""
-        self.emit(QtCore.SIGNAL("fileName"), str(self.fileName))               
+        self.emit(QtCore.SIGNAL("fileName"), str(self.fileName)) 
     
     def emitStatus(self):
         self.emit(QtCore.SIGNAL("statusActivated"), str(self.fileName))

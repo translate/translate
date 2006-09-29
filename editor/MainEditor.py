@@ -25,10 +25,12 @@ from modules.MainEditorUI import Ui_MainWindow
 from modules.TUview import TUview
 from modules.Overview import OverviewDock
 from modules.Comment import CommentDock
+from modules.Header import Header
 from modules.Operator import Operator
 from modules.FileAction import FileAction
 from modules.Find import Find
 from modules.AboutEditor import AboutEditor
+
 
 class MainWindow(QtGui.QMainWindow):
     MaxRecentFiles = 10
@@ -112,7 +114,7 @@ class MainWindow(QtGui.QMainWindow):
         # connect setHighLightSourcek setHighLightTarget, setHighLightComment by passing offset, and length
         self.connect(self.operator, QtCore.SIGNAL("foundInSource"), self.dockTUview.setHighLightSource)
         self.connect(self.operator, QtCore.SIGNAL("foundInTarget"), self.dockTUview.setHighLightTarget)
-        self.connect(self.operator, QtCore.SIGNAL("foundInComment"), self.dockComment.setHighLightComment)
+##        self.connect(self.operator, QtCore.SIGNAL("foundInComment"), self.dockComment.setHighLightComment)
         self.connect(self.operator, QtCore.SIGNAL("searchNotFound"), self.dockComment.clearHighLight)
         self.connect(self.operator, QtCore.SIGNAL("searchNotFound"), self.dockTUview.clearHighLight)
         self.connect(self.operator, QtCore.SIGNAL("phraseNotFound"), self.searchlabel.setText)
@@ -132,7 +134,11 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionFirst, QtCore.SIGNAL("triggered()"), self.operator.first)        
         self.connect(self.ui.actionLast, QtCore.SIGNAL("triggered()"), self.operator.last)
         self.connect(self.ui.actionCopySource2Target, QtCore.SIGNAL("triggered()"), self.dockTUview.source2target)
-
+        
+        #Edit Header
+        self.headerDialog = Header()        
+        self.connect(self.ui.actionEdit_Header, QtCore.SIGNAL("triggered()"), self.headerDialog, QtCore.SLOT("show()"))
+        
         # action filter menu
         self.connect(self.ui.actionUnfiltered, QtCore.SIGNAL("triggered()"), self.unfiltered)
         self.connect(self.ui.actionFilterFuzzy, QtCore.SIGNAL("triggered()"), self.filterFuzzy)
@@ -141,7 +147,9 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionToggleFuzzy, QtCore.SIGNAL("triggered()"), self.operator.toggleFuzzy)
         
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockTUview.updateTUview)
-        self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockComment.updateComment)        
+        self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockComment.updateComment)
+        self.connect(self.operator, QtCore.SIGNAL("header"), self.headerDialog.updateHeader)  
+        self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.operator.emitHeader)      
 
         self.connect(self.operator, QtCore.SIGNAL("takeoutUnit"), self.takeoutUnit)
         
@@ -156,11 +164,13 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("updateUnit"), self.dockTUview.checkModified)
         self.connect(self.operator, QtCore.SIGNAL("updateUnit"), self.dockComment.checkModified)
         self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
-        self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.dockOverview.setTarget)        
+        self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.dockOverview.setTarget)           
         self.connect(self.dockComment, QtCore.SIGNAL("commentChanged"), self.operator.setComment)
         self.connect(self.fileaction, QtCore.SIGNAL("fileName"), self.operator.saveStoreToFile)
-        self.connect(self.fileaction, QtCore.SIGNAL("fileName"), self.disableSave)
-##        self.connect(self.fileaction, QtCore.SIGNAL("fileName"), self.enableSave)
+        self.connect(self.operator, QtCore.SIGNAL("savedAlready"), self.ui.actionSave.setEnabled)
+        self.connect(self.dockTUview, QtCore.SIGNAL("readyForSave"), self.ui.actionSave.setEnabled)     
+        self.connect(self.dockComment, QtCore.SIGNAL("readyForSave"), self.ui.actionSave.setEnabled)     
+
 
         self.connect(self.fileaction, QtCore.SIGNAL("fileName"), self.setTitle)
         self.connect(self.operator, QtCore.SIGNAL("firstUnit"), self.setEnabledFirstPrev)                
@@ -248,13 +258,13 @@ class MainWindow(QtGui.QMainWindow):
 
     def setOpening(self, fileName):        
         self.setTitle(fileName)
-        self.operator.getUnits(fileName)            
-        self.ui.actionSave.setEnabled(True)         # enable Save and Saveas action after opening file
+        self.operator.getUnits(fileName)          
+        self.ui.actionSave.setEnabled(False)  
         self.ui.actionSaveas.setEnabled(True)
         self.ui.actionUndo.setEnabled(True)
         self.ui.actionRedo.setEnabled(True)
-        self.ui.actionCut.setEnabled(True)
-        self.ui.actionCopy.setEnabled(True)
+##        self.ui.actionCut.setEnabled(True)
+##        self.ui.actionCopy.setEnabled(True)
         self.ui.actionPast.setEnabled(True)
         self.ui.actionSelectAll.setEnabled(True)
         self.ui.actionFind.setEnabled(True)
@@ -326,24 +336,24 @@ class MainWindow(QtGui.QMainWindow):
     
     def setEnabledNextLast(self, bool):
         self.ui.actionNext.setEnabled(bool)        
-        self.ui.actionLast.setEnabled(bool)                                
+        self.ui.actionLast.setEnabled(bool)        
+
+    def setEnabledSave(self, bool):
+        self.ui.actionSave.setEnabled(bool)
+    
     
     def disableAll(self):
         self.ui.actionFirst.setDisabled(True)
         self.ui.actionPrevious.setDisabled(True)
         self.ui.actionNext.setDisabled(True)
         self.ui.actionLast.setDisabled(True)
-    
-    # FIXME this should go away, you can connect directly to setVisible. Jens
-    def disableSave(self):
-            self.ui.actionSave.setEnabled(False)                       
-    
+
     def startInNewWindow(self):        
         other = MainWindow()
         MainWindow.windowList.append(other) 
         if other.fileaction.openFile():
             other.show()
-    
+
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     editor = MainWindow()
