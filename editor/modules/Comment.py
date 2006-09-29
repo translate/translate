@@ -68,7 +68,7 @@ class CommentDock(QtGui.QDockWidget):
         self.emit(QtCore.SIGNAL("highLight"), self.ui.txtComment.document())
   
     def setHighLightComment(self, location):
-        '''HighLight on comment depending on location (offset, and length)'''             
+        '''HighLight on comment depending on location (offset, and length)'''
         offsetindoc = location[0]
         length = location[1]
         overrides = []        
