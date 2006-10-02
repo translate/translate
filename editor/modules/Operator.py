@@ -26,9 +26,10 @@ from translate.tools import pocount
 class Operator(QtCore.QObject):
     def __init__(self):
         QtCore.QObject.__init__(self)
-        self.store = None               
+        self.store = None
         self._modified = False
-        self._saveDone = False        
+        self._saveDone = False
+        self._unitpointer = None
         self._unitpointer=None
     
     def getUnits(self, fileName):
@@ -41,9 +42,10 @@ class Operator(QtCore.QObject):
         self.numTotal = self.numTranslated + self.numUntranslated
         self.emitCurrentStatus()
         
-        self.filteredList = range(len(self.store.units))
-        self.emit(QtCore.SIGNAL("newUnits"), self.store.units)
-        
+        header = self.store.units[0].isheader()
+        self.filteredList = range(len(self.store.units))[header:]
+        self.emit(QtCore.SIGNAL("newUnits"), self.store.units[header:], self.filteredList)
+
         self._unitpointer = 0
         self.emitCurrentUnit()
 
@@ -84,7 +86,7 @@ class Operator(QtCore.QObject):
     
     def emitUpdateUnit(self):
         if (self._unitpointer != None):
-            self.emit(QtCore.SIGNAL("updateUnit"))    
+            self.emit(QtCore.SIGNAL("updateUnit"))
 
     def emitHeader(self, fileName):
         self.store = factory.getobject(fileName)

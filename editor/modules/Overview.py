@@ -62,11 +62,10 @@ class OverviewDock(QtGui.QDockWidget):
             self._actionShow.setText(self.tr("Show Overview"))    
         self.setHidden(not self.isHidden())    
 
-    def addItem(self, currentUnit, currentPointer):
+    def addItem(self, currentUnit, id):
         """Add one item to the list of source and target."""
         item = QtGui.QTreeWidgetItem(self.ui.treeOverview)
         self.items.append(item)
-        id = currentPointer
         item.setTextAlignment(0, QtCore.Qt.AlignRight)
         # sorting needs leading space: '   1', '   2', '  10'.. rather than '1', '10', '2'
         item.setText(0, str(id).rjust(4) + '  ')
@@ -93,13 +92,16 @@ class OverviewDock(QtGui.QDockWidget):
 ##            # select the first item in list
 ##            self.highLightItem(0)
 
-    def slotNewUnits(self, units):
+    def slotNewUnits(self, units, ids):
         """Initialize the list, clear and fill with units"""
         self.lastItem = None
-        self.items = []
+        if (ids[0] != 0):
+            self.items = [None]
+        else:
+            self.items = []
         self.ui.treeOverview.clear()
         for i in range(len(units)):
-            self.addItem(units[i], i)
+            self.addItem(units[i], ids[i])
         # select the first item in list
         self.highLightItem(0)
 
@@ -116,6 +118,7 @@ class OverviewDock(QtGui.QDockWidget):
         self.highLightItem(fList[0])
    
     def highLightItem(self, value):
+        print value
         if (not self.items) or (value < 0) or (value >= len(self.items)):
             return
         item = self.items[value]

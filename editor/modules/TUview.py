@@ -70,7 +70,7 @@ class TUview(QtGui.QDockWidget):
     def takeoutUnit(self, value):
         self.ui.fileScrollBar.setMaximum(self.ui.fileScrollBar.maximum() - 1)
         
-    def slotNewUnits(self, units):
+    def slotNewUnits(self, units, ids):
         """slot after new file was loaded"""
         if not units:
             self.ui.txtSource.setPlainText("")
@@ -78,7 +78,8 @@ class TUview(QtGui.QDockWidget):
             self.ui.fileScrollBar.setMaximum(0)
             return
         ## adjust the scrollbar
-        self.ids = range(len(units))
+        #self.ids = range(len(units))
+        self.ids = ids
         self.ui.fileScrollBar.setMaximum(len(units) - 1)
         self.ui.fileScrollBar.setEnabled(True)
         self.ui.fileScrollBar.setSliderPosition(0)
