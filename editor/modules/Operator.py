@@ -34,6 +34,7 @@ class Operator(QtCore.QObject):
     
     def getUnits(self, fileName):
         self.store = factory.getobject(fileName)
+        print fileName
 ##        print self.store.getheaderplural()
         # get status for units       
         self.numFuzzy = len(pocount.fuzzymessages(self.store.units))
@@ -76,7 +77,8 @@ class Operator(QtCore.QObject):
         if (not filter):
             self.filteredList = range(len(self.store.units))
         else:
-            for i in range(len(self.store.units)):
+            header = self.store.units[0].isheader()
+            for i in range(header, len(self.store.units)):
                 if (filter == 'fuzzy' and self.store.units[i].isfuzzy()) \
                 or (filter == 'translated' and self.store.units[i].istranslated()) \
                 or (filter == 'untranslated' and not self.store.units[i].istranslated()):
