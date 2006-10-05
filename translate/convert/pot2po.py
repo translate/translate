@@ -132,7 +132,8 @@ def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similari
           if inputpotunit.source == templatepounit.source and templatepounit.target:
             inputpotunit.merge(templatepounit)
             break
-        else: 
+        else:
+          fuzzycandidates = []
           if fuzzyfilematcher:
             fuzzycandidates = fuzzyfilematcher.matches(inputpotunit.source)
             if fuzzycandidates:
