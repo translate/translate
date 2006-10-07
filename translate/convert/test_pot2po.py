@@ -191,8 +191,8 @@ msgstr "Sertifikate"
     def test_merging_obsoleting_messages(self):
         """check that we obsolete messages no longer present in the new file"""
         potsource = ''
-        posource = '#: obsoleteme:10\nmsgid "One"\nmsgstr "Een"\n'
-        expected = '#~ msgid "One"\n#~ msgstr "Een"\n'
+        posource = '# Some comment\n#: obsoleteme:10\nmsgid "One"\nmsgstr "Een"\n'
+        expected = '# Some comment\n#~ msgid "One"\n#~ msgstr "Een"\n'
         newpo = self.convertpot(potsource, posource)
         print str(newpo)
         newpounit = self.singleunit(newpo)
