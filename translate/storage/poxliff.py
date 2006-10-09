@@ -170,15 +170,15 @@ class PoXliffUnit(xliff.xliffunit):
         for unit in self.units[1:]:
             unit.addnote(text, origin)
 
-    def getnotes(self):
-        """Returns the text from all the notes"""
-        notetags = self.xmlelement.getElementsByTagName("note")
-        if len(notetags) < 2:
-            return lisa.getText(notetags)
-        if lisa.getText(notetags[0]) == lisa.getText(notetags[1]):
-            return lisa.getText(notetags[0])
-        else:
-            return lisa.getText(notetags)
+    def getnotes(self, origin=None):
+        """Returns the text from notes matching 'origin' or all notes"""
+        notenodes = self.xmlelement.getElementsByTagName("note")
+        textlist = [lisa.getText(note) for note in notenodes if self.correctorigin(note, origin)]
+        notelist = []
+        for i in textlist:
+            if i not in notelist:
+                notelist.append(i)
+        return ''.join(notelist) 
 
 #    def isfuzzy(self):
 #       #We only need to check the first element, so we can simply inherit, but
