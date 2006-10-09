@@ -124,8 +124,8 @@ class xliffunit(lisa.LISAunit):
         else:
           length = len(notenodes)
           notes = ""
-          for i in range(length):
-             if notenodes[i].getAttribute("from") == origin:
+          for i in range(len(notenodes)):
+             if self.correctorigin(notenodes[i], origin):
                 notes += lisa.getText(notenodes[i])
           return notes
 
@@ -223,6 +223,14 @@ class xliffunit(lisa.LISAunit):
         if otherunit.isfuzzy():
             self.markfuzzy()
 
+    def correctorigin(self, node, origin):
+        """Check against note tag origin"""
+        if origin == None:
+            return True
+        elif origin not in node.getAttribute("from"):
+            return False
+        else:
+            return True
 
 class xlifffile(lisa.LISAfile):
     """Class representing a XLIFF file store."""
