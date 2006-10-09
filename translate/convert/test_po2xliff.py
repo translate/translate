@@ -171,7 +171,7 @@ msgstr "kunye"
         tuples = self.getcontexttuples(node)
         assert tuples == [("x-po-trancomment", "Translate?\nHow?")]
 
-        assert xliff.units[0].getnotes() == "Translate?\nHow?"
+        assert xliff.units[0].getnotes("translator") == "Translate?\nHow?"
 
 
     def test_automaticcomments(self):
@@ -213,7 +213,7 @@ msgstr ""
         assert unit.xmlelement.getAttribute("restype") == "x-gettext-domain-header"
         assert unit.xmlelement.getAttribute("approved") == "no"
         assert unit.xmlelement.getAttribute("xml:space") == "preserve"
-        assert unit.getnotes() == "Pulana  Translation for bla\nHallo Ma!"
+        assert unit.getnotes("po-translator") == "Pulana  Translation for bla\nHallo Ma!"
 
     def test_fuzzy(self):
         minipo = r'''#, fuzzy
