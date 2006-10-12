@@ -1,0 +1,703 @@
+<ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
+ <class>frmPreference</class>
+ <widget class="QDialog" name="frmPreference" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>485</width>
+    <height>455</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Preference</string>
+  </property>
+  <layout class="QGridLayout" >
+   <property name="margin" >
+    <number>9</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item row="1" column="0" >
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>131</width>
+         <height>31</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="okButton" >
+       <property name="text" >
+        <string>OK</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="cancelButton" >
+       <property name="text" >
+        <string>Cancel</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="0" >
+    <widget class="QTabWidget" name="tabWidget" >
+     <property name="enabled" >
+      <bool>true</bool>
+     </property>
+     <property name="font" >
+      <font>
+       <family>Sans Serif</family>
+       <pointsize>10</pointsize>
+       <weight>50</weight>
+       <italic>false</italic>
+       <bold>false</bold>
+       <underline>false</underline>
+       <strikeout>false</strikeout>
+      </font>
+     </property>
+     <property name="autoFillBackground" >
+      <bool>false</bool>
+     </property>
+     <widget class="QWidget" name="tab1" >
+      <property name="enabled" >
+       <bool>true</bool>
+      </property>
+      <attribute name="title" >
+       <string>Personalize</string>
+      </attribute>
+      <widget class="QFrame" name="frame" >
+       <property name="geometry" >
+        <rect>
+         <x>10</x>
+         <y>50</y>
+         <width>431</width>
+         <height>231</height>
+        </rect>
+       </property>
+       <property name="frameShape" >
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow" >
+        <enum>QFrame::Raised</enum>
+       </property>
+       <widget class="QLabel" name="label4" >
+        <property name="geometry" >
+         <rect>
+          <x>240</x>
+          <y>110</y>
+          <width>101</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="text" >
+         <string>Language Code:</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label5" >
+        <property name="geometry" >
+         <rect>
+          <x>10</x>
+          <y>150</y>
+          <width>91</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="text" >
+         <string>Support Team:</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label6" >
+        <property name="geometry" >
+         <rect>
+          <x>10</x>
+          <y>190</y>
+          <width>97</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text" >
+         <string>Time Zone:</string>
+        </property>
+       </widget>
+       <widget class="QTextEdit" name="EmailAddress" >
+        <property name="geometry" >
+         <rect>
+          <x>140</x>
+          <y>60</y>
+          <width>275</width>
+          <height>30</height>
+         </rect>
+        </property>
+        <property name="tabChangesFocus" >
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QTextEdit" name="FullLanguage" >
+        <property name="geometry" >
+         <rect>
+          <x>140</x>
+          <y>100</y>
+          <width>92</width>
+          <height>30</height>
+         </rect>
+        </property>
+        <property name="tabChangesFocus" >
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QTextEdit" name="Code" >
+        <property name="geometry" >
+         <rect>
+          <x>340</x>
+          <y>100</y>
+          <width>75</width>
+          <height>30</height>
+         </rect>
+        </property>
+        <property name="tabChangesFocus" >
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QTextEdit" name="SupportTeam" >
+        <property name="geometry" >
+         <rect>
+          <x>140</x>
+          <y>140</y>
+          <width>275</width>
+          <height>30</height>
+         </rect>
+        </property>
+        <property name="tabChangesFocus" >
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QTextEdit" name="TimeZone" >
+        <property name="geometry" >
+         <rect>
+          <x>140</x>
+          <y>180</y>
+          <width>275</width>
+          <height>30</height>
+         </rect>
+        </property>
+        <property name="tabChangesFocus" >
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label1" >
+        <property name="geometry" >
+         <rect>
+          <x>10</x>
+          <y>30</y>
+          <width>71</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="text" >
+         <string>UserName:</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label2" >
+        <property name="geometry" >
+         <rect>
+          <x>10</x>
+          <y>70</y>
+          <width>121</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="text" >
+         <string>Your email address:</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label3" >
+        <property name="geometry" >
+         <rect>
+          <x>10</x>
+          <y>110</y>
+          <width>118</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="text" >
+         <string>Full Language Name:</string>
+        </property>
+       </widget>
+       <widget class="QTextEdit" name="UserName" >
+        <property name="geometry" >
+         <rect>
+          <x>140</x>
+          <y>20</y>
+          <width>275</width>
+          <height>30</height>
+         </rect>
+        </property>
+        <property name="tabChangesFocus" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QFrame" name="frame2" >
+       <property name="geometry" >
+        <rect>
+         <x>10</x>
+         <y>290</y>
+         <width>431</width>
+         <height>51</height>
+        </rect>
+       </property>
+       <property name="frameShape" >
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow" >
+        <enum>QFrame::Raised</enum>
+       </property>
+       <widget class="QLabel" name="label" >
+        <property name="geometry" >
+         <rect>
+          <x>10</x>
+          <y>20</y>
+          <width>181</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="text" >
+         <string>Number of Singular/Plular Forms:</string>
+        </property>
+       </widget>
+       <widget class="QSpinBox" name="spinBox" >
+        <property name="geometry" >
+         <rect>
+          <x>200</x>
+          <y>10</y>
+          <width>216</width>
+          <height>31</height>
+         </rect>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QLabel" name="label0" >
+       <property name="geometry" >
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>301</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="font" >
+        <font>
+         <family>Sans Serif</family>
+         <pointsize>12</pointsize>
+         <weight>50</weight>
+         <italic>false</italic>
+         <bold>false</bold>
+         <underline>false</underline>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="text" >
+        <string>Information About You And Translation Team</string>
+       </property>
+      </widget>
+      <widget class="Line" name="line" >
+       <property name="geometry" >
+        <rect>
+         <x>10</x>
+         <y>30</y>
+         <width>431</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="tab2" >
+      <attribute name="title" >
+       <string>Font</string>
+      </attribute>
+      <widget class="Line" name="line_2" >
+       <property name="geometry" >
+        <rect>
+         <x>20</x>
+         <y>40</y>
+         <width>431</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label0_2" >
+       <property name="geometry" >
+        <rect>
+         <x>20</x>
+         <y>20</y>
+         <width>91</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="font" >
+        <font>
+         <family>Sans Serif</family>
+         <pointsize>12</pointsize>
+         <weight>50</weight>
+         <italic>false</italic>
+         <bold>false</bold>
+         <underline>false</underline>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="text" >
+        <string>Font Setting</string>
+       </property>
+      </widget>
+      <widget class="QFrame" name="frame_2" >
+       <property name="geometry" >
+        <rect>
+         <x>20</x>
+         <y>80</y>
+         <width>431</width>
+         <height>221</height>
+        </rect>
+       </property>
+       <property name="frameShape" >
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow" >
+        <enum>QFrame::Raised</enum>
+       </property>
+       <widget class="QLabel" name="label2" >
+        <property name="geometry" >
+         <rect>
+          <x>20</x>
+          <y>30</y>
+          <width>61</width>
+          <height>19</height>
+         </rect>
+        </property>
+        <property name="font" >
+         <font>
+          <family>Sans Serif</family>
+          <pointsize>11</pointsize>
+          <weight>50</weight>
+          <italic>false</italic>
+          <bold>false</bold>
+          <underline>false</underline>
+          <strikeout>false</strikeout>
+         </font>
+        </property>
+        <property name="text" >
+         <string>Overview</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="bntOverview" >
+        <property name="geometry" >
+         <rect>
+          <x>330</x>
+          <y>30</y>
+          <width>61</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="text" >
+         <string>Choose</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label5" >
+        <property name="geometry" >
+         <rect>
+          <x>20</x>
+          <y>150</y>
+          <width>61</width>
+          <height>19</height>
+         </rect>
+        </property>
+        <property name="font" >
+         <font>
+          <family>Sans Serif</family>
+          <pointsize>11</pointsize>
+          <weight>50</weight>
+          <italic>false</italic>
+          <bold>false</bold>
+          <underline>false</underline>
+          <strikeout>false</strikeout>
+         </font>
+        </property>
+        <property name="text" >
+         <string>Comment</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="bntComment" >
+        <property name="geometry" >
+         <rect>
+          <x>330</x>
+          <y>150</y>
+          <width>61</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="text" >
+         <string>Choose</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label4" >
+        <property name="geometry" >
+         <rect>
+          <x>20</x>
+          <y>110</y>
+          <width>48</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="font" >
+         <font>
+          <family>Sans Serif</family>
+          <pointsize>11</pointsize>
+          <weight>50</weight>
+          <italic>false</italic>
+          <bold>false</bold>
+          <underline>false</underline>
+          <strikeout>false</strikeout>
+         </font>
+        </property>
+        <property name="text" >
+         <string>Target</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="bntTarget" >
+        <property name="geometry" >
+         <rect>
+          <x>330</x>
+          <y>110</y>
+          <width>61</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="text" >
+         <string>Choose</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="Source" >
+        <property name="geometry" >
+         <rect>
+          <x>20</x>
+          <y>70</y>
+          <width>48</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="font" >
+         <font>
+          <family>Sans Serif</family>
+          <pointsize>11</pointsize>
+          <weight>50</weight>
+          <italic>false</italic>
+          <bold>false</bold>
+          <underline>false</underline>
+          <strikeout>false</strikeout>
+         </font>
+        </property>
+        <property name="text" >
+         <string>Source</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="bntSource" >
+        <property name="geometry" >
+         <rect>
+          <x>330</x>
+          <y>70</y>
+          <width>61</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="text" >
+         <string>Choose</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="lblOverView" >
+        <property name="geometry" >
+         <rect>
+          <x>100</x>
+          <y>30</y>
+          <width>211</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="font" >
+         <font>
+          <family>Sans Serif</family>
+          <pointsize>11</pointsize>
+          <weight>50</weight>
+          <italic>false</italic>
+          <bold>false</bold>
+          <underline>false</underline>
+          <strikeout>false</strikeout>
+         </font>
+        </property>
+        <property name="frameShape" >
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+       </widget>
+       <widget class="QLabel" name="lblSource" >
+        <property name="geometry" >
+         <rect>
+          <x>100</x>
+          <y>70</y>
+          <width>211</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="font" >
+         <font>
+          <family>Sans Serif</family>
+          <pointsize>11</pointsize>
+          <weight>50</weight>
+          <italic>false</italic>
+          <bold>false</bold>
+          <underline>false</underline>
+          <strikeout>false</strikeout>
+         </font>
+        </property>
+        <property name="frameShape" >
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+       </widget>
+       <widget class="QLabel" name="lblTarget" >
+        <property name="geometry" >
+         <rect>
+          <x>100</x>
+          <y>110</y>
+          <width>211</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="font" >
+         <font>
+          <family>Sans Serif</family>
+          <pointsize>11</pointsize>
+          <weight>50</weight>
+          <italic>false</italic>
+          <bold>false</bold>
+          <underline>false</underline>
+          <strikeout>false</strikeout>
+         </font>
+        </property>
+        <property name="frameShape" >
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+       </widget>
+       <widget class="QLabel" name="lblComment" >
+        <property name="geometry" >
+         <rect>
+          <x>100</x>
+          <y>150</y>
+          <width>211</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="font" >
+         <font>
+          <family>Sans Serif</family>
+          <pointsize>11</pointsize>
+          <weight>50</weight>
+          <italic>false</italic>
+          <bold>false</bold>
+          <underline>false</underline>
+          <strikeout>false</strikeout>
+         </font>
+        </property>
+        <property name="frameShape" >
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+       </widget>
+      </widget>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <pixmapfunction></pixmapfunction>
+ <tabstops>
+  <tabstop>UserName</tabstop>
+  <tabstop>EmailAddress</tabstop>
+  <tabstop>FullLanguage</tabstop>
+  <tabstop>Code</tabstop>
+  <tabstop>SupportTeam</tabstop>
+  <tabstop>TimeZone</tabstop>
+  <tabstop>spinBox</tabstop>
+  <tabstop>okButton</tabstop>
+  <tabstop>cancelButton</tabstop>
+  <tabstop>tabWidget</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>okButton</sender>
+   <signal>clicked()</signal>
+   <receiver>frmPreference</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>278</x>
+     <y>253</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>96</x>
+     <y>254</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cancelButton</sender>
+   <signal>clicked()</signal>
+   <receiver>frmPreference</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>369</x>
+     <y>253</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>179</x>
+     <y>282</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
