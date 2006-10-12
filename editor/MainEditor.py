@@ -29,6 +29,7 @@ from modules.Header import Header
 from modules.Operator import Operator
 from modules.FileAction import FileAction
 from modules.Find import Find
+from modules.Preference import Preference
 from modules.AboutEditor import AboutEditor
 
 
@@ -44,7 +45,14 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.recentaction = []
         self.createRecentAction()                
         self.filter = None
-        
+        #User must to fill your information
+##        self.profile = UserProfile()              
+##        if  self.profile == isNull():
+##        if not self.profile.isEmpty():    
+##            self.profile.show()             
+##        else:
+##            sys.exit(app.exec_())
+            
         # create radio selection for menu filter
         filterGroup = QtGui.QActionGroup(self.ui.menuFilter)
         self.ui.actionUnfiltered.setActionGroup(filterGroup)
@@ -118,26 +126,33 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("foundInComment"), self.dockComment.setHighLightComment)
         self.connect(self.operator, QtCore.SIGNAL("clearHighLight"), self.dockComment.clearHighLight)
         self.connect(self.operator, QtCore.SIGNAL("clearHighLight"), self.dockTUview.clearHighLight)
-        self.connect(self.operator, QtCore.SIGNAL("searchNotFound"), self.searchlabel.setText)
-        
+        self.connect(self.operator, QtCore.SIGNAL("searchNotFound"), self.searchlabel.setText)        
     
         # Edit menu action
         self.connect(self.ui.actionUndo, QtCore.SIGNAL("triggered()"), self.undoer)
         self.connect(self.ui.actionRedo, QtCore.SIGNAL("triggered()"), self.redoer) 
-        self.connect(self.ui.actionCut, QtCore.SIGNAL("triggered()"), self.cutter)
+##        self.connect(self.ui.actionCut, QtCore.SIGNAL("triggered()"), self.dockTUview.selectCut)
+        
         self.connect(self.ui.actionCopy, QtCore.SIGNAL("triggered()"), self.copier)
         self.connect(self.ui.actionPast, QtCore.SIGNAL("triggered()"), self.paster)   
         # Select All File
         self.connect(self.ui.actionSelectAll , QtCore.SIGNAL("triggered()"), self.selectAll)   
         
+        # action Preferences menu 
+        self.preference = Preference()
+        self.connect(self.ui.actionPreferences, QtCore.SIGNAL("triggered()"), self.preference,QtCore.SLOT("show()"))
+        self.connect(self.preference, QtCore.SIGNAL("fontChanged"), self.fontChanged)
+        self.preference.initFonts()
+        
+        
         # Other actions        
         self.connect(self.ui.actionNext, QtCore.SIGNAL("triggered()"), self.operator.next)
         self.connect(self.ui.actionPrevious, QtCore.SIGNAL("triggered()"), self.operator.previous)
-        self.connect(self.ui.actionFirst, QtCore.SIGNAL("triggered()"), self.operator.first)        
+        self.connect(self.ui.actionFirst, QtCore.SIGNAL("triggered()"), self.operator.first) 
         self.connect(self.ui.actionLast, QtCore.SIGNAL("triggered()"), self.operator.last)
         self.connect(self.ui.actionCopySource2Target, QtCore.SIGNAL("triggered()"), self.dockTUview.source2target)
         
-        #Edit Header
+        # Edit Header
         self.headerDialog = Header()        
         self.connect(self.ui.actionEdit_Header, QtCore.SIGNAL("triggered()"), self.headerDialog, QtCore.SLOT("show()"))
         
@@ -168,11 +183,10 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
         self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.dockOverview.setTarget)           
         self.connect(self.dockComment, QtCore.SIGNAL("commentChanged"), self.operator.setComment)
-        self.connect(self.fileaction, QtCore.SIGNAL("fileName"), self.operator.saveStoreToFile)
+        self.connect(self.fileaction, QtCore.SIGNAL("fileName"), self.operator.saveStoreToFile)        
         self.connect(self.operator, QtCore.SIGNAL("savedAlready"), self.ui.actionSave.setEnabled)
         self.connect(self.dockTUview, QtCore.SIGNAL("readyForSave"), self.ui.actionSave.setEnabled)     
         self.connect(self.dockComment, QtCore.SIGNAL("readyForSave"), self.ui.actionSave.setEnabled)     
-
 
         self.connect(self.fileaction, QtCore.SIGNAL("fileName"), self.setTitle)
         self.connect(self.operator, QtCore.SIGNAL("firstUnit"), self.setEnabledFirstPrev)                
@@ -187,8 +201,7 @@ class MainWindow(QtGui.QMainWindow):
         
         # set file status information to text label of status bar
         self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.statuslabel.setText)
-        self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.setOpening)
-        
+        self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.setOpening)        
     
     # FIXME the next 4 slots should not be here. Move them into Operator
     # And please do not use a string to define what you want to filter.
@@ -221,6 +234,7 @@ class MainWindow(QtGui.QMainWindow):
     
     def cutter(self):
         object = self.focusWidget()
+        object = self.isEnabled(bool)
         try:
             object.cut()
         except AttributeError:
@@ -265,6 +279,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionSaveas.setEnabled(True)
         self.ui.actionUndo.setEnabled(True)
         self.ui.actionRedo.setEnabled(True)
+
         self.ui.actionPast.setEnabled(True)
         self.ui.actionSelectAll.setEnabled(True)
         self.ui.actionFind.setEnabled(True)
@@ -275,7 +290,7 @@ class MainWindow(QtGui.QMainWindow):
         settings = QtCore.QSettings("WordForge", "Translation Editor")
         files = settings.value("recentFileList").toStringList()
         files.removeAll(fileName)        
-        files.prepend(fileName)        
+        files.prepend(fileName)
         while files.count() > MainWindow.MaxRecentFiles:
             files.removeLast()
         settings.setValue("recentFileList", QtCore.QVariant(files))
@@ -339,8 +354,19 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionNext.setEnabled(bool)        
         self.ui.actionLast.setEnabled(bool)        
 
-    def setEnabledSave(self, bool):
-        self.ui.actionSave.setEnabled(bool)
+##    def setEnabledSave(self, bool):
+##        self.ui.actionSave.setEnabled(bool)
+    
+    def fontChanged(self, obj, font):
+        if (obj == "overview"):
+            self.dockOverview.setFontOverView(font)
+        elif (obj == "tuSource"):
+            self.dockTUview.setFontSource(font)
+        elif (obj == "tuTarget"):
+            self.dockTUview.setFontTarget(font)
+        elif (obj == "comment"):
+            self.dockComment.setFontComment(font)
+
     
     def disableAll(self):
         self.ui.actionFirst.setDisabled(True)

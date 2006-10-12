@@ -13,7 +13,11 @@
     <body>
       <trans-unit approved="yes" id="0" reformat="yes" translate="yes" xml:space="default">
         <source>Objects and Object-Orientation</source>
+<<<<<<< .mine
+        <target state="translated">Objects and Object-Orientations</target>
+=======
         <target state="translated">Objects and Object-Orientationasdfafdas</target>
+>>>>>>> .r3984
         <prop-group>
           <prop prop-type="entryid">1150875516735</prop>
         </prop-group>

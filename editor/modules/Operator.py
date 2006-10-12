@@ -95,8 +95,8 @@ class Operator(QtCore.QObject):
         try:
             self.emit(QtCore.SIGNAL("header"),self.store.header())
         except:
-            pass
-        
+            pass        
+
     def takeoutUnit(self, value):
         return
         self.unitpointer = value - 1
@@ -367,5 +367,5 @@ class Operator(QtCore.QObject):
     def emitSearchNotFound(self):
         '''emit signal search not found in order to unhighlight'''
         self.emit(QtCore.SIGNAL("clearHighLight"))
-        self.emit(QtCore.SIGNAL("searchNotFound"), "search not found")
-        
+        self.emit(QtCore.SIGNAL("searchNotFound"), "search not found")    
+    

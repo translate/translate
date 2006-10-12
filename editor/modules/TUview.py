@@ -56,6 +56,38 @@ class TUview(QtGui.QDockWidget):
             self._actionShow.setText(self.tr("Show Detail"))    
         self.setHidden(not self.isHidden())
 
+    def setColor(self):
+        """set color to txtSource and txtTarget"""
+        color = QtGui.QColorDialog.getColor(QtCore.Qt.red, self)     
+        if color.isValid():
+            self.ui.txtSource.setTextColor(color)
+            self.ui.txtTarget.setTextColor(color)
+    
+    def setFontSource(self, font):
+        self.ui.txtSource.setFont(font)
+    
+    def setFontTarget(self, font):
+        self.ui.txtTarget.setFont(font)
+        
+
+##    def setFont(self):
+##        """set font to txtSource and txtTarget"""
+##        #get font settings
+##        settings = QtCore.QSettings("WordForge", "Translation Editor")
+##        fontFamily = settings.value("FontFamily").toString()        
+##        fontSize = settings.value("FontSize").toString()
+##        fontSize = int(fontSize)
+##        font = QtGui.QFontDialog.getFont(QtGui.QFont(fontFamily, fontSize))        
+##        fontFamily = font[0].family()        
+##        fontSize = font[0].pointSize()
+##        self.ui.txtSource.setFont(font[0])
+##        self.ui.txtTarget.setFont(font[0])
+##        if (font[1]):
+##            #store font settings
+##            settings = QtCore.QSettings("WordForge", "Translation Editor")
+##            settings.setValue("FontFamily", QtCore.QVariant(fontFamily))
+##            settings.setValue("FontSize", QtCore.QVariant(fontSize))
+        
     @QtCore.pyqtSignature("int")
     def emitCurrentId(self, value):
         id = self.ids[value]
@@ -151,6 +183,11 @@ class TUview(QtGui.QDockWidget):
         except:
             pass        
         
+    def selectCut(self):
+##        self.ui.txtSource.copyAvailable(bool)
+        self.ui.txtSource.cut()                                
+
+            
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     Form = TUview()

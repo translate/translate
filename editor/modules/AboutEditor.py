@@ -96,7 +96,7 @@ class LicensesTab(QtGui.QWidget):
 
         fileNameLabel.setReadOnly(True)
         mainLayout = QtGui.QVBoxLayout()
-        mainLayout.addWidget(fileNameLabel)
+        mainLayout.addWidget(fileNameLabel)        
         self.setLayout(mainLayout) 
         
 

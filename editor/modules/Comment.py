@@ -95,6 +95,9 @@ class CommentDock(QtGui.QDockWidget):
         
     def setReadyForSave(self):
       self.emit(QtCore.SIGNAL("readyForSave"), True)
+      
+    def setFontComment(self, font):
+        self.ui.txtComment.setFont(font)
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

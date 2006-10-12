@@ -143,6 +143,9 @@ class OverviewDock(QtGui.QDockWidget):
     def setTarget(self, target):
         if (self.lastItem):
             self.lastItem.setText(2, target)
+            
+    def setFontOverView(self, font):
+        self.ui.treeOverview.setFont(font)
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

@@ -2,18 +2,24 @@
  <author></author>
  <comment></comment>
  <exportmacro></exportmacro>
- <class>Dia</class>
- <widget class="QDialog" name="Dia" >
+ <class>frmHeader</class>
+ <widget class="QDialog" name="frmHeader" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>426</width>
+    <height>388</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Header</string>
+  </property>
+  <property name="sizeGripEnabled" >
+   <bool>true</bool>
+  </property>
+  <property name="modal" >
+   <bool>true</bool>
   </property>
   <layout class="QGridLayout" >
    <property name="margin" >
@@ -22,13 +28,6 @@
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item row="0" column="0" >
-    <widget class="QTextEdit" name="txtHeader" >
-     <property name="mouseTracking" >
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="0" >
     <layout class="QHBoxLayout" >
      <property name="margin" >
@@ -37,6 +36,20 @@
      <property name="spacing" >
       <number>6</number>
      </property>
+     <item>
+      <widget class="QPushButton" name="resetButton" >
+       <property name="text" >
+        <string>Reset</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="applyButton" >
+       <property name="text" >
+        <string>Apply Settings</string>
+       </property>
+      </widget>
+     </item>
      <item>
       <spacer>
        <property name="orientation" >
@@ -66,6 +79,13 @@
      </item>
     </layout>
    </item>
+   <item row="0" column="0" >
+    <widget class="QTextEdit" name="txtHeader" >
+     <property name="mouseTracking" >
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <pixmapfunction></pixmapfunction>
@@ -74,7 +94,7 @@
   <connection>
    <sender>okButton</sender>
    <signal>clicked()</signal>
-   <receiver>Dia</receiver>
+   <receiver>frmHeader</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -90,7 +110,7 @@
   <connection>
    <sender>cancelButton</sender>
    <signal>clicked()</signal>
-   <receiver>Dia</receiver>
+   <receiver>frmHeader</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel" >

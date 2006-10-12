@@ -40,11 +40,11 @@ class FileAction(QtGui.QDialog):
             self.emitFileOpened()
             return True
         else:
-            return False
+            return False            
 
     def save(self):        
         if not self.fileName.isEmpty():
-            self.emitFileName()
+            self.emitFileName()            
 
     def saveAs(self):      
         # TODO: set selected Filter to all support Files
@@ -70,6 +70,9 @@ class FileAction(QtGui.QDialog):
         else:
             pass
             
+    def cut(self):
+        if not self.fileName.isEmpty():
+            self.emitFileName()
 
     def aboutToClose(self, main):
         """Action before closing the program when file has modified"""

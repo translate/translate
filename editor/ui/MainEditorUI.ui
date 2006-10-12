@@ -31,7 +31,7 @@
      <x>0</x>
      <y>0</y>
      <width>571</width>
-     <height>27</height>
+     <height>29</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuHelp" >
@@ -40,48 +40,6 @@
     </property>
     <addaction name="actionAbout" />
     <addaction name="actionAboutQT" />
-   </widget>
-   <widget class="QMenu" name="menuGo" >
-    <property name="title" >
-     <string>&amp;Go</string>
-    </property>
-    <addaction name="actionFirst" />
-    <addaction name="actionPrevious" />
-    <addaction name="actionNext" />
-    <addaction name="actionLast" />
-   </widget>
-   <widget class="QMenu" name="menuSettings" >
-    <property name="title" >
-     <string>&amp;Settings</string>
-    </property>
-    <widget class="QMenu" name="menuToolBar" >
-     <property name="title" >
-      <string>ToolBar</string>
-     </property>
-     <addaction name="actionShow_MenuBar" />
-     <addaction name="actionShow_TUview" />
-    </widget>
-    <widget class="QMenu" name="menuToolbar" >
-     <property name="title" >
-      <string>Toolbar</string>
-     </property>
-    </widget>
-    <widget class="QMenu" name="menuViews" >
-     <property name="title" >
-      <string>Views</string>
-     </property>
-    </widget>
-    <widget class="QMenu" name="menuFilter" >
-     <property name="title" >
-      <string>Filter</string>
-     </property>
-     <addaction name="actionUnfiltered" />
-     <addaction name="actionFilterFuzzy" />
-     <addaction name="actionFilterTranslated" />
-     <addaction name="actionFilterUntranslated" />
-    </widget>
-    <addaction name="menuFilter" />
-    <addaction name="menuViews" />
    </widget>
    <widget class="QMenu" name="menuFile" >
     <property name="title" >
@@ -126,6 +84,54 @@
     <addaction name="actionToggleFuzzy" />
     <addaction name="actionEdit_Header" />
    </widget>
+   <widget class="QMenu" name="menuGo" >
+    <property name="title" >
+     <string>&amp;Go</string>
+    </property>
+    <addaction name="actionFirst" />
+    <addaction name="actionPrevious" />
+    <addaction name="actionNext" />
+    <addaction name="actionLast" />
+   </widget>
+   <widget class="QMenu" name="menuSettings" >
+    <property name="title" >
+     <string>&amp;Settings</string>
+    </property>
+    <widget class="QMenu" name="menuToolBar" >
+     <property name="title" >
+      <string>ToolBar</string>
+     </property>
+     <addaction name="actionShow_MenuBar" />
+     <addaction name="actionShow_TUview" />
+    </widget>
+    <widget class="QMenu" name="menuToolbar" >
+     <property name="title" >
+      <string>Toolbar</string>
+     </property>
+    </widget>
+    <widget class="QMenu" name="menuViews" >
+     <property name="title" >
+      <string>Views</string>
+     </property>
+    </widget>
+    <widget class="QMenu" name="menuFilter" >
+     <property name="title" >
+      <string>Filter</string>
+     </property>
+     <addaction name="actionUnfiltered" />
+     <addaction name="actionFilterFuzzy" />
+     <addaction name="actionFilterTranslated" />
+     <addaction name="actionFilterUntranslated" />
+    </widget>
+    <widget class="QMenu" name="menuPreferences" >
+     <property name="title" >
+      <string>Preferences</string>
+     </property>
+    </widget>
+    <addaction name="menuFilter" />
+    <addaction name="menuViews" />
+    <addaction name="actionPreferences" />
+   </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
    <addaction name="menuGo" />
@@ -136,9 +142,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>456</y>
+     <y>454</y>
      <width>571</width>
-     <height>20</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>
@@ -154,7 +160,6 @@
    </attribute>
    <addaction name="actionOpen" />
    <addaction name="actionSave" />
-   <addaction name="actionPrint" />
    <addaction name="separator" />
    <addaction name="actionCut" />
    <addaction name="actionCopy" />
@@ -243,20 +248,6 @@
    </property>
    <property name="shortcut" >
     <string>Ctrl+Q</string>
-   </property>
-  </action>
-  <action name="actionPrint" >
-   <property name="enabled" >
-    <bool>false</bool>
-   </property>
-   <property name="icon" >
-    <iconset>../images/print.png</iconset>
-   </property>
-   <property name="text" >
-    <string>&amp;Print</string>
-   </property>
-   <property name="shortcut" >
-    <string>Ctrl+P</string>
    </property>
   </action>
   <action name="actionUndo" >
@@ -604,6 +595,11 @@
   <action name="actionEdit_Header" >
    <property name="text" >
     <string>Edit Header...</string>
+   </property>
+  </action>
+  <action name="actionPreferences" >
+   <property name="text" >
+    <string>Preferences</string>
    </property>
   </action>
  </widget>
