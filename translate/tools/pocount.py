@@ -87,10 +87,10 @@ def fuzzymessages(units):
     return filter(lambda unit: unit.isfuzzy() and unit.istranslated(), units)
 
 def translatedmessages(units):
-    return filter(lambda unit: unit.istranslated() and not unit.isfuzzy(), units)
+    return filter(lambda unit: unit.istranslated(), units)
 
 def untranslatedmessages(units):
-    return filter(lambda unit: not unit.istranslated(), units)
+    return filter(lambda unit: not (unit.istranslated() or unit.isfuzzy()), units)
 
 class summarizer:
   def __init__(self, filenames, CSVstyle):

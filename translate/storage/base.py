@@ -82,7 +82,7 @@ class TranslationUnit(object):
         """Indicates whether this unit is translated. This should be used 
         rather than deducing it from .target, to ensure that other classes can
         implement more functionality (as XLIFF does)."""
-        return bool(self.target)
+        return bool(self.target) and not self.isfuzzy()
 
     def isfuzzy(self):
         """Indicates whether this unit is fuzzy"""
