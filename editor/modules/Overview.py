@@ -62,66 +62,50 @@ class OverviewDock(QtGui.QDockWidget):
             self._actionShow.setText(self.tr("Show Overview"))    
         self.setHidden(not self.isHidden())    
 
-    def addItem(self, currentUnit, id):
-        """Add one item to the list of source and target."""
-        item = QtGui.QTreeWidgetItem(self.ui.treeOverview)
-        self.items.append(item)
-        item.setTextAlignment(0, QtCore.Qt.AlignRight)
-        # sorting needs leading space: '   1', '   2', '  10'.. rather than '1', '10', '2'
-        item.setText(0, str(id).rjust(4) + '  ')
-        item.setText(1, currentUnit.source)
-        item.setText(2, currentUnit.target)
-        
-##    def addItems(self, currentUnit, currentPointer):
-##        """Add an item or a list of items."""
-##        if isinstance(currentUnit, list):
-##            #for item in currentUnit:
-##            #    self.addItem(item, pointer)
-##            for i in range(len(currentUnit)):
-##                self.addItem(currentUnit[i], currentPointer[i])
-##        else:
-##            self.addItem(currentUnit)
-
-##    def slotNewUnits(self, units, unitsPointer):
-##        """Initialize the list, clear and fill with units"""
-##        self.lastItem = None
-##        self.items = []
-##        self.ui.treeOverview.clear()
-##        if units:
-##            self.addItems(units, unitsPointer)
-##            # select the first item in list
-##            self.highLightItem(0)
-
     def slotNewUnits(self, units, ids):
         """Initialize the list, clear and fill with units"""
         self.lastItem = None
-        if (ids[0] != 0):
-            self.items = [None]
-        else:
-            self.items = []
         self.ui.treeOverview.clear()
-        for i in range(len(units)):
-            self.addItem(units[i], ids[i])
+
+        items = []
+        for i in range(len(units)):           
+            item = QtGui.QTreeWidgetItem()
+            item.setTextAlignment(0, QtCore.Qt.AlignRight)
+            # sorting needs leading space: '   1', '   2', '  10'.. rather than '1', '10', '2'
+            item.setText(0, str(ids[i]).rjust(4) + '  ')
+            item.setText(1, units[i].source)
+            item.setText(2, units[i].target)
+            # add item to children, in reverse mode because addTopLevelItems do the opposite
+            items.insert(0,item)
+            #items.append(item)
+        # add children to tree widget
+        self.ui.treeOverview.addTopLevelItems(items)
+        
         # select the first item in list
         self.highLightItem(0)
 
     def filteredList(self, fList):
+        """ Show only items that are in filtered list """
+        self.setUpdatesEnabled(False)
         j = 0
-        for i in range(len(self.items)):
-            item = self.items[i]
+        numItems = self.ui.treeOverview.topLevelItemCount()
+        for i in range(numItems):
+            item = self.ui.treeOverview.topLevelItem(i)
             if (j < len(fList)) and (i == fList[j]):
                 j += 1
-                # show only the item which are filtered
                 self.ui.treeOverview.setItemHidden(item, False)
             else:
                 self.ui.treeOverview.setItemHidden(item, True)
-        self.highLightItem(fList[0])
+        self.setUpdatesEnabled(True)
+        if (fList):
+            self.highLightItem(fList[0])
    
     def highLightItem(self, value):
-        print value
-        if (not self.items) or (value < 0) or (value >= len(self.items)):
+        print 'highLight',value
+        numItems = self.ui.treeOverview.topLevelItemCount()
+        if (not numItems) or (value < 0) or (value >= numItems):
             return
-        item = self.items[value]
+        item = self.ui.treeOverview.topLevelItem(value)
         if (self.lastItem != item):
             self.disconnect(self.ui.treeOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitItemSelected)
             self.ui.treeOverview.setCurrentItem(item)
@@ -129,7 +113,7 @@ class OverviewDock(QtGui.QDockWidget):
             self.lastItem = item
     
     def hideItem(self, value):
-        item = self.items[value]
+        item = self.ui.treeOverview.topLevelItem(value)
         self.ui.treeOverview.setItemHidden(item, True)
 
     def emitItemSelected(self):
@@ -137,8 +121,11 @@ class OverviewDock(QtGui.QDockWidget):
             item = self.ui.treeOverview.selectedItems()[0]
         except IndexError:
             return
-        id = int(item.text(0))
-        self.emit(QtCore.SIGNAL("currentId"), id)
+        try:
+            id = int(item.text(0))
+            self.emit(QtCore.SIGNAL("currentId"), id)
+        except:
+            pass
         
     def setTarget(self, target):
         if (self.lastItem):

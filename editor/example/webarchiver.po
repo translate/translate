@@ -1,7 +1,7 @@
 # ,មិនអាច​បើក​ប័ណ្ណសារ​sfasfaasfsfaewrqsfasfa
 #: archivedialog.cpp:90
 msgid "Unable to Open Web-Archive"
-msgstr "safsfdsg"
+msgstr "មិន​អាច​បើក​ប័ណ្ណ​សារ​បណ្ដាញ"
 
 # សម្រាប់​ការ​សរសេរ​បាន​ទេ ។sfasfssfasasfasfsfsfasfsfsf
 #: archivedialog.cpp:91
@@ -9,25 +9,22 @@ msgid ""
 "Unable to open \n"
 " %1 \n"
 " for writing."
-msgstr ""
+msgstr "min"
 
 # werwerw
 #: archivedialog.cpp:125
 msgid "Could Not Open Temporary File"
 msgstr ""
-"មិនអាច​បើក​ឯកសារ​បណ្តោះអាសន្ន​បាន​ទេsdfa\n"
-"jjjjj;afsda"
-"xcasdsadsf"
-"asfsfd"
+"មិនអាច​បើក​ឯកសារ​បណ្តោះអាសន្ន​បាន​ទេ"
 
 # opensfasa
 #: archivedialog.cpp:126
 msgid "Could not open a temporary file"
-msgstr "មិនអាច​បើក​ឯកសារ​បណ្តោះអាសន្ន​មួយ​បាន​ទេsaf"
+msgstr "មិនអាច​បើក​ឯកសារ​បណ្តោះអាសន្ន​មួយ​បាន​ទេ"
 
 #: archivedialog.cpp:157
 msgid "Archiving webpage completed."
-msgstr "ទំព័រ​បណ្តាញ​​ប័ណ្ណ​សារ​បានបញ្ចប់​ទាំងស្រុង ។sfasfasfsafas"
+msgstr "ទំព័រ​បណ្តាញ​​ប័ណ្ណ​សារ​បានបញ្ចប់​ទាំងស្រុង ។"
 
 #: archivedialog.cpp:450
 #, fuzzy
@@ -51,7 +48,7 @@ msgstr "*.war *.tgz|ប័ណ្ណសារ​បណ្តាញ"
 
 #: plugin_webarchiver.cpp:90
 msgid "Save Page as Web-Archive"
-msgstr ""
+msgstr "rkja"
 
 #: plugin_webarchiver.cpp:95
 msgid "Invalid URL"

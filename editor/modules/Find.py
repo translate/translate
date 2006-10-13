@@ -46,7 +46,11 @@ class Find(QtGui.QDockWidget):
         self.connect(self.ui.insource, QtCore.SIGNAL("stateChanged(int)"), self.emitSeachInSource)
         self.connect(self.ui.intarget, QtCore.SIGNAL("stateChanged(int)"), self.emitSearchInTarget)
         self.connect(self.ui.incomment, QtCore.SIGNAL("stateChanged(int)"), self.emitSeachInComment)
-        self.connect(self.ui.matchcase, QtCore.SIGNAL("stateChanged(int)"), self.emitMatchCase)        
+        self.connect(self.ui.matchcase, QtCore.SIGNAL("stateChanged(int)"), self.emitMatchCase)   
+   
+        self.searchinsource = False
+        self.searchintarget = False
+        self.searchincomment = False   
 
     def actionShow(self):  
         return self._actionShow        

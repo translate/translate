@@ -34,6 +34,7 @@ class Operator(QtCore.QObject):
     
     def getUnits(self, fileName):
         self.store = factory.getobject(fileName)
+        print bool(self.store)
         # get status for units       
         self.numFuzzy = len(pocount.fuzzymessages(self.store.units))
         self.numTranslated = len(pocount.translatedmessages(self.store.units))
