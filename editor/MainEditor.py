@@ -8,7 +8,7 @@
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2.1
-# of the License, or (at your option) any later version.
+# of the License, or (at your option) any later version.http://rak3k.wordpress.com/
 #
 # You should have received a copy of the GNU General Public License
 # along with translate; if not, write to the Free Software
@@ -170,7 +170,7 @@ class MainWindow(QtGui.QMainWindow):
 
         self.connect(self.operator, QtCore.SIGNAL("takeoutUnit"), self.takeoutUnit)
         
-        self.connect(self.operator, QtCore.SIGNAL("currentPosition"), self.dockOverview.highLightItem)
+        #self.connect(self.operator, QtCore.SIGNAL("currentPosition"), self.dockOverview.highLightItem)
         self.connect(self.operator, QtCore.SIGNAL("currentPosition"), self.dockTUview.highLightScrollbar)
         self.connect(self.dockTUview, QtCore.SIGNAL("currentId"), self.operator.setCurrentUnit)
         self.connect(self.dockOverview, QtCore.SIGNAL("currentId"), self.operator.setCurrentUnit)
@@ -181,7 +181,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("updateUnit"), self.dockTUview.checkModified)
         self.connect(self.operator, QtCore.SIGNAL("updateUnit"), self.dockComment.checkModified)
         self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
-        self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.dockOverview.setTarget)           
+        #self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.dockOverview.setTarget)           
         self.connect(self.dockComment, QtCore.SIGNAL("commentChanged"), self.operator.setComment)
         self.connect(self.fileaction, QtCore.SIGNAL("fileName"), self.operator.saveStoreToFile)        
         self.connect(self.operator, QtCore.SIGNAL("savedAlready"), self.ui.actionSave.setEnabled)
@@ -189,14 +189,11 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.dockComment, QtCore.SIGNAL("readyForSave"), self.ui.actionSave.setEnabled)     
 
         self.connect(self.fileaction, QtCore.SIGNAL("fileName"), self.setTitle)
-        self.connect(self.operator, QtCore.SIGNAL("firstUnit"), self.setEnabledFirstPrev)                
-        self.connect(self.operator, QtCore.SIGNAL("lastUnit"), self.setEnabledNextLast)
-        self.connect(self.operator, QtCore.SIGNAL("middleUnit"), self.setEnabledFirstPrev)
-        self.connect(self.operator, QtCore.SIGNAL("middleUnit"), self.setEnabledNextLast)        
+        self.connect(self.operator, QtCore.SIGNAL("toggleFirstLastUnit"), self.toggleFirstLastUnit)
 
-        self.connect(self.operator, QtCore.SIGNAL("newUnits"), self.dockOverview.slotNewUnits)
+        #self.connect(self.operator, QtCore.SIGNAL("newUnits"), self.dockOverview.slotNewUnits)
         self.connect(self.operator, QtCore.SIGNAL("newUnits"), self.dockTUview.slotNewUnits)
-        self.connect(self.operator, QtCore.SIGNAL("filteredList"), self.dockOverview.filteredList)
+        #self.connect(self.operator, QtCore.SIGNAL("filteredList"), self.dockOverview.filteredList)
         self.connect(self.operator, QtCore.SIGNAL("filteredList"), self.dockTUview.filteredList)
         
         # set file status information to text label of status bar
@@ -284,9 +281,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionSelectAll.setEnabled(True)
         self.ui.actionFind.setEnabled(True)
         self.ui.actionReplace.setEnabled(True)
-        self.setEnabledFirstPrev(False)
         # FIXME what will happen if the file only contains 1 TU? Jens
-        self.setEnabledNextLast(True)   
         settings = QtCore.QSettings("WordForge", "Translation Editor")
         files = settings.value("recentFileList").toStringList()
         files.removeAll(fileName)        
@@ -329,7 +324,7 @@ class MainWindow(QtGui.QMainWindow):
         for j in range(numRecentFiles, MainWindow.MaxRecentFiles):
             self.ui.recentaction[j].setVisible(False)
     
-    def closeEvent(self, event):            
+    def closeEvent(self, event):
         if self.operator.modified():  
             if self.fileaction.aboutToClose(self):
                 event.accept()
@@ -346,14 +341,14 @@ class MainWindow(QtGui.QMainWindow):
     def enableUndo(self):
         self.ui.actionUndo.setEnabled(True)    
     
-    def setEnabledFirstPrev(self, bool):        
-        self.ui.actionFirst.setEnabled(bool)        
-        self.ui.actionPrevious.setEnabled(bool)                                             
+    def toggleFirstLastUnit(self, boolFirst, boolLast):
+        """ set enable/disable first, previous, next, and last unit buttons """
+        # disable first and previous unit buttons
+        self.ui.actionFirst.setEnabled(boolFirst)
+        self.ui.actionPrevious.setEnabled(boolFirst)
+        self.ui.actionNext.setEnabled(boolLast)
+        self.ui.actionLast.setEnabled(boolLast)
     
-    def setEnabledNextLast(self, bool):
-        self.ui.actionNext.setEnabled(bool)        
-        self.ui.actionLast.setEnabled(bool)        
-
 ##    def setEnabledSave(self, bool):
 ##        self.ui.actionSave.setEnabled(bool)
     

@@ -34,8 +34,6 @@ class Operator(QtCore.QObject):
     
     def getUnits(self, fileName):
         self.store = factory.getobject(fileName)
-        print fileName
-##        print self.store.getheaderplural()
         # get status for units       
         self.numFuzzy = len(pocount.fuzzymessages(self.store.units))
         self.numTranslated = len(pocount.translatedmessages(self.store.units))
@@ -52,23 +50,34 @@ class Operator(QtCore.QObject):
 
     def emitCurrentUnit(self):
         if (self._unitpointer == 0):
-            self.emit(QtCore.SIGNAL("firstUnit"), False)
-            self.emit(QtCore.SIGNAL("lastUnit"), True)
+            # first unit
+            # toggleUnitButtons: enable first/prev, next/last
+            self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), False, True)
+            self.middleUnit = False
         elif (self._unitpointer == len(self.filteredList) - 1):
-            self.emit(QtCore.SIGNAL("firstUnit"), True)
-            self.emit(QtCore.SIGNAL("lastUnit"), False)
-        else:
-            self.emit(QtCore.SIGNAL("middleUnit"), True)
-        currentPosition = self.getCurrentUnit()
-        if (currentPosition != len(self.store.units)):
-            self.emit(QtCore.SIGNAL("currentUnit"), self.store.units[currentPosition])
-            self.emit(QtCore.SIGNAL("currentPosition"), currentPosition)            
+            # last unit
+            self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), True, False)
+            self.middleUnit = False
+        elif (not self.middleUnit):
+            # middle unit
+            self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), True, True)
+            self.middleUnit = True
+        currentPosition = self.getCurrentPosition()
 
-    def getCurrentUnit(self):
+        if (currentPosition == -1):
+            # no unit
+            self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), False, False)
+            self.emit(QtCore.SIGNAL("currentUnit"), None)
+        else:
+            self.emit(QtCore.SIGNAL("currentUnit"), self.store.units[currentPosition])
+            self.emit(QtCore.SIGNAL("currentPosition"), currentPosition)
+
+    def getCurrentPosition(self):
         try:
             return self.filteredList[self._unitpointer]
         except IndexError:
-            return 0
+            # no current position found in list
+            return -1
 
     def emitFilteredList(self, filter):
         #pocount.fuzzymessages(self.store.units)
@@ -143,14 +152,14 @@ class Operator(QtCore.QObject):
     
     def setComment(self, comment):
         """set the comment which is QString type to the current unit."""
-        currentUnit = self.getCurrentUnit()
-        self.store.units[currentUnit].removenotes()
-        self.store.units[currentUnit].addnote(unicode(comment))
+        currentPosition = self.getCurrentPosition()
+        self.store.units[currentPosition].removenotes()
+        self.store.units[currentPosition].addnote(unicode(comment))
         self._modified = True
     
     def setTarget(self, target):
         """set the target which is QString type to the current unit."""
-        currentPosition = self.getCurrentUnit()
+        currentPosition = self.getCurrentPosition()
         currentUnit = self.store.units[currentPosition]
         before_isuntranslated = not currentUnit.istranslated()
         unitIsFuzzy = currentUnit.isfuzzy()
@@ -185,7 +194,7 @@ class Operator(QtCore.QObject):
    
     def toggleFuzzy(self):
         """toggle fuzzy state for current unit"""
-        currentPosition = self.getCurrentUnit()
+        currentPosition = self.getCurrentPosition()
         unitIsFuzzy = self.store.units[currentPosition].isfuzzy()
         if (unitIsFuzzy):
             self.store.units[currentPosition].markfuzzy(False)

@@ -5782,7 +5782,7 @@ Object</note></trans-unit>
       <note>sdgfsadfstr</note></trans-unit>
       <trans-unit approved="no" id="774" reformat="yes" translate="yes" xml:space="default">
         <source>Dynamically <bpt id="1">&lt;link linkend=&quot;fileinfo.alltogether&quot;&gt;</bpt>instantiating classes of unknown type<ept id="1">&lt;/link&gt;</ept> by treating classes as objects and passing them around</source>
-        <target>sdfasdf</target>
+        <target state="translated">1234</target>
         <prop-group>
           <prop prop-type="entryid">1150875517578</prop>
         </prop-group>

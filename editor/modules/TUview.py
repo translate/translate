@@ -94,10 +94,11 @@ class TUview(QtGui.QDockWidget):
         self.emit(QtCore.SIGNAL("currentId"), id)
 
     def highLightScrollbar(self, id):
-        self.disconnect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentId)
-        value = self.ids.index(id)
-        self.ui.fileScrollBar.setValue(value)
-        self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentId)
+        if (self.ids):
+            self.disconnect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentId)
+            value = self.ids.index(id)
+            self.ui.fileScrollBar.setValue(value)
+            self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentId)
 
     def takeoutUnit(self, value):
         self.ui.fileScrollBar.setMaximum(self.ui.fileScrollBar.maximum() - 1)
@@ -118,6 +119,12 @@ class TUview(QtGui.QDockWidget):
         self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentId)
     
     def filteredList(self, fList):
+        # filter list is empty
+        if not fList:
+            self.ui.fileScrollBar.setMaximum(0)
+            self.ids = []
+            return
+            
         # set maximum scrollbar value according to filter list
         self.ui.fileScrollBar.setMaximum(len(fList) - 1)
         self.ids = []
@@ -130,8 +137,12 @@ class TUview(QtGui.QDockWidget):
     
     def updateTUview(self, currentUnit):
         """ Update TUview """
-        self.ui.txtSource.setPlainText(currentUnit.source)
-        self.ui.txtTarget.setPlainText(currentUnit.target)
+        if (currentUnit):
+            self.ui.txtSource.setPlainText(currentUnit.source)
+            self.ui.txtTarget.setPlainText(currentUnit.target)
+        else:
+            self.ui.txtSource.setPlainText("")
+            self.ui.txtTarget.setPlainText("")
     
     def checkModified(self):
         if self.ui.txtTarget.document().isModified():
