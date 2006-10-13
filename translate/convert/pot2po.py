@@ -94,9 +94,11 @@ def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similari
     fuzzyglobalmatcher = None
   inputheadervalues = inputpot.parseheader()
   for key, value in inputheadervalues.iteritems():
-    if key in ("Project-Id-Version", "Last-Translator", "Language-Team", "PO-Revision-Date", "Content-Type", "Content-Transfer-Encoding", "Plural-Forms"):
+    if key in ("Last-Translator", "Language-Team", "PO-Revision-Date", "Content-Type", "Content-Transfer-Encoding", "Plural-Forms"):
       # want to carry these from the template so we ignore them
       pass
+    elif key == "Project-Id-Version":
+      project_id_version = value
     elif key == "POT-Creation-Date":
       pot_creation_date = value
     elif key == "MIME-Version":
