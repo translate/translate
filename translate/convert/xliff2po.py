@@ -42,8 +42,9 @@ class xliff2po:
     if locations:
       thepo.sourcecomments.append("#: %s\n" % " ".join(locations))
 
+    #NOTE: Supporting both <context> and <note> tags in xliff files for comments
     #Translator comments
-    notes = transunit.getnotes("po-translator")
+    notes = transunit.getnotes("translator")
     trancomments = transunit.gettranslatorcomments()
     if notes == trancomments or trancomments.find(notes) >= 0:
       notes = ""
@@ -54,8 +55,14 @@ class xliff2po:
     if trancomments:
       thepo.othercomments.extend(["# %s\n" % comment for comment in trancomments.split("\n")])
     
-    #Automatic comments
+    #Automatic and Developer comments
+    devcomments = transunit.getnotes("developer")
     autocomments = transunit.getautomaticcomments()
+    if devcomments == autocomments or autocomments.find(devcomments) >= 0:
+      devcomments = ""
+    elif devcomments.find(autocomments) >= 0:
+      autocomments = devcomments
+      devcomments = ""
     if autocomments:
       thepo.automaticcomments.extend(["#. %s\n" % comment for comment in autocomments.split("\n")])
 
