@@ -44,7 +44,6 @@ class MainWindow(QtGui.QMainWindow):
         self.resize(800, 600)        
         self.ui.recentaction = []
         self.createRecentAction()                
-        self.filter = None
         #User must to fill your information
 ##        self.profile = UserProfile()              
 ##        if  self.profile == isNull():
@@ -55,6 +54,7 @@ class MainWindow(QtGui.QMainWindow):
             
         # create radio selection for menu filter
         filterGroup = QtGui.QActionGroup(self.ui.menuFilter)
+        #filterGroup.setExclusive(False)
         self.ui.actionUnfiltered.setActionGroup(filterGroup)
         self.ui.actionFilterFuzzy.setActionGroup(filterGroup)
         self.ui.actionFilterTranslated.setActionGroup(filterGroup)
@@ -63,7 +63,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionFilterFuzzy.setCheckable(True)
         self.ui.actionFilterTranslated.setCheckable(True)
         self.ui.actionFilterUntranslated.setCheckable(True)
-        self.ui.actionUnfiltered.setChecked(True)
+        self.ui.actionUnfiltered.setChecked(True)       
         
         # set disable
         self.ui.actionUnfiltered.setDisabled(True)
@@ -157,18 +157,19 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionEdit_Header, QtCore.SIGNAL("triggered()"), self.headerDialog, QtCore.SLOT("show()"))
         
         # action filter menu
-        self.connect(self.ui.actionUnfiltered, QtCore.SIGNAL("triggered()"), self.unfiltered)
-        self.connect(self.ui.actionFilterFuzzy, QtCore.SIGNAL("triggered()"), self.filterFuzzy)
-        self.connect(self.ui.actionFilterTranslated, QtCore.SIGNAL("triggered()"), self.filterTranslated)
-        self.connect(self.ui.actionFilterUntranslated, QtCore.SIGNAL("triggered()"), self.filterUntranslated)        
+        self.connect(self.ui.actionUnfiltered, QtCore.SIGNAL("triggered()"), self.operator.unfiltered)
+        self.connect(self.ui.actionFilterFuzzy, QtCore.SIGNAL("triggered()"), self.operator.filterFuzzy)
+        self.connect(self.ui.actionFilterTranslated, QtCore.SIGNAL("triggered()"), self.operator.filterTranslated)
+        self.connect(self.ui.actionFilterUntranslated, QtCore.SIGNAL("triggered()"), self.operator.filterUntranslated)        
         self.connect(self.ui.actionToggleFuzzy, QtCore.SIGNAL("triggered()"), self.operator.toggleFuzzy)
         
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockTUview.updateTUview)
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockComment.updateComment)
         self.connect(self.operator, QtCore.SIGNAL("header"), self.headerDialog.updateHeader)  
-        self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.operator.emitHeader)      
-
-        self.connect(self.operator, QtCore.SIGNAL("takeoutUnit"), self.takeoutUnit)
+        self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.operator.emitHeader)
+        
+        self.connect(self.operator, QtCore.SIGNAL("hideUnit"), self.dockOverview.hideUnit)
+        self.connect(self.operator, QtCore.SIGNAL("hideUnit"), self.dockTUview.hideUnit)
         
         self.connect(self.operator, QtCore.SIGNAL("currentPosition"), self.dockOverview.highLightItem)
         self.connect(self.operator, QtCore.SIGNAL("currentPosition"), self.dockTUview.highLightScrollbar)
@@ -199,36 +200,7 @@ class MainWindow(QtGui.QMainWindow):
         # set file status information to text label of status bar
         self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.statuslabel.setText)
         self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.setOpening)        
-    
-    # FIXME the next 4 slots should not be here. Move them into Operator
-    # And please do not use a string to define what you want to filter.
-    # You have to be able to select more than one category at the same time.
-    # How can you filter fuzzy and untranslated together? Jens
-    def unfiltered(self):
-        self.filter = None
-        self.operator.emitFilteredList(None)
-
-    def filterFuzzy(self):
-        self.filter = 'fuzzy'
-        self.operator.emitFilteredList(self.filter)
-    
-    def filterTranslated(self):
-        self.filter = 'translated'
-        self.operator.emitFilteredList(self.filter)
-    
-    def filterUntranslated(self):
-        self.filter = 'untranslated'
-        self.operator.emitFilteredList(self.filter)
-    
-    # FIXME Why do you need to go thru MainEditor with this stuff?
-    # Please use slots in Overview and TUview and connect them to a signal in Operator
-    # and call takeoutUnit in Operator directly! Jens
-    def takeoutUnit(self, value):
-        if (self.filter):
-            self.dockOverview.hideItem(value)
-            self.dockTUview.takeoutUnit(value)
-            self.operator.takeoutUnit(value)
-    
+       
     def cutter(self):
         object = self.focusWidget()
         object = self.isEnabled(bool)

@@ -20,7 +20,7 @@
   </property>
   <layout class="QGridLayout" >
    <property name="margin" >
-    <number>9</number>
+    <number>2</number>
    </property>
    <property name="spacing" >
     <number>6</number>
@@ -111,8 +111,8 @@
          <blue>139</blue>
         </color>
         <color>
-         <red>237</red>
-         <green>243</green>
+         <red>228</red>
+         <green>235</green>
          <blue>255</blue>
         </color>
        </active>
@@ -198,8 +198,8 @@
          <blue>139</blue>
         </color>
         <color>
-         <red>237</red>
-         <green>243</green>
+         <red>228</red>
+         <green>235</green>
          <blue>255</blue>
         </color>
        </inactive>
@@ -285,12 +285,23 @@
          <blue>139</blue>
         </color>
         <color>
-         <red>237</red>
-         <green>243</green>
+         <red>228</red>
+         <green>235</green>
          <blue>255</blue>
         </color>
        </disabled>
       </palette>
+     </property>
+     <property name="font" >
+      <font>
+       <family>Sans Serif</family>
+       <pointsize>9</pointsize>
+       <weight>50</weight>
+       <italic>false</italic>
+       <bold>false</bold>
+       <underline>false</underline>
+       <strikeout>false</strikeout>
+      </font>
      </property>
      <property name="alternatingRowColors" >
       <bool>true</bool>

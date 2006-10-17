@@ -69,67 +69,49 @@ class TUview(QtGui.QDockWidget):
     def setFontTarget(self, font):
         self.ui.txtTarget.setFont(font)
         
-
-##    def setFont(self):
-##        """set font to txtSource and txtTarget"""
-##        #get font settings
-##        settings = QtCore.QSettings("WordForge", "Translation Editor")
-##        fontFamily = settings.value("FontFamily").toString()        
-##        fontSize = settings.value("FontSize").toString()
-##        fontSize = int(fontSize)
-##        font = QtGui.QFontDialog.getFont(QtGui.QFont(fontFamily, fontSize))        
-##        fontFamily = font[0].family()        
-##        fontSize = font[0].pointSize()
-##        self.ui.txtSource.setFont(font[0])
-##        self.ui.txtTarget.setFont(font[0])
-##        if (font[1]):
-##            #store font settings
-##            settings = QtCore.QSettings("WordForge", "Translation Editor")
-##            settings.setValue("FontFamily", QtCore.QVariant(fontFamily))
-##            settings.setValue("FontSize", QtCore.QVariant(fontSize))
-        
     @QtCore.pyqtSignature("int")
     def emitCurrentId(self, value):
-        id = self.ids[value]
-        self.emit(QtCore.SIGNAL("currentId"), id)
+        if (self.ids) and (value < len(self.ids)):
+            id = self.ids[value]
+            self.emit(QtCore.SIGNAL("currentId"), id)
 
     def highLightScrollbar(self, id):
-        if (self.ids):
-            self.disconnect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentId)
+        try:
             value = self.ids.index(id)
-            self.ui.fileScrollBar.setValue(value)
-            self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentId)
+        except:
+            return
+        self.disconnect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentId)
+        self.ui.fileScrollBar.setValue(value)
+        self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentId)
 
-    def takeoutUnit(self, value):
-        self.ui.fileScrollBar.setMaximum(self.ui.fileScrollBar.maximum() - 1)
+    def hideUnit(self, value):
+        # adjust the scrollbar
+        try:
+            self.ids.remove(value)
+        except ValueError:
+            pass
+        if (len(self.ids) > 0):
+            self.ui.fileScrollBar.setMaximum(len(self.ids) - 1)
         
-    def slotNewUnits(self, units, ids):
+    def slotNewUnits(self, units):
         """slot after new file was loaded"""
         if not units:
             self.ui.txtSource.setPlainText("")
             self.ui.txtTarget.setPlainText("")
-            self.ui.fileScrollBar.setMaximum(0)
-            return
-        ## adjust the scrollbar
-        #self.ids = range(len(units))
-        self.ids = ids
-        self.ui.fileScrollBar.setMaximum(len(units) - 1)
+        # adjust the scrollbar
+        # self.ids store the information of unit's id
+        self.ids = range(len(units))
+        if (len(self.ids) > 0):
+            self.ui.fileScrollBar.setMaximum(len(self.ids) - 1)
         self.ui.fileScrollBar.setEnabled(True)
         self.ui.fileScrollBar.setSliderPosition(0)
         self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentId)
     
     def filteredList(self, fList):
-        # filter list is empty
-        if not fList:
-            self.ui.fileScrollBar.setMaximum(0)
-            self.ids = []
-            return
-            
-        # set maximum scrollbar value according to filter list
-        self.ui.fileScrollBar.setMaximum(len(fList) - 1)
-        self.ids = []
-        for id in fList:
-            self.ids.append(id)
+        self.ids = fList
+        # set maximum scrollbar value according to ids
+        if (len(self.ids) > 0):
+            self.ui.fileScrollBar.setMaximum(len(self.ids) - 1)
         self.disconnect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentId)
         self.ui.fileScrollBar.setValue(0)
         self.ui.fileScrollBar.setSliderPosition(0)

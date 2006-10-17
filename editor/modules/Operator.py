@@ -30,11 +30,14 @@ class Operator(QtCore.QObject):
         self._modified = False
         self._saveDone = False
         self._unitpointer = None
-        self._unitpointer=None
-    
+        self.UNFILTERED = 0
+        self.FUZZY = 2
+        self.TRANSLATED = 4
+        self.UNTRANSLATED = 8
+        self.filter = self.UNFILTERED
+        
     def getUnits(self, fileName):
         self.store = factory.getobject(fileName)
-        print bool(self.store)
         # get status for units       
         self.numFuzzy = len(pocount.fuzzymessages(self.store.units))
         self.numTranslated = len(pocount.translatedmessages(self.store.units))
@@ -42,10 +45,11 @@ class Operator(QtCore.QObject):
         self.numTotal = self.numTranslated + self.numUntranslated
         self.emitCurrentStatus()
         
-        header = self.store.units[0].isheader()
-        self.filteredList = range(len(self.store.units))[header:]
-        self.emit(QtCore.SIGNAL("newUnits"), self.store.units[header:], self.filteredList)
-
+        self.emit(QtCore.SIGNAL("newUnits"), self.store.units)
+        self.filteredList = range(len(self.store.units))
+        # hide first unit if it's header
+        if (self.store.units[0].isheader()):
+            self.hideUnit(0)
         self._unitpointer = 0
         self.emitCurrentUnit()
 
@@ -64,9 +68,8 @@ class Operator(QtCore.QObject):
             self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), True, True)
             self.middleUnit = True
         currentPosition = self.getCurrentPosition()
-
         if (currentPosition == -1):
-            # no unit
+            # send signal to disable all 4 navigation buttons
             self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), False, False)
             self.emit(QtCore.SIGNAL("currentUnit"), None)
         else:
@@ -76,43 +79,74 @@ class Operator(QtCore.QObject):
     def getCurrentPosition(self):
         try:
             return self.filteredList[self._unitpointer]
-        except IndexError:
+        except:
             # no current position found in list
             return -1
 
-    def emitFilteredList(self, filter):
-        #pocount.fuzzymessages(self.store.units)
-        self._unitpointer = 0
-        self.filteredList = []
-        if (not filter):
-            self.filteredList = range(len(self.store.units))
-        else:
-            header = self.store.units[0].isheader()
-            for i in range(header, len(self.store.units)):
-                if (filter == 'fuzzy' and self.store.units[i].isfuzzy()) \
-                or (filter == 'translated' and self.store.units[i].istranslated()) \
-                or (filter == 'untranslated' and not self.store.units[i].istranslated()):
-                    self.filteredList.append(i)
+    def hideUnit(self, value):
+        try:
+            self.filteredList.remove(value)
+        except ValueError:
+            pass
+        self.emit(QtCore.SIGNAL("hideUnit"), value)
+        
+    def unfiltered(self):
+        self.emitUpdateUnit()
+        self.filter = self.UNFILTERED
+        self.filteredList = range(len(self.store.units))
         self.emit(QtCore.SIGNAL("filteredList"), self.filteredList)
+        # hide first unit if it's header
+        if (self.store.units[0].isheader()):
+            self.hideUnit(0)
+        self._unitpointer = 0
+        self.emitCurrentUnit()
+        
+    def filterFuzzy(self):
+        self.emitFiltered(self.FUZZY)
+        
+    def filterTranslated(self):
+        self.emitFiltered(self.TRANSLATED)
+        
+    def filterUntranslated(self):
+        self.emitFiltered(self.UNTRANSLATED)
+
+    # FIXME You have to be able to select more than one category at the same time.
+    # How can you filter fuzzy and untranslated together? Jens
+
+    def emitFiltered(self, filter):
+        #pocount.fuzzymessages(self.store.units)
+        self.emitUpdateUnit()
+        self.filteredList = []
+        self.filter = filter
+        header = self.store.units[0].isheader()
+        for i in range(header, len(self.store.units)):
+            if (filter & self.FUZZY) and (self.store.units[i].isfuzzy()):
+                self.filteredList.append(i)
+            if (filter & self.TRANSLATED) and (self.store.units[i].istranslated()):
+                self.filteredList.append(i)
+            if (filter & self.UNTRANSLATED) and (not self.store.units[i].istranslated()):
+                self.filteredList.append(i)
+        self.emit(QtCore.SIGNAL("filteredList"), self.filteredList)
+        self._unitpointer = 0
         self.emitCurrentUnit()
     
     def emitUpdateUnit(self):
         if (self._unitpointer != None):
             self.emit(QtCore.SIGNAL("updateUnit"))
+        
+        currentPosition = self.getCurrentPosition()
+        currentUnit = self.store.units[currentPosition]
+        if ((self.filter & self.FUZZY) and (not currentUnit.isfuzzy())) or ((self.filter & self.TRANSLATED) and (not currentUnit.istranslated())) or ((self.filter & self.UNTRANSLATED) and (currentUnit.istranslated())):
+            self.hideUnit(currentPosition)
+            return True
 
     def emitHeader(self, fileName):
         self.store = factory.getobject(fileName)
         try:
             self.emit(QtCore.SIGNAL("header"),self.store.header())
         except:
-            pass        
+            pass
 
-    def takeoutUnit(self, value):
-        return
-        self.unitpointer = value - 1
-        if self.unitpointer < 0:
-            self.unitpointer = 0
-    
     def previous(self):
         if self._unitpointer > 0:
             self.emitUpdateUnit()
@@ -122,10 +156,8 @@ class Operator(QtCore.QObject):
     def next(self):
         # move to next unit inside the list, not the whole store.units
         if self._unitpointer < len(self.filteredList):
-            self.emitUpdateUnit()
-            #if (self._unitpointer == len(self.filteredList) - 1):
-            #    self._unitpointer -= 1
-            self._unitpointer += 1
+            if (not self.emitUpdateUnit()):
+                self._unitpointer += 1
             self.emitCurrentUnit()
         
     def first(self):
@@ -163,25 +195,20 @@ class Operator(QtCore.QObject):
         currentPosition = self.getCurrentPosition()
         currentUnit = self.store.units[currentPosition]
         before_isuntranslated = not currentUnit.istranslated()
-        unitIsFuzzy = currentUnit.isfuzzy()
         currentUnit.target = unicode(target)
         if (currentUnit.target != ''):
             try:
                 self.store.units[currentPosition].marktranslated()
             except AttributeError:
                 pass
-            if (unitIsFuzzy):
+            if (currentUnit.isfuzzy()):
                 self.numFuzzy -= 1
                 self.store.units[currentPosition].markfuzzy(False)
         after_istranslated = currentUnit.istranslated()
         if (before_isuntranslated and after_istranslated):
             self.numTranslated += 1
-            # send takeout current unit signal
-            self.emit(QtCore.SIGNAL("takeoutUnit"), self._unitpointer)
         elif (not before_isuntranslated and not after_istranslated):
             self.numTranslated -= 1
-            # send takeout current unit signal
-            self.emit(QtCore.SIGNAL("takeoutUnit"), self._unitpointer)
         self.emitCurrentStatus()
         self._modified = True
     
@@ -196,16 +223,13 @@ class Operator(QtCore.QObject):
     def toggleFuzzy(self):
         """toggle fuzzy state for current unit"""
         currentPosition = self.getCurrentPosition()
-        unitIsFuzzy = self.store.units[currentPosition].isfuzzy()
-        if (unitIsFuzzy):
+        currentUnit = self.store.units[currentPosition]
+        if (currentUnit.isfuzzy()):
             self.store.units[currentPosition].markfuzzy(False)
             self.numFuzzy -= 1
-            # send takeout current unit signal
-            self.emit(QtCore.SIGNAL("takeoutUnit"), self._unitpointer)
         else:
             self.store.units[currentPosition].markfuzzy(True)
             self.numFuzzy += 1
-        
         self._modified = True
         self.emitCurrentStatus()
     

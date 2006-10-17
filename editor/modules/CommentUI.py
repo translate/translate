@@ -17,7 +17,7 @@ class Ui_frmComment(object):
         frmComment.setContextMenuPolicy(QtCore.Qt.NoContextMenu)
 
         self.gridlayout = QtGui.QGridLayout(frmComment)
-        self.gridlayout.setMargin(9)
+        self.gridlayout.setMargin(2)
         self.gridlayout.setSpacing(6)
         self.gridlayout.setObjectName("gridlayout")
 

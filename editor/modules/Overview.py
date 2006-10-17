@@ -62,17 +62,17 @@ class OverviewDock(QtGui.QDockWidget):
             self._actionShow.setText(self.tr("Show Overview"))    
         self.setHidden(not self.isHidden())    
 
-    def slotNewUnits(self, units, ids):
+    def slotNewUnits(self, units):
         """Initialize the list, clear and fill with units"""
         self.lastItem = None
         self.ui.treeOverview.clear()
-
+        ids = range(len(units))
         items = []
-        for i in range(len(units)):           
+        for i in ids:
             item = QtGui.QTreeWidgetItem()
             item.setTextAlignment(0, QtCore.Qt.AlignRight)
             # sorting needs leading space: '   1', '   2', '  10'.. rather than '1', '10', '2'
-            item.setText(0, str(ids[i]).rjust(4) + '  ')
+            item.setText(0, str(i).rjust(4) + '  ')
             item.setText(1, units[i].source)
             item.setText(2, units[i].target)
             # add item to children, in reverse mode because addTopLevelItems do the opposite
@@ -80,7 +80,6 @@ class OverviewDock(QtGui.QDockWidget):
             #items.append(item)
         # add children to tree widget
         self.ui.treeOverview.addTopLevelItems(items)
-        
         # select the first item in list
         self.highLightItem(0)
 
@@ -95,10 +94,9 @@ class OverviewDock(QtGui.QDockWidget):
                 j += 1
                 self.ui.treeOverview.setItemHidden(item, False)
             else:
+                pass
                 self.ui.treeOverview.setItemHidden(item, True)
         self.setUpdatesEnabled(True)
-        if (fList):
-            self.highLightItem(fList[0])
    
     def highLightItem(self, value):
         print 'highLight',value
@@ -112,7 +110,7 @@ class OverviewDock(QtGui.QDockWidget):
             self.connect(self.ui.treeOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitItemSelected)
             self.lastItem = item
     
-    def hideItem(self, value):
+    def hideUnit(self, value):
         item = self.ui.treeOverview.topLevelItem(value)
         self.ui.treeOverview.setItemHidden(item, True)
 
@@ -133,6 +131,8 @@ class OverviewDock(QtGui.QDockWidget):
             
     def setFontOverView(self, font):
         self.ui.treeOverview.setFont(font)
+        font = QtGui.QFont('serif', 9)
+        self.ui.treeOverview.header().setFont(font)
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

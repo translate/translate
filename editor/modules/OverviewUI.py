@@ -17,7 +17,7 @@ class Ui_Form(object):
         Form.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
 
         self.gridlayout = QtGui.QGridLayout(Form)
-        self.gridlayout.setMargin(9)
+        self.gridlayout.setMargin(2)
         self.gridlayout.setSpacing(6)
         self.gridlayout.setObjectName("gridlayout")
 
