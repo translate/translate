@@ -8,8 +8,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>485</width>
-    <height>455</height>
+    <width>482</width>
+    <height>413</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -22,43 +22,6 @@
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item row="1" column="0" >
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <property name="spacing" >
-      <number>6</number>
-     </property>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>131</width>
-         <height>31</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="okButton" >
-       <property name="text" >
-        <string>OK</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="cancelButton" >
-       <property name="text" >
-        <string>Cancel</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
    <item row="0" column="0" >
     <widget class="QTabWidget" name="tabWidget" >
      <property name="enabled" >
@@ -89,8 +52,8 @@
        <property name="geometry" >
         <rect>
          <x>10</x>
-         <y>50</y>
-         <width>431</width>
+         <y>20</y>
+         <width>441</width>
          <height>231</height>
         </rect>
        </property>
@@ -100,134 +63,17 @@
        <property name="frameShadow" >
         <enum>QFrame::Raised</enum>
        </property>
-       <widget class="QLabel" name="label4" >
-        <property name="geometry" >
-         <rect>
-          <x>240</x>
-          <y>110</y>
-          <width>101</width>
-          <height>18</height>
-         </rect>
-        </property>
-        <property name="text" >
-         <string>Language Code:</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label5" >
-        <property name="geometry" >
-         <rect>
-          <x>10</x>
-          <y>150</y>
-          <width>91</width>
-          <height>18</height>
-         </rect>
-        </property>
-        <property name="text" >
-         <string>Support Team:</string>
-        </property>
-       </widget>
        <widget class="QLabel" name="label6" >
         <property name="geometry" >
          <rect>
           <x>10</x>
           <y>190</y>
-          <width>97</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="text" >
-         <string>Time Zone:</string>
-        </property>
-       </widget>
-       <widget class="QTextEdit" name="EmailAddress" >
-        <property name="geometry" >
-         <rect>
-          <x>140</x>
-          <y>60</y>
-          <width>275</width>
-          <height>30</height>
-         </rect>
-        </property>
-        <property name="tabChangesFocus" >
-         <bool>true</bool>
-        </property>
-       </widget>
-       <widget class="QTextEdit" name="FullLanguage" >
-        <property name="geometry" >
-         <rect>
-          <x>140</x>
-          <y>100</y>
-          <width>92</width>
-          <height>30</height>
-         </rect>
-        </property>
-        <property name="tabChangesFocus" >
-         <bool>true</bool>
-        </property>
-       </widget>
-       <widget class="QTextEdit" name="Code" >
-        <property name="geometry" >
-         <rect>
-          <x>340</x>
-          <y>100</y>
-          <width>75</width>
-          <height>30</height>
-         </rect>
-        </property>
-        <property name="tabChangesFocus" >
-         <bool>true</bool>
-        </property>
-       </widget>
-       <widget class="QTextEdit" name="SupportTeam" >
-        <property name="geometry" >
-         <rect>
-          <x>140</x>
-          <y>140</y>
-          <width>275</width>
-          <height>30</height>
-         </rect>
-        </property>
-        <property name="tabChangesFocus" >
-         <bool>true</bool>
-        </property>
-       </widget>
-       <widget class="QTextEdit" name="TimeZone" >
-        <property name="geometry" >
-         <rect>
-          <x>140</x>
-          <y>180</y>
-          <width>275</width>
-          <height>30</height>
-         </rect>
-        </property>
-        <property name="tabChangesFocus" >
-         <bool>true</bool>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label1" >
-        <property name="geometry" >
-         <rect>
-          <x>10</x>
-          <y>30</y>
-          <width>71</width>
+          <width>61</width>
           <height>18</height>
          </rect>
         </property>
         <property name="text" >
-         <string>UserName:</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label2" >
-        <property name="geometry" >
-         <rect>
-          <x>10</x>
-          <y>70</y>
-          <width>121</width>
-          <height>18</height>
-         </rect>
-        </property>
-        <property name="text" >
-         <string>Your email address:</string>
+         <string>Time Zone</string>
         </property>
        </widget>
        <widget class="QLabel" name="label3" >
@@ -240,15 +86,60 @@
          </rect>
         </property>
         <property name="text" >
-         <string>Full Language Name:</string>
+         <string>Full Language Name</string>
         </property>
        </widget>
-       <widget class="QTextEdit" name="UserName" >
+       <widget class="QLabel" name="label1" >
         <property name="geometry" >
          <rect>
-          <x>140</x>
-          <y>20</y>
-          <width>275</width>
+          <x>10</x>
+          <y>30</y>
+          <width>71</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="text" >
+         <string>UserName</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label5" >
+        <property name="geometry" >
+         <rect>
+          <x>10</x>
+          <y>150</y>
+          <width>81</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="text" >
+         <string>Support Team</string>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="cbxLanguageCode" >
+        <property name="enabled" >
+         <bool>true</bool>
+        </property>
+        <property name="geometry" >
+         <rect>
+          <x>350</x>
+          <y>100</y>
+          <width>81</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="acceptDrops" >
+         <bool>false</bool>
+        </property>
+        <property name="editable" >
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QTextEdit" name="EmailAddress" >
+        <property name="geometry" >
+         <rect>
+          <x>130</x>
+          <y>60</y>
+          <width>302</width>
           <height>30</height>
          </rect>
         </property>
@@ -256,13 +147,103 @@
          <bool>true</bool>
         </property>
        </widget>
+       <widget class="QTextEdit" name="UserName" >
+        <property name="geometry" >
+         <rect>
+          <x>130</x>
+          <y>20</y>
+          <width>302</width>
+          <height>30</height>
+         </rect>
+        </property>
+        <property name="focusPolicy" >
+         <enum>Qt::TabFocus</enum>
+        </property>
+        <property name="tabChangesFocus" >
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QTextEdit" name="SupportTeam" >
+        <property name="geometry" >
+         <rect>
+          <x>130</x>
+          <y>140</y>
+          <width>301</width>
+          <height>30</height>
+         </rect>
+        </property>
+        <property name="tabChangesFocus" >
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="cbxTimeZone" >
+        <property name="enabled" >
+         <bool>true</bool>
+        </property>
+        <property name="geometry" >
+         <rect>
+          <x>130</x>
+          <y>180</y>
+          <width>301</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="editable" >
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label4" >
+        <property name="geometry" >
+         <rect>
+          <x>260</x>
+          <y>109</y>
+          <width>91</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="text" >
+         <string>Language Code</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label2" >
+        <property name="geometry" >
+         <rect>
+          <x>10</x>
+          <y>69</y>
+          <width>81</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="text" >
+         <string>Email address</string>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="cbxFullLanguage" >
+        <property name="enabled" >
+         <bool>true</bool>
+        </property>
+        <property name="geometry" >
+         <rect>
+          <x>130</x>
+          <y>100</y>
+          <width>121</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="editable" >
+         <bool>true</bool>
+        </property>
+        <property name="currentIndex" >
+         <number>-1</number>
+        </property>
+       </widget>
       </widget>
       <widget class="QFrame" name="frame2" >
        <property name="geometry" >
         <rect>
          <x>10</x>
-         <y>290</y>
-         <width>431</width>
+         <y>260</y>
+         <width>441</width>
          <height>51</height>
         </rect>
        </property>
@@ -272,116 +253,55 @@
        <property name="frameShadow" >
         <enum>QFrame::Raised</enum>
        </property>
-       <widget class="QLabel" name="label" >
-        <property name="geometry" >
-         <rect>
-          <x>10</x>
-          <y>20</y>
-          <width>181</width>
-          <height>18</height>
-         </rect>
-        </property>
-        <property name="text" >
-         <string>Number of Singular/Plular Forms:</string>
-        </property>
-       </widget>
        <widget class="QSpinBox" name="spinBox" >
         <property name="geometry" >
          <rect>
-          <x>200</x>
+          <x>215</x>
           <y>10</y>
           <width>216</width>
           <height>31</height>
          </rect>
         </property>
        </widget>
-      </widget>
-      <widget class="QLabel" name="label0" >
-       <property name="geometry" >
-        <rect>
-         <x>10</x>
-         <y>10</y>
-         <width>301</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="font" >
-        <font>
-         <family>Sans Serif</family>
-         <pointsize>12</pointsize>
-         <weight>50</weight>
-         <italic>false</italic>
-         <bold>false</bold>
-         <underline>false</underline>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text" >
-        <string>Information About You And Translation Team</string>
-       </property>
-      </widget>
-      <widget class="Line" name="line" >
-       <property name="geometry" >
-        <rect>
-         <x>10</x>
-         <y>30</y>
-         <width>431</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
+       <widget class="QLabel" name="label" >
+        <property name="geometry" >
+         <rect>
+          <x>10</x>
+          <y>18</y>
+          <width>181</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="text" >
+         <string>Number of singular/plural forms</string>
+        </property>
+       </widget>
       </widget>
      </widget>
      <widget class="QWidget" name="tab2" >
       <attribute name="title" >
        <string>Font</string>
       </attribute>
-      <widget class="Line" name="line_2" >
+      <widget class="QPushButton" name="bntDefaults" >
        <property name="geometry" >
         <rect>
-         <x>20</x>
-         <y>40</y>
-         <width>431</width>
-         <height>16</height>
+         <x>340</x>
+         <y>230</y>
+         <width>91</width>
+         <height>21</height>
         </rect>
        </property>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
+       <property name="text" >
+        <string>Defaults</string>
        </property>
       </widget>
-      <widget class="QLabel" name="label0_2" >
+      <widget class="QFrame" name="frame2" >
        <property name="geometry" >
         <rect>
          <x>20</x>
          <y>20</y>
-         <width>91</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="font" >
-        <font>
-         <family>Sans Serif</family>
-         <pointsize>12</pointsize>
-         <weight>50</weight>
-         <italic>false</italic>
-         <bold>false</bold>
-         <underline>false</underline>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text" >
-        <string>Font Setting</string>
-       </property>
-      </widget>
-      <widget class="QFrame" name="frame_2" >
-       <property name="geometry" >
-        <rect>
-         <x>20</x>
-         <y>80</y>
-         <width>431</width>
-         <height>221</height>
+         <width>411</width>
+         <height>201</height>
         </rect>
        </property>
        <property name="frameShape" >
@@ -402,7 +322,7 @@
         <property name="font" >
          <font>
           <family>Sans Serif</family>
-          <pointsize>11</pointsize>
+          <pointsize>10</pointsize>
           <weight>50</weight>
           <italic>false</italic>
           <bold>false</bold>
@@ -412,93 +332,6 @@
         </property>
         <property name="text" >
          <string>Overview</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="bntOverview" >
-        <property name="geometry" >
-         <rect>
-          <x>330</x>
-          <y>30</y>
-          <width>61</width>
-          <height>21</height>
-         </rect>
-        </property>
-        <property name="text" >
-         <string>Choose</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label5" >
-        <property name="geometry" >
-         <rect>
-          <x>20</x>
-          <y>150</y>
-          <width>61</width>
-          <height>19</height>
-         </rect>
-        </property>
-        <property name="font" >
-         <font>
-          <family>Sans Serif</family>
-          <pointsize>11</pointsize>
-          <weight>50</weight>
-          <italic>false</italic>
-          <bold>false</bold>
-          <underline>false</underline>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text" >
-         <string>Comment</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="bntComment" >
-        <property name="geometry" >
-         <rect>
-          <x>330</x>
-          <y>150</y>
-          <width>61</width>
-          <height>21</height>
-         </rect>
-        </property>
-        <property name="text" >
-         <string>Choose</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label4" >
-        <property name="geometry" >
-         <rect>
-          <x>20</x>
-          <y>110</y>
-          <width>48</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font" >
-         <font>
-          <family>Sans Serif</family>
-          <pointsize>11</pointsize>
-          <weight>50</weight>
-          <italic>false</italic>
-          <bold>false</bold>
-          <underline>false</underline>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text" >
-         <string>Target</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="bntTarget" >
-        <property name="geometry" >
-         <rect>
-          <x>330</x>
-          <y>110</y>
-          <width>61</width>
-          <height>21</height>
-         </rect>
-        </property>
-        <property name="text" >
-         <string>Choose</string>
         </property>
        </widget>
        <widget class="QLabel" name="Source" >
@@ -513,7 +346,7 @@
         <property name="font" >
          <font>
           <family>Sans Serif</family>
-          <pointsize>11</pointsize>
+          <pointsize>10</pointsize>
           <weight>50</weight>
           <italic>false</italic>
           <bold>false</bold>
@@ -525,32 +358,19 @@
          <string>Source</string>
         </property>
        </widget>
-       <widget class="QPushButton" name="bntSource" >
+       <widget class="QLabel" name="label4" >
         <property name="geometry" >
          <rect>
-          <x>330</x>
-          <y>70</y>
-          <width>61</width>
-          <height>21</height>
-         </rect>
-        </property>
-        <property name="text" >
-         <string>Choose</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="lblOverView" >
-        <property name="geometry" >
-         <rect>
-          <x>100</x>
-          <y>30</y>
-          <width>211</width>
-          <height>23</height>
+          <x>20</x>
+          <y>110</y>
+          <width>48</width>
+          <height>17</height>
          </rect>
         </property>
         <property name="font" >
          <font>
           <family>Sans Serif</family>
-          <pointsize>11</pointsize>
+          <pointsize>10</pointsize>
           <weight>50</weight>
           <italic>false</italic>
           <bold>false</bold>
@@ -558,18 +378,39 @@
           <strikeout>false</strikeout>
          </font>
         </property>
-        <property name="frameShape" >
-         <enum>QFrame::StyledPanel</enum>
-        </property>
         <property name="text" >
-         <string/>
+         <string>Target</string>
         </property>
        </widget>
-       <widget class="QLabel" name="lblSource" >
+       <widget class="QLabel" name="lblsupportteam" >
+        <property name="geometry" >
+         <rect>
+          <x>20</x>
+          <y>150</y>
+          <width>61</width>
+          <height>19</height>
+         </rect>
+        </property>
+        <property name="font" >
+         <font>
+          <family>Sans Serif</family>
+          <pointsize>10</pointsize>
+          <weight>50</weight>
+          <italic>false</italic>
+          <bold>false</bold>
+          <underline>false</underline>
+          <strikeout>false</strikeout>
+         </font>
+        </property>
+        <property name="text" >
+         <string>Comment</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="lblComment" >
         <property name="geometry" >
          <rect>
           <x>100</x>
-          <y>70</y>
+          <y>150</y>
           <width>211</width>
           <height>21</height>
          </rect>
@@ -619,11 +460,11 @@
          <string/>
         </property>
        </widget>
-       <widget class="QLabel" name="lblComment" >
+       <widget class="QLabel" name="lblSource" >
         <property name="geometry" >
          <rect>
           <x>100</x>
-          <y>150</y>
+          <y>70</y>
           <width>211</width>
           <height>21</height>
          </rect>
@@ -646,9 +487,125 @@
          <string/>
         </property>
        </widget>
+       <widget class="QLabel" name="lblOverView" >
+        <property name="geometry" >
+         <rect>
+          <x>100</x>
+          <y>30</y>
+          <width>211</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="font" >
+         <font>
+          <family>Sans Serif</family>
+          <pointsize>11</pointsize>
+          <weight>50</weight>
+          <italic>false</italic>
+          <bold>false</bold>
+          <underline>false</underline>
+          <strikeout>false</strikeout>
+         </font>
+        </property>
+        <property name="frameShape" >
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="bntOverview" >
+        <property name="geometry" >
+         <rect>
+          <x>330</x>
+          <y>30</y>
+          <width>61</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="text" >
+         <string>Choose</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="bntSource" >
+        <property name="geometry" >
+         <rect>
+          <x>330</x>
+          <y>70</y>
+          <width>61</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="text" >
+         <string>Choose</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="bntTarget" >
+        <property name="geometry" >
+         <rect>
+          <x>330</x>
+          <y>110</y>
+          <width>61</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="text" >
+         <string>Choose</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="bntComment" >
+        <property name="geometry" >
+         <rect>
+          <x>330</x>
+          <y>150</y>
+          <width>61</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="text" >
+         <string>Choose</string>
+        </property>
+       </widget>
       </widget>
      </widget>
     </widget>
+   </item>
+   <item row="1" column="0" >
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>131</width>
+         <height>31</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="okButton" >
+       <property name="text" >
+        <string>OK</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="cancelButton" >
+       <property name="text" >
+        <string>Cancel</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
@@ -656,14 +613,19 @@
  <tabstops>
   <tabstop>UserName</tabstop>
   <tabstop>EmailAddress</tabstop>
-  <tabstop>FullLanguage</tabstop>
-  <tabstop>Code</tabstop>
+  <tabstop>cbxFullLanguage</tabstop>
+  <tabstop>cbxLanguageCode</tabstop>
   <tabstop>SupportTeam</tabstop>
-  <tabstop>TimeZone</tabstop>
+  <tabstop>cbxTimeZone</tabstop>
   <tabstop>spinBox</tabstop>
   <tabstop>okButton</tabstop>
   <tabstop>cancelButton</tabstop>
   <tabstop>tabWidget</tabstop>
+  <tabstop>bntComment</tabstop>
+  <tabstop>bntTarget</tabstop>
+  <tabstop>bntSource</tabstop>
+  <tabstop>bntDefaults</tabstop>
+  <tabstop>bntOverview</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -674,8 +636,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>278</x>
-     <y>253</y>
+     <x>373</x>
+     <y>400</y>
     </hint>
     <hint type="destinationlabel" >
      <x>96</x>
@@ -690,8 +652,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>369</x>
-     <y>253</y>
+     <x>464</x>
+     <y>400</y>
     </hint>
     <hint type="destinationlabel" >
      <x>179</x>
