@@ -21,6 +21,7 @@
 
 from PyQt4 import QtCore, QtGui
 from translate.storage import factory
+from translate.storage import xliff
 from translate.tools import pocount
 
 class Operator(QtCore.QObject):
@@ -32,33 +33,58 @@ class Operator(QtCore.QObject):
         self._unitpointer = None
         
         # filter flags
+
         self.FUZZY = 2
         self.TRANSLATED = 4
         self.UNTRANSLATED = 8
         self.filter = self.FUZZY + self.TRANSLATED + self.UNTRANSLATED
         
+
     def getUnits(self, fileName):
         self.store = factory.getobject(fileName)
+
         # get status for units       
         self.numFuzzy = len(pocount.fuzzymessages(self.store.units))
         self.numTranslated = len(pocount.translatedmessages(self.store.units))
         self.numUntranslated = len(pocount.untranslatedmessages(self.store.units))
         self.numTotal = self.numTranslated + self.numUntranslated
         self.emitCurrentStatus()
+
+####        fileNode = self.store.getfilenode(fileName)
+##        xliffHeader = self.store.getheadernode(fileNode)
+##        header = self.store.header(xliffHeader)
+
+        header = self.store.units[0].isheader()
+        self.filteredList = range(len(self.store.units))[header:]
+        self.emit(QtCore.SIGNAL("newUnits"), self.store.units[header:], self.filteredList)
+##        header = {"charset":"CHARSET", "encoding":"ENCODING", "project_id_version":None, "pot_creation_date":None, "po_revision_date":None, "last_translator":None, "language_team":None, "mime_version":None, "plural_forms":None, "report_msgid_bugs_to":None}
+##        poHeader = self.store.makeheader(charset="CHARSET", encoding="ENCODING", project_id_version=None, pot_creation_date=None, po_revision_date=None, last_translator=None, language_team=None, mime_version=None, plural_forms=None, report_msgid_bugs_to=None)
         
+
+
+
         self.emit(QtCore.SIGNAL("newUnits"), self.store.units)
         self.filteredList = range(len(self.store.units))
         # hide first unit if it's header
         if (self.store.units[0].isheader()):
             self.hideUnit(0)
+
         self._unitpointer = 0
         self.emitCurrentUnit()
+
+
+    def updateNewHeader(self, header):
+##        poHeader = self.store.makeheader(header)
+        self.store.updateheader(header)
+##        print self.store.header()
+        
 
         # set color for fuzzy unit only
         fuzzyUnits = pocount.fuzzymessages(self.store.units)
         for i in fuzzyUnits:
             id = self.store.units.index(i)
             self.emit(QtCore.SIGNAL("setColor"), id, self.FUZZY)
+
 
     def emitCurrentUnit(self):
         if (len(self.filteredList) <= 1):
@@ -90,8 +116,10 @@ class Operator(QtCore.QObject):
         try:
             return self.filteredList[self._unitpointer]
         except:
+
             # no current position found in list
             return -1
+      
 
     def hideUnit(self, value):
         try:
@@ -170,12 +198,20 @@ class Operator(QtCore.QObject):
             # tell next button not to advance another step
             return True
 
+    def emitOtherComments(self):
+        """sending comment of Header"""
+        self.emit(QtCore.SIGNAL("otherComments"),self.store.units[0].othercomments)
+        
     def emitHeader(self, fileName):
+        """sending Header """        
         self.store = factory.getobject(fileName)
-        try:
-            self.emit(QtCore.SIGNAL("header"),self.store.header())
-        except:
-            pass
+        self.emit(QtCore.SIGNAL("header"),self.store.units[0].target)
+##        if (callable(getattr(self.store, "header", None))):
+        
+##            self.emit(QtCore.SIGNAL("header"),self.store.header())
+      
+##        except:
+##            pass
 
     def previous(self):
         if self._unitpointer > 0:

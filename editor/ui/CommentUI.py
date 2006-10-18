@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Thu Aug 10 12:01:25 2006
+# Created: Thu Oct  5 14:54:03 2006
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -14,7 +14,6 @@ class Ui_frmComment(object):
     def setupUi(self, frmComment):
         frmComment.setObjectName("frmComment")
         frmComment.resize(QtCore.QSize(QtCore.QRect(0,0,534,395).size()).expandedTo(frmComment.minimumSizeHint()))
-        frmComment.setContextMenuPolicy(QtCore.Qt.NoContextMenu)
 
         self.gridlayout = QtGui.QGridLayout(frmComment)
         self.gridlayout.setMargin(2)
@@ -22,6 +21,7 @@ class Ui_frmComment(object):
         self.gridlayout.setObjectName("gridlayout")
 
         self.txtComment = QtGui.QTextEdit(frmComment)
+        self.txtComment.setEnabled(False)
         self.txtComment.setObjectName("txtComment")
         self.gridlayout.addWidget(self.txtComment,0,0,1,1)
 

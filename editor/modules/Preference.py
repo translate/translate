@@ -21,7 +21,7 @@
 
 import sys
 from PyQt4 import QtCore, QtGui
-from PreferenceUI import Ui_frmPreference
+from ui.PreferenceUI import Ui_frmPreference
 
 class Preference(QtGui.QDialog):
     def __init__(self):
@@ -41,6 +41,11 @@ class Preference(QtGui.QDialog):
         self.ui.SupportTeam.setPlainText(settings.value("SupportTeam").toString())
         self.ui.cbxTimeZone.setEditText(settings.value("TimeZone").toString())      
         
+        
+        self.connect(self.ui.chkHeaderAuto, QtCore.SIGNAL("stateChanged(int)"), self.ui.chkHeaderAuto.checkState) 
+      
+
+        
        #Font Setting
        
         self.connect(self.ui.bntOverview, QtCore.SIGNAL("clicked()"), self.fontOverview) 
@@ -58,6 +63,18 @@ class Preference(QtGui.QDialog):
         self.tuTargetFont = None
         self.commentFont = None
         
+
+##    def rejected(self):
+##        "remove all settings"
+##        print "remove"
+##        settings = QtCore.QSettings("WordForge", "Translation Editor")
+##        settings.remove("")
+    
+##    def toggleChkHeader(self):
+
+       
+        
+
     def initFonts(self):
         # get font for display
         self.overviewFont, fontCaption = self.getFont("overview")
@@ -83,6 +100,7 @@ class Preference(QtGui.QDialog):
     def accepted(self):
         #personal setting
         self.getUserProfile()
+        
         
         # font setting
         if self.default:
@@ -195,6 +213,8 @@ class Preference(QtGui.QDialog):
 ##        userprofile = dictutils.cidict()
 ##        userprofile = {"charset":"CHARSET", "encoding":"ENCODING", "project_id_version":None, "pot_creation_date":None, "po_revision_date":None, "last_translator":UserName, "language_team":Code, "mime_version":None, "plural_forms":None, "report_msgid_bugs_to":SupportTeam}
         userprofile = {"charset":"CHARSET", "encoding":"ENCODING", "project_id_version":None, "pot_creation_date":None, "po_revision_date":None, "last_translator":"Hok Kakada", "language_team":"Khmer", "mime_version":None, "plural_forms":None, "report_msgid_bugs_to": "support@khmeros.info"}
+        if (self.ui.chkHeaderAuto.checkState() == 2):
+            self.emit(QtCore.SIGNAL("headerAuto"), userprofile)
         self.emit(QtCore.SIGNAL("updateProfile"), userprofile)
         
     def emitUserprofile(self, filename):

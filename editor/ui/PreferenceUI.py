@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Tue Oct 17 17:03:00 2006
+# Created: Wed Oct 18 15:51:41 2006
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -13,12 +13,29 @@ from PyQt4 import QtCore, QtGui
 class Ui_frmPreference(object):
     def setupUi(self, frmPreference):
         frmPreference.setObjectName("frmPreference")
-        frmPreference.resize(QtCore.QSize(QtCore.QRect(0,0,482,413).size()).expandedTo(frmPreference.minimumSizeHint()))
+        frmPreference.resize(QtCore.QSize(QtCore.QRect(0,0,483,460).size()).expandedTo(frmPreference.minimumSizeHint()))
 
         self.gridlayout = QtGui.QGridLayout(frmPreference)
         self.gridlayout.setMargin(9)
         self.gridlayout.setSpacing(6)
         self.gridlayout.setObjectName("gridlayout")
+
+        self.hboxlayout = QtGui.QHBoxLayout()
+        self.hboxlayout.setMargin(0)
+        self.hboxlayout.setSpacing(6)
+        self.hboxlayout.setObjectName("hboxlayout")
+
+        spacerItem = QtGui.QSpacerItem(131,31,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        self.hboxlayout.addItem(spacerItem)
+
+        self.okButton = QtGui.QPushButton(frmPreference)
+        self.okButton.setObjectName("okButton")
+        self.hboxlayout.addWidget(self.okButton)
+
+        self.cancelButton = QtGui.QPushButton(frmPreference)
+        self.cancelButton.setObjectName("cancelButton")
+        self.hboxlayout.addWidget(self.cancelButton)
+        self.gridlayout.addLayout(self.hboxlayout,1,0,1,1)
 
         self.tabWidget = QtGui.QTabWidget(frmPreference)
         self.tabWidget.setEnabled(True)
@@ -117,6 +134,10 @@ class Ui_frmPreference(object):
         self.label = QtGui.QLabel(self.frame2)
         self.label.setGeometry(QtCore.QRect(10,18,181,18))
         self.label.setObjectName("label")
+
+        self.chkHeaderAuto = QtGui.QCheckBox(self.tab1)
+        self.chkHeaderAuto.setGeometry(QtCore.QRect(10,330,201,20))
+        self.chkHeaderAuto.setObjectName("chkHeaderAuto")
         self.tabWidget.addTab(self.tab1, "")
 
         self.tab2 = QtGui.QWidget()
@@ -266,23 +287,6 @@ class Ui_frmPreference(object):
         self.tabWidget.addTab(self.tab2, "")
         self.gridlayout.addWidget(self.tabWidget,0,0,1,1)
 
-        self.hboxlayout = QtGui.QHBoxLayout()
-        self.hboxlayout.setMargin(0)
-        self.hboxlayout.setSpacing(6)
-        self.hboxlayout.setObjectName("hboxlayout")
-
-        spacerItem = QtGui.QSpacerItem(131,31,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
-        self.hboxlayout.addItem(spacerItem)
-
-        self.okButton = QtGui.QPushButton(frmPreference)
-        self.okButton.setObjectName("okButton")
-        self.hboxlayout.addWidget(self.okButton)
-
-        self.cancelButton = QtGui.QPushButton(frmPreference)
-        self.cancelButton.setObjectName("cancelButton")
-        self.hboxlayout.addWidget(self.cancelButton)
-        self.gridlayout.addLayout(self.hboxlayout,1,0,1,1)
-
         self.retranslateUi(frmPreference)
         self.cbxFullLanguage.setCurrentIndex(-1)
         QtCore.QObject.connect(self.okButton,QtCore.SIGNAL("clicked()"),frmPreference.accept)
@@ -308,6 +312,8 @@ class Ui_frmPreference(object):
 
     def retranslateUi(self, frmPreference):
         frmPreference.setWindowTitle(self.tr("Preference"))
+        self.okButton.setText(self.tr("OK"))
+        self.cancelButton.setText(self.tr("Cancel"))
         self.label6.setText(self.tr("Time Zone"))
         self.label3.setText(self.tr("Full Language Name"))
         self.label1.setText(self.tr("UserName"))
@@ -315,6 +321,7 @@ class Ui_frmPreference(object):
         self.label4.setText(self.tr("Language Code"))
         self.label2.setText(self.tr("Email address"))
         self.label.setText(self.tr("Number of singular/plural forms"))
+        self.chkHeaderAuto.setText(self.tr("Auto matically update header"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab1), self.tr("Personalize"))
         self.bntDefaults.setText(self.tr("Defaults"))
         self.label21.setText(self.tr("Overview"))
@@ -326,5 +333,3 @@ class Ui_frmPreference(object):
         self.bntTarget.setText(self.tr("Choose"))
         self.bntComment.setText(self.tr("Choose"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab2), self.tr("Font"))
-        self.okButton.setText(self.tr("OK"))
-        self.cancelButton.setText(self.tr("Cancel"))

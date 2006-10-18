@@ -1,4 +1,4 @@
-# ,មិនអាច​បើក​ប័ណ្ណសារ​sfasfaasfsfaewrqsfasfa
+# helloសួស្ដី
 #: archivedialog.cpp:90
 msgid "Unable to Open Web-Archive"
 msgstr "មិន​អាច​បើក​ប័ណ្ណ​សារ​បណ្ដាញ"

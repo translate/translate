@@ -22,7 +22,7 @@
 
 import sys
 from PyQt4 import QtCore, QtGui
-from OverviewUI import Ui_Form
+from ui.OverviewUI import Ui_Form
 
 class OverviewDock(QtGui.QDockWidget):
     def __init__(self):
@@ -105,7 +105,9 @@ class OverviewDock(QtGui.QDockWidget):
             else:
                 pass
                 self.ui.treeOverview.setItemHidden(item, True)
+
         self.setUpdatesEnabled(True)
+
    
     def highLightItem(self, value):
         #print 'highLight',value

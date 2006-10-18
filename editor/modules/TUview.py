@@ -21,7 +21,7 @@
 
 import sys
 from PyQt4 import QtCore, QtGui
-from TUviewUI import Ui_TUview
+from ui.TUviewUI import Ui_TUview
 
 class TUview(QtGui.QDockWidget):
     def __init__(self):

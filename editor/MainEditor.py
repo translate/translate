@@ -21,7 +21,7 @@
 
 import sys
 from PyQt4 import QtCore, QtGui
-from modules.MainEditorUI import Ui_MainWindow
+from ui.MainEditorUI import Ui_MainWindow
 from modules.TUview import TUview
 from modules.Overview import OverviewDock
 from modules.Comment import CommentDock
@@ -137,8 +137,9 @@ class MainWindow(QtGui.QMainWindow):
         # action Preferences menu 
         self.preference = Preference()
         self.connect(self.ui.actionPreferences, QtCore.SIGNAL("triggered()"), self.preference,QtCore.SLOT("show()"))
-        self.connect(self.preference, QtCore.SIGNAL("fontChanged"), self.fontChanged)
+        self.connect(self.preference, QtCore.SIGNAL("fontChanged"), self.fontChanged)        
         self.preference.initFonts()
+        
         
         
         # Other actions        
@@ -151,6 +152,9 @@ class MainWindow(QtGui.QMainWindow):
         # Edit Header
         self.headerDialog = Header()        
         self.connect(self.ui.actionEdit_Header, QtCore.SIGNAL("triggered()"), self.headerDialog, QtCore.SLOT("show()"))
+        self.connect(self.preference, QtCore.SIGNAL("updateProfile"), self.headerDialog.updateProfile)
+        self.connect(self.preference, QtCore.SIGNAL("headerAuto"), self.operator.updateNewHeader)
+        self.connect(self.headerDialog, QtCore.SIGNAL("addHeader"), self.operator.updateNewHeader)
         
         # action filter menu
         self.connect(self.ui.actionFilterFuzzy, QtCore.SIGNAL("toggled(bool)"), self.operator.filterFuzzy)
@@ -161,7 +165,9 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockTUview.updateTUview)
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockComment.updateComment)
         self.connect(self.operator, QtCore.SIGNAL("header"), self.headerDialog.updateHeader)  
+        self.connect(self.operator, QtCore.SIGNAL("otherComments"), self.headerDialog.updateOtherComments)  
         self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.operator.emitHeader)
+        self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.operator.emitOtherComments)
         
         self.connect(self.operator, QtCore.SIGNAL("hideUnit"), self.dockOverview.hideUnit)
         self.connect(self.operator, QtCore.SIGNAL("hideUnit"), self.dockTUview.hideUnit)
@@ -239,18 +245,25 @@ class MainWindow(QtGui.QMainWindow):
         except AttributeError:
             pass       
 
-    def setOpening(self, fileName):        
+    def setOpening(self, fileName): 
+        """set status after open a file"""
+        #Enable all views
+        self.dockOverview.ui.treeOverview.setEnabled(True)
+        self.dockComment.ui.txtComment.setEnabled(True)
+        self.dockTUview.ui.txtSource.setEnabled(True)
+        self.dockTUview.ui.txtTarget.setEnabled(True)
+        
         self.setTitle(fileName)
         self.operator.getUnits(fileName)          
         self.ui.actionSave.setEnabled(False)  
         self.ui.actionSaveas.setEnabled(True)
         self.ui.actionUndo.setEnabled(True)
         self.ui.actionRedo.setEnabled(True)
-
         self.ui.actionPast.setEnabled(True)
         self.ui.actionSelectAll.setEnabled(True)
         self.ui.actionFind.setEnabled(True)
         self.ui.actionReplace.setEnabled(True)
+        self.ui.actionEdit_Header.setEnabled(True)
         # FIXME what will happen if the file only contains 1 TU? Jens
         settings = QtCore.QSettings("WordForge", "Translation Editor")
         files = settings.value("recentFileList").toStringList()

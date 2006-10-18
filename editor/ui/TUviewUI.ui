@@ -49,6 +49,9 @@
       <enum>Qt::Vertical</enum>
      </property>
      <widget class="QTextEdit" name="txtSource" >
+      <property name="enabled" >
+       <bool>false</bool>
+      </property>
       <property name="palette" >
        <palette>
         <active>
@@ -328,6 +331,9 @@
       </property>
      </widget>
      <widget class="QTextEdit" name="txtTarget" >
+      <property name="enabled" >
+       <bool>false</bool>
+      </property>
       <property name="contextMenuPolicy" >
        <enum>Qt::DefaultContextMenu</enum>
       </property>

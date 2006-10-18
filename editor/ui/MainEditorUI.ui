@@ -474,6 +474,9 @@
    </property>
   </action>
   <action name="actionCopySource2Target" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="text" >
     <string>Copy Source to Target</string>
    </property>
@@ -482,6 +485,9 @@
    </property>
   </action>
   <action name="actionToggleFuzzy" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="text" >
     <string>Toggle fuzzy</string>
    </property>
@@ -594,6 +600,9 @@
    </property>
   </action>
   <action name="actionEdit_Header" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="text" >
     <string>Edit Header...</string>
    </property>

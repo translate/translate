@@ -68,7 +68,7 @@ class AuthorsTab(QtGui.QWidget):
     def __init__(self, fileInfo, parent=None):
         QtGui.QWidget.__init__(self, parent)
         
-        fileNameLabel = QtGui.QLabel(self.tr("<br>Hok Kakada (hokkakada@khmeros.info)<br><br>Keo Sophon (keosophon@khmeros.info)<br><br>San Titvirak (titvirak@khmeros.info)<br><br>Seth Chanratha(sethchanratha@khmeros.info)"))
+        fileNameLabel = QtGui.QLabel(self.tr('<br>Hok Kakada (<a href="mailto:hokkakada@khmeros.info">hokkakada@khmeros.info</a>)<br><br>Keo Sophon (<a href="mailto:keosophon@khmeros.info">keosophon@khmeros.info</a>)<br><br>San Titvirak (<a href="mailto:titvirak@khmeros.info">titvirak@khmeros.info</a>)<br><br>Seth Chanratha(<a href="mailto:sethchanratha@khmeros.info">sethchanratha@khmeros.info</a>)'))
 
         mainLayout = QtGui.QVBoxLayout()
         mainLayout.addWidget(fileNameLabel)

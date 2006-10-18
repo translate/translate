@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Mon Aug 28 17:12:22 2006
+# Created: Thu Oct  5 14:55:21 2006
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -22,6 +22,7 @@ class Ui_Form(object):
         self.gridlayout.setObjectName("gridlayout")
 
         self.treeOverview = QtGui.QTreeWidget(Form)
+        self.treeOverview.setEnabled(False)
 
         palette = QtGui.QPalette()
         palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(0),QtGui.QColor(0,0,0))
@@ -94,12 +95,3 @@ class Ui_Form(object):
         self.treeOverview.headerItem().setText(0,self.tr("Id"))
         self.treeOverview.headerItem().setText(1,self.tr("Source"))
         self.treeOverview.headerItem().setText(2,self.tr("Target"))
-
-
-if __name__ == "__main__":
-    app = QtGui.QApplication(sys.argv)
-    Form = QtGui.QWidget()
-    ui = Ui_Form()
-    ui.setupUi(Form)
-    Form.show()
-    sys.exit(app.exec_())

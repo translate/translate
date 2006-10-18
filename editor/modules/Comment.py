@@ -22,7 +22,7 @@
 
 import sys
 from PyQt4 import QtCore, QtGui
-from CommentUI import Ui_frmComment
+from ui.CommentUI import Ui_frmComment
 
 class CommentDock(QtGui.QDockWidget):
     def __init__(self):

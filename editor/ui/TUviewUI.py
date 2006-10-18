@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Mon Aug 28 17:12:17 2006
+# Created: Thu Oct  5 14:55:32 2006
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -15,7 +15,7 @@ class Ui_TUview(object):
         TUview.setObjectName("TUview")
         TUview.setEnabled(True)
         TUview.resize(QtCore.QSize(QtCore.QRect(0,0,370,283).size()).expandedTo(TUview.minimumSizeHint()))
-        TUview.setMinimumSize(QtCore.QSize(200,200))
+        TUview.setMinimumSize(QtCore.QSize(0,0))
         TUview.setFocusPolicy(QtCore.Qt.StrongFocus)
         TUview.setAutoFillBackground(True)
 
@@ -29,6 +29,7 @@ class Ui_TUview(object):
         self.splitter.setObjectName("splitter")
 
         self.txtSource = QtGui.QTextEdit(self.splitter)
+        self.txtSource.setEnabled(False)
 
         palette = QtGui.QPalette()
         palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(0),QtGui.QColor(0,0,0))
@@ -90,6 +91,7 @@ class Ui_TUview(object):
         self.txtSource.setObjectName("txtSource")
 
         self.txtTarget = QtGui.QTextEdit(self.splitter)
+        self.txtTarget.setEnabled(False)
         self.txtTarget.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
         self.txtTarget.setObjectName("txtTarget")
         self.hboxlayout.addWidget(self.splitter)
@@ -113,12 +115,3 @@ class Ui_TUview(object):
         TUview.setWindowTitle(self.tr("Ui_TUview"))
         self.splitter.setToolTip(self.tr("Click to change position"))
         self.fileScrollBar.setToolTip(self.tr("Navigate in your file"))
-
-
-if __name__ == "__main__":
-    app = QtGui.QApplication(sys.argv)
-    TUview = QtGui.QWidget()
-    ui = Ui_TUview()
-    ui.setupUi(TUview)
-    TUview.show()
-    sys.exit(app.exec_())
