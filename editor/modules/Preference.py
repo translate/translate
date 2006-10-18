@@ -58,12 +58,6 @@ class Preference(QtGui.QDialog):
         self.tuTargetFont = None
         self.commentFont = None
         
-##    def rejected(self):
-##        "remove all settings"
-##        print "remove"
-##        settings = QtCore.QSettings("WordForge", "Translation Editor")
-##        settings.remove("")
-        
     def initFonts(self):
         # get font for display
         self.overviewFont, fontCaption = self.getFont("overview")

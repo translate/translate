@@ -44,6 +44,17 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.treeOverview.header().setResizeMode(1, QtGui.QHeaderView.Stretch)
         self.ui.treeOverview.header().setResizeMode(2, QtGui.QHeaderView.Stretch)
         
+        # filter flags
+        self.FUZZY = 2
+        self.TRANSLATED = 4
+        self.UNTRANSLATED = 8
+        
+        # colorize item
+        self.DEFAULTCOLOR = QtGui.QColor(255,255,255,0)
+        self.FUZZYCOLOR = QtGui.QColor(235,235,160,128)
+        self.TRANSLATEDCOLOR = QtGui.QColor(190,255,165,128)
+        self.UNTRANSLATEDCOLOR = QtGui.QColor(228,228,228,128)
+        
         # TODO do you really need this, maybe it is enough to just use the current item? Jens
         self.lastItem = None
         self.connect(self.ui.treeOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitItemSelected)
@@ -80,8 +91,6 @@ class OverviewDock(QtGui.QDockWidget):
             #items.append(item)
         # add children to tree widget
         self.ui.treeOverview.addTopLevelItems(items)
-        # select the first item in list
-        self.highLightItem(0)
 
     def filteredList(self, fList):
         """ Show only items that are in filtered list """
@@ -99,7 +108,7 @@ class OverviewDock(QtGui.QDockWidget):
         self.setUpdatesEnabled(True)
    
     def highLightItem(self, value):
-        print 'highLight',value
+        #print 'highLight',value
         numItems = self.ui.treeOverview.topLevelItemCount()
         if (not numItems) or (value < 0) or (value >= numItems):
             return
@@ -133,6 +142,21 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.treeOverview.setFont(font)
         font = QtGui.QFont('serif', 9)
         self.ui.treeOverview.header().setFont(font)
+        
+    def setColor(self, value, state):
+        item = self.ui.treeOverview.topLevelItem(value)
+        if (state & self.FUZZY):
+            color = self.FUZZYCOLOR
+##        elif (state & self.TRANSLATED):
+##            color = self.TRANSLATEDCOLOR
+##        elif (state & self.UNTRANSLATED):
+##            color = self.UNTRANSLATEDCOLOR
+        else:
+            color = self.DEFAULTCOLOR        
+        if (item):
+            item.setBackgroundColor(0, color)
+            item.setBackgroundColor(1, color)
+            item.setBackgroundColor(2, color)
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

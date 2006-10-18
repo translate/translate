@@ -90,8 +90,12 @@ class TUview(QtGui.QDockWidget):
             self.ids.remove(value)
         except ValueError:
             pass
-        if (len(self.ids) > 0):
-            self.ui.fileScrollBar.setMaximum(len(self.ids) - 1)
+        maximum = len(self.ids) - 1
+        if (maximum < 0):
+            maximum = 0
+        self.ui.fileScrollBar.setMaximum(maximum)
+        self.ui.txtSource.setPlainText("")
+        self.ui.txtTarget.setPlainText("")
         
     def slotNewUnits(self, units):
         """slot after new file was loaded"""
@@ -101,8 +105,10 @@ class TUview(QtGui.QDockWidget):
         # adjust the scrollbar
         # self.ids store the information of unit's id
         self.ids = range(len(units))
-        if (len(self.ids) > 0):
-            self.ui.fileScrollBar.setMaximum(len(self.ids) - 1)
+        maximum = len(self.ids) - 1
+        if (maximum < 0):
+            maximum = 0
+        self.ui.fileScrollBar.setMaximum(maximum)
         self.ui.fileScrollBar.setEnabled(True)
         self.ui.fileScrollBar.setSliderPosition(0)
         self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentId)
@@ -110,8 +116,10 @@ class TUview(QtGui.QDockWidget):
     def filteredList(self, fList):
         self.ids = fList
         # set maximum scrollbar value according to ids
-        if (len(self.ids) > 0):
-            self.ui.fileScrollBar.setMaximum(len(self.ids) - 1)
+        maximum = len(self.ids) - 1
+        if (maximum < 0):
+            maximum = 0
+        self.ui.fileScrollBar.setMaximum(maximum)
         self.disconnect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentId)
         self.ui.fileScrollBar.setValue(0)
         self.ui.fileScrollBar.setSliderPosition(0)

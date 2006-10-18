@@ -31,16 +31,9 @@
      <x>0</x>
      <y>0</y>
      <width>571</width>
-     <height>29</height>
+     <height>28</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuHelp" >
-    <property name="title" >
-     <string>&amp;Help</string>
-    </property>
-    <addaction name="actionAbout" />
-    <addaction name="actionAboutQT" />
-   </widget>
    <widget class="QMenu" name="menuFile" >
     <property name="title" >
      <string>&amp;File</string>
@@ -61,6 +54,58 @@
     <addaction name="actionSaveas" />
     <addaction name="separator" />
     <addaction name="actionExit" />
+   </widget>
+   <widget class="QMenu" name="menuHelp" >
+    <property name="title" >
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="actionAbout" />
+    <addaction name="actionAboutQT" />
+   </widget>
+   <widget class="QMenu" name="menuSettings" >
+    <property name="title" >
+     <string>&amp;Settings</string>
+    </property>
+    <widget class="QMenu" name="menuToolBar" >
+     <property name="title" >
+      <string>ToolBar</string>
+     </property>
+     <addaction name="actionShow_MenuBar" />
+     <addaction name="actionShow_TUview" />
+    </widget>
+    <widget class="QMenu" name="menuToolbar" >
+     <property name="title" >
+      <string>Toolbar</string>
+     </property>
+    </widget>
+    <widget class="QMenu" name="menuPreferences" >
+     <property name="title" >
+      <string>Preferences</string>
+     </property>
+    </widget>
+    <widget class="QMenu" name="menuFilter" >
+     <property name="title" >
+      <string>Filter</string>
+     </property>
+     <addaction name="actionFilterFuzzy" />
+     <addaction name="actionFilterTranslated" />
+     <addaction name="actionFilterUntranslated" />
+    </widget>
+    <widget class="QMenu" name="menuViews" >
+     <property name="title" >
+      <string>Tools</string>
+     </property>
+    </widget>
+    <addaction name="actionPreferences" />
+   </widget>
+   <widget class="QMenu" name="menuGo" >
+    <property name="title" >
+     <string>&amp;Go</string>
+    </property>
+    <addaction name="actionFirst" />
+    <addaction name="actionPrevious" />
+    <addaction name="actionNext" />
+    <addaction name="actionLast" />
    </widget>
    <widget class="QMenu" name="menuEdit" >
     <property name="title" >
@@ -84,56 +129,34 @@
     <addaction name="actionToggleFuzzy" />
     <addaction name="actionEdit_Header" />
    </widget>
-   <widget class="QMenu" name="menuGo" >
+   <widget class="QMenu" name="menuView" >
     <property name="title" >
-     <string>&amp;Go</string>
+     <string>&amp;View</string>
     </property>
-    <addaction name="actionFirst" />
-    <addaction name="actionPrevious" />
-    <addaction name="actionNext" />
-    <addaction name="actionLast" />
-   </widget>
-   <widget class="QMenu" name="menuSettings" >
-    <property name="title" >
-     <string>&amp;Settings</string>
-    </property>
-    <widget class="QMenu" name="menuToolBar" >
+    <widget class="QMenu" name="menuType_Here" >
      <property name="title" >
-      <string>ToolBar</string>
-     </property>
-     <addaction name="actionShow_MenuBar" />
-     <addaction name="actionShow_TUview" />
-    </widget>
-    <widget class="QMenu" name="menuToolbar" >
-     <property name="title" >
-      <string>Toolbar</string>
+      <string>Type Here</string>
      </property>
     </widget>
-    <widget class="QMenu" name="menuViews" >
+    <widget class="QMenu" name="menuMessages" >
      <property name="title" >
-      <string>Views</string>
+      <string>Messages</string>
      </property>
-    </widget>
-    <widget class="QMenu" name="menuFilter" >
-     <property name="title" >
-      <string>Filter</string>
-     </property>
-     <addaction name="actionUnfiltered" />
      <addaction name="actionFilterFuzzy" />
      <addaction name="actionFilterTranslated" />
      <addaction name="actionFilterUntranslated" />
     </widget>
-    <widget class="QMenu" name="menuPreferences" >
+    <widget class="QMenu" name="menuTools" >
      <property name="title" >
-      <string>Preferences</string>
+      <string>Tools</string>
      </property>
     </widget>
-    <addaction name="menuFilter" />
-    <addaction name="menuViews" />
-    <addaction name="actionPreferences" />
+    <addaction name="menuMessages" />
+    <addaction name="menuTools" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
+   <addaction name="menuView" />
    <addaction name="menuGo" />
    <addaction name="menuSettings" />
    <addaction name="menuHelp" />
@@ -142,9 +165,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>454</y>
+     <y>455</y>
      <width>571</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>
@@ -548,28 +571,6 @@
     <string>Translated</string>
    </property>
   </action>
-  <action name="actionFilterUntranslated" >
-   <property name="icon" >
-    <iconset/>
-   </property>
-   <property name="text" >
-    <string>Untranslated</string>
-   </property>
-   <property name="iconText" >
-    <string>Untranslated</string>
-   </property>
-   <property name="toolTip" >
-    <string>Untranslated</string>
-   </property>
-  </action>
-  <action name="actionUnfiltered" >
-   <property name="icon" >
-    <iconset/>
-   </property>
-   <property name="text" >
-    <string>Unfiltered</string>
-   </property>
-  </action>
   <action name="actionFindPrevious" >
    <property name="enabled" >
     <bool>false</bool>
@@ -600,6 +601,22 @@
   <action name="actionPreferences" >
    <property name="text" >
     <string>Preferences</string>
+   </property>
+  </action>
+  <action name="actionFilterUntranslated" >
+   <property name="text" >
+    <string>Untranslated</string>
+   </property>
+   <property name="iconText" >
+    <string>Untranslated</string>
+   </property>
+   <property name="toolTip" >
+    <string>Untranslated</string>
+   </property>
+  </action>
+  <action name="actionAsf" >
+   <property name="text" >
+    <string>asf</string>
    </property>
   </action>
  </widget>

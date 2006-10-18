@@ -54,19 +54,15 @@ class MainWindow(QtGui.QMainWindow):
             
         # create radio selection for menu filter
         filterGroup = QtGui.QActionGroup(self.ui.menuFilter)
-        #filterGroup.setExclusive(False)
-        self.ui.actionUnfiltered.setActionGroup(filterGroup)
+        filterGroup.setExclusive(False)
         self.ui.actionFilterFuzzy.setActionGroup(filterGroup)
         self.ui.actionFilterTranslated.setActionGroup(filterGroup)
         self.ui.actionFilterUntranslated.setActionGroup(filterGroup)
-        self.ui.actionUnfiltered.setCheckable(True)
         self.ui.actionFilterFuzzy.setCheckable(True)
         self.ui.actionFilterTranslated.setCheckable(True)
         self.ui.actionFilterUntranslated.setCheckable(True)
-        self.ui.actionUnfiltered.setChecked(True)       
         
         # set disable
-        self.ui.actionUnfiltered.setDisabled(True)
         self.ui.actionFilterFuzzy.setDisabled(True)
         self.ui.actionFilterTranslated.setDisabled(True)
         self.ui.actionFilterUntranslated.setDisabled(True)
@@ -74,17 +70,17 @@ class MainWindow(QtGui.QMainWindow):
         #plug in overview widget
         self.dockOverview = OverviewDock()        
         self.addDockWidget(QtCore.Qt.TopDockWidgetArea, self.dockOverview)        
-        self.ui.menuViews.addAction(self.dockOverview.actionShow())        
+        self.ui.menuTools.addAction(self.dockOverview.actionShow())        
         
         #plug in TUview widget
         self.dockTUview = TUview()                        
         self.setCentralWidget(self.dockTUview)
-        self.ui.menuViews.addAction(self.dockTUview.actionShow())              
+        self.ui.menuTools.addAction(self.dockTUview.actionShow())              
         
         #plug in comment widget
         self.dockComment = CommentDock()        
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.dockComment)
-        self.ui.menuViews.addAction(self.dockComment.actionShow())                          
+        self.ui.menuTools.addAction(self.dockComment.actionShow())                          
 
         #add widgets to statusbar
         #TODO: Decorate Status Bar
@@ -157,10 +153,9 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionEdit_Header, QtCore.SIGNAL("triggered()"), self.headerDialog, QtCore.SLOT("show()"))
         
         # action filter menu
-        self.connect(self.ui.actionUnfiltered, QtCore.SIGNAL("triggered()"), self.operator.unfiltered)
-        self.connect(self.ui.actionFilterFuzzy, QtCore.SIGNAL("triggered()"), self.operator.filterFuzzy)
-        self.connect(self.ui.actionFilterTranslated, QtCore.SIGNAL("triggered()"), self.operator.filterTranslated)
-        self.connect(self.ui.actionFilterUntranslated, QtCore.SIGNAL("triggered()"), self.operator.filterUntranslated)        
+        self.connect(self.ui.actionFilterFuzzy, QtCore.SIGNAL("toggled(bool)"), self.operator.filterFuzzy)
+        self.connect(self.ui.actionFilterTranslated, QtCore.SIGNAL("toggled(bool)"), self.operator.filterTranslated)
+        self.connect(self.ui.actionFilterUntranslated, QtCore.SIGNAL("toggled(bool)"), self.operator.filterUntranslated)        
         self.connect(self.ui.actionToggleFuzzy, QtCore.SIGNAL("triggered()"), self.operator.toggleFuzzy)
         
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockTUview.updateTUview)
@@ -170,6 +165,9 @@ class MainWindow(QtGui.QMainWindow):
         
         self.connect(self.operator, QtCore.SIGNAL("hideUnit"), self.dockOverview.hideUnit)
         self.connect(self.operator, QtCore.SIGNAL("hideUnit"), self.dockTUview.hideUnit)
+        
+        # setColor(value, state)
+        self.connect(self.operator, QtCore.SIGNAL("setColor"), self.dockOverview.setColor)
         
         self.connect(self.operator, QtCore.SIGNAL("currentPosition"), self.dockOverview.highLightItem)
         self.connect(self.operator, QtCore.SIGNAL("currentPosition"), self.dockTUview.highLightScrollbar)
@@ -263,11 +261,12 @@ class MainWindow(QtGui.QMainWindow):
         settings.setValue("recentFileList", QtCore.QVariant(files))
         self.updateRecentAction() 
         
-        self.ui.actionUnfiltered.setEnabled(True)
         self.ui.actionFilterFuzzy.setEnabled(True)
         self.ui.actionFilterTranslated.setEnabled(True)
         self.ui.actionFilterUntranslated.setEnabled(True)
-        self.ui.actionUnfiltered.setChecked(True)
+        self.ui.actionFilterFuzzy.setChecked(True)
+        self.ui.actionFilterTranslated.setChecked(True)
+        self.ui.actionFilterUntranslated.setChecked(True)
         
     def startRecentAction(self):
         action = self.sender()
