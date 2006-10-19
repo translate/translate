@@ -17,6 +17,9 @@
 #
 # Developed by:
 #       Hok Kakada (hokkakada@khmeros.info)
+#       Keo Sophon (keosophon@khmeros.info)
+#       Seth Chanratha (sethchanratha@khmeros.info)
+#       San Titvirak (titvirak@khmeros.info)
 #
 # This module is working on any comments of current TU.
 
@@ -33,6 +36,8 @@ class CommentDock(QtGui.QDockWidget):
         self.ui.setupUi(self.form)        
         self.setWidget(self.form)
         self.layout = QtGui.QTextLayout ()
+        self.settings = QtCore.QSettings("WordForge", "Translation Editor")
+        self.applySettings()
         
         # create action for show/hide
         self._actionShow = QtGui.QAction(self)
@@ -100,8 +105,12 @@ class CommentDock(QtGui.QDockWidget):
     def setReadyForSave(self):
       self.emit(QtCore.SIGNAL("readyForSave"), True)
       
-    def setFontComment(self, font):
-        self.ui.txtComment.setFont(font)
+    def applySettings(self):
+        font = self.settings.value("commentFont")
+        if (font.isValid()):
+            fontObj = QtGui.QFont()
+            if (fontObj.fromString(font.toString())):
+                self.ui.txtComment.setFont(fontObj)
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

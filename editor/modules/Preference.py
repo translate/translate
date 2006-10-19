@@ -15,7 +15,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # Developed by:
+#       Hok Kakada (hokkakada@khmeros.info)
+#       Keo Sophon (keosophon@khmeros.info)
 #       Seth Chanratha (sethchanratha@khmeros.info)
+#       San Titvirak (titvirak@khmeros.info)
 # 
 # This module is working on Userprofile
 
@@ -26,174 +29,138 @@ from ui.PreferenceUI import Ui_frmPreference
 class Preference(QtGui.QDialog):
     def __init__(self):
         QtGui.QDialog.__init__(self)
-        self.setWindowTitle(self.tr("User Profile"))
-        self.ui = Ui_frmPreference()
-        self.ui.setupUi(self)  
-        self.setModal(True)        
-        self.default = False
+        self.ui = None
 
         #Personal Setting
-        settings = QtCore.QSettings("WordForge", "Translation Editor")
-        self.ui.UserName.setPlainText(settings.value("UserName").toString())
-        self.ui.EmailAddress.setPlainText(settings.value("EmailAddress").toString())
-        self.ui.cbxFullLanguage.setEditText(settings.value("FullLanguage").toString())
-        self.ui.cbxLanguageCode.setEditText(settings.value("Code").toString())
-        self.ui.SupportTeam.setPlainText(settings.value("SupportTeam").toString())
-        self.ui.cbxTimeZone.setEditText(settings.value("TimeZone").toString())      
-        
-        
-        self.connect(self.ui.chkHeaderAuto, QtCore.SIGNAL("stateChanged(int)"), self.ui.chkHeaderAuto.checkState) 
-      
+        self.settings = QtCore.QSettings("WordForge", "Translation Editor")
 
+    def initUI(self):
+        """ get values and display them """
+        self.overviewFont = self.getFont("overview")
+        self.setCaption(self.ui.lblOverView, self.overviewFont)
+        self.tuSourceFont = self.getFont("tuSource")
+        self.setCaption(self.ui.lblSource, self.tuSourceFont)
+        self.tuTargetFont = self.getFont("tuTarget")
+        self.setCaption(self.ui.lblTarget, self.tuTargetFont )
+        self.commentFont = self.getFont("comment")
+        self.setCaption(self.ui.lblComment, self.commentFont)
         
-       #Font Setting
-       
-        self.connect(self.ui.bntOverview, QtCore.SIGNAL("clicked()"), self.fontOverview) 
-        self.connect(self.ui.bntSource, QtCore.SIGNAL("clicked()"), self.fontSource) 
-        self.connect(self.ui.bntTarget, QtCore.SIGNAL("clicked()"), self.fontTarget) 
-        self.connect(self.ui.bntComment, QtCore.SIGNAL("clicked()"), self.fontComment) 
-        self.connect(self.ui.bntDefaults, QtCore.SIGNAL("clicked()"), self.defaultFonts) 
-        
-        self.connect(self.ui.okButton, QtCore.SIGNAL("clicked()"), self.accepted)
-##        self.connect(self.ui.cancelButton, QtCore.SIGNAL("clicked()"), self.rejected)
+        self.ui.UserName.setPlainText(self.settings.value("UserName").toString())
+        self.ui.EmailAddress.setPlainText(self.settings.value("EmailAddress").toString())
+        self.ui.cbxFullLanguage.setEditText(self.settings.value("FullLanguage").toString())
+        self.ui.cbxLanguageCode.setEditText(self.settings.value("Code").toString())
+        self.ui.SupportTeam.setPlainText(self.settings.value("SupportTeam").toString())
+        self.ui.cbxTimeZone.setEditText(self.settings.value("TimeZone").toString())      
 
-        # set font modify as false
-        self.overviewFont = None
-        self.tuSourceFont = None
-        self.tuTargetFont = None
-        self.commentFont = None
-        
-
-##    def rejected(self):
-##        "remove all settings"
-##        print "remove"
-##        settings = QtCore.QSettings("WordForge", "Translation Editor")
-##        settings.remove("")
-    
-##    def toggleChkHeader(self):
-
-       
-        
-
-    def initFonts(self):
-        # get font for display
-        self.overviewFont, fontCaption = self.getFont("overview")
-        self.ui.lblOverView.setText(fontCaption)
-        self.tuSourceFont, fontCaption = self.getFont("tuSource")
-        self.ui.lblSource.setText(fontCaption)
-        self.tuTargetFont, fontCaption = self.getFont("tuTarget")
-        self.ui.lblTarget.setText(fontCaption)
-        self.commentFont, fontCaption = self.getFont("comment")
-        self.ui.lblComment.setText(fontCaption)
-        # call font changed
-        self.emit(QtCore.SIGNAL("fontChanged"), "overview" , self.overviewFont)
-        self.emit(QtCore.SIGNAL("fontChanged"), "tuSource" , self.tuSourceFont)
-        self.emit(QtCore.SIGNAL("fontChanged"), "tuTarget" , self.tuTargetFont)
-        self.emit(QtCore.SIGNAL("fontChanged"), "comment" , self.commentFont)
-        # set font modify as false
-        self.overviewFont = None
-        self.tuSourceFont = None
-        self.tuTargetFont = None
-        self.commentFont = None
-        
-        
     def accepted(self):
-        #personal setting
-        self.getUserProfile()
-        
-        
-        # font setting
-        if self.default:
-            self.default = False
-            self.overviewFont = self.tuSourceFont = self.tuTargetFont = self.commentFont = QtGui.QFont("Serif", 10)
-                        
-        if (self.overviewFont):
-            self.emit(QtCore.SIGNAL("fontChanged"), "overview" , self.overviewFont)
-            print self.overviewFont.family()
-        if (self.tuSourceFont):
-            self.emit(QtCore.SIGNAL("fontChanged"), "tuSource" , self.tuSourceFont)
-        if (self.tuTargetFont):
-            self.emit(QtCore.SIGNAL("fontChanged"), "tuTarget" , self.tuTargetFont)
-        if (self.commentFont):
-            self.emit(QtCore.SIGNAL("fontChanged"), "comment" , self.commentFont)
-        # unless the ok button on dialog is pressed, save all configuration.
-        self.rememberChanges("overview", self.overviewFont)
-        self.rememberChanges("tuSource", self.tuSourceFont)
-        self.rememberChanges("tuTarget", self.tuTargetFont)
-        self.rememberChanges("comment", self.commentFont)
+        """ slot ok pressed """
+        self.rememberFont("overview", self.overviewFont)
+        self.rememberFont("tuSource", self.tuSourceFont)
+        self.rememberFont("tuTarget", self.tuTargetFont)
+        self.rememberFont("comment", self.commentFont)
+
+        self.settings.setValue("UserName", QtCore.QVariant(self.ui.UserName.toPlainText()))
+        self.settings.setValue("EmailAddress", QtCore.QVariant(self.ui.EmailAddress.toPlainText()))
+# TODO
+##        self.settings.setValue("FullLanguage", QtCore.QVariant(self.ui.cbxFullLanguage.toPlainText()))
+##        self.settings.setValue("Code", QtCore.QVariant(self.ui.Code.toPlainText()))
+        self.settings.setValue("SupportTeam", QtCore.QVariant(self.ui.SupportTeam.toPlainText()))
+##        self.settings.setValue("TimeZone", QtCore.QVariant(self.ui.TimeZone.toPlainText()))
+        self.emit(QtCore.SIGNAL("settingsChanged"))
    
-    def rememberChanges(self, obj, fontObj):
+    def rememberFont(self, obj, fontObj):
         """input obj as string"""        
         # store font settings
-        if (fontObj != None):    
-            fontFamily = fontObj.family()
-            fontSize = fontObj.pointSize()
-            currentFont = fontFamily +",  "+ str(fontSize)
-            settings = QtCore.QSettings("WordForge", "Translation Editor")
-            settings.setValue(str(obj + "FontFamily"), QtCore.QVariant(fontFamily))
-            settings.setValue(str(obj + "FontSize"), QtCore.QVariant(fontSize))
-            settings.setValue(str(obj + "CurrentFont"), QtCore.QVariant(currentFont))
+        if (fontObj != None):    # TODO do we need this ???
+            self.settings.setValue(str(obj + "Font"), QtCore.QVariant(fontObj.toString()))
             
         
     def fontOverview(self):
-        self.overviewFont, fontCaption = self.setFont("overview")
-        self.ui.lblOverView.setText(fontCaption)
+        """ slot to open font selection dialog """
+        self.overviewFont = self.setFont("overview")
+        self.setCaption(self.ui.lblOverView, self.overviewFont)
+        
     def fontSource(self):
-        self.tuSourceFont, fontCaption = self.setFont("tuSource")
-        self.ui.lblSource.setText(fontCaption)
+        """ slot to open font selection dialog """
+        self.tuSourceFont = self.setFont("tuSource")
+        self.setCaption(self.ui.lblSource, self.tuSourceFont)
+        
     def fontTarget(self):
-        self.tuTargetFont, fontCaption = self.setFont("tuTarget")
-        self.ui.lblTarget.setText(fontCaption)
+        """ slot to open font selection dialog """
+        self.tuTargetFont = self.setFont("tuTarget")
+        self.setCaption(self.ui.lblTarget, self.tuTargetFont)
+        
     def fontComment(self):
-        self.commentFont, fontCaption = self.setFont("comment")
-        self.ui.lblComment.setText(fontCaption)
+        """ slot to open font selection dialog """
+        self.commentFont = self.setFont("comment")
+        self.setCaption(self.ui.lblComment, self.commentFont)
     
     def getFont(self, obj):
-        """ return font family and size as list for each objects """
-        settings = QtCore.QSettings("WordForge", "Translation Editor")
-        fontFamily = settings.value(str(obj + "FontFamily")).toString()        
-        fontSize = settings.value(str(obj + "FontSize")).toString()
-        currentFont = settings.value(str(obj + "CurrentFont")).toString()
-        if (fontSize):
-            fontSize = int(fontSize)
-        else:
-            fontSize = 10
-        font = QtGui.QFont(fontFamily, fontSize)
-##        currentFont = fontFamily +",  "+ str(fontSize)
-        return [font, currentFont]
+        """ return font object created from settings"""
+        font = self.settings.value(str(obj + "Font"), QtCore.QVariant(self.defaultFont.toString()))
+        if (font.isValid()):
+            fontObj = QtGui.QFont()
+            if (fontObj.fromString(font.toString())):
+                return fontObj
+        return self.defaultFont
     
     def defaultFonts(self):
-        """Set default fonts"""
-        self.ui.lblOverView.setText("Serif, 10")        
-        self.ui.lblSource.setText("Serif, 10")        
-        self.ui.lblTarget.setText("Serif, 10")        
-        self.ui.lblComment.setText("Serif, 10")   
-        self.default = True
-        return self.default
+        """slot Set default fonts"""
+        self.setCaption(self.ui.lblOverView, self.defaultFont)
+        self.overviewFont = self.defaultFont
+        self.setCaption(self.ui.lblSource, self.defaultFont)
+        self.tuSourceFont = self.defaultFont
+        self.setCaption(self.ui.lblTarget, self.defaultFont)
+        self.tuTargetFont = self.defaultFont
+        self.setCaption(self.ui.lblComment, self.defaultFont)
+        self.commentFont = self.defaultFont
 
         
+    def setCaption(self, lable, fontObj):
+        """ create the text from the font object and set the widget lable"""
+        newText = fontObj.family() +",  "+ str(fontObj.pointSize())
+        if (fontObj.bold()):
+            newText.append(", " + self.tr("bold"))
+        if (fontObj.italic()):
+            newText.append(", " + self.tr("italic"))
+        if (fontObj.underline()):
+            newText.append(", " + self.tr("underline"))
+        lable.setText(newText)
         
     def setFont(self, obj):
-        """set font to other widgets, return current font name and size"""
+        """ open font dialog 
+            return selected new font object or the old one if cancel was pressed """
         #get font settings
         oldFont = self.getFont(obj)
-        fontFamily = oldFont[0].family()
-        fontSize = oldFont[0].pointSize()
-        newFont = QtGui.QFontDialog.getFont(QtGui.QFont(fontFamily, fontSize))
-        if (newFont[1]):
-            fontFamily = newFont[0].family()
-            fontSize = newFont[0].pointSize()
-            self.fontChanged = True
-        currentFont = fontFamily +",  "+ str(fontSize)
-        self.rememberChanges("overview", newFont[0])
-        self.rememberChanges("tuSource", newFont[0])
-        self.rememberChanges("tuTarget", newFont[0])
-        self.rememberChanges("comment", newFont[0])
-        return [newFont[0], currentFont]
+        newFont, okPressed = QtGui.QFontDialog.getFont(oldFont)
+        if (okPressed):
+            self.rememberFont(obj, newFont)
+            return newFont
+        return oldFont
       
+    def showDialog(self):
+        """ make the dialog visible """
+        # lazy init 
+        if (not self.ui):
+            self.setWindowTitle(self.tr("Preferences"))
+            self.setModal(True)        
+            self.defaultFont = QtGui.QFont("Serif", 10)
+            self.ui = Ui_frmPreference()
+            self.ui.setupUi(self)  
+            # connect signals
+            self.connect(self.ui.chkHeaderAuto, QtCore.SIGNAL("stateChanged(int)"), self.ui.chkHeaderAuto.checkState) 
+            self.connect(self.ui.bntOverview, QtCore.SIGNAL("clicked()"), self.fontOverview) 
+            self.connect(self.ui.bntSource, QtCore.SIGNAL("clicked()"), self.fontSource) 
+            self.connect(self.ui.bntTarget, QtCore.SIGNAL("clicked()"), self.fontTarget) 
+            self.connect(self.ui.bntComment, QtCore.SIGNAL("clicked()"), self.fontComment) 
+            self.connect(self.ui.bntDefaults, QtCore.SIGNAL("clicked()"), self.defaultFonts) 
+            self.connect(self.ui.okButton, QtCore.SIGNAL("clicked()"), self.accepted)
+
+        self.initUI()
+        self.show()
         
-    def getUserProfile(self):  
-        """emit updateProfile signal and return userprofile as dictionary"""
+##    def getUserProfile(self):  
+##        """emit updateProfile signal and return userprofile as dictionary"""
 ##        UserName = str(self.ui.UserName.toPlainText())
 ##        EmailAddress = str(self.ui.EmailAddress.toPlainText())
 ####        FullLanguage = str(self.ui.FullLanguage.toPlainText())
@@ -212,18 +179,18 @@ class Preference(QtGui.QDialog):
 ##        userprofile = "UserName:" + UserName + "\nEmailAddress:" + EmailAddress + "\nFullLanguage:" + FullLanguage + "\nCode:" + Code + "\nSupportTeam:" + SupportTeam + "\nTimeZone:" + TimeZone +"\n"
 ##        userprofile = dictutils.cidict()
 ##        userprofile = {"charset":"CHARSET", "encoding":"ENCODING", "project_id_version":None, "pot_creation_date":None, "po_revision_date":None, "last_translator":UserName, "language_team":Code, "mime_version":None, "plural_forms":None, "report_msgid_bugs_to":SupportTeam}
-        userprofile = {"charset":"CHARSET", "encoding":"ENCODING", "project_id_version":None, "pot_creation_date":None, "po_revision_date":None, "last_translator":"Hok Kakada", "language_team":"Khmer", "mime_version":None, "plural_forms":None, "report_msgid_bugs_to": "support@khmeros.info"}
-        if (self.ui.chkHeaderAuto.checkState() == 2):
-            self.emit(QtCore.SIGNAL("headerAuto"), userprofile)
-        self.emit(QtCore.SIGNAL("updateProfile"), userprofile)
-        
-    def emitUserprofile(self, filename):
-        self.store = factory.getobject(fileName)
-        try:
-            self.emit(QtCore.SIGNAL("fileName"),self.store.fileName())            
-        except:
-            pass               
-        
+##        userprofile = {"charset":"CHARSET", "encoding":"ENCODING", "project_id_version":None, "pot_creation_date":None, "po_revision_date":None, "last_translator":"Hok Kakada", "language_team":"Khmer", "mime_version":None, "plural_forms":None, "report_msgid_bugs_to": "support@khmeros.info"}
+##        if (self.ui.chkHeaderAuto.checkState() == 2):
+##            self.emit(QtCore.SIGNAL("headerAuto"), userprofile)
+##        self.emit(QtCore.SIGNAL("storeProfile"), userprofile)
+##        
+##    def emitUserprofile(self, filename):
+##        self.store = factory.getobject(fileName)
+##        try:
+##            self.emit(QtCore.SIGNAL("fileName"),self.store.fileName())            
+##        except:
+##            pass               
+##        
         
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

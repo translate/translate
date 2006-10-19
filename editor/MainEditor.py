@@ -15,7 +15,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # Developed by:
+#       Hok Kakada (hokkakada@khmeros.info)
+#       Keo Sophon (keosophon@khmeros.info)
 #       Seth Chanratha (sethchanratha@khmeros.info)
+#       San Titvirak (titvirak@khmeros.info)
 # 
 # This module is working on the main windows of Editor
 
@@ -136,9 +139,8 @@ class MainWindow(QtGui.QMainWindow):
         
         # action Preferences menu 
         self.preference = Preference()
-        self.connect(self.ui.actionPreferences, QtCore.SIGNAL("triggered()"), self.preference,QtCore.SLOT("show()"))
-        self.connect(self.preference, QtCore.SIGNAL("fontChanged"), self.fontChanged)        
-        self.preference.initFonts()
+        self.connect(self.ui.actionPreferences, QtCore.SIGNAL("triggered()"), self.preference.showDialog)
+        self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockComment.applySettings)        
         
         
         
@@ -152,7 +154,9 @@ class MainWindow(QtGui.QMainWindow):
         # Edit Header
         self.headerDialog = Header()        
         self.connect(self.ui.actionEdit_Header, QtCore.SIGNAL("triggered()"), self.headerDialog, QtCore.SLOT("show()"))
-        self.connect(self.preference, QtCore.SIGNAL("updateProfile"), self.headerDialog.updateProfile)
+        self.connect(self.preference, QtCore.SIGNAL("storeProfile"), self.storeProfile)
+        self.connect(self, QtCore.SIGNAL("updateProfile"), self.operator.updateNewHeader)
+        self.connect(self.operator, QtCore.SIGNAL("alreadyUpdate"), self.headerDialog.updateProfile)        
         self.connect(self.preference, QtCore.SIGNAL("headerAuto"), self.operator.updateNewHeader)
         self.connect(self.headerDialog, QtCore.SIGNAL("addHeader"), self.operator.updateNewHeader)
         
@@ -204,7 +208,11 @@ class MainWindow(QtGui.QMainWindow):
         # set file status information to text label of status bar
         self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.statuslabel.setText)
         self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.setOpening)        
-       
+    
+    def storeProfile(self, userProfile):
+        """receive userProfile from Preference as a dictionary and remember for other files"""
+        self.emit(QtCore.SIGNAL("updateProfile"), userProfile)        
+        
     def cutter(self):
         object = self.focusWidget()
         object = self.isEnabled(bool)
@@ -336,16 +344,6 @@ class MainWindow(QtGui.QMainWindow):
 ##    def setEnabledSave(self, bool):
 ##        self.ui.actionSave.setEnabled(bool)
     
-    def fontChanged(self, obj, font):
-        if (obj == "overview"):
-            self.dockOverview.setFontOverView(font)
-        elif (obj == "tuSource"):
-            self.dockTUview.setFontSource(font)
-        elif (obj == "tuTarget"):
-            self.dockTUview.setFontTarget(font)
-        elif (obj == "comment"):
-            self.dockComment.setFontComment(font)
-
     
     def disableAll(self):
         self.ui.actionFirst.setDisabled(True)
