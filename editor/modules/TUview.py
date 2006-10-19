@@ -38,7 +38,7 @@ class TUview(QtGui.QDockWidget):
         self._actionShow.setObjectName("actionShowDetail")
         self._actionShow.setText(self.tr("Hide Detail"))
         self.connect(self._actionShow, QtCore.SIGNAL("triggered()"), self.show)        
-        self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged ()"), self.setReadyForSave)
+        self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.setReadyForSave)
 
     def closeEvent(self, event):
         """when close button is click, change caption to "Show Detail"""
@@ -125,18 +125,19 @@ class TUview(QtGui.QDockWidget):
         self.ui.fileScrollBar.setSliderPosition(0)
         self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentId)
     
-    def updateTUview(self, currentUnit):
-        """ Update TUview """
+    def updateUnit(self, currentUnit):
+        """Update the text in source and target."""
         if (currentUnit):
             self.ui.txtSource.setPlainText(currentUnit.source)
             self.ui.txtTarget.setPlainText(currentUnit.target)
         else:
             self.ui.txtSource.setPlainText("")
             self.ui.txtTarget.setPlainText("")
-    
+        self.ui.txtTarget.setFocus
+
     def checkModified(self):
         if self.ui.txtTarget.document().isModified():
-            self.emit(QtCore.SIGNAL("targetChanged"), self.ui.txtTarget.toPlainText())            
+            self.emit(QtCore.SIGNAL("targetChanged"), self.ui.txtTarget.toPlainText())
             
     def setReadyForSave(self):
       self.emit(QtCore.SIGNAL("readyForSave"), True)
@@ -149,15 +150,15 @@ class TUview(QtGui.QDockWidget):
         self.ui.txtTarget.document().setModified()
 
     def setHighLightSource(self, location):
-        '''call setHighLight by passing source document and location (offset, length)'''
+        """call setHighLight by passing source document and location (offset, length)"""
         self.setHighLight(self.ui.txtSource.document(), location)        
         
     def setHighLightTarget(self, location):
-        '''call setHighLight by passing target document and location (offset, length)'''              
+        """call setHighLight by passing target document and location (offset, length)"""              
         self.setHighLight(self.ui.txtTarget.document(), location)        
     
     def setHighLight(self, doc, location):
-        '''HighLight on source or target depending on doc, and location (offset, and length)'''
+        """HighLight on source or target depending on doc, and location (offset, and length)"""
         offsetindoc = location[0]
         length = location[1]
         overrides = []
@@ -185,10 +186,8 @@ class TUview(QtGui.QDockWidget):
             pass        
         
     def selectCut(self):
-##        self.ui.txtSource.copyAvailable(bool)
         self.ui.txtSource.cut()                                
 
-            
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     Form = TUview()

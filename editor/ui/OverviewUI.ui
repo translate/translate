@@ -30,6 +30,12 @@
      <property name="enabled" >
       <bool>false</bool>
      </property>
+     <property name="sizeIncrement" >
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="palette" >
       <palette>
        <active>
@@ -305,6 +311,9 @@
        <underline>false</underline>
        <strikeout>false</strikeout>
       </font>
+     </property>
+     <property name="autoFillBackground" >
+      <bool>false</bool>
      </property>
      <property name="alternatingRowColors" >
       <bool>true</bool>

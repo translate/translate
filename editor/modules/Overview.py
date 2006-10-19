@@ -55,14 +55,10 @@ class OverviewDock(QtGui.QDockWidget):
         self.TRANSLATEDCOLOR = QtGui.QColor(190,255,165,128)
         self.UNTRANSLATEDCOLOR = QtGui.QColor(228,228,228,128)
         
-        # TODO do you really need this, maybe it is enough to just use the current item? Jens
-        self.lastItem = None
-        self.connect(self.ui.treeOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitItemSelected)
+        # itemToUpdate holds the last item selected
+        self.itemToUpdate = None
+        self.connect(self.ui.treeOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitCurrentId)
 
-    def closeEvent(self, event):            
-        self._actionShow.setText(self.tr("Show Overview"))
-        # FIXME you need to call the parents implementation here. Jens
-        
     def actionShow(self):
         return self._actionShow
 
@@ -74,8 +70,7 @@ class OverviewDock(QtGui.QDockWidget):
         self.setHidden(not self.isHidden())    
 
     def slotNewUnits(self, units):
-        """Initialize the list, clear and fill with units"""
-        self.lastItem = None
+        """Initialize the list, clear and fill with units."""
         self.ui.treeOverview.clear()
         ids = range(len(units))
         items = []
@@ -89,11 +84,13 @@ class OverviewDock(QtGui.QDockWidget):
             # add item to children, in reverse mode because addTopLevelItems do the opposite
             items.insert(0,item)
             #items.append(item)
+        self.setUpdatesEnabled(False)
         # add children to tree widget
         self.ui.treeOverview.addTopLevelItems(items)
+        self.setUpdatesEnabled(True)
 
     def filteredList(self, fList):
-        """ Show only items that are in filtered list """
+        """Show the items that are in filtered list."""
         self.setUpdatesEnabled(False)
         j = 0
         numItems = self.ui.treeOverview.topLevelItemCount()
@@ -105,44 +102,39 @@ class OverviewDock(QtGui.QDockWidget):
             else:
                 pass
                 self.ui.treeOverview.setItemHidden(item, True)
-
         self.setUpdatesEnabled(True)
-
    
-    def highLightItem(self, value):
-        #print 'highLight',value
-        numItems = self.ui.treeOverview.topLevelItemCount()
-        if (not numItems) or (value < 0) or (value >= numItems):
-            return
-        item = self.ui.treeOverview.topLevelItem(value)
-        if (self.lastItem != item):
-            self.disconnect(self.ui.treeOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitItemSelected)
+    def highLightItem(self, id):
+        print 'highLight', id
+        item = self.ui.treeOverview.topLevelItem(id)
+        self.itemToUpdate = item
+        if (item):
+            self.disconnect(self.ui.treeOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitCurrentId)
             self.ui.treeOverview.setCurrentItem(item)
-            self.connect(self.ui.treeOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitItemSelected)
-            self.lastItem = item
+            self.connect(self.ui.treeOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitCurrentId)
     
     def hideUnit(self, value):
+        """Hide item at index value"""
         item = self.ui.treeOverview.topLevelItem(value)
         self.ui.treeOverview.setItemHidden(item, True)
 
-    def emitItemSelected(self):
-        try:
-            item = self.ui.treeOverview.selectedItems()[0]
-        except IndexError:
-            return
-        try:
+    def emitCurrentId(self):
+        """Send ID according to selected item."""
+        item = self.ui.treeOverview.currentItem()
+        if (item):
             id = int(item.text(0))
             self.emit(QtCore.SIGNAL("currentId"), id)
-        except:
-            pass
-        
-    def setTarget(self, target):
-        if (self.lastItem):
-            self.lastItem.setText(2, target)
-            
+
+    def updateTarget(self, target):
+        """Update the text in target column."""
+        # should be update before change to new position
+        #item = self.ui.treeOverview.currentItem()
+        #item.setText(2, target)
+        self.itemToUpdate.setText(2, target)
+
     def setFontOverView(self, font):
         self.ui.treeOverview.setFont(font)
-        font = QtGui.QFont('serif', 9)
+        font = QtGui.QFont('sans', 9)
         self.ui.treeOverview.header().setFont(font)
         
     def setColor(self, value, state):

@@ -166,8 +166,6 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionFilterUntranslated, QtCore.SIGNAL("toggled(bool)"), self.operator.filterUntranslated)        
         self.connect(self.ui.actionToggleFuzzy, QtCore.SIGNAL("triggered()"), self.operator.toggleFuzzy)
         
-        self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockTUview.updateTUview)
-        self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockComment.updateComment)
         self.connect(self.operator, QtCore.SIGNAL("header"), self.headerDialog.updateHeader)  
         self.connect(self.operator, QtCore.SIGNAL("otherComments"), self.headerDialog.updateOtherComments)  
         self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.operator.emitHeader)
@@ -178,19 +176,20 @@ class MainWindow(QtGui.QMainWindow):
         
         # setColor(value, state)
         self.connect(self.operator, QtCore.SIGNAL("setColor"), self.dockOverview.setColor)
-        
-        self.connect(self.operator, QtCore.SIGNAL("currentPosition"), self.dockOverview.highLightItem)
-        self.connect(self.operator, QtCore.SIGNAL("currentPosition"), self.dockTUview.highLightScrollbar)
+
+        self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockTUview.updateUnit)
+        self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockComment.updateUnit)
+        self.connect(self.operator, QtCore.SIGNAL("currentId"), self.dockOverview.highLightItem)
+        self.connect(self.operator, QtCore.SIGNAL("currentId"), self.dockTUview.highLightScrollbar)
         self.connect(self.dockTUview, QtCore.SIGNAL("currentId"), self.operator.setCurrentUnit)
         self.connect(self.dockOverview, QtCore.SIGNAL("currentId"), self.operator.setCurrentUnit)
-        self.connect(self.dockOverview, QtCore.SIGNAL("currentId"), self.dockTUview.ui.txtTarget.setFocus)
 
 ##        self.connect(self.operator, QtCore.SIGNAL("changetarget"), self.dockTUview.txtClear)
         
         self.connect(self.operator, QtCore.SIGNAL("updateUnit"), self.dockTUview.checkModified)
         self.connect(self.operator, QtCore.SIGNAL("updateUnit"), self.dockComment.checkModified)
         self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
-        self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.dockOverview.setTarget)           
+        self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.dockOverview.updateTarget)
         self.connect(self.dockComment, QtCore.SIGNAL("commentChanged"), self.operator.setComment)
         self.connect(self.fileaction, QtCore.SIGNAL("fileName"), self.operator.saveStoreToFile)        
         self.connect(self.operator, QtCore.SIGNAL("savedAlready"), self.ui.actionSave.setEnabled)
@@ -282,6 +281,7 @@ class MainWindow(QtGui.QMainWindow):
         settings.setValue("recentFileList", QtCore.QVariant(files))
         self.updateRecentAction() 
         
+        self.ui.actionToggleFuzzy.setEnabled(True)
         self.ui.actionFilterFuzzy.setEnabled(True)
         self.ui.actionFilterTranslated.setEnabled(True)
         self.ui.actionFilterUntranslated.setEnabled(True)
