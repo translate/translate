@@ -16,6 +16,9 @@
 #
 # Developed by:
 #       Hok Kakada (hokkakada@khmeros.info)
+#       Keo Sophon (keosophon@khmeros.info)
+#       Seth Chanratha (sethchanratha@khmeros.info)
+#       San Titvirak (titvirak@khmeros.info)
 #
 # This module is working on source and target of current TU.
 
@@ -32,6 +35,9 @@ class TUview(QtGui.QDockWidget):
         self.ui.setupUi(self.form)
         self.setWidget(self.form)
         self.layout = QtGui.QTextLayout ()
+        self.settings = QtCore.QSettings("WordForge", "Translation Editor")
+        self.applySettingsToSource()
+        self.applySettingsToTarget()
                 
         # create action for show/hide
         self._actionShow = QtGui.QAction(self)
@@ -186,7 +192,21 @@ class TUview(QtGui.QDockWidget):
             pass        
         
     def selectCut(self):
-        self.ui.txtSource.cut()                                
+        self.ui.txtSource.cut()
+    
+    def applySettingsToSource(self):
+        font = self.settings.value("tuSourceFont")
+        if (font.isValid()):
+            fontObj = QtGui.QFont()
+            if (fontObj.fromString(font.toString())):
+                self.ui.txtSource.setFont(fontObj)
+                
+    def applySettingsToTarget(self):
+        font = self.settings.value("tuTargetFont")
+        if (font.isValid()):
+            fontObj = QtGui.QFont()
+            if (fontObj.fromString(font.toString())):
+                self.ui.txtTarget.setFont(fontObj)
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

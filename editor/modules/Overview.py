@@ -16,6 +16,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # Developed by:
+#       Hok Kakada (hokkakada@khmeros.info)
+#       Keo Sophon (keosophon@khmeros.info)
+#       Seth Chanratha (sethchanratha@khmeros.info)
 #       San Titvirak (titvirak@khmeros.info)
 #
 # This module is working on overview of source and target
@@ -32,6 +35,7 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui = Ui_Form()
         self.ui.setupUi(self.form)        
         self.setWidget(self.form)
+        self.settings = QtCore.QSettings("WordForge", "Translation Editor")        
         
         # create action for show/hide
         self._actionShow = QtGui.QAction(self)
@@ -43,7 +47,10 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.treeOverview.resizeColumnToContents(0)
         self.ui.treeOverview.header().setResizeMode(1, QtGui.QHeaderView.Stretch)
         self.ui.treeOverview.header().setResizeMode(2, QtGui.QHeaderView.Stretch)
-        
+        self.headerFont = QtGui.QFont('Sans Serif', 10)
+        self.ui.treeOverview.header().setFont(self.headerFont)
+        self.applySettings()
+
         # filter flags
         self.FUZZY = 2
         self.TRANSLATED = 4
@@ -131,11 +138,14 @@ class OverviewDock(QtGui.QDockWidget):
         #item = self.ui.treeOverview.currentItem()
         #item.setText(2, target)
         self.itemToUpdate.setText(2, target)
-
-    def setFontOverView(self, font):
-        self.ui.treeOverview.setFont(font)
-        font = QtGui.QFont('sans', 9)
-        self.ui.treeOverview.header().setFont(font)
+        
+    def applySettings(self):
+        font = self.settings.value("overviewFont")
+        if (font.isValid()):
+            fontObj = QtGui.QFont()
+            if (fontObj.fromString(font.toString())):
+                self.ui.treeOverview.setFont(fontObj)
+                self.ui.treeOverview.header().setFont(self.headerFont)
         
     def setColor(self, value, state):
         item = self.ui.treeOverview.topLevelItem(value)
