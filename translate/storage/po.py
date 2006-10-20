@@ -26,6 +26,7 @@ from __future__ import generators
 from translate.misc.multistring import multistring
 from translate.misc import quote
 from translate.misc import dictutils
+from translate.misc import textwrap
 from translate.storage import base
 from translate import __version__
 import sre
@@ -68,7 +69,7 @@ def quoteforpo(text, template=None):
     polines.extend(['""'])
     polines.extend(['"' + escapeforpo(line) + '\\n"' for line in lines[:-1]])
   if lines[-1]:
-    polines.extend(['"' + escapeforpo(lines[-1]) + '"'])
+    polines.extend(['"' + escapeforpo(line) + '"' for line in textwrap.wrap(lines[-1], 76, replace_whitespace=False, expand_tabs=False, drop_whitespace=False)])
   return polines
 
 def quoteforpofromtemplate(text, template):
