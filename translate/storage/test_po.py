@@ -132,6 +132,21 @@ class TestPOUnit(test_base.TestTranslationUnit):
         print expected, str(unit)
         assert str(unit) == expected
 
+        # Now check for long newlines segments
+        longstring = ("123456789 " * 10 + "\n") * 3
+        expected = r'''msgid ""
+"123456789 123456789 123456789 123456789 123456789 123456789 123456789 "
+"123456789 123456789 123456789 \n"
+"123456789 123456789 123456789 123456789 123456789 123456789 123456789 "
+"123456789 123456789 123456789 \n"
+"123456789 123456789 123456789 123456789 123456789 123456789 123456789 "
+"123456789 123456789 123456789 \n"
+msgstr ""
+'''
+        unit = self.UnitClass(longstring)
+        print expected, str(unit)
+        assert str(unit) == expected
+
     def test_wrap_on_max_line_length(self):
         """test that we wrap all lines on the maximum line length"""
         string = "1 3 5 7 N " * 11
