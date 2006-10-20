@@ -106,7 +106,31 @@ class TestPOUnit(test_base.TestTranslationUnit):
 	unit = self.UnitClass("Tree")
 	assert raises(ValueError, unit.settarget, [u"ki", u"ni ki"])
 	assert unit.hasplural() == False
- 
+
+    def test_wrap_firstlines(self):
+        '''tests that we wrap the first line correctly a first line if longer then 71 chars
+        as at 71 chars we should align the text on the left and preceed with with a msgid ""'''
+        # longest before we wrap text
+        str_max = "123456789 123456789 123456789 123456789 123456789 123456789 123456789 1"
+        unit = self.UnitClass(str_max)
+        expected = 'msgid "%s"\nmsgstr ""\n' % str_max
+        print expected, str(unit)
+        assert str(unit) == expected
+        # at this length we wrap
+        str_wrap = str_max + '2'
+        unit = self.UnitClass(str_wrap)
+        expected = 'msgid ""\n"%s"\nmsgstr ""\n' % str_wrap
+        print expected, str(unit)
+        assert str(unit) == expected
+
+    def test_wrap_on_newlines(self):
+        """test that we wrap newlines on a real \n"""
+        string = "123456789\n" * 3
+        postring = ('"123456789\\n"\n' * 3)[:-1]
+        unit = self.UnitClass(string)
+        expected = 'msgid ""\n%s\nmsgstr ""\n' % postring
+        print expected, str(unit)
+        assert str(unit) == expected
 
 class TestPO(test_base.TestTranslationStore):
     StoreClass = po.pofile

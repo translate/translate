@@ -64,7 +64,7 @@ def quoteforpo(text, template=None):
   if text is None:
     return polines
   lines = text.split("\n")
-  if len(lines) > 1:
+  if len(lines) > 1 or (len(lines) == 1 and len(lines[0]) > 71):
     polines.extend(['""'])
     polines.extend(['"' + escapeforpo(line) + '\\n"' for line in lines[:-1]])
   if lines[-1]:
