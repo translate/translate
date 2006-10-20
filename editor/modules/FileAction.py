@@ -16,22 +16,27 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # Developed by:
+#       Hok Kakada (hokkakada@khmeros.info)
 #       Keo Sophon (keosophon@khmeros.info)
+#       Seth Chanratha (sethchanratha@khmeros.info)
+#       San Titvirak (titvirak@khmeros.info)
 #
 
 from PyQt4 import QtCore, QtGui
 import sys, os
 
-class FileAction(QtGui.QDialog):
-    def __init__(self):
-        QtGui.QDialog.__init__(self)        
+class FileAction(QtCore.QObject):
+    def __init__(self, parent):
+        """ parent: a QWidget to center the dialogs """
+        QtCore.QObject.__init__(self)
+        self.parentWidget = parent
         self.fileName = None
         self.fileExtension = ""
         self.fileDescription = ""
         
     def openFile(self):    
         #TODO: open one or more existing files selected
-        self.fileName = QtGui.QFileDialog.getOpenFileName(self, self.tr("Open File"),
+        self.fileName = QtGui.QFileDialog.getOpenFileName(self.parentWidget, self.tr("Open File"),
                         QtCore.QDir.currentPath(),
                         self.tr("Supported Files (*.po *.pot *.xliff *.xlf);;All Files(*.*)"))
                         #self.tr("Po Files (*.po);; XLIFF Files (*.xliff *.xlf);;Po Templates (*.pot)"))
@@ -44,35 +49,32 @@ class FileAction(QtGui.QDialog):
 
     def save(self):        
         if not self.fileName.isEmpty():
-            self.emitFileName()            
+            self.emitFileName(self.fileName)            
 
     def saveAs(self):      
-        # TODO: set selected Filter to all support Files
+        # TODO: think about export in different formats
         labelSaveAs = self.tr("Save As")
         labelAllFiles = self.tr("All Files")
-        self.fileForSave = QtGui.QFileDialog.getSaveFileName(self,
-            labelSaveAs, QtCore.QDir.currentPath(), 
-            self.fileDescription + " (*" + self.fileExtension + ");;" + labelAllFiles + " (*.*)")
+        fileDialog = QtGui.QFileDialog(self.parentWidget, labelSaveAs, QtCore.QDir.currentPath(), self.fileDescription + " (*" + self.fileExtension + ");;" + labelAllFiles + " (*.*)")
+        fileDialog.setLabelText ( QtGui.QFileDialog.Accept, labelSaveAs)
         
-        # perform save as only when there is filename
-        if not self.fileForSave.isNull():
-            (path, saveFile) = os.path.split(str(self.fileForSave))
-            if not (saveFile.endswith(self.fileExtension)):
-                # add extension according to existing open file
-                self.fileForSave = str(self.fileForSave) + self.fileExtension
-                self.fileName = self.fileForSave
-                self.emitFileName()
+##        self.fileForSave = QtGui.QFileDialog.getSaveFileName(self.parentWidget,
+##            labelSaveAs, QtCore.QDir.currentPath(), 
+##            self.fileDescription + " (*" + self.fileExtension + ");;" + labelAllFiles + " (*.*)")
+##        
+        # perform save as only when there is filename        
+        if (fileDialog.exec_()):
+            files = fileDialog.selectedFiles()
+            if (not files.isEmpty()):
+                fileForSave = files.first()
+                if (not fileForSave.endsWith(self.fileExtension,  QtCore.Qt.CaseInsensitive)):
+                    # add extension according to existing open file
+                    fileForSave.append(self.fileExtension)
+                self.emitFileName(fileForSave)
             # FIXME add a return value here. Jens
             else:
-                QtGui.QMessageBox.information(self,self.tr("Information") ,self.tr("Please specify the filename to save to"))
+                QtGui.QMessageBox.information(self.parentWidget, self.tr("Information") , self.tr("Please specify the filename to save to"))
                 self.saveAs()
-        #close button clicked
-        else:
-            pass
-            
-    def cut(self):
-        if not self.fileName.isEmpty():
-            self.emitFileName()
 
     def aboutToClose(self, main):
         """Action before closing the program when file has modified"""
@@ -82,20 +84,20 @@ class FileAction(QtGui.QDialog):
                     QtGui.QMessageBox.Yes | QtGui.QMessageBox.Default,
                     QtGui.QMessageBox.No,
                     QtGui.QMessageBox.Cancel | QtGui.QMessageBox.Escape)
+        if ret == QtGui.QMessageBox.Cancel:
+            return False   
         if ret == QtGui.QMessageBox.Yes:
             self.save()
-            return True
-        elif ret == QtGui.QMessageBox.No:
-            return True            
-        elif ret == QtGui.QMessageBox.Cancel:
-            return False   
-        
+        return True
+         
     def setFileName(self, filename):
+        """ open a new file """
         self.fileName = filename
         self.emitFileOpened()
     
-    def emitFileName(self):
-        """emit signal fileName, with a filename as string"""
+    def emitFileName(self, file):
+        """emit signal fileName, with file as string"""
+        self.fileName = file
         self.emit(QtCore.SIGNAL("fileName"), str(self.fileName)) 
     
     def emitStatus(self):
