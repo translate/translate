@@ -53,25 +53,24 @@ class Operator(QtCore.QObject):
 ##        header = self.store.header(xliffHeader)
 
         header = self.store.units[0].isheader()
-        self.filteredList = range(len(self.store.units))[header:]
-        self.emit(QtCore.SIGNAL("newUnits"), self.store.units[header:], self.filteredList)
+##        self.filteredList = range(len(self.store.units))[header:]
+##        self.emit(QtCore.SIGNAL("newUnits"), self.store.units, self.filteredList)
 ##        header = {"charset":"CHARSET", "encoding":"ENCODING", "project_id_version":None, "pot_creation_date":None, "po_revision_date":None, "last_translator":None, "language_team":None, "mime_version":None, "plural_forms":None, "report_msgid_bugs_to":None}
 ##        poHeader = self.store.makeheader(charset="CHARSET", encoding="ENCODING", project_id_version=None, pot_creation_date=None, po_revision_date=None, last_translator=None, language_team=None, mime_version=None, plural_forms=None, report_msgid_bugs_to=None)
         
-
         self.emit(QtCore.SIGNAL("newUnits"), self.store.units)
         self.filteredList = range(len(self.store.units))
         # hide first unit if it's header
         if (header):
             self.hideUnit(0)
-        # emit first unit
+        # set to first unit pointer
         self._unitpointer = 0
         self.emitCurrentUnit()
         # set color for fuzzy unit only
-        fuzzyUnits = pocount.fuzzymessages(self.store.units)
-        for i in fuzzyUnits:
-            id = self.store.units.index(i)
-            self.emit(QtCore.SIGNAL("setColor"), id, self.FUZZY)
+##        fuzzyUnits = pocount.fuzzymessages(self.store.units)
+##        for i in fuzzyUnits:
+##            id = self.store.units.index(i)
+##            self.emit(QtCore.SIGNAL("setColor"), id, self.FUZZY)
 
 
     def updateNewHeader(self, header):
@@ -138,9 +137,9 @@ class Operator(QtCore.QObject):
         
     def filterUntranslated(self, checked):
         """add/remove untranslated to filter, and send filter signal."""
-        if (checked) and (not self.filter & self.UNTRANSLATED):
-            self.filter += self.UNTRANSLATED
-        elif (not checked) and (self.filter & self.UNTRANSLATED):
+        if (checked):
+            self.filter = self.filter | self.UNTRANSLATED
+        elif (self.filter & self.UNTRANSLATED):
             self.filter -= self.UNTRANSLATED
         self.emitFiltered(self.filter)
 
@@ -153,7 +152,7 @@ class Operator(QtCore.QObject):
         header = self.store.units[0].isheader()
         for i in range(header, len(self.store.units)):
             currentUnit = self.store.units[i]
-            # determine the unit state
+            # get the unit state
             unitState = 0
             if currentUnit.isfuzzy():
                 unitState += self.FUZZY
@@ -173,12 +172,9 @@ class Operator(QtCore.QObject):
         currentId = self.getCurrentId()
         if (self._unitpointer == None) or (currentId > len(self.store.units)):
             return
-
-        self.emitCurrentStatus()
         self.emit(QtCore.SIGNAL("updateUnit"))
         currentUnit = self.store.units[currentId]
-        
-        # determine the unit state
+        # get the unit state
         unitState = 0
         if currentUnit.isfuzzy():
             unitState += self.FUZZY
@@ -186,7 +182,6 @@ class Operator(QtCore.QObject):
             unitState += self.TRANSLATED
         else:
             unitState += self.UNTRANSLATED
-        
         # set color for current unit
         self.emit(QtCore.SIGNAL("setColor"), currentId, unitState)        
         # hide unit if it is not in the filter
@@ -252,31 +247,34 @@ class Operator(QtCore.QObject):
     def setComment(self, comment):
         """set the comment which is QString type to the current unit."""
         currentId = self.getCurrentId()
-        self.store.units[currentId].removenotes()
-        self.store.units[currentId].addnote(unicode(comment))
+        currentUnit = self.store.units[currentId]
+        currentUnit.removenotes()
+        currentUnit.addnote(unicode(comment))
         self._modified = True
     
     def setTarget(self, target):
         """set the target which is QString type to the current unit."""
         currentId = self.getCurrentId()
         currentUnit = self.store.units[currentId]
-        before_isuntranslated = not currentUnit.istranslated()
+        translatedState = currentUnit.istranslated()
+        # update target for current unit
         currentUnit.target = unicode(target)
-        if (currentUnit.target != ''):
+        # marktranslated for xliff file
+        if (currentUnit.target):
             try:
-                self.store.units[currentId].marktranslated()
+                currentUnit.marktranslated()
             except AttributeError:
                 pass
-            if (currentUnit.isfuzzy()):
-                self.numFuzzy -= 1
-                self.store.units[currentId].markfuzzy(False)
-        after_istranslated = currentUnit.istranslated()
-        if (before_isuntranslated and after_istranslated):
-            self.numTranslated += 1
-        elif (not before_isuntranslated and not after_istranslated):
-            self.numTranslated -= 1
+        # unmark fuzzy is unit if it's previously fuzzy
+        if (currentUnit.isfuzzy()):
+            self.numFuzzy -= 1
+            currentUnit.markfuzzy(False)
+        # calculate number of translated units
+        if (translatedState != currentUnit.istranslated()):
+            self.numTranslated += (1 - (int(translatedState)*2))
         self._modified = True
-    
+        self.emitCurrentStatus()
+
     def setCurrentUnit(self, currentId):
         """adjust the unitpointer with currentId, and send currentUnit signal."""
         self.emitUpdateUnit()
@@ -288,8 +286,12 @@ class Operator(QtCore.QObject):
    
     def toggleFuzzy(self):
         """toggle fuzzy state for current unit."""
+        self.emitUpdateUnit()
         currentId = self.getCurrentId()
         currentUnit = self.store.units[currentId]
+        # skip if unit is not yet translated
+        if (not currentUnit.istranslated()):
+            return
         if (currentUnit.isfuzzy()):
             self.store.units[currentId].markfuzzy(False)
             self.numFuzzy -= 1
@@ -298,6 +300,7 @@ class Operator(QtCore.QObject):
             self.numFuzzy += 1
         self._modified = True
         self.emitUpdateUnit()
+        self.emitCurrentStatus()
     
     def emitCurrentStatus(self):
         """send currentStatus signal."""
@@ -306,7 +309,7 @@ class Operator(QtCore.QObject):
         self.emit(QtCore.SIGNAL("currentStatus"), ' ' + status + ' ')
     
     def setSearchOptions(self, options):
-        '''set location to search, direction, matchcase, and searching text'''
+        """set location to search, direction, matchcase, and searching text"""
         self._sourcesearch = options[0]
         self._targetsearch = options[1]
         self._commentsearch = options[2]
@@ -315,7 +318,7 @@ class Operator(QtCore.QObject):
         self._text = options[5]
 
     def startSearch(self, options):
-        '''set options to start searching when input'''
+        """set options to start searching when input"""
         self._searchFound = False
         self._cycled = False        
         self._insource = True
@@ -437,7 +440,7 @@ class Operator(QtCore.QObject):
             self._intarget = False
 
     def searchedIndex(self, offset, stringofunit):
-        '''get string that it will be searched in, and position to search from'''
+        """get string that it will be searched in, and position to search from"""
         if (self._matchcase):
             regexp = QtCore.QRegExp(self._text)
         else:
@@ -451,22 +454,22 @@ class Operator(QtCore.QObject):
         return temp 
             
     def emitFoundInSource(self):
-        '''emit signal foundInSource with the a list of position the search found, and length in source'''
+        """emit signal foundInSource with the a list of position the search found, and length in source"""
         self.emitCurrentUnit()
         self.emit(QtCore.SIGNAL("foundInSource"), [self._offset, self._matchlength])
     
     def emitFoundInComment(self):
-        '''emit signal foundInComment with the a list of position the search found, and length in comment'''
+        """emit signal foundInComment with the a list of position the search found, and length in comment"""
         self.emitCurrentUnit()
         self.emit(QtCore.SIGNAL("foundInComment"), [self._offset, self._matchlength])
     
     def emitFoundInTarget(self):
-        '''emit signal foundInTarget with the a list of position the search found, and length to highlight in target'''
+        """emit signal foundInTarget with the a list of position the search found, and length to highlight in target"""
         self.emitCurrentUnit()
         self.emit(QtCore.SIGNAL("foundInTarget"), [self._offset, self._matchlength])
 
     def emitSearchNotFound(self):
-        '''emit signal search not found in order to unhighlight'''
+        """emit signal search not found in order to unhighlight"""
         self.emit(QtCore.SIGNAL("clearHighLight"))
         self.emit(QtCore.SIGNAL("searchNotFound"), "search not found")    
     

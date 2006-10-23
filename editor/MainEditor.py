@@ -8,7 +8,7 @@
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2.1
-# of the License, or (at your option) any later version.http://rak3k.wordpress.com/
+# of the License, or (at your option) any later version.
 #
 # You should have received a copy of the GNU General Public License
 # along with translate; if not, write to the Free Software
@@ -64,7 +64,10 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionFilterFuzzy.setCheckable(True)
         self.ui.actionFilterTranslated.setCheckable(True)
         self.ui.actionFilterUntranslated.setCheckable(True)
-        
+        self.ui.actionFilterFuzzy.setChecked(True)
+        self.ui.actionFilterTranslated.setChecked(True)
+        self.ui.actionFilterUntranslated.setChecked(True)
+
         # set disable
         self.ui.actionFilterFuzzy.setDisabled(True)
         self.ui.actionFilterTranslated.setDisabled(True)
@@ -102,7 +105,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionAboutQT, QtCore.SIGNAL("triggered()"), QtGui.qApp, QtCore.SLOT("aboutQt()"))     
         
         # create file action object and file action menu related signals
-        self.fileaction = FileAction()        
+        self.fileaction = FileAction(self)
         self.connect(self.ui.actionOpen, QtCore.SIGNAL("triggered()"), self.fileaction.openFile)
         self.connect(self.ui.actionOpenInNewWindow, QtCore.SIGNAL("triggered()"), self.startInNewWindow)
         self.connect(self.ui.actionSave, QtCore.SIGNAL("triggered()"), self.fileaction.save)
@@ -182,7 +185,7 @@ class MainWindow(QtGui.QMainWindow):
 
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockTUview.updateUnit)
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockComment.updateUnit)
-        self.connect(self.operator, QtCore.SIGNAL("currentId"), self.dockOverview.highLightItem)
+        self.connect(self.operator, QtCore.SIGNAL("currentId"), self.dockOverview.highlightItem)
         self.connect(self.operator, QtCore.SIGNAL("currentId"), self.dockTUview.highLightScrollbar)
         self.connect(self.dockTUview, QtCore.SIGNAL("currentId"), self.operator.setCurrentUnit)
         self.connect(self.dockOverview, QtCore.SIGNAL("currentId"), self.operator.setCurrentUnit)
@@ -191,6 +194,9 @@ class MainWindow(QtGui.QMainWindow):
         
         self.connect(self.operator, QtCore.SIGNAL("updateUnit"), self.dockTUview.checkModified)
         self.connect(self.operator, QtCore.SIGNAL("updateUnit"), self.dockComment.checkModified)
+        self.connect(self.dockOverview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
+        self.connect(self.dockOverview, QtCore.SIGNAL("targetChanged"), self.dockTUview.setTarget)
+        
         self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
         self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.dockOverview.updateTarget)
         self.connect(self.dockComment, QtCore.SIGNAL("commentChanged"), self.operator.setComment)
@@ -257,8 +263,8 @@ class MainWindow(QtGui.QMainWindow):
 
     def setOpening(self, fileName): 
         """set status after open a file"""
+        # TODO: Move into module
         #Enable all views
-        self.dockOverview.ui.treeOverview.setEnabled(True)
         self.dockComment.ui.txtComment.setEnabled(True)
         self.dockTUview.ui.txtSource.setEnabled(True)
         self.dockTUview.ui.txtTarget.setEnabled(True)
@@ -288,9 +294,6 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionFilterFuzzy.setEnabled(True)
         self.ui.actionFilterTranslated.setEnabled(True)
         self.ui.actionFilterUntranslated.setEnabled(True)
-        self.ui.actionFilterFuzzy.setChecked(True)
-        self.ui.actionFilterTranslated.setChecked(True)
-        self.ui.actionFilterUntranslated.setChecked(True)
         
     def startRecentAction(self):
         action = self.sender()

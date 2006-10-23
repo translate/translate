@@ -5,20 +5,21 @@ msgstr "មិន​អាច​បើក​ប័ណ្ណ​សារ​បណ
 
 # សម្រាប់​ការ​សរសេរ​បាន​ទេ ។sfasfssfasasfasfsfsfasfsfsf
 #: archivedialog.cpp:91
+#, fuzzy
 msgid ""
 "Unable to open \n"
 " %1 \n"
 " for writing."
-msgstr "min"
+msgstr "minimum"
 
 # werwerw
 #: archivedialog.cpp:125
 msgid "Could Not Open Temporary File"
 msgstr ""
-"មិនអាច​បើក​ឯកសារ​បណ្តោះអាសន្ន​បាន​ទេ"
 
 # opensfasa
 #: archivedialog.cpp:126
+#, fuzzy
 msgid "Could not open a temporary file"
 msgstr "មិនអាច​បើក​ឯកសារ​បណ្តោះអាសន្ន​មួយ​បាន​ទេ"
 

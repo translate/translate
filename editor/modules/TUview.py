@@ -90,16 +90,21 @@ class TUview(QtGui.QDockWidget):
         self.ui.fileScrollBar.setValue(value)
         self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentId)
 
+    def setScrollbarMaximum(self):
+        """Set scrollbar maximum value according to number of id."""
+        maximum = len(self.ids) - 1
+        if (maximum < 0):
+            maximum = 0
+        self.ui.fileScrollBar.setMaximum(maximum)
+        
     def hideUnit(self, value):
+        """Remove id from ids, and recalculate scrollbar maximum."""
         # adjust the scrollbar
         try:
             self.ids.remove(value)
         except ValueError:
             pass
-        maximum = len(self.ids) - 1
-        if (maximum < 0):
-            maximum = 0
-        self.ui.fileScrollBar.setMaximum(maximum)
+        self.setScrollbarMaximum()
         self.ui.txtSource.setPlainText("")
         self.ui.txtTarget.setPlainText("")
         
@@ -108,24 +113,17 @@ class TUview(QtGui.QDockWidget):
         if not units:
             self.ui.txtSource.setPlainText("")
             self.ui.txtTarget.setPlainText("")
-        # adjust the scrollbar
         # self.ids store the information of unit's id
         self.ids = range(len(units))
-        maximum = len(self.ids) - 1
-        if (maximum < 0):
-            maximum = 0
-        self.ui.fileScrollBar.setMaximum(maximum)
+        # adjust the scrollbar
+        self.setScrollbarMaximum()
         self.ui.fileScrollBar.setEnabled(True)
         self.ui.fileScrollBar.setSliderPosition(0)
-        self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentId)
     
     def filteredList(self, fList):
         self.ids = fList
-        # set maximum scrollbar value according to ids
-        maximum = len(self.ids) - 1
-        if (maximum < 0):
-            maximum = 0
-        self.ui.fileScrollBar.setMaximum(maximum)
+        # adjust the scrollbar
+        self.setScrollbarMaximum()
         self.disconnect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentId)
         self.ui.fileScrollBar.setValue(0)
         self.ui.fileScrollBar.setSliderPosition(0)
@@ -141,6 +139,9 @@ class TUview(QtGui.QDockWidget):
             self.ui.txtTarget.setPlainText("")
         self.ui.txtTarget.setFocus
 
+    def setTarget(self, target):
+        self.ui.txtTarget.setPlainText(target)
+        
     def checkModified(self):
         if self.ui.txtTarget.document().isModified():
             self.emit(QtCore.SIGNAL("targetChanged"), self.ui.txtTarget.toPlainText())
