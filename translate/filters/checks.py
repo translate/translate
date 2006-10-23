@@ -725,6 +725,8 @@ class StandardChecker(TranslationChecker):
     str1 = prefilters.removekdecomments(str1)
     tags = sre.findall("<[^>]+>", str1)
     if len(tags) > 0:
+      if (len(tags[0]) == len(str1)) and not "=" in tags[0]:
+        return True
       tags2 = sre.findall("<[^>]+>", str2)
       properties1 = tagproperties(tags, self.config.ignoretags)
       properties2 = tagproperties(tags2, self.config.ignoretags)
