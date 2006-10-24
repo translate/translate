@@ -236,7 +236,7 @@ class pounit(base.TranslationUnit):
       multi = multistring(map(unquotefrompo, self.msgstr.values()), self.encoding)
     else:
       multi = multistring(unquotefrompo(self.msgstr), self.encoding)
-    return multi.replace("\\n", "\n").replace("\\t", "\t").replace("\\r", "\r")
+    return multi
 
   def settarget(self, target):
     """Sets the msgstr to the given (unescaped) value"""
