@@ -160,6 +160,7 @@ From the GNU gettext manual:
      #. AUTOMATIC-COMMENTS
      #: REFERENCE...
      #, FLAG...
+     msgctxt CONTEXT
      msgid UNTRANSLATED-STRING
      msgstr TRANSLATED-STRING
 """
@@ -171,6 +172,7 @@ class pounit(base.TranslationUnit):
   # typecomments = []       #   #, fuzzy
   # visiblecomments = []    #   #_ note to translator  (this is nonsense)
   # msgidcomments = []      #   _: within msgid
+  # msgctxt
   # msgid = []
   # msgstr = []
 
@@ -178,10 +180,12 @@ class pounit(base.TranslationUnit):
     self.encoding = encodingToUse(encoding)
     self.obsolete = False
     self.initallcomments(blankall=True)
+    self.msgctxt = []
     self.msgid = []
     self.msgid_pluralcomments = []
     self.msgid_plural = []
     self.msgstr = []
+    self.obsoletemsgctxt = []
     self.obsoletemsgid = []
     self.obsoletemsgid_pluralcomments = []
     self.obsoletemsgid_plural = []
@@ -294,6 +298,7 @@ class pounit(base.TranslationUnit):
     newpo.obsolete = self.obsolete
     newpo.msgidcomments = self.msgidcomments[:]
     newpo.initallcomments()
+    newpo.msgctxt = self.msgctxt[:]
     newpo.msgid = self.msgid[:]
     newpo.msgid_pluralcomments = self.msgid_pluralcomments[:]
     newpo.msgid_plural = self.msgid_plural[:]
@@ -302,6 +307,7 @@ class pounit(base.TranslationUnit):
     else:
       newpo.msgstr = self.msgstr[:]
       
+    newpo.obsoletemsgctxt = self.obsoletemsgctxt[:]
     newpo.obsoletemsgid = self.obsoletemsgid[:]
     newpo.obsoletemsgid_pluralcomments = self.obsoletemsgid_pluralcomments[:]
     newpo.obsoletemsgid_plural = self.obsoletemsgid_plural[:]
@@ -450,6 +456,8 @@ class pounit(base.TranslationUnit):
   def makeobsolete(self):
     """Makes this unit obsolete"""
     self.obsolete = True
+    if self.msgctxt:
+      self.obsoletemsgctxt = self.msgctxt
     if self.msgid:
       self.obsoletemsgid = self.msgid
       self.msgid = []
@@ -468,6 +476,9 @@ class pounit(base.TranslationUnit):
   def resurrect(self):
     """Makes an obsolete unit normal"""
     self.obsolete = False
+    if self.obsoletemsgctxt:
+      self.msgid = self.obsoletemsgctxt
+      self.obsoletemsgctxt = []
     if self.obsoletemsgid:
       self.msgid = self.obsoletemsgid
       self.obsoletemsgid = []
@@ -486,6 +497,7 @@ class pounit(base.TranslationUnit):
     return len(self.msgid_plural) > 0
 
   def parse(self, src):
+    inmsgctxt = 0
     inmsgid = 0
     inmsgid_comment = 0
     inmsgid_plural = 0
@@ -515,16 +527,25 @@ class pounit(base.TranslationUnit):
         else:
           self.othercomments.append(line)
       if line.startswith('msgid_plural'):
+        inmsgctxt = 0
         inmsgid = 0
         inmsgid_plural = 1
         inmsgstr = 0
         inmsgid_comment = 0
+      elif line.startswith('msgctxt'):
+        inmsgctxt = 1
+        inmsgid = 0
+        inmsgid_plural = 0
+        inmsgstr = 0
+        inmsgid_comment = 0
       elif line.startswith('msgid'):
+        inmsgctxt = 0
         inmsgid = 1
         inmsgid_plural = 0
         inmsgstr = 0
         inmsgid_comment = 0
       elif line.startswith('msgstr'):
+        inmsgctxt = 0
         inmsgid = 0
         inmsgid_plural = 0
         inmsgstr = 1
@@ -534,7 +555,9 @@ class pounit(base.TranslationUnit):
           msgstr_pluralid = None
       extracted = quote.extractstr(line)
       if not extracted is None:
-        if inmsgid:
+        if inmsgctxt:
+          self.msgctxt.append(extracted)
+        elif inmsgid:
           # TODO: improve kde comment detection
           if extracted.find("_:") != -1:
             inmsgid_comment = 1
@@ -628,6 +651,8 @@ class pounit(base.TranslationUnit):
     if self.isobsolete():
       lines.extend(self.typecomments)
       obsoletelines = []
+      if self.obsoletemsgctxt:
+        obsoletelines.append(self.getmsgpartstr("#~ msgctxt", self.obsoletemsgctxt))
       obsoletelines.append(self.getmsgpartstr("#~ msgid", self.obsoletemsgid, self.obsoletemsgidcomments))
       if self.obsoletemsgid_plural or self.obsoletemsgid_pluralcomments:
         obsoletelines.append(self.getmsgpartstr("#~ msgid_plural", self.obsoletemsgid_plural, self.obsoletemsgid_pluralcomments))
@@ -647,6 +672,8 @@ class pounit(base.TranslationUnit):
     lines.extend(self.sourcecomments)
     lines.extend(self.typecomments)
     lines.extend(self.visiblecomments)
+    if self.msgctxt:
+      lines.append(self.getmsgpartstr("msgctxt", self.msgctxt))
     lines.append(self.getmsgpartstr("msgid", self.msgid, self.msgidcomments))
     if self.msgid_plural or self.msgid_pluralcomments:
       lines.append(self.getmsgpartstr("msgid_plural", self.msgid_plural, self.msgid_pluralcomments))

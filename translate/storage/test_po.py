@@ -192,6 +192,20 @@ class TestPO(test_base.TestTranslationStore):
         assert thepo.source == "test"
         assert thepo.target == "rest"
 
+    def test_copy(self):
+        """checks that we can copy all the needed PO fields"""
+        posource = '''# TRANSLATOR-COMMENTS
+#. AUTOMATIC-COMMENTS
+#: REFERENCE...
+#, fuzzy
+msgctxt "CONTEXT"
+msgid "UNTRANSLATED-STRING"
+msgstr "TRANSLATED-STRING"'''
+        pofile = self.poparse(posource)
+        oldunit = pofile.units[0]
+        newunit = oldunit.copy()
+        assert newunit == oldunit
+
     def test_combine_msgidcomments(self):
         """checks that we don't get duplicate msgid comments"""
         posource = 'msgid "test me"\nmsgstr ""'
@@ -387,6 +401,8 @@ msgstr[0] "Sheep"
         print pofile
         assert str(unit) == poexpected
         
+    def test_makeobsolete_plural(self):
+        """Tests making a plural unit obsolete"""
         posource = r'''msgid "Cow"
 msgid_plural "Cows"
 msgstr[0] "Koei"
@@ -397,6 +413,19 @@ msgstr[1] "Koeie"
 #~ msgstr[0] "Koei"
 #~ msgstr[1] "Koeie"
 '''
+        pofile = self.poparse(posource)
+        print pofile
+        unit = pofile.units[0]
+        assert not unit.isobsolete()
+        unit.makeobsolete()
+        assert unit.isobsolete()
+        print pofile
+        assert str(unit) == poexpected
+
+    def test_makeobsolete_msgctxt(self):
+        """Tests making a unit with msgctxt obsolete"""
+        posource = '#: test.c\nmsgctxt "Context"\nmsgid "test"\nmsgstr "rest"\n'
+        poexpected = '#~ msgctxt "Context"\n#~ msgid "test"\n#~ msgstr "rest"\n'
         pofile = self.poparse(posource)
         print pofile
         unit = pofile.units[0]
