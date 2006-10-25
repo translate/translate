@@ -25,6 +25,7 @@
 import sys
 from PyQt4 import QtCore, QtGui
 from ui.PreferenceUI import Ui_frmPreference
+from modules.World import World
 
 class Preference(QtGui.QDialog):
     def __init__(self):
@@ -32,7 +33,8 @@ class Preference(QtGui.QDialog):
         self.ui = None
 
         #Personal Setting
-        self.settings = QtCore.QSettings("WordForge", "Translation Editor")
+        self.world = World()
+        self.settings = QtCore.QSettings(self.world.settingOrg, self.world.settingOrg)
 
     def initUI(self):
         """ get values and display them """

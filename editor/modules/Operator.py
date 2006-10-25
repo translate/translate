@@ -1,6 +1,5 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
-#
 # WordForge Translation Editor
 # Copyright 2006 WordForge Foundation
 #
@@ -8,7 +7,7 @@
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
+# as published by the Free Software Foundation; either version 2.1
 # of the License, or (at your option) any later version.
 #
 # You should have received a copy of the GNU General Public License
@@ -16,13 +15,18 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # Developed by:
+#       Hok Kakada (hokkakada@khmeros.info)
 #       Keo Sophon (keosophon@khmeros.info)
+#       San Titvirak (titvirak@khmeros.info)
+#       Seth Chanratha (sethchanratha@khmeros.info)
+# 
 #
 
 from PyQt4 import QtCore, QtGui
 from translate.storage import factory
 from translate.storage import xliff
-from translate.tools import pocount
+from modules.World import World
+from modules.Status import Status
 
 class Operator(QtCore.QObject):
     def __init__(self):
@@ -31,22 +35,16 @@ class Operator(QtCore.QObject):
         self._modified = False
         self._saveDone = False
         self._unitpointer = None
-        
+        # global variables
+        self.world = World()
         # filter flags
-        self.FUZZY = 2
-        self.TRANSLATED = 4
-        self.UNTRANSLATED = 8
-        self.filter = self.FUZZY + self.TRANSLATED + self.UNTRANSLATED
+        self.filter = self.world.fuzzy + self.world.translated + self.world.untranslated
 
     def getUnits(self, fileName):
         self.store = factory.getobject(fileName)
-
-        # get status for units       
-        self.numFuzzy = len(pocount.fuzzymessages(self.store.units))
-        self.numTranslated = len(pocount.translatedmessages(self.store.units))
-        self.numUntranslated = len(pocount.untranslatedmessages(self.store.units))
-        self.numTotal = self.numTranslated + self.numUntranslated
-        self.emitCurrentStatus()
+        # get status for units
+        self.status = Status(self.store.units)
+        self.emitStatus()
 
 ####        fileNode = self.store.getfilenode(fileName)
 ##        xliffHeader = self.store.getheadernode(fileNode)
@@ -58,7 +56,12 @@ class Operator(QtCore.QObject):
 ##        header = {"charset":"CHARSET", "encoding":"ENCODING", "project_id_version":None, "pot_creation_date":None, "po_revision_date":None, "last_translator":None, "language_team":None, "mime_version":None, "plural_forms":None, "report_msgid_bugs_to":None}
 ##        poHeader = self.store.makeheader(charset="CHARSET", encoding="ENCODING", project_id_version=None, pot_creation_date=None, po_revision_date=None, last_translator=None, language_team=None, mime_version=None, plural_forms=None, report_msgid_bugs_to=None)
         
-        self.emit(QtCore.SIGNAL("newUnits"), self.store.units)
+        unitsState = []
+        for unit in self.store.units:
+            currentState = self.status.getStatus(unit)
+            unitsState.append(currentState)
+        
+        self.emit(QtCore.SIGNAL("newUnits"), self.store.units, unitsState)
         self.filteredList = range(len(self.store.units))
         # hide first unit if it's header
         if (header):
@@ -66,17 +69,20 @@ class Operator(QtCore.QObject):
         # set to first unit pointer
         self._unitpointer = 0
         self.emitCurrentUnit()
-        # set color for fuzzy unit only
+##        # set color for fuzzy unit only
 ##        fuzzyUnits = pocount.fuzzymessages(self.store.units)
 ##        for i in fuzzyUnits:
 ##            id = self.store.units.index(i)
-##            self.emit(QtCore.SIGNAL("setColor"), id, self.FUZZY)
+##            self.emit(QtCore.SIGNAL("setColor"), id, self.world.fuzzy)
 
 
     def updateNewHeader(self, header):
 ##        poHeader = self.store.makeheader(header)
         self.store.updateheader(header)
 ##        print self.store.header()
+
+    def emitStatus(self):
+        self.emit(QtCore.SIGNAL("currentStatus"), self.status.statusString())
         
     def emitCurrentUnit(self):
         if (len(self.filteredList) <= 1):
@@ -96,15 +102,15 @@ class Operator(QtCore.QObject):
             self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), True, True)
             self.middleUnit = True
         
-        currentId = self.getCurrentId()
-        currentUnit = self.store.units[currentId]
-        if (currentId == -1):
-            self.emit(QtCore.SIGNAL("currentUnit"), None)
+        currentIndex = self.getCurrentIndex()
+        currentUnit = self.store.units[currentIndex]
+        currentState = self.status.getStatus(currentUnit)
+        if (currentIndex == -1):
+            self.emit(QtCore.SIGNAL("currentUnit"), None, None, None)
         else:
-            self.emit(QtCore.SIGNAL("currentUnit"), currentUnit)
-            self.emit(QtCore.SIGNAL("currentId"), currentId)
+            self.emit(QtCore.SIGNAL("currentUnit"), currentUnit, currentIndex, currentState)
 
-    def getCurrentId(self):
+    def getCurrentIndex(self):
         try:
             return self.filteredList[self._unitpointer]
         except:
@@ -121,31 +127,33 @@ class Operator(QtCore.QObject):
         
     def filterFuzzy(self, checked):
         """add/remove fuzzy to filter, and send filter signal."""
-        if (checked) and (not self.filter & self.FUZZY):
-            self.filter += self.FUZZY
-        elif (not checked) and (self.filter & self.FUZZY):
-            self.filter -= self.FUZZY
+        if (checked) and (not self.filter & self.world.fuzzy):
+            self.filter += self.world.fuzzy
+        elif (not checked) and (self.filter & self.world.fuzzy):
+            self.filter -= self.world.fuzzy
+        print self.filter
         self.emitFiltered(self.filter)
         
     def filterTranslated(self, checked):
         """add/remove translated to filter, and send filter signal."""
-        if (checked) and (not self.filter & self.TRANSLATED):
-            self.filter += self.TRANSLATED
-        elif (not checked) and (self.filter & self.TRANSLATED):
-            self.filter -= self.TRANSLATED
+        if (checked) and (not self.filter & self.world.translated):
+            self.filter += self.world.translated
+        elif (not checked) and (self.filter & self.world.translated):
+            self.filter -= self.world.translated
+        print self.filter
         self.emitFiltered(self.filter)
         
     def filterUntranslated(self, checked):
         """add/remove untranslated to filter, and send filter signal."""
         if (checked):
-            self.filter = self.filter | self.UNTRANSLATED
-        elif (self.filter & self.UNTRANSLATED):
-            self.filter -= self.UNTRANSLATED
+            self.filter = self.filter | self.world.untranslated
+        elif (self.filter & self.world.untranslated):
+            self.filter -= self.world.untranslated
+        print self.filter
         self.emitFiltered(self.filter)
 
     def emitFiltered(self, filter):
         """send filtered list signal according to filter."""
-        #pocount.fuzzymessages(self.store.units)
         self.emitUpdateUnit()
         self.filteredList = []
         self.filter = filter
@@ -155,11 +163,11 @@ class Operator(QtCore.QObject):
             # get the unit state
             unitState = 0
             if currentUnit.isfuzzy():
-                unitState += self.FUZZY
+                unitState += self.world.fuzzy
             if currentUnit.istranslated():
-                unitState += self.TRANSLATED
+                unitState += self.world.translated
             else:
-                unitState += self.UNTRANSLATED
+                unitState += self.world.untranslated
             # add unit to filteredList if it is in the filter
             if (self.filter & unitState):
                 self.filteredList.append(i)
@@ -169,26 +177,27 @@ class Operator(QtCore.QObject):
     
     def emitUpdateUnit(self):
         """send updateUnit, setColor, and hideUnit signal."""
-        currentId = self.getCurrentId()
-        if (self._unitpointer == None) or (currentId > len(self.store.units)):
+        currentIndex = self.getCurrentIndex()
+        if (self._unitpointer == None) or (currentIndex > len(self.store.units)):
             return
         self.emit(QtCore.SIGNAL("updateUnit"))
-        currentUnit = self.store.units[currentId]
-        # get the unit state
-        unitState = 0
-        if currentUnit.isfuzzy():
-            unitState += self.FUZZY
-        if currentUnit.istranslated():
-            unitState += self.TRANSLATED
-        else:
-            unitState += self.UNTRANSLATED
-        # set color for current unit
-        self.emit(QtCore.SIGNAL("setColor"), currentId, unitState)        
-        # hide unit if it is not in the filter
-        if (self.filter) and not (self.filter & unitState):
-            self.hideUnit(currentId)
-            # tell next button not to advance another step
-            return True
+
+##        currentUnit = self.store.units[currentIndex]
+##        # get the unit state
+##        unitState = 0
+##        if currentUnit.isfuzzy():
+##            unitState += self.world.fuzzy
+##        if currentUnit.istranslated():
+##            unitState += self.world.translated
+##        else:
+##            unitState += self.world.untranslated
+##        # set color for current unit
+##        self.emit(QtCore.SIGNAL("setColor"), currentIndex, unitState)
+##        # hide unit if it is not in the filter
+##        if (self.filter) and not (self.filter & unitState):
+##            self.hideUnit(currentIndex)
+##            # tell next button not to advance another step
+##            return True
 
     def emitOtherComments(self):
         """sending comment of Header"""
@@ -246,16 +255,16 @@ class Operator(QtCore.QObject):
     
     def setComment(self, comment):
         """set the comment which is QString type to the current unit."""
-        currentId = self.getCurrentId()
-        currentUnit = self.store.units[currentId]
+        currentIndex = self.getCurrentIndex()
+        currentUnit = self.store.units[currentIndex]
         currentUnit.removenotes()
         currentUnit.addnote(unicode(comment))
         self._modified = True
     
     def setTarget(self, target):
         """set the target which is QString type to the current unit."""
-        currentId = self.getCurrentId()
-        currentUnit = self.store.units[currentId]
+        currentIndex = self.getCurrentIndex()
+        currentUnit = self.store.units[currentIndex]
         translatedState = currentUnit.istranslated()
         # update target for current unit
         currentUnit.target = unicode(target)
@@ -267,19 +276,19 @@ class Operator(QtCore.QObject):
                 pass
         # unmark fuzzy is unit if it's previously fuzzy
         if (currentUnit.isfuzzy()):
-            self.numFuzzy -= 1
+            self.status.addNumFuzzy(-1)
             currentUnit.markfuzzy(False)
         # calculate number of translated units
         if (translatedState != currentUnit.istranslated()):
-            self.numTranslated += (1 - (int(translatedState)*2))
+            self.status.addNumTranslated(1 - (int(translatedState)*2))
         self._modified = True
-        self.emitCurrentStatus()
+        self.emitStatus()
 
-    def setCurrentUnit(self, currentId):
-        """adjust the unitpointer with currentId, and send currentUnit signal."""
+    def setCurrentUnit(self, currentIndex):
+        """adjust the unitpointer with currentIndex, and send currentUnit signal."""
         self.emitUpdateUnit()
         try:
-            self._unitpointer = self.filteredList.index(currentId)
+            self._unitpointer = self.filteredList.index(currentIndex)
         except ValueError:
             self._unitpointer = -1
         self.emitCurrentUnit()
@@ -287,27 +296,21 @@ class Operator(QtCore.QObject):
     def toggleFuzzy(self):
         """toggle fuzzy state for current unit."""
         self.emitUpdateUnit()
-        currentId = self.getCurrentId()
-        currentUnit = self.store.units[currentId]
+        currentIndex= self.getCurrentIndex()
+        currentUnit = self.store.units[currentIndex]
         # skip if unit is not yet translated
         if (not currentUnit.istranslated()):
             return
         if (currentUnit.isfuzzy()):
-            self.store.units[currentId].markfuzzy(False)
-            self.numFuzzy -= 1
+            self.store.units[currentIndex].markfuzzy(False)
+            self.status.addNumFuzzy(-1)
         else:
-            self.store.units[currentId].markfuzzy(True)
-            self.numFuzzy += 1
+            self.store.units[currentIndex].markfuzzy(True)
+            self.status.addNumFuzzy(1)
         self._modified = True
         self.emitUpdateUnit()
-        self.emitCurrentStatus()
-    
-    def emitCurrentStatus(self):
-        """send currentStatus signal."""
-        self.numUntranslated = self.numTotal - self.numTranslated
-        status = "Total: "+ str(self.numTotal) + "  |  Fuzzy: " +  str(self.numFuzzy) + "  |  Translated: " +  str(self.numTranslated) + "  |  Untranslated: " + str(self.numUntranslated)
-        self.emit(QtCore.SIGNAL("currentStatus"), ' ' + status + ' ')
-    
+        self.emitStatus()
+
     def setSearchOptions(self, options):
         """set location to search, direction, matchcase, and searching text"""
         self._sourcesearch = options[0]

@@ -26,6 +26,7 @@
 import sys
 from PyQt4 import QtCore, QtGui
 from ui.Ui_Overview import Ui_Form
+from modules.World import World
 
 class OverviewDock(QtGui.QDockWidget):
     def __init__(self):
@@ -35,7 +36,8 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui = Ui_Form()
         self.ui.setupUi(self.form)        
         self.setWidget(self.form)
-        self.settings = QtCore.QSettings("WordForge", "Translation Editor")        
+        self.world = World()
+        self.settings = QtCore.QSettings(self.world.settingOrg, self.world.settingApp)
         
         # create action for show/hide
         self._actionShow = QtGui.QAction(self)
@@ -44,34 +46,32 @@ class OverviewDock(QtGui.QDockWidget):
         self.connect(self._actionShow, QtCore.SIGNAL("triggered()"), self.show)
         
         # set up table appearance and behavior
+        
+        self.headerLabels = [self.tr("Index"), self.tr("Source"), self.tr("Target"), self.tr("Notes")]
+        self.ui.tableOverview.setColumnCount(4)
+        self.ui.tableOverview.setRowCount(0)
+        self.ui.tableOverview.setHorizontalHeaderLabels(self.headerLabels)
         self.ui.tableOverview.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
         self.ui.tableOverview.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
         self.ui.tableOverview.horizontalHeader().setSortIndicatorShown(True)
         self.ui.tableOverview.resizeColumnToContents(0)
+        self.ui.tableOverview.resizeColumnToContents(3)
         self.ui.tableOverview.horizontalHeader().setResizeMode(1, QtGui.QHeaderView.Stretch)
         self.ui.tableOverview.horizontalHeader().setResizeMode(2, QtGui.QHeaderView.Stretch)
         self.ui.tableOverview.horizontalHeader().setHighlightSections(False)        
         self.ui.tableOverview.verticalHeader().hide()
         
-        
         self.headerFont = QtGui.QFont('Sans Serif', 10)
         self.ui.tableOverview.horizontalHeader().setFont(self.headerFont)
         self.applySettings()
-
-        # filter flags
-        self.FUZZY = 2
-        self.TRANSLATED = 4
-        self.UNTRANSLATED = 8
         
-        # colorize item
-        self.DEFAULTCOLOR = QtGui.QColor(255,255,255,0)
-        self.FUZZYCOLOR = QtGui.QColor(235,235,160,128)
-        self.TRANSLATEDCOLOR = QtGui.QColor(190,255,165,128)
-        self.UNTRANSLATEDCOLOR = QtGui.QColor(228,228,228,128)
+        # iconize item
+        #self.FUZZYICON = QtGui.QIcon("./images/icon.png")
+        #self.NULLICON = QtGui.QIcon()
         
-        # idToUpdate holds the last item selected
-        self.idToUpdate = None
-        self.connect(self.ui.tableOverview, QtCore.SIGNAL("cellChanged(int, int)"), self.emitTargetChanged)
+        # indexToUpdate holds the last item selected
+        self.indexToUpdate = None
+        #self.connect(self.ui.tableOverview, QtCore.SIGNAL("cellDoubleClicked(int, int)"), self.emitTargetChanged)
 
     def actionShow(self):
         return self._actionShow
@@ -83,26 +83,32 @@ class OverviewDock(QtGui.QDockWidget):
             self._actionShow.setText(self.tr("Show Overview"))    
         self.setHidden(not self.isHidden())    
 
-    def slotNewUnits(self, units):
+    def slotNewUnits(self, units, unitsStatus):
         """Initialize the list, clear and fill with units."""
         self.ui.tableOverview.setEnabled(True)
         self.ui.tableOverview.clear()
-        self.ui.tableOverview.setHorizontalHeaderLabels([self.tr("Index"), self.tr("Source"), self.tr("Target")])
+        self.ui.tableOverview.setHorizontalHeaderLabels(self.headerLabels)
         self.ui.tableOverview.setRowCount(len(units))
         i = 0
         normalState = QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
-        
+        self.setUpdatesEnabled(False)
         for unit in units:
-            item = QtGui.QTableWidgetItem(str(i).rjust(4) + '  ')
-            item.setTextAlignment(QtCore.Qt.AlignRight + QtCore.Qt.AlignVCenter)
-            item.setFlags(normalState)
-            self.ui.tableOverview.setItem(i, 0, item)
-            item = QtGui.QTableWidgetItem(unit.source)
-            item.setFlags(normalState)
-            self.ui.tableOverview.setItem(i, 1, item)
-            item = QtGui.QTableWidgetItem(unit.target)
-            self.ui.tableOverview.setItem(i, 2, item)
+            item0 = QtGui.QTableWidgetItem(str(i).rjust(4))
+            item1 = QtGui.QTableWidgetItem(unit.source)
+            item2 = QtGui.QTableWidgetItem(unit.target)
+            item3 = QtGui.QTableWidgetItem(self.stateString(unitsStatus[i]))
+            item0.setTextAlignment(QtCore.Qt.AlignCenter)
+            item0.setFlags(normalState)
+            item1.setFlags(normalState)
+            item2.setFlags(normalState)
+            item3.setFlags(normalState)
+            self.ui.tableOverview.setItem(i, 0, item0)
+            self.ui.tableOverview.setItem(i, 1, item1)
+            self.ui.tableOverview.setItem(i, 2, item2)
+            self.ui.tableOverview.setItem(i, 3, item3)
             i += 1
+        self.ui.tableOverview.resizeRowsToContents()
+        self.setUpdatesEnabled(True)
 
     def filteredList(self, shownList):
         """Show the items that are in filtered list."""
@@ -115,33 +121,52 @@ class OverviewDock(QtGui.QDockWidget):
             self.ui.tableOverview.hideRow(i)
         self.setUpdatesEnabled(True)
    
-    def highlightItem(self, id):
-        """Highlight row according to id."""
-        self.disconnect(self.ui.tableOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitCurrentId)
-        self.ui.tableOverview.selectRow(id)
-        self.connect(self.ui.tableOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitCurrentId)
-        self.idToUpdate = id
-
-    def hideUnit(self, value):
-        """Hide row at value."""
-        self.ui.tableOverview.hideRow(value)
-
-    def emitCurrentId(self):
-        """Send ID according to selected row."""
-        id = self.ui.tableOverview.currentRow()
-        self.emit(QtCore.SIGNAL("currentId"), id)
-
-    def emitTargetChanged(self):
-        """Send target as string and signal targetChanged."""
-        id = self.ui.tableOverview.currentRow()
-        if (id >= 0):
-            target = unicode(self.ui.tableOverview.item(id, 2).text())
-            self.emit(QtCore.SIGNAL("targetChanged"), target)
+    def updateUnit(self, unit, index, state):
+        """Highlight the row of current unit index."""
+        if (not index):
+            return
+        self.disconnect(self.ui.tableOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitCurrentIndex)
+        self.ui.tableOverview.selectRow(index)
+        self.connect(self.ui.tableOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitCurrentIndex)
+        self.indexToUpdate = index
+        # display unit status on note column.
+        if (state):
+            noteItem = self.ui.tableOverview.item(index, 3)
+            item = QtGui.QTableWidgetItem(self.stateString(state))
+            self.ui.tableOverview.setItem(self.indexToUpdate, 3, item)
+    
+    def stateString(self, state):
+        status = ""
+        if (state & self.world.fuzzy):
+            status += " F"
+        #if (state & self.world.translated):
+        #    status += " T"
+        if (state & self.world.untranslated):
+            status += " U"
+        return status
         
     def updateTarget(self, target):
         """Update the text in target column."""
         item = QtGui.QTableWidgetItem(target)
-        self.ui.tableOverview.setItem(self.idToUpdate, 2, item)
+        self.ui.tableOverview.setItem(self.indexToUpdate, 2, item)
+        currentRow = self.ui.tableOverview.currentRow()
+        #self.ui.tableOverview.resizeRowToContents(currentRow)
+        
+    def hideUnit(self, index):
+        """Hide row at index."""
+        self.ui.tableOverview.hideRow(index)
+
+    def emitCurrentIndex(self):
+        """Send current row's index."""
+        index = self.ui.tableOverview.currentRow()
+        self.emit(QtCore.SIGNAL("currentIndex"), index)
+
+##    def emitTargetChanged(self):
+##        """Send target as string and signal targetChanged."""
+##        index = self.ui.tableOverview.currentRow()
+##        if (index >= 0):
+##            target = unicode(self.ui.tableOverview.item(index, 2).text())
+##            self.emit(QtCore.SIGNAL("targetChanged"), target)
         
     def applySettings(self):
         font = self.settings.value("overviewFont")
@@ -150,22 +175,6 @@ class OverviewDock(QtGui.QDockWidget):
             if (fontObj.fromString(font.toString())):
                 self.ui.tableOverview.setFont(fontObj)
                 self.ui.tableOverview.horizontalHeader().setFont(self.headerFont)
-        
-    def setColor(self, value, state):
-        return
-        item = self.ui.tableOverview.topLevelItem(value)
-        if (state & self.FUZZY):
-            color = self.FUZZYCOLOR
-##        elif (state & self.TRANSLATED):
-##            color = self.TRANSLATEDCOLOR
-##        elif (state & self.UNTRANSLATED):
-##            color = self.UNTRANSLATEDCOLOR
-        else:
-            color = self.DEFAULTCOLOR        
-        if (item):
-            item.setBackgroundColor(0, color)
-            item.setBackgroundColor(1, color)
-            item.setBackgroundColor(2, color)
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

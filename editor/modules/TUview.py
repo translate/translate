@@ -17,8 +17,8 @@
 # Developed by:
 #       Hok Kakada (hokkakada@khmeros.info)
 #       Keo Sophon (keosophon@khmeros.info)
-#       Seth Chanratha (sethchanratha@khmeros.info)
 #       San Titvirak (titvirak@khmeros.info)
+#       Seth Chanratha (sethchanratha@khmeros.info)
 #
 # This module is working on source and target of current TU.
 
@@ -38,7 +38,7 @@ class TUview(QtGui.QDockWidget):
         self.settings = QtCore.QSettings("WordForge", "Translation Editor")
         self.applySettingsToSource()
         self.applySettingsToTarget()
-                
+        
         # create action for show/hide
         self._actionShow = QtGui.QAction(self)
         self._actionShow.setObjectName("actionShowDetail")
@@ -76,32 +76,23 @@ class TUview(QtGui.QDockWidget):
         self.ui.txtTarget.setFont(font)
         
     @QtCore.pyqtSignature("int")
-    def emitCurrentId(self, value):
-        if (self.ids) and (value < len(self.ids)):
-            id = self.ids[value]
-            self.emit(QtCore.SIGNAL("currentId"), id)
-
-    def highLightScrollbar(self, id):
-        try:
-            value = self.ids.index(id)
-        except:
-            return
-        self.disconnect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentId)
-        self.ui.fileScrollBar.setValue(value)
-        self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentId)
+    def emitCurrentIndex(self, value):
+        if (self.indexes) and (value < len(self.indexes)):
+            index = self.indexes[value]
+            self.emit(QtCore.SIGNAL("currentIndex"), index)
 
     def setScrollbarMaximum(self):
-        """Set scrollbar maximum value according to number of id."""
-        maximum = len(self.ids) - 1
+        """Set scrollbar maximum value according to number of index."""
+        maximum = len(self.indexes) - 1
         if (maximum < 0):
             maximum = 0
         self.ui.fileScrollBar.setMaximum(maximum)
         
     def hideUnit(self, value):
-        """Remove id from ids, and recalculate scrollbar maximum."""
+        """Remove index from indexes, and recalculate scrollbar maximum."""
         # adjust the scrollbar
         try:
-            self.ids.remove(value)
+            self.indexes.remove(value)
         except ValueError:
             pass
         self.setScrollbarMaximum()
@@ -113,33 +104,42 @@ class TUview(QtGui.QDockWidget):
         if not units:
             self.ui.txtSource.setPlainText("")
             self.ui.txtTarget.setPlainText("")
-        # self.ids store the information of unit's id
-        self.ids = range(len(units))
+        # self.indexes store the information of unit's index
+        self.indexes = range(len(units))
         # adjust the scrollbar
         self.setScrollbarMaximum()
         self.ui.fileScrollBar.setEnabled(True)
         self.ui.fileScrollBar.setSliderPosition(0)
     
     def filteredList(self, fList):
-        self.ids = fList
-        # adjust the scrollbar
+        """Adjust the scrollbar maximum according to length of filtered list."""
+        self.indexes = fList
         self.setScrollbarMaximum()
-        self.disconnect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentId)
+        self.disconnect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
         self.ui.fileScrollBar.setValue(0)
         self.ui.fileScrollBar.setSliderPosition(0)
-        self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentId)
+        self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
     
-    def updateUnit(self, currentUnit):
-        """Update the text in source and target."""
-        if (currentUnit):
-            self.ui.txtSource.setPlainText(currentUnit.source)
-            self.ui.txtTarget.setPlainText(currentUnit.target)
+    def updateUnit(self, unit, index, state):
+        """Update the text in source and target, and set the scrollbar position."""
+        if (unit):
+            self.ui.txtSource.setPlainText(unit.source)
+            self.ui.txtTarget.setPlainText(unit.target)
         else:
             self.ui.txtSource.setPlainText("")
             self.ui.txtTarget.setPlainText("")
         self.ui.txtTarget.setFocus
+        # set the scrollbar position
+        try:
+            value = self.indexes.index(index)
+        except:
+            return
+        self.disconnect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
+        self.ui.fileScrollBar.setValue(value)
+        self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
 
     def setTarget(self, target):
+        """Change the target text."""
         self.ui.txtTarget.setPlainText(target)
         
     def checkModified(self):
@@ -150,7 +150,7 @@ class TUview(QtGui.QDockWidget):
       self.emit(QtCore.SIGNAL("readyForSave"), True)
 
     def source2target(self):
-        """copy source to target"""
+        """Copy the text from source to target."""
         self.ui.txtTarget.setFocus()
         self.ui.txtTarget.selectAll()
         self.ui.txtTarget.insertPlainText(self.ui.txtSource.toPlainText())
