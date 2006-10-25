@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Wed Oct 18 15:51:41 2006
+# Created: Wed Oct 25 14:38:31 2006
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -321,7 +321,7 @@ class Ui_frmPreference(object):
         self.label4.setText(self.tr("Language Code"))
         self.label2.setText(self.tr("Email address"))
         self.label.setText(self.tr("Number of singular/plural forms"))
-        self.chkHeaderAuto.setText(self.tr("Auto matically update header"))
+        self.chkHeaderAuto.setText(self.tr("Automatically update header on save"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab1), self.tr("Personalize"))
         self.bntDefaults.setText(self.tr("Defaults"))
         self.label21.setText(self.tr("Overview"))
@@ -333,3 +333,12 @@ class Ui_frmPreference(object):
         self.bntTarget.setText(self.tr("Choose"))
         self.bntComment.setText(self.tr("Choose"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab2), self.tr("Font"))
+
+
+if __name__ == "__main__":
+    app = QtGui.QApplication(sys.argv)
+    frmPreference = QtGui.QDialog()
+    ui = Ui_frmPreference()
+    ui.setupUi(frmPreference)
+    frmPreference.show()
+    sys.exit(app.exec_())
