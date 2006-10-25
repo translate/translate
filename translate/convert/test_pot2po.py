@@ -80,6 +80,19 @@ class TestPOT2PO:
         print newpo
         assert str(self.singleunit(newpo)) == poexpected
 
+    def test_merging_location_ambiguous_with_disambiguous(self):
+        """test that when we have a PO in ambiguous (Gettext form) and merge with disamabiguous (KDE comment form) 
+        that we don't duplicate the location #: comments"""
+        potsource = '''#: location.c:1\nmsgid ""\n"_: location.c:1\\n"\n"Source"\nmsgstr ""\n\n''' + \
+                    '''#: location.c:10\nmsgid ""\n"_: location.c:10\\n"\n"Source"\nmsgstr ""\n'''
+        posource = '''#: location.c:1\n#: location.c:10\nmsgid "Source"\nmsgstr "Target"\n\n'''
+        poexpected1 = '''#: location.c:1\nmsgid ""\n"_: location.c:1\\n"\n"Source"\nmsgstr "Target"\n'''
+        poexpected2 = '''#: location.c:10\nmsgid ""\n"_: location.c:10\\n"\n"Source"\nmsgstr "Target"\n'''
+        newpo = self.convertpot(potsource, posource)
+        print "Expected:\n", poexpected1, "Actual:\n", newpo.units[1]
+        assert str(newpo.units[1]) == poexpected1
+        assert str(newpo.units[2]) == poexpected2
+
     def test_merging_accelerator_changes(self):
         """test that a change in the accelerator localtion still allows merging"""
         potsource = '''#: someline.c\nmsgid "A&bout"\nmsgstr ""\n'''

@@ -167,7 +167,7 @@ class TestPO(test_base.TestTranslationStore):
         """helper that converts po source to pofile object and back"""
         return str(self.poparse(posource))
 
-    def pomerge(self, oldmessage, newmessage):
+    def pomerge(self, oldmessage, newmessage, authoritative):
         """helper that merges two messages"""
         dummyfile = wStringIO.StringIO(oldmessage)
         oldpofile = po.pofile(dummyfile)
@@ -178,7 +178,7 @@ class TestPO(test_base.TestTranslationStore):
           newunit = newpofile.units[0]
         else:
           newunit = po.pounit()
-        oldunit.merge(newunit)
+        oldunit.merge(newunit, authoritative=authoritative)
         print oldunit
         return str(oldunit)
 
@@ -224,6 +224,17 @@ msgstr "TRANSLATED-STRING"'''
         pofile.removeduplicates("merge")
         assert len(pofile.units) == 1
         assert pofile.units[0].getlocations() == ["source1", "source2"]
+
+    def test_merge_duplicates_msgctxt(self):
+        """checks that merging duplicates works for msgctxt"""
+        posource = '#: source1\nmsgid "test me"\nmsgstr ""\n\n#: source2\nmsgid "test me"\nmsgstr ""\n'
+        pofile = self.poparse(posource)
+        assert len(pofile.units) == 2
+        pofile.removeduplicates("msgctxt")
+        print pofile
+        assert len(pofile.units) == 2
+        assert str(pofile.units[0]).count("source1") == 2
+        assert str(pofile.units[1]).count("source2") == 2
 
     def test_merge_mixed_sources(self):
         """checks that merging works with different source location styles"""
@@ -476,7 +487,7 @@ msgstr[1] "Koeie"
         oldsource = '#. old comment\n#: line:10\nmsgid "One"\nmsgstr "Een"\n'
         newsource = '#. new comment\n#: line:10\nmsgid "One"\nmsgstr ""\n'
         expected = '#. new comment\n#: line:10\nmsgid "One"\nmsgstr "Een"\n'
-        assert self.pomerge(newsource, oldsource) == expected
+        assert self.pomerge(newsource, oldsource, authoritative=True) == expected
 
     def test_unassociated_comments(self):
         """tests behaviour of unassociated comments."""

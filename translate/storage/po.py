@@ -330,7 +330,7 @@ class pounit(base.TranslationUnit):
     else:
       return len(unquotefrompo(self.msgstr).strip())
 
-  def merge(self, otherpo, overwrite=False, comments=True):
+  def merge(self, otherpo, overwrite=False, comments=True, authoritative=False):
     """merges the otherpo (with the same msgid) into this one
     overwrite non-blank self.msgstr only if overwrite is True
     merge comments only if comments is True"""
@@ -379,13 +379,14 @@ class pounit(base.TranslationUnit):
       return
     if comments:
       mergelists(self.othercomments, otherpo.othercomments)
-      # We don't bring across otherpo.automaticcomments as we consider ourself
-      # to be the the authority.  Same applies to otherpo.msgidcomments
-      #self.automaticcomments = otherpo.automaticcomments
-      #mergelists(self.msgidcomments, otherpo.msgidcomments)
-      mergelists(self.sourcecomments, otherpo.sourcecomments, split=True)
       mergelists(self.typecomments, otherpo.typecomments)
       mergelists(self.visiblecomments, otherpo.visiblecomments)
+      if not authoritative:
+        # We don't bring across otherpo.automaticcomments as we consider ourself
+        # to be the the authority.  Same applies to otherpo.msgidcomments
+        self.automaticcomments = otherpo.automaticcomments
+        mergelists(self.msgidcomments, otherpo.msgidcomments)
+        mergelists(self.sourcecomments, otherpo.sourcecomments, split=True)
     if self.isblankmsgstr() or overwrite:
       self.target = otherpo.target
       if self.source != otherpo.source:
@@ -1015,6 +1016,13 @@ class pofile(base.TranslationStore):
           if origpo not in markedpos:
             addcomment(origpo)
           addcomment(thepo)
+          uniqueelements.append(thepo)
+        elif duplicatestyle == "msgctxt":
+          origpo = msgiddict[msgid]
+          if origpo not in markedpos:
+            origpo.msgctxt.append('"%s"' % " ".join(origpo.getlocations()))
+            markedpos.append(thepo)
+          thepo.msgctxt.append('"%s"' % " ".join(thepo.getlocations()))
           uniqueelements.append(thepo)
       else:
         if not msgid and duplicatestyle != "keep":
