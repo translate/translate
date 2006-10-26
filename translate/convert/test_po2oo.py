@@ -96,6 +96,16 @@ class TestPO2OO:
         assert po2oo.convertoo(inputfile, outputfile, templatefile, targetlanguage="en-US")
         assert outputfile.getvalue() == oointro + '2002-02-02 02:02:02' + oooutro
 
+    def test_escape_conversion(self):
+        """test to ensure that we convert escapes correctly"""
+        oosource = r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Column1\tColumn2\r\n				2002-02-02 02:02:02' + '\r\n'
+        posource = '''#: numpages.src#RID_SVXPAGE_NUM_OPTIONS.STR_BULLET.string.text\nmsgid "Column1\\tColumn2\\r\\n"\nmsgstr "Kolom1\\tKolom2\\r\\n"\n'''
+        inputfile = wStringIO.StringIO(posource)
+        outputfile = wStringIO.StringIO()
+        templatefile = wStringIO.StringIO(oosource)
+        assert po2oo.convertoo(inputfile, outputfile, templatefile, targetlanguage="af-ZA")
+        assert "\tKolom1\\tKolom2\\r\\n\t" in outputfile.getvalue()
+
 class TestPO2OOCommand(test_convert.TestConvertCommand, TestPO2OO):
     """Tests running actual po2oo commands on files"""
     convertmodule = po2oo
