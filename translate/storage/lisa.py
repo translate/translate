@@ -212,9 +212,10 @@ class LISAfile(base.TranslationStore):
     #The XML skeleton to use for empty construction:
     XMLskeleton = ""
 
-    def __init__(self, inputfile=None, sourcelanguage='en'):
+    def __init__(self, inputfile=None, sourcelanguage='en', targetlanguage=None):
         super(LISAfile, self).__init__()
         self.setsourcelanguage(sourcelanguage)
+        self.settargetlanguage(targetlanguage)
         if inputfile is not None:
             self.parse(inputfile)
             assert self.document.documentElement.tagName == self.rootNode
@@ -233,6 +234,10 @@ class LISAfile(base.TranslationStore):
     def setsourcelanguage(self, sourcelanguage):
         """Sets the source language for this store"""
         self.sourcelanguage = sourcelanguage
+
+    def settargetlanguage(self, targetlanguage):
+        """Sets the target language for this store"""
+        self.targetlanguage = targetlanguage
 
     def addsourceunit(self, source):
         #TODO: miskien moet hierdie eerder addsourcestring of iets genoem word?

@@ -253,6 +253,8 @@ class xlifffile(lisa.LISAfile):
     def addheader(self):
         """Initialise the file header."""
         self.document.getElementsByTagName("file")[0].setAttribute("source-language", self.sourcelanguage)
+        if self.targetlanguage:
+            self.document.getElementsByTagName("file")[0].setAttribute("target-language", self.targetlanguage)
 
     def createfilenode(self, filename, sourcelanguage=None, datatype='plaintext'):
         """creates a filenode with the given filename. All parameters are needed
