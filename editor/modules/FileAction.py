@@ -115,8 +115,8 @@ class FileAction(QtCore.QObject):
         self.fileName = file
         self.emit(QtCore.SIGNAL("fileName"), str(self.fileName)) 
     
-    def emitStatus(self):
-        self.emit(QtCore.SIGNAL("statusActivated"), str(self.fileName))
+##    def emitStatus(self):
+##        self.emit(QtCore.SIGNAL("statusActivated"), str(self.fileName))
     
     def emitFileOpened(self):
         """emit signal fileOpened, with a filename as string"""

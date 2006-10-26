@@ -5,7 +5,7 @@
 # Copyright 2006 WordForge Foundation
 #
 # Version 0.1 (31 August 2006)
-# This program is free software; you can redistribute it and/or
+# This program is free sofware; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
@@ -36,8 +36,7 @@ class TUview(QtGui.QDockWidget):
         self.setWidget(self.form)
         self.layout = QtGui.QTextLayout ()
         self.settings = QtCore.QSettings("WordForge", "Translation Editor")
-        self.applySettingsToSource()
-        self.applySettingsToTarget()
+        self.applySettings()        
         
         # create action for show/hide
         self._actionShow = QtGui.QAction(self)
@@ -69,12 +68,6 @@ class TUview(QtGui.QDockWidget):
             self.ui.txtSource.setTextColor(color)
             self.ui.txtTarget.setTextColor(color)
     
-    def setFontSource(self, font):
-        self.ui.txtSource.setFont(font)
-    
-    def setFontTarget(self, font):
-        self.ui.txtTarget.setFont(font)
-        
     @QtCore.pyqtSignature("int")
     def emitCurrentIndex(self, value):
         if (self.indexes) and (value < len(self.indexes)):
@@ -120,7 +113,7 @@ class TUview(QtGui.QDockWidget):
         self.ui.fileScrollBar.setSliderPosition(0)
         self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
     
-    def updateUnit(self, unit, index, state):
+    def updateView(self, unit, index, state):
         """Update the text in source and target, and set the scrollbar position."""
         if (unit):
             self.ui.txtSource.setPlainText(unit.source)
@@ -193,20 +186,18 @@ class TUview(QtGui.QDockWidget):
             pass        
         
     def selectCut(self):
-        self.ui.txtSource.cut()
-    
-    def applySettingsToSource(self):
-        font = self.settings.value("tuSourceFont")
-        if (font.isValid()):
-            fontObj = QtGui.QFont()
-            if (fontObj.fromString(font.toString())):
-                self.ui.txtSource.setFont(fontObj)
+        self.ui.txtSource.cut()        
                 
-    def applySettingsToTarget(self):
-        font = self.settings.value("tuTargetFont")
-        if (font.isValid()):
+    def applySettings(self):
+        sourcefont = self.settings.value("tuSourceFont")
+        if (sourcefont.isValid()):
             fontObj = QtGui.QFont()
-            if (fontObj.fromString(font.toString())):
+            if (fontObj.fromString(sourcefont.toString())):
+                self.ui.txtSource.setFont(fontObj)
+        targetfont = self.settings.value("tuTargetFont")
+        if (targetfont.isValid()):
+            fontObj = QtGui.QFont()
+            if (fontObj.fromString(targetfont.toString())):
                 self.ui.txtTarget.setFont(fontObj)
 
 if __name__ == "__main__":

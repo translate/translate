@@ -121,7 +121,7 @@ class OverviewDock(QtGui.QDockWidget):
             self.ui.tableOverview.hideRow(i)
         self.setUpdatesEnabled(True)
    
-    def updateUnit(self, unit, index, state):
+    def updateView(self, unit, index, state):
         """Highlight the row of current unit index."""
         if (not index):
             return

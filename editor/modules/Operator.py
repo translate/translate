@@ -20,8 +20,6 @@
 #       San Titvirak (titvirak@khmeros.info)
 #       Seth Chanratha (sethchanratha@khmeros.info)
 # 
-#
-
 from PyQt4 import QtCore, QtGui
 from translate.storage import factory
 from translate.storage import xliff
@@ -49,13 +47,18 @@ class Operator(QtCore.QObject):
 ####        fileNode = self.store.getfilenode(fileName)
 ##        xliffHeader = self.store.getheadernode(fileNode)
 ##        header = self.store.header(xliffHeader)
-
+ 
         header = self.store.units[0].isheader()
 ##        self.filteredList = range(len(self.store.units))[header:]
 ##        self.emit(QtCore.SIGNAL("newUnits"), self.store.units, self.filteredList)
-##        header = {"charset":"CHARSET", "encoding":"ENCODING", "project_id_version":None, "pot_creation_date":None, "po_revision_date":None, "last_translator":None, "language_team":None, "mime_version":None, "plural_forms":None, "report_msgid_bugs_to":None}
-##        poHeader = self.store.makeheader(charset="CHARSET", encoding="ENCODING", project_id_version=None, pot_creation_date=None, po_revision_date=None, last_translator=None, language_team=None, mime_version=None, plural_forms=None, report_msgid_bugs_to=None)
         
+
+##        poHeader = self.store.makeheader(charset="CHARSET", encoding="ENCODING", project_id_version=None, pot_creation_date=None, po_revision_date=None, last_translator="hokkakada<hokkakada@khmeros.info", language_team="Khmer", mime_version=None, plural_forms=None, report_msgid_bugs_to=None)
+##        poHeader = self.store.makeheader(poHeader)
+##        print poHeader
+        
+        self.emit(QtCore.SIGNAL("newUnits"), self.store.units)
+
         unitsState = []
         for unit in self.store.units:
             currentState = self.status.getStatus(unit)
@@ -77,6 +80,12 @@ class Operator(QtCore.QObject):
 
 
     def updateNewHeader(self, header):
+        """will update header when ok button in Header Editor is clicked or auto Header is on and save is triggered"""
+        if (callable(getattr(self.store, "makeheader", None))):            
+            print header
+            poHeader = self.store.makeheader(header)
+##            print poHeader
+##            self.store.updateheader(header)
 ##        poHeader = self.store.makeheader(header)
         self.store.updateheader(header)
 ##        print self.store.header()
@@ -84,6 +93,7 @@ class Operator(QtCore.QObject):
     def emitStatus(self):
         self.emit(QtCore.SIGNAL("currentStatus"), self.status.statusString())
         
+
     def emitCurrentUnit(self):
         if (len(self.filteredList) <= 1):
             # less than one unit, disable all 4 navigation buttons
@@ -199,21 +209,10 @@ class Operator(QtCore.QObject):
 ##            # tell next button not to advance another step
 ##            return True
 
-    def emitOtherComments(self):
-        """sending comment of Header"""
-        self.emit(QtCore.SIGNAL("otherComments"),self.store.units[0].othercomments)
+    def emitHeaderInfo(self):
+        """sending Header and comment of Header"""
+        self.emit(QtCore.SIGNAL("headerInfo"),self.store.units[0].othercomments,self.store.units[0].target)
         
-    def emitHeader(self, fileName):
-        """sending Header """        
-        self.store = factory.getobject(fileName)
-        self.emit(QtCore.SIGNAL("header"),self.store.units[0].target)
-##        if (callable(getattr(self.store, "header", None))):
-        
-##            self.emit(QtCore.SIGNAL("header"),self.store.header())
-      
-##        except:
-##            pass
-
     def previous(self):
         """move to previous unit inside the filtered list."""
         if self._unitpointer > 0:

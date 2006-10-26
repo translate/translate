@@ -1,12 +1,11 @@
-# helloសួស្ដី
-#: archivedialog.cpp:90
-msgid "Unable to Open Web-Archive"
-msgstr "មិន​អាច​បើក​ប័ណ្ណ​សារ​បណ្ដាញ"
-
-# សម្រាប់​ការ​សរសេរ​បាន​ទេ ។sfasfssfasasfasfsfsfasfsfsf
-#: archivedialog.cpp:91
+# translation of libkfaximgage.po to Khmer
+#
+# Keo Sophon <keosophon@khmeros.info>, 2006.
+# Leang Chumsoben <soben@khmeros.info>, 2006.
 #, fuzzy
 msgid ""
+<<<<<<< .mine
+=======
 "Unable to open \n"
 " %1 \n"
 " for writing."
@@ -15,121 +14,84 @@ msgstr "minimum"
 # werwerw
 #: archivedialog.cpp:125
 msgid "Could Not Open Temporary File"
+>>>>>>> .r4111
 msgstr ""
+<<<<<<< .mine
+"Project-Id-Version: libkfaximgage\n"
+"POT-Creation-Date: 2005-10-15 02:46+0200\n"
+"PO-Revision-Date: 2006-03-10 11:29+0700\n"
+"Last-Translator: Leang Chumsoben <soben@khmeros.info>\n"
+"Language-Team: Khmer <support@khmeros.info>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11\n"
+=======
+>>>>>>> .r4111
 
+<<<<<<< .mine
+#: kfaximage.cpp:189
+msgid "Unable to open file for reading."
+msgstr "មិន​អាច​បើក​ឯកសារ ដើម្បី​អាន​បាន​ឡើយ ។"
+=======
 # opensfasa
 #: archivedialog.cpp:126
 #, fuzzy
 msgid "Could not open a temporary file"
 msgstr "មិនអាច​បើក​ឯកសារ​បណ្តោះអាសន្ន​មួយ​បាន​ទេ"
+>>>>>>> .r4111
 
-#: archivedialog.cpp:157
-msgid "Archiving webpage completed."
-msgstr "ទំព័រ​បណ្តាញ​​ប័ណ្ណ​សារ​បានបញ្ចប់​ទាំងស្រុង ។"
+#: kfaximage.cpp:194
+msgid "Unable to read file header (file too short)."
+msgstr "មិន​អាច​អាន​ក្បាល​ឯកសារ​បាន​ឡើយ (ឯកសារ​ខ្លី​ពេក) ។"
 
-#: archivedialog.cpp:450
-#, fuzzy
-msgid "Downloading"
-msgstr "កំពុង​ទាញយក"
+#: kfaximage.cpp:203
+msgid "This is not a TIFF FAX file."
+msgstr "នេះ​មិនមែន​ជា​ឯកសារ TIFF FAX ឡើយ ។"
 
-#: archivedialog.cpp:465
-#, fuzzy
-msgid "Ok"
-msgstr "យល់ព្រម"
+#: kfaximage.cpp:228
+msgid "Invalid or incomplete TIFF file."
+msgstr "ឯកសារ TIFF មិន​ត្រឹមត្រូវ ឬ មិន​ពេញលេញ ។"
 
-#: plugin_webarchiver.cpp:56
-#, fuzzy
-msgid "Archive &Web Page..."
-msgstr "ទុក​ទំព័រ​បណ្តាញ..."
-
-#: plugin_webarchiver.cpp:89
-#, fuzzy
-msgid "*.war *.tgz|Web Archives"
-msgstr "*.war *.tgz|ប័ណ្ណសារ​បណ្តាញ"
-
-#: plugin_webarchiver.cpp:90
-msgid "Save Page as Web-Archive"
-msgstr "rkja"
-
-#: plugin_webarchiver.cpp:95
-msgid "Invalid URL"
-msgstr "​URL មិន​ត្រឹមត្រូវ"
-
-# sfsa
-#: plugin_webarchiver.cpp:96
+#: kfaximage.cpp:329
 msgid ""
-"The URL\n"
-"%1\n"
-"is not valid."
+"In file %1\n"
+"StripsPerImage tag 273=%2,tag279=%3\n"
 msgstr ""
-"sfa"
-" URL\n"
-"%1\n"
-"គឺ​មិន​ត្រឹមត្រូវ ។"
+"ក្នុង​ឯកសារ %1\n"
+"StripsPerImage tag 273=%2,tag279=%3\n"
 
-# sfa
-#: plugin_webarchiver.cpp:103
-msgid "File Exists"
-msgstr "​មាន​ឯកសារ​រួច​ហើយ"
-
-#: plugin_webarchiver.cpp:104
+#: kfaximage.cpp:372
 msgid ""
-"Do you really want to overwrite:\n"
-"%1?"
+"Due to patent reasons LZW (Lempel-Ziv & Welch) compressed Fax files cannot be "
+"loaded yet.\n"
 msgstr ""
-"តើ​អ្នក​ពិត​ជា​ចង់​សរសេរ​ជាន់​លើ ៖\n"
-"%1​ ទេ?"
+"ដោយ​សារ​តែ​បញ្ហា​ប៉ាតង់ ឯកសារ​ទូរសារ​ដែល​បាន​បង្ហាប់​ដោយ LZW (Lempel-Ziv & "
+"Welch) នឹង​មិន​អាច​ត្រូវ​បាន​ផ្ទុក​បាន​ឡើយ ។\n"
 
-#: plugin_webarchiver.cpp:105
-msgid "Overwrite"
-msgstr "​សរសេរ​ជាន់​លើ"
+#: kfaximage.cpp:377
+msgid ""
+"This version can only handle Fax files\n"
+msgstr ""
+"កំណែ​នេះ​អាច​ដោះស្រាយ​តែ​ឯកសារ​ទូរសារ​ប៉ុណ្ណោះ\n"
 
-#. i18n: file plugin_webarchiver.rc line 8
-#: rc.cpp:6
-#, no-c-format
-msgid "Extra Toolbar"
-msgstr "​របារ​ឧបករណ៍​បន្ថែម"
+#: kfaximage.cpp:406
+msgid "%1: Bad Fax File"
+msgstr "%1 ៖ ឯកសារ​ទូរសារ​មិន​ល្អ"
 
-#. i18n: file archiveviewbase.ui line 16
-#: rc.cpp:9
-#, no-c-format
-msgid "Web Archiver"
-msgstr "កម្មវិធី​ទុក​វ៉េប​ក្នុង​ប័ណ្ណសារ"
+#: kfaximage.cpp:472
+msgid "Trying to expand too many strips."
+msgstr "កំពុង​ព្យាយាម​ពង្រីក​ឆ្នូត​ច្រើន ។"
 
-#. i18n: file archiveviewbase.ui line 43
-#: rc.cpp:12
-#, no-c-format
-msgid "Local File"
-msgstr "ឯកសារ​មូលដ្ឋាន"
+#: kfaximage.cpp:498
+msgid "Only the first page of the PC Research multipage file will be shown."
+msgstr ""
+"មាន​តែ​ទំព័រ​ដំបូង​នៃ​ឯកសារ​ពហុទំព័រ PC Research នឹង​ត្រូវ​បាន​បង្ហាញ ។"
 
-#. i18n: file archiveviewbase.ui line 51
-#: rc.cpp:15
-#, no-c-format
-#, fuzzy
-msgid "To:"
-msgstr "​ទៅ ៖"
+#: kfaximage.cpp:511
+msgid "No fax found in file."
+msgstr "រកមិនឃើញ​ទូរសារ​ក្នុង​ឯកសារ ។"
 
-#. i18n: file archiveviewbase.ui line 59
-#: rc.cpp:18
-#, no-c-format
-msgid "Archiving:"
-msgstr "ទុក​ក្នុង​ប័ណ្ណសារ ៖"
-
-#. i18n: file archiveviewbase.ui line 75
-#: rc.cpp:21
-#, no-c-format
-msgid "Original URL"
-msgstr "URL ដើម"
-
-#. i18n: file archiveviewbase.ui line 88
-#: rc.cpp:24
-#, no-c-format
-#, fuzzy
-msgid "URL"
-msgstr "​URL"
-
-#. i18n: file archiveviewbase.ui line 99
-#: rc.cpp:27
-#, no-c-format
-msgid "State"
-msgstr "​សភាព"
+#: kfaximage.cpp:631
+msgid "Fax G3 format not yet supported."
+msgstr "មិន​ទាន់​គាំទ្រ​ទ្រង់ទ្រាយ​ទូរសារ G3 នៅ​ឡើយ​ទេ ។"

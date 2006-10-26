@@ -20,7 +20,7 @@
 #       Seth Chanratha (sethchanratha@khmeros.info)
 #       San Titvirak (titvirak@khmeros.info)
 # 
-# This module is working on Userprofile
+# This module is working on Preferences
 
 import sys
 from PyQt4 import QtCore, QtGui
@@ -34,17 +34,17 @@ class Preference(QtGui.QDialog):
 
         #Personal Setting
         self.world = World()
-        self.settings = QtCore.QSettings(self.world.settingOrg, self.world.settingOrg)
+        self.settings = QtCore.QSettings(self.world.settingOrg, self.world.settingApp)
 
     def initUI(self):
         """ get values and display them """
-        self.overviewFont = self.getFont("overview")
+        self.overviewFont = self.getFont(self.widget[0])
         self.setCaption(self.ui.lblOverView, self.overviewFont)
-        self.tuSourceFont = self.getFont("tuSource")
+        self.tuSourceFont = self.getFont(self.widget[1])
         self.setCaption(self.ui.lblSource, self.tuSourceFont)
-        self.tuTargetFont = self.getFont("tuTarget")
+        self.tuTargetFont = self.getFont(self.widget[2])
         self.setCaption(self.ui.lblTarget, self.tuTargetFont )
-        self.commentFont = self.getFont("comment")
+        self.commentFont = self.getFont(self.widget[3])
         self.setCaption(self.ui.lblComment, self.commentFont)
         
         self.ui.UserName.setPlainText(self.settings.value("UserName").toString())
@@ -56,10 +56,10 @@ class Preference(QtGui.QDialog):
 
     def accepted(self):
         """ slot ok pressed """
-        self.rememberFont("overview", self.overviewFont)
-        self.rememberFont("tuSource", self.tuSourceFont)
-        self.rememberFont("tuTarget", self.tuTargetFont)
-        self.rememberFont("comment", self.commentFont)
+        self.rememberFont(self.widget[0], self.overviewFont)
+        self.rememberFont(self.widget[1], self.tuSourceFont)
+        self.rememberFont(self.widget[2], self.tuTargetFont)
+        self.rememberFont(self.widget[3], self.commentFont)
 
         self.settings.setValue("UserName", QtCore.QVariant(self.ui.UserName.toPlainText()))
         self.settings.setValue("EmailAddress", QtCore.QVariant(self.ui.EmailAddress.toPlainText()))
@@ -74,27 +74,26 @@ class Preference(QtGui.QDialog):
         """input obj as string"""        
         # store font settings
         if (fontObj != None):    # TODO do we need this ???
-            self.settings.setValue(str(obj + "Font"), QtCore.QVariant(fontObj.toString()))
-            
+            self.settings.setValue(str(obj + "Font"), QtCore.QVariant(fontObj.toString()))            
         
     def fontOverview(self):
         """ slot to open font selection dialog """
-        self.overviewFont = self.setFont("overview")
+        self.overviewFont = self.setFont(self.widget[0])
         self.setCaption(self.ui.lblOverView, self.overviewFont)
         
     def fontSource(self):
         """ slot to open font selection dialog """
-        self.tuSourceFont = self.setFont("tuSource")
+        self.tuSourceFont = self.setFont(self.widget[1])
         self.setCaption(self.ui.lblSource, self.tuSourceFont)
         
     def fontTarget(self):
         """ slot to open font selection dialog """
-        self.tuTargetFont = self.setFont("tuTarget")
+        self.tuTargetFont = self.setFont(self.widget[2])
         self.setCaption(self.ui.lblTarget, self.tuTargetFont)
         
     def fontComment(self):
         """ slot to open font selection dialog """
-        self.commentFont = self.setFont("comment")
+        self.commentFont = self.setFont(self.widget[3])
         self.setCaption(self.ui.lblComment, self.commentFont)
     
     def getFont(self, obj):
@@ -157,6 +156,7 @@ class Preference(QtGui.QDialog):
             self.connect(self.ui.bntComment, QtCore.SIGNAL("clicked()"), self.fontComment) 
             self.connect(self.ui.bntDefaults, QtCore.SIGNAL("clicked()"), self.defaultFonts) 
             self.connect(self.ui.okButton, QtCore.SIGNAL("clicked()"), self.accepted)
+            self.widget = ["overview","tuSource","tuTarget","comment"]
 
         self.initUI()
         self.show()

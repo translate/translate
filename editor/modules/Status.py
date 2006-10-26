@@ -20,7 +20,7 @@
 #       San Titvirak (titvirak@khmeros.info)
 #       Seth Chanratha (sethchanratha@khmeros.info)
 # 
-# This module stores global variables for use in whole applicaion.
+# This module stores status
 
 from translate.tools import pocount
 from modules.World import World

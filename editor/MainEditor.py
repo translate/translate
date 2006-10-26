@@ -92,9 +92,9 @@ class MainWindow(QtGui.QMainWindow):
         #TODO: Decorate Status Bar
 
         self.statuslabel = QtGui.QLabel()
-        self.searchlabel = QtGui.QLabel()        
+        self.lblGeneralInfo = QtGui.QLabel()        
         self.ui.statusbar.addWidget(self.statuslabel)
-        self.ui.statusbar.addPermanentWidget(self.searchlabel)
+        self.ui.statusbar.addPermanentWidget(self.lblGeneralInfo)
 
         #create operator
         self.operator = Operator()                
@@ -112,6 +112,13 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionSaveas, QtCore.SIGNAL("triggered()"), self.fileaction.saveAs)
         self.connect(self.ui.actionExit, QtCore.SIGNAL("triggered()"), QtCore.SLOT("close()"))
         
+        # Edit Header
+        self.headerDialog = Header()                
+        self.connect(self.ui.actionEdit_Header, QtCore.SIGNAL("triggered()"), self.operator.emitHeaderInfo)
+        self.connect(self.operator, QtCore.SIGNAL("headerInfo"), self.headerDialog.showDialog)
+##        self.connect(self.preference, QtCore.SIGNAL("headerAuto"), self.operator.updateNewHeader)
+        self.connect(self.headerDialog, QtCore.SIGNAL("updateHeader"), self.operator.updateNewHeader)
+
         # create Find widget and connect signals related to it        
         self.findBar = Find()      
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.findBar)              
@@ -128,7 +135,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("foundInComment"), self.dockComment.setHighLightComment)
         self.connect(self.operator, QtCore.SIGNAL("clearHighLight"), self.dockComment.clearHighLight)
         self.connect(self.operator, QtCore.SIGNAL("clearHighLight"), self.dockTUview.clearHighLight)
-        self.connect(self.operator, QtCore.SIGNAL("searchNotFound"), self.searchlabel.setText)        
+        self.connect(self.operator, QtCore.SIGNAL("searchNotFound"), self.lblGeneralInfo.setText)        
     
         # Edit menu action
         self.connect(self.ui.actionUndo, QtCore.SIGNAL("triggered()"), self.undoer)
@@ -145,10 +152,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionPreferences, QtCore.SIGNAL("triggered()"), self.preference.showDialog)
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockComment.applySettings)
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockOverview.applySettings)
-        self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockTUview.applySettingsToSource)
-        self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockTUview.applySettingsToTarget)
-        
-        
+        self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockTUview.applySettings)
         
         # Other actions        
         self.connect(self.ui.actionNext, QtCore.SIGNAL("triggered()"), self.operator.next)
@@ -157,36 +161,20 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionLast, QtCore.SIGNAL("triggered()"), self.operator.last)
         self.connect(self.ui.actionCopySource2Target, QtCore.SIGNAL("triggered()"), self.dockTUview.source2target)
         
-        # Edit Header
-        self.headerDialog = Header()        
-        self.connect(self.ui.actionEdit_Header, QtCore.SIGNAL("triggered()"), self.headerDialog, QtCore.SLOT("show()"))
-        self.connect(self.preference, QtCore.SIGNAL("storeProfile"), self.storeProfile)
-        self.connect(self, QtCore.SIGNAL("updateProfile"), self.operator.updateNewHeader)
-        self.connect(self.operator, QtCore.SIGNAL("alreadyUpdate"), self.headerDialog.updateProfile)        
-        self.connect(self.preference, QtCore.SIGNAL("headerAuto"), self.operator.updateNewHeader)
-        self.connect(self.headerDialog, QtCore.SIGNAL("addHeader"), self.operator.updateNewHeader)
+        
         
         # action filter menu
         self.connect(self.ui.actionFilterFuzzy, QtCore.SIGNAL("toggled(bool)"), self.operator.filterFuzzy)
         self.connect(self.ui.actionFilterTranslated, QtCore.SIGNAL("toggled(bool)"), self.operator.filterTranslated)
-        self.connect(self.ui.actionFilterUntranslated, QtCore.SIGNAL("toggled(bool)"), self.operator.filterUntranslated)        
+        self.connect(self.ui.actionFilterUntranslated, QtCore.SIGNAL("toggled(bool)"), self.operator.filterUntranslated)
         self.connect(self.ui.actionToggleFuzzy, QtCore.SIGNAL("triggered()"), self.operator.toggleFuzzy)
-        
-        self.connect(self.operator, QtCore.SIGNAL("header"), self.headerDialog.updateHeader)  
-        self.connect(self.operator, QtCore.SIGNAL("otherComments"), self.headerDialog.updateOtherComments)  
-        self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.operator.emitHeader)
-        self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.operator.emitOtherComments)
         
         self.connect(self.operator, QtCore.SIGNAL("hideUnit"), self.dockOverview.hideUnit)
         self.connect(self.operator, QtCore.SIGNAL("hideUnit"), self.dockTUview.hideUnit)
         
         # setColor(value, state)
-        self.connect(self.operator, QtCore.SIGNAL("setColor"), self.dockOverview.setColor)
-
-        self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockTUview.updateUnit)
-        self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockComment.updateUnit)
-        self.connect(self.operator, QtCore.SIGNAL("currentId"), self.dockOverview.highlightItem)
-        self.connect(self.operator, QtCore.SIGNAL("currentId"), self.dockTUview.highLightScrollbar)
+        self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockTUview.updateView)
+        self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockComment.updateView)
         self.connect(self.dockTUview, QtCore.SIGNAL("currentId"), self.operator.setCurrentUnit)
         self.connect(self.dockOverview, QtCore.SIGNAL("currentId"), self.operator.setCurrentUnit)
 
@@ -215,11 +203,8 @@ class MainWindow(QtGui.QMainWindow):
         
         # set file status information to text label of status bar
         self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.statuslabel.setText)
-        self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.setOpening)        
-    
-    def storeProfile(self, userProfile):
-        """receive userProfile from Preference as a dictionary and remember for other files"""
-        self.emit(QtCore.SIGNAL("updateProfile"), userProfile)        
+        self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.setOpening)
+        self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.operator.getUnits)
         
     def cutter(self):
         object = self.focusWidget()
@@ -269,8 +254,7 @@ class MainWindow(QtGui.QMainWindow):
         self.dockTUview.ui.txtSource.setEnabled(True)
         self.dockTUview.ui.txtTarget.setEnabled(True)
         
-        self.setTitle(fileName)
-        self.operator.getUnits(fileName)          
+        self.setTitle(fileName)                  
         self.ui.actionSave.setEnabled(False)  
         self.ui.actionSaveas.setEnabled(True)
         self.ui.actionUndo.setEnabled(True)

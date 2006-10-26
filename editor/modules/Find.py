@@ -16,7 +16,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # Developed by:
+#       Hok Kakada (hokkakada@khmeros.info)
 #       Keo Sophon (keosophon@khmeros.info)
+#       Seth Chanratha (sethchanratha@khmeros.info)
+#       San Titvirak (titvirak@khmeros.info)
 #
 # This module is working on source and target of current TU.
 

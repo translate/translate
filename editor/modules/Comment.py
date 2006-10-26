@@ -60,7 +60,7 @@ class CommentDock(QtGui.QDockWidget):
             self._actionShow.setText(self.tr("Show Comment"))    
         self.setHidden(not self.isHidden()) 
  
-    def updateUnit(self, currentUnit):
+    def updateView(self, currentUnit):
         if (currentUnit):
             comment = currentUnit.getnotes()
         else:

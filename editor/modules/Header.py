@@ -17,6 +17,9 @@
 #
 # Developed by:
 #       Hok Kakada (hokkakada@khmeros.info)
+#       Keo Sophon (keosophon@khmeros.info)
+#       Seth Chanratha (sethchanratha@khmeros.info)
+#       San Titvirak (titvirak@khmeros.info)
 #
 # This module is working on any Headers of current TU.
 
@@ -24,67 +27,87 @@ import sys
 from PyQt4 import QtCore, QtGui
 from ui.HeaderUI import Ui_frmHeader
 from modules.Operator import Operator
+from modules.World import World
 
 class Header(QtGui.QDialog):
     def __init__(self):
-        QtGui.QDialog.__init__(self)
-        self.setWindowTitle(self.tr("Header Editor"))
-        self.ui = Ui_frmHeader()
-        self.ui.setupUi(self)
-        self.setModal(True)
+        QtGui.QDialog.__init__(self)        
+        self.ui = None
+
         
-        QtCore.QObject.connect(self.ui.okButton,QtCore.SIGNAL("clicked()"), self.accepted)
-        QtCore.QObject.connect(self.ui.cancelButton,QtCore.SIGNAL("clicked()"), self.rejected)
-        QtCore.QObject.connect(self.ui.applyButton,QtCore.SIGNAL("clicked()"), self.applySettings)
-        QtCore.QObject.connect(self.ui.resetButton,QtCore.SIGNAL("clicked()"), self.reset)
+        self.world = World()
+        self.settings = QtCore.QSettings(self.world.settingOrg, self.world.settingApp)        
                         
-    def updateOtherComments(self, otherComments):
-        """slot for getting otherComments and set into txtOtherComments"""
-        otherCommentsStr = " "
-        for i in range(len(otherComments)):
-            otherCommentsStr += otherComments[i]
-        self.ui.txtOtherComments.setPlainText(unicode(otherCommentsStr))
-        
-    def updateHeader(self, header):
-        """slot for getting Header and set into txtHeader"""
-##        settings = QtCore.QSettings("WordForge", "Translation Editor")
-##        header = settings.value("OldHeader").toString()        
-        self.ui.txtHeader.setPlainText(unicode(header))
-    
-    def checkModified(self):
-        if self.ui.txtHeader.document().isModified():
-            self.emit(QtCore.SIGNAL("HeaderChanged"), self.ui.txtHeader.toPlainText())
+##    def getHeaderInfo(self, otherComments, header):
+##        """slot for getting otherComments and header from doc then set to textbox"""
+##        otherCommentsStr = " "
+##        for i in range(len(otherComments)):
+##            otherCommentsStr += otherComments[i].lstrip("# ")
+##        self.ui.txtOtherComments.setPlainText(unicode(otherCommentsStr))
+##        #remember old settings
+##        self.oldOtherComments = self.ui.txtOtherComments.toPlainText()
+##        self.ui.txtHeader.setPlainText(unicode(header))
+##            
+    def showDialog(self, otherComments, header):
+        """ make the dialog visible with otherComments and header filled in"""
+        # lazy init 
+        if (not self.ui):
+            self.setWindowTitle(self.tr("Header Editor"))
+            self.setModal(True)                  
             
+            self.ui = Ui_frmHeader()
+            self.ui.setupUi(self)
+            otherCommentsStr = " "
+            for i in range(len(otherComments)):
+                otherCommentsStr += otherComments[i].lstrip("# ")
+            self.ui.txtOtherComments.setPlainText(unicode(otherCommentsStr))
+            #remember old settings
+            self.oldOtherComments = self.ui.txtOtherComments.toPlainText()
+            self.ui.txtHeader.setPlainText(unicode(header))
+            
+            #connect signals
+            QtCore.QObject.connect(self.ui.okButton,QtCore.SIGNAL("clicked()"), self.accepted)
+            QtCore.QObject.connect(self.ui.applyButton,QtCore.SIGNAL("clicked()"), self.applySettings)
+            QtCore.QObject.connect(self.ui.resetButton,QtCore.SIGNAL("clicked()"), self.reset)
+
+        self.show()
+        
     def reset(self):
         """Reset back the original header"""
         if self.ui.txtHeader.document().isModified():
             self.ui.txtHeader.setPlainText(self.oldHeader)
+        if self.ui.txtOtherComments.document().isModified():
+            self.ui.txtOtherComments.setPlainText(self.oldOtherComments)
         
-    def applySettings(self):
-        """set user profile from preference into the txtHeader"""
-##        settings = QtCore.QSettings("WordForge", "Translation Editor")
-##        self.headerString = settings.value("userProfile").toString()
+    def applySettings(self):    
+        """set user profile from Qsettings into the txtHeader, all infomation need filling in"""     
+        userProfile = []
+        userName = self.settings.value("UserName")        
+        userProfile.append(userName.toString())        
+        if (userName.isValid()):
+            emailAddress = self.settings.value("EmailAddress")
+            if (emailAddress.isValid()):
+                FullLanguage = self.settings.value("FullLanguage")
+                if (FullLanguage.isValid()):
+                    Code = self.settings.value("Code")
+                    if (Code.isValid()):
+                        SupportTeam = self.settings.value("SupportTeam")
+                        if (SupportTeam.isValid()):
+                            TimeZone = self.settings.value("TimeZone")
+                            if (TimeZone.isValid()):
+##                                userProfile.append   
+                                pass
         self.oldHeader = self.ui.txtHeader.toPlainText()
-        self.updateHeader(self.userProfile)
-        self.ui.txtHeader.document().setModified(True)       
-    
-    def updateProfile(self, userProfile):
-        """receive userProfile from Preference as a dictionary and remember for other files"""
-        self.userProfile = userProfile
-##        settings = QtCore.QSettings("WordForge", "Translation Editor")
-##        settings.setValue("userProfile", QtCore.QVariant(self.userProfile))
+        self.ui.txtHeader.setPlainText(userProfile[0])
+        self.ui.txtHeader.document().setModified(True)
+        return userProfile
 
     def accepted(self):
         """add header to document"""
-        self.emit(QtCore.SIGNAL("addHeader"), self.userProfile)
-        
-    def rejected(self):
-        """noting changed if the cancel button is clicked """
+        userProfile = self.applySettings()           
+##        userProfile = {"charset":"CHARSET", "encoding":"ENCODING", "project_id_version":None, "pot_creation_date":None, "po_revision_date":None, "last_translator":"hokkakada<hokkakada@khmeros.info", "language_team":"Khmer", "mime_version":None, "plural_forms":None, "report_msgid_bugs_to":None}
+        self.emit(QtCore.SIGNAL("updateHeader"), userProfile)
         pass
-##        self.emit(QtCore.SIGNAL("nothingChanged"), self.oldHeader)
-##        settings = QtCore.QSettings("WordForge", "Translation Editor")
-##        settings.setValue("OldHeader", QtCore.QVariant(self.oldHeader))
-
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
