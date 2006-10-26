@@ -379,6 +379,22 @@ class StandardChecker(TranslationChecker):
     else:
       return True
 
+  def newlines(self, str1, str2):
+    """checks whether newlines are consistent between the two strings"""
+    str1 = prefilters.removekdecomments(str1)
+    if not helpers.countsmatch(str1, str2, ("\n", "\r")):
+      raise FilterFailure("line endings in original don't match line endings in translation")
+    else:
+      return True
+
+  def tabs(self, str1, str2):
+    """checks whether tabs are consistent between the two strings"""
+    str1 = prefilters.removekdecomments(str1)
+    if not helpers.countmatch(str1, str2, "\t"):
+      raise SeriousFilterFailure("tabs in original don't match tabs in translation")
+    else:
+      return True
+
   def singlequoting(self, str1, str2):
     """checks whether singlequoting is consistent between the two strings"""
     str1 = self.filterwordswithpunctuation(self.filteraccelerators(self.filtervariables(prefilters.removekdecomments(str1))))

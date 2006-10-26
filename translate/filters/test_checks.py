@@ -164,8 +164,6 @@ def test_escapes():
     assert checks.passes(stdchecker.escapes, r"""_: KDE comment\n
 A sentence""", "I'm correct.")
     assert checks.passes(stdchecker.escapes, "A file\n", "'n Leer\n")
-    assert checks.fails(stdchecker.escapes, "A file\n", "'n Leer")
-    assert checks.fails(stdchecker.escapes, "blah.\nA file", "bleah. 'n leer")
     assert checks.fails(stdchecker.escapes, r"blah. A file", r"bleah.\n'n leer")
     assert checks.passes(stdchecker.escapes, r"A tab\t", r"'n Tab\t")
     assert checks.fails(stdchecker.escapes, r"A tab\t", r"'n Tab")
@@ -178,7 +176,36 @@ A sentence""", "I'm correct.")
     assert checks.fails(stdchecker.escapes, "An escaped newline \\n", "Escaped newline \n")
     # Real example
     ooochecker = checks.OpenOfficeChecker()
-    assert checks.fails(ooochecker.escapes, "The arrowhead was modified without saving.\nWould you like to save the arrowhead now?", "Ṱhoho ya musevhe yo khwinifhadzwa hu si na u seiva.Ni khou ṱoda u seiva thoho ya musevhe zwino?")
+    assert checks.passes(ooochecker.escapes, ",\t44\t;\t59\t:\t58\t{Tab}\t9\t{space}\t32", ",\t44\t;\t59\t:\t58\t{Tab}\t9\t{space}\t32")
+
+def test_newlines():
+    """tests newlines"""
+    stdchecker = checks.StandardChecker()
+    assert checks.passes(stdchecker.newlines, "Nothing to see", "Niks te sien")
+    assert checks.passes(stdchecker.newlines, "Correct\n", "Korrek\n")
+    assert checks.passes(stdchecker.newlines, "Correct\r", "Korrek\r")
+    assert checks.passes(stdchecker.newlines, "Correct\r\n", "Korrek\r\n")
+    assert checks.fails(stdchecker.newlines, "A file\n", "'n Leer")
+    assert checks.fails(stdchecker.newlines, "A file", "'n Leer\n")
+    assert checks.fails(stdchecker.newlines, "A file\r", "'n Leer")
+    assert checks.fails(stdchecker.newlines, "A file", "'n Leer\r")
+    assert checks.fails(stdchecker.newlines, "A file\n", "'n Leer\r\n")
+    assert checks.fails(stdchecker.newlines, "A file\r\n", "'n Leer\n")
+    assert checks.fails(stdchecker.newlines, "blah.\nA file", "bleah. 'n leer")
+    # Real example
+    ooochecker = checks.OpenOfficeChecker()
+    assert checks.fails(ooochecker.newlines, "The arrowhead was modified without saving.\nWould you like to save the arrowhead now?", "Ṱhoho ya musevhe yo khwinifhadzwa hu si na u seiva.Ni khou ṱoda u seiva thoho ya musevhe zwino?")
+
+def test_tabs():
+    """tests tabs"""
+    stdchecker = checks.StandardChecker()
+    assert checks.passes(stdchecker.tabs, "Nothing to see", "Niks te sien")
+    assert checks.passes(stdchecker.tabs, "Correct\t", "Korrek\t")
+    assert checks.passes(stdchecker.tabs, "Correct\tAA", "Korrek\tAA")
+    assert checks.fails(stdchecker.tabs, "A file\t", "'n Leer")
+    assert checks.fails(stdchecker.tabs, "A file", "'n Leer\t")
+    ooochecker = checks.OpenOfficeChecker()
+    assert checks.passes(ooochecker.escapes, ",\t44\t;\t59\t:\t58\t{Tab}\t9\t{space}\t32", ",\t44\t;\t59\t:\t58\t{Tab}\t9\t{space}\t32")
 
 def test_filepaths():
     """tests filepaths"""
