@@ -33,21 +33,10 @@ class Header(QtGui.QDialog):
     def __init__(self):
         QtGui.QDialog.__init__(self)        
         self.ui = None
-
         
         self.world = World()
-        self.settings = QtCore.QSettings(self.world.settingOrg, self.world.settingApp)        
-                        
-##    def getHeaderInfo(self, otherComments, header):
-##        """slot for getting otherComments and header from doc then set to textbox"""
-##        otherCommentsStr = " "
-##        for i in range(len(otherComments)):
-##            otherCommentsStr += otherComments[i].lstrip("# ")
-##        self.ui.txtOtherComments.setPlainText(unicode(otherCommentsStr))
-##        #remember old settings
-##        self.oldOtherComments = self.ui.txtOtherComments.toPlainText()
-##        self.ui.txtHeader.setPlainText(unicode(header))
-##            
+        self.settings = QtCore.QSettings(self.world.settingOrg, self.world.settingApp)
+
     def showDialog(self, otherComments, header):
         """ make the dialog visible with otherComments and header filled in"""
         # lazy init 
@@ -56,20 +45,19 @@ class Header(QtGui.QDialog):
             self.setModal(True)                  
             
             self.ui = Ui_frmHeader()
-            self.ui.setupUi(self)
-            otherCommentsStr = " "
-            for i in range(len(otherComments)):
-                otherCommentsStr += otherComments[i].lstrip("# ")
-            self.ui.txtOtherComments.setPlainText(unicode(otherCommentsStr))
-            #remember old settings
-            self.oldOtherComments = self.ui.txtOtherComments.toPlainText()
-            self.ui.txtHeader.setPlainText(unicode(header))
+            self.ui.setupUi(self)           
             
             #connect signals
             QtCore.QObject.connect(self.ui.okButton,QtCore.SIGNAL("clicked()"), self.accepted)
             QtCore.QObject.connect(self.ui.applyButton,QtCore.SIGNAL("clicked()"), self.applySettings)
             QtCore.QObject.connect(self.ui.resetButton,QtCore.SIGNAL("clicked()"), self.reset)
-
+        otherCommentsStr = " "
+        for i in range(len(otherComments)):
+            otherCommentsStr += otherComments[i].lstrip("# ")
+        self.ui.txtOtherComments.setPlainText(unicode(otherCommentsStr))
+        #remember old settings
+        self.oldOtherComments = self.ui.txtOtherComments.toPlainText()
+        self.ui.txtHeader.setPlainText(unicode(header))
         self.show()
         
     def reset(self):
@@ -80,34 +68,46 @@ class Header(QtGui.QDialog):
             self.ui.txtOtherComments.setPlainText(self.oldOtherComments)
         
     def applySettings(self):    
-        """set user profile from Qsettings into the txtHeader, all infomation need filling in"""     
+        """set user profile from Qsettings into the txtHeader, all information need filling in"""     
         userProfile = []
         userName = self.settings.value("UserName")        
-        userProfile.append(userName.toString())        
         if (userName.isValid()):
+            userProfile.append(userName.toString())
             emailAddress = self.settings.value("EmailAddress")
             if (emailAddress.isValid()):
-                FullLanguage = self.settings.value("FullLanguage")
-                if (FullLanguage.isValid()):
-                    Code = self.settings.value("Code")
-                    if (Code.isValid()):
-                        SupportTeam = self.settings.value("SupportTeam")
-                        if (SupportTeam.isValid()):
-                            TimeZone = self.settings.value("TimeZone")
-                            if (TimeZone.isValid()):
-##                                userProfile.append   
-                                pass
+               userProfile.append(emailAddress.toString())
+               FullLanguage = self.settings.value("FullLanguage")
+               if (FullLanguage.isValid()):
+                  userProfile.append(FullLanguage.toString())
+                  Code = self.settings.value("Code")
+                  if (Code.isValid()):
+                      userProfile.append(Code.toString())
+                      SupportTeam = self.settings.value("SupportTeam")
+                      if (SupportTeam.isValid()):
+                          userProfile.append(SupportTeam.toString())
+                          TimeZone = self.settings.value("TimeZone")
+                          if (TimeZone.isValid()):
+                              userProfile.append(TimeZone.toString())
+                              
         self.oldHeader = self.ui.txtHeader.toPlainText()
-        self.ui.txtHeader.setPlainText(userProfile[0])
+        header = 'Project-Id-Version:' + 'fileName' + \
+        '\nPOT-Creation-Date: 2005-10-15 02:46+0200\n\
+PO-Revision-Date: 2006-03-10 11:29+0700\n' + \
+        'Last-Translator:' + userProfile[0] + '<' + userProfile[1] + '>' + \
+        '\nLanguage-Team:' + userProfile[2]+ '<' + userProfile[4] + '>' +\
+        '\nMIME-Version: 1.0\n\
+Content-Type: text/plain; charset=UTF-8\n\
+Content-Transfer-Encoding: 8bit\n\
+X-Generator: KBabel 1.11\n'
+ 
+        self.ui.txtHeader.setPlainText(header)
         self.ui.txtHeader.document().setModified(True)
         return userProfile
 
     def accepted(self):
-        """add header to document"""
-        userProfile = self.applySettings()           
-##        userProfile = {"charset":"CHARSET", "encoding":"ENCODING", "project_id_version":None, "pot_creation_date":None, "po_revision_date":None, "last_translator":"hokkakada<hokkakada@khmeros.info", "language_team":"Khmer", "mime_version":None, "plural_forms":None, "report_msgid_bugs_to":None}
-        self.emit(QtCore.SIGNAL("updateHeader"), userProfile)
-        pass
+        """send header information"""
+        #header as list
+        self.emit(QtCore.SIGNAL("updateHeader"), self.ui.txtOtherComments.toPlainText(), self.ui.txtHeader.toPlainText())
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

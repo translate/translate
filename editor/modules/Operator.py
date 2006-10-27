@@ -22,6 +22,7 @@
 # 
 from PyQt4 import QtCore, QtGui
 from translate.storage import factory
+from translate.storage import po
 from translate.storage import xliff
 from modules.World import World
 from modules.Status import Status
@@ -37,8 +38,10 @@ class Operator(QtCore.QObject):
         self.world = World()
         # filter flags
         self.filter = self.world.fuzzy + self.world.translated + self.world.untranslated
+        self.world.untranslated
 
     def getUnits(self, fileName):
+        self.fileName = fileName
         self.store = factory.getobject(fileName)
         # get status for units
         self.status = Status(self.store.units)
@@ -51,11 +54,6 @@ class Operator(QtCore.QObject):
         header = self.store.units[0].isheader()
 ##        self.filteredList = range(len(self.store.units))[header:]
 ##        self.emit(QtCore.SIGNAL("newUnits"), self.store.units, self.filteredList)
-        
-
-##        poHeader = self.store.makeheader(charset="CHARSET", encoding="ENCODING", project_id_version=None, pot_creation_date=None, po_revision_date=None, last_translator="hokkakada<hokkakada@khmeros.info", language_team="Khmer", mime_version=None, plural_forms=None, report_msgid_bugs_to=None)
-##        poHeader = self.store.makeheader(poHeader)
-##        print poHeader
         
         unitsState = []
         for unit in self.store.units:
@@ -77,16 +75,22 @@ class Operator(QtCore.QObject):
 ##            self.emit(QtCore.SIGNAL("setColor"), id, self.world.fuzzy)
 
 
-    def updateNewHeader(self, header):
-        """will update header when ok button in Header Editor is clicked or auto Header is on and save is triggered"""
-        if (callable(getattr(self.store, "makeheader", None))):            
-            print header
-            poHeader = self.store.makeheader(header)
-##            print poHeader
-##            self.store.updateheader(header)
-##        poHeader = self.store.makeheader(header)
-        self.store.updateheader(header)
-##        print self.store.header()
+    def updateNewHeader(self, othercomments, header):
+          """will update header when ok button in Header Editor is clicked or auto Header is on and save is triggered"""
+##          if (len(header) != 0):    
+##              import os
+##              translator = header[0] + '<' + header[1] + '>'
+##              language = header[2]+ '<' + header[4] + '>'
+##              path, fileName = os.path.split(self.fileName)
+ 
+##          if (callable(getattr(self.store, "makeheader", None))):
+##            poHeader = self.store.makeheader(charset="CHARSET", encoding="ENCODING", project_id_version=fileName, pot_creation_date=None, po_revision_date=None, last_translator=translator, language_team=language, mime_version=None, plural_forms=None, report_msgid_bugs_to=None)
+##            self.store.updateheader(charset="CHARSET", encoding="ENCODING", project_id_version=fileName, pot_creation_date=None, po_revision_date=None, last_translator=translator, language_team=language, mime_version=None, plural_forms=None, report_msgid_bugs_to=None)
+          headerDic= po.poheader.parse(header)
+          print type(headerDic), headerDic
+          self.store.updateheader(self.store.units[0].target, True, headerDic)
+##        print poHeader
+
 
     def emitStatus(self):
         self.emit(QtCore.SIGNAL("currentStatus"), self.status.statusString())

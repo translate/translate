@@ -151,6 +151,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockComment.applySettings)
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockOverview.applySettings)
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockTUview.applySettings)
+        self.connect(self.preference, QtCore.SIGNAL("headerAuto"), self.operator.updateNewHeader)
         
         # Other actions        
         self.connect(self.ui.actionNext, QtCore.SIGNAL("triggered()"), self.operator.next)
