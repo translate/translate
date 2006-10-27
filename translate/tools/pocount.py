@@ -84,7 +84,7 @@ def summarize(title, units, CSVstyle=False):
     print
 
 def fuzzymessages(units):
-    return filter(lambda unit: unit.isfuzzy() and unit.istranslated(), units)
+    return filter(lambda unit: unit.isfuzzy() and unit.target, units)
 
 def translatedmessages(units):
     return filter(lambda unit: unit.istranslated(), units)
