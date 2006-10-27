@@ -25,6 +25,7 @@
 import sys
 from PyQt4 import QtCore, QtGui
 from ui.TUviewUI import Ui_TUview
+from modules.World import World
 
 class TUview(QtGui.QDockWidget):
     def __init__(self):
@@ -35,15 +36,19 @@ class TUview(QtGui.QDockWidget):
         self.ui.setupUi(self.form)
         self.setWidget(self.form)
         self.layout = QtGui.QTextLayout ()
-        self.settings = QtCore.QSettings("WordForge", "Translation Editor")
+        self.world = World()
+        self.settings = QtCore.QSettings(self.world.settingOrg, self.world.settingApp)
         self.applySettings()        
         
         # create action for show/hide
         self._actionShow = QtGui.QAction(self)
         self._actionShow.setObjectName("actionShowDetail")
         self._actionShow.setText(self.tr("Hide Detail"))
+        
+        self.lastValue = None        
         self.connect(self._actionShow, QtCore.SIGNAL("triggered()"), self.show)        
         self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.setReadyForSave)
+        self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
 
     def closeEvent(self, event):
         """when close button is click, change caption to "Show Detail"""
@@ -68,12 +73,6 @@ class TUview(QtGui.QDockWidget):
             self.ui.txtSource.setTextColor(color)
             self.ui.txtTarget.setTextColor(color)
     
-    @QtCore.pyqtSignature("int")
-    def emitCurrentIndex(self, value):
-        if (self.indexes) and (value < len(self.indexes)):
-            index = self.indexes[value]
-            self.emit(QtCore.SIGNAL("currentIndex"), index)
-
     def setScrollbarMaximum(self):
         """Set scrollbar maximum value according to number of index."""
         maximum = len(self.indexes) - 1
@@ -108,10 +107,15 @@ class TUview(QtGui.QDockWidget):
         """Adjust the scrollbar maximum according to length of filtered list."""
         self.indexes = fList
         self.setScrollbarMaximum()
-        self.disconnect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
         self.ui.fileScrollBar.setValue(0)
-        self.ui.fileScrollBar.setSliderPosition(0)
-        self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
+
+    @QtCore.pyqtSignature("int")
+    def emitCurrentIndex(self, value):
+        # send the signal only index is new
+        if (self.lastValue != value):
+            if (self.indexes) and (value < len(self.indexes)):
+                index = self.indexes[value]
+                self.emit(QtCore.SIGNAL("currentIndex"), index)
     
     def updateView(self, unit, index, state):
         """Update the text in source and target, and set the scrollbar position."""
@@ -127,9 +131,8 @@ class TUview(QtGui.QDockWidget):
             value = self.indexes.index(index)
         except:
             return
-        self.disconnect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
+        self.lastValue = value
         self.ui.fileScrollBar.setValue(value)
-        self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
 
     def setTarget(self, target):
         """Change the target text."""
@@ -149,23 +152,29 @@ class TUview(QtGui.QDockWidget):
         self.ui.txtTarget.insertPlainText(self.ui.txtSource.toPlainText())
         self.ui.txtTarget.document().setModified()
 
-    def setHighLightSource(self, location):
-        """call setHighLight by passing source document and location (offset, length)"""
-        self.setHighLight(self.ui.txtSource.document(), location)        
-        
-    def setHighLightTarget(self, location):
-        """call setHighLight by passing target document and location (offset, length)"""              
-        self.setHighLight(self.ui.txtTarget.document(), location)        
-    
-    def setHighLight(self, doc, location):
-        """HighLight on source or target depending on doc, and location (offset, and length)"""
+    def highlightSearch(self, container, location):
+        """HighLight on source or target depending on container, and location (offset, and length)"""
+        # search not found
+        if (not location):
+            try:
+                self.layout.clearAdditionalFormats()
+                self.ui.txtSource.update()
+                self.ui.txtTarget.update()
+            except:
+                pass
+        if (container == self.world.source):
+            container = self.ui.txtSource
+        elif (container == self.world.target):
+            container = self.ui.txtTarget
+        else:
+            return
         offsetindoc = location[0]
         length = location[1]
         overrides = []
         charformat = QtGui.QTextCharFormat()
         charformat.setFontWeight(QtGui.QFont.Bold)
         charformat.setForeground(QtCore.Qt.darkMagenta)                
-        block = doc.findBlock(offsetindoc)        
+        block = container.document().findBlock(offsetindoc)        
         offsetinblock = offsetindoc - block.position()
         range = QtGui.QTextLayout.FormatRange()
         range.start = offsetinblock
@@ -177,14 +186,6 @@ class TUview(QtGui.QDockWidget):
         self.layout.setAdditionalFormats(overrides)
         block.document().markContentsDirty(block.position(), block.length())               
     
-    def clearHighLight(self):
-        try:
-            self.layout.clearAdditionalFormats()
-            self.ui.txtSource.update()
-            self.ui.txtTarget.update()
-        except:
-            pass        
-        
     def selectCut(self):
         self.ui.txtSource.cut()        
                 

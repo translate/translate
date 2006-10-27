@@ -28,6 +28,10 @@ class World:
         self.translated = 2
         self.untranslated = 4
         
+        self.source = 1
+        self.target = 2
+        self.comment = 4
+        
         self.settingOrg = "WordForge"
         self.settingApp = "Translation Editor"
         

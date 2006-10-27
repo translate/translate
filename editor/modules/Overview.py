@@ -18,8 +18,8 @@
 # Developed by:
 #       Hok Kakada (hokkakada@khmeros.info)
 #       Keo Sophon (keosophon@khmeros.info)
-#       Seth Chanratha (sethchanratha@khmeros.info)
 #       San Titvirak (titvirak@khmeros.info)
+#       Seth Chanratha (sethchanratha@khmeros.info)
 #
 # This module is working on overview of source and target
 
@@ -47,7 +47,7 @@ class OverviewDock(QtGui.QDockWidget):
         
         # set up table appearance and behavior
         
-        self.headerLabels = [self.tr("Index"), self.tr("Source"), self.tr("Target"), self.tr("Notes")]
+        self.headerLabels = [self.tr("Index"), self.tr("Source"), self.tr("Target"), self.tr("Note")]
         self.ui.tableOverview.setColumnCount(4)
         self.ui.tableOverview.setRowCount(0)
         self.ui.tableOverview.setHorizontalHeaderLabels(self.headerLabels)
@@ -59,18 +59,15 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.tableOverview.horizontalHeader().setResizeMode(1, QtGui.QHeaderView.Stretch)
         self.ui.tableOverview.horizontalHeader().setResizeMode(2, QtGui.QHeaderView.Stretch)
         self.ui.tableOverview.horizontalHeader().setHighlightSections(False)        
-        self.ui.tableOverview.verticalHeader().hide()
+        #self.ui.tableOverview.verticalHeader().hide()
         
         self.headerFont = QtGui.QFont('Sans Serif', 10)
         self.ui.tableOverview.horizontalHeader().setFont(self.headerFont)
         self.applySettings()
         
-        # iconize item
-        #self.FUZZYICON = QtGui.QIcon("./images/icon.png")
-        #self.NULLICON = QtGui.QIcon()
-        
         # indexToUpdate holds the last item selected
         self.indexToUpdate = None
+        self.connect(self.ui.tableOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitCurrentIndex)
         #self.connect(self.ui.tableOverview, QtCore.SIGNAL("cellDoubleClicked(int, int)"), self.emitTargetChanged)
 
     def actionShow(self):
@@ -120,20 +117,26 @@ class OverviewDock(QtGui.QDockWidget):
         for i in hiddenList:
             self.ui.tableOverview.hideRow(i)
         self.setUpdatesEnabled(True)
-   
+
+    def emitCurrentIndex(self):
+        """Send current row's index."""
+        row = self.ui.tableOverview.currentRow()
+        index = int(self.ui.tableOverview.item(row, 0).text())
+        # send the signal only row is new
+        if (self.indexToUpdate != index):
+            self.emit(QtCore.SIGNAL("currentIndex"), index)
+
     def updateView(self, unit, index, state):
         """Highlight the row of current unit index."""
-        if (not index):
-            return
-        self.disconnect(self.ui.tableOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitCurrentIndex)
-        self.ui.tableOverview.selectRow(index)
-        self.connect(self.ui.tableOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitCurrentIndex)
-        self.indexToUpdate = index
-        # display unit status on note column.
-        if (state):
-            noteItem = self.ui.tableOverview.item(index, 3)
-            item = QtGui.QTableWidgetItem(self.stateString(state))
-            self.ui.tableOverview.setItem(self.indexToUpdate, 3, item)
+        # TODO: must convert index to row in order to highlight the correct unit.
+        # (Not done)
+        #self.indexToUpdate = index
+        #self.ui.tableOverview.selectRow(index)
+##        # display unit status on note column.
+##        if (state):
+##            noteItem = self.ui.tableOverview.item(row, 3)
+##            item = QtGui.QTableWidgetItem(self.stateString(state))
+##            self.ui.tableOverview.setItem(self.indexToUpdate, 3, item)
     
     def stateString(self, state):
         status = ""
@@ -147,23 +150,21 @@ class OverviewDock(QtGui.QDockWidget):
         
     def updateTarget(self, target):
         """Update the text in target column."""
-        item = QtGui.QTableWidgetItem(target)
-        self.ui.tableOverview.setItem(self.indexToUpdate, 2, item)
-        currentRow = self.ui.tableOverview.currentRow()
-        #self.ui.tableOverview.resizeRowToContents(currentRow)
+        if (self.indexToUpdate):
+            item = QtGui.QTableWidgetItem(target)
+            self.ui.tableOverview.setItem(self.indexToUpdate, 2, item)
+            #item = self.ui.tableOverview.item(self.ui.tableOverview.currentRow(), 0)
+            #index = int(item.text())
+            #self.ui.tableOverview.resizeRowToContents(index)
         
     def hideUnit(self, index):
         """Hide row at index."""
         self.ui.tableOverview.hideRow(index)
 
-    def emitCurrentIndex(self):
-        """Send current row's index."""
-        index = self.ui.tableOverview.currentRow()
-        self.emit(QtCore.SIGNAL("currentIndex"), index)
-
 ##    def emitTargetChanged(self):
 ##        """Send target as string and signal targetChanged."""
-##        index = self.ui.tableOverview.currentRow()
+##        item = self.ui.tableOverview.item(self.ui.tableOverview.currentRow(), 0)
+##        index = int(item.text())
 ##        if (index >= 0):
 ##            target = unicode(self.ui.tableOverview.item(index, 2).text())
 ##            self.emit(QtCore.SIGNAL("targetChanged"), target)

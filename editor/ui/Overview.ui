@@ -42,24 +42,12 @@
      <property name="showGrid" >
       <bool>false</bool>
      </property>
+     <property name="rowCount" >
+      <number>0</number>
+     </property>
      <property name="sortingEnabled" >
       <bool>true</bool>
      </property>
-     <column>
-      <property name="text" >
-       <string>Index</string>
-      </property>
-     </column>
-     <column>
-      <property name="text" >
-       <string>Source</string>
-      </property>
-     </column>
-     <column>
-      <property name="text" >
-       <string>Target</string>
-      </property>
-     </column>
     </widget>
    </item>
   </layout>

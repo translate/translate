@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Mon Oct 23 14:47:57 2006
+# Created: Mon Oct 23 17:11:30 2006
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -39,21 +39,10 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(self.tr("Form"))
-        self.tableOverview.clear()
-        self.tableOverview.setColumnCount(3)
         self.tableOverview.setRowCount(0)
-
-        headerItem = QtGui.QTableWidgetItem()
-        headerItem.setText(self.tr("Index"))
-        self.tableOverview.setHorizontalHeaderItem(0,headerItem)
-
-        headerItem1 = QtGui.QTableWidgetItem()
-        headerItem1.setText(self.tr("Source"))
-        self.tableOverview.setHorizontalHeaderItem(1,headerItem1)
-
-        headerItem2 = QtGui.QTableWidgetItem()
-        headerItem2.setText(self.tr("Target"))
-        self.tableOverview.setHorizontalHeaderItem(2,headerItem2)
+        self.tableOverview.clear()
+        self.tableOverview.setColumnCount(0)
+        self.tableOverview.setRowCount(0)
 
 
 if __name__ == "__main__":

@@ -57,8 +57,6 @@ class Operator(QtCore.QObject):
 ##        poHeader = self.store.makeheader(poHeader)
 ##        print poHeader
         
-        self.emit(QtCore.SIGNAL("newUnits"), self.store.units)
-
         unitsState = []
         for unit in self.store.units:
             currentState = self.status.getStatus(unit)
@@ -392,11 +390,11 @@ class Operator(QtCore.QObject):
             self._offset = temp
             self._unitpointer = unitpointer
             if (self._insource):
-                self.emitFoundInSource()
+                self.emitSearchFound(self.world.source)
             if (self._incomment):
-                self.emitFoundInComment()
+                self.emitSearchFound(self.world.comment)
             if (self._intarget):
-                self.emitFoundInTarget()
+                self.emitSearchFound(self.world.target)
             return None
         
         # when search not found, it will decrease/increase unit depending on search previous or next
@@ -455,23 +453,12 @@ class Operator(QtCore.QObject):
         self._matchlength = regexp.matchedLength()
         return temp 
             
-    def emitFoundInSource(self):
-        """emit signal foundInSource with the a list of position the search found, and length in source"""
+    def emitSearchFound(self, container):
+        """emit signal searchFound with the a list of position the search found, and length in source"""
         self.emitCurrentUnit()
-        self.emit(QtCore.SIGNAL("foundInSource"), [self._offset, self._matchlength])
+        self.emit(QtCore.SIGNAL("searchResult"), container, [self._offset, self._matchlength])
     
-    def emitFoundInComment(self):
-        """emit signal foundInComment with the a list of position the search found, and length in comment"""
-        self.emitCurrentUnit()
-        self.emit(QtCore.SIGNAL("foundInComment"), [self._offset, self._matchlength])
-    
-    def emitFoundInTarget(self):
-        """emit signal foundInTarget with the a list of position the search found, and length to highlight in target"""
-        self.emitCurrentUnit()
-        self.emit(QtCore.SIGNAL("foundInTarget"), [self._offset, self._matchlength])
-
     def emitSearchNotFound(self):
         """emit signal search not found in order to unhighlight"""
-        self.emit(QtCore.SIGNAL("clearHighLight"))
-        self.emit(QtCore.SIGNAL("searchNotFound"), "search not found")    
-    
+        self.emit(QtCore.SIGNAL("searchResult"), None, None)
+        self.emit(QtCore.SIGNAL("generalInfo"), "search not found")    

@@ -17,8 +17,8 @@
 # Developed by:
 #       Hok Kakada (hokkakada@khmeros.info)
 #       Keo Sophon (keosophon@khmeros.info)
-#       Seth Chanratha (sethchanratha@khmeros.info)
 #       San Titvirak (titvirak@khmeros.info)
+#       Seth Chanratha (sethchanratha@khmeros.info)
 # 
 # This module is working on the main windows of Editor
 
@@ -34,19 +34,20 @@ from modules.FileAction import FileAction
 from modules.Find import Find
 from modules.Preference import Preference
 from modules.AboutEditor import AboutEditor
-
+from modules.World import World
 
 class MainWindow(QtGui.QMainWindow):
     MaxRecentFiles = 10
     windowList = []
 
     def __init__(self, parent = None):
-        QtGui.QMainWindow.__init__(self, parent)       
+        QtGui.QMainWindow.__init__(self, parent)
         self.ui = Ui_MainWindow()
-        self.ui.setupUi(self)         
-        self.resize(800, 600)        
+        self.ui.setupUi(self)
+        self.resize(800, 600)
         self.ui.recentaction = []
-        self.createRecentAction()                
+        self.world = World()
+        self.createRecentAction()
         #User must to fill your information
 ##        self.profile = UserProfile()              
 ##        if  self.profile == isNull():
@@ -129,13 +130,10 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.findBar, QtCore.SIGNAL("findNext"), self.operator.searchNext)
         self.connect(self.findBar, QtCore.SIGNAL("findPrevious"), self.operator.searchPrevious)
         
-        # connect setHighLightSourcek setHighLightTarget, setHighLightComment by passing offset, and length
-        self.connect(self.operator, QtCore.SIGNAL("foundInSource"), self.dockTUview.setHighLightSource)
-        self.connect(self.operator, QtCore.SIGNAL("foundInTarget"), self.dockTUview.setHighLightTarget)
-        self.connect(self.operator, QtCore.SIGNAL("foundInComment"), self.dockComment.setHighLightComment)
-        self.connect(self.operator, QtCore.SIGNAL("clearHighLight"), self.dockComment.clearHighLight)
-        self.connect(self.operator, QtCore.SIGNAL("clearHighLight"), self.dockTUview.clearHighLight)
-        self.connect(self.operator, QtCore.SIGNAL("searchNotFound"), self.lblGeneralInfo.setText)        
+        # "searchFound" send container and location to be highlighted.
+        self.connect(self.operator, QtCore.SIGNAL("searchResult"), self.dockTUview.highlightSearch)
+        self.connect(self.operator, QtCore.SIGNAL("searchResult"), self.dockComment.setHighLightComment)
+        self.connect(self.operator, QtCore.SIGNAL("generalInfo"), self.lblGeneralInfo.setText)        
     
         # Edit menu action
         self.connect(self.ui.actionUndo, QtCore.SIGNAL("triggered()"), self.undoer)
@@ -161,8 +159,6 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionLast, QtCore.SIGNAL("triggered()"), self.operator.last)
         self.connect(self.ui.actionCopySource2Target, QtCore.SIGNAL("triggered()"), self.dockTUview.source2target)
         
-        
-        
         # action filter menu
         self.connect(self.ui.actionFilterFuzzy, QtCore.SIGNAL("toggled(bool)"), self.operator.filterFuzzy)
         self.connect(self.ui.actionFilterTranslated, QtCore.SIGNAL("toggled(bool)"), self.operator.filterTranslated)
@@ -172,14 +168,13 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("hideUnit"), self.dockOverview.hideUnit)
         self.connect(self.operator, QtCore.SIGNAL("hideUnit"), self.dockTUview.hideUnit)
         
-        # setColor(value, state)
+        # "currentUnit" send currentUnit, currentIndex, and currentState.
+        self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockOverview.updateView)
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockTUview.updateView)
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockComment.updateView)
-        self.connect(self.dockTUview, QtCore.SIGNAL("currentId"), self.operator.setCurrentUnit)
-        self.connect(self.dockOverview, QtCore.SIGNAL("currentId"), self.operator.setCurrentUnit)
+        self.connect(self.dockTUview, QtCore.SIGNAL("currentIndex"), self.operator.setCurrentUnit)
+        self.connect(self.dockOverview, QtCore.SIGNAL("currentIndex"), self.operator.setCurrentUnit)
 
-##        self.connect(self.operator, QtCore.SIGNAL("changetarget"), self.dockTUview.txtClear)
-        
         self.connect(self.operator, QtCore.SIGNAL("updateUnit"), self.dockTUview.checkModified)
         self.connect(self.operator, QtCore.SIGNAL("updateUnit"), self.dockComment.checkModified)
         self.connect(self.dockOverview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
@@ -196,6 +191,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.fileaction, QtCore.SIGNAL("fileName"), self.setTitle)
         self.connect(self.operator, QtCore.SIGNAL("toggleFirstLastUnit"), self.toggleFirstLastUnit)
 
+        # newUnits send newUnits and unitsStatus
         self.connect(self.operator, QtCore.SIGNAL("newUnits"), self.dockOverview.slotNewUnits)
         self.connect(self.operator, QtCore.SIGNAL("newUnits"), self.dockTUview.slotNewUnits)
         self.connect(self.operator, QtCore.SIGNAL("filteredList"), self.dockOverview.filteredList)
@@ -265,7 +261,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionReplace.setEnabled(True)
         self.ui.actionEdit_Header.setEnabled(True)
         # FIXME what will happen if the file only contains 1 TU? Jens
-        settings = QtCore.QSettings("WordForge", "Translation Editor")
+        settings = QtCore.QSettings(self.world.settingOrg, self.world.settingApp)
         files = settings.value("recentFileList").toStringList()
         files.removeAll(fileName)        
         files.prepend(fileName)
@@ -292,8 +288,8 @@ class MainWindow(QtGui.QMainWindow):
             self.ui.menuOpen_Recent.addAction(self.ui.recentaction[i])
         self.updateRecentAction()                  
     
-    def updateRecentAction(self):        
-        settings = QtCore.QSettings("WordForge", "Translation Editor")
+    def updateRecentAction(self):
+        settings = QtCore.QSettings(self.world.settingOrg, self.world.settingApp)
         files = settings.value("recentFileList").toStringList()
         numRecentFiles = min(files.count(), MainWindow.MaxRecentFiles)             
 

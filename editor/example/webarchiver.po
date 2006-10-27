@@ -2,44 +2,30 @@
 #
 # Keo Sophon <keosophon@khmeros.info>, 2006.
 # Leang Chumsoben <soben@khmeros.info>, 2006.
-#, fuzzy
 msgid ""
-<<<<<<< .mine
-=======
+
+
 "Unable to open \n"
 " %1 \n"
 " for writing."
-msgstr "minimum"
+msgstr "minimum2"
 
 # werwerw
 #: archivedialog.cpp:125
 msgid "Could Not Open Temporary File"
->>>>>>> .r4111
-msgstr ""
-<<<<<<< .mine
-"Project-Id-Version: libkfaximgage\n"
-"POT-Creation-Date: 2005-10-15 02:46+0200\n"
-"PO-Revision-Date: 2006-03-10 11:29+0700\n"
-"Last-Translator: Leang Chumsoben <soben@khmeros.info>\n"
-"Language-Team: Khmer <support@khmeros.info>\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11\n"
-=======
->>>>>>> .r4111
 
-<<<<<<< .mine
+msgstr ""
+
 #: kfaximage.cpp:189
 msgid "Unable to open file for reading."
 msgstr "មិន​អាច​បើក​ឯកសារ ដើម្បី​អាន​បាន​ឡើយ ។"
-=======
-# opensfasa
+
+
 #: archivedialog.cpp:126
 #, fuzzy
 msgid "Could not open a temporary file"
 msgstr "មិនអាច​បើក​ឯកសារ​បណ្តោះអាសន្ន​មួយ​បាន​ទេ"
->>>>>>> .r4111
+
 
 #: kfaximage.cpp:194
 msgid "Unable to read file header (file too short)."

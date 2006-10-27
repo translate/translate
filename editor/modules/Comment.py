@@ -26,6 +26,7 @@
 import sys
 from PyQt4 import QtCore, QtGui
 from ui.CommentUI import Ui_frmComment
+from modules.World import World
 
 class CommentDock(QtGui.QDockWidget):
     def __init__(self):
@@ -36,7 +37,8 @@ class CommentDock(QtGui.QDockWidget):
         self.ui.setupUi(self.form)        
         self.setWidget(self.form)
         self.layout = QtGui.QTextLayout ()
-        self.settings = QtCore.QSettings("WordForge", "Translation Editor")
+        self.world = World()
+        self.settings = QtCore.QSettings(self.world.settingOrg, self.world.settingApp)
         self.applySettings()
         
         # create action for show/hide
@@ -75,8 +77,17 @@ class CommentDock(QtGui.QDockWidget):
     def getCommentToHighLight(self):                        
         self.emit(QtCore.SIGNAL("highLight"), self.ui.txtComment.document())
   
-    def setHighLightComment(self, location):
+    def setHighLightComment(self, container, location):
         '''HighLight on comment depending on location (offset, and length)'''
+        # search not found
+        if (not location):
+            try:
+                self.layout.clearAdditionalFormats()
+                self.ui.txtComment.update()
+            except:
+                pass
+        if (container != self.world.comment):
+            return
         offsetindoc = location[0]
         length = location[1]
         overrides = []        
@@ -95,13 +106,6 @@ class CommentDock(QtGui.QDockWidget):
         self.layout.setAdditionalFormats(overrides)
         block.document().markContentsDirty(block.position(), block.length())
 
-    def clearHighLight(self):
-        try:
-            self.layout.clearAdditionalFormats()
-            self.ui.txtComment.update()
-        except:
-            pass        
-        
     def setReadyForSave(self):
       self.emit(QtCore.SIGNAL("readyForSave"), True)
       
