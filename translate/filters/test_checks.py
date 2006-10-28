@@ -205,7 +205,7 @@ def test_tabs():
     assert checks.fails(stdchecker.tabs, "A file\t", "'n Leer")
     assert checks.fails(stdchecker.tabs, "A file", "'n Leer\t")
     ooochecker = checks.OpenOfficeChecker()
-    assert checks.passes(ooochecker.escapes, ",\t44\t;\t59\t:\t58\t{Tab}\t9\t{space}\t32", ",\t44\t;\t59\t:\t58\t{Tab}\t9\t{space}\t32")
+    assert checks.passes(ooochecker.tabs, ",\t44\t;\t59\t:\t58\t{Tab}\t9\t{space}\t32", ",\t44\t;\t59\t:\t58\t{Tab}\t9\t{space}\t32")
 
 def test_filepaths():
     """tests filepaths"""
