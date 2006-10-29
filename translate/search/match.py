@@ -82,8 +82,8 @@ class matcher:
         self.candidates.units.sort(sourcelencmp)
         if not self.candidates.units:
             raise ValueError("No usable translation memory")
-        print "TM initialised with %d candidates (%d to %d characters long)" % \
-                (len(self.candidates.units), len(self.candidates.units[0].source), len(self.candidates.units[-1].source))
+        # print "TM initialised with %d candidates (%d to %d characters long)" % \
+        #        (len(self.candidates.units), len(self.candidates.units[0].source), len(self.candidates.units[-1].source))
 
     def setparameters(self, max_candidates=10, min_similarity=75, max_length=70):
         """Sets the parameters without reinitialising the tm. If a parameter 
