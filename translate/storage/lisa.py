@@ -212,8 +212,8 @@ class LISAfile(base.TranslationStore):
     #The XML skeleton to use for empty construction:
     XMLskeleton = ""
 
-    def __init__(self, inputfile=None, sourcelanguage='en', targetlanguage=None):
-        super(LISAfile, self).__init__()
+    def __init__(self, inputfile=None, sourcelanguage='en', targetlanguage=None, unitclass=None):
+        super(LISAfile, self, unitclass=unitclass).__init__()
         self.setsourcelanguage(sourcelanguage)
         self.settargetlanguage(targetlanguage)
         if inputfile is not None:

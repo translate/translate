@@ -120,9 +120,11 @@ class TranslationStore(object):
     """Base class for stores for multiple translation units of type UnitClass"""
     UnitClass = TranslationUnit
 
-    def __init__(self):
+    def __init__(self, unitclass=None):
         """Constructs a blank TranslationStore"""
         self.units = []
+	if unitclass:
+            self.UnitClass = unitclass
 
     def addsourceunit(self, source):
         """Adds and returns a new unit with the given source string"""
