@@ -137,7 +137,14 @@ class xliffunit(lisa.LISAunit):
             self.xmlelement.removeChild(notes[i])    
     
     def isapproved(self):
+        """States whether this unit is approved"""
         return self.xmlelement.getAttribute("approved") == "yes"
+
+    def isreview(self):
+        """States whether this unit needs to be reviewed"""
+        targetnode = self.getlanguageNode(lang=None, index=1)
+        return not targetnode is None and \
+                "needs-review" in targetnode.getAttribute("state"))
 
     def isfuzzy(self):
         targetnode = self.getlanguageNode(lang=None, index=1)
