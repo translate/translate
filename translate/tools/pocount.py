@@ -45,13 +45,13 @@ def wordcount(postr):
   return len(postr.split())
 
 def wordsinpoel(poel):
-  """counts the words in the msgid, msgstr, taking plurals into account"""
-  (msgidwords, msgstrwords) = (0, 0)
+  """counts the words in the source, target, taking plurals into account"""
+  (sourcewords, targetwords) = (0, 0)
   for s in poel.source.strings:
-    msgidwords += wordcount(s)
+    sourcewords += wordcount(s)
   for s in poel.target.strings:
-    msgstrwords += wordcount(s)
-  return msgidwords, msgstrwords
+    targetwords += wordcount(s)
+  return sourcewords, targetwords
 
 def summarize(title, units, CSVstyle=False):
   # ignore totally blank or header units
@@ -61,26 +61,26 @@ def summarize(title, units, CSVstyle=False):
   review = filter(lambda poel: poel.isreview(), units)
   untranslated = untranslatedmessages(units)
   wordcounts = dict(map(lambda poel: (poel, wordsinpoel(poel)), units))
-  msgidwords = lambda elementlist: sum(map(lambda poel: wordcounts[poel][0], elementlist))
-  msgstrwords = lambda elementlist: sum(map(lambda poel: wordcounts[poel][1], elementlist))
+  sourcewords = lambda elementlist: sum(map(lambda poel: wordcounts[poel][0], elementlist))
+  targetwords = lambda elementlist: sum(map(lambda poel: wordcounts[poel][1], elementlist))
   if CSVstyle:
     print "%s, " % title,
-    print "%d, %d, %d," % (len(translated), msgidwords(translated), msgstrwords(translated)),
-    print "%d, %d," % (len(fuzzy), msgidwords(fuzzy)),
-    print "%d, %d," % (len(untranslated), msgidwords(untranslated)),
-    print "%d, %d" % (len(translated) + len(fuzzy) + len(untranslated), msgidwords(translated) + msgidwords(fuzzy) + msgidwords(untranslated)),
+    print "%d, %d, %d," % (len(translated), sourcewords(translated), targetwords(translated)),
+    print "%d, %d," % (len(fuzzy), sourcewords(fuzzy)),
+    print "%d, %d," % (len(untranslated), sourcewords(untranslated)),
+    print "%d, %d" % (len(translated) + len(fuzzy) + len(untranslated), sourcewords(translated) + sourcewords(fuzzy) + sourcewords(untranslated)),
     if len(review) > 0:
-      print ", %d, %d" % (len(review), msgidwords(review)),
+      print ", %d, %d" % (len(review), sourcewords(review)),
     print
   else:
     print title
     print "type           strings words (source) words (translation)"
-    print "translated:   %5d %10d %15d" % (len(translated), msgidwords(translated), msgstrwords(translated))
-    print "fuzzy:        %5d %10d             n/a" % (len(fuzzy), msgidwords(fuzzy))
-    print "untranslated: %5d %10d             n/a" % (len(untranslated), msgidwords(untranslated))
-    print "Total:        %5d %10d %15d" % (len(translated) + len(fuzzy) + len(untranslated), msgidwords(translated) + msgidwords(fuzzy) + msgidwords(untranslated), msgstrwords(translated))
+    print "translated:   %5d %10d %15d" % (len(translated), sourcewords(translated), targetwords(translated))
+    print "fuzzy:        %5d %10d             n/a" % (len(fuzzy), sourcewords(fuzzy))
+    print "untranslated: %5d %10d             n/a" % (len(untranslated), sourcewords(untranslated))
+    print "Total:        %5d %10d %15d" % (len(translated) + len(fuzzy) + len(untranslated), sourcewords(translated) + sourcewords(fuzzy) + sourcewords(untranslated), targetwords(translated))
     if len(review) > 0:
-      print "review:       %5d %10d             n/a" % (len(review), msgidwords(review))
+      print "review:       %5d %10d             n/a" % (len(review), sourcewords(review))
     print
 
 def fuzzymessages(units):
