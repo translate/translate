@@ -100,6 +100,12 @@ class TranslationUnit(object):
     def isheader(self):
         return False
 
+    def isblank(self):
+        """Used to see if this unit has no source or target string. This is 
+	probably used more to find translatable units, and we might want to 
+	move in that direction rather and get rid of this."""
+        return not (self.source and self.target)
+
     def hasplural(self):
         """Tells whether or not this specific unit has plural strings."""
         #TODO: Reconsider
