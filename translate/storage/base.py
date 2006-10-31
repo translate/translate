@@ -47,6 +47,15 @@ class TranslationUnit(object):
     def settarget(self, target):
         """Sets the target string to the given value"""
         self.target = target
+    
+    def gettargetlen(self):
+        """returns the length of the translation string, possible combining 
+        plural forms"""
+        length = len(self.target)
+        strings = getattr(self.target, "strings", [])
+        if strings:
+            length += sum([len(pluralform) for pluralform in strings[1:]])
+        return length
 
     def getlocations(self):
         """A list of source code locations. Shouldn't be implemented if the
