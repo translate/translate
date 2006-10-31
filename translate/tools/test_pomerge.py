@@ -129,9 +129,9 @@ class TestPOMerge:
 
     def test_preserve_format_kde_comments(self):
         """Test that layout related to KDE comments does not change unnecessarily"""
-        templatepo = '''msgid "_: KDE comment\\n"\n"Simple string"\nmsgstr ""\n'''
-        mergepo = '''msgid "_: KDE comment\\n"\n"Simple string"\nmsgstr "Dimpled ring"\n'''
-        expectedpo = '''msgid "_: KDE comment\\n"\n"Simple string"\nmsgstr "Dimpled ring"\n'''
+        templatepo = '''msgid ""\n"_: KDE comment\\n"\n"Simple string"\nmsgstr ""\n'''
+        mergepo = '''msgid ""\n"_: KDE comment\\n"\n"Simple string"\nmsgstr "Dimpled ring"\n'''
+        expectedpo = '''msgid ""\n"_: KDE comment\\n"\n"Simple string"\nmsgstr "Dimpled ring"\n'''
         pofile = self.mergepo(templatepo, mergepo)
         print "Expected:\n%s\n\nMerged:\n%s" % (expectedpo, str(pofile))
         assert str(pofile) == expectedpo
@@ -330,3 +330,54 @@ msgstr "Stuur"
         print "Expected:\n%s\n---\nMerged:\n%s\n---" % (expectedpo, str(pofile))
         assert str(pofile) == expectedpo
 
+    def test_merging_header_entries(self):
+        """check that we do the right thing if we have header entries in the input PO"""
+        templatepo = r'''#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: new@example.com\n"
+"POT-Creation-Date: 2006-11-11 11:11+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"X-Generator: Translate Toolkit 0.10rc2\n"
+
+'''
+        mergepo = r'''msgid ""
+msgstr ""
+"Project-Id-Version: Pootle 0.10\n"
+"Report-Msgid-Bugs-To: old@example.com\n"
+"POT-Creation-Date: 2006-01-01 01:01+0100\n"
+"PO-Revision-Date: 2006-09-09 09:09+0900\n"
+"Last-Translator: Joe Translate <joe@example.com>\n"
+"Language-Team: Pig Latin <piglatin@example.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Translate Toolkit 0.9\n"
+
+'''
+        expectedpo = r'''msgid ""
+msgstr ""
+"Project-Id-Version: Pootle 0.10\n"
+"Report-Msgid-Bugs-To: new@example.com\n"
+"POT-Creation-Date: 2006-11-11 11:11+0000\n"
+"PO-Revision-Date: 2006-09-09 09:09+0900\n"
+"Last-Translator: Joe Translate <joe@example.com>\n"
+"Language-Team: Pig Latin <piglatin@example.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Translate Toolkit 0.10rc2\n"
+
+'''
+        pofile = self.mergepo(templatepo, mergepo)
+        print "Expected:\n%s\n---\nMerged:\n%s\n---" % (expectedpo, str(pofile))
+        assert str(pofile) == expectedpo
