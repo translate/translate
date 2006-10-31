@@ -347,6 +347,9 @@ msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 "X-Generator: Translate Toolkit 0.10rc2\n"
 
+#: simple.test
+msgid "Simple String"
+msgstr ""
 '''
         mergepo = r'''msgid ""
 msgstr ""
@@ -362,6 +365,9 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Translate Toolkit 0.9\n"
 
+#: simple.test
+msgid "Simple String"
+msgstr "Dimpled Ring"
 '''
         expectedpo = r'''msgid ""
 msgstr ""
@@ -377,6 +383,9 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Translate Toolkit 0.10rc2\n"
 
+#: simple.test
+msgid "Simple String"
+msgstr "Dimpled Ring"
 '''
         pofile = self.mergepo(templatepo, mergepo)
         print "Expected:\n%s\n---\nMerged:\n%s\n---" % (expectedpo, str(pofile))
