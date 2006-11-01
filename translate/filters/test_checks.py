@@ -605,6 +605,7 @@ def test_xmltags():
     assert checks.fails(stdchecker.xmltags, "Click <a href=\"page.html\" target=\"koei\">", "Klik <a href=\"page.html\">")
     assert checks.fails(stdchecker.xmltags, "<b>Current Translation</b>", "<b>Traducción Actual:<b>")
     assert checks.passes(stdchecker.xmltags, "<Error>", "<Fout>")
+    assert checks.fails(stdchecker.xmltags, "%d/%d translated\n(%d blank, %d fuzzy)", "<br>%d/%d μεταφρασμένα\n<br>(%d κενά, %d ασαφή)")
 
 def test_ooxmltags():
     """Tests the xml tags in OpenOffice.org translations for quality as done in gsicheck"""
