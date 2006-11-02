@@ -213,7 +213,7 @@ class LISAfile(base.TranslationStore):
     XMLskeleton = ""
 
     def __init__(self, inputfile=None, sourcelanguage='en', targetlanguage=None, unitclass=None):
-        super(LISAfile, self, unitclass=unitclass).__init__()
+        super(LISAfile, self).__init__(unitclass=unitclass)
         self.setsourcelanguage(sourcelanguage)
         self.settargetlanguage(targetlanguage)
         if inputfile is not None:
