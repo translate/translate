@@ -738,7 +738,7 @@ class poheader:
       if key in fixedargs:
         headerargs[key] = fixedargs.pop(key)
     for key in fixedargs:
-      headerargs[key] = kwargs[key]
+      headerargs[key] = fixedargs[key]
     for key, value in headerargs.iteritems():
       if existing.has_key(key) or add:
         existing[key] = value
