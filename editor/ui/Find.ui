@@ -1,0 +1,405 @@
+<ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
+ <class>Form</class>
+ <widget class="QWidget" name="Form" >
+  <property name="enabled" >
+   <bool>true</bool>
+  </property>
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>70</height>
+   </rect>
+  </property>
+  <property name="sizePolicy" >
+   <sizepolicy>
+    <hsizetype>5</hsizetype>
+    <vsizetype>4</vsizetype>
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize" >
+   <size>
+    <width>800</width>
+    <height>70</height>
+   </size>
+  </property>
+  <property name="maximumSize" >
+   <size>
+    <width>16777215</width>
+    <height>0</height>
+   </size>
+  </property>
+  <property name="contextMenuPolicy" >
+   <enum>Qt::DefaultContextMenu</enum>
+  </property>
+  <property name="windowTitle" >
+   <string/>
+  </property>
+  <widget class="QLineEdit" name="lineEdit" >
+   <property name="geometry" >
+    <rect>
+     <x>95</x>
+     <y>10</y>
+     <width>251</width>
+     <height>24</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="findNext" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
+   <property name="geometry" >
+    <rect>
+     <x>353</x>
+     <y>11</y>
+     <width>61</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="font" >
+    <font>
+     <family>Sans Serif</family>
+     <pointsize>9</pointsize>
+     <weight>50</weight>
+     <italic>false</italic>
+     <bold>false</bold>
+     <underline>false</underline>
+     <strikeout>false</strikeout>
+    </font>
+   </property>
+   <property name="text" >
+    <string>&amp;Next</string>
+   </property>
+   <property name="icon" >
+    <iconset>../images/next.png</iconset>
+   </property>
+   <property name="flat" >
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="findPrevious" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
+   <property name="geometry" >
+    <rect>
+     <x>421</x>
+     <y>11</y>
+     <width>81</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="font" >
+    <font>
+     <family>Sans Serif</family>
+     <pointsize>9</pointsize>
+     <weight>50</weight>
+     <italic>false</italic>
+     <bold>false</bold>
+     <underline>false</underline>
+     <strikeout>false</strikeout>
+    </font>
+   </property>
+   <property name="text" >
+    <string>&amp;Previous</string>
+   </property>
+   <property name="icon" >
+    <iconset>../images/previous.png</iconset>
+   </property>
+   <property name="flat" >
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEdit_2" >
+   <property name="geometry" >
+    <rect>
+     <x>95</x>
+     <y>40</y>
+     <width>251</width>
+     <height>24</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="replace" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
+   <property name="geometry" >
+    <rect>
+     <x>353</x>
+     <y>40</y>
+     <width>61</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="font" >
+    <font>
+     <family>Sans Serif</family>
+     <pointsize>9</pointsize>
+     <weight>50</weight>
+     <italic>false</italic>
+     <bold>false</bold>
+     <underline>false</underline>
+     <strikeout>false</strikeout>
+    </font>
+   </property>
+   <property name="text" >
+    <string>&amp;Replace</string>
+   </property>
+   <property name="icon" >
+    <iconset/>
+   </property>
+   <property name="flat" >
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="replaceAll" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
+   <property name="geometry" >
+    <rect>
+     <x>421</x>
+     <y>40</y>
+     <width>81</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="font" >
+    <font>
+     <family>Sans Serif</family>
+     <pointsize>9</pointsize>
+     <weight>50</weight>
+     <italic>false</italic>
+     <bold>false</bold>
+     <underline>false</underline>
+     <strikeout>false</strikeout>
+    </font>
+   </property>
+   <property name="text" >
+    <string>Replace &amp;All</string>
+   </property>
+   <property name="icon" >
+    <iconset/>
+   </property>
+   <property name="flat" >
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lblReplace" >
+   <property name="geometry" >
+    <rect>
+     <x>3</x>
+     <y>42</y>
+     <width>95</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="sizeIncrement" >
+    <size>
+     <width>0</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="font" >
+    <font>
+     <family>Sans Serif</family>
+     <pointsize>9</pointsize>
+     <weight>50</weight>
+     <italic>true</italic>
+     <bold>false</bold>
+     <underline>false</underline>
+     <strikeout>false</strikeout>
+    </font>
+   </property>
+   <property name="text" >
+    <string>Replace With:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lblFind" >
+   <property name="geometry" >
+    <rect>
+     <x>16</x>
+     <y>14</y>
+     <width>79</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="sizeIncrement" >
+    <size>
+     <width>0</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="font" >
+    <font>
+     <family>Sans Serif</family>
+     <pointsize>9</pointsize>
+     <weight>50</weight>
+     <italic>true</italic>
+     <bold>false</bold>
+     <underline>false</underline>
+     <strikeout>false</strikeout>
+    </font>
+   </property>
+   <property name="text" >
+    <string>Search For:</string>
+   </property>
+  </widget>
+  <widget class="QGroupBox" name="groupBox" >
+   <property name="geometry" >
+    <rect>
+     <x>507</x>
+     <y>9</y>
+     <width>291</width>
+     <height>55</height>
+    </rect>
+   </property>
+   <property name="font" >
+    <font>
+     <family>Sans Serif</family>
+     <pointsize>9</pointsize>
+     <weight>75</weight>
+     <italic>false</italic>
+     <bold>true</bold>
+     <underline>false</underline>
+     <strikeout>false</strikeout>
+    </font>
+   </property>
+   <property name="title" >
+    <string/>
+   </property>
+   <widget class="Line" name="line" >
+    <property name="geometry" >
+     <rect>
+      <x>3</x>
+      <y>26</y>
+      <width>284</width>
+      <height>5</height>
+     </rect>
+    </property>
+    <property name="orientation" >
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="matchcase" >
+    <property name="geometry" >
+     <rect>
+      <x>11</x>
+      <y>33</y>
+      <width>91</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="font" >
+     <font>
+      <family>Sans Serif</family>
+      <pointsize>9</pointsize>
+      <weight>50</weight>
+      <italic>false</italic>
+      <bold>false</bold>
+      <underline>false</underline>
+      <strikeout>false</strikeout>
+     </font>
+    </property>
+    <property name="text" >
+     <string>Mat&amp;ch case</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="insource" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>4</y>
+      <width>81</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="font" >
+     <font>
+      <family>Sans Serif</family>
+      <pointsize>9</pointsize>
+      <weight>50</weight>
+      <italic>false</italic>
+      <bold>false</bold>
+      <underline>false</underline>
+      <strikeout>false</strikeout>
+     </font>
+    </property>
+    <property name="text" >
+     <string>In &amp;Source</string>
+    </property>
+    <property name="checkable" >
+     <bool>true</bool>
+    </property>
+    <property name="checked" >
+     <bool>true</bool>
+    </property>
+    <property name="tristate" >
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="incomment" >
+    <property name="geometry" >
+     <rect>
+      <x>98</x>
+      <y>4</y>
+      <width>101</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="font" >
+     <font>
+      <family>Sans Serif</family>
+      <pointsize>9</pointsize>
+      <weight>50</weight>
+      <italic>false</italic>
+      <bold>false</bold>
+      <underline>false</underline>
+      <strikeout>false</strikeout>
+     </font>
+    </property>
+    <property name="text" >
+     <string>In &amp;Comment</string>
+    </property>
+    <property name="checked" >
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="intarget" >
+    <property name="geometry" >
+     <rect>
+      <x>203</x>
+      <y>4</y>
+      <width>81</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="font" >
+     <font>
+      <family>Sans Serif</family>
+      <pointsize>9</pointsize>
+      <weight>50</weight>
+      <italic>false</italic>
+      <bold>false</bold>
+      <underline>false</underline>
+      <strikeout>false</strikeout>
+     </font>
+    </property>
+    <property name="text" >
+     <string>In &amp;Target</string>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <pixmapfunction></pixmapfunction>
+ <resources/>
+ <connections/>
+</ui>
