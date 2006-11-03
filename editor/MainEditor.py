@@ -123,16 +123,17 @@ class MainWindow(QtGui.QMainWindow):
         # create Find widget and connect signals related to it        
         self.findBar = Find()      
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.findBar)              
-        self.findBar.ui.lineEdit.setFocus()
-        self.connect(self.ui.actionFind, QtCore.SIGNAL("triggered()"), self.findBar.showFind)        
-        self.connect(self.ui.actionReplace, QtCore.SIGNAL("triggered()"), self.findBar.showReplace)        
-        self.connect(self.findBar, QtCore.SIGNAL("startSearch"), self.operator.startSearch)
-        self.connect(self.findBar, QtCore.SIGNAL("findNext"), self.operator.searchNext)
-        self.connect(self.findBar, QtCore.SIGNAL("findPrevious"), self.operator.searchPrevious)
+        self.connect(self.ui.actionFind, QtCore.SIGNAL("triggered()"), self.findBar.showFind)
+        self.connect(self.ui.actionReplace, QtCore.SIGNAL("triggered()"), self.findBar.showReplace)
+        # "searchString" send string, matchcase flag, direction flag, and container flag.
+        self.connect(self.findBar, QtCore.SIGNAL("searchString"), self.operator.searchString)
+        #self.connect(self.findBar, QtCore.SIGNAL("startSearch"), self.operator.startSearch)
+        #self.connect(self.findBar, QtCore.SIGNAL("findNext"), self.operator.searchNext)
+        #self.connect(self.findBar, QtCore.SIGNAL("findPrevious"), self.operator.searchPrevious)
         
-        # "searchFound" send container and location to be highlighted.
+        # "searchFound" sends container and location to be highlighted.
         self.connect(self.operator, QtCore.SIGNAL("searchResult"), self.dockTUview.highlightSearch)
-        self.connect(self.operator, QtCore.SIGNAL("searchResult"), self.dockComment.setHighLightComment)
+        self.connect(self.operator, QtCore.SIGNAL("searchResult"), self.dockComment.highlightSearch)
         self.connect(self.operator, QtCore.SIGNAL("generalInfo"), self.lblGeneralInfo.setText)        
     
         # Edit menu action
@@ -169,7 +170,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("hideUnit"), self.dockOverview.hideUnit)
         self.connect(self.operator, QtCore.SIGNAL("hideUnit"), self.dockTUview.hideUnit)
         
-        # "currentUnit" send currentUnit, currentIndex, and currentState.
+        # "currentUnit" sends currentUnit, currentIndex, and currentState.
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockOverview.updateView)
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockTUview.updateView)
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockComment.updateView)
@@ -192,13 +193,13 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.fileaction, QtCore.SIGNAL("fileName"), self.setTitle)
         self.connect(self.operator, QtCore.SIGNAL("toggleFirstLastUnit"), self.toggleFirstLastUnit)
 
-        # newUnits send newUnits and unitsStatus
+        # newUnits sends newUnits and unitsStatus.
         self.connect(self.operator, QtCore.SIGNAL("newUnits"), self.dockOverview.slotNewUnits)
         self.connect(self.operator, QtCore.SIGNAL("newUnits"), self.dockTUview.slotNewUnits)
         self.connect(self.operator, QtCore.SIGNAL("filteredList"), self.dockOverview.filteredList)
         self.connect(self.operator, QtCore.SIGNAL("filteredList"), self.dockTUview.filteredList)
         
-        # set file status information to text label of status bar
+        # set file status information to text label of status bar.
         self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.statuslabel.setText)
         self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.setOpening)
         self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.operator.getUnits)

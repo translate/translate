@@ -59,7 +59,8 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.tableOverview.horizontalHeader().setResizeMode(1, QtGui.QHeaderView.Stretch)
         self.ui.tableOverview.horizontalHeader().setResizeMode(2, QtGui.QHeaderView.Stretch)
         self.ui.tableOverview.horizontalHeader().setHighlightSections(False)        
-        #self.ui.tableOverview.verticalHeader().hide()
+        self.ui.tableOverview.verticalHeader().hide()
+        self.ui.tableOverview.setSortingEnabled(False)
         
         self.headerFont = QtGui.QFont('Sans Serif', 10)
         self.ui.tableOverview.horizontalHeader().setFont(self.headerFont)
@@ -129,14 +130,14 @@ class OverviewDock(QtGui.QDockWidget):
     def updateView(self, unit, index, state):
         """Highlight the row of current unit index."""
         # TODO: must convert index to row in order to highlight the correct unit.
-        # (Not done)
-        #self.indexToUpdate = index
-        #self.ui.tableOverview.selectRow(index)
-##        # display unit status on note column.
-##        if (state):
-##            noteItem = self.ui.tableOverview.item(row, 3)
-##            item = QtGui.QTableWidgetItem(self.stateString(state))
-##            self.ui.tableOverview.setItem(self.indexToUpdate, 3, item)
+        # (Not done yet)
+        self.indexToUpdate = index
+        self.ui.tableOverview.selectRow(index)
+        # display unit status on note column.
+        if (state):
+            noteItem = self.ui.tableOverview.item(index, 3)
+            item = QtGui.QTableWidgetItem(self.stateString(state))
+            self.ui.tableOverview.setItem(self.indexToUpdate, 3, item)
     
     def stateString(self, state):
         status = ""

@@ -32,6 +32,11 @@ class World:
         self.target = 2
         self.comment = 4
         
+        self.searchForward = 1
+        self.searchBackward = 2
+        self.searchStatic = 4
+        
+        
         self.settingOrg = "WordForge"
         self.settingApp = "Translation Editor"
         

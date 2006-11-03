@@ -49,7 +49,16 @@ class TUview(QtGui.QDockWidget):
         self.connect(self._actionShow, QtCore.SIGNAL("triggered()"), self.show)        
         self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.setReadyForSave)
         self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
-
+        
+        # create highlight font
+        self.highlightFormat = QtGui.QTextCharFormat()
+        #self.highlightFormat.setFontWeight(QtGui.QFont.Bold)
+        #self.highlightFormat.setForeground(QtCore.Qt.darkMagenta)
+        #self.highlightFormat.setForeground(QtCore.Qt.white)
+        self.highlightFormat.setBackground(QtGui.QColor(55, 218, 123))
+        self.highlightRange = QtGui.QTextLayout.FormatRange()
+        self.highlightRange.format = self.highlightFormat
+        
     def closeEvent(self, event):
         """when close button is click, change caption to "Show Detail"""
         self._actionShow.setText(self.tr("Show Detail"))
@@ -152,40 +161,27 @@ class TUview(QtGui.QDockWidget):
         self.ui.txtTarget.insertPlainText(self.ui.txtSource.toPlainText())
         self.ui.txtTarget.document().setModified()
 
-    def highlightSearch(self, container, location):
+    def highlightSearch(self, receiver, position, length = 0):
         """HighLight on source or target depending on container, and location (offset, and length)"""
         # search not found
-        if (not location):
-            try:
-                self.layout.clearAdditionalFormats()
-                self.ui.txtSource.update()
-                self.ui.txtTarget.update()
-            except:
-                pass
-        if (container == self.world.source):
+##        if (not position):
+##            try:
+##                self.layout.clearAdditionalFormats()
+##                self.ui.txtSource.update()
+##                self.ui.txtTarget.update()
+##            except:
+##                pass
+        if (receiver == self.world.source):
             container = self.ui.txtSource
-        elif (container == self.world.target):
+        elif (receiver == self.world.target):
             container = self.ui.txtTarget
         else:
             return
-        offsetindoc = location[0]
-        length = location[1]
-        overrides = []
-        charformat = QtGui.QTextCharFormat()
-        charformat.setFontWeight(QtGui.QFont.Bold)
-        charformat.setForeground(QtCore.Qt.darkMagenta)                
-        block = container.document().findBlock(offsetindoc)        
-        offsetinblock = offsetindoc - block.position()
-        range = QtGui.QTextLayout.FormatRange()
-        range.start = offsetinblock
-        range.length = length
-        range.format = charformat
-        self.layout = block.layout()
-        text = block.text()
-        overrides.append(range)
-        self.layout.setAdditionalFormats(overrides)
-        block.document().markContentsDirty(block.position(), block.length())               
-    
+        block = container.document().findBlock(position)
+        self.highlightRange.start = position
+        self.highlightRange.length = length
+        block.layout().setAdditionalFormats([self.highlightRange])
+
     def selectCut(self):
         self.ui.txtSource.cut()        
                 

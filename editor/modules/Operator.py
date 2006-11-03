@@ -38,7 +38,10 @@ class Operator(QtCore.QObject):
         self.world = World()
         # filter flags
         self.filter = self.world.fuzzy + self.world.translated + self.world.untranslated
-        self.world.untranslated
+        # search function's variables
+        self.searchReached = False
+        self.foundPosition = -1
+        self.lastI = 0
 
     def getUnits(self, fileName):
         self.fileName = fileName
@@ -114,6 +117,8 @@ class Operator(QtCore.QObject):
             self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), True, True)
             self.middleUnit = True
         
+        # tell search it is not reached end or start of file.
+        self.searchReached = False
         currentIndex = self.getCurrentIndex()
         currentUnit = self.store.units[currentIndex]
         currentState = self.status.getStatus(currentUnit)
@@ -311,158 +316,90 @@ class Operator(QtCore.QObject):
         self._modified = True
         self.emitUpdateUnit()
         self.emitStatus()
-
-    def setSearchOptions(self, options):
-        """set location to search, direction, matchcase, and searching text"""
-        self._sourcesearch = options[0]
-        self._targetsearch = options[1]
-        self._commentsearch = options[2]
-        self._matchcase = options[3]
-        self._forward = options[4]
-        self._text = options[5]
-
-    def startSearch(self, options):
-        """set options to start searching when input"""
-        self._searchFound = False
-        self._cycled = False        
-        self._insource = True
-        self._incomment = False
-        self._intarget = False                
-        self.setSearchOptions(options)
-        if (self._forward):
-            self._offset = -1
-            self.searchNext(options)
-        else:
-            self._offset = 0
-            self.searchPrevious(options)
-
-    def searchNext(self, options): 
-        self.setSearchOptions(options)
-        unitpointer = self._unitpointer
-        startingpoint = self._unitpointer
-        while (unitpointer != None and (unitpointer < len(self.filteredList) and unitpointer > -1)):
-            unitpointer = self.search(self._offset + 1, unitpointer)
-            if ( unitpointer >  len(self.filteredList) - 1):
-                unitpointer = 0
-                self._cycled = True
-            if (unitpointer == startingpoint and self._cycled and not self._searchFound):
-                self.emitSearchNotFound()
-                break
-            
-    def searchPrevious(self, options):        
-        self.setSearchOptions(options)
-        unitpointer = self._unitpointer
-        startingpoint = self._unitpointer        
-        if (self._offset == 0):
-            if (self._unitpointer != 0):
-                if (self._insource):
-                    unitpointer = self._unitpointer - 1
-                self.setFlagsPrevious()
-            else:
-                if (not self._insource):
-                    self.setFlagsPrevious()
-                else:
-                    unitpointer = len(self.filteredList) - 1
-        
-        while (unitpointer != None and (unitpointer < len(self.filteredList) and unitpointer > -1)):            
-            unitpointer = self.search(self._offset - 1, unitpointer)            
-            if ( unitpointer < 0 and unitpointer != None):                
-                unitpointer =   len(self.filteredList) - 1
-                self._cycled = True
-            if (unitpointer == startingpoint and self._cycled and not self._searchFound):
-                self.emitSearchNotFound()
-                break
-            
-    def search(self, offset, unitpointer):
-        temp = None
-        if (self.filteredList):
-            searchString = ''
-            if (self._sourcesearch and self._insource):
-                searchString = self.store.units[self.filteredList[unitpointer]].source
-
-            if (self._commentsearch and self._incomment):
-                searchString = self.store.units[self.filteredList[unitpointer]].getnotes()
-
-            if (self._targetsearch and self._intarget):                
-                searchString = self.store.units[self.filteredList[unitpointer]].target
-
-            temp = self.searchedIndex(offset, searchString)
-        # when found in source, comment or target, it will emit signal
-        # in order to go to highlight place and put highlight.
-        if (temp != -1 and temp != None):
-            self._searchFound = True
-            self._offset = temp
-            self._unitpointer = unitpointer
-            if (self._insource):
-                self.emitSearchFound(self.world.source)
-            if (self._incomment):
-                self.emitSearchFound(self.world.comment)
-            if (self._intarget):
-                self.emitSearchFound(self.world.target)
-            return None
-        
-        # when search not found, it will decrease/increase unit depending on search previous or next
-        if (temp == -1 or temp == None):
-            if (self._forward):                
-                if (self._intarget):
-                    unitpointer += 1                    
-                self._offset = -1
-                self.setFlagsNext()
-            else:
-                if (self._insource):
-                    unitpointer -= 1                    
-                self.setFlagsPrevious()
-                self._offset = 0
-            return unitpointer
-            
-    def setFlagsPrevious(self):        
-        if (self._intarget):
-            self._incomment = True
-            self._intarget = False                  
-            self._insource = False
-        elif (self._incomment):                        
-            self._insource = True
-            self._incomment = False
-            self._intarget = False
-        else:     
-            self._intarget = True
-            self._incomment = False
-            self._insource = False
-
-    def setFlagsNext(self):
-        if (self._insource):
-            self._incomment = True
-            self._insource = False
-            self._intarget = False
-        elif (self._incomment):          
-            self._intarget = True
-            self._insource = False
-            self._incomment = False
-        else:
-            self._insource = True
-            self._incomment = False
-            self._intarget = False
-
-    def searchedIndex(self, offset, stringofunit):
-        """get string that it will be searched in, and position to search from"""
-        if (self._matchcase):
-            regexp = QtCore.QRegExp(self._text)
-        else:
-            regexp = QtCore.QRegExp(self._text, QtCore.Qt.CaseInsensitive)
-
-        if (self._forward):
-            temp = regexp.indexIn(stringofunit, offset)
-        else:
-            temp = regexp. lastIndexIn(stringofunit, offset)
-        self._matchlength = regexp.matchedLength()
-        return temp 
-            
-    def emitSearchFound(self, container):
-        """emit signal searchFound with the a list of position the search found, and length in source"""
-        self.emitCurrentUnit()
-        self.emit(QtCore.SIGNAL("searchResult"), container, [self._offset, self._matchlength])
     
-    def emitSearchNotFound(self):
-        """emit signal search not found in order to unhighlight"""
-        self.emit(QtCore.SIGNAL("searchResult"), None, None)
-        self.emit(QtCore.SIGNAL("generalInfo"), "search not found")    
+    def searchString(self, searchText, matchCase, searchDirection, container):
+        """Search the whole units for searchText, when found emit searchResult signal."""
+        # TODO: search in all fields, now work only in source
+        # skip if no text to search for
+        if (not searchText):
+            return
+        if (searchDirection == self.world.searchForward):
+            direction = 1
+        elif (searchDirection == self.world.searchBackward):
+            direction = -1
+        if (matchCase):
+            regexp = QtCore.QRegExp(searchText)
+        else:
+            regexp = QtCore.QRegExp(searchText, QtCore.Qt.CaseInsensitive)
+        startPoint = self._unitpointer
+        if (self.searchReached):
+            if (searchDirection == self.world.searchForward):
+                startPoint = 0
+            else:
+                startPoint = len(self.filteredList) - 1
+            self.searchReached = False
+        while (startPoint >= 0) and (startPoint < len(self.filteredList)):
+            unitIndex = self.filteredList[startPoint]
+            # construct list of mainString
+            mainStringList = []
+            receiverList = []
+            if (container & self.world.source):
+                mainStringList.append(QtCore.QString(self.store.units[unitIndex].source))
+                receiverList.append(self.world.source)
+            if (container & self.world.target):
+                mainStringList.append(QtCore.QString(self.store.units[unitIndex].target))
+                receiverList.append(self.world.target)
+            if (container & self.world.comment):
+                mainStringList.append(QtCore.QString(self.store.units[unitIndex].getnotes()))
+                receiverList.append(self.world.comment)
+            
+            for i in range(self.lastI, len(mainStringList)):
+                mainString = mainStringList[i]            
+                # get the index of string where searchText is found.
+                if (searchDirection == self.world.searchForward):
+                    self.foundPosition = regexp.indexIn(mainString, self.foundPosition + 1)
+                elif (searchDirection == self.world.searchBackward):
+                    firstFound = self.foundPosition
+                    self.foundPosition = regexp.lastIndexIn(mainString, self.foundPosition - 1)
+                    secondFound = self.foundPosition
+                    # fix bug that it would go up one unit before, when search string found at pos 0
+                    # if still find the same thing, assume it does not find.
+                    if (firstFound == secondFound):
+                        self.foundPosition = -1
+                else:
+                    self.foundPosition = regexp.lastIndexIn(mainString)
+                # break "for" when found
+                if (self.foundPosition >= 0):
+                    self.lastI = i
+                    foundLength = len(searchText)
+                    # send current unit signal when found
+                    self._unitpointer = startPoint
+                    self.emitCurrentUnit()
+                    self.emit(QtCore.SIGNAL("searchResult"), receiverList[i], self.foundPosition, foundLength)
+                    self.emit(QtCore.SIGNAL("generalInfo"), "")
+                    break
+                else:
+                    # search in new mainString starts with -1
+                    self.foundPosition = -1
+            else:
+                # have searched in all containers
+                self.lastI = 0
+            # break "while" when found
+            if (self.foundPosition >= 0):
+                break
+            # go to next/previous unit
+            startPoint += direction
+        else:
+            if (searchDirection == self.world.searchBackward):
+                message = self.tr("Search has reached the start of document.")
+                self.searchReached = True
+            else:
+                message = self.tr("Search has reached the end of document.")
+                self.searchReached = True
+            self.emit(QtCore.SIGNAL("generalInfo"), message)
+            
+##            if (searchDirection == self.world.searchForward):
+##                resumeRange = range(self.lastI, len(mainStringList))
+##            else:
+##                resumeRange = range(len(mainStringList) - 1, self.lastI - 1, -1)
+##            # resume search from "lastI" and "self.foundPosition"

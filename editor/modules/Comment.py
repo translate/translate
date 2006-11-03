@@ -48,6 +48,12 @@ class CommentDock(QtGui.QDockWidget):
         self.connect(self._actionShow, QtCore.SIGNAL("triggered()"), self.show)
         self.connect(self.ui.txtComment, QtCore.SIGNAL("textChanged ()"), self.setReadyForSave)
         
+        # create highlight font
+        self.highlightFormat = QtGui.QTextCharFormat()
+        self.highlightFormat.setBackground(QtGui.QColor(55, 218, 123))        
+        self.highlightRange = QtGui.QTextLayout.FormatRange()
+        self.highlightRange.format = self.highlightFormat
+        
     def closeEvent(self, event):            
         self._actionShow.setText(self.tr("Show Comment"))
         # FIXME you need to call the parents implementation here. Jens
@@ -74,37 +80,21 @@ class CommentDock(QtGui.QDockWidget):
         if self.ui.txtComment.document().isModified():
             self.emit(QtCore.SIGNAL("commentChanged"), self.ui.txtComment.toPlainText())
 
-    def getCommentToHighLight(self):                        
-        self.emit(QtCore.SIGNAL("highLight"), self.ui.txtComment.document())
-  
-    def setHighLightComment(self, container, location):
-        '''HighLight on comment depending on location (offset, and length)'''
+    def highlightSearch(self, receiver, position, length = 0):
+        '''Highlight on comment depending on location (offset, and length)'''
         # search not found
-        if (not location):
-            try:
-                self.layout.clearAdditionalFormats()
-                self.ui.txtComment.update()
-            except:
-                pass
-        if (container != self.world.comment):
+##        if (not position):
+##            try:
+##                self.layout.clearAdditionalFormats()
+##                self.ui.txtComment.update()
+##            except:
+##                pass
+        if (receiver != self.world.comment):
             return
-        offsetindoc = location[0]
-        length = location[1]
-        overrides = []        
-        charformat = QtGui.QTextCharFormat()
-        charformat.setFontWeight(QtGui.QFont.Bold)
-        charformat.setForeground(QtCore.Qt.darkMagenta)        
-        block = self.ui.txtComment.document().findBlock(offsetindoc)        
-        offsetinblock = offsetindoc - block.position()
-        range = QtGui.QTextLayout.FormatRange()
-        range.start = offsetinblock
-        range.length = length
-        range.format = charformat
-        self.layout = block.layout()
-        text = block.text()
-        overrides.append(range)
-        self.layout.setAdditionalFormats(overrides)
-        block.document().markContentsDirty(block.position(), block.length())
+        block = self.ui.txtComment.document().findBlock(position)
+        self.highlightRange.start = position
+        self.highlightRange.length = length
+        block.layout().setAdditionalFormats([self.highlightRange])
 
     def setReadyForSave(self):
       self.emit(QtCore.SIGNAL("readyForSave"), True)

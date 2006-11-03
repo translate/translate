@@ -30,6 +30,9 @@
      <property name="enabled" >
       <bool>false</bool>
      </property>
+     <property name="tabKeyNavigation" >
+      <bool>false</bool>
+     </property>
      <property name="alternatingRowColors" >
       <bool>true</bool>
      </property>

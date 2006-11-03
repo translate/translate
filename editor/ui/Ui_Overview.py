@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Mon Oct 23 17:11:30 2006
+# Created: Fri Oct 27 15:29:34 2006
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -23,6 +23,7 @@ class Ui_Form(object):
 
         self.tableOverview = QtGui.QTableWidget(Form)
         self.tableOverview.setEnabled(False)
+        self.tableOverview.setTabKeyNavigation(False)
         self.tableOverview.setAlternatingRowColors(True)
         self.tableOverview.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
         self.tableOverview.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
