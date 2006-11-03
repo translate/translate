@@ -25,7 +25,7 @@
 
 import sys
 from PyQt4 import QtCore, QtGui
-from ui.FindUI import Ui_Form
+from ui.Ui_Find import Ui_Form
 
 class Find(QtGui.QDockWidget):
     def __init__(self):

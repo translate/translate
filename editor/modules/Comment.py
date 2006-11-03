@@ -25,7 +25,7 @@
 
 import sys
 from PyQt4 import QtCore, QtGui
-from ui.CommentUI import Ui_frmComment
+from ui.Ui_Comment import Ui_frmComment
 from modules.World import World
 
 class CommentDock(QtGui.QDockWidget):

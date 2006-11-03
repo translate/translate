@@ -24,7 +24,7 @@
 
 import sys
 from PyQt4 import QtCore, QtGui
-from ui.TUviewUI import Ui_TUview
+from ui.Ui_TUview import Ui_TUview
 from modules.World import World
 
 class TUview(QtGui.QDockWidget):
