@@ -91,15 +91,15 @@ class OverviewDock(QtGui.QDockWidget):
         normalState = QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
         self.setUpdatesEnabled(False)
         for unit in units:
-            item0 = QtGui.QTableWidgetItem(str(i).rjust(4))
-            item1 = QtGui.QTableWidgetItem(unit.source)
+            item0 = QtGui.QTableWidgetItem(str(i).rjust(4))            
+            item1 = QtGui.QTableWidgetItem(unit.source)            
             item2 = QtGui.QTableWidgetItem(unit.target)
             item3 = QtGui.QTableWidgetItem(self.stateString(unitsStatus[i]))
             item0.setTextAlignment(QtCore.Qt.AlignCenter)
             item0.setFlags(normalState)
             item1.setFlags(normalState)
             item2.setFlags(normalState)
-            item3.setFlags(normalState)
+            item3.setFlags(normalState)            
             self.ui.tableOverview.setItem(i, 0, item0)
             self.ui.tableOverview.setItem(i, 1, item1)
             self.ui.tableOverview.setItem(i, 2, item2)

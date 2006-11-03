@@ -78,18 +78,9 @@ class Operator(QtCore.QObject):
 ##            self.emit(QtCore.SIGNAL("setColor"), id, self.world.fuzzy)
 
 
-    def updateNewHeader(self, othercomments, header):
+    def updateNewHeader(self, othercomments, headerDic):
           """will update header when ok button in Header Editor is clicked or auto Header is on and save is triggered"""
-##          if (len(header) != 0):    
-##              import os
-##              translator = header[0] + '<' + header[1] + '>'
-##              language = header[2]+ '<' + header[4] + '>'
-##              path, fileName = os.path.split(self.fileName)
- 
-##          if (callable(getattr(self.store, "makeheader", None))):
-##            poHeader = self.store.makeheader(charset="CHARSET", encoding="ENCODING", project_id_version=fileName, pot_creation_date=None, po_revision_date=None, last_translator=translator, language_team=language, mime_version=None, plural_forms=None, report_msgid_bugs_to=None)
-##            self.store.updateheader(charset="CHARSET", encoding="ENCODING", project_id_version=fileName, pot_creation_date=None, po_revision_date=None, last_translator=translator, language_team=language, mime_version=None, plural_forms=None, report_msgid_bugs_to=None)
-          headerDic= po.poheader.parse(header)
+##          headerDic= po.poheader.parse(header)
           print type(headerDic), headerDic
           self.store.updateheader(self.store.units[0].target, True, headerDic)
 ##        print poHeader
@@ -218,7 +209,8 @@ class Operator(QtCore.QObject):
 
     def emitHeaderInfo(self):
         """sending Header and comment of Header"""
-        self.emit(QtCore.SIGNAL("headerInfo"),self.store.units[0].othercomments,self.store.units[0].target)
+        headerDic= po.poheader.parse(self.store.units[0].target)
+        self.emit(QtCore.SIGNAL("headerInfo"),self.store.units[0].othercomments,headerDic)
         
     def previous(self):
         """move to previous unit inside the filtered list."""
