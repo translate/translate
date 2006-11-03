@@ -739,12 +739,12 @@ class StandardChecker(TranslationChecker):
   def xmltags(self, str1, str2):
     """checks that XML/HTML tags have not been translated"""
     str1 = prefilters.removekdecomments(str1)
-    tags = sre.findall("<[^>]+>", str1)
-    if len(tags) > 0:
-      if (len(tags[0]) == len(str1)) and not "=" in tags[0]:
+    tags1 = sre.findall("<[^>]+>", str1)
+    if len(tags1) > 0:
+      if (len(tags1[0]) == len(str1)) and not "=" in tags1[0]:
         return True
       tags2 = sre.findall("<[^>]+>", str2)
-      properties1 = tagproperties(tags, self.config.ignoretags)
+      properties1 = tagproperties(tags1, self.config.ignoretags)
       properties2 = tagproperties(tags2, self.config.ignoretags)
       filtered1 = []
       filtered2 = []
@@ -759,9 +759,8 @@ class StandardChecker(TranslationChecker):
     else:
       # No tags in str1, let's just check that none were added in str2. This 
       # might be useful for fuzzy strings wrongly unfuzzied, for example.
-      str2 = prefilters.removekdecomments(str2)
-      tags = sre.findall("<[^>]+>", str2)
-      if len(tags) > 0:
+      tags2 = sre.findall("<[^>]+>", str2)
+      if len(tags2) > 0:
         return False
     return True
 
