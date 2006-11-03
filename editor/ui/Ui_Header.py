@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Wed Oct 18 17:05:14 2006
+# Created: Fri Nov  3 09:32:24 2006
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -25,13 +25,6 @@ class Ui_frmHeader(object):
         self.label = QtGui.QLabel(frmHeader)
         self.label.setObjectName("label")
         self.gridlayout.addWidget(self.label,0,0,1,1)
-
-        self.txtHeader = QtGui.QTextEdit(frmHeader)
-        self.txtHeader.setEnabled(True)
-        self.txtHeader.setMouseTracking(False)
-        self.txtHeader.setReadOnly(True)
-        self.txtHeader.setObjectName("txtHeader")
-        self.gridlayout.addWidget(self.txtHeader,3,0,1,1)
 
         self.txtOtherComments = QtGui.QTextEdit(frmHeader)
         self.txtOtherComments.setObjectName("txtOtherComments")
@@ -67,6 +60,10 @@ class Ui_frmHeader(object):
         self.hboxlayout.addWidget(self.cancelButton)
         self.gridlayout.addLayout(self.hboxlayout,4,0,1,1)
 
+        self.tableHeader = QtGui.QTableWidget(frmHeader)
+        self.tableHeader.setObjectName("tableHeader")
+        self.gridlayout.addWidget(self.tableHeader,3,0,1,1)
+
         self.retranslateUi(frmHeader)
         QtCore.QObject.connect(self.okButton,QtCore.SIGNAL("clicked()"),frmHeader.accept)
         QtCore.QObject.connect(self.cancelButton,QtCore.SIGNAL("clicked()"),frmHeader.reject)
@@ -83,3 +80,16 @@ class Ui_frmHeader(object):
         self.applyButton.setText(self.tr("Apply Settings"))
         self.okButton.setText(self.tr("OK"))
         self.cancelButton.setText(self.tr("Cancel"))
+        self.tableHeader.setColumnCount(2)
+        self.tableHeader.clear()
+        self.tableHeader.setColumnCount(2)
+        self.tableHeader.setRowCount(0)
+
+
+if __name__ == "__main__":
+    app = QtGui.QApplication(sys.argv)
+    frmHeader = QtGui.QDialog()
+    ui = Ui_frmHeader()
+    ui.setupUi(frmHeader)
+    frmHeader.show()
+    sys.exit(app.exec_())

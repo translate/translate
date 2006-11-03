@@ -35,19 +35,6 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="0" >
-    <widget class="QTextEdit" name="txtHeader" >
-     <property name="enabled" >
-      <bool>true</bool>
-     </property>
-     <property name="mouseTracking" >
-      <bool>false</bool>
-     </property>
-     <property name="readOnly" >
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="0" >
     <widget class="QTextEdit" name="txtOtherComments" />
    </item>
@@ -111,6 +98,15 @@
       </widget>
      </item>
     </layout>
+   </item>
+   <item row="3" column="0" >
+    <widget class="QTableWidget" name="tableHeader" >
+     <property name="columnCount" >
+      <number>2</number>
+     </property>
+     <column/>
+     <column/>
+    </widget>
    </item>
   </layout>
  </widget>
