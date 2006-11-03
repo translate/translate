@@ -756,6 +756,13 @@ class StandardChecker(TranslationChecker):
       #TODO: consider the consequences of different ordering of attributes/tags
       if filtered1 != filtered2:
         return False
+    else:
+      # No tags in str1, let's just check that none were added in str2. This 
+      # might be useful for fuzzy strings wrongly unfuzzied, for example.
+      str2 = prefilters.removekdecomments(str2)
+      tags = sre.findall("<[^>]+>", str2)
+      if len(tags) > 0:
+        return False
     return True
 
   def kdecomments(self, str1, str2):
