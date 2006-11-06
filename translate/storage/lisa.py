@@ -274,7 +274,8 @@ class LISAfile(base.TranslationStore):
     def parsestring(cls, storestring):
         """Parses the string to return the correct file object"""
         newstore = cls()
-        newstore.parse(storestring)
+        if storestring:
+            newstore.parse(storestring)
         return newstore
     parsestring = classmethod(parsestring)
 
