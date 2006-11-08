@@ -121,15 +121,13 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.headerDialog, QtCore.SIGNAL("updateHeader"), self.operator.updateNewHeader)
 
         # create Find widget and connect signals related to it        
-        self.findBar = Find()      
-        self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.findBar)              
+        self.findBar = Find()
+        self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.findBar)
         self.connect(self.ui.actionFind, QtCore.SIGNAL("triggered()"), self.findBar.showFind)
         self.connect(self.ui.actionReplace, QtCore.SIGNAL("triggered()"), self.findBar.showReplace)
-        # "searchString" send string, matchcase flag, direction flag, and container flag.
-        self.connect(self.findBar, QtCore.SIGNAL("searchString"), self.operator.searchString)
-        #self.connect(self.findBar, QtCore.SIGNAL("startSearch"), self.operator.startSearch)
-        #self.connect(self.findBar, QtCore.SIGNAL("findNext"), self.operator.searchNext)
-        #self.connect(self.findBar, QtCore.SIGNAL("findPrevious"), self.operator.searchPrevious)
+        self.connect(self.findBar, QtCore.SIGNAL("initSearch"), self.operator.initSearch)
+        self.connect(self.findBar, QtCore.SIGNAL("searchNext"), self.operator.searchNext)
+        self.connect(self.findBar, QtCore.SIGNAL("searchPrevious"), self.operator.searchPrevious)
         
         # "searchFound" sends container and location to be highlighted.
         self.connect(self.operator, QtCore.SIGNAL("searchResult"), self.dockTUview.highlightSearch)

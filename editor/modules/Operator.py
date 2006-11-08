@@ -39,9 +39,6 @@ class Operator(QtCore.QObject):
         # filter flags
         self.filter = self.world.fuzzy + self.world.translated + self.world.untranslated
         # search function's variables
-        self.searchReached = False
-        self.foundPosition = -1
-        self.lastI = 0
 
     def getUnits(self, fileName):
         self.fileName = fileName
@@ -108,8 +105,7 @@ class Operator(QtCore.QObject):
             self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), True, True)
             self.middleUnit = True
         
-        # tell search it is not reached end or start of file.
-        self.searchReached = False
+        self.searchPointer = self._unitpointer
         currentIndex = self.getCurrentIndex()
         currentUnit = self.store.units[currentIndex]
         currentState = self.status.getStatus(currentUnit)
@@ -139,7 +135,6 @@ class Operator(QtCore.QObject):
             self.filter += self.world.fuzzy
         elif (not checked) and (self.filter & self.world.fuzzy):
             self.filter -= self.world.fuzzy
-        print self.filter
         self.emitFiltered(self.filter)
         
     def filterTranslated(self, checked):
@@ -148,7 +143,6 @@ class Operator(QtCore.QObject):
             self.filter += self.world.translated
         elif (not checked) and (self.filter & self.world.translated):
             self.filter -= self.world.translated
-        print self.filter
         self.emitFiltered(self.filter)
         
     def filterUntranslated(self, checked):
@@ -157,7 +151,6 @@ class Operator(QtCore.QObject):
             self.filter = self.filter | self.world.untranslated
         elif (self.filter & self.world.untranslated):
             self.filter -= self.world.untranslated
-        print self.filter
         self.emitFiltered(self.filter)
 
     def emitFiltered(self, filter):
@@ -309,89 +302,82 @@ class Operator(QtCore.QObject):
         self.emitUpdateUnit()
         self.emitStatus()
     
-    def searchString(self, searchText, matchCase, searchDirection, container):
-        """Search the whole units for searchText, when found emit searchResult signal."""
-        # TODO: search in all fields, now work only in source
-        # skip if no text to search for
-        if (not searchText):
-            return
-        if (searchDirection == self.world.searchForward):
-            direction = 1
-        elif (searchDirection == self.world.searchBackward):
-            direction = -1
-        if (matchCase):
-            regexp = QtCore.QRegExp(searchText)
+    def initSearch(self, searchString, searchableText, matchCase):
+        self.searchPointer = self._unitpointer
+        self.currentContainer = 0
+        self.foundPosition = -1
+        self.searchString = str(searchString)
+        self.searchableText = self.world.searchableText
+        if (not matchCase):
+            self.matchCase = False
+            self.searchString = self.searchString.lower()
         else:
-            regexp = QtCore.QRegExp(searchText, QtCore.Qt.CaseInsensitive)
-        startPoint = self._unitpointer
-        if (self.searchReached):
-            if (searchDirection == self.world.searchForward):
-                startPoint = 0
-            else:
-                startPoint = len(self.filteredList) - 1
-            self.searchReached = False
-        while (startPoint >= 0) and (startPoint < len(self.filteredList)):
-            unitIndex = self.filteredList[startPoint]
-            # construct list of mainString
-            mainStringList = []
-            receiverList = []
-            if (container & self.world.source):
-                mainStringList.append(QtCore.QString(self.store.units[unitIndex].source))
-                receiverList.append(self.world.source)
-            if (container & self.world.target):
-                mainStringList.append(QtCore.QString(self.store.units[unitIndex].target))
-                receiverList.append(self.world.target)
-            if (container & self.world.comment):
-                mainStringList.append(QtCore.QString(self.store.units[unitIndex].getnotes()))
-                receiverList.append(self.world.comment)
-            
-            for i in range(self.lastI, len(mainStringList)):
-                mainString = mainStringList[i]            
-                # get the index of string where searchText is found.
-                if (searchDirection == self.world.searchForward):
-                    self.foundPosition = regexp.indexIn(mainString, self.foundPosition + 1)
-                elif (searchDirection == self.world.searchBackward):
-                    firstFound = self.foundPosition
-                    self.foundPosition = regexp.lastIndexIn(mainString, self.foundPosition - 1)
-                    secondFound = self.foundPosition
-                    # fix bug that it would go up one unit before, when search string found at pos 0
-                    # if still find the same thing, assume it does not find.
-                    if (firstFound == secondFound):
-                        self.foundPosition = -1
-                else:
-                    self.foundPosition = regexp.lastIndexIn(mainString)
-                # break "for" when found
-                if (self.foundPosition >= 0):
-                    self.lastI = i
-                    foundLength = len(searchText)
-                    # send current unit signal when found
-                    self._unitpointer = startPoint
-                    self.emitCurrentUnit()
-                    self.emit(QtCore.SIGNAL("searchResult"), receiverList[i], self.foundPosition, foundLength)
-                    self.emit(QtCore.SIGNAL("generalInfo"), "")
-                    break
-                else:
-                    # search in new mainString starts with -1
-                    self.foundPosition = -1
-            else:
-                # have searched in all containers
-                self.lastI = 0
-            # break "while" when found
+            self.matchCase = True
+
+    def searchFound(self):
+        self._unitpointer = self.searchPointer
+        self.emitCurrentUnit()
+        container = self.searchableText[self.currentContainer]
+        self.emit(QtCore.SIGNAL("searchResult"), container, self.foundPosition, len(self.searchString))
+        self.emit(QtCore.SIGNAL("generalInfo"), "")
+
+    def searchNext(self):
+        while (self.searchPointer < len(self.filteredList)):
+            unitString = self.getUnitString(self.searchableText)
+            self.foundPosition = unitString.find(self.searchString, self.foundPosition + 1)
+            # found in current container
             if (self.foundPosition >= 0):
+                self.searchFound()
                 break
-            # go to next/previous unit
-            startPoint += direction
-        else:
-            if (searchDirection == self.world.searchBackward):
-                message = self.tr("Search has reached the start of document.")
-                self.searchReached = True
             else:
-                message = self.tr("Search has reached the end of document.")
-                self.searchReached = True
-            self.emit(QtCore.SIGNAL("generalInfo"), message)
+                # next container
+                if (self.currentContainer < len(self.searchableText) - 1):
+                    self.currentContainer += 1
+                    continue
+                # next unit
+                else:
+                    self.currentContainer = 0
+                    self.searchPointer += 1
+        else:
+            # exhausted
+            self.emit(QtCore.SIGNAL("generalInfo"), "Search has reached end of document")
+
+    def searchPrevious(self):
+        while (self.searchPointer > 0):
+            unitString = self.getUnitString(self.searchableText)
+            self.foundPosition = unitString.rfind(self.searchString, 0, self.foundPosition)
+            # found in current container
+            if (self.foundPosition >= 0):
+                self.searchFound()
+                break
+            else:
+                # previous container
+                if (self.currentContainer > 0):
+                    self.currentContainer -= 1
+                    unitString = self.getUnitString(self.searchableText)
+                    self.foundPosition = len(unitString)
+                    continue
+                # previous unit
+                else:
+                    self.currentContainer = len(self.searchableText) - 1
+                    self.searchPointer -= 1
+                unitString = self.getUnitString(self.searchableText)
+                self.foundPosition = len(unitString)
+        else:
+            # exhausted
+            self.emit(QtCore.SIGNAL("generalInfo"), "Search has reached start of document")
             
-##            if (searchDirection == self.world.searchForward):
-##                resumeRange = range(self.lastI, len(mainStringList))
-##            else:
-##                resumeRange = range(len(mainStringList) - 1, self.lastI - 1, -1)
-##            # resume search from "lastI" and "self.foundPosition"
+    def getUnitString(self, searchableText):
+        container = searchableText[self.currentContainer]
+        unitIndex = self.filteredList[self.searchPointer]
+        if (container == self.world.source):
+            unitString = self.store.units[unitIndex].source
+        elif (container == self.world.target):
+            unitString = self.store.units[unitIndex].target
+        elif (container == self.world.comment):
+            unitString = self.store.units[unitIndex].getnotes()
+        else:
+            return
+        if (not self.matchCase):
+            unitString = unitString.lower()
+        return unitString

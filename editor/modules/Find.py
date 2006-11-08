@@ -40,6 +40,7 @@ class Find(QtGui.QDockWidget):
         self.forward = True        
         self.setVisible(False)
         
+        self.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
         self.world = World()
         
         # create action for show/hide
@@ -75,10 +76,11 @@ class Find(QtGui.QDockWidget):
             self.ui.findNext.setEnabled(False)
             self.ui.findPrevious.setEnabled(False)          
         
-##        if self.ui.lineEdit.isModified():        
-##            searchStr = self.ui.lineEdit.text()
-##            self.emit(QtCore.SIGNAL("searchString"), searchStr, self.matchcase, self.world.searchStatic, self.filter)
-##            self.ui.lineEdit.setModified(False)        
+        if self.ui.lineEdit.isModified():        
+            searchString = self.ui.lineEdit.text()
+            self.emit(QtCore.SIGNAL("initSearch"), searchString, self.world.source, self.matchcase)
+            #self.emit(QtCore.SIGNAL("searchString"), searchString, self.matchcase, self.world.searchStatic, self.filter)
+            self.ui.lineEdit.setModified(False)        
         
     def emitSeachInSource(self):        
         if (not self.checkBoxCheckedStatus()):
@@ -128,13 +130,15 @@ class Find(QtGui.QDockWidget):
             return True
     
     def findNext(self):
-        searchStr = self.ui.lineEdit.text()
-        self.emit(QtCore.SIGNAL("searchString"), searchStr, self.matchcase, self.world.searchForward, self.filter)
+        #searchStr = self.ui.lineEdit.text()
+        self.emit(QtCore.SIGNAL("searchNext"))
+        #self.emit(QtCore.SIGNAL("searchString"), searchStr, self.matchcase, self.world.searchForward, self.filter)
         self.ui.lineEdit.setFocus()
     
     def findPrevious(self):
         searchStr = self.ui.lineEdit.text()
-        self.emit(QtCore.SIGNAL("searchString"), searchStr, self.matchcase, self.world.searchBackward, self.filter)
+        self.emit(QtCore.SIGNAL("searchPrevious"))
+        #self.emit(QtCore.SIGNAL("searchString"), searchStr, self.matchcase, self.world.searchBackward, self.filter)
         self.ui.lineEdit.setFocus()
     
     def showFind(self):

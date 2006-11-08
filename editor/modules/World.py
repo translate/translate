@@ -31,6 +31,7 @@ class World:
         self.source = 1
         self.target = 2
         self.comment = 4
+        self.searchableText = [self.source, self.target, self.comment]
         
         self.searchForward = 1
         self.searchBackward = 2
