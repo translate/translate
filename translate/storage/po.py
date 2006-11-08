@@ -748,6 +748,23 @@ class poheader:
     return header
   update = classmethod(update)
 
+  def getheaderplural(cls, header):
+    """returns the nplural and plural values from the header"""
+    pluralformvalue = header.get('Plural-Forms', None)
+    if pluralformvalue is None:
+      return None, None
+    nplural = sre.findall("nplurals=(.+?);", pluralformvalue)
+    plural = sre.findall("plural=(.+?);?$", pluralformvalue)
+    if not nplural or nplural[0] == "INTEGER":
+      nplural = None
+    else:
+      nplural = nplural[0]
+    if not plural or plural[0] == "EXPRESSION":
+      plural = None
+    else:
+      plural = plural[0]
+    return nplural, plural
+  getheaderplural= classmethod(getheaderplural)
 
 class pofile(base.TranslationStore):
   """this represents a .po file containing various units"""
@@ -863,20 +880,7 @@ class pofile(base.TranslationStore):
 
   def getheaderplural(self):
     """returns the nplural and plural values from the header"""
-    pluralformvalue = self.parseheader().get('Plural-Forms', None)
-    if pluralformvalue is None:
-      return None, None
-    nplural = sre.findall("nplurals=(.+?);", pluralformvalue)
-    plural = sre.findall("plural=(.+?);?$", pluralformvalue)
-    if not nplural or nplural[0] == "INTEGER":
-      nplural = None
-    else:
-      nplural = nplural[0]
-    if not plural or plural[0] == "EXPRESSION":
-      plural = None
-    else:
-      plural = plural[0]
-    return nplural, plural
+    return poheader.getheaderplural(self.parseheader())
 
   def changeencoding(self, newencoding):
     """changes the encoding on the file"""
