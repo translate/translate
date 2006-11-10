@@ -86,6 +86,12 @@ class TestPOUnit(test_base.TestTranslationUnit):
         assert str(unit) == '# # Double commented comment\nmsgid "File"\nmsgstr ""\n'
         assert unit.getnotes() == "# Double commented comment"
 
+    def test_adding_empty_note(self):
+        unit = self.UnitClass("bla")
+        assert not '#' in str(unit)
+        unit.addnote("")
+        assert not '#' in str(unit)
+        
     def test_no_plural_settarget(self):
 	"""tests that target handling of file with no plural is correct"""
 	# plain text, no plural test
@@ -368,6 +374,19 @@ msgstr[0] "Sheep"
         assert pofile.units[0].automaticcomments == ["#. automatic comment\n"]
         assert pofile.units[0].sourcecomments == ["#: source comment\n"]
         assert pofile.units[0].typecomments == ["#, fuzzy\n"]
+
+    def test_empty_lines_notes(self):
+        """Tests that empty comment lines are preserved"""
+        posource = r'''# License name
+#
+# license line 1
+# license line 2
+# license line 3
+msgid ""
+msgstr "POT-Creation-Date: 2006-03-08 17:30+0200\n"
+'''
+        pofile = self.poparse(posource)
+        assert str(pofile) == posource
 
     def test_fuzzy(self):
         """checks that fuzzy functionality works as expected"""
