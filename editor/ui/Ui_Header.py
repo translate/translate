@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Fri Nov  3 09:32:24 2006
+# Created: Wed Nov  8 11:46:06 2006
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -61,6 +61,13 @@ class Ui_frmHeader(object):
         self.gridlayout.addLayout(self.hboxlayout,4,0,1,1)
 
         self.tableHeader = QtGui.QTableWidget(frmHeader)
+        self.tableHeader.setMouseTracking(True)
+        self.tableHeader.setFocusPolicy(QtCore.Qt.TabFocus)
+        self.tableHeader.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+        self.tableHeader.setAcceptDrops(False)
+        self.tableHeader.setProperty("showDropIndicator",QtCore.QVariant(True))
+        self.tableHeader.setDragEnabled(False)
+        self.tableHeader.setAlternatingRowColors(True)
         self.tableHeader.setObjectName("tableHeader")
         self.gridlayout.addWidget(self.tableHeader,3,0,1,1)
 

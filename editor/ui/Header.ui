@@ -101,6 +101,27 @@
    </item>
    <item row="3" column="0" >
     <widget class="QTableWidget" name="tableHeader" >
+     <property name="mouseTracking" >
+      <bool>true</bool>
+     </property>
+     <property name="focusPolicy" >
+      <enum>Qt::TabFocus</enum>
+     </property>
+     <property name="contextMenuPolicy" >
+      <enum>Qt::ActionsContextMenu</enum>
+     </property>
+     <property name="acceptDrops" >
+      <bool>false</bool>
+     </property>
+     <property name="showDropIndicator" stdset="0" >
+      <bool>true</bool>
+     </property>
+     <property name="dragEnabled" >
+      <bool>false</bool>
+     </property>
+     <property name="alternatingRowColors" >
+      <bool>true</bool>
+     </property>
      <property name="columnCount" >
       <number>2</number>
      </property>
