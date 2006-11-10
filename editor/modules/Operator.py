@@ -85,20 +85,19 @@ class Operator(QtCore.QObject):
 ##        for i in fuzzyUnits:
 ##            id = self.store.units.index(i)
 ##            self.emit(QtCore.SIGNAL("setColor"), id, self.world.fuzzy)
-
-
+    def makeNewHeader(self, headerDic):
+          """receive headerDic as dictionary, and return header as strig"""
+          header = self.store.makeheader(**headerDic)
+          return po.poheader.parse(str(header))
+          
     def updateNewHeader(self, othercomments, headerDic):
           """will update header when ok button in Header Editor is clicked or auto Header is on and save is triggered
           """
-##          headerDic= po.poheader.parse(header)
-          print type(headerDic), headerDic
-          self.store.updateheader(self.store.units[0].target, True, headerDic)
-##        print poHeader
+          self.store.updateheader(add=True, **headerDic)
 
 
     def emitStatus(self):
-        self.emit(QtCore.SIGNAL("currentStatus"), self.status.statusString())
-        
+        self.emit(QtCore.SIGNAL("currentStatus"), self.status.statusString())        
 
     def emitCurrentUnit(self):
         if (len(self.filteredList) <= 1):
