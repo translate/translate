@@ -85,17 +85,7 @@ class Operator(QtCore.QObject):
 ##        for i in fuzzyUnits:
 ##            id = self.store.units.index(i)
 ##            self.emit(QtCore.SIGNAL("setColor"), id, self.world.fuzzy)
-    def makeNewHeader(self, headerDic):
-          """receive headerDic as dictionary, and return header as strig"""
-          header = self.store.makeheader(**headerDic)
-          return po.poheader.parse(str(header))
-          
-    def updateNewHeader(self, othercomments, headerDic):
-          """will update header when ok button in Header Editor is clicked or auto Header is on and save is triggered
-          """
-          self.store.updateheader(add=True, **headerDic)
-
-
+    
     def emitStatus(self):
         self.emit(QtCore.SIGNAL("currentStatus"), self.status.statusString())        
 
@@ -219,8 +209,20 @@ class Operator(QtCore.QObject):
 
     def emitHeaderInfo(self):
         """sending Header and comment of Header"""
-        headerDic= po.poheader.parse(self.store.units[0].target)
-        self.emit(QtCore.SIGNAL("headerInfo"),self.store.units[0].othercomments,headerDic)
+        headerDic = po.poheader.parse(self.store.units[0].target)
+        self.emit(QtCore.SIGNAL("headerInfo"), self.store.units[0].othercomments, headerDic)
+        
+    def makeNewHeader(self, headerDic):
+          """receive headerDic as dictionary, and return header as string"""
+          header = self.store.makeheader(**headerDic)
+          self.emit(QtCore.SIGNAL("headerGenerated"), po.poheader.parse(str(header)))
+          
+    def updateNewHeader(self, othercomments, headerDic):
+          """will update header when ok button in Header Editor is clicked or auto Header is on and save is triggered"""
+          self.store.units[0].removenotes()
+          self.store.units[0].addnote(str(othercomments))
+          self.store.updateheader(add=True, **headerDic)
+
         
     def previous(self):
         """move to previous unit inside the filtered list."""

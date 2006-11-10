@@ -98,7 +98,11 @@ class Header(QtGui.QDialog):
         lastRow = self.ui.tableHeader.rowCount() +1
         print lastRow,"hello"
         self.ui.tableHeader.insertRow(lastRow)
-   
+    
+    def generatedHeader(self,generated_header):
+        """ slot for headerGenerated"""
+        self.generated_header = generated_header
+        
     def applySettings(self):    
         """set user profile from Qsettings into the tableHeader, all information need filling in"""
         newHeaderDic = {}
@@ -115,7 +119,8 @@ class Header(QtGui.QDialog):
         #if there is no user profile 
         if (self.ui.tableHeader.rowCount() == 1):
             userProfileDic = {'charset':"CHARSET", 'encoding':"ENCODING", 'project_id_version':None, 'pot_creation_date':None, 'po_revision_date':None, 'last_translator':str(Last_Translator), 'language_team':str(Language_Team), 'mime_version':None, 'plural_forms':None, 'report_msgid_bugs_to':None}
-            userProfileDic = self.emit(QtCore.SIGNAL("makeHeader"), userProfileDic)
+            self.emit(QtCore.SIGNAL("makeHeader"), userProfileDic)
+            userProfileDic = self.generated_header
         else:
             self.headerDic['Language-Team'] = str(Language_Team)
             self.headerDic['Last-Translator'] = str(Last_Translator)
