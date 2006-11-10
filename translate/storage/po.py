@@ -276,6 +276,9 @@ class pounit(base.TranslationUnit):
 
   def addnote(self, text, origin=None):
     """This is modeled on the XLIFF method. See xliff.py::xliffunit.addnote"""
+    # We don't want to put in an empty '#' without a real comment:
+    if not text:
+      return
     commentlist = self.othercomments
     linestart = "# "
     if origin in ["programmer", "developer", "source code"]:
