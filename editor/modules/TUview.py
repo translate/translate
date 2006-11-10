@@ -61,10 +61,12 @@ class TUview(QtGui.QDockWidget):
         
     def closeEvent(self, event):
         """when close button is click, change caption to "Show Detail"""
+        # FIXME: comment the param and do not use translated strings in comment
         self._actionShow.setText(self.tr("Show Detail"))
-        # FIXME you need to call the parents implementation here. Jens
+        # FIXME: you need to call the parents implementation here. Jens
         
     def actionShow(self):
+        # FIXME: comment the return value
         return self._actionShow
         
     def show(self):
@@ -102,6 +104,7 @@ class TUview(QtGui.QDockWidget):
         
     def slotNewUnits(self, units):
         """slot after new file was loaded"""
+        #FIXME: comment the param
         if not units:
             self.ui.txtSource.setPlainText("")
             self.ui.txtTarget.setPlainText("")
@@ -114,12 +117,14 @@ class TUview(QtGui.QDockWidget):
     
     def filteredList(self, fList):
         """Adjust the scrollbar maximum according to length of filtered list."""
+        # FIXME: comment the param
         self.indexes = fList
         self.setScrollbarMaximum()
         self.ui.fileScrollBar.setValue(0)
 
     @QtCore.pyqtSignature("int")
     def emitCurrentIndex(self, value):
+        # FIXME: comment the param
         # send the signal only index is new
         if (self.lastValue != value):
             if (self.indexes) and (value < len(self.indexes)):
@@ -128,6 +133,7 @@ class TUview(QtGui.QDockWidget):
     
     def updateView(self, unit, index, state):
         """Update the text in source and target, and set the scrollbar position."""
+        # FIXME: comment the param
         if (unit):
             self.ui.txtSource.setPlainText(unit.source)
             self.ui.txtTarget.setPlainText(unit.target)
@@ -145,6 +151,7 @@ class TUview(QtGui.QDockWidget):
 
     def setTarget(self, target):
         """Change the target text."""
+        # FIXME: comment the param
         self.ui.txtTarget.setPlainText(target)
         
     def checkModified(self):
@@ -163,6 +170,7 @@ class TUview(QtGui.QDockWidget):
 
     def highlightSearch(self, receiver, position, length = 0):
         """HighLight on source or target depending on container, and location (offset, and length)"""
+        # FIXME: comment the param
         # search not found
 ##        if (not position):
 ##            try:

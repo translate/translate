@@ -28,6 +28,13 @@ from modules.World import World
 from modules.Status import Status
 
 class Operator(QtCore.QObject):
+    """
+    Operates on the internal datastructure.
+    The class loads and saves files and navigates in the data.
+    Provides means for searching and filtering.
+    
+    @signal currentStatus(string) emitted with the new status message
+    """
     def __init__(self):
         QtCore.QObject.__init__(self)
         self.store = None
@@ -41,6 +48,11 @@ class Operator(QtCore.QObject):
         # search function's variables
 
     def getUnits(self, fileName):
+        """
+        reading a file into the internal datastructure
+        
+        @param fileName the file to open
+        """
         self.fileName = fileName
         self.store = factory.getobject(fileName)
         # get status for units
@@ -76,7 +88,8 @@ class Operator(QtCore.QObject):
 
 
     def updateNewHeader(self, othercomments, headerDic):
-          """will update header when ok button in Header Editor is clicked or auto Header is on and save is triggered"""
+          """will update header when ok button in Header Editor is clicked or auto Header is on and save is triggered
+          """
 ##          headerDic= po.poheader.parse(header)
           print type(headerDic), headerDic
           self.store.updateheader(self.store.units[0].target, True, headerDic)
@@ -115,6 +128,7 @@ class Operator(QtCore.QObject):
             self.emit(QtCore.SIGNAL("currentUnit"), currentUnit, currentIndex, currentState)
 
     def getCurrentIndex(self):
+        # FIXME: comment this there is a return value!
         try:
             return self.filteredList[self._unitpointer]
         except:
@@ -123,6 +137,7 @@ class Operator(QtCore.QObject):
 
     def hideUnit(self, value):
         """remove unit inside filtered list, and send hideUnit signal."""
+        # FIXME: comment the param
         try:
             self.filteredList.remove(value)
         except ValueError:
@@ -131,6 +146,7 @@ class Operator(QtCore.QObject):
         
     def filterFuzzy(self, checked):
         """add/remove fuzzy to filter, and send filter signal."""
+        # FIXME: comment the param
         if (checked) and (not self.filter & self.world.fuzzy):
             self.filter += self.world.fuzzy
         elif (not checked) and (self.filter & self.world.fuzzy):
@@ -139,6 +155,7 @@ class Operator(QtCore.QObject):
         
     def filterTranslated(self, checked):
         """add/remove translated to filter, and send filter signal."""
+        # FIXME: comment the param
         if (checked) and (not self.filter & self.world.translated):
             self.filter += self.world.translated
         elif (not checked) and (self.filter & self.world.translated):
@@ -147,6 +164,7 @@ class Operator(QtCore.QObject):
         
     def filterUntranslated(self, checked):
         """add/remove untranslated to filter, and send filter signal."""
+        # FIXME: comment the param
         if (checked):
             self.filter = self.filter | self.world.untranslated
         elif (self.filter & self.world.untranslated):
@@ -232,12 +250,14 @@ class Operator(QtCore.QObject):
         self.emitCurrentUnit()
 
     def saveStoreToFile(self, fileName):
+        # FIXME: comment this
         self.emitUpdateUnit()
         self.store.savefile(fileName)
         self._saveDone = True
         self.emit(QtCore.SIGNAL("savedAlready"), False) 
 
     def modified(self):
+        # FIXME: comment this
         self.emitUpdateUnit()
         if self._saveDone:
             self._modified = False
@@ -246,6 +266,7 @@ class Operator(QtCore.QObject):
     
     def setComment(self, comment):
         """set the comment which is QString type to the current unit."""
+        # FIXME: comment the param
         currentIndex = self.getCurrentIndex()
         currentUnit = self.store.units[currentIndex]
         currentUnit.removenotes()
@@ -254,6 +275,7 @@ class Operator(QtCore.QObject):
     
     def setTarget(self, target):
         """set the target which is QString type to the current unit."""
+        # FIXME: comment the param
         currentIndex = self.getCurrentIndex()
         currentUnit = self.store.units[currentIndex]
         translatedState = currentUnit.istranslated()
@@ -277,6 +299,7 @@ class Operator(QtCore.QObject):
 
     def setCurrentUnit(self, currentIndex):
         """adjust the unitpointer with currentIndex, and send currentUnit signal."""
+        # FIXME: comment the param
         self.emitUpdateUnit()
         try:
             self._unitpointer = self.filteredList.index(currentIndex)
@@ -303,6 +326,7 @@ class Operator(QtCore.QObject):
         self.emitStatus()
     
     def initSearch(self, searchString, searchableText, matchCase):
+        # FIXME: comment this
         self.searchPointer = self._unitpointer
         self.currentContainer = 0
         self.foundPosition = -1
@@ -368,6 +392,7 @@ class Operator(QtCore.QObject):
             self.emit(QtCore.SIGNAL("generalInfo"), "Search has reached start of document")
             
     def getUnitString(self, searchableText):
+        # FIXME: comment this
         container = searchableText[self.currentContainer]
         unitIndex = self.filteredList[self.searchPointer]
         if (container == self.world.source):

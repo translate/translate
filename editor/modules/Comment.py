@@ -29,6 +29,8 @@ from ui.Ui_Comment import Ui_frmComment
 from modules.World import World
 
 class CommentDock(QtGui.QDockWidget):
+    # FIXME: comment this list the signals
+    
     def __init__(self):
         QtGui.QDockWidget.__init__(self)
         self.setWindowTitle(self.tr("Comment"))
@@ -55,10 +57,12 @@ class CommentDock(QtGui.QDockWidget):
         self.highlightRange.format = self.highlightFormat
         
     def closeEvent(self, event):            
+        # FIXME: comment this
         self._actionShow.setText(self.tr("Show Comment"))
-        # FIXME you need to call the parents implementation here. Jens
+        # FIXME: you need to call the parents implementation here. Jens
         
     def actionShow(self):
+        # FIXME: comment this there is a return value
         return self._actionShow
 
     def show(self):
@@ -82,6 +86,7 @@ class CommentDock(QtGui.QDockWidget):
 
     def highlightSearch(self, receiver, position, length = 0):
         '''Highlight on comment depending on location (offset, and length)'''
+        # FIXME: comment the param
         # search not found
 ##        if (not position):
 ##            try:

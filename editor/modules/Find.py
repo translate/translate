@@ -29,7 +29,10 @@ from ui.Ui_Find import Ui_Form
 from modules.World import World
 
 class Find(QtGui.QDockWidget):
+    # FIXME: comment this and list the signals
+
     def __init__(self):
+        # FIXME: change this to lazy init so that the startup is faster
         QtGui.QDockWidget.__init__(self)        
         self.form = QtGui.QWidget(self)             
         self.ui = Ui_Form()
@@ -119,6 +122,7 @@ class Find(QtGui.QDockWidget):
             self.matchcase = False
     
     def checkBoxCheckedStatus(self):
+        # FIXME: comment this there is a return value
         if ((not self.ui.insource.isChecked()) and \
             (not self.ui.intarget.isChecked()) and \
             (not self.ui.incomment.isChecked())):

@@ -44,7 +44,7 @@ class MainWindow(QtGui.QMainWindow):
         QtGui.QMainWindow.__init__(self, parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.resize(800, 600)
+        self.resize(800, 600)  # TODO: make the app remember the last size and position
         self.ui.recentaction = []
         self.world = World()
         self.createRecentAction()
@@ -260,7 +260,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionFind.setEnabled(True)
         self.ui.actionReplace.setEnabled(True)
         self.ui.actionEdit_Header.setEnabled(True)
-        # FIXME what will happen if the file only contains 1 TU? Jens
+        # FIXME: what will happen if the file only contains 1 TU? Jens
         settings = QtCore.QSettings(self.world.settingOrg, self.world.settingApp)
         files = settings.value("recentFileList").toStringList()
         files.removeAll(fileName)        
@@ -289,12 +289,13 @@ class MainWindow(QtGui.QMainWindow):
         self.updateRecentAction()                  
     
     def updateRecentAction(self):
+        # FIXME: comment this
         settings = QtCore.QSettings(self.world.settingOrg, self.world.settingApp)
         files = settings.value("recentFileList").toStringList()
         numRecentFiles = min(files.count(), MainWindow.MaxRecentFiles)             
 
         for i in range(numRecentFiles):
-            # FIXME make sure that the text does not get too long. Jens
+            # FIXME: make sure that the text does not get too long. Jens
             self.ui.recentaction[i].setText(files[i])          
             self.ui.recentaction[i].setData(QtCore.QVariant(files[i]))              
             self.ui.recentaction[i].setVisible(True)
@@ -303,6 +304,7 @@ class MainWindow(QtGui.QMainWindow):
             self.ui.recentaction[j].setVisible(False)
     
     def closeEvent(self, event):
+        # FIXME: comment the param
         if self.operator.modified():  
             if self.fileaction.aboutToClose(self):
                 event.accept()
@@ -310,6 +312,7 @@ class MainWindow(QtGui.QMainWindow):
                 event.ignore()
            
     def setTitle(self, title):
+        # FIXME: comment the param
         shownName = QtCore.QFileInfo(title).fileName()
         self.setWindowTitle(self.tr("%1[*] - %2").arg(shownName).arg(self.tr("Translation Editor")))        
     
@@ -321,6 +324,7 @@ class MainWindow(QtGui.QMainWindow):
     
     def toggleFirstLastUnit(self, boolFirst, boolLast):
         """ set enable/disable first, previous, next, and last unit buttons """
+        # FIXME: comment the param
         # disable first and previous unit buttons
         self.ui.actionFirst.setEnabled(boolFirst)
         self.ui.actionPrevious.setEnabled(boolFirst)

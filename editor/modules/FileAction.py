@@ -26,8 +26,14 @@ from PyQt4 import QtCore, QtGui
 import sys, os
 
 class FileAction(QtCore.QObject):
+    # FIXME: comment this and list the signals
+
     def __init__(self, parent):
-        """ parent: a QWidget to center the dialogs """
+        """ 
+        init the class.
+        
+        @param parent a QWidget to center the dialogs 
+        """
         QtCore.QObject.__init__(self)
         self.parentWidget = parent
         self.fileName = None
@@ -83,7 +89,7 @@ class FileAction(QtCore.QObject):
                     history.removeAll(history.first())                    
                 self.settings.setValue("SaveAsHistory", QtCore.QVariant(newHistory))
                 self.settings.setValue("SaveAsDirectory", QtCore.QVariant(fileDialog.directory().path()))
-            # FIXME add a return value here. Jens
+            # FIXME: add a return value here. Jens
             else:
                 QtGui.QMessageBox.information(self.parentWidget, self.tr("Information") , self.tr("Please specify the filename to save to"))
                 self.saveAs()
@@ -107,11 +113,15 @@ class FileAction(QtCore.QObject):
          
     def setFileName(self, filename):
         """ open a new file """
+        # FIXME: comment the param and rethink the comment
         self.fileName = filename
         self.emitFileOpened()
     
     def emitFileName(self, file):
-        """emit signal fileName, with file as string"""
+        """emit signal fileName
+        
+        @param file a string with the filename
+        """
         self.fileName = file
         self.emit(QtCore.SIGNAL("fileName"), str(self.fileName)) 
     

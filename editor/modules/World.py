@@ -22,6 +22,9 @@
 # 
 # This module stores global variables for use in whole applicaion.
 
+
+# TODO: think about the need of the class here. A module might be enough to create the namespace?
+
 class World:
     def __init__(self):
         self.fuzzy = 1
