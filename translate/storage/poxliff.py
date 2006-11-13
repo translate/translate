@@ -68,11 +68,12 @@ class PoXliffUnit(xliff.xliffunit):
                 if not self.units[i+1] == other.units[i+1]:
                     return False
             return True
-        if len(self.units) == 1:
+        if len(self.units) <= 1:
             if isinstance(other, lisa.LISAunit):
                 return super(PoXliffUnit, self).__eq__(other)
             else:
                 return self.source == other.source and self.target == other.target
+        return False
 
     def setsource(self, source, sourcelang="en"):
 #        TODO: consider changing from plural to singular, etc.
