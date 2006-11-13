@@ -322,14 +322,15 @@ class MainWindow(QtGui.QMainWindow):
     def enableUndo(self):
         self.ui.actionUndo.setEnabled(True)    
     
-    def toggleFirstLastUnit(self, boolFirst, boolLast):
-        """ set enable/disable first, previous, next, and last unit buttons """
-        # FIXME: comment the param
-        # disable first and previous unit buttons
-        self.ui.actionFirst.setEnabled(boolFirst)
-        self.ui.actionPrevious.setEnabled(boolFirst)
-        self.ui.actionNext.setEnabled(boolLast)
-        self.ui.actionLast.setEnabled(boolLast)
+    def toggleFirstLastUnit(self, atFirst, atLast):
+        """set enable/disable first, previous, next, and last unit buttons
+        @param atFirst: bool indicates that the unit is at first place
+        @param atLast: bool indicates that the unit is at last place
+        """
+        self.ui.actionFirst.setDisabled(atFirst)
+        self.ui.actionPrevious.setDisabled(atFirst)
+        self.ui.actionNext.setDisabled(atLast)
+        self.ui.actionLast.setDisabled(atLast)
     
 ##    def setEnabledSave(self, bool):
 ##        self.ui.actionSave.setEnabled(bool)

@@ -48,11 +48,8 @@ class Operator(QtCore.QObject):
         # search function's variables
 
     def getUnits(self, fileName):
-        """
-        reading a file into the internal datastructure
-        
-        @param fileName the file to open
-        """
+        """reading a file into the internal datastructure.
+        @param fileName: the file to open"""
         self.fileName = fileName
         self.store = factory.getobject(fileName)
         # get status for units
@@ -90,25 +87,18 @@ class Operator(QtCore.QObject):
         self.emit(QtCore.SIGNAL("currentStatus"), self.status.statusString())        
 
     def emitCurrentUnit(self):
-        if (len(self.filteredList) <= 1):
-            # less than one unit, disable all 4 navigation buttons
-            self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), False, False)
-        elif (self._unitpointer == 0):
-            # first unit
-            # toggleUnitButtons: enable first/prev, next/last
-            self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), False, True)
-            self.middleUnit = False
-        elif (self._unitpointer == len(self.filteredList) - 1):
-            # last unit
-            self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), True, False)
-            self.middleUnit = False
-        elif (not self.middleUnit):
-            # middle unit
-            self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), True, True)
-            self.middleUnit = True
+        """send currentUnit signal with currentUnit, currentIndex, currentState."""
+        # TODO: Sending toggleFirstLastUnit only needed.
+        atFirst = False
+        atLast = False
+        if (self._unitpointer == 0):
+            atFirst = True
+        if (self._unitpointer >= len(self.filteredList) - 1):
+            atLast = True
+        self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), atFirst, atLast)
         
         self.searchPointer = self._unitpointer
-        currentIndex = self.getCurrentIndex()
+        currentIndex = self._getCurrentIndex()
         currentUnit = self.store.units[currentIndex]
         currentState = self.status.getStatus(currentUnit)
         if (currentIndex == -1):
@@ -116,8 +106,8 @@ class Operator(QtCore.QObject):
         else:
             self.emit(QtCore.SIGNAL("currentUnit"), currentUnit, currentIndex, currentState)
 
-    def getCurrentIndex(self):
-        # FIXME: comment this there is a return value!
+    def _getCurrentIndex(self):
+        """return current index of current unit."""
         try:
             return self.filteredList[self._unitpointer]
         except:
@@ -125,8 +115,8 @@ class Operator(QtCore.QObject):
             return -1
 
     def hideUnit(self, value):
-        """remove unit inside filtered list, and send hideUnit signal."""
-        # FIXME: comment the param
+        """remove unit inside filtered list, and send hideUnit signal.
+        @param value: index in units."""
         try:
             self.filteredList.remove(value)
         except ValueError:
@@ -185,7 +175,7 @@ class Operator(QtCore.QObject):
     
     def emitUpdateUnit(self):
         """send updateUnit, setColor, and hideUnit signal."""
-        currentIndex = self.getCurrentIndex()
+        currentIndex = self._getCurrentIndex()
         if (self._unitpointer == None) or (currentIndex > len(self.store.units)):
             return
         self.emit(QtCore.SIGNAL("updateUnit"))
@@ -268,7 +258,7 @@ class Operator(QtCore.QObject):
     def setComment(self, comment):
         """set the comment which is QString type to the current unit."""
         # FIXME: comment the param
-        currentIndex = self.getCurrentIndex()
+        currentIndex = self._getCurrentIndex()
         currentUnit = self.store.units[currentIndex]
         currentUnit.removenotes()
         currentUnit.addnote(unicode(comment))
@@ -277,7 +267,7 @@ class Operator(QtCore.QObject):
     def setTarget(self, target):
         """set the target which is QString type to the current unit."""
         # FIXME: comment the param
-        currentIndex = self.getCurrentIndex()
+        currentIndex = self._getCurrentIndex()
         currentUnit = self.store.units[currentIndex]
         translatedState = currentUnit.istranslated()
         # update target for current unit
@@ -299,8 +289,8 @@ class Operator(QtCore.QObject):
         self.emitStatus()
 
     def setCurrentUnit(self, currentIndex):
-        """adjust the unitpointer with currentIndex, and send currentUnit signal."""
-        # FIXME: comment the param
+        """adjust the unitpointer with currentIndex, and send currentUnit signal.
+        @param currentIndex: current unit's index inside the units."""
         self.emitUpdateUnit()
         try:
             self._unitpointer = self.filteredList.index(currentIndex)
@@ -311,7 +301,7 @@ class Operator(QtCore.QObject):
     def toggleFuzzy(self):
         """toggle fuzzy state for current unit."""
         self.emitUpdateUnit()
-        currentIndex= self.getCurrentIndex()
+        currentIndex= self._getCurrentIndex()
         currentUnit = self.store.units[currentIndex]
         # skip if unit is not yet translated
         if (not currentUnit.istranslated()):
@@ -327,83 +317,97 @@ class Operator(QtCore.QObject):
         self.emitStatus()
     
     def initSearch(self, searchString, searchableText, matchCase):
-        # FIXME: comment this
+        """initilize the needed variables for searching.
+        @param searchString: string to search for.
+        @param searchableText: text fields to search through.
+        @param matchCase: bool indicates case sensitive condition."""
         self.searchPointer = self._unitpointer
-        self.currentContainer = 0
+        self.currentTextField = 0
         self.foundPosition = -1
         self.searchString = str(searchString)
-        self.searchableText = self.world.searchableText
+        self.searchableText = searchableText
         if (not matchCase):
             self.matchCase = False
             self.searchString = self.searchString.lower()
         else:
             self.matchCase = True
 
-    def searchFound(self):
-        self._unitpointer = self.searchPointer
-        self.emitCurrentUnit()
-        container = self.searchableText[self.currentContainer]
-        self.emit(QtCore.SIGNAL("searchResult"), container, self.foundPosition, len(self.searchString))
-        self.emit(QtCore.SIGNAL("generalInfo"), "")
-
     def searchNext(self):
+        """search forward through the text fields."""
         while (self.searchPointer < len(self.filteredList)):
-            unitString = self.getUnitString(self.searchableText)
+            unitString = self._getUnitString()
             self.foundPosition = unitString.find(self.searchString, self.foundPosition + 1)
-            # found in current container
+            # found in current textField
             if (self.foundPosition >= 0):
-                self.searchFound()
+                self._searchFound()
                 break
             else:
-                # next container
-                if (self.currentContainer < len(self.searchableText) - 1):
-                    self.currentContainer += 1
+                # next textField
+                if (self.currentTextField < len(self.searchableText) - 1):
+                    self.currentTextField += 1
                     continue
                 # next unit
                 else:
-                    self.currentContainer = 0
+                    self.currentTextField = 0
                     self.searchPointer += 1
         else:
             # exhausted
+            self._searchNotFound()
             self.emit(QtCore.SIGNAL("generalInfo"), "Search has reached end of document")
+            self.searchPointer = len(self.filteredList) - 1
 
     def searchPrevious(self):
+        """search backward through the text fields."""
         while (self.searchPointer > 0):
-            unitString = self.getUnitString(self.searchableText)
+            unitString = self._getUnitString()
             self.foundPosition = unitString.rfind(self.searchString, 0, self.foundPosition)
-            # found in current container
+            # found in current textField
             if (self.foundPosition >= 0):
-                self.searchFound()
+                self._searchFound()
                 break
             else:
-                # previous container
-                if (self.currentContainer > 0):
-                    self.currentContainer -= 1
-                    unitString = self.getUnitString(self.searchableText)
+                # previous textField
+                if (self.currentTextField > 0):
+                    self.currentTextField -= 1
+                    unitString = self._getUnitString()
                     self.foundPosition = len(unitString)
                     continue
                 # previous unit
                 else:
-                    self.currentContainer = len(self.searchableText) - 1
+                    self.currentTextField = len(self.searchableText) - 1
                     self.searchPointer -= 1
-                unitString = self.getUnitString(self.searchableText)
+                unitString = self._getUnitString()
                 self.foundPosition = len(unitString)
         else:
             # exhausted
+            self._searchNotFound()
             self.emit(QtCore.SIGNAL("generalInfo"), "Search has reached start of document")
             
-    def getUnitString(self, searchableText):
-        # FIXME: comment this
-        container = searchableText[self.currentContainer]
+    def _getUnitString(self):
+        """return the string of current text field."""
+        textField = self.searchableText[self.currentTextField]
         unitIndex = self.filteredList[self.searchPointer]
-        if (container == self.world.source):
+        if (textField == self.world.source):
             unitString = self.store.units[unitIndex].source
-        elif (container == self.world.target):
+        elif (textField == self.world.target):
             unitString = self.store.units[unitIndex].target
-        elif (container == self.world.comment):
+        elif (textField == self.world.comment):
             unitString = self.store.units[unitIndex].getnotes()
         else:
-            return
+            unitString = ""
         if (not self.matchCase):
             unitString = unitString.lower()
         return unitString
+
+    def _searchFound(self):
+        """emit searchResult signal with text field, position, and length."""
+        self._unitpointer = self.searchPointer
+        self.emitCurrentUnit()
+        textField = self.searchableText[self.currentTextField]
+        self.emit(QtCore.SIGNAL("searchResult"), textField, self.foundPosition, len(self.searchString))
+        self.emit(QtCore.SIGNAL("generalInfo"), "")
+
+    def _searchNotFound(self):
+        """emit searchResult signal with text field, position, and length."""
+        textField = self.searchableText[self.currentTextField]
+        self.emit(QtCore.SIGNAL("searchResult"), textField, None, None)

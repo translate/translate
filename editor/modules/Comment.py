@@ -52,7 +52,9 @@ class CommentDock(QtGui.QDockWidget):
         
         # create highlight font
         self.highlightFormat = QtGui.QTextCharFormat()
-        self.highlightFormat.setBackground(QtGui.QColor(55, 218, 123))        
+        self.highlightFormat.setFontWeight(QtGui.QFont.Bold)
+        self.highlightFormat.setForeground(QtCore.Qt.white)
+        self.highlightFormat.setBackground(QtCore.Qt.darkMagenta)
         self.highlightRange = QtGui.QTextLayout.FormatRange()
         self.highlightRange.format = self.highlightFormat
         
@@ -84,23 +86,25 @@ class CommentDock(QtGui.QDockWidget):
         if self.ui.txtComment.document().isModified():
             self.emit(QtCore.SIGNAL("commentChanged"), self.ui.txtComment.toPlainText())
 
-    def highlightSearch(self, receiver, position, length = 0):
-        '''Highlight on comment depending on location (offset, and length)'''
-        # FIXME: comment the param
-        # search not found
-##        if (not position):
-##            try:
-##                self.layout.clearAdditionalFormats()
-##                self.ui.txtComment.update()
-##            except:
-##                pass
-        if (receiver != self.world.comment):
+    def highlightSearch(self, textField, position, length = 0):
+        """Highlight the text at specified position, length, and textField.
+        @param textField: source or target text box.
+        @param position: highlight start point.
+        @param length: highlight length."""
+        if (textField != self.world.comment):
             return
-        block = self.ui.txtComment.document().findBlock(position)
-        self.highlightRange.start = position
-        self.highlightRange.length = length
+        textField = self.ui.txtComment
+        if (position >= 0):
+            block = textField.document().findBlock(position)
+            self.highlightRange.start = position
+            self.highlightRange.length = length
+        else:
+            block = textField.document().begin()
+            self.highlightRange.length = 0
+            self.layout.clearAdditionalFormats()
+            textField.update()
         block.layout().setAdditionalFormats([self.highlightRange])
-
+        
     def setReadyForSave(self):
       self.emit(QtCore.SIGNAL("readyForSave"), True)
       

@@ -52,15 +52,14 @@ class Find(QtGui.QDockWidget):
         self.connect(self._actionShow, QtCore.SIGNAL("triggered()"), self.show)
         self.connect(self.ui.findNext, QtCore.SIGNAL("clicked()"), self.findNext)
         self.connect(self.ui.findPrevious, QtCore.SIGNAL("clicked()"), self.findPrevious)        
-        self.connect(self.ui.insource, QtCore.SIGNAL("stateChanged(int)"), self.emitSeachInSource)
-        self.connect(self.ui.intarget, QtCore.SIGNAL("stateChanged(int)"), self.emitSearchInTarget)
-        self.connect(self.ui.incomment, QtCore.SIGNAL("stateChanged(int)"), self.emitSeachInComment)
-        self.connect(self.ui.matchcase, QtCore.SIGNAL("stateChanged(int)"), self.emitMatchCase)   
+        self.connect(self.ui.insource, QtCore.SIGNAL("stateChanged(int)"), self.toggleSeachInSource)
+        self.connect(self.ui.intarget, QtCore.SIGNAL("stateChanged(int)"), self.toggleSearchInTarget)
+        self.connect(self.ui.incomment, QtCore.SIGNAL("stateChanged(int)"), self.toggleSeachInComment)
+        self.connect(self.ui.matchcase, QtCore.SIGNAL("stateChanged(int)"), self.toggleMatchCase)   
    
-        self.searchinsource = 0
-        self.searchintarget = 0
-        self.searchincomment = 0
-        self.filter = 0
+        self.searchinsource = self.world.nothing
+        self.searchintarget = self.world.nothing
+        self.searchincomment = self.world.nothing
         self.ui.findNext.setEnabled(False)
         self.ui.findPrevious.setEnabled(False)
         self.ui.insource.setChecked(True)
@@ -80,46 +79,51 @@ class Find(QtGui.QDockWidget):
             self.ui.findPrevious.setEnabled(False)          
         
         if self.ui.lineEdit.isModified():        
-            searchString = self.ui.lineEdit.text()
-            self.emit(QtCore.SIGNAL("initSearch"), searchString, self.world.source, self.matchcase)
-            #self.emit(QtCore.SIGNAL("searchString"), searchString, self.matchcase, self.world.searchStatic, self.filter)
+            self.initSearch()
             self.ui.lineEdit.setModified(False)        
-        
-    def emitSeachInSource(self):        
+    
+    def initSearch(self):
+        searchString = self.ui.lineEdit.text()
+        filter = self.searchinsource + self.searchintarget + self.searchincomment
+        self.emit(QtCore.SIGNAL("initSearch"), searchString, filter, self.matchcase)
+        self.emit(QtCore.SIGNAL("searchNext"))
+    
+    def toggleSeachInSource(self):        
         if (not self.checkBoxCheckedStatus()):
             self.ui.insource.setChecked(True)
             return
         if (self.ui.insource.isChecked()): 
-            self.searchinsource = self.world.source
+            self.searchinsource = self.world.sourceField
         else:
-            self.searchinsource = 0
-        self.filter = self.searchinsource + self.searchintarget + self.searchincomment
+            self.searchinsource = self.world.nothing
+        self.initSearch()
             
-    def emitSearchInTarget(self):
+    def toggleSearchInTarget(self):
         if (not self.checkBoxCheckedStatus()):
             self.ui.intarget.setChecked(True)
             return
         if (self.ui.intarget.isChecked()): 
-            self.searchintarget = self.world.target
+            self.searchintarget = self.world.targetField
         else:
-            self.searchintarget = 0
-        self.filter = self.searchinsource + self.searchintarget + self.searchincomment
+            self.searchintarget = self.world.nothing
+        self.initSearch()
             
-    def emitSeachInComment(self):
+    def toggleSeachInComment(self):
         if (not self.checkBoxCheckedStatus()):
             self.ui.incomment.setChecked(True)
             return
         if (self.ui.incomment.isChecked()): 
-            self.searchincomment = self.world.comment
+            self.searchincomment = self.world.commentField
         else:
-            self.searchincomment = 0
-        self.filter = self.searchinsource + self.searchintarget + self.searchincomment
+            self.searchincomment = self.world.nothing
+        self.initSearch()
         
-    def emitMatchCase(self):
+    def toggleMatchCase(self):
         if (self.ui.matchcase.isChecked()): 
             self.matchcase = True
         else:
             self.matchcase = False
+        self.initSearch()
     
     def checkBoxCheckedStatus(self):
         # FIXME: comment this there is a return value
@@ -134,15 +138,11 @@ class Find(QtGui.QDockWidget):
             return True
     
     def findNext(self):
-        #searchStr = self.ui.lineEdit.text()
         self.emit(QtCore.SIGNAL("searchNext"))
-        #self.emit(QtCore.SIGNAL("searchString"), searchStr, self.matchcase, self.world.searchForward, self.filter)
         self.ui.lineEdit.setFocus()
     
     def findPrevious(self):
-        searchStr = self.ui.lineEdit.text()
         self.emit(QtCore.SIGNAL("searchPrevious"))
-        #self.emit(QtCore.SIGNAL("searchString"), searchStr, self.matchcase, self.world.searchBackward, self.filter)
         self.ui.lineEdit.setFocus()
     
     def showFind(self):

@@ -2,30 +2,22 @@
 #
 # Keo Sophon <keosophon@khmeros.info>, 2006.
 # Leang Chumsoben <soben@khmeros.info>, 2006.
+
 msgid ""
-
-
-"Unable to open \n"
-" %1 \n"
-" for writing."
 msgstr "minimum2"
 
 # werwerw
 #: archivedialog.cpp:125
 msgid "Could Not Open Temporary File"
-
 msgstr ""
 
 #: kfaximage.cpp:189
 msgid "Unable to open file for reading."
 msgstr "មិន​អាច​បើក​ឯកសារ ដើម្បី​អាន​បាន​ឡើយ ។"
 
-
 #: archivedialog.cpp:126
-#, fuzzy
 msgid "Could not open a temporary file"
 msgstr "មិនអាច​បើក​ឯកសារ​បណ្តោះអាសន្ន​មួយ​បាន​ទេ"
-
 
 #: kfaximage.cpp:194
 msgid "Unable to read file header (file too short)."

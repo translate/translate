@@ -52,10 +52,9 @@ class TUview(QtGui.QDockWidget):
         
         # create highlight font
         self.highlightFormat = QtGui.QTextCharFormat()
-        #self.highlightFormat.setFontWeight(QtGui.QFont.Bold)
-        #self.highlightFormat.setForeground(QtCore.Qt.darkMagenta)
-        #self.highlightFormat.setForeground(QtCore.Qt.white)
-        self.highlightFormat.setBackground(QtGui.QColor(55, 218, 123))
+        self.highlightFormat.setFontWeight(QtGui.QFont.Bold)
+        self.highlightFormat.setForeground(QtCore.Qt.white)
+        self.highlightFormat.setBackground(QtCore.Qt.darkMagenta)
         self.highlightRange = QtGui.QTextLayout.FormatRange()
         self.highlightRange.format = self.highlightFormat
         
@@ -168,26 +167,26 @@ class TUview(QtGui.QDockWidget):
         self.ui.txtTarget.insertPlainText(self.ui.txtSource.toPlainText())
         self.ui.txtTarget.document().setModified()
 
-    def highlightSearch(self, receiver, position, length = 0):
-        """HighLight on source or target depending on container, and location (offset, and length)"""
-        # FIXME: comment the param
-        # search not found
-##        if (not position):
-##            try:
-##                self.layout.clearAdditionalFormats()
-##                self.ui.txtSource.update()
-##                self.ui.txtTarget.update()
-##            except:
-##                pass
-        if (receiver == self.world.source):
-            container = self.ui.txtSource
-        elif (receiver == self.world.target):
-            container = self.ui.txtTarget
+    def highlightSearch(self, textField, position, length = 0):
+        """Highlight the text at specified position, length, and textField.
+        @param textField: source or target text box.
+        @param position: highlight start point.
+        @param length: highlight length."""
+        if (textField == self.world.source):
+            textField = self.ui.txtSource
+        elif (textField == self.world.target):
+            textField = self.ui.txtTarget
         else:
             return
-        block = container.document().findBlock(position)
-        self.highlightRange.start = position
-        self.highlightRange.length = length
+        if (position >= 0):
+            block = textField.document().findBlock(position)
+            self.highlightRange.start = position
+            self.highlightRange.length = length
+        else:
+            block = textField.document().begin()
+            self.highlightRange.length = 0
+            self.layout.clearAdditionalFormats()
+            textField.update()
         block.layout().setAdditionalFormats([self.highlightRange])
 
     def selectCut(self):

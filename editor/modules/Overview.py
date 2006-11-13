@@ -131,9 +131,10 @@ class OverviewDock(QtGui.QDockWidget):
         """Highlight the row of current unit index."""
         # TODO: must convert index to row in order to highlight the correct unit.
         # (Not done yet)
+        if (index < 0):
+            return
         
         #print self.ui.tableOverview.visualRow(index)
-        
         self.indexToUpdate = index
         self.ui.tableOverview.selectRow(index)
         # display unit status on note column.
