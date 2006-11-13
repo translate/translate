@@ -402,12 +402,9 @@ class xlifffile(lisa.LISAfile):
 	xliff = super(xlifffile, cls).parsestring(storestring)
 	if xliff.units:
 	    header = xliff.units[0]
-	    print "restype:", header.getrestype()
-	    print "datatype:", xliff.getdatatype()
 	    if ("gettext-domain-header" in header.getrestype() or xliff.getdatatype() == "po") \
 		    and cls.__name__.lower() != "poxlifffile":
 		import poxliff
-		print "Het poxliff ingevoer"
 		xliff = poxliff.PoXliffFile.parsestring(storestring)
 	return xliff
     parsestring = classmethod(parsestring)
