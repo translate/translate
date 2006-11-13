@@ -1,6 +1,6 @@
 #!/usr/bin/python
-#!/usr/bin/python
 # -*- coding: utf8 -*-
+
 # WordForge Translation Editor
 # Copyright 2006 WordForge Foundation
 #
@@ -48,11 +48,11 @@ class Preference(QtGui.QDialog):
         self.commentFont = self.getFont(self.widget[3])
         self.setCaption(self.ui.lblComment, self.commentFont)
         
-        self.ui.UserName.setPlainText(self.settings.value("UserName").toString())
-        self.ui.EmailAddress.setPlainText(self.settings.value("EmailAddress").toString())
+        self.ui.UserName.setText(self.settings.value("UserName").toString())
+        self.ui.EmailAddress.setText(self.settings.value("EmailAddress").toString())
         self.ui.cbxFullLanguage.setEditText(self.settings.value("FullLanguage").toString())
         self.ui.cbxLanguageCode.setEditText(self.settings.value("Code").toString())        
-        self.ui.SupportTeam.setPlainText(self.settings.value("SupportTeam").toString())
+        self.ui.SupportTeam.setText(self.settings.value("SupportTeam").toString())
         self.ui.cbxTimeZone.setEditText(self.settings.value("TimeZone").toString())
     
     def accepted(self):
@@ -62,11 +62,11 @@ class Preference(QtGui.QDialog):
         self.rememberFont(self.widget[2], self.tuTargetFont)
         self.rememberFont(self.widget[3], self.commentFont)
 
-        self.settings.setValue("UserName", QtCore.QVariant(self.ui.UserName.toPlainText()))
-        self.settings.setValue("EmailAddress", QtCore.QVariant(self.ui.EmailAddress.toPlainText()))
+        self.settings.setValue("UserName", QtCore.QVariant(self.ui.UserName.text()))
+        self.settings.setValue("EmailAddress", QtCore.QVariant(self.ui.EmailAddress.text()))
         self.settings.setValue("FullLanguage", QtCore.QVariant(self.ui.cbxFullLanguage.currentText()))
         self.settings.setValue("Code", QtCore.QVariant(self.ui.cbxLanguageCode.currentText()))
-        self.settings.setValue("SupportTeam", QtCore.QVariant(self.ui.SupportTeam.toPlainText()))
+        self.settings.setValue("SupportTeam", QtCore.QVariant(self.ui.SupportTeam.text()))
         self.settings.setValue("TimeZone", QtCore.QVariant(self.ui.cbxTimeZone.currentText()))
         self.emit(QtCore.SIGNAL("settingsChanged"))
    
@@ -98,7 +98,7 @@ class Preference(QtGui.QDialog):
     
     def getFont(self, obj):
         """ return font object created from settings"""
-        font = self.settings.value(str(obj + "Font"), QtCore.QVariant(self.defaultFont.toString()))
+        font = self.settings.value(str(obj + "Font"), QtCore.QVariant(self.defaultFont.toString()))        
         if (font.isValid()):
             fontObj = QtGui.QFont()
             if (fontObj.fromString(font.toString())):
