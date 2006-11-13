@@ -54,6 +54,11 @@ class Preference(QtGui.QDialog):
         self.ui.cbxLanguageCode.setEditText(self.settings.value("Code").toString())        
         self.ui.SupportTeam.setText(self.settings.value("SupportTeam").toString())
         self.ui.cbxTimeZone.setEditText(self.settings.value("TimeZone").toString())
+        checkState = self.settings.value("headerAuto").toString()
+        if (checkState == "checked"):
+            self.ui.chkHeaderAuto.setCheckState(QtCore.Qt.Checked)
+        else:
+            self.ui.chkHeaderAuto.setCheckState(QtCore.Qt.Unchecked)
     
     def accepted(self):
         """ slot ok pressed """
@@ -67,7 +72,12 @@ class Preference(QtGui.QDialog):
         self.settings.setValue("FullLanguage", QtCore.QVariant(self.ui.cbxFullLanguage.currentText()))
         self.settings.setValue("Code", QtCore.QVariant(self.ui.cbxLanguageCode.currentText()))
         self.settings.setValue("SupportTeam", QtCore.QVariant(self.ui.SupportTeam.text()))
-        self.settings.setValue("TimeZone", QtCore.QVariant(self.ui.cbxTimeZone.currentText()))
+        self.settings.setValue("TimeZone", QtCore.QVariant(self.ui.cbxTimeZone.currentText()))        
+        if (self.ui.chkHeaderAuto.checkState() == QtCore.Qt.Checked):
+            checkStatus = "checked"
+        else:
+            checkStatus = "unchecked"
+        self.settings.setValue("headerAuto", QtCore.QVariant(checkStatus))     
         self.emit(QtCore.SIGNAL("settingsChanged"))
    
     def rememberFont(self, obj, fontObj):

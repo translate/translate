@@ -43,6 +43,7 @@ class Operator(QtCore.QObject):
         self._unitpointer = None
         # global variables
         self.world = World()
+        self.settings = QtCore.QSettings(self.world.settingOrg, self.world.settingApp)
         # filter flags
         self.filter = self.world.fuzzy + self.world.translated + self.world.untranslated
         # search function's variables
@@ -204,6 +205,7 @@ class Operator(QtCore.QObject):
         
     def makeNewHeader(self, headerDic):
           """receive headerDic as dictionary, and return header as string"""
+          self.store.x_generator = "WordForge Translation Editor v.0.1"
           header = self.store.makeheader(**headerDic)
           self.emit(QtCore.SIGNAL("headerGenerated"), po.poheader.parse(str(header)))
           
@@ -243,6 +245,8 @@ class Operator(QtCore.QObject):
     def saveStoreToFile(self, fileName):
         # FIXME: comment this
         self.emitUpdateUnit()
+        if (self.settings.value("headerAuto").toString() == "checked"):
+            self.emit(QtCore.SIGNAL("headerAuto"))
         self.store.savefile(fileName)
         self._saveDone = True
         self.emit(QtCore.SIGNAL("savedAlready"), False) 

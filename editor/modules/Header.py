@@ -28,6 +28,7 @@ from PyQt4 import QtCore, QtGui
 from ui.Ui_Header import Ui_frmHeader
 from modules.Operator import Operator
 from modules.World import World
+import time, os
 
 class Header(QtGui.QDialog):
     def __init__(self):
@@ -36,16 +37,23 @@ class Header(QtGui.QDialog):
         
         self.world = World()
         self.settings = QtCore.QSettings(self.world.settingOrg, self.world.settingApp)
-
+    
+    def getFileName(self, fileName):
+        (path, self.fileName) = os.path.split(str(fileName))
+        
+    def setupUI(self):
+        self.ui = Ui_frmHeader()
+        self.ui.setupUi(self) 
+        self.headerDic = {}
+       
+        
     def showDialog(self, otherComments, headerDic):
         """ make the dialog visible with otherComments and header filled in"""
         # lazy init 
         if (not self.ui):
             self.setWindowTitle(self.tr("Header Editor"))
-            self.setModal(True)                  
-            
-            self.ui = Ui_frmHeader()
-            self.ui.setupUi(self)           
+            self.setModal(True)
+            self.setupUI()
             
             #connect signals
             QtCore.QObject.connect(self.ui.okButton,QtCore.SIGNAL("clicked()"), self.accepted)
@@ -61,12 +69,11 @@ class Header(QtGui.QDialog):
             self.ui.tableHeader.horizontalHeader().setResizeMode(1, QtGui.QHeaderView.Stretch)
             self.ui.tableHeader.horizontalHeader().setHighlightSections(False)
             self.ui.tableHeader.setEnabled(True)
-##            QtGui.QWidget.setMouseTracking(True)
 
             self.headerDic = headerDic
             self.addItemToTable()
-            row = self.ui.tableHeader.rowCount()
-            QtCore.QObject.connect(self.ui.tableHeader,QtCore.SIGNAL("cellEntered(row,0)"), self.appendRow)
+            QtCore.QObject.connect(self.ui.tableHeader, QtCore.SIGNAL("cellClicked(int, int)"), self.appendRow)
+            
             
         otherCommentsStr = " "
         for i in range(len(otherComments)):
@@ -87,17 +94,17 @@ class Header(QtGui.QDialog):
         self.ui.tableHeader.setRowCount(len(headerDic) + 1)
         i = 0
         for key, value in headerDic.items():
-            item0 = QtGui.QTableWidgetItem(QtCore.QString(key))   
-            item1 = QtGui.QTableWidgetItem(QtCore.QString(value))   
+            item0 = QtGui.QTableWidgetItem(QtCore.QString(key.lstrip('"')))   
+            item1 = QtGui.QTableWidgetItem(QtCore.QString(value.rstrip('"')))   
             self.ui.tableHeader.setItem(i, 0, item0)
             self.ui.tableHeader.setItem(i, 1, item1)
             i += 1   
    
-    def appendRow(self):
+    def appendRow(self, row, col):
         """ Append one row to the last"""
-        lastRow = self.ui.tableHeader.rowCount() +1
-        print lastRow,"hello"
-        self.ui.tableHeader.insertRow(lastRow)
+        lastRow = self.ui.tableHeader.rowCount() - 1
+        if (row == lastRow):          
+            self.ui.tableHeader.insertRow(lastRow)
     
     def generatedHeader(self,generated_header):
         """ slot for headerGenerated"""
@@ -118,14 +125,15 @@ class Header(QtGui.QDialog):
          #if header doesn't exist, call makeheader, otherwise, only update from setting
         #if there is no user profile 
         if (self.ui.tableHeader.rowCount() == 1):
-            userProfileDic = {'charset':"CHARSET", 'encoding':"ENCODING", 'project_id_version':None, 'pot_creation_date':None, 'po_revision_date':None, 'last_translator':str(Last_Translator), 'language_team':str(Language_Team), 'mime_version':None, 'plural_forms':None, 'report_msgid_bugs_to':None}
+            userProfileDic = {'charset':"CHARSET", 'encoding':"ENCODING", 'project_id_version': self.fileName, 'pot_creation_date':None, 'po_revision_date': False, 'last_translator': str(Last_Translator), 'language_team':str(Language_Team), 'mime_version':None, 'plural_forms':None, 'report_msgid_bugs_to':None}
             self.emit(QtCore.SIGNAL("makeHeader"), userProfileDic)
             userProfileDic = self.generated_header
         else:
             self.headerDic['Language-Team'] = str(Language_Team)
             self.headerDic['Last-Translator'] = str(Last_Translator)
+            self.headerDic['PO-Revision-Date'] = time.strftime("%Y-%m-%d %H:%M%z")
+            self.headerDic['X-Generator'] = "WordForge Translation Editor v.0.1"
             userProfileDic = self.headerDic
-
         self.addItemToTable(userProfileDic)       
 
         #set all the infomation into a dictionary
@@ -137,8 +145,11 @@ class Header(QtGui.QDialog):
 
     def accepted(self):
         """send header information"""        
+        if (not self.ui):
+            self.setupUI()
         self.emit(QtCore.SIGNAL("updateHeader"), self.ui.txtOtherComments.toPlainText(), self.applySettings())
 
+        
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     Header = Header()

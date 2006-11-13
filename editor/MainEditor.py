@@ -24,7 +24,7 @@
 
 import sys
 from PyQt4 import QtCore, QtGui
-from ui.MainEditorUI import Ui_MainWindow
+from ui.Ui_MainEditor import Ui_MainWindow
 from modules.TUview import TUview
 from modules.Overview import OverviewDock
 from modules.Comment import CommentDock
@@ -47,6 +47,7 @@ class MainWindow(QtGui.QMainWindow):
         self.resize(800, 600)  # TODO: make the app remember the last size and position
         self.ui.recentaction = []
         self.world = World()
+        
         self.createRecentAction()
         #User must to fill your information
 ##        self.profile = UserProfile()              
@@ -111,14 +112,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionOpenInNewWindow, QtCore.SIGNAL("triggered()"), self.startInNewWindow)
         self.connect(self.ui.actionSave, QtCore.SIGNAL("triggered()"), self.fileaction.save)
         self.connect(self.ui.actionSaveas, QtCore.SIGNAL("triggered()"), self.fileaction.saveAs)
-        self.connect(self.ui.actionExit, QtCore.SIGNAL("triggered()"), QtCore.SLOT("close()"))
-        
-        # Edit Header
-        self.headerDialog = Header()                
-        self.connect(self.ui.actionEdit_Header, QtCore.SIGNAL("triggered()"), self.operator.emitHeaderInfo)
-        self.connect(self.operator, QtCore.SIGNAL("headerInfo"), self.headerDialog.showDialog)
-##        self.connect(self.preference, QtCore.SIGNAL("headerAuto"), self.operator.updateNewHeader)
-        self.connect(self.headerDialog, QtCore.SIGNAL("updateHeader"), self.operator.updateNewHeader)
+        self.connect(self.ui.actionExit, QtCore.SIGNAL("triggered()"), QtCore.SLOT("close()"))       
 
         # create Find widget and connect signals related to it        
         self.findBar = Find()
@@ -150,7 +144,15 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockComment.applySettings)
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockOverview.applySettings)
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockTUview.applySettings)
-        self.connect(self.preference, QtCore.SIGNAL("headerAuto"), self.operator.updateNewHeader)
+
+        # Edit Header
+        self.headerDialog = Header()                
+        self.connect(self.ui.actionEdit_Header, QtCore.SIGNAL("triggered()"), self.operator.emitHeaderInfo)
+        self.connect(self.operator, QtCore.SIGNAL("headerInfo"), self.headerDialog.showDialog)
+        self.connect(self.operator, QtCore.SIGNAL("headerGenerated"), self.headerDialog.generatedHeader)
+        self.connect(self.operator, QtCore.SIGNAL("headerAuto"), self.headerDialog.accepted)
+        self.connect(self.headerDialog, QtCore.SIGNAL("updateHeader"), self.operator.updateNewHeader)
+        self.connect(self.headerDialog, QtCore.SIGNAL("makeHeader"), self.operator.makeNewHeader)
         
         # Other actions        
         self.connect(self.ui.actionNext, QtCore.SIGNAL("triggered()"), self.operator.next)
@@ -201,6 +203,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.statuslabel.setText)
         self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.setOpening)
         self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.operator.getUnits)
+        self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.headerDialog.getFileName)
         
     def cutter(self):
         object = self.focusWidget()
