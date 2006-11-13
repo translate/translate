@@ -393,15 +393,22 @@ class xlifffile(lisa.LISAfile):
         if isinstance(storefile, basestring):
             storefile = open(storefile, "r")
         storestring = storefile.read()
-        xliff = cls.parsestring(storestring)
+        return xlifffile.parsestring(storestring)
 
-        if xliff.units:
-            header = xliff.units[0]
-            if ("gettext-domain-header" in header.getrestype() or xliff.getdatatype() == "po") \
-                    and cls.__name__.lower() != "poxlifffile":
-                import poxliff
-                storefile.seek(0)
-                xliff = poxliff.PoXliffFile.parsefile(storefile)
-        return xliff
     parsefile = classmethod(parsefile)
+
+    def parsestring(cls, storestring):
+	"""Parses the string to return the correct file object"""
+	xliff = super(xlifffile, cls).parsestring(storestring)
+	if xliff.units:
+	    header = xliff.units[0]
+	    print "restype:", header.getrestype()
+	    print "datatype:", xliff.getdatatype()
+	    if ("gettext-domain-header" in header.getrestype() or xliff.getdatatype() == "po") \
+		    and cls.__name__.lower() != "poxlifffile":
+		import poxliff
+		print "Het poxliff ingevoer"
+		xliff = poxliff.PoXliffFile.parsestring(storestring)
+	return xliff
+    parsestring = classmethod(parsestring)
 
