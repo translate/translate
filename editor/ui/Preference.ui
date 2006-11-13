@@ -8,9 +8,17 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>483</width>
-    <height>460</height>
+    <width>485</width>
+    <height>376</height>
    </rect>
+  </property>
+  <property name="sizePolicy" >
+   <sizepolicy>
+    <hsizetype>7</hsizetype>
+    <vsizetype>7</vsizetype>
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle" >
    <string>Preference</string>
@@ -22,13 +30,719 @@
    <property name="spacing" >
     <number>6</number>
    </property>
+   <item row="0" column="0" >
+    <widget class="QTabWidget" name="tabWidget" >
+     <property name="enabled" >
+      <bool>true</bool>
+     </property>
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>7</hsizetype>
+       <vsizetype>5</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="font" >
+      <font>
+       <family>Sans Serif</family>
+       <pointsize>10</pointsize>
+       <weight>50</weight>
+       <italic>false</italic>
+       <bold>false</bold>
+       <underline>false</underline>
+       <strikeout>false</strikeout>
+      </font>
+     </property>
+     <property name="focusPolicy" >
+      <enum>Qt::WheelFocus</enum>
+     </property>
+     <property name="autoFillBackground" >
+      <bool>false</bool>
+     </property>
+     <property name="tabPosition" >
+      <enum>QTabWidget::North</enum>
+     </property>
+     <widget class="QWidget" name="tab1" >
+      <property name="enabled" >
+       <bool>true</bool>
+      </property>
+      <attribute name="title" >
+       <string>Personalize</string>
+      </attribute>
+      <layout class="QGridLayout" >
+       <property name="margin" >
+        <number>9</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item row="1" column="0" >
+        <widget class="QFrame" name="frame2" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>7</hsizetype>
+           <vsizetype>0</vsizetype>
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="frameShape" >
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow" >
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>9</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="0" column="0" >
+           <widget class="QLabel" name="label" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>Number of singular/plural forms</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" >
+           <widget class="QSpinBox" name="spinBox" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="0" column="0" >
+        <widget class="QFrame" name="frame" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>7</hsizetype>
+           <vsizetype>0</vsizetype>
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="focusPolicy" >
+          <enum>Qt::TabFocus</enum>
+         </property>
+         <property name="autoFillBackground" >
+          <bool>true</bool>
+         </property>
+         <property name="frameShape" >
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow" >
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>9</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="3" column="0" >
+           <widget class="QLabel" name="label5" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>Support Team</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="3" >
+           <widget class="QComboBox" name="cbxLanguageCode" >
+            <property name="enabled" >
+             <bool>true</bool>
+            </property>
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="acceptDrops" >
+             <bool>false</bool>
+            </property>
+            <property name="editable" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0" >
+           <widget class="QLabel" name="label6" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>Time Zone</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1" >
+           <widget class="QComboBox" name="cbxFullLanguage" >
+            <property name="enabled" >
+             <bool>true</bool>
+            </property>
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="editable" >
+             <bool>true</bool>
+            </property>
+            <property name="currentIndex" >
+             <number>-1</number>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1" colspan="3" >
+           <widget class="QComboBox" name="cbxTimeZone" >
+            <property name="enabled" >
+             <bool>true</bool>
+            </property>
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="editable" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" >
+           <widget class="QLabel" name="label1" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>UserName</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" >
+           <widget class="QLabel" name="label3" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>Full Language Name</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" >
+           <widget class="QLabel" name="label2" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>Email address</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2" >
+           <widget class="QLabel" name="label4" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>Language Code</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" colspan="3" >
+           <widget class="QLineEdit" name="UserName" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maxLength" >
+             <number>32768</number>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" colspan="3" >
+           <widget class="QLineEdit" name="EmailAddress" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>5</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1" colspan="3" >
+           <widget class="QLineEdit" name="SupportTeam" />
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="2" column="0" >
+        <widget class="QCheckBox" name="chkHeaderAuto" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>7</hsizetype>
+           <vsizetype>0</vsizetype>
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text" >
+          <string>Automatically update header on save</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType" >
+          <enum>QSizePolicy::MinimumExpanding</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>20</width>
+           <height>10</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab2" >
+      <attribute name="title" >
+       <string>Font</string>
+      </attribute>
+      <layout class="QGridLayout" >
+       <property name="margin" >
+        <number>9</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item row="1" column="0" >
+        <widget class="QPushButton" name="bntDefaults" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>0</hsizetype>
+           <vsizetype>0</vsizetype>
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text" >
+          <string>Defaults</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType" >
+          <enum>QSizePolicy::MinimumExpanding</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="0" column="0" >
+        <widget class="QFrame" name="frame2" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>7</hsizetype>
+           <vsizetype>0</vsizetype>
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="frameShape" >
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow" >
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>9</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="3" column="0" >
+           <widget class="QLabel" name="lblsupportteam" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>10</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="text" >
+             <string>Comment</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" >
+           <widget class="QLabel" name="label4" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>10</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="text" >
+             <string>Target</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" >
+           <widget class="QLabel" name="Source" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>10</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="text" >
+             <string>Source</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" >
+           <widget class="QLabel" name="label2" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>10</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="text" >
+             <string>Overview</string>
+            </property>
+            <property name="scaledContents" >
+             <bool>true</bool>
+            </property>
+            <property name="wordWrap" >
+             <bool>true</bool>
+            </property>
+            <property name="indent" >
+             <number>0</number>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="2" >
+           <widget class="QPushButton" name="bntComment" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>Choose</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2" >
+           <widget class="QPushButton" name="bntTarget" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>Choose</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2" >
+           <widget class="QPushButton" name="bntSource" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>Choose</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2" >
+           <widget class="QPushButton" name="bntOverview" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>Choose</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1" >
+           <widget class="QLabel" name="lblComment" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>11</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="frameShape" >
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="text" >
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1" >
+           <widget class="QLabel" name="lblTarget" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>11</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="frameShape" >
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="text" >
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" >
+           <widget class="QLabel" name="lblSource" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>11</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="frameShape" >
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="text" >
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" >
+           <widget class="QLabel" name="lblOverView" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>11</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="frameShape" >
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="text" >
+             <string/>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
    <item row="1" column="0" >
     <layout class="QHBoxLayout" >
      <property name="margin" >
       <number>0</number>
      </property>
      <property name="spacing" >
-      <number>6</number>
+      <number>5</number>
      </property>
      <item>
       <spacer>
@@ -37,7 +751,7 @@
        </property>
        <property name="sizeHint" >
         <size>
-         <width>131</width>
+         <width>285</width>
          <height>31</height>
         </size>
        </property>
@@ -45,6 +759,14 @@
      </item>
      <item>
       <widget class="QPushButton" name="okButton" >
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>1</hsizetype>
+         <vsizetype>0</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text" >
         <string>OK</string>
        </property>
@@ -59,576 +781,12 @@
      </item>
     </layout>
    </item>
-   <item row="0" column="0" >
-    <widget class="QTabWidget" name="tabWidget" >
-     <property name="enabled" >
-      <bool>true</bool>
-     </property>
-     <property name="font" >
-      <font>
-       <family>Sans Serif</family>
-       <pointsize>10</pointsize>
-       <weight>50</weight>
-       <italic>false</italic>
-       <bold>false</bold>
-       <underline>false</underline>
-       <strikeout>false</strikeout>
-      </font>
-     </property>
-     <property name="autoFillBackground" >
-      <bool>false</bool>
-     </property>
-     <widget class="QWidget" name="tab1" >
-      <property name="enabled" >
-       <bool>true</bool>
-      </property>
-      <attribute name="title" >
-       <string>Personalize</string>
-      </attribute>
-      <widget class="QFrame" name="frame" >
-       <property name="geometry" >
-        <rect>
-         <x>10</x>
-         <y>20</y>
-         <width>441</width>
-         <height>231</height>
-        </rect>
-       </property>
-       <property name="frameShape" >
-        <enum>QFrame::StyledPanel</enum>
-       </property>
-       <property name="frameShadow" >
-        <enum>QFrame::Raised</enum>
-       </property>
-       <widget class="QLabel" name="label6" >
-        <property name="geometry" >
-         <rect>
-          <x>10</x>
-          <y>190</y>
-          <width>61</width>
-          <height>18</height>
-         </rect>
-        </property>
-        <property name="text" >
-         <string>Time Zone</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label3" >
-        <property name="geometry" >
-         <rect>
-          <x>10</x>
-          <y>110</y>
-          <width>118</width>
-          <height>18</height>
-         </rect>
-        </property>
-        <property name="text" >
-         <string>Full Language Name</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label1" >
-        <property name="geometry" >
-         <rect>
-          <x>10</x>
-          <y>30</y>
-          <width>71</width>
-          <height>18</height>
-         </rect>
-        </property>
-        <property name="text" >
-         <string>UserName</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label5" >
-        <property name="geometry" >
-         <rect>
-          <x>10</x>
-          <y>150</y>
-          <width>81</width>
-          <height>18</height>
-         </rect>
-        </property>
-        <property name="text" >
-         <string>Support Team</string>
-        </property>
-       </widget>
-       <widget class="QComboBox" name="cbxLanguageCode" >
-        <property name="enabled" >
-         <bool>true</bool>
-        </property>
-        <property name="geometry" >
-         <rect>
-          <x>350</x>
-          <y>100</y>
-          <width>81</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="acceptDrops" >
-         <bool>false</bool>
-        </property>
-        <property name="editable" >
-         <bool>true</bool>
-        </property>
-       </widget>
-       <widget class="QTextEdit" name="EmailAddress" >
-        <property name="geometry" >
-         <rect>
-          <x>130</x>
-          <y>60</y>
-          <width>302</width>
-          <height>30</height>
-         </rect>
-        </property>
-        <property name="tabChangesFocus" >
-         <bool>true</bool>
-        </property>
-       </widget>
-       <widget class="QTextEdit" name="UserName" >
-        <property name="geometry" >
-         <rect>
-          <x>130</x>
-          <y>20</y>
-          <width>302</width>
-          <height>30</height>
-         </rect>
-        </property>
-        <property name="focusPolicy" >
-         <enum>Qt::TabFocus</enum>
-        </property>
-        <property name="tabChangesFocus" >
-         <bool>true</bool>
-        </property>
-       </widget>
-       <widget class="QTextEdit" name="SupportTeam" >
-        <property name="geometry" >
-         <rect>
-          <x>130</x>
-          <y>140</y>
-          <width>301</width>
-          <height>30</height>
-         </rect>
-        </property>
-        <property name="tabChangesFocus" >
-         <bool>true</bool>
-        </property>
-       </widget>
-       <widget class="QComboBox" name="cbxTimeZone" >
-        <property name="enabled" >
-         <bool>true</bool>
-        </property>
-        <property name="geometry" >
-         <rect>
-          <x>130</x>
-          <y>180</y>
-          <width>301</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="editable" >
-         <bool>true</bool>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label4" >
-        <property name="geometry" >
-         <rect>
-          <x>260</x>
-          <y>109</y>
-          <width>91</width>
-          <height>18</height>
-         </rect>
-        </property>
-        <property name="text" >
-         <string>Language Code</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label2" >
-        <property name="geometry" >
-         <rect>
-          <x>10</x>
-          <y>69</y>
-          <width>81</width>
-          <height>18</height>
-         </rect>
-        </property>
-        <property name="text" >
-         <string>Email address</string>
-        </property>
-       </widget>
-       <widget class="QComboBox" name="cbxFullLanguage" >
-        <property name="enabled" >
-         <bool>true</bool>
-        </property>
-        <property name="geometry" >
-         <rect>
-          <x>130</x>
-          <y>100</y>
-          <width>121</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="editable" >
-         <bool>true</bool>
-        </property>
-        <property name="currentIndex" >
-         <number>-1</number>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QFrame" name="frame2" >
-       <property name="geometry" >
-        <rect>
-         <x>10</x>
-         <y>260</y>
-         <width>441</width>
-         <height>51</height>
-        </rect>
-       </property>
-       <property name="frameShape" >
-        <enum>QFrame::StyledPanel</enum>
-       </property>
-       <property name="frameShadow" >
-        <enum>QFrame::Raised</enum>
-       </property>
-       <widget class="QSpinBox" name="spinBox" >
-        <property name="geometry" >
-         <rect>
-          <x>215</x>
-          <y>10</y>
-          <width>216</width>
-          <height>31</height>
-         </rect>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label" >
-        <property name="geometry" >
-         <rect>
-          <x>10</x>
-          <y>18</y>
-          <width>181</width>
-          <height>18</height>
-         </rect>
-        </property>
-        <property name="text" >
-         <string>Number of singular/plural forms</string>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QCheckBox" name="chkHeaderAuto" >
-       <property name="geometry" >
-        <rect>
-         <x>10</x>
-         <y>330</y>
-         <width>201</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="text" >
-        <string>Automatically update header on save</string>
-       </property>
-      </widget>
-     </widget>
-     <widget class="QWidget" name="tab2" >
-      <attribute name="title" >
-       <string>Font</string>
-      </attribute>
-      <widget class="QPushButton" name="bntDefaults" >
-       <property name="geometry" >
-        <rect>
-         <x>340</x>
-         <y>230</y>
-         <width>91</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="text" >
-        <string>Defaults</string>
-       </property>
-      </widget>
-      <widget class="QFrame" name="frame2" >
-       <property name="geometry" >
-        <rect>
-         <x>20</x>
-         <y>20</y>
-         <width>411</width>
-         <height>201</height>
-        </rect>
-       </property>
-       <property name="frameShape" >
-        <enum>QFrame::StyledPanel</enum>
-       </property>
-       <property name="frameShadow" >
-        <enum>QFrame::Raised</enum>
-       </property>
-       <widget class="QLabel" name="label2" >
-        <property name="geometry" >
-         <rect>
-          <x>20</x>
-          <y>30</y>
-          <width>61</width>
-          <height>19</height>
-         </rect>
-        </property>
-        <property name="font" >
-         <font>
-          <family>Sans Serif</family>
-          <pointsize>10</pointsize>
-          <weight>50</weight>
-          <italic>false</italic>
-          <bold>false</bold>
-          <underline>false</underline>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text" >
-         <string>Overview</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="Source" >
-        <property name="geometry" >
-         <rect>
-          <x>20</x>
-          <y>70</y>
-          <width>48</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font" >
-         <font>
-          <family>Sans Serif</family>
-          <pointsize>10</pointsize>
-          <weight>50</weight>
-          <italic>false</italic>
-          <bold>false</bold>
-          <underline>false</underline>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text" >
-         <string>Source</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label4" >
-        <property name="geometry" >
-         <rect>
-          <x>20</x>
-          <y>110</y>
-          <width>48</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font" >
-         <font>
-          <family>Sans Serif</family>
-          <pointsize>10</pointsize>
-          <weight>50</weight>
-          <italic>false</italic>
-          <bold>false</bold>
-          <underline>false</underline>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text" >
-         <string>Target</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="lblsupportteam" >
-        <property name="geometry" >
-         <rect>
-          <x>20</x>
-          <y>150</y>
-          <width>61</width>
-          <height>19</height>
-         </rect>
-        </property>
-        <property name="font" >
-         <font>
-          <family>Sans Serif</family>
-          <pointsize>10</pointsize>
-          <weight>50</weight>
-          <italic>false</italic>
-          <bold>false</bold>
-          <underline>false</underline>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text" >
-         <string>Comment</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="lblComment" >
-        <property name="geometry" >
-         <rect>
-          <x>100</x>
-          <y>150</y>
-          <width>211</width>
-          <height>21</height>
-         </rect>
-        </property>
-        <property name="font" >
-         <font>
-          <family>Sans Serif</family>
-          <pointsize>11</pointsize>
-          <weight>50</weight>
-          <italic>false</italic>
-          <bold>false</bold>
-          <underline>false</underline>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="frameShape" >
-         <enum>QFrame::StyledPanel</enum>
-        </property>
-        <property name="text" >
-         <string/>
-        </property>
-       </widget>
-       <widget class="QLabel" name="lblTarget" >
-        <property name="geometry" >
-         <rect>
-          <x>100</x>
-          <y>110</y>
-          <width>211</width>
-          <height>21</height>
-         </rect>
-        </property>
-        <property name="font" >
-         <font>
-          <family>Sans Serif</family>
-          <pointsize>11</pointsize>
-          <weight>50</weight>
-          <italic>false</italic>
-          <bold>false</bold>
-          <underline>false</underline>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="frameShape" >
-         <enum>QFrame::StyledPanel</enum>
-        </property>
-        <property name="text" >
-         <string/>
-        </property>
-       </widget>
-       <widget class="QLabel" name="lblSource" >
-        <property name="geometry" >
-         <rect>
-          <x>100</x>
-          <y>70</y>
-          <width>211</width>
-          <height>21</height>
-         </rect>
-        </property>
-        <property name="font" >
-         <font>
-          <family>Sans Serif</family>
-          <pointsize>11</pointsize>
-          <weight>50</weight>
-          <italic>false</italic>
-          <bold>false</bold>
-          <underline>false</underline>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="frameShape" >
-         <enum>QFrame::StyledPanel</enum>
-        </property>
-        <property name="text" >
-         <string/>
-        </property>
-       </widget>
-       <widget class="QLabel" name="lblOverView" >
-        <property name="geometry" >
-         <rect>
-          <x>100</x>
-          <y>30</y>
-          <width>211</width>
-          <height>23</height>
-         </rect>
-        </property>
-        <property name="font" >
-         <font>
-          <family>Sans Serif</family>
-          <pointsize>11</pointsize>
-          <weight>50</weight>
-          <italic>false</italic>
-          <bold>false</bold>
-          <underline>false</underline>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="frameShape" >
-         <enum>QFrame::StyledPanel</enum>
-        </property>
-        <property name="text" >
-         <string/>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="bntOverview" >
-        <property name="geometry" >
-         <rect>
-          <x>330</x>
-          <y>30</y>
-          <width>61</width>
-          <height>21</height>
-         </rect>
-        </property>
-        <property name="text" >
-         <string>Choose</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="bntSource" >
-        <property name="geometry" >
-         <rect>
-          <x>330</x>
-          <y>70</y>
-          <width>61</width>
-          <height>21</height>
-         </rect>
-        </property>
-        <property name="text" >
-         <string>Choose</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="bntTarget" >
-        <property name="geometry" >
-         <rect>
-          <x>330</x>
-          <y>110</y>
-          <width>61</width>
-          <height>21</height>
-         </rect>
-        </property>
-        <property name="text" >
-         <string>Choose</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="bntComment" >
-        <property name="geometry" >
-         <rect>
-          <x>330</x>
-          <y>150</y>
-          <width>61</width>
-          <height>21</height>
-         </rect>
-        </property>
-        <property name="text" >
-         <string>Choose</string>
-        </property>
-       </widget>
-      </widget>
-     </widget>
-    </widget>
-   </item>
   </layout>
  </widget>
  <pixmapfunction></pixmapfunction>
  <tabstops>
-  <tabstop>UserName</tabstop>
-  <tabstop>EmailAddress</tabstop>
   <tabstop>cbxFullLanguage</tabstop>
   <tabstop>cbxLanguageCode</tabstop>
-  <tabstop>SupportTeam</tabstop>
   <tabstop>cbxTimeZone</tabstop>
   <tabstop>spinBox</tabstop>
   <tabstop>okButton</tabstop>
@@ -643,22 +801,6 @@
  <resources/>
  <connections>
   <connection>
-   <sender>okButton</sender>
-   <signal>clicked()</signal>
-   <receiver>frmPreference</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>373</x>
-     <y>400</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>96</x>
-     <y>254</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>cancelButton</sender>
    <signal>clicked()</signal>
    <receiver>frmPreference</receiver>
@@ -671,6 +813,22 @@
     <hint type="destinationlabel" >
      <x>179</x>
      <y>282</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>okButton</sender>
+   <signal>clicked()</signal>
+   <receiver>frmPreference</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>373</x>
+     <y>400</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>96</x>
+     <y>254</y>
     </hint>
    </hints>
   </connection>
