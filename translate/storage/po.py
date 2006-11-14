@@ -394,6 +394,8 @@ class pounit(base.TranslationUnit):
       self.target = otherpo.target
       if self.source != otherpo.source:
         self.markfuzzy()
+      else:
+        self.markfuzzy(otherpo.isfuzzy())
     elif otherpo.isblankmsgstr():
       if self.source != otherpo.source:
         self.markfuzzy()
