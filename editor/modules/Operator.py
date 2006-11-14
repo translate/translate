@@ -344,7 +344,8 @@ class Operator(QtCore.QObject):
             # found in current textField
             if (self.foundPosition >= 0):
                 self._searchFound()
-                break
+                return True
+                #break
             else:
                 # next textField
                 if (self.currentTextField < len(self.searchableText) - 1):
@@ -386,7 +387,33 @@ class Operator(QtCore.QObject):
             # exhausted
             self._searchNotFound()
             self.emit(QtCore.SIGNAL("generalInfo"), "Search has reached start of document")
-            
+    
+    def replace(self, replacedText):
+        """replace the found text in the text fields.
+        @param replacedText: text to replace."""
+        self.foundPosition = -1
+        if self.searchNext():
+            textField = self.searchableText[self.currentTextField]
+            self.emit(QtCore.SIGNAL("replaceText"), \
+                                    textField, \
+                                    self.foundPosition, \
+                                    len(unicode(self.searchString)), \
+                                    replacedText)
+
+    def replaceAll(self, replacedText):
+        """replace the found text in the text fields through out the units.
+        @param replacedText: text to replace."""
+        self.searchPointer = 0
+        for i in self.filteredList:
+            self.foundPosition = -1
+            if self.searchNext():
+                textField = self.searchableText[self.currentTextField]
+                self.emit(QtCore.SIGNAL("replaceText"), \
+                                        textField, \
+                                        self.foundPosition, \
+                                        len(unicode(self.searchString)), \
+                                        replacedText)
+        
     def _getUnitString(self):
         """return the string of current text field."""
         textField = self.searchableText[self.currentTextField]
@@ -405,10 +432,11 @@ class Operator(QtCore.QObject):
 
     def _searchFound(self):
         """emit searchResult signal with text field, position, and length."""
+        self.emitUpdateUnit()
         self._unitpointer = self.searchPointer
         self.emitCurrentUnit()
         textField = self.searchableText[self.currentTextField]
-        self.emit(QtCore.SIGNAL("searchResult"), textField, self.foundPosition, len(self.searchString))
+        self.emit(QtCore.SIGNAL("searchResult"), textField, self.foundPosition, len(unicode(self.searchString)))
         self.emit(QtCore.SIGNAL("generalInfo"), "")
 
     def _searchNotFound(self):

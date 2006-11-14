@@ -51,7 +51,9 @@ class Find(QtGui.QDockWidget):
         self._actionShow.setObjectName("actionShowOverview")
         self.connect(self._actionShow, QtCore.SIGNAL("triggered()"), self.show)
         self.connect(self.ui.findNext, QtCore.SIGNAL("clicked()"), self.findNext)
-        self.connect(self.ui.findPrevious, QtCore.SIGNAL("clicked()"), self.findPrevious)        
+        self.connect(self.ui.findPrevious, QtCore.SIGNAL("clicked()"), self.findPrevious)
+        self.connect(self.ui.replace, QtCore.SIGNAL("clicked()"), self.replace)
+        self.connect(self.ui.replaceAll, QtCore.SIGNAL("clicked()"), self.replaceAll)
         self.connect(self.ui.insource, QtCore.SIGNAL("stateChanged(int)"), self.toggleSeachInSource)
         self.connect(self.ui.intarget, QtCore.SIGNAL("stateChanged(int)"), self.toggleSearchInTarget)
         self.connect(self.ui.incomment, QtCore.SIGNAL("stateChanged(int)"), self.toggleSeachInComment)
@@ -80,13 +82,14 @@ class Find(QtGui.QDockWidget):
         
         if self.ui.lineEdit.isModified():        
             self.initSearch()
-            self.ui.lineEdit.setModified(False)        
+            self.emit(QtCore.SIGNAL("searchNext"))
+            self.ui.lineEdit.setModified(False)
     
     def initSearch(self):
         searchString = self.ui.lineEdit.text()
         filter = self.searchinsource + self.searchintarget + self.searchincomment
-        self.emit(QtCore.SIGNAL("initSearch"), searchString, filter, self.matchcase)
-        self.emit(QtCore.SIGNAL("searchNext"))
+        if (filter):
+            self.emit(QtCore.SIGNAL("initSearch"), searchString, filter, self.matchcase)
     
     def toggleSeachInSource(self):        
         if (not self.checkBoxCheckedStatus()):
@@ -137,20 +140,15 @@ class Find(QtGui.QDockWidget):
         else:
             return True
     
-    def findNext(self):
-        self.emit(QtCore.SIGNAL("searchNext"))
-        self.ui.lineEdit.setFocus()
-    
-    def findPrevious(self):
-        self.emit(QtCore.SIGNAL("searchPrevious"))
-        self.ui.lineEdit.setFocus()
-    
     def showFind(self):
         self.ui.lineEdit.setEnabled(True)
         self.ui.lineEdit_2.setEnabled(False)
         self.ui.replace.setEnabled(False)
         self.ui.replaceAll.setEnabled(False)
         self.ui.lineEdit.setFocus()
+        self.ui.insource.setEnabled(True)
+        self.ui.insource.setChecked(True)
+        self.ui.intarget.setChecked(False)
         if (not self.isVisible()):
             self.show()
     
@@ -160,8 +158,28 @@ class Find(QtGui.QDockWidget):
         self.ui.replace.setEnabled(True)
         self.ui.replaceAll.setEnabled(True)
         self.ui.lineEdit.setFocus()
+        self.ui.intarget.setChecked(True)
+        self.ui.insource.setChecked(False)
+        self.ui.insource.setEnabled(False)
         if (not self.isVisible()):
             self.show()
+
+    def findNext(self):
+        self.emit(QtCore.SIGNAL("searchNext"))
+        self.ui.lineEdit.setFocus()
+    
+    def findPrevious(self):
+        self.emit(QtCore.SIGNAL("searchPrevious"))
+        self.ui.lineEdit.setFocus()
+    
+    def replace(self):
+        self.emit(QtCore.SIGNAL("replace"), self.ui.lineEdit_2.text())
+        self.ui.lineEdit_2.setFocus()
+    
+    def replaceAll(self):
+        self.emit(QtCore.SIGNAL("replaceAll"), self.ui.lineEdit_2.text())
+        self.ui.lineEdit_2.setFocus()
+    
     
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

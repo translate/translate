@@ -148,10 +148,11 @@ class TUview(QtGui.QDockWidget):
         self.lastValue = value
         self.ui.fileScrollBar.setValue(value)
 
-    def setTarget(self, target):
-        """Change the target text."""
+    def setTarget(self, text):
+        """Change the target text.
+        @param QString(text): text to set into target field."""
         # FIXME: comment the param
-        self.ui.txtTarget.setPlainText(target)
+        self.ui.txtTarget.setPlainText(text)
         
     def checkModified(self):
         if self.ui.txtTarget.document().isModified():
@@ -189,9 +190,23 @@ class TUview(QtGui.QDockWidget):
             textField.update()
         block.layout().setAdditionalFormats([self.highlightRange])
 
+    def replaceText(self, textField, position, length, replacedText):
+        """Highlight the text at specified position, length, and textField.
+        @param textField: source or target text box.
+        @param position: highlight start point.
+        @param length: highlight length.
+        @param replacedText: text to replace."""
+        if (textField != self.world.target):
+            return
+        text = self.ui.txtTarget.toPlainText()
+        text.replace(position, length, replacedText);
+        self.ui.txtTarget.setPlainText(text)
+        self.ui.txtTarget.document().setModified()
+        self.checkModified()
+        
     def selectCut(self):
         self.ui.txtSource.cut()        
-                
+    
     def applySettings(self):
         sourcefont = self.settings.value("tuSourceFont")
         if (sourcefont.isValid()):

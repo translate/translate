@@ -125,12 +125,17 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.findBar, QtCore.SIGNAL("initSearch"), self.operator.initSearch)
         self.connect(self.findBar, QtCore.SIGNAL("searchNext"), self.operator.searchNext)
         self.connect(self.findBar, QtCore.SIGNAL("searchPrevious"), self.operator.searchPrevious)
+        self.connect(self.findBar, QtCore.SIGNAL("replace"), self.operator.replace)
+        self.connect(self.findBar, QtCore.SIGNAL("replaceAll"), self.operator.replaceAll)
         
         # "searchFound" sends container and location to be highlighted.
         self.connect(self.operator, QtCore.SIGNAL("searchResult"), self.dockTUview.highlightSearch)
         self.connect(self.operator, QtCore.SIGNAL("searchResult"), self.dockComment.highlightSearch)
         self.connect(self.operator, QtCore.SIGNAL("generalInfo"), self.lblGeneralInfo.setText)        
-    
+        
+        # "replaceText" sends text field, start, length, and text to replace.
+        self.connect(self.operator, QtCore.SIGNAL("replaceText"), self.dockTUview.replaceText)
+        
         # Edit menu action
         self.connect(self.ui.actionUndo, QtCore.SIGNAL("triggered()"), self.undoer)
         self.connect(self.ui.actionRedo, QtCore.SIGNAL("triggered()"), self.redoer) 
