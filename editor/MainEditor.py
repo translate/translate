@@ -37,6 +37,9 @@ from modules.AboutEditor import AboutEditor
 from modules.World import World
 
 class MainWindow(QtGui.QMainWindow):
+    """
+    The main window which holds the toolviews.
+    """
     MaxRecentFiles = 10
     windowList = []
 
@@ -103,7 +106,7 @@ class MainWindow(QtGui.QMainWindow):
         
         #Help menu of aboutQt        
         self.aboutDialog = AboutEditor()        
-        self.connect(self.ui.actionAbout, QtCore.SIGNAL("triggered()"), self.aboutDialog, QtCore.SLOT("show()"))
+        self.connect(self.ui.actionAbout, QtCore.SIGNAL("triggered()"), self.aboutDialog.showDialog)
         self.connect(self.ui.actionAboutQT, QtCore.SIGNAL("triggered()"), QtGui.qApp, QtCore.SLOT("aboutQt()"))     
         
         # create file action object and file action menu related signals
@@ -246,7 +249,11 @@ class MainWindow(QtGui.QMainWindow):
             pass       
 
     def setOpening(self, fileName): 
-        """set status after open a file"""
+        """
+        set status after open a file
+        
+        @param fileName string, the filename to open
+        """
         # TODO: Move into module
         #Enable all views
         self.dockComment.ui.txtComment.setEnabled(True)
