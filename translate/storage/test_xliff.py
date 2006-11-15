@@ -84,6 +84,24 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert unit.correctorigin(notenodes[2], "ad") == True
         assert unit.correctorigin(notenodes[2], "om") == False
 
+    def test_suggestions(self):
+        """Test xliff style <alt-trans> suggestions"""
+        xlifffile = xliff.xlifffile()
+        unit = xlifffile.addsourceunit("Testing")
+
+        unit.addalttrans("ginmi")
+        unit.addalttrans("shikenki")
+        suggestions = unit.getalttrans()
+        assert suggestions[0] == "ginmi"
+        assert suggestions[1] == "shikenki"
+
+        unit.addalttrans("Tasting", origin="bob", lang="eng")
+        suggestions = unit.getalttrans()
+        assert suggestions[2] == "Tasting"
+
+        suggestions = unit.getalttrans(origin="bob")
+        assert suggestions[0] == "Tasting"
+
     def test_fuzzy(self):
         xlifffile = xliff.xlifffile()
         unit = xlifffile.addsourceunit("Concept")

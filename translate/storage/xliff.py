@@ -106,6 +106,31 @@ class xliffunit(lisa.LISAunit):
             nodes.extend(sources[- (sourcesl - targetsl):])
         return nodes
 
+    def addalttrans(self, txt, origin=None, lang=None):
+        """Adds a alt-trans tag and alt-trans components to <source>"""
+        if isinstance(txt, str):
+            txt = txt.decode("utf-8")
+        suggestion = self.document.createElement("alt-trans")
+        suggestion.appendChild(self.document.createTextNode(txt))
+        if origin:
+            suggestion.setAttribute("origin", origin)
+        if lang:
+            suggestion.setAttribute("xml:lang", lang)
+        self.xmlelement.appendChild(suggestion)
+
+    def getalttrans(self, origin=None):
+        """Returns <alt-trans> for source as a list"""
+        suggnodes = self.xmlelement.getElementsByTagName("alt-trans")
+        suggestlist = []
+        if not origin:
+            for i in range(len(suggnodes)):
+                suggestlist.append(lisa.getText(suggnodes[i]))
+        else:
+            for i in range(len(suggnodes)):
+                if self.correctorigin(suggnodes[i], origin):
+                    suggestlist.append(lisa.getText(suggnodes[i]))
+        return suggestlist
+
     def addnote(self, text, origin=None):
         """Add a note specifically in a "note" tag"""
         if isinstance(text, str):
@@ -122,7 +147,6 @@ class xliffunit(lisa.LISAunit):
         if origin == None:
           return lisa.getText(notenodes)
         else:
-          length = len(notenodes)
           notes = ""
           for i in range(len(notenodes)):
              if self.correctorigin(notenodes[i], origin):
@@ -231,13 +255,15 @@ class xliffunit(lisa.LISAunit):
             self.markfuzzy()
 
     def correctorigin(self, node, origin):
-        """Check against note tag origin"""
+        """Check against node tag's origin (e.g note or alt-trans)"""
         if origin == None:
             return True
-        elif origin not in node.getAttribute("from"):
-            return False
-        else:
+        elif origin in node.getAttribute("from"):
             return True
+        elif origin in node.getAttribute("origin"):
+            return True
+        else:
+            return False
 
 class xlifffile(lisa.LISAfile):
     """Class representing a XLIFF file store."""
