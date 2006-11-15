@@ -46,7 +46,6 @@ class Header(QtGui.QDialog):
         self.ui.setupUi(self) 
         self.headerDic = {}
        
-        
     def showDialog(self, otherComments, headerDic):
         """ make the dialog visible with otherComments and header filled in"""
         # lazy init 
@@ -59,6 +58,12 @@ class Header(QtGui.QDialog):
             QtCore.QObject.connect(self.ui.okButton,QtCore.SIGNAL("clicked()"), self.accepted)
             QtCore.QObject.connect(self.ui.applyButton,QtCore.SIGNAL("clicked()"), self.applySettings)
             QtCore.QObject.connect(self.ui.resetButton,QtCore.SIGNAL("clicked()"), self.reset)
+            QtCore.QObject.connect(self.ui.tableHeader, QtCore.SIGNAL("cellClicked(int, int)"), self.getRowCol)
+            QtCore.QObject.connect(self.ui.tableHeader, QtCore.SIGNAL("cellClicked(int, int)"), self.appendRow)
+            QtCore.QObject.connect(self.ui.btnUp,QtCore.SIGNAL("clicked()"), self.moveUp)
+            QtCore.QObject.connect(self.ui.btnDown ,QtCore.SIGNAL("clicked()"), self.moveDown)
+            QtCore.QObject.connect(self.ui.btnInsertRow,QtCore.SIGNAL("clicked()"), self.insertNewRow)
+            QtCore.QObject.connect(self.ui.btnDeleteRow,QtCore.SIGNAL("clicked()"), self.DeleteRow)
             
              # set up table appearance and behavior        
             self.headerLabels = [self.tr("Key"), self.tr("Value")]            
@@ -72,8 +77,6 @@ class Header(QtGui.QDialog):
 
             self.headerDic = headerDic
             self.addItemToTable()
-            QtCore.QObject.connect(self.ui.tableHeader, QtCore.SIGNAL("cellClicked(int, int)"), self.appendRow)
-            
             
         otherCommentsStr = " "
         for i in range(len(otherComments)):
@@ -84,7 +87,66 @@ class Header(QtGui.QDialog):
     
     def reset(self):
         """Reset back the original header"""                
-        self.addItemToTable()
+        self.addItemToTable(self.headerDic)
+    
+    def moveUp(self):
+        """ Move the selected item up"""      
+        # Swap between items
+        self.ui.tableHeader.setItem(self.row-1, 0, self.selectedKey)
+        self.ui.tableHeader.setItem(self.row-1, 1, self.selectedValue) 
+        self.ui.tableHeader.setItem(self.row, 0, self.aboveSelectedKey)
+        self.ui.tableHeader.setItem(self.row, 1, self.aboveSelectedValue)                  
+        
+    def moveDown(self):
+        """ Move the selected item down"""
+         # Swap between items
+        self.ui.tableHeader.setItem(self.row, 0, self.underSelectedKey)
+        self.ui.tableHeader.setItem(self.row, 1, self.underSelectedValue) 
+        self.ui.tableHeader.setItem(self.row+1, 0, self.selectedKey)
+        self.ui.tableHeader.setItem(self.row+1, 1, self.selectedValue)
+        
+    def insertNewRow(self):
+        """ Insert a row befor the selected row """
+        self.ui.tableHeader.insertRow(self.row)     
+      
+    def DeleteRow(self):
+        """ Delete selected row"""
+        self.ui.tableHeader.removeRow(self.row)
+        
+    def naviState(self):
+        # if selected item is the first item, cannot move up
+        if (self.row == 0):
+            self.ui.btnUp.setEnabled(False)
+            self.ui.btnDown.setEnabled(True)
+        # if selected item is the last item, cannot move down
+        elif(self.row == self.ui.tableHeader.rowCount() - 1):
+            self.ui.btnDown.setEnabled(False)
+            self.ui.btnUp.setEnabled(True)
+        else:
+            self.ui.btnUp.setEnabled(True)
+            self.ui.btnDown.setEnabled(True)
+    
+    def rememberItems(self):
+        """Remember selected item and item above selected item"""
+        self.selectedKey = self.ui.tableHeader.takeItem(self.row, 0)
+        self.selectedValue = self.ui.tableHeader.takeItem(self.row, 1)
+        self.aboveSelectedKey = self.ui.tableHeader.takeItem(self.row-1, 0)
+        self.aboveSelectedValue = self.ui.tableHeader.takeItem(self.row-1, 1)
+        self.underSelectedKey = self.ui.tableHeader.takeItem(self.row+1, 0)
+        self.underSelectedValue = self.ui.tableHeader.takeItem(self.row+1, 1)
+        
+    def getRowCol(self, row, col):
+        """ slot for signals cellClicked  """
+        self.row = row
+        self.col = col
+        self.naviState()
+        self.rememberItems()          
+          
+    def appendRow(self):
+        """ Append one row to the last"""
+        lastRow = self.ui.tableHeader.rowCount() - 1
+        if (self.row == lastRow):          
+            self.ui.tableHeader.insertRow(lastRow)
         
     def addItemToTable(self, headerDic = None):
         """ Add old items to the table"""
@@ -99,19 +161,13 @@ class Header(QtGui.QDialog):
             self.ui.tableHeader.setItem(i, 0, item0)
             self.ui.tableHeader.setItem(i, 1, item1)
             i += 1   
-   
-    def appendRow(self, row, col):
-        """ Append one row to the last"""
-        lastRow = self.ui.tableHeader.rowCount() - 1
-        if (row == lastRow):          
-            self.ui.tableHeader.insertRow(lastRow)
-    
+            
     def generatedHeader(self,generated_header):
         """ slot for headerGenerated"""
         self.generated_header = generated_header
         
     def applySettings(self):    
-        """set user profile from Qsettings into the tableHeader, all information need filling in"""
+        """set user profile from Qsettings into the tableHeader"""
         newHeaderDic = {}
         userProfileDic = {}
         userName = self.settings.value("UserName", QtCore.QVariant(""))        
@@ -138,17 +194,15 @@ class Header(QtGui.QDialog):
 
         #set all the infomation into a dictionary
         for i in range(self.ui.tableHeader.rowCount()):   
-            if (self.ui.tableHeader.item(i,0) != None):                
-                newHeaderDic[str(self.ui.tableHeader.item(i,0).text())] = str(self.ui.tableHeader.item(i,1).text())
-        return newHeaderDic
-     
+            if (self.ui.tableHeader.item(i, 0) != None):                
+                newHeaderDic[str(self.ui.tableHeader.item(i, 0).text())] = str(self.ui.tableHeader.item(i,1).text())
+        return newHeaderDic     
 
     def accepted(self):
         """send header information"""        
         if (not self.ui):
             self.setupUI()
         self.emit(QtCore.SIGNAL("updateHeader"), self.ui.txtOtherComments.toPlainText(), self.applySettings())
-
         
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
