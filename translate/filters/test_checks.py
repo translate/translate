@@ -656,5 +656,6 @@ def test_urls():
 def test_simpleplurals():
     """test that we can find English style plural(s)"""
     stdchecker = checks.StandardChecker()
+    assert checks.passes(stdchecker.simpleplurals, "computer(s)", "rekenaar(s)")
     assert checks.fails(stdchecker.simpleplurals, "plural(s)", "meervoud(e)")
     assert checks.fails(stdchecker.simpleplurals, "Ungroup Metafile(s)...", "Kuvhanganyululani Metafaela(dzi)...")
