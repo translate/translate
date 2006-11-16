@@ -535,6 +535,8 @@ def test_variables_mozilla():
     assert checks.fails(mozillachecker.variables, "About $ProgramName$", "Oor $NaamVanProgam$")
     assert checks.passes(mozillachecker.variables, "About $_CLICK", "Oor $_CLICK")
     assert checks.fails(mozillachecker.variables, "About $_CLICK", "Oor $_KLIK")
+    assert checks.passes(mozillachecker.variables, "About $(^NameDA)", "Oor $(^NameDA)")
+    assert checks.fails(mozillachecker.variables, "About $(^NameDA)", "Oor $(^NaamDA)")
     # Double variable problem
     assert checks.fails(mozillachecker.variables, "Create In &lt;&lt;", "Etsa ka Ho &lt;lt;")
     # Variables at the end of a sentence
