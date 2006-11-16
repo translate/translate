@@ -34,11 +34,15 @@ class AboutEditor(QtGui.QDialog):
     
     def showDialog(self):
         #lazy init
-        if (not self.ui):
-            tabWidget = QtGui.QTabWidget()        
+        if (not self.ui):            
+            tabWidget = QtGui.QTabWidget()                    
             tabWidget.addTab(AboutTab(), self.tr("About Editor"))
-            tabWidget.addTab(AuthorsTab(), self.tr("Authors"))
-            tabWidget.addTab(ThanksTab(), self.tr("Thanks To"))
+            authortab = AuthorsTab()
+            self.connect(authortab.fileNameLabel, QtCore.SIGNAL("anchorClicked(const QUrl&)"),self.handleLinkClicked)
+            tabWidget.addTab(authortab, self.tr("Authors"))
+            thankstab = ThanksTab()
+            self.connect(thankstab.fileNameLabel, QtCore.SIGNAL("anchorClicked(const QUrl&)"),self.handleLinkClicked)
+            tabWidget.addTab(thankstab, self.tr("Thanks To"))
             tabWidget.addTab(LicensesTab(), self.tr("Licenses Agreement"))
 
             self.okButton = QtGui.QPushButton(self.tr("&OK"))
@@ -54,17 +58,24 @@ class AboutEditor(QtGui.QDialog):
             self.setLayout(mainLayout)
             self.ui = True
         self.setWindowTitle(self.tr("About Editor"))
-        self.resize(400, 200)   
+        self.setMinimumSize(400, 400)   
         self.setModal(True)
         self.show()
-
-
+    
+    def handleLinkClicked(self, url):
+        '''slot to handle when anchorClicked (an email address), and open a webbrowser and a mail client'''
+        self.sender().setSource(QtCore.QUrl())
+        try:
+            import webbrowser            
+            webbrowser.open(unicode(url.toString()))
+            return
+        except:
+            pass
+    
 class AboutTab(QtGui.QWidget):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
-
         fileNameLabel = QtGui.QLabel(self.tr("<center><br><br><br><b>  WordForge Translation Editor </b></br></center><center><br> Version 0.1 (31 August 2006)</br><br>Copyright 2006 WordForge Foundation.</br></center>"))
-
         mainLayout = QtGui.QVBoxLayout()
         mainLayout.addWidget(fileNameLabel)
         mainLayout.addStretch(1)
@@ -73,26 +84,21 @@ class AboutTab(QtGui.QWidget):
 
 class AuthorsTab(QtGui.QWidget):
     def __init__(self, parent=None):
-        QtGui.QWidget.__init__(self, parent)
-
-        fileNameLabel = QtGui.QLabel(self.tr('<br>Hok Kakada (<a href="mailto:hokkakada@khmeros.info">hokkakada@khmeros.info</a>)<br><br>Keo Sophon (<a href="mailto:keosophon@khmeros.info">keosophon@khmeros.info</a>)<br><br>San Titvirak (<a href="mailto:titvirak@khmeros.info">titvirak@khmeros.info</a>)<br><br>Seth Chanratha(<a href="mailto:sethchanratha@khmeros.info">sethchanratha@khmeros.info</a>)'))
-
+        QtGui.QWidget.__init__(self, parent)        
+        self.fileNameLabel = QtGui.QTextBrowser()
+        self.fileNameLabel.setHtml(self.tr('<br>Hok Kakada (<a href="mailto:hokkakada@khmeros.info">hokkakada@khmeros.info</a>)<br><br>Keo Sophon (<a href="mailto:keosophon@khmeros.info">keosophon@khmeros.info</a>)<br><br>San Titvirak (<a href="mailto:titvirak@khmeros.info">titvirak@khmeros.info</a>)<br><br>Seth Chanratha(<a href="mailto:sethchanratha@khmeros.info">sethchanratha@khmeros.info</a>)'))                    
         mainLayout = QtGui.QVBoxLayout()
-        mainLayout.addWidget(fileNameLabel)
-        mainLayout.addStretch(1)
-        self.setLayout(mainLayout)
+        mainLayout.addWidget(self.fileNameLabel)        
+        self.setLayout(mainLayout)       
 
 
 class ThanksTab(QtGui.QWidget):
     def __init__(self, parent=None):
-        QtGui.QWidget.__init__(self, parent)
-
-
-        fileNameLabel = QtGui.QLabel(self.tr("<br><b>Special thanks to:</b><br><br><u>Funtionalities specification contributor:</u><br><br>Javier Sola (javier@khmeros.info)<br><br><br><u>Code contributors:</u><br><br>Dwayne Bailey (dwayne@translate.org.za)<br><br>Friedel Wolff (friedel@translate.org.za)<br><br>Jens Herden (jens@khmeros.info)"))
-
+        QtGui.QWidget.__init__(self, parent)        
+        self.fileNameLabel = QtGui.QTextBrowser()
+        self.fileNameLabel.setHtml(self.tr('<br><b>Special thanks to:</b><br><br><u>Funtionalities specification contributor:</u><br><br>Javier Sola (<a href="mailto:javier@khmeros.info">javier@khmeros.info </a>)<br><br><br><u>Code contributors:</u><br><br>Dwayne Bailey (<a href="mailto:dwayne@translate.org.za">dwayne@translate.org.za</a>)<br><br>Friedel Wolff (<a href="mailto:friedel@translate.org.za">friedel@translate.org.za</a>)<br><br>Jens Herden (<a href="mailto:jens@khmeros.info">jens@khmeros.info</a>)'))                                
         mainLayout = QtGui.QVBoxLayout()
-        mainLayout.addWidget(fileNameLabel)
-        mainLayout.addStretch(1)
+        mainLayout.addWidget(self.fileNameLabel)        
         self.setLayout(mainLayout)
  
 class LicensesTab(QtGui.QWidget):
@@ -105,7 +111,6 @@ class LicensesTab(QtGui.QWidget):
         mainLayout = QtGui.QVBoxLayout()
         mainLayout.addWidget(fileNameLabel)
         self.setLayout(mainLayout) 
-
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
