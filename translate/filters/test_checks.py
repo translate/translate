@@ -54,6 +54,7 @@ def test_accelerators():
     assert checks.fails(mozillachecker.accelerators, "File", "&Fayile") 
     assert checks.passes(mozillachecker.accelerators, "Mail &amp; News", "Pos en Nuus") 
     assert checks.fails(mozillachecker.accelerators, "Mail &amp; News", "Pos en &Nuus") 
+    assert checks.seriousfails(mozillachecker.accelerators, "&File", "Fayile") 
     ooochecker = checks.OpenOfficeChecker()
     assert checks.passes(ooochecker.accelerators, "~File", "~Fayile") 
     assert checks.fails(ooochecker.accelerators, "~File", "Fayile") 
