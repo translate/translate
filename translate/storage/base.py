@@ -138,7 +138,7 @@ class TranslationStore(object):
     def __init__(self, unitclass=None):
         """Constructs a blank TranslationStore"""
         self.units = []
-	if unitclass:
+        if unitclass:
             self.UnitClass = unitclass
 
     def addsourceunit(self, source):
