@@ -58,8 +58,7 @@ class Header(QtGui.QDialog):
             QtCore.QObject.connect(self.ui.okButton,QtCore.SIGNAL("clicked()"), self.accepted)
             QtCore.QObject.connect(self.ui.applyButton,QtCore.SIGNAL("clicked()"), self.applySettings)
             QtCore.QObject.connect(self.ui.resetButton,QtCore.SIGNAL("clicked()"), self.reset)
-            QtCore.QObject.connect(self.ui.tableHeader, QtCore.SIGNAL("cellClicked(int, int)"), self.getRowCol)
-            QtCore.QObject.connect(self.ui.tableHeader, QtCore.SIGNAL("cellClicked(int, int)"), self.appendRow)
+            QtCore.QObject.connect(self.ui.tableHeader,QtCore.SIGNAL("itemSelectionChanged()"), self.naviState)
             QtCore.QObject.connect(self.ui.btnUp,QtCore.SIGNAL("clicked()"), self.moveUp)
             QtCore.QObject.connect(self.ui.btnDown ,QtCore.SIGNAL("clicked()"), self.moveDown)
             QtCore.QObject.connect(self.ui.btnInsertRow,QtCore.SIGNAL("clicked()"), self.insertNewRow)
@@ -74,6 +73,7 @@ class Header(QtGui.QDialog):
             self.ui.tableHeader.horizontalHeader().setResizeMode(1, QtGui.QHeaderView.Stretch)
             self.ui.tableHeader.horizontalHeader().setHighlightSections(False)
             self.ui.tableHeader.setEnabled(True)
+            self.ui.tableHeader.verticalHeader().hide()
 
             self.headerDic = headerDic
             self.addItemToTable()
@@ -86,74 +86,64 @@ class Header(QtGui.QDialog):
         self.show()
     
     def reset(self):
-        """Reset back the original header"""                
+        """Reset back the original header"""
         self.addItemToTable(self.headerDic)
     
+    def moveItem(self, distance) :
+        """ Move the selected item up or down
+        @param distance is a difference for the current row"""
+        
+        table = self.ui.tableHeader
+        currRow = table.currentRow()
+        targetRow = currRow + distance
+        if ((targetRow >= 0) and (targetRow < self.ui.tableHeader.rowCount())):
+            # Swap between items
+            for i in range(table.columnCount()):
+                item = QtGui.QTableWidgetItem(table.item(currRow, i))
+                table.setItem(currRow, i, QtGui.QTableWidgetItem(table.item(targetRow, i)))
+                table.setItem(targetRow, i, item)
+            table.setCurrentCell(targetRow, table.currentColumn())
+                
     def moveUp(self):
-        """ Move the selected item up"""      
-        # Swap between items
-        self.ui.tableHeader.setItem(self.row-1, 0, self.selectedKey)
-        self.ui.tableHeader.setItem(self.row-1, 1, self.selectedValue) 
-        self.ui.tableHeader.setItem(self.row, 0, self.aboveSelectedKey)
-        self.ui.tableHeader.setItem(self.row, 1, self.aboveSelectedValue)                  
+        """ Move the selected item up"""
+        self.moveItem(-1)
         
     def moveDown(self):
         """ Move the selected item down"""
-         # Swap between items
-        self.ui.tableHeader.setItem(self.row, 0, self.underSelectedKey)
-        self.ui.tableHeader.setItem(self.row, 1, self.underSelectedValue) 
-        self.ui.tableHeader.setItem(self.row+1, 0, self.selectedKey)
-        self.ui.tableHeader.setItem(self.row+1, 1, self.selectedValue)
+        self.moveItem(+1)
         
     def insertNewRow(self):
         """ Insert a row befor the selected row """
-        self.ui.tableHeader.insertRow(self.row)     
+        table = self.ui.tableHeader
+        currRow = table.currentRow()
+        table.insertRow(currRow)
+        table.setItem(currRow, 0, QtGui.QTableWidgetItem())
+        table.setItem(currRow, 1, QtGui.QTableWidgetItem())
+        table.setCurrentCell(currRow, table.currentColumn())
+        
       
     def DeleteRow(self):
         """ Delete selected row"""
-        self.ui.tableHeader.removeRow(self.row)
+        self.ui.tableHeader.removeRow(self.ui.tableHeader.currentRow())
         
     def naviState(self):
         # if selected item is the first item, cannot move up
-        if (self.row == 0):
-            self.ui.btnUp.setEnabled(False)
-            self.ui.btnDown.setEnabled(True)
-        # if selected item is the last item, cannot move down
-        elif(self.row == self.ui.tableHeader.rowCount() - 1):
-            self.ui.btnDown.setEnabled(False)
-            self.ui.btnUp.setEnabled(True)
-        else:
-            self.ui.btnUp.setEnabled(True)
-            self.ui.btnDown.setEnabled(True)
+        currRow = self.ui.tableHeader.currentRow()
+        rowCount = self.ui.tableHeader.rowCount()
+        upEnabled = False
+        downEnabled = False
+        if (rowCount > 1):
+            upEnabled = (currRow > 0)
+            downEnabled = (currRow < rowCount - 1)
+        self.ui.btnUp.setEnabled(upEnabled)
+        self.ui.btnDown.setEnabled(downEnabled)
     
-    def rememberItems(self):
-        """Remember selected item and item above selected item"""
-        self.selectedKey = self.ui.tableHeader.takeItem(self.row, 0)
-        self.selectedValue = self.ui.tableHeader.takeItem(self.row, 1)
-        self.aboveSelectedKey = self.ui.tableHeader.takeItem(self.row-1, 0)
-        self.aboveSelectedValue = self.ui.tableHeader.takeItem(self.row-1, 1)
-        self.underSelectedKey = self.ui.tableHeader.takeItem(self.row+1, 0)
-        self.underSelectedValue = self.ui.tableHeader.takeItem(self.row+1, 1)
-        
-    def getRowCol(self, row, col):
-        """ slot for signals cellClicked  """
-        self.row = row
-        self.col = col
-        self.naviState()
-        self.rememberItems()          
-          
-    def appendRow(self):
-        """ Append one row to the last"""
-        lastRow = self.ui.tableHeader.rowCount() - 1
-        if (self.row == lastRow):          
-            self.ui.tableHeader.insertRow(lastRow)
-        
     def addItemToTable(self, headerDic = None):
         """ Add old items to the table"""
         if (headerDic == None):
             headerDic = self.headerDic
         #rowCount according to the old headerDic length
-        self.ui.tableHeader.setRowCount(len(headerDic) + 1)
+        self.ui.tableHeader.setRowCount(len(headerDic))
         i = 0
         for key, value in headerDic.items():
             item0 = QtGui.QTableWidgetItem(QtCore.QString(key.lstrip('"')))   
