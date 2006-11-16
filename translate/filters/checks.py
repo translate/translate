@@ -790,7 +790,18 @@ class StandardChecker(TranslationChecker):
 
   def simpleplurals(self, str1, str2):
     """checks for English style plural(s) for you to review"""
-    return str1.find("(s)") == -1
+    def numberofpatterns(string, patterns):
+      number = 0
+      for pattern in patterns:
+        number += len(sre.findall(pattern, string))
+      print number
+      return number
+
+    sourcepatterns = ["\(s\)"]
+    targetpatterns = ["\(s\)"]
+    sourcecount = numberofpatterns(str1, sourcepatterns)
+    targetcount = numberofpatterns(str2, targetpatterns)
+    return sourcecount == targetcount
 
   def spellcheck(self, str1, str2):
     """checks words that don't pass a spell check"""
