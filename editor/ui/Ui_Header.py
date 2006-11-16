@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Wed Nov 15 09:05:26 2006
+# Created: Thu Nov 16 19:05:45 2006
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -177,11 +177,12 @@ class Ui_frmHeader(object):
         self.tableHeader.setFocusPolicy(QtCore.Qt.TabFocus)
         self.tableHeader.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
         self.tableHeader.setAcceptDrops(False)
+        self.tableHeader.setLineWidth(0)
         self.tableHeader.setProperty("showDropIndicator",QtCore.QVariant(False))
         self.tableHeader.setDragEnabled(False)
         self.tableHeader.setAlternatingRowColors(True)
         self.tableHeader.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
-        self.tableHeader.setSelectionBehavior(QtGui.QAbstractItemView.SelectItems)
+        self.tableHeader.setShowGrid(False)
         self.tableHeader.setObjectName("tableHeader")
         self.gridlayout1.addWidget(self.tableHeader,0,0,5,1)
         self.gridlayout.addWidget(self.frame,3,0,1,1)

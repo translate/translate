@@ -471,6 +471,9 @@
         <property name="acceptDrops" >
          <bool>false</bool>
         </property>
+        <property name="lineWidth" >
+         <number>0</number>
+        </property>
         <property name="showDropIndicator" stdset="0" >
          <bool>false</bool>
         </property>
@@ -482,6 +485,9 @@
         </property>
         <property name="selectionMode" >
          <enum>QAbstractItemView::SingleSelection</enum>
+        </property>
+        <property name="showGrid" >
+         <bool>false</bool>
         </property>
         <property name="columnCount" >
          <number>2</number>
