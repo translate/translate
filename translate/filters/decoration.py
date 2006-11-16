@@ -61,7 +61,7 @@ def ispurepunctuation(str1):
   """checks whether the string is entirely punctuation"""
   for c in str1:
     if c.isalpha(): return 0
-  return 1
+  return len(str1)
 
 def isvalidaccelerator(accelerator, ignorelist=[]):
   """returns whether the given accelerator string is a valid one..."""

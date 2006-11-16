@@ -342,6 +342,7 @@ def test_purepunc():
     """tests messages containing only punctuation"""
     stdchecker = checks.StandardChecker()
     assert checks.passes(stdchecker.purepunc, ".", ".")
+    assert checks.passes(stdchecker.purepunc, "", "")
     assert checks.fails(stdchecker.purepunc, ".", " ")
 
 def test_sentencecount():
