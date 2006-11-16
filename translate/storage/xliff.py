@@ -110,26 +110,26 @@ class xliffunit(lisa.LISAunit):
         """Adds a alt-trans tag and alt-trans components to <source>"""
         if isinstance(txt, str):
             txt = txt.decode("utf-8")
-        suggestion = self.document.createElement("alt-trans")
-        suggestion.appendChild(self.document.createTextNode(txt))
+        alttrans = self.document.createElement("alt-trans")
+        alttrans.appendChild(self.document.createTextNode(txt))
         if origin:
-            suggestion.setAttribute("origin", origin)
+            alttrans.setAttribute("origin", origin)
         if lang:
-            suggestion.setAttribute("xml:lang", lang)
-        self.xmlelement.appendChild(suggestion)
+            alttrans.setAttribute("xml:lang", lang)
+        self.xmlelement.appendChild(alttrans)
 
     def getalttrans(self, origin=None):
         """Returns <alt-trans> for source as a list"""
-        suggnodes = self.xmlelement.getElementsByTagName("alt-trans")
-        suggestlist = []
+        nodes = self.xmlelement.getElementsByTagName("alt-trans")
+        translist = []
         if not origin:
-            for i in range(len(suggnodes)):
-                suggestlist.append(lisa.getText(suggnodes[i]))
+            for i in range(len(nodes)):
+                translist.append(lisa.getText(nodes[i]))
         else:
-            for i in range(len(suggnodes)):
-                if self.correctorigin(suggnodes[i], origin):
-                    suggestlist.append(lisa.getText(suggnodes[i]))
-        return suggestlist
+            for i in range(len(nodes)):
+                if self.correctorigin(nodes[i], origin):
+                    translist.append(lisa.getText(nodes[i]))
+        return translist
 
     def addnote(self, text, origin=None):
         """Add a note specifically in a "note" tag"""
