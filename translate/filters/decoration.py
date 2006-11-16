@@ -195,9 +195,11 @@ def getnumbers(str1):
     numbers = [number.encode('utf8') for number in numbers]
   return numbers
 
-def getfunctions(str1):
-  """returns the functions() that are in a string"""
-  return [word for word in str1.split() if word.endswith("()")]
+def getfunctions(str1, punctuation):
+  """returns the functions() that are in a string, while ignoring the trailing 
+  punctuation in the given parameter"""
+  punctuation = punctuation.replace("(", "").replace(")", "")
+  return [word.rstrip(punctuation) for word in str1.split() if word.rstrip(punctuation).endswith("()")]
 
 def getemails(str1):
   """returns the email addresses that are in a string"""

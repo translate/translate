@@ -554,7 +554,7 @@ class StandardChecker(TranslationChecker):
 
   def functions(self, str1, str2):
     """checks to see that function names are not translated"""
-    return helpers.funcmatch(str1, str2, decoration.getfunctions)
+    return helpers.funcmatch(str1, str2, decoration.getfunctions, self.config.punctuation)
 
   def emails(self, str1, str2):
     """checks to see that emails are not translated"""

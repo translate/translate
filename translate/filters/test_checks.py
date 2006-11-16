@@ -640,6 +640,8 @@ def test_functions():
     assert checks.passes(stdchecker.functions, "rgb() in percentage", "rgb() kha phesenthe")
     assert checks.fails(stdchecker.functions, "blah string.rgb() blah", "blee bleeb.rgb() blee")
     assert checks.passes(stdchecker.functions, "blah string.rgb() blah", "blee string.rgb() blee")
+    assert checks.passes(stdchecker.functions, "or domain().", "domain() verwag.")
+    assert checks.passes(stdchecker.functions, "Expected url(), url-prefix(), or domain().", "url(), url-prefix() of domain() verwag.")
 
 def test_emails():
     """tests to see that email addresses are not translated"""
