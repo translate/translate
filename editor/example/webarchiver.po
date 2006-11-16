@@ -1,7 +1,8 @@
 # translation of libkfaximgage.po to Khmer
-#
 # Keo Sophon <keosophon@khmeros.info>, 2006.
-# Leang Chumsoben <soben@khmeros.info>, 2006.
+# Leang en@khmeros.info>, 2006.Chumsoben <sob
+msgid ""
+msgstr "Chumsoben <sob"
 
 msgid ""
 msgstr "minimum2"
@@ -9,8 +10,10 @@ msgstr "minimum2"
 # werwerw
 #: archivedialog.cpp:125
 msgid "Could Not Open Temporary File"
-msgstr ""
 
+msgstr "មិនអាចបើកឯកសារបណ្ដោះអាសន្នបានទេ"
+
+# ឡើយ ។
 #: kfaximage.cpp:189
 msgid "Unable to open file for reading."
 msgstr "មិន​អាច​បើក​ឯកសារ ដើម្បី​អាន​បាន​ឡើយ ។"
@@ -21,7 +24,7 @@ msgstr "មិនអាច​បើក​ឯកសារ​បណ្តោះអ
 
 #: kfaximage.cpp:194
 msgid "Unable to read file header (file too short)."
-msgstr "មិន​អាច​អាន​ក្បាល​ឯកសារ​បាន​ឡើយ (ឯកសារ​ខ្លី​ពេក) ។"
+msgstr "មិន​អាច​អាន​ក្បាល​ឯកសារ​បាន​ឡើយ (ឯកសារ​ខ្លី​ពេក) ។ "
 
 #: kfaximage.cpp:203
 msgid "This is not a TIFF FAX file."

@@ -38,17 +38,19 @@ class TUview(QtGui.QDockWidget):
         self.layout = QtGui.QTextLayout ()
         self.world = World()
         self.settings = QtCore.QSettings(self.world.settingOrg, self.world.settingApp)
-        self.applySettings()        
+        self.applySettings()
         
         # create action for show/hide
         self._actionShow = QtGui.QAction(self)
         self._actionShow.setObjectName("actionShowDetail")
         self._actionShow.setText(self.tr("Hide Detail"))
         
-        self.lastValue = None        
-        self.connect(self._actionShow, QtCore.SIGNAL("triggered()"), self.show)        
+        self.lastValue = None
+        self.connect(self._actionShow, QtCore.SIGNAL("triggered()"), self.show)
         self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.setReadyForSave)
         self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
+        self.connect(self.ui.txtSource, QtCore.SIGNAL("copyAvailable(bool)"), self._copyAvailable)
+        self.connect(self.ui.txtTarget, QtCore.SIGNAL("copyAvailable(bool)"), self._copyAvailable)
         
         # create highlight font
         self.highlightFormat = QtGui.QTextCharFormat()
@@ -78,7 +80,7 @@ class TUview(QtGui.QDockWidget):
 
     def setColor(self):
         """set color to txtSource and txtTarget"""
-        color = QtGui.QColorDialog.getColor(QtCore.Qt.red, self)     
+        color = QtGui.QColorDialog.getColor(QtCore.Qt.red, self)
         if color.isValid():
             self.ui.txtSource.setTextColor(color)
             self.ui.txtTarget.setTextColor(color)
@@ -153,11 +155,11 @@ class TUview(QtGui.QDockWidget):
         @param QString(text): text to set into target field."""
         # FIXME: comment the param
         self.ui.txtTarget.setPlainText(text)
-        
+
     def checkModified(self):
         if self.ui.txtTarget.document().isModified():
             self.emit(QtCore.SIGNAL("targetChanged"), self.ui.txtTarget.toPlainText())
-            
+
     def setReadyForSave(self):
       self.emit(QtCore.SIGNAL("readyForSave"), True)
 
@@ -190,6 +192,7 @@ class TUview(QtGui.QDockWidget):
             textField.update()
         block.layout().setAdditionalFormats([self.highlightRange])
 
+
     def replaceText(self, textField, position, length, replacedText):
         """Highlight the text at specified position, length, and textField.
         @param textField: source or target text box.
@@ -203,10 +206,10 @@ class TUview(QtGui.QDockWidget):
         self.ui.txtTarget.setPlainText(text)
         self.ui.txtTarget.document().setModified()
         self.checkModified()
-        
+
     def selectCut(self):
-        self.ui.txtSource.cut()        
-    
+        self.ui.txtSource.cut()
+
     def applySettings(self):
         sourcefont = self.settings.value("tuSourceFont")
         if (sourcefont.isValid()):
@@ -218,6 +221,9 @@ class TUview(QtGui.QDockWidget):
             fontObj = QtGui.QFont()
             if (fontObj.fromString(targetfont.toString())):
                 self.ui.txtTarget.setFont(fontObj)
+
+    def _copyAvailable(self, bool):
+        self.emit(QtCore.SIGNAL("copyAvailable(bool)"), bool)
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

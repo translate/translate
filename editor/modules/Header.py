@@ -66,7 +66,7 @@ class Header(QtGui.QDialog):
             QtCore.QObject.connect(self.ui.btnDeleteRow,QtCore.SIGNAL("clicked()"), self.DeleteRow)
             
              # set up table appearance and behavior        
-            self.headerLabels = [self.tr("Key"), self.tr("Value")]            
+            self.headerLabels = [self.tr("Key"), self.tr("Value")]
             self.ui.tableHeader.setHorizontalHeaderLabels(self.headerLabels)
             self.ui.tableHeader.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
             self.ui.tableHeader.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)

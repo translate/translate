@@ -42,14 +42,15 @@ class CommentDock(QtGui.QDockWidget):
         self.world = World()
         self.settings = QtCore.QSettings(self.world.settingOrg, self.world.settingApp)
         self.applySettings()
-        
+
         # create action for show/hide
         self._actionShow = QtGui.QAction(self)
         self._actionShow.setObjectName("actionShowComment")
-        self._actionShow.setText(self.tr("Hide Comment"))    
+        self._actionShow.setText(self.tr("Hide Comment"))
         self.connect(self._actionShow, QtCore.SIGNAL("triggered()"), self.show)
         self.connect(self.ui.txtComment, QtCore.SIGNAL("textChanged ()"), self.setReadyForSave)
-        
+        self.connect(self.ui.txtComment, QtCore.SIGNAL("copyAvailable(bool)"), self._copyAvailable)
+
         # create highlight font
         self.highlightFormat = QtGui.QTextCharFormat()
         self.highlightFormat.setFontWeight(QtGui.QFont.Bold)
@@ -57,29 +58,29 @@ class CommentDock(QtGui.QDockWidget):
         self.highlightFormat.setBackground(QtCore.Qt.darkMagenta)
         self.highlightRange = QtGui.QTextLayout.FormatRange()
         self.highlightRange.format = self.highlightFormat
-        
-    def closeEvent(self, event):            
+
+    def closeEvent(self, event):
         # FIXME: comment this
         self._actionShow.setText(self.tr("Show Comment"))
         # FIXME: you need to call the parents implementation here. Jens
-        
+
     def actionShow(self):
         # FIXME: comment this there is a return value
         return self._actionShow
 
     def show(self):
         if self.isHidden():
-            self._actionShow.setText(self.tr("Hide Comment"))    
+            self._actionShow.setText(self.tr("Hide Comment"))
         else:
-            self._actionShow.setText(self.tr("Show Comment"))    
-        self.setHidden(not self.isHidden()) 
- 
+            self._actionShow.setText(self.tr("Show Comment"))
+        self.setHidden(not self.isHidden())
+
     def updateView(self, currentUnit):
         if (currentUnit):
             comment = currentUnit.getnotes()
         else:
             comment = ""
-            
+
         self.ui.txtComment.setPlainText(unicode(comment))
     
     def checkModified(self):
@@ -104,16 +105,20 @@ class CommentDock(QtGui.QDockWidget):
             self.layout.clearAdditionalFormats()
             textField.update()
         block.layout().setAdditionalFormats([self.highlightRange])
-        
+
     def setReadyForSave(self):
       self.emit(QtCore.SIGNAL("readyForSave"), True)
-      
+
     def applySettings(self):
         font = self.settings.value("commentFont")
         if (font.isValid()):
             fontObj = QtGui.QFont()
             if (fontObj.fromString(font.toString())):
                 self.ui.txtComment.setFont(fontObj)
+
+    def _copyAvailable(self, bool):
+        self.emit(QtCore.SIGNAL("copyAvailable(bool)"), bool)
+
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
