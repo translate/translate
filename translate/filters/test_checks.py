@@ -221,6 +221,7 @@ A string to translate""", "'n String om te vertaal")
     assert checks.fails(stdchecker.kdecomments, r"""_: I am a comment\n
 A string to translate""", r"""_: Ek is 'n commment\n
 'n String om te vertaal""")
+    assert checks.fails(stdchecker.kdecomments, """_: I am a comment\\n\n""", """_: I am a comment\\n\n""")
 
 def test_long():
     """tests long messages"""
