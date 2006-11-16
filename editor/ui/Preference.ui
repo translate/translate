@@ -141,7 +141,7 @@
           </sizepolicy>
          </property>
          <property name="focusPolicy" >
-          <enum>Qt::TabFocus</enum>
+          <enum>Qt::NoFocus</enum>
          </property>
          <property name="autoFillBackground" >
           <bool>true</bool>
@@ -785,18 +785,23 @@
  </widget>
  <pixmapfunction></pixmapfunction>
  <tabstops>
+  <tabstop>UserName</tabstop>
+  <tabstop>EmailAddress</tabstop>
   <tabstop>cbxFullLanguage</tabstop>
   <tabstop>cbxLanguageCode</tabstop>
+  <tabstop>SupportTeam</tabstop>
   <tabstop>cbxTimeZone</tabstop>
   <tabstop>spinBox</tabstop>
+  <tabstop>chkHeaderAuto</tabstop>
+  <tabstop>bntOverview</tabstop>
+  <tabstop>bntSource</tabstop>
+  <tabstop>bntTarget</tabstop>
+  <tabstop>bntComment</tabstop>
+  <tabstop>bntDefaults</tabstop>
   <tabstop>okButton</tabstop>
   <tabstop>cancelButton</tabstop>
   <tabstop>tabWidget</tabstop>
-  <tabstop>bntComment</tabstop>
-  <tabstop>bntTarget</tabstop>
-  <tabstop>bntSource</tabstop>
-  <tabstop>bntDefaults</tabstop>
-  <tabstop>bntOverview</tabstop>
+  <tabstop>frame</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -807,8 +812,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>464</x>
-     <y>400</y>
+     <x>474</x>
+     <y>362</y>
     </hint>
     <hint type="destinationlabel" >
      <x>179</x>
@@ -823,8 +828,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>373</x>
-     <y>400</y>
+     <x>384</x>
+     <y>362</y>
     </hint>
     <hint type="destinationlabel" >
      <x>96</x>

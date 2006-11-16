@@ -152,8 +152,7 @@ class TUview(QtGui.QDockWidget):
 
     def setTarget(self, text):
         """Change the target text.
-        @param QString(text): text to set into target field."""
-        # FIXME: comment the param
+        @param text: text to set into target field."""
         self.ui.txtTarget.setPlainText(text)
 
     def checkModified(self):
@@ -194,11 +193,11 @@ class TUview(QtGui.QDockWidget):
 
 
     def replaceText(self, textField, position, length, replacedText):
-        """Highlight the text at specified position, length, and textField.
+        """replace the string (at position and length) with replacedText in txtTarget.
         @param textField: source or target text box.
-        @param position: highlight start point.
-        @param length: highlight length.
-        @param replacedText: text to replace."""
+        @param position: old string's start point.
+        @param length: old string's length.
+        @param replacedText: string to replace."""
         if (textField != self.world.target):
             return
         text = self.ui.txtTarget.toPlainText()

@@ -352,10 +352,16 @@
  </widget>
  <pixmapfunction></pixmapfunction>
  <tabstops>
+  <tabstop>lineEdit</tabstop>
   <tabstop>findNext</tabstop>
   <tabstop>findPrevious</tabstop>
+  <tabstop>lineEdit_2</tabstop>
   <tabstop>replace</tabstop>
   <tabstop>replaceAll</tabstop>
+  <tabstop>insource</tabstop>
+  <tabstop>intarget</tabstop>
+  <tabstop>incomment</tabstop>
+  <tabstop>matchcase</tabstop>
  </tabstops>
  <resources/>
  <connections/>

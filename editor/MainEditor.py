@@ -95,11 +95,9 @@ class MainWindow(QtGui.QMainWindow):
 
         #add widgets to statusbar
         #TODO: Decorate Status Bar
-
         self.statuslabel = QtGui.QLabel()
-        self.lblGeneralInfo = QtGui.QLabel()
-        self.ui.statusbar.addWidget(self.statuslabel)
-        self.ui.statusbar.addPermanentWidget(self.lblGeneralInfo)
+        self.statuslabel.setFrameStyle(QtGui.QFrame.NoFrame)
+        self.ui.statusbar.addWidget(self.statuslabel, 1)
 
         #create operator
         self.operator = Operator()
@@ -132,8 +130,7 @@ class MainWindow(QtGui.QMainWindow):
         # "searchFound" sends container and location to be highlighted.
         self.connect(self.operator, QtCore.SIGNAL("searchResult"), self.dockTUview.highlightSearch)
         self.connect(self.operator, QtCore.SIGNAL("searchResult"), self.dockComment.highlightSearch)
-        self.connect(self.operator, QtCore.SIGNAL("generalInfo"), self.lblGeneralInfo.setText)
-
+        self.connect(self.operator, QtCore.SIGNAL("generalInfo"), self.showTemporaryMessage)
         # "replaceText" sends text field, start, length, and text to replace.
         self.connect(self.operator, QtCore.SIGNAL("replaceText"), self.dockTUview.replaceText)
 
@@ -363,45 +360,15 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionNext.setDisabled(atLast)
         self.ui.actionLast.setDisabled(atLast)
     
-##    def setEnabledSave(self, bool):
-##        self.ui.actionSave.setEnabled(bool)
-        self.connect(self.operator, QtCore.SIGNAL("updateUnit"), self.dockTUview.checkModified)
-        self.connect(self.operator, QtCore.SIGNAL("updateUnit"), self.dockComment.checkModified)
-        self.connect(self.dockOverview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
-        self.connect(self.dockOverview, QtCore.SIGNAL("targetChanged"), self.dockTUview.setTarget)
-
-        self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
-        self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.dockOverview.updateTarget)
-        self.connect(self.dockComment, QtCore.SIGNAL("commentChanged"), self.operator.setComment)
-        self.connect(self.fileaction, QtCore.SIGNAL("fileName"), self.operator.saveStoreToFile)
-        self.connect(self.operator, QtCore.SIGNAL("savedAlready"), self.ui.actionSave.setEnabled)
-        self.connect(self.dockTUview, QtCore.SIGNAL("readyForSave"), self.ui.actionSave.setEnabled)
-        self.connect(self.dockComment, QtCore.SIGNAL("readyForSave"), self.ui.actionSave.setEnabled)
-
-        self.connect(self.fileaction, QtCore.SIGNAL("fileName"), self.setTitle)
-        self.connect(self.operator, QtCore.SIGNAL("toggleFirstLastUnit"), self.toggleFirstLastUnit)
-
-        # newUnits sends newUnits and unitsStatus.
-        self.connect(self.operator, QtCore.SIGNAL("newUnits"), self.dockOverview.slotNewUnits)
-        self.connect(self.operator, QtCore.SIGNAL("newUnits"), self.dockTUview.slotNewUnits)
-        self.connect(self.operator, QtCore.SIGNAL("filteredList"), self.dockOverview.filteredList)
-        self.connect(self.operator, QtCore.SIGNAL("filteredList"), self.dockTUview.filteredList)
-
-        # set file status information to text label of status bar.
-
-
-    def disableAll(self):
-        self.ui.actionFirst.setDisabled(True)
-        self.ui.actionPrevious.setDisabled(True)
-        self.ui.actionNext.setDisabled(True)
-        self.ui.actionLast.setDisabled(True)
-
     def startInNewWindow(self):
         other = MainWindow()
         MainWindow.windowList.append(other) 
         if other.fileaction.openFile():
             other.show()
-
+        
+    def showTemporaryMessage(self, text):
+        self.ui.statusbar.showMessage(text, 3000)
+        
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     editor = MainWindow()

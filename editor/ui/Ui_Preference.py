@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Mon Nov 13 16:15:57 2006
+# Created: Thu Nov 16 15:08:12 2006
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -102,7 +102,7 @@ class Ui_frmPreference(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.frame.sizePolicy().hasHeightForWidth())
         self.frame.setSizePolicy(sizePolicy)
-        self.frame.setFocusPolicy(QtCore.Qt.TabFocus)
+        self.frame.setFocusPolicy(QtCore.Qt.NoFocus)
         self.frame.setAutoFillBackground(True)
         self.frame.setFrameShape(QtGui.QFrame.StyledPanel)
         self.frame.setFrameShadow(QtGui.QFrame.Raised)
@@ -525,17 +525,22 @@ class Ui_frmPreference(object):
         QtCore.QObject.connect(self.cancelButton,QtCore.SIGNAL("clicked()"),frmPreference.reject)
         QtCore.QObject.connect(self.okButton,QtCore.SIGNAL("clicked()"),frmPreference.accept)
         QtCore.QMetaObject.connectSlotsByName(frmPreference)
+        frmPreference.setTabOrder(self.UserName,self.EmailAddress)
+        frmPreference.setTabOrder(self.EmailAddress,self.cbxFullLanguage)
         frmPreference.setTabOrder(self.cbxFullLanguage,self.cbxLanguageCode)
-        frmPreference.setTabOrder(self.cbxLanguageCode,self.cbxTimeZone)
+        frmPreference.setTabOrder(self.cbxLanguageCode,self.SupportTeam)
+        frmPreference.setTabOrder(self.SupportTeam,self.cbxTimeZone)
         frmPreference.setTabOrder(self.cbxTimeZone,self.spinBox)
-        frmPreference.setTabOrder(self.spinBox,self.okButton)
+        frmPreference.setTabOrder(self.spinBox,self.chkHeaderAuto)
+        frmPreference.setTabOrder(self.chkHeaderAuto,self.bntOverview)
+        frmPreference.setTabOrder(self.bntOverview,self.bntSource)
+        frmPreference.setTabOrder(self.bntSource,self.bntTarget)
+        frmPreference.setTabOrder(self.bntTarget,self.bntComment)
+        frmPreference.setTabOrder(self.bntComment,self.bntDefaults)
+        frmPreference.setTabOrder(self.bntDefaults,self.okButton)
         frmPreference.setTabOrder(self.okButton,self.cancelButton)
         frmPreference.setTabOrder(self.cancelButton,self.tabWidget)
-        frmPreference.setTabOrder(self.tabWidget,self.bntComment)
-        frmPreference.setTabOrder(self.bntComment,self.bntTarget)
-        frmPreference.setTabOrder(self.bntTarget,self.bntSource)
-        frmPreference.setTabOrder(self.bntSource,self.bntDefaults)
-        frmPreference.setTabOrder(self.bntDefaults,self.bntOverview)
+        frmPreference.setTabOrder(self.tabWidget,self.frame)
 
     def tr(self, string):
         return QtGui.QApplication.translate("frmPreference", string, None, QtGui.QApplication.UnicodeUTF8)

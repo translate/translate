@@ -90,14 +90,9 @@ class Operator(QtCore.QObject):
     def emitCurrentUnit(self):
         """send currentUnit signal with currentUnit, currentIndex, currentState."""
         # TODO: Sending toggleFirstLastUnit only needed.
-        atFirst = False
-        atLast = False
-        if (self._unitpointer == 0):
-            atFirst = True
-        if (self._unitpointer >= len(self.filteredList) - 1):
-            atLast = True
+        atFirst = (self._unitpointer == 0)
+        atLast = (self._unitpointer >= len(self.filteredList) - 1)
         self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), atFirst, atLast)
-        
         self.searchPointer = self._unitpointer
         currentIndex = self._getCurrentIndex()
         currentUnit = self.store.units[currentIndex]
@@ -395,24 +390,24 @@ class Operator(QtCore.QObject):
         if self.searchNext():
             textField = self.searchableText[self.currentTextField]
             self.emit(QtCore.SIGNAL("replaceText"), \
-                                    textField, \
-                                    self.foundPosition, \
-                                    len(unicode(self.searchString)), \
-                                    replacedText)
+                textField, \
+                self.foundPosition, \
+                len(unicode(self.searchString)), \
+                replacedText)
 
     def replaceAll(self, replacedText):
         """replace the found text in the text fields through out the units.
         @param replacedText: text to replace."""
         self.searchPointer = 0
+        self.foundPosition = -1
         for i in self.filteredList:
-            self.foundPosition = -1
             if self.searchNext():
                 textField = self.searchableText[self.currentTextField]
                 self.emit(QtCore.SIGNAL("replaceText"), \
-                                        textField, \
-                                        self.foundPosition, \
-                                        len(unicode(self.searchString)), \
-                                        replacedText)
+                    textField, \
+                    self.foundPosition, \
+                    len(unicode(self.searchString)), \
+                    replacedText)
         
     def _getUnitString(self):
         """return the string of current text field."""

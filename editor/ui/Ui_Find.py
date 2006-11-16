@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Fri Nov  3 17:14:51 2006
+# Created: Wed Nov 15 14:54:23 2006
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -204,9 +204,15 @@ class Ui_Form(object):
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
+        Form.setTabOrder(self.lineEdit,self.findNext)
         Form.setTabOrder(self.findNext,self.findPrevious)
-        Form.setTabOrder(self.findPrevious,self.replace)
+        Form.setTabOrder(self.findPrevious,self.lineEdit_2)
+        Form.setTabOrder(self.lineEdit_2,self.replace)
         Form.setTabOrder(self.replace,self.replaceAll)
+        Form.setTabOrder(self.replaceAll,self.insource)
+        Form.setTabOrder(self.insource,self.intarget)
+        Form.setTabOrder(self.intarget,self.incomment)
+        Form.setTabOrder(self.incomment,self.matchcase)
 
     def tr(self, string):
         return QtGui.QApplication.translate("Form", string, None, QtGui.QApplication.UnicodeUTF8)
