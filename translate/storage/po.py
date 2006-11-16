@@ -125,7 +125,7 @@ def quoteforpofromtemplate(text, template):
     polines = ['""'] + polines
   elif polines and polines[0] == '""':
       polines = polines[1:]
-    
+
   return polines
 
 def extractpoline(line):
@@ -407,12 +407,14 @@ class pounit(base.TranslationUnit):
     return (self.msgidlen() == 0) and (self.msgstrlen() > 0) and (len(self.msgidcomments) == 0)
 
   def isblank(self):
-    if self.isheader():
+    if self.isheader() or len(self.msgidcomments):
       return False
     if (self.msgidlen() == 0) and (self.msgstrlen() == 0):
       return True
-    unquotedid = [quote.extractwithoutquotes(line,'"','"','\\',includeescapes=0)[0] for line in self.msgid]
-    return len("".join(unquotedid).strip()) == 0
+    return False
+    # TODO: remove:
+    # Before, the equivalent of the following was the final return statement:
+    # return len(self.source.strip()) == 0
 
   def isblankmsgstr(self):
     """checks whether the msgstr is blank"""
