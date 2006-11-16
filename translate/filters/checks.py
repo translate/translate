@@ -122,6 +122,14 @@ def fails(filterfunction, str1, str2):
     filterresult = False
   return not filterresult
 
+def seriousfails(filterfunction, str1, str2):
+  """returns whether the given strings fail on the given test, handling SeriousFilterFailures"""
+  try:
+    filterresult = filterfunction(str1, str2)
+  except SeriousFilterFailure, e:
+    filterresult = False
+  return not filterresult
+
 punctuation_chars = u'.,;:!?-@#$%^*_()[]{}/\\\'"<>\u2018\u2019\u201a\u201b\u201c\u201d\u201e\u201f\u2032\u2033\u2034\u2035\u2036\u2037\u2039\u203a\xab\xbb\xb1\xb3\xb9\xb2\xb0\xbf\xa9\xae\xd7\xa3\xa5\u2026'
 endpunctuation_chars = u'.:!?\u2026'
 # printf syntax based on http://en.wikipedia.org/wiki/Printf which doens't cover everything we leave \w instead of specifying the exact letters as
@@ -140,7 +148,7 @@ common_canchangetags = [("img", "alt", None)]
 
 class CheckerConfig(object):
   """object representing the configuration of a checker"""
-  def __init__(self, targetlanguage=None, accelmarkers=None, varmatches=None, notranslatewords=None, musttranslatewords=None, validchars=None, punctuation=None, endpunctuation=None, ignoretags=None, canchangetags=None):
+  def __init__(self, targetlanguage=None, accelmarkers=None, varmatches=None, notranslatewords=None, musttranslatewords=None, validchars=None, punctuation=None, endpunctuation=None, ignoretags=None, canchangetags=None, criticaltests=None):
     # make sure that we initialise empty lists properly (default arguments get reused!)
     if accelmarkers is None:
       accelmarkers = []
@@ -178,8 +186,10 @@ class CheckerConfig(object):
       self.canchangetags = common_canchangetags
     else:
       self.canchangetags = canchangetags
-    
-    
+    if criticaltests is None:
+      criticaltests = []
+    self.criticaltests = criticaltests
+
   def update(self, otherconfig):
     """combines the info in otherconfig into this config object"""
     self.targetlanguage = otherconfig.targetlanguage or self.targetlanguage
@@ -193,6 +203,8 @@ class CheckerConfig(object):
     #TODO: consider also updating in the following cases:
     self.ignoretags = otherconfig.ignoretags
     self.canchangetags = otherconfig.canchangetags
+    self.criticaltests.extend(otherconfig.criticaltests)
+
   def updatevalidchars(self, validchars):
     """updates the map that eliminates valid characters"""
     if validchars is None:
@@ -479,7 +491,11 @@ class StandardChecker(TranslationChecker):
       else:
         messages.append("accelerator %s occurs %d time(s) in original and %d time(s) in translation" % (accelmarker, count1, count2))
     if messages:
-      raise FilterFailure(messages)
+      print self.config.criticaltests
+      if "accelerators" in self.config.criticaltests:
+        raise SeriousFilterFailure(messages)
+      else:
+        raise FilterFailure(messages)
     return True
 
 #  def acceleratedvariables(self, str1, str2):
@@ -840,7 +856,8 @@ class OpenOfficeChecker(StandardChecker):
 
 mozillaconfig = CheckerConfig(
   accelmarkers = ["&"],
-  varmatches = [("&", ";"), ("%", "%"), ("%", 1), ("$", "$"), ("$", None), ("#", 1), ("${", "}"), ("$(^", ")")]
+  varmatches = [("&", ";"), ("%", "%"), ("%", 1), ("$", "$"), ("$", None), ("#", 1), ("${", "}"), ("$(^", ")")],
+  criticaltests = ["accelerators"]
   )
 
 class MozillaChecker(StandardChecker):
