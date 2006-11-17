@@ -59,24 +59,6 @@ class MainWindow(QtGui.QMainWindow):
 ##            self.profile.show()
 ##        else:
 ##            sys.exit(app.exec_())
-            
-        # create radio selection for menu filter
-        filterGroup = QtGui.QActionGroup(self.ui.menuFilter)
-        filterGroup.setExclusive(False)
-        self.ui.actionFilterFuzzy.setActionGroup(filterGroup)
-        self.ui.actionFilterTranslated.setActionGroup(filterGroup)
-        self.ui.actionFilterUntranslated.setActionGroup(filterGroup)
-        self.ui.actionFilterFuzzy.setCheckable(True)
-        self.ui.actionFilterTranslated.setCheckable(True)
-        self.ui.actionFilterUntranslated.setCheckable(True)
-        self.ui.actionFilterFuzzy.setChecked(True)
-        self.ui.actionFilterTranslated.setChecked(True)
-        self.ui.actionFilterUntranslated.setChecked(True)
-
-        # set disable
-        self.ui.actionFilterFuzzy.setDisabled(True)
-        self.ui.actionFilterTranslated.setDisabled(True)
-        self.ui.actionFilterUntranslated.setDisabled(True)
         
         #plug in overview widget
         self.dockOverview = OverviewDock()        
@@ -95,9 +77,9 @@ class MainWindow(QtGui.QMainWindow):
 
         #add widgets to statusbar
         #TODO: Decorate Status Bar
-        self.statuslabel = QtGui.QLabel()
+        self.statuslabel = QtGui.QLabel("asdf")
         self.statuslabel.setFrameStyle(QtGui.QFrame.NoFrame)
-        self.ui.statusbar.addWidget(self.statuslabel, 1)
+        self.ui.statusbar.addWidget(self.statuslabel)
 
         #create operator
         self.operator = Operator()
@@ -149,7 +131,7 @@ class MainWindow(QtGui.QMainWindow):
 
         self.connect(self.ui.actionCut, QtCore.SIGNAL("triggered()"), self.cutter)
         self.connect(self.ui.actionCopy, QtCore.SIGNAL("triggered()"), self.copier)
-        self.connect(self.ui.actionPast, QtCore.SIGNAL("triggered()"), self.paster)
+        self.connect(self.ui.actionPaste, QtCore.SIGNAL("triggered()"), self.paster)
 
         # Select All File
         self.connect(self.ui.actionSelectAll , QtCore.SIGNAL("triggered()"), self.selectAll)
@@ -269,7 +251,6 @@ class MainWindow(QtGui.QMainWindow):
     def setOpening(self, fileName): 
         """
         set status after open a file
-
         @param fileName string, the filename to open
         """
         # TODO: Move into module
@@ -283,7 +264,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionSaveas.setEnabled(True)
         self.ui.actionUndo.setEnabled(True)
         self.ui.actionRedo.setEnabled(True)
-        self.ui.actionPast.setEnabled(True)
+        self.ui.actionPaste.setEnabled(True)
         self.ui.actionSelectAll.setEnabled(True)
         self.ui.actionFind.setEnabled(True)
         self.ui.actionReplace.setEnabled(True)

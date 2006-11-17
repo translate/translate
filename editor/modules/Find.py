@@ -59,9 +59,9 @@ class Find(QtGui.QDockWidget):
         self.connect(self.ui.incomment, QtCore.SIGNAL("stateChanged(int)"), self.toggleSeachInComment)
         self.connect(self.ui.matchcase, QtCore.SIGNAL("stateChanged(int)"), self.toggleMatchCase)   
    
-        self.searchinsource = self.world.nothing
-        self.searchintarget = self.world.nothing
-        self.searchincomment = self.world.nothing
+        self.searchinsource = []
+        self.searchintarget = []
+        self.searchincomment = []
         self.ui.findNext.setEnabled(False)
         self.ui.findPrevious.setEnabled(False)
         self.ui.insource.setChecked(True)
@@ -96,9 +96,9 @@ class Find(QtGui.QDockWidget):
             self.ui.insource.setChecked(True)
             return
         if (self.ui.insource.isChecked()): 
-            self.searchinsource = self.world.sourceField
+            self.searchinsource = [self.world.source]
         else:
-            self.searchinsource = self.world.nothing
+            self.searchinsource = []
         self.initSearch()
             
     def toggleSearchInTarget(self):
@@ -106,9 +106,9 @@ class Find(QtGui.QDockWidget):
             self.ui.intarget.setChecked(True)
             return
         if (self.ui.intarget.isChecked()): 
-            self.searchintarget = self.world.targetField
+            self.searchintarget = [self.world.target]
         else:
-            self.searchintarget = self.world.nothing
+            self.searchintarget = []
         self.initSearch()
             
     def toggleSeachInComment(self):
@@ -116,9 +116,9 @@ class Find(QtGui.QDockWidget):
             self.ui.incomment.setChecked(True)
             return
         if (self.ui.incomment.isChecked()): 
-            self.searchincomment = self.world.commentField
+            self.searchincomment = [self.world.comment]
         else:
-            self.searchincomment = self.world.nothing
+            self.searchincomment = []
         self.initSearch()
         
     def toggleMatchCase(self):

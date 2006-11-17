@@ -34,10 +34,6 @@ class World:
         self.source = 1
         self.target = 2
         self.comment = 4
-        self.nothing = []
-        self.sourceField = [self.source]
-        self.targetField = [self.target]
-        self.commentField = [self.comment]
         
         self.searchForward = 1
         self.searchBackward = 2
