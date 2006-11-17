@@ -115,15 +115,17 @@ def passes(filterfunction, str1, str2):
   return filterresult
 
 def fails(filterfunction, str1, str2):
-  """returns whether the given strings fail on the given test, handling FilterFailures"""
+  """returns whether the given strings fail on the given test, handling only FilterFailures"""
   try:
     filterresult = filterfunction(str1, str2)
+  except SeriousFilterFailure, e:
+    filterresult = True
   except FilterFailure, e:
     filterresult = False
   return not filterresult
 
-def seriousfails(filterfunction, str1, str2):
-  """returns whether the given strings fail on the given test, handling SeriousFilterFailures"""
+def fails_serious(filterfunction, str1, str2):
+  """returns whether the given strings fail on the given test, handling only SeriousFilterFailures"""
   try:
     filterresult = filterfunction(str1, str2)
   except SeriousFilterFailure, e:
