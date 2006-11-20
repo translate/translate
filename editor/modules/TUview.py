@@ -98,15 +98,15 @@ class TUview(QtGui.QDockWidget):
         except ValueError:
             pass
         self.setScrollbarMaximum()
-        self.ui.txtSource.setPlainText("")
-        self.ui.txtTarget.setPlainText("")
+        self.ui.txtSource.clear()
+        self.ui.txtTarget.clear()
         
     def slotNewUnits(self, units):
         """slot after new file was loaded"""
         #FIXME: comment the param
         if not units:
-            self.ui.txtSource.setPlainText("")
-            self.ui.txtTarget.setPlainText("")
+            self.ui.txtSource.clear()
+            self.ui.txtTarget.clear()
         # self.indexes store the information of unit's index
         self.indexes = range(len(units))
         # adjust the scrollbar
@@ -137,8 +137,8 @@ class TUview(QtGui.QDockWidget):
             self.ui.txtSource.setPlainText(unit.source)
             self.ui.txtTarget.setPlainText(unit.target)
         else:
-            self.ui.txtSource.setPlainText("")
-            self.ui.txtTarget.setPlainText("")
+            self.ui.txtSource.clear()
+            self.ui.txtTarget.clear()
         self.ui.txtTarget.setFocus
         # set the scrollbar position
         try:
