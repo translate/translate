@@ -26,7 +26,7 @@
 import sys
 from PyQt4 import QtCore, QtGui
 from ui.Ui_Overview import Ui_Form
-from modules.World import World
+import modules.World as World
 
 class OverviewDock(QtGui.QDockWidget):
     def __init__(self):
@@ -36,8 +36,7 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui = Ui_Form()
         self.ui.setupUi(self.form)        
         self.setWidget(self.form)
-        self.world = World()
-        self.settings = QtCore.QSettings(self.world.settingOrg, self.world.settingApp)
+        self.settings = QtCore.QSettings(World.settingOrg, World.settingApp)
         
         # create action for show/hide
         self._actionShow = QtGui.QAction(self)
@@ -152,11 +151,11 @@ class OverviewDock(QtGui.QDockWidget):
     
     def _stateString(self, state):
         status = ""
-        if (state & self.world.fuzzy):
+        if (state & World.fuzzy):
             status += " F"
-        #if (state & self.world.translated):
+        #if (state & World.translated):
         #    status += " T"
-        if (state & self.world.untranslated):
+        if (state & World.untranslated):
             status += " U"
         return status
         

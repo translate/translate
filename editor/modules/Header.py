@@ -27,7 +27,7 @@ import sys
 from PyQt4 import QtCore, QtGui
 from ui.Ui_Header import Ui_frmHeader
 from modules.Operator import Operator
-from modules.World import World
+import modules.World as World
 import time, os
 
 class Header(QtGui.QDialog):
@@ -35,8 +35,7 @@ class Header(QtGui.QDialog):
         QtGui.QDialog.__init__(self)        
         self.ui = None
         
-        self.world = World()
-        self.settings = QtCore.QSettings(self.world.settingOrg, self.world.settingApp)
+        self.settings = QtCore.QSettings(World.settingOrg, World.settingApp)
     
     def getFileName(self, fileName):
         (path, self.fileName) = os.path.split(str(fileName))

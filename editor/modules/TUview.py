@@ -25,7 +25,7 @@
 import sys
 from PyQt4 import QtCore, QtGui
 from ui.Ui_TUview import Ui_TUview
-from modules.World import World
+from modules import World
 
 class TUview(QtGui.QDockWidget):
     def __init__(self):
@@ -36,8 +36,7 @@ class TUview(QtGui.QDockWidget):
         self.ui.setupUi(self.form)
         self.setWidget(self.form)
         self.layout = QtGui.QTextLayout ()
-        self.world = World()
-        self.settings = QtCore.QSettings(self.world.settingOrg, self.world.settingApp)
+        self.settings = QtCore.QSettings(World.settingOrg, World.settingApp)
         self.applySettings()
         
         # create action for show/hide
@@ -174,9 +173,9 @@ class TUview(QtGui.QDockWidget):
         @param textField: source or target text box.
         @param position: highlight start point.
         @param length: highlight length."""
-        if (textField == self.world.source):
+        if (textField == World.source):
             textField = self.ui.txtSource
-        elif (textField == self.world.target):
+        elif (textField == World.target):
             textField = self.ui.txtTarget
         else:
             return
@@ -198,7 +197,7 @@ class TUview(QtGui.QDockWidget):
         @param position: old string's start point.
         @param length: old string's length.
         @param replacedText: string to replace."""
-        if (textField != self.world.target):
+        if (textField != World.target):
             return
         text = self.ui.txtTarget.toPlainText()
         text.replace(position, length, replacedText);

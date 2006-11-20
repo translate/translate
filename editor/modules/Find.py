@@ -26,7 +26,7 @@
 import sys
 from PyQt4 import QtCore, QtGui
 from ui.Ui_Find import Ui_Form
-from modules.World import World
+import modules.World as World
 
 class Find(QtGui.QDockWidget):
     # FIXME: comment this and list the signals
@@ -44,7 +44,6 @@ class Find(QtGui.QDockWidget):
         self.setVisible(False)
         
         self.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
-        self.world = World()
         
         # create action for show/hide
         self._actionShow = QtGui.QAction(self)
@@ -96,7 +95,7 @@ class Find(QtGui.QDockWidget):
             self.ui.insource.setChecked(True)
             return
         if (self.ui.insource.isChecked()): 
-            self.searchinsource = [self.world.source]
+            self.searchinsource = [World.source]
         else:
             self.searchinsource = []
         self.initSearch()
@@ -106,7 +105,7 @@ class Find(QtGui.QDockWidget):
             self.ui.intarget.setChecked(True)
             return
         if (self.ui.intarget.isChecked()): 
-            self.searchintarget = [self.world.target]
+            self.searchintarget = [World.target]
         else:
             self.searchintarget = []
         self.initSearch()
@@ -116,7 +115,7 @@ class Find(QtGui.QDockWidget):
             self.ui.incomment.setChecked(True)
             return
         if (self.ui.incomment.isChecked()): 
-            self.searchincomment = [self.world.comment]
+            self.searchincomment = [World.comment]
         else:
             self.searchincomment = []
         self.initSearch()

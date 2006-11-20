@@ -26,7 +26,7 @@
 import sys
 from PyQt4 import QtCore, QtGui
 from ui.Ui_Preference import Ui_frmPreference
-from modules.World import World
+import modules.World as World
 
 class Preference(QtGui.QDialog):
     def __init__(self):
@@ -34,8 +34,7 @@ class Preference(QtGui.QDialog):
         self.ui = None    
 
         #Personal Setting
-        self.world = World()
-        self.settings = QtCore.QSettings(self.world.settingOrg, self.world.settingApp)
+        self.settings = QtCore.QSettings(World.settingOrg, World.settingApp)
         
     def initUI(self):
         """ get values and display them """

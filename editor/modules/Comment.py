@@ -26,7 +26,7 @@
 import sys
 from PyQt4 import QtCore, QtGui
 from ui.Ui_Comment import Ui_frmComment
-from modules.World import World
+import modules.World as World
 
 class CommentDock(QtGui.QDockWidget):
     # FIXME: comment this list the signals
@@ -39,8 +39,7 @@ class CommentDock(QtGui.QDockWidget):
         self.ui.setupUi(self.form)        
         self.setWidget(self.form)
         self.layout = QtGui.QTextLayout ()
-        self.world = World()
-        self.settings = QtCore.QSettings(self.world.settingOrg, self.world.settingApp)
+        self.settings = QtCore.QSettings(World.settingOrg, World.settingApp)
         self.applySettings()
 
         # create action for show/hide
@@ -92,7 +91,7 @@ class CommentDock(QtGui.QDockWidget):
         @param textField: source or target text box.
         @param position: highlight start point.
         @param length: highlight length."""
-        if (textField != self.world.comment):
+        if (textField != World.comment):
             return
         textField = self.ui.txtComment
         if (position >= 0):

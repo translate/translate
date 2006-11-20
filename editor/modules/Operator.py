@@ -24,7 +24,7 @@ from PyQt4 import QtCore, QtGui
 from translate.storage import factory
 from translate.storage import po
 from translate.storage import xliff
-from modules.World import World
+import modules.World as World
 from modules.Status import Status
 
 class Operator(QtCore.QObject):
@@ -41,11 +41,9 @@ class Operator(QtCore.QObject):
         self._modified = False
         self._saveDone = False
         self._unitpointer = None
-        # global variables
-        self.world = World()
-        self.settings = QtCore.QSettings(self.world.settingOrg, self.world.settingApp)
+        self.settings = QtCore.QSettings(World.settingOrg, World.settingApp)
         # filter flags
-        self.filter = self.world.fuzzy + self.world.translated + self.world.untranslated
+        self.filter = World.fuzzy + World.translated + World.untranslated
         # search function's variables
 
     def getUnits(self, fileName):
@@ -82,7 +80,7 @@ class Operator(QtCore.QObject):
 ##        fuzzyUnits = pocount.fuzzymessages(self.store.units)
 ##        for i in fuzzyUnits:
 ##            id = self.store.units.index(i)
-##            self.emit(QtCore.SIGNAL("setColor"), id, self.world.fuzzy)
+##            self.emit(QtCore.SIGNAL("setColor"), id, World.fuzzy)
     
     def emitStatus(self):
         self.emit(QtCore.SIGNAL("currentStatus"), self.status.statusString())        
@@ -122,28 +120,28 @@ class Operator(QtCore.QObject):
     def filterFuzzy(self, checked):
         """add/remove fuzzy to filter, and send filter signal."""
         # FIXME: comment the param
-        if (checked) and (not self.filter & self.world.fuzzy):
-            self.filter += self.world.fuzzy
-        elif (not checked) and (self.filter & self.world.fuzzy):
-            self.filter -= self.world.fuzzy
+        if (checked) and (not self.filter & World.fuzzy):
+            self.filter += World.fuzzy
+        elif (not checked) and (self.filter & World.fuzzy):
+            self.filter -= World.fuzzy
         self.emitFiltered(self.filter)
         
     def filterTranslated(self, checked):
         """add/remove translated to filter, and send filter signal."""
         # FIXME: comment the param
-        if (checked) and (not self.filter & self.world.translated):
-            self.filter += self.world.translated
-        elif (not checked) and (self.filter & self.world.translated):
-            self.filter -= self.world.translated
+        if (checked) and (not self.filter & World.translated):
+            self.filter += World.translated
+        elif (not checked) and (self.filter & World.translated):
+            self.filter -= World.translated
         self.emitFiltered(self.filter)
         
     def filterUntranslated(self, checked):
         """add/remove untranslated to filter, and send filter signal."""
         # FIXME: comment the param
         if (checked):
-            self.filter = self.filter | self.world.untranslated
-        elif (self.filter & self.world.untranslated):
-            self.filter -= self.world.untranslated
+            self.filter = self.filter | World.untranslated
+        elif (self.filter & World.untranslated):
+            self.filter -= World.untranslated
         self.emitFiltered(self.filter)
 
     def emitFiltered(self, filter):
@@ -157,11 +155,11 @@ class Operator(QtCore.QObject):
             # get the unit state
             unitState = 0
             if currentUnit.isfuzzy():
-                unitState += self.world.fuzzy
+                unitState += World.fuzzy
             if currentUnit.istranslated():
-                unitState += self.world.translated
+                unitState += World.translated
             else:
-                unitState += self.world.untranslated
+                unitState += World.untranslated
             # add unit to filteredList if it is in the filter
             if (self.filter & unitState):
                 self.filteredList.append(i)
@@ -180,11 +178,11 @@ class Operator(QtCore.QObject):
 ##        # get the unit state
 ##        unitState = 0
 ##        if currentUnit.isfuzzy():
-##            unitState += self.world.fuzzy
+##            unitState += World.fuzzy
 ##        if currentUnit.istranslated():
-##            unitState += self.world.translated
+##            unitState += World.translated
 ##        else:
-##            unitState += self.world.untranslated
+##            unitState += World.untranslated
 ##        # set color for current unit
 ##        self.emit(QtCore.SIGNAL("setColor"), currentIndex, unitState)
 ##        # hide unit if it is not in the filter
@@ -413,11 +411,11 @@ class Operator(QtCore.QObject):
         """return the string of current text field."""
         textField = self.searchableText[self.currentTextField]
         unitIndex = self.filteredList[self.searchPointer]
-        if (textField == self.world.source):
+        if (textField == World.source):
             unitString = self.store.units[unitIndex].source
-        elif (textField == self.world.target):
+        elif (textField == World.target):
             unitString = self.store.units[unitIndex].target
-        elif (textField == self.world.comment):
+        elif (textField == World.comment):
             unitString = self.store.units[unitIndex].getnotes()
         else:
             unitString = ""

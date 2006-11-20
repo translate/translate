@@ -25,21 +25,19 @@
 
 # TODO: think about the need of the class here. A module might be enough to create the namespace?
 
-class World:
-    def __init__(self):
-        self.fuzzy = 1
-        self.translated = 2
-        self.untranslated = 4
-        
-        self.source = 1
-        self.target = 2
-        self.comment = 4
-        
-        self.searchForward = 1
-        self.searchBackward = 2
-        self.searchStatic = 4
-        
-        
-        self.settingOrg = "WordForge"
-        self.settingApp = "Translation Editor"
+fuzzy = 1
+translated = 2
+untranslated = 4
+
+source = 1
+target = 2
+comment = 4
+
+searchForward = 1
+searchBackward = 2
+searchStatic = 4
+
+
+settingOrg = "WordForge"
+settingApp = "Translation Editor"
         

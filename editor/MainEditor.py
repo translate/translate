@@ -34,7 +34,7 @@ from modules.FileAction import FileAction
 from modules.Find import Find
 from modules.Preference import Preference
 from modules.AboutEditor import AboutEditor
-from modules.World import World
+import modules.World as World
 
 class MainWindow(QtGui.QMainWindow):
     """
@@ -48,11 +48,10 @@ class MainWindow(QtGui.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.ui.recentaction = []
-        self.world = World()    
         self.createRecentAction()
         
         # get the last geometry
-        settings = QtCore.QSettings(self.world.settingOrg, self.world.settingApp)
+        settings = QtCore.QSettings(World.settingOrg, World.settingApp)
         geometry = settings.value("lastGeometry").toRect()
         self.setGeometry(geometry)
         
@@ -266,7 +265,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionReplace.setEnabled(True)
         self.ui.actionEdit_Header.setEnabled(True)
         # FIXME: what will happen if the file only contains 1 TU? Jens
-        settings = QtCore.QSettings(self.world.settingOrg, self.world.settingApp)
+        settings = QtCore.QSettings(World.settingOrg, World.settingApp)
         files = settings.value("recentFileList").toStringList()                
         files.removeAll(fileName)
         files.prepend(fileName)
@@ -295,7 +294,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def updateRecentAction(self):
         # FIXME: comment this
-        settings = QtCore.QSettings(self.world.settingOrg, self.world.settingApp)
+        settings = QtCore.QSettings(World.settingOrg, World.settingApp)
         files = settings.value("recentFileList").toStringList()
         numRecentFiles = min(files.count(), MainWindow.MaxRecentFiles)
 
@@ -317,7 +316,7 @@ class MainWindow(QtGui.QMainWindow):
                 event.ignore()
                 
         # remember last geometry
-        settings = QtCore.QSettings(self.world.settingOrg, self.world.settingApp)
+        settings = QtCore.QSettings(World.settingOrg, World.settingApp)
         settings.setValue("lastGeometry", QtCore.QVariant(self.geometry()))
         
     def setTitle(self, title):

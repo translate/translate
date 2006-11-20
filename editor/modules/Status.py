@@ -23,7 +23,7 @@
 # This module stores status
 
 from translate.tools import pocount
-from modules.World import World
+import modules.World as World
 
 class Status:
     def __init__(self, units):
@@ -31,7 +31,6 @@ class Status:
         self.numFuzzy = len(pocount.fuzzymessages(units))
         self.numTranslated = len(pocount.translatedmessages(units))
         self.numUntranslated = self.numTotal - self.numTranslated
-        self.world = World()
     
     def addNumFuzzy(self, value):
         """calculate the number of fuzzy messages."""
@@ -46,11 +45,11 @@ class Status:
         """return the status (as integer) of unit."""
         unitState = 0
         if unit.isfuzzy():
-            unitState += self.world.fuzzy
+            unitState += World.fuzzy
         if unit.istranslated():
-            unitState += self.world.translated
+            unitState += World.translated
         else:
-            unitState += self.world.untranslated
+            unitState += World.untranslated
         # add unit to filteredList if it is in the filter
         return unitState
     
