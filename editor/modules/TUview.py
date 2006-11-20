@@ -204,9 +204,6 @@ class TUview(QtGui.QDockWidget):
         self.ui.txtTarget.document().setModified()
         self.checkModified()
 
-    def selectCut(self):
-        self.ui.txtSource.cut()
-
     def applySettings(self):
         sourcefont = World.settings.value("tuSourceFont")
         if (sourcefont.isValid()):
