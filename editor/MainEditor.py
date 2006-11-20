@@ -247,11 +247,6 @@ class MainWindow(QtGui.QMainWindow):
         set status after open a file
         @param fileName string, the filename to open
         """
-        # TODO: Move into module
-        #Enable all views
-        self.dockComment.ui.txtComment.setEnabled(True)
-        self.dockTUview.ui.txtSource.setEnabled(True)
-        self.dockTUview.ui.txtTarget.setEnabled(True)
 
         self.setTitle(fileName)
         self.ui.actionSave.setEnabled(False)  

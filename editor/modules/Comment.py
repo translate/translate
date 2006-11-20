@@ -76,10 +76,12 @@ class CommentDock(QtGui.QDockWidget):
     def updateView(self, currentUnit):
         if (currentUnit):
             comment = currentUnit.getnotes()
+            self.ui.txtComment.setPlainText(unicode(comment))
+            self.ui.txtComment.setEnabled(True)
         else:
-            comment = ""
+            self.ui.txtComment.clear()
+            self.ui.txtComment.setEnabled(False)
 
-        self.ui.txtComment.setPlainText(unicode(comment))
     
     def checkModified(self):
         if self.ui.txtComment.document().isModified():

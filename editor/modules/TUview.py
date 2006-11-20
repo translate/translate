@@ -104,6 +104,8 @@ class TUview(QtGui.QDockWidget):
     def slotNewUnits(self, units):
         """slot after new file was loaded"""
         #FIXME: comment the param
+        self.ui.txtSource.setEnabled(True)
+        self.ui.txtTarget.setEnabled(True)
         if not units:
             self.ui.txtSource.clear()
             self.ui.txtTarget.clear()
