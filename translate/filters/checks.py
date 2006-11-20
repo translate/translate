@@ -493,7 +493,6 @@ class StandardChecker(TranslationChecker):
       else:
         messages.append("accelerator %s occurs %d time(s) in original and %d time(s) in translation" % (accelmarker, count1, count2))
     if messages:
-      print self.config.criticaltests
       if "accelerators" in self.config.criticaltests:
         raise SeriousFilterFailure(messages)
       else:
@@ -796,7 +795,6 @@ class StandardChecker(TranslationChecker):
       number = 0
       for pattern in patterns:
         number += len(sre.findall(pattern, string))
-      print number
       return number
 
     sourcepatterns = ["\(s\)"]
