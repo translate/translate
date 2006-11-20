@@ -24,6 +24,7 @@
 
 from PyQt4 import QtCore, QtGui
 import sys, os
+from modules import World
 
 class FileAction(QtCore.QObject):
     # FIXME: comment this and list the signals
@@ -40,7 +41,6 @@ class FileAction(QtCore.QObject):
         self.fileExtension = ""
         self.fileDescription = ""        
         self.MaxRecentHistory = 10
-        self.settings = QtCore.QSettings("WordForge", "Translation Editor")
         
     def openFile(self):    
         #TODO: open one or more existing files selected
@@ -65,8 +65,8 @@ class FileAction(QtCore.QObject):
         labelAllFiles = self.tr("All Files")       
         fileDialog = QtGui.QFileDialog(self.parentWidget, labelSaveAs, QtCore.QDir.homePath(), self.fileDescription + " (*" + self.fileExtension + ");;" + labelAllFiles + " (*.*)")
 
-        fileDialog.setHistory(self.settings.value("SaveAsHistory").toStringList())
-        fileDialog.setDirectory(QtCore.QDir(self.settings.value("SaveAsDirectory").toString()))       
+        fileDialog.setHistory(World.settings.value("SaveAsHistory").toStringList())
+        fileDialog.setDirectory(QtCore.QDir(World.settings.value("SaveAsDirectory").toString()))       
                 
         fileDialog.setLabelText ( QtGui.QFileDialog.Accept, labelSaveAs)
         fileDialog.setAcceptMode(QtGui.QFileDialog.AcceptSave)
@@ -87,8 +87,8 @@ class FileAction(QtCore.QObject):
                     print history.first()
                     newHistory.append(history.first())
                     history.removeAll(history.first())                    
-                self.settings.setValue("SaveAsHistory", QtCore.QVariant(newHistory))
-                self.settings.setValue("SaveAsDirectory", QtCore.QVariant(fileDialog.directory().path()))
+                World.settings.setValue("SaveAsHistory", QtCore.QVariant(newHistory))
+                World.settings.setValue("SaveAsDirectory", QtCore.QVariant(fileDialog.directory().path()))
             # FIXME: add a return value here. Jens
             else:
                 QtGui.QMessageBox.information(self.parentWidget, self.tr("Information") , self.tr("Please specify the filename to save to"))
