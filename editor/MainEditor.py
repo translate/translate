@@ -51,13 +51,13 @@ class MainWindow(QtGui.QMainWindow):
         self.createRecentAction()
         
         # get the last geometry
-        geometry = World.settings.value("lastGeometry").toRect()
+        geometry = World.settings.value("lastGeometry", QtCore.QVariant(QtCore.QRect(0,0,800,600))).toRect()
         self.setGeometry(geometry)
         
         #plug in overview widget
         self.dockOverview = OverviewDock()
-        self.addDockWidget(QtCore.Qt.TopDockWidgetArea, self.dockOverview)        
-        self.ui.menuTools.addAction(self.dockOverview.actionShow())        
+        self.addDockWidget(QtCore.Qt.TopDockWidgetArea, self.dockOverview)
+        self.ui.menuTools.addAction(self.dockOverview.actionShow())
         
         #plug in TUview widget
         self.dockTUview = TUview()
@@ -264,12 +264,12 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionReplace.setEnabled(True)
         self.ui.actionEdit_Header.setEnabled(True)
         # FIXME: what will happen if the file only contains 1 TU? Jens
-        files = World.settings.value("recentFileList").toStringList()                
+        files = World.settings.value("recentFileList").toStringList()
         files.removeAll(fileName)
         files.prepend(fileName)
         while files.count() > MainWindow.MaxRecentFiles:
             files.removeLast()
-        settings.setValue("recentFileList", QtCore.QVariant(files))
+        World.settings.setValue("recentFileList", QtCore.QVariant(files))
         self.updateRecentAction() 
 
         self.ui.actionToggleFuzzy.setEnabled(True)
@@ -305,7 +305,7 @@ class MainWindow(QtGui.QMainWindow):
             self.ui.recentaction[j].setVisible(False)
 
     def closeEvent(self, event):
-        # FIXME: comment the param        
+        # FIXME: comment the param
         if self.operator.modified():
             if self.fileaction.aboutToClose(self):
                 event.accept()
