@@ -148,17 +148,14 @@ class Operator(QtCore.QObject):
         self.emitUpdateUnit()
         self.filteredList = []
         self.filter = filter
-        header = self.store.units[0].isheader()
-        for i in range(header, len(self.store.units)):
+        if (self.store.units[0].isheader()):
+            start = 1
+        else:
+            start = 0
+        for i in range(start, len(self.store.units)):
             currentUnit = self.store.units[i]
             # get the unit state
-            unitState = 0
-            if currentUnit.isfuzzy():
-                unitState += World.fuzzy
-            if currentUnit.istranslated():
-                unitState += World.translated
-            else:
-                unitState += World.untranslated
+            unitState = self.status.getStatus(currentUnit)
             # add unit to filteredList if it is in the filter
             if (self.filter & unitState):
                 self.filteredList.append(i)
