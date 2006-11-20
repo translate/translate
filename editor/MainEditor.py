@@ -40,7 +40,6 @@ class MainWindow(QtGui.QMainWindow):
     """
     The main window which holds the toolviews.
     """
-    MaxRecentFiles = 10
     windowList = []
 
     def __init__(self, parent = None):
@@ -268,7 +267,7 @@ class MainWindow(QtGui.QMainWindow):
         files = World.settings.value("recentFileList").toStringList()
         files.removeAll(fileName)
         files.prepend(fileName)
-        while files.count() > MainWindow.MaxRecentFiles:
+        while files.count() > World.MaxRecentFiles:
             files.removeLast()
         World.settings.setValue("recentFileList", QtCore.QVariant(files))
         self.updateRecentAction() 
@@ -284,7 +283,7 @@ class MainWindow(QtGui.QMainWindow):
             self.fileaction.setFileName(action.data().toString())
 
     def createRecentAction(self):
-        for i in range(MainWindow.MaxRecentFiles):
+        for i in range(World.MaxRecentFiles):
             self.ui.recentaction.append(QtGui.QAction(self))
             self.ui.recentaction[i].setVisible(False)
             self.connect(self.ui.recentaction[i], QtCore.SIGNAL("triggered()"), self.startRecentAction)
@@ -294,7 +293,7 @@ class MainWindow(QtGui.QMainWindow):
     def updateRecentAction(self):
         # FIXME: comment this
         files = World.settings.value("recentFileList").toStringList()
-        numRecentFiles = min(files.count(), MainWindow.MaxRecentFiles)
+        numRecentFiles = min(files.count(), World.MaxRecentFiles)
 
         for i in range(numRecentFiles):
             # FIXME: make sure that the text does not get too long. Jens
@@ -302,7 +301,7 @@ class MainWindow(QtGui.QMainWindow):
             self.ui.recentaction[i].setData(QtCore.QVariant(files[i]))
             self.ui.recentaction[i].setVisible(True)
 
-        for j in range(numRecentFiles, MainWindow.MaxRecentFiles):
+        for j in range(numRecentFiles, World.MaxRecentFiles):
             self.ui.recentaction[j].setVisible(False)
 
     def closeEvent(self, event):
