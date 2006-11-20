@@ -47,21 +47,17 @@ class MainWindow(QtGui.QMainWindow):
         QtGui.QMainWindow.__init__(self, parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.resize(800, 600)  # TODO: make the app remember the last size and position
         self.ui.recentaction = []
-        self.world = World()
-        
+        self.world = World()    
         self.createRecentAction()
-        #User must to fill your information
-##        self.profile = UserProfile()
-##        if  self.profile == isNull():
-##        if not self.profile.isEmpty():
-##            self.profile.show()
-##        else:
-##            sys.exit(app.exec_())
+        
+        # get the last geometry
+        settings = QtCore.QSettings(self.world.settingOrg, self.world.settingApp)
+        geometry = settings.value("lastGeometry").toRect()
+        self.setGeometry(geometry)
         
         #plug in overview widget
-        self.dockOverview = OverviewDock()        
+        self.dockOverview = OverviewDock()
         self.addDockWidget(QtCore.Qt.TopDockWidgetArea, self.dockOverview)        
         self.ui.menuTools.addAction(self.dockOverview.actionShow())        
         
@@ -271,7 +267,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionEdit_Header.setEnabled(True)
         # FIXME: what will happen if the file only contains 1 TU? Jens
         settings = QtCore.QSettings(self.world.settingOrg, self.world.settingApp)
-        files = settings.value("recentFileList").toStringList()
+        files = settings.value("recentFileList").toStringList()                
         files.removeAll(fileName)
         files.prepend(fileName)
         while files.count() > MainWindow.MaxRecentFiles:
@@ -313,13 +309,17 @@ class MainWindow(QtGui.QMainWindow):
             self.ui.recentaction[j].setVisible(False)
 
     def closeEvent(self, event):
-        # FIXME: comment the param
+        # FIXME: comment the param        
         if self.operator.modified():
             if self.fileaction.aboutToClose(self):
                 event.accept()
             else:
                 event.ignore()
-
+                
+        # remember last geometry
+        settings = QtCore.QSettings(self.world.settingOrg, self.world.settingApp)
+        settings.setValue("lastGeometry", QtCore.QVariant(self.geometry()))
+        
     def setTitle(self, title):
         # FIXME: comment the param
         shownName = QtCore.QFileInfo(title).fileName()
@@ -349,7 +349,7 @@ class MainWindow(QtGui.QMainWindow):
         
     def showTemporaryMessage(self, text):
         self.ui.statusbar.showMessage(text, 3000)
-        
+
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     editor = MainWindow()
