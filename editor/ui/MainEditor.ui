@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow" >
   <property name="enabled" >
@@ -45,7 +42,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>30</height>
+     <height>31</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuHelp" >
@@ -59,36 +56,6 @@
     <property name="title" >
      <string>&amp;Settings</string>
     </property>
-    <widget class="QMenu" name="menuToolBar" >
-     <property name="title" >
-      <string>ToolBar</string>
-     </property>
-     <addaction name="actionShow_MenuBar" />
-     <addaction name="actionShow_TUview" />
-    </widget>
-    <widget class="QMenu" name="menuToolbar" >
-     <property name="title" >
-      <string>Toolbar</string>
-     </property>
-    </widget>
-    <widget class="QMenu" name="menuPreferences" >
-     <property name="title" >
-      <string>Preferences</string>
-     </property>
-    </widget>
-    <widget class="QMenu" name="menuFilter" >
-     <property name="title" >
-      <string>Filter</string>
-     </property>
-     <addaction name="actionFilterFuzzy" />
-     <addaction name="actionFilterTranslated" />
-     <addaction name="actionFilterUntranslated" />
-    </widget>
-    <widget class="QMenu" name="menuViews" >
-     <property name="title" >
-      <string>Tools</string>
-     </property>
-    </widget>
     <addaction name="actionPreferences" />
    </widget>
    <widget class="QMenu" name="menuGo" >
@@ -125,11 +92,6 @@
     <property name="title" >
      <string>&amp;View</string>
     </property>
-    <widget class="QMenu" name="menuType_Here" >
-     <property name="title" >
-      <string>Type Here</string>
-     </property>
-    </widget>
     <widget class="QMenu" name="menuMessages" >
      <property name="title" >
       <string>Messages</string>
@@ -175,16 +137,7 @@
    <addaction name="menuSettings" />
    <addaction name="menuHelp" />
   </widget>
-  <widget class="QStatusBar" name="statusbar" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>577</y>
-     <width>800</width>
-     <height>23</height>
-    </rect>
-   </property>
-  </widget>
+  <widget class="QStatusBar" name="statusbar" />
   <widget class="QToolBar" name="toolStandard" >
    <property name="enabled" >
     <bool>true</bool>
@@ -670,7 +623,6 @@
    </property>
   </action>
  </widget>
- <pixmapfunction></pixmapfunction>
  <resources/>
  <connections/>
 </ui>
