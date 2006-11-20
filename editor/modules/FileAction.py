@@ -84,7 +84,6 @@ class FileAction(QtCore.QObject):
                 history = fileDialog.history()
                 newHistory = QtCore.QStringList()
                 while (not history.isEmpty() and newHistory.count() < self.MaxRecentHistory):       
-                    print history.first()
                     newHistory.append(history.first())
                     history.removeAll(history.first())                    
                 World.settings.setValue("SaveAsHistory", QtCore.QVariant(newHistory))
