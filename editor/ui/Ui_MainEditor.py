@@ -2,7 +2,6 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Mon Nov 20 15:18:35 2006
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -86,7 +85,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
 
         self.toolStandard = QtGui.QToolBar(MainWindow)
-        self.toolStandard.setEnabled(False)
+        self.toolStandard.setEnabled(True)
         self.toolStandard.setOrientation(QtCore.Qt.Horizontal)
         self.toolStandard.setObjectName("toolStandard")
         MainWindow.addToolBar(self.toolStandard)
@@ -333,7 +332,7 @@ class Ui_MainWindow(object):
         return QtGui.QApplication.translate("MainWindow", string, None, QtGui.QApplication.UnicodeUTF8)
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(self.tr("WordForge Translation Editor"))
+        MainWindow.setWindowTitle(self.tr("Form"))
         self.menuHelp.setTitle(self.tr("&Help"))
         self.menuSettings.setTitle(self.tr("&Settings"))
         self.menuToolBar.setTitle(self.tr("ToolBar"))

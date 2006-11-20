@@ -33,7 +33,7 @@
    <enum>Qt::DefaultContextMenu</enum>
   </property>
   <property name="windowTitle" >
-   <string>WordForge Translation Editor</string>
+   <string>Form</string>
   </property>
   <property name="windowIcon" >
    <iconset>../images/icon.png</iconset>
@@ -187,7 +187,7 @@
   </widget>
   <widget class="QToolBar" name="toolStandard" >
    <property name="enabled" >
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="windowTitle" >
     <string>Standard Toolbar</string>

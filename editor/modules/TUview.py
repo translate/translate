@@ -43,7 +43,7 @@ class TUview(QtGui.QDockWidget):
         self._actionShow.setObjectName("actionShowDetail")
         self._actionShow.setText(self.tr("Hide Detail"))
         
-        self.lastValue = None
+        self.indexToUpdate = None
         self.connect(self._actionShow, QtCore.SIGNAL("triggered()"), self.show)
         self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.setReadyForSave)
         self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
@@ -90,17 +90,6 @@ class TUview(QtGui.QDockWidget):
             maximum = 0
         self.ui.fileScrollBar.setMaximum(maximum)
         
-    def hideUnit(self, value):
-        """Remove index from indexes, and recalculate scrollbar maximum."""
-        # adjust the scrollbar
-        try:
-            self.indexes.remove(value)
-        except ValueError:
-            pass
-        self.setScrollbarMaximum()
-        self.ui.txtSource.clear()
-        self.ui.txtTarget.clear()
-        
     def slotNewUnits(self, units):
         """slot after new file was loaded"""
         #FIXME: comment the param
@@ -111,43 +100,55 @@ class TUview(QtGui.QDockWidget):
             self.ui.txtTarget.clear()
         # self.indexes store the information of unit's index
         self.indexes = range(len(units))
+        self.filter = World.fuzzy + World.translated + World.untranslated
         # adjust the scrollbar
         self.setScrollbarMaximum()
         self.ui.fileScrollBar.setEnabled(True)
         self.ui.fileScrollBar.setSliderPosition(0)
     
-    def filteredList(self, fList):
+    def filteredList(self, fList, filter):
         """Adjust the scrollbar maximum according to length of filtered list."""
         # FIXME: comment the param
         self.indexes = fList
+        self.filter = filter
         self.setScrollbarMaximum()
         self.ui.fileScrollBar.setValue(0)
 
     @QtCore.pyqtSignature("int")
     def emitCurrentIndex(self, value):
-        # FIXME: comment the param
+        """emit "currentIndex" signal with current index value.
+        @param index: current index in the units."""
         # send the signal only index is new
-        if (self.lastValue != value):
+        if (self.indexToUpdate != value):
             if (self.indexes) and (value < len(self.indexes)):
                 index = self.indexes[value]
                 self.emit(QtCore.SIGNAL("currentIndex"), index)
     
     def updateView(self, unit, index, state):
-        """Update the text in source and target, and set the scrollbar position."""
-        # FIXME: comment the param
-        if (unit):
-            self.ui.txtSource.setPlainText(unit.source)
-            self.ui.txtTarget.setPlainText(unit.target)
-        else:
-            self.ui.txtSource.clear()
-            self.ui.txtTarget.clear()
-        self.ui.txtTarget.setFocus
-        # set the scrollbar position
+        """Update the text in source and target, set the scrollbar position,
+        remove a value from scrollbar if the unit is not in filter.
+        Then recalculate scrollbar maximum value.
+        @param unit: unit to set in target and source.
+        @param index: value in the scrollbar to be removed.
+        @param state: state of unit defined in world.py."""
         try:
             value = self.indexes.index(index)
         except:
             return
-        self.lastValue = value
+        if (unit):
+            self.ui.txtSource.setPlainText(unit.source)
+            self.ui.txtTarget.setPlainText(unit.target)
+            self.ui.txtTarget.setFocus
+        if not (self.filter & state):
+            try:
+                self.indexes.remove(index)
+            except:
+                pass
+            self.setScrollbarMaximum()
+            self.ui.txtSource.clear()
+            self.ui.txtTarget.clear()
+        # set the scrollbar position
+        self.indexToUpdate = value
         self.ui.fileScrollBar.setValue(value)
 
     def setTarget(self, text):
@@ -188,7 +189,6 @@ class TUview(QtGui.QDockWidget):
             self.layout.clearAdditionalFormats()
             textField.update()
         block.layout().setAdditionalFormats([self.highlightRange])
-
 
     def replaceText(self, textField, position, length, replacedText):
         """replace the string (at position and length) with replacedText in txtTarget.

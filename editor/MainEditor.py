@@ -47,6 +47,8 @@ class MainWindow(QtGui.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.ui.recentaction = []
+        self.setWindowTitle(World.settingOrg + ' ' + World.settingApp + ' ' + World.settingVer)
+        
         self.createRecentAction()
         
         # get the last geometry
@@ -71,7 +73,7 @@ class MainWindow(QtGui.QMainWindow):
 
         #add widgets to statusbar
         #TODO: Decorate Status Bar
-        self.statuslabel = QtGui.QLabel("asdf")
+        self.statuslabel = QtGui.QLabel()
         self.statuslabel.setFrameStyle(QtGui.QFrame.NoFrame)
         self.ui.statusbar.addWidget(self.statuslabel)
 
@@ -119,8 +121,8 @@ class MainWindow(QtGui.QMainWindow):
         #self.connect(self.ui.actionCopy, QtCore.SIGNAL("triggered()"), self.dockTUview.ui.txtSource, QtCore.SLOT("copy()"))
         self.ui.actionCut.setEnabled(False)
         self.ui.actionCopy.setEnabled(False)
-        self.connect(self.dockComment, QtCore.SIGNAL("copyAvailable(bool)"), self._enableCopyPaste)
-        self.connect(self.dockTUview, QtCore.SIGNAL("copyAvailable(bool)"), self._enableCopyPaste)
+        self.connect(self.dockComment, QtCore.SIGNAL("copyAvailable(bool)"), self.enableCopyPaste)
+        self.connect(self.dockTUview, QtCore.SIGNAL("copyAvailable(bool)"), self.enableCopyPaste)
 
 
         self.connect(self.ui.actionCut, QtCore.SIGNAL("triggered()"), self.cutter)
@@ -159,9 +161,6 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionFilterUntranslated, QtCore.SIGNAL("toggled(bool)"), self.operator.filterUntranslated)
         self.connect(self.ui.actionToggleFuzzy, QtCore.SIGNAL("triggered()"), self.operator.toggleFuzzy)
 
-        self.connect(self.operator, QtCore.SIGNAL("hideUnit"), self.dockOverview.hideUnit)
-        self.connect(self.operator, QtCore.SIGNAL("hideUnit"), self.dockTUview.hideUnit)
-
         # "currentUnit" sends currentUnit, currentIndex, and currentState.
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockOverview.updateView)
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockTUview.updateView)
@@ -197,7 +196,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.operator.getUnits)
 
 
-    def _enableCopyPaste(self, bool):
+    def enableCopyPaste(self, bool):
         self.ui.actionCopy.setEnabled(bool)
         self.ui.actionCut.setEnabled(bool)
 
@@ -218,8 +217,10 @@ class MainWindow(QtGui.QMainWindow):
 
     def paster(self):
         object = self.focusWidget()
-        object.paste()
-
+        try:
+            object.paste()
+        except AttributeError:
+            pass
 
     def redoer(self):
         object = self.focusWidget()
@@ -311,9 +312,10 @@ class MainWindow(QtGui.QMainWindow):
         World.settings.setValue("lastGeometry", QtCore.QVariant(self.geometry()))
         
     def setTitle(self, title):
-        # FIXME: comment the param
+        """set the title of program.
+        @param title: title string."""
         shownName = QtCore.QFileInfo(title).fileName()
-        self.setWindowTitle(self.tr("%1[*] - %2").arg(shownName).arg(self.tr("Translation Editor")))
+        self.setWindowTitle(self.tr("%1[*] - %2").arg(shownName).arg(World.settingApp))
 
     def disableUndo(self):
         self.ui.actionUndo.setVisible(True)
@@ -333,7 +335,7 @@ class MainWindow(QtGui.QMainWindow):
     
     def startInNewWindow(self):
         other = MainWindow()
-        MainWindow.windowList.append(other) 
+        MainWindow.windowList.append(other)
         if other.fileaction.openFile():
             other.show()
         

@@ -62,6 +62,14 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.tableOverview.horizontalHeader().setFont(self.headerFont)
         self.applySettings()
         
+        self.fuzzyIcon = QtGui.QIcon("./images/fuzzy.png")
+        self.fuzzyItem = QtGui.QTableWidgetItem()
+        self.fuzzyItem.setIcon(self.fuzzyIcon)
+        self.fuzzyItem.setToolTip("fuzzy")
+        
+        self.blankItem = QtGui.QTableWidgetItem()
+        self.blankItem.setFlags(QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable)
+        
         # indexToUpdate holds the last item selected
         self.indexToUpdate = None
         self.connect(self.ui.tableOverview, QtCore.SIGNAL("itemSelectionChanged()"), self._emitCurrentIndex)
@@ -71,9 +79,9 @@ class OverviewDock(QtGui.QDockWidget):
         return self._actionShow
 
     def _show(self):
-        """set the widget's label according to visibility."""
+        """show/hide the widget and set the label."""
         if self.isHidden():
-            self._actionShow.setText(self.tr("Hide Overview"))    
+            self._actionShow.setText(self.tr("Hide Overview"))
         else:
             self._actionShow.setText(self.tr("Show Overview"))    
         self.setHidden(not self.isHidden())    
@@ -82,6 +90,7 @@ class OverviewDock(QtGui.QDockWidget):
         """initialize the list, clear and fill with units.
         @param units: list of unit to add into table.
         @param unitsStatus: list of unit's status."""
+        self.filter = World.fuzzy + World.translated + World.untranslated
         self.ui.tableOverview.setEnabled(True)
         self.ui.tableOverview.clear()
         self.ui.tableOverview.setHorizontalHeaderLabels(self.headerLabels)
@@ -92,26 +101,26 @@ class OverviewDock(QtGui.QDockWidget):
         self.indexMaxLen = len(str(len(units)))
         for unit in units:
             item0 = QtGui.QTableWidgetItem(str(i).rjust(self.indexMaxLen))
-            item1 = QtGui.QTableWidgetItem(unit.source)            
+            item1 = QtGui.QTableWidgetItem(unit.source)
             item2 = QtGui.QTableWidgetItem(unit.target)
-            item3 = QtGui.QTableWidgetItem(self._stateString(unitsStatus[i]))
             item0.setTextAlignment(QtCore.Qt.AlignCenter)
             item0.setFlags(normalState)
             item1.setFlags(normalState)
             item2.setFlags(normalState)
-            item3.setFlags(normalState)            
             self.ui.tableOverview.setItem(i, 0, item0)
             self.ui.tableOverview.setItem(i, 1, item1)
             self.ui.tableOverview.setItem(i, 2, item2)
-            self.ui.tableOverview.setItem(i, 3, item3)
+            self._setUnitProperty(i, unitsStatus[i])
             i += 1
         self.ui.tableOverview.resizeRowsToContents()
         self.setUpdatesEnabled(True)
 
-    def filteredList(self, shownList):
-        """show the items that are in filtered list.
-        @param shownList: list of unit shown in the table."""
+    def filteredList(self, shownList, filter):
+        """show the items which are in shownList.
+        @param shownList: list of unit which allow to be visible in the table.
+        @param filter: shownList's filter."""
         self.setUpdatesEnabled(False)
+        self.filter = filter
         hiddenList = range(self.ui.tableOverview.rowCount())
         for i in shownList:
             self.ui.tableOverview.showRow(i)
@@ -141,23 +150,21 @@ class OverviewDock(QtGui.QDockWidget):
             return
         row = self.ui.tableOverview.row(item)
         self.indexToUpdate = row
+        self._setUnitProperty(row, state)
         self.ui.tableOverview.selectRow(row)
-        # display unit status on note column.
-        if (state):
-            noteItem = self.ui.tableOverview.item(index, 3)
-            item = QtGui.QTableWidgetItem(self._stateString(state))
-            self.ui.tableOverview.setItem(self.indexToUpdate, 3, item)
-    
-    def _stateString(self, state):
-        status = ""
+        self.ui.tableOverview.scrollToItem(item)
+
+    def _setUnitProperty(self, index, state):
+        """display unit status on note column, and hide if unit is not in filter.
+        @param index: row in table to set property.
+        @param state: state of unit defined in world.py."""
         if (state & World.fuzzy):
-            status += " F"
-        #if (state & World.translated):
-        #    status += " T"
-        if (state & World.untranslated):
-            status += " U"
-        return status
-        
+            self.ui.tableOverview.setItem(index, 3, self.fuzzyItem)
+        else:
+            self.ui.tableOverview.takeItem(index, 3)
+        if (not self.filter & state):
+            self.ui.tableOverview.hideRow(index)
+    
     def updateTarget(self, text):
         """change the text in target column (indexToUpdate).
         @param text: text to set into target field."""
@@ -166,10 +173,10 @@ class OverviewDock(QtGui.QDockWidget):
             self.ui.tableOverview.setItem(self.indexToUpdate, 2, item)
             self.ui.tableOverview.resizeRowToContents(self.indexToUpdate)
         
-    def hideUnit(self, index):
-        """hide the table's row.
-        @param index: table's row to hide."""
-        self.ui.tableOverview.hideRow(index)
+##    def hideUnit(self, index):
+##        """hide the table's row.
+##        @param index: table's row to hide."""
+##        self.ui.tableOverview.hideRow(index)
 
 ##    def emitTargetChanged(self):
 ##        """Send target as string and signal targetChanged."""

@@ -43,7 +43,6 @@ class Operator(QtCore.QObject):
         self._unitpointer = None
         # filter flags
         self.filter = World.filterAll
-        # search function's variables
 
     def getUnits(self, fileName):
         """reading a file into the internal datastructure.
@@ -57,11 +56,7 @@ class Operator(QtCore.QObject):
 ####        fileNode = self.store.getfilenode(fileName)
 ##        xliffHeader = self.store.getheadernode(fileNode)
 ##        header = self.store.header(xliffHeader)
- 
-        header = self.store.units[0].isheader()
-##        self.filteredList = range(len(self.store.units))[header:]
-##        self.emit(QtCore.SIGNAL("newUnits"), self.store.units, self.filteredList)
-        
+
         unitsState = []
         for unit in self.store.units:
             currentState = self.status.getStatus(unit)
@@ -70,17 +65,12 @@ class Operator(QtCore.QObject):
         self.emit(QtCore.SIGNAL("newUnits"), self.store.units, unitsState)
         self.filteredList = range(len(self.store.units))
         # hide first unit if it's header
-        if (header):
-            self.hideUnit(0)
+##        if (self.store.units[0].isheader()):
+##            self.hideUnit(0)
         # set to first unit pointer
         self._unitpointer = 0
         self.emitCurrentUnit()
-##        # set color for fuzzy unit only
-##        fuzzyUnits = pocount.fuzzymessages(self.store.units)
-##        for i in fuzzyUnits:
-##            id = self.store.units.index(i)
-##            self.emit(QtCore.SIGNAL("setColor"), id, World.fuzzy)
-    
+
     def emitStatus(self):
         self.emit(QtCore.SIGNAL("currentStatus"), self.status.statusString())        
 
@@ -93,11 +83,13 @@ class Operator(QtCore.QObject):
         self.searchPointer = self._unitpointer
         currentIndex = self._getCurrentIndex()
         if (currentIndex == -1):
-            self.emit(QtCore.SIGNAL("currentUnit"), None, None, None)
+            currentUnit = None
+            currentIndex = None
+            currentState = None
         else:
             currentUnit = self.store.units[currentIndex]
             currentState = self.status.getStatus(currentUnit)
-            self.emit(QtCore.SIGNAL("currentUnit"), currentUnit, currentIndex, currentState)
+        self.emit(QtCore.SIGNAL("currentUnit"), currentUnit, currentIndex, currentState)
 
     def _getCurrentIndex(self):
         """return current index of current unit."""
@@ -107,15 +99,6 @@ class Operator(QtCore.QObject):
             # no current id found in list
             return -1
 
-    def hideUnit(self, value):
-        """remove unit inside filtered list, and send hideUnit signal.
-        @param value: index in units."""
-        try:
-            self.filteredList.remove(value)
-        except ValueError:
-            pass
-        self.emit(QtCore.SIGNAL("hideUnit"), value)
-        
     def filterFuzzy(self, checked):
         """add/remove fuzzy to filter, and send filter signal."""
         # FIXME: comment the param
@@ -159,33 +142,16 @@ class Operator(QtCore.QObject):
             # add unit to filteredList if it is in the filter
             if (self.filter & unitState):
                 self.filteredList.append(i)
-        self.emit(QtCore.SIGNAL("filteredList"), self.filteredList)
+        self.emit(QtCore.SIGNAL("filteredList"), self.filteredList, filter)
         self._unitpointer = 0
         self.emitCurrentUnit()
     
     def emitUpdateUnit(self):
-        """send updateUnit, setColor, and hideUnit signal."""
+        """emit "updateUnit" signal."""
         currentIndex = self._getCurrentIndex()
         if (self._unitpointer == None) or (currentIndex > len(self.store.units)):
             return
         self.emit(QtCore.SIGNAL("updateUnit"))
-
-##        currentUnit = self.store.units[currentIndex]
-##        # get the unit state
-##        unitState = 0
-##        if currentUnit.isfuzzy():
-##            unitState += World.fuzzy
-##        if currentUnit.istranslated():
-##            unitState += World.translated
-##        else:
-##            unitState += World.untranslated
-##        # set color for current unit
-##        self.emit(QtCore.SIGNAL("setColor"), currentIndex, unitState)
-##        # hide unit if it is not in the filter
-##        if (self.filter) and not (self.filter & unitState):
-##            self.hideUnit(currentIndex)
-##            # tell next button not to advance another step
-##            return True
 
     def emitHeaderInfo(self):
         """sending Header and comment of Header"""
@@ -204,7 +170,6 @@ class Operator(QtCore.QObject):
           self.store.units[0].addnote(str(othercomments))
           self.store.updateheader(add=True, **headerDic)
 
-        
     def previous(self):
         """move to previous unit inside the filtered list."""
         if self._unitpointer > 0:
@@ -306,7 +271,7 @@ class Operator(QtCore.QObject):
             self.store.units[currentIndex].markfuzzy(True)
             self.status.addNumFuzzy(1)
         self._modified = True
-        self.emitUpdateUnit()
+        self.emitCurrentUnit()
         self.emitStatus()
     
     def initSearch(self, searchString, searchableText, matchCase):

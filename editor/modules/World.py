@@ -22,7 +22,6 @@
 # 
 # This module stores global variables for use in whole applicaion.
 
-
 from PyQt4 import QtCore
 
 # helper constants for filtering
@@ -40,8 +39,10 @@ searchBackward = 2
 searchStatic = 4
 
 # this is the global settings object, use only this for saving and restoring settings
-settings = QtCore.QSettings("WordForge", "Translation Editor")
+settingOrg = "WordForge"
+settingApp = "Translation Editor"
+settingVer = "0.1"
+settings = QtCore.QSettings(settingOrg, settingApp)
 
 # maximum number of files in the recent file menu
 MaxRecentFiles = 10
-
