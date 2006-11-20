@@ -92,11 +92,11 @@ class Operator(QtCore.QObject):
         self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), atFirst, atLast)
         self.searchPointer = self._unitpointer
         currentIndex = self._getCurrentIndex()
-        currentUnit = self.store.units[currentIndex]
-        currentState = self.status.getStatus(currentUnit)
         if (currentIndex == -1):
             self.emit(QtCore.SIGNAL("currentUnit"), None, None, None)
         else:
+            currentUnit = self.store.units[currentIndex]
+            currentState = self.status.getStatus(currentUnit)
             self.emit(QtCore.SIGNAL("currentUnit"), currentUnit, currentIndex, currentState)
 
     def _getCurrentIndex(self):
