@@ -39,7 +39,6 @@ class CommentDock(QtGui.QDockWidget):
         self.ui.setupUi(self.form)        
         self.setWidget(self.form)
         self.layout = QtGui.QTextLayout ()
-        self.settings = QtCore.QSettings(World.settingOrg, World.settingApp)
         self.applySettings()
 
         # create action for show/hide
@@ -109,7 +108,7 @@ class CommentDock(QtGui.QDockWidget):
       self.emit(QtCore.SIGNAL("readyForSave"), True)
 
     def applySettings(self):
-        font = self.settings.value("commentFont")
+        font = World.settings.value("commentFont")
         if (font.isValid()):
             fontObj = QtGui.QFont()
             if (fontObj.fromString(font.toString())):

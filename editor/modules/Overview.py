@@ -36,7 +36,6 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui = Ui_Form()
         self.ui.setupUi(self.form)        
         self.setWidget(self.form)
-        self.settings = QtCore.QSettings(World.settingOrg, World.settingApp)
         
         # create action for show/hide
         self._actionShow = QtGui.QAction(self)
@@ -181,7 +180,7 @@ class OverviewDock(QtGui.QDockWidget):
 ##            self.emit(QtCore.SIGNAL("targetChanged"), target)
         
     def applySettings(self):
-        font = self.settings.value("overviewFont")
+        font = World.settings.value("overviewFont")
         if (font.isValid()):
             fontObj = QtGui.QFont()
             if (fontObj.fromString(font.toString())):

@@ -41,7 +41,6 @@ class Operator(QtCore.QObject):
         self._modified = False
         self._saveDone = False
         self._unitpointer = None
-        self.settings = QtCore.QSettings(World.settingOrg, World.settingApp)
         # filter flags
         self.filter = World.fuzzy + World.translated + World.untranslated
         # search function's variables
@@ -238,7 +237,7 @@ class Operator(QtCore.QObject):
     def saveStoreToFile(self, fileName):
         # FIXME: comment this
         self.emitUpdateUnit()
-        if (self.settings.value("headerAuto").toString() == "checked"):
+        if (World.settings.value("headerAuto").toString() == "checked"):
             self.emit(QtCore.SIGNAL("headerAuto"))
         self.store.savefile(fileName)
         self._saveDone = True

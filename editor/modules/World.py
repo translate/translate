@@ -23,7 +23,7 @@
 # This module stores global variables for use in whole applicaion.
 
 
-# TODO: think about the need of the class here. A module might be enough to create the namespace?
+from PyQt4 import QtCore
 
 fuzzy = 1
 translated = 2
@@ -37,7 +37,5 @@ searchForward = 1
 searchBackward = 2
 searchStatic = 4
 
-
-settingOrg = "WordForge"
-settingApp = "Translation Editor"
-        
+# this is the global settings object, use only this for saving and restoring settings
+settings = QtCore.QSettings("WordForge", "Translation Editor")

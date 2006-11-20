@@ -35,7 +35,6 @@ class Header(QtGui.QDialog):
         QtGui.QDialog.__init__(self)        
         self.ui = None
         
-        self.settings = QtCore.QSettings(World.settingOrg, World.settingApp)
     
     def getFileName(self, fileName):
         (path, self.fileName) = os.path.split(str(fileName))
@@ -159,12 +158,12 @@ class Header(QtGui.QDialog):
         """set user profile from Qsettings into the tableHeader"""
         newHeaderDic = {}
         userProfileDic = {}
-        userName = self.settings.value("UserName", QtCore.QVariant(""))        
-        emailAddress = self.settings.value("EmailAddress", QtCore.QVariant(""))
-        FullLanguage = self.settings.value("FullLanguage", QtCore.QVariant(""))
-        Code = self.settings.value("Code", QtCore.QVariant(""))
-        SupportTeam = self.settings.value("SupportTeam", QtCore.QVariant(""))
-        TimeZone = self.settings.value("TimeZone", QtCore.QVariant(""))        
+        userName = World.settings.value("UserName", QtCore.QVariant(""))        
+        emailAddress = World.settings.value("EmailAddress", QtCore.QVariant(""))
+        FullLanguage = World.settings.value("FullLanguage", QtCore.QVariant(""))
+        Code = World.settings.value("Code", QtCore.QVariant(""))
+        SupportTeam = World.settings.value("SupportTeam", QtCore.QVariant(""))
+        TimeZone = World.settings.value("TimeZone", QtCore.QVariant(""))        
         Last_Translator = userName.toString() + '<' + emailAddress.toString() + '>'        
         Language_Team =  FullLanguage.toString() + '<' + SupportTeam.toString() + '>'        
          #if header doesn't exist, call makeheader, otherwise, only update from setting

@@ -36,7 +36,6 @@ class TUview(QtGui.QDockWidget):
         self.ui.setupUi(self.form)
         self.setWidget(self.form)
         self.layout = QtGui.QTextLayout ()
-        self.settings = QtCore.QSettings(World.settingOrg, World.settingApp)
         self.applySettings()
         
         # create action for show/hide
@@ -209,12 +208,12 @@ class TUview(QtGui.QDockWidget):
         self.ui.txtSource.cut()
 
     def applySettings(self):
-        sourcefont = self.settings.value("tuSourceFont")
+        sourcefont = World.settings.value("tuSourceFont")
         if (sourcefont.isValid()):
             fontObj = QtGui.QFont()
             if (fontObj.fromString(sourcefont.toString())):
                 self.ui.txtSource.setFont(fontObj)
-        targetfont = self.settings.value("tuTargetFont")
+        targetfont = World.settings.value("tuTargetFont")
         if (targetfont.isValid()):
             fontObj = QtGui.QFont()
             if (fontObj.fromString(targetfont.toString())):

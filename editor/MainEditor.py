@@ -51,8 +51,7 @@ class MainWindow(QtGui.QMainWindow):
         self.createRecentAction()
         
         # get the last geometry
-        settings = QtCore.QSettings(World.settingOrg, World.settingApp)
-        geometry = settings.value("lastGeometry").toRect()
+        geometry = World.settings.value("lastGeometry").toRect()
         self.setGeometry(geometry)
         
         #plug in overview widget
@@ -265,8 +264,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionReplace.setEnabled(True)
         self.ui.actionEdit_Header.setEnabled(True)
         # FIXME: what will happen if the file only contains 1 TU? Jens
-        settings = QtCore.QSettings(World.settingOrg, World.settingApp)
-        files = settings.value("recentFileList").toStringList()                
+        files = World.settings.value("recentFileList").toStringList()                
         files.removeAll(fileName)
         files.prepend(fileName)
         while files.count() > MainWindow.MaxRecentFiles:
@@ -294,8 +292,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def updateRecentAction(self):
         # FIXME: comment this
-        settings = QtCore.QSettings(World.settingOrg, World.settingApp)
-        files = settings.value("recentFileList").toStringList()
+        files = World.settings.value("recentFileList").toStringList()
         numRecentFiles = min(files.count(), MainWindow.MaxRecentFiles)
 
         for i in range(numRecentFiles):
@@ -316,8 +313,7 @@ class MainWindow(QtGui.QMainWindow):
                 event.ignore()
                 
         # remember last geometry
-        settings = QtCore.QSettings(World.settingOrg, World.settingApp)
-        settings.setValue("lastGeometry", QtCore.QVariant(self.geometry()))
+        World.settings.setValue("lastGeometry", QtCore.QVariant(self.geometry()))
         
     def setTitle(self, title):
         # FIXME: comment the param

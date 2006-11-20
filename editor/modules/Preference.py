@@ -33,9 +33,6 @@ class Preference(QtGui.QDialog):
         QtGui.QDialog.__init__(self)
         self.ui = None    
 
-        #Personal Setting
-        self.settings = QtCore.QSettings(World.settingOrg, World.settingApp)
-        
     def initUI(self):
         """ get values and display them """
         self.overviewFont = self.getFont(self.widget[0])
@@ -47,13 +44,13 @@ class Preference(QtGui.QDialog):
         self.commentFont = self.getFont(self.widget[3])
         self.setCaption(self.ui.lblComment, self.commentFont)
         
-        self.ui.UserName.setText(self.settings.value("UserName").toString())
-        self.ui.EmailAddress.setText(self.settings.value("EmailAddress").toString())
-        self.ui.cbxFullLanguage.setEditText(self.settings.value("FullLanguage").toString())
-        self.ui.cbxLanguageCode.setEditText(self.settings.value("Code").toString())
-        self.ui.SupportTeam.setText(self.settings.value("SupportTeam").toString())
-        self.ui.cbxTimeZone.setEditText(self.settings.value("TimeZone").toString())
-        checkState = self.settings.value("headerAuto").toString()
+        self.ui.UserName.setText(World.settings.value("UserName").toString())
+        self.ui.EmailAddress.setText(World.settings.value("EmailAddress").toString())
+        self.ui.cbxFullLanguage.setEditText(World.settings.value("FullLanguage").toString())
+        self.ui.cbxLanguageCode.setEditText(World.settings.value("Code").toString())
+        self.ui.SupportTeam.setText(World.settings.value("SupportTeam").toString())
+        self.ui.cbxTimeZone.setEditText(World.settings.value("TimeZone").toString())
+        checkState = World.settings.value("headerAuto").toString()
         if (checkState == "checked"):
             self.ui.chkHeaderAuto.setCheckState(QtCore.Qt.Checked)
         else:
@@ -66,24 +63,24 @@ class Preference(QtGui.QDialog):
         self.rememberFont(self.widget[2], self.tuTargetFont)
         self.rememberFont(self.widget[3], self.commentFont)
 
-        self.settings.setValue("UserName", QtCore.QVariant(self.ui.UserName.text()))
-        self.settings.setValue("EmailAddress", QtCore.QVariant(self.ui.EmailAddress.text()))
-        self.settings.setValue("FullLanguage", QtCore.QVariant(self.ui.cbxFullLanguage.currentText()))
-        self.settings.setValue("Code", QtCore.QVariant(self.ui.cbxLanguageCode.currentText()))
-        self.settings.setValue("SupportTeam", QtCore.QVariant(self.ui.SupportTeam.text()))
-        self.settings.setValue("TimeZone", QtCore.QVariant(self.ui.cbxTimeZone.currentText()))        
+        World.settings.setValue("UserName", QtCore.QVariant(self.ui.UserName.text()))
+        World.settings.setValue("EmailAddress", QtCore.QVariant(self.ui.EmailAddress.text()))
+        World.settings.setValue("FullLanguage", QtCore.QVariant(self.ui.cbxFullLanguage.currentText()))
+        World.settings.setValue("Code", QtCore.QVariant(self.ui.cbxLanguageCode.currentText()))
+        World.settings.setValue("SupportTeam", QtCore.QVariant(self.ui.SupportTeam.text()))
+        World.settings.setValue("TimeZone", QtCore.QVariant(self.ui.cbxTimeZone.currentText()))        
         if (self.ui.chkHeaderAuto.checkState() == QtCore.Qt.Checked):
             checkStatus = "checked"
         else:
             checkStatus = "unchecked"
-        self.settings.setValue("headerAuto", QtCore.QVariant(checkStatus))     
+        World.settings.setValue("headerAuto", QtCore.QVariant(checkStatus))     
         self.emit(QtCore.SIGNAL("settingsChanged"))
    
     def rememberFont(self, obj, fontObj):
         """input obj as string"""        
         # store font settings
         if (fontObj != None):    # TODO do we need this ???
-            self.settings.setValue(str(obj + "Font"), QtCore.QVariant(fontObj.toString()))
+            World.settings.setValue(str(obj + "Font"), QtCore.QVariant(fontObj.toString()))
         
     def fontOverview(self):
         """ slot to open font selection dialog """
@@ -107,7 +104,7 @@ class Preference(QtGui.QDialog):
 
     def getFont(self, obj):
         """ return font object created from settings"""
-        font = self.settings.value(str(obj + "Font"), QtCore.QVariant(self.defaultFont.toString()))        
+        font = World.settings.value(str(obj + "Font"), QtCore.QVariant(self.defaultFont.toString()))        
         if (font.isValid()):
             fontObj = QtGui.QFont()
             if (fontObj.fromString(font.toString())):
