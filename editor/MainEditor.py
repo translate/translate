@@ -51,9 +51,10 @@ class MainWindow(QtGui.QMainWindow):
         self.createRecentAction()
         
         # get the last geometry
-        geometry = World.settings.value("lastGeometry", QtCore.QVariant(QtCore.QRect(0,0,800,600))).toRect()
-        self.setGeometry(geometry)
-        
+        geometry = World.settings.value("lastGeometry")
+        if (geometry.isValid()):
+            self.setGeometry(geometry.toRect())
+            
         #plug in overview widget
         self.dockOverview = OverviewDock()
         self.addDockWidget(QtCore.Qt.TopDockWidgetArea, self.dockOverview)
