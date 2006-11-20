@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Fri Nov 17 08:30:37 2006
+# Created: Mon Nov 20 10:25:40 2006
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -14,7 +14,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.setEnabled(True)
-        MainWindow.resize(QtCore.QSize(QtCore.QRect(0,0,571,476).size()).expandedTo(MainWindow.minimumSizeHint()))
+        MainWindow.resize(QtCore.QSize(QtCore.QRect(0,0,800,600).size()).expandedTo(MainWindow.minimumSizeHint()))
         MainWindow.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
         MainWindow.setWindowIcon(QtGui.QIcon("./images/icon.png"))
 
@@ -23,7 +23,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0,0,571,28))
+        self.menubar.setGeometry(QtCore.QRect(0,0,800,30))
         self.menubar.setObjectName("menubar")
 
         self.menuHelp = QtGui.QMenu(self.menubar)
@@ -74,7 +74,7 @@ class Ui_MainWindow(object):
         MainWindow.setMenuBar(self.menubar)
 
         self.statusbar = QtGui.QStatusBar(MainWindow)
-        self.statusbar.setGeometry(QtCore.QRect(0,455,571,21))
+        self.statusbar.setGeometry(QtCore.QRect(0,577,800,23))
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
