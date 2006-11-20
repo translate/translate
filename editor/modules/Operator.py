@@ -42,7 +42,7 @@ class Operator(QtCore.QObject):
         self._saveDone = False
         self._unitpointer = None
         # filter flags
-        self.filter = World.fuzzy + World.translated + World.untranslated
+        self.filter = World.filterAll
         # search function's variables
 
     def getUnits(self, fileName):

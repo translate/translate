@@ -25,9 +25,11 @@
 
 from PyQt4 import QtCore
 
+# helper constants for filtering
 fuzzy = 1
 translated = 2
 untranslated = 4
+filterAll = 4 + 2 + 1
 
 source = 1
 target = 2
