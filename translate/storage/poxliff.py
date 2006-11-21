@@ -322,6 +322,10 @@ class PoXliffFile(xliff.xlifffile):
             header.markfuzzy(False)
         return header
 
+    def getheaderplural(self):
+        """returns the nplural and plural values from the po header"""
+        return poheader.getheaderplural(self.parseheader())
+
     def addplural(self, source, target, filename, createifmissing=False):
         """This method should now be unnecessary, but is left for reference"""
         assert isinstance(source, multistring)
