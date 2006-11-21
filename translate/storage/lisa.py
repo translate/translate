@@ -65,14 +65,14 @@ def _getPhMatches(text):
 class LISAunit(base.TranslationUnit):
     """A single unit in the file. 
 Provisional work is done to make several languages possible."""
-    
+
     #The name of the root element of this unit type:(termEntry, tu, trans-unit)
     rootNode = ""
     #The name of the per language element of this unit type:(termEntry, tu, trans-unit)
     languageNode = ""
     #The name of the innermost element of this unit type:(term, seg)
     textNode = ""
-    
+
     def __init__(self, source, document=None, empty=False):
         """Constructs a unit containing the given source string"""
         if document:
@@ -83,7 +83,7 @@ Provisional work is done to make several languages possible."""
             return
         self.xmlelement = self.document.createElement(self.rootNode)
         #add descrip, note, etc.
-        
+
         super(LISAunit, self).__init__(source)
 
     def __eq__(self, other):
@@ -99,7 +99,7 @@ Provisional work is done to make several languages possible."""
                 #TODO:^ maybe we want to take children and notes into account
                 return False
         return True
-        
+
     def setsource(self, source, sourcelang='en'):
         languageNodes = self.getlanguageNodes()
         sourcelanguageNode = self.createlanguageNode(sourcelang, source, "source")
@@ -107,7 +107,7 @@ Provisional work is done to make several languages possible."""
             self.xmlelement.replaceChild(sourcelanguageNode, languageNodes[0])
         else:
             self.xmlelement.appendChild(sourcelanguageNode)
-            
+
     def getsource(self):
         return self.getNodeText(self.getlanguageNode(lang=None, index=0))
     source = property(getsource, setsource)
@@ -138,7 +138,7 @@ Provisional work is done to make several languages possible."""
             node = self.getlanguageNode(lang=None, index=1)
         return self.getNodeText(node)
     target = property(gettarget, settarget)
-                   
+
     def createlanguageNode(self, lang, text, purpose=None):
         """Returns a xml Element setup with given parameters to represent a 
         single language entry. Has to be overridden."""
@@ -180,7 +180,7 @@ Provisional work is done to make several languages possible."""
             else:
                 return languageNodes[index]
         return None
-            
+
     def getNodeText(self, languageNode):
         """Retrieves the term from the given languageNode"""
         if languageNode is None:
@@ -219,7 +219,7 @@ class LISAfile(base.TranslationStore):
         if inputfile is not None:
             self.parse(inputfile)
             assert self.document.documentElement.tagName == self.rootNode
-        else:        
+        else:
             self.parse(self.XMLskeleton)
             self.addheader()
 
@@ -283,5 +283,4 @@ class LISAfile(base.TranslationStore):
         """clean up the document if required"""
         if hasattr(self, "document"):
             self.document.unlink()
-
 
