@@ -102,8 +102,8 @@ class TranslationUnit(object):
 
     def isblank(self):
         """Used to see if this unit has no source or target string. This is 
-	probably used more to find translatable units, and we might want to 
-	move in that direction rather and get rid of this."""
+        probably used more to find translatable units, and we might want to 
+        move in that direction rather and get rid of this."""
         return not (self.source and self.target)
 
     def hasplural(self):
@@ -141,10 +141,14 @@ class TranslationStore(object):
         if unitclass:
             self.UnitClass = unitclass
 
+    def addunit(self, unit):
+        """Appends the given unit to the object's list of units."""
+        self.units.append(unit)
+
     def addsourceunit(self, source):
         """Adds and returns a new unit with the given source string"""
         unit = self.UnitClass(source)
-        self.units.append(unit)
+        self.addunit(unit)
         return unit
 
     def findunit(self, source):
@@ -185,6 +189,21 @@ class TranslationStore(object):
         """Converts to a string representation that can be parsed back using parse"""
         force_override(self.__str__, TranslationStore)
         return pickle.dumps(self)
+
+    def isempty(self):
+      """returns True if the object doesn't contain any translation units."""
+      if len(self.units) == 0:
+        return True
+      # Skip the first unit if it is a header.
+      if self.units[0].isheader():
+        units = self.units[1:]
+      else:
+        units = self.units
+
+      for unit in units:
+        if not unit.isblank():
+          return False
+      return True
 
     def parsestring(cls, storestring):
         """Converts the string representation back to an object"""

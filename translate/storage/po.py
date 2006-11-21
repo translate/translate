@@ -922,20 +922,6 @@ class pofile(base.TranslationStore):
       headerstr = headerstr.replace(charsetline, newcharsetline, 1)
     header.msgstr = quoteforpo(headerstr)
 
-  def isempty(self):
-    """returns whether the po file doesn't contain any definitions..."""
-    if len(self.units) == 0:
-      return 1
-    # first we check the header...
-    header = self.units[0]
-    if not (header.isheader() or header.isblank()):
-      return 0
-    # if there are any other units, this is only empty if they are blank
-    for thepo in self.units[1:]:
-      if not thepo.isblank():
-        return 0
-    return 1
-
   def parsestring(cls, storestring):
     """Parses the po file contents in the storestring and returns a new pofile object (classmethod, constructor)"""
     parsedfile = pofile()
