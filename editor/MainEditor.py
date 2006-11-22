@@ -50,41 +50,53 @@ class MainWindow(QtGui.QMainWindow):
         self.setWindowTitle(World.settingOrg + ' ' + World.settingApp + ' ' + World.settingVer)
         
         self.createRecentAction()
+        self.setObjectName("mainwindows")
         
         # get the last geometry
         geometry = World.settings.value("lastGeometry")
         if (geometry.isValid()):
             self.setGeometry(geometry.toRect())
             
+        # get the last state of mainwindows's toolbars and dockwidgets
+        state = World.settings.value("lastState")
+        
         #plug in overview widget
         self.dockOverview = OverviewDock()
+        self.dockOverview.setObjectName("dockOverview")
         self.addDockWidget(QtCore.Qt.TopDockWidgetArea, self.dockOverview)
         self.ui.menuTools.addAction(self.dockOverview.actionShow())
         
         #plug in TUview widget
         self.dockTUview = TUview()
-        self.setCentralWidget(self.dockTUview)
+        self.dockTUview.setObjectName("dockTUview")
         self.ui.menuTools.addAction(self.dockTUview.actionShow())
-
+        
         #plug in comment widget
         self.dockComment = CommentDock()
+        self.dockComment.setObjectName("dockComment")
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.dockComment)
         self.ui.menuTools.addAction(self.dockComment.actionShow())
-
+        
+        # check if the last state is valid it will restore
+        if (state.isValid()):
+            self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.dockTUview)
+            self.restoreState(state.toByteArray(), 1)
+        else:
+            self.setCentralWidget(self.dockTUview)
+            
         #add widgets to statusbar
-        #TODO: Decorate Status Bar
         self.statuslabel = QtGui.QLabel()
         self.statuslabel.setFrameStyle(QtGui.QFrame.NoFrame)
         self.ui.statusbar.addWidget(self.statuslabel)
-
+        
         #create operator
         self.operator = Operator()
-
+        
         #Help menu of aboutQt
         self.aboutDialog = AboutEditor()
         self.connect(self.ui.actionAbout, QtCore.SIGNAL("triggered()"), self.aboutDialog.showDialog)
         self.connect(self.ui.actionAboutQT, QtCore.SIGNAL("triggered()"), QtGui.qApp, QtCore.SLOT("aboutQt()"))
-
+        
         # create file action object and file action menu related signals
         self.fileaction = FileAction(self)
         self.connect(self.ui.actionOpen, QtCore.SIGNAL("triggered()"), self.fileaction.openFile)
@@ -92,7 +104,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionSave, QtCore.SIGNAL("triggered()"), self.fileaction.save)
         self.connect(self.ui.actionSaveas, QtCore.SIGNAL("triggered()"), self.fileaction.saveAs)
         self.connect(self.ui.actionExit, QtCore.SIGNAL("triggered()"), QtCore.SLOT("close()"))
-
+        
         # create Find widget and connect signals related to it
         self.findBar = Find()
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.findBar)
@@ -101,29 +113,27 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.findBar, QtCore.SIGNAL("initSearch"), self.operator.initSearch)
         self.connect(self.findBar, QtCore.SIGNAL("searchNext"), self.operator.searchNext)
         self.connect(self.findBar, QtCore.SIGNAL("searchPrevious"), self.operator.searchPrevious)
-
+        
         self.connect(self.findBar, QtCore.SIGNAL("replace"), self.operator.replace)
         self.connect(self.findBar, QtCore.SIGNAL("replaceAll"), self.operator.replaceAll)
-
+        
         # "searchFound" sends container and location to be highlighted.
         self.connect(self.operator, QtCore.SIGNAL("searchResult"), self.dockTUview.highlightSearch)
         self.connect(self.operator, QtCore.SIGNAL("searchResult"), self.dockComment.highlightSearch)
         self.connect(self.operator, QtCore.SIGNAL("generalInfo"), self.showTemporaryMessage)
         # "replaceText" sends text field, start, length, and text to replace.
         self.connect(self.operator, QtCore.SIGNAL("replaceText"), self.dockTUview.replaceText)
-
+        
         # Edit menu action
         self.connect(self.ui.actionUndo, QtCore.SIGNAL("triggered()"), self.undoer)
         self.connect(self.ui.actionRedo, QtCore.SIGNAL("triggered()"), self.redoer)
-
-
+        
         #self.connect(self.ui.actionCut, QtCore.SIGNAL("triggered()"), self.dockComment.ui.txtComment, QtCore.SLOT("cut()"))
         #self.connect(self.ui.actionCopy, QtCore.SIGNAL("triggered()"), self.dockTUview.ui.txtSource, QtCore.SLOT("copy()"))
         self.ui.actionCut.setEnabled(False)
         self.ui.actionCopy.setEnabled(False)
         self.connect(self.dockComment, QtCore.SIGNAL("copyAvailable(bool)"), self.enableCopyPaste)
         self.connect(self.dockTUview, QtCore.SIGNAL("copyAvailable(bool)"), self.enableCopyPaste)
-
 
         self.connect(self.ui.actionCut, QtCore.SIGNAL("triggered()"), self.cutter)
         self.connect(self.ui.actionCopy, QtCore.SIGNAL("triggered()"), self.copier)
@@ -194,12 +204,10 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.statuslabel.setText)
         self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.setOpening)
         self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.operator.getUnits)
-
-
+        
     def enableCopyPaste(self, bool):
         self.ui.actionCopy.setEnabled(bool)
         self.ui.actionCut.setEnabled(bool)
-
 
     def cutter(self):
         object = self.focusWidget()
@@ -272,7 +280,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionFilterFuzzy.setEnabled(True)
         self.ui.actionFilterTranslated.setEnabled(True)
         self.ui.actionFilterUntranslated.setEnabled(True)
-
+    
     def startRecentAction(self):
         action = self.sender()
         if action:
@@ -310,6 +318,10 @@ class MainWindow(QtGui.QMainWindow):
                 
         # remember last geometry
         World.settings.setValue("lastGeometry", QtCore.QVariant(self.geometry()))
+        
+        # remember last state
+        state = self.saveState(1)
+        World.settings.setValue("lastState", QtCore.QVariant(state))
         
     def setTitle(self, title):
         """set the title of program.
