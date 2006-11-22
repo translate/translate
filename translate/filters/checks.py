@@ -365,7 +365,7 @@ class StandardChecker(TranslationChecker):
         return True
     str1 = self.removevariables(str1)
     str2 = self.removevariables(str2)
-    if not (str1.isdigit() or len(str1) < 2) and (str1.strip().lower() == str2.strip().lower()):
+    if not (str1.strip().isdigit() or len(str1) < 2 or decoration.ispurepunctuation(str1.strip())) and (str1.strip().lower() == str2.strip().lower()):
       raise FilterFailure("please translate")
     return True
 

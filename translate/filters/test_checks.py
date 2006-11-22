@@ -479,9 +479,11 @@ def test_unchanged():
     assert checks.passes(stdchecker.unchanged, "&ACRONYM", "&ACRONYM") 
     assert checks.fails(stdchecker.unchanged, r"""_: KDE comment\n
 Unchanged""", r"Unchanged") 
-    # Variable only messages should be ignored
+    # Variable only and variable plus punctuation messages should be ignored
     mozillachecker = checks.MozillaChecker()
     assert checks.passes(mozillachecker.unchanged, "$ProgramName$", "$ProgramName$") 
+    assert checks.passes(mozillachecker.unchanged, "$file$ : $dir$", "$file$ : $dir$") 
+    assert checks.fails(mozillachecker.unchanged, "$file$ in $dir$", "$file$ in $dir$") 
     # Don't translate words should be ignored
     stdchecker = checks.StandardChecker(checks.CheckerConfig(notranslatewords=["Mozilla"]))
     assert checks.passes(stdchecker.unchanged, "Mozilla", "Mozilla") 
