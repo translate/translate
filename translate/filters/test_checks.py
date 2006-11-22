@@ -351,7 +351,7 @@ def test_sentencecount():
     assert checks.passes(stdchecker.sentencecount, "One. Two. Three.", "Een. Twee. Drie.")
     assert checks.fails(stdchecker.sentencecount, "One two three", "Een twee drie.")
     assert checks.fails(stdchecker.sentencecount, "One. Two. Three.", "Een Twee. Drie.")
-    assert checks.passes(stdchecker.sentencecount, "Sentence with i.e. in it.", "Sin met d.w.s. in dit.")
+    assert checks.passes(stdchecker.sentencecount, "Sentence with i.e. in it.", "Sin met d.w.s. in dit.") # bug 178, description item 8
 
 def test_short():
     """tests short messages"""
@@ -475,19 +475,22 @@ def test_unchanged():
     assert checks.fails(stdchecker.unchanged, "&Unchanged", "Un&changed") 
     assert checks.passes(stdchecker.unchanged, "Unchanged", "Changed") 
     assert checks.passes(stdchecker.unchanged, "1234", "1234") 
+    assert checks.passes(stdchecker.unchanged, "2×2", "2×2") # bug 178, description item 14
     assert checks.passes(stdchecker.unchanged, "I", "I") 
-    assert checks.passes(stdchecker.unchanged, "   ", "   ") 
-    assert checks.passes(stdchecker.unchanged, "&ACRONYM", "&ACRONYM") 
+    assert checks.passes(stdchecker.unchanged, "   ", "   ")  # bug 178, description item 5
+    assert checks.passes(stdchecker.unchanged, "???", "???")  # bug 178, description item 15
+    assert checks.passes(stdchecker.unchanged, "&ACRONYM", "&ACRONYM") # bug 178, description item 7
+    assert checks.passes(stdchecker.unchanged, "F1", "F1") # bug 178, description item 20
     assert checks.fails(stdchecker.unchanged, r"""_: KDE comment\n
 Unchanged""", r"Unchanged") 
     # Variable only and variable plus punctuation messages should be ignored
     mozillachecker = checks.MozillaChecker()
     assert checks.passes(mozillachecker.unchanged, "$ProgramName$", "$ProgramName$") 
-    assert checks.passes(mozillachecker.unchanged, "$file$ : $dir$", "$file$ : $dir$") 
+    assert checks.passes(mozillachecker.unchanged, "$file$ : $dir$", "$file$ : $dir$") # bug 178, description item 13
     assert checks.fails(mozillachecker.unchanged, "$file$ in $dir$", "$file$ in $dir$") 
     # Don't translate words should be ignored
     stdchecker = checks.StandardChecker(checks.CheckerConfig(notranslatewords=["Mozilla"]))
-    assert checks.passes(stdchecker.unchanged, "Mozilla", "Mozilla") 
+    assert checks.passes(stdchecker.unchanged, "Mozilla", "Mozilla") # bug 178, description item 10
 
 def test_untranslated():
     """tests untranslated entries"""
