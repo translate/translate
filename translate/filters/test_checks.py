@@ -475,6 +475,8 @@ def test_unchanged():
     assert checks.passes(stdchecker.unchanged, "Unchanged", "Changed") 
     assert checks.passes(stdchecker.unchanged, "1234", "1234") 
     assert checks.passes(stdchecker.unchanged, "I", "I") 
+    assert checks.passes(stdchecker.unchanged, "   ", "   ") 
+    assert checks.passes(stdchecker.unchanged, "&ACRONYM", "&ACRONYM") 
     assert checks.fails(stdchecker.unchanged, r"""_: KDE comment\n
 Unchanged""", r"Unchanged") 
     # Variable only messages should be ignored

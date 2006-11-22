@@ -355,6 +355,10 @@ class StandardChecker(TranslationChecker):
     """checks whether a translation is basically identical to the original string"""
     str1 = self.filteraccelerators(prefilters.removekdecomments(str1))
     str2 = self.filteraccelerators(str2)
+    if len(str1.strip()) == 0:
+      return True
+    if str1.isupper() and str1 == str2:
+      return True
     if self.config.notranslatewords:
       words1 = str1.split()
       if len(words1) == 1 and [word for word in words1 if word in self.config.notranslatewords]:
