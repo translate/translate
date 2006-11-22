@@ -28,6 +28,17 @@ class TestPO2Txt:
         posource = 'msgid "Heading"\nmsgstr "Opskrif"\n\nmsgid "File content"\nmsgstr "Lêerinhoud"\n'
         assert self.po2txt(posource, txttemplate) == "Opskrif\n\nLêerinhoud"
 
+    def test_blank_handling(self):
+        """check that we discard blank messages"""
+        txttemplate = "Heading\n\nBody text"
+        posource = 'msgid "Heading"\nmsgstr "Opskrif"\n\nmsgid "Body text"\nmsgstr ""\n'
+        assert self.po2txt(posource, txttemplate) == "Opskrif\n\nBody text"
+
+    def test_fuzzy_handling(self):
+        """check that we handle fuzzy message correctly"""
+        txttemplate = "Heading\n\nBody text"
+        posource = '#, fuzzy\nmsgid "Heading"\nmsgstr "Opskrif"\n\nmsgid "Body text"\nmsgstr "Lyfteks"\n'
+        assert self.po2txt(posource, txttemplate) == "Heading\n\nLyfteks"
 
 class TestPO2TxtCommand(test_convert.TestConvertCommand, TestPO2Txt):
     """Tests running actual po2txt commands on files"""
@@ -38,4 +49,6 @@ class TestPO2TxtCommand(test_convert.TestConvertCommand, TestPO2Txt):
         """tests getting help"""
         options = test_convert.TestConvertCommand.test_help(self)
         options = self.help_check(options, "-tTEMPLATE, --template=TEMPLATE")
+        options = self.help_check(options, "--fuzzy")
+        options = self.help_check(options, "--nofuzzy")
         options = self.help_check(options, "-wWRAP, --wrap=WRAP", last=True)

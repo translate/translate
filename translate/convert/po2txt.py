@@ -53,7 +53,7 @@ class po2txt:
         txtresult += self.wrapmessage(thepo.target) + "\n" + "\n"
     return txtresult
  
-  def mergefile(self, inputpo, templatetext):
+  def mergefile(self, inputpo, templatetext, includefuzzy):
     """converts a file to .po format"""
     txtresult = templatetext
     # TODO: make a list of blocks of text and translate them individually
@@ -61,12 +61,14 @@ class po2txt:
     for thepo in inputpo.units:
       if thepo.isheader():
         continue
-      msgid = thepo.source
-      msgstr = self.wrapmessage(thepo.target)
-      txtresult = txtresult.replace(msgid, msgstr)
+      if not thepo.isfuzzy() or includefuzzy:
+        msgid = thepo.source
+        msgstr = self.wrapmessage(thepo.target)
+        if msgstr:
+          txtresult = txtresult.replace(msgid, msgstr)
     return txtresult
 
-def converttxt(inputfile, outputfile, templatefile, wrap=None):
+def converttxt(inputfile, outputfile, templatefile, wrap=None, includefuzzy=False):
   """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
   inputpo = po.pofile(inputfile)
   convertor = po2txt(wrap=wrap)
@@ -74,7 +76,7 @@ def converttxt(inputfile, outputfile, templatefile, wrap=None):
     outputtxt = convertor.convertfile(inputpo)
   else:
     templatetext = templatefile.read()
-    outputtxt = convertor.mergefile(inputpo, templatetext)
+    outputtxt = convertor.mergefile(inputpo, templatetext, includefuzzy)
   outputfilepos = outputfile.tell()
   outputfile.write(outputtxt.encode('utf-8'))
   return 1
@@ -90,5 +92,6 @@ def main(argv=None):
     parser.add_option("-w", "--wrap", dest="wrap", default=None, type="int",
                       help="set number of columns to wrap text at", metavar="WRAP")
     parser.passthrough.append("wrap")
+  parser.add_fuzzy_option()
   parser.run(argv)
 
