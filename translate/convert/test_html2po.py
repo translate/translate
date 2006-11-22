@@ -64,6 +64,13 @@ class TestHTML2PO:
         pofile = self.html2po(markup)
         self.compareunit(pofile, 1, "First line.<br>Second line.")
 
+    def test_tag_div(self):
+        """test that we can extract the <div> tag"""
+        self.check_single("<html><head></head><body><div>A paragraph.</div></body></html>", "A paragraph.")
+        markup = "<div>First line.<br>Second line.</div>"
+        pofile = self.html2po(markup)
+        self.compareunit(pofile, 1, "First line.<br>Second line.")
+
     def test_tag_a(self):
         """test that we can extract the <a> tag"""
         self.check_single("<html><head></head><body><p>A paragraph with <a>hyperlink</a>.</p></body></html>", "A paragraph with <a>hyperlink</a>.")
