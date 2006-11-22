@@ -17,14 +17,14 @@ class TestPO2Prop:
         outputprop = convertor.convertfile(inputpo)
         return outputprop
 
-    def merge2prop(self, propsource, posource):
+    def merge2prop(self, propsource, posource, personality="java"):
         """helper that merges po translations to .properties source without requiring files"""
         inputfile = wStringIO.StringIO(posource)
         inputpo = po.pofile(inputfile)
         templatefile = wStringIO.StringIO(propsource)
         #templateprop = properties.propfile(templatefile)
         convertor = po2prop.reprop(templatefile)
-        outputprop = convertor.convertfile(inputpo)
+        outputprop = convertor.convertfile(inputpo, personality=personality)
         print outputprop
         return outputprop
 
@@ -86,6 +86,19 @@ msgstr ""'''
         print propfile
         assert propfile == [propexpected]
 
+    def test_personalities(self):
+        """test that we output correctly for Java and Mozilla style property files.  Mozilla uses Unicode, while Java uses escaped Unicode"""
+        posource = '''#: prop\nmsgid "value"\nmsgstr "ṽḁḽṻḝ"\n'''
+        proptemplate = '''prop  =  value\n'''
+        propexpectedjava = '''prop  =  \\u1E7D\\u1E01\\u1E3D\\u1E7B\\u1E1D\n'''
+        propfile = self.merge2prop(proptemplate, posource)
+        print propfile
+        assert propfile == [propexpectedjava]
+        propexpectedmozilla = '''prop  =  ṽḁḽṻḝ\n'''
+        propfile = self.merge2prop(proptemplate, posource, personality="mozilla")
+        print propfile
+        assert propfile == [propexpectedmozilla]
+
 class TestPO2PropCommand(test_convert.TestConvertCommand, TestPO2Prop):
     """Tests running actual po2prop commands on files"""
     convertmodule = po2prop
@@ -96,5 +109,6 @@ class TestPO2PropCommand(test_convert.TestConvertCommand, TestPO2Prop):
         options = test_convert.TestConvertCommand.test_help(self)
         options = self.help_check(options, "-tTEMPLATE, --template=TEMPLATE")
         options = self.help_check(options, "--fuzzy")
+        options = self.help_check(options, "--personality=TYPE")
         options = self.help_check(options, "--nofuzzy", last=True)
 

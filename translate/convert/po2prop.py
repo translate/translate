@@ -37,7 +37,8 @@ class reprop:
     self.templatefile = templatefile
     self.podict = {}
 
-  def convertfile(self, pofile, includefuzzy=False):
+  def convertfile(self, pofile, personality, includefuzzy=False):
+    self.personality = personality
     self.inmultilinemsgid = 0
     self.inecho = 0
     self.makepodict(pofile, includefuzzy)
@@ -96,7 +97,10 @@ class reprop:
           postr = self.podict[name]
           if isinstance(postr, str):
             postr = postr.decode('utf8')
-          returnline = name+preeqspace+"="+posteqspace+quote.mozillapropertiesencode(postr)+eol
+          if self.personality == "mozilla":
+            returnline = name+preeqspace+"="+posteqspace+quote.mozillapropertiesencode(postr)+eol
+          else:
+            returnline = name+preeqspace+"="+posteqspace+quote.javapropertiesencode(postr)+eol
         else:
           self.inecho = 1
           returnline = line+eol
@@ -104,14 +108,19 @@ class reprop:
       returnline = returnline.encode('utf-8')
     return returnline
 
-def convertprop(inputfile, outputfile, templatefile, includefuzzy=False):
+def convertmozillaprop(inputfile, outputfile, templatefile, includefuzzy=False):
+  """Mozilla specific convertor function"""
+  convertprop(inputfile, outputfile, templatefile, personality="mozilla", includefuzzy=includefuzzy)
+  return 1
+
+def convertprop(inputfile, outputfile, templatefile, personality, includefuzzy=False):
   inputpo = po.pofile(inputfile)
   if templatefile is None:
     raise ValueError("must have template file for properties files")
     # convertor = po2prop()
   else:
     convertor = reprop(templatefile)
-  outputproplines = convertor.convertfile(inputpo, includefuzzy)
+  outputproplines = convertor.convertfile(inputpo, personality, includefuzzy)
   outputfile.writelines(outputproplines)
   return 1
 
@@ -120,7 +129,11 @@ def main(argv=None):
   from translate.convert import convert
   formats = {("po", "properties"): ("properties", convertprop)}
   parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
+  parser.add_option("", "--personality", dest="personality", default="java", type="choice",
+                    choices=["java", "mozilla"],
+                    help="set the output behaviour: java (default), mozilla", metavar="TYPE")
   parser.add_fuzzy_option()
+  parser.passthrough.append("personality")
   parser.run(argv)
 
 if __name__ == '__main__':
