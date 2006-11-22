@@ -628,7 +628,10 @@ class StandardChecker(TranslationChecker):
 
   def sentencecount(self, str1, str2):
     """checks that the number of sentences in both strings match"""
-    return helpers.countsmatch(prefilters.removekdecomments(str1), str2, ".")
+    str1 = prefilters.removekdecomments(str1)
+    str1 = sre.sub("\s((?:\w\.)+)\s", " ", str1) 
+    str2 = sre.sub("\s((?:\w\.)+)\s", " ", str2) 
+    return helpers.countsmatch(str1, str2, ".")
 
   def startcaps(self, str1, str2):
     """checks that the message starts with the correct capitalisation"""
