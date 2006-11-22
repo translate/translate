@@ -165,6 +165,14 @@ class TestHTML2PO:
         self.check_single('''<td valign="middle" width="96%"><font class="headingwhite">South
                   Africa</font></td>''', '''<font class="headingwhite">South Africa</font>''')
 
+    def wtest_nested_tags(self):
+        """check that we can extract items within nested tags"""
+        markup = "<div><p>Extract this</p>And this</div>"
+        pofile = self.html2po(markup)
+        self.countunits(pofile, 2)
+        self.compareunit(pofile, 1, "Extract this")
+        self.compareunit(pofile, 2, "And this")
+
 class TestHTML2POCommand(test_convert.TestConvertCommand, TestHTML2PO):
     """Tests running actual html2po commands on files"""
     convertmodule = html2po
