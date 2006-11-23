@@ -84,11 +84,11 @@ class MainWindow(QtGui.QMainWindow):
             self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.dockTUview)
             self.restoreState(state.toByteArray(), 1)
             if (self.dockOverview.isHidden()):
-                self.dockOverview._actionShow.setText("Show Overview")
+                self.dockOverview._actionShow.setText(self.tr("Show Overview"))
             if (self.dockTUview.isHidden()):
-                self.dockTUview._actionShow.setText("Show Detail")
+                self.dockTUview._actionShow.setText(self.tr("Show Detail"))
             if (self.dockComment.isHidden()):
-                self.dockComment._actionShow.setText("Show Comment")
+                self.dockComment._actionShow.setText(self.tr("Show Comment"))
             
         #add widgets to statusbar
         self.statuslabel = QtGui.QLabel()
