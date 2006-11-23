@@ -59,13 +59,15 @@ class TUview(QtGui.QDockWidget):
         self.highlightRange.format = self.highlightFormat
         
     def closeEvent(self, event):
-        """when close button is click, change caption to "Show Detail"""
-        # FIXME: comment the param and do not use translated strings in comment
+        """
+        set text of action object to 'show Detail' before closing TUview
+        @param QCloseEvent Object: received close event when closing widget
+        """        
+        QtGui.QDockWidget.closeEvent(self, event)
         self._actionShow.setText(self.tr("Show Detail"))
-        # FIXME: you need to call the parents implementation here. Jens
         
     def actionShow(self):
-        # FIXME: comment the return value
+        '''return action object which can handles "shows/hides TUview" '''
         return self._actionShow
         
     def show(self):
@@ -73,7 +75,7 @@ class TUview(QtGui.QDockWidget):
         if self.isHidden():
             self._actionShow.setText(self.tr("Hide Detail"))
         else:
-            self._actionShow.setText(self.tr("Show Detail"))    
+            self._actionShow.setText(self.tr("Show Detail"))
         self.setHidden(not self.isHidden())
 
     def setColor(self):
@@ -91,8 +93,9 @@ class TUview(QtGui.QDockWidget):
         self.ui.fileScrollBar.setMaximum(maximum)
         
     def slotNewUnits(self, units):
-        """slot after new file was loaded"""
-        #FIXME: comment the param
+        """slot after new file was loaded
+        @param units: a list of translation units objects of an opened file
+        """
         self.ui.txtSource.setEnabled(True)
         self.ui.txtTarget.setEnabled(True)
         if not units:
@@ -107,8 +110,10 @@ class TUview(QtGui.QDockWidget):
         self.ui.fileScrollBar.setSliderPosition(0)
     
     def filteredList(self, fList, filter):
-        """Adjust the scrollbar maximum according to length of filtered list."""
-        # FIXME: comment the param
+        """Adjust the scrollbar maximum according to length of filtered list.
+        @param fList: Index list of units visible in the table after filtered
+        @param filter: helper constants for filtering
+        """
         self.indexes = fList
         self.filter = filter
         self.setScrollbarMaximum()
