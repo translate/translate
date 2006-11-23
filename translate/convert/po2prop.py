@@ -110,8 +110,7 @@ class reprop:
 
 def convertmozillaprop(inputfile, outputfile, templatefile, includefuzzy=False):
   """Mozilla specific convertor function"""
-  convertprop(inputfile, outputfile, templatefile, personality="mozilla", includefuzzy=includefuzzy)
-  return 1
+  return convertprop(inputfile, outputfile, templatefile, personality="mozilla", includefuzzy=includefuzzy)
 
 def convertprop(inputfile, outputfile, templatefile, personality, includefuzzy=False):
   inputpo = po.pofile(inputfile)
