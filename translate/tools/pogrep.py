@@ -27,23 +27,25 @@ from translate.misc.multistring import multistring
 import sre
 import locale
 
-class pogrepfilter:
+class GrepFilter:
   def __init__(self, searchstring, searchparts, ignorecase=False, useregexp=False, invertmatch=False, accelchar=None, encoding='utf-8'):
-    """builds a pocheckfilter using the given checker"""
+    """builds a checkfilter using the given checker"""
     if isinstance(searchstring, unicode):
       self.searchstring = searchstring
     else:
       self.searchstring = searchstring.decode(encoding)
     if searchparts:
-      self.searchmsgid = "msgid" in searchparts
-      self.searchmsgstr = "msgstr" in searchparts
-      self.searchcomment = 'comment' in searchparts
-      self.searchsource = 'source' in searchparts
+      # For now we still support the old terminology, except for the old 'source'
+      # which has a new meaning now.
+      self.search_source = ('source' in searchparts) or ('msgid' in searchparts)
+      self.search_target = ('target' in searchparts) or ('msgstr' in searchparts)
+      self.search_notes =  ('notes' in searchparts) or ('comment' in searchparts)
+      self.search_locations = 'locations' in searchparts
     else:
-      self.searchmsgid = True
-      self.searchmsgstr = True
-      self.searchcomment = False
-      self.searchsource = False
+      self.search_source = True
+      self.search_target = True
+      self.search_notes = False
+      self.search_locations = False
     self.ignorecase = ignorecase
     if self.ignorecase:
       self.searchstring = self.searchstring.lower()
@@ -67,43 +69,42 @@ class pogrepfilter:
       found = not found
     return found
 
-  def filterelement(self, thepo):
+  def filterelement(self, unit):
     """runs filters on an element"""
-    if thepo.isheader(): return []
+    if unit.isheader(): return []
 
-    if self.searchmsgid:
-      if isinstance(thepo.source, multistring):
-        strings = thepo.source.strings
+    if self.search_source:
+      if isinstance(unit.source, multistring):
+        strings = unit.source.strings
       else:
-        strings = [thepo.source]
+        strings = [unit.source]
       for string in strings:
         if self.matches(string):
           return True
 
-    if self.searchmsgstr:
-      if isinstance(thepo.target, multistring):
-        strings = thepo.target.strings
+    if self.search_target:
+      if isinstance(unit.target, multistring):
+        strings = unit.target.strings
       else:
-        strings = [thepo.target]
+        strings = [unit.target]
       for string in strings:
         if self.matches(string):
           return True
 
-    if self.searchcomment:
-      if self.matches(" ".join(thepo.othercomments)): return True
-    if self.searchsource:
-      if self.matches(" ".join(thepo.sourcecomments)): return True
-          
+    if self.search_notes:
+      return self.matches(unit.getnotes(origin="translator"))
+    if self.search_locations:
+      return self.matches(" ".join(unit.getlocations()))
     return False
 
-  def filterfile(self, thepofile):
-    """runs filters on a file"""
-    thenewpofile = type(thepofile)()
-    for thepo in thepofile.units:
+  def filterfile(self, thefile):
+    """runs filters on a translation file object"""
+    thenewfile = type(thefile)()
+    for unit in thefile.units:
       # filterelement() returns True when a unit matches.
-      if self.filterelement(thepo):
-        thenewpofile.addunit(thepo)
-    return thenewpofile
+      if self.filterelement(unit):
+        thenewfile.addunit(unit)
+    return thenewfile
 
 class GrepOptionParser(optrecurse.RecursiveOptionParser):
   """a specialized Option Parser for the grep tool..."""
@@ -144,12 +145,12 @@ class GrepOptionParser(optrecurse.RecursiveOptionParser):
     (options, args) = self.parse_args()
     options.inputformats = self.inputformats
     options.outputoptions = self.outputoptions
-    options.checkfilter = pogrepfilter(options.searchstring, options.searchparts, options.ignorecase, options.useregexp, options.invertmatch, options.accelchar, locale.getpreferredencoding())
+    options.checkfilter = GrepFilter(options.searchstring, options.searchparts, options.ignorecase, options.useregexp, options.invertmatch, options.accelchar, locale.getpreferredencoding())
     self.usepsyco(options)
     self.recursiveprocess(options)
 
 def rungrep(inputfile, outputfile, templatefile, checkfilter):
-  """reads in inputfile using po.pofile, filters using pocheckfilter, writes to stdout"""
+  """reads in inputfile, filters using checkfilter, writes to outputfile"""
   fromfile = factory.getobject(inputfile)
   tofile = checkfilter.filterfile(fromfile)
   if tofile.isempty():
@@ -158,11 +159,11 @@ def rungrep(inputfile, outputfile, templatefile, checkfilter):
   return True
 
 def cmdlineparser():
-  formats = {"po":("po", rungrep), "pot":("pot", rungrep), "xliff":("xliff", rungrep), "xlf":("xlf", rungrep), None:("po", rungrep)}
+  formats = {"po":("po", rungrep), "pot":("pot", rungrep), "xliff":("xliff", rungrep), "xlf":("xlf", rungrep), "xlff":("xlff", rungrep), None:("po", rungrep)}
   parser = GrepOptionParser(formats)
   parser.add_option("", "--search", dest="searchparts",
-    action="append", type="choice", choices=["msgid", "msgstr", "comment", "source"],
-    metavar="SEARCHPARTS", help="searches the given parts (msgid, msgstr, comment, source)")
+    action="append", type="choice", choices=["source", "target", "notes", "locations", "msgid", "msgstr", "comment" ],
+    metavar="SEARCHPARTS", help="searches the given parts (source, target, notes and locations)")
   parser.add_option("-I", "--ignore-case", dest="ignorecase",
     action="store_true", default=False, help="ignore case distinctions")
   parser.add_option("-e", "--regexp", dest="useregexp",

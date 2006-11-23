@@ -18,7 +18,7 @@ class TestPOGrep:
         if cmdlineoptions is None:
             cmdlineoptions = []
         options, args = pogrep.cmdlineparser().parse_args(["xxx.po"] + cmdlineoptions)
-        grepfilter = pogrep.pogrepfilter(searchstring, options.searchparts, options.ignorecase, options.useregexp, options.invertmatch, options.accelchar)
+        grepfilter = pogrep.GrepFilter(searchstring, options.searchparts, options.ignorecase, options.useregexp, options.invertmatch, options.accelchar)
         tofile = grepfilter.filterfile(self.poparse(posource))
         print str(tofile)
         return str(tofile)
@@ -39,12 +39,12 @@ class TestPOGrep:
         poresult = self.pogrep(posource, "test", ["--search=msgstr"])
         assert poresult == ""
 
-    def test_simplegrep_source(self):
-        """grep for a string in the source"""
+    def test_simplegrep_locations(self):
+        """grep for a string in the location comments"""
         posource = '#: test.c\nmsgid "test"\nmsgstr "rest"\n'
-        poresult = self.pogrep(posource, "test.c", ["--search=source"])
+        poresult = self.pogrep(posource, "test.c", ["--search=locations"])
         assert poresult == posource
-        poresult = self.pogrep(posource, "rest.c", ["--search=source"])
+        poresult = self.pogrep(posource, "rest.c", ["--search=locations"])
         assert poresult == ""
 
     def test_simplegrep_comments(self):
@@ -109,7 +109,7 @@ class TestXLiffGrep:
         if cmdlineoptions is None:
             cmdlineoptions = []
         options, args = pogrep.cmdlineparser().parse_args(["xxx.xliff"] + cmdlineoptions)
-        grepfilter = pogrep.pogrepfilter(searchstring, options.searchparts, options.ignorecase, options.useregexp, options.invertmatch, options.accelchar)
+        grepfilter = pogrep.GrepFilter(searchstring, options.searchparts, options.ignorecase, options.useregexp, options.invertmatch, options.accelchar)
         tofile = grepfilter.filterfile(self.xliff_parse(xliff_text))
         return str(tofile)
 
