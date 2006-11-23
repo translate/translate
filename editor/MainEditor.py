@@ -78,11 +78,17 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.menuTools.addAction(self.dockComment.actionShow())
         
         # check if the last state is valid it will restore
-        if (state.isValid()):
+        if (not state.isValid()):
+            self.setCentralWidget(self.dockTUview)
+        else:
             self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.dockTUview)
             self.restoreState(state.toByteArray(), 1)
-        else:
-            self.setCentralWidget(self.dockTUview)
+            if (self.dockOverview.isHidden()):
+                self.dockOverview._actionShow.setText("Show Overview")
+            if (self.dockTUview.isHidden()):
+                self.dockTUview._actionShow.setText("Show Detail")
+            if (self.dockComment.isHidden()):
+                self.dockComment._actionShow.setText("Show Comment")
             
         #add widgets to statusbar
         self.statuslabel = QtGui.QLabel()
