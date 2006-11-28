@@ -48,7 +48,6 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.setupUi(self)
         self.ui.recentaction = []
         self.setWindowTitle(World.settingOrg + ' ' + World.settingApp + ' ' + World.settingVer)
-        
         self.createRecentAction()
         self.setObjectName("mainwindows")
         
@@ -64,32 +63,19 @@ class MainWindow(QtGui.QMainWindow):
         self.dockOverview = OverviewDock()
         self.dockOverview.setObjectName("dockOverview")
         self.addDockWidget(QtCore.Qt.TopDockWidgetArea, self.dockOverview)
-        self.ui.menuTools.addAction(self.dockOverview.actionShow())
+        self.ui.menuView.addAction(self.dockOverview.toggleViewAction())
         
         #plug in TUview widget
         self.dockTUview = TUview()
         self.dockTUview.setObjectName("dockTUview")
-        self.ui.menuTools.addAction(self.dockTUview.actionShow())
+        self.ui.menuView.addAction(self.dockTUview.toggleViewAction())
         
         #plug in comment widget
         self.dockComment = CommentDock()
         self.dockComment.setObjectName("dockComment")
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.dockComment)
-        self.ui.menuTools.addAction(self.dockComment.actionShow())
-        
-        # check if the last state is valid it will restore
-        if (not state.isValid()):
-            self.setCentralWidget(self.dockTUview)
-        else:
-            self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.dockTUview)
-            self.restoreState(state.toByteArray(), 1)
-            if (self.dockOverview.isHidden()):
-                self.dockOverview._actionShow.setText(self.tr("Show Overview"))
-            if (self.dockTUview.isHidden()):
-                self.dockTUview._actionShow.setText(self.tr("Show Detail"))
-            if (self.dockComment.isHidden()):
-                self.dockComment._actionShow.setText(self.tr("Show Comment"))
-            
+        self.ui.menuView.addAction(self.dockComment.toggleViewAction())
+         
         #add widgets to statusbar
         self.statuslabel = QtGui.QLabel()
         self.statuslabel.setFrameStyle(QtGui.QFrame.NoFrame)
@@ -113,6 +99,8 @@ class MainWindow(QtGui.QMainWindow):
         
         # create Find widget and connect signals related to it
         self.findBar = Find()
+        self.findBar.setObjectName("findBar")
+        self.findBar.setHidden(True)
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.findBar)
         self.connect(self.ui.actionFind, QtCore.SIGNAL("triggered()"), self.findBar.showFind)
         self.connect(self.ui.actionReplace, QtCore.SIGNAL("triggered()"), self.findBar.showReplace)
@@ -133,6 +121,8 @@ class MainWindow(QtGui.QMainWindow):
         # Edit menu action
         self.connect(self.ui.actionUndo, QtCore.SIGNAL("triggered()"), self.undoer)
         self.connect(self.ui.actionRedo, QtCore.SIGNAL("triggered()"), self.redoer)
+        self.connect(self.ui.actionStandard_Tools, QtCore.SIGNAL("triggered()"), self.showStandardTools)
+        self.connect(self.ui.actionNavigation_Tools, QtCore.SIGNAL("triggered()"), self.showNavigationTools)
         
         #self.connect(self.ui.actionCut, QtCore.SIGNAL("triggered()"), self.dockComment.ui.txtComment, QtCore.SLOT("cut()"))
         #self.connect(self.ui.actionCopy, QtCore.SIGNAL("triggered()"), self.dockTUview.ui.txtSource, QtCore.SLOT("copy()"))
@@ -210,6 +200,16 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.statuslabel.setText)
         self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.setOpening)
         self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.operator.getUnits)
+            
+        # check if the last state is valid it will restore
+        if (not state.isValid()):
+            self.setCentralWidget(self.dockTUview)
+        else:
+            self.restoreState(state.toByteArray(), 1)
+            
+        # toggle standard and navigation tools actions according to standard and navigation toolbar status
+        self.ui.actionStandard_Tools.setChecked(not self.ui.toolStandard.isHidden())
+        self.ui.actionNavigation_Tools.setChecked(not self.ui.toolNavigation.isHidden())
         
     def enableCopyPaste(self, bool):
         self.ui.actionCopy.setEnabled(bool)
@@ -320,6 +320,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def closeEvent(self, event):
         # FIXME: comment the param
+        QtGui.QMainWindow.closeEvent(self, event)
         if self.operator.modified():
             if self.fileaction.aboutToClose(self):
                 event.accept()
@@ -363,7 +364,18 @@ class MainWindow(QtGui.QMainWindow):
         
     def showTemporaryMessage(self, text):
         self.ui.statusbar.showMessage(text, 3000)
-
+        
+    def showStandardTools(self):
+        self.ui.toolStandard.setHidden(not self.ui.toolStandard.isHidden())
+        
+    def showNavigationTools(self):
+        self.ui.toolNavigation.setHidden(not self.ui.toolNavigation.isHidden())
+        
+    def contextMenuEvent(self, event):
+        QtGui.QMainWindow.contextMenuEvent(self, event)
+        self.ui.actionStandard_Tools.setChecked(not self.ui.toolStandard.isHidden())
+        self.ui.actionNavigation_Tools.setChecked(not self.ui.toolNavigation.isHidden())
+    
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     editor = MainWindow()

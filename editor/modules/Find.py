@@ -25,64 +25,66 @@
 
 import sys
 from PyQt4 import QtCore, QtGui
-from ui.Ui_Find import Ui_Form
+from ui.Ui_Find import Ui_frmFind
 import modules.World as World
 
 class Find(QtGui.QDockWidget):
     # FIXME: comment this and list the signals
-
     def __init__(self):
-        # FIXME: change this to lazy init so that the startup is faster
-        QtGui.QDockWidget.__init__(self)        
-        self.form = QtGui.QWidget(self)             
-        self.ui = Ui_Form()
-        self.ui.setupUi(self.form)  
-        self.setWidget(self.form)        
-        self.setFeatures(QtGui.QDockWidget.DockWidgetClosable)        
-        self.matchcase = False
-        self.forward = True        
-        self.setVisible(False)
+        QtGui.QDockWidget.__init__(self)
+        self.setWindowTitle(self.tr("Find"))
+        self.ui = None
         
-        self.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
+    def initUI(self):
+        if (not self.ui):
+            self.form = QtGui.QWidget(self)
+            self.ui = Ui_frmFind()
+            self.ui.setupUi(self.form)
+            self.setWidget(self.form)
+            self.setFeatures(QtGui.QDockWidget.DockWidgetClosable)
+            self.matchcase = False
+            self.forward = True
+            self.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
+            
+            # create action for show/hide
+            self._actionShow = QtGui.QAction(self)
+            self._actionShow.setObjectName("actionShowOverview")
+            self.connect(self._actionShow, QtCore.SIGNAL("triggered()"), self.show)
+            self.connect(self.ui.findNext, QtCore.SIGNAL("clicked()"), self.findNext)
+            self.connect(self.ui.findPrevious, QtCore.SIGNAL("clicked()"), self.findPrevious)
+            self.connect(self.ui.replace, QtCore.SIGNAL("clicked()"), self.replace)
+            self.connect(self.ui.replaceAll, QtCore.SIGNAL("clicked()"), self.replaceAll)
+            self.connect(self.ui.insource, QtCore.SIGNAL("stateChanged(int)"), self.toggleSeachInSource)
+            self.connect(self.ui.intarget, QtCore.SIGNAL("stateChanged(int)"), self.toggleSearchInTarget)
+            self.connect(self.ui.incomment, QtCore.SIGNAL("stateChanged(int)"), self.toggleSeachInComment)
+            self.connect(self.ui.matchcase, QtCore.SIGNAL("stateChanged(int)"), self.toggleMatchCase)
+       
+            self.searchinsource = []
+            self.searchintarget = []
+            self.searchincomment = []
+            self.ui.findNext.setEnabled(False)
+            self.ui.findPrevious.setEnabled(False)
+            self.ui.insource.setChecked(True)
         
-        # create action for show/hide
-        self._actionShow = QtGui.QAction(self)
-        self._actionShow.setObjectName("actionShowOverview")
-        self.connect(self._actionShow, QtCore.SIGNAL("triggered()"), self.show)
-        self.connect(self.ui.findNext, QtCore.SIGNAL("clicked()"), self.findNext)
-        self.connect(self.ui.findPrevious, QtCore.SIGNAL("clicked()"), self.findPrevious)
-        self.connect(self.ui.replace, QtCore.SIGNAL("clicked()"), self.replace)
-        self.connect(self.ui.replaceAll, QtCore.SIGNAL("clicked()"), self.replaceAll)
-        self.connect(self.ui.insource, QtCore.SIGNAL("stateChanged(int)"), self.toggleSeachInSource)
-        self.connect(self.ui.intarget, QtCore.SIGNAL("stateChanged(int)"), self.toggleSearchInTarget)
-        self.connect(self.ui.incomment, QtCore.SIGNAL("stateChanged(int)"), self.toggleSeachInComment)
-        self.connect(self.ui.matchcase, QtCore.SIGNAL("stateChanged(int)"), self.toggleMatchCase)   
-   
-        self.searchinsource = []
-        self.searchintarget = []
-        self.searchincomment = []
-        self.ui.findNext.setEnabled(False)
-        self.ui.findPrevious.setEnabled(False)
-        self.ui.insource.setChecked(True)
+        self.ui.lineEdit.setEnabled(True)
+        self.ui.lineEdit.setFocus()
         
-    def actionShow(self):  
-        return self._actionShow
-        
-    def show(self):
-        self.setHidden(not self.isHidden())
-    
-    def keyReleaseEvent(self, event):                
+    def keyReleaseEvent(self, event):
         if (self.ui.lineEdit.text() != ''):
             self.ui.findNext.setEnabled(True)
-            self.ui.findPrevious.setEnabled(True)            
+            self.ui.findPrevious.setEnabled(True)
         else:
             self.ui.findNext.setEnabled(False)
-            self.ui.findPrevious.setEnabled(False)          
+            self.ui.findPrevious.setEnabled(False)
         
-        if self.ui.lineEdit.isModified():        
+        if self.ui.lineEdit.isModified():
             self.initSearch()
             self.emit(QtCore.SIGNAL("searchNext"))
             self.ui.lineEdit.setModified(False)
+        
+        if self.ui.lineEdit_2.isModified():
+            self.ui.replace.setEnabled(True)
+            self.ui.replaceAll.setEnabled(True)
     
     def initSearch(self):
         searchString = self.ui.lineEdit.text()
@@ -90,7 +92,7 @@ class Find(QtGui.QDockWidget):
         if (filter):
             self.emit(QtCore.SIGNAL("initSearch"), searchString, filter, self.matchcase)
     
-    def toggleSeachInSource(self):        
+    def toggleSeachInSource(self):
         if (not self.checkBoxCheckedStatus()):
             self.ui.insource.setChecked(True)
             return
@@ -128,7 +130,7 @@ class Find(QtGui.QDockWidget):
         self.initSearch()
     
     def checkBoxCheckedStatus(self):
-        # FIXME: comment this there is a return value
+        '''It return False if there is no check box checked otherwise it will return True'''
         if ((not self.ui.insource.isChecked()) and \
             (not self.ui.intarget.isChecked()) and \
             (not self.ui.incomment.isChecked())):
@@ -138,30 +140,34 @@ class Find(QtGui.QDockWidget):
             return False
         else:
             return True
-    
+            
     def showFind(self):
-        self.ui.lineEdit.setEnabled(True)
-        self.ui.lineEdit_2.setEnabled(False)
-        self.ui.replace.setEnabled(False)
-        self.ui.replaceAll.setEnabled(False)
-        self.ui.lineEdit.setFocus()
+        self.initUI()
         self.ui.insource.setEnabled(True)
         self.ui.insource.setChecked(True)
         self.ui.intarget.setChecked(False)
-        if (not self.isVisible()):
-            self.show()
-    
+        self.ui.lineEdit_2.setHidden(True)
+        self.ui.lblReplace.setHidden(True)
+        self.ui.replace.setHidden(True)
+        self.ui.replaceAll.setHidden(True)
+        self.resize(self.width(), 15)
+        self.setWindowTitle(self.tr("Find"))
+        self.show()
+        
     def showReplace(self):
-        self.ui.lineEdit.setEnabled(True)
+        self.initUI()
         self.ui.lineEdit_2.setEnabled(True)
-        self.ui.replace.setEnabled(True)
-        self.ui.replaceAll.setEnabled(True)
-        self.ui.lineEdit.setFocus()
+        self.ui.replace.setEnabled(False)
+        self.ui.replaceAll.setEnabled(False)
+        self.ui.lineEdit_2.setHidden(False)
+        self.ui.lblReplace.setHidden(False)
+        self.ui.replace.setHidden(False)
+        self.ui.replaceAll.setHidden(False)
         self.ui.intarget.setChecked(True)
         self.ui.insource.setChecked(False)
         self.ui.insource.setEnabled(False)
-        if (not self.isVisible()):
-            self.show()
+        self.setWindowTitle(self.tr("Find-Replace"))
+        self.show()
 
     def findNext(self):
         self.emit(QtCore.SIGNAL("searchNext"))
@@ -179,7 +185,11 @@ class Find(QtGui.QDockWidget):
         self.emit(QtCore.SIGNAL("replaceAll"), self.ui.lineEdit_2.text())
         self.ui.lineEdit_2.setFocus()
     
-    
+    def showEvent(self, event):
+        QtGui.QDockWidget.showEvent(self, event)
+        if (not self.ui):
+            self.showFind()
+        
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     Form = Find()

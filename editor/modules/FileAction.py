@@ -27,6 +27,11 @@ import sys, os
 from modules import World
 
 class FileAction(QtCore.QObject):
+    """
+    Code for the actions in File menu.
+    
+    @signal fileName(string) emitted when a new file was given by the user
+    """
     # FIXME: comment this and list the signals
 
     def __init__(self, parent):
@@ -39,40 +44,39 @@ class FileAction(QtCore.QObject):
         self.parentWidget = parent
         self.fileName = None
         self.fileExtension = ""
-        self.fileDescription = ""        
+        self.fileDescription = ""
         self.MaxRecentHistory = 10
         
-    def openFile(self):    
+    def openFile(self):        
         #TODO: open one or more existing files selected
         self.fileName = QtGui.QFileDialog.getOpenFileName(self.parentWidget, self.tr("Open File"),
                         QtCore.QDir.currentPath(),
-                        self.tr("Supported Files (*.po *.pot *.xliff *.xlf);;All Files(*.*)"))
+                        self.tr("PO Files (*.po *.pot);;XLIFF Files (*.xliff *.xlf);;All Supported Files (*.po *.pot *.xliff *.xlf);;All Files (*.*)"))
                         #self.tr("Po Files (*.po);; XLIFF Files (*.xliff *.xlf);;Po Templates (*.pot)"))
-
+        
         if not self.fileName.isEmpty():
             self.emitFileOpened()
             return True
         else:
-            return False            
+            return False
 
-    def save(self):        
+    def save(self):
         if not self.fileName.isEmpty():
-            self.emitFileName(self.fileName)            
+            self.emitFileName(self.fileName)
 
-    def saveAs(self):      
+    def saveAs(self):
         # TODO: think about export in different formats
         labelSaveAs = self.tr("Save As")
-        labelAllFiles = self.tr("All Files")       
+        labelAllFiles = self.tr("All Files")
         fileDialog = QtGui.QFileDialog(self.parentWidget, labelSaveAs, QtCore.QDir.homePath(), self.fileDescription + " (*" + self.fileExtension + ");;" + labelAllFiles + " (*.*)")
 
         fileDialog.setHistory(World.settings.value("SaveAsHistory").toStringList())
-        fileDialog.setDirectory(QtCore.QDir(World.settings.value("SaveAsDirectory").toString()))       
-                
+        fileDialog.setDirectory(QtCore.QDir(World.settings.value("SaveAsDirectory").toString()))
         fileDialog.setLabelText ( QtGui.QFileDialog.Accept, labelSaveAs)
         fileDialog.setAcceptMode(QtGui.QFileDialog.AcceptSave)
         fileDialog.setConfirmOverwrite(True)
         
-        # perform save as only when there is filename        
+        # perform save as only when there is filename
         if (fileDialog.exec_()):
             files = fileDialog.selectedFiles()
             if (not files.isEmpty()):
@@ -83,19 +87,15 @@ class FileAction(QtCore.QObject):
                 self.emitFileName(fileForSave)
                 history = fileDialog.history()
                 newHistory = QtCore.QStringList()
-                while (not history.isEmpty() and newHistory.count() < self.MaxRecentHistory):       
+                while (not history.isEmpty() and newHistory.count() < self.MaxRecentHistory):
                     newHistory.append(history.first())
-                    history.removeAll(history.first())                    
+                    history.removeAll(history.first())
                 World.settings.setValue("SaveAsHistory", QtCore.QVariant(newHistory))
                 World.settings.setValue("SaveAsDirectory", QtCore.QVariant(fileDialog.directory().path()))
-            # FIXME: add a return value here. Jens
             else:
                 QtGui.QMessageBox.information(self.parentWidget, self.tr("Information") , self.tr("Please specify the filename to save to"))
                 self.saveAs()
-        
-        
-##
-
+                
     def aboutToClose(self, main):
         """Action before closing the program when file has modified"""
         ret = QtGui.QMessageBox.question(main, self.tr("File Modified"),

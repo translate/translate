@@ -34,14 +34,8 @@ class OverviewDock(QtGui.QDockWidget):
         self.setWindowTitle(self.tr("Overview"))
         self.form = QtGui.QWidget(self)
         self.ui = Ui_Form()
-        self.ui.setupUi(self.form)        
+        self.ui.setupUi(self.form)
         self.setWidget(self.form)
-        
-        # create action for show/hide
-        self._actionShow = QtGui.QAction(self)
-        self._actionShow.setObjectName("actionShowOverview")        
-        self._actionShow.setText(self.tr("Hide Overview"))
-        self.connect(self._actionShow, QtCore.SIGNAL("triggered()"), self._show)
         
         # set up table appearance and behavior
         self.headerLabels = [self.tr("Index"), self.tr("Source"), self.tr("Target"), self.tr("Status")]
@@ -55,7 +49,7 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.tableOverview.resizeColumnToContents(3)
         self.ui.tableOverview.horizontalHeader().setResizeMode(1, QtGui.QHeaderView.Stretch)
         self.ui.tableOverview.horizontalHeader().setResizeMode(2, QtGui.QHeaderView.Stretch)
-        self.ui.tableOverview.horizontalHeader().setHighlightSections(False)        
+        self.ui.tableOverview.horizontalHeader().setHighlightSections(False)
         self.ui.tableOverview.verticalHeader().hide()
         
         self.headerFont = QtGui.QFont('Sans Serif', 10)
@@ -75,16 +69,13 @@ class OverviewDock(QtGui.QDockWidget):
         self.connect(self.ui.tableOverview, QtCore.SIGNAL("itemSelectionChanged()"), self._emitCurrentIndex)
         #self.connect(self.ui.tableOverview, QtCore.SIGNAL("cellDoubleClicked(int, int)"), self.emitTargetChanged)
 
-    def actionShow(self):
-        return self._actionShow
-
-    def _show(self):
-        """show/hide the widget and set the label."""
-        if self.isHidden():
-            self._actionShow.setText(self.tr("Hide Overview"))
-        else:
-            self._actionShow.setText(self.tr("Show Overview"))    
-        self.setHidden(not self.isHidden())    
+    def closeEvent(self, event):
+        """
+        set text of action object to 'show Overview' before closing Overview
+        @param QCloseEvent Object: received close event when closing widget
+        """        
+        QtGui.QDockWidget.closeEvent(self, event)
+        self.toggleViewAction().setChecked(False)
 
     def slotNewUnits(self, units, unitsStatus):
         """initialize the list, clear and fill with units.

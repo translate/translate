@@ -35,16 +35,11 @@ class TUview(QtGui.QDockWidget):
         self.ui = Ui_TUview()
         self.ui.setupUi(self.form)
         self.setWidget(self.form)
+        self.setFeatures(QtGui.QDockWidget.DockWidgetClosable)
         self.layout = QtGui.QTextLayout ()
         self.applySettings()
         
-        # create action for show/hide
-        self._actionShow = QtGui.QAction(self)
-        self._actionShow.setObjectName("actionShowDetail")
-        self._actionShow.setText(self.tr("Hide Detail"))
-        
         self.indexToUpdate = None
-        self.connect(self._actionShow, QtCore.SIGNAL("triggered()"), self.show)
         self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.setReadyForSave)
         self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
         self.connect(self.ui.txtSource, QtCore.SIGNAL("copyAvailable(bool)"), self.copyAvailable)
@@ -64,20 +59,8 @@ class TUview(QtGui.QDockWidget):
         @param QCloseEvent Object: received close event when closing widget
         """        
         QtGui.QDockWidget.closeEvent(self, event)
-        self._actionShow.setText(self.tr("Show Detail"))
+        self.toggleViewAction().setChecked(False)
         
-    def actionShow(self):
-        '''return action object which can handles "shows/hides TUview" '''
-        return self._actionShow
-        
-    def show(self):
-        """toggle hide/show detail caption"""
-        if self.isHidden():
-            self._actionShow.setText(self.tr("Hide Detail"))
-        else:
-            self._actionShow.setText(self.tr("Show Detail"))
-        self.setHidden(not self.isHidden())
-
     def setColor(self):
         """set color to txtSource and txtTarget"""
         color = QtGui.QColorDialog.getColor(QtCore.Qt.red, self)

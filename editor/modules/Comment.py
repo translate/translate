@@ -36,16 +36,11 @@ class CommentDock(QtGui.QDockWidget):
         self.setWindowTitle(self.tr("Comment"))
         self.form = QtGui.QWidget(self)
         self.ui = Ui_frmComment()
-        self.ui.setupUi(self.form)        
+        self.ui.setupUi(self.form)
         self.setWidget(self.form)
         self.layout = QtGui.QTextLayout ()
         self.applySettings()
 
-        # create action for show/hide
-        self._actionShow = QtGui.QAction(self)
-        self._actionShow.setObjectName("actionShowComment")
-        self._actionShow.setText(self.tr("Hide Comment"))
-        self.connect(self._actionShow, QtCore.SIGNAL("triggered()"), self.show)
         self.connect(self.ui.txtComment, QtCore.SIGNAL("textChanged ()"), self.setReadyForSave)
         self.connect(self.ui.txtComment, QtCore.SIGNAL("copyAvailable(bool)"), self._copyAvailable)
 
@@ -58,20 +53,12 @@ class CommentDock(QtGui.QDockWidget):
         self.highlightRange.format = self.highlightFormat
 
     def closeEvent(self, event):
-        # FIXME: comment this
-        self._actionShow.setText(self.tr("Show Comment"))
-        # FIXME: you need to call the parents implementation here. Jens
-
-    def actionShow(self):
-        # FIXME: comment this there is a return value
-        return self._actionShow
-
-    def show(self):
-        if self.isHidden():
-            self._actionShow.setText(self.tr("Hide Comment"))
-        else:
-            self._actionShow.setText(self.tr("Show Comment"))
-        self.setHidden(not self.isHidden())
+        """
+        set text of action object to 'show Comment' before closing Comment View
+        @param QCloseEvent Object: received close event when closing widget
+        """        
+        QtGui.QDockWidget.closeEvent(self, event)
+        self.toggleViewAction().setChecked(False)
 
     def updateView(self, currentUnit):
         if (currentUnit):
@@ -81,8 +68,7 @@ class CommentDock(QtGui.QDockWidget):
         else:
             self.ui.txtComment.clear()
             self.ui.txtComment.setEnabled(False)
-
-    
+            
     def checkModified(self):
         if self.ui.txtComment.document().isModified():
             self.emit(QtCore.SIGNAL("commentChanged"), self.ui.txtComment.toPlainText())
@@ -127,8 +113,7 @@ class CommentDock(QtGui.QDockWidget):
 
     def _copyAvailable(self, bool):
         self.emit(QtCore.SIGNAL("copyAvailable(bool)"), bool)
-
-
+        
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     comment = CommentDock()
