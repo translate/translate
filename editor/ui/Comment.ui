@@ -12,15 +12,26 @@
     <height>395</height>
    </rect>
   </property>
+  <property name="sizePolicy" >
+   <sizepolicy>
+    <hsizetype>3</hsizetype>
+    <vsizetype>3</vsizetype>
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="contextMenuPolicy" >
+   <enum>Qt::DefaultContextMenu</enum>
+  </property>
   <property name="windowTitle" >
    <string>Comments</string>
   </property>
   <layout class="QGridLayout" >
    <property name="margin" >
-    <number>9</number>
+    <number>1</number>
    </property>
    <property name="spacing" >
-    <number>6</number>
+    <number>1</number>
    </property>
    <item row="0" column="0" >
     <widget class="QTextEdit" name="txtComment" >

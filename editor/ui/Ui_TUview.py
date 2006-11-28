@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Thu Oct  5 14:55:32 2006
+# Created: Tue Nov 28 09:58:59 2006
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -15,13 +15,19 @@ class Ui_TUview(object):
         TUview.setObjectName("TUview")
         TUview.setEnabled(True)
         TUview.resize(QtCore.QSize(QtCore.QRect(0,0,370,283).size()).expandedTo(TUview.minimumSizeHint()))
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(3),QtGui.QSizePolicy.Policy(3))
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(TUview.sizePolicy().hasHeightForWidth())
+        TUview.setSizePolicy(sizePolicy)
         TUview.setMinimumSize(QtCore.QSize(0,0))
         TUview.setFocusPolicy(QtCore.Qt.StrongFocus)
         TUview.setAutoFillBackground(True)
 
         self.hboxlayout = QtGui.QHBoxLayout(TUview)
-        self.hboxlayout.setMargin(2)
-        self.hboxlayout.setSpacing(6)
+        self.hboxlayout.setMargin(1)
+        self.hboxlayout.setSpacing(1)
         self.hboxlayout.setObjectName("hboxlayout")
 
         self.splitter = QtGui.QSplitter(TUview)
@@ -115,3 +121,12 @@ class Ui_TUview(object):
         TUview.setWindowTitle(self.tr("Ui_TUview"))
         self.splitter.setToolTip(self.tr("Click to change position"))
         self.fileScrollBar.setToolTip(self.tr("Navigate in your file"))
+
+
+if __name__ == "__main__":
+    app = QtGui.QApplication(sys.argv)
+    TUview = QtGui.QWidget()
+    ui = Ui_TUview()
+    ui.setupUi(TUview)
+    TUview.show()
+    sys.exit(app.exec_())

@@ -2,8 +2,8 @@
  <author></author>
  <comment></comment>
  <exportmacro></exportmacro>
- <class>Form</class>
- <widget class="QWidget" name="Form" >
+ <class>frmFind</class>
+ <widget class="QWidget" name="frmFind" >
   <property name="enabled" >
    <bool>true</bool>
   </property>
@@ -11,14 +11,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
-    <height>70</height>
+    <width>767</width>
+    <height>81</height>
    </rect>
   </property>
   <property name="sizePolicy" >
    <sizepolicy>
     <hsizetype>5</hsizetype>
-    <vsizetype>1</vsizetype>
+    <vsizetype>0</vsizetype>
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -26,48 +26,25 @@
   <property name="minimumSize" >
    <size>
     <width>600</width>
-    <height>70</height>
+    <height>20</height>
    </size>
   </property>
   <property name="contextMenuPolicy" >
    <enum>Qt::DefaultContextMenu</enum>
   </property>
   <property name="windowTitle" >
-   <string/>
+   <string>Find &amp; Replace</string>
+  </property>
+  <property name="autoFillBackground" >
+   <bool>true</bool>
   </property>
   <layout class="QGridLayout" >
    <property name="margin" >
-    <number>2</number>
+    <number>1</number>
    </property>
    <property name="spacing" >
-    <number>6</number>
+    <number>1</number>
    </property>
-   <item row="1" column="1" >
-    <widget class="QLineEdit" name="lineEdit_2" >
-     <property name="enabled" >
-      <bool>false</bool>
-     </property>
-     <property name="minimumSize" >
-      <size>
-       <width>0</width>
-       <height>26</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1" >
-    <widget class="QLineEdit" name="lineEdit" >
-     <property name="enabled" >
-      <bool>false</bool>
-     </property>
-     <property name="minimumSize" >
-      <size>
-       <width>0</width>
-       <height>26</height>
-      </size>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="0" >
     <widget class="QLabel" name="lblReplace" >
      <property name="sizeIncrement" >
@@ -81,23 +58,18 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="0" >
-    <widget class="QLabel" name="lblFind" >
-     <property name="sizeIncrement" >
-      <size>
-       <width>0</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="text" >
-      <string>Search for:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2" >
-    <widget class="QPushButton" name="findNext" >
+   <item row="1" column="3" >
+    <widget class="QPushButton" name="replaceAll" >
      <property name="enabled" >
       <bool>false</bool>
+     </property>
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>0</hsizetype>
+       <vsizetype>0</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
      <property name="font" >
       <font>
@@ -110,11 +82,8 @@
        <strikeout>false</strikeout>
       </font>
      </property>
-     <property name="layoutDirection" >
-      <enum>Qt::LeftToRight</enum>
-     </property>
      <property name="text" >
-      <string>&amp;Next</string>
+      <string>Replace &amp;All</string>
      </property>
      <property name="icon" >
       <iconset/>
@@ -134,6 +103,14 @@
     <widget class="QPushButton" name="replace" >
      <property name="enabled" >
       <bool>false</bool>
+     </property>
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>0</hsizetype>
+       <vsizetype>0</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
      <property name="font" >
       <font>
@@ -155,67 +132,40 @@
      <property name="icon" >
       <iconset/>
      </property>
+     <property name="autoDefault" >
+      <bool>true</bool>
+     </property>
+     <property name="default" >
+      <bool>true</bool>
+     </property>
      <property name="flat" >
       <bool>false</bool>
      </property>
     </widget>
    </item>
-   <item row="1" column="3" >
-    <widget class="QPushButton" name="replaceAll" >
+   <item row="1" column="1" >
+    <widget class="QLineEdit" name="lineEdit_2" >
      <property name="enabled" >
       <bool>false</bool>
      </property>
-     <property name="font" >
-      <font>
-       <family>Sans Serif</family>
-       <pointsize>9</pointsize>
-       <weight>50</weight>
-       <italic>false</italic>
-       <bold>false</bold>
-       <underline>false</underline>
-       <strikeout>false</strikeout>
-      </font>
-     </property>
-     <property name="text" >
-      <string>Replace &amp;All</string>
-     </property>
-     <property name="icon" >
-      <iconset/>
-     </property>
-     <property name="flat" >
-      <bool>false</bool>
+     <property name="minimumSize" >
+      <size>
+       <width>0</width>
+       <height>26</height>
+      </size>
      </property>
     </widget>
    </item>
-   <item row="0" column="3" >
-    <widget class="QPushButton" name="findPrevious" >
-     <property name="enabled" >
-      <bool>false</bool>
-     </property>
-     <property name="font" >
-      <font>
-       <family>Sans Serif</family>
-       <pointsize>9</pointsize>
-       <weight>50</weight>
-       <italic>false</italic>
-       <bold>false</bold>
-       <underline>false</underline>
-       <strikeout>false</strikeout>
-      </font>
-     </property>
-     <property name="text" >
-      <string>&amp;Previous</string>
-     </property>
-     <property name="icon" >
-      <iconset/>
-     </property>
-     <property name="flat" >
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item rowspan="2" row="0" column="4" >
+   <item row="0" column="4" >
     <widget class="QGroupBox" name="groupBox" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>0</hsizetype>
+       <vsizetype>0</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="font" >
       <font>
        <family>Sans Serif</family>
@@ -230,38 +180,14 @@
      <property name="title" >
       <string/>
      </property>
-     <layout class="QGridLayout" >
+     <layout class="QHBoxLayout" >
       <property name="margin" >
-       <number>2</number>
+       <number>1</number>
       </property>
       <property name="spacing" >
-       <number>2</number>
+       <number>1</number>
       </property>
-      <item row="0" column="1" >
-       <widget class="QCheckBox" name="intarget" >
-        <property name="minimumSize" >
-         <size>
-          <width>85</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="font" >
-         <font>
-          <family>Sans Serif</family>
-          <pointsize>9</pointsize>
-          <weight>50</weight>
-          <italic>false</italic>
-          <bold>false</bold>
-          <underline>false</underline>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text" >
-         <string>&amp;Target</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0" >
+      <item>
        <widget class="QCheckBox" name="insource" >
         <property name="minimumSize" >
          <size>
@@ -294,7 +220,31 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="2" >
+      <item>
+       <widget class="QCheckBox" name="intarget" >
+        <property name="minimumSize" >
+         <size>
+          <width>85</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="font" >
+         <font>
+          <family>Sans Serif</family>
+          <pointsize>9</pointsize>
+          <weight>50</weight>
+          <italic>false</italic>
+          <bold>false</bold>
+          <underline>false</underline>
+          <strikeout>false</strikeout>
+         </font>
+        </property>
+        <property name="text" >
+         <string>&amp;Target</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QCheckBox" name="incomment" >
         <property name="minimumSize" >
          <size>
@@ -321,7 +271,7 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0" >
+      <item>
        <widget class="QCheckBox" name="matchcase" >
         <property name="minimumSize" >
          <size>
@@ -348,6 +298,123 @@
      </layout>
     </widget>
    </item>
+   <item row="0" column="2" >
+    <widget class="QPushButton" name="findNext" >
+     <property name="enabled" >
+      <bool>false</bool>
+     </property>
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>0</hsizetype>
+       <vsizetype>0</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="font" >
+      <font>
+       <family>Sans Serif</family>
+       <pointsize>9</pointsize>
+       <weight>50</weight>
+       <italic>false</italic>
+       <bold>false</bold>
+       <underline>false</underline>
+       <strikeout>false</strikeout>
+      </font>
+     </property>
+     <property name="layoutDirection" >
+      <enum>Qt::LeftToRight</enum>
+     </property>
+     <property name="text" >
+      <string>&amp;Next</string>
+     </property>
+     <property name="icon" >
+      <iconset/>
+     </property>
+     <property name="autoDefault" >
+      <bool>true</bool>
+     </property>
+     <property name="default" >
+      <bool>true</bool>
+     </property>
+     <property name="flat" >
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" >
+    <widget class="QLineEdit" name="lineEdit" >
+     <property name="enabled" >
+      <bool>false</bool>
+     </property>
+     <property name="minimumSize" >
+      <size>
+       <width>0</width>
+       <height>26</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" >
+    <widget class="QLabel" name="lblFind" >
+     <property name="sizeIncrement" >
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="text" >
+      <string>Search for:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="3" >
+    <widget class="QPushButton" name="findPrevious" >
+     <property name="enabled" >
+      <bool>false</bool>
+     </property>
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>0</hsizetype>
+       <vsizetype>0</vsizetype>
+       <horstretch>17</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="maximumSize" >
+      <size>
+       <width>16777215</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="font" >
+      <font>
+       <family>Sans Serif</family>
+       <pointsize>9</pointsize>
+       <weight>50</weight>
+       <italic>false</italic>
+       <bold>false</bold>
+       <underline>false</underline>
+       <strikeout>false</strikeout>
+      </font>
+     </property>
+     <property name="text" >
+      <string>  &amp;Previous  </string>
+     </property>
+     <property name="icon" >
+      <iconset/>
+     </property>
+     <property name="autoDefault" >
+      <bool>true</bool>
+     </property>
+     <property name="default" >
+      <bool>true</bool>
+     </property>
+     <property name="flat" >
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <pixmapfunction></pixmapfunction>
@@ -358,10 +425,6 @@
   <tabstop>lineEdit_2</tabstop>
   <tabstop>replace</tabstop>
   <tabstop>replaceAll</tabstop>
-  <tabstop>insource</tabstop>
-  <tabstop>intarget</tabstop>
-  <tabstop>incomment</tabstop>
-  <tabstop>matchcase</tabstop>
  </tabstops>
  <resources/>
  <connections/>

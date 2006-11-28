@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Fri Oct 27 15:29:34 2006
+# Created: Tue Nov 28 10:00:44 2006
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -14,11 +14,17 @@ class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
         Form.resize(QtCore.QSize(QtCore.QRect(0,0,562,487).size()).expandedTo(Form.minimumSizeHint()))
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(3),QtGui.QSizePolicy.Policy(3))
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(Form.sizePolicy().hasHeightForWidth())
+        Form.setSizePolicy(sizePolicy)
         Form.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
 
         self.gridlayout = QtGui.QGridLayout(Form)
-        self.gridlayout.setMargin(2)
-        self.gridlayout.setSpacing(6)
+        self.gridlayout.setMargin(1)
+        self.gridlayout.setSpacing(1)
         self.gridlayout.setObjectName("gridlayout")
 
         self.tableOverview = QtGui.QTableWidget(Form)

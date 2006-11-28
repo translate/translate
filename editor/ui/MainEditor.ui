@@ -1,4 +1,7 @@
 <ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow" >
   <property name="enabled" >
@@ -9,7 +12,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>600</height>
+    <height>492</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -42,11 +45,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-<<<<<<< .mine
-     <height>28</height>
-=======
-     <height>31</height>
->>>>>>> .r4298
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuHelp" >
@@ -61,15 +60,6 @@
      <string>&amp;Settings</string>
     </property>
     <addaction name="actionPreferences" />
-   </widget>
-   <widget class="QMenu" name="menuGo" >
-    <property name="title" >
-     <string>&amp;Go</string>
-    </property>
-    <addaction name="actionFirst" />
-    <addaction name="actionPrevious" />
-    <addaction name="actionNext" />
-    <addaction name="actionLast" />
    </widget>
    <widget class="QMenu" name="menuFile" >
     <property name="title" >
@@ -91,26 +81,6 @@
     <addaction name="actionSaveas" />
     <addaction name="separator" />
     <addaction name="actionExit" />
-   </widget>
-   <widget class="QMenu" name="menuView" >
-    <property name="title" >
-     <string>&amp;View</string>
-    </property>
-    <widget class="QMenu" name="menuMessages" >
-     <property name="title" >
-      <string>Messages</string>
-     </property>
-     <addaction name="actionFilterFuzzy" />
-     <addaction name="actionFilterTranslated" />
-     <addaction name="actionFilterUntranslated" />
-    </widget>
-    <widget class="QMenu" name="menuTools" >
-     <property name="title" >
-      <string>Tools</string>
-     </property>
-    </widget>
-    <addaction name="menuMessages" />
-    <addaction name="menuTools" />
    </widget>
    <widget class="QMenu" name="menuEdit" >
     <property name="title" >
@@ -134,6 +104,51 @@
     <addaction name="actionToggleFuzzy" />
     <addaction name="actionEdit_Header" />
    </widget>
+   <widget class="QMenu" name="menuGo" >
+    <property name="title" >
+     <string>&amp;Go</string>
+    </property>
+    <addaction name="actionFirst" />
+    <addaction name="actionPrevious" />
+    <addaction name="actionNext" />
+    <addaction name="actionLast" />
+   </widget>
+   <widget class="QMenu" name="menuView" >
+    <property name="title" >
+     <string>&amp;View</string>
+    </property>
+    <widget class="QMenu" name="menuToolBars" >
+     <property name="title" >
+      <string>ToolBars</string>
+     </property>
+     <addaction name="actionStandard_Tools" />
+     <addaction name="actionNavigation_Tools" />
+    </widget>
+    <widget class="QMenu" name="menuWindows" >
+     <property name="title" >
+      <string>Tools</string>
+     </property>
+    </widget>
+    <widget class="QMenu" name="menuMessages" >
+     <property name="title" >
+      <string>Messages</string>
+     </property>
+     <addaction name="actionFilterFuzzy" />
+     <addaction name="actionFilterTranslated" />
+     <addaction name="actionFilterUntranslated" />
+    </widget>
+    <widget class="QMenu" name="menuToolbars" >
+     <property name="title" >
+      <string>Toolbars</string>
+     </property>
+     <addaction name="actionStandard_Tools" />
+     <addaction name="actionNavigation_Tools" />
+    </widget>
+    <addaction name="menuMessages" />
+    <addaction name="separator" />
+    <addaction name="menuToolbars" />
+    <addaction name="separator" />
+   </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
    <addaction name="menuView" />
@@ -141,20 +156,16 @@
    <addaction name="menuSettings" />
    <addaction name="menuHelp" />
   </widget>
-<<<<<<< .mine
   <widget class="QStatusBar" name="statusbar" >
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>579</y>
+     <y>469</y>
      <width>800</width>
-     <height>21</height>
+     <height>23</height>
     </rect>
    </property>
   </widget>
-=======
-  <widget class="QStatusBar" name="statusbar" />
->>>>>>> .r4298
   <widget class="QToolBar" name="toolStandard" >
    <property name="enabled" >
     <bool>true</bool>
@@ -639,7 +650,106 @@
     <string>asf</string>
    </property>
   </action>
+  <action name="actionStandard_Tools" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="checked" >
+    <bool>false</bool>
+   </property>
+   <property name="text" >
+    <string>Standard Tools</string>
+   </property>
+  </action>
+  <action name="actionNavigation_Tools" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>Navigation Tools</string>
+   </property>
+  </action>
+  <action name="actionHide_View" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="checked" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>Hide Overview</string>
+   </property>
+  </action>
+  <action name="actionHide_Detail" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="checked" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>Hide Detail</string>
+   </property>
+  </action>
+  <action name="actionHide_Comment" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="checked" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>Hide Comment</string>
+   </property>
+  </action>
+  <action name="actionStandard_Tools" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="checked" >
+    <bool>false</bool>
+   </property>
+   <property name="text" >
+    <string>Standard Tools</string>
+   </property>
+  </action>
+  <action name="actionNavigation_Tools" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="checked" >
+    <bool>false</bool>
+   </property>
+   <property name="text" >
+    <string>Navigation Tools</string>
+   </property>
+  </action>
+  <action name="actionHello" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>Hello</string>
+   </property>
+  </action>
+  <action name="actionComment" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>Comment</string>
+   </property>
+  </action>
+  <action name="actionHello_2" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>Hello</string>
+   </property>
+  </action>
  </widget>
+ <pixmapfunction></pixmapfunction>
  <resources/>
  <connections/>
 </ui>
