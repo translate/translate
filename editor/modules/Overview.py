@@ -187,12 +187,20 @@ class OverviewDock(QtGui.QDockWidget):
 ##            self.emit(QtCore.SIGNAL("targetChanged"), target)
         
     def applySettings(self):
+        """ set color and font to the tableOverview"""
+        overviewColor = World.settings.value("overviewColor")
+        if (overviewColor.isValid()):
+            colorObj = QtGui.QColor(overviewColor.toString())
+            palette = QtGui.QPalette()
+            palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(6),colorObj)
+            self.ui.tableOverview.setPalette(palette)
+          
         font = World.settings.value("overviewFont")
         if (font.isValid()):
             fontObj = QtGui.QFont()
             if (fontObj.fromString(font.toString())):
-                self.ui.tableOverview.setFont(fontObj)
-                self.ui.tableOverview.horizontalHeader().setFont(self.headerFont)
+              self.ui.tableOverview.setFont(fontObj)
+              self.ui.tableOverview.horizontalHeader().setFont(self.headerFont)
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

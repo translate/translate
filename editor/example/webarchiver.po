@@ -1,16 +1,13 @@
 # translation of libkfaximgage.po to Khmer
 # Keo Sophon <keosophon@khmeros.info>, 2006.
 # Leang en@khmeros.info>, 2006.Chumsoben <sob
-msgid ""
-msgstr "Chumsoben <sob"
-
-msgid ""
-msgstr "minimum2"
 
 # werwerw
 #: archivedialog.cpp:125
 msgid "Could Not Open Temporary File"
+msgstr "um2sseth"
 
+msgid ""
 msgstr "មិនអាចបើកឯកសារបណ្ដោះអាសន្នបានទេ"
 
 # ឡើយ ។

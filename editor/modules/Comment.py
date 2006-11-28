@@ -110,6 +110,15 @@ class CommentDock(QtGui.QDockWidget):
       self.emit(QtCore.SIGNAL("readyForSave"), True)
 
     def applySettings(self):
+        """ set color to the txtComment"""
+        commentColor = World.settings.value("commentColor")
+        if (commentColor.isValid()):
+            colorObj = QtGui.QColor(commentColor.toString())
+            palette = QtGui.QPalette()
+            palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(6),colorObj)
+            self.ui.txtComment.setPalette(palette)
+            
+        """ set font to the txtComment"""  
         font = World.settings.value("commentFont")
         if (font.isValid()):
             fontObj = QtGui.QFont()

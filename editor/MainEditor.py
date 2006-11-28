@@ -238,15 +238,19 @@ class MainWindow(QtGui.QMainWindow):
 
     def redoer(self):
         object = self.focusWidget()
-        try:
-            object.document().redo()
+        try:            
+            object.document().redo()            
         except AttributeError:
             pass
 
-    def undoer(self):
-        object = self.focusWidget()
-        try:
+    def undoer(self, obj):
+        object = self.focusWidget()        
+        try:  
             object.document().undo()
+            if object is None:
+              print "hdhd"
+            else:
+              print object
         except AttributeError:
             pass
 

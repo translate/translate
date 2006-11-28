@@ -47,8 +47,8 @@ class TUview(QtGui.QDockWidget):
         self.connect(self._actionShow, QtCore.SIGNAL("triggered()"), self.show)
         self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.setReadyForSave)
         self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
-        self.connect(self.ui.txtSource, QtCore.SIGNAL("copyAvailable(bool)"), self._copyAvailable)
-        self.connect(self.ui.txtTarget, QtCore.SIGNAL("copyAvailable(bool)"), self._copyAvailable)
+        self.connect(self.ui.txtSource, QtCore.SIGNAL("copyAvailable(bool)"), self.copyAvailable)
+        self.connect(self.ui.txtTarget, QtCore.SIGNAL("copyAvailable(bool)"), self.copyAvailable)
         
         # create highlight font
         self.highlightFormat = QtGui.QTextCharFormat()
@@ -209,7 +209,22 @@ class TUview(QtGui.QDockWidget):
         self.ui.txtTarget.document().setModified()
         self.checkModified()
 
-    def applySettings(self):
+    def applySettings(self):        
+        """ set font and color to txtSource and txtTarget"""
+        sourceColor = World.settings.value("tuSourceColor")
+        if (sourceColor.isValid()):
+            colorObj = QtGui.QColor(sourceColor.toString())
+            palette = QtGui.QPalette()
+            palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(6),colorObj)
+            self.ui.txtSource.setPalette(palette)
+            
+        targetColor = World.settings.value("tuTargetColor")
+        if (targetColor.isValid()):
+            colorObj = QtGui.QColor(targetColor.toString())
+            palette = QtGui.QPalette()
+            palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(6),colorObj)
+            self.ui.txtTarget.setPalette(palette)
+            
         sourcefont = World.settings.value("tuSourceFont")
         if (sourcefont.isValid()):
             fontObj = QtGui.QFont()
@@ -221,7 +236,7 @@ class TUview(QtGui.QDockWidget):
             if (fontObj.fromString(targetfont.toString())):
                 self.ui.txtTarget.setFont(fontObj)
 
-    def _copyAvailable(self, bool):
+    def copyAvailable(self, bool):
         self.emit(QtCore.SIGNAL("copyAvailable(bool)"), bool)
 
 if __name__ == "__main__":

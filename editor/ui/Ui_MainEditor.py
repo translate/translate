@@ -180,7 +180,7 @@ class Ui_MainWindow(object):
         self.actionShowOverview.setObjectName("actionShowOverview")
 
         self.actionCopySource2Target = QtGui.QAction(MainWindow)
-        self.actionCopySource2Target.setEnabled(False)
+        self.actionCopySource2Target.setEnabled(True)
         self.actionCopySource2Target.setObjectName("actionCopySource2Target")
 
         self.actionToggleFuzzy = QtGui.QAction(MainWindow)
@@ -386,12 +386,3 @@ class Ui_MainWindow(object):
         self.actionFilterUntranslated.setIconText(QtGui.QApplication.translate("MainWindow", "Untranslated", None, QtGui.QApplication.UnicodeUTF8))
         self.actionFilterUntranslated.setToolTip(QtGui.QApplication.translate("MainWindow", "Untranslated", None, QtGui.QApplication.UnicodeUTF8))
         self.actionAsf.setText(QtGui.QApplication.translate("MainWindow", "asf", None, QtGui.QApplication.UnicodeUTF8))
-
-
-if __name__ == "__main__":
-    app = QtGui.QApplication(sys.argv)
-    MainWindow = QtGui.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec_())

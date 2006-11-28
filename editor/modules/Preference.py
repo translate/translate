@@ -44,6 +44,15 @@ class Preference(QtGui.QDialog):
         self.commentFont = self.getFont(self.widget[3])
         self.setCaption(self.ui.lblComment, self.commentFont)
         
+        self.overviewColorObj = self.getColor(self.widget[0])
+        self.setTextColor(self.ui.overviewColor, self.overviewColorObj)
+        self.tuSourceColorObj = self.getColor(self.widget[1])
+        self.setTextColor(self.ui.tuSourceColor, self.tuSourceColorObj)
+        self.tuTargetColorObj = self.getColor(self.widget[2])
+        self.setTextColor(self.ui.tuTargetColor, self.tuTargetColorObj )
+        self.commentColorObj = self.getColor(self.widget[3])
+        self.setTextColor(self.ui.commentColor, self.commentColorObj)
+        
         self.ui.UserName.setText(World.settings.value("UserName").toString())
         self.ui.EmailAddress.setText(World.settings.value("EmailAddress").toString())
         self.ui.cbxFullLanguage.setEditText(World.settings.value("FullLanguage").toString())
@@ -61,8 +70,13 @@ class Preference(QtGui.QDialog):
         self.rememberFont(self.widget[0], self.overviewFont)
         self.rememberFont(self.widget[1], self.tuSourceFont)
         self.rememberFont(self.widget[2], self.tuTargetFont)
-        self.rememberFont(self.widget[3], self.commentFont)
-
+        self.rememberFont(self.widget[3], self.commentFont)  
+        
+        self.rememberColor(self.widget[0], self.overviewColorObj)
+        self.rememberColor(self.widget[1], self.tuSourceColorObj)
+        self.rememberColor(self.widget[2], self.tuTargetColorObj)
+        self.rememberColor(self.widget[3], self.commentColorObj) 
+        
         World.settings.setValue("UserName", QtCore.QVariant(self.ui.UserName.text()))
         World.settings.setValue("EmailAddress", QtCore.QVariant(self.ui.EmailAddress.text()))
         World.settings.setValue("FullLanguage", QtCore.QVariant(self.ui.cbxFullLanguage.currentText()))
@@ -73,14 +87,23 @@ class Preference(QtGui.QDialog):
             checkStatus = "checked"
         else:
             checkStatus = "unchecked"
-        World.settings.setValue("headerAuto", QtCore.QVariant(checkStatus))     
+        World.settings.setValue("headerAuto", QtCore.QVariant(checkStatus))
         self.emit(QtCore.SIGNAL("settingsChanged"))
-   
+  
     def rememberFont(self, obj, fontObj):
-        """input obj as string"""        
-        # store font settings
+        """ remember Font in Qsettings
+        @param obj: input as string
+        @param fontObj: stored font"""
         if (fontObj != None):    # TODO do we need this ???
             World.settings.setValue(str(obj + "Font"), QtCore.QVariant(fontObj.toString()))
+            
+    def rememberColor(self, obj, colorObj):
+        """ remember Color in Qsettings
+        @param obj: input as string
+        @param colorObj: stored color"""        
+        if (colorObj != None):    # TODO do we need this ???
+            World.settings.setValue(str(obj + "Color"), QtCore.QVariant(colorObj.name()))      
+
         
     def fontOverview(self):
         """ slot to open font selection dialog """
@@ -102,14 +125,44 @@ class Preference(QtGui.QDialog):
         self.commentFont = self.setFont(self.widget[3])
         self.setCaption(self.ui.lblComment, self.commentFont)
 
+    def colorOverview(self):
+        """ slot to open color selection dialog """
+        self.overviewColorObj = self.setColor(self.widget[0])
+        self.setTextColor(self.ui.overviewColor, self.overviewColorObj)
+         
+    def colorSource(self):
+        """ slot to open color selection dialog """
+        self.tuSourceColorObj = self.setColor(self.widget[1])
+        self.setTextColor(self.ui.tuSourceColor, self.tuSourceColorObj)
+        
+    def colorTarget(self):
+        """ slot to open color selection dialog """
+        self.tuTargetColorObj = self.setColor(self.widget[2])
+        self.setTextColor(self.ui.tuTargetColor, self.tuTargetColorObj)
+
+    def colorComment(self):
+        """ slot to open font selection dialog """
+        self.commentColorObj = self.setColor(self.widget[3])
+        self.setTextColor(self.ui.commentColor, self.commentColorObj)
+
     def getFont(self, obj):
-        """ return font object created from settings"""
+        """ return font object created from settings
+        @param obj: widget whose font is gotten from"""
         font = World.settings.value(str(obj + "Font"), QtCore.QVariant(self.defaultFont.toString()))        
         if (font.isValid()):
             fontObj = QtGui.QFont()
             if (fontObj.fromString(font.toString())):
                 return fontObj
         return self.defaultFont
+        
+    def getColor(self, obj):
+        """ return color object created from settings
+        @param obj: widget whose color is gotten from"""
+        color = World.settings.value(str(obj + "Color"), QtCore.QVariant(self.defaultColor.name()))
+        if (color.isValid()):
+            colorObj = QtGui.QColor(color.toString())
+            return colorObj
+        return self.defaultColor
 
     def defaultFonts(self):
         """slot Set default fonts"""
@@ -122,8 +175,21 @@ class Preference(QtGui.QDialog):
         self.setCaption(self.ui.lblComment, self.defaultFont)
         self.commentFont = self.defaultFont
         
-    def setCaption(self, lable, fontObj):
-        """ create the text from the font object and set the widget lable"""
+    def defaultColors(self):
+        """slot Set default colors"""
+        self.setTextColor(self.ui.overviewColor, self.defaultColor)
+        self.overviewColorObj = self.defaultColor
+        self.setTextColor(self.ui.tuSourceColor, self.defaultColor)
+        self.tuSourceColorObj = self.defaultColor
+        self.setTextColor(self.ui.tuTargetColor, self.defaultColor)
+        self.tuTargetColorObj = self.defaultColor
+        self.setTextColor(self.ui.commentColor, self.defaultColor)
+        self.commentColorObj = self.defaultColor
+        
+    def setCaption(self, lbl, fontObj):
+        """ create the text from the font object and set the widget lable
+        @param lbl: label widget for setting Font information to
+        @param fontObj:  font whose information is set to label widget"""
         newText = fontObj.family() +",  "+ str(fontObj.pointSize())
         if (fontObj.bold()):
             newText.append(", " + self.tr("bold"))
@@ -131,11 +197,20 @@ class Preference(QtGui.QDialog):
             newText.append(", " + self.tr("italic"))
         if (fontObj.underline()):
             newText.append(", " + self.tr("underline"))
-        lable.setText(newText)
+        lbl.setText(newText)
+        
+    def setTextColor(self, lbl, colorObj):
+        """ set color to the text of lable widget
+        @param lbl: label widget for setting color to
+        @param colorObj: Color to set to label widget"""
+        palette = QtGui.QPalette()
+        palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(6),colorObj)
+        lbl.setPalette(palette)
         
     def setFont(self, obj):
         """ open font dialog 
-            return selected new font object or the old one if cancel was pressed """
+            return selected new font object or the old one if cancel was pressed 
+            @param obj: widget whose font is gotten from"""
         #get font settings
         oldFont = self.getFont(obj)
         newFont, okPressed = QtGui.QFontDialog.getFont(oldFont)
@@ -143,7 +218,18 @@ class Preference(QtGui.QDialog):
             self.rememberFont(obj, newFont)
             return newFont
         return oldFont
-      
+     
+    def setColor(self, obj):
+        """ open color dialog 
+            return selected new color object or the old one if cancel was pressed 
+            @param obj: widget whose color is gotten from"""
+        oldColor = self.getColor(obj)
+        newColor = QtGui.QColorDialog.getColor(oldColor)        
+        if (newColor):
+            self.rememberColor(obj, newColor)
+            return newColor
+        return oldColor
+       
     def showDialog(self):
         """ make the dialog visible """
         # lazy init 
@@ -151,6 +237,7 @@ class Preference(QtGui.QDialog):
             self.setWindowTitle(self.tr("Preferences"))
             self.setModal(True)
             self.defaultFont = QtGui.QFont("Serif", 10)
+            self.defaultColor = QtGui.QColor(QtCore.Qt.black)
             self.ui = Ui_frmPreference()
             self.ui.setupUi(self)  
             # connect signals
@@ -160,6 +247,14 @@ class Preference(QtGui.QDialog):
             self.connect(self.ui.bntTarget, QtCore.SIGNAL("clicked()"), self.fontTarget) 
             self.connect(self.ui.bntComment, QtCore.SIGNAL("clicked()"), self.fontComment) 
             self.connect(self.ui.bntDefaults, QtCore.SIGNAL("clicked()"), self.defaultFonts) 
+             
+            # for color
+            self.connect(self.ui.bntColorOverview, QtCore.SIGNAL("clicked()"), self.colorOverview) 
+            self.connect(self.ui.bntColorSource, QtCore.SIGNAL("clicked()"), self.colorSource) 
+            self.connect(self.ui.bntColorTarget, QtCore.SIGNAL("clicked()"), self.colorTarget) 
+            self.connect(self.ui.bntColorComment, QtCore.SIGNAL("clicked()"), self.colorComment) 
+            self.connect(self.ui.bntColorDefaults, QtCore.SIGNAL("clicked()"), self.defaultColors)
+            
             self.connect(self.ui.okButton, QtCore.SIGNAL("clicked()"), self.accepted)
             self.connect(self.ui.cbxFullLanguage, QtCore.SIGNAL("activated(int)"), self.setCodeIndex)
             self.connect(self.ui.cbxLanguageCode, QtCore.SIGNAL("activated(int)"), self.setLanguageIndex)
@@ -168,17 +263,19 @@ class Preference(QtGui.QDialog):
             self.ui.cbxFullLanguage.addItems(language)
             code = ['aa','ab','ae','af','ak','am','an','ar','as','av','ay','az','ba','be','bg','bh','bi','bm','bn','bo','br','bs','ca','ce','ch','co','cr','cs','cu','cv','cy','da','de','dv','dz','ee','el','en','eo','es','et','eu','fa','ff','fi','fj','fo','fr','fy','ga','gd','gl','gn','gu','gv','ha','he','hi','ho','hr','ht','hu','hy','hz','ia','id','ie','ig','ii','ik','io','is','it','iu','ja','jv','ka','kg','ki','kj','kk','kl','km','kn','ko','kr','ks','ku','kv','kw','ky','la','lb','lg','li','ln','lo','lt','lu','lv','mg','mh','mi','mk','ml','mn','mo','mr','ms','mt','my','na','nb','nd','ne','ng','nl','nn','no','nr','nv','ny','oc','oj','om','or','os','pa','pi','pl','ps','pt','qu','rm','rn','ro','ru','rw','sa','sc','sd','se','sg','si','sk','sl','sm','sn','so','sq','sr','ss','st','su','sv','sw','ta','te','tg','th','ti','tk','tl','tn','to','tr','ts','tt','tw','ty','ug','uk','ur','uz','ve','vi','vo','wa','wo','xh','yi','yo','za','zh','zu']
             self.ui.cbxLanguageCode.addItems(code)
-            timeZone = ['(GMT-11:00) Midway Island, Samoa','(GMT-10:00) Hawaii','(GMT-09:00) Alaska','(GMT-08:00) Pacific Time(US & Canada); Tijuana','(GMT-07:00) Arizona','(GMT-07:00) Chihuahua, La Paz, Mazatlan','(GMT-07:00) Mountain Time(US & Canada)','(GMT-06:00) Central America','(GMT-06:00) Central Time(US & Canada)','(GMT-06:00) Guadalajara, Mexico City, Monterrey ','(GMT-06:00) Saskatchewan','(GMT-05:00) Bogota, Lima, Quito','(GMT-05:00) Eastern Time(US & Canada)','(GMT-05:00) Indiana (East)','(GMT-04:00) Atlantic Time (Canada)','(GMT-04:00) Caracas, La Paz','(GMT-04:00) Santiago','(GMT-03:30) NewFoundland','(GMT-03:00) Brasilia','(GMT-03:00) Buenos Aires, Georgetown','(GMT-03:00) Greenland','(GMT-02:00) Mid-Atlantic','(GMT-01:00) Azores','(GMT-01:00) Cape Verde Is.','(GMT) Casablanca, Monrovia','(GMT) Greenwich Mean Time: Dublin, Edinburgh, Lisbon, London','(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Viena','(GMT+01:00) Belgrade, Bratislava, Budapest, Ljubljana, Prague','(GMT+01:00) Brussels, Copenhagen, Madrid, Paris','(GMT+01:00) Sarajevo, Skopje, Warsaw, Zagreb','(GMT+01:00) West Central Africa','(GMT+02:00) Athens, Beirut, Istanbul, Minsk','(GMT+02:00)  Bucharest','(GMT+02:00) Cairo','(GMT+02:00) Harare, Pretoria','(GMT+02:00) Helsinki, kyiv, Riga, Sofia, Tailinn, Vilnius','(GMT+02:00) Jerusalem','(GMT+03:00) Baghdad','(GMT+03:00) Brasilia','(GMT+03:00) Kuwait, Riyadh','(GMT+03:00) Moscow, St. Petersburg, Volgograd','(GMT+03:00) Nairobi','(GMT+03:30) Tehran','(GMT+04:00) Abu Dhabi, Muscat','(GMT+04:00) Baku, Tbilisi, Yerevan','(GMT+04:30) Kabul','(GMT+05:00) Ekaterinburg','(GMT+05:00) Islamabad, Karachi, Tashkent','(GMT+05:30) Chennai, Kolkata, Mumbia, New Delhi','(GMT+05:45) Kathmandu','(GMT+06:00) Almaty, Novosibirsk','(GMT+06:00) Astana, Dhaka','(GMT+06:00) Sri Jayawardenpura','(GMT+06:30) Rangoon','(GMT+07:00) Bangkok, Hanoi, Jakarta','(GMT+07:00) Krasnoyarsk','(GMT+08:00) Beijing, Chongging, Hong Kong, Urumqi','(GMT+08:00) Irkutsk, UlaanBataar','(GMT+08:00)   Kuala Lumpur, Singapore','(GMT+08:00) Perth','(GMT+08:00) Taipei','(GMT+08:00) Osaka, Sapporo, Tokyo','(GMT+09:00) Seoul','(GMT+09:00) Yakutsk','(GMT+09:30) Adelaide','(GMT+09:30) Darwin','(GMT+10:00) Brisbane','(GMT+10:00) Canberra, Melbourne, Sydney','(GMT+10:00)   Guam, Port Moresby','(GMT+10:00) Hobert']
+            timeZone = ['(GMT-11:00) Midway Island, Samoa','(GMT-10:00) Hawaii','(GMT-09:00) Alaska','(GMT-08:00) Pacific Time(US & Canada); Tijuana','(GMT-07:00) Arizona','(GMT-07:00) Chihuahua, La Paz, Mazatlan','(GMT-07:00) Mountain Time(US & Canada)','(GMT-06:00) Central America','(GMT-06:00) Central Time(US & Canada)','(GMT-06:00) Guadalajara, Mexico City, Monterrey ','(GMT-06:00) Saskatchewan','(GMT-05:00) Bogota, Lima, Quito','(GMT-05:00) Eastern Time(US & Canada)','(GMT-05:00) Indiana (East)','(GMT-04:00) Atlantic Time (Canada)','(GMT-04:00) Caracas, La Paz','(GMT-04:00) Santiago','(GMT-03:30) NewFoundland','(GMT-03:00) Brasilia','(GMT-03:00) Buenos Aires, Georgetown','(GMT-03:00) Greenland','(GMT-02:00) Mid-Atlantic','(GMT-01:00) Azores','(GMT-01:00) Cape Verde Is.','(GMT) Casablanca, Monrovia','(GMT) Greenwich Mean Time: Dublin, Edinburgh, Lisbon, London','(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Viena','(GMT+01:00) Belgrade, Bratislava, Budapest, Ljubljana, Prague','(GMT+01:00) Brussels, Copenhagen, Madrid, Paris','(GMT+01:00) Sarajevo, Skopje, Warsaw, Zagreb','(GMT+01:00) West Central Africa','(GMT+02:00) Athens, Beirut, Istanbul, Minsk','(GMT+02:00)  Bucharest','(GMT+02:00) Cairo','(GMT+02:00) Harare, Pretoria','(GMT+02:00) Helsinki, kyiv, Riga, Sofia, Tailinn, Vilnius','(GMT+02:00) Jerusalem','(GMT+03:00) Baghdad','(GMT+03:00) Brasilia','(GMT+03:00) Kuwait, Riyadh','(GMT+03:00) Moscow, St. Petersburg, Volgograd','(GMT+03:00) Nairobi','(GMT+03:30) Tehran','(GMT+04:00) Abu Dhabi, Muscat','(GMT+04:00) Baku, Tbilisi, Yerevan','(GMT+04:30) Kabul','(GMT+05:00) Ekaterinburg','(GMT+05:00) Islamabad, Karachi, Tashkent','(GMT+05:30) Chennai, Kolkata, Mumbia, New Delhi','(GMT+05:45) Kathmandu','(GMT+06:00) Almaty, Novosibirsk','(GMT+06:00) Astana, Dhaka','(GMT+06:00) Sri Jayawardenpura','(GMT+06:30) Rangoon','(GMT+07:00) Bangkok, Hanoi, Jakarta','(GMT+07:00) Krasnoyarsk','(GMT+08:00) Beijing, Chongging, Hong Kong, Urumqi','(GMT+08:00) Irkutsk, UlaanBataar','(GMT+08:00)   Kuala Lumpur, Singapore','(GMT+08:00) Perth','(GMT+08:00) Taipei','(GMT+08:00) Osaka, Sapporo, Tokyo','(GMT+09:00) Seoul','(GMT+09:00) Yakutsk','(GMT+09:30) Adelaide','(GMT+09:30) Darwin','(GMT+10:00) Brisbane','(GMT+10:00) Canberra, Melbourne, Sydney','(GMT+10:00)   Guam, Port Moresby','(GMT+10:00) Hobert','(GMT+10:00) Vladivostok','(GMT+11:00) Magada, Solomon Is, New Caledonia','(GMT+12:00) Auckland, Wellington','(GMT+12:00) Fiji, Kamchatka, Marshall Is','(GMT+13:00) Nuku alofa']
             self.ui.cbxTimeZone.addItems(timeZone)
         self.initUI()
         self.show()
         
     def setCodeIndex(self, index):
-        """SetIndex for Combo box"""
+        """SetIndex for Combo box
+        @param index: list's item correspond to index """
         self.ui.cbxLanguageCode.setCurrentIndex(index)
   
     def setLanguageIndex(self, index):
-        """SetIndex for Combo box"""
+        """SetIndex for Combo box
+        @param index: list's item correspond to index """
         self.ui.cbxFullLanguage.setCurrentIndex(index)
 
         
