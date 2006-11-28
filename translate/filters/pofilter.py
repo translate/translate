@@ -20,7 +20,7 @@
 
 """simple script to run all check filters on gettext .po localization file(s)"""
 
-from translate.storage import po
+from translate.storage import factory
 from translate.filters import checks
 from translate.filters import autocorrect
 from translate.misc import optrecurse
@@ -83,7 +83,7 @@ class StandardPOChecker(POChecker):
 class pocheckfilter:
   def __init__(self, options, checkerclasses=None, checkerconfig=None):
     # excludefilters={}, limitfilters=None, includeheader=False, includefuzzy=True, includereview=True, autocorrect=False):
-    """builds a pocheckfilter using the given checker (a list is allowed too)"""
+    """builds a checkfilter using the given checker (a list is allowed too)"""
     if checkerclasses is None:
       checkerclasses = [checks.StandardChecker, StandardPOChecker]
     self.checker = POTeeChecker(checkerconfig=checkerconfig, excludefilters=options.excludefilters, limitfilters=options.limitfilters, checkerclasses=checkerclasses)
@@ -120,40 +120,28 @@ class pocheckfilter:
           return []
     return failures
 
-  def filterfile(self, thepofile):
-    """runs filters on a file"""
-    thenewpofile = po.pofile()
-    for thepo in thepofile.units:
-      filterresult = self.filterelement(thepo)
+  def filterfile(self, transfile):
+    """Runs filters on a translation store object.
+    Parameters:
+      - transfile. A translation store object.
+    Return value:
+      - A new translation store object with the results of the filter included."""
+    newtransfile = type(transfile)()
+    for unit in transfile.units:
+      filterresult = self.filterelement(unit)
       if filterresult:
         if filterresult != autocorrect:
           for filtername, filtermessage in filterresult:
-            if filtername == "isreview":
-              if thepo.hastypecomment("review"):
-                reviewcomments = [comment for comment in thepo.typecomments if "review" in comment.replace("#,", "", 1).strip()]
-                for comment in reviewcomments:
-                  reviewmessage = comment.replace("#,", "", 1).strip()
-                  if reviewmessage == "review":
-                    reviewmessage = "(review)"
-                    thepo.typecomments = [typecomment for typecomment in thepo.typecomments if typecomment != comment]
-                  elif reviewmessage.startswith("review - "):
-                    reviewmessage = reviewmessage.replace("review - ", "(review) ", 1)
-                    thepo.typecomments = [typecomment for typecomment in thepo.typecomments if typecomment != comment]
-                  else:
-                    reviewmessage = "(review) " + reviewmessage
-                  thepo.othercomments.append("# %s\n" % reviewmessage)
-                thepo.settypecomment("review", False)
-            else:
-              newcomment = "# (pofilter) %s: %s\n" % (filtername, filtermessage)
-              if newcomment not in thepo.othercomments:
-                thepo.othercomments.append(newcomment)
+            newcomment = "(pofilter) %s: %s" % (filtername, filtermessage)
+            if newcomment not in unit.getnotes(origin="translator"):
+              unit.addnote(newcomment, origin="translator")
           for filtername, filtermessage in filterresult:
             if isinstance(filtermessage, checks.SeriousFilterFailure):
-              thepo.markfuzzy()
-        thenewpofile.units.append(thepo)
-    if self.options.includeheader and thenewpofile.units > 0:
-      thenewpofile.units.insert(0, thenewpofile.makeheader("UTF-8", "8bit"))
-    return thenewpofile
+              unit.markfuzzy()
+        newtransfile.addunit(unit)
+    if self.options.includeheader and newtransfile.units > 0:
+      newtransfile.units.insert(0, newtransfile.makeheader("UTF-8", "8bit"))
+    return newtransfile
 
 class FilterOptionParser(optrecurse.RecursiveOptionParser):
   """a specialized Option Parser for filter tools..."""
@@ -206,9 +194,9 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
     else:
       self.recursiveprocess(options)
 
-def runpofilter(inputfile, outputfile, templatefile, checkfilter=None):
-  """reads in inputfile using po.pofile, filters using pocheckfilter, writes to stdout"""
-  fromfile = po.pofile(inputfile)
+def runfilter(inputfile, outputfile, templatefile, checkfilter=None):
+  """reads in inputfile, filters using checkfilter, writes to outputfile"""
+  fromfile = factory.getobject(inputfile)
   tofile = checkfilter.filterfile(fromfile)
   if tofile.isempty():
     return 0
@@ -216,7 +204,8 @@ def runpofilter(inputfile, outputfile, templatefile, checkfilter=None):
   return 1
 
 def cmdlineparser():
-  formats = {"po":("po", runpofilter), "pot":("pot", runpofilter), None:("po", runpofilter)}
+  formats = {"po":("po", runfilter), "pot":("pot", runfilter), "xliff":("xliff", runfilter), "xlf":("xlf", runfilter), "xlff":("xlff", runfilter), None:("po", runfilter)}
+
   parser = FilterOptionParser(formats)
   parser.add_option("", "--review", dest="includereview",
     action="store_true", default=True,
