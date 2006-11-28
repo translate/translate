@@ -170,6 +170,17 @@ class xliffunit(lisa.LISAunit):
         return not targetnode is None and \
                 "needs-review" in targetnode.getAttribute("state")
 
+    def markreviewneeded(self, needsreview=True, explanation=None):
+        """Marks the unit to indicate whether it needs review. Adds an optional explanation as a note."""
+        targetnode = self.getlanguageNode(lang=None, index=1)
+        if targetnode:
+            if needsreview:
+                targetnode.setAttribute("state", "needs-review-translation")
+                if explanation:
+                    self.addnote(explanation, origin="translator")
+            else:
+                targetnode.removeAttribute("state")
+
     def isfuzzy(self):
         targetnode = self.getlanguageNode(lang=None, index=1)
         return not targetnode is None and \

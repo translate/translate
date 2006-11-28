@@ -458,6 +458,26 @@ class pounit(base.TranslationUnit):
   def isreview(self):
     return self.hastypecomment("review") or self.hasmarkedcomment("review") or self.hasmarkedcomment("pofilter")
 
+  def markreviewneeded(self, needsreview=True, explanation=None):
+    """Marks the unit to indicate whether it needs review. Adds an optional explanation as a note."""
+    if needsreview:
+      reviewnote = "(review)"
+      if explanation:
+        reviewnote += " " + explanation
+      self.addnote(reviewnote, origin="translator")
+    else:
+      # Strip (review) notes.
+      notestring = self.getnotes(origin="translator")
+      notes = notestring.split('\n')
+      newnotes = []
+      for note in notes:
+        if not '(review)' in note:
+          newnotes.append(note)
+      newnotes = '\n'.join(newnotes)
+      self.removenotes()
+      self.addnote(newnotes, origin="translator")
+      
+
   def isnotblank(self):
     return not self.isblank()
 

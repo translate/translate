@@ -22,6 +22,7 @@
 """base classes for storage interfaces"""
 
 import pickle
+from exceptions import NotImplementedError
 
 def force_override(method, baseclass):
     """forces derived classes to override method"""
@@ -84,8 +85,16 @@ class TranslationUnit(object):
 
     def addnote(self, text, origin=None):
         """Adds a note (comment). 
-        Origin specifies who/where the comment comes from"""
+        Origin specifies who/where the comment comes from.
+	Origin can be one of the following text strings:
+	    - 'translator'
+	    - 'developer', 'programmer' or 'source code' (synonyms),
+	    - """
         self.notes += text
+
+    def markreviewneeded(self, needsreview=True, explanation=None):
+        """Marks the unit to indicate whether it needs review. Adds an optional explanation as a note."""
+	raise NotImplementedError
 
     def istranslated(self):
         """Indicates whether this unit is translated. This should be used 
@@ -99,6 +108,10 @@ class TranslationUnit(object):
 
     def isheader(self):
         return False
+
+    def isreview(self):
+        """Indicates whether this unit needs review."""
+	raise NotImplementedError
 
     def isblank(self):
         """Used to see if this unit has no source or target string. This is 
