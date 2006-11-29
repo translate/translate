@@ -32,7 +32,6 @@ class Find(QtGui.QDockWidget):
     # FIXME: comment this and list the signals
     def __init__(self):
         QtGui.QDockWidget.__init__(self)
-        self.setWindowTitle(self.tr("Find"))
         self.ui = None
         
     def initUI(self):
@@ -161,7 +160,7 @@ class Find(QtGui.QDockWidget):
         self.ui.intarget.setChecked(True)
         self.ui.insource.setChecked(False)
         self.ui.insource.setEnabled(False)
-        self.setWindowTitle(self.tr("Find-Replace"))
+        self.setWindowTitle(self.tr("Find & Replace"))
         self.show()
 
     def findNext(self):
@@ -180,11 +179,6 @@ class Find(QtGui.QDockWidget):
         self.emit(QtCore.SIGNAL("replaceAll"), self.ui.lineEdit_2.text())
         self.ui.lineEdit_2.setFocus()
     
-    def showEvent(self, event):
-        QtGui.QDockWidget.showEvent(self, event)
-        if (not self.ui):
-            self.showFind()
-        
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     Form = Find()
