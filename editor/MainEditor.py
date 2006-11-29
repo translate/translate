@@ -56,9 +56,6 @@ class MainWindow(QtGui.QMainWindow):
         if (geometry.isValid()):
             self.setGeometry(geometry.toRect())
             
-        # get the last state of mainwindows's toolbars and dockwidgets
-        state = World.settings.value("lastState")
-        
         #plug in overview widget
         self.dockOverview = OverviewDock()
         self.dockOverview.setObjectName("dockOverview")
@@ -68,6 +65,7 @@ class MainWindow(QtGui.QMainWindow):
         #plug in TUview widget
         self.dockTUview = TUview()
         self.dockTUview.setObjectName("dockTUview")
+        self.setCentralWidget(self.dockTUview)
         self.ui.menuView.addAction(self.dockTUview.toggleViewAction())
         
         #plug in comment widget
@@ -203,12 +201,15 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.statuslabel.setText)
         self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.setOpening)
         self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.operator.getUnits)
-            
+        
+        # get the last state of mainwindows's toolbars and dockwidgets
+        state = World.settings.value("MainWindowState")
         # check if the last state is valid it will restore
-        if (not state.isValid()):
-            self.setCentralWidget(self.dockTUview)
-        else:
+        if (state.isValid()):
             self.restoreState(state.toByteArray(), 1)
+        
+        tuViewHidden = World.settings.value("TuViewHidden", QtCore.QVariant(False))
+        self.dockTUview.setHidden(tuViewHidden.toBool())
         
     def enableCopyPaste(self, bool):
         self.ui.actionCopy.setEnabled(bool)
@@ -238,7 +239,7 @@ class MainWindow(QtGui.QMainWindow):
     def redoer(self):
         object = self.focusWidget()
         try:            
-            object.document().redo()            
+            object.document().redo()
         except AttributeError:
             pass
 
@@ -331,7 +332,8 @@ class MainWindow(QtGui.QMainWindow):
         
         # remember last state
         state = self.saveState(1)
-        World.settings.setValue("lastState", QtCore.QVariant(state))
+        World.settings.setValue("MainWindowState", QtCore.QVariant(state))
+        World.settings.setValue("TuViewHidden", QtCore.QVariant(self.dockTUview.isHidden()))
         
     def setTitle(self, title):
         """set the title of program.
