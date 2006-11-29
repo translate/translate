@@ -30,8 +30,8 @@ import modules.World as World
 
 class Find(QtGui.QDockWidget):
     # FIXME: comment this and list the signals
-    def __init__(self):
-        QtGui.QDockWidget.__init__(self)
+    def __init__(self, parent):
+        QtGui.QDockWidget.__init__(self, parent)
         self.ui = None
         
     def initUI(self):
@@ -41,127 +41,90 @@ class Find(QtGui.QDockWidget):
             self.ui.setupUi(self.form)
             self.setWidget(self.form)
             self.setFeatures(QtGui.QDockWidget.DockWidgetClosable)
-            self.matchcase = False
-            self.forward = True
             self.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
             
             self.connect(self.ui.findNext, QtCore.SIGNAL("clicked()"), self.findNext)
             self.connect(self.ui.findPrevious, QtCore.SIGNAL("clicked()"), self.findPrevious)
             self.connect(self.ui.replace, QtCore.SIGNAL("clicked()"), self.replace)
             self.connect(self.ui.replaceAll, QtCore.SIGNAL("clicked()"), self.replaceAll)
-            self.connect(self.ui.insource, QtCore.SIGNAL("stateChanged(int)"), self.toggleSeachInSource)
-            self.connect(self.ui.intarget, QtCore.SIGNAL("stateChanged(int)"), self.toggleSearchInTarget)
-            self.connect(self.ui.incomment, QtCore.SIGNAL("stateChanged(int)"), self.toggleSeachInComment)
-            self.connect(self.ui.matchcase, QtCore.SIGNAL("stateChanged(int)"), self.toggleMatchCase)
-       
-            self.searchinsource = []
-            self.searchintarget = []
-            self.searchincomment = []
-            self.ui.findNext.setEnabled(False)
-            self.ui.findPrevious.setEnabled(False)
-            self.ui.insource.setChecked(True)
-        
-        self.ui.lineEdit.setEnabled(True)
-        self.ui.lineEdit.setFocus()
-        
-    def keyReleaseEvent(self, event):
-        if (self.ui.lineEdit.text() != ''):
-            self.ui.findNext.setEnabled(True)
-            self.ui.findPrevious.setEnabled(True)
-        else:
-            self.ui.findNext.setEnabled(False)
-            self.ui.findPrevious.setEnabled(False)
-        
-        if self.ui.lineEdit.isModified():
-            self.initSearch()
-            self.emit(QtCore.SIGNAL("searchNext"))
-            self.ui.lineEdit.setModified(False)
-        
-        if self.ui.lineEdit_2.isModified():
-            self.ui.replace.setEnabled(True)
-            self.ui.replaceAll.setEnabled(True)
-    
+            self.connect(self.ui.insource, QtCore.SIGNAL("stateChanged(int)"), self.initSearch)
+            self.connect(self.ui.intarget, QtCore.SIGNAL("stateChanged(int)"), self.initSearch)
+            self.connect(self.ui.incomment, QtCore.SIGNAL("stateChanged(int)"), self.initSearch)
+            self.connect(self.ui.matchcase, QtCore.SIGNAL("stateChanged(int)"), self.initSearch)
+            self.connect(self.ui.lineEdit, QtCore.SIGNAL("textChanged(const QString &)"), self._textChanged)
+
+    def _textChanged(self, txt):
+        """ private slot
+        @param txt: new value in the widget """
+        self.initSearch()
+        self.findNext()
+
     def initSearch(self):
-        searchString = self.ui.lineEdit.text()
-        filter = self.searchinsource + self.searchintarget + self.searchincomment
+        """ start the search process, if possible
+        manage the UI elements for search
+        @signal initSearch """
+        # create the filter
+        filter = []
+        if (self.ui.insource.isChecked()):
+            filter.append(World.source)
+        if (self.ui.intarget.isChecked()):
+            filter.append(World.target)
+        if (self.ui.incomment.isChecked()):
+            filter.append(World.comment)
+        
         if (filter):
-            self.emit(QtCore.SIGNAL("initSearch"), searchString, filter, self.matchcase)
-    
-    def toggleSeachInSource(self):
-        if (not self.checkBoxCheckedStatus()):
-            self.ui.insource.setChecked(True)
-            return
-        if (self.ui.insource.isChecked()): 
-            self.searchinsource = [World.source]
+            self.setToolTip("")
+            self.setStatusTip("")
+            self._enableSearch(True)
+            self.ui.lineEdit.setFocus()
+            searchString = self.ui.lineEdit.text()
+            self.emit(QtCore.SIGNAL("initSearch"), searchString, filter, self.ui.matchcase.isChecked())
         else:
-            self.searchinsource = []
-        self.initSearch()
-            
-    def toggleSearchInTarget(self):
-        if (not self.checkBoxCheckedStatus()):
-            self.ui.intarget.setChecked(True)
-            return
-        if (self.ui.intarget.isChecked()): 
-            self.searchintarget = [World.target]
-        else:
-            self.searchintarget = []
-        self.initSearch()
-            
-    def toggleSeachInComment(self):
-        if (not self.checkBoxCheckedStatus()):
-            self.ui.incomment.setChecked(True)
-            return
-        if (self.ui.incomment.isChecked()): 
-            self.searchincomment = [World.comment]
-        else:
-            self.searchincomment = []
-        self.initSearch()
-        
-    def toggleMatchCase(self):
-        if (self.ui.matchcase.isChecked()): 
-            self.matchcase = True
-        else:
-            self.matchcase = False
-        self.initSearch()
-    
-    def checkBoxCheckedStatus(self):
-        '''It return False if there is no check box checked otherwise it will return True'''
-        if ((not self.ui.insource.isChecked()) and \
-            (not self.ui.intarget.isChecked()) and \
-            (not self.ui.incomment.isChecked())):
-            ret = QtGui.QMessageBox.warning(self, self.tr("No Searching Location Selected"), 
-                self.tr("You have to specify at least one location to search in."), 
-                QtGui.QMessageBox.Ok, QtGui.QMessageBox.NoButton, QtGui.QMessageBox.NoButton)
-            return False
-        else:
-            return True
-            
+            msg = QtCore.QString(self.tr("Please select first where to search!"))
+            self.setToolTip(msg)
+            self.setStatusTip(msg)
+            self._enableSearch(False)
+
+    def _enableSearch(self, enabled):
+        """ enable or disable the means to search 
+        @param enabled: True or False"""
+        self.ui.lineEdit.setEnabled(enabled)
+        self.ui.findNext.setEnabled(enabled)
+        self.ui.findPrevious.setEnabled(enabled)
+        self.ui.lineEdit_2.setEnabled(enabled)
+        self.ui.replace.setEnabled(enabled)
+        self.ui.replaceAll.setEnabled(enabled)
+
     def showFind(self):
-        self.initUI()
-        self.ui.insource.setEnabled(True)
-        self.ui.insource.setChecked(True)
-        self.ui.intarget.setChecked(False)
-        self.ui.lineEdit_2.setHidden(True)
-        self.ui.lblReplace.setHidden(True)
-        self.ui.replace.setHidden(True)
-        self.ui.replaceAll.setHidden(True)
-        self.setWindowTitle(self.tr("Find"))
-        self.show()
-        
+        if (self.isHidden() or not self.ui.lineEdit_2.isHidden()):
+            self.initUI()
+            self.ui.insource.setEnabled(True)
+            self.setWindowTitle(self.tr("Find"))
+            self.initSearch()
+            self._hideReplace(True)
+            self.show()
+        else:
+            self.hide()
+
     def showReplace(self):
-        self.initUI()
-        self.ui.lineEdit_2.setEnabled(True)
-        self.ui.replace.setEnabled(False)
-        self.ui.replaceAll.setEnabled(False)
-        self.ui.lineEdit_2.setHidden(False)
-        self.ui.lblReplace.setHidden(False)
-        self.ui.replace.setHidden(False)
-        self.ui.replaceAll.setHidden(False)
-        self.ui.intarget.setChecked(True)
-        self.ui.insource.setChecked(False)
-        self.ui.insource.setEnabled(False)
-        self.setWindowTitle(self.tr("Find & Replace"))
-        self.show()
+        if (self.isHidden() or self.ui.lineEdit_2.isHidden()):
+            self.initUI()
+            self.ui.insource.setChecked(False)
+            self.ui.insource.setEnabled(False)
+            self.setWindowTitle(self.tr("Find & Replace"))
+            self.initSearch()
+            self._hideReplace(False)
+            self.show()
+        else:
+            self.hide()
+
+    def _hideReplace(self, hidden):
+        """ hide or show the replace UI elements
+        @param hidden: True or False """
+        self.ui.lineEdit_2.setHidden(hidden)
+        self.ui.lblReplace.setHidden(hidden)
+        self.ui.replace.setHidden(hidden)
+        self.ui.replaceAll.setHidden(hidden)
 
     def findNext(self):
         self.emit(QtCore.SIGNAL("searchNext"))
