@@ -46,10 +46,6 @@ class Find(QtGui.QDockWidget):
             self.forward = True
             self.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
             
-            # create action for show/hide
-            self._actionShow = QtGui.QAction(self)
-            self._actionShow.setObjectName("actionShowOverview")
-            self.connect(self._actionShow, QtCore.SIGNAL("triggered()"), self.show)
             self.connect(self.ui.findNext, QtCore.SIGNAL("clicked()"), self.findNext)
             self.connect(self.ui.findPrevious, QtCore.SIGNAL("clicked()"), self.findPrevious)
             self.connect(self.ui.replace, QtCore.SIGNAL("clicked()"), self.replace)
