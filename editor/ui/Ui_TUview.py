@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Tue Nov 28 09:58:59 2006
+# Created: Wed Nov 29 17:10:14 2006
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -14,7 +14,7 @@ class Ui_TUview(object):
     def setupUi(self, TUview):
         TUview.setObjectName("TUview")
         TUview.setEnabled(True)
-        TUview.resize(QtCore.QSize(QtCore.QRect(0,0,370,283).size()).expandedTo(TUview.minimumSizeHint()))
+        TUview.resize(QtCore.QSize(QtCore.QRect(0,0,478,354).size()).expandedTo(TUview.minimumSizeHint()))
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(3),QtGui.QSizePolicy.Policy(3))
         sizePolicy.setHorizontalStretch(0)
@@ -22,20 +22,27 @@ class Ui_TUview(object):
         sizePolicy.setHeightForWidth(TUview.sizePolicy().hasHeightForWidth())
         TUview.setSizePolicy(sizePolicy)
         TUview.setMinimumSize(QtCore.QSize(0,0))
-        TUview.setFocusPolicy(QtCore.Qt.StrongFocus)
+        TUview.setFocusPolicy(QtCore.Qt.NoFocus)
         TUview.setAutoFillBackground(True)
 
         self.hboxlayout = QtGui.QHBoxLayout(TUview)
-        self.hboxlayout.setMargin(1)
-        self.hboxlayout.setSpacing(1)
+        self.hboxlayout.setMargin(2)
+        self.hboxlayout.setSpacing(10)
         self.hboxlayout.setObjectName("hboxlayout")
 
-        self.splitter = QtGui.QSplitter(TUview)
+        self.splitter_2 = QtGui.QSplitter(TUview)
+        self.splitter_2.setOrientation(QtCore.Qt.Vertical)
+        self.splitter_2.setChildrenCollapsible(False)
+        self.splitter_2.setObjectName("splitter_2")
+
+        self.splitter = QtGui.QSplitter(self.splitter_2)
         self.splitter.setOrientation(QtCore.Qt.Vertical)
+        self.splitter.setChildrenCollapsible(False)
         self.splitter.setObjectName("splitter")
 
         self.txtSource = QtGui.QTextEdit(self.splitter)
         self.txtSource.setEnabled(False)
+        self.txtSource.setMinimumSize(QtCore.QSize(0,20))
 
         palette = QtGui.QPalette()
         palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(0),QtGui.QColor(0,0,0))
@@ -47,7 +54,7 @@ class Ui_TUview(object):
         palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(6),QtGui.QColor(0,0,0))
         palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(7),QtGui.QColor(255,255,255))
         palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(8),QtGui.QColor(0,0,0))
-        palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(9),QtGui.QColor(225,225,225))
+        palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(9),QtGui.QColor(255,255,255))
         palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(10),QtGui.QColor(239,239,239))
         palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(11),QtGui.QColor(0,0,0))
         palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(12),QtGui.QColor(103,141,178))
@@ -96,11 +103,17 @@ class Ui_TUview(object):
         self.txtSource.setTabStopWidth(79)
         self.txtSource.setObjectName("txtSource")
 
-        self.txtTarget = QtGui.QTextEdit(self.splitter)
+        self.lblComment = QtGui.QLabel(self.splitter)
+        self.lblComment.setMinimumSize(QtCore.QSize(0,20))
+        self.lblComment.setTextFormat(QtCore.Qt.PlainText)
+        self.lblComment.setObjectName("lblComment")
+
+        self.txtTarget = QtGui.QTextEdit(self.splitter_2)
         self.txtTarget.setEnabled(False)
+        self.txtTarget.setMinimumSize(QtCore.QSize(0,20))
         self.txtTarget.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
         self.txtTarget.setObjectName("txtTarget")
-        self.hboxlayout.addWidget(self.splitter)
+        self.hboxlayout.addWidget(self.splitter_2)
 
         self.fileScrollBar = QtGui.QScrollBar(TUview)
         self.fileScrollBar.setEnabled(False)
@@ -119,7 +132,6 @@ class Ui_TUview(object):
 
     def retranslateUi(self, TUview):
         TUview.setWindowTitle(self.tr("Ui_TUview"))
-        self.splitter.setToolTip(self.tr("Click to change position"))
         self.fileScrollBar.setToolTip(self.tr("Navigate in your file"))
 
 
