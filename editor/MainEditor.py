@@ -49,7 +49,6 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.recentaction = []
         self.setWindowTitle(World.settingOrg + ' ' + World.settingApp + ' ' + World.settingVer)
         self.createRecentAction()
-        self.setObjectName("mainwindows")
         
         # get the last geometry
         geometry = World.settings.value("lastGeometry")
@@ -58,19 +57,16 @@ class MainWindow(QtGui.QMainWindow):
             
         #plug in overview widget
         self.dockOverview = OverviewDock()
-        self.dockOverview.setObjectName("dockOverview")
         self.addDockWidget(QtCore.Qt.TopDockWidgetArea, self.dockOverview)
         self.ui.menuView.addAction(self.dockOverview.toggleViewAction())
         
         #plug in TUview widget
         self.dockTUview = TUview()
-        self.dockTUview.setObjectName("dockTUview")
         self.setCentralWidget(self.dockTUview)
         self.ui.menuView.addAction(self.dockTUview.toggleViewAction())
         
         #plug in comment widget
         self.dockComment = CommentDock()
-        self.dockComment.setObjectName("dockComment")
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.dockComment)
         self.ui.menuView.addAction(self.dockComment.toggleViewAction())
          
@@ -101,7 +97,6 @@ class MainWindow(QtGui.QMainWindow):
         
         # create Find widget and connect signals related to it
         self.findBar = Find()
-        self.findBar.setObjectName("findBar")
         self.findBar.setHidden(True)
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.findBar)
         self.connect(self.ui.actionFind, QtCore.SIGNAL("triggered()"), self.findBar.showFind)
