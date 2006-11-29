@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Tue Nov 28 17:32:44 2006
+# Created: Wed Nov 29 15:26:48 2006
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -39,6 +39,12 @@ class Ui_MainWindow(object):
         self.menuSettings = QtGui.QMenu(self.menubar)
         self.menuSettings.setObjectName("menuSettings")
 
+        self.menuEdit = QtGui.QMenu(self.menubar)
+        self.menuEdit.setObjectName("menuEdit")
+
+        self.menuGo = QtGui.QMenu(self.menubar)
+        self.menuGo.setObjectName("menuGo")
+
         self.menuFile = QtGui.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
 
@@ -46,17 +52,8 @@ class Ui_MainWindow(object):
         self.menuOpen_Recent.setIcon(QtGui.QIcon("./images/open.png"))
         self.menuOpen_Recent.setObjectName("menuOpen_Recent")
 
-        self.menuEdit = QtGui.QMenu(self.menubar)
-        self.menuEdit.setObjectName("menuEdit")
-
-        self.menuGo = QtGui.QMenu(self.menubar)
-        self.menuGo.setObjectName("menuGo")
-
         self.menuView = QtGui.QMenu(self.menubar)
         self.menuView.setObjectName("menuView")
-
-        self.menuToolBars = QtGui.QMenu(self.menuView)
-        self.menuToolBars.setObjectName("menuToolBars")
 
         self.menuWindows = QtGui.QMenu(self.menuView)
         self.menuWindows.setObjectName("menuWindows")
@@ -253,15 +250,6 @@ class Ui_MainWindow(object):
         self.actionAsf = QtGui.QAction(MainWindow)
         self.actionAsf.setObjectName("actionAsf")
 
-        self.actionStandard_Tools = QtGui.QAction(MainWindow)
-        self.actionStandard_Tools.setCheckable(True)
-        self.actionStandard_Tools.setChecked(False)
-        self.actionStandard_Tools.setObjectName("actionStandard_Tools")
-
-        self.actionNavigation_Tools = QtGui.QAction(MainWindow)
-        self.actionNavigation_Tools.setCheckable(True)
-        self.actionNavigation_Tools.setObjectName("actionNavigation_Tools")
-
         self.actionHide_View = QtGui.QAction(MainWindow)
         self.actionHide_View.setCheckable(True)
         self.actionHide_View.setChecked(True)
@@ -277,16 +265,6 @@ class Ui_MainWindow(object):
         self.actionHide_Comment.setChecked(True)
         self.actionHide_Comment.setObjectName("actionHide_Comment")
 
-        self.actionStandard_Tools1 = QtGui.QAction(MainWindow)
-        self.actionStandard_Tools1.setCheckable(True)
-        self.actionStandard_Tools1.setChecked(False)
-        self.actionStandard_Tools1.setObjectName("actionStandard_Tools1")
-
-        self.actionNavigation_Tools1 = QtGui.QAction(MainWindow)
-        self.actionNavigation_Tools1.setCheckable(True)
-        self.actionNavigation_Tools1.setChecked(False)
-        self.actionNavigation_Tools1.setObjectName("actionNavigation_Tools1")
-
         self.actionHello = QtGui.QAction(MainWindow)
         self.actionHello.setCheckable(True)
         self.actionHello.setObjectName("actionHello")
@@ -301,14 +279,6 @@ class Ui_MainWindow(object):
         self.menuHelp.addAction(self.actionAbout)
         self.menuHelp.addAction(self.actionAboutQT)
         self.menuSettings.addAction(self.actionPreferences)
-        self.menuFile.addAction(self.actionOpenInNewWindow)
-        self.menuFile.addAction(self.actionOpen)
-        self.menuFile.addAction(self.menuOpen_Recent.menuAction())
-        self.menuFile.addSeparator()
-        self.menuFile.addAction(self.actionSave)
-        self.menuFile.addAction(self.actionSaveas)
-        self.menuFile.addSeparator()
-        self.menuFile.addAction(self.actionExit)
         self.menuEdit.addAction(self.actionUndo)
         self.menuEdit.addAction(self.actionRedo)
         self.menuEdit.addSeparator()
@@ -330,13 +300,17 @@ class Ui_MainWindow(object):
         self.menuGo.addAction(self.actionPrevious)
         self.menuGo.addAction(self.actionNext)
         self.menuGo.addAction(self.actionLast)
-        self.menuToolBars.addAction(self.actionStandard_Tools)
-        self.menuToolBars.addAction(self.actionNavigation_Tools)
+        self.menuFile.addAction(self.actionOpenInNewWindow)
+        self.menuFile.addAction(self.actionOpen)
+        self.menuFile.addAction(self.menuOpen_Recent.menuAction())
+        self.menuFile.addSeparator()
+        self.menuFile.addAction(self.actionSave)
+        self.menuFile.addAction(self.actionSaveas)
+        self.menuFile.addSeparator()
+        self.menuFile.addAction(self.actionExit)
         self.menuMessages.addAction(self.actionFilterFuzzy)
         self.menuMessages.addAction(self.actionFilterTranslated)
         self.menuMessages.addAction(self.actionFilterUntranslated)
-        self.menuToolbars.addAction(self.actionStandard_Tools)
-        self.menuToolbars.addAction(self.actionNavigation_Tools)
         self.menuView.addAction(self.menuMessages.menuAction())
         self.menuView.addSeparator()
         self.menuView.addAction(self.menuToolbars.menuAction())
@@ -371,12 +345,11 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(self.tr("Form"))
         self.menuHelp.setTitle(self.tr("&Help"))
         self.menuSettings.setTitle(self.tr("&Settings"))
-        self.menuFile.setTitle(self.tr("&File"))
-        self.menuOpen_Recent.setTitle(self.tr("Open &Recent"))
         self.menuEdit.setTitle(self.tr("&Edit"))
         self.menuGo.setTitle(self.tr("&Go"))
+        self.menuFile.setTitle(self.tr("&File"))
+        self.menuOpen_Recent.setTitle(self.tr("Open &Recent"))
         self.menuView.setTitle(self.tr("&View"))
-        self.menuToolBars.setTitle(self.tr("ToolBars"))
         self.menuWindows.setTitle(self.tr("Tools"))
         self.menuMessages.setTitle(self.tr("Messages"))
         self.menuToolbars.setTitle(self.tr("Toolbars"))
@@ -450,13 +423,9 @@ class Ui_MainWindow(object):
         self.actionFilterUntranslated.setIconText(self.tr("Untranslated"))
         self.actionFilterUntranslated.setToolTip(self.tr("Untranslated"))
         self.actionAsf.setText(self.tr("asf"))
-        self.actionStandard_Tools.setText(self.tr("Standard Tools"))
-        self.actionNavigation_Tools.setText(self.tr("Navigation Tools"))
         self.actionHide_View.setText(self.tr("Hide Overview"))
         self.actionHide_Detail.setText(self.tr("Hide Detail"))
         self.actionHide_Comment.setText(self.tr("Hide Comment"))
-        self.actionStandard_Tools1.setText(self.tr("Standard Tools"))
-        self.actionNavigation_Tools1.setText(self.tr("Navigation Tools"))
         self.actionHello.setText(self.tr("Hello"))
         self.actionComment.setText(self.tr("Comment"))
         self.actionHello_2.setText(self.tr("Hello"))
