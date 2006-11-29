@@ -81,6 +81,10 @@ class MainWindow(QtGui.QMainWindow):
         self.statuslabel.setFrameStyle(QtGui.QFrame.NoFrame)
         self.ui.statusbar.addWidget(self.statuslabel)
         
+        #add action from each toolbar toggleviewaction to toolbars submenu of view menu
+        self.ui.menuToolbars.addAction(self.ui.toolStandard.toggleViewAction())
+        self.ui.menuToolbars.addAction(self.ui.toolNavigation.toggleViewAction())
+        
         #create operator
         self.operator = Operator()
         
@@ -121,8 +125,7 @@ class MainWindow(QtGui.QMainWindow):
         # Edit menu action
         self.connect(self.ui.actionUndo, QtCore.SIGNAL("triggered()"), self.undoer)
         self.connect(self.ui.actionRedo, QtCore.SIGNAL("triggered()"), self.redoer)
-        self.connect(self.ui.actionStandard_Tools, QtCore.SIGNAL("triggered()"), self.showStandardTools)
-        self.connect(self.ui.actionNavigation_Tools, QtCore.SIGNAL("triggered()"), self.showNavigationTools)
+        self.connect(self.ui.actionComment, QtCore.SIGNAL("triggered()"), self.dockComment.show)
         
         #self.connect(self.ui.actionCut, QtCore.SIGNAL("triggered()"), self.dockComment.ui.txtComment, QtCore.SLOT("cut()"))
         #self.connect(self.ui.actionCopy, QtCore.SIGNAL("triggered()"), self.dockTUview.ui.txtSource, QtCore.SLOT("copy()"))
@@ -206,10 +209,6 @@ class MainWindow(QtGui.QMainWindow):
             self.setCentralWidget(self.dockTUview)
         else:
             self.restoreState(state.toByteArray(), 1)
-            
-        # toggle standard and navigation tools actions according to standard and navigation toolbar status
-        self.ui.actionStandard_Tools.setChecked(not self.ui.toolStandard.isHidden())
-        self.ui.actionNavigation_Tools.setChecked(not self.ui.toolNavigation.isHidden())
         
     def enableCopyPaste(self, bool):
         self.ui.actionCopy.setEnabled(bool)
@@ -365,17 +364,6 @@ class MainWindow(QtGui.QMainWindow):
     def showTemporaryMessage(self, text):
         self.ui.statusbar.showMessage(text, 3000)
         
-    def showStandardTools(self):
-        self.ui.toolStandard.setHidden(not self.ui.toolStandard.isHidden())
-        
-    def showNavigationTools(self):
-        self.ui.toolNavigation.setHidden(not self.ui.toolNavigation.isHidden())
-        
-    def contextMenuEvent(self, event):
-        QtGui.QMainWindow.contextMenuEvent(self, event)
-        self.ui.actionStandard_Tools.setChecked(not self.ui.toolStandard.isHidden())
-        self.ui.actionNavigation_Tools.setChecked(not self.ui.toolNavigation.isHidden())
-    
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     editor = MainWindow()
