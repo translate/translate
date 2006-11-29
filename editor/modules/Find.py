@@ -146,7 +146,6 @@ class Find(QtGui.QDockWidget):
         self.ui.lblReplace.setHidden(True)
         self.ui.replace.setHidden(True)
         self.ui.replaceAll.setHidden(True)
-        self.resize(self.width(), 15)
         self.setWindowTitle(self.tr("Find"))
         self.show()
         
