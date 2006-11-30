@@ -32,6 +32,7 @@ class Find(QtGui.QDockWidget):
     # FIXME: comment this and list the signals
     def __init__(self, parent):
         QtGui.QDockWidget.__init__(self, parent)
+        self.setObjectName("findDock")
         self.ui = None
         
     def initUI(self):

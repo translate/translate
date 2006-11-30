@@ -29,8 +29,9 @@ from ui.Ui_Overview import Ui_Form
 import modules.World as World
 
 class OverviewDock(QtGui.QDockWidget):
-    def __init__(self):
-        QtGui.QDockWidget.__init__(self)
+    def __init__(self, parent):
+        QtGui.QDockWidget.__init__(self, parent)
+        self.setObjectName("overviewDock")
         self.setWindowTitle(self.tr("Overview"))
         self.form = QtGui.QWidget(self)
         self.ui = Ui_Form()

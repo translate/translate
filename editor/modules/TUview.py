@@ -28,15 +28,15 @@ from ui.Ui_TUview import Ui_TUview
 from modules import World
 
 class TUview(QtGui.QDockWidget):
-    def __init__(self):
-        QtGui.QDockWidget.__init__(self)
+    def __init__(self, parent):
+        QtGui.QDockWidget.__init__(self, parent)
+        self.setObjectName("detailDock")
         self.setWindowTitle(self.tr("Detail"))
         self.form = QtGui.QWidget(self)
         self.ui = Ui_TUview()
         self.ui.setupUi(self.form)
         self.setWidget(self.form)
         self.setFeatures(QtGui.QDockWidget.DockWidgetClosable)
-        self.layout = QtGui.QTextLayout ()
         self.applySettings()
         
         self.indexToUpdate = None
@@ -174,7 +174,6 @@ class TUview(QtGui.QDockWidget):
         else:
             block = textField.document().begin()
             self.highlightRange.length = 0
-            self.layout.clearAdditionalFormats()
             textField.update()
         block.layout().setAdditionalFormats([self.highlightRange])
 

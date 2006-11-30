@@ -37,8 +37,9 @@ class CommentDock(QtGui.QDockWidget):
     @signal copyAvailable(bool): emitted when text is selected or de-selected in the Comment view.
     """
     
-    def __init__(self):
-        QtGui.QDockWidget.__init__(self)
+    def __init__(self, parent):
+        QtGui.QDockWidget.__init__(self, parent)
+        self.setObjectName("commentDock")
         self.setWindowTitle(self.tr("Comment"))
         self.form = QtGui.QWidget(self)
         self.ui = Ui_frmComment()
