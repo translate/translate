@@ -122,24 +122,6 @@ class PoXliffUnit(xliff.xliffunit):
         
         for i in range(len(self.units)):
             self.units[i].target = targets[i]
-        
-#        pluralnum = 0
-#        group = self.creategroup(filename, True, restype="x-gettext-plural")
-#        for (src, tgt) in zip(sources, targets):
-#            unit = self.UnitClass(src, self.document)
-#            unit.target = tgt
-#            unit.setid("%d[%d]" % (self._messagenum, pluralnum))
-#            pluralnum += 1
-#            group.appendChild(unit)
-
-#        if pluralnum < sourcel:
-#            for string in sources[pluralnum:]:
-#                unit = self.UnitClass(src, self.document)
-#                unit.xmlelement.setAttribute("translate", "no")
-#                unit.setid("%d[%d]" % (self._messagenum, pluralnum))
-#                pluralnum += 1
-#                group.appendChild(unit)
-        
 
     def gettarget(self):
         if self.hasplural():
@@ -151,12 +133,6 @@ class PoXliffUnit(xliff.xliffunit):
         else:
             return super(PoXliffUnit, self).gettarget()
 
-#        strings = [super(PoXliffUnit, self).gettarget()]
-#        strings.extend([unit.target for unit in self.units[1:]])
-#        if strings:
-#            return multistring(strings)
-#        else:
-#            return None
     target = property(gettarget, settarget)
 
     def addnote(self, text, origin=None):
@@ -171,26 +147,6 @@ class PoXliffUnit(xliff.xliffunit):
         for unit in self.units[1:]:
             unit.addnote(text, origin)
 
-    def getnotes(self, origin=None):
-        """Returns the text from notes matching 'origin' or all notes"""
-        notenodes = self.xmlelement.getElementsByTagName("note")
-        textlist = [lisa.getText(note) for note in notenodes if self.correctorigin(note, origin)]
-        notelist = []
-        for i in textlist:
-            if i not in notelist:
-                notelist.append(i)
-        return ''.join(notelist) 
-
-#    def isfuzzy(self):
-#       #We only need to check the first element, so we can simply inherit, but
-#       #for compatibility with po we might want to also return true if 
-#       #approved=no and target string is empty.  
-#       if super(PoXliffUnit, self).isfuzzy():
-#           return True
-#       if self.target is None and self.xmlelement.getAttribute("approved") == "no":
-#           return True
-#       return False
-       
     def markfuzzy(self, value=True):
         super(PoXliffUnit, self).markfuzzy(value)
         for unit in self.units[1:]:
