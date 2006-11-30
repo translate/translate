@@ -435,14 +435,14 @@ class xlifffile(lisa.LISAfile):
     parsefile = classmethod(parsefile)
 
     def parsestring(cls, storestring):
-	"""Parses the string to return the correct file object"""
-	xliff = super(xlifffile, cls).parsestring(storestring)
-	if xliff.units:
-	    header = xliff.units[0]
-	    if ("gettext-domain-header" in header.getrestype() or xliff.getdatatype() == "po") \
-		    and cls.__name__.lower() != "poxlifffile":
-		import poxliff
-		xliff = poxliff.PoXliffFile.parsestring(storestring)
-	return xliff
+        """Parses the string to return the correct file object"""
+        xliff = super(xlifffile, cls).parsestring(storestring)
+        if xliff.units:
+            header = xliff.units[0]
+            if ("gettext-domain-header" in header.getrestype() or xliff.getdatatype() == "po") \
+                    and cls.__name__.lower() != "poxlifffile":
+                import poxliff
+                xliff = poxliff.PoXliffFile.parsestring(storestring)
+        return xliff
     parsestring = classmethod(parsestring)
 
