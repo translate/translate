@@ -30,9 +30,9 @@ class FileAction(QtCore.QObject):
     """
     Code for the actions in File menu.
     
-    @signal fileName(string) emitted when a new file was given by the user
+    @signal fileSaved(string): emitted when a file is saved. 'string' is the filename as string.
+    @signal fileOpened(string): emitted when a file is opened. 'string' is the filename as string.
     """
-    # FIXME: comment this and list the signals
 
     def __init__(self, parent):
         """ 
@@ -62,7 +62,7 @@ class FileAction(QtCore.QObject):
 
     def save(self):
         if not self.fileName.isEmpty():
-            self.emitFileName(self.fileName)
+            self.emitFileSaved(self.fileName)
 
     def saveAs(self):
         # TODO: think about export in different formats
@@ -84,7 +84,7 @@ class FileAction(QtCore.QObject):
                 if (not fileForSave.endsWith(self.fileExtension,  QtCore.Qt.CaseInsensitive)):
                     # add extension according to existing open file
                     fileForSave.append(self.fileExtension)
-                self.emitFileName(fileForSave)
+                self.emitFileSaved(fileForSave)
                 history = fileDialog.history()
                 newHistory = QtCore.QStringList()
                 while (not history.isEmpty() and newHistory.count() < self.MaxRecentHistory):
@@ -111,21 +111,21 @@ class FileAction(QtCore.QObject):
         return True
          
     def setFileName(self, filename):
-        """ open a new file """
-        # FIXME: comment the param and rethink the comment
+        """
+        Assign the name of an opened file to a local variable.
+        
+        @param filename: file's name as QString
+        """
         self.fileName = filename
         self.emitFileOpened()
     
-    def emitFileName(self, file):
-        """emit signal fileName
+    def emitFileSaved(self, filename):
+        """emit signal fileSaved when a file is saved
         
-        @param file a string with the filename
+        @param filename: file's name as QString
         """
-        self.fileName = file
-        self.emit(QtCore.SIGNAL("fileName"), str(self.fileName)) 
-    
-##    def emitStatus(self):
-##        self.emit(QtCore.SIGNAL("statusActivated"), str(self.fileName))
+        self.fileName = filename
+        self.emit(QtCore.SIGNAL("fileSaved"), str(self.fileName)) 
     
     def emitFileOpened(self):
         """emit signal fileOpened, with a filename as string"""
