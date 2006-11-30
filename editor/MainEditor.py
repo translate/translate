@@ -96,7 +96,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionExit, QtCore.SIGNAL("triggered()"), QtCore.SLOT("close()"))
         
         # create Find widget and connect signals related to it
-        self.findBar = Find()
+        self.findBar = Find(self)
         self.findBar.setHidden(True)
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.findBar)
         self.connect(self.ui.actionFind, QtCore.SIGNAL("triggered()"), self.findBar.showFind)
