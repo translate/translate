@@ -56,17 +56,17 @@ class MainWindow(QtGui.QMainWindow):
             self.setGeometry(geometry.toRect())
             
         #plug in overview widget
-        self.dockOverview = OverviewDock()
+        self.dockOverview = OverviewDock(self)
         self.addDockWidget(QtCore.Qt.TopDockWidgetArea, self.dockOverview)
         self.ui.menuView.addAction(self.dockOverview.toggleViewAction())
         
         #plug in TUview widget
-        self.dockTUview = TUview()
+        self.dockTUview = TUview(self)
         self.setCentralWidget(self.dockTUview)
         self.ui.menuView.addAction(self.dockTUview.toggleViewAction())
         
         #plug in comment widget
-        self.dockComment = CommentDock()
+        self.dockComment = CommentDock(self)
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.dockComment)
         self.ui.menuView.addAction(self.dockComment.toggleViewAction())
          
@@ -83,6 +83,9 @@ class MainWindow(QtGui.QMainWindow):
         self.operator = Operator()
         
         #Help menu of aboutQt
+        self.ui.menuHelp.addSeparator()
+        action = QtGui.QWhatsThis.createAction(self)
+        self.ui.menuHelp.addAction(action)
         self.aboutDialog = AboutEditor()
         self.connect(self.ui.actionAbout, QtCore.SIGNAL("triggered()"), self.aboutDialog.showDialog)
         self.connect(self.ui.actionAboutQT, QtCore.SIGNAL("triggered()"), QtGui.qApp, QtCore.SLOT("aboutQt()"))
