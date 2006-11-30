@@ -96,7 +96,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionExit, QtCore.SIGNAL("triggered()"), QtCore.SLOT("close()"))
         
         # create Find widget and connect signals related to it
-        self.findBar = Find(self)
+        self.findBar = Find()
         self.findBar.setHidden(True)
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.findBar)
         self.connect(self.ui.actionFind, QtCore.SIGNAL("triggered()"), self.findBar.showFind)
@@ -178,12 +178,12 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
         self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.dockOverview.updateTarget)
         self.connect(self.dockComment, QtCore.SIGNAL("commentChanged"), self.operator.setComment)
-        self.connect(self.fileaction, QtCore.SIGNAL("fileName"), self.operator.saveStoreToFile)
+        self.connect(self.fileaction, QtCore.SIGNAL("fileSaved"), self.operator.saveStoreToFile)
         self.connect(self.operator, QtCore.SIGNAL("savedAlready"), self.ui.actionSave.setEnabled)
         self.connect(self.dockTUview, QtCore.SIGNAL("readyForSave"), self.ui.actionSave.setEnabled)
         self.connect(self.dockComment, QtCore.SIGNAL("readyForSave"), self.ui.actionSave.setEnabled)
 
-        self.connect(self.fileaction, QtCore.SIGNAL("fileName"), self.setTitle)
+        self.connect(self.fileaction, QtCore.SIGNAL("fileSaved"), self.setTitle)
         self.connect(self.operator, QtCore.SIGNAL("toggleFirstLastUnit"), self.toggleFirstLastUnit)
 
         # newUnits sends newUnits and unitsStatus.
@@ -272,7 +272,6 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionFind.setEnabled(True)
         self.ui.actionReplace.setEnabled(True)
         self.ui.actionEdit_Header.setEnabled(True)
-        # FIXME: what will happen if the file only contains 1 TU? Jens
         files = World.settings.value("recentFileList").toStringList()
         files.removeAll(fileName)
         files.prepend(fileName)
@@ -300,12 +299,12 @@ class MainWindow(QtGui.QMainWindow):
         self.updateRecentAction()
 
     def updateRecentAction(self):
-        # FIXME: comment this
+        """
+        Update recent actions of Open Recent Files with names of recent opened files
+        """
         files = World.settings.value("recentFileList").toStringList()
         numRecentFiles = min(files.count(), World.MaxRecentFiles)
-
         for i in range(numRecentFiles):
-            # FIXME: make sure that the text does not get too long. Jens
             self.ui.recentaction[i].setText(files[i])
             self.ui.recentaction[i].setData(QtCore.QVariant(files[i]))
             self.ui.recentaction[i].setVisible(True)
@@ -314,7 +313,9 @@ class MainWindow(QtGui.QMainWindow):
             self.ui.recentaction[j].setVisible(False)
 
     def closeEvent(self, event):
-        # FIXME: comment the param
+        """
+        @param QCloseEvent Object: received close event when closing mainwindows
+        """
         QtGui.QMainWindow.closeEvent(self, event)
         if self.operator.modified():
             if self.fileaction.aboutToClose(self):
