@@ -29,7 +29,13 @@ from ui.Ui_Comment import Ui_frmComment
 import modules.World as World
 
 class CommentDock(QtGui.QDockWidget):
-    # FIXME: comment this list the signals
+    """
+    Code for Comment View
+    
+    @signal commentChanged(): emitted when Comment view's document is modified.
+    @signal readyForSave(True): emitted when Comment view's text is changed.
+    @signal copyAvailable(bool): emitted when text is selected or de-selected in the Comment view.
+    """
     
     def __init__(self):
         QtGui.QDockWidget.__init__(self)
