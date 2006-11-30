@@ -279,7 +279,6 @@ def test_notranslatewords():
     assert checks.fails(stdchecker.notranslatewords, "Click Mozilla!", "Kliek Motzille!")
     assert checks.passes(stdchecker.notranslatewords, "Click Mozilla!", "Kliek Mozilla!")
     assert checks.fails(stdchecker.notranslatewords, "Searches (From Opera)", "adosako (kusukela ku- Ophera)")
-    assert checks.fails(stdchecker.notranslatewords, "Searches (From Opera)", "adosako (kusukela ku- Ophera)")
     stdchecker = checks.StandardChecker(checks.CheckerConfig(notranslatewords=["Sun","NeXT"]))
     assert checks.fails(stdchecker.notranslatewords, "Sun/NeXT Audio", "Odio dza Ḓuvha/TeVHELAHO")
     assert checks.passes(stdchecker.notranslatewords, "Sun/NeXT Audio", "Odio dza Sun/NeXT")
