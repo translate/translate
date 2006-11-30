@@ -70,9 +70,7 @@ class TUview(QtGui.QDockWidget):
     
     def setScrollbarMaximum(self):
         """Set scrollbar maximum value according to number of index."""
-        maximum = len(self.indexes) - 1
-        if (maximum < 0):
-            maximum = 0
+        maximum = max(len(self.indexes) - 1, 0)
         self.ui.fileScrollBar.setMaximum(maximum)
         
     def slotNewUnits(self, units):
