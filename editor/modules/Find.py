@@ -29,30 +29,29 @@ from ui.Ui_Find import Ui_frmFind
 import modules.World as World
 
 class Find(QtGui.QDockWidget):
-    # FIXME: comment this and list the signals
+    """
+    Code for Find and Replace dock
+    
+    @signal initSearch:
+    """
     def __init__(self, parent):
         QtGui.QDockWidget.__init__(self, parent)
         self.setObjectName("findDock")
-        self.ui = None
-        
-    def initUI(self):
-        if (not self.ui):
-            self.form = QtGui.QWidget(self)
-            self.ui = Ui_frmFind()
-            self.ui.setupUi(self.form)
-            self.setWidget(self.form)
-            self.setFeatures(QtGui.QDockWidget.DockWidgetClosable)
-            self.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
-            
-            self.connect(self.ui.findNext, QtCore.SIGNAL("clicked()"), self.findNext)
-            self.connect(self.ui.findPrevious, QtCore.SIGNAL("clicked()"), self.findPrevious)
-            self.connect(self.ui.replace, QtCore.SIGNAL("clicked()"), self.replace)
-            self.connect(self.ui.replaceAll, QtCore.SIGNAL("clicked()"), self.replaceAll)
-            self.connect(self.ui.insource, QtCore.SIGNAL("stateChanged(int)"), self.initSearch)
-            self.connect(self.ui.intarget, QtCore.SIGNAL("stateChanged(int)"), self.initSearch)
-            self.connect(self.ui.incomment, QtCore.SIGNAL("stateChanged(int)"), self.initSearch)
-            self.connect(self.ui.matchcase, QtCore.SIGNAL("stateChanged(int)"), self.initSearch)
-            self.connect(self.ui.lineEdit, QtCore.SIGNAL("textChanged(const QString &)"), self._textChanged)
+        self.form = QtGui.QWidget(self)
+        self.ui = Ui_frmFind()
+        self.ui.setupUi(self.form)
+        self.setWidget(self.form)
+        self.setFeatures(QtGui.QDockWidget.DockWidgetClosable)
+        self.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
+        self.connect(self.ui.findNext, QtCore.SIGNAL("clicked()"), self.findNext)
+        self.connect(self.ui.findPrevious, QtCore.SIGNAL("clicked()"), self.findPrevious)
+        self.connect(self.ui.replace, QtCore.SIGNAL("clicked()"), self.replace)
+        self.connect(self.ui.replaceAll, QtCore.SIGNAL("clicked()"), self.replaceAll)
+        self.connect(self.ui.insource, QtCore.SIGNAL("stateChanged(int)"), self.initSearch)
+        self.connect(self.ui.intarget, QtCore.SIGNAL("stateChanged(int)"), self.initSearch)
+        self.connect(self.ui.incomment, QtCore.SIGNAL("stateChanged(int)"), self.initSearch)
+        self.connect(self.ui.matchcase, QtCore.SIGNAL("stateChanged(int)"), self.initSearch)
+        self.connect(self.ui.lineEdit, QtCore.SIGNAL("textChanged(const QString &)"), self._textChanged)
 
     def _textChanged(self, txt):
         """ private slot
@@ -98,7 +97,6 @@ class Find(QtGui.QDockWidget):
 
     def showFind(self):
         if (self.isHidden() or not self.ui.lineEdit_2.isHidden()):
-            self.initUI()
             self.ui.insource.setEnabled(True)
             self.setWindowTitle(self.tr("Find"))
             self.initSearch()
@@ -109,7 +107,6 @@ class Find(QtGui.QDockWidget):
 
     def showReplace(self):
         if (self.isHidden() or self.ui.lineEdit_2.isHidden()):
-            self.initUI()
             self.ui.insource.setChecked(False)
             self.ui.insource.setEnabled(False)
             self.setWindowTitle(self.tr("Find & Replace"))
