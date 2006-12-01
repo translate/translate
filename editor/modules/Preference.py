@@ -70,12 +70,12 @@ class Preference(QtGui.QDialog):
         self.rememberFont(self.widget[0], self.overviewFont)
         self.rememberFont(self.widget[1], self.tuSourceFont)
         self.rememberFont(self.widget[2], self.tuTargetFont)
-        self.rememberFont(self.widget[3], self.commentFont)  
+        self.rememberFont(self.widget[3], self.commentFont)
         
         self.rememberColor(self.widget[0], self.overviewColorObj)
         self.rememberColor(self.widget[1], self.tuSourceColorObj)
         self.rememberColor(self.widget[2], self.tuTargetColorObj)
-        self.rememberColor(self.widget[3], self.commentColorObj) 
+        self.rememberColor(self.widget[3], self.commentColorObj)
         
         World.settings.setValue("UserName", QtCore.QVariant(self.ui.UserName.text()))
         World.settings.setValue("EmailAddress", QtCore.QVariant(self.ui.EmailAddress.text()))
@@ -102,8 +102,7 @@ class Preference(QtGui.QDialog):
         @param obj: input as string
         @param colorObj: stored color"""        
         if (colorObj != None):    # TODO do we need this ???
-            World.settings.setValue(str(obj + "Color"), QtCore.QVariant(colorObj.name()))      
-
+            World.settings.setValue(str(obj + "Color"), QtCore.QVariant(colorObj.name()))
         
     def fontOverview(self):
         """ slot to open font selection dialog """
@@ -148,7 +147,7 @@ class Preference(QtGui.QDialog):
     def getFont(self, obj):
         """ return font object created from settings
         @param obj: widget whose font is gotten from"""
-        font = World.settings.value(str(obj + "Font"), QtCore.QVariant(self.defaultFont.toString()))        
+        font = World.settings.value(str(obj + "Font"), QtCore.QVariant(self.defaultFont.toString()))
         if (font.isValid()):
             fontObj = QtGui.QFont()
             if (fontObj.fromString(font.toString())):
@@ -159,10 +158,8 @@ class Preference(QtGui.QDialog):
         """ return color object created from settings
         @param obj: widget whose color is gotten from"""
         color = World.settings.value(str(obj + "Color"), QtCore.QVariant(self.defaultColor.name()))
-        if (color.isValid()):
-            colorObj = QtGui.QColor(color.toString())
-            return colorObj
-        return self.defaultColor
+        colorObj = QtGui.QColor(color.toString())
+        return colorObj
 
     def defaultFonts(self):
         """slot Set default fonts"""
@@ -204,14 +201,13 @@ class Preference(QtGui.QDialog):
         @param lbl: label widget for setting color to
         @param colorObj: Color to set to label widget"""
         palette = QtGui.QPalette()
-        palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(6),colorObj)
+        palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(QtGui.QPalette.Text), colorObj)
         lbl.setPalette(palette)
         
     def setFont(self, obj):
         """ open font dialog 
-            return selected new font object or the old one if cancel was pressed 
-            @param obj: widget whose font is gotten from"""
-        #get font settings
+        @return selected new font object or the old one if cancel was pressed 
+        @param obj: widget whose font is gotten from"""
         oldFont = self.getFont(obj)
         newFont, okPressed = QtGui.QFontDialog.getFont(oldFont)
         if (okPressed):
@@ -221,13 +217,14 @@ class Preference(QtGui.QDialog):
      
     def setColor(self, obj):
         """ open color dialog 
-            return selected new color object or the old one if cancel was pressed 
-            @param obj: widget whose color is gotten from"""
+        @return selected new color object or the old one if cancel was pressed
+        @param obj: widget whose color is gotten from"""
         oldColor = self.getColor(obj)
-        newColor = QtGui.QColorDialog.getColor(oldColor)        
-        if (newColor):
+        newColor = QtGui.QColorDialog.getColor(QtCore.Qt.white)
+        if (newColor.isValid()):
             self.rememberColor(obj, newColor)
             return newColor
+        self.rememberColor(obj, oldColor)
         return oldColor
        
     def showDialog(self):
