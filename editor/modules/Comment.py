@@ -48,8 +48,8 @@ class CommentDock(QtGui.QDockWidget):
         self.layout = QtGui.QTextLayout ()
         self.applySettings()
 
-        self.connect(self.ui.txtComment, QtCore.SIGNAL("textChanged ()"), self.setReadyForSave)
-        self.connect(self.ui.txtComment, QtCore.SIGNAL("copyAvailable(bool)"), self._copyAvailable)
+        self.connect(self.ui.txtTranslatorComment, QtCore.SIGNAL("textChanged ()"), self.setReadyForSave)
+        self.connect(self.ui.txtTranslatorComment, QtCore.SIGNAL("copyAvailable(bool)"), self._copyAvailable)
 
         # create highlight font
         self.highlightFormat = QtGui.QTextCharFormat()
@@ -70,15 +70,15 @@ class CommentDock(QtGui.QDockWidget):
     def updateView(self, currentUnit):
         if (currentUnit):
             comment = currentUnit.getnotes()
-            self.ui.txtComment.setPlainText(unicode(comment))
-            self.ui.txtComment.setEnabled(True)
+            self.ui.txtTranslatorComment.setPlainText(unicode(comment))
+            self.ui.txtTranslatorComment.setEnabled(True)
         else:
-            self.ui.txtComment.clear()
-            self.ui.txtComment.setEnabled(False)
+            self.ui.txtTranslatorComment.clear()
+            self.ui.txtTranslatorComment.setEnabled(False)
             
     def checkModified(self):
-        if self.ui.txtComment.document().isModified():
-            self.emit(QtCore.SIGNAL("commentChanged"), self.ui.txtComment.toPlainText())
+        if self.ui.txtTranslatorComment.document().isModified():
+            self.emit(QtCore.SIGNAL("commentChanged"), self.ui.txtTranslatorComment.toPlainText())
 
     def highlightSearch(self, textField, position, length = 0):
         """Highlight the text at specified position, length, and textField.
@@ -87,7 +87,7 @@ class CommentDock(QtGui.QDockWidget):
         @param length: highlight length."""
         if (textField != World.comment):
             return
-        textField = self.ui.txtComment
+        textField = self.ui.txtTranslatorComment
         if (position >= 0):
             block = textField.document().findBlock(position)
             self.highlightRange.start = position
@@ -103,20 +103,20 @@ class CommentDock(QtGui.QDockWidget):
       self.emit(QtCore.SIGNAL("readyForSave"), True)
 
     def applySettings(self):
-        """ set color to the txtComment"""
+        """ set color to the txtTranslatorComment"""
         commentColor = World.settings.value("commentColor")
         if (commentColor.isValid()):
             colorObj = QtGui.QColor(commentColor.toString())
             palette = QtGui.QPalette()
             palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(6),colorObj)
-            self.ui.txtComment.setPalette(palette)
+            self.ui.txtTranslatorComment.setPalette(palette)
             
         """ set font to the txtComment"""  
         font = World.settings.value("commentFont")
         if (font.isValid()):
             fontObj = QtGui.QFont()
             if (fontObj.fromString(font.toString())):
-                self.ui.txtComment.setFont(fontObj)
+                self.ui.txtTranslatorComment.setFont(fontObj)
 
     def _copyAvailable(self, bool):
         self.emit(QtCore.SIGNAL("copyAvailable(bool)"), bool)
