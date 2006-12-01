@@ -145,7 +145,7 @@ class Preference(QtGui.QDialog):
         self.setTextColor(self.ui.commentColor, self.commentColorObj)
 
     def getFont(self, obj):
-        """ return font object created from settings
+        """@return obj: font object created from settings
         @param obj: widget whose font is gotten from"""
         font = World.settings.value(str(obj + "Font"), QtCore.QVariant(self.defaultFont.toString()))
         if (font.isValid()):
@@ -155,7 +155,7 @@ class Preference(QtGui.QDialog):
         return self.defaultFont
         
     def getColor(self, obj):
-        """ return color object created from settings
+        """@return obj: color object created from settings
         @param obj: widget whose color is gotten from"""
         color = World.settings.value(str(obj + "Color"), QtCore.QVariant(self.defaultColor.name()))
         colorObj = QtGui.QColor(color.toString())

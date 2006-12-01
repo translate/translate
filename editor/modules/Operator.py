@@ -33,7 +33,7 @@ class Operator(QtCore.QObject):
     The class loads and saves files and navigates in the data.
     Provides means for searching and filtering.
     
-    @signal currentStatus(string) emitted with the new status message
+    @signal currentStatus(string): emitted with the new status message
     """
     def __init__(self):
         QtCore.QObject.__init__(self)
@@ -100,8 +100,9 @@ class Operator(QtCore.QObject):
             return -1
 
     def filterFuzzy(self, checked):
-        """add/remove fuzzy to filter, and send filter signal."""
-        # FIXME: comment the param
+        """add/remove fuzzy to filter, and send filter signal.
+        @param checked: True or False when Fuzzy checkbox is checked or unchecked.
+        """
         if (checked) and (not self.filter & World.fuzzy):
             self.filter += World.fuzzy
         elif (not checked) and (self.filter & World.fuzzy):
@@ -109,8 +110,8 @@ class Operator(QtCore.QObject):
         self.emitFiltered(self.filter)
         
     def filterTranslated(self, checked):
-        """add/remove translated to filter, and send filter signal."""
-        # FIXME: comment the param
+        """add/remove translated to filter, and send filter signal.
+        @param checked: True or False when Translated checkbox is checked or unchecked."""
         if (checked) and (not self.filter & World.translated):
             self.filter += World.translated
         elif (not checked) and (self.filter & World.translated):
@@ -118,8 +119,9 @@ class Operator(QtCore.QObject):
         self.emitFiltered(self.filter)
         
     def filterUntranslated(self, checked):
-        """add/remove untranslated to filter, and send filter signal."""
-        # FIXME: comment the param
+        """add/remove untranslated to filter, and send filter signal.
+        @param checked: True or False when Untranslated checkbox is checked or unchecked.
+        """
         if (checked):
             self.filter = self.filter | World.untranslated
         elif (self.filter & World.untranslated):
@@ -197,7 +199,10 @@ class Operator(QtCore.QObject):
         self.emitCurrentUnit()
 
     def saveStoreToFile(self, fileName):
-        # FIXME: comment this
+        """
+        save the temporary store into a file.
+        @param fileName: String type
+        """
         self.emitUpdateUnit()
         if (World.settings.value("headerAuto").toString() == "checked"):
             self.emit(QtCore.SIGNAL("headerAuto"))
@@ -206,7 +211,9 @@ class Operator(QtCore.QObject):
         self.emit(QtCore.SIGNAL("savedAlready"), False) 
 
     def modified(self):
-        # FIXME: comment this
+        """
+        @return bool: True or False if current unit is modified or not modified.
+        """
         self.emitUpdateUnit()
         if self._saveDone:
             self._modified = False
@@ -214,8 +221,9 @@ class Operator(QtCore.QObject):
         return self._modified
     
     def setComment(self, comment):
-        """set the comment which is QString type to the current unit."""
-        # FIXME: comment the param
+        """set the comment to the current unit.
+        @param comment: QString type
+        """
         currentIndex = self._getCurrentIndex()
         currentUnit = self.store.units[currentIndex]
         currentUnit.removenotes()
@@ -223,8 +231,9 @@ class Operator(QtCore.QObject):
         self._modified = True
     
     def setTarget(self, target):
-        """set the target which is QString type to the current unit."""
-        # FIXME: comment the param
+        """set the target which is QString type to the current unit.
+        @param target: QString type
+        """
         currentIndex = self._getCurrentIndex()
         currentUnit = self.store.units[currentIndex]
         translatedState = currentUnit.istranslated()
@@ -369,7 +378,7 @@ class Operator(QtCore.QObject):
                     replacedText)
         
     def _getUnitString(self):
-        """return the string of current text field."""
+        """@return: the string of current text field."""
         textField = self.searchableText[self.currentTextField]
         unitIndex = self.filteredList[self.searchPointer]
         if (textField == World.source):
