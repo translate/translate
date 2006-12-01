@@ -32,7 +32,12 @@ class Find(QtGui.QDockWidget):
     """
     Code for Find and Replace dock
     
-    @signal initSearch:
+    @signal initSearch(string, list, bool): emitted when source, target, comment, and matchcase checkboxes changed their status.
+    Also when Find field text is changed, and Find or Replace box is showed.
+    @signal searchNext(): emitted when 'Next' button in find dock is clicked or Find field text is changed.
+    @signal searchPrevious(): emitted when 'Previous' button in find dock is clicked.
+    @signal replace(string): emitted when 'Replace' button in find dock is clicked.
+    @signal replaceAll(string): emitted when 'Replace All' button in find and replace dock is clicked.
     """
     def __init__(self, parent):
         QtGui.QDockWidget.__init__(self, parent)
