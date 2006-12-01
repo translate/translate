@@ -1,12 +1,15 @@
 <ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
  <class>frmComment</class>
  <widget class="QWidget" name="frmComment" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>150</width>
-    <height>50</height>
+    <width>171</width>
+    <height>231</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -31,26 +34,33 @@
   </property>
   <layout class="QGridLayout" >
    <property name="margin" >
-    <number>1</number>
+    <number>9</number>
    </property>
    <property name="spacing" >
-    <number>1</number>
+    <number>6</number>
    </property>
    <item row="0" column="0" >
-    <widget class="QTextEdit" name="txtComment" >
-     <property name="enabled" >
-      <bool>false</bool>
+    <widget class="QSplitter" name="" >
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
      </property>
-     <property name="minimumSize" >
-      <size>
-       <width>0</width>
-       <height>0</height>
-      </size>
-     </property>
+     <widget class="QTextEdit" name="txtTranslatorComment" >
+      <property name="enabled" >
+       <bool>false</bool>
+      </property>
+      <property name="minimumSize" >
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="txtLocationComment" />
     </widget>
    </item>
   </layout>
  </widget>
+ <pixmapfunction></pixmapfunction>
  <resources/>
  <connections/>
 </ui>
