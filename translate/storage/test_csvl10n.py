@@ -7,10 +7,17 @@ from py import test
 
 class TestCSVUnit(test_base.TestTranslationUnit):
     UnitClass = csvl10n.csvunit
-    
+
+    def setup_method(self, method):
+        self.unit = self.UnitClass("Test Source String")
+
     def test_markreview(self):
-        unit = self.UnitClass("Test Source String")
-        assert test.raises(NotImplementedError, unit.markreviewneeded)
+        assert test.raises(NotImplementedError, self.unit.markreviewneeded)
+    
+    def test_note_sanity(self):
+        """This test should be removed (in favour of the base test)
+        as soon as csvunit has a 'notes' attribute."""
+        assert test.raises(AttributeError, self.unit.addnote, 'test note')
 
 class TestCSV(test_base.TestTranslationStore):
     StoreClass = csvl10n.csvfile

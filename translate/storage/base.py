@@ -90,7 +90,14 @@ class TranslationUnit(object):
 	    - 'translator'
 	    - 'developer', 'programmer' or 'source code' (synonyms),
 	    - """
-        self.notes += text
+	if self.notes:
+            self.notes += '\n'+text
+        else:
+            self.notes = text
+
+    def removenotes(self):
+        """Remove all the translator's notes."""
+        self.notes = u''
 
     def markreviewneeded(self, needsreview=True, explanation=None):
         """Marks the unit to indicate whether it needs review. Adds an optional explanation as a note."""

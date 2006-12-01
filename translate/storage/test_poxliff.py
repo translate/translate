@@ -91,6 +91,6 @@ class TestPOXLIFFfile(test_xliff.TestXLIFFfile):
         </trans-unit>
 </group>'''
         xlifffile = self.StoreClass.parsestring(minixlf)
-        assert xlifffile.units[0].getnotes() == "Zulu translation of program ABCazoozoo come back!"
+        assert xlifffile.units[0].getnotes() == "Zulu translation of program ABC\nazoozoo come back!"
         assert xlifffile.units[0].getnotes("developer") == "azoozoo come back!"
         assert xlifffile.units[0].getnotes("po-translator") == "Zulu translation of program ABC"

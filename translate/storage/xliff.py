@@ -144,14 +144,13 @@ class xliffunit(lisa.LISAunit):
     def getnotes(self, origin=None):
         """Returns the text from notes matching 'origin' or all notes"""
         notenodes = self.xmlelement.getElementsByTagName("note")
-        if origin == None:
-          return lisa.getText(notenodes)
-        else:
-          notes = ""
-          for i in range(len(notenodes)):
-             if self.correctorigin(notenodes[i], origin):
-                notes += lisa.getText(notenodes[i])
-          return notes
+        initial_list = [lisa.getText(note) for note in notenodes if self.correctorigin(note, origin)]
+
+        # Remove duplicate entries from list:
+        dictset = {}
+        notelist = [dictset.setdefault(note, note) for note in initial_list if note not in dictset]
+
+        return '\n'.join(notelist) 
 
     def removenotes(self):
         """Remove all the notes"""

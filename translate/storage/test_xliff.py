@@ -77,10 +77,10 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert notenodes[2].getAttribute("from") == "Dad"
         assert unit.getnotes(origin="Dad") == "Don't forget the beer"
 
-        assert not unit.getnotes(origin="Bob") == "Please buy breadPlease buy milkDon't forget the beer"
+        assert not unit.getnotes(origin="Bob") == "Please buy bread\nPlease buy milk\nDon't forget the beer"
         assert not notenodes[2].getAttribute("from") == "Mom"
         assert not notenodes[0].hasAttribute("from")
-        assert unit.getnotes() == "Please buy breadPlease buy milkDon't forget the beer"
+        assert unit.getnotes() == "Please buy bread\nPlease buy milk\nDon't forget the beer"
         assert unit.correctorigin(notenodes[2], "ad") == True
         assert unit.correctorigin(notenodes[2], "om") == False
 

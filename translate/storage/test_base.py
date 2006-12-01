@@ -116,6 +116,28 @@ class TestTranslationUnit:
         notes = unit.getnotes(origin="translator")
         assert notes.count("Double check spelling.") == 1
 
+    def test_note_sanity(self):
+        """Tests that all subclasses of the base behaves consistently with regards to notes."""
+        unit = self.UnitClass("Test String")
+
+        unit.addnote("Test note 1", origin="translator")
+        unit.addnote("Test note 2", origin="translator")
+        unit.addnote("Test note 3", origin="translator")
+        expected_notes = u"Test note 1\nTest note 2\nTest note 3"
+        actual_notes = unit.getnotes(origin="translator")
+        assert actual_notes == expected_notes
+
+        # Test with no origin.
+        unit.removenotes()
+        assert not unit.getnotes()
+        unit.addnote("Test note 1")
+        unit.addnote("Test note 2")
+        unit.addnote("Test note 3")
+        expected_notes = u"Test note 1\nTest note 2\nTest note 3"
+        actual_notes = unit.getnotes()
+        assert actual_notes == expected_notes
+
+
 class TestTranslationStore:
     """Tests a TranslationStore.
     Derived classes can reuse these tests by pointing StoreClass to a derived Store"""
