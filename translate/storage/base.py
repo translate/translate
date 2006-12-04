@@ -86,11 +86,11 @@ class TranslationUnit(object):
     def addnote(self, text, origin=None):
         """Adds a note (comment). 
         Origin specifies who/where the comment comes from.
-	Origin can be one of the following text strings:
-	    - 'translator'
-	    - 'developer', 'programmer' or 'source code' (synonyms),
-	    - """
-	if self.notes:
+        Origin can be one of the following text strings:
+            - 'translator'
+            - 'developer', 'programmer' or 'source code' (synonyms),
+            - """
+        if self.notes:
             self.notes += '\n'+text
         else:
             self.notes = text
@@ -101,7 +101,7 @@ class TranslationUnit(object):
 
     def markreviewneeded(self, needsreview=True, explanation=None):
         """Marks the unit to indicate whether it needs review. Adds an optional explanation as a note."""
-	raise NotImplementedError
+        raise NotImplementedError
 
     def istranslated(self):
         """Indicates whether this unit is translated. This should be used 
@@ -118,7 +118,7 @@ class TranslationUnit(object):
 
     def isreview(self):
         """Indicates whether this unit needs review."""
-	raise NotImplementedError
+        raise NotImplementedError
 
     def isblank(self):
         """Used to see if this unit has no source or target string. This is 
