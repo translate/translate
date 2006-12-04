@@ -207,15 +207,14 @@ class TUview(QtGui.QDockWidget):
             palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(QtGui.QPalette.Text), colorObj)
             self.ui.txtTarget.setPalette(palette)
             
+        fontObj = QtGui.QFont()
         sourcefont = World.settings.value("tuSourceFont")
+        if (sourcefont.isValid() and fontObj.fromString(sourcefont.toString())):
+            self.ui.txtSource.setFont(fontObj)
+
         targetfont = World.settings.value("tuTargetFont")
-        if (sourcefont.isValid() or targetfont.isValid()):
-            fontObj = QtGui.QFont()
-            if (fontObj.fromString(sourcefont.toString())):
-                self.ui.txtSource.setFont(fontObj)
-            if (fontObj.fromString(targetfont.toString())):
-                self.ui.txtTarget.setFont(fontObj)
-        targetfont = World.settings.value("tuTargetFont")
+        if (targetfont.isValid() and fontObj.fromString(targetfont.toString())):
+            self.ui.txtTarget.setFont(fontObj)
 
     def copyAvailable(self, bool):
         self.emit(QtCore.SIGNAL("copyAvailable(bool)"), bool)
