@@ -123,13 +123,20 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionRedo, QtCore.SIGNAL("triggered()"), self.redoer)
         self.connect(self.ui.actionComment, QtCore.SIGNAL("triggered()"), self.dockComment.show)
         
-        #self.connect(self.ui.actionCut, QtCore.SIGNAL("triggered()"), self.dockComment.ui.txtComment, QtCore.SLOT("cut()"))
-        #self.connect(self.ui.actionCopy, QtCore.SIGNAL("triggered()"), self.dockTUview.ui.txtSource, QtCore.SLOT("copy()"))
         self.ui.actionCut.setEnabled(False)
         self.ui.actionCopy.setEnabled(False)
         self.connect(self.dockComment, QtCore.SIGNAL("copyAvailable(bool)"), self.enableCopyPaste)
         self.connect(self.dockTUview, QtCore.SIGNAL("copyAvailable(bool)"), self.enableCopyPaste)
 
+        self.ui.actionUndo.setEnabled(False)
+        self.ui.actionRedo.setEnabled(False)
+        self.connect(self.dockTUview, QtCore.SIGNAL("undoAvailable(bool)"), self.enableUndo)
+        self.connect(self.dockComment, QtCore.SIGNAL("undoAvailable(bool)"), self.enableUndo)
+        self.connect(self.dockTUview, QtCore.SIGNAL("redoAvailable(bool)"), self.enableRedo)
+        self.connect(self.dockComment, QtCore.SIGNAL("redoAvailable(bool)"), self.enableRedo)
+
+        self.connect(self.ui.actionUndo, QtCore.SIGNAL("triggered()"), self.undoer)
+        self.connect(self.ui.actionRedo, QtCore.SIGNAL("triggered()"), self.redoer)
         self.connect(self.ui.actionCut, QtCore.SIGNAL("triggered()"), self.cutter)
         self.connect(self.ui.actionCopy, QtCore.SIGNAL("triggered()"), self.copier)
         self.connect(self.ui.actionPaste, QtCore.SIGNAL("triggered()"), self.paster)
@@ -213,6 +220,12 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionCopy.setEnabled(bool)
         self.ui.actionCut.setEnabled(bool)
 
+    def enableUndo(self, bool):
+        self.ui.actionUndo.setEnabled(bool)
+
+    def enableRedo(self, bool):
+        self.ui.actionRedo.setEnabled(bool)
+
     def cutter(self):
         object = self.focusWidget()
         try:
@@ -234,21 +247,17 @@ class MainWindow(QtGui.QMainWindow):
         except AttributeError:
             pass
 
-    def redoer(self):
+    def undoer(self):
         object = self.focusWidget()
-        try:            
-            object.document().redo()
+        try:
+            object.document().undo()
         except AttributeError:
             pass
 
-    def undoer(self, obj):
-        object = self.focusWidget()        
+    def redoer(self):
+        object = self.focusWidget()
         try:  
-            object.document().undo()
-            if object is None:
-              print "hdhd"
-            else:
-              print object
+            object.document().redo()
         except AttributeError:
             pass
 
@@ -268,8 +277,6 @@ class MainWindow(QtGui.QMainWindow):
         self.setTitle(fileName)
         self.ui.actionSave.setEnabled(False)  
         self.ui.actionSaveas.setEnabled(True)
-        self.ui.actionUndo.setEnabled(True)
-        self.ui.actionRedo.setEnabled(True)
         self.ui.actionPaste.setEnabled(True)
         self.ui.actionSelectAll.setEnabled(True)
         self.ui.actionFind.setEnabled(True)
@@ -339,12 +346,6 @@ class MainWindow(QtGui.QMainWindow):
         @param title: title string."""
         shownName = QtCore.QFileInfo(title).fileName()
         self.setWindowTitle(self.tr("%1[*] - %2").arg(shownName).arg(World.settingApp))
-
-    def disableUndo(self):
-        self.ui.actionUndo.setVisible(True)
-
-    def enableUndo(self):
-        self.ui.actionUndo.setEnabled(True)
 
     def toggleFirstLastUnit(self, atFirst, atLast):
         """set enable/disable first, previous, next, and last unit buttons

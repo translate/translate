@@ -44,6 +44,8 @@ class TUview(QtGui.QDockWidget):
         self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
         self.connect(self.ui.txtSource, QtCore.SIGNAL("copyAvailable(bool)"), self.copyAvailable)
         self.connect(self.ui.txtTarget, QtCore.SIGNAL("copyAvailable(bool)"), self.copyAvailable)
+        self.connect(self.ui.txtTarget, QtCore.SIGNAL("undoAvailable(bool)"), self.undoAvailable)
+        self.connect(self.ui.txtTarget, QtCore.SIGNAL("redoAvailable(bool)"), self.redoAvailable)
         
         # create highlight font
         self.highlightFormat = QtGui.QTextCharFormat()
@@ -195,30 +197,35 @@ class TUview(QtGui.QDockWidget):
         if (sourceColor.isValid()):
             colorObj = QtGui.QColor(sourceColor.toString())
             palette = QtGui.QPalette()
-            palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(6),colorObj)
+            palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(QtGui.QPalette.Text), colorObj)
             self.ui.txtSource.setPalette(palette)
             
         targetColor = World.settings.value("tuTargetColor")
         if (targetColor.isValid()):
             colorObj = QtGui.QColor(targetColor.toString())
             palette = QtGui.QPalette()
-            palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(6),colorObj)
+            palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(QtGui.QPalette.Text), colorObj)
             self.ui.txtTarget.setPalette(palette)
             
         sourcefont = World.settings.value("tuSourceFont")
-        if (sourcefont.isValid()):
+        targetfont = World.settings.value("tuTargetFont")
+        if (sourcefont.isValid() or targetfont.isValid()):
             fontObj = QtGui.QFont()
             if (fontObj.fromString(sourcefont.toString())):
                 self.ui.txtSource.setFont(fontObj)
-        targetfont = World.settings.value("tuTargetFont")
-        if (targetfont.isValid()):
-            fontObj = QtGui.QFont()
             if (fontObj.fromString(targetfont.toString())):
                 self.ui.txtTarget.setFont(fontObj)
+        targetfont = World.settings.value("tuTargetFont")
 
     def copyAvailable(self, bool):
         self.emit(QtCore.SIGNAL("copyAvailable(bool)"), bool)
+        
+    def undoAvailable(self, bool):
+        self.emit(QtCore.SIGNAL("undoAvailable(bool)"), bool)
 
+    def redoAvailable(self, bool):
+        self.emit(QtCore.SIGNAL("redoAvailable(bool)"), bool)
+        
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     Form = TUview()

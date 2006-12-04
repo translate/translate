@@ -45,11 +45,13 @@ class CommentDock(QtGui.QDockWidget):
         self.ui = Ui_frmComment()
         self.ui.setupUi(self.form)
         self.setWidget(self.form)
-        self.layout = QtGui.QTextLayout ()
+        self.layout = QtGui.QTextLayout()
         self.applySettings()
 
-        self.connect(self.ui.txtTranslatorComment, QtCore.SIGNAL("textChanged ()"), self.setReadyForSave)
-        self.connect(self.ui.txtTranslatorComment, QtCore.SIGNAL("copyAvailable(bool)"), self._copyAvailable)
+        self.connect(self.ui.txtTranslatorComment, QtCore.SIGNAL("textChanged()"), self.setReadyForSave)
+        self.connect(self.ui.txtTranslatorComment, QtCore.SIGNAL("copyAvailable(bool)"), self.copyAvailable)
+        self.connect(self.ui.txtTranslatorComment, QtCore.SIGNAL("undoAvailable(bool)"), self.undoAvailable)
+        self.connect(self.ui.txtTranslatorComment, QtCore.SIGNAL("redoAvailable(bool)"), self.redoAvailable)
 
         # create highlight font
         self.highlightFormat = QtGui.QTextCharFormat()
@@ -103,24 +105,29 @@ class CommentDock(QtGui.QDockWidget):
       self.emit(QtCore.SIGNAL("readyForSave"), True)
 
     def applySettings(self):
-        """ set color to the txtTranslatorComment"""
+        """ set color and font to txtTranslatorComment"""
         commentColor = World.settings.value("commentColor")
         if (commentColor.isValid()):
             colorObj = QtGui.QColor(commentColor.toString())
             palette = QtGui.QPalette()
-            palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(6),colorObj)
+            palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(QtGui.QPalette.Text), colorObj)
             self.ui.txtTranslatorComment.setPalette(palette)
             
-        """ set font to the txtComment"""  
         font = World.settings.value("commentFont")
         if (font.isValid()):
             fontObj = QtGui.QFont()
             if (fontObj.fromString(font.toString())):
                 self.ui.txtTranslatorComment.setFont(fontObj)
 
-    def _copyAvailable(self, bool):
+    def copyAvailable(self, bool):
         self.emit(QtCore.SIGNAL("copyAvailable(bool)"), bool)
         
+    def undoAvailable(self, bool):
+        self.emit(QtCore.SIGNAL("undoAvailable(bool)"), bool)
+
+    def redoAvailable(self, bool):
+        self.emit(QtCore.SIGNAL("redoAvailable(bool)"), bool)
+    
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     comment = CommentDock()
