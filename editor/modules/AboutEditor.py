@@ -23,6 +23,11 @@
 #
 # This module is working on About Editor
 
+if __name__ == "__main__":
+    import sys
+    import os.path
+    sys.path.append(os.path.join(sys.path[0], ".."))
+
 import sys
 from PyQt4 import QtCore, QtGui
 
@@ -78,7 +83,7 @@ class AboutTab(QtGui.QWidget):
         fileNameLabel = QtGui.QLabel(self.tr("<center><br><br><br><b>  WordForge Translation Editor </b></br></center><center><br> Version 0.1 (31 August 2006)</br><br>Copyright 2006 WordForge Foundation.</br></center>"))
         mainLayout = QtGui.QVBoxLayout()
         mainLayout.addWidget(fileNameLabel)
-        mainLayout.addStretch(1)
+##        mainLayout.addStretch(1)
         self.setLayout(mainLayout)
 
 
@@ -86,7 +91,7 @@ class AuthorsTab(QtGui.QWidget):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)        
         self.fileNameLabel = QtGui.QTextBrowser()
-        self.fileNameLabel.setHtml(self.tr('<br>Hok Kakada (<a href="mailto:hokkakada@khmeros.info">hokkakada@khmeros.info</a>)<br><br>Keo Sophon (<a href="mailto:keosophon@khmeros.info">keosophon@khmeros.info</a>)<br><br>San Titvirak (<a href="mailto:titvirak@khmeros.info">titvirak@khmeros.info</a>)<br><br>Seth Chanratha(<a href="mailto:sethchanratha@khmeros.info">sethchanratha@khmeros.info</a>)'))                    
+        self.fileNameLabel.setHtml(self.tr('<br>Hok Kakada (<a href="mailto:hokkakada@khmeros.info">hokkakada@khmeros.info</a>)<br><br>Keo Sophon (<a href="mailto:keosophon@khmeros.info">keosophon@khmeros.info</a>)<br><br>San Titvirak (<a href="mailto:titvirak@khmeros.info">titvirak@khmeros.info</a>)<br><br>Seth Chanratha(<a href="mailto:sethchanratha@khmeros.info">sethchanratha@khmeros.info</a>)'))
         mainLayout = QtGui.QVBoxLayout()
         mainLayout.addWidget(self.fileNameLabel)
         self.setLayout(mainLayout)
@@ -114,6 +119,6 @@ class LicensesTab(QtGui.QWidget):
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
-    tabdialog = AboutEditor()
+    tabdialog = AboutEditor(None)
     sys.exit(tabdialog.exec_())
 
