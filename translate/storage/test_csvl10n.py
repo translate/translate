@@ -19,6 +19,12 @@ class TestCSVUnit(test_base.TestTranslationUnit):
         as soon as csvunit has a 'notes' attribute."""
         assert test.raises(AttributeError, self.unit.addnote, 'test note')
 
+    def test_errors(self):
+        """Assert the fact that geterrors() and adderror() is not (yet) implemented.
+        This test needs to be removed when these methods get implemented."""
+        assert test.raises(NotImplementedError, self.unit.geterrors)
+        assert test.raises(NotImplementedError, self.unit.adderror, 'testname', 'Test error')
+
 class TestCSV(test_base.TestTranslationStore):
     StoreClass = csvl10n.csvfile
 

@@ -137,6 +137,25 @@ class TestTranslationUnit:
         actual_notes = unit.getnotes()
         assert actual_notes == expected_notes
 
+    def test_errors(self):
+        """Tests that we can add and retrieve error messages for a unit."""
+        unit = self.UnitClass("Test String")
+
+        # The base class methods won't be implemented:
+        if self.__module__.endswith('test_base'):
+            assert test.raises(NotImplementedError, unit.markreviewneeded) 
+            return
+
+        assert len(unit.geterrors()) == 0
+        unit.adderror(errorname='test1', errortext='Test error message 1.')
+        unit.adderror(errorname='test2', errortext='Test error message 2.')
+        unit.adderror(errorname='test3', errortext='Test error message 3.')
+        assert len(unit.geterrors()) == 3
+        assert unit.geterrors()['test1'] == 'Test error message 1.'
+        assert unit.geterrors()['test2'] == 'Test error message 2.'
+        assert unit.geterrors()['test3'] == 'Test error message 3.'
+        unit.adderror(errorname='test1', errortext='New error 1.')
+        assert unit.geterrors()['test1'] == 'New error 1.'
 
 class TestTranslationStore:
     """Tests a TranslationStore.

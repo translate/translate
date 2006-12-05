@@ -99,6 +99,14 @@ class TranslationUnit(object):
         """Remove all the translator's notes."""
         self.notes = u''
 
+    def adderror(self, errorname, errortext):
+        """Adds an error message to this unit."""
+        raise NotImplementedError
+
+    def geterrors(self):
+        """Get all error messages."""
+        raise NotImplementedError
+
     def markreviewneeded(self, needsreview=True, explanation=None):
         """Marks the unit to indicate whether it needs review. Adds an optional explanation as a note."""
         raise NotImplementedError

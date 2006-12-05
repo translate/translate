@@ -8,9 +8,18 @@ from py import test
 class TestTBXUnit(test_base.TestTranslationUnit):
     UnitClass = tbx.tbxunit
 
+    def setup_method(self, method):
+        self.unit = self.UnitClass("Test Source String")
+
     def test_markreview(self):
-        unit = self.UnitClass("Test Source String")
-        assert test.raises(NotImplementedError, unit.markreviewneeded)
+        assert test.raises(NotImplementedError, self.unit.markreviewneeded)
+
+    def test_errors(self):
+        """Assert the fact that geterrors() and adderror() is not (yet) implemented.
+        This test needs to be removed when these methods get implemented."""
+        assert test.raises(NotImplementedError, self.unit.geterrors)
+        assert test.raises(NotImplementedError, self.unit.adderror, 'testname', 'Test error')
+
 
 class TestTBXfile(test_base.TestTranslationStore):
 	StoreClass = tbx.tbxfile

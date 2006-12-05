@@ -141,7 +141,7 @@ class xliffunit(lisa.LISAunit):
             note.setAttribute("from", origin)
         self.xmlelement.appendChild(note)        
 
-    def getnotes(self, origin=None):
+    def getnotelist(self, origin=None):
         """Returns the text from notes matching 'origin' or all notes"""
         notenodes = self.xmlelement.getElementsByTagName("note")
         initial_list = [lisa.getText(note) for note in notenodes if self.correctorigin(note, origin)]
@@ -150,7 +150,10 @@ class xliffunit(lisa.LISAunit):
         dictset = {}
         notelist = [dictset.setdefault(note, note) for note in initial_list if note not in dictset]
 
-        return '\n'.join(notelist) 
+        return notelist 
+
+    def getnotes(self, origin=None):
+        return '\n'.join(self.getnotelist(origin=origin)) 
 
     def removenotes(self):
         """Remove all the notes"""
@@ -158,7 +161,21 @@ class xliffunit(lisa.LISAunit):
         notes = self.xmlelement.getElementsByTagName("note")
         for i in range(len(notes)):
             self.xmlelement.removeChild(notes[i])    
-    
+ 
+    def adderror(self, errorname, errortext):
+        """Adds an error message to this unit."""
+        text = errorname + ': ' + errortext
+        self.addnote(text, origin="pofilter")
+
+    def geterrors(self):
+        """Get all error messages."""
+        notelist = self.getnotelist(origin="pofilter")
+        errordict = {}
+        for note in notelist:
+            errorname, errortext = note.split(': ')
+            errordict[errorname] = errortext
+        return errordict
+
     def isapproved(self):
         """States whether this unit is approved"""
         return self.xmlelement.getAttribute("approved") == "yes"
