@@ -1,0 +1,19 @@
+ITEMS										STATUS				WHO		Priority
+
+1. README/CHANGLOG						not					Phon		1
+2. OVERVIEW: Navigation, Filter					not					Rak			1
+3. Find: Wrong Highligth,Not go to the beginning	        not					Phon		1
+4. Save button						                        not					Phon		2
+5. Copy/Paste/Undo/Redo					        not					Ratha		1
+6. Open many files: no attribute remove last		        not					Virak		1
+7. What's this?								not					All			2
+8. Image Path									not					Jens		1
+9. Able to run script							not					Da			1
+10. Show preference dialog on save if no			not					Ratha		3
+11. Command Line							        not					Da			1
+12. UnitTest									not					All			1
+13. Header									not					Jens		1
+14. Note										not					Da			1
+15. Name									not					All			1
+16. Windows Installer							not					Virak		3
+17. Rpm packages							not					Da			3
