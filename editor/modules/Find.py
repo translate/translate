@@ -23,6 +23,11 @@
 #
 # This module is working on source and target of current TU.
 
+if __name__ == "__main__":
+    import sys
+    import os.path
+    sys.path.append(os.path.join(sys.path[0], ".."))
+    
 import sys
 from PyQt4 import QtCore, QtGui
 from ui.Ui_Find import Ui_frmFind
@@ -146,6 +151,6 @@ class Find(QtGui.QDockWidget):
     
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
-    Form = Find()
+    Form = Find(None)
     Form.show()
     sys.exit(app.exec_())
