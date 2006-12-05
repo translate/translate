@@ -49,9 +49,6 @@ class CommentDock(QtGui.QDockWidget):
         self.applySettings()
 
         self.connect(self.ui.txtTranslatorComment, QtCore.SIGNAL("textChanged()"), self.setReadyForSave)
-        self.connect(self.ui.txtTranslatorComment, QtCore.SIGNAL("copyAvailable(bool)"), self.copyAvailable)
-        self.connect(self.ui.txtTranslatorComment, QtCore.SIGNAL("undoAvailable(bool)"), self.undoAvailable)
-        self.connect(self.ui.txtTranslatorComment, QtCore.SIGNAL("redoAvailable(bool)"), self.redoAvailable)
 
         # create highlight font
         self.highlightFormat = QtGui.QTextCharFormat()
@@ -118,15 +115,7 @@ class CommentDock(QtGui.QDockWidget):
             fontObj = QtGui.QFont()
             if (fontObj.fromString(font.toString())):
                 self.ui.txtTranslatorComment.setFont(fontObj)
-
-    def copyAvailable(self, bool):
-        self.emit(QtCore.SIGNAL("copyAvailable(bool)"), bool)
-        
-    def undoAvailable(self, bool):
-        self.emit(QtCore.SIGNAL("undoAvailable(bool)"), bool)
-
-    def redoAvailable(self, bool):
-        self.emit(QtCore.SIGNAL("redoAvailable(bool)"), bool)
+    
     
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

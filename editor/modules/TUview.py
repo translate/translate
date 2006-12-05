@@ -42,10 +42,6 @@ class TUview(QtGui.QDockWidget):
         self.indexToUpdate = None
         self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.setReadyForSave)
         self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
-        self.connect(self.ui.txtSource, QtCore.SIGNAL("copyAvailable(bool)"), self.copyAvailable)
-        self.connect(self.ui.txtTarget, QtCore.SIGNAL("copyAvailable(bool)"), self.copyAvailable)
-        self.connect(self.ui.txtTarget, QtCore.SIGNAL("undoAvailable(bool)"), self.undoAvailable)
-        self.connect(self.ui.txtTarget, QtCore.SIGNAL("redoAvailable(bool)"), self.redoAvailable)
         
         # create highlight font
         self.highlightFormat = QtGui.QTextCharFormat()
@@ -214,16 +210,7 @@ class TUview(QtGui.QDockWidget):
 
         targetfont = World.settings.value("tuTargetFont")
         if (targetfont.isValid() and fontObj.fromString(targetfont.toString())):
-            self.ui.txtTarget.setFont(fontObj)
-
-    def copyAvailable(self, bool):
-        self.emit(QtCore.SIGNAL("copyAvailable(bool)"), bool)
-        
-    def undoAvailable(self, bool):
-        self.emit(QtCore.SIGNAL("undoAvailable(bool)"), bool)
-
-    def redoAvailable(self, bool):
-        self.emit(QtCore.SIGNAL("redoAvailable(bool)"), bool)
+            self.ui.txtTarget.setFont(fontObj)  
         
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

@@ -50,6 +50,9 @@ class MainWindow(QtGui.QMainWindow):
         self.setWindowTitle(World.settingOrg + ' ' + World.settingApp + ' ' + World.settingVer)
         self.createRecentAction()
         
+        app = QtGui.QApplication.instance()
+        self.connect(app, QtCore.SIGNAL("focusChanged(QWidget *,QWidget *)"), self.focusChanged)
+        
         # get the last geometry
         geometry = World.settings.value("lastGeometry")
         if (geometry.isValid()):
@@ -366,6 +369,23 @@ class MainWindow(QtGui.QMainWindow):
     def showTemporaryMessage(self, text):
         self.ui.statusbar.showMessage(text, 3000)
         
+    def focusChanged(self, oldWidget, newWidget):
+        if (oldWidget):
+            self.disconnect(oldWidget, QtCore.SIGNAL("copyAvailable(bool)"), self.enableCopyPaste)
+            self.disconnect(oldWidget, QtCore.SIGNAL("undoAvailable(bool)"), self.enableUndo)
+            self.disconnect(oldWidget, QtCore.SIGNAL("redoAvailable(bool)"), self.enableRedo)
+        if (newWidget):
+            self.connect(newWidget, QtCore.SIGNAL("copyAvailable(bool)"), self.enableCopyPaste)
+            self.connect(newWidget, QtCore.SIGNAL("undoAvailable(bool)"), self.enableUndo)
+            self.connect(newWidget, QtCore.SIGNAL("redoAvailable(bool)"), self.enableRedo)
+            try:
+                self.enableCopyPaste(newWidget.textCursor().hasSelection())
+                self.enableUndo(newWidget.textCursor().hasSelection())
+                self.enableRedo(newWidget.textCursor().hasSelection())
+            except:
+                pass
+        
+    
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     editor = MainWindow()
