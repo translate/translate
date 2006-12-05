@@ -30,8 +30,8 @@ class BaseTestFilter(object):
         """checks that an obviously wrong string fails"""
         self.unit.settarget("REST")
         filter_result = self.filter(self.translationstore)
-        assert 'startcaps:' in str(filter_result)
-        assert 'simplecaps:' in str(filter_result)
+        assert filter_result.units[0].geterrors().has_key('startcaps')
+        assert filter_result.units[0].geterrors().has_key('simplecaps')
 
     def test_variables_across_lines(self):
         """Test that variables can span lines and still fail/pass"""
@@ -44,15 +44,15 @@ class BaseTestFilter(object):
         """check that we don't add another failing marker if the message is already marked as failed"""
         self.unit.settarget('')
         filter_result = self.filter(self.translationstore, cmdlineoptions=["--test=untranslated"])
-        notes = filter_result.units[0].getnotes(origin="translator").split('\n')
-        assert len(notes) == 1
-        assert notes[0].count('untranslated:') == 1
+        errors = filter_result.units[0].geterrors()
+        assert len(errors) == 1
+        assert errors.has_key('untranslated')
 
         # Run a filter test on the result, to check that it doesn't mark the same error twice.
         filter_result2 = self.filter(filter_result, cmdlineoptions=["--test=untranslated"])
-        notes = filter_result.units[0].getnotes(origin="translator").split('\n')
-        assert len(notes) == 1
-        assert notes[0].count('untranslated:') == 1
+        errors = filter_result2.units[0].geterrors()
+        assert len(errors) == 1
+        assert errors.has_key('untranslated')
 
     def test_non_existant_check(self):
         """check that we report an error if a user tries to run a non-existant test"""
@@ -71,7 +71,7 @@ class BaseTestFilter(object):
         self.unit.markfuzzy()
 
         filter_result = self.filter(self.translationstore, cmdlineoptions=["--fuzzy"])
-        assert filter_result.units[0].getnotes(origin="translator").count('isfuzzy:') == 1
+        assert filter_result.units[0].geterrors().has_key('isfuzzy')
 
         filter_result = self.filter(self.translationstore, cmdlineoptions=["--nofuzzy"])
         assert len(filter_result.units) == 0
@@ -108,11 +108,11 @@ class BaseTestFilter(object):
         self.unit.markfuzzy()
 
         filter_result = self.filter(self.translationstore, cmdlineoptions=["--test=isfuzzy"])
-        assert 'isfuzzy:' in str(filter_result)
+        assert filter_result.units[0].geterrors().has_key('isfuzzy')
 
         self.unit.markfuzzy(False)
         filter_result = self.filter(self.translationstore, cmdlineoptions=["--test=isfuzzy"])
-        assert 'isfuzzy:' not in str(filter_result)
+        assert len(filter_result.units) == 0
 
     def test_isreview(self):
         """tests the extraction of items marked review"""

@@ -132,10 +132,7 @@ class pocheckfilter:
       if filterresult:
         if filterresult != autocorrect:
           for filtername, filtermessage in filterresult:
-            newcomment = "(pofilter) %s: %s" % (filtername, filtermessage)
-            if newcomment not in unit.getnotes(origin="translator"):
-              unit.addnote(newcomment, origin="translator")
-          for filtername, filtermessage in filterresult:
+            unit.adderror(filtername, filtermessage)
             if isinstance(filtermessage, checks.SeriousFilterFailure):
               unit.markfuzzy()
         newtransfile.addunit(unit)
