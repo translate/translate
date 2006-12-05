@@ -21,7 +21,11 @@
 #       Seth Chanratha (sethchanratha@khmeros.info)
 #       San Titvirak (titvirak@khmeros.info)
 #
-
+if __name__ == "__main__":
+    import sys
+    import os.path
+    sys.path.append(os.path.join(sys.path[0], ".."))
+    
 from PyQt4 import QtCore, QtGui
 import sys, os
 from modules import World
@@ -144,6 +148,5 @@ class FileAction(QtCore.QObject):
     
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
-    fileaction = FileAction()   
-    fileaction.show()
+    fileaction = FileAction(None)
     sys.exit(app.exec_())
