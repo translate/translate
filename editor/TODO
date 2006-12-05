@@ -93,3 +93,10 @@
 - Who: Da
 - Status: not
 
+19. Comment the code: all classes, return values and parameter!
+- Priority: 1
+- Who: all
+- Status: not
+- Tip: I am not writing everywhere FIXME: you have to start thinking yourself, Jens
+
+
