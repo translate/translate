@@ -1,0 +1,95 @@
+
+1. README/CHANGLOG
+- Priority: 1
+- Who: Phon
+- Status: not
+
+2. OVERVIEW: Navigation, Filter
+- Priority: 1
+- Who: Virak
+- Status: not
+
+3. Find: Wrong Highligth,Not go to the beginning
+- Priority: 1
+- Who: Phon
+- Status: not
+
+4. Save button
+- Priority: 2
+- Who: Phon
+- Status: not
+
+5. Copy/Paste/Undo/Redo
+- Priority: 1
+- Who: Ratha
+- Status: not
+
+6. Open many files: no attribute remove last
+- Priority: 1
+- Who: Virak
+- Status: not
+
+7. What's this?
+- Priority: 2
+- Who: All
+- Status: not
+
+8. Image Path
+- Priority: 1
+- Who: Jens
+- Status: not
+
+9. Able to run script
+- Priority: 1
+- Who: Da
+- Status: not
+  + some files: Header.py, Operator.py, Comment.py, World.py, Status.py are still not commited for some code are  not done yet
+
+10. Show preference dialog on save if no
+- Priority: 3
+- Who: Ratha
+- Status: not
+
+11. Command Line	
+- Priority: 1
+- Who: Da
+- Status: not
+
+12. UnitTest
+- Priority: 1
+- Who: All
+- Status: not
+
+13. Header
+- Priority: 1
+- Who: Jens
+- Status: not
+
+14. Note
+- Priority: 1
+- Who: Da
+- Status: Open
+  + need futhure discussion with pootle team.
+
+15. Editor's Name
+- Priority: 1
+- Who: All
+- Status: Open
+    + There are two candidates: pootling, poxole.
+
+16. Windows Installer
+- Priority: 3
+- Who: Virak
+- Status: not
+
+17. Rpm packages
+- Priority: 3
+- Who: Da
+- Status: not
+- Tip: use rpm-python
+
+18 Move the mainwindow class into a file in modules and make the filename of the main script only lowercase.
+- Priority: 2
+- Who: Da
+- Status: not
+
