@@ -145,7 +145,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionSelectAll , QtCore.SIGNAL("triggered()"), self.selectAll)
 
         # action Preferences menu 
-        self.preference = Preference()
+        self.preference = Preference(self)
         self.connect(self.ui.actionPreferences, QtCore.SIGNAL("triggered()"), self.preference.showDialog)
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockComment.applySettings)
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockOverview.applySettings)
