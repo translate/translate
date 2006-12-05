@@ -23,6 +23,11 @@
 #
 # This module is working on overview of source and target
 
+if __name__ == "__main__":
+    import sys
+    import os.path
+    sys.path.append(os.path.join(sys.path[0], ".."))
+    
 import sys
 from PyQt4 import QtCore, QtGui
 from ui.Ui_Overview import Ui_Form
@@ -196,6 +201,6 @@ class OverviewDock(QtGui.QDockWidget):
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
-    overview = OverviewDock()
+    overview = OverviewDock(None)
     overview.show()
     sys.exit(app.exec_())
