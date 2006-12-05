@@ -23,14 +23,19 @@
 # 
 # This module is working on Preferences
 
+if __name__ == "__main__":
+    import sys
+    import os.path
+    sys.path.append(os.path.join(sys.path[0], ".."))
+    
 import sys
 from PyQt4 import QtCore, QtGui
 from ui.Ui_Preference import Ui_frmPreference
 import modules.World as World
 
 class Preference(QtGui.QDialog):
-    def __init__(self):
-        QtGui.QDialog.__init__(self)
+    def __init__(self, parent):
+        QtGui.QDialog.__init__(self, parent)
         self.ui = None    
 
     def initUI(self):
@@ -278,6 +283,6 @@ class Preference(QtGui.QDialog):
         
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
-    user = Preference()
+    user = Preference(None)
     user.show()
-    sys.exit(app.exec_())        
+    sys.exit(app.exec_())
