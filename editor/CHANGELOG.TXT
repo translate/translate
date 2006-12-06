@@ -1,3 +1,20 @@
 WordForge Translation Editor
 ---------------------------------------
+
+30 December 2006:
+	- About Dialog is improved
+	- Open in New Windows is improved
+		. The new windows is not opened anymore when pressing Cancel button or Esc key
+	- Find and Replace bar
+		- Find is improved (match case, findbackward and highlight)
+	- Preference Dialog with 3 Tabs:
+		.Personalize
+		.Font
+		.Color
+	- Save button is disabled once it is clicked
+	- Save as is improved
+		.Can detect save/cancel button
+	- Status of Translation units is showed at Statusbar
+	
+
 31. August 2006, release of version 0.1

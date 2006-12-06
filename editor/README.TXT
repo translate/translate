@@ -1,6 +1,16 @@
-WordForge Translation Editor (V.1.0)
-===========================================================
+				WordForge Translation Editor (V.1.0)
+	Copyright (c) 2006 by The WordForge Foundation (All Rights Reserved)
+				www.khmeros.info
 
+Version 1.0  Date: 30 December 2006
+
+Developed by:
+	Hok Kakada (hokkakada@khmeros.info)
+	Keo Sophon (keosophon@khmeros.info)
+	San Titvirak (titvirak@khmeros.info)
+	Seth Chanratha (sethchanratha@khmeros.info)
+
+===========================================================
 * How it works
 * References
 * Requirement/Installation
