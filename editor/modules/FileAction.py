@@ -21,21 +21,19 @@
 #       Seth Chanratha (sethchanratha@khmeros.info)
 #       San Titvirak (titvirak@khmeros.info)
 #
+import sys, os
 if __name__ == "__main__":
-    import sys
-    import os.path
     sys.path.append(os.path.join(sys.path[0], ".."))
     
 from PyQt4 import QtCore, QtGui
-import sys, os
 from modules import World
 
 class FileAction(QtCore.QObject):
     """
     Code for the actions in File menu.
     
-    @signal fileSaved(string): emitted when a file is saved. 'string' is the filename as string.
-    @signal fileOpened(string): emitted when a file is opened. 'string' is the filename as string.
+    @signal fileSaved(string): emitted when a file is saved. 'string' is the filename as QString.
+    @signal fileOpened(string): emitted when a file is opened. 'string' is the filename as QString.
     """
 
     def __init__(self, parent):
@@ -53,12 +51,12 @@ class FileAction(QtCore.QObject):
         
     def openFile(self):        
         #TODO: open one or more existing files selected
-        self.fileName = QtGui.QFileDialog.getOpenFileName(self.parentWidget, self.tr("Open File"),
-                        QtCore.QDir.currentPath(),
-                        self.tr("PO Files (*.po *.pot);;XLIFF Files (*.xliff *.xlf);;All Supported Files (*.po *.pot *.xliff *.xlf);;All Files (*.*)"))
-                        #self.tr("Po Files (*.po);; XLIFF Files (*.xliff *.xlf);;Po Templates (*.pot)"))
+        newFileName = QtGui.QFileDialog.getOpenFileName(self.parentWidget, self.tr("Open File"),
+                        sys.path[0],
+                        self.tr("All Supported Files (*.po *.pot *.xliff *.xlf);;PO Files (*.po *.pot);;XLIFF Files (*.xliff *.xlf);;All Files (*)"))
         
-        if not self.fileName.isEmpty():
+        if not newFileName.isEmpty():
+            self.fileName = newFileName
             self.emitFileOpened()
             return True
         else:
