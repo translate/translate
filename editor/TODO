@@ -43,8 +43,7 @@
 9. Able to run script
 - Priority: 1
 - Who: Da
-- Status: not
-  + some files: Header.py, Operator.py, Comment.py, World.py, Status.py are still not commited for some code are  not done yet
+- Status: closed
 
 10. Show preference dialog on save if no
 - Priority: 3
@@ -54,15 +53,16 @@
 11. Command Line	
 - Priority: 1
 - Who: Da
-- Status: not
+- Status: closed
   + create poxole.py file and putting options ( -h, --help, --version)
   + open the editor if there is no options
-  + in the process of doing open the editor with a valid given file. 
+  + open the editor with a valid given file. 
 
 12. UnitTest
 - Priority: 1
 - Who: All
 - Status: not
+   + Test_Comment.py : just start (da)
 
 13. Header
 - Priority: 1
