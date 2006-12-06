@@ -36,8 +36,8 @@ from modules.Operator import Operator
 import modules.World as World
 
 class Header(QtGui.QDialog):
-    def __init__(self):
-        QtGui.QDialog.__init__(self)        
+    def __init__(self, parent):
+        QtGui.QDialog.__init__(self, parent)
         self.ui = None
         
     
