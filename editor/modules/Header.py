@@ -24,11 +24,14 @@
 # This module is working on any Headers of current TU.
 
 import sys
+import time, os
+if __name__ == "__main__":
+    sys.path.append(os.path.join(sys.path[0], ".."))
+
 from PyQt4 import QtCore, QtGui
 from ui.Ui_Header import Ui_frmHeader
 from modules.Operator import Operator
 import modules.World as World
-import time, os
 
 class Header(QtGui.QDialog):
     def __init__(self):
@@ -195,5 +198,5 @@ class Header(QtGui.QDialog):
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     Header = Header()
-    Header.show()
+    Header.showDialog("other comments", {"first entry":"one"})
     sys.exit(app.exec_())
