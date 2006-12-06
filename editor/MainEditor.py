@@ -290,7 +290,7 @@ class MainWindow(QtGui.QMainWindow):
         files.removeAll(fileName)
         files.prepend(fileName)
         while files.count() > World.MaxRecentFiles:
-            files.removeLast()
+            files.removeAt(files.count() - 1)
         World.settings.setValue("recentFileList", QtCore.QVariant(files))
         self.updateRecentAction() 
 
