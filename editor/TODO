@@ -55,6 +55,9 @@
 - Priority: 1
 - Who: Da
 - Status: not
+  + create poxole.py file and putting options ( -h, --help, --version)
+  + open the editor if there is no options
+  + in the process of doing open the editor with a valid given file. 
 
 12. UnitTest
 - Priority: 1
@@ -92,7 +95,7 @@
 18 Move the mainwindow class into a file in modules and make the filename of the main script only lowercase.
 - Priority: 2
 - Who: Da
-- Status: not
+- Status: closed
 
 19. Comment the code: all classes, return values and parameter!
 - Priority: 1
