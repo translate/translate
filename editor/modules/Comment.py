@@ -85,7 +85,7 @@ class CommentDock(QtGui.QDockWidget):
         if self.ui.txtTranslatorComment.document().isModified():
             self.emit(QtCore.SIGNAL("commentChanged"), self.ui.txtTranslatorComment.toPlainText())
 
-    def highlightSearch(self, textField, position, length = 0):
+    def highlightSearch(self, textField, position, positionInBlock, length = 0):
         """Highlight the text at specified position, length, and textField.
         @param textField: source or target text box.
         @param position: highlight start point.
@@ -95,7 +95,7 @@ class CommentDock(QtGui.QDockWidget):
         textField = self.ui.txtTranslatorComment
         if (position >= 0):
             block = textField.document().findBlock(position)
-            self.highlightRange.start = position
+            self.highlightRange.start = positionInBlock
             self.highlightRange.length = length
         else:
             block = textField.document().begin()
@@ -105,7 +105,7 @@ class CommentDock(QtGui.QDockWidget):
         block.layout().setAdditionalFormats([self.highlightRange])
 
     def setReadyForSave(self):
-      self.emit(QtCore.SIGNAL("readyForSave"), True)
+        self.emit(QtCore.SIGNAL("readyForSave"), True)
 
     def applySettings(self):
         """ set color and font to txtTranslatorComment"""
@@ -115,13 +115,12 @@ class CommentDock(QtGui.QDockWidget):
             palette = QtGui.QPalette()
             palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(QtGui.QPalette.Text), colorObj)
             self.ui.txtTranslatorComment.setPalette(palette)
-            
+
         font = World.settings.value("commentFont")
         if (font.isValid()):
             fontObj = QtGui.QFont()
             if (fontObj.fromString(font.toString())):
                 self.ui.txtTranslatorComment.setFont(fontObj)
-    
     
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

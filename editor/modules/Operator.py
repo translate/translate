@@ -52,11 +52,6 @@ class Operator(QtCore.QObject):
         # get status for units
         self.status = Status(self.store.units)
         self.emitStatus()
-
-####        fileNode = self.store.getfilenode(fileName)
-##        xliffHeader = self.store.getheadernode(fileNode)
-##        header = self.store.header(xliffHeader)
-
         unitsState = []
         for unit in self.store.units:
             currentState = self.status.getStatus(unit)
@@ -291,6 +286,7 @@ class Operator(QtCore.QObject):
         self.searchPointer = self._unitpointer
         self.currentTextField = 0
         self.foundPosition = -1
+        self.positionInBlock = -1
         self.searchString = str(searchString)
         self.searchableText = searchableText
         if (not matchCase):
@@ -304,6 +300,10 @@ class Operator(QtCore.QObject):
         while (self.searchPointer < len(self.filteredList)):
             unitString = self._getUnitString()
             self.foundPosition = unitString.find(self.searchString, self.foundPosition + 1)
+            if (self.foundPosition >= 0):
+                self.positionInBlock = self.getPositionInBlock_Next(unitString)
+            else:
+                self.positionInBlock = self.foundPosition
             # found in current textField
             if (self.foundPosition >= 0):
                 self._searchFound()
@@ -329,6 +329,10 @@ class Operator(QtCore.QObject):
         while (self.searchPointer > 0):
             unitString = self._getUnitString()
             self.foundPosition = unitString.rfind(self.searchString, 0, self.foundPosition)
+            if (self.foundPosition >= 0):
+                self.positionInBlock = self.getPositionInBlock_Prev(unitString)
+            else:
+                self.positionInBlock = self.foundPosition
             # found in current textField
             if (self.foundPosition >= 0):
                 self._searchFound()
@@ -399,10 +403,38 @@ class Operator(QtCore.QObject):
         self._unitpointer = self.searchPointer
         self.emitCurrentUnit()
         textField = self.searchableText[self.currentTextField]
-        self.emit(QtCore.SIGNAL("searchResult"), textField, self.foundPosition, len(unicode(self.searchString)))
+        self.emit(QtCore.SIGNAL("searchResult"), textField, self.foundPosition, self.positionInBlock, len(unicode(self.searchString)))
         self.emit(QtCore.SIGNAL("generalInfo"), "")
 
     def _searchNotFound(self):
         """emit searchResult signal with text field, position, and length."""
         textField = self.searchableText[self.currentTextField]
         self.emit(QtCore.SIGNAL("searchResult"), textField, None, None)
+
+    def getPositionInBlock_Next(self,unitString):
+        '''get found position in a block of text not in the entire text.
+        @param unitString: String as unicode
+        @return position: Found Position in block
+        '''
+        textfield = QtGui.QTextEdit()
+        textfield.setPlainText(unitString)
+        block = textfield.document().findBlock(self.foundPosition)
+        if (not self.matchCase):
+            position = block.text().indexOf(self.searchString, self.positionInBlock + 1, QtCore.Qt.CaseInsensitive)
+        else:
+            position = block.text().indexOf(self.searchString, self.positionInBlock + 1)
+        return position
+    
+    def getPositionInBlock_Prev(self,unitString):
+        '''get found position in a block of text not in the entire text.
+        @param unitString: String as unicode
+        @return position: Found Position in block
+        '''
+        textfield = QtGui.QTextEdit()
+        textfield.setPlainText(unitString)
+        block = textfield.document().findBlock(self.foundPosition)
+        if (not self.matchCase):
+            position = block.text().lastIndexOf(self.searchString, self.positionInBlock - 1, QtCore.Qt.CaseInsensitive)
+        else:
+            position = block.text().lastIndexOf(self.searchString, self.positionInBlock -1)
+        return position
