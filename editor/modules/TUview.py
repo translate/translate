@@ -151,14 +151,14 @@ class TUview(QtGui.QDockWidget):
             self.emit(QtCore.SIGNAL("targetChanged"), self.ui.txtTarget.toPlainText())
 
     def setReadyForSave(self):
-        self.emit(QtCore.SIGNAL("readyForSave"), True)
-    
+      self.emit(QtCore.SIGNAL("readyForSave"), True)
+
     def source2target(self):
         """Copy the text from source to target."""
         self.ui.txtTarget.setPlainText(self.ui.txtSource.toPlainText())
         self.ui.txtTarget.document().setModified()
 
-    def highlightSearch(self, textField, position, positionInBlock, length = 0):
+    def highlightSearch(self, textField, position, length = 0):
         """Highlight the text at specified position, length, and textField.
         @param textField: source or target text box.
         @param position: highlight start point.
@@ -171,7 +171,7 @@ class TUview(QtGui.QDockWidget):
             return
         if (position >= 0):
             block = textField.document().findBlock(position)
-            self.highlightRange.start = positionInBlock
+            self.highlightRange.start = position - block.position()
             self.highlightRange.length = length
         else:
             block = textField.document().begin()
@@ -193,7 +193,7 @@ class TUview(QtGui.QDockWidget):
         self.ui.txtTarget.document().setModified()
         self.checkModified()
 
-    def applySettings(self):
+    def applySettings(self):        
         """ set font and color to txtSource and txtTarget"""
         sourceColor = World.settings.value("tuSourceColor")
         if (sourceColor.isValid()):
