@@ -62,11 +62,8 @@ class OverviewDock(QtGui.QDockWidget):
         self.headerFont = QtGui.QFont('Sans Serif', 10)
         self.ui.tableOverview.horizontalHeader().setFont(self.headerFont)
         self.applySettings()
-        
         self.fuzzyIcon = QtGui.QIcon("../images/fuzzy.png")
         self.normalState = QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
-        # indexToUpdate holds the last item selected
-        self.indexToUpdate = None
         self.connect(self.ui.tableOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitCurrentIndex)
         #self.connect(self.ui.tableOverview, QtCore.SIGNAL("cellDoubleClicked(int, int)"), self.emitTargetChanged)
     
@@ -145,12 +142,11 @@ class OverviewDock(QtGui.QDockWidget):
 
     def emitCurrentIndex(self):
         """send the selected unit index."""
-        return
         row = self.ui.tableOverview.currentRow()
-        index = int(self.ui.tableOverview.item(row, 0).text())
-        if (self.indexToUpdate != index):
-            self.emit(QtCore.SIGNAL("currentIndex"), index)
-            self.indexToUpdate = index
+        indexToUpdate = int(self.ui.tableOverview.item(row, 0).text())
+        indexOfSelectedRow = int(self.ui.tableOverview.selectedItems()[0].text())
+        if (indexToUpdate != indexOfSelectedRow):
+            self.emit(QtCore.SIGNAL("currentIndex"), indexOfSelectedRow)
 
     def updateView(self, unit, index, state):
         """highlight the table's row at index.
@@ -158,18 +154,12 @@ class OverviewDock(QtGui.QDockWidget):
         @param index: table's row to highlight.
         @param state: unit's state shown in table."""
         # TODO: improve conversion of index to row number.
-##        return
-##        vis = self.ui.tableOverview.visualRow(index)
-##        print index, vis
-##        
-##        return
         if (index < 0):
             return
         item = self.ui.tableOverview.findItems(str(index).rjust(self.indexMaxLen), QtCore.Qt.MatchExactly)[0]
         if (not item):
             return
         row = self.ui.tableOverview.row(item)
-        self.indexToUpdate = row
         self.setUnitProperty(row, state)
         self.ui.tableOverview.selectRow(row)
         self.ui.tableOverview.scrollToItem(item)
@@ -189,14 +179,16 @@ class OverviewDock(QtGui.QDockWidget):
             self.ui.tableOverview.takeItem(index, 3)
 ##        if (not self.filter & state):
 ##            self.ui.tableOverview.hideRow(index)
-    
+
     def updateTarget(self, text):
         """change the text in target column (indexToUpdate).
         @param text: text to set into target field."""
-        if (self.indexToUpdate >= 0):
+        row = self.ui.tableOverview.currentRow()
+        indexToUpdate = int(self.ui.tableOverview.item(row, 0).text())
+        if (indexToUpdate >= 0):
             item = QtGui.QTableWidgetItem(text)
-            self.ui.tableOverview.setItem(self.indexToUpdate, 2, item)
-            self.ui.tableOverview.resizeRowToContents(self.indexToUpdate)
+            self.ui.tableOverview.setItem(indexToUpdate, 2, item)
+            self.ui.tableOverview.resizeRowToContents(indexToUpdate)
 
 ##    def emitTargetChanged(self):
 ##        """Send target as string and signal targetChanged."""
