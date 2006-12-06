@@ -79,6 +79,7 @@ class MainWindow(QtGui.QMainWindow):
         #add widgets to statusbar
         self.statuslabel = QtGui.QLabel()
         self.statuslabel.setFrameStyle(QtGui.QFrame.NoFrame)
+        self.statuslabel.setMargin(1)
         self.ui.statusbar.addWidget(self.statuslabel)
         
         #add action from each toolbar toggleviewaction to toolbars submenu of view menu
