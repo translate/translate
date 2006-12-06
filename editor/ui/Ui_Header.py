@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'unknown'
+# Form implementation generated from reading ui file '/home/jhe/khmerOS/svn-wf/trunk/editor/ui/Header.ui'
 #
-# Created: Thu Nov 16 19:05:45 2006
-#      by: PyQt4 UI code generator 4.0
+# Created: Wed Dec  6 09:33:47 2006
+#      by: PyQt4 UI code generator 4.0.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -54,7 +54,7 @@ class Ui_frmHeader(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.btnDown.sizePolicy().hasHeightForWidth())
         self.btnDown.setSizePolicy(sizePolicy)
-        self.btnDown.setIcon(QtGui.QIcon("./images/redo.png"))
+        self.btnDown.setIcon(QtGui.QIcon("../images/redo.png"))
         self.btnDown.setObjectName("btnDown")
         self.gridlayout1.addWidget(self.btnDown,1,1,1,1)
 
@@ -65,7 +65,7 @@ class Ui_frmHeader(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.btnUp.sizePolicy().hasHeightForWidth())
         self.btnUp.setSizePolicy(sizePolicy)
-        self.btnUp.setIcon(QtGui.QIcon("./images/undo.png"))
+        self.btnUp.setIcon(QtGui.QIcon("../images/undo.png"))
         self.btnUp.setObjectName("btnUp")
         self.gridlayout1.addWidget(self.btnUp,0,1,1,1)
 
@@ -86,7 +86,7 @@ class Ui_frmHeader(object):
         font.setStrikeOut(False)
         font.setBold(False)
         self.btnInsertRow.setFont(font)
-        self.btnInsertRow.setIcon(QtGui.QIcon("./images/new.png"))
+        self.btnInsertRow.setIcon(QtGui.QIcon("../images/new.png"))
         self.btnInsertRow.setObjectName("btnInsertRow")
         self.gridlayout1.addWidget(self.btnInsertRow,3,1,1,1)
 
@@ -162,7 +162,7 @@ class Ui_frmHeader(object):
         font.setBold(False)
         self.btnDeleteRow.setFont(font)
         self.btnDeleteRow.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.btnDeleteRow.setIcon(QtGui.QIcon("./images/stop.png"))
+        self.btnDeleteRow.setIcon(QtGui.QIcon("../images/stop.png"))
         self.btnDeleteRow.setObjectName("btnDeleteRow")
         self.gridlayout1.addWidget(self.btnDeleteRow,4,1,1,1)
 
@@ -236,25 +236,22 @@ class Ui_frmHeader(object):
         QtCore.QObject.connect(self.cancelButton,QtCore.SIGNAL("clicked()"),frmHeader.reject)
         QtCore.QMetaObject.connectSlotsByName(frmHeader)
 
-    def tr(self, string):
-        return QtGui.QApplication.translate("frmHeader", string, None, QtGui.QApplication.UnicodeUTF8)
-
     def retranslateUi(self, frmHeader):
-        frmHeader.setWindowTitle(self.tr("Header"))
-        self.btnDown.setToolTip(self.tr("Move down"))
-        self.btnUp.setToolTip(self.tr("Move up"))
-        self.btnInsertRow.setToolTip(self.tr("Insert row"))
-        self.btnDeleteRow.setToolTip(self.tr("delete row"))
+        frmHeader.setWindowTitle(QtGui.QApplication.translate("frmHeader", "Header", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnDown.setToolTip(QtGui.QApplication.translate("frmHeader", "Move down", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnUp.setToolTip(QtGui.QApplication.translate("frmHeader", "Move up", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnInsertRow.setToolTip(QtGui.QApplication.translate("frmHeader", "Insert row", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnDeleteRow.setToolTip(QtGui.QApplication.translate("frmHeader", "delete row", None, QtGui.QApplication.UnicodeUTF8))
         self.tableHeader.setColumnCount(2)
         self.tableHeader.clear()
         self.tableHeader.setColumnCount(2)
         self.tableHeader.setRowCount(0)
-        self.label_2.setText(self.tr("Header"))
-        self.resetButton.setText(self.tr("Reset"))
-        self.applyButton.setText(self.tr("Apply Settings"))
-        self.okButton.setText(self.tr("OK"))
-        self.cancelButton.setText(self.tr("Cancel"))
-        self.label.setText(self.tr("Comment"))
+        self.label_2.setText(QtGui.QApplication.translate("frmHeader", "Header", None, QtGui.QApplication.UnicodeUTF8))
+        self.resetButton.setText(QtGui.QApplication.translate("frmHeader", "Reset", None, QtGui.QApplication.UnicodeUTF8))
+        self.applyButton.setText(QtGui.QApplication.translate("frmHeader", "Apply Settings", None, QtGui.QApplication.UnicodeUTF8))
+        self.okButton.setText(QtGui.QApplication.translate("frmHeader", "OK", None, QtGui.QApplication.UnicodeUTF8))
+        self.cancelButton.setText(QtGui.QApplication.translate("frmHeader", "Cancel", None, QtGui.QApplication.UnicodeUTF8))
+        self.label.setText(QtGui.QApplication.translate("frmHeader", "Comment", None, QtGui.QApplication.UnicodeUTF8))
 
 
 if __name__ == "__main__":

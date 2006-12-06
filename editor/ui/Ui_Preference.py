@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'unknown'
+# Form implementation generated from reading ui file '/home/jhe/khmerOS/svn-wf/trunk/editor/ui/Preference.ui'
 #
-# Created: Tue Nov 28 08:50:57 2006
-#      by: PyQt4 UI code generator 4.0
+# Created: Wed Dec  6 09:33:47 2006
+#      by: PyQt4 UI code generator 4.0.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -780,46 +780,43 @@ class Ui_frmPreference(object):
         frmPreference.setTabOrder(self.cancelButton,self.tabWidget)
         frmPreference.setTabOrder(self.tabWidget,self.frame)
 
-    def tr(self, string):
-        return QtGui.QApplication.translate("frmPreference", string, None, QtGui.QApplication.UnicodeUTF8)
-
     def retranslateUi(self, frmPreference):
-        frmPreference.setWindowTitle(self.tr("Preference"))
-        self.label.setText(self.tr("Number of singular/plural forms"))
-        self.label5.setText(self.tr("Support Team"))
-        self.label6.setText(self.tr("Time Zone"))
-        self.label1.setText(self.tr("UserName"))
-        self.label3.setText(self.tr("Full Language Name"))
-        self.label2.setText(self.tr("Email address"))
-        self.label4.setText(self.tr("Language Code"))
-        self.chkHeaderAuto.setText(self.tr("Automatically update header on save"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab1), self.tr("Personalize"))
-        self.bntDefaults.setText(self.tr("Defaults"))
-        self.lblsupportteam.setText(self.tr("Comment"))
-        self.label41.setText(self.tr("Target"))
-        self.Source.setText(self.tr("Source"))
-        self.label21.setText(self.tr("Overview"))
-        self.bntComment.setText(self.tr("Choose"))
-        self.bntTarget.setText(self.tr("Choose"))
-        self.bntSource.setText(self.tr("Choose"))
-        self.bntOverview.setText(self.tr("Choose"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab2), self.tr("Font"))
-        self.bntColorDefaults.setText(self.tr("Defaults"))
-        self.ColorComment.setText(self.tr("<html><head><meta name=\"qrichtext\" content=\"1\" /></head><body style=\" white-space: pre-wrap; font-family:Sans Serif; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;\"><p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Color for Comment</p></body></html>"))
-        self.bntColorComment.setText(self.tr("Choose"))
-        self.bntColorTarget.setText(self.tr("Choose"))
-        self.bntColorSource.setText(self.tr("Choose"))
-        self.bntColorOverview.setText(self.tr("Choose"))
-        self.ColorTarget.setText(self.tr("<html><head><meta name=\"qrichtext\" content=\"1\" /></head><body style=\" white-space: pre-wrap; font-family:Sans Serif; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;\"><p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Color for Target</p></body></html>"))
-        self.ColorOverview.setText(self.tr("<html><head><meta name=\"qrichtext\" content=\"1\" /></head><body style=\" white-space: pre-wrap; font-family:Sans Serif; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;\"><p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Color for Overview</p></body></html>"))
-        self.ColorSource.setText(self.tr("<html><head><meta name=\"qrichtext\" content=\"1\" /></head><body style=\" white-space: pre-wrap; font-family:Sans Serif; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;\"><p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Color for Source</p></body></html>"))
-        self.tuTargetColor.setText(self.tr("Sample text"))
-        self.commentColor.setText(self.tr("Sample text"))
-        self.overviewColor.setText(self.tr("Sample text"))
-        self.tuSourceColor.setText(self.tr("Sample text"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), self.tr("Color"))
-        self.okButton.setText(self.tr("OK"))
-        self.cancelButton.setText(self.tr("Cancel"))
+        frmPreference.setWindowTitle(QtGui.QApplication.translate("frmPreference", "Preference", None, QtGui.QApplication.UnicodeUTF8))
+        self.label.setText(QtGui.QApplication.translate("frmPreference", "Number of singular/plural forms", None, QtGui.QApplication.UnicodeUTF8))
+        self.label5.setText(QtGui.QApplication.translate("frmPreference", "Support Team", None, QtGui.QApplication.UnicodeUTF8))
+        self.label6.setText(QtGui.QApplication.translate("frmPreference", "Time Zone", None, QtGui.QApplication.UnicodeUTF8))
+        self.label1.setText(QtGui.QApplication.translate("frmPreference", "UserName", None, QtGui.QApplication.UnicodeUTF8))
+        self.label3.setText(QtGui.QApplication.translate("frmPreference", "Full Language Name", None, QtGui.QApplication.UnicodeUTF8))
+        self.label2.setText(QtGui.QApplication.translate("frmPreference", "Email address", None, QtGui.QApplication.UnicodeUTF8))
+        self.label4.setText(QtGui.QApplication.translate("frmPreference", "Language Code", None, QtGui.QApplication.UnicodeUTF8))
+        self.chkHeaderAuto.setText(QtGui.QApplication.translate("frmPreference", "Automatically update header on save", None, QtGui.QApplication.UnicodeUTF8))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab1), QtGui.QApplication.translate("frmPreference", "Personalize", None, QtGui.QApplication.UnicodeUTF8))
+        self.bntDefaults.setText(QtGui.QApplication.translate("frmPreference", "Defaults", None, QtGui.QApplication.UnicodeUTF8))
+        self.lblsupportteam.setText(QtGui.QApplication.translate("frmPreference", "Comment", None, QtGui.QApplication.UnicodeUTF8))
+        self.label41.setText(QtGui.QApplication.translate("frmPreference", "Target", None, QtGui.QApplication.UnicodeUTF8))
+        self.Source.setText(QtGui.QApplication.translate("frmPreference", "Source", None, QtGui.QApplication.UnicodeUTF8))
+        self.label21.setText(QtGui.QApplication.translate("frmPreference", "Overview", None, QtGui.QApplication.UnicodeUTF8))
+        self.bntComment.setText(QtGui.QApplication.translate("frmPreference", "Choose", None, QtGui.QApplication.UnicodeUTF8))
+        self.bntTarget.setText(QtGui.QApplication.translate("frmPreference", "Choose", None, QtGui.QApplication.UnicodeUTF8))
+        self.bntSource.setText(QtGui.QApplication.translate("frmPreference", "Choose", None, QtGui.QApplication.UnicodeUTF8))
+        self.bntOverview.setText(QtGui.QApplication.translate("frmPreference", "Choose", None, QtGui.QApplication.UnicodeUTF8))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab2), QtGui.QApplication.translate("frmPreference", "Font", None, QtGui.QApplication.UnicodeUTF8))
+        self.bntColorDefaults.setText(QtGui.QApplication.translate("frmPreference", "Defaults", None, QtGui.QApplication.UnicodeUTF8))
+        self.ColorComment.setText(QtGui.QApplication.translate("frmPreference", "<html><head><meta name=\"qrichtext\" content=\"1\" /></head><body style=\" white-space: pre-wrap; font-family:Sans Serif; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;\"><p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Color for Comment</p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+        self.bntColorComment.setText(QtGui.QApplication.translate("frmPreference", "Choose", None, QtGui.QApplication.UnicodeUTF8))
+        self.bntColorTarget.setText(QtGui.QApplication.translate("frmPreference", "Choose", None, QtGui.QApplication.UnicodeUTF8))
+        self.bntColorSource.setText(QtGui.QApplication.translate("frmPreference", "Choose", None, QtGui.QApplication.UnicodeUTF8))
+        self.bntColorOverview.setText(QtGui.QApplication.translate("frmPreference", "Choose", None, QtGui.QApplication.UnicodeUTF8))
+        self.ColorTarget.setText(QtGui.QApplication.translate("frmPreference", "<html><head><meta name=\"qrichtext\" content=\"1\" /></head><body style=\" white-space: pre-wrap; font-family:Sans Serif; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;\"><p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Color for Target</p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+        self.ColorOverview.setText(QtGui.QApplication.translate("frmPreference", "<html><head><meta name=\"qrichtext\" content=\"1\" /></head><body style=\" white-space: pre-wrap; font-family:Sans Serif; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;\"><p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Color for Overview</p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+        self.ColorSource.setText(QtGui.QApplication.translate("frmPreference", "<html><head><meta name=\"qrichtext\" content=\"1\" /></head><body style=\" white-space: pre-wrap; font-family:Sans Serif; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;\"><p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Color for Source</p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+        self.tuTargetColor.setText(QtGui.QApplication.translate("frmPreference", "Sample text", None, QtGui.QApplication.UnicodeUTF8))
+        self.commentColor.setText(QtGui.QApplication.translate("frmPreference", "Sample text", None, QtGui.QApplication.UnicodeUTF8))
+        self.overviewColor.setText(QtGui.QApplication.translate("frmPreference", "Sample text", None, QtGui.QApplication.UnicodeUTF8))
+        self.tuSourceColor.setText(QtGui.QApplication.translate("frmPreference", "Sample text", None, QtGui.QApplication.UnicodeUTF8))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QtGui.QApplication.translate("frmPreference", "Color", None, QtGui.QApplication.UnicodeUTF8))
+        self.okButton.setText(QtGui.QApplication.translate("frmPreference", "OK", None, QtGui.QApplication.UnicodeUTF8))
+        self.cancelButton.setText(QtGui.QApplication.translate("frmPreference", "Cancel", None, QtGui.QApplication.UnicodeUTF8))
 
 
 if __name__ == "__main__":

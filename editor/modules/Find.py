@@ -23,13 +23,14 @@
 #
 # This module is working on source and target of current TU.
 
-if __name__ == "__main__":
-    import sys
-    import os.path
-    sys.path.append(os.path.join(sys.path[0], ".."))
-    
 import sys
 from PyQt4 import QtCore, QtGui
+if __name__ == "__main__":
+    import os.path
+    sys.path.append(os.path.join(sys.path[0], ".."))
+    # set the path for QT in order to find the icons
+    QtCore.QDir.setCurrent(os.path.join(sys.path[0], "..", "ui"))
+
 from ui.Ui_Find import Ui_frmFind
 import modules.World as World
 

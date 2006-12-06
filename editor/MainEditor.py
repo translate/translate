@@ -23,6 +23,7 @@
 # This module is working on the main windows of Editor
 
 import sys
+import os.path
 from PyQt4 import QtCore, QtGui
 from ui.Ui_MainEditor import Ui_MainWindow
 from modules.TUview import TUview
@@ -387,6 +388,8 @@ class MainWindow(QtGui.QMainWindow):
         
     
 if __name__ == "__main__":
+    # set the path for QT in order to find the icons
+    QtCore.QDir.setCurrent(os.path.join(sys.path[0], "ui"))
     app = QtGui.QApplication(sys.argv)
     editor = MainWindow()
     editor.show()

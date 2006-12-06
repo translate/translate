@@ -25,6 +25,12 @@
 
 import sys
 from PyQt4 import QtCore, QtGui
+if __name__ == "__main__":
+    import os.path
+    sys.path.append(os.path.join(sys.path[0], ".."))
+    # set the path for QT in order to find the icons
+    QtCore.QDir.setCurrent(os.path.join(sys.path[0], "..", "ui"))
+
 from ui.Ui_Comment import Ui_frmComment
 import modules.World as World
 
@@ -119,6 +125,6 @@ class CommentDock(QtGui.QDockWidget):
     
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
-    comment = CommentDock()
+    comment = CommentDock(None)
     comment.show()
     sys.exit(app.exec_())

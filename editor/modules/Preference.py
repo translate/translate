@@ -23,13 +23,14 @@
 # 
 # This module is working on Preferences
 
-if __name__ == "__main__":
-    import sys
-    import os.path
-    sys.path.append(os.path.join(sys.path[0], ".."))
-    
 import sys
 from PyQt4 import QtCore, QtGui
+if __name__ == "__main__":
+    import os.path
+    sys.path.append(os.path.join(sys.path[0], ".."))
+    # set the path for QT in order to find the icons
+    QtCore.QDir.setCurrent(os.path.join(sys.path[0], "..", "ui"))
+
 from ui.Ui_Preference import Ui_frmPreference
 import modules.World as World
 
@@ -284,5 +285,5 @@ class Preference(QtGui.QDialog):
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     user = Preference(None)
-    user.show()
+    user.showDialog()
     sys.exit(app.exec_())

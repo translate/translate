@@ -25,10 +25,12 @@
 
 import sys
 import time, os
+from PyQt4 import QtCore, QtGui
 if __name__ == "__main__":
     sys.path.append(os.path.join(sys.path[0], ".."))
+    # set the path for QT in order to find the icons
+    QtCore.QDir.setCurrent(os.path.join(sys.path[0], "..", "ui"))
 
-from PyQt4 import QtCore, QtGui
 from ui.Ui_Header import Ui_frmHeader
 from modules.Operator import Operator
 import modules.World as World

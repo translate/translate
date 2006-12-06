@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'unknown'
+# Form implementation generated from reading ui file '/home/jhe/khmerOS/svn-wf/trunk/editor/ui/TUview.ui'
 #
-# Created: Fri Dec  1 14:05:39 2006
-#      by: PyQt4 UI code generator 4.0
+# Created: Wed Dec  6 09:33:46 2006
+#      by: PyQt4 UI code generator 4.0.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -128,12 +128,9 @@ class Ui_TUview(object):
         QtCore.QMetaObject.connectSlotsByName(TUview)
         TUview.setTabOrder(self.txtSource,self.txtComment)
 
-    def tr(self, string):
-        return QtGui.QApplication.translate("TUview", string, None, QtGui.QApplication.UnicodeUTF8)
-
     def retranslateUi(self, TUview):
-        TUview.setWindowTitle(self.tr("Detail"))
-        self.fileScrollBar.setToolTip(self.tr("Navigate in your file"))
+        TUview.setWindowTitle(QtGui.QApplication.translate("TUview", "Detail", None, QtGui.QApplication.UnicodeUTF8))
+        self.fileScrollBar.setToolTip(QtGui.QApplication.translate("TUview", "Navigate in your file", None, QtGui.QApplication.UnicodeUTF8))
 
 
 if __name__ == "__main__":

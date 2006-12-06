@@ -21,15 +21,15 @@
 #       San Titvirak (titvirak@khmeros.info)
 #       Seth Chanratha (sethchanratha@khmeros.info)
 #
-# This module is working on About Editor
+# This module is providing an About dialog
 
+from PyQt4 import QtCore, QtGui
+import sys
 if __name__ == "__main__":
-    import sys
     import os.path
     sys.path.append(os.path.join(sys.path[0], ".."))
-
-import sys
-from PyQt4 import QtCore, QtGui
+    # set the path for QT in order to find the icons
+    QtCore.QDir.setCurrent(os.path.join(sys.path[0], "..", "ui"))
 
 
 class AboutEditor(QtGui.QDialog):
@@ -120,5 +120,6 @@ class LicensesTab(QtGui.QWidget):
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     tabdialog = AboutEditor(None)
+    tabdialog.showDialog()
     sys.exit(tabdialog.exec_())
 

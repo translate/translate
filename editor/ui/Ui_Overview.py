@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/jhe/khmerOS/svn-wordforge/trunk/editor/ui/Overview.ui'
+# Form implementation generated from reading ui file '/home/jhe/khmerOS/svn-wf/trunk/editor/ui/Overview.ui'
 #
-# Created: Thu Nov 30 21:09:58 2006
+# Created: Wed Dec  6 09:33:45 2006
 #      by: PyQt4 UI code generator 4.0.1
 #
 # WARNING! All changes made in this file will be lost!
