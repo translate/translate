@@ -33,8 +33,8 @@ if __name__ == "__main__":
 
 
 class AboutEditor(QtGui.QDialog):
-    def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self)
+    def __init__(self, parent):
+        QtGui.QDialog.__init__(self, parent)
         self.ui = None
     
     def showDialog(self):

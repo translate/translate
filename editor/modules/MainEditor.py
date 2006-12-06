@@ -93,7 +93,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.menuHelp.addSeparator()
         action = QtGui.QWhatsThis.createAction(self)
         self.ui.menuHelp.addAction(action)
-        self.aboutDialog = AboutEditor()
+        self.aboutDialog = AboutEditor(self)
         self.connect(self.ui.actionAbout, QtCore.SIGNAL("triggered()"), self.aboutDialog.showDialog)
         self.connect(self.ui.actionAboutQT, QtCore.SIGNAL("triggered()"), QtGui.qApp, QtCore.SLOT("aboutQt()"))
         
