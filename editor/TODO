@@ -67,7 +67,7 @@
 13. Header
 - Priority: 1
 - Who: Jens
-- Status: not
+- Status: patch send for discussion, no reply yet.
 
 14. Note
 - Priority: 1
@@ -103,4 +103,46 @@
 - Status: not
 - Tip: I am not writing everywhere FIXME: you have to start thinking yourself, Jens
 
+20. Make the highlight color configurable
+- Priority: 2
+- Who: ???
+- Status: not
+
+21. rearrange the menu. Create an entry Window and move toolbars and toolviews there. 
+    Make the filter appear on the first level in View menu.
+- Priority: 1
+- Who: ???
+- Status: not
+
+22. do not crash when a not welformed xliff was read.
+- Priority: 1
+- Who: ???
+- Status: not
+
+23. open in new window is not save. If I kill one window the otherone will 
+    also go away.
+- Priority: 1
+- Who: ???
+- Status: not
+- Tip: if we can not fix this we remove the action from the menu
+
+24. add an icon to the preference action.
+- Priority: 2
+- Who: ???
+- Status: not
+
+25. unify the icons for previous/next and first/last. They have different size in the moment.
+- Priority: 2
+- Who: ???
+- Status: not
+
+26. Do not repeat "Edit" in the text for the header dialog.
+- Priority: 1
+- Who: ???
+- Status: not
+
+27. Use the custom font also for the table header in overview.
+- Priority: 1
+- Who: ???
+- Status: not
 
