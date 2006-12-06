@@ -326,7 +326,7 @@ class Operator(QtCore.QObject):
 
     def searchPrevious(self):
         """search backward through the text fields."""
-        while (self.searchPointer > 0):
+        while (self.searchPointer >= 0):
             unitString = self._getUnitString()
             self.foundPosition = unitString.rfind(self.searchString, 0, self.foundPosition)
             if (self.foundPosition >= 0):
