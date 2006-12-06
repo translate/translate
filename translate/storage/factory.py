@@ -38,11 +38,29 @@ classes = {"po": po.pofile, "pot": po.pofile, "csv": csvl10n.csvfile,
             "xliff": xliff.xlifffile, "xlf": xliff.xlifffile, 
             "tmx": tmx.tmxfile, "tbx": tbx.tbxfile}
 
+def guesstype(storefile):
+    """Guesses the type of a file object by looking at the first few characters.
+    The return value is a string that can be used as a file extension."""
+    start = storefile.read(100).strip()
+    if '<xliff ' in start:
+        filetype = "xliff"
+    elif start.find('msgid ') != -1:
+        filetype = "po"
+    else:
+        raise ValueError("Failed to guess file type.")
+    storefile.seek(0)
+    return filetype
+
+def getdummyname(storefile):
+    """Provides a dummy name for a file object without a name attribute, by guessing the file type."""
+    filetype = guesstype(storefile)
+    return 'dummy.'+filetype
+
 def getname(storefile):
     """returns the filename"""
     if not isinstance(storefile, basestring):
         if not hasattr(storefile, "name"):
-            raise ValueError("Factory can only guess filetype from filename")
+            storefilename = getdummyname(storefile)
         else:
             storefilename = storefile.name
     else:
