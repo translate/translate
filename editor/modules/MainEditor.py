@@ -22,8 +22,10 @@
 # 
 # This module is working on the main windows of Editor
 
+import os
 import sys
-import os.path
+if __name__ == "__main__":
+    sys.path.append(os.path.join(sys.path[0], ".."))
 from PyQt4 import QtCore, QtGui
 from ui.Ui_MainEditor import Ui_MainWindow
 from modules.TUview import TUview
@@ -156,7 +158,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockTUview.applySettings)
 
         # Edit Header
-        self.headerDialog = Header()
+        self.headerDialog = Header(self.operator)
         self.connect(self.ui.actionEdit_Header, QtCore.SIGNAL("triggered()"), self.operator.emitHeaderInfo)
         self.connect(self.operator, QtCore.SIGNAL("headerInfo"), self.headerDialog.showDialog)
         self.connect(self.operator, QtCore.SIGNAL("headerGenerated"), self.headerDialog.generatedHeader)
@@ -392,10 +394,19 @@ class MainWindow(QtGui.QMainWindow):
                self.enableRedo(redoAvailable)
 
 
-if __name__ == "__main__":
+def main(inputFile = None):
     # set the path for QT in order to find the icons
     QtCore.QDir.setCurrent(os.path.join(sys.path[0], "ui"))
     app = QtGui.QApplication(sys.argv)
     editor = MainWindow()
     editor.show()
+    if (inputFile):
+        if os.path.exists(inputFile):
+            editor.fileaction.setFileName(inputFile)
+        else:
+            msg = editor.tr("%1 file name doesn't exist").arg(inputFile)
+            QtGui.QMessageBox.warning(editor, editor.tr("File not found") , msg)
     sys.exit(app.exec_())
+    
+if __name__ == "__main__":
+    main()
