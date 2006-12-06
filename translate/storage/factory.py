@@ -58,6 +58,8 @@ def getdummyname(storefile):
 
 def getname(storefile):
     """returns the filename"""
+    if storefile is None:
+        raise ValueError("This method cannot magically produce a filename when given None as input.")
     if not isinstance(storefile, basestring):
         if not hasattr(storefile, "name"):
             storefilename = getdummyname(storefile)
