@@ -379,14 +379,19 @@ class MainWindow(QtGui.QMainWindow):
             self.connect(newWidget, QtCore.SIGNAL("copyAvailable(bool)"), self.enableCopyPaste)
             self.connect(newWidget, QtCore.SIGNAL("undoAvailable(bool)"), self.enableUndo)
             self.connect(newWidget, QtCore.SIGNAL("redoAvailable(bool)"), self.enableRedo)
-            try:
-                self.enableCopyPaste(newWidget.textCursor().hasSelection())
-                self.enableUndo(newWidget.textCursor().hasSelection())
-                self.enableRedo(newWidget.textCursor().hasSelection())
-            except:
-                pass
-        
-    
+            if (callable(getattr(newWidget, "textCursor", None))):
+               hasSelection = newWidget.textCursor().hasSelection()
+               self.enableCopyPaste(hasSelection)
+
+            if (callable(getattr(newWidget, "document", None))):
+               undoAvailable = newWidget.document().isUndoAvailable()
+               self.enableUndo(undoAvailable)
+
+            if (callable(getattr(newWidget, "document", None))):
+               redoAvailable = newWidget.document().isRedoAvailable()
+               self.enableRedo(redoAvailable)
+
+
 if __name__ == "__main__":
     # set the path for QT in order to find the icons
     QtCore.QDir.setCurrent(os.path.join(sys.path[0], "ui"))
