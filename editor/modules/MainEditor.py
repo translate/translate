@@ -107,7 +107,6 @@ class MainWindow(QtGui.QMainWindow):
         
         # create Find widget and connect signals related to it
         self.findBar = Find(self)
-        self.findBar.setHidden(True)
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.findBar)
         self.connect(self.ui.actionFind, QtCore.SIGNAL("triggered()"), self.findBar.showFind)
         self.connect(self.ui.actionReplace, QtCore.SIGNAL("triggered()"), self.findBar.showReplace)
@@ -124,6 +123,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("generalInfo"), self.showTemporaryMessage)
         # "replaceText" sends text field, start, length, and text to replace.
         self.connect(self.operator, QtCore.SIGNAL("replaceText"), self.dockTUview.replaceText)
+        self.connect(self.operator, QtCore.SIGNAL("replaceText"), self.dockComment.replaceText)
         
         # Edit menu action      
         
@@ -200,6 +200,7 @@ class MainWindow(QtGui.QMainWindow):
         
         tuViewHidden = World.settings.value("TuViewHidden", QtCore.QVariant(False))
         self.dockTUview.setHidden(tuViewHidden.toBool())
+        self.findBar.setHidden(True)
         
     def enableCopyPaste(self, bool):
         self.ui.actionCopy.setEnabled(bool)
