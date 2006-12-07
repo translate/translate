@@ -33,7 +33,7 @@
 - Priority: 2
 - Who: All
 - Status: not
-  + whatsthis for Tuview and Comment at my side are done, but cannot be commited for ther are some relevance unsuccessful code.
+  + whatsthis for Tuview and Comment at my side are done, but cannot be commited for ther are some relevant unsuccessful code.
 
 8. Image Path
 - Priority: 1
@@ -103,46 +103,57 @@
 - Status: not
 - Tip: I am not writing everywhere FIXME: you have to start thinking yourself, Jens
 
-20. Make the highlight color configurable
+20. Make the highlight color configurable: color for parameter, tag, search highlight
 - Priority: 2
-- Who: ???
+- Who: phon
 - Status: not
-
+ 
 21. rearrange the menu. Create an entry Window and move toolbars and toolviews there. 
     Make the filter appear on the first level in View menu.
 - Priority: 1
-- Who: ???
+- Who: ratha
 - Status: not
 
 22. do not crash when a not welformed xliff was read.
 - Priority: 1
-- Who: ???
+- Who: virak
 - Status: not
 
 23. open in new window is not save. If I kill one window the otherone will 
     also go away.
 - Priority: 1
-- Who: ???
+- Who: phon
 - Status: not
 - Tip: if we can not fix this we remove the action from the menu
 
 24. add an icon to the preference action.
 - Priority: 2
-- Who: ???
+- Who: ratha
 - Status: not
 
 25. unify the icons for previous/next and first/last. They have different size in the moment.
 - Priority: 2
-- Who: ???
+- Who: ratha
 - Status: not
 
 26. Do not repeat "Edit" in the text for the header dialog.
 - Priority: 1
-- Who: ???
+- Who: da
 - Status: not
+-Tip: I don't really understand this!!!
 
 27. Use the custom font also for the table header in overview.
 - Priority: 1
-- Who: ???
+- Who: da
+- Status: not
+
+28. Change icons for move up/move down in header dialog.
+- Priority: 1
+- Who: ratha
+- Status: not
+
+29. Add fuzzy icon on status bar and overview
+- Priority: 1
+- Who: virak
 - Status: not
 
