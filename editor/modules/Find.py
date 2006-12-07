@@ -51,6 +51,7 @@ class Find(QtGui.QDockWidget):
         self.ui = Ui_frmFind()
         self.ui.setupUi(self.form)
         self.setWidget(self.form)
+        self.ui.insource.setEnabled(False)
         self.setFeatures(QtGui.QDockWidget.DockWidgetClosable)
         self.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
         self.connect(self.ui.findNext, QtCore.SIGNAL("clicked()"), self.findNext)
