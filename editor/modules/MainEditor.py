@@ -125,32 +125,10 @@ class MainWindow(QtGui.QMainWindow):
         # "replaceText" sends text field, start, length, and text to replace.
         self.connect(self.operator, QtCore.SIGNAL("replaceText"), self.dockTUview.replaceText)
         
-        # Edit menu action
-        self.connect(self.ui.actionUndo, QtCore.SIGNAL("triggered()"), self.undoer)
-        self.connect(self.ui.actionRedo, QtCore.SIGNAL("triggered()"), self.redoer)
-        self.connect(self.ui.actionComment, QtCore.SIGNAL("triggered()"), self.dockComment.show)
+        # Edit menu action      
         
-        self.ui.actionCut.setEnabled(False)
-        self.ui.actionCopy.setEnabled(False)
-        self.connect(self.dockComment, QtCore.SIGNAL("copyAvailable(bool)"), self.enableCopyPaste)
-        self.connect(self.dockTUview, QtCore.SIGNAL("copyAvailable(bool)"), self.enableCopyPaste)
-
-        self.ui.actionUndo.setEnabled(False)
-        self.ui.actionRedo.setEnabled(False)
-        self.connect(self.dockTUview, QtCore.SIGNAL("undoAvailable(bool)"), self.enableUndo)
-        self.connect(self.dockComment, QtCore.SIGNAL("undoAvailable(bool)"), self.enableUndo)
-        self.connect(self.dockTUview, QtCore.SIGNAL("redoAvailable(bool)"), self.enableRedo)
-        self.connect(self.dockComment, QtCore.SIGNAL("redoAvailable(bool)"), self.enableRedo)
-
-        self.connect(self.ui.actionUndo, QtCore.SIGNAL("triggered()"), self.undoer)
-        self.connect(self.ui.actionRedo, QtCore.SIGNAL("triggered()"), self.redoer)
-        self.connect(self.ui.actionCut, QtCore.SIGNAL("triggered()"), self.cutter)
-        self.connect(self.ui.actionCopy, QtCore.SIGNAL("triggered()"), self.copier)
-        self.connect(self.ui.actionPaste, QtCore.SIGNAL("triggered()"), self.paster)
-
-        # Select All File
-        self.connect(self.ui.actionSelectAll , QtCore.SIGNAL("triggered()"), self.selectAll)
-
+        self.connect(self.ui.actionComment, QtCore.SIGNAL("triggered()"), self.dockComment.show)
+       
         # action Preferences menu 
         self.preference = Preference(self)
         self.connect(self.ui.actionPreferences, QtCore.SIGNAL("triggered()"), self.preference.showDialog)
@@ -232,48 +210,6 @@ class MainWindow(QtGui.QMainWindow):
 
     def enableRedo(self, bool):
         self.ui.actionRedo.setEnabled(bool)
-
-    def cutter(self):
-        object = self.focusWidget()
-        try:
-            object.cut()
-        except AttributeError:
-            pass
-
-    def copier(self):
-        object = self.focusWidget()
-        try:
-            object.copy()
-        except AttributeError:
-            pass
-
-    def paster(self):
-        object = self.focusWidget()
-        try:
-            object.paste()
-        except AttributeError:
-            pass
-
-    def undoer(self):
-        object = self.focusWidget()
-        try:
-            object.document().undo()
-        except AttributeError:
-            pass
-
-    def redoer(self):
-        object = self.focusWidget()
-        try:  
-            object.document().redo()
-        except AttributeError:
-            pass
-
-    def selectAll(self):
-        object = self.focusWidget()
-        try:
-            object.selectAll()
-        except AttributeError:
-            pass
 
     def setOpening(self, fileName): 
         """
@@ -378,22 +314,56 @@ class MainWindow(QtGui.QMainWindow):
             self.disconnect(oldWidget, QtCore.SIGNAL("copyAvailable(bool)"), self.enableCopyPaste)
             self.disconnect(oldWidget, QtCore.SIGNAL("undoAvailable(bool)"), self.enableUndo)
             self.disconnect(oldWidget, QtCore.SIGNAL("redoAvailable(bool)"), self.enableRedo)
+            # cut, copy and paste in oldWidget
+            if (callable(getattr(oldWidget, "cut", None))):
+                self.disconnect(self.ui.actionCut, QtCore.SIGNAL("triggered()"), oldWidget, QtCore.SLOT("cut()"))
+
+            if (callable(getattr(oldWidget, "copy", None))):
+                self.disconnect(self.ui.actionCopy, QtCore.SIGNAL("triggered()"), oldWidget, QtCore.SLOT("copy()"))
+
+            if (callable(getattr(oldWidget, "paste", None))):
+                self.disconnect(self.ui.actionPaste, QtCore.SIGNAL("triggered()"), oldWidget, QtCore.SLOT("paste()")) 
+            # undo, redo and selectAll in oldWidget
+            if (callable(getattr(oldWidget, "document", None))):
+                self.disconnect(self.ui.actionUndo, QtCore.SIGNAL("triggered()"), oldWidget.document(), QtCore.SLOT("undo()"))
+                self.disconnect(self.ui.actionRedo, QtCore.SIGNAL("triggered()"), oldWidget.document(), QtCore.SLOT("redo()"))
+
+            if (callable(getattr(oldWidget, "selectAll", None))):
+                self.disconnect(self.ui.actionSelectAll , QtCore.SIGNAL("triggered()"), oldWidget, QtCore.SLOT("selectAll()"))
         if (newWidget):
             self.connect(newWidget, QtCore.SIGNAL("copyAvailable(bool)"), self.enableCopyPaste)
             self.connect(newWidget, QtCore.SIGNAL("undoAvailable(bool)"), self.enableUndo)
             self.connect(newWidget, QtCore.SIGNAL("redoAvailable(bool)"), self.enableRedo)
+            # cut, copy and paste in newWidget
+            if (callable(getattr(newWidget, "cut", None))):
+                self.connect(self.ui.actionCut, QtCore.SIGNAL("triggered()"), newWidget, QtCore.SLOT("cut()"))
+
+            if (callable(getattr(newWidget, "copy", None))):
+                self.connect(self.ui.actionCopy, QtCore.SIGNAL("triggered()"), newWidget, QtCore.SLOT("copy()"))
+
+            if (callable(getattr(newWidget, "paste", None))):
+                self.connect(self.ui.actionPaste, QtCore.SIGNAL("triggered()"), newWidget, QtCore.SLOT("paste()"))
+            # Select All
+            if (callable(getattr(newWidget, "selectAll", None))):
+                self.connect(self.ui.actionSelectAll , QtCore.SIGNAL("triggered()"), newWidget, QtCore.SLOT("selectAll()"))
+
             if (callable(getattr(newWidget, "textCursor", None))):
-               hasSelection = newWidget.textCursor().hasSelection()
-               self.enableCopyPaste(hasSelection)
+                hasSelection = newWidget.textCursor().hasSelection()
+                self.enableCopyPaste(hasSelection)
+            else:
+                self.enableCopyPaste(False)
 
+            #it will not work for QLineEdits
             if (callable(getattr(newWidget, "document", None))):
-               undoAvailable = newWidget.document().isUndoAvailable()
-               self.enableUndo(undoAvailable)
-
-            if (callable(getattr(newWidget, "document", None))):
-               redoAvailable = newWidget.document().isRedoAvailable()
-               self.enableRedo(redoAvailable)
-
+                undoAvailable = newWidget.document().isUndoAvailable()
+                redoAvailable = newWidget.document().isRedoAvailable()
+                self.enableUndo(undoAvailable)
+                self.enableRedo(redoAvailable)
+                self.connect(self.ui.actionUndo, QtCore.SIGNAL("triggered()"), newWidget.document(), QtCore.SLOT("undo()"))
+                self.connect(self.ui.actionRedo, QtCore.SIGNAL("triggered()"), newWidget.document(), QtCore.SLOT("redo()"))
+            else:
+                self.enableUndo(False)
+                self.enableRedo(False)
 
 def main(inputFile = None):
     # set the path for QT in order to find the icons
@@ -408,6 +378,6 @@ def main(inputFile = None):
             msg = editor.tr("%1 file name doesn't exist").arg(inputFile)
             QtGui.QMessageBox.warning(editor, editor.tr("File not found") , msg)
     sys.exit(app.exec_())
-    
+
 if __name__ == "__main__":
     main()
