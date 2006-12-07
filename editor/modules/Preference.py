@@ -37,7 +37,7 @@ import modules.World as World
 class Preference(QtGui.QDialog):
     def __init__(self, parent):
         QtGui.QDialog.__init__(self, parent)
-        self.ui = None    
+        self.ui = None
 
     def initUI(self):
         """ get values and display them """
@@ -49,6 +49,8 @@ class Preference(QtGui.QDialog):
         self.setCaption(self.ui.lblTarget, self.tuTargetFont )
         self.commentFont = self.getFont(self.widget[3])
         self.setCaption(self.ui.lblComment, self.commentFont)
+        self.overviewHeaderFont = self.getFont(self.widget[4])
+        self.setCaption(self.ui.lblOverViewHeader, self.overviewHeaderFont)
         
         self.overviewColorObj = self.getColor(self.widget[0])
         self.setTextColor(self.ui.overviewColor, self.overviewColorObj)
@@ -77,6 +79,7 @@ class Preference(QtGui.QDialog):
         self.rememberFont(self.widget[1], self.tuSourceFont)
         self.rememberFont(self.widget[2], self.tuTargetFont)
         self.rememberFont(self.widget[3], self.commentFont)
+        self.rememberFont(self.widget[4], self.overviewHeaderFont)
         
         self.rememberColor(self.widget[0], self.overviewColorObj)
         self.rememberColor(self.widget[1], self.tuSourceColorObj)
@@ -106,7 +109,7 @@ class Preference(QtGui.QDialog):
     def rememberColor(self, obj, colorObj):
         """ remember Color in Qsettings
         @param obj: input as string
-        @param colorObj: stored color"""        
+        @param colorObj: stored color"""
         if (colorObj != None):    # TODO do we need this ???
             World.settings.setValue(str(obj + "Color"), QtCore.QVariant(colorObj.name()))
         
@@ -129,6 +132,11 @@ class Preference(QtGui.QDialog):
         """ slot to open font selection dialog """
         self.commentFont = self.setFont(self.widget[3])
         self.setCaption(self.ui.lblComment, self.commentFont)
+        
+    def fontOverviewHeader(self):
+        """ slot to open font selection dialog """
+        self.overviewHeaderFont = self.setFont(self.widget[4])
+        self.setCaption(self.ui.lblOverViewHeader, self.overviewHeaderFont)
 
     def colorOverview(self):
         """ slot to open color selection dialog """
@@ -246,6 +254,7 @@ class Preference(QtGui.QDialog):
             # connect signals
             self.connect(self.ui.chkHeaderAuto, QtCore.SIGNAL("stateChanged(int)"), self.ui.chkHeaderAuto.checkState) 
             self.connect(self.ui.bntOverview, QtCore.SIGNAL("clicked()"), self.fontOverview) 
+            self.connect(self.ui.bntOverviewHeader, QtCore.SIGNAL("clicked()"), self.fontOverviewHeader) 
             self.connect(self.ui.bntSource, QtCore.SIGNAL("clicked()"), self.fontSource) 
             self.connect(self.ui.bntTarget, QtCore.SIGNAL("clicked()"), self.fontTarget) 
             self.connect(self.ui.bntComment, QtCore.SIGNAL("clicked()"), self.fontComment) 
@@ -261,7 +270,7 @@ class Preference(QtGui.QDialog):
             self.connect(self.ui.okButton, QtCore.SIGNAL("clicked()"), self.accepted)
             self.connect(self.ui.cbxFullLanguage, QtCore.SIGNAL("activated(int)"), self.setCodeIndex)
             self.connect(self.ui.cbxLanguageCode, QtCore.SIGNAL("activated(int)"), self.setLanguageIndex)
-            self.widget = ["overview","tuSource","tuTarget","comment"]
+            self.widget = ["overview","tuSource","tuTarget","comment", "overviewHeader"]
             language = ['Afar','Abkhazian','Avestan','Afrikaans','Akan','Amharic','Aragonese','Arabic','Assamese','Avaric','Aymara','Azerbaijani','Bashkir','Byelorussian;Belarusian','Bulgarian','Bihari','Bislama','Bambara','Bengali; Bangla','Tibetan','Breton','Bosnian','Catalan','Chechen','Chamorro','Corsican','Cree','Czech','Church Slavic','Chuvash','Welsh','Danish','German','Divehi','Dzongkha; Bhutani','Ewe','Greek','English','Esperanto','Spanish','Estonian','Basque','Persian','Fulah','Finnish','Fijian; Fiji','Faroese','French','Frisian','Irish','Scots; Gaelic','Gallegan; Galician','Guarani','Gujarati','Manx','Hausa','Hebrew','Hindi','Hiri Motu','Croatian','Haitian; Haitian Creole','Hungarian','Armenian','Herero','Interlingua','Indonesian','Interlingue','Igbo','Sichuan Yi','Inupiak','Ido','Icelandic','Italian','Inuktitut','Japanese','Javanese','Georgian','Kongo','Kikuyu','Kuanyama','Kazakh','Kalaallisut; Greenlandic','Khmer','Kannada','Korean','Kanuri','Kashmiri','Kurdish','Komi','Cornish','Kirghiz','Latin','Letzeburgesch','Ganda','Limburgish; Limburger; Limburgan','Lingala','Lao; Laotian','Lithuanian','Luba-Katanga','Latvian; Lettish','Malagasy','Marshall','Maori','Macedonian','Malayalam','Mongolian','Moldavian','Marathi','Malay','Maltese','Burmese','Nauru','Norwegian Bokmaal','Ndebele, North','Nepali','Ndonga','Dutch','Norwegian Nynorsk','Norwegian','Ndebele, South','Navajo','Chichewa; Nyanja','Occitan; Provenc,al','Ojibwa','(Afan) Oromo','Oriya','Ossetian; Ossetic','Panjabi; Punjabi','Pali','Polish','Pashto, Pushto','Portuguese','Quechua','Rhaeto-Romance','Rundi; Kirundi','Romanian','Russian','Kinyarwanda','Sanskrit','Sardinian','Sindhi','Northern Sami','Sango; Sangro','Sinhalese','Slovak','Slovenian','Samoan','Shona','Somali','Albanian','Serbian','Swati','Sesotho','Sundanese','Swedish','Swahili','Tamil','Telugu','Tajik','Thai','Tigrinya','Turkmen','Tagalog','Tswana','Tonga','Turkish','Tsonga','Tatar','Twi','Tahitian','Uighur','Ukrainian','Urdu','Uzbek','Venda','Vietnamese','Volapuk','Walloon','Wolof','Xhosa','Yiddish','Yoruba','Zhuang','Chinese','Zulu']
             self.ui.cbxFullLanguage.addItems(language)
             code = ['aa','ab','ae','af','ak','am','an','ar','as','av','ay','az','ba','be','bg','bh','bi','bm','bn','bo','br','bs','ca','ce','ch','co','cr','cs','cu','cv','cy','da','de','dv','dz','ee','el','en','eo','es','et','eu','fa','ff','fi','fj','fo','fr','fy','ga','gd','gl','gn','gu','gv','ha','he','hi','ho','hr','ht','hu','hy','hz','ia','id','ie','ig','ii','ik','io','is','it','iu','ja','jv','ka','kg','ki','kj','kk','kl','km','kn','ko','kr','ks','ku','kv','kw','ky','la','lb','lg','li','ln','lo','lt','lu','lv','mg','mh','mi','mk','ml','mn','mo','mr','ms','mt','my','na','nb','nd','ne','ng','nl','nn','no','nr','nv','ny','oc','oj','om','or','os','pa','pi','pl','ps','pt','qu','rm','rn','ro','ru','rw','sa','sc','sd','se','sg','si','sk','sl','sm','sn','so','sq','sr','ss','st','su','sv','sw','ta','te','tg','th','ti','tk','tl','tn','to','tr','ts','tt','tw','ty','ug','uk','ur','uz','ve','vi','vo','wa','wo','xh','yi','yo','za','zh','zu']

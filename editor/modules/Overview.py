@@ -59,8 +59,8 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.tableOverview.horizontalHeader().setHighlightSections(False)
         self.ui.tableOverview.verticalHeader().hide()
         
-        self.headerFont = QtGui.QFont('Sans Serif', 10)
-        self.ui.tableOverview.horizontalHeader().setFont(self.headerFont)
+##        self.headerFont = QtGui.QFont('Sans Serif', 10)
+##        self.ui.tableOverview.horizontalHeader().setFont(self.headerFont)
         self.applySettings()
         self.fuzzyIcon = QtGui.QIcon("../images/fuzzy.png")
         self.normalState = QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
@@ -214,7 +214,12 @@ class OverviewDock(QtGui.QDockWidget):
             fontObj = QtGui.QFont()
             if (fontObj.fromString(font.toString())):
               self.ui.tableOverview.setFont(fontObj)
-              self.ui.tableOverview.horizontalHeader().setFont(self.headerFont)
+              
+        font = World.settings.value("overviewHeaderFont")
+        if (font.isValid()):
+            fontObj = QtGui.QFont()
+            if (fontObj.fromString(font.toString())):
+              self.ui.tableOverview.horizontalHeader().setFont(fontObj)
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
