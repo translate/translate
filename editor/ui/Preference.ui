@@ -355,6 +355,9 @@
          <property name="text" >
           <string>Automatically update header on save</string>
          </property>
+         <property name="checked" >
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
        <item row="3" column="0" >
@@ -401,22 +404,6 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="0" >
-        <spacer>
-         <property name="orientation" >
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeType" >
-          <enum>QSizePolicy::MinimumExpanding</enum>
-         </property>
-         <property name="sizeHint" >
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
        <item row="0" column="0" >
         <widget class="QFrame" name="frame2" >
          <property name="sizePolicy" >
@@ -440,7 +427,165 @@
           <property name="spacing" >
            <number>6</number>
           </property>
-          <item row="3" column="0" >
+          <item row="1" column="1" >
+           <widget class="QLabel" name="lblOverViewHeader" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>11</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="frameShape" >
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="text" >
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" >
+           <widget class="QLabel" name="Source" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>10</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="text" >
+             <string>Source</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="2" >
+           <widget class="QPushButton" name="bntComment" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>Choose</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="2" >
+           <widget class="QPushButton" name="bntTarget" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>Choose</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2" >
+           <widget class="QPushButton" name="bntSource" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>Choose</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1" >
+           <widget class="QLabel" name="lblSource" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>11</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="frameShape" >
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="text" >
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1" >
+           <widget class="QLabel" name="lblComment" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>11</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="frameShape" >
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="text" >
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0" >
            <widget class="QLabel" name="lblsupportteam" >
             <property name="sizePolicy" >
              <sizepolicy>
@@ -466,7 +611,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0" >
+          <item row="3" column="0" >
            <widget class="QLabel" name="label4" >
             <property name="sizePolicy" >
              <sizepolicy>
@@ -492,11 +637,11 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0" >
-           <widget class="QLabel" name="Source" >
+          <item row="3" column="1" >
+           <widget class="QLabel" name="lblTarget" >
             <property name="sizePolicy" >
              <sizepolicy>
-              <hsizetype>0</hsizetype>
+              <hsizetype>7</hsizetype>
               <vsizetype>0</vsizetype>
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
@@ -505,7 +650,7 @@
             <property name="font" >
              <font>
               <family>Sans Serif</family>
-              <pointsize>10</pointsize>
+              <pointsize>11</pointsize>
               <weight>50</weight>
               <italic>false</italic>
               <bold>false</bold>
@@ -513,8 +658,55 @@
               <strikeout>false</strikeout>
              </font>
             </property>
+            <property name="frameShape" >
+             <enum>QFrame::StyledPanel</enum>
+            </property>
             <property name="text" >
-             <string>Source</string>
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2" >
+           <widget class="QPushButton" name="bntOverview" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>Choose</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" >
+           <widget class="QLabel" name="lblOverView" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>11</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="frameShape" >
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="text" >
+             <string/>
             </property>
            </widget>
           </item>
@@ -553,8 +745,8 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="2" >
-           <widget class="QPushButton" name="bntComment" >
+          <item row="1" column="0" >
+           <widget class="QLabel" name="label2_2" >
             <property name="sizePolicy" >
              <sizepolicy>
               <hsizetype>0</hsizetype>
@@ -563,28 +755,33 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="text" >
-             <string>Choose</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2" >
-           <widget class="QPushButton" name="bntTarget" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>0</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>10</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
             </property>
             <property name="text" >
-             <string>Choose</string>
+             <string>Overview header</string>
+            </property>
+            <property name="scaledContents" >
+             <bool>true</bool>
+            </property>
+            <property name="wordWrap" >
+             <bool>true</bool>
+            </property>
+            <property name="indent" >
+             <number>0</number>
             </property>
            </widget>
           </item>
           <item row="1" column="2" >
-           <widget class="QPushButton" name="bntSource" >
+           <widget class="QPushButton" name="bntOverviewHeader" >
             <property name="sizePolicy" >
              <sizepolicy>
               <hsizetype>0</hsizetype>
@@ -595,142 +792,27 @@
             </property>
             <property name="text" >
              <string>Choose</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2" >
-           <widget class="QPushButton" name="bntOverview" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>0</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text" >
-             <string>Choose</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1" >
-           <widget class="QLabel" name="lblComment" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>7</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font" >
-             <font>
-              <family>Sans Serif</family>
-              <pointsize>11</pointsize>
-              <weight>50</weight>
-              <italic>false</italic>
-              <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="frameShape" >
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="text" >
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1" >
-           <widget class="QLabel" name="lblTarget" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>7</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font" >
-             <font>
-              <family>Sans Serif</family>
-              <pointsize>11</pointsize>
-              <weight>50</weight>
-              <italic>false</italic>
-              <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="frameShape" >
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="text" >
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1" >
-           <widget class="QLabel" name="lblSource" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>7</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font" >
-             <font>
-              <family>Sans Serif</family>
-              <pointsize>11</pointsize>
-              <weight>50</weight>
-              <italic>false</italic>
-              <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="frameShape" >
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="text" >
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" >
-           <widget class="QLabel" name="lblOverView" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>7</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font" >
-             <font>
-              <family>Sans Serif</family>
-              <pointsize>11</pointsize>
-              <weight>50</weight>
-              <italic>false</italic>
-              <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="frameShape" >
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="text" >
-             <string/>
             </property>
            </widget>
           </item>
          </layout>
         </widget>
+       </item>
+       <item row="2" column="0" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType" >
+          <enum>QSizePolicy::MinimumExpanding</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>
