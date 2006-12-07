@@ -105,7 +105,7 @@ class CommentDock(QtGui.QDockWidget):
         block.layout().setAdditionalFormats([self.highlightRange])
 
     def setReadyForSave(self):
-      self.emit(QtCore.SIGNAL("readyForSave"), True)
+        self.emit(QtCore.SIGNAL("readyForSave"), True)
 
     def applySettings(self):
         """ set color and font to txtTranslatorComment"""
@@ -121,7 +121,20 @@ class CommentDock(QtGui.QDockWidget):
             fontObj = QtGui.QFont()
             if (fontObj.fromString(font.toString())):
                 self.ui.txtTranslatorComment.setFont(fontObj)
-    
+                
+    def replaceText(self, textField, position, length, replacedText):
+        """replace the string (at position and length) with replacedText in txtTarget.
+        @param textField: source or target text box.
+        @param position: old string's start point.
+        @param length: old string's length.
+        @param replacedText: string to replace."""
+        if (textField != World.comment):
+            return
+        text = self.ui.txtTranslatorComment.toPlainText()
+        text.replace(position, length, replacedText);
+        self.ui.txtTranslatorComment.setPlainText(text)
+        self.ui.txtTranslatorComment.document().setModified()
+        self.checkModified()
     
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
