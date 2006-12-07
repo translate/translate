@@ -64,17 +64,17 @@ class MainWindow(QtGui.QMainWindow):
         #plug in overview widget
         self.dockOverview = OverviewDock(self)
         self.addDockWidget(QtCore.Qt.TopDockWidgetArea, self.dockOverview)
-        self.ui.menuView.addAction(self.dockOverview.toggleViewAction())
+        self.ui.menuWindow.addAction(self.dockOverview.toggleViewAction())
         
         #plug in TUview widget
         self.dockTUview = TUview(self)
         self.setCentralWidget(self.dockTUview)
-        self.ui.menuView.addAction(self.dockTUview.toggleViewAction())
+        self.ui.menuWindow.addAction(self.dockTUview.toggleViewAction())
         
         #plug in comment widget
         self.dockComment = CommentDock(self)
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.dockComment)
-        self.ui.menuView.addAction(self.dockComment.toggleViewAction())
+        self.ui.menuWindow.addAction(self.dockComment.toggleViewAction())
          
         #add widgets to statusbar
         self.statuslabel = QtGui.QLabel()
@@ -238,7 +238,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionFilterFuzzy.setEnabled(True)
         self.ui.actionFilterTranslated.setEnabled(True)
         self.ui.actionFilterUntranslated.setEnabled(True)
-    
+        
     def startRecentAction(self):
         action = self.sender()
         if action:
