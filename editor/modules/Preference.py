@@ -91,7 +91,7 @@ class Preference(QtGui.QDialog):
         World.settings.setValue("FullLanguage", QtCore.QVariant(self.ui.cbxFullLanguage.currentText()))
         World.settings.setValue("Code", QtCore.QVariant(self.ui.cbxLanguageCode.currentText()))
         World.settings.setValue("SupportTeam", QtCore.QVariant(self.ui.SupportTeam.text()))
-        World.settings.setValue("TimeZone", QtCore.QVariant(self.ui.cbxTimeZone.currentText()))        
+        World.settings.setValue("TimeZone", QtCore.QVariant(self.ui.cbxTimeZone.currentText()))
         if (self.ui.chkHeaderAuto.checkState() == QtCore.Qt.Checked):
             checkStatus = "checked"
         else:
@@ -250,7 +250,8 @@ class Preference(QtGui.QDialog):
             self.defaultFont = QtGui.QFont("Serif", 10)
             self.defaultColor = QtGui.QColor(QtCore.Qt.black)
             self.ui = Ui_frmPreference()
-            self.ui.setupUi(self)  
+            self.ui.setupUi(self)
+            World.settings.setValue("headerAuto", QtCore.QVariant("checked"))
             # connect signals
             self.connect(self.ui.chkHeaderAuto, QtCore.SIGNAL("stateChanged(int)"), self.ui.chkHeaderAuto.checkState) 
             self.connect(self.ui.bntOverview, QtCore.SIGNAL("clicked()"), self.fontOverview) 
