@@ -63,6 +63,8 @@ class OverviewDock(QtGui.QDockWidget):
 ##        self.ui.tableOverview.horizontalHeader().setFont(self.headerFont)
         self.applySettings()
         self.fuzzyIcon = QtGui.QIcon("../images/fuzzy.png")
+        self.noteIcon = QtGui.QIcon("../images/note.png")
+        self.approvedIcon = QtGui.QIcon("../images/approved.png")
         self.normalState = QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
         self.connect(self.ui.tableOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitCurrentIndex)
         #self.connect(self.ui.tableOverview, QtCore.SIGNAL("cellDoubleClicked(int, int)"), self.emitTargetChanged)
@@ -92,23 +94,12 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.tableOverview.setSortingEnabled(False)
         i = 0
         for unit in units:
-            item0 = QtGui.QTableWidgetItem(str(i).rjust(self.indexMaxLen))
-            item1 = QtGui.QTableWidgetItem(unit.source)
-            item2 = QtGui.QTableWidgetItem(unit.target)
-            item0.setTextAlignment(QtCore.Qt.AlignCenter)
-            item0.setFlags(self.normalState)
-            item1.setFlags(self.normalState)
-            item2.setFlags(self.normalState)
-            self.ui.tableOverview.setItem(i, 0, item0)
-            self.ui.tableOverview.setItem(i, 1, item1)
-            self.ui.tableOverview.setItem(i, 2, item2)
-            self.setUnitProperty(i, self.unitsStatus[i])
+            self.addUnit(unit, i)
             i += 1
         self.ui.tableOverview.setSortingEnabled(True)
         self.ui.tableOverview.sortItems(0)
         self.ui.tableOverview.resizeRowsToContents()
         self.setUpdatesEnabled(True)
-        
 
     def filteredList(self, shownList, filter):
         """show the items which are in shownList.
@@ -123,23 +114,35 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.tableOverview.setSortingEnabled(False)
         j = 0
         for i in shownList:
-            item0 = QtGui.QTableWidgetItem(str(i).rjust(self.indexMaxLen))
-            item1 = QtGui.QTableWidgetItem(self.units[i].source)
-            item2 = QtGui.QTableWidgetItem(self.units[i].target)
-            item0.setTextAlignment(QtCore.Qt.AlignCenter)
-            item0.setFlags(self.normalState)
-            item1.setFlags(self.normalState)
-            item2.setFlags(self.normalState)
-            self.ui.tableOverview.setItem(j, 0, item0)
-            self.ui.tableOverview.setItem(j, 1, item1)
-            self.ui.tableOverview.setItem(j, 2, item2)
-            self.setUnitProperty(j, self.unitsStatus[i])
+            self.addUnit(self.units[i], j)
             j += 1
         self.ui.tableOverview.setSortingEnabled(True)
         self.ui.tableOverview.sortItems(0)
         self.ui.tableOverview.resizeRowsToContents()
         self.setUpdatesEnabled(True)
-
+        
+    def addUnit(self, unit, row):
+        """add unit to row.
+        @param unit: unit class.
+        @param row: row in table."""
+        indexItem = QtGui.QTableWidgetItem(str(row).rjust(self.indexMaxLen))
+        sourceItem = QtGui.QTableWidgetItem(unit.source)
+        targetItem = QtGui.QTableWidgetItem(unit.target)
+        indexItem.setTextAlignment(QtCore.Qt.AlignCenter)
+        indexItem.setFlags(self.normalState)
+        sourceItem.setFlags(self.normalState)
+        targetItem.setFlags(self.normalState)
+        note = unit.getnotes("translator")
+        if (note):
+            indexItem.setIcon(self.noteIcon)
+            indexItem.setTextAlignment(QtCore.Qt.AlignVCenter)
+            indexItem.setToolTip(unicode(note))
+            indexItem.setFlags(self.normalState)
+        self.ui.tableOverview.setItem(row, 0, indexItem)
+        self.ui.tableOverview.setItem(row, 1, sourceItem)
+        self.ui.tableOverview.setItem(row, 2, targetItem)
+        self.setState(row, self.unitsStatus[row])
+    
     def emitCurrentIndex(self):
         """send the selected unit index."""
         row = self.ui.tableOverview.currentRow()
@@ -158,25 +161,26 @@ class OverviewDock(QtGui.QDockWidget):
         # TODO: improve conversion of index to row number.
         if (index < 0):
             return
-        item = self.ui.tableOverview.findItems(str(index).rjust(self.indexMaxLen), QtCore.Qt.MatchExactly)[0]
-        if (not item):
-            return
-        row = self.ui.tableOverview.row(item)
-        self.setUnitProperty(row, state)
-        self.ui.tableOverview.selectRow(row)
-        self.ui.tableOverview.scrollToItem(item)
+        foundItems = self.ui.tableOverview.findItems(str(index).rjust(self.indexMaxLen), QtCore.Qt.MatchExactly)
+        if (len(foundItems) > 0):
+            item = foundItems[0]
+            row = self.ui.tableOverview.row(item)
+            self.unitsStatus[row] = state
+            self.setState(row, self.unitsStatus[row])
+            self.ui.tableOverview.selectRow(row)
+            self.ui.tableOverview.scrollToItem(item)
 
-    def setUnitProperty(self, index, state):
+    def setState(self, index, state):
         """display unit status on note column, and hide if unit is not in filter.
         @param index: row in table to set property.
         @param state: state of unit defined in world.py."""
         if (state & World.fuzzy):
-            fuzzyItem = QtGui.QTableWidgetItem()
-            fuzzyItem.setIcon(self.fuzzyIcon)
-            fuzzyItem.setTextAlignment(QtCore.Qt.AlignVCenter)
-            fuzzyItem.setToolTip("fuzzy")
-            fuzzyItem.setFlags(self.normalState)
-            self.ui.tableOverview.setItem(index, 3, fuzzyItem)
+            noteItem = QtGui.QTableWidgetItem()
+            noteItem.setIcon(self.fuzzyIcon)
+            noteItem.setTextAlignment(QtCore.Qt.AlignVCenter)
+            noteItem.setToolTip("fuzzy")
+            noteItem.setFlags(self.normalState)
+            self.ui.tableOverview.setItem(index, 3, noteItem)
         else:
             self.ui.tableOverview.takeItem(index, 3)
 ##        if (not self.filter & state):
@@ -189,6 +193,7 @@ class OverviewDock(QtGui.QDockWidget):
         indexToUpdate = int(self.ui.tableOverview.item(row, 0).text())
         if (indexToUpdate >= 0):
             item = QtGui.QTableWidgetItem(text)
+            item.setFlags(self.normalState)
             self.ui.tableOverview.setItem(indexToUpdate, 2, item)
             self.ui.tableOverview.resizeRowToContents(indexToUpdate)
 
