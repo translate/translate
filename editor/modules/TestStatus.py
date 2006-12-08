@@ -1,4 +1,5 @@
 from translate.storage import factory
+from translate.tools import pocount
 import sys
 import os.path
 sys.path.append(os.path.join(sys.path[0], ".."))
@@ -10,11 +11,12 @@ class TestStatus(unittest.TestCase):
 
     def setUp(self):
         self.store = factory.getobject("../example/webarchiver.po")
+        units = self.store.units
+        self.total = len(units)
+        self.fuzzy = len(pocount.fuzzymessages(units))
+        self.translated = len(pocount.translatedmessages(units))
+        self.untranslated = self.total - self.translated
         self.status = Status(self.store.units)
-        self.total = self.status.numTotal
-        self.fuzzy = self.status.numFuzzy
-        self.translated = self.status.numTranslated
-        self.untranslated = self.status.numUntranslated
     
     def testAddNumFuzzy(self):
         self.status.addNumFuzzy(1)
