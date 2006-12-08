@@ -22,6 +22,11 @@
 # 
 # This module stores status
 
+if __name__ == "__main__":
+    import sys
+    import os.path
+    sys.path.append(os.path.join(sys.path[0], ".."))
+    
 from translate.tools import pocount
 import modules.World as World
 
