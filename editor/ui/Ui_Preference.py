@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Thu Dec  7 09:48:29 2006
+# Created: Fri Dec  8 09:38:22 2006
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -862,14 +862,14 @@ class Ui_frmPreference(object):
         self.bntOverviewHeader.setText(self.tr("Choose"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab2), self.tr("Font"))
         self.bntColorDefaults.setText(self.tr("Defaults"))
-        self.ColorComment.setText(self.tr("<html><head><meta name=\"qrichtext\" content=\"1\" /></head><body style=\" white-space: pre-wrap; font-family:Sans Serif; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;\"><p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Color for Comment</p></body></html>"))
+        self.ColorComment.setText(self.tr("Comment"))
         self.bntColorComment.setText(self.tr("Choose"))
         self.bntColorTarget.setText(self.tr("Choose"))
         self.bntColorSource.setText(self.tr("Choose"))
         self.bntColorOverview.setText(self.tr("Choose"))
-        self.ColorTarget.setText(self.tr("<html><head><meta name=\"qrichtext\" content=\"1\" /></head><body style=\" white-space: pre-wrap; font-family:Sans Serif; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;\"><p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Color for Target</p></body></html>"))
-        self.ColorOverview.setText(self.tr("<html><head><meta name=\"qrichtext\" content=\"1\" /></head><body style=\" white-space: pre-wrap; font-family:Sans Serif; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;\"><p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Color for Overview</p></body></html>"))
-        self.ColorSource.setText(self.tr("<html><head><meta name=\"qrichtext\" content=\"1\" /></head><body style=\" white-space: pre-wrap; font-family:Sans Serif; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;\"><p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Color for Source</p></body></html>"))
+        self.ColorTarget.setText(self.tr("Target"))
+        self.ColorOverview.setText(self.tr("Overview"))
+        self.ColorSource.setText(self.tr("Source"))
         self.tuTargetColor.setText(self.tr("Sample text"))
         self.commentColor.setText(self.tr("Sample text"))
         self.overviewColor.setText(self.tr("Sample text"))
