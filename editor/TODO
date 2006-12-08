@@ -23,6 +23,7 @@
 - Priority: 1
 - Who: Ratha
 - Status: not
+    + only Paste is not done: disable Paste over readonly widget
 
 6. Open many files: no attribute remove last
 - Priority: 1
@@ -112,7 +113,7 @@
     Make the filter appear on the first level in View menu.
 - Priority: 1
 - Who: ratha
-- Status: not
+- Status: closed
 
 22. do not crash when a not welformed xliff was read.
 - Priority: 1
@@ -129,31 +130,36 @@
 24. add an icon to the preference action.
 - Priority: 2
 - Who: ratha
-- Status: not
+- Status: closed
 
 25. unify the icons for previous/next and first/last. They have different size in the moment.
 - Priority: 2
 - Who: ratha
-- Status: not
+- Status: closed
 
 26. Do not repeat "Edit" in the text for the header dialog.
 - Priority: 1
 - Who: da
-- Status: not
--Tip: I don't really understand this!!!
+- Status: done
+
 
 27. Use the custom font also for the table header in overview.
 - Priority: 1
 - Who: da
-- Status: not
+- Status: closed
 
 28. Change icons for move up/move down in header dialog.
 - Priority: 1
 - Who: ratha
-- Status: not
+- Status: closed
 
 29. Add fuzzy icon on status bar and overview
 - Priority: 1
 - Who: virak
 - Status: not
+
+30. Change Auto update header on save by default
+- Priority: 1
+- Who: da
+- Status: closed
 
