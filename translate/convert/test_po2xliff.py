@@ -12,11 +12,11 @@ class TestPO2XLIFF:
 
     def po2xliff(self, posource, sourcelanguage='en', targetlanguage=None):
         """helper that converts po source to xliff source without requiring files"""
-	pofile = po.pofile(posource)
-	convertor = po2xliff.po2xliff()
-	outputxliff = convertor.convertfile(pofile, None, sourcelanguage=sourcelanguage)
-	return poxliff.PoXliffFile(outputxliff)
-	
+        pofile = po.pofile(posource)
+        convertor = po2xliff.po2xliff()
+        outputxliff = convertor.convertfile(pofile, None, sourcelanguage=sourcelanguage)
+        return poxliff.PoXliffFile(outputxliff)
+
     def getnode(self, xliff):
         """Retrieves the trans-unit node from the dom"""
         assert len(xliff.units) == 1
@@ -58,10 +58,10 @@ msgstr "Toepassings"
         assert xliff.translate("Applications") == "Toepassings"
         assert xliff.translate("bla") is None
         xmltext = str(xliff)
-	assert xmltext.index('<xliff version="1.1"')
-	assert xmltext.index('<file')
-	assert xmltext.index('source-language')
-	assert xmltext.index('datatype')
+        assert xmltext.index('<xliff version="1.1"')
+        assert xmltext.index('<file')
+        assert xmltext.index('source-language')
+        assert xmltext.index('datatype')
 
     def test_multiline(self):
         """Test multiline po entry"""
@@ -82,7 +82,7 @@ msgstr "Eerste lyn\nTweede lyn"
 '''
         xliff = self.po2xliff(minipo)
         print "The generated xml:"
-	xmltext = str(xliff)
+        xmltext = str(xliff)
         print xmltext
         assert xliff.translate("First line\nSecond line") == "Eerste lyn\nTweede lyn"
         assert xliff.translate("First line\\nSecond line") is None
@@ -90,7 +90,7 @@ msgstr "Eerste lyn\nTweede lyn"
         assert xmltext.find("lyn\\nTweede") == -1
         assert xmltext.find("line\nSecond") > 0
         assert xmltext.find("lyn\nTweede") > 0
-	
+
     def test_escapedtabs(self):
         """Test the escaping of tabs"""
         minipo = r'''msgid "First column\tSecond column"
@@ -241,7 +241,7 @@ msgstr[1] "iinkomo"
         print "The generated xml:"
         xmltext = str(xliff)
         print xmltext
-	assert len(xliff.units) == 1
+        assert len(xliff.units) == 1
         assert xliff.translate("cow") == "inkomo"
         
     def test_funny_plurals(self):
@@ -255,7 +255,7 @@ msgstr[2] "iiinkomo"
         print "The generated xml:"
         xmltext = str(xliff)
         print xmltext
-	assert len(xliff.units) == 1
+        assert len(xliff.units) == 1
         assert xliff.translate("cow") == "inkomo"
 
     def test_language_tags(self):
