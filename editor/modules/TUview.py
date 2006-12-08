@@ -88,7 +88,7 @@ class TUview(QtGui.QDockWidget):
             self.ui.txtTarget.clear()
         # self.indexes store the information of unit's index
         self.indexes = range(len(units))
-        self.filter = World.fuzzy + World.translated + World.untranslated
+        self.filter = World.filterAll
         # adjust the scrollbar
         self.setScrollbarMaximum()
         self.ui.fileScrollBar.setEnabled(True)
@@ -149,6 +149,7 @@ class TUview(QtGui.QDockWidget):
     def checkModified(self):
         if self.ui.txtTarget.document().isModified():
             self.emit(QtCore.SIGNAL("targetChanged"), self.ui.txtTarget.toPlainText())
+            self.ui.txtTarget.document().setModified(False)
 
     def setReadyForSave(self):
       self.emit(QtCore.SIGNAL("readyForSave"), True)
@@ -191,7 +192,6 @@ class TUview(QtGui.QDockWidget):
         text.replace(position, length, replacedText);
         self.ui.txtTarget.setPlainText(text)
         self.ui.txtTarget.document().setModified()
-        self.checkModified()
 
     def applySettings(self):        
         """ set font and color to txtSource and txtTarget"""
