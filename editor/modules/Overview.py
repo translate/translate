@@ -145,13 +145,10 @@ class OverviewDock(QtGui.QDockWidget):
     
     def emitCurrentIndex(self):
         """send the selected unit index."""
-        row = self.ui.tableOverview.currentRow()
-        indexToUpdate = int(self.ui.tableOverview.item(row, 0).text())
         selectedItems = self.ui.tableOverview.selectedItems()
         if (len(selectedItems) > 0):
-            indexOfSelectedRow = int(self.ui.tableOverview.selectedItems()[0].text())
-            if (indexToUpdate != indexOfSelectedRow):
-                self.emit(QtCore.SIGNAL("currentIndex"), indexOfSelectedRow)
+            indexOfSelectedRow = int(selectedItems[0].text())
+            self.emit(QtCore.SIGNAL("currentIndex"), indexOfSelectedRow)
 
     def updateView(self, unit, index, state):
         """highlight the table's row at index.
