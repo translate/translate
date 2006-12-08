@@ -1,4 +1,7 @@
 <ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow" >
   <property name="enabled" >
@@ -141,7 +144,16 @@
    <addaction name="menuWindow" />
    <addaction name="menuHelp" />
   </widget>
-  <widget class="QStatusBar" name="statusbar" />
+  <widget class="QStatusBar" name="statusbar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>471</y>
+     <width>498</width>
+     <height>21</height>
+    </rect>
+   </property>
+  </widget>
   <widget class="QToolBar" name="toolStandard" >
    <property name="enabled" >
     <bool>true</bool>
@@ -559,7 +571,7 @@
     <bool>false</bool>
    </property>
    <property name="text" >
-    <string>Edit Header...</string>
+    <string>Header...</string>
    </property>
   </action>
   <action name="actionPreferences" >
@@ -626,6 +638,7 @@
    </property>
   </action>
  </widget>
+ <pixmapfunction></pixmapfunction>
  <resources/>
  <connections/>
 </ui>

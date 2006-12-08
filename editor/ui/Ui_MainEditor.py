@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Thu Dec  7 17:39:55 2006
+# Created: Fri Dec  8 15:37:06 2006
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -64,6 +64,7 @@ class Ui_MainWindow(object):
         MainWindow.setMenuBar(self.menubar)
 
         self.statusbar = QtGui.QStatusBar(MainWindow)
+        self.statusbar.setGeometry(QtCore.QRect(0,471,498,21))
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
@@ -388,7 +389,7 @@ class Ui_MainWindow(object):
         self.actionFindPrevious.setShortcut(self.tr("Shift+F3"))
         self.actionSelectAll.setText(self.tr("Select &All"))
         self.actionSelectAll.setShortcut(self.tr("Ctrl+A"))
-        self.actionEdit_Header.setText(self.tr("Edit Header..."))
+        self.actionEdit_Header.setText(self.tr("Header..."))
         self.actionPreferences.setText(self.tr("Preferences..."))
         self.actionComment.setText(self.tr("Comment"))
         self.actionToolbars.setText(self.tr("Toolbars"))
