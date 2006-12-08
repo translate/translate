@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/jhe/khmerOS/svn-wf/trunk/editor/ui/Comment.ui'
+# Form implementation generated from reading ui file 'unknown'
 #
-# Created: Wed Dec  6 09:33:46 2006
-#      by: PyQt4 UI code generator 4.0.1
+# Created: Wed Dec  6 16:53:57 2006
+#      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -24,7 +24,7 @@ class Ui_frmComment(object):
         frmComment.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
 
         self.gridlayout = QtGui.QGridLayout(frmComment)
-        self.gridlayout.setMargin(9)
+        self.gridlayout.setMargin(0)
         self.gridlayout.setSpacing(6)
         self.gridlayout.setObjectName("gridlayout")
 
@@ -101,10 +101,13 @@ class Ui_frmComment(object):
         self.retranslateUi(frmComment)
         QtCore.QMetaObject.connectSlotsByName(frmComment)
 
+    def tr(self, string):
+        return QtGui.QApplication.translate("frmComment", string, None, QtGui.QApplication.UnicodeUTF8)
+
     def retranslateUi(self, frmComment):
-        frmComment.setWindowTitle(QtGui.QApplication.translate("frmComment", "Comments", None, QtGui.QApplication.UnicodeUTF8))
-        self.txtTranslatorComment.setToolTip(QtGui.QApplication.translate("frmComment", "Translators\' comments", None, QtGui.QApplication.UnicodeUTF8))
-        self.txtLocationComment.setToolTip(QtGui.QApplication.translate("frmComment", "String\'s location", None, QtGui.QApplication.UnicodeUTF8))
+        frmComment.setWindowTitle(self.tr("Comments"))
+        self.txtTranslatorComment.setToolTip(self.tr("Translators\' comments"))
+        self.txtLocationComment.setToolTip(self.tr("String\'s location"))
 
 
 if __name__ == "__main__":
