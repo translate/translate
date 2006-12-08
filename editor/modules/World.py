@@ -39,6 +39,10 @@ searchBackward = 2
 searchStatic = 4
 
 # this is the global settings object, use only this for saving and restoring settings
+
+settings = QtCore.QSettings("WordForge", "Translation Editor")
+x_generator = "WordForge Translation Editor v.0.1"
+
 settingOrg = "WordForge"
 settingApp = "Translation Editor"
 settingVer = "0.1"
@@ -46,3 +50,4 @@ settings = QtCore.QSettings(settingOrg, settingApp)
 
 # maximum number of files in the recent file menu
 MaxRecentFiles = 10
+
