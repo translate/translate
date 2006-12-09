@@ -163,3 +163,9 @@
 - Who: da
 - Status: closed
 
+31. Setting the text color does not work if I have no file open. 
+    When I restart the editor the new colors are used. If I have a file open
+    the colors change immediately.
+- Priority: 1
+- Who: ???
+- Status: open
