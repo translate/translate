@@ -54,7 +54,7 @@ class MainWindow(QtGui.QMainWindow):
         self.createRecentAction()
         
         app = QtGui.QApplication.instance()
-        self.connect(app, QtCore.SIGNAL("focusChanged(QWidget *,QWidget *)"), self.focusChanged)
+        self.connect(app, QtCore.SIGNAL("focusChanged(QWidget *,QWidget *)"), self.focusChanged)    
         
         # get the last geometry
         geometry = World.settings.value("lastGeometry")
@@ -125,8 +125,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("replaceText"), self.dockTUview.replaceText)
         self.connect(self.operator, QtCore.SIGNAL("replaceText"), self.dockComment.replaceText)
         
-        # Edit menu action      
-        
+        # Edit menu action
         self.connect(self.ui.actionComment, QtCore.SIGNAL("triggered()"), self.dockComment.show)
        
         # action Preferences menu 
@@ -202,15 +201,15 @@ class MainWindow(QtGui.QMainWindow):
         self.dockTUview.setHidden(tuViewHidden.toBool())
         self.findBar.setHidden(True)
         
-    def enableCopyPaste(self, bool):
+    def enableCopyCut(self, bool):
         self.ui.actionCopy.setEnabled(bool)
-        self.ui.actionCut.setEnabled(bool)
+        self.ui.actionCut.setEnabled(bool)        
 
     def enableUndo(self, bool):
         self.ui.actionUndo.setEnabled(bool)
 
     def enableRedo(self, bool):
-        self.ui.actionRedo.setEnabled(bool)
+        self.ui.actionRedo.setEnabled(bool)   
 
     def setOpening(self, fileName): 
         """
@@ -225,6 +224,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionSelectAll.setEnabled(True)
         self.ui.actionFind.setEnabled(True)
         self.ui.actionReplace.setEnabled(True)
+        self.ui.actionCopySource2Target.setEnabled(True)
         self.ui.actionEdit_Header.setEnabled(True)
         files = World.settings.value("recentFileList").toStringList()
         files.removeAll(fileName)
@@ -312,7 +312,7 @@ class MainWindow(QtGui.QMainWindow):
         
     def focusChanged(self, oldWidget, newWidget):
         if (oldWidget):
-            self.disconnect(oldWidget, QtCore.SIGNAL("copyAvailable(bool)"), self.enableCopyPaste)
+            self.disconnect(oldWidget, QtCore.SIGNAL("copyAvailable(bool)"), self.enableCopyCut)
             self.disconnect(oldWidget, QtCore.SIGNAL("undoAvailable(bool)"), self.enableUndo)
             self.disconnect(oldWidget, QtCore.SIGNAL("redoAvailable(bool)"), self.enableRedo)
             # cut, copy and paste in oldWidget
@@ -323,7 +323,7 @@ class MainWindow(QtGui.QMainWindow):
                 self.disconnect(self.ui.actionCopy, QtCore.SIGNAL("triggered()"), oldWidget, QtCore.SLOT("copy()"))
 
             if (callable(getattr(oldWidget, "paste", None))):
-                self.disconnect(self.ui.actionPaste, QtCore.SIGNAL("triggered()"), oldWidget, QtCore.SLOT("paste()")) 
+                self.disconnect(self.ui.actionPaste, QtCore.SIGNAL("triggered()"), oldWidget, QtCore.SLOT("paste()"))            
             # undo, redo and selectAll in oldWidget
             if (callable(getattr(oldWidget, "document", None))):
                 self.disconnect(self.ui.actionUndo, QtCore.SIGNAL("triggered()"), oldWidget.document(), QtCore.SLOT("undo()"))
@@ -332,7 +332,7 @@ class MainWindow(QtGui.QMainWindow):
             if (callable(getattr(oldWidget, "selectAll", None))):
                 self.disconnect(self.ui.actionSelectAll , QtCore.SIGNAL("triggered()"), oldWidget, QtCore.SLOT("selectAll()"))
         if (newWidget):
-            self.connect(newWidget, QtCore.SIGNAL("copyAvailable(bool)"), self.enableCopyPaste)
+            self.connect(newWidget, QtCore.SIGNAL("copyAvailable(bool)"), self.enableCopyCut)
             self.connect(newWidget, QtCore.SIGNAL("undoAvailable(bool)"), self.enableUndo)
             self.connect(newWidget, QtCore.SIGNAL("redoAvailable(bool)"), self.enableRedo)
             # cut, copy and paste in newWidget
@@ -344,15 +344,21 @@ class MainWindow(QtGui.QMainWindow):
 
             if (callable(getattr(newWidget, "paste", None))):
                 self.connect(self.ui.actionPaste, QtCore.SIGNAL("triggered()"), newWidget, QtCore.SLOT("paste()"))
+                if (callable(getattr(newWidget, "isReadOnly", None))):
+                    self.ui.actionPaste.setEnabled(not newWidget.isReadOnly())
+                else:
+                    self.ui.actionPaste.setEnabled(True)
+            else:
+                self.ui.actionPaste.setEnabled(False)
             # Select All
             if (callable(getattr(newWidget, "selectAll", None))):
                 self.connect(self.ui.actionSelectAll , QtCore.SIGNAL("triggered()"), newWidget, QtCore.SLOT("selectAll()"))
 
             if (callable(getattr(newWidget, "textCursor", None))):
                 hasSelection = newWidget.textCursor().hasSelection()
-                self.enableCopyPaste(hasSelection)
+                self.enableCopyCut(hasSelection)
             else:
-                self.enableCopyPaste(False)
+                self.enableCopyCut(False)
 
             #it will not work for QLineEdits
             if (callable(getattr(newWidget, "document", None))):
