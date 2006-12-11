@@ -109,3 +109,6 @@ def main(argv=None):
   parser.replacer = replacer
   parser.run(argv)
 
+
+if __name__ == '__main__':
+    main()

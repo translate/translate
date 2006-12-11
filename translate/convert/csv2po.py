@@ -204,3 +204,6 @@ def main(argv=None):
   parser.passthrough.append("columnorder")
   parser.run(argv)
 
+
+if __name__ == '__main__':
+    main()

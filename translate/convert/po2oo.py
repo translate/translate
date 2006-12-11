@@ -248,3 +248,6 @@ def main(argv=None):
   parser.passthrough.append("filteraction")
   parser.run(argv)
 
+
+if __name__ == '__main__':
+    main()
