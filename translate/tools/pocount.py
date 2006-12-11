@@ -141,3 +141,6 @@ def main():
     CSVstyle = True
   summarizer(sys.argv[1:], CSVstyle)
 
+
+if __name__ == '__main__':
+    main()

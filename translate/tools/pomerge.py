@@ -145,3 +145,6 @@ def main():
   parser.passthrough.append("mergecomments")
   parser.run()
 
+
+if __name__ == '__main__':
+    main()
