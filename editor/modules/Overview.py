@@ -66,6 +66,7 @@ class OverviewDock(QtGui.QDockWidget):
         self.noteIcon = QtGui.QIcon("../images/note.png")
         self.approvedIcon = QtGui.QIcon("../images/approved.png")
         self.normalState = QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
+        self.tailSpace = "  "
         self.connect(self.ui.tableOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitCurrentIndex)
         #self.connect(self.ui.tableOverview, QtCore.SIGNAL("cellDoubleClicked(int, int)"), self.emitTargetChanged)
     
@@ -85,7 +86,8 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.tableOverview.setEnabled(True)
         self.ui.tableOverview.clear()
         self.ui.tableOverview.setColumnCount(len(self.headerLabels))
-        self.ui.tableOverview.setRowCount(len(units))
+        #self.ui.tableOverview.setRowCount(len(units))
+        self.ui.tableOverview.setRowCount(0)
         self.ui.tableOverview.setHorizontalHeaderLabels(self.headerLabels)
         self.setUpdatesEnabled(False)
         self.indexMaxLen = len(str(len(units)))
@@ -109,39 +111,38 @@ class OverviewDock(QtGui.QDockWidget):
         self.filter = filter
         self.ui.tableOverview.clear()
         self.ui.tableOverview.setColumnCount(len(self.headerLabels))
-        self.ui.tableOverview.setRowCount(len(shownList))
+        #self.ui.tableOverview.setRowCount(len(shownList))
+        self.ui.tableOverview.setRowCount(0)
         self.ui.tableOverview.setHorizontalHeaderLabels(self.headerLabels)
         self.ui.tableOverview.setSortingEnabled(False)
-        j = 0
         for i in shownList:
-            self.addUnit(self.units[i], j)
-            j += 1
+            self.addUnit(self.units[i], i)
         self.ui.tableOverview.setSortingEnabled(True)
         self.ui.tableOverview.sortItems(0)
         self.ui.tableOverview.resizeRowsToContents()
         self.setUpdatesEnabled(True)
         
-    def addUnit(self, unit, row):
+    def addUnit(self, unit, index):
         """add unit to row.
         @param unit: unit class.
-        @param row: row in table."""
-        indexItem = QtGui.QTableWidgetItem(str(row).rjust(self.indexMaxLen))
+        @param index: unit's index."""
+        row = self.ui.tableOverview.rowCount()
+        self.ui.tableOverview.setRowCount(row + 1)
+        indexItem = QtGui.QTableWidgetItem(str(index).rjust(self.indexMaxLen) + self.tailSpace)
         sourceItem = QtGui.QTableWidgetItem(unit.source)
         targetItem = QtGui.QTableWidgetItem(unit.target)
-        indexItem.setTextAlignment(QtCore.Qt.AlignCenter)
+        indexItem.setTextAlignment(QtCore.Qt.AlignRight)
         indexItem.setFlags(self.normalState)
         sourceItem.setFlags(self.normalState)
         targetItem.setFlags(self.normalState)
-        note = unit.getnotes("translator")
+        note = unit.getnotes() or unit.getnotes("msgid")
         if (note):
             indexItem.setIcon(self.noteIcon)
-            indexItem.setTextAlignment(QtCore.Qt.AlignVCenter)
             indexItem.setToolTip(unicode(note))
-            indexItem.setFlags(self.normalState)
         self.ui.tableOverview.setItem(row, 0, indexItem)
         self.ui.tableOverview.setItem(row, 1, sourceItem)
         self.ui.tableOverview.setItem(row, 2, targetItem)
-        self.setState(row, self.unitsStatus[row])
+        self.setState(row, self.unitsStatus[index])
     
     def emitCurrentIndex(self):
         """send the selected unit index."""
@@ -158,7 +159,7 @@ class OverviewDock(QtGui.QDockWidget):
         # TODO: improve conversion of index to row number.
         if (index < 0):
             return
-        foundItems = self.ui.tableOverview.findItems(str(index).rjust(self.indexMaxLen), QtCore.Qt.MatchExactly)
+        foundItems = self.ui.tableOverview.findItems(str(index).rjust(self.indexMaxLen) + self.tailSpace, QtCore.Qt.MatchExactly)
         if (len(foundItems) > 0):
             item = foundItems[0]
             row = self.ui.tableOverview.row(item)
@@ -222,6 +223,8 @@ class OverviewDock(QtGui.QDockWidget):
             fontObj = QtGui.QFont()
             if (fontObj.fromString(font.toString())):
               self.ui.tableOverview.horizontalHeader().setFont(fontObj)
+              
+        self.ui.tableOverview.resizeRowsToContents()
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

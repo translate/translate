@@ -32,22 +32,10 @@ import modules.World as World
 
 class Status:
     def __init__(self, units):
-        self.numTotal = len(units)
-        self.numFuzzy = len(pocount.fuzzymessages(units))
-        self.numTranslated = len(pocount.translatedmessages(units))
-        self.numUntranslated = self.numTotal - self.numTranslated
-    
-    def addNumFuzzy(self, value):
-        """calculate the number of fuzzy messages."""
-        self.numFuzzy += value
-    
-    def addNumTranslated(self, value):
-        """calculate the number of translated/untranslated messages."""
-        self.numTranslated += value
-        self.numUntranslated = self.numTotal - self.numTranslated
+        self.units = units
     
     def getStatus(self, unit):
-        """return the status (as integer) of unit."""
+        """return the unit's status flag."""
         unitState = 0
         if unit.isfuzzy():
             unitState += World.fuzzy
@@ -55,13 +43,16 @@ class Status:
             unitState += World.translated
         else:
             unitState += World.untranslated
-        # add unit to filteredList if it is in the filter
         return unitState
-    
+        
     def statusString(self):
         """return string of total, fuzzy, translated, and untranslated messages."""
-        return "Total: "+ str(self.numTotal) + \
-                "  |  Fuzzy: " +  str(self.numFuzzy) + \
-                "  |  Translated: " +  str(self.numTranslated) + \
-                "  |  Untranslated: " + str(self.numUntranslated)
-        
+        numTotal = len(self.units)
+        numFuzzy = len(pocount.fuzzymessages(self.units))
+        numTranslated = len(pocount.translatedmessages(self.units))
+        numUntranslated = numTotal - numTranslated
+        return "Total: "+ str(numTotal) + \
+                "  |  Fuzzy: " +  str(numFuzzy) + \
+                "  |  Translated: " +  str(numTranslated) + \
+                "  |  Untranslated: " + str(numUntranslated)
+

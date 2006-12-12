@@ -41,14 +41,14 @@ class Operator(QtCore.QObject):
         self._modified = False
         self._saveDone = False
         self._unitpointer = None
-        # filter flags
-        self.filter = World.filterAll
 
     def getUnits(self, fileName):
         """reading a file into the internal datastructure.
         @param fileName: the file to open"""
         self.fileName = fileName
         self.store = factory.getobject(fileName)
+        # filter flags
+        self.filter = World.filterAll
         # get status for units
         self.status = Status(self.store.units)
         self.emitStatus()
@@ -133,10 +133,11 @@ class Operator(QtCore.QObject):
         self.emitUpdateUnit()
         self.filteredList = []
         self.filter = filter
-        if (self.store.units[0].isheader()):
-            start = 1
-        else:
-            start = 0
+##        if (self.store.units[0].isheader()):
+##            start = 1
+##        else:
+##            start = 0
+        start = 0
         for i in range(start, len(self.store.units)):
             currentUnit = self.store.units[i]
             # get the unit state
@@ -232,8 +233,7 @@ class Operator(QtCore.QObject):
     
     def setTarget(self, target):
         """set the target which is QString type to the current unit.
-        @param target: QString type
-        """
+        @param target: QString type"""
         currentIndex = self._getCurrentIndex()
         currentUnit = self.store.units[currentIndex]
         translatedState = currentUnit.istranslated()
@@ -247,11 +247,7 @@ class Operator(QtCore.QObject):
                 pass
         # unmark fuzzy is unit if it's previously fuzzy
         if (currentUnit.isfuzzy()):
-            self.status.addNumFuzzy(-1)
             currentUnit.markfuzzy(False)
-        # calculate number of translated units
-        if (translatedState != currentUnit.istranslated()):
-            self.status.addNumTranslated(1 - (int(translatedState)*2))
         self._modified = True
         self.emitStatus()
 
@@ -273,12 +269,10 @@ class Operator(QtCore.QObject):
         # skip if unit is not yet translated
         if (not currentUnit.istranslated()):
             return
-        if (currentUnit.isfuzzy()):
-            self.store.units[currentIndex].markfuzzy(False)
-            self.status.addNumFuzzy(-1)
+        if (self.status.getStatus(currentUnit) & World.fuzzy):
+            currentUnit.markfuzzy(False)
         else:
-            self.store.units[currentIndex].markfuzzy(True)
-            self.status.addNumFuzzy(1)
+            currentUnit.markfuzzy(True)
         self._modified = True
         self.emitCurrentUnit()
         self.emitStatus()

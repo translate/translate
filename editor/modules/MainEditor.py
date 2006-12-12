@@ -136,7 +136,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockTUview.applySettings)
 
         # Edit Header
-        self.headerDialog = Header(self, self.operator)
+        self.headerDialog = Header(self)
         self.connect(self.ui.actionEdit_Header, QtCore.SIGNAL("triggered()"), self.operator.emitHeaderInfo)
         self.connect(self.operator, QtCore.SIGNAL("headerInfo"), self.headerDialog.showDialog)
         self.connect(self.operator, QtCore.SIGNAL("headerGenerated"), self.headerDialog.generatedHeader)
@@ -238,6 +238,9 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionFilterFuzzy.setEnabled(True)
         self.ui.actionFilterTranslated.setEnabled(True)
         self.ui.actionFilterUntranslated.setEnabled(True)
+        self.ui.actionFilterFuzzy.setChecked(True)
+        self.ui.actionFilterTranslated.setChecked(True)
+        self.ui.actionFilterUntranslated.setChecked(True)
         
     def startRecentAction(self):
         action = self.sender()
