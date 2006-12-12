@@ -60,21 +60,22 @@ class MainWindow(QtGui.QMainWindow):
         geometry = World.settings.value("lastGeometry")
         if (geometry.isValid()):
             self.setGeometry(geometry.toRect())
-            
+
+        sepAction = self.ui.menuWindow.actions()[1]
         #plug in overview widget
         self.dockOverview = OverviewDock(self)
         self.addDockWidget(QtCore.Qt.TopDockWidgetArea, self.dockOverview)
-        self.ui.menuWindow.addAction(self.dockOverview.toggleViewAction())
+        self.ui.menuWindow.insertAction(sepAction, self.dockOverview.toggleViewAction())
         
         #plug in TUview widget
         self.dockTUview = TUview(self)
         self.setCentralWidget(self.dockTUview)
-        self.ui.menuWindow.addAction(self.dockTUview.toggleViewAction())
+        self.ui.menuWindow.insertAction(sepAction, self.dockTUview.toggleViewAction())
         
         #plug in comment widget
         self.dockComment = CommentDock(self)
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.dockComment)
-        self.ui.menuWindow.addAction(self.dockComment.toggleViewAction())
+        self.ui.menuWindow.insertAction(sepAction, self.dockComment.toggleViewAction())
          
         #add widgets to statusbar
         self.statuslabel = QtGui.QLabel()

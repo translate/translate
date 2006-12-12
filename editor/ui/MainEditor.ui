@@ -72,25 +72,6 @@
     </property>
     <addaction name="actionPreferences" />
    </widget>
-   <widget class="QMenu" name="menuHelp" >
-    <property name="title" >
-     <string>&amp;Help</string>
-    </property>
-    <addaction name="actionAbout" />
-    <addaction name="actionAboutQT" />
-   </widget>
-   <widget class="QMenu" name="menuWindow" >
-    <property name="title" >
-     <string>&amp;Window</string>
-    </property>
-    <widget class="QMenu" name="menuToolbars" >
-     <property name="title" >
-      <string>Toolbars</string>
-     </property>
-    </widget>
-    <addaction name="menuToolbars" />
-    <addaction name="separator" />
-   </widget>
    <widget class="QMenu" name="menuView" >
     <property name="enabled" >
      <bool>true</bool>
@@ -132,6 +113,26 @@
     <addaction name="actionCopySource2Target" />
     <addaction name="actionToggleFuzzy" />
     <addaction name="actionEdit_Header" />
+   </widget>
+   <widget class="QMenu" name="menuHelp" >
+    <property name="title" >
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="actionAbout" />
+    <addaction name="actionAboutQT" />
+   </widget>
+   <widget class="QMenu" name="menuWindow" >
+    <property name="title" >
+     <string>&amp;Window</string>
+    </property>
+    <widget class="QMenu" name="menuToolbars" >
+     <property name="title" >
+      <string>Toolbars</string>
+     </property>
+    </widget>
+    <addaction name="separator" />
+    <addaction name="separator" />
+    <addaction name="menuToolbars" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
