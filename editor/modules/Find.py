@@ -109,7 +109,8 @@ class Find(QtGui.QDockWidget):
     def showFind(self):
         if (self.isHidden() or not self.ui.lineEdit_2.isHidden()):
             self.ui.insource.setEnabled(True)
-            self.ui.insource.setChecked(True)
+            if ((not self.ui.intarget.isChecked()) and (not self.ui.incomment.isChecked())):
+                self.ui.insource.setChecked(True)
             self.setWindowTitle(self.tr("Find"))
             self.initSearch()
             self._hideReplace(True)
@@ -121,7 +122,8 @@ class Find(QtGui.QDockWidget):
         if (self.isHidden() or self.ui.lineEdit_2.isHidden()):
             self.ui.insource.setChecked(False)
             self.ui.insource.setEnabled(False)
-            self.ui.intarget.setChecked(True)
+            if (not self.ui.incomment.isChecked()):
+                self.ui.intarget.setChecked(True)
             self.setWindowTitle(self.tr("Find & Replace"))
             self.initSearch()
             self._hideReplace(False)
