@@ -23,9 +23,9 @@
 """An xliff file specifically suited for handling the po representation of 
 xliff. """
 
-from translate.storage import po
 from translate.storage import xliff
 from translate.storage import lisa 
+from translate.storage import poheader
 from translate.misc.multistring import multistring
 from xml.dom import minidom
 import xml
@@ -228,7 +228,7 @@ class PoXliffUnit(xliff.xliffunit):
         return self.xmlelement.tagName == "group"
 
 
-class PoXliffFile(xliff.xlifffile):
+class PoXliffFile(xliff.xlifffile, poheader.poheader):
     """a file for the po variant of Xliff files"""
     UnitClass = PoXliffUnit
     def __init__(self, *args, **kwargs):
@@ -248,39 +248,6 @@ class PoXliffFile(xliff.xlifffile):
         unit.xmlelement.setAttribute("approved", "no")
         unit.xmlelement.setAttribute("xml:space", "preserve")
         return unit
-
-    def header(self):
-        """Attempt to return the unit that corresponds to the PO header unit"""
-        if len(self.units) > 0:
-            candidate = self.units[0]
-            if candidate.isheader():
-                return candidate
-        else:
-            return None
-
-    def parseheader(self):
-        """parses the values in the PO style header into a dictionary"""
-        header = self.header()
-        if not header:
-            return {}
-        return po.poheader.parse(header.target)
-
-    def updateheader(self, add=False, **kwargs):
-        """Updates the fields in the PO style header. 
-        Remember that this is not present in XLIFF files in general"""
-        headeritems = self.parseheader()
-        if not headeritems and not add:
-           return
-        header = self.header()
-        # TODO: Should we add a header if there is none?
-        if header:
-            header.target = po.poheader.update(headeritems, add, **kwargs)
-            header.markfuzzy(False)
-        return header
-
-    def getheaderplural(self):
-        """returns the nplural and plural values from the po header"""
-        return poheader.getheaderplural(self.parseheader())
 
     def addplural(self, source, target, filename, createifmissing=False):
         """This method should now be unnecessary, but is left for reference"""
