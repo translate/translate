@@ -38,7 +38,7 @@ msgstr "unable to read file"
 '''
         self.pofile = self.poparse(message)
         currentunit = self.pofile.units[0]
-        self.commentObj.updateView(self.pofile.units[0])
+        self.commentObj.updateView(currentunit)
         self.assertEqual(str(self.commentObj.ui.txtTranslatorComment.toPlainText()), currentunit.getnotes())
         self.assertEqual(self.commentObj.ui.txtTranslatorComment.isEnabled(), True)
     
