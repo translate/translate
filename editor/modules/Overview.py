@@ -119,7 +119,7 @@ class OverviewDock(QtGui.QDockWidget):
         indexItem.setFlags(self.normalState)
         sourceItem.setFlags(self.normalState)
         targetItem.setFlags(self.normalState)
-        note = unit.getnotes() or unit.getnotes("msgid")
+        note = unit.getnotes() #or unit.getnotes("msgid")
         if (note):
             indexItem.setIcon(self.noteIcon)
             indexItem.setToolTip(unicode(note))
