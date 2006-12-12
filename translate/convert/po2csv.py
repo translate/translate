@@ -34,7 +34,7 @@ class po2csv:
       commentparts.append(comment.replace("#:","",1).strip())
     return " ".join(commentparts)
 
-  def convertelement(self,thepo):
+  def convertunit(self,thepo):
     thecsv = csvl10n.csvunit()
     if thepo.isheader():
       thecsv.comment = "comment"
@@ -62,7 +62,7 @@ class po2csv:
   def convertfile(self,thepofile,columnorder=None):
     thecsvfile = csvl10n.csvfile(fieldnames=columnorder)
     for thepo in thepofile.units:
-      thecsv = self.convertelement(thepo)
+      thecsv = self.convertunit(thepo)
       if thecsv is not None:
         thecsvfile.units.append(thecsv)
       if thepo.hasplural():
