@@ -28,47 +28,47 @@ class po2csv:
   def convertstring(self, postr):
     return po.unquotefrompo(postr, joinwithlinebreak=False)
 
-  def convertcomments(self,thepo):
+  def convertcomments(self, pounit):
     commentparts = []
-    for comment in thepo.sourcecomments:
+    for comment in pounit.sourcecomments:
       commentparts.append(comment.replace("#:","",1).strip())
     return " ".join(commentparts)
 
-  def convertunit(self,thepo):
-    thecsv = csvl10n.csvunit()
-    if thepo.isheader():
-      thecsv.comment = "comment"
-      thecsv.source = "original"
-      thecsv.target = "translation"
-    elif thepo.isblank():
+  def convertunit(self, pounit):
+    csvunit = csvl10n.csvunit()
+    if pounit.isheader():
+      csvunit.comment = "comment"
+      csvunit.source = "original"
+      csvunit.target = "translation"
+    elif pounit.isblank():
       return None
     else:
-      thecsv.comment = self.convertcomments(thepo)
-      thecsv.source = self.convertstring(thepo.msgid)
+      csvunit.comment = self.convertcomments(pounit)
+      csvunit.source = self.convertstring(pounit.msgid)
       # avoid plurals
-      target = thepo.msgstr
+      target = pounit.msgstr
       if isinstance(target, dict):
-        target = thepo.msgstr[0]
-      thecsv.target = self.convertstring(target)
-    return thecsv
+        target = pounit.msgstr[0]
+      csvunit.target = self.convertstring(target)
+    return csvunit
 
-  def convertplurals(self,thepo):
-    thecsv = csvl10n.csvunit()
-    thecsv.comment = self.convertcomments(thepo)
-    thecsv.source = self.convertstring(thepo.msgid_plural)
-    thecsv.target = self.convertstring(thepo.msgstr[1])
-    return thecsv
+  def convertplurals(self, pounit):
+    csvunit = csvl10n.csvunit()
+    csvunit.comment = self.convertcomments(pounit)
+    csvunit.source = self.convertstring(pounit.msgid_plural)
+    csvunit.target = self.convertstring(pounit.msgstr[1])
+    return csvunit
 
-  def convertfile(self,thepofile,columnorder=None):
+  def convertfile(self, thepofile, columnorder=None):
     thecsvfile = csvl10n.csvfile(fieldnames=columnorder)
-    for thepo in thepofile.units:
-      thecsv = self.convertunit(thepo)
-      if thecsv is not None:
-        thecsvfile.units.append(thecsv)
-      if thepo.hasplural():
-        thecsv = self.convertplurals(thepo)
-        if thecsv is not None:
-          thecsvfile.units.append(thecsv)
+    for pounit in thepofile.units:
+      csvunit = self.convertunit(pounit)
+      if csvunit is not None:
+        thecsvfile.units.append(csvunit)
+      if pounit.hasplural():
+        csvunit = self.convertplurals(pounit)
+        if csvunit is not None:
+          thecsvfile.units.append(csvunit)
     return thecsvfile
 
 def convertcsv(inputfile, outputfile, templatefile, columnorder=None):
