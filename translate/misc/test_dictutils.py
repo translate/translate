@@ -13,3 +13,10 @@ def test_delete():
     d[2] = 3
     del d[2]
     assert len(d.order) == 0
+
+def test_pop():
+    d = dictutils.ordereddict()
+    d[2] = 3
+    value = d.pop(2)
+    assert len(d.order) == 0
+    assert value == 3

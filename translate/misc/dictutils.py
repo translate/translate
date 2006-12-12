@@ -157,4 +157,8 @@ class ordereddict(dict):
     del self[k]
     return (k,v)
 
-
+  def pop(self, key):
+    """remove entry from dict and internal list"""
+    value = super(ordereddict, self).pop(key)
+    del self.order[self.order.index(key)]
+    return value
