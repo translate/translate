@@ -136,7 +136,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockTUview.applySettings)
 
         # Edit Header
-        self.headerDialog = Header(self.operator)
+        self.headerDialog = Header(self, self.operator)
         self.connect(self.ui.actionEdit_Header, QtCore.SIGNAL("triggered()"), self.operator.emitHeaderInfo)
         self.connect(self.operator, QtCore.SIGNAL("headerInfo"), self.headerDialog.showDialog)
         self.connect(self.operator, QtCore.SIGNAL("headerGenerated"), self.headerDialog.generatedHeader)
