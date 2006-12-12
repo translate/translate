@@ -83,8 +83,8 @@ class csv2po:
       if comment in self.commentindex:
         del self.commentindex[comment]
 
-  def convertelement(self,thecsv):
-    """converts csv element to po element"""
+  def convertunit(self,thecsv):
+    """converts csv unit to po unit"""
     thepo = po.pounit(encoding="UTF-8")
     thepo.sourcecomments = ["#: " + thecsv.comment + "\n"]
     thepo.msgid = [quotecsvstr(line) for line in thecsv.source.split('\n')]
@@ -92,7 +92,7 @@ class csv2po:
     return thepo
 
   def handlecsvunit(self, thecsv):
-    """handles reintegrating a csv element into the .po file"""
+    """handles reintegrating a csv unit into the .po file"""
     if len(thecsv.comment.strip()) > 0 and thecsv.comment in self.commentindex:
       thepo = self.commentindex[thecsv.comment]
     elif thecsv.source in self.sourceindex:
@@ -162,7 +162,7 @@ class csv2po:
       if mergemode:
         self.handlecsvunit(thecsv)
       else:
-        thepo = self.convertelement(thecsv)
+        thepo = self.convertunit(thecsv)
         self.pofile.units.append(thepo)
     self.pofile.removeduplicates(self.duplicatestyle)
     return self.pofile
