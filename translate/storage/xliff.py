@@ -299,7 +299,7 @@ class xlifffile(lisa.LISAfile):
     bodyNode = "body"
     XMLskeleton = '''<?xml version="1.0" ?>
 <xliff version='1.1' xmlns='urn:oasis:names:tc:xliff:document:1.1'>
- <file original='NoName' source-language='en' target-language='en' datatype='plaintext'>
+ <file original='NoName' source-language='en' datatype='plaintext'>
   <body>
   </body>
  </file>
