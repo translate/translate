@@ -299,7 +299,7 @@ class xlifffile(lisa.LISAfile):
     bodyNode = "body"
     XMLskeleton = '''<?xml version="1.0" ?>
 <xliff version='1.1' xmlns='urn:oasis:names:tc:xliff:document:1.1'>
- <file original='NoName' source-language='en' datatype='plaintext'>
+ <file original='NoName' source-language='en' target-language='en' datatype='plaintext'>
   <body>
   </body>
  </file>
@@ -310,21 +310,34 @@ class xlifffile(lisa.LISAfile):
         self._filename = "NoName"
         self._messagenum = 0
 
+        # Allow the inputfile to override defaults for source and target language.
+        filenode = self.document.childNodes[0].getElementsByTagName('file')[0]
+        sourcelanguage = filenode.getAttribute('source-language')
+        if sourcelanguage:
+            self.setsourcelanguage(sourcelanguage)
+        targetlanguage = filenode.getAttribute('target-language')
+        if targetlanguage:
+            self.settargetlanguage(targetlanguage)
+
     def addheader(self):
         """Initialise the file header."""
         self.document.getElementsByTagName("file")[0].setAttribute("source-language", self.sourcelanguage)
         if self.targetlanguage:
             self.document.getElementsByTagName("file")[0].setAttribute("target-language", self.targetlanguage)
 
-    def createfilenode(self, filename, sourcelanguage=None, datatype='plaintext'):
+    def createfilenode(self, filename, sourcelanguage=None, targetlanguage=None, datatype='plaintext'):
         """creates a filenode with the given filename. All parameters are needed
         for XLIFF compliance."""
         self.removedefaultfile()
         if sourcelanguage is None:
             sourcelanguage = self.sourcelanguage
+        if targetlanguage is None:
+            targetlanguage = self.targetlanguage
         filenode = self.document.createElement("file")
         filenode.setAttribute("original", filename)
         filenode.setAttribute("source-language", sourcelanguage)
+        if targetlanguage:
+            filenode.setAttribute("target-language", targetlanguage)
         filenode.setAttribute("datatype", datatype)
         bodyNode = self.document.createElement(self.bodyNode)
         filenode.appendChild(bodyNode)
