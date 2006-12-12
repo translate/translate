@@ -61,15 +61,8 @@ class Operator(QtCore.QObject):
         for unit in self.store.units:
             currentState = self.status.getStatus(unit)
             unitsState.append(currentState)
-        
         self.emit(QtCore.SIGNAL("newUnits"), self.store.units, unitsState)
-        self.filteredList = range(len(self.store.units))
-        # hide first unit if it's header
-##        if (self.store.units[0].isheader()):
-##            self.hideUnit(0)
-        # set to first unit pointer
-        self._unitpointer = 0
-        self.emitCurrentUnit()
+        self.emitFiltered(self.filter)
 
     def emitStatus(self):
         self.emit(QtCore.SIGNAL("currentStatus"), self.status.statusString())        
@@ -133,11 +126,10 @@ class Operator(QtCore.QObject):
         self.emitUpdateUnit()
         self.filteredList = []
         self.filter = filter
-##        if (self.store.units[0].isheader()):
-##            start = 1
-##        else:
-##            start = 0
-        start = 0
+        if (self.store.units[0].isheader()):
+            start = 1
+        else:
+            start = 0
         for i in range(start, len(self.store.units)):
             currentUnit = self.store.units[i]
             # get the unit state

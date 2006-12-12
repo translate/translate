@@ -82,26 +82,10 @@ class OverviewDock(QtGui.QDockWidget):
         """initialize the list, clear and fill with units.
         @param units: list of unit to add into table.
         @param unitsStatus: list of unit's status."""
-        self.filter = World.filterAll
         self.ui.tableOverview.setEnabled(True)
-        self.ui.tableOverview.clear()
-        self.ui.tableOverview.setColumnCount(len(self.headerLabels))
-        #self.ui.tableOverview.setRowCount(len(units))
-        self.ui.tableOverview.setRowCount(0)
-        self.ui.tableOverview.setHorizontalHeaderLabels(self.headerLabels)
-        self.setUpdatesEnabled(False)
         self.indexMaxLen = len(str(len(units)))
         self.units = units
         self.unitsStatus = unitsStatus
-        self.ui.tableOverview.setSortingEnabled(False)
-        i = 0
-        for unit in units:
-            self.addUnit(unit, i)
-            i += 1
-        self.ui.tableOverview.setSortingEnabled(True)
-        self.ui.tableOverview.sortItems(0)
-        self.ui.tableOverview.resizeRowsToContents()
-        self.setUpdatesEnabled(True)
 
     def filteredList(self, shownList, filter):
         """show the items which are in shownList.
