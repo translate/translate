@@ -57,80 +57,80 @@ class csv2po:
     self.sourceindex = {}
     self.simpleindex = {}
     self.duplicatecomments = []
-    for thepo in self.pofile.units:
+    for pounit in self.pofile.units:
       commentparts = []
-      for comment in thepo.sourcecomments:
+      for comment in pounit.sourcecomments:
         commentparts.append(comment.replace("#:","",1).strip())
       joinedcomment = " ".join(commentparts)
-      unquotedid = po.unquotefrompo(thepo.msgid)
+      unquotedid = po.unquotefrompo(pounit.msgid)
       # the definitive way to match is by source comment (joinedcomment)
       if joinedcomment in self.commentindex:
         # unless more than one thing matches...
         self.duplicatecomments.append(joinedcomment)
       else:
-        self.commentindex[joinedcomment] = thepo
+        self.commentindex[joinedcomment] = pounit
       # do simpler matching in case things have been mangled...
       simpleid = simplify(unquotedid)
       # but check for duplicates
       if simpleid in self.simpleindex and not (unquotedid in self.sourceindex):
         # keep a list of them...
-        self.simpleindex[simpleid].append(thepo)
+        self.simpleindex[simpleid].append(pounit)
       else:
-        self.simpleindex[simpleid] = [thepo]
+        self.simpleindex[simpleid] = [pounit]
       # also match by standard msgid
-      self.sourceindex[unquotedid] = thepo
+      self.sourceindex[unquotedid] = pounit
     for comment in self.duplicatecomments:
       if comment in self.commentindex:
         del self.commentindex[comment]
 
-  def convertunit(self,thecsv):
+  def convertunit(self, csvunit):
     """converts csv unit to po unit"""
-    thepo = po.pounit(encoding="UTF-8")
-    thepo.sourcecomments = ["#: " + thecsv.comment + "\n"]
-    thepo.msgid = [quotecsvstr(line) for line in thecsv.source.split('\n')]
-    thepo.msgstr = [quotecsvstr(line) for line in thecsv.target.split('\n')]
-    return thepo
+    pounit = po.pounit(encoding="UTF-8")
+    pounit.sourcecomments = ["#: " + csvunit.comment + "\n"]
+    pounit.msgid = [quotecsvstr(line) for line in csvunit.source.split('\n')]
+    pounit.msgstr = [quotecsvstr(line) for line in csvunit.target.split('\n')]
+    return pounit
 
-  def handlecsvunit(self, thecsv):
+  def handlecsvunit(self, csvunit):
     """handles reintegrating a csv unit into the .po file"""
-    if len(thecsv.comment.strip()) > 0 and thecsv.comment in self.commentindex:
-      thepo = self.commentindex[thecsv.comment]
-    elif thecsv.source in self.sourceindex:
-      thepo = self.sourceindex[thecsv.source]
-    elif simplify(thecsv.source) in self.simpleindex:
-      thepolist = self.simpleindex[simplify(thecsv.source)]
+    if len(csvunit.comment.strip()) > 0 and csvunit.comment in self.commentindex:
+      pounit = self.commentindex[csvunit.comment]
+    elif csvunit.source in self.sourceindex:
+      pounit = self.sourceindex[csvunit.source]
+    elif simplify(csvunit.source) in self.simpleindex:
+      thepolist = self.simpleindex[simplify(csvunit.source)]
       if len(thepolist) > 1:
         csvfilename = getattr(self.csvfile, "filename", "(unknown)")
-        matches = "\n  ".join(["possible match: " + po.unquotefrompo(thepo.msgid) for thepo in thepolist])
-        print >>sys.stderr, "%s - csv entry not found in pofile, multiple matches found:\n  location\t%s\n  original\t%s\n  translation\t%s\n  %s" % (csvfilename, thecsv.comment, thecsv.source, thecsv.target, matches)
+        matches = "\n  ".join(["possible match: " + po.unquotefrompo(pounit.msgid) for pounit in thepolist])
+        print >>sys.stderr, "%s - csv entry not found in pofile, multiple matches found:\n  location\t%s\n  original\t%s\n  translation\t%s\n  %s" % (csvfilename, csvunit.comment, csvunit.source, csvunit.target, matches)
         self.unmatched += 1
         return
-      thepo = thepolist[0]
+      pounit = thepolist[0]
     else:
       csvfilename = getattr(self.csvfile, "filename", "(unknown)")
-      print >>sys.stderr, "%s - csv entry not found in pofile:\n  location\t%s\n  original\t%s\n  translation\t%s" % (csvfilename, thecsv.comment, thecsv.source, thecsv.target)
+      print >>sys.stderr, "%s - csv entry not found in pofile:\n  location\t%s\n  original\t%s\n  translation\t%s" % (csvfilename, csvunit.comment, csvunit.source, csvunit.target)
       self.unmatched += 1
       return
-    csvtarget = [quotecsvstr(line) for line in thecsv.target.split('\n')]
-    if thepo.hasplural():
+    csvtarget = [quotecsvstr(line) for line in csvunit.target.split('\n')]
+    if pounit.hasplural():
       # we need to work out whether we matched the singular or the plural
-      singularid = po.unquotefrompo(thepo.msgid)
-      pluralid = po.unquotefrompo(thepo.msgid_plural)
-      if thecsv.source == singularid:
-        thepo.msgstr[0] = csvtarget
-      elif thecsv.source == pluralid:
-        thepo.msgstr[1] = csvtarget
-      elif simplify(thecsv.source) == simplify(singularid):
-        thepo.msgstr[0] = csvtarget
-      elif simplify(thecsv.source) == simplify(pluralid):
-        thepo.msgstr[1] = csvtarget
+      singularid = po.unquotefrompo(pounit.msgid)
+      pluralid = po.unquotefrompo(pounit.msgid_plural)
+      if csvunit.source == singularid:
+        pounit.msgstr[0] = csvtarget
+      elif csvunit.source == pluralid:
+        pounit.msgstr[1] = csvtarget
+      elif simplify(csvunit.source) == simplify(singularid):
+        pounit.msgstr[0] = csvtarget
+      elif simplify(csvunit.source) == simplify(pluralid):
+        pounit.msgstr[1] = csvtarget
       else:
         print >>sys.stderr, "couldn't work out singular or plural: %r, %r, %r" %  \
-          (thecsv.source, singularid, pluralid)
+          (csvunit.source, singularid, pluralid)
         self.unmatched += 1
         return
     else:
-      thepo.msgstr = csvtarget
+      pounit.msgstr = csvtarget
 
   def convertfile(self, thecsvfile):
     """converts a csvfile to a pofile, and returns it. uses templatepo if given at construction"""
@@ -147,23 +147,23 @@ class csv2po:
       headerpo = self.pofile.makeheader(charset="UTF-8", encoding="8bit")
     headerpo.othercomments.append("# extracted from %s\n" % self.csvfile.filename)
     mightbeheader = True
-    for thecsv in self.csvfile.units:
+    for csvunit in self.csvfile.units:
       if self.charset is not None:
-        thecsv.source = thecsv.source.decode(self.charset)
-        thecsv.target = thecsv.target.decode(self.charset)
+        csvunit.source = csvunit.source.decode(self.charset)
+        csvunit.target = csvunit.target.decode(self.charset)
       if mightbeheader:
         # ignore typical header strings...
         mightbeheader = False
-        if [item.strip().lower() for item in thecsv.comment, thecsv.source, thecsv.target] == \
+        if [item.strip().lower() for item in csvunit.comment, csvunit.source, csvunit.target] == \
            ["comment", "original", "translation"]:
           continue
-        if len(thecsv.comment.strip()) == 0 and thecsv.source.find("Content-Type:") != -1:
+        if len(csvunit.comment.strip()) == 0 and csvunit.source.find("Content-Type:") != -1:
           continue
       if mergemode:
-        self.handlecsvunit(thecsv)
+        self.handlecsvunit(csvunit)
       else:
-        thepo = self.convertunit(thecsv)
-        self.pofile.units.append(thepo)
+        pounit = self.convertunit(csvunit)
+        self.pofile.units.append(pounit)
     self.pofile.removeduplicates(self.duplicatestyle)
     return self.pofile
 
@@ -171,8 +171,8 @@ class csv2po:
     """get the number of missing translations..."""
     # TODO: work out how to print out the following if in verbose mode
     missing = 0
-    for thepo in self.pofile.units:
-      if thepo.isblankmsgstr():
+    for pounit in self.pofile.units:
+      if pounit.isblankmsgstr():
         missing += 1
 
 def convertcsv(inputfile, outputfile, templatefile, charset=None, columnorder=None, duplicatestyle="msgctxt"):
