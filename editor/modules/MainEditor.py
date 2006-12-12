@@ -61,7 +61,7 @@ class MainWindow(QtGui.QMainWindow):
         if (geometry.isValid()):
             self.setGeometry(geometry.toRect())
 
-        sepAction = self.ui.menuWindow.actions()[1]
+        sepAction = self.ui.menuWindow.actions()[0]
         #plug in overview widget
         self.dockOverview = OverviewDock(self)
         self.addDockWidget(QtCore.Qt.TopDockWidgetArea, self.dockOverview)
