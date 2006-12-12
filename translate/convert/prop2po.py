@@ -41,20 +41,20 @@ class prop2po:
     # we try and merge the header po with any comments at the start of the properties file
     appendedheader = 0
     waitingcomments = []
-    for theprop in thepropfile.units:
-      thepo = self.convertelement(theprop)
-      if thepo is None:
-        waitingcomments.extend(theprop.comments)
+    for propunit in thepropfile.units:
+      pounit = self.convertunit(propunit)
+      if pounit is None:
+        waitingcomments.extend(propunit.comments)
       if not appendedheader:
-        if theprop.isblank():
-          thepo = headerpo
+        if propunit.isblank():
+          pounit = headerpo
         else:
           thepofile.units.append(headerpo)
         appendedheader = 1
-      if thepo is not None:
-        thepo.othercomments = waitingcomments + thepo.othercomments
+      if pounit is not None:
+        pounit.othercomments = waitingcomments + pounit.othercomments
         waitingcomments = []
-        thepofile.units.append(thepo)
+        thepofile.units.append(pounit)
     thepofile.removeduplicates(duplicatestyle)
     return thepofile
 
@@ -69,7 +69,7 @@ class prop2po:
     waitingcomments = []
     # loop through the original file, looking at units one by one
     for origprop in origpropfile.units:
-      origpo = self.convertelement(origprop)
+      origpo = self.convertunit(origprop)
       if origpo is None:
         waitingcomments.extend(origprop.comments)
       # handle the header case specially...
@@ -82,10 +82,10 @@ class prop2po:
       # try and find a translation of the same name...
       if origprop.name in translatedpropfile.locationindex:
         translatedprop = translatedpropfile.locationindex[origprop.name]
-        translatedpo = self.convertelement(translatedprop)
+        translatedpo = self.convertunit(translatedprop)
       else:
         translatedpo = None
-      # if we have a valid po element, get the translation and add it...
+      # if we have a valid po unit, get the translation and add it...
       if origpo is not None:
         if translatedpo is not None and not blankmsgstr:
           origpo.target = translatedpo.source
@@ -97,25 +97,25 @@ class prop2po:
     thepofile.removeduplicates(duplicatestyle)
     return thepofile
 
-  def convertelement(self, theprop):
-    """Converts a .properties element to a .po element. Returns None if empty
+  def convertunit(self, propunit):
+    """Converts a .properties unit to a .po unit. Returns None if empty
     or not for translation."""
-    if theprop is None:
+    if propunit is None:
       return None
     # escape unicode
-    thepo = po.pounit(encoding="UTF-8")
-    if hasattr(theprop, "comments"):
-      for comment in theprop.comments:
+    pounit = po.pounit(encoding="UTF-8")
+    if hasattr(propunit, "comments"):
+      for comment in propunit.comments:
         if "DONT_TRANSLATE" in comment:
           return None
-      thepo.othercomments.extend(theprop.comments)
+      pounit.othercomments.extend(propunit.comments)
     # TODO: handle multiline msgid
-    if theprop.isblank():
+    if propunit.isblank():
       return None
-    thepo.sourcecomments.append("#: "+theprop.name+eol)
-    thepo.source = theprop.source
-    thepo.target = ""
-    return thepo
+    pounit.sourcecomments.append("#: "+propunit.name+eol)
+    pounit.source = propunit.source
+    pounit.target = ""
+    return pounit
 
 def convertprop(inputfile, outputfile, templatefile, pot=False, duplicatestyle="msgctxt"):
   """reads in inputfile using properties, converts using prop2po, writes to outputfile"""
