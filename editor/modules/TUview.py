@@ -211,7 +211,7 @@ class TUview(QtGui.QDockWidget):
         self.ui.txtTarget.setPlainText(text)
         self.ui.txtTarget.document().setModified()
 
-    def applySettings(self):        
+    def applySettings(self):
         """ set font and color to txtSource and txtTarget"""
         sourceColor = World.settings.value("tuSourceColor")
         if (sourceColor.isValid()):
@@ -234,7 +234,7 @@ class TUview(QtGui.QDockWidget):
 
         targetfont = World.settings.value("tuTargetFont")
         if (targetfont.isValid() and fontObj.fromString(targetfont.toString())):
-            self.ui.txtTarget.setFont(fontObj)  
+            self.ui.txtTarget.setFont(fontObj)
         
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
