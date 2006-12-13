@@ -90,15 +90,15 @@ class CommentDock(QtGui.QDockWidget):
         @param textField: source or target text box.
         @param position: highlight start point.
         @param length: highlight length."""
-        if (textField != World.comment):
-            return
-        textField = self.ui.txtTranslatorComment
-        if (position >= 0):
+        if (textField != World.comment or position == None):
+            if (not getattr(self, "highlightBlock", None)):
+                return
+            self.highlightRange.length = 0
+        else:
+            textField = self.ui.txtTranslatorComment
             self.highlightBlock = textField.document().findBlock(position)
             self.highlightRange.start = position - self.highlightBlock.position()
             self.highlightRange.length = length
-        else:
-            self.highlightRange.length = 0
         self.highlightBlock.layout().setAdditionalFormats([self.highlightRange])
         self.highlightBlock.document().markContentsDirty(self.highlightBlock.position(), self.highlightBlock.length())
 

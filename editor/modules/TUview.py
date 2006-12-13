@@ -164,18 +164,18 @@ class TUview(QtGui.QDockWidget):
         @param textField: source or target text box.
         @param position: highlight start point.
         @param length: highlight length."""
-        if (textField == World.source):
-            textField = self.ui.txtSource
-        elif (textField == World.target):
-            textField = self.ui.txtTarget
+        if ((textField != World.source and textField != World.target)  or position == None):
+            if (not getattr(self, "highlightBlock", None)):
+                return
+            self.highlightRange.length = 0
         else:
-            return
-        if (position >= 0):
+            if (textField == World.source):
+                textField = self.ui.txtSource
+            else:
+                textField = self.ui.txtTarget
             self.highlightBlock = textField.document().findBlock(position)
             self.highlightRange.start = position - self.highlightBlock.position()
             self.highlightRange.length = length
-        else:
-            self.highlightRange.length = 0
         self.highlightBlock.layout().setAdditionalFormats([self.highlightRange])
         self.highlightBlock.document().markContentsDirty(self.highlightBlock.position(), self.highlightBlock.length())
 
