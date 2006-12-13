@@ -34,13 +34,13 @@ msgstr "unable to read file"
         dummyfile = wStringIO.StringIO(posource)
         return po.pofile(dummyfile)
     
-    def testAddNumFuzzy(self):
-        self.status.addNumFuzzy(1)
-        self.assertEqual(self.status.numFuzzy, self.fuzzy + 1)
-   
-    def testAddnumTranslated(self):
-        self.status.addNumTranslated(2)
-        self.assertEqual(self.status.numTranslated, self.translated + 2)
+##    def testAddNumFuzzy(self):
+##        self.status.addNumFuzzy(1)
+##        self.assertEqual(self.status.numFuzzy, self.fuzzy + 1)
+##   
+##    def testAddnumTranslated(self):
+##        self.status.addNumTranslated(2)
+##        self.assertEqual(self.status.numTranslated, self.translated + 2)
         
     def testGetStatus(self):
         unitstate = World.fuzzy + World.untranslated
