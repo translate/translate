@@ -172,12 +172,16 @@ class OverviewDock(QtGui.QDockWidget):
         """change the text in target column (indexToUpdate).
         @param text: text to set into target field."""
         row = self.ui.tableOverview.currentRow()
-        indexToUpdate = int(self.ui.tableOverview.item(row, 0).text())
-        if (indexToUpdate >= 0):
-            item = QtGui.QTableWidgetItem(text)
-            item.setFlags(self.normalState)
-            self.ui.tableOverview.setItem(indexToUpdate, 2, item)
-            self.ui.tableOverview.resizeRowToContents(indexToUpdate)
+        index = int(self.ui.tableOverview.item(row, 0).text())
+        item = QtGui.QTableWidgetItem(text)
+        item.setFlags(self.normalState)
+        self.ui.tableOverview.setItem(row, 2, item)
+        self.ui.tableOverview.resizeRowToContents(row)
+        if (text):
+            state = World.translated
+        else:
+            state = World.untranslated
+        self.setState(row, state)
 
 ##    def emitTargetChanged(self):
 ##        """Send target as string and signal targetChanged."""
