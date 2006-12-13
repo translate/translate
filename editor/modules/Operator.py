@@ -20,9 +20,16 @@
 #       San Titvirak (titvirak@khmeros.info)
 #       Seth Chanratha (sethchanratha@khmeros.info)
 # 
+
+if __name__ == "__main__":
+    import sys
+    import os.path
+    sys.path.append(os.path.join(sys.path[0], ".."))
+    
 from PyQt4 import QtCore, QtGui
 from translate.storage import factory
 from translate.storage import po
+from translate.storage import poheader
 from translate.storage import xliff
 import modules.World as World
 from modules.Status import Status
@@ -41,21 +48,20 @@ class Operator(QtCore.QObject):
         self._modified = False
         self._saveDone = False
         self._unitpointer = None
-
+        
     def getUnits(self, fileName):
         """reading a file into the internal datastructure.
         @param fileName: the file to open"""
         self.fileName = fileName
         self.store = factory.getobject(fileName)
+        self.headerObj = poheader.poheader()
+
         # filter flags
         self.filter = World.filterAll
+        
         # get status for units
         self.status = Status(self.store.units)
         self.emitStatus()
-
-####        fileNode = self.store.getfilenode(fileName)
-##        xliffHeader = self.store.getheadernode(fileNode)
-##        header = self.store.header(xliffHeader)
 
         unitsState = []
         for unit in self.store.units:
@@ -150,17 +156,24 @@ class Operator(QtCore.QObject):
 
     def emitHeaderInfo(self):
         """sending Header and comment of Header"""
-        headerDic = po.poheader.parse(self.store.units[0].target)
-        self.emit(QtCore.SIGNAL("headerInfo"), self.store.units[0].othercomments, headerDic)
+        if (not isinstance(self.store, poheader.poheader)):
+            return 
         
+        header = self.store.header() 
+        if header:
+            headerDic = self.store.parseheader()
+            self.emit(QtCore.SIGNAL("headerInfo"), header.getnotes("translator"), headerDic)
+        else:
+            self.emit(QtCore.SIGNAL("headerInfo"), "", {} )
+                
     def makeNewHeader(self, headerDic):
           """receive headerDic as dictionary, and return header as string"""
-          self.store.x_generator = "WordForge Translation Editor v.0.1"
-          header = self.store.makeheader(**headerDic)
-          self.emit(QtCore.SIGNAL("headerGenerated"), po.poheader.parse(str(header)))
+          #TODO: move to world
+          self.store.x_generator = World.settingOrg + ' ' + World.settingApp + ' ' + World.settingVer
+          return self.store.makeheaderdict(**headerDic)
           
     def updateNewHeader(self, othercomments, headerDic):
-          """will update header when ok button in Header Editor is clicked or auto Header is on and save is triggered"""
+          """will update header"""
           self.store.units[0].removenotes()
           self.store.units[0].addnote(str(othercomments))
           self.store.updateheader(add=True, **headerDic)
@@ -392,3 +405,8 @@ class Operator(QtCore.QObject):
         """emit searchResult signal with text field, position, and length."""
         textField = self.searchableText[self.currentTextField]
         self.emit(QtCore.SIGNAL("searchResult"), textField, None, None)
+        
+if __name__ == "__main__":
+    app = QtGui.QApplication(sys.argv)
+    operator = Operator()
+    sys.exit(app.exec_())
