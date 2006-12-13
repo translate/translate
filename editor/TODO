@@ -158,6 +158,7 @@
 - Who: virak
 - Status: not
 
+
 30. Change Auto update header on save by default
 - Priority: 1
 - Who: da
@@ -176,4 +177,9 @@
 - Priority: 1
 - Who: ???
 - Status: open
+
+32. Replace: replace after the first replace is wrong:
+- Priority: 1
+- Who: Phon
+- Status: Open
 
