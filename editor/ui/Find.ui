@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>frmFind</class>
  <widget class="QWidget" name="frmFind" >
   <property name="enabled" >
@@ -197,7 +194,7 @@
       <item>
        <widget class="QCheckBox" name="insource" >
         <property name="text" >
-         <string>&amp;Source</string>
+         <string>S&amp;ource</string>
         </property>
         <property name="checkable" >
          <bool>true</bool>
@@ -230,13 +227,12 @@
    <item>
     <widget class="QCheckBox" name="matchcase" >
      <property name="text" >
-      <string>Matc&amp;h case</string>
+      <string>&amp;Match case</string>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
- <pixmapfunction></pixmapfunction>
  <tabstops>
   <tabstop>lineEdit</tabstop>
   <tabstop>findNext</tabstop>

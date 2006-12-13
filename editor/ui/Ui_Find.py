@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/jhe/khmerOS/svn-wf/trunk/editor/ui/Find.ui'
+# Form implementation generated from reading ui file 'unknown'
 #
-# Created: Wed Dec  6 09:33:46 2006
-#      by: PyQt4 UI code generator 4.0.1
+# Created: Wed Dec 13 14:23:38 2006
+#      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -130,18 +130,21 @@ class Ui_frmFind(object):
         frmFind.setTabOrder(self.lineEdit_2,self.replace)
         frmFind.setTabOrder(self.replace,self.replaceAll)
 
+    def tr(self, string):
+        return QtGui.QApplication.translate("frmFind", string, None, QtGui.QApplication.UnicodeUTF8)
+
     def retranslateUi(self, frmFind):
-        frmFind.setWindowTitle(QtGui.QApplication.translate("frmFind", "Find & Replace", None, QtGui.QApplication.UnicodeUTF8))
-        self.lblReplace.setText(QtGui.QApplication.translate("frmFind", "Replace", None, QtGui.QApplication.UnicodeUTF8))
-        self.findNext.setText(QtGui.QApplication.translate("frmFind", "&Next", None, QtGui.QApplication.UnicodeUTF8))
-        self.lblFind.setText(QtGui.QApplication.translate("frmFind", "Search", None, QtGui.QApplication.UnicodeUTF8))
-        self.findPrevious.setText(QtGui.QApplication.translate("frmFind", "  &Previous  ", None, QtGui.QApplication.UnicodeUTF8))
-        self.replace.setText(QtGui.QApplication.translate("frmFind", "&Replace", None, QtGui.QApplication.UnicodeUTF8))
-        self.replaceAll.setText(QtGui.QApplication.translate("frmFind", "Replace &All", None, QtGui.QApplication.UnicodeUTF8))
-        self.insource.setText(QtGui.QApplication.translate("frmFind", "&Source", None, QtGui.QApplication.UnicodeUTF8))
-        self.intarget.setText(QtGui.QApplication.translate("frmFind", "&Target", None, QtGui.QApplication.UnicodeUTF8))
-        self.incomment.setText(QtGui.QApplication.translate("frmFind", "&Comment", None, QtGui.QApplication.UnicodeUTF8))
-        self.matchcase.setText(QtGui.QApplication.translate("frmFind", "Matc&h case", None, QtGui.QApplication.UnicodeUTF8))
+        frmFind.setWindowTitle(self.tr("Find & Replace"))
+        self.lblReplace.setText(self.tr("Replace"))
+        self.findNext.setText(self.tr("&Next"))
+        self.lblFind.setText(self.tr("Search"))
+        self.findPrevious.setText(self.tr("  &Previous  "))
+        self.replace.setText(self.tr("&Replace"))
+        self.replaceAll.setText(self.tr("Replace &All"))
+        self.insource.setText(self.tr("S&ource"))
+        self.intarget.setText(self.tr("&Target"))
+        self.incomment.setText(self.tr("&Comment"))
+        self.matchcase.setText(self.tr("&Match case"))
 
 
 if __name__ == "__main__":
