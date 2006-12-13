@@ -39,7 +39,6 @@ class FileAction(QtCore.QObject):
     def __init__(self, parent):
         """ 
         init the class.
-        
         @param parent a QWidget to center the dialogs 
         """
         QtCore.QObject.__init__(self)
@@ -49,7 +48,7 @@ class FileAction(QtCore.QObject):
         self.fileDescription = ""
         self.MaxRecentHistory = 10
         
-    def openFile(self):        
+    def openFile(self):
         #TODO: open one or more existing files selected
         newFileName = QtGui.QFileDialog.getOpenFileName(self.parentWidget, self.tr("Open File"),
                         sys.path[0],
