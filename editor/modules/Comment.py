@@ -94,16 +94,13 @@ class CommentDock(QtGui.QDockWidget):
             return
         textField = self.ui.txtTranslatorComment
         if (position >= 0):
-            block = textField.document().findBlock(position)
-            self.highlightRange.start = position - block.position()
+            self.highlightBlock = textField.document().findBlock(position)
+            self.highlightRange.start = position - self.highlightBlock.position()
             self.highlightRange.length = length
         else:
-            block = textField.document().begin()
             self.highlightRange.length = 0
-            self.layout.clearAdditionalFormats()
-            textField.update()
-        block.layout().setAdditionalFormats([self.highlightRange])
-        block.document().markContentsDirty(block.position(), block.length())
+        self.highlightBlock.layout().setAdditionalFormats([self.highlightRange])
+        self.highlightBlock.document().markContentsDirty(self.highlightBlock.position(), self.highlightBlock.length())
 
     def setReadyForSave(self):
         self.emit(QtCore.SIGNAL("readyForSave"), True)

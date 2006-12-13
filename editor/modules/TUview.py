@@ -171,15 +171,13 @@ class TUview(QtGui.QDockWidget):
         else:
             return
         if (position >= 0):
-            block = textField.document().findBlock(position)
-            self.highlightRange.start = position - block.position()
+            self.highlightBlock = textField.document().findBlock(position)
+            self.highlightRange.start = position - self.highlightBlock.position()
             self.highlightRange.length = length
         else:
-            block = textField.document().begin()
             self.highlightRange.length = 0
-            textField.update()
-        block.layout().setAdditionalFormats([self.highlightRange])
-        block.document().markContentsDirty(block.position(), block.length())
+        self.highlightBlock.layout().setAdditionalFormats([self.highlightRange])
+        self.highlightBlock.document().markContentsDirty(self.highlightBlock.position(), self.highlightBlock.length())
 
     def replaceText(self, textField, position, length, replacedText):
         """replace the string (at position and length) with replacedText in txtTarget.
