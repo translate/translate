@@ -107,7 +107,9 @@ class Find(QtGui.QDockWidget):
         self.ui.replaceAll.setEnabled(enabled)
 
     def showFind(self):
-        if (self.isHidden() or not self.ui.lineEdit_2.isHidden()):
+        if not ((self.isHidden() or not self.ui.lineEdit_2.isHidden())):
+            self.hide()
+        else:
             self.ui.insource.setEnabled(True)
             if ((not self.ui.intarget.isChecked()) and (not self.ui.incomment.isChecked())):
                 self.ui.insource.setChecked(True)
@@ -115,11 +117,11 @@ class Find(QtGui.QDockWidget):
             self.initSearch()
             self._hideReplace(True)
             self.show()
-        else:
-            self.hide()
 
     def showReplace(self):
-        if (self.isHidden() or self.ui.lineEdit_2.isHidden()):
+        if not ((self.isHidden() or self.ui.lineEdit_2.isHidden())):
+            self.hide()
+        else:
             self.ui.insource.setChecked(False)
             self.ui.insource.setEnabled(False)
             if (not self.ui.incomment.isChecked()):
@@ -128,8 +130,6 @@ class Find(QtGui.QDockWidget):
             self.initSearch()
             self._hideReplace(False)
             self.show()
-        else:
-            self.hide()
 
     def _hideReplace(self, hidden):
         """ hide or show the replace UI elements
