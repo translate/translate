@@ -65,9 +65,12 @@ class OverviewDock(QtGui.QDockWidget):
         self.fuzzyIcon = QtGui.QIcon("../images/fuzzy.png")
         self.noteIcon = QtGui.QIcon("../images/note.png")
         self.approvedIcon = QtGui.QIcon("../images/approved.png")
+        self.blankIcon = QtGui.QIcon()
         self.normalState = QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
         self.tailSpace = "  "
+        self.currentIndexActive = False
         self.connect(self.ui.tableOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitCurrentIndex)
+        self.connect(self.ui.tableOverview.model(), QtCore.SIGNAL("layoutChanged()"), self.layoutChanged)
         #self.connect(self.ui.tableOverview, QtCore.SIGNAL("cellDoubleClicked(int, int)"), self.emitTargetChanged)
     
     def closeEvent(self, event):
@@ -112,20 +115,27 @@ class OverviewDock(QtGui.QDockWidget):
         @param index: unit's index."""
         row = self.ui.tableOverview.rowCount()
         self.ui.tableOverview.setRowCount(row + 1)
-        indexItem = QtGui.QTableWidgetItem(str(index).rjust(self.indexMaxLen) + self.tailSpace)
-        sourceItem = QtGui.QTableWidgetItem(unit.source)
-        targetItem = QtGui.QTableWidgetItem(unit.target)
-        indexItem.setTextAlignment(QtCore.Qt.AlignRight)
-        indexItem.setFlags(self.normalState)
-        sourceItem.setFlags(self.normalState)
-        targetItem.setFlags(self.normalState)
+        item = QtGui.QTableWidgetItem(str(index).rjust(self.indexMaxLen) + self.tailSpace)
+        item.setTextAlignment(QtCore.Qt.AlignRight + QtCore.Qt.AlignVCenter)
+        item.setFlags(self.normalState)
         note = unit.getnotes() #or unit.getnotes("msgid")
         if (note):
-            indexItem.setIcon(self.noteIcon)
-            indexItem.setToolTip(unicode(note))
-        self.ui.tableOverview.setItem(row, 0, indexItem)
-        self.ui.tableOverview.setItem(row, 1, sourceItem)
-        self.ui.tableOverview.setItem(row, 2, targetItem)
+            item.setIcon(self.noteIcon)
+            item.setToolTip(unicode(note))
+        self.ui.tableOverview.setItem(row, 0, item)
+        
+        item = QtGui.QTableWidgetItem(unit.source)
+        item.setFlags(self.normalState)
+        self.ui.tableOverview.setItem(row, 1, item)
+        
+        item = QtGui.QTableWidgetItem(unit.target)
+        item.setFlags(self.normalState)
+        self.ui.tableOverview.setItem(row, 2, item)
+        
+        item = QtGui.QTableWidgetItem()
+        item.setFlags(self.normalState)
+        self.ui.tableOverview.setItem(row, 3, item)
+        
         self.setState(row, self.unitsStatus[index])
     
     def emitCurrentIndex(self):
@@ -133,6 +143,7 @@ class OverviewDock(QtGui.QDockWidget):
         selectedItems = self.ui.tableOverview.selectedItems()
         if (len(selectedItems) > 0):
             indexOfSelectedRow = int(selectedItems[0].text())
+            self.currentIndexActive = True
             self.emit(QtCore.SIGNAL("currentIndex"), indexOfSelectedRow)
 
     def updateView(self, unit, index, state):
@@ -141,14 +152,18 @@ class OverviewDock(QtGui.QDockWidget):
         @param index: table's row to highlight.
         @param state: unit's state shown in table."""
         # TODO: improve conversion of index to row number.
+        if (self.currentIndexActive == True):
+            self.currentIndexActive = False
+            return
         if (index < 0):
             return
         foundItems = self.ui.tableOverview.findItems(str(index).rjust(self.indexMaxLen) + self.tailSpace, QtCore.Qt.MatchExactly)
         if (len(foundItems) > 0):
             item = foundItems[0]
             row = self.ui.tableOverview.row(item)
+##            if (self.unitsStatus[row] != state):
             self.unitsStatus[row] = state
-            self.setState(row, self.unitsStatus[row])
+            self.setState(row, state)
             self.ui.tableOverview.selectRow(row)
             self.ui.tableOverview.scrollToItem(item)
 
@@ -156,17 +171,16 @@ class OverviewDock(QtGui.QDockWidget):
         """display unit status on note column, and hide if unit is not in filter.
         @param index: row in table to set property.
         @param state: state of unit defined in world.py."""
+        if (not self.filter & state):
+            self.ui.tableOverview.removeRow(index)
+            return
+        noteItem = self.ui.tableOverview.item(index, 3)
         if (state & World.fuzzy):
-            noteItem = QtGui.QTableWidgetItem()
             noteItem.setIcon(self.fuzzyIcon)
-            noteItem.setTextAlignment(QtCore.Qt.AlignVCenter)
             noteItem.setToolTip("fuzzy")
-            noteItem.setFlags(self.normalState)
-            self.ui.tableOverview.setItem(index, 3, noteItem)
         else:
-            self.ui.tableOverview.takeItem(index, 3)
-##        if (not self.filter & state):
-##            self.ui.tableOverview.hideRow(index)
+            noteItem.setIcon(self.blankIcon)
+            noteItem.setToolTip("")
 
     def updateTarget(self, text):
         """change the text in target column (indexToUpdate).
@@ -212,6 +226,9 @@ class OverviewDock(QtGui.QDockWidget):
             if (fontObj.fromString(font.toString())):
               self.ui.tableOverview.horizontalHeader().setFont(fontObj)
               
+        self.ui.tableOverview.resizeRowsToContents()
+        
+    def layoutChanged(self):
         self.ui.tableOverview.resizeRowsToContents()
 
 if __name__ == "__main__":
