@@ -32,7 +32,6 @@ if __name__ == "__main__":
     QtCore.QDir.setCurrent(os.path.join(sys.path[0], "..", "ui"))
 
 from ui.Ui_Header import Ui_frmHeader
-from modules.Operator import Operator
 import modules.World as World
 
 class Header(QtGui.QDialog):
@@ -41,17 +40,17 @@ class Header(QtGui.QDialog):
         QtGui.QDialog.__init__(self, parent)
         self.ui = None
         
-    
-    def getFileName(self, fileName):
-        (path, self.fileName) = os.path.split(str(fileName))
-        
     def setupUI(self):
         self.ui = Ui_frmHeader()
         self.ui.setupUi(self) 
         self.headerDic = {}
        
     def showDialog(self, otherComments, headerDic):
-        """ make the dialog visible with otherComments and header filled in"""
+        """ slot for signal headerInfo 
+        make the dialog visible with otherComments and header filled in
+        @ param otherComments: comments of the header
+        @ param headerDic: a dictionary of header information
+        """
         # lazy init 
         if (not self.ui):
             self.setWindowTitle(self.tr("Header Editor"))
@@ -68,7 +67,8 @@ class Header(QtGui.QDialog):
             QtCore.QObject.connect(self.ui.btnInsertRow,QtCore.SIGNAL("clicked()"), self.insertNewRow)
             QtCore.QObject.connect(self.ui.btnDeleteRow,QtCore.SIGNAL("clicked()"), self.DeleteRow)
             
-             # set up table appearance and behavior        
+             # set up table appearance and behavior
+            self.ui.tableHeader.clear()
             self.headerLabels = [self.tr("Key"), self.tr("Value")]
             self.ui.tableHeader.setHorizontalHeaderLabels(self.headerLabels)
             self.ui.tableHeader.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
@@ -79,14 +79,14 @@ class Header(QtGui.QDialog):
             self.ui.tableHeader.setEnabled(True)
             self.ui.tableHeader.verticalHeader().hide()
 
-            self.headerDic = headerDic
-            self.addItemToTable()
+        self.headerDic = headerDic
+        self.addItemToTable(headerDic)
             
         otherCommentsStr = " "
         for i in range(len(otherComments)):
             otherCommentsStr += otherComments[i].lstrip("#")
         self.ui.txtOtherComments.setPlainText(unicode(otherCommentsStr))
-        self.oldOtherComments = self.ui.txtOtherComments.toPlainText()        
+        self.oldOtherComments = self.ui.txtOtherComments.toPlainText()
         self.show()
     
     def reset(self):
@@ -125,13 +125,12 @@ class Header(QtGui.QDialog):
         table.setItem(currRow, 1, QtGui.QTableWidgetItem())
         table.setCurrentCell(currRow, table.currentColumn())
         
-      
     def DeleteRow(self):
         """ Delete selected row"""
         self.ui.tableHeader.removeRow(self.ui.tableHeader.currentRow())
         
     def naviState(self):
-        # if selected item is the first item, cannot move up
+        """ enabled/ disabled status of botton moveup/ movedown"""
         currRow = self.ui.tableHeader.currentRow()
         rowCount = self.ui.tableHeader.rowCount()
         upEnabled = False
@@ -142,64 +141,63 @@ class Header(QtGui.QDialog):
         self.ui.btnUp.setEnabled(upEnabled)
         self.ui.btnDown.setEnabled(downEnabled)
     
-    def addItemToTable(self, headerDic = None):
-        """ Add old items to the table"""
-        if (headerDic == None):
-            headerDic = self.headerDic
+    def addItemToTable(self, headerDic):
+        """ Add items to the table
+        @ param headerDic: a dictionary of header information for putting in header table"""
         #rowCount according to the old headerDic length
         self.ui.tableHeader.setRowCount(len(headerDic))
         i = 0
         for key, value in headerDic.items():
-            item0 = QtGui.QTableWidgetItem(QtCore.QString(key.lstrip('"')))   
-            item1 = QtGui.QTableWidgetItem(QtCore.QString(value.rstrip('"')))   
+            item0 = QtGui.QTableWidgetItem(QtCore.QString(key))
+            item1 = QtGui.QTableWidgetItem(QtCore.QString(value))
             self.ui.tableHeader.setItem(i, 0, item0)
             self.ui.tableHeader.setItem(i, 1, item1)
-            i += 1   
+            i += 1
             
     def generatedHeader(self,generated_header):
-        """ slot for headerGenerated"""
+        """ slot for headerGenerated
+        @ param generated_header: """
         self.generated_header = generated_header
         
-    def applySettings(self):    
+    def applySettings(self):
         """set user profile from Qsettings into the tableHeader"""
         newHeaderDic = {}
         userProfileDic = {}
-        userName = World.settings.value("UserName", QtCore.QVariant(""))        
+        userName = World.settings.value("UserName", QtCore.QVariant(""))
         emailAddress = World.settings.value("EmailAddress", QtCore.QVariant(""))
         FullLanguage = World.settings.value("FullLanguage", QtCore.QVariant(""))
         Code = World.settings.value("Code", QtCore.QVariant(""))
         SupportTeam = World.settings.value("SupportTeam", QtCore.QVariant(""))
-        TimeZone = World.settings.value("TimeZone", QtCore.QVariant(""))        
-        Last_Translator = userName.toString() + '<' + emailAddress.toString() + '>'        
-        Language_Team =  FullLanguage.toString() + '<' + SupportTeam.toString() + '>'        
+        TimeZone = World.settings.value("TimeZone", QtCore.QVariant(""))
+        Last_Translator = userName.toString() + '<' + emailAddress.toString() + '>'
+        Language_Team =  FullLanguage.toString() + '<' + SupportTeam.toString() + '>'
          #if header doesn't exist, call makeheader, otherwise, only update from setting
         #if there is no user profile 
-        if (self.ui.tableHeader.rowCount() == 1):
-            userProfileDic = {'charset':"CHARSET", 'encoding':"ENCODING", 'project_id_version': self.fileName, 'pot_creation_date':None, 'po_revision_date': False, 'last_translator': str(Last_Translator), 'language_team':str(Language_Team), 'mime_version':None, 'plural_forms':None, 'report_msgid_bugs_to':None}
-            self.emit(QtCore.SIGNAL("makeHeader"), userProfileDic)
-            userProfileDic = self.generated_header
+        if (self.ui.tableHeader.rowCount() == 0):
+            (path, fileName) = os.path.split(str(self.operator.fileName).lower())
+            userProfileDic = {'charset':"CHARSET", 'encoding':"ENCODING", 'project_id_version': fileName, 'pot_creation_date':None, 'po_revision_date': False, 'last_translator': str(Last_Translator), 'language_team':str(Language_Team), 'mime_version':None, 'plural_forms':None, 'report_msgid_bugs_to':None}
+            self.headerDic = self.operator.makeNewHeader(userProfileDic)
         else:
             self.headerDic['Language-Team'] = str(Language_Team)
             self.headerDic['Last-Translator'] = str(Last_Translator)
             self.headerDic['PO-Revision-Date'] = time.strftime("%Y-%m-%d %H:%M%z")
-            self.headerDic['X-Generator'] = "WordForge Translation Editor v.0.1"
-            userProfileDic = self.headerDic
-        self.addItemToTable(userProfileDic)       
+            self.headerDic['X-Generator'] = World.settingOrg + ' ' + World.settingApp + ' ' + World.settingVer
+        self.addItemToTable(self.headerDic)
 
         #set all the infomation into a dictionary
-        for i in range(self.ui.tableHeader.rowCount()):   
-            if (self.ui.tableHeader.item(i, 0) != None):                
+        for i in range(self.ui.tableHeader.rowCount()):
+            if (self.ui.tableHeader.item(i, 0) != None):
                 newHeaderDic[str(self.ui.tableHeader.item(i, 0).text())] = str(self.ui.tableHeader.item(i,1).text())
-        return newHeaderDic     
+        return newHeaderDic
 
     def accepted(self):
-        """send header information"""        
+        """send header information"""
         if (not self.ui):
             self.setupUI()
         self.emit(QtCore.SIGNAL("updateHeader"), self.ui.txtOtherComments.toPlainText(), self.applySettings())
         
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
-    Header = Header()
+    Header = Header(None)
     Header.showDialog("other comments", {"first entry":"one"})
     sys.exit(app.exec_())
