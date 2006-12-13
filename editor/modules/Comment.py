@@ -23,7 +23,6 @@
 #
 # This module is working on any comments of current TU.
 
-import sys
 from PyQt4 import QtCore, QtGui
 if __name__ == "__main__":
     import os.path
@@ -33,6 +32,8 @@ if __name__ == "__main__":
 
 from ui.Ui_Comment import Ui_frmComment
 import modules.World as World
+from translate.storage import po
+from translate.storage import xliff
 
 class CommentDock(QtGui.QDockWidget):
     """
@@ -52,10 +53,13 @@ class CommentDock(QtGui.QDockWidget):
         self.ui.setupUi(self.form)
         self.setWidget(self.form)
         self.layout = QtGui.QTextLayout()
+        self.ui.txtLocationComment.hide()
+        self.ui.txtTranslatorComment.setWhatsThis("Translator Comment\n\nThis is where translator can leave comments for other translators or for reviewers.")
+        self.ui.txtLocationComment.setWhatsThis("Location Comment\n\nThis noneditable comment contains information about where the message is found in the souce code. It will be appeared once there is comments only. You can hide the comment editor by deactivating Views - Show Comment.")
         self.applySettings()
 
         self.connect(self.ui.txtTranslatorComment, QtCore.SIGNAL("textChanged()"), self.setReadyForSave)
-
+        
         # create highlight font
         self.highlightFormat = QtGui.QTextCharFormat()
         self.highlightFormat.setFontWeight(QtGui.QFont.Bold)
@@ -73,14 +77,26 @@ class CommentDock(QtGui.QDockWidget):
         self.toggleViewAction().setChecked(False)
 
     def updateView(self, currentUnit):
+        """ update comments 
+        @param currentUnit: new unit that just emit
+        """
+        self.ui.txtTranslatorComment.setEnabled(True)
+        translatorComment = ""
+        locationComment = ""
         if (currentUnit):
-            comment = currentUnit.getnotes()
-            self.ui.txtTranslatorComment.setPlainText(unicode(comment))
-            self.ui.txtTranslatorComment.setEnabled(True)
-        else:
-            self.ui.txtTranslatorComment.clear()
-            self.ui.txtTranslatorComment.setEnabled(False)
-            
+            if isinstance(currentUnit, po.pounit):
+                translatorComment = currentUnit.getnotes("translator")
+                locationComment = comments = "".join([comment[3:] for comment in currentUnit.sourcecomments])
+                if (locationComment == ""):
+                    self.ui.txtLocationComment.hide()
+                else:
+                    self.ui.txtLocationComment.show()
+                    self.ui.txtLocationComment.setPlainText(unicode(locationComment))
+            elif isinstance(currentUnit, xliff.xliffunit):
+                translatorComment = currentUnit.getnotes()
+                self.ui.txtLocationComment.hide()
+            self.ui.txtTranslatorComment.setPlainText(unicode(translatorComment))
+
     def checkModified(self):
         if self.ui.txtTranslatorComment.document().isModified():
             self.emit(QtCore.SIGNAL("commentChanged"), self.ui.txtTranslatorComment.toPlainText())
