@@ -407,6 +407,4 @@ class Operator(QtCore.QObject):
         self.emit(QtCore.SIGNAL("searchResult"), textField, None, None)
         
 if __name__ == "__main__":
-    app = QtGui.QApplication(sys.argv)
     operator = Operator()
-    sys.exit(app.exec_())
