@@ -22,6 +22,11 @@
 #
 # This module is working on source and target of current TU.
 
+if __name__ == "__main__":
+    import sys
+    import os.path
+    sys.path.append(os.path.join(sys.path[0], ".."))
+
 import sys
 from PyQt4 import QtCore, QtGui
 if __name__ == "__main__":
@@ -43,6 +48,10 @@ class TUview(QtGui.QDockWidget):
         self.ui.setupUi(self.form)
         self.setWidget(self.form)
         self.setFeatures(QtGui.QDockWidget.DockWidgetClosable)
+        self.ui.txtComment.hide()
+        self.ui.txtTarget.setWhatsThis("Translation Editor\n\nThis editor displays and lets you edit the trasnslation of the currently displayed message")
+        self.ui.txtSource.setWhatsThis("Original String\n\nThis part of the window shows you the original message of the currently displayed entry.")
+        self.ui.txtComment.setWhatsThis("Important Comment\n\nThis part is very useful for translator during translation. Hints from the developer are contained in this area. This area will be hidden if there is no hints. ")
         self.applySettings()
         
         self.indexToUpdate = None
@@ -127,6 +136,16 @@ class TUview(QtGui.QDockWidget):
             return
         if (unit):
             self.ui.txtSource.setPlainText(unit.source)
+            comment = "".join([comment for comment in unit.msgidcomments])
+            comment = comment.lstrip('"_:')
+            comment = comment.rstrip('"')
+            comment= comment.rstrip('\\n')
+            comment += unit.getnotes("developer")
+            if (comment == ""):
+                self.ui.txtComment.hide()
+            else:
+                self.ui.txtComment.show()
+                self.ui.txtComment.setPlainText(unicode(comment))
             self.ui.txtTarget.setPlainText(unit.target)
             self.ui.txtTarget.setFocus
         if not (self.filter & state):
@@ -152,7 +171,7 @@ class TUview(QtGui.QDockWidget):
             self.ui.txtTarget.document().setModified(False)
 
     def setReadyForSave(self):
-      self.emit(QtCore.SIGNAL("readyForSave"), True)
+        self.emit(QtCore.SIGNAL("readyForSave"), True)
 
     def source2target(self):
         """Copy the text from source to target."""
