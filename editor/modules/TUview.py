@@ -179,6 +179,7 @@ class TUview(QtGui.QDockWidget):
             self.highlightRange.length = 0
             textField.update()
         block.layout().setAdditionalFormats([self.highlightRange])
+        block.document().markContentsDirty(block.position(), block.length())
 
     def replaceText(self, textField, position, length, replacedText):
         """replace the string (at position and length) with replacedText in txtTarget.

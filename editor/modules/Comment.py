@@ -103,6 +103,7 @@ class CommentDock(QtGui.QDockWidget):
             self.layout.clearAdditionalFormats()
             textField.update()
         block.layout().setAdditionalFormats([self.highlightRange])
+        block.document().markContentsDirty(block.position(), block.length())
 
     def setReadyForSave(self):
         self.emit(QtCore.SIGNAL("readyForSave"), True)
