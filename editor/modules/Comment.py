@@ -95,6 +95,9 @@ class CommentDock(QtGui.QDockWidget):
             elif isinstance(currentUnit, xliff.xliffunit):
                 translatorComment = currentUnit.getnotes()
                 self.ui.txtLocationComment.hide()
+            else:
+                translatorComment = ""
+                self.ui.txtLocationComment.hide()
             self.ui.txtTranslatorComment.setPlainText(unicode(translatorComment))
 
     def checkModified(self):
