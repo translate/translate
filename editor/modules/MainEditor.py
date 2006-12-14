@@ -140,7 +140,6 @@ class MainWindow(QtGui.QMainWindow):
         self.headerDialog = Header(self, self.operator)
         self.connect(self.ui.actionEdit_Header, QtCore.SIGNAL("triggered()"), self.operator.emitHeaderInfo)
         self.connect(self.operator, QtCore.SIGNAL("headerInfo"), self.headerDialog.showDialog)
-        self.connect(self.operator, QtCore.SIGNAL("headerGenerated"), self.headerDialog.generatedHeader)
         self.connect(self.operator, QtCore.SIGNAL("headerAuto"), self.headerDialog.accepted)
         self.connect(self.headerDialog, QtCore.SIGNAL("updateHeader"), self.operator.updateNewHeader)
         self.connect(self.headerDialog, QtCore.SIGNAL("makeHeader"), self.operator.makeNewHeader)
@@ -177,6 +176,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("savedAlready"), self.ui.actionSave.setEnabled)
         self.connect(self.dockTUview, QtCore.SIGNAL("readyForSave"), self.ui.actionSave.setEnabled)
         self.connect(self.dockComment, QtCore.SIGNAL("readyForSave"), self.ui.actionSave.setEnabled)
+        self.connect(self.headerDialog, QtCore.SIGNAL("readyForSave"), self.ui.actionSave.setEnabled)
 
         self.connect(self.fileaction, QtCore.SIGNAL("fileSaved"), self.setTitle)
         self.connect(self.operator, QtCore.SIGNAL("toggleFirstLastUnit"), self.toggleFirstLastUnit)
