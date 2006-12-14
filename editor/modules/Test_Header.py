@@ -7,6 +7,7 @@ import sys
 import os.path
 sys.path.append(os.path.join(sys.path[0], ".."))
 import Header
+import Operator
 from translate.storage import po
 from PyQt4 import QtCore, QtGui
 import unittest
@@ -14,8 +15,8 @@ import World
 
 class TestHeader(unittest.TestCase):
     def setUp(self):
-        self.HeaderObj = Header.Header(None, None)
-        self.HeaderObj.showDialog("", {})
+        self.HeaderObj = Header.Header(None, Operator.Operator())
+        self.HeaderObj.showDialog()
         self.HeaderObj.ui.tableHeader.setRowCount(10)
         self.HeaderObj.ui.tableHeader.setCurrentCell(1,0)
 
@@ -59,11 +60,15 @@ class TestHeader(unittest.TestCase):
         self.assertEqual(self.HeaderObj.ui.tableHeader.rowCount(), 11)
         
     def testMoveUp(self):
-        self.HeaderObj.moveUp(-1)
+        headerDic = {'a':"da", 'c':"ka", 'e': 'la', 'e':'ta'}
+        self.HeaderObj.addItemToTable(headerDic)
+        self.HeaderObj.moveUp()
         self.assertEqual(self.HeaderObj.ui.tableHeader.currentRow(), 0)
         
     def testMoveDown(self):
-        self.HeaderObj.moveDown(+1)
+        headerDic = {'a':"da", 'c':"ka", 'e': 'la', 'e':'ta'}
+        self.HeaderObj.addItemToTable(headerDic)
+        self.HeaderObj.moveDown()
         self.assertEqual(self.HeaderObj.ui.tableHeader.currentRow(), 2)
       
 

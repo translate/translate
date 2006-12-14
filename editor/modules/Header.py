@@ -37,6 +37,9 @@ import modules.World as World
 class Header(QtGui.QDialog):
     def __init__(self, parent, operator):
         self.operator = operator
+        self.connect(operator, QtCore.SIGNAL("headerInfo"), self.showDialog)
+        self.connect(operator, QtCore.SIGNAL("headerAuto"), self.accepted)
+
         QtGui.QDialog.__init__(self, parent)
         self.ui = None
         
@@ -45,11 +48,8 @@ class Header(QtGui.QDialog):
         self.ui.setupUi(self) 
         self.headerDic = {}
        
-    def showDialog(self, otherComments, headerDic):
-        """ slot for signal headerInfo 
-        make the dialog visible with otherComments and header filled in
-        @ param otherComments: comments of the header
-        @ param headerDic: a dictionary of header information
+    def showDialog(self):
+        """make the dialog visible
         """
         # lazy init 
         if (not self.ui):
@@ -81,12 +81,14 @@ class Header(QtGui.QDialog):
             self.ui.tableHeader.setEnabled(True)
             self.ui.tableHeader.verticalHeader().hide()
 
-        self.headerDic = headerDic
-        self.addItemToTable(headerDic)
+        otherComments, self.headerDic = self.operator.headerData() 
+        if (self.headerDic):
+            self.addItemToTable(self.headerDic)
             
         otherCommentsStr = " "
-        for i in range(len(otherComments)):
-            otherCommentsStr += otherComments[i].lstrip("#")
+        if (otherComments):
+            for i in range(len(otherComments)):
+                otherCommentsStr += otherComments[i].lstrip("#")
         self.ui.txtOtherComments.setPlainText(unicode(otherCommentsStr))
         self.oldOtherComments = self.ui.txtOtherComments.toPlainText()
         self.show()
@@ -195,7 +197,7 @@ class Header(QtGui.QDialog):
         """send header information"""
         if (not self.ui):
             self.setupUI()
-        self.emit(QtCore.SIGNAL("updateHeader"), self.ui.txtOtherComments.toPlainText(), self.applySettings())
+        self.operator.updateNewHeader(self.ui.txtOtherComments.toPlainText(), self.applySettings())
         
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

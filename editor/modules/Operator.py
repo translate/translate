@@ -140,18 +140,18 @@ class Operator(QtCore.QObject):
             return
         self.emit(QtCore.SIGNAL("updateUnit"))
 
-    def emitHeaderInfo(self):
-        """sending Header and comment of Header"""
+    def headerData(self):
+        """@return Header comment and Header dictonary"""
         if (not isinstance(self.store, poheader.poheader)):
-            return 
-        
+            return (None, None)
+
         header = self.store.header() 
         if header:
             headerDic = self.store.parseheader()
-            self.emit(QtCore.SIGNAL("headerInfo"), header.getnotes("translator"), headerDic)
+            return (header.getnotes("translator"), headerDic)
         else:
-            self.emit(QtCore.SIGNAL("headerInfo"), "", {} )
-                
+            return ("", {})
+
     def makeNewHeader(self, headerDic):
           """receive headerDic as dictionary, and return header as string"""
           #TODO: move to world
@@ -159,10 +159,12 @@ class Operator(QtCore.QObject):
           return self.store.makeheaderdict(**headerDic)
           
     def updateNewHeader(self, othercomments, headerDic):
-          """will update header"""
-          self.store.units[0].removenotes()
-          self.store.units[0].addnote(str(othercomments))
-          self.store.updateheader(add=True, **headerDic)
+        """will update header"""
+        header = self.store.header()
+        if (header):
+            header.removenotes()
+            header.addnote(str(othercomments))
+            self.store.updateheader(add=True, **headerDic)
 
     def previous(self):
         """move to previous unit inside the filtered list."""
