@@ -35,6 +35,11 @@ class Operator(QtCore.QObject):
     Provides means for searching and filtering.
     
     @signal currentStatus(string): emitted with the new status message
+    @signal newUnits(store.units): emitted with the new units
+    @signal updateUnit(): emitted when the views should update the unit´s data
+    @signal toggleFirstLastUnit(atFirst, atLast): emitted to allow dis/enable of actions
+    @signal filteredList(list, filter): emitted when the filter was changed
+    @signal savedAlready(False): emitted when a file was saved
     """
     def __init__(self):
         QtCore.QObject.__init__(self)
