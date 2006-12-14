@@ -67,7 +67,7 @@ class Header(QtGui.QDialog):
             QtCore.QObject.connect(self.ui.btnInsertRow,QtCore.SIGNAL("clicked()"), self.insertNewRow)
             QtCore.QObject.connect(self.ui.btnDeleteRow,QtCore.SIGNAL("clicked()"), self.deleteRow)
             
-            QtCore.QObject.connect(self.ui.txtOtherComments, QtCore.SIGNAL("textChanged()"), self.setReadyForSave)
+            QtCore.QObject.connect(self.ui.txtOtherComments, QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
             
              # set up table appearance and behavior
             self.ui.tableHeader.clear()
@@ -92,7 +92,7 @@ class Header(QtGui.QDialog):
         self.ui.txtOtherComments.setPlainText(unicode(otherCommentsStr))
         self.oldOtherComments = self.ui.txtOtherComments.toPlainText()
         self.show()
-    def setReadyForSave(self):
+    def emitReadyForSave(self):
         self.emit(QtCore.SIGNAL("readyForSave"), True)
         
     def reset(self):

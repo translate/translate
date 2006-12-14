@@ -51,7 +51,7 @@ msgstr "unable to read file"
         self.assertEqual(self.commentObj.highlightRange.start, position)
         self.assertEqual(self.commentObj.highlightRange.length, length )
     
-    def testSetReadyForSave(self):
+    def testEmitReadyForSave(self):
         QtCore.QObject.connect(self.commentObj, QtCore.SIGNAL("readyForSave"), self.slot)
         self.commentObj.updateView(self.currentunit)
         self.assertEqual(self.slotReached, True)

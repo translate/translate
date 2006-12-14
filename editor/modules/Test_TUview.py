@@ -95,7 +95,7 @@ msgstr "Could not open"
         self.tuview.checkModified()
         self.assertEqual(self.slotReached, True)
     
-    def testSetReadyForSave(self):
+    def testEmitReadyForSave(self):
         QtCore.QObject.connect(self.tuview, QtCore.SIGNAL("readyForSave"), self.slot)
         self.tuview.ui.txtTarget.setPlainText('hello')
         self.assertEqual(self.slotReached, True)

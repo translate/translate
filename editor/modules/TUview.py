@@ -56,7 +56,7 @@ class TUview(QtGui.QDockWidget):
         self.applySettings()
         
         self.indexToUpdate = None
-        self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.setReadyForSave)
+        self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
         self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
         
         # create highlight font
@@ -164,7 +164,7 @@ class TUview(QtGui.QDockWidget):
             self.emit(QtCore.SIGNAL("targetChanged"), self.ui.txtTarget.toPlainText())
             self.ui.txtTarget.document().setModified(False)
 
-    def setReadyForSave(self):
+    def emitReadyForSave(self):
         self.emit(QtCore.SIGNAL("readyForSave"), True)
 
     def source2target(self):

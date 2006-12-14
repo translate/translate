@@ -59,7 +59,7 @@ class CommentDock(QtGui.QDockWidget):
         self.ui.txtLocationComment.setWhatsThis("Location Comment\n\nThis noneditable comment contains information about where the message is found in the souce code. It will be appeared once there is comments only. You can hide the comment editor by deactivating Views - Show Comment.")
         self.applySettings()
 
-        self.connect(self.ui.txtTranslatorComment, QtCore.SIGNAL("textChanged()"), self.setReadyForSave)
+        self.connect(self.ui.txtTranslatorComment, QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
         
         # create highlight font
         self.highlightFormat = QtGui.QTextCharFormat()
@@ -122,7 +122,7 @@ class CommentDock(QtGui.QDockWidget):
         self.highlightBlock.layout().setAdditionalFormats([self.highlightRange])
         self.highlightBlock.document().markContentsDirty(self.highlightBlock.position(), self.highlightBlock.length())
 
-    def setReadyForSave(self):
+    def emitReadyForSave(self):
         self.emit(QtCore.SIGNAL("readyForSave"), True)
 
     def applySettings(self):
