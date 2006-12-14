@@ -68,10 +68,13 @@ class Preference(QtGui.QDialog):
         self.ui.SupportTeam.setText(World.settings.value("SupportTeam").toString())
         self.ui.cbxTimeZone.setEditText(World.settings.value("TimeZone").toString())
         checkState = World.settings.value("headerAuto").toString()
-        if (checkState == "checked"):
-            self.ui.chkHeaderAuto.setCheckState(QtCore.Qt.Checked)
-        else:
-            self.ui.chkHeaderAuto.setCheckState(QtCore.Qt.Unchecked)
+        if checkState:
+            if (checkState == "checked"):
+                self.ui.chkHeaderAuto.setCheckState(QtCore.Qt.Checked)
+            else:
+                self.ui.chkHeaderAuto.setCheckState(QtCore.Qt.Unchecked)
+        else: 
+              self.ui.chkHeaderAuto.setCheckState(QtCore.Qt.Checked)
     
     def accepted(self):
         """ slot ok pressed """
@@ -251,7 +254,6 @@ class Preference(QtGui.QDialog):
             self.defaultColor = QtGui.QColor(QtCore.Qt.black)
             self.ui = Ui_frmPreference()
             self.ui.setupUi(self)
-            World.settings.setValue("headerAuto", QtCore.QVariant("checked"))
             # connect signals
             self.connect(self.ui.chkHeaderAuto, QtCore.SIGNAL("stateChanged(int)"), self.ui.chkHeaderAuto.checkState) 
             self.connect(self.ui.bntOverview, QtCore.SIGNAL("clicked()"), self.fontOverview) 
