@@ -75,13 +75,6 @@ class TUview(QtGui.QDockWidget):
         QtGui.QDockWidget.closeEvent(self, event)
         self.toggleViewAction().setChecked(False)
         
-    def setColor(self):
-        """set color to txtSource and txtTarget"""
-        color = QtGui.QColorDialog.getColor(QtCore.Qt.red, self)
-        if color.isValid():
-            self.ui.txtSource.setTextColor(color)
-            self.ui.txtTarget.setTextColor(color)
-    
     def setScrollbarMaximum(self):
         """Set scrollbar maximum value according to number of index."""
         maximum = max(len(self.indexes) - 1, 0)
