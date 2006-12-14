@@ -238,15 +238,10 @@ class Operator(QtCore.QObject):
         translatedState = currentUnit.istranslated()
         # update target for current unit
         currentUnit.target = unicode(target)
-        # marktranslated for xliff file
         if (currentUnit.target):
-            try:
-                currentUnit.marktranslated()
-            except AttributeError:
-                pass
-        # unmark fuzzy is unit if it's previously fuzzy
-        if (currentUnit.isfuzzy()):
-            currentUnit.markfuzzy(False)
+            self.status.markTranslated(currentUnit, True)
+        else:
+            self.status.markTranslated(currentUnit, False)
         self._modified = True
         self.emitStatus()
 
@@ -263,12 +258,12 @@ class Operator(QtCore.QObject):
     def toggleFuzzy(self):
         """toggle fuzzy state for current unit."""
         self.emitUpdateUnit()
-        currentIndex= self._getCurrentIndex()
+        currentIndex = self._getCurrentIndex()
         currentUnit = self.store.units[currentIndex]
         if (self.status.getStatus(currentUnit) & World.fuzzy):
-            currentUnit.markfuzzy(False)
+            self.status.markFuzzy(currentUnit, False)
         elif (self.status.getStatus(currentUnit) & World.translated):
-            currentUnit.markfuzzy(True)
+            self.status.markFuzzy(currentUnit, True)
         else:
             return
         self._modified = True

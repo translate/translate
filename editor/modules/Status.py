@@ -27,27 +27,49 @@ import modules.World as World
 
 class Status:
     def __init__(self, units):
-        self.units = units
+        self.numTotal = len(units)
+        self.numFuzzy = len(pocount.fuzzymessages(units))
+        self.numTranslated = len(pocount.translatedmessages(units))
+    
+    def markFuzzy(self, unit, bool):
+        if (bool):
+            unit.markfuzzy(True)
+            self.numFuzzy += 1
+            self.numTranslated -= 1
+        else:
+            unit.markfuzzy(False)
+            self.numFuzzy -= 1
+            self.numTranslated += 1
+
+    def markTranslated(self, unit, bool):
+        if (bool):
+            self.numTranslated += 1
+            try:
+                unit.marktranslated()
+            except AttributeError:
+                pass
+        else:
+            self.numTranslated -= 1
+        if (unit.isfuzzy()):
+                unit.markfuzzy(False)
+                self.numFuzzy -= 1
     
     def getStatus(self, unit):
         """return the unit's status flag."""
         unitState = 0
-        if unit.isfuzzy():
-            unitState += World.fuzzy
-        if unit.istranslated():
+        if (unit.istranslated()):
             unitState += World.translated
+        elif (unit.isfuzzy()):
+            unitState += World.fuzzy
         else:
             unitState += World.untranslated
         return unitState
         
     def statusString(self):
         """return string of total, fuzzy, translated, and untranslated messages."""
-        numTotal = len(self.units)
-        numFuzzy = len(pocount.fuzzymessages(self.units))
-        numTranslated = len(pocount.translatedmessages(self.units))
-        numUntranslated = numTotal - numTranslated
-        return "Total: "+ str(numTotal) + \
-                "  |  Fuzzy: " +  str(numFuzzy) + \
-                "  |  Translated: " +  str(numTranslated) + \
-                "  |  Untranslated: " + str(numUntranslated)
+        self.numUntranslated = self.numTotal - (self.numTranslated + self.numFuzzy)
+        return "Total: "+ str(self.numTotal) + \
+                "  |  Fuzzy: " +  str(self.numFuzzy) + \
+                "  |  Translated: " +  str(self.numTranslated) + \
+                "  |  Untranslated: " + str(self.numUntranslated)
 

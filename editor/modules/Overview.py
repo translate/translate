@@ -67,8 +67,8 @@ class OverviewDock(QtGui.QDockWidget):
         self.approvedIcon = QtGui.QIcon("../images/approved.png")
         self.blankIcon = QtGui.QIcon()
         self.normalState = QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
-        self.tailSpace = "  "
         self.currentIndexActive = False
+        self.indexMaxLen = 0
         self.connect(self.ui.tableOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitCurrentIndex)
         self.connect(self.ui.tableOverview.model(), QtCore.SIGNAL("layoutChanged()"), self.layoutChanged)
         #self.connect(self.ui.tableOverview, QtCore.SIGNAL("cellDoubleClicked(int, int)"), self.emitTargetChanged)
@@ -115,7 +115,7 @@ class OverviewDock(QtGui.QDockWidget):
         @param index: unit's index."""
         row = self.ui.tableOverview.rowCount()
         self.ui.tableOverview.setRowCount(row + 1)
-        item = QtGui.QTableWidgetItem(str(index).rjust(self.indexMaxLen) + self.tailSpace)
+        item = QtGui.QTableWidgetItem(self.indexString(index))
         item.setTextAlignment(QtCore.Qt.AlignRight + QtCore.Qt.AlignVCenter)
         item.setFlags(self.normalState)
         note = unit.getnotes() #or unit.getnotes("msgid")
@@ -157,15 +157,15 @@ class OverviewDock(QtGui.QDockWidget):
             return
         if (index < 0):
             return
-        foundItems = self.ui.tableOverview.findItems(str(index).rjust(self.indexMaxLen) + self.tailSpace, QtCore.Qt.MatchExactly)
+        foundItems = self.ui.tableOverview.findItems(self.indexString(index), QtCore.Qt.MatchExactly)
         if (len(foundItems) > 0):
             item = foundItems[0]
             row = self.ui.tableOverview.row(item)
-##            if (self.unitsStatus[row] != state):
-            self.unitsStatus[row] = state
+            if (self.unitsStatus[index] != state):
+                self.unitsStatus[index] = state
             self.setState(row, state)
             self.ui.tableOverview.selectRow(row)
-            self.ui.tableOverview.scrollToItem(item)
+            #self.ui.tableOverview.scrollToItem(item)
 
     def setState(self, index, state):
         """display unit status on note column, and hide if unit is not in filter.
@@ -230,6 +230,9 @@ class OverviewDock(QtGui.QDockWidget):
         
     def layoutChanged(self):
         self.ui.tableOverview.resizeRowsToContents()
+        
+    def indexString(self, index):
+        return str(index).rjust(self.indexMaxLen) + "  "
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
