@@ -36,6 +36,7 @@ if __name__ == "__main__":
     QtCore.QDir.setCurrent(os.path.join(sys.path[0], "..", "ui"))
 
 from ui.Ui_TUview import Ui_TUview
+from translate.storage import po
 from modules import World
 
 class TUview(QtGui.QDockWidget):
@@ -135,17 +136,18 @@ class TUview(QtGui.QDockWidget):
         except:
             return
         if (unit):
+            if isinstance(unit, po.pounit):
+                comment = "".join([comment for comment in unit.msgidcomments])
+                comment = comment.lstrip('"_:')
+                comment = comment.rstrip('"')
+                comment= comment.rstrip('\\n')
+                comment += unit.getnotes("developer")
+                if (comment == ""):
+                    self.ui.txtComment.hide()
+                else:
+                    self.ui.txtComment.show()
+                    self.ui.txtComment.setPlainText(unicode(comment))
             self.ui.txtSource.setPlainText(unit.source)
-            comment = "".join([comment for comment in unit.msgidcomments])
-            comment = comment.lstrip('"_:')
-            comment = comment.rstrip('"')
-            comment= comment.rstrip('\\n')
-            comment += unit.getnotes("developer")
-            if (comment == ""):
-                self.ui.txtComment.hide()
-            else:
-                self.ui.txtComment.show()
-                self.ui.txtComment.setPlainText(unicode(comment))
             self.ui.txtTarget.setPlainText(unit.target)
             self.ui.txtTarget.setFocus
         if not (self.filter & state):
