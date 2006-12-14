@@ -265,13 +265,12 @@ class Operator(QtCore.QObject):
         self.emitUpdateUnit()
         currentIndex= self._getCurrentIndex()
         currentUnit = self.store.units[currentIndex]
-        # skip if unit is not yet translated
-        if (not currentUnit.istranslated()):
-            return
         if (self.status.getStatus(currentUnit) & World.fuzzy):
             currentUnit.markfuzzy(False)
-        else:
+        elif (self.status.getStatus(currentUnit) & World.translated):
             currentUnit.markfuzzy(True)
+        else:
+            return
         self._modified = True
         self.emitCurrentUnit()
         self.emitStatus()
