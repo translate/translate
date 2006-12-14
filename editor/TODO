@@ -63,18 +63,25 @@
 - Priority: 1
 - Who: All
 - Status: not
-   + Test_Comment.py : just start (da)
+   + Test_Comment.py : ok
+   + Test_Status: ok
+   + Test_FileAction: ok
+   + Test_Find:0k
+   + Test_TUview: (phon)
+   + Test_Header:(da)
+   + Test_Operator:???
 
 13. Header
 - Priority: 1
 - Who: Da
-- Status: patch commited to SVN, Da has to continue in the editor
+- Status: it is working with po and poxliff file, but no xliff
 
 14. Note
 - Priority: 1
 - Who: Da
 - Status: Open
-  + need futhure discussion with pootle team.
+  + I move the needed code to editor, and it works now
+  + need futhure discussion with pootle team.about better method of getnodes() in po.py
 
 15. Editor's Name
 - Priority: 1
@@ -140,7 +147,7 @@
 26. Do not repeat "Edit" in the text for the header dialog.
 - Priority: 1
 - Who: da
-- Status: done
+- Status: closed
 
 
 27. Use the custom font also for the table header in overview.
