@@ -33,19 +33,49 @@ msgstr "unable to read file"
         """helper that parses po source without requiring files"""
         dummyfile = wStringIO.StringIO(posource)
         return po.pofile(dummyfile)
-    
-##    def testAddNumFuzzy(self):
-##        self.status.addNumFuzzy(1)
-##        self.assertEqual(self.status.numFuzzy, self.fuzzy + 1)
-##   
-##    def testAddnumTranslated(self):
-##        self.status.addNumTranslated(2)
-##        self.assertEqual(self.status.numTranslated, self.translated + 2)
-        
+
+    def testMarkTranslated(self):
+        unit = self.pofile.units[0]
+        numFuzzy = self.status.numFuzzy
+        numTranslated = self.status.numTranslated
+        # unit is fuzzy, making it translated should change it
+        self.assertEqual(unit.x_editor_state, World.fuzzy)
+        self.status.markTranslated(unit, True)
+        self.assertEqual(unit.x_editor_state, World.translated)
+        self.assertEqual(self.status.numFuzzy, numFuzzy - 1)
+        self.assertEqual(self.status.numTranslated, numTranslated + 1)
+        # unit is translated, making it untranslated should change it
+        self.status.markTranslated(unit, False)
+        self.assertEqual(unit.x_editor_state, World.untranslated)
+        self.assertEqual(self.status.numFuzzy, numFuzzy - 1)
+        self.assertEqual(self.status.numTranslated, numTranslated)
+
+    def testMarkFuzzy(self):
+        unit = self.pofile.units[0]
+        numFuzzy = self.status.numFuzzy
+        numTranslated = self.status.numTranslated
+        # unit is fuzzy, making it fuzzy again should not change it
+        self.assertEqual(unit.x_editor_state, World.fuzzy)
+        self.status.markFuzzy(unit, True)
+        self.assertEqual(unit.x_editor_state, World.fuzzy)
+        self.assertEqual(self.status.numFuzzy, numFuzzy)
+        self.assertEqual(self.status.numTranslated, numTranslated)
+        # setting it to not fuzzy should change it
+        self.status.markFuzzy(unit, False)
+        self.assertEqual(unit.x_editor_state, World.translated)
+        self.assertEqual(self.status.numFuzzy, numFuzzy - 1)
+        self.assertEqual(self.status.numTranslated, numTranslated + 1)
+        # setting it to fuzzy again should change it back
+        self.status.markFuzzy(unit, True)
+        self.assertEqual(unit.x_editor_state, World.fuzzy)
+        self.assertEqual(self.status.numFuzzy, numFuzzy)
+        self.assertEqual(self.status.numTranslated, numTranslated)
+
     def testGetStatus(self):
-        unitstate = World.fuzzy + World.untranslated
+        unitstate = World.fuzzy
         unit = self.pofile.units[0]
         self.assertEqual(self.status.getStatus(unit), unitstate)
+        self.assertEqual(unit.x_editor_state, unitstate)
     
     def testStatusString(self):
         status = self.status.statusString()

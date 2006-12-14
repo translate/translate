@@ -117,13 +117,12 @@ class TUview(QtGui.QDockWidget):
                 index = self.indexes[value]
                 self.emit(QtCore.SIGNAL("currentIndex"), index)
     
-    def updateView(self, unit, index, state):
+    def updateView(self, unit, index):
         """Update the text in source and target, set the scrollbar position,
         remove a value from scrollbar if the unit is not in filter.
         Then recalculate scrollbar maximum value.
         @param unit: unit to set in target and source.
-        @param index: value in the scrollbar to be removed.
-        @param state: state of unit defined in world.py."""
+        @param index: value in the scrollbar to be removed."""
         try:
             value = self.indexes.index(index)
         except:
@@ -143,7 +142,7 @@ class TUview(QtGui.QDockWidget):
             self.ui.txtSource.setPlainText(unit.source)
             self.ui.txtTarget.setPlainText(unit.target)
             self.ui.txtTarget.setFocus
-        if not (self.filter & state):
+        if not (self.filter & unit.x_editor_state):
             try:
                 self.indexes.remove(index)
             except:

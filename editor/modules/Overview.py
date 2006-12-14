@@ -81,14 +81,13 @@ class OverviewDock(QtGui.QDockWidget):
         QtGui.QDockWidget.closeEvent(self, event)
         self.toggleViewAction().setChecked(False)
 
-    def slotNewUnits(self, units, unitsStatus):
+    def slotNewUnits(self, units):
         """initialize the list, clear and fill with units.
         @param units: list of unit to add into table.
         @param unitsStatus: list of unit's status."""
         self.ui.tableOverview.setEnabled(True)
         self.indexMaxLen = len(str(len(units)))
         self.units = units
-        self.unitsStatus = unitsStatus
 
     def filteredList(self, shownList, filter):
         """show the items which are in shownList.
@@ -136,7 +135,7 @@ class OverviewDock(QtGui.QDockWidget):
         item.setFlags(self.normalState)
         self.ui.tableOverview.setItem(row, 3, item)
         
-        self.setState(row, self.unitsStatus[index])
+        self.setState(row, unit.x_editor_state)
     
     def emitCurrentIndex(self):
         """send the selected unit index."""
@@ -146,11 +145,10 @@ class OverviewDock(QtGui.QDockWidget):
             self.currentIndexActive = True
             self.emit(QtCore.SIGNAL("currentIndex"), indexOfSelectedRow)
 
-    def updateView(self, unit, index, state):
+    def updateView(self, unit, index):
         """highlight the table's row at index.
         @param unit: (not needed in this function).
-        @param index: table's row to highlight.
-        @param state: unit's state shown in table."""
+        @param index: table's row to highlight."""
         # TODO: improve conversion of index to row number.
         if (self.currentIndexActive == True):
             self.currentIndexActive = False
@@ -161,9 +159,7 @@ class OverviewDock(QtGui.QDockWidget):
         if (len(foundItems) > 0):
             item = foundItems[0]
             row = self.ui.tableOverview.row(item)
-            if (self.unitsStatus[index] != state):
-                self.unitsStatus[index] = state
-            self.setState(row, state)
+            self.setState(row, unit.x_editor_state)
             self.ui.tableOverview.selectRow(row)
             #self.ui.tableOverview.scrollToItem(item)
 

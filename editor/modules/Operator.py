@@ -57,18 +57,14 @@ class Operator(QtCore.QObject):
         self.status = Status(self.store.units)
         self.emitStatus()
 
-        unitsState = []
-        for unit in self.store.units:
-            currentState = self.status.getStatus(unit)
-            unitsState.append(currentState)
-        self.emit(QtCore.SIGNAL("newUnits"), self.store.units, unitsState)
+        self.emit(QtCore.SIGNAL("newUnits"), self.store.units)
         self.emitFiltered(self.filter)
 
     def emitStatus(self):
         self.emit(QtCore.SIGNAL("currentStatus"), self.status.statusString())        
 
     def emitCurrentUnit(self):
-        """send currentUnit signal with currentUnit, currentIndex, currentState."""
+        """send currentUnit signal with currentUnit, currentIndex."""
         # TODO: Sending toggleFirstLastUnit only needed.
         atFirst = (self._unitpointer == 0)
         atLast = (self._unitpointer >= len(self.filteredList) - 1)
@@ -78,11 +74,9 @@ class Operator(QtCore.QObject):
         if (currentIndex == -1):
             currentUnit = None
             currentIndex = None
-            currentState = None
         else:
             currentUnit = self.store.units[currentIndex]
-            currentState = self.status.getStatus(currentUnit)
-        self.emit(QtCore.SIGNAL("currentUnit"), currentUnit, currentIndex, currentState)
+        self.emit(QtCore.SIGNAL("currentUnit"), currentUnit, currentIndex)
 
     def _getCurrentIndex(self):
         """return current index of current unit."""
@@ -96,19 +90,19 @@ class Operator(QtCore.QObject):
         """add/remove fuzzy to filter, and send filter signal.
         @param checked: True or False when Fuzzy checkbox is checked or unchecked.
         """
-        if (checked) and (not self.filter & World.fuzzy):
-            self.filter += World.fuzzy
-        elif (not checked) and (self.filter & World.fuzzy):
-            self.filter -= World.fuzzy
+        if (checked):
+            self.filter |= World.fuzzy
+        else:
+            self.filter &= ~World.fuzzy
         self.emitFiltered(self.filter)
         
     def filterTranslated(self, checked):
         """add/remove translated to filter, and send filter signal.
         @param checked: True or False when Translated checkbox is checked or unchecked."""
-        if (checked) and (not self.filter & World.translated):
-            self.filter += World.translated
-        elif (not checked) and (self.filter & World.translated):
-            self.filter -= World.translated
+        if (checked):
+            self.filter |= World.translated
+        else:
+            self.filter &= ~World.translated
         self.emitFiltered(self.filter)
         
     def filterUntranslated(self, checked):
@@ -116,9 +110,9 @@ class Operator(QtCore.QObject):
         @param checked: True or False when Untranslated checkbox is checked or unchecked.
         """
         if (checked):
-            self.filter = self.filter | World.untranslated
-        elif (self.filter & World.untranslated):
-            self.filter -= World.untranslated
+            self.filter |= World.untranslated
+        else:
+            self.filter &= ~World.untranslated
         self.emitFiltered(self.filter)
 
     def emitFiltered(self, filter):
@@ -132,10 +126,8 @@ class Operator(QtCore.QObject):
             start = 0
         for i in range(start, len(self.store.units)):
             currentUnit = self.store.units[i]
-            # get the unit state
-            unitState = self.status.getStatus(currentUnit)
             # add unit to filteredList if it is in the filter
-            if (self.filter & unitState):
+            if (self.filter & currentUnit.x_editor_state):
                 self.filteredList.append(i)
         self.emit(QtCore.SIGNAL("filteredList"), self.filteredList, filter)
         self._unitpointer = 0
@@ -260,9 +252,9 @@ class Operator(QtCore.QObject):
         self.emitUpdateUnit()
         currentIndex = self._getCurrentIndex()
         currentUnit = self.store.units[currentIndex]
-        if (self.status.getStatus(currentUnit) & World.fuzzy):
+        if (currentUnit.x_editor_state & World.fuzzy):
             self.status.markFuzzy(currentUnit, False)
-        elif (self.status.getStatus(currentUnit) & World.translated):
+        elif (currentUnit.x_editor_state & World.translated):
             self.status.markFuzzy(currentUnit, True)
         else:
             return
@@ -280,11 +272,9 @@ class Operator(QtCore.QObject):
         self.foundPosition = -1
         self.searchString = str(searchString)
         self.searchableText = searchableText
+        self.matchCase = matchCase
         if (not matchCase):
-            self.matchCase = False
             self.searchString = self.searchString.lower()
-        else:
-            self.matchCase = True
 
     def searchNext(self):
         """search forward through the text fields."""

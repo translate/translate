@@ -30,39 +30,55 @@ class Status:
         self.numTotal = len(units)
         self.numFuzzy = len(pocount.fuzzymessages(units))
         self.numTranslated = len(pocount.translatedmessages(units))
-    
-    def markFuzzy(self, unit, bool):
-        if (bool):
-            unit.markfuzzy(True)
+        for unit in units:
+            unit.x_editor_state = self.getStatus(unit)
+
+    def markFuzzy(self, unit, fuzzy):
+        if (unit.isfuzzy() == fuzzy):
+            return
+        unit.markfuzzy(fuzzy)
+        if (fuzzy):
             self.numFuzzy += 1
             self.numTranslated -= 1
+            unit.x_editor_state |= World.fuzzy
+            unit.x_editor_state &= ~World.translated
         else:
-            unit.markfuzzy(False)
             self.numFuzzy -= 1
             self.numTranslated += 1
+            unit.x_editor_state &= ~World.fuzzy
+            unit.x_editor_state |= World.translated
 
-    def markTranslated(self, unit, bool):
-        if (bool):
+    def markTranslated(self, unit, translated):
+        if (translated):
+            if (unit.x_editor_state & World.translated):
+                return
             self.numTranslated += 1
             try:
                 unit.marktranslated()
             except AttributeError:
                 pass
+            unit.x_editor_state |= World.translated
+            unit.x_editor_state &= ~World.untranslated
         else:
+            if (unit.x_editor_state & World.untranslated):
+                return
             self.numTranslated -= 1
+            unit.x_editor_state &= ~World.translated
+            unit.x_editor_state |= World.untranslated
         if (unit.isfuzzy()):
-                unit.markfuzzy(False)
-                self.numFuzzy -= 1
-    
+            unit.markfuzzy(False)
+            self.numFuzzy -= 1
+            unit.x_editor_state &= ~World.fuzzy
+
     def getStatus(self, unit):
         """return the unit's status flag."""
         unitState = 0
         if (unit.istranslated()):
-            unitState += World.translated
+            unitState |= World.translated
         elif (unit.isfuzzy()):
-            unitState += World.fuzzy
+            unitState |= World.fuzzy
         else:
-            unitState += World.untranslated
+            unitState |= World.untranslated
         return unitState
         
     def statusString(self):
