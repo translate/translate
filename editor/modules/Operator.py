@@ -204,7 +204,7 @@ class Operator(QtCore.QObject):
         @param fileName: String type
         """
         self.emitUpdateUnit()
-        if (World.settings.value("headerAuto").toString() == "checked"):
+        if (World.settings.value("headerAuto", QtCore.QVariant(True)).toBool()):
             self.emit(QtCore.SIGNAL("headerAuto"))
         self.store.savefile(fileName)
         self._saveDone = True
