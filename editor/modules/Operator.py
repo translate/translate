@@ -23,7 +23,7 @@
 from PyQt4 import QtCore, QtGui
 from translate.storage import factory
 from translate.storage import po
-from translate.storage import poheader
+##from translate.storage import poheader
 from translate.storage import xliff
 import modules.World as World
 from modules.Status import Status
@@ -45,7 +45,6 @@ class Operator(QtCore.QObject):
         QtCore.QObject.__init__(self)
         self.store = None
         self._modified = False
-        self._saveDone = False
         self._unitpointer = None
         
     def getUnits(self, fileName):
@@ -53,7 +52,7 @@ class Operator(QtCore.QObject):
         @param fileName: the file to open"""
         self.fileName = fileName
         self.store = factory.getobject(fileName)
-        self.headerObj = poheader.poheader()
+        self._modified = False
 
         # filter flags
         self.filter = World.filterAll
@@ -206,7 +205,7 @@ class Operator(QtCore.QObject):
         if (World.settings.value("headerAuto", QtCore.QVariant(True)).toBool()):
             self.emit(QtCore.SIGNAL("headerAuto"))
         self.store.savefile(fileName)
-        self._saveDone = True
+        self._modified = False
         self.emit(QtCore.SIGNAL("savedAlready"), False) 
 
     def modified(self):
@@ -214,9 +213,6 @@ class Operator(QtCore.QObject):
         @return bool: True or False if current unit is modified or not modified.
         """
         self.emitUpdateUnit()
-        if self._saveDone:
-            self._modified = False
-            self._saveDone = False
         return self._modified
     
     def setComment(self, comment):
