@@ -3,6 +3,7 @@ import sys
 import os.path
 sys.path.append(os.path.join(sys.path[0], ".."))
 import TUview
+import Status
 import World
 from PyQt4 import QtGui, QtCore
 from translate.misc import wStringIO
@@ -23,7 +24,8 @@ msgid "Could not open a temporary file"
 msgstr "Could not open"
 '''
         self.pofile = self.poparse(self.message)
-    
+        self.status = Status.Status(self.pofile.units)
+
     def testCloseEvent(self):
         close_event = QtGui.QCloseEvent()
         self.tuview.closeEvent(close_event)
@@ -72,16 +74,14 @@ msgstr "Could not open"
         # test first-time updateview
         unit = self.pofile.units[0]
         index = 0
-        state = World.fuzzy + World.untranslated
         self.tuview.slotNewUnits(self.pofile.units)
-        self.tuview.updateView(unit, index, state)
+        self.tuview.updateView(unit, index)
         self.assertEqual(self.tuview.indexToUpdate, 0)
         
         # test second-time updateview
         unit = self.pofile.units[1]
         index = 1
-        state = World.translated
-        self.tuview.updateView(unit, index, state)
+        self.tuview.updateView(unit, index)
         self.assertEqual(self.tuview.indexToUpdate, 1)
     
     def testSetTarget(self):
