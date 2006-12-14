@@ -67,6 +67,8 @@ class Header(QtGui.QDialog):
             QtCore.QObject.connect(self.ui.btnInsertRow,QtCore.SIGNAL("clicked()"), self.insertNewRow)
             QtCore.QObject.connect(self.ui.btnDeleteRow,QtCore.SIGNAL("clicked()"), self.DeleteRow)
             
+            QtCore.QObject.connect(self.ui.txtOtherComments, QtCore.SIGNAL("textChanged()"), self.setReadyForSave)
+            
              # set up table appearance and behavior
             self.ui.tableHeader.clear()
             self.headerLabels = [self.tr("Key"), self.tr("Value")]
@@ -88,10 +90,14 @@ class Header(QtGui.QDialog):
         self.ui.txtOtherComments.setPlainText(unicode(otherCommentsStr))
         self.oldOtherComments = self.ui.txtOtherComments.toPlainText()
         self.show()
-    
+    def setReadyForSave(self):
+        self.emit(QtCore.SIGNAL("readyForSave"), True)
+        
     def reset(self):
         """Reset back the original header"""
         self.addItemToTable(self.headerDic)
+        self.ui.txtOtherComments.setPlainText(self.oldOtherComments)
+        
     
     def moveItem(self, distance) :
         """ Move the selected item up or down
@@ -130,7 +136,7 @@ class Header(QtGui.QDialog):
         self.ui.tableHeader.removeRow(self.ui.tableHeader.currentRow())
         
     def naviState(self):
-        """ enabled/ disabled status of botton moveup/ movedown"""
+        """ enabled/ disabled status of bottun moveup/ movedown"""
         currRow = self.ui.tableHeader.currentRow()
         rowCount = self.ui.tableHeader.rowCount()
         upEnabled = False
@@ -153,12 +159,7 @@ class Header(QtGui.QDialog):
             self.ui.tableHeader.setItem(i, 0, item0)
             self.ui.tableHeader.setItem(i, 1, item1)
             i += 1
-            
-    def generatedHeader(self,generated_header):
-        """ slot for headerGenerated
-        @ param generated_header: """
-        self.generated_header = generated_header
-        
+     
     def applySettings(self):
         """set user profile from Qsettings into the tableHeader"""
         newHeaderDic = {}
