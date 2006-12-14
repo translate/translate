@@ -19,13 +19,7 @@
 #       Keo Sophon (keosophon@khmeros.info)
 #       San Titvirak (titvirak@khmeros.info)
 #       Seth Chanratha (sethchanratha@khmeros.info)
-# 
-
-if __name__ == "__main__":
-    import sys
-    import os.path
-    sys.path.append(os.path.join(sys.path[0], ".."))
-    
+#     
 from PyQt4 import QtCore, QtGui
 from translate.storage import factory
 from translate.storage import po
@@ -405,6 +399,3 @@ class Operator(QtCore.QObject):
         """emit searchResult signal with text field, position, and length."""
         textField = self.searchableText[self.currentTextField]
         self.emit(QtCore.SIGNAL("searchResult"), textField, None, None)
-        
-if __name__ == "__main__":
-    operator = Operator()
