@@ -65,7 +65,7 @@ class Header(QtGui.QDialog):
             QtCore.QObject.connect(self.ui.btnUp,QtCore.SIGNAL("clicked()"), self.moveUp)
             QtCore.QObject.connect(self.ui.btnDown ,QtCore.SIGNAL("clicked()"), self.moveDown)
             QtCore.QObject.connect(self.ui.btnInsertRow,QtCore.SIGNAL("clicked()"), self.insertNewRow)
-            QtCore.QObject.connect(self.ui.btnDeleteRow,QtCore.SIGNAL("clicked()"), self.DeleteRow)
+            QtCore.QObject.connect(self.ui.btnDeleteRow,QtCore.SIGNAL("clicked()"), self.deleteRow)
             
             QtCore.QObject.connect(self.ui.txtOtherComments, QtCore.SIGNAL("textChanged()"), self.setReadyForSave)
             
@@ -131,12 +131,12 @@ class Header(QtGui.QDialog):
         table.setItem(currRow, 1, QtGui.QTableWidgetItem())
         table.setCurrentCell(currRow, table.currentColumn())
         
-    def DeleteRow(self):
+    def deleteRow(self):
         """ Delete selected row"""
         self.ui.tableHeader.removeRow(self.ui.tableHeader.currentRow())
         
     def naviState(self):
-        """ enabled/ disabled status of bottun moveup/ movedown"""
+        """ enabled/ disabled status of button moveup/ movedown"""
         currRow = self.ui.tableHeader.currentRow()
         rowCount = self.ui.tableHeader.rowCount()
         upEnabled = False
