@@ -23,7 +23,7 @@
 from PyQt4 import QtCore, QtGui
 from translate.storage import factory
 from translate.storage import po
-##from translate.storage import poheader
+from translate.storage import poheader
 from translate.storage import xliff
 import modules.World as World
 from modules.Status import Status
@@ -160,10 +160,16 @@ class Operator(QtCore.QObject):
           """receive headerDic as dictionary, and return header as string"""
           #TODO: move to world
           self.store.x_generator = World.settingOrg + ' ' + World.settingApp + ' ' + World.settingVer
-          return self.store.makeheaderdict(**headerDic)
+          if isinstance(self.store, poheader.poheader):
+              return self.store.makeheaderdict(**headerDic)
+          else: return {}
           
     def updateNewHeader(self, othercomments, headerDic):
         """will update header"""
+        #TODO: need to make it work with xliff file
+        if (not isinstance(self.store, poheader.poheader)):
+            return (None, None)
+            
         header = self.store.header()
         if (header):
             header.removenotes()
