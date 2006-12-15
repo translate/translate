@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/jhe/khmerOS/svn-wf/trunk/editor/ui/TUview.ui'
+# Form implementation generated from reading ui file 'unknown'
 #
-# Created: Wed Dec  6 09:33:46 2006
-#      by: PyQt4 UI code generator 4.0.1
+# Created: Wed Dec  6 16:54:02 2006
+#      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -14,14 +14,7 @@ class Ui_TUview(object):
     def setupUi(self, TUview):
         TUview.setObjectName("TUview")
         TUview.setEnabled(True)
-        TUview.resize(QtCore.QSize(QtCore.QRect(0,0,400,300).size()).expandedTo(TUview.minimumSizeHint()))
-
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(7))
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(TUview.sizePolicy().hasHeightForWidth())
-        TUview.setSizePolicy(sizePolicy)
-        TUview.setMinimumSize(QtCore.QSize(200,140))
+        TUview.resize(QtCore.QSize(QtCore.QRect(0,0,277,588).size()).expandedTo(TUview.minimumSizeHint()))
         TUview.setFocusPolicy(QtCore.Qt.NoFocus)
         TUview.setAutoFillBackground(True)
 
@@ -31,6 +24,12 @@ class Ui_TUview(object):
         self.hboxlayout.setObjectName("hboxlayout")
 
         self.splitter = QtGui.QSplitter(TUview)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(5),QtGui.QSizePolicy.Policy(5))
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.splitter.sizePolicy().hasHeightForWidth())
+        self.splitter.setSizePolicy(sizePolicy)
         self.splitter.setOrientation(QtCore.Qt.Vertical)
         self.splitter.setOpaqueResize(True)
         self.splitter.setChildrenCollapsible(False)
@@ -45,6 +44,14 @@ class Ui_TUview(object):
 
         self.txtComment = QtGui.QTextEdit(self.splitter)
         self.txtComment.setEnabled(False)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.txtComment.sizePolicy().hasHeightForWidth())
+        self.txtComment.setSizePolicy(sizePolicy)
+        self.txtComment.setMinimumSize(QtCore.QSize(0,25))
+        self.txtComment.setMaximumSize(QtCore.QSize(16777215,50))
 
         palette = QtGui.QPalette()
         palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(0),QtGui.QColor(0,0,0))
@@ -128,9 +135,12 @@ class Ui_TUview(object):
         QtCore.QMetaObject.connectSlotsByName(TUview)
         TUview.setTabOrder(self.txtSource,self.txtComment)
 
+    def tr(self, string):
+        return QtGui.QApplication.translate("TUview", string, None, QtGui.QApplication.UnicodeUTF8)
+
     def retranslateUi(self, TUview):
-        TUview.setWindowTitle(QtGui.QApplication.translate("TUview", "Detail", None, QtGui.QApplication.UnicodeUTF8))
-        self.fileScrollBar.setToolTip(QtGui.QApplication.translate("TUview", "Navigate in your file", None, QtGui.QApplication.UnicodeUTF8))
+        TUview.setWindowTitle(self.tr("Detail"))
+        self.fileScrollBar.setToolTip(self.tr("Navigate in your file"))
 
 
 if __name__ == "__main__":

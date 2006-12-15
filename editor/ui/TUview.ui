@@ -11,23 +11,9 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>277</width>
+    <height>588</height>
    </rect>
-  </property>
-  <property name="sizePolicy" >
-   <sizepolicy>
-    <hsizetype>7</hsizetype>
-    <vsizetype>7</vsizetype>
-    <horstretch>0</horstretch>
-    <verstretch>0</verstretch>
-   </sizepolicy>
-  </property>
-  <property name="minimumSize" >
-   <size>
-    <width>200</width>
-    <height>140</height>
-   </size>
   </property>
   <property name="focusPolicy" >
    <enum>Qt::NoFocus</enum>
@@ -50,6 +36,14 @@
    </property>
    <item>
     <widget class="QSplitter" name="splitter" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>5</hsizetype>
+       <vsizetype>5</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="orientation" >
       <enum>Qt::Vertical</enum>
      </property>
@@ -76,6 +70,26 @@
      <widget class="QTextEdit" name="txtComment" >
       <property name="enabled" >
        <bool>false</bool>
+      </property>
+      <property name="sizePolicy" >
+       <sizepolicy>
+        <hsizetype>7</hsizetype>
+        <vsizetype>0</vsizetype>
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize" >
+       <size>
+        <width>0</width>
+        <height>25</height>
+       </size>
+      </property>
+      <property name="maximumSize" >
+       <size>
+        <width>16777215</width>
+        <height>50</height>
+       </size>
       </property>
       <property name="palette" >
        <palette>
@@ -349,7 +363,11 @@
        <enum>QFrame::NoFrame</enum>
       </property>
      </widget>
-     <widget class="QTextEdit" name="txtTarget" />
+     <widget class="QTextEdit" name="txtTarget" >
+      <property name="whatsThis" >
+       <string/>
+      </property>
+     </widget>
     </widget>
    </item>
    <item>
