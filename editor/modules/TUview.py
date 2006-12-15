@@ -55,7 +55,6 @@ class TUview(QtGui.QDockWidget):
         self.ui.txtComment.setWhatsThis("Important Comment\n\nThis part is very useful for translator during translation. Hints from the developer are contained in this area. This area will be hidden if there is no hints. ")
         self.applySettings()
         
-        self.indexToUpdate = None
         self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
         self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
         
@@ -75,84 +74,63 @@ class TUview(QtGui.QDockWidget):
         QtGui.QDockWidget.closeEvent(self, event)
         self.toggleViewAction().setChecked(False)
         
-    def setScrollbarMaximum(self):
+    def setScrollbarMaxValue(self, value):
         """Set scrollbar maximum value according to number of index."""
-        maximum = max(len(self.indexes) - 1, 0)
-        self.ui.fileScrollBar.setMaximum(maximum)
+        self.ui.fileScrollBar.setMaximum(max(value - 1, 0))
         
-    def slotNewUnits(self, units):
-        """slot after new file was loaded
-        @param units: a list of translation units objects of an opened file
-        """
-        self.ui.txtSource.setEnabled(True)
-        self.ui.txtTarget.setEnabled(True)
-        if not units:
-            self.ui.txtSource.clear()
-            self.ui.txtTarget.clear()
-        # self.indexes store the information of unit's index
-        self.indexes = range(len(units))
-        self.filter = World.filterAll
-        # adjust the scrollbar
-        self.setScrollbarMaximum()
-        self.ui.fileScrollBar.setEnabled(True)
-        self.ui.fileScrollBar.setSliderPosition(0)
-    
     def filteredList(self, fList, filter):
         """Adjust the scrollbar maximum according to length of filtered list.
         @param fList: Index list of units visible in the table after filtered
-        @param filter: helper constants for filtering
-        """
-        self.indexes = fList
+        @param filter: helper constants for filtering"""
+        if (fList):
+            self.ui.fileScrollBar.setEnabled(True)
+            self.ui.txtSource.setEnabled(True)
+            self.ui.txtTarget.setEnabled(True)
+        else:
+            self.ui.txtSource.clear()
+            self.ui.txtTarget.clear()
+            self.ui.txtSource.setEnabled(False)
+            self.ui.txtTarget.setEnabled(False)
         self.filter = filter
-        self.setScrollbarMaximum()
+        self.setScrollbarMaxValue(len(fList))
         self.ui.fileScrollBar.setValue(0)
 
     @QtCore.pyqtSignature("int")
     def emitCurrentIndex(self, value):
         """emit "currentIndex" signal with current index value.
         @param index: current index in the units."""
-        # send the signal only index is new
-        if (self.indexToUpdate != value):
-            if (self.indexes) and (value < len(self.indexes)):
-                index = self.indexes[value]
-                self.emit(QtCore.SIGNAL("currentIndex"), index)
+        self.emit(QtCore.SIGNAL("filteredIndex"), value)
     
-    def updateView(self, unit, index):
+    def updateView(self, unit):
         """Update the text in source and target, set the scrollbar position,
         remove a value from scrollbar if the unit is not in filter.
         Then recalculate scrollbar maximum value.
         @param unit: unit to set in target and source.
         @param index: value in the scrollbar to be removed."""
-        try:
-            value = self.indexes.index(index)
-        except:
+        if (not unit):
             return
-        if (unit):
-            if isinstance(unit, po.pounit):
-                comment = "".join([comment for comment in unit.msgidcomments])
-                comment = comment.lstrip('"_:')
-                comment = comment.rstrip('"')
-                comment= comment.rstrip('\\n')
-                comment += unit.getnotes("developer")
-                if (comment == ""):
-                    self.ui.txtComment.hide()
-                else:
-                    self.ui.txtComment.show()
-                    self.ui.txtComment.setPlainText(unicode(comment))
-            self.ui.txtSource.setPlainText(unit.source)
-            self.ui.txtTarget.setPlainText(unit.target)
-            self.ui.txtTarget.setFocus
-        if not (self.filter & unit.x_editor_state):
-            try:
-                self.indexes.remove(index)
-            except:
-                pass
-            self.setScrollbarMaximum()
-            self.ui.txtSource.clear()
-            self.ui.txtTarget.clear()
+        if isinstance(unit, po.pounit):
+            comment = "".join([comment for comment in unit.msgidcomments])
+            comment = comment.lstrip('"_:')
+            comment = comment.rstrip('"')
+            comment= comment.rstrip('\\n')
+            comment += unit.getnotes("developer")
+            if (comment == ""):
+                self.ui.txtComment.hide()
+            else:
+                self.ui.txtComment.show()
+                self.ui.txtComment.setPlainText(unicode(comment))
+        self.ui.txtSource.setPlainText(unit.source)
+        self.ui.txtTarget.setPlainText(unit.target)
+        self.ui.txtTarget.setFocus
+##        if not (self.filter & unit.x_editor_state):
+##            self.setScrollbarMaxValue(self.ui.fileScrollBar.maximum())
+##            self.ui.txtSource.clear()
+##            self.ui.txtTarget.clear()
         # set the scrollbar position
-        self.indexToUpdate = value
-        self.ui.fileScrollBar.setValue(value)
+        self.disconnect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
+        self.ui.fileScrollBar.setValue(unit.x_editor_filterIndex)
+        self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
 
     def setTarget(self, text):
         """Change the target text.

@@ -79,27 +79,29 @@ class CommentDock(QtGui.QDockWidget):
 
     def updateView(self, currentUnit):
         """ update comments 
-        @param currentUnit: new unit that just emit
-        """
-        self.ui.txtTranslatorComment.setEnabled(True)
+        @param currentUnit: new unit that just emit"""
+        self.ui.txtTranslatorComment.setEnabled(bool(currentUnit))
+        if (not currentUnit):
+            self.ui.txtLocationComment.hide()
+            self.ui.txtTranslatorComment.setPlainText("")
+            return
         translatorComment = ""
         locationComment = ""
-        if (currentUnit):
-            if isinstance(currentUnit, po.pounit):
-                translatorComment = currentUnit.getnotes("translator")
-                locationComment = comments = "".join([comment[3:] for comment in currentUnit.sourcecomments])
-                if (locationComment == ""):
-                    self.ui.txtLocationComment.hide()
-                else:
-                    self.ui.txtLocationComment.show()
-                    self.ui.txtLocationComment.setPlainText(unicode(locationComment))
-            elif isinstance(currentUnit, xliff.xliffunit):
-                translatorComment = currentUnit.getnotes()
+        if isinstance(currentUnit, po.pounit):
+            translatorComment = currentUnit.getnotes("translator")
+            locationComment = comments = "".join([comment[3:] for comment in currentUnit.sourcecomments])
+            if (locationComment == ""):
                 self.ui.txtLocationComment.hide()
             else:
-                translatorComment = ""
-                self.ui.txtLocationComment.hide()
-            self.ui.txtTranslatorComment.setPlainText(unicode(translatorComment))
+                self.ui.txtLocationComment.show()
+                self.ui.txtLocationComment.setPlainText(unicode(locationComment))
+        elif isinstance(currentUnit, xliff.xliffunit):
+            translatorComment = currentUnit.getnotes()
+            self.ui.txtLocationComment.hide()
+        else:
+            translatorComment = ""
+            self.ui.txtLocationComment.hide()
+        self.ui.txtTranslatorComment.setPlainText(unicode(translatorComment))
 
     def checkModified(self):
         if self.ui.txtTranslatorComment.document().isModified():

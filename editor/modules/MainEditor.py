@@ -157,7 +157,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockOverview.updateView)
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockTUview.updateView)
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockComment.updateView)
-        self.connect(self.dockTUview, QtCore.SIGNAL("currentIndex"), self.operator.setCurrentUnit)
+        self.connect(self.dockTUview, QtCore.SIGNAL("filteredIndex"), self.operator.indexToUnit)
         self.connect(self.dockOverview, QtCore.SIGNAL("currentIndex"), self.operator.setCurrentUnit)
 
         self.connect(self.operator, QtCore.SIGNAL("updateUnit"), self.dockTUview.checkModified)
@@ -168,6 +168,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
         self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.dockOverview.updateTarget)
         self.connect(self.dockComment, QtCore.SIGNAL("commentChanged"), self.operator.setComment)
+        self.connect(self.dockComment, QtCore.SIGNAL("commentChanged"), self.dockOverview.updateComment)
         self.connect(self.fileaction, QtCore.SIGNAL("fileSaved"), self.operator.saveStoreToFile)
         self.connect(self.operator, QtCore.SIGNAL("savedAlready"), self.ui.actionSave.setEnabled)
         self.connect(self.dockTUview, QtCore.SIGNAL("readyForSave"), self.ui.actionSave.setEnabled)
@@ -177,9 +178,6 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.fileaction, QtCore.SIGNAL("fileSaved"), self.setTitle)
         self.connect(self.operator, QtCore.SIGNAL("toggleFirstLastUnit"), self.toggleFirstLastUnit)
 
-        # newUnits sends newUnits and unitsStatus.
-        self.connect(self.operator, QtCore.SIGNAL("newUnits"), self.dockOverview.slotNewUnits)
-        self.connect(self.operator, QtCore.SIGNAL("newUnits"), self.dockTUview.slotNewUnits)
         self.connect(self.operator, QtCore.SIGNAL("filteredList"), self.dockOverview.filteredList)
         self.connect(self.operator, QtCore.SIGNAL("filteredList"), self.dockTUview.filteredList)
 
