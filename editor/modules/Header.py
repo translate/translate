@@ -37,7 +37,6 @@ import modules.World as World
 class Header(QtGui.QDialog):
     def __init__(self, parent, operator):
         self.operator = operator
-        self.connect(operator, QtCore.SIGNAL("headerInfo"), self.showDialog)
         self.connect(operator, QtCore.SIGNAL("headerAuto"), self.accepted)
 
         QtGui.QDialog.__init__(self, parent)
@@ -164,7 +163,6 @@ class Header(QtGui.QDialog):
      
     def applySettings(self):
         """set user profile from Qsettings into the tableHeader"""
-        newHeaderDic = {}
         userProfileDic = {}
         userName = World.settings.value("UserName", QtCore.QVariant(""))
         emailAddress = World.settings.value("EmailAddress", QtCore.QVariant(""))
@@ -185,19 +183,23 @@ class Header(QtGui.QDialog):
             self.headerDic['Last-Translator'] = str(Last_Translator)
             self.headerDic['PO-Revision-Date'] = time.strftime("%Y-%m-%d %H:%M%z")
             self.headerDic['X-Generator'] = World.settingOrg + ' ' + World.settingApp + ' ' + World.settingVer
+        if (len(self.headerDic) == 0):
+            return
         self.addItemToTable(self.headerDic)
-
-        #set all the infomation into a dictionary
-        for i in range(self.ui.tableHeader.rowCount()):
-            if (self.ui.tableHeader.item(i, 0) != None):
-                newHeaderDic[str(self.ui.tableHeader.item(i, 0).text())] = str(self.ui.tableHeader.item(i,1).text())
-        return newHeaderDic
-
+        
     def accepted(self):
         """send header information"""
         if (not self.ui):
             self.setupUI()
-        self.operator.updateNewHeader(self.ui.txtOtherComments.toPlainText(), self.applySettings())
+            self.applySettings()
+            self.operator.updateNewHeader("", self.headerDic)
+            return
+        newHeaderDic = {}
+        #set all the infomation into a dictionary
+        for i in range(self.ui.tableHeader.rowCount()):
+            if (self.ui.tableHeader.item(i, 0) != None):
+                newHeaderDic[str(self.ui.tableHeader.item(i, 0).text())] = str(self.ui.tableHeader.item(i,1).text())
+        self.operator.updateNewHeader(self.ui.txtOtherComments.toPlainText(), newHeaderDic)
         
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
