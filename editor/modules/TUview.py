@@ -39,9 +39,10 @@ class TUview(QtGui.QDockWidget):
         self.setWidget(self.form)
         self.setFeatures(QtGui.QDockWidget.DockWidgetClosable)
         self.ui.txtComment.hide()
-        self.ui.txtTarget.setWhatsThis("Translation Editor\n\nThis editor displays and lets you edit the trasnslation of the currently displayed message")
-        self.ui.txtSource.setWhatsThis("Original String\n\nThis part of the window shows you the original message of the currently displayed entry.")
-        self.ui.txtComment.setWhatsThis("Important Comment\n\nThis part is very useful for translator during translation. Hints from the developer are contained in this area. This area will be hidden if there is no hints. ")
+        self.ui.txtTarget.setWhatsThis("<h3>Translated String</h3>This editor displays and lets you edit the translation of the currently displayed string.")
+        self.ui.txtSource.setWhatsThis("<h3>Original String</h3>This part of the window shows you the original string of the currently displayed entry. <br>You can not edit this string.")
+        self.ui.txtComment.setWhatsThis("<h3>Important Comment</h3>Hints from the developer to the translator are displayed in this area. This area will be hidden if there is no hint. ")
+        self.ui.fileScrollBar.setWhatsThis("<h3>Navigation Scrollbar</h3>It allows you do navigate in the current file. If you filter your strings you get only the filtered list. <br>It also gives you visual feedback about the postion of the current entry. The Tooltip also shows you the current number and the total numbers of strings.")
         self.applySettings()
         
         self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
@@ -66,7 +67,12 @@ class TUview(QtGui.QDockWidget):
     def setScrollbarMaxValue(self, value):
         """Set scrollbar maximum value according to number of index."""
         self.ui.fileScrollBar.setMaximum(max(value - 1, 0))
-        
+
+    def setScrollbarValue(self, value):
+        """@param value: the new value for the scrollbar"""
+        self.ui.fileScrollBar.setValue(value)
+        self.ui.fileScrollBar.setToolTip("%s / %s" % (value + 1,  self.ui.fileScrollBar.maximum() + 1))
+
     def filteredList(self, fList, filter):
         """Adjust the scrollbar maximum according to length of filtered list.
         @param fList: Index list of units visible in the table after filtered
@@ -82,7 +88,7 @@ class TUview(QtGui.QDockWidget):
             self.ui.txtTarget.setEnabled(False)
         self.filter = filter
         self.setScrollbarMaxValue(len(fList))
-        self.ui.fileScrollBar.setValue(0)
+        self.setScrollbarValue(0)
 
     @QtCore.pyqtSignature("int")
     def emitCurrentIndex(self, value):
@@ -118,7 +124,7 @@ class TUview(QtGui.QDockWidget):
 ##            self.ui.txtTarget.clear()
         # set the scrollbar position
         self.disconnect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
-        self.ui.fileScrollBar.setValue(unit.x_editor_filterIndex)
+        self.setScrollbarValue(unit.x_editor_filterIndex)
         self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
 
     def setTarget(self, text):
