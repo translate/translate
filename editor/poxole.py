@@ -31,9 +31,7 @@ if (sys.argv[0].endswith('py')):
 else:
     py = ''
 usage = py + """%prog [OPTION] [filename]\n
-if there is no option is given, the new editor is open
-if there is a file is given, the new editor will be open with the file.\n
-"""
+if the filename is given, the editor will open the file."""
 
 strVersion = """%prog Version 0.1\n
 Copyright (C) 2006 The WordForge Foundation. www.khmeros.info.
@@ -48,7 +46,6 @@ parser = OptionParser(usage = usage, version = strVersion)
 argc = len(args)
 if (len(sys.argv) == 1):
     MainEditor.main()
-    sys.exit()
 
 inputFileName = args[0]
 MainEditor.main(inputFileName)
