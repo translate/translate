@@ -196,4 +196,9 @@
 - Who: ???
 - Status: not
 
+35. the statistic in the status bar counts the header unit as a normal unit!
+    -> the overview shows less units than the statistic
+- Priority: 1
+- Who: ???
+- Status: Open
 
