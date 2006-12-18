@@ -4,8 +4,6 @@
 """tests for FileAction classes"""
 
 import sys
-import os.path
-sys.path.append(os.path.join(sys.path[0], ".."))
 import FileAction
 from PyQt4 import QtCore, QtGui
 import unittest

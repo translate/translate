@@ -24,8 +24,6 @@
 
 import os
 import sys
-if __name__ == "__main__":
-    sys.path.append(os.path.join(sys.path[0], ".."))
 from PyQt4 import QtCore, QtGui
 from ui.Ui_MainEditor import Ui_MainWindow
 from modules.TUview import TUview

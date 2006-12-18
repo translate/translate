@@ -4,8 +4,6 @@
 """tests for Header classes"""
 
 import sys
-import os.path
-sys.path.append(os.path.join(sys.path[0], ".."))
 import Header
 import Operator
 from translate.storage import po

@@ -24,13 +24,7 @@
 # This module is working on any comments of current TU.
 
 from PyQt4 import QtCore, QtGui
-if __name__ == "__main__":
-    import os.path
-    import sys
-    sys.path.append(os.path.join(sys.path[0], ".."))
-    # set the path for QT in order to find the icons
-    QtCore.QDir.setCurrent(os.path.join(sys.path[0], "..", "ui"))
-
+import sys
 from ui.Ui_Comment import Ui_frmComment
 import modules.World as World
 from translate.storage import po

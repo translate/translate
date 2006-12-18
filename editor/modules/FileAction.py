@@ -22,9 +22,6 @@
 #       San Titvirak (titvirak@khmeros.info)
 #
 import sys, os
-if __name__ == "__main__":
-    sys.path.append(os.path.join(sys.path[0], ".."))
-    
 from PyQt4 import QtCore, QtGui
 from modules import World
 
