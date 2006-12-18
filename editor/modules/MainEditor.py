@@ -80,7 +80,8 @@ class MainWindow(QtGui.QMainWindow):
         self.statuslabel.setFrameStyle(QtGui.QFrame.NoFrame)
         self.statuslabel.setMargin(1)
         self.ui.statusbar.addWidget(self.statuslabel)
-        
+        self.ui.statusbar.setWhatsThis("<h3>Status Bar</h3>Shows the progress of the translation in the file and messages about the current state of the application.")
+
         #add action from each toolbar toggleviewaction to toolbars submenu of view menu
         self.ui.menuToolbars.addAction(self.ui.toolStandard.toggleViewAction())
         self.ui.menuToolbars.addAction(self.ui.toolNavigation.toggleViewAction())
