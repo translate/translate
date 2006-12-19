@@ -4,8 +4,6 @@
 """tests for Operator classes"""
 
 import sys
-import os.path
-sys.path.append(os.path.join(sys.path[0], ".."))
 import unittest
 import Operator
 import Status
@@ -44,25 +42,13 @@ msgstr "Could not open"
     
     def testEmitCurrentIndex(self):
         self.operator._unitpointer = 0
-        self.operator.filteredList = [0,1]
+        self.operator.filteredList = self.operator.store.units
         QtCore.QObject.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.slot)
         self.operator.emitCurrentUnit()
         self.assertEqual(self.slotReached, True)
     
-    def test_GetCurrentIndex(self):
-        self.operator.filteredList = [0, 1]
-        
-        # test _unitpointer found in the list
-        self.operator._unitpointer = 1
-        self.assertEqual(self.operator._getCurrentIndex(), 1)
-        
-        # test _unitpointer not found in the list
-        self.operator._unitpointer = 2
-        self.assertEqual(self.operator._getCurrentIndex(), -1)
-    
     def testFilteredFuzzy(self):
-        self.status = Status.Status(self.operator.store.units)
-        
+        self.operator.getUnits(wStringIO.StringIO(self.message))
         self.operator.filter = World.filterAll
         #test if filter fuzzy is checked
         self.operator.filterFuzzy(True)
@@ -73,6 +59,7 @@ msgstr "Could not open"
         self.assertEqual(self.operator.filter, 6)
     
     def testFilterTranslated(self):
+        self.operator.getUnits(wStringIO.StringIO(self.message))
         self.status = Status.Status(self.operator.store.units)
         
         self.operator.filter = World.filterAll
@@ -85,68 +72,108 @@ msgstr "Could not open"
         self.assertEqual(self.operator.filter, 5)
     
     def testFilterUntranslated(self):
+        self.operator.getUnits(wStringIO.StringIO(self.message))
         self.status = Status.Status(self.operator.store.units)
         
         self.operator.filter = World.filterAll
         #test if filter untranslated is checked
         self.operator.filterUntranslated(True)
         self.assertEqual(self.operator.filter, 7)
-        
+       
         #test if filter untranslated is unchecked
         self.operator.filterUntranslated(False)
         self.assertEqual(self.operator.filter, 3)
     
     def testEmitFiltered(self):
-        self.status = Status.Status(self.operator.store.units)
+        self.operator.getUnits(wStringIO.StringIO(self.message))
         QtCore.QObject.connect(self.operator, QtCore.SIGNAL("filteredList"), self.slot)
         self.operator.emitFiltered(World.fuzzy + World.translated + World.untranslated)
         self.assertEqual(self.slotReached, True)
-    
+        
     def testEmitUpdateUnit(self):
         QtCore.QObject.connect(self.operator, QtCore.SIGNAL("updateUnit"), self.slot)
-        self.operator.filteredList = [0, 1]
-        
-        #test unitpointer is not None
+        self.operator.filteredList = self.operator.store.units
+     
+        #test unitpointer is less than or equal to length of filteredList
         self.operator._unitpointer = 1
         self.operator.emitUpdateUnit()
         self.assertEqual(self.slotReached, True)
-        
-        #test unitpointer is None
-        self.operator._unitpointer = None
+     
+        #test unitpointer is bigger than length of filteredList
+        self.operator._unitpointer = 3
         self.slotReached = False
         self.operator.emitUpdateUnit()
         self.assertEqual(not(self.slotReached), True)
-    
+        
     def testHeaderData(self):
     
-        # test Header which is none
+        # test message Header which has no data
         self.assertEqual(self.operator.headerData(), ('', {}))
+     
+        # test message Header which has data
+        self.message = '''msgid ""
+msgstr ""
+"POT-Creation-Date: 2005-05-18 21:23+0200\n"
+"PO-Revision-Date: 2006-11-27 11:50+0700\n"
+"Project-Id-Version: cupsdconf\n"
+""
+# aaaaa
+#: kfaximage.cpp:189
+msgid "Unable to open file for reading."
+msgstr "unable to read file"
+'''
+        self.operator.store = self.poparse(self.message)
+        self.assertEqual(self.operator.headerData(), ('', {'POT-Creation-Date': u'2005-05-18 21:23+0200', 'PO-Revision-Date': u'2006-11-27 11:50+0700', 'Project-Id-Version': u'cupsdconf'}))
         
-        # test Header which is not None and no Comment
+##    def testPrevious(self):
+##        self.operator._unitpointer = 1
+##        self.operator.filteredList = self.operator.store.units
+##        self.operator.previous()
+##        self.assertEqual(self.operator._unitpointer, 0)
+##    
+##    def testNext(self):
+##        self.operator._unitpointer = 0
+##        self.operator.filteredList = self.operator.store.units
+##        self.operator.next()
+##        self.assertEqual(self.operator._unitpointer, 1)
+##    
+##    def testFirst(self):
+##        self.operator._unitpointer = 1
+##        self.operator.filteredList = self.operator.store.units
+##        self.operator.first()
+##        self.assertEqual(self.operator._unitpointer, 0)
+##        
+##    def testLast(self):
+##        self.operator._unitpointer = 0
+##        self.operator.filteredList = self.operator.store.units
+##        self.operator.last()
+##        self.assertEqual(self.operator._unitpointer, 1)
+    
+    def testModified(self):
+        self.operator.getUnits(wStringIO.StringIO(self.message))
+        # test it will return True, if _modified is true
+        self.operator._modified = True
+        self.assertEqual(self.operator.modified(), True)
         
-    
-    def testPrevious(self):
+        # test it will return False, if _modified is False
+        self.operator._modified = False
+        self.assertEqual(self.operator.modified(), False)
+        
+    def testSetComment(self):
+        self.operator.getUnits(wStringIO.StringIO(self.message))
         self.operator._unitpointer = 1
-        self.operator.filteredList = [0, 1]
-        self.operator.previous()
-        self.assertEqual(self.operator._unitpointer, 0)
+        self.operator.setComment('comments')
+        self.assertEqual(self.operator.filteredList[self.operator._unitpointer].getnotes(), u'comments')
     
-    def testNext(self):
-        self.operator._unitpointer = 0
-        self.operator.filteredList = [0, 1]
-        self.operator.next()
-        self.assertEqual(self.operator._unitpointer, 1)
-    
-    def testFirst(self):
+    def testSetTarget(self):
+        self.operator.getUnits(wStringIO.StringIO(self.message))
         self.operator._unitpointer = 1
-        self.operator.filteredList = [0, 1]
-        self.operator.first()
-        self.assertEqual(self.operator._unitpointer, 0)
+        self.operator.setTarget('target')
+        self.assertEqual(self.operator.filteredList[self.operator._unitpointer].target, u'target')
     
-    def testLast(self):
-        self.operator._unitpointer = 0
-        self.operator.filteredList = [0, 1]
-        self.operator.last()
+    def testSetCurrentUnit(self):
+        self.operator.getUnits(wStringIO.StringIO(self.message))
+        self.operator.setCurrentUnit(1)
         self.assertEqual(self.operator._unitpointer, 1)
     
     def poparse(self, posource):
