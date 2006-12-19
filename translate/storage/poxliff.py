@@ -290,11 +290,7 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
         def ispluralgroup(node):
             """determines whether the xml node refers to a getttext plural"""
             return node.getAttribute("restype") == "x-gettext-plurals"
-
-        def isheaderunit(node):
-            """determines whether the xml node refers to a po header"""
-            return node.getAttribute("restype") == "x-gettext-domain-header"
-
+        
         def issingularunit(node):
             """determindes whether the xml node contains a plural like id"""
             return re.match("\\d\[\\d\\]", node.getAttribute("id")) is None
@@ -310,14 +306,10 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
         groups = self.document.getElementsByTagName("group")
         pluralgroups = filter(ispluralgroup, groups)
         termEntries = self.document.getElementsByTagName(self.UnitClass.rootNode)
+        singularunits = filter(issingularunit, termEntries)
+        
         if termEntries is None:
             return
-        singularunits = filter(issingularunit, termEntries)
-
-        headerunits = filter(isheaderunit, termEntries)
-        if len(headerunits) > 0:
-            singularunits.insert(0, headerunits[0])
-
         for entry in singularunits + pluralgroups:
             term = self.UnitClass.createfromxmlElement(entry, self.document)
             self.units.append(term)
