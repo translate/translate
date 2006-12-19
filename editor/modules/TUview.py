@@ -22,7 +22,6 @@
 #
 # This module is working on source and target of current TU.
 
-import sys
 from PyQt4 import QtCore, QtGui
 from ui.Ui_TUview import Ui_TUview
 from translate.storage import po
@@ -205,6 +204,9 @@ class TUview(QtGui.QDockWidget):
             self.ui.txtTarget.setFont(fontObj)
         
 if __name__ == "__main__":
+    import sys, os
+    # set the path for QT in order to find the icons
+    QtCore.QDir.setCurrent(os.path.join(sys.path[0], "..", "ui"))
     app = QtGui.QApplication(sys.argv)
     Form = TUview(None)
     Form.show()

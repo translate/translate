@@ -24,7 +24,6 @@
 # This module is providing an About dialog
 
 from PyQt4 import QtCore, QtGui
-import sys
 
 class AboutEditor(QtGui.QDialog):
     def __init__(self, parent):
@@ -112,6 +111,9 @@ class LicensesTab(QtGui.QWidget):
         self.setLayout(mainLayout) 
 
 if __name__ == "__main__":
+    import sys, os
+    # set the path for QT in order to find the icons
+    QtCore.QDir.setCurrent(os.path.join(sys.path[0], "..", "ui"))
     app = QtGui.QApplication(sys.argv)
     tabdialog = AboutEditor(None)
     tabdialog.showDialog()

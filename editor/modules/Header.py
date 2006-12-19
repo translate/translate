@@ -23,8 +23,8 @@
 #
 # This module is working on any Headers of current TU.
 
-import sys
-import time, os
+
+import time
 from PyQt4 import QtCore, QtGui
 from ui.Ui_Header import Ui_frmHeader
 import modules.World as World
@@ -198,6 +198,9 @@ class Header(QtGui.QDialog):
         self.operator.updateNewHeader(self.ui.txtOtherComments.toPlainText(), newHeaderDic)
         
 if __name__ == "__main__":
+    import sys, os
+    # set the path for QT in order to find the icons
+    QtCore.QDir.setCurrent(os.path.join(sys.path[0], "..", "ui"))
     app = QtGui.QApplication(sys.argv)
     from modules.Operator import Operator
     operatorObj = Operator()

@@ -23,7 +23,6 @@
 #
 # This module is working on source and target of current TU.
 
-import sys
 from PyQt4 import QtCore, QtGui
 from ui.Ui_Find import Ui_frmFind
 import modules.World as World
@@ -150,6 +149,9 @@ class Find(QtGui.QDockWidget):
         self.ui.lineEdit_2.setFocus()
     
 if __name__ == "__main__":
+    import sys, os
+    # set the path for QT in order to find the icons
+    QtCore.QDir.setCurrent(os.path.join(sys.path[0], "..", "ui"))
     app = QtGui.QApplication(sys.argv)
     Form = Find(None)
     Form.show()

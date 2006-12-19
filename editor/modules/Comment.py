@@ -24,7 +24,6 @@
 # This module is working on any comments of current TU.
 
 from PyQt4 import QtCore, QtGui
-import sys
 from ui.Ui_Comment import Ui_frmComment
 import modules.World as World
 from translate.storage import po
@@ -151,6 +150,9 @@ class CommentDock(QtGui.QDockWidget):
         self.checkModified()
     
 if __name__ == "__main__":
+    import sys, os
+    # set the path for QT in order to find the icons
+    QtCore.QDir.setCurrent(os.path.join(sys.path[0], "..", "ui"))
     app = QtGui.QApplication(sys.argv)
     comment = CommentDock(None)
     comment.show()

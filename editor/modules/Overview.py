@@ -23,7 +23,6 @@
 #
 # This module is working on overview of source and target
 
-import sys
 from PyQt4 import QtCore, QtGui
 from ui.Ui_Overview import Ui_Form
 import modules.World as World
@@ -275,6 +274,9 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.tableOverview.selectRow(self.ui.tableOverview.rowCount() - 1)
 
 if __name__ == "__main__":
+    import sys, os
+    # set the path for QT in order to find the icons
+    QtCore.QDir.setCurrent(os.path.join(sys.path[0], "..", "ui"))
     app = QtGui.QApplication(sys.argv)
     overview = OverviewDock(None)
     overview.show()
