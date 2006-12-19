@@ -42,7 +42,7 @@
      <x>0</x>
      <y>0</y>
      <width>498</width>
-     <height>30</height>
+     <height>31</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSettings" >
@@ -50,17 +50,6 @@
      <string>&amp;Settings</string>
     </property>
     <addaction name="actionPreferences" />
-   </widget>
-   <widget class="QMenu" name="menuView" >
-    <property name="enabled" >
-     <bool>true</bool>
-    </property>
-    <property name="title" >
-     <string>&amp;View</string>
-    </property>
-    <addaction name="actionFilterFuzzy" />
-    <addaction name="actionFilterTranslated" />
-    <addaction name="actionFilterUntranslated" />
    </widget>
    <widget class="QMenu" name="menuGo" >
     <property name="title" >
@@ -70,28 +59,6 @@
     <addaction name="actionPrevious" />
     <addaction name="actionNext" />
     <addaction name="actionLast" />
-   </widget>
-   <widget class="QMenu" name="menuEdit" >
-    <property name="title" >
-     <string>&amp;Edit</string>
-    </property>
-    <addaction name="actionUndo" />
-    <addaction name="actionRedo" />
-    <addaction name="separator" />
-    <addaction name="actionCut" />
-    <addaction name="actionCopy" />
-    <addaction name="actionPaste" />
-    <addaction name="separator" />
-    <addaction name="actionSelectAll" />
-    <addaction name="separator" />
-    <addaction name="actionFind" />
-    <addaction name="actionFindPrevious" />
-    <addaction name="actionFindNext" />
-    <addaction name="actionReplace" />
-    <addaction name="separator" />
-    <addaction name="actionCopySource2Target" />
-    <addaction name="actionToggleFuzzy" />
-    <addaction name="actionEdit_Header" />
    </widget>
    <widget class="QMenu" name="menuHelp" >
     <property name="title" >
@@ -133,6 +100,39 @@
     <addaction name="actionSaveas" />
     <addaction name="separator" />
     <addaction name="actionExit" />
+   </widget>
+   <widget class="QMenu" name="menuView" >
+    <property name="enabled" >
+     <bool>true</bool>
+    </property>
+    <property name="title" >
+     <string>&amp;View</string>
+    </property>
+    <addaction name="actionFilterFuzzy" />
+    <addaction name="actionFilterTranslated" />
+    <addaction name="actionFilterUntranslated" />
+   </widget>
+   <widget class="QMenu" name="menuEdit" >
+    <property name="title" >
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="actionUndo" />
+    <addaction name="actionRedo" />
+    <addaction name="separator" />
+    <addaction name="actionCut" />
+    <addaction name="actionCopy" />
+    <addaction name="actionPaste" />
+    <addaction name="separator" />
+    <addaction name="actionSelectAll" />
+    <addaction name="separator" />
+    <addaction name="actionFind" />
+    <addaction name="actionFindPrevious" />
+    <addaction name="actionFindNext" />
+    <addaction name="actionReplace" />
+    <addaction name="separator" />
+    <addaction name="actionCopySource2Target" />
+    <addaction name="actionToggleFuzzy" />
+    <addaction name="actionEdit_Header" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
@@ -562,6 +562,12 @@
    <property name="text" >
     <string>Header...</string>
    </property>
+   <property name="statusTip" >
+    <string>Open the dialog to edit the header information.</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+h</string>
+   </property>
   </action>
   <action name="actionPreferences" >
    <property name="icon" >
@@ -597,6 +603,9 @@
    <property name="text" >
     <string>Fuzzy</string>
    </property>
+   <property name="shortcut" >
+    <string>Ctrl+Alt+f</string>
+   </property>
   </action>
   <action name="actionFilterTranslated" >
    <property name="checkable" >
@@ -611,6 +620,9 @@
    <property name="text" >
     <string>Translated</string>
    </property>
+   <property name="shortcut" >
+    <string>Ctrl+Alt+t</string>
+   </property>
   </action>
   <action name="actionFilterUntranslated" >
    <property name="checkable" >
@@ -624,6 +636,9 @@
    </property>
    <property name="text" >
     <string>Untranslated</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+Alt+u</string>
    </property>
   </action>
  </widget>
