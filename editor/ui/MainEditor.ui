@@ -187,6 +187,20 @@
    <addaction name="actionNext" />
    <addaction name="actionLast" />
   </widget>
+  <widget class="QToolBar" name="toolFilter" >
+   <property name="windowTitle" >
+    <string>Filter Toolbar</string>
+   </property>
+   <property name="orientation" >
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <attribute name="toolBarArea" >
+    <number>4</number>
+   </attribute>
+   <addaction name="actionFilterFuzzy" />
+   <addaction name="actionFilterTranslated" />
+   <addaction name="actionFilterUntranslated" />
+  </widget>
   <action name="actionNew" >
    <property name="icon" >
     <iconset>../images/new.png</iconset>
@@ -566,7 +580,7 @@
     <string>Open the dialog to edit the header information.</string>
    </property>
    <property name="shortcut" >
-    <string>Ctrl+h</string>
+    <string>Ctrl+H</string>
    </property>
   </action>
   <action name="actionPreferences" >
@@ -600,11 +614,20 @@
    <property name="enabled" >
     <bool>false</bool>
    </property>
+   <property name="icon" >
+    <iconset>../images/fuzzy.png</iconset>
+   </property>
    <property name="text" >
     <string>Fuzzy</string>
    </property>
+   <property name="toolTip" >
+    <string>Hide/Show Fuzzy Items</string>
+   </property>
+   <property name="statusTip" >
+    <string>Hide/Show Fuzzy Items</string>
+   </property>
    <property name="shortcut" >
-    <string>Ctrl+Alt+f</string>
+    <string>Ctrl+Alt+F</string>
    </property>
   </action>
   <action name="actionFilterTranslated" >
@@ -617,11 +640,20 @@
    <property name="enabled" >
     <bool>false</bool>
    </property>
+   <property name="icon" >
+    <iconset>../images/translated.png</iconset>
+   </property>
    <property name="text" >
     <string>Translated</string>
    </property>
+   <property name="toolTip" >
+    <string>Hide/Show Translated Items</string>
+   </property>
+   <property name="statusTip" >
+    <string>Hide/Show Translated Items</string>
+   </property>
    <property name="shortcut" >
-    <string>Ctrl+Alt+t</string>
+    <string>Ctrl+Alt+T</string>
    </property>
   </action>
   <action name="actionFilterUntranslated" >
@@ -634,11 +666,20 @@
    <property name="enabled" >
     <bool>false</bool>
    </property>
+   <property name="icon" >
+    <iconset>../images/untranslated.png</iconset>
+   </property>
    <property name="text" >
     <string>Untranslated</string>
    </property>
+   <property name="toolTip" >
+    <string>Hide/Show Untranslated Items</string>
+   </property>
+   <property name="statusTip" >
+    <string>Hide/Show Untranslated Items</string>
+   </property>
    <property name="shortcut" >
-    <string>Ctrl+Alt+u</string>
+    <string>Ctrl+Alt+U</string>
    </property>
   </action>
  </widget>

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/jhe/khmerOS/svn-wf/trunk/editor/ui/MainEditor.ui'
 #
-# Created: Tue Dec 19 14:57:39 2006
+# Created: Tue Dec 19 15:50:41 2006
 #      by: PyQt4 UI code generator 4.0.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -79,6 +79,11 @@ class Ui_MainWindow(object):
         self.toolNavigation.setOrientation(QtCore.Qt.Horizontal)
         self.toolNavigation.setObjectName("toolNavigation")
         MainWindow.addToolBar(self.toolNavigation)
+
+        self.toolFilter = QtGui.QToolBar(MainWindow)
+        self.toolFilter.setOrientation(QtCore.Qt.Horizontal)
+        self.toolFilter.setObjectName("toolFilter")
+        MainWindow.addToolBar(self.toolFilter)
 
         self.actionNew = QtGui.QAction(MainWindow)
         self.actionNew.setIcon(QtGui.QIcon("../images/new.png"))
@@ -238,18 +243,21 @@ class Ui_MainWindow(object):
         self.actionFilterFuzzy.setCheckable(True)
         self.actionFilterFuzzy.setChecked(True)
         self.actionFilterFuzzy.setEnabled(False)
+        self.actionFilterFuzzy.setIcon(QtGui.QIcon("../images/fuzzy.png"))
         self.actionFilterFuzzy.setObjectName("actionFilterFuzzy")
 
         self.actionFilterTranslated = QtGui.QAction(MainWindow)
         self.actionFilterTranslated.setCheckable(True)
         self.actionFilterTranslated.setChecked(True)
         self.actionFilterTranslated.setEnabled(False)
+        self.actionFilterTranslated.setIcon(QtGui.QIcon("../images/translated.png"))
         self.actionFilterTranslated.setObjectName("actionFilterTranslated")
 
         self.actionFilterUntranslated = QtGui.QAction(MainWindow)
         self.actionFilterUntranslated.setCheckable(True)
         self.actionFilterUntranslated.setChecked(True)
         self.actionFilterUntranslated.setEnabled(False)
+        self.actionFilterUntranslated.setIcon(QtGui.QIcon("../images/untranslated.png"))
         self.actionFilterUntranslated.setObjectName("actionFilterUntranslated")
         self.menuSettings.addAction(self.actionPreferences)
         self.menuGo.addAction(self.actionFirst)
@@ -309,6 +317,9 @@ class Ui_MainWindow(object):
         self.toolNavigation.addAction(self.actionPrevious)
         self.toolNavigation.addAction(self.actionNext)
         self.toolNavigation.addAction(self.actionLast)
+        self.toolFilter.addAction(self.actionFilterFuzzy)
+        self.toolFilter.addAction(self.actionFilterTranslated)
+        self.toolFilter.addAction(self.actionFilterUntranslated)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -326,6 +337,7 @@ class Ui_MainWindow(object):
         self.menuEdit.setTitle(QtGui.QApplication.translate("MainWindow", "&Edit", None, QtGui.QApplication.UnicodeUTF8))
         self.toolStandard.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Standard Toolbar", None, QtGui.QApplication.UnicodeUTF8))
         self.toolNavigation.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Navigation Toolbar", None, QtGui.QApplication.UnicodeUTF8))
+        self.toolFilter.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Filter Toolbar", None, QtGui.QApplication.UnicodeUTF8))
         self.actionNew.setText(QtGui.QApplication.translate("MainWindow", "&New", None, QtGui.QApplication.UnicodeUTF8))
         self.actionNew.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+N", None, QtGui.QApplication.UnicodeUTF8))
         self.actionOpen.setText(QtGui.QApplication.translate("MainWindow", "&Open", None, QtGui.QApplication.UnicodeUTF8))
@@ -388,16 +400,22 @@ class Ui_MainWindow(object):
         self.actionSelectAll.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+A", None, QtGui.QApplication.UnicodeUTF8))
         self.actionEdit_Header.setText(QtGui.QApplication.translate("MainWindow", "Header...", None, QtGui.QApplication.UnicodeUTF8))
         self.actionEdit_Header.setStatusTip(QtGui.QApplication.translate("MainWindow", "Open the dialog to edit the header information.", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionEdit_Header.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+h", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionEdit_Header.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+H", None, QtGui.QApplication.UnicodeUTF8))
         self.actionPreferences.setText(QtGui.QApplication.translate("MainWindow", "Preferences...", None, QtGui.QApplication.UnicodeUTF8))
         self.actionComment.setText(QtGui.QApplication.translate("MainWindow", "Comment", None, QtGui.QApplication.UnicodeUTF8))
         self.actionToolbars.setText(QtGui.QApplication.translate("MainWindow", "Toolbars", None, QtGui.QApplication.UnicodeUTF8))
         self.actionFilterFuzzy.setText(QtGui.QApplication.translate("MainWindow", "Fuzzy", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionFilterFuzzy.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+Alt+f", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionFilterFuzzy.setToolTip(QtGui.QApplication.translate("MainWindow", "Hide/Show Fuzzy Items", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionFilterFuzzy.setStatusTip(QtGui.QApplication.translate("MainWindow", "Hide/Show Fuzzy Items", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionFilterFuzzy.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+Alt+F", None, QtGui.QApplication.UnicodeUTF8))
         self.actionFilterTranslated.setText(QtGui.QApplication.translate("MainWindow", "Translated", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionFilterTranslated.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+Alt+t", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionFilterTranslated.setToolTip(QtGui.QApplication.translate("MainWindow", "Hide/Show Translated Items", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionFilterTranslated.setStatusTip(QtGui.QApplication.translate("MainWindow", "Hide/Show Translated Items", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionFilterTranslated.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+Alt+T", None, QtGui.QApplication.UnicodeUTF8))
         self.actionFilterUntranslated.setText(QtGui.QApplication.translate("MainWindow", "Untranslated", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionFilterUntranslated.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+Alt+u", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionFilterUntranslated.setToolTip(QtGui.QApplication.translate("MainWindow", "Hide/Show Untranslated Items", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionFilterUntranslated.setStatusTip(QtGui.QApplication.translate("MainWindow", "Hide/Show Untranslated Items", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionFilterUntranslated.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+Alt+U", None, QtGui.QApplication.UnicodeUTF8))
 
 
 if __name__ == "__main__":
