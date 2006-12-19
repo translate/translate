@@ -26,20 +26,14 @@
 import sys
 import time, os
 from PyQt4 import QtCore, QtGui
-if __name__ == "__main__":
-    sys.path.append(os.path.join(sys.path[0], ".."))
-    # set the path for QT in order to find the icons
-    QtCore.QDir.setCurrent(os.path.join(sys.path[0], "..", "ui"))
-
 from ui.Ui_Header import Ui_frmHeader
 import modules.World as World
 
 class Header(QtGui.QDialog):
     def __init__(self, parent, operator):
-        self.operator = operator
-        self.connect(operator, QtCore.SIGNAL("headerAuto"), self.accepted)
-
         QtGui.QDialog.__init__(self, parent)
+        self.operator = operator
+        QtCore.QObject.connect(self.operator, QtCore.SIGNAL("headerAuto"), self.updateOnSave)
         self.ui = None
         
     def setupUI(self):
@@ -134,6 +128,7 @@ class Header(QtGui.QDialog):
         
     def deleteRow(self):
         """ Delete selected row"""
+        del self.headerDic[str(self.ui.tableHeader.item(self.ui.tableHeader.currentRow(), 0).text())]
         self.ui.tableHeader.removeRow(self.ui.tableHeader.currentRow())
         
     def naviState(self):
@@ -162,7 +157,8 @@ class Header(QtGui.QDialog):
             i += 1
      
     def applySettings(self):
-        """set user profile from Qsettings into the tableHeader"""
+        """set user profile from Qsettings into the tableHeader
+             return a header as dictionary """
         userProfileDic = {}
         userName = World.settings.value("UserName", QtCore.QVariant(""))
         emailAddress = World.settings.value("EmailAddress", QtCore.QVariant(""))
@@ -185,24 +181,26 @@ class Header(QtGui.QDialog):
             self.headerDic['X-Generator'] = World.settingOrg + ' ' + World.settingApp + ' ' + World.settingVer
         if (len(self.headerDic) == 0):
             return
-        self.addItemToTable(self.headerDic)
+        if (self.ui): 
+            self.addItemToTable(self.headerDic)
+        return self.headerDic
+    
+    def updateOnSave(self):
+        """ slot for headerAuto """
+        self.operator.updateNewHeader("", self.applySettings())
         
     def accepted(self):
         """send header information"""
-        if (not self.ui):
-            self.setupUI()
-            self.applySettings()
-            self.operator.updateNewHeader("", self.headerDic)
-            return
         newHeaderDic = {}
         #set all the infomation into a dictionary
         for i in range(self.ui.tableHeader.rowCount()):
-            if (self.ui.tableHeader.item(i, 0) != None):
                 newHeaderDic[str(self.ui.tableHeader.item(i, 0).text())] = str(self.ui.tableHeader.item(i,1).text())
         self.operator.updateNewHeader(self.ui.txtOtherComments.toPlainText(), newHeaderDic)
         
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
-    Header = Header(None)
-    Header.showDialog("other comments", {"first entry":"one"})
+    from modules.Operator import Operator
+    operatorObj = Operator()
+    Header = Header(None, operatorObj)
+    Header.showDialog()
     sys.exit(app.exec_())
