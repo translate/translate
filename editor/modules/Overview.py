@@ -63,6 +63,7 @@ class OverviewDock(QtGui.QDockWidget):
         self.normalState = QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
         self.currentIndexActive = False
         self.indexMaxLen = 0
+        self.units = []
         self.connect(self.ui.tableOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitCurrentIndex)
         self.connect(self.ui.tableOverview.model(), QtCore.SIGNAL("layoutChanged()"), self.layoutChanged)
         #self.connect(self.ui.tableOverview, QtCore.SIGNAL("cellDoubleClicked(int, int)"), self.emitTargetChanged)
@@ -80,28 +81,30 @@ class OverviewDock(QtGui.QDockWidget):
         self.indexMaxLen = len(str(len(units)))
         self.setUpdatesEnabled(False)
         self.filter = World.filterAll
+        self.units = []
         self.ui.tableOverview.clear()
-        self.ui.tableOverview.setColumnCount(len(self.headerLabels))
-        self.ui.tableOverview.setRowCount(0)
         self.ui.tableOverview.setHorizontalHeaderLabels(self.headerLabels)
         self.ui.tableOverview.setSortingEnabled(False)
         for unit in units:
             self.addUnit(unit)
         self.ui.tableOverview.setSortingEnabled(True)
-        self.ui.tableOverview.sortItems(0)
-        self.ui.tableOverview.resizeRowsToContents()
         self.setUpdatesEnabled(True)
+        self.units = units
 
     def filteredList(self, shownList, filter):
         """show the items which are in shownList.
         @param shownList: list of unit which allow to be visible in the table.
         @param filter: shownList's filter."""
-        hiddenList = range(self.ui.tableOverview.rowCount())
-        for i in hiddenList:
-            self.ui.tableOverview.hideRow(i)
-        for unit in shownList:
-            self.ui.tableOverview.showRow(unit.x_editor_index)
+        if (filter != self.filter):
+            hiddenList = range(self.ui.tableOverview.rowCount())
+            for i in hiddenList:
+                self.ui.tableOverview.hideRow(i)
+            for unit in shownList:
+                self.ui.tableOverview.showRow(unit.x_editor_index)
+            self.filter = filter
         self.shownList = shownList
+        self.ui.tableOverview.sortItems(0)
+        self.ui.tableOverview.resizeRowsToContents()
         
     def addUnit(self, unit):
         """add unit to row.
@@ -138,7 +141,10 @@ class OverviewDock(QtGui.QDockWidget):
 
     def updateView(self, unit):
         """highlight the table's row at index.
-        @param unit: (not needed in this function)."""
+        @param unit: """
+        atFirst = (self.ui.tableOverview.currentRow() == 0)
+        atLast = (self.ui.tableOverview.currentRow() >= self.ui.tableOverview.rowCount() - 1)
+        self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), atFirst, atLast)
         if (self.currentIndexActive == True):
             self.currentIndexActive = False
             return
@@ -148,13 +154,12 @@ class OverviewDock(QtGui.QDockWidget):
         self.markComment(row, unit.getnotes())
         self.markState(row, unit.x_editor_state)
         self.ui.tableOverview.selectRow(row)
-        #self.ui.tableOverview.scrollToItem(unit.x_editor_tableItem)
-        self.filterUnit(row, unit.x_editor_state)
+        self.ui.tableOverview.scrollToItem(unit.x_editor_tableItem)
+        #self.filterUnit(row, unit.x_editor_state)
         
     def filterUnit(self, index, state):
-        return
         if (not self.filter & state):
-            self.ui.tableOverview.removeRow(index)
+            self.ui.tableOverview.hideRow(index)
         
     def markState(self, index, state):
         """display unit status on note column, and hide if unit is not in filter.
@@ -213,26 +218,15 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.tableOverview.resizeRowsToContents()
         
     def layoutChanged(self):
-        try:
-            shownListIndex = []
-            for unit in self.shownList:
-                shownListIndex.append(unit.x_editor_index)
-        except:
-            pass
-        
-##        shownListIndex = []
-##        for i in range(self.ui.tableOverview.rowCount()):
-##            if not self.ui.tableOverview.isRowHidden(i):
-##                shownListIndex.append(i)
-        
-        for i in range(self.ui.tableOverview.rowCount()):
-            index = int(self.ui.tableOverview.item(i, 0).text())
-            if index in shownListIndex:
-                self.ui.tableOverview.showRow(i)
-            else:
-                self.ui.tableOverview.hideRow(i)
+        for unit in self.units:
+            if (unit.x_editor_tableItem):
+                row = self.ui.tableOverview.row(unit.x_editor_tableItem)
+                if (unit.x_editor_state & self.filter):
+                    self.ui.tableOverview.showRow(row)
+                else:
+                    self.ui.tableOverview.hideRow(row)
         self.ui.tableOverview.resizeRowsToContents()
-        
+
     def indexString(self, index):
         return str(index).rjust(self.indexMaxLen) + "  "
         
@@ -250,6 +244,35 @@ class OverviewDock(QtGui.QDockWidget):
         else:
             item.setIcon(self.blankIcon)
             item.setToolTip("")
+    
+    def scrollPrevious(self):
+        """move to previous row inside the table."""
+        currentRow = self.ui.tableOverview.currentRow()
+        if currentRow > 0:
+            for i in range(currentRow - 1, -1, -1):
+                if (not self.ui.tableOverview.isRowHidden(i)):
+                    currentRow = i
+                    break
+            self.ui.tableOverview.selectRow(currentRow)
+        
+    def scrollNext(self):
+        """move to next row inside the table."""
+        currentRow = self.ui.tableOverview.currentRow()
+        rowCount = self.ui.tableOverview.rowCount()
+        if currentRow < rowCount:
+            for i in range(currentRow + 1, rowCount):
+                if (not self.ui.tableOverview.isRowHidden(i)):
+                    currentRow = i
+                    break
+            self.ui.tableOverview.selectRow(currentRow)
+        
+    def scrollFirst(self):
+        """move to first row of the table."""
+        self.ui.tableOverview.selectRow(0)
+        
+    def scrollLast(self):
+        """move to last row of the table."""
+        self.ui.tableOverview.selectRow(self.ui.tableOverview.rowCount() - 1)
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

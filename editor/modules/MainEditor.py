@@ -140,10 +140,10 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionEdit_Header, QtCore.SIGNAL("triggered()"), self.headerDialog.showDialog)
 
         # Other actions
-        self.connect(self.ui.actionNext, QtCore.SIGNAL("triggered()"), self.operator.next)
-        self.connect(self.ui.actionPrevious, QtCore.SIGNAL("triggered()"), self.operator.previous)
-        self.connect(self.ui.actionFirst, QtCore.SIGNAL("triggered()"), self.operator.first)
-        self.connect(self.ui.actionLast, QtCore.SIGNAL("triggered()"), self.operator.last)
+        self.connect(self.ui.actionFirst, QtCore.SIGNAL("triggered()"), self.dockOverview.scrollFirst)
+        self.connect(self.ui.actionPrevious, QtCore.SIGNAL("triggered()"), self.dockOverview.scrollPrevious)
+        self.connect(self.ui.actionNext, QtCore.SIGNAL("triggered()"), self.dockOverview.scrollNext)
+        self.connect(self.ui.actionLast, QtCore.SIGNAL("triggered()"), self.dockOverview.scrollLast)
         self.connect(self.ui.actionCopySource2Target, QtCore.SIGNAL("triggered()"), self.dockTUview.source2target)
 
         # action filter menu
@@ -175,7 +175,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.headerDialog, QtCore.SIGNAL("readyForSave"), self.ui.actionSave.setEnabled)
 
         self.connect(self.fileaction, QtCore.SIGNAL("fileSaved"), self.setTitle)
-        self.connect(self.operator, QtCore.SIGNAL("toggleFirstLastUnit"), self.toggleFirstLastUnit)
+        self.connect(self.dockOverview, QtCore.SIGNAL("toggleFirstLastUnit"), self.toggleFirstLastUnit)
 
         self.connect(self.operator, QtCore.SIGNAL("newUnits"), self.dockOverview.slotNewUnits)
         self.connect(self.operator, QtCore.SIGNAL("filteredList"), self.dockOverview.filteredList)

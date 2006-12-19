@@ -46,7 +46,6 @@ class Operator(QtCore.QObject):
         self.store = None
         self._modified = False
         self._unitpointer = 0
-        self.filteredList = []
         
     def getUnits(self, fileName):
         """reading a file into the internal datastructure.
@@ -62,8 +61,14 @@ class Operator(QtCore.QObject):
         self.status = Status(self.store.units)
         self.emitStatus()
 
-        for i in range(len(self.store.units)):
-            self.store.units[i].x_editor_index = i
+        self.filteredList = []
+        i = 0 #int(bool(self.store.units[0].isheader()))
+        #for unit in self.store.units[i:]:
+        for unit in self.store.units:
+            unit.x_editor_index = i
+            unit.x_editor_filterIndex = i
+            self.filteredList.append(unit)
+            i += 1
         self.emit(QtCore.SIGNAL("newUnits"), self.store.units)
         self.emitFiltered(self.filter)
 
@@ -72,10 +77,6 @@ class Operator(QtCore.QObject):
 
     def emitCurrentUnit(self):
         """send signal with unit class."""
-        # TODO: Sending toggleFirstLastUnit only needed.
-        atFirst = (self._unitpointer == 0)
-        atLast = (self._unitpointer >= len(self.filteredList) - 1)
-        self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), atFirst, atLast)
         self.searchPointer = self._unitpointer
         if (self.filteredList):
             unit = self.filteredList[self._unitpointer]
@@ -88,59 +89,60 @@ class Operator(QtCore.QObject):
         """add/remove fuzzy to filter, and send filter signal.
         @param checked: True or False when Fuzzy checkbox is checked or unchecked.
         """
+        filter = self.filter
         if (checked):
-            self.filter |= World.fuzzy
+            filter |= World.fuzzy
         else:
-            self.filter &= ~World.fuzzy
-        self.emitFiltered(self.filter)
+            filter &= ~World.fuzzy
+        self.emitFiltered(filter)
         
     def filterTranslated(self, checked):
         """add/remove translated to filter, and send filter signal.
         @param checked: True or False when Translated checkbox is checked or unchecked."""
+        filter = self.filter
         if (checked):
-            self.filter |= World.translated
+            filter |= World.translated
         else:
-            self.filter &= ~World.translated
-        self.emitFiltered(self.filter)
+            filter &= ~World.translated
+        self.emitFiltered(filter)
         
     def filterUntranslated(self, checked):
         """add/remove untranslated to filter, and send filter signal.
         @param checked: True or False when Untranslated checkbox is checked or unchecked.
         """
+        filter = self.filter
         if (checked):
-            self.filter |= World.untranslated
+            filter |= World.untranslated
         else:
-            self.filter &= ~World.untranslated
-        self.emitFiltered(self.filter)
+            filter &= ~World.untranslated
+        self.emitFiltered(filter)
 
     def emitFiltered(self, filter):
         """send filtered list signal according to filter."""
         self.emitUpdateUnit()
+        # try to remember last index
         if (self.filteredList):
             lastIndex = self.filteredList[self._unitpointer].x_editor_index
         else:
             lastIndex = 0
-        self.filteredList = []
-        self.filter = filter
-        if (self.store.units[0].isheader()):
-            start = 1
-        else:
-            start = 0
-        j = 0
-        for i in range(start, len(self.store.units)):
-            unit = self.store.units[i]
-            # add unit to filteredList if it is in the filter
-            if (self.filter & unit.x_editor_state):
-                unit.x_editor_filterIndex = j
-                self.filteredList.append(unit)
-                j += 1
+        if (filter != self.filter):
+            # build a new filteredList when only filter has changed.
+            self.filter = filter
+            self.filteredList = []
+            i = 0
+            start = int(bool(self.store.units[0].isheader()))
+            for unit in self.store.units[start:]:
+                # add unit to filteredList if it is in the filter
+                if (self.filter & unit.x_editor_state):
+                    unit.x_editor_filterIndex = i
+                    self.filteredList.append(unit)
+                    i += 1
+                else:
+                    unit.x_editor_filterIndex = None
         self.emit(QtCore.SIGNAL("filteredList"), self.filteredList, filter)
-        try:
-            unit = self.store.units[lastIndex]
-            self._unitpointer = unit.x_editor_filterIndex
-        except:
-            pass
-        if (self._unitpointer > len(self.filteredList)):
+        unit = self.store.units[lastIndex]
+        self._unitpointer = unit.x_editor_filterIndex
+        if (self._unitpointer == None):
             self._unitpointer = 0
         self.emitCurrentUnit()
         
@@ -185,32 +187,6 @@ class Operator(QtCore.QObject):
             header.removenotes()
             header.addnote(str(othercomments))
             self.store.updateheader(add=True, **headerDic)
-
-    def previous(self):
-        """move to previous unit inside the filtered list."""
-        if self._unitpointer > 0:
-            self.emitUpdateUnit()
-            self._unitpointer -= 1
-            self.emitCurrentUnit()
-        
-    def next(self):
-        """move to next unit inside the filtered list."""
-        if self._unitpointer < len(self.filteredList):
-            if (not self.emitUpdateUnit()):
-                self._unitpointer += 1
-            self.emitCurrentUnit()
-        
-    def first(self):
-        """move to first unit of the filtered list."""
-        self.emitUpdateUnit()
-        self._unitpointer = 0
-        self.emitCurrentUnit()
-        
-    def last(self):
-        """move to last unit of the filtered list."""
-        self.emitUpdateUnit()
-        self._unitpointer = len(self.filteredList) - 1
-        self.emitCurrentUnit()
 
     def saveStoreToFile(self, fileName):
         """
