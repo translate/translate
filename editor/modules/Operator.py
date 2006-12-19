@@ -152,7 +152,7 @@ class Operator(QtCore.QObject):
     
     def emitUpdateUnit(self):
         """emit "updateUnit" signal."""
-        if (self._unitpointer > len(self.filteredList)):
+        if (not self.store or self._unitpointer > len(self.filteredList)):
             return
         self.emit(QtCore.SIGNAL("updateUnit"))
 
