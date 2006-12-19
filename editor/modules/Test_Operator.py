@@ -20,7 +20,7 @@ class TestOperator(unittest.TestCase):
 #: kfaximage.cpp:189
 #, fuzzy
 msgid "Unable to open file for reading."
-msgstr "unable to read file"
+msgstr "unable, to read file"
 
 #: archivedialog.cpp:126
 msgid "Could not open a temporary file"
@@ -29,9 +29,8 @@ msgstr "Could not open"
         self.operator.store = self.poparse(self.message)
         
     def testGetUnits(self):
-        dummyfile = wStringIO.StringIO(self.message)
         QtCore.QObject.connect(self.operator, QtCore.SIGNAL("newUnits"), self.slot)
-        self.operator.getUnits(dummyfile)
+        self.operator.getUnits(wStringIO.StringIO(self.message))
         self.assertEqual(self.slotReached, True)
     
     def testEmitStatus(self):
@@ -124,31 +123,16 @@ msgstr "unable to read file"
 '''
         self.operator.store = self.poparse(self.message)
         self.assertEqual(self.operator.headerData(), ('', {'POT-Creation-Date': u'2005-05-18 21:23+0200', 'PO-Revision-Date': u'2006-11-27 11:50+0700', 'Project-Id-Version': u'cupsdconf'}))
-        
-##    def testPrevious(self):
-##        self.operator._unitpointer = 1
-##        self.operator.filteredList = self.operator.store.units
-##        self.operator.previous()
-##        self.assertEqual(self.operator._unitpointer, 0)
-##    
-##    def testNext(self):
-##        self.operator._unitpointer = 0
-##        self.operator.filteredList = self.operator.store.units
-##        self.operator.next()
-##        self.assertEqual(self.operator._unitpointer, 1)
-##    
-##    def testFirst(self):
-##        self.operator._unitpointer = 1
-##        self.operator.filteredList = self.operator.store.units
-##        self.operator.first()
-##        self.assertEqual(self.operator._unitpointer, 0)
-##        
-##    def testLast(self):
-##        self.operator._unitpointer = 0
-##        self.operator.filteredList = self.operator.store.units
-##        self.operator.last()
-##        self.assertEqual(self.operator._unitpointer, 1)
     
+    def testMakeNewHeader(self):
+        pass
+    
+    def testUpdateNewHeader(self):
+        pass
+        
+    def testSaveStoreToFile(self):
+        pass
+        
     def testModified(self):
         self.operator.getUnits(wStringIO.StringIO(self.message))
         # test it will return True, if _modified is true
@@ -175,6 +159,63 @@ msgstr "unable to read file"
         self.operator.getUnits(wStringIO.StringIO(self.message))
         self.operator.setCurrentUnit(1)
         self.assertEqual(self.operator._unitpointer, 1)
+    
+    def testIndexToUnit(self):
+        self.operator.getUnits(wStringIO.StringIO(self.message))
+        self.operator.indexToUnit(1)
+        self.assertEqual(self.operator._unitpointer, 1)
+    
+    def testToggleFuzzy(self):
+        self.operator.getUnits(wStringIO.StringIO(self.message))
+        self.operator.toggleFuzzy()
+        self.assertEqual(self.operator.store.units[0].isfuzzy(), False)
+    
+    def testInitSearch(self):
+        self.operator.initSearch('Aaa', [World.source, World.target, World.comment], False)
+        self.assertEqual(self.operator.searchString, str('aaa'))
+        self.assertEqual(self.operator.searchableText, [World.source, World.target, World.comment])
+        self.assertEqual(self.operator.matchCase, False)
+        
+    def testSearchNext(self):
+        self.operator.getUnits(wStringIO.StringIO(self.message))
+        self.operator.initSearch('To', [World.source, World.target, World.comment], False)
+        
+        # first found search will encounter in source
+        self.operator.searchNext()
+        self.assertEqual(self.operator._getUnitString(), u'Unable to open file for reading.'.lower())
+        self.assertEqual(self.operator.foundPosition, 7)
+        
+        # second found search will encounter in target
+        self.operator.searchNext()
+        self.assertEqual(self.operator._getUnitString(), u'unable, to read file'.lower())
+        self.assertEqual(self.operator.foundPosition, 8)
+        
+        # then search will not found and read end of units
+        QtCore.QObject.connect(self.operator, QtCore.SIGNAL("generalInfo"), self.slot)
+        self.operator.searchNext()
+        self.assertEqual(self.slotReached, True)
+        self.assertEqual(self.operator.searchPointer, 1)
+    
+    def testSearchPrevious(self):
+        self.operator.getUnits(wStringIO.StringIO(self.message))
+        self.operator.setCurrentUnit(1)
+        self.operator.initSearch('To', [World.source, World.target, World.comment], False)
+        
+        # first found search will encounter in target
+        self.operator.searchPrevious()
+        self.assertEqual(self.operator._getUnitString(), u'unable, to read file'.lower())
+        self.assertEqual(self.operator.foundPosition, 8)
+        
+        # second found search will encounter in source
+        self.operator.searchPrevious()
+        self.assertEqual(self.operator._getUnitString(), u'Unable to open file for reading.'.lower())
+        self.assertEqual(self.operator.foundPosition, 7)
+        
+        # then search will not found and read the beginning of units
+        QtCore.QObject.connect(self.operator, QtCore.SIGNAL("generalInfo"), self.slot)
+        self.operator.searchNext()
+        self.assertEqual(self.slotReached, True)
+        self.assertEqual(self.operator.searchPointer, 0)
     
     def poparse(self, posource):
         """helper that parses po source without requiring files"""
