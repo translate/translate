@@ -43,30 +43,45 @@ class Preference(QtGui.QDialog):
         """ get values and display them """
         self.overviewFont = self.getFont(self.widget[0])
         self.setCaption(self.ui.lblOverView, self.overviewFont)
+        self.ui.lblOverView.setWhatsThis("<h3>Overview Font</h3>Here, it will currently displayed font name, style and size of overview font on top Dock Widget Area of MainEditor.")
         self.tuSourceFont = self.getFont(self.widget[1])
         self.setCaption(self.ui.lblSource, self.tuSourceFont)
+        self.ui.lblSource.setWhatsThis("<h3>Source Font</h3>Here, it will currently displayed font name, style and size of txtsource font on below overview of MainEditor.")
         self.tuTargetFont = self.getFont(self.widget[2])
         self.setCaption(self.ui.lblTarget, self.tuTargetFont )
+        self.ui.lblTarget.setWhatsThis("<h3>Target Font</h3>Here, it will currently displayed font name, style and size of txtTarget font on below txtSource of MainEditor.")
         self.commentFont = self.getFont(self.widget[3])
         self.setCaption(self.ui.lblComment, self.commentFont)
+        self.ui.lblComment.setWhatsThis("<h3>Comment Font</h3>Here, it will currently displayed font name, style and size of comment font on the right side of MainEditor.")
         self.overviewHeaderFont = self.getFont(self.widget[4])
         self.setCaption(self.ui.lblOverViewHeader, self.overviewHeaderFont)
-        
+        self.ui.lblOverViewHeader.setWhatsThis("<h3>Overview Header Font</h3>Here, it will currently displayed font name, style and size of overview header on MainEditor.")
+
         self.overviewColorObj = self.getColor(self.widget[0])
         self.setTextColor(self.ui.overviewColor, self.overviewColorObj)
+        self.ui.overviewColor.setWhatsThis("<h3>Overview Color</h3>Here, it will currently displayed color of overview on top Dock Widget Area of MainEditor.")
         self.tuSourceColorObj = self.getColor(self.widget[1])
         self.setTextColor(self.ui.tuSourceColor, self.tuSourceColorObj)
+        self.ui.tuSourceColor.setWhatsThis("<h3>Source Color</h3>Here, it will currently displayed color of txtSource on below overview of MainEditor.")
         self.tuTargetColorObj = self.getColor(self.widget[2])
         self.setTextColor(self.ui.tuTargetColor, self.tuTargetColorObj )
+        self.ui.tuTargetColor.setWhatsThis("<h3>Target Color</h3>it will currently displayed color of txtTarget on below txtSource of MainEditor.")
         self.commentColorObj = self.getColor(self.widget[3])
         self.setTextColor(self.ui.commentColor, self.commentColorObj)
-        
+        self.ui.commentColor.setWhatsThis("<h3>Comment Color</h3>it will currently displayed color of comment on the right side of MainEditor.")
+
         self.ui.UserName.setText(World.settings.value("UserName").toString())
+        self.ui.UserName.setWhatsThis("<h3>UserName</h3>User can fill in cell of own name.")
         self.ui.EmailAddress.setText(World.settings.value("EmailAddress").toString())
+        self.ui.EmailAddress.setWhatsThis("<h3>EmailAddress</h3>User can fill in cell of own email.")
         self.ui.cbxFullLanguage.setEditText(World.settings.value("FullLanguage").toString())
+        self.ui.cbxFullLanguage.setWhatsThis("<h3>Language</h3>Choose your own language.")
         self.ui.cbxLanguageCode.setEditText(World.settings.value("Code").toString())
+        self.ui.cbxLanguageCode.setWhatsThis("<h3>Code</h3>Choose your own Code.")
         self.ui.SupportTeam.setText(World.settings.value("SupportTeam").toString())
+        self.ui.SupportTeam.setWhatsThis("<h3>Support</h3>Type email support address.")
         self.ui.cbxTimeZone.setEditText(World.settings.value("TimeZone").toString())
+        self.ui.cbxTimeZone.setWhatsThis("<h3>TimeZone</h3>Choose timeZone of your country.")
         checkState = World.settings.value("headerAuto", QtCore.QVariant(True))
         if (checkState.toBool()):
             self.ui.chkHeaderAuto.setCheckState(QtCore.Qt.Checked)
@@ -80,7 +95,7 @@ class Preference(QtGui.QDialog):
         self.rememberFont(self.widget[2], self.tuTargetFont)
         self.rememberFont(self.widget[3], self.commentFont)
         self.rememberFont(self.widget[4], self.overviewHeaderFont)
-        
+
         self.rememberColor(self.widget[0], self.overviewColorObj)
         self.rememberColor(self.widget[1], self.tuSourceColorObj)
         self.rememberColor(self.widget[2], self.tuTargetColorObj)
@@ -94,21 +109,21 @@ class Preference(QtGui.QDialog):
         World.settings.setValue("TimeZone", QtCore.QVariant(self.ui.cbxTimeZone.currentText()))
         World.settings.setValue("headerAuto", QtCore.QVariant(self.ui.chkHeaderAuto.checkState() == QtCore.Qt.Checked))
         self.emit(QtCore.SIGNAL("settingsChanged"))
-  
+
     def rememberFont(self, obj, fontObj):
         """ remember Font in Qsettings
         @param obj: input as string
         @param fontObj: stored font"""
         if (fontObj != None):    # TODO do we need this ???
             World.settings.setValue(str(obj + "Font"), QtCore.QVariant(fontObj.toString()))
-            
+
     def rememberColor(self, obj, colorObj):
         """ remember Color in Qsettings
         @param obj: input as string
         @param colorObj: stored color"""
         if (colorObj != None):    # TODO do we need this ???
             World.settings.setValue(str(obj + "Color"), QtCore.QVariant(colorObj.name()))
-        
+
     def fontOverview(self):
         """ slot to open font selection dialog """
         self.overviewFont = self.setFont(self.widget[0])
@@ -163,7 +178,7 @@ class Preference(QtGui.QDialog):
             if (fontObj.fromString(font.toString())):
                 return fontObj
         return self.defaultFont
-        
+
     def getColor(self, obj):
         """@return obj: color object created from settings
         @param obj: widget whose color is gotten from"""
@@ -175,6 +190,8 @@ class Preference(QtGui.QDialog):
         """slot Set default fonts"""
         self.setCaption(self.ui.lblOverView, self.defaultFont)
         self.overviewFont = self.defaultFont
+        self.setCaption(self.ui.lblOverViewHeader, self.defaultFont)
+        self.overviewHeaderFont = self.defaultFont
         self.setCaption(self.ui.lblSource, self.defaultFont)
         self.tuSourceFont = self.defaultFont
         self.setCaption(self.ui.lblTarget, self.defaultFont)
@@ -221,7 +238,6 @@ class Preference(QtGui.QDialog):
         oldFont = self.getFont(obj)
         newFont, okPressed = QtGui.QFontDialog.getFont(oldFont)
         if (okPressed):
-            self.rememberFont(obj, newFont)
             return newFont
         return oldFont
      
@@ -232,9 +248,7 @@ class Preference(QtGui.QDialog):
         oldColor = self.getColor(obj)
         newColor = QtGui.QColorDialog.getColor(QtCore.Qt.white)
         if (newColor.isValid()):
-            self.rememberColor(obj, newColor)
             return newColor
-        self.rememberColor(obj, oldColor)
         return oldColor
        
     def showDialog(self):
@@ -252,17 +266,23 @@ class Preference(QtGui.QDialog):
             self.connect(self.ui.bntOverview, QtCore.SIGNAL("clicked()"), self.fontOverview) 
             self.connect(self.ui.bntOverviewHeader, QtCore.SIGNAL("clicked()"), self.fontOverviewHeader) 
             self.connect(self.ui.bntSource, QtCore.SIGNAL("clicked()"), self.fontSource) 
-            self.connect(self.ui.bntTarget, QtCore.SIGNAL("clicked()"), self.fontTarget) 
+            self.connect(self.ui.bntTarget, QtCore.SIGNAL("clicked()"), self.fontTarget)
             self.connect(self.ui.bntComment, QtCore.SIGNAL("clicked()"), self.fontComment) 
-            self.connect(self.ui.bntDefaults, QtCore.SIGNAL("clicked()"), self.defaultFonts) 
+            self.connect(self.ui.bntDefaults, QtCore.SIGNAL("clicked()"), self.defaultFonts)
+            self.ui.bntDefaults.setWhatsThis("<h3>Defaults font</h3>You can click here if you would like Overview, Overview Header, Source, Target and Comment as default font.")
              
             # for color
             self.connect(self.ui.bntColorOverview, QtCore.SIGNAL("clicked()"), self.colorOverview) 
+            self.ui.bntColorOverview.setWhatsThis("<h3>Overview Color</h3>You can click Choose button and select color ever you want to be used on Overview.")
             self.connect(self.ui.bntColorSource, QtCore.SIGNAL("clicked()"), self.colorSource) 
+            self.ui.bntColorSource.setWhatsThis("<h3>Source Color</h3>You can click Choose button and select color ever you want to be used on txtSource.")
             self.connect(self.ui.bntColorTarget, QtCore.SIGNAL("clicked()"), self.colorTarget) 
+            self.ui.bntColorTarget.setWhatsThis("<h3>Target Color</h3>You can click Choose button and select color ever you want to be used on txtTarget.")
             self.connect(self.ui.bntColorComment, QtCore.SIGNAL("clicked()"), self.colorComment) 
+            self.ui.bntColorComment.setWhatsThis("<h3>Comment Color</h3>You can click Choose button and select color ever you want to be used on Comment.")
             self.connect(self.ui.bntColorDefaults, QtCore.SIGNAL("clicked()"), self.defaultColors)
-            
+            self.ui.bntColorDefaults.setWhatsThis("<h3>Defaults color</h3>You can click here if you would like Overview, Source, Target and Comment as default color.")
+
             self.connect(self.ui.okButton, QtCore.SIGNAL("clicked()"), self.accepted)
             self.connect(self.ui.cbxFullLanguage, QtCore.SIGNAL("activated(int)"), self.setCodeIndex)
             self.connect(self.ui.cbxLanguageCode, QtCore.SIGNAL("activated(int)"), self.setLanguageIndex)
@@ -278,12 +298,12 @@ class Preference(QtGui.QDialog):
         
     def setCodeIndex(self, index):
         """SetIndex for Combo box
-        @param index: list's item correspond to index """
+        @param ind<h3> list's item correspond to index """
         self.ui.cbxLanguageCode.setCurrentIndex(index)
   
     def setLanguageIndex(self, index):
         """SetIndex for Combo box
-        @param index: list's item correspond to index """
+        @param ind<h3> list's item correspond to index """
         self.ui.cbxFullLanguage.setCurrentIndex(index)
 
         
