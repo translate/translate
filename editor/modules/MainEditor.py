@@ -153,6 +153,13 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionFilterUntranslated, QtCore.SIGNAL("toggled(bool)"), self.operator.filterUntranslated)
         self.connect(self.ui.actionToggleFuzzy, QtCore.SIGNAL("triggered()"), self.operator.toggleFuzzy)
 
+        # add open recent to the toolbar
+        action = self.ui.menuOpen_Recent.menuAction()
+        action.setToolTip(self.tr("Open"))
+        self.connect(action, QtCore.SIGNAL("triggered()"), self.fileaction.openFile)
+
+        self.ui.toolStandard.insertAction(self.ui.actionSave, action)
+
         # "currentUnit" sends currentUnit, currentIndex
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockOverview.updateView)
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockTUview.updateView)
