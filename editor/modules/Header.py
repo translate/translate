@@ -170,7 +170,8 @@ class Header(QtGui.QDialog):
         Language_Team =  FullLanguage.toString() + '<' + SupportTeam.toString() + '>'
          #if header doesn't exist, call makeheader, otherwise, only update from setting
         #if there is no user profile 
-        if (self.ui.tableHeader.rowCount() == 0):
+        header = self.operator.store.header()
+        if not header:
             (path, fileName) = os.path.split(str(self.operator.fileName).lower())
             userProfileDic = {'charset':"CHARSET", 'encoding':"ENCODING", 'project_id_version': fileName, 'pot_creation_date':None, 'po_revision_date': False, 'last_translator': str(Last_Translator), 'language_team':str(Language_Team), 'mime_version':None, 'plural_forms':None, 'report_msgid_bugs_to':None}
             self.headerDic = self.operator.makeNewHeader(userProfileDic)
@@ -187,7 +188,8 @@ class Header(QtGui.QDialog):
     
     def updateOnSave(self):
         """ slot for headerAuto """
-        self.operator.updateNewHeader("", self.applySettings())
+        otherComments, self.headerDic = self.operator.headerData()
+        self.operator.updateNewHeader(otherComments, self.applySettings())
         
     def accepted(self):
         """send header information"""
