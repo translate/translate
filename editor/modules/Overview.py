@@ -74,27 +74,34 @@ class OverviewDock(QtGui.QDockWidget):
         """        
         QtGui.QDockWidget.closeEvent(self, event)
         self.toggleViewAction().setChecked(False)
-
-    def filteredList(self, shownList, filter):
-        """show the items which are in shownList.
-        @param shownList: list of unit which allow to be visible in the table.
-        @param filter: shownList's filter."""
-        self.ui.tableOverview.setEnabled(bool(shownList))
-        self.indexMaxLen = len(str(len(shownList)))
+        
+    def slotNewUnits(self, units):
+        self.ui.tableOverview.setEnabled(bool(units))
+        self.indexMaxLen = len(str(len(units)))
         self.setUpdatesEnabled(False)
-        self.filter = filter
+        self.filter = World.filterAll
         self.ui.tableOverview.clear()
         self.ui.tableOverview.setColumnCount(len(self.headerLabels))
-        #self.ui.tableOverview.setRowCount(len(shownList))
         self.ui.tableOverview.setRowCount(0)
         self.ui.tableOverview.setHorizontalHeaderLabels(self.headerLabels)
         self.ui.tableOverview.setSortingEnabled(False)
-        for unit in shownList:
+        for unit in units:
             self.addUnit(unit)
         self.ui.tableOverview.setSortingEnabled(True)
         self.ui.tableOverview.sortItems(0)
         self.ui.tableOverview.resizeRowsToContents()
         self.setUpdatesEnabled(True)
+
+    def filteredList(self, shownList, filter):
+        """show the items which are in shownList.
+        @param shownList: list of unit which allow to be visible in the table.
+        @param filter: shownList's filter."""
+        hiddenList = range(self.ui.tableOverview.rowCount())
+        for i in hiddenList:
+            self.ui.tableOverview.hideRow(i)
+        for unit in shownList:
+            self.ui.tableOverview.showRow(unit.x_editor_index)
+        self.shownList = shownList
         
     def addUnit(self, unit):
         """add unit to row.
@@ -141,7 +148,7 @@ class OverviewDock(QtGui.QDockWidget):
         self.markComment(row, unit.getnotes())
         self.markState(row, unit.x_editor_state)
         self.ui.tableOverview.selectRow(row)
-        #self.ui.tableOverview.scrollToItem(item)
+        #self.ui.tableOverview.scrollToItem(unit.x_editor_tableItem)
         self.filterUnit(row, unit.x_editor_state)
         
     def filterUnit(self, index, state):
@@ -206,6 +213,24 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.tableOverview.resizeRowsToContents()
         
     def layoutChanged(self):
+        try:
+            shownListIndex = []
+            for unit in self.shownList:
+                shownListIndex.append(unit.x_editor_index)
+        except:
+            pass
+        
+##        shownListIndex = []
+##        for i in range(self.ui.tableOverview.rowCount()):
+##            if not self.ui.tableOverview.isRowHidden(i):
+##                shownListIndex.append(i)
+        
+        for i in range(self.ui.tableOverview.rowCount()):
+            index = int(self.ui.tableOverview.item(i, 0).text())
+            if index in shownListIndex:
+                self.ui.tableOverview.showRow(i)
+            else:
+                self.ui.tableOverview.hideRow(i)
         self.ui.tableOverview.resizeRowsToContents()
         
     def indexString(self, index):

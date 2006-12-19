@@ -62,6 +62,8 @@ class Operator(QtCore.QObject):
         self.status = Status(self.store.units)
         self.emitStatus()
 
+        for i in range(len(self.store.units)):
+            self.store.units[i].x_editor_index = i
         self.emit(QtCore.SIGNAL("newUnits"), self.store.units)
         self.emitFiltered(self.filter)
 
@@ -127,7 +129,6 @@ class Operator(QtCore.QObject):
         j = 0
         for i in range(start, len(self.store.units)):
             unit = self.store.units[i]
-            unit.x_editor_index = i
             # add unit to filteredList if it is in the filter
             if (self.filter & unit.x_editor_state):
                 unit.x_editor_filterIndex = j
@@ -256,10 +257,13 @@ class Operator(QtCore.QObject):
     def setCurrentUnit(self, index):
         """adjust the unitpointer with currentIndex, and send currentUnit signal.
         @param currentIndex: current unit's index inside the units."""
-        self.emitUpdateUnit()
-        unit = self.store.units[index]
-        self._unitpointer = unit.x_editor_filterIndex
-        self.emitCurrentUnit()
+        try:
+            self.emitUpdateUnit()
+            unit = self.store.units[index]
+            self._unitpointer = unit.x_editor_filterIndex
+            self.emitCurrentUnit()
+        except:
+            pass
         
     def indexToUnit(self, index):
         self.emitUpdateUnit()
