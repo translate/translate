@@ -227,7 +227,7 @@ class Preference(QtGui.QDialog):
         """ set color to the text of lable widget
         @param lbl: label widget for setting color to
         @param colorObj: Color to set to label widget"""
-        palette = QtGui.QPalette()
+        palette = lbl.palette()
         palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(QtGui.QPalette.Text), colorObj)
         lbl.setPalette(palette)
         

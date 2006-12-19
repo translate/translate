@@ -199,7 +199,7 @@ class OverviewDock(QtGui.QDockWidget):
         overviewColor = World.settings.value("overviewColor")
         if (overviewColor.isValid()):
             colorObj = QtGui.QColor(overviewColor.toString())
-            palette = QtGui.QPalette()
+            palette = self.ui.tableOverview.palette()
             palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(6),colorObj)
             self.ui.tableOverview.setPalette(palette)
         

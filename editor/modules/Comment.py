@@ -126,7 +126,7 @@ class CommentDock(QtGui.QDockWidget):
         commentColor = World.settings.value("commentColor")
         if (commentColor.isValid()):
             colorObj = QtGui.QColor(commentColor.toString())
-            palette = QtGui.QPalette()
+            palette = self.ui.txtTranslatorComment.palette()
             palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(QtGui.QPalette.Text), colorObj)
             self.ui.txtTranslatorComment.setPalette(palette)
             
