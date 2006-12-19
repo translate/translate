@@ -85,7 +85,8 @@ class MainWindow(QtGui.QMainWindow):
         #add action from each toolbar toggleviewaction to toolbars submenu of view menu
         self.ui.menuToolbars.addAction(self.ui.toolStandard.toggleViewAction())
         self.ui.menuToolbars.addAction(self.ui.toolNavigation.toggleViewAction())
-        
+        self.ui.menuToolbars.addAction(self.ui.toolFilter.toggleViewAction())
+
         #create operator
         self.operator = Operator()
         
