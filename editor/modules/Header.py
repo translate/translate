@@ -23,11 +23,11 @@
 #
 # This module is working on any Headers of current TU.
 
-
 import time
 from PyQt4 import QtCore, QtGui
 from ui.Ui_Header import Ui_frmHeader
 import modules.World as World
+from translate.storage import poheader
 
 class Header(QtGui.QDialog):
     def __init__(self, parent, operator):
@@ -170,6 +170,8 @@ class Header(QtGui.QDialog):
         Language_Team =  FullLanguage.toString() + '<' + SupportTeam.toString() + '>'
          #if header doesn't exist, call makeheader, otherwise, only update from setting
         #if there is no user profile 
+        if (not isinstance(self.operator.store, poheader.poheader)):
+            return
         header = self.operator.store.header()
         if not header:
             (path, fileName) = os.path.split(str(self.operator.fileName).lower())
