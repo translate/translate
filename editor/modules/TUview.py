@@ -103,6 +103,7 @@ class TUview(QtGui.QDockWidget):
         @param unit: unit to set in target and source.
         @param index: value in the scrollbar to be removed."""
         if (not unit):
+            self.ui.txtComment.hide()
             return
         if isinstance(unit, po.pounit):
             comment = "".join([comment for comment in unit.msgidcomments])
