@@ -173,6 +173,7 @@ class Operator(QtCore.QObject):
           #TODO: move to world
           self.store.x_generator = World.settingOrg + ' ' + World.settingApp + ' ' + World.settingVer
           if isinstance(self.store, poheader.poheader):
+              self.store.updateheader(add=True, **headerDic)
               return self.store.makeheaderdict(**headerDic)
           else: return {}
           
@@ -180,14 +181,15 @@ class Operator(QtCore.QObject):
         """will update header"""
         #TODO: need to make it work with xliff file
         if (not isinstance(self.store, poheader.poheader)):
-            return (None, None)
-            
+            return {}
+        
         header = self.store.header()
         if (header):
             header.removenotes()
+            header.target = ""
             header.addnote(str(othercomments))
             self.store.updateheader(add=True, **headerDic)
-
+            
     def saveStoreToFile(self, fileName):
         """
         save the temporary store into a file.
