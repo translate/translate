@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/jhe/khmerOS/svn-wf/trunk/editor/ui/MainEditor.ui'
 #
-# Created: Tue Dec 19 15:50:41 2006
+# Created: Tue Dec 19 17:03:17 2006
 #      by: PyQt4 UI code generator 4.0.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -48,19 +48,19 @@ class Ui_MainWindow(object):
         self.menuToolbars = QtGui.QMenu(self.menuWindow)
         self.menuToolbars.setObjectName("menuToolbars")
 
-        self.menuFile = QtGui.QMenu(self.menubar)
-        self.menuFile.setObjectName("menuFile")
-
-        self.menuOpen_Recent = QtGui.QMenu(self.menuFile)
-        self.menuOpen_Recent.setIcon(QtGui.QIcon("../images/open.png"))
-        self.menuOpen_Recent.setObjectName("menuOpen_Recent")
-
         self.menuView = QtGui.QMenu(self.menubar)
         self.menuView.setEnabled(True)
         self.menuView.setObjectName("menuView")
 
         self.menuEdit = QtGui.QMenu(self.menubar)
         self.menuEdit.setObjectName("menuEdit")
+
+        self.menuFile = QtGui.QMenu(self.menubar)
+        self.menuFile.setObjectName("menuFile")
+
+        self.menuOpen_Recent = QtGui.QMenu(self.menuFile)
+        self.menuOpen_Recent.setIcon(QtGui.QIcon("../images/open.png"))
+        self.menuOpen_Recent.setObjectName("menuOpen_Recent")
         MainWindow.setMenuBar(self.menubar)
 
         self.statusbar = QtGui.QStatusBar(MainWindow)
@@ -269,14 +269,6 @@ class Ui_MainWindow(object):
         self.menuWindow.addSeparator()
         self.menuWindow.addSeparator()
         self.menuWindow.addAction(self.menuToolbars.menuAction())
-        self.menuFile.addAction(self.actionOpenInNewWindow)
-        self.menuFile.addAction(self.actionOpen)
-        self.menuFile.addAction(self.menuOpen_Recent.menuAction())
-        self.menuFile.addSeparator()
-        self.menuFile.addAction(self.actionSave)
-        self.menuFile.addAction(self.actionSaveas)
-        self.menuFile.addSeparator()
-        self.menuFile.addAction(self.actionExit)
         self.menuView.addAction(self.actionFilterFuzzy)
         self.menuView.addAction(self.actionFilterTranslated)
         self.menuView.addAction(self.actionFilterUntranslated)
@@ -297,6 +289,14 @@ class Ui_MainWindow(object):
         self.menuEdit.addAction(self.actionCopySource2Target)
         self.menuEdit.addAction(self.actionToggleFuzzy)
         self.menuEdit.addAction(self.actionEdit_Header)
+        self.menuFile.addAction(self.actionOpenInNewWindow)
+        self.menuFile.addAction(self.actionOpen)
+        self.menuFile.addAction(self.menuOpen_Recent.menuAction())
+        self.menuFile.addSeparator()
+        self.menuFile.addAction(self.actionSave)
+        self.menuFile.addAction(self.actionSaveas)
+        self.menuFile.addSeparator()
+        self.menuFile.addAction(self.actionExit)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
         self.menubar.addAction(self.menuView.menuAction())
@@ -304,7 +304,6 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuSettings.menuAction())
         self.menubar.addAction(self.menuWindow.menuAction())
         self.menubar.addAction(self.menuHelp.menuAction())
-        self.toolStandard.addAction(self.actionOpen)
         self.toolStandard.addAction(self.actionSave)
         self.toolStandard.addSeparator()
         self.toolStandard.addAction(self.actionCut)
@@ -331,10 +330,10 @@ class Ui_MainWindow(object):
         self.menuHelp.setTitle(QtGui.QApplication.translate("MainWindow", "&Help", None, QtGui.QApplication.UnicodeUTF8))
         self.menuWindow.setTitle(QtGui.QApplication.translate("MainWindow", "&Window", None, QtGui.QApplication.UnicodeUTF8))
         self.menuToolbars.setTitle(QtGui.QApplication.translate("MainWindow", "Toolbars", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuFile.setTitle(QtGui.QApplication.translate("MainWindow", "&File", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuOpen_Recent.setTitle(QtGui.QApplication.translate("MainWindow", "Open &Recent", None, QtGui.QApplication.UnicodeUTF8))
         self.menuView.setTitle(QtGui.QApplication.translate("MainWindow", "&View", None, QtGui.QApplication.UnicodeUTF8))
         self.menuEdit.setTitle(QtGui.QApplication.translate("MainWindow", "&Edit", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuFile.setTitle(QtGui.QApplication.translate("MainWindow", "&File", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuOpen_Recent.setTitle(QtGui.QApplication.translate("MainWindow", "Open &Recent", None, QtGui.QApplication.UnicodeUTF8))
         self.toolStandard.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Standard Toolbar", None, QtGui.QApplication.UnicodeUTF8))
         self.toolNavigation.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Navigation Toolbar", None, QtGui.QApplication.UnicodeUTF8))
         self.toolFilter.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Filter Toolbar", None, QtGui.QApplication.UnicodeUTF8))

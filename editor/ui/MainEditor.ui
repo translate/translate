@@ -80,27 +80,6 @@
     <addaction name="separator" />
     <addaction name="menuToolbars" />
    </widget>
-   <widget class="QMenu" name="menuFile" >
-    <property name="title" >
-     <string>&amp;File</string>
-    </property>
-    <widget class="QMenu" name="menuOpen_Recent" >
-     <property name="title" >
-      <string>Open &amp;Recent</string>
-     </property>
-     <property name="icon" >
-      <iconset>../images/open.png</iconset>
-     </property>
-    </widget>
-    <addaction name="actionOpenInNewWindow" />
-    <addaction name="actionOpen" />
-    <addaction name="menuOpen_Recent" />
-    <addaction name="separator" />
-    <addaction name="actionSave" />
-    <addaction name="actionSaveas" />
-    <addaction name="separator" />
-    <addaction name="actionExit" />
-   </widget>
    <widget class="QMenu" name="menuView" >
     <property name="enabled" >
      <bool>true</bool>
@@ -134,6 +113,27 @@
     <addaction name="actionToggleFuzzy" />
     <addaction name="actionEdit_Header" />
    </widget>
+   <widget class="QMenu" name="menuFile" >
+    <property name="title" >
+     <string>&amp;File</string>
+    </property>
+    <widget class="QMenu" name="menuOpen_Recent" >
+     <property name="title" >
+      <string>Open &amp;Recent</string>
+     </property>
+     <property name="icon" >
+      <iconset>../images/open.png</iconset>
+     </property>
+    </widget>
+    <addaction name="actionOpenInNewWindow" />
+    <addaction name="actionOpen" />
+    <addaction name="menuOpen_Recent" />
+    <addaction name="separator" />
+    <addaction name="actionSave" />
+    <addaction name="actionSaveas" />
+    <addaction name="separator" />
+    <addaction name="actionExit" />
+   </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
    <addaction name="menuView" />
@@ -156,7 +156,6 @@
    <attribute name="toolBarArea" >
     <number>4</number>
    </attribute>
-   <addaction name="actionOpen" />
    <addaction name="actionSave" />
    <addaction name="separator" />
    <addaction name="actionCut" />
