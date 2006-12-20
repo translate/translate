@@ -177,6 +177,7 @@ class TUview(QtGui.QDockWidget):
         text.replace(position, length, replacedText);
         self.ui.txtTarget.setPlainText(text)
         self.ui.txtTarget.document().setModified()
+        self.checkModified()
 
     def applySettings(self):
         """ set font and color to txtSource and txtTarget"""

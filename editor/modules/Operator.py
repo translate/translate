@@ -371,7 +371,6 @@ class Operator(QtCore.QObject):
 
     def _searchFound(self):
         """emit searchResult signal with text field, position, and length."""
-        self.emitUpdateUnit()
         self._unitpointer = self.searchPointer
         self.emitCurrentUnit()
         textField = self.searchableText[self.currentTextField]

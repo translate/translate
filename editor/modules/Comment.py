@@ -144,7 +144,7 @@ class CommentDock(QtGui.QDockWidget):
         if (textField != World.comment):
             return
         text = self.ui.txtTranslatorComment.toPlainText()
-        text.replace(position, length, replacedText);
+        text.replace(position, length, replacedText)
         self.ui.txtTranslatorComment.setPlainText(text)
         self.ui.txtTranslatorComment.document().setModified()
         self.checkModified()

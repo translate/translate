@@ -1,3 +1,8 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""tests for Find classes"""
+
 import sys
 import unittest
 import os.path
