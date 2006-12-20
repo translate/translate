@@ -24,7 +24,7 @@ msgstr "unable, to read file"
 
 #: archivedialog.cpp:126
 msgid "Could not open a temporary file"
-msgstr "Could not open"
+msgstr "Could not open any"
 '''
         self.operator.store = self.poparse(self.message)
         
@@ -217,6 +217,37 @@ msgstr "unable to read file"
         self.assertEqual(self.slotReached, True)
         self.assertEqual(self.operator.searchPointer, 0)
     
+    def testReplace(self):
+        self.operator.getUnits(wStringIO.StringIO(self.message))
+        QtCore.QObject.connect(self.operator, QtCore.SIGNAL("replaceText"), self.slot)
+        self.operator.initSearch("unable,", [World.source, World.target, World.comment], False)
+        self.operator.replace("to")
+        self.assertEqual(self.slotReached, True)
+        self.assertEqual(self.operator.searchableText[self.operator.currentTextField], 2)
+        self.assertEqual(self.operator.foundPosition, 0)
+    
+    def test_GetUnitString(self):
+        self.operator.getUnits(wStringIO.StringIO(self.message))
+        self.operator.searchableText = [World.source, World.target]
+        self.operator.matchCase = True
+        self.operator.currentTextField = 1
+        self.assertEqual(self.operator._getUnitString(), u"unable, to read file")
+    
+    def testSearchFound(self):
+        QtCore.QObject.connect(self.operator, QtCore.SIGNAL("searchResult"), self.slot)
+        self.operator.getUnits(wStringIO.StringIO(self.message))
+        self.operator.initSearch("temporary", [World.source, World.target], True)
+        self.operator.searchNext()
+        self.assertEqual(self.slotReached, True)
+        self.assertEqual(self.operator.searchableText[self.operator.currentTextField], 1)
+    
+    def test_SearchNotFound(self):
+        QtCore.QObject.connect(self.operator, QtCore.SIGNAL("searchResult"), self.slot)
+        self.operator.searchableText = [World.source, World.target]
+        self.operator.currentTextField = 0
+        self.operator._searchNotFound()
+        self.assertEqual(self.slotReached, True)
+        
     def poparse(self, posource):
         """helper that parses po source without requiring files"""
         dummyfile = wStringIO.StringIO(posource)
