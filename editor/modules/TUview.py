@@ -184,17 +184,19 @@ class TUview(QtGui.QDockWidget):
         sourceColor = World.settings.value("tuSourceColor")
         if (sourceColor.isValid()):
             colorObj = QtGui.QColor(sourceColor.toString())
-            palette = QtGui.QPalette()
+            palette = QtGui.QPalette(self.ui.txtSource.palette())
             palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(QtGui.QPalette.Text), colorObj)
+            palette.setColor(QtGui.QPalette.Inactive, QtGui.QPalette.ColorRole(QtGui.QPalette.Text), colorObj)
             self.ui.txtSource.setPalette(palette)
-            
+
         targetColor = World.settings.value("tuTargetColor")
         if (targetColor.isValid()):
             colorObj = QtGui.QColor(targetColor.toString())
-            palette = QtGui.QPalette()
+            palette = QtGui.QPalette(self.ui.txtTarget.palette())
             palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(QtGui.QPalette.Text), colorObj)
+            palette.setColor(QtGui.QPalette.Inactive, QtGui.QPalette.ColorRole(QtGui.QPalette.Text), colorObj)
             self.ui.txtTarget.setPalette(palette)
-            
+
         fontObj = QtGui.QFont()
         sourcefont = World.settings.value("tuSourceFont")
         if (sourcefont.isValid() and fontObj.fromString(sourcefont.toString())):

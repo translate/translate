@@ -51,6 +51,8 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.tableOverview.horizontalHeader().setResizeMode(2, QtGui.QHeaderView.Stretch)
         self.ui.tableOverview.horizontalHeader().setHighlightSections(False)
         self.ui.tableOverview.verticalHeader().hide()
+##        self.ui.tableOverview.verticalHeader().hide()
+##        palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(QtGui.QPalette.Text), colorObj)
         
 ##        self.headerFont = QtGui.QFont('Sans Serif', 10)
 ##        self.ui.tableOverview.horizontalHeader().setFont(self.headerFont)
@@ -71,7 +73,7 @@ class OverviewDock(QtGui.QDockWidget):
         """
         set text of action object to 'show Overview' before closing Overview
         @param QCloseEvent Object: received close event when closing widget
-        """        
+        """
         QtGui.QDockWidget.closeEvent(self, event)
         self.toggleViewAction().setChecked(False)
         
@@ -199,9 +201,10 @@ class OverviewDock(QtGui.QDockWidget):
         if (overviewColor.isValid()):
             colorObj = QtGui.QColor(overviewColor.toString())
             palette = self.ui.tableOverview.palette()
-            palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(6),colorObj)
+            palette.setColor(QtGui.QPalette.Active, QtGui.QPalette.ColorRole(QtGui.QPalette.Text), colorObj)
+            palette.setColor(QtGui.QPalette.Inactive, QtGui.QPalette.ColorRole(QtGui.QPalette.Text), colorObj)
             self.ui.tableOverview.setPalette(palette)
-        
+
         font = World.settings.value("overviewFont")
         if (font.isValid()):
             fontObj = QtGui.QFont()
