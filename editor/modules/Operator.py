@@ -36,9 +36,10 @@ class Operator(QtCore.QObject):
     
     @signal currentStatus(string): emitted with the new status message
     @signal newUnits(store.units): emitted with the new units
+    @signal currentUnit(unit): emitted with the current unit
     @signal updateUnit(): emitted when the views should update the unit´s data
     @signal toggleFirstLastUnit(atFirst, atLast): emitted to allow dis/enable of actions
-    @signal filteredList(list, filter): emitted when the filter was changed
+    @signal filterChanged(filter, lenFilter): emitted when the filter was changed
     @signal savedAlready(False): emitted when a file was saved
     """
     def __init__(self):
@@ -65,6 +66,7 @@ class Operator(QtCore.QObject):
         start = 0
         if (self.store.units[0].isheader()):
             start = 1
+        self.currentUnitIndex = start
         i = start
         j = 0
         for unit in self.store.units[start:]:
@@ -138,7 +140,8 @@ class Operator(QtCore.QObject):
                     unit.x_editor_filterIndex = None
         self.emit(QtCore.SIGNAL("filterChanged"), filter, len(self.filteredList))
         unit = self.store.units[self.currentUnitIndex]
-        self.emitUnit(unit)
+        if (len(self.filteredList) > 0):
+            self.emitUnit(unit)
         
     def filterUnit(self, unit):
         if (not self.filter & unit.x_editor_state):
@@ -226,7 +229,7 @@ class Operator(QtCore.QObject):
         self._modified = True
         self.emitStatus()
 
-    def setCurrentUnit(self, index):
+    def setUnitFromIndex(self, index):
         """build a unit from index and call emitUnit.
         @param index: index inside the store.units."""
         if (index < len(self.store.units)):
@@ -234,10 +237,10 @@ class Operator(QtCore.QObject):
             unit = self.store.units[index]
             self.emitUnit(unit)
         
-    def indexToUnit(self, index):
-        if (index < len(self.filteredList)):
+    def setUnitFromPosition(self, position):
+        if (position < len(self.filteredList)):
             self.emitUpdateUnit()
-            unit = self.filteredList[index]
+            unit = self.filteredList[position]
             self.emitUnit(unit)
         
     def toggleFuzzy(self):
@@ -259,7 +262,6 @@ class Operator(QtCore.QObject):
         @param searchString: string to search for.
         @param searchableText: text fields to search through.
         @param matchCase: bool indicates case sensitive condition."""
-        #self.searchPointer = self._unitpointer
         self.currentTextField = 0
         self.foundPosition = -1
         self.searchString = str(searchString)
@@ -363,7 +365,7 @@ class Operator(QtCore.QObject):
 
     def _searchFound(self):
         """emit searchResult signal with text field, position, and length."""
-        self.indexToUnit(self.searchPointer)
+        self.setUnitFromPosition(self.searchPointer)
         textField = self.searchableText[self.currentTextField]
         self.emit(QtCore.SIGNAL("searchResult"), textField, self.foundPosition, len(unicode(self.searchString)))
         self.emit(QtCore.SIGNAL("generalInfo"), "")
