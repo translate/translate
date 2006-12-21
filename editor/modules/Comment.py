@@ -49,10 +49,7 @@ class CommentDock(QtGui.QDockWidget):
         self.ui.txtLocationComment.hide()
         self.ui.txtTranslatorComment.setWhatsThis("Translator Comment\n\nThis is where translator can leave comments for other translators or for reviewers.")
         self.ui.txtLocationComment.setWhatsThis("Location Comment\n\nThis noneditable comment contains information about where the message is found in the souce code. It will be appeared once there is comments only. You can hide the comment editor by deactivating Views - Show Comment.")
-        # we need to enable the widget otherwise it will not use the new palette
-        self.ui.txtTranslatorComment.setEnabled(True)
         self.applySettings()
-        self.ui.txtTranslatorComment.setEnabled(False)
 
         self.connect(self.ui.txtTranslatorComment, QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
         
@@ -130,7 +127,13 @@ class CommentDock(QtGui.QDockWidget):
             palette = QtGui.QPalette(self.ui.txtTranslatorComment.palette())
             palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(QtGui.QPalette.Text), colorObj)
             palette.setColor(QtGui.QPalette.Inactive,QtGui.QPalette.ColorRole(QtGui.QPalette.Text), colorObj)
-            self.ui.txtTranslatorComment.setPalette(palette)
+            if (self.ui.txtTranslatorComment.isEnabled()):
+                self.ui.txtTranslatorComment.setPalette(palette)
+            else:
+                # we need to enable the widget otherwise it will not use the new palette
+                self.ui.txtTranslatorComment.setEnabled(True)
+                self.ui.txtTranslatorComment.setPalette(palette)
+                self.ui.txtTranslatorComment.setEnabled(False)
 
         font = World.settings.value("commentFont")
         if (font.isValid()):
