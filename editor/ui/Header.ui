@@ -472,7 +472,10 @@
          <bool>false</bool>
         </property>
         <property name="lineWidth" >
-         <number>0</number>
+         <number>1</number>
+        </property>
+        <property name="midLineWidth" >
+         <number>1</number>
         </property>
         <property name="showDropIndicator" stdset="0" >
          <bool>false</bool>
@@ -487,7 +490,7 @@
          <enum>QAbstractItemView::SingleSelection</enum>
         </property>
         <property name="showGrid" >
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="columnCount" >
          <number>2</number>
