@@ -102,6 +102,8 @@ class Element(minidom.Element):
     return getElementsByTagName_helper(self, name)
   def searchElementsByTagName(self, name, onlysearch):
     return searchElementsByTagName_helper(self, name, onlysearch)
+  def writexml(self, writer, indent, addindent, newl):
+    return writexml_helper(self, writer, indent, addindent, newl)
 class Document(minidom.Document):
   implementation = DOMImplementation()
   def getElementsByTagName(self, name):
