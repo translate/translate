@@ -186,8 +186,11 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.dockOverview, QtCore.SIGNAL("toggleFirstLastUnit"), self.toggleFirstLastUnit)
 
         self.connect(self.operator, QtCore.SIGNAL("newUnits"), self.dockOverview.slotNewUnits)
-        self.connect(self.operator, QtCore.SIGNAL("filteredList"), self.dockOverview.filteredList)
-        self.connect(self.operator, QtCore.SIGNAL("filteredList"), self.dockTUview.filteredList)
+        # "filterChanged" sends filter and number of filtered items.
+        self.connect(self.operator, QtCore.SIGNAL("filterChanged"), self.dockOverview.filterChanged)
+        self.connect(self.operator, QtCore.SIGNAL("filterChanged"), self.dockTUview.filterChanged)
+##        self.connect(self.operator, QtCore.SIGNAL("filteredList"), self.dockOverview.filteredList)
+##        self.connect(self.operator, QtCore.SIGNAL("filteredList"), self.dockTUview.filteredList)
 
         # set file status information to text label of status bar.
         self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.statuslabel.setText)

@@ -53,10 +53,8 @@ class Status:
             if (unit.x_editor_state & World.translated):
                 return
             self.numTranslated += 1
-            try:
+            if hasattr(unit, "marktranslated"):
                 unit.marktranslated()
-            except AttributeError:
-                pass
             unit.x_editor_state |= World.translated
             unit.x_editor_state &= ~World.untranslated
         else:

@@ -62,11 +62,10 @@ class OverviewDock(QtGui.QDockWidget):
         self.approvedIcon = QtGui.QIcon("../images/approved.png")
         self.blankIcon = QtGui.QIcon()
         self.normalState = QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
-        self.currentIndexActive = False
         self.indexMaxLen = 0
         self.units = []
         self.connect(self.ui.tableOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitCurrentIndex)
-        self.connect(self.ui.tableOverview.model(), QtCore.SIGNAL("layoutChanged()"), self.layoutChanged)
+        self.connect(self.ui.tableOverview.model(), QtCore.SIGNAL("layoutChanged()"), self.showFilteredItems)
         #self.connect(self.ui.tableOverview, QtCore.SIGNAL("cellDoubleClicked(int, int)"), self.emitTargetChanged)
     
     def closeEvent(self, event):
@@ -86,26 +85,24 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.tableOverview.clear()
         self.ui.tableOverview.setHorizontalHeaderLabels(self.headerLabels)
         self.ui.tableOverview.setSortingEnabled(False)
+        self.ui.tableOverview.setRowCount(0)
         for unit in units:
             self.addUnit(unit)
         self.ui.tableOverview.setSortingEnabled(True)
         self.setUpdatesEnabled(True)
-        self.units = units
-
-    def filteredList(self, shownList, filter):
-        """show the items which are in shownList.
-        @param shownList: list of unit which allow to be visible in the table.
-        @param filter: shownList's filter."""
-        if (filter != self.filter):
-            hiddenList = range(self.ui.tableOverview.rowCount())
-            for i in hiddenList:
-                self.ui.tableOverview.hideRow(i)
-            for unit in shownList:
-                self.ui.tableOverview.showRow(unit.x_editor_index)
-            self.filter = filter
-        self.shownList = shownList
         self.ui.tableOverview.sortItems(0)
         self.ui.tableOverview.resizeRowsToContents()
+        self.units = units
+        self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), True, False)
+
+    def filterChanged(self, filter, lenFilter):
+        """show the items which are in filter.
+        @param filter: helper constants for filtering
+        @param lenFilter: len of filtered items."""
+        if (filter == self.filter):
+            return
+        self.filter = filter
+        self.showFilteredItems()
         
     def addUnit(self, unit):
         """add unit to row.
@@ -137,30 +134,31 @@ class OverviewDock(QtGui.QDockWidget):
         selectedItems = self.ui.tableOverview.selectedItems()
         if (len(selectedItems) > 0):
             index = int(selectedItems[0].text())
-            self.currentIndexActive = True
             self.emit(QtCore.SIGNAL("currentIndex"), index)
 
     def updateView(self, unit):
         """highlight the table's row at index.
         @param unit: """
-        atFirst = (self.ui.tableOverview.currentRow() == 0)
-        atLast = (self.ui.tableOverview.currentRow() >= self.ui.tableOverview.rowCount() - 1)
-        self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), atFirst, atLast)
-        if (self.currentIndexActive == True):
-            self.currentIndexActive = False
-            return
-        if (not unit):
+##        atFirst = (self.ui.tableOverview.currentRow() == 0)
+##        atLast = (self.ui.tableOverview.currentRow() >= self.ui.tableOverview.rowCount() - 1)
+##        self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), atFirst, atLast)
+        if (not unit) or (not hasattr(unit, "x_editor_tableItem")):
             return
         row = self.ui.tableOverview.row(unit.x_editor_tableItem)
+        self.lastRow = row
         self.markComment(row, unit.getnotes())
         self.markState(row, unit.x_editor_state)
+        self.disconnect(self.ui.tableOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitCurrentIndex)
         self.ui.tableOverview.selectRow(row)
+        self.connect(self.ui.tableOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitCurrentIndex)
         self.ui.tableOverview.scrollToItem(unit.x_editor_tableItem)
-        #self.filterUnit(row, unit.x_editor_state)
+        self.filterUnit(row, unit.x_editor_state)
         
     def filterUnit(self, index, state):
         if (not self.filter & state):
             self.ui.tableOverview.hideRow(index)
+            self.scrollPrevious()
+            self.scrollNext()
         
     def markState(self, index, state):
         """display unit status on note column, and hide if unit is not in filter.
@@ -177,7 +175,7 @@ class OverviewDock(QtGui.QDockWidget):
     def updateTarget(self, text):
         """change the text in target column.
         @param text: text to set into target field."""
-        row = self.ui.tableOverview.currentRow()
+        row = self.lastRow
         item = self.ui.tableOverview.item(row, 2)
         item.setText(text)
         self.ui.tableOverview.resizeRowToContents(row)
@@ -219,9 +217,9 @@ class OverviewDock(QtGui.QDockWidget):
               
         self.ui.tableOverview.resizeRowsToContents()
         
-    def layoutChanged(self):
+    def showFilteredItems(self):
         for unit in self.units:
-            if (unit.x_editor_tableItem):
+            if hasattr(unit, "x_editor_tableItem"):
                 row = self.ui.tableOverview.row(unit.x_editor_tableItem)
                 if (unit.x_editor_state & self.filter):
                     self.ui.tableOverview.showRow(row)
@@ -250,31 +248,50 @@ class OverviewDock(QtGui.QDockWidget):
     def scrollPrevious(self):
         """move to previous row inside the table."""
         currentRow = self.ui.tableOverview.currentRow()
-        if currentRow > 0:
+        if (currentRow > 0):
+            atFirst = True
             for i in range(currentRow - 1, -1, -1):
                 if (not self.ui.tableOverview.isRowHidden(i)):
                     currentRow = i
+                    atFirst = False
                     break
             self.ui.tableOverview.selectRow(currentRow)
+            self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), atFirst, False)
         
     def scrollNext(self):
         """move to next row inside the table."""
         currentRow = self.ui.tableOverview.currentRow()
         rowCount = self.ui.tableOverview.rowCount()
-        if currentRow < rowCount:
+        if (currentRow < rowCount):
+            atLast = True
             for i in range(currentRow + 1, rowCount):
                 if (not self.ui.tableOverview.isRowHidden(i)):
                     currentRow = i
+                    atLast = False
                     break
             self.ui.tableOverview.selectRow(currentRow)
+            self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), False, atLast)
         
     def scrollFirst(self):
         """move to first row of the table."""
-        self.ui.tableOverview.selectRow(0)
+        currentRow = self.ui.tableOverview.currentRow()
+        if (currentRow > 0):
+            for i in range(currentRow - 1, -1, -1):
+                if (not self.ui.tableOverview.isRowHidden(i)):
+                    currentRow = i
+            self.ui.tableOverview.selectRow(currentRow)
+            self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), True, False)
         
     def scrollLast(self):
         """move to last row of the table."""
-        self.ui.tableOverview.selectRow(self.ui.tableOverview.rowCount() - 1)
+        currentRow = self.ui.tableOverview.currentRow()
+        rowCount = self.ui.tableOverview.rowCount()
+        if (currentRow < rowCount):
+            for i in range(currentRow + 1, rowCount):
+                if (not self.ui.tableOverview.isRowHidden(i)):
+                    currentRow = i
+            self.ui.tableOverview.selectRow(currentRow)
+            self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), False, True)
 
 if __name__ == "__main__":
     import sys, os

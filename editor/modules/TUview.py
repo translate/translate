@@ -69,14 +69,35 @@ class TUview(QtGui.QDockWidget):
 
     def setScrollbarValue(self, value):
         """@param value: the new value for the scrollbar"""
+        if (value < 0):
+            value = 0
+        self.disconnect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
         self.ui.fileScrollBar.setValue(value)
+        self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
         self.ui.fileScrollBar.setToolTip("%s / %s" % (value + 1,  self.ui.fileScrollBar.maximum() + 1))
 
-    def filteredList(self, fList, filter):
-        """Adjust the scrollbar maximum according to length of filtered list.
-        @param fList: Index list of units visible in the table after filtered
-        @param filter: helper constants for filtering"""
-        if (fList):
+##    def filteredList(self, fList, filter):
+##        """Adjust the scrollbar maximum according to length of filtered list.
+##        @param fList: Index list of units visible in the table after filtered
+##        @param filter: helper constants for filtering"""
+##        if (fList):
+##            self.ui.fileScrollBar.setEnabled(True)
+##            self.ui.txtSource.setEnabled(True)
+##            self.ui.txtTarget.setEnabled(True)
+##        else:
+##            self.ui.txtSource.clear()
+##            self.ui.txtTarget.clear()
+##            self.ui.txtSource.setEnabled(False)
+##            self.ui.txtTarget.setEnabled(False)
+##        self.filter = filter
+##        self.setScrollbarMaxValue(len(fList))
+##        self.setScrollbarValue(0)
+    
+    def filterChanged(self, filter, lenFilter):
+        """Adjust the scrollbar maximum according to lenFilter.
+        @param filter: helper constants for filtering
+        @param lenFilter: len of filtered items."""
+        if (lenFilter):
             self.ui.fileScrollBar.setEnabled(True)
             self.ui.txtSource.setEnabled(True)
             self.ui.txtTarget.setEnabled(True)
@@ -86,9 +107,9 @@ class TUview(QtGui.QDockWidget):
             self.ui.txtSource.setEnabled(False)
             self.ui.txtTarget.setEnabled(False)
         self.filter = filter
-        self.setScrollbarMaxValue(len(fList))
+        self.setScrollbarMaxValue(lenFilter)
         self.setScrollbarValue(0)
-
+    
     @QtCore.pyqtSignature("int")
     def emitCurrentIndex(self, value):
         """emit "currentIndex" signal with current index value.
@@ -101,8 +122,12 @@ class TUview(QtGui.QDockWidget):
         Then recalculate scrollbar maximum value.
         @param unit: unit to set in target and source.
         @param index: value in the scrollbar to be removed."""
-        if (not unit):
+        if (not unit) or (not hasattr(unit, "x_editor_filterIndex")):
             self.ui.txtComment.hide()
+            self.ui.txtSource.clear()
+            self.ui.txtTarget.clear()
+            self.ui.txtSource.setEnabled(False)
+            self.ui.txtTarget.setEnabled(False)
             return
         if isinstance(unit, po.pounit):
             comment = "".join([comment for comment in unit.msgidcomments])
@@ -118,14 +143,8 @@ class TUview(QtGui.QDockWidget):
         self.ui.txtSource.setPlainText(unit.source)
         self.ui.txtTarget.setPlainText(unit.target)
         self.ui.txtTarget.setFocus
-##        if not (self.filter & unit.x_editor_state):
-##            self.setScrollbarMaxValue(self.ui.fileScrollBar.maximum())
-##            self.ui.txtSource.clear()
-##            self.ui.txtTarget.clear()
         # set the scrollbar position
-        self.disconnect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
         self.setScrollbarValue(unit.x_editor_filterIndex)
-        self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
 
     def setTarget(self, text):
         """Change the target text.

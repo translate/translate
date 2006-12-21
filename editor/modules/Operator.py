@@ -45,7 +45,7 @@ class Operator(QtCore.QObject):
         QtCore.QObject.__init__(self)
         self.store = None
         self._modified = False
-        self._unitpointer = 0
+        self.currentUnitIndex = 0
         
     def getUnits(self, fileName):
         """reading a file into the internal datastructure.
@@ -62,29 +62,29 @@ class Operator(QtCore.QObject):
         self.emitStatus()
 
         self.filteredList = []
-        i = 0 #int(bool(self.store.units[0].isheader()))
-        #for unit in self.store.units[i:]:
-        for unit in self.store.units:
+        start = 0
+        if (self.store.units[0].isheader()):
+            start = 1
+        i = start
+        j = 0
+        for unit in self.store.units[start:]:
             unit.x_editor_index = i
-            unit.x_editor_filterIndex = i
+            unit.x_editor_filterIndex = j
             self.filteredList.append(unit)
             i += 1
-        self.emit(QtCore.SIGNAL("newUnits"), self.store.units)
+            j += 1
+        self.emit(QtCore.SIGNAL("newUnits"), self.store.units[start:])
         self.emitFiltered(self.filter)
 
     def emitStatus(self):
         self.emit(QtCore.SIGNAL("currentStatus"), self.status.statusString())        
-
-    def emitCurrentUnit(self):
-        """send signal with unit class."""
-        self.searchPointer = self._unitpointer
-        if (self.filteredList):
-            unit = self.filteredList[self._unitpointer]
-        else:
-            unit = None
-        self.emit(QtCore.SIGNAL("currentUnit"), unit)
-        #self.filterUnit(currentUnit)
-        
+    
+    def emitUnit(self, unit):
+        if hasattr(unit, "x_editor_index"):
+            self.currentUnitIndex = unit.x_editor_index
+            self.searchPointer = self.currentUnitIndex
+            self.emit(QtCore.SIGNAL("currentUnit"), unit)
+    
     def filterFuzzy(self, checked):
         """add/remove fuzzy to filter, and send filter signal.
         @param checked: True or False when Fuzzy checkbox is checked or unchecked.
@@ -95,7 +95,7 @@ class Operator(QtCore.QObject):
         else:
             filter &= ~World.fuzzy
         self.emitFiltered(filter)
-        
+    
     def filterTranslated(self, checked):
         """add/remove translated to filter, and send filter signal.
         @param checked: True or False when Translated checkbox is checked or unchecked."""
@@ -120,17 +120,14 @@ class Operator(QtCore.QObject):
     def emitFiltered(self, filter):
         """send filtered list signal according to filter."""
         self.emitUpdateUnit()
-        # try to remember last index
-        if (self.filteredList):
-            lastIndex = self.filteredList[self._unitpointer].x_editor_index
-        else:
-            lastIndex = 0
         if (filter != self.filter):
             # build a new filteredList when only filter has changed.
             self.filter = filter
             self.filteredList = []
+            start = 0
+            if (self.store.units[0].isheader()):
+                start = 1
             i = 0
-            start = int(bool(self.store.units[0].isheader()))
             for unit in self.store.units[start:]:
                 # add unit to filteredList if it is in the filter
                 if (self.filter & unit.x_editor_state):
@@ -139,12 +136,9 @@ class Operator(QtCore.QObject):
                     i += 1
                 else:
                     unit.x_editor_filterIndex = None
-        self.emit(QtCore.SIGNAL("filteredList"), self.filteredList, filter)
-        unit = self.store.units[lastIndex]
-        self._unitpointer = unit.x_editor_filterIndex
-        if (self._unitpointer == None):
-            self._unitpointer = 0
-        self.emitCurrentUnit()
+        self.emit(QtCore.SIGNAL("filterChanged"), filter, len(self.filteredList))
+        unit = self.store.units[self.currentUnitIndex]
+        self.emitUnit(unit)
         
     def filterUnit(self, unit):
         if (not self.filter & unit.x_editor_state):
@@ -152,7 +146,7 @@ class Operator(QtCore.QObject):
     
     def emitUpdateUnit(self):
         """emit "updateUnit" signal."""
-        if (not self.store or self._unitpointer > len(self.filteredList)):
+        if (not self.store):
             return
         self.emit(QtCore.SIGNAL("updateUnit"))
 
@@ -213,7 +207,7 @@ class Operator(QtCore.QObject):
         """set the comment to the current unit.
         @param comment: QString type
         """
-        unit = self.filteredList[self._unitpointer]
+        unit = self.store.units[self.currentUnitIndex]
         unit.removenotes()
         unit.addnote(unicode(comment))
         self._modified = True
@@ -221,7 +215,7 @@ class Operator(QtCore.QObject):
     def setTarget(self, target):
         """set the target which is QString type to the current unit.
         @param target: QString type"""
-        unit = self.filteredList[self._unitpointer]
+        unit = self.store.units[self.currentUnitIndex]
         translatedState = unit.istranslated()
         # update target for current unit
         unit.target = unicode(target)
@@ -233,25 +227,23 @@ class Operator(QtCore.QObject):
         self.emitStatus()
 
     def setCurrentUnit(self, index):
-        """adjust the unitpointer with currentIndex, and send currentUnit signal.
-        @param currentIndex: current unit's index inside the units."""
-        try:
+        """build a unit from index and call emitUnit.
+        @param index: index inside the store.units."""
+        if (index < len(self.store.units)):
             self.emitUpdateUnit()
             unit = self.store.units[index]
-            self._unitpointer = unit.x_editor_filterIndex
-            self.emitCurrentUnit()
-        except:
-            pass
+            self.emitUnit(unit)
         
     def indexToUnit(self, index):
-        self.emitUpdateUnit()
-        self._unitpointer = index
-        self.emitCurrentUnit()
+        if (index < len(self.filteredList)):
+            self.emitUpdateUnit()
+            unit = self.filteredList[index]
+            self.emitUnit(unit)
         
     def toggleFuzzy(self):
         """toggle fuzzy state for current unit."""
         self.emitUpdateUnit()
-        unit = self.filteredList[self._unitpointer]
+        unit = self.store.units[self.currentUnitIndex]
         if (unit.x_editor_state & World.fuzzy):
             self.status.markFuzzy(unit, False)
         elif (unit.x_editor_state & World.translated):
@@ -259,7 +251,7 @@ class Operator(QtCore.QObject):
         else:
             return
         self._modified = True
-        self.emitCurrentUnit()
+        self.emitUnit(unit)
         self.emitStatus()
     
     def initSearch(self, searchString, searchableText, matchCase):
@@ -267,7 +259,7 @@ class Operator(QtCore.QObject):
         @param searchString: string to search for.
         @param searchableText: text fields to search through.
         @param matchCase: bool indicates case sensitive condition."""
-        self.searchPointer = self._unitpointer
+        #self.searchPointer = self._unitpointer
         self.currentTextField = 0
         self.foundPosition = -1
         self.searchString = str(searchString)
@@ -371,8 +363,7 @@ class Operator(QtCore.QObject):
 
     def _searchFound(self):
         """emit searchResult signal with text field, position, and length."""
-        self._unitpointer = self.searchPointer
-        self.emitCurrentUnit()
+        self.indexToUnit(self.searchPointer)
         textField = self.searchableText[self.currentTextField]
         self.emit(QtCore.SIGNAL("searchResult"), textField, self.foundPosition, len(unicode(self.searchString)))
         self.emit(QtCore.SIGNAL("generalInfo"), "")
