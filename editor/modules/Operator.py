@@ -82,6 +82,8 @@ class Operator(QtCore.QObject):
         self.emit(QtCore.SIGNAL("currentStatus"), self.status.statusString())        
     
     def emitUnit(self, unit):
+        """send "currentUnit" signal with unit.
+        @param unit: class unit."""
         if hasattr(unit, "x_editor_index"):
             self.currentUnitIndex = unit.x_editor_index
             self.searchPointer = self.currentUnitIndex
@@ -145,10 +147,6 @@ class Operator(QtCore.QObject):
         else:
             self.emitUnit(None)
         
-    def filterUnit(self, unit):
-        if (not self.filter & unit.x_editor_state):
-            self.filteredList.remove(unit.x_editor_index)
-    
     def emitUpdateUnit(self):
         """emit "updateUnit" signal."""
         if (not self.store):

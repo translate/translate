@@ -152,13 +152,6 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.tableOverview.selectRow(row)
         self.connect(self.ui.tableOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitCurrentIndex)
         self.ui.tableOverview.scrollToItem(unit.x_editor_tableItem)
-        self.filterUnit(row, unit.x_editor_state)
-        
-    def filterUnit(self, index, state):
-        if (not self.filter & state):
-            self.ui.tableOverview.hideRow(index)
-            self.scrollPrevious()
-            self.scrollNext()
         
     def markState(self, index, state):
         """display unit status on note column, and hide if unit is not in filter.
