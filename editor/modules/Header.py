@@ -59,7 +59,6 @@ class Header(QtGui.QDialog):
             QtCore.QObject.connect(self.ui.btnDown ,QtCore.SIGNAL("clicked()"), self.moveDown)
             QtCore.QObject.connect(self.ui.btnInsertRow,QtCore.SIGNAL("clicked()"), self.insertNewRow)
             QtCore.QObject.connect(self.ui.btnDeleteRow,QtCore.SIGNAL("clicked()"), self.deleteRow)
-            
             QtCore.QObject.connect(self.ui.txtOtherComments, QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
             
              # set up table appearance and behavior
@@ -73,11 +72,11 @@ class Header(QtGui.QDialog):
             self.ui.tableHeader.horizontalHeader().setHighlightSections(False)
             self.ui.tableHeader.setEnabled(True)
             self.ui.tableHeader.verticalHeader().hide()
-
         otherComments, self.headerDic = self.operator.headerData() 
+##        self.headerDicForReset = self.headerDic
         if (self.headerDic):
             self.addItemToTable(self.headerDic)
-            
+            self.btnRMStat()
         otherCommentsStr = " "
         if (otherComments):
             for i in range(len(otherComments)):
@@ -91,9 +90,9 @@ class Header(QtGui.QDialog):
     def reset(self):
         """Reset back the original header"""
         self.addItemToTable(self.headerDic)
+##        self.addItemToTable(self.headerDicForReset)
         self.ui.txtOtherComments.setPlainText(self.oldOtherComments)
         
-    
     def moveItem(self, distance) :
         """ Move the selected item up or down
         @param distance is a difference for the current row"""
@@ -119,6 +118,7 @@ class Header(QtGui.QDialog):
         
     def insertNewRow(self):
         """ Insert a row befor the selected row """
+        self.ui.btnDeleteRow.setEnabled(True)
         table = self.ui.tableHeader
         currRow = table.currentRow()
         table.insertRow(currRow)
@@ -128,9 +128,20 @@ class Header(QtGui.QDialog):
         
     def deleteRow(self):
         """ Delete selected row"""
+        self.btnRMStat()
+        if (self.stat == False):
+            return
         del self.headerDic[str(self.ui.tableHeader.item(self.ui.tableHeader.currentRow(), 0).text())]
         self.ui.tableHeader.removeRow(self.ui.tableHeader.currentRow())
-        
+
+    def btnRMStat(self):
+        if (self.ui.tableHeader.rowCount() > 0 ):
+            self.ui.btnDeleteRow.setEnabled(True)
+            self.stat = True
+        else:
+            self.ui.btnDeleteRow.setEnabled(False)
+            self.stat = False
+
     def naviState(self):
         """ enabled/ disabled status of button moveup/ movedown"""
         currRow = self.ui.tableHeader.currentRow()
