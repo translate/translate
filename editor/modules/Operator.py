@@ -85,7 +85,7 @@ class Operator(QtCore.QObject):
         if hasattr(unit, "x_editor_index"):
             self.currentUnitIndex = unit.x_editor_index
             self.searchPointer = self.currentUnitIndex
-            self.emit(QtCore.SIGNAL("currentUnit"), unit)
+        self.emit(QtCore.SIGNAL("currentUnit"), unit)
     
     def filterFuzzy(self, checked):
         """add/remove fuzzy to filter, and send filter signal.
@@ -142,6 +142,8 @@ class Operator(QtCore.QObject):
         unit = self.store.units[self.currentUnitIndex]
         if (len(self.filteredList) > 0):
             self.emitUnit(unit)
+        else:
+            self.emitUnit(None)
         
     def filterUnit(self, unit):
         if (not self.filter & unit.x_editor_state):

@@ -69,26 +69,26 @@ class CommentDock(QtGui.QDockWidget):
         QtGui.QDockWidget.closeEvent(self, event)
         self.toggleViewAction().setChecked(False)
 
-    def updateView(self, currentUnit):
-        """ update comments 
-        @param currentUnit: new unit that just emit"""
-        self.ui.txtTranslatorComment.setEnabled(bool(currentUnit))
-        if (not currentUnit):
+    def updateView(self, unit):
+        """Update the comments view
+        @param unit: class unit."""
+        self.ui.txtTranslatorComment.setEnabled(bool(unit))
+        if (not unit):
             self.ui.txtLocationComment.hide()
-            self.ui.txtTranslatorComment.setPlainText("")
+            self.ui.txtTranslatorComment.clear()
             return
         translatorComment = ""
         locationComment = ""
-        if isinstance(currentUnit, po.pounit):
-            translatorComment = currentUnit.getnotes("translator")
-            locationComment = comments = "".join([comment[3:] for comment in currentUnit.sourcecomments])
+        if isinstance(unit, po.pounit):
+            translatorComment = unit.getnotes("translator")
+            locationComment = comments = "".join([comment[3:] for comment in unit.sourcecomments])
             if (locationComment == ""):
                 self.ui.txtLocationComment.hide()
             else:
                 self.ui.txtLocationComment.show()
                 self.ui.txtLocationComment.setPlainText(unicode(locationComment))
-        elif isinstance(currentUnit, xliff.xliffunit):
-            translatorComment = currentUnit.getnotes()
+        elif isinstance(unit, xliff.xliffunit):
+            translatorComment = unit.getnotes()
             self.ui.txtLocationComment.hide()
         else:
             translatorComment = ""
