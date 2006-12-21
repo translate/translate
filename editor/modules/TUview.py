@@ -76,23 +76,6 @@ class TUview(QtGui.QDockWidget):
         self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
         self.ui.fileScrollBar.setToolTip("%s / %s" % (value + 1,  self.ui.fileScrollBar.maximum() + 1))
 
-##    def filteredList(self, fList, filter):
-##        """Adjust the scrollbar maximum according to length of filtered list.
-##        @param fList: Index list of units visible in the table after filtered
-##        @param filter: helper constants for filtering"""
-##        if (fList):
-##            self.ui.fileScrollBar.setEnabled(True)
-##            self.ui.txtSource.setEnabled(True)
-##            self.ui.txtTarget.setEnabled(True)
-##        else:
-##            self.ui.txtSource.clear()
-##            self.ui.txtTarget.clear()
-##            self.ui.txtSource.setEnabled(False)
-##            self.ui.txtTarget.setEnabled(False)
-##        self.filter = filter
-##        self.setScrollbarMaxValue(len(fList))
-##        self.setScrollbarValue(0)
-    
     def filterChanged(self, filter, lenFilter):
         """Adjust the scrollbar maximum according to lenFilter.
         @param filter: helper constants for filtering
@@ -108,7 +91,6 @@ class TUview(QtGui.QDockWidget):
             self.ui.txtTarget.setEnabled(False)
         self.filter = filter
         self.setScrollbarMaxValue(lenFilter)
-        self.setScrollbarValue(0)
     
     @QtCore.pyqtSignature("int")
     def emitCurrentIndex(self, value):
