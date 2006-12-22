@@ -22,6 +22,7 @@
 
 """module for parsing .xliff files for translation"""
 
+from translate.storage import base
 from translate.storage import lisa
 from xml.dom import minidom
 
@@ -108,10 +109,14 @@ class xliffunit(lisa.LISAunit):
 
     def addalttrans(self, txt, origin=None, lang=None):
         """Adds a alt-trans tag and alt-trans components to <source>"""
+        #TODO: support adding a source tag ad match quality attribute.  At 
+        # the source tag is needed to inject fuzzy matches from a TM.
         if isinstance(txt, str):
             txt = txt.decode("utf-8")
+        alttarget = self.document.createElement("target")
+        alttarget.appendChild(self.document.createTextNode(txt))
         alttrans = self.document.createElement("alt-trans")
-        alttrans.appendChild(self.document.createTextNode(txt))
+        alttrans.appendChild(alttarget)
         if origin:
             alttrans.setAttribute("origin", origin)
         if lang:
@@ -119,17 +124,35 @@ class xliffunit(lisa.LISAunit):
         self.xmlelement.appendChild(alttrans)
 
     def getalttrans(self, origin=None):
-        """Returns <alt-trans> for source as a list"""
+        """Returns <alt-trans> for the given origin as a list of units. No 
+        origin means all alternatives."""
         nodes = self.xmlelement.getElementsByTagName("alt-trans")
         translist = []
-        if not origin:
-            for i in range(len(nodes)):
-                translist.append(lisa.getText(nodes[i]))
-        else:
-            for i in range(len(nodes)):
-                if self.correctorigin(nodes[i], origin):
-                    translist.append(lisa.getText(nodes[i]))
+        for i in range(len(nodes)):
+            if self.correctorigin(nodes[i], origin):
+                # We build some mini units that keep the xmlelement. This 
+                # makes it easier to delete it if it is passed back to us.
+                newunit = base.TranslationUnit(self.source)
+                node = nodes[i]
+
+                # the source tag is optional
+                sourcelist = node.getElementsByTagName("source")
+                if sourcelist:
+                    newunit.source = lisa.getText(sourcelist[0])
+
+                # must have one or more targets
+                targetlist = node.getElementsByTagName("target")
+                newunit.target = lisa.getText(targetlist[0])
+                #TODO: support multiple targets better
+                #TODO: support notes in alt-trans
+                newunit.xmlelement = node
+
+                translist.append(newunit)
         return translist
+
+    def delattrans(self, alternative):
+        """Removes the supplied alternative from the list of alt-trans tags"""
+        self.xmlelement.removeChild(alternative.xmlelement)
 
     def addnote(self, text, origin=None):
         """Add a note specifically in a "note" tag"""
