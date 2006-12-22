@@ -9,57 +9,22 @@
 - Who: Virak
 - Status: not
 
-3. Find: Wrong Highligth,Not go to the beginning
-- Priority: 1
-- Who: Phon
-- Status: Done
-
-4. Save button
+3. Save button
 - Priority: 2
 - Who: Phon
 - Status: not
 
-5. Copy/Paste/Undo/Redo
-- Priority: 1
-- Who: Ratha
-- Status: not
-    + only Paste is not done: disable Paste over readonly widget
-
-6. Open many files: no attribute remove last
-- Priority: 1
-- Who: Virak
-- Status: done
-
-7. What's this?
+4. What's this?
 - Priority: 2
 - Who: All
 - Status: not
-  + whatsthis for Tuview and Comment at my side are done, but cannot be commited for ther are some relevant unsuccessful code.
 
-8. Image Path
-- Priority: 1
-- Who: Jens
-- Status: fixed
-
-9. Able to run script
-- Priority: 1
-- Who: Da
-- Status: closed
-
-10. Show preference dialog on save if no
+5. Show preference dialog on save if no
 - Priority: 3
 - Who: Ratha
 - Status: not
 
-11. Command Line	
-- Priority: 1
-- Who: Da
-- Status: closed
-  + create poxole.py file and putting options ( -h, --help, --version)
-  + open the editor if there is no options
-  + open the editor with a valid given file. 
-
-12. UnitTest
+6. UnitTest
 - Priority: 1
 - Who: All
 - Status: not
@@ -69,136 +34,100 @@
    + Test_Find:0k
    + Test_TUview: (phon)
    + Test_Header:(da)
-   + Test_Operator:???
+   + Test_Operator:phon
 
-13. Header
+7. Header
 - Priority: 1
 - Who: Da
 - Status: it is working with po and poxliff file, but no xliff
 
-14. Note
+8. Note
 - Priority: 1
 - Who: Da
 - Status: Open
   + I move the needed code to editor, and it works now
   + need futhure discussion with pootle team.about better method of getnodes() in po.py
 
-15. Editor's Name
+9. Editor's Name
 - Priority: 1
 - Who: All
 - Status: Open
     + There are two candidates: pootling, poxole.
 
-16. Windows Installer
+10. Windows Installer
 - Priority: 3
 - Who: Virak
 - Status: not
 
-17. Rpm packages
+11. Rpm packages
 - Priority: 3
 - Who: Da
 - Status: not
 - Tip: use rpm-python
 
-18 Move the mainwindow class into a file in modules and make the filename of the main script only lowercase.
-- Priority: 2
-- Who: Da
-- Status: closed
-
-19. Comment the code: all classes, return values and parameter!
+12. Comment the code: all classes, return values and parameter!
 - Priority: 1
 - Who: all
 - Status: not
 - Tip: I am not writing everywhere FIXME: you have to start thinking yourself, Jens
 
-20. Make the highlight color configurable: color for parameter, tag, search highlight
+13. Make the highlight color configurable: color for parameter, tag, search highlight
 - Priority: 2
 - Who: phon
 - Status: not
  
-21. rearrange the menu. Create an entry Window and move toolbars and toolviews there. 
-    Make the filter appear on the first level in View menu.
-- Priority: 1
-- Who: ratha
-- Status: closed
-
-22. do not crash when a not welformed xliff was read.
+14. do not crash when a not welformed xliff was read.
 - Priority: 1
 - Who: virak
 - Status: not
 
-23. open in new window is not save. If I kill one window the otherone will 
+15. open in new window is not save. If I kill one window the otherone will 
     also go away.
 - Priority: 1
 - Who: phon
 - Status: not
 - Tip: if we can not fix this we remove the action from the menu
 
-24. add an icon to the preference action.
-- Priority: 2
-- Who: ratha
-- Status: closed
 
-25. unify the icons for previous/next and first/last. They have different size in the moment.
-- Priority: 2
-- Who: ratha
-- Status: closed
-
-26. Do not repeat "Edit" in the text for the header dialog.
-- Priority: 1
-- Who: da
-- Status: closed
-
-
-27. Use the custom font also for the table header in overview.
-- Priority: 1
-- Who: da
-- Status: closed
-
-28. Change icons for move up/move down in header dialog.
-- Priority: 1
-- Who: ratha
-- Status: closed
-
-29. Add fuzzy icon on status bar and overview
+16. Add fuzzy icon on status bar and overview
 - Priority: 1
 - Who: virak
 - Status: not
 
 
-30. Change Auto update header on save by default
-- Priority: 1
-- Who: da
-- Status: closed
-
-31. Setting the text color does not work if I have no file open. 
+17. Setting the text color does not work if I have no file open. 
     When I restart the editor the new colors are used. If I have a file open
     the colors change immediately.
 - Priority: 1
-- Who: ???
+- Who: ratha
 - Status: open
 
-32. adjust the comments in all files: 
+18. adjust the comments in all files: 
     - correct version number and date
     - think about the use of "along with translate" in the text
 - Priority: 1
 - Who: ratha
 - Status: open
 
-33. Replace: replace after the first replace is wrong:
+19. Replace: replace after the first replace is wrong:
 - Priority: 1
 - Who: Phon
 - Status: Open
 
-34. Replace: when click Open Dialog, the paste on toolbar will enabled because
+20.when click Open Dialog, the paste on toolbar will enabled because
     of cursor focus on filename.
 - Priority: 2
 - Who: ???
 - Status: not
 
-35. the statistic in the status bar counts the header unit as a normal unit!
+21. the statistic in the status bar counts the header unit as a normal unit!
     -> the overview shows less units than the statistic
 - Priority: 1
-- Who: ???
+- Who: virak
 - Status: Open
+
+22. Emit signal readyForSave when there is something change in Preference and Header
+- Priority: 1
+- Who: ???
+- Status: not
 
