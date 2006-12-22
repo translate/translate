@@ -86,7 +86,9 @@ class Operator(QtCore.QObject):
         @param unit: class unit."""
         if hasattr(unit, "x_editor_index"):
             self.currentUnitIndex = unit.x_editor_index
-            self.searchPointer = self.currentUnitIndex
+        else:
+            self.currentUnitIndex = None
+        self.searchPointer = self.currentUnitIndex
         self.emit(QtCore.SIGNAL("currentUnit"), unit)
     
     def filterFuzzy(self, checked):
@@ -141,11 +143,13 @@ class Operator(QtCore.QObject):
                 else:
                     unit.x_editor_filterIndex = None
         self.emit(QtCore.SIGNAL("filterChanged"), filter, len(self.filteredList))
-        unit = self.store.units[self.currentUnitIndex]
-        if (len(self.filteredList) > 0):
-            self.emitUnit(unit)
+        if (self.currentUnitIndex > 0) and (self.store.units[self.currentUnitIndex] in self.filteredList):
+            unit = self.store.units[self.currentUnitIndex]
+        elif (len(self.filteredList) > 0):
+            unit = self.filteredList[0]
         else:
-            self.emitUnit(None)
+            unit = None
+        self.emitUnit(unit)
         
     def emitUpdateUnit(self):
         """emit "updateUnit" signal."""
@@ -210,6 +214,8 @@ class Operator(QtCore.QObject):
         """set the comment to the current unit.
         @param comment: QString type
         """
+        if (self.currentUnitIndex < 0):
+            return
         unit = self.store.units[self.currentUnitIndex]
         unit.removenotes()
         unit.addnote(unicode(comment))
@@ -218,6 +224,8 @@ class Operator(QtCore.QObject):
     def setTarget(self, target):
         """set the target which is QString type to the current unit.
         @param target: QString type"""
+        if (self.currentUnitIndex < 0):
+            return
         unit = self.store.units[self.currentUnitIndex]
         translatedState = unit.istranslated()
         # update target for current unit
@@ -245,6 +253,8 @@ class Operator(QtCore.QObject):
         
     def toggleFuzzy(self):
         """toggle fuzzy state for current unit."""
+        if (self.currentUnitIndex < 0):
+            return
         self.emitUpdateUnit()
         unit = self.store.units[self.currentUnitIndex]
         if (unit.x_editor_state & World.fuzzy):
@@ -350,6 +360,8 @@ class Operator(QtCore.QObject):
         
     def _getUnitString(self):
         """@return: the string of current text field."""
+        if (self.searchPointer >= len(self.filteredList)):
+            return ""
         textField = self.searchableText[self.currentTextField]
         if (textField == World.source):
             unitString = self.filteredList[self.searchPointer].source

@@ -51,11 +51,6 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.tableOverview.horizontalHeader().setResizeMode(2, QtGui.QHeaderView.Stretch)
         self.ui.tableOverview.horizontalHeader().setHighlightSections(False)
         self.ui.tableOverview.verticalHeader().hide()
-##        self.ui.tableOverview.verticalHeader().hide()
-##        palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(QtGui.QPalette.Text), colorObj)
-        
-##        self.headerFont = QtGui.QFont('Sans Serif', 10)
-##        self.ui.tableOverview.horizontalHeader().setFont(self.headerFont)
         self.applySettings()
         self.fuzzyIcon = QtGui.QIcon("../images/fuzzy.png")
         self.noteIcon = QtGui.QIcon("../images/note.png")
@@ -64,6 +59,8 @@ class OverviewDock(QtGui.QDockWidget):
         self.normalState = QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
         self.indexMaxLen = 0
         self.units = []
+        self.selectedIndex = 0
+        self.visibleRow = []
         self.connect(self.ui.tableOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitCurrentIndex)
         self.connect(self.ui.tableOverview.model(), QtCore.SIGNAL("layoutChanged()"), self.showFilteredItems)
         #self.connect(self.ui.tableOverview, QtCore.SIGNAL("cellDoubleClicked(int, int)"), self.emitTargetChanged)
@@ -101,6 +98,8 @@ class OverviewDock(QtGui.QDockWidget):
         @param lenFilter: len of filtered items."""
         if (filter == self.filter):
             return
+        if (lenFilter == 0):
+            self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), True, True)
         self.filter = filter
         self.showFilteredItems()
         
@@ -139,9 +138,6 @@ class OverviewDock(QtGui.QDockWidget):
     def updateView(self, unit):
         """highlight the table's row at index.
         @param unit: """
-##        atFirst = (self.ui.tableOverview.currentRow() == 0)
-##        atLast = (self.ui.tableOverview.currentRow() >= self.ui.tableOverview.rowCount() - 1)
-##        self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), atFirst, atLast)
         if (not unit) or (not hasattr(unit, "x_editor_tableItem")):
             return
         row = self.ui.tableOverview.row(unit.x_editor_tableItem)
@@ -152,6 +148,12 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.tableOverview.selectRow(row)
         self.connect(self.ui.tableOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitCurrentIndex)
         self.ui.tableOverview.scrollToItem(unit.x_editor_tableItem)
+        
+        if (self.visibleRow):
+            self.selectedIndex = self.visibleRow.index(row)
+        firstUnit = (self.selectedIndex == 0)
+        lastUnit = (self.selectedIndex >= len(self.visibleRow) -1)
+        self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), firstUnit, lastUnit)
         
     def markState(self, index, state):
         """display unit status on note column, and hide if unit is not in filter.
@@ -219,7 +221,15 @@ class OverviewDock(QtGui.QDockWidget):
                 else:
                     self.ui.tableOverview.hideRow(row)
         self.ui.tableOverview.resizeRowsToContents()
-
+        
+        self.visibleRow = []
+        for i in range(self.ui.tableOverview.rowCount()):
+            if (not self.ui.tableOverview.isRowHidden(i)):
+                self.visibleRow.append(i)
+        if (self.visibleRow) and (len(self.ui.tableOverview.selectedItems()) > 0):
+            row = self.ui.tableOverview.row(self.ui.tableOverview.selectedItems()[0])
+            self.selectedIndex = self.visibleRow.index(row)
+        
     def indexString(self, index):
         return str(index).rjust(self.indexMaxLen) + "  "
         
@@ -240,51 +250,25 @@ class OverviewDock(QtGui.QDockWidget):
     
     def scrollPrevious(self):
         """move to previous row inside the table."""
-        currentRow = self.ui.tableOverview.currentRow()
-        if (currentRow > 0):
-            atFirst = True
-            for i in range(currentRow - 1, -1, -1):
-                if (not self.ui.tableOverview.isRowHidden(i)):
-                    currentRow = i
-                    atFirst = False
-                    break
-            self.ui.tableOverview.selectRow(currentRow)
-            self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), atFirst, False)
+        if (self.selectedIndex > 0):
+            self.selectedIndex -= 1
+            self.ui.tableOverview.selectRow(self.visibleRow[self.selectedIndex])
         
     def scrollNext(self):
         """move to next row inside the table."""
-        currentRow = self.ui.tableOverview.currentRow()
-        rowCount = self.ui.tableOverview.rowCount()
-        if (currentRow < rowCount):
-            atLast = True
-            for i in range(currentRow + 1, rowCount):
-                if (not self.ui.tableOverview.isRowHidden(i)):
-                    currentRow = i
-                    atLast = False
-                    break
-            self.ui.tableOverview.selectRow(currentRow)
-            self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), False, atLast)
+        if (self.selectedIndex < len(self.visibleRow)):
+            self.selectedIndex += 1
+            self.ui.tableOverview.selectRow(self.visibleRow[self.selectedIndex])
         
     def scrollFirst(self):
         """move to first row of the table."""
-        currentRow = self.ui.tableOverview.currentRow()
-        if (currentRow > 0):
-            for i in range(currentRow - 1, -1, -1):
-                if (not self.ui.tableOverview.isRowHidden(i)):
-                    currentRow = i
-            self.ui.tableOverview.selectRow(currentRow)
-            self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), True, False)
+        self.selectedIndex = 0
+        self.ui.tableOverview.selectRow(self.visibleRow[self.selectedIndex])
         
     def scrollLast(self):
         """move to last row of the table."""
-        currentRow = self.ui.tableOverview.currentRow()
-        rowCount = self.ui.tableOverview.rowCount()
-        if (currentRow < rowCount):
-            for i in range(currentRow + 1, rowCount):
-                if (not self.ui.tableOverview.isRowHidden(i)):
-                    currentRow = i
-            self.ui.tableOverview.selectRow(currentRow)
-            self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), False, True)
+        self.selectedIndex = len(self.visibleRow) - 1
+        self.ui.tableOverview.selectRow(self.visibleRow[self.selectedIndex])
 
 if __name__ == "__main__":
     import sys, os
