@@ -1,4 +1,87 @@
+Closed bugs and need review
+=====================================
+1. Find: Wrong Highligth,Not go to the beginning
+- Priority: 1
+- Who: Phon
+- Status: Done
 
+2. Open many files: no attribute remove last
+- Priority: 1
+- Who: Virak
+- Status: done
+
+3. Image Path
+- Priority: 1
+- Who: Jens
+- Status: fixed
+
+
+4. Able to run script
+- Priority: 1
+- Who: Da
+- Status: closed
+
+5. Command Line	
+- Priority: 1
+- Who: Da
+- Status: closed
+  + create poxole.py file and putting options ( -h, --help, --version)
+  + open the editor if there is no options
+  + open the editor with a valid given file. 
+  
+  6 Move the mainwindow class into a file in modules and make the filename of the main script only lowercase.
+- Priority: 2
+- Who: Da
+- Status: closed
+
+7. rearrange the menu. Create an entry Window and move toolbars and toolviews there. 
+    Make the filter appear on the first level in View menu.
+- Priority: 1
+- Who: ratha
+- Status: closed
+
+8. add an icon to the preference action.
+- Priority: 2
+- Who: ratha
+- Status: closed
+
+9. unify the icons for previous/next and first/last. They have different size in the moment.
+- Priority: 2
+- Who: ratha
+- Status: closed
+
+10. Do not repeat "Edit" in the text for the header dialog.
+- Priority: 1
+- Who: da
+- Status: closed
+
+
+11. Use the custom font also for the table header in overview.
+- Priority: 1
+- Who: da
+- Status: closed
+
+12. Change icons for move up/move down in header dialog.
+- Priority: 1
+- Who: ratha
+- Status: closed
+
+
+13. Change Auto update header on save by default
+- Priority: 1
+- Who: da
+- Status: closed
+
+14. Setting the text color does not work if I have no file open. 
+    When I restart the editor the new colors are used. If I have a file open
+    the colors change immediately.
+- Priority: 1
+- Who: da
+- Status: closed
+
+====================================================
+Open Bugs
+====================================================
 1. README/CHANGLOG
 - Priority: 1
 - Who: Phon
@@ -14,17 +97,22 @@
 - Who: Phon
 - Status: not
 
-4. What's this?
+4. Copy/Paste/Undo/Redo
+- Priority: 1
+- Who: Ratha
+- Status: open
+
+5. What's this?
 - Priority: 2
 - Who: All
 - Status: not
 
-5. Show preference dialog on save if no
+6. Show preference dialog on save if no
 - Priority: 3
 - Who: Ratha
 - Status: not
 
-6. UnitTest
+7. UnitTest
 - Priority: 1
 - Who: All
 - Status: not
@@ -34,100 +122,97 @@
    + Test_Find:0k
    + Test_TUview: (phon)
    + Test_Header:(da)
-   + Test_Operator:phon
+   + Test_Operator:???
 
-7. Header
+8. Header
 - Priority: 1
 - Who: Da
 - Status: it is working with po and poxliff file, but no xliff
 
-8. Note
+9. Note
 - Priority: 1
 - Who: Da
 - Status: Open
   + I move the needed code to editor, and it works now
   + need futhure discussion with pootle team.about better method of getnodes() in po.py
 
-9. Editor's Name
+10. Editor's Name
 - Priority: 1
 - Who: All
 - Status: Open
     + There are two candidates: pootling, poxole.
 
-10. Windows Installer
+11. Windows Installer
 - Priority: 3
 - Who: Virak
 - Status: not
 
-11. Rpm packages
+12. Rpm packages
 - Priority: 3
 - Who: Da
 - Status: not
 - Tip: use rpm-python
 
-12. Comment the code: all classes, return values and parameter!
+13. Comment the code: all classes, return values and parameter!
 - Priority: 1
 - Who: all
 - Status: not
 - Tip: I am not writing everywhere FIXME: you have to start thinking yourself, Jens
 
-13. Make the highlight color configurable: color for parameter, tag, search highlight
+14. Make the highlight color configurable: color for parameter, tag, search highlight
 - Priority: 2
 - Who: phon
 - Status: not
  
-14. do not crash when a not welformed xliff was read.
+15. do not crash when a not welformed xliff was read.
 - Priority: 1
 - Who: virak
 - Status: not
 
-15. open in new window is not save. If I kill one window the otherone will 
+16. open in new window is not save. If I kill one window the otherone will 
     also go away.
 - Priority: 1
 - Who: phon
 - Status: not
 - Tip: if we can not fix this we remove the action from the menu
 
-
-16. Add fuzzy icon on status bar and overview
+17. Add fuzzy icon on status bar and overview
 - Priority: 1
 - Who: virak
 - Status: not
 
-
-17. Setting the text color does not work if I have no file open. 
-    When I restart the editor the new colors are used. If I have a file open
-    the colors change immediately.
-- Priority: 1
-- Who: ratha
-- Status: open
-
-18. adjust the comments in all files: 
+19. adjust the comments in all files: 
     - correct version number and date
     - think about the use of "along with translate" in the text
 - Priority: 1
 - Who: ratha
 - Status: open
 
+20. Replace: replace after the first replace is wrong:
+- Priority: 1
+- Who: Phon
+- Status: Open
 
-19.when click Open Dialog, the paste on toolbar will enabled because
+21. Replace: when click Open Dialog, the paste on toolbar will enabled because
     of cursor focus on filename.
 - Priority: 2
-- Who: ???
+- Who: ratha
 - Status: not
 
-20. the statistic in the status bar counts the header unit as a normal unit!
+22. the statistic in the status bar counts the header unit as a normal unit!
     -> the overview shows less units than the statistic
 - Priority: 1
 - Who: virak
 - Status: Open
 
-21. Emit signal readyForSave when there is something change in Preference and Header
+23. Emit signal readyForSave when there is something change in Preference and Header
 - Priority: 1
-- Who: ???
+- Who: da
 - Status: not
 
-22. Error search in PO
-- Priority: 1
-- Who: Phon
-- Status: not
+24.Error search in PO
++- Priority: 1
++- Who: Phon
++- Status: not
+
+
