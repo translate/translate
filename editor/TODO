@@ -109,25 +109,25 @@
 - Who: ratha
 - Status: open
 
-19. Replace: replace after the first replace is wrong:
-- Priority: 1
-- Who: Phon
-- Status: Open
 
-20.when click Open Dialog, the paste on toolbar will enabled because
+19.when click Open Dialog, the paste on toolbar will enabled because
     of cursor focus on filename.
 - Priority: 2
 - Who: ???
 - Status: not
 
-21. the statistic in the status bar counts the header unit as a normal unit!
+20. the statistic in the status bar counts the header unit as a normal unit!
     -> the overview shows less units than the statistic
 - Priority: 1
 - Who: virak
 - Status: Open
 
-22. Emit signal readyForSave when there is something change in Preference and Header
+21. Emit signal readyForSave when there is something change in Preference and Header
 - Priority: 1
 - Who: ???
 - Status: not
 
+22. Error search in PO
+- Priority: 1
+- Who: Phon
+- Status: not
