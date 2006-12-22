@@ -131,7 +131,8 @@ class Header(QtGui.QDialog):
         self.btnRMStat()
         if (self.stat == False):
             return
-        del self.headerDic[str(self.ui.tableHeader.item(self.ui.tableHeader.currentRow(), 0).text())]
+        if (str(self.ui.tableHeader.item(self.ui.tableHeader.currentRow(), 0).text()) != ""):
+            del self.headerDic[str(self.ui.tableHeader.item(self.ui.tableHeader.currentRow(), 0).text())]
         self.ui.tableHeader.removeRow(self.ui.tableHeader.currentRow())
 
     def btnRMStat(self):
