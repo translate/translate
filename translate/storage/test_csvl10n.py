@@ -14,11 +14,6 @@ class TestCSVUnit(test_base.TestTranslationUnit):
     def test_markreview(self):
         assert test.raises(NotImplementedError, self.unit.markreviewneeded)
     
-    def test_note_sanity(self):
-        """This test should be removed (in favour of the base test)
-        as soon as csvunit has a 'notes' attribute."""
-        assert test.raises(AttributeError, self.unit.addnote, 'test note')
-
     def test_errors(self):
         """Assert the fact that geterrors() and adderror() is not (yet) implemented.
         This test needs to be removed when these methods get implemented."""

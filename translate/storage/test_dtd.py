@@ -27,11 +27,6 @@ class TestDTDUnit(test_monolingual.TestMonolingualUnit):
     def test_markreview(self):
         assert test.raises(NotImplementedError, self.unit.markreviewneeded)
     
-    def test_note_sanity(self):
-        """This test should be removed (in favour of the base test)
-        as soon as dtdunit has a 'notes' attribute."""
-        assert test.raises(AttributeError, self.unit.addnote, 'test note')
-
 class TestDTD(test_monolingual.TestMonolingualStore):
     StoreClass = dtd.dtdfile
     def dtdparse(self, dtdsource):
