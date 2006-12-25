@@ -38,6 +38,7 @@ class TUview(QtGui.QDockWidget):
         self.setWidget(self.form)
         self.setFeatures(QtGui.QDockWidget.DockWidgetClosable)
         self.ui.txtComment.hide()
+        self.ui.txtTarget.setReadOnly(True)
         self.ui.txtTarget.setWhatsThis("<h3>Translated String</h3>This editor displays and lets you edit the translation of the currently displayed string.")
         self.ui.txtSource.setWhatsThis("<h3>Original String</h3>This part of the window shows you the original string of the currently displayed entry. <br>You can not edit this string.")
         self.ui.txtComment.setWhatsThis("<h3>Important Comment</h3>Hints from the developer to the translator are displayed in this area. This area will be hidden if there is no hint. ")
@@ -111,6 +112,7 @@ class TUview(QtGui.QDockWidget):
             self.ui.txtSource.setEnabled(False)
             self.ui.txtTarget.setEnabled(False)
             return
+        self.ui.txtTarget.setReadOnly(False)
         if isinstance(unit, po.pounit):
             comment = "".join([comment for comment in unit.msgidcomments])
             comment = comment.lstrip('"_:')
