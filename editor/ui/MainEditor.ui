@@ -42,7 +42,7 @@
      <x>0</x>
      <y>0</y>
      <width>498</width>
-     <height>31</height>
+     <height>28</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSettings" >
@@ -218,6 +218,9 @@
    <property name="text" >
     <string>&amp;Open</string>
    </property>
+   <property name="whatsThis" >
+    <string>&lt;h3>open a file&lt;/h3>You will be asked for the name of a file to be opened and open recent file in an editor window.</string>
+   </property>
    <property name="shortcut" >
     <string>Ctrl+O</string>
    </property>
@@ -231,6 +234,9 @@
    </property>
    <property name="text" >
     <string>&amp;Save</string>
+   </property>
+   <property name="whatsThis" >
+    <string>&lt;h3>Save a file&lt;/h3>Save the contents of current editor window.</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+S</string>
@@ -271,6 +277,9 @@
    <property name="text" >
     <string>Undo</string>
    </property>
+   <property name="whatsThis" >
+    <string>&lt;h3>Undo&lt;/h3>Undo the last change done in the current editor.</string>
+   </property>
    <property name="shortcut" >
     <string>Ctrl+Z</string>
    </property>
@@ -285,6 +294,9 @@
    <property name="text" >
     <string>Redo</string>
    </property>
+   <property name="whatsThis" >
+    <string>&lt;h3>Redo&lt;/h3>Redo the last change done in the current editor.</string>
+   </property>
    <property name="shortcut" >
     <string>Ctrl+Shift+Z</string>
    </property>
@@ -298,6 +310,9 @@
    </property>
    <property name="text" >
     <string>Cut</string>
+   </property>
+   <property name="whatsThis" >
+    <string>&lt;h3>Cut&lt;/h3>Cut the selected text of the current editor to the clipboard.</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+X</string>
@@ -315,6 +330,9 @@
    </property>
    <property name="text" >
     <string>Copy</string>
+   </property>
+   <property name="whatsThis" >
+    <string>&lt;h3>Copy&lt;/h3>Copy the selected text of the current editor to the clipboard.</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+C</string>
@@ -335,6 +353,9 @@
    </property>
    <property name="toolTip" >
     <string>Paste</string>
+   </property>
+   <property name="whatsThis" >
+    <string>&lt;h3>Paste&lt;/h3>Paste the last cut/copies text from the clipboard to the current editor.</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+V</string>
@@ -406,6 +427,9 @@
    <property name="text" >
     <string>&amp;First</string>
    </property>
+   <property name="whatsThis" >
+    <string>&lt;h3>First&lt;/h3>Move to first row of the table.</string>
+   </property>
    <property name="shortcut" >
     <string>Ctrl+PgUp</string>
    </property>
@@ -419,6 +443,9 @@
    </property>
    <property name="text" >
     <string>&amp;Previous</string>
+   </property>
+   <property name="whatsThis" >
+    <string>&lt;h3>Previous&lt;/h3>Move to previous row inside the table.</string>
    </property>
    <property name="shortcut" >
     <string>PgUp</string>
@@ -434,6 +461,9 @@
    <property name="text" >
     <string>&amp;Next</string>
    </property>
+   <property name="whatsThis" >
+    <string>&lt;h3>Next&lt;/h3>Move to next row inside the table.</string>
+   </property>
    <property name="shortcut" >
     <string>PgDown</string>
    </property>
@@ -447,6 +477,9 @@
    </property>
    <property name="text" >
     <string>&amp;Last</string>
+   </property>
+   <property name="whatsThis" >
+    <string>&lt;h3>Last&lt;/h3>Move to last row of the table.</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+PgDown</string>
