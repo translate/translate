@@ -63,7 +63,7 @@ class MainWindow(QtGui.QMainWindow):
         #plug in overview widget
         self.dockOverview = OverviewDock(self)
         self.addDockWidget(QtCore.Qt.TopDockWidgetArea, self.dockOverview)
-        self.ui.menuWindow.insertAction(sepAction, self.dockOverview.toggleViewAction())
+        self.ui.menuWindow.insertAction(sepAction, self.dockOverview.toggleViewAction())        
         
         #plug in TUview widget
         self.dockTUview = TUview(self)
@@ -156,6 +156,7 @@ class MainWindow(QtGui.QMainWindow):
         # add open recent to the toolbar
         action = self.ui.menuOpen_Recent.menuAction()
         action.setToolTip(self.tr("Open"))
+        action.setWhatsThis("<h3>Open a file</h3>You will be asked for the name of a file to be opened and open recent file in an editor window.") 
         self.connect(action, QtCore.SIGNAL("triggered()"), self.fileaction.openFile)
 
         self.ui.toolStandard.insertAction(self.ui.actionSave, action)
@@ -195,7 +196,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.statuslabel.setText)
         self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.setOpening)
         self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.operator.getUnits)
-        
+
         # get the last state of mainwindows's toolbars and dockwidgets
         state = World.settings.value("MainWindowState")
         # check if the last state is valid it will restore
@@ -314,7 +315,7 @@ class MainWindow(QtGui.QMainWindow):
         MainWindow.windowList.append(other)
         if other.fileaction.openFile():
             other.show()
-        
+
     def showTemporaryMessage(self, text):
         self.ui.statusbar.showMessage(text, 3000)
         
@@ -331,7 +332,7 @@ class MainWindow(QtGui.QMainWindow):
                 self.disconnect(self.ui.actionCopy, QtCore.SIGNAL("triggered()"), oldWidget, QtCore.SLOT("copy()"))
 
             if (callable(getattr(oldWidget, "paste", None))):
-                self.disconnect(self.ui.actionPaste, QtCore.SIGNAL("triggered()"), oldWidget, QtCore.SLOT("paste()"))            
+                self.disconnect(self.ui.actionPaste, QtCore.SIGNAL("triggered()"), oldWidget, QtCore.SLOT("paste()"))
             # undo, redo and selectAll in oldWidget
             if (callable(getattr(oldWidget, "document", None))):
                 self.disconnect(self.ui.actionUndo, QtCore.SIGNAL("triggered()"), oldWidget.document(), QtCore.SLOT("undo()"))
