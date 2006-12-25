@@ -127,12 +127,7 @@ class TUview(QtGui.QDockWidget):
         self.ui.txtTarget.setFocus
         # set the scrollbar position
         self.setScrollbarValue(unit.x_editor_filterIndex)
-
-    def setTarget(self, text):
-        """Change the target text.
-        @param text: text to set into target field."""
-        self.ui.txtTarget.setPlainText(text)
-
+    
     def checkModified(self):
         if self.ui.txtTarget.document().isModified():
             self.emit(QtCore.SIGNAL("targetChanged"), self.ui.txtTarget.toPlainText())

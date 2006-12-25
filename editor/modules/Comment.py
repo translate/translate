@@ -98,6 +98,7 @@ class CommentDock(QtGui.QDockWidget):
     def checkModified(self):
         if self.ui.txtTranslatorComment.document().isModified():
             self.emit(QtCore.SIGNAL("commentChanged"), self.ui.txtTranslatorComment.toPlainText())
+            self.ui.txtTranslatorComment.document().setModified(False)
 
     def highlightSearch(self, textField, position, length = 0):
         """Highlight the text at specified position, length, and textField.
