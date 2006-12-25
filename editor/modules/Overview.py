@@ -61,8 +61,11 @@ class OverviewDock(QtGui.QDockWidget):
         self.units = []
         self.selectedIndex = 0
         self.visibleRow = []
+        self.lastRow = None
+        self.itemEdited = False
         self.connect(self.ui.tableOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitCurrentIndex)
         self.connect(self.ui.tableOverview.model(), QtCore.SIGNAL("layoutChanged()"), self.showFilteredItems)
+        self.connect(self.ui.tableOverview, QtCore.SIGNAL("itemDoubleClicked(QTableWidgetItem *)"), self.setItemEdited)
     
     def closeEvent(self, event):
         """
@@ -73,7 +76,6 @@ class OverviewDock(QtGui.QDockWidget):
         self.toggleViewAction().setChecked(False)
         
     def slotNewUnits(self, units):
-        self.disconnect(self.ui.tableOverview, QtCore.SIGNAL("currentCellChanged(int, int, int, int)"), self.emitTargetChanged)
         self.ui.tableOverview.setEnabled(bool(units))
         self.indexMaxLen = len(str(len(units)))
         self.setUpdatesEnabled(False)
@@ -91,7 +93,6 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.tableOverview.resizeRowsToContents()
         self.units = units
         self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), True, False)
-        self.connect(self.ui.tableOverview, QtCore.SIGNAL("currentCellChanged(int, int, int, int)"), self.emitTargetChanged)
 
     def filterChanged(self, filter, lenFilter):
         """show the items which are in filter.
@@ -130,12 +131,18 @@ class OverviewDock(QtGui.QDockWidget):
     
     def emitCurrentIndex(self):
         """send the selected unit index."""
+        # emit targetChanged if last item has been edited.
+        if (self.lastRow >= 0) and (self.itemEdited):
+            self.itemEdited = False
+            self.markState(self.lastRow, not World.fuzzy)
+            item = self.ui.tableOverview.item(self.lastRow, 2)
+            target = unicode(item.text())
+            self.emit(QtCore.SIGNAL("targetChanged"), target)
+        # emit the index of current unit.
         selectedItems = self.ui.tableOverview.selectedItems()
         if (len(selectedItems) > 0):
             index = int(selectedItems[0].text())
-            self.disconnect(self.ui.tableOverview, QtCore.SIGNAL("currentCellChanged(int, int, int, int)"), self.emitTargetChanged)
             self.emit(QtCore.SIGNAL("currentIndex"), index)
-            self.connect(self.ui.tableOverview, QtCore.SIGNAL("currentCellChanged(int, int, int, int)"), self.emitTargetChanged)
 
     def updateView(self, unit):
         """highlight the table's row at index.
@@ -176,11 +183,7 @@ class OverviewDock(QtGui.QDockWidget):
         item = self.ui.tableOverview.item(row, 2)
         item.setText(text)
         self.ui.tableOverview.resizeRowToContents(row)
-        if (text):
-            state = World.translated
-        else:
-            state = World.untranslated
-        self.markState(row, state)
+        self.markState(row, not World.fuzzy)
 
     def applySettings(self):
         """ set color and font to the tableOverview"""
@@ -263,12 +266,9 @@ class OverviewDock(QtGui.QDockWidget):
         self.selectedIndex = len(self.visibleRow) - 1
         self.ui.tableOverview.selectRow(self.visibleRow[self.selectedIndex])
     
-    def emitTargetChanged(self, cRow, cColumn, lRow, lColumn):
-        """Send target as string and signal targetChanged."""
-        if (lRow >= 0):
-            item = self.ui.tableOverview.item(lRow, 2)
-            self.emit(QtCore.SIGNAL("targetChanged"), unicode(item.text()))
-    
+    def setItemEdited(self, item):
+        self.itemEdited = True
+        
 if __name__ == "__main__":
     import sys, os
     # set the path for QT in order to find the icons
