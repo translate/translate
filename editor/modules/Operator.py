@@ -59,7 +59,10 @@ class Operator(QtCore.QObject):
         self.filter = World.filterAll
         
         # get status for units
-        self.status = Status(self.store.units)
+        if (self.store.units[0].isheader()):
+            self.status = Status(self.store.units[1:])
+        else:
+            self.status = Status(self.store.units)
         self.emitStatus()
 
         self.filteredList = []
