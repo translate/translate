@@ -39,13 +39,21 @@ msgstr "Could not open any"
         self.operator.emitStatus()
         self.assertEqual(self.slotReached, True)
     
-    def testEmitCurrentIndex(self):
-        self.operator._unitpointer = 0
-        self.operator.filteredList = self.operator.store.units
+    def testEmitUnit(self):
         QtCore.QObject.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.slot)
-        self.operator.emitCurrentUnit()
+        unit = self.operator.store.units[0]
+        
+        # test case unit has no attribute x_editor_index
+        self.operator.emitUnit(unit)
+        self.assertEqual(self.operator.currentUnitIndex, None)
         self.assertEqual(self.slotReached, True)
-    
+        
+        # test case unit has attribute x_editor_index
+        unit.x_editor_index = 1
+        self.operator.emitUnit(unit)
+        self.assertEqual(self.operator.currentUnitIndex, 1)
+        self.assertEqual(self.slotReached, True)
+        
     def testFilteredFuzzy(self):
         self.operator.getUnits(wStringIO.StringIO(self.message))
         self.operator.filter = World.filterAll
@@ -85,24 +93,22 @@ msgstr "Could not open any"
     
     def testEmitFiltered(self):
         self.operator.getUnits(wStringIO.StringIO(self.message))
-        QtCore.QObject.connect(self.operator, QtCore.SIGNAL("filteredList"), self.slot)
+        QtCore.QObject.connect(self.operator, QtCore.SIGNAL("filterChanged"), self.slot)
         self.operator.emitFiltered(World.fuzzy + World.translated + World.untranslated)
         self.assertEqual(self.slotReached, True)
         
     def testEmitUpdateUnit(self):
         QtCore.QObject.connect(self.operator, QtCore.SIGNAL("updateUnit"), self.slot)
-        self.operator.filteredList = self.operator.store.units
      
-        #test unitpointer is less than or equal to length of filteredList
-        self.operator._unitpointer = 1
+        #test case self.store is valid
         self.operator.emitUpdateUnit()
         self.assertEqual(self.slotReached, True)
      
-        #test unitpointer is bigger than length of filteredList
-        self.operator._unitpointer = 3
+        #test case self.store is none
+        self.operator.store = None
         self.slotReached = False
         self.operator.emitUpdateUnit()
-        self.assertEqual(not(self.slotReached), True)
+        self.assertEqual(self.slotReached, False)
         
     def testHeaderData(self):
     
@@ -145,25 +151,15 @@ msgstr "unable to read file"
         
     def testSetComment(self):
         self.operator.getUnits(wStringIO.StringIO(self.message))
-        self.operator._unitpointer = 1
+        self.operator.currentUnitIndex = 1
         self.operator.setComment('comments')
-        self.assertEqual(self.operator.filteredList[self.operator._unitpointer].getnotes(), u'comments')
+        self.assertEqual(self.operator.filteredList[self.operator.currentUnitIndex].getnotes(), u'comments')
     
     def testSetTarget(self):
         self.operator.getUnits(wStringIO.StringIO(self.message))
-        self.operator._unitpointer = 1
+        self.operator.currentUnitIndex = 1
         self.operator.setTarget('target')
-        self.assertEqual(self.operator.filteredList[self.operator._unitpointer].target, u'target')
-    
-    def testSetCurrentUnit(self):
-        self.operator.getUnits(wStringIO.StringIO(self.message))
-        self.operator.setCurrentUnit(1)
-        self.assertEqual(self.operator._unitpointer, 1)
-    
-    def testIndexToUnit(self):
-        self.operator.getUnits(wStringIO.StringIO(self.message))
-        self.operator.indexToUnit(1)
-        self.assertEqual(self.operator._unitpointer, 1)
+        self.assertEqual(self.operator.filteredList[self.operator.currentUnitIndex].target, u'target')
     
     def testToggleFuzzy(self):
         self.operator.getUnits(wStringIO.StringIO(self.message))
@@ -198,7 +194,7 @@ msgstr "unable to read file"
     
     def testSearchPrevious(self):
         self.operator.getUnits(wStringIO.StringIO(self.message))
-        self.operator.setCurrentUnit(1)
+        self.operator.searchPointer = 1
         self.operator.initSearch('To', [World.source, World.target, World.comment], False)
         
         # first found search will encounter in target
