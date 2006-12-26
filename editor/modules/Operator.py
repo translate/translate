@@ -59,10 +59,7 @@ class Operator(QtCore.QObject):
         self.filter = World.filterAll
         
         # get status for units
-        if (self.store.units[0].isheader()):
-            self.status = Status(self.store.units[1:])
-        else:
-            self.status = Status(self.store.units)
+        self.status = Status(self.store.units)
         self.emitStatus()
 
         self.filteredList = []
@@ -70,14 +67,11 @@ class Operator(QtCore.QObject):
         i = 0
         for unit in self.store.units:
             unit.x_editor_index = i
-            unit.x_editor_filterIndex = i
             unit.x_editor_state = self.status.getStatus(unit)
-            self.filteredList.append(unit)
+            if (self.filter & unit.x_editor_state):
+                unit.x_editor_filterIndex = len(self.filteredList)
+                self.filteredList.append(unit)
             i += 1
-        if (len(self.store.units) > 0):
-            unit = self.store.units[0]
-            if (unit.isheader()):
-                unit.x_editor_state = World.header
         self.emit(QtCore.SIGNAL("newUnits"), self.store.units)
         self.emitFiltered(self.filter)
 
@@ -133,13 +127,13 @@ class Operator(QtCore.QObject):
             # build a new filteredList when only filter has changed.
             self.filter = filter
             self.filteredList = []
-            i = 0
             for unit in self.store.units:
                 # add unit to filteredList if it is in the filter
+                if (not hasattr(unit, "x_editor_state")):
+                    unit.x_editor_state = self.status.getStatus(unit)
                 if (self.filter & unit.x_editor_state):
-                    unit.x_editor_filterIndex = i
+                    unit.x_editor_filterIndex = len(self.filteredList)
                     self.filteredList.append(unit)
-                    i += 1
                 else:
                     unit.x_editor_filterIndex = None
         self.emit(QtCore.SIGNAL("filterChanged"), filter, len(self.filteredList))
@@ -202,18 +196,15 @@ class Operator(QtCore.QObject):
         self.store.savefile(fileName)
         self._modified = False
         self.emit(QtCore.SIGNAL("savedAlready"), False) 
-
+    
     def modified(self):
-        """
-        @return bool: True or False if current unit is modified or not modified.
-        """
+        """@return bool: True or False if current unit is modified or not modified."""
         self.emitUpdateUnit()
         return self._modified
     
     def setComment(self, comment):
         """set the comment to the current unit.
-        @param comment: QString type
-        """
+        @param comment: QString type"""
         if (self.currentUnitIndex < 0):
             return
         unit = self.store.units[self.currentUnitIndex]
