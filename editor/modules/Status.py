@@ -27,9 +27,18 @@ import modules.World as World
 
 class Status:
     def __init__(self, units):
-        self.numTotal = len(units)
-        self.numFuzzy = len(pocount.fuzzymessages(units))
-        self.numTranslated = len(pocount.translatedmessages(units))
+        if (units):
+            if (units[0].isheader()):
+                units = units[1:]
+            self.numFuzzy = len(pocount.fuzzymessages(units))
+            self.numTranslated = len(pocount.translatedmessages(units))
+            self.numUntranslated = len(pocount.untranslatedmessages(units))
+            self.numTotal = self.numFuzzy + self.numTranslated + self.numUntranslated
+        else:
+            self.numFuzzy = 0
+            self.numTranslated = 0
+            self.numUntranslated = 0
+            self.numTotal = 0
 
     def markFuzzy(self, unit, fuzzy):
         if (unit.isfuzzy() == fuzzy):
@@ -69,6 +78,8 @@ class Status:
     def getStatus(self, unit):
         """return the unit's status flag."""
         unitState = 0
+        if (unit.isheader()):
+            return World.header
         if (unit.istranslated()):
             unitState |= World.translated
         elif (unit.isfuzzy()):
