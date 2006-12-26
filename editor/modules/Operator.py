@@ -23,6 +23,7 @@
 from PyQt4 import QtCore, QtGui
 from translate.storage import factory
 from translate.storage import po
+from translate.misc import quote
 from translate.storage import poheader
 from translate.storage import xliff
 import modules.World as World
@@ -181,9 +182,13 @@ class Operator(QtCore.QObject):
         header = self.store.header()
         if (header):
             header.removenotes()
-            header.target = ""
             header.addnote(str(othercomments))
-            self.store.updateheader(add=True, **headerDic)
+            #TODO this code is also in the library po.py, so we should combine it.
+            header.msgid = ['""']
+            headeritems = self.store.makeheaderdict(**headerDic)
+            header.msgstr = ['""']
+            for (key, value) in headeritems.items():
+                header.msgstr.append(quote.quotestr("%s: %s\\n" % (key, value)))
             
     def saveStoreToFile(self, fileName):
         """
