@@ -63,7 +63,9 @@ class OverviewDock(QtGui.QDockWidget):
         self.visibleRow = []
         self.lastRow = None
         self.lastTarget = None
-        self.connect(self.ui.tableOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitCurrentIndex)
+        
+        self.changedSignal = QtCore.SIGNAL("currentCellChanged(int, int, int, int)")
+        self.connect(self.ui.tableOverview, self.changedSignal, self.emitCurrentIndex)
         self.connect(self.ui.tableOverview.model(), QtCore.SIGNAL("layoutChanged()"), self.showFilteredItems)
     
     def closeEvent(self, event):
@@ -85,7 +87,8 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.tableOverview.setSortingEnabled(False)
         self.ui.tableOverview.setRowCount(0)
         for unit in units:
-            self.addUnit(unit)
+            if (self.filter & unit.x_editor_state):
+                self.addUnit(unit)
         self.ui.tableOverview.setSortingEnabled(True)
         self.setUpdatesEnabled(True)
         self.ui.tableOverview.sortItems(0)
@@ -132,22 +135,22 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.tableOverview.setItem(row, 3, item)
         self.markState(row, unit.x_editor_state)
     
-    def emitCurrentIndex(self):
+    def emitCurrentIndex(self, row, col, preRow, preCol):
         """send the selected unit index."""
-        # emit targetChanged if last item has been edited.
-        if (self.lastRow >= 0):
-            item = self.ui.tableOverview.item(self.lastRow, 2)
+        # emit targetChanged if previous item has been edited.
+        item = self.ui.tableOverview.item(preRow, 2)
+        if hasattr(item, "text"):
             target = item.text()
-            if (target != self.lastTarget):
-                self.markState(self.lastRow, not World.fuzzy)
+            if (self.lastTarget != target):
+                self.markState(preRow, not World.fuzzy)
                 self.emit(QtCore.SIGNAL("targetChanged"), target)
-        
         # emit the index of current unit.
-        selectedItems = self.ui.tableOverview.selectedItems()
-        if (len(selectedItems) > 0):
-            index = int(selectedItems[0].text())
-            self.emit(QtCore.SIGNAL("currentIndex"), index)
-            self.lastTarget = self.ui.tableOverview.item(self.lastRow, 2).text()
+        item = self.ui.tableOverview.item(row, 0)
+        if hasattr(item, "text"):
+            index = int(item.text())
+            if (index >= 0):
+                self.emit(QtCore.SIGNAL("currentIndex"), index)
+                self.lastTarget = self.ui.tableOverview.item(row, 2).text()
     
     def updateView(self, unit):
         """highlight the table's row at index.
@@ -158,12 +161,12 @@ class OverviewDock(QtGui.QDockWidget):
         self.lastRow = row
         self.markComment(row, unit.getnotes())
         self.markState(row, unit.x_editor_state)
-        self.disconnect(self.ui.tableOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitCurrentIndex)
+        self.disconnect(self.ui.tableOverview, self.changedSignal, self.emitCurrentIndex)
         self.ui.tableOverview.selectRow(row)
-        self.connect(self.ui.tableOverview, QtCore.SIGNAL("itemSelectionChanged()"), self.emitCurrentIndex)
+        self.connect(self.ui.tableOverview, self.changedSignal, self.emitCurrentIndex)
         self.ui.tableOverview.scrollToItem(unit.x_editor_tableItem)
         
-        if (self.visibleRow):
+        if (row in self.visibleRow):
             self.selectedIndex = self.visibleRow.index(row)
         firstUnit = (self.selectedIndex == 0)
         lastUnit = (self.selectedIndex >= len(self.visibleRow) -1)

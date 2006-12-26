@@ -25,6 +25,7 @@
 from PyQt4 import QtCore
 
 # helper constants for filtering
+header = 0
 fuzzy = 1
 translated = 2
 untranslated = 4

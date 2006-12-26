@@ -30,8 +30,6 @@ class Status:
         self.numTotal = len(units)
         self.numFuzzy = len(pocount.fuzzymessages(units))
         self.numTranslated = len(pocount.translatedmessages(units))
-        for unit in units:
-            unit.x_editor_state = self.getStatus(unit)
 
     def markFuzzy(self, unit, fuzzy):
         if (unit.isfuzzy() == fuzzy):

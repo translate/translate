@@ -66,19 +66,19 @@ class Operator(QtCore.QObject):
         self.emitStatus()
 
         self.filteredList = []
-        start = 0
-        if (self.store.units[0].isheader()):
-            start = 1
-        self.currentUnitIndex = start
-        i = start
-        j = 0
-        for unit in self.store.units[start:]:
+        self.currentUnitIndex = 0
+        i = 0
+        for unit in self.store.units:
             unit.x_editor_index = i
-            unit.x_editor_filterIndex = j
+            unit.x_editor_filterIndex = i
+            unit.x_editor_state = self.status.getStatus(unit)
             self.filteredList.append(unit)
             i += 1
-            j += 1
-        self.emit(QtCore.SIGNAL("newUnits"), self.store.units[start:])
+        if (len(self.store.units) > 0):
+            unit = self.store.units[0]
+            if (unit.isheader()):
+                unit.x_editor_state = World.header
+        self.emit(QtCore.SIGNAL("newUnits"), self.store.units)
         self.emitFiltered(self.filter)
 
     def emitStatus(self):
@@ -133,11 +133,8 @@ class Operator(QtCore.QObject):
             # build a new filteredList when only filter has changed.
             self.filter = filter
             self.filteredList = []
-            start = 0
-            if (self.store.units[0].isheader()):
-                start = 1
             i = 0
-            for unit in self.store.units[start:]:
+            for unit in self.store.units:
                 # add unit to filteredList if it is in the filter
                 if (self.filter & unit.x_editor_state):
                     unit.x_editor_filterIndex = i
