@@ -76,43 +76,47 @@ class OverviewDock(QtGui.QDockWidget):
         self.toggleViewAction().setChecked(False)
         
     def slotNewUnits(self, units):
+        """
+        set the filter to filterAll, fill the table with units.
+        @param units: list of unit class.
+        """
         self.ui.tableOverview.setEnabled(bool(units))
         self.indexMaxLen = len(str(len(units)))
-        self.setUpdatesEnabled(False)
         self.filter = World.filterAll
-        self.units = []
+        self.units = units
         self.ui.tableOverview.clear()
         self.ui.tableOverview.setHorizontalHeaderLabels(self.headerLabels)
         self.ui.tableOverview.setSortingEnabled(False)
         self.ui.tableOverview.setRowCount(0)
+        
+        self.setUpdatesEnabled(False)
         for unit in units:
             if (self.filter & unit.x_editor_state):
                 self.addUnit(unit)
         self.ui.tableOverview.setSortingEnabled(True)
-        self.setUpdatesEnabled(True)
         self.ui.tableOverview.sortItems(0)
         self.ui.tableOverview.resizeRowsToContents()
-        self.units = units
+        self.setUpdatesEnabled(True)
         
         if (self.ui.tableOverview.rowCount > 0):
             self.lastTarget = self.ui.tableOverview.item(0, 2).text()
-        
-        self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), True, False)
 
     def filterChanged(self, filter, lenFilter):
-        """show the items which are in filter.
-        @param filter: helper constants for filtering
-        @param lenFilter: len of filtered items."""
+        """
+        show the items which are in filter.
+        @param filter: helper constants for filtering.
+        @param lenFilter: len of filtered items.
+        """
         if (filter == self.filter):
             return
-        if (lenFilter == 0):
-            self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), True, True)
         self.filter = filter
         self.showFilteredItems()
         
     def addUnit(self, unit):
-        """add unit to row.
-        @param unit: unit class."""
+        """
+        add the unit to table.
+        @param unit: unit class.
+        """
         row = self.ui.tableOverview.rowCount()
         self.ui.tableOverview.setRowCount(row + 1)
         item = QtGui.QTableWidgetItem(self.indexString(unit.x_editor_index))
@@ -135,7 +139,10 @@ class OverviewDock(QtGui.QDockWidget):
         self.markState(row, unit.x_editor_state)
     
     def emitCurrentIndex(self, row, col, preRow, preCol):
-        """send the selected unit index."""
+        """
+        send targetChanged if unit's taget has changed, and send currentIndex
+        with selected unit's index.
+        """
         # emit targetChanged if previous item has been edited.
         item = self.ui.tableOverview.item(preRow, 2)
         if hasattr(item, "text"):
@@ -152,8 +159,11 @@ class OverviewDock(QtGui.QDockWidget):
                 self.lastTarget = self.ui.tableOverview.item(row, 2).text()
     
     def updateView(self, unit):
-        """highlight the table's row at index.
-        @param unit: """
+        """
+        highlight the table's row, mark comment icon, mark state icon,
+        and set the target text according to unit.
+        @param unit: unit class
+        """
         if (not unit) or (not hasattr(unit, "x_editor_tableItem")):
             return
         row = self.ui.tableOverview.row(unit.x_editor_tableItem)
@@ -177,9 +187,11 @@ class OverviewDock(QtGui.QDockWidget):
         self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), firstUnit, lastUnit)
         
     def markState(self, index, state):
-        """display unit status on note column, and hide if unit is not in filter.
-        @param index: row in table to set property.
-        @param state: state of unit defined in world.py."""
+        """
+        mark icon indicate state of unit on note column.
+        @param index: row in table.
+        @param state: unit's state.
+        """
         item = self.ui.tableOverview.item(index, 3)
         if (state & World.fuzzy):
             item.setIcon(self.fuzzyIcon)
@@ -189,7 +201,9 @@ class OverviewDock(QtGui.QDockWidget):
             item.setToolTip("")
     
     def applySettings(self):
-        """ set color and font to the tableOverview"""
+        """
+        set color and font to the table.
+        """
         overviewColor = World.settings.value("overviewColor")
         if (overviewColor.isValid()):
             colorObj = QtGui.QColor(overviewColor.toString())
@@ -213,6 +227,10 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.tableOverview.resizeRowsToContents()
         
     def showFilteredItems(self):
+        """
+        hide and show the item in the table according to filter.
+        calculating the visibleRow for navigation.
+        """
         for unit in self.units:
             if hasattr(unit, "x_editor_tableItem"):
                 row = self.ui.tableOverview.row(unit.x_editor_tableItem)
@@ -231,9 +249,15 @@ class OverviewDock(QtGui.QDockWidget):
             self.selectedIndex = self.visibleRow.index(row)
         
     def indexString(self, index):
+        """converting index which is integer string."""
         return str(index).rjust(self.indexMaxLen) + "  "
     
     def markComment(self, index, note):
+        """
+        mark icon indicate unit has comment on index column, and add tooltips.
+        @param index: row in table.
+        @param note: unit's comment as tooltips in index column.
+        """
         item = self.ui.tableOverview.item(index, 0)
         if (note):
             item.setIcon(self.noteIcon)
