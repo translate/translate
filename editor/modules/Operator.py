@@ -52,17 +52,22 @@ class Operator(QtCore.QObject):
         
     def getUnits(self, fileName):
         """reading a file into the internal datastructure.
-        @param fileName: the file to open"""
+        @param fileName: the file to open, either a string or a file object"""
         self.fileName = fileName
         if (not os.path.exists(fileName)):
             QtGui.QMessageBox.critical(None, 'Error', fileName  + '\n' + 'The file doesn\'t exist.')
             return
         try:
-            self.store = factory.getobject(fileName)
+            store = factory.getobject(fileName)
         except Exception, e:
             QtGui.QMessageBox.critical(None, 'Error', 'Error while trying to read file ' + fileName  + '\n' + str(e))
             return
-            
+        self.setNewStore(store)
+        
+    def setNewStore(self, store):
+        """ setup the oparator with a new storage
+        @param store: the new storage class"""
+        self.store = store
         self._modified = False
         # filter flags
         self.filter = World.filterAll
@@ -94,7 +99,7 @@ class Operator(QtCore.QObject):
             self.currentUnitIndex = unit.x_editor_index
         else:
             self.currentUnitIndex = None
-        self.searchPointer = self.currentUnitIndex
+        self.searchPointer = unit.x_editor_filterIndex
         self.emit(QtCore.SIGNAL("currentUnit"), unit)
     
     def filterFuzzy(self, checked):
@@ -287,6 +292,7 @@ class Operator(QtCore.QObject):
 
     def searchNext(self):
         """search forward through the text fields."""
+        oldSearchPointer = self.searchPointer
         while (self.searchPointer < len(self.filteredList)):
             unitString = self._getUnitString()
             self.foundPosition = unitString.find(self.searchString, self.foundPosition + 1)
@@ -308,7 +314,7 @@ class Operator(QtCore.QObject):
             # exhausted
             self._searchNotFound()
             self.emit(QtCore.SIGNAL("generalInfo"), "Search has reached end of document")
-            self.searchPointer = len(self.filteredList) - 1
+            self.searchPointer = oldSearchPointer
 
     def searchPrevious(self):
         """search backward through the text fields."""
