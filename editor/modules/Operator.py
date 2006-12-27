@@ -53,9 +53,13 @@ class Operator(QtCore.QObject):
         """reading a file into the internal datastructure.
         @param fileName: the file to open"""
         self.fileName = fileName
-        self.store = factory.getobject(fileName)
+        try:
+            self.store = factory.getobject(fileName)
+        except Exception, e:
+            QtGui.QMessageBox.critical(None, 'Error', 'Error while trying to read file ' + fileName  + '\n' + str(e))
+            return
+            
         self._modified = False
-
         # filter flags
         self.filter = World.filterAll
         
