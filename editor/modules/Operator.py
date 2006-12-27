@@ -57,12 +57,11 @@ class Operator(QtCore.QObject):
         if (not os.path.exists(fileName)):
             QtGui.QMessageBox.critical(None, 'Error', fileName  + '\n' + 'The file doesn\'t exist.')
             return
-        else:
-            try:
-                self.store = factory.getobject(fileName)
-            except Exception, e:
-                QtGui.QMessageBox.critical(None, 'Error', 'Error while trying to read file ' + fileName  + '\n' + str(e))
-                return
+        try:
+            self.store = factory.getobject(fileName)
+        except Exception, e:
+            QtGui.QMessageBox.critical(None, 'Error', 'Error while trying to read file ' + fileName  + '\n' + str(e))
+            return
             
         self._modified = False
         # filter flags
