@@ -103,7 +103,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         alternatives = unit.getalttrans(origin="bob")
         assert alternatives[0].target == "Tasting"
 
-        unit.delattrans(alternatives[0])
+        unit.delalttrans(alternatives[0])
         assert len(unit.getalttrans(origin="bob")) == 0
         alternatives = unit.getalttrans()
         assert len(alternatives) == 2
