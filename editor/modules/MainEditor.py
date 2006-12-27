@@ -76,6 +76,13 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.menuWindow.insertAction(sepAction, self.dockComment.toggleViewAction())
          
         #add widgets to statusbar
+        self.statusfuzzy = QtGui.QLabel()
+        pixmap = QtGui.QPixmap("../images/fuzzy.png")
+        self.statusfuzzy.setPixmap(pixmap.scaled(16, 16, QtCore.Qt.KeepAspectRatio))
+        self.statusfuzzy.setToolTip("Current unit is fuzzy")
+        self.statusfuzzy.setVisible(False)
+        self.ui.statusbar.addWidget(self.statusfuzzy)
+        
         self.statuslabel = QtGui.QLabel()
         self.statuslabel.setFrameStyle(QtGui.QFrame.NoFrame)
         self.statuslabel.setMargin(1)
@@ -165,6 +172,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockOverview.updateView)
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockTUview.updateView)
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockComment.updateView)
+        self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.addFuzzyIcon)
         self.connect(self.dockTUview, QtCore.SIGNAL("filteredIndex"), self.operator.setUnitFromPosition)
         self.connect(self.dockOverview, QtCore.SIGNAL("currentIndex"), self.operator.setUnitFromIndex)
 
@@ -246,6 +254,7 @@ class MainWindow(QtGui.QMainWindow):
     def startRecentAction(self):
         action = self.sender()
         if action:
+            # TODO: remove filename from recent file if it doesn't exist.
             self.fileaction.setFileName(action.data().toString())
 
     def createRecentAction(self):
@@ -375,7 +384,11 @@ class MainWindow(QtGui.QMainWindow):
             else:
                 self.enableUndo(False)
                 self.enableRedo(False)
-
+    
+    def addFuzzyIcon(self, unit):
+        if hasattr(unit, "x_editor_state"):
+            self.statusfuzzy.setVisible(unit.x_editor_state & World.fuzzy)
+    
 def main(inputFile = None):
     # set the path for QT in order to find the icons
     if __name__ == "__main__":
