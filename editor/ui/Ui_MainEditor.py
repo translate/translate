@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Fri Dec 22 12:00:21 2006
+# Created: Wed Dec 27 16:11:48 2006
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -30,7 +30,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0,0,498,28))
+        self.menubar.setGeometry(QtCore.QRect(0,0,498,30))
         self.menubar.setObjectName("menubar")
 
         self.menuSettings = QtGui.QMenu(self.menubar)
@@ -214,6 +214,7 @@ class Ui_MainWindow(object):
 
         self.actionOpenInNewWindow = QtGui.QAction(MainWindow)
         self.actionOpenInNewWindow.setIcon(QtGui.QIcon("../images/window_new.png"))
+        self.actionOpenInNewWindow.setVisible(False)
         self.actionOpenInNewWindow.setObjectName("actionOpenInNewWindow")
 
         self.actionFindPrevious = QtGui.QAction(MainWindow)
@@ -343,6 +344,7 @@ class Ui_MainWindow(object):
         self.actionNew.setText(self.tr("&New"))
         self.actionNew.setShortcut(self.tr("Ctrl+N"))
         self.actionOpen.setText(self.tr("&Open"))
+        self.actionOpen.setWhatsThis(self.tr("<h3>open a file</h3>You will be asked for the name of a file to be opened and open recent file in an editor window."))
         self.actionOpen.setShortcut(self.tr("Ctrl+O"))
         self.actionSave.setText(self.tr("&Save"))
         self.actionSave.setWhatsThis(self.tr("<h3>Save a file</h3>Save the contents of current editor window."))

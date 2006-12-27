@@ -42,7 +42,7 @@
      <x>0</x>
      <y>0</y>
      <width>498</width>
-     <height>28</height>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSettings" >
@@ -577,6 +577,9 @@
    </property>
    <property name="text" >
     <string>Open in New Window</string>
+   </property>
+   <property name="visible" >
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionFindPrevious" >
