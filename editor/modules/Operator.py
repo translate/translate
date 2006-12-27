@@ -217,7 +217,7 @@ class Operator(QtCore.QObject):
         return self._modified
     
     def setComment(self, comment):
-        """set the comment to the current unit.
+        """set the comment to the current unit, and emit current unit.
         @param comment: QString type"""
         if (self.currentUnitIndex < 0):
             return
@@ -225,14 +225,14 @@ class Operator(QtCore.QObject):
         unit.removenotes()
         unit.addnote(unicode(comment))
         self._modified = True
+        self.emitUnit(unit)
     
     def setTarget(self, target):
-        """set the target which is QString type to the current unit.
+        """set the target which is QString type to the current unit, and emit current unit.
         @param target: QString type"""
         if (self.currentUnitIndex < 0):
             return
         unit = self.store.units[self.currentUnitIndex]
-        translatedState = unit.istranslated()
         # update target for current unit
         unit.target = unicode(target)
         if (unit.target):
@@ -240,6 +240,7 @@ class Operator(QtCore.QObject):
         else:
             self.status.markTranslated(unit, False)
         self._modified = True
+        self.emitUnit(unit)
         self.emitStatus()
 
     def setUnitFromIndex(self, index):

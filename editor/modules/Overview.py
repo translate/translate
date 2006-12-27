@@ -61,7 +61,6 @@ class OverviewDock(QtGui.QDockWidget):
         self.units = []
         self.selectedIndex = 0
         self.visibleRow = []
-        self.lastRow = None
         self.lastTarget = None
         
         self.changedSignal = QtCore.SIGNAL("currentCellChanged(int, int, int, int)")
@@ -158,12 +157,17 @@ class OverviewDock(QtGui.QDockWidget):
         if (not unit) or (not hasattr(unit, "x_editor_tableItem")):
             return
         row = self.ui.tableOverview.row(unit.x_editor_tableItem)
-        self.lastRow = row
+        
+        targetItem = self.ui.tableOverview.item(row, 2)
+        targetItem.setText(unit.target)
+        
         self.markComment(row, unit.getnotes())
         self.markState(row, unit.x_editor_state)
+        
         self.disconnect(self.ui.tableOverview, self.changedSignal, self.emitCurrentIndex)
         self.ui.tableOverview.selectRow(row)
         self.connect(self.ui.tableOverview, self.changedSignal, self.emitCurrentIndex)
+        
         self.ui.tableOverview.scrollToItem(unit.x_editor_tableItem)
         
         if (row in self.visibleRow):
@@ -184,15 +188,6 @@ class OverviewDock(QtGui.QDockWidget):
             item.setIcon(self.blankIcon)
             item.setToolTip("")
     
-    def updateTarget(self, text):
-        """change the text in target column.
-        @param text: text to set into target field."""
-        row = self.lastRow
-        item = self.ui.tableOverview.item(row, 2)
-        item.setText(text)
-        self.ui.tableOverview.resizeRowToContents(row)
-        self.markState(row, not World.fuzzy)
-
     def applySettings(self):
         """ set color and font to the tableOverview"""
         overviewColor = World.settings.value("overviewColor")
@@ -237,12 +232,7 @@ class OverviewDock(QtGui.QDockWidget):
         
     def indexString(self, index):
         return str(index).rjust(self.indexMaxLen) + "  "
-        
-    def updateComment(self, text):
-        """change the tooltip in index column, and add an icon if there is text.
-        @param text: text to set as tooltip in index field."""
-        self.markComment(self.lastRow, text)
-        
+    
     def markComment(self, index, note):
         item = self.ui.tableOverview.item(index, 0)
         if (note):

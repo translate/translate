@@ -171,11 +171,8 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("updateUnit"), self.dockTUview.checkModified)
         self.connect(self.operator, QtCore.SIGNAL("updateUnit"), self.dockComment.checkModified)
         self.connect(self.dockOverview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
-
         self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
-        self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.dockOverview.updateTarget)
         self.connect(self.dockComment, QtCore.SIGNAL("commentChanged"), self.operator.setComment)
-        self.connect(self.dockComment, QtCore.SIGNAL("commentChanged"), self.dockOverview.updateComment)
         self.connect(self.fileaction, QtCore.SIGNAL("fileSaved"), self.operator.saveStoreToFile)
         self.connect(self.operator, QtCore.SIGNAL("savedAlready"), self.ui.actionSave.setEnabled)
         self.connect(self.dockTUview, QtCore.SIGNAL("readyForSave"), self.ui.actionSave.setEnabled)
@@ -189,8 +186,6 @@ class MainWindow(QtGui.QMainWindow):
         # "filterChanged" sends filter and number of filtered items.
         self.connect(self.operator, QtCore.SIGNAL("filterChanged"), self.dockOverview.filterChanged)
         self.connect(self.operator, QtCore.SIGNAL("filterChanged"), self.dockTUview.filterChanged)
-##        self.connect(self.operator, QtCore.SIGNAL("filteredList"), self.dockOverview.filteredList)
-##        self.connect(self.operator, QtCore.SIGNAL("filteredList"), self.dockTUview.filteredList)
 
         # set file status information to text label of status bar.
         self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.statuslabel.setText)
