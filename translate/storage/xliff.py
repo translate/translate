@@ -150,7 +150,7 @@ class xliffunit(lisa.LISAunit):
                 translist.append(newunit)
         return translist
 
-    def delattrans(self, alternative):
+    def delalttrans(self, alternative):
         """Removes the supplied alternative from the list of alt-trans tags"""
         self.xmlelement.removeChild(alternative.xmlelement)
 
