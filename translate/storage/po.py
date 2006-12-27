@@ -635,6 +635,12 @@ class pounit(base.TranslationUnit):
             self.msgstr[msgstr_pluralid].append(extracted)
     if self.obsolete:
       self.makeobsolete()
+    # If this unit is the header, we have to get the encoding to ensure that no
+    # methods are called that need the encoding before we obtained it.
+    if self.isheader():
+      charset = sre.search("charset=([^\\s]+)", unquotefrompo(self.msgstr))
+      if charset:
+        self.encoding = encodingToUse(charset.group(1))
     return linesprocessed
 
   def getmsgpartstr(self, partname, partlines, partcomments=""):
@@ -832,15 +838,11 @@ class pofile(base.TranslationStore, poheader.poheader):
           if linesprocessed >= 1 and newpe.getoutput():
             self.units.append(newpe)
             if newpe.isheader():
-              headervalues = self.parseheader()
-              contenttype = headervalues.get("Content-Type", None)
-              if contenttype is not None:
-                charsetmatch = sre.search("charset=([^ ]*)", contenttype)
-                if charsetmatch:
-                  self.encoding = charsetmatch.group(1)
-                # now that we know the encoding, decode the whole file
-                if self.encoding is not None and self.encoding.lower() != 'charset':
-                  lines = self.decode(lines)
+              if "Content-Type" in self.parseheader():
+                self.encoding = newpe.encoding
+              # now that we know the encoding, decode the whole file
+              if self.encoding is not None and self.encoding.lower() != 'charset':
+                lines = self.decode(lines)
             if self.encoding is None: #still have not found an encoding, let's assume UTF-8
               #TODO: This might be dead code
               self.encoding = 'utf-8'
