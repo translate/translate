@@ -373,7 +373,7 @@ class Operator(QtCore.QObject):
         
     def _getUnitString(self):
         """@return: the string of current text field."""
-        if (self.searchPointer >= len(self.filteredList)):
+        if (self.searchPointer >= len(self.filteredList) or self.searchPointer < 0):
             return ""
         textField = self.searchableText[self.currentTextField]
         if (textField == World.source):
