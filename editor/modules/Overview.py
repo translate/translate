@@ -109,6 +109,8 @@ class OverviewDock(QtGui.QDockWidget):
         """
         if (filter == self.filter):
             return
+        if (lenFilter == 0):
+            self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), True, True)
         self.filter = filter
         self.showFilteredItems()
         
@@ -119,9 +121,10 @@ class OverviewDock(QtGui.QDockWidget):
         """
         row = self.ui.tableOverview.rowCount()
         self.ui.tableOverview.setRowCount(row + 1)
-        item = QtGui.QTableWidgetItem(self.indexString(unit.x_editor_index))
+        item = QtGui.QTableWidgetItem(self.indexString(row + 1))
         item.setTextAlignment(QtCore.Qt.AlignRight + QtCore.Qt.AlignVCenter)
         item.setFlags(self.normalState)
+        item.setData(QtCore.Qt.UserRole, QtCore.QVariant(unit.x_editor_index))
         unit.x_editor_tableItem = item
         self.ui.tableOverview.setItem(row, 0, item)
         self.markComment(row, unit.getnotes())
@@ -152,11 +155,11 @@ class OverviewDock(QtGui.QDockWidget):
                 self.emit(QtCore.SIGNAL("targetChanged"), target)
         # emit the index of current unit.
         item = self.ui.tableOverview.item(row, 0)
-        if hasattr(item, "text"):
-            index = int(item.text())
-            if (index >= 0):
-                self.emit(QtCore.SIGNAL("currentIndex"), index)
-                self.lastTarget = self.ui.tableOverview.item(row, 2).text()
+        
+        if (hasattr(item, "data")):
+            index = item.data(QtCore.Qt.UserRole).toInt()[0]
+            self.emit(QtCore.SIGNAL("currentIndex"), index)
+            self.lastTarget = self.ui.tableOverview.item(row, 2).text()
     
     def updateView(self, unit):
         """
