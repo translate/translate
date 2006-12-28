@@ -175,11 +175,12 @@ class oopocheckfilter(pofilter.pocheckfilter):
     if filterresult:
       if filterresult != autocorrect:
         for filtername, filtermessage in filterresult:
+          location = thepo.getlocations()[0].encode('utf-8')
           if filtername in self.options.error:
-            print >> sys.stderr, "Error at %s::%s: %s" % (filename, thepo.getlocations()[0], filtermessage)
+            print >> sys.stderr, "Error at %s::%s: %s" % (filename, location, filtermessage)
             return not filteraction in ["exclude-all", "exclude-serious"]
           if filtername in self.options.warning or self.options.alwayswarn:
-            print >> sys.stderr, "Warning at %s::%s: %s" % (filename, thepo.getlocations()[0], filtermessage)
+            print >> sys.stderr, "Warning at %s::%s: %s" % (filename, location, filtermessage)
             return not filteraction in ["exclude-all"]
     return True
 
