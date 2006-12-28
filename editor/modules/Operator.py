@@ -80,13 +80,12 @@ class Operator(QtCore.QObject):
         self.currentUnitIndex = 0
         i = 0
         for unit in self.store.units:
-            unit.x_editor_index = i
             unit.x_editor_state = self.status.getStatus(unit)
             if (self.filter & unit.x_editor_state):
                 unit.x_editor_filterIndex = len(self.filteredList)
                 self.filteredList.append(unit)
             i += 1
-        self.emit(QtCore.SIGNAL("newUnits"), self.store.units)
+        self.emit(QtCore.SIGNAL("newUnits"), self.filteredList)
         self.emitFiltered(self.filter)
 
     def emitStatus(self):
@@ -97,12 +96,8 @@ class Operator(QtCore.QObject):
         @param unit: class unit."""
         if (not hasattr(unit, "x_editor_filterIndex")):
             return
-        if hasattr(unit, "x_editor_index"):
-            self.currentUnitIndex = unit.x_editor_index
-        else:
-            self.currentUnitIndex = None
-        if hasattr(unit, "x_editor_filterIndex"):
-            self.searchPointer = unit.x_editor_filterIndex
+        self.currentUnitIndex = unit.x_editor_filterIndex
+        self.searchPointer = unit.x_editor_filterIndex
         
         self.emit(QtCore.SIGNAL("currentUnit"), unit)
     
@@ -141,6 +136,12 @@ class Operator(QtCore.QObject):
     def emitFiltered(self, filter):
         """send filtered list signal according to filter."""
         self.emitUpdateUnit()
+        
+        if (len(self.filteredList) > 0):
+            unitBeforeFiltered = self.filteredList[self.currentUnitIndex]
+        else:
+            unitBeforeFiltered = None
+        
         if (filter != self.filter):
             # build a new filteredList when only filter has changed.
             self.filter = filter
@@ -155,8 +156,8 @@ class Operator(QtCore.QObject):
                 else:
                     unit.x_editor_filterIndex = None
         self.emit(QtCore.SIGNAL("filterChanged"), filter, len(self.filteredList))
-        if (self.currentUnitIndex > 0) and (self.store.units[self.currentUnitIndex] in self.filteredList):
-            unit = self.store.units[self.currentUnitIndex]
+        if (unitBeforeFiltered) and (unitBeforeFiltered in self.filteredList):
+            unit = unitBeforeFiltered
         elif (len(self.filteredList) > 0):
             unit = self.filteredList[0]
         else:
@@ -229,7 +230,7 @@ class Operator(QtCore.QObject):
         @param comment: QString type"""
         if (self.currentUnitIndex < 0):
             return
-        unit = self.store.units[self.currentUnitIndex]
+        unit = self.filteredList[self.currentUnitIndex]
         unit.removenotes()
         unit.addnote(unicode(comment))
         self._modified = True
@@ -240,7 +241,7 @@ class Operator(QtCore.QObject):
         @param target: QString type"""
         if (self.currentUnitIndex < 0):
             return
-        unit = self.store.units[self.currentUnitIndex]
+        unit = self.filteredList[self.currentUnitIndex]
         # update target for current unit
         unit.target = unicode(target)
         if (unit.target):
@@ -250,27 +251,21 @@ class Operator(QtCore.QObject):
         self._modified = True
         self.emitUnit(unit)
         self.emitStatus()
-
-    def setUnitFromIndex(self, index):
-        """build a unit from index and call emitUnit.
-        @param index: index inside the store.units."""
-        if (index < len(self.store.units)):
-            self.emitUpdateUnit()
-            unit = self.store.units[index]
-            self.emitUnit(unit)
-        
+    
     def setUnitFromPosition(self, position):
+        """build a unit from position and call emitUnit.
+        @param position: position inside the filtered list."""
         if (position < len(self.filteredList)):
             self.emitUpdateUnit()
             unit = self.filteredList[position]
             self.emitUnit(unit)
-        
+    
     def toggleFuzzy(self):
         """toggle fuzzy state for current unit."""
         if (self.currentUnitIndex < 0):
             return
         self.emitUpdateUnit()
-        unit = self.store.units[self.currentUnitIndex]
+        unit = self.filteredList[self.currentUnitIndex]
         if (unit.x_editor_state & World.fuzzy):
             self.status.markFuzzy(unit, False)
         elif (unit.x_editor_state & World.translated):

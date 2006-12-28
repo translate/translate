@@ -59,7 +59,6 @@ class OverviewDock(QtGui.QDockWidget):
         self.normalState = QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
         self.indexMaxLen = 0
         self.units = []
-        self.selectedIndex = 0
         self.visibleRow = []
         self.lastTarget = None
         
@@ -109,8 +108,6 @@ class OverviewDock(QtGui.QDockWidget):
         """
         if (filter == self.filter):
             return
-        if (lenFilter == 0):
-            self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), True, True)
         self.filter = filter
         self.showFilteredItems()
         
@@ -124,7 +121,7 @@ class OverviewDock(QtGui.QDockWidget):
         item = QtGui.QTableWidgetItem(self.indexString(row + 1))
         item.setTextAlignment(QtCore.Qt.AlignRight + QtCore.Qt.AlignVCenter)
         item.setFlags(self.normalState)
-        item.setData(QtCore.Qt.UserRole, QtCore.QVariant(unit.x_editor_index))
+        item.setData(QtCore.Qt.UserRole, QtCore.QVariant(row))
         unit.x_editor_tableItem = item
         self.ui.tableOverview.setItem(row, 0, item)
         self.markComment(row, unit.getnotes())
@@ -158,7 +155,7 @@ class OverviewDock(QtGui.QDockWidget):
         
         if (hasattr(item, "data")):
             index = item.data(QtCore.Qt.UserRole).toInt()[0]
-            self.emit(QtCore.SIGNAL("currentIndex"), index)
+            self.emit(QtCore.SIGNAL("filteredIndex"), index)
             self.lastTarget = self.ui.tableOverview.item(row, 2).text()
     
     def updateView(self, unit):
@@ -182,13 +179,8 @@ class OverviewDock(QtGui.QDockWidget):
         self.connect(self.ui.tableOverview, self.changedSignal, self.emitCurrentIndex)
         
         self.ui.tableOverview.scrollToItem(unit.x_editor_tableItem)
-        
-        if (row in self.visibleRow):
-            self.selectedIndex = self.visibleRow.index(row)
-        firstUnit = (self.selectedIndex == 0)
-        lastUnit = (self.selectedIndex >= len(self.visibleRow) -1)
-        self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), firstUnit, lastUnit)
-        
+        self.emitFirstLastUnit()
+    
     def markState(self, index, state):
         """
         mark icon indicate state of unit on note column.
@@ -234,23 +226,22 @@ class OverviewDock(QtGui.QDockWidget):
         hide and show the item in the table according to filter.
         calculating the visibleRow for navigation.
         """
+        i = 0
+        self.visibleRow = []
         for unit in self.units:
             if hasattr(unit, "x_editor_tableItem"):
-                row = self.ui.tableOverview.row(unit.x_editor_tableItem)
+                item = unit.x_editor_tableItem
+                row = self.ui.tableOverview.row(item)
                 if (unit.x_editor_state & self.filter):
                     self.ui.tableOverview.showRow(row)
+                    self.visibleRow.append(row)
+                    item.setData(QtCore.Qt.UserRole, QtCore.QVariant(i))
+                    i += 1
                 else:
                     self.ui.tableOverview.hideRow(row)
         self.ui.tableOverview.resizeRowsToContents()
-        
-        self.visibleRow = []
-        for i in range(self.ui.tableOverview.rowCount()):
-            if (not self.ui.tableOverview.isRowHidden(i)):
-                self.visibleRow.append(i)
-        if (self.visibleRow) and (len(self.ui.tableOverview.selectedItems()) > 0):
-            row = self.ui.tableOverview.row(self.ui.tableOverview.selectedItems()[0])
-            self.selectedIndex = self.visibleRow.index(row)
-        
+        self.emitFirstLastUnit()
+    
     def indexString(self, index):
         """converting index which is integer string."""
         return str(index).rjust(self.indexMaxLen) + "  "
@@ -271,25 +262,32 @@ class OverviewDock(QtGui.QDockWidget):
     
     def scrollPrevious(self):
         """move to previous row inside the table."""
-        if (self.selectedIndex > 0):
-            self.selectedIndex -= 1
-            self.ui.tableOverview.selectRow(self.visibleRow[self.selectedIndex])
+        currentRow = self.ui.tableOverview.currentRow()
+        if (currentRow > 0):
+            currentRow -= 1
+            self.ui.tableOverview.selectRow(currentRow)
     
     def scrollNext(self):
         """move to next row inside the table."""
-        if (self.selectedIndex < len(self.visibleRow) - 1):
-            self.selectedIndex += 1
-            self.ui.tableOverview.selectRow(self.visibleRow[self.selectedIndex])
+        currentRow = self.ui.tableOverview.currentRow()
+        if (currentRow < len(self.visibleRow) - 1):
+            currentRow += 1
+            self.ui.tableOverview.selectRow(currentRow)
     
     def scrollFirst(self):
         """move to first row of the table."""
-        self.selectedIndex = 0
-        self.ui.tableOverview.selectRow(self.visibleRow[self.selectedIndex])
+        self.ui.tableOverview.selectRow(0)
     
     def scrollLast(self):
         """move to last row of the table."""
-        self.selectedIndex = len(self.visibleRow) - 1
-        self.ui.tableOverview.selectRow(self.visibleRow[self.selectedIndex])
+        self.ui.tableOverview.selectRow(len(self.visibleRow) - 1)
+    
+    def emitFirstLastUnit(self):
+        currentRow = self.ui.tableOverview.currentRow()
+        lenSelItem = len(self.ui.tableOverview.selectedItems())
+        firstUnit = (currentRow == 0) or (lenSelItem == 0)
+        lastUnit = (currentRow >= len(self.visibleRow) -1)
+        self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), firstUnit, lastUnit)
     
 if __name__ == "__main__":
     import sys, os

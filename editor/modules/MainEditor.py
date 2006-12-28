@@ -174,7 +174,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockComment.updateView)
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.addFuzzyIcon)
         self.connect(self.dockTUview, QtCore.SIGNAL("filteredIndex"), self.operator.setUnitFromPosition)
-        self.connect(self.dockOverview, QtCore.SIGNAL("currentIndex"), self.operator.setUnitFromIndex)
+        self.connect(self.dockOverview, QtCore.SIGNAL("filteredIndex"), self.operator.setUnitFromPosition)
 
         self.connect(self.operator, QtCore.SIGNAL("updateUnit"), self.dockTUview.checkModified)
         self.connect(self.operator, QtCore.SIGNAL("updateUnit"), self.dockComment.checkModified)
