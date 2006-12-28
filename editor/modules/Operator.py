@@ -185,7 +185,8 @@ class Operator(QtCore.QObject):
     def makeNewHeader(self, headerDic):
           """receive headerDic as dictionary, and return header as string"""
           #TODO: move to world
-          self.store.x_generator = World.settingOrg + ' ' + World.settingApp + ' ' + World.settingVer
+          if (hasattr(self.store, "x_generator")):
+            self.store.x_generator = World.settingOrg + ' ' + World.settingApp + ' ' + World.settingVer
           if isinstance(self.store, poheader.poheader):
               self.store.updateheader(add=True, **headerDic)
               return self.store.makeheaderdict(**headerDic)
@@ -255,7 +256,7 @@ class Operator(QtCore.QObject):
     def setUnitFromPosition(self, position):
         """build a unit from position and call emitUnit.
         @param position: position inside the filtered list."""
-        if (position < len(self.filteredList)):
+        if (position < len(self.filteredList) and position >= 0):
             self.emitUpdateUnit()
             unit = self.filteredList[position]
             self.emitUnit(unit)
