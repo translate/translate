@@ -23,7 +23,7 @@
 # This module stores status
 
 from translate.tools import pocount
-import modules.World as World
+import editor.modules.World as World
 
 class Status:
     def __init__(self, units):

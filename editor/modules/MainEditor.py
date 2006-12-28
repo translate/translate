@@ -25,17 +25,17 @@
 import os
 import sys
 from PyQt4 import QtCore, QtGui
-from ui.Ui_MainEditor import Ui_MainWindow
-from modules.TUview import TUview
-from modules.Overview import OverviewDock
-from modules.Comment import CommentDock
-from modules.Header import Header
-from modules.Operator import Operator
-from modules.FileAction import FileAction
-from modules.Find import Find
-from modules.Preference import Preference
-from modules.AboutEditor import AboutEditor
-import modules.World as World
+from editor.ui.Ui_MainEditor import Ui_MainWindow
+from editor.modules.TUview import TUview
+from editor.modules.Overview import OverviewDock
+from editor.modules.Comment import CommentDock
+from editor.modules.Header import Header
+from editor.modules.Operator import Operator
+from editor.modules.FileAction import FileAction
+from editor.modules.Find import Find
+from editor.modules.Preference import Preference
+from editor.modules.AboutEditor import AboutEditor
+import editor.modules.World as World
 
 class MainWindow(QtGui.QMainWindow):
     """

@@ -24,8 +24,8 @@
 # This module is working on overview of source and target
 
 from PyQt4 import QtCore, QtGui
-from ui.Ui_Overview import Ui_Form
-import modules.World as World
+from editor.ui.Ui_Overview import Ui_Form
+import editor.modules.World as World
 
 class OverviewDock(QtGui.QDockWidget):
     def __init__(self, parent):

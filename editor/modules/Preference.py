@@ -26,8 +26,8 @@
 
 
 from PyQt4 import QtCore, QtGui
-from ui.Ui_Preference import Ui_frmPreference
-import modules.World as World
+from editor.ui.Ui_Preference import Ui_frmPreference
+import editor.modules.World as World
 
 class Preference(QtGui.QDialog):
     def __init__(self, parent):
