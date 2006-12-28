@@ -294,7 +294,7 @@ class TranslationChecker(object):
         filterresult = filterfunction(str1, str2)
       except FilterFailure, e:
         filterresult = False
-        filtermessage = e
+        filtermessage = str(e)
       except Exception, e:
         if self.errorhandler is None:
           raise
