@@ -1,7 +1,26 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""tests for FileAction classes"""
+# WordForge Translation Editor
+# Copyright 2006 WordForge Foundation
+#
+# Version 0.1 (29 December 2006)
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2.1
+# of the License, or (at your option) any later version.
+#
+# See the LICENSE file for more details. 
+#
+# # Developed by:
+#       Hok Kakada (hokkakada@khmeros.info)
+#       Keo Sophon (keosophon@khmeros.info)
+#       San Titvirak (titvirak@khmeros.info)
+#       Seth Chanratha (sethchanratha@khmeros.info)
+# 
+# This module is working on tests for FileAction classes
+
 
 import sys
 import FileAction

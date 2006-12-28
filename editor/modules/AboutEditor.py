@@ -4,16 +4,14 @@
 # WordForge Translation Editor
 # Copyright 2006 WordForge Foundation
 #
-# Version 0.1 (31 August 2006)
+# Version 0.1 (29 December 2006)
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# See the LICENSE file for more details. 
 #
 # Developed by:
 #       Hok Kakada (hokkakada@khmeros.info)
@@ -29,7 +27,7 @@ class AboutEditor(QtGui.QDialog):
     def __init__(self, parent):
         QtGui.QDialog.__init__(self, parent)
         self.ui = None
-    
+
     def showDialog(self):
         #lazy init
         if (not self.ui):
@@ -44,7 +42,7 @@ class AboutEditor(QtGui.QDialog):
             tabWidget.addTab(LicensesTab(), self.tr("Licenses Agreement"))
 
             self.okButton = QtGui.QPushButton(self.tr("&OK"))
-            self.connect(self.okButton, QtCore.SIGNAL("clicked()"), QtCore.SLOT("accept()"))   
+            self.connect(self.okButton, QtCore.SIGNAL("clicked()"), QtCore.SLOT("accept()"))
 
             buttonLayout = QtGui.QHBoxLayout()
             buttonLayout.addStretch(1)
@@ -56,10 +54,10 @@ class AboutEditor(QtGui.QDialog):
             self.setLayout(mainLayout)
             self.ui = True
         self.setWindowTitle(self.tr("About Editor"))
-        self.setMinimumSize(400, 400)   
+        self.setMinimumSize(400, 400)
         self.setModal(True)
         self.show()
-    
+
     def handleLinkClicked(self, url):
         '''slot to handle when anchorClicked (an email address), and open a webbrowser and a mail client'''
         self.sender().setSource(QtCore.QUrl())
@@ -69,7 +67,7 @@ class AboutEditor(QtGui.QDialog):
             return
         except:
             pass
-    
+
 class AboutTab(QtGui.QWidget):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
@@ -80,9 +78,10 @@ class AboutTab(QtGui.QWidget):
         self.setLayout(mainLayout)
 
 
+
 class AuthorsTab(QtGui.QWidget):
     def __init__(self, parent=None):
-        QtGui.QWidget.__init__(self, parent)        
+        QtGui.QWidget.__init__(self, parent)
         self.fileNameLabel = QtGui.QTextBrowser()
         self.fileNameLabel.setHtml(self.tr('<br>Hok Kakada (<a href="mailto:hokkakada@khmeros.info">hokkakada@khmeros.info</a>)<br><br>Keo Sophon (<a href="mailto:keosophon@khmeros.info">keosophon@khmeros.info</a>)<br><br>San Titvirak (<a href="mailto:titvirak@khmeros.info">titvirak@khmeros.info</a>)<br><br>Seth Chanratha(<a href="mailto:sethchanratha@khmeros.info">sethchanratha@khmeros.info</a>)'))
         mainLayout = QtGui.QVBoxLayout()
