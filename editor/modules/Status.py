@@ -57,7 +57,7 @@ class Status:
 
     def markTranslated(self, unit, translated):
         if (translated):
-            if (unit.x_editor_state & World.translated):
+            if (not hasattr(unit, "x_editor_state")) or (unit.x_editor_state & World.translated):
                 return
             self.numTranslated += 1
             if hasattr(unit, "marktranslated"):
