@@ -99,7 +99,9 @@ class Operator(QtCore.QObject):
             self.currentUnitIndex = unit.x_editor_index
         else:
             self.currentUnitIndex = None
-        self.searchPointer = unit.x_editor_filterIndex
+        if hasattr(unit, "x_editor_filterIndex"):
+            self.searchPointer = unit.x_editor_filterIndex
+        
         self.emit(QtCore.SIGNAL("currentUnit"), unit)
     
     def filterFuzzy(self, checked):
