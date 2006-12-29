@@ -359,16 +359,14 @@ class Operator(QtCore.QObject):
     def replaceAll(self, replacedText):
         """replace the found text in the text fields through out the units.
         @param replacedText: text to replace."""
-        self.searchPointer = 0
         self.foundPosition = -1
-        for i in self.filteredList:
-            if self.searchNext():
-                textField = self.searchableText[self.currentTextField]
-                self.emit(QtCore.SIGNAL("replaceText"), \
-                    textField, \
-                    self.foundPosition, \
-                    len(unicode(self.searchString)), \
-                    replacedText)
+        while self.searchNext():
+            textField = self.searchableText[self.currentTextField]
+            self.emit(QtCore.SIGNAL("replaceText"), \
+                textField, \
+                self.foundPosition, \
+                len(unicode(self.searchString)), \
+                replacedText)
         
     def _getUnitString(self):
         """@return: the string of current text field."""
