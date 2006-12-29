@@ -193,8 +193,8 @@ class MainWindow(QtGui.QMainWindow):
 
         # set file status information to text label of status bar.
         self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.statuslabel.setText)
-        self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.setOpening)
         self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.operator.getUnits)
+        self.connect(self.operator, QtCore.SIGNAL("fileIsOK"), self.setOpening)
 
         # get the last state of mainwindows's toolbars and dockwidgets
         state = World.settings.value("MainWindowState")
@@ -246,6 +246,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionFilterFuzzy.setChecked(True)
         self.ui.actionFilterTranslated.setChecked(True)
         self.ui.actionFilterUntranslated.setChecked(True)
+        self.findBar.toggleViewAction().setVisible(True)
         
     def startRecentAction(self):
         action = self.sender()

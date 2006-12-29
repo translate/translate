@@ -64,6 +64,7 @@ class Operator(QtCore.QObject):
             QtGui.QMessageBox.critical(None, 'Error', 'Error while trying to read file ' + fileName  + '\n' + str(e))
             return
         self.setNewStore(store)
+        self.emit(QtCore.SIGNAL("fileIsOK"), fileName)
         
     def setNewStore(self, store):
         """ setup the oparator with a new storage
