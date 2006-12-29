@@ -43,6 +43,8 @@ class Find(QtGui.QDockWidget):
         self.ui.setupUi(self.form)
         self.setWidget(self.form)
         self.ui.insource.setEnabled(False)
+        self.setWindowTitle(self.tr("Find and Replace"))
+        self.toggleViewAction().setVisible(False)
         self.setFeatures(QtGui.QDockWidget.DockWidgetClosable)
         self.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
         self.connect(self.ui.findNext, QtCore.SIGNAL("clicked()"), self.findNext)
@@ -117,7 +119,7 @@ class Find(QtGui.QDockWidget):
             self.ui.insource.setEnabled(False)
             if (not self.ui.incomment.isChecked()):
                 self.ui.intarget.setChecked(True)
-            self.setWindowTitle(self.tr("Find & Replace"))
+            self.setWindowTitle(self.tr("Find and Replace"))
             self.initSearch()
             self._hideReplace(False)
             self.show()
