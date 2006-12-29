@@ -24,8 +24,8 @@
 import time
 import os
 from PyQt4 import QtCore, QtGui
-from ui.Ui_Header import Ui_frmHeader
-import modules.World as World
+from editor.ui.Ui_Header import Ui_frmHeader
+import editor.modules.World as World
 from translate.storage import poheader
 
 class Header(QtGui.QDialog):
@@ -61,7 +61,6 @@ class Header(QtGui.QDialog):
             QtCore.QObject.connect(self.ui.txtOtherComments, QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
             
              # set up table appearance and behavior
-            self.ui.tableHeader.clear()
             self.headerLabels = [self.tr("Key"), self.tr("Value")]
             self.ui.tableHeader.setHorizontalHeaderLabels(self.headerLabels)
             self.ui.tableHeader.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
@@ -71,11 +70,16 @@ class Header(QtGui.QDialog):
             self.ui.tableHeader.horizontalHeader().setHighlightSections(False)
             self.ui.tableHeader.setEnabled(True)
             self.ui.tableHeader.verticalHeader().hide()
-        otherComments, self.headerDic = self.operator.headerData() 
-##        self.headerDicForReset = self.headerDic
+        self.ui.tableHeader.clear()
+        self.ui.tableHeader.setRowCount(0)
+        otherComments, self.headerDic = self.operator.headerData()
         if (self.headerDic):
             self.addItemToTable(self.headerDic)
             self.btnRMStat()
+        if (self.ui.tableHeader.rowCount() != 0):
+            self.ui.btnDown.setEnabled(True)
+            self.ui.btnUp.setEnabled(True)
+            self.ui.tableHeader.setCurrentCell(0,0)
         otherCommentsStr = " "
         if (otherComments):
             for i in range(len(otherComments)):
@@ -89,7 +93,6 @@ class Header(QtGui.QDialog):
     def reset(self):
         """Reset back the original header"""
         self.addItemToTable(self.headerDic)
-##        self.addItemToTable(self.headerDicForReset)
         self.ui.txtOtherComments.setPlainText(self.oldOtherComments)
         
     def moveItem(self, distance) :
@@ -130,8 +133,6 @@ class Header(QtGui.QDialog):
         self.btnRMStat()
         if (self.stat == False):
             return
-        if (str(self.ui.tableHeader.item(self.ui.tableHeader.currentRow(), 0).text()) != ""):
-            del self.headerDic[str(self.ui.tableHeader.item(self.ui.tableHeader.currentRow(), 0).text())]
         self.ui.tableHeader.removeRow(self.ui.tableHeader.currentRow())
 
     def btnRMStat(self):
@@ -217,7 +218,7 @@ if __name__ == "__main__":
     # set the path for QT in order to find the icons
     QtCore.QDir.setCurrent(os.path.join(sys.path[0], "..", "ui"))
     app = QtGui.QApplication(sys.argv)
-    from modules.Operator import Operator
+    from editor.modules.Operator import Operator
     operatorObj = Operator()
     Header = Header(None, operatorObj)
     Header.showDialog()
