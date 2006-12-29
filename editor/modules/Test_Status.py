@@ -38,29 +38,27 @@ class TestStatus(unittest.TestCase):
 msgid "Unable to open file for reading."
 msgstr "unable to read file"
 '''
-        self.pofile = self.poparse(unit)
-        units = self.pofile.units
+        self.store = po.pofile.parsestring(unit)
+        units = self.store.units
         self.total = len(units)
         self.fuzzy = len(pocount.fuzzymessages(units))
         self.translated = len(pocount.translatedmessages(units))
         self.untranslated = self.total - self.translated
-        self.status = Status(self.pofile.units)
-
-    def poparse(self, posource):
-        """helper that parses po source without requiring files"""
-        dummyfile = wStringIO.StringIO(posource)
-        return po.pofile(dummyfile)
+        self.status = Status(self.store.units)
 
     def testMarkTranslated(self):
-        unit = self.pofile.units[0]
+        unit = self.store.units[0]
         numFuzzy = self.status.numFuzzy
         numTranslated = self.status.numTranslated
+        unit.x_editor_state = self.status.getStatus(unit)
+        
         # unit is fuzzy, making it translated should change it
         self.assertEqual(unit.x_editor_state, World.fuzzy)
         self.status.markTranslated(unit, True)
         self.assertEqual(unit.x_editor_state, World.translated)
         self.assertEqual(self.status.numFuzzy, numFuzzy - 1)
         self.assertEqual(self.status.numTranslated, numTranslated + 1)
+        
         # unit is translated, making it untranslated should change it
         self.status.markTranslated(unit, False)
         self.assertEqual(unit.x_editor_state, World.untranslated)
@@ -68,15 +66,18 @@ msgstr "unable to read file"
         self.assertEqual(self.status.numTranslated, numTranslated)
 
     def testMarkFuzzy(self):
-        unit = self.pofile.units[0]
+        unit = self.store.units[0]
         numFuzzy = self.status.numFuzzy
         numTranslated = self.status.numTranslated
+        unit.x_editor_state = self.status.getStatus(unit)
+        
         # unit is fuzzy, making it fuzzy again should not change it
         self.assertEqual(unit.x_editor_state, World.fuzzy)
         self.status.markFuzzy(unit, True)
         self.assertEqual(unit.x_editor_state, World.fuzzy)
         self.assertEqual(self.status.numFuzzy, numFuzzy)
         self.assertEqual(self.status.numTranslated, numTranslated)
+        
         # setting it to not fuzzy should change it
         self.status.markFuzzy(unit, False)
         self.assertEqual(unit.x_editor_state, World.translated)
@@ -90,9 +91,8 @@ msgstr "unable to read file"
 
     def testGetStatus(self):
         unitstate = World.fuzzy
-        unit = self.pofile.units[0]
+        unit = self.store.units[0]
         self.assertEqual(self.status.getStatus(unit), unitstate)
-        self.assertEqual(unit.x_editor_state, unitstate)
     
     def testStatusString(self):
         status = self.status.statusString()
