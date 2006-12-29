@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Tue Dec 12 15:47:57 2006
+# Created: Thu Dec 28 14:30:37 2006
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -48,6 +48,7 @@ class Ui_frmHeader(object):
         self.gridlayout1.addItem(spacerItem,2,1,1,1)
 
         self.btnDown = QtGui.QPushButton(self.frame)
+        self.btnDown.setEnabled(False)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(0),QtGui.QSizePolicy.Policy(0))
         sizePolicy.setHorizontalStretch(0)
@@ -59,6 +60,7 @@ class Ui_frmHeader(object):
         self.gridlayout1.addWidget(self.btnDown,1,1,1,1)
 
         self.btnUp = QtGui.QPushButton(self.frame)
+        self.btnUp.setEnabled(False)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(0),QtGui.QSizePolicy.Policy(0))
         sizePolicy.setHorizontalStretch(0)
@@ -177,12 +179,13 @@ class Ui_frmHeader(object):
         self.tableHeader.setFocusPolicy(QtCore.Qt.TabFocus)
         self.tableHeader.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
         self.tableHeader.setAcceptDrops(False)
-        self.tableHeader.setLineWidth(0)
+        self.tableHeader.setLineWidth(1)
+        self.tableHeader.setMidLineWidth(1)
         self.tableHeader.setProperty("showDropIndicator",QtCore.QVariant(False))
         self.tableHeader.setDragEnabled(False)
         self.tableHeader.setAlternatingRowColors(True)
         self.tableHeader.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
-        self.tableHeader.setShowGrid(False)
+        self.tableHeader.setShowGrid(True)
         self.tableHeader.setObjectName("tableHeader")
         self.gridlayout1.addWidget(self.tableHeader,0,0,5,1)
         self.gridlayout.addWidget(self.frame,3,0,1,1)

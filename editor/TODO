@@ -37,7 +37,7 @@ Closed bugs and need review
 7. rearrange the menu. Create an entry Window and move toolbars and toolviews there. 
     Make the filter appear on the first level in View menu.
 - Priority: 1
-- Who: ratha
+- Who: ratha 
 - Status: closed
 
 8. add an icon to the preference action.
@@ -151,8 +151,8 @@ Open Bugs
    + Test_FileAction: ok
    + Test_Find:0k
    + Test_TUview: ok
-   + Test_Header:(da)
-   + Test_Operator:???
+   + Test_Header:da
+   + Test_Operator:phon
 
 10. Editor's Name
 - Priority: 1
@@ -174,7 +174,7 @@ Open Bugs
 - Status: open
 
 19. Emit signal readyForSave when there is something change in Preference and Header
-- Priority: 1
+- Priority: 2
 - Who: da
 - Status: not
 
@@ -193,7 +193,7 @@ Open Bugs
 - Who: phon
 - Status: not
 
-18. Replace: when click Open Dialog, the paste on toolbar will enabled because
+18. when click Open Dialog, the paste on toolbar will enabled because
     of cursor focus on filename.
 - Priority: 2
 - Who: ratha
