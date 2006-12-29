@@ -78,8 +78,6 @@ class MainWindow(QtGui.QMainWindow):
         pixmap = QtGui.QPixmap("../images/fuzzy.png")
         self.statusfuzzy.setPixmap(pixmap.scaled(16, 16, QtCore.Qt.KeepAspectRatio))
         self.statusfuzzy.setToolTip("Current unit is fuzzy")
-        self.statusfuzzy.setVisible(False)
-        self.ui.statusbar.addWidget(self.statusfuzzy)
         
         self.statuslabel = QtGui.QLabel()
         self.statuslabel.setFrameStyle(QtGui.QFrame.NoFrame)
@@ -385,7 +383,12 @@ class MainWindow(QtGui.QMainWindow):
     
     def addFuzzyIcon(self, unit):
         if hasattr(unit, "x_editor_state"):
-            self.statusfuzzy.setVisible(unit.x_editor_state & World.fuzzy)
+            if (unit.x_editor_state & World.fuzzy):
+                self.statusfuzzy.setVisible(True)
+                self.ui.statusbar.addWidget(self.statusfuzzy)
+            else:
+                self.statusfuzzy.setVisible(False)
+                self.ui.statusbar.removeWidget(self.statusfuzzy)
     
 def main(inputFile = None):
     # set the path for QT in order to find the icons
