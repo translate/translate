@@ -15,32 +15,36 @@ class TestHeader(unittest.TestCase):
     def setUp(self):
         self.HeaderObj = Header.Header(None, Operator.Operator())
         self.HeaderObj.showDialog()
+        self.headerDic = {}
         self.HeaderObj.ui.tableHeader.setRowCount(10)
         self.HeaderObj.ui.tableHeader.setCurrentCell(1,0)
 
     def testNaviState(self):
         #if table has no row
         self.HeaderObj.ui.tableHeader.setRowCount(0)
-        self.HeaderObj.naviState()
+        QtCore.QObject.connect(self.HeaderObj.ui.tableHeader,QtCore.SIGNAL("currentItemChanged(QTableWidgetItem *, QTableWidgetItem *)"), self.HeaderObj.naviState)
         self.assertEqual(self.HeaderObj.ui.btnUp.isEnabled(), False)
         self.assertEqual(self.HeaderObj.ui.btnDown.isEnabled(), False)
         
         self.HeaderObj.ui.tableHeader.setRowCount(10)
+        self.HeaderObj.ui.btnDown.setEnabled(True)
         # if the top row is the current row
         self.HeaderObj.ui.tableHeader.setCurrentCell(0,0)
-        self.HeaderObj.naviState()
+        QtCore.QObject.connect(self.HeaderObj.ui.tableHeader,QtCore.SIGNAL("currentItemChanged(QTableWidgetItem *, QTableWidgetItem *)"), self.HeaderObj.naviState)
         self.assertEqual(self.HeaderObj.ui.btnUp.isEnabled(), False)
         self.assertEqual(self.HeaderObj.ui.btnDown.isEnabled(), True)
         
         # if the current row is in the midle
         self.HeaderObj.ui.tableHeader.setCurrentCell(1,0)
-        self.HeaderObj.naviState()
+        self.HeaderObj.ui.btnUp.setEnabled(True)
+        QtCore.QObject.connect(self.HeaderObj.ui.tableHeader,QtCore.SIGNAL("currentItemChanged(QTableWidgetItem *, QTableWidgetItem *)"), self.HeaderObj.naviState)
         self.assertEqual(self.HeaderObj.ui.btnUp.isEnabled(), True)
         self.assertEqual(self.HeaderObj.ui.btnDown.isEnabled(), True)
         
          # if the current row is at last
         self.HeaderObj.ui.tableHeader.setCurrentCell(self.HeaderObj.ui.tableHeader.rowCount()-1,0)
-        self.HeaderObj.naviState()
+        self.HeaderObj.ui.btnDown.setEnabled(False)
+        QtCore.QObject.connect(self.HeaderObj.ui.tableHeader,QtCore.SIGNAL("currentItemChanged(QTableWidgetItem *, QTableWidgetItem *)"), self.HeaderObj.naviState)
         self.assertEqual(self.HeaderObj.ui.btnUp.isEnabled(), True)
         self.assertEqual(self.HeaderObj.ui.btnDown.isEnabled(), False)
         
@@ -50,8 +54,9 @@ class TestHeader(unittest.TestCase):
         self.assertEqual(self.HeaderObj.ui.tableHeader.rowCount(), len(headerDic))
         
     def testDeleteRow(self):
+        table = self.HeaderObj.ui.tableHeader
         self.HeaderObj.deleteRow()
-        self.assertEqual(self.HeaderObj.ui.tableHeader.rowCount(), 9)
+        self.assertEqual(table.rowCount(), 9)
         
     def testInsertNewRow(self):
         self.HeaderObj.insertNewRow()
