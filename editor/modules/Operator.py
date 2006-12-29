@@ -293,6 +293,8 @@ class Operator(QtCore.QObject):
 
     def searchNext(self):
         """search forward through the text fields."""
+        if (not hasattr(self, "searchPointer")):
+            return
         oldSearchPointer = self.searchPointer
         while (self.searchPointer < len(self.filteredList)):
             unitString = self._getUnitString()
@@ -319,6 +321,8 @@ class Operator(QtCore.QObject):
 
     def searchPrevious(self):
         """search backward through the text fields."""
+        if (not hasattr(self, "searchPointer")):
+            return
         while (self.searchPointer >= 0):
             unitString = self._getUnitString()
             self.foundPosition = unitString.rfind(self.searchString, 0, self.foundPosition)
