@@ -1,8 +1,8 @@
-				WordForge Translation Editor (V.1.0)
+				WordForge Translation Editor (V.0.1)
 	Copyright (c) 2006 by The WordForge Foundation (All Rights Reserved)
 				www.khmeros.info
 
-Version 1.0  Date: 30 December 2006
+Version 0.1  Date: 29 December 2006
 
 Developed by:
 	Hok Kakada (hokkakada@khmeros.info)
@@ -34,7 +34,7 @@ Mail Archives: http://sourceforge.net/mailarchive/forum.php?forum=translate-poot
 Requirements/Installation
 -------------------------
 
-WordForge Translation Editor requires the Translate Toolkit package from 
+WordForge Translation Editor, pootling,  requires the Translate Toolkit package from 
 http://translate.sourceforge.net as it uses most of the other modules.
 
 The Translate Toolkit requires Python 2.2 or higher.It must 
@@ -43,11 +43,23 @@ will normally be accomplished by installing from source:
 
 	python setup.py install	
 
+Other requirement tools:
+----------------------
+
+sip-4.4.5, Python C/C++ Bindings Generator, is also needed and can be obtained from 
+http://www.riverbankcomputing.co.uk/sip/
+
+PyQt-x11-gpl-4.0, <http://www.riverbankcomputing.co.uk/pyqt/> - the Python bindings for
+the Qt GUI toolkit
+
+Qt4.2
+
+
 Running
 -------
 For Linux User:
     
-    python MainEditor.py
+    python pootling.py
     
 For Windows User:
     Not available yet.
