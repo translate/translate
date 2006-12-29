@@ -26,8 +26,8 @@ from translate.storage import po
 from translate.misc import quote
 from translate.storage import poheader
 from translate.storage import xliff
-import modules.World as World
-from modules.Status import Status
+import editor.modules.World as World
+from editor.modules.Status import Status
 import os.path
 
 class Operator(QtCore.QObject):
@@ -49,6 +49,7 @@ class Operator(QtCore.QObject):
         self.store = None
         self._modified = False
         self.currentUnitIndex = 0
+        self.filteredList = []
         
     def getUnits(self, fileName):
         """reading a file into the internal datastructure.
