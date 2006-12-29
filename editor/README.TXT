@@ -13,7 +13,7 @@ Developed by:
 ===========================================================
 * How it works
 * References
-* Requirement/Installation
+* Requirement/How to run
 * Running
 * Bug reporting
 * Notes
@@ -28,13 +28,13 @@ References
 Bugzilla: http://bugs.wordforge.org/
 Wiki: http://translate.sourceforge.net/wiki
 
-Requirements/Installation
+Requirements/How to run
 -------------------------
 
 WordForge Translation Editor, pootling,  requires the Translate Toolkit package from 
 http://translate.sourceforge.net as it uses most of the other modules.
 
-The Translate Toolkit requires Python 2.2 or higher.It must 
+The Translate Toolkit requires Python 2.3 or higher.It must 
 be installed properly i.e. it needs to be accessible in your Python Path. This
 will normally be accomplished by installing it. Please read the README for details.
 
