@@ -21,7 +21,7 @@ Closed bugs and need review
 - Who: Da
 - Status: closed
 
-5. Command Line	
+5. Command Line
 - Priority: 1
 - Who: Da
 - Status: closed
@@ -134,18 +134,21 @@ Closed bugs and need review
 +- Who: Phon
 +- Status: Done
 
-====================================================
-Open Bugs
-====================================================
-1. README/CHANGLOG
-- Priority: 1
-- Who: Phon
-- Status: not
 
-7. UnitTest
+21. Copy source 2 target - Undo is not available
++ Priority: 2
++ Who: virak
++ Status: Done
+
+22. README/CHANGLOG
+- Priority: 1
+- Who: da
+- Status: done
+
+23. UnitTest
 - Priority: 1
 - Who: All
-- Status: not
+- Status: done
    + Test_Comment.py : ok
    + Test_Status: ok
    + Test_FileAction: ok
@@ -154,11 +157,25 @@ Open Bugs
    + Test_Header:da
    + Test_Operator:phon
 
-10. Editor's Name
+24. Editor's Name: Pootling
 - Priority: 1
 - Who: All
-- Status: Open
-    + There are two candidates: pootling, poxole.
+- Status: done
+
+25. adjust the comments in all files: 
+    - correct version number and date
+    - think about the use of "along with translate" in the text
+- Priority: 1
+- Who: ratha
+- Status: closed
+
+5. What's this?
+- Priority: 2
+- Who: All
+- Status: done
+====================================================
+Open Bugs
+====================================================
 
 13. Comment the code: all classes, return values and parameter!
 - Priority: 1
@@ -166,9 +183,7 @@ Open Bugs
 - Status: not
 - Tip: I am not writing everywhere FIXME: you have to start thinking yourself, Jens
 
-17. adjust the comments in all files: 
-    - correct version number and date
-    - think about the use of "along with translate" in the text
+17 - think about the use of "along with translate" in the text
 - Priority: 1
 - Who: ratha
 - Status: open
@@ -183,11 +198,6 @@ Open Bugs
 - Who: Phon
 - Status: not
 
-5. What's this?
-- Priority: 2
-- Who: All
-- Status: not
-
 14. Make the highlight color configurable: color for parameter, tag, search highlight
 - Priority: 2
 - Who: phon
@@ -198,12 +208,6 @@ Open Bugs
 - Priority: 2
 - Who: ratha
 - Status: not
-
-
-21. Copy source 2 target - Undo is not available
-+ Priority: 2
-+ Who: Phon
-+ Status: not
 
 22. Replacing - Undo is not available
 + Priority: 2
