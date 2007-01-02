@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Wed Dec 27 16:11:48 2006
+# Created: Tue Jan  2 08:58:33 2007
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -23,14 +23,14 @@ class Ui_MainWindow(object):
         MainWindow.setSizePolicy(sizePolicy)
         MainWindow.setMinimumSize(QtCore.QSize(400,300))
         MainWindow.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
-        MainWindow.setWindowIcon(QtGui.QIcon("../images/icon.png"))
+        MainWindow.setWindowIcon(QtGui.QIcon("../images/pootling.png"))
 
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0,0,498,30))
+        self.menubar.setGeometry(QtCore.QRect(0,0,498,28))
         self.menubar.setObjectName("menubar")
 
         self.menuSettings = QtGui.QMenu(self.menubar)
@@ -64,6 +64,7 @@ class Ui_MainWindow(object):
         MainWindow.setMenuBar(self.menubar)
 
         self.statusbar = QtGui.QStatusBar(MainWindow)
+        self.statusbar.setGeometry(QtCore.QRect(0,471,498,21))
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
 

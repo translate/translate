@@ -1,4 +1,7 @@
 <ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow" >
   <property name="enabled" >
@@ -33,7 +36,7 @@
    <string>Form</string>
   </property>
   <property name="windowIcon" >
-   <iconset>../images/icon.png</iconset>
+   <iconset>../images/pootling.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget" />
   <widget class="QMenuBar" name="menubar" >
@@ -42,7 +45,7 @@
      <x>0</x>
      <y>0</y>
      <width>498</width>
-     <height>30</height>
+     <height>28</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSettings" >
@@ -142,7 +145,16 @@
    <addaction name="menuWindow" />
    <addaction name="menuHelp" />
   </widget>
-  <widget class="QStatusBar" name="statusbar" />
+  <widget class="QStatusBar" name="statusbar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>471</y>
+     <width>498</width>
+     <height>21</height>
+    </rect>
+   </property>
+  </widget>
   <widget class="QToolBar" name="toolStandard" >
    <property name="enabled" >
     <bool>true</bool>
@@ -718,6 +730,7 @@
    </property>
   </action>
  </widget>
+ <pixmapfunction></pixmapfunction>
  <resources/>
  <connections/>
 </ui>
