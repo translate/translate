@@ -36,6 +36,7 @@ class OverviewDock(QtGui.QDockWidget):
         self.setWidget(self.form)
         
         # set up table appearance and behavior
+        self.ui.tableOverview.setWhatsThis(self.tr("<h3>Overview</h3>This table shows original messages, translations, and status of each messages in current file."))
         self.headerLabels = [self.tr("Index"), self.tr("Source"), self.tr("Target"), self.tr("Status")]
         self.ui.tableOverview.setColumnCount(len(self.headerLabels))
         self.ui.tableOverview.setRowCount(0)
