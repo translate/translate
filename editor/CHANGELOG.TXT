@@ -7,6 +7,8 @@ Enable to do translation with basic features:
 - Set and View comments
 - Find/Replace
 - Preference Setting
+- Copy source2target
+- Toggle fuzzy
 
 
 
