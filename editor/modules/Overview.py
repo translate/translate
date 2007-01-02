@@ -224,6 +224,7 @@ class OverviewDock(QtGui.QDockWidget):
         hide and show the item in the table according to filter.
         calculating the visibleRow for navigation.
         """
+        self.setUpdatesEnabled(False)
         i = 0
         self.visibleRow = []
         for unit in self.units:
@@ -238,6 +239,7 @@ class OverviewDock(QtGui.QDockWidget):
                 else:
                     self.ui.tableOverview.hideRow(row)
         self.ui.tableOverview.resizeRowsToContents()
+        self.setUpdatesEnabled(True)
         self.emitFirstLastUnit()
     
     def indexString(self, index):

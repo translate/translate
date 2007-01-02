@@ -44,13 +44,14 @@ class FileAction(QtCore.QObject):
         self.fileExtension = ""
         self.fileDescription = ""
         self.MaxRecentHistory = 10
+        self.directory = sys.path[0]
         
     def openFile(self):
         #TODO: open one or more existing files selected
         newFileName = QtGui.QFileDialog.getOpenFileName(self.parentWidget, self.tr("Open File"),
-                        sys.path[0],
+                        self.directory,
                         self.tr("All Supported Files (*.po *.pot *.xliff *.xlf);;PO Files (*.po *.pot);;XLIFF Files (*.xliff *.xlf);;All Files (*)"))
-        
+        self.directory = os.path.dirname(str(newFileName))
         if not newFileName.isEmpty():
             self.fileName = newFileName
             self.emitFileOpened()
