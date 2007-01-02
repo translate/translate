@@ -477,15 +477,6 @@ class xlifffile(lisa.LISAfile):
         self.removedefaultfile()
         return super(xlifffile, self).__str__()
 
-    def parsefile(cls, storefile):
-        """Normal parsing, but if it smells like a PO-XLIFF, rather hand over to poxliff."""
-        if isinstance(storefile, basestring):
-            storefile = open(storefile, "r")
-        storestring = storefile.read()
-        return xlifffile.parsestring(storestring)
-
-    parsefile = classmethod(parsefile)
-
     def parsestring(cls, storestring):
         """Parses the string to return the correct file object"""
         xliff = super(xlifffile, cls).parsestring(storestring)
