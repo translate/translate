@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
-# WordForge Translation Editor
+# Pootling
 # Copyright 2006 WordForge Foundation
 #
 # Version 0.1 (29 December 2006)
@@ -188,7 +188,7 @@ class Operator(QtCore.QObject):
           """receive headerDic as dictionary, and return header as string"""
           #TODO: move to world
           if (hasattr(self.store, "x_generator")):
-            self.store.x_generator = World.settingOrg + ' ' + World.settingApp + ' ' + World.settingVer
+            self.store.x_generator = World.settingApp + ' ' + World.settingVer
           if isinstance(self.store, poheader.poheader):
               self.store.updateheader(add=True, **headerDic)
               return self.store.makeheaderdict(**headerDic)

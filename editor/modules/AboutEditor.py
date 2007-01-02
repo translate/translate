@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 #
-# WordForge Translation Editor
+# Pootling
 # Copyright 2006 WordForge Foundation
 #
 # Version 0.1 (29 December 2006)
@@ -32,7 +32,7 @@ class AboutEditor(QtGui.QDialog):
         #lazy init
         if (not self.ui):
             tabWidget = QtGui.QTabWidget()
-            tabWidget.addTab(AboutTab(), self.tr("About Editor"))
+            tabWidget.addTab(AboutTab(), self.tr("About Pootling"))
             authortab = AuthorsTab()
             self.connect(authortab.fileNameLabel, QtCore.SIGNAL("anchorClicked(const QUrl&)"),self.handleLinkClicked)
             tabWidget.addTab(authortab, self.tr("Authors"))
@@ -53,7 +53,7 @@ class AboutEditor(QtGui.QDialog):
             mainLayout.addLayout(buttonLayout)
             self.setLayout(mainLayout)
             self.ui = True
-        self.setWindowTitle(self.tr("About Editor"))
+        self.setWindowTitle(self.tr("About Pootling"))
         self.setMinimumSize(400, 400)
         self.setModal(True)
         self.show()
@@ -71,7 +71,7 @@ class AboutEditor(QtGui.QDialog):
 class AboutTab(QtGui.QWidget):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
-        fileNameLabel = QtGui.QLabel(self.tr("<center><br><br><br><b>  WordForge Translation Editor </b></br></center><center><br> Version 0.1 (31 August 2006)</br><br>Copyright 2006 WordForge Foundation.</br></center>"))
+        fileNameLabel = QtGui.QLabel(self.tr("<center><br><br><br><b>  Pootling </b></br></center><center><br> Version 0.1 (31 August 2006)</br><br>Copyright 2006 WordForge Foundation.</br></center>"))
         mainLayout = QtGui.QVBoxLayout()
         mainLayout.addWidget(fileNameLabel)
 ##        mainLayout.addStretch(1)

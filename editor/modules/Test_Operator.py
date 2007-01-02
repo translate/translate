@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*
 
 
-# WordForge Translation Editor
+# Pootling
 # Copyright 2006 WordForge Foundation
 #
 # Version 0.1 (29 December 2006)
@@ -166,7 +166,7 @@ msgstr "unable to read file"
         
         # test self.store is instance of poheader.poheader()
         self.operator.store = po.pofile.parsestring(self.message)
-        self.assertEqual(self.operator.makeNewHeader(headerDic), {'PO-Revision-Date': time.strftime("%Y-%m-%d %H:%M%z"), 'X-Generator': 'WordForge Translation Editor 0.1', 'Content-Transfer-Encoding': 'ENCODING', 'Plural-Forms': 'nplurals=INTEGER; plural=EXPRESSION;', 'Project-Id-Version': '1.po', 'Report-Msgid-Bugs-To': '', 'Last-Translator': 'AAA', 'Language-Team': 'KhmerOS', 'POT-Creation-Date': time.strftime("%Y-%m-%d %H:%M%z"), 'Content-Type': 'text/plain; charset=CHARSET', 'MIME-Version': '1.0'})
+        self.assertEqual(self.operator.makeNewHeader(headerDic), {'PO-Revision-Date': time.strftime("%Y-%m-%d %H:%M%z"), 'X-Generator': 'Pootling 0.1', 'Content-Transfer-Encoding': 'ENCODING', 'Plural-Forms': 'nplurals=INTEGER; plural=EXPRESSION;', 'Project-Id-Version': '1.po', 'Report-Msgid-Bugs-To': '', 'Last-Translator': 'AAA', 'Language-Team': 'KhmerOS', 'POT-Creation-Date': time.strftime("%Y-%m-%d %H:%M%z"), 'Content-Type': 'text/plain; charset=CHARSET', 'MIME-Version': '1.0'})
     
     def testUpdateNewHeader(self):
         self.message = '''msgid ""

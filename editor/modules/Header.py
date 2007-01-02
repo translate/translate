@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 #
-# WordForge Translation Editor
+# Pootling
 # Copyright 2006 WordForge Foundation
 #
 # Version 0.1 (29 December 2006)
@@ -193,7 +193,7 @@ class Header(QtGui.QDialog):
             self.headerDic['Language-Team'] = str(Language_Team)
             self.headerDic['Last-Translator'] = str(Last_Translator)
             self.headerDic['PO-Revision-Date'] = time.strftime("%Y-%m-%d %H:%M%z")
-            self.headerDic['X-Generator'] = World.settingOrg + ' ' + World.settingApp + ' ' + World.settingVer
+            self.headerDic['X-Generator'] = World.settingApp + ' ' + World.settingVer
         if (len(self.headerDic) == 0):
             return
         if (self.ui): 

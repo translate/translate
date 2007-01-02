@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
-# WordForge Translation Editor
+# Pootling
 # Copyright 2006 WordForge Foundation
 #
 # Version 0.1 (29 December 2006)
@@ -46,7 +46,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.ui.recentaction = []
-        self.setWindowTitle(World.settingOrg + ' ' + World.settingApp + ' ' + World.settingVer)
+        self.setWindowTitle(World.settingApp + ' ' + World.settingVer)
         self.createRecentAction()
         
         app = QtGui.QApplication.instance()

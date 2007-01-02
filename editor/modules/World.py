@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
-# WordForge Translation Editor
+# Pootling
 # Copyright 2006 WordForge Foundation
 #
 # Version 0.1 (29 December 2006)
@@ -40,7 +40,7 @@ searchStatic = 4
 # this is the global settings object, use only this for saving and restoring settings
 
 settingOrg = "WordForge"
-settingApp = "Translation Editor"
+settingApp = "Pootling"
 settingVer = "0.1"
 settings = QtCore.QSettings(settingOrg, settingApp)
 
