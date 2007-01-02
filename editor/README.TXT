@@ -1,4 +1,4 @@
-                        WordForge Translation Editor (V.0.1)
+                        Pootling (V.0.1)
 Copyright (c) 2006 by The WordForge Foundation (All Rights Reserved)
                         ww.khmeros.info
 
