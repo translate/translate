@@ -51,8 +51,9 @@ class FileAction(QtCore.QObject):
         newFileName = QtGui.QFileDialog.getOpenFileName(self.parentWidget, self.tr("Open File"),
                         self.directory,
                         self.tr("All Supported Files (*.po *.pot *.xliff *.xlf);;PO Files (*.po *.pot);;XLIFF Files (*.xliff *.xlf);;All Files (*)"))
-        self.directory = os.path.dirname(str(newFileName))
         if not newFileName.isEmpty():
+            # remember last open file's directory.
+            self.directory = os.path.dirname(str(newFileName))
             self.fileName = newFileName
             self.emitFileOpened()
             return True
@@ -112,11 +113,12 @@ class FileAction(QtCore.QObject):
     def setFileName(self, filename):
         """
         Assign the name of an opened file to a local variable.
-        
         @param filename: file's name as QString
         """
         self.fileName = filename
         self.emitFileOpened()
+        # remember last open file's directory.
+        self.directory = os.path.dirname(str(filename))
     
     def emitFileSaved(self, filename):
         """emit signal fileSaved when a file is saved
