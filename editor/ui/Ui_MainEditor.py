@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Tue Jan  2 08:58:33 2007
+# Created: Wed Jan  3 09:25:02 2007
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -30,7 +30,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0,0,498,28))
+        self.menubar.setGeometry(QtCore.QRect(0,0,498,30))
         self.menubar.setObjectName("menubar")
 
         self.menuSettings = QtGui.QMenu(self.menubar)
@@ -64,7 +64,6 @@ class Ui_MainWindow(object):
         MainWindow.setMenuBar(self.menubar)
 
         self.statusbar = QtGui.QStatusBar(MainWindow)
-        self.statusbar.setGeometry(QtCore.QRect(0,471,498,21))
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
@@ -261,6 +260,11 @@ class Ui_MainWindow(object):
         self.actionFilterUntranslated.setEnabled(False)
         self.actionFilterUntranslated.setIcon(QtGui.QIcon("../images/untranslated.png"))
         self.actionFilterUntranslated.setObjectName("actionFilterUntranslated")
+
+        self.action_Close = QtGui.QAction(MainWindow)
+        self.action_Close.setEnabled(False)
+        self.action_Close.setIcon(QtGui.QIcon("../images/fileclose.png"))
+        self.action_Close.setObjectName("action_Close")
         self.menuSettings.addAction(self.actionPreferences)
         self.menuGo.addAction(self.actionFirst)
         self.menuGo.addAction(self.actionPrevious)
@@ -294,6 +298,7 @@ class Ui_MainWindow(object):
         self.menuFile.addAction(self.actionOpenInNewWindow)
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.menuOpen_Recent.menuAction())
+        self.menuFile.addAction(self.action_Close)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionSave)
         self.menuFile.addAction(self.actionSaveas)
@@ -431,6 +436,10 @@ class Ui_MainWindow(object):
         self.actionFilterUntranslated.setToolTip(self.tr("Hide/Show Untranslated Items"))
         self.actionFilterUntranslated.setStatusTip(self.tr("Hide/Show Untranslated Items"))
         self.actionFilterUntranslated.setShortcut(self.tr("Ctrl+Alt+U"))
+        self.action_Close.setText(self.tr("&Close"))
+        self.action_Close.setStatusTip(self.tr("Close the current opened file"))
+        self.action_Close.setWhatsThis(self.tr("<h3>Close the current opened file</h3>You will be asked whether to save the current opened file."))
+        self.action_Close.setShortcut(self.tr("Ctrl+W"))
 
 
 if __name__ == "__main__":

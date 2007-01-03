@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow" >
   <property name="enabled" >
@@ -45,7 +42,7 @@
      <x>0</x>
      <y>0</y>
      <width>498</width>
-     <height>28</height>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSettings" >
@@ -131,6 +128,7 @@
     <addaction name="actionOpenInNewWindow" />
     <addaction name="actionOpen" />
     <addaction name="menuOpen_Recent" />
+    <addaction name="action_Close" />
     <addaction name="separator" />
     <addaction name="actionSave" />
     <addaction name="actionSaveas" />
@@ -145,16 +143,7 @@
    <addaction name="menuWindow" />
    <addaction name="menuHelp" />
   </widget>
-  <widget class="QStatusBar" name="statusbar" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>471</y>
-     <width>498</width>
-     <height>21</height>
-    </rect>
-   </property>
-  </widget>
+  <widget class="QStatusBar" name="statusbar" />
   <widget class="QToolBar" name="toolStandard" >
    <property name="enabled" >
     <bool>true</bool>
@@ -729,8 +718,27 @@
     <string>Ctrl+Alt+U</string>
    </property>
   </action>
+  <action name="action_Close" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
+   <property name="icon" >
+    <iconset>../images/fileclose.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Close</string>
+   </property>
+   <property name="statusTip" >
+    <string>Close the current opened file</string>
+   </property>
+   <property name="whatsThis" >
+    <string>&lt;h3>Close the current opened file&lt;/h3>You will be asked whether to save the current opened file.</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+W</string>
+   </property>
+  </action>
  </widget>
- <pixmapfunction></pixmapfunction>
  <resources/>
  <connections/>
 </ui>
