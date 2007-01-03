@@ -96,10 +96,9 @@ class Operator(QtCore.QObject):
     def emitUnit(self, unit):
         """send "currentUnit" signal with unit.
         @param unit: class unit."""
-        if (not hasattr(unit, "x_editor_filterIndex")):
-            return
-        self.currentUnitIndex = unit.x_editor_filterIndex
-        self.searchPointer = unit.x_editor_filterIndex
+        if (hasattr(unit, "x_editor_filterIndex")):
+            self.currentUnitIndex = unit.x_editor_filterIndex
+            self.searchPointer = unit.x_editor_filterIndex
         
         self.emit(QtCore.SIGNAL("currentUnit"), unit)
     
