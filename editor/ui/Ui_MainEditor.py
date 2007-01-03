@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Wed Jan  3 09:25:02 2007
+# Created: Wed Jan  3 11:13:24 2007
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -357,6 +357,8 @@ class Ui_MainWindow(object):
         self.actionSave.setShortcut(self.tr("Ctrl+S"))
         self.actionSaveas.setText(self.tr("Save &As"))
         self.actionExit.setText(self.tr("&Quit"))
+        self.actionExit.setStatusTip(self.tr("Quit the application"))
+        self.actionExit.setWhatsThis(self.tr("<h3>Quit the application</h3>You will be asked to save the opened file that is being edited."))
         self.actionExit.setShortcut(self.tr("Ctrl+Q"))
         self.actionUndo.setText(self.tr("Undo"))
         self.actionUndo.setWhatsThis(self.tr("<h3>Undo</h3>Undo the last change done in the current editor."))

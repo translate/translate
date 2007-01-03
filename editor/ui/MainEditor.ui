@@ -264,6 +264,12 @@
    <property name="text" >
     <string>&amp;Quit</string>
    </property>
+   <property name="statusTip" >
+    <string>Quit the application</string>
+   </property>
+   <property name="whatsThis" >
+    <string>&lt;h3>Quit the application&lt;/h3>You will be asked to save the opened file that is being edited.</string>
+   </property>
    <property name="shortcut" >
     <string>Ctrl+Q</string>
    </property>
