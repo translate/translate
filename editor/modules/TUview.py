@@ -202,7 +202,11 @@ class TUview(QtGui.QDockWidget):
         targetfont = World.settings.value("tuTargetFont")
         if (targetfont.isValid() and fontObj.fromString(targetfont.toString())):
             self.ui.txtTarget.setFont(fontObj)
-        
+    
+    def disableView(self):
+        self.ui.txtSource.setEnabled(False)
+        self.ui.txtTarget.setEnabled(False)
+    
 if __name__ == "__main__":
     import sys, os
     # set the path for QT in order to find the icons

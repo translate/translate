@@ -290,6 +290,9 @@ class OverviewDock(QtGui.QDockWidget):
         lastUnit = (currentRow >= len(self.visibleRow) -1)
         self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), firstUnit, lastUnit)
     
+    def disableView(self):
+        self.ui.tableOverview.setEnabled(False)
+    
 if __name__ == "__main__":
     import sys, os
     # set the path for QT in order to find the icons
