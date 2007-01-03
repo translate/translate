@@ -71,5 +71,5 @@ class TestProp(test_monolingual.TestMonolingualStore):
         propfile = self.propparse(propsource)
         propunit = propfile.units[0]
         assert propunit.name == "whitespace"
-        assert propunit.source == "Start "
+        assert propunit.source == "Start"
      
