@@ -77,59 +77,6 @@
        <property name="spacing" >
         <number>6</number>
        </property>
-       <item row="1" column="0" >
-        <widget class="QFrame" name="frame2" >
-         <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>7</hsizetype>
-           <vsizetype>0</vsizetype>
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="frameShape" >
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow" >
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item row="0" column="0" >
-           <widget class="QLabel" name="label" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>7</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text" >
-             <string>Number of singular/plural forms</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" >
-           <widget class="QSpinBox" name="spinBox" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>7</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
        <item row="0" column="0" >
         <widget class="QFrame" name="frame" >
          <property name="sizePolicy" >
@@ -170,7 +117,7 @@
              </sizepolicy>
             </property>
             <property name="text" >
-             <string>Support Team</string>
+             <string>Support team</string>
             </property>
            </widget>
           </item>
@@ -206,7 +153,7 @@
              </sizepolicy>
             </property>
             <property name="text" >
-             <string>Time Zone</string>
+             <string>Time zone</string>
             </property>
            </widget>
           </item>
@@ -260,7 +207,7 @@
              </sizepolicy>
             </property>
             <property name="text" >
-             <string>UserName</string>
+             <string>User name</string>
             </property>
            </widget>
           </item>
@@ -275,7 +222,7 @@
              </sizepolicy>
             </property>
             <property name="text" >
-             <string>Full Language Name</string>
+             <string>Full language name</string>
             </property>
            </widget>
           </item>
@@ -1430,7 +1377,6 @@
   <tabstop>cbxLanguageCode</tabstop>
   <tabstop>SupportTeam</tabstop>
   <tabstop>cbxTimeZone</tabstop>
-  <tabstop>spinBox</tabstop>
   <tabstop>chkHeaderAuto</tabstop>
   <tabstop>bntOverview</tabstop>
   <tabstop>bntSource</tabstop>

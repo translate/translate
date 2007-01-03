@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Fri Dec  8 09:38:22 2006
+# Created: Wed Jan  3 14:50:47 2007
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -58,43 +58,6 @@ class Ui_frmPreference(object):
         self.gridlayout1.setSpacing(6)
         self.gridlayout1.setObjectName("gridlayout1")
 
-        self.frame2 = QtGui.QFrame(self.tab1)
-
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.frame2.sizePolicy().hasHeightForWidth())
-        self.frame2.setSizePolicy(sizePolicy)
-        self.frame2.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.frame2.setFrameShadow(QtGui.QFrame.Raised)
-        self.frame2.setObjectName("frame2")
-
-        self.gridlayout2 = QtGui.QGridLayout(self.frame2)
-        self.gridlayout2.setMargin(9)
-        self.gridlayout2.setSpacing(6)
-        self.gridlayout2.setObjectName("gridlayout2")
-
-        self.label = QtGui.QLabel(self.frame2)
-
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
-        self.label.setSizePolicy(sizePolicy)
-        self.label.setObjectName("label")
-        self.gridlayout2.addWidget(self.label,0,0,1,1)
-
-        self.spinBox = QtGui.QSpinBox(self.frame2)
-
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.spinBox.sizePolicy().hasHeightForWidth())
-        self.spinBox.setSizePolicy(sizePolicy)
-        self.spinBox.setObjectName("spinBox")
-        self.gridlayout2.addWidget(self.spinBox,0,1,1,1)
-        self.gridlayout1.addWidget(self.frame2,1,0,1,1)
-
         self.frame = QtGui.QFrame(self.tab1)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
@@ -108,10 +71,10 @@ class Ui_frmPreference(object):
         self.frame.setFrameShadow(QtGui.QFrame.Raised)
         self.frame.setObjectName("frame")
 
-        self.gridlayout3 = QtGui.QGridLayout(self.frame)
-        self.gridlayout3.setMargin(9)
-        self.gridlayout3.setSpacing(6)
-        self.gridlayout3.setObjectName("gridlayout3")
+        self.gridlayout2 = QtGui.QGridLayout(self.frame)
+        self.gridlayout2.setMargin(9)
+        self.gridlayout2.setSpacing(6)
+        self.gridlayout2.setObjectName("gridlayout2")
 
         self.label5 = QtGui.QLabel(self.frame)
 
@@ -121,7 +84,7 @@ class Ui_frmPreference(object):
         sizePolicy.setHeightForWidth(self.label5.sizePolicy().hasHeightForWidth())
         self.label5.setSizePolicy(sizePolicy)
         self.label5.setObjectName("label5")
-        self.gridlayout3.addWidget(self.label5,3,0,1,1)
+        self.gridlayout2.addWidget(self.label5,3,0,1,1)
 
         self.cbxLanguageCode = QtGui.QComboBox(self.frame)
         self.cbxLanguageCode.setEnabled(True)
@@ -134,7 +97,7 @@ class Ui_frmPreference(object):
         self.cbxLanguageCode.setAcceptDrops(False)
         self.cbxLanguageCode.setEditable(True)
         self.cbxLanguageCode.setObjectName("cbxLanguageCode")
-        self.gridlayout3.addWidget(self.cbxLanguageCode,2,3,1,1)
+        self.gridlayout2.addWidget(self.cbxLanguageCode,2,3,1,1)
 
         self.label6 = QtGui.QLabel(self.frame)
 
@@ -144,7 +107,7 @@ class Ui_frmPreference(object):
         sizePolicy.setHeightForWidth(self.label6.sizePolicy().hasHeightForWidth())
         self.label6.setSizePolicy(sizePolicy)
         self.label6.setObjectName("label6")
-        self.gridlayout3.addWidget(self.label6,4,0,1,1)
+        self.gridlayout2.addWidget(self.label6,4,0,1,1)
 
         self.cbxFullLanguage = QtGui.QComboBox(self.frame)
         self.cbxFullLanguage.setEnabled(True)
@@ -156,7 +119,7 @@ class Ui_frmPreference(object):
         self.cbxFullLanguage.setSizePolicy(sizePolicy)
         self.cbxFullLanguage.setEditable(True)
         self.cbxFullLanguage.setObjectName("cbxFullLanguage")
-        self.gridlayout3.addWidget(self.cbxFullLanguage,2,1,1,1)
+        self.gridlayout2.addWidget(self.cbxFullLanguage,2,1,1,1)
 
         self.cbxTimeZone = QtGui.QComboBox(self.frame)
         self.cbxTimeZone.setEnabled(True)
@@ -168,7 +131,7 @@ class Ui_frmPreference(object):
         self.cbxTimeZone.setSizePolicy(sizePolicy)
         self.cbxTimeZone.setEditable(True)
         self.cbxTimeZone.setObjectName("cbxTimeZone")
-        self.gridlayout3.addWidget(self.cbxTimeZone,4,1,1,3)
+        self.gridlayout2.addWidget(self.cbxTimeZone,4,1,1,3)
 
         self.label1 = QtGui.QLabel(self.frame)
 
@@ -178,7 +141,7 @@ class Ui_frmPreference(object):
         sizePolicy.setHeightForWidth(self.label1.sizePolicy().hasHeightForWidth())
         self.label1.setSizePolicy(sizePolicy)
         self.label1.setObjectName("label1")
-        self.gridlayout3.addWidget(self.label1,0,0,1,1)
+        self.gridlayout2.addWidget(self.label1,0,0,1,1)
 
         self.label3 = QtGui.QLabel(self.frame)
 
@@ -188,7 +151,7 @@ class Ui_frmPreference(object):
         sizePolicy.setHeightForWidth(self.label3.sizePolicy().hasHeightForWidth())
         self.label3.setSizePolicy(sizePolicy)
         self.label3.setObjectName("label3")
-        self.gridlayout3.addWidget(self.label3,2,0,1,1)
+        self.gridlayout2.addWidget(self.label3,2,0,1,1)
 
         self.label2 = QtGui.QLabel(self.frame)
 
@@ -198,7 +161,7 @@ class Ui_frmPreference(object):
         sizePolicy.setHeightForWidth(self.label2.sizePolicy().hasHeightForWidth())
         self.label2.setSizePolicy(sizePolicy)
         self.label2.setObjectName("label2")
-        self.gridlayout3.addWidget(self.label2,1,0,1,1)
+        self.gridlayout2.addWidget(self.label2,1,0,1,1)
 
         self.label4 = QtGui.QLabel(self.frame)
 
@@ -208,7 +171,7 @@ class Ui_frmPreference(object):
         sizePolicy.setHeightForWidth(self.label4.sizePolicy().hasHeightForWidth())
         self.label4.setSizePolicy(sizePolicy)
         self.label4.setObjectName("label4")
-        self.gridlayout3.addWidget(self.label4,2,2,1,1)
+        self.gridlayout2.addWidget(self.label4,2,2,1,1)
 
         self.UserName = QtGui.QLineEdit(self.frame)
 
@@ -219,7 +182,7 @@ class Ui_frmPreference(object):
         self.UserName.setSizePolicy(sizePolicy)
         self.UserName.setMaxLength(32768)
         self.UserName.setObjectName("UserName")
-        self.gridlayout3.addWidget(self.UserName,0,1,1,3)
+        self.gridlayout2.addWidget(self.UserName,0,1,1,3)
 
         self.EmailAddress = QtGui.QLineEdit(self.frame)
 
@@ -229,11 +192,11 @@ class Ui_frmPreference(object):
         sizePolicy.setHeightForWidth(self.EmailAddress.sizePolicy().hasHeightForWidth())
         self.EmailAddress.setSizePolicy(sizePolicy)
         self.EmailAddress.setObjectName("EmailAddress")
-        self.gridlayout3.addWidget(self.EmailAddress,1,1,1,3)
+        self.gridlayout2.addWidget(self.EmailAddress,1,1,1,3)
 
         self.SupportTeam = QtGui.QLineEdit(self.frame)
         self.SupportTeam.setObjectName("SupportTeam")
-        self.gridlayout3.addWidget(self.SupportTeam,3,1,1,3)
+        self.gridlayout2.addWidget(self.SupportTeam,3,1,1,3)
         self.gridlayout1.addWidget(self.frame,0,0,1,1)
 
         self.chkHeaderAuto = QtGui.QCheckBox(self.tab1)
@@ -254,10 +217,10 @@ class Ui_frmPreference(object):
         self.tab2 = QtGui.QWidget()
         self.tab2.setObjectName("tab2")
 
-        self.gridlayout4 = QtGui.QGridLayout(self.tab2)
-        self.gridlayout4.setMargin(9)
-        self.gridlayout4.setSpacing(6)
-        self.gridlayout4.setObjectName("gridlayout4")
+        self.gridlayout3 = QtGui.QGridLayout(self.tab2)
+        self.gridlayout3.setMargin(9)
+        self.gridlayout3.setSpacing(6)
+        self.gridlayout3.setObjectName("gridlayout3")
 
         self.bntDefaults = QtGui.QPushButton(self.tab2)
 
@@ -267,25 +230,25 @@ class Ui_frmPreference(object):
         sizePolicy.setHeightForWidth(self.bntDefaults.sizePolicy().hasHeightForWidth())
         self.bntDefaults.setSizePolicy(sizePolicy)
         self.bntDefaults.setObjectName("bntDefaults")
-        self.gridlayout4.addWidget(self.bntDefaults,1,0,1,1)
+        self.gridlayout3.addWidget(self.bntDefaults,1,0,1,1)
 
-        self.frame21 = QtGui.QFrame(self.tab2)
+        self.frame2 = QtGui.QFrame(self.tab2)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.frame21.sizePolicy().hasHeightForWidth())
-        self.frame21.setSizePolicy(sizePolicy)
-        self.frame21.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.frame21.setFrameShadow(QtGui.QFrame.Raised)
-        self.frame21.setObjectName("frame21")
+        sizePolicy.setHeightForWidth(self.frame2.sizePolicy().hasHeightForWidth())
+        self.frame2.setSizePolicy(sizePolicy)
+        self.frame2.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.frame2.setFrameShadow(QtGui.QFrame.Raised)
+        self.frame2.setObjectName("frame2")
 
-        self.gridlayout5 = QtGui.QGridLayout(self.frame21)
-        self.gridlayout5.setMargin(9)
-        self.gridlayout5.setSpacing(6)
-        self.gridlayout5.setObjectName("gridlayout5")
+        self.gridlayout4 = QtGui.QGridLayout(self.frame2)
+        self.gridlayout4.setMargin(9)
+        self.gridlayout4.setSpacing(6)
+        self.gridlayout4.setObjectName("gridlayout4")
 
-        self.lblOverViewHeader = QtGui.QLabel(self.frame21)
+        self.lblOverViewHeader = QtGui.QLabel(self.frame2)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
         sizePolicy.setHorizontalStretch(0)
@@ -304,9 +267,9 @@ class Ui_frmPreference(object):
         self.lblOverViewHeader.setFont(font)
         self.lblOverViewHeader.setFrameShape(QtGui.QFrame.StyledPanel)
         self.lblOverViewHeader.setObjectName("lblOverViewHeader")
-        self.gridlayout5.addWidget(self.lblOverViewHeader,1,1,1,1)
+        self.gridlayout4.addWidget(self.lblOverViewHeader,1,1,1,1)
 
-        self.Source = QtGui.QLabel(self.frame21)
+        self.Source = QtGui.QLabel(self.frame2)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(0),QtGui.QSizePolicy.Policy(0))
         sizePolicy.setHorizontalStretch(0)
@@ -324,9 +287,9 @@ class Ui_frmPreference(object):
         font.setBold(False)
         self.Source.setFont(font)
         self.Source.setObjectName("Source")
-        self.gridlayout5.addWidget(self.Source,2,0,1,1)
+        self.gridlayout4.addWidget(self.Source,2,0,1,1)
 
-        self.bntComment = QtGui.QPushButton(self.frame21)
+        self.bntComment = QtGui.QPushButton(self.frame2)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(0),QtGui.QSizePolicy.Policy(0))
         sizePolicy.setHorizontalStretch(0)
@@ -334,9 +297,9 @@ class Ui_frmPreference(object):
         sizePolicy.setHeightForWidth(self.bntComment.sizePolicy().hasHeightForWidth())
         self.bntComment.setSizePolicy(sizePolicy)
         self.bntComment.setObjectName("bntComment")
-        self.gridlayout5.addWidget(self.bntComment,4,2,1,1)
+        self.gridlayout4.addWidget(self.bntComment,4,2,1,1)
 
-        self.bntTarget = QtGui.QPushButton(self.frame21)
+        self.bntTarget = QtGui.QPushButton(self.frame2)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(0),QtGui.QSizePolicy.Policy(0))
         sizePolicy.setHorizontalStretch(0)
@@ -344,9 +307,9 @@ class Ui_frmPreference(object):
         sizePolicy.setHeightForWidth(self.bntTarget.sizePolicy().hasHeightForWidth())
         self.bntTarget.setSizePolicy(sizePolicy)
         self.bntTarget.setObjectName("bntTarget")
-        self.gridlayout5.addWidget(self.bntTarget,3,2,1,1)
+        self.gridlayout4.addWidget(self.bntTarget,3,2,1,1)
 
-        self.bntSource = QtGui.QPushButton(self.frame21)
+        self.bntSource = QtGui.QPushButton(self.frame2)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(0),QtGui.QSizePolicy.Policy(0))
         sizePolicy.setHorizontalStretch(0)
@@ -354,9 +317,9 @@ class Ui_frmPreference(object):
         sizePolicy.setHeightForWidth(self.bntSource.sizePolicy().hasHeightForWidth())
         self.bntSource.setSizePolicy(sizePolicy)
         self.bntSource.setObjectName("bntSource")
-        self.gridlayout5.addWidget(self.bntSource,2,2,1,1)
+        self.gridlayout4.addWidget(self.bntSource,2,2,1,1)
 
-        self.lblSource = QtGui.QLabel(self.frame21)
+        self.lblSource = QtGui.QLabel(self.frame2)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
         sizePolicy.setHorizontalStretch(0)
@@ -375,9 +338,9 @@ class Ui_frmPreference(object):
         self.lblSource.setFont(font)
         self.lblSource.setFrameShape(QtGui.QFrame.StyledPanel)
         self.lblSource.setObjectName("lblSource")
-        self.gridlayout5.addWidget(self.lblSource,2,1,1,1)
+        self.gridlayout4.addWidget(self.lblSource,2,1,1,1)
 
-        self.lblComment = QtGui.QLabel(self.frame21)
+        self.lblComment = QtGui.QLabel(self.frame2)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
         sizePolicy.setHorizontalStretch(0)
@@ -396,9 +359,9 @@ class Ui_frmPreference(object):
         self.lblComment.setFont(font)
         self.lblComment.setFrameShape(QtGui.QFrame.StyledPanel)
         self.lblComment.setObjectName("lblComment")
-        self.gridlayout5.addWidget(self.lblComment,4,1,1,1)
+        self.gridlayout4.addWidget(self.lblComment,4,1,1,1)
 
-        self.lblsupportteam = QtGui.QLabel(self.frame21)
+        self.lblsupportteam = QtGui.QLabel(self.frame2)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(0),QtGui.QSizePolicy.Policy(0))
         sizePolicy.setHorizontalStretch(0)
@@ -416,9 +379,9 @@ class Ui_frmPreference(object):
         font.setBold(False)
         self.lblsupportteam.setFont(font)
         self.lblsupportteam.setObjectName("lblsupportteam")
-        self.gridlayout5.addWidget(self.lblsupportteam,4,0,1,1)
+        self.gridlayout4.addWidget(self.lblsupportteam,4,0,1,1)
 
-        self.label41 = QtGui.QLabel(self.frame21)
+        self.label41 = QtGui.QLabel(self.frame2)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(0),QtGui.QSizePolicy.Policy(0))
         sizePolicy.setHorizontalStretch(0)
@@ -436,9 +399,9 @@ class Ui_frmPreference(object):
         font.setBold(False)
         self.label41.setFont(font)
         self.label41.setObjectName("label41")
-        self.gridlayout5.addWidget(self.label41,3,0,1,1)
+        self.gridlayout4.addWidget(self.label41,3,0,1,1)
 
-        self.lblTarget = QtGui.QLabel(self.frame21)
+        self.lblTarget = QtGui.QLabel(self.frame2)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
         sizePolicy.setHorizontalStretch(0)
@@ -457,9 +420,9 @@ class Ui_frmPreference(object):
         self.lblTarget.setFont(font)
         self.lblTarget.setFrameShape(QtGui.QFrame.StyledPanel)
         self.lblTarget.setObjectName("lblTarget")
-        self.gridlayout5.addWidget(self.lblTarget,3,1,1,1)
+        self.gridlayout4.addWidget(self.lblTarget,3,1,1,1)
 
-        self.bntOverview = QtGui.QPushButton(self.frame21)
+        self.bntOverview = QtGui.QPushButton(self.frame2)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(0),QtGui.QSizePolicy.Policy(0))
         sizePolicy.setHorizontalStretch(0)
@@ -467,9 +430,9 @@ class Ui_frmPreference(object):
         sizePolicy.setHeightForWidth(self.bntOverview.sizePolicy().hasHeightForWidth())
         self.bntOverview.setSizePolicy(sizePolicy)
         self.bntOverview.setObjectName("bntOverview")
-        self.gridlayout5.addWidget(self.bntOverview,0,2,1,1)
+        self.gridlayout4.addWidget(self.bntOverview,0,2,1,1)
 
-        self.lblOverView = QtGui.QLabel(self.frame21)
+        self.lblOverView = QtGui.QLabel(self.frame2)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
         sizePolicy.setHorizontalStretch(0)
@@ -488,9 +451,9 @@ class Ui_frmPreference(object):
         self.lblOverView.setFont(font)
         self.lblOverView.setFrameShape(QtGui.QFrame.StyledPanel)
         self.lblOverView.setObjectName("lblOverView")
-        self.gridlayout5.addWidget(self.lblOverView,0,1,1,1)
+        self.gridlayout4.addWidget(self.lblOverView,0,1,1,1)
 
-        self.label21 = QtGui.QLabel(self.frame21)
+        self.label21 = QtGui.QLabel(self.frame2)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(0),QtGui.QSizePolicy.Policy(0))
         sizePolicy.setHorizontalStretch(0)
@@ -511,9 +474,9 @@ class Ui_frmPreference(object):
         self.label21.setWordWrap(True)
         self.label21.setIndent(0)
         self.label21.setObjectName("label21")
-        self.gridlayout5.addWidget(self.label21,0,0,1,1)
+        self.gridlayout4.addWidget(self.label21,0,0,1,1)
 
-        self.label2_2 = QtGui.QLabel(self.frame21)
+        self.label2_2 = QtGui.QLabel(self.frame2)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(0),QtGui.QSizePolicy.Policy(0))
         sizePolicy.setHorizontalStretch(0)
@@ -534,9 +497,9 @@ class Ui_frmPreference(object):
         self.label2_2.setWordWrap(True)
         self.label2_2.setIndent(0)
         self.label2_2.setObjectName("label2_2")
-        self.gridlayout5.addWidget(self.label2_2,1,0,1,1)
+        self.gridlayout4.addWidget(self.label2_2,1,0,1,1)
 
-        self.bntOverviewHeader = QtGui.QPushButton(self.frame21)
+        self.bntOverviewHeader = QtGui.QPushButton(self.frame2)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(0),QtGui.QSizePolicy.Policy(0))
         sizePolicy.setHorizontalStretch(0)
@@ -544,23 +507,23 @@ class Ui_frmPreference(object):
         sizePolicy.setHeightForWidth(self.bntOverviewHeader.sizePolicy().hasHeightForWidth())
         self.bntOverviewHeader.setSizePolicy(sizePolicy)
         self.bntOverviewHeader.setObjectName("bntOverviewHeader")
-        self.gridlayout5.addWidget(self.bntOverviewHeader,1,2,1,1)
-        self.gridlayout4.addWidget(self.frame21,0,0,1,1)
+        self.gridlayout4.addWidget(self.bntOverviewHeader,1,2,1,1)
+        self.gridlayout3.addWidget(self.frame2,0,0,1,1)
 
         spacerItem1 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.MinimumExpanding)
-        self.gridlayout4.addItem(spacerItem1,2,0,1,1)
+        self.gridlayout3.addItem(spacerItem1,2,0,1,1)
         self.tabWidget.addTab(self.tab2, "")
 
         self.tab = QtGui.QWidget()
         self.tab.setObjectName("tab")
 
-        self.gridlayout6 = QtGui.QGridLayout(self.tab)
-        self.gridlayout6.setMargin(9)
-        self.gridlayout6.setSpacing(6)
-        self.gridlayout6.setObjectName("gridlayout6")
+        self.gridlayout5 = QtGui.QGridLayout(self.tab)
+        self.gridlayout5.setMargin(9)
+        self.gridlayout5.setSpacing(6)
+        self.gridlayout5.setObjectName("gridlayout5")
 
         spacerItem2 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.MinimumExpanding)
-        self.gridlayout6.addItem(spacerItem2,2,0,1,1)
+        self.gridlayout5.addItem(spacerItem2,2,0,1,1)
 
         self.bntColorDefaults = QtGui.QPushButton(self.tab)
 
@@ -570,7 +533,7 @@ class Ui_frmPreference(object):
         sizePolicy.setHeightForWidth(self.bntColorDefaults.sizePolicy().hasHeightForWidth())
         self.bntColorDefaults.setSizePolicy(sizePolicy)
         self.bntColorDefaults.setObjectName("bntColorDefaults")
-        self.gridlayout6.addWidget(self.bntColorDefaults,1,0,1,1)
+        self.gridlayout5.addWidget(self.bntColorDefaults,1,0,1,1)
 
         self.frame2_2 = QtGui.QFrame(self.tab)
 
@@ -583,10 +546,10 @@ class Ui_frmPreference(object):
         self.frame2_2.setFrameShadow(QtGui.QFrame.Raised)
         self.frame2_2.setObjectName("frame2_2")
 
-        self.gridlayout7 = QtGui.QGridLayout(self.frame2_2)
-        self.gridlayout7.setMargin(9)
-        self.gridlayout7.setSpacing(6)
-        self.gridlayout7.setObjectName("gridlayout7")
+        self.gridlayout6 = QtGui.QGridLayout(self.frame2_2)
+        self.gridlayout6.setMargin(9)
+        self.gridlayout6.setSpacing(6)
+        self.gridlayout6.setObjectName("gridlayout6")
 
         self.ColorComment = QtGui.QLabel(self.frame2_2)
 
@@ -606,7 +569,7 @@ class Ui_frmPreference(object):
         font.setBold(False)
         self.ColorComment.setFont(font)
         self.ColorComment.setObjectName("ColorComment")
-        self.gridlayout7.addWidget(self.ColorComment,3,0,1,1)
+        self.gridlayout6.addWidget(self.ColorComment,3,0,1,1)
 
         self.bntColorComment = QtGui.QPushButton(self.frame2_2)
 
@@ -616,7 +579,7 @@ class Ui_frmPreference(object):
         sizePolicy.setHeightForWidth(self.bntColorComment.sizePolicy().hasHeightForWidth())
         self.bntColorComment.setSizePolicy(sizePolicy)
         self.bntColorComment.setObjectName("bntColorComment")
-        self.gridlayout7.addWidget(self.bntColorComment,3,2,1,1)
+        self.gridlayout6.addWidget(self.bntColorComment,3,2,1,1)
 
         self.bntColorTarget = QtGui.QPushButton(self.frame2_2)
 
@@ -626,7 +589,7 @@ class Ui_frmPreference(object):
         sizePolicy.setHeightForWidth(self.bntColorTarget.sizePolicy().hasHeightForWidth())
         self.bntColorTarget.setSizePolicy(sizePolicy)
         self.bntColorTarget.setObjectName("bntColorTarget")
-        self.gridlayout7.addWidget(self.bntColorTarget,2,2,1,1)
+        self.gridlayout6.addWidget(self.bntColorTarget,2,2,1,1)
 
         self.bntColorSource = QtGui.QPushButton(self.frame2_2)
 
@@ -636,7 +599,7 @@ class Ui_frmPreference(object):
         sizePolicy.setHeightForWidth(self.bntColorSource.sizePolicy().hasHeightForWidth())
         self.bntColorSource.setSizePolicy(sizePolicy)
         self.bntColorSource.setObjectName("bntColorSource")
-        self.gridlayout7.addWidget(self.bntColorSource,1,2,1,1)
+        self.gridlayout6.addWidget(self.bntColorSource,1,2,1,1)
 
         self.bntColorOverview = QtGui.QPushButton(self.frame2_2)
 
@@ -646,7 +609,7 @@ class Ui_frmPreference(object):
         sizePolicy.setHeightForWidth(self.bntColorOverview.sizePolicy().hasHeightForWidth())
         self.bntColorOverview.setSizePolicy(sizePolicy)
         self.bntColorOverview.setObjectName("bntColorOverview")
-        self.gridlayout7.addWidget(self.bntColorOverview,0,2,1,1)
+        self.gridlayout6.addWidget(self.bntColorOverview,0,2,1,1)
 
         self.ColorTarget = QtGui.QLabel(self.frame2_2)
 
@@ -666,7 +629,7 @@ class Ui_frmPreference(object):
         font.setBold(False)
         self.ColorTarget.setFont(font)
         self.ColorTarget.setObjectName("ColorTarget")
-        self.gridlayout7.addWidget(self.ColorTarget,2,0,1,1)
+        self.gridlayout6.addWidget(self.ColorTarget,2,0,1,1)
 
         self.ColorOverview = QtGui.QLabel(self.frame2_2)
 
@@ -690,7 +653,7 @@ class Ui_frmPreference(object):
         self.ColorOverview.setWordWrap(True)
         self.ColorOverview.setIndent(0)
         self.ColorOverview.setObjectName("ColorOverview")
-        self.gridlayout7.addWidget(self.ColorOverview,0,0,1,1)
+        self.gridlayout6.addWidget(self.ColorOverview,0,0,1,1)
 
         self.ColorSource = QtGui.QLabel(self.frame2_2)
 
@@ -710,23 +673,23 @@ class Ui_frmPreference(object):
         font.setBold(False)
         self.ColorSource.setFont(font)
         self.ColorSource.setObjectName("ColorSource")
-        self.gridlayout7.addWidget(self.ColorSource,1,0,1,1)
+        self.gridlayout6.addWidget(self.ColorSource,1,0,1,1)
 
         self.tuTargetColor = QtGui.QLineEdit(self.frame2_2)
         self.tuTargetColor.setReadOnly(True)
         self.tuTargetColor.setObjectName("tuTargetColor")
-        self.gridlayout7.addWidget(self.tuTargetColor,2,1,1,1)
+        self.gridlayout6.addWidget(self.tuTargetColor,2,1,1,1)
 
         self.commentColor = QtGui.QLineEdit(self.frame2_2)
         self.commentColor.setReadOnly(True)
         self.commentColor.setObjectName("commentColor")
-        self.gridlayout7.addWidget(self.commentColor,3,1,1,1)
+        self.gridlayout6.addWidget(self.commentColor,3,1,1,1)
 
         self.overviewColor = QtGui.QLineEdit(self.frame2_2)
         self.overviewColor.setEnabled(True)
         self.overviewColor.setReadOnly(True)
         self.overviewColor.setObjectName("overviewColor")
-        self.gridlayout7.addWidget(self.overviewColor,0,1,1,1)
+        self.gridlayout6.addWidget(self.overviewColor,0,1,1,1)
 
         self.tuSourceColor = QtGui.QLineEdit(self.frame2_2)
 
@@ -785,8 +748,8 @@ class Ui_frmPreference(object):
         self.tuSourceColor.setPalette(palette)
         self.tuSourceColor.setReadOnly(True)
         self.tuSourceColor.setObjectName("tuSourceColor")
-        self.gridlayout7.addWidget(self.tuSourceColor,1,1,1,1)
-        self.gridlayout6.addWidget(self.frame2_2,0,0,1,1)
+        self.gridlayout6.addWidget(self.tuSourceColor,1,1,1,1)
+        self.gridlayout5.addWidget(self.frame2_2,0,0,1,1)
         self.tabWidget.addTab(self.tab, "")
         self.gridlayout.addWidget(self.tabWidget,0,0,1,1)
 
@@ -823,8 +786,7 @@ class Ui_frmPreference(object):
         frmPreference.setTabOrder(self.cbxFullLanguage,self.cbxLanguageCode)
         frmPreference.setTabOrder(self.cbxLanguageCode,self.SupportTeam)
         frmPreference.setTabOrder(self.SupportTeam,self.cbxTimeZone)
-        frmPreference.setTabOrder(self.cbxTimeZone,self.spinBox)
-        frmPreference.setTabOrder(self.spinBox,self.chkHeaderAuto)
+        frmPreference.setTabOrder(self.cbxTimeZone,self.chkHeaderAuto)
         frmPreference.setTabOrder(self.chkHeaderAuto,self.bntOverview)
         frmPreference.setTabOrder(self.bntOverview,self.bntSource)
         frmPreference.setTabOrder(self.bntSource,self.bntTarget)
@@ -840,11 +802,10 @@ class Ui_frmPreference(object):
 
     def retranslateUi(self, frmPreference):
         frmPreference.setWindowTitle(self.tr("Preference"))
-        self.label.setText(self.tr("Number of singular/plural forms"))
-        self.label5.setText(self.tr("Support Team"))
-        self.label6.setText(self.tr("Time Zone"))
-        self.label1.setText(self.tr("UserName"))
-        self.label3.setText(self.tr("Full Language Name"))
+        self.label5.setText(self.tr("Support team"))
+        self.label6.setText(self.tr("Time zone"))
+        self.label1.setText(self.tr("User name"))
+        self.label3.setText(self.tr("Full language name"))
         self.label2.setText(self.tr("Email address"))
         self.label4.setText(self.tr("Language Code"))
         self.chkHeaderAuto.setText(self.tr("Automatically update header on save"))
