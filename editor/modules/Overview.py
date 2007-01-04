@@ -98,6 +98,8 @@ class OverviewDock(QtGui.QDockWidget):
         
         if (self.ui.tableOverview.rowCount > 0):
             self.lastTarget = self.ui.tableOverview.item(0, 2).text()
+        
+        self.connect(self.ui.tableOverview, QtCore.SIGNAL("cellChanged(int, int)"), self.checkEmitTargetChanged)
 
     def filterChanged(self, filter, lenFilter):
         """
@@ -143,12 +145,8 @@ class OverviewDock(QtGui.QDockWidget):
         with selected unit's index.
         """
         # emit targetChanged if previous item has been edited.
-        item = self.ui.tableOverview.item(preRow, 2)
-        if hasattr(item, "text"):
-            target = item.text()
-            if (self.lastTarget != target):
-                self.markState(preRow, not World.fuzzy)
-                self.emit(QtCore.SIGNAL("targetChanged"), target)
+        self.emitTargetChanged(preRow)
+        
         # emit the index of current unit.
         item = self.ui.tableOverview.item(row, 0)
         
@@ -156,6 +154,15 @@ class OverviewDock(QtGui.QDockWidget):
             index = item.data(QtCore.Qt.UserRole).toInt()[0]
             self.emit(QtCore.SIGNAL("filteredIndex"), index)
             self.lastTarget = self.ui.tableOverview.item(row, 2).text()
+    
+    def emitTargetChanged(self, row):
+        # emit targetChanged if previous item has been edited.
+        item = self.ui.tableOverview.item(row, 2)
+        if hasattr(item, "text"):
+            target = item.text()
+            if (self.lastTarget != target):
+                self.markState(row, not World.fuzzy)
+                self.emit(QtCore.SIGNAL("targetChanged"), target)
     
     def updateView(self, unit):
         """
@@ -292,6 +299,10 @@ class OverviewDock(QtGui.QDockWidget):
     
     def disableView(self):
         self.ui.tableOverview.setEnabled(False)
+    
+    def checkEmitTargetChanged(self, row, col):
+        if ((row == self.ui.tableOverview.currentRow()) and (col == 2)):
+            self.emitTargetChanged(row)
     
 if __name__ == "__main__":
     import sys, os
