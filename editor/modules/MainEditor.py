@@ -428,6 +428,7 @@ class MainWindow(QtGui.QMainWindow):
         self.dockOverview.disableView()
         self.dockTUview.disableView()
         self.dockComment.disableView()
+        self.statuslabel.setText("")
         
 def main(inputFile = None):
     # set the path for QT in order to find the icons
