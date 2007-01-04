@@ -747,6 +747,10 @@ class pounit(base.TranslationUnit):
     """add to sourcecomments"""
     self.sourcecomments.append("#: %s\n" % location)
 
+  def getcontext(self):
+    """Get the message context."""
+    return unquotefrompo(self.msgctxt)
+
 class pofile(base.TranslationStore, poheader.poheader):
   """this represents a .po file containing various units"""
   UnitClass = pounit
