@@ -156,9 +156,10 @@ From the GNU gettext manual:
      WHITE-SPACE
      #  TRANSLATOR-COMMENTS
      #. AUTOMATIC-COMMENTS
+     #| PREVIOUS MSGID                 (Gettext 0.16 - check if this is the correct position - not yet implemented)
      #: REFERENCE...
      #, FLAG...
-     msgctxt CONTEXT
+     msgctxt CONTEXT                   (Gettext 0.15)
      msgid UNTRANSLATED-STRING
      msgstr TRANSLATED-STRING
 """
@@ -217,7 +218,7 @@ class pounit(base.TranslationUnit):
     return multi
 
   def setsource(self, source):
-    """Sets the msgstr to the given (unescaped) value"""
+    """Sets the msgid to the given (unescaped) value"""
     if isinstance(source, multistring):
       source = source.strings
     if isinstance(source, list):
