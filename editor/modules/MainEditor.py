@@ -388,13 +388,11 @@ class MainWindow(QtGui.QMainWindow):
                 self.enableRedo(False)
     
     def addFuzzyIcon(self, unit):
+        self.ui.statusbar.removeWidget(self.statusfuzzy)
         if hasattr(unit, "x_editor_state"):
             if (unit.x_editor_state & World.fuzzy):
                 self.statusfuzzy.setVisible(True)
                 self.ui.statusbar.addWidget(self.statusfuzzy)
-            else:
-                self.statusfuzzy.setVisible(False)
-                self.ui.statusbar.removeWidget(self.statusfuzzy)
     
     def closeFile(self):
         if (not self.operator.modified()):
