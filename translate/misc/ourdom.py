@@ -28,7 +28,8 @@ from xml.dom import expatbuilder
 # helper functions we use to do xml the way we want, used by modified classes below
 
 def writexml_helper(self, writer, indent="", addindent="", newl=""):
-    """a replacement to writexml that formats it more like typical .ts files"""
+    """A replacement for writexml that formats it like typical XML files.
+    Nodes are intendented but text nodes, where whitespace can be significant, are not indented."""
     # indent = current indentation
     # addindent = indentation to add to higher levels
     # newl = newline string
