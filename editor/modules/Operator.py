@@ -215,13 +215,20 @@ class Operator(QtCore.QObject):
         save the temporary store into a file.
         @param fileName: String type
         """
-        self.emitUpdateUnit()
-        if (World.settings.value("headerAuto", QtCore.QVariant(True)).toBool()):
-            self.emit(QtCore.SIGNAL("headerAuto"))
-        self.store.savefile(fileName)
+##        self.emitUpdateUnit()
+##        if (World.settings.value("headerAuto", QtCore.QVariant(True)).toBool()):
+##            self.emit(QtCore.SIGNAL("headerAuto"))
+##        self.store.savefile(fileName)
+##        self._modified = False
+##        self.emit(QtCore.SIGNAL("savedAlready"), False)         
+        if (fileName != ""):
+            self.emitUpdateUnit()
+            if (World.settings.value("headerAuto", QtCore.QVariant(True)).toBool()):
+                self.emit(QtCore.SIGNAL("headerAuto"))
+            self.store.savefile(fileName)
+            self.emit(QtCore.SIGNAL("savedAlready"), False) 
         self._modified = False
-        self.emit(QtCore.SIGNAL("savedAlready"), False) 
-    
+        
     def modified(self):
         """@return bool: True or False if current unit is modified or not modified."""
         self.emitUpdateUnit()

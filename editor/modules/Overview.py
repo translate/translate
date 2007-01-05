@@ -187,8 +187,8 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.tableOverview.scrollToItem(unit.x_editor_tableItem)
         self.emitFirstLastUnit()
     
-    def emitReadyForSave(self, bool = True):
-        self.emit(QtCore.SIGNAL("readyForSave"), bool)
+    def emitReadyForSave(self):
+        self.emit(QtCore.SIGNAL("readyForSave"), True)
     
     def markState(self, index, state):
         """
@@ -300,15 +300,15 @@ class OverviewDock(QtGui.QDockWidget):
         lastUnit = (currentRow >= len(self.visibleRow) -1)
         self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), firstUnit, lastUnit)
     
-    def OpeningClosingFile(self, bool):
-        self.emitReadyForSave(bool)
-        self.ui.tableOverview.setEnabled(bool)
-    
     def checkEmitTargetChanged(self, row, col):
         if ((row == self.ui.tableOverview.currentRow()) and (col == 2)):
-            self.emitReadyForSave(True)
+            self.emitReadyForSave()
             self.emitTargetChanged(row)
     
+    def fileClosed(self):
+        self.ui.tableOverview.setEnabled(False)
+        
+        
 if __name__ == "__main__":
     import sys, os
     # set the path for QT in order to find the icons

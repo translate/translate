@@ -136,8 +136,8 @@ class TUview(QtGui.QDockWidget):
             self.emit(QtCore.SIGNAL("targetChanged"), self.ui.txtTarget.toPlainText())
             self.ui.txtTarget.document().setModified(False)
 
-    def emitReadyForSave(self, bool = True):
-        self.emit(QtCore.SIGNAL("readyForSave"), bool)
+    def emitReadyForSave(self):
+        self.emit(QtCore.SIGNAL("readyForSave"), True)
 
     def source2target(self):
         """Copy the text from source to target."""
@@ -206,10 +206,9 @@ class TUview(QtGui.QDockWidget):
         if (targetfont.isValid() and fontObj.fromString(targetfont.toString())):
             self.ui.txtTarget.setFont(fontObj)
     
-    def OpeningClosingFile(self, bool):
-        self.emitReadyForSave(bool)
-        self.ui.txtSource.setEnabled(bool)
-        self.ui.txtTarget.setEnabled(bool)
+    def fileClosed(self):
+        self.ui.txtSource.setEnabled(False)
+        self.ui.txtTarget.setEnabled(False)
     
 if __name__ == "__main__":
     import sys, os

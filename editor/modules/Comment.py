@@ -117,8 +117,8 @@ class CommentDock(QtGui.QDockWidget):
         self.highlightBlock.layout().setAdditionalFormats([self.highlightRange])
         self.highlightBlock.document().markContentsDirty(self.highlightBlock.position(), self.highlightBlock.length())
 
-    def emitReadyForSave(self, bool = True):
-        self.emit(QtCore.SIGNAL("readyForSave"), bool)
+    def emitReadyForSave(self):
+        self.emit(QtCore.SIGNAL("readyForSave"), True)
 
     def applySettings(self):
         """ set color and font to txtTranslatorComment"""
@@ -156,10 +156,9 @@ class CommentDock(QtGui.QDockWidget):
         self.ui.txtTranslatorComment.document().setModified()
         self.checkModified()
     
-    def OpeningClosingFile(self, bool):
-        self.emitReadyForSave(bool)
-        self.ui.txtLocationComment.setEnabled(bool)
-        self.ui.txtTranslatorComment.setEnabled(bool)
+    def fileClosed(self):
+        self.ui.txtTranslatorComment.setEnabled(False)
+        self.ui.txtLocationComment.setEnabled(False)
     
 if __name__ == "__main__":
     import sys, os

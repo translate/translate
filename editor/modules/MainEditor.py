@@ -224,6 +224,9 @@ class MainWindow(QtGui.QMainWindow):
         @param fileName string, the filename to open
         """
         self.OpeningClosingFile(fileName, True)
+        self.dockOverview.setEnabled(True)
+        self.dockComment.setEnabled(True)
+        self.dockTUview.setEnabled(True)
         files = World.settings.value("recentFileList").toStringList()
         files.removeAll(fileName)
         files.prepend(fileName)
@@ -270,7 +273,7 @@ class MainWindow(QtGui.QMainWindow):
                 event.accept()
             else:
                 event.ignore()
-                
+        
         # remember last geometry
         World.settings.setValue("lastGeometry", QtCore.QVariant(self.geometry()))
         
@@ -379,16 +382,17 @@ class MainWindow(QtGui.QMainWindow):
         else:
             if self.fileaction.aboutToClose(self):
                 self.setClosingFile()
-    
+                
     def setClosingFile(self):
         """
         set status after closing a file
         """
         filename = ""
         self.OpeningClosingFile(filename, False)
-        self.dockOverview.OpeningClosingFile(False)
-        self.dockTUview.OpeningClosingFile(False)
-        self.dockComment.OpeningClosingFile(False)
+        self.dockOverview.fileClosed()
+        self.dockTUview.fileClosed()
+        self.dockComment.fileClosed()
+        self.ui.actionSave.setEnabled(False)
         self.statuslabel.setText("")
     
     def OpeningClosingFile(self, filename, bool):
@@ -411,9 +415,6 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionFilterTranslated.setChecked(bool)
         self.ui.actionFilterUntranslated.setChecked(bool)
         self.findBar.toggleViewAction().setVisible(bool)
-        self.dockOverview.setEnabled(bool)
-        self.dockTUview.setEnabled(bool)
-        self.dockComment.setEnabled(bool)
         
 def main(inputFile = None):
     # set the path for QT in order to find the icons
