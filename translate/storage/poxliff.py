@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2006 Zuza Software Foundation
+# Copyright 2006-2007 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
@@ -27,7 +27,7 @@ from translate.storage import xliff
 from translate.storage import lisa 
 from translate.storage import poheader
 from translate.misc.multistring import multistring
-from xml.dom import minidom
+from translate.misc import ourdom
 import xml
 import re
 
@@ -43,7 +43,7 @@ class PoXliffUnit(xliff.xliffunit):
         if document:
             self.document = document
         else:
-            self.document = minidom.Document()
+            self.document = ourdom.Document()
             
         if empty:
             return
@@ -300,7 +300,7 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
             xmlsrc = xml.read()
             xml.close()
             xml = xmlsrc
-        self.document = minidom.parseString(xml)
+        self.document = ourdom.parseString(xml)
         assert self.document.documentElement.tagName == self.rootNode
         self.initbody()
         groups = self.document.getElementsByTagName("group")

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2006 Zuza Software Foundation
+# Copyright 2006-2007 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
@@ -24,7 +24,13 @@
 
 from translate.storage import base
 from translate.misc.multistring import multistring
-from xml.dom import minidom
+from translate.misc import ourdom
+
+# Note that it is important that the local "ourdom" class is used. The builtin 
+# pretty printing of XML is not correct in minidom. Therefore take care to 
+# only instantiate classes from ourdom, and to call those functions as needed.
+#
+# For example: ourdom.Element, ourdom.Document, ourdom.parseString
 
 def getText(nodelist):
     """joins together the text from all the text nodes in the nodelist and their children"""
@@ -78,7 +84,7 @@ Provisional work is done to make several languages possible."""
         if document:
             self.document = document
         else:
-            self.document = minidom.Document()
+            self.document = ourdom.Document()
         if empty:
             return
         self.xmlelement = self.document.createElement(self.rootNode)
@@ -153,7 +159,7 @@ Provisional work is done to make several languages possible."""
             #pretext
             parent.appendChild(self.document.createTextNode(text[start:m.start()]))
             #ph node
-            phnode = minidom.Element("ph")
+            phnode = ourdom.Element("ph")
             phnode.setAttribute("id", str(i+1))
             phnode.appendChild(self.document.createTextNode(m.group()))
             parent.appendChild(phnode)
@@ -252,7 +258,7 @@ class LISAfile(base.TranslationStore):
 
     def __str__(self):
         """Converts to a string containing the file's XML"""
-        return self.document.toxml(encoding="utf-8")
+        return self.document.toprettyxml(indent="\t", encoding="utf-8")
 
     def parse(self, xml):
         """Populates this object from the given xml string"""
@@ -261,7 +267,7 @@ class LISAfile(base.TranslationStore):
             posrc = xml.read()
             xml.close()
             xml = posrc
-        self.document = minidom.parseString(xml)
+        self.document = ourdom.parseString(xml)
         assert self.document.documentElement.tagName == self.rootNode
         self.initbody()
         termEntries = self.document.getElementsByTagName(self.UnitClass.rootNode)
