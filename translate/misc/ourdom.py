@@ -20,7 +20,13 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-"""module that provides modified DOM functionality for our needs"""
+"""module that provides modified DOM functionality for our needs
+
+Note that users of ourdom should ensure that no code might still use classes 
+directly from minidom, like minidom.Element, minidom.Document or methods such 
+as minidom.parseString, since the functionality provided here will not be in 
+those objects.
+"""
 
 from xml.dom import minidom
 from xml.dom import expatbuilder
@@ -44,12 +50,19 @@ def writexml_helper(self, writer, indent="", addindent="", newl=""):
         minidom._write_data(writer, attrs[a_name].value)
         writer.write("\"")
     if self.childNodes:
-        if len(self.childNodes) == 1 and self.childNodes[0].nodeType == self.TEXT_NODE:
+        # We need to write text nodes without newline and indentation, so 
+        # we handle them differently. Note that we here assume that "empty" 
+        # text nodes can be done away with (see the strip()). Note also that 
+        # nested tags in a text node (like ph tags in xliff) should also not 
+        # have newlines and indentation or an extra newline, since that will 
+        # alter the text node.
+        if self.childNodes[0].nodeType == self.TEXT_NODE and self.childNodes[0].data.strip():
           writer.write(">")
           for node in self.childNodes:
               node.writexml(writer,"","","")
           writer.write("</%s>%s" % (self.tagName,newl))
         else:
+          # This is the normal case that we do with pretty layout
           writer.write(">%s"%(newl))
           for node in self.childNodes:
               node.writexml(writer,indent+addindent,addindent,newl)
@@ -58,6 +71,11 @@ def writexml_helper(self, writer, indent="", addindent="", newl=""):
         writer.write("/>%s"%(newl))
 
 def getElementsByTagName_helper(parent, name, dummy=None):
+    """A reimplementation of getElementsByTagName as an iterator.
+
+    Note that this is not compatible with getElementsByTagName that returns a 
+    list, therefore, the class below exposes this through yieldElementsByTagName"""
+
     for node in parent.childNodes:
         if node.nodeType == minidom.Node.ELEMENT_NODE and \
             (name == "*" or node.tagName == name):
