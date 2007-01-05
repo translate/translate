@@ -34,14 +34,13 @@ class BaseTestFactory:
         fileobj = givefile(self.filename, self.file_content)
         store = factory.getobject(fileobj)
         assert isinstance(store, self.expected_instance)
-        assert str(store) == self.file_content
 
     def test_get_noname_object(self):
         """Tests that we get a valid object from a file object without a name."""
         fileobj = wStringIO.StringIO(self.file_content)
         assert not hasattr(fileobj, 'name')
         store = factory.getobject(fileobj)
-        assert str(store) == self.file_content
+        assert isinstance(store, self.expected_instance)
 
 class TestPOFactory(BaseTestFactory):
     expected_instance = factory.po.pofile
