@@ -103,6 +103,7 @@ class TUview(QtGui.QDockWidget):
         Then recalculate scrollbar maximum value.
         @param unit: unit to set in target and source.
         @param index: value in the scrollbar to be removed."""
+        self.disconnect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
         if (not unit) or (not hasattr(unit, "x_editor_filterIndex")):
             self.ui.txtComment.hide()
             self.ui.txtSource.clear()
@@ -128,13 +129,15 @@ class TUview(QtGui.QDockWidget):
         # set the scrollbar position
         self.setScrollbarValue(unit.x_editor_filterIndex)
     
+        self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
+        
     def checkModified(self):
         if self.ui.txtTarget.document().isModified():
             self.emit(QtCore.SIGNAL("targetChanged"), self.ui.txtTarget.toPlainText())
             self.ui.txtTarget.document().setModified(False)
 
-    def emitReadyForSave(self):
-        self.emit(QtCore.SIGNAL("readyForSave"), True)
+    def emitReadyForSave(self, bool = True):
+        self.emit(QtCore.SIGNAL("readyForSave"), bool)
 
     def source2target(self):
         """Copy the text from source to target."""
@@ -203,9 +206,10 @@ class TUview(QtGui.QDockWidget):
         if (targetfont.isValid() and fontObj.fromString(targetfont.toString())):
             self.ui.txtTarget.setFont(fontObj)
     
-    def disableView(self):
-        self.ui.txtSource.setEnabled(False)
-        self.ui.txtTarget.setEnabled(False)
+    def OpeningClosingFile(self, bool):
+        self.emitReadyForSave(bool)
+        self.ui.txtSource.setEnabled(bool)
+        self.ui.txtTarget.setEnabled(bool)
     
 if __name__ == "__main__":
     import sys, os

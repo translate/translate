@@ -187,6 +187,9 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.tableOverview.scrollToItem(unit.x_editor_tableItem)
         self.emitFirstLastUnit()
     
+    def emitReadyForSave(self, bool = True):
+        self.emit(QtCore.SIGNAL("readyForSave"), bool)
+    
     def markState(self, index, state):
         """
         mark icon indicate state of unit on note column.
@@ -297,11 +300,13 @@ class OverviewDock(QtGui.QDockWidget):
         lastUnit = (currentRow >= len(self.visibleRow) -1)
         self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), firstUnit, lastUnit)
     
-    def disableView(self):
-        self.ui.tableOverview.setEnabled(False)
+    def OpeningClosingFile(self, bool):
+        self.emitReadyForSave(bool)
+        self.ui.tableOverview.setEnabled(bool)
     
     def checkEmitTargetChanged(self, row, col):
         if ((row == self.ui.tableOverview.currentRow()) and (col == 2)):
+            self.emitReadyForSave(True)
             self.emitTargetChanged(row)
     
 if __name__ == "__main__":

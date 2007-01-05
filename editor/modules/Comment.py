@@ -70,6 +70,7 @@ class CommentDock(QtGui.QDockWidget):
     def updateView(self, unit):
         """Update the comments view
         @param unit: class unit."""
+        self.disconnect(self.ui.txtTranslatorComment, QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
         self.ui.txtTranslatorComment.setEnabled(bool(unit))
         if (not unit):
             self.ui.txtLocationComment.hide()
@@ -92,6 +93,7 @@ class CommentDock(QtGui.QDockWidget):
             translatorComment = ""
             self.ui.txtLocationComment.hide()
         self.ui.txtTranslatorComment.setPlainText(unicode(translatorComment))
+        self.connect(self.ui.txtTranslatorComment, QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
 
     def checkModified(self):
         if self.ui.txtTranslatorComment.document().isModified():
@@ -115,8 +117,8 @@ class CommentDock(QtGui.QDockWidget):
         self.highlightBlock.layout().setAdditionalFormats([self.highlightRange])
         self.highlightBlock.document().markContentsDirty(self.highlightBlock.position(), self.highlightBlock.length())
 
-    def emitReadyForSave(self):
-        self.emit(QtCore.SIGNAL("readyForSave"), True)
+    def emitReadyForSave(self, bool = True):
+        self.emit(QtCore.SIGNAL("readyForSave"), bool)
 
     def applySettings(self):
         """ set color and font to txtTranslatorComment"""
@@ -154,9 +156,10 @@ class CommentDock(QtGui.QDockWidget):
         self.ui.txtTranslatorComment.document().setModified()
         self.checkModified()
     
-    def disableView(self):
-        self.ui.txtLocationComment.setEnabled(False)
-        self.ui.txtTranslatorComment.setEnabled(False)
+    def OpeningClosingFile(self, bool):
+        self.emitReadyForSave(bool)
+        self.ui.txtLocationComment.setEnabled(bool)
+        self.ui.txtTranslatorComment.setEnabled(bool)
     
 if __name__ == "__main__":
     import sys, os

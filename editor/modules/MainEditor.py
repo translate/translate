@@ -180,6 +180,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.dockComment, QtCore.SIGNAL("commentChanged"), self.operator.setComment)
         self.connect(self.fileaction, QtCore.SIGNAL("fileSaved"), self.operator.saveStoreToFile)
         self.connect(self.operator, QtCore.SIGNAL("savedAlready"), self.ui.actionSave.setEnabled)
+        self.connect(self.dockOverview, QtCore.SIGNAL("readyForSave"), self.ui.actionSave.setEnabled)
         self.connect(self.dockTUview, QtCore.SIGNAL("readyForSave"), self.ui.actionSave.setEnabled)
         self.connect(self.dockComment, QtCore.SIGNAL("readyForSave"), self.ui.actionSave.setEnabled)
         self.connect(self.headerDialog, QtCore.SIGNAL("readyForSave"), self.ui.actionSave.setEnabled)
@@ -222,36 +223,14 @@ class MainWindow(QtGui.QMainWindow):
         set status after open a file
         @param fileName string, the filename to open
         """
-
-        self.setTitle(fileName)
-        self.ui.action_Close.setEnabled(True)
-        self.ui.actionSave.setEnabled(False)  
-        self.ui.actionSaveas.setEnabled(True)
-        self.ui.actionPaste.setEnabled(True)
-        self.ui.actionSelectAll.setEnabled(True)
-        self.ui.actionFind.setEnabled(True)
-        self.ui.actionReplace.setEnabled(True)
-        self.ui.actionCopySource2Target.setEnabled(True)
-        self.ui.actionEdit_Header.setEnabled(True)
+        self.OpeningClosingFile(fileName, True)
         files = World.settings.value("recentFileList").toStringList()
         files.removeAll(fileName)
         files.prepend(fileName)
         while files.count() > World.MaxRecentFiles:
             files.removeAt(files.count() - 1)
         World.settings.setValue("recentFileList", QtCore.QVariant(files))
-        self.updateRecentAction() 
-
-        self.ui.actionToggleFuzzy.setEnabled(True)
-        self.ui.actionFilterFuzzy.setEnabled(True)
-        self.ui.actionFilterTranslated.setEnabled(True)
-        self.ui.actionFilterUntranslated.setEnabled(True)
-        self.ui.actionFilterFuzzy.setChecked(True)
-        self.ui.actionFilterTranslated.setChecked(True)
-        self.ui.actionFilterUntranslated.setChecked(True)
-        self.findBar.toggleViewAction().setVisible(True)
-        self.dockOverview.setEnabled(True)
-        self.dockTUview.setEnabled(True)
-        self.dockComment.setEnabled(True)
+        self.updateRecentAction()
         
     def startRecentAction(self):
         action = self.sender()
@@ -405,28 +384,36 @@ class MainWindow(QtGui.QMainWindow):
         """
         set status after closing a file
         """
-        self.setTitle(World.settingApp + World.settingVer)
-        self.ui.action_Close.setEnabled(False)
-        self.ui.actionSave.setEnabled(False)
-        self.ui.actionSaveas.setEnabled(False)
-        self.ui.actionPaste.setEnabled(False)
-        self.ui.actionSelectAll.setEnabled(False)
-        self.ui.actionFind.setEnabled(False)
-        self.ui.actionReplace.setEnabled(False)
-        self.ui.actionCopySource2Target.setEnabled(False)
-        self.ui.actionEdit_Header.setEnabled(False)
-        self.ui.actionToggleFuzzy.setEnabled(False)
-        self.ui.actionFilterFuzzy.setEnabled(False)
-        self.ui.actionFilterTranslated.setEnabled(False)
-        self.ui.actionFilterUntranslated.setEnabled(False)
-        self.ui.actionFilterFuzzy.setChecked(False)
-        self.ui.actionFilterTranslated.setChecked(False)
-        self.ui.actionFilterUntranslated.setChecked(False)
-        self.findBar.toggleViewAction().setVisible(False)
-        self.dockOverview.disableView()
-        self.dockTUview.disableView()
-        self.dockComment.disableView()
+        filename = ""
+        self.OpeningClosingFile(filename, False)
+        self.dockOverview.OpeningClosingFile(False)
+        self.dockTUview.OpeningClosingFile(False)
+        self.dockComment.OpeningClosingFile(False)
         self.statuslabel.setText("")
+    
+    def OpeningClosingFile(self, filename, bool):
+        self.setWindowTitle(((filename != "") and (filename + ' - ') or filename) + World.settingApp + ' ' + World.settingVer)
+        self.ui.action_Close.setEnabled(bool)
+        self.ui.actionSaveas.setEnabled(bool)
+        self.ui.actionPaste.setEnabled(bool)
+    
+        self.ui.actionSelectAll.setEnabled(bool)
+        self.ui.actionFind.setEnabled(bool)
+        self.ui.actionReplace.setEnabled(bool)
+        self.ui.actionCopySource2Target.setEnabled(bool)
+        self.ui.actionEdit_Header.setEnabled(bool)
+        
+        self.ui.actionToggleFuzzy.setEnabled(bool)
+        self.ui.actionFilterFuzzy.setEnabled(bool)
+        self.ui.actionFilterTranslated.setEnabled(bool)
+        self.ui.actionFilterUntranslated.setEnabled(bool)
+        self.ui.actionFilterFuzzy.setChecked(bool)
+        self.ui.actionFilterTranslated.setChecked(bool)
+        self.ui.actionFilterUntranslated.setChecked(bool)
+        self.findBar.toggleViewAction().setVisible(bool)
+        self.dockOverview.setEnabled(bool)
+        self.dockTUview.setEnabled(bool)
+        self.dockComment.setEnabled(bool)
         
 def main(inputFile = None):
     # set the path for QT in order to find the icons
