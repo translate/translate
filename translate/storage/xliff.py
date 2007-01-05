@@ -24,50 +24,6 @@
 
 from translate.storage import base
 from translate.storage import lisa
-from xml.dom import minidom
-
-def writexml(self, writer, indent="", addindent="", newl=""):
-    """a replacement to writexml that formats it more like typical .ts files"""
-    # indent = current indentation
-    # addindent = indentation to add to higher levels
-    # newl = newline string
-    writer.write(indent+"<" + self.tagName)
-
-    attrs = self._get_attributes()
-    a_names = attrs.keys()
-    a_names.sort()
-
-    for a_name in a_names:
-        writer.write(" %s=\"" % a_name)
-        minidom._write_data(writer, attrs[a_name].value)
-        writer.write("\"")
-    if self.childNodes:
-        if len(self.childNodes) == 1 and self.childNodes[0].nodeType == self.TEXT_NODE:
-          writer.write(">")
-          for node in self.childNodes:
-              node.writexml(writer,"","","")
-          writer.write("</%s>%s" % (self.tagName,newl))
-        else:
-          writer.write(">%s"%(newl))
-          for node in self.childNodes:
-              node.writexml(writer,indent+addindent,addindent,newl)
-          writer.write("%s</%s>%s" % (indent,self.tagName,newl))
-    else:
-        writer.write("/>%s"%(newl))
-
-# commented out modifications to minidom classes
-'''
-Element_writexml = minidom.Element.writexml
-for elementclassname in dir(minidom):
-  elementclass = getattr(minidom, elementclassname)
-  if not isinstance(elementclass, type(minidom.Element)):
-    continue
-  if not issubclass(elementclass, minidom.Element):
-    continue
-  if elementclass.writexml != Element_writexml:
-    continue
-  elementclass.writexml = writexml
-'''
 
 # TODO: handle translation types
 
@@ -415,7 +371,7 @@ class xlifffile(lisa.LISAfile):
             return headernodes[0]
         if not createifmissing:
             return None
-        headernode = minidom.Element("header")
+        headernode = ourdom.Element("header")
         filenode.appendChild(headernode)
         return headernode
 
