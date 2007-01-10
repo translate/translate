@@ -231,7 +231,7 @@ class Operator(QtCore.QObject):
     def setComment(self, comment):
         """set the comment to the current unit, and emit current unit.
         @param comment: QString type"""
-        if (self.currentUnitIndex < 0):
+        if (self.currentUnitIndex < 0 or self.filteredList == None):
             return
         unit = self.filteredList[self.currentUnitIndex]
         unit.removenotes()
@@ -242,7 +242,7 @@ class Operator(QtCore.QObject):
     def setTarget(self, target):
         """set the target which is QString type to the current unit, and emit current unit.
         @param target: QString type"""
-        if (self.currentUnitIndex < 0):
+        if (self.currentUnitIndex < 0 or self.filteredList == None):
             return
         unit = self.filteredList[self.currentUnitIndex]
         # update target for current unit
@@ -403,6 +403,10 @@ class Operator(QtCore.QObject):
         self.emit(QtCore.SIGNAL("searchResult"), textField, None, None)
 
     def setAfterfileClosed(self):
+        self.store = None
+        self._modified = None
+        self.status = None
+        self.filter = None
         self.filteredList = None
         self.emit(QtCore.SIGNAL("newUnits"), self.filteredList)
         

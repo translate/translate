@@ -142,7 +142,7 @@ class TUview(QtGui.QDockWidget):
         """Copy the text from source to target."""
         self.ui.txtTarget.selectAll()
         self.ui.txtTarget.insertPlainText(self.ui.txtSource.toPlainText())
-        self.ui.txtTarget.document().setModified()
+        self.checkModified()
 
     def highlightSearch(self, textField, position, length = 0):
         """Highlight the text at specified position, length, and textField.
