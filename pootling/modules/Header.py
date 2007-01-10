@@ -218,7 +218,7 @@ if __name__ == "__main__":
     # set the path for QT in order to find the icons
     QtCore.QDir.setCurrent(os.path.join(sys.path[0], "..", "ui"))
     app = QtGui.QApplication(sys.argv)
-    from editor.modules.Operator import Operator
+    from pootling.modules.Operator import Operator
     operatorObj = Operator()
     Header = Header(None, operatorObj)
     Header.showDialog()
