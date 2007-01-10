@@ -21,7 +21,7 @@
 # This module stores status
 
 from translate.tools import pocount
-import editor.modules.World as World
+import pootling.modules.World as World
 
 class Status:
     def __init__(self, units):

@@ -23,17 +23,17 @@
 import os
 import sys
 from PyQt4 import QtCore, QtGui
-from editor.ui.Ui_MainEditor import Ui_MainWindow
-from editor.modules.TUview import TUview
-from editor.modules.Overview import OverviewDock
-from editor.modules.Comment import CommentDock
-from editor.modules.Header import Header
-from editor.modules.Operator import Operator
-from editor.modules.FileAction import FileAction
-from editor.modules.Find import Find
-from editor.modules.Preference import Preference
-from editor.modules.AboutEditor import AboutEditor
-import editor.modules.World as World
+from pootling.ui.Ui_MainEditor import Ui_MainWindow
+from pootling.modules.TUview import TUview
+from pootling.modules.Overview import OverviewDock
+from pootling.modules.Comment import CommentDock
+from pootling.modules.Header import Header
+from pootling.modules.Operator import Operator
+from pootling.modules.FileAction import FileAction
+from pootling.modules.Find import Find
+from pootling.modules.Preference import Preference
+from pootling.modules.AboutEditor import AboutEditor
+import pootling.modules.World as World
 
 class MainWindow(QtGui.QMainWindow):
     """

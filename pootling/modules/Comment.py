@@ -22,8 +22,8 @@
 # This module is working on any comments of current TU.
 
 from PyQt4 import QtCore, QtGui
-from editor.ui.Ui_Comment import Ui_frmComment
-import editor.modules.World as World
+from pootling.ui.Ui_Comment import Ui_frmComment
+import pootling.modules.World as World
 from translate.storage import po
 from translate.storage import xliff
 

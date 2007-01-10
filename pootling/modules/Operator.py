@@ -26,8 +26,8 @@ from translate.storage import po
 from translate.misc import quote
 from translate.storage import poheader
 from translate.storage import xliff
-import editor.modules.World as World
-from editor.modules.Status import Status
+import pootling.modules.World as World
+from pootling.modules.Status import Status
 import os.path
 
 class Operator(QtCore.QObject):

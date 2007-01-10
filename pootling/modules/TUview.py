@@ -21,9 +21,9 @@
 # This module is working on source and target of current TU.
 
 from PyQt4 import QtCore, QtGui
-from editor.ui.Ui_TUview import Ui_TUview
+from pootling.ui.Ui_TUview import Ui_TUview
 from translate.storage import po
-from editor.modules import World
+from pootling.modules import World
 
 class TUview(QtGui.QDockWidget):
     def __init__(self, parent):

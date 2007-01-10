@@ -23,7 +23,7 @@
 
 import sys, os
 from PyQt4 import QtCore, QtGui
-from editor.modules import World
+from pootling.modules import World
 
 class FileAction(QtCore.QObject):
     """

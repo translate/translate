@@ -23,8 +23,8 @@
 
 
 from PyQt4 import QtCore, QtGui
-from editor.ui.Ui_Preference import Ui_frmPreference
-import editor.modules.World as World
+from pootling.ui.Ui_Preference import Ui_frmPreference
+import pootling.modules.World as World
 
 class Preference(QtGui.QDialog):
     def __init__(self, parent):

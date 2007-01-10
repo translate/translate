@@ -24,8 +24,8 @@
 import time
 import os
 from PyQt4 import QtCore, QtGui
-from editor.ui.Ui_Header import Ui_frmHeader
-import editor.modules.World as World
+from pootling.ui.Ui_Header import Ui_frmHeader
+import pootling.modules.World as World
 from translate.storage import poheader
 
 class Header(QtGui.QDialog):

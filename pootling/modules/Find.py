@@ -22,8 +22,8 @@
 # This module is working on source and target of current TU.
 
 from PyQt4 import QtCore, QtGui
-from editor.ui.Ui_Find import Ui_frmFind
-import editor.modules.World as World
+from pootling.ui.Ui_Find import Ui_frmFind
+import pootling.modules.World as World
 
 class Find(QtGui.QDockWidget):
     """
