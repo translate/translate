@@ -224,9 +224,6 @@ class MainWindow(QtGui.QMainWindow):
         @param fileName string, the filename to open
         """
         self.OpeningClosingFile(fileName, True)
-        self.dockOverview.setEnabled(True)
-        self.dockComment.setEnabled(True)
-        self.dockTUview.setEnabled(True)
         files = World.settings.value("recentFileList").toStringList()
         files.removeAll(fileName)
         files.prepend(fileName)
@@ -389,9 +386,7 @@ class MainWindow(QtGui.QMainWindow):
         """
         filename = ""
         self.OpeningClosingFile(filename, False)
-        self.dockOverview.fileClosed()
-        self.dockTUview.fileClosed()
-        self.dockComment.fileClosed()
+        self.operator.setAfterfileClosed()
         self.ui.actionSave.setEnabled(False)
         self.statuslabel.setText("")
     

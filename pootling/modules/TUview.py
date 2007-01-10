@@ -125,10 +125,9 @@ class TUview(QtGui.QDockWidget):
                 self.ui.txtComment.setPlainText(unicode(comment))
         self.ui.txtSource.setPlainText(unit.source)
         self.ui.txtTarget.setPlainText(unit.target)
-        self.ui.txtTarget.setFocus
+        self.ui.txtTarget.setFocus()
         # set the scrollbar position
         self.setScrollbarValue(unit.x_editor_filterIndex)
-    
         self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
         
     def checkModified(self):
@@ -205,11 +204,6 @@ class TUview(QtGui.QDockWidget):
         targetfont = World.settings.value("tuTargetFont")
         if (targetfont.isValid() and fontObj.fromString(targetfont.toString())):
             self.ui.txtTarget.setFont(fontObj)
-            self.ui.txtTarget.setTabStopWidth(QtGui.QFontMetrics(fontObj).width("m"*8))
-    
-    def fileClosed(self):
-        self.ui.txtSource.setEnabled(False)
-        self.ui.txtTarget.setEnabled(False)
     
 if __name__ == "__main__":
     import sys, os

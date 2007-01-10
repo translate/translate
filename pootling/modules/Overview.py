@@ -78,6 +78,14 @@ class OverviewDock(QtGui.QDockWidget):
         set the filter to filterAll, fill the table with units.
         @param units: list of unit class.
         """
+        if (not units or units == None):
+            self.ui.tableOverview.clear()
+            self.headerLabels = [self.tr("Index"), self.tr("Source"), self.tr("Target"), self.tr("Status")]
+            self.ui.tableOverview.setColumnCount(len(self.headerLabels))
+            self.ui.tableOverview.setRowCount(0)
+            self.ui.tableOverview.setHorizontalHeaderLabels(self.headerLabels)
+            self.ui.tableOverview.setEnabled(bool(units))
+            return
         self.ui.tableOverview.setEnabled(bool(units))
         self.indexMaxLen = len(str(len(units)))
         self.filter = World.filterAll
@@ -98,7 +106,6 @@ class OverviewDock(QtGui.QDockWidget):
         
         if (self.ui.tableOverview.rowCount > 0):
             self.lastTarget = self.ui.tableOverview.item(0, 2).text()
-        
         self.connect(self.ui.tableOverview, QtCore.SIGNAL("cellChanged(int, int)"), self.checkEmitTargetChanged)
 
     def filterChanged(self, filter, lenFilter):
@@ -305,10 +312,6 @@ class OverviewDock(QtGui.QDockWidget):
             self.emitReadyForSave()
             self.emitTargetChanged(row)
     
-    def fileClosed(self):
-        self.ui.tableOverview.setEnabled(False)
-        
-        
 if __name__ == "__main__":
     import sys, os
     # set the path for QT in order to find the icons

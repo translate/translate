@@ -39,7 +39,7 @@ class Operator(QtCore.QObject):
     @signal currentStatus(string): emitted with the new status message
     @signal newUnits(store.units): emitted with the new units
     @signal currentUnit(unit): emitted with the current unit
-    @signal updateUnit(): emitted when the views should update the unit´s data
+    @signal updateUnit(): emitted when the views should update the unitÂ´s data
     @signal toggleFirstLastUnit(atFirst, atLast): emitted to allow dis/enable of actions
     @signal filterChanged(filter, lenFilter): emitted when the filter was changed
     @signal savedAlready(False): emitted when a file was saved
@@ -215,12 +215,6 @@ class Operator(QtCore.QObject):
         save the temporary store into a file.
         @param fileName: String type
         """
-##        self.emitUpdateUnit()
-##        if (World.settings.value("headerAuto", QtCore.QVariant(True)).toBool()):
-##            self.emit(QtCore.SIGNAL("headerAuto"))
-##        self.store.savefile(fileName)
-##        self._modified = False
-##        self.emit(QtCore.SIGNAL("savedAlready"), False)         
         if (fileName != ""):
             self.emitUpdateUnit()
             if (World.settings.value("headerAuto", QtCore.QVariant(True)).toBool()):
@@ -407,3 +401,8 @@ class Operator(QtCore.QObject):
         """emit searchResult signal with text field, position, and length."""
         textField = self.searchableText[self.currentTextField]
         self.emit(QtCore.SIGNAL("searchResult"), textField, None, None)
+
+    def setAfterfileClosed(self):
+        self.filteredList = None
+        self.emit(QtCore.SIGNAL("newUnits"), self.filteredList)
+        

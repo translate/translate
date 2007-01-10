@@ -61,8 +61,6 @@ class FileAction(QtCore.QObject):
             return False
 
     def save(self):
-##        if not self.fileName.isEmpty():
-##            self.emitFileSaved(self.fileName)
         self.emitFileSaved(self.fileName)
         
     def saveAs(self):
@@ -106,9 +104,7 @@ class FileAction(QtCore.QObject):
                     QtGui.QMessageBox.No,
                     QtGui.QMessageBox.Cancel | QtGui.QMessageBox.Escape)
         if ret == QtGui.QMessageBox.Cancel:
-            return False   
-        ##        if ret == QtGui.QMessageBox.Yes:
-##            self.save()
+            return False
         if ret == QtGui.QMessageBox.No:
             self.fileName = ""
         self.save()

@@ -156,10 +156,6 @@ class CommentDock(QtGui.QDockWidget):
         self.ui.txtTranslatorComment.document().setModified()
         self.checkModified()
     
-    def fileClosed(self):
-        self.ui.txtTranslatorComment.setEnabled(False)
-        self.ui.txtLocationComment.setEnabled(False)
-    
 if __name__ == "__main__":
     import sys, os
     # set the path for QT in order to find the icons
