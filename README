@@ -1,0 +1,137 @@
+Translate Toolkit
+-----------------
+
+The Translate Toolkit is a set of software and documentation designed to help
+make the lives of localizers both more productive and less frustrating.  
+The Toolkit is part of the translate.sourceforge.net project, 
+hosted at http://translate.sourceforge.net/
+
+The software includes programs to covert localization formats to the common PO
+format and programs to check and manage PO files.  The documentation includes
+guides on using the tools, running a localization project and how to localize
+various projects from OpenOffice.org to Mozilla.
+
+At its core the software contains a set of classes for handling various 
+localization storage formats: DTD, properties, OpenOffice.org GSI/SDF,
+CSV and of course PO and XLIFF.  It also provides scripts to convert between 
+these formats.
+
+Also part of the Toolkit are Python programs to create word counts, merge
+translations and perform various checks on PO and XLIFF files.
+
+
+Download
+--------
+The latest version of the Translate Toolkit can be downloaded from:
+http://sourceforge.net/project/showfiles.php?group_id=91920
+
+The latest documentation is always available at:
+http://translate.sourceforge.net/wiki/toolkit/index
+
+
+Copying
+-------
+The Translate Toolkit is developed and Copyright:
+	Zuza Software Foundation (Translate.org.za), and
+	St James Software
+
+and is released under the GPL license.
+
+The Translate Toolkit Documentation is Copyright:
+	Dwayne Bailey
+	Javier SOLA
+	David Fraser
+	Friedel Wolff
+	and others
+
+and is released under the GPL.
+
+Where useful emails have been quoted we have attempted to preserve the authors
+name and assume that their work may be republished.
+
+Joining the Translate Project
+-----------------------------
+If you would like to join the translate project mailing list then visit:
+http://lists.sourceforge.net/lists/listinfo/translate-devel
+
+The vision of the Translate Project is to be a meta project for localizers
+built on the premise that your language deserves to be a project on its own
+right not a poor cousin of the main project.
+
+Most projects are inattentive to the needs and difficulties experienced by
+localizers. To that end the aim is to work towards creating tools and
+documentation that allows localizers to focus on what they do best: translating
+software.
+
+System Requirements
+-------------------
+Python 2.3 recommended.
+
+The Toolkit may still work using Python 2.2 but is now most extensively tested 
+using Python 2.3.  If you experience any errors and are using Python 2.2 then 
+please first check that the error also occurs in 2.3 before reporting it as a bug.
+
+The programs have been tested on Linux and Windows.
+
+
+Installation
+------------
+
+To install the Translate Toolkit
+
+* Windows
+Double Click on translate-N.N-py2exe.zip and extract to a directory
+From a DOS Window 
+<path-to-tools>\<command>
+
+* Linux
+tar xzf translate-N.N.tar.gz
+cd translate-N.N
+su -c ./setup.py install
+
+
+Bugs
+----
+We think there might be some :)
+
+Please send your bug reports to:
+translate-devel at lists sourceforge net
+
+Preferably with a patch or at least a test case.
+
+
+Documentation
+------------
+Please read our documentation online at http://translate.sourceforge.net/wiki/
+There they are constantly being updated. Please feel free to contribute new 
+sections and suggest corrections.
+
+
+Program overview
+----------------
+
+Use --help to find the syntax and options for all programs.
+
+* Converters
+oo2po, po2oo - convert between OpenOffice.org GSI files and PO
+moz2po, po2moz - convert from a Mozilla XPI file and PO.  Including unpacking
+	and building a translated XPI.
+txt2po, po2txt - convert simple text files to PO
+sxw2po - convert OpenOffice.org Writer files to PO
+csv2po, po2csv - convert PO format to CSV for editing in a spreadsheet program
+ts2po, po2ts - convert Qt Linguist (.ts) files to PO
+html2po - convert HTML to PO (beta)
+pot2po - PO file initialiser
+
+* Tools
+pomerge - merge corrected translations from pofilter back into your existing
+	PO files.
+pogrep - find words in PO files
+pofilter - run any of the 28 checks on your PO files
+podebug - Create comment in your PO files' msgstr which can then be used to quickly track down
+	mistranslations as the comments appear in the application.
+
+* Other Converters
+These are not called directly but used in moz2po
+dtd2po, po2dtd, prop2po, po2prop - for conversion of DTD and .properties files
+	to PO format.
