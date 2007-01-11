@@ -20,7 +20,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-"""module for parsing .xliff files for translation"""
+"""module for handling XLIFF files for translation.
+
+The official recommendation is to use the extention .xlf for XLIFF files."""
 
 from translate.storage import base
 from translate.storage import lisa
@@ -365,7 +367,7 @@ class xlifffile(lisa.LISAfile):
 
     def getheadernode(self, filenode, createifmissing=False):
         """finds the header node for the given filenode"""
-        #Deprecated?
+        # TODO: Deprecated?
         headernodes = list(filenode.getElementsByTagName("header"))
         if headernodes:
             return headernodes[0]
