@@ -38,22 +38,22 @@ classes = {"po": po.pofile, "pot": po.pofile, "csv": csvl10n.csvfile,
             "xliff": xliff.xlifffile, "xlf": xliff.xlifffile, 
             "tmx": tmx.tmxfile, "tbx": tbx.tbxfile}
 
-def guesstype(storefile):
+def guessextention(storefile):
     """Guesses the type of a file object by looking at the first few characters.
-    The return value is a dictionary containing the file extension."""
+    The return value is a file extention ."""
     start = storefile.read(100).strip()
     if '<xliff ' in start:
-        typedict = {'extension': 'xliff'}
-    elif start.find('msgid ') != -1:
-        typedict = {'extension': 'po'}
+        extention = 'xlf'
+    elif 'msgid "' in start:
+        extention = 'po'
     else:
         raise ValueError("Failed to guess file type.")
     storefile.seek(0)
-    return typedict
+    return extention
 
 def getdummyname(storefile):
     """Provides a dummy name for a file object without a name attribute, by guessing the file type."""
-    return 'dummy.' + guesstype(storefile)['extension']
+    return 'dummy.' + guessextention(storefile)
 
 def getname(storefile):
     """returns the filename"""
