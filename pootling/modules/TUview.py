@@ -200,10 +200,12 @@ class TUview(QtGui.QDockWidget):
         sourcefont = World.settings.value("tuSourceFont")
         if (sourcefont.isValid() and fontObj.fromString(sourcefont.toString())):
             self.ui.txtSource.setFont(fontObj)
+            self.ui.txtSource.setTabStopWidth(QtGui.QFontMetrics(fontObj).width("m"*8))
 
         targetfont = World.settings.value("tuTargetFont")
         if (targetfont.isValid() and fontObj.fromString(targetfont.toString())):
             self.ui.txtTarget.setFont(fontObj)
+            self.ui.txtTarget.setTabStopWidth(QtGui.QFontMetrics(fontObj).width("m"*8))
     
 if __name__ == "__main__":
     import sys, os
