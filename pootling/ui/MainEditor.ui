@@ -35,6 +35,12 @@
   <property name="windowIcon" >
    <iconset>../images/pootling.png</iconset>
   </property>
+  <property name="statusTip" >
+   <string>database of translated strings and their translation.</string>
+  </property>
+  <property name="whatsThis" >
+   <string>&lt;h3>translation database&lt;/h3>You can get and assign your current word or string a translation from database of translated string.</string>
+  </property>
   <widget class="QWidget" name="centralwidget" />
   <widget class="QMenuBar" name="menubar" >
    <property name="geometry" >
@@ -45,12 +51,6 @@
      <height>30</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuSettings" >
-    <property name="title" >
-     <string>&amp;Settings</string>
-    </property>
-    <addaction name="actionPreferences" />
-   </widget>
    <widget class="QMenu" name="menuGo" >
     <property name="title" >
      <string>&amp;Go</string>
@@ -59,26 +59,6 @@
     <addaction name="actionPrevious" />
     <addaction name="actionNext" />
     <addaction name="actionLast" />
-   </widget>
-   <widget class="QMenu" name="menuHelp" >
-    <property name="title" >
-     <string>&amp;Help</string>
-    </property>
-    <addaction name="actionAbout" />
-    <addaction name="actionAboutQT" />
-   </widget>
-   <widget class="QMenu" name="menuWindow" >
-    <property name="title" >
-     <string>&amp;Window</string>
-    </property>
-    <widget class="QMenu" name="menuToolbars" >
-     <property name="title" >
-      <string>Toolbars</string>
-     </property>
-    </widget>
-    <addaction name="separator" />
-    <addaction name="separator" />
-    <addaction name="menuToolbars" />
    </widget>
    <widget class="QMenu" name="menuView" >
     <property name="enabled" >
@@ -134,6 +114,33 @@
     <addaction name="actionSaveas" />
     <addaction name="separator" />
     <addaction name="actionExit" />
+   </widget>
+   <widget class="QMenu" name="menuHelp" >
+    <property name="title" >
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="actionAbout" />
+    <addaction name="actionAboutQT" />
+   </widget>
+   <widget class="QMenu" name="menuWindow" >
+    <property name="title" >
+     <string>&amp;Window</string>
+    </property>
+    <widget class="QMenu" name="menuToolbars" >
+     <property name="title" >
+      <string>Toolbars</string>
+     </property>
+    </widget>
+    <addaction name="separator" />
+    <addaction name="separator" />
+    <addaction name="menuToolbars" />
+   </widget>
+   <widget class="QMenu" name="menuSettings" >
+    <property name="title" >
+     <string>&amp;Settings</string>
+    </property>
+    <addaction name="actionPreferences" />
+    <addaction name="action_Memory" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
@@ -630,7 +637,7 @@
     <iconset>../images/configure.png</iconset>
    </property>
    <property name="text" >
-    <string>Preferences...</string>
+    <string>&amp;Preferences...</string>
    </property>
   </action>
   <action name="actionComment" >
@@ -742,6 +749,17 @@
    </property>
    <property name="shortcut" >
     <string>Ctrl+W</string>
+   </property>
+  </action>
+  <action name="action_Memory" >
+   <property name="text" >
+    <string>&amp;Memory</string>
+   </property>
+   <property name="statusTip" >
+    <string>database of translated word or string and their translation</string>
+   </property>
+   <property name="whatsThis" >
+    <string/>
    </property>
   </action>
  </widget>

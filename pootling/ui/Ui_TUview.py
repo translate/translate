@@ -39,7 +39,7 @@ class Ui_TUview(object):
         self.txtSource.setTabChangesFocus(True)
         self.txtSource.setUndoRedoEnabled(False)
         self.txtSource.setReadOnly(True)
-        self.txtSource.setTabStopWidth(79)
+        self.txtSource.setTabStopWidth(8)
         self.txtSource.setObjectName("txtSource")
 
         self.txtComment = QtGui.QTextEdit(self.splitter)
