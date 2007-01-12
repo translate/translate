@@ -6,6 +6,8 @@ There are some changes for this version:
 - Correct visible tabulation in TUview source and target.
 - Fix PgUp/PgDown in fuzzy view
 - Add Close submenu under File menu
+- Remove the not working plurals form in preference for this version temporary.
+-When toggle fuzzy, enable save button.
 - Windows Installer.version 0.1.1
 
 
