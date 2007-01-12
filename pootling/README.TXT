@@ -32,17 +32,18 @@ Requirements
 WordForge Translation Editor, pootling.v0.1.1, requires the Translate Toolkit. 
 It requires a version that was not yet released at the time of this release of 
 pootling, but you can find a beta version of the toolkit here: 
-  http://translate.sourceforge.net/snapshots/translate-toolkit-1.0beta/ 
+http://translate.sourceforge.net/snapshots/translate-toolkit-1.0beta/ 
 
-Please note that this is not an official release and is for testing 
-pootling 0.1.1, there might be bugs if you use this beta version in other programs.
+Please note that this is not an official release and is for testing pootling 
+0.1.1, there might be bugs if you use this beta version in other programs.
 When translate-toolkit 1.0 is released, you are recommended to use it.
 
-If you want the stable release of the toolkit, visit http://translate.sourceforge.net
+If you want the stable release of the toolkit, visit 
+http://translate.sourceforge.net
 
 The Translate Toolkit requires Python 2.3 or higher. It must be installed 
-properly, i.e. it needs to be accessible in your PYTHONPATH. This
-will normally be accomplished by installing it. Please read the README.TXT for details.
+properly, i.e. it needs to be accessible in your PYTHONPATH. Please see the 
+file README in the translate toolkit for details.
 
 Other required tools:
 ----------------------
