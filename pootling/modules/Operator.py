@@ -42,7 +42,7 @@ class Operator(QtCore.QObject):
     @signal updateUnit(): emitted when the views should update the unitÂ´s data
     @signal toggleFirstLastUnit(atFirst, atLast): emitted to allow dis/enable of actions
     @signal filterChanged(filter, lenFilter): emitted when the filter was changed
-    @signal savedAlready(False): emitted when a file was saved
+    @signal readyForSave(False): emitted when a file was saved
     """
     def __init__(self):
         QtCore.QObject.__init__(self)
@@ -220,7 +220,7 @@ class Operator(QtCore.QObject):
             if (World.settings.value("headerAuto", QtCore.QVariant(True)).toBool()):
                 self.emit(QtCore.SIGNAL("headerAuto"))
             self.store.savefile(fileName)
-            self.emit(QtCore.SIGNAL("savedAlready"), False) 
+            self.emit(QtCore.SIGNAL("readyForSave"), False) 
         self._modified = False
         
     def modified(self):
@@ -278,6 +278,7 @@ class Operator(QtCore.QObject):
         self._modified = True
         self.emitUnit(unit)
         self.emitStatus()
+        self.emit(QtCore.SIGNAL("readyForSave"), True)
     
     def initSearch(self, searchString, searchableText, matchCase):
         """initilize the needed variables for searching.

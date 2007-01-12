@@ -179,7 +179,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
         self.connect(self.dockComment, QtCore.SIGNAL("commentChanged"), self.operator.setComment)
         self.connect(self.fileaction, QtCore.SIGNAL("fileSaved"), self.operator.saveStoreToFile)
-        self.connect(self.operator, QtCore.SIGNAL("savedAlready"), self.ui.actionSave.setEnabled)
+        self.connect(self.operator, QtCore.SIGNAL("readyForSave"), self.ui.actionSave.setEnabled)
         self.connect(self.dockOverview, QtCore.SIGNAL("readyForSave"), self.ui.actionSave.setEnabled)
         self.connect(self.dockTUview, QtCore.SIGNAL("readyForSave"), self.ui.actionSave.setEnabled)
         self.connect(self.dockComment, QtCore.SIGNAL("readyForSave"), self.ui.actionSave.setEnabled)
