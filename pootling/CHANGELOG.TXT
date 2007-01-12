@@ -1,3 +1,15 @@
+Date: 12 January 2007, release Pootling version 0.1.1
+
+There are some changes for this version:
+- Change terminology from editor to pootling in each module where import statement are found.
+- Change the pootling.py to pootling-editor.py to avoid the same name as pootling folder.
+- Correct visible tabulation in TUview source and target.
+- Fix PgUp/PgDown in fuzzy view
+- Add Close submenu under File menu
+- Windows Installer.version 0.1.1
+
+
+
 Date: 29 December 2006, release Pootling version 0.1
 
 Enable to do translation with basic features:
@@ -10,11 +22,3 @@ Enable to do translation with basic features:
 - Copy source2target
 - Toggle fuzzy
 
-
-
-
-
-
-
-
->>>>>>> .r4679
