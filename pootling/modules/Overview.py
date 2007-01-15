@@ -95,10 +95,20 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.tableOverview.setSortingEnabled(False)
         self.ui.tableOverview.setRowCount(0)
         
+        # TODO: fill up by 30 units in foreground... the rest in background.
         self.setUpdatesEnabled(False)
+        
+        timer = QtCore.QTimer()
+        self.connect(timer, QtCore.SIGNAL("timeout"), self.updateTimer)
+        timer.start(1000)
+        
+        #timer.singleShot(2000, self.updateTimer)
+        
         for unit in units:
             if (self.filter & unit.x_editor_state):
                 self.addUnit(unit)
+        
+        
         self.ui.tableOverview.setSortingEnabled(True)
         self.ui.tableOverview.sortItems(0)
         self.ui.tableOverview.resizeRowsToContents()
@@ -108,6 +118,9 @@ class OverviewDock(QtGui.QDockWidget):
             self.lastTarget = self.ui.tableOverview.item(0, 2).text()
         self.connect(self.ui.tableOverview, QtCore.SIGNAL("cellChanged(int, int)"), self.checkEmitTargetChanged)
 
+    def updateTimer(self):
+        print "haha"
+    
     def filterChanged(self, filter, lenFilter):
         """
         show the items which are in filter.
@@ -185,6 +198,7 @@ class OverviewDock(QtGui.QDockWidget):
         
         targetItem = self.ui.tableOverview.item(row, 2)
         targetItem.setText(unit.target)
+        self.ui.tableOverview.resizeRowToContents(row)
         
         self.markComment(row, unit.getnotes())
         self.markState(row, unit.x_editor_state)
@@ -314,6 +328,7 @@ class OverviewDock(QtGui.QDockWidget):
         if ((row == self.ui.tableOverview.currentRow()) and (col == 2)):
             self.emitReadyForSave()
             self.emitTargetChanged(row)
+            self.ui.tableOverview.resizeRowToContents(row)
     
 if __name__ == "__main__":
     import sys, os
