@@ -96,18 +96,9 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.tableOverview.setRowCount(0)
         
         # TODO: fill up by 30 units in foreground... the rest in background.
-        self.setUpdatesEnabled(False)
-        
-        timer = QtCore.QTimer()
-        self.connect(timer, QtCore.SIGNAL("timeout"), self.updateTimer)
-        timer.start(1000)
-        
-        #timer.singleShot(2000, self.updateTimer)
-        
         for unit in units:
             if (self.filter & unit.x_editor_state):
                 self.addUnit(unit)
-        
         
         self.ui.tableOverview.setSortingEnabled(True)
         self.ui.tableOverview.sortItems(0)
@@ -118,9 +109,6 @@ class OverviewDock(QtGui.QDockWidget):
             self.lastTarget = self.ui.tableOverview.item(0, 2).text()
         self.connect(self.ui.tableOverview, QtCore.SIGNAL("cellChanged(int, int)"), self.checkEmitTargetChanged)
 
-    def updateTimer(self):
-        print "haha"
-    
     def filterChanged(self, filter, lenFilter):
         """
         show the items which are in filter.
