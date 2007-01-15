@@ -1,3 +1,5 @@
+1st Milestone:
+---------------
 Closed bugs and need review
 =====================================
 1. Find: Wrong Highligth,Not go to the beginning
@@ -169,10 +171,17 @@ Closed bugs and need review
 - Who: ratha
 - Status: closed
 
-5. What's this?
+26. What's this?
 - Priority: 2
 - Who: All
 - Status: done
+
+27. Windows Installer
+- Priority: 3
+- Who: Virak
+- Status: not
+
+
 ====================================================
 Open Bugs
 ====================================================
@@ -224,13 +233,75 @@ Open Bugs
 - Who: Ratha
 - Status: not
 
-11. Windows Installer
-- Priority: 3
-- Who: Virak
-- Status: not
-
 12. Rpm packages
 - Priority: 3
 - Who: Da
 - Status: not
 - Tip: use rpm-python
+
+2nd Milestone:
+----------------
+Closed bugs and need review
+=====================================
+1. Task: Rename editor folder in trunk to pootling.
+    priority: 1
+    who: da
+    status: done
+
+====================================================
+Open Bugs
+====================================================
+
+2 Task: copy pootling from trunk to tags.
+  who: da
+   priority: 1
+
+3. Task: finish what are left in TODO from milestone 1
+   priority: 1
+   who: all
+   
+4. The most important task for this milestone is to have a Translation 
+Database working.
+ 	    .Possilble to import/export tbx file
+            . Automatic Lookup the source
+            . When selecting source word, a glossary should show at right side.
+            . Automatic Save the target
+            . save translation to memory
+            . get translation from memory
+            . display translation to view
+            . Use SQL-Lite file as backend
+   priority: 1
+   who: phon
+   
+5. Task: Bookmark on TU 
+    priority: 2
+    who: ratha
+    
+6. Task: Show first 100 units, the rest load in background (to improve 
+speed)--- has progress bar indication.
+   priority: 1
+   who: virak
+7. Task: String Status scrollbar representation
+  priority: 2
+  who: virak
+  
+8.Task:  History of translator ( xliff in particular)
+    . Name
+      Email
+      History of phase in the whole file
+      History of phase which worked on the TU.
+  priority: 2
+  who: da
+  
+9. Task: Approver Mode (xliff in particular)
+ priority: 1
+ who: da
+ 
+10. Task: Show/Hide/Colorize tag
+ priority: 3
+ who ratha
+ 
+ 11. Task: Plural forms:
+ priority: 2
+ who: virak
+ 
