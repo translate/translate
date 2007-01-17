@@ -25,7 +25,6 @@ You can convert back to .xliff using po2xliff"""
 
 from translate.storage import po
 from translate.storage import poxliff as xliff
-from translate.misc import quote
 
 class xliff2po:
   def converttransunit(self, transunit):
@@ -95,7 +94,7 @@ def convertxliff(inputfile, outputfile, templates):
 
 def main(argv=None):
   from translate.convert import convert
-  formats = {"xliff":("po",convertxliff)}
+  formats = {"xlf":("po",convertxliff)}
   parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
   parser.run(argv)
 
