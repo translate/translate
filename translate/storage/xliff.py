@@ -292,7 +292,7 @@ class xlifffile(lisa.LISAfile):
         self._messagenum = 0
 
         # Allow the inputfile to override defaults for source and target language.
-        filenode = self.document.childNodes[0].getElementsByTagName('file')[0]
+        filenode = self.document.getElementsByTagName('file')[0]
         sourcelanguage = filenode.getAttribute('source-language')
         if sourcelanguage:
             self.setsourcelanguage(sourcelanguage)
