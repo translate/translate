@@ -116,7 +116,11 @@
        </widget>
       </item>
       <item row="5" column="0" >
-       <widget class="QLineEdit" name="lineDatabase" />
+       <widget class="QLineEdit" name="lineDatabase" >
+        <property name="readOnly" >
+         <bool>false</bool>
+        </property>
+       </widget>
       </item>
       <item row="0" column="0" >
        <widget class="QGroupBox" name="groupBox" >
@@ -233,13 +237,6 @@
       <item row="2" column="0" >
        <widget class="QLineEdit" name="lineFile" />
       </item>
-      <item row="3" column="0" >
-       <widget class="QCheckBox" name="chkScan" >
-        <property name="text" >
-         <string>Scan all folders</string>
-        </property>
-       </widget>
-      </item>
       <item row="7" column="0" >
        <widget class="QLabel" name="label_3" >
         <property name="font" >
@@ -272,7 +269,7 @@
          </font>
         </property>
         <property name="text" >
-         <string>Database folder</string>
+         <string>Output Folder</string>
         </property>
        </widget>
       </item>

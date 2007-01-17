@@ -33,7 +33,10 @@ from pootling.modules.FileAction import FileAction
 from pootling.modules.Find import Find
 from pootling.modules.Preference import Preference
 from pootling.modules.AboutEditor import AboutEditor
+from pootling.modules.Converters import Converters
+from pootling.pootlingdic.modules.tm import tm
 import pootling.modules.World as World
+
 
 class MainWindow(QtGui.QMainWindow):
     """
@@ -139,7 +142,11 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockComment.applySettings)
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockOverview.applySettings)
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockTUview.applySettings)
-
+        
+        # action Translation Memory
+        self.tmx = tm(self)
+        self.connect(self.ui.actionTMX_compendium, QtCore.SIGNAL("triggered()"), self.tmx.showDialog)
+        
         # Edit Header
         self.headerDialog = Header(self, self.operator)
         self.connect(self.ui.actionEdit_Header, QtCore.SIGNAL("triggered()"), self.headerDialog.showDialog)

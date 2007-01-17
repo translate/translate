@@ -139,8 +139,14 @@
     <property name="title" >
      <string>&amp;Settings</string>
     </property>
+    <widget class="QMenu" name="menuTranslation_Memory" >
+     <property name="title" >
+      <string>Translation &amp;Memory</string>
+     </property>
+     <addaction name="actionTMX_compendium" />
+    </widget>
     <addaction name="actionPreferences" />
-    <addaction name="action_Memory" />
+    <addaction name="menuTranslation_Memory" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
@@ -751,15 +757,9 @@
     <string>Ctrl+W</string>
    </property>
   </action>
-  <action name="action_Memory" >
+  <action name="actionTMX_compendium" >
    <property name="text" >
-    <string>&amp;Memory</string>
-   </property>
-   <property name="statusTip" >
-    <string>database of translated word or string and their translation</string>
-   </property>
-   <property name="whatsThis" >
-    <string/>
+    <string>&amp;TMX compendium</string>
    </property>
   </action>
  </widget>

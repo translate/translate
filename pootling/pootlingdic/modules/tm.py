@@ -85,8 +85,7 @@ class tm(QtGui.QDialog):
     def generateDB(self):
         path = str(self.ui.lineFile.text())
         if (os.path.isfile(path)):
-            output = os.path.join(str(self.ui.lineDatabase.text()) + os.path.splitext(os.path.split(path)[1])[0] + '.tmx')
-            self.process(path, output)
+            self.process(path)
         
         if (os.path.isdir(path)):
             if (not self.subscan):
@@ -106,14 +105,20 @@ class tm(QtGui.QDialog):
                 for file in files:
                     if (file.endswith('po') or file.endswith('xliff') or file.endswith('xlf')):
                         # TODO: add subdir to path if there is
-                        output = os.path.join(str(self.ui.lineDatabase.text()) + os.path.splitext(file)[0] + '.tmx')
-                        self.process(os.path.join(roots + file), output)
-                
-    def process(self, path, output):
+                        self.process(os.path.join(roots + file))
+        return
+        
+    def process(self, path):
         source = self.getSource(path)
-        tmxfile_obj = tmx.tmxfile()
-        po2tmx.po2tmx().convertfiles(source, tmxfile_obj, targetlanguage = 'km')
+        output = os.path.join(str(self.ui.lineDatabase.text()) + 'km_KH.tmx')
+        if (os.path.exists(output)):
+            fout = open(output, 'r')
+            tmxfile_obj = tmx.tmxfile(fout)
+            fout.close()
+        else:
+            tmxfile_obj = tmx.tmxfile()
         fout = open(output, 'w')
+        po2tmx.po2tmx().convertfiles(source, tmxfile_obj, targetlanguage = 'km')
         fout.write(str(tmxfile_obj))
         fout.close()
         return

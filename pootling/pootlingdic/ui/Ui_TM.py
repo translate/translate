@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Wed Jan 17 08:24:09 2007
+# Created: Wed Jan 17 15:48:35 2007
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -73,6 +73,7 @@ class Ui_Dialog(object):
         self.gridlayout1.addWidget(self.btnBrowseFile,2,1,1,1)
 
         self.lineDatabase = QtGui.QLineEdit(self.frame)
+        self.lineDatabase.setReadOnly(False)
         self.lineDatabase.setObjectName("lineDatabase")
         self.gridlayout1.addWidget(self.lineDatabase,5,0,1,1)
 
@@ -152,10 +153,6 @@ class Ui_Dialog(object):
         self.lineFile.setObjectName("lineFile")
         self.gridlayout1.addWidget(self.lineFile,2,0,1,1)
 
-        self.chkScan = QtGui.QCheckBox(self.frame)
-        self.chkScan.setObjectName("chkScan")
-        self.gridlayout1.addWidget(self.chkScan,3,0,1,1)
-
         self.label_3 = QtGui.QLabel(self.frame)
 
         font = QtGui.QFont(self.label_3.font())
@@ -207,9 +204,8 @@ class Ui_Dialog(object):
         self.chkrepeated.setText(self.tr("Repeat source string"))
         self.btnBrowseDatabase.setText(self.tr("Browse..."))
         self.btnGenerate.setText(self.tr("Generate"))
-        self.chkScan.setText(self.tr("Scan all folders"))
         self.label_3.setText(self.tr("Total progress:"))
-        self.label_2.setText(self.tr("Database folder"))
+        self.label_2.setText(self.tr("Output Folder"))
 
 
 if __name__ == "__main__":

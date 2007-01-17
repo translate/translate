@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Thu Jan 11 08:12:14 2007
+# Created: Wed Jan 17 16:08:30 2007
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -61,6 +61,9 @@ class Ui_MainWindow(object):
 
         self.menuSettings = QtGui.QMenu(self.menubar)
         self.menuSettings.setObjectName("menuSettings")
+
+        self.menuTranslation_Memory = QtGui.QMenu(self.menuSettings)
+        self.menuTranslation_Memory.setObjectName("menuTranslation_Memory")
         MainWindow.setMenuBar(self.menubar)
 
         self.statusbar = QtGui.QStatusBar(MainWindow)
@@ -266,8 +269,8 @@ class Ui_MainWindow(object):
         self.action_Close.setIcon(QtGui.QIcon("../images/fileclose.png"))
         self.action_Close.setObjectName("action_Close")
 
-        self.action_Memory = QtGui.QAction(MainWindow)
-        self.action_Memory.setObjectName("action_Memory")
+        self.actionTMX_compendium = QtGui.QAction(MainWindow)
+        self.actionTMX_compendium.setObjectName("actionTMX_compendium")
         self.menuGo.addAction(self.actionFirst)
         self.menuGo.addAction(self.actionPrevious)
         self.menuGo.addAction(self.actionNext)
@@ -306,8 +309,9 @@ class Ui_MainWindow(object):
         self.menuWindow.addSeparator()
         self.menuWindow.addSeparator()
         self.menuWindow.addAction(self.menuToolbars.menuAction())
+        self.menuTranslation_Memory.addAction(self.actionTMX_compendium)
         self.menuSettings.addAction(self.actionPreferences)
-        self.menuSettings.addAction(self.action_Memory)
+        self.menuSettings.addAction(self.menuTranslation_Memory.menuAction())
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
         self.menubar.addAction(self.menuView.menuAction())
@@ -350,6 +354,7 @@ class Ui_MainWindow(object):
         self.menuWindow.setTitle(self.tr("&Window"))
         self.menuToolbars.setTitle(self.tr("Toolbars"))
         self.menuSettings.setTitle(self.tr("&Settings"))
+        self.menuTranslation_Memory.setTitle(self.tr("Translation &Memory"))
         self.toolStandard.setWindowTitle(self.tr("Standard Toolbar"))
         self.toolNavigation.setWindowTitle(self.tr("Navigation Toolbar"))
         self.toolFilter.setWindowTitle(self.tr("Filter Toolbar"))
@@ -448,8 +453,7 @@ class Ui_MainWindow(object):
         self.action_Close.setStatusTip(self.tr("Close the current opened file"))
         self.action_Close.setWhatsThis(self.tr("<h3>Close the current opened file</h3>You will be asked whether to save the current opened file."))
         self.action_Close.setShortcut(self.tr("Ctrl+W"))
-        self.action_Memory.setText(self.tr("&Memory"))
-        self.action_Memory.setStatusTip(self.tr("database of translated word or string and their translation"))
+        self.actionTMX_compendium.setText(self.tr("&TMX compendium"))
 
 
 if __name__ == "__main__":
