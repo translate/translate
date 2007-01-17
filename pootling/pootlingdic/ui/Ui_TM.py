@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Mon Jan 15 08:29:36 2007
+# Created: Wed Jan 17 08:24:09 2007
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -90,18 +90,18 @@ class Ui_Dialog(object):
         self.gridlayout2.setSpacing(6)
         self.gridlayout2.setObjectName("gridlayout2")
 
-        self.radioButton_3 = QtGui.QRadioButton(self.groupBox)
-        self.radioButton_3.setObjectName("radioButton_3")
-        self.gridlayout2.addWidget(self.radioButton_3,0,2,1,1)
+        self.radio_folder_sub = QtGui.QRadioButton(self.groupBox)
+        self.radio_folder_sub.setObjectName("radio_folder_sub")
+        self.gridlayout2.addWidget(self.radio_folder_sub,0,2,1,1)
 
-        self.radioButton = QtGui.QRadioButton(self.groupBox)
-        self.radioButton.setChecked(True)
-        self.radioButton.setObjectName("radioButton")
-        self.gridlayout2.addWidget(self.radioButton,0,0,1,1)
+        self.radio_file = QtGui.QRadioButton(self.groupBox)
+        self.radio_file.setChecked(True)
+        self.radio_file.setObjectName("radio_file")
+        self.gridlayout2.addWidget(self.radio_file,0,0,1,1)
 
-        self.radioButton_2 = QtGui.QRadioButton(self.groupBox)
-        self.radioButton_2.setObjectName("radioButton_2")
-        self.gridlayout2.addWidget(self.radioButton_2,0,1,1,1)
+        self.radio_folder = QtGui.QRadioButton(self.groupBox)
+        self.radio_folder.setObjectName("radio_folder")
+        self.gridlayout2.addWidget(self.radio_folder,0,1,1,1)
         self.gridlayout1.addWidget(self.groupBox,0,0,1,1)
 
         self.label = QtGui.QLabel(self.frame)
@@ -200,9 +200,9 @@ class Ui_Dialog(object):
         self.btncancel.setText(self.tr("Cancel"))
         self.btnBrowseFile.setText(self.tr("Browse..."))
         self.groupBox.setTitle(self.tr("scan"))
-        self.radioButton_3.setText(self.tr("folder and sub"))
-        self.radioButton.setText(self.tr("file"))
-        self.radioButton_2.setText(self.tr("folder"))
+        self.radio_folder_sub.setText(self.tr("folder and sub"))
+        self.radio_file.setText(self.tr("file"))
+        self.radio_folder.setText(self.tr("folder"))
         self.label.setText(self.tr("Path to translated file"))
         self.chkrepeated.setText(self.tr("Repeat source string"))
         self.btnBrowseDatabase.setText(self.tr("Browse..."))
