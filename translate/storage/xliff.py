@@ -123,7 +123,7 @@ class xliffunit(lisa.LISAunit):
         self.xmlelement.appendChild(note)        
 
     def getnotelist(self, origin=None):
-        """Returns the text from notes matching 'origin' or all notes"""
+        """Private method that returns the text from notes matching 'origin' or all notes."""
         notenodes = self.xmlelement.getElementsByTagName("note")
         initial_list = [lisa.getText(note) for note in notenodes if self.correctorigin(note, origin)]
 
