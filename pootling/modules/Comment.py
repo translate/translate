@@ -80,12 +80,10 @@ class CommentDock(QtGui.QDockWidget):
         locationComment = ""
         translatorComment = unit.getnotes("translator")
         if isinstance(unit, po.pounit):
-            locationComment = comments = "".join([comment[3:] for comment in unit.sourcecomments])
+            locationComment = "".join([comment[3:] for comment in unit.sourcecomments])
         elif isinstance(unit, xliff.xliffunit):
-            locationComments = unit.getcontextgroups('po-reference')
-            for i in range(len(locationComments)): 
-                locationComment = locationComment + locationComments[i][0][1].lstrip("multistring([u'")
-                locationComment = locationComment + ":" + locationComments[i][1][1].lstrip("multistring([u'") + "\n"
+            locationComments = unit.getlocations()
+            locationComment = "\n".join([location for location in locationComments])
         else:
             translatorComment = ""
             self.ui.txtLocationComment.hide()
