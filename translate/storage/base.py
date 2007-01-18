@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # 
-# Copyright 2006 Zuza Software Foundation
+# Copyright 2007 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
@@ -19,13 +19,19 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""base classes for storage interfaces"""
+"""Base classes for storage interfaces.
+
+@organization: Zuza Software Foundation
+@copyright: 2007 Zuza Software Foundation
+@license: GPL
+"""
 
 import pickle
 from exceptions import NotImplementedError
 
 def force_override(method, baseclass):
-    """forces derived classes to override method"""
+    """Forces derived classes to override method."""
+
     if type(method.im_self) == type(baseclass):
         # then this is a classmethod and im_self is the actual class
         actualclass = method.im_self
@@ -35,23 +41,63 @@ def force_override(method, baseclass):
         raise NotImplementedError("%s does not reimplement %s as required by %s" % (actualclass.__name__, method.__name__, baseclass.__name__))
 
 class TranslationUnit(object):
+    """Base class for translation units.
+    
+    Our concept of a I{translation unit} is influenced heavily by XLIFF:
+    U{http://www.oasis-open.org/committees/xliff/documents/xliff-specification.htm}
+
+    As such most of the method- and variable names borrows from XLIFF terminology.
+
+    A translation unit consists of the following:
+      - A I{source} string. This is the original translatable text.
+      - A I{target} string. This is the translation of the I{source}.
+      - Zero or more I{notes} on the unit. Notes would typically be some
+        comments from a translator on the unit, or some comments originating from
+        the source code.
+      - Zero or more I{locations}. Locations indicate where in the original
+        source code this unit came from.
+      - Zero or more I{errors}. Some tools (eg. L{pofilter <filters.pofilter>}) can run checks on
+        translations and produce error messages.
+
+    @group Source: *source*
+    @group Target: *target*
+    @group Notes: *note*
+    @group Locations: *location*
+    @group Errors: *error*
+    """
+
     def __init__(self, source):
-        """Constructs a TranslationUnit containing the given source string"""
+        """Constructs a TranslationUnit containing the given source string."""
+
         self.source = source
         self.target = None
         self.notes = ""
 
     def __eq__(self, other):
-        """Compares two TranslationUnits"""
+        """Compares two TranslationUnits.
+        
+        @type other: L{TranslationUnit}
+        @param other: Another L{TranslationUnit}
+        @rtype: Boolean
+        @return: Returns True if the supplied TranslationUnit equals this unit.
+        
+        """
+
         return self.source == other.source and self.target == other.target
 
     def settarget(self, target):
-        """Sets the target string to the given value"""
+        """Sets the target string to the given value."""
+
         self.target = target
     
     def gettargetlen(self):
-        """returns the length of the translation string, possible combining 
-        plural forms"""
+        """Returns the length of the target string.
+        
+        @note: Plural forms might be combined.
+        @rtype: Integer
+        
+        """
+
         length = len(self.target)
         strings = getattr(self.target, "strings", [])
         if strings:
@@ -59,18 +105,32 @@ class TranslationUnit(object):
         return length
 
     def getlocations(self):
-        """A list of source code locations. Shouldn't be implemented if the
-        format doesn't support it."""
+        """A list of source code locations.
+        
+        @note: Shouldn't be implemented if the format doesn't support it.
+        @rtype: List
+        
+        """
+
         return []
     
     def addlocation(self, location):
-        """Add one location to the list of locations. Shouldn't be implemented
-        if the format doesn't support it."""
+        """Add one location to the list of locations.
+        
+        @note: Shouldn't be implemented if the format doesn't support it.
+        
+        """
         pass
 
     def addlocations(self, location):
-        """Add a location or a list of locations. Most classes shouldn't need
-        to implement this, but should rather implement addlocation()."""
+        """Add a location or a list of locations.
+        
+        @note: Most classes shouldn't need to implement this,
+               but should rather implement L{addlocation()}.
+        @warning: This method might be removed in future.
+        
+        """
+
         if isinstance(location, list):
             for item in location:
                 self.addlocation(item)
@@ -78,18 +138,27 @@ class TranslationUnit(object):
             self.addlocation(location)
 
     def getnotes(self, origin=None):
-        """Returns all notes about this unit. It will probably be freeform text
-        or something reasonable that can be synthesised by the format. It should
-        not include location comments (see getlocations)"""
+        """Returns all notes about this unit.
+        
+        It will probably be freeform text or something reasonable that can be
+        synthesised by the format.
+        It should not include location comments (see L{getlocations()}).
+        
+        """
         return getattr(self, "notes", "")
 
     def addnote(self, text, origin=None):
         """Adds a note (comment). 
-        Origin specifies who/where the comment comes from.
-        Origin can be one of the following text strings:
-            - 'translator'
-            - 'developer', 'programmer' or 'source code' (synonyms),
-            - """
+
+        @type text: string
+        @param text: Usually just a sentence or two.
+        @type origin: string
+        @param origin: Specifies who/where the comment comes from.
+                       Origin can be one of the following text strings:
+                         - 'translator'
+                         - 'developer', 'programmer', 'source code' (synonyms)
+
+        """
         if self.notes:
             self.notes += '\n'+text
         else:
@@ -97,56 +166,92 @@ class TranslationUnit(object):
 
     def removenotes(self):
         """Remove all the translator's notes."""
+
         self.notes = u''
 
     def adderror(self, errorname, errortext):
-        """Adds an error message to this unit."""
+        """Adds an error message to this unit.
+        
+          @type errorname: string
+          @param errorname: A single word to id the error.
+          @type errortext: string
+          @param errortext: The text describing the error.
+        
+        """
+
         raise NotImplementedError
 
     def geterrors(self):
-        """Get all error messages."""
+        """Get all error messages.
+        
+        @rtype: Dictionary
+        
+        """
+
         raise NotImplementedError
 
     def markreviewneeded(self, needsreview=True, explanation=None):
-        """Marks the unit to indicate whether it needs review. Adds an optional explanation as a note."""
+        """Marks the unit to indicate whether it needs review.
+        
+        @keyword needsreview: Defaults to True.
+        @keyword explanation: Adds an optional explanation as a note.
+        
+        """
+
         raise NotImplementedError
 
     def istranslated(self):
-        """Indicates whether this unit is translated. This should be used 
-        rather than deducing it from .target, to ensure that other classes can
-        implement more functionality (as XLIFF does)."""
+        """Indicates whether this unit is translated.
+        
+        This should be used rather than deducing it from .target,
+        to ensure that other classes can implement more functionality
+        (as XLIFF does).
+        
+        """
+
         return bool(self.target) and not self.isfuzzy()
 
     def isfuzzy(self):
-        """Indicates whether this unit is fuzzy"""
+        """Indicates whether this unit is fuzzy."""
+
         return False
 
     def isheader(self):
+        """Indicates whether this unit is a header."""
+
         return False
 
     def isreview(self):
         """Indicates whether this unit needs review."""
+
         raise NotImplementedError
 
     def isblank(self):
-        """Used to see if this unit has no source or target string. This is 
-        probably used more to find translatable units, and we might want to 
-        move in that direction rather and get rid of this."""
+        """Used to see if this unit has no source or target string.
+        
+        @note: This is probably used more to find translatable units,
+        and we might want to move in that direction rather and get rid of this.
+        
+        """
+
         return not (self.source and self.target)
 
     def hasplural(self):
         """Tells whether or not this specific unit has plural strings."""
+
         #TODO: Reconsider
         return False
 
     def merge(self, otherunit, overwrite=False, comments=True):
-        """do basic format agnostic merging"""
+        """Do basic format agnostic merging."""
+
         if self.target == "" or overwrite:
             self.target = otherunit.target
 
     def buildfromunit(cls, unit):
-        """build a native unit from a foreign unit, preserving as much as 
-        possible information"""
+        """Build a native unit from a foreign unit, preserving as much as 
+        possible information."""
+
         if type(unit) == cls and hasattr(unit, "copy") and iscallable(unit.copy):
             return unit.copy()
         newunit = cls(unit.source)
@@ -160,27 +265,48 @@ class TranslationUnit(object):
     buildfromunit = classmethod(buildfromunit)
 
 class TranslationStore(object):
-    """Base class for stores for multiple translation units of type UnitClass"""
+    """Base class for stores for multiple translation units of type UnitClass."""
+
     UnitClass = TranslationUnit
 
     def __init__(self, unitclass=None):
-        """Constructs a blank TranslationStore"""
+        """Constructs a blank TranslationStore."""
+
         self.units = []
         if unitclass:
             self.UnitClass = unitclass
 
     def addunit(self, unit):
-        """Appends the given unit to the object's list of units."""
+        """Appends the given unit to the object's list of units.
+        
+        This method should always be used rather than trying to modify the
+        list manually.
+
+        @type unit: L{TranslationUnit}
+        @param unit: The unit that will be added.
+        
+        """
+
         self.units.append(unit)
 
     def addsourceunit(self, source):
-        """Adds and returns a new unit with the given source string"""
+        """Adds and returns a new unit with the given source string.
+        
+        @rtype: L{TranslationUnit}
+
+        """
+
         unit = self.UnitClass(source)
         self.addunit(unit)
         return unit
 
     def findunit(self, source):
-        """Finds the unit with the given source string"""
+        """Finds the unit with the given source string.
+        
+        @rtype: L{TranslationUnit} or None
+
+        """
+
         if len(getattr(self, "sourceindex", [])):
             if source in self.sourceindex:
                 return self.sourceindex[source]
@@ -191,6 +317,12 @@ class TranslationStore(object):
         return None
 
     def translate(self, source):
+        """Returns the translated string for a given source string.
+        
+        @rtype: String or None
+
+        """
+
         unit = self.findunit(source)
         if unit and unit.target:
             return unit.target
@@ -199,6 +331,7 @@ class TranslationStore(object):
 
     def makeindex(self):
         """Indexes the items in this store. At least .sourceindex should be usefull."""
+
         self.locationindex = {}
         self.sourceindex = {}
         for unit in self.units:
@@ -214,12 +347,14 @@ class TranslationStore(object):
                     self.locationindex[location] = unit
 
     def __str__(self):
-        """Converts to a string representation that can be parsed back using parse"""
+        """Converts to a string representation that can be parsed back using L{parsestring()}."""
+
         force_override(self.__str__, TranslationStore)
         return pickle.dumps(self)
 
     def isempty(self):
-      """returns True if the object doesn't contain any translation units."""
+      """Returns True if the object doesn't contain any translation units."""
+
       if len(self.units) == 0:
         return True
       # Skip the first unit if it is a header.
@@ -234,13 +369,15 @@ class TranslationStore(object):
       return True
 
     def parsestring(cls, storestring):
-        """Converts the string representation back to an object"""
+        """Converts the string representation back to an object."""
+
         force_override(cls.parsestring, TranslationStore)
         return pickle.loads(storestring)
     parsestring = classmethod(parsestring)
 
     def savefile(self, storefile):
-        """Writes the string representation to the given file (or filename)"""
+        """Writes the string representation to the given file (or filename)."""
+
         storestring = str(self)
         if isinstance(storefile, basestring):
             storefile = open(storefile, "w")
@@ -248,7 +385,8 @@ class TranslationStore(object):
         storefile.close()
 
     def parsefile(cls, storefile):
-        """Reads the given file (or opens the given filename) and parses back to an object"""
+        """Reads the given file (or opens the given filename) and parses back to an object."""
+
         if isinstance(storefile, basestring):
             storefile = open(storefile, "r")
         if "r" in getattr(storefile, "mode", "r"):
