@@ -4,7 +4,7 @@
 # Pootling
 # Copyright 2006 WordForge Foundation
 #
-# Version 0.1 (29 December 2006)
+# Version 0.1.1 (12 January 2007)
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -78,20 +78,22 @@ class CommentDock(QtGui.QDockWidget):
             return
         translatorComment = ""
         locationComment = ""
+        translatorComment = unit.getnotes("translator")
         if isinstance(unit, po.pounit):
-            translatorComment = unit.getnotes("translator")
             locationComment = comments = "".join([comment[3:] for comment in unit.sourcecomments])
-            if (locationComment == ""):
-                self.ui.txtLocationComment.hide()
-            else:
-                self.ui.txtLocationComment.show()
-                self.ui.txtLocationComment.setPlainText(unicode(locationComment))
         elif isinstance(unit, xliff.xliffunit):
-            translatorComment = unit.getnotes()
-            self.ui.txtLocationComment.hide()
+            locationComments = unit.getcontextgroups('po-reference')
+            for i in range(len(locationComments)): 
+                locationComment = locationComment + locationComments[i][0][1].lstrip("multistring([u'")
+                locationComment = locationComment + ":" + locationComments[i][1][1].lstrip("multistring([u'") + "\n"
         else:
             translatorComment = ""
             self.ui.txtLocationComment.hide()
+        if (locationComment == ""):
+            self.ui.txtLocationComment.hide()
+        else:
+            self.ui.txtLocationComment.show()
+            self.ui.txtLocationComment.setPlainText(unicode(locationComment))
         self.ui.txtTranslatorComment.setPlainText(unicode(translatorComment))
         self.connect(self.ui.txtTranslatorComment, QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
 
