@@ -71,21 +71,26 @@ class TestTranslationUnit:
         unit = self.UnitClass('bla')
         specials = ['Fish & chips', 'five < six', 'six > five', 'five &lt; six',
                     'Use &nbsp;', 'Use &amp;nbsp;', 'Use &amp;amp;nbsp;'
-                    'A "solution"', "skop 'n bal", '"""', "'''", 
-                    '\n', '\t', '\r', 
-                    '\\n', '\\t', '\\r', '\\"', '\\', '\\ ',
-                    '\\\n', '\\\t', '\\\r', 
-                    '\\\\n', '\\\\t', '\\\\r', '\\\\"',
-                    '\r\n', '\\r\\n', '\\\\r\\n', '\\r\\\\n', '\\\\n\\\\r'
-                    u'µ']
+                    'A "solution"', "skop 'n bal", '"""', "'''", u'µ',
+                    '\n', '\t', '\r', '\r\n', '\\r', '\\', '\\\r'] 
         for special in specials:
             unit.source = special
-            print "unit.source:"
-            print repr(unit.source)
-            print unit.source.encode('utf-8')
-            print "special:"
-            print repr(special)
-            print special.encode('utf-8')
+            print "unit.source:", repr(unit.source)
+            print "special:", repr(special)
+            assert unit.source == special
+
+    def test_difficult_escapes(self):
+        """Test difficult characters that might go wrong in a quoting and 
+        escaping roundtrip."""
+
+        unit = self.UnitClass('bla')
+        specials = ['\\n', '\\t', '\\"', '\\ ',
+                    '\\\n', '\\\t', '\\\\n', '\\\\t', '\\\\r', '\\\\"',
+                    '\\r\\n', '\\\\r\\n', '\\r\\\\n', '\\\\n\\\\r']
+        for special in specials:
+            unit.source = special
+            print "unit.source:", repr(unit.source) + '|'
+            print "special:", repr(special) + '|'
             assert unit.source == special
 
     def test_markreview(self):
