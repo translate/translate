@@ -31,7 +31,6 @@ from pootling.modules.FileAction import FileAction
 from pootling.modules.Find import Find
 from pootling.modules.Preference import Preference
 from pootling.modules.AboutEditor import AboutEditor
-from pootling.pootlingdic.modules.tm import tm
 import pootling.modules.World as World
 
 
@@ -134,17 +133,16 @@ class MainWindow(QtGui.QMainWindow):
         # Edit menu action
         self.connect(self.ui.actionComment, QtCore.SIGNAL("triggered()"), self.dockComment.show)
        
+       # Goto menu action
+        self.connect(self.ui.actionGoTo, QtCore.SIGNAL("triggered()"), self.showGoto)
+
         # action Preferences menu 
         self.preference = Preference(self)
         self.connect(self.ui.actionPreferences, QtCore.SIGNAL("triggered()"), self.preference.showDialog)
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockComment.applySettings)
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockOverview.applySettings)
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockTUview.applySettings)
-        
-        # action Translation Memory
-        self.tmx = tm(self)
-        self.connect(self.ui.actionTMX_compendium, QtCore.SIGNAL("triggered()"), self.tmx.showDialog)
-        
+
         # Edit Header
         self.headerDialog = Header(self, self.operator)
         self.connect(self.ui.actionEdit_Header, QtCore.SIGNAL("triggered()"), self.headerDialog.showDialog)
@@ -246,7 +244,14 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionUndo.setEnabled(bool)
 
     def enableRedo(self, bool):
-        self.ui.actionRedo.setEnabled(bool)   
+        self.ui.actionRedo.setEnabled(bool)
+
+    def showGoto(self):
+        i, ok = QtGui.QInputDialog.getInteger(self, self.tr("Goto"),
+                                              self.tr("Line Number:"))
+        if ok:
+            value = i - 1
+            self.operator.setUnitFromPosition(value)
 
     def setOpening(self, fileName): 
         """
@@ -431,7 +436,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionReplace.setEnabled(bool)
         self.ui.actionCopySource2Target.setEnabled(bool)
         self.ui.actionEdit_Header.setEnabled(bool)
-        
+        self.ui.actionGoTo.setEnabled(bool)
         self.ui.actionToggleFuzzy.setEnabled(bool)
         self.ui.actionFilterFuzzy.setEnabled(bool)
         self.ui.actionFilterTranslated.setEnabled(bool)
