@@ -136,12 +136,11 @@ class xliffunit(lisa.LISAunit):
     def getnotes(self, origin=None):
         return '\n'.join(self.getnotelist(origin=origin)) 
 
-    def removenotes(self, origin=None):
-        """Remove all the notes with the given origin. If no origin is given, 
-        all notes are removed."""
+    def removenotes(self):
+        """Remove all the translator notes."""
         notes = self.xmlelement.getElementsByTagName("note")
 	for note in notes:
-            if self.correctorigin(note, origin):
+            if self.correctorigin(note, origin="translator"):
                 self.xmlelement.removeChild(note)
 
     def adderror(self, errorname, errortext):
