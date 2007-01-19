@@ -36,10 +36,10 @@
    <iconset>../images/pootling.png</iconset>
   </property>
   <property name="statusTip" >
-   <string>database of translated strings and their translation.</string>
+   <string/>
   </property>
   <property name="whatsThis" >
-   <string>&lt;h3>translation database&lt;/h3>You can get and assign your current word or string a translation from database of translated string.</string>
+   <string/>
   </property>
   <widget class="QWidget" name="centralwidget" />
   <widget class="QMenuBar" name="menubar" >
@@ -48,7 +48,7 @@
      <x>0</x>
      <y>0</y>
      <width>498</width>
-     <height>30</height>
+     <height>28</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuGo" >
@@ -93,28 +93,6 @@
     <addaction name="actionToggleFuzzy" />
     <addaction name="actionEdit_Header" />
    </widget>
-   <widget class="QMenu" name="menuFile" >
-    <property name="title" >
-     <string>&amp;File</string>
-    </property>
-    <widget class="QMenu" name="menuOpen_Recent" >
-     <property name="title" >
-      <string>Open &amp;Recent</string>
-     </property>
-     <property name="icon" >
-      <iconset>../images/open.png</iconset>
-     </property>
-    </widget>
-    <addaction name="actionOpenInNewWindow" />
-    <addaction name="actionOpen" />
-    <addaction name="menuOpen_Recent" />
-    <addaction name="action_Close" />
-    <addaction name="separator" />
-    <addaction name="actionSave" />
-    <addaction name="actionSaveas" />
-    <addaction name="separator" />
-    <addaction name="actionExit" />
-   </widget>
    <widget class="QMenu" name="menuHelp" >
     <property name="title" >
      <string>&amp;Help</string>
@@ -147,6 +125,30 @@
     </widget>
     <addaction name="actionPreferences" />
     <addaction name="menuTranslation_Memory" />
+   </widget>
+   <widget class="QMenu" name="menuFile" >
+    <property name="title" >
+     <string>&amp;File</string>
+    </property>
+    <widget class="QMenu" name="menuOpen_Recent" >
+     <property name="title" >
+      <string>Open &amp;Recent</string>
+     </property>
+     <property name="icon" >
+      <iconset>../images/open.png</iconset>
+     </property>
+     <addaction name="actionClear" />
+     <addaction name="separator" />
+    </widget>
+    <addaction name="actionOpenInNewWindow" />
+    <addaction name="actionOpen" />
+    <addaction name="menuOpen_Recent" />
+    <addaction name="action_Close" />
+    <addaction name="separator" />
+    <addaction name="actionSave" />
+    <addaction name="actionSaveas" />
+    <addaction name="separator" />
+    <addaction name="actionExit" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
@@ -760,6 +762,11 @@
   <action name="actionTMX_compendium" >
    <property name="text" >
     <string>&amp;TMX compendium</string>
+   </property>
+  </action>
+  <action name="actionClear" >
+   <property name="text" >
+    <string>Clear</string>
    </property>
   </action>
  </widget>
