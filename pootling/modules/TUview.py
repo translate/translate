@@ -4,7 +4,6 @@
 # Pootling
 # Copyright 2006 WordForge Foundation
 #
-# Version 0.1 (29 December 2006)
 # This program is free sofware; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
@@ -37,6 +36,8 @@ class TUview(QtGui.QDockWidget):
         self.setFeatures(QtGui.QDockWidget.DockWidgetClosable)
         self.ui.txtComment.hide()
         self.ui.txtTarget.setReadOnly(True)
+##        #support only qt4.2
+##        self.ui.txtTarget.moveCursor(QtGui.QTextCursor.Start, QtGui.QTextCursor.MoveAnchor )
         self.ui.txtTarget.setWhatsThis("<h3>Translated String</h3>This editor displays and lets you edit the translation of the currently displayed string.")
         self.ui.txtSource.setWhatsThis("<h3>Original String</h3>This part of the window shows you the original string of the currently displayed entry. <br>You can not edit this string.")
         self.ui.txtComment.setWhatsThis("<h3>Important Comment</h3>Hints from the developer to the translator are displayed in this area. This area will be hidden if there is no hint. ")
@@ -112,17 +113,19 @@ class TUview(QtGui.QDockWidget):
             self.ui.txtTarget.setEnabled(False)
             return
         self.ui.txtTarget.setReadOnly(False)
+        comment = ""
         if isinstance(unit, po.pounit):
             comment = "".join([comment for comment in unit.msgidcomments])
             comment = comment.lstrip('"_:')
             comment = comment.rstrip('"')
             comment= comment.rstrip('\\n')
-            comment += unit.getnotes("developer")
-            if (comment == ""):
-                self.ui.txtComment.hide()
-            else:
-                self.ui.txtComment.show()
-                self.ui.txtComment.setPlainText(unicode(comment))
+        comment += unit.getnotes("developer")
+        if (comment == ""):
+            self.ui.txtComment.hide()
+        else:
+            self.ui.txtComment.show()
+            self.ui.txtComment.setPlainText(unicode(comment))
+            
         self.ui.txtSource.setPlainText(unit.source)
         self.ui.txtTarget.setPlainText(unit.target)
         self.ui.txtTarget.setFocus()
