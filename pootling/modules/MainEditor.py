@@ -3,8 +3,6 @@
 # Pootling
 # Copyright 2006 WordForge Foundation
 #
-# Version 0.1 (29 December 2006)
-#
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2.1
@@ -106,6 +104,7 @@ class MainWindow(QtGui.QMainWindow):
         # create file action object and file action menu related signals
         self.fileaction = FileAction(self)
         self.connect(self.ui.actionOpen, QtCore.SIGNAL("triggered()"), self.fileaction.openFile)
+        self.connect(self.ui.actionClear, QtCore.SIGNAL("triggered()"), self.clearOpenRecent)
         self.connect(self.ui.actionOpenInNewWindow, QtCore.SIGNAL("triggered()"), self.startInNewWindow)
         self.connect(self.ui.action_Close, QtCore.SIGNAL("triggered()"), self.closeFile)
         self.connect(self.ui.actionSave, QtCore.SIGNAL("triggered()"), self.fileaction.save)
@@ -224,13 +223,20 @@ class MainWindow(QtGui.QMainWindow):
         self.dockTUview.setHidden(tuViewHidden.toBool())
         self.findBar.setHidden(True)
     
+    def clearOpenRecent(self):
+        """Clear only the recentFileList, not the whole Qsetting """
+        files = World.settings.value("recentFileList").toStringList()
+        numRecentFiles = min(files.count(), World.MaxRecentFiles)
+        for i in range(numRecentFiles):
+            self.ui.recentaction[i].setVisible(False)
+        World.settings.remove("recentFileList")
+    
     def updateProgress(self, value):
         if (value >= 99):
             self.progressBar.setVisible(False)
         elif (value <= 1) and (not self.progressBar.isVisible()):
             self.progressBar.setVisible(True)
         self.progressBar.setValue(value)
-    
     
     def enableCopyCut(self, bool):
         self.ui.actionCopy.setEnabled(bool)
