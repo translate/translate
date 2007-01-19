@@ -139,7 +139,7 @@ class xliffunit(lisa.LISAunit):
     def removenotes(self):
         """Remove all the translator notes."""
         notes = self.xmlelement.getElementsByTagName("note")
-	for note in notes:
+        for note in notes:
             if self.correctorigin(note, origin="translator"):
                 self.xmlelement.removeChild(note)
 
