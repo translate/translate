@@ -309,8 +309,12 @@ speed)--- has progress bar indication.
  priority: 3
  who ratha
  
- 11. Task: Plural forms:
+11. Task: Plural forms:
  priority: 1
  who: da
- 
+
+12. Task: Goto menu:
+ priority:1
+ who:ratha
+ status:done
 
