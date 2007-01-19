@@ -115,10 +115,7 @@ class TUview(QtGui.QDockWidget):
         self.ui.txtTarget.setReadOnly(False)
         comment = ""
         if isinstance(unit, po.pounit):
-            comment = "".join([comment for comment in unit.msgidcomments])
-            comment = comment.lstrip('"_:')
-            comment = comment.rstrip('"')
-            comment= comment.rstrip('\\n')
+            comment = unit.getcontext()
         comment += unit.getnotes("developer")
         if (comment == ""):
             self.ui.txtComment.hide()
