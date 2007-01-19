@@ -248,6 +248,14 @@ Closed bugs and need review
     who: da
     status: done
 
+ 2 Task: right now, the xliff developer comments is display at translator's comment view, therefore, it can be removable. Fix Comment to display properly the same way as po does.
+ priority: 1
+ who: da
+ 
+ 3  Task: add clear function under the open recent list
+ priority: 2
+ who: da
+
 ====================================================
 Open Bugs
 ====================================================
@@ -295,13 +303,14 @@ speed)--- has progress bar indication.
   
 9. Task: Approver Mode (xliff in particular)
  priority: 1
- who: da
+ who: virak
  
 10. Task: Show/Hide/Colorize tag
  priority: 3
  who ratha
  
  11. Task: Plural forms:
- priority: 2
- who: virak
+ priority: 1
+ who: da
  
+
