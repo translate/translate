@@ -232,10 +232,10 @@ class MainWindow(QtGui.QMainWindow):
         World.settings.remove("recentFileList")
     
     def updateProgress(self, value):
-        if (value >= 99):
-            self.progressBar.setVisible(False)
-        elif (value <= 1) and (not self.progressBar.isVisible()):
+        if (not self.progressBar.isVisible()):
             self.progressBar.setVisible(True)
+        elif (value == 100):
+            self.progressBar.setVisible(False)
         self.progressBar.setValue(value)
     
     def enableCopyCut(self, bool):

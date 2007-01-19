@@ -51,6 +51,10 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.tableOverview.horizontalHeader().setHighlightSections(False)
         self.ui.tableOverview.verticalHeader().hide()
         self.applySettings()
+        
+        self.fuzzyColor = QtGui.QColor(246, 238, 156, 100)
+        self.blankColor = QtGui.QColor(255, 255, 255, 0)
+        
         self.fuzzyIcon = QtGui.QIcon("../images/fuzzy.png")
         self.noteIcon = QtGui.QIcon("../images/note.png")
         self.approvedIcon = QtGui.QIcon("../images/approved.png")
@@ -101,13 +105,12 @@ class OverviewDock(QtGui.QDockWidget):
         for unit in units:
             if (self.filter & unit.x_editor_state):
                 self.addUnit(unit)
+            i += 1
             value = int((i / lenUnit) * 100)
             # emit signal when only percentage changed
             if (oldValue != value):
                 self.emit(QtCore.SIGNAL("progressBarValue"), value)
                 oldValue = value
-            i += 1
-        
         self.ui.tableOverview.setSortingEnabled(True)
         self.ui.tableOverview.sortItems(0)
         self.ui.tableOverview.resizeRowsToContents()
@@ -218,9 +221,21 @@ class OverviewDock(QtGui.QDockWidget):
         if (state & World.fuzzy):
             item.setIcon(self.fuzzyIcon)
             item.setToolTip("fuzzy")
+            
+            self.ui.tableOverview.item(index, 0).setBackgroundColor(self.fuzzyColor)
+            self.ui.tableOverview.item(index, 1).setBackgroundColor(self.fuzzyColor)
+            self.ui.tableOverview.item(index, 2).setBackgroundColor(self.fuzzyColor)
+            item.setBackgroundColor(self.fuzzyColor)
+            
         else:
+            # TODO: do not setBackgroundColor when item is not dirty yet.
             item.setIcon(self.blankIcon)
             item.setToolTip("")
+            
+            self.ui.tableOverview.item(index, 0).setBackgroundColor(self.blankColor)
+            self.ui.tableOverview.item(index, 1).setBackgroundColor(self.blankColor)
+            self.ui.tableOverview.item(index, 2).setBackgroundColor(self.blankColor)
+            item.setBackgroundColor(self.blankColor)
     
     def applySettings(self):
         """
@@ -269,6 +284,7 @@ class OverviewDock(QtGui.QDockWidget):
                     self.ui.tableOverview.hideRow(row)
         self.ui.tableOverview.resizeRowsToContents()
         self.setUpdatesEnabled(True)
+        self.ui.tableOverview.repaint()
         self.visibleRow.sort()
         self.emitFirstLastUnit()
     
