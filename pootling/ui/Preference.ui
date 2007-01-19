@@ -8,8 +8,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>485</width>
-    <height>376</height>
+    <width>516</width>
+    <height>416</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -77,6 +77,65 @@
        <property name="spacing" >
         <number>6</number>
        </property>
+       <item row="3" column="0" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>20</width>
+           <height>41</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="2" column="0" >
+        <widget class="QCheckBox" name="chkHeaderAuto" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>7</hsizetype>
+           <vsizetype>0</vsizetype>
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text" >
+          <string>Automatically update header on save</string>
+         </property>
+         <property name="checked" >
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" >
+        <widget class="QFrame" name="frame_2" >
+         <property name="frameShape" >
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow" >
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>9</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="0" column="0" >
+           <widget class="QLabel" name="label" >
+            <property name="text" >
+             <string>Number of single/plural form:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" >
+           <widget class="QSpinBox" name="spinBox" />
+          </item>
+         </layout>
+        </widget>
+       </item>
        <item row="0" column="0" >
         <widget class="QFrame" name="frame" >
          <property name="sizePolicy" >
@@ -289,45 +348,11 @@
          </layout>
         </widget>
        </item>
-       <item row="2" column="0" >
-        <widget class="QCheckBox" name="chkHeaderAuto" >
-         <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>7</hsizetype>
-           <vsizetype>0</vsizetype>
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text" >
-          <string>Automatically update header on save</string>
-         </property>
-         <property name="checked" >
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0" >
-        <spacer>
-         <property name="orientation" >
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeType" >
-          <enum>QSizePolicy::MinimumExpanding</enum>
-         </property>
-         <property name="sizeHint" >
-          <size>
-           <width>20</width>
-           <height>10</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="tab2" >
       <attribute name="title" >
-       <string>Font</string>
+       <string>Settings</string>
       </attribute>
       <layout class="QGridLayout" >
        <property name="margin" >
@@ -336,22 +361,7 @@
        <property name="spacing" >
         <number>6</number>
        </property>
-       <item row="1" column="0" >
-        <widget class="QPushButton" name="bntDefaults" >
-         <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>0</hsizetype>
-           <vsizetype>0</vsizetype>
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text" >
-          <string>Defaults</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0" >
+       <item row="0" column="0" colspan="3" >
         <widget class="QFrame" name="frame2" >
          <property name="sizePolicy" >
           <sizepolicy>
@@ -374,8 +384,246 @@
           <property name="spacing" >
            <number>6</number>
           </property>
-          <item row="1" column="1" >
+          <item row="0" column="0" >
+           <widget class="QLabel" name="label2_2" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>10</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="text" >
+             <string>Overview header</string>
+            </property>
+            <property name="scaledContents" >
+             <bool>true</bool>
+            </property>
+            <property name="wordWrap" >
+             <bool>true</bool>
+            </property>
+            <property name="indent" >
+             <number>0</number>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2" >
+           <widget class="QPushButton" name="bntFontOverviewHeader" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>Font</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" >
            <widget class="QLabel" name="lblOverViewHeader" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>11</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="frameShape" >
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="text" >
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3" >
+           <widget class="QPushButton" name="btnColorOverview" >
+            <property name="text" >
+             <string>Color</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2" >
+           <widget class="QPushButton" name="bntFontOverview" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>Font</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" >
+           <widget class="QLabel" name="lblOverView" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>11</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="frameShape" >
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="text" >
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" >
+           <widget class="QLabel" name="label2_3" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>10</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="text" >
+             <string>Overview</string>
+            </property>
+            <property name="scaledContents" >
+             <bool>true</bool>
+            </property>
+            <property name="wordWrap" >
+             <bool>true</bool>
+            </property>
+            <property name="indent" >
+             <number>0</number>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="2" >
+           <widget class="QPushButton" name="bntFontTarget" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>Font</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1" >
+           <widget class="QLabel" name="lblComment" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>11</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="frameShape" >
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="text" >
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1" >
+           <widget class="QLabel" name="lblTarget" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>11</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="frameShape" >
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="text" >
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1" >
+           <widget class="QLabel" name="lblSource" >
             <property name="sizePolicy" >
              <sizepolicy>
               <hsizetype>7</hsizetype>
@@ -429,38 +677,8 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="2" >
-           <widget class="QPushButton" name="bntComment" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>0</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text" >
-             <string>Choose</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="2" >
-           <widget class="QPushButton" name="bntTarget" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>0</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text" >
-             <string>Choose</string>
-            </property>
-           </widget>
-          </item>
           <item row="2" column="2" >
-           <widget class="QPushButton" name="bntSource" >
+           <widget class="QPushButton" name="bntFontSource" >
             <property name="sizePolicy" >
              <sizepolicy>
               <hsizetype>0</hsizetype>
@@ -470,65 +688,7 @@
              </sizepolicy>
             </property>
             <property name="text" >
-             <string>Choose</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1" >
-           <widget class="QLabel" name="lblSource" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>7</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font" >
-             <font>
-              <family>Sans Serif</family>
-              <pointsize>11</pointsize>
-              <weight>50</weight>
-              <italic>false</italic>
-              <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="frameShape" >
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="text" >
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1" >
-           <widget class="QLabel" name="lblComment" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>7</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font" >
-             <font>
-              <family>Sans Serif</family>
-              <pointsize>11</pointsize>
-              <weight>50</weight>
-              <italic>false</italic>
-              <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="frameShape" >
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="text" >
-             <string/>
+             <string>Font</string>
             </property>
            </widget>
           </item>
@@ -558,8 +718,23 @@
             </property>
            </widget>
           </item>
+          <item row="4" column="2" >
+           <widget class="QPushButton" name="bntFontComment" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>Font</string>
+            </property>
+           </widget>
+          </item>
           <item row="3" column="0" >
-           <widget class="QLabel" name="label4" >
+           <widget class="QLabel" name="label4_2" >
             <property name="sizePolicy" >
              <sizepolicy>
               <hsizetype>0</hsizetype>
@@ -584,214 +759,32 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="1" >
-           <widget class="QLabel" name="lblTarget" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>7</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font" >
-             <font>
-              <family>Sans Serif</family>
-              <pointsize>11</pointsize>
-              <weight>50</weight>
-              <italic>false</italic>
-              <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="frameShape" >
-             <enum>QFrame::StyledPanel</enum>
-            </property>
+          <item row="2" column="3" >
+           <widget class="QPushButton" name="btnColorSource" >
             <property name="text" >
-             <string/>
+             <string>Color</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="2" >
-           <widget class="QPushButton" name="bntOverview" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>0</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
+          <item row="3" column="3" >
+           <widget class="QPushButton" name="btnColorTarget" >
             <property name="text" >
-             <string>Choose</string>
+             <string>Color</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="1" >
-           <widget class="QLabel" name="lblOverView" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>7</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font" >
-             <font>
-              <family>Sans Serif</family>
-              <pointsize>11</pointsize>
-              <weight>50</weight>
-              <italic>false</italic>
-              <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="frameShape" >
-             <enum>QFrame::StyledPanel</enum>
-            </property>
+          <item row="4" column="3" >
+           <widget class="QPushButton" name="btnColorComment" >
             <property name="text" >
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0" >
-           <widget class="QLabel" name="label2" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>0</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font" >
-             <font>
-              <family>Sans Serif</family>
-              <pointsize>10</pointsize>
-              <weight>50</weight>
-              <italic>false</italic>
-              <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="text" >
-             <string>Overview</string>
-            </property>
-            <property name="scaledContents" >
-             <bool>true</bool>
-            </property>
-            <property name="wordWrap" >
-             <bool>true</bool>
-            </property>
-            <property name="indent" >
-             <number>0</number>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" >
-           <widget class="QLabel" name="label2_2" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>0</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font" >
-             <font>
-              <family>Sans Serif</family>
-              <pointsize>10</pointsize>
-              <weight>50</weight>
-              <italic>false</italic>
-              <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="text" >
-             <string>Overview header</string>
-            </property>
-            <property name="scaledContents" >
-             <bool>true</bool>
-            </property>
-            <property name="wordWrap" >
-             <bool>true</bool>
-            </property>
-            <property name="indent" >
-             <number>0</number>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2" >
-           <widget class="QPushButton" name="bntOverviewHeader" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>0</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text" >
-             <string>Choose</string>
+             <string>Color</string>
             </property>
            </widget>
           </item>
          </layout>
         </widget>
        </item>
-       <item row="2" column="0" >
-        <spacer>
-         <property name="orientation" >
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeType" >
-          <enum>QSizePolicy::MinimumExpanding</enum>
-         </property>
-         <property name="sizeHint" >
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="tab" >
-      <attribute name="title" >
-       <string>Color</string>
-      </attribute>
-      <layout class="QGridLayout" >
-       <property name="margin" >
-        <number>9</number>
-       </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
-       <item row="2" column="0" >
-        <spacer>
-         <property name="orientation" >
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeType" >
-          <enum>QSizePolicy::MinimumExpanding</enum>
-         </property>
-         <property name="sizeHint" >
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="1" column="0" >
-        <widget class="QPushButton" name="bntColorDefaults" >
+       <item row="1" column="1" >
+        <widget class="QPushButton" name="bntDefaultsFont" >
          <property name="sizePolicy" >
           <sizepolicy>
            <hsizetype>0</hsizetype>
@@ -801,11 +794,71 @@
           </sizepolicy>
          </property>
          <property name="text" >
-          <string>Defaults</string>
+          <string>Defaults Font</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="0" >
+       <item row="1" column="2" >
+        <widget class="QPushButton" name="bntDefaultsColor" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>0</hsizetype>
+           <vsizetype>0</vsizetype>
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text" >
+          <string>Defaults Color</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>20</width>
+           <height>51</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab" >
+      <property name="enabled" >
+       <bool>false</bool>
+      </property>
+      <attribute name="title" >
+       <string>Colorize Tags</string>
+      </attribute>
+      <layout class="QGridLayout" >
+       <property name="margin" >
+        <number>9</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item row="2" column="1" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType" >
+          <enum>QSizePolicy::MinimumExpanding</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>221</width>
+           <height>61</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="0" column="0" colspan="2" >
         <widget class="QFrame" name="frame2_2" >
          <property name="sizePolicy" >
           <sizepolicy>
@@ -828,8 +881,8 @@
           <property name="spacing" >
            <number>6</number>
           </property>
-          <item row="3" column="0" >
-           <widget class="QLabel" name="ColorComment" >
+          <item row="3" column="2" >
+           <widget class="QPushButton" name="bntColor" >
             <property name="sizePolicy" >
              <sizepolicy>
               <hsizetype>0</hsizetype>
@@ -838,24 +891,13 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="font" >
-             <font>
-              <family>Sans Serif</family>
-              <pointsize>10</pointsize>
-              <weight>50</weight>
-              <italic>false</italic>
-              <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
             <property name="text" >
-             <string>Comment</string>
+             <string>Choose</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="2" >
-           <widget class="QPushButton" name="bntColorComment" >
+          <item row="4" column="2" >
+           <widget class="QPushButton" name="bntColor" >
             <property name="sizePolicy" >
              <sizepolicy>
               <hsizetype>0</hsizetype>
@@ -870,7 +912,7 @@
            </widget>
           </item>
           <item row="2" column="2" >
-           <widget class="QPushButton" name="bntColorTarget" >
+           <widget class="QPushButton" name="bntColor" >
             <property name="sizePolicy" >
              <sizepolicy>
               <hsizetype>0</hsizetype>
@@ -881,156 +923,13 @@
             </property>
             <property name="text" >
              <string>Choose</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2" >
-           <widget class="QPushButton" name="bntColorSource" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>0</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text" >
-             <string>Choose</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2" >
-           <widget class="QPushButton" name="bntColorOverview" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>0</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text" >
-             <string>Choose</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0" >
-           <widget class="QLabel" name="ColorTarget" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>0</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font" >
-             <font>
-              <family>Sans Serif</family>
-              <pointsize>10</pointsize>
-              <weight>50</weight>
-              <italic>false</italic>
-              <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="text" >
-             <string>Target</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0" >
-           <widget class="QLabel" name="ColorOverview" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>0</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="maximumSize" >
-             <size>
-              <width>16777207</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="font" >
-             <font>
-              <family>Sans Serif</family>
-              <pointsize>10</pointsize>
-              <weight>50</weight>
-              <italic>false</italic>
-              <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="text" >
-             <string>Overview</string>
-            </property>
-            <property name="scaledContents" >
-             <bool>true</bool>
-            </property>
-            <property name="wordWrap" >
-             <bool>true</bool>
-            </property>
-            <property name="indent" >
-             <number>0</number>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" >
-           <widget class="QLabel" name="ColorSource" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>0</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font" >
-             <font>
-              <family>Sans Serif</family>
-              <pointsize>10</pointsize>
-              <weight>50</weight>
-              <italic>false</italic>
-              <bold>false</bold>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="text" >
-             <string>Source</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1" >
-           <widget class="QLineEdit" name="tuTargetColor" >
-            <property name="text" >
-             <string>Sample text</string>
-            </property>
-            <property name="readOnly" >
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1" >
-           <widget class="QLineEdit" name="commentColor" >
-            <property name="text" >
-             <string>Sample text</string>
-            </property>
-            <property name="readOnly" >
-             <bool>true</bool>
             </property>
            </widget>
           </item>
           <item row="0" column="1" >
            <widget class="QLineEdit" name="overviewColor" >
             <property name="enabled" >
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="text" >
              <string>Sample text</string>
@@ -1315,7 +1214,227 @@
             </property>
            </widget>
           </item>
+          <item row="2" column="1" >
+           <widget class="QLineEdit" name="tuTargetColor" >
+            <property name="text" >
+             <string>Sample text</string>
+            </property>
+            <property name="readOnly" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1" >
+           <widget class="QLineEdit" name="commentColor" >
+            <property name="text" >
+             <string>Sample text</string>
+            </property>
+            <property name="readOnly" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1" >
+           <widget class="QLineEdit" name="ColorTags" >
+            <property name="text" >
+             <string>Sample text</string>
+            </property>
+            <property name="readOnly" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" >
+           <widget class="QLabel" name="ColorComment" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>10</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="text" >
+             <string>Comment</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" >
+           <widget class="QLabel" name="ColorTarget" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>10</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="text" >
+             <string>Target</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" >
+           <widget class="QLabel" name="ColorSource" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>10</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="text" >
+             <string>Source</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" >
+           <widget class="QLabel" name="ColorOverview" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize" >
+             <size>
+              <width>16777207</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>10</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="text" >
+             <string>Overview</string>
+            </property>
+            <property name="scaledContents" >
+             <bool>true</bool>
+            </property>
+            <property name="wordWrap" >
+             <bool>true</bool>
+            </property>
+            <property name="indent" >
+             <number>0</number>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0" >
+           <widget class="QLabel" name="ColorTags" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font" >
+             <font>
+              <family>Sans Serif</family>
+              <pointsize>10</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="text" >
+             <string>For Tags</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2" >
+           <widget class="QPushButton" name="bntColor" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>Choose</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2" >
+           <widget class="QPushButton" name="bntColor" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>Choose</string>
+            </property>
+           </widget>
+          </item>
          </layout>
+        </widget>
+       </item>
+       <item row="1" column="0" >
+        <widget class="QPushButton" name="bntColorDefaults" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>0</hsizetype>
+           <vsizetype>0</vsizetype>
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text" >
+          <string>Defaults</string>
+         </property>
         </widget>
        </item>
       </layout>
@@ -1377,12 +1496,6 @@
   <tabstop>cbxLanguageCode</tabstop>
   <tabstop>SupportTeam</tabstop>
   <tabstop>cbxTimeZone</tabstop>
-  <tabstop>chkHeaderAuto</tabstop>
-  <tabstop>bntOverview</tabstop>
-  <tabstop>bntSource</tabstop>
-  <tabstop>bntTarget</tabstop>
-  <tabstop>bntComment</tabstop>
-  <tabstop>bntDefaults</tabstop>
   <tabstop>okButton</tabstop>
   <tabstop>cancelButton</tabstop>
   <tabstop>tabWidget</tabstop>

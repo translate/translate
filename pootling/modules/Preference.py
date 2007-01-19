@@ -50,17 +50,17 @@ class Preference(QtGui.QDialog):
         self.ui.lblOverViewHeader.setWhatsThis("<h3>Overview Header Font</h3>Here, it will currently displayed font name, style and size of overview header on MainEditor.")
 
         self.overviewColorObj = self.getColor(self.widget[0])
-        self.setTextColor(self.ui.overviewColor, self.overviewColorObj)
-        self.ui.overviewColor.setWhatsThis("<h3>Overview Color</h3>Here, it will currently displayed color of overview on top Dock Widget Area of MainEditor.")
+        self.setTextColor(self.ui.lblOverView, self.overviewColorObj)
+        self.ui.lblOverView.setWhatsThis("<h3>Overview Color</h3>Here, it will currently displayed color of overview on top Dock Widget Area of MainEditor.")
         self.tuSourceColorObj = self.getColor(self.widget[1])
-        self.setTextColor(self.ui.tuSourceColor, self.tuSourceColorObj)
-        self.ui.tuSourceColor.setWhatsThis("<h3>Source Color</h3>Here, it will currently displayed color of txtSource on below overview of MainEditor.")
+        self.setTextColor(self.ui.lblSource, self.tuSourceColorObj)
+        self.ui.lblSource.setWhatsThis("<h3>Source Color</h3>Here, it will currently displayed color of txtSource on below overview of MainEditor.")
         self.tuTargetColorObj = self.getColor(self.widget[2])
-        self.setTextColor(self.ui.tuTargetColor, self.tuTargetColorObj)
-        self.ui.tuTargetColor.setWhatsThis("<h3>Target Color</h3>it will currently displayed color of txtTarget on below txtSource of MainEditor.")
+        self.setTextColor(self.ui.lblTarget, self.tuTargetColorObj)
+        self.ui.lblTarget.setWhatsThis("<h3>Target Color</h3>it will currently displayed color of txtTarget on below txtSource of MainEditor.")
         self.commentColorObj = self.getColor(self.widget[3])
-        self.setTextColor(self.ui.commentColor, self.commentColorObj)
-        self.ui.commentColor.setWhatsThis("<h3>Comment Color</h3>it will currently displayed color of comment on the right side of MainEditor.")
+        self.setTextColor(self.ui.lblComment, self.commentColorObj)
+        self.ui.lblComment.setWhatsThis("<h3>Comment Color</h3>it will currently displayed color of comment on the right side of MainEditor.")
 
         self.ui.UserName.setText(World.settings.value("UserName").toString())
         self.ui.UserName.setWhatsThis("<h3>UserName</h3>User can fill in cell of own name.")
@@ -142,22 +142,22 @@ class Preference(QtGui.QDialog):
     def colorOverview(self):
         """ slot to open color selection dialog """
         self.overviewColorObj = self.setColor(self.widget[0])
-        self.setTextColor(self.ui.overviewColor, self.overviewColorObj)
-         
+        self.setTextColor(self.ui.lblOverView, self.overviewColorObj)
+
     def colorSource(self):
         """ slot to open color selection dialog """
         self.tuSourceColorObj = self.setColor(self.widget[1])
-        self.setTextColor(self.ui.tuSourceColor, self.tuSourceColorObj)
+        self.setTextColor(self.ui.lblSource, self.tuSourceColorObj)
 
     def colorTarget(self):
         """ slot to open color selection dialog """
         self.tuTargetColorObj = self.setColor(self.widget[2])
-        self.setTextColor(self.ui.tuTargetColor, self.tuTargetColorObj)
+        self.setTextColor(self.ui.lblTarget, self.tuTargetColorObj)
 
     def colorComment(self):
         """ slot to open font selection dialog """
         self.commentColorObj = self.setColor(self.widget[3])
-        self.setTextColor(self.ui.commentColor, self.commentColorObj)
+        self.setTextColor(self.ui.lblComment, self.commentColorObj)
 
     def getFont(self, obj):
         """@return obj: font object created from settings
@@ -188,18 +188,18 @@ class Preference(QtGui.QDialog):
         self.tuTargetFont = self.defaultFont
         self.setCaption(self.ui.lblComment, self.defaultFont)
         self.commentFont = self.defaultFont
-        
+
     def defaultColors(self):
         """slot Set default colors"""
-        self.setTextColor(self.ui.overviewColor, self.defaultColor)
+        self.setTextColor(self.ui.lblOverView, self.defaultColor)
         self.overviewColorObj = self.defaultColor
-        self.setTextColor(self.ui.tuSourceColor, self.defaultColor)
+        self.setTextColor(self.ui.lblSource, self.defaultColor)
         self.tuSourceColorObj = self.defaultColor
-        self.setTextColor(self.ui.tuTargetColor, self.defaultColor)
+        self.setTextColor(self.ui.lblTarget, self.defaultColor)
         self.tuTargetColorObj = self.defaultColor
-        self.setTextColor(self.ui.commentColor, self.defaultColor)
+        self.setTextColor(self.ui.lblComment, self.defaultColor)
         self.commentColorObj = self.defaultColor
-        
+
     def setCaption(self, lbl, fontObj):
         """ create the text from the font object and set the widget lable
         @param lbl: label widget for setting Font information to
@@ -218,8 +218,8 @@ class Preference(QtGui.QDialog):
         @param lbl: label widget for setting color to
         @param colorObj: Color to set to label widget"""
         palette = QtGui.QPalette(lbl.palette())
-        palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(QtGui.QPalette.Text), colorObj)
-        palette.setColor(QtGui.QPalette.Inactive,QtGui.QPalette.ColorRole(QtGui.QPalette.Text), colorObj)
+        palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(QtGui.QPalette.WindowText), colorObj)
+        palette.setColor(QtGui.QPalette.Inactive,QtGui.QPalette.ColorRole(QtGui.QPalette.WindowText), colorObj)
         lbl.setPalette(palette)
 
     def setFont(self, obj):
@@ -254,30 +254,30 @@ class Preference(QtGui.QDialog):
             self.ui.setupUi(self)
             # connect signals
             self.connect(self.ui.chkHeaderAuto, QtCore.SIGNAL("stateChanged(int)"), self.ui.chkHeaderAuto.checkState) 
-            self.connect(self.ui.bntOverview, QtCore.SIGNAL("clicked()"), self.fontOverview) 
-            self.ui.bntOverview.setWhatsThis("<h3>Overview Font</h3>You can click Choose button and select color ever you want to be used on Overview.")
-            self.connect(self.ui.bntOverviewHeader, QtCore.SIGNAL("clicked()"), self.fontOverviewHeader)
-            self.ui.bntOverviewHeader.setWhatsThis("<h3>Overview Header Font</h3>You can click Choose button and select color ever you want to be used on Overview Header.")
-            self.connect(self.ui.bntSource, QtCore.SIGNAL("clicked()"), self.fontSource) 
-            self.ui.bntSource.setWhatsThis("<h3>Source Font</h3>You can click Choose button and select color ever you want to be used on txtSource.")
-            self.connect(self.ui.bntTarget, QtCore.SIGNAL("clicked()"), self.fontTarget)
-            self.ui.bntTarget.setWhatsThis("<h3>Target Font</h3>You can click Choose button and select color ever you want to be used on txtTarget.")
-            self.connect(self.ui.bntComment, QtCore.SIGNAL("clicked()"), self.fontComment) 
-            self.ui.bntComment.setWhatsThis("<h3>Comment Font</h3>You can click Choose button and select color ever you want to be used on Comment.")
-            self.connect(self.ui.bntDefaults, QtCore.SIGNAL("clicked()"), self.defaultFonts)
-            self.ui.bntDefaults.setWhatsThis("<h3>Defaults font</h3>You can click here if you would like Overview, Overview Header, Source, Target and Comment as default font.")
+            self.connect(self.ui.bntFontOverview, QtCore.SIGNAL("clicked()"), self.fontOverview) 
+            self.ui.bntFontOverview.setWhatsThis("<h3>Overview Font</h3>You can click Choose button and select color ever you want to be used on Overview.")
+            self.connect(self.ui.bntFontOverviewHeader, QtCore.SIGNAL("clicked()"), self.fontOverviewHeader)
+            self.ui.bntFontOverviewHeader.setWhatsThis("<h3>Overview Header Font</h3>You can click Choose button and select color ever you want to be used on Overview Header.")
+            self.connect(self.ui.bntFontSource, QtCore.SIGNAL("clicked()"), self.fontSource) 
+            self.ui.bntFontSource.setWhatsThis("<h3>Source Font</h3>You can click Choose button and select color ever you want to be used on txtSource.")
+            self.connect(self.ui.bntFontTarget, QtCore.SIGNAL("clicked()"), self.fontTarget)
+            self.ui.bntFontTarget.setWhatsThis("<h3>Target Font</h3>You can click Choose button and select color ever you want to be used on txtTarget.")
+            self.connect(self.ui.bntFontComment, QtCore.SIGNAL("clicked()"), self.fontComment) 
+            self.ui.bntFontComment.setWhatsThis("<h3>Comment Font</h3>You can click Choose button and select color ever you want to be used on Comment.")
+            self.connect(self.ui.bntDefaultsFont, QtCore.SIGNAL("clicked()"), self.defaultFonts)
+            self.ui.bntDefaultsFont.setWhatsThis("<h3>Defaults font</h3>You can click here if you would like Overview, Overview Header, Source, Target and Comment as default font.")
 
             # for color
-            self.connect(self.ui.bntColorOverview, QtCore.SIGNAL("clicked()"), self.colorOverview) 
-            self.ui.bntColorOverview.setWhatsThis("<h3>Overview Color</h3>You can click Choose button and select color ever you want to be used on Overview.")
-            self.connect(self.ui.bntColorSource, QtCore.SIGNAL("clicked()"), self.colorSource) 
-            self.ui.bntColorSource.setWhatsThis("<h3>Source Color</h3>You can click Choose button and select color ever you want to be used on txtSource.")
-            self.connect(self.ui.bntColorTarget, QtCore.SIGNAL("clicked()"), self.colorTarget) 
-            self.ui.bntColorTarget.setWhatsThis("<h3>Target Color</h3>You can click Choose button and select color ever you want to be used on txtTarget.")
-            self.connect(self.ui.bntColorComment, QtCore.SIGNAL("clicked()"), self.colorComment) 
-            self.ui.bntColorComment.setWhatsThis("<h3>Comment Color</h3>You can click Choose button and select color ever you want to be used on Comment.")
-            self.connect(self.ui.bntColorDefaults, QtCore.SIGNAL("clicked()"), self.defaultColors)
-            self.ui.bntColorDefaults.setWhatsThis("<h3>Defaults color</h3>You can click here if you would like Overview, Source, Target and Comment as default color.")
+            self.connect(self.ui.btnColorComment, QtCore.SIGNAL("clicked()"), self.colorComment) 
+            self.ui.btnColorComment.setWhatsThis("<h3>Comment Color</h3>You can click Choose button and select color ever you want to be used on Comment.")
+            self.connect(self.ui.btnColorSource, QtCore.SIGNAL("clicked()"), self.colorSource) 
+            self.ui.btnColorSource.setWhatsThis("<h3>Source Color</h3>You can click Choose button and select color ever you want to be used on txtSource.")
+            self.connect(self.ui.btnColorTarget, QtCore.SIGNAL("clicked()"), self.colorTarget) 
+            self.ui.btnColorTarget.setWhatsThis("<h3>Target Color</h3>You can click Choose button and select color ever you want to be used on txtTarget.")
+            self.connect(self.ui.btnColorOverview, QtCore.SIGNAL("clicked()"), self.colorOverview) 
+            self.ui.btnColorOverview.setWhatsThis("<h3>Overview Color</h3>You can click Choose button and select color ever you want to be used on Overview.")
+            self.connect(self.ui.bntDefaultsColor, QtCore.SIGNAL("clicked()"), self.defaultColors)
+            self.ui.bntDefaultsColor.setWhatsThis("<h3>Defaults color</h3>You can click here if you would like Overview, Source, Target and Comment as default color.")
 
             self.connect(self.ui.okButton, QtCore.SIGNAL("clicked()"), self.accepted)
             self.connect(self.ui.cbxFullLanguage, QtCore.SIGNAL("activated(int)"), self.setCodeIndex)
