@@ -4,8 +4,6 @@
 # Pootling
 # Copyright 2006 WordForge Foundation
 #
-# Version 0.1.1 (12 January 2007)
-#
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
@@ -79,14 +77,8 @@ class CommentDock(QtGui.QDockWidget):
         translatorComment = ""
         locationComment = ""
         translatorComment = unit.getnotes("translator")
-        if isinstance(unit, po.pounit):
-            locationComment = "".join([comment[3:] for comment in unit.sourcecomments])
-        elif isinstance(unit, xliff.xliffunit):
-            locationComments = unit.getlocations()
-            locationComment = "\n".join([location for location in locationComments])
-        else:
-            translatorComment = ""
-            self.ui.txtLocationComment.hide()
+        locationComments = unit.getlocations()
+        locationComment = "\n".join([location for location in locationComments])
         if (locationComment == ""):
             self.ui.txtLocationComment.hide()
         else:
