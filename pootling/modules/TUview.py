@@ -34,13 +34,13 @@ class TUview(QtGui.QDockWidget):
         self.ui.setupUi(self.form)
         self.setWidget(self.form)
         self.setFeatures(QtGui.QDockWidget.DockWidgetClosable)
-        self.ui.txtComment.hide()
+        self.ui.lblComment.hide()
         self.ui.txtTarget.setReadOnly(True)
 ##        #support only qt4.2
 ##        self.ui.txtTarget.moveCursor(QtGui.QTextCursor.Start, QtGui.QTextCursor.MoveAnchor )
         self.ui.txtTarget.setWhatsThis("<h3>Translated String</h3>This editor displays and lets you edit the translation of the currently displayed string.")
         self.ui.txtSource.setWhatsThis("<h3>Original String</h3>This part of the window shows you the original string of the currently displayed entry. <br>You can not edit this string.")
-        self.ui.txtComment.setWhatsThis("<h3>Important Comment</h3>Hints from the developer to the translator are displayed in this area. This area will be hidden if there is no hint. ")
+        self.ui.lblComment.setWhatsThis("<h3>Important Comment</h3>Hints from the developer to the translator are displayed in this area. This area will be hidden if there is no hint. ")
         self.ui.fileScrollBar.setWhatsThis("<h3>Navigation Scrollbar</h3>It allows you do navigate in the current file. If you filter your strings you get only the filtered list. <br>It also gives you visual feedback about the postion of the current entry. The Tooltip also shows you the current number and the total numbers of strings.")
         self.applySettings()
         
@@ -106,7 +106,7 @@ class TUview(QtGui.QDockWidget):
         @param index: value in the scrollbar to be removed."""
         self.disconnect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
         if (not unit) or (not hasattr(unit, "x_editor_filterIndex")):
-            self.ui.txtComment.hide()
+            self.ui.lblComment.hide()
             self.ui.txtSource.clear()
             self.ui.txtTarget.clear()
             self.ui.txtSource.setEnabled(False)
@@ -118,10 +118,10 @@ class TUview(QtGui.QDockWidget):
             comment = unit.getcontext()
         comment += unit.getnotes("developer")
         if (comment == ""):
-            self.ui.txtComment.hide()
+            self.ui.lblComment.hide()
         else:
-            self.ui.txtComment.show()
-            self.ui.txtComment.setPlainText(unicode(comment))
+            self.ui.lblComment.show()
+            self.ui.lblComment.setText(unicode(comment))
             
         self.ui.txtSource.setPlainText(unit.source)
         self.ui.txtTarget.setPlainText(unit.target)
