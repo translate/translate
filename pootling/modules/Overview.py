@@ -95,10 +95,18 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.tableOverview.setSortingEnabled(False)
         self.ui.tableOverview.setRowCount(0)
         
-        # TODO: fill up by 30 units in foreground... the rest in background.
+        oldValue = None
+        lenUnit = len(units)
+        i = 0.0
         for unit in units:
             if (self.filter & unit.x_editor_state):
                 self.addUnit(unit)
+            value = int((i / lenUnit) * 100)
+            # emit signal when only percentage changed
+            if (oldValue != value):
+                self.emit(QtCore.SIGNAL("progressBarValue"), value)
+                oldValue = value
+            i += 1
         
         self.ui.tableOverview.setSortingEnabled(True)
         self.ui.tableOverview.sortItems(0)
@@ -166,7 +174,6 @@ class OverviewDock(QtGui.QDockWidget):
     
     def emitTargetChanged(self, row):
         # emit targetChanged if previous item has been edited.
-        # TODO: do not unfuzzy unit when filter changed....
         item = self.ui.tableOverview.item(row, 2)
         if hasattr(item, "text"):
             target = item.text()

@@ -33,7 +33,6 @@ from pootling.modules.FileAction import FileAction
 from pootling.modules.Find import Find
 from pootling.modules.Preference import Preference
 from pootling.modules.AboutEditor import AboutEditor
-from pootling.modules.Converters import Converters
 from pootling.pootlingdic.modules.tm import tm
 import pootling.modules.World as World
 
@@ -205,6 +204,16 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.operator.getUnits)
         self.connect(self.operator, QtCore.SIGNAL("fileIsOK"), self.setOpening)
 
+        # progress bar
+        self.progressBar = QtGui.QProgressBar()
+        self.progressBar.setEnabled(True)
+        self.progressBar.setProperty("value",QtCore.QVariant(0))
+        self.progressBar.setOrientation(QtCore.Qt.Horizontal)
+        self.progressBar.setObjectName("progressBar")
+        self.progressBar.setVisible(False)
+        self.ui.statusbar.addPermanentWidget(self.progressBar)
+        self.connect(self.dockOverview, QtCore.SIGNAL("progressBarValue"), self.updateProgress)
+
         # get the last state of mainwindows's toolbars and dockwidgets
         state = World.settings.value("MainWindowState")
         # check if the last state is valid it will restore
@@ -214,7 +223,15 @@ class MainWindow(QtGui.QMainWindow):
         tuViewHidden = World.settings.value("TuViewHidden", QtCore.QVariant(False))
         self.dockTUview.setHidden(tuViewHidden.toBool())
         self.findBar.setHidden(True)
-        
+    
+    def updateProgress(self, value):
+        if (value >= 99):
+            self.progressBar.setVisible(False)
+        elif (value <= 1) and (not self.progressBar.isVisible()):
+            self.progressBar.setVisible(True)
+        self.progressBar.setValue(value)
+    
+    
     def enableCopyCut(self, bool):
         self.ui.actionCopy.setEnabled(bool)
         self.ui.actionCut.setEnabled(bool)        
