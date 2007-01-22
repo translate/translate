@@ -355,9 +355,13 @@ class pounit(base.TranslationUnit):
       return len(unquotefrompo(self.msgstr).strip())
 
   def merge(self, otherpo, overwrite=False, comments=True, authoritative=False):
-    """merges the otherpo (with the same msgid) into this one
-    overwrite non-blank self.msgstr only if overwrite is True
-    merge comments only if comments is True"""
+    """Merges the otherpo (with the same msgid) into this one.
+
+    Overwrite non-blank self.msgstr only if overwrite is True
+    merge comments only if comments is True
+    
+    """
+
     def mergelists(list1, list2, split=False):
       #decode where necessary
       if unicode in [type(item) for item in list2] + [type(item) for item in list1]:
@@ -408,7 +412,7 @@ class pounit(base.TranslationUnit):
       if not authoritative:
         # We don't bring across otherpo.automaticcomments as we consider ourself
         # to be the the authority.  Same applies to otherpo.msgidcomments
-        self.automaticcomments = otherpo.automaticcomments
+        mergelists(self.automaticcomments, otherpo.automaticcomments)
         mergelists(self.msgidcomments, otherpo.msgidcomments)
         mergelists(self.sourcecomments, otherpo.sourcecomments, split=True)
     if self.isblankmsgstr() or overwrite:
