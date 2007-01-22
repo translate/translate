@@ -41,7 +41,7 @@ classes = {"po": po.pofile, "pot": po.pofile, "csv": csvl10n.csvfile,
 def guessextention(storefile):
     """Guesses the type of a file object by looking at the first few characters.
     The return value is a file extention ."""
-    start = storefile.read(100).strip()
+    start = storefile.read(200).strip()
     if '<xliff ' in start:
         extention = 'xlf'
     elif 'msgid "' in start:
