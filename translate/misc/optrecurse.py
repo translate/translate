@@ -47,9 +47,16 @@ class ManPageOption(optparse.Option, object):
     return super(ManPageOption, self).take_action(action, dest, opt, value, values, parser)
 
 class RecursiveOptionParser(optparse.OptionParser, object):
-  """a specialized Option Parser for recursing through directories..."""
+  """A specialized Option Parser for recursing through directories."""
+
   def __init__(self, formats, usetemplates=False, description=None):
-    """construct the specialized Option Parser"""
+    """Construct the specialized Option Parser.
+
+    @type formats: Dictionary
+    @param formats: See L{setformats()} for an explanation of the formats parameter.
+
+    """
+
     optparse.OptionParser.__init__(self, version="%prog "+__version__.ver, description=description)
     self.setmanpageoption()
     self.setprogressoptions()
@@ -162,12 +169,17 @@ class RecursiveOptionParser(optparse.OptionParser, object):
     self.add_option(option)
 
   def setformats(self, formats, usetemplates):
-    """sets the format options using the given format dictionary
-    formats' keys should be
-    - single strings (or 1-tuples) containing an input format (if not usetemplates)
-    - tuples containing an input format and template format (if usetemplates)
-    - formats can be None to indicate what to do with standard input
-    formats' values should be tuples of outputformat (string) and processor method"""
+    """Sets the format options using the given format dictionary.
+
+    @type formats: Dictionary
+    @param formats: The dictionary I{keys} should be:
+        - single strings (or 1-tuples) containing an input format (if not usetemplates)
+        - tuples containing an input format and template format (if usetemplates)
+        - formats can be None to indicate what to do with standard input
+      The dictionary I{values} should be tuples of outputformat (string) and processor method.
+    
+    """
+
     inputformats = []
     outputformats = []
     templateformats = []
