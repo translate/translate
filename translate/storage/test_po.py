@@ -451,6 +451,27 @@ msgstr[0] "Sheep"
         assert unit.target == "Sheep"
         assert unit.target.strings == ["Sheep"]
 
+    def wtest_kde_plurals(self):
+        """Tests kde-style plurals. (Bug: 191)"""
+        posource = '''msgid "_n Singular\n"
+"Plural"
+msgstr "Een\n"
+"Twee\n"
+"Drie"
+'''
+        pofile = self.poparse(posource)
+        assert len(pofile.units) == 1
+        unit = pofile.units[0]
+	assert unit.hasplural() == True
+        assert isinstance(unit.source, multistring)
+        print unit.source.strings
+        assert unit.source == "Singular"
+        assert unit.source.strings == ["Singular", "Plural"]
+        assert isinstance(unit.target, multistring)
+        print unit.target.strings
+        assert unit.target == "Een"
+        assert unit.target.strings == ["Een", "Twee", "Drie"]
+
     def test_posections(self):
         """checks the content of all the expected sections of a PO message"""
         posource = '# other comment\n#. automatic comment\n#: source comment\n#, fuzzy\nmsgid "One"\nmsgstr "Een"\n'
