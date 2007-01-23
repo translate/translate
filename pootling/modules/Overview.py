@@ -50,7 +50,7 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.tableOverview.verticalHeader().hide()
         self.applySettings()
         
-        self.fuzzyColor = QtGui.QColor(246, 238, 156, 100)
+        self.fuzzyColor = QtGui.QColor(246, 238, 156, 140)
         self.blankColor = QtGui.QColor(255, 255, 255, 0)
         
         self.fuzzyIcon = QtGui.QIcon("../images/fuzzy.png")
@@ -61,11 +61,12 @@ class OverviewDock(QtGui.QDockWidget):
         self.indexMaxLen = 0
         self.units = []
         self.visibleRow = []
-        self.lastTarget = None
+
         
         self.changedSignal = QtCore.SIGNAL("currentCellChanged(int, int, int, int)")
         self.connect(self.ui.tableOverview, self.changedSignal, self.emitCurrentIndex)
         self.connect(self.ui.tableOverview.model(), QtCore.SIGNAL("layoutChanged()"), self.showFilteredItems)
+        self.disconnect(self.ui.tableOverview, QtCore.SIGNAL("cellChanged(int, int)"), self.emitTargetChanged)
     
     def closeEvent(self, event):
         """
@@ -114,9 +115,7 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.tableOverview.resizeRowsToContents()
         self.setUpdatesEnabled(True)
         
-        if (self.ui.tableOverview.rowCount > 0):
-            self.lastTarget = self.ui.tableOverview.item(0, 2).text()
-        self.connect(self.ui.tableOverview, QtCore.SIGNAL("cellChanged(int, int)"), self.checkEmitTargetChanged)
+        self.connect(self.ui.tableOverview, QtCore.SIGNAL("cellChanged(int, int)"), self.emitTargetChanged)
 
     def filterChanged(self, filter, lenFilter):
         """
@@ -128,7 +127,6 @@ class OverviewDock(QtGui.QDockWidget):
             return
         self.filter = filter
         self.showFilteredItems()
-        self.lastTarget = None
         
     def addUnit(self, unit):
         """
@@ -159,28 +157,27 @@ class OverviewDock(QtGui.QDockWidget):
     
     def emitCurrentIndex(self, row, col, preRow, preCol):
         """
-        send targetChanged if unit's taget has changed, and send filteredIndex
-        with selected unit's index.
+        emit filteredIndex signal with selected unit's index.
         """
-        # emit targetChanged if previous item has been edited.
-        self.emitTargetChanged(preRow)
-        
         # emit the index of current unit.
         item = self.ui.tableOverview.item(row, 0)
         
         if (hasattr(item, "data")):
             index = item.data(QtCore.Qt.UserRole).toInt()[0]
             self.emit(QtCore.SIGNAL("filteredIndex"), index)
-            self.lastTarget = self.ui.tableOverview.item(row, 2).text()
     
-    def emitTargetChanged(self, row):
-        # emit targetChanged if previous item has been edited.
-        item = self.ui.tableOverview.item(row, 2)
-        if hasattr(item, "text"):
-            target = item.text()
-            if (self.lastTarget != None) and (self.lastTarget != target):
+    def emitTargetChanged(self, row, col):
+        """
+        emit targetChanged signal if target column has changed.
+        """
+        if ((row == self.ui.tableOverview.currentRow()) and (col == 2)):
+            item = self.ui.tableOverview.item(row, 2)
+            if hasattr(item, "text"):
+                target = item.text()
                 self.markState(row, not World.fuzzy)
                 self.emit(QtCore.SIGNAL("targetChanged"), target)
+                self.emitReadyForSave()
+                self.ui.tableOverview.resizeRowToContents(row)
     
     def updateView(self, unit):
         """
@@ -194,7 +191,7 @@ class OverviewDock(QtGui.QDockWidget):
         
         targetItem = self.ui.tableOverview.item(row, 2)
         targetItem.setText(unit.target)
-        self.ui.tableOverview.resizeRowToContents(row)
+        #self.ui.tableOverview.resizeRowToContents(row)
         
         self.markComment(row, unit.getnotes())
         self.markState(row, unit.x_editor_state)
@@ -326,18 +323,17 @@ class OverviewDock(QtGui.QDockWidget):
         """move to last row of the table."""
         self.ui.tableOverview.selectRow(self.visibleRow[-1])
     
+    def scrollToRow(self, value):
+        """move to row number specified by value.
+        @param value: row number."""
+        self.ui.tableOverview.selectRow(value)
+    
     def emitFirstLastUnit(self):
         currentRow = self.ui.tableOverview.currentRow()
         lenSelItem = len(self.ui.tableOverview.selectedItems())
         firstUnit = (lenSelItem == 0) or (currentRow == self.visibleRow[0])
         lastUnit = (lenSelItem == 0) or (currentRow == self.visibleRow[-1])
         self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), firstUnit, lastUnit)
-    
-    def checkEmitTargetChanged(self, row, col):
-        if ((row == self.ui.tableOverview.currentRow()) and (col == 2)):
-            self.emitReadyForSave()
-            self.emitTargetChanged(row)
-            self.ui.tableOverview.resizeRowToContents(row)
     
 if __name__ == "__main__":
     import sys, os
