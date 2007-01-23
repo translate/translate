@@ -61,12 +61,11 @@ class OverviewDock(QtGui.QDockWidget):
         self.indexMaxLen = 0
         self.units = []
         self.visibleRow = []
-
         
         self.changedSignal = QtCore.SIGNAL("currentCellChanged(int, int, int, int)")
         self.connect(self.ui.tableOverview, self.changedSignal, self.emitCurrentIndex)
         self.connect(self.ui.tableOverview.model(), QtCore.SIGNAL("layoutChanged()"), self.showFilteredItems)
-        self.disconnect(self.ui.tableOverview, QtCore.SIGNAL("cellChanged(int, int)"), self.emitTargetChanged)
+        self.connect(self.ui.tableOverview, QtCore.SIGNAL("cellChanged(int, int)"), self.emitTargetChanged)
     
     def closeEvent(self, event):
         """
@@ -98,6 +97,7 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.tableOverview.setSortingEnabled(False)
         self.ui.tableOverview.setRowCount(0)
         
+        self.setUpdatesEnabled(False)
         oldValue = None
         lenUnit = len(units)
         i = 0.0
@@ -114,9 +114,7 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.tableOverview.sortItems(0)
         self.ui.tableOverview.resizeRowsToContents()
         self.setUpdatesEnabled(True)
-        
-        self.connect(self.ui.tableOverview, QtCore.SIGNAL("cellChanged(int, int)"), self.emitTargetChanged)
-
+    
     def filterChanged(self, filter, lenFilter):
         """
         show the items which are in filter.
@@ -159,9 +157,11 @@ class OverviewDock(QtGui.QDockWidget):
         """
         emit filteredIndex signal with selected unit's index.
         """
+        # do not emit signal when select the same row.
+        if (row == preRow):
+            return
         # emit the index of current unit.
         item = self.ui.tableOverview.item(row, 0)
-        
         if (hasattr(item, "data")):
             index = item.data(QtCore.Qt.UserRole).toInt()[0]
             self.emit(QtCore.SIGNAL("filteredIndex"), index)
@@ -170,15 +170,20 @@ class OverviewDock(QtGui.QDockWidget):
         """
         emit targetChanged signal if target column has changed.
         """
-        if ((row == self.ui.tableOverview.currentRow()) and (col == 2)):
-            item = self.ui.tableOverview.item(row, 2)
-            if hasattr(item, "text"):
-                target = item.text()
-                self.markState(row, not World.fuzzy)
-                self.emit(QtCore.SIGNAL("targetChanged"), target)
-                self.emitReadyForSave()
-                self.ui.tableOverview.resizeRowToContents(row)
-    
+        # prevent function from working while adding unit to list.
+        if (not self.updatesEnabled()):
+            return
+        if (col == 2):
+            self.ui.tableOverview.resizeRowToContents(row)
+            # if target column changed, emit signal.
+            if (row == self.ui.tableOverview.currentRow()):
+                item = self.ui.tableOverview.item(row, 2)
+                if hasattr(item, "text"):
+                    target = item.text()
+                    self.markState(row, not World.fuzzy)
+                    self.emit(QtCore.SIGNAL("targetChanged"), target)
+                    self.emitReadyForSave()
+        
     def updateView(self, unit):
         """
         highlight the table's row, mark comment icon, mark state icon,
@@ -190,8 +195,9 @@ class OverviewDock(QtGui.QDockWidget):
         row = self.ui.tableOverview.row(unit.x_editor_tableItem)
         
         targetItem = self.ui.tableOverview.item(row, 2)
-        targetItem.setText(unit.target)
-        #self.ui.tableOverview.resizeRowToContents(row)
+        # update target column only if text has changed.
+        if (targetItem.text() != unit.target):
+            targetItem.setText(unit.target)
         
         self.markComment(row, unit.getnotes())
         self.markState(row, unit.x_editor_state)
