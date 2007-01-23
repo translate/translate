@@ -1,11 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*
 
-
 # Pootling
 # Copyright 2006 WordForge Foundation
-#
-# Version 0.1 (29 December 2006)
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -35,6 +32,7 @@ from translate.storage import factory
 from translate.misc import wStringIO
 from translate.storage import po
 from PyQt4 import QtCore, QtGui
+import __version__
 
 class TestOperator(unittest.TestCase):
     def setUp(self):
@@ -159,7 +157,7 @@ msgstr "unable to read file"
     def testMakeNewHeader(self):
         headerDic = {'charset':"CHARSET", 'encoding':"ENCODING", 'project_id_version': '1.po', 'pot_creation_date':None, 'po_revision_date': False, 'last_translator': 'AAA', 'language_team': 'KhmerOS', 'mime_version':None, 'plural_forms':None, 'report_msgid_bugs_to':None}
         
-##        self.assertEqual(self.operator.store.x_generator, World.settingOrg + ' ' + World.settingApp + ' ' + World.settingVer)
+##        self.assertEqual(self.operator.store.x_generator, World.settingOrg + ' ' + World.settingApp + ' ' + __version__.ver)
         # test self.store is not instance of poheader.poheader()
         self.store = None
         self.assertEqual(self.operator.makeNewHeader(headerDic), {})

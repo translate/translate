@@ -32,7 +32,7 @@ from pootling.modules.Find import Find
 from pootling.modules.Preference import Preference
 from pootling.modules.AboutEditor import AboutEditor
 import pootling.modules.World as World
-
+import __version__
 
 class MainWindow(QtGui.QMainWindow):
     """
@@ -45,7 +45,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.ui.recentaction = []
-        self.setWindowTitle(World.settingApp + ' ' + World.settingVer)
+        self.setWindowTitle(World.settingApp + ' ' + __version__.ver)
         self.createRecentAction()
         
         app = QtGui.QApplication.instance()
@@ -426,7 +426,7 @@ class MainWindow(QtGui.QMainWindow):
         self.statuslabel.setText("")
     
     def OpeningClosingFile(self, filename, bool):
-        self.setWindowTitle(((filename != "") and (filename + ' - ') or filename) + World.settingApp + ' ' + World.settingVer)
+        self.setWindowTitle(((filename != "") and (filename + ' - ') or filename) + World.settingApp + ' ' + __version__.ver)
         self.ui.action_Close.setEnabled(bool)
         self.ui.actionSaveas.setEnabled(bool)
         self.ui.actionPaste.setEnabled(bool)

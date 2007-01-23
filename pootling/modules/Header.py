@@ -4,8 +4,6 @@
 # Pootling
 # Copyright 2006 WordForge Foundation
 #
-# Version 0.1 (29 December 2006)
-#
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
@@ -27,6 +25,7 @@ from PyQt4 import QtCore, QtGui
 from pootling.ui.Ui_Header import Ui_frmHeader
 import pootling.modules.World as World
 from translate.storage import poheader
+import __version__
 
 class Header(QtGui.QDialog):
     def __init__(self, parent, operator):
@@ -193,7 +192,7 @@ class Header(QtGui.QDialog):
             self.headerDic['Language-Team'] = str(Language_Team)
             self.headerDic['Last-Translator'] = str(Last_Translator)
             self.headerDic['PO-Revision-Date'] = time.strftime("%Y-%m-%d %H:%M%z")
-            self.headerDic['X-Generator'] = World.settingApp + ' ' + World.settingVer
+            self.headerDic['X-Generator'] = World.settingApp + ' ' + __version__.ver
         if (len(self.headerDic) == 0):
             return
         if (self.ui): 

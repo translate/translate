@@ -4,8 +4,6 @@
 # Pootling
 # Copyright 2006 WordForge Foundation
 #
-# Version 0.1 (29 December 2006)
-#
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
@@ -22,6 +20,7 @@
 # This module is providing an About dialog
 
 from PyQt4 import QtCore, QtGui
+import  __version__
 
 class AboutEditor(QtGui.QDialog):
     def __init__(self, parent):
@@ -71,7 +70,8 @@ class AboutEditor(QtGui.QDialog):
 class AboutTab(QtGui.QWidget):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
-        fileNameLabel = QtGui.QLabel(self.tr("<center><br><br><br><b>  Pootling </b></br></center><center><br> Version 0.1 (31 August 2006)</br><br>Copyright 2006 WordForge Foundation.</br></center>"))
+        name = "<center><br><br><br><b>  Pootling </b></br></center><center><br> Version " +  __version__.ver + "</br><br>Copyright 2006 WordForge Foundation.</br></center>"
+        fileNameLabel = QtGui.QLabel(self.tr(name))
         mainLayout = QtGui.QVBoxLayout()
         mainLayout.addWidget(fileNameLabel)
         self.setLayout(mainLayout)

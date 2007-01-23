@@ -27,6 +27,7 @@ from translate.storage import xliff
 import pootling.modules.World as World
 from pootling.modules.Status import Status
 import os.path
+import __version__
 
 class Operator(QtCore.QObject):
     """
@@ -63,7 +64,7 @@ class Operator(QtCore.QObject):
             return
         self.setNewStore(store)
         self.emit(QtCore.SIGNAL("fileIsOK"), fileName)
-        
+      
     def setNewStore(self, store):
         """ setup the oparator with a new storage
         @param store: the new storage class"""
@@ -185,7 +186,7 @@ class Operator(QtCore.QObject):
           """receive headerDic as dictionary, and return header as string"""
           #TODO: move to world
           if (hasattr(self.store, "x_generator")):
-            self.store.x_generator = World.settingApp + ' ' + World.settingVer
+            self.store.x_generator = World.settingApp + ' ' + __version__.ver
           if isinstance(self.store, poheader.poheader):
               self.store.updateheader(add=True, **headerDic)
               return self.store.makeheaderdict(**headerDic)

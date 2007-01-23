@@ -3,8 +3,6 @@
 # Pootling
 # Copyright 2006 WordForge Foundation
 #
-# Version 0.1 (29 December 2006)
-#
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2.1
@@ -41,7 +39,6 @@ searchStatic = 4
 
 settingOrg = "WordForge"
 settingApp = "Pootling"
-settingVer = "0.1"
 settings = QtCore.QSettings(settingOrg, settingApp)
 
 # maximum number of files in the recent file menu
