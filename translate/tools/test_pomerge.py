@@ -205,10 +205,15 @@ class TestPOMerge:
         print "Expected:\n%s\n\nMerged:\n%s" % (expectedpo, str(pofile))
         assert str(pofile) == expectedpo
 
-    def test_preserve_format_tabs(self):
+    def xtest_escape_tabs(self):
+        """Ensure that input tabs are escaped in the output, like gettext does."""
+
+        # The strings below contains the tab character, not spaces.
         templatepo = '''msgid "First	Second"\nmsgstr ""\n\n'''
         mergepo = '''msgid "First	Second"\nmsgstr "Eerste	Tweede"\n'''
-        expectedpo = mergepo
+        expectedpo = r'''imsgid "First\tSecond"
+msgstr "Eerste\tTweede"
+'''
         pofile = self.mergepo(templatepo, mergepo)
         print "Expected:\n%s\n\nMerged:\n%s" % (expectedpo, str(pofile))
         assert str(pofile) == expectedpo
