@@ -161,6 +161,13 @@ msgstr ""
         print expected, str(unit)
         assert str(unit) == expected
 
+    def test_extract_msgidcomments_from_text(self):
+        """Test that KDE style comments are extracted correctly."""
+        unit = self.UnitClass("test source")
+
+        kdetext = "_: Simple comment\nsimple text"
+        assert unit.extract_msgidcomments_from_text(kdetext) == "Simple comment"
+
 class TestPO(test_base.TestTranslationStore):
     StoreClass = po.pofile
     def poparse(self, posource):

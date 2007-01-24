@@ -297,7 +297,7 @@ msgstr "Eerste\tTweede"
         # multiline KDE comment
         templatepo = '''msgid "_: KDE "\n"comment\\n"\n"File"\nmsgstr "File"\n\n'''
         mergepo = '''msgid "_: KDE "\n"comment\\n"\n"File"\nmsgstr "_: KDE "\n"comment\\n"\n"Ifayile"\n\n'''
-        expectedpo = '''msgid "_: KDE "\n"comment\\n"\n"File"\nmsgstr "Ifayile"\n'''
+        expectedpo = '''msgid ""\n"_: KDE "\n"comment\\n"\n"File"\nmsgstr "Ifayile"\n'''
         pofile = self.mergepo(templatepo, mergepo)
         print "Expected:\n%s\n\nMerged:\n%s" % (expectedpo, str(pofile))
         assert str(pofile) == expectedpo
