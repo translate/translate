@@ -262,7 +262,7 @@ class MainWindow(QtGui.QMainWindow):
     def setBookmarks(self):
         unit = self.operator.getCurrentUnit()
         id = self.dockOverview.getCurrentIndex()
-        reducedSource = str(id) + " : " + unit.source[:10] 
+        reducedSource = str(id) + " : " + unit.source[:15] + "..."
         bookmark = World.settings.value("bookmarkList").toStringList()
         bookmark.removeAll(reducedSource)
         bookmark.prepend(reducedSource)
@@ -283,7 +283,6 @@ class MainWindow(QtGui.QMainWindow):
         action = self.sender()
         if action:
             index = str(action.data().toString()).split(" : ")
-            print index[0]
             self.dockOverview.gotoRow(int(index[0]))
     
     def updateBookmarkAction(self):

@@ -109,24 +109,20 @@ class Operator(QtCore.QObject):
         """add/remove fuzzy to filter, and send filter signal.
         @param checked: True or False when Fuzzy checkbox is checked or unchecked.
         """
-        if (not self.filter):
-            return
         filter = self.filter
         if (checked):
             filter |= World.fuzzy
-        else:
+        elif (filter):
             filter &= ~World.fuzzy
         self.emitFiltered(filter)
     
     def filterTranslated(self, checked):
         """add/remove translated to filter, and send filter signal.
         @param checked: True or False when Translated checkbox is checked or unchecked."""
-        if (not self.filter):
-            return
         filter = self.filter
         if (checked):
             filter |= World.translated
-        else:
+        elif (filter):
             filter &= ~World.translated
         self.emitFiltered(filter)
     
@@ -134,12 +130,10 @@ class Operator(QtCore.QObject):
         """add/remove untranslated to filter, and send filter signal.
         @param checked: True or False when Untranslated checkbox is checked or unchecked.
         """
-        if (not self.filter):
-            return
         filter = self.filter
         if (checked):
             filter |= World.untranslated
-        else:
+        elif (filter):
             filter &= ~World.untranslated
         self.emitFiltered(filter)
     

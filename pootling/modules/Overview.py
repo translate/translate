@@ -61,6 +61,7 @@ class OverviewDock(QtGui.QDockWidget):
         self.indexMaxLen = 0
         self.units = []
         self.visibleRow = []
+        self.filter = None
         
         self.changedSignal = QtCore.SIGNAL("currentCellChanged(int, int, int, int)")
         self.connect(self.ui.tableOverview, self.changedSignal, self.emitCurrentIndex)
