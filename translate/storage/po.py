@@ -416,7 +416,8 @@ class pounit(base.TranslationUnit):
         mergelists(self.msgidcomments, otherpo.msgidcomments)
         mergelists(self.sourcecomments, otherpo.sourcecomments, split=True)
     if self.isblankmsgstr() or overwrite:
-      if self.extract_msgidcomments(otherpo.target) == otherpo.extract_msgidcomments():
+      # Remove kde-style comments from the translation (if any).
+      if self.extract_msgidcomments(otherpo.target):
         otherpo.target = otherpo.target.replace('_: ' + otherpo.extract_msgidcomments()+ '\n', '')
       self.target = otherpo.target
       if self.source != otherpo.source:

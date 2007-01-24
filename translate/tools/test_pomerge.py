@@ -287,13 +287,20 @@ msgstr "Eerste\tTweede"
         assert str(pofile) == expectedpo
 
     def test_merging_dont_merge_kde_comments_found_in_translation(self):
-        """If we find a KDE comment in the translation and it is exactly the same as the English then do not merge it"""
+        """If we find a KDE comment in the translation (target) then do not merge it."""
+
         templatepo = '''msgid "_: KDE comment\\n"\n"File"\nmsgstr "File"\n\n'''
         mergepo = '''msgid "_: KDE comment\\n"\n"File"\nmsgstr "_: KDE comment\\n"\n"Ifayile"\n\n'''
         expectedpo = '''msgid ""\n"_: KDE comment\\n"\n"File"\nmsgstr "Ifayile"\n'''
         pofile = self.mergepo(templatepo, mergepo)
+        print "Expected:\n%s\n\nMerged:\n%s" % (expectedpo, str(pofile))
         assert str(pofile) == expectedpo
         
+        # Translated kde comment.
+        mergepo = '''msgid "_: KDE comment\\n"\n"File"\nmsgstr "_: KDE kommentaar\\n"\n"Ifayile"\n\n'''
+        print "Expected:\n%s\n\nMerged:\n%s" % (expectedpo, str(pofile))
+        assert str(pofile) == expectedpo
+
         # multiline KDE comment
         templatepo = '''msgid "_: KDE "\n"comment\\n"\n"File"\nmsgstr "File"\n\n'''
         mergepo = '''msgid "_: KDE "\n"comment\\n"\n"File"\nmsgstr "_: KDE "\n"comment\\n"\n"Ifayile"\n\n'''
