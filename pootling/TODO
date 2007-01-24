@@ -256,6 +256,15 @@ Closed bugs and need review
  priority: 2
  who: da
 
+ 12. Task: Goto menu:
+ priority:1
+ who:ratha
+ status:done
+ 
+ 12. Task: Ask for save, if translator open new file, when the old file is modified.
+priority: 1
+who: virak
+status: done
 ====================================================
 Open Bugs
 ====================================================
@@ -289,6 +298,7 @@ Database working.
 speed)--- has progress bar indication.
    priority: 1
    who: virak
+   
 7. Task: String Status scrollbar representation
   priority: 2
   who: virak
@@ -313,8 +323,6 @@ speed)--- has progress bar indication.
  priority: 1
  who: da
 
-12. Task: Goto menu:
- priority:1
- who:ratha
- status:done
+
+
 
