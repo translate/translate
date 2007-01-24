@@ -348,6 +348,11 @@ class OverviewDock(QtGui.QDockWidget):
             if (not self.ui.tableOverview.isRowHidden(row)):
                 self.ui.tableOverview.selectRow(row)
     
+    def getCurrentIndex(self):
+        row = self.ui.tableOverview.currentRow()
+        item = self.ui.tableOverview.item(row, 0)
+        return int(item.text())
+        
 if __name__ == "__main__":
     import sys, os
     # set the path for QT in order to find the icons
