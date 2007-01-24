@@ -49,6 +49,7 @@ class Operator(QtCore.QObject):
         self._modified = False
         self.currentUnitIndex = 0
         self.filteredList = []
+        self.filter = None
         
     def getUnits(self, fileName):
         """reading a file into the internal datastructure.
@@ -105,6 +106,8 @@ class Operator(QtCore.QObject):
         """add/remove fuzzy to filter, and send filter signal.
         @param checked: True or False when Fuzzy checkbox is checked or unchecked.
         """
+        if (not self.filter):
+            return
         filter = self.filter
         if (checked):
             filter |= World.fuzzy
@@ -115,6 +118,8 @@ class Operator(QtCore.QObject):
     def filterTranslated(self, checked):
         """add/remove translated to filter, and send filter signal.
         @param checked: True or False when Translated checkbox is checked or unchecked."""
+        if (not self.filter):
+            return
         filter = self.filter
         if (checked):
             filter |= World.translated
@@ -126,6 +131,8 @@ class Operator(QtCore.QObject):
         """add/remove untranslated to filter, and send filter signal.
         @param checked: True or False when Untranslated checkbox is checked or unchecked.
         """
+        if (not self.filter):
+            return
         filter = self.filter
         if (checked):
             filter |= World.untranslated

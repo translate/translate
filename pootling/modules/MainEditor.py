@@ -173,8 +173,9 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockTUview.updateView)
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockComment.updateView)
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.addFuzzyIcon)
-        self.connect(self.dockTUview, QtCore.SIGNAL("filteredIndex"), self.operator.setUnitFromPosition)
+##        self.connect(self.dockTUview, QtCore.SIGNAL("filteredIndex"), self.operator.setUnitFromPosition)
         self.connect(self.dockOverview, QtCore.SIGNAL("filteredIndex"), self.operator.setUnitFromPosition)
+        self.connect(self.dockTUview, QtCore.SIGNAL("scrollToRow"), self.dockOverview.scrollToRow)
 
         self.connect(self.operator, QtCore.SIGNAL("updateUnit"), self.dockTUview.checkModified)
         self.connect(self.operator, QtCore.SIGNAL("updateUnit"), self.dockComment.checkModified)
@@ -198,7 +199,7 @@ class MainWindow(QtGui.QMainWindow):
 
         # set file status information to text label of status bar.
         self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.statuslabel.setText)
-        self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.operator.getUnits)
+        self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.openFile)
         self.connect(self.operator, QtCore.SIGNAL("fileIsOK"), self.setOpening)
 
         # progress bar
@@ -408,12 +409,21 @@ class MainWindow(QtGui.QMainWindow):
                 self.statusfuzzy.setVisible(True)
                 self.ui.statusbar.addWidget(self.statusfuzzy)
     
+    def openFile(self, value):
+        closed = self.closeFile()
+        if (closed):
+            self.operator.getUnits(value)
+    
     def closeFile(self):
+        """return True when successfully close file, else return False."""
         if (not self.operator.modified()):
             self.setClosingFile()
         else:
             if self.fileaction.aboutToClose(self):
                 self.setClosingFile()
+            else:
+                return False
+        return True
                 
     def setClosingFile(self):
         """
