@@ -45,8 +45,10 @@ class MainWindow(QtGui.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.ui.recentaction = []
+        self.ui.bookmarkaction = []
         self.setWindowTitle(World.settingApp + ' ' + __version__.ver)
         self.createRecentAction()
+        self.createBookmarkAction()
         
         app = QtGui.QApplication.instance()
         self.connect(app, QtCore.SIGNAL("focusChanged(QWidget *,QWidget *)"), self.focusChanged)    
@@ -135,7 +137,11 @@ class MainWindow(QtGui.QMainWindow):
        
        # Goto menu action
         self.connect(self.ui.actionGoTo, QtCore.SIGNAL("triggered()"), self.showGoto)
-
+        
+        # Bookmarks menu action
+        self.connect(self.ui.actionAddBookmarks, QtCore.SIGNAL("triggered()"), self.setBookmarks)
+        self.connect(self.ui.actionClearBookmarks, QtCore.SIGNAL("triggered()"), self.clearBookmarks)
+        
         # action Preferences menu 
         self.preference = Preference(self)
         self.connect(self.ui.actionPreferences, QtCore.SIGNAL("triggered()"), self.preference.showDialog)
@@ -228,7 +234,8 @@ class MainWindow(QtGui.QMainWindow):
         for i in range(numRecentFiles):
             self.ui.recentaction[i].setVisible(False)
         World.settings.remove("recentFileList")
-    
+
+
     def updateProgress(self, value):
         if (not self.progressBar.isVisible()):
             self.progressBar.setVisible(True)
@@ -252,6 +259,55 @@ class MainWindow(QtGui.QMainWindow):
         if ok:
             self.dockOverview.gotoRow(value)
 
+    def setBookmarks(self):
+        unit = self.operator.getCurrentUnit()
+        id = self.dockOverview.getCurrentIndex()
+        reducedSource = str(id) + " : " + unit.source[:10] 
+        bookmark = World.settings.value("bookmarkList").toStringList()
+        bookmark.removeAll(reducedSource)
+        bookmark.prepend(reducedSource)
+        while bookmark.count() > World.MaxRecentFiles:
+            bookmark.removeAt(bookmark.count() - 1)
+        World.settings.setValue("bookmarkList", QtCore.QVariant(bookmark))
+        self.updateBookmarkAction()
+    
+    def createBookmarkAction(self):
+        for i in range(World.MaxRecentFiles):
+            self.ui.bookmarkaction.append(QtGui.QAction(self))
+            self.ui.bookmarkaction[i].setVisible(False)
+            self.connect(self.ui.bookmarkaction[i], QtCore.SIGNAL("triggered()"), self.startBookmarkAction)
+            self.ui.menuBookmark.addAction(self.ui.bookmarkaction[i])
+        self.updateBookmarkAction()
+    
+    def startBookmarkAction(self):
+        action = self.sender()
+        if action:
+            index = str(action.data().toString()).split(" : ")
+            print index[0]
+            self.dockOverview.gotoRow(int(index[0]))
+    
+    def updateBookmarkAction(self):
+        """
+        Update recent actions of Open Recent Files with names of recent opened files
+        """
+        bookmark = World.settings.value("bookmarkList").toStringList()
+        numBookmark = min(bookmark.count(), World.MaxRecentFiles)
+        for i in range(numBookmark):
+            self.ui.bookmarkaction[i].setText(bookmark[i])
+            self.ui.bookmarkaction[i].setData(QtCore.QVariant(bookmark[i]))
+            self.ui.bookmarkaction[i].setVisible(True)
+
+        for j in range(numBookmark, World.MaxRecentFiles):
+            self.ui.bookmarkaction[j].setVisible(False)
+
+    def clearBookmarks(self):
+        files = World.settings.value("bookmarkList").toStringList()
+        numRecentFiles = min(files.count(), World.MaxRecentFiles)
+        for i in range(numRecentFiles):
+            self.ui.bookmarkaction[i].setVisible(False)
+        World.settings.remove("bookmarkList")
+
+        
     def setOpening(self, fileName): 
         """
         set status after open a file

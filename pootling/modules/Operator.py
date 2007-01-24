@@ -99,8 +99,11 @@ class Operator(QtCore.QObject):
         if (hasattr(unit, "x_editor_filterIndex")):
             self.currentUnitIndex = unit.x_editor_filterIndex
             self.searchPointer = unit.x_editor_filterIndex
-        
         self.emit(QtCore.SIGNAL("currentUnit"), unit)
+    
+    def getCurrentUnit(self):
+        """return the current unit"""
+        return self.filteredList[self.currentUnitIndex]
     
     def filterFuzzy(self, checked):
         """add/remove fuzzy to filter, and send filter signal.
@@ -126,7 +129,7 @@ class Operator(QtCore.QObject):
         else:
             filter &= ~World.translated
         self.emitFiltered(filter)
-        
+    
     def filterUntranslated(self, checked):
         """add/remove untranslated to filter, and send filter signal.
         @param checked: True or False when Untranslated checkbox is checked or unchecked.
@@ -139,7 +142,7 @@ class Operator(QtCore.QObject):
         else:
             filter &= ~World.untranslated
         self.emitFiltered(filter)
-
+    
     def emitFiltered(self, filter):
         """send filtered list signal according to filter."""
         self.emitUpdateUnit()
@@ -239,7 +242,7 @@ class Operator(QtCore.QObject):
         @param comment: QString type"""
         if (self.currentUnitIndex < 0 or self.filteredList == None):
             return
-        unit = self.filteredList[self.currentUnitIndex]
+        unit = self.getCurrentUnit()
         unit.removenotes()
         unit.addnote(unicode(comment),'translator')
         self._modified = True
@@ -250,7 +253,7 @@ class Operator(QtCore.QObject):
         @param target: QString type"""
         if (self.currentUnitIndex < 0 or self.filteredList == None):
             return
-        unit = self.filteredList[self.currentUnitIndex]
+        unit = self.getCurrentUnit()
         # update target for current unit
         unit.target = unicode(target)
         if (unit.target):
@@ -274,7 +277,7 @@ class Operator(QtCore.QObject):
         if (self.currentUnitIndex < 0):
             return
         self.emitUpdateUnit()
-        unit = self.filteredList[self.currentUnitIndex]
+        unit = self.getCurrentUnit()
         if (unit.x_editor_state & World.fuzzy):
             self.status.markFuzzy(unit, False)
         elif (unit.x_editor_state & World.translated):
