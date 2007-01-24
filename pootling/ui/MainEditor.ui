@@ -109,6 +109,28 @@
     <addaction name="actionPreferences" />
     <addaction name="menuTranslation_Memory" />
    </widget>
+   <widget class="QMenu" name="menuView" >
+    <property name="enabled" >
+     <bool>true</bool>
+    </property>
+    <property name="title" >
+     <string>&amp;View</string>
+    </property>
+    <addaction name="actionFilterFuzzy" />
+    <addaction name="actionFilterTranslated" />
+    <addaction name="actionFilterUntranslated" />
+   </widget>
+   <widget class="QMenu" name="menuGo" >
+    <property name="title" >
+     <string>&amp;Go</string>
+    </property>
+    <addaction name="actionFirst" />
+    <addaction name="actionPrevious" />
+    <addaction name="actionNext" />
+    <addaction name="actionLast" />
+    <addaction name="separator" />
+    <addaction name="actionGoTo" />
+   </widget>
    <widget class="QMenu" name="menuFile" >
     <property name="title" >
      <string>&amp;File</string>
@@ -133,32 +155,19 @@
     <addaction name="separator" />
     <addaction name="actionExit" />
    </widget>
-   <widget class="QMenu" name="menuView" >
-    <property name="enabled" >
-     <bool>true</bool>
-    </property>
+   <widget class="QMenu" name="menuBookmark" >
     <property name="title" >
-     <string>&amp;View</string>
+     <string>&amp;Bookmarks</string>
     </property>
-    <addaction name="actionFilterFuzzy" />
-    <addaction name="actionFilterTranslated" />
-    <addaction name="actionFilterUntranslated" />
-   </widget>
-   <widget class="QMenu" name="menuGo" >
-    <property name="title" >
-     <string>&amp;Go</string>
-    </property>
-    <addaction name="actionFirst" />
-    <addaction name="actionPrevious" />
-    <addaction name="actionNext" />
-    <addaction name="actionLast" />
+    <addaction name="actionAddBookmarks" />
+    <addaction name="actionClearBookmarks" />
     <addaction name="separator" />
-    <addaction name="actionGoTo" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
    <addaction name="menuView" />
    <addaction name="menuGo" />
+   <addaction name="menuBookmark" />
    <addaction name="menuSettings" />
    <addaction name="menuWindow" />
    <addaction name="menuHelp" />
@@ -792,6 +801,25 @@
    </property>
    <property name="shortcut" >
     <string>Ctrl+G</string>
+   </property>
+  </action>
+  <action name="actionAddBookmarks" >
+   <property name="icon" >
+    <iconset>../images/bookmarkadd.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Add Bookmarks</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+B</string>
+   </property>
+  </action>
+  <action name="actionClearBookmarks" >
+   <property name="text" >
+    <string>&amp;Clear Bookmarks</string>
+   </property>
+   <property name="shortcut" >
+    <string/>
    </property>
   </action>
  </widget>

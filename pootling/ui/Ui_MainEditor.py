@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Fri Jan 19 11:24:37 2007
+# Created: Tue Jan 23 16:42:32 2007
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -51,6 +51,13 @@ class Ui_MainWindow(object):
         self.menuTranslation_Memory = QtGui.QMenu(self.menuSettings)
         self.menuTranslation_Memory.setObjectName("menuTranslation_Memory")
 
+        self.menuView = QtGui.QMenu(self.menubar)
+        self.menuView.setEnabled(True)
+        self.menuView.setObjectName("menuView")
+
+        self.menuGo = QtGui.QMenu(self.menubar)
+        self.menuGo.setObjectName("menuGo")
+
         self.menuFile = QtGui.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
 
@@ -58,12 +65,8 @@ class Ui_MainWindow(object):
         self.menuOpen_Recent.setIcon(QtGui.QIcon("../images/open.png"))
         self.menuOpen_Recent.setObjectName("menuOpen_Recent")
 
-        self.menuView = QtGui.QMenu(self.menubar)
-        self.menuView.setEnabled(True)
-        self.menuView.setObjectName("menuView")
-
-        self.menuGo = QtGui.QMenu(self.menubar)
-        self.menuGo.setObjectName("menuGo")
+        self.menuBookmark = QtGui.QMenu(self.menubar)
+        self.menuBookmark.setObjectName("menuBookmark")
         MainWindow.setMenuBar(self.menubar)
 
         self.statusbar = QtGui.QStatusBar(MainWindow)
@@ -279,6 +282,13 @@ class Ui_MainWindow(object):
         self.actionGoTo = QtGui.QAction(MainWindow)
         self.actionGoTo.setEnabled(False)
         self.actionGoTo.setObjectName("actionGoTo")
+
+        self.actionAddBookmarks = QtGui.QAction(MainWindow)
+        self.actionAddBookmarks.setIcon(QtGui.QIcon("../images/bookmarkadd.png"))
+        self.actionAddBookmarks.setObjectName("actionAddBookmarks")
+
+        self.actionClearBookmarks = QtGui.QAction(MainWindow)
+        self.actionClearBookmarks.setObjectName("actionClearBookmarks")
         self.menuEdit.addAction(self.actionUndo)
         self.menuEdit.addAction(self.actionRedo)
         self.menuEdit.addSeparator()
@@ -304,6 +314,15 @@ class Ui_MainWindow(object):
         self.menuTranslation_Memory.addAction(self.actionTMX_compendium)
         self.menuSettings.addAction(self.actionPreferences)
         self.menuSettings.addAction(self.menuTranslation_Memory.menuAction())
+        self.menuView.addAction(self.actionFilterFuzzy)
+        self.menuView.addAction(self.actionFilterTranslated)
+        self.menuView.addAction(self.actionFilterUntranslated)
+        self.menuGo.addAction(self.actionFirst)
+        self.menuGo.addAction(self.actionPrevious)
+        self.menuGo.addAction(self.actionNext)
+        self.menuGo.addAction(self.actionLast)
+        self.menuGo.addSeparator()
+        self.menuGo.addAction(self.actionGoTo)
         self.menuOpen_Recent.addAction(self.actionClear)
         self.menuOpen_Recent.addSeparator()
         self.menuFile.addAction(self.actionOpenInNewWindow)
@@ -315,19 +334,14 @@ class Ui_MainWindow(object):
         self.menuFile.addAction(self.actionSaveas)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionExit)
-        self.menuView.addAction(self.actionFilterFuzzy)
-        self.menuView.addAction(self.actionFilterTranslated)
-        self.menuView.addAction(self.actionFilterUntranslated)
-        self.menuGo.addAction(self.actionFirst)
-        self.menuGo.addAction(self.actionPrevious)
-        self.menuGo.addAction(self.actionNext)
-        self.menuGo.addAction(self.actionLast)
-        self.menuGo.addSeparator()
-        self.menuGo.addAction(self.actionGoTo)
+        self.menuBookmark.addAction(self.actionAddBookmarks)
+        self.menuBookmark.addAction(self.actionClearBookmarks)
+        self.menuBookmark.addSeparator()
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
         self.menubar.addAction(self.menuView.menuAction())
         self.menubar.addAction(self.menuGo.menuAction())
+        self.menubar.addAction(self.menuBookmark.menuAction())
         self.menubar.addAction(self.menuSettings.menuAction())
         self.menubar.addAction(self.menuWindow.menuAction())
         self.menubar.addAction(self.menuHelp.menuAction())
@@ -361,10 +375,11 @@ class Ui_MainWindow(object):
         self.menuToolbars.setTitle(self.tr("Toolbars"))
         self.menuSettings.setTitle(self.tr("&Settings"))
         self.menuTranslation_Memory.setTitle(self.tr("Translation &Memory"))
-        self.menuFile.setTitle(self.tr("&File"))
-        self.menuOpen_Recent.setTitle(self.tr("Open &Recent"))
         self.menuView.setTitle(self.tr("&View"))
         self.menuGo.setTitle(self.tr("&Go"))
+        self.menuFile.setTitle(self.tr("&File"))
+        self.menuOpen_Recent.setTitle(self.tr("Open &Recent"))
+        self.menuBookmark.setTitle(self.tr("&Bookmarks"))
         self.toolStandard.setWindowTitle(self.tr("Standard Toolbar"))
         self.toolNavigation.setWindowTitle(self.tr("Navigation Toolbar"))
         self.toolFilter.setWindowTitle(self.tr("Filter Toolbar"))
@@ -467,6 +482,9 @@ class Ui_MainWindow(object):
         self.actionClear.setText(self.tr("Clear"))
         self.actionGoTo.setText(self.tr("GoTo Line"))
         self.actionGoTo.setShortcut(self.tr("Ctrl+G"))
+        self.actionAddBookmarks.setText(self.tr("&Add Bookmarks"))
+        self.actionAddBookmarks.setShortcut(self.tr("Ctrl+B"))
+        self.actionClearBookmarks.setText(self.tr("&Clear Bookmarks"))
 
 
 if __name__ == "__main__":
