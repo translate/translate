@@ -94,9 +94,9 @@ class TUview(QtGui.QDockWidget):
     
     @QtCore.pyqtSignature("int")
     def emitCurrentIndex(self, value):
-        """emit "currentIndex" signal with current index value.
-        @param index: current index in the units."""
-        self.emit(QtCore.SIGNAL("filteredIndex"), value)
+        """emit "scrollToRow" signal with value as row start from 0.
+        @param value: current row."""
+        self.emit(QtCore.SIGNAL("scrollToRow"), value)
     
     def updateView(self, unit):
         """Update the text in source and target, set the scrollbar position,
@@ -127,6 +127,7 @@ class TUview(QtGui.QDockWidget):
         self.ui.txtTarget.setPlainText(unit.target)
         self.ui.txtTarget.setFocus()
         # set the scrollbar position
+        #self.setScrollbarValue(unit.x_editor_filterIndex)
         self.setScrollbarValue(unit.x_editor_filterIndex)
         self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
         

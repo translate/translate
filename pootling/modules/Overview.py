@@ -341,6 +341,13 @@ class OverviewDock(QtGui.QDockWidget):
         lastUnit = (lenSelItem == 0) or (currentRow == self.visibleRow[-1])
         self.emit(QtCore.SIGNAL("toggleFirstLastUnit"), firstUnit, lastUnit)
     
+    def gotoRow(self, value):
+        item = self.ui.tableOverview.findItems(self.indexString(value), QtCore.Qt.MatchExactly)
+        if (len(item) > 0):
+            row = self.ui.tableOverview.row(item[0])
+            if (not self.ui.tableOverview.isRowHidden(row)):
+                self.ui.tableOverview.selectRow(row)
+    
 if __name__ == "__main__":
     import sys, os
     # set the path for QT in order to find the icons

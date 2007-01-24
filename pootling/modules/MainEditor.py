@@ -173,7 +173,6 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockTUview.updateView)
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockComment.updateView)
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.addFuzzyIcon)
-##        self.connect(self.dockTUview, QtCore.SIGNAL("filteredIndex"), self.operator.setUnitFromPosition)
         self.connect(self.dockOverview, QtCore.SIGNAL("filteredIndex"), self.operator.setUnitFromPosition)
         self.connect(self.dockTUview, QtCore.SIGNAL("scrollToRow"), self.dockOverview.scrollToRow)
 
@@ -248,11 +247,10 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionRedo.setEnabled(bool)
 
     def showGoto(self):
-        i, ok = QtGui.QInputDialog.getInteger(self, self.tr("Goto"),
-                                              self.tr("Line Number:"))
+        value, ok = QtGui.QInputDialog.getInteger(self, self.tr("Goto"),
+                                                self.tr("Line Number:"))
         if ok:
-            value = i - 1
-            self.operator.setUnitFromPosition(value)
+            self.dockOverview.gotoRow(value)
 
     def setOpening(self, fileName): 
         """
