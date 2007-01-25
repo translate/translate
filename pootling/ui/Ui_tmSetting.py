@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Wed Jan 24 16:47:27 2007
+# Created: Thu Jan 25 12:07:48 2007
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -71,7 +71,7 @@ class Ui_tmsetting(object):
         self.gridlayout1.addWidget(self.label,0,0,1,2)
 
         self.linePOfile = QtGui.QLineEdit(self.tab)
-        self.linePOfile.setReadOnly(True)
+        self.linePOfile.setReadOnly(False)
         self.linePOfile.setObjectName("linePOfile")
         self.gridlayout1.addWidget(self.linePOfile,1,0,1,1)
 
@@ -124,7 +124,7 @@ class Ui_tmsetting(object):
         self.gridlayout2.addWidget(self.label_4,0,0,1,1)
 
         self.lineTMXfile = QtGui.QLineEdit(self.tab_2)
-        self.lineTMXfile.setReadOnly(True)
+        self.lineTMXfile.setReadOnly(False)
         self.lineTMXfile.setObjectName("lineTMXfile")
         self.gridlayout2.addWidget(self.lineTMXfile,1,0,1,1)
 

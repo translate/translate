@@ -439,10 +439,15 @@ class Operator(QtCore.QObject):
         get TM path and start lookup
         '''
         lookupTM = self.getLookupPath()
+        if (not len(lookupTM)):
+            QtGui.QMessageBox.warning(None, self.tr("No Translation Memory"), self.tr("Translation Memory Not Found"))
+            return
         self.lookupProcess(lookupTM, len(lookupTM) - 1)
     
     def lookupProcess(self, lookupTM, index):
         '''lookup process'''
+        if (not self.store):
+            return
         if (index < 0):
             self.emitNewUnits()
             self.emitReadyForSave()
@@ -459,7 +464,10 @@ class Operator(QtCore.QObject):
             if (len(found.units) > 0):
                 score_list = []
                 for foundunit in found.units:
-                    score = int(foundunit.getnotes("translator").rstrip('%'))
+                    try:
+                        score = int(foundunit.getnotes("translator").rstrip('%'))
+                    except:
+                        pass
                     dic[(foundunit.source, score)] = foundunit.target
                     if (not score_list.count(score)):
                         score_list.append(score)
@@ -479,15 +487,19 @@ class Operator(QtCore.QObject):
         
     def lookupText(self):
         foundlist = []
+        if (not len(self.filteredList)):
+            return
         unit = self.filteredList[self.currentUnitIndex]
         dummyfile = wStringIO.StringIO(unit)
         inputfile = po.pofile(dummyfile)
         lookupTM = self.getLookupPath()
-        if (len(lookupTM) > 0):
-            for i in range(len(lookupTM)):
-                found = tm.autoTranslate(lookupTM[i], inputfile)
-                foundlist.append(found)
-            self.emit(QtCore.SIGNAL("FoundTextInTM"), foundlist)
+        if (not len(lookupTM)):
+            QtGui.QMessageBox.warning(None, self.tr("No Translation Memory"), self.tr("Translation Memory Not Found"))
+            return
+        for i in range(len(lookupTM)):
+            found = tm.autoTranslate(lookupTM[i], inputfile)
+            foundlist.append(found)
+        self.emit(QtCore.SIGNAL("FoundTextInTM"), foundlist)
     
     def emitReadyForSave(self):
         self.emit(QtCore.SIGNAL("readyForSave"), self._modified) 

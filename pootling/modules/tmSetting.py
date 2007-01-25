@@ -50,10 +50,12 @@ class tmSetting(QtGui.QDialog):
             self.connect(self.ui.btnTMXfile, QtCore.SIGNAL("clicked(bool)"), self.setTMXPath)
             self.connect(self.ui.poLookup, QtCore.SIGNAL("stateChanged(int)"), self.setPOLookup)
             self.connect(self.ui.tmxLookup, QtCore.SIGNAL("stateChanged(int)"), self.setTMXLookup)
-            self.ui.poLookup.setChecked(True)
-            self.ui.tmxLookup.setChecked(True)
         self.ui.linePOfile.setText(World.settings.value("PODictionary").toString())
         self.ui.lineTMXfile.setText(World.settings.value("TMXDictionary").toString())
+        if (self.ui.linePOfile.text()):
+            self.ui.poLookup.setChecked(True)
+        if (self.ui.lineTMXfile.text()):
+            self.ui.tmxLookup.setChecked(True)
         self.show()
         
     def setPOPath(self):
@@ -63,9 +65,8 @@ class tmSetting(QtGui.QDialog):
                          "Select a PO file to set as dictionary",
                          QtCore.QDir.homePath(),
                          "PO file (*.po)")
-        if (path):
-            self.ui.linePOfile.setText(path)
-            World.settings.setValue("PODictionary", QtCore.QVariant(path))
+        self.ui.linePOfile.setText(path)
+        World.settings.setValue("PODictionary", QtCore.QVariant(path))
 
     def setTMXPath(self):
         '''set path of translated TMX file(s) '''
@@ -74,9 +75,8 @@ class tmSetting(QtGui.QDialog):
                          "Select a TMX file to set as dictionary",
                          QtCore.QDir.homePath(),
                          "TMX file (*.tmx)")
-        if (path):
-            self.ui.lineTMXfile.setText(path)
-            World.settings.setValue("TMXDictionary", QtCore.QVariant(path))
+        self.ui.lineTMXfile.setText(path)
+        World.settings.setValue("TMXDictionary", QtCore.QVariant(path))
     
     def setPOLookup(self):
         World.settings.setValue("POLookup", QtCore.QVariant(self.ui.poLookup.isChecked()))
