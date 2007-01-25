@@ -24,10 +24,13 @@ from translate.storage import po
 from translate.misc import quote
 from translate.storage import poheader
 from translate.storage import xliff
+from translate.misc import wStringIO
 import pootling.modules.World as World
 from pootling.modules.Status import Status
+from pootling.tm.modules import tm
 import os.path
 import __version__
+
 
 class Operator(QtCore.QObject):
     """
@@ -87,9 +90,12 @@ class Operator(QtCore.QObject):
                 unit.x_editor_filterIndex = len(self.filteredList)
                 self.filteredList.append(unit)
             i += 1
-        self.emit(QtCore.SIGNAL("newUnits"), self.filteredList)
+        self.emitNewUnits()
         self.emitFiltered(self.filter)
 
+    def emitNewUnits(self):
+        self.emit(QtCore.SIGNAL("newUnits"), self.filteredList)
+        
     def emitStatus(self):
         self.emit(QtCore.SIGNAL("currentStatus"), self.status.statusString())        
     
@@ -218,13 +224,14 @@ class Operator(QtCore.QObject):
         save the temporary store into a file.
         @param fileName: String type
         """
+        self._modified = False
         if (fileName != ""):
             self.emitUpdateUnit()
             if (World.settings.value("headerAuto", QtCore.QVariant(True)).toBool()):
                 self.emit(QtCore.SIGNAL("headerAuto"))
             self.store.savefile(fileName)
-            self.emit(QtCore.SIGNAL("readyForSave"), False) 
-        self._modified = False
+            self.emitReadyForSave()
+        
         
     def modified(self):
         """@return bool: True or False if current unit is modified or not modified."""
@@ -281,7 +288,7 @@ class Operator(QtCore.QObject):
         self._modified = True
         self.emitUnit(unit)
         self.emitStatus()
-        self.emit(QtCore.SIGNAL("readyForSave"), True)
+        self.emitReadyForSave()
     
     def initSearch(self, searchString, searchableText, matchCase):
         """initilize the needed variables for searching.
@@ -412,5 +419,75 @@ class Operator(QtCore.QObject):
         self.status = None
         self.filter = None
         self.filteredList = None
-        self.emit(QtCore.SIGNAL("newUnits"), self.filteredList)
+        self.emitNewUnits()
+    
+    def getLookupPath(self):
+        lookupTM = []
+        POLookup = World.settings.value("POLookup").toBool()
+        TMXLookup = World.settings.value("TMXLookup").toBool()
+        popath = str(World.settings.value("PODictionary").toString())
+        tmxpath = str(World.settings.value("TMXDictionary").toString())
         
+        if (POLookup and popath):
+            lookupTM.append(popath)
+        if (TMXLookup and tmxpath):
+            lookupTM.append(tmxpath)
+        return lookupTM
+        
+    def autoTranslate(self):
+        '''
+        get TM path and start lookup
+        '''
+        lookupTM = self.getLookupPath()
+        self.lookupProcess(lookupTM, len(lookupTM) - 1)
+    
+    def lookupProcess(self, lookupTM, index):
+        '''lookup process'''
+        if (index < 0):
+            self.emitNewUnits()
+            self.emitReadyForSave()
+            return
+        else:
+            dic = {}
+            tmfile = lookupTM[(len(lookupTM) - 1) - index]
+            try:
+                found = tm.autoTranslate(tmfile, self.store)
+            except Exception, e:
+                QtGui.QMessageBox.critical(None, 'Error', 'Error while trying to read TM file.' + tmfile  + '\n' + str(e))
+                #FIXME: If there are fews TM, if one TM is not usable, should we continue in next TM or return?
+                return
+            if (len(found.units) > 0):
+                score_list = []
+                for foundunit in found.units:
+                    score = int(foundunit.getnotes("translator").rstrip('%'))
+                    dic[(foundunit.source, score)] = foundunit.target
+                    if (not score_list.count(score)):
+                        score_list.append(score)
+                score_list.sort()
+                score_list.reverse()
+                for unit in self.filteredList:
+                    if (not (unit.istranslated() or unit.isfuzzy())):
+                        for score in score_list:
+                            try:
+                                unit.target = dic[(unit.source, score)]
+                                self.status.markFuzzy(unit, True)
+                                self._modified = True
+                                break
+                            except KeyError:
+                                pass
+            self.lookupProcess(lookupTM, index - 1)
+        
+    def lookupText(self):
+        foundlist = []
+        unit = self.filteredList[self.currentUnitIndex]
+        dummyfile = wStringIO.StringIO(unit)
+        inputfile = po.pofile(dummyfile)
+        lookupTM = self.getLookupPath()
+        if (len(lookupTM) > 0):
+            for i in range(len(lookupTM)):
+                found = tm.autoTranslate(lookupTM[i], inputfile)
+                foundlist.append(found)
+            self.emit(QtCore.SIGNAL("FoundTextInTM"), foundlist)
+    
+    def emitReadyForSave(self):
+        self.emit(QtCore.SIGNAL("readyForSave"), self._modified) 

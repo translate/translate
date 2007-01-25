@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Thu Jan 11 09:40:12 2007
+# Created: Wed Jan 24 14:31:12 2007
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -15,9 +15,14 @@ class Ui_Form(object):
         Form.setObjectName("Form")
         Form.resize(QtCore.QSize(QtCore.QRect(0,0,400,300).size()).expandedTo(Form.minimumSizeHint()))
 
+        self.gridlayout = QtGui.QGridLayout(Form)
+        self.gridlayout.setMargin(9)
+        self.gridlayout.setSpacing(6)
+        self.gridlayout.setObjectName("gridlayout")
+
         self.tblTM = QtGui.QTableWidget(Form)
-        self.tblTM.setGeometry(QtCore.QRect(9,11,381,281))
         self.tblTM.setObjectName("tblTM")
+        self.gridlayout.addWidget(self.tblTM,0,0,1,1)
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)

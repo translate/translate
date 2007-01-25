@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Tue Jan 23 16:42:32 2007
+# Created: Thu Jan 25 09:55:58 2007
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -30,26 +30,17 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0,0,498,28))
+        self.menubar.setGeometry(QtCore.QRect(0,0,498,30))
         self.menubar.setObjectName("menubar")
 
         self.menuEdit = QtGui.QMenu(self.menubar)
         self.menuEdit.setObjectName("menuEdit")
-
-        self.menuHelp = QtGui.QMenu(self.menubar)
-        self.menuHelp.setObjectName("menuHelp")
 
         self.menuWindow = QtGui.QMenu(self.menubar)
         self.menuWindow.setObjectName("menuWindow")
 
         self.menuToolbars = QtGui.QMenu(self.menuWindow)
         self.menuToolbars.setObjectName("menuToolbars")
-
-        self.menuSettings = QtGui.QMenu(self.menubar)
-        self.menuSettings.setObjectName("menuSettings")
-
-        self.menuTranslation_Memory = QtGui.QMenu(self.menuSettings)
-        self.menuTranslation_Memory.setObjectName("menuTranslation_Memory")
 
         self.menuView = QtGui.QMenu(self.menubar)
         self.menuView.setEnabled(True)
@@ -65,12 +56,20 @@ class Ui_MainWindow(object):
         self.menuOpen_Recent.setIcon(QtGui.QIcon("../images/open.png"))
         self.menuOpen_Recent.setObjectName("menuOpen_Recent")
 
+        self.menuHelp = QtGui.QMenu(self.menubar)
+        self.menuHelp.setObjectName("menuHelp")
+
         self.menuBookmark = QtGui.QMenu(self.menubar)
         self.menuBookmark.setObjectName("menuBookmark")
+
+        self.menu_TM = QtGui.QMenu(self.menubar)
+        self.menu_TM.setObjectName("menu_TM")
+
+        self.menuSettings = QtGui.QMenu(self.menubar)
+        self.menuSettings.setObjectName("menuSettings")
         MainWindow.setMenuBar(self.menubar)
 
         self.statusbar = QtGui.QStatusBar(MainWindow)
-        self.statusbar.setGeometry(QtCore.QRect(0,471,498,21))
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
@@ -273,9 +272,6 @@ class Ui_MainWindow(object):
         self.action_Close.setIcon(QtGui.QIcon("../images/fileclose.png"))
         self.action_Close.setObjectName("action_Close")
 
-        self.actionTMX_compendium = QtGui.QAction(MainWindow)
-        self.actionTMX_compendium.setObjectName("actionTMX_compendium")
-
         self.actionClear = QtGui.QAction(MainWindow)
         self.actionClear.setObjectName("actionClear")
 
@@ -289,6 +285,15 @@ class Ui_MainWindow(object):
 
         self.actionClearBookmarks = QtGui.QAction(MainWindow)
         self.actionClearBookmarks.setObjectName("actionClearBookmarks")
+
+        self.action_lookup_Text = QtGui.QAction(MainWindow)
+        self.action_lookup_Text.setObjectName("action_lookup_Text")
+
+        self.actionAuto_translate = QtGui.QAction(MainWindow)
+        self.actionAuto_translate.setObjectName("actionAuto_translate")
+
+        self.action_TM = QtGui.QAction(MainWindow)
+        self.action_TM.setObjectName("action_TM")
         self.menuEdit.addAction(self.actionUndo)
         self.menuEdit.addAction(self.actionRedo)
         self.menuEdit.addSeparator()
@@ -306,14 +311,9 @@ class Ui_MainWindow(object):
         self.menuEdit.addAction(self.actionCopySource2Target)
         self.menuEdit.addAction(self.actionToggleFuzzy)
         self.menuEdit.addAction(self.actionEdit_Header)
-        self.menuHelp.addAction(self.actionAbout)
-        self.menuHelp.addAction(self.actionAboutQT)
         self.menuWindow.addSeparator()
         self.menuWindow.addSeparator()
         self.menuWindow.addAction(self.menuToolbars.menuAction())
-        self.menuTranslation_Memory.addAction(self.actionTMX_compendium)
-        self.menuSettings.addAction(self.actionPreferences)
-        self.menuSettings.addAction(self.menuTranslation_Memory.menuAction())
         self.menuView.addAction(self.actionFilterFuzzy)
         self.menuView.addAction(self.actionFilterTranslated)
         self.menuView.addAction(self.actionFilterUntranslated)
@@ -334,14 +334,21 @@ class Ui_MainWindow(object):
         self.menuFile.addAction(self.actionSaveas)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionExit)
+        self.menuHelp.addAction(self.actionAbout)
+        self.menuHelp.addAction(self.actionAboutQT)
         self.menuBookmark.addAction(self.actionAddBookmarks)
         self.menuBookmark.addAction(self.actionClearBookmarks)
         self.menuBookmark.addSeparator()
+        self.menu_TM.addAction(self.action_lookup_Text)
+        self.menu_TM.addAction(self.actionAuto_translate)
+        self.menuSettings.addAction(self.actionPreferences)
+        self.menuSettings.addAction(self.action_TM)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
         self.menubar.addAction(self.menuView.menuAction())
         self.menubar.addAction(self.menuGo.menuAction())
         self.menubar.addAction(self.menuBookmark.menuAction())
+        self.menubar.addAction(self.menu_TM.menuAction())
         self.menubar.addAction(self.menuSettings.menuAction())
         self.menubar.addAction(self.menuWindow.menuAction())
         self.menubar.addAction(self.menuHelp.menuAction())
@@ -370,16 +377,16 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(self.tr("Form"))
         self.menuEdit.setTitle(self.tr("&Edit"))
-        self.menuHelp.setTitle(self.tr("&Help"))
         self.menuWindow.setTitle(self.tr("&Window"))
         self.menuToolbars.setTitle(self.tr("Toolbars"))
-        self.menuSettings.setTitle(self.tr("&Settings"))
-        self.menuTranslation_Memory.setTitle(self.tr("Translation &Memory"))
         self.menuView.setTitle(self.tr("&View"))
         self.menuGo.setTitle(self.tr("&Go"))
         self.menuFile.setTitle(self.tr("&File"))
         self.menuOpen_Recent.setTitle(self.tr("Open &Recent"))
+        self.menuHelp.setTitle(self.tr("&Help"))
         self.menuBookmark.setTitle(self.tr("&Bookmarks"))
+        self.menu_TM.setTitle(self.tr("&TM"))
+        self.menuSettings.setTitle(self.tr("&Settings"))
         self.toolStandard.setWindowTitle(self.tr("Standard Toolbar"))
         self.toolNavigation.setWindowTitle(self.tr("Navigation Toolbar"))
         self.toolFilter.setWindowTitle(self.tr("Filter Toolbar"))
@@ -478,13 +485,15 @@ class Ui_MainWindow(object):
         self.action_Close.setStatusTip(self.tr("Close the current opened file"))
         self.action_Close.setWhatsThis(self.tr("<h3>Close the current opened file</h3>You will be asked whether to save the current opened file."))
         self.action_Close.setShortcut(self.tr("Ctrl+W"))
-        self.actionTMX_compendium.setText(self.tr("&TMX compendium"))
         self.actionClear.setText(self.tr("Clear"))
         self.actionGoTo.setText(self.tr("GoTo Line"))
         self.actionGoTo.setShortcut(self.tr("Ctrl+G"))
         self.actionAddBookmarks.setText(self.tr("&Add Bookmarks"))
         self.actionAddBookmarks.setShortcut(self.tr("Ctrl+B"))
         self.actionClearBookmarks.setText(self.tr("&Clear Bookmarks"))
+        self.action_lookup_Text.setText(self.tr("&Lookup Text"))
+        self.actionAuto_translate.setText(self.tr("&Auto translate"))
+        self.action_TM.setText(self.tr("&TM"))
 
 
 if __name__ == "__main__":

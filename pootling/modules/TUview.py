@@ -34,7 +34,7 @@ class TUview(QtGui.QDockWidget):
         self.ui.setupUi(self.form)
         self.setWidget(self.form)
         self.setFeatures(QtGui.QDockWidget.DockWidgetClosable)
-        self.ui.lblComment.hide()
+##        self.ui.lblComment.hide()
         self.ui.txtTarget.setReadOnly(True)
 ##        #support only qt4.2
 ##        self.ui.txtTarget.moveCursor(QtGui.QTextCursor.Start, QtGui.QTextCursor.MoveAnchor )

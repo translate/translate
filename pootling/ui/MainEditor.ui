@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow" >
   <property name="enabled" >
@@ -51,7 +48,7 @@
      <x>0</x>
      <y>0</y>
      <width>498</width>
-     <height>28</height>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuEdit" >
@@ -76,13 +73,6 @@
     <addaction name="actionToggleFuzzy" />
     <addaction name="actionEdit_Header" />
    </widget>
-   <widget class="QMenu" name="menuHelp" >
-    <property name="title" >
-     <string>&amp;Help</string>
-    </property>
-    <addaction name="actionAbout" />
-    <addaction name="actionAboutQT" />
-   </widget>
    <widget class="QMenu" name="menuWindow" >
     <property name="title" >
      <string>&amp;Window</string>
@@ -95,19 +85,6 @@
     <addaction name="separator" />
     <addaction name="separator" />
     <addaction name="menuToolbars" />
-   </widget>
-   <widget class="QMenu" name="menuSettings" >
-    <property name="title" >
-     <string>&amp;Settings</string>
-    </property>
-    <widget class="QMenu" name="menuTranslation_Memory" >
-     <property name="title" >
-      <string>Translation &amp;Memory</string>
-     </property>
-     <addaction name="actionTMX_compendium" />
-    </widget>
-    <addaction name="actionPreferences" />
-    <addaction name="menuTranslation_Memory" />
    </widget>
    <widget class="QMenu" name="menuView" >
     <property name="enabled" >
@@ -155,6 +132,13 @@
     <addaction name="separator" />
     <addaction name="actionExit" />
    </widget>
+   <widget class="QMenu" name="menuHelp" >
+    <property name="title" >
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="actionAbout" />
+    <addaction name="actionAboutQT" />
+   </widget>
    <widget class="QMenu" name="menuBookmark" >
     <property name="title" >
      <string>&amp;Bookmarks</string>
@@ -163,25 +147,31 @@
     <addaction name="actionClearBookmarks" />
     <addaction name="separator" />
    </widget>
+   <widget class="QMenu" name="menu_TM" >
+    <property name="title" >
+     <string>&amp;TM</string>
+    </property>
+    <addaction name="action_lookup_Text" />
+    <addaction name="actionAuto_translate" />
+   </widget>
+   <widget class="QMenu" name="menuSettings" >
+    <property name="title" >
+     <string>&amp;Settings</string>
+    </property>
+    <addaction name="actionPreferences" />
+    <addaction name="action_TM" />
+   </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
    <addaction name="menuView" />
    <addaction name="menuGo" />
    <addaction name="menuBookmark" />
+   <addaction name="menu_TM" />
    <addaction name="menuSettings" />
    <addaction name="menuWindow" />
    <addaction name="menuHelp" />
   </widget>
-  <widget class="QStatusBar" name="statusbar" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>471</y>
-     <width>498</width>
-     <height>21</height>
-    </rect>
-   </property>
-  </widget>
+  <widget class="QStatusBar" name="statusbar" />
   <widget class="QToolBar" name="toolStandard" >
    <property name="enabled" >
     <bool>true</bool>
@@ -782,11 +772,6 @@
     <string>Ctrl+W</string>
    </property>
   </action>
-  <action name="actionTMX_compendium" >
-   <property name="text" >
-    <string>&amp;TMX compendium</string>
-   </property>
-  </action>
   <action name="actionClear" >
    <property name="text" >
     <string>Clear</string>
@@ -822,8 +807,22 @@
     <string/>
    </property>
   </action>
+  <action name="action_lookup_Text" >
+   <property name="text" >
+    <string>&amp;Lookup Text</string>
+   </property>
+  </action>
+  <action name="actionAuto_translate" >
+   <property name="text" >
+    <string>&amp;Auto translate</string>
+   </property>
+  </action>
+  <action name="action_TM" >
+   <property name="text" >
+    <string>&amp;TM</string>
+   </property>
+  </action>
  </widget>
- <pixmapfunction></pixmapfunction>
  <resources/>
  <connections/>
 </ui>

@@ -32,6 +32,8 @@ from pootling.modules.Find import Find
 from pootling.modules.Preference import Preference
 from pootling.modules.AboutEditor import AboutEditor
 import pootling.modules.World as World
+from pootling.modules import tmSetting
+from pootling.modules import tableTM
 import __version__
 
 class MainWindow(QtGui.QMainWindow):
@@ -105,7 +107,6 @@ class MainWindow(QtGui.QMainWindow):
         # create file action object and file action menu related signals
         self.fileaction = FileAction(self)
         self.connect(self.ui.actionOpen, QtCore.SIGNAL("triggered()"), self.fileaction.openFile)
-        self.connect(self.ui.actionClear, QtCore.SIGNAL("triggered()"), self.clearOpenRecent)
         self.connect(self.ui.actionOpenInNewWindow, QtCore.SIGNAL("triggered()"), self.startInNewWindow)
         self.connect(self.ui.action_Close, QtCore.SIGNAL("triggered()"), self.closeFile)
         self.connect(self.ui.actionSave, QtCore.SIGNAL("triggered()"), self.fileaction.save)
@@ -148,7 +149,20 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockComment.applySettings)
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockOverview.applySettings)
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockTUview.applySettings)
-
+        
+        # action setting Path of TM
+        self.tmsetting = tmSetting.tmSetting(self)
+        self.connect(self.ui.action_TM, QtCore.SIGNAL("triggered()"), self.tmsetting.showDialog)
+        
+        # action lookup text and auto translation from TM
+        self.connect(self.ui.action_lookup_Text, QtCore.SIGNAL("triggered()"), self.operator.lookupText)
+        self.connect(self.ui.actionAuto_translate, QtCore.SIGNAL("triggered()"), self.operator.autoTranslate)
+        
+        # TM table
+        self.table = tableTM.tableTM(self)
+        self.connect(self.operator, QtCore.SIGNAL("FoundTextInTM"), self.table.fillTable)
+        self.connect(self.table, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
+        
         # Edit Header
         self.headerDialog = Header(self, self.operator)
         self.connect(self.ui.actionEdit_Header, QtCore.SIGNAL("triggered()"), self.headerDialog.showDialog)
@@ -507,6 +521,8 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionFilterFuzzy.setChecked(bool)
         self.ui.actionFilterTranslated.setChecked(bool)
         self.ui.actionFilterUntranslated.setChecked(bool)
+        self.ui.action_lookup_Text.setEnabled(bool)
+        self.ui.actionAuto_translate.setEnabled(bool)
         self.findBar.toggleViewAction().setVisible(bool)
         
 def main(inputFile = None):
