@@ -34,7 +34,7 @@ class TUview(QtGui.QDockWidget):
         self.ui.setupUi(self.form)
         self.setWidget(self.form)
         self.setFeatures(QtGui.QDockWidget.DockWidgetClosable)
-##        self.ui.lblComment.hide()
+        self.ui.lblComment.hide()
         self.ui.txtTarget.setReadOnly(True)
 ##        #support only qt4.2
 ##        self.ui.txtTarget.moveCursor(QtGui.QTextCursor.Start, QtGui.QTextCursor.MoveAnchor )
@@ -54,12 +54,26 @@ class TUview(QtGui.QDockWidget):
         self.highlightFormat.setBackground(QtCore.Qt.darkMagenta)
         self.highlightRange = QtGui.QTextLayout.FormatRange()
         self.highlightRange.format = self.highlightFormat
+        self.tabForPlural()
         
+    def tabForPlural(self):
+        # tab for plural
+        self.tabSource = QtGui.QTabWidget(self.form)
+        self.tabSource.setObjectName("tabSource")
+        self.ui.gridlayout.addWidget(self.tabSource,0,0,1,1)
+
+        self.tabTarget = QtGui.QTabWidget(self.form)
+        self.tabTarget.setObjectName("tabTarget")
+        self.ui.gridlayout.addWidget(self.tabTarget,1,0,1,1)
+        
+        self.tabSource.hide()
+        self.tabTarget.hide()
+
     def closeEvent(self, event):
         """
         set text of action object to 'show Detail' before closing TUview
         @param QCloseEvent Object: received close event when closing widget
-        """        
+        """
         QtGui.QDockWidget.closeEvent(self, event)
         self.toggleViewAction().setChecked(False)
         
@@ -113,6 +127,7 @@ class TUview(QtGui.QDockWidget):
             self.ui.txtTarget.setEnabled(False)
             return
         self.ui.txtTarget.setReadOnly(False)
+
         comment = ""
         if isinstance(unit, po.pounit):
             comment = unit.getcontext()
@@ -122,15 +137,86 @@ class TUview(QtGui.QDockWidget):
         else:
             self.ui.lblComment.show()
             self.ui.lblComment.setText(unicode(comment))
-            
-        self.ui.txtSource.setPlainText(unit.source)
-        self.ui.txtTarget.setPlainText(unit.target)
-        self.ui.txtTarget.setFocus()
+        if unit.hasplural():
+            self.unitPlural(unit)
+        else:
+            self.unitSingle(unit)
         # set the scrollbar position
         #self.setScrollbarValue(unit.x_editor_filterIndex)
         self.setScrollbarValue(unit.x_editor_filterIndex)
+     
+    def unitPlural(self, unit):
+        """ This will be call when unit is plural"""
+        self.tabSource.show()
+        self.tabTarget.show()
+        self.ui.txtSource.hide()
+        self.ui.txtTarget.hide()
+        self.tabSourcePlurals = []
+        self.tabTargetPlurals = []
+        self.gridlayoutSList = []
+        self.gridlayoutTarList = []
+        self.txtSourceList = []
+        self.txtTargetList = []
+        print self.tabSource.count()
+        if (self.tabSource.count() == len(unit.source.strings)):
+            return
+        else:
+            for i in range(len(unit.source.strings)):
+                tabSourcePlural = QtGui.QWidget(self.tabSource)
+                self.tabSourcePlurals.append(tabSourcePlural)
+                self.tabSourcePlurals[i].setObjectName("tabSourcePlural%d" % i)
+                
+                self.gridlayoutS = QtGui.QGridLayout(self.tabSourcePlurals[i])
+                self.gridlayoutSList.append(self.gridlayoutS)
+                self.gridlayoutSList[i].setMargin(0)
+                self.gridlayoutSList[i].setSpacing(0)
+                self.gridlayoutSList[i].setObjectName("gridlayoutS%d" % i)
+                
+                self.txtSource = QtGui.QTextEdit(self.tabSourcePlurals[i])
+                self.txtSourceList.append(self.txtSource)
+                self.txtSourceList[i].setObjectName("txtSource%d" % i)
+                self.txtSourceList[i].setTabChangesFocus(True)
+                self.txtSourceList[i].setUndoRedoEnabled(False)
+                self.txtSourceList[i].setReadOnly(True)
+                self.gridlayoutSList[i].addWidget(self.txtSourceList[i],0,0,1,1)
+                self.txtSourceList[i].setPlainText(unit.source.strings[i])
+                
+                self.tabSource.addTab(self.tabSourcePlurals[i], "")
+                self.tabSource.setTabText(self.tabSource.indexOf(self.tabSourcePlurals[i]), self.tr("Plural%d" % i))
+    
+                # target
+                tabTargetPlural = QtGui.QWidget(self.tabTarget)
+                self.tabTargetPlurals.append(tabTargetPlural)
+                self.tabTargetPlurals[i].setObjectName("tabTargetPlural%d" % i)
+                
+                self.gridlayoutTar = QtGui.QGridLayout(self.tabTargetPlurals[i])
+                self.gridlayoutTarList.append(self.gridlayoutTar)
+                self.gridlayoutTarList[i].setMargin(0)
+                self.gridlayoutTarList[i].setSpacing(0)
+                self.gridlayoutTarList[i].setObjectName("gridlayoutTar%d" % i)
+                
+                self.tabTarget.addTab(self.tabTargetPlurals[i], "")
+                self.tabTarget.setTabText(self.tabTarget.indexOf(self.tabTargetPlurals[i]), self.tr("Plural%d"% i))
+                
+                self.txtTarget = QtGui.QTextEdit(self.tabTargetPlurals[i])
+                self.txtTargetList.append(self.txtTarget)
+                self.txtTargetList[i].setObjectName("txtTarget%d"% i)
+                self.gridlayoutTarList[i].addWidget(self.txtTargetList[i],0,0,1,1)
+                self.txtTargetList[i].setPlainText(unit.target.strings[1])
+                self.txtTargetList[0].setFocus()
+                self.connect(self.txtTargetList[i], QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
+
+    def unitSingle(self, unit):
+        """This will be called when unit is singular"""
+        self.tabSource.hide()
+        self.tabTarget.hide()
+        self.ui.txtSource.show()
+        self.ui.txtTarget.show()
+        self.ui.txtSource.setPlainText(unit.source)
+        self.ui.txtTarget.setPlainText(unit.target)
+        self.ui.txtTarget.setFocus()
         self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
-        
+
     def checkModified(self):
         if self.ui.txtTarget.document().isModified():
             self.emit(QtCore.SIGNAL("targetChanged"), self.ui.txtTarget.toPlainText())
