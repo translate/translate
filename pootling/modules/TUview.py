@@ -57,6 +57,12 @@ class TUview(QtGui.QDockWidget):
         self.tabForPlural()
         
     def tabForPlural(self):
+        self.tabSourcePlurals = []
+        self.tabTargetPlurals = []
+        self.gridlayoutSList = []
+        self.gridlayoutTarList = []
+        self.txtSourceList = []
+        self.txtTargetList = []
         # tab for plural
         self.tabSource = QtGui.QTabWidget(self.form)
         self.tabSource.setObjectName("tabSource")
@@ -151,17 +157,14 @@ class TUview(QtGui.QDockWidget):
         self.tabTarget.show()
         self.ui.txtSource.hide()
         self.ui.txtTarget.hide()
-        self.tabSourcePlurals = []
-        self.tabTargetPlurals = []
-        self.gridlayoutSList = []
-        self.gridlayoutTarList = []
-        self.txtSourceList = []
-        self.txtTargetList = []
-        print self.tabSource.count()
         if (self.tabSource.count() == len(unit.source.strings)):
-            return
+            print self.tabSource.count()
+            print len(unit.source.strings)
+            for i in range(len(unit.source.strings)):
+                self.txtSourceList[i].setPlainText(unit.source.strings[i])
         else:
             for i in range(len(unit.source.strings)):
+                print "hi"
                 tabSourcePlural = QtGui.QWidget(self.tabSource)
                 self.tabSourcePlurals.append(tabSourcePlural)
                 self.tabSourcePlurals[i].setObjectName("tabSourcePlural%d" % i)
@@ -183,8 +186,11 @@ class TUview(QtGui.QDockWidget):
                 
                 self.tabSource.addTab(self.tabSourcePlurals[i], "")
                 self.tabSource.setTabText(self.tabSource.indexOf(self.tabSourcePlurals[i]), self.tr("Plural%d" % i))
-    
+                self.ui.gridlayout.addWidget(self.ui.fileScrollBar,0,2,1,1)
+
                 # target
+            nplurals = 2  # nplurals will be adapted to the language set in preference.
+            for i in range(nplurals):
                 tabTargetPlural = QtGui.QWidget(self.tabTarget)
                 self.tabTargetPlurals.append(tabTargetPlural)
                 self.tabTargetPlurals[i].setObjectName("tabTargetPlural%d" % i)
@@ -203,7 +209,6 @@ class TUview(QtGui.QDockWidget):
                 self.txtTargetList[i].setObjectName("txtTarget%d"% i)
                 self.gridlayoutTarList[i].addWidget(self.txtTargetList[i],0,0,1,1)
                 self.txtTargetList[i].setPlainText(unit.target.strings[1])
-                self.txtTargetList[0].setFocus()
                 self.connect(self.txtTargetList[i], QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
 
     def unitSingle(self, unit):
@@ -214,7 +219,6 @@ class TUview(QtGui.QDockWidget):
         self.ui.txtTarget.show()
         self.ui.txtSource.setPlainText(unit.source)
         self.ui.txtTarget.setPlainText(unit.target)
-        self.ui.txtTarget.setFocus()
         self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
 
     def checkModified(self):
