@@ -103,8 +103,15 @@ class matcher:
         return max(len(text) * (min_similarity/100.0), 1)
     
     def matches(self, text):
-        """Returns a list of possible matches for text in candidates with the associated similarity.
-        Return value is a list containing tuples (score, original, translation)."""
+        """Returns a list of possible matches for given source text.
+        
+        @type text: String
+        @param text: The text that will be search for in the translation memory
+        @rtype: list
+        @return: a list of units with the source and target strings from the 
+        translation memory. If self.addpercentage is true (default) the match 
+        quality is given as a percentage in the notes.
+        """
         bestcandidates = [(0.0,None)]*self.MAX_CANDIDATES
         heapq.heapify(bestcandidates)
         #We use self.MIN_SIMILARITY, but if we already know we have max_candidates
