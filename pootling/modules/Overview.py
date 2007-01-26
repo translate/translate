@@ -67,6 +67,23 @@ class OverviewDock(QtGui.QDockWidget):
         self.connect(self.ui.tableOverview, self.changedSignal, self.emitCurrentIndex)
         self.connect(self.ui.tableOverview.model(), QtCore.SIGNAL("layoutChanged()"), self.showFilteredItems)
         self.connect(self.ui.tableOverview, QtCore.SIGNAL("cellChanged(int, int)"), self.emitTargetChanged)
+        
+        self.menu = QtGui.QMenu()
+        self.connect(self.menu, QtCore.SIGNAL("triggered(QAction *)"), self.menuTriggered)
+    
+    def fillMenu (self, foundList):
+        self.menu.clear()
+        for me in foundList:
+            for unit in me.units:
+                self.menu.addAction(unit.target)
+    
+    def contextMenuEvent(self, e):
+        self.emit(QtCore.SIGNAL("lookupText"))
+        self.menu.exec_(e.globalPos())
+    
+    def menuTriggered(self, action):
+        target = action.text()
+        self.emit(QtCore.SIGNAL("targetChanged"), target)
     
     def closeEvent(self, event):
         """
