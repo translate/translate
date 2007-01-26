@@ -197,3 +197,21 @@ class poheader:
     if isinstance(nplurals, basestring):
       nplurals = int(nplurals)
     self.updateheader( Plural_Forms = "nplurals=%d; plural=%s;" % (nplurals, plural) )
+
+  def mergeheaders(self, otherstore):
+    """Merges another header with this header.
+    
+    This header is assumed to be the template.
+    
+    @type otherstore: L{TranslationStore}
+    
+    """
+
+    newvalues = otherstore.parseheader()
+    self.updateheader(
+      Project_Id_Version = newvalues['Project-Id-Version'],
+      PO_Revision_Date   = newvalues['PO-Revision-Date'],
+      Last_Translator    = newvalues['Last-Translator'],
+      Language_Team      = newvalues['Language-Team'],
+      Plural_Forms       = newvalues['Plural-Forms']
+    )

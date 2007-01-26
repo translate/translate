@@ -259,7 +259,11 @@ class pounit(base.TranslationUnit):
     elif isinstance(target, dict):
       self.msgstr = dict([(i, quoteforpo(targetstring, templates.get(i, None))) for i, targetstring in target.iteritems()])
     else:
-      self.msgstr = quoteforpo(target, template=templates.get(0, None))
+      # TODO: Using the template parameter on headers buggers up the header layout.
+      if self.isheader():
+        self.msgstr = quoteforpo(target)
+      else:
+        self.msgstr = quoteforpo(target, template=templates.get(0, None))
   target = property(gettarget, settarget)
 
   def getnotes(self, origin=None):

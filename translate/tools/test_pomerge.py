@@ -343,7 +343,8 @@ msgstr "Stuur"
         assert str(pofile) == expectedpo
 
     def test_merging_header_entries(self):
-        """check that we do the right thing if we have header entries in the input PO"""
+        """Check that we do the right thing if we have header entries in the input PO."""
+
         templatepo = r'''#, fuzzy
 msgid ""
 msgstr ""

@@ -25,12 +25,16 @@ import sys
 from translate.storage import factory
 from translate.storage import po
 from translate.storage import xliff 
+from translate.storage.poheader import poheader
 
 def mergepofiles(p1, p2, mergeblanks, mergecomments):
-  """take any new translations in p2 and write them into p1"""
+  """Take any new translations in p2 and write them into p1."""
+
   for po2 in p2.units:
-    if (callable(getattr(po2, "isheader", None)) and po2.isheader()) or \
-       (callable(getattr(po2, "getrestype", None)) and po2.getrestype() == "x-gettext-domain-header"):
+    if po2.isheader():
+      if isinstance(p1, poheader):
+        p1.mergeheaders(p2)
+      # Skip header units
       continue
     # there may be more than one entity due to msguniq merge
     entities = po2.getlocations()
