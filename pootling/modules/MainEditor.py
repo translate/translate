@@ -160,7 +160,7 @@ class MainWindow(QtGui.QMainWindow):
         
         # TM table
         self.table = tableTM.tableTM(self)
-##        self.connect(self.operator, QtCore.SIGNAL("FoundTextInTM"), self.table.fillTable)
+        self.connect(self.operator, QtCore.SIGNAL("candidates"), self.table.fillTable)
         self.connect(self.table, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
         
         

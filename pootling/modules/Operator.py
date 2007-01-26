@@ -1,4 +1,4 @@
-#!/usr/bin/python
+ #!/usr/bin/python
 # -*- coding: utf8 -*-
 # Pootling
 # Copyright 2006 WordForge Foundation
@@ -27,7 +27,7 @@ from translate.storage import xliff
 from translate.misc import wStringIO
 import pootling.modules.World as World
 from pootling.modules.Status import Status
-from pootling.tm.modules import tm
+from translate.search import match
 import os.path
 import __version__
 
@@ -432,6 +432,8 @@ class Operator(QtCore.QObject):
             lookupTM.append(popath)
         if (TMXLookup and tmxpath):
             lookupTM.append(tmxpath)
+        if (not len(lookupTM)):
+            QtGui.QMessageBox.warning(None, self.tr("No Translation Memory"), self.tr("Translation Memory Not Found"))
         return lookupTM
         
     def autoTranslate(self):
@@ -440,66 +442,76 @@ class Operator(QtCore.QObject):
         '''
         lookupTM = self.getLookupPath()
         if (not len(lookupTM)):
-            QtGui.QMessageBox.warning(None, self.tr("No Translation Memory"), self.tr("Translation Memory Not Found"))
             return
-        self.lookupProcess(lookupTM, len(lookupTM) - 1)
+        if (not len(self.filteredList)):
+            return
+        self.lookupProcess(lookupTM, self.filteredList)
     
-    def lookupProcess(self, lookupTM, index):
+    def lookupProcess(self, lookupTM, units):
         '''lookup process'''
-        if (not self.store):
-            return
-        if (index < 0):
-            self.emitNewUnits()
-            self.emitReadyForSave()
-            return
+        units_is_lists = isinstance(units, list)
+        
+        matcher = []
+        #FIXME: tmfile might be broken file
+        for i in range(len(lookupTM)):
+            memo = factory.getobject(lookupTM[i])
+            matcher.append(match.matcher(memo))
+        
+        #FIXME: matcher might be empty
+        if (not units_is_lists):
+            candidateslist = []
+            for i in range(len(matcher)):
+                candidates = matcher[i].matches(units.source)
+                candidateslist.append(candidates)
+            return candidateslist
         else:
-            dic = {}
-            tmfile = lookupTM[(len(lookupTM) - 1) - index]
-            try:
-                found = tm.autoTranslate(tmfile, self.store)
-            except Exception, e:
-                QtGui.QMessageBox.critical(None, 'Error', 'Error while trying to read TM file.' + tmfile  + '\n' + str(e))
-                #FIXME: If there are fews TM, if one TM is not usable, should we continue in next TM or return?
-                return
-            if (len(found.units) > 0):
-                score_list = []
-                for foundunit in found.units:
-                    try:
-                        score = int(foundunit.getnotes("translator").rstrip('%'))
-                    except:
-                        pass
-                    dic[(foundunit.source, score)] = foundunit.target
-                    if (not score_list.count(score)):
-                        score_list.append(score)
-                score_list.sort()
-                score_list.reverse()
-                for unit in self.filteredList:
-                    if (not (unit.istranslated() or unit.isfuzzy())):
+            for unit in units:
+                candidatelist = []
+                if (not (unit.istranslated() or unit.isfuzzy())):
+                    for i in range(len(matcher)):
+                        candidates = matcher[i].matches(unit.source)
+                        #get the best candidates
+                        if (not len(candidates)):
+                            continue
+                        candidatelist.append(candidates[0])
+                    if (len(candidatelist)):
+                        self._modified = True
+                    if (len(candidatelist) == 1):
+                        unit.target = candidatelist[0].target
+                        self.status.markFuzzy(unit, True)
+                    else:
+                        score_list = []
+                        dic = {}
+                        for candidate in candidatelist:
+                            try:
+                                score = int(candidate.getnotes("translator").rstrip('%'))
+                            except:
+                                pass
+                            dic[(candidate.source, score)] = candidate.target
+                            if (not score_list.count(score)):
+                                score_list.append(score)
+                        score_list.sort()
+                        score_list.reverse()
                         for score in score_list:
                             try:
                                 unit.target = dic[(unit.source, score)]
                                 self.status.markFuzzy(unit, True)
-                                self._modified = True
                                 break
                             except KeyError:
                                 pass
-            self.lookupProcess(lookupTM, index - 1)
-        
+            self.emitNewUnits()
+            self.emitReadyForSave()
+            return
+    
     def lookupText(self):
-        foundlist = []
+        lookupTM = self.getLookupPath()
+        if (not len(lookupTM)):
+            return
         if (not len(self.filteredList)):
             return
         unit = self.filteredList[self.currentUnitIndex]
-        dummyfile = wStringIO.StringIO(unit)
-        inputfile = po.pofile(dummyfile)
-        lookupTM = self.getLookupPath()
-        if (not len(lookupTM)):
-            QtGui.QMessageBox.warning(None, self.tr("No Translation Memory"), self.tr("Translation Memory Not Found"))
-            return
-        for i in range(len(lookupTM)):
-            found = tm.autoTranslate(lookupTM[i], inputfile)
-            foundlist.append(found)
-        self.emit(QtCore.SIGNAL("FoundTextInTM"), foundlist)
+        candidateslist = self.lookupProcess(lookupTM, unit)
+        self.emit(QtCore.SIGNAL("candidates"), candidateslist)
     
     def emitReadyForSave(self):
         self.emit(QtCore.SIGNAL("readyForSave"), self._modified) 

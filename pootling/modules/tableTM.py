@@ -19,15 +19,15 @@ class tableTM(QtGui.QDialog):
         self.connect(self.ui.tblTM, QtCore.SIGNAL("currentCellChanged(int, int, int, int)"), self.getCurrentTarget)
         self.connect(self.ui.tblTM, QtCore.SIGNAL("itemDoubleClicked(QTableWidgetItem *)"), self.emitTarget)
         
-    def fillTable(self, foundlist):
+    def fillTable(self, candidateslist):
         '''fill each found unit into table
-        @param foundlist:list of pofile object'''
+        @param candidateslist:list of pofile object'''
         self.ui.tblTM.clear()
         self.ui.tblTM.setHorizontalHeaderLabels(self.headerLabels)
         self.ui.tblTM.setSortingEnabled(False)
         self.ui.tblTM.setRowCount(0)
-        for i in range(len(foundlist)):
-            for unit in foundlist[i].units:
+        for candidates in candidateslist:
+            for unit in candidates:
                 row = self.ui.tblTM.rowCount()
                 self.ui.tblTM.setRowCount(row + 1)
                 item = QtGui.QTableWidgetItem(unit.source)
@@ -36,6 +36,7 @@ class tableTM(QtGui.QDialog):
                 
                 item = QtGui.QTableWidgetItem(unit.target)
                 self.ui.tblTM.setItem(row, 1, item)
+                
         self.ui.tblTM.setSortingEnabled(True)
         self.ui.tblTM.sortItems(0)
         self.ui.tblTM.resizeRowsToContents()
