@@ -53,14 +53,46 @@ class TestHTML2PO:
         """test that we can extract the <title> tag"""
         self.check_single("<html><head><title>My title</title></head><body></body></html>", "My title")
 
+    def test_title_with_linebreak(self):
+        """Test a linebreak in the <title> tag"""
+        htmltext = '''<html>
+<head>
+  <title>My
+title</title>
+</head>
+<body>
+</body>
+</html>
+'''
+        self.check_single(htmltext, "My title")
+
     def test_meta(self):
-        """test that we can extract certian <meta> info from <head>"""
+        """Test that we can extract certain <meta> info from <head>."""
         self.check_single('''<html><head><meta name="keywords" content="these are keywords"></head><body></body></html>''', "these are keywords")
 
     def test_tag_p(self):
         """test that we can extract the <p> tag"""
         self.check_single("<html><head></head><body><p>A paragraph.</p></body></html>", "A paragraph.")
         markup = "<p>First line.<br>Second line.</p>"
+        pofile = self.html2po(markup)
+        self.compareunit(pofile, 1, "First line.<br>Second line.")
+
+    def test_tag_p_with_linebreak(self):
+        """Test newlines within the <p> tag."""
+        htmltext = '''<html>
+<head>
+</head>
+<body>
+<p>
+A paragraph is a section in a piece of writing, usually highlighting a
+particular point or topic. It always begins on a new line and usually
+with indentation, and it consists of at least one sentence.
+</p>
+</body>
+</html>
+'''
+        self.check_single(htmltext, "A paragraph is a section in a piece of writing, usually highlighting a particular point or topic. It always begins on a new line and usually with indentation, and it consists of at least one sentence.")
+        markup = "<p>First\nline.<br>Second\nline.</p>"
         pofile = self.html2po(markup)
         self.compareunit(pofile, 1, "First line.<br>Second line.")
 
@@ -71,9 +103,43 @@ class TestHTML2PO:
         pofile = self.html2po(markup)
         self.compareunit(pofile, 1, "First line.<br>Second line.")
 
+    def test_tag_div_with_linebreaks(self):
+        """Test linebreaks within a <div> tag."""
+        htmltext = '''<html>
+<head>
+</head>
+<body>
+<div>
+A paragraph is a section in a piece of writing, usually highlighting a
+particular point or topic. It always begins on a new line and usually
+with indentation, and it consists of at least one sentence.
+</div>
+</body>
+</html>
+'''
+        self.check_single(htmltext, "A paragraph is a section in a piece of writing, usually highlighting a particular point or topic. It always begins on a new line and usually with indentation, and it consists of at least one sentence.")
+        markup = "<div>First\nline.<br>Second\nline.</div>"
+        pofile = self.html2po(markup)
+        self.compareunit(pofile, 1, "First line.<br>Second line.")
+
     def test_tag_a(self):
         """test that we can extract the <a> tag"""
-        self.check_single("<html><head></head><body><p>A paragraph with <a>hyperlink</a>.</p></body></html>", "A paragraph with <a>hyperlink</a>.")
+        self.check_single('<html><head></head><body><p>A paragraph with <a href="http://translate.org.za/">hyperlink</a>.</p></body></html>', 'A paragraph with <a href="http://translate.org.za/">hyperlink</a>.')
+
+    def test_tag_a_with_linebreak(self):
+        """Test that we can extract the <a> tag with newlines in it."""
+        htmltext = '''<html>
+<head>
+</head>
+<body>
+<p>A
+paragraph
+with <a
+href="http://translate.org.za/">hyperlink</a>
+and
+newlines.</p></body></html>
+'''
+        self.check_single(htmltext, 'A paragraph with <a href="http://translate.org.za/">hyperlink</a> and newlines.')
 
     def test_tag_img(self):
         """test that we can extract the <a> tag"""
@@ -116,10 +182,22 @@ class TestHTML2PO:
     def test_address(self):
         """Test to see if the address element is extracted"""
         self.check_single("<body><address>My address</address></body>", "My address")
-        
+         
     def test_headings(self):
         """Test to see if the h* elements are extracted"""
         markup = "<html><head></head><body><h1>Heading One</h1><h2>Heading Two</h2><h3>Heading Three</h3><h4>Heading Four</h4><h5>Heading Five</h5><h6>Heading Six</h6></body></html>"
+        pofile = self.html2po(markup)
+        self.countunits(pofile, 6)
+        self.compareunit(pofile, 1, "Heading One")
+        self.compareunit(pofile, 2, "Heading Two")
+        self.compareunit(pofile, 3, "Heading Three")
+        self.compareunit(pofile, 4, "Heading Four")
+        self.compareunit(pofile, 5, "Heading Five")
+        self.compareunit(pofile, 6, "Heading Six")
+
+    def test_headings_with_linebreaks(self):
+        """Test to see if h* elements with newlines can be extracted"""
+        markup = "<html><head></head><body><h1>Heading\nOne</h1><h2>Heading\nTwo</h2><h3>Heading\nThree</h3><h4>Heading\nFour</h4><h5>Heading\nFive</h5><h6>Heading\nSix</h6></body></html>"
         pofile = self.html2po(markup)
         self.countunits(pofile, 6)
         self.compareunit(pofile, 1, "Heading One")
