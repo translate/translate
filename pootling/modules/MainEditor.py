@@ -163,9 +163,8 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("candidates"), self.table.fillTable)
         self.connect(self.table, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
         
-        
         self.connect(self.dockOverview, QtCore.SIGNAL("lookupText"), self.operator.lookupText)
-        self.connect(self.operator, QtCore.SIGNAL("FoundTextInTM"), self.dockOverview.fillMenu)
+        self.connect(self.operator, QtCore.SIGNAL("candidates"), self.dockOverview.fillMenu)
         
         # Edit Header
         self.headerDialog = Header(self, self.operator)

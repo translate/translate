@@ -229,8 +229,17 @@ class Operator(QtCore.QObject):
             self.emitUpdateUnit()
             if (World.settings.value("headerAuto", QtCore.QVariant(True)).toBool()):
                 self.emit(QtCore.SIGNAL("headerAuto"))
-            self.store.savefile(fileName)
-            self.emitReadyForSave()
+            
+            try:
+                self.store.savefile(fileName)
+                self.emitReadyForSave()
+            except Exception, e:
+                QtGui.QMessageBox.critical(None, 
+                                        'Error', 
+                                        'Error while trying to write file ' 
+                                        + fileName  + 
+                                        '\n' + str(e))
+                return
         
         
     def modified(self):
@@ -256,7 +265,7 @@ class Operator(QtCore.QObject):
             return
         unit = self.getCurrentUnit()
         # update target for current unit
-        unit.target = unicode(target)
+        unit.settarget(unicode(target))
         if (unit.target):
             self.status.markTranslated(unit, True)
         else:

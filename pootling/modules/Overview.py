@@ -71,10 +71,10 @@ class OverviewDock(QtGui.QDockWidget):
         self.menu = QtGui.QMenu()
         self.connect(self.menu, QtCore.SIGNAL("triggered(QAction *)"), self.menuTriggered)
     
-    def fillMenu (self, foundList):
+    def fillMenu (self, candidateslist):
         self.menu.clear()
-        for me in foundList:
-            for unit in me.units:
+        for candidates in candidateslist:
+            for unit in candidates:
                 self.menu.addAction(unit.target)
     
     def contextMenuEvent(self, e):
