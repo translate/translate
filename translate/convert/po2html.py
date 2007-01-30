@@ -29,6 +29,11 @@ try:
 except:
   textwrap = None
 
+try:
+  import tidy
+except:
+  tidy = None
+
 class po2html:
   """po2html can take a po file and generate html. best to give it a template file otherwise will just concat msgstrs"""
   def __init__(self, wrap=None):
@@ -54,7 +59,7 @@ class po2html:
  
   def mergefile(self, inputpo, templatetext):
     """converts a file to .po format"""
-    htmlresult = templatetext
+    htmlresult = templatetext.replace("\n", " ")
     if isinstance(htmlresult, str):
       #TODO: get the correct encoding
       htmlresult = htmlresult.decode('utf-8')
@@ -66,8 +71,11 @@ class po2html:
       msgid = thepo.source
       msgstr = self.wrapmessage(thepo.target)
       if msgstr.strip():
-        htmlresult = htmlresult.replace(msgid, msgstr)
-    return htmlresult.encode('utf-8')
+        htmlresult = htmlresult.replace(msgid, msgstr, 1)
+    htmlresult = htmlresult.encode('utf-8')
+    if tidy:
+      htmlresult = str(tidy.parseString(htmlresult))
+    return htmlresult
 
 def converthtml(inputfile, outputfile, templatefile, wrap=None, includefuzzy=False):
   """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""

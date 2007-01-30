@@ -63,13 +63,16 @@ localizers. To that end the aim is to work towards creating tools and
 documentation that allows localizers to focus on what they do best: translating
 software.
 
-System Requirements
--------------------
+Requirements
+------------
 Python 2.3 recommended.
 
 The Toolkit may still work using Python 2.2 but is now most extensively tested 
 using Python 2.3.  If you experience any errors and are using Python 2.2 then 
 please first check that the error also occurs in 2.3 before reporting it as a bug.
+
+The python wrappers to htmltidy is needed for po2html.
+http://utidylib.berlios.de/
 
 The programs have been tested on Linux and Windows.
 
