@@ -75,7 +75,7 @@ class MainWindow(QtGui.QMainWindow):
         self.dockComment = CommentDock(self)
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.dockComment)
         self.ui.menuWindow.insertAction(sepAction, self.dockComment.toggleViewAction())
-         
+       
         #add widgets to statusbar
         self.statusfuzzy = QtGui.QLabel()
         pixmap = QtGui.QPixmap("../images/fuzzy.png")
@@ -95,6 +95,16 @@ class MainWindow(QtGui.QMainWindow):
 
         #create operator
         self.operator = Operator()
+        
+         # TM table
+        self.table = tableTM.tableTM(self)
+        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.table)
+        self.ui.menuWindow.insertAction(sepAction, self.table.toggleViewAction())
+        self.connect(self.operator, QtCore.SIGNAL("candidates"), self.table.fillTable)
+        self.connect(self.table, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
+        
+        self.connect(self.dockOverview, QtCore.SIGNAL("lookupText"), self.operator.lookupText)
+        self.connect(self.operator, QtCore.SIGNAL("candidates"), self.dockOverview.fillMenu)
         
         #Help menu of aboutQt
         self.ui.menuHelp.addSeparator()
@@ -132,9 +142,6 @@ class MainWindow(QtGui.QMainWindow):
         # "replaceText" sends text field, start, length, and text to replace.
         self.connect(self.operator, QtCore.SIGNAL("replaceText"), self.dockTUview.replaceText)
         self.connect(self.operator, QtCore.SIGNAL("replaceText"), self.dockComment.replaceText)
-        
-        # Edit menu action
-        self.connect(self.ui.actionComment, QtCore.SIGNAL("triggered()"), self.dockComment.show)
        
        # Goto menu action
         self.connect(self.ui.actionGoTo, QtCore.SIGNAL("triggered()"), self.showGoto)

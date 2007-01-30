@@ -36,7 +36,7 @@ class TUview(QtGui.QDockWidget):
         self.setFeatures(QtGui.QDockWidget.DockWidgetClosable)
         self.ui.lblComment.hide()
         self.ui.txtTarget.setReadOnly(True)
-##        #support only qt4.2
+        #support only qt4.2
 ##        self.ui.txtTarget.moveCursor(QtGui.QTextCursor.Start, QtGui.QTextCursor.MoveAnchor )
         self.ui.txtTarget.setWhatsThis("<h3>Translated String</h3>This editor displays and lets you edit the translation of the currently displayed string.")
         self.ui.txtSource.setWhatsThis("<h3>Original String</h3>This part of the window shows you the original string of the currently displayed entry. <br>You can not edit this string.")

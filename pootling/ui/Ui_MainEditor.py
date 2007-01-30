@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Thu Jan 25 09:55:58 2007
+# Created: Tue Jan 30 11:36:39 2007
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -33,21 +33,8 @@ class Ui_MainWindow(object):
         self.menubar.setGeometry(QtCore.QRect(0,0,498,30))
         self.menubar.setObjectName("menubar")
 
-        self.menuEdit = QtGui.QMenu(self.menubar)
-        self.menuEdit.setObjectName("menuEdit")
-
-        self.menuWindow = QtGui.QMenu(self.menubar)
-        self.menuWindow.setObjectName("menuWindow")
-
-        self.menuToolbars = QtGui.QMenu(self.menuWindow)
-        self.menuToolbars.setObjectName("menuToolbars")
-
-        self.menuView = QtGui.QMenu(self.menubar)
-        self.menuView.setEnabled(True)
-        self.menuView.setObjectName("menuView")
-
-        self.menuGo = QtGui.QMenu(self.menubar)
-        self.menuGo.setObjectName("menuGo")
+        self.menuHelp = QtGui.QMenu(self.menubar)
+        self.menuHelp.setObjectName("menuHelp")
 
         self.menuFile = QtGui.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
@@ -56,8 +43,15 @@ class Ui_MainWindow(object):
         self.menuOpen_Recent.setIcon(QtGui.QIcon("../images/open.png"))
         self.menuOpen_Recent.setObjectName("menuOpen_Recent")
 
-        self.menuHelp = QtGui.QMenu(self.menubar)
-        self.menuHelp.setObjectName("menuHelp")
+        self.menuEdit = QtGui.QMenu(self.menubar)
+        self.menuEdit.setObjectName("menuEdit")
+
+        self.menuView = QtGui.QMenu(self.menubar)
+        self.menuView.setEnabled(True)
+        self.menuView.setObjectName("menuView")
+
+        self.menuGo = QtGui.QMenu(self.menubar)
+        self.menuGo.setObjectName("menuGo")
 
         self.menuBookmark = QtGui.QMenu(self.menubar)
         self.menuBookmark.setObjectName("menuBookmark")
@@ -67,6 +61,12 @@ class Ui_MainWindow(object):
 
         self.menuSettings = QtGui.QMenu(self.menubar)
         self.menuSettings.setObjectName("menuSettings")
+
+        self.menuWindow = QtGui.QMenu(self.menubar)
+        self.menuWindow.setObjectName("menuWindow")
+
+        self.menuToolbars = QtGui.QMenu(self.menuWindow)
+        self.menuToolbars.setObjectName("menuToolbars")
         MainWindow.setMenuBar(self.menubar)
 
         self.statusbar = QtGui.QStatusBar(MainWindow)
@@ -182,15 +182,6 @@ class Ui_MainWindow(object):
         self.actionLast.setIcon(QtGui.QIcon("../images/last.png"))
         self.actionLast.setObjectName("actionLast")
 
-        self.actionShowDetail = QtGui.QAction(MainWindow)
-        self.actionShowDetail.setObjectName("actionShowDetail")
-
-        self.actionShowComment = QtGui.QAction(MainWindow)
-        self.actionShowComment.setObjectName("actionShowComment")
-
-        self.actionShowOverview = QtGui.QAction(MainWindow)
-        self.actionShowOverview.setObjectName("actionShowOverview")
-
         self.actionCopySource2Target = QtGui.QAction(MainWindow)
         self.actionCopySource2Target.setEnabled(False)
         self.actionCopySource2Target.setObjectName("actionCopySource2Target")
@@ -238,10 +229,6 @@ class Ui_MainWindow(object):
         self.actionPreferences = QtGui.QAction(MainWindow)
         self.actionPreferences.setIcon(QtGui.QIcon("../images/configure.png"))
         self.actionPreferences.setObjectName("actionPreferences")
-
-        self.actionComment = QtGui.QAction(MainWindow)
-        self.actionComment.setCheckable(True)
-        self.actionComment.setObjectName("actionComment")
 
         self.actionToolbars = QtGui.QAction(MainWindow)
         self.actionToolbars.setObjectName("actionToolbars")
@@ -294,6 +281,19 @@ class Ui_MainWindow(object):
 
         self.action_TM = QtGui.QAction(MainWindow)
         self.action_TM.setObjectName("action_TM")
+        self.menuHelp.addAction(self.actionAbout)
+        self.menuHelp.addAction(self.actionAboutQT)
+        self.menuOpen_Recent.addAction(self.actionClear)
+        self.menuOpen_Recent.addSeparator()
+        self.menuFile.addAction(self.actionOpenInNewWindow)
+        self.menuFile.addAction(self.actionOpen)
+        self.menuFile.addAction(self.menuOpen_Recent.menuAction())
+        self.menuFile.addAction(self.action_Close)
+        self.menuFile.addSeparator()
+        self.menuFile.addAction(self.actionSave)
+        self.menuFile.addAction(self.actionSaveas)
+        self.menuFile.addSeparator()
+        self.menuFile.addAction(self.actionExit)
         self.menuEdit.addAction(self.actionUndo)
         self.menuEdit.addAction(self.actionRedo)
         self.menuEdit.addSeparator()
@@ -311,9 +311,6 @@ class Ui_MainWindow(object):
         self.menuEdit.addAction(self.actionCopySource2Target)
         self.menuEdit.addAction(self.actionToggleFuzzy)
         self.menuEdit.addAction(self.actionEdit_Header)
-        self.menuWindow.addSeparator()
-        self.menuWindow.addSeparator()
-        self.menuWindow.addAction(self.menuToolbars.menuAction())
         self.menuView.addAction(self.actionFilterFuzzy)
         self.menuView.addAction(self.actionFilterTranslated)
         self.menuView.addAction(self.actionFilterUntranslated)
@@ -323,19 +320,6 @@ class Ui_MainWindow(object):
         self.menuGo.addAction(self.actionLast)
         self.menuGo.addSeparator()
         self.menuGo.addAction(self.actionGoTo)
-        self.menuOpen_Recent.addAction(self.actionClear)
-        self.menuOpen_Recent.addSeparator()
-        self.menuFile.addAction(self.actionOpenInNewWindow)
-        self.menuFile.addAction(self.actionOpen)
-        self.menuFile.addAction(self.menuOpen_Recent.menuAction())
-        self.menuFile.addAction(self.action_Close)
-        self.menuFile.addSeparator()
-        self.menuFile.addAction(self.actionSave)
-        self.menuFile.addAction(self.actionSaveas)
-        self.menuFile.addSeparator()
-        self.menuFile.addAction(self.actionExit)
-        self.menuHelp.addAction(self.actionAbout)
-        self.menuHelp.addAction(self.actionAboutQT)
         self.menuBookmark.addAction(self.actionAddBookmarks)
         self.menuBookmark.addAction(self.actionClearBookmarks)
         self.menuBookmark.addSeparator()
@@ -343,6 +327,9 @@ class Ui_MainWindow(object):
         self.menu_TM.addAction(self.actionAuto_translate)
         self.menuSettings.addAction(self.actionPreferences)
         self.menuSettings.addAction(self.action_TM)
+        self.menuWindow.addSeparator()
+        self.menuWindow.addSeparator()
+        self.menuWindow.addAction(self.menuToolbars.menuAction())
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
         self.menubar.addAction(self.menuView.menuAction())
@@ -376,17 +363,17 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(self.tr("Form"))
-        self.menuEdit.setTitle(self.tr("&Edit"))
-        self.menuWindow.setTitle(self.tr("&Window"))
-        self.menuToolbars.setTitle(self.tr("Toolbars"))
-        self.menuView.setTitle(self.tr("&View"))
-        self.menuGo.setTitle(self.tr("&Go"))
+        self.menuHelp.setTitle(self.tr("&Help"))
         self.menuFile.setTitle(self.tr("&File"))
         self.menuOpen_Recent.setTitle(self.tr("Open &Recent"))
-        self.menuHelp.setTitle(self.tr("&Help"))
+        self.menuEdit.setTitle(self.tr("&Edit"))
+        self.menuView.setTitle(self.tr("&View"))
+        self.menuGo.setTitle(self.tr("&Go"))
         self.menuBookmark.setTitle(self.tr("&Bookmarks"))
         self.menu_TM.setTitle(self.tr("&TM"))
         self.menuSettings.setTitle(self.tr("&Settings"))
+        self.menuWindow.setTitle(self.tr("&Window"))
+        self.menuToolbars.setTitle(self.tr("Toolbars"))
         self.toolStandard.setWindowTitle(self.tr("Standard Toolbar"))
         self.toolNavigation.setWindowTitle(self.tr("Navigation Toolbar"))
         self.toolFilter.setWindowTitle(self.tr("Filter Toolbar"))
@@ -442,9 +429,6 @@ class Ui_MainWindow(object):
         self.actionLast.setText(self.tr("&Last"))
         self.actionLast.setWhatsThis(self.tr("<h3>Last</h3>Move to last row of the table."))
         self.actionLast.setShortcut(self.tr("Ctrl+PgDown"))
-        self.actionShowDetail.setText(self.tr("Show Detail"))
-        self.actionShowComment.setText(self.tr("Show Comment"))
-        self.actionShowOverview.setText(self.tr("Show Overview"))
         self.actionCopySource2Target.setText(self.tr("Copy Source to Target"))
         self.actionCopySource2Target.setShortcut(self.tr("F2"))
         self.actionToggleFuzzy.setText(self.tr("Toggle fuzzy"))
@@ -467,7 +451,6 @@ class Ui_MainWindow(object):
         self.actionEdit_Header.setStatusTip(self.tr("Open the dialog to edit the header information."))
         self.actionEdit_Header.setShortcut(self.tr("Ctrl+H"))
         self.actionPreferences.setText(self.tr("&Preferences..."))
-        self.actionComment.setText(self.tr("Comment"))
         self.actionToolbars.setText(self.tr("Toolbars"))
         self.actionFilterFuzzy.setText(self.tr("Fuzzy"))
         self.actionFilterFuzzy.setToolTip(self.tr("Hide/Show Fuzzy Items"))

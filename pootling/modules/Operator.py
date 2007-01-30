@@ -18,6 +18,7 @@
 #
 # This module is working on Operator.
 
+import pickle
 from PyQt4 import QtCore, QtGui
 from translate.storage import factory
 from translate.storage import po
@@ -434,13 +435,17 @@ class Operator(QtCore.QObject):
         lookupTM = []
         POLookup = World.settings.value("POLookup").toBool()
         TMXLookup = World.settings.value("TMXLookup").toBool()
+        XLIFFLookup = World.settings.value("XLIFFLookup").toBool()
         popath = str(World.settings.value("PODictionary").toString())
         tmxpath = str(World.settings.value("TMXDictionary").toString())
+        xliffpath = str(World.settings.value("XLIFFDictionary").toString())
         
         if (POLookup and popath):
             lookupTM.append(popath)
         if (TMXLookup and tmxpath):
             lookupTM.append(tmxpath)
+        if (XLIFFLookup and xliffpath):
+            lookupTM.append(xliffpath)
         if (not len(lookupTM)):
             QtGui.QMessageBox.warning(None, self.tr("No Translation Memory"), self.tr("Translation Memory Not Found"))
         return lookupTM
@@ -458,56 +463,32 @@ class Operator(QtCore.QObject):
     
     def lookupProcess(self, lookupTM, units):
         '''lookup process'''
-        units_is_lists = isinstance(units, list)
+        # FIXME: too slow process to lookup
         
-        matcher = []
-        #FIXME: tmfile might be broken file
+        memo = []
         for i in range(len(lookupTM)):
-            memo = factory.getobject(lookupTM[i])
-            matcher.append(match.matcher(memo))
+            #FIXME: tmfile might be broken file
+            memo.append(factory.getobject(lookupTM[i]))
+        matcher = match.matcher(memo)
         
-        #FIXME: matcher might be empty
-        if (not units_is_lists):
-            candidateslist = []
-            for i in range(len(matcher)):
-                candidates = matcher[i].matches(units.source)
-                candidateslist.append(candidates)
-            return candidateslist
+        if (not isinstance(units, list)):
+            candidates = matcher.matches(units.source)
+            return candidates
         else:
             for unit in units:
-                candidatelist = []
-                if (not (unit.istranslated() or unit.isfuzzy())):
-                    for i in range(len(matcher)):
-                        candidates = matcher[i].matches(unit.source)
-                        #get the best candidates
-                        if (not len(candidates)):
-                            continue
-                        candidatelist.append(candidates[0])
-                    if (len(candidatelist)):
-                        self._modified = True
-                    if (len(candidatelist) == 1):
-                        unit.target = candidatelist[0].target
-                        self.status.markFuzzy(unit, True)
+                if (unit.istranslated() or unit.isfuzzy()):
+                    continue
+                else:
+                    candidates = matcher.matches(unit.source)
+                    # no condidates search in next TM
+                    if (not candidates):
+                        continue
                     else:
-                        score_list = []
-                        dic = {}
-                        for candidate in candidatelist:
-                            try:
-                                score = int(candidate.getnotes("translator").rstrip('%'))
-                            except:
-                                pass
-                            dic[(candidate.source, score)] = candidate.target
-                            if (not score_list.count(score)):
-                                score_list.append(score)
-                        score_list.sort()
-                        score_list.reverse()
-                        for score in score_list:
-                            try:
-                                unit.target = dic[(unit.source, score)]
-                                self.status.markFuzzy(unit, True)
-                                break
-                            except KeyError:
-                                pass
+                        #FIXME: in XLiff, it is possible to have alternatives translation, get just the best candidates is not enough
+                        # get the best candidates
+                        unit.target = candidates[0].target
+                        self.status.markFuzzy(unit, True)
+                        self._modified = True
             self.emitNewUnits()
             self.emitReadyForSave()
             return
@@ -519,8 +500,8 @@ class Operator(QtCore.QObject):
         if (not len(self.filteredList)):
             return
         unit = self.filteredList[self.currentUnitIndex]
-        candidateslist = self.lookupProcess(lookupTM, unit)
-        self.emit(QtCore.SIGNAL("candidates"), candidateslist)
+        candidates = self.lookupProcess(lookupTM, unit)
+        self.emit(QtCore.SIGNAL("candidates"), candidates)
     
     def emitReadyForSave(self):
         self.emit(QtCore.SIGNAL("readyForSave"), self._modified) 

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Wed Jan 24 14:31:12 2007
+# Created: Mon Jan 29 10:33:06 2007
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -31,7 +31,7 @@ class Ui_Form(object):
         return QtGui.QApplication.translate("Form", string, None, QtGui.QApplication.UnicodeUTF8)
 
     def retranslateUi(self, Form):
-        Form.setWindowTitle(self.tr("Form"))
+        Form.setWindowTitle(self.tr("Lookup"))
         self.tblTM.setRowCount(0)
         self.tblTM.setColumnCount(2)
         self.tblTM.clear()

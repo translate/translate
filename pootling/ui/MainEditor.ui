@@ -51,62 +51,12 @@
      <height>30</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuEdit" >
+   <widget class="QMenu" name="menuHelp" >
     <property name="title" >
-     <string>&amp;Edit</string>
+     <string>&amp;Help</string>
     </property>
-    <addaction name="actionUndo" />
-    <addaction name="actionRedo" />
-    <addaction name="separator" />
-    <addaction name="actionCut" />
-    <addaction name="actionCopy" />
-    <addaction name="actionPaste" />
-    <addaction name="separator" />
-    <addaction name="actionSelectAll" />
-    <addaction name="separator" />
-    <addaction name="actionFind" />
-    <addaction name="actionFindPrevious" />
-    <addaction name="actionFindNext" />
-    <addaction name="actionReplace" />
-    <addaction name="separator" />
-    <addaction name="actionCopySource2Target" />
-    <addaction name="actionToggleFuzzy" />
-    <addaction name="actionEdit_Header" />
-   </widget>
-   <widget class="QMenu" name="menuWindow" >
-    <property name="title" >
-     <string>&amp;Window</string>
-    </property>
-    <widget class="QMenu" name="menuToolbars" >
-     <property name="title" >
-      <string>Toolbars</string>
-     </property>
-    </widget>
-    <addaction name="separator" />
-    <addaction name="separator" />
-    <addaction name="menuToolbars" />
-   </widget>
-   <widget class="QMenu" name="menuView" >
-    <property name="enabled" >
-     <bool>true</bool>
-    </property>
-    <property name="title" >
-     <string>&amp;View</string>
-    </property>
-    <addaction name="actionFilterFuzzy" />
-    <addaction name="actionFilterTranslated" />
-    <addaction name="actionFilterUntranslated" />
-   </widget>
-   <widget class="QMenu" name="menuGo" >
-    <property name="title" >
-     <string>&amp;Go</string>
-    </property>
-    <addaction name="actionFirst" />
-    <addaction name="actionPrevious" />
-    <addaction name="actionNext" />
-    <addaction name="actionLast" />
-    <addaction name="separator" />
-    <addaction name="actionGoTo" />
+    <addaction name="actionAbout" />
+    <addaction name="actionAboutQT" />
    </widget>
    <widget class="QMenu" name="menuFile" >
     <property name="title" >
@@ -132,12 +82,49 @@
     <addaction name="separator" />
     <addaction name="actionExit" />
    </widget>
-   <widget class="QMenu" name="menuHelp" >
+   <widget class="QMenu" name="menuEdit" >
     <property name="title" >
-     <string>&amp;Help</string>
+     <string>&amp;Edit</string>
     </property>
-    <addaction name="actionAbout" />
-    <addaction name="actionAboutQT" />
+    <addaction name="actionUndo" />
+    <addaction name="actionRedo" />
+    <addaction name="separator" />
+    <addaction name="actionCut" />
+    <addaction name="actionCopy" />
+    <addaction name="actionPaste" />
+    <addaction name="separator" />
+    <addaction name="actionSelectAll" />
+    <addaction name="separator" />
+    <addaction name="actionFind" />
+    <addaction name="actionFindPrevious" />
+    <addaction name="actionFindNext" />
+    <addaction name="actionReplace" />
+    <addaction name="separator" />
+    <addaction name="actionCopySource2Target" />
+    <addaction name="actionToggleFuzzy" />
+    <addaction name="actionEdit_Header" />
+   </widget>
+   <widget class="QMenu" name="menuView" >
+    <property name="enabled" >
+     <bool>true</bool>
+    </property>
+    <property name="title" >
+     <string>&amp;View</string>
+    </property>
+    <addaction name="actionFilterFuzzy" />
+    <addaction name="actionFilterTranslated" />
+    <addaction name="actionFilterUntranslated" />
+   </widget>
+   <widget class="QMenu" name="menuGo" >
+    <property name="title" >
+     <string>&amp;Go</string>
+    </property>
+    <addaction name="actionFirst" />
+    <addaction name="actionPrevious" />
+    <addaction name="actionNext" />
+    <addaction name="actionLast" />
+    <addaction name="separator" />
+    <addaction name="actionGoTo" />
    </widget>
    <widget class="QMenu" name="menuBookmark" >
     <property name="title" >
@@ -160,6 +147,19 @@
     </property>
     <addaction name="actionPreferences" />
     <addaction name="action_TM" />
+   </widget>
+   <widget class="QMenu" name="menuWindow" >
+    <property name="title" >
+     <string>&amp;Window</string>
+    </property>
+    <widget class="QMenu" name="menuToolbars" >
+     <property name="title" >
+      <string>Toolbars</string>
+     </property>
+    </widget>
+    <addaction name="separator" />
+    <addaction name="separator" />
+    <addaction name="menuToolbars" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
@@ -520,21 +520,6 @@
     <string>Ctrl+PgDown</string>
    </property>
   </action>
-  <action name="actionShowDetail" >
-   <property name="text" >
-    <string>Show Detail</string>
-   </property>
-  </action>
-  <action name="actionShowComment" >
-   <property name="text" >
-    <string>Show Comment</string>
-   </property>
-  </action>
-  <action name="actionShowOverview" >
-   <property name="text" >
-    <string>Show Overview</string>
-   </property>
-  </action>
   <action name="actionCopySource2Target" >
    <property name="enabled" >
     <bool>false</bool>
@@ -659,14 +644,6 @@
    </property>
    <property name="text" >
     <string>&amp;Preferences...</string>
-   </property>
-  </action>
-  <action name="actionComment" >
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
-   <property name="text" >
-    <string>Comment</string>
    </property>
   </action>
   <action name="actionToolbars" >
