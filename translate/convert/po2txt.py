@@ -24,6 +24,7 @@
 You can generate the po files using txt2po"""
 
 from translate.storage import po
+from translate.storage import txt
 from translate.misc import quote
 try:
   import textwrap
@@ -44,13 +45,13 @@ class po2txt:
   def convertfile(self, inputpo, includefuzzy):
     """converts a file to .po format"""
     txtresult = ""
-    for thepo in inputpo.units:
-      if thepo.isheader():
+    for pounit in inputpo.units:
+      if pounit.isheader():
         continue
-      if thepo.isblankmsgstr() or (not includefuzzy and thepo.isfuzzy()):
-        txtresult += self.wrapmessage(thepo.source) + "\n" + "\n"
+      if pounit.isblankmsgstr() or (not includefuzzy and pounit.isfuzzy()):
+        txtresult += self.wrapmessage(pounit.source) + "\n" + "\n"
       else:
-        txtresult += self.wrapmessage(thepo.target) + "\n" + "\n"
+        txtresult += self.wrapmessage(pounit.target) + "\n" + "\n"
     return txtresult.rstrip()
  
   def mergefile(self, inputpo, templatetext, includefuzzy):
@@ -58,14 +59,14 @@ class po2txt:
     txtresult = templatetext
     # TODO: make a list of blocks of text and translate them individually
     # rather than using replace
-    for thepo in inputpo.units:
-      if thepo.isheader():
+    for pounit in inputpo.units:
+      if pounit.isheader():
         continue
-      if not thepo.isfuzzy() or includefuzzy:
-        msgid = thepo.source
-        msgstr = self.wrapmessage(thepo.target)
-        if not thepo.isblankmsgstr():
-          txtresult = txtresult.replace(msgid, msgstr)
+      if not pounit.isfuzzy() or includefuzzy:
+        txtsource = pounit.source
+        txttarget = self.wrapmessage(pounit.target)
+        if not pounit.isblankmsgstr():
+          txtresult = txtresult.replace(txtsource, txttarget)
     return txtresult
 
 def converttxt(inputfile, outputfile, templatefile, wrap=None, includefuzzy=False):
