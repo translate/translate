@@ -6,11 +6,11 @@
     <x>0</x>
     <y>0</y>
     <width>350</width>
-    <height>340</height>
+    <height>350</height>
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Form</string>
+   <string>Translation Memory Settings</string>
   </property>
   <layout class="QGridLayout" >
    <property name="margin" >
@@ -19,6 +19,46 @@
    <property name="spacing" >
     <number>6</number>
    </property>
+   <item row="2" column="2" >
+    <widget class="QPushButton" name="btnClose" >
+     <property name="text" >
+      <string>&amp;Close</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1" >
+    <widget class="QPushButton" name="btnOk" >
+     <property name="text" >
+      <string>&amp;Ok</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>141</width>
+       <height>46</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="0" colspan="3" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>332</width>
+       <height>16</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
    <item row="0" column="0" colspan="3" >
     <widget class="QTabWidget" name="tabXliff" >
      <property name="currentIndex" >
@@ -35,28 +75,57 @@
        <property name="spacing" >
         <number>6</number>
        </property>
-       <item row="4" column="0" colspan="2" >
-        <spacer>
-         <property name="orientation" >
-          <enum>Qt::Vertical</enum>
+       <item row="1" column="0" >
+        <widget class="QFrame" name="frame_3" >
+         <property name="frameShape" >
+          <enum>QFrame::StyledPanel</enum>
          </property>
-         <property name="sizeHint" >
-          <size>
-           <width>301</width>
-           <height>221</height>
-          </size>
+         <property name="frameShadow" >
+          <enum>QFrame::Raised</enum>
          </property>
-        </spacer>
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>9</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="1" column="0" >
+           <widget class="QRadioButton" name="radPoFolder" >
+            <property name="text" >
+             <string>Folders</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" >
+           <widget class="QRadioButton" name="radPoFile" >
+            <property name="text" >
+             <string>Files</string>
+            </property>
+            <property name="checked" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" >
+           <widget class="QRadioButton" name="radPoFolder_sub" >
+            <property name="text" >
+             <string>Folders and subfolders</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </item>
-       <item row="3" column="0" colspan="2" >
-        <widget class="Line" name="line" >
-         <property name="orientation" >
-          <enum>Qt::Horizontal</enum>
+       <item row="3" column="0" >
+        <widget class="QLineEdit" name="linePoFile" >
+         <property name="readOnly" >
+          <bool>false</bool>
          </property>
         </widget>
        </item>
-       <item row="0" column="0" colspan="2" >
-        <widget class="QLabel" name="label" >
+       <item row="2" column="0" >
+        <widget class="QLabel" name="label_11" >
          <property name="sizePolicy" >
           <sizepolicy>
            <hsizetype>1</hsizetype>
@@ -77,19 +146,38 @@
           </font>
          </property>
          <property name="text" >
-          <string>Path to PO translated file</string>
+          <string>Path to XLiff translated file</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="0" >
-        <widget class="QLineEdit" name="linePOfile" >
-         <property name="readOnly" >
-          <bool>false</bool>
+       <item row="0" column="0" >
+        <widget class="QLabel" name="label_10" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>1</hsizetype>
+           <vsizetype>1</vsizetype>
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font" >
+          <font>
+           <family>Sans Serif</family>
+           <pointsize>10</pointsize>
+           <weight>50</weight>
+           <italic>false</italic>
+           <bold>false</bold>
+           <underline>false</underline>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="text" >
+          <string>Scan options</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="1" >
-        <widget class="QPushButton" name="btnPOfile" >
+       <item row="3" column="1" >
+        <widget class="QPushButton" name="btnPoFile" >
          <property name="sizePolicy" >
           <sizepolicy>
            <hsizetype>1</hsizetype>
@@ -103,8 +191,8 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="0" >
-        <widget class="QCheckBox" name="poLookup" >
+       <item row="4" column="0" >
+        <widget class="QCheckBox" name="xliffLookup_3" >
          <property name="autoFillBackground" >
           <bool>false</bool>
          </property>
@@ -129,28 +217,8 @@
        <property name="spacing" >
         <number>6</number>
        </property>
-       <item row="4" column="0" colspan="2" >
-        <spacer>
-         <property name="orientation" >
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" >
-          <size>
-           <width>301</width>
-           <height>221</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="3" column="0" colspan="2" >
-        <widget class="Line" name="line_3" >
-         <property name="orientation" >
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1" >
-        <widget class="QPushButton" name="btnTMXfile" >
+       <item row="3" column="1" >
+        <widget class="QPushButton" name="btnPoFile" >
          <property name="sizePolicy" >
           <sizepolicy>
            <hsizetype>1</hsizetype>
@@ -164,8 +232,15 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="0" >
-        <widget class="QCheckBox" name="tmxLookup" >
+       <item row="3" column="0" >
+        <widget class="QLineEdit" name="lineTmxFile" >
+         <property name="readOnly" >
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0" >
+        <widget class="QCheckBox" name="xliffLookup_2" >
          <property name="autoFillBackground" >
           <bool>false</bool>
          </property>
@@ -177,15 +252,8 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0" >
-        <widget class="QLineEdit" name="lineTMXfile" >
-         <property name="readOnly" >
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0" >
-        <widget class="QLabel" name="label_4" >
+       <item row="2" column="0" >
+        <widget class="QLabel" name="label_9" >
          <property name="sizePolicy" >
           <sizepolicy>
            <hsizetype>1</hsizetype>
@@ -206,8 +274,76 @@
           </font>
          </property>
          <property name="text" >
-          <string>Path to TMX translated file</string>
+          <string>Path to XLiff translated file</string>
          </property>
+        </widget>
+       </item>
+       <item row="0" column="0" >
+        <widget class="QLabel" name="label_8" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>1</hsizetype>
+           <vsizetype>1</vsizetype>
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font" >
+          <font>
+           <family>Sans Serif</family>
+           <pointsize>10</pointsize>
+           <weight>50</weight>
+           <italic>false</italic>
+           <bold>false</bold>
+           <underline>false</underline>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="text" >
+          <string>Scan options</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" >
+        <widget class="QFrame" name="frame_2" >
+         <property name="frameShape" >
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow" >
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>9</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="1" column="0" >
+           <widget class="QRadioButton" name="radTmxFolder" >
+            <property name="text" >
+             <string>Folders</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" >
+           <widget class="QRadioButton" name="radTmxFile" >
+            <property name="text" >
+             <string>Files</string>
+            </property>
+            <property name="checked" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" >
+           <widget class="QRadioButton" name="radTmxFolder_sub" >
+            <property name="text" >
+             <string>Folders and subfolders</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
       </layout>
@@ -223,27 +359,7 @@
        <property name="spacing" >
         <number>6</number>
        </property>
-       <item row="4" column="0" colspan="2" >
-        <spacer>
-         <property name="orientation" >
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" >
-          <size>
-           <width>301</width>
-           <height>221</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="1" column="0" >
-        <widget class="QLineEdit" name="lineXliffFile" >
-         <property name="readOnly" >
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0" >
+       <item row="4" column="0" >
         <widget class="QCheckBox" name="xliffLookup" >
          <property name="autoFillBackground" >
           <bool>false</bool>
@@ -256,22 +372,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="1" >
-        <widget class="QPushButton" name="btnXLiffFile" >
-         <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>1</hsizetype>
-           <vsizetype>1</vsizetype>
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text" >
-          <string>&amp;Browse...</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0" >
+       <item row="2" column="0" >
         <widget class="QLabel" name="label_6" >
          <property name="sizePolicy" >
           <sizepolicy>
@@ -297,11 +398,94 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="0" colspan="2" >
-        <widget class="Line" name="line_5" >
-         <property name="orientation" >
-          <enum>Qt::Horizontal</enum>
+       <item row="3" column="1" >
+        <widget class="QPushButton" name="btnXLiffFile" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>1</hsizetype>
+           <vsizetype>1</vsizetype>
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
+         <property name="text" >
+          <string>&amp;Browse...</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0" >
+        <widget class="QLineEdit" name="lineXliffFile" >
+         <property name="readOnly" >
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0" >
+        <widget class="QLabel" name="label_7" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>1</hsizetype>
+           <vsizetype>1</vsizetype>
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font" >
+          <font>
+           <family>Sans Serif</family>
+           <pointsize>10</pointsize>
+           <weight>50</weight>
+           <italic>false</italic>
+           <bold>false</bold>
+           <underline>false</underline>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="text" >
+          <string>Scan options</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" >
+        <widget class="QFrame" name="frame" >
+         <property name="frameShape" >
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow" >
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>9</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="1" column="0" >
+           <widget class="QRadioButton" name="radXLiffFolder" >
+            <property name="text" >
+             <string>Folders</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" >
+           <widget class="QRadioButton" name="radXLiffFile" >
+            <property name="text" >
+             <string>Files</string>
+            </property>
+            <property name="checked" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" >
+           <widget class="QRadioButton" name="radXLiffFolder_sub" >
+            <property name="text" >
+             <string>Folders and subfolders</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
       </layout>
@@ -311,39 +495,6 @@
        <string>&amp;Database</string>
       </attribute>
      </widget>
-    </widget>
-   </item>
-   <item row="1" column="0" colspan="3" >
-    <spacer>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" >
-      <size>
-       <width>332</width>
-       <height>16</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item rowspan="2" row="2" column="0" >
-    <spacer>
-     <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" >
-      <size>
-       <width>231</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item rowspan="2" row="2" column="2" >
-    <widget class="QPushButton" name="btnClose" >
-     <property name="text" >
-      <string>&amp;Close</string>
-     </property>
     </widget>
    </item>
   </layout>
