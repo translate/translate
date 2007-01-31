@@ -314,6 +314,16 @@ msgstr ""
         print 'Expected Header:\n%s' % expected
         assert str(newpo) == expected
 
+    def test_merging_comments(self):
+        """Test that we can merge comments correctly"""
+        potsource = '''#. Don't do it!\n#: file.py:1\nmsgid "One"\nmsgstr ""\n''' 
+        posource = '''#. Don't do it!\n#: file.py:2\nmsgid "One"\nmsgstr "Een"\n'''
+        poexpected = '''#. Don't do it!\n#: file.py:1\nmsgid "One"\nmsgstr "Een"\n'''
+        newpo = self.convertpot(potsource, posource)
+        print newpo
+        newpounit = self.singleunit(newpo)
+        assert str(newpounit) == poexpected
+        
 class TestPOT2POCommand(test_convert.TestConvertCommand, TestPOT2PO):
     """Tests running actual pot2po commands on files"""
     convertmodule = pot2po
