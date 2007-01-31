@@ -77,7 +77,7 @@ class matcher:
             for candidate in candidates:
                 simpleunit = base.TranslationUnit(candidate.source)
                 simpleunit.target = candidate.target
-                simpleunit.addnote(candidate.getnotes())
+                simpleunit.addnote(candidate.getnotes(origin="translator"))
                 self.candidates.units.append(simpleunit)
         self.candidates.units.sort(sourcelencmp)
         if not self.candidates.units:
