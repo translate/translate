@@ -477,19 +477,21 @@ class Operator(QtCore.QObject):
             for unit in units:
                 if (unit.istranslated() or unit.isfuzzy()):
                     continue
-                else:
-                    candidates = matcher.matches(unit.source)
-                    # no condidates search in next TM
-                    if (not candidates):
-                        continue
-                    else:
-                        #FIXME: in XLiff, it is possible to have alternatives translation, get just the best candidates is not enough
-                        # get the best candidates
-                        unit.settarget(candidates[0].target)
-                        self.status.markTranslated(unit, True)
-                        self.status.markFuzzy(unit, True)
-                        self._modified = True
+                if (not unit.source):
+                    continue
+                candidates = matcher.matches(unit.source)
+                # no condidates search in next TM
+                if (not candidates):
+                    continue
+                if (not self._modified):
+                    self._modified = True
+                #FIXME: in XLiff, it is possible to have alternatives translation, get just the best candidates is not enough
+                # get the best candidates
+                unit.settarget(candidates[0].target)
+                self.status.markTranslated(unit, True)
+                self.status.markFuzzy(unit, True)
             self.emitNewUnits()
+            self.emitStatus()
             self.emitReadyForSave()
             return
     

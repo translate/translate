@@ -30,6 +30,7 @@ class tableTM(QtGui.QDockWidget):
         
         self.ui.tblTM.setEnabled(True)
         self.ui.tblTM.clear()
+        self.ui.tblTM.setHorizontalHeaderLabels(self.headerLabels)
         self.ui.tblTM.setSortingEnabled(False)
         self.ui.tblTM.setRowCount(0)
         for unit in candidates:
