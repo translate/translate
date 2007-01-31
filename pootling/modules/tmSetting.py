@@ -89,8 +89,8 @@ class tmSetting(QtGui.QDialog):
                          self,
                          "Select a TMX file to set as dictionary",
                          QtCore.QDir.homePath(),
-                         "Xliff file (*.xlf, *.xliff)")
-        self.ui.lineTMXfile.setText(path)
+                         "Xliff file (*.xlf *.xliff)")
+        self.ui.lineXliffFile.setText(path)
         World.settings.setValue("XLIFFDictionary", QtCore.QVariant(path))
     
     def setPOLookup(self):

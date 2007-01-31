@@ -18,7 +18,6 @@
 #
 # This module is working on Operator.
 
-import pickle
 from PyQt4 import QtCore, QtGui
 from translate.storage import factory
 from translate.storage import po
@@ -486,7 +485,8 @@ class Operator(QtCore.QObject):
                     else:
                         #FIXME: in XLiff, it is possible to have alternatives translation, get just the best candidates is not enough
                         # get the best candidates
-                        unit.target = candidates[0].target
+                        unit.settarget(candidates[0].target)
+                        self.status.markTranslated(unit, True)
                         self.status.markFuzzy(unit, True)
                         self._modified = True
             self.emitNewUnits()

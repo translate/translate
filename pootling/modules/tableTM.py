@@ -11,8 +11,10 @@ class tableTM(QtGui.QDockWidget):
         self.ui = Ui_Form()
         self.ui.setupUi(self.form)
         self.setWidget(self.form)
+        self.ui.tblTM.setEnabled(False)
         self.headerLabels = [self.tr("Similarity"),self.tr("Source"), self.tr("Target")]
         self.ui.tblTM.setColumnCount(len(self.headerLabels))
+        self.ui.tblTM.setHorizontalHeaderLabels(self.headerLabels)
         for i in range(len(self.headerLabels)):
             self.ui.tblTM.resizeColumnToContents(i)
             self.ui.tblTM.horizontalHeader().setResizeMode(i, QtGui.QHeaderView.Stretch)
@@ -26,8 +28,8 @@ class tableTM(QtGui.QDockWidget):
         '''fill each found unit into table
         @param candidateslist:list of pofile object'''
         
+        self.ui.tblTM.setEnabled(True)
         self.ui.tblTM.clear()
-        self.ui.tblTM.setHorizontalHeaderLabels(self.headerLabels)
         self.ui.tblTM.setSortingEnabled(False)
         self.ui.tblTM.setRowCount(0)
         for unit in candidates:

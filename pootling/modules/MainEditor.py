@@ -165,14 +165,6 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.action_lookup_Text, QtCore.SIGNAL("triggered()"), self.operator.lookupText)
         self.connect(self.ui.actionAuto_translate, QtCore.SIGNAL("triggered()"), self.operator.autoTranslate)
         
-        # TM table
-        self.table = tableTM.tableTM(self)
-        self.connect(self.operator, QtCore.SIGNAL("candidates"), self.table.fillTable)
-        self.connect(self.table, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
-        
-        self.connect(self.dockOverview, QtCore.SIGNAL("lookupText"), self.operator.lookupText)
-        self.connect(self.operator, QtCore.SIGNAL("candidates"), self.dockOverview.fillMenu)
-        
         # Edit Header
         self.headerDialog = Header(self, self.operator)
         self.connect(self.ui.actionEdit_Header, QtCore.SIGNAL("triggered()"), self.headerDialog.showDialog)
@@ -534,7 +526,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.action_lookup_Text.setEnabled(bool)
         self.ui.actionAuto_translate.setEnabled(bool)
         self.findBar.toggleViewAction().setVisible(bool)
-        
+    
 def main(inputFile = None):
     # set the path for QT in order to find the icons
     if __name__ == "__main__":
@@ -544,6 +536,7 @@ def main(inputFile = None):
     app = QtGui.QApplication(sys.argv)
     editor = MainWindow()
     editor.show()
+    
     if (inputFile):
         if os.path.exists(inputFile):
             editor.fileaction.setFileName(inputFile)
