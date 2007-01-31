@@ -46,18 +46,18 @@ class tmSetting(QtGui.QDialog):
             self.setWindowTitle("Setting Translation Memory")
             self.setModal(True)
             self.connect(self.ui.btnClose, QtCore.SIGNAL("clicked(bool)"), QtCore.SLOT("close()"))
-            self.connect(self.ui.btnPOfile, QtCore.SIGNAL("clicked(bool)"), self.setPOPath)
-            self.connect(self.ui.btnTMXfile, QtCore.SIGNAL("clicked(bool)"), self.setTMXPath)
+            self.connect(self.ui.btnPOFile, QtCore.SIGNAL("clicked(bool)"), self.setPOPath)
+            self.connect(self.ui.btnTMXFile, QtCore.SIGNAL("clicked(bool)"), self.setTMXPath)
             self.connect(self.ui.btnXLiffFile, QtCore.SIGNAL("clicked(bool)"), self.setXliffPath)
             self.connect(self.ui.poLookup, QtCore.SIGNAL("stateChanged(int)"), self.setPOLookup)
             self.connect(self.ui.tmxLookup, QtCore.SIGNAL("stateChanged(int)"), self.setTMXLookup)
             self.connect(self.ui.xliffLookup, QtCore.SIGNAL("stateChanged(int)"), self.setXliffLookup)
-        self.ui.linePOfile.setText(World.settings.value("PODictionary").toString())
-        self.ui.lineTMXfile.setText(World.settings.value("TMXDictionary").toString())
+        self.ui.linePOFile.setText(World.settings.value("PODictionary").toString())
+        self.ui.lineTMXFile.setText(World.settings.value("TMXDictionary").toString())
         self.ui.lineXliffFile.setText(World.settings.value("XLIFFDictionary").toString())
-        if (self.ui.linePOfile.text()):
+        if (self.ui.linePOFile.text()):
             self.ui.poLookup.setChecked(True)
-        if (self.ui.lineTMXfile.text()):
+        if (self.ui.lineTMXFile.text()):
             self.ui.tmxLookup.setChecked(True)
         if (self.ui.lineXliffFile.text()):
             self.ui.xliffLookup.setChecked(True)
@@ -70,7 +70,7 @@ class tmSetting(QtGui.QDialog):
                          "Select a PO file to set as dictionary",
                          QtCore.QDir.homePath(),
                          "PO file (*.po)")
-        self.ui.linePOfile.setText(path)
+        self.ui.linePOFile.setText(path)
         World.settings.setValue("PODictionary", QtCore.QVariant(path))
 
     def setTMXPath(self):
@@ -80,7 +80,7 @@ class tmSetting(QtGui.QDialog):
                          "Select a TMX file to set as dictionary",
                          QtCore.QDir.homePath(),
                          "TMX file (*.tmx)")
-        self.ui.lineTMXfile.setText(path)
+        self.ui.lineTMXFile.setText(path)
         World.settings.setValue("TMXDictionary", QtCore.QVariant(path))
     
     def setXliffPath(self):
