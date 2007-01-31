@@ -106,6 +106,7 @@ class Operator(QtCore.QObject):
             self.currentUnitIndex = unit.x_editor_filterIndex
             self.searchPointer = unit.x_editor_filterIndex
         self.emit(QtCore.SIGNAL("currentUnit"), unit)
+        self.lookupText()
     
     def getCurrentUnit(self):
         """return the current unit"""
@@ -173,6 +174,7 @@ class Operator(QtCore.QObject):
         else:
             unit = None
         self.emitUnit(unit)
+        
         
     def emitUpdateUnit(self):
         """emit "updateUnit" signal."""
@@ -445,8 +447,8 @@ class Operator(QtCore.QObject):
             lookupTM.append(tmxpath)
         if (XLIFFLookup and xliffpath):
             lookupTM.append(xliffpath)
-        if (not len(lookupTM)):
-            QtGui.QMessageBox.warning(None, self.tr("No Translation Memory"), self.tr("Translation Memory Not Found"))
+##        if (not len(lookupTM)):
+##            QtGui.QMessageBox.warning(None, self.tr("No Translation Memory"), self.tr("Translation Memory Not Found"))
         return lookupTM
         
     def autoTranslate(self):
@@ -475,9 +477,7 @@ class Operator(QtCore.QObject):
             return candidates
         else:
             for unit in units:
-                if (unit.istranslated() or unit.isfuzzy()):
-                    continue
-                if (not unit.source):
+                if (unit.istranslated() or unit.isfuzzy() or (not unit.source)):
                     continue
                 candidates = matcher.matches(unit.source)
                 # no condidates search in next TM

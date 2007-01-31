@@ -51,6 +51,7 @@ class MainWindow(QtGui.QMainWindow):
         self.setWindowTitle(World.settingApp + ' ' + __version__.ver)
         self.createRecentAction()
         self.createBookmarkAction()
+        self.clearBookmarks()
         
         app = QtGui.QApplication.instance()
         self.connect(app, QtCore.SIGNAL("focusChanged(QWidget *,QWidget *)"), self.focusChanged)    
@@ -102,9 +103,6 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.menuWindow.insertAction(sepAction, self.table.toggleViewAction())
         self.connect(self.operator, QtCore.SIGNAL("candidates"), self.table.fillTable)
         self.connect(self.table, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
-        
-        self.connect(self.dockOverview, QtCore.SIGNAL("lookupText"), self.operator.lookupText)
-        self.connect(self.operator, QtCore.SIGNAL("candidates"), self.dockOverview.fillMenu)
         
         #Help menu of aboutQt
         self.ui.menuHelp.addSeparator()

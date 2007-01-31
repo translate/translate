@@ -67,22 +67,6 @@ class OverviewDock(QtGui.QDockWidget):
         self.connect(self.ui.tableOverview, self.changedSignal, self.emitCurrentIndex)
         self.connect(self.ui.tableOverview.model(), QtCore.SIGNAL("layoutChanged()"), self.showFilteredItems)
         self.connect(self.ui.tableOverview, QtCore.SIGNAL("cellChanged(int, int)"), self.emitTargetChanged)
-        
-        self.menu = QtGui.QMenu()
-        self.connect(self.menu, QtCore.SIGNAL("triggered(QAction *)"), self.menuTriggered)
-    
-    def fillMenu (self, candidates):
-        self.menu.clear()
-        for unit in candidates:
-            self.menu.addAction(unit.target)
-    
-    def contextMenuEvent(self, e):
-        self.emit(QtCore.SIGNAL("lookupText"))
-        self.menu.exec_(e.globalPos())
-    
-    def menuTriggered(self, action):
-        target = action.text()
-        self.emit(QtCore.SIGNAL("targetChanged"), target)
     
     def closeEvent(self, event):
         """
@@ -182,7 +166,7 @@ class OverviewDock(QtGui.QDockWidget):
         if (hasattr(item, "data")):
             index = item.data(QtCore.Qt.UserRole).toInt()[0]
             self.emit(QtCore.SIGNAL("filteredIndex"), index)
-    
+        
     def emitTargetChanged(self, row, col):
         """
         emit targetChanged signal if target column has changed.

@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>350</width>
-    <height>350</height>
+    <width>400</width>
+    <height>370</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -19,6 +19,19 @@
    <property name="spacing" >
     <number>6</number>
    </property>
+   <item row="1" column="0" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>20</width>
+       <height>81</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
    <item row="0" column="0" colspan="3" >
     <widget class="QTabWidget" name="tabOptions" >
      <property name="currentIndex" >
@@ -35,7 +48,46 @@
        <property name="spacing" >
         <number>6</number>
        </property>
-       <item row="0" column="0" >
+       <item row="1" column="0" colspan="2" >
+        <widget class="QLabel" name="label_11" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>1</hsizetype>
+           <vsizetype>1</vsizetype>
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font" >
+          <font>
+           <family>Sans Serif</family>
+           <pointsize>10</pointsize>
+           <weight>50</weight>
+           <italic>false</italic>
+           <bold>false</bold>
+           <underline>false</underline>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="text" >
+          <string>Path to XLiff translated file</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0" colspan="2" >
+        <widget class="QCheckBox" name="poLookup" >
+         <property name="autoFillBackground" >
+          <bool>false</bool>
+         </property>
+         <property name="text" >
+          <string>LookUp</string>
+         </property>
+         <property name="checked" >
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0" colspan="2" >
         <widget class="QGroupBox" name="groupBox_3" >
          <property name="title" >
           <string>Scan</string>
@@ -74,19 +126,6 @@
          </layout>
         </widget>
        </item>
-       <item row="3" column="0" >
-        <widget class="QCheckBox" name="poLookup" >
-         <property name="autoFillBackground" >
-          <bool>false</bool>
-         </property>
-         <property name="text" >
-          <string>LookUp</string>
-         </property>
-         <property name="checked" >
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
        <item row="2" column="1" >
         <widget class="QPushButton" name="btnPOFile" >
          <property name="sizePolicy" >
@@ -102,8 +141,61 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0" >
-        <widget class="QLabel" name="label_11" >
+       <item row="2" column="0" >
+        <widget class="QLineEdit" name="linePOFile" >
+         <property name="readOnly" >
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_2" >
+      <attribute name="title" >
+       <string>&amp;TMX</string>
+      </attribute>
+      <layout class="QGridLayout" >
+       <property name="margin" >
+        <number>9</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item row="2" column="0" >
+        <widget class="QLineEdit" name="lineTMXFile" >
+         <property name="readOnly" >
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0" colspan="2" >
+        <widget class="QCheckBox" name="tmxLookup" >
+         <property name="autoFillBackground" >
+          <bool>false</bool>
+         </property>
+         <property name="text" >
+          <string>LookUp</string>
+         </property>
+         <property name="checked" >
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" colspan="2" >
+        <widget class="QLabel" name="label_9" >
          <property name="sizePolicy" >
           <sizepolicy>
            <hsizetype>1</hsizetype>
@@ -128,27 +220,7 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="0" >
-        <widget class="QLineEdit" name="linePOFile" >
-         <property name="readOnly" >
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="tab_2" >
-      <attribute name="title" >
-       <string>&amp;TMX</string>
-      </attribute>
-      <layout class="QGridLayout" >
-       <property name="margin" >
-        <number>9</number>
-       </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
-       <item row="0" column="0" >
+       <item row="0" column="0" colspan="2" >
         <widget class="QGroupBox" name="groupBox" >
          <property name="title" >
           <string>Scan</string>
@@ -187,52 +259,6 @@
          </layout>
         </widget>
        </item>
-       <item row="1" column="0" >
-        <widget class="QLabel" name="label_9" >
-         <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>1</hsizetype>
-           <vsizetype>1</vsizetype>
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="font" >
-          <font>
-           <family>Sans Serif</family>
-           <pointsize>10</pointsize>
-           <weight>50</weight>
-           <italic>false</italic>
-           <bold>false</bold>
-           <underline>false</underline>
-           <strikeout>false</strikeout>
-          </font>
-         </property>
-         <property name="text" >
-          <string>Path to XLiff translated file</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0" >
-        <widget class="QCheckBox" name="tmxLookup" >
-         <property name="autoFillBackground" >
-          <bool>false</bool>
-         </property>
-         <property name="text" >
-          <string>LookUp</string>
-         </property>
-         <property name="checked" >
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0" >
-        <widget class="QLineEdit" name="lineTMXFile" >
-         <property name="readOnly" >
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
        <item row="2" column="1" >
         <widget class="QPushButton" name="btnTMXFile" >
          <property name="sizePolicy" >
@@ -248,6 +274,19 @@
          </property>
         </widget>
        </item>
+       <item row="4" column="0" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="tabXliff" >
@@ -261,7 +300,14 @@
        <property name="spacing" >
         <number>6</number>
        </property>
-       <item row="0" column="0" >
+       <item row="2" column="0" >
+        <widget class="QLineEdit" name="lineXliffFile" >
+         <property name="readOnly" >
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0" colspan="2" >
         <widget class="QGroupBox" name="groupBox_2" >
          <property name="title" >
           <string>Scan</string>
@@ -300,29 +346,7 @@
          </layout>
         </widget>
        </item>
-       <item row="2" column="0" >
-        <widget class="QLineEdit" name="lineXliffFile" >
-         <property name="readOnly" >
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1" >
-        <widget class="QPushButton" name="btnXLiffFile" >
-         <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>1</hsizetype>
-           <vsizetype>1</vsizetype>
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text" >
-          <string>&amp;Browse...</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0" >
+       <item row="1" column="0" colspan="2" >
         <widget class="QLabel" name="label_6" >
          <property name="sizePolicy" >
           <sizepolicy>
@@ -348,7 +372,7 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="0" >
+       <item row="3" column="0" colspan="2" >
         <widget class="QCheckBox" name="xliffLookup" >
          <property name="autoFillBackground" >
           <bool>false</bool>
@@ -360,6 +384,34 @@
           <bool>false</bool>
          </property>
         </widget>
+       </item>
+       <item row="2" column="1" >
+        <widget class="QPushButton" name="btnXLiffFile" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>1</hsizetype>
+           <vsizetype>1</vsizetype>
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text" >
+          <string>&amp;Browse...</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>
@@ -379,10 +431,33 @@
        <property name="spacing" >
         <number>6</number>
        </property>
-       <item row="3" column="0" >
-        <widget class="QCheckBox" name="chkCaseSensitive" >
+       <item row="0" column="0" >
+        <widget class="QLabel" name="label" >
          <property name="text" >
-          <string>Case Sensitive</string>
+          <string>Similarity</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" >
+        <widget class="QLabel" name="label_2" >
+         <property name="text" >
+          <string>Maximum candidates</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1" >
+        <widget class="QSpinBox" name="spinSimilarity" >
+         <property name="maximum" >
+          <number>100</number>
+         </property>
+         <property name="minimum" >
+          <number>1</number>
+         </property>
+         <property name="singleStep" >
+          <number>1</number>
+         </property>
+         <property name="value" >
+          <number>75</number>
          </property>
         </widget>
        </item>
@@ -401,44 +476,54 @@
         </widget>
        </item>
        <item row="2" column="1" >
-        <widget class="QSpinBox" name="spinMaxLen" />
+        <widget class="QSpinBox" name="spinMaxLen" >
+         <property name="maximum" >
+          <number>100</number>
+         </property>
+         <property name="minimum" >
+          <number>1</number>
+         </property>
+         <property name="value" >
+          <number>70</number>
+         </property>
+        </widget>
        </item>
-       <item row="1" column="0" >
-        <widget class="QLabel" name="label_2" >
+       <item row="3" column="0" >
+        <widget class="QCheckBox" name="chkCaseSensitive" >
          <property name="text" >
-          <string>Maximum candidates</string>
+          <string>Case Sensitive</string>
          </property>
         </widget>
        </item>
        <item row="1" column="1" >
-        <widget class="QSpinBox" name="spinMaxCandidate" />
-       </item>
-       <item row="0" column="1" >
-        <widget class="QSpinBox" name="spinSimilarity" />
-       </item>
-       <item row="0" column="0" >
-        <widget class="QLabel" name="label" >
-         <property name="text" >
-          <string>Similarity</string>
+        <widget class="QSpinBox" name="spinMaxCandidate" >
+         <property name="maximum" >
+          <number>100</number>
+         </property>
+         <property name="minimum" >
+          <number>1</number>
+         </property>
+         <property name="value" >
+          <number>10</number>
          </property>
         </widget>
+       </item>
+       <item row="5" column="0" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>177</width>
+           <height>21</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>
     </widget>
-   </item>
-   <item row="1" column="0" colspan="3" >
-    <spacer>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" >
-      <size>
-       <width>332</width>
-       <height>16</height>
-      </size>
-     </property>
-    </spacer>
    </item>
    <item row="2" column="0" >
     <spacer>
@@ -447,18 +532,11 @@
      </property>
      <property name="sizeHint" >
       <size>
-       <width>141</width>
+       <width>131</width>
        <height>46</height>
       </size>
      </property>
     </spacer>
-   </item>
-   <item row="2" column="1" >
-    <widget class="QPushButton" name="btnOk" >
-     <property name="text" >
-      <string>&amp;Ok</string>
-     </property>
-    </widget>
    </item>
    <item row="2" column="2" >
     <widget class="QPushButton" name="btnClose" >

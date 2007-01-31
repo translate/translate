@@ -55,11 +55,11 @@ class tmSetting(QtGui.QDialog):
         self.ui.linePOFile.setText(World.settings.value("PODictionary").toString())
         self.ui.lineTMXFile.setText(World.settings.value("TMXDictionary").toString())
         self.ui.lineXliffFile.setText(World.settings.value("XLIFFDictionary").toString())
-        if (self.ui.linePOFile.text()):
+        if (self.ui.linePOFile.text() and World.settings.value("POLookup").toBool()):
             self.ui.poLookup.setChecked(True)
-        if (self.ui.lineTMXFile.text()):
+        if (self.ui.lineTMXFile.text() and World.settings.value("TMXLookup").toBool()):
             self.ui.tmxLookup.setChecked(True)
-        if (self.ui.lineXliffFile.text()):
+        if (self.ui.lineXliffFile.text() and World.settings.value("XLIFFLookup").toBool()):
             self.ui.xliffLookup.setChecked(True)
         self.show()
         

@@ -25,6 +25,7 @@ from PyQt4 import QtCore, QtGui
 from pootling.ui.Ui_Header import Ui_frmHeader
 import pootling.modules.World as World
 from translate.storage import poheader
+
 import __version__
 
 class Header(QtGui.QDialog):
