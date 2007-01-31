@@ -24,6 +24,49 @@ from pootling.ui.Ui_TUview import Ui_TUview
 from translate.storage import po
 from pootling.modules import World
 
+class MyHighlighter(QtGui.QSyntaxHighlighter):
+    def __init__(self, parent):
+        QtGui.QSyntaxHighlighter.__init__(self, parent)
+        self.tagFormat = QtGui.QTextCharFormat()
+        self.tagFormat.setFontWeight(QtGui.QFont.Bold)
+        self.tagFormat.setForeground(QtCore.Qt.blue)
+        
+        self.quoteFormat = QtGui.QTextCharFormat()
+        self.quoteFormat.setForeground(QtCore.Qt.darkGreen)
+        
+        self.accelFormat = QtGui.QTextCharFormat()
+        self.accelFormat.setForeground(QtCore.Qt.darkMagenta)
+
+    def highlightBlock(self, text):
+        # tag
+        pattern = QtCore.QString("%\d+|%s|%d")
+        expression = QtCore.QRegExp(pattern)
+        index = text.indexOf(expression)
+        while (index >= 0):
+            length = expression.matchedLength()
+            self.setFormat(index, length, self.tagFormat)
+            index = text.indexOf(expression, index + length)
+        
+        # quote
+##        pattern = QtCore.QString("\".+\"")
+        pattern = QtCore.QString("<.+>|</.+>")
+        expression = QtCore.QRegExp(pattern)
+        index = text.indexOf(expression)
+        while (index >= 0):
+            length = expression.matchedLength()
+            self.setFormat(index, length, self.quoteFormat)
+            index = text.indexOf(expression, index + length)
+        
+        # accelerator
+        pattern = QtCore.QString("&\S")
+        expression = QtCore.QRegExp(pattern)
+        index = text.indexOf(expression)
+        while (index >= 0):
+            length = expression.matchedLength()
+            self.setFormat(index, length, self.accelFormat)
+            index = text.indexOf(expression, index + length)
+        
+
 class TUview(QtGui.QDockWidget):
     def __init__(self, parent):
         QtGui.QDockWidget.__init__(self, parent)
@@ -55,6 +98,9 @@ class TUview(QtGui.QDockWidget):
         self.highlightRange = QtGui.QTextLayout.FormatRange()
         self.highlightRange.format = self.highlightFormat
         self.tabForPlural()
+        
+        MyHighlighter(self.ui.txtSource)
+        MyHighlighter(self.ui.txtTarget)
         
     def tabForPlural(self):
         self.tabSourcePlurals = []
@@ -148,7 +194,6 @@ class TUview(QtGui.QDockWidget):
         else:
             self.unitSingle(unit)
         # set the scrollbar position
-        #self.setScrollbarValue(unit.x_editor_filterIndex)
         self.setScrollbarValue(unit.x_editor_filterIndex)
      
     def unitPlural(self, unit):
@@ -297,7 +342,7 @@ class TUview(QtGui.QDockWidget):
         if (targetfont.isValid() and fontObj.fromString(targetfont.toString())):
             self.ui.txtTarget.setFont(fontObj)
             self.ui.txtTarget.setTabStopWidth(QtGui.QFontMetrics(fontObj).width("m"*8))
-    
+            
 if __name__ == "__main__":
     import sys, os
     # set the path for QT in order to find the icons
