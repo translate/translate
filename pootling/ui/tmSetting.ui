@@ -62,7 +62,7 @@
    <item row="0" column="0" colspan="3" >
     <widget class="QTabWidget" name="tabXliff" >
      <property name="currentIndex" >
-      <number>2</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab" >
       <attribute name="title" >
@@ -91,14 +91,14 @@
            <number>6</number>
           </property>
           <item row="1" column="0" >
-           <widget class="QRadioButton" name="radPoFolder" >
+           <widget class="QRadioButton" name="radPOFolder" >
             <property name="text" >
              <string>Folders</string>
             </property>
            </widget>
           </item>
           <item row="0" column="0" >
-           <widget class="QRadioButton" name="radPoFile" >
+           <widget class="QRadioButton" name="radPOFile" >
             <property name="text" >
              <string>Files</string>
             </property>
@@ -108,7 +108,7 @@
            </widget>
           </item>
           <item row="2" column="0" >
-           <widget class="QRadioButton" name="radPoFolder_sub" >
+           <widget class="QRadioButton" name="radPOFolder_sub" >
             <property name="text" >
              <string>Folders and subfolders</string>
             </property>
@@ -118,7 +118,7 @@
         </widget>
        </item>
        <item row="3" column="0" >
-        <widget class="QLineEdit" name="linePoFile" >
+        <widget class="QLineEdit" name="linePOFile" >
          <property name="readOnly" >
           <bool>false</bool>
          </property>
@@ -177,7 +177,7 @@
         </widget>
        </item>
        <item row="3" column="1" >
-        <widget class="QPushButton" name="btnPoFile" >
+        <widget class="QPushButton" name="btnPOFile" >
          <property name="sizePolicy" >
           <sizepolicy>
            <hsizetype>1</hsizetype>
@@ -192,7 +192,7 @@
         </widget>
        </item>
        <item row="4" column="0" >
-        <widget class="QCheckBox" name="xliffLookup_3" >
+        <widget class="QCheckBox" name="poLookup" >
          <property name="autoFillBackground" >
           <bool>false</bool>
          </property>
@@ -218,7 +218,7 @@
         <number>6</number>
        </property>
        <item row="3" column="1" >
-        <widget class="QPushButton" name="btnPoFile" >
+        <widget class="QPushButton" name="btnTMXFile" >
          <property name="sizePolicy" >
           <sizepolicy>
            <hsizetype>1</hsizetype>
@@ -233,14 +233,14 @@
         </widget>
        </item>
        <item row="3" column="0" >
-        <widget class="QLineEdit" name="lineTmxFile" >
+        <widget class="QLineEdit" name="lineTMXFile" >
          <property name="readOnly" >
           <bool>false</bool>
          </property>
         </widget>
        </item>
        <item row="4" column="0" >
-        <widget class="QCheckBox" name="xliffLookup_2" >
+        <widget class="QCheckBox" name="tmxLookup" >
          <property name="autoFillBackground" >
           <bool>false</bool>
          </property>
@@ -320,14 +320,14 @@
            <number>6</number>
           </property>
           <item row="1" column="0" >
-           <widget class="QRadioButton" name="radTmxFolder" >
+           <widget class="QRadioButton" name="radTMXFolder" >
             <property name="text" >
              <string>Folders</string>
             </property>
            </widget>
           </item>
           <item row="0" column="0" >
-           <widget class="QRadioButton" name="radTmxFile" >
+           <widget class="QRadioButton" name="radTMXFile" >
             <property name="text" >
              <string>Files</string>
             </property>
@@ -337,7 +337,7 @@
            </widget>
           </item>
           <item row="2" column="0" >
-           <widget class="QRadioButton" name="radTmxFolder_sub" >
+           <widget class="QRadioButton" name="radTMXFolder_sub" >
             <property name="text" >
              <string>Folders and subfolders</string>
             </property>
