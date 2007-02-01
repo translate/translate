@@ -36,36 +36,28 @@ class MyHighlighter(QtGui.QSyntaxHighlighter):
         
         self.accelFormat = QtGui.QTextCharFormat()
         self.accelFormat.setForeground(QtCore.Qt.darkMagenta)
+        
+        self.tag = "%\d+|%s|%d"
+        self.accel = "&\S"
+        self.quote = "<.+>|</.+>"
+        self.tagExp = QtCore.QRegExp(self.tag)
+        self.accelExp = QtCore.QRegExp(self.accel)
+        self.quoteExp = QtCore.QRegExp(self.quote)
+        self.expression = QtCore.QRegExp(self.tag + "|" + self.accel + "|" + self.quote)
 
     def highlightBlock(self, text):
-        # tag
-        pattern = QtCore.QString("%\d+|%s|%d")
-        expression = QtCore.QRegExp(pattern)
-        index = text.indexOf(expression)
+        index = text.indexOf(self.expression)
         while (index >= 0):
-            length = expression.matchedLength()
-            self.setFormat(index, length, self.tagFormat)
-            index = text.indexOf(expression, index + length)
-        
-        # quote
-##        pattern = QtCore.QString("\".+\"")
-        pattern = QtCore.QString("<.+>|</.+>")
-        expression = QtCore.QRegExp(pattern)
-        index = text.indexOf(expression)
-        while (index >= 0):
-            length = expression.matchedLength()
-            self.setFormat(index, length, self.quoteFormat)
-            index = text.indexOf(expression, index + length)
-        
-        # accelerator
-        pattern = QtCore.QString("&\S")
-        expression = QtCore.QRegExp(pattern)
-        index = text.indexOf(expression)
-        while (index >= 0):
-            length = expression.matchedLength()
-            self.setFormat(index, length, self.accelFormat)
-            index = text.indexOf(expression, index + length)
-        
+            length = self.expression.matchedLength()
+            for cText in self.expression.capturedTexts():
+                if (cText.indexOf(self.tagExp) > -1):
+                    charFormat = self.tagFormat
+                elif (cText.indexOf(self.accelExp) > -1):
+                    charFormat = self.accelFormat
+                else:
+                    charFormat = self.quoteFormat
+            self.setFormat(index, length, charFormat)
+            index = text.indexOf(self.expression, index + length)
 
 class TUview(QtGui.QDockWidget):
     def __init__(self, parent):
