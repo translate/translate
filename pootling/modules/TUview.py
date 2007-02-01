@@ -24,41 +24,55 @@ from pootling.ui.Ui_TUview import Ui_TUview
 from translate.storage import po
 from pootling.modules import World
 
-class MyHighlighter(QtGui.QSyntaxHighlighter):
+class Highlighter(QtGui.QSyntaxHighlighter):
     def __init__(self, parent):
         QtGui.QSyntaxHighlighter.__init__(self, parent)
-        self.tagFormat = QtGui.QTextCharFormat()
-        self.tagFormat.setFontWeight(QtGui.QFont.Bold)
-        self.tagFormat.setForeground(QtCore.Qt.blue)
         
-        self.quoteFormat = QtGui.QTextCharFormat()
-        self.quoteFormat.setForeground(QtCore.Qt.darkGreen)
+        self.index = None
+        self.searchFormat = QtGui.QTextCharFormat()
+        self.searchFormat.setFontWeight(QtGui.QFont.Bold)
+        self.searchFormat.setForeground(QtCore.Qt.white)
+        self.searchFormat.setBackground(QtCore.Qt.darkMagenta)
         
-        self.accelFormat = QtGui.QTextCharFormat()
-        self.accelFormat.setForeground(QtCore.Qt.darkMagenta)
+        tagFormat = QtGui.QTextCharFormat()
+        tagFormat.setFontWeight(QtGui.QFont.Bold)
+        tagFormat.setForeground(QtCore.Qt.blue)
+        quoteFormat = QtGui.QTextCharFormat()
+        quoteFormat.setForeground(QtCore.Qt.darkGreen)
+        accelFormat = QtGui.QTextCharFormat()
+        accelFormat.setForeground(QtCore.Qt.darkMagenta)
         
-        self.tag = "%\d+|%s|%d"
-        self.accel = "&\S"
-        self.quote = "<.+>|</.+>"
-        self.tagExp = QtCore.QRegExp(self.tag)
-        self.accelExp = QtCore.QRegExp(self.accel)
-        self.quoteExp = QtCore.QRegExp(self.quote)
-        self.expression = QtCore.QRegExp(self.tag + "|" + self.accel + "|" + self.quote)
-
+        tagPattern = QtCore.QRegExp("%\d+|%s|%d")
+        accelPattern = QtCore.QRegExp("&\S")
+        quotePattern = QtCore.QRegExp("<.+>|</.+>")
+        
+        self.formats = [tagFormat, accelFormat, quoteFormat]
+        self.patterns = [tagPattern, accelPattern, quotePattern]
+        self.expression = QtCore.QRegExp(tagPattern.pattern() + "|" + \
+                accelPattern.pattern() + "|" + \
+                quotePattern.pattern())
+        
     def highlightBlock(self, text):
         index = text.indexOf(self.expression)
+        charFormat = self.formats[0]
         while (index >= 0):
             length = self.expression.matchedLength()
-            for cText in self.expression.capturedTexts():
-                if (cText.indexOf(self.tagExp) > -1):
-                    charFormat = self.tagFormat
-                elif (cText.indexOf(self.accelExp) > -1):
-                    charFormat = self.accelFormat
-                else:
-                    charFormat = self.quoteFormat
+            # format the found text
+            cap = self.expression.cap()
+            for i in range(len(self.patterns)):
+                if (cap.indexOf(self.patterns[i]) > -1):
+                    charFormat = self.formats[i]
             self.setFormat(index, length, charFormat)
             index = text.indexOf(self.expression, index + length)
-
+        
+        if (self.index >= 0):
+            self.setFormat(self.index, self.length, self.searchFormat)
+            self.index = None
+    
+    def initSearch(self, index, length):
+        self.index = index
+        self.length = length
+        
 class TUview(QtGui.QDockWidget):
     def __init__(self, parent):
         QtGui.QDockWidget.__init__(self, parent)
@@ -91,8 +105,8 @@ class TUview(QtGui.QDockWidget):
         self.highlightRange.format = self.highlightFormat
         self.tabForPlural()
         
-        MyHighlighter(self.ui.txtSource)
-        MyHighlighter(self.ui.txtTarget)
+        self.sourceHighlight = Highlighter(self.ui.txtSource)
+        self.targetHighlight = Highlighter(self.ui.txtTarget)
         
     def tabForPlural(self):
         self.tabSourcePlurals = []
@@ -277,20 +291,21 @@ class TUview(QtGui.QDockWidget):
         @param textField: source or target text box.
         @param position: highlight start point.
         @param length: highlight length."""
-        if ((textField != World.source and textField != World.target)  or position == None):
-            if (not getattr(self, "highlightBlock", None)):
-                return
-            self.highlightRange.length = 0
-        else:
-            if (textField == World.source):
-                textField = self.ui.txtSource
-            else:
-                textField = self.ui.txtTarget
-            self.highlightBlock = textField.document().findBlock(position)
-            self.highlightRange.start = position - self.highlightBlock.position()
-            self.highlightRange.length = length
-        self.highlightBlock.layout().setAdditionalFormats([self.highlightRange])
-        self.highlightBlock.document().markContentsDirty(self.highlightBlock.position(), self.highlightBlock.length())
+        self.sourceHighlight.initSearch(position, length)
+##        if ((textField != World.source and textField != World.target)  or position == None):
+##            if (not getattr(self, "highlightBlock", None)):
+##                return
+##            self.highlightRange.length = 0
+##        else:
+##            if (textField == World.source):
+##                textField = self.ui.txtSource
+##            else:
+##                textField = self.ui.txtTarget
+##            self.highlightBlock = textField.document().findBlock(position)
+##            self.highlightRange.start = position - self.highlightBlock.position()
+##            self.highlightRange.length = length
+##        self.highlightBlock.layout().setAdditionalFormats([self.highlightRange])
+##        self.highlightBlock.document().markContentsDirty(self.highlightBlock.position(), self.highlightBlock.length())
 
     def replaceText(self, textField, position, length, replacedText):
         """replace the string (at position and length) with replacedText in txtTarget.
