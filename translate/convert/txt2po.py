@@ -61,7 +61,7 @@ def main(argv=None):
   formats = {"txt":("po",converttxt), "*":("po",converttxt)}
   parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
   parser.add_option("", "--flavour", dest="flavour", default=None,
-      help="the flavour of text file: plain (default), dokuwiki")
+      help="the flavour of text file: plain (default), dokuwiki, mediawiki")
   parser.passthrough.append("flavour")
   parser.add_duplicates_option()
   parser.run(argv)
