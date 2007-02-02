@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Tue Jan 30 11:36:39 2007
+# Created: Thu Feb  1 14:09:29 2007
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -14,7 +14,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.setEnabled(True)
-        MainWindow.resize(QtCore.QSize(QtCore.QRect(0,0,498,492).size()).expandedTo(MainWindow.minimumSizeHint()))
+        MainWindow.resize(QtCore.QSize(QtCore.QRect(0,0,539,492).size()).expandedTo(MainWindow.minimumSizeHint()))
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(7))
         sizePolicy.setHorizontalStretch(0)
@@ -30,7 +30,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0,0,498,30))
+        self.menubar.setGeometry(QtCore.QRect(0,0,539,28))
         self.menubar.setObjectName("menubar")
 
         self.menuHelp = QtGui.QMenu(self.menubar)
@@ -53,23 +53,27 @@ class Ui_MainWindow(object):
         self.menuGo = QtGui.QMenu(self.menubar)
         self.menuGo.setObjectName("menuGo")
 
-        self.menuBookmark = QtGui.QMenu(self.menubar)
-        self.menuBookmark.setObjectName("menuBookmark")
-
-        self.menu_TM = QtGui.QMenu(self.menubar)
-        self.menu_TM.setObjectName("menu_TM")
-
-        self.menuSettings = QtGui.QMenu(self.menubar)
-        self.menuSettings.setObjectName("menuSettings")
+        self.menu_Catalog = QtGui.QMenu(self.menubar)
+        self.menu_Catalog.setObjectName("menu_Catalog")
 
         self.menuWindow = QtGui.QMenu(self.menubar)
         self.menuWindow.setObjectName("menuWindow")
 
         self.menuToolbars = QtGui.QMenu(self.menuWindow)
         self.menuToolbars.setObjectName("menuToolbars")
+
+        self.menuBookmark = QtGui.QMenu(self.menubar)
+        self.menuBookmark.setObjectName("menuBookmark")
+
+        self.menuSettings = QtGui.QMenu(self.menubar)
+        self.menuSettings.setObjectName("menuSettings")
+
+        self.menu_TM = QtGui.QMenu(self.menubar)
+        self.menu_TM.setObjectName("menu_TM")
         MainWindow.setMenuBar(self.menubar)
 
         self.statusbar = QtGui.QStatusBar(MainWindow)
+        self.statusbar.setGeometry(QtCore.QRect(0,471,539,21))
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
@@ -267,6 +271,7 @@ class Ui_MainWindow(object):
         self.actionGoTo.setObjectName("actionGoTo")
 
         self.actionAddBookmarks = QtGui.QAction(MainWindow)
+        self.actionAddBookmarks.setEnabled(False)
         self.actionAddBookmarks.setIcon(QtGui.QIcon("../images/bookmarkadd.png"))
         self.actionAddBookmarks.setObjectName("actionAddBookmarks")
 
@@ -281,6 +286,9 @@ class Ui_MainWindow(object):
 
         self.action_TM = QtGui.QAction(MainWindow)
         self.action_TM.setObjectName("action_TM")
+
+        self.actionCatalogManager = QtGui.QAction(MainWindow)
+        self.actionCatalogManager.setObjectName("actionCatalogManager")
         self.menuHelp.addAction(self.actionAbout)
         self.menuHelp.addAction(self.actionAboutQT)
         self.menuOpen_Recent.addAction(self.actionClear)
@@ -320,16 +328,18 @@ class Ui_MainWindow(object):
         self.menuGo.addAction(self.actionLast)
         self.menuGo.addSeparator()
         self.menuGo.addAction(self.actionGoTo)
-        self.menuBookmark.addAction(self.actionAddBookmarks)
-        self.menuBookmark.addAction(self.actionClearBookmarks)
-        self.menuBookmark.addSeparator()
-        self.menu_TM.addAction(self.action_lookup_Text)
-        self.menu_TM.addAction(self.actionAuto_translate)
-        self.menuSettings.addAction(self.actionPreferences)
-        self.menuSettings.addAction(self.action_TM)
         self.menuWindow.addSeparator()
         self.menuWindow.addSeparator()
         self.menuWindow.addAction(self.menuToolbars.menuAction())
+        self.menuBookmark.addAction(self.actionAddBookmarks)
+        self.menuBookmark.addAction(self.actionClearBookmarks)
+        self.menuBookmark.addSeparator()
+        self.menuSettings.addAction(self.actionPreferences)
+        self.menuSettings.addAction(self.action_TM)
+        self.menu_TM.addAction(self.action_lookup_Text)
+        self.menu_TM.addAction(self.actionAuto_translate)
+        self.menu_TM.addSeparator()
+        self.menu_TM.addAction(self.actionCatalogManager)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
         self.menubar.addAction(self.menuView.menuAction())
@@ -369,11 +379,12 @@ class Ui_MainWindow(object):
         self.menuEdit.setTitle(self.tr("&Edit"))
         self.menuView.setTitle(self.tr("&View"))
         self.menuGo.setTitle(self.tr("&Go"))
-        self.menuBookmark.setTitle(self.tr("&Bookmarks"))
-        self.menu_TM.setTitle(self.tr("&TM"))
-        self.menuSettings.setTitle(self.tr("&Settings"))
+        self.menu_Catalog.setTitle(self.tr("&Catalog"))
         self.menuWindow.setTitle(self.tr("&Window"))
         self.menuToolbars.setTitle(self.tr("Toolbars"))
+        self.menuBookmark.setTitle(self.tr("&Bookmarks"))
+        self.menuSettings.setTitle(self.tr("&Settings"))
+        self.menu_TM.setTitle(self.tr("&Tool"))
         self.toolStandard.setWindowTitle(self.tr("Standard Toolbar"))
         self.toolNavigation.setWindowTitle(self.tr("Navigation Toolbar"))
         self.toolFilter.setWindowTitle(self.tr("Filter Toolbar"))
@@ -477,6 +488,7 @@ class Ui_MainWindow(object):
         self.action_lookup_Text.setText(self.tr("&Lookup Text"))
         self.actionAuto_translate.setText(self.tr("&Auto translate"))
         self.action_TM.setText(self.tr("&TM"))
+        self.actionCatalogManager.setText(self.tr("Catalog Manager"))
 
 
 if __name__ == "__main__":

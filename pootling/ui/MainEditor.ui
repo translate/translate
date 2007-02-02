@@ -1,4 +1,7 @@
 <ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow" >
   <property name="enabled" >
@@ -8,7 +11,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>498</width>
+    <width>539</width>
     <height>492</height>
    </rect>
   </property>
@@ -47,8 +50,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>498</width>
-     <height>30</height>
+     <width>539</width>
+     <height>28</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuHelp" >
@@ -126,27 +129,10 @@
     <addaction name="separator" />
     <addaction name="actionGoTo" />
    </widget>
-   <widget class="QMenu" name="menuBookmark" >
+   <widget class="QMenu" name="menu_Catalog" >
     <property name="title" >
-     <string>&amp;Bookmarks</string>
+     <string>&amp;Catalog</string>
     </property>
-    <addaction name="actionAddBookmarks" />
-    <addaction name="actionClearBookmarks" />
-    <addaction name="separator" />
-   </widget>
-   <widget class="QMenu" name="menu_TM" >
-    <property name="title" >
-     <string>&amp;TM</string>
-    </property>
-    <addaction name="action_lookup_Text" />
-    <addaction name="actionAuto_translate" />
-   </widget>
-   <widget class="QMenu" name="menuSettings" >
-    <property name="title" >
-     <string>&amp;Settings</string>
-    </property>
-    <addaction name="actionPreferences" />
-    <addaction name="action_TM" />
    </widget>
    <widget class="QMenu" name="menuWindow" >
     <property name="title" >
@@ -161,6 +147,30 @@
     <addaction name="separator" />
     <addaction name="menuToolbars" />
    </widget>
+   <widget class="QMenu" name="menuBookmark" >
+    <property name="title" >
+     <string>&amp;Bookmarks</string>
+    </property>
+    <addaction name="actionAddBookmarks" />
+    <addaction name="actionClearBookmarks" />
+    <addaction name="separator" />
+   </widget>
+   <widget class="QMenu" name="menuSettings" >
+    <property name="title" >
+     <string>&amp;Settings</string>
+    </property>
+    <addaction name="actionPreferences" />
+    <addaction name="action_TM" />
+   </widget>
+   <widget class="QMenu" name="menu_TM" >
+    <property name="title" >
+     <string>&amp;Tool</string>
+    </property>
+    <addaction name="action_lookup_Text" />
+    <addaction name="actionAuto_translate" />
+    <addaction name="separator" />
+    <addaction name="actionCatalogManager" />
+   </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
    <addaction name="menuView" />
@@ -171,7 +181,16 @@
    <addaction name="menuWindow" />
    <addaction name="menuHelp" />
   </widget>
-  <widget class="QStatusBar" name="statusbar" />
+  <widget class="QStatusBar" name="statusbar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>471</y>
+     <width>539</width>
+     <height>21</height>
+    </rect>
+   </property>
+  </widget>
   <widget class="QToolBar" name="toolStandard" >
    <property name="enabled" >
     <bool>true</bool>
@@ -766,6 +785,9 @@
    </property>
   </action>
   <action name="actionAddBookmarks" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="icon" >
     <iconset>../images/bookmarkadd.png</iconset>
    </property>
@@ -799,7 +821,13 @@
     <string>&amp;TM</string>
    </property>
   </action>
+  <action name="actionCatalogManager" >
+   <property name="text" >
+    <string>Catalog Manager</string>
+   </property>
+  </action>
  </widget>
+ <pixmapfunction></pixmapfunction>
  <resources/>
  <connections/>
 </ui>
