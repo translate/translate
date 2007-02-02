@@ -42,7 +42,7 @@ class txt2po:
     thepofile.removeduplicates(self.duplicatestyle)
     return thepofile
 
-def converttxt(inputfile, outputfile, templates, duplicatestyle="msgxtct"):
+def converttxt(inputfile, outputfile, templates, duplicatestyle="msgctxt"):
   """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
   inputtxt = txt.TxtFile(inputfile)
   convertor = txt2po(duplicatestyle=duplicatestyle)
