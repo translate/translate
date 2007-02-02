@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # 
-# Copyright 2007 Zuza Software Foundation
+# Copyright 2006-2007 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
@@ -22,7 +22,7 @@
 """Base classes for storage interfaces.
 
 @organization: Zuza Software Foundation
-@copyright: 2007 Zuza Software Foundation
+@copyright: 2006-2007 Zuza Software Foundation
 @license: GPL
 """
 
@@ -335,10 +335,11 @@ class TranslationStore(object):
         self.locationindex = {}
         self.sourceindex = {}
         for unit in self.units:
+            # Do we need to test if unit.source exists?
             self.sourceindex[unit.source] = unit
             if unit.hasplural():
-                plural_source = unit.source.strings[1]
-                self.sourceindex[plural_source] = unit
+                for nounform in unit.source.strings[1:]:
+                    self.sourceindex[nounform] = unit
             for location in unit.getlocations():
                 if location in self.locationindex:
                     # if sources aren't unique, don't use them
