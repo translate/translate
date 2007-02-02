@@ -42,9 +42,9 @@ class txt2po:
     thepofile.removeduplicates(self.duplicatestyle)
     return thepofile
 
-def converttxt(inputfile, outputfile, templates, duplicatestyle="msgctxt"):
+def converttxt(inputfile, outputfile, templates, duplicatestyle="msgctxt", flavour=None):
   """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
-  inputtxt = txt.TxtFile(inputfile)
+  inputtxt = txt.TxtFile(inputfile, flavour=flavour)
   convertor = txt2po(duplicatestyle=duplicatestyle)
   outputpo = convertor.convertfile(inputtxt)
   if outputpo.isempty():
@@ -60,6 +60,9 @@ def main(argv=None):
   sys.stdout = stdiotell.StdIOWrapper(sys.stdout)
   formats = {"txt":("po",converttxt), "*":("po",converttxt)}
   parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
+  parser.add_option("", "--flavour", dest="flavour", default=None,
+      help="the flavour of text file: plain (default), dokuwiki")
+  parser.passthrough.append("flavour")
   parser.add_duplicates_option()
   parser.run(argv)
 
