@@ -19,10 +19,28 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""This class implements the functionality for handling plain text files.""" 
+"""This class implements the functionality for handling plain text files, or 
+similar wiki type files.
+
+Supported formats are 
+  - Plain text
+  - dokuwiki
+""" 
 
 from translate.storage import base
 from translate.misc import textwrap
+import re
+
+dokuwiki = []
+dokuwiki.append(("Dokuwiki heading", re.compile(r"( ?={2,5}[\s]*)(.+)"), re.compile("([\s]*={2,5}[\s]*)$")))
+dokuwiki.append(("Dokuwiki bullet", re.compile(r"([\s]{2,}\*[\s]*)(.+)"), re.compile("[\s]+$")))
+dokuwiki.append(("Dokuwiki bullet", re.compile(r"([\s]{2,}-[\s]*)(.+)"), re.compile("[\s]+$")))
+
+flavours = {
+"dokuwiki": dokuwiki,
+None: [],
+"plain": []
+}
 
 class TxtUnit(base.TranslationUnit):
     """This class represents a block of text from a text file"""
@@ -63,9 +81,11 @@ class TxtUnit(base.TranslationUnit):
 class TxtFile(base.TranslationStore):
     """This class represents a text file, made up of txtunits"""
     UnitClass = TxtUnit
-    def __init__(self, inputfile=None):
+    def __init__(self, inputfile=None, flavour=None):
         self.units = []
         self.filename = getattr(inputfile, 'name', '')
+        if flavour in flavours:
+            self.flavour = flavours[flavour]
         if inputfile is not None:
           txtsrc = inputfile.readlines()
           self.parse(txtsrc)
@@ -77,7 +97,19 @@ class TxtFile(base.TranslationStore):
         startline = 0
         for linenum in range(len(lines)):
             line = lines[linenum].rstrip("\n")
-            isbreak = not line.strip()
+            for rule, prere, postre in self.flavour:
+                match = prere.match(line)
+                if match:
+                    pretext, source = match.groups()
+                    postmatch = postre.search(source)
+                    if postmatch:
+                        posttext = postmatch.group()
+                        source = source[:postmatch.start()]
+                    block.append(source)
+                    isbreak = True
+                    break
+            else:
+                isbreak = not line.strip()
             if isbreak and block:
                 unit = self.addsourceunit("\n".join(block))
                 unit.addlocation("%s:%d" % (self.filename, startline + 1))
