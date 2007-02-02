@@ -142,6 +142,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("replaceText"), self.dockComment.replaceText)
        
        # Goto menu action
+        self.ui.actionGoTo.setIcon(QtGui.QIcon("../images/goto.png"))
         self.connect(self.ui.actionGoTo, QtCore.SIGNAL("triggered()"), self.showGoto)
         
         # Bookmarks menu action
@@ -248,8 +249,7 @@ class MainWindow(QtGui.QMainWindow):
         for i in range(numRecentFiles):
             self.ui.recentaction[i].setVisible(False)
         World.settings.remove("recentFileList")
-
-
+    
     def updateProgress(self, value):
         if (not self.progressBar.isVisible()):
             self.progressBar.setVisible(True)
@@ -284,7 +284,7 @@ class MainWindow(QtGui.QMainWindow):
             bookmark.removeAt(bookmark.count() - 1)
         World.settings.setValue("bookmarkList", QtCore.QVariant(bookmark))
         self.updateBookmarkAction()
-    
+
     def createBookmarkAction(self):
         for i in range(World.MaxRecentFiles):
             self.ui.bookmarkaction.append(QtGui.QAction(self))
@@ -320,7 +320,6 @@ class MainWindow(QtGui.QMainWindow):
             self.ui.bookmarkaction[i].setVisible(False)
         World.settings.remove("bookmarkList")
 
-        
     def setOpening(self, fileName): 
         """
         set status after open a file
@@ -334,6 +333,7 @@ class MainWindow(QtGui.QMainWindow):
             files.removeAt(files.count() - 1)
         World.settings.setValue("recentFileList", QtCore.QVariant(files))
         self.updateRecentAction()
+        self.clearBookmarks()
         
     def startRecentAction(self):
         action = self.sender()
@@ -514,6 +514,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionCopySource2Target.setEnabled(bool)
         self.ui.actionEdit_Header.setEnabled(bool)
         self.ui.actionGoTo.setEnabled(bool)
+        self.ui.actionAddBookmarks.setEnabled(bool)
         self.ui.actionToggleFuzzy.setEnabled(bool)
         self.ui.actionFilterFuzzy.setEnabled(bool)
         self.ui.actionFilterTranslated.setEnabled(bool)
