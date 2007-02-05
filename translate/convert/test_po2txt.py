@@ -57,4 +57,5 @@ class TestPO2TxtCommand(test_convert.TestConvertCommand, TestPO2Txt):
         options = self.help_check(options, "-tTEMPLATE, --template=TEMPLATE")
         options = self.help_check(options, "--fuzzy")
         options = self.help_check(options, "--nofuzzy")
+        options = self.help_check(options, "--encoding")
         options = self.help_check(options, "-wWRAP, --wrap=WRAP", last=True)
