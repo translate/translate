@@ -69,14 +69,14 @@ class po2txt:
           txtresult = txtresult.replace(txtsource, txttarget)
     return txtresult
 
-def converttxt(inputfile, outputfile, templatefile, wrap=None, includefuzzy=False):
+def converttxt(inputfile, outputfile, templatefile, wrap=None, includefuzzy=False, encoding='utf-8'):
   """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
   inputpo = po.pofile(inputfile)
   convertor = po2txt(wrap=wrap)
   if templatefile is None:
     outputtxt = convertor.convertfile(inputpo, includefuzzy)
   else:
-    templatetext = templatefile.read()
+    templatetext = templatefile.read().decode(encoding)
     outputtxt = convertor.mergefile(inputpo, templatetext, includefuzzy)
   outputfilepos = outputfile.tell()
   outputfile.write(outputtxt.encode('utf-8'))
@@ -89,6 +89,9 @@ def main(argv=None):
   sys.stdout = stdiotell.StdIOWrapper(sys.stdout)
   formats = {("po", "txt"):("txt",converttxt), ("po"):("txt",converttxt)}
   parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
+  parser.add_option("", "--encoding", dest="encoding", default='utf-8', type="string",
+      help="The encoding of the template file (default: UTF-8)")
+  parser.passthrough.append("encoding")
   if textwrap is not None:
     parser.add_option("-w", "--wrap", dest="wrap", default=None, type="int",
                       help="set number of columns to wrap text at", metavar="WRAP")
