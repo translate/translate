@@ -269,7 +269,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def showGoto(self):
         value, ok = QtGui.QInputDialog.getInteger(self, self.tr("Goto"),
-                                                self.tr("Line Number:"))
+                                                self.tr("Line Number:"), 0, 0, self.operator.status.numTotal)
         if ok:
             self.dockOverview.gotoRow(value)
 
