@@ -50,21 +50,24 @@ None: [],
 
 class TxtUnit(base.TranslationUnit):
     """This class represents a block of text from a text file"""
-    def __init__(self, source=""):
+    def __init__(self, source="", encoding="utf-8"):
         """Construct the txtunit"""
+        self.encoding = encoding
         self.source = source
         self.location = []
 
     def __str__(self):
         """Convert a txt unit to a string"""
-        string = "".join(self.source)
+        string = u"".join(self.source)
         if isinstance(string, unicode):
-            return string.encode(getattr(self, "encoding", "UTF-8"))
+            return string.encode(self.encoding)
         return string
 
     # Note that source and target are equivalent for monolingual units
     def setsource(self, source):
         """Sets the definition to the quoted value of source"""
+        if isinstance(source, str):
+          source = source.decode(self.encoding)
         self._source = source
 
     def getsource(self):
@@ -74,11 +77,11 @@ class TxtUnit(base.TranslationUnit):
 
     def settarget(self, target):
         """Sets the definition to the quoted value of target"""
-        self._source = target
+        self.source = target
 
     def gettarget(self):
         """gets the unquoted target string"""
-        return self._source
+        return self.source
     target = property(gettarget, settarget)
 
     def addlocation(self, location):
@@ -87,7 +90,7 @@ class TxtUnit(base.TranslationUnit):
 class TxtFile(base.TranslationStore):
     """This class represents a text file, made up of txtunits"""
     UnitClass = TxtUnit
-    def __init__(self, inputfile=None, flavour=None):
+    def __init__(self, inputfile=None, flavour=None, encoding="utf-8"):
         self.units = []
         self.filename = getattr(inputfile, 'name', '')
         if flavour in flavours:
@@ -95,6 +98,7 @@ class TxtFile(base.TranslationStore):
         if inputfile is not None:
           txtsrc = inputfile.readlines()
           self.parse(txtsrc)
+        self.encoding="utf-8"
 
     def parse(self, lines):
         """Read in text lines and create txtunits from the blocks of text"""
