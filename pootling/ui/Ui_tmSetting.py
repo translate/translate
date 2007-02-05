@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Thu Feb  1 15:09:21 2007
+# Created: Mon Feb  5 16:19:53 2007
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -20,6 +20,13 @@ class Ui_tmsetting(object):
         self.gridlayout.setSpacing(6)
         self.gridlayout.setObjectName("gridlayout")
 
+        self.btnOk = QtGui.QPushButton(tmsetting)
+        self.btnOk.setObjectName("btnOk")
+        self.gridlayout.addWidget(self.btnOk,1,1,1,1)
+
+        spacerItem = QtGui.QSpacerItem(181,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        self.gridlayout.addItem(spacerItem,1,0,1,1)
+
         self.tabOptions = QtGui.QTabWidget(tmsetting)
         self.tabOptions.setObjectName("tabOptions")
 
@@ -31,28 +38,45 @@ class Ui_tmsetting(object):
         self.gridlayout1.setSpacing(6)
         self.gridlayout1.setObjectName("gridlayout1")
 
-        spacerItem = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
-        self.gridlayout1.addItem(spacerItem,3,1,1,1)
+        spacerItem1 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
+        self.gridlayout1.addItem(spacerItem1,7,0,1,1)
+
+        self.checkBox = QtGui.QCheckBox(self.tab)
+        self.checkBox.setObjectName("checkBox")
+        self.gridlayout1.addWidget(self.checkBox,6,0,1,1)
+
+        self.btnAdd = QtGui.QPushButton(self.tab)
+        self.btnAdd.setIcon(QtGui.QIcon("../images/addTM.png"))
+        self.btnAdd.setObjectName("btnAdd")
+        self.gridlayout1.addWidget(self.btnAdd,1,1,1,1)
+
+        self.listWidget = QtGui.QListWidget(self.tab)
+        self.listWidget.setObjectName("listWidget")
+        self.gridlayout1.addWidget(self.listWidget,1,0,5,1)
+
+        self.btnMoveUp = QtGui.QPushButton(self.tab)
+        self.btnMoveUp.setIcon(QtGui.QIcon("../images/up.png"))
+        self.btnMoveUp.setObjectName("btnMoveUp")
+        self.gridlayout1.addWidget(self.btnMoveUp,4,1,1,1)
 
         self.label_4 = QtGui.QLabel(self.tab)
         self.label_4.setObjectName("label_4")
         self.gridlayout1.addWidget(self.label_4,0,0,1,1)
 
-        self.listView = QtGui.QListView(self.tab)
-        self.listView.setObjectName("listView")
-        self.gridlayout1.addWidget(self.listView,1,0,3,1)
+        self.btnRemoveAll = QtGui.QPushButton(self.tab)
+        self.btnRemoveAll.setIcon(QtGui.QIcon("../images/eraser.png"))
+        self.btnRemoveAll.setObjectName("btnRemoveAll")
+        self.gridlayout1.addWidget(self.btnRemoveAll,3,1,1,1)
 
-        self.checkBox = QtGui.QCheckBox(self.tab)
-        self.checkBox.setObjectName("checkBox")
-        self.gridlayout1.addWidget(self.checkBox,4,0,1,1)
+        self.btnMoveDown = QtGui.QPushButton(self.tab)
+        self.btnMoveDown.setIcon(QtGui.QIcon("../images/down.png"))
+        self.btnMoveDown.setObjectName("btnMoveDown")
+        self.gridlayout1.addWidget(self.btnMoveDown,5,1,1,1)
 
         self.btnRemove = QtGui.QPushButton(self.tab)
+        self.btnRemove.setIcon(QtGui.QIcon("../images/removeTM.png"))
         self.btnRemove.setObjectName("btnRemove")
         self.gridlayout1.addWidget(self.btnRemove,2,1,1,1)
-
-        self.btnAdd = QtGui.QPushButton(self.tab)
-        self.btnAdd.setObjectName("btnAdd")
-        self.gridlayout1.addWidget(self.btnAdd,1,1,1,1)
         self.tabOptions.addTab(self.tab, "")
 
         self.tab_3 = QtGui.QWidget()
@@ -109,31 +133,41 @@ class Ui_tmsetting(object):
         self.label_2.setObjectName("label_2")
         self.gridlayout2.addWidget(self.label_2,1,0,1,1)
 
-        spacerItem1 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
-        self.gridlayout2.addItem(spacerItem1,5,0,1,1)
+        spacerItem2 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
+        self.gridlayout2.addItem(spacerItem2,5,0,1,1)
         self.tabOptions.addTab(self.tab_4, "")
         self.gridlayout.addWidget(self.tabOptions,0,0,1,2)
-
-        spacerItem2 = QtGui.QSpacerItem(40,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
-        self.gridlayout.addItem(spacerItem2,1,0,1,1)
-
-        self.btnOk = QtGui.QPushButton(tmsetting)
-        self.btnOk.setObjectName("btnOk")
-        self.gridlayout.addWidget(self.btnOk,1,1,1,1)
 
         self.retranslateUi(tmsetting)
         self.tabOptions.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(tmsetting)
+        tmsetting.setTabOrder(self.tabOptions,self.listWidget)
+        tmsetting.setTabOrder(self.listWidget,self.btnAdd)
+        tmsetting.setTabOrder(self.btnAdd,self.btnRemove)
+        tmsetting.setTabOrder(self.btnRemove,self.btnRemoveAll)
+        tmsetting.setTabOrder(self.btnRemoveAll,self.btnMoveUp)
+        tmsetting.setTabOrder(self.btnMoveUp,self.btnMoveDown)
+        tmsetting.setTabOrder(self.btnMoveDown,self.checkBox)
+        tmsetting.setTabOrder(self.checkBox,self.btnOk)
+        tmsetting.setTabOrder(self.btnOk,self.spinSimilarity)
+        tmsetting.setTabOrder(self.spinSimilarity,self.chkCaseSensitive)
+        tmsetting.setTabOrder(self.chkCaseSensitive,self.spinMaxLen)
+        tmsetting.setTabOrder(self.spinMaxLen,self.spinMaxCandidate)
+        tmsetting.setTabOrder(self.spinMaxCandidate,self.chkIgnorFuzzy)
 
     def tr(self, string):
         return QtGui.QApplication.translate("tmsetting", string, None, QtGui.QApplication.UnicodeUTF8)
 
     def retranslateUi(self, tmsetting):
         tmsetting.setWindowTitle(self.tr("Translation Memory Settings"))
-        self.label_4.setText(self.tr("Locations:"))
+        self.btnOk.setText(self.tr("&OK"))
         self.checkBox.setText(self.tr("Dive into Subfolders"))
-        self.btnRemove.setText(self.tr("&Remove"))
-        self.btnAdd.setText(self.tr("&Add"))
+        self.btnAdd.setToolTip(self.tr("Add TM"))
+        self.btnMoveUp.setToolTip(self.tr("move up"))
+        self.label_4.setText(self.tr("Locations:"))
+        self.btnRemoveAll.setToolTip(self.tr("clear list"))
+        self.btnMoveDown.setToolTip(self.tr("move down"))
+        self.btnRemove.setToolTip(self.tr("remove TM"))
         self.tabOptions.setTabText(self.tabOptions.indexOf(self.tab), self.tr("&File"))
         self.tabOptions.setTabText(self.tabOptions.indexOf(self.tab_3), self.tr("&Database"))
         self.label_3.setText(self.tr("Maximum string length"))
@@ -141,8 +175,7 @@ class Ui_tmsetting(object):
         self.label.setText(self.tr("Similarity"))
         self.chkCaseSensitive.setText(self.tr("Case Sensitive"))
         self.label_2.setText(self.tr("Maximum candidates"))
-        self.tabOptions.setTabText(self.tabOptions.indexOf(self.tab_4), self.tr("Options"))
-        self.btnOk.setText(self.tr("&OK"))
+        self.tabOptions.setTabText(self.tabOptions.indexOf(self.tab_4), self.tr("O&ptions"))
 
 
 if __name__ == "__main__":

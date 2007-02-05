@@ -447,8 +447,6 @@ class Operator(QtCore.QObject):
             lookupTM.append(tmxpath)
         if (XLIFFLookup and xliffpath):
             lookupTM.append(xliffpath)
-##        if (not len(lookupTM)):
-##            QtGui.QMessageBox.warning(None, self.tr("No Translation Memory"), self.tr("Translation Memory Not Found"))
         return lookupTM
         
     def autoTranslate(self):

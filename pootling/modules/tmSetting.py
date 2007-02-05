@@ -45,69 +45,31 @@ class tmSetting(QtGui.QDialog):
             self.ui = Ui_tmsetting()
             self.ui.setupUi(self)
             self.setWindowTitle("Setting Translation Memory")
-            self.connect(self.ui.btnOk, QtCore.SIGNAL("clicked(bool)"), QtCore.SLOT("close()"))
-            self.connect(self.ui.btnAdd, QtCore.SIGNAL("clicked(bool)"), self.addLocation)
-            
+            self.connect(self.ui.btnAdd, QtCore.SIGNAL("clicked(bool)"), self.showFileDialog)
             self.filedialog = FileDialog.fileDialog(self)
-##            self.connect(self.ui.btnPOFile, QtCore.SIGNAL("clicked(bool)"), self.setPOPath)
-##            self.connect(self.ui.btnTMXFile, QtCore.SIGNAL("clicked(bool)"), self.setTMXPath)
-##            self.connect(self.ui.btnXLiffFile, QtCore.SIGNAL("clicked(bool)"), self.setXliffPath)
-##            self.connect(self.ui.poLookup, QtCore.SIGNAL("stateChanged(int)"), self.setPOLookup)
-##            self.connect(self.ui.tmxLookup, QtCore.SIGNAL("stateChanged(int)"), self.setTMXLookup)
-##            self.connect(self.ui.xliffLookup, QtCore.SIGNAL("stateChanged(int)"), self.setXliffLookup)
-##        self.ui.linePOFile.setText(World.settings.value("PODictionary").toString())
-##        self.ui.lineTMXFile.setText(World.settings.value("TMXDictionary").toString())
-##        self.ui.lineXliffFile.setText(World.settings.value("XLIFFDictionary").toString())
-##        if (self.ui.linePOFile.text() and World.settings.value("POLookup").toBool()):
-##            self.ui.poLookup.setChecked(True)
-##        if (self.ui.lineTMXFile.text() and World.settings.value("TMXLookup").toBool()):
-##            self.ui.tmxLookup.setChecked(True)
-##        if (self.ui.lineXliffFile.text() and World.settings.value("XLIFFLookup").toBool()):
-##            self.ui.xliffLookup.setChecked(True)
+            self.connect(self.filedialog, QtCore.SIGNAL("location"), self.addLocation)
+            self.connect(self.ui.btnOk, QtCore.SIGNAL("clicked(bool)"), QtCore.SLOT("close()"))
+            self.connect(self.ui.btnRemove, QtCore.SIGNAL("clicked(bool)"), self.removeLocation)
+            self.connect(self.ui.btnRemoveAll, QtCore.SIGNAL("clicked(bool)"), self.ui.listWidget.clear)
+            self.connect(self.ui.btnMoveUp, QtCore.SIGNAL("clicked(bool)"), self.moveItem)
+            self.connect(self.ui.btnMoveDown, QtCore.SIGNAL("clicked(bool)"), self.moveItem)
         self.show()
-##        
-##    def setPOPath(self):
-##        '''set path of translated PO file(s) '''
-##        path = QtGui.QFileDialog.getOpenFileName(
-##                         self,
-##                         "Select a PO file to set as dictionary",
-##                         QtCore.QDir.homePath(),
-##                         "PO file (*.po)")
-##        self.ui.linePOFile.setText(path)
-##        World.settings.setValue("PODictionary", QtCore.QVariant(path))
-##
-##    def setTMXPath(self):
-##        '''set path of translated TMX file(s) '''
-##        path = QtGui.QFileDialog.getOpenFileName(
-##                         self,
-##                         "Select a TMX file to set as dictionary",
-##                         QtCore.QDir.homePath(),
-##                         "TMX file (*.tmx)")
-##        self.ui.lineTMXFile.setText(path)
-##        World.settings.setValue("TMXDictionary", QtCore.QVariant(path))
-##    
-##    def setXliffPath(self):
-##        '''set path of translated Xliff file(s) '''
-##        path = QtGui.QFileDialog.getOpenFileName(
-##                         self,
-##                         "Select a TMX file to set as dictionary",
-##                         QtCore.QDir.homePath(),
-##                         "Xliff file (*.xlf *.xliff)")
-##        self.ui.lineXliffFile.setText(path)
-##        World.settings.setValue("XLIFFDictionary", QtCore.QVariant(path))
-##    
-##    def setPOLookup(self):
-##        World.settings.setValue("POLookup", QtCore.QVariant(self.ui.poLookup.isChecked()))
-##    
-##    def setTMXLookup(self):
-##        World.settings.setValue("TMXLookup", QtCore.QVariant(self.ui.tmxLookup.isChecked()))
-##    
-##    def setXliffLookup(self):
-##        World.settings.setValue("XLIFFLookup", QtCore.QVariant(self.ui.xliffLookup.isChecked()))
     
-    def addLocation(self):
+    def showFileDialog(self):
         self.filedialog.show()
-        
+    
+    def addLocation(self, text):
+        self.ui.listWidget.addItem(text)
+    
+    def removeLocation(self):
+        self.ui.listWidget.takeItem(self.ui.listWidget.currentRow())
+    
+    def moveItem(self):
+        if (self.sender() == self.ui.btnMoveUp):
+            print 'hello'
+        elif (self.sender() == self.ui.btnMoveDown):
+            print 'hi'
+    
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     tm = tmSetting(None)

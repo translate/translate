@@ -42,10 +42,15 @@ class fileDialog(QtGui.QDialog):
         
         self.connect(self.ui.treeView, QtCore.SIGNAL("doubleClicked ( const QModelIndex &)"), self.addLocation)
         self.connect(self.ui.treeView, QtCore.SIGNAL("clicked ( const QModelIndex &)"), self.addLocation)
+        self.connect(self.ui.btnAdd, QtCore.SIGNAL("clicked(bool)"), self.emitLocation)
+        self.connect(self.ui.btnQuit, QtCore.SIGNAL("clicked(bool)"), QtCore.SLOT("close()"))
         
     def addLocation(self):
-        self.ui.lineLocation.setText('hello')
-
+        self.ui.lineLocation.setText(self.dir.filePath(self.ui.treeView.currentIndex()))
+    
+    def emitLocation(self):
+        self.emit(QtCore.SIGNAL("location"), self.ui.lineLocation.text())
+    
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     filedialog = fileDialog(None)

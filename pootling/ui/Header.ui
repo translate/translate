@@ -151,7 +151,7 @@
          <string/>
         </property>
         <property name="icon" >
-         <iconset>../images/new.png</iconset>
+         <iconset>../images/plus.png</iconset>
         </property>
        </widget>
       </item>
@@ -174,9 +174,9 @@
             <blue>0</blue>
            </color>
            <color>
-            <red>255</red>
-            <green>255</green>
-            <blue>255</blue>
+            <red>221</red>
+            <green>223</green>
+            <blue>228</blue>
            </color>
            <color>
             <red>255</red>
@@ -199,9 +199,9 @@
             <blue>199</blue>
            </color>
            <color>
-            <red>255</red>
-            <green>255</green>
-            <blue>255</blue>
+            <red>0</red>
+            <green>0</green>
+            <blue>0</blue>
            </color>
            <color>
             <red>255</red>
@@ -261,9 +261,9 @@
             <blue>0</blue>
            </color>
            <color>
-            <red>255</red>
-            <green>255</green>
-            <blue>255</blue>
+            <red>221</red>
+            <green>223</green>
+            <blue>228</blue>
            </color>
            <color>
             <red>255</red>
@@ -286,9 +286,9 @@
             <blue>199</blue>
            </color>
            <color>
-            <red>255</red>
-            <green>255</green>
-            <blue>255</blue>
+            <red>0</red>
+            <green>0</green>
+            <blue>0</blue>
            </color>
            <color>
             <red>255</red>
@@ -348,9 +348,9 @@
             <blue>128</blue>
            </color>
            <color>
-            <red>255</red>
-            <green>255</green>
-            <blue>255</blue>
+            <red>221</red>
+            <green>223</green>
+            <blue>228</blue>
            </color>
            <color>
             <red>255</red>
@@ -451,7 +451,7 @@
          <string/>
         </property>
         <property name="icon" >
-         <iconset>../images/stop.png</iconset>
+         <iconset>../images/minus.png</iconset>
         </property>
        </widget>
       </item>
