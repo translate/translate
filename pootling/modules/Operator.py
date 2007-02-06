@@ -46,6 +46,7 @@ class Operator(QtCore.QObject):
     @signal filterChanged(filter, lenFilter): emitted when the filter was changed
     @signal readyForSave(False): emitted when a file was saved
     """
+    
     def __init__(self):
         QtCore.QObject.__init__(self)
         self.store = None
@@ -432,8 +433,9 @@ class Operator(QtCore.QObject):
         self.filteredList = None
         self.emitNewUnits()
     
-    def getLookupPath(self):
-##        diveIntoSub = World.settings.value("diveIntoSub").toBool()
+    def getTMpath(self):
+        '''return TM paths which are added in TM setting dialog
+        @return tm: paths as QStringList'''
         tm = World.settings.value("TMPath").toStringList()
         return tm
         
@@ -443,30 +445,51 @@ class Operator(QtCore.QObject):
         '''
         if (not self.filteredList):
             return
-        lookupTM = self.getLookupPath()
-        if (not lookupTM):
+        TMpath = self.getTMpath()
+        if (not TMpath):
             return
-        self.lookupProcess(lookupTM, self.filteredList)
+        memo = self.getMemo(TMpath)
+        self.lookupProcess(memo, self.filteredList)
     
-    def lookupProcess(self, lookupTM, units):
+    def getMemo(self, TMpath):
+        # TODO: not complet yet.
+        memo = []
+        diveSub = World.settings.value("diveIntoSub").toBool()
+        for each in TMpath:
+            each = str(each)
+            if (os.path.isfile(each)):
+                try:
+                    memo.append(factory.getobject(each))
+                except:
+                    pass
+                continue
+            # TODO: dive into subfolder
+            if (os.path.isdir(each)):
+                # not dive into subfolder
+                for root, dirs, files in os.walk(each):
+                    if (root):
+                        for each in files:
+                            try:
+                                memo.append(factory.getobject(each))
+                            except:
+                                pass
+                    # whether dive into subfolder
+                    if (not diveSub):
+                        break
+        return memo
+        
+    def lookupProcess(self, memo, units):
         '''lookup process'''
         # FIXME: too slow process to lookup
-        # FIXME: some file path is not TM.
-                
-        memo = []
-        for i in range(len(lookupTM)):
-            #FIXME: tmfile might be broken file
-            #FIXME: some paths are dir
-            # TODO: dive into subfolder
-            memo.append(factory.getobject(str(lookupTM[i])))
         matcher = match.matcher(memo)
-        
         if (not isinstance(units, list)):
             candidates = matcher.matches(units.source)
             return candidates
         else:
             for unit in units:
-                if (unit.istranslated() or unit.isfuzzy() or (not unit.source)):
+                if (unit.istranslated() or unit.isfuzzy()):
+                    continue
+                if (not unit.source):
                     continue
                 candidates = matcher.matches(unit.source)
                 # no condidates search in next TM
@@ -487,11 +510,12 @@ class Operator(QtCore.QObject):
     def lookupText(self):
         if (not self.filteredList):
             return
-        lookupTM = self.getLookupPath()
-        if (not lookupTM):
+        TMpath = self.getTMpath()
+        if (not TMpath):
             return
         unit = self.filteredList[self.currentUnitIndex]
-        candidates = self.lookupProcess(lookupTM, unit)
+        memo = self.getMemo(TMpath)
+        candidates = self.lookupProcess(memo, unit)
         self.emit(QtCore.SIGNAL("candidates"), candidates)
     
     def emitReadyForSave(self):
