@@ -433,41 +433,32 @@ class Operator(QtCore.QObject):
         self.emitNewUnits()
     
     def getLookupPath(self):
-        lookupTM = []
-        POLookup = World.settings.value("POLookup").toBool()
-        TMXLookup = World.settings.value("TMXLookup").toBool()
-        XLIFFLookup = World.settings.value("XLIFFLookup").toBool()
-        popath = str(World.settings.value("PODictionary").toString())
-        tmxpath = str(World.settings.value("TMXDictionary").toString())
-        xliffpath = str(World.settings.value("XLIFFDictionary").toString())
-        
-        if (POLookup and popath):
-            lookupTM.append(popath)
-        if (TMXLookup and tmxpath):
-            lookupTM.append(tmxpath)
-        if (XLIFFLookup and xliffpath):
-            lookupTM.append(xliffpath)
-        return lookupTM
+##        diveIntoSub = World.settings.value("diveIntoSub").toBool()
+        tm = World.settings.value("TMPath").toStringList()
+        return tm
         
     def autoTranslate(self):
         '''
         get TM path and start lookup
         '''
-        lookupTM = self.getLookupPath()
-        if (not len(lookupTM)):
+        if (not self.filteredList):
             return
-        if (not len(self.filteredList)):
+        lookupTM = self.getLookupPath()
+        if (not lookupTM):
             return
         self.lookupProcess(lookupTM, self.filteredList)
     
     def lookupProcess(self, lookupTM, units):
         '''lookup process'''
         # FIXME: too slow process to lookup
-        
+        # FIXME: some file path is not TM.
+                
         memo = []
         for i in range(len(lookupTM)):
             #FIXME: tmfile might be broken file
-            memo.append(factory.getobject(lookupTM[i]))
+            #FIXME: some paths are dir
+            # TODO: dive into subfolder
+            memo.append(factory.getobject(str(lookupTM[i])))
         matcher = match.matcher(memo)
         
         if (not isinstance(units, list)):
@@ -494,10 +485,10 @@ class Operator(QtCore.QObject):
             return
     
     def lookupText(self):
-        lookupTM = self.getLookupPath()
-        if (not len(lookupTM)):
+        if (not self.filteredList):
             return
-        if (not len(self.filteredList)):
+        lookupTM = self.getLookupPath()
+        if (not lookupTM):
             return
         unit = self.filteredList[self.currentUnitIndex]
         candidates = self.lookupProcess(lookupTM, unit)

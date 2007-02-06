@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow" >
   <property name="enabled" >
@@ -51,7 +48,7 @@
      <x>0</x>
      <y>0</y>
      <width>539</width>
-     <height>28</height>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuHelp" >
@@ -129,11 +126,6 @@
     <addaction name="separator" />
     <addaction name="actionGoTo" />
    </widget>
-   <widget class="QMenu" name="menu_Catalog" >
-    <property name="title" >
-     <string>&amp;Catalog</string>
-    </property>
-   </widget>
    <widget class="QMenu" name="menuWindow" >
     <property name="title" >
      <string>&amp;Window</string>
@@ -162,13 +154,22 @@
     <addaction name="actionPreferences" />
     <addaction name="action_TM" />
    </widget>
-   <widget class="QMenu" name="menu_TM" >
+   <widget class="QMenu" name="menu_Tool" >
     <property name="title" >
      <string>&amp;Tool</string>
     </property>
-    <addaction name="action_lookup_Text" />
-    <addaction name="actionAuto_translate" />
+    <widget class="QMenu" name="menu_TM" >
+     <property name="title" >
+      <string>&amp;TM</string>
+     </property>
+     <property name="icon" >
+      <iconset>../images/memory.png</iconset>
+     </property>
+     <addaction name="action_lookup_Text" />
+     <addaction name="actionAuto_translate" />
+    </widget>
     <addaction name="separator" />
+    <addaction name="menu_TM" />
     <addaction name="actionCatalogManager" />
    </widget>
    <addaction name="menuFile" />
@@ -176,21 +177,12 @@
    <addaction name="menuView" />
    <addaction name="menuGo" />
    <addaction name="menuBookmark" />
-   <addaction name="menu_TM" />
+   <addaction name="menu_Tool" />
    <addaction name="menuSettings" />
    <addaction name="menuWindow" />
    <addaction name="menuHelp" />
   </widget>
-  <widget class="QStatusBar" name="statusbar" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>471</y>
-     <width>539</width>
-     <height>21</height>
-    </rect>
-   </property>
-  </widget>
+  <widget class="QStatusBar" name="statusbar" />
   <widget class="QToolBar" name="toolStandard" >
    <property name="enabled" >
     <bool>true</bool>
@@ -817,6 +809,9 @@
    </property>
   </action>
   <action name="action_TM" >
+   <property name="icon" >
+    <iconset>../images/memory.png</iconset>
+   </property>
    <property name="text" >
     <string>&amp;TM</string>
    </property>
@@ -827,7 +822,6 @@
    </property>
   </action>
  </widget>
- <pixmapfunction></pixmapfunction>
  <resources/>
  <connections/>
 </ui>

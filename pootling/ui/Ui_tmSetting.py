@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Mon Feb  5 16:19:53 2007
+# Created: Tue Feb  6 14:56:16 2007
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -13,19 +13,12 @@ from PyQt4 import QtCore, QtGui
 class Ui_tmsetting(object):
     def setupUi(self, tmsetting):
         tmsetting.setObjectName("tmsetting")
-        tmsetting.resize(QtCore.QSize(QtCore.QRect(0,0,426,297).size()).expandedTo(tmsetting.minimumSizeHint()))
+        tmsetting.resize(QtCore.QSize(QtCore.QRect(0,0,547,350).size()).expandedTo(tmsetting.minimumSizeHint()))
 
         self.gridlayout = QtGui.QGridLayout(tmsetting)
         self.gridlayout.setMargin(9)
         self.gridlayout.setSpacing(6)
         self.gridlayout.setObjectName("gridlayout")
-
-        self.btnOk = QtGui.QPushButton(tmsetting)
-        self.btnOk.setObjectName("btnOk")
-        self.gridlayout.addWidget(self.btnOk,1,1,1,1)
-
-        spacerItem = QtGui.QSpacerItem(181,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
-        self.gridlayout.addItem(spacerItem,1,0,1,1)
 
         self.tabOptions = QtGui.QTabWidget(tmsetting)
         self.tabOptions.setObjectName("tabOptions")
@@ -38,8 +31,8 @@ class Ui_tmsetting(object):
         self.gridlayout1.setSpacing(6)
         self.gridlayout1.setObjectName("gridlayout1")
 
-        spacerItem1 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
-        self.gridlayout1.addItem(spacerItem1,7,0,1,1)
+        spacerItem = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
+        self.gridlayout1.addItem(spacerItem,7,0,1,1)
 
         self.checkBox = QtGui.QCheckBox(self.tab)
         self.checkBox.setObjectName("checkBox")
@@ -133,10 +126,17 @@ class Ui_tmsetting(object):
         self.label_2.setObjectName("label_2")
         self.gridlayout2.addWidget(self.label_2,1,0,1,1)
 
-        spacerItem2 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
-        self.gridlayout2.addItem(spacerItem2,5,0,1,1)
+        spacerItem1 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
+        self.gridlayout2.addItem(spacerItem1,5,0,1,1)
         self.tabOptions.addTab(self.tab_4, "")
         self.gridlayout.addWidget(self.tabOptions,0,0,1,2)
+
+        self.btnOk = QtGui.QPushButton(tmsetting)
+        self.btnOk.setObjectName("btnOk")
+        self.gridlayout.addWidget(self.btnOk,1,1,1,1)
+
+        spacerItem2 = QtGui.QSpacerItem(311,28,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        self.gridlayout.addItem(spacerItem2,1,0,1,1)
 
         self.retranslateUi(tmsetting)
         self.tabOptions.setCurrentIndex(0)
@@ -160,14 +160,18 @@ class Ui_tmsetting(object):
 
     def retranslateUi(self, tmsetting):
         tmsetting.setWindowTitle(self.tr("Translation Memory Settings"))
-        self.btnOk.setText(self.tr("&OK"))
         self.checkBox.setText(self.tr("Dive into Subfolders"))
         self.btnAdd.setToolTip(self.tr("Add TM"))
+        self.btnAdd.setText(self.tr(" &Add"))
         self.btnMoveUp.setToolTip(self.tr("move up"))
+        self.btnMoveUp.setText(self.tr(" &Up"))
         self.label_4.setText(self.tr("Locations:"))
         self.btnRemoveAll.setToolTip(self.tr("clear list"))
+        self.btnRemoveAll.setText(self.tr(" &Clear"))
         self.btnMoveDown.setToolTip(self.tr("move down"))
+        self.btnMoveDown.setText(self.tr(" Do&wn"))
         self.btnRemove.setToolTip(self.tr("remove TM"))
+        self.btnRemove.setText(self.tr(" De&lete"))
         self.tabOptions.setTabText(self.tabOptions.indexOf(self.tab), self.tr("&File"))
         self.tabOptions.setTabText(self.tabOptions.indexOf(self.tab_3), self.tr("&Database"))
         self.label_3.setText(self.tr("Maximum string length"))
@@ -176,6 +180,7 @@ class Ui_tmsetting(object):
         self.chkCaseSensitive.setText(self.tr("Case Sensitive"))
         self.label_2.setText(self.tr("Maximum candidates"))
         self.tabOptions.setTabText(self.tabOptions.indexOf(self.tab_4), self.tr("O&ptions"))
+        self.btnOk.setText(self.tr("&OK"))
 
 
 if __name__ == "__main__":

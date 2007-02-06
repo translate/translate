@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Thu Feb  1 14:09:29 2007
+# Created: Tue Feb  6 14:15:13 2007
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -30,7 +30,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0,0,539,28))
+        self.menubar.setGeometry(QtCore.QRect(0,0,539,30))
         self.menubar.setObjectName("menubar")
 
         self.menuHelp = QtGui.QMenu(self.menubar)
@@ -53,9 +53,6 @@ class Ui_MainWindow(object):
         self.menuGo = QtGui.QMenu(self.menubar)
         self.menuGo.setObjectName("menuGo")
 
-        self.menu_Catalog = QtGui.QMenu(self.menubar)
-        self.menu_Catalog.setObjectName("menu_Catalog")
-
         self.menuWindow = QtGui.QMenu(self.menubar)
         self.menuWindow.setObjectName("menuWindow")
 
@@ -68,12 +65,15 @@ class Ui_MainWindow(object):
         self.menuSettings = QtGui.QMenu(self.menubar)
         self.menuSettings.setObjectName("menuSettings")
 
-        self.menu_TM = QtGui.QMenu(self.menubar)
+        self.menu_Tool = QtGui.QMenu(self.menubar)
+        self.menu_Tool.setObjectName("menu_Tool")
+
+        self.menu_TM = QtGui.QMenu(self.menu_Tool)
+        self.menu_TM.setIcon(QtGui.QIcon("../images/memory.png"))
         self.menu_TM.setObjectName("menu_TM")
         MainWindow.setMenuBar(self.menubar)
 
         self.statusbar = QtGui.QStatusBar(MainWindow)
-        self.statusbar.setGeometry(QtCore.QRect(0,471,539,21))
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
@@ -285,6 +285,7 @@ class Ui_MainWindow(object):
         self.actionAuto_translate.setObjectName("actionAuto_translate")
 
         self.action_TM = QtGui.QAction(MainWindow)
+        self.action_TM.setIcon(QtGui.QIcon("../images/memory.png"))
         self.action_TM.setObjectName("action_TM")
 
         self.actionCatalogManager = QtGui.QAction(MainWindow)
@@ -338,14 +339,15 @@ class Ui_MainWindow(object):
         self.menuSettings.addAction(self.action_TM)
         self.menu_TM.addAction(self.action_lookup_Text)
         self.menu_TM.addAction(self.actionAuto_translate)
-        self.menu_TM.addSeparator()
-        self.menu_TM.addAction(self.actionCatalogManager)
+        self.menu_Tool.addSeparator()
+        self.menu_Tool.addAction(self.menu_TM.menuAction())
+        self.menu_Tool.addAction(self.actionCatalogManager)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
         self.menubar.addAction(self.menuView.menuAction())
         self.menubar.addAction(self.menuGo.menuAction())
         self.menubar.addAction(self.menuBookmark.menuAction())
-        self.menubar.addAction(self.menu_TM.menuAction())
+        self.menubar.addAction(self.menu_Tool.menuAction())
         self.menubar.addAction(self.menuSettings.menuAction())
         self.menubar.addAction(self.menuWindow.menuAction())
         self.menubar.addAction(self.menuHelp.menuAction())
@@ -379,12 +381,12 @@ class Ui_MainWindow(object):
         self.menuEdit.setTitle(self.tr("&Edit"))
         self.menuView.setTitle(self.tr("&View"))
         self.menuGo.setTitle(self.tr("&Go"))
-        self.menu_Catalog.setTitle(self.tr("&Catalog"))
         self.menuWindow.setTitle(self.tr("&Window"))
         self.menuToolbars.setTitle(self.tr("Toolbars"))
         self.menuBookmark.setTitle(self.tr("&Bookmarks"))
         self.menuSettings.setTitle(self.tr("&Settings"))
-        self.menu_TM.setTitle(self.tr("&Tool"))
+        self.menu_Tool.setTitle(self.tr("&Tool"))
+        self.menu_TM.setTitle(self.tr("&TM"))
         self.toolStandard.setWindowTitle(self.tr("Standard Toolbar"))
         self.toolNavigation.setWindowTitle(self.tr("Navigation Toolbar"))
         self.toolFilter.setWindowTitle(self.tr("Filter Toolbar"))

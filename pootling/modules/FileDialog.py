@@ -38,10 +38,14 @@ class fileDialog(QtGui.QDialog):
         self.dir = QtGui.QDirModel()
         self.dir.setReadOnly(True)
         self.ui.treeView.setModel(self.dir)
+        self.goHome()
+        self.ui.treeView.resizeColumnToContents(0)
         self.setModal(True)
         
         self.connect(self.ui.treeView, QtCore.SIGNAL("doubleClicked ( const QModelIndex &)"), self.addLocation)
         self.connect(self.ui.treeView, QtCore.SIGNAL("clicked ( const QModelIndex &)"), self.addLocation)
+        self.connect(self.ui.btnHome, QtCore.SIGNAL("clicked(bool)"), self.goHome)
+        self.connect(self.ui.btnDesktop, QtCore.SIGNAL("clicked(bool)"), self.goDesktop)
         self.connect(self.ui.btnAdd, QtCore.SIGNAL("clicked(bool)"), self.emitLocation)
         self.connect(self.ui.btnQuit, QtCore.SIGNAL("clicked(bool)"), QtCore.SLOT("close()"))
         
@@ -50,6 +54,14 @@ class fileDialog(QtGui.QDialog):
     
     def emitLocation(self):
         self.emit(QtCore.SIGNAL("location"), self.ui.lineLocation.text())
+    
+    def goHome(self):
+        self.ui.treeView.setCurrentIndex(self.dir.index(QtCore.QDir.homePath()))
+        self.addLocation()
+    
+    def goDesktop(self):
+        self.ui.treeView.setCurrentIndex(self.dir.index(QtCore.QDir.homePath() + '/Desktop'))
+        self.addLocation()
     
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

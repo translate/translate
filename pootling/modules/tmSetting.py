@@ -51,8 +51,12 @@ class tmSetting(QtGui.QDialog):
             self.connect(self.ui.btnOk, QtCore.SIGNAL("clicked(bool)"), QtCore.SLOT("close()"))
             self.connect(self.ui.btnRemove, QtCore.SIGNAL("clicked(bool)"), self.removeLocation)
             self.connect(self.ui.btnRemoveAll, QtCore.SIGNAL("clicked(bool)"), self.ui.listWidget.clear)
-            self.connect(self.ui.btnMoveUp, QtCore.SIGNAL("clicked(bool)"), self.moveItem)
-            self.connect(self.ui.btnMoveDown, QtCore.SIGNAL("clicked(bool)"), self.moveItem)
+            self.connect(self.ui.btnMoveUp, QtCore.SIGNAL("clicked(bool)"), self.moveUp)
+            self.connect(self.ui.btnMoveDown, QtCore.SIGNAL("clicked(bool)"), self.moveDown)
+            self.connect(self.ui.checkBox, QtCore.SIGNAL("stateChanged(int)"), self.rememberDive)
+            self.ui.listWidget.addItems(World.settings.value("TMPath").toStringList())
+            self.setModal(True)
+        self.ui.checkBox.setChecked(World.settings.value("diveIntoSub").toBool())
         self.show()
     
     def showFileDialog(self):
@@ -64,12 +68,36 @@ class tmSetting(QtGui.QDialog):
     def removeLocation(self):
         self.ui.listWidget.takeItem(self.ui.listWidget.currentRow())
     
-    def moveItem(self):
-        if (self.sender() == self.ui.btnMoveUp):
-            print 'hello'
-        elif (self.sender() == self.ui.btnMoveDown):
-            print 'hi'
+    def moveItem(self, distance):
+        '''move an item up or down depending on distance
+        @param distance: int'''
+        currentrow = self.ui.listWidget.currentRow()
+        currentItem = self.ui.listWidget.item(currentrow)
+        distanceItem = self.ui.listWidget.item(currentrow + distance)
+        if (distanceItem):
+            temp = distanceItem.text()
+            distanceItem.setText(currentItem.text())
+            currentItem.setText(temp)
+            self.ui.listWidget.setCurrentRow(currentrow + distance)
+        
+    def moveUp(self):
+        '''move item up'''
+        self.moveItem(-1)
     
+    def moveDown(self):
+        '''move item down'''
+        self.moveItem(1)
+    
+    def rememberDive(self):
+        World.settings.setValue("diveIntoSub", QtCore.QVariant(self.ui.checkBox.isChecked()))
+        
+    def closeEvent(self, event):
+        stringlist = QtCore.QStringList()
+        for i in range(self.ui.listWidget.count()):
+            stringlist.append(self.ui.listWidget.item(i).text())
+        World.settings.setValue("TMPath", QtCore.QVariant(stringlist))
+        QtGui.QDialog.closeEvent(self, event)
+
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     tm = tmSetting(None)
