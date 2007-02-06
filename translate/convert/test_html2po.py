@@ -26,8 +26,8 @@ class TestHTML2PO:
         """helper to validate a PO message"""
         if not pofile.units[0].isheader():
           unitnumber = unitnumber - 1
-        print pofile.units[unitnumber]
-        print expected
+        print 'unit source: ' + str(pofile.units[unitnumber].source) + '|'
+        print 'expected: ' + expected + '|'
         assert str(pofile.units[unitnumber].source) == expected
 
     def check_single(self, markup, itemtext):
@@ -250,6 +250,24 @@ newlines.</p></body></html>
         self.countunits(pofile, 2)
         self.compareunit(pofile, 1, "Extract this")
         self.compareunit(pofile, 2, "And this")
+
+    def test_carriage_return(self):
+        """Remove carriage returns from files in dos format."""
+        htmlsource = '''<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">\r
+<html><!-- InstanceBegin template="/Templates/masterpage.dwt" codeOutsideHTMLIsLocked="false" -->\r
+<head>\r
+<!-- InstanceBeginEditable name="doctitle" -->\r
+<link href="fmfi.css" rel="stylesheet" type="text/css">\r
+</head>\r
+\r
+<body>\r
+<p>The rapid expansion of telecommunications infrastructure in recent\r
+years has helped to bridge the digital divide to a limited extent.</p> \r
+</body>\r
+<!-- InstanceEnd --></html>\r
+'''
+
+        self.check_single(htmlsource, 'The rapid expansion of telecommunications infrastructure in recent years has helped to bridge the digital divide to a limited extent.')
 
 class TestHTML2POCommand(test_convert.TestConvertCommand, TestHTML2PO):
     """Tests running actual html2po commands on files"""

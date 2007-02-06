@@ -106,7 +106,7 @@ class TxtFile(base.TranslationStore):
         block = []
         startline = 0
         for linenum in range(len(lines)):
-            line = lines[linenum].rstrip("\n")
+            line = lines[linenum].rstrip("\n").rstrip("\r")
             for rule, prere, postre in self.flavour:
                 match = prere.match(line)
                 if match:

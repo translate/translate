@@ -45,6 +45,19 @@ Third unit with blank after but no more units.
         assert poresult.units[0].isheader()
         assert len(poresult.units) == 4
 
+    def test_carriage_return(self):
+        """Remove carriage returns from files in dos format."""
+        txtsource = '''The rapid expansion of telecommunications infrastructure in recent years has\r
+helped to bridge the digital divide to a limited extent.\r
+'''
+
+        txtexpected = '''The rapid expansion of telecommunications infrastructure in recent years has
+helped to bridge the digital divide to a limited extent.'''
+
+        poresult = self.txt2po(txtsource)
+        pounit = poresult.units[1]
+        assert str(pounit.getsource()) == txtexpected
+
 class TestDoku2po:
     def doku2po(self, txtsource, template=None):
         """helper that converts dokuwiki source to po source without requiring files."""
