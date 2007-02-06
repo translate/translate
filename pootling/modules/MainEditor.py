@@ -115,6 +115,7 @@ class MainWindow(QtGui.QMainWindow):
         # create file action object and file action menu related signals
         self.fileaction = FileAction(self)
         self.connect(self.ui.actionOpen, QtCore.SIGNAL("triggered()"), self.fileaction.openFile)
+        self.connect(self.ui.actionClear, QtCore.SIGNAL("triggered()"), self.clearOpenRecent)
         self.connect(self.ui.actionOpenInNewWindow, QtCore.SIGNAL("triggered()"), self.startInNewWindow)
         self.connect(self.ui.action_Close, QtCore.SIGNAL("triggered()"), self.closeFile)
         self.connect(self.ui.actionSave, QtCore.SIGNAL("triggered()"), self.fileaction.save)
