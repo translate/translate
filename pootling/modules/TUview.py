@@ -104,6 +104,9 @@ class TUview(QtGui.QDockWidget):
         self.highlightRange = QtGui.QTextLayout.FormatRange()
         self.highlightRange.format = self.highlightFormat
         self.tabForPlural()
+        self.unitHasPlural = False
+        self.targetModified = False
+        self.sourceLength = 0
         
         self.sourceHighlight = Highlighter(self.ui.txtSource)
         self.targetHighlight = Highlighter(self.ui.txtTarget)
@@ -123,6 +126,8 @@ class TUview(QtGui.QDockWidget):
         self.tabTarget = QtGui.QTabWidget(self.form)
         self.tabTarget.setObjectName("tabTarget")
         self.ui.gridlayout.addWidget(self.tabTarget,1,0,1,1)
+        
+        self.ui.gridlayout.addWidget(self.ui.fileScrollBar,0,2,3,1)
         
         self.tabSource.hide()
         self.tabTarget.hide()
@@ -204,18 +209,18 @@ class TUview(QtGui.QDockWidget):
      
     def unitPlural(self, unit):
         """ This will be call when unit is plural"""
+        self.unitHasPlural = True
         self.tabSource.show()
         self.tabTarget.show()
+        self.ui.gridlayout.addWidget(self.ui.fileScrollBar,0,2,3,1)
         self.ui.txtSource.hide()
         self.ui.txtTarget.hide()
-        if (self.tabSource.count() == len(unit.source.strings)):
-            print self.tabSource.count()
-            print len(unit.source.strings)
-            for i in range(len(unit.source.strings)):
+        self.sourceLength = len(unit.source.strings)
+        if (self.tabSource.count() == self.sourceLength):
+            for i in range(self.sourceLength):
                 self.txtSourceList[i].setPlainText(unit.source.strings[i])
         else:
-            for i in range(len(unit.source.strings)):
-                print "hi"
+            for i in range(self.sourceLength):
                 tabSourcePlural = QtGui.QWidget(self.tabSource)
                 self.tabSourcePlurals.append(tabSourcePlural)
                 self.tabSourcePlurals[i].setObjectName("tabSourcePlural%d" % i)
@@ -237,11 +242,19 @@ class TUview(QtGui.QDockWidget):
                 
                 self.tabSource.addTab(self.tabSourcePlurals[i], "")
                 self.tabSource.setTabText(self.tabSource.indexOf(self.tabSourcePlurals[i]), self.tr("Plural%d" % i))
-                self.ui.gridlayout.addWidget(self.ui.fileScrollBar,0,2,1,1)
 
                 # target
-            nplurals = 2  # nplurals will be adapted to the language set in preference.
-            for i in range(nplurals):
+            self.nplurals = 3  # nplurals will be adapted to the language set in preference.
+        if (self.tabTarget.count() == self.nplurals):
+            for i in range(self.nplurals):
+                print len(unit.target)
+                if (len(unit.target) == 1):
+                    self.txtTargetList[i].setPlainText(unit.target.strings[0])
+                else:
+                    pass
+##                    self.txtTargetList[i].setPlainText(unit.target.strings[i])
+        else:
+            for i in range(self.nplurals):
                 tabTargetPlural = QtGui.QWidget(self.tabTarget)
                 self.tabTargetPlurals.append(tabTargetPlural)
                 self.tabTargetPlurals[i].setObjectName("tabTargetPlural%d" % i)
@@ -258,12 +271,17 @@ class TUview(QtGui.QDockWidget):
                 self.txtTarget = QtGui.QTextEdit(self.tabTargetPlurals[i])
                 self.txtTargetList.append(self.txtTarget)
                 self.txtTargetList[i].setObjectName("txtTarget%d"% i)
+                self.txtTargetList[i].clear()
                 self.gridlayoutTarList[i].addWidget(self.txtTargetList[i],0,0,1,1)
-                self.txtTargetList[i].setPlainText(unit.target.strings[1])
+                if (len(unit.target) == 1):
+                    self.txtTargetList[i].setPlainText(unit.target.strings[0])
+                else:
+                    self.txtTargetList[i].setPlainText(unit.target.strings[0])
                 self.connect(self.txtTargetList[i], QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
 
     def unitSingle(self, unit):
         """This will be called when unit is singular"""
+        self.unitHasPlural = False
         self.tabSource.hide()
         self.tabTarget.hide()
         self.ui.txtSource.show()
@@ -273,9 +291,22 @@ class TUview(QtGui.QDockWidget):
         self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
 
     def checkModified(self):
-        if self.ui.txtTarget.document().isModified():
-            self.emit(QtCore.SIGNAL("targetChanged"), self.ui.txtTarget.toPlainText())
-            self.ui.txtTarget.document().setModified(False)
+        if (not self.unitHasPlural):
+            if self.ui.txtTarget.document().isModified():
+                self.emit(QtCore.SIGNAL("targetChanged"), self.ui.txtTarget.toPlainText())
+                self.ui.txtTarget.document().setModified(False)
+        else:
+            targetList = []
+            for i in range(self.nplurals):
+                if self.txtTargetList[i].document().isModified():
+                    self.targetModified = True
+            if (self.targetModified):
+                for i in range(self.nplurals):
+                    targetList.append(unicode(self.txtTargetList[i].toPlainText()))
+                    print self.txtTargetList[i].toPlainText()
+                    self.txtTargetList[i].document().setModified(False)
+            self.emit(QtCore.SIGNAL("targetChanged"), targetList)
+            
 
     def emitReadyForSave(self):
         self.emit(QtCore.SIGNAL("readyForSave"), True)
