@@ -27,8 +27,8 @@ class TestHTML2PO:
         if not pofile.units[0].isheader():
           unitnumber = unitnumber - 1
         print 'unit source: ' + str(pofile.units[unitnumber].source) + '|'
-        print 'expected: ' + expected + '|'
-        assert str(pofile.units[unitnumber].source) == expected
+        print 'expected: ' + expected.encode('utf-8') + '|'
+        assert unicode(pofile.units[unitnumber].source) == unicode(expected)
 
     def check_single(self, markup, itemtext):
         """checks that converting this markup produces a single element with value itemtext"""
@@ -268,6 +268,37 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
 '''
 
         self.check_single(htmlsource, 'The rapid expansion of telecommunications infrastructure in recent years has helped to bridge the digital divide to a limited extent.')
+
+    def test_encoding_latin1(self):
+        """Convert HTML input in iso-8859-1 correctly to unicode."""
+        htmlsource = '''<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><!-- InstanceBegin template="/Templates/masterpage.dwt" codeOutsideHTMLIsLocked="false" -->
+<head>
+<!-- InstanceBeginEditable name="doctitle" -->
+<title>FMFI - South Africa - CSIR Openphone - Overview</title>
+<!-- InstanceEndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="keywords" content="fmfi, first mile, first inch, wireless, rural development, access devices, mobile devices, wifi, connectivity, rural connectivty, ict, low cost, cheap, digital divide, csir, idrc, community">
+
+<!-- InstanceBeginEditable name="head" -->
+<!-- InstanceEndEditable -->
+<link href="../../../fmfi.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<p>We aim to please \x96 will you aim too, please?</p>
+<p>South Africa\x92s language diversity can be challenging.</p>
+</body>
+</html>
+'''
+        pofile = self.html2po(htmlsource)
+
+        # 5 units are extracted from the source above.
+        # This might change in future, I suspect we don't really want to
+        # translate things like the charset...
+        self.countunits(pofile, 5)
+        self.compareunit(pofile, 4, u'We aim to please \x96 will you aim too, please?')
+        self.compareunit(pofile, 5, u'South Africa\x92s language diversity can be challenging.')
 
 class TestHTML2POCommand(test_convert.TestConvertCommand, TestHTML2PO):
     """Tests running actual html2po commands on files"""

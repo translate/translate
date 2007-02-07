@@ -55,16 +55,41 @@ class htmlfile(HTMLParser, base.TranslationStore):
   def __init__(self, includeuntaggeddata=None, inputfile=None):
     self.units= []
     self.filename = getattr(inputfile, 'name', None) 
-    if inputfile is not None:
-      thmlsrc = inputfile.read()
-      inputfile.close()
-      self.parse(htmlsrc)
-    
     self.currentblock = ""
     self.currentblocknum = 0
     self.currenttag = None
     self.includeuntaggeddata = includeuntaggeddata
     HTMLParser.__init__(self)
+
+    if inputfile is not None:
+      htmlsrc = inputfile.read()
+      inputfile.close()
+      self.parse(htmlsrc)
+
+  def guess_encoding(self, htmlsrc):
+      """Returns the encoding of the html text."""
+
+      charset_begin = htmlsrc.find('charset=')
+      if charset_begin > -1:
+          charset_begin += 8
+      else:
+          return None
+  
+      charset_end = htmlsrc.find('"', charset_begin)
+      encoding = htmlsrc[charset_begin:charset_end]
+      return encoding
+
+  def do_encoding(self, htmlsrc):
+      """Return the html text properly encoded based on a charset."""
+      charset = self.guess_encoding(htmlsrc)
+      if charset:
+          return htmlsrc.decode(charset)
+      else:
+          return htmlsrc
+
+  def parse(self, htmlsrc):
+    htmlsrc = self.do_encoding(htmlsrc)
+    self.feed(htmlsrc)
 
   def parsestring(cls, storestring):
     """Parses the html file contents in the storestring"""
