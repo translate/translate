@@ -65,7 +65,7 @@ class MainWindow(QtGui.QMainWindow):
         #plug in overview widget
         self.dockOverview = OverviewDock(self)
         self.addDockWidget(QtCore.Qt.TopDockWidgetArea, self.dockOverview)
-        self.ui.menuWindow.insertAction(sepAction, self.dockOverview.toggleViewAction())        
+        self.ui.menuWindow.insertAction(sepAction, self.dockOverview.toggleViewAction())
         
         #plug in TUview widget
         self.dockTUview = TUview(self)
@@ -103,6 +103,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.menuWindow.insertAction(sepAction, self.table.toggleViewAction())
         self.connect(self.operator, QtCore.SIGNAL("candidates"), self.table.fillTable)
         self.connect(self.table, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
+        self.connect(self.operator, QtCore.SIGNAL("filterChanged"), self.table.filterChanged)
         
         #Help menu of aboutQt
         self.ui.menuHelp.addSeparator()
@@ -138,6 +139,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("searchResult"), self.dockTUview.highlightSearch)
         self.connect(self.operator, QtCore.SIGNAL("searchResult"), self.dockComment.highlightSearch)
         self.connect(self.operator, QtCore.SIGNAL("generalInfo"), self.showTemporaryMessage)
+        self.connect(self.operator, QtCore.SIGNAL("noTM"), self.showTemporaryMessage)
         # "replaceText" sends text field, start, length, and text to replace.
         self.connect(self.operator, QtCore.SIGNAL("replaceText"), self.dockTUview.replaceText)
         self.connect(self.operator, QtCore.SIGNAL("replaceText"), self.dockComment.replaceText)
@@ -162,7 +164,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.action_TM, QtCore.SIGNAL("triggered()"), self.tmsetting.showDialog)
         
         # action lookup text and auto translation from TM
-        self.connect(self.ui.action_lookup_Text, QtCore.SIGNAL("triggered()"), self.operator.lookupText)
+        self.connect(self.ui.action_lookup_Text, QtCore.SIGNAL("triggered()"), self.operator.lookupUnit)
         self.connect(self.ui.actionAuto_translate, QtCore.SIGNAL("triggered()"), self.operator.autoTranslate)
         
         # Edit Header

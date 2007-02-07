@@ -66,6 +66,12 @@
          <property name="icon" >
           <iconset>../images/addTM.png</iconset>
          </property>
+         <property name="iconSize" >
+          <size>
+           <width>16</width>
+           <height>16</height>
+          </size>
+         </property>
         </widget>
        </item>
        <item rowspan="5" row="1" column="0" >
@@ -81,6 +87,12 @@
          </property>
          <property name="icon" >
           <iconset>../images/up.png</iconset>
+         </property>
+         <property name="iconSize" >
+          <size>
+           <width>16</width>
+           <height>16</height>
+          </size>
          </property>
         </widget>
        </item>
@@ -102,6 +114,12 @@
          <property name="icon" >
           <iconset>../images/eraser.png</iconset>
          </property>
+         <property name="iconSize" >
+          <size>
+           <width>16</width>
+           <height>16</height>
+          </size>
+         </property>
         </widget>
        </item>
        <item row="5" column="1" >
@@ -115,6 +133,12 @@
          <property name="icon" >
           <iconset>../images/down.png</iconset>
          </property>
+         <property name="iconSize" >
+          <size>
+           <width>16</width>
+           <height>16</height>
+          </size>
+         </property>
         </widget>
        </item>
        <item row="2" column="1" >
@@ -127,6 +151,12 @@
          </property>
          <property name="icon" >
           <iconset>../images/removeTM.png</iconset>
+         </property>
+         <property name="iconSize" >
+          <size>
+           <width>16</width>
+           <height>16</height>
+          </size>
          </property>
         </widget>
        </item>

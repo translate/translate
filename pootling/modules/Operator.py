@@ -28,9 +28,9 @@ from translate.misc import wStringIO
 import pootling.modules.World as World
 from pootling.modules.Status import Status
 from translate.search import match
-import os.path
+import os, sys
 import __version__
-
+import pickle
 
 class Operator(QtCore.QObject):
     """
@@ -107,7 +107,7 @@ class Operator(QtCore.QObject):
             self.currentUnitIndex = unit.x_editor_filterIndex
             self.searchPointer = unit.x_editor_filterIndex
         self.emit(QtCore.SIGNAL("currentUnit"), unit)
-        self.lookupText()
+        self.lookupUnit()
     
     def getCurrentUnit(self):
         """return the current unit"""
@@ -243,8 +243,7 @@ class Operator(QtCore.QObject):
                                         + fileName  + 
                                         '\n' + str(e))
                 return
-        
-        
+                
     def modified(self):
         """@return bool: True or False if current unit is modified or not modified."""
         self.emitUpdateUnit()
@@ -448,57 +447,65 @@ class Operator(QtCore.QObject):
         TMpath = self.getTMpath()
         if (not TMpath):
             return
-        memo = self.getMemo(TMpath)
-        self.lookupProcess(memo, self.filteredList)
-    
-    def getMemo(self, TMpath):
-        # TODO: not complet yet.
-        memo = []
+        self.lookupProcess(TMpath, self.filteredList)
+        
+    def getStore(self, TMpath):
+        '''return list of base class object
+        @param TMpath: file or stringlist of files, or QStringList of files
+        '''
+        storelist = []
+        store = None
         diveSub = World.settings.value("diveIntoSub").toBool()
         for each in TMpath:
             each = str(each)
             if (os.path.isfile(each)):
                 try:
-                    memo.append(factory.getobject(each))
+                    store = factory.getobject(each)
                 except:
-                    pass
-                continue
-            # TODO: dive into subfolder
+                    continue
+                storelist.append(store)
             if (os.path.isdir(each)):
-                # not dive into subfolder
                 for root, dirs, files in os.walk(each):
                     if (root):
-                        for each in files:
+                        for file in files:
                             try:
-                                memo.append(factory.getobject(each))
+                                store = factory.getobject(os.path.join(root + '/' + file))
                             except:
-                                pass
-                    # whether dive into subfolder
-                    if (not diveSub):
-                        break
-        return memo
+                                continue
+                            storelist.append(store)
+                        # whether dive into subfolder
+                        if (not diveSub):
+                            # not dive into subfolder
+                            break
+        return storelist
         
-    def lookupProcess(self, memo, units):
+    def lookupProcess(self, TMpath, units):
         '''lookup process'''
         # FIXME: too slow process to lookup
-        matcher = match.matcher(memo)
+        #TODO: use dump
+        #str(TranslationStore)
+        #TranslationStore.parsestring(openfile.read())
+        store = self.getStore(TMpath)
+        try:
+            matcher = match.matcher(store)
+        except Exception, e:
+            self.emit(QtCore.SIGNAL("noTM"), str(e))
+            return
         if (not isinstance(units, list)):
             candidates = matcher.matches(units.source)
             return candidates
         else:
             for unit in units:
-                if (unit.istranslated() or unit.isfuzzy()):
-                    continue
-                if (not unit.source):
+                if (unit.istranslated() or unit.isfuzzy() or not unit.source):
                     continue
                 candidates = matcher.matches(unit.source)
-                # no condidates search in next TM
+                # no condidates continue searching in next TM
                 if (not candidates):
                     continue
                 if (not self._modified):
                     self._modified = True
                 #FIXME: in XLiff, it is possible to have alternatives translation, get just the best candidates is not enough
-                # get the best candidates
+                # get the best candidates for targets in overview
                 unit.settarget(candidates[0].target)
                 self.status.markTranslated(unit, True)
                 self.status.markFuzzy(unit, True)
@@ -507,15 +514,14 @@ class Operator(QtCore.QObject):
             self.emitReadyForSave()
             return
     
-    def lookupText(self):
+    def lookupUnit(self):
         if (not self.filteredList):
             return
         TMpath = self.getTMpath()
         if (not TMpath):
             return
         unit = self.filteredList[self.currentUnitIndex]
-        memo = self.getMemo(TMpath)
-        candidates = self.lookupProcess(memo, unit)
+        candidates = self.lookupProcess(TMpath, unit)
         self.emit(QtCore.SIGNAL("candidates"), candidates)
     
     def emitReadyForSave(self):

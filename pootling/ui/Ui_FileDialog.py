@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Tue Feb  6 15:03:14 2007
+# Created: Wed Feb  7 14:37:50 2007
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -22,7 +22,7 @@ class Ui_Dialog(object):
         self.gridlayout.setSpacing(6)
         self.gridlayout.setObjectName("gridlayout")
 
-        spacerItem = QtGui.QSpacerItem(51,28,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        spacerItem = QtGui.QSpacerItem(195,28,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
         self.gridlayout.addItem(spacerItem,2,1,1,1)
 
         self.frame = QtGui.QFrame(Dialog)
@@ -37,7 +37,7 @@ class Ui_Dialog(object):
         self.gridlayout1.setObjectName("gridlayout1")
 
         spacerItem1 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
-        self.gridlayout1.addItem(spacerItem1,2,0,1,1)
+        self.gridlayout1.addItem(spacerItem1,3,0,1,1)
 
         self.btnDesktop = QtGui.QPushButton(self.frame)
 
@@ -47,6 +47,7 @@ class Ui_Dialog(object):
         sizePolicy.setHeightForWidth(self.btnDesktop.sizePolicy().hasHeightForWidth())
         self.btnDesktop.setSizePolicy(sizePolicy)
         self.btnDesktop.setIcon(QtGui.QIcon("../images/desktop.png"))
+        self.btnDesktop.setIconSize(QtCore.QSize(32,32))
         self.btnDesktop.setFlat(True)
         self.btnDesktop.setObjectName("btnDesktop")
         self.gridlayout1.addWidget(self.btnDesktop,1,0,1,1)
@@ -59,9 +60,18 @@ class Ui_Dialog(object):
         sizePolicy.setHeightForWidth(self.btnHome.sizePolicy().hasHeightForWidth())
         self.btnHome.setSizePolicy(sizePolicy)
         self.btnHome.setIcon(QtGui.QIcon("../images/folder_home.png"))
+        self.btnHome.setIconSize(QtCore.QSize(32,32))
         self.btnHome.setFlat(True)
         self.btnHome.setObjectName("btnHome")
         self.gridlayout1.addWidget(self.btnHome,0,0,1,1)
+
+        self.btnDoc = QtGui.QPushButton(self.frame)
+        self.btnDoc.setIcon(QtGui.QIcon("../images/document.png"))
+        self.btnDoc.setIconSize(QtCore.QSize(32,32))
+        self.btnDoc.setAutoDefault(True)
+        self.btnDoc.setFlat(True)
+        self.btnDoc.setObjectName("btnDoc")
+        self.gridlayout1.addWidget(self.btnDoc,2,0,1,1)
         self.gridlayout.addWidget(self.frame,0,0,2,1)
 
         self.btnQuit = QtGui.QPushButton(Dialog)
@@ -93,8 +103,12 @@ class Ui_Dialog(object):
 
     def retranslateUi(self, Dialog):
         Dialog.setWindowTitle(self.tr("Select a file or a location"))
+        self.btnDesktop.setToolTip(self.tr("go to Desktop folder"))
         self.btnDesktop.setText(self.tr(" &Desktop"))
+        self.btnHome.setToolTip(self.tr("go to Home folder"))
         self.btnHome.setText(self.tr(" &Home"))
+        self.btnDoc.setToolTip(self.tr("go to Document folder"))
+        self.btnDoc.setText(self.tr(" Docu&ments"))
         self.btnQuit.setText(self.tr("&Quit"))
         self.btnAdd.setText(self.tr("&Add"))
 

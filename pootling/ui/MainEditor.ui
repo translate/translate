@@ -8,7 +8,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>539</width>
+    <width>605</width>
     <height>492</height>
    </rect>
   </property>
@@ -47,7 +47,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>539</width>
+     <width>605</width>
      <height>30</height>
     </rect>
    </property>
@@ -800,12 +800,12 @@
   </action>
   <action name="action_lookup_Text" >
    <property name="text" >
-    <string>&amp;Lookup Text</string>
+    <string>&amp;Lookup Unit</string>
    </property>
   </action>
   <action name="actionAuto_translate" >
    <property name="text" >
-    <string>&amp;Auto translate</string>
+    <string>&amp;Auto Translate</string>
    </property>
   </action>
   <action name="action_TM" >

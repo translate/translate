@@ -6,7 +6,7 @@ class tableTM(QtGui.QDockWidget):
     def __init__(self, parent):
         QtGui.QDockWidget.__init__(self, parent)
         self.setObjectName("miscDock")
-        self.setWindowTitle(self.tr("Lookup"))
+        self.setWindowTitle(self.tr("TM Lookup"))
         self.form = QtGui.QWidget(self)
         self.ui = Ui_Form()
         self.ui.setupUi(self.form)
@@ -33,6 +33,10 @@ class tableTM(QtGui.QDockWidget):
         self.ui.tblTM.setHorizontalHeaderLabels(self.headerLabels)
         self.ui.tblTM.setSortingEnabled(False)
         self.ui.tblTM.setRowCount(0)
+        
+        if (not candidates):
+            return
+            
         for unit in candidates:
             row = self.ui.tblTM.rowCount()
             self.ui.tblTM.setRowCount(row + 1)
@@ -60,6 +64,12 @@ class tableTM(QtGui.QDockWidget):
     
     def emitTarget(self):
         self.emit(QtCore.SIGNAL("targetChanged"), self.target)
+    
+    def filterChanged(self, filter, lenFilter):
+        if (not lenFilter):
+            self.ui.tblTM.setRowCount(0)
+            self.ui.tblTM.clear()
+        self.ui.tblTM.setEnabled(not(lenFilter) and False or True)
     
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

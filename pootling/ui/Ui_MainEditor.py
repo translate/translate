@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Tue Feb  6 14:15:13 2007
+# Created: Wed Feb  7 14:52:24 2007
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -14,7 +14,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.setEnabled(True)
-        MainWindow.resize(QtCore.QSize(QtCore.QRect(0,0,539,492).size()).expandedTo(MainWindow.minimumSizeHint()))
+        MainWindow.resize(QtCore.QSize(QtCore.QRect(0,0,605,492).size()).expandedTo(MainWindow.minimumSizeHint()))
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(7))
         sizePolicy.setHorizontalStretch(0)
@@ -30,7 +30,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0,0,539,30))
+        self.menubar.setGeometry(QtCore.QRect(0,0,605,30))
         self.menubar.setObjectName("menubar")
 
         self.menuHelp = QtGui.QMenu(self.menubar)
@@ -487,8 +487,8 @@ class Ui_MainWindow(object):
         self.actionAddBookmarks.setText(self.tr("&Add Bookmarks"))
         self.actionAddBookmarks.setShortcut(self.tr("Ctrl+B"))
         self.actionClearBookmarks.setText(self.tr("&Clear Bookmarks"))
-        self.action_lookup_Text.setText(self.tr("&Lookup Text"))
-        self.actionAuto_translate.setText(self.tr("&Auto translate"))
+        self.action_lookup_Text.setText(self.tr("&Lookup Unit"))
+        self.actionAuto_translate.setText(self.tr("&Auto Translate"))
         self.action_TM.setText(self.tr("&TM"))
         self.actionCatalogManager.setText(self.tr("Catalog Manager"))
 

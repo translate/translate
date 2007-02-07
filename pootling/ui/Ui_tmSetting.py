@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Tue Feb  6 14:56:16 2007
+# Created: Wed Feb  7 08:53:05 2007
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -40,6 +40,7 @@ class Ui_tmsetting(object):
 
         self.btnAdd = QtGui.QPushButton(self.tab)
         self.btnAdd.setIcon(QtGui.QIcon("../images/addTM.png"))
+        self.btnAdd.setIconSize(QtCore.QSize(16,16))
         self.btnAdd.setObjectName("btnAdd")
         self.gridlayout1.addWidget(self.btnAdd,1,1,1,1)
 
@@ -49,6 +50,7 @@ class Ui_tmsetting(object):
 
         self.btnMoveUp = QtGui.QPushButton(self.tab)
         self.btnMoveUp.setIcon(QtGui.QIcon("../images/up.png"))
+        self.btnMoveUp.setIconSize(QtCore.QSize(16,16))
         self.btnMoveUp.setObjectName("btnMoveUp")
         self.gridlayout1.addWidget(self.btnMoveUp,4,1,1,1)
 
@@ -58,16 +60,19 @@ class Ui_tmsetting(object):
 
         self.btnRemoveAll = QtGui.QPushButton(self.tab)
         self.btnRemoveAll.setIcon(QtGui.QIcon("../images/eraser.png"))
+        self.btnRemoveAll.setIconSize(QtCore.QSize(16,16))
         self.btnRemoveAll.setObjectName("btnRemoveAll")
         self.gridlayout1.addWidget(self.btnRemoveAll,3,1,1,1)
 
         self.btnMoveDown = QtGui.QPushButton(self.tab)
         self.btnMoveDown.setIcon(QtGui.QIcon("../images/down.png"))
+        self.btnMoveDown.setIconSize(QtCore.QSize(16,16))
         self.btnMoveDown.setObjectName("btnMoveDown")
         self.gridlayout1.addWidget(self.btnMoveDown,5,1,1,1)
 
         self.btnRemove = QtGui.QPushButton(self.tab)
         self.btnRemove.setIcon(QtGui.QIcon("../images/removeTM.png"))
+        self.btnRemove.setIconSize(QtCore.QSize(16,16))
         self.btnRemove.setObjectName("btnRemove")
         self.gridlayout1.addWidget(self.btnRemove,2,1,1,1)
         self.tabOptions.addTab(self.tab, "")

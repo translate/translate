@@ -63,6 +63,7 @@ class tmSetting(QtGui.QDialog):
         self.filedialog.show()
     
     def addLocation(self, text):
+        #TODO: if item has already in listWidget, don't add
         self.ui.listWidget.addItem(text)
     
     def removeLocation(self):

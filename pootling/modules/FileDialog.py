@@ -30,6 +30,7 @@ class fileDialog(QtGui.QDialog):
     Code for choosing path of translation memory
     """
     def __init__(self, parent):
+        #TODO: path history
         QtGui.QDialog.__init__(self, parent)
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
@@ -46,6 +47,7 @@ class fileDialog(QtGui.QDialog):
         self.connect(self.ui.treeView, QtCore.SIGNAL("clicked ( const QModelIndex &)"), self.addLocation)
         self.connect(self.ui.btnHome, QtCore.SIGNAL("clicked(bool)"), self.goHome)
         self.connect(self.ui.btnDesktop, QtCore.SIGNAL("clicked(bool)"), self.goDesktop)
+        self.connect(self.ui.btnDoc, QtCore.SIGNAL("clicked(bool)"), self.goDocument)
         self.connect(self.ui.btnAdd, QtCore.SIGNAL("clicked(bool)"), self.emitLocation)
         self.connect(self.ui.btnQuit, QtCore.SIGNAL("clicked(bool)"), QtCore.SLOT("close()"))
         
@@ -61,6 +63,10 @@ class fileDialog(QtGui.QDialog):
     
     def goDesktop(self):
         self.ui.treeView.setCurrentIndex(self.dir.index(QtCore.QDir.homePath() + '/Desktop'))
+        self.addLocation()
+    
+    def goDocument(self):
+        self.ui.treeView.setCurrentIndex(self.dir.index(QtCore.QDir.homePath() + '/Documents'))
         self.addLocation()
     
 if __name__ == "__main__":
