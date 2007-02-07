@@ -22,6 +22,7 @@
 
 """module for parsing html files for translation"""
 
+import re
 from translate.storage import base
 from HTMLParser import HTMLParser
 
@@ -67,16 +68,16 @@ class htmlfile(HTMLParser, base.TranslationStore):
       self.parse(htmlsrc)
 
   def guess_encoding(self, htmlsrc):
-      """Returns the encoding of the html text."""
+      """Returns the encoding of the html text.
+      
+      We look for 'charset=' within a meta tag to do this.
+      """
 
-      charset_begin = htmlsrc.find('charset=')
-      if charset_begin > -1:
-          charset_begin += 8
-      else:
-          return None
-  
-      charset_end = htmlsrc.find('"', charset_begin)
-      encoding = htmlsrc[charset_begin:charset_end]
+      pattern = '''<meta.*content.*=.*charset.*=\\s*([^\\s]*)\\s*["']'''
+      result = re.findall(pattern, htmlsrc, re.I)
+      encoding = None
+      if result:
+          encoding = result[0]
       return encoding
 
   def do_encoding(self, htmlsrc):
