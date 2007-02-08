@@ -113,7 +113,7 @@ class htmlfile(HTMLParser, base.TranslationStore):
       return False
 
     pattern = '<[^>]*>'
-    result = re.sub(pattern, '', text)
+    result = re.sub(pattern, '', text).strip()
     if result:
       return True
     else:
