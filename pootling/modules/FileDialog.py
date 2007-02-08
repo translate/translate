@@ -40,7 +40,6 @@ class fileDialog(QtGui.QDialog):
         self.dir.setReadOnly(True)
         self.ui.treeView.setModel(self.dir)
         self.goHome()
-        self.ui.treeView.resizeColumnToContents(0)
         self.setModal(True)
         
         self.connect(self.ui.treeView, QtCore.SIGNAL("doubleClicked ( const QModelIndex &)"), self.addLocation)
@@ -52,6 +51,9 @@ class fileDialog(QtGui.QDialog):
         self.connect(self.ui.btnQuit, QtCore.SIGNAL("clicked(bool)"), QtCore.SLOT("close()"))
         
     def addLocation(self):
+        self.ui.treeView.scrollTo(self.ui.treeView.currentIndex())
+        self.ui.treeView.expand(self.ui.treeView.currentIndex())
+        self.ui.treeView.resizeColumnToContents(0)
         self.ui.lineLocation.setText(self.dir.filePath(self.ui.treeView.currentIndex()))
     
     def emitLocation(self):
