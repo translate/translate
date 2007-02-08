@@ -100,11 +100,24 @@ class htmlfile(HTMLParser, base.TranslationStore):
   parsestring = classmethod(parsestring)
 
   def addcurrentblock(self):
-    if self.currentblock:
+    if self.has_translatable_content(self.currentblock):
       self.currentblocknum += 1
       unit = self.addsourceunit(self.currentblock.strip())
       unit.addlocation("%s:%d" % (self.filename, self.currentblocknum))
 
+  def has_translatable_content(self, text):
+    """Check if the supplied HTML snippet has any content that needs to be translated."""
+
+    # TODO: Get a better way to find untranslatable entities.
+    if text.strip() == '&nbsp;':
+      return False
+
+    pattern = '<[^>]*>'
+    result = re.sub(pattern, '', text)
+    if result:
+      return True
+    else:
+      return False
 
 #From here on below, follows the methods of the HTMLParser
 

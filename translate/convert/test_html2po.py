@@ -17,8 +17,9 @@ class TestHTML2PO:
     def countunits(self, pofile, expected):
         """helper to check that we got the expected number of messages"""
         actual = len(pofile.units)
-        if pofile.units[0].isheader():
-          actual = actual - 1
+        if actual > 0:
+          if pofile.units[0].isheader():
+            actual = actual - 1
         print pofile
         assert actual == expected
 
@@ -142,8 +143,13 @@ newlines.</p></body></html>
         self.check_single(htmltext, 'A paragraph with <a href="http://translate.org.za/">hyperlink</a> and newlines.')
 
     def test_tag_img(self):
-        """test that we can extract the <a> tag"""
+        """Test that we can extract the alt attribute from the <img> tag."""
         self.check_single('''<html><head></head><body><img src="picture.png" alt="A picture"></body></html>''', "A picture")
+
+    def test_img_empty(self):
+        """Test that we can extract the alt attribute from the <img> tag."""
+        htmlsource = '''<html><head></head><body><img src="images/topbar.jpg" width="750" height="80"></body></html>'''
+        self.check_null(htmlsource)
 
     def test_tag_table_summary(self):
         """test that we can extract summary= """
@@ -173,8 +179,12 @@ newlines.</p></body></html>
         self.compareunit(pofile, 8, "One")
         self.compareunit(pofile, 9, "Two")
 
-    def wtest_table_empty(self):
-        """test that we ignore tables that are empty ie they have no translatanle content"""
+    def test_table_empty(self):
+        """Test that we ignore tables that are empty.
+        
+        A table is deemed empty if it has no translatable content.
+        """
+
         self.check_null('''<html><head></head><body><table><tr><td><img src="bob.png"></td></tr></table></body></html>''')
         self.check_null('''<html><head></head><body><table><tr><td>&nbsp;</td></tr></table></body></html>''')
         self.check_null('''<html><head></head><body><table><tr><td><strong></strong></td></tr></table></body></html>''')
