@@ -29,6 +29,7 @@ from pootling.modules.Header import Header
 from pootling.modules.Operator import Operator
 from pootling.modules.FileAction import FileAction
 from pootling.modules.Find import Find
+from pootling.modules.Catalog import Catalog
 from pootling.modules.Preference import Preference
 from pootling.modules.AboutEditor import AboutEditor
 import pootling.modules.World as World
@@ -97,6 +98,10 @@ class MainWindow(QtGui.QMainWindow):
         #create operator
         self.operator = Operator()
         
+        # action Tool menu of Catalog Manager
+        self.Catalog = Catalog(self)
+        self.connect(self.ui.actionCatalogManager, QtCore.SIGNAL("triggered()"), self.Catalog.showDialog)
+
          # TM table
         self.table = tableTM.tableTM(self)
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.table)
