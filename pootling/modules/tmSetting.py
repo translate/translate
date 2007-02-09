@@ -26,7 +26,7 @@ from PyQt4 import QtCore, QtGui
 from pootling.ui.Ui_tmSetting import Ui_tmsetting
 from pootling.modules import World
 from pootling.modules import FileDialog
-from pootling.modules import pickleStore
+from pootling.modules import pickleTM
 
 class tmSetting(QtGui.QDialog):
     """
@@ -50,15 +50,17 @@ class tmSetting(QtGui.QDialog):
             self.filedialog = FileDialog.fileDialog(self)
             self.connect(self.filedialog, QtCore.SIGNAL("location"), self.addLocation)
             self.connect(self.ui.btnOk, QtCore.SIGNAL("clicked(bool)"), QtCore.SLOT("close()"))
+            self.connect(self.ui.btnCreateTM, QtCore.SIGNAL("clicked(bool)"), self.createTM)
             self.connect(self.ui.btnRemove, QtCore.SIGNAL("clicked(bool)"), self.removeLocation)
             self.connect(self.ui.btnRemoveAll, QtCore.SIGNAL("clicked(bool)"), self.ui.listWidget.clear)
-            self.connect(self.ui.btnRemoveAll, QtCore.SIGNAL("clicked(bool)"), pickleStore.clear)
+            self.connect(self.ui.btnRemoveAll, QtCore.SIGNAL("clicked(bool)"), pickleTM.clear)
             self.connect(self.ui.btnMoveUp, QtCore.SIGNAL("clicked(bool)"), self.moveUp)
             self.connect(self.ui.btnMoveDown, QtCore.SIGNAL("clicked(bool)"), self.moveDown)
             self.connect(self.ui.checkBox, QtCore.SIGNAL("stateChanged(int)"), self.rememberDive)
             self.ui.listWidget.addItems(World.settings.value("TMPath").toStringList())
             self.setModal(True)
         self.ui.checkBox.setChecked(World.settings.value("diveIntoSub").toBool())
+        self.ui.progressBar.setValue(0)
         self.show()
     
     def showFileDialog(self):
@@ -73,7 +75,7 @@ class tmSetting(QtGui.QDialog):
         currentItem = self.ui.listWidget.item(currentrow)
         self.ui.listWidget.takeItem(currentrow)
         if(hasattr(currentItem, 'text')):
-            pickleStore.removeTM(currentItem.text())
+            pickleTM.removeTM(currentItem.text())
     
     def moveItem(self, distance):
         '''move an item up or down depending on distance
@@ -103,9 +105,19 @@ class tmSetting(QtGui.QDialog):
         for i in range(self.ui.listWidget.count()):
             path = self.ui.listWidget.item(i).text()
             stringlist.append(path)
-            pickleStore.saveTM(path)
         World.settings.setValue("TMPath", QtCore.QVariant(stringlist))
         QtGui.QDialog.closeEvent(self, event)
+    
+    def createTM(self):
+        count = self.ui.listWidget.count()
+        self.ui.progressBar.setValue(0)
+        self.ui.progressBar.setMinimum(0)
+        self.ui.progressBar.setMaximum(count)
+        
+        for i in range(count):
+            pickleTM.saveTM(self.ui.listWidget.item(i).text())
+            self.ui.progressBar.setValue(i+1)
+            print self.ui.progressBar.value()
     
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

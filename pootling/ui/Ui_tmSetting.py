@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Wed Feb  7 08:53:05 2007
+# Created: Fri Feb  9 16:12:47 2007
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -13,7 +13,7 @@ from PyQt4 import QtCore, QtGui
 class Ui_tmsetting(object):
     def setupUi(self, tmsetting):
         tmsetting.setObjectName("tmsetting")
-        tmsetting.resize(QtCore.QSize(QtCore.QRect(0,0,547,350).size()).expandedTo(tmsetting.minimumSizeHint()))
+        tmsetting.resize(QtCore.QSize(QtCore.QRect(0,0,566,404).size()).expandedTo(tmsetting.minimumSizeHint()))
 
         self.gridlayout = QtGui.QGridLayout(tmsetting)
         self.gridlayout.setMargin(9)
@@ -31,12 +31,30 @@ class Ui_tmsetting(object):
         self.gridlayout1.setSpacing(6)
         self.gridlayout1.setObjectName("gridlayout1")
 
+        self.progressBar = QtGui.QProgressBar(self.tab)
+        self.progressBar.setProperty("value",QtCore.QVariant(0))
+        self.progressBar.setOrientation(QtCore.Qt.Horizontal)
+        self.progressBar.setObjectName("progressBar")
+        self.gridlayout1.addWidget(self.progressBar,8,0,1,2)
+
         spacerItem = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
-        self.gridlayout1.addItem(spacerItem,7,0,1,1)
+        self.gridlayout1.addItem(spacerItem,9,0,1,1)
 
         self.checkBox = QtGui.QCheckBox(self.tab)
         self.checkBox.setObjectName("checkBox")
         self.gridlayout1.addWidget(self.checkBox,6,0,1,1)
+
+        self.label_4 = QtGui.QLabel(self.tab)
+        self.label_4.setObjectName("label_4")
+        self.gridlayout1.addWidget(self.label_4,0,0,1,1)
+
+        self.label_5 = QtGui.QLabel(self.tab)
+        self.label_5.setObjectName("label_5")
+        self.gridlayout1.addWidget(self.label_5,7,0,1,1)
+
+        self.listWidget = QtGui.QListWidget(self.tab)
+        self.listWidget.setObjectName("listWidget")
+        self.gridlayout1.addWidget(self.listWidget,1,0,5,1)
 
         self.btnAdd = QtGui.QPushButton(self.tab)
         self.btnAdd.setIcon(QtGui.QIcon("../images/addTM.png"))
@@ -44,19 +62,11 @@ class Ui_tmsetting(object):
         self.btnAdd.setObjectName("btnAdd")
         self.gridlayout1.addWidget(self.btnAdd,1,1,1,1)
 
-        self.listWidget = QtGui.QListWidget(self.tab)
-        self.listWidget.setObjectName("listWidget")
-        self.gridlayout1.addWidget(self.listWidget,1,0,5,1)
-
-        self.btnMoveUp = QtGui.QPushButton(self.tab)
-        self.btnMoveUp.setIcon(QtGui.QIcon("../images/up.png"))
-        self.btnMoveUp.setIconSize(QtCore.QSize(16,16))
-        self.btnMoveUp.setObjectName("btnMoveUp")
-        self.gridlayout1.addWidget(self.btnMoveUp,4,1,1,1)
-
-        self.label_4 = QtGui.QLabel(self.tab)
-        self.label_4.setObjectName("label_4")
-        self.gridlayout1.addWidget(self.label_4,0,0,1,1)
+        self.btnRemove = QtGui.QPushButton(self.tab)
+        self.btnRemove.setIcon(QtGui.QIcon("../images/removeTM.png"))
+        self.btnRemove.setIconSize(QtCore.QSize(16,16))
+        self.btnRemove.setObjectName("btnRemove")
+        self.gridlayout1.addWidget(self.btnRemove,2,1,1,1)
 
         self.btnRemoveAll = QtGui.QPushButton(self.tab)
         self.btnRemoveAll.setIcon(QtGui.QIcon("../images/eraser.png"))
@@ -64,17 +74,17 @@ class Ui_tmsetting(object):
         self.btnRemoveAll.setObjectName("btnRemoveAll")
         self.gridlayout1.addWidget(self.btnRemoveAll,3,1,1,1)
 
+        self.btnMoveUp = QtGui.QPushButton(self.tab)
+        self.btnMoveUp.setIcon(QtGui.QIcon("../images/up.png"))
+        self.btnMoveUp.setIconSize(QtCore.QSize(16,16))
+        self.btnMoveUp.setObjectName("btnMoveUp")
+        self.gridlayout1.addWidget(self.btnMoveUp,4,1,1,1)
+
         self.btnMoveDown = QtGui.QPushButton(self.tab)
         self.btnMoveDown.setIcon(QtGui.QIcon("../images/down.png"))
         self.btnMoveDown.setIconSize(QtCore.QSize(16,16))
         self.btnMoveDown.setObjectName("btnMoveDown")
         self.gridlayout1.addWidget(self.btnMoveDown,5,1,1,1)
-
-        self.btnRemove = QtGui.QPushButton(self.tab)
-        self.btnRemove.setIcon(QtGui.QIcon("../images/removeTM.png"))
-        self.btnRemove.setIconSize(QtCore.QSize(16,16))
-        self.btnRemove.setObjectName("btnRemove")
-        self.gridlayout1.addWidget(self.btnRemove,2,1,1,1)
         self.tabOptions.addTab(self.tab, "")
 
         self.tab_3 = QtGui.QWidget()
@@ -134,14 +144,22 @@ class Ui_tmsetting(object):
         spacerItem1 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
         self.gridlayout2.addItem(spacerItem1,5,0,1,1)
         self.tabOptions.addTab(self.tab_4, "")
-        self.gridlayout.addWidget(self.tabOptions,0,0,1,2)
+        self.gridlayout.addWidget(self.tabOptions,0,0,1,4)
+
+        spacerItem2 = QtGui.QSpacerItem(281,28,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        self.gridlayout.addItem(spacerItem2,1,0,1,1)
+
+        self.btnCancel = QtGui.QPushButton(tmsetting)
+        self.btnCancel.setObjectName("btnCancel")
+        self.gridlayout.addWidget(self.btnCancel,1,3,1,1)
+
+        self.btnCreateTM = QtGui.QPushButton(tmsetting)
+        self.btnCreateTM.setObjectName("btnCreateTM")
+        self.gridlayout.addWidget(self.btnCreateTM,1,1,1,1)
 
         self.btnOk = QtGui.QPushButton(tmsetting)
         self.btnOk.setObjectName("btnOk")
-        self.gridlayout.addWidget(self.btnOk,1,1,1,1)
-
-        spacerItem2 = QtGui.QSpacerItem(311,28,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
-        self.gridlayout.addItem(spacerItem2,1,0,1,1)
+        self.gridlayout.addWidget(self.btnOk,1,2,1,1)
 
         self.retranslateUi(tmsetting)
         self.tabOptions.setCurrentIndex(0)
@@ -166,17 +184,18 @@ class Ui_tmsetting(object):
     def retranslateUi(self, tmsetting):
         tmsetting.setWindowTitle(self.tr("Translation Memory Settings"))
         self.checkBox.setText(self.tr("Dive into Subfolders"))
+        self.label_4.setText(self.tr("Locations:"))
+        self.label_5.setText(self.tr("Progress"))
         self.btnAdd.setToolTip(self.tr("Add TM"))
         self.btnAdd.setText(self.tr(" &Add"))
-        self.btnMoveUp.setToolTip(self.tr("move up"))
-        self.btnMoveUp.setText(self.tr(" &Up"))
-        self.label_4.setText(self.tr("Locations:"))
-        self.btnRemoveAll.setToolTip(self.tr("clear list"))
-        self.btnRemoveAll.setText(self.tr(" &Clear"))
-        self.btnMoveDown.setToolTip(self.tr("move down"))
-        self.btnMoveDown.setText(self.tr(" Do&wn"))
         self.btnRemove.setToolTip(self.tr("remove TM"))
         self.btnRemove.setText(self.tr(" De&lete"))
+        self.btnRemoveAll.setToolTip(self.tr("clear list"))
+        self.btnRemoveAll.setText(self.tr(" &Clear"))
+        self.btnMoveUp.setToolTip(self.tr("move up"))
+        self.btnMoveUp.setText(self.tr(" &Up"))
+        self.btnMoveDown.setToolTip(self.tr("move down"))
+        self.btnMoveDown.setText(self.tr(" Do&wn"))
         self.tabOptions.setTabText(self.tabOptions.indexOf(self.tab), self.tr("&File"))
         self.tabOptions.setTabText(self.tabOptions.indexOf(self.tab_3), self.tr("&Database"))
         self.label_3.setText(self.tr("Maximum string length"))
@@ -185,6 +204,8 @@ class Ui_tmsetting(object):
         self.chkCaseSensitive.setText(self.tr("Case Sensitive"))
         self.label_2.setText(self.tr("Maximum candidates"))
         self.tabOptions.setTabText(self.tabOptions.indexOf(self.tab_4), self.tr("O&ptions"))
+        self.btnCancel.setText(self.tr("Ca&ncel"))
+        self.btnCreateTM.setText(self.tr("Create &TM"))
         self.btnOk.setText(self.tr("&OK"))
 
 

@@ -148,7 +148,6 @@ class Operator(QtCore.QObject):
     def emitFiltered(self, filter):
         """send filtered list signal according to filter."""
         self.emitUpdateUnit()
-        
         if (len(self.filteredList) > 0):
             unitBeforeFiltered = self.filteredList[self.currentUnitIndex]
         else:
@@ -438,53 +437,46 @@ class Operator(QtCore.QObject):
         '''
         if (not self.filteredList):
             return
-        storelist =  pickleTM.getStore()
-        if (not storelist):
-            return
-        self.lookupProcess(storelist, self.filteredList)
+        self.lookupProcess(self.filteredList)
         
-    def lookupProcess(self, storelist, units):
+    def lookupProcess(self, units):
         '''lookup process'''
         # FIXME: too slow process to lookup
         #TODO: use dump
-        #str(TranslationStore)
-        #TranslationStore.parsestring(openfile.read())
+                
         try:
-            matcher = match.matcher(storelist)
+            matcher = pickleTM.getMatcher()
         except Exception, e:
             self.emit(QtCore.SIGNAL("noTM"), str(e))
             return
+        
         if (not isinstance(units, list)):
             candidates = matcher.matches(units.source)
             return candidates
-        else:
-            for unit in units:
-                if (unit.istranslated() or unit.isfuzzy() or not unit.source):
-                    continue
-                candidates = matcher.matches(unit.source)
-                # no condidates continue searching in next TM
-                if (not candidates):
-                    continue
-                if (not self._modified):
-                    self._modified = True
-                #FIXME: in XLiff, it is possible to have alternatives translation, get just the best candidates is not enough
-                # get the best candidates for targets in overview
-                unit.settarget(candidates[0].target)
-                self.status.markTranslated(unit, True)
-                self.status.markFuzzy(unit, True)
-            self.emitNewUnits()
-            self.emitStatus()
-            self.emitReadyForSave()
-            return
+       
+        for unit in units:
+            if (unit.istranslated() or unit.isfuzzy() or not unit.source):
+                continue
+            candidates = matcher.matches(unit.source)
+            # no condidates continue searching in next TM
+            if (not candidates):
+                continue
+            self._modified = True
+            #FIXME: in XLiff, it is possible to have alternatives translation, get just the best candidates is not enough
+            # get the best candidates for targets in overview
+            unit.settarget(candidates[0].target)
+            self.status.markTranslated(unit, True)
+            self.status.markFuzzy(unit, True)
+        self.emitNewUnits()
+        self.emitStatus()
+        self.emitReadyForSave()
+        return
     
     def lookupUnit(self):
         if (not self.filteredList):
             return
-        storelist =  pickleTM.getStore()
-        if (not storelist):
-            return
         unit = self.filteredList[self.currentUnitIndex]
-        candidates = self.lookupProcess(storelist, unit)
+        candidates = self.lookupProcess(unit)
         self.emit(QtCore.SIGNAL("candidates"), candidates)
     
     def emitReadyForSave(self):

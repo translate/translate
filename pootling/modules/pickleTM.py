@@ -23,6 +23,9 @@ import os, tempfile, pickle
 from PyQt4 import QtCore
 from pootling.modules import World
 from translate.storage import factory
+from translate.search import match
+
+matcher = None
 
 def createStore(file):
     try:
@@ -106,4 +109,7 @@ def getStore():
             else:
                 storelist += v
     return storelist
-    
+
+def getMatcher():
+    matcher = match.matcher(getStore())
+    return matcher
