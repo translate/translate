@@ -30,7 +30,7 @@ from pootling.modules.Status import Status
 from translate.search import match
 import os, sys
 import __version__
-import pickle
+import pickleTM
 
 class Operator(QtCore.QObject):
     """
@@ -431,12 +431,6 @@ class Operator(QtCore.QObject):
         self.filter = None
         self.filteredList = None
         self.emitNewUnits()
-    
-    def getTMpath(self):
-        '''return TM paths which are added in TM setting dialog
-        @return tm: paths as QStringList'''
-        tm = World.settings.value("TMPath").toStringList()
-        return tm
         
     def autoTranslate(self):
         '''
@@ -444,50 +438,19 @@ class Operator(QtCore.QObject):
         '''
         if (not self.filteredList):
             return
-        TMpath = self.getTMpath()
-        if (not TMpath):
+        storelist =  pickleTM.getStore()
+        if (not storelist):
             return
-        self.lookupProcess(TMpath, self.filteredList)
+        self.lookupProcess(storelist, self.filteredList)
         
-    def getStore(self, TMpath):
-        '''return list of base class object
-        @param TMpath: file or stringlist of files, or QStringList of files
-        '''
-        storelist = []
-        store = None
-        diveSub = World.settings.value("diveIntoSub").toBool()
-        for each in TMpath:
-            each = str(each)
-            if (os.path.isfile(each)):
-                try:
-                    store = factory.getobject(each)
-                except:
-                    continue
-                storelist.append(store)
-            if (os.path.isdir(each)):
-                for root, dirs, files in os.walk(each):
-                    if (root):
-                        for file in files:
-                            try:
-                                store = factory.getobject(os.path.join(root + '/' + file))
-                            except:
-                                continue
-                            storelist.append(store)
-                        # whether dive into subfolder
-                        if (not diveSub):
-                            # not dive into subfolder
-                            break
-        return storelist
-        
-    def lookupProcess(self, TMpath, units):
+    def lookupProcess(self, storelist, units):
         '''lookup process'''
         # FIXME: too slow process to lookup
         #TODO: use dump
         #str(TranslationStore)
         #TranslationStore.parsestring(openfile.read())
-        store = self.getStore(TMpath)
         try:
-            matcher = match.matcher(store)
+            matcher = match.matcher(storelist)
         except Exception, e:
             self.emit(QtCore.SIGNAL("noTM"), str(e))
             return
@@ -517,11 +480,11 @@ class Operator(QtCore.QObject):
     def lookupUnit(self):
         if (not self.filteredList):
             return
-        TMpath = self.getTMpath()
-        if (not TMpath):
+        storelist =  pickleTM.getStore()
+        if (not storelist):
             return
         unit = self.filteredList[self.currentUnitIndex]
-        candidates = self.lookupProcess(TMpath, unit)
+        candidates = self.lookupProcess(storelist, unit)
         self.emit(QtCore.SIGNAL("candidates"), candidates)
     
     def emitReadyForSave(self):

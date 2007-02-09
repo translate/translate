@@ -26,6 +26,7 @@ from PyQt4 import QtCore, QtGui
 from pootling.ui.Ui_tmSetting import Ui_tmsetting
 from pootling.modules import World
 from pootling.modules import FileDialog
+from pootling.modules import pickleStore
 
 class tmSetting(QtGui.QDialog):
     """
@@ -51,6 +52,7 @@ class tmSetting(QtGui.QDialog):
             self.connect(self.ui.btnOk, QtCore.SIGNAL("clicked(bool)"), QtCore.SLOT("close()"))
             self.connect(self.ui.btnRemove, QtCore.SIGNAL("clicked(bool)"), self.removeLocation)
             self.connect(self.ui.btnRemoveAll, QtCore.SIGNAL("clicked(bool)"), self.ui.listWidget.clear)
+            self.connect(self.ui.btnRemoveAll, QtCore.SIGNAL("clicked(bool)"), pickleStore.clear)
             self.connect(self.ui.btnMoveUp, QtCore.SIGNAL("clicked(bool)"), self.moveUp)
             self.connect(self.ui.btnMoveDown, QtCore.SIGNAL("clicked(bool)"), self.moveDown)
             self.connect(self.ui.checkBox, QtCore.SIGNAL("stateChanged(int)"), self.rememberDive)
@@ -62,12 +64,16 @@ class tmSetting(QtGui.QDialog):
     def showFileDialog(self):
         self.filedialog.show()
     
-    def addLocation(self, text):
+    def addLocation(self, TMpath):
         #TODO: if item has already in listWidget, don't add
-        self.ui.listWidget.addItem(text)
+        self.ui.listWidget.addItem(TMpath)
     
     def removeLocation(self):
-        self.ui.listWidget.takeItem(self.ui.listWidget.currentRow())
+        currentrow = self.ui.listWidget.currentRow()
+        currentItem = self.ui.listWidget.item(currentrow)
+        self.ui.listWidget.takeItem(currentrow)
+        if(hasattr(currentItem, 'text')):
+            pickleStore.removeTM(currentItem.text())
     
     def moveItem(self, distance):
         '''move an item up or down depending on distance
@@ -95,10 +101,12 @@ class tmSetting(QtGui.QDialog):
     def closeEvent(self, event):
         stringlist = QtCore.QStringList()
         for i in range(self.ui.listWidget.count()):
-            stringlist.append(self.ui.listWidget.item(i).text())
+            path = self.ui.listWidget.item(i).text()
+            stringlist.append(path)
+            pickleStore.saveTM(path)
         World.settings.setValue("TMPath", QtCore.QVariant(stringlist))
         QtGui.QDialog.closeEvent(self, event)
-
+    
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     tm = tmSetting(None)
