@@ -20,9 +20,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-"""module for handling XLIFF files for translation.
+"""Module for handling XLIFF files for translation.
 
-The official recommendation is to use the extention .xlf for XLIFF files."""
+The official recommendation is to use the extention .xlf for XLIFF files.
+"""
 
 from translate.storage import base
 from translate.storage import lisa
@@ -30,7 +31,8 @@ from translate.storage import lisa
 # TODO: handle translation types
 
 class xliffunit(lisa.LISAunit):
-    """A single term in the xliff file.""" 
+    """A single term in the xliff file."""
+
     rootNode = "trans-unit"
     languageNode = "source"
     textNode = ""
@@ -38,7 +40,8 @@ class xliffunit(lisa.LISAunit):
     #TODO: id and all the trans-unit level stuff
 
     def createlanguageNode(self, lang, text, purpose):
-        """returns an xml Element setup with given parameters"""
+        """Returns an xml Element setup with given parameters."""
+
         #TODO: for now we do source, but we have to test if it is target, perhaps 
         # with parameter. Alternatively, we can use lang, if supplied, since an xliff 
         #file has to conform to the bilingual nature promised by the header.
@@ -54,6 +57,7 @@ class xliffunit(lisa.LISAunit):
     
     def getlanguageNodes(self):
         """We override this to get source and target nodes."""
+
         sources = self.xmlelement.getElementsByTagName(self.languageNode)
         targets = self.xmlelement.getElementsByTagName("target")
         sourcesl = len(sources)
@@ -66,7 +70,12 @@ class xliffunit(lisa.LISAunit):
         return nodes
 
     def addalttrans(self, txt, origin=None, lang=None):
-        """Adds a alt-trans tag and alt-trans components to <source>"""
+        """Adds an alt-trans tag and alt-trans components to the unit.
+        
+        @type txt: String
+        @param txt: Alternative translation of the source text.
+        """
+
         #TODO: support adding a source tag ad match quality attribute.  At 
         # the source tag is needed to inject fuzzy matches from a TM.
         if isinstance(txt, str):

@@ -23,7 +23,7 @@
 
 @organization: Zuza Software Foundation
 @copyright: 2006-2007 Zuza Software Foundation
-@license: GPL
+@license: U{GPL <http://www.fsf.org/licensing/licenses/gpl.html>}
 """
 
 import pickle
