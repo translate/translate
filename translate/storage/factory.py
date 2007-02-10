@@ -84,7 +84,13 @@ def getclass(storefile, ignore=None):
 
 def getobject(storefile, ignore=None):
     """Factory that returns a usable object for the type of file presented.
-    Specify ignore to ignore some part at the back of the name (like .gz). """
+
+    @type storefile: file or str
+    @param storefile: File object or file name.
+
+    Specify ignore to ignore some part at the back of the name (like .gz).
+    """
+
     if isinstance(storefile, base.TranslationStore):
         return storefile
     storefilename = getname(storefile)
