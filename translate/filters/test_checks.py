@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from translate.filters import checks
+from translate.misc.multistring import multistring
 
 def test_defaults():
     """tests default setup and that checks aren't altered by other constructions"""
@@ -669,3 +670,20 @@ def test_simpleplurals():
     assert checks.passes(stdchecker.simpleplurals, "computer(s)", "rekenaar(s)")
     assert checks.fails(stdchecker.simpleplurals, "plural(s)", "meervoud(e)")
     assert checks.fails(stdchecker.simpleplurals, "Ungroup Metafile(s)...", "Kuvhanganyululani Metafaela(dzi)...")
+
+def test_nplurals():
+    """test that we can find the wrong number of plural forms"""
+    stdchecker = checks.StandardChecker()
+    assert checks.passes(stdchecker.nplurals, multistring(["%d file", "%d files"]), multistring([u"%d lêer", u"%d lêers"]))
+
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='af'))
+    assert checks.passes(stdchecker.nplurals, "%d files", "%d lêer")
+    assert checks.passes(stdchecker.nplurals, multistring(["%d file", "%d files"]), multistring([u"%d lêer", u"%d lêers"]))
+    assert checks.fails(stdchecker.nplurals, multistring(["%d file", "%d files"]), multistring([u"%d lêer", u"%d lêers", u"%d lêeeeers"]))
+    assert checks.fails(stdchecker.nplurals, multistring(["%d file", "%d files"]), multistring([u"%d lêer"]))
+
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='km'))
+    assert checks.passes(stdchecker.nplurals, "%d files", "%d ឯកសារ")
+    assert checks.passes(stdchecker.nplurals, multistring(["%d file", "%d files"]), multistring([u"%d ឯកសារ"]))
+    assert checks.fails(stdchecker.nplurals, multistring(["%d file", "%d files"]), multistring([u"%d ឯកសារ", u"%d lêers"]))
+

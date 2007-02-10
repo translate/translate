@@ -24,6 +24,8 @@
 from translate.filters import helpers
 from translate.filters import decoration
 from translate.filters import prefilters
+from translate.misc.multistring import multistring
+from translate.lang import factory
 import sre
 try:
   from enchant import checker
@@ -161,6 +163,7 @@ class CheckerConfig(object):
     if notranslatewords is None:
       notranslatewords = []
     self.targetlanguage = targetlanguage
+    self.lang = factory.getlanguage(self.targetlanguage)
     self.accelmarkers = accelmarkers
     self.varmatches = varmatches
     # TODO: allow user configuration of untranslatable words
@@ -809,6 +812,17 @@ class StandardChecker(TranslationChecker):
     sourcecount = numberofpatterns(str1, sourcepatterns)
     targetcount = numberofpatterns(str2, targetpatterns)
     return sourcecount == targetcount
+
+  def nplurals(self, str1, str2):
+    """Checks for the correct number of noun forms for plural translations."""
+    if isinstance(str1, multistring) and isinstance(str2, multistring):
+      # if we don't have a valid nplurals value, don't run the test
+      if len(str1.strings) > 1 and self.config.lang.nplurals != 0:
+        return len(str2.strings) == self.config.lang.nplurals
+      else:
+        return True
+    else:
+      return True
 
   def spellcheck(self, str1, str2):
     """checks words that don't pass a spell check"""
