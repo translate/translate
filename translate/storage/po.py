@@ -37,7 +37,10 @@ po_unescape_map = {"\\r": "\r", "\\t": "\t", '\\"': '"', '\\n': '\n', '\\\\': '\
 po_escape_map = dict([(value, key) for (key, value) in po_unescape_map.items()])
 
 def escapeforpo(line):
-  """escapes a line for po format. assumes no \n occurs in the line"""
+  """Escapes a line for po format. assumes no \n occurs in the line.
+  
+  @param line: unescaped text
+  """
   special_locations = []
   for special_key in po_escape_map:
     special_locations.extend(quote.find_all(line, special_key))
@@ -53,6 +56,7 @@ def escapeforpo(line):
   return escaped_line
 
 def unescapehandler(escape):
+
   return po_unescape_map.get(escape, escape)
 
 def quoteforpo(text, template=None):
@@ -127,6 +131,10 @@ def quoteforpofromtemplate(text, template):
   return polines
 
 def extractpoline(line):
+  """Remove quote and unescape line from po file.
+   
+  @param line: a quoted line from a po file (msgid or msgstr)
+  """
   extracted = quote.extractwithoutquotes(line,'"','"','\\',includeescapes=unescapehandler)[0]
   return extracted
 
@@ -218,7 +226,10 @@ class pounit(base.TranslationUnit):
     return multi
 
   def setsource(self, source):
-    """Sets the msgid to the given (unescaped) value"""
+    """Sets the msgid to the given (unescaped) value.
+    
+    @param source: an unescaped source string.
+    """
     if isinstance(source, multistring):
       source = source.strings
     if isinstance(source, list):
