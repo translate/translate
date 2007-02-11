@@ -36,3 +36,10 @@ class km(common.Common):
     nplurals = 1
     pluralequation = "0"
 
+    #\u00a0 is non-breaking space
+    puncdict = {
+        u".": u"\u00a0។",
+        u":": u"\u00a0៖",
+        u"!": u"\u00a0!",
+        u"?": u"\u00a0?",
+    }
