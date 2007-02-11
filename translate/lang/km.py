@@ -43,3 +43,5 @@ class km(common.Common):
         u"!": u"\u00a0!",
         u"?": u"\u00a0?",
     }
+
+    ignoretests = ["startcaps", "simplecaps"]
