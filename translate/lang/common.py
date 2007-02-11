@@ -58,3 +58,52 @@ class Common:
     # 0 is not a valid value - it must be overridden
     nplurals = 0
     pluralequation = "0"
+
+    punctuation = u".,;:!?-@#$%^*_()[]{}/\\'\"<>‘’‚‛“”„‟′″‴‵‶‷‹›«»±³¹²°¿©®×£¥。។៕៖៘"
+
+    def character_iter(cls, text):
+        """Returns an iterator over the characters in text."""
+        #We don't return more than one consecutive whitespace character
+        prev = 'A'
+        for c in text:
+            if c.isspace() and prev.isspace():
+                continue
+            prev = c
+            if not (c in cls.punctuation):
+                yield c
+    character_iter = classmethod(character_iter)
+
+    def characters(cls, text):
+        """Returns a list of characters in text."""
+        return [c for c in cls.character_iter(text)]
+    characters = classmethod(characters)
+
+    def word_iter(cls, text):
+        """Returns an iterator over the words in text."""
+        #TODO: Consider replacing puctuation with space before split()
+        for w in text.split():
+            word = w.strip(cls.punctuation)
+            if word:
+                yield word
+    word_iter = classmethod(word_iter)
+
+    def words(cls, text):
+        """Returns a list of words in text."""
+        return [w for w in cls.word_iter(text)]
+    words = classmethod(words)
+
+    def sentence_iter(cls, text):
+        """Returns an iterator over the senteces in text."""
+        #TODO: This is very naïve. We really should consider all punctuation,
+        #and return the punctuation with the sentence.
+        #TODO: Search for capital letter start with next sentence to avoid
+        #confusion with abbreviations. And remember Afrikaans "'n" :-)
+        for s in text.split(". "):
+            yield s.strip()
+    sentence_iter = classmethod(sentence_iter)
+            
+    def sentences(cls, text):
+        """Returns a list of senteces in text."""
+        return [s for s in cls.sentence_iter(text)]
+    sentences = classmethod(sentences)
+
