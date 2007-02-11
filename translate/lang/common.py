@@ -60,6 +60,20 @@ class Common:
     pluralequation = "0"
 
     punctuation = u".,;:!?-@#$%^*_()[]{}/\\'\"<>‘’‚‛“”„‟′″‴‵‶‷‹›«»±³¹²°¿©®×£¥。។៕៖៘"
+    puncdict = {}
+
+    def punctranslate(cls, text):
+        """Converts the punctuation in a string according to the rules of the 
+        language."""
+        newtext = ""
+        #TODO: look at po::escapeforpo() for performance idea
+        for i,c in enumerate(text):
+            if c in cls.puncdict:
+                newtext += cls.puncdict[c]
+            else:
+                newtext += c
+        return newtext
+    punctranslate = classmethod(punctranslate)
 
     def character_iter(cls, text):
         """Returns an iterator over the characters in text."""
