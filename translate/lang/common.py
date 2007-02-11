@@ -27,6 +27,12 @@ language name (Khmer, Afrikaans)
 Plurals
   Number of plurals (nplurals)
   Plural equation
+pofilter tests to ignore
+
+Segmentation
+  characters
+  words
+  sentences
 
 TODO:
 Ideas for possible features:
@@ -34,9 +40,8 @@ Ideas for possible features:
 Language-Team information
 
 Segmentation
-  words
   phrases
-  sentences
+
 Punctuation
   End of sentence
   Start of sentence
@@ -54,13 +59,42 @@ class Common:
     """This class is the common parent class for all language classes."""
     
     code = ""
+    """The ISO 639 language code, possibly with a country specifier or other 
+    modifier.
+    
+    Examples:
+        km
+        pt_BR
+        sr_YU@Latn
+    """
+
     fullname = ""
-    # 0 is not a valid value - it must be overridden
+    """The full (English) name of this language.
+
+    Dialect codes should have the form of 
+      Khmer
+      Portugese (Brazil)
+      #TODO: sr_YU@Latn?
+    """
+    
     nplurals = 0
+    """The number of plural forms of this language.
+    
+    0 is not a valid value - it must be overridden.
+    Any positive integer is valid (it should probably be between 1 and 6)
+    """
+    
     pluralequation = "0"
+    """The plural equation for selection of plural forms. 
+
+    This is used for PO files to fill into the header.
+    See U{http://www.gnu.org/software/gettext/manual/html_node/gettext_150.html}.
+    """
 
     punctuation = u".,;:!?-@#$%^*_()[]{}/\\'\"<>‘’‚‛“”„‟′″‴‵‶‷‹›«»±³¹²°¿©®×£¥。។៕៖៘"
+    
     puncdict = {}
+    """A dictionary of punctuation transformation rules that can be used by punctranslate()."""
 
     def punctranslate(cls, text):
         """Converts the punctuation in a string according to the rules of the 
