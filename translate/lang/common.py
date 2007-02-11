@@ -96,6 +96,9 @@ class Common:
     puncdict = {}
     """A dictionary of punctuation transformation rules that can be used by punctranslate()."""
 
+    ignoretests = []
+    """List of pofilter tests for this language that must be ignored."""
+
     def punctranslate(cls, text):
         """Converts the punctuation in a string according to the rules of the 
         language."""
