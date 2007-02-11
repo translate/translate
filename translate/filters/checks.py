@@ -678,8 +678,9 @@ class StandardChecker(TranslationChecker):
     for startmatch, endmatch in self.config.varmatches:
       allowed += decoration.getvariables(startmatch, endmatch)(str1)
     allowed += self.config.musttranslatewords.keys()
-    for word in self.filteraccelerators(self.filtervariables(str1)).split():
-      word = word.strip(self.config.punctuation)
+    str1 = self.filteraccelerators(self.filtervariables(str1))
+    iter = self.config.lang.word_iter(str1)
+    for word in iter:
       if word.isupper() and len(word) > 1 and word not in allowed:
         if self.filteraccelerators(self.filtervariables(str2)).find(word) == -1:
           acronyms.append(word)
