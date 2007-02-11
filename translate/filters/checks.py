@@ -281,7 +281,7 @@ class TranslationChecker(object):
   def run_filters(self, str1, str2):
     """run all the tests in this suite, return failures as testname, message_or_exception"""
     failures = []
-    ignores = []
+    ignores = self.config.lang.ignoretests[:]
     functionnames = self.defaultfilters.keys()
     priorityfunctionnames = self.preconditions.keys()
     otherfunctionnames = filter(lambda functionname: functionname not in self.preconditions, functionnames)
