@@ -155,6 +155,9 @@ def test_endpunc():
     # Making sure singlequotes don't confuse things
     assert checks.passes(stdchecker.endpunc, "Pseudo-elements can't be negated '%1$S'.", "Pseudo-elemente kan nie '%1$S' ontken word nie.")
 
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='km'))
+    assert checks.passes(stdchecker.endpunc, "In this new version, there are some minor conversion improvements on complex style in Openoffice.org Writer.", u"នៅ​ក្នុង​កំណែ​ថ្មីនេះ មាន​ការ​កែសម្រួល​មួយ​ចំនួន​តូច​ទាក់​ទង​នឹង​ការ​បំលែង​ពុម្ពអក្សរ​ខ្មែរ​ ក្នុង​កម្មវិធី​ការិយាល័យ​ ស្លឹករឹត ដែល​មាន​ប្រើ​ប្រាស់​រចនាប័ទ្មស្មុគស្មាញច្រើន\u00a0។")
+
 def test_endwhitespace():
     """tests endwhitespace"""
     stdchecker = checks.StandardChecker()
