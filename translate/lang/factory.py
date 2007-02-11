@@ -29,9 +29,11 @@ def getlanguage(code):
     @param code: The ISO 639 language code
     """
     try:
+        if code is None:
+            raise ImportError ("Can't determine language code")
         exec("from translate.lang import %s" % code)
         exec("langclass = %s.%s" % (code, code))
         return langclass
-    except Exception, e:
+    except ImportError, e:
         #TODO: Handle country codes, dialect codes, and locale modifiers
         return common.Common
