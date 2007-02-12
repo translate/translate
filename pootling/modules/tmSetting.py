@@ -46,61 +46,61 @@ class tmSetting(QtGui.QDialog):
             self.ui = Ui_tmsetting()
             self.ui.setupUi(self)
             self.setWindowTitle("Setting Translation Memory")
+            self.setModal(True)
+            self.loadItemToList()
             self.connect(self.ui.btnAdd, QtCore.SIGNAL("clicked(bool)"), self.showFileDialog)
             self.filedialog = FileDialog.fileDialog(self)
             self.connect(self.filedialog, QtCore.SIGNAL("location"), self.addLocation)
-            self.connect(self.ui.btnOk, QtCore.SIGNAL("clicked(bool)"), QtCore.SLOT("close()"))
-            self.connect(self.ui.btnCreateTM, QtCore.SIGNAL("clicked(bool)"), self.createTM)
+            self.connect(self.ui.btnOk, QtCore.SIGNAL("clicked(bool)"), self.createTM)
             self.connect(self.ui.btnRemove, QtCore.SIGNAL("clicked(bool)"), self.removeLocation)
             self.connect(self.ui.btnRemoveAll, QtCore.SIGNAL("clicked(bool)"), self.ui.listWidget.clear)
             self.connect(self.ui.btnRemoveAll, QtCore.SIGNAL("clicked(bool)"), pickleTM.clear)
-            self.connect(self.ui.btnMoveUp, QtCore.SIGNAL("clicked(bool)"), self.moveUp)
-            self.connect(self.ui.btnMoveDown, QtCore.SIGNAL("clicked(bool)"), self.moveDown)
+            self.connect(self.ui.btnEnable, QtCore.SIGNAL("clicked(bool)"), self.setChecked)
+            self.connect(self.ui.btnDisable, QtCore.SIGNAL("clicked(bool)"), self.setUnchecked)
             self.connect(self.ui.checkBox, QtCore.SIGNAL("stateChanged(int)"), self.rememberDive)
-            self.ui.listWidget.addItems(World.settings.value("TMPath").toStringList())
-            self.setModal(True)
+            self.connect(self.ui.listWidget, QtCore.SIGNAL("itemClicked(QListWidgetItem *)"), self.setDisabledTM)
+            self.ui.listWidget.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
         self.ui.checkBox.setChecked(World.settings.value("diveIntoSub").toBool())
         self.ui.progressBar.setValue(0)
         self.show()
     
+    def loadItemToList(self):
+        '''load remembered item to list'''
+        TMpath = World.settings.value("TMPath").toStringList()
+        disableTM = set(World.settings.value("disabledTM").toStringList())
+        for path in TMpath:
+            item = QtGui.QListWidgetItem(path)
+            item.setCheckState((not path in disableTM) and QtCore.Qt.Checked or QtCore.Qt.Unchecked)
+            self.ui.listWidget.addItem(item)
+        
     def showFileDialog(self):
+        '''show Translation Memory setting dialog'''
         self.filedialog.show()
     
     def addLocation(self, TMpath):
-        #TODO: if item has already in listWidget, don't add
-        self.ui.listWidget.addItem(TMpath)
+        '''add TMpath to listWidget
+        @param TMpath: filename as string
+        '''
+        items = self.ui.listWidget.findItems(TMpath, QtCore.Qt.MatchCaseSensitive)
+        if (not items):
+            item = QtGui.QListWidgetItem(TMpath)
+            item.setCheckState(QtCore.Qt.Checked)
+            self.ui.listWidget.addItem(item)
     
     def removeLocation(self):
-        currentrow = self.ui.listWidget.currentRow()
-        currentItem = self.ui.listWidget.item(currentrow)
-        self.ui.listWidget.takeItem(currentrow)
-        if(hasattr(currentItem, 'text')):
-            pickleTM.removeTM(currentItem.text())
-    
-    def moveItem(self, distance):
-        '''move an item up or down depending on distance
-        @param distance: int'''
-        currentrow = self.ui.listWidget.currentRow()
-        currentItem = self.ui.listWidget.item(currentrow)
-        distanceItem = self.ui.listWidget.item(currentrow + distance)
-        if (distanceItem):
-            temp = distanceItem.text()
-            distanceItem.setText(currentItem.text())
-            currentItem.setText(temp)
-            self.ui.listWidget.setCurrentRow(currentrow + distance)
-        
-    def moveUp(self):
-        '''move item up'''
-        self.moveItem(-1)
-    
-    def moveDown(self):
-        '''move item down'''
-        self.moveItem(1)
-    
+        '''remove selected path and their TMs from list and TM list'''
+        items = self.ui.listWidget.selectedItems()
+        for item in items:
+            self.ui.listWidget.setCurrentItem(item)
+            self.ui.listWidget.takeItem(self.ui.listWidget.currentRow())
+            pickleTM.removeTM(item.text())
+            
     def rememberDive(self):
         World.settings.setValue("diveIntoSub", QtCore.QVariant(self.ui.checkBox.isChecked()))
         
     def closeEvent(self, event):
+        '''rememer TMpath before closing
+        @param event: CloseEvent Object'''
         stringlist = QtCore.QStringList()
         for i in range(self.ui.listWidget.count()):
             path = self.ui.listWidget.item(i).text()
@@ -109,16 +109,44 @@ class tmSetting(QtGui.QDialog):
         QtGui.QDialog.closeEvent(self, event)
     
     def createTM(self):
+        '''build base object of checked files in lists'''
         count = self.ui.listWidget.count()
-        self.ui.progressBar.setValue(0)
-        self.ui.progressBar.setMinimum(0)
-        self.ui.progressBar.setMaximum(count)
-        
         for i in range(count):
-            pickleTM.saveTM(self.ui.listWidget.item(i).text())
-            self.ui.progressBar.setValue(i+1)
-            print self.ui.progressBar.value()
+            item = self.ui.listWidget.item(i)
+            if (item.checkState()):
+                pickleTM.saveTM(item.text())
+        try:
+            matcher = pickleTM.buildMatcher()
+        except Exception, e:
+            matcher = None
+            self.emit(QtCore.SIGNAL("noTM"), str(e))
+        self.emit(QtCore.SIGNAL("matcher"), matcher)
+        self.close()
+            
+    def setChecked(self):
+        '''set state of selectedItems as checked'''
+        items = self.ui.listWidget.selectedItems()
+        for item in items:
+            item.setCheckState(QtCore.Qt.Checked)
+        self.setDisabledTM()
+        
+    def setUnchecked(self):
+        '''set state of selectedItems as unchecked'''
+        items = self.ui.listWidget.selectedItems()
+        for item in items:
+            item.setCheckState(QtCore.Qt.Unchecked)
+        self.setDisabledTM()
     
+    def setDisabledTM(self):
+        '''remember unchecked TM path as disabled TM'''
+        stringlist = QtCore.QStringList()
+        count = self.ui.listWidget.count()
+        for i in range(count):
+            item = self.ui.listWidget.item(i)
+            if (not item.checkState()):
+                stringlist.append(item.text())
+        pickleTM.disableTM(stringlist)
+        
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     tm = tmSetting(None)

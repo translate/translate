@@ -144,7 +144,6 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("searchResult"), self.dockTUview.highlightSearch)
         self.connect(self.operator, QtCore.SIGNAL("searchResult"), self.dockComment.highlightSearch)
         self.connect(self.operator, QtCore.SIGNAL("generalInfo"), self.showTemporaryMessage)
-        self.connect(self.operator, QtCore.SIGNAL("noTM"), self.showTemporaryMessage)
         # "replaceText" sends text field, start, length, and text to replace.
         self.connect(self.operator, QtCore.SIGNAL("replaceText"), self.dockTUview.replaceText)
         self.connect(self.operator, QtCore.SIGNAL("replaceText"), self.dockComment.replaceText)
@@ -167,6 +166,8 @@ class MainWindow(QtGui.QMainWindow):
         # action setting Path of TM
         self.tmsetting = tmSetting.tmSetting(self)
         self.connect(self.ui.action_TM, QtCore.SIGNAL("triggered()"), self.tmsetting.showDialog)
+        self.connect(self.tmsetting, QtCore.SIGNAL("noTM"), self.showTemporaryMessage)
+        self.connect(self.tmsetting, QtCore.SIGNAL("matcher"), self.operator.setMatcher)
         
         # action lookup text and auto translation from TM
         self.connect(self.ui.action_lookup_Text, QtCore.SIGNAL("triggered()"), self.operator.lookupUnit)

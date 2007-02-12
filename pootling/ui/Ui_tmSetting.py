@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Fri Feb  9 16:12:47 2007
+# Created: Mon Feb 12 14:17:42 2007
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -13,7 +13,7 @@ from PyQt4 import QtCore, QtGui
 class Ui_tmsetting(object):
     def setupUi(self, tmsetting):
         tmsetting.setObjectName("tmsetting")
-        tmsetting.resize(QtCore.QSize(QtCore.QRect(0,0,566,404).size()).expandedTo(tmsetting.minimumSizeHint()))
+        tmsetting.resize(QtCore.QSize(QtCore.QRect(0,0,484,404).size()).expandedTo(tmsetting.minimumSizeHint()))
 
         self.gridlayout = QtGui.QGridLayout(tmsetting)
         self.gridlayout.setMargin(9)
@@ -74,17 +74,15 @@ class Ui_tmsetting(object):
         self.btnRemoveAll.setObjectName("btnRemoveAll")
         self.gridlayout1.addWidget(self.btnRemoveAll,3,1,1,1)
 
-        self.btnMoveUp = QtGui.QPushButton(self.tab)
-        self.btnMoveUp.setIcon(QtGui.QIcon("../images/up.png"))
-        self.btnMoveUp.setIconSize(QtCore.QSize(16,16))
-        self.btnMoveUp.setObjectName("btnMoveUp")
-        self.gridlayout1.addWidget(self.btnMoveUp,4,1,1,1)
+        self.btnEnable = QtGui.QPushButton(self.tab)
+        self.btnEnable.setIconSize(QtCore.QSize(16,16))
+        self.btnEnable.setObjectName("btnEnable")
+        self.gridlayout1.addWidget(self.btnEnable,4,1,1,1)
 
-        self.btnMoveDown = QtGui.QPushButton(self.tab)
-        self.btnMoveDown.setIcon(QtGui.QIcon("../images/down.png"))
-        self.btnMoveDown.setIconSize(QtCore.QSize(16,16))
-        self.btnMoveDown.setObjectName("btnMoveDown")
-        self.gridlayout1.addWidget(self.btnMoveDown,5,1,1,1)
+        self.btnDisable = QtGui.QPushButton(self.tab)
+        self.btnDisable.setIconSize(QtCore.QSize(16,16))
+        self.btnDisable.setObjectName("btnDisable")
+        self.gridlayout1.addWidget(self.btnDisable,5,1,1,1)
         self.tabOptions.addTab(self.tab, "")
 
         self.tab_3 = QtGui.QWidget()
@@ -153,10 +151,6 @@ class Ui_tmsetting(object):
         self.btnCancel.setObjectName("btnCancel")
         self.gridlayout.addWidget(self.btnCancel,1,3,1,1)
 
-        self.btnCreateTM = QtGui.QPushButton(tmsetting)
-        self.btnCreateTM.setObjectName("btnCreateTM")
-        self.gridlayout.addWidget(self.btnCreateTM,1,1,1,1)
-
         self.btnOk = QtGui.QPushButton(tmsetting)
         self.btnOk.setObjectName("btnOk")
         self.gridlayout.addWidget(self.btnOk,1,2,1,1)
@@ -168,9 +162,9 @@ class Ui_tmsetting(object):
         tmsetting.setTabOrder(self.listWidget,self.btnAdd)
         tmsetting.setTabOrder(self.btnAdd,self.btnRemove)
         tmsetting.setTabOrder(self.btnRemove,self.btnRemoveAll)
-        tmsetting.setTabOrder(self.btnRemoveAll,self.btnMoveUp)
-        tmsetting.setTabOrder(self.btnMoveUp,self.btnMoveDown)
-        tmsetting.setTabOrder(self.btnMoveDown,self.checkBox)
+        tmsetting.setTabOrder(self.btnRemoveAll,self.btnEnable)
+        tmsetting.setTabOrder(self.btnEnable,self.btnDisable)
+        tmsetting.setTabOrder(self.btnDisable,self.checkBox)
         tmsetting.setTabOrder(self.checkBox,self.btnOk)
         tmsetting.setTabOrder(self.btnOk,self.spinSimilarity)
         tmsetting.setTabOrder(self.spinSimilarity,self.chkCaseSensitive)
@@ -192,10 +186,10 @@ class Ui_tmsetting(object):
         self.btnRemove.setText(self.tr(" De&lete"))
         self.btnRemoveAll.setToolTip(self.tr("clear list"))
         self.btnRemoveAll.setText(self.tr(" &Clear"))
-        self.btnMoveUp.setToolTip(self.tr("move up"))
-        self.btnMoveUp.setText(self.tr(" &Up"))
-        self.btnMoveDown.setToolTip(self.tr("move down"))
-        self.btnMoveDown.setText(self.tr(" Do&wn"))
+        self.btnEnable.setToolTip(self.tr("Enabel Translation Memory"))
+        self.btnEnable.setText(self.tr(" &Enable"))
+        self.btnDisable.setToolTip(self.tr("Disable Translation Memory"))
+        self.btnDisable.setText(self.tr("Di&sable"))
         self.tabOptions.setTabText(self.tabOptions.indexOf(self.tab), self.tr("&File"))
         self.tabOptions.setTabText(self.tabOptions.indexOf(self.tab_3), self.tr("&Database"))
         self.label_3.setText(self.tr("Maximum string length"))
@@ -205,7 +199,6 @@ class Ui_tmsetting(object):
         self.label_2.setText(self.tr("Maximum candidates"))
         self.tabOptions.setTabText(self.tabOptions.indexOf(self.tab_4), self.tr("O&ptions"))
         self.btnCancel.setText(self.tr("Ca&ncel"))
-        self.btnCreateTM.setText(self.tr("Create &TM"))
         self.btnOk.setText(self.tr("&OK"))
 
 

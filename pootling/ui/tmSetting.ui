@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>566</width>
+    <width>484</width>
     <height>404</height>
    </rect>
   </property>
@@ -140,15 +140,12 @@
         </widget>
        </item>
        <item row="4" column="1" >
-        <widget class="QPushButton" name="btnMoveUp" >
+        <widget class="QPushButton" name="btnEnable" >
          <property name="toolTip" >
-          <string>move up</string>
+          <string>Enabel Translation Memory</string>
          </property>
          <property name="text" >
-          <string> &amp;Up</string>
-         </property>
-         <property name="icon" >
-          <iconset>../images/up.png</iconset>
+          <string> &amp;Enable</string>
          </property>
          <property name="iconSize" >
           <size>
@@ -159,15 +156,12 @@
         </widget>
        </item>
        <item row="5" column="1" >
-        <widget class="QPushButton" name="btnMoveDown" >
+        <widget class="QPushButton" name="btnDisable" >
          <property name="toolTip" >
-          <string>move down</string>
+          <string>Disable Translation Memory</string>
          </property>
          <property name="text" >
-          <string> Do&amp;wn</string>
-         </property>
-         <property name="icon" >
-          <iconset>../images/down.png</iconset>
+          <string>Di&amp;sable</string>
          </property>
          <property name="iconSize" >
           <size>
@@ -309,13 +303,6 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="1" >
-    <widget class="QPushButton" name="btnCreateTM" >
-     <property name="text" >
-      <string>Create &amp;TM</string>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="2" >
     <widget class="QPushButton" name="btnOk" >
      <property name="text" >
@@ -331,8 +318,8 @@
   <tabstop>btnAdd</tabstop>
   <tabstop>btnRemove</tabstop>
   <tabstop>btnRemoveAll</tabstop>
-  <tabstop>btnMoveUp</tabstop>
-  <tabstop>btnMoveDown</tabstop>
+  <tabstop>btnEnable</tabstop>
+  <tabstop>btnDisable</tabstop>
   <tabstop>checkBox</tabstop>
   <tabstop>btnOk</tabstop>
   <tabstop>spinSimilarity</tabstop>

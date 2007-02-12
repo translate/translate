@@ -25,9 +25,10 @@ from pootling.modules import World
 from translate.storage import factory
 from translate.search import match
 
-matcher = None
-
 def createStore(file):
+    '''create a base object from file
+    @param file: as a file path or object
+    '''
     try:
         store = factory.getobject(file)
     except:
@@ -35,9 +36,16 @@ def createStore(file):
     return store
 
 def saveTM(TMpath):
+    '''create base object of supported file, and save into TM dictionary
+    @param TMpath: file or translation memory path as string'''
     dic = unpickleStoreDic()
     diveSub = World.settings.value("diveIntoSub").toBool()
     path = str(TMpath)
+    
+    # FIXME: this will make memory not up to date.
+    if (dic.has_key(path)):
+        return
+    
     if (os.path.isfile(path)):
         store = createStore(path)
         if (store):
@@ -60,6 +68,7 @@ def saveTM(TMpath):
     return
 
 def removeTM(TMpath):
+    '''remove TM object of file from dictionary if it exists'''
     path = str(TMpath)
     dic = unpickleStoreDic()
     if (dic):
@@ -71,13 +80,22 @@ def removeTM(TMpath):
     return
 
 def clear():
+    '''clear translation memory'''
     dic = unpickleStoreDic()
     if (dic):
         dic = {}
         pickleStoreDic(dic)
     return
 
+def disableTM(TMpaths):
+    '''remember specified TM path as disabledTM
+    @param TMpaths: QStringList Object
+    '''
+    World.settings.setValue("disabledTM", QtCore.QVariant(TMpaths))
+    
 def pickleStoreDic(dic):
+    '''pickle dictionary of TM objects into a tempo file
+    @param dic: dictionary which has key as file and value as its base object'''
     filename = World.settings.value("fileStoredDic").toString()
     if (not filename):
         handle, filename = tempfile.mkstemp('','PKL')
@@ -88,6 +106,8 @@ def pickleStoreDic(dic):
     World.settings.setValue("fileStoredDic", QtCore.QVariant(filename))
 
 def unpickleStoreDic():
+    '''unpickle dictionary from file
+    @return dic: dictionary which has key as file and value as its base object'''
     dic = {}
     filename = World.settings.value("fileStoredDic").toString()
     if (filename):
@@ -100,16 +120,22 @@ def unpickleStoreDic():
     return dic
 
 def getStore():
+    '''return storelist
+    @return storelist: as a list of store
+    '''
     dic = unpickleStoreDic()
+    disabledTM = set(World.settings.value("disabledTM").toStringList())
     storelist = []
     if (dic):
         for k, v in dic.iteritems():
+            if (QtCore.QString(k) in disabledTM):
+                continue
             if (not isinstance(v, list)):
                 storelist.append(v)
             else:
                 storelist += v
     return storelist
 
-def getMatcher():
-    matcher = match.matcher(getStore())
-    return matcher
+def buildMatcher():
+    '''build new matcher'''
+    return match.matcher(getStore())
