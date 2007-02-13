@@ -4,6 +4,10 @@
 from translate.storage import factory
 from translate.misc import wStringIO
 
+from gzip import GzipFile
+from bz2 import BZ2File
+import os
+
 def classname(filename):
     """returns the classname to ease testing"""
     classinstance = factory.getclass(filename)
@@ -16,6 +20,28 @@ def givefile(filename, content):
     return file
 
 class BaseTestFactory:
+    def setup_method(self, method):
+        """sets up a test directory"""
+        self.testdir = "%s_testdir" % (self.__class__.__name__)
+        self.cleardir(self.testdir)
+        os.mkdir(self.testdir)
+
+    def teardown_method(self, method):
+        """removes the attributes set up by setup_method"""
+        self.cleardir(self.testdir)
+
+    def cleardir(self, dirname):
+        """removes the given directory"""
+        if os.path.exists(dirname):
+            for dirpath, subdirs, filenames in os.walk(dirname, topdown=False):
+                for name in filenames:
+                    os.remove(os.path.join(dirpath, name))
+                for name in subdirs:
+                    os.rmdir(os.path.join(dirpath, name))
+        if os.path.exists(dirname): os.rmdir(dirname)
+        assert not os.path.exists(dirname)
+    cleardir = classmethod(cleardir)
+
     def test_getclass(self):
         assert classname("file.po") == "pofile"
         assert classname("file.pot") == "pofile"
@@ -29,6 +55,30 @@ class BaseTestFactory:
         assert not classname("file.po") == "tmxfile"
         assert not classname("file.po") == "xlifffile"
 
+        assert classname("file.po.gz") == "pofile"
+        assert classname("file.pot.gz") == "pofile"
+        assert classname("file.dtd.po.gz") == "pofile"
+
+        assert classname("file.tmx.gz") == "tmxfile"
+        assert classname("file.af.tmx.gz") == "tmxfile"
+        assert classname("file.tbx.gz") == "tbxfile"
+        assert classname("file.po.xliff.gz") == "xlifffile"
+
+        assert not classname("file.po.gz") == "tmxfile"
+        assert not classname("file.po.gz") == "xlifffile"
+
+        assert classname("file.po.bz2") == "pofile"
+        assert classname("file.pot.bz2") == "pofile"
+        assert classname("file.dtd.po.bz2") == "pofile"
+
+        assert classname("file.tmx.bz2") == "tmxfile"
+        assert classname("file.af.tmx.bz2") == "tmxfile"
+        assert classname("file.tbx.bz2") == "tbxfile"
+        assert classname("file.po.xliff.bz2") == "xlifffile"
+
+        assert not classname("file.po.bz2") == "tmxfile"
+        assert not classname("file.po.bz2") == "xlifffile"
+
     def test_getobject(self):
         """Tests that we get a valid object."""
         fileobj = givefile(self.filename, self.file_content)
@@ -40,6 +90,24 @@ class BaseTestFactory:
         fileobj = wStringIO.StringIO(self.file_content)
         assert not hasattr(fileobj, 'name')
         store = factory.getobject(fileobj)
+        assert isinstance(store, self.expected_instance)
+
+    def test_gzfile(self):
+        """Test that we can open a gzip file correctly."""
+        filename = os.path.join(self.testdir, self.filename + '.gz')
+        gzfile = GzipFile(filename, mode="wb")
+        gzfile.write(self.file_content)
+        gzfile.close()
+        store = factory.getobject(filename)
+        assert isinstance(store, self.expected_instance)
+
+    def test_bz2file(self):
+        """Test that we can open a gzip file correctly."""
+        filename = os.path.join(self.testdir, self.filename + '.bz2')
+        bz2file = BZ2File(filename, mode="wb")
+        bz2file.write(self.file_content)
+        bz2file.close()
+        store = factory.getobject(filename)
         assert isinstance(store, self.expected_instance)
 
 class TestPOFactory(BaseTestFactory):
