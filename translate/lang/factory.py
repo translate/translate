@@ -28,6 +28,8 @@ def getlanguage(code):
 
     @param code: The ISO 639 language code
     """
+    if code:
+        code = code.replace("-", "_")
     try:
         if code is None:
             raise ImportError ("Can't determine language code")
