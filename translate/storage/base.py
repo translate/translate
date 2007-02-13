@@ -248,6 +248,14 @@ class TranslationUnit(object):
         if self.target == "" or overwrite:
             self.target = otherunit.target
 
+    def unit_iter(self):
+        """Iterator that only returns this unit."""
+        yield self
+
+    def getunits(self):
+        """This unit in a list."""
+        return [self]
+
     def buildfromunit(cls, unit):
         """Build a native unit from a foreign unit, preserving as much as 
         possible information."""
@@ -275,6 +283,15 @@ class TranslationStore(object):
         self.units = []
         if unitclass:
             self.UnitClass = unitclass
+
+    def unit_iter(self):
+        """Iterator over all the units in this store."""
+        for unit in self.units:
+            yield unit
+
+    def getunits(self):
+        """Return a list of all units in this store."""
+        return [unit for unit in self.unit_iter()]
 
     def addunit(self, unit):
         """Appends the given unit to the object's list of units.
