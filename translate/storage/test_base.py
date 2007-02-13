@@ -269,3 +269,34 @@ class TestTranslationStore:
         #Just test that __str__ doesn't raise exception:
         src = str(store)
 
+    def test_store_stats(self):
+        store = self.StoreClass()
+        unit1 = store.addsourceunit("Test source")
+        assert unit1.source_wordcount() == 2
+        assert store.source_wordcount() == 2
+        unit2 = store.addsourceunit("Test source 2")
+        assert unit2.source_wordcount() == 3
+        assert store.source_wordcount() == 5
+        # If the source has also been changed, assume it's a monolingual file.
+        if not unit1.source == unit1.target:
+            assert store.translated_unitcount() == 0
+            assert store.untranslated_unitcount() == 2
+            assert store.translated_wordcount() == 0
+            assert store.untranslated_wordcount() == 5
+        unit1.settarget("Toets bron teks")
+        # If the source has also been changed, assume it's a monolingual file.
+        if not unit1.source == unit1.target:
+            assert store.translated_unitcount() == 1
+            assert store.untranslated_unitcount() == 1
+            assert store.translated_wordcount() == 2
+            assert store.untranslated_wordcount() == 3
+            assert store.fuzzy_units() == 0
+            unit1.markfuzzy(True)
+            assert store.fuzzy_units() == 1
+
+        store = self.StoreClass()
+        unit1 = store.addsourceunit(u"ភាសា​ខ្មែរ")
+        unit2 = store.addsourceunit(u"សាលារៀន")
+        assert unit1.source_wordcount() == 2
+        assert unit2.source_wordcount() == 1
+        assert store.source_wordcount() == 3

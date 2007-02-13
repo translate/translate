@@ -53,6 +53,7 @@ class TxtUnit(base.TranslationUnit):
     def __init__(self, source="", encoding="utf-8"):
         """Construct the txtunit"""
         self.encoding = encoding
+        super(TxtUnit, self).__init__(source)
         self.source = source
         self.location = []
 
@@ -91,6 +92,7 @@ class TxtFile(base.TranslationStore):
     """This class represents a text file, made up of txtunits"""
     UnitClass = TxtUnit
     def __init__(self, inputfile=None, flavour=None, encoding="utf-8"):
+        base.TranslationStore.__init__(self, unitclass=self.UnitClass)
         self.units = []
         self.filename = getattr(inputfile, 'name', '')
         if flavour in flavours:

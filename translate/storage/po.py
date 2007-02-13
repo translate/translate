@@ -199,6 +199,7 @@ class pounit(base.TranslationUnit):
     self.obsoletemsgstr = []
     if source:
       self.setsource(source)
+    super(pounit, self).__init__(source)
 
   def initallcomments(self, blankall=False):
     """Initialises allcomments"""
@@ -793,6 +794,7 @@ class pofile(base.TranslationStore, poheader.poheader):
     """construct a pofile, optionally reading in from inputfile.
     encoding can be specified but otherwise will be read from the PO header"""
     self.UnitClass = unitclass
+    base.TranslationStore.__init__(self, unitclass=unitclass)
     self.units = []
     self.filename = ''
     self.encoding = encodingToUse(encoding)

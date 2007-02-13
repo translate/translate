@@ -28,6 +28,7 @@
 
 import pickle
 from exceptions import NotImplementedError
+from translate.storage.statistics import Statistics
 
 def force_override(method, baseclass):
     """Forces derived classes to override method."""
@@ -40,7 +41,7 @@ def force_override(method, baseclass):
     if actualclass != baseclass:
         raise NotImplementedError("%s does not reimplement %s as required by %s" % (actualclass.__name__, method.__name__, baseclass.__name__))
 
-class TranslationUnit(object):
+class TranslationUnit(Statistics):
     """Base class for translation units.
     
     Our concept of a I{translation unit} is influenced heavily by XLIFF:
@@ -69,9 +70,11 @@ class TranslationUnit(object):
     def __init__(self, source):
         """Constructs a TranslationUnit containing the given source string."""
 
+        super(TranslationUnit, self).__init__()
         self.source = source
         self.target = None
         self.notes = ""
+        self.fuzzy = False
 
     def __eq__(self, other):
         """Compares two TranslationUnits.
@@ -214,7 +217,11 @@ class TranslationUnit(object):
     def isfuzzy(self):
         """Indicates whether this unit is fuzzy."""
 
-        return False
+        return self.fuzzy
+
+    def markfuzzy(self, value=True):
+        """Marks the unit as fuzzy or not."""
+        self.fuzzy = value
 
     def isheader(self):
         """Indicates whether this unit is a header."""
@@ -272,7 +279,7 @@ class TranslationUnit(object):
         return newunit
     buildfromunit = classmethod(buildfromunit)
 
-class TranslationStore(object):
+class TranslationStore(Statistics):
     """Base class for stores for multiple translation units of type UnitClass."""
 
     UnitClass = TranslationUnit
@@ -280,6 +287,7 @@ class TranslationStore(object):
     def __init__(self, unitclass=None):
         """Constructs a blank TranslationStore."""
 
+        super(TranslationStore, self).__init__()
         self.units = []
         if unitclass:
             self.UnitClass = unitclass

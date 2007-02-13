@@ -208,6 +208,12 @@ class xliffunit(lisa.LISAunit):
             #TODO: review decision
             self.xmlelement.setAttribute("approved", "no")
 
+    def settarget(self, text, lang='xx', append=False):
+        """Sets the target string to the given value."""
+        super(xliffunit, self).settarget(text, lang, append)
+        if text:
+            self.marktranslated()
+
     def istranslated(self):
         targetnode = self.getlanguageNode(lang=None, index=1)
         return not targetnode is None and \

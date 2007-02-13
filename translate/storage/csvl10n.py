@@ -144,6 +144,7 @@ class csvfile(base.TranslationStore):
   The default format contains three columns: comments, source, target"""
   UnitClass = csvunit
   def __init__(self, inputfile=None, fieldnames=None):
+    base.TranslationStore.__init__(self, unitclass = self.UnitClass)
     self.units= []
     if fieldnames is None:
       self.fieldnames = ['comment', 'source', 'target']
