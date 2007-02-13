@@ -52,7 +52,8 @@ class Directory:
         for dirname, filename in self.file_iter():
             store = factory.getobject(path.join(dirname, filename))
             #TODO: don't regenerate all the storage objects
-            yield store.unit_iter()
+            for unit in store.unit_iter():
+                yield unit
 
     def getunits(self):
         """List of all the units in all the files in this directory."""

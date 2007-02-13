@@ -9,9 +9,8 @@ class TestDirectory(object):
     """a test class to run tests on a test Pootle Server"""
 
     def setup_method(self, method):
-        """create the testing environment"""
-        print "setup_method called on", self.__class__.__name__
         """sets up a test directory"""
+        print "setup_method called on", self.__class__.__name__
         self.testdir = "%s_testdir" % (self.__class__.__name__)
         self.cleardir(self.testdir)
         os.mkdir(self.testdir)
@@ -30,7 +29,6 @@ class TestDirectory(object):
                     os.rmdir(os.path.join(dirpath, name))
         if os.path.exists(dirname): os.rmdir(dirname)
         assert not os.path.exists(dirname)
-    cleardir = classmethod(cleardir)
 
     def touchfiles(self, dir, filenames, content=None):
         for filename in filenames:
@@ -75,4 +73,6 @@ class TestDirectory(object):
         self.touchfiles(self.testdir, files, posource)
 
         d = directory.Directory(self.testdir)
+        for unit in d.getunits():
+            assert unit.target == "blabla"
         assert len(d.getunits()) == 3
