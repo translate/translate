@@ -32,7 +32,6 @@ from translate.storage import tbx
 import os
 
 #TODO: Monolingual formats (with template?)
-#TODO: guess from first lines
 
 classes = {"po": po.pofile, "pot": po.pofile, "csv": csvl10n.csvfile, 
             "xliff": xliff.xlifffile, "xlf": xliff.xlifffile, 
