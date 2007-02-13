@@ -30,12 +30,19 @@ from translate.storage import tmx
 from translate.storage import tbx
 
 import os
+from gzip import GzipFile
+from bz2 import BZ2File
 
 #TODO: Monolingual formats (with template?)
 
 classes = {"po": po.pofile, "pot": po.pofile, "csv": csvl10n.csvfile, 
             "xliff": xliff.xlifffile, "xlf": xliff.xlifffile, 
             "tmx": tmx.tmxfile, "tbx": tbx.tbxfile}
+
+decompressclass = {
+    'gz': GzipFile,
+    'bz2': BZ2File,
+}
 
 def guessextention(storefile):
     """Guesses the type of a file object by looking at the first few characters.
@@ -75,6 +82,9 @@ def getclass(storefile, ignore=None):
         storefilename = storefile[:-len(ignore)]
     root, ext = os.path.splitext(storefilename)
     ext = ext[len(os.path.extsep):].lower()
+    if ext in decompressclass:
+        root, ext = os.path.splitext(root)
+        ext = ext[len(os.path.extsep):].lower()
     try:
         storeclass = classes[ext]
     except KeyError:
@@ -95,6 +105,10 @@ def getobject(storefile, ignore=None):
     storefilename = getname(storefile)
     storeclass = getclass(storefilename, ignore)
     if os.path.exists(storefilename) or not getattr(storefile, "closed", True):
+        name, ext = os.path.splitext(storefilename)
+        ext = ext[len(os.path.extsep):].lower()
+        if ext in decompressclass:
+            storefile = decompressclass[ext](storefilename)
         store = storeclass.parsefile(storefile)
     else:
         store = storeclass()

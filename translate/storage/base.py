@@ -407,7 +407,9 @@ class TranslationStore(object):
 
         if isinstance(storefile, basestring):
             storefile = open(storefile, "r")
-        if "r" in getattr(storefile, "mode", "r"):
+        mode = getattr(storefile, "mode", "r")
+        #For some reason GzipFile returns 1, so we have to test for that here
+        if mode == 1 or "r" in mode:
           storestring = storefile.read()
         else:
           storestring = ""
