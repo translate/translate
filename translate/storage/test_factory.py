@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from translate.storage import factory
+from translate.storage.directory import Directory
 from translate.misc import wStringIO
 
 from gzip import GzipFile
@@ -109,6 +110,11 @@ class BaseTestFactory:
         bz2file.close()
         store = factory.getobject(filename)
         assert isinstance(store, self.expected_instance)
+
+    def test_directory(self):
+        """Test that a directory is correctly detected."""
+        object = factory.getobject(self.testdir)
+        assert isinstance(object, Directory)
 
 class TestPOFactory(BaseTestFactory):
     expected_instance = factory.po.pofile

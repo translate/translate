@@ -102,6 +102,10 @@ def getobject(storefile, ignore=None):
 
     if isinstance(storefile, base.TranslationStore):
         return storefile
+    if isinstance(storefile, basestring):
+        if os.path.isdir(storefile) or storefile.endswith(os.path.sep):
+            from translate.storage import directory
+            return directory.Directory(storefile)
     storefilename = getname(storefile)
     storeclass = getclass(storefilename, ignore)
     if os.path.exists(storefilename) or not getattr(storefile, "closed", True):
