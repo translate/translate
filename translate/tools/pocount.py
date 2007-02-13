@@ -24,6 +24,7 @@
 import sys
 import os
 from translate.storage import po
+from translate.lang.common import Common
 import sre
 
 if not hasattr(__builtins__, "sum"):
@@ -42,7 +43,9 @@ def wordcount(postr):
   postr = sre.sub("<br>", "\n", postr)
   postr = sre.sub("<[^>]+>", "", postr)
   postr = sre.sub("\\D\\.\\D", " ", postr)
-  return len(postr.split())
+  #TODO: This should still use the correct language to count in the target 
+  #language
+  return len(Common.words(postr))
 
 def wordsinpoel(poel):
   """counts the words in the source, target, taking plurals into account"""
