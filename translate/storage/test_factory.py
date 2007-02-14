@@ -128,7 +128,7 @@ class TestXliffFactory(BaseTestFactory):
 <xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
 <file>
 <body>
-  <trans-unit restype="x-gettext-domain-header">
+  <trans-unit>
     <source>test</source>
     <target>rest</target>
   </trans-unit>

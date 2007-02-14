@@ -346,7 +346,10 @@ class xlifffile(lisa.LISAfile):
     def getfilenames(self):
         """returns all filenames in this XLIFF file"""
         filenodes = self.document.getElementsByTagName("file")
-        return [self.getfilename(filenode) for filenode in filenodes]
+        filenames = [self.getfilename(filenode) for filenode in filenodes]
+        if len(filenames) == 1 and filenames[0] == '':
+            filenames = []
+        return filenames
 
     def getfilenode(self, filename):
         """finds the filenode with the given name"""
