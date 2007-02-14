@@ -32,11 +32,12 @@ from translate.lang import factory
 class Statistics(object):
     """Manages statistics for storage objects."""
 
-    def __init__(self):
-        self.sourcelanguage = 'en'
-        self.targetlanguage = 'en'
+    def __init__(self, sourcelanguage='en', targetlanguage='en', checker=None):
+        self.sourcelanguage = sourcelanguage
+        self.targetlanguage = targetlanguage
         self.language = lang.factory.getlanguage(self.sourcelanguage)
-        self.stats = {}
+        self.checker = checker
+        self.classification = {}
 
     def fuzzy_units(self):
         count = 0
@@ -110,3 +111,80 @@ class Statistics(object):
 
         text = self.get_source_text(self.untranslated_units())
         return self.wordcount(text)
+
+    def classifyunit(self, unit):
+        """Returns a list of the classes that the unit belongs to.
+        
+        @param unit: the unit to classify
+        """
+        classes = ["total"]
+        if unit.isfuzzy():
+            classes.append("fuzzy")
+        if unit.gettargetlen() == 0:
+            classes.append("blank")
+        if unit.istranslated():
+            classes.append("translated")
+        #TODO: we don't handle checking plurals at all yet, as this is tricky...
+        source = unit.source
+        target = unit.target
+        if isinstance(source, str) and isinstance(target, unicode):
+            source = source.decode(getattr(unit, "encoding", "utf-8"))
+        #TODO: decoding should not be done here
+        checkresult = self.checker.run_filters(unit, source, target)
+        for checkname, checkmessage in checkresult:
+            classes.append("check-" + checkname)
+        return classes
+
+    def classifyunits(self):
+        """Makes a dictionary of which units fall into which classifications.
+        
+        This method iterates over all units.
+        """
+        self.classification = {}
+        self.classification["fuzzy"] = []
+        self.classification["blank"] = []
+        self.classification["translated"] = []
+        self.classification["has-suggestion"] = []
+        self.classification["total"] = []
+        for checkname in self.checker.getfilters().keys():
+            self.classification["check-" + checkname] = []
+        for item, unit in enumerate(self.unit_iter()):
+            classes = self.classifyunit(unit)
+#            if self.basefile.getsuggestions(item):
+#                classes.append("has-suggestion")
+            for classname in classes:
+                if classname in self.classification:
+                    self.classification[classname].append(item)
+                else:
+                    self.classification[classname] = item
+        self.countwords()
+
+    def countwords(self):
+        """Counts the source and target words in each of the units."""
+        self.sourcewordcounts = []
+        self.targetwordcounts = []
+        for unit in self.unit_iter():
+            self.sourcewordcounts.append([self.wordcount(text) for text in unit.source.strings])
+            self.targetwordcounts.append([self.wordcount(text) for text in unit.target.strings])
+
+    def reclassifyunit(self, item):
+        """Updates the classification of a unit in self.classification.
+        
+        @param item: an integer that is an index in .getunits().
+        """
+        unit = self.getunits()[item]
+        self.sourcewordcounts[item] = [self.wordcount(text) for text in unit.source.strings]
+        self.targetwordcounts[item] = [self.wordcount(text) for text in unit.target.strings]
+        classes = self.classifyunit(unit)
+#        if self.basefile.getsuggestions(item):
+#            classes.append("has-suggestion")
+        for classname, matchingitems in self.classification.items():
+            if (classname in classes) != (item in matchingitems):
+                if classname in classes:
+                    self.classification[classname].append(item)
+                else:
+                    self.classification[classname].remove(item)
+                self.classification[classname].sort()
+#        self.savestats()
+
+
