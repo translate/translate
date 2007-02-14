@@ -998,6 +998,11 @@ class pofile(base.TranslationStore, poheader.poheader):
     # TODO: make them unquoted strings, if useful...
     return dict([(" ".join(poel.msgid), poel) for poel in self.units])
 
+  def unit_iter(self):
+    for unit in self.units:
+      if not (unit.isheader() or unit.isobsolete()):
+        yield unit
+
 if __name__ == '__main__':
   import sys
   pf = pofile(sys.stdin)
