@@ -70,11 +70,11 @@ class TranslationUnit(Statistics):
     def __init__(self, source):
         """Constructs a TranslationUnit containing the given source string."""
 
-        super(TranslationUnit, self).__init__()
         self.source = source
         self.target = None
         self.notes = ""
         self.fuzzy = False
+        super(TranslationUnit, self).__init__()
 
     def __eq__(self, other):
         """Compares two TranslationUnits.
@@ -101,7 +101,7 @@ class TranslationUnit(Statistics):
         
         """
 
-        length = len(self.target)
+        length = len(self.target or "")
         strings = getattr(self.target, "strings", [])
         if strings:
             length += sum([len(pluralform) for pluralform in strings[1:]])
@@ -234,8 +234,8 @@ class TranslationUnit(Statistics):
 
     def isreview(self):
         """Indicates whether this unit needs review."""
+        return False
 
-        raise NotImplementedError
 
     def isblank(self):
         """Used to see if this unit has no source or target string.
@@ -291,10 +291,10 @@ class TranslationStore(Statistics):
     def __init__(self, unitclass=None):
         """Constructs a blank TranslationStore."""
 
-        super(TranslationStore, self).__init__()
         self.units = []
         if unitclass:
             self.UnitClass = unitclass
+        super(TranslationStore, self).__init__()
 
     def unit_iter(self):
         """Iterator over all the units in this store."""
