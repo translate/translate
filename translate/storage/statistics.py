@@ -1,3 +1,31 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# 
+# Copyright 2007 Zuza Software Foundation
+# 
+# This file is part of translate.
+#
+# translate is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+# 
+# translate is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with translate; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+"""Module to provide statistics and related functionality.
+
+@organization: Zuza Software Foundation
+@copyright: 2007 Zuza Software Foundation
+@license: U{GPL <http://www.fsf.org/licensing/licenses/gpl.html>}
+"""
+
 from translate import lang
 from translate.lang import factory
 
@@ -7,7 +35,7 @@ class Statistics(object):
     def __init__(self):
         self.sourcelanguage = 'en'
         self.targetlanguage = 'en'
-
+        self.language = lang.factory.getlanguage(self.sourcelanguage)
         self.stats = {}
 
     def fuzzy_units(self):
@@ -56,18 +84,19 @@ class Statistics(object):
         """Joins the unit source strings in a single string of text."""
         source_text = ""
         for unit in units:
-            source_text += unit.source + " "
+            source_text += unit.source + "\n"
+            plurals = getattr(unit.source, "strings")
+            if plurals:
+                source_text += "\n".join(plurals[1:])
         return source_text
 
     def wordcount(self, text):
         """Returns the number of words in the given text."""
-
-        language = lang.factory.getlanguage(self.sourcelanguage)
-        return len(language.words(text))
+        return len(self.language.words(text))
 
     def source_wordcount(self):
-        units = self.getunits()
-        source_text = self.get_source_text(units)
+        """Returns the number of words in the source text."""
+        source_text = self.get_source_text(self.getunits())
         return self.wordcount(source_text)
 
     def translated_wordcount(self):
