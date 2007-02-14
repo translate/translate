@@ -12,7 +12,7 @@ class Statistics(object):
 
     def fuzzy_units(self):
         count = 0
-        for unit in self.units:
+        for unit in self.getunits():
             if unit.isfuzzy():
                 count += 1
         return count
