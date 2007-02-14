@@ -191,9 +191,7 @@ class TUview(QtGui.QDockWidget):
             return
         self.ui.txtTarget.setReadOnly(False)
 
-        comment = ""
-        if isinstance(unit, po.pounit):
-            comment = unit.getcontext()
+        comment = unit.getcontext()
         comment += unit.getnotes("developer")
         if (comment == ""):
             self.ui.lblComment.hide()
