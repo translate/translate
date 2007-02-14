@@ -86,7 +86,7 @@ class Statistics(object):
         source_text = ""
         for unit in units:
             source_text += unit.source + "\n"
-            plurals = getattr(unit.source, "strings")
+            plurals = getattr(unit.source, "strings", [])
             if plurals:
                 source_text += "\n".join(plurals[1:])
         return source_text
