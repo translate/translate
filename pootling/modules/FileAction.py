@@ -59,7 +59,7 @@ class FileAction(QtCore.QObject):
             return False
 
     def save(self):
-        self.emitFileSaved(self.fileName)
+        self.emitFileSaved()
         
     def saveAs(self):
         # TODO: think about export in different formats
@@ -118,13 +118,15 @@ class FileAction(QtCore.QObject):
         # remember last open file's directory.
         self.directory = os.path.dirname(str(filename))
     
-    def emitFileSaved(self, filename):
+    def emitFileSaved(self, filename = ""):
         """emit signal fileSaved when a file is saved
         
-        @param filename: file's name as QString
+        @param filename: file's name as QString. If filename is empty,
+        it will use the existing open file.
         """
-        self.fileName = filename
-        self.emit(QtCore.SIGNAL("fileSaved"), str(self.fileName)) 
+        if (filename):
+            self.fileName = filename
+        self.emit(QtCore.SIGNAL("fileSaved"), str(filename)) 
     
     def emitFileOpened(self):
         """emit signal fileOpened, with a filename as string"""

@@ -394,8 +394,9 @@ class MainWindow(QtGui.QMainWindow):
     def setTitle(self, title):
         """set the title of program.
         @param title: title string."""
-        shownName = QtCore.QFileInfo(title).fileName()
-        self.setWindowTitle(self.tr("%1[*] - %2").arg(shownName).arg(World.settingApp))
+        if (title):
+            shownName = QtCore.QFileInfo(title).fileName()
+            self.setWindowTitle(self.tr("%1[*] - %2").arg(shownName).arg(World.settingApp))
 
     def toggleFirstLastUnit(self, atFirst, atLast):
         """set enable/disable first, previous, next, and last unit buttons

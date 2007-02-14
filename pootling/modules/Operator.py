@@ -228,21 +228,22 @@ class Operator(QtCore.QObject):
         @param fileName: String type
         """
         self._modified = False
-        if (fileName != ""):
-            self.emitUpdateUnit()
-            if (World.settings.value("headerAuto", QtCore.QVariant(True)).toBool()):
-                self.emit(QtCore.SIGNAL("headerAuto"))
-            
-            try:
+        self.emitUpdateUnit()
+        if (World.settings.value("headerAuto", QtCore.QVariant(True)).toBool()):
+            self.emit(QtCore.SIGNAL("headerAuto"))
+        
+        try:
+            if (fileName):
                 self.store.savefile(fileName)
-                self.emitReadyForSave()
-            except Exception, e:
-                QtGui.QMessageBox.critical(None, 
-                                        'Error', 
-                                        'Error while trying to write file ' 
-                                        + fileName  + 
-                                        '\n' + str(e))
-                return
+            else:
+                self.store.save()
+            self.emitReadyForSave()
+        except Exception, e:
+            QtGui.QMessageBox.critical(None, 
+                                    'Error', 
+                                    'Error while trying to write file ' 
+                                    + fileName  + 
+                                    '\n' + str(e))
                 
     def modified(self):
         """@return bool: True or False if current unit is modified or not modified."""
