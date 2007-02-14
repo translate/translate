@@ -140,6 +140,10 @@ class TranslationUnit(Statistics):
         else:
             self.addlocation(location)
 
+    def getcontext(self):
+        """Get the message context."""
+        return ""
+    
     def getnotes(self, origin=None):
         """Returns all notes about this unit.
         
