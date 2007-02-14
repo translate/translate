@@ -250,6 +250,15 @@ class TestTranslationStore:
         newstore = self.StoreClass.parsefile(self.filename)
         self.check_equality(store, newstore)
 
+    def test_save(self):
+        """Tests that we can save directly back to the original file."""
+        store = self.StoreClass()
+        unit1 = store.addsourceunit("Test String")
+        store.savefile(self.filename)
+        store.save()
+        newstore = self.StoreClass.parsefile(self.filename)
+        self.check_equality(store, newstore)
+
     def test_markup(self):
         """Tests that markup survives the roundtrip. Most usefull for xml types."""
         store = self.StoreClass()

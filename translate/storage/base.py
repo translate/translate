@@ -376,7 +376,12 @@ class TranslationStore(Statistics):
         """Converts to a string representation that can be parsed back using L{parsestring()}."""
 
         force_override(self.__str__, TranslationStore)
-        return pickle.dumps(self)
+        # We can't pickle fileobj if it is there, so let's hide it for a while.
+        fileobj = getattr(self, "fileobj", None)
+        self.fileobj = None
+        dump = pickle.dumps(self)
+        self.fileobj = fileobj
+        return dump
 
     def isempty(self):
       """Returns True if the object doesn't contain any translation units."""
@@ -407,20 +412,20 @@ class TranslationStore(Statistics):
         storestring = str(self)
         if isinstance(storefile, basestring):
             storefile = open(storefile, "w")
+        self.fileobj = storefile
         storefile.write(storestring)
         storefile.close()
 
     def save(self):
         """Save to the file that data was originally read from, if available."""
         fileobj = getattr(self, "fileobj", None)
-        if fileobj:
-            fileobj.close()
-            self.fileobj = type(fileobj)(fileobj.name, "w")
-        else:
+        if not fileobj:
             filename = getattr(self, "filename", None)
             if filename:
-                self.fileobj = file(filename, "w")
-        fileobj = getattr(self, "fileobj", None)
+                fileobj = file(filename, "w")
+        else:
+            fileobj.close()
+            fileobj = type(fileobj)(fileobj.name, "w")
         if fileobj:
             self.savefile(fileobj)
         #TODO: raise exception otherwise?
