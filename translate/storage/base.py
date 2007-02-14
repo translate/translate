@@ -429,10 +429,11 @@ class TranslationStore(Statistics):
                 fileobj = file(filename, "w")
         else:
             fileobj.close()
-            fileobj = type(fileobj)(fileobj.name, "w")
-        if fileobj:
-            self.savefile(fileobj)
-        #TODO: raise exception otherwise?
+            filename = getattr(fileobj, "name", getattr(fileobj, "filename", None))
+            if not filename:
+                raise ValueError("No file or filename to save to")
+            fileobj = fileobj.__class__(filename, "w")
+        self.savefile(fileobj)
 
     def parsefile(cls, storefile):
         """Reads the given file (or opens the given filename) and parses back to an object."""
