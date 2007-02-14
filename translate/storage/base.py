@@ -410,6 +410,21 @@ class TranslationStore(Statistics):
         storefile.write(storestring)
         storefile.close()
 
+    def save(self):
+        """Save to the file that data was originally read from, if available."""
+        fileobj = getattr(self, "fileobj", None)
+        if fileobj:
+            fileobj.close()
+            self.fileobj = type(fileobj)(fileobj.name, "w")
+        else:
+            filename = getattr(self, "filename", None)
+            if filename:
+                self.fileobj = file(filename, "w")
+        fileobj = getattr(self, "fileobj", None)
+        if fileobj:
+            self.savefile(fileobj)
+        #TODO: raise exception otherwise?
+
     def parsefile(cls, storefile):
         """Reads the given file (or opens the given filename) and parses back to an object."""
 
@@ -421,6 +436,8 @@ class TranslationStore(Statistics):
           storestring = storefile.read()
         else:
           storestring = ""
-        return cls.parsestring(storestring)
+        newstore = cls.parsestring(storestring)
+        newstore.fileobj = storefile
+        return newstore
     parsefile = classmethod(parsefile)
 
