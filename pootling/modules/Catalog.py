@@ -26,12 +26,11 @@ from pootling.ui.Ui_Catalog import Ui_Catalog
 from pootling.modules.CatalogSetting import CatalogSetting
 from pootling.modules.Operator import Operator
 from pootling.modules.AboutEditor import AboutEditor
-
 from translate.storage import factory
 from pootling.modules.Status import Status
-import os
 from Pootle import versioncontrol
 import pootling.modules.World as World
+import os
 
 class Catalog(QtGui.QMainWindow):
     """
@@ -44,24 +43,34 @@ class Catalog(QtGui.QMainWindow):
         self.refreshTimer.setInterval(2000)
         self.ui = Ui_Catalog()
         self.ui.setupUi(self)
-
-        # set up table appearance and behavior
-        self.headerLabels = [self.tr("Name"), self.tr("Fuzzy"), self.tr("Untranslated"), self.tr("Total"), self.tr("CVS/SVN Status"), self.tr("Last Revision"), self.tr("Last Translator")]
-        self.ui.tableCatalog.setColumnCount(len(self.headerLabels))
-        self.ui.tableCatalog.setRowCount(0)
-        self.ui.tableCatalog.setHorizontalHeaderLabels(self.headerLabels)
-        self.ui.tableCatalog.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
-        self.ui.tableCatalog.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
-        self.ui.tableCatalog.horizontalHeader().setSortIndicatorShown(True)
-        self.ui.tableCatalog.horizontalHeader().setHighlightSections(False)
-        self.ui.tableCatalog.verticalHeader().hide()
+        self.resize(720,400)
+        self.headerLabels = []
 
         # File menu action
         self.connect(self.ui.actionQuit, QtCore.SIGNAL("triggered()"), QtCore.SLOT("close()"))
 
         # Project menu action
         self.Catalog = CatalogSetting(self)
-        self.connect(self.ui.actionConfigure, QtCore.SIGNAL("triggered()"), self.Catalog.showDialog)
+        self.connect(self.ui.actionConfigure, QtCore.SIGNAL("triggered()"), self.Catalog.show)
+        self.connect(self.Catalog.ui.chbname, QtCore.SIGNAL("stateChanged(int)"), self.setHeaderLabel)
+        self.connect(self.Catalog.ui.chbfuzzy, QtCore.SIGNAL("stateChanged(int)"), self.setHeaderLabel)
+        self.connect(self.Catalog.ui.chblastrevision, QtCore.SIGNAL("stateChanged(int)"), self.setHeaderLabel)
+        self.connect(self.Catalog.ui.chbtranslator, QtCore.SIGNAL("stateChanged(int)"), self.setHeaderLabel)
+        self.connect(self.Catalog.ui.chbuntranslated, QtCore.SIGNAL("stateChanged(int)"), self.setHeaderLabel)
+        self.connect(self.Catalog.ui.chbtotal, QtCore.SIGNAL("stateChanged(int)"), self.setHeaderLabel)
+        self.connect(self.Catalog.ui.chbSVN, QtCore.SIGNAL("stateChanged(int)"), self.setHeaderLabel)
+
+        # TODO: setChecked to fuzzy checkbox and so on... when loading.
+
+        # progress bar
+        self.progressBar = QtGui.QProgressBar()
+        self.progressBar.setEnabled(True)
+        self.progressBar.setProperty("value",QtCore.QVariant(0))
+        self.progressBar.setOrientation(QtCore.Qt.Horizontal)
+        self.progressBar.setObjectName("progressBar")
+        self.progressBar.setVisible(False)
+        self.ui.statusbar.addPermanentWidget(self.progressBar)
+        self.connect(self.Catalog, QtCore.SIGNAL("progressValue"), self.updateProgress)
 
         #Help menu of aboutQt
         self.ui.menuHelp.addSeparator()
@@ -72,10 +81,32 @@ class Catalog(QtGui.QMainWindow):
         self.connect(self.ui.actionAboutQt, QtCore.SIGNAL("triggered()"), QtGui.qApp, QtCore.SLOT("aboutQt()"))
         
         self.connect(self.Catalog, QtCore.SIGNAL("updateCatalog"), self.updateCatalog)
+
+    def setHeaderLabel(self):
+        if (isinstance(self.sender(), QtGui.QCheckBox)):
+            if (self.sender().isChecked()):
+                self.headerLabels.append(self.sender().text())
+            else:
+                self.headerLabels.remove(self.sender().text())
+            self.ui.tableCatalog.setColumnCount(len(self.headerLabels))
+            self.ui.tableCatalog.setRowCount(0)
+            self.ui.tableCatalog.setHorizontalHeaderLabels(self.headerLabels)
+            self.ui.tableCatalog.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
+            self.ui.tableCatalog.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
+            self.ui.tableCatalog.horizontalHeader().setSortIndicatorShown(False)
+            self.ui.tableCatalog.horizontalHeader().setHighlightSections(True)
+            self.ui.tableCatalog.verticalHeader().hide()
+            World.settings.setValue("rememberHeader", QtCore.QVariant(self.headerLabels))
+
+    def updateProgress(self, value):
+        if (not self.progressBar.isVisible()):
+            self.progressBar.setVisible(True)
+        elif (value == 100):
+            self.progressBar.setVisible(False)
+        self.progressBar.setValue(value)
         
     def showDialog(self):
         self.show()
-        
         cats = World.settings.value("CatalogPath").toStringList()
         if (cats) and (self.ui.tableCatalog.rowCount() == 0):
             self.updateCatalog()
@@ -98,7 +129,7 @@ class Catalog(QtGui.QMainWindow):
                         self.addUnit(root + file)
                     if (not includeSub):
                         break
-        self.ui.tableCatalog.setSortingEnabled(True)
+        self.ui.tableCatalog.setSortingEnabled(False)
     
     def addUnit(self, filename):
         """
@@ -140,7 +171,6 @@ class Catalog(QtGui.QMainWindow):
                 self.ui.tableCatalog.setItem(row, 5, item)
             except:
                 pass
-            
 
 
 if __name__ == "__main__":
