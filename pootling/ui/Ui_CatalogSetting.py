@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Wed Feb  7 16:59:01 2007
+# Created: Thu Feb 15 16:25:21 2007
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -80,13 +80,6 @@ class Ui_catalogSetting(object):
         self.gridlayout2.setSpacing(6)
         self.gridlayout2.setObjectName("gridlayout2")
 
-        spacerItem1 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
-        self.gridlayout2.addItem(spacerItem1,2,1,1,1)
-
-        self.label = QtGui.QLabel(self.tab_3)
-        self.label.setObjectName("label")
-        self.gridlayout2.addWidget(self.label,0,0,1,1)
-
         self.frame = QtGui.QFrame(self.tab_3)
         self.frame.setFrameShape(QtGui.QFrame.StyledPanel)
         self.frame.setFrameShadow(QtGui.QFrame.Raised)
@@ -97,48 +90,60 @@ class Ui_catalogSetting(object):
         self.gridlayout3.setSpacing(6)
         self.gridlayout3.setObjectName("gridlayout3")
 
-        spacerItem2 = QtGui.QSpacerItem(20,21,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
-        self.gridlayout3.addItem(spacerItem2,3,0,1,1)
-
-        self.chbfuzzy = QtGui.QCheckBox(self.frame)
-        self.chbfuzzy.setChecked(True)
-        self.chbfuzzy.setObjectName("chbfuzzy")
-        self.gridlayout3.addWidget(self.chbfuzzy,1,1,1,1)
-
-        self.chblastrevision = QtGui.QCheckBox(self.frame)
-        self.chblastrevision.setChecked(True)
-        self.chblastrevision.setObjectName("chblastrevision")
-        self.gridlayout3.addWidget(self.chblastrevision,2,1,1,1)
-
-        self.chbtranslator = QtGui.QCheckBox(self.frame)
-        self.chbtranslator.setChecked(True)
-        self.chbtranslator.setObjectName("chbtranslator")
-        self.gridlayout3.addWidget(self.chbtranslator,0,1,1,1)
+        spacerItem1 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
+        self.gridlayout3.addItem(spacerItem1,2,1,1,2)
 
         self.chbuntranslated = QtGui.QCheckBox(self.frame)
-        self.chbuntranslated.setChecked(True)
+        self.chbuntranslated.setChecked(False)
         self.chbuntranslated.setObjectName("chbuntranslated")
         self.gridlayout3.addWidget(self.chbuntranslated,1,0,1,1)
 
-        self.chbflag = QtGui.QCheckBox(self.frame)
-        self.chbflag.setChecked(True)
-        self.chbflag.setObjectName("chbflag")
-        self.gridlayout3.addWidget(self.chbflag,0,0,1,1)
+        self.chbtotal = QtGui.QCheckBox(self.frame)
+        self.chbtotal.setChecked(False)
+        self.chbtotal.setObjectName("chbtotal")
+        self.gridlayout3.addWidget(self.chbtotal,0,4,1,1)
+
+        self.chbfuzzy = QtGui.QCheckBox(self.frame)
+        self.chbfuzzy.setChecked(False)
+        self.chbfuzzy.setObjectName("chbfuzzy")
+        self.gridlayout3.addWidget(self.chbfuzzy,1,1,1,1)
+
+        self.chbtranslator = QtGui.QCheckBox(self.frame)
+        self.chbtranslator.setChecked(False)
+        self.chbtranslator.setObjectName("chbtranslator")
+        self.gridlayout3.addWidget(self.chbtranslator,0,1,1,2)
 
         self.chbSVN = QtGui.QCheckBox(self.frame)
-        self.chbSVN.setChecked(True)
+        self.chbSVN.setChecked(False)
         self.chbSVN.setObjectName("chbSVN")
-        self.gridlayout3.addWidget(self.chbSVN,2,0,1,1)
+        self.gridlayout3.addWidget(self.chbSVN,1,3,1,1)
+
+        self.chbname = QtGui.QCheckBox(self.frame)
+        self.chbname.setChecked(False)
+        self.chbname.setObjectName("chbname")
+        self.gridlayout3.addWidget(self.chbname,0,0,1,1)
+
+        self.chblastrevision = QtGui.QCheckBox(self.frame)
+        self.chblastrevision.setChecked(False)
+        self.chblastrevision.setObjectName("chblastrevision")
+        self.gridlayout3.addWidget(self.chblastrevision,0,3,1,1)
         self.gridlayout2.addWidget(self.frame,1,0,1,2)
+
+        spacerItem2 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
+        self.gridlayout2.addItem(spacerItem2,2,1,1,1)
+
+        self.label = QtGui.QLabel(self.tab_3)
+        self.label.setObjectName("label")
+        self.gridlayout2.addWidget(self.label,0,0,1,1)
         self.tabOptions.addTab(self.tab_3, "")
         self.gridlayout.addWidget(self.tabOptions,0,0,1,2)
-
-        spacerItem3 = QtGui.QSpacerItem(311,28,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
-        self.gridlayout.addItem(spacerItem3,1,0,1,1)
 
         self.btnOk = QtGui.QPushButton(catalogSetting)
         self.btnOk.setObjectName("btnOk")
         self.gridlayout.addWidget(self.btnOk,1,1,1,1)
+
+        spacerItem3 = QtGui.QSpacerItem(311,28,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        self.gridlayout.addItem(spacerItem3,1,0,1,1)
 
         self.retranslateUi(catalogSetting)
         self.tabOptions.setCurrentIndex(1)
@@ -170,13 +175,14 @@ class Ui_catalogSetting(object):
         self.btnRemove.setToolTip(self.tr("remove TM"))
         self.btnRemove.setText(self.tr(" De&lete"))
         self.tabOptions.setTabText(self.tabOptions.indexOf(self.tab), self.tr("&File"))
-        self.label.setText(self.tr("Show Columns:"))
-        self.chbfuzzy.setText(self.tr("Fuzzy"))
-        self.chblastrevision.setText(self.tr("Last Revision"))
-        self.chbtranslator.setText(self.tr("Translator"))
         self.chbuntranslated.setText(self.tr("Untranslated"))
-        self.chbflag.setText(self.tr("Flag"))
+        self.chbtotal.setText(self.tr("Total"))
+        self.chbfuzzy.setText(self.tr("Fuzzy"))
+        self.chbtranslator.setText(self.tr("Translator"))
         self.chbSVN.setText(self.tr("SVN/CVS status"))
+        self.chbname.setText(self.tr("Name"))
+        self.chblastrevision.setText(self.tr("Last Revision"))
+        self.label.setText(self.tr("Show Columns:"))
         self.tabOptions.setTabText(self.tabOptions.indexOf(self.tab_3), self.tr("Catalog &View"))
         self.btnOk.setText(self.tr("&OK"))
 
