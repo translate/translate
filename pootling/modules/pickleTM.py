@@ -40,10 +40,11 @@ def saveTM(TMpath):
     @param TMpath: file or translation memory path as string'''
     dic = unpickleStoreDic()
     diveSub = World.settings.value("diveIntoSub").toBool()
+    refreshAllTM = World.settings.value("refreshAllTMs").toBool()
     path = str(TMpath)
     
     # FIXME: this will make memory not up to date.
-    if (dic.has_key(path)):
+    if (dic.has_key(path) and not refreshAllTM):        
         return
     
     if (os.path.isfile(path)):

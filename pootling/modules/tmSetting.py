@@ -57,10 +57,12 @@ class tmSetting(QtGui.QDialog):
             self.connect(self.ui.btnRemoveAll, QtCore.SIGNAL("clicked(bool)"), pickleTM.clear)
             self.connect(self.ui.btnEnable, QtCore.SIGNAL("clicked(bool)"), self.setChecked)
             self.connect(self.ui.btnDisable, QtCore.SIGNAL("clicked(bool)"), self.setUnchecked)
-            self.connect(self.ui.checkBox, QtCore.SIGNAL("stateChanged(int)"), self.rememberDive)
+            self.connect(self.ui.checkBox, QtCore.SIGNAL("stateChanged(int)"), self.rememberOptions)
+            self.connect(self.ui.chbrefreshAllTMs, QtCore.SIGNAL("stateChanged(int)"), self.rememberOptions)
             self.connect(self.ui.listWidget, QtCore.SIGNAL("itemClicked(QListWidgetItem *)"), self.setDisabledTM)
             self.ui.listWidget.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
         self.ui.checkBox.setChecked(World.settings.value("diveIntoSub").toBool())
+        self.ui.chbrefreshAllTMs.setChecked(World.settings.value("refreshAllTMs").toBool())
         self.ui.progressBar.setValue(0)
         self.show()
     
@@ -95,8 +97,9 @@ class tmSetting(QtGui.QDialog):
             self.ui.listWidget.takeItem(self.ui.listWidget.currentRow())
             pickleTM.removeTM(item.text())
             
-    def rememberDive(self):
+    def rememberOptions(self):
         World.settings.setValue("diveIntoSub", QtCore.QVariant(self.ui.checkBox.isChecked()))
+        World.settings.setValue("refreshAllTMs", QtCore.QVariant(self.ui.chbrefreshAllTMs.isChecked()))
         
     def closeEvent(self, event):
         '''rememer TMpath before closing
