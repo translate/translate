@@ -379,7 +379,6 @@ class TranslationStore(Statistics):
     def __str__(self):
         """Converts to a string representation that can be parsed back using L{parsestring()}."""
 
-        force_override(self.__str__, TranslationStore)
         # We can't pickle fileobj if it is there, so let's hide it for a while.
         fileobj = getattr(self, "fileobj", None)
         self.fileobj = None
@@ -406,7 +405,6 @@ class TranslationStore(Statistics):
     def parsestring(cls, storestring):
         """Converts the string representation back to an object."""
 
-        force_override(cls.parsestring, TranslationStore)
         return pickle.loads(storestring)
     parsestring = classmethod(parsestring)
 
