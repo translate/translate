@@ -12,3 +12,11 @@ def test_punctranslate():
     assert language.punctranslate(u"abc efg? hij!") == u"abc efg ? hij !"
     assert language.punctranslate(u"Delete file: %s?") == u"Delete file : %s ?"
     assert language.punctranslate(u'The user "root"') == u"The user « root »"
+
+def test_sentences():
+    """Tests basic functionality of sentence segmentation."""
+    language = factory.getlanguage('fr')
+    sentences = language.sentences(u"Normal case. Nothing interesting.")
+    assert sentences == [u"Normal case.", "Nothing interesting."]
+    sentences = language.sentences(u"Is that the case ? Sounds interesting !")
+    assert sentences == [u"Is that the case ?", "Sounds interesting !"]
