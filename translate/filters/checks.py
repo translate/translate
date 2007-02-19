@@ -164,6 +164,7 @@ class CheckerConfig(object):
       notranslatewords = []
     self.targetlanguage = targetlanguage
     self.lang = factory.getlanguage(self.targetlanguage)
+    self.sourcelang = factory.getlanguage('en')
     self.accelmarkers = accelmarkers
     self.varmatches = varmatches
     # TODO: allow user configuration of untranslatable words
@@ -633,9 +634,9 @@ class StandardChecker(TranslationChecker):
   def sentencecount(self, str1, str2):
     """checks that the number of sentences in both strings match"""
     str1 = prefilters.removekdecomments(str1)
-    str1 = sre.sub("\s((?:\w\.)+)\s", " ", str1) 
-    str2 = sre.sub("\s((?:\w\.)+)\s", " ", str2) 
-    return helpers.countsmatch(str1, str2, ".")
+    sentences1 = self.config.sourcelang.sentences(str1)
+    sentences2 = self.config.lang.sentences(str2)
+    return len(sentences1) == len(sentences2)
 
   def startcaps(self, str1, str2):
     """checks that the message starts with the correct capitalisation"""
