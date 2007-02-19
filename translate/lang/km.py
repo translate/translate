@@ -27,10 +27,7 @@ For more information, see U{http://en.wikipedia.org/wiki/Khmer_language}
 from translate.lang import common
 
 class km(common.Common):
-    """This class represents Khmer.
-    
-    Common is the common parent class for all languages.
-    """
+    """This class represents Khmer."""
     code = "km"
     fullname = "Khmer"
     nplurals = 1
