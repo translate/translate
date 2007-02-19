@@ -34,3 +34,30 @@ class fr(common.Common):
     nplurals = 2
     pluralequation = "(n > 1)"
 
+    # According to http://french.about.com/library/writing/bl-punctuation.htm, 
+    # in French, a space is required both before and after all two- (or more) 
+    # part punctuation marks and symbols, including : ; « » ! ? % $ # etc.
+    puncdict = {}
+    for c in u":;!?#":
+        puncdict[c] = u" %s" % c
+    # TODO: consider adding % and $, but think about the consequences of how 
+    # they could be part of variables
+
+    def punctranslate(cls, text):
+        """Implement some extra features for quotation marks.
+        
+        Known shortcomings:
+            - % and $ are not touched yet for fear of variables
+            - Double spaces might be introduced
+        """
+        text = super(cls, cls).punctranslate(text)
+
+        def convertquotation(match):
+            return u"« %s »" % match.group()[1:-1]
+
+        # Check that there is an even number of double quotes, otherwise it is
+        # probably not safe to convert them.
+        if text.count(u'"') % 2 == 0:
+            text = re.sub('"[^"]+"', convertquotation, text)
+        return text
+    punctranslate = classmethod(punctranslate)
