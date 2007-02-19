@@ -353,7 +353,7 @@ def test_sentencecount():
     """tests sentencecount messages"""
     stdchecker = checks.StandardChecker()
     assert checks.passes(stdchecker.sentencecount, "One. Two. Three.", "Een. Twee. Drie.")
-    assert checks.fails(stdchecker.sentencecount, "One two three", "Een twee drie.")
+    assert checks.passes(stdchecker.sentencecount, "One two three", "Een twee drie.")
     assert checks.fails(stdchecker.sentencecount, "One. Two. Three.", "Een Twee. Drie.")
     assert checks.passes(stdchecker.sentencecount, "Sentence with i.e. in it.", "Sin met d.w.s. in dit.") # bug 178, description item 8
 
