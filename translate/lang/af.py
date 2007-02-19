@@ -27,10 +27,7 @@ For more information, see U{http://en.wikipedia.org/wiki/Afrikaans_language}
 from translate.lang import common
 
 class af(common.Common):
-    """This class represents Afrikaans.
-    
-    Common is the common parent class for all languages.
-    """
+    """This class represents Afrikaans."""
     code = "af"
     fullname = "Afrikaans"
     nplurals = 2
