@@ -55,7 +55,10 @@ Accelerator characters
 Special characters
 Direction (rtl or ltr)
 """
-class Common:
+
+import re
+
+class Common(object):
     """This class is the common parent class for all language classes."""
     
     code = ""
@@ -92,6 +95,18 @@ class Common:
     """
 
     punctuation = u".,;:!?-@#$%^*_()[]{}/\\'\"<>‘’‚‛“”„‟′″‴‵‶‷‹›«»±³¹²°¿©®×£¥。។៕៖៘"
+
+    sentenceend = u".!?។៕៘。"
+
+    #The following tries to account for a lot of things. For the best idea of 
+    #what works, see test_common.py. We try to ignore abbreviations, for 
+    #example, by checking that the following sentence doesn't start with lower 
+    #case or numbers.
+    sentencere = re.compile(r""".*?    #any text, but match non-greedy
+                            [%s]    #the puntuation for sentence ending
+                            \s      #the space after the puntuation
+                            (?=[^a-z\d])#lookahead that next part starts with caps
+                            """ % sentenceend, re.VERBOSE)
     
     puncdict = {}
     """A dictionary of punctuation transformation rules that can be used by punctranslate()."""
@@ -145,12 +160,12 @@ class Common:
 
     def sentence_iter(cls, text):
         """Returns an iterator over the senteces in text."""
-        #TODO: This is very naïve. We really should consider all punctuation,
-        #and return the punctuation with the sentence.
-        #TODO: Search for capital letter start with next sentence to avoid
-        #confusion with abbreviations. And remember Afrikaans "'n" :-)
-        for s in text.split(". "):
-            yield s.strip()
+        lastmatch = 0
+        iter = cls.sentencere.finditer(text)
+        for item in iter:
+            lastmatch = item.end()
+            yield item.group().strip()
+        yield text[lastmatch:]
     sentence_iter = classmethod(sentence_iter)
             
     def sentences(cls, text):
