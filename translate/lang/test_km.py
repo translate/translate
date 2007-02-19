@@ -15,3 +15,9 @@ def test_punctranslate():
     assert language.punctranslate(u"abc efg? hij!") == u"abc efg\u00a0? hij\u00a0!"
     assert language.punctranslate(u"Delete file: %s?") == u"Delete file\u00a0៖ %s\u00a0?"
 
+def test_sentences():
+    """Tests basic functionality of sentence segmentation."""
+    language = factory.getlanguage('km')
+    sentences = language.sentences(u"លក្ខណៈ​​នេះ​អាច​ឲ្យ​យើងធ្វើ​ជាតូបនីយកម្មកម្មវិធី​កុំព្យូទ័រ​ ។ លក្ខណៈ​​នេះ​អាច​ឲ្យ​យើងធ្វើ​ជាតូបនីយកម្មកម្មវិធី​កុំព្យូទ័រ​ ។")
+    assert sentences == [u"លក្ខណៈ​​នេះ​អាច​ឲ្យ​យើងធ្វើ​ជាតូបនីយកម្មកម្មវិធី​កុំព្យូទ័រ​ ។", u"លក្ខណៈ​​នេះ​អាច​ឲ្យ​យើងធ្វើ​ជាតូបនីយកម្មកម្មវិធី​កុំព្យូទ័រ​ ។"]
+
