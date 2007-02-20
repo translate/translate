@@ -262,13 +262,14 @@ class Operator(QtCore.QObject):
         self.emitUnit(unit)
     
     def setTarget(self, target):
-        """set the target which is QString type to the current unit, and emit current unit.
-        @param target: QString type"""
+        """set the target to the current unit, and emit current unit.
+        @param target: Unicode sting type for single unit and list type for plural unit."""
+        # if there is no translation unit in the view.
         if (self.currentUnitIndex < 0 or self.filteredList == None):
             return
         unit = self.getCurrentUnit()
         # update target for current unit
-        unit.settarget(unicode(target))
+        unit.target = target
         if (unit.target):
             self.status.markTranslated(unit, True)
         else:
@@ -451,11 +452,13 @@ class Operator(QtCore.QObject):
                 
         if (not self.matcher):
             return
-        
+            
+        #for lookupunit
         if (not isinstance(units, list)):
             candidates = self.matcher.matches(units.source)
             return candidates
-       
+            
+       #for autoTranslate
         for unit in units:
             if (unit.istranslated() or unit.isfuzzy() or not unit.source):
                 continue
