@@ -77,7 +77,7 @@ class TUview(QtGui.QDockWidget):
     def __init__(self, parent):
         QtGui.QDockWidget.__init__(self, parent)
         self.setObjectName("detailDock")
-        self.setWindowTitle(self.tr("Detail"))
+        self.setWindowTitle(self.tr("&Detail"))
         self.form = QtGui.QWidget(self)
         self.ui = Ui_TUview()
         self.ui.setupUi(self.form)

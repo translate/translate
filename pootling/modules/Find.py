@@ -44,7 +44,7 @@ class Find(QtGui.QDockWidget):
         self.setWindowTitle(self.tr("Find and Replace"))
         self.toggleViewAction().setVisible(False)
         self.setFeatures(QtGui.QDockWidget.DockWidgetClosable)
-        self.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
+        self.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
         self.connect(self.ui.findNext, QtCore.SIGNAL("clicked()"), self.findNext)
         self.connect(self.ui.findPrevious, QtCore.SIGNAL("clicked()"), self.findPrevious)
         self.connect(self.ui.replace, QtCore.SIGNAL("clicked()"), self.replace)

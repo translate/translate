@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'unknown'
+# Form implementation generated from reading ui file '/home/ks/programming/wordforge/trunk/pootling/ui/FileDialog.ui'
 #
-# Created: Wed Feb  7 14:37:50 2007
-#      by: PyQt4 UI code generator 4.0
+# Created: Tue Feb 20 16:04:29 2007
+#      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!
 
-import sys
 from PyQt4 import QtCore, QtGui
 
 class Ui_Dialog(object):
@@ -98,22 +97,21 @@ class Ui_Dialog(object):
         Dialog.setTabOrder(self.lineLocation,self.btnAdd)
         Dialog.setTabOrder(self.btnAdd,self.btnQuit)
 
-    def tr(self, string):
-        return QtGui.QApplication.translate("Dialog", string, None, QtGui.QApplication.UnicodeUTF8)
-
     def retranslateUi(self, Dialog):
-        Dialog.setWindowTitle(self.tr("Select a file or a location"))
-        self.btnDesktop.setToolTip(self.tr("go to Desktop folder"))
-        self.btnDesktop.setText(self.tr(" &Desktop"))
-        self.btnHome.setToolTip(self.tr("go to Home folder"))
-        self.btnHome.setText(self.tr(" &Home"))
-        self.btnDoc.setToolTip(self.tr("go to Document folder"))
-        self.btnDoc.setText(self.tr(" Docu&ments"))
-        self.btnQuit.setText(self.tr("&Quit"))
-        self.btnAdd.setText(self.tr("&Add"))
+        Dialog.setWindowTitle(QtGui.QApplication.translate("Dialog", "Select a file or a location", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnDesktop.setToolTip(QtGui.QApplication.translate("Dialog", "go to Desktop folder", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnDesktop.setText(QtGui.QApplication.translate("Dialog", " &Desktop", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnHome.setToolTip(QtGui.QApplication.translate("Dialog", "go to Home folder", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnHome.setText(QtGui.QApplication.translate("Dialog", " &Home", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnDoc.setToolTip(QtGui.QApplication.translate("Dialog", "go to Document folder", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnDoc.setText(QtGui.QApplication.translate("Dialog", " Docu&ments", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnQuit.setText(QtGui.QApplication.translate("Dialog", "&Quit", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnAdd.setText(QtGui.QApplication.translate("Dialog", "&Add", None, QtGui.QApplication.UnicodeUTF8))
+
 
 
 if __name__ == "__main__":
+    import sys
     app = QtGui.QApplication(sys.argv)
     Dialog = QtGui.QDialog()
     ui = Ui_Dialog()

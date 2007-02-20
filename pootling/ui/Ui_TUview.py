@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'unknown'
+# Form implementation generated from reading ui file '/home/ks/programming/wordforge/trunk/pootling/ui/TUview.ui'
 #
-# Created: Thu Aug  2 15:37:43 2007
-#      by: PyQt4 UI code generator 4.0
+# Created: Tue Feb 20 10:26:40 2007
+#      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!
 
-import sys
 from PyQt4 import QtCore, QtGui
 
 class Ui_TUview(object):
@@ -122,15 +121,14 @@ class Ui_TUview(object):
         self.retranslateUi(TUview)
         QtCore.QMetaObject.connectSlotsByName(TUview)
 
-    def tr(self, string):
-        return QtGui.QApplication.translate("TUview", string, None, QtGui.QApplication.UnicodeUTF8)
-
     def retranslateUi(self, TUview):
-        TUview.setWindowTitle(self.tr("Detail"))
-        self.fileScrollBar.setToolTip(self.tr("Navigate in your file"))
+        TUview.setWindowTitle(QtGui.QApplication.translate("TUview", "Detail", None, QtGui.QApplication.UnicodeUTF8))
+        self.fileScrollBar.setToolTip(QtGui.QApplication.translate("TUview", "Navigate in your file", None, QtGui.QApplication.UnicodeUTF8))
+
 
 
 if __name__ == "__main__":
+    import sys
     app = QtGui.QApplication(sys.argv)
     TUview = QtGui.QWidget()
     ui = Ui_TUview()

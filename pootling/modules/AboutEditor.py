@@ -31,14 +31,14 @@ class AboutEditor(QtGui.QDialog):
         #lazy init
         if (not self.ui):
             tabWidget = QtGui.QTabWidget()
-            tabWidget.addTab(AboutTab(), self.tr("About Pootling"))
+            tabWidget.addTab(AboutTab(), self.tr("&About Pootling"))
             authortab = AuthorsTab()
             self.connect(authortab.fileNameLabel, QtCore.SIGNAL("anchorClicked(const QUrl&)"),self.handleLinkClicked)
-            tabWidget.addTab(authortab, self.tr("Authors"))
+            tabWidget.addTab(authortab, self.tr("A&uthors"))
             thankstab = ThanksTab()
             self.connect(thankstab.fileNameLabel, QtCore.SIGNAL("anchorClicked(const QUrl&)"),self.handleLinkClicked)
-            tabWidget.addTab(thankstab, self.tr("Thanks To"))
-            tabWidget.addTab(LicensesTab(), self.tr("Licenses Agreement"))
+            tabWidget.addTab(thankstab, self.tr("&Thanks To"))
+            tabWidget.addTab(LicensesTab(), self.tr("&Licenses Agreement"))
 
             self.okButton = QtGui.QPushButton(self.tr("&OK"))
             self.connect(self.okButton, QtCore.SIGNAL("clicked()"), QtCore.SLOT("accept()"))

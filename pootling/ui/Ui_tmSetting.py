@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/ks/programming/wordforge/trunk/pootling/ui/tmSetting.ui'
 #
-# Created: Fri Feb 16 10:37:11 2007
+# Created: Tue Feb 20 16:02:56 2007
 #      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!
@@ -184,7 +184,7 @@ class Ui_tmsetting(object):
         self.btnDisable.setText(QtGui.QApplication.translate("tmsetting", "Di&sable", None, QtGui.QApplication.UnicodeUTF8))
         self.label_4.setText(QtGui.QApplication.translate("tmsetting", "Locations:", None, QtGui.QApplication.UnicodeUTF8))
         self.btnRemoveAll.setToolTip(QtGui.QApplication.translate("tmsetting", "clear list", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnRemoveAll.setText(QtGui.QApplication.translate("tmsetting", " &Clear", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnRemoveAll.setText(QtGui.QApplication.translate("tmsetting", " Clea&r", None, QtGui.QApplication.UnicodeUTF8))
         self.btnEnable.setToolTip(QtGui.QApplication.translate("tmsetting", "Enabel Translation Memory", None, QtGui.QApplication.UnicodeUTF8))
         self.btnEnable.setText(QtGui.QApplication.translate("tmsetting", " &Enable", None, QtGui.QApplication.UnicodeUTF8))
         self.btnAdd.setToolTip(QtGui.QApplication.translate("tmsetting", "Add TM", None, QtGui.QApplication.UnicodeUTF8))
@@ -199,7 +199,7 @@ class Ui_tmsetting(object):
         self.chkCaseSensitive.setText(QtGui.QApplication.translate("tmsetting", "Case Sensitive", None, QtGui.QApplication.UnicodeUTF8))
         self.label_2.setText(QtGui.QApplication.translate("tmsetting", "Maximum candidates", None, QtGui.QApplication.UnicodeUTF8))
         self.tabOptions.setTabText(self.tabOptions.indexOf(self.tab_4), QtGui.QApplication.translate("tmsetting", "O&ptions", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnCancel.setText(QtGui.QApplication.translate("tmsetting", "Ca&ncel", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnCancel.setText(QtGui.QApplication.translate("tmsetting", "&Cancel", None, QtGui.QApplication.UnicodeUTF8))
         self.btnOk.setText(QtGui.QApplication.translate("tmsetting", "&OK", None, QtGui.QApplication.UnicodeUTF8))
 
 

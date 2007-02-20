@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'unknown'
+# Form implementation generated from reading ui file '/home/ks/programming/wordforge/trunk/pootling/ui/Overview.ui'
 #
-# Created: Tue Jan 23 15:27:07 2007
-#      by: PyQt4 UI code generator 4.0
+# Created: Tue Feb 20 10:26:43 2007
+#      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!
 
-import sys
 from PyQt4 import QtCore, QtGui
 
 class Ui_Form(object):
@@ -43,18 +42,17 @@ class Ui_Form(object):
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
-    def tr(self, string):
-        return QtGui.QApplication.translate("Form", string, None, QtGui.QApplication.UnicodeUTF8)
-
     def retranslateUi(self, Form):
-        Form.setWindowTitle(self.tr("Overview"))
+        Form.setWindowTitle(QtGui.QApplication.translate("Form", "Overview", None, QtGui.QApplication.UnicodeUTF8))
         self.tableOverview.setRowCount(0)
         self.tableOverview.clear()
         self.tableOverview.setColumnCount(0)
         self.tableOverview.setRowCount(0)
 
 
+
 if __name__ == "__main__":
+    import sys
     app = QtGui.QApplication(sys.argv)
     Form = QtGui.QWidget()
     ui = Ui_Form()

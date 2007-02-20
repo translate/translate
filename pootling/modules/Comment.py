@@ -37,7 +37,7 @@ class CommentDock(QtGui.QDockWidget):
     def __init__(self, parent):
         QtGui.QDockWidget.__init__(self, parent)
         self.setObjectName("commentDock")
-        self.setWindowTitle(self.tr("Comment"))
+        self.setWindowTitle(self.tr("&Comment"))
         self.form = QtGui.QWidget(self)
         self.ui = Ui_frmComment()
         self.ui.setupUi(self.form)

@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'unknown'
+# Form implementation generated from reading ui file '/home/ks/programming/wordforge/trunk/pootling/ui/Comment.ui'
 #
-# Created: Tue Jan 23 15:27:08 2007
-#      by: PyQt4 UI code generator 4.0
+# Created: Tue Feb 20 10:26:46 2007
+#      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!
 
-import sys
 from PyQt4 import QtCore, QtGui
 
 class Ui_frmComment(object):
@@ -101,16 +100,15 @@ class Ui_frmComment(object):
         self.retranslateUi(frmComment)
         QtCore.QMetaObject.connectSlotsByName(frmComment)
 
-    def tr(self, string):
-        return QtGui.QApplication.translate("frmComment", string, None, QtGui.QApplication.UnicodeUTF8)
-
     def retranslateUi(self, frmComment):
-        frmComment.setWindowTitle(self.tr("Comments"))
-        self.txtTranslatorComment.setToolTip(self.tr("Translators\' comments"))
-        self.txtLocationComment.setToolTip(self.tr("String\'s location"))
+        frmComment.setWindowTitle(QtGui.QApplication.translate("frmComment", "Comments", None, QtGui.QApplication.UnicodeUTF8))
+        self.txtTranslatorComment.setToolTip(QtGui.QApplication.translate("frmComment", "Translators\' comments", None, QtGui.QApplication.UnicodeUTF8))
+        self.txtLocationComment.setToolTip(QtGui.QApplication.translate("frmComment", "String\'s location", None, QtGui.QApplication.UnicodeUTF8))
+
 
 
 if __name__ == "__main__":
+    import sys
     app = QtGui.QApplication(sys.argv)
     frmComment = QtGui.QWidget()
     ui = Ui_frmComment()

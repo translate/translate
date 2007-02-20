@@ -1,3 +1,25 @@
+#!/usr/bin/python
+# -*- coding: utf8 -*-
+#
+# Pootling
+# Copyright 2006 WordForge Foundation
+#
+# Version 0.1 (29 December 2006)
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# See the LICENSE file for more details. 
+#
+# Developed by:
+#       Hok Kakada (hokkakada@khmeros.info)
+#       Keo Sophon (keosophon@khmeros.info)
+#       San Titvirak (titvirak@khmeros.info)
+#       Seth Chanratha (sethchanratha@khmeros.info)
+#
+
 from PyQt4 import QtCore, QtGui
 from pootling.ui.Ui_TableTM import Ui_Form
 import sys, os
@@ -6,7 +28,7 @@ class tableTM(QtGui.QDockWidget):
     def __init__(self, parent):
         QtGui.QDockWidget.__init__(self, parent)
         self.setObjectName("miscDock")
-        self.setWindowTitle(self.tr("TM Lookup"))
+        self.setWindowTitle(self.tr("TM &Lookup"))
         self.form = QtGui.QWidget(self)
         self.ui = Ui_Form()
         self.ui.setupUi(self.form)

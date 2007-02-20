@@ -8,14 +8,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>703</width>
-    <height>64</height>
+    <width>695</width>
+    <height>78</height>
    </rect>
   </property>
   <property name="sizePolicy" >
    <sizepolicy>
-    <hsizetype>5</hsizetype>
-    <vsizetype>0</vsizetype>
+    <hsizetype>7</hsizetype>
+    <vsizetype>7</vsizetype>
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -26,14 +26,74 @@
   <property name="autoFillBackground" >
    <bool>true</bool>
   </property>
-  <layout class="QHBoxLayout" >
+  <layout class="QGridLayout" >
    <property name="margin" >
-    <number>0</number>
+    <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item>
+   <item row="0" column="2" >
+    <widget class="QCheckBox" name="matchcase" >
+     <property name="text" >
+      <string>&amp;Match case</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" >
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>5</hsizetype>
+       <vsizetype>0</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title" >
+      <string/>
+     </property>
+     <layout class="QHBoxLayout" >
+      <property name="margin" >
+       <number>0</number>
+      </property>
+      <property name="spacing" >
+       <number>11</number>
+      </property>
+      <item>
+       <widget class="QCheckBox" name="insource" >
+        <property name="text" >
+         <string>S&amp;ource</string>
+        </property>
+        <property name="checkable" >
+         <bool>true</bool>
+        </property>
+        <property name="tristate" >
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="intarget" >
+        <property name="text" >
+         <string>T&amp;arget</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="incomment" >
+        <property name="text" >
+         <string>&amp;Comment</string>
+        </property>
+        <property name="checked" >
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="0" column="0" >
     <layout class="QGridLayout" >
      <property name="margin" >
       <number>0</number>
@@ -73,7 +133,10 @@
         <bool>false</bool>
        </property>
        <property name="text" >
-        <string>&amp;Next</string>
+        <string> &amp;Next</string>
+       </property>
+       <property name="icon" >
+        <iconset>../images/next.png</iconset>
        </property>
        <property name="autoDefault" >
         <bool>true</bool>
@@ -120,6 +183,9 @@
        <property name="text" >
         <string>  &amp;Previous  </string>
        </property>
+       <property name="icon" >
+        <iconset>../images/previous.png</iconset>
+       </property>
        <property name="autoDefault" >
         <bool>true</bool>
        </property>
@@ -137,7 +203,10 @@
         <bool>false</bool>
        </property>
        <property name="text" >
-        <string>&amp;Replace</string>
+        <string> &amp;Replace</string>
+       </property>
+       <property name="icon" >
+        <iconset>../images/replace.png</iconset>
        </property>
        <property name="autoDefault" >
         <bool>true</bool>
@@ -156,7 +225,10 @@
         <bool>false</bool>
        </property>
        <property name="text" >
-        <string>Replace &amp;All</string>
+        <string> Replace &amp;All</string>
+       </property>
+       <property name="icon" >
+        <iconset>../images/replaceAll.png</iconset>
        </property>
        <property name="autoDefault" >
         <bool>true</bool>
@@ -170,66 +242,6 @@
       </widget>
      </item>
     </layout>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="groupBox" >
-     <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>5</hsizetype>
-       <vsizetype>0</vsizetype>
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="title" >
-      <string/>
-     </property>
-     <layout class="QHBoxLayout" >
-      <property name="margin" >
-       <number>0</number>
-      </property>
-      <property name="spacing" >
-       <number>11</number>
-      </property>
-      <item>
-       <widget class="QCheckBox" name="insource" >
-        <property name="text" >
-         <string>S&amp;ource</string>
-        </property>
-        <property name="checkable" >
-         <bool>true</bool>
-        </property>
-        <property name="tristate" >
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="intarget" >
-        <property name="text" >
-         <string>&amp;Target</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="incomment" >
-        <property name="text" >
-         <string>&amp;Comment</string>
-        </property>
-        <property name="checked" >
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QCheckBox" name="matchcase" >
-     <property name="text" >
-      <string>&amp;Match case</string>
-     </property>
-    </widget>
    </item>
   </layout>
  </widget>

@@ -103,7 +103,7 @@
           <string>clear list</string>
          </property>
          <property name="text" >
-          <string> &amp;Clear</string>
+          <string> Clea&amp;r</string>
          </property>
          <property name="icon" >
           <iconset>../images/eraser.png</iconset>
@@ -306,7 +306,7 @@
    <item row="1" column="2" >
     <widget class="QPushButton" name="btnCancel" >
      <property name="text" >
-      <string>Ca&amp;ncel</string>
+      <string>&amp;Cancel</string>
      </property>
     </widget>
    </item>

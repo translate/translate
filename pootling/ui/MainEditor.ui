@@ -8,8 +8,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>605</width>
-    <height>492</height>
+    <width>597</width>
+    <height>458</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -47,17 +47,10 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>605</width>
-     <height>30</height>
+     <width>597</width>
+     <height>28</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuHelp" >
-    <property name="title" >
-     <string>&amp;Help</string>
-    </property>
-    <addaction name="actionAbout" />
-    <addaction name="actionAboutQT" />
-   </widget>
    <widget class="QMenu" name="menuFile" >
     <property name="title" >
      <string>&amp;File</string>
@@ -126,19 +119,6 @@
     <addaction name="separator" />
     <addaction name="actionGoTo" />
    </widget>
-   <widget class="QMenu" name="menuWindow" >
-    <property name="title" >
-     <string>&amp;Window</string>
-    </property>
-    <widget class="QMenu" name="menuToolbars" >
-     <property name="title" >
-      <string>Toolbars</string>
-     </property>
-    </widget>
-    <addaction name="separator" />
-    <addaction name="separator" />
-    <addaction name="menuToolbars" />
-   </widget>
    <widget class="QMenu" name="menuBookmark" >
     <property name="title" >
      <string>&amp;Bookmarks</string>
@@ -146,13 +126,6 @@
     <addaction name="actionAddBookmarks" />
     <addaction name="actionClearBookmarks" />
     <addaction name="separator" />
-   </widget>
-   <widget class="QMenu" name="menuSettings" >
-    <property name="title" >
-     <string>&amp;Settings</string>
-    </property>
-    <addaction name="actionPreferences" />
-    <addaction name="action_TM" />
    </widget>
    <widget class="QMenu" name="menu_Tool" >
     <property name="title" >
@@ -171,6 +144,33 @@
     <addaction name="separator" />
     <addaction name="menu_TM" />
     <addaction name="actionCatalogManager" />
+   </widget>
+   <widget class="QMenu" name="menuSettings" >
+    <property name="title" >
+     <string>&amp;Settings</string>
+    </property>
+    <addaction name="actionPreferences" />
+    <addaction name="action_TM" />
+   </widget>
+   <widget class="QMenu" name="menuHelp" >
+    <property name="title" >
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="actionAbout" />
+    <addaction name="actionAboutQT" />
+   </widget>
+   <widget class="QMenu" name="menuWindow" >
+    <property name="title" >
+     <string>&amp;Window</string>
+    </property>
+    <widget class="QMenu" name="menuToolbars" >
+     <property name="title" >
+      <string>&amp;Toolbars</string>
+     </property>
+    </widget>
+    <addaction name="separator" />
+    <addaction name="separator" />
+    <addaction name="menuToolbars" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
@@ -321,7 +321,7 @@
     <iconset>../images/undo.png</iconset>
    </property>
    <property name="text" >
-    <string>Undo</string>
+    <string>&amp;Undo</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>Undo&lt;/h3>Undo the last change done in the current editor.</string>
@@ -338,7 +338,7 @@
     <iconset>../images/redo.png</iconset>
    </property>
    <property name="text" >
-    <string>Redo</string>
+    <string>Re&amp;do</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>Redo&lt;/h3>Redo the last change done in the current editor.</string>
@@ -355,7 +355,7 @@
     <iconset>../images/cut.png</iconset>
    </property>
    <property name="text" >
-    <string>Cut</string>
+    <string>Cu&amp;t</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>Cut&lt;/h3>Cut the selected text of the current editor to the clipboard.</string>
@@ -375,7 +375,7 @@
     <iconset>../images/copy.png</iconset>
    </property>
    <property name="text" >
-    <string>Copy</string>
+    <string>&amp;Copy</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>Copy&lt;/h3>Copy the selected text of the current editor to the clipboard.</string>
@@ -392,7 +392,7 @@
     <iconset>../images/paste.png</iconset>
    </property>
    <property name="text" >
-    <string>Paste</string>
+    <string>&amp;Paste</string>
    </property>
    <property name="iconText" >
     <string>Paste</string>
@@ -415,7 +415,7 @@
     <iconset>../images/find.png</iconset>
    </property>
    <property name="text" >
-    <string>Find</string>
+    <string>&amp;Find</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+F</string>
@@ -423,7 +423,7 @@
   </action>
   <action name="actionAbout" >
    <property name="text" >
-    <string>About</string>
+    <string>&amp;About</string>
    </property>
    <property name="shortcut" >
     <string/>
@@ -447,7 +447,7 @@
   </action>
   <action name="actionAboutQT" >
    <property name="text" >
-    <string>About QT</string>
+    <string>About &amp;QT</string>
    </property>
    <property name="shortcut" >
     <string/>
@@ -485,7 +485,7 @@
     <bool>false</bool>
    </property>
    <property name="icon" >
-    <iconset>../images/previous.png</iconset>
+    <iconset>../images/back.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Previous</string>
@@ -502,7 +502,7 @@
     <bool>false</bool>
    </property>
    <property name="icon" >
-    <iconset>../images/next.png</iconset>
+    <iconset>../images/forward.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Next</string>
@@ -536,7 +536,7 @@
     <bool>false</bool>
    </property>
    <property name="text" >
-    <string>Copy Source to Target</string>
+    <string>Cop&amp;y Source to Target</string>
    </property>
    <property name="shortcut" >
     <string>F2</string>
@@ -547,7 +547,7 @@
     <bool>false</bool>
    </property>
    <property name="text" >
-    <string>Toggle fuzzy</string>
+    <string>To&amp;ggle fuzzy</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+U</string>
@@ -578,6 +578,9 @@
    <property name="enabled" >
     <bool>false</bool>
    </property>
+   <property name="icon" >
+    <iconset>../images/replace.png</iconset>
+   </property>
    <property name="text" >
     <string>&amp;Replace</string>
    </property>
@@ -589,8 +592,11 @@
    <property name="enabled" >
     <bool>false</bool>
    </property>
+   <property name="icon" >
+    <iconset>../images/next.png</iconset>
+   </property>
    <property name="text" >
-    <string>Find Next</string>
+    <string>Find &amp;Next</string>
    </property>
    <property name="iconText" >
     <string>Find Next</string>
@@ -617,8 +623,11 @@
    <property name="enabled" >
     <bool>false</bool>
    </property>
+   <property name="icon" >
+    <iconset>../images/previous.png</iconset>
+   </property>
    <property name="text" >
-    <string>Find Previous</string>
+    <string>Find Pre&amp;vious</string>
    </property>
    <property name="shortcut" >
     <string>Shift+F3</string>
@@ -640,7 +649,7 @@
     <bool>false</bool>
    </property>
    <property name="text" >
-    <string>Header...</string>
+    <string>&amp;Header...</string>
    </property>
    <property name="statusTip" >
     <string>Open the dialog to edit the header information.</string>
@@ -676,7 +685,7 @@
     <iconset>../images/fuzzy.png</iconset>
    </property>
    <property name="text" >
-    <string>Fuzzy</string>
+    <string>&amp;Fuzzy</string>
    </property>
    <property name="toolTip" >
     <string>Hide/Show Fuzzy Items</string>
@@ -702,7 +711,7 @@
     <iconset>../images/translated.png</iconset>
    </property>
    <property name="text" >
-    <string>Translated</string>
+    <string>&amp;Translated</string>
    </property>
    <property name="toolTip" >
     <string>Hide/Show Translated Items</string>
@@ -728,7 +737,7 @@
     <iconset>../images/untranslated.png</iconset>
    </property>
    <property name="text" >
-    <string>Untranslated</string>
+    <string>&amp;Untranslated</string>
    </property>
    <property name="toolTip" >
     <string>Hide/Show Untranslated Items</string>
@@ -762,7 +771,7 @@
   </action>
   <action name="actionClear" >
    <property name="text" >
-    <string>Clear</string>
+    <string>&amp;Clear</string>
    </property>
   </action>
   <action name="actionGoTo" >
@@ -770,7 +779,7 @@
     <bool>false</bool>
    </property>
    <property name="text" >
-    <string>GoTo Line</string>
+    <string>&amp;GoTo Line</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+G</string>
