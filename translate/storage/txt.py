@@ -95,8 +95,7 @@ class TxtFile(base.TranslationStore):
         base.TranslationStore.__init__(self, unitclass=self.UnitClass)
         self.units = []
         self.filename = getattr(inputfile, 'name', '')
-        if flavour in flavours:
-            self.flavour = flavours[flavour]
+        self.flavour = flavours.get(flavour, [])
         if inputfile is not None:
           txtsrc = inputfile.readlines()
           self.parse(txtsrc)
