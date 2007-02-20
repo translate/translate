@@ -274,6 +274,8 @@ def buildmanifest_in(file, scripts):
   print >> file, "# scripts which don't get included by default in sdist"
   for scriptname in scripts:
     print >>file, "include %s" % scriptname
+  print >> file, "# include our documentation"
+  print >> file, "recursive-include translate/doc *"
   # wordlist, portal are in the source tree but unconnected to the python code
   print >>file, "prune wordlist"
   print >>file, "prune editor"
