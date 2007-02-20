@@ -16,6 +16,12 @@ def test_words():
     words = language.words(u"This is a weird test .")
     assert words == [u"This", u"is", u"a", u"weird", u"test"]
 
+    words = language.words(u"Don't send e-mail!")
+    assert words == [u"Don't", u"send", u"e-mail"]
+
+    words = language.words(u"Don’t send e-mail!")
+    assert words == [u"Don’t", u"send", u"e-mail"]
+
 def test_sentences():
     """Tests basic functionality of sentence segmentation."""
     language = common.Common
