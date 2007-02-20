@@ -24,7 +24,7 @@
 from PyQt4 import QtCore, QtGui
 from pootling.ui.Ui_Catalog import Ui_Catalog
 from pootling.modules.CatalogSetting import CatalogSetting
-from pootling.modules.Operator import Operator
+##from pootling.modules.Operator import Operator
 from pootling.modules.AboutEditor import AboutEditor
 from translate.storage import factory
 from pootling.modules.Status import Status
@@ -85,17 +85,18 @@ class Catalog(QtGui.QMainWindow):
     def setHeaderLabel(self):
         if (isinstance(self.sender(), QtGui.QCheckBox)):
             if (self.sender().isChecked()):
-                self.headerLabels.append(self.sender().text())
+##                self.headerLabels.append(self.sender().text())
+                self.addUnit(self.headerLabels.append(self.sender().text()))
             else:
                 self.headerLabels.remove(self.sender().text())
             self.ui.tableCatalog.setColumnCount(len(self.headerLabels))
-            self.ui.tableCatalog.setRowCount(0)
+##            self.ui.tableCatalog.setRowCount(0)
             self.ui.tableCatalog.setHorizontalHeaderLabels(self.headerLabels)
-            self.ui.tableCatalog.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
-            self.ui.tableCatalog.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
-            self.ui.tableCatalog.horizontalHeader().setSortIndicatorShown(False)
-            self.ui.tableCatalog.horizontalHeader().setHighlightSections(True)
-            self.ui.tableCatalog.verticalHeader().hide()
+##            self.ui.tableCatalog.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
+##            self.ui.tableCatalog.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
+##            self.ui.tableCatalog.horizontalHeader().setSortIndicatorShown(False)
+##            self.ui.tableCatalog.horizontalHeader().setHighlightSections(True)
+##            self.ui.tableCatalog.verticalHeader().hide()
             World.settings.setValue("rememberHeader", QtCore.QVariant(self.headerLabels))
 
     def updateProgress(self, value):
@@ -151,7 +152,6 @@ class Catalog(QtGui.QMainWindow):
         status = Status(store.units)
         item = QtGui.QTableWidgetItem(filename)
         self.ui.tableCatalog.setItem(row, 0, item)
-        
         item = QtGui.QTableWidgetItem(str(status.numFuzzy))
         self.ui.tableCatalog.setItem(row, 1, item)
         item = QtGui.QTableWidgetItem(str(status.numUntranslated))
