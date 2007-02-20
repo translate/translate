@@ -206,18 +206,23 @@ class TUview(QtGui.QDockWidget):
         self.setScrollbarValue(unit.x_editor_filterIndex)
      
     def unitPlural(self, unit):
-        """ This will be call when unit is plural"""
+        """This will be call when unit is plural.
+        @param unit: unit to consider if plural or not."""
+        #show tab for plural unit and hide the normal text box.
         self.unitHasPlural = True
         self.tabSource.show()
         self.tabTarget.show()
         self.ui.gridlayout.addWidget(self.ui.fileScrollBar,0,2,3,1)
         self.ui.txtSource.hide()
         self.ui.txtTarget.hide()
+        # source section
         self.sourceLength = len(unit.source.strings)
+        # if plural unit is already detected once then no need to create more tab.
         if (self.tabSource.count() == self.sourceLength):
             for i in range(self.sourceLength):
                 self.txtSourceList[i].setPlainText(unit.source.strings[i])
         else:
+            # create tab regarding to the number of strings in source.
             for i in range(self.sourceLength):
                 tabSourcePlural = QtGui.QWidget(self.tabSource)
                 self.tabSourcePlurals.append(tabSourcePlural)
@@ -241,17 +246,19 @@ class TUview(QtGui.QDockWidget):
                 self.tabSource.addTab(self.tabSourcePlurals[i], "")
                 self.tabSource.setTabText(self.tabSource.indexOf(self.tabSourcePlurals[i]), self.tr("Plural%d" % i))
 
-                # target
-            self.nplurals = 3  # nplurals will be adapted to the language set in preference.
+                # target section
+            # nplurals will be adapted to the language set in preference.
+            self.nplurals = 2  
+        # if plural unit is already detected once then no need to create more tab.
         if (self.tabTarget.count() == self.nplurals):
             for i in range(self.nplurals):
-                print len(unit.target)
-                if (len(unit.target) == 1):
-                    self.txtTargetList[i].setPlainText(unit.target.strings[0])
+                # if the plural unit is not translated yet.
+                if (len(unit.target.strings) == 1):
+                    self.txtTargetList[i].clear()
                 else:
-                    pass
-##                    self.txtTargetList[i].setPlainText(unit.target.strings[i])
+                    self.txtTargetList[i].setPlainText(unit.target.strings[i])
         else:
+            # create tab regarding to the number plural form
             for i in range(self.nplurals):
                 tabTargetPlural = QtGui.QWidget(self.tabTarget)
                 self.tabTargetPlurals.append(tabTargetPlural)
@@ -269,41 +276,44 @@ class TUview(QtGui.QDockWidget):
                 self.txtTarget = QtGui.QTextEdit(self.tabTargetPlurals[i])
                 self.txtTargetList.append(self.txtTarget)
                 self.txtTargetList[i].setObjectName("txtTarget%d"% i)
-                self.txtTargetList[i].clear()
                 self.gridlayoutTarList[i].addWidget(self.txtTargetList[i],0,0,1,1)
-                if (len(unit.target) == 1):
-                    self.txtTargetList[i].setPlainText(unit.target.strings[0])
+                #the plural unit is not translated yet.
+                if (len(unit.target.strings) == 1):
+                    self.txtTargetList[i].clear()
                 else:
-                    self.txtTargetList[i].setPlainText(unit.target.strings[0])
+                    # list index out of range when the unit is not translate yet.it has only msgstr[0]
+                    self.txtTargetList[i].setPlainText(unit.target.strings[i])
                 self.connect(self.txtTargetList[i], QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
 
     def unitSingle(self, unit):
-        """This will be called when unit is singular"""
+        """This will be called when unit is singular.
+        @param unit: unit to consider if signal or not."""
+        #hide tab for plural unit and show the normal text boxes for signal unit.
         self.unitHasPlural = False
         self.tabSource.hide()
         self.tabTarget.hide()
         self.ui.txtSource.show()
         self.ui.txtTarget.show()
+        
         self.ui.txtSource.setPlainText(unit.source)
         self.ui.txtTarget.setPlainText(unit.target)
         self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
 
     def checkModified(self):
+        """Check if target is modified, send target as unicode string for single unit and list of unicode string for plural unit.
+        @signal targetChanged: emitted with target."""
         if (not self.unitHasPlural):
             if self.ui.txtTarget.document().isModified():
-                self.emit(QtCore.SIGNAL("targetChanged"), self.ui.txtTarget.toPlainText())
+                self.emit(QtCore.SIGNAL("targetChanged"), unicode(self.ui.txtTarget.toPlainText()))
                 self.ui.txtTarget.document().setModified(False)
         else:
             targetList = []
             for i in range(self.nplurals):
                 if self.txtTargetList[i].document().isModified():
-                    self.targetModified = True
-            if (self.targetModified):
-                for i in range(self.nplurals):
-                    targetList.append(unicode(self.txtTargetList[i].toPlainText()))
-                    print self.txtTargetList[i].toPlainText()
-                    self.txtTargetList[i].document().setModified(False)
-            self.emit(QtCore.SIGNAL("targetChanged"), targetList)
+                      for i in range(self.nplurals):
+                          targetList.append(unicode(self.txtTargetList[i].toPlainText()))
+                          self.txtTargetList[i].document().setModified(False)
+                      self.emit(QtCore.SIGNAL("targetChanged"), targetList)
             
 
     def emitReadyForSave(self):
