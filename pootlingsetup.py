@@ -28,7 +28,6 @@ sitepackages = packagesdir.replace(sys.prefix + os.sep, '')
 infofiles = [(join(sitepackages,'pootling'),
              [join('pootling',filename) for filename in 'CHANGELOG.TXT', 'LICENSE.TXT', 'README.TXT', 'TODO'])]
 initfiles = [(join(sitepackages,'pootling'),[join('pootling','__init__.py')])]
-imagefiles = [(join(sitepackages,'pootling', 'images'), ['pootling/images/minus.png)'])]
 
 packages = ["pootling"]
 subpackages = ["modules", "ui"]
@@ -190,7 +189,7 @@ def map_data_file (data_file):
   return data_file
 
 def getdatafiles():
-  datafiles = initfiles + infofiles + imagefiles
+  datafiles = initfiles + infofiles
   return datafiles
 
 def buildinfolinks():
@@ -219,6 +218,8 @@ def buildmanifest_in(file, scripts):
   print >> file, "# scripts which don't get included by default in sdist"
   for scriptname in scripts:
     print >>file, "include %s" % scriptname
+  print >> file, "# images which don't get included by default in sdist"
+  print >> file, "recursive-include pootling/images *.png"
   # wordlist, portal are in the source tree but unconnected to the python code
   print >>file, "prune wordlist"
   print >>file, "prune Pootle"
