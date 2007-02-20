@@ -24,17 +24,17 @@ def test_sentences():
     sentences = language.sentences(u"This is a sentence")
     assert sentences == [u"This is a sentence"]
     sentences = language.sentences(u"This is a sentence. Another one.")
-    assert sentences == [u"This is a sentence.", "Another one."]
+    assert sentences == [u"This is a sentence.", u"Another one."]
     sentences = language.sentences(u"This is a sentence. Another one. Bla.")
-    assert sentences == [u"This is a sentence.", "Another one.", "Bla."]
+    assert sentences == [u"This is a sentence.", u"Another one.", u"Bla."]
     sentences = language.sentences(u"This is a sentence.Not another one.")
     assert sentences == [u"This is a sentence.Not another one."]
     sentences = language.sentences(u"Exclamation! Really? No...")
-    assert sentences == [u"Exclamation!", "Really?", "No..."]
+    assert sentences == [u"Exclamation!", u"Really?", u"No..."]
     sentences = language.sentences(u"Four i.e. 1+3. See?")
-    assert sentences == [u"Four i.e. 1+3.", "See?"]
+    assert sentences == [u"Four i.e. 1+3.", u"See?"]
     sentences = language.sentences(u"Apples, bananas, etc. are nice.")
     assert sentences == [u"Apples, bananas, etc. are nice."]
     sentences = language.sentences(u"Apples, bananas, etc.\nNext part")
-    assert sentences == [u"Apples, bananas, etc.", "Next part"]
+    assert sentences == [u"Apples, bananas, etc.", u"Next part"]
 
