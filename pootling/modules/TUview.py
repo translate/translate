@@ -246,9 +246,9 @@ class TUview(QtGui.QDockWidget):
                 self.tabSource.addTab(self.tabSourcePlurals[i], "")
                 self.tabSource.setTabText(self.tabSource.indexOf(self.tabSourcePlurals[i]), self.tr("Plural%d" % i))
 
-                # target section
-            # nplurals will be adapted to the language set in preference.
-            self.nplurals = 2  
+        # target section
+        # nplurals will be adapted to the language set in preference.
+        self.nplurals = World.settings.value("nPlural").toInt()[0]
         # if plural unit is already detected once then no need to create more tab.
         if (self.tabTarget.count() == self.nplurals):
             for i in range(self.nplurals):
