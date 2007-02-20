@@ -298,7 +298,7 @@ class TranslationChecker(object):
         filterresult = filterfunction(str1, str2)
       except FilterFailure, e:
         filterresult = False
-        filtermessage = str(e)
+        filtermessage = str(e).decode('utf-8')
       except Exception, e:
         if self.errorhandler is None:
           raise
@@ -395,9 +395,9 @@ class StandardChecker(TranslationChecker):
     """checks whether escaping is consistent between the two strings"""
     str1 = prefilters.removekdecomments(str1)
     if not helpers.countsmatch(str1, str2, ("\\", "\\\\")):
-      escapes1 = ", ".join(["'%s'" % word for word in str1.split() if "\\" in word])
-      escapes2 = ", ".join(["'%s'" % word for word in str2.split() if "\\" in word])
-      raise SeriousFilterFailure("escapes in original (%s) don't match escapes in translation (%s)" % (escapes1, escapes2))
+      escapes1 = u", ".join([u"'%s'" % word for word in str1.split() if "\\" in word])
+      escapes2 = u", ".join([u"'%s'" % word for word in str2.split() if "\\" in word])
+      raise SeriousFilterFailure(u"escapes in original (%s) don't match escapes in translation (%s)" % (escapes1, escapes2))
     else:
       return True
 
