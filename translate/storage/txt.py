@@ -55,11 +55,13 @@ class TxtUnit(base.TranslationUnit):
         self.encoding = encoding
         super(TxtUnit, self).__init__(source)
         self.source = source
+        self.pretext = ""
+        self.posttext = ""
         self.location = []
 
     def __str__(self):
         """Convert a txt unit to a string"""
-        string = u"".join(self.source)
+        string = u"".join([self.pretext, self.source, self.posttext])
         if isinstance(string, unicode):
             return string.encode(self.encoding)
         return string
@@ -106,6 +108,8 @@ class TxtFile(base.TranslationStore):
         self.units = []
         block = []
         startline = 0
+        pretext = ""
+        posttext = ""
         for linenum in range(len(lines)):
             line = lines[linenum].rstrip("\n").rstrip("\r")
             for rule, prere, postre in self.flavour:
@@ -124,6 +128,10 @@ class TxtFile(base.TranslationStore):
             if isbreak and block:
                 unit = self.addsourceunit("\n".join(block))
                 unit.addlocation("%s:%d" % (self.filename, startline + 1))
+                unit.pretext = pretext
+                unit.posttext = posttext
+                pretext = ""
+                posttext = ""
                 block = []
             elif not isbreak:
                 if not block:
