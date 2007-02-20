@@ -44,7 +44,17 @@ class Catalog(QtGui.QMainWindow):
         self.ui = Ui_Catalog()
         self.ui.setupUi(self)
         self.resize(720,400)
-        self.headerLabels = []
+        
+        # set up table appearance and behavior
+        self.headerLabels = [self.tr("Name"), self.tr("Fuzzy"), self.tr("Untranslated"), self.tr("Total"), self.tr("CVS/SVN Status"), self.tr("Last Revision"), self.tr("Last Translator")]
+        self.ui.tableCatalog.setColumnCount(len(self.headerLabels))
+        self.ui.tableCatalog.setRowCount(0)
+        self.ui.tableCatalog.setHorizontalHeaderLabels(self.headerLabels)
+        self.ui.tableCatalog.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
+        self.ui.tableCatalog.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
+        self.ui.tableCatalog.horizontalHeader().setSortIndicatorShown(True)
+        self.ui.tableCatalog.horizontalHeader().setHighlightSections(False)
+        self.ui.tableCatalog.verticalHeader().hide()
 
         # File menu action
         self.connect(self.ui.actionQuit, QtCore.SIGNAL("triggered()"), QtCore.SLOT("close()"))
@@ -84,19 +94,13 @@ class Catalog(QtGui.QMainWindow):
 
     def setHeaderLabel(self):
         if (isinstance(self.sender(), QtGui.QCheckBox)):
-            if (self.sender().isChecked()):
-##                self.headerLabels.append(self.sender().text())
-                self.addUnit(self.headerLabels.append(self.sender().text()))
-            else:
-                self.headerLabels.remove(self.sender().text())
-            self.ui.tableCatalog.setColumnCount(len(self.headerLabels))
-##            self.ui.tableCatalog.setRowCount(0)
-            self.ui.tableCatalog.setHorizontalHeaderLabels(self.headerLabels)
-##            self.ui.tableCatalog.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
-##            self.ui.tableCatalog.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
-##            self.ui.tableCatalog.horizontalHeader().setSortIndicatorShown(False)
-##            self.ui.tableCatalog.horizontalHeader().setHighlightSections(True)
-##            self.ui.tableCatalog.verticalHeader().hide()
+            text = self.sender().text()
+            if text in self.headerLabels:
+                if (self.sender().isChecked()):
+                    self.ui.tableCatalog.showColumn(self.headerLabels.index(text))
+                else:
+                    self.ui.tableCatalog.hideColumn(self.headerLabels.index(text))
+                    
             World.settings.setValue("rememberHeader", QtCore.QVariant(self.headerLabels))
 
     def updateProgress(self, value):
@@ -137,11 +141,11 @@ class Catalog(QtGui.QMainWindow):
         add the unit to table.
         @param filename: path and file name.
         """
-        try:
-            print versioncontrol.getcleanfile(filename)
-        except:
-            pass
-        
+##        try:
+##            print versioncontrol.getcleanfile(filename)
+##        except:
+##            pass
+##        
         try:
             store = factory.getobject(filename)
         except:
