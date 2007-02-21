@@ -152,11 +152,11 @@ newlines.</p></body></html>
         self.check_null(htmlsource)
 
     def test_tag_table_summary(self):
-        """test that we can extract summary= """
+        """Test that we can extract the summary attribute."""
         self.check_single( '''<html><head></head><body><table summary="Table summary"></table></body></html>''', "Table summary")
 
     def test_table_simple(self):
-        """test that we can fully extract a simple table"""
+        """Test that we can fully extract a simple table."""
         markup = '''<html><head></head><body><table><tr><th>Heading One</th><th>Heading Two</th><tr><td>One</td><td>Two</td></tr></table></body></html>'''
         pofile = self.html2po(markup)
         self.countunits(pofile, 4)
