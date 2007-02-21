@@ -120,6 +120,7 @@ class tmSetting(QtGui.QDialog):
                 pickleTM.saveTM(item.text())
         try:
             matcher = pickleTM.buildMatcher()
+#            print matcher
         except Exception, e:
             matcher = None
             self.emit(QtCore.SIGNAL("noTM"), str(e))

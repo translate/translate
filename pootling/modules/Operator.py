@@ -54,7 +54,6 @@ class Operator(QtCore.QObject):
         self.currentUnitIndex = 0
         self.filteredList = []
         self.filter = None
-        self.matcher = None
         
     def getUnits(self, fileName):
         """reading a file into the internal datastructure.
@@ -448,11 +447,13 @@ class Operator(QtCore.QObject):
     def lookupProcess(self, units):
         '''lookup process'''
         # FIXME: too slow process to lookup
-        #TODO: use dump
-                
+        
+        if (not hasattr(self, "matcher")):
+            self.matcher = pickleTM.buildMatcher()
+        
         if (not self.matcher):
             return
-            
+        
         #for lookupunit
         if (not isinstance(units, list)):
             candidates = self.matcher.matches(units.source)

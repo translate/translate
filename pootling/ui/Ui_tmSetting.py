@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/ks/programming/wordforge/trunk/pootling/ui/tmSetting.ui'
 #
-# Created: Tue Feb 20 16:02:56 2007
+# Created: Wed Feb 21 15:24:57 2007
 #      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!

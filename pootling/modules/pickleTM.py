@@ -17,7 +17,7 @@
 #       San Titvirak (titvirak@khmeros.info)
 #       Seth Chanratha (sethchanratha@khmeros.info)
 #
-# This module provides interface for pickle and unpickle base object of files
+# This module provides interface for pickle and unpickle each matcher candidates of base object files
 
 import os, tempfile, pickle
 from PyQt4 import QtCore
@@ -44,27 +44,27 @@ def saveTM(TMpath):
     path = str(TMpath)
     
     # FIXME: this will make memory not up to date.
-    if (dic.has_key(path) and not refreshAllTM):        
+    if (dic.has_key(path) and not refreshAllTM):
         return
     
     if (os.path.isfile(path)):
         store = createStore(path)
         if (store):
-            dic[path] = store
+            dic[path] = match.matcher(store).candidates
     
     if (os.path.isdir(path)):
-        storelist = []
+        list = []
         for root, dirs, files in os.walk(path):
             for file in files:
                 store = createStore(os.path.join(root + '/' + file))
                 if (store):
-                    storelist.append(store)
+                    list.append(match.matcher(store).candidates)
             # whether dive into subfolder
             if (not diveSub):
                 # not dive into subfolder
                 break
-        if (storelist):
-            dic[path] = storelist
+        if (list):
+            dic[path] = list
     pickleStoreDic(dic)
     return
 
@@ -120,7 +120,7 @@ def unpickleStoreDic():
         tmpFile.close()
     return dic
 
-def getStore():
+def getStoreList():
     '''return storelist
     @return storelist: as a list of store
     '''
@@ -138,5 +138,6 @@ def getStore():
     return storelist
 
 def buildMatcher():
-    '''build new matcher'''
-    return match.matcher(getStore())
+    storelist = getStoreList()
+    matcher = match.matcher(storelist)
+    return matcher

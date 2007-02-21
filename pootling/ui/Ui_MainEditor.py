@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/ks/programming/wordforge/trunk/pootling/ui/MainEditor.ui'
 #
-# Created: Wed Feb 21 09:03:20 2007
+# Created: Wed Feb 21 14:35:02 2007
 #      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!
@@ -58,18 +58,18 @@ class Ui_MainWindow(object):
         self.menuSettings = QtGui.QMenu(self.menubar)
         self.menuSettings.setObjectName("menuSettings")
 
+        self.menuWindow = QtGui.QMenu(self.menubar)
+        self.menuWindow.setObjectName("menuWindow")
+
+        self.menuToolbars = QtGui.QMenu(self.menuWindow)
+        self.menuToolbars.setObjectName("menuToolbars")
+
         self.menu_Tool = QtGui.QMenu(self.menubar)
         self.menu_Tool.setObjectName("menu_Tool")
 
         self.menu_TM = QtGui.QMenu(self.menu_Tool)
         self.menu_TM.setIcon(QtGui.QIcon("../images/memory.png"))
         self.menu_TM.setObjectName("menu_TM")
-
-        self.menuWindow = QtGui.QMenu(self.menubar)
-        self.menuWindow.setObjectName("menuWindow")
-
-        self.menuToolbars = QtGui.QMenu(self.menuWindow)
-        self.menuToolbars.setObjectName("menuToolbars")
         MainWindow.setMenuBar(self.menubar)
 
         self.statusbar = QtGui.QStatusBar(MainWindow)
@@ -281,6 +281,7 @@ class Ui_MainWindow(object):
         self.actionClearBookmarks.setObjectName("actionClearBookmarks")
 
         self.action_lookup_Text = QtGui.QAction(MainWindow)
+        self.action_lookup_Text.setCheckable(True)
         self.action_lookup_Text.setObjectName("action_lookup_Text")
 
         self.actionAuto_translate = QtGui.QAction(MainWindow)
@@ -336,14 +337,14 @@ class Ui_MainWindow(object):
         self.menuHelp.addAction(self.actionAboutQT)
         self.menuSettings.addAction(self.actionPreferences)
         self.menuSettings.addAction(self.action_TM)
+        self.menuWindow.addSeparator()
+        self.menuWindow.addSeparator()
+        self.menuWindow.addAction(self.menuToolbars.menuAction())
         self.menu_TM.addAction(self.action_lookup_Text)
         self.menu_TM.addAction(self.actionAuto_translate)
         self.menu_Tool.addSeparator()
         self.menu_Tool.addAction(self.menu_TM.menuAction())
         self.menu_Tool.addAction(self.actionCatalogManager)
-        self.menuWindow.addSeparator()
-        self.menuWindow.addSeparator()
-        self.menuWindow.addAction(self.menuToolbars.menuAction())
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
         self.menubar.addAction(self.menuView.menuAction())
@@ -382,10 +383,10 @@ class Ui_MainWindow(object):
         self.menuBookmark.setTitle(QtGui.QApplication.translate("MainWindow", "&Bookmarks", None, QtGui.QApplication.UnicodeUTF8))
         self.menuHelp.setTitle(QtGui.QApplication.translate("MainWindow", "&Help", None, QtGui.QApplication.UnicodeUTF8))
         self.menuSettings.setTitle(QtGui.QApplication.translate("MainWindow", "&Settings", None, QtGui.QApplication.UnicodeUTF8))
-        self.menu_Tool.setTitle(QtGui.QApplication.translate("MainWindow", "&Tool", None, QtGui.QApplication.UnicodeUTF8))
-        self.menu_TM.setTitle(QtGui.QApplication.translate("MainWindow", "&TM", None, QtGui.QApplication.UnicodeUTF8))
         self.menuWindow.setTitle(QtGui.QApplication.translate("MainWindow", "&Window", None, QtGui.QApplication.UnicodeUTF8))
         self.menuToolbars.setTitle(QtGui.QApplication.translate("MainWindow", "&Toolbars", None, QtGui.QApplication.UnicodeUTF8))
+        self.menu_Tool.setTitle(QtGui.QApplication.translate("MainWindow", "&Tool", None, QtGui.QApplication.UnicodeUTF8))
+        self.menu_TM.setTitle(QtGui.QApplication.translate("MainWindow", "&TM", None, QtGui.QApplication.UnicodeUTF8))
         self.toolStandard.setWindowTitle(QtGui.QApplication.translate("MainWindow", "&Standard Toolbar", None, QtGui.QApplication.UnicodeUTF8))
         self.toolNavigation.setWindowTitle(QtGui.QApplication.translate("MainWindow", "&Navigation Toolbar", None, QtGui.QApplication.UnicodeUTF8))
         self.toolFilter.setWindowTitle(QtGui.QApplication.translate("MainWindow", "&Filter Toolbar", None, QtGui.QApplication.UnicodeUTF8))

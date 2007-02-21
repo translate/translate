@@ -141,6 +141,19 @@
     <addaction name="actionPreferences" />
     <addaction name="action_TM" />
    </widget>
+   <widget class="QMenu" name="menuWindow" >
+    <property name="title" >
+     <string>&amp;Window</string>
+    </property>
+    <widget class="QMenu" name="menuToolbars" >
+     <property name="title" >
+      <string>&amp;Toolbars</string>
+     </property>
+    </widget>
+    <addaction name="separator" />
+    <addaction name="separator" />
+    <addaction name="menuToolbars" />
+   </widget>
    <widget class="QMenu" name="menu_Tool" >
     <property name="title" >
      <string>&amp;Tool</string>
@@ -158,19 +171,6 @@
     <addaction name="separator" />
     <addaction name="menu_TM" />
     <addaction name="actionCatalogManager" />
-   </widget>
-   <widget class="QMenu" name="menuWindow" >
-    <property name="title" >
-     <string>&amp;Window</string>
-    </property>
-    <widget class="QMenu" name="menuToolbars" >
-     <property name="title" >
-      <string>&amp;Toolbars</string>
-     </property>
-    </widget>
-    <addaction name="separator" />
-    <addaction name="separator" />
-    <addaction name="menuToolbars" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
@@ -808,6 +808,9 @@
    </property>
   </action>
   <action name="action_lookup_Text" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
    <property name="text" >
     <string>&amp;Lookup Unit</string>
    </property>
