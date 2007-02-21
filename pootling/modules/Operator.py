@@ -80,7 +80,6 @@ class Operator(QtCore.QObject):
         self.filter = World.filterAll
         
         # get status for units
-        self.status = Status(self.store.units)
         self.status = Status(self.store)
         self.emitStatus()
 
