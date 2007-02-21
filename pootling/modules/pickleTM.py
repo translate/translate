@@ -35,109 +35,71 @@ def createStore(file):
         store = None
     return store
 
-def saveTM(TMpath):
-    '''create base object of supported file, and save into TM dictionary
-    @param TMpath: file or translation memory path as string'''
-    dic = unpickleStoreDic()
+def getStore(TMpath):
+    '''return base object as store or storelist
+    @param TMpath: file or translation memory path as string
+    @return store or storelist'''
     diveSub = World.settings.value("diveIntoSub").toBool()
-    refreshAllTM = World.settings.value("refreshAllTMs").toBool()
     path = str(TMpath)
-    
-    # FIXME: this will make memory not up to date.
-    if (dic.has_key(path) and not refreshAllTM):
-        return
     
     if (os.path.isfile(path)):
         store = createStore(path)
         if (store):
-            dic[path] = match.matcher(store).candidates
+            return store
     
     if (os.path.isdir(path)):
-        list = []
+        storelist = []
         for root, dirs, files in os.walk(path):
             for file in files:
                 store = createStore(os.path.join(root + '/' + file))
                 if (store):
-                    list.append(match.matcher(store).candidates)
+                    storelist.append(store)
             # whether dive into subfolder
             if (not diveSub):
                 # not dive into subfolder
                 break
-        if (list):
-            dic[path] = list
-    pickleStoreDic(dic)
-    return
-
-def removeTM(TMpath):
-    '''remove TM object of file from dictionary if it exists'''
-    path = str(TMpath)
-    dic = unpickleStoreDic()
-    if (dic):
-        try:
-            del dic[path]
-        except:
-            pass
-        pickleStoreDic(dic)
-    return
-
-def clear():
-    '''clear translation memory'''
-    dic = unpickleStoreDic()
-    if (dic):
-        dic = {}
-        pickleStoreDic(dic)
-    return
-
-def disableTM(TMpaths):
-    '''remember specified TM path as disabledTM
-    @param TMpaths: QStringList Object
-    '''
-    World.settings.setValue("disabledTM", QtCore.QVariant(TMpaths))
+        if (storelist):
+            return storelist
     
-def pickleStoreDic(dic):
-    '''pickle dictionary of TM objects into a tempo file
-    @param dic: dictionary which has key as file and value as its base object'''
+def pickleMatcher(matcher):
+    '''pickle matcher of TM locations
+    @param matcher: matcher of TM files or locations'''
     filename = World.settings.value("fileStoredDic").toString()
     if (not filename):
         handle, filename = tempfile.mkstemp('','PKL')
     tmpFile = open(filename, 'w')
-    if (dic):
-        pickle.dump(dic, tmpFile)
+    if (matcher):
+        pickle.dump(matcher, tmpFile)
     tmpFile.close()
     World.settings.setValue("fileStoredDic", QtCore.QVariant(filename))
 
-def unpickleStoreDic():
-    '''unpickle dictionary from file
-    @return dic: dictionary which has key as file and value as its base object'''
-    dic = {}
+def getMatcher():
+    '''unpickle matcher from file
+    @return matcher: matcher of TM locations'''
+    matcher = None
     filename = World.settings.value("fileStoredDic").toString()
     if (filename):
         tmpFile = open(filename, 'rb')
         try:
-            dic = pickle.load(tmpFile)
+            matcher = pickle.load(tmpFile)
         except:
             pass
         tmpFile.close()
-    return dic
+    return matcher
 
-def getStoreList():
-    '''return storelist
-    @return storelist: as a list of store
+def buildMatcher(stringlist):
+    '''build new matcher of TM locations
+    @param stringlist: list of TM locations as string of path
     '''
-    dic = unpickleStoreDic()
-    disabledTM = set(World.settings.value("disabledTM").toStringList())
+    store = None
     storelist = []
-    if (dic):
-        for k, v in dic.iteritems():
-            if (QtCore.QString(k) in disabledTM):
-                continue
-            if (not isinstance(v, list)):
-                storelist.append(v)
+    for i in range(len(stringlist)):
+        store = getStore(stringlist[i])
+        if (store):
+            if (not isinstance(store, list)):
+                storelist.append(store)
             else:
-                storelist += v
-    return storelist
-
-def buildMatcher():
-    storelist = getStoreList()
+                storelist += store
     matcher = match.matcher(storelist)
+    pickleMatcher(matcher)
     return matcher

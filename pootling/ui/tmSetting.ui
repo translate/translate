@@ -171,13 +171,6 @@
          </property>
         </widget>
        </item>
-       <item row="7" column="0" >
-        <widget class="QCheckBox" name="chbrefreshAllTMs" >
-         <property name="text" >
-          <string>refresh all TMs</string>
-         </property>
-        </widget>
-       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="tab_3" >

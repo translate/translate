@@ -54,7 +54,8 @@ class Operator(QtCore.QObject):
         self.currentUnitIndex = 0
         self.filteredList = []
         self.filter = None
-        
+        self.lookupUnitStatus = None
+
     def getUnits(self, fileName):
         """reading a file into the internal datastructure.
         @param fileName: the file to open, either a string or a file object"""
@@ -107,7 +108,8 @@ class Operator(QtCore.QObject):
             self.currentUnitIndex = unit.x_editor_filterIndex
             self.searchPointer = unit.x_editor_filterIndex
         self.emit(QtCore.SIGNAL("currentUnit"), unit)
-        self.lookupUnit()
+        if (self.lookupUnitStatus):
+            self.lookupUnit()
     
     def getCurrentUnit(self):
         """return the current unit"""
@@ -442,6 +444,7 @@ class Operator(QtCore.QObject):
         self.lookupProcess(self.filteredList)
         
     def setMatcher(self, matcher):
+        '''set matcher to new matcher'''
         self.matcher = matcher
     
     def lookupProcess(self, units):
@@ -449,7 +452,7 @@ class Operator(QtCore.QObject):
         # FIXME: too slow process to lookup
         
         if (not hasattr(self, "matcher")):
-            self.matcher = pickleTM.buildMatcher()
+            self.matcher = pickleTM.getMatcher()
         
         if (not self.matcher):
             return
@@ -487,3 +490,7 @@ class Operator(QtCore.QObject):
     
     def emitReadyForSave(self):
         self.emit(QtCore.SIGNAL("readyForSave"), self._modified) 
+    
+    def setLookupStatus(self, bool):
+        self.lookupUnitStatus = bool
+    

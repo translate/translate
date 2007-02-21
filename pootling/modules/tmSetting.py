@@ -54,15 +54,11 @@ class tmSetting(QtGui.QDialog):
             self.connect(self.ui.btnOk, QtCore.SIGNAL("clicked(bool)"), self.createTM)
             self.connect(self.ui.btnRemove, QtCore.SIGNAL("clicked(bool)"), self.removeLocation)
             self.connect(self.ui.btnRemoveAll, QtCore.SIGNAL("clicked(bool)"), self.ui.listWidget.clear)
-            self.connect(self.ui.btnRemoveAll, QtCore.SIGNAL("clicked(bool)"), pickleTM.clear)
             self.connect(self.ui.btnEnable, QtCore.SIGNAL("clicked(bool)"), self.setChecked)
             self.connect(self.ui.btnDisable, QtCore.SIGNAL("clicked(bool)"), self.setUnchecked)
             self.connect(self.ui.checkBox, QtCore.SIGNAL("stateChanged(int)"), self.rememberOptions)
-            self.connect(self.ui.chbrefreshAllTMs, QtCore.SIGNAL("stateChanged(int)"), self.rememberOptions)
-            self.connect(self.ui.listWidget, QtCore.SIGNAL("itemClicked(QListWidgetItem *)"), self.setDisabledTM)
             self.ui.listWidget.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
         self.ui.checkBox.setChecked(World.settings.value("diveIntoSub").toBool())
-        self.ui.chbrefreshAllTMs.setChecked(World.settings.value("refreshAllTMs").toBool())
         self.ui.progressBar.setValue(0)
         self.show()
     
@@ -95,11 +91,9 @@ class tmSetting(QtGui.QDialog):
         for item in items:
             self.ui.listWidget.setCurrentItem(item)
             self.ui.listWidget.takeItem(self.ui.listWidget.currentRow())
-            pickleTM.removeTM(item.text())
             
     def rememberOptions(self):
         World.settings.setValue("diveIntoSub", QtCore.QVariant(self.ui.checkBox.isChecked()))
-        World.settings.setValue("refreshAllTMs", QtCore.QVariant(self.ui.chbrefreshAllTMs.isChecked()))
         
     def closeEvent(self, event):
         '''rememer TMpath before closing
@@ -113,43 +107,34 @@ class tmSetting(QtGui.QDialog):
     
     def createTM(self):
         '''build base object of checked files in lists'''
+        stringlist = []
         count = self.ui.listWidget.count()
+
         for i in range(count):
             item = self.ui.listWidget.item(i)
             if (item.checkState()):
-                pickleTM.saveTM(item.text())
+                stringlist.append(item.text())
+        
+        matcher = None
         try:
-            matcher = pickleTM.buildMatcher()
-#            print matcher
+            matcher = pickleTM.buildMatcher(stringlist)
         except Exception, e:
-            matcher = None
             self.emit(QtCore.SIGNAL("noTM"), str(e))
+        
         self.emit(QtCore.SIGNAL("matcher"), matcher)
         self.close()
-            
+
     def setChecked(self):
         '''set state of selectedItems as checked'''
         items = self.ui.listWidget.selectedItems()
         for item in items:
             item.setCheckState(QtCore.Qt.Checked)
-        self.setDisabledTM()
         
     def setUnchecked(self):
         '''set state of selectedItems as unchecked'''
         items = self.ui.listWidget.selectedItems()
         for item in items:
             item.setCheckState(QtCore.Qt.Unchecked)
-        self.setDisabledTM()
-    
-    def setDisabledTM(self):
-        '''remember unchecked TM path as disabled TM'''
-        stringlist = QtCore.QStringList()
-        count = self.ui.listWidget.count()
-        for i in range(count):
-            item = self.ui.listWidget.item(i)
-            if (not item.checkState()):
-                stringlist.append(item.text())
-        pickleTM.disableTM(stringlist)
         
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

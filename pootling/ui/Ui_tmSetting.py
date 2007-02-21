@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/ks/programming/wordforge/trunk/pootling/ui/tmSetting.ui'
 #
-# Created: Wed Feb 21 15:24:57 2007
+# Created: Wed Feb 21 15:32:01 2007
 #      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!
@@ -82,10 +82,6 @@ class Ui_tmsetting(object):
         self.progressBar.setOrientation(QtCore.Qt.Horizontal)
         self.progressBar.setObjectName("progressBar")
         self.gridlayout1.addWidget(self.progressBar,9,0,1,2)
-
-        self.chbrefreshAllTMs = QtGui.QCheckBox(self.tab)
-        self.chbrefreshAllTMs.setObjectName("chbrefreshAllTMs")
-        self.gridlayout1.addWidget(self.chbrefreshAllTMs,7,0,1,1)
         self.tabOptions.addTab(self.tab,"")
 
         self.tab_3 = QtGui.QWidget()
@@ -190,7 +186,6 @@ class Ui_tmsetting(object):
         self.btnAdd.setToolTip(QtGui.QApplication.translate("tmsetting", "Add TM", None, QtGui.QApplication.UnicodeUTF8))
         self.btnAdd.setText(QtGui.QApplication.translate("tmsetting", " &Add", None, QtGui.QApplication.UnicodeUTF8))
         self.label_5.setText(QtGui.QApplication.translate("tmsetting", "Progress", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbrefreshAllTMs.setText(QtGui.QApplication.translate("tmsetting", "refresh all TMs", None, QtGui.QApplication.UnicodeUTF8))
         self.tabOptions.setTabText(self.tabOptions.indexOf(self.tab), QtGui.QApplication.translate("tmsetting", "&File", None, QtGui.QApplication.UnicodeUTF8))
         self.tabOptions.setTabText(self.tabOptions.indexOf(self.tab_3), QtGui.QApplication.translate("tmsetting", "&Database", None, QtGui.QApplication.UnicodeUTF8))
         self.label_3.setText(QtGui.QApplication.translate("tmsetting", "Maximum string length", None, QtGui.QApplication.UnicodeUTF8))

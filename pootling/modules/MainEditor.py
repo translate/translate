@@ -180,7 +180,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.tmsetting, QtCore.SIGNAL("matcher"), self.operator.setMatcher)
         
         # action lookup text and auto translation from TM
-        self.connect(self.ui.action_lookup_Text, QtCore.SIGNAL("triggered()"), self.operator.lookupUnit)
+        self.connect(self.ui.action_lookup_Text, QtCore.SIGNAL("toggled(bool)"), self.setLookupStatus)
         self.connect(self.ui.actionAuto_translate, QtCore.SIGNAL("triggered()"), self.operator.autoTranslate)
         
         # Edit Header
@@ -511,7 +511,7 @@ class MainWindow(QtGui.QMainWindow):
             else:
                 return False
         return True
-                
+
     def setClosingFile(self):
         """
         set status after closing a file
@@ -545,6 +545,9 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.action_lookup_Text.setEnabled(bool)
         self.ui.actionAuto_translate.setEnabled(bool)
         self.findBar.toggleViewAction().setVisible(bool)
+    
+    def setLookupStatus(self):
+        self.operator.setLookupStatus(self.ui.action_lookup_Text.isChecked())
     
 def main(inputFile = None):
     # set the path for QT in order to find the icons
