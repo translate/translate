@@ -70,8 +70,6 @@ class Catalog(QtGui.QMainWindow):
         self.connect(self.Catalog.ui.chbtotal, QtCore.SIGNAL("stateChanged(int)"), self.setHeaderLabel)
         self.connect(self.Catalog.ui.chbSVN, QtCore.SIGNAL("stateChanged(int)"), self.setHeaderLabel)
 
-        # TODO: setChecked to fuzzy checkbox and so on... when loading.
-
         # progress bar
         self.progressBar = QtGui.QProgressBar()
         self.progressBar.setEnabled(True)
@@ -80,9 +78,8 @@ class Catalog(QtGui.QMainWindow):
         self.progressBar.setObjectName("progressBar")
         self.progressBar.setVisible(False)
         self.ui.statusbar.addPermanentWidget(self.progressBar)
-        self.connect(self.Catalog, QtCore.SIGNAL("progressValue"), self.updateProgress)
 
-        #Help menu of aboutQt
+        # Help menu of aboutQt
         self.ui.menuHelp.addSeparator()
         action = QtGui.QWhatsThis.createAction(self)
         self.ui.menuHelp.addAction(action)
@@ -124,6 +121,20 @@ class Catalog(QtGui.QMainWindow):
         
         cats = World.settings.value("CatalogPath").toStringList()
         includeSub = World.settings.value("diveIntoSubCatalog").toBool()
+        
+        maxFilesNum = 0.0
+        for path in cats:
+            path = str(path)
+            if (os.path.isdir(path)):
+                if (not path.endswith("/")):
+                    path = path + "/"
+                for root, dirs, files in os.walk(path):
+                    for file in files:
+                        maxFilesNum += 1
+                    if (not includeSub):
+                        break
+        
+        currentFileNum = 0.0
         for path in cats:
             path = str(path)
             if (os.path.isdir(path)):
@@ -132,6 +143,8 @@ class Catalog(QtGui.QMainWindow):
                 for root, dirs, files in os.walk(path):
                     for file in files:
                         self.addUnit(root + file)
+                        currentFileNum += 1
+                        self.updateProgress(int((currentFileNum / maxFilesNum) * 100))
                     if (not includeSub):
                         break
         self.ui.tableCatalog.setSortingEnabled(False)
@@ -153,14 +166,14 @@ class Catalog(QtGui.QMainWindow):
         row = self.ui.tableCatalog.rowCount()
         self.ui.tableCatalog.setRowCount(row + 1)
         
-        status = Status(store.units)
         item = QtGui.QTableWidgetItem(filename)
         self.ui.tableCatalog.setItem(row, 0, item)
-        item = QtGui.QTableWidgetItem(str(status.numFuzzy))
+        item = QtGui.QTableWidgetItem(str(store.fuzzy_units()))
         self.ui.tableCatalog.setItem(row, 1, item)
-        item = QtGui.QTableWidgetItem(str(status.numUntranslated))
+        item = QtGui.QTableWidgetItem(str(store.untranslated_unitcount()))
         self.ui.tableCatalog.setItem(row, 2, item)
-        item = QtGui.QTableWidgetItem(str(status.numTotal))
+        totalUnitCount = store.fuzzy_units() + store.untranslated_unitcount() + store.translated_unitcount()
+        item = QtGui.QTableWidgetItem(str(totalUnitCount))
         self.ui.tableCatalog.setItem(row, 3, item)
         
         if hasattr(store, "parseheader"):
