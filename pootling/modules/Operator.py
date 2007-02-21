@@ -81,6 +81,7 @@ class Operator(QtCore.QObject):
         
         # get status for units
         self.status = Status(self.store.units)
+        self.status = Status(self.store)
         self.emitStatus()
 
         self.filteredList = []

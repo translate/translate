@@ -17,24 +17,15 @@
 # 
 # This module stores status
 
-from translate.tools import pocount
 import pootling.modules.World as World
 
 class Status:
     def __init__(self, units):
-        if (units):
-            if (units[0].isheader()):
-                units = units[1:]
-            self.numFuzzy = len(pocount.fuzzymessages(units))
-            self.numTranslated = len(pocount.translatedmessages(units))
-            self.numUntranslated = len(pocount.untranslatedmessages(units))
-            self.numTotal = self.numFuzzy + self.numTranslated + self.numUntranslated
-        else:
-            self.numFuzzy = 0
-            self.numTranslated = 0
-            self.numUntranslated = 0
-            self.numTotal = 0
-
+        self.numFuzzy = units.fuzzy_units()
+        self.numTranslated = units.translated_unitcount()
+        self.numUntranslated = units.untranslated_unitcount()
+        self.numTotal = self.numFuzzy + self.numTranslated + self.numUntranslated
+    
     def markFuzzy(self, unit, fuzzy):
         if (unit.isfuzzy() == fuzzy):
             return
