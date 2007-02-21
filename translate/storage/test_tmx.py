@@ -25,11 +25,7 @@ class TestTMXUnitFromParsedString(TestTMXUnit):
 <!DOCTYPE tmx
   SYSTEM 'tmx14.dtd'>
 <tmx version="1.4">
-
-
         <header adminlang="en" creationtool="Translate Toolkit - po2tmx" creationtoolversion="1.0beta" datatype="PlainText" o-tmf="UTF-8" segtype="sentence" srclang="en"/>
-
-
         <body>
                 <tu>
                         <tuv xml:lang="en">
@@ -40,8 +36,6 @@ class TestTMXUnitFromParsedString(TestTMXUnit):
                         </tuv>
                 </tu>
         </body>
-
-
 </tmx>'''
 
     def setup_method(self, method):
