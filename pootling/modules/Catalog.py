@@ -27,7 +27,6 @@ from pootling.modules.CatalogSetting import CatalogSetting
 ##from pootling.modules.Operator import Operator
 from pootling.modules.AboutEditor import AboutEditor
 from translate.storage import factory
-from pootling.modules.Status import Status
 from Pootle import versioncontrol
 import pootling.modules.World as World
 import os
@@ -88,6 +87,8 @@ class Catalog(QtGui.QMainWindow):
         self.connect(self.ui.actionAboutQt, QtCore.SIGNAL("triggered()"), QtGui.qApp, QtCore.SLOT("aboutQt()"))
         
         self.connect(self.Catalog, QtCore.SIGNAL("updateCatalog"), self.updateCatalog)
+        
+        self.setupCheckbox()
 
     def setHeaderLabel(self):
         if (isinstance(self.sender(), QtGui.QCheckBox)):
@@ -95,10 +96,12 @@ class Catalog(QtGui.QMainWindow):
             if text in self.headerLabels:
                 if (self.sender().isChecked()):
                     self.ui.tableCatalog.showColumn(self.headerLabels.index(text))
+                    World.settings.setValue("Catalog." + text, QtCore.QVariant(True))
                 else:
                     self.ui.tableCatalog.hideColumn(self.headerLabels.index(text))
+                    World.settings.setValue("Catalog." + text, QtCore.QVariant(False))
                     
-            World.settings.setValue("rememberHeader", QtCore.QVariant(self.headerLabels))
+##            World.settings.setValue("rememberHeader", QtCore.QVariant(self.headerLabels))
 
     def updateProgress(self, value):
         if (not self.progressBar.isVisible()):
@@ -188,7 +191,42 @@ class Catalog(QtGui.QMainWindow):
                 self.ui.tableCatalog.setItem(row, 5, item)
             except:
                 pass
-
+    
+    def setupCheckbox(self):
+        if not (World.settings.value("Catalog.Name").toBool()):
+            self.Catalog.ui.chbname.setCheckState(QtCore.Qt.Unchecked)
+        else:
+            self.Catalog.ui.chbname.setCheckState(QtCore.Qt.Checked)
+        
+        if not (World.settings.value("Catalog.Fuzzy").toBool()):
+            self.Catalog.ui.chbfuzzy.setCheckState(QtCore.Qt.Unchecked)
+        else:
+            self.Catalog.ui.chbfuzzy.setCheckState(QtCore.Qt.Checked)
+        
+        if not (World.settings.value("Catalog.Untranslated").toBool()):
+            self.Catalog.ui.chbuntranslated.setCheckState(QtCore.Qt.Unchecked)
+        else:
+            self.Catalog.ui.chbuntranslated.setCheckState(QtCore.Qt.Checked)
+        
+        if not (World.settings.value("Catalog.Total").toBool()):
+            self.Catalog.ui.chbtotal.setCheckState(QtCore.Qt.Unchecked)
+        else:
+            self.Catalog.ui.chbtotal.setCheckState(QtCore.Qt.Checked)
+        
+        if not (World.settings.value("Catalog.CVS/SVN Status").toBool()):
+            self.Catalog.ui.chbSVN.setCheckState(QtCore.Qt.Unchecked)
+        else:
+            self.Catalog.ui.chbSVN.setCheckState(QtCore.Qt.Checked)
+        
+        if not (World.settings.value("Catalog.Last Revision").toBool()):
+            self.Catalog.ui.chblastrevision.setCheckState(QtCore.Qt.Unchecked)
+        else:
+            self.Catalog.ui.chblastrevision.setCheckState(QtCore.Qt.Checked)
+        
+        if not (World.settings.value("Catalog.Last Translator").toBool()):
+            self.Catalog.ui.chbtranslator.setCheckState(QtCore.Qt.Unchecked)
+        else:
+            self.Catalog.ui.chbtranslator.setCheckState(QtCore.Qt.Checked)
 
 if __name__ == "__main__":
     import sys, os
