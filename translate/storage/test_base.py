@@ -299,8 +299,10 @@ class TestTranslationStore:
             assert store.untranslated_unitcount() == 1
             assert store.translated_wordcount() == 2
             assert store.untranslated_wordcount() == 3
-            assert store.fuzzy_units() == 0
-            unit1.markfuzzy(True)
+
+        assert store.fuzzy_units() == 0
+        unit1.markfuzzy(True)
+        if unit1.isfuzzy():
             assert store.fuzzy_units() == 1
 
         store = self.StoreClass()
