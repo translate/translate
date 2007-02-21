@@ -72,9 +72,11 @@ class Preference(QtGui.QDialog):
         self.ui.SupportTeam.setText(World.settings.value("SupportTeam").toString())
         self.ui.SupportTeam.setWhatsThis("<h3>Support</h3>Type email support address.")
         self.ui.cbxTimeZone.setEditText(World.settings.value("TimeZone").toString())
-        self.ui.spinBox.setValue(World.settings.value("nPlural").toInt()[0])
         self.ui.cbxTimeZone.setWhatsThis("<h3>TimeZone</h3>Choose timeZone of your country.")
+        self.ui.spinBox.setValue(World.settings.value("nPlural").toInt()[0])
         self.ui.spinBox.setWhatsThis("<h3>Singular/Plural forms</h3>Set plural forms for a specific language")
+        self.ui.lineEqaution.setText(World.settings.value("equation").toString())
+        self.ui.lineEqaution.setWhatsThis("<h3>Plural equation</h3>Set plural equation for a specific language. Pootling try to set this value for you. If no information provided, you should fill up by yourself. ")
         checkState = World.settings.value("headerAuto", QtCore.QVariant(True))
         if (checkState.toBool()):
             self.ui.chkHeaderAuto.setCheckState(QtCore.Qt.Checked)
@@ -101,6 +103,7 @@ class Preference(QtGui.QDialog):
         World.settings.setValue("SupportTeam", QtCore.QVariant(self.ui.SupportTeam.text()))
         World.settings.setValue("TimeZone", QtCore.QVariant(self.ui.cbxTimeZone.currentText()))
         World.settings.setValue("nPlural", QtCore.QVariant(self.ui.spinBox.value()))
+        World.settings.setValue("equation", QtCore.QVariant(self.ui.lineEqaution.text()))
         World.settings.setValue("headerAuto", QtCore.QVariant(self.ui.chkHeaderAuto.checkState() == QtCore.Qt.Checked))
         self.emit(QtCore.SIGNAL("settingsChanged"))
 
@@ -310,6 +313,7 @@ class Preference(QtGui.QDialog):
         @param langCode: as Qstring type. """
         language = factory.getlanguage(langCode)
         self.ui.spinBox.setValue(language.nplurals)
+        self.ui.lineEqaution.setText(language.pluralequation)
         
 if __name__ == "__main__":
     import sys, os
