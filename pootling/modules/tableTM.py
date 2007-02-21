@@ -28,7 +28,7 @@ class tableTM(QtGui.QDockWidget):
     def __init__(self, parent):
         QtGui.QDockWidget.__init__(self, parent)
         self.setObjectName("miscDock")
-        self.setWindowTitle(self.tr("TM &Lookup"))
+        self.setWindowTitle(self.tr("TM Lookup"))
         self.form = QtGui.QWidget(self)
         self.ui = Ui_Form()
         self.ui.setupUi(self.form)

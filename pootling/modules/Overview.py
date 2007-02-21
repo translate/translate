@@ -27,7 +27,7 @@ class OverviewDock(QtGui.QDockWidget):
     def __init__(self, parent):
         QtGui.QDockWidget.__init__(self, parent)
         self.setObjectName("overviewDock")
-        self.setWindowTitle(self.tr("&Overview"))
+        self.setWindowTitle(self.tr("Overview"))
         self.form = QtGui.QWidget(self)
         self.ui = Ui_Form()
         self.ui.setupUi(self.form)

@@ -66,17 +66,24 @@ class MainWindow(QtGui.QMainWindow):
         #plug in overview widget
         self.dockOverview = OverviewDock(self)
         self.addDockWidget(QtCore.Qt.TopDockWidgetArea, self.dockOverview)
-        self.ui.menuWindow.insertAction(sepAction, self.dockOverview.toggleViewAction())
+        action = self.dockOverview.toggleViewAction()
+        action.setText("&Overview")
+        self.ui.menuWindow.insertAction(sepAction, action)
         
         #plug in TUview widget
         self.dockTUview = TUview(self)
         self.setCentralWidget(self.dockTUview)
-        self.ui.menuWindow.insertAction(sepAction, self.dockTUview.toggleViewAction())
+        action = self.dockTUview.toggleViewAction()
+        action.setText("&Detail")
+        self.ui.menuWindow.insertAction(sepAction, action)
         
         #plug in comment widget
         self.dockComment = CommentDock(self)
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.dockComment)
-        self.ui.menuWindow.insertAction(sepAction, self.dockComment.toggleViewAction())
+        action = self.dockComment.toggleViewAction()
+        action.setText("&Comment")
+        self.ui.menuWindow.insertAction(sepAction, action)
+#        self.ui.menuWindow.insertAction(sepAction, self.dockComment.toggleViewAction())
        
         #add widgets to statusbar
         self.statusfuzzy = QtGui.QLabel()
@@ -105,7 +112,9 @@ class MainWindow(QtGui.QMainWindow):
          # TM table
         self.table = tableTM.tableTM(self)
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.table)
-        self.ui.menuWindow.insertAction(sepAction, self.table.toggleViewAction())
+        action = self.table.toggleViewAction()
+        action.setText("TM &Lookup")
+        self.ui.menuWindow.insertAction(sepAction, action)
         self.connect(self.operator, QtCore.SIGNAL("candidates"), self.table.fillTable)
         self.connect(self.table, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
         self.connect(self.operator, QtCore.SIGNAL("filterChanged"), self.table.filterChanged)
@@ -113,6 +122,7 @@ class MainWindow(QtGui.QMainWindow):
         #Help menu of aboutQt
         self.ui.menuHelp.addSeparator()
         action = QtGui.QWhatsThis.createAction(self)
+        action.setText(self.tr("&What's This?"))
         self.ui.menuHelp.addAction(action)
         self.aboutDialog = AboutEditor(self)
         self.connect(self.ui.actionAbout, QtCore.SIGNAL("triggered()"), self.aboutDialog.showDialog)

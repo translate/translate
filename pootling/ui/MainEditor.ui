@@ -127,6 +127,20 @@
     <addaction name="actionClearBookmarks" />
     <addaction name="separator" />
    </widget>
+   <widget class="QMenu" name="menuHelp" >
+    <property name="title" >
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="actionAbout" />
+    <addaction name="actionAboutQT" />
+   </widget>
+   <widget class="QMenu" name="menuSettings" >
+    <property name="title" >
+     <string>&amp;Settings</string>
+    </property>
+    <addaction name="actionPreferences" />
+    <addaction name="action_TM" />
+   </widget>
    <widget class="QMenu" name="menu_Tool" >
     <property name="title" >
      <string>&amp;Tool</string>
@@ -144,20 +158,6 @@
     <addaction name="separator" />
     <addaction name="menu_TM" />
     <addaction name="actionCatalogManager" />
-   </widget>
-   <widget class="QMenu" name="menuSettings" >
-    <property name="title" >
-     <string>&amp;Settings</string>
-    </property>
-    <addaction name="actionPreferences" />
-    <addaction name="action_TM" />
-   </widget>
-   <widget class="QMenu" name="menuHelp" >
-    <property name="title" >
-     <string>&amp;Help</string>
-    </property>
-    <addaction name="actionAbout" />
-    <addaction name="actionAboutQT" />
    </widget>
    <widget class="QMenu" name="menuWindow" >
     <property name="title" >
@@ -188,7 +188,7 @@
     <bool>true</bool>
    </property>
    <property name="windowTitle" >
-    <string>Standard Toolbar</string>
+    <string>&amp;Standard Toolbar</string>
    </property>
    <property name="orientation" >
     <enum>Qt::Horizontal</enum>
@@ -213,7 +213,7 @@
     <bool>false</bool>
    </property>
    <property name="windowTitle" >
-    <string>Navigation Toolbar</string>
+    <string>&amp;Navigation Toolbar</string>
    </property>
    <property name="orientation" >
     <enum>Qt::Horizontal</enum>
@@ -228,7 +228,7 @@
   </widget>
   <widget class="QToolBar" name="toolFilter" >
    <property name="windowTitle" >
-    <string>Filter Toolbar</string>
+    <string>&amp;Filter Toolbar</string>
    </property>
    <property name="orientation" >
     <enum>Qt::Horizontal</enum>
