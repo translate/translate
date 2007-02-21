@@ -20,6 +20,34 @@ class TestTMXUnit(test_base.TestTranslationUnit):
         assert test.raises(NotImplementedError, self.unit.geterrors)
         assert test.raises(NotImplementedError, self.unit.adderror, 'testname', 'Test error')
 
+class TestTMXUnitFromParsedString(TestTMXUnit):
+    tmxsource = '''<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE tmx
+  SYSTEM 'tmx14.dtd'>
+<tmx version="1.4">
+
+
+        <header adminlang="en" creationtool="Translate Toolkit - po2tmx" creationtoolversion="1.0beta" datatype="PlainText" o-tmf="UTF-8" segtype="sentence" srclang="en"/>
+
+
+        <body>
+                <tu>
+                        <tuv xml:lang="en">
+                                <seg>Test String</seg>
+                        </tuv>
+                        <tuv xml:lang="af">
+                                <seg>Toets String</seg>
+                        </tuv>
+                </tu>
+        </body>
+
+
+</tmx>'''
+
+    def setup_method(self, method):
+        store = tmx.tmxfile.parsestring(self.tmxsource)
+        self.unit = store.units[0]
+
 class TestTMXfile(test_base.TestTranslationStore):
     StoreClass = tmx.tmxfile
 
