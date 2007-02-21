@@ -73,7 +73,6 @@ class TranslationUnit(Statistics):
         self.source = source
         self.target = None
         self.notes = ""
-        self.fuzzy = False
         super(TranslationUnit, self).__init__()
 
     def __eq__(self, other):
@@ -221,11 +220,11 @@ class TranslationUnit(Statistics):
     def isfuzzy(self):
         """Indicates whether this unit is fuzzy."""
 
-        return self.fuzzy
+        return False
 
     def markfuzzy(self, value=True):
         """Marks the unit as fuzzy or not."""
-        self.fuzzy = value
+        pass
 
     def isheader(self):
         """Indicates whether this unit is a header."""

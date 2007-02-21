@@ -30,6 +30,17 @@ class TestTranslationUnit:
     """Tests a TranslationUnit.
     Derived classes can reuse these tests by pointing UnitClass to a derived Unit"""
     UnitClass = base.TranslationUnit
+
+    def setup_method(self, method):
+        self.unit = self.UnitClass("Test String")
+
+    def test_isfuzzy(self):
+        """Test that we can call isfuzzy() on a unit.
+        
+        The default return value for isfuzzy() should be False.
+        """
+        assert not self.unit.isfuzzy()
+
     def test_create(self):
         """tests a simple creation with a source string"""
         unit = self.UnitClass("Test String")
