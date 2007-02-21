@@ -22,6 +22,7 @@
 
 from PyQt4 import QtCore, QtGui
 from pootling.ui.Ui_Preference import Ui_frmPreference
+from translate.lang import factory
 import pootling.modules.World as World
 
 class Preference(QtGui.QDialog):
@@ -279,10 +280,11 @@ class Preference(QtGui.QDialog):
             self.ui.btnColorOverview.setWhatsThis("<h3>Overview Color</h3>You can click Choose button and select color ever you want to be used on Overview.")
             self.connect(self.ui.bntDefaultsColor, QtCore.SIGNAL("clicked()"), self.defaultColors)
             self.ui.bntDefaultsColor.setWhatsThis("<h3>Defaults color</h3>You can click here if you would like Overview, Source, Target and Comment as default color.")
-
+            
             self.connect(self.ui.okButton, QtCore.SIGNAL("clicked()"), self.accepted)
-            self.connect(self.ui.cbxFullLanguage, QtCore.SIGNAL("activated(int)"), self.setCodeIndex)
+            self.connect(self.ui.cbxFullLanguage, QtCore.SIGNAL("activatedd(int)"), self.setCodeIndex)
             self.connect(self.ui.cbxLanguageCode, QtCore.SIGNAL("activated(int)"), self.setLanguageIndex)
+            self.connect(self.ui.cbxLanguageCode, QtCore.SIGNAL("activated(const QString &)"), self.setNPlural)
             self.widget = ["overview","tuSource","tuTarget","comment", "overviewHeader"]
             language = ['Afar','Abkhazian','Avestan','Afrikaans','Akan','Amharic','Aragonese','Arabic','Assamese','Avaric','Aymara','Azerbaijani','Bashkir','Byelorussian;Belarusian','Bulgarian','Bihari','Bislama','Bambara','Bengali; Bangla','Tibetan','Breton','Bosnian','Catalan','Chechen','Chamorro','Corsican','Cree','Czech','Church Slavic','Chuvash','Welsh','Danish','German','Divehi','Dzongkha; Bhutani','Ewe','Greek','English','Esperanto','Spanish','Estonian','Basque','Persian','Fulah','Finnish','Fijian; Fiji','Faroese','French','Frisian','Irish','Scots; Gaelic','Gallegan; Galician','Guarani','Gujarati','Manx','Hausa','Hebrew','Hindi','Hiri Motu','Croatian','Haitian; Haitian Creole','Hungarian','Armenian','Herero','Interlingua','Indonesian','Interlingue','Igbo','Sichuan Yi','Inupiak','Ido','Icelandic','Italian','Inuktitut','Japanese','Javanese','Georgian','Kongo','Kikuyu','Kuanyama','Kazakh','Kalaallisut; Greenlandic','Khmer','Kannada','Korean','Kanuri','Kashmiri','Kurdish','Komi','Cornish','Kirghiz','Latin','Letzeburgesch','Ganda','Limburgish; Limburger; Limburgan','Lingala','Lao; Laotian','Lithuanian','Luba-Katanga','Latvian; Lettish','Malagasy','Marshall','Maori','Macedonian','Malayalam','Mongolian','Moldavian','Marathi','Malay','Maltese','Burmese','Nauru','Norwegian Bokmaal','Ndebele, North','Nepali','Ndonga','Dutch','Norwegian Nynorsk','Norwegian','Ndebele, South','Navajo','Chichewa; Nyanja','Occitan; Provenc,al','Ojibwa','(Afan) Oromo','Oriya','Ossetian; Ossetic','Panjabi; Punjabi','Pali','Polish','Pashto, Pushto','Portuguese','Quechua','Rhaeto-Romance','Rundi; Kirundi','Romanian','Russian','Kinyarwanda','Sanskrit','Sardinian','Sindhi','Northern Sami','Sango; Sangro','Sinhalese','Slovak','Slovenian','Samoan','Shona','Somali','Albanian','Serbian','Swati','Sesotho','Sundanese','Swedish','Swahili','Tamil','Telugu','Tajik','Thai','Tigrinya','Turkmen','Tagalog','Tswana','Tonga','Turkish','Tsonga','Tatar','Twi','Tahitian','Uighur','Ukrainian','Urdu','Uzbek','Venda','Vietnamese','Volapuk','Walloon','Wolof','Xhosa','Yiddish','Yoruba','Zhuang','Chinese','Zulu']
             self.ui.cbxFullLanguage.addItems(language)
@@ -294,15 +296,20 @@ class Preference(QtGui.QDialog):
         self.show()
         
     def setCodeIndex(self, index):
-        """SetIndex for Combo box
-        @param ind<h3> list's item correspond to index """
+        """SetIndex for language code combo box.
+        @param index: list's item correspond to index """
         self.ui.cbxLanguageCode.setCurrentIndex(index)
   
     def setLanguageIndex(self, index):
-        """SetIndex for Combo box
-        @param ind<h3> list's item correspond to index """
+        """SetIndex for language name combo box.
+        @param index: list's item correspond to index """
         self.ui.cbxFullLanguage.setCurrentIndex(index)
-
+    
+    def setNPlural(self, langCode):
+        """Set nplurals for specific language.
+        @param langCode: as Qstring type. """
+        language = factory.getlanguage(langCode)
+        self.ui.spinBox.setValue(language.nplurals)
         
 if __name__ == "__main__":
     import sys, os
