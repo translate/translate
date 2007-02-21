@@ -57,8 +57,12 @@ class TerminologyComparer:
         # First remove a possible disambiguating bracket at the end
         b = sre.sub("\s+\(.*\)\s*$", "", b)
 
-        if b in a[:self.MAX_LEN]:
-            return 100
+        if len(b) <= 2:
+            return 0
+            
+        pos = a[:self.MAX_LEN].find(b)
+        if pos >= 0:
+            return 100 - pos * 10 / len(a[:self.MAX_LEN])
 
         for ignorepattern in ignorepatterns:
             newb = sre.sub(ignorepattern[0], ignorepattern[1], b)
