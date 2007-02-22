@@ -14,9 +14,6 @@ from py import test
 class TestMonolingualUnit(test_base.TestTranslationUnit):
     UnitClass = base.TranslationUnit
 
-    def setup_method(self, method):
-        self.unit = self.UnitClass("Test Source String")
-
     def test_target(self):
       pass
 

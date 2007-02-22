@@ -8,9 +8,6 @@ from py import test
 class TestTxtUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = txt.TxtUnit
 
-    def setup_method(self, method):
-        self.unit = self.UnitClass("Test Source String")
-
     def test_markreview(self):
         assert test.raises(NotImplementedError, self.unit.markreviewneeded)
 

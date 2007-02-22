@@ -8,9 +8,6 @@ from py import test
 class TestTBXUnit(test_base.TestTranslationUnit):
     UnitClass = tbx.tbxunit
 
-    def setup_method(self, method):
-        self.unit = self.UnitClass("Test Source String")
-
     def test_markreview(self):
         assert test.raises(NotImplementedError, self.unit.markreviewneeded)
 

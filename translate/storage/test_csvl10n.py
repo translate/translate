@@ -8,9 +8,6 @@ from py import test
 class TestCSVUnit(test_base.TestTranslationUnit):
     UnitClass = csvl10n.csvunit
 
-    def setup_method(self, method):
-        self.unit = self.UnitClass("Test Source String")
-
     def test_markreview(self):
         assert test.raises(NotImplementedError, self.unit.markreviewneeded)
     

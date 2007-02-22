@@ -9,9 +9,6 @@ from py import test
 class TestPropUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = properties.propunit
 
-    def setup_method(self, method):
-        self.unit = self.UnitClass("Test Source String")
-
     def test_errors(self):
         """Assert the fact that geterrors() and adderror() is not (yet) implemented.
         This test needs to be removed when these methods get implemented."""
