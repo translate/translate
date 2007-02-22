@@ -29,18 +29,15 @@ from pootling.modules import FileDialog
 from pootling.modules import pickleTM
 
 class tmSetting(QtGui.QDialog):
-    """
-    Code for setting path of translation memory dialog
+    """Code for setting path of translation memory dialog."""
     
-    @signal poLookup(1): emitted when poLookup checkbox is changed
-    @signal tmxLookup(2): emitted when tmxLookup checkbox is changed
-    """
     def __init__(self, parent):
         QtGui.QDialog.__init__(self, parent)
         self.ui = None
         self.subscan = None
         
     def showDialog(self):
+        """Make the Translation Memory Setting dialog visible."""
         #lazy init
         if (not self.ui):
             self.ui = Ui_tmsetting()
@@ -63,7 +60,7 @@ class tmSetting(QtGui.QDialog):
         self.show()
     
     def loadItemToList(self):
-        '''load remembered item to list'''
+        """Load remembered item to list."""
         TMpath = World.settings.value("TMPath").toStringList()
         disableTM = set(World.settings.value("disabledTM").toStringList())
         for path in TMpath:
@@ -72,13 +69,15 @@ class tmSetting(QtGui.QDialog):
             self.ui.listWidget.addItem(item)
         
     def showFileDialog(self):
-        '''show Translation Memory setting dialog'''
+        """Show Translation Memory setting dialog."""
         self.filedialog.show()
     
     def addLocation(self, TMpath):
-        '''add TMpath to listWidget
-        @param TMpath: filename as string
-        '''
+        """Add TMpath to TM list.
+        
+        @param TMpath: Filename as string
+        
+        """
         items = self.ui.listWidget.findItems(TMpath, QtCore.Qt.MatchCaseSensitive)
         if (not items):
             item = QtGui.QListWidgetItem(TMpath)
@@ -86,7 +85,7 @@ class tmSetting(QtGui.QDialog):
             self.ui.listWidget.addItem(item)
     
     def removeLocation(self):
-        '''remove selected path and their TMs from list and TM list'''
+        """Remove selected path TM list."""
         items = self.ui.listWidget.selectedItems()
         for item in items:
             self.ui.listWidget.setCurrentItem(item)
@@ -96,8 +95,11 @@ class tmSetting(QtGui.QDialog):
         World.settings.setValue("diveIntoSub", QtCore.QVariant(self.ui.checkBox.isChecked()))
         
     def closeEvent(self, event):
-        '''rememer TMpath before closing
-        @param event: CloseEvent Object'''
+        """Rememer TMpath before closing.
+        
+        @param event: CloseEvent Object
+        
+        """
         stringlist = QtCore.QStringList()
         for i in range(self.ui.listWidget.count()):
             path = self.ui.listWidget.item(i).text()
@@ -106,7 +108,11 @@ class tmSetting(QtGui.QDialog):
         QtGui.QDialog.closeEvent(self, event)
     
     def createTM(self):
-        '''build base object of checked files in lists'''
+        """Build base object of checked files in lists.
+        
+        @signal matcher: This signal is emitted when there is matcher
+        
+        """
         stringlist = []
         count = self.ui.listWidget.count()
 
@@ -125,13 +131,13 @@ class tmSetting(QtGui.QDialog):
         self.close()
 
     def setChecked(self):
-        '''set state of selectedItems as checked'''
+        """Set state of selectedItems as checked."""
         items = self.ui.listWidget.selectedItems()
         for item in items:
             item.setCheckState(QtCore.Qt.Checked)
         
     def setUnchecked(self):
-        '''set state of selectedItems as unchecked'''
+        """Set state of selectedItems as unchecked."""
         items = self.ui.listWidget.selectedItems()
         for item in items:
             item.setCheckState(QtCore.Qt.Unchecked)
