@@ -155,6 +155,8 @@ msgstr "unable to read file"
         self.assertEqual(self.operator.headerData(), ('', {'POT-Creation-Date': u'2005-05-18 21:23+0200', 'PO-Revision-Date': u'2006-11-27 11:50+0700', 'Project-Id-Version': u'cupsdconf'}))
     
     def testMakeNewHeader(self):
+        """Test that it really createsa new header based on a given information in headerDic."""
+        
         headerDic = {'charset':"CHARSET", 'encoding':"ENCODING", 'project_id_version': '1.po', 'pot_creation_date':None, 'po_revision_date': False, 'last_translator': 'AAA', 'language_team': 'KhmerOS', 'mime_version':None, 'plural_forms':None, 'report_msgid_bugs_to':None}
         
 ##        self.assertEqual(self.operator.store.x_generator, World.settingOrg + ' ' + World.settingApp + ' ' + __version__.ver)
@@ -164,7 +166,8 @@ msgstr "unable to read file"
         
         # test self.store is instance of poheader.poheader()
         self.operator.store = po.pofile.parsestring(self.message)
-        self.assertEqual(self.operator.makeNewHeader(headerDic), {'PO-Revision-Date': time.strftime("%Y-%m-%d %H:%M%z"), 'X-Generator': 'Pootling 0.1', 'Content-Transfer-Encoding': 'ENCODING', 'Plural-Forms': 'nplurals=INTEGER; plural=EXPRESSION;', 'Project-Id-Version': '1.po', 'Report-Msgid-Bugs-To': '', 'Last-Translator': 'AAA', 'Language-Team': 'KhmerOS', 'POT-Creation-Date': time.strftime("%Y-%m-%d %H:%M%z"), 'Content-Type': 'text/plain; charset=CHARSET', 'MIME-Version': '1.0'})
+        result = {'PO-Revision-Date': time.strftime("%Y-%m-%d %H:%M%z"), 'X-Generator': World.settingApp + ' ' + __version__.ver, 'Content-Transfer-Encoding': 'ENCODING', 'Plural-Forms': 'nplurals=INTEGER; plural=EXPRESSION;', 'Project-Id-Version': '1.po', 'Report-Msgid-Bugs-To': '', 'Last-Translator': 'AAA', 'Language-Team': 'KhmerOS', 'POT-Creation-Date': time.strftime("%Y-%m-%d %H:%M%z"), 'Content-Type': 'text/plain; charset=CHARSET', 'MIME-Version': '1.0'}
+        self.assertEqual(self.operator.makeNewHeader(headerDic), result)
     
     def testUpdateNewHeader(self):
         self.message = '''msgid ""
@@ -186,11 +189,12 @@ msgstr "unable to read file"
         self.operator.store = po.pofile.parsestring(self.message)
         otherComment = "hello comment"
         headerDic = {"POT-Creation-Date":" 2005-05-18 21:23+0200",
-"PO-Revision-Date":" 2006-11-27 11:50+0700",
+"PO-Revision-Date":" 2007-02-22 11:50+0700",
 "Project-Id-Version": "cupsdconf_new", "AAA":"BBB"}
         self.operator.updateNewHeader(otherComment, headerDic)
         self.assertEqual(self.operator.store.header().getnotes(), "hello comment")
-        self.assertEqual(self.operator.store.header().target, u'Project-Id-Version: cupsdconf_new\nReport-Msgid-Bugs-To: \nPOT-Creation-Date:  2005-05-18 21:23+0200\nPO-Revision-Date:  2006-11-27 11:50+0700\nLast-Translator: FULL NAME <EMAIL@ADDRESS>\nLanguage-Team: LANGUAGE <LL@li.org>\nMIME-Version: 1.0\nContent-Type: text/plain; charset=CHARSET\nContent-Transfer-Encoding: ENCODING\nPlural-Forms: nplurals=INTEGER; plural=EXPRESSION;\nX-Generator: Translate Toolkit 0.10.90\nAAA: BBB\n')
+        result = u'Project-Id-Version: cupsdconf_new\nReport-Msgid-Bugs-To: \nPOT-Creation-Date:  2005-05-18 21:23+0200\nPO-Revision-Date:  2007-02-22 11:50+0700\nLast-Translator: FULL NAME <EMAIL@ADDRESS>\nLanguage-Team: LANGUAGE <LL@li.org>\nMIME-Version: 1.0\nContent-Type: text/plain; charset=CHARSET\nContent-Transfer-Encoding: ENCODING\nPlural-Forms: nplurals=INTEGER; plural=EXPRESSION;\nX-Generator: ' + self.operator.store.x_generator + '\nAAA: BBB\n'
+        self.assertEqual(self.operator.store.header().target, result)
         
     def testSaveStoreToFile(self):
         QtCore.QObject.connect(self.operator, QtCore.SIGNAL("headerAuto"), self.slot)
