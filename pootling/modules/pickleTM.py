@@ -49,9 +49,7 @@ def getStore(TMpath):
     path = str(TMpath)
     
     if (os.path.isfile(path)):
-        store = createStore(path)
-        if (store):
-            return store
+        return createStore(path)
     
     if (os.path.isdir(path)):
         storelist = []
@@ -64,8 +62,7 @@ def getStore(TMpath):
             if (not diveSub):
                 # not dive into subfolder
                 break
-        if (storelist):
-            return storelist
+        return storelist
     
 def pickleMatcher(matcher):
     """Pickle matcher of TM locations.
@@ -99,10 +96,13 @@ def getMatcher():
         tmpFile.close()
     return matcher
 
-def buildMatcher(stringlist):
+def buildMatcher(stringlist, max_candidates, min_similarity,  max_string_len):
     """Build new matcher of TM locations and dump it to file.
     
-    @param stringlist: list of TM locations as string of path
+    @param stringlist: List of TM locations as string of path
+    @param max_candidates: The maximum number of candidates that should be assembled,
+    @param min_similarity: The minimum similarity that must be attained to be included in
+    @param max_string_len: maximum length of source string to be searched.
     @return: matcher object
     """
     store = None
@@ -114,6 +114,6 @@ def buildMatcher(stringlist):
                 storelist.append(store)
             else:
                 storelist += store
-    matcher = match.matcher(storelist)
+    matcher = match.matcher(storelist, max_candidates, min_similarity,  max_string_len)
     pickleMatcher(matcher)
     return matcher
