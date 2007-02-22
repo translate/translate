@@ -120,17 +120,11 @@ class tmSetting(QtGui.QDialog):
         @signal matcher: This signal is emitted when there is matcher
         
         """
-        stringlist = []
-        count = self.ui.listWidget.count()
-
-        for i in range(count):
-            item = self.ui.listWidget.item(i)
-            if (item.checkState()):
-                stringlist.append(item.text())
+        checkedItemList = self.getPathList()[0]
         
         matcher = None
         try:
-            matcher = pickleTM.buildMatcher(stringlist, self.ui.spinMaxCandidate.value(), self.ui.spinSimilarity.value(),  self.ui.spinMaxLen.value())
+            matcher = pickleTM.buildMatcher(checkedItemList, self.ui.spinMaxCandidate.value(), self.ui.spinSimilarity.value(),  self.ui.spinMaxLen.value())
         except Exception, e:
             self.emit(QtCore.SIGNAL("noTM"), str(e))
         
@@ -150,16 +144,28 @@ class tmSetting(QtGui.QDialog):
         for item in items:
             item.setCheckState(QtCore.Qt.Unchecked)
         self.setDisabledTM()
-
-    def setDisabledTM(self):
-        '''remember unchecked TM path as disabled TM'''
-        stringlist = QtCore.QStringList()
+    
+    def getPathList(self):
+        """Return list of path that marked as checked and unchecked separately.
+        
+        @return: A tuple of checkedItemList and unCheckedItemList
+        """
+        checkedItemList = QtCore.QStringList()
+        unCheckedItemList = QtCore.QStringList()
         count = self.ui.listWidget.count()
         for i in range(count):
             item = self.ui.listWidget.item(i)
-            if (not item.checkState()):
-                stringlist.append(item.text())
-        World.settings.setValue("disabledTM", QtCore.QVariant(stringlist))
+            if (item.checkState()):
+                checkedItemList.append(item.text())
+            else:
+                unCheckedItemList.append(item.text())
+        return (checkedItemList, unCheckedItemList)
+        
+    def setDisabledTM(self):
+        '''Remember unchecked TM path as disabled TM.'''
+
+        unCheckedItemList = self.getPathList()[1]
+        World.settings.setValue("disabledTM", QtCore.QVariant(unCheckedItemList))
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
