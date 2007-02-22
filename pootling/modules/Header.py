@@ -29,6 +29,10 @@ from translate.storage import poheader
 import __version__
 
 class Header(QtGui.QDialog):
+    """Hold infomation of Header file.
+    
+    @signal readyForSave(True): emitted when there is something changed.
+    """
     def __init__(self, parent, operator):
         QtGui.QDialog.__init__(self, parent)
         self.operator = operator
@@ -41,7 +45,7 @@ class Header(QtGui.QDialog):
         self.headerDic = {}
        
     def showDialog(self):
-        """make the dialog visible
+        """Make the dialog visible with header infomation fill in, if any.
         """
         # lazy init 
         if (not self.ui):
@@ -72,32 +76,55 @@ class Header(QtGui.QDialog):
             self.ui.tableHeader.verticalHeader().hide()
         self.ui.tableHeader.clear()
         self.ui.tableHeader.setRowCount(0)
+        #Obtain header information from file
         otherComments, self.headerDic = self.operator.headerData()
+        #remember for reset usage
+        self.oldOtherComments = otherComments
+        self.oldHeaderDic = self.headerDic
+        
         if (self.headerDic):
             self.addItemToTable(self.headerDic)
             self.btnRMStat()
+        
         if (self.ui.tableHeader.rowCount() != 0):
             self.ui.btnDown.setEnabled(True)
             self.ui.btnUp.setEnabled(True)
             self.ui.tableHeader.setCurrentCell(0,0)
+        
         otherCommentsStr = " "
         if (otherComments):
             for i in range(len(otherComments)):
+                # The "#" charactor is not important to show to translator  
                 otherCommentsStr += otherComments[i].lstrip("#")
         self.ui.txtOtherComments.setPlainText(unicode(otherCommentsStr))
-        self.oldOtherComments = self.ui.txtOtherComments.toPlainText()
         self.show()
+    
+    def addItemToTable(self, headerDic):
+        """Add items to the table.
+        @ param headerDic: a dictionary of header information for putting in header table"""
+        #rowCount according to the old headerDic length
+        self.ui.tableHeader.setRowCount(len(headerDic))
+        i = 0
+        for key, value in headerDic.items():
+            item0 = QtGui.QTableWidgetItem(QtCore.QString(key))
+            item1 = QtGui.QTableWidgetItem(QtCore.QString(value))
+            self.ui.tableHeader.setItem(i, 0, item0)
+            self.ui.tableHeader.setItem(i, 1, item1)
+            i += 1
+            
     def emitReadyForSave(self):
         self.emit(QtCore.SIGNAL("readyForSave"), True)
         
     def reset(self):
-        """Reset back the original header"""
-        self.addItemToTable(self.headerDic)
+        """Reset back the original header."""
+        if (len(self.oldHeaderDic) != 0):
+            self.addItemToTable(self.oldHeaderDic)
         self.ui.txtOtherComments.setPlainText(self.oldOtherComments)
         
     def moveItem(self, distance) :
-        """ Move the selected item up or down
-        @param distance is a difference for the current row"""
+        """ Move the selected item up or down.
+        
+        @param distance: A difference for the current row"""
         
         table = self.ui.tableHeader
         currRow = table.currentRow()
@@ -111,15 +138,15 @@ class Header(QtGui.QDialog):
             table.setCurrentCell(targetRow, table.currentColumn())
                 
     def moveUp(self):
-        """ Move the selected item up"""
+        """Move the selected item up."""
         self.moveItem(-1)
         
     def moveDown(self):
-        """ Move the selected item down"""
+        """Move the selected item down."""
         self.moveItem(+1)
         
     def insertNewRow(self):
-        """ Insert a row befor the selected row """
+        """Insert a row befor the selected row."""
         self.ui.btnDeleteRow.setEnabled(True)
         table = self.ui.tableHeader
         currRow = table.currentRow()
@@ -129,13 +156,14 @@ class Header(QtGui.QDialog):
         table.setCurrentCell(currRow, table.currentColumn())
         
     def deleteRow(self):
-        """ Delete selected row"""
+        """Delete selected row."""
         self.btnRMStat()
         if (self.stat == False):
             return
         self.ui.tableHeader.removeRow(self.ui.tableHeader.currentRow())
 
     def btnRMStat(self):
+        """Enabled/disabled status to button DeleteRow."""
         if (self.ui.tableHeader.rowCount() > 0 ):
             self.ui.btnDeleteRow.setEnabled(True)
             self.stat = True
@@ -144,7 +172,7 @@ class Header(QtGui.QDialog):
             self.stat = False
 
     def naviState(self, current, previous):
-        """ enabled/ disabled status of button moveup/ movedown"""
+        """Enabled/ disabled status of button moveup/ movedown."""
         currRow = self.ui.tableHeader.currentRow()
         rowCount = self.ui.tableHeader.rowCount()
         upEnabled = False
@@ -155,23 +183,13 @@ class Header(QtGui.QDialog):
         self.ui.btnUp.setEnabled(upEnabled)
         self.ui.btnDown.setEnabled(downEnabled)
     
-    def addItemToTable(self, headerDic):
-        """ Add items to the table
-        @ param headerDic: a dictionary of header information for putting in header table"""
-        #rowCount according to the old headerDic length
-        self.ui.tableHeader.setRowCount(len(headerDic))
-        i = 0
-        for key, value in headerDic.items():
-            item0 = QtGui.QTableWidgetItem(QtCore.QString(key))
-            item1 = QtGui.QTableWidgetItem(QtCore.QString(value))
-            self.ui.tableHeader.setItem(i, 0, item0)
-            self.ui.tableHeader.setItem(i, 1, item1)
-            i += 1
-     
     def applySettings(self):
-        """set user profile from Qsettings into the tableHeader
-             return a header as dictionary """
-        userProfileDic = {}
+        """Set user profile from Qsettings into the tableHeader.
+        
+            @return: Return a header as dictionary """
+            
+        userProfileDic = {} # a dictionary store info from preference
+        
         userName = World.settings.value("UserName", QtCore.QVariant(""))
         emailAddress = World.settings.value("EmailAddress", QtCore.QVariant(""))
         FullLanguage = World.settings.value("FullLanguage", QtCore.QVariant(""))
@@ -180,20 +198,29 @@ class Header(QtGui.QDialog):
         TimeZone = World.settings.value("TimeZone", QtCore.QVariant(""))
         Last_Translator = userName.toString() + '<' + emailAddress.toString() + '>'
         Language_Team =  FullLanguage.toString() + '<' + SupportTeam.toString() + '>'
-         #if header doesn't exist, call makeheader, otherwise, only update from setting
-        #if there is no user profile 
+        nPlural = World.settings.value("nPlural", QtCore.QVariant(""))
+        pluralEquation = World.settings.value("equation", QtCore.QVariant(""))
+        
+        # test if it is a po or poxliff header.
         if (not isinstance(self.operator.store, poheader.poheader)):
             return
         header = self.operator.store.header()
+        #if header doesn't exist, call makeheader, otherwise, only update from setting
         if not header:
             (path, fileName) = os.path.split(str(self.operator.fileName).lower())
-            userProfileDic = {'charset':"CHARSET", 'encoding':"ENCODING", 'project_id_version': fileName, 'pot_creation_date':None, 'po_revision_date': False, 'last_translator': str(Last_Translator), 'language_team':str(Language_Team), 'mime_version':None, 'plural_forms':None, 'report_msgid_bugs_to':None}
+            userProfileDic = {'charset':"CHARSET", 'encoding':"ENCODING", 'project_id_version': fileName, 'pot_creation_date':None, 'po_revision_date': False, 'last_translator': str(Last_Translator), 'language_team':str(Language_Team), 'mime_version':None, 'plural_forms':None, 'report_msgid_bugs_to':'translate-editor@lists.sourceforge.net'}
             self.headerDic = self.operator.makeNewHeader(userProfileDic)
         else:
             self.headerDic['Language-Team'] = str(Language_Team)
             self.headerDic['Last-Translator'] = str(Last_Translator)
             self.headerDic['PO-Revision-Date'] = time.strftime("%Y-%m-%d %H:%M%z")
+            self.headerDic['Report-Msgid-Bugs-To'] = 'translate-editor@lists.sourceforge.net'
+            self.headerDic['Plural-Forms'] = 'nplurals=' + nPlural.toString() + '; plural=' + pluralEquation.toString() + ';'
             self.headerDic['X-Generator'] = World.settingApp + ' ' + __version__.ver
+        #Plural form should be updated either the header is just created or it is already in the file.
+        self.operator.store.updateheaderplural(int(nPlural.toString()), str(pluralEquation.toString()))
+        
+        #TODO: why do we need this?
         if (len(self.headerDic) == 0):
             return
         if (self.ui): 
@@ -201,13 +228,13 @@ class Header(QtGui.QDialog):
         return self.headerDic
     
     def updateOnSave(self):
-        """ slot for headerAuto """
+        """Slot for headerAuto."""
         otherComments, self.headerDic = self.operator.headerData()
         self.operator.updateNewHeader(otherComments, self.applySettings())
         
     def accepted(self):
         """send header information"""
-        newHeaderDic = {}
+        newHeaderDic = {} # a dictionary that hold all header infomation from header table.
         #set all the infomation into a dictionary
         for i in range(self.ui.tableHeader.rowCount()):
                 newHeaderDic[str(self.ui.tableHeader.item(i, 0).text())] = str(self.ui.tableHeader.item(i,1).text())
