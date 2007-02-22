@@ -197,8 +197,11 @@ class Operator(QtCore.QObject):
             return ("", {})
 
     def makeNewHeader(self, headerDic):
-          """receive headerDic as dictionary, and return header as string"""
-          #TODO: move to world
+          """Create a header with the information from headerDic.
+          
+          @param headerDic: a dictionary of arguments that are neccessary to form a header
+          @return: a dictionary with the header items"""
+
           if (hasattr(self.store, "x_generator")):
             self.store.x_generator = World.settingApp + ' ' + __version__.ver
           if isinstance(self.store, poheader.poheader):
@@ -207,7 +210,11 @@ class Operator(QtCore.QObject):
           else: return {}
           
     def updateNewHeader(self, othercomments, headerDic):
-        """will update header"""
+        """Will update the existing header.
+        
+        @param othercomments: The comment of header file
+        @param headerDic: A header dictionary that have information about header
+        """
         #TODO: need to make it work with xliff file
         if (not isinstance(self.store, poheader.poheader)):
             return {}
