@@ -26,9 +26,12 @@ from translate.storage import factory
 from translate.search import match
 
 def createStore(file):
-    '''create a base object from file
+    """Create a base object from file.
+    
     @param file: as a file path or object
-    '''
+    @return: store as a base object
+    
+    """
     try:
         store = factory.getobject(file)
     except:
@@ -36,9 +39,12 @@ def createStore(file):
     return store
 
 def getStore(TMpath):
-    '''return base object as store or storelist
+    """Return base object as store or storelist.
+    
     @param TMpath: file or translation memory path as string
-    @return store or storelist'''
+    @return store or storelist
+    
+    """
     diveSub = World.settings.value("diveIntoSub").toBool()
     path = str(TMpath)
     
@@ -62,8 +68,11 @@ def getStore(TMpath):
             return storelist
     
 def pickleMatcher(matcher):
-    '''pickle matcher of TM locations
-    @param matcher: matcher of TM files or locations'''
+    """Pickle matcher of TM locations.
+    
+    @param matcher: matcher of TM files or locations
+    
+    """
     filename = World.settings.value("fileStoredDic").toString()
     if (not filename):
         handle, filename = tempfile.mkstemp('','PKL')
@@ -74,8 +83,11 @@ def pickleMatcher(matcher):
     World.settings.setValue("fileStoredDic", QtCore.QVariant(filename))
 
 def getMatcher():
-    '''unpickle matcher from file
-    @return matcher: matcher of TM locations'''
+    """Unpickle matcher from file.
+    
+    @return matcher: matcher of TM locations
+    
+    """
     matcher = None
     filename = World.settings.value("fileStoredDic").toString()
     if (filename):
@@ -88,9 +100,11 @@ def getMatcher():
     return matcher
 
 def buildMatcher(stringlist):
-    '''build new matcher of TM locations
+    """Build new matcher of TM locations and dump it to file.
+    
     @param stringlist: list of TM locations as string of path
-    '''
+    @return: matcher object
+    """
     store = None
     storelist = []
     for i in range(len(stringlist)):
