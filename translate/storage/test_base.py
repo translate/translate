@@ -43,12 +43,13 @@ class TestTranslationUnit:
 
     def test_create(self):
         """tests a simple creation with a source string"""
-        unit = self.UnitClass("Test String")
+        unit = self.unit
+        print 'unit.source:', unit.source
         assert unit.source == "Test String"
 
     def test_eq(self):
         """tests equality comparison"""
-        unit1 = self.UnitClass("Test String")
+        unit1 = self.unit
         unit2 = self.UnitClass("Test String")
         unit3 = self.UnitClass("Test String")
         unit4 = self.UnitClass("Blessed String")
@@ -67,7 +68,7 @@ class TestTranslationUnit:
         assert unit1 != unit6
 
     def test_target(self):
-        unit = self.UnitClass("Test String")
+        unit = self.unit
         assert not unit.target
         unit.settarget("Stressed Ting")
         assert unit.target == "Stressed Ting"
@@ -79,7 +80,7 @@ class TestTranslationUnit:
     def test_escapes(self):
         """Test all sorts of characters that might go wrong in a quoting and 
         escaping roundtrip."""
-        unit = self.UnitClass('bla')
+        unit = self.unit
         specials = ['Fish & chips', 'five < six', 'six > five', 'five &lt; six',
                     'Use &nbsp;', 'Use &amp;nbsp;', 'Use &amp;amp;nbsp;'
                     'A "solution"', "skop 'n bal", '"""', "'''", u'µ',
@@ -94,7 +95,7 @@ class TestTranslationUnit:
         """Test difficult characters that might go wrong in a quoting and 
         escaping roundtrip."""
 
-        unit = self.UnitClass('bla')
+        unit = self.unit
         specials = ['\\n', '\\t', '\\"', '\\ ',
                     '\\\n', '\\\t', '\\\\n', '\\\\t', '\\\\r', '\\\\"',
                     '\\r\\n', '\\\\r\\n', '\\r\\\\n', '\\\\n\\\\r']
@@ -106,7 +107,7 @@ class TestTranslationUnit:
 
     def test_markreview(self):
         """Tests if we can mark the unit to need review."""
-        unit = self.UnitClass("Test String")
+        unit = self.unit
         # We have to explicitly set the target to nothing, otherwise xliff
         # tests will fail.
         # Can we make it default behavior for the UnitClass?
@@ -134,7 +135,7 @@ class TestTranslationUnit:
 
     def test_note_sanity(self):
         """Tests that all subclasses of the base behaves consistently with regards to notes."""
-        unit = self.UnitClass("Test String")
+        unit = self.unit
 
         unit.addnote("Test note 1", origin="translator")
         unit.addnote("Test note 2", origin="translator")
@@ -155,7 +156,7 @@ class TestTranslationUnit:
 
     def test_errors(self):
         """Tests that we can add and retrieve error messages for a unit."""
-        unit = self.UnitClass("Test String")
+        unit = self.unit
 
         # The base class methods won't be implemented:
         if self.__module__.endswith('test_base'):
