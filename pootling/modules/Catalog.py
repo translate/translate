@@ -87,7 +87,9 @@ class Catalog(QtGui.QMainWindow):
         self.connect(self.ui.actionAboutQt, QtCore.SIGNAL("triggered()"), QtGui.qApp, QtCore.SLOT("aboutQt()"))
         
         self.connect(self.Catalog, QtCore.SIGNAL("updateCatalog"), self.updateCatalog)
+        self.connect(self.ui.tableCatalog, QtCore.SIGNAL("cellDoubleClicked(int, int)"), self.emitOpenFile)
         
+        self.normalState = QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
         self.setupCheckbox()
 
     def setHeaderLabel(self):
@@ -170,24 +172,30 @@ class Catalog(QtGui.QMainWindow):
         self.ui.tableCatalog.setRowCount(row + 1)
         
         item = QtGui.QTableWidgetItem(filename)
+        item.setFlags(self.normalState)
         self.ui.tableCatalog.setItem(row, 0, item)
         item = QtGui.QTableWidgetItem(str(store.fuzzy_units()))
+        item.setFlags(self.normalState)
         self.ui.tableCatalog.setItem(row, 1, item)
         item = QtGui.QTableWidgetItem(str(store.untranslated_unitcount()))
+        item.setFlags(self.normalState)
         self.ui.tableCatalog.setItem(row, 2, item)
         totalUnitCount = store.fuzzy_units() + store.untranslated_unitcount() + store.translated_unitcount()
         item = QtGui.QTableWidgetItem(str(totalUnitCount))
+        item.setFlags(self.normalState)
         self.ui.tableCatalog.setItem(row, 3, item)
         
         if hasattr(store, "parseheader"):
             headerDic = store.parseheader()
             try:
                 item = QtGui.QTableWidgetItem(str(headerDic["Last-Translator"]))
+                item.setFlags(self.normalState)
                 self.ui.tableCatalog.setItem(row, 6, item)
             except:
                 pass
             try:
                 item = QtGui.QTableWidgetItem(str(headerDic["PO-Revision-Date"]))
+                item.setFlags(self.normalState)
                 self.ui.tableCatalog.setItem(row, 5, item)
             except:
                 pass
@@ -227,7 +235,12 @@ class Catalog(QtGui.QMainWindow):
             self.Catalog.ui.chbtranslator.setCheckState(QtCore.Qt.Unchecked)
         else:
             self.Catalog.ui.chbtranslator.setCheckState(QtCore.Qt.Checked)
-
+    
+    def emitOpenFile(self, row, col):
+        item = self.ui.tableCatalog.item(row, 0)
+        filename = str(item.text())
+        self.emit(QtCore.SIGNAL("openFile"), filename)
+    
 if __name__ == "__main__":
     import sys, os
     app = QtGui.QApplication(sys.argv)

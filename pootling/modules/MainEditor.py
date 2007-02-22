@@ -260,6 +260,8 @@ class MainWindow(QtGui.QMainWindow):
         tuViewHidden = World.settings.value("TuViewHidden", QtCore.QVariant(False))
         self.dockTUview.setHidden(tuViewHidden.toBool())
         self.findBar.setHidden(True)
+        
+        self.connect(self.Catalog, QtCore.SIGNAL("openFile"), self.openFile)
     
     def clearOpenRecent(self):
         """Clear only the recentFileList, not the whole Qsetting """
