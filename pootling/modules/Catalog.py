@@ -24,7 +24,6 @@
 from PyQt4 import QtCore, QtGui
 from pootling.ui.Ui_Catalog import Ui_Catalog
 from pootling.modules.CatalogSetting import CatalogSetting
-##from pootling.modules.Operator import Operator
 from pootling.modules.AboutEditor import AboutEditor
 from translate.storage import factory
 from Pootle import versioncontrol
@@ -38,12 +37,10 @@ class Catalog(QtGui.QMainWindow):
 
     def __init__(self, parent = None):
         QtGui.QMainWindow.__init__(self, parent)
-        self.refreshTimer = QtCore.QTimer()
-        self.refreshTimer.setInterval(2000)
         self.ui = Ui_Catalog()
         self.ui.setupUi(self)
         self.resize(720,400)
-        
+
         # set up table appearance and behavior
         self.headerLabels = [self.tr("Name"), self.tr("Fuzzy"), self.tr("Untranslated"), self.tr("Total"), self.tr("CVS/SVN Status"), self.tr("Last Revision"), self.tr("Last Translator")]
         self.ui.tableCatalog.setColumnCount(len(self.headerLabels))
@@ -57,6 +54,10 @@ class Catalog(QtGui.QMainWindow):
 
         # File menu action
         self.connect(self.ui.actionQuit, QtCore.SIGNAL("triggered()"), QtCore.SLOT("close()"))
+
+        # Edit menu action
+        self.ui.actionReload.setEnabled(True)
+        self.connect(self.ui.actionReload, QtCore.SIGNAL("triggered()"), self.updateCatalog)
 
         # Project menu action
         self.Catalog = CatalogSetting(self)
@@ -102,8 +103,6 @@ class Catalog(QtGui.QMainWindow):
                 else:
                     self.ui.tableCatalog.hideColumn(self.headerLabels.index(text))
                     World.settings.setValue("Catalog." + text, QtCore.QVariant(False))
-                    
-##            World.settings.setValue("rememberHeader", QtCore.QVariant(self.headerLabels))
 
     def updateProgress(self, value):
         if (not self.progressBar.isVisible()):
@@ -199,7 +198,7 @@ class Catalog(QtGui.QMainWindow):
                 self.ui.tableCatalog.setItem(row, 5, item)
             except:
                 pass
-    
+
     def setupCheckbox(self):
         if not (World.settings.value("Catalog.Name").toBool()):
             self.Catalog.ui.chbname.setCheckState(QtCore.Qt.Unchecked)
