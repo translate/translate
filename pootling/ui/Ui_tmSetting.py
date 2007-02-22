@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/ks/programming/wordforge/trunk/pootling/ui/tmSetting.ui'
 #
-# Created: Wed Feb 21 15:32:01 2007
+# Created: Thu Feb 22 14:19:00 2007
 #      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!
@@ -113,7 +113,7 @@ class Ui_tmsetting(object):
 
         self.spinSimilarity = QtGui.QSpinBox(self.tab_4)
         self.spinSimilarity.setMaximum(100)
-        self.spinSimilarity.setMinimum(1)
+        self.spinSimilarity.setMinimum(75)
         self.spinSimilarity.setSingleStep(1)
         self.spinSimilarity.setProperty("value",QtCore.QVariant(75))
         self.spinSimilarity.setObjectName("spinSimilarity")
@@ -128,7 +128,7 @@ class Ui_tmsetting(object):
         self.gridlayout2.addWidget(self.chkCaseSensitive,3,0,1,1)
 
         self.spinMaxCandidate = QtGui.QSpinBox(self.tab_4)
-        self.spinMaxCandidate.setMaximum(100)
+        self.spinMaxCandidate.setMaximum(10)
         self.spinMaxCandidate.setMinimum(1)
         self.spinMaxCandidate.setProperty("value",QtCore.QVariant(10))
         self.spinMaxCandidate.setObjectName("spinMaxCandidate")
@@ -155,7 +155,7 @@ class Ui_tmsetting(object):
         self.gridlayout.addWidget(self.btnOk,1,1,1,1)
 
         self.retranslateUi(tmsetting)
-        self.tabOptions.setCurrentIndex(0)
+        self.tabOptions.setCurrentIndex(2)
         QtCore.QMetaObject.connectSlotsByName(tmsetting)
         tmsetting.setTabOrder(self.tabOptions,self.listWidget)
         tmsetting.setTabOrder(self.listWidget,self.btnAdd)

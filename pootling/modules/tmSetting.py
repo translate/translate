@@ -54,6 +54,7 @@ class tmSetting(QtGui.QDialog):
             self.connect(self.ui.btnEnable, QtCore.SIGNAL("clicked(bool)"), self.setChecked)
             self.connect(self.ui.btnDisable, QtCore.SIGNAL("clicked(bool)"), self.setUnchecked)
             self.connect(self.ui.checkBox, QtCore.SIGNAL("stateChanged(int)"), self.rememberOptions)
+            self.connect(self.ui.listWidget, QtCore.SIGNAL("itemClicked(QListWidgetItem *)"), self.setDisabledTM)
             self.ui.listWidget.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
         self.ui.checkBox.setChecked(World.settings.value("diveIntoSub").toBool())
         self.ui.progressBar.setValue(0)
@@ -67,7 +68,10 @@ class tmSetting(QtGui.QDialog):
             item = QtGui.QListWidgetItem(path)
             item.setCheckState((not path in disableTM) and QtCore.Qt.Checked or QtCore.Qt.Unchecked)
             self.ui.listWidget.addItem(item)
-        
+        self.ui.spinSimilarity.setValue(World.settings.value("Similarity", QtCore.QVariant(75)).toInt()[0])
+        self.ui.spinMaxCandidate.setValue(World.settings.value("Max_Candidates", QtCore.QVariant(75)).toInt()[0])
+        self.ui.spinMaxLen.setValue(World.settings.value("Max_String_len", QtCore.QVariant(75)).toInt()[0])
+
     def showFileDialog(self):
         """Show Translation Memory setting dialog."""
         self.filedialog.show()
@@ -105,6 +109,9 @@ class tmSetting(QtGui.QDialog):
             path = self.ui.listWidget.item(i).text()
             stringlist.append(path)
         World.settings.setValue("TMPath", QtCore.QVariant(stringlist))
+        World.settings.setValue("Similarity", QtCore.QVariant(self.ui.spinSimilarity.value()))
+        World.settings.setValue("Max_Candidates", QtCore.QVariant(self.ui.spinMaxCandidate.value()))
+        World.settings.setValue("Max_String_len", QtCore.QVariant(self.ui.spinMaxLen.value()))
         QtGui.QDialog.closeEvent(self, event)
     
     def createTM(self):
@@ -123,7 +130,7 @@ class tmSetting(QtGui.QDialog):
         
         matcher = None
         try:
-            matcher = pickleTM.buildMatcher(stringlist)
+            matcher = pickleTM.buildMatcher(stringlist, self.ui.spinMaxCandidate.value(), self.ui.spinSimilarity.value(),  self.ui.spinMaxLen.value())
         except Exception, e:
             self.emit(QtCore.SIGNAL("noTM"), str(e))
         
@@ -135,13 +142,25 @@ class tmSetting(QtGui.QDialog):
         items = self.ui.listWidget.selectedItems()
         for item in items:
             item.setCheckState(QtCore.Qt.Checked)
-        
+        self.setDisabledTM()
+
     def setUnchecked(self):
         """Set state of selectedItems as unchecked."""
         items = self.ui.listWidget.selectedItems()
         for item in items:
             item.setCheckState(QtCore.Qt.Unchecked)
-        
+        self.setDisabledTM()
+
+    def setDisabledTM(self):
+        '''remember unchecked TM path as disabled TM'''
+        stringlist = QtCore.QStringList()
+        count = self.ui.listWidget.count()
+        for i in range(count):
+            item = self.ui.listWidget.item(i)
+            if (not item.checkState()):
+                stringlist.append(item.text())
+        World.settings.setValue("disabledTM", QtCore.QVariant(stringlist))
+
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     tm = tmSetting(None)
