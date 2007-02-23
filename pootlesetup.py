@@ -303,14 +303,14 @@ def standardsetup(name, version, custompackages=[], customdatafiles=[]):
   ext_modules = []
   dosetup(name, version, packages + custompackages, datafiles + customdatafiles, pootlescripts, ext_modules)
 
+#http://cheeseshop.python.org/pypi?:action=list_classifiers
 classifiers = [
   "Development Status :: 5 - Production/Stable",
-  "Environment :: Console",
-  "Intended Audience :: Developers",
+  "Environment :: Web Environment",
+  "Intended Audience :: End Users/Desktop",
   "License :: OSI Approved :: GNU General Public License (GPL)",
   "Programming Language :: Python",
   "Topic :: Software Development :: Localization",
-  "Topic :: Software Development :: Libraries :: Python Modules",
   "Operating System :: OS Independent",
   "Operating System :: Microsoft :: Windows",
   "Operating System :: Unix"
