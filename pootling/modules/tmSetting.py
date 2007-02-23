@@ -49,11 +49,13 @@ class tmSetting(QtGui.QDialog):
             self.filedialog = FileDialog.fileDialog(self)
             self.connect(self.filedialog, QtCore.SIGNAL("location"), self.addLocation)
             self.connect(self.ui.btnOk, QtCore.SIGNAL("clicked(bool)"), self.createTM)
+            #TODO: cancel all setting and building TM when clicking cancel, then restore
+            self.connect(self.ui.btnCancel, QtCore.SIGNAL("clicked(bool)"), QtCore.SLOT("close()"))
             self.connect(self.ui.btnRemove, QtCore.SIGNAL("clicked(bool)"), self.removeLocation)
             self.connect(self.ui.btnRemoveAll, QtCore.SIGNAL("clicked(bool)"), self.ui.listWidget.clear)
             self.connect(self.ui.btnEnable, QtCore.SIGNAL("clicked(bool)"), self.setChecked)
             self.connect(self.ui.btnDisable, QtCore.SIGNAL("clicked(bool)"), self.setUnchecked)
-            self.connect(self.ui.checkBox, QtCore.SIGNAL("stateChanged(int)"), self.rememberOptions)
+            self.connect(self.ui.checkBox, QtCore.SIGNAL("stateChanged(int)"), self.rememberDive)
             self.connect(self.ui.listWidget, QtCore.SIGNAL("itemClicked(QListWidgetItem *)"), self.setDisabledTM)
             self.ui.listWidget.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
         self.ui.checkBox.setChecked(World.settings.value("diveIntoSub").toBool())
@@ -69,8 +71,8 @@ class tmSetting(QtGui.QDialog):
             item.setCheckState((not path in disableTM) and QtCore.Qt.Checked or QtCore.Qt.Unchecked)
             self.ui.listWidget.addItem(item)
         self.ui.spinSimilarity.setValue(World.settings.value("Similarity", QtCore.QVariant(75)).toInt()[0])
-        self.ui.spinMaxCandidate.setValue(World.settings.value("Max_Candidates", QtCore.QVariant(75)).toInt()[0])
-        self.ui.spinMaxLen.setValue(World.settings.value("Max_String_len", QtCore.QVariant(75)).toInt()[0])
+        self.ui.spinMaxCandidate.setValue(World.settings.value("Max_Candidates", QtCore.QVariant(10)).toInt()[0])
+        self.ui.spinMaxLen.setValue(World.settings.value("Max_String_len", QtCore.QVariant(70)).toInt()[0])
 
     def showFileDialog(self):
         """Show Translation Memory setting dialog."""
@@ -95,9 +97,9 @@ class tmSetting(QtGui.QDialog):
             self.ui.listWidget.setCurrentItem(item)
             self.ui.listWidget.takeItem(self.ui.listWidget.currentRow())
             
-    def rememberOptions(self):
+    def rememberDive(self):
         World.settings.setValue("diveIntoSub", QtCore.QVariant(self.ui.checkBox.isChecked()))
-        
+    
     def closeEvent(self, event):
         """Rememer TMpath before closing.
         
@@ -113,15 +115,14 @@ class tmSetting(QtGui.QDialog):
         World.settings.setValue("Max_Candidates", QtCore.QVariant(self.ui.spinMaxCandidate.value()))
         World.settings.setValue("Max_String_len", QtCore.QVariant(self.ui.spinMaxLen.value()))
         QtGui.QDialog.closeEvent(self, event)
-    
+        
     def createTM(self):
         """Build base object of checked files in lists.
         
         @signal matcher: This signal is emitted when there is matcher
         
         """
-        checkedItemList = self.getPathList()[0]
-        
+        checkedItemList = self.getPathList(QtCore.Qt.Checked)
         matcher = None
         try:
             matcher = pickleTM.buildMatcher(checkedItemList, self.ui.spinMaxCandidate.value(), self.ui.spinSimilarity.value(),  self.ui.spinMaxLen.value())
@@ -130,7 +131,7 @@ class tmSetting(QtGui.QDialog):
         
         self.emit(QtCore.SIGNAL("matcher"), matcher)
         self.close()
-
+        
     def setChecked(self):
         """Set state of selectedItems as checked."""
         items = self.ui.listWidget.selectedItems()
@@ -145,26 +146,23 @@ class tmSetting(QtGui.QDialog):
             item.setCheckState(QtCore.Qt.Unchecked)
         self.setDisabledTM()
     
-    def getPathList(self):
-        """Return list of path that marked as checked and unchecked separately.
+    def getPathList(self, isChecked):
+        """Return list of path according to the parameter isChecked or unChecked
         
-        @return: A tuple of checkedItemList and unCheckedItemList
+        @return: itemList as list of unchecked or checked path
         """
-        checkedItemList = QtCore.QStringList()
-        unCheckedItemList = QtCore.QStringList()
+        itemList = QtCore.QStringList()
         count = self.ui.listWidget.count()
         for i in range(count):
             item = self.ui.listWidget.item(i)
-            if (item.checkState()):
-                checkedItemList.append(item.text())
-            else:
-                unCheckedItemList.append(item.text())
-        return (checkedItemList, unCheckedItemList)
+            if (not (item.checkState() ^ isChecked)):
+                itemList.append(item.text())
+        return itemList
         
     def setDisabledTM(self):
         '''Remember unchecked TM path as disabled TM.'''
-
-        unCheckedItemList = self.getPathList()[1]
+    
+        unCheckedItemList = self.getPathList(QtCore.Qt.Unchecked)
         World.settings.setValue("disabledTM", QtCore.QVariant(unCheckedItemList))
 
 if __name__ == "__main__":
