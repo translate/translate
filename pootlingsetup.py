@@ -190,6 +190,10 @@ def map_data_file (data_file):
 
 def getdatafiles():
   datafiles = initfiles + infofiles
+  def listfiles(srcdir):
+    return join(sitepackages, srcdir), [join(srcdir, f) for f in os.listdir(srcdir) if os.path.isfile(join(srcdir, f))]
+  imagefiles = [listfiles(join('pootling', 'images'))]
+  datafiles += imagefiles
   return datafiles
 
 def buildinfolinks():
@@ -219,7 +223,7 @@ def buildmanifest_in(file, scripts):
   for scriptname in scripts:
     print >>file, "include %s" % scriptname
   print >> file, "# images which don't get included by default in sdist"
-  print >> file, "recursive-include pootling/images *.png"
+  print >> file, "graft pootling/images"
   # wordlist, portal are in the source tree but unconnected to the python code
   print >>file, "prune wordlist"
   print >>file, "prune Pootle"
