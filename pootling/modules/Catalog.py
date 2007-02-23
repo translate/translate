@@ -40,6 +40,9 @@ class Catalog(QtGui.QMainWindow):
         self.ui = Ui_Catalog()
         self.ui.setupUi(self)
         self.resize(720,400)
+        self.refreshTimer = QtCore.QTimer()
+        self.refreshTimer.setInterval(2000)
+        self.autoRefresh = True
 
         # set up table appearance and behavior
         self.headerLabels = [self.tr("Name"), self.tr("Fuzzy"), self.tr("Untranslated"), self.tr("Total"), self.tr("CVS/SVN Status"), self.tr("Last Revision"), self.tr("Last Translator")]
@@ -57,7 +60,7 @@ class Catalog(QtGui.QMainWindow):
 
         # Edit menu action
         self.ui.actionReload.setEnabled(True)
-        self.connect(self.ui.actionReload, QtCore.SIGNAL("triggered()"), self.updateCatalog)
+        self.connect(self.ui.actionReload, QtCore.SIGNAL("triggered()"), self.refresh)
 
         # Project menu action
         self.Catalog = CatalogSetting(self)
@@ -92,6 +95,15 @@ class Catalog(QtGui.QMainWindow):
         
         self.normalState = QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
         self.setupCheckbox()
+
+    def refresh(self):
+        self.settings = QtCore.QSettings()
+        if self.autoRefresh:
+            self.refreshTimer.start()
+            self.updateCatalog()
+        else:
+            self.settings.sync()
+            self.refreshTimer.stop() 
 
     def setHeaderLabel(self):
         if (isinstance(self.sender(), QtGui.QCheckBox)):
