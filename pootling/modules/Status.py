@@ -24,6 +24,7 @@ class Status:
         self.numFuzzy = units.fuzzy_units()
         self.numTranslated = units.translated_unitcount()
         self.numUntranslated = units.untranslated_unitcount()
+        #FIXME: It's not total number of unit.
         self.numTotal = self.numFuzzy + self.numTranslated + self.numUntranslated
     
     def markFuzzy(self, unit, fuzzy):

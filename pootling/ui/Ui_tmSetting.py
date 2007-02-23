@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/ks/programming/wordforge/trunk/pootling/ui/tmSetting.ui'
 #
-# Created: Thu Feb 22 14:19:00 2007
+# Created: Fri Feb 23 11:18:28 2007
 #      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!
@@ -19,6 +19,17 @@ class Ui_tmsetting(object):
         self.gridlayout.setSpacing(6)
         self.gridlayout.setObjectName("gridlayout")
 
+        spacerItem = QtGui.QSpacerItem(151,28,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        self.gridlayout.addItem(spacerItem,1,0,1,1)
+
+        self.btnCancel = QtGui.QPushButton(tmsetting)
+        self.btnCancel.setObjectName("btnCancel")
+        self.gridlayout.addWidget(self.btnCancel,1,2,1,1)
+
+        self.btnOk = QtGui.QPushButton(tmsetting)
+        self.btnOk.setObjectName("btnOk")
+        self.gridlayout.addWidget(self.btnOk,1,1,1,1)
+
         self.tabOptions = QtGui.QTabWidget(tmsetting)
         self.tabOptions.setObjectName("tabOptions")
 
@@ -34,8 +45,8 @@ class Ui_tmsetting(object):
         self.checkBox.setObjectName("checkBox")
         self.gridlayout1.addWidget(self.checkBox,6,0,1,1)
 
-        spacerItem = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
-        self.gridlayout1.addItem(spacerItem,10,0,1,1)
+        spacerItem1 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
+        self.gridlayout1.addItem(spacerItem1,10,0,1,1)
 
         self.btnRemove = QtGui.QPushButton(self.tab)
         self.btnRemove.setIcon(QtGui.QIcon("../images/removeTM.png"))
@@ -96,63 +107,53 @@ class Ui_tmsetting(object):
         self.gridlayout2.setSpacing(6)
         self.gridlayout2.setObjectName("gridlayout2")
 
-        self.label_3 = QtGui.QLabel(self.tab_4)
-        self.label_3.setObjectName("label_3")
-        self.gridlayout2.addWidget(self.label_3,2,0,1,1)
+        self.groupBox = QtGui.QGroupBox(self.tab_4)
+        self.groupBox.setObjectName("groupBox")
 
-        self.spinMaxLen = QtGui.QSpinBox(self.tab_4)
+        self.gridlayout3 = QtGui.QGridLayout(self.groupBox)
+        self.gridlayout3.setMargin(9)
+        self.gridlayout3.setSpacing(6)
+        self.gridlayout3.setObjectName("gridlayout3")
+
+        self.label_3 = QtGui.QLabel(self.groupBox)
+        self.label_3.setObjectName("label_3")
+        self.gridlayout3.addWidget(self.label_3,2,0,1,1)
+
+        self.spinMaxLen = QtGui.QSpinBox(self.groupBox)
         self.spinMaxLen.setMaximum(100)
         self.spinMaxLen.setMinimum(1)
         self.spinMaxLen.setProperty("value",QtCore.QVariant(70))
         self.spinMaxLen.setObjectName("spinMaxLen")
-        self.gridlayout2.addWidget(self.spinMaxLen,2,1,1,1)
+        self.gridlayout3.addWidget(self.spinMaxLen,2,1,1,1)
 
-        self.chkIgnorFuzzy = QtGui.QCheckBox(self.tab_4)
-        self.chkIgnorFuzzy.setObjectName("chkIgnorFuzzy")
-        self.gridlayout2.addWidget(self.chkIgnorFuzzy,4,0,1,1)
-
-        self.spinSimilarity = QtGui.QSpinBox(self.tab_4)
+        self.spinSimilarity = QtGui.QSpinBox(self.groupBox)
         self.spinSimilarity.setMaximum(100)
         self.spinSimilarity.setMinimum(75)
         self.spinSimilarity.setSingleStep(1)
         self.spinSimilarity.setProperty("value",QtCore.QVariant(75))
         self.spinSimilarity.setObjectName("spinSimilarity")
-        self.gridlayout2.addWidget(self.spinSimilarity,0,1,1,1)
+        self.gridlayout3.addWidget(self.spinSimilarity,0,1,1,1)
 
-        self.label = QtGui.QLabel(self.tab_4)
+        self.label = QtGui.QLabel(self.groupBox)
         self.label.setObjectName("label")
-        self.gridlayout2.addWidget(self.label,0,0,1,1)
+        self.gridlayout3.addWidget(self.label,0,0,1,1)
 
-        self.chkCaseSensitive = QtGui.QCheckBox(self.tab_4)
-        self.chkCaseSensitive.setObjectName("chkCaseSensitive")
-        self.gridlayout2.addWidget(self.chkCaseSensitive,3,0,1,1)
-
-        self.spinMaxCandidate = QtGui.QSpinBox(self.tab_4)
+        self.spinMaxCandidate = QtGui.QSpinBox(self.groupBox)
         self.spinMaxCandidate.setMaximum(10)
         self.spinMaxCandidate.setMinimum(1)
         self.spinMaxCandidate.setProperty("value",QtCore.QVariant(10))
         self.spinMaxCandidate.setObjectName("spinMaxCandidate")
-        self.gridlayout2.addWidget(self.spinMaxCandidate,1,1,1,1)
+        self.gridlayout3.addWidget(self.spinMaxCandidate,1,1,1,1)
 
-        self.label_2 = QtGui.QLabel(self.tab_4)
+        self.label_2 = QtGui.QLabel(self.groupBox)
         self.label_2.setObjectName("label_2")
-        self.gridlayout2.addWidget(self.label_2,1,0,1,1)
+        self.gridlayout3.addWidget(self.label_2,1,0,1,1)
+        self.gridlayout2.addWidget(self.groupBox,0,0,1,1)
 
-        spacerItem1 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
-        self.gridlayout2.addItem(spacerItem1,5,0,1,1)
+        spacerItem2 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
+        self.gridlayout2.addItem(spacerItem2,1,0,1,1)
         self.tabOptions.addTab(self.tab_4,"")
         self.gridlayout.addWidget(self.tabOptions,0,0,1,3)
-
-        spacerItem2 = QtGui.QSpacerItem(281,28,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
-        self.gridlayout.addItem(spacerItem2,1,0,1,1)
-
-        self.btnCancel = QtGui.QPushButton(tmsetting)
-        self.btnCancel.setObjectName("btnCancel")
-        self.gridlayout.addWidget(self.btnCancel,1,2,1,1)
-
-        self.btnOk = QtGui.QPushButton(tmsetting)
-        self.btnOk.setObjectName("btnOk")
-        self.gridlayout.addWidget(self.btnOk,1,1,1,1)
 
         self.retranslateUi(tmsetting)
         self.tabOptions.setCurrentIndex(2)
@@ -165,14 +166,15 @@ class Ui_tmsetting(object):
         tmsetting.setTabOrder(self.btnEnable,self.btnDisable)
         tmsetting.setTabOrder(self.btnDisable,self.checkBox)
         tmsetting.setTabOrder(self.checkBox,self.btnOk)
-        tmsetting.setTabOrder(self.btnOk,self.spinSimilarity)
-        tmsetting.setTabOrder(self.spinSimilarity,self.chkCaseSensitive)
-        tmsetting.setTabOrder(self.chkCaseSensitive,self.spinMaxLen)
-        tmsetting.setTabOrder(self.spinMaxLen,self.spinMaxCandidate)
-        tmsetting.setTabOrder(self.spinMaxCandidate,self.chkIgnorFuzzy)
+        tmsetting.setTabOrder(self.btnOk,self.btnCancel)
+        tmsetting.setTabOrder(self.btnCancel,self.spinSimilarity)
+        tmsetting.setTabOrder(self.spinSimilarity,self.spinMaxCandidate)
+        tmsetting.setTabOrder(self.spinMaxCandidate,self.spinMaxLen)
 
     def retranslateUi(self, tmsetting):
         tmsetting.setWindowTitle(QtGui.QApplication.translate("tmsetting", "Translation Memory Settings", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnCancel.setText(QtGui.QApplication.translate("tmsetting", "&Cancel", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnOk.setText(QtGui.QApplication.translate("tmsetting", "&OK", None, QtGui.QApplication.UnicodeUTF8))
         self.checkBox.setText(QtGui.QApplication.translate("tmsetting", "Dive into Subfolders", None, QtGui.QApplication.UnicodeUTF8))
         self.btnRemove.setToolTip(QtGui.QApplication.translate("tmsetting", "remove TM", None, QtGui.QApplication.UnicodeUTF8))
         self.btnRemove.setText(QtGui.QApplication.translate("tmsetting", " De&lete", None, QtGui.QApplication.UnicodeUTF8))
@@ -189,13 +191,9 @@ class Ui_tmsetting(object):
         self.tabOptions.setTabText(self.tabOptions.indexOf(self.tab), QtGui.QApplication.translate("tmsetting", "&File", None, QtGui.QApplication.UnicodeUTF8))
         self.tabOptions.setTabText(self.tabOptions.indexOf(self.tab_3), QtGui.QApplication.translate("tmsetting", "&Database", None, QtGui.QApplication.UnicodeUTF8))
         self.label_3.setText(QtGui.QApplication.translate("tmsetting", "Maximum string length", None, QtGui.QApplication.UnicodeUTF8))
-        self.chkIgnorFuzzy.setText(QtGui.QApplication.translate("tmsetting", " Ignor fuzzy strings", None, QtGui.QApplication.UnicodeUTF8))
         self.label.setText(QtGui.QApplication.translate("tmsetting", "Similarity", None, QtGui.QApplication.UnicodeUTF8))
-        self.chkCaseSensitive.setText(QtGui.QApplication.translate("tmsetting", "Case Sensitive", None, QtGui.QApplication.UnicodeUTF8))
         self.label_2.setText(QtGui.QApplication.translate("tmsetting", "Maximum candidates", None, QtGui.QApplication.UnicodeUTF8))
         self.tabOptions.setTabText(self.tabOptions.indexOf(self.tab_4), QtGui.QApplication.translate("tmsetting", "O&ptions", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnCancel.setText(QtGui.QApplication.translate("tmsetting", "&Cancel", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnOk.setText(QtGui.QApplication.translate("tmsetting", "&OK", None, QtGui.QApplication.UnicodeUTF8))
 
 
 

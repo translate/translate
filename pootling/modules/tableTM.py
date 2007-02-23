@@ -91,6 +91,7 @@ class tableTM(QtGui.QDockWidget):
         if (not lenFilter):
             self.ui.tblTM.setRowCount(0)
             self.ui.tblTM.clear()
+            self.ui.tblTM.setHorizontalHeaderLabels(self.headerLabels)
         self.ui.tblTM.setEnabled(not(lenFilter) and False or True)
     
 if __name__ == "__main__":

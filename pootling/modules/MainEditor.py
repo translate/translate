@@ -68,6 +68,8 @@ class MainWindow(QtGui.QMainWindow):
         self.addDockWidget(QtCore.Qt.TopDockWidgetArea, self.dockOverview)
         action = self.dockOverview.toggleViewAction()
         action.setText("&Overview")
+        action.setStatusTip("Toggle the Overview window")
+        action.setWhatsThis("<h3>Toggle the Overview window</h3>If the Overview window is hidden then display it. If it is displayed then close it.")
         self.ui.menuWindow.insertAction(sepAction, action)
         
         #plug in TUview widget
@@ -75,6 +77,8 @@ class MainWindow(QtGui.QMainWindow):
         self.setCentralWidget(self.dockTUview)
         action = self.dockTUview.toggleViewAction()
         action.setText("&Detail")
+        action.setStatusTip("Toggle the Detail window")
+        action.setWhatsThis("<h3>Toggle the Detail window</h3>If the Detail window is hidden then display it. If it is displayed then close it.")
         self.ui.menuWindow.insertAction(sepAction, action)
         
         #plug in comment widget
@@ -82,6 +86,8 @@ class MainWindow(QtGui.QMainWindow):
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.dockComment)
         action = self.dockComment.toggleViewAction()
         action.setText("&Comment")
+        action.setStatusTip("Toggle the Comment window")
+        action.setWhatsThis("<h3>Toggle the Comment window</h3>If the Comment window is hidden then display it. If it is displayed then close it.")
         self.ui.menuWindow.insertAction(sepAction, action)
 #        self.ui.menuWindow.insertAction(sepAction, self.dockComment.toggleViewAction())
        
@@ -98,7 +104,8 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.statusbar.setWhatsThis("<h3>Status Bar</h3>Shows the progress of the translation in the file and messages about the current state of the application.")
 
         #add action from each toolbar toggleviewaction to toolbars submenu of view menu
-        self.ui.menuToolbars.addAction(self.ui.toolStandard.toggleViewAction())
+        self.ui.menuToolbars.addAction(self.ui.toolFile.toggleViewAction())
+        self.ui.menuToolbars.addAction(self.ui.toolEdit.toggleViewAction())
         self.ui.menuToolbars.addAction(self.ui.toolNavigation.toggleViewAction())
         self.ui.menuToolbars.addAction(self.ui.toolFilter.toggleViewAction())
 
@@ -114,6 +121,8 @@ class MainWindow(QtGui.QMainWindow):
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.table)
         action = self.table.toggleViewAction()
         action.setText("TM &Lookup")
+        action.setStatusTip("Toggle the TM Lookup window")
+        action.setWhatsThis("<h3>Toggle the TM Lookup window</h3>If the TM Lookup window is hidden then display it. If it is displayed then close it.")
         self.ui.menuWindow.insertAction(sepAction, action)
         self.connect(self.operator, QtCore.SIGNAL("candidates"), self.table.fillTable)
         self.connect(self.table, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
@@ -123,6 +132,8 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.menuHelp.addSeparator()
         action = QtGui.QWhatsThis.createAction(self)
         action.setText(self.tr("&What's This?"))
+        action.setStatusTip("Context sensitive help")
+        action.setWhatsThis("<h3>Display context sensitive help</h3>In what's This? mode, the mouse cursor shows an arrow with a question mark, and you can click on the interface elements to get a short description of what they do and how to use them in a dialog, the feature can be accessed using the context help button in the titlebar.")
         self.ui.menuHelp.addAction(action)
         self.aboutDialog = AboutEditor(self)
         self.connect(self.ui.actionAbout, QtCore.SIGNAL("triggered()"), self.aboutDialog.showDialog)
@@ -206,7 +217,7 @@ class MainWindow(QtGui.QMainWindow):
         action.setWhatsThis("<h3>Open a file</h3>You will be asked for the name of a file to be opened and open recent file in an editor window.") 
         self.connect(action, QtCore.SIGNAL("triggered()"), self.fileaction.openFile)
 
-        self.ui.toolStandard.insertAction(self.ui.actionSave, action)
+        self.ui.toolFile.insertAction(self.ui.actionSave, action)
 
         # "currentUnit" sends currentUnit, currentIndex
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockOverview.updateView)
@@ -290,7 +301,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def showGoto(self):
         value, ok = QtGui.QInputDialog.getInteger(self, self.tr("Goto"),
-                                                self.tr("Line Number:"), 0, 0, self.operator.status.numTotal)
+                                                self.tr("Unit Index:"), 1, 1, self.operator.status.numTotal)
         if ok:
             self.dockOverview.gotoRow(value)
 
