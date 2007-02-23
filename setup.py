@@ -241,6 +241,12 @@ def getdatafiles():
     # TODO: work out csv.so/pyd
     csvModuleFile = (sitepackages, ['_csv.so'])
     datafiles.append(csvModuleFile)
+  docfiles = []
+  docfiles.append(listfiles(join('translate', 'doc')))
+  docfiles.append(listfiles(join('translate', 'doc', 'api')))
+  docfiles.append(listfiles(join('translate', 'doc', 'api', 'private')))
+  docfiles.append(listfiles(join('translate', 'doc', 'api', 'public')))
+  datafiles += docfiles
   return datafiles
 
 def buildinfolinks():
@@ -275,7 +281,7 @@ def buildmanifest_in(file, scripts):
   for scriptname in scripts:
     print >>file, "include %s" % scriptname
   print >> file, "# include our documentation"
-  print >> file, "recursive-include translate/doc *"
+  print >> file, "graft translate/doc"
   # wordlist, portal are in the source tree but unconnected to the python code
   print >>file, "prune wordlist"
   print >>file, "prune editor"
