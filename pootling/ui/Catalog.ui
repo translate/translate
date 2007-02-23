@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>Catalog</class>
  <widget class="QMainWindow" name="Catalog" >
   <property name="geometry" >
@@ -18,13 +15,22 @@
   <widget class="QWidget" name="centralwidget" >
    <layout class="QGridLayout" >
     <property name="margin" >
-     <number>0</number>
+     <number>9</number>
     </property>
     <property name="spacing" >
-     <number>0</number>
+     <number>6</number>
     </property>
     <item row="0" column="0" >
-     <widget class="QTableWidget" name="tableCatalog" />
+     <widget class="QTreeWidget" name="treeCatalog" >
+      <property name="font" >
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="alternatingRowColors" >
+       <bool>true</bool>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -37,6 +43,12 @@
      <height>28</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuFile" >
+    <property name="title" >
+     <string>&amp;File</string>
+    </property>
+    <addaction name="actionQuit" />
+   </widget>
    <widget class="QMenu" name="menuHelp" >
     <property name="title" >
      <string>&amp;Help</string>
@@ -44,39 +56,24 @@
     <addaction name="actionAbout" />
     <addaction name="actionAboutQt" />
    </widget>
-   <widget class="QMenu" name="menuEdit" >
-    <property name="title" >
-     <string>&amp;Edit</string>
-    </property>
-    <addaction name="actionReload" />
-   </widget>
-   <widget class="QMenu" name="menuFile" >
-    <property name="title" >
-     <string>&amp;File</string>
-    </property>
-    <addaction name="actionQuit" />
-   </widget>
    <widget class="QMenu" name="menuProject" >
     <property name="title" >
      <string>&amp;Project</string>
     </property>
     <addaction name="actionConfigure" />
    </widget>
+   <widget class="QMenu" name="menuEdit" >
+    <property name="title" >
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="actionReload" />
+   </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
    <addaction name="menuProject" />
    <addaction name="menuHelp" />
   </widget>
-  <widget class="QStatusBar" name="statusbar" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>379</y>
-     <width>531</width>
-     <height>21</height>
-    </rect>
-   </property>
-  </widget>
+  <widget class="QStatusBar" name="statusbar" />
   <widget class="QToolBar" name="toolBar" >
    <property name="orientation" >
     <enum>Qt::Horizontal</enum>
@@ -119,7 +116,7 @@
     <string>&amp;Reload</string>
    </property>
    <property name="shortcut" >
-    <string>Ctrl+R</string>
+    <string>F5</string>
    </property>
   </action>
   <action name="actionConfigure" >
@@ -131,7 +128,6 @@
    </property>
   </action>
  </widget>
- <pixmapfunction></pixmapfunction>
  <resources/>
  <connections/>
 </ui>
