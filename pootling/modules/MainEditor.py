@@ -301,7 +301,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def showGoto(self):
         value, ok = QtGui.QInputDialog.getInteger(self, self.tr("Goto"),
-                                                self.tr("Unit Index:"), 1, 1, self.operator.status.numTotal)
+                                                self.tr("Unit Index:"), 1, 1, self.operator.store.translated_unitcount() + self.operator.store.untranslated_unitcount())
         if ok:
             self.dockOverview.gotoRow(value)
 

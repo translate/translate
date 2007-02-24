@@ -20,24 +20,17 @@
 import pootling.modules.World as World
 
 class Status:
-    def __init__(self, store):
-        self.numFuzzy = store.fuzzy_units()
-        self.numTranslated = store.translated_unitcount()
-        self.numUntranslated = store.untranslated_unitcount()
-        self.numTotal = self.numTranslated + self.numUntranslated
     
+    # FIXME: toggle unit's fuzzy is not working
+    def __init__(self, store):
+        self.store = store
+
     def markFuzzy(self, unit, fuzzy):
-        if (unit.isfuzzy() == fuzzy):
-            return
         unit.markfuzzy(fuzzy)
         if (fuzzy):
-            self.numFuzzy += 1
-            self.numTranslated -= 1
             unit.x_editor_state |= World.fuzzy
             unit.x_editor_state &= ~World.translated
         else:
-            self.numFuzzy -= 1
-            self.numTranslated += 1
             unit.x_editor_state &= ~World.fuzzy
             unit.x_editor_state |= World.translated
 
@@ -45,18 +38,15 @@ class Status:
         if (translated):
             if (not hasattr(unit, "x_editor_state")) or (unit.x_editor_state & World.translated):
                 return
-            self.numTranslated += 1
             unit.x_editor_state |= World.translated
             unit.x_editor_state &= ~World.untranslated
         else:
             if (unit.x_editor_state & World.untranslated):
                 return
-            self.numTranslated -= 1
             unit.x_editor_state &= ~World.translated
             unit.x_editor_state |= World.untranslated
         if (unit.isfuzzy()):
             unit.markfuzzy(False)
-            self.numFuzzy -= 1
             unit.x_editor_state &= ~World.fuzzy
 
     def getStatus(self, unit):
@@ -74,8 +64,8 @@ class Status:
         
     def statusString(self):
         """return string of total, fuzzy, translated, and untranslated messages."""
-        return "Total: "+ str(self.numTotal) + \
-                "  |  Fuzzy: " +  str(self.numFuzzy) + \
-                "  |  Translated: " +  str(self.numTranslated) + \
-                "  |  Untranslated: " + str(self.numUntranslated)
+        return "Total: "+ str(self.store.translated_unitcount() + self.store.untranslated_unitcount()) + \
+                "  |  Fuzzy: " +  str(self.store.fuzzy_units()) + \
+                "  |  Translated: " +  str(self.store.translated_unitcount()) + \
+                "  |  Untranslated: " + str(self.store.untranslated_unitcount())
 

@@ -76,31 +76,6 @@
     <addaction name="separator" />
     <addaction name="actionGoTo" />
    </widget>
-   <widget class="QMenu" name="menuSettings" >
-    <property name="title" >
-     <string>&amp;Settings</string>
-    </property>
-    <addaction name="actionPreferences" />
-    <addaction name="action_TM" />
-   </widget>
-   <widget class="QMenu" name="menu_Tool" >
-    <property name="title" >
-     <string>&amp;Tool</string>
-    </property>
-    <widget class="QMenu" name="menu_TM" >
-     <property name="title" >
-      <string>&amp;TM</string>
-     </property>
-     <property name="icon" >
-      <iconset>../images/memory.png</iconset>
-     </property>
-     <addaction name="action_lookup_Text" />
-     <addaction name="actionAuto_translate" />
-    </widget>
-    <addaction name="separator" />
-    <addaction name="menu_TM" />
-    <addaction name="actionCatalogManager" />
-   </widget>
    <widget class="QMenu" name="menuHelp" >
     <property name="title" >
      <string>&amp;Help</string>
@@ -174,6 +149,31 @@
     <addaction name="actionAddBookmarks" />
     <addaction name="actionClearBookmarks" />
     <addaction name="separator" />
+   </widget>
+   <widget class="QMenu" name="menu_Tool" >
+    <property name="title" >
+     <string>&amp;Tool</string>
+    </property>
+    <widget class="QMenu" name="menu_TM" >
+     <property name="title" >
+      <string>&amp;TM</string>
+     </property>
+     <property name="icon" >
+      <iconset>../images/memory.png</iconset>
+     </property>
+     <addaction name="action_lookup_Text" />
+     <addaction name="actionAuto_translate" />
+    </widget>
+    <addaction name="separator" />
+    <addaction name="menu_TM" />
+    <addaction name="actionCatalogManager" />
+   </widget>
+   <widget class="QMenu" name="menuSettings" >
+    <property name="title" >
+     <string>&amp;Settings</string>
+    </property>
+    <addaction name="actionPreferences" />
+    <addaction name="action_TM" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
@@ -945,6 +945,12 @@
    <property name="text" >
     <string>&amp;Add Bookmarks</string>
    </property>
+   <property name="statusTip" >
+    <string>Add mark on current unit</string>
+   </property>
+   <property name="whatsThis" >
+    <string>&lt;h3>Add Bookmarks&lt;/h3> A mark on current unit will be added.</string>
+   </property>
    <property name="shortcut" >
     <string>Ctrl+B</string>
    </property>
@@ -952,6 +958,12 @@
   <action name="actionClearBookmarks" >
    <property name="text" >
     <string>&amp;Clear Bookmarks</string>
+   </property>
+   <property name="statusTip" >
+    <string>Clear bookmarks</string>
+   </property>
+   <property name="whatsThis" >
+    <string>&lt;h3>Clear all marks&lt;/h3>All marks of units will be cleared.</string>
    </property>
    <property name="shortcut" >
     <string/>
