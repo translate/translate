@@ -20,12 +20,11 @@
 import pootling.modules.World as World
 
 class Status:
-    def __init__(self, units):
-        self.numFuzzy = units.fuzzy_units()
-        self.numTranslated = units.translated_unitcount()
-        self.numUntranslated = units.untranslated_unitcount()
-        #FIXME: It's not total number of unit.
-        self.numTotal = self.numFuzzy + self.numTranslated + self.numUntranslated
+    def __init__(self, store):
+        self.numFuzzy = store.fuzzy_units()
+        self.numTranslated = store.translated_unitcount()
+        self.numUntranslated = store.untranslated_unitcount()
+        self.numTotal = self.numTranslated + self.numUntranslated
     
     def markFuzzy(self, unit, fuzzy):
         if (unit.isfuzzy() == fuzzy):
@@ -75,7 +74,6 @@ class Status:
         
     def statusString(self):
         """return string of total, fuzzy, translated, and untranslated messages."""
-        self.numUntranslated = self.numTotal - (self.numTranslated + self.numFuzzy)
         return "Total: "+ str(self.numTotal) + \
                 "  |  Fuzzy: " +  str(self.numFuzzy) + \
                 "  |  Translated: " +  str(self.numTranslated) + \
