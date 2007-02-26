@@ -101,8 +101,7 @@ class Catalog(QtGui.QMainWindow):
         self.connect(self.ui.actionAboutQt, QtCore.SIGNAL("triggered()"), QtGui.qApp, QtCore.SLOT("aboutQt()"))
         
         self.connect(self.catSetting, QtCore.SIGNAL("updateCatalog"), self.updateCatalog)
-##        self.connect(self.ui.treeCatalog, QtCore.SIGNAL("cellDoubleClicked(int, int)"), self.emitOpenFile)
-##        
+        self.connect(self.ui.treeCatalog, QtCore.SIGNAL("itemDoubleClicked(QTreeWidgetItem *, int)"), self.emitOpenFile)
         self.setupCheckbox()
     
     def toggleHeaderItem(self):
@@ -242,10 +241,23 @@ class Catalog(QtGui.QMainWindow):
         else:
             self.catSetting.ui.chbtranslator.setCheckState(QtCore.Qt.Checked)
         
-##    def emitOpenFile(self, row, col):
-##        item = self.ui.treeCatalog.item(row, 0)
-##        filename = str(item.text())
-##        self.emit(QtCore.SIGNAL("openFile"), filename)
+    def emitOpenFile(self, item, col):
+        """
+        Send "openFile" signal with filename.
+        """
+        if (not hasattr(item.parent(), "text")):
+            return
+        
+        path = str(item.parent().text(0))
+        filename = str(item.text(0))
+        
+        if (not path.endswith("/")):
+            path += "/"
+        elif (not path.endswith("\\")):
+            path += "\\"
+        
+        self.emit(QtCore.SIGNAL("openFile"), path + filename)
+        
 
     def refresh(self):
         self.settings = QtCore.QSettings()
