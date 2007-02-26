@@ -118,7 +118,7 @@ class htmlfile(HTMLParser, base.TranslationStore):
     text = text.strip()
 
     pattern = '^<[^>]*>(.*)</.*>$'
-    result = re.findall(pattern, text)
+    result = re.findall(pattern, text, re.DOTALL)
     if len(result) == 1:
         text = self.strip_html(result[0])
     return text
