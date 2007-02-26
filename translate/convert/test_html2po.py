@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from translate.convert import html2po
+from translate.convert import po2html
 from translate.convert import test_convert
 from translate.misc import wStringIO
 from translate.storage import po
@@ -13,6 +14,14 @@ class TestHTML2PO:
         convertor = html2po.html2po()
         outputpo = convertor.convertfile(inputfile, "test", False, False)
         return outputpo
+
+    def po2html(self, posource, htmltemplate):
+        """Helper to convert po to html without a file."""
+        inputfile = wStringIO.StringIO(posource)
+        outputfile = wStringIO.StringIO()
+        templatefile = wStringIO.StringIO(htmltemplate)
+        assert po2html.converthtml(inputfile, outputfile, templatefile)
+        return outputfile.getvalue()
 
     def countunits(self, pofile, expected):
         """helper to check that we got the expected number of messages"""
@@ -309,6 +318,52 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
         self.countunits(pofile, 5)
         self.compareunit(pofile, 4, u'We aim to please \x96 will you aim too, please?')
         self.compareunit(pofile, 5, u'South Africa\x92s language diversity can be challenging.')
+
+    def test_strip_html(self):
+        """Ensure that unnecessary html is stripped from the resulting unit."""
+
+        htmlsource = '''<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>FMFI - Contact</title>
+</head>
+<body>
+<table width="100%"  border="0" cellpadding="0" cellspacing="0">
+  <tr align="left" valign="top">
+    <td width="150" height="556"> 
+      <table width="157" height="100%" border="0" cellspacing="0" id="leftmenubg-color">
+      <tr>
+          <td align="left" valign="top" height="555"> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="2">
+              <tr align="left" valign="top" bgcolor="#660000"> 
+                <td width="4%"><strong></strong></td>
+                <td width="96%"><strong><font class="headingwhite">Projects</font></strong></td>
+              </tr>
+              <tr align="left" valign="top"> 
+                <td valign="middle" width="4%"><img src="images/arrow.gif" width="8" height="8"></td>
+                <td width="96%"><a href="index.html">Home Page</a></td>
+              </tr>
+            </table>
+          </td>
+      </tr>
+    </table></td>
+</table>
+</body>
+</html>
+'''
+        pofile = self.html2po(htmlsource)
+        self.countunits(pofile, 3)
+        self.compareunit(pofile, 2, u'Projects')
+        self.compareunit(pofile, 3, u'Home Page')
+
+        # Translate and convert back:
+        pofile.units[1].target = 'Projekte'
+        pofile.units[2].target = 'Tuisblad'
+        htmlresult = self.po2html(str(pofile), htmlsource).replace('\n', ' ').replace('= "', '="').replace('> <', '><')
+        snippet ='<td width="96%"><strong><font class="headingwhite">Projekte</font></strong></td>'
+        assert snippet in htmlresult
+        snippet = '<td width="96%"><a href="index.html">Tuisblad</a></td>'
+        assert snippet in htmlresult
 
 class TestHTML2POCommand(test_convert.TestConvertCommand, TestHTML2PO):
     """Tests running actual html2po commands on files"""

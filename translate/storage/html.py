@@ -100,10 +100,28 @@ class htmlfile(HTMLParser, base.TranslationStore):
   parsestring = classmethod(parsestring)
 
   def addcurrentblock(self):
+    self.currentblock = self.strip_html(self.currentblock)
     if self.has_translatable_content(self.currentblock):
       self.currentblocknum += 1
-      unit = self.addsourceunit(self.currentblock.strip())
+      unit = self.addsourceunit(self.currentblock)
       unit.addlocation("%s:%d" % (self.filename, self.currentblocknum))
+
+  def strip_html(self, text):
+    """Strip unnecessary html from the text.
+    
+    HTML tags are deemed unnecessary if it fully encloses the translatable
+    text, eg. '<a href="index.html">Home Page</a>'.
+
+    HTML tags that occurs within the normal flow of text will not be removed,
+    eg. 'This is a link to the <a href="index.html">Home Page</a>.'
+    """
+    text = text.strip()
+
+    pattern = '^<[^>]*>(.*)</.*>$'
+    result = re.findall(pattern, text)
+    if len(result) == 1:
+        text = self.strip_html(result[0])
+    return text
 
   def has_translatable_content(self, text):
     """Check if the supplied HTML snippet has any content that needs to be translated."""
