@@ -99,11 +99,11 @@ class htmlfile(HTMLParser, base.TranslationStore):
     return parsedfile
   parsestring = classmethod(parsestring)
 
-  def addcurrentblock(self):
-    self.currentblock = self.strip_html(self.currentblock)
-    if self.has_translatable_content(self.currentblock):
+  def addhtmlblock(self, text):
+    text = self.strip_html(text)
+    if self.has_translatable_content(text):
       self.currentblocknum += 1
-      unit = self.addsourceunit(self.currentblock)
+      unit = self.addsourceunit(text)
       unit.addlocation("%s:%d" % (self.filename, self.currentblocknum))
 
   def strip_html(self, text):
@@ -140,12 +140,12 @@ class htmlfile(HTMLParser, base.TranslationStore):
 #From here on below, follows the methods of the HTMLParser
 
   def startblock(self, tag):
-    self.addcurrentblock()
+    self.addhtmlblock(self.currentblock)
     self.currentblock = ""
     self.currenttag = tag
 
   def endblock(self):
-    self.addcurrentblock()
+    self.addhtmlblock(self.currentblock)
     self.currentblock = ""
     self.currenttag = None
 
@@ -157,9 +157,7 @@ class htmlfile(HTMLParser, base.TranslationStore):
       if attrname in self.markingattrs:
         newblock = 1
       if attrname in self.includeattrs:
-        self.currentblocknum += 1
-        unit = self.addsourceunit(attrvalue)
-        unit.addlocation("%s:%d" % (self.filename, self.currentblocknum))
+        self.addhtmlblock(attrvalue)
 
     if newblock:
       self.startblock(tag)
@@ -169,9 +167,7 @@ class htmlfile(HTMLParser, base.TranslationStore):
   def handle_startendtag(self, tag, attrs):
     for attrname, attrvalue in attrs:
       if attrname in self.includeattrs:
-        self.currentblocknum += 1
-        unit = self.addsourceunit(attrvalue)
-        unit.addlocation("%s:%d" % (self.filename, self.currentblocknum))
+        self.addhtmlblock(attrvalue)
     if self.currenttag is not None:
       self.currentblock += self.get_starttag_text()
 
