@@ -30,7 +30,6 @@ class CommentDock(QtGui.QDockWidget):
     Code for Comment View
     
     @signal commentChanged(): emitted when Comment view's document is modified.
-    @signal readyForSave(True): emitted when Comment view's text is changed.
     @signal copyAvailable(bool): emitted when text is selected or de-selected in the Comment view.
     """
     
@@ -46,8 +45,6 @@ class CommentDock(QtGui.QDockWidget):
         self.ui.txtTranslatorComment.setWhatsThis("<h3>Translator Comment</h3>This is where translator can leave comments for other translators or for reviewers.")
         self.ui.txtLocationComment.setWhatsThis("<h3>Location Comment</h3>This noneditable comment contains information about where the message is found in the souce code. It will be appeared once there is comments only. You can hide the comment editor by deactivating Views - Show Comment.")
         self.applySettings()
-
-        self.connect(self.ui.txtTranslatorComment, QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
         
         # create highlight font
         self.highlightFormat = QtGui.QTextCharFormat()
@@ -68,7 +65,7 @@ class CommentDock(QtGui.QDockWidget):
     def updateView(self, unit):
         """Update the comments view
         @param unit: class unit."""
-        self.disconnect(self.ui.txtTranslatorComment, QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
+        self.disconnect(self.ui.txtTranslatorComment, QtCore.SIGNAL("textChanged()"), self.checkModified)
         self.ui.txtTranslatorComment.setEnabled(bool(unit))
         if (not unit):
             self.ui.txtLocationComment.hide()
@@ -85,7 +82,7 @@ class CommentDock(QtGui.QDockWidget):
             self.ui.txtLocationComment.show()
             self.ui.txtLocationComment.setPlainText(unicode(locationComment))
         self.ui.txtTranslatorComment.setPlainText(unicode(translatorComment))
-        self.connect(self.ui.txtTranslatorComment, QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
+        self.connect(self.ui.txtTranslatorComment, QtCore.SIGNAL("textChanged()"), self.checkModified)
 
     def checkModified(self):
         if self.ui.txtTranslatorComment.document().isModified():
@@ -108,9 +105,6 @@ class CommentDock(QtGui.QDockWidget):
             self.highlightRange.length = length
         self.highlightBlock.layout().setAdditionalFormats([self.highlightRange])
         self.highlightBlock.document().markContentsDirty(self.highlightBlock.position(), self.highlightBlock.length())
-
-    def emitReadyForSave(self):
-        self.emit(QtCore.SIGNAL("readyForSave"), True)
 
     def applySettings(self):
         """ set color and font to txtTranslatorComment"""

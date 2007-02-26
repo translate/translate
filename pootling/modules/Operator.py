@@ -50,9 +50,9 @@ class Operator(QtCore.QObject):
     def __init__(self):
         QtCore.QObject.__init__(self)
         self.store = None
-        self._modified = False
         self.currentUnitIndex = 0
         self.filteredList = []
+        self.modified = None
         self.filter = None
         self.lookupUnitStatus = None
 
@@ -75,10 +75,8 @@ class Operator(QtCore.QObject):
         """ setup the oparator with a new storage
         @param store: the new storage class"""
         self.store = store
-        self._modified = False
         # filter flags
         self.filter = World.filterAll
-        
         # get status for units
         self.status = Status(self.store)
         self.emitStatus()
@@ -94,6 +92,7 @@ class Operator(QtCore.QObject):
             i += 1
         self.emitNewUnits()
         self.emitFiltered(self.filter)
+        self.setModified(False)
 
     def emitNewUnits(self):
         self.emit(QtCore.SIGNAL("newUnits"), self.filteredList)
@@ -206,6 +205,7 @@ class Operator(QtCore.QObject):
             self.store.x_generator = World.settingApp + ' ' + __version__.ver
           if isinstance(self.store, poheader.poheader):
               self.store.updateheader(add=True, **headerDic)
+              self.setModified(True)
               return self.store.makeheaderdict(**headerDic)
           else: return {}
           
@@ -229,13 +229,13 @@ class Operator(QtCore.QObject):
             header.msgstr = ['""']
             for (key, value) in headeritems.items():
                 header.msgstr.append(quote.quotestr("%s: %s\\n" % (key, value)))
-            
+        self.setModified(True)
+
     def saveStoreToFile(self, fileName):
         """
         save the temporary store into a file.
         @param fileName: String type
         """
-        self._modified = False
         self.emitUpdateUnit()
         if (World.settings.value("headerAuto", QtCore.QVariant(True)).toBool()):
             self.emit(QtCore.SIGNAL("headerAuto"))
@@ -245,18 +245,13 @@ class Operator(QtCore.QObject):
                 self.store.savefile(fileName)
             else:
                 self.store.save()
-            self.emitReadyForSave()
+            self.setModified(False)
         except Exception, e:
             QtGui.QMessageBox.critical(None, 
                                     'Error', 
                                     'Error while trying to write file ' 
                                     + fileName  + 
                                     '\n' + str(e))
-                
-    def modified(self):
-        """@return bool: True or False if current unit is modified or not modified."""
-        self.emitUpdateUnit()
-        return self._modified
     
     def setComment(self, comment):
         """set the comment to the current unit, and emit current unit.
@@ -266,8 +261,7 @@ class Operator(QtCore.QObject):
         unit = self.getCurrentUnit()
         unit.removenotes()
         unit.addnote(unicode(comment),'translator')
-        self._modified = True
-        self.emitUnit(unit)
+        self.setModified(True)
     
     def setTarget(self, target):
         """set the target to the current unit, and emit current unit.
@@ -277,14 +271,10 @@ class Operator(QtCore.QObject):
             return
         unit = self.getCurrentUnit()
         # update target for current unit
-        unit.target = target
-        if (unit.target):
-            self.status.markTranslated(unit, True)
-        else:
-            self.status.markTranslated(unit, False)
-        self._modified = True
-        self.emitUnit(unit)
+        unit.settarget(target)
+        self.status.markTranslated(unit, (unit.target and True or False))
         self.emitStatus()
+        self.setModified(True)
     
     def setUnitFromPosition(self, position):
         """build a unit from position and call emitUnit.
@@ -306,10 +296,9 @@ class Operator(QtCore.QObject):
             self.status.markFuzzy(unit, True)
         else:
             return
-        self._modified = True
         self.emitUnit(unit)
         self.emitStatus()
-        self.emitReadyForSave()
+        self.setModified(True)
     
     def initSearch(self, searchString, searchableText, matchCase):
         """initilize the needed variables for searching.
@@ -436,8 +425,8 @@ class Operator(QtCore.QObject):
 
     def setAfterfileClosed(self):
         self.store = None
-        self._modified = None
         self.status = None
+        self.modified = None
         self.filter = None
         self.filteredList = None
         self.emitNewUnits()
@@ -477,7 +466,7 @@ class Operator(QtCore.QObject):
             # no condidates continue searching in next TM
             if (not candidates):
                 continue
-            self._modified = True
+            self.setModified(True)
             #FIXME: in XLiff, it is possible to have alternatives translation, get just the best candidates is not enough
             # get the best candidates for targets in overview
             unit.settarget(candidates[0].target)
@@ -485,7 +474,6 @@ class Operator(QtCore.QObject):
             self.status.markFuzzy(unit, True)
         self.emitNewUnits()
         self.emitStatus()
-        self.emitReadyForSave()
         return
     
     def lookupUnit(self):
@@ -495,9 +483,9 @@ class Operator(QtCore.QObject):
         candidates = self.lookupProcess(unit)
         self.emit(QtCore.SIGNAL("candidates"), candidates)
     
-    def emitReadyForSave(self):
-        self.emit(QtCore.SIGNAL("readyForSave"), self._modified) 
-    
     def setLookupStatus(self, bool):
         self.lookupUnitStatus = bool
     
+    def setModified(self, bool):
+        self.modified = bool
+        self.emit(QtCore.SIGNAL("readyForSave"), self.modified) 

@@ -182,8 +182,7 @@ class OverviewDock(QtGui.QDockWidget):
                 if hasattr(item, "text"):
                     target = item.text()
                     self.markState(row, not World.fuzzy)
-                    self.emit(QtCore.SIGNAL("targetChanged"), target)
-                    self.emitReadyForSave()
+                    self.emit(QtCore.SIGNAL("targetChanged"), unicode(target))
         
     def updateView(self, unit):
         """
@@ -209,9 +208,6 @@ class OverviewDock(QtGui.QDockWidget):
         
         self.ui.tableOverview.scrollToItem(unit.x_editor_tableItem)
         self.emitFirstLastUnit()
-    
-    def emitReadyForSave(self):
-        self.emit(QtCore.SIGNAL("readyForSave"), True)
     
     def markState(self, index, state):
         """
@@ -353,7 +349,13 @@ class OverviewDock(QtGui.QDockWidget):
         row = self.ui.tableOverview.currentRow()
         item = self.ui.tableOverview.item(row, 0)
         return int(item.text())
-        
+    
+    def setTarget(self, text):
+        row = self.ui.tableOverview.currentRow()
+        item = self.ui.tableOverview.item(row, 2)
+        if (item.text() != text):
+            item.setText(text)
+    
 if __name__ == "__main__":
     import sys, os
     # set the path for QT in order to find the icons

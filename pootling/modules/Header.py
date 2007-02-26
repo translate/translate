@@ -30,8 +30,7 @@ import __version__
 
 class Header(QtGui.QDialog):
     """Hold infomation of Header file.
-    
-    @signal readyForSave(True): emitted when there is something changed.
+
     """
     def __init__(self, parent, operator):
         QtGui.QDialog.__init__(self, parent)
@@ -62,7 +61,6 @@ class Header(QtGui.QDialog):
             QtCore.QObject.connect(self.ui.btnDown ,QtCore.SIGNAL("clicked()"), self.moveDown)
             QtCore.QObject.connect(self.ui.btnInsertRow,QtCore.SIGNAL("clicked()"), self.insertNewRow)
             QtCore.QObject.connect(self.ui.btnDeleteRow,QtCore.SIGNAL("clicked()"), self.deleteRow)
-            QtCore.QObject.connect(self.ui.txtOtherComments, QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
             
              # set up table appearance and behavior
             self.headerLabels = [self.tr("Key"), self.tr("Value")]
@@ -111,9 +109,6 @@ class Header(QtGui.QDialog):
             self.ui.tableHeader.setItem(i, 0, item0)
             self.ui.tableHeader.setItem(i, 1, item1)
             i += 1
-            
-    def emitReadyForSave(self):
-        self.emit(QtCore.SIGNAL("readyForSave"), True)
         
     def reset(self):
         """Reset back the original header."""

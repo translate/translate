@@ -93,7 +93,6 @@ class TUview(QtGui.QDockWidget):
         self.ui.fileScrollBar.setWhatsThis("<h3>Navigation Scrollbar</h3>It allows you do navigate in the current file. If you filter your strings you get only the filtered list. <br>It also gives you visual feedback about the postion of the current entry. The Tooltip also shows you the current number and the total numbers of strings.")
         self.applySettings()
         
-        self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
         self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
         
         # create highlight font
@@ -181,7 +180,7 @@ class TUview(QtGui.QDockWidget):
         Then recalculate scrollbar maximum value.
         @param unit: unit to set in target and source.
         @param index: value in the scrollbar to be removed."""
-        self.disconnect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
+        self.disconnect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.checkModified)
         if (not unit) or (not hasattr(unit, "x_editor_filterIndex")):
             self.ui.lblComment.hide()
             self.ui.txtSource.clear()
@@ -204,6 +203,7 @@ class TUview(QtGui.QDockWidget):
             self.unitSingle(unit)
         # set the scrollbar position
         self.setScrollbarValue(unit.x_editor_filterIndex)
+        self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.checkModified)
      
     def unitPlural(self, unit):
         """This will be call when unit is plural.
@@ -283,7 +283,7 @@ class TUview(QtGui.QDockWidget):
                 else:
                     # list index out of range when the unit is not translate yet.it has only msgstr[0]
                     self.txtTargetList[i].setPlainText(unit.target.strings[i])
-                self.connect(self.txtTargetList[i], QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
+#                self.connect(self.txtTargetList[i], QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
 
     def unitSingle(self, unit):
         """This will be called when unit is singular.
@@ -297,33 +297,37 @@ class TUview(QtGui.QDockWidget):
         
         self.ui.txtSource.setPlainText(unit.source)
         self.ui.txtTarget.setPlainText(unit.target)
-        self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
+#        self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
 
     def checkModified(self):
         """Check if target is modified, send target as unicode string for single unit and list of unicode string for plural unit.
         @signal targetChanged: emitted with target."""
-        if (not self.unitHasPlural):
-            if self.ui.txtTarget.document().isModified():
+        if self.ui.txtTarget.document().isModified():
                 self.emit(QtCore.SIGNAL("targetChanged"), unicode(self.ui.txtTarget.toPlainText()))
                 self.ui.txtTarget.document().setModified(False)
-        else:
-            targetList = []
-            for i in range(self.nplurals):
-                if self.txtTargetList[i].document().isModified():
-                      for i in range(self.nplurals):
-                          targetList.append(unicode(self.txtTargetList[i].toPlainText()))
-                          self.txtTargetList[i].document().setModified(False)
-                      self.emit(QtCore.SIGNAL("targetChanged"), targetList)
+#        if (not self.unitHasPlural):
+#            if self.ui.txtTarget.document().isModified():
+#                self.emit(QtCore.SIGNAL("targetChanged"), unicode(self.ui.txtTarget.toPlainText()))
+#                self.ui.txtTarget.document().setModified(False)
+#        else:
+#            targetList = []
+#            for i in range(self.nplurals):
+#                if self.txtTargetList[i].document().isModified():
+#                      for i in range(self.nplurals):
+#                          targetList.append(unicode(self.txtTargetList[i].toPlainText()))
+#                          self.txtTargetList[i].document().setModified(False)
+#                      self.emit(QtCore.SIGNAL("targetChanged"), targetList)
             
-
-    def emitReadyForSave(self):
-        self.emit(QtCore.SIGNAL("readyForSave"), True)
 
     def source2target(self):
         """Copy the text from source to target."""
         self.ui.txtTarget.selectAll()
         self.ui.txtTarget.insertPlainText(self.ui.txtSource.toPlainText())
         self.checkModified()
+        
+    def setTarget(self, text):
+        if (text != unicode(self.ui.txtTarget.toPlainText())):
+            self.ui.txtTarget.setText(text)
 
     def highlightSearch(self, textField, position, length = 0):
         """Highlight the text at specified position, length, and textField.
