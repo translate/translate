@@ -148,7 +148,6 @@ class Operator(QtCore.QObject):
     
     def emitFiltered(self, filter):
         """send filtered list signal according to filter."""
-        self.emitUpdateUnit()
         if (len(self.filteredList) > 0):
             unitBeforeFiltered = self.filteredList[self.currentUnitIndex]
         else:
@@ -175,13 +174,6 @@ class Operator(QtCore.QObject):
         else:
             unit = None
         self.emitUnit(unit)
-        
-        
-    def emitUpdateUnit(self):
-        """emit "updateUnit" signal."""
-        if (not self.store):
-            return
-        self.emit(QtCore.SIGNAL("updateUnit"))
 
     def headerData(self):
         """@return Header comment and Header dictonary"""
@@ -236,7 +228,6 @@ class Operator(QtCore.QObject):
         save the temporary store into a file.
         @param fileName: String type
         """
-        self.emitUpdateUnit()
         if (World.settings.value("headerAuto", QtCore.QVariant(True)).toBool()):
             self.emit(QtCore.SIGNAL("headerAuto"))
         
@@ -256,7 +247,7 @@ class Operator(QtCore.QObject):
     def setComment(self, comment):
         """set the comment to the current unit, and emit current unit.
         @param comment: QString type"""
-        if (self.currentUnitIndex < 0 or self.filteredList == None):
+        if (self.currentUnitIndex < 0 or not self.filteredList):
             return
         unit = self.getCurrentUnit()
         unit.removenotes()
@@ -267,7 +258,7 @@ class Operator(QtCore.QObject):
         """set the target to the current unit, and emit current unit.
         @param target: Unicode sting type for single unit and list type for plural unit."""
         # if there is no translation unit in the view.
-        if (self.currentUnitIndex < 0 or self.filteredList == None):
+        if (self.currentUnitIndex < 0 or not self.filteredList):
             return
         unit = self.getCurrentUnit()
         # update target for current unit
@@ -280,7 +271,6 @@ class Operator(QtCore.QObject):
         """build a unit from position and call emitUnit.
         @param position: position inside the filtered list."""
         if (position < len(self.filteredList) and position >= 0):
-            self.emitUpdateUnit()
             unit = self.filteredList[position]
             self.emitUnit(unit)
     
@@ -288,7 +278,6 @@ class Operator(QtCore.QObject):
         """toggle fuzzy state for current unit."""
         if (self.currentUnitIndex < 0):
             return
-        self.emitUpdateUnit()
         unit = self.getCurrentUnit()
         if (unit.x_editor_state & World.fuzzy):
             self.status.markFuzzy(unit, False)
