@@ -126,8 +126,13 @@ class htmlfile(HTMLParser, base.TranslationStore):
   def has_translatable_content(self, text):
     """Check if the supplied HTML snippet has any content that needs to be translated."""
 
+    text = text.strip()
+    result = re.findall('.*(charset.*=.*)', text, re.IGNORECASE)
+    if len(result) == 1:
+      return False
+
     # TODO: Get a better way to find untranslatable entities.
-    if text.strip() == '&nbsp;':
+    if text == '&nbsp;':
       return False
 
     pattern = '<[^>]*>'

@@ -312,12 +312,9 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
 '''
         pofile = self.html2po(htmlsource)
 
-        # 5 units are extracted from the source above.
-        # This might change in future, I suspect we don't really want to
-        # translate things like the charset...
-        self.countunits(pofile, 5)
-        self.compareunit(pofile, 4, u'We aim to please \x96 will you aim too, please?')
-        self.compareunit(pofile, 5, u'South Africa\x92s language diversity can be challenging.')
+        self.countunits(pofile, 4)
+        self.compareunit(pofile, 3, u'We aim to please \x96 will you aim too, please?')
+        self.compareunit(pofile, 4, u'South Africa\x92s language diversity can be challenging.')
 
     def test_strip_html(self):
         """Ensure that unnecessary html is stripped from the resulting unit."""
