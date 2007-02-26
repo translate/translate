@@ -56,7 +56,9 @@ Special characters
 Direction (rtl or ltr)
 """
 
+from translate.lang import data
 import re
+import sys
 
 class Common(object):
     """This class is the common parent class for all language classes."""
@@ -113,6 +115,20 @@ class Common(object):
 
     ignoretests = []
     """List of pofilter tests for this language that must be ignored."""
+
+    def __init__(self, code):
+        """This constructor is used if we need to instantiate an abject (not 
+        the usual setup). This will mostly when the factory is asked for a
+        language for which we don't have a dedicated class."""
+        self.code = code or ""
+        while code:
+            langdata = data.languages.get(code, None)
+            if langdata:
+                self.fullname, self.nplurals, self.pluralequations = langdata
+                break
+            code = data.simplercode(code)
+        if not code:
+            print >> sys.stderr, "Warning: No information found about language code %s" % code
 
     def punctranslate(cls, text):
         """Converts the punctuation in a string according to the rules of the 
