@@ -22,6 +22,7 @@
 """This module provides a factory to instantiate language classes."""
 
 from translate.lang import common
+from translate.lang import data
 
 def getlanguage(code):
     """This returns a language class.
@@ -37,5 +38,11 @@ def getlanguage(code):
         exec("langclass = %s.%s" % (code, code))
         return langclass
     except ImportError, e:
-        #TODO: Handle country codes, dialect codes, and locale modifiers
-        return common.Common
+        simplercode = data.simplercode(code)
+        if simplercode:
+            relatedlanguage = getlanguage(simplercode)
+            if isinstance(relatedlanguage, common.Common):
+                relatedlanguage = relatedlanguage.__class__(code)
+            return relatedlanguage
+        else:
+            return common.Common(code)
