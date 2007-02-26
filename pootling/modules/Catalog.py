@@ -83,15 +83,15 @@ class Catalog(QtGui.QMainWindow):
         self.connect(self.catSetting.ui.chbtotal, QtCore.SIGNAL("stateChanged(int)"), self.toggleHeaderItem)
         self.connect(self.catSetting.ui.chbSVN, QtCore.SIGNAL("stateChanged(int)"), self.toggleHeaderItem)
 
-##        # progress bar
-##        self.progressBar = QtGui.QProgressBar()
-##        self.progressBar.setEnabled(True)
-##        self.progressBar.setProperty("value",QtCore.QVariant(0))
-##        self.progressBar.setOrientation(QtCore.Qt.Horizontal)
-##        self.progressBar.setObjectName("progressBar")
-##        self.progressBar.setVisible(False)
-##        self.ui.statusbar.addPermanentWidget(self.progressBar)
-##
+        # progress bar
+        self.progressBar = QtGui.QProgressBar()
+        self.progressBar.setEnabled(True)
+        self.progressBar.setProperty("value",QtCore.QVariant(0))
+        self.progressBar.setOrientation(QtCore.Qt.Horizontal)
+        self.progressBar.setObjectName("progressBar")
+        self.progressBar.setVisible(False)
+        self.ui.statusbar.addPermanentWidget(self.progressBar)
+
         # Help menu of aboutQt
         self.ui.menuHelp.addSeparator()
         action = QtGui.QWhatsThis.createAction(self)
@@ -115,13 +115,13 @@ class Catalog(QtGui.QMainWindow):
                     self.ui.treeCatalog.hideColumn(self.headerLabels.index(text))
                     World.settings.setValue("Catalog." + text, QtCore.QVariant(False))
 
-##    def updateProgress(self, value):
-##        if (not self.progressBar.isVisible()):
-##            self.progressBar.setVisible(True)
-##        elif (value == 100):
-##            self.progressBar.setVisible(False)
-##        self.progressBar.setValue(value)
-##        
+    def updateProgress(self, value):
+        if (not self.progressBar.isVisible()):
+            self.progressBar.setVisible(True)
+        elif (value == 100):
+            self.progressBar.setVisible(False)
+        self.progressBar.setValue(value)
+        
     def showDialog(self):
         self.lazyInit()
         self.show()
@@ -145,6 +145,10 @@ class Catalog(QtGui.QMainWindow):
         cats = World.settings.value("CatalogPath").toStringList()
         includeSub = World.settings.value("diveIntoSubCatalog").toBool()
         
+        # TODO: calculate number of maximum files in directory.
+        maxFilesNum = 0.1
+        currentFileNum = 0.0
+        
         for path in cats:
             path = str(path)
             item = QtGui.QTreeWidgetItem()
@@ -156,23 +160,31 @@ class Catalog(QtGui.QMainWindow):
                     for file in files:
                         if (not root.endswith("/")):
                             root += "/"
-                        childState = self.getState(root + file)
-                        childItem = QtGui.QTreeWidgetItem()
-                        childItem.setText(0, childState[0])
-                        childItem.setText(1, childState[1])
-                        childItem.setText(2, childState[2])
-                        childItem.setText(3, childState[3])
-                        childItem.setText(4, childState[4])
-                        childItem.setText(5, childState[5])
-                        childItem.setText(6, childState[6])
-                        item.addChild(childItem)
-##                        currentFileNum += 1
-##                        self.updateProgress(int((currentFileNum / maxFilesNum) * 100))
+                        childStats = self.getStats(root + file)
+                        self.addItem(item, childStats)
+                        currentFileNum += 1
+                        self.updateProgress(int((currentFileNum / maxFilesNum) * 100))
                     if (not includeSub):
                         break
             self.ui.treeCatalog.addTopLevelItem(item)
-        
-    def getState(self, filename):
+    
+    def addItem(self, parentItem, childStats):
+        """
+        Add item to parentItem
+        @param parentItem: parent item.
+        @param childStats: list of statistic.
+        """
+        childItem = QtGui.QTreeWidgetItem()
+        childItem.setText(0, childStats[0])
+        childItem.setText(1, childStats[1])
+        childItem.setText(2, childStats[2])
+        childItem.setText(3, childStats[3])
+        childItem.setText(4, childStats[4])
+        childItem.setText(5, childStats[5])
+        childItem.setText(6, childStats[6])
+        parentItem.addChild(childItem)
+    
+    def getStats(self, filename):
         """
         return stats as list of text of current file name.
         @param filename: path and file name.
