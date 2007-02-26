@@ -63,9 +63,9 @@ class Status:
         return unitState
         
     def statusString(self):
-        """return string of total, fuzzy, translated, and untranslated messages."""
+        """return string of total, fuzzy, translated, and untranslated (not fuzzy)  messages."""
         return "Total: "+ str(self.store.translated_unitcount() + self.store.untranslated_unitcount()) + \
                 "  |  Fuzzy: " +  str(self.store.fuzzy_units()) + \
                 "  |  Translated: " +  str(self.store.translated_unitcount()) + \
-                "  |  Untranslated: " + str(self.store.untranslated_unitcount())
+                "  |  Untranslated: " + str(self.store.untranslated_unitcount() - self.store.fuzzy_units())
 
