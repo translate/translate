@@ -227,8 +227,6 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.dockOverview, QtCore.SIGNAL("filteredIndex"), self.operator.setUnitFromPosition)
         self.connect(self.dockTUview, QtCore.SIGNAL("scrollToRow"), self.dockOverview.scrollToRow)
 
-        self.connect(self.operator, QtCore.SIGNAL("updateUnit"), self.dockTUview.checkModified)
-        self.connect(self.operator, QtCore.SIGNAL("updateUnit"), self.dockComment.checkModified)
         self.connect(self.dockOverview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
         self.connect(self.dockOverview, QtCore.SIGNAL("targetChanged"), self.dockTUview.setTarget)
         self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
