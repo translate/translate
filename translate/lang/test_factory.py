@@ -11,7 +11,17 @@ def test_getlanguage():
     
     # Test a non-exisint code
     language = factory.getlanguage('zz')
-    assert language.code == ''
+    assert language.nplurals == 0
+
+    # Test a code without a module
+    language = factory.getlanguage('fy')
+    assert language.nplurals == 2
+    assert language.fullname == "Frisian"
+
+    # Test a code without a module and with a country code
+    language = factory.getlanguage('de_AT')
+    assert language.nplurals == 2
+    assert language.fullname == "German"
 
     # Test with None as language code
     language = factory.getlanguage(None)
