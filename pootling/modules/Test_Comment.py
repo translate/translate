@@ -64,12 +64,7 @@ msgstr "unable to read file"
         self.commentObj.highlightSearch(World.comment, position, length)
         self.assertEqual(self.commentObj.highlightRange.start, position)
         self.assertEqual(self.commentObj.highlightRange.length, length )
-    
-    def testEmitReadyForSave(self):
-        QtCore.QObject.connect(self.commentObj, QtCore.SIGNAL("readyForSave"), self.slot)
-        self.commentObj.updateView(self.currentunit)
-        self.assertEqual(self.slotReached, True)
-    
+
     def testReplaceText(self):
         position = 0
         length = 2
