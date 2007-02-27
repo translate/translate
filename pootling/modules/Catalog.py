@@ -268,20 +268,19 @@ class Catalog(QtGui.QMainWindow):
         """
         Send "openFile" signal with filename.
         """
-        if (not hasattr(item.parent(), "text")):
-            return
-        
-        path = str(item.parent().text(0))
+        filename = self.getFilename(item)
+        if (os.path.isfile(filename)): 
+            self.emit(QtCore.SIGNAL("openFile"), filename)
+    
+    def getFilename(self, item):
+        """
+        return filename join from item.text(0) to its parent.
+        """
         filename = str(item.text(0))
-        
-        if (not path.endswith("/")):
-            path += "/"
-        elif (not path.endswith("\\")):
-            path += "\\"
-        
-        self.emit(QtCore.SIGNAL("openFile"), path + filename)
-        
-
+        if (item.parent()):
+            filename = os.path.join(self.getFilename(item.parent()) + '/' + filename)
+        return filename
+    
     def refresh(self):
         self.settings = QtCore.QSettings()
         if self.autoRefresh:
