@@ -311,7 +311,7 @@ class Preference(QtGui.QDialog):
     def setNPlural(self, langCode):
         """Set nplurals for specific language.
         @param langCode: as Qstring type. """
-        language = factory.getlanguage(langCode)
+        language = factory.getlanguage(str(langCode))
         self.ui.spinBox.setValue(language.nplurals)
         self.ui.lineEqaution.setText(language.pluralequation)
         
