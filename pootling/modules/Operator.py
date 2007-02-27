@@ -98,7 +98,12 @@ class Operator(QtCore.QObject):
         self.emit(QtCore.SIGNAL("newUnits"), self.filteredList)
         
     def emitStatus(self):
-        self.emit(QtCore.SIGNAL("currentStatus"), self.status.statusString())        
+        total = self.store.translated_unitcount() + self.store.untranslated_unitcount() + self.store.fuzzy_units()
+        statusString = "Total: " + str(total) + "  |  " + \
+                "Fuzzy: " +  str(self.store.fuzzy_units()) + "  |  " + \
+                "Translated: " +  str(self.store.translated_unitcount()) + "  |  " + \
+                "Untranslated: " + str(self.store.untranslated_unitcount())
+        self.emit(QtCore.SIGNAL("currentStatus"), statusString)
     
     def emitUnit(self, unit):
         """send "currentUnit" signal with unit.
