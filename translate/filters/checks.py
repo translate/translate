@@ -163,7 +163,7 @@ class CheckerConfig(object):
     if notranslatewords is None:
       notranslatewords = []
     self.targetlanguage = targetlanguage
-    self.lang = factory.getlanguage(self.targetlanguage)
+    self.updatetargetlanguage(targetlanguage)
     self.sourcelang = factory.getlanguage('en')
     self.accelmarkers = accelmarkers
     self.varmatches = varmatches
@@ -199,6 +199,7 @@ class CheckerConfig(object):
   def update(self, otherconfig):
     """combines the info in otherconfig into this config object"""
     self.targetlanguage = otherconfig.targetlanguage or self.targetlanguage
+    self.lang = otherconfig.lang
     self.accelmarkers.extend(otherconfig.accelmarkers)
     self.varmatches.extend(otherconfig.varmatches)
     self.notranslatewords.update(otherconfig.notranslatewords)
@@ -217,6 +218,10 @@ class CheckerConfig(object):
       return True
     validcharsmap = dict([(ord(validchar), None) for validchar in validchars])
     self.validcharsmap.update(validcharsmap)
+
+  def updatetargetlanguage(self, langcode):
+      """Updates the target language in the config to the given target language"""
+      self.lang = factory.getlanguage(langcode)
 
 class TranslationChecker(object):
   """Base Checker class which does the checking based on functions available in derived classes"""
@@ -374,7 +379,7 @@ class StandardChecker(TranslationChecker):
     return True
 
   def blank(self, str1, str2):
-    """checks whether a translation is totally blank"""
+    """checks whether a translation only contains spaces"""
     len1 = len(prefilters.removekdecomments(str1).strip())
     len2 = len(str2.strip())
     return not (len1 > 0 and len(str2) != 0 and len2 == 0)
@@ -656,8 +661,10 @@ class StandardChecker(TranslationChecker):
     str1 = self.removevariables(prefilters.removekdecomments(str1))
     str2 = self.removevariables(str2)
     str1 = sre.sub("[^.]( I )", " i ", str1)
-    capitals1, capitals2 = helpers.filtercount(str1, type(str1).isupper), helpers.filtercount(str2, type(str2).isupper)
-    alpha1, alpha2 = helpers.filtercount(str1, type(str1).isalpha), helpers.filtercount(str2, type(str2).isalpha)
+    capitals1 = helpers.filtercount(str1, type(str1).isupper)
+    capitals2 = helpers.filtercount(str2, type(str2).isupper)
+    alpha1 = helpers.filtercount(str1, type(str1).isalpha)
+    alpha2 = helpers.filtercount(str2, type(str2).isalpha)
     # Capture the all caps case
     if capitals1 == alpha1:
       return capitals2 == alpha2
@@ -861,8 +868,19 @@ class StandardChecker(TranslationChecker):
                                     "sentencecount", "numbers", "isfuzzy",
                                     "isreview", "notranslatewords", "musttranslatewords",
                                     "emails", "simpleplurals", "urls", "printf",
+                                    "tabs", "newlines", "blank", "nplurals"),
+                    "blank":        ("simplecaps", "variables", "startcaps",
+                                    "accelerators", "brackets", "endpunc",
+                                    "acronyms", "xmltags", "startpunc",
+                                    "endwhitespace", "startwhitespace",
+                                    "escapes", "doublequoting", "singlequoting", 
+                                    "filepaths", "purepunc", "doublespacing",
+                                    "sentencecount", "numbers", "isfuzzy",
+                                    "isreview", "notranslatewords", "musttranslatewords",
+                                    "emails", "simpleplurals", "urls", "printf",
                                     "tabs", "newlines"),
-                   "unchanged": ("doublewords",), 
+                   "unchanged":     ("doublewords",), 
+                   "startcaps":     ("simplecaps",),
                    "compendiumconflicts": ("accelerators", "brackets", "escapes", 
                                     "numbers", "startpunc", "long", "variables", 
                                     "startcaps", "sentencecount", "simplecaps",
