@@ -96,52 +96,6 @@
     <addaction name="separator" />
     <addaction name="menuToolbars" />
    </widget>
-   <widget class="QMenu" name="menuFile" >
-    <property name="title" >
-     <string>&amp;File</string>
-    </property>
-    <widget class="QMenu" name="menuOpen_Recent" >
-     <property name="title" >
-      <string>Open &amp;Recent</string>
-     </property>
-     <property name="icon" >
-      <iconset>../images/open.png</iconset>
-     </property>
-     <addaction name="actionClear" />
-     <addaction name="separator" />
-    </widget>
-    <addaction name="actionOpenInNewWindow" />
-    <addaction name="actionOpen" />
-    <addaction name="menuOpen_Recent" />
-    <addaction name="action_Close" />
-    <addaction name="separator" />
-    <addaction name="actionSave" />
-    <addaction name="actionSaveas" />
-    <addaction name="separator" />
-    <addaction name="actionExit" />
-   </widget>
-   <widget class="QMenu" name="menuEdit" >
-    <property name="title" >
-     <string>&amp;Edit</string>
-    </property>
-    <addaction name="actionUndo" />
-    <addaction name="actionRedo" />
-    <addaction name="separator" />
-    <addaction name="actionCut" />
-    <addaction name="actionCopy" />
-    <addaction name="actionPaste" />
-    <addaction name="separator" />
-    <addaction name="actionSelectAll" />
-    <addaction name="separator" />
-    <addaction name="actionFind" />
-    <addaction name="actionFindPrevious" />
-    <addaction name="actionFindNext" />
-    <addaction name="actionReplace" />
-    <addaction name="separator" />
-    <addaction name="actionCopySource2Target" />
-    <addaction name="actionToggleFuzzy" />
-    <addaction name="actionEdit_Header" />
-   </widget>
    <widget class="QMenu" name="menuBookmark" >
     <property name="title" >
      <string>&amp;Bookmarks</string>
@@ -174,6 +128,49 @@
     </property>
     <addaction name="actionPreferences" />
     <addaction name="action_TM" />
+   </widget>
+   <widget class="QMenu" name="menuEdit" >
+    <property name="title" >
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="actionUndo" />
+    <addaction name="actionRedo" />
+    <addaction name="separator" />
+    <addaction name="actionCut" />
+    <addaction name="actionCopy" />
+    <addaction name="actionPaste" />
+    <addaction name="separator" />
+    <addaction name="actionSelectAll" />
+    <addaction name="separator" />
+    <addaction name="actionFind" />
+    <addaction name="actionFindPrevious" />
+    <addaction name="actionFindNext" />
+    <addaction name="actionReplace" />
+    <addaction name="separator" />
+    <addaction name="actionCopySource2Target" />
+    <addaction name="actionToggleFuzzy" />
+    <addaction name="actionEdit_Header" />
+   </widget>
+   <widget class="QMenu" name="menuFile" >
+    <property name="title" >
+     <string>&amp;File</string>
+    </property>
+    <widget class="QMenu" name="menuOpen_Recent" >
+     <property name="title" >
+      <string>Open &amp;Recent</string>
+     </property>
+     <property name="icon" >
+      <iconset>../images/open.png</iconset>
+     </property>
+    </widget>
+    <addaction name="actionOpen" />
+    <addaction name="menuOpen_Recent" />
+    <addaction name="action_Close" />
+    <addaction name="separator" />
+    <addaction name="actionSave" />
+    <addaction name="actionSaveas" />
+    <addaction name="separator" />
+    <addaction name="actionExit" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
@@ -716,17 +713,6 @@
     <string>F3</string>
    </property>
   </action>
-  <action name="actionOpenInNewWindow" >
-   <property name="icon" >
-    <iconset>../images/window_new.png</iconset>
-   </property>
-   <property name="text" >
-    <string>Open in New Window</string>
-   </property>
-   <property name="visible" >
-    <bool>false</bool>
-   </property>
-  </action>
   <action name="actionFindPrevious" >
    <property name="enabled" >
     <bool>false</bool>
@@ -899,17 +885,6 @@
    </property>
    <property name="shortcut" >
     <string>Ctrl+W</string>
-   </property>
-  </action>
-  <action name="actionClear" >
-   <property name="text" >
-    <string>&amp;Clear</string>
-   </property>
-   <property name="statusTip" >
-    <string>Clear open recent files list</string>
-   </property>
-   <property name="whatsThis" >
-    <string>&lt;h3>clear&lt;/h3>It will clear the open recent files list&lt;/h3></string>
    </property>
   </action>
   <action name="actionGoTo" >

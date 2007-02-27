@@ -42,4 +42,4 @@ settingApp = "Pootling"
 settings = QtCore.QSettings(settingOrg, settingApp)
 
 # maximum number of files in the recent file menu
-MaxRecentFiles = 10
+MaxRecentFiles = 9

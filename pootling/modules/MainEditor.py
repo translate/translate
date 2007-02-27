@@ -41,7 +41,6 @@ class MainWindow(QtGui.QMainWindow):
     """
     The main window which holds the toolviews.
     """
-    windowList = []
 
     def __init__(self, parent = None):
         QtGui.QMainWindow.__init__(self, parent)
@@ -53,9 +52,6 @@ class MainWindow(QtGui.QMainWindow):
         self.createRecentAction()
         self.createBookmarkAction()
         self.clearBookmarks()
-        
-        app = QtGui.QApplication.instance()
-        self.connect(app, QtCore.SIGNAL("focusChanged(QWidget *,QWidget *)"), self.focusChanged)    
         
         # get the last geometry
         geometry = World.settings.value("lastGeometry")
@@ -142,8 +138,6 @@ class MainWindow(QtGui.QMainWindow):
         # create file action object and file action menu related signals
         self.fileaction = FileAction(self)
         self.connect(self.ui.actionOpen, QtCore.SIGNAL("triggered()"), self.fileaction.openFile)
-        self.connect(self.ui.actionClear, QtCore.SIGNAL("triggered()"), self.clearOpenRecent)
-        self.connect(self.ui.actionOpenInNewWindow, QtCore.SIGNAL("triggered()"), self.startInNewWindow)
         self.connect(self.ui.action_Close, QtCore.SIGNAL("triggered()"), self.closeFile)
         self.connect(self.ui.actionSave, QtCore.SIGNAL("triggered()"), self.fileaction.save)
         self.connect(self.ui.actionSaveas, QtCore.SIGNAL("triggered()"), self.fileaction.saveAs)
@@ -227,7 +221,6 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.dockOverview, QtCore.SIGNAL("filteredIndex"), self.operator.setUnitFromPosition)
         self.connect(self.dockTUview, QtCore.SIGNAL("scrollToRow"), self.dockOverview.scrollToRow)
 
-        self.connect(self.dockOverview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
         self.connect(self.dockOverview, QtCore.SIGNAL("targetChanged"), self.dockTUview.setTarget)
         self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
         self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.dockOverview.setTarget)
@@ -269,14 +262,6 @@ class MainWindow(QtGui.QMainWindow):
         self.findBar.setHidden(True)
         
         self.connect(self.Catalog, QtCore.SIGNAL("openFile"), self.openFile)
-    
-    def clearOpenRecent(self):
-        """Clear only the recentFileList, not the whole Qsetting """
-        files = World.settings.value("recentFileList").toStringList()
-        numRecentFiles = min(files.count(), World.MaxRecentFiles)
-        for i in range(numRecentFiles):
-            self.ui.recentaction[i].setVisible(False)
-        World.settings.remove("recentFileList")
     
     def updateProgress(self, value):
         if (not self.progressBar.isVisible()):
@@ -359,6 +344,8 @@ class MainWindow(QtGui.QMainWindow):
         files.prepend(fileName)
         while files.count() > World.MaxRecentFiles:
             files.removeAt(files.count() - 1)
+        if (files.count() > 0):
+            self.ui.menuOpen_Recent.setEnabled(True)
         World.settings.setValue("recentFileList", QtCore.QVariant(files))
         self.updateRecentAction()
         self.clearBookmarks()
@@ -368,23 +355,37 @@ class MainWindow(QtGui.QMainWindow):
         if action:
             # TODO: remove filename from recent file if it doesn't exist.
             self.fileaction.setFileName(action.data().toString())
-
+    
+    def clearRecentAction(self):
+        self.ui.menuOpen_Recent.clear()
+        self.ui.menuOpen_Recent.setEnabled(False)
+        World.settings.remove("recentFileList")
+    
     def createRecentAction(self):
         for i in range(World.MaxRecentFiles):
             self.ui.recentaction.append(QtGui.QAction(self))
             self.ui.recentaction[i].setVisible(False)
             self.connect(self.ui.recentaction[i], QtCore.SIGNAL("triggered()"), self.startRecentAction)
             self.ui.menuOpen_Recent.addAction(self.ui.recentaction[i])
+        self.ui.menuOpen_Recent.addSeparator()
+        self.clearAction = QtGui.QAction("&Clear", self)
+        self.connect(self.clearAction, QtCore.SIGNAL("triggered()"), self.clearRecentAction)
+        self.ui.menuOpen_Recent.addAction(self.clearAction)
+        self.ui.menuOpen_Recent.setEnabled(False)
         self.updateRecentAction()
 
     def updateRecentAction(self):
         """
         Update recent actions of Open Recent Files with names of recent opened files
         """
+        if (not len(self.ui.menuOpen_Recent.actions())):
+            self.createRecentAction()
         files = World.settings.value("recentFileList").toStringList()
+        if (files.count() > 0):
+            self.ui.menuOpen_Recent.setEnabled(True)
         numRecentFiles = min(files.count(), World.MaxRecentFiles)
         for i in range(numRecentFiles):
-            self.ui.recentaction[i].setText(files[i])
+            self.ui.recentaction[i].setText(self.tr("&" + str(i+1) + ": ") + files[i])
             self.ui.recentaction[i].setData(QtCore.QVariant(files[i]))
             self.ui.recentaction[i].setVisible(True)
 
@@ -426,12 +427,6 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionPrevious.setDisabled(atFirst)
         self.ui.actionNext.setDisabled(atLast)
         self.ui.actionLast.setDisabled(atLast)
-    
-    def startInNewWindow(self):
-        other = MainWindow()
-        MainWindow.windowList.append(other)
-        if other.fileaction.openFile():
-            other.show()
 
     def showTemporaryMessage(self, text):
         self.ui.statusbar.showMessage(text, 3000)

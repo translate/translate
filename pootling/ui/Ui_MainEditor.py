@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/ks/programming/wordforge/trunk/pootling/ui/MainEditor.ui'
 #
-# Created: Sat Feb 24 09:54:13 2007
+# Created: Tue Feb 27 13:35:28 2007
 #      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!
@@ -48,16 +48,6 @@ class Ui_MainWindow(object):
         self.menuToolbars = QtGui.QMenu(self.menuWindow)
         self.menuToolbars.setObjectName("menuToolbars")
 
-        self.menuFile = QtGui.QMenu(self.menubar)
-        self.menuFile.setObjectName("menuFile")
-
-        self.menuOpen_Recent = QtGui.QMenu(self.menuFile)
-        self.menuOpen_Recent.setIcon(QtGui.QIcon("../images/open.png"))
-        self.menuOpen_Recent.setObjectName("menuOpen_Recent")
-
-        self.menuEdit = QtGui.QMenu(self.menubar)
-        self.menuEdit.setObjectName("menuEdit")
-
         self.menuBookmark = QtGui.QMenu(self.menubar)
         self.menuBookmark.setObjectName("menuBookmark")
 
@@ -70,6 +60,16 @@ class Ui_MainWindow(object):
 
         self.menuSettings = QtGui.QMenu(self.menubar)
         self.menuSettings.setObjectName("menuSettings")
+
+        self.menuEdit = QtGui.QMenu(self.menubar)
+        self.menuEdit.setObjectName("menuEdit")
+
+        self.menuFile = QtGui.QMenu(self.menubar)
+        self.menuFile.setObjectName("menuFile")
+
+        self.menuOpen_Recent = QtGui.QMenu(self.menuFile)
+        self.menuOpen_Recent.setIcon(QtGui.QIcon("../images/open.png"))
+        self.menuOpen_Recent.setObjectName("menuOpen_Recent")
         MainWindow.setMenuBar(self.menubar)
 
         self.statusbar = QtGui.QStatusBar(MainWindow)
@@ -215,11 +215,6 @@ class Ui_MainWindow(object):
         self.actionFindNext.setIcon(QtGui.QIcon("../images/next.png"))
         self.actionFindNext.setObjectName("actionFindNext")
 
-        self.actionOpenInNewWindow = QtGui.QAction(MainWindow)
-        self.actionOpenInNewWindow.setIcon(QtGui.QIcon("../images/window_new.png"))
-        self.actionOpenInNewWindow.setVisible(False)
-        self.actionOpenInNewWindow.setObjectName("actionOpenInNewWindow")
-
         self.actionFindPrevious = QtGui.QAction(MainWindow)
         self.actionFindPrevious.setEnabled(False)
         self.actionFindPrevious.setIcon(QtGui.QIcon("../images/previous.png"))
@@ -266,9 +261,6 @@ class Ui_MainWindow(object):
         self.action_Close.setIcon(QtGui.QIcon("../images/fileclose.png"))
         self.action_Close.setObjectName("action_Close")
 
-        self.actionClear = QtGui.QAction(MainWindow)
-        self.actionClear.setObjectName("actionClear")
-
         self.actionGoTo = QtGui.QAction(MainWindow)
         self.actionGoTo.setEnabled(False)
         self.actionGoTo.setObjectName("actionGoTo")
@@ -308,17 +300,16 @@ class Ui_MainWindow(object):
         self.menuWindow.addSeparator()
         self.menuWindow.addSeparator()
         self.menuWindow.addAction(self.menuToolbars.menuAction())
-        self.menuOpen_Recent.addAction(self.actionClear)
-        self.menuOpen_Recent.addSeparator()
-        self.menuFile.addAction(self.actionOpenInNewWindow)
-        self.menuFile.addAction(self.actionOpen)
-        self.menuFile.addAction(self.menuOpen_Recent.menuAction())
-        self.menuFile.addAction(self.action_Close)
-        self.menuFile.addSeparator()
-        self.menuFile.addAction(self.actionSave)
-        self.menuFile.addAction(self.actionSaveas)
-        self.menuFile.addSeparator()
-        self.menuFile.addAction(self.actionExit)
+        self.menuBookmark.addAction(self.actionAddBookmarks)
+        self.menuBookmark.addAction(self.actionClearBookmarks)
+        self.menuBookmark.addSeparator()
+        self.menu_TM.addAction(self.action_lookup_Text)
+        self.menu_TM.addAction(self.actionAuto_translate)
+        self.menu_Tool.addSeparator()
+        self.menu_Tool.addAction(self.menu_TM.menuAction())
+        self.menu_Tool.addAction(self.actionCatalogManager)
+        self.menuSettings.addAction(self.actionPreferences)
+        self.menuSettings.addAction(self.action_TM)
         self.menuEdit.addAction(self.actionUndo)
         self.menuEdit.addAction(self.actionRedo)
         self.menuEdit.addSeparator()
@@ -336,16 +327,14 @@ class Ui_MainWindow(object):
         self.menuEdit.addAction(self.actionCopySource2Target)
         self.menuEdit.addAction(self.actionToggleFuzzy)
         self.menuEdit.addAction(self.actionEdit_Header)
-        self.menuBookmark.addAction(self.actionAddBookmarks)
-        self.menuBookmark.addAction(self.actionClearBookmarks)
-        self.menuBookmark.addSeparator()
-        self.menu_TM.addAction(self.action_lookup_Text)
-        self.menu_TM.addAction(self.actionAuto_translate)
-        self.menu_Tool.addSeparator()
-        self.menu_Tool.addAction(self.menu_TM.menuAction())
-        self.menu_Tool.addAction(self.actionCatalogManager)
-        self.menuSettings.addAction(self.actionPreferences)
-        self.menuSettings.addAction(self.action_TM)
+        self.menuFile.addAction(self.actionOpen)
+        self.menuFile.addAction(self.menuOpen_Recent.menuAction())
+        self.menuFile.addAction(self.action_Close)
+        self.menuFile.addSeparator()
+        self.menuFile.addAction(self.actionSave)
+        self.menuFile.addAction(self.actionSaveas)
+        self.menuFile.addSeparator()
+        self.menuFile.addAction(self.actionExit)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
         self.menubar.addAction(self.menuView.menuAction())
@@ -381,13 +370,13 @@ class Ui_MainWindow(object):
         self.menuHelp.setTitle(QtGui.QApplication.translate("MainWindow", "&Help", None, QtGui.QApplication.UnicodeUTF8))
         self.menuWindow.setTitle(QtGui.QApplication.translate("MainWindow", "&Window", None, QtGui.QApplication.UnicodeUTF8))
         self.menuToolbars.setTitle(QtGui.QApplication.translate("MainWindow", "&Toolbars", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuFile.setTitle(QtGui.QApplication.translate("MainWindow", "&File", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuOpen_Recent.setTitle(QtGui.QApplication.translate("MainWindow", "Open &Recent", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuEdit.setTitle(QtGui.QApplication.translate("MainWindow", "&Edit", None, QtGui.QApplication.UnicodeUTF8))
         self.menuBookmark.setTitle(QtGui.QApplication.translate("MainWindow", "&Bookmarks", None, QtGui.QApplication.UnicodeUTF8))
         self.menu_Tool.setTitle(QtGui.QApplication.translate("MainWindow", "&Tool", None, QtGui.QApplication.UnicodeUTF8))
         self.menu_TM.setTitle(QtGui.QApplication.translate("MainWindow", "&TM", None, QtGui.QApplication.UnicodeUTF8))
         self.menuSettings.setTitle(QtGui.QApplication.translate("MainWindow", "&Settings", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuEdit.setTitle(QtGui.QApplication.translate("MainWindow", "&Edit", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuFile.setTitle(QtGui.QApplication.translate("MainWindow", "&File", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuOpen_Recent.setTitle(QtGui.QApplication.translate("MainWindow", "Open &Recent", None, QtGui.QApplication.UnicodeUTF8))
         self.toolFile.setWindowTitle(QtGui.QApplication.translate("MainWindow", "&File Toolbar", None, QtGui.QApplication.UnicodeUTF8))
         self.toolFile.setToolTip(QtGui.QApplication.translate("MainWindow", "Save", None, QtGui.QApplication.UnicodeUTF8))
         self.toolFile.setStatusTip(QtGui.QApplication.translate("MainWindow", "Save", None, QtGui.QApplication.UnicodeUTF8))
@@ -489,7 +478,6 @@ class Ui_MainWindow(object):
         self.actionFindNext.setStatusTip(QtGui.QApplication.translate("MainWindow", "Find next occurrance of text", None, QtGui.QApplication.UnicodeUTF8))
         self.actionFindNext.setWhatsThis(QtGui.QApplication.translate("MainWindow", "<h3>Find next</h3>Find next occurrance of text in the table. The previously entered searchtext and options are reused.", None, QtGui.QApplication.UnicodeUTF8))
         self.actionFindNext.setShortcut(QtGui.QApplication.translate("MainWindow", "F3", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionOpenInNewWindow.setText(QtGui.QApplication.translate("MainWindow", "Open in New Window", None, QtGui.QApplication.UnicodeUTF8))
         self.actionFindPrevious.setText(QtGui.QApplication.translate("MainWindow", "Find Pre&vious", None, QtGui.QApplication.UnicodeUTF8))
         self.actionFindPrevious.setStatusTip(QtGui.QApplication.translate("MainWindow", "Find previous occurrance of text", None, QtGui.QApplication.UnicodeUTF8))
         self.actionFindPrevious.setWhatsThis(QtGui.QApplication.translate("MainWindow", "<h3>Find previous</h3>Find previous occurrance of text in the table. The previously entered searchtext and options are reused.", None, QtGui.QApplication.UnicodeUTF8))
@@ -523,9 +511,6 @@ class Ui_MainWindow(object):
         self.action_Close.setStatusTip(QtGui.QApplication.translate("MainWindow", "Close the current opened file", None, QtGui.QApplication.UnicodeUTF8))
         self.action_Close.setWhatsThis(QtGui.QApplication.translate("MainWindow", "<h3>Close the current opened file</h3>You will be asked whether to save the current opened file.", None, QtGui.QApplication.UnicodeUTF8))
         self.action_Close.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+W", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionClear.setText(QtGui.QApplication.translate("MainWindow", "&Clear", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionClear.setStatusTip(QtGui.QApplication.translate("MainWindow", "Clear open recent files list", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionClear.setWhatsThis(QtGui.QApplication.translate("MainWindow", "<h3>clear</h3>It will clear the open recent files list</h3>", None, QtGui.QApplication.UnicodeUTF8))
         self.actionGoTo.setText(QtGui.QApplication.translate("MainWindow", "&GoTo Unit", None, QtGui.QApplication.UnicodeUTF8))
         self.actionGoTo.setIconText(QtGui.QApplication.translate("MainWindow", "GoTo unit", None, QtGui.QApplication.UnicodeUTF8))
         self.actionGoTo.setToolTip(QtGui.QApplication.translate("MainWindow", "GoTo unit", None, QtGui.QApplication.UnicodeUTF8))
