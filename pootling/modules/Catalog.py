@@ -129,12 +129,6 @@ class Catalog(QtGui.QMainWindow):
         cats = World.settings.value("CatalogPath").toStringList()
         if (cats) and (self.ui.treeCatalog.topLevelItemCount() == 0):
             self.updateCatalog()
-        
-        return
-        
-        cats = World.settings.value("CatalogPath").toStringList()
-        if (cats) and (self.ui.treeCatalog.rowCount() == 0):
-            self.updateCatalog()
     
     def updateCatalog(self):
         """
@@ -146,43 +140,60 @@ class Catalog(QtGui.QMainWindow):
         includeSub = World.settings.value("diveIntoSubCatalog").toBool()
         
         # TODO: calculate number of maximum files in directory.
-        maxFilesNum = 0.1
+        maxFilesNum = 0.1       # avoid devision by zero.
         currentFileNum = 0.0
         
-        for path in cats:
-            path = str(path)
-            item = QtGui.QTreeWidgetItem()
-            item.setText(0, path)
-            if (os.path.isdir(path)):
-                if (not path.endswith("/")):
-                    path += "/"
-                for root, dirs, files in os.walk(path):
-                    for file in files:
-                        if (not root.endswith("/")):
-                            root += "/"
-                        childStats = self.getStats(root + file)
-                        self.addItem(item, childStats)
-                        currentFileNum += 1
-                        self.updateProgress(int((currentFileNum / maxFilesNum) * 100))
-                    if (not includeSub):
-                        break
-            self.ui.treeCatalog.addTopLevelItem(item)
+        for catalogFile in cats:
+            catalogFile = str(catalogFile)
+            
+            topItem = QtGui.QTreeWidgetItem()
+            self.addCatalogFile(catalogFile, includeSub, topItem)
+            self.ui.treeCatalog.addTopLevelItem(topItem)
+            self.ui.treeCatalog.expandItem(topItem)
+        
+        self.ui.treeCatalog.resizeColumnToContents(0)
+            #currentFileNum += 1
+            #self.updateProgress(int((currentFileNum / maxFilesNum) * 100))
     
-    def addItem(self, parentItem, childStats):
+    def addCatalogFile(self, path, includeSub, item):
         """
-        Add item to parentItem
-        @param parentItem: parent item.
-        @param childStats: list of statistic.
+        add path to catalog tree view if it's file, if it's directory then
+        dive into it and add files.
         """
-        childItem = QtGui.QTreeWidgetItem()
-        childItem.setText(0, childStats[0])
-        childItem.setText(1, childStats[1])
-        childItem.setText(2, childStats[2])
-        childItem.setText(3, childStats[3])
-        childItem.setText(4, childStats[4])
-        childItem.setText(5, childStats[5])
-        childItem.setText(6, childStats[6])
-        parentItem.addChild(childItem)
+        
+        if (os.path.isfile(path)):
+            if (not item.text(0)):
+                item.setText(0, os.path.dirname(path))
+            childStats = self.getStats(path)
+            item1 = QtGui.QTreeWidgetItem(item)
+            item1.setText(0, childStats[0])
+            item1.setText(1, childStats[1])
+            item1.setText(2, childStats[2])
+            item1.setText(3, childStats[3])
+            item1.setText(4, childStats[4])
+            item1.setText(5, childStats[5])
+            item1.setText(6, childStats[6])
+        
+        if (os.path.isdir(path)):
+            if (not item.parent()):
+                pathName = path
+            else:
+                pathName = os.path.basename(path)
+            item.setText(0, pathName)
+            
+            for root, dirs, files in os.walk(path):
+                for file in files:
+                    path = os.path.join(root + '/' + file)
+                    self.addCatalogFile(path, includeSub, item)
+                    
+                # whether dive into subfolder
+                if (includeSub):
+                    for folder in dirs:
+                        path = os.path.join(root + '/' + folder)
+                        subItem = QtGui.QTreeWidgetItem(item)
+                        self.addCatalogFile(path, includeSub, subItem)
+                
+                break
     
     def getStats(self, filename):
         """
