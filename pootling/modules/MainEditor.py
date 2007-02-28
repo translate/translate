@@ -397,7 +397,7 @@ class MainWindow(QtGui.QMainWindow):
         @param QCloseEvent Object: received close event when closing mainwindows
         """
         QtGui.QMainWindow.closeEvent(self, event)
-        if self.operator.modified:
+        if self.operator.getModified():
             if self.fileaction.aboutToClose(self):
                 event.accept()
             else:
@@ -507,7 +507,7 @@ class MainWindow(QtGui.QMainWindow):
     
     def closeFile(self):
         """return True when successfully close file, else return False."""
-        if (not self.operator.modified):
+        if (not self.operator.getModified()):
             self.setClosingFile()
         else:
             if self.fileaction.aboutToClose(self):

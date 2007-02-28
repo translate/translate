@@ -50,7 +50,6 @@ class Operator(QtCore.QObject):
         self.store = None
         self.currentUnitIndex = 0
         self.filteredList = []
-        self.modified = None
         self.filter = None
         self.lookupUnitStatus = None
 
@@ -421,7 +420,6 @@ class Operator(QtCore.QObject):
     def setAfterfileClosed(self):
         self.store = None
         self.status = None
-        self.modified = None
         self.filter = None
         self.filteredList = None
         self.emitNewUnits()
@@ -484,3 +482,6 @@ class Operator(QtCore.QObject):
     def setModified(self, bool):
         self.modified = bool
         self.emit(QtCore.SIGNAL("readyForSave"), self.modified) 
+
+    def getModified(self):
+        return (hasattr(self, "modified") and self.modified or None)
