@@ -81,7 +81,8 @@ class CommentDock(QtGui.QDockWidget):
         else:
             self.ui.txtLocationComment.show()
             self.ui.txtLocationComment.setPlainText(unicode(locationComment))
-        self.ui.txtTranslatorComment.setPlainText(unicode(translatorComment))
+        if (unicode(self.ui.txtTranslatorComment.toPlainText()) != unicode(translatorComment)):
+            self.ui.txtTranslatorComment.setPlainText(unicode(translatorComment))
         self.connect(self.ui.txtTranslatorComment, QtCore.SIGNAL("textChanged()"), self.checkModified)
 
     def checkModified(self):

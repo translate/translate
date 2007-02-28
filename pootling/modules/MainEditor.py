@@ -221,9 +221,8 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.dockOverview, QtCore.SIGNAL("filteredIndex"), self.operator.setUnitFromPosition)
         self.connect(self.dockTUview, QtCore.SIGNAL("scrollToRow"), self.dockOverview.scrollToRow)
 
-        self.connect(self.dockOverview, QtCore.SIGNAL("targetChanged"), self.dockTUview.setTarget)
+        self.connect(self.dockOverview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
         self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
-        self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.dockOverview.setTarget)
         self.connect(self.dockComment, QtCore.SIGNAL("commentChanged"), self.operator.setComment)
         self.connect(self.fileaction, QtCore.SIGNAL("fileSaved"), self.operator.saveStoreToFile)
         self.connect(self.operator, QtCore.SIGNAL("readyForSave"), self.ui.actionSave.setEnabled)
@@ -282,7 +281,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def showGoto(self):
         value, ok = QtGui.QInputDialog.getInteger(self, self.tr("Goto"),
-                                                self.tr("Unit Index:"), 1, 1, self.operator.store.translated_unitcount() + self.operator.store.untranslated_unitcount())
+                                                self.tr("Unit Index:"), 1, 1, self.status.numTotal)
         if ok:
             self.dockOverview.gotoRow(value)
 

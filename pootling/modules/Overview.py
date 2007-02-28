@@ -234,7 +234,7 @@ class OverviewDock(QtGui.QDockWidget):
             self.ui.tableOverview.item(index, 1).setBackgroundColor(self.blankColor)
             self.ui.tableOverview.item(index, 2).setBackgroundColor(self.blankColor)
             item.setBackgroundColor(self.blankColor)
-    
+
     def applySettings(self):
         """
         set color and font to the table.
@@ -349,12 +349,6 @@ class OverviewDock(QtGui.QDockWidget):
         row = self.ui.tableOverview.currentRow()
         item = self.ui.tableOverview.item(row, 0)
         return int(item.text())
-    
-    def setTarget(self, text):
-        row = self.ui.tableOverview.currentRow()
-        item = self.ui.tableOverview.item(row, 2)
-        if (item.text() != text):
-            item.setText(text)
     
 if __name__ == "__main__":
     import sys, os

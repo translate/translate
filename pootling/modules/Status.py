@@ -22,30 +22,40 @@ import pootling.modules.World as World
 class Status:
     
     # FIXME: toggle unit's fuzzy is not working
+    def __init__(self, store):
+        self.numTranslated = store.translated_unitcount()
+        self.numFuzzy = store.fuzzy_units()
+        self.numTotal = store.translated_unitcount() + store.untranslated_unitcount()
 
     def markFuzzy(self, unit, fuzzy):
         unit.markfuzzy(fuzzy)
         if (fuzzy):
+            self.numFuzzy += 1
+            self.numTranslated -= 1
             unit.x_editor_state |= World.fuzzy
             unit.x_editor_state &= ~World.translated
         else:
+            self.numFuzzy -= 1
+            self.numTranslated += 1
             unit.x_editor_state &= ~World.fuzzy
             unit.x_editor_state |= World.translated
 
     def markTranslated(self, unit, translated):
+        if (unit.isfuzzy()):
+            self.markFuzzy(unit, False)
+
         if (translated):
             if (not hasattr(unit, "x_editor_state")) or (unit.x_editor_state & World.translated):
                 return
+            self.numTranslated += 1
             unit.x_editor_state |= World.translated
             unit.x_editor_state &= ~World.untranslated
         else:
             if (unit.x_editor_state & World.untranslated):
                 return
+            self.numTranslated -= 1
             unit.x_editor_state &= ~World.translated
             unit.x_editor_state |= World.untranslated
-        if (unit.isfuzzy()):
-            unit.markfuzzy(False)
-            unit.x_editor_state &= ~World.fuzzy
 
     def getStatus(self, unit):
         """return the unit's status flag."""
@@ -59,4 +69,15 @@ class Status:
         else:
             unitState |= World.untranslated
         return unitState
+    
+    def statusString(self):
+        '''show total of messages in a file, fuzzy, translated messages and untranslate  messages which are not fuzzy.
+        
+        '''
+        # Untranslated messages, here, are not fuzzy messages (for user-easy understainding)
+        statusString = "Total: " + str(self.numTotal) + "  |  " + \
+                "Fuzzy: " +  str(self.numFuzzy) + "  |  " + \
+                "Translated: " +  str(self.numTranslated) + "  |  " + \
+                "Untranslated: " + str(self.numTotal - self.numTranslated - self.numFuzzy)
+        return statusString
     

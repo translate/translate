@@ -74,7 +74,7 @@ class Operator(QtCore.QObject):
         # filter flags
         self.filter = World.filterAll
         # get status for units
-        self.status = Status()
+        self.status = Status(self.store)
         self.emitStatus()
 
         self.filteredList = []
@@ -97,12 +97,7 @@ class Operator(QtCore.QObject):
         '''show total of messages in a file, fuzzy, translated messages and untranslate  messages which are not fuzzy.
         
         '''
-        total = self.store.translated_unitcount() + self.store.untranslated_unitcount()
-        statusString = "Total: " + str(total) + "  |  " + \
-                "Fuzzy: " +  str(self.store.fuzzy_units()) + "  |  " + \
-                "Translated: " +  str(self.store.translated_unitcount()) + "  |  " + \
-                "Untranslated: " + str(self.store.untranslated_unitcount()  - self.store.fuzzy_units())
-        self.emit(QtCore.SIGNAL("currentStatus"), statusString)
+        self.emit(QtCore.SIGNAL("currentStatus"), self.status.statusString())
     
     def emitUnit(self, unit):
         """send "currentUnit" signal with unit.
@@ -267,11 +262,12 @@ class Operator(QtCore.QObject):
             return
         unit = self.getCurrentUnit()
         # update target for current unit
-        unit.settarget(target)
-        self.status.markTranslated(unit, (unit.target and True or False))
-        self.emitStatus()
-        self.emitUnit(unit)
-        self.setModified(True)
+        if (unicode(unit.target) != unicode(target)):
+            unit.settarget(target)
+            self.status.markTranslated(unit, (unit.target and True or False))
+            self.emitUnit(unit)
+            self.emitStatus()
+            self.setModified(True)
     
     def setUnitFromPosition(self, position):
         """build a unit from position and call emitUnit.
