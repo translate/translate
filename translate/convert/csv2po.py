@@ -86,9 +86,10 @@ class csv2po:
   def convertunit(self, csvunit):
     """converts csv unit to po unit"""
     pounit = po.pounit(encoding="UTF-8")
-    pounit.sourcecomments = ["#: " + csvunit.comment + "\n"]
-    pounit.msgid = [quotecsvstr(line) for line in csvunit.source.split('\n')]
-    pounit.msgstr = [quotecsvstr(line) for line in csvunit.target.split('\n')]
+    if csvunit.comment:
+      pounit.addlocation(csvunit.comment)
+    pounit.source = csvunit.source
+    pounit.target = csvunit.target
     return pounit
 
   def handlecsvunit(self, csvunit):
