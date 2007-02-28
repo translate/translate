@@ -56,7 +56,6 @@ class Operator(QtCore.QObject):
     def getUnits(self, fileName):
         """reading a file into the internal datastructure.
         @param fileName: the file to open, either a string or a file object"""
-        self.fileName = fileName
         if (not os.path.exists(fileName)):
             QtGui.QMessageBox.critical(None, 'Error', fileName  + '\n' + 'The file doesn\'t exist.')
             return
@@ -257,6 +256,7 @@ class Operator(QtCore.QObject):
         unit = self.getCurrentUnit()
         unit.removenotes()
         unit.addnote(unicode(comment),'translator')
+        self.emitUnit(unit)
         self.setModified(True)
     
     def setTarget(self, target):
@@ -270,6 +270,7 @@ class Operator(QtCore.QObject):
         unit.settarget(target)
         self.status.markTranslated(unit, (unit.target and True or False))
         self.emitStatus()
+        self.emitUnit(unit)
         self.setModified(True)
     
     def setUnitFromPosition(self, position):
