@@ -22,8 +22,6 @@ import pootling.modules.World as World
 class Status:
     
     # FIXME: toggle unit's fuzzy is not working
-    def __init__(self, store):
-        self.store = store
 
     def markFuzzy(self, unit, fuzzy):
         unit.markfuzzy(fuzzy)

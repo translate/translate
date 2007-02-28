@@ -24,10 +24,8 @@ from translate.storage import po
 from translate.misc import quote
 from translate.storage import poheader
 from translate.storage import xliff
-from translate.misc import wStringIO
 import pootling.modules.World as World
 from pootling.modules.Status import Status
-from translate.search import match
 import os, sys
 import __version__
 import pickleTM
@@ -78,7 +76,7 @@ class Operator(QtCore.QObject):
         # filter flags
         self.filter = World.filterAll
         # get status for units
-        self.status = Status(self.store)
+        self.status = Status()
         self.emitStatus()
 
         self.filteredList = []
@@ -98,11 +96,14 @@ class Operator(QtCore.QObject):
         self.emit(QtCore.SIGNAL("newUnits"), self.filteredList)
         
     def emitStatus(self):
-        total = self.store.translated_unitcount() + self.store.untranslated_unitcount() + self.store.fuzzy_units()
+        '''show total of messages in a file, fuzzy, translated messages and untranslate  messages which are not fuzzy.
+        
+        '''
+        total = self.store.translated_unitcount() + self.store.untranslated_unitcount()
         statusString = "Total: " + str(total) + "  |  " + \
                 "Fuzzy: " +  str(self.store.fuzzy_units()) + "  |  " + \
                 "Translated: " +  str(self.store.translated_unitcount()) + "  |  " + \
-                "Untranslated: " + str(self.store.untranslated_unitcount())
+                "Untranslated: " + str(self.store.untranslated_unitcount()  - self.store.fuzzy_units())
         self.emit(QtCore.SIGNAL("currentStatus"), statusString)
     
     def emitUnit(self, unit):
