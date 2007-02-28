@@ -280,8 +280,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionRedo.setEnabled(bool)
 
     def showGoto(self):
-        value, ok = QtGui.QInputDialog.getInteger(self, self.tr("Goto"),
-                                                self.tr("Unit Index:"), 1, 1, self.status.numTotal)
+        value, ok = QtGui.QInputDialog.getInteger(self, self.tr("Goto"), self.tr("Unit Index:"), 1, 1, self.operator.status.numTotal)
         if ok:
             self.dockOverview.gotoRow(value)
 

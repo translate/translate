@@ -21,6 +21,7 @@
 
 from PyQt4 import QtCore, QtGui
 from pootling.ui.Ui_TUview import Ui_TUview
+from pootling.ui.Ui_PluralTab import Ui_PluralTab
 from translate.storage import po
 from pootling.modules import World
 
@@ -72,7 +73,7 @@ class Highlighter(QtGui.QSyntaxHighlighter):
     def initSearch(self, index, length):
         self.index = index
         self.length = length
-        
+
 class TUview(QtGui.QDockWidget):
     def __init__(self, parent):
         QtGui.QDockWidget.__init__(self, parent)
@@ -86,13 +87,11 @@ class TUview(QtGui.QDockWidget):
         self.ui.lblComment.hide()
         self.ui.txtTarget.setReadOnly(True)
         #support only qt4.2
-##        self.ui.txtTarget.moveCursor(QtGui.QTextCursor.Start, QtGui.QTextCursor.MoveAnchor )
         self.ui.txtTarget.setWhatsThis("<h3>Translated String</h3>This editor displays and lets you edit the translation of the currently displayed string.")
         self.ui.txtSource.setWhatsThis("<h3>Original String</h3>This part of the window shows you the original string of the currently displayed entry. <br>You can not edit this string.")
         self.ui.lblComment.setWhatsThis("<h3>Important Comment</h3>Hints from the developer to the translator are displayed in this area. This area will be hidden if there is no hint. ")
         self.ui.fileScrollBar.setWhatsThis("<h3>Navigation Scrollbar</h3>It allows you do navigate in the current file. If you filter your strings you get only the filtered list. <br>It also gives you visual feedback about the postion of the current entry. The Tooltip also shows you the current number and the total numbers of strings.")
         self.applySettings()
-        
         self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
         
         # create highlight font
@@ -102,34 +101,11 @@ class TUview(QtGui.QDockWidget):
         self.highlightFormat.setBackground(QtCore.Qt.darkMagenta)
         self.highlightRange = QtGui.QTextLayout.FormatRange()
         self.highlightRange.format = self.highlightFormat
-        self.tabForPlural()
-        self.unitHasPlural = False
-        self.targetModified = False
+        
         self.sourceLength = 0
         
         self.sourceHighlight = Highlighter(self.ui.txtSource)
         self.targetHighlight = Highlighter(self.ui.txtTarget)
-        
-    def tabForPlural(self):
-        self.tabSourcePlurals = []
-        self.tabTargetPlurals = []
-        self.gridlayoutSList = []
-        self.gridlayoutTarList = []
-        self.txtSourceList = []
-        self.txtTargetList = []
-        # tab for plural
-        self.tabSource = QtGui.QTabWidget(self.form)
-        self.tabSource.setObjectName("tabSource")
-        self.ui.gridlayout.addWidget(self.tabSource,0,0,1,1)
-
-        self.tabTarget = QtGui.QTabWidget(self.form)
-        self.tabTarget.setObjectName("tabTarget")
-        self.ui.gridlayout.addWidget(self.tabTarget,1,0,1,1)
-        
-        self.ui.gridlayout.addWidget(self.ui.fileScrollBar,0,2,3,1)
-        
-        self.tabSource.hide()
-        self.tabTarget.hide()
 
     def closeEvent(self, event):
         """
@@ -180,7 +156,7 @@ class TUview(QtGui.QDockWidget):
         Then recalculate scrollbar maximum value.
         @param unit: unit to set in target and source.
         @param index: value in the scrollbar to be removed."""
-        self.disconnect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.checkModified)
+        self.disconnect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
         if (not unit) or (not hasattr(unit, "x_editor_filterIndex")):
             self.ui.lblComment.hide()
             self.ui.txtSource.clear()
@@ -197,137 +173,33 @@ class TUview(QtGui.QDockWidget):
         else:
             self.ui.lblComment.show()
             self.ui.lblComment.setText(unicode(comment))
-        if unit.hasplural():
-            self.unitPlural(unit)
-        else:
-            self.unitSingle(unit)
+        self.showUnit(unit)
         # set the scrollbar position
         self.setScrollbarValue(unit.x_editor_filterIndex)
-        self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.checkModified)
-     
-    def unitPlural(self, unit):
-        """This will be call when unit is plural.
-        @param unit: unit to consider if plural or not."""
-        #show tab for plural unit and hide the normal text box.
-        self.unitHasPlural = True
-        self.tabSource.show()
-        self.tabTarget.show()
-        self.ui.gridlayout.addWidget(self.ui.fileScrollBar,0,2,3,1)
-        self.ui.txtSource.hide()
-        self.ui.txtTarget.hide()
-        # source section
-        self.sourceLength = len(unit.source.strings)
-        # if plural unit is already detected once then no need to create more tab.
-        if (self.tabSource.count() == self.sourceLength):
-            for i in range(self.sourceLength):
-                self.txtSourceList[i].setPlainText(unit.source.strings[i])
-        else:
-            # create tab regarding to the number of strings in source.
-            for i in range(self.sourceLength):
-                tabSourcePlural = QtGui.QWidget(self.tabSource)
-                self.tabSourcePlurals.append(tabSourcePlural)
-                self.tabSourcePlurals[i].setObjectName("tabSourcePlural%d" % i)
-                
-                self.gridlayoutS = QtGui.QGridLayout(self.tabSourcePlurals[i])
-                self.gridlayoutSList.append(self.gridlayoutS)
-                self.gridlayoutSList[i].setMargin(0)
-                self.gridlayoutSList[i].setSpacing(0)
-                self.gridlayoutSList[i].setObjectName("gridlayoutS%d" % i)
-                
-                self.txtSource = QtGui.QTextEdit(self.tabSourcePlurals[i])
-                self.txtSourceList.append(self.txtSource)
-                self.txtSourceList[i].setObjectName("txtSource%d" % i)
-                self.txtSourceList[i].setTabChangesFocus(True)
-                self.txtSourceList[i].setUndoRedoEnabled(False)
-                self.txtSourceList[i].setReadOnly(True)
-                self.gridlayoutSList[i].addWidget(self.txtSourceList[i],0,0,1,1)
-                self.txtSourceList[i].setPlainText(unit.source.strings[i])
-                
-                self.tabSource.addTab(self.tabSourcePlurals[i], "")
-                self.tabSource.setTabText(self.tabSource.indexOf(self.tabSourcePlurals[i]), self.tr("Plural%d" % i))
-
-        # target section
-        # nplurals will be adapted to the language set in preference.
-        self.nplurals = World.settings.value("nPlural").toInt()[0]
-        # if plural unit is already detected once then no need to create more tab.
-        if (self.tabTarget.count() == self.nplurals):
-            for i in range(self.nplurals):
-                # if the plural unit is not translated yet.
-                if (len(unit.target.strings) == 1):
-                    self.txtTargetList[i].clear()
-                else:
-                    self.txtTargetList[i].setPlainText(unit.target.strings[i])
-        else:
-            # create tab regarding to the number plural form
-            for i in range(self.nplurals):
-                tabTargetPlural = QtGui.QWidget(self.tabTarget)
-                self.tabTargetPlurals.append(tabTargetPlural)
-                self.tabTargetPlurals[i].setObjectName("tabTargetPlural%d" % i)
-                
-                self.gridlayoutTar = QtGui.QGridLayout(self.tabTargetPlurals[i])
-                self.gridlayoutTarList.append(self.gridlayoutTar)
-                self.gridlayoutTarList[i].setMargin(0)
-                self.gridlayoutTarList[i].setSpacing(0)
-                self.gridlayoutTarList[i].setObjectName("gridlayoutTar%d" % i)
-                
-                self.tabTarget.addTab(self.tabTargetPlurals[i], "")
-                self.tabTarget.setTabText(self.tabTarget.indexOf(self.tabTargetPlurals[i]), self.tr("Plural%d"% i))
-                
-                self.txtTarget = QtGui.QTextEdit(self.tabTargetPlurals[i])
-                self.txtTargetList.append(self.txtTarget)
-                self.txtTargetList[i].setObjectName("txtTarget%d"% i)
-                self.gridlayoutTarList[i].addWidget(self.txtTargetList[i],0,0,1,1)
-                #the plural unit is not translated yet.
-                if (len(unit.target.strings) == 1):
-                    self.txtTargetList[i].clear()
-                else:
-                    # list index out of range when the unit is not translate yet.it has only msgstr[0]
-                    self.txtTargetList[i].setPlainText(unit.target.strings[i])
-#                self.connect(self.txtTargetList[i], QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
-
-    def unitSingle(self, unit):
-        """This will be called when unit is singular.
+        self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
+    
+    def showUnit(self, unit):
+        if (not unit.hasplural()):
+            """This will be called when unit is singular.
         @param unit: unit to consider if signal or not."""
-        #hide tab for plural unit and show the normal text boxes for signal unit.
-        self.unitHasPlural = False
-        self.tabSource.hide()
-        self.tabTarget.hide()
-        self.ui.txtSource.show()
-        self.ui.txtTarget.show()
-        
-        self.ui.txtSource.setPlainText(unit.source)
-        self.ui.txtTarget.setPlainText(unit.target)
-#        self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitReadyForSave)
-
-    def checkModified(self):
-        """Check if target is modified, send target as unicode string for single unit and list of unicode string for plural unit.
-        @signal targetChanged: emitted with target."""
-        if self.ui.txtTarget.document().isModified():
-                self.emit(QtCore.SIGNAL("targetChanged"), unicode(self.ui.txtTarget.toPlainText()))
-                self.ui.txtTarget.document().setModified(False)
-#        if (not self.unitHasPlural):
-#            if self.ui.txtTarget.document().isModified():
-#                self.emit(QtCore.SIGNAL("targetChanged"), unicode(self.ui.txtTarget.toPlainText()))
-#                self.ui.txtTarget.document().setModified(False)
-#        else:
-#            targetList = []
-#            for i in range(self.nplurals):
-#                if self.txtTargetList[i].document().isModified():
-#                      for i in range(self.nplurals):
-#                          targetList.append(unicode(self.txtTargetList[i].toPlainText()))
-#                          self.txtTargetList[i].document().setModified(False)
-#                      self.emit(QtCore.SIGNAL("targetChanged"), targetList)
+            #hide tab for plural unit and show the normal text boxes for signal unit.
+            self.ui.sourceStacked.setCurrentIndex(0)
+            self.ui.targetStacked.setCurrentIndex(0)
+            self.ui.txtSource.setPlainText(unit.source)
+            if (unicode(unit.target) !=  unicode(self.ui.txtTarget.toPlainText())):
+                self.ui.txtTarget.setPlainText(unit.target)
+        else:
+            # TODO: continue this block tomorrow
+            self.ui.sourceStacked.setCurrentIndex(1)
+            nplurals = World.settings.value("nPlural").toInt()[0]
+            self.ui.targetStacked.setCurrentIndex((nplurals > 1) and 1 or 0)
             
-
+    def emitTargetChanged(self):
+        self.emit(QtCore.SIGNAL("targetChanged"), unicode(self.ui.txtTarget.toPlainText()))
+    
     def source2target(self):
         """Copy the text from source to target."""
-        self.ui.txtTarget.selectAll()
-        self.ui.txtTarget.insertPlainText(self.ui.txtSource.toPlainText())
-        self.checkModified()
-        
-    def setTarget(self, text):
-        if (text != unicode(self.ui.txtTarget.toPlainText())):
-            self.ui.txtTarget.setText(text)
+        self.ui.txtTarget.setText(self.ui.txtSource.toPlainText())
 
     def highlightSearch(self, textField, position, length = 0):
         """Highlight the text at specified position, length, and textField.
@@ -361,8 +233,6 @@ class TUview(QtGui.QDockWidget):
         text = self.ui.txtTarget.toPlainText()
         text.replace(position, length, replacedText);
         self.ui.txtTarget.setPlainText(text)
-        self.ui.txtTarget.document().setModified()
-        self.checkModified()
 
     def applySettings(self):
         """ set font and color to txtSource and txtTarget"""
