@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/ks/programming/wordforge/trunk/pootling/ui/FileDialog.ui'
+# Form implementation generated from reading ui file 'unknown'
 #
-# Created: Wed Feb 21 15:31:47 2007
-#      by: PyQt4 UI code generator 4-snapshot-20070212
+# Created: Wed Feb 28 16:25:40 2007
+#      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
 
+import sys
 from PyQt4 import QtCore, QtGui
 
 class Ui_Dialog(object):
@@ -21,8 +22,24 @@ class Ui_Dialog(object):
         self.gridlayout.setSpacing(6)
         self.gridlayout.setObjectName("gridlayout")
 
-        spacerItem = QtGui.QSpacerItem(195,28,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        self.btnOK = QtGui.QPushButton(Dialog)
+        self.btnOK.setObjectName("btnOK")
+        self.gridlayout.addWidget(self.btnOK,2,3,1,1)
+
+        spacerItem = QtGui.QSpacerItem(91,28,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
         self.gridlayout.addItem(spacerItem,2,1,1,1)
+
+        self.lineLocation = QtGui.QLineEdit(Dialog)
+        self.lineLocation.setObjectName("lineLocation")
+        self.gridlayout.addWidget(self.lineLocation,1,1,1,3)
+
+        self.treeView = QtGui.QTreeView(Dialog)
+        self.treeView.setObjectName("treeView")
+        self.gridlayout.addWidget(self.treeView,0,1,1,3)
+
+        self.btnAdd = QtGui.QPushButton(Dialog)
+        self.btnAdd.setObjectName("btnAdd")
+        self.gridlayout.addWidget(self.btnAdd,2,2,1,1)
 
         self.frame = QtGui.QFrame(Dialog)
         self.frame.setFrameShape(QtGui.QFrame.Box)
@@ -73,45 +90,30 @@ class Ui_Dialog(object):
         self.gridlayout1.addWidget(self.btnDoc,2,0,1,1)
         self.gridlayout.addWidget(self.frame,0,0,2,1)
 
-        self.btnQuit = QtGui.QPushButton(Dialog)
-        self.btnQuit.setObjectName("btnQuit")
-        self.gridlayout.addWidget(self.btnQuit,2,3,1,1)
-
-        self.btnAdd = QtGui.QPushButton(Dialog)
-        self.btnAdd.setObjectName("btnAdd")
-        self.gridlayout.addWidget(self.btnAdd,2,2,1,1)
-
-        self.treeView = QtGui.QTreeView(Dialog)
-        self.treeView.setObjectName("treeView")
-        self.gridlayout.addWidget(self.treeView,0,1,1,3)
-
-        self.lineLocation = QtGui.QLineEdit(Dialog)
-        self.lineLocation.setObjectName("lineLocation")
-        self.gridlayout.addWidget(self.lineLocation,1,1,1,3)
-
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
         Dialog.setTabOrder(self.btnHome,self.btnDesktop)
         Dialog.setTabOrder(self.btnDesktop,self.treeView)
         Dialog.setTabOrder(self.treeView,self.lineLocation)
         Dialog.setTabOrder(self.lineLocation,self.btnAdd)
-        Dialog.setTabOrder(self.btnAdd,self.btnQuit)
+        Dialog.setTabOrder(self.btnAdd,self.btnOK)
+
+    def tr(self, string):
+        return QtGui.QApplication.translate("Dialog", string, None, QtGui.QApplication.UnicodeUTF8)
 
     def retranslateUi(self, Dialog):
-        Dialog.setWindowTitle(QtGui.QApplication.translate("Dialog", "Select a file or a location", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnDesktop.setToolTip(QtGui.QApplication.translate("Dialog", "go to Desktop folder", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnDesktop.setText(QtGui.QApplication.translate("Dialog", " &Desktop", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnHome.setToolTip(QtGui.QApplication.translate("Dialog", "go to Home folder", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnHome.setText(QtGui.QApplication.translate("Dialog", " &Home", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnDoc.setToolTip(QtGui.QApplication.translate("Dialog", "go to Document folder", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnDoc.setText(QtGui.QApplication.translate("Dialog", " Docu&ments", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnQuit.setText(QtGui.QApplication.translate("Dialog", "&Quit", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnAdd.setText(QtGui.QApplication.translate("Dialog", "&Add", None, QtGui.QApplication.UnicodeUTF8))
-
+        Dialog.setWindowTitle(self.tr("Select a file or a location"))
+        self.btnOK.setText(self.tr("&OK"))
+        self.btnAdd.setText(self.tr("&Add"))
+        self.btnDesktop.setToolTip(self.tr("go to Desktop folder"))
+        self.btnDesktop.setText(self.tr(" &Desktop"))
+        self.btnHome.setToolTip(self.tr("go to Home folder"))
+        self.btnHome.setText(self.tr(" &Home"))
+        self.btnDoc.setToolTip(self.tr("go to Document folder"))
+        self.btnDoc.setText(self.tr(" Docu&ments"))
 
 
 if __name__ == "__main__":
-    import sys
     app = QtGui.QApplication(sys.argv)
     Dialog = QtGui.QDialog()
     ui = Ui_Dialog()
