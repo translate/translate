@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'unknown'
+# Form implementation generated from reading ui file '/home/ratha/sourceforge.net/translate/trunk/pootling/ui/CatalogSetting.ui'
 #
-# Created: Tue Feb 20 15:45:32 2007
-#      by: PyQt4 UI code generator 4.0
+# Created: Thu Mar  1 10:52:08 2007
+#      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!
 
-import sys
 from PyQt4 import QtCore, QtGui
 
 class Ui_catalogSetting(object):
@@ -70,7 +69,7 @@ class Ui_catalogSetting(object):
         self.btnRemove.setIcon(QtGui.QIcon("../images/removeTM.png"))
         self.btnRemove.setObjectName("btnRemove")
         self.gridlayout1.addWidget(self.btnRemove,2,1,1,1)
-        self.tabOptions.addTab(self.tab, "")
+        self.tabOptions.addTab(self.tab,"")
 
         self.tab_3 = QtGui.QWidget()
         self.tab_3.setObjectName("tab_3")
@@ -131,8 +130,13 @@ class Ui_catalogSetting(object):
         self.chbSVN.setChecked(True)
         self.chbSVN.setObjectName("chbSVN")
         self.gridlayout3.addWidget(self.chbSVN,1,1,1,1)
+
+        self.chbtranslated = QtGui.QCheckBox(self.frame)
+        self.chbtranslated.setChecked(True)
+        self.chbtranslated.setObjectName("chbtranslated")
+        self.gridlayout3.addWidget(self.chbtranslated,1,2,1,1)
         self.gridlayout2.addWidget(self.frame,1,0,1,1)
-        self.tabOptions.addTab(self.tab_3, "")
+        self.tabOptions.addTab(self.tab_3,"")
         self.gridlayout.addWidget(self.tabOptions,0,0,1,2)
 
         spacerItem2 = QtGui.QSpacerItem(311,28,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
@@ -143,7 +147,7 @@ class Ui_catalogSetting(object):
         self.gridlayout.addWidget(self.btnOk,2,1,1,1)
 
         self.retranslateUi(catalogSetting)
-        self.tabOptions.setCurrentIndex(1)
+        self.tabOptions.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(catalogSetting)
         catalogSetting.setTabOrder(self.tabOptions,self.listWidget)
         catalogSetting.setTabOrder(self.listWidget,self.btnAdd)
@@ -154,37 +158,37 @@ class Ui_catalogSetting(object):
         catalogSetting.setTabOrder(self.btnMoveDown,self.checkBox)
         catalogSetting.setTabOrder(self.checkBox,self.btnOk)
 
-    def tr(self, string):
-        return QtGui.QApplication.translate("catalogSetting", string, None, QtGui.QApplication.UnicodeUTF8)
-
     def retranslateUi(self, catalogSetting):
-        catalogSetting.setWindowTitle(self.tr("Catalog Settings"))
-        self.checkBox.setText(self.tr("Dive into Subfolders"))
-        self.btnAdd.setToolTip(self.tr("Add TM"))
-        self.btnAdd.setText(self.tr(" &Add"))
-        self.btnMoveUp.setToolTip(self.tr("move up"))
-        self.btnMoveUp.setText(self.tr(" &Up"))
-        self.label_4.setText(self.tr("Locations:"))
-        self.btnRemoveAll.setToolTip(self.tr("clear list"))
-        self.btnRemoveAll.setText(self.tr(" &Clear"))
-        self.btnMoveDown.setToolTip(self.tr("move down"))
-        self.btnMoveDown.setText(self.tr(" Do&wn"))
-        self.btnRemove.setToolTip(self.tr("remove TM"))
-        self.btnRemove.setText(self.tr(" De&lete"))
-        self.tabOptions.setTabText(self.tabOptions.indexOf(self.tab), self.tr("&File"))
-        self.label.setText(self.tr("Show Columns:"))
-        self.chbtotal.setText(self.tr("Total"))
-        self.chbtranslator.setText(self.tr("Last Translator"))
-        self.chbuntranslated.setText(self.tr("Untranslated"))
-        self.chbfuzzy.setText(self.tr("Fuzzy"))
-        self.chbname.setText(self.tr("Name"))
-        self.chblastrevision.setText(self.tr("Last Revision"))
-        self.chbSVN.setText(self.tr("CVS/SVN Status"))
-        self.tabOptions.setTabText(self.tabOptions.indexOf(self.tab_3), self.tr("Catalog &View"))
-        self.btnOk.setText(self.tr("&OK"))
+        catalogSetting.setWindowTitle(QtGui.QApplication.translate("catalogSetting", "Catalog Settings", None, QtGui.QApplication.UnicodeUTF8))
+        self.checkBox.setText(QtGui.QApplication.translate("catalogSetting", "Dive into Subfolders", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnAdd.setToolTip(QtGui.QApplication.translate("catalogSetting", "Add TM", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnAdd.setText(QtGui.QApplication.translate("catalogSetting", " &Add", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnMoveUp.setToolTip(QtGui.QApplication.translate("catalogSetting", "move up", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnMoveUp.setText(QtGui.QApplication.translate("catalogSetting", " &Up", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_4.setText(QtGui.QApplication.translate("catalogSetting", "Locations:", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnRemoveAll.setToolTip(QtGui.QApplication.translate("catalogSetting", "clear list", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnRemoveAll.setText(QtGui.QApplication.translate("catalogSetting", " &Clear", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnMoveDown.setToolTip(QtGui.QApplication.translate("catalogSetting", "move down", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnMoveDown.setText(QtGui.QApplication.translate("catalogSetting", " Do&wn", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnRemove.setToolTip(QtGui.QApplication.translate("catalogSetting", "remove TM", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnRemove.setText(QtGui.QApplication.translate("catalogSetting", " De&lete", None, QtGui.QApplication.UnicodeUTF8))
+        self.tabOptions.setTabText(self.tabOptions.indexOf(self.tab), QtGui.QApplication.translate("catalogSetting", "&File", None, QtGui.QApplication.UnicodeUTF8))
+        self.label.setText(QtGui.QApplication.translate("catalogSetting", "Show Columns:", None, QtGui.QApplication.UnicodeUTF8))
+        self.chbtotal.setText(QtGui.QApplication.translate("catalogSetting", "Total", None, QtGui.QApplication.UnicodeUTF8))
+        self.chbtranslator.setText(QtGui.QApplication.translate("catalogSetting", "Last Translator", None, QtGui.QApplication.UnicodeUTF8))
+        self.chbuntranslated.setText(QtGui.QApplication.translate("catalogSetting", "Untranslated", None, QtGui.QApplication.UnicodeUTF8))
+        self.chbfuzzy.setText(QtGui.QApplication.translate("catalogSetting", "Fuzzy", None, QtGui.QApplication.UnicodeUTF8))
+        self.chbname.setText(QtGui.QApplication.translate("catalogSetting", "Name", None, QtGui.QApplication.UnicodeUTF8))
+        self.chblastrevision.setText(QtGui.QApplication.translate("catalogSetting", "Last Revision", None, QtGui.QApplication.UnicodeUTF8))
+        self.chbSVN.setText(QtGui.QApplication.translate("catalogSetting", "CVS/SVN Status", None, QtGui.QApplication.UnicodeUTF8))
+        self.chbtranslated.setText(QtGui.QApplication.translate("catalogSetting", "Translated", None, QtGui.QApplication.UnicodeUTF8))
+        self.tabOptions.setTabText(self.tabOptions.indexOf(self.tab_3), QtGui.QApplication.translate("catalogSetting", "Catalog &View", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnOk.setText(QtGui.QApplication.translate("catalogSetting", "&OK", None, QtGui.QApplication.UnicodeUTF8))
+
 
 
 if __name__ == "__main__":
+    import sys
     app = QtGui.QApplication(sys.argv)
     catalogSetting = QtGui.QWidget()
     ui = Ui_catalogSetting()
