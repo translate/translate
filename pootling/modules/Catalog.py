@@ -60,10 +60,12 @@ class Catalog(QtGui.QMainWindow):
                             self.tr("Total"),
                             self.tr("CVS/SVN Status"),
                             self.tr("Last Revision"),
-                            self.tr("Last Translator")]
+                            self.tr("Last Translator"),
+                            self.tr("Translated")]
         self.ui.treeCatalog.setColumnCount(len(self.headerLabels))
         self.ui.treeCatalog.setHeaderLabels(self.headerLabels)
         self.ui.treeCatalog.header().setResizeMode(QtGui.QHeaderView.Interactive)
+        self.ui.treeCatalog.setWhatsThis("The catalog manager merges all files and folders enter one treewidget and displays all po, xlf... files. the way you can easily see if a template has been added or removed. Also some information about the files is displayed.")
         
         # File menu action
         self.connect(self.ui.actionQuit, QtCore.SIGNAL("triggered()"), QtCore.SLOT("close()"))
@@ -71,10 +73,12 @@ class Catalog(QtGui.QMainWindow):
         # Edit menu action
         self.ui.actionReload.setEnabled(True)
         self.connect(self.ui.actionReload, QtCore.SIGNAL("triggered()"), self.refresh)
+        self.ui.actionReload.setWhatsThis("<h3>Reload</h3>Set the current files or folders to get the most up-to-date version.")
         
         # Catalog setting's checkboxes action.
         self.catSetting = CatalogSetting(self)
         self.connect(self.ui.actionConfigure, QtCore.SIGNAL("triggered()"), self.catSetting.show)
+        self.ui.actionConfigure.setWhatsThis("<h3>Configure...</h3>Set the configuration items with your prefered values.")
         self.connect(self.catSetting.ui.chbname, QtCore.SIGNAL("stateChanged(int)"), self.toggleHeaderItem)
         self.connect(self.catSetting.ui.chbfuzzy, QtCore.SIGNAL("stateChanged(int)"), self.toggleHeaderItem)
         self.connect(self.catSetting.ui.chblastrevision, QtCore.SIGNAL("stateChanged(int)"), self.toggleHeaderItem)
@@ -82,6 +86,7 @@ class Catalog(QtGui.QMainWindow):
         self.connect(self.catSetting.ui.chbuntranslated, QtCore.SIGNAL("stateChanged(int)"), self.toggleHeaderItem)
         self.connect(self.catSetting.ui.chbtotal, QtCore.SIGNAL("stateChanged(int)"), self.toggleHeaderItem)
         self.connect(self.catSetting.ui.chbSVN, QtCore.SIGNAL("stateChanged(int)"), self.toggleHeaderItem)
+        self.connect(self.catSetting.ui.chbtranslated, QtCore.SIGNAL("stateChanged(int)"), self.toggleHeaderItem)
 
         # progress bar
         self.progressBar = QtGui.QProgressBar()
@@ -173,7 +178,8 @@ class Catalog(QtGui.QMainWindow):
             item1.setText(4, childStats[4])
             item1.setText(5, childStats[5])
             item1.setText(6, childStats[6])
-        
+            item1.setText(7, childStats[7])
+
         if (os.path.isdir(path)):
             if (not item.parent()):
                 pathName = path
@@ -203,12 +209,13 @@ class Catalog(QtGui.QMainWindow):
         try:
             store = factory.getobject(filename)
         except:
-            return ["", "", "", "", "", "", ""]
+            return ["", "", "", "", "", "", "",""]
         
         name = os.path.basename(filename)
         fuzzyUnitCount = store.fuzzy_units()
+        translated = store.translated_unitcount()
         untranslatedUnitCount = store.untranslated_unitcount()
-        totalUnitCount = fuzzyUnitCount + untranslatedUnitCount + store.translated_unitcount()
+        totalUnitCount = fuzzyUnitCount + untranslatedUnitCount + translated
         
         cvsSvn = "?"
         
@@ -226,7 +233,7 @@ class Catalog(QtGui.QMainWindow):
             revisionDate = ""
             lastTranslator = ""
         
-        return [name, str(fuzzyUnitCount), str(untranslatedUnitCount), str(totalUnitCount), cvsSvn, revisionDate, lastTranslator]
+        return [name, str(fuzzyUnitCount), str(untranslatedUnitCount), str(totalUnitCount), cvsSvn, revisionDate, lastTranslator, str(translated)]
 
     def setupCheckbox(self):
         if not (World.settings.value("Catalog.Name").toBool()):
@@ -264,6 +271,11 @@ class Catalog(QtGui.QMainWindow):
         else:
             self.catSetting.ui.chbtranslator.setCheckState(QtCore.Qt.Checked)
         
+        if not (World.settings.value("Catalog.Translated").toBool()):
+            self.catSetting.ui.chbtranslated.setCheckState(QtCore.Qt.Unchecked)
+        else:
+            self.catSetting.ui.chbtranslated.setCheckState(QtCore.Qt.Checked)
+
     def emitOpenFile(self, item, col):
         """
         Send "openFile" signal with filename.
