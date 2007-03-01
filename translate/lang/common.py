@@ -124,7 +124,7 @@ class Common(object):
         while code:
             langdata = data.languages.get(code, None)
             if langdata:
-                self.fullname, self.nplurals, self.pluralequations = langdata
+                self.fullname, self.nplurals, self.pluralequation = langdata
                 break
             code = data.simplercode(code)
         if not code:
