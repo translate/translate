@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/ratha/sourceforge.net/translate/trunk/pootling/ui/CatalogSetting.ui'
+# Form implementation generated from reading ui file 'unknown'
 #
-# Created: Thu Mar  1 10:52:08 2007
-#      by: PyQt4 UI code generator 4-snapshot-20070212
+# Created: Thu Mar  1 13:48:39 2007
+#      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
 
+import sys
 from PyQt4 import QtCore, QtGui
 
 class Ui_catalogSetting(object):
@@ -69,7 +70,7 @@ class Ui_catalogSetting(object):
         self.btnRemove.setIcon(QtGui.QIcon("../images/removeTM.png"))
         self.btnRemove.setObjectName("btnRemove")
         self.gridlayout1.addWidget(self.btnRemove,2,1,1,1)
-        self.tabOptions.addTab(self.tab,"")
+        self.tabOptions.addTab(self.tab, "")
 
         self.tab_3 = QtGui.QWidget()
         self.tab_3.setObjectName("tab_3")
@@ -81,10 +82,6 @@ class Ui_catalogSetting(object):
 
         spacerItem1 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
         self.gridlayout2.addItem(spacerItem1,2,0,1,1)
-
-        self.label = QtGui.QLabel(self.tab_3)
-        self.label.setObjectName("label")
-        self.gridlayout2.addWidget(self.label,0,0,1,1)
 
         self.frame = QtGui.QFrame(self.tab_3)
         self.frame.setFrameShape(QtGui.QFrame.StyledPanel)
@@ -99,52 +96,56 @@ class Ui_catalogSetting(object):
         self.chbtotal = QtGui.QCheckBox(self.frame)
         self.chbtotal.setChecked(True)
         self.chbtotal.setObjectName("chbtotal")
-        self.gridlayout3.addWidget(self.chbtotal,0,1,1,1)
+        self.gridlayout3.addWidget(self.chbtotal,1,1,1,1)
 
-        self.chbtranslator = QtGui.QCheckBox(self.frame)
-        self.chbtranslator.setChecked(True)
-        self.chbtranslator.setObjectName("chbtranslator")
-        self.gridlayout3.addWidget(self.chbtranslator,0,2,1,1)
-
-        self.chbuntranslated = QtGui.QCheckBox(self.frame)
-        self.chbuntranslated.setChecked(True)
-        self.chbuntranslated.setObjectName("chbuntranslated")
-        self.gridlayout3.addWidget(self.chbuntranslated,2,0,1,1)
+        self.chbtranslated = QtGui.QCheckBox(self.frame)
+        self.chbtranslated.setChecked(True)
+        self.chbtranslated.setObjectName("chbtranslated")
+        self.gridlayout3.addWidget(self.chbtranslated,1,0,1,1)
 
         self.chbfuzzy = QtGui.QCheckBox(self.frame)
         self.chbfuzzy.setChecked(True)
         self.chbfuzzy.setObjectName("chbfuzzy")
-        self.gridlayout3.addWidget(self.chbfuzzy,1,0,1,1)
+        self.gridlayout3.addWidget(self.chbfuzzy,2,0,1,1)
+
+        self.chbuntranslated = QtGui.QCheckBox(self.frame)
+        self.chbuntranslated.setChecked(True)
+        self.chbuntranslated.setObjectName("chbuntranslated")
+        self.gridlayout3.addWidget(self.chbuntranslated,0,1,1,1)
+
+        self.chbSVN = QtGui.QCheckBox(self.frame)
+        self.chbSVN.setChecked(True)
+        self.chbSVN.setObjectName("chbSVN")
+        self.gridlayout3.addWidget(self.chbSVN,2,1,1,1)
+
+        self.chblastrevision = QtGui.QCheckBox(self.frame)
+        self.chblastrevision.setChecked(True)
+        self.chblastrevision.setObjectName("chblastrevision")
+        self.gridlayout3.addWidget(self.chblastrevision,0,2,1,1)
+
+        self.chbtranslator = QtGui.QCheckBox(self.frame)
+        self.chbtranslator.setChecked(True)
+        self.chbtranslator.setObjectName("chbtranslator")
+        self.gridlayout3.addWidget(self.chbtranslator,1,2,1,1)
 
         self.chbname = QtGui.QCheckBox(self.frame)
         self.chbname.setChecked(True)
         self.chbname.setObjectName("chbname")
         self.gridlayout3.addWidget(self.chbname,0,0,1,1)
-
-        self.chblastrevision = QtGui.QCheckBox(self.frame)
-        self.chblastrevision.setChecked(True)
-        self.chblastrevision.setObjectName("chblastrevision")
-        self.gridlayout3.addWidget(self.chblastrevision,2,1,1,2)
-
-        self.chbSVN = QtGui.QCheckBox(self.frame)
-        self.chbSVN.setChecked(True)
-        self.chbSVN.setObjectName("chbSVN")
-        self.gridlayout3.addWidget(self.chbSVN,1,1,1,1)
-
-        self.chbtranslated = QtGui.QCheckBox(self.frame)
-        self.chbtranslated.setChecked(True)
-        self.chbtranslated.setObjectName("chbtranslated")
-        self.gridlayout3.addWidget(self.chbtranslated,1,2,1,1)
         self.gridlayout2.addWidget(self.frame,1,0,1,1)
-        self.tabOptions.addTab(self.tab_3,"")
-        self.gridlayout.addWidget(self.tabOptions,0,0,1,2)
 
-        spacerItem2 = QtGui.QSpacerItem(311,28,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
-        self.gridlayout.addItem(spacerItem2,1,0,2,1)
+        self.label = QtGui.QLabel(self.tab_3)
+        self.label.setObjectName("label")
+        self.gridlayout2.addWidget(self.label,0,0,1,1)
+        self.tabOptions.addTab(self.tab_3, "")
+        self.gridlayout.addWidget(self.tabOptions,0,0,1,2)
 
         self.btnOk = QtGui.QPushButton(catalogSetting)
         self.btnOk.setObjectName("btnOk")
         self.gridlayout.addWidget(self.btnOk,2,1,1,1)
+
+        spacerItem2 = QtGui.QSpacerItem(311,28,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        self.gridlayout.addItem(spacerItem2,1,0,2,1)
 
         self.retranslateUi(catalogSetting)
         self.tabOptions.setCurrentIndex(0)
@@ -156,39 +157,48 @@ class Ui_catalogSetting(object):
         catalogSetting.setTabOrder(self.btnRemoveAll,self.btnMoveUp)
         catalogSetting.setTabOrder(self.btnMoveUp,self.btnMoveDown)
         catalogSetting.setTabOrder(self.btnMoveDown,self.checkBox)
-        catalogSetting.setTabOrder(self.checkBox,self.btnOk)
+        catalogSetting.setTabOrder(self.checkBox,self.chbname)
+        catalogSetting.setTabOrder(self.chbname,self.chbtranslated)
+        catalogSetting.setTabOrder(self.chbtranslated,self.chbfuzzy)
+        catalogSetting.setTabOrder(self.chbfuzzy,self.chbuntranslated)
+        catalogSetting.setTabOrder(self.chbuntranslated,self.chbtotal)
+        catalogSetting.setTabOrder(self.chbtotal,self.chbSVN)
+        catalogSetting.setTabOrder(self.chbSVN,self.chblastrevision)
+        catalogSetting.setTabOrder(self.chblastrevision,self.chbtranslator)
+        catalogSetting.setTabOrder(self.chbtranslator,self.btnOk)
+
+    def tr(self, string):
+        return QtGui.QApplication.translate("catalogSetting", string, None, QtGui.QApplication.UnicodeUTF8)
 
     def retranslateUi(self, catalogSetting):
-        catalogSetting.setWindowTitle(QtGui.QApplication.translate("catalogSetting", "Catalog Settings", None, QtGui.QApplication.UnicodeUTF8))
-        self.checkBox.setText(QtGui.QApplication.translate("catalogSetting", "Dive into Subfolders", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnAdd.setToolTip(QtGui.QApplication.translate("catalogSetting", "Add TM", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnAdd.setText(QtGui.QApplication.translate("catalogSetting", " &Add", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnMoveUp.setToolTip(QtGui.QApplication.translate("catalogSetting", "move up", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnMoveUp.setText(QtGui.QApplication.translate("catalogSetting", " &Up", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_4.setText(QtGui.QApplication.translate("catalogSetting", "Locations:", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnRemoveAll.setToolTip(QtGui.QApplication.translate("catalogSetting", "clear list", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnRemoveAll.setText(QtGui.QApplication.translate("catalogSetting", " &Clear", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnMoveDown.setToolTip(QtGui.QApplication.translate("catalogSetting", "move down", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnMoveDown.setText(QtGui.QApplication.translate("catalogSetting", " Do&wn", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnRemove.setToolTip(QtGui.QApplication.translate("catalogSetting", "remove TM", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnRemove.setText(QtGui.QApplication.translate("catalogSetting", " De&lete", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabOptions.setTabText(self.tabOptions.indexOf(self.tab), QtGui.QApplication.translate("catalogSetting", "&File", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("catalogSetting", "Show Columns:", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbtotal.setText(QtGui.QApplication.translate("catalogSetting", "Total", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbtranslator.setText(QtGui.QApplication.translate("catalogSetting", "Last Translator", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbuntranslated.setText(QtGui.QApplication.translate("catalogSetting", "Untranslated", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbfuzzy.setText(QtGui.QApplication.translate("catalogSetting", "Fuzzy", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbname.setText(QtGui.QApplication.translate("catalogSetting", "Name", None, QtGui.QApplication.UnicodeUTF8))
-        self.chblastrevision.setText(QtGui.QApplication.translate("catalogSetting", "Last Revision", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbSVN.setText(QtGui.QApplication.translate("catalogSetting", "CVS/SVN Status", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbtranslated.setText(QtGui.QApplication.translate("catalogSetting", "Translated", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabOptions.setTabText(self.tabOptions.indexOf(self.tab_3), QtGui.QApplication.translate("catalogSetting", "Catalog &View", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnOk.setText(QtGui.QApplication.translate("catalogSetting", "&OK", None, QtGui.QApplication.UnicodeUTF8))
-
+        catalogSetting.setWindowTitle(self.tr("Catalog Settings"))
+        self.checkBox.setText(self.tr("Dive into Subfolders"))
+        self.btnAdd.setToolTip(self.tr("Add TM"))
+        self.btnAdd.setText(self.tr(" &Add"))
+        self.btnMoveUp.setToolTip(self.tr("move up"))
+        self.btnMoveUp.setText(self.tr(" &Up"))
+        self.label_4.setText(self.tr("Locations:"))
+        self.btnRemoveAll.setToolTip(self.tr("clear list"))
+        self.btnRemoveAll.setText(self.tr(" &Clear"))
+        self.btnMoveDown.setToolTip(self.tr("move down"))
+        self.btnMoveDown.setText(self.tr(" Do&wn"))
+        self.btnRemove.setToolTip(self.tr("remove TM"))
+        self.btnRemove.setText(self.tr(" De&lete"))
+        self.tabOptions.setTabText(self.tabOptions.indexOf(self.tab), self.tr("&File"))
+        self.chbtotal.setText(self.tr("Total"))
+        self.chbtranslated.setText(self.tr("Translated"))
+        self.chbfuzzy.setText(self.tr("Fuzzy"))
+        self.chbuntranslated.setText(self.tr("Untranslated"))
+        self.chbSVN.setText(self.tr("CVS/SVN Status"))
+        self.chblastrevision.setText(self.tr("Last Revision"))
+        self.chbtranslator.setText(self.tr("Last Translator"))
+        self.chbname.setText(self.tr("Name"))
+        self.label.setText(self.tr("Show Columns:"))
+        self.tabOptions.setTabText(self.tabOptions.indexOf(self.tab_3), self.tr("Catalog &View"))
+        self.btnOk.setText(self.tr("&OK"))
 
 
 if __name__ == "__main__":
-    import sys
     app = QtGui.QApplication(sys.argv)
     catalogSetting = QtGui.QWidget()
     ui = Ui_catalogSetting()
