@@ -22,7 +22,7 @@
 
 from PyQt4 import QtCore, QtGui
 from pootling.ui.Ui_Preference import Ui_frmPreference
-from translate.lang import factory
+from translate.lang import common
 import pootling.modules.World as World
 
 class Preference(QtGui.QDialog):
@@ -311,9 +311,9 @@ class Preference(QtGui.QDialog):
     def setNPlural(self, langCode):
         """Set nplurals for specific language.
         @param langCode: as Qstring type. """
-        language = factory.getlanguage(str(langCode))
+        language = common.Common(str(langCode))
         self.ui.spinBox.setValue(language.nplurals)
-        self.ui.lineEqaution.setText(language.pluralequation)
+        self.ui.lineEqaution.setText(language.pluralequations)
         
 if __name__ == "__main__":
     import sys, os
