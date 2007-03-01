@@ -17,6 +17,7 @@ def test_getlanguage():
     language = factory.getlanguage('fy')
     assert language.nplurals == 2
     assert language.fullname == "Frisian"
+    assert "n != 1" in language.pluralequation 
 
     # Test a code without a module and with a country code
     language = factory.getlanguage('de_AT')
