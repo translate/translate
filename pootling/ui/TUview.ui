@@ -35,6 +35,15 @@
   <property name="windowIcon" >
    <iconset/>
   </property>
+  <property name="toolTip" >
+   <string/>
+  </property>
+  <property name="statusTip" >
+   <string/>
+  </property>
+  <property name="whatsThis" >
+   <string>&lt;h3>Source and Target View&lt;/h3>It contains source of unit in the upper text box, and target of unit in the below text box. If unit is plural, it will display multi of tabs.</string>
+  </property>
   <property name="autoFillBackground" >
    <bool>true</bool>
   </property>
@@ -64,6 +73,15 @@
         </property>
         <item row="0" column="0" >
          <widget class="QTextEdit" name="txtSource" >
+          <property name="toolTip" >
+           <string>Original Source String</string>
+          </property>
+          <property name="statusTip" >
+           <string>Original Source String</string>
+          </property>
+          <property name="whatsThis" >
+           <string>&lt;h3>Original Source String&lt;/h3>This part of the window shows you the original string of the currently displayed entry. &lt;br>You can not edit this string.</string>
+          </property>
           <property name="tabChangesFocus" >
            <bool>true</bool>
           </property>
@@ -95,7 +113,7 @@
           </property>
           <widget class="QWidget" name="tabSource1" >
            <attribute name="title" >
-            <string>Source1</string>
+            <string>Plural 1</string>
            </attribute>
            <layout class="QGridLayout" >
             <property name="margin" >
@@ -584,13 +602,22 @@
         </disabled>
        </palette>
       </property>
+      <property name="toolTip" >
+       <string>Important Comment</string>
+      </property>
+      <property name="statusTip" >
+       <string>Important Comment</string>
+      </property>
+      <property name="whatsThis" >
+       <string>&lt;h3>Important Comment&lt;/h3>Hints from the developer to the translator are displayed in this area. This area will be hidden if there is no hint. </string>
+      </property>
       <property name="text" >
        <string/>
       </property>
      </widget>
      <widget class="QStackedWidget" name="targetStacked" >
       <property name="currentIndex" >
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="page3" >
        <layout class="QGridLayout" >
@@ -602,6 +629,15 @@
         </property>
         <item row="0" column="0" >
          <widget class="QTextEdit" name="txtTarget" >
+          <property name="toolTip" >
+           <string>Translated String</string>
+          </property>
+          <property name="statusTip" >
+           <string>Translated String</string>
+          </property>
+          <property name="whatsThis" >
+           <string>&lt;h3>Translated String&lt;/h3>This editor displays and lets you edit the translation of the currently displayed string.</string>
+          </property>
           <property name="tabChangesFocus" >
            <bool>true</bool>
           </property>
@@ -633,7 +669,7 @@
           </property>
           <widget class="QWidget" name="tabTarget1" >
            <attribute name="title" >
-            <string>Target1</string>
+            <string>Plural 1</string>
            </attribute>
            <layout class="QGridLayout" >
             <property name="margin" >
@@ -685,6 +721,12 @@
      </property>
      <property name="toolTip" >
       <string>Navigate in your file</string>
+     </property>
+     <property name="statusTip" >
+      <string>Navigation Scrollbar</string>
+     </property>
+     <property name="whatsThis" >
+      <string>&lt;h3>Navigation Scrollbar&lt;/h3>It allows you do navigate in the current file. If you filter your strings you get only the filtered list. &lt;br>It also gives you visual feedback about the postion of the current entry. The Tooltip also shows you the current number and the total numbers of strings.</string>
      </property>
      <property name="maximum" >
       <number>0</number>

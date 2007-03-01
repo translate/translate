@@ -21,7 +21,6 @@
 
 from PyQt4 import QtCore, QtGui
 from pootling.ui.Ui_TUview import Ui_TUview
-from pootling.ui.Ui_PluralTab import Ui_PluralTab
 from translate.storage import po
 from pootling.modules import World
 
@@ -86,11 +85,6 @@ class TUview(QtGui.QDockWidget):
         self.setFeatures(QtGui.QDockWidget.DockWidgetClosable)
         self.ui.lblComment.hide()
         self.ui.txtTarget.setReadOnly(True)
-        #support only qt4.2
-        self.ui.txtTarget.setWhatsThis("<h3>Translated String</h3>This editor displays and lets you edit the translation of the currently displayed string.")
-        self.ui.txtSource.setWhatsThis("<h3>Original String</h3>This part of the window shows you the original string of the currently displayed entry. <br>You can not edit this string.")
-        self.ui.lblComment.setWhatsThis("<h3>Important Comment</h3>Hints from the developer to the translator are displayed in this area. This area will be hidden if there is no hint. ")
-        self.ui.fileScrollBar.setWhatsThis("<h3>Navigation Scrollbar</h3>It allows you do navigate in the current file. If you filter your strings you get only the filtered list. <br>It also gives you visual feedback about the postion of the current entry. The Tooltip also shows you the current number and the total numbers of strings.")
         self.applySettings()
         self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
         
@@ -183,20 +177,73 @@ class TUview(QtGui.QDockWidget):
             """This will be called when unit is singular.
         @param unit: unit to consider if signal or not."""
             #hide tab for plural unit and show the normal text boxes for signal unit.
+            self.unitplural = False
             self.ui.sourceStacked.setCurrentIndex(0)
             self.ui.targetStacked.setCurrentIndex(0)
             self.ui.txtSource.setPlainText(unit.source)
             if (unicode(unit.target) !=  unicode(self.ui.txtTarget.toPlainText())):
                 self.ui.txtTarget.setPlainText(unit.target)
         else:
-            # TODO: continue this block tomorrow
+            # create source tab
+            self.unitplural = True
             self.ui.sourceStacked.setCurrentIndex(1)
+            count = self.ui.tabWidgetSource.count()
+            nsource = len(unit.source.strings)
+            if (not (count  == nsource)):
+                while (count > nsource):
+                    count -= 1
+                    self.ui.tabWidgetSource.removeTab(count)
+                while (count < nsource):
+                    count += 1
+                    widget = self.createWidgetForTab()
+                    self.ui.tabWidgetSource.addTab(widget, "Plural " + str(count))
+            # add each source string of a unit to widget
+            for i in range(len(unit.source.strings)):
+                self.ui.tabWidgetSource.widget(i).children()[1].setText(unit.source.strings[i])
+            
+            # create target tab
             nplurals = World.settings.value("nPlural").toInt()[0]
             self.ui.targetStacked.setCurrentIndex((nplurals > 1) and 1 or 0)
-            
-    def emitTargetChanged(self):
-        self.emit(QtCore.SIGNAL("targetChanged"), unicode(self.ui.txtTarget.toPlainText()))
+            # TODO: when nplurals changed in Preference Translated String Viw also changes
+            # TODO: reset min and max of nplural spinbox in Preference, otherwise it will cause bugs here
+            if (not (nplurals > 1)):
+                if (unicode(unit.target) !=  unicode(self.ui.txtTarget.toPlainText())):
+                    self.ui.txtTarget.setPlainText(unit.target)
+            else:
+                count = self.ui.tabWidgetTarget.count()
+                if (not (count  == nplurals)):
+                    while (count > nplurals):
+                        count -= 1
+                        self.ui.tabWidgetTarget.removeTab(count)
+                    while (count < nplurals):
+                        count += 1
+                        widget = self.createWidgetForTab()
+                        self.ui.tabWidgetTarget.addTab(widget, "Plural " + str(count))
+                # add each target string of a unit to widget
+                minloop = min(count, len(unit.target.strings))
+                for i in range(minloop):
+                    self.ui.tabWidgetTarget.widget(i).children()[1].setText(unit.target.strings[i])
+                # connect signal textchanged when each target string of a plural unit is changed
+                for i in range(count):
+                    self.connect(self.ui.tabWidgetTarget.widget(i).children()[1], QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
+
+    def createWidgetForTab(self):
+        widget = QtGui.QWidget()
+        gridlayout = QtGui.QGridLayout(widget)
+        textedit = QtGui.QTextEdit()
+        gridlayout.addWidget(textedit)
+        return widget
     
+    def emitTargetChanged(self):
+        if (not self.unitplural):
+            self.emit(QtCore.SIGNAL("targetChanged"), unicode(self.ui.txtTarget.toPlainText()))
+        else:
+            list = []
+            for i in range(self.ui.tabWidgetTarget.count()):
+                list.append(unicode(self.ui.tabWidgetTarget.widget(i).children()[1].toPlainText()))
+            # TODO: emit list causes error in operator.
+            self.emit(QtCore.SIGNAL("targetChanged"), list)
+            
     def source2target(self):
         """Copy the text from source to target."""
         self.ui.txtTarget.setText(self.ui.txtSource.toPlainText())
