@@ -193,7 +193,7 @@ class Header(QtGui.QDialog):
         TimeZone = World.settings.value("TimeZone", QtCore.QVariant(""))
         Last_Translator = userName.toString() + '<' + emailAddress.toString() + '>'
         Language_Team =  FullLanguage.toString() + '<' + SupportTeam.toString() + '>'
-        nPlural = World.settings.value("nPlural", QtCore.QVariant(""))
+        nPlural = World.settings.value("nPlural", QtCore.QVariant(str(2)))
         pluralEquation = World.settings.value("equation", QtCore.QVariant(""))
         
         # test if it is a po or poxliff header.
@@ -213,6 +213,7 @@ class Header(QtGui.QDialog):
             self.headerDic['Plural-Forms'] = 'nplurals=' + nPlural.toString() + '; plural=' + pluralEquation.toString() + ';'
             self.headerDic['X-Generator'] = World.settingApp + ' ' + __version__.ver
         #Plural form should be updated either the header is just created or it is already in the file.
+        print nPlural.toString()
         self.operator.store.updateheaderplural(int(nPlural.toString()), str(pluralEquation.toString()))
         
         #TODO: why do we need this?
