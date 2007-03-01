@@ -48,7 +48,11 @@ class fileDialog(QtGui.QDialog):
         self.connect(self.ui.btnDesktop, QtCore.SIGNAL("clicked(bool)"), self.goDesktop)
         self.connect(self.ui.btnDoc, QtCore.SIGNAL("clicked(bool)"), self.goDocument)
         self.connect(self.ui.btnAdd, QtCore.SIGNAL("clicked(bool)"), self.emitLocation)
-        self.connect(self.ui.btnQuit, QtCore.SIGNAL("clicked(bool)"), QtCore.SLOT("close()"))
+        self.connect(self.ui.btnOK, QtCore.SIGNAL("clicked(bool)"), self.OK)
+    
+    def OK(self):
+        self.emitLocation()
+        self.close()
         
     def addLocation(self):
         self.ui.treeView.scrollTo(self.ui.treeView.currentIndex())
