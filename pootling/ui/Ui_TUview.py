@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/ks/programming/wordforge/trunk/pootling/ui/TUview.ui'
 #
-# Created: Thu Mar  1 14:03:55 2007
+# Created: Fri Mar  2 08:08:41 2007
 #      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!
@@ -40,8 +40,8 @@ class Ui_TUview(object):
         self.page1.setObjectName("page1")
 
         self.gridlayout1 = QtGui.QGridLayout(self.page1)
-        self.gridlayout1.setMargin(9)
-        self.gridlayout1.setSpacing(6)
+        self.gridlayout1.setMargin(0)
+        self.gridlayout1.setSpacing(0)
         self.gridlayout1.setObjectName("gridlayout1")
 
         self.txtSource = QtGui.QTextEdit(self.page1)
@@ -57,8 +57,8 @@ class Ui_TUview(object):
         self.page2.setObjectName("page2")
 
         self.gridlayout2 = QtGui.QGridLayout(self.page2)
-        self.gridlayout2.setMargin(9)
-        self.gridlayout2.setSpacing(6)
+        self.gridlayout2.setMargin(0)
+        self.gridlayout2.setSpacing(0)
         self.gridlayout2.setObjectName("gridlayout2")
 
         self.tabWidgetSource = QtGui.QTabWidget(self.page2)
@@ -68,8 +68,8 @@ class Ui_TUview(object):
         self.tabSource1.setObjectName("tabSource1")
 
         self.gridlayout3 = QtGui.QGridLayout(self.tabSource1)
-        self.gridlayout3.setMargin(9)
-        self.gridlayout3.setSpacing(6)
+        self.gridlayout3.setMargin(0)
+        self.gridlayout3.setSpacing(0)
         self.gridlayout3.setObjectName("gridlayout3")
 
         self.txtPluralSource1 = QtGui.QTextEdit(self.tabSource1)
@@ -296,8 +296,8 @@ class Ui_TUview(object):
         self.page3.setObjectName("page3")
 
         self.gridlayout4 = QtGui.QGridLayout(self.page3)
-        self.gridlayout4.setMargin(9)
-        self.gridlayout4.setSpacing(6)
+        self.gridlayout4.setMargin(0)
+        self.gridlayout4.setSpacing(0)
         self.gridlayout4.setObjectName("gridlayout4")
 
         self.txtTarget = QtGui.QTextEdit(self.page3)
@@ -313,8 +313,8 @@ class Ui_TUview(object):
         self.page4.setObjectName("page4")
 
         self.gridlayout5 = QtGui.QGridLayout(self.page4)
-        self.gridlayout5.setMargin(9)
-        self.gridlayout5.setSpacing(6)
+        self.gridlayout5.setMargin(0)
+        self.gridlayout5.setSpacing(0)
         self.gridlayout5.setObjectName("gridlayout5")
 
         self.tabWidgetTarget = QtGui.QTabWidget(self.page4)
@@ -324,8 +324,8 @@ class Ui_TUview(object):
         self.tabTarget1.setObjectName("tabTarget1")
 
         self.gridlayout6 = QtGui.QGridLayout(self.tabTarget1)
-        self.gridlayout6.setMargin(9)
-        self.gridlayout6.setSpacing(6)
+        self.gridlayout6.setMargin(0)
+        self.gridlayout6.setSpacing(0)
         self.gridlayout6.setObjectName("gridlayout6")
 
         self.txtPluralTarget1 = QtGui.QTextEdit(self.tabTarget1)
@@ -335,9 +335,6 @@ class Ui_TUview(object):
         self.gridlayout5.addWidget(self.tabWidgetTarget,0,0,1,1)
         self.targetStacked.addWidget(self.page4)
         self.gridlayout.addWidget(self.splitter,0,0,1,1)
-
-        spacerItem = QtGui.QSpacerItem(16,588,QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Minimum)
-        self.gridlayout.addItem(spacerItem,0,1,1,1)
 
         self.fileScrollBar = QtGui.QScrollBar(TUview)
         self.fileScrollBar.setEnabled(False)
@@ -352,6 +349,9 @@ class Ui_TUview(object):
         self.fileScrollBar.setOrientation(QtCore.Qt.Vertical)
         self.fileScrollBar.setObjectName("fileScrollBar")
         self.gridlayout.addWidget(self.fileScrollBar,0,2,1,1)
+
+        spacerItem = QtGui.QSpacerItem(16,588,QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Minimum)
+        self.gridlayout.addItem(spacerItem,0,1,1,1)
 
         self.retranslateUi(TUview)
         self.sourceStacked.setCurrentIndex(0)

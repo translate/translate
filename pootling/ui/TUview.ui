@@ -66,10 +66,10 @@
       <widget class="QWidget" name="page1" >
        <layout class="QGridLayout" >
         <property name="margin" >
-         <number>9</number>
+         <number>0</number>
         </property>
         <property name="spacing" >
-         <number>6</number>
+         <number>0</number>
         </property>
         <item row="0" column="0" >
          <widget class="QTextEdit" name="txtSource" >
@@ -101,10 +101,10 @@
       <widget class="QWidget" name="page2" >
        <layout class="QGridLayout" >
         <property name="margin" >
-         <number>9</number>
+         <number>0</number>
         </property>
         <property name="spacing" >
-         <number>6</number>
+         <number>0</number>
         </property>
         <item row="0" column="0" >
          <widget class="QTabWidget" name="tabWidgetSource" >
@@ -117,10 +117,10 @@
            </attribute>
            <layout class="QGridLayout" >
             <property name="margin" >
-             <number>9</number>
+             <number>0</number>
             </property>
             <property name="spacing" >
-             <number>6</number>
+             <number>0</number>
             </property>
             <item row="0" column="0" >
              <widget class="QTextEdit" name="txtPluralSource1" />
@@ -622,10 +622,10 @@
       <widget class="QWidget" name="page3" >
        <layout class="QGridLayout" >
         <property name="margin" >
-         <number>9</number>
+         <number>0</number>
         </property>
         <property name="spacing" >
-         <number>6</number>
+         <number>0</number>
         </property>
         <item row="0" column="0" >
          <widget class="QTextEdit" name="txtTarget" >
@@ -657,10 +657,10 @@
       <widget class="QWidget" name="page4" >
        <layout class="QGridLayout" >
         <property name="margin" >
-         <number>9</number>
+         <number>0</number>
         </property>
         <property name="spacing" >
-         <number>6</number>
+         <number>0</number>
         </property>
         <item row="0" column="0" >
          <widget class="QTabWidget" name="tabWidgetTarget" >
@@ -673,10 +673,10 @@
            </attribute>
            <layout class="QGridLayout" >
             <property name="margin" >
-             <number>9</number>
+             <number>0</number>
             </property>
             <property name="spacing" >
-             <number>6</number>
+             <number>0</number>
             </property>
             <item row="0" column="0" >
              <widget class="QTextEdit" name="txtPluralTarget1" />
@@ -689,22 +689,6 @@
       </widget>
      </widget>
     </widget>
-   </item>
-   <item row="0" column="1" >
-    <spacer>
-     <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeType" >
-      <enum>QSizePolicy::Fixed</enum>
-     </property>
-     <property name="sizeHint" >
-      <size>
-       <width>16</width>
-       <height>588</height>
-      </size>
-     </property>
-    </spacer>
    </item>
    <item row="0" column="2" >
     <widget class="QScrollBar" name="fileScrollBar" >
@@ -738,6 +722,22 @@
       <enum>Qt::Vertical</enum>
      </property>
     </widget>
+   </item>
+   <item row="0" column="1" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeType" >
+      <enum>QSizePolicy::Fixed</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>16</width>
+       <height>588</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>
