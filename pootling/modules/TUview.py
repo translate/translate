@@ -177,7 +177,7 @@ class TUview(QtGui.QDockWidget):
             """This will be called when unit is singular.
         @param unit: unit to consider if signal or not."""
             #hide tab for plural unit and show the normal text boxes for signal unit.
-            self.unitplural = False
+            self.secondpage = False
             self.ui.sourceStacked.setCurrentIndex(0)
             self.ui.targetStacked.setCurrentIndex(0)
             self.ui.txtSource.setPlainText(unit.source)
@@ -185,7 +185,6 @@ class TUview(QtGui.QDockWidget):
                 self.ui.txtTarget.setPlainText(unit.target)
         else:
             # create source tab
-            self.unitplural = True
             self.ui.sourceStacked.setCurrentIndex(1)
             self.addRemoveTabWidget(self.ui.tabWidgetSource, len(unit.source.strings), unit.source.strings)
             
@@ -197,11 +196,17 @@ class TUview(QtGui.QDockWidget):
             if (not (nplurals > 1)):
                 if (unicode(unit.target) !=  unicode(self.ui.txtTarget.toPlainText())):
                     self.ui.txtTarget.setPlainText(unit.target)
+                self.secondpage = False
             else:
+                self.secondpage = True
                 self.addRemoveTabWidget(self.ui.tabWidgetTarget, nplurals, unit.target.strings)
                 for i in range(self.ui.tabWidgetTarget.count()):
+                    # make sure it is not emit signal targetchanged everytime when unit is updated.
+                    textbox = self.ui.tabWidgetTarget.widget(i).children()[1]
+                    textbox.setReadOnly(False)
+                    self.disconnect(textbox, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
                     # everytime display a unit, connect signal
-                    self.connect(self.ui.tabWidgetTarget.widget(i).children()[1], QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
+                    self.connect(textbox, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
     
     def addRemoveTabWidget(self, tabWidget, length, msg_strings):
         '''Add or remove tab to a Tab widget.
@@ -225,22 +230,24 @@ class TUview(QtGui.QDockWidget):
                 textedit = QtGui.QTextEdit()
                 gridlayout.addWidget(textedit)
                 tabWidget.addTab(widget, "Plural " + str(count))
-        # add each source string of a unit to widget
+            # add each source string of a unit to widget
         minloop = min(count, len(msg_strings))
         for i in range(minloop):
             textbox = tabWidget.widget(i).children()[1]
             if (unicode(msg_strings[i]) != unicode(textbox.toPlainText())):
                 textbox.setText(msg_strings[i])
+            textbox.setReadOnly(True)
     
     def emitTargetChanged(self):
-        if (not self.unitplural):
+        if ((not hasattr(self, "secondpage")) or  (not self.secondpage)):
             self.emit(QtCore.SIGNAL("targetChanged"), unicode(self.ui.txtTarget.toPlainText()))
         else:
             list = []
             for i in range(self.ui.tabWidgetTarget.count()):
-                list.append(unicode(self.ui.tabWidgetTarget.widget(i).children()[1].toPlainText()))
+                textbox = self.ui.tabWidgetTarget.widget(i).children()[1]
+                list.append(unicode(textbox.toPlainText()))
                 # prevent infinit loop of textchanged signal everytime a plural unit target string is changed.
-                self.disconnect(self.ui.tabWidgetTarget.widget(i).children()[1], QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
+                self.disconnect(textbox, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
             self.emit(QtCore.SIGNAL("targetChanged"), list)
             
     def source2target(self):
@@ -308,7 +315,9 @@ class TUview(QtGui.QDockWidget):
         if (targetfont.isValid() and fontObj.fromString(targetfont.toString())):
             self.ui.txtTarget.setFont(fontObj)
             self.ui.txtTarget.setTabStopWidth(QtGui.QFontMetrics(fontObj).width("m"*8))
-            
+        
+        self.emitTargetChanged()
+
 if __name__ == "__main__":
     import sys, os
     # set the path for QT in order to find the icons

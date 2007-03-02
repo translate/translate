@@ -318,8 +318,7 @@ class Preference(QtGui.QDialog):
         @param langCode: as Qstring type. """
         language = common.Common(str(langCode))
         self.ui.spinBox.setValue(language.nplurals)
-        print language.pluralequations, str(langCode)
-        self.ui.lineEqaution.setText(language.pluralequations)
+        self.ui.lineEqaution.setText(language.pluralequation)
         
 if __name__ == "__main__":
     import sys, os

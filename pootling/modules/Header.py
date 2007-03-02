@@ -213,7 +213,6 @@ class Header(QtGui.QDialog):
             self.headerDic['Plural-Forms'] = 'nplurals=' + nPlural.toString() + '; plural=' + pluralEquation.toString() + ';'
             self.headerDic['X-Generator'] = World.settingApp + ' ' + __version__.ver
         #Plural form should be updated either the header is just created or it is already in the file.
-        print nPlural.toString()
         self.operator.store.updateheaderplural(int(nPlural.toString()), str(pluralEquation.toString()))
         
         #TODO: why do we need this?

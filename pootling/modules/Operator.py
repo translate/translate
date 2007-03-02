@@ -262,12 +262,12 @@ class Operator(QtCore.QObject):
             return
         unit = self.getCurrentUnit()
         # update target for current unit
-        if (unicode(unit.target) != unicode(target)):
-            unit.settarget(target)
-            self.status.markTranslated(unit, (unit.target and True or False))
-            self.emitUnit(unit)
-            self.emitStatus()
-            self.setModified(True)
+#        if (unicode(unit.target) != unicode(target)):
+        unit.settarget(target)
+        self.status.markTranslated(unit, (unit.target and True or False))
+        self.emitUnit(unit)
+        self.emitStatus()
+        self.setModified(True)
     
     def setUnitFromPosition(self, position):
         """build a unit from position and call emitUnit.
