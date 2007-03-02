@@ -66,6 +66,10 @@
     <property name="title" >
      <string>&amp;Edit</string>
     </property>
+    <addaction name="actionFind_in_Files" />
+    <addaction name="actionReplace_in_Files" />
+    <addaction name="actionStop_Find" />
+    <addaction name="separator" />
     <addaction name="actionReload" />
    </widget>
    <addaction name="menuFile" />
@@ -125,6 +129,39 @@
    </property>
    <property name="text" >
     <string>&amp;Configure...</string>
+   </property>
+  </action>
+  <action name="actionFind_in_Files" >
+   <property name="icon" >
+    <iconset>../images/find.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Find in Files...</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+F</string>
+   </property>
+  </action>
+  <action name="actionReplace_in_Files" >
+   <property name="icon" >
+    <iconset>../images/replace.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Replace in Files...</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="actionStop_Find" >
+   <property name="icon" >
+    <iconset>../images/stop.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Stop Find</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+S</string>
    </property>
   </action>
  </widget>
