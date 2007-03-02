@@ -187,19 +187,7 @@ class TUview(QtGui.QDockWidget):
             # create source tab
             self.unitplural = True
             self.ui.sourceStacked.setCurrentIndex(1)
-            count = self.ui.tabWidgetSource.count()
-            nsource = len(unit.source.strings)
-            if (not (count  == nsource)):
-                while (count > nsource):
-                    count -= 1
-                    self.ui.tabWidgetSource.removeTab(count)
-                while (count < nsource):
-                    count += 1
-                    widget = self.createWidgetForTab()
-                    self.ui.tabWidgetSource.addTab(widget, "Plural " + str(count))
-            # add each source string of a unit to widget
-            for i in range(len(unit.source.strings)):
-                self.ui.tabWidgetSource.widget(i).children()[1].setText(unit.source.strings[i])
+            self.addRemoveTabWidget(self.ui.tabWidgetSource, len(unit.source.strings), unit.source.strings)
             
             # create target tab
             nplurals = World.settings.value("nPlural").toInt()[0]
@@ -210,29 +198,39 @@ class TUview(QtGui.QDockWidget):
                 if (unicode(unit.target) !=  unicode(self.ui.txtTarget.toPlainText())):
                     self.ui.txtTarget.setPlainText(unit.target)
             else:
-                count = self.ui.tabWidgetTarget.count()
-                if (not (count  == nplurals)):
-                    while (count > nplurals):
-                        count -= 1
-                        self.ui.tabWidgetTarget.removeTab(count)
-                    while (count < nplurals):
-                        count += 1
-                        widget = self.createWidgetForTab()
-                        self.ui.tabWidgetTarget.addTab(widget, "Plural " + str(count))
-                # add each target string of a unit to widget
-                minloop = min(count, len(unit.target.strings))
-                for i in range(minloop):
-                    self.ui.tabWidgetTarget.widget(i).children()[1].setText(unit.target.strings[i])
-                # connect signal textchanged when each target string of a plural unit is changed
-                for i in range(count):
+                self.addRemoveTabWidget(self.ui.tabWidgetTarget, nplurals, unit.target.strings)
+                for i in range(self.ui.tabWidgetTarget.count()):
+                    # everytime display a unit, connect signal
                     self.connect(self.ui.tabWidgetTarget.widget(i).children()[1], QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
-
-    def createWidgetForTab(self):
-        widget = QtGui.QWidget()
-        gridlayout = QtGui.QGridLayout(widget)
-        textedit = QtGui.QTextEdit()
-        gridlayout.addWidget(textedit)
-        return widget
+    
+    def addRemoveTabWidget(self, tabWidget, length, msg_strings):
+        '''Add or remove tab to a Tab widget.
+        
+        @param tabWidget: QTabWidget
+        @param length: amount of tab as int type
+        @param msg_strings: list of strings to set to textbox in each tab of tabWidget
+        
+        '''
+        count = tabWidget.count()
+        if (not (count  == length)):
+            while (count > length):
+                count -= 1
+                tabWidget.removeTab(count)
+            while (count < length):
+                count += 1
+                widget = QtGui.QWidget()
+                gridlayout = QtGui.QGridLayout(widget)
+                gridlayout.setMargin(0)
+                gridlayout.setSpacing(0)
+                textedit = QtGui.QTextEdit()
+                gridlayout.addWidget(textedit)
+                tabWidget.addTab(widget, "Plural " + str(count))
+        # add each source string of a unit to widget
+        minloop = min(count, len(msg_strings))
+        for i in range(minloop):
+            textbox = tabWidget.widget(i).children()[1]
+            if (unicode(msg_strings[i]) != unicode(textbox.toPlainText())):
+                textbox.setText(msg_strings[i])
     
     def emitTargetChanged(self):
         if (not self.unitplural):
@@ -241,7 +239,8 @@ class TUview(QtGui.QDockWidget):
             list = []
             for i in range(self.ui.tabWidgetTarget.count()):
                 list.append(unicode(self.ui.tabWidgetTarget.widget(i).children()[1].toPlainText()))
-            # TODO: emit list causes error in operator.
+                # prevent infinit loop of textchanged signal everytime a plural unit target string is changed.
+                self.disconnect(self.ui.tabWidgetTarget.widget(i).children()[1], QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
             self.emit(QtCore.SIGNAL("targetChanged"), list)
             
     def source2target(self):
