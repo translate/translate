@@ -173,10 +173,16 @@ class TUview(QtGui.QDockWidget):
         self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
     
     def showUnit(self, unit):
+        ''' show unit's source and target in a normal text box if unit is single or 
+        in multi tab if unit is plural and number of plural forms setting is more than 1.
+
+        @param unit: to show into source and target.
+        '''
         if (not unit.hasplural()):
             """This will be called when unit is singular.
         @param unit: unit to consider if signal or not."""
             #hide tab for plural unit and show the normal text boxes for signal unit.
+            # display on first page which is normal text box page
             self.secondpage = False
             self.ui.sourceStacked.setCurrentIndex(0)
             self.ui.targetStacked.setCurrentIndex(0)
@@ -191,13 +197,13 @@ class TUview(QtGui.QDockWidget):
             # create target tab
             nplurals = World.settings.value("nPlural").toInt()[0]
             self.ui.targetStacked.setCurrentIndex((nplurals > 1) and 1 or 0)
-            # TODO: when nplurals changed in Preference Translated String Viw also changes
-            # TODO: reset min and max of nplural spinbox in Preference, otherwise it will cause bugs here
             if (not (nplurals > 1)):
                 if (unicode(unit.target) !=  unicode(self.ui.txtTarget.toPlainText())):
                     self.ui.txtTarget.setPlainText(unit.target)
+                # display on first page which is normal text box page
                 self.secondpage = False
             else:
+                # display on second page which is tabwidget page; second page means unit is plural and number of plurals form setting is more than 1.
                 self.secondpage = True
                 self.addRemoveTabWidget(self.ui.tabWidgetTarget, nplurals, unit.target.strings)
                 for i in range(self.ui.tabWidgetTarget.count()):
@@ -235,10 +241,13 @@ class TUview(QtGui.QDockWidget):
         for i in range(minloop):
             textbox = tabWidget.widget(i).children()[1]
             if (unicode(msg_strings[i]) != unicode(textbox.toPlainText())):
-                textbox.setText(msg_strings[i])
+                textbox.setPlainText(msg_strings[i])
             textbox.setReadOnly(True)
     
     def emitTargetChanged(self):
+        """
+        emit targetChanged signal if target in TUview is changed.
+        """
         if ((not hasattr(self, "secondpage")) or  (not self.secondpage)):
             self.emit(QtCore.SIGNAL("targetChanged"), unicode(self.ui.txtTarget.toPlainText()))
         else:
@@ -252,7 +261,22 @@ class TUview(QtGui.QDockWidget):
             
     def source2target(self):
         """Copy the text from source to target."""
-        self.ui.txtTarget.setText(self.ui.txtSource.toPlainText())
+        # if secondpage means unit is plural and number of plural forms setting is more than 1.
+        if (self.secondpage):
+            targettab =self.ui.tabWidgetTarget
+            targettabindex = targettab.currentIndex()
+            sourcetab = self.ui.tabWidgetSource
+            sourcetabindex = sourcetab.currentIndex()
+            targettab.widget(targettabindex).children()[1].setPlainText(sourcetab.widget(sourcetabindex).children()[1].toPlainText())
+        else:
+            # here targetview is always normal text box, but unit could be single or plural.
+            sourceview_as_tab = self.ui.sourceStacked.currentIndex()
+            if (not sourceview_as_tab):
+                self.ui.txtTarget.setPlainText(self.ui.txtSource.toPlainText())
+            else:
+                sourcetab = self.ui.tabWidgetSource
+                sourcetabindex = sourcetab.currentIndex()
+                self.ui.txtTarget.setPlainText(sourcetab.widget(sourcetabindex).children()[1].toPlainText())
 
     def highlightSearch(self, textField, position, length = 0):
         """Highlight the text at specified position, length, and textField.
