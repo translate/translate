@@ -66,7 +66,6 @@ class OverviewDock(QtGui.QDockWidget):
         self.changedSignal = QtCore.SIGNAL("currentCellChanged(int, int, int, int)")
         self.connect(self.ui.tableOverview, self.changedSignal, self.emitCurrentIndex)
         self.connect(self.ui.tableOverview.model(), QtCore.SIGNAL("layoutChanged()"), self.showFilteredItems)
-        self.connect(self.ui.tableOverview, QtCore.SIGNAL("cellChanged(int, int)"), self.emitTargetChanged)
     
     def closeEvent(self, event):
         """
@@ -190,6 +189,7 @@ class OverviewDock(QtGui.QDockWidget):
         and set the target text according to unit.
         @param unit: unit class
         """
+        self.disconnect(self.ui.tableOverview, QtCore.SIGNAL("cellChanged(int, int)"), self.emitTargetChanged)
         if (not unit) or (not hasattr(unit, "x_editor_tableItem")):
             return
         row = self.ui.tableOverview.row(unit.x_editor_tableItem)
@@ -208,6 +208,7 @@ class OverviewDock(QtGui.QDockWidget):
         
         self.ui.tableOverview.scrollToItem(unit.x_editor_tableItem)
         self.emitFirstLastUnit()
+        self.connect(self.ui.tableOverview, QtCore.SIGNAL("cellChanged(int, int)"), self.emitTargetChanged)
     
     def markState(self, index, state):
         """
