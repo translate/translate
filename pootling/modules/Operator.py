@@ -87,7 +87,8 @@ class Operator(QtCore.QObject):
                 self.filteredList.append(unit)
             i += 1
         self.emitNewUnits()
-        self.emitFiltered(self.filter)
+        self.emitUnit(self.filteredList[0])
+#        self.emitFiltered(self.filter)
         self.setModified(False)
 
     def emitNewUnits(self):
@@ -158,13 +159,13 @@ class Operator(QtCore.QObject):
             self.filteredList = []
             for unit in self.store.units:
                 # add unit to filteredList if it is in the filter
-                if (not hasattr(unit, "x_editor_state")):
-                    unit.x_editor_state = self.status.getStatus(unit)
+#                if (not hasattr(unit, "x_editor_state")):                              // this 2 lines are uncomment, because it was thought to be useless
+#                    unit.x_editor_state = self.status.getStatus(unit)
                 if (self.filter & unit.x_editor_state):
                     unit.x_editor_filterIndex = len(self.filteredList)
                     self.filteredList.append(unit)
-                else:
-                    unit.x_editor_filterIndex = None
+#                else:                                                                                  //this 2 lines are uncomment because it was thought to be useless
+#                    unit.x_editor_filterIndex = None
         self.emit(QtCore.SIGNAL("filterChanged"), filter, len(self.filteredList))
         if (unitBeforeFiltered) and (unitBeforeFiltered in self.filteredList):
             unit = unitBeforeFiltered
@@ -262,8 +263,8 @@ class Operator(QtCore.QObject):
             return
         unit = self.getCurrentUnit()
         # update target for current unit
-#        if (unicode(unit.target) != unicode(target)):
         unit.settarget(target)
+        #FIXME: this mark works single not plural unit.
         self.status.markTranslated(unit, (unit.target and True or False))
         self.emitUnit(unit)
         self.emitStatus()
@@ -418,9 +419,9 @@ class Operator(QtCore.QObject):
         self.store = None
         self.status = None
         self.filter = None
-        self.filteredList = None
-        self.emitNewUnits()
-        
+        self.filteredList = []
+        self.emitUnit(None)
+    
     def autoTranslate(self):
         '''
         get TM path and start lookup
