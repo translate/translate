@@ -21,7 +21,7 @@
 
 from PyQt4 import QtCore, QtGui
 from pootling.ui.Ui_TUview import Ui_TUview
-from translate.storage import po
+#from translate.storage import po
 from pootling.modules import World
 
 class Highlighter(QtGui.QSyntaxHighlighter):
@@ -84,7 +84,7 @@ class TUview(QtGui.QDockWidget):
         self.setWidget(self.form)
         self.setFeatures(QtGui.QDockWidget.DockWidgetClosable)
         self.ui.lblComment.hide()
-        self.ui.txtTarget.setReadOnly(True)
+#        self.ui.txtTarget.setReadOnly(True)
         self.applySettings()
         self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
         
@@ -126,16 +126,16 @@ class TUview(QtGui.QDockWidget):
         """Adjust the scrollbar maximum according to lenFilter.
         @param filter: helper constants for filtering
         @param lenFilter: len of filtered items."""
-        if (lenFilter):
-            self.ui.fileScrollBar.setEnabled(True)
-            self.ui.txtSource.setEnabled(True)
-            self.ui.txtTarget.setEnabled(True)
-        else:
-            self.ui.txtSource.clear()
-            self.ui.txtTarget.clear()
-            self.ui.txtSource.setEnabled(False)
-            self.ui.txtTarget.setEnabled(False)
-        self.filter = filter
+#        if (lenFilter):
+#            self.ui.fileScrollBar.setEnabled(True)
+#            self.ui.txtSource.setEnabled(True)
+#            self.ui.txtTarget.setEnabled(True)
+#        else:
+#            self.ui.txtSource.clear()
+#            self.ui.txtTarget.clear()
+#            self.ui.txtSource.setEnabled(False)
+#            self.ui.txtTarget.setEnabled(False)
+#        self.filter = filter
         self.setScrollbarMaxValue(lenFilter)
     
     @QtCore.pyqtSignature("int")
@@ -151,13 +151,21 @@ class TUview(QtGui.QDockWidget):
         @param unit: unit to set in target and source.
         @param index: value in the scrollbar to be removed."""
         self.disconnect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
-        if (not unit) or (not hasattr(unit, "x_editor_filterIndex")):
-            self.ui.lblComment.hide()
-            self.ui.txtSource.clear()
-            self.ui.txtTarget.clear()
-            self.ui.txtSource.setEnabled(False)
-            self.ui.txtTarget.setEnabled(False)
+#        if ((not unit) or (not hasattr(unit, "x_editor_filterIndex"))):
+#            self.ui.lblComment.hide()
+#            self.ui.txtSource.clear()
+#            self.ui.txtTarget.clear()
+#            self.ui.fileScrollBar.setEnabled(True)
+#            self.ui.txtSource.setEnabled(True)
+#            self.ui.txtTarget.setEnabled(True)
+#        else:
+#            self.ui.txtSource.setEnabled(False)
+#            self.ui.txtTarget.setEnabled(False)
+        if (not unit):
+            self.viewSetting(False)
             return
+        else:
+            self.viewSetting(True)
         self.ui.txtTarget.setReadOnly(False)
 
         comment = unit.getcontext()
@@ -341,7 +349,19 @@ class TUview(QtGui.QDockWidget):
             self.ui.txtTarget.setTabStopWidth(QtGui.QFontMetrics(fontObj).width("m"*8))
         
         self.emitTargetChanged()
-
+    
+    def viewSetting(self, bool):
+        if (bool == False):
+            self.ui.txtSource.clear()
+            self.ui.txtTarget.clear()
+            for i in range(self.ui.tabWidgetSource.count()):
+                self.ui.tabWidgetSource.widget(i).children()[1].clear()
+            for i in range(self.ui.tabWidgetTarget.count()):
+                self.ui.tabWidgetTarget.widget(i).children()[1].clear()
+        self.ui.lblComment.setVisible(bool)
+        self.ui.sourceStacked.setEnabled(bool)
+        self.ui.targetStacked.setEnabled(bool)
+    
 if __name__ == "__main__":
     import sys, os
     # set the path for QT in order to find the icons
