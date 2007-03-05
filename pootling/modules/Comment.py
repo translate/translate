@@ -66,10 +66,11 @@ class CommentDock(QtGui.QDockWidget):
         """Update the comments view
         @param unit: class unit."""
         self.disconnect(self.ui.txtTranslatorComment, QtCore.SIGNAL("textChanged()"), self.checkModified)
-        self.ui.txtTranslatorComment.setEnabled(bool(unit))
+#        self.ui.txtTranslatorComment.setEnabled(bool(unit))
+        self.viewSetting(unit)
         if (not unit):
-            self.ui.txtLocationComment.hide()
-            self.ui.txtTranslatorComment.clear()
+#            self.ui.txtLocationComment.hide()
+#            self.ui.txtTranslatorComment.clear()
             return
         translatorComment = ""
         locationComment = ""
@@ -143,6 +144,14 @@ class CommentDock(QtGui.QDockWidget):
         self.ui.txtTranslatorComment.document().setModified()
         self.checkModified()
     
+    def viewSetting(self, argc):
+        bool = (argc and True or False)
+        self.ui.txtTranslatorComment.setEnabled(bool)
+        if (bool == False):
+            self.ui.txtLocationComment.hide()
+            self.ui.txtTranslatorComment.clear()
+            return
+
 if __name__ == "__main__":
     import sys, os
     # set the path for QT in order to find the icons

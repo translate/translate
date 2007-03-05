@@ -420,7 +420,7 @@ class Operator(QtCore.QObject):
         self.status = None
         self.filter = None
         self.filteredList = []
-        self.emitUnit(None)
+        self.emitNewUnits()
     
     def autoTranslate(self):
         '''

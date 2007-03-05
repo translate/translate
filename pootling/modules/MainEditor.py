@@ -231,6 +231,8 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.dockOverview, QtCore.SIGNAL("toggleFirstLastUnit"), self.toggleFirstLastUnit)
 
         self.connect(self.operator, QtCore.SIGNAL("newUnits"), self.dockOverview.slotNewUnits)
+        self.connect(self.operator, QtCore.SIGNAL("newUnits"), self.dockTUview.viewSetting)
+        self.connect(self.operator, QtCore.SIGNAL("newUnits"), self.dockComment.viewSetting)
         # "filterChanged" sends filter and number of filtered items.
         self.connect(self.operator, QtCore.SIGNAL("filterChanged"), self.dockOverview.filterChanged)
         self.connect(self.operator, QtCore.SIGNAL("filterChanged"), self.dockTUview.filterChanged)

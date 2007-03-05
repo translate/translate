@@ -136,6 +136,7 @@ class TUview(QtGui.QDockWidget):
 #            self.ui.txtSource.setEnabled(False)
 #            self.ui.txtTarget.setEnabled(False)
 #        self.filter = filter
+        self.viewSetting(lenFilter)
         self.setScrollbarMaxValue(lenFilter)
     
     @QtCore.pyqtSignature("int")
@@ -162,12 +163,9 @@ class TUview(QtGui.QDockWidget):
 #            self.ui.txtSource.setEnabled(False)
 #            self.ui.txtTarget.setEnabled(False)
         if (not unit):
-            self.viewSetting(False)
             return
-        else:
-            self.viewSetting(True)
-        self.ui.txtTarget.setReadOnly(False)
 
+        self.ui.txtTarget.setReadOnly(False)
         comment = unit.getcontext()
         comment += unit.getnotes("developer")
         if (comment == ""):
@@ -350,8 +348,10 @@ class TUview(QtGui.QDockWidget):
         
         self.emitTargetChanged()
     
-    def viewSetting(self, bool):
+    def viewSetting(self, arg = None):
+        bool = (arg and True or False)
         if (bool == False):
+            self.ui.lblComment.clear()
             self.ui.txtSource.clear()
             self.ui.txtTarget.clear()
             for i in range(self.ui.tabWidgetSource.count()):
