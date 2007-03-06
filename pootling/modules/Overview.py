@@ -89,6 +89,7 @@ class OverviewDock(QtGui.QDockWidget):
 #            self.ui.tableOverview.setRowCount(0)
 #            self.ui.tableOverview.setHorizontalHeaderLabels(self.headerLabels)
 #            self.ui.tableOverview.setEnabled(bool(units))
+            self.emitFirstLastUnit()
             return
 #        self.ui.tableOverview.setEnabled(bool(units))
         self.indexMaxLen = len(str(len(units)))
