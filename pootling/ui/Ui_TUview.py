@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/ks/programming/wordforge/trunk/pootling/ui/TUview.ui'
 #
-# Created: Fri Mar  2 08:08:41 2007
+# Created: Wed Mar  7 15:02:31 2007
 #      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!
@@ -364,14 +364,12 @@ class Ui_TUview(object):
         TUview.setWindowTitle(QtGui.QApplication.translate("TUview", "Detail", None, QtGui.QApplication.UnicodeUTF8))
         TUview.setWhatsThis(QtGui.QApplication.translate("TUview", "<h3>Source and Target View</h3>It contains source of unit in the upper text box, and target of unit in the below text box. If unit is plural, it will display multi of tabs.", None, QtGui.QApplication.UnicodeUTF8))
         self.txtSource.setToolTip(QtGui.QApplication.translate("TUview", "Original Source String", None, QtGui.QApplication.UnicodeUTF8))
-        self.txtSource.setStatusTip(QtGui.QApplication.translate("TUview", "Original Source String", None, QtGui.QApplication.UnicodeUTF8))
         self.txtSource.setWhatsThis(QtGui.QApplication.translate("TUview", "<h3>Original Source String</h3>This part of the window shows you the original string of the currently displayed entry. <br>You can not edit this string.", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidgetSource.setTabText(self.tabWidgetSource.indexOf(self.tabSource1), QtGui.QApplication.translate("TUview", "Plural 1", None, QtGui.QApplication.UnicodeUTF8))
         self.lblComment.setToolTip(QtGui.QApplication.translate("TUview", "Important Comment", None, QtGui.QApplication.UnicodeUTF8))
         self.lblComment.setStatusTip(QtGui.QApplication.translate("TUview", "Important Comment", None, QtGui.QApplication.UnicodeUTF8))
         self.lblComment.setWhatsThis(QtGui.QApplication.translate("TUview", "<h3>Important Comment</h3>Hints from the developer to the translator are displayed in this area. This area will be hidden if there is no hint. ", None, QtGui.QApplication.UnicodeUTF8))
         self.txtTarget.setToolTip(QtGui.QApplication.translate("TUview", "Translated String", None, QtGui.QApplication.UnicodeUTF8))
-        self.txtTarget.setStatusTip(QtGui.QApplication.translate("TUview", "Translated String", None, QtGui.QApplication.UnicodeUTF8))
         self.txtTarget.setWhatsThis(QtGui.QApplication.translate("TUview", "<h3>Translated String</h3>This editor displays and lets you edit the translation of the currently displayed string.", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidgetTarget.setTabText(self.tabWidgetTarget.indexOf(self.tabTarget1), QtGui.QApplication.translate("TUview", "Plural 1", None, QtGui.QApplication.UnicodeUTF8))
         self.fileScrollBar.setToolTip(QtGui.QApplication.translate("TUview", "Navigate in your file", None, QtGui.QApplication.UnicodeUTF8))

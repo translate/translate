@@ -26,9 +26,9 @@
     <number>6</number>
    </property>
    <item row="2" column="3" >
-    <widget class="QPushButton" name="btnOK" >
+    <widget class="QPushButton" name="btnClose" >
      <property name="text" >
-      <string>&amp;OK</string>
+      <string>&amp;Close</string>
      </property>
     </widget>
    </item>
@@ -182,10 +182,11 @@
  <tabstops>
   <tabstop>btnHome</tabstop>
   <tabstop>btnDesktop</tabstop>
+  <tabstop>btnDoc</tabstop>
   <tabstop>treeView</tabstop>
   <tabstop>lineLocation</tabstop>
   <tabstop>btnAdd</tabstop>
-  <tabstop>btnOK</tabstop>
+  <tabstop>btnClose</tabstop>
  </tabstops>
  <resources/>
  <connections/>
