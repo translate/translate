@@ -41,18 +41,23 @@ class fileDialog(QtGui.QDialog):
         self.ui.treeView.setModel(self.dir)
         self.goHome()
         self.setModal(True)
-        
-        self.connect(self.ui.treeView, QtCore.SIGNAL("doubleClicked ( const QModelIndex &)"), self.addLocation)
+    
         self.connect(self.ui.treeView, QtCore.SIGNAL("clicked ( const QModelIndex &)"), self.addLocation)
         self.connect(self.ui.btnHome, QtCore.SIGNAL("clicked(bool)"), self.goHome)
         self.connect(self.ui.btnDesktop, QtCore.SIGNAL("clicked(bool)"), self.goDesktop)
         self.connect(self.ui.btnDoc, QtCore.SIGNAL("clicked(bool)"), self.goDocument)
         self.connect(self.ui.btnAdd, QtCore.SIGNAL("clicked(bool)"), self.emitLocation)
-        self.connect(self.ui.btnOK, QtCore.SIGNAL("clicked(bool)"), self.OK)
+        self.connect(self.ui.btnClose, QtCore.SIGNAL("clicked(bool)"), QtCore.SLOT("close()"))
     
-    def OK(self):
-        self.emitLocation()
-        self.close()
+    def keyReleaseEvent(self, event):
+        if (self.ui.btnHome.hasFocus()):
+            self.goHome()
+        elif (self.ui.btnDesktop.hasFocus()):
+            self.goDesktop()
+        elif (self.ui.btnDoc.hasFocus()):
+            self.goDocument()
+        if (self.ui.treeView.hasFocus()):
+            self.addLocation()
         
     def addLocation(self):
         self.ui.treeView.scrollTo(self.ui.treeView.currentIndex())
@@ -62,7 +67,7 @@ class fileDialog(QtGui.QDialog):
     
     def emitLocation(self):
         self.emit(QtCore.SIGNAL("location"), self.ui.lineLocation.text())
-    
+        
     def goHome(self):
         self.ui.treeView.setCurrentIndex(self.dir.index(QtCore.QDir.homePath()))
         self.addLocation()
