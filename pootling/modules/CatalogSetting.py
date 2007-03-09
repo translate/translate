@@ -42,15 +42,15 @@ class CatalogSetting(QtGui.QDialog):
         self.filedialog = FileDialog.fileDialog(self)
         self.connect(self.filedialog, QtCore.SIGNAL("location"), self.addLocation)
         self.connect(self.ui.btnOk, QtCore.SIGNAL("clicked(bool)"), QtCore.SLOT("close()"))
-        self.connect(self.ui.btnRemove, QtCore.SIGNAL("clicked(bool)"), self.removeLocation)
-        self.connect(self.ui.btnRemoveAll, QtCore.SIGNAL("clicked(bool)"), self.ui.listWidget.clear)
+        self.connect(self.ui.btnDelete, QtCore.SIGNAL("clicked(bool)"), self.removeLocation)
+        self.connect(self.ui.btnClear, QtCore.SIGNAL("clicked(bool)"), self.ui.listWidget.clear)
         self.connect(self.ui.btnMoveUp, QtCore.SIGNAL("clicked(bool)"), self.moveUp)
         self.connect(self.ui.btnMoveDown, QtCore.SIGNAL("clicked(bool)"), self.moveDown)
-        self.connect(self.ui.checkBox, QtCore.SIGNAL("stateChanged(int)"), self.rememberDive)
+        self.connect(self.ui.chbDiveIntoSubfolders, QtCore.SIGNAL("stateChanged(int)"), self.rememberDive)
         self.ui.listWidget.addItems(World.settings.value("CatalogPath").toStringList())
         self.setModal(True)
-        self.ui.checkBox.setChecked(World.settings.value("diveIntoSubCatalog").toBool())
-    
+        self.ui.chbDiveIntoSubfolders.setChecked(World.settings.value("diveIntoSubCatalog").toBool())
+
     def showFileDialog(self):
         self.filedialog.show()
     
@@ -83,7 +83,7 @@ class CatalogSetting(QtGui.QDialog):
         self.moveItem(1)
     
     def rememberDive(self):
-        World.settings.setValue("diveIntoSubCatalog", QtCore.QVariant(self.ui.checkBox.isChecked()))
+        World.settings.setValue("diveIntoSubCatalog", QtCore.QVariant(self.ui.chbDiveIntoSubfolders.isChecked()))
         self.catalogModified = True
 
     def closeEvent(self, event):
