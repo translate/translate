@@ -58,10 +58,12 @@ class fileDialog(QtGui.QDialog):
             self.goDocument()
         if (self.ui.treeView.hasFocus()):
             self.addLocation()
-        
+        if (event.key() == 32 or event.key() == 16777220):
+            if (self.ui.treeView.hasFocus()):
+                self.ui.treeView.setExpanded(self.ui.treeView.currentIndex(), (not self.ui.treeView.isExpanded(self.ui.treeView.currentIndex())))
+
     def addLocation(self):
         self.ui.treeView.scrollTo(self.ui.treeView.currentIndex())
-        self.ui.treeView.expand(self.ui.treeView.currentIndex())
         self.ui.treeView.resizeColumnToContents(0)
         self.ui.lineLocation.setText(self.dir.filePath(self.ui.treeView.currentIndex()))
     
