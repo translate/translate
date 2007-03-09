@@ -263,7 +263,8 @@ class MainWindow(QtGui.QMainWindow):
         self.findBar.setHidden(True)
         
         self.connect(self.Catalog, QtCore.SIGNAL("openFile"), self.openFile)
-    
+        self.connect(self.Catalog, QtCore.SIGNAL("goto"), self.dockOverview.gotoRow)
+
     def updateProgress(self, value):
         if (not self.progressBar.isVisible()):
             self.progressBar.setVisible(True)

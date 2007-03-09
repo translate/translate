@@ -28,6 +28,7 @@ from pootling.modules.AboutEditor import AboutEditor
 from translate.storage import factory
 from Pootle import versioncontrol
 import pootling.modules.World as World
+from pootling.modules.FindInCatalog import FindInCatalog
 import os
 
 class Catalog(QtGui.QMainWindow):
@@ -88,6 +89,15 @@ class Catalog(QtGui.QMainWindow):
         self.connect(self.catSetting.ui.chbSVN, QtCore.SIGNAL("stateChanged(int)"), self.toggleHeaderItem)
         self.connect(self.catSetting.ui.chbtranslated, QtCore.SIGNAL("stateChanged(int)"), self.toggleHeaderItem)
 
+        # Create Find String in Catalog
+        self.findBar = FindInCatalog(self)
+        self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.findBar)
+        self.findBar.setHidden(True)
+
+        self.connect(self.ui.actionFind_in_Files, QtCore.SIGNAL("triggered()"), self.findBar.showFind)
+        # emit findfiles signal from FindInCatalog file
+        self.connect(self.findBar, QtCore.SIGNAL("initSearch"), self.find)
+
         # progress bar
         self.progressBar = QtGui.QProgressBar()
         self.progressBar.setEnabled(True)
@@ -108,7 +118,40 @@ class Catalog(QtGui.QMainWindow):
         self.connect(self.catSetting, QtCore.SIGNAL("updateCatalog"), self.updateCatalog)
         self.connect(self.ui.treeCatalog, QtCore.SIGNAL("itemDoubleClicked(QTreeWidgetItem *, int)"), self.emitOpenFile)
         self.setupCheckbox()
-    
+
+    def find(self, searchString, searchOptions):
+            if (not (searchString and searchOptions)):
+                return
+            for i in range(self.ui.treeCatalog.topLevelItemCount()):
+                 item = self.ui.treeCatalog.topLevelItem(i)
+                 for j in range(item.childCount()):
+                      childItem = item.child(j)
+                      filename = self.getFilename(childItem)
+                      self.searchInString(searchString, filename, searchOptions)
+                      break
+                 break
+
+    def searchInString(self, searchString, filename, searchOptions):
+        if (not os.path.isfile(filename)):
+            return
+        store = factory.getobject(filename)
+        if (not store):
+            return
+        unitIndex = 0
+        for unit in store.units:
+            searchableText = None
+            if (searchOptions == World.source):
+                searchableText = unit.source
+            elif (searchOptions == World.target):
+                searchableText = unit.target
+            elif (searchOptions == (World.source + World.target)):
+                searchableText = unit.source + unit.target
+            if (searchableText.find(searchString) != -1 ):
+                self.emit(QtCore.SIGNAL("openFile"), filename)
+                self.emit(QtCore.SIGNAL("goto"), unitIndex)
+                break
+            unitIndex += 1
+
     def toggleHeaderItem(self):
         if (isinstance(self.sender(), QtGui.QCheckBox)):
             text = self.sender().text()
