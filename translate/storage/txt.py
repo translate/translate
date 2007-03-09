@@ -32,7 +32,7 @@ from translate.misc import textwrap
 import re
 
 dokuwiki = []
-dokuwiki.append(("Dokuwiki heading", re.compile(r"( ?={2,5}[\s]*)(.+)"), re.compile("([\s]*={2,5}[\s]*)$")))
+dokuwiki.append(("Dokuwiki heading", re.compile(r"( ?={2,6}[\s]*)(.+)"), re.compile("([\s]*={2,6}[\s]*)$")))
 dokuwiki.append(("Dokuwiki bullet", re.compile(r"([\s]{2,}\*[\s]*)(.+)"), re.compile("[\s]+$")))
 dokuwiki.append(("Dokuwiki numbered item", re.compile(r"([\s]{2,}-[\s]*)(.+)"), re.compile("[\s]+$")))
 
@@ -89,6 +89,9 @@ class TxtUnit(base.TranslationUnit):
 
     def addlocation(self, location):
         self.location.append(location)
+
+    def getlocations(self):
+        return self.location
 
 class TxtFile(base.TranslationStore):
     """This class represents a text file, made up of txtunits"""
