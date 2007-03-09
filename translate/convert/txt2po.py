@@ -38,7 +38,8 @@ class txt2po:
     headerpo.othercomments.append("# extracted from %s\n" % thetxtfile.filename)
     thepofile.units.append(headerpo)
     for txtunit in thetxtfile.units:
-       thepofile.addsourceunit(txtunit.source)
+       newunit = thepofile.addsourceunit(txtunit.source)
+       newunit.addlocations(txtunit.getlocations())
     thepofile.removeduplicates(self.duplicatestyle)
     return thepofile
 
