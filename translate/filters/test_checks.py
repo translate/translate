@@ -609,6 +609,17 @@ Start %PRODUCTNAME%""", "Begin %PRODUCTNAME%")
     assert checks.passes(ooochecker.variables, r"""_: Do not translate %PROGRAMNAME% in the text\n
 Start %PROGRAMNAME%""", "Begin %PROGRAMNAME%")
 
+def test_variables_cclicense():
+    """Tests variables in Creative Commons translations."""
+    checker = checks.CCLicenseChecker()
+    assert checks.passes(checker.variables, "CC-GNU @license_code@.", "CC-GNU @license_code@.")
+    assert checks.fails_serious(checker.variables, "CC-GNU @license_code@.", "CC-GNU @lisensie_kode@.")
+    assert checks.passes(checker.variables, "Deed to the @license_name_full@", "Akte vir die @license_name_full@")
+    assert checks.fails_serious(checker.variables, "Deed to the @license_name_full@", "Akte vir die @volle_lisensie@")
+    assert checks.passes(checker.variables, "The @license_name_full@ is", "Die @license_name_full@ is")
+    assert checks.fails_serious(checker.variables, "The @license_name_full@ is", "Die @iiilicense_name_full@ is")
+    assert checks.fails_serious(checker.variables, "A @ccvar@", "'n @ccvertaaldeveranderlike@")
+
 def test_xmltags():
     """tests xml tags"""
     stdchecker = checks.StandardChecker()

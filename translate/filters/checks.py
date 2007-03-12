@@ -951,11 +951,22 @@ class KdeChecker(StandardChecker):
     checkerconfig.update(kdeconfig)
     StandardChecker.__init__(self, **kwargs)
 
+cclicenseconfig = CheckerConfig(varmatches = [("@", "@")])
+class CCLicenseChecker(StandardChecker):
+  def __init__(self, **kwargs):
+    checkerconfig = kwargs.get("checkerconfig", None)
+    if checkerconfig is None:
+      checkerconfig = CheckerConfig()
+      kwargs["checkerconfig"] = checkerconfig
+    checkerconfig.update(cclicenseconfig)
+    StandardChecker.__init__(self, **kwargs)
+
 projectcheckers = {
   "openoffice": OpenOfficeChecker,
   "mozilla": MozillaChecker,
   "kde": KdeChecker,
-  "gnome": GnomeChecker
+  "gnome": GnomeChecker,
+  "creativecommons": CCLicenseChecker
   }
 
 def runtests(str1, str2, ignorelist=()):
