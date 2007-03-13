@@ -35,6 +35,7 @@ class tmSetting(QtGui.QDialog):
         QtGui.QDialog.__init__(self, parent)
         self.ui = None
         self.subscan = None
+        self.tempoRemember = {}
         
     def showDialog(self):
         """Make the Translation Memory Setting dialog visible."""
@@ -44,41 +45,42 @@ class tmSetting(QtGui.QDialog):
             self.ui.setupUi(self)
             self.setWindowTitle("Setting Translation Memory")
             self.setModal(True)
-            self.loadItemToList()
-            self.connect(self.ui.btnAdd, QtCore.SIGNAL("clicked(bool)"), self.showFileDialog)
             self.filedialog = FileDialog.fileDialog(self)
             self.connect(self.filedialog, QtCore.SIGNAL("location"), self.addLocation)
+            self.connect(self.ui.btnAdd, QtCore.SIGNAL("clicked(bool)"), self.filedialog.show)
             self.connect(self.ui.btnOk, QtCore.SIGNAL("clicked(bool)"), self.createTM)
-            #TODO: cancel all setting and building TM when clicking cancel, then restore
             self.connect(self.ui.btnCancel, QtCore.SIGNAL("clicked(bool)"), QtCore.SLOT("close()"))
             self.connect(self.ui.btnRemove, QtCore.SIGNAL("clicked(bool)"), self.removeLocation)
             self.connect(self.ui.btnRemoveAll, QtCore.SIGNAL("clicked(bool)"), self.ui.listWidget.clear)
             self.connect(self.ui.btnEnable, QtCore.SIGNAL("clicked(bool)"), self.setChecked)
             self.connect(self.ui.btnDisable, QtCore.SIGNAL("clicked(bool)"), self.setUnchecked)
-            self.connect(self.ui.checkBox, QtCore.SIGNAL("stateChanged(int)"), self.rememberDive)
-            self.connect(self.ui.listWidget, QtCore.SIGNAL("itemClicked(QListWidgetItem *)"), self.setDisabledTM)
             self.ui.listWidget.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        self.loadItemToList()
         self.ui.checkBox.setChecked(World.settings.value("diveIntoSub").toBool())
+        self.tempoRemember["diveIntoSub"] = self.ui.checkBox.isChecked()
         self.ui.progressBar.setValue(0)
         self.show()
     
     def loadItemToList(self):
         """Load remembered item to list."""
-        TMpath = World.settings.value("TMPath").toStringList()
-        disableTM = set(World.settings.value("disabledTM").toStringList())
-        for path in TMpath:
-            item = QtGui.QListWidgetItem(path)
-            item.setCheckState((not path in disableTM) and QtCore.Qt.Checked or QtCore.Qt.Unchecked)
-            self.ui.listWidget.addItem(item)
+        self.ui.listWidget.clear()
+        enabledTM = World.settings.value("enabledTM").toStringList()
+        disableTM = World.settings.value("disabledTM").toStringList()
+        for path in enabledTM:
+            self.addLocation(path)
+        for path in disableTM:
+            self.addLocation(path, QtCore.Qt.Unchecked)
+        
         self.ui.spinSimilarity.setValue(World.settings.value("Similarity", QtCore.QVariant(75)).toInt()[0])
         self.ui.spinMaxCandidate.setValue(World.settings.value("Max_Candidates", QtCore.QVariant(10)).toInt()[0])
         self.ui.spinMaxLen.setValue(World.settings.value("Max_String_len", QtCore.QVariant(70)).toInt()[0])
-
-    def showFileDialog(self):
-        """Show Translation Memory setting dialog."""
-        self.filedialog.show()
+        self.tempoRemember["enabledTM"] = enabledTM
+        self.tempoRemember["disabledTM"] = disableTM
+        self.tempoRemember["Similarity"] = self.ui.spinSimilarity.value()
+        self.tempoRemember["Max_Candidates"] = self.ui.spinMaxCandidate.value()
+        self.tempoRemember["Max_String_len"] = self.ui.spinMaxLen.value()
     
-    def addLocation(self, TMpath):
+    def addLocation(self, TMpath, checked = QtCore.Qt.Checked):
         """Add TMpath to TM list.
         
         @param TMpath: Filename as string
@@ -87,7 +89,7 @@ class tmSetting(QtGui.QDialog):
         items = self.ui.listWidget.findItems(TMpath, QtCore.Qt.MatchCaseSensitive)
         if (not items):
             item = QtGui.QListWidgetItem(TMpath)
-            item.setCheckState(QtCore.Qt.Checked)
+            item.setCheckState(checked and QtCore.Qt.Checked or QtCore.Qt.Unchecked)
             self.ui.listWidget.addItem(item)
     
     def removeLocation(self):
@@ -96,9 +98,6 @@ class tmSetting(QtGui.QDialog):
         for item in items:
             self.ui.listWidget.setCurrentItem(item)
             self.ui.listWidget.takeItem(self.ui.listWidget.currentRow())
-            
-    def rememberDive(self):
-        World.settings.setValue("diveIntoSub", QtCore.QVariant(self.ui.checkBox.isChecked()))
     
     def closeEvent(self, event):
         """Rememer TMpath before closing.
@@ -106,14 +105,13 @@ class tmSetting(QtGui.QDialog):
         @param event: CloseEvent Object
         
         """
-        stringlist = QtCore.QStringList()
-        for i in range(self.ui.listWidget.count()):
-            path = self.ui.listWidget.item(i).text()
-            stringlist.append(path)
-        World.settings.setValue("TMPath", QtCore.QVariant(stringlist))
-        World.settings.setValue("Similarity", QtCore.QVariant(self.ui.spinSimilarity.value()))
-        World.settings.setValue("Max_Candidates", QtCore.QVariant(self.ui.spinMaxCandidate.value()))
-        World.settings.setValue("Max_String_len", QtCore.QVariant(self.ui.spinMaxLen.value()))
+        
+        World.settings.setValue("enabledTM", QtCore.QVariant(self.tempoRemember["enabledTM"]))
+        World.settings.setValue("disabledTM", QtCore.QVariant(self.tempoRemember["disabledTM"]))
+        World.settings.setValue("diveIntoSub", QtCore.QVariant(self.tempoRemember["diveIntoSub"]))
+        World.settings.setValue("Similarity", QtCore.QVariant(self.tempoRemember["Similarity"]))
+        World.settings.setValue("Max_Candidates", QtCore.QVariant(self.tempoRemember["Max_Candidates"]))
+        World.settings.setValue("Max_String_len", QtCore.QVariant(self.tempoRemember["Max_String_len"]))
         QtGui.QDialog.closeEvent(self, event)
         
     def createTM(self):
@@ -130,6 +128,13 @@ class tmSetting(QtGui.QDialog):
             self.emit(QtCore.SIGNAL("noTM"), str(e))
         
         self.emit(QtCore.SIGNAL("matcher"), matcher)
+        
+        self.tempoRemember["enabledTM"] = self.getPathList(QtCore.Qt.Checked)
+        self.tempoRemember["disabledTM"] = self.getPathList(QtCore.Qt.Unchecked)
+        self.tempoRemember["diveIntoSub"] = self.ui.checkBox.isChecked()
+        self.tempoRemember["Similarity"] = self.ui.spinSimilarity.value()
+        self.tempoRemember["Max_Candidates"] = self.ui.spinMaxCandidate.value()
+        self.tempoRemember["Max_String_len"] = self.ui.spinMaxLen.value()
         self.close()
         
     def setChecked(self):
@@ -137,14 +142,12 @@ class tmSetting(QtGui.QDialog):
         items = self.ui.listWidget.selectedItems()
         for item in items:
             item.setCheckState(QtCore.Qt.Checked)
-        self.setDisabledTM()
 
     def setUnchecked(self):
         """Set state of selectedItems as unchecked."""
         items = self.ui.listWidget.selectedItems()
         for item in items:
             item.setCheckState(QtCore.Qt.Unchecked)
-        self.setDisabledTM()
     
     def getPathList(self, isChecked):
         """Return list of path according to the parameter isChecked or unChecked
@@ -158,12 +161,7 @@ class tmSetting(QtGui.QDialog):
             if (not (item.checkState() ^ isChecked)):
                 itemList.append(item.text())
         return itemList
-        
-    def setDisabledTM(self):
-        '''Remember unchecked TM path as disabled TM.'''
     
-        unCheckedItemList = self.getPathList(QtCore.Qt.Unchecked)
-        World.settings.setValue("disabledTM", QtCore.QVariant(unCheckedItemList))
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
