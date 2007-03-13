@@ -478,7 +478,7 @@ class Operator(QtCore.QObject):
         self.lookupUnitStatus = bool
     
     def setModified(self, bool):
-        self.modified = bool
+        self.modified = (bool and True or False)
         self.emit(QtCore.SIGNAL("readyForSave"), self.modified) 
 
     def getModified(self):

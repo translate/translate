@@ -105,9 +105,11 @@ class FileAction(QtCore.QObject):
             return False
         if ret == QtGui.QMessageBox.No:
             self.fileName = ""
+            self.emitFileNotSave()
+            return True
         self.save()
         return True
-         
+    
     def setFileName(self, filename):
         """
         Assign the name of an opened file to a local variable.
@@ -128,6 +130,9 @@ class FileAction(QtCore.QObject):
             self.fileName = filename
         self.emit(QtCore.SIGNAL("fileSaved"), str(filename)) 
     
+    def emitFileNotSave(self):
+        self.emit(QtCore.SIGNAL("fileNotSaved"), str(self.fileName)) 
+        
     def emitFileOpened(self):
         """emit signal fileOpened, with a filename as string"""
         # get default file extension and description
