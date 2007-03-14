@@ -444,12 +444,12 @@ class Operator(QtCore.QObject):
         if (not self.matcher):
             return
         
-        #for lookupunit
+        #for lookup a unit
         if (not isinstance(units, list)):
             candidates = self.matcher.matches(units.source)
             return candidates
             
-       #for autoTranslate
+       #for autoTranslate all units
         for unit in units:
             if (unit.istranslated() or unit.isfuzzy() or not unit.source):
                 continue
@@ -458,9 +458,13 @@ class Operator(QtCore.QObject):
             if (not candidates):
                 continue
             self.setModified(True)
-            #FIXME: in XLiff, it is possible to have alternatives translation, get just the best candidates is not enough
             # get the best candidates for targets in overview
             unit.settarget(candidates[0].target)
+            #in XLiff, it is possible to have alternatives translation
+            # TODO: add source original language and target language attribute
+            if (isinstance(self.store, xliff.xlifffile)):
+                for i in range(1, len(candidates)):
+                    unit.addalttrans(candidates[i].target)
             self.status.markTranslated(unit, True)
             self.status.markFuzzy(unit, True)
         self.emitNewUnits()
