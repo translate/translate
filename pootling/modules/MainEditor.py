@@ -226,11 +226,10 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
         self.connect(self.dockComment, QtCore.SIGNAL("commentChanged"), self.operator.setComment)
         self.connect(self.fileaction, QtCore.SIGNAL("fileSaved"), self.operator.saveStoreToFile)
-        self.connect(self.fileaction, QtCore.SIGNAL("fileNotSaved"), self.operator.setModified)
+        self.connect(self.fileaction, QtCore.SIGNAL("saveFile"), self.operator.setModified)
         self.connect(self.operator, QtCore.SIGNAL("readyForSave"), self.ui.actionSave.setEnabled)
 
         self.connect(self.fileaction, QtCore.SIGNAL("fileSaved"), self.setTitle)
-        self.connect(self.fileaction, QtCore.SIGNAL("fileNotSaved"), self.setTitle)
         self.connect(self.dockOverview, QtCore.SIGNAL("toggleFirstLastUnit"), self.toggleFirstLastUnit)
 
         self.connect(self.operator, QtCore.SIGNAL("newUnits"), self.dockOverview.slotNewUnits)

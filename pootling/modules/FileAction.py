@@ -105,9 +105,9 @@ class FileAction(QtCore.QObject):
             return False
         if ret == QtGui.QMessageBox.No:
             self.fileName = ""
-            self.emitFileNotSave()
-            return True
-        self.save()
+            self.emit(QtCore.SIGNAL("saveFile"), False)
+        elif ret == QtGui.QMessageBox.Yes:
+            self.save()
         return True
     
     def setFileName(self, filename):
@@ -129,9 +129,6 @@ class FileAction(QtCore.QObject):
         if (filename):
             self.fileName = filename
         self.emit(QtCore.SIGNAL("fileSaved"), str(filename)) 
-    
-    def emitFileNotSave(self):
-        self.emit(QtCore.SIGNAL("fileNotSaved"), str(self.fileName)) 
         
     def emitFileOpened(self):
         """emit signal fileOpened, with a filename as string"""
