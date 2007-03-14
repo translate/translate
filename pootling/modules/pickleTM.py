@@ -87,7 +87,7 @@ def getMatcher():
     """
     matcher = None
     filename = World.settings.value("fileStoredDic").toString()
-    if (filename):
+    if (filename and os.path.exists(filename)):
         tmpFile = open(filename, 'rb')
         try:
             matcher = pickle.load(tmpFile)
