@@ -19,12 +19,6 @@
 # 
 # This module is working on the main windows of Editor
 
-try:
-    import psyco
-    psyco.full()
-except ImportError:
-    pass
-
 import os
 import sys
 from PyQt4 import QtCore, QtGui
