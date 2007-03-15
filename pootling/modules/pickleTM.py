@@ -70,14 +70,14 @@ def pickleMatcher(matcher):
     @param matcher: matcher of TM files or locations
     
     """
-    filename = World.settings.value("fileStoredDic").toString()
+    filename = World.settings.value("fileStoreMatcher").toString()
     if (not filename):
         handle, filename = tempfile.mkstemp('','PKL')
     tmpFile = open(filename, 'w')
     if (matcher):
         pickle.dump(matcher, tmpFile)
     tmpFile.close()
-    World.settings.setValue("fileStoredDic", QtCore.QVariant(filename))
+    World.settings.setValue("fileStoreMatcher", QtCore.QVariant(filename))
 
 def getMatcher():
     """Unpickle matcher from file.
@@ -86,7 +86,7 @@ def getMatcher():
     
     """
     matcher = None
-    filename = World.settings.value("fileStoredDic").toString()
+    filename = World.settings.value("fileStoreMatcher").toString()
     if (filename and os.path.exists(filename)):
         tmpFile = open(filename, 'rb')
         try:
@@ -117,3 +117,12 @@ def buildMatcher(stringlist, max_candidates, min_similarity,  max_string_len):
     matcher = match.matcher(storelist, max_candidates, min_similarity,  max_string_len)
     pickleMatcher(matcher)
     return matcher
+
+def removeFile():
+    filename = World.settings.value("fileStoreMatcher").toString()
+    try:
+        os.remove(filename)
+        World.settings.remove("fileStoreMatcher")
+    except:
+        pass
+    
