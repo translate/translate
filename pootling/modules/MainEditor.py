@@ -559,7 +559,9 @@ def main(inputFile = None):
     if __name__ == "__main__":
         QtCore.QDir.setCurrent(os.path.join(sys.path[0], "../ui"))
     else:
-        QtCore.QDir.setCurrent(os.path.join(sys.path[0], "ui"))
+        import distutils.sysconfig
+        packagesdir = distutils.sysconfig.get_python_lib(prefix="/usr/local/")
+        QtCore.QDir.setCurrent(os.path.join(packagesdir, "pootling", "ui"))
     app = QtGui.QApplication(sys.argv)
     editor = MainWindow()
     editor.show()
