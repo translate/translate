@@ -35,7 +35,6 @@ class Catalog(QtGui.QMainWindow):
     """
     The Catalog Manager which holds the toolviews.
     """
-    
     def __init__(self, parent = None):
         QtGui.QMainWindow.__init__(self, parent)
         self.ui = None
@@ -50,10 +49,11 @@ class Catalog(QtGui.QMainWindow):
         self.ui = Ui_Catalog()
         self.ui.setupUi(self)
         self.resize(720,400)
-        self.refreshTimer = QtCore.QTimer()
-        self.refreshTimer.setInterval(2000)
-        self.autoRefresh = True
 
+        self.ui.toolBar.toggleViewAction()
+        self.ui.toolBar.setWindowTitle("ToolBar View")
+        self.ui.toolBar.setStatusTip("Toggle ToolBar View")
+    
         # set up table appearance and behavior
         self.headerLabels = [self.tr("Name"),
                             self.tr("Fuzzy"),
@@ -70,6 +70,7 @@ class Catalog(QtGui.QMainWindow):
         
         # File menu action
         self.connect(self.ui.actionQuit, QtCore.SIGNAL("triggered()"), QtCore.SLOT("close()"))
+        self.ui.actionQuit.setWhatsThis("<h3>Quit</h3>Quit Catalog")
         
         # Edit menu action
         self.ui.actionReload.setEnabled(True)
@@ -95,6 +96,7 @@ class Catalog(QtGui.QMainWindow):
         self.findBar.setHidden(True)
 
         self.connect(self.ui.actionFind_in_Files, QtCore.SIGNAL("triggered()"), self.findBar.showFind)
+        self.ui.actionFind_in_Files.setWhatsThis("<h3>Find</h3>You can find string ever you want in Catalog")
         # emit findfiles signal from FindInCatalog file
         self.connect(self.findBar, QtCore.SIGNAL("initSearch"), self.find)
 
@@ -339,11 +341,10 @@ class Catalog(QtGui.QMainWindow):
     def refresh(self):
         self.settings = QtCore.QSettings()
         if self.autoRefresh:
-            self.refreshTimer.start()
             self.updateCatalog()
         else:
             self.settings.sync()
-            self.refreshTimer.stop() 
+
 
 ##if __name__ == "__main__":
 ##    import sys, os
