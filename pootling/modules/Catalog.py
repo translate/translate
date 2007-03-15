@@ -49,6 +49,7 @@ class Catalog(QtGui.QMainWindow):
         self.ui = Ui_Catalog()
         self.ui.setupUi(self)
         self.resize(720,400)
+        self.autoRefresh = True
 
         self.ui.toolBar.toggleViewAction()
         self.ui.toolBar.setWindowTitle("ToolBar View")
@@ -132,8 +133,12 @@ class Catalog(QtGui.QMainWindow):
                       self.searchInString(searchString, filename, searchOptions)
                       break
                  break
+            if not self.found:
+                msg = self.tr("' was not found")
+                QtGui.QMessageBox.information(self, self.tr("Find"), "'" + str(searchString) + msg)
 
     def searchInString(self, searchString, filename, searchOptions):
+        self.found = False
         if (not os.path.isfile(filename)):
             return
         store = factory.getobject(filename)
