@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/ratha/sourceforge.net/translate/trunk/pootling/ui/Catalog.ui'
 #
-# Created: Fri Mar  2 17:32:56 2007
+# Created: Tue Mar 13 10:59:36 2007
 #      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!
@@ -13,6 +13,12 @@ class Ui_Catalog(object):
     def setupUi(self, Catalog):
         Catalog.setObjectName("Catalog")
         Catalog.resize(QtCore.QSize(QtCore.QRect(0,0,531,400).size()).expandedTo(Catalog.minimumSizeHint()))
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(7))
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(Catalog.sizePolicy().hasHeightForWidth())
+        Catalog.setSizePolicy(sizePolicy)
 
         self.centralwidget = QtGui.QWidget(Catalog)
         self.centralwidget.setObjectName("centralwidget")
@@ -36,9 +42,6 @@ class Ui_Catalog(object):
         self.menubar.setGeometry(QtCore.QRect(0,0,531,28))
         self.menubar.setObjectName("menubar")
 
-        self.menuFile = QtGui.QMenu(self.menubar)
-        self.menuFile.setObjectName("menuFile")
-
         self.menuHelp = QtGui.QMenu(self.menubar)
         self.menuHelp.setObjectName("menuHelp")
 
@@ -47,6 +50,9 @@ class Ui_Catalog(object):
 
         self.menuEdit = QtGui.QMenu(self.menubar)
         self.menuEdit.setObjectName("menuEdit")
+
+        self.menuFile = QtGui.QMenu(self.menubar)
+        self.menuFile.setObjectName("menuFile")
         Catalog.setMenuBar(self.menubar)
 
         self.statusbar = QtGui.QStatusBar(Catalog)
@@ -54,6 +60,14 @@ class Ui_Catalog(object):
         Catalog.setStatusBar(self.statusbar)
 
         self.toolBar = QtGui.QToolBar(Catalog)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(1),QtGui.QSizePolicy.Policy(1))
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.toolBar.sizePolicy().hasHeightForWidth())
+        self.toolBar.setSizePolicy(sizePolicy)
+        self.toolBar.setContextMenuPolicy(QtCore.Qt.NoContextMenu)
+        self.toolBar.setAcceptDrops(True)
         self.toolBar.setOrientation(QtCore.Qt.Horizontal)
         self.toolBar.setObjectName("toolBar")
         Catalog.addToolBar(self.toolBar)
@@ -78,29 +92,22 @@ class Ui_Catalog(object):
         self.actionConfigure.setObjectName("actionConfigure")
 
         self.actionFind_in_Files = QtGui.QAction(Catalog)
+        self.actionFind_in_Files.setEnabled(True)
         self.actionFind_in_Files.setIcon(QtGui.QIcon("../images/find.png"))
         self.actionFind_in_Files.setObjectName("actionFind_in_Files")
-
-        self.actionReplace_in_Files = QtGui.QAction(Catalog)
-        self.actionReplace_in_Files.setIcon(QtGui.QIcon("../images/replace.png"))
-        self.actionReplace_in_Files.setObjectName("actionReplace_in_Files")
-
-        self.actionStop_Find = QtGui.QAction(Catalog)
-        self.actionStop_Find.setIcon(QtGui.QIcon("../images/stop.png"))
-        self.actionStop_Find.setObjectName("actionStop_Find")
-        self.menuFile.addAction(self.actionQuit)
         self.menuHelp.addAction(self.actionAbout)
         self.menuHelp.addAction(self.actionAboutQt)
         self.menuProject.addAction(self.actionConfigure)
         self.menuEdit.addAction(self.actionFind_in_Files)
-        self.menuEdit.addAction(self.actionReplace_in_Files)
-        self.menuEdit.addAction(self.actionStop_Find)
         self.menuEdit.addSeparator()
         self.menuEdit.addAction(self.actionReload)
+        self.menuFile.addAction(self.actionQuit)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
         self.menubar.addAction(self.menuProject.menuAction())
         self.menubar.addAction(self.menuHelp.menuAction())
+        self.toolBar.addAction(self.actionQuit)
+        self.toolBar.addAction(self.actionFind_in_Files)
         self.toolBar.addAction(self.actionReload)
         self.toolBar.addAction(self.actionConfigure)
 
@@ -109,10 +116,10 @@ class Ui_Catalog(object):
 
     def retranslateUi(self, Catalog):
         Catalog.setWindowTitle(QtGui.QApplication.translate("Catalog", "Catalog Manager", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuFile.setTitle(QtGui.QApplication.translate("Catalog", "&File", None, QtGui.QApplication.UnicodeUTF8))
         self.menuHelp.setTitle(QtGui.QApplication.translate("Catalog", "&Help", None, QtGui.QApplication.UnicodeUTF8))
         self.menuProject.setTitle(QtGui.QApplication.translate("Catalog", "&Project", None, QtGui.QApplication.UnicodeUTF8))
         self.menuEdit.setTitle(QtGui.QApplication.translate("Catalog", "&Edit", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuFile.setTitle(QtGui.QApplication.translate("Catalog", "&File", None, QtGui.QApplication.UnicodeUTF8))
         self.actionQuit.setText(QtGui.QApplication.translate("Catalog", "&Quit", None, QtGui.QApplication.UnicodeUTF8))
         self.actionQuit.setShortcut(QtGui.QApplication.translate("Catalog", "Ctrl+Q", None, QtGui.QApplication.UnicodeUTF8))
         self.actionAbout.setText(QtGui.QApplication.translate("Catalog", "About", None, QtGui.QApplication.UnicodeUTF8))
@@ -122,10 +129,6 @@ class Ui_Catalog(object):
         self.actionConfigure.setText(QtGui.QApplication.translate("Catalog", "&Configure...", None, QtGui.QApplication.UnicodeUTF8))
         self.actionFind_in_Files.setText(QtGui.QApplication.translate("Catalog", "&Find in Files...", None, QtGui.QApplication.UnicodeUTF8))
         self.actionFind_in_Files.setShortcut(QtGui.QApplication.translate("Catalog", "Ctrl+F", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionReplace_in_Files.setText(QtGui.QApplication.translate("Catalog", "&Replace in Files...", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionReplace_in_Files.setShortcut(QtGui.QApplication.translate("Catalog", "Ctrl+R", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionStop_Find.setText(QtGui.QApplication.translate("Catalog", "&Stop Find", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionStop_Find.setShortcut(QtGui.QApplication.translate("Catalog", "Ctrl+S", None, QtGui.QApplication.UnicodeUTF8))
 
 
 
