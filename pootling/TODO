@@ -233,11 +233,10 @@ Open Bugs
 - Who: Ratha
 - Status: not
 
-12. Rpm packages
+12. Rpm packages and Installer
 - Priority: 3
 - Who: Da
-- Status: not
-- Tip: use rpm-python
+- Status: done
 
 2nd Milestone:
 ----------------
@@ -256,22 +255,34 @@ Closed bugs and need review
  priority: 2
  who: da
 
- 12. Task: Goto menu:
+ 4. Task: Goto menu:
  priority:1
  who:ratha
  status:done
  
- 12. Task: Ask for save, if translator open new file, when the old file is modified.
+ 5. Task: Ask for save, if translator open new file, when the old file is modified.
 priority: 1
 who: virak
 status: done
+
+6. Task: Plural forms:
+ priority: 1
+ who: da and phon
+ status: done
+ 
+ 7 Task: copy pootling from trunk to tags.
+  who: da
+   priority: 1
+ status: done
+ 
+ 8. Task: Bookmark on TU 
+    priority: 2
+    who: ratha
+    status: done
+    
 ====================================================
 Open Bugs
 ====================================================
-
-2 Task: copy pootling from trunk to tags.
-  who: da
-   priority: 1
 
 3. Task: finish what are left in TODO from milestone 1
    priority: 1
@@ -290,9 +301,7 @@ Database working.
    priority: 1
    who: phon
    
-5. Task: Bookmark on TU 
-    priority: 2
-    who: ratha
+
     
 6. Task: Show first 100 units, the rest load in background (to improve 
 speed)--- has progress bar indication.
@@ -319,10 +328,3 @@ speed)--- has progress bar indication.
  priority: 3
  who ratha
  
-11. Task: Plural forms:
- priority: 1
- who: da
-
-
-
-
