@@ -435,15 +435,17 @@ class Operator(QtCore.QObject):
         self.matcher = matcher
     
     def lookupProcess(self, units):
-        '''lookup process'''
-        # FIXME: too slow process to lookup
+        '''process lookup translation from translation memory
+        
+        @param units: a unit or list of units
+        '''
         
         # get matcher from when startup
         if (not hasattr(self, "matcher")):
             self.matcher = pickleTM.getMatcher()
         
         if (not self.matcher):
-            self.emit(QtCore.SIGNAL("noTM"), "Problem with translation memory, Rebuild it")
+            self.emit(QtCore.SIGNAL("noTM"), "Problem with translation memory, Build or Rebuild TM")
             return
         
         #for lookup a unit

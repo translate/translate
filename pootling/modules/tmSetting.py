@@ -43,7 +43,7 @@ class tmSetting(QtGui.QDialog):
         if (not self.ui):
             self.ui = Ui_tmsetting()
             self.ui.setupUi(self)
-            self.setWindowTitle("Setting Translation Memory")
+            self.setWindowTitle("Specify translated file path and options to create TM")
             self.setModal(True)
             self.filedialog = FileDialog.fileDialog(self)
             self.connect(self.filedialog, QtCore.SIGNAL("location"), self.addLocation)
@@ -122,10 +122,15 @@ class tmSetting(QtGui.QDialog):
         """
         checkedItemList = self.getPathList(QtCore.Qt.Checked)
         matcher = None
-        try:
-            matcher = pickleTM.buildMatcher(checkedItemList, self.ui.spinMaxCandidate.value(), self.ui.spinSimilarity.value(),  self.ui.spinMaxLen.value())
-        except Exception, e:
-            self.emit(QtCore.SIGNAL("noTM"), str(e))
+        if (not checkedItemList):
+            pickleTM.removeFile()
+            QtGui.QMessageBox.critical(None, 'No translated file path specified', 'No translated file for building Translation Memory.')
+        else:
+            try:
+                matcher = pickleTM.buildMatcher(checkedItemList, self.ui.spinMaxCandidate.value(), self.ui.spinSimilarity.value(),  self.ui.spinMaxLen.value())
+            except Exception, e:
+                pickleTM.removeFile()
+                QtGui.QMessageBox.critical(None, 'Error', str(e))
         
         self.emit(QtCore.SIGNAL("matcher"), matcher)
         

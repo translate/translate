@@ -182,7 +182,6 @@ class MainWindow(QtGui.QMainWindow):
         # action setting Path of TM
         self.tmsetting = tmSetting.tmSetting(self)
         self.connect(self.ui.action_TM, QtCore.SIGNAL("triggered()"), self.tmsetting.showDialog)
-        self.connect(self.tmsetting, QtCore.SIGNAL("noTM"), self.showTemporaryMessage)
         self.connect(self.operator, QtCore.SIGNAL("noTM"), self.showTemporaryMessage)
         self.connect(self.tmsetting, QtCore.SIGNAL("matcher"), self.operator.setMatcher)
         
