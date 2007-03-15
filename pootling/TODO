@@ -307,10 +307,12 @@ Database working.
 speed)--- has progress bar indication.
    priority: 1
    who: virak
-   
+  expected finished date:
+  
 7. Task: String Status scrollbar representation
   priority: 2
   who: virak
+expected finished date:
   
 8.Task:  History of translator ( xliff in particular)
     . Name
@@ -319,12 +321,50 @@ speed)--- has progress bar indication.
       History of phase which worked on the TU.
   priority: 2
   who: da
-  
+ expected finished date:
+ 
 9. Task: Approver Mode (xliff in particular)
  priority: 1
  who: virak
+ expected finished date:
  
 10. Task: Show/Hide/Colorize tag
  priority: 3
  who ratha
+expected finished date:
  
+11- Progress bar when creating TM
+ priority:2
+who: da
+status: no
+expected finished date:
+
+12- get translation of each word when selecting a word
+ priority:1
+who: da
+status: no
+expected finished date:
+
+13- display alts-translation if exists in a dialog
+ priority:1
+who: da
+status: no
+expected finished date:
+
+14- remove tableUi and use overview.ui instead
+priority:3
+who: phon
+status: no
+expected finished date:
+
+15- matched translation info (dates, author, file)
+priority:1
+who: phon
+status: no
+expected finished date:
+
+16- edit matched translation and save it to its location
+priority:1
+who: phon
+status: no
+expected finished date: 
