@@ -43,9 +43,12 @@ class tmSetting(QtGui.QDialog):
         if (not self.ui):
             self.ui = Ui_tmsetting()
             self.ui.setupUi(self)
-            self.setWindowTitle("Specify translated file path and options to create TM")
+            self.setWindowTitle("Configure Translation Memory")
             self.setModal(True)
             self.filedialog = FileDialog.fileDialog(self)
+            self.ui.listWidget.setWhatsThis("<h3>Locations</h3>A list of translated file path to create TM. You can also add more file(s), delete, enable, disable file path or even clear the memory by clicking on the button on the right hand side.")
+            self.ui.checkBox.setWhatsThis("<h3>Dive into subfolders</h3>If it is checked the process will include subfolders for translation memory scaning.")
+            
             self.connect(self.filedialog, QtCore.SIGNAL("location"), self.addLocation)
             self.connect(self.ui.btnAdd, QtCore.SIGNAL("clicked(bool)"), self.filedialog.show)
             self.connect(self.ui.btnOk, QtCore.SIGNAL("clicked(bool)"), self.createTM)
