@@ -50,7 +50,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.recentaction = []
         self.ui.bookmarkaction = []
         self.setWindowTitle(World.settingApp + ' ' + __version__.ver)
-        self.createRecentAction()
+#        self.createRecentAction()
         self.createBookmarkAction()
         self.clearBookmarks()
         
@@ -143,6 +143,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionSave, QtCore.SIGNAL("triggered()"), self.fileaction.save)
         self.connect(self.ui.actionSaveas, QtCore.SIGNAL("triggered()"), self.fileaction.saveAs)
         self.connect(self.ui.actionExit, QtCore.SIGNAL("triggered()"), QtCore.SLOT("close()"))
+        self.createRecentAction()
         
         # create Find widget and connect signals related to it
         self.findBar = Find(self)
@@ -206,14 +207,14 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionFilterUntranslated, QtCore.SIGNAL("toggled(bool)"), self.operator.filterUntranslated)
         self.connect(self.ui.actionToggleFuzzy, QtCore.SIGNAL("triggered()"), self.operator.toggleFuzzy)
 
-        # add open recent to the toolbar
-        action = self.ui.menuOpen_Recent.menuAction()
-        action.setToolTip(self.tr("Open"))
-        action.setWhatsThis("<h3>Open a file</h3>You will be asked for the name of a file to be opened and open recent file in an editor window.") 
-        self.connect(action, QtCore.SIGNAL("triggered()"), self.fileaction.openFile)
-
-        self.ui.toolFile.insertAction(self.ui.actionSave, action)
-
+#        # add open recent to the toolbar
+#        action = self.ui.menuOpen_Recent.menuAction()
+#        action.setToolTip(self.tr("Open"))
+#        action.setWhatsThis("<h3>Open a file</h3>You will be asked for the name of a file to be opened and open recent file in an editor window.") 
+#        self.connect(action, QtCore.SIGNAL("triggered()"), self.fileaction.openFile)
+#
+#        self.ui.toolFile.insertAction(self.ui.actionSave, action)
+    
         # "currentUnit" sends currentUnit, currentIndex
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockOverview.updateView)
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockTUview.updateView)
@@ -363,6 +364,8 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.menuOpen_Recent.clear()
         self.ui.menuOpen_Recent.setEnabled(False)
         World.settings.remove("recentFileList")
+        # remove menu Open_Recent action, and add Open action to toolbar
+        self.addOpenToBar()
     
     def createRecentAction(self):
         for i in range(World.MaxRecentFiles):
@@ -394,6 +397,8 @@ class MainWindow(QtGui.QMainWindow):
 
         for j in range(numRecentFiles, World.MaxRecentFiles):
             self.ui.recentaction[j].setVisible(False)
+        # remove Open action from toolbar, and add menu Open_Recent action to toolbar
+        self.addOpenToBar()
 
     def closeEvent(self, event):
         """
@@ -553,6 +558,22 @@ class MainWindow(QtGui.QMainWindow):
     def setLookupStatus(self):
         self.operator.setLookupStatus(self.ui.action_lookup_Text.isChecked())
     
+    def addOpenToBar(self):
+        '''add Open action or menu Open_Recent action to toolbar
+        
+        '''
+        if (hasattr(self, "actionOpen")):
+            self.ui.toolFile.removeAction(self.actionOpen)
+        if not self.ui.menuOpen_Recent.isEnabled():
+            self.actionOpen = self.ui.actionOpen
+        else:
+            self.actionOpen = self.ui.menuOpen_Recent.menuAction()
+            self.disconnect(self.actionOpen, QtCore.SIGNAL("triggered()"), self.fileaction.openFile)
+            self.connect(self.actionOpen, QtCore.SIGNAL("triggered()"), self.fileaction.openFile)
+        self.actionOpen.setToolTip(self.tr("Open"))
+        self.actionOpen.setWhatsThis("<h3>Open a file</h3>You will be asked for the name of a file to be opened and open recent file in an editor window.") 
+        self.ui.toolFile.insertAction(self.ui.actionSave, self.actionOpen)
+        
 def main(inputFile = None):
     # set the path for QT in order to find the icons
     if __name__ == "__main__":
