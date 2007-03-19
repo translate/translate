@@ -258,6 +258,12 @@ class Preference(QtGui.QDialog):
             self.defaultColor = QtGui.QColor(QtCore.Qt.black)
             self.ui = Ui_frmPreference()
             self.ui.setupUi(self)
+            self.ui.listWidget.addItem(QtGui.QListWidgetItem(QtGui.QIcon("../images/identity.png"), self.tr("Personalize")))
+            self.ui.listWidget.addItem(QtGui.QListWidgetItem(QtGui.QIcon("../images/colorize.png"), self.tr("Font & Color")))
+            self.ui.listWidget.setViewMode(QtGui.QListView.IconMode)
+            self.ui.listWidget.setCurrentRow(0)
+            self.connect(self.ui.listWidget, QtCore.SIGNAL("currentRowChanged(int)"), self.changedPaged)
+            
             # connect signals
             self.connect(self.ui.chkHeaderAuto, QtCore.SIGNAL("stateChanged(int)"), self.ui.chkHeaderAuto.checkState) 
             self.connect(self.ui.bntFontOverview, QtCore.SIGNAL("clicked()"), self.fontOverview) 
@@ -319,7 +325,10 @@ class Preference(QtGui.QDialog):
         language = common.Common(str(langCode))
         self.ui.spinBox.setValue(language.nplurals)
         self.ui.lineEqaution.setText(language.pluralequation)
-        
+    
+    def changedPaged(self):
+        self.ui.stackedWidget.setCurrentIndex(self.ui.listWidget.currentRow())
+    
 if __name__ == "__main__":
     import sys, os
     # set the path for QT in order to find the icons
