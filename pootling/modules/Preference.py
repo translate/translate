@@ -260,8 +260,11 @@ class Preference(QtGui.QDialog):
             self.ui.setupUi(self)
             self.ui.listWidget.addItem(QtGui.QListWidgetItem(QtGui.QIcon("../images/identity.png"), self.tr("Personalize")))
             self.ui.listWidget.addItem(QtGui.QListWidgetItem(QtGui.QIcon("../images/colorize.png"), self.tr("Font & Color")))
+            self.ui.listWidget.addItem(QtGui.QListWidgetItem(QtGui.QIcon("../images/memory.png"), self.tr("TM - Memory")))
             self.ui.listWidget.setViewMode(QtGui.QListView.IconMode)
             self.ui.listWidget.setCurrentRow(0)
+            self.ui.listWidget.setResizeMode(QtGui.QListView.Fixed)
+            self.ui.listWidget.setDragDropMode(QtGui.QAbstractItemView.NoDragDrop)
             self.connect(self.ui.listWidget, QtCore.SIGNAL("currentRowChanged(int)"), self.changedPaged)
             
             # connect signals
