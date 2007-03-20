@@ -210,11 +210,6 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_3" >
-      <attribute name="title" >
-       <string>&amp;Database</string>
-      </attribute>
-     </widget>
      <widget class="QWidget" name="tab_4" >
       <attribute name="title" >
        <string>O&amp;ptions</string>

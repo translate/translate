@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/ks/programming/wordforge/trunk/pootling/ui/tmSetting.ui'
 #
-# Created: Fri Feb 23 11:18:28 2007
+# Created: Tue Mar 20 11:20:37 2007
 #      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!
@@ -95,10 +95,6 @@ class Ui_tmsetting(object):
         self.gridlayout1.addWidget(self.progressBar,9,0,1,2)
         self.tabOptions.addTab(self.tab,"")
 
-        self.tab_3 = QtGui.QWidget()
-        self.tab_3.setObjectName("tab_3")
-        self.tabOptions.addTab(self.tab_3,"")
-
         self.tab_4 = QtGui.QWidget()
         self.tab_4.setObjectName("tab_4")
 
@@ -156,7 +152,7 @@ class Ui_tmsetting(object):
         self.gridlayout.addWidget(self.tabOptions,0,0,1,3)
 
         self.retranslateUi(tmsetting)
-        self.tabOptions.setCurrentIndex(2)
+        self.tabOptions.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(tmsetting)
         tmsetting.setTabOrder(self.tabOptions,self.listWidget)
         tmsetting.setTabOrder(self.listWidget,self.btnAdd)
@@ -183,13 +179,15 @@ class Ui_tmsetting(object):
         self.label_4.setText(QtGui.QApplication.translate("tmsetting", "Locations:", None, QtGui.QApplication.UnicodeUTF8))
         self.btnRemoveAll.setToolTip(QtGui.QApplication.translate("tmsetting", "clear list", None, QtGui.QApplication.UnicodeUTF8))
         self.btnRemoveAll.setText(QtGui.QApplication.translate("tmsetting", " Clea&r", None, QtGui.QApplication.UnicodeUTF8))
+        self.listWidget.setToolTip(QtGui.QApplication.translate("tmsetting", "Translation Memory(s)", None, QtGui.QApplication.UnicodeUTF8))
+        self.listWidget.setStatusTip(QtGui.QApplication.translate("tmsetting", "List of Translation Memory Location(s)", None, QtGui.QApplication.UnicodeUTF8))
+        self.listWidget.setWhatsThis(QtGui.QApplication.translate("tmsetting", "<h3>Translation Memory</h3> List of TMs. You can specify TMs which will be used and not used.", None, QtGui.QApplication.UnicodeUTF8))
         self.btnEnable.setToolTip(QtGui.QApplication.translate("tmsetting", "Enabel Translation Memory", None, QtGui.QApplication.UnicodeUTF8))
         self.btnEnable.setText(QtGui.QApplication.translate("tmsetting", " &Enable", None, QtGui.QApplication.UnicodeUTF8))
         self.btnAdd.setToolTip(QtGui.QApplication.translate("tmsetting", "Add TM", None, QtGui.QApplication.UnicodeUTF8))
         self.btnAdd.setText(QtGui.QApplication.translate("tmsetting", " &Add", None, QtGui.QApplication.UnicodeUTF8))
         self.label_5.setText(QtGui.QApplication.translate("tmsetting", "Progress", None, QtGui.QApplication.UnicodeUTF8))
         self.tabOptions.setTabText(self.tabOptions.indexOf(self.tab), QtGui.QApplication.translate("tmsetting", "&File", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabOptions.setTabText(self.tabOptions.indexOf(self.tab_3), QtGui.QApplication.translate("tmsetting", "&Database", None, QtGui.QApplication.UnicodeUTF8))
         self.label_3.setText(QtGui.QApplication.translate("tmsetting", "Maximum string length", None, QtGui.QApplication.UnicodeUTF8))
         self.label.setText(QtGui.QApplication.translate("tmsetting", "Similarity", None, QtGui.QApplication.UnicodeUTF8))
         self.label_2.setText(QtGui.QApplication.translate("tmsetting", "Maximum candidates", None, QtGui.QApplication.UnicodeUTF8))

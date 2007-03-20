@@ -104,31 +104,6 @@
     <addaction name="actionClearBookmarks" />
     <addaction name="separator" />
    </widget>
-   <widget class="QMenu" name="menu_Tool" >
-    <property name="title" >
-     <string>&amp;Tool</string>
-    </property>
-    <widget class="QMenu" name="menu_TM" >
-     <property name="title" >
-      <string>&amp;TM</string>
-     </property>
-     <property name="icon" >
-      <iconset>../images/memory.png</iconset>
-     </property>
-     <addaction name="action_lookup_Text" />
-     <addaction name="actionAuto_translate" />
-    </widget>
-    <addaction name="separator" />
-    <addaction name="menu_TM" />
-    <addaction name="actionCatalogManager" />
-   </widget>
-   <widget class="QMenu" name="menuSettings" >
-    <property name="title" >
-     <string>&amp;Settings</string>
-    </property>
-    <addaction name="actionPreferences" />
-    <addaction name="action_TM" />
-   </widget>
    <widget class="QMenu" name="menuEdit" >
     <property name="title" >
      <string>&amp;Edit</string>
@@ -171,6 +146,30 @@
     <addaction name="actionSaveas" />
     <addaction name="separator" />
     <addaction name="actionExit" />
+   </widget>
+   <widget class="QMenu" name="menuSettings" >
+    <property name="title" >
+     <string>&amp;Settings</string>
+    </property>
+    <addaction name="actionPreferences" />
+   </widget>
+   <widget class="QMenu" name="menu_Tool" >
+    <property name="title" >
+     <string>&amp;Tool</string>
+    </property>
+    <widget class="QMenu" name="menu_TM" >
+     <property name="title" >
+      <string>Translation &amp;Memory</string>
+     </property>
+     <property name="icon" >
+      <iconset>../images/memory.png</iconset>
+     </property>
+     <addaction name="actionAuto_translate" />
+     <addaction name="actionBuild_TM" />
+    </widget>
+    <addaction name="separator" />
+    <addaction name="actionCatalogManager" />
+    <addaction name="menu_TM" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
@@ -944,30 +943,19 @@
     <string/>
    </property>
   </action>
-  <action name="action_lookup_Text" >
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
-   <property name="text" >
-    <string>&amp;Lookup Unit</string>
-   </property>
-  </action>
   <action name="actionAuto_translate" >
    <property name="text" >
     <string>&amp;Auto Translate</string>
    </property>
   </action>
-  <action name="action_TM" >
-   <property name="icon" >
-    <iconset>../images/memory.png</iconset>
-   </property>
-   <property name="text" >
-    <string>&amp;TM</string>
-   </property>
-  </action>
   <action name="actionCatalogManager" >
    <property name="text" >
     <string>Catalog Manager</string>
+   </property>
+  </action>
+  <action name="actionBuild_TM" >
+   <property name="text" >
+    <string>Build &amp;TM</string>
    </property>
   </action>
  </widget>
