@@ -26,7 +26,7 @@ from PyQt4 import QtCore, QtGui
 from pootling.ui.Ui_tmSetting import Ui_tmsetting
 from pootling.modules import World
 from pootling.modules import FileDialog
-from pootling.modules import pickleTM
+from pootling.modules.pickleTM import pickleTM
 
 class tmSetting(QtGui.QDialog):
     """Code for setting path of translation memory dialog."""
@@ -46,8 +46,6 @@ class tmSetting(QtGui.QDialog):
             self.setWindowTitle("Configure Translation Memory")
             self.setModal(True)
             self.filedialog = FileDialog.fileDialog(self)
-            self.ui.listWidget.setWhatsThis("<h3>Locations</h3>A list of translated file path to create TM. You can also add more file(s), delete, enable, disable file path or even clear the memory by clicking on the button on the right hand side.")
-            self.ui.checkBox.setWhatsThis("<h3>Dive into subfolders</h3>If it is checked the process will include subfolders for translation memory scaning.")
             
             self.connect(self.filedialog, QtCore.SIGNAL("location"), self.addLocation)
             self.connect(self.ui.btnAdd, QtCore.SIGNAL("clicked(bool)"), self.filedialog.show)
@@ -63,6 +61,9 @@ class tmSetting(QtGui.QDialog):
         self.tempoRemember["diveIntoSub"] = self.ui.checkBox.isChecked()
         self.ui.progressBar.setValue(0)
         self.show()
+        #TODO: It should be a way to use relative path for platform independent.
+        confFile = str(QtCore.QDir.homePath()) + '/.config/WordForge/Pootling.conf'
+        self.pickleTMObj = pickleTM(confFile)
     
     def loadItemToList(self):
         """Load remembered item to list."""
@@ -126,13 +127,13 @@ class tmSetting(QtGui.QDialog):
         checkedItemList = self.getPathList(QtCore.Qt.Checked)
         matcher = None
         if (not checkedItemList):
-            pickleTM.removeFile()
+            self.pickleTMObj.removeFile()
             QtGui.QMessageBox.critical(None, 'No translated file path specified', 'No translated file for building Translation Memory.')
         else:
             try:
-                matcher = pickleTM.buildMatcher(checkedItemList, self.ui.spinMaxCandidate.value(), self.ui.spinSimilarity.value(),  self.ui.spinMaxLen.value())
+                matcher = self.pickleTMObj.buildMatcher(checkedItemList, self.ui.spinMaxCandidate.value(), self.ui.spinSimilarity.value(),  self.ui.spinMaxLen.value())
             except Exception, e:
-                pickleTM.removeFile()
+                self.pickleTMObj.removeFile()
                 QtGui.QMessageBox.critical(None, 'Error', str(e))
         
         self.emit(QtCore.SIGNAL("matcher"), matcher)

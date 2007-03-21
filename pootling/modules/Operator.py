@@ -26,9 +26,10 @@ from translate.storage import poheader
 from translate.storage import xliff
 import pootling.modules.World as World
 from pootling.modules.Status import Status
+from pootling.modules.pickleTM import pickleTM
 import os, sys
 import __version__
-import pickleTM
+
 
 class Operator(QtCore.QObject):
     """
@@ -428,7 +429,13 @@ class Operator(QtCore.QObject):
     def setMatcher(self, matcher):
         '''set matcher to new matcher'''
         self.matcher = matcher
-    
+        
+##    def lookupterm(self, word):
+##        """Process to lookup for a terminology matching
+##        @param word: a term to look for its translation for Glossary
+##        @signal lookupterm will be emited when a word is selected."""
+        
+        
     def lookupProcess(self, units):
         '''process lookup translation from translation memory
         
@@ -437,7 +444,10 @@ class Operator(QtCore.QObject):
         
         # get matcher from when startup
         if (not hasattr(self, "matcher")):
-            self.matcher = pickleTM.getMatcher()
+            #TODO: It should be a way to use relative path for platform independent.
+            confFile = str(QtCore.QDir.homePath()) + '/.config/WordForge/Pootling.conf'
+            self.pickleTMObj = pickleTM(confFile)
+            self.matcher = self.pickleTMObj.getMatcher()
         
         if (not self.matcher):
             self.emit(QtCore.SIGNAL("noTM"), "Problem with translation memory, Build or Rebuild TM")
