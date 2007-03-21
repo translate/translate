@@ -29,6 +29,7 @@ class pickleTM:
     def __init__(self, confFile = ""):
         self.config = ConfigParser()
         self.config.read(confFile)
+        self.confFile = confFile
         
     def createStore(self, file):
         """Create a base object from file.
@@ -87,6 +88,9 @@ class pickleTM:
             pickle.dump(matcher, tmpFile)
         tmpFile.close()
         self.config.set('General', 'fileStoreMatcher', filename)
+        confFilefp = open(self.confFile, 'w')
+        self.config.write(confFilefp)
+        confFilefp.close()
     
     def getMatcher(self):
         """Unpickle matcher from file.
