@@ -85,6 +85,10 @@ class Preference(QtGui.QDialog):
             self.ui.chkHeaderAuto.setCheckState(QtCore.Qt.Unchecked)
         
         # TODO: set checkstateOptions of TM preference here when applicaiton is running
+        TMpreference = World.settings.value("TMpreference").toInt()[0]
+        self.ui.chbAutoTranslate.setChecked(TMpreference & 1 and True or False)
+        self.ui.chbIgnoreFuzzy.setChecked(TMpreference & 2 and True or False)
+        self.ui.chbAddTraslation.setChecked(TMpreference & 4 and True or False)
     
     def accepted(self):
         """ slot ok pressed """
@@ -342,10 +346,16 @@ class Preference(QtGui.QDialog):
         self.ui.stackedWidget.setCurrentIndex(self.ui.listWidget.currentRow())
     
     def emitTMOptions(self):
-        self.emit(QtCore.SIGNAL("TMpreference"), [self.ui.chbAutoTranslate.isChecked(), self.ui.chbIgnoreFuzzy.isChecked(), self.ui.chbAddTraslation.isChecked()])
-        #TODO: remember this TM preference setting though application is closed
+        TMpreference = 0
+        if (self.ui.chbAutoTranslate.isChecked()):
+            TMpreference +=1
+        if (self.ui.chbIgnoreFuzzy.isChecked()):
+            TMpreference +=2
+        if (self.ui.chbAddTraslation.isChecked()):
+            TMpreference +=4
+        self.emit(QtCore.SIGNAL("TMpreference"), TMpreference)
+        World.settings.setValue("TMpreference", QtCore.QVariant(TMpreference))
         
-    
 if __name__ == "__main__":
     import sys, os
     # set the path for QT in order to find the icons

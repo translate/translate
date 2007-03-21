@@ -1048,7 +1048,7 @@
                 </sizepolicy>
                </property>
                <property name="text" >
-                <string>Auto get translation from memory</string>
+                <string>Lookup translation in TM</string>
                </property>
               </widget>
              </item>
@@ -1063,7 +1063,7 @@
                 </sizepolicy>
                </property>
                <property name="text" >
-                <string>Add translation to memory</string>
+                <string>Add new translation to TM</string>
                </property>
               </widget>
              </item>

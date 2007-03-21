@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/ks/programming/wordforge/trunk/pootling/ui/Preference.ui'
 #
-# Created: Tue Mar 20 11:18:36 2007
+# Created: Wed Mar 21 11:07:57 2007
 #      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!
@@ -791,8 +791,8 @@ class Ui_frmPreference(object):
         self.bntDefaultsColor.setText(QtGui.QApplication.translate("frmPreference", "Defaults Color", None, QtGui.QApplication.UnicodeUTF8))
         self.label_4.setText(QtGui.QApplication.translate("frmPreference", "Setting font & color", None, QtGui.QApplication.UnicodeUTF8))
         self.chbIgnoreFuzzy.setText(QtGui.QApplication.translate("frmPreference", "Ignore fuzzy strings", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbAutoTranslate.setText(QtGui.QApplication.translate("frmPreference", "Auto get translation from memory", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbAddTraslation.setText(QtGui.QApplication.translate("frmPreference", "Add translation to memory", None, QtGui.QApplication.UnicodeUTF8))
+        self.chbAutoTranslate.setText(QtGui.QApplication.translate("frmPreference", "Lookup translation in TM", None, QtGui.QApplication.UnicodeUTF8))
+        self.chbAddTraslation.setText(QtGui.QApplication.translate("frmPreference", "Add new translation to TM", None, QtGui.QApplication.UnicodeUTF8))
         self.label_5.setText(QtGui.QApplication.translate("frmPreference", "Configure translation memory usage", None, QtGui.QApplication.UnicodeUTF8))
 
 

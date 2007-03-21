@@ -463,7 +463,6 @@ class Operator(QtCore.QObject):
        #for autoTranslate all units
         for unit in units:
             if (unit.istranslated() or not unit.source or (unit.isfuzzy() and self.ignoreFuzzyStatus)):   # if ignore fuzzy strings is checked, ad units is fuzzy do nothing.
-                print 'hi'
                 continue
             candidates = self.matcher.matches(unit.source)
             # no condidates continue searching in next TM
@@ -490,10 +489,10 @@ class Operator(QtCore.QObject):
         candidates = self.lookupProcess(unit)
         self.emit(QtCore.SIGNAL("candidates"), candidates)
     
-    def setLookupStatus(self, tmoptionstatus):
-        self.lookupUnitStatus = tmoptionstatus[0]
-        self.ignoreFuzzyStatus =  tmoptionstatus[1]
-        self.addtranslation =  tmoptionstatus[2]
+    def setLookupStatus(self, TMprefrence):
+        self.lookupUnitStatus = (TMprefrence & 1 and True or False)
+        self.ignoreFuzzyStatus =  (TMprefrence & 2 and True or False)
+        self.addtranslation =  (TMprefrence & 4 and True or False)
     
     def setModified(self, bool):
         self.modified = bool
