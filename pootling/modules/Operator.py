@@ -52,6 +52,7 @@ class Operator(QtCore.QObject):
         self.filteredList = []
         self.filter = None
         self.lookupUnitStatus = None
+        self.ignoreFuzzyStatus = None
 
     def getUnits(self, fileName):
         """reading a file into the internal datastructure.
@@ -88,7 +89,6 @@ class Operator(QtCore.QObject):
             i += 1
         self.emitNewUnits()
         self.emitUnit(self.filteredList[0])
-#        self.emitFiltered(self.filter)
         self.setModified(False)
 
     def emitNewUnits(self):
@@ -158,14 +158,9 @@ class Operator(QtCore.QObject):
             self.filter = filter
             self.filteredList = []
             for unit in self.store.units:
-                # add unit to filteredList if it is in the filter
-#                if (not hasattr(unit, "x_editor_state")):                              // this 2 lines are uncomment, because it was thought to be useless
-#                    unit.x_editor_state = self.status.getStatus(unit)
                 if (self.filter & unit.x_editor_state):
                     unit.x_editor_filterIndex = len(self.filteredList)
                     self.filteredList.append(unit)
-#                else:                                                                                  //this 2 lines are uncomment because it was thought to be useless
-#                    unit.x_editor_filterIndex = None
         self.emit(QtCore.SIGNAL("filterChanged"), filter, len(self.filteredList))
         if (unitBeforeFiltered) and (unitBeforeFiltered in self.filteredList):
             unit = unitBeforeFiltered
@@ -450,12 +445,15 @@ class Operator(QtCore.QObject):
         
         #for lookup a unit
         if (not isinstance(units, list)):
+            if (units.isfuzzy() and self.ignoreFuzzyStatus):   # if ignore fuzzy strings is checked, ad units is fuzzy do nothing.
+                return
             candidates = self.matcher.matches(units.source)
             return candidates
             
        #for autoTranslate all units
         for unit in units:
-            if (unit.istranslated() or unit.isfuzzy() or not unit.source):
+            if (unit.istranslated() or not unit.source or (unit.isfuzzy() and self.ignoreFuzzyStatus)):   # if ignore fuzzy strings is checked, ad units is fuzzy do nothing.
+                print 'hi'
                 continue
             candidates = self.matcher.matches(unit.source)
             # no condidates continue searching in next TM
@@ -482,8 +480,10 @@ class Operator(QtCore.QObject):
         candidates = self.lookupProcess(unit)
         self.emit(QtCore.SIGNAL("candidates"), candidates)
     
-    def setLookupStatus(self, bool):
-        self.lookupUnitStatus = bool
+    def setLookupStatus(self, tmoptionstatus):
+        self.lookupUnitStatus = tmoptionstatus[0]
+        self.ignoreFuzzyStatus =  tmoptionstatus[1]
+        self.addtranslation =  tmoptionstatus[2]
     
     def setModified(self, bool):
         self.modified = bool
@@ -491,3 +491,4 @@ class Operator(QtCore.QObject):
 
     def getModified(self):
         return (hasattr(self, "modified") and self.modified or None)
+    

@@ -50,7 +50,6 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.recentaction = []
         self.ui.bookmarkaction = []
         self.setWindowTitle(World.settingApp + ' ' + __version__.ver)
-#        self.createRecentAction()
         self.createBookmarkAction()
         self.clearBookmarks()
         
@@ -179,15 +178,14 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockComment.applySettings)
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockOverview.applySettings)
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockTUview.applySettings)
+        self.connect(self.preference, QtCore.SIGNAL("TMpreference"), self.operator.setLookupStatus)
         
         # action setting Path of TM
         self.tmsetting = tmSetting.tmSetting(self)
-        self.connect(self.ui.action_TM, QtCore.SIGNAL("triggered()"), self.tmsetting.showDialog)
+        self.connect(self.ui.actionBuild_TM, QtCore.SIGNAL("triggered()"), self.tmsetting.showDialog)
         self.connect(self.operator, QtCore.SIGNAL("noTM"), self.showTemporaryMessage)
         self.connect(self.tmsetting, QtCore.SIGNAL("matcher"), self.operator.setMatcher)
-        
         # action lookup text and auto translation from TM
-        self.connect(self.ui.action_lookup_Text, QtCore.SIGNAL("toggled(bool)"), self.setLookupStatus)
         self.connect(self.ui.actionAuto_translate, QtCore.SIGNAL("triggered()"), self.operator.autoTranslate)
         
         # Edit Header
@@ -206,14 +204,6 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionFilterTranslated, QtCore.SIGNAL("toggled(bool)"), self.operator.filterTranslated)
         self.connect(self.ui.actionFilterUntranslated, QtCore.SIGNAL("toggled(bool)"), self.operator.filterUntranslated)
         self.connect(self.ui.actionToggleFuzzy, QtCore.SIGNAL("triggered()"), self.operator.toggleFuzzy)
-
-#        # add open recent to the toolbar
-#        action = self.ui.menuOpen_Recent.menuAction()
-#        action.setToolTip(self.tr("Open"))
-#        action.setWhatsThis("<h3>Open a file</h3>You will be asked for the name of a file to be opened and open recent file in an editor window.") 
-#        self.connect(action, QtCore.SIGNAL("triggered()"), self.fileaction.openFile)
-#
-#        self.ui.toolFile.insertAction(self.ui.actionSave, action)
     
         # "currentUnit" sends currentUnit, currentIndex
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockOverview.updateView)
@@ -551,12 +541,8 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionFilterFuzzy.setEnabled(bool)
         self.ui.actionFilterTranslated.setEnabled(bool)
         self.ui.actionFilterUntranslated.setEnabled(bool)
-        self.ui.action_lookup_Text.setEnabled(bool)
         self.ui.actionAuto_translate.setEnabled(bool)
         self.findBar.toggleViewAction().setVisible(bool)
-    
-    def setLookupStatus(self):
-        self.operator.setLookupStatus(self.ui.action_lookup_Text.isChecked())
     
     def addOpenToBar(self):
         '''add Open action or menu Open_Recent action to toolbar

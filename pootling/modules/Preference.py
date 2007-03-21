@@ -83,7 +83,9 @@ class Preference(QtGui.QDialog):
             self.ui.chkHeaderAuto.setCheckState(QtCore.Qt.Checked)
         else:
             self.ui.chkHeaderAuto.setCheckState(QtCore.Qt.Unchecked)
-
+        
+        # TODO: set checkstateOptions of TM preference here when applicaiton is running
+    
     def accepted(self):
         """ slot ok pressed """
         self.rememberFont(self.widget[0], self.overviewFont)
@@ -267,6 +269,11 @@ class Preference(QtGui.QDialog):
             self.ui.listWidget.setDragDropMode(QtGui.QAbstractItemView.NoDragDrop)
             self.connect(self.ui.listWidget, QtCore.SIGNAL("currentRowChanged(int)"), self.changedPaged)
             
+            # TM page signals
+            self.connect(self.ui.chbAutoTranslate, QtCore.SIGNAL("stateChanged(int)"), self.emitTMOptions)
+            self.connect(self.ui.chbIgnoreFuzzy, QtCore.SIGNAL("stateChanged(int)"), self.emitTMOptions)
+            self.connect(self.ui.chbAddTraslation, QtCore.SIGNAL("stateChanged(int)"), self.emitTMOptions)
+            
             # connect signals
             self.connect(self.ui.chkHeaderAuto, QtCore.SIGNAL("stateChanged(int)"), self.ui.chkHeaderAuto.checkState) 
             self.connect(self.ui.bntFontOverview, QtCore.SIGNAL("clicked()"), self.fontOverview) 
@@ -330,7 +337,14 @@ class Preference(QtGui.QDialog):
         self.ui.lineEqaution.setText(language.pluralequation)
     
     def changedPaged(self):
+        '''show a page of stackedWidget according to selected item in listwidget.
+        '''
         self.ui.stackedWidget.setCurrentIndex(self.ui.listWidget.currentRow())
+    
+    def emitTMOptions(self):
+        self.emit(QtCore.SIGNAL("TMpreference"), [self.ui.chbAutoTranslate.isChecked(), self.ui.chbIgnoreFuzzy.isChecked(), self.ui.chbAddTraslation.isChecked()])
+        #TODO: remember this TM preference setting though application is closed
+        
     
 if __name__ == "__main__":
     import sys, os
