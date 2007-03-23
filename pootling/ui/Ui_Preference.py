@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/ks/programming/wordforge/trunk/pootling/ui/Preference.ui'
 #
-# Created: Wed Mar 21 11:07:57 2007
+# Created: Fri Mar 23 10:38:47 2007
 #      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,7 +12,7 @@ from PyQt4 import QtCore, QtGui
 class Ui_frmPreference(object):
     def setupUi(self, frmPreference):
         frmPreference.setObjectName("frmPreference")
-        frmPreference.resize(QtCore.QSize(QtCore.QRect(0,0,553,450).size()).expandedTo(frmPreference.minimumSizeHint()))
+        frmPreference.resize(QtCore.QSize(QtCore.QRect(0,0,552,540).size()).expandedTo(frmPreference.minimumSizeHint()))
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(7))
         sizePolicy.setHorizontalStretch(0)
@@ -25,37 +25,14 @@ class Ui_frmPreference(object):
         self.gridlayout.setSpacing(6)
         self.gridlayout.setObjectName("gridlayout")
 
-        self.hboxlayout = QtGui.QHBoxLayout()
-        self.hboxlayout.setMargin(0)
-        self.hboxlayout.setSpacing(5)
-        self.hboxlayout.setObjectName("hboxlayout")
-
-        spacerItem = QtGui.QSpacerItem(287,31,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
-        self.hboxlayout.addItem(spacerItem)
-
-        self.okButton = QtGui.QPushButton(frmPreference)
-
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(1),QtGui.QSizePolicy.Policy(0))
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.okButton.sizePolicy().hasHeightForWidth())
-        self.okButton.setSizePolicy(sizePolicy)
-        self.okButton.setObjectName("okButton")
-        self.hboxlayout.addWidget(self.okButton)
-
-        self.cancelButton = QtGui.QPushButton(frmPreference)
-        self.cancelButton.setObjectName("cancelButton")
-        self.hboxlayout.addWidget(self.cancelButton)
-        self.gridlayout.addLayout(self.hboxlayout,1,1,1,1)
-
         self.frame = QtGui.QFrame(frmPreference)
         self.frame.setFrameShape(QtGui.QFrame.NoFrame)
         self.frame.setFrameShadow(QtGui.QFrame.Raised)
         self.frame.setObjectName("frame")
 
         self.gridlayout1 = QtGui.QGridLayout(self.frame)
-        self.gridlayout1.setMargin(0)
-        self.gridlayout1.setSpacing(3)
+        self.gridlayout1.setMargin(9)
+        self.gridlayout1.setSpacing(6)
         self.gridlayout1.setObjectName("gridlayout1")
 
         self.stackedWidget = QtGui.QStackedWidget(self.frame)
@@ -79,8 +56,8 @@ class Ui_frmPreference(object):
         self.gridlayout2.setSpacing(6)
         self.gridlayout2.setObjectName("gridlayout2")
 
-        spacerItem1 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
-        self.gridlayout2.addItem(spacerItem1,5,0,1,1)
+        spacerItem = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
+        self.gridlayout2.addItem(spacerItem,5,0,1,1)
 
         self.frame_2 = QtGui.QFrame(self.personal)
 
@@ -650,8 +627,8 @@ class Ui_frmPreference(object):
         self.label_4.setObjectName("label_4")
         self.gridlayout5.addWidget(self.label_4,0,0,1,2)
 
-        spacerItem2 = QtGui.QSpacerItem(20,61,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
-        self.gridlayout5.addItem(spacerItem2,4,0,1,1)
+        spacerItem1 = QtGui.QSpacerItem(20,61,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
+        self.gridlayout5.addItem(spacerItem1,4,0,1,1)
         self.stackedWidget.addWidget(self.interface)
 
         self.page = QtGui.QWidget()
@@ -662,61 +639,105 @@ class Ui_frmPreference(object):
         self.gridlayout7.setSpacing(6)
         self.gridlayout7.setObjectName("gridlayout7")
 
-        spacerItem3 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
-        self.gridlayout7.addItem(spacerItem3,3,0,1,1)
+        spacerItem2 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
+        self.gridlayout7.addItem(spacerItem2,7,0,1,1)
 
-        self.frame_3 = QtGui.QFrame(self.page)
+        self.frame_4 = QtGui.QFrame(self.page)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(5))
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.frame_3.sizePolicy().hasHeightForWidth())
-        self.frame_3.setSizePolicy(sizePolicy)
-        self.frame_3.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.frame_3.setFrameShadow(QtGui.QFrame.Raised)
-        self.frame_3.setObjectName("frame_3")
+        sizePolicy.setHeightForWidth(self.frame_4.sizePolicy().hasHeightForWidth())
+        self.frame_4.setSizePolicy(sizePolicy)
+        self.frame_4.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.frame_4.setFrameShadow(QtGui.QFrame.Raised)
+        self.frame_4.setObjectName("frame_4")
 
-        self.gridlayout8 = QtGui.QGridLayout(self.frame_3)
+        self.gridlayout8 = QtGui.QGridLayout(self.frame_4)
         self.gridlayout8.setMargin(9)
         self.gridlayout8.setSpacing(6)
         self.gridlayout8.setObjectName("gridlayout8")
 
-        self.chbIgnoreFuzzy = QtGui.QCheckBox(self.frame_3)
+        self.chbAutoTranslate_2 = QtGui.QCheckBox(self.frame_4)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.chbIgnoreFuzzy.sizePolicy().hasHeightForWidth())
-        self.chbIgnoreFuzzy.setSizePolicy(sizePolicy)
-        self.chbIgnoreFuzzy.setObjectName("chbIgnoreFuzzy")
-        self.gridlayout8.addWidget(self.chbIgnoreFuzzy,1,0,1,1)
+        sizePolicy.setHeightForWidth(self.chbAutoTranslate_2.sizePolicy().hasHeightForWidth())
+        self.chbAutoTranslate_2.setSizePolicy(sizePolicy)
+        self.chbAutoTranslate_2.setObjectName("chbAutoTranslate_2")
+        self.gridlayout8.addWidget(self.chbAutoTranslate_2,0,0,1,1)
 
-        self.chbAutoTranslate = QtGui.QCheckBox(self.frame_3)
+        self.checkBox = QtGui.QCheckBox(self.frame_4)
+        self.checkBox.setObjectName("checkBox")
+        self.gridlayout8.addWidget(self.checkBox,1,0,1,1)
 
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.chbAutoTranslate.sizePolicy().hasHeightForWidth())
-        self.chbAutoTranslate.setSizePolicy(sizePolicy)
-        self.chbAutoTranslate.setObjectName("chbAutoTranslate")
-        self.gridlayout8.addWidget(self.chbAutoTranslate,0,0,1,1)
-
-        self.chbAddTraslation = QtGui.QCheckBox(self.frame_3)
+        self.chbIgnoreFuzzy_2 = QtGui.QCheckBox(self.frame_4)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.chbAddTraslation.sizePolicy().hasHeightForWidth())
-        self.chbAddTraslation.setSizePolicy(sizePolicy)
-        self.chbAddTraslation.setObjectName("chbAddTraslation")
-        self.gridlayout8.addWidget(self.chbAddTraslation,2,0,1,1)
-        self.gridlayout7.addWidget(self.frame_3,2,0,1,1)
+        sizePolicy.setHeightForWidth(self.chbIgnoreFuzzy_2.sizePolicy().hasHeightForWidth())
+        self.chbIgnoreFuzzy_2.setSizePolicy(sizePolicy)
+        self.chbIgnoreFuzzy_2.setObjectName("chbIgnoreFuzzy_2")
+        self.gridlayout8.addWidget(self.chbIgnoreFuzzy_2,3,0,1,1)
 
-        self.line_3 = QtGui.QFrame(self.page)
-        self.line_3.setFrameShape(QtGui.QFrame.HLine)
-        self.line_3.setFrameShadow(QtGui.QFrame.Sunken)
-        self.line_3.setObjectName("line_3")
-        self.gridlayout7.addWidget(self.line_3,1,0,1,1)
+        self.frame_5 = QtGui.QFrame(self.frame_4)
+        self.frame_5.setFrameShape(QtGui.QFrame.NoFrame)
+        self.frame_5.setFrameShadow(QtGui.QFrame.Raised)
+        self.frame_5.setObjectName("frame_5")
+
+        self.gridlayout9 = QtGui.QGridLayout(self.frame_5)
+        self.gridlayout9.setMargin(0)
+        self.gridlayout9.setSpacing(5)
+        self.gridlayout9.setObjectName("gridlayout9")
+
+        self.chbAddTraslation_2 = QtGui.QCheckBox(self.frame_5)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.chbAddTraslation_2.sizePolicy().hasHeightForWidth())
+        self.chbAddTraslation_2.setSizePolicy(sizePolicy)
+        self.chbAddTraslation_2.setObjectName("chbAddTraslation_2")
+        self.gridlayout9.addWidget(self.chbAddTraslation_2,0,0,1,3)
+
+        spacerItem3 = QtGui.QSpacerItem(81,21,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        self.gridlayout9.addItem(spacerItem3,1,2,1,1)
+
+        self.checkBox_4 = QtGui.QCheckBox(self.frame_5)
+        self.checkBox_4.setObjectName("checkBox_4")
+        self.gridlayout9.addWidget(self.checkBox_4,1,1,1,1)
+
+        spacerItem4 = QtGui.QSpacerItem(20,20,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Minimum)
+        self.gridlayout9.addItem(spacerItem4,1,0,1,1)
+        self.gridlayout8.addWidget(self.frame_5,4,0,1,1)
+
+        self.checkBox_2 = QtGui.QCheckBox(self.frame_4)
+        self.checkBox_2.setObjectName("checkBox_2")
+        self.gridlayout8.addWidget(self.checkBox_2,2,0,1,1)
+        self.gridlayout7.addWidget(self.frame_4,6,0,1,1)
+
+        self.line_4 = QtGui.QFrame(self.page)
+        self.line_4.setFrameShape(QtGui.QFrame.HLine)
+        self.line_4.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line_4.setObjectName("line_4")
+        self.gridlayout7.addWidget(self.line_4,5,0,1,1)
+
+        self.label_6 = QtGui.QLabel(self.page)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(5))
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_6.sizePolicy().hasHeightForWidth())
+        self.label_6.setSizePolicy(sizePolicy)
+
+        font = QtGui.QFont(self.label_6.font())
+        font.setWeight(75)
+        font.setBold(True)
+        self.label_6.setFont(font)
+        self.label_6.setObjectName("label_6")
+        self.gridlayout7.addWidget(self.label_6,4,0,1,1)
 
         self.label_5 = QtGui.QLabel(self.page)
 
@@ -732,6 +753,66 @@ class Ui_frmPreference(object):
         self.label_5.setFont(font)
         self.label_5.setObjectName("label_5")
         self.gridlayout7.addWidget(self.label_5,0,0,1,1)
+
+        self.frame_3 = QtGui.QFrame(self.page)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(5))
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.frame_3.sizePolicy().hasHeightForWidth())
+        self.frame_3.setSizePolicy(sizePolicy)
+        self.frame_3.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.frame_3.setFrameShadow(QtGui.QFrame.Raised)
+        self.frame_3.setObjectName("frame_3")
+
+        self.gridlayout10 = QtGui.QGridLayout(self.frame_3)
+        self.gridlayout10.setMargin(9)
+        self.gridlayout10.setSpacing(6)
+        self.gridlayout10.setObjectName("gridlayout10")
+
+        self.chbAutoTranslate = QtGui.QCheckBox(self.frame_3)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.chbAutoTranslate.sizePolicy().hasHeightForWidth())
+        self.chbAutoTranslate.setSizePolicy(sizePolicy)
+        self.chbAutoTranslate.setObjectName("chbAutoTranslate")
+        self.gridlayout10.addWidget(self.chbAutoTranslate,0,0,1,1)
+
+        self.chbIgnoreFuzzy = QtGui.QCheckBox(self.frame_3)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.chbIgnoreFuzzy.sizePolicy().hasHeightForWidth())
+        self.chbIgnoreFuzzy.setSizePolicy(sizePolicy)
+        self.chbIgnoreFuzzy.setObjectName("chbIgnoreFuzzy")
+        self.gridlayout10.addWidget(self.chbIgnoreFuzzy,1,0,1,1)
+
+        self.chbAddTraslation = QtGui.QCheckBox(self.frame_3)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.chbAddTraslation.sizePolicy().hasHeightForWidth())
+        self.chbAddTraslation.setSizePolicy(sizePolicy)
+        self.chbAddTraslation.setObjectName("chbAddTraslation")
+        self.gridlayout10.addWidget(self.chbAddTraslation,3,0,1,1)
+
+        self.checkBox_3 = QtGui.QCheckBox(self.frame_3)
+        self.checkBox_3.setObjectName("checkBox_3")
+        self.gridlayout10.addWidget(self.checkBox_3,2,0,1,1)
+        self.gridlayout7.addWidget(self.frame_3,2,0,1,1)
+
+        self.line_3 = QtGui.QFrame(self.page)
+        self.line_3.setFrameShape(QtGui.QFrame.HLine)
+        self.line_3.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line_3.setObjectName("line_3")
+        self.gridlayout7.addWidget(self.line_3,1,0,1,1)
+
+        spacerItem5 = QtGui.QSpacerItem(20,20,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Minimum)
+        self.gridlayout7.addItem(spacerItem5,3,0,1,1)
         self.stackedWidget.addWidget(self.page)
         self.gridlayout1.addWidget(self.stackedWidget,0,1,1,1)
 
@@ -749,10 +830,33 @@ class Ui_frmPreference(object):
         self.listWidget.setModelColumn(0)
         self.listWidget.setObjectName("listWidget")
         self.gridlayout1.addWidget(self.listWidget,0,0,1,1)
-        self.gridlayout.addWidget(self.frame,0,0,1,2)
+        self.gridlayout.addWidget(self.frame,0,0,1,1)
+
+        self.hboxlayout = QtGui.QHBoxLayout()
+        self.hboxlayout.setMargin(0)
+        self.hboxlayout.setSpacing(5)
+        self.hboxlayout.setObjectName("hboxlayout")
+
+        spacerItem6 = QtGui.QSpacerItem(287,31,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        self.hboxlayout.addItem(spacerItem6)
+
+        self.okButton = QtGui.QPushButton(frmPreference)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(1),QtGui.QSizePolicy.Policy(0))
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.okButton.sizePolicy().hasHeightForWidth())
+        self.okButton.setSizePolicy(sizePolicy)
+        self.okButton.setObjectName("okButton")
+        self.hboxlayout.addWidget(self.okButton)
+
+        self.cancelButton = QtGui.QPushButton(frmPreference)
+        self.cancelButton.setObjectName("cancelButton")
+        self.hboxlayout.addWidget(self.cancelButton)
+        self.gridlayout.addLayout(self.hboxlayout,1,0,1,1)
 
         self.retranslateUi(frmPreference)
-        self.stackedWidget.setCurrentIndex(0)
+        self.stackedWidget.setCurrentIndex(2)
         self.cbxFullLanguage.setCurrentIndex(-1)
         QtCore.QObject.connect(self.cancelButton,QtCore.SIGNAL("clicked()"),frmPreference.reject)
         QtCore.QObject.connect(self.okButton,QtCore.SIGNAL("clicked()"),frmPreference.accept)
@@ -761,8 +865,6 @@ class Ui_frmPreference(object):
 
     def retranslateUi(self, frmPreference):
         frmPreference.setWindowTitle(QtGui.QApplication.translate("frmPreference", "Preference", None, QtGui.QApplication.UnicodeUTF8))
-        self.okButton.setText(QtGui.QApplication.translate("frmPreference", "&OK", None, QtGui.QApplication.UnicodeUTF8))
-        self.cancelButton.setText(QtGui.QApplication.translate("frmPreference", "&Cancel", None, QtGui.QApplication.UnicodeUTF8))
         self.label_2.setText(QtGui.QApplication.translate("frmPreference", "Plural equation:", None, QtGui.QApplication.UnicodeUTF8))
         self.label_3.setText(QtGui.QApplication.translate("frmPreference", "Number of single/plural form:", None, QtGui.QApplication.UnicodeUTF8))
         self.label5.setText(QtGui.QApplication.translate("frmPreference", "Support team", None, QtGui.QApplication.UnicodeUTF8))
@@ -790,10 +892,20 @@ class Ui_frmPreference(object):
         self.btnColorOverview.setText(QtGui.QApplication.translate("frmPreference", "Color", None, QtGui.QApplication.UnicodeUTF8))
         self.bntDefaultsColor.setText(QtGui.QApplication.translate("frmPreference", "Defaults Color", None, QtGui.QApplication.UnicodeUTF8))
         self.label_4.setText(QtGui.QApplication.translate("frmPreference", "Setting font & color", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbIgnoreFuzzy.setText(QtGui.QApplication.translate("frmPreference", "Ignore fuzzy strings", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbAutoTranslate.setText(QtGui.QApplication.translate("frmPreference", "Lookup translation in TM", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbAddTraslation.setText(QtGui.QApplication.translate("frmPreference", "Add new translation to TM", None, QtGui.QApplication.UnicodeUTF8))
+        self.chbAutoTranslate_2.setText(QtGui.QApplication.translate("frmPreference", "Automatically identify and highlight terminology in glossary", None, QtGui.QApplication.UnicodeUTF8))
+        self.checkBox.setText(QtGui.QApplication.translate("frmPreference", "Possible to change translation of terminology in glossary", None, QtGui.QApplication.UnicodeUTF8))
+        self.chbIgnoreFuzzy_2.setText(QtGui.QApplication.translate("frmPreference", "Detect new terminology", None, QtGui.QApplication.UnicodeUTF8))
+        self.chbAddTraslation_2.setText(QtGui.QApplication.translate("frmPreference", "Add new terminology to glossary", None, QtGui.QApplication.UnicodeUTF8))
+        self.checkBox_4.setText(QtGui.QApplication.translate("frmPreference", "Allow translation suggestion from TM", None, QtGui.QApplication.UnicodeUTF8))
+        self.checkBox_2.setText(QtGui.QApplication.translate("frmPreference", "Alert if the terminology\'s translation doesn\'t match", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_6.setText(QtGui.QApplication.translate("frmPreference", "Configure glossary usage", None, QtGui.QApplication.UnicodeUTF8))
         self.label_5.setText(QtGui.QApplication.translate("frmPreference", "Configure translation memory usage", None, QtGui.QApplication.UnicodeUTF8))
+        self.chbAutoTranslate.setText(QtGui.QApplication.translate("frmPreference", "Automatically lookup translation in TM", None, QtGui.QApplication.UnicodeUTF8))
+        self.chbIgnoreFuzzy.setText(QtGui.QApplication.translate("frmPreference", "Don\'t lookup fuzzy strings", None, QtGui.QApplication.UnicodeUTF8))
+        self.chbAddTraslation.setText(QtGui.QApplication.translate("frmPreference", "Add new translation to TM", None, QtGui.QApplication.UnicodeUTF8))
+        self.checkBox_3.setText(QtGui.QApplication.translate("frmPreference", " Possible to change translation in TM", None, QtGui.QApplication.UnicodeUTF8))
+        self.okButton.setText(QtGui.QApplication.translate("frmPreference", "&OK", None, QtGui.QApplication.UnicodeUTF8))
+        self.cancelButton.setText(QtGui.QApplication.translate("frmPreference", "&Cancel", None, QtGui.QApplication.UnicodeUTF8))
 
 
 
