@@ -174,7 +174,7 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
     if self._ns_ordered_prefixes:
       for prefix, uri in self._ns_ordered_prefixes:
         if prefix:
-          a = minidom.Attr(_intern(self, 'xmlns:' + prefix),
+          a = minidom.Attr(expatbuilder._intern(self, 'xmlns:' + prefix),
                    expatbuilder.XMLNS_NAMESPACE, prefix, "xmlns")
         else:
           a = minidom.Attr("xmlns", expatbuilder.XMLNS_NAMESPACE,
