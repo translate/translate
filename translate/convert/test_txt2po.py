@@ -24,7 +24,8 @@ class TestTxt2PO:
     def test_simple(self):
         """test the most basic txt conversion"""
         txtsource = "A simple string"
-        poexpected = '''msgid "A simple string"
+        poexpected = '''#: :1
+msgid "A simple string"
 msgstr ""
 '''
         poresult = self.txt2po(txtsource)
