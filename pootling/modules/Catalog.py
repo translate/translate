@@ -54,7 +54,8 @@ class Catalog(QtGui.QMainWindow):
         self.ui.toolBar.toggleViewAction()
         self.ui.toolBar.setWindowTitle("ToolBar View")
         self.ui.toolBar.setStatusTip("Toggle ToolBar View")
-    
+
+
         # set up table appearance and behavior
         self.headerLabels = [self.tr("Name"),
                             self.tr("Fuzzy"),
@@ -72,16 +73,19 @@ class Catalog(QtGui.QMainWindow):
         # File menu action
         self.connect(self.ui.actionQuit, QtCore.SIGNAL("triggered()"), QtCore.SLOT("close()"))
         self.ui.actionQuit.setWhatsThis("<h3>Quit</h3>Quit Catalog")
-        
+        self.ui.actionQuit.setStatusTip("Quit application")
+
         # Edit menu action
         self.ui.actionReload.setEnabled(True)
         self.connect(self.ui.actionReload, QtCore.SIGNAL("triggered()"), self.refresh)
         self.ui.actionReload.setWhatsThis("<h3>Reload</h3>Set the current files or folders to get the most up-to-date version.")
-        
+        self.ui.actionReload.setStatusTip("Reload the current files")
+
         # Catalog setting's checkboxes action.
         self.catSetting = CatalogSetting(self)
         self.connect(self.ui.actionConfigure, QtCore.SIGNAL("triggered()"), self.catSetting.show)
         self.ui.actionConfigure.setWhatsThis("<h3>Configure...</h3>Set the configuration items with your prefered values.")
+        self.ui.actionConfigure.setStatusTip("Set the prefered configuration")
         self.connect(self.catSetting.ui.chbname, QtCore.SIGNAL("stateChanged(int)"), self.toggleHeaderItem)
         self.connect(self.catSetting.ui.chbfuzzy, QtCore.SIGNAL("stateChanged(int)"), self.toggleHeaderItem)
         self.connect(self.catSetting.ui.chblastrevision, QtCore.SIGNAL("stateChanged(int)"), self.toggleHeaderItem)
@@ -98,6 +102,7 @@ class Catalog(QtGui.QMainWindow):
 
         self.connect(self.ui.actionFind_in_Files, QtCore.SIGNAL("triggered()"), self.findBar.showFind)
         self.ui.actionFind_in_Files.setWhatsThis("<h3>Find</h3>You can find string ever you want in Catalog")
+        self.ui.actionFind_in_Files.setStatusTip("Search for a text")
         # emit findfiles signal from FindInCatalog file
         self.connect(self.findBar, QtCore.SIGNAL("initSearch"), self.find)
 
@@ -122,6 +127,8 @@ class Catalog(QtGui.QMainWindow):
         self.connect(self.ui.treeCatalog, QtCore.SIGNAL("itemDoubleClicked(QTreeWidgetItem *, int)"), self.emitOpenFile)
         self.setupCheckbox()
 
+        self.lastFoundFilename= None
+
     def find(self, searchString, searchOptions):
             if (not (searchString and searchOptions)):
                 return
@@ -130,34 +137,44 @@ class Catalog(QtGui.QMainWindow):
                  for j in range(item.childCount()):
                       childItem = item.child(j)
                       filename = self.getFilename(childItem)
-                      self.searchInString(searchString, filename, searchOptions)
+                      if (self.lastFoundFilename != filename):
+                          found = self.searchInString(searchString, filename, searchOptions)
+                          break
+                      else:
+                          found = False
+
+                 if found:
+                      print "found in", filename, "at position", found
+                      self.lastFoundFilename = filename
+                      self.emit(QtCore.SIGNAL("openFile"), filename)
+                      self.emit(QtCore.SIGNAL("goto"), found)
                       break
-                 break
-            if not self.found:
+            else:
                 msg = self.tr("' was not found")
-                QtGui.QMessageBox.information(self, self.tr("Find"), "'" + str(searchString) + msg)
+                QtGui.QMessageBox.information(self, self.tr("Find"), "'" + str(searchString) + msg + '\n\n' + "Please try again !")
 
     def searchInString(self, searchString, filename, searchOptions):
-        self.found = False
+        found = False
         if (not os.path.isfile(filename)):
-            return
+            return False
         store = factory.getobject(filename)
         if (not store):
-            return
+            return False
         unitIndex = 0
         for unit in store.units:
-            searchableText = None
+            searchableText = ""
             if (searchOptions == World.source):
                 searchableText = unit.source
             elif (searchOptions == World.target):
                 searchableText = unit.target
             elif (searchOptions == (World.source + World.target)):
                 searchableText = unit.source + unit.target
+
             if (searchableText.find(searchString) != -1 ):
-                self.emit(QtCore.SIGNAL("openFile"), filename)
-                self.emit(QtCore.SIGNAL("goto"), unitIndex)
+                found = unitIndex
                 break
             unitIndex += 1
+        return found
 
     def toggleHeaderItem(self):
         if (isinstance(self.sender(), QtGui.QCheckBox)):
@@ -180,7 +197,6 @@ class Catalog(QtGui.QMainWindow):
     def showDialog(self):
         self.lazyInit()
         self.show()
-        
         cats = World.settings.value("CatalogPath").toStringList()
         if (cats) and (self.ui.treeCatalog.topLevelItemCount() == 0):
             self.updateCatalog()
@@ -193,14 +209,14 @@ class Catalog(QtGui.QMainWindow):
         self.ui.treeCatalog.clear()
         cats = World.settings.value("CatalogPath").toStringList()
         includeSub = World.settings.value("diveIntoSubCatalog").toBool()
-        
+
         # TODO: calculate number of maximum files in directory.
         maxFilesNum = 0.1       # avoid devision by zero.
         currentFileNum = 0.0
-        
+
         for catalogFile in cats:
             catalogFile = str(catalogFile)
-            
+
             topItem = QtGui.QTreeWidgetItem()
             self.addCatalogFile(catalogFile, includeSub, topItem)
             self.ui.treeCatalog.addTopLevelItem(topItem)
@@ -215,7 +231,6 @@ class Catalog(QtGui.QMainWindow):
         add path to catalog tree view if it's file, if it's directory then
         dive into it and add files.
         """
-        
         if (os.path.isfile(path)):
             if (not item.text(0)):
                 item.setText(0, os.path.dirname(path))
@@ -241,7 +256,7 @@ class Catalog(QtGui.QMainWindow):
                 for file in files:
                     path = os.path.join(root + '/' + file)
                     self.addCatalogFile(path, includeSub, item)
-                    
+
                 # whether dive into subfolder
                 if (includeSub):
                     for folder in dirs:
@@ -349,11 +364,3 @@ class Catalog(QtGui.QMainWindow):
             self.updateCatalog()
         else:
             self.settings.sync()
-
-
-##if __name__ == "__main__":
-##    import sys, os
-##    app = QtGui.QApplication(sys.argv)
-##    catalog = Catalog(None)
-##    catalog.showDialog()
-##    sys.exit(catalog.exec_())
