@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/ks/programming/wordforge/trunk/pootling/ui/Preference.ui'
+# Form implementation generated from reading ui file 'unknown'
 #
-# Created: Fri Mar 23 10:38:47 2007
-#      by: PyQt4 UI code generator 4-snapshot-20070212
+# Created: Mon Mar 26 09:27:06 2007
+#      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
 
+import sys
 from PyQt4 import QtCore, QtGui
 
 class Ui_frmPreference(object):
@@ -270,17 +271,6 @@ class Ui_frmPreference(object):
         self.line.setFrameShadow(QtGui.QFrame.Sunken)
         self.line.setObjectName("line")
         self.gridlayout2.addWidget(self.line,1,0,1,1)
-
-        self.chkHeaderAuto = QtGui.QCheckBox(self.personal)
-
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.chkHeaderAuto.sizePolicy().hasHeightForWidth())
-        self.chkHeaderAuto.setSizePolicy(sizePolicy)
-        self.chkHeaderAuto.setChecked(True)
-        self.chkHeaderAuto.setObjectName("chkHeaderAuto")
-        self.gridlayout2.addWidget(self.chkHeaderAuto,4,0,1,1)
         self.stackedWidget.addWidget(self.personal)
 
         self.interface = QtGui.QWidget()
@@ -814,6 +804,50 @@ class Ui_frmPreference(object):
         spacerItem5 = QtGui.QSpacerItem(20,20,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Minimum)
         self.gridlayout7.addItem(spacerItem5,3,0,1,1)
         self.stackedWidget.addWidget(self.page)
+
+        self.page_2 = QtGui.QWidget()
+        self.page_2.setObjectName("page_2")
+
+        self.gridlayout11 = QtGui.QGridLayout(self.page_2)
+        self.gridlayout11.setMargin(9)
+        self.gridlayout11.setSpacing(6)
+        self.gridlayout11.setObjectName("gridlayout11")
+
+        spacerItem6 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
+        self.gridlayout11.addItem(spacerItem6,3,0,1,1)
+
+        self.chkHeaderAuto = QtGui.QCheckBox(self.page_2)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.chkHeaderAuto.sizePolicy().hasHeightForWidth())
+        self.chkHeaderAuto.setSizePolicy(sizePolicy)
+        self.chkHeaderAuto.setChecked(True)
+        self.chkHeaderAuto.setObjectName("chkHeaderAuto")
+        self.gridlayout11.addWidget(self.chkHeaderAuto,2,0,1,1)
+
+        self.label_7 = QtGui.QLabel(self.page_2)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(5))
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_7.sizePolicy().hasHeightForWidth())
+        self.label_7.setSizePolicy(sizePolicy)
+
+        font = QtGui.QFont(self.label_7.font())
+        font.setWeight(75)
+        font.setBold(True)
+        self.label_7.setFont(font)
+        self.label_7.setObjectName("label_7")
+        self.gridlayout11.addWidget(self.label_7,0,0,1,1)
+
+        self.line_5 = QtGui.QFrame(self.page_2)
+        self.line_5.setFrameShape(QtGui.QFrame.HLine)
+        self.line_5.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line_5.setObjectName("line_5")
+        self.gridlayout11.addWidget(self.line_5,1,0,1,1)
+        self.stackedWidget.addWidget(self.page_2)
         self.gridlayout1.addWidget(self.stackedWidget,0,1,1,1)
 
         self.listWidget = QtGui.QListWidget(self.frame)
@@ -837,8 +871,8 @@ class Ui_frmPreference(object):
         self.hboxlayout.setSpacing(5)
         self.hboxlayout.setObjectName("hboxlayout")
 
-        spacerItem6 = QtGui.QSpacerItem(287,31,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
-        self.hboxlayout.addItem(spacerItem6)
+        spacerItem7 = QtGui.QSpacerItem(287,31,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        self.hboxlayout.addItem(spacerItem7)
 
         self.okButton = QtGui.QPushButton(frmPreference)
 
@@ -856,61 +890,63 @@ class Ui_frmPreference(object):
         self.gridlayout.addLayout(self.hboxlayout,1,0,1,1)
 
         self.retranslateUi(frmPreference)
-        self.stackedWidget.setCurrentIndex(2)
+        self.stackedWidget.setCurrentIndex(0)
         self.cbxFullLanguage.setCurrentIndex(-1)
         QtCore.QObject.connect(self.cancelButton,QtCore.SIGNAL("clicked()"),frmPreference.reject)
         QtCore.QObject.connect(self.okButton,QtCore.SIGNAL("clicked()"),frmPreference.accept)
         QtCore.QMetaObject.connectSlotsByName(frmPreference)
         frmPreference.setTabOrder(self.okButton,self.cancelButton)
 
-    def retranslateUi(self, frmPreference):
-        frmPreference.setWindowTitle(QtGui.QApplication.translate("frmPreference", "Preference", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_2.setText(QtGui.QApplication.translate("frmPreference", "Plural equation:", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_3.setText(QtGui.QApplication.translate("frmPreference", "Number of single/plural form:", None, QtGui.QApplication.UnicodeUTF8))
-        self.label5.setText(QtGui.QApplication.translate("frmPreference", "Support team", None, QtGui.QApplication.UnicodeUTF8))
-        self.label6.setText(QtGui.QApplication.translate("frmPreference", "Time zone", None, QtGui.QApplication.UnicodeUTF8))
-        self.label1.setText(QtGui.QApplication.translate("frmPreference", "User name", None, QtGui.QApplication.UnicodeUTF8))
-        self.label3.setText(QtGui.QApplication.translate("frmPreference", "Full language name", None, QtGui.QApplication.UnicodeUTF8))
-        self.label2.setText(QtGui.QApplication.translate("frmPreference", "Email address", None, QtGui.QApplication.UnicodeUTF8))
-        self.label4.setText(QtGui.QApplication.translate("frmPreference", "Language Code", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("frmPreference", "Setting personal information", None, QtGui.QApplication.UnicodeUTF8))
-        self.chkHeaderAuto.setText(QtGui.QApplication.translate("frmPreference", "Automatically update header on save", None, QtGui.QApplication.UnicodeUTF8))
-        self.bntDefaultsFont.setText(QtGui.QApplication.translate("frmPreference", "Defaults Font", None, QtGui.QApplication.UnicodeUTF8))
-        self.label2_4.setText(QtGui.QApplication.translate("frmPreference", "Overview header", None, QtGui.QApplication.UnicodeUTF8))
-        self.label2_5.setText(QtGui.QApplication.translate("frmPreference", "Overview", None, QtGui.QApplication.UnicodeUTF8))
-        self.Source_2.setText(QtGui.QApplication.translate("frmPreference", "Source", None, QtGui.QApplication.UnicodeUTF8))
-        self.label4_3.setText(QtGui.QApplication.translate("frmPreference", "Target", None, QtGui.QApplication.UnicodeUTF8))
-        self.lblsupportteam_2.setText(QtGui.QApplication.translate("frmPreference", "Comment", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnColorSource.setText(QtGui.QApplication.translate("frmPreference", "Color", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnColorComment.setText(QtGui.QApplication.translate("frmPreference", "Color", None, QtGui.QApplication.UnicodeUTF8))
-        self.bntFontComment.setText(QtGui.QApplication.translate("frmPreference", "Font", None, QtGui.QApplication.UnicodeUTF8))
-        self.bntFontTarget.setText(QtGui.QApplication.translate("frmPreference", "Font", None, QtGui.QApplication.UnicodeUTF8))
-        self.bntFontSource.setText(QtGui.QApplication.translate("frmPreference", "Font", None, QtGui.QApplication.UnicodeUTF8))
-        self.bntFontOverview.setText(QtGui.QApplication.translate("frmPreference", "Font", None, QtGui.QApplication.UnicodeUTF8))
-        self.bntFontOverviewHeader.setText(QtGui.QApplication.translate("frmPreference", "Font", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnColorTarget.setText(QtGui.QApplication.translate("frmPreference", "Color", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnColorOverview.setText(QtGui.QApplication.translate("frmPreference", "Color", None, QtGui.QApplication.UnicodeUTF8))
-        self.bntDefaultsColor.setText(QtGui.QApplication.translate("frmPreference", "Defaults Color", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_4.setText(QtGui.QApplication.translate("frmPreference", "Setting font & color", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbAutoTranslate_2.setText(QtGui.QApplication.translate("frmPreference", "Automatically identify and highlight terminology in glossary", None, QtGui.QApplication.UnicodeUTF8))
-        self.checkBox.setText(QtGui.QApplication.translate("frmPreference", "Possible to change translation of terminology in glossary", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbIgnoreFuzzy_2.setText(QtGui.QApplication.translate("frmPreference", "Detect new terminology", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbAddTraslation_2.setText(QtGui.QApplication.translate("frmPreference", "Add new terminology to glossary", None, QtGui.QApplication.UnicodeUTF8))
-        self.checkBox_4.setText(QtGui.QApplication.translate("frmPreference", "Allow translation suggestion from TM", None, QtGui.QApplication.UnicodeUTF8))
-        self.checkBox_2.setText(QtGui.QApplication.translate("frmPreference", "Alert if the terminology\'s translation doesn\'t match", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_6.setText(QtGui.QApplication.translate("frmPreference", "Configure glossary usage", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_5.setText(QtGui.QApplication.translate("frmPreference", "Configure translation memory usage", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbAutoTranslate.setText(QtGui.QApplication.translate("frmPreference", "Automatically lookup translation in TM", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbIgnoreFuzzy.setText(QtGui.QApplication.translate("frmPreference", "Don\'t lookup fuzzy strings", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbAddTraslation.setText(QtGui.QApplication.translate("frmPreference", "Add new translation to TM", None, QtGui.QApplication.UnicodeUTF8))
-        self.checkBox_3.setText(QtGui.QApplication.translate("frmPreference", " Possible to change translation in TM", None, QtGui.QApplication.UnicodeUTF8))
-        self.okButton.setText(QtGui.QApplication.translate("frmPreference", "&OK", None, QtGui.QApplication.UnicodeUTF8))
-        self.cancelButton.setText(QtGui.QApplication.translate("frmPreference", "&Cancel", None, QtGui.QApplication.UnicodeUTF8))
+    def tr(self, string):
+        return QtGui.QApplication.translate("frmPreference", string, None, QtGui.QApplication.UnicodeUTF8)
 
+    def retranslateUi(self, frmPreference):
+        frmPreference.setWindowTitle(self.tr("Preference"))
+        self.label_2.setText(self.tr("Plural equation:"))
+        self.label_3.setText(self.tr("Number of single/plural form:"))
+        self.label5.setText(self.tr("Support team"))
+        self.label6.setText(self.tr("Time zone"))
+        self.label1.setText(self.tr("User name"))
+        self.label3.setText(self.tr("Full language name"))
+        self.label2.setText(self.tr("Email address"))
+        self.label4.setText(self.tr("Language Code"))
+        self.label.setText(self.tr("Setting personal information"))
+        self.bntDefaultsFont.setText(self.tr("Defaults Font"))
+        self.label2_4.setText(self.tr("Overview header"))
+        self.label2_5.setText(self.tr("Overview"))
+        self.Source_2.setText(self.tr("Source"))
+        self.label4_3.setText(self.tr("Target"))
+        self.lblsupportteam_2.setText(self.tr("Comment"))
+        self.btnColorSource.setText(self.tr("Color"))
+        self.btnColorComment.setText(self.tr("Color"))
+        self.bntFontComment.setText(self.tr("Font"))
+        self.bntFontTarget.setText(self.tr("Font"))
+        self.bntFontSource.setText(self.tr("Font"))
+        self.bntFontOverview.setText(self.tr("Font"))
+        self.bntFontOverviewHeader.setText(self.tr("Font"))
+        self.btnColorTarget.setText(self.tr("Color"))
+        self.btnColorOverview.setText(self.tr("Color"))
+        self.bntDefaultsColor.setText(self.tr("Defaults Color"))
+        self.label_4.setText(self.tr("Setting font & color"))
+        self.chbAutoTranslate_2.setText(self.tr("Automatically identify and highlight terminology in glossary"))
+        self.checkBox.setText(self.tr("Possible to change translation of terminology in glossary"))
+        self.chbIgnoreFuzzy_2.setText(self.tr("Detect new terminology"))
+        self.chbAddTraslation_2.setText(self.tr("Add new terminology to glossary"))
+        self.checkBox_4.setText(self.tr("Allow translation suggestion from TM"))
+        self.checkBox_2.setText(self.tr("Alert if the terminology\'s translation doesn\'t match"))
+        self.label_6.setText(self.tr("Configure glossary usage"))
+        self.label_5.setText(self.tr("Configure translation memory usage"))
+        self.chbAutoTranslate.setText(self.tr("Automatically lookup translation in TM"))
+        self.chbIgnoreFuzzy.setText(self.tr("Don\'t lookup fuzzy strings"))
+        self.chbAddTraslation.setText(self.tr("Add new translation to TM"))
+        self.checkBox_3.setText(self.tr(" Possible to change translation in TM"))
+        self.chkHeaderAuto.setText(self.tr("Automatically update header on save"))
+        self.label_7.setText(self.tr("Setting personal information"))
+        self.okButton.setText(self.tr("&OK"))
+        self.cancelButton.setText(self.tr("&Cancel"))
 
 
 if __name__ == "__main__":
-    import sys
     app = QtGui.QApplication(sys.argv)
     frmPreference = QtGui.QDialog()
     ui = Ui_frmPreference()
