@@ -33,6 +33,14 @@
     </property>
     <item row="0" column="0" >
      <widget class="QTreeWidget" name="treeCatalog" >
+      <property name="sizePolicy" >
+       <sizepolicy>
+        <hsizetype>5</hsizetype>
+        <vsizetype>5</vsizetype>
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="font" >
        <font>
         <pointsize>10</pointsize>
@@ -64,11 +72,11 @@
     <addaction name="actionAbout" />
     <addaction name="actionAboutQt" />
    </widget>
-   <widget class="QMenu" name="menuProject" >
+   <widget class="QMenu" name="menuFile" >
     <property name="title" >
-     <string>&amp;Project</string>
+     <string>&amp;File</string>
     </property>
-    <addaction name="actionConfigure" />
+    <addaction name="actionQuit" />
    </widget>
    <widget class="QMenu" name="menuEdit" >
     <property name="title" >
@@ -76,13 +84,16 @@
     </property>
     <addaction name="actionFind_in_Files" />
     <addaction name="separator" />
+    <addaction name="actionStatistics" />
     <addaction name="actionReload" />
+    <addaction name="separator" />
    </widget>
-   <widget class="QMenu" name="menuFile" >
+   <widget class="QMenu" name="menuProject" >
     <property name="title" >
-     <string>&amp;File</string>
+     <string>&amp;Project</string>
     </property>
-    <addaction name="actionQuit" />
+    <addaction name="actionConfigure" />
+    <addaction name="action_Build_TM" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
@@ -116,6 +127,7 @@
    </attribute>
    <addaction name="actionQuit" />
    <addaction name="actionFind_in_Files" />
+   <addaction name="actionStatistics" />
    <addaction name="actionReload" />
    <addaction name="actionConfigure" />
   </widget>
@@ -174,6 +186,22 @@
    </property>
    <property name="shortcut" >
     <string>Ctrl+F</string>
+   </property>
+  </action>
+  <action name="actionStatistics" >
+   <property name="icon" >
+    <iconset>../images/statistic.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Statistics</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="action_Build_TM" >
+   <property name="text" >
+    <string>&amp;Build TM</string>
    </property>
   </action>
  </widget>
