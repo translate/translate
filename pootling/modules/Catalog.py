@@ -55,7 +55,6 @@ class Catalog(QtGui.QMainWindow):
         self.ui.toolBar.setWindowTitle("ToolBar View")
         self.ui.toolBar.setStatusTip("Toggle ToolBar View")
 
-
         # set up table appearance and behavior
         self.headerLabels = [self.tr("Name"),
                             self.tr("Fuzzy"),
@@ -81,6 +80,9 @@ class Catalog(QtGui.QMainWindow):
         self.ui.actionReload.setWhatsThis("<h3>Reload</h3>Set the current files or folders to get the most up-to-date version.")
         self.ui.actionReload.setStatusTip("Reload the current files")
 
+        # create statistics action
+        self.connect(self.ui.actionStatistics, QtCore.SIGNAL("triggered()"), self.showStatistic)
+
         # Catalog setting's checkboxes action.
         self.catSetting = CatalogSetting(self)
         self.connect(self.ui.actionConfigure, QtCore.SIGNAL("triggered()"), self.catSetting.show)
@@ -105,7 +107,7 @@ class Catalog(QtGui.QMainWindow):
         self.ui.actionFind_in_Files.setStatusTip("Search for a text")
         # emit findfiles signal from FindInCatalog file
         self.connect(self.findBar, QtCore.SIGNAL("initSearch"), self.find)
-
+        
         # progress bar
         self.progressBar = QtGui.QProgressBar()
         self.progressBar.setEnabled(True)
@@ -176,6 +178,29 @@ class Catalog(QtGui.QMainWindow):
             unitIndex += 1
         return found
 
+    def showStatistic(self):
+          for i in range (self.ui.treeCatalog.topLevelItemCount()):
+              path = self.ui.treeCatalog.topLevelItem(i)
+              item = self.ui.treeCatalog.currentItem().text(i)
+              filename = os.path.join(path + os.path.sep + item)
+              if (os.path.isdir(item)):
+                  return
+
+          filename = str(filename)
+          store = factory.getobject(filename)
+
+          name = os.path.basename(filename)
+          fuzzyUnitCount = store.fuzzy_units()
+          translatedUnitCount = store.translated_unitcount()
+          untranslatedUnitCount = store.untranslated_unitcount()
+          totalUnitCount = fuzzyUnitCount + untranslatedUnitCount + translatedUnitCount
+
+          fuzzy = str((float(fuzzyUnitCount) / totalUnitCount) * 100)
+          translated = str((float(translatedUnitCount) / totalUnitCount) * 100)
+          untranslated = str((float(untranslatedUnitCount) / totalUnitCount) * 100)
+
+          QtGui.QMessageBox.information(self, self.tr("Statistic of files"), 'File Name: ' + str(name) + '\n\nFuzzy: ' + str(fuzzyUnitCount) + ' (' + fuzzy + '%)' + '\n\nTranslated: ' + str(translatedUnitCount) + ' (' + translated + '%)' + '\n\nUntranslated: ' + str(untranslatedUnitCount) + ' (' + untranslated + '%)' + '\n\nTotal of strings: ' + str(totalUnitCount), "OK")
+
     def toggleHeaderItem(self):
         if (isinstance(self.sender(), QtGui.QCheckBox)):
             text = self.sender().text()
@@ -209,14 +234,14 @@ class Catalog(QtGui.QMainWindow):
         self.ui.treeCatalog.clear()
         cats = World.settings.value("CatalogPath").toStringList()
         includeSub = World.settings.value("diveIntoSubCatalog").toBool()
-
+        
         # TODO: calculate number of maximum files in directory.
         maxFilesNum = 0.1       # avoid devision by zero.
         currentFileNum = 0.0
-
+        
         for catalogFile in cats:
             catalogFile = str(catalogFile)
-
+            
             topItem = QtGui.QTreeWidgetItem()
             self.addCatalogFile(catalogFile, includeSub, topItem)
             self.ui.treeCatalog.addTopLevelItem(topItem)
@@ -281,7 +306,7 @@ class Catalog(QtGui.QMainWindow):
         translated = store.translated_unitcount()
         untranslatedUnitCount = store.untranslated_unitcount()
         totalUnitCount = fuzzyUnitCount + untranslatedUnitCount + translated
-        
+
         cvsSvn = "?"
         
         if hasattr(store, "parseheader"):
@@ -297,7 +322,7 @@ class Catalog(QtGui.QMainWindow):
         else:
             revisionDate = ""
             lastTranslator = ""
-        
+
         return [name, str(fuzzyUnitCount), str(untranslatedUnitCount), str(totalUnitCount), cvsSvn, revisionDate, lastTranslator, str(translated)]
 
     def setupCheckbox(self):
@@ -364,3 +389,11 @@ class Catalog(QtGui.QMainWindow):
             self.updateCatalog()
         else:
             self.settings.sync()
+
+
+##if __name__ == "__main__":
+##    import sys, os
+##    app = QtGui.QApplication(sys.argv)
+##    catalog = Catalog(None)
+##    catalog.showDialog()
+##    sys.exit(catalog.exec_())
