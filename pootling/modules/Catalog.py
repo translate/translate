@@ -54,7 +54,7 @@ class Catalog(QtGui.QMainWindow):
         self.ui.toolBar.toggleViewAction()
         self.ui.toolBar.setWindowTitle("ToolBar View")
         self.ui.toolBar.setStatusTip("Toggle ToolBar View")
-
+    
         # set up table appearance and behavior
         self.headerLabels = [self.tr("Name"),
                             self.tr("Fuzzy"),
@@ -82,12 +82,12 @@ class Catalog(QtGui.QMainWindow):
 
         # create statistics action
         self.connect(self.ui.actionStatistics, QtCore.SIGNAL("triggered()"), self.showStatistic)
+        self.ui.actionConfigure.setStatusTip("Set the prefered configuration")
 
         # Catalog setting's checkboxes action.
         self.catSetting = CatalogSetting(self)
         self.connect(self.ui.actionConfigure, QtCore.SIGNAL("triggered()"), self.catSetting.show)
         self.ui.actionConfigure.setWhatsThis("<h3>Configure...</h3>Set the configuration items with your prefered values.")
-        self.ui.actionConfigure.setStatusTip("Set the prefered configuration")
         self.connect(self.catSetting.ui.chbname, QtCore.SIGNAL("stateChanged(int)"), self.toggleHeaderItem)
         self.connect(self.catSetting.ui.chbfuzzy, QtCore.SIGNAL("stateChanged(int)"), self.toggleHeaderItem)
         self.connect(self.catSetting.ui.chblastrevision, QtCore.SIGNAL("stateChanged(int)"), self.toggleHeaderItem)
@@ -107,7 +107,7 @@ class Catalog(QtGui.QMainWindow):
         self.ui.actionFind_in_Files.setStatusTip("Search for a text")
         # emit findfiles signal from FindInCatalog file
         self.connect(self.findBar, QtCore.SIGNAL("initSearch"), self.find)
-        
+
         # progress bar
         self.progressBar = QtGui.QProgressBar()
         self.progressBar.setEnabled(True)
@@ -135,8 +135,8 @@ class Catalog(QtGui.QMainWindow):
             if (not (searchString and searchOptions)):
                 return
             for i in range(self.ui.treeCatalog.topLevelItemCount()):
-                 item = self.ui.treeCatalog.topLevelItem(i)
-                 for j in range(item.childCount()):
+                item = self.ui.treeCatalog.topLevelItem(i)
+                for j in range(item.childCount()):
                       childItem = item.child(j)
                       filename = self.getFilename(childItem)
                       if (self.lastFoundFilename != filename):
@@ -145,7 +145,7 @@ class Catalog(QtGui.QMainWindow):
                       else:
                           found = False
 
-                 if found:
+                if found:
                       print "found in", filename, "at position", found
                       self.lastFoundFilename = filename
                       self.emit(QtCore.SIGNAL("openFile"), filename)
@@ -156,50 +156,52 @@ class Catalog(QtGui.QMainWindow):
                 QtGui.QMessageBox.information(self, self.tr("Find"), "'" + str(searchString) + msg + '\n\n' + "Please try again !")
 
     def searchInString(self, searchString, filename, searchOptions):
-        found = False
-        if (not os.path.isfile(filename)):
-            return False
-        store = factory.getobject(filename)
-        if (not store):
-            return False
-        unitIndex = 0
-        for unit in store.units:
-            searchableText = ""
-            if (searchOptions == World.source):
-                searchableText = unit.source
-            elif (searchOptions == World.target):
-                searchableText = unit.target
-            elif (searchOptions == (World.source + World.target)):
-                searchableText = unit.source + unit.target
-
-            if (searchableText.find(searchString) != -1 ):
-                found = unitIndex
-                break
-            unitIndex += 1
-        return found
+          found = False
+          if (not os.path.isfile(filename)):
+              return False
+          store = factory.getobject(filename)
+          if (not store):
+              return False
+          unitIndex = 0
+          for unit in store.units:
+              searchableText = ""
+              if (searchOptions == World.source):
+                  searchableText = unit.source
+              elif (searchOptions == World.target):
+                  searchableText = unit.target
+              elif (searchOptions == (World.source + World.target)):
+                  searchableText = unit.source + unit.target
+              if (searchableText.find(searchString) != -1 ):
+                  found = unitIndex
+                  break
+              unitIndex += 1
+          return found
 
     def showStatistic(self):
-          for i in range (self.ui.treeCatalog.topLevelItemCount()):
-              path = self.ui.treeCatalog.topLevelItem(i)
-              item = self.ui.treeCatalog.currentItem().text(i)
-              filename = os.path.join(path + os.path.sep + item)
-              if (os.path.isdir(item)):
-                  return
+          item = self.ui.treeCatalog.currentItem()
+          filename = self.getFilename(item)
+          if os.path.isfile(filename):
+              filename = str(filename)
+              store = factory.getobject(filename)
 
-          filename = str(filename)
-          store = factory.getobject(filename)
+              name = os.path.basename(filename)
+              fuzzyUnitCount = store.fuzzy_units()
+              translatedUnitCount = store.translated_unitcount()
+              untranslatedUnitCount = store.untranslated_unitcount()
+              totalUnitCount = fuzzyUnitCount + untranslatedUnitCount + translatedUnitCount
 
-          name = os.path.basename(filename)
-          fuzzyUnitCount = store.fuzzy_units()
-          translatedUnitCount = store.translated_unitcount()
-          untranslatedUnitCount = store.untranslated_unitcount()
-          totalUnitCount = fuzzyUnitCount + untranslatedUnitCount + translatedUnitCount
+              fuzzy = str((float(fuzzyUnitCount) / totalUnitCount) * 100)
+              translated = str((float(translatedUnitCount) / totalUnitCount) * 100)
+              untranslated = str((float(untranslatedUnitCount) / totalUnitCount) * 100)
 
-          fuzzy = str((float(fuzzyUnitCount) / totalUnitCount) * 100)
-          translated = str((float(translatedUnitCount) / totalUnitCount) * 100)
-          untranslated = str((float(untranslatedUnitCount) / totalUnitCount) * 100)
+              QtGui.QMessageBox.information(self, self.tr("Statistic of files"), 'File Name: ' + str(name) + '\n\nFuzzy: ' + str(fuzzyUnitCount) + ' (' + fuzzy + '%)' + '\n\nTranslated: ' + str(translatedUnitCount) + ' (' + translated + '%)' + '\n\nUntranslated: ' + str(untranslatedUnitCount) + ' (' + untranslated + '%)' + '\n\nTotal of strings: ' + str(totalUnitCount), "OK")
 
-          QtGui.QMessageBox.information(self, self.tr("Statistic of files"), 'File Name: ' + str(name) + '\n\nFuzzy: ' + str(fuzzyUnitCount) + ' (' + fuzzy + '%)' + '\n\nTranslated: ' + str(translatedUnitCount) + ' (' + translated + '%)' + '\n\nUntranslated: ' + str(untranslatedUnitCount) + ' (' + untranslated + '%)' + '\n\nTotal of strings: ' + str(totalUnitCount), "OK")
+          elif os.path.isdir(filename):
+                for i in range(item.childCount()):
+                    childItem = item.child(i)
+                    i += 1
+                QtGui.QMessageBox.information(self, self.tr("Statistic of file"), 'Total of files: ' + str(i) , "OK")
+          return
 
     def toggleHeaderItem(self):
         if (isinstance(self.sender(), QtGui.QCheckBox)):
@@ -222,6 +224,7 @@ class Catalog(QtGui.QMainWindow):
     def showDialog(self):
         self.lazyInit()
         self.show()
+        
         cats = World.settings.value("CatalogPath").toStringList()
         if (cats) and (self.ui.treeCatalog.topLevelItemCount() == 0):
             self.updateCatalog()
@@ -256,6 +259,7 @@ class Catalog(QtGui.QMainWindow):
         add path to catalog tree view if it's file, if it's directory then
         dive into it and add files.
         """
+        
         if (os.path.isfile(path)):
             if (not item.text(0)):
                 item.setText(0, os.path.dirname(path))
@@ -281,7 +285,7 @@ class Catalog(QtGui.QMainWindow):
                 for file in files:
                     path = os.path.join(root + '/' + file)
                     self.addCatalogFile(path, includeSub, item)
-
+                    
                 # whether dive into subfolder
                 if (includeSub):
                     for folder in dirs:
@@ -306,7 +310,7 @@ class Catalog(QtGui.QMainWindow):
         translated = store.translated_unitcount()
         untranslatedUnitCount = store.untranslated_unitcount()
         totalUnitCount = fuzzyUnitCount + untranslatedUnitCount + translated
-
+        
         cvsSvn = "?"
         
         if hasattr(store, "parseheader"):
@@ -322,7 +326,7 @@ class Catalog(QtGui.QMainWindow):
         else:
             revisionDate = ""
             lastTranslator = ""
-
+        
         return [name, str(fuzzyUnitCount), str(untranslatedUnitCount), str(totalUnitCount), cvsSvn, revisionDate, lastTranslator, str(translated)]
 
     def setupCheckbox(self):
