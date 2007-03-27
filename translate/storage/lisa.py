@@ -165,7 +165,8 @@ Provisional work is done to make several languages possible."""
             parent.appendChild(phnode)
             start = m.end()
         #post text
-        parent.appendChild(self.document.createTextNode(text[start:]))
+        if text[start:]:
+            parent.appendChild(self.document.createTextNode(text[start:]))
 
     def getlanguageNodes(self):
         """Returns a list of all nodes that contain per language information."""
