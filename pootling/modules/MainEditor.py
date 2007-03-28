@@ -1,4 +1,3 @@
-
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 # Pootling
@@ -85,7 +84,6 @@ class MainWindow(QtGui.QMainWindow):
         action.setStatusTip("Toggle the Comment window")
         action.setWhatsThis("<h3>Toggle the Comment window</h3>If the Comment window is hidden then display it. If it is displayed then close it.")
         self.ui.menuWindow.insertAction(sepAction, action)
-#        self.ui.menuWindow.insertAction(sepAction, self.dockComment.toggleViewAction())
        
         #add widgets to statusbar
         self.statusfuzzy = QtGui.QLabel()
@@ -185,8 +183,13 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionBuild_TM, QtCore.SIGNAL("triggered()"), self.tmsetting.showDialog)
         self.connect(self.operator, QtCore.SIGNAL("noTM"), self.showTemporaryMessage)
         self.connect(self.tmsetting, QtCore.SIGNAL("matcher"), self.operator.setMatcher)
+        
         # action lookup text and auto translation from TM
         self.connect(self.ui.actionAuto_translate, QtCore.SIGNAL("triggered()"), self.operator.autoTranslate)
+        
+        # action setting path of glossary
+        self.glossary = tmSetting.glossarySetting(self)
+        self.connect(self.ui.actionGlossary, QtCore.SIGNAL("triggered()"), self.glossary.showDialog)
         
         # Edit Header
         self.headerDialog = Header(self, self.operator)
@@ -529,7 +532,6 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.action_Close.setEnabled(bool)
         self.ui.actionSaveas.setEnabled(bool)
         self.ui.actionPaste.setEnabled(bool)
-    
         self.ui.actionSelectAll.setEnabled(bool)
         self.ui.actionFind.setEnabled(bool)
         self.ui.actionReplace.setEnabled(bool)
@@ -541,7 +543,6 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionFilterFuzzy.setEnabled(bool)
         self.ui.actionFilterTranslated.setEnabled(bool)
         self.ui.actionFilterUntranslated.setEnabled(bool)
-        self.ui.actionAuto_translate.setEnabled(bool)
         self.findBar.toggleViewAction().setVisible(bool)
     
     def addOpenToBar(self):

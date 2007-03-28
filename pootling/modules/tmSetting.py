@@ -27,14 +27,17 @@ from pootling.ui.Ui_tmSetting import Ui_tmsetting
 from pootling.modules import World
 from pootling.modules import FileDialog
 from pootling.modules.pickleTM import pickleTM
+#from ConfigParser import *
 
-class tmSetting(QtGui.QDialog):
+class globalSetting(QtGui.QDialog):
     """Code for setting path of translation memory dialog."""
     
     def __init__(self, parent):
         QtGui.QDialog.__init__(self, parent)
         self.ui = None
         self.subscan = None
+        self.title = None
+        self.section = None
         self.tempoRemember = {}
         
     def showDialog(self):
@@ -43,46 +46,54 @@ class tmSetting(QtGui.QDialog):
         if (not self.ui):
             self.ui = Ui_tmsetting()
             self.ui.setupUi(self)
-            self.setWindowTitle("Configure Translation Memory")
             self.setModal(True)
             self.filedialog = FileDialog.fileDialog(self)
-            
+            self.setWindowTitle(self.title)
             self.connect(self.filedialog, QtCore.SIGNAL("location"), self.addLocation)
-            self.connect(self.ui.btnAdd, QtCore.SIGNAL("clicked(bool)"), self.filedialog.show)
             self.connect(self.ui.btnOk, QtCore.SIGNAL("clicked(bool)"), self.createTM)
             self.connect(self.ui.btnCancel, QtCore.SIGNAL("clicked(bool)"), QtCore.SLOT("close()"))
+            self.connect(self.ui.btnAdd, QtCore.SIGNAL("clicked(bool)"), self.filedialog.show)
             self.connect(self.ui.btnRemove, QtCore.SIGNAL("clicked(bool)"), self.removeLocation)
             self.connect(self.ui.btnRemoveAll, QtCore.SIGNAL("clicked(bool)"), self.ui.listWidget.clear)
-            self.connect(self.ui.btnEnable, QtCore.SIGNAL("clicked(bool)"), self.setChecked)
-            self.connect(self.ui.btnDisable, QtCore.SIGNAL("clicked(bool)"), self.setUnchecked)
             self.ui.listWidget.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        
+        # get application setting file, and parse it.
+        filename = World.settings.fileName()
         self.loadItemToList()
-        self.ui.checkBox.setChecked(World.settings.value("diveIntoSub").toBool())
-        self.tempoRemember["diveIntoSub"] = self.ui.checkBox.isChecked()
-        self.ui.progressBar.setValue(0)
         self.show()
-        #TODO: It should be a way to use relative path for platform independent.
-        confFile = str(QtCore.QDir.homePath()) + '/.config/WordForge/Pootling.conf'
-        self.pickleTMObj = pickleTM(confFile)
+        
+        # create pickleMatcher objectr
+        self.pickleTM = pickleTM(str(filename), self.section)
     
     def loadItemToList(self):
         """Load remembered item to list."""
         self.ui.listWidget.clear()
-        enabledTM = World.settings.value("enabledTM").toStringList()
-        disableTM = World.settings.value("disabledTM").toStringList()
-        for path in enabledTM:
+        World.settings.beginGroup(self.section)
+        enabledPath = World.settings.value("enabledpath").toStringList()
+        disabledPath = World.settings.value("disabledpath").toStringList()
+        for path in enabledPath:
             self.addLocation(path)
-        for path in disableTM:
+        for path in disabledPath:
             self.addLocation(path, QtCore.Qt.Unchecked)
         
-        self.ui.spinSimilarity.setValue(World.settings.value("Similarity", QtCore.QVariant(75)).toInt()[0])
-        self.ui.spinMaxCandidate.setValue(World.settings.value("Max_Candidates", QtCore.QVariant(10)).toInt()[0])
-        self.ui.spinMaxLen.setValue(World.settings.value("Max_String_len", QtCore.QVariant(70)).toInt()[0])
-        self.tempoRemember["enabledTM"] = enabledTM
-        self.tempoRemember["disabledTM"] = disableTM
-        self.tempoRemember["Similarity"] = self.ui.spinSimilarity.value()
-        self.tempoRemember["Max_Candidates"] = self.ui.spinMaxCandidate.value()
-        self.tempoRemember["Max_String_len"] = self.ui.spinMaxLen.value()
+        self.ui.checkBox.setChecked(World.settings.value("diveintosub").toBool())
+        self.ui.spinSimilarity.setValue(World.settings.value("similarity", QtCore.QVariant(75)).toInt()[0])
+        self.ui.spinMaxCandidate.setValue(World.settings.value("max_candidates", QtCore.QVariant(10)).toInt()[0])
+        
+        if (self.section == "TM"):
+            self.ui.spinMaxLen.setValue(World.settings.value("max_string_len", QtCore.QVariant(70)).toInt()[0])
+        elif (self.section == "Glossary"):
+            self.ui.spinMaxLen.setMaximum(500)
+            self.ui.spinMaxLen.setValue(World.settings.value(self.section + "/" + "max_string_len", QtCore.QVariant(500)).toInt()[0])
+        
+        # temporary remember in order to clear changing when clicking cancel button
+        self.tempoRemember["enabledpath"] = enabledPath
+        self.tempoRemember["disabledpath"] = disabledPath
+        self.tempoRemember["diveintosub"] = self.ui.checkBox.isChecked()
+        self.tempoRemember["similarity"] = self.ui.spinSimilarity.value()
+        self.tempoRemember["max_candidates"] = self.ui.spinMaxCandidate.value()
+        self.tempoRemember["max_string_len"] = self.ui.spinMaxLen.value()
+        World.settings.endGroup()
     
     def addLocation(self, TMpath, checked = QtCore.Qt.Checked):
         """Add TMpath to TM list.
@@ -110,12 +121,14 @@ class tmSetting(QtGui.QDialog):
         
         """
         
-        World.settings.setValue("enabledTM", QtCore.QVariant(self.tempoRemember["enabledTM"]))
-        World.settings.setValue("disabledTM", QtCore.QVariant(self.tempoRemember["disabledTM"]))
-        World.settings.setValue("diveIntoSub", QtCore.QVariant(self.tempoRemember["diveIntoSub"]))
-        World.settings.setValue("Similarity", QtCore.QVariant(self.tempoRemember["Similarity"]))
-        World.settings.setValue("Max_Candidates", QtCore.QVariant(self.tempoRemember["Max_Candidates"]))
-        World.settings.setValue("Max_String_len", QtCore.QVariant(self.tempoRemember["Max_String_len"]))
+        World.settings.beginGroup(self.section);
+        World.settings.setValue("enabledpath", QtCore.QVariant(self.tempoRemember["enabledpath"]))
+        World.settings.setValue("disabledpath", QtCore.QVariant(self.tempoRemember["disabledpath"]))
+        World.settings.setValue("diveintosub", QtCore.QVariant(self.tempoRemember["diveintosub"]))
+        World.settings.setValue("similarity", QtCore.QVariant(self.tempoRemember["similarity"]))
+        World.settings.setValue( "max_candidates", QtCore.QVariant(self.tempoRemember["max_candidates"]))
+        World.settings.setValue("max_string_len", QtCore.QVariant(self.tempoRemember["max_string_len"]))
+        World.settings.endGroup();
         QtGui.QDialog.closeEvent(self, event)
         
     def createTM(self):
@@ -127,36 +140,28 @@ class tmSetting(QtGui.QDialog):
         checkedItemList = self.getPathList(QtCore.Qt.Checked)
         matcher = None
         if (not checkedItemList):
-            self.pickleTMObj.removeFile()
-            QtGui.QMessageBox.critical(None, 'No translated file path specified', 'No translated file for building Translation Memory.')
+            self.pickleTM.removeFile()
+            QtGui.QMessageBox.critical(None, 'No file specified', 'No file specified for building TM or glossary')
         else:
             try:
-                matcher = self.pickleTMObj.buildMatcher(checkedItemList, self.ui.spinMaxCandidate.value(), self.ui.spinSimilarity.value(),  self.ui.spinMaxLen.value())
+                #FIXME: do not hard code.
+                if (self.section == "TM"):
+                    matcher = self.pickleTM.buildTMMatcher(checkedItemList, self.ui.spinMaxCandidate.value(), self.ui.spinSimilarity.value(),  self.ui.spinMaxLen.value())
+                elif (self.section == "Glossary"):
+                    matcher = self.pickleTM.buildTermMatcher(checkedItemList, self.ui.spinMaxCandidate.value(), self.ui.spinSimilarity.value(),  self.ui.spinMaxLen.value())
             except Exception, e:
-                self.pickleTMObj.removeFile()
+                self.pickleTM.removeFile()
                 QtGui.QMessageBox.critical(None, 'Error', str(e))
         
         self.emit(QtCore.SIGNAL("matcher"), matcher)
         
-        self.tempoRemember["enabledTM"] = self.getPathList(QtCore.Qt.Checked)
-        self.tempoRemember["disabledTM"] = self.getPathList(QtCore.Qt.Unchecked)
-        self.tempoRemember["diveIntoSub"] = self.ui.checkBox.isChecked()
-        self.tempoRemember["Similarity"] = self.ui.spinSimilarity.value()
-        self.tempoRemember["Max_Candidates"] = self.ui.spinMaxCandidate.value()
-        self.tempoRemember["Max_String_len"] = self.ui.spinMaxLen.value()
+        self.tempoRemember["enabledpath"] = self.getPathList(QtCore.Qt.Checked)
+        self.tempoRemember["disabledpath"] = self.getPathList(QtCore.Qt.Unchecked)
+        self.tempoRemember["diveintosub"] = self.ui.checkBox.isChecked()
+        self.tempoRemember["similarity"] = self.ui.spinSimilarity.value()
+        self.tempoRemember["max_candidates"] = self.ui.spinMaxCandidate.value()
+        self.tempoRemember["max_string_len"] = self.ui.spinMaxLen.value()
         self.close()
-        
-    def setChecked(self):
-        """Set state of selectedItems as checked."""
-        items = self.ui.listWidget.selectedItems()
-        for item in items:
-            item.setCheckState(QtCore.Qt.Checked)
-
-    def setUnchecked(self):
-        """Set state of selectedItems as unchecked."""
-        items = self.ui.listWidget.selectedItems()
-        for item in items:
-            item.setCheckState(QtCore.Qt.Unchecked)
     
     def getPathList(self, isChecked):
         """Return list of path according to the parameter isChecked or unChecked
@@ -168,9 +173,20 @@ class tmSetting(QtGui.QDialog):
         for i in range(count):
             item = self.ui.listWidget.item(i)
             if (not (item.checkState() ^ isChecked)):
-                itemList.append(item.text())
+                itemList.append(str(item.text()))
         return itemList
-    
+
+class tmSetting(globalSetting):
+    def __init__(self, parent):
+        globalSetting.__init__(self, parent)
+        self.title = "Configure translation memory"
+        self.section = "TM"
+
+class glossarySetting(globalSetting):
+    def __init__(self, parent):
+        globalSetting.__init__(self, parent)
+        self.title = "Configure glossary"
+        self.section = "Glossary"
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

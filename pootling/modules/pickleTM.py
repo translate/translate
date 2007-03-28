@@ -25,11 +25,12 @@ from translate.search import match
 from ConfigParser import *
 
 class pickleTM:
-    """This class is for pickling TM"""
-    def __init__(self, confFile = ""):
+    """This class is for pickling and unpickling TM or Terminology"""
+    def __init__(self, confFile = "", section = None):
         self.config = ConfigParser()
-        self.config.read(confFile)
         self.confFile = confFile
+        self.section = section
+        self.config.read(self.confFile)
         
     def createStore(self, file):
         """Create a base object from file.
@@ -51,10 +52,9 @@ class pickleTM:
         @return store or storelist
         
         """
-        try:
-            diveSub = self.config.get('General','diveIntoSub')
-        except NoOptionError:
-            pass
+        diveSub = False
+        if (self.config.has_option(self.section, "diveIntoSub")):
+            diveSub = self.config.get(self.section, "diveIntoSub")
         path = str(TMpath)
         
         if (os.path.isfile(path)):
@@ -73,21 +73,39 @@ class pickleTM:
                     break
             return storelist
         
-    def pickleMatcher(self, matcher, prefix = "PKL"):
-        """Pickle matcher of TM locations.
+    def getStoreList(self, stringlist):
+        '''return a list of stores of file locations.
         
-        @param matcher: matcher of TM files or locations
+        @param stringlist: a list of file paths
+        @return storelist: a list of stores
+        '''
+        store = None
+        storelist = []
+        for i in range(len(stringlist)):
+            store = self.getStore(stringlist[i])
+            if (store):
+                if (not isinstance(store, list)):
+                    storelist.append(store)
+                else:
+                    storelist += store
+        return storelist
+    
+    def pickleMatcher(self, matcher):
+        """Pickle matcher to a location.
         
+        @param matcher: matcher of TM files or Glossary files
         """
-        try:
-            filename = self.config.get('General','fileStoreMatcher')
-        except NoOptionError:
+        if (not self.config.has_section(self.section)):
+            self.config.add_section(self.section)
+        if (self.config.has_option(self.section, "location")):
+            filename = self.config.get(self.section, "location")
+        else:
             handle, filename = tempfile.mkstemp('','PKL')
         tmpFile = open(filename, 'w')
         if (matcher):
             pickle.dump(matcher, tmpFile)
         tmpFile.close()
-        self.config.set('General', 'fileStoreMatcher', filename)
+        self.config.set(self.section, "location", filename)
         confFilefp = open(self.confFile, 'w')
         self.config.write(confFilefp)
         confFilefp.close()
@@ -98,9 +116,10 @@ class pickleTM:
         @return matcher: matcher of TM locations
         
         """
+        filename = None
         matcher = None
-        try:
-            filename = self.config.get('General','fileStoreMatcher')
+        if (self.config.has_section(self.section) and self.config.has_option(self.section, "location")):
+            filename = self.config.get(self.section, "location")
             if (filename and os.path.exists(filename)):
                 tmpFile = open(filename, 'rb')
                 try:
@@ -108,11 +127,9 @@ class pickleTM:
                 except:
                     pass
                 tmpFile.close()
-        except:
-            pass
         return matcher
     
-    def buildMatcher(self, stringlist, max_candidates, min_similarity,  max_string_len):
+    def buildTMMatcher(self, stringlist, max_candidates, min_similarity,  max_string_len):
         """Build new matcher of TM locations and dump it to file.
         
         @param stringlist: List of TM locations as string of path
@@ -121,24 +138,33 @@ class pickleTM:
         @param max_string_len: maximum length of source string to be searched.
         @return: matcher object
         """
-        store = None
-        storelist = []
-        for i in range(len(stringlist)):
-            store = self.getStore(stringlist[i])
-            if (store):
-                if (not isinstance(store, list)):
-                    storelist.append(store)
-                else:
-                    storelist += store
+        storelist = self.getStoreList(stringlist)
         matcher = match.matcher(storelist, max_candidates, min_similarity,  max_string_len)
+        self.pickleMatcher(matcher)
+        return matcher
+
+    def buildTermMatcher(self, stringlist, max_candidates, min_similarity,  max_string_len):
+        """Build new terminology matcher and dump it to file.
+        
+        @param stringlist: List of glossary locations as string of path
+        @param max_candidates: The maximum number of candidates that should be assembled,
+        @param min_similarity: The minimum similarity that must be attained to be included in
+        @param max_string_len: maximum length of source string to be searched.
+        @return: matcher object
+        """
+        storelist = self.getStoreList(stringlist)
+        matcher = match.terminologymatcher(storelist, max_candidates, min_similarity,  max_string_len)
         self.pickleMatcher(matcher)
         return matcher
     
     def removeFile(self):
-        try:
-            filename = self.config.get('General','fileStoreMatcher')
+        '''remove file which stores matcher
+        '''
+        if (self.config.has_section(self.section) and self.config.has_option(self.section, "location")):
+            filename = self.config.get(self.section, "location")
             os.remove(filename)
-            self.config.remove_option('General', 'fileStoreMatcher')
-        except:
-            pass
+            self.config.remove_option(self.section, "location")
+            confFilefp = open(self.confFile, 'w')
+            self.config.write(confFilefp)
+            confFilefp.close()
             
