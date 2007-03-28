@@ -444,10 +444,9 @@ class Operator(QtCore.QObject):
         
         # get matcher from when startup
         if (not hasattr(self, "matcher")):
-            #TODO: It should be a way to use relative path for platform independent.
-            confFile = str(QtCore.QDir.homePath()) + '/.config/WordForge/Pootling.conf'
-            self.pickleTMObj = pickleTM(confFile)
-            self.matcher = self.pickleTMObj.getMatcher()
+            confFile = World.settings.fileName()
+            self.pickleTM = pickleTM(str(confFile), "TM")
+            self.matcher = self.pickleTM.getMatcher()
         
         if (not self.matcher):
             self.emit(QtCore.SIGNAL("noTM"), "Problem with translation memory, Build or Rebuild TM")

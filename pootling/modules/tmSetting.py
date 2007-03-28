@@ -27,7 +27,6 @@ from pootling.ui.Ui_tmSetting import Ui_tmsetting
 from pootling.modules import World
 from pootling.modules import FileDialog
 from pootling.modules.pickleTM import pickleTM
-#from ConfigParser import *
 
 class globalSetting(QtGui.QDialog):
     """Code for setting path of translation memory dialog."""
