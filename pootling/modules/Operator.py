@@ -52,8 +52,8 @@ class Operator(QtCore.QObject):
         self.currentUnitIndex = 0
         self.filteredList = []
         self.filter = None
-        self.lookupUnitStatus = None
-        self.ignoreFuzzyStatus = None
+        TMpreference = World.settings.value("TMpreference").toInt()[0]
+        self.setLookupStatus(TMpreference)
 
     def getUnits(self, fileName):
         """reading a file into the internal datastructure.
