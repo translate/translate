@@ -54,28 +54,6 @@
      <height>28</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuView" >
-    <property name="enabled" >
-     <bool>true</bool>
-    </property>
-    <property name="title" >
-     <string>&amp;View</string>
-    </property>
-    <addaction name="actionFilterFuzzy" />
-    <addaction name="actionFilterTranslated" />
-    <addaction name="actionFilterUntranslated" />
-   </widget>
-   <widget class="QMenu" name="menuGo" >
-    <property name="title" >
-     <string>&amp;Go</string>
-    </property>
-    <addaction name="actionFirst" />
-    <addaction name="actionPrevious" />
-    <addaction name="actionNext" />
-    <addaction name="actionLast" />
-    <addaction name="separator" />
-    <addaction name="actionGoTo" />
-   </widget>
    <widget class="QMenu" name="menuHelp" >
     <property name="title" >
      <string>&amp;Help</string>
@@ -95,14 +73,6 @@
     <addaction name="separator" />
     <addaction name="separator" />
     <addaction name="menuToolbars" />
-   </widget>
-   <widget class="QMenu" name="menuBookmark" >
-    <property name="title" >
-     <string>&amp;Bookmarks</string>
-    </property>
-    <addaction name="actionAddBookmarks" />
-    <addaction name="actionClearBookmarks" />
-    <addaction name="separator" />
    </widget>
    <widget class="QMenu" name="menuEdit" >
     <property name="title" >
@@ -147,19 +117,52 @@
     <addaction name="separator" />
     <addaction name="actionExit" />
    </widget>
+   <widget class="QMenu" name="menuView" >
+    <property name="enabled" >
+     <bool>true</bool>
+    </property>
+    <property name="title" >
+     <string>&amp;View</string>
+    </property>
+    <addaction name="actionFilterFuzzy" />
+    <addaction name="actionFilterTranslated" />
+    <addaction name="actionFilterUntranslated" />
+   </widget>
+   <widget class="QMenu" name="menuGo" >
+    <property name="title" >
+     <string>&amp;Go</string>
+    </property>
+    <addaction name="actionFirst" />
+    <addaction name="actionPrevious" />
+    <addaction name="actionNext" />
+    <addaction name="actionLast" />
+    <addaction name="separator" />
+    <addaction name="actionGoTo" />
+   </widget>
    <widget class="QMenu" name="menuSettings" >
     <property name="title" >
      <string>&amp;Settings</string>
     </property>
     <addaction name="actionPreferences" />
    </widget>
+   <widget class="QMenu" name="menuBookmark" >
+    <property name="title" >
+     <string>&amp;Bookmarks</string>
+    </property>
+    <addaction name="actionAddBookmarks" />
+    <addaction name="actionClearBookmarks" />
+    <addaction name="separator" />
+   </widget>
    <widget class="QMenu" name="menu_Tool" >
     <property name="title" >
      <string>&amp;Tool</string>
     </property>
     <widget class="QMenu" name="menu_TM" >
+     <property name="enabled" >
+      <bool>true</bool>
+     </property>
      <property name="title" >
-      <string>Translation &amp;Memory</string>
+      <string>T&amp;M</string>
      </property>
      <property name="icon" >
       <iconset>../images/memory.png</iconset>
@@ -170,6 +173,7 @@
     <addaction name="separator" />
     <addaction name="actionCatalogManager" />
     <addaction name="menu_TM" />
+    <addaction name="actionGlossary" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
@@ -956,6 +960,14 @@
   <action name="actionBuild_TM" >
    <property name="text" >
     <string>Build &amp;TM</string>
+   </property>
+  </action>
+  <action name="actionGlossary" >
+   <property name="enabled" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>Gl&amp;ossary</string>
    </property>
   </action>
  </widget>

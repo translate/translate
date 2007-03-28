@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/ks/programming/wordforge/trunk/pootling/ui/MainEditor.ui'
 #
-# Created: Tue Mar 20 10:39:06 2007
+# Created: Tue Mar 27 11:15:12 2007
 #      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!
@@ -32,13 +32,6 @@ class Ui_MainWindow(object):
         self.menubar.setGeometry(QtCore.QRect(0,0,594,28))
         self.menubar.setObjectName("menubar")
 
-        self.menuView = QtGui.QMenu(self.menubar)
-        self.menuView.setEnabled(True)
-        self.menuView.setObjectName("menuView")
-
-        self.menuGo = QtGui.QMenu(self.menubar)
-        self.menuGo.setObjectName("menuGo")
-
         self.menuHelp = QtGui.QMenu(self.menubar)
         self.menuHelp.setObjectName("menuHelp")
 
@@ -47,9 +40,6 @@ class Ui_MainWindow(object):
 
         self.menuToolbars = QtGui.QMenu(self.menuWindow)
         self.menuToolbars.setObjectName("menuToolbars")
-
-        self.menuBookmark = QtGui.QMenu(self.menubar)
-        self.menuBookmark.setObjectName("menuBookmark")
 
         self.menuEdit = QtGui.QMenu(self.menubar)
         self.menuEdit.setObjectName("menuEdit")
@@ -61,13 +51,24 @@ class Ui_MainWindow(object):
         self.menuOpen_Recent.setIcon(QtGui.QIcon("../images/open.png"))
         self.menuOpen_Recent.setObjectName("menuOpen_Recent")
 
+        self.menuView = QtGui.QMenu(self.menubar)
+        self.menuView.setEnabled(True)
+        self.menuView.setObjectName("menuView")
+
+        self.menuGo = QtGui.QMenu(self.menubar)
+        self.menuGo.setObjectName("menuGo")
+
         self.menuSettings = QtGui.QMenu(self.menubar)
         self.menuSettings.setObjectName("menuSettings")
+
+        self.menuBookmark = QtGui.QMenu(self.menubar)
+        self.menuBookmark.setObjectName("menuBookmark")
 
         self.menu_Tool = QtGui.QMenu(self.menubar)
         self.menu_Tool.setObjectName("menu_Tool")
 
         self.menu_TM = QtGui.QMenu(self.menu_Tool)
+        self.menu_TM.setEnabled(True)
         self.menu_TM.setIcon(QtGui.QIcon("../images/memory.png"))
         self.menu_TM.setObjectName("menu_TM")
         MainWindow.setMenuBar(self.menubar)
@@ -281,23 +282,15 @@ class Ui_MainWindow(object):
 
         self.actionBuild_TM = QtGui.QAction(MainWindow)
         self.actionBuild_TM.setObjectName("actionBuild_TM")
-        self.menuView.addAction(self.actionFilterFuzzy)
-        self.menuView.addAction(self.actionFilterTranslated)
-        self.menuView.addAction(self.actionFilterUntranslated)
-        self.menuGo.addAction(self.actionFirst)
-        self.menuGo.addAction(self.actionPrevious)
-        self.menuGo.addAction(self.actionNext)
-        self.menuGo.addAction(self.actionLast)
-        self.menuGo.addSeparator()
-        self.menuGo.addAction(self.actionGoTo)
+
+        self.actionGlossary = QtGui.QAction(MainWindow)
+        self.actionGlossary.setEnabled(True)
+        self.actionGlossary.setObjectName("actionGlossary")
         self.menuHelp.addAction(self.actionAbout)
         self.menuHelp.addAction(self.actionAboutQT)
         self.menuWindow.addSeparator()
         self.menuWindow.addSeparator()
         self.menuWindow.addAction(self.menuToolbars.menuAction())
-        self.menuBookmark.addAction(self.actionAddBookmarks)
-        self.menuBookmark.addAction(self.actionClearBookmarks)
-        self.menuBookmark.addSeparator()
         self.menuEdit.addAction(self.actionUndo)
         self.menuEdit.addAction(self.actionRedo)
         self.menuEdit.addSeparator()
@@ -323,12 +316,25 @@ class Ui_MainWindow(object):
         self.menuFile.addAction(self.actionSaveas)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionExit)
+        self.menuView.addAction(self.actionFilterFuzzy)
+        self.menuView.addAction(self.actionFilterTranslated)
+        self.menuView.addAction(self.actionFilterUntranslated)
+        self.menuGo.addAction(self.actionFirst)
+        self.menuGo.addAction(self.actionPrevious)
+        self.menuGo.addAction(self.actionNext)
+        self.menuGo.addAction(self.actionLast)
+        self.menuGo.addSeparator()
+        self.menuGo.addAction(self.actionGoTo)
         self.menuSettings.addAction(self.actionPreferences)
+        self.menuBookmark.addAction(self.actionAddBookmarks)
+        self.menuBookmark.addAction(self.actionClearBookmarks)
+        self.menuBookmark.addSeparator()
         self.menu_TM.addAction(self.actionAuto_translate)
         self.menu_TM.addAction(self.actionBuild_TM)
         self.menu_Tool.addSeparator()
         self.menu_Tool.addAction(self.actionCatalogManager)
         self.menu_Tool.addAction(self.menu_TM.menuAction())
+        self.menu_Tool.addAction(self.actionGlossary)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
         self.menubar.addAction(self.menuView.menuAction())
@@ -359,18 +365,18 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Form", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuView.setTitle(QtGui.QApplication.translate("MainWindow", "&View", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuGo.setTitle(QtGui.QApplication.translate("MainWindow", "&Go", None, QtGui.QApplication.UnicodeUTF8))
         self.menuHelp.setTitle(QtGui.QApplication.translate("MainWindow", "&Help", None, QtGui.QApplication.UnicodeUTF8))
         self.menuWindow.setTitle(QtGui.QApplication.translate("MainWindow", "&Window", None, QtGui.QApplication.UnicodeUTF8))
         self.menuToolbars.setTitle(QtGui.QApplication.translate("MainWindow", "&Toolbars", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuBookmark.setTitle(QtGui.QApplication.translate("MainWindow", "&Bookmarks", None, QtGui.QApplication.UnicodeUTF8))
         self.menuEdit.setTitle(QtGui.QApplication.translate("MainWindow", "&Edit", None, QtGui.QApplication.UnicodeUTF8))
         self.menuFile.setTitle(QtGui.QApplication.translate("MainWindow", "&File", None, QtGui.QApplication.UnicodeUTF8))
         self.menuOpen_Recent.setTitle(QtGui.QApplication.translate("MainWindow", "Open &Recent", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuView.setTitle(QtGui.QApplication.translate("MainWindow", "&View", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuGo.setTitle(QtGui.QApplication.translate("MainWindow", "&Go", None, QtGui.QApplication.UnicodeUTF8))
         self.menuSettings.setTitle(QtGui.QApplication.translate("MainWindow", "&Settings", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuBookmark.setTitle(QtGui.QApplication.translate("MainWindow", "&Bookmarks", None, QtGui.QApplication.UnicodeUTF8))
         self.menu_Tool.setTitle(QtGui.QApplication.translate("MainWindow", "&Tool", None, QtGui.QApplication.UnicodeUTF8))
-        self.menu_TM.setTitle(QtGui.QApplication.translate("MainWindow", "Translation &Memory", None, QtGui.QApplication.UnicodeUTF8))
+        self.menu_TM.setTitle(QtGui.QApplication.translate("MainWindow", "T&M", None, QtGui.QApplication.UnicodeUTF8))
         self.toolFile.setWindowTitle(QtGui.QApplication.translate("MainWindow", "&File Toolbar", None, QtGui.QApplication.UnicodeUTF8))
         self.toolFile.setToolTip(QtGui.QApplication.translate("MainWindow", "Save", None, QtGui.QApplication.UnicodeUTF8))
         self.toolFile.setStatusTip(QtGui.QApplication.translate("MainWindow", "Save", None, QtGui.QApplication.UnicodeUTF8))
@@ -521,6 +527,7 @@ class Ui_MainWindow(object):
         self.actionAuto_translate.setText(QtGui.QApplication.translate("MainWindow", "&Auto Translate", None, QtGui.QApplication.UnicodeUTF8))
         self.actionCatalogManager.setText(QtGui.QApplication.translate("MainWindow", "Catalog Manager", None, QtGui.QApplication.UnicodeUTF8))
         self.actionBuild_TM.setText(QtGui.QApplication.translate("MainWindow", "Build &TM", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionGlossary.setText(QtGui.QApplication.translate("MainWindow", "Gl&ossary", None, QtGui.QApplication.UnicodeUTF8))
 
 
 
