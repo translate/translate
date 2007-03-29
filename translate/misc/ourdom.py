@@ -56,7 +56,12 @@ def writexml_helper(self, writer, indent="", addindent="", newl=""):
         # nested tags in a text node (like ph tags in xliff) should also not 
         # have newlines and indentation or an extra newline, since that will 
         # alter the text node.
-        if self.childNodes[0].nodeType == self.TEXT_NODE and self.childNodes[0].data.strip():
+        haveText = False
+        for childNode in self.childNodes:
+            if childNode.nodeType == self.TEXT_NODE and childNode.data.strip():
+                haveText = True
+                break
+        if haveText:
           writer.write(">")
           for node in self.childNodes:
               node.writexml(writer,"","","")
