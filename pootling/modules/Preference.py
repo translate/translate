@@ -3,6 +3,7 @@
 
 # Pootling
 # Copyright 2006 WordForge Foundation
+# Copyright 2006 WordForge Foundation
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -89,6 +90,14 @@ class Preference(QtGui.QDialog):
         self.ui.chbAutoTranslate.setChecked(TMpreference & 1 and True or False)
         self.ui.chbIgnoreFuzzy.setChecked(TMpreference & 2 and True or False)
         self.ui.chbAddTraslation.setChecked(TMpreference & 4 and True or False)
+        
+        GlossaryPreference = World.settings.value("GlossaryPreference").toInt()[0]
+        self.ui.chbAutoIdentTerm.setChecked(GlossaryPreference & 1 and True or False)
+        self.ui.chbChangeTerm.setChecked(GlossaryPreference & 2 and True or False)
+        self.ui.chbMatchTerm.setChecked(GlossaryPreference & 4 and True or False)
+        self.ui.chbDetectTerm.setChecked(GlossaryPreference & 8 and True or False)
+        self.ui.chbAddNewTerm.setChecked(GlossaryPreference & 16 and True or False)
+        self.ui.chbSuggestTranslation.setChecked(GlossaryPreference & 32 and True or False)
     
     def accepted(self):
         """ slot ok pressed """
@@ -278,6 +287,14 @@ class Preference(QtGui.QDialog):
             self.connect(self.ui.chbIgnoreFuzzy, QtCore.SIGNAL("stateChanged(int)"), self.emitTMOptions)
             self.connect(self.ui.chbAddTraslation, QtCore.SIGNAL("stateChanged(int)"), self.emitTMOptions)
             
+            # Glossary page signals
+            self.connect(self.ui.chbAutoIdentTerm, QtCore.SIGNAL("stateChanged(int)"), self.emitGlossaryOptions)
+            self.connect(self.ui.chbChangeTerm, QtCore.SIGNAL("stateChanged(int)"), self.emitGlossaryOptions)
+            self.connect(self.ui.chbMatchTerm, QtCore.SIGNAL("stateChanged(int)"), self.emitGlossaryOptions)
+            self.connect(self.ui.chbDetectTerm, QtCore.SIGNAL("stateChanged(int)"), self.emitGlossaryOptions)
+            self.connect(self.ui.chbAddNewTerm, QtCore.SIGNAL("stateChanged(int)"), self.emitGlossaryOptions)
+            self.connect(self.ui.chbSuggestTranslation, QtCore.SIGNAL("stateChanged(int)"), self.emitGlossaryOptions)
+            
             # connect signals
             self.connect(self.ui.chkHeaderAuto, QtCore.SIGNAL("stateChanged(int)"), self.ui.chkHeaderAuto.checkState) 
             self.connect(self.ui.bntFontOverview, QtCore.SIGNAL("clicked()"), self.fontOverview) 
@@ -355,7 +372,24 @@ class Preference(QtGui.QDialog):
             TMpreference +=4
         self.emit(QtCore.SIGNAL("TMpreference"), TMpreference)
         World.settings.setValue("TMpreference", QtCore.QVariant(TMpreference))
-        
+    
+    def emitGlossaryOptions(self):
+        GlossaryPreference = 0
+        if (self.ui.chbAutoIdentTerm.isChecked()):
+            GlossaryPreference +=1
+        if (self.ui.chbChangeTerm.isChecked()):
+            GlossaryPreference +=2
+        if (self.ui.chbMatchTerm.isChecked()):
+            GlossaryPreference +=4
+        if (self.ui.chbDetectTerm.isChecked()):
+            GlossaryPreference +=8
+        if (self.ui.chbAddNewTerm.isChecked()):
+            GlossaryPreference +=16
+        if (self.ui.chbSuggestTranslation.isChecked()):
+            GlossaryPreference +=32
+        self.emit(QtCore.SIGNAL("GlossaryPreference"), GlossaryPreference)
+        World.settings.setValue("GlossaryPreference", QtCore.QVariant(GlossaryPreference))
+    
 if __name__ == "__main__":
     import sys, os
     # set the path for QT in order to find the icons

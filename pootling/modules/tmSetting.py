@@ -152,7 +152,7 @@ class globalSetting(QtGui.QDialog):
                 self.pickleTM.removeFile()
                 QtGui.QMessageBox.critical(None, 'Error', str(e))
         
-        self.emit(QtCore.SIGNAL("matcher"), matcher)
+        self.emit(QtCore.SIGNAL("matcher"), [self.section, matcher])
         
         self.tempoRemember["enabledpath"] = self.getPathList(QtCore.Qt.Checked)
         self.tempoRemember["disabledpath"] = self.getPathList(QtCore.Qt.Unchecked)

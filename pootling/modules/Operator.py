@@ -53,7 +53,9 @@ class Operator(QtCore.QObject):
         self.filteredList = []
         self.filter = None
         TMpreference = World.settings.value("TMpreference").toInt()[0]
-        self.setLookupStatus(TMpreference)
+        self.setTMLookupStatus(TMpreference)
+        GlossaryPreference = World.settings.value("GlossaryPreference").toInt()[0]
+        self.setTermLookupStatus(GlossaryPreference)
 
     def getUnits(self, fileName):
         """reading a file into the internal datastructure.
@@ -89,7 +91,7 @@ class Operator(QtCore.QObject):
                 self.filteredList.append(unit)
             i += 1
         self.emitNewUnits()
-        self.emitUnit(self.filteredList[0])
+        self.setUnitFromPosition(0)
         self.setModified(False)
 
     def emitNewUnits(self):
@@ -108,8 +110,6 @@ class Operator(QtCore.QObject):
             self.currentUnitIndex = unit.x_editor_filterIndex
             self.searchPointer = unit.x_editor_filterIndex
         self.emit(QtCore.SIGNAL("currentUnit"), unit)
-        if (self.lookupUnitStatus):
-            self.lookupUnit()
     
     def getCurrentUnit(self):
         """return the current unit"""
@@ -272,6 +272,10 @@ class Operator(QtCore.QObject):
         if (position < len(self.filteredList) and position >= 0):
             unit = self.filteredList[position]
             self.emitUnit(unit)
+        if (self.lookupUnitStatus):
+            self.lookupUnit()
+        if (self.AutoIdentTerm):
+            self.lookupTerm()
     
     def toggleFuzzy(self):
         """toggle fuzzy state for current unit."""
@@ -426,15 +430,12 @@ class Operator(QtCore.QObject):
             return
         self.lookupProcess(self.filteredList)
         
-    def setMatcher(self, matcher):
+    def setMatcher(self, list):
         '''set matcher to new matcher'''
-        self.matcher = matcher
-        
-##    def lookupterm(self, word):
-##        """Process to lookup for a terminology matching
-##        @param word: a term to look for its translation for Glossary
-##        @signal lookupterm will be emited when a word is selected."""
-        
+        if (list[0] == "TM"):
+            self.matcher = list[1]
+        else:
+            self.termmatcher = list[1]
         
     def lookupProcess(self, units):
         '''process lookup translation from translation memory
@@ -488,10 +489,17 @@ class Operator(QtCore.QObject):
         candidates = self.lookupProcess(unit)
         self.emit(QtCore.SIGNAL("candidates"), candidates)
     
-    def setLookupStatus(self, TMprefrence):
+    def setTMLookupStatus(self, TMprefrence):
         self.lookupUnitStatus = (TMprefrence & 1 and True or False)
         self.ignoreFuzzyStatus =  (TMprefrence & 2 and True or False)
         self.addtranslation =  (TMprefrence & 4 and True or False)
+    
+    def setTermLookupStatus(self, GlossaryPreference):
+        self.AutoIdentTerm = (GlossaryPreference & 1 and True or False)
+        self.ChangeTerm =  (GlossaryPreference & 2 and True or False)
+        self.DetectTerm =  (GlossaryPreference & 8 and True or False)
+        self.AddNewTerm =  (GlossaryPreference & 16 and True or False)
+        self.SuggestTranslation =  (GlossaryPreference & 32 and True or False)
     
     def setModified(self, bool):
         self.modified = bool
@@ -500,3 +508,19 @@ class Operator(QtCore.QObject):
     def getModified(self):
         return (hasattr(self, "modified") and self.modified or None)
     
+    def lookupTerm(self):
+        if (not self.filteredList):
+            return
+        
+        # get glossary matcher from disk when startup
+        if (not hasattr(self, "termmatcher")):
+            confFile = World.settings.fileName()
+            self.pickleterm = pickleTM(str(confFile), "Glossary")
+            self.termmatcher = self.pickleterm.getMatcher()
+        
+        if (not self.termmatcher):
+            self.emit(QtCore.SIGNAL("noTM"), "Problem with glossary, Build or Rebuild glossary")
+            return
+        unit = self.filteredList[self.currentUnitIndex]
+        candidates = self.termmatcher.matches(unit.source)
+

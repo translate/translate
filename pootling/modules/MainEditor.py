@@ -176,7 +176,8 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockComment.applySettings)
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockOverview.applySettings)
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockTUview.applySettings)
-        self.connect(self.preference, QtCore.SIGNAL("TMpreference"), self.operator.setLookupStatus)
+        self.connect(self.preference, QtCore.SIGNAL("TMpreference"), self.operator.setTMLookupStatus)
+        self.connect(self.preference, QtCore.SIGNAL("GlossaryPreference"), self.operator.setTermLookupStatus)
         
         # action setting Path of TM
         self.tmsetting = tmSetting.tmSetting(self)
