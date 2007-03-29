@@ -270,7 +270,7 @@ class TranslationUnit(Statistics):
         """Build a native unit from a foreign unit, preserving as much as 
         possible information."""
 
-        if type(unit) == cls and hasattr(unit, "copy") and iscallable(unit.copy):
+        if type(unit) == cls and hasattr(unit, "copy") and callable(unit.copy):
             return unit.copy()
         newunit = cls(unit.source)
         newunit.target = unit.target
