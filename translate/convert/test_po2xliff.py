@@ -266,3 +266,10 @@ msgstr "Uno"
         assert xliff.sourcelanguage == "af"
         assert xliff.targetlanguage == "es"
         
+    def test_variables(self):
+        minipo = r'''msgid "%s%s%s%s has made %s his or her buddy%s%s"
+msgstr "%s%s%s%s het %s sy/haar vriend/vriendin gemaak%s%s"'''
+        xliff = self.po2xliff(minipo)
+        print xliff.units[0].source
+        assert xliff.units[0].source == "%s%s%s%s has made %s his or her buddy%s%s"
+
