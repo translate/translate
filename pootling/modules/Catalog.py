@@ -54,7 +54,6 @@ class Catalog(QtGui.QMainWindow):
         self.ui.toolBar.toggleViewAction()
         self.ui.toolBar.setWindowTitle("ToolBar View")
         self.ui.toolBar.setStatusTip("Toggle ToolBar View")
-    
         # set up table appearance and behavior
         self.headerLabels = [self.tr("Name"),
                             self.tr("Fuzzy"),
@@ -82,12 +81,13 @@ class Catalog(QtGui.QMainWindow):
 
         # create statistics action
         self.connect(self.ui.actionStatistics, QtCore.SIGNAL("triggered()"), self.showStatistic)
-        self.ui.actionConfigure.setStatusTip("Set the prefered configuration")
+        self.ui.actionStatistics.setStatusTip("Show status of files")
 
         # Catalog setting's checkboxes action.
         self.catSetting = CatalogSetting(self)
         self.connect(self.ui.actionConfigure, QtCore.SIGNAL("triggered()"), self.catSetting.show)
         self.ui.actionConfigure.setWhatsThis("<h3>Configure...</h3>Set the configuration items with your prefered values.")
+        self.ui.actionConfigure.setStatusTip("Set the prefered configuration")
         self.connect(self.catSetting.ui.chbname, QtCore.SIGNAL("stateChanged(int)"), self.toggleHeaderItem)
         self.connect(self.catSetting.ui.chbfuzzy, QtCore.SIGNAL("stateChanged(int)"), self.toggleHeaderItem)
         self.connect(self.catSetting.ui.chblastrevision, QtCore.SIGNAL("stateChanged(int)"), self.toggleHeaderItem)
@@ -209,10 +209,10 @@ class Catalog(QtGui.QMainWindow):
             if text in self.headerLabels:
                 if (self.sender().isChecked()):
                     self.ui.treeCatalog.showColumn(self.headerLabels.index(text))
-                    World.settings.setValue("Catalog." + text, QtCore.QVariant(True))
+                    World.settings.setValue("Catalog." + text, QtCore.QVariant(False))
                 else:
                     self.ui.treeCatalog.hideColumn(self.headerLabels.index(text))
-                    World.settings.setValue("Catalog." + text, QtCore.QVariant(False))
+                    World.settings.setValue("Catalog." + text, QtCore.QVariant(True))
 
     def updateProgress(self, value):
         if (not self.progressBar.isVisible()):
