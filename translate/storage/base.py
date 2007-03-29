@@ -244,7 +244,7 @@ class TranslationUnit(Statistics):
         
         """
 
-        return not (self.source and self.target)
+        return not (self.source or self.target)
 
     def hasplural(self):
         """Tells whether or not this specific unit has plural strings."""
