@@ -35,10 +35,6 @@ class OverviewDock(QtGui.QDockWidget):
         
         # set up table appearance and behavior
         self.ui.tableOverview.setWhatsThis(self.tr("<h3>Overview</h3>This table shows original messages, translations, and status of each messages in current file."))
-#        self.headerLabels = [self.tr("Index"), self.tr("Source"), self.tr("Target"), self.tr("Status")]
-#        self.ui.tableOverview.setColumnCount(len(self.headerLabels))
-#        self.ui.tableOverview.setRowCount(0)
-#        self.ui.tableOverview.setHorizontalHeaderLabels(self.headerLabels)
         self.viewSetting()
         self.ui.tableOverview.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
         self.ui.tableOverview.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
@@ -83,22 +79,12 @@ class OverviewDock(QtGui.QDockWidget):
         """
         self.viewSetting(units)
         if (not units):
-#            self.ui.tableOverview.clear()
-#            self.headerLabels = [self.tr("Index"), self.tr("Source"), self.tr("Target"), self.tr("Status")]
-#            self.ui.tableOverview.setColumnCount(len(self.headerLabels))
-#            self.ui.tableOverview.setRowCount(0)
-#            self.ui.tableOverview.setHorizontalHeaderLabels(self.headerLabels)
-#            self.ui.tableOverview.setEnabled(bool(units))
             self.emitFirstLastUnit()
             return
-#        self.ui.tableOverview.setEnabled(bool(units))
         self.indexMaxLen = len(str(len(units)))
         self.filter = World.filterAll
         self.units = units
-#        self.ui.tableOverview.clear()
-#        self.ui.tableOverview.setHorizontalHeaderLabels(self.headerLabels)
         self.ui.tableOverview.setSortingEnabled(False)
-#        self.ui.tableOverview.setRowCount(0)
         
         self.setUpdatesEnabled(False)
         oldValue = None
