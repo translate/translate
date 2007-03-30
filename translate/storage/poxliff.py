@@ -291,9 +291,17 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
             """determines whether the xml node refers to a getttext plural"""
             return node.getAttribute("restype") == "x-gettext-plurals"
         
-        def issingularunit(node):
-            """determindes whether the xml node contains a plural like id"""
-            return re.match("\\d\[\\d\\]", node.getAttribute("id")) is None
+        def isnonpluralunit(node):
+            """determindes whether the xml node contains a plural like id.
+            
+            We want to filter out all the plural nodes, except the very first
+            one in each group.
+            """
+            return re.match(r"\d+\[[123456]\]$", node.getAttribute("id")) is None
+
+        def pluralunits(pluralgroups):
+            for pluralgroup in pluralgroups:
+                yield self.UnitClass.createfromxmlElement(pluralgroup, self.document)
         
         self.filename = getattr(xml, 'name', '')
         if hasattr(xml, "read"):
@@ -306,11 +314,24 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
         groups = self.document.getElementsByTagName("group")
         pluralgroups = filter(ispluralgroup, groups)
         termEntries = self.document.getElementsByTagName(self.UnitClass.rootNode)
-        singularunits = filter(issingularunit, termEntries)
-        
         if termEntries is None:
             return
-        for entry in singularunits + pluralgroups:
+
+        singularunits = filter(isnonpluralunit, termEntries)
+        pluralunit_iter = pluralunits(pluralgroups)
+        if pluralunit_iter:
+            nextplural = pluralunit_iter.next()
+        else:
+            nextplural = None
+
+        for entry in singularunits:
             term = self.UnitClass.createfromxmlElement(entry, self.document)
-            self.units.append(term)
+            if nextplural and unicode(term.source) in nextplural.source.strings:
+                self.units.append(nextplural)
+                try:
+                    nextplural = pluralunit_iter.next()
+                except StopIteration, i:
+                    nextplural = None
+            else:
+                self.units.append(term)
 
