@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/ratha/sourceforge.net/translate/trunk/pootling/ui/Catalog.ui'
 #
-# Created: Tue Mar 27 11:06:47 2007
+# Created: Fri Mar 30 17:21:32 2007
 #      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!
@@ -30,12 +30,6 @@ class Ui_Catalog(object):
 
         self.treeCatalog = QtGui.QTreeWidget(self.centralwidget)
 
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(5),QtGui.QSizePolicy.Policy(5))
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.treeCatalog.sizePolicy().hasHeightForWidth())
-        self.treeCatalog.setSizePolicy(sizePolicy)
-
         font = QtGui.QFont(self.treeCatalog.font())
         font.setPointSize(10)
         self.treeCatalog.setFont(font)
@@ -48,17 +42,17 @@ class Ui_Catalog(object):
         self.menubar.setGeometry(QtCore.QRect(0,0,531,28))
         self.menubar.setObjectName("menubar")
 
-        self.menuHelp = QtGui.QMenu(self.menubar)
-        self.menuHelp.setObjectName("menuHelp")
-
         self.menuFile = QtGui.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
 
-        self.menuEdit = QtGui.QMenu(self.menubar)
-        self.menuEdit.setObjectName("menuEdit")
+        self.menuHelp = QtGui.QMenu(self.menubar)
+        self.menuHelp.setObjectName("menuHelp")
 
         self.menuProject = QtGui.QMenu(self.menubar)
         self.menuProject.setObjectName("menuProject")
+
+        self.menuEdit = QtGui.QMenu(self.menubar)
+        self.menuEdit.setObjectName("menuEdit")
         Catalog.setMenuBar(self.menubar)
 
         self.statusbar = QtGui.QStatusBar(Catalog)
@@ -106,18 +100,17 @@ class Ui_Catalog(object):
         self.actionStatistics.setIcon(QtGui.QIcon("../images/statistic.png"))
         self.actionStatistics.setObjectName("actionStatistics")
 
-        self.action_Build_TM = QtGui.QAction(Catalog)
-        self.action_Build_TM.setObjectName("action_Build_TM")
+        self.actionBuildTM = QtGui.QAction(Catalog)
+        self.actionBuildTM.setObjectName("actionBuildTM")
+        self.menuFile.addAction(self.actionQuit)
         self.menuHelp.addAction(self.actionAbout)
         self.menuHelp.addAction(self.actionAboutQt)
-        self.menuFile.addAction(self.actionQuit)
+        self.menuProject.addAction(self.actionConfigure)
+        self.menuProject.addAction(self.actionBuildTM)
         self.menuEdit.addAction(self.actionFind_in_Files)
         self.menuEdit.addSeparator()
         self.menuEdit.addAction(self.actionStatistics)
         self.menuEdit.addAction(self.actionReload)
-        self.menuEdit.addSeparator()
-        self.menuProject.addAction(self.actionConfigure)
-        self.menuProject.addAction(self.action_Build_TM)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
         self.menubar.addAction(self.menuProject.menuAction())
@@ -133,10 +126,10 @@ class Ui_Catalog(object):
 
     def retranslateUi(self, Catalog):
         Catalog.setWindowTitle(QtGui.QApplication.translate("Catalog", "Catalog Manager", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuHelp.setTitle(QtGui.QApplication.translate("Catalog", "&Help", None, QtGui.QApplication.UnicodeUTF8))
         self.menuFile.setTitle(QtGui.QApplication.translate("Catalog", "&File", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuEdit.setTitle(QtGui.QApplication.translate("Catalog", "&Edit", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuHelp.setTitle(QtGui.QApplication.translate("Catalog", "&Help", None, QtGui.QApplication.UnicodeUTF8))
         self.menuProject.setTitle(QtGui.QApplication.translate("Catalog", "&Project", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuEdit.setTitle(QtGui.QApplication.translate("Catalog", "&Edit", None, QtGui.QApplication.UnicodeUTF8))
         self.actionQuit.setText(QtGui.QApplication.translate("Catalog", "&Quit", None, QtGui.QApplication.UnicodeUTF8))
         self.actionQuit.setShortcut(QtGui.QApplication.translate("Catalog", "Ctrl+Q", None, QtGui.QApplication.UnicodeUTF8))
         self.actionAbout.setText(QtGui.QApplication.translate("Catalog", "About", None, QtGui.QApplication.UnicodeUTF8))
@@ -148,7 +141,7 @@ class Ui_Catalog(object):
         self.actionFind_in_Files.setShortcut(QtGui.QApplication.translate("Catalog", "Ctrl+F", None, QtGui.QApplication.UnicodeUTF8))
         self.actionStatistics.setText(QtGui.QApplication.translate("Catalog", "&Statistics", None, QtGui.QApplication.UnicodeUTF8))
         self.actionStatistics.setShortcut(QtGui.QApplication.translate("Catalog", "Ctrl+S", None, QtGui.QApplication.UnicodeUTF8))
-        self.action_Build_TM.setText(QtGui.QApplication.translate("Catalog", "&Build TM", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionBuildTM.setText(QtGui.QApplication.translate("Catalog", "&Build TM", None, QtGui.QApplication.UnicodeUTF8))
 
 
 
