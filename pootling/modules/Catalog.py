@@ -49,21 +49,12 @@ class Catalog(QtGui.QMainWindow):
         self.ui = Ui_Catalog()
         self.ui.setupUi(self)
         self.resize(720,400)
-<<<<<<< .mine
-=======
         self.autoRefresh = True
->>>>>>> .r5320
+        self.ui.actionStatistics.setEnabled(False)
 
-<<<<<<< .mine
         self.ui.toolBar.toggleViewAction()
         self.ui.toolBar.setWindowTitle("ToolBar View")
         self.ui.toolBar.setStatusTip("Toggle ToolBar View")
-    
-=======
-        self.ui.toolBar.toggleViewAction()
-        self.ui.toolBar.setWindowTitle("ToolBar View")
-        self.ui.toolBar.setStatusTip("Toggle ToolBar View")
->>>>>>> .r5320
         # set up table appearance and behavior
         self.headerLabels = [self.tr("Name"),
                             self.tr("Fuzzy"),
@@ -80,14 +71,9 @@ class Catalog(QtGui.QMainWindow):
         
         # File menu action
         self.connect(self.ui.actionQuit, QtCore.SIGNAL("triggered()"), QtCore.SLOT("close()"))
-<<<<<<< .mine
-        self.ui.actionQuit.setWhatsThis("<h3>Quit</h3>Quit Catalog")
-        
-=======
         self.ui.actionQuit.setWhatsThis("<h3>Quit</h3>Quit Catalog")
         self.ui.actionQuit.setStatusTip("Quit application")
 
->>>>>>> .r5320
         # Edit menu action
         self.ui.actionReload.setEnabled(True)
         self.connect(self.ui.actionReload, QtCore.SIGNAL("triggered()"), self.refresh)
@@ -118,12 +104,8 @@ class Catalog(QtGui.QMainWindow):
         self.findBar.setHidden(True)
 
         self.connect(self.ui.actionFind_in_Files, QtCore.SIGNAL("triggered()"), self.findBar.showFind)
-<<<<<<< .mine
-        self.ui.actionFind_in_Files.setWhatsThis("<h3>Find</h3>You can find string ever you want in Catalog")
-=======
         self.ui.actionFind_in_Files.setWhatsThis("<h3>Find</h3>You can find string ever you want in Catalog")
         self.ui.actionFind_in_Files.setStatusTip("Search for a text")
->>>>>>> .r5320
         # emit findfiles signal from FindInCatalog file
         self.connect(self.findBar, QtCore.SIGNAL("initSearch"), self.find)
 
@@ -197,6 +179,11 @@ class Catalog(QtGui.QMainWindow):
           return found
 
     def showStatistic(self):
+          # files is empty of tree Catalog
+          itemCount = self.ui.treeCatalog.topLevelItemCount()
+          if (itemCount == 0):
+              return
+
           item = self.ui.treeCatalog.currentItem()
           filename = self.getFilename(item)
           if os.path.isfile(filename):
@@ -208,12 +195,20 @@ class Catalog(QtGui.QMainWindow):
               translatedUnitCount = store.translated_unitcount()
               untranslatedUnitCount = store.untranslated_unitcount()
               totalUnitCount = fuzzyUnitCount + untranslatedUnitCount + translatedUnitCount
-
+              # round down to number ater decimal points (fuzzy)
               fuzzy = str((float(fuzzyUnitCount) / totalUnitCount) * 100)
+              fuzzy = float(fuzzy)
+              fuzzy = round(fuzzy , 2)
+              # round down to number ater decimal points ( translated)
               translated = str((float(translatedUnitCount) / totalUnitCount) * 100)
+              translated = float(translated)
+              translated = round(translated , 2)
+              # round down to number ater decimal points (untranslated)
               untranslated = str((float(untranslatedUnitCount) / totalUnitCount) * 100)
+              untranslated = float(untranslated)
+              untranslated = round(untranslated , 2)
 
-              QtGui.QMessageBox.information(self, self.tr("Statistic of files"), 'File Name: ' + str(name) + '\n\nFuzzy: ' + str(fuzzyUnitCount) + ' (' + fuzzy + '%)' + '\n\nTranslated: ' + str(translatedUnitCount) + ' (' + translated + '%)' + '\n\nUntranslated: ' + str(untranslatedUnitCount) + ' (' + untranslated + '%)' + '\n\nTotal of strings: ' + str(totalUnitCount), "OK")
+              QtGui.QMessageBox.information(self, self.tr("Statistic of files"), 'File Name: ' + str(name) + '\n\nFuzzy: ' + str(fuzzyUnitCount) + ' (' + str(fuzzy) + '%)' + '\n\nTranslated: ' + str(translatedUnitCount) + ' (' + str(translated) + '%)' + '\n\nUntranslated: ' + str(untranslatedUnitCount) + ' (' + str(untranslated) + '%)' + '\n\nTotal of strings: ' + str(totalUnitCount), "OK")
 
           elif os.path.isdir(filename):
                 for i in range(item.childCount()):
@@ -253,6 +248,7 @@ class Catalog(QtGui.QMainWindow):
         Read data from world's "CatalogPath" and display statistic of files
         in tree view.
         """
+        self.ui.actionStatistics.setEnabled(True)
         self.ui.treeCatalog.clear()
         cats = World.settings.value("CatalogPath").toStringList()
         includeSub = World.settings.value("diveIntoSubCatalog").toBool()
@@ -274,9 +270,7 @@ class Catalog(QtGui.QMainWindow):
         add path to catalog tree view if it's file, if it's directory then
         dive into it and add files.
         """
-        
         if (os.path.isfile(path)):
-            
             if (item == None):
                 item = QtGui.QTreeWidgetItem(item)
                 self.ui.treeCatalog.addTopLevelItem(item)
