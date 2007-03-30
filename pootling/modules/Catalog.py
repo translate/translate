@@ -257,6 +257,12 @@ class Catalog(QtGui.QMainWindow):
         """
         
         if (os.path.isfile(path)):
+            
+            if (item == None):
+                item = QtGui.QTreeWidgetItem(item)
+                self.ui.treeCatalog.addTopLevelItem(item)
+                self.ui.treeCatalog.expandItem(item)
+                
             if (not item.text(0)):
                 item.setText(0, os.path.dirname(path))
             childStats = self.getStats(path)
