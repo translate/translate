@@ -263,7 +263,8 @@ class LISAfile(base.TranslationStore):
 
     def parse(self, xml):
         """Populates this object from the given xml string"""
-        self.filename = getattr(xml, 'name', '')
+        if not hasattr(self, 'filename'):
+            self.filename = getattr(xml, 'name', '')
         if hasattr(xml, "read"):
             posrc = xml.read()
             xml.close()
