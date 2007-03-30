@@ -319,9 +319,9 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
 
         singularunits = filter(isnonpluralunit, termEntries)
         pluralunit_iter = pluralunits(pluralgroups)
-        if pluralunit_iter:
+        try:
             nextplural = pluralunit_iter.next()
-        else:
+        except StopIteration:
             nextplural = None
 
         for entry in singularunits:
