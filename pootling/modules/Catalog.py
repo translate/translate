@@ -49,11 +49,21 @@ class Catalog(QtGui.QMainWindow):
         self.ui = Ui_Catalog()
         self.ui.setupUi(self)
         self.resize(720,400)
+<<<<<<< .mine
+=======
         self.autoRefresh = True
+>>>>>>> .r5320
 
+<<<<<<< .mine
         self.ui.toolBar.toggleViewAction()
         self.ui.toolBar.setWindowTitle("ToolBar View")
         self.ui.toolBar.setStatusTip("Toggle ToolBar View")
+    
+=======
+        self.ui.toolBar.toggleViewAction()
+        self.ui.toolBar.setWindowTitle("ToolBar View")
+        self.ui.toolBar.setStatusTip("Toggle ToolBar View")
+>>>>>>> .r5320
         # set up table appearance and behavior
         self.headerLabels = [self.tr("Name"),
                             self.tr("Fuzzy"),
@@ -70,9 +80,14 @@ class Catalog(QtGui.QMainWindow):
         
         # File menu action
         self.connect(self.ui.actionQuit, QtCore.SIGNAL("triggered()"), QtCore.SLOT("close()"))
+<<<<<<< .mine
+        self.ui.actionQuit.setWhatsThis("<h3>Quit</h3>Quit Catalog")
+        
+=======
         self.ui.actionQuit.setWhatsThis("<h3>Quit</h3>Quit Catalog")
         self.ui.actionQuit.setStatusTip("Quit application")
 
+>>>>>>> .r5320
         # Edit menu action
         self.ui.actionReload.setEnabled(True)
         self.connect(self.ui.actionReload, QtCore.SIGNAL("triggered()"), self.refresh)
@@ -103,8 +118,12 @@ class Catalog(QtGui.QMainWindow):
         self.findBar.setHidden(True)
 
         self.connect(self.ui.actionFind_in_Files, QtCore.SIGNAL("triggered()"), self.findBar.showFind)
+<<<<<<< .mine
+        self.ui.actionFind_in_Files.setWhatsThis("<h3>Find</h3>You can find string ever you want in Catalog")
+=======
         self.ui.actionFind_in_Files.setWhatsThis("<h3>Find</h3>You can find string ever you want in Catalog")
         self.ui.actionFind_in_Files.setStatusTip("Search for a text")
+>>>>>>> .r5320
         # emit findfiles signal from FindInCatalog file
         self.connect(self.findBar, QtCore.SIGNAL("initSearch"), self.find)
 
