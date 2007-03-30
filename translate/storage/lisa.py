@@ -157,7 +157,9 @@ Provisional work is done to make several languages possible."""
         start = 0
         for i,m in enumerate(_getPhMatches(text)):
             #pretext
-            parent.appendChild(self.document.createTextNode(text[start:m.start()]))
+            pretext = text[start:m.start()]
+            if pretext:
+                parent.appendChild(self.document.createTextNode(pretext))
             #ph node
             phnode = ourdom.Element("ph")
             phnode.setAttribute("id", str(i+1))
