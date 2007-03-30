@@ -243,12 +243,8 @@ class Catalog(QtGui.QMainWindow):
         currentFileNum = 0.0
         
         for catalogFile in cats:
-            catalogFile = str(catalogFile)
-            
-            topItem = QtGui.QTreeWidgetItem()
-            self.addCatalogFile(catalogFile, includeSub, topItem)
-            self.ui.treeCatalog.addTopLevelItem(topItem)
-            self.ui.treeCatalog.expandItem(topItem)
+            catalogFile = unicode(catalogFile)
+            self.addCatalogFile(catalogFile, includeSub, None)
         
         self.ui.treeCatalog.resizeColumnToContents(0)
             #currentFileNum += 1
@@ -264,21 +260,32 @@ class Catalog(QtGui.QMainWindow):
             if (not item.text(0)):
                 item.setText(0, os.path.dirname(path))
             childStats = self.getStats(path)
-            item1 = QtGui.QTreeWidgetItem(item)
-            item1.setText(0, childStats[0])
-            item1.setText(1, childStats[1])
-            item1.setText(2, childStats[2])
-            item1.setText(3, childStats[3])
-            item1.setText(4, childStats[4])
-            item1.setText(5, childStats[5])
-            item1.setText(6, childStats[6])
-            item1.setText(7, childStats[7])
+            if (childStats):
+                item1 = QtGui.QTreeWidgetItem(item)
+                item1.setText(0, childStats[0])
+                item1.setText(1, childStats[1])
+                item1.setText(2, childStats[2])
+                item1.setText(3, childStats[3])
+                item1.setText(4, childStats[4])
+                item1.setText(5, childStats[5])
+                item1.setText(6, childStats[6])
+                item1.setText(7, childStats[7])
 
-        if (os.path.isdir(path)):
+        if (os.path.isdir(path)) and (not path.endswith(".svn")):
+            if (item == None):
+                item = QtGui.QTreeWidgetItem(item)
+                self.ui.treeCatalog.addTopLevelItem(item)
+                self.ui.treeCatalog.expandItem(item)
+            else:
+                item = QtGui.QTreeWidgetItem(item)
+            
             if (not item.parent()):
+                # full path name is need for top level directory
                 pathName = path
             else:
+                # sub directory.. needs only basename
                 pathName = os.path.basename(path)
+            
             item.setText(0, pathName)
             
             for root, dirs, files in os.walk(path):
@@ -290,20 +297,21 @@ class Catalog(QtGui.QMainWindow):
                 if (includeSub):
                     for folder in dirs:
                         path = os.path.join(root + '/' + folder)
-                        subItem = QtGui.QTreeWidgetItem(item)
-                        self.addCatalogFile(path, includeSub, subItem)
+                        #subItem = QtGui.QTreeWidgetItem(item)
+                        #self.addCatalogFile(path, includeSub, subItem)
+                        self.addCatalogFile(path, includeSub, item)
                 
                 break
     
     def getStats(self, filename):
         """
-        return stats as list of text of current file name.
+        return stats as list of text of current file name or False if error.
         @param filename: path and file name.
         """
         try:
             store = factory.getobject(filename)
         except:
-            return ["", "", "", "", "", "", "",""]
+            return False
         
         name = os.path.basename(filename)
         fuzzyUnitCount = store.fuzzy_units()
