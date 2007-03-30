@@ -134,3 +134,20 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert unit.xmlelement.getAttribute("approved") == "no"
         #assert unit.isfuzzy()
 
+    def test_parsing(self):
+        xlfsource = '''<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
+        <file datatype="po" original="doc.txt" source-language="en-US">
+                <body>
+                        <trans-unit id="2" xml:space="preserve">
+                                <source>&amp;Applications</source>
+                                <target/>
+                        </trans-unit>
+                </body>
+        </file>
+</xliff>'''
+        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        assert len(xlifffile.units) == 1
+        print xlifffile.units[0].source
+        assert xlifffile.units[0].source == "&Applications"
+
