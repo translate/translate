@@ -291,6 +291,9 @@ class TranslationStore(Statistics):
         """Constructs a blank TranslationStore."""
 
         self.units = []
+        self.filepath = None
+        self.translator = ""
+        self.date = ""
         if unitclass:
             self.UnitClass = unitclass
         super(TranslationStore, self).__init__()
