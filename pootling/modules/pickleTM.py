@@ -22,6 +22,7 @@
 import os, tempfile, pickle
 from translate.storage import factory
 from translate.search import match
+from translate.storage import poheader
 from ConfigParser import *
 
 class pickleTM:
@@ -41,6 +42,15 @@ class pickleTM:
         """
         try:
             store = factory.getobject(file)
+            store.filepath = file
+            if (isinstance(store, poheader.poheader)):
+                headerDic = store.parseheader()
+                store.translator = headerDic['Last-Translator']
+                store.date = headerDic['PO-Revision-Date']
+            else:
+                store.translator = ""
+                store.date = ""
+            
         except:
             store = None
         return store

@@ -120,6 +120,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.menuWindow.insertAction(sepAction, action)
         self.connect(self.operator, QtCore.SIGNAL("candidates"), self.table.fillTable)
         self.connect(self.table, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
+        self.connect(self.table, QtCore.SIGNAL("isCopyResult"), self.operator.isCopyResult)
         self.connect(self.operator, QtCore.SIGNAL("filterChanged"), self.table.filterChanged)
         
         #Help menu of aboutQt
@@ -202,6 +203,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionNext, QtCore.SIGNAL("triggered()"), self.dockOverview.scrollNext)
         self.connect(self.ui.actionLast, QtCore.SIGNAL("triggered()"), self.dockOverview.scrollLast)
         self.connect(self.ui.actionCopySource2Target, QtCore.SIGNAL("triggered()"), self.dockTUview.source2target)
+        self.connect(self.ui.actionCopySearchResult2Target, QtCore.SIGNAL("triggered()"), self.table.emitTarget)
 
         # action filter menu
         self.connect(self.ui.actionFilterFuzzy, QtCore.SIGNAL("toggled(bool)"), self.operator.filterFuzzy)
@@ -261,7 +263,10 @@ class MainWindow(QtGui.QMainWindow):
         
         self.connect(self.Catalog, QtCore.SIGNAL("openFile"), self.openFile)
         self.connect(self.Catalog, QtCore.SIGNAL("goto"), self.dockOverview.gotoRow)
-
+        
+        self.connect(self.table, QtCore.SIGNAL("openFile"), self.openFile)
+        self.connect(self.table, QtCore.SIGNAL("goto"), self.dockOverview.gotoRow)
+        
     def updateProgress(self, value):
         if (not self.progressBar.isVisible()):
             self.progressBar.setVisible(True)
@@ -527,6 +532,7 @@ class MainWindow(QtGui.QMainWindow):
         self.operator.setAfterfileClosed()
         self.ui.actionSave.setEnabled(False)
         self.statuslabel.setText("")
+        self.table.clearInfo()
     
     def OpeningClosingFile(self, filename, bool):
         self.setWindowTitle(((filename != "") and (filename + ' - ') or filename) + World.settingApp + ' ' + __version__.ver)
@@ -544,6 +550,8 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionFilterFuzzy.setEnabled(bool)
         self.ui.actionFilterTranslated.setEnabled(bool)
         self.ui.actionFilterUntranslated.setEnabled(bool)
+        #TODO: it is enable unless Automatically lookup translation in TM is checked.
+        self.ui.actionCopySearchResult2Target.setEnabled(bool)
         self.findBar.toggleViewAction().setVisible(bool)
     
     def addOpenToBar(self):

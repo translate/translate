@@ -34,17 +34,40 @@ class tableTM(QtGui.QDockWidget):
         self.ui.setupUi(self.form)
         self.setWidget(self.form)
         self.ui.tblTM.setEnabled(False)
-        self.headerLabels = [self.tr("Similarity"),self.tr("Source"), self.tr("Target")]
+        self.headerLabels = [self.tr("Similarity"),self.tr("Source"), self.tr("Target"), self.tr("Location"), self.tr("Translator"), self.tr("Date"), self.tr("Index")]
         self.ui.tblTM.setColumnCount(len(self.headerLabels))
         self.ui.tblTM.setHorizontalHeaderLabels(self.headerLabels)
         for i in range(len(self.headerLabels)):
             self.ui.tblTM.resizeColumnToContents(i)
             self.ui.tblTM.horizontalHeader().setResizeMode(i, QtGui.QHeaderView.Stretch)
         self.ui.tblTM.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
+        self.ui.tblTM.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
         self.normalState = QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
+        self.ui.tblTM.selectRow(0)
+        self.ui.tblTM.hideColumn(3)
+        self.ui.tblTM.hideColumn(4)
+        self.ui.tblTM.hideColumn(5)
+        self.ui.tblTM.hideColumn(6)
+        self.filepath = " "
+        self.target = ""
+        self.unitindex = ""
         
         self.connect(self.ui.tblTM, QtCore.SIGNAL("currentCellChanged(int, int, int, int)"), self.getCurrentTarget)
         self.connect(self.ui.tblTM, QtCore.SIGNAL("itemDoubleClicked(QTableWidgetItem *)"), self.emitTarget)
+        self.createContextMenu()
+        
+    def createContextMenu(self):
+        # context menu of items
+        self.menu = QtGui.QMenu()
+        actionCopyResult = self.menu.addAction(QtGui.QIcon("../images/identity.png"), self.tr("Copy search result to target"))
+        actionEditFile = self.menu.addAction(self.tr("Edit file: %s" % self.filepath))
+        actionChangeTranslation = self.menu.addAction(self.tr("Change translation in TM"))
+        
+        self.connect(actionCopyResult, QtCore.SIGNAL("triggered()"), self.emitTarget)
+        self.connect(actionEditFile, QtCore.SIGNAL("triggered()"), self.emitOpenFile)
+        
+    def contextMenuEvent(self, e):
+        self.menu.exec_(e.globalPos())
         
     def fillTable(self, candidates):
         '''fill each found unit into table
@@ -73,20 +96,71 @@ class tableTM(QtGui.QDockWidget):
             
             item = QtGui.QTableWidgetItem(unit.target)
             self.ui.tblTM.setItem(row, 2, item)
-                
+            
+            item = QtGui.QTableWidgetItem(unit.filepath)
+            self.ui.tblTM.setItem(row, 3, item)
+            
+            item = QtGui.QTableWidgetItem(unit.translator)
+            self.ui.tblTM.setItem(row, 4, item)
+            
+            item = QtGui.QTableWidgetItem(unit.date)
+            self.ui.tblTM.setItem(row, 5, item)
+            item = QtGui.QTableWidgetItem(str(unit.unitindex))
+            self.ui.tblTM.setItem(row, 6, item)
+            
         self.ui.tblTM.setSortingEnabled(True)
         self.ui.tblTM.sortItems(0)
         self.ui.tblTM.resizeRowsToContents()
         self.show()
-    
+        self.createContextMenu()
+        self.ui.tblTM.setCurrentCell(0,0)
+        self.getCurrentTarget(0,0,0,0)
+        
+    def clearInfo(self):
+        self.ui.lblPath.clear()
+        self.ui.lblTranslator.clear()
+        self.ui.lblDate.clear()
+        self.ui.tblTM.clear()
+        self.ui.tblTM.setRowCount(0)
+        self.target = ""
+        self.filepath = ""
+        
     def getCurrentTarget(self, row, col, preRow, preCol):
-        item = self.ui.tblTM.item(row, 2)
-        if (item):
-            self.target = item.text()
+        """Slot to get info from the current found unit."""
+        if (row < 0):
+            self.clearInfo()
+        target = self.ui.tblTM.item(row, 2)
+        if (target):
+            self.target = target.text()
+        filepath = self.ui.tblTM.item(row, 3)
+        if (filepath):
+            self.filepath = filepath.text()
+            self.ui.lblPath.setText(self.filepath)
+        translator = self.ui.tblTM.item(row, 4)
+        if (translator):
+            self.ui.lblTranslator.setText(translator.text())
+        date = self.ui.tblTM.item(row, 5)
+        if (date):
+            self.ui.lblDate.setText(date.text())
+        unitindex = self.ui.tblTM.item(row, 6)
+        if (unitindex):
+            self.unitindex = int(str(unitindex.text()))
     
     def emitTarget(self):
-        self.emit(QtCore.SIGNAL("targetChanged"), self.target)
+        self.emitIsCopyResult(True)
+        self.emit(QtCore.SIGNAL("targetChanged"), unicode(self.target))
+        
+    def emitIsCopyResult(self, bool = False):
+        self.emit(QtCore.SIGNAL("isCopyResult"), bool)
+        
     
+    def emitOpenFile(self):
+        """
+        Send "openFile" signal with filename.
+        """
+        self.emit(QtCore.SIGNAL("openFile"), str(self.filepath))
+        self.emit(QtCore.SIGNAL("goto"), self.unitindex)
+            
     def filterChanged(self, filter, lenFilter):
         if (not lenFilter):
             self.ui.tblTM.setRowCount(0)

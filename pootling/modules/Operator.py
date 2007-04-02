@@ -56,6 +56,7 @@ class Operator(QtCore.QObject):
         self.setTMLookupStatus(TMpreference)
         GlossaryPreference = World.settings.value("GlossaryPreference").toInt()[0]
         self.setTermLookupStatus(GlossaryPreference)
+        self.isCpResult = False
 
     def getUnits(self, fileName):
         """reading a file into the internal datastructure.
@@ -481,9 +482,16 @@ class Operator(QtCore.QObject):
         self.emitNewUnits()
         self.emitStatus()
         return
-    
+        
+    def isCopyResult(self, bool):
+        """Slot to recieve isCopyResult signal."""
+        self.isCpResult = bool
+        
     def lookupUnit(self):
         if (not self.filteredList):
+            return
+        if (self.isCpResult):
+            self.isCpResult = False
             return
         unit = self.filteredList[self.currentUnitIndex]
         candidates = self.lookupProcess(unit)
