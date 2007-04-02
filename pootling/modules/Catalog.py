@@ -24,11 +24,13 @@
 from PyQt4 import QtCore, QtGui
 from pootling.ui.Ui_Catalog import Ui_Catalog
 from pootling.modules.CatalogSetting import CatalogSetting
+from pootling.modules import tmSetting
 from pootling.modules.AboutEditor import AboutEditor
 from translate.storage import factory
 from Pootle import versioncontrol
 import pootling.modules.World as World
 from pootling.modules.FindInCatalog import FindInCatalog
+from pootling.ui.Ui_tmSetting import Ui_tmsetting
 import os
 
 class Catalog(QtGui.QMainWindow):
@@ -87,6 +89,7 @@ class Catalog(QtGui.QMainWindow):
         # Catalog setting's checkboxes action.
         self.catSetting = CatalogSetting(self)
         self.connect(self.ui.actionConfigure, QtCore.SIGNAL("triggered()"), self.catSetting.show)
+        self.connect(self.ui.actionBuildTM, QtCore.SIGNAL("triggered()"), self.buildTM)
         self.ui.actionConfigure.setWhatsThis("<h3>Configure...</h3>Set the configuration items with your prefered values.")
         self.ui.actionConfigure.setStatusTip("Set the prefered configuration")
         self.connect(self.catSetting.ui.chbname, QtCore.SIGNAL("stateChanged(int)"), self.toggleHeaderItem)
@@ -131,7 +134,7 @@ class Catalog(QtGui.QMainWindow):
         self.setupCheckbox()
 
         self.lastFoundFilename= None
-
+    
     def find(self, searchString, searchOptions):
             if (not (searchString and searchOptions)):
                 return
@@ -421,6 +424,17 @@ class Catalog(QtGui.QMainWindow):
         else:
             self.settings.sync()
 
+    def buildTM(self):
+        """Build Translation Memory"""
+        cats = self.ui.treeCatalog.topLevelItem(0)
+        if cats:
+            catalogPath = cats.text(0)
+            self.tmSetting = tmSetting.tmSetting(None)
+            self.tmSetting.showDialog()
+            self.tmSetting.addLocation(catalogPath)
+            self.tmSetting.createTM()
+        else:
+            return
 
 ##if __name__ == "__main__":
 ##    import sys, os
