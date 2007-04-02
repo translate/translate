@@ -74,10 +74,16 @@ class matcher:
             store = [store]
         for file in store:
             candidates = filter(self.usable, file.units)
+            unitindex = 1
             for candidate in candidates:
                 simpleunit = base.TranslationUnit(candidate.source)
                 simpleunit.target = candidate.target
                 simpleunit.addnote(candidate.getnotes(origin="translator"))
+                simpleunit.filepath = file.filepath
+                simpleunit.unitindex = unitindex
+                simpleunit.translator = file.translator
+                simpleunit.date = file.date
+                unitindex += 1
                 self.candidates.units.append(simpleunit)
         self.candidates.units.sort(sourcelencmp)
         if not self.candidates.units:
@@ -163,6 +169,10 @@ class matcher:
         for score, candidate in candidates:
             newunit = po.pounit(candidate.source)
             newunit.target = candidate.target
+            newunit.filepath = candidate.filepath
+            newunit.unitindex = candidate.unitindex
+            newunit.translator = candidate.translator
+            newunit.date = candidate.date
             candidatenotes = candidate.getnotes().strip()
             if candidatenotes:
                 newunit.addnote(candidatenotes)
