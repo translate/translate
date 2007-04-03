@@ -4,16 +4,22 @@ class Highlighter(QtCore.QObject):
     def __init__(self, parent = None):
         QtCore.QObject.__init__(self, parent)
         
-        # highlight search
+        # highlight format
         self.searchFormat = QtGui.QTextCharFormat()
         self.searchFormat.setFontWeight(QtGui.QFont.Bold)
         self.searchFormat.setForeground(QtCore.Qt.white)
         self.searchFormat.setBackground(QtCore.Qt.darkMagenta)
         
+        # glossary format
+        self.glossaryFormat = QtGui.QTextCharFormat()
+        self.glossaryFormat.setFontWeight(QtGui.QFont.Bold)
+        self.glossaryFormat.setUnderlineStyle(QtGui.QTextCharFormat.DashDotDotLine)
+        
         self.highlightRange = QtGui.QTextLayout.FormatRange()
-        self.highlightRange.format = self.searchFormat
         self.block = None
         
+        self.format = {"search": self.searchFormat, "glossary":self.glossaryFormat}
+    
 #        # highlight tage
 #        tagFormat = QtGui.QTextCharFormat()
 #        tagFormat.setFontWeight(QtGui.QFont.Bold)
@@ -69,4 +75,5 @@ class Highlighter(QtCore.QObject):
         self.setHighlightRange()
         self.highlightBlock(self.block)
         
-        
+    def setHighlightFormat(self, format):
+        self.highlightRange.format = self.format[format]

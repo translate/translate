@@ -105,6 +105,7 @@ class MainWindow(QtGui.QMainWindow):
 
         #create operator
         self.operator = Operator()
+        self.connect(self.dockTUview, QtCore.SIGNAL("Lookup"), self.operator.lookupTranslation)
         
         # action Tool menu of Catalog Manager
         self.Catalog = Catalog(self)
@@ -156,6 +157,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.findBar, QtCore.SIGNAL("replaceAll"), self.operator.replaceAll)
         
         # "searchFound" sends container and location to be highlighted.
+        self.connect(self.operator, QtCore.SIGNAL("glossaryResult"), self.dockTUview.highlighGlossary)
         self.connect(self.operator, QtCore.SIGNAL("searchResult"), self.dockTUview.highlightSearch)
         self.connect(self.operator, QtCore.SIGNAL("searchResult"), self.dockComment.highlightSearch)
         self.connect(self.operator, QtCore.SIGNAL("generalInfo"), self.showTemporaryMessage)

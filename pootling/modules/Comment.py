@@ -92,6 +92,7 @@ class CommentDock(QtGui.QDockWidget):
         if ((textField == World.comment) and position != None):
             textField = self.ui.txtTranslatorComment
             block = textField.document().findBlock(position)
+            self.highlighter.setHighlightFormat("search")
             self.highlighter.setHighlightRange(position - block.position(), length)
             self.highlighter.highlightBlock(block)
         else:

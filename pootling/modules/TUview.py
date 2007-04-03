@@ -81,7 +81,7 @@ class TUview(QtGui.QDockWidget):
         remove a value from scrollbar if the unit is not in filter.
         Then recalculate scrollbar maximum value.
         @param unit: unit to set in target and source.
-        @param index: value in the scrollbar to be removed."""
+        @param index: value in the scrollbar to be removed.""" 
         self.disconnect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
         if (not unit):
             return
@@ -113,7 +113,9 @@ class TUview(QtGui.QDockWidget):
             self.secondpage = False
             self.ui.sourceStacked.setCurrentIndex(0)
             self.ui.targetStacked.setCurrentIndex(0)
-            self.ui.txtSource.setPlainText(unit.source)
+            if (unicode(unit.source) !=  unicode(self.ui.txtSource.toPlainText())):
+                self.ui.txtSource.setPlainText(unit.source)
+                self.emitLookup()
             if (unicode(unit.target) !=  unicode(self.ui.txtTarget.toPlainText())):
                 self.ui.txtTarget.setPlainText(unit.target)
         else:
@@ -204,7 +206,7 @@ class TUview(QtGui.QDockWidget):
                 sourcetab = self.ui.tabWidgetSource
                 sourcetabindex = sourcetab.currentIndex()
                 self.ui.txtTarget.setPlainText(sourcetab.widget(sourcetabindex).children()[1].toPlainText())
-
+    
     def highlightSearch(self, textField, position, length = 0):
         """Highlight the text at specified position, length, and textField.
         @param textField: source or target text box.
@@ -214,12 +216,25 @@ class TUview(QtGui.QDockWidget):
         if ((textField == World.source or textField == World.target)  and position != None):
             textField = ((textField == World.source) and self.ui.txtSource or self.ui.txtTarget)
             block = textField.document().findBlock(position)
-            self.highlighter.setHighlightRange(position - block.position(), length)
-            self.highlighter.highlightBlock(block)
+            self.highlight("search", position - block.position(), length, block)
         else:
             self.highlighter.clearAdditionalFormats()
         self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
+    
+    def highlighGlossary(self, position, length = 0):
+        self.disconnect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
+        block = self.ui.txtSource.document().findBlock(position)
+        self.highlight("glossary", position - block.position(), length, block)
+        self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
+    
+    def highlight(self, format, start, length, block):
+        '''set highlight mode according to format.
         
+        '''
+        self.highlighter.setHighlightFormat(format)
+        self.highlighter.setHighlightRange(start, length)
+        self.highlighter.highlightBlock(block)
+    
     def replaceText(self, textField, position, length, replacedText):
         """replace the string (at position and length) with replacedText in txtTarget.
         @param textField: source or target text box.
@@ -260,8 +275,6 @@ class TUview(QtGui.QDockWidget):
         if (targetfont.isValid() and fontObj.fromString(targetfont.toString())):
             self.ui.txtTarget.setFont(fontObj)
             self.ui.txtTarget.setTabStopWidth(QtGui.QFontMetrics(fontObj).width("m"*8))
-        
-#        self.emitTargetChanged()
     
     def viewSetting(self, arg = None):
         bool = (arg and True or False)
@@ -276,6 +289,13 @@ class TUview(QtGui.QDockWidget):
         self.ui.lblComment.setVisible(bool)
         self.ui.sourceStacked.setEnabled(bool)
         self.ui.targetStacked.setEnabled(bool)
+    
+    def emitLookup(self):
+        '''emit signal to lookup unit translation or unit's terminologies translation in glossary;
+        
+        '''
+        self.emit(QtCore.SIGNAL("Lookup"))
+        
     
 if __name__ == "__main__":
     import sys, os

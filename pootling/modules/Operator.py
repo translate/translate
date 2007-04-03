@@ -273,10 +273,6 @@ class Operator(QtCore.QObject):
         if (position < len(self.filteredList) and position >= 0):
             unit = self.filteredList[position]
             self.emitUnit(unit)
-        if (self.lookupUnitStatus):
-            self.lookupUnit()
-        if (self.AutoIdentTerm):
-            self.lookupTerm()
     
     def toggleFuzzy(self):
         """toggle fuzzy state for current unit."""
@@ -300,7 +296,7 @@ class Operator(QtCore.QObject):
         @param matchCase: bool indicates case sensitive condition."""
         self.currentTextField = 0
         self.foundPosition = -1
-        self.searchString = str(searchString)
+        self.searchString = unicode(searchString)
         self.searchableText = searchableText
         self.matchCase = matchCase
         if (not matchCase):
@@ -530,5 +526,19 @@ class Operator(QtCore.QObject):
             self.emit(QtCore.SIGNAL("noTM"), "Problem with glossary, Build or Rebuild glossary")
             return
         unit = self.filteredList[self.currentUnitIndex]
-        candidates = self.termmatcher.matches(unit.source)
-
+        #TODO: split text by space
+        words = unit.source.split(" ")
+        for word in words:
+            candidates = self.termmatcher.matches(word)
+            foundPosition = unit.source.lower().find(candidates[0].source, 0)
+            if (foundPosition):
+                self.emit(QtCore.SIGNAL("glossaryResult"), foundPosition, len(unicode(candidates[0].source)))
+    
+    def lookupTranslation(self):
+        '''lookup text translation or text terminologies in glossary.
+        
+        '''
+        if (self.lookupUnitStatus):
+            self.lookupUnit()
+        if (self.AutoIdentTerm):
+            self.lookupTerm()
