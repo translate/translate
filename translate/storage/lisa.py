@@ -268,8 +268,8 @@ class LISAfile(base.TranslationStore):
         if not hasattr(self, 'filename'):
             self.filename = getattr(xml, 'name', '')
         if hasattr(xml, "read"):
+            xml.seek(0)
             posrc = xml.read()
-            xml.close()
             xml = posrc
         self.document = ourdom.parseString(xml)
         assert self.document.documentElement.tagName == self.rootNode

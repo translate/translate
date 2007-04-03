@@ -329,8 +329,8 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
         
         self.filename = getattr(xml, 'name', '')
         if hasattr(xml, "read"):
+            xml.seek(0)
             xmlsrc = xml.read()
-            xml.close()
             xml = xmlsrc
         self.document = ourdom.parseString(xml)
         assert self.document.documentElement.tagName == self.rootNode
