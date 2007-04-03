@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Mon Mar 26 09:27:06 2007
+# Created: Tue Apr  3 09:41:43 2007
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -13,7 +13,7 @@ from PyQt4 import QtCore, QtGui
 class Ui_frmPreference(object):
     def setupUi(self, frmPreference):
         frmPreference.setObjectName("frmPreference")
-        frmPreference.resize(QtCore.QSize(QtCore.QRect(0,0,552,540).size()).expandedTo(frmPreference.minimumSizeHint()))
+        frmPreference.resize(QtCore.QSize(QtCore.QRect(0,0,537,540).size()).expandedTo(frmPreference.minimumSizeHint()))
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(7))
         sizePolicy.setHorizontalStretch(0)
@@ -648,29 +648,29 @@ class Ui_frmPreference(object):
         self.gridlayout8.setSpacing(6)
         self.gridlayout8.setObjectName("gridlayout8")
 
-        self.chbAutoTranslate_2 = QtGui.QCheckBox(self.frame_4)
+        self.chbAutoIdentTerm = QtGui.QCheckBox(self.frame_4)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.chbAutoTranslate_2.sizePolicy().hasHeightForWidth())
-        self.chbAutoTranslate_2.setSizePolicy(sizePolicy)
-        self.chbAutoTranslate_2.setObjectName("chbAutoTranslate_2")
-        self.gridlayout8.addWidget(self.chbAutoTranslate_2,0,0,1,1)
+        sizePolicy.setHeightForWidth(self.chbAutoIdentTerm.sizePolicy().hasHeightForWidth())
+        self.chbAutoIdentTerm.setSizePolicy(sizePolicy)
+        self.chbAutoIdentTerm.setObjectName("chbAutoIdentTerm")
+        self.gridlayout8.addWidget(self.chbAutoIdentTerm,0,0,1,1)
 
-        self.checkBox = QtGui.QCheckBox(self.frame_4)
-        self.checkBox.setObjectName("checkBox")
-        self.gridlayout8.addWidget(self.checkBox,1,0,1,1)
+        self.chbChangeTerm = QtGui.QCheckBox(self.frame_4)
+        self.chbChangeTerm.setObjectName("chbChangeTerm")
+        self.gridlayout8.addWidget(self.chbChangeTerm,1,0,1,1)
 
-        self.chbIgnoreFuzzy_2 = QtGui.QCheckBox(self.frame_4)
+        self.chbDetectTerm = QtGui.QCheckBox(self.frame_4)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.chbIgnoreFuzzy_2.sizePolicy().hasHeightForWidth())
-        self.chbIgnoreFuzzy_2.setSizePolicy(sizePolicy)
-        self.chbIgnoreFuzzy_2.setObjectName("chbIgnoreFuzzy_2")
-        self.gridlayout8.addWidget(self.chbIgnoreFuzzy_2,3,0,1,1)
+        sizePolicy.setHeightForWidth(self.chbDetectTerm.sizePolicy().hasHeightForWidth())
+        self.chbDetectTerm.setSizePolicy(sizePolicy)
+        self.chbDetectTerm.setObjectName("chbDetectTerm")
+        self.gridlayout8.addWidget(self.chbDetectTerm,3,0,1,1)
 
         self.frame_5 = QtGui.QFrame(self.frame_4)
         self.frame_5.setFrameShape(QtGui.QFrame.NoFrame)
@@ -682,30 +682,30 @@ class Ui_frmPreference(object):
         self.gridlayout9.setSpacing(5)
         self.gridlayout9.setObjectName("gridlayout9")
 
-        self.chbAddTraslation_2 = QtGui.QCheckBox(self.frame_5)
+        self.chbAddNewTerm = QtGui.QCheckBox(self.frame_5)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.chbAddTraslation_2.sizePolicy().hasHeightForWidth())
-        self.chbAddTraslation_2.setSizePolicy(sizePolicy)
-        self.chbAddTraslation_2.setObjectName("chbAddTraslation_2")
-        self.gridlayout9.addWidget(self.chbAddTraslation_2,0,0,1,3)
+        sizePolicy.setHeightForWidth(self.chbAddNewTerm.sizePolicy().hasHeightForWidth())
+        self.chbAddNewTerm.setSizePolicy(sizePolicy)
+        self.chbAddNewTerm.setObjectName("chbAddNewTerm")
+        self.gridlayout9.addWidget(self.chbAddNewTerm,0,0,1,3)
 
         spacerItem3 = QtGui.QSpacerItem(81,21,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
         self.gridlayout9.addItem(spacerItem3,1,2,1,1)
 
-        self.checkBox_4 = QtGui.QCheckBox(self.frame_5)
-        self.checkBox_4.setObjectName("checkBox_4")
-        self.gridlayout9.addWidget(self.checkBox_4,1,1,1,1)
+        self.chbSuggestTranslation = QtGui.QCheckBox(self.frame_5)
+        self.chbSuggestTranslation.setObjectName("chbSuggestTranslation")
+        self.gridlayout9.addWidget(self.chbSuggestTranslation,1,1,1,1)
 
         spacerItem4 = QtGui.QSpacerItem(20,20,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Minimum)
         self.gridlayout9.addItem(spacerItem4,1,0,1,1)
         self.gridlayout8.addWidget(self.frame_5,4,0,1,1)
 
-        self.checkBox_2 = QtGui.QCheckBox(self.frame_4)
-        self.checkBox_2.setObjectName("checkBox_2")
-        self.gridlayout8.addWidget(self.checkBox_2,2,0,1,1)
+        self.chbMatchTerm = QtGui.QCheckBox(self.frame_4)
+        self.chbMatchTerm.setObjectName("chbMatchTerm")
+        self.gridlayout8.addWidget(self.chbMatchTerm,2,0,1,1)
         self.gridlayout7.addWidget(self.frame_4,6,0,1,1)
 
         self.line_4 = QtGui.QFrame(self.page)
@@ -790,9 +790,9 @@ class Ui_frmPreference(object):
         self.chbAddTraslation.setObjectName("chbAddTraslation")
         self.gridlayout10.addWidget(self.chbAddTraslation,3,0,1,1)
 
-        self.checkBox_3 = QtGui.QCheckBox(self.frame_3)
-        self.checkBox_3.setObjectName("checkBox_3")
-        self.gridlayout10.addWidget(self.checkBox_3,2,0,1,1)
+        self.chbEditTraslation = QtGui.QCheckBox(self.frame_3)
+        self.chbEditTraslation.setObjectName("chbEditTraslation")
+        self.gridlayout10.addWidget(self.chbEditTraslation,2,0,1,1)
         self.gridlayout7.addWidget(self.frame_3,2,0,1,1)
 
         self.line_3 = QtGui.QFrame(self.page)
@@ -812,9 +812,6 @@ class Ui_frmPreference(object):
         self.gridlayout11.setMargin(9)
         self.gridlayout11.setSpacing(6)
         self.gridlayout11.setObjectName("gridlayout11")
-
-        spacerItem6 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
-        self.gridlayout11.addItem(spacerItem6,3,0,1,1)
 
         self.chkHeaderAuto = QtGui.QCheckBox(self.page_2)
 
@@ -847,6 +844,20 @@ class Ui_frmPreference(object):
         self.line_5.setFrameShadow(QtGui.QFrame.Sunken)
         self.line_5.setObjectName("line_5")
         self.gridlayout11.addWidget(self.line_5,1,0,1,1)
+
+        self.chkUpdateTMAuto = QtGui.QCheckBox(self.page_2)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.chkUpdateTMAuto.sizePolicy().hasHeightForWidth())
+        self.chkUpdateTMAuto.setSizePolicy(sizePolicy)
+        self.chkUpdateTMAuto.setChecked(True)
+        self.chkUpdateTMAuto.setObjectName("chkUpdateTMAuto")
+        self.gridlayout11.addWidget(self.chkUpdateTMAuto,3,0,1,1)
+
+        spacerItem6 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
+        self.gridlayout11.addItem(spacerItem6,4,0,1,1)
         self.stackedWidget.addWidget(self.page_2)
         self.gridlayout1.addWidget(self.stackedWidget,0,1,1,1)
 
@@ -864,15 +875,11 @@ class Ui_frmPreference(object):
         self.listWidget.setModelColumn(0)
         self.listWidget.setObjectName("listWidget")
         self.gridlayout1.addWidget(self.listWidget,0,0,1,1)
-        self.gridlayout.addWidget(self.frame,0,0,1,1)
+        self.gridlayout.addWidget(self.frame,0,0,1,3)
 
-        self.hboxlayout = QtGui.QHBoxLayout()
-        self.hboxlayout.setMargin(0)
-        self.hboxlayout.setSpacing(5)
-        self.hboxlayout.setObjectName("hboxlayout")
-
-        spacerItem7 = QtGui.QSpacerItem(287,31,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
-        self.hboxlayout.addItem(spacerItem7)
+        self.cancelButton = QtGui.QPushButton(frmPreference)
+        self.cancelButton.setObjectName("cancelButton")
+        self.gridlayout.addWidget(self.cancelButton,1,2,1,1)
 
         self.okButton = QtGui.QPushButton(frmPreference)
 
@@ -882,12 +889,10 @@ class Ui_frmPreference(object):
         sizePolicy.setHeightForWidth(self.okButton.sizePolicy().hasHeightForWidth())
         self.okButton.setSizePolicy(sizePolicy)
         self.okButton.setObjectName("okButton")
-        self.hboxlayout.addWidget(self.okButton)
+        self.gridlayout.addWidget(self.okButton,1,1,1,1)
 
-        self.cancelButton = QtGui.QPushButton(frmPreference)
-        self.cancelButton.setObjectName("cancelButton")
-        self.hboxlayout.addWidget(self.cancelButton)
-        self.gridlayout.addLayout(self.hboxlayout,1,0,1,1)
+        spacerItem7 = QtGui.QSpacerItem(341,31,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        self.gridlayout.addItem(spacerItem7,1,0,1,1)
 
         self.retranslateUi(frmPreference)
         self.stackedWidget.setCurrentIndex(0)
@@ -928,22 +933,23 @@ class Ui_frmPreference(object):
         self.btnColorOverview.setText(self.tr("Color"))
         self.bntDefaultsColor.setText(self.tr("Defaults Color"))
         self.label_4.setText(self.tr("Setting font & color"))
-        self.chbAutoTranslate_2.setText(self.tr("Automatically identify and highlight terminology in glossary"))
-        self.checkBox.setText(self.tr("Possible to change translation of terminology in glossary"))
-        self.chbIgnoreFuzzy_2.setText(self.tr("Detect new terminology"))
-        self.chbAddTraslation_2.setText(self.tr("Add new terminology to glossary"))
-        self.checkBox_4.setText(self.tr("Allow translation suggestion from TM"))
-        self.checkBox_2.setText(self.tr("Alert if the terminology\'s translation doesn\'t match"))
+        self.chbAutoIdentTerm.setText(self.tr("Automatically identify and highlight terminology in glossary"))
+        self.chbChangeTerm.setText(self.tr("Possible to change translation of terminology in glossary"))
+        self.chbDetectTerm.setText(self.tr("Detect new terminology"))
+        self.chbAddNewTerm.setText(self.tr("Add new terminology to glossary"))
+        self.chbSuggestTranslation.setText(self.tr("Allow translation suggestion from TM"))
+        self.chbMatchTerm.setText(self.tr("Alert if the terminology\'s translation doesn\'t match"))
         self.label_6.setText(self.tr("Configure glossary usage"))
         self.label_5.setText(self.tr("Configure translation memory usage"))
         self.chbAutoTranslate.setText(self.tr("Automatically lookup translation in TM"))
         self.chbIgnoreFuzzy.setText(self.tr("Don\'t lookup fuzzy strings"))
         self.chbAddTraslation.setText(self.tr("Add new translation to TM"))
-        self.checkBox_3.setText(self.tr(" Possible to change translation in TM"))
+        self.chbEditTraslation.setText(self.tr(" Possible to change translation in TM"))
         self.chkHeaderAuto.setText(self.tr("Automatically update header on save"))
         self.label_7.setText(self.tr("Setting personal information"))
-        self.okButton.setText(self.tr("&OK"))
+        self.chkUpdateTMAuto.setText(self.tr("Automatically update TM on save"))
         self.cancelButton.setText(self.tr("&Cancel"))
+        self.okButton.setText(self.tr("&OK"))
 
 
 if __name__ == "__main__":
