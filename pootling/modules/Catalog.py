@@ -57,6 +57,9 @@ class Catalog(QtGui.QMainWindow):
         self.ui.toolBar.toggleViewAction()
         self.ui.toolBar.setWindowTitle("ToolBar View")
         self.ui.toolBar.setStatusTip("Toggle ToolBar View")
+        
+        self.folderIcon = QtGui.QIcon("../images/folder.png")
+        
         # set up table appearance and behavior
         self.headerLabels = [self.tr("Name"),
                             self.tr("Fuzzy"),
@@ -133,31 +136,60 @@ class Catalog(QtGui.QMainWindow):
         self.connect(self.ui.treeCatalog, QtCore.SIGNAL("itemDoubleClicked(QTreeWidgetItem *, int)"), self.emitOpenFile)
         self.setupCheckbox()
 
-        self.lastFoundFilename= None
+        self.lastFound = None
     
     def find(self, searchString, searchOptions):
             if (not (searchString and searchOptions)):
                 return
+                
+            # start find in the top level..
             for i in range(self.ui.treeCatalog.topLevelItemCount()):
-                item = self.ui.treeCatalog.topLevelItem(i)
-                for j in range(item.childCount()):
-                      childItem = item.child(j)
-                      filename = self.getFilename(childItem)
-                      if (self.lastFoundFilename != filename):
+                topItem = self.ui.treeCatalog.topLevelItem(i)
+                for j in range(topItem.childCount()):
+                      item = topItem.child(j)
+                      filename = self.getFilename(item)
+                      
+                      # continue from resume item
+                      if (self.lastFound == None) or (self.lastFound == item):
+                      
+                      
                           found = self.searchInString(searchString, filename, searchOptions)
+                          self.lastFound = item
                           break
                       else:
                           found = False
-
+                
                 if found:
                       print "found in", filename, "at position", found
-                      self.lastFoundFilename = filename
                       self.emit(QtCore.SIGNAL("openFile"), filename)
                       self.emit(QtCore.SIGNAL("goto"), found)
                       break
             else:
                 msg = self.tr("' was not found")
+                self.lastFound = None
+                
                 QtGui.QMessageBox.information(self, self.tr("Find"), "'" + str(searchString) + msg + '\n\n' + "Please try again !")
+                
+##            for i in range(self.ui.treeCatalog.topLevelItemCount()):
+##                item = self.ui.treeCatalog.topLevelItem(i)
+##                for j in range(item.childCount()):
+##                      childItem = item.child(j)
+##                      filename = self.getFilename(childItem)
+##                      if (self.lastFound != filename):
+##                          found = self.searchInString(searchString, filename, searchOptions)
+##                          break
+##                      else:
+##                          found = False
+##
+##                if found:
+##                      print "found in", filename, "at position", found
+##                      self.lastFound = filename
+##                      self.emit(QtCore.SIGNAL("openFile"), filename)
+##                      self.emit(QtCore.SIGNAL("goto"), found)
+##                      break
+##            else:
+##                msg = self.tr("' was not found")
+##                QtGui.QMessageBox.information(self, self.tr("Find"), "'" + str(searchString) + msg + '\n\n' + "Please try again !")
 
     def searchInString(self, searchString, filename, searchOptions):
           found = False
@@ -274,56 +306,86 @@ class Catalog(QtGui.QMainWindow):
         dive into it and add files.
         """
         if (os.path.isfile(path)):
-            if (item == None):
+            existedItem = self.getExistedItem(os.path.dirname(path))
+            if (existedItem):
+                item = existedItem
+            elif (item == None):
                 item = QtGui.QTreeWidgetItem(item)
                 self.ui.treeCatalog.addTopLevelItem(item)
                 self.ui.treeCatalog.expandItem(item)
-                
-            if (not item.text(0)):
                 item.setText(0, os.path.dirname(path))
+                item.setIcon(0, self.folderIcon)
+                
+            # if file is already existed in the item's child... skip.
+            if (self.ifFileExisted(path, item)):
+                return
             childStats = self.getStats(path)
             if (childStats):
-                item1 = QtGui.QTreeWidgetItem(item)
-                item1.setText(0, childStats[0])
-                item1.setText(1, childStats[1])
-                item1.setText(2, childStats[2])
-                item1.setText(3, childStats[3])
-                item1.setText(4, childStats[4])
-                item1.setText(5, childStats[5])
-                item1.setText(6, childStats[6])
-                item1.setText(7, childStats[7])
-
+                childItem = QtGui.QTreeWidgetItem(item)
+                childItem.setText(0, childStats[0])
+                childItem.setText(1, childStats[1])
+                childItem.setText(2, childStats[2])
+                childItem.setText(3, childStats[3])
+                childItem.setText(4, childStats[4])
+                childItem.setText(5, childStats[5])
+                childItem.setText(6, childStats[6])
+                childItem.setText(7, childStats[7])
+        
         if (os.path.isdir(path)) and (not path.endswith(".svn")):
-            if (item == None):
-                item = QtGui.QTreeWidgetItem(item)
-                self.ui.treeCatalog.addTopLevelItem(item)
-                self.ui.treeCatalog.expandItem(item)
+            existedItem = self.getExistedItem(path)
+            if (existedItem):
+                # it's already existed, so use the existed one
+                childItem = existedItem
             else:
-                item = QtGui.QTreeWidgetItem(item)
-            
-            if (not item.parent()):
-                # full path name is need for top level directory
-                pathName = path
-            else:
-                # sub directory.. needs only basename
-                pathName = os.path.basename(path)
-            
-            item.setText(0, pathName)
+                # it does not exist in tree yet, create new one
+                if (item == None):
+                    childItem = QtGui.QTreeWidgetItem(item)
+                    self.ui.treeCatalog.addTopLevelItem(childItem)
+                    self.ui.treeCatalog.expandItem(childItem)
+                    childItem.setText(0, path)
+                # it's existed in tree but it is the sub directory
+                elif hasattr(item, "parent"):
+                    childItem = QtGui.QTreeWidgetItem()
+                    item.insertChild(0, childItem)
+                    childItem.setText(0, os.path.basename(path))
+                childItem.setIcon(0, self.folderIcon)
             
             for root, dirs, files in os.walk(path):
                 for file in files:
-                    path = os.path.join(root + '/' + file)
-                    self.addCatalogFile(path, includeSub, item)
+                    path = os.path.join(root + os.path.sep + file)
+                    self.addCatalogFile(path, includeSub, childItem)
                     
                 # whether dive into subfolder
                 if (includeSub):
                     for folder in dirs:
-                        path = os.path.join(root + '/' + folder)
-                        #subItem = QtGui.QTreeWidgetItem(item)
-                        #self.addCatalogFile(path, includeSub, subItem)
-                        self.addCatalogFile(path, includeSub, item)
+                        path = os.path.join(root + os.path.sep + folder)
+                        self.addCatalogFile(path, includeSub, childItem)
                 
                 break
+    
+    def getExistedItem(self, path):
+        """
+        Get existed item in the tree's top level. If the item existed, it returns
+        the item, otherwise returns False.
+        """
+        for i in range(self.ui.treeCatalog.topLevelItemCount()):
+            item = self.ui.treeCatalog.topLevelItem(i)
+            if (hasattr(item, "text")) and (item.text(0) == path):
+                return item
+        return False
+    
+    def ifFileExisted(self, path, item):
+        """
+        Get existed item in the tree's top level. If the item existed, it returns
+        the item, otherwise returns False.
+        """
+        if (not hasattr(item, "childCount")):
+            return False
+        for i in range(item.childCount()):
+            it = item.child(i)
+            if (hasattr(it, "text")) and (it.text(0) == os.path.basename(path)):
+                return it
+        return False
     
     def getStats(self, filename):
         """
@@ -412,9 +474,9 @@ class Catalog(QtGui.QMainWindow):
         """
         return filename join from item.text(0) to its parent.
         """
-        filename = str(item.text(0))
+        filename = unicode(item.text(0))
         if (item.parent()):
-            filename = os.path.join(self.getFilename(item.parent()) + '/' + filename)
+            filename = os.path.join(self.getFilename(item.parent()) + os.path.sep + filename)
         return filename
     
     def refresh(self):
