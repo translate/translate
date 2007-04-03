@@ -2,6 +2,7 @@
 
 from translate.convert import xliff2po
 from translate.storage import po
+from translate.misc import wStringIO
 
 class TestXLIFF2PO:
     xliffskeleton = '''<?xml version="1.0" ?>
@@ -15,8 +16,9 @@ class TestXLIFF2PO:
 
     def xliff2po(self, xliffsource):
         """helper that converts xliff source to po source without requiring files"""
+        inputfile = wStringIO.StringIO(xliffsource)
 	convertor = xliff2po.xliff2po()
-	outputpo = convertor.convertfile(xliffsource)
+	outputpo = convertor.convertfile(inputfile)
         print "The generated po:"
         print str(outputpo)
         return outputpo
