@@ -73,6 +73,10 @@ class xliff2po:
 
   def convertfile(self, inputfile):
     """converts a .xliff file to .po format"""
+    # XXX: The inputfile is converted to string because Pootle supplies
+    # XXX: a PootleFile object as input which cannot be sent to PoXliffFile.
+    # XXX: The better way would be to have a consistent conversion API.
+    inputfile = str(inputfile)
     PoXliffFile = xliff.PoXliffFile(inputfile)
     thepofile = po.pofile()
     headerpo = thepofile.makeheader(charset="UTF-8", encoding="8bit")
