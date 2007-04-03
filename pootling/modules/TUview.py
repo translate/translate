@@ -21,57 +21,8 @@
 
 from PyQt4 import QtCore, QtGui
 from pootling.ui.Ui_TUview import Ui_TUview
-#from translate.storage import po
 from pootling.modules import World
-
-class Highlighter(QtGui.QSyntaxHighlighter):
-    def __init__(self, parent):
-        QtGui.QSyntaxHighlighter.__init__(self, parent)
-        
-        self.index = None
-        self.searchFormat = QtGui.QTextCharFormat()
-        self.searchFormat.setFontWeight(QtGui.QFont.Bold)
-        self.searchFormat.setForeground(QtCore.Qt.white)
-        self.searchFormat.setBackground(QtCore.Qt.darkMagenta)
-        
-        tagFormat = QtGui.QTextCharFormat()
-        tagFormat.setFontWeight(QtGui.QFont.Bold)
-        tagFormat.setForeground(QtCore.Qt.blue)
-        quoteFormat = QtGui.QTextCharFormat()
-        quoteFormat.setForeground(QtCore.Qt.darkGreen)
-        accelFormat = QtGui.QTextCharFormat()
-        accelFormat.setForeground(QtCore.Qt.darkMagenta)
-        
-        tagPattern = QtCore.QRegExp("%\d+|%s|%d")
-        accelPattern = QtCore.QRegExp("&\S")
-        quotePattern = QtCore.QRegExp("<.+>|</.+>")
-        
-        self.formats = [tagFormat, accelFormat, quoteFormat]
-        self.patterns = [tagPattern, accelPattern, quotePattern]
-        self.expression = QtCore.QRegExp(tagPattern.pattern() + "|" + \
-                accelPattern.pattern() + "|" + \
-                quotePattern.pattern())
-        
-    def highlightBlock(self, text):
-        index = text.indexOf(self.expression)
-        charFormat = self.formats[0]
-        while (index >= 0):
-            length = self.expression.matchedLength()
-            # format the found text
-            cap = self.expression.cap()
-            for i in range(len(self.patterns)):
-                if (cap.indexOf(self.patterns[i]) > -1):
-                    charFormat = self.formats[i]
-            self.setFormat(index, length, charFormat)
-            index = text.indexOf(self.expression, index + length)
-        
-        if (self.index >= 0):
-            self.setFormat(self.index, self.length, self.searchFormat)
-            self.index = None
-    
-    def initSearch(self, index, length):
-        self.index = index
-        self.length = length
+from pootling.modules import highlighter
 
 class TUview(QtGui.QDockWidget):
     def __init__(self, parent):
@@ -84,23 +35,13 @@ class TUview(QtGui.QDockWidget):
         self.setWidget(self.form)
         self.setFeatures(QtGui.QDockWidget.DockWidgetClosable)
         self.ui.lblComment.hide()
-#        self.ui.txtTarget.setReadOnly(True)
         self.applySettings()
         self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
         
-        # create highlight font
-        self.highlightFormat = QtGui.QTextCharFormat()
-        self.highlightFormat.setFontWeight(QtGui.QFont.Bold)
-        self.highlightFormat.setForeground(QtCore.Qt.white)
-        self.highlightFormat.setBackground(QtCore.Qt.darkMagenta)
-        self.highlightRange = QtGui.QTextLayout.FormatRange()
-        self.highlightRange.format = self.highlightFormat
-        
+        # create highlighter
+        self.highlighter = highlighter.Highlighter()
         self.sourceLength = 0
         
-        self.sourceHighlight = Highlighter(self.ui.txtSource)
-        self.targetHighlight = Highlighter(self.ui.txtTarget)
-
     def closeEvent(self, event):
         """
         set text of action object to 'show Detail' before closing TUview
@@ -126,16 +67,6 @@ class TUview(QtGui.QDockWidget):
         """Adjust the scrollbar maximum according to lenFilter.
         @param filter: helper constants for filtering
         @param lenFilter: len of filtered items."""
-#        if (lenFilter):
-#            self.ui.fileScrollBar.setEnabled(True)
-#            self.ui.txtSource.setEnabled(True)
-#            self.ui.txtTarget.setEnabled(True)
-#        else:
-#            self.ui.txtSource.clear()
-#            self.ui.txtTarget.clear()
-#            self.ui.txtSource.setEnabled(False)
-#            self.ui.txtTarget.setEnabled(False)
-#        self.filter = filter
         self.viewSetting(lenFilter)
         self.setScrollbarMaxValue(lenFilter)
     
@@ -152,16 +83,6 @@ class TUview(QtGui.QDockWidget):
         @param unit: unit to set in target and source.
         @param index: value in the scrollbar to be removed."""
         self.disconnect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
-#        if ((not unit) or (not hasattr(unit, "x_editor_filterIndex"))):
-#            self.ui.lblComment.hide()
-#            self.ui.txtSource.clear()
-#            self.ui.txtTarget.clear()
-#            self.ui.fileScrollBar.setEnabled(True)
-#            self.ui.txtSource.setEnabled(True)
-#            self.ui.txtTarget.setEnabled(True)
-#        else:
-#            self.ui.txtSource.setEnabled(False)
-#            self.ui.txtTarget.setEnabled(False)
         if (not unit):
             return
 
@@ -289,22 +210,16 @@ class TUview(QtGui.QDockWidget):
         @param textField: source or target text box.
         @param position: highlight start point.
         @param length: highlight length."""
-        self.sourceHighlight.initSearch(position, length)
-##        if ((textField != World.source and textField != World.target)  or position == None):
-##            if (not getattr(self, "highlightBlock", None)):
-##                return
-##            self.highlightRange.length = 0
-##        else:
-##            if (textField == World.source):
-##                textField = self.ui.txtSource
-##            else:
-##                textField = self.ui.txtTarget
-##            self.highlightBlock = textField.document().findBlock(position)
-##            self.highlightRange.start = position - self.highlightBlock.position()
-##            self.highlightRange.length = length
-##        self.highlightBlock.layout().setAdditionalFormats([self.highlightRange])
-##        self.highlightBlock.document().markContentsDirty(self.highlightBlock.position(), self.highlightBlock.length())
-
+        self.disconnect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
+        if ((textField == World.source or textField == World.target)  and position != None):
+            textField = ((textField == World.source) and self.ui.txtSource or self.ui.txtTarget)
+            block = textField.document().findBlock(position)
+            self.highlighter.setHighlightRange(position - block.position(), length)
+            self.highlighter.highlightBlock(block)
+        else:
+            self.highlighter.clearAdditionalFormats()
+        self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
+        
     def replaceText(self, textField, position, length, replacedText):
         """replace the string (at position and length) with replacedText in txtTarget.
         @param textField: source or target text box.
@@ -346,7 +261,7 @@ class TUview(QtGui.QDockWidget):
             self.ui.txtTarget.setFont(fontObj)
             self.ui.txtTarget.setTabStopWidth(QtGui.QFontMetrics(fontObj).width("m"*8))
         
-        self.emitTargetChanged()
+#        self.emitTargetChanged()
     
     def viewSetting(self, arg = None):
         bool = (arg and True or False)

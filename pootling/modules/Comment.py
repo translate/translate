@@ -24,6 +24,7 @@ from pootling.ui.Ui_Comment import Ui_frmComment
 import pootling.modules.World as World
 from translate.storage import po
 from translate.storage import xliff
+from pootling.modules import highlighter
 
 class CommentDock(QtGui.QDockWidget):
     """
@@ -46,13 +47,8 @@ class CommentDock(QtGui.QDockWidget):
         self.ui.txtLocationComment.setWhatsThis("<h3>Location Comment</h3>This noneditable comment contains information about where the message is found in the souce code. It will be appeared once there is comments only. You can hide the comment editor by deactivating Views - Show Comment.")
         self.applySettings()
         
-        # create highlight font
-        self.highlightFormat = QtGui.QTextCharFormat()
-        self.highlightFormat.setFontWeight(QtGui.QFont.Bold)
-        self.highlightFormat.setForeground(QtCore.Qt.white)
-        self.highlightFormat.setBackground(QtCore.Qt.darkMagenta)
-        self.highlightRange = QtGui.QTextLayout.FormatRange()
-        self.highlightRange.format = self.highlightFormat
+        # create highlighter
+        self.highlighter = highlighter.Highlighter()
 
     def closeEvent(self, event):
         """
@@ -65,12 +61,9 @@ class CommentDock(QtGui.QDockWidget):
     def updateView(self, unit):
         """Update the comments view
         @param unit: class unit."""
-        self.disconnect(self.ui.txtTranslatorComment, QtCore.SIGNAL("textChanged()"), self.checkModified)
-#        self.ui.txtTranslatorComment.setEnabled(bool(unit))
+        self.disconnect(self.ui.txtTranslatorComment, QtCore.SIGNAL("commentChanged()"), self.checkModified)
         self.viewSetting(unit)
         if (not unit):
-#            self.ui.txtLocationComment.hide()
-#            self.ui.txtTranslatorComment.clear()
             return
         translatorComment = ""
         locationComment = ""
@@ -84,7 +77,7 @@ class CommentDock(QtGui.QDockWidget):
             self.ui.txtLocationComment.setPlainText(unicode(locationComment))
         if (unicode(self.ui.txtTranslatorComment.toPlainText()) != unicode(translatorComment)):
             self.ui.txtTranslatorComment.setPlainText(unicode(translatorComment))
-        self.connect(self.ui.txtTranslatorComment, QtCore.SIGNAL("textChanged()"), self.checkModified)
+        self.connect(self.ui.txtTranslatorComment, QtCore.SIGNAL("commentChanged()"), self.checkModified)
 
     def checkModified(self):
         if self.ui.txtTranslatorComment.document().isModified():
@@ -96,17 +89,13 @@ class CommentDock(QtGui.QDockWidget):
         @param textField: source or target text box.
         @param position: highlight start point.
         @param length: highlight length."""
-        if (textField != World.comment or position == None):
-            if (not getattr(self, "highlightBlock", None)):
-                return
-            self.highlightRange.length = 0
-        else:
+        if ((textField == World.comment) and position != None):
             textField = self.ui.txtTranslatorComment
-            self.highlightBlock = textField.document().findBlock(position)
-            self.highlightRange.start = position - self.highlightBlock.position()
-            self.highlightRange.length = length
-        self.highlightBlock.layout().setAdditionalFormats([self.highlightRange])
-        self.highlightBlock.document().markContentsDirty(self.highlightBlock.position(), self.highlightBlock.length())
+            block = textField.document().findBlock(position)
+            self.highlighter.setHighlightRange(position - block.position(), length)
+            self.highlighter.highlightBlock(block)
+        else:
+            self.highlighter.clearAdditionalFormats()
 
     def applySettings(self):
         """ set color and font to txtTranslatorComment"""
