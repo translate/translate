@@ -24,7 +24,8 @@
 You can convert back to .xliff using po2xliff"""
 
 from translate.storage import po
-from translate.storage import poxliff as xliff
+from translate.storage import xliff
+from translate.misc import wStringIO
 
 class xliff2po:
   def converttransunit(self, transunit):
@@ -43,25 +44,12 @@ class xliff2po:
 
     #NOTE: Supporting both <context> and <note> tags in xliff files for comments
     #Translator comments
-    notes = transunit.getnotes("translator")
-    trancomments = transunit.gettranslatorcomments()
-    if notes == trancomments or trancomments.find(notes) >= 0:
-      notes = ""
-    elif notes.find(trancomments) >= 0:
-      trancomments = notes
-      notes = ""
-    trancomments = trancomments + notes
+    trancomments = transunit.getnotes("translator")
     if trancomments:
       thepo.othercomments.extend(["# %s\n" % comment for comment in trancomments.split("\n")])
     
     #Automatic and Developer comments
-    devcomments = transunit.getnotes("developer")
-    autocomments = transunit.getautomaticcomments()
-    if devcomments == autocomments or autocomments.find(devcomments) >= 0:
-      devcomments = ""
-    elif devcomments.find(autocomments) >= 0:
-      autocomments = devcomments
-      devcomments = ""
+    autocomments = transunit.getnotes("developer")
     if autocomments:
       thepo.automaticcomments.extend(["#. %s\n" % comment for comment in autocomments.split("\n")])
 
@@ -76,14 +64,13 @@ class xliff2po:
     # XXX: The inputfile is converted to string because Pootle supplies
     # XXX: a PootleFile object as input which cannot be sent to PoXliffFile.
     # XXX: The better way would be to have a consistent conversion API.
-    inputfile = str(inputfile)
-    PoXliffFile = xliff.PoXliffFile(inputfile)
+    if not isinstance(inputfile, (file, wStringIO.StringIO)):
+        inputfile = str(inputfile)
+    XliffFile = xliff.xlifffile.parsestring(inputfile)
     thepofile = po.pofile()
     headerpo = thepofile.makeheader(charset="UTF-8", encoding="8bit")
-    # for filename, transunits in PoXliffFile.units:
     # TODO: support multiple files
-    if True:
-      for transunit in PoXliffFile.units:
+    for transunit in XliffFile.units:
         thepo = self.converttransunit(transunit)
         thepofile.units.append(thepo)
     return thepofile
