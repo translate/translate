@@ -147,6 +147,30 @@ class PoXliffUnit(xliff.xliffunit):
         for unit in self.units[1:]:
             unit.addnote(text, origin)
 
+    def getnotes(self, origin=None):
+        #NOTE: We support both <context> and <note> tags in xliff files for comments
+        if origin == "translator":
+            notes = super(PoXliffUnit, self).getnotes("translator")
+            trancomments = self.gettranslatorcomments()
+            if notes == trancomments or trancomments.find(notes) >= 0:
+                notes = ""
+            elif notes.find(trancomments) >= 0:
+                trancomments = notes
+                notes = ""
+            trancomments = trancomments + notes
+            return trancomments
+        elif origin in ["programmer", "developer", "source code"]:
+            devcomments = super(PoXliffUnit, self).getnotes("developer")
+            autocomments = self.getautomaticcomments()
+            if devcomments == autocomments or autocomments.find(devcomments) >= 0:
+                devcomments = ""
+            elif devcomments.find(autocomments) >= 0:
+                autocomments = devcomments
+                devcomments = ""
+            return autocomments
+        else:
+            return super(PoXliffUnit, self).getnotes(origin)
+
     def markfuzzy(self, value=True):
         super(PoXliffUnit, self).markfuzzy(value)
         for unit in self.units[1:]:
