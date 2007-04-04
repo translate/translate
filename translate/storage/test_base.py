@@ -293,9 +293,12 @@ class TestTranslationStore:
     def test_store_stats(self):
         store = self.StoreClass()
         unit1 = store.addsourceunit("Test source")
+        store.units[0].markfuzzy(False)
         assert unit1.source_wordcount() == 2
         assert store.source_wordcount() == 2
         unit2 = store.addsourceunit("Test source 2")
+        store.units[1].markfuzzy(False)
+        store.classifyunits()
         assert unit2.source_wordcount() == 3
         assert store.source_wordcount() == 5
         # If the source has also been changed, assume it's a monolingual file.
@@ -305,6 +308,7 @@ class TestTranslationStore:
             assert store.translated_wordcount() == 0
             assert store.untranslated_wordcount() == 5
         unit1.settarget("Toets bron teks")
+        store.classifyunits()
         # If the source has also been changed, assume it's a monolingual file.
         if not unit1.source == unit1.target:
             assert store.translated_unitcount() == 1
@@ -315,6 +319,7 @@ class TestTranslationStore:
         assert store.fuzzy_units() == 0
         unit1.markfuzzy(True)
         if unit1.isfuzzy():
+            store.classifyunits()
             assert store.fuzzy_units() == 1
 
         store = self.StoreClass()
