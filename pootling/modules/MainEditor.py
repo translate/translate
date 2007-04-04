@@ -51,6 +51,8 @@ class MainWindow(QtGui.QMainWindow):
         self.setWindowTitle(World.settingApp + ' ' + __version__.ver)
         self.createBookmarkAction()
         self.clearBookmarks()
+        app = QtGui.QApplication.instance()
+        self.connect(app, QtCore.SIGNAL("focusChanged(QWidget *,QWidget *)"), self.focusChanged)
         
         # get the last geometry
         geometry = World.settings.value("lastGeometry")
@@ -278,7 +280,7 @@ class MainWindow(QtGui.QMainWindow):
     
     def enableCopyCut(self, bool):
         self.ui.actionCopy.setEnabled(bool)
-        self.ui.actionCut.setEnabled(bool)        
+        self.ui.actionCut.setEnabled(bool)
 
     def enableUndo(self, bool):
         self.ui.actionUndo.setEnabled(bool)
