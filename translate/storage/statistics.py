@@ -29,32 +29,41 @@
 from translate import lang
 from translate.lang import factory
 
+# calling classifyunits() in the constructor is probably not ideal. 
+# idea: have a property for .classification that calls it if necessary
+
+# If we add units or change translations, statistics are out of date
+# Compare with modules/Status.py in pootling that uses a bitmask to 
+# filter units
+
+# Add support for reading and writing Pootle style .stats files
+
+# Consider providing quickstats
+
 class Statistics(object):
     """Manages statistics for storage objects."""
 
-    def __init__(self, sourcelanguage='en', targetlanguage='en', checker=None):
+    def __init__(self, sourcelanguage='en', targetlanguage='en', checkerstyle=None):
         self.sourcelanguage = sourcelanguage
         self.targetlanguage = targetlanguage
         self.language = lang.factory.getlanguage(self.sourcelanguage)
-        self.checker = checker
+#        self.init_checker(checkerstyle)
+        
         self.classification = {}
+        self.classifyunits()
+
+    def init_checker(self, checkerstyle=None):
+        from translate.filters import checks
+        from translate.filters import pofilter
+        checkerclasses = [checkerstyle or checks.StandardChecker, pofilter.StandardPOChecker]
+        self.checker = pofilter.POTeeChecker(checkerclasses=checkerclasses)
 
     def fuzzy_units(self):
-        count = 0
-        for unit in self.getunits():
-            if unit.isfuzzy():
-                count += 1
-        return count
+        return len([self.getunits()[item] for item in self.classification["fuzzy"]])
 
     def translated_units(self):
         """Return a list of translated units."""
-
-        translated = []
-        units = self.getunits()
-        for unit in units:
-            if unit.istranslated():
-                translated.append(unit)
-        return translated
+        return [self.getunits()[item] for item in self.classification["translated"]]
 
     def translated_unitcount(self):
         """Returns the number of translated units."""
@@ -64,13 +73,7 @@ class Statistics(object):
 
     def untranslated_units(self):
         """Return a list of untranslated units."""
-
-        untranslated = []
-        units = self.getunits()
-        for unit in units:
-            if not unit.istranslated():
-                untranslated.append(unit)
-        return untranslated
+        return [self.getunits()[item] for item in self.classification["blank"]]
 
     def untranslated_unitcount(self):
         """Returns the number of untranslated units."""
@@ -130,7 +133,8 @@ class Statistics(object):
         if isinstance(source, str) and isinstance(target, unicode):
             source = source.decode(getattr(unit, "encoding", "utf-8"))
         #TODO: decoding should not be done here
-        checkresult = self.checker.run_filters(unit, source, target)
+#        checkresult = self.checker.run_filters(unit, source, target)
+        checkresult = []
         for checkname, checkmessage in checkresult:
             classes.append("check-" + checkname)
         return classes
@@ -146,8 +150,8 @@ class Statistics(object):
         self.classification["translated"] = []
         self.classification["has-suggestion"] = []
         self.classification["total"] = []
-        for checkname in self.checker.getfilters().keys():
-            self.classification["check-" + checkname] = []
+#        for checkname in self.checker.getfilters().keys():
+#            self.classification["check-" + checkname] = []
         for item, unit in enumerate(self.unit_iter()):
             classes = self.classifyunit(unit)
 #            if self.basefile.getsuggestions(item):
@@ -164,8 +168,8 @@ class Statistics(object):
         self.sourcewordcounts = []
         self.targetwordcounts = []
         for unit in self.unit_iter():
-            self.sourcewordcounts.append([self.wordcount(text) for text in unit.source.strings])
-            self.targetwordcounts.append([self.wordcount(text) for text in unit.target.strings])
+            self.sourcewordcounts.append([self.wordcount(text) for text in getattr(unit.source, "strings", [""])])
+            self.targetwordcounts.append([self.wordcount(text) for text in getattr(unit.target, "strings", [""])])
 
     def reclassifyunit(self, item):
         """Updates the classification of a unit in self.classification.
