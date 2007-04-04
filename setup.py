@@ -3,6 +3,7 @@
 from distutils.core import setup, Extension, Distribution, Command
 import distutils.sysconfig
 import sys
+import os
 import os.path
 from translate import __version__
 from translate import __doc__
@@ -242,10 +243,10 @@ def getdatafiles():
     csvModuleFile = (sitepackages, ['_csv.so'])
     datafiles.append(csvModuleFile)
   docfiles = []
-  docfiles.append(listfiles(join('translate', 'doc')))
-  docfiles.append(listfiles(join('translate', 'doc', 'api')))
-  docfiles.append(listfiles(join('translate', 'doc', 'api', 'private')))
-  docfiles.append(listfiles(join('translate', 'doc', 'api', 'public')))
+  docwalk=os.walk(os.path.join('translate', 'doc'))
+  for docs in docwalk:
+    if not '.svn' in docs[0]:
+      docfiles.append(listfiles(docs[0]))
   datafiles += docfiles
   return datafiles
 
