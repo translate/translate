@@ -10,6 +10,11 @@ from py import test
 class TestXLIFFUnit(test_base.TestTranslationUnit):
     UnitClass = xliff.xliffunit
    
+    def test_isfuzzy(self):
+        """The default behaviour for XLIFF is different, so we adapt the test
+        from test_base.py"""
+        assert self.unit.isfuzzy()
+
 class TestXLIFFfile(test_base.TestTranslationStore):
     StoreClass = xliff.xlifffile
     def test_basic(self):
@@ -114,9 +119,9 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         xlifffile = xliff.xlifffile()
         unit = xlifffile.addsourceunit("Concept")
         unit.markfuzzy()
-        assert not unit.isfuzzy() #No target yet
+        assert unit.isfuzzy()
         unit.target = "Konsep"
-        assert not unit.isfuzzy()
+        assert unit.isfuzzy()
         unit.markfuzzy()
         assert unit.isfuzzy()
         unit.markfuzzy(False)
