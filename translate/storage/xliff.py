@@ -188,25 +188,25 @@ class xliffunit(lisa.LISAunit):
                 targetnode.removeAttribute("state")
 
     def isfuzzy(self):
-        targetnode = self.getlanguageNode(lang=None, index=1)
-        return not targetnode is None and \
-                (targetnode.getAttribute("state-qualifier") == "fuzzy-match" or \
-                targetnode.getAttribute("state") == "needs-review-translation")
+#        targetnode = self.getlanguageNode(lang=None, index=1)
+#        return not targetnode is None and \
+#                (targetnode.getAttribute("state-qualifier") == "fuzzy-match" or \
+#                targetnode.getAttribute("state") == "needs-review-translation")
+        return not self.isapproved()
                 
     def markfuzzy(self, value=True):
+        if value:
+            self.xmlelement.setAttribute("approved", "no")
+        else:
+            self.xmlelement.setAttribute("approved", "yes")
         targetnode = self.getlanguageNode(lang=None, index=1)
         if targetnode:
             if value:
                 targetnode.setAttribute("state", "needs-review-translation")
-                targetnode.setAttribute("state-qualifier", "fuzzy-match")
-            elif self.isfuzzy():                
-                targetnode.removeAttribute("state")
-                targetnode.removeAttribute("state-qualifier")
-        elif value:
-            #If there is no target, we can't really indicate fuzzyness, so we set
-            #approved to "no", but we don't take it into account in isfuzzy()
-            #TODO: review decision
-            self.xmlelement.setAttribute("approved", "no")
+            else:
+                for attribute in ["state", "state-qualifier"]:
+                    if targetnode.hasAttribute(attribute):
+                        targetnode.removeAttribute(attribute)
 
     def settarget(self, text, lang='xx', append=False):
         """Sets the target string to the given value."""
@@ -223,7 +223,7 @@ class xliffunit(lisa.LISAunit):
         targetnode = self.getlanguageNode(lang=None, index=1)
         if not targetnode:
             return
-        if self.isfuzzy():
+        if self.isfuzzy() and targetnode.hasAttribute("state-qualifier"):
             #TODO: consider
             targetnode.removeAttribute("state-qualifier")
         targetnode.setAttribute("state", "translated")
