@@ -54,7 +54,7 @@ class xliff2po:
       thepo.automaticcomments.extend(["#. %s\n" % comment for comment in autocomments.split("\n")])
 
     #See 5.6.1 of the spec. We should not check fuzzyness, but approved attribute
-    if not transunit.isapproved():
+    if transunit.isfuzzy():
       thepo.markfuzzy(True)
     
     return thepo
