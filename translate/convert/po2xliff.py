@@ -40,11 +40,9 @@ class po2xliff:
     else:
       unit = xlifffile.addsourceunit(source, filename, True)
       unit.target = target
-      if thepo.isfuzzy():
-        unit.markfuzzy()
-      elif target:
-        #TODO: consider if an empty target can be considered as translated
-        unit.marktranslated()
+      #Explicetely marking the fuzzy state will ensure that normal (translated)
+      #units in the PO file end up as approved in the XLIFF file.
+      unit.markfuzzy(thepo.isfuzzy())
       
       #Handle #: location comments
       for location in thepo.getlocations():
