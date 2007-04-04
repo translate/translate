@@ -150,7 +150,7 @@ class TestXliffFilter(BaseTestFilter):
 <xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
 <file original='NoName' source-language="en" datatype="plaintext">
   <body>
-    <trans-unit>
+    <trans-unit approved="yes">
       <source>test</source>
       <target>rest</target>
     </trans-unit>
@@ -169,7 +169,7 @@ class TestXliffFilter(BaseTestFilter):
 <xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
 <file datatype="po" original="example.po" source-language="en-US">
   <body>
-    <trans-unit>
+    <trans-unit approved="yes">
       <source>test</source>
       <target>rest</target>
     </trans-unit>
