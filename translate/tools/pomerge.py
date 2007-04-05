@@ -136,8 +136,8 @@ def main():
   xliffoutput = ("xliff", mergexliff)
   formats = {("po", "po"): pooutput, ("po", "pot"): pooutput, ("pot", "po"): pooutput, ("pot", "pot"): potoutput,
              "po": pooutput, "pot": pooutput,
-             ("xliff", "po"): pooutput, ("xliff", "pot"): pooutput,
-             ("xliff", "xliff"): xliffoutput, ("po", "xliff"):xliffoutput}
+             ("xlf", "po"): pooutput, ("xlf", "pot"): pooutput,
+             ("xlf", "xlf"): xliffoutput, ("po", "xlf"): xliffoutput}
   mergeblanksoption = convert.optparse.Option("", "--mergeblanks", dest="mergeblanks",
     action="store", default="yes", help="whether to overwrite existing translations with blank translations (yes/no)")
   mergecommentsoption = convert.optparse.Option("", "--mergecomments", dest="mergecomments",
