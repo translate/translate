@@ -87,6 +87,7 @@ class Catalog(QtGui.QMainWindow):
 
         # create statistics action
         self.connect(self.ui.actionStatistics, QtCore.SIGNAL("triggered()"), self.showStatistic)
+        self.ui.actionStatistics.setWhatsThis("<h3>Statistics</h3>Show status of files that have filename, fuzzy, untranslated,translated and total of strings.")
         self.ui.actionStatistics.setStatusTip("Show status of files")
 
         # Catalog setting's checkboxes action.
@@ -136,67 +137,31 @@ class Catalog(QtGui.QMainWindow):
         self.connect(self.ui.treeCatalog, QtCore.SIGNAL("itemDoubleClicked(QTreeWidgetItem *, int)"), self.emitOpenFile)
         self.setupCheckbox()
 
-        self.lastFound = None
-        
         # timer..
         self.timer = QtCore.QTimer()
         self.connect(self.timer, QtCore.SIGNAL("timeout()"), self.updateStatistic)
         self.fileItems = []
         self.itemNumber = 0
-    
+        self.lastFoundNumber = 0
+      
     def find(self, searchString, searchOptions):
-            if (not (searchString and searchOptions)):
-                return
-                
-            # start find in the top level..
-            for i in range(self.ui.treeCatalog.topLevelItemCount()):
-                topItem = self.ui.treeCatalog.topLevelItem(i)
-                for j in range(topItem.childCount()):
-                      item = topItem.child(j)
-                      filename = self.getFilename(item)
-                      
-                      # continue from resume item
-                      if (self.lastFound == None) or (self.lastFound == item):
-                      
-                      
-                          found = self.searchInString(searchString, filename, searchOptions)
-                          self.lastFound = item
-                          break
-                      else:
-                          found = False
-                
-                if found:
-                      print "found in", filename, "at position", found
-                      self.emit(QtCore.SIGNAL("openFile"), filename)
-                      self.emit(QtCore.SIGNAL("goto"), found)
-                      break
-            else:
-                msg = self.tr("' was not found")
-                self.lastFound = None
-                
-                QtGui.QMessageBox.information(self, self.tr("Find"), "'" + str(searchString) + msg + '\n\n' + "Please try again !")
-                
-##            for i in range(self.ui.treeCatalog.topLevelItemCount()):
-##                item = self.ui.treeCatalog.topLevelItem(i)
-##                for j in range(item.childCount()):
-##                      childItem = item.child(j)
-##                      filename = self.getFilename(childItem)
-##                      if (self.lastFound != filename):
-##                          found = self.searchInString(searchString, filename, searchOptions)
-##                          break
-##                      else:
-##                          found = False
-##
-##                if found:
-##                      print "found in", filename, "at position", found
-##                      self.lastFound = filename
-##                      self.emit(QtCore.SIGNAL("openFile"), filename)
-##                      self.emit(QtCore.SIGNAL("goto"), found)
-##                      break
-##            else:
-##                msg = self.tr("' was not found")
-##                QtGui.QMessageBox.information(self, self.tr("Find"), "'" + str(searchString) + msg + '\n\n' + "Please try again !")
-
+        if (not (searchString and searchOptions)):
+            return
+        
+        for i in range(self.lastFoundNumber, len(self.fileItems)):
+            item = self.fileItems[i]
+            filename = self.getFilename(item)
+            found = self.searchInString(searchString, filename, searchOptions)
+            if (found):
+                self.emit(QtCore.SIGNAL("openFile"), filename)
+                self.emit(QtCore.SIGNAL("goto"), found)
+                self.lastFoundNumber = i+1
+                break
+        else:
+            QtGui.QMessageBox.information(self, self.tr("Search"), 
+                    self.tr("Search has reached the end of catalog."))
+            self.lastFoundNumber = 0
+    
     def searchInString(self, searchString, filename, searchOptions):
           found = False
           if (not os.path.isfile(filename)):
