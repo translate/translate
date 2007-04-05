@@ -137,6 +137,12 @@ class Catalog(QtGui.QMainWindow):
         self.setupCheckbox()
 
         self.lastFound = None
+        
+        # timer..
+        self.timer = QtCore.QTimer()
+        self.connect(self.timer, QtCore.SIGNAL("timeout()"), self.updateStatistic)
+        self.fileItems = []
+        self.itemNumber = 0
     
     def find(self, searchString, searchOptions):
             if (not (searchString and searchOptions)):
@@ -297,6 +303,8 @@ class Catalog(QtGui.QMainWindow):
             self.addCatalogFile(catalogFile, includeSub, None)
         
         self.ui.treeCatalog.resizeColumnToContents(0)
+        self.timer.start(1000)
+        
             #currentFileNum += 1
             #self.updateProgress(int((currentFileNum / maxFilesNum) * 100))
     
@@ -317,19 +325,22 @@ class Catalog(QtGui.QMainWindow):
                 item.setIcon(0, self.folderIcon)
                 
             # if file is already existed in the item's child... skip.
-            if (self.ifFileExisted(path, item)):
-                return
-            childStats = self.getStats(path)
-            if (childStats):
+            if (path.endswith(".po") or path.endswith(".pot") or path.endswith(".xlf") or path.endswith(".xliff")) and (not self.ifFileExisted(path, item)):
                 childItem = QtGui.QTreeWidgetItem(item)
-                childItem.setText(0, childStats[0])
-                childItem.setText(1, childStats[1])
-                childItem.setText(2, childStats[2])
-                childItem.setText(3, childStats[3])
-                childItem.setText(4, childStats[4])
-                childItem.setText(5, childStats[5])
-                childItem.setText(6, childStats[6])
-                childItem.setText(7, childStats[7])
+                childItem.setText(0, os.path.basename(path))
+                self.fileItems.append(childItem)
+                
+##            childStats = self.getStats(path)
+##            if (childStats):
+##                childItem = QtGui.QTreeWidgetItem(item)
+##                childItem.setText(0, childStats[0])
+##                childItem.setText(1, childStats[1])
+##                childItem.setText(2, childStats[2])
+##                childItem.setText(3, childStats[3])
+##                childItem.setText(4, childStats[4])
+##                childItem.setText(5, childStats[5])
+##                childItem.setText(6, childStats[6])
+##                childItem.setText(7, childStats[7])
         
         if (os.path.isdir(path)) and (not path.endswith(".svn")):
             existedItem = self.getExistedItem(path)
@@ -395,6 +406,9 @@ class Catalog(QtGui.QMainWindow):
         try:
             store = factory.getobject(filename)
         except:
+            return False
+        
+        if (not os.path.isfile(filename)):
             return False
         
         name = os.path.basename(filename)
@@ -497,6 +511,25 @@ class Catalog(QtGui.QMainWindow):
             self.tmSetting.createTM()
         else:
             return
+    
+    def updateStatistic(self):
+        item = self.fileItems[self.itemNumber]
+        path = self.getFilename(item)
+        childStats = self.getStats(path)
+        
+        if (childStats):
+            item.setText(1, childStats[1])
+            item.setText(2, childStats[2])
+            item.setText(3, childStats[3])
+            item.setText(4, childStats[4])
+            item.setText(5, childStats[5])
+            item.setText(6, childStats[6])
+            item.setText(7, childStats[7])
+        
+        self.itemNumber += 1
+        if (self.itemNumber == len(self.fileItems)):
+            self.timer.stop()
+    
 
 ##if __name__ == "__main__":
 ##    import sys, os
