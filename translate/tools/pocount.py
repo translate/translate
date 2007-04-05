@@ -23,7 +23,7 @@
 
 import sys
 import os
-from translate.storage import po
+from translate.storage import factory
 from translate.lang.common import Common
 import sre
 
@@ -56,7 +56,7 @@ def wordsinpoel(poel):
     targetwords += wordcount(s)
   return sourcewords, targetwords
 
-def summarize(title, units, CSVstyle=False):
+def calcstats(units):
   # ignore totally blank or header units
   units = filter(lambda poel: not poel.isheader(), units)
   translated = translatedmessages(units)
@@ -66,24 +66,40 @@ def summarize(title, units, CSVstyle=False):
   wordcounts = dict(map(lambda poel: (poel, wordsinpoel(poel)), units))
   sourcewords = lambda elementlist: sum(map(lambda poel: wordcounts[poel][0], elementlist))
   targetwords = lambda elementlist: sum(map(lambda poel: wordcounts[poel][1], elementlist))
+  stats = {}
+  stats["translated"] = len(translated)
+  stats["fuzzy"] = len(fuzzy)
+  stats["untranslated"] = len(untranslated)
+  stats["review"] = len(review)
+  stats["total"] = stats["translated"] + stats["fuzzy"] + stats["untranslated"]
+
+  stats["translatedsourcewords"] = sourcewords(translated)
+  stats["translatedtargetwords"] = targetwords(translated)
+  stats["fuzzysourcewords"] = sourcewords(fuzzy)
+  stats["untranslatedsourcewords"] = sourcewords(untranslated)
+  stats["reviewsourcewords"] = sourcewords(review)
+  stats["totalsourcewords"] = stats["translatedsourcewords"] + stats["fuzzysourcewords"] + stats["untranslatedsourcewords"]
+  return stats
+
+def summarize(title, stats, CSVstyle=False):
   if CSVstyle:
     print "%s, " % title,
-    print "%d, %d, %d," % (len(translated), sourcewords(translated), targetwords(translated)),
-    print "%d, %d," % (len(fuzzy), sourcewords(fuzzy)),
-    print "%d, %d," % (len(untranslated), sourcewords(untranslated)),
-    print "%d, %d" % (len(translated) + len(fuzzy) + len(untranslated), sourcewords(translated) + sourcewords(fuzzy) + sourcewords(untranslated)),
-    if len(review) > 0:
-      print ", %d, %d" % (len(review), sourcewords(review)),
+    print "%d, %d, %d," % stats["translated"], stats["translatedsourcewords"], stats["translatedtargetwords"]
+    print "%d, %d," % stats["fuzzy"], stats["fuzzytargetwords"]
+    print "%d, %d," % stats["untranslated"], stats["untranslatedsourcewords"]
+    print "%d, %d" % stats["total"], stats["totalsourcewords"]
+    if stats["review"] > 0:
+      print ", %d, %d" % stats["review"], stats["reviewsourdcewords"]
     print
   else:
     print title
     print "type           strings words (source) words (translation)"
-    print "translated:   %5d %10d %15d" % (len(translated), sourcewords(translated), targetwords(translated))
-    print "fuzzy:        %5d %10d             n/a" % (len(fuzzy), sourcewords(fuzzy))
-    print "untranslated: %5d %10d             n/a" % (len(untranslated), sourcewords(untranslated))
-    print "Total:        %5d %10d %15d" % (len(translated) + len(fuzzy) + len(untranslated), sourcewords(translated) + sourcewords(fuzzy) + sourcewords(untranslated), targetwords(translated))
-    if len(review) > 0:
-      print "review:       %5d %10d             n/a" % (len(review), sourcewords(review))
+    print "translated:   %5d %10d %15d" % (stats["translated"], stats["translatedsourcewords"], stats["translatedtargetwords"])
+    print "fuzzy:        %5d %10d             n/a" % (stats["fuzzy"], stats["fuzzysourcewords"])
+    print "untranslated: %5d %10d             n/a" % (stats["untranslated"], stats["untranslatedsourcewords"])
+    print "Total:        %5d %10d %15d" % (stats["total"], stats["totalsourcewords"], stats["translatedtargetwords"])
+    if stats["review"] > 0:
+      print "review:       %5d %10d             n/a" % (stats["review"], stats["reviewsourcewords"])
     print
 
 def fuzzymessages(units):
@@ -93,11 +109,11 @@ def translatedmessages(units):
     return filter(lambda unit: unit.istranslated(), units)
 
 def untranslatedmessages(units):
-    return filter(lambda unit: not (unit.istranslated() or unit.isfuzzy()), units)
+    return filter(lambda unit: not (unit.istranslated() or unit.isfuzzy()) and unit.source, units)
 
 class summarizer:
   def __init__(self, filenames, CSVstyle):
-    self.allelements = []
+    self.totals = {}
     self.filecount = 0
     self.CSVstyle = CSVstyle
     if self.CSVstyle:
@@ -114,17 +130,22 @@ Review Messages, Review Source Words"
       else:
         self.handlefile(filename)
     if self.filecount > 1 and not self.CSVstyle:
-      summarize("TOTAL:", self.allelements)
+      summarize("TOTAL:", self.totals)
       print "File count:   %5d" % (self.filecount)
       print
 
+  def updatetotals(self, stats):
+    """Update self.totals with the statistics in stats."""
+    for key in stats.keys():
+        if not self.totals.has_key(key):
+            self.totals[key] = 0
+        self.totals[key] += stats[key]
+
   def handlefile(self, filename):
-    infile = open(filename)
-    pof = po.pofile()
-    pof.parse(infile.read())
-    infile.close()
-    self.allelements.extend(pof.units)
-    summarize(filename, pof.units, self.CSVstyle)
+    pof = factory.getobject(filename)
+    stats = calcstats(pof.units)
+    self.updatetotals(stats)
+    summarize(filename, stats, self.CSVstyle)
     self.filecount += 1
 
   def handlefiles(self, arg, dirname, filenames):
