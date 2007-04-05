@@ -37,9 +37,8 @@ def untranslatedwords(pair):
   return original.words
 
 def wordcount(postr):
-  # TODO: po class should understand KDE style plurals and comments
+  # TODO: po class should understand KDE style plurals
   postr = sre.sub("^_n: ", "", postr)
-  postr = sre.sub("^_: .*?\\n", "", postr)
   postr = sre.sub("<br>", "\n", postr)
   postr = sre.sub("<[^>]+>", "", postr)
   postr = sre.sub("\\D\\.\\D", " ", postr)
