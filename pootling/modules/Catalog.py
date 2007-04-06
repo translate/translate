@@ -262,15 +262,16 @@ class Catalog(QtGui.QMainWindow):
         # TODO: calculate number of maximum files in directory.
         maxFilesNum = 0.1       # avoid devision by zero.
         currentFileNum = 0.0
+        self.fileItems = []
         
         for catalogFile in cats:
             catalogFile = unicode(catalogFile)
             self.addCatalogFile(catalogFile, includeSub, None)
         
         self.ui.treeCatalog.resizeColumnToContents(0)
-        self.timer.start(1000)
+        self.timer.start(100)
         
-            #currentFileNum += 1
+        #currentFileNum += 1
             #self.updateProgress(int((currentFileNum / maxFilesNum) * 100))
     
     def addCatalogFile(self, path, includeSub, item):
@@ -294,18 +295,6 @@ class Catalog(QtGui.QMainWindow):
                 childItem = QtGui.QTreeWidgetItem(item)
                 childItem.setText(0, os.path.basename(path))
                 self.fileItems.append(childItem)
-                
-##            childStats = self.getStats(path)
-##            if (childStats):
-##                childItem = QtGui.QTreeWidgetItem(item)
-##                childItem.setText(0, childStats[0])
-##                childItem.setText(1, childStats[1])
-##                childItem.setText(2, childStats[2])
-##                childItem.setText(3, childStats[3])
-##                childItem.setText(4, childStats[4])
-##                childItem.setText(5, childStats[5])
-##                childItem.setText(6, childStats[6])
-##                childItem.setText(7, childStats[7])
         
         if (os.path.isdir(path)) and (not path.endswith(".svn")):
             existedItem = self.getExistedItem(path)
@@ -478,6 +467,11 @@ class Catalog(QtGui.QMainWindow):
             return
     
     def updateStatistic(self):
+        if (len(self.fileItems) <= 0):
+            self.timer.stop()
+            self.itemNumber = 0
+            return
+        
         item = self.fileItems[self.itemNumber]
         path = self.getFilename(item)
         childStats = self.getStats(path)
@@ -492,8 +486,13 @@ class Catalog(QtGui.QMainWindow):
             item.setText(7, childStats[7])
         
         self.itemNumber += 1
+        
+        perc = int((float(self.itemNumber) / len(self.fileItems)) * 100)
+        self.updateProgress(perc)
+        
         if (self.itemNumber == len(self.fileItems)):
             self.timer.stop()
+            self.itemNumber = 0
     
 
 ##if __name__ == "__main__":
