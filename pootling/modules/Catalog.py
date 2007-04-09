@@ -140,8 +140,6 @@ class Catalog(QtGui.QMainWindow):
         # timer..
         self.timer = QtCore.QTimer()
         self.connect(self.timer, QtCore.SIGNAL("timeout()"), self.updateStatistic)
-        self.fileItems = []
-        self.itemNumber = 0
         self.lastFoundNumber = 0
       
     def find(self, searchString, searchOptions):
@@ -259,10 +257,8 @@ class Catalog(QtGui.QMainWindow):
         cats = World.settings.value("CatalogPath").toStringList()
         includeSub = World.settings.value("diveIntoSubCatalog").toBool()
         
-        # TODO: calculate number of maximum files in directory.
-        maxFilesNum = 0.1       # avoid devision by zero.
-        currentFileNum = 0.0
         self.fileItems = []
+        self.itemNumber = 0
         
         for catalogFile in cats:
             catalogFile = unicode(catalogFile)
@@ -270,9 +266,6 @@ class Catalog(QtGui.QMainWindow):
         
         self.ui.treeCatalog.resizeColumnToContents(0)
         self.timer.start(100)
-        
-        #currentFileNum += 1
-            #self.updateProgress(int((currentFileNum / maxFilesNum) * 100))
     
     def addCatalogFile(self, path, includeSub, item):
         """
@@ -472,6 +465,8 @@ class Catalog(QtGui.QMainWindow):
             self.itemNumber = 0
             return
         
+        self.timer.stop()
+        
         item = self.fileItems[self.itemNumber]
         path = self.getFilename(item)
         childStats = self.getStats(path)
@@ -489,6 +484,8 @@ class Catalog(QtGui.QMainWindow):
         
         perc = int((float(self.itemNumber) / len(self.fileItems)) * 100)
         self.updateProgress(perc)
+        
+        self.timer.start(10)
         
         if (self.itemNumber == len(self.fileItems)):
             self.timer.stop()
