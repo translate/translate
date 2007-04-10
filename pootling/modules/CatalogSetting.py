@@ -43,7 +43,7 @@ class CatalogSetting(QtGui.QDialog):
         self.connect(self.filedialog, QtCore.SIGNAL("location"), self.addLocation)
         self.connect(self.ui.btnOk, QtCore.SIGNAL("clicked(bool)"), QtCore.SLOT("close()"))
         self.connect(self.ui.btnDelete, QtCore.SIGNAL("clicked(bool)"), self.removeLocation)
-        self.connect(self.ui.btnClear, QtCore.SIGNAL("clicked(bool)"), self.ui.listWidget.clear)
+        self.connect(self.ui.btnClear, QtCore.SIGNAL("clicked(bool)"), self.clearLocation)
         self.connect(self.ui.btnMoveUp, QtCore.SIGNAL("clicked(bool)"), self.moveUp)
         self.connect(self.ui.btnMoveDown, QtCore.SIGNAL("clicked(bool)"), self.moveDown)
         self.connect(self.ui.chbDiveIntoSubfolders, QtCore.SIGNAL("stateChanged(int)"), self.rememberDive)
@@ -57,6 +57,11 @@ class CatalogSetting(QtGui.QDialog):
     def addLocation(self, text):
         self.ui.listWidget.addItem(text)
         self.catalogModified = True
+    
+    def clearLocation(self):
+        self.ui.listWidget.clear()
+        self.catalogModified = True
+        self.ui.chbDiveIntoSubfolders.setChecked(False)
     
     def removeLocation(self):
         self.ui.listWidget.takeItem(self.ui.listWidget.currentRow())
