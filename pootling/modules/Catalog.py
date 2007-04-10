@@ -161,6 +161,7 @@ class Catalog(QtGui.QMainWindow):
             filename = self.getFilename(item)
             found = self.searchInString(searchString, filename, searchOptions)
             if (found):
+                self.ui.treeCatalog.setCurrentItem(item)
                 self.emit(QtCore.SIGNAL("openFile"), filename)
                 self.emit(QtCore.SIGNAL("goto"), found)
                 self.lastFoundNumber = i+1
