@@ -141,7 +141,17 @@ class Catalog(QtGui.QMainWindow):
         self.timer = QtCore.QTimer()
         self.connect(self.timer, QtCore.SIGNAL("timeout()"), self.updateStatistic)
         self.lastFoundNumber = 0
-      
+        
+        # context menu of items
+        self.menu = QtGui.QMenu()
+        actionOpen = self.menu.addAction(self.tr("Open"))
+        actionFind = self.menu.addAction(QtGui.QIcon("../images/find.png"), self.tr("Find"))
+        actionShowStat = self.menu.addAction(QtGui.QIcon("../images/statistic.png"), self.tr("Show statistic"))
+        self.connect(actionOpen, QtCore.SIGNAL("triggered()"), self.emitOpenFile)
+        self.connect(actionFind, QtCore.SIGNAL("triggered()"), self.findBar.showFind)
+        self.connect(actionShowStat, QtCore.SIGNAL("triggered()"), self.showStatistic)
+        
+        
     def find(self, searchString, searchOptions):
         if (not (searchString and searchOptions)):
             return
@@ -265,7 +275,7 @@ class Catalog(QtGui.QMainWindow):
             self.addCatalogFile(catalogFile, includeSub, None)
         
         self.ui.treeCatalog.resizeColumnToContents(0)
-        self.timer.start(100)
+        self.timer.start(10)
     
     def addCatalogFile(self, path, includeSub, item):
         """
@@ -303,8 +313,9 @@ class Catalog(QtGui.QMainWindow):
                     childItem.setText(0, path)
                 # it's existed in tree but it is the sub directory
                 elif hasattr(item, "parent"):
-                    childItem = QtGui.QTreeWidgetItem()
-                    item.insertChild(0, childItem)
+##                    childItem = QtGui.QTreeWidgetItem()
+##                    item.insertChild(0, childItem)
+                    childItem = QtGui.QTreeWidgetItem(item)
                     childItem.setText(0, os.path.basename(path))
                 childItem.setIcon(0, self.folderIcon)
             
@@ -423,10 +434,16 @@ class Catalog(QtGui.QMainWindow):
         else:
             self.catSetting.ui.chbtranslated.setCheckState(QtCore.Qt.Checked)
 
-    def emitOpenFile(self, item, col):
+    def emitOpenFile(self, item=None, col=None):
         """
         Send "openFile" signal with filename.
         """
+        if (not item):
+            try:
+                item = self.ui.treeCatalog.selectedItems()[0]
+            except:
+                return
+        
         filename = self.getFilename(item)
         if (os.path.isfile(filename)): 
             self.emit(QtCore.SIGNAL("openFile"), filename)
@@ -485,12 +502,15 @@ class Catalog(QtGui.QMainWindow):
         perc = int((float(self.itemNumber) / len(self.fileItems)) * 100)
         self.updateProgress(perc)
         
+        # start getting statistic
         self.timer.start(10)
         
         if (self.itemNumber == len(self.fileItems)):
             self.timer.stop()
             self.itemNumber = 0
     
+    def contextMenuEvent(self, e):
+        self.menu.exec_(e.globalPos())
 
 ##if __name__ == "__main__":
 ##    import sys, os
