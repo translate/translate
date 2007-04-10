@@ -62,13 +62,13 @@ class Catalog(QtGui.QMainWindow):
         
         # set up table appearance and behavior
         self.headerLabels = [self.tr("Name"),
+                            self.tr("Translated"),
                             self.tr("Fuzzy"),
                             self.tr("Untranslated"),
                             self.tr("Total"),
                             self.tr("CVS/SVN Status"),
                             self.tr("Last Revision"),
-                            self.tr("Last Translator"),
-                            self.tr("Translated")]
+                            self.tr("Last Translator")]
         self.ui.treeCatalog.setColumnCount(len(self.headerLabels))
         self.ui.treeCatalog.setHeaderLabels(self.headerLabels)
         self.ui.treeCatalog.header().setResizeMode(QtGui.QHeaderView.Interactive)
@@ -194,44 +194,39 @@ class Catalog(QtGui.QMainWindow):
           return found
 
     def showStatistic(self):
-          # files is empty of tree Catalog
-          itemCount = self.ui.treeCatalog.topLevelItemCount()
-          if (itemCount == 0):
-              return
-
-          item = self.ui.treeCatalog.currentItem()
-          filename = self.getFilename(item)
-          if os.path.isfile(filename):
-              filename = str(filename)
-              store = factory.getobject(filename)
-
-              name = os.path.basename(filename)
-              fuzzyUnitCount = store.fuzzy_units()
-              translatedUnitCount = store.translated_unitcount()
-              untranslatedUnitCount = store.untranslated_unitcount()
-              totalUnitCount = fuzzyUnitCount + untranslatedUnitCount + translatedUnitCount
-              # round down to number ater decimal points (fuzzy)
-              fuzzy = str((float(fuzzyUnitCount) / totalUnitCount) * 100)
-              fuzzy = float(fuzzy)
-              fuzzy = round(fuzzy , 2)
-              # round down to number ater decimal points ( translated)
-              translated = str((float(translatedUnitCount) / totalUnitCount) * 100)
-              translated = float(translated)
-              translated = round(translated , 2)
-              # round down to number ater decimal points (untranslated)
-              untranslated = str((float(untranslatedUnitCount) / totalUnitCount) * 100)
-              untranslated = float(untranslated)
-              untranslated = round(untranslated , 2)
-
-              QtGui.QMessageBox.information(self, self.tr("Statistic of files"), 'File Name: ' + str(name) + '\n\nFuzzy: ' + str(fuzzyUnitCount) + ' (' + str(fuzzy) + '%)' + '\n\nTranslated: ' + str(translatedUnitCount) + ' (' + str(translated) + '%)' + '\n\nUntranslated: ' + str(untranslatedUnitCount) + ' (' + str(untranslated) + '%)' + '\n\nTotal of strings: ' + str(totalUnitCount), "OK")
-
-          elif os.path.isdir(filename):
-                for i in range(item.childCount()):
-                    childItem = item.child(i)
-                    i += 1
-                QtGui.QMessageBox.information(self, self.tr("Statistic of file"), 'Total of files: ' + str(i) , "OK")
-          return
-
+        item = self.ui.treeCatalog.currentItem()
+        if (not item):
+            return
+        
+        filename = self.getFilename(item)
+        title = unicode(os.path.basename(filename))
+        
+        stats = self.getStatsFromItem(item)
+        translated = stats["translated"]
+        fuzzy = stats["fuzzy"]
+        untranslated = stats["untranslated"]
+        total = float(translated + fuzzy + untranslated)
+        
+        if (total > 0):
+            perTranslated = str((translated/total) * 100)
+            perTranslated = perTranslated[0:perTranslated.find(".")+3] + "%"
+            perFuzzy = str((fuzzy/total) * 100)
+            perFuzzy = perFuzzy[0:perFuzzy.find(".")+3] + "%"
+            perUntranslated = str((untranslated/total) * 100)
+            perUntranslated = perUntranslated[0:perUntranslated.find(".")+3] + "%"
+        else:
+            perTranslated = "0%"
+            perFuzzy = "0%"
+            perUntranslated = "0%"
+        
+        message = title + ":\n" + \
+                "\nTranslated:\t" + str(translated) + "\t" + perTranslated + \
+                "\nFuzzy:\t" + str(fuzzy) + "\t" + perFuzzy + \
+                "\nUntranslated:\t" + str(untranslated) + "\t" + perUntranslated + \
+                "\nTotal:\t" + str(int(total))
+            
+        QtGui.QMessageBox.information(self, self.tr("Statistic"), message , "OK")
+        
     def toggleHeaderItem(self):
         if (isinstance(self.sender(), QtGui.QCheckBox)):
             text = self.sender().text()
@@ -359,7 +354,9 @@ class Catalog(QtGui.QMainWindow):
     
     def getStats(self, filename):
         """
-        return stats as list of text of current file name or False if error.
+        return a dictionary which consist of basename, translatedCount, fuzzyCount,
+        untranslatedCount, totalCount, subVersionState, revisionDate, lastTranslator
+        or return False when error.
         @param filename: path and file name.
         """
         try:
@@ -370,13 +367,12 @@ class Catalog(QtGui.QMainWindow):
         if (not os.path.isfile(filename)):
             return False
         
-        name = os.path.basename(filename)
-        fuzzyUnitCount = store.fuzzy_units()
-        translated = store.translated_unitcount()
-        untranslatedUnitCount = store.untranslated_unitcount()
-        totalUnitCount = fuzzyUnitCount + untranslatedUnitCount + translated
-        
-        cvsSvn = "?"
+        basename = os.path.basename(filename)
+        numTranslated = store.translated_unitcount()
+        numFuzzy = store.fuzzy_units()
+        numUntranslated = store.untranslated_unitcount()
+        numTotal = numTranslated + numUntranslated + numFuzzy
+        subVersionState = ""
         
         if hasattr(store, "parseheader"):
             headerDic = store.parseheader()
@@ -392,8 +388,35 @@ class Catalog(QtGui.QMainWindow):
             revisionDate = ""
             lastTranslator = ""
         
-        return [name, str(fuzzyUnitCount), str(untranslatedUnitCount), str(totalUnitCount), cvsSvn, revisionDate, lastTranslator, str(translated)]
-
+        return {"basename":basename, "numTranslated":numTranslated, "numFuzzy":numFuzzy, 
+                "numUntranslated":numUntranslated, "numTotal":numTotal, 
+                "subVersionState":subVersionState, "revisionDate":revisionDate, 
+                "lastTranslator":lastTranslator}
+    
+    def getStatsFromItem(self, item):
+        """
+        get number of translated, untranslated, and fuzzy units from item.
+        @param item: treewidget item which has at least those four fields.
+        @return dictionary of stats.
+        """
+        try:
+            translated = int(item.text(1))
+            fuzzy = int(item.text(2))
+            untranslated = int(item.text(3))
+        except:
+            translated = 0
+            fuzzy = 0
+            untranslated = 0
+        
+        for i in range(item.childCount()):
+            child = item.child(i)
+            stats = self.getStatsFromItem(child)
+            translated += stats["translated"]
+            fuzzy += stats["fuzzy"]
+            untranslated += stats["untranslated"]
+        
+        return {"translated": translated, "fuzzy":fuzzy, "untranslated":untranslated}
+    
     def setupCheckbox(self):
         if not (World.settings.value("Catalog.Name").toBool()):
             self.catSetting.ui.chbname.setCheckState(QtCore.Qt.Unchecked)
@@ -453,6 +476,9 @@ class Catalog(QtGui.QMainWindow):
         """
         return filename join from item.text(0) to its parent.
         """
+        if (not item):
+            return None
+        
         filename = unicode(item.text(0))
         if (item.parent()):
             filename = os.path.join(self.getFilename(item.parent()) + os.path.sep + filename)
@@ -490,13 +516,13 @@ class Catalog(QtGui.QMainWindow):
         childStats = self.getStats(path)
         
         if (childStats):
-            item.setText(1, childStats[1])
-            item.setText(2, childStats[2])
-            item.setText(3, childStats[3])
-            item.setText(4, childStats[4])
-            item.setText(5, childStats[5])
-            item.setText(6, childStats[6])
-            item.setText(7, childStats[7])
+            item.setText(1, str(childStats["numTranslated"]))
+            item.setText(2, str(childStats["numFuzzy"]))
+            item.setText(3, str(childStats["numUntranslated"]))
+            item.setText(4, str(childStats["numTotal"]))
+            item.setText(5, childStats["subVersionState"])
+            item.setText(6, childStats["revisionDate"])
+            item.setText(7, childStats["lastTranslator"])
         
         self.itemNumber += 1
         
