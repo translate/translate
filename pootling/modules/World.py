@@ -35,6 +35,9 @@ searchForward = 1
 searchBackward = 2
 searchStatic = 4
 
+searchFormat = 1
+glossaryFormat = 2
+
 # this is the global settings object, use only this for saving and restoring settings
 
 settingOrg = "WordForge"

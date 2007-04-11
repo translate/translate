@@ -107,12 +107,11 @@ class MainWindow(QtGui.QMainWindow):
 
         #create operator
         self.operator = Operator()
-        self.connect(self.dockTUview, QtCore.SIGNAL("Lookup"), self.operator.lookupTranslation)
         
         # action Tool menu of Catalog Manager
         self.Catalog = Catalog(self)
         self.connect(self.ui.actionCatalogManager, QtCore.SIGNAL("triggered()"), self.Catalog.showDialog)
-
+        
          # TM table
         self.table = tableTM.tableTM(self)
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.table)
@@ -222,9 +221,11 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.addFuzzyIcon)
         self.connect(self.dockOverview, QtCore.SIGNAL("filteredIndex"), self.operator.setUnitFromPosition)
         self.connect(self.dockTUview, QtCore.SIGNAL("scrollToRow"), self.dockOverview.scrollToRow)
-
+        self.connect(self.dockTUview, QtCore.SIGNAL("lookupTranslation"), self.operator.lookupTranslation)
+        
         self.connect(self.dockOverview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
         self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
+        
         self.connect(self.dockComment, QtCore.SIGNAL("commentChanged"), self.operator.setComment)
         self.connect(self.fileaction, QtCore.SIGNAL("fileSaved"), self.operator.saveStoreToFile)
         self.connect(self.fileaction, QtCore.SIGNAL("saveFile"), self.operator.setModified)

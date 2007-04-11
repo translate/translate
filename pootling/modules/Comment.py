@@ -48,7 +48,7 @@ class CommentDock(QtGui.QDockWidget):
         self.applySettings()
         
         # create highlighter
-        self.highlighter = highlighter.Highlighter()
+        self.highlighter = highlighter.Highlighter(None)
 
     def closeEvent(self, event):
         """
@@ -92,8 +92,7 @@ class CommentDock(QtGui.QDockWidget):
         if ((textField == World.comment) and position != None):
             textField = self.ui.txtTranslatorComment
             block = textField.document().findBlock(position)
-            self.highlighter.setHighlightFormat("search")
-            self.highlighter.setHighlightRange(position - block.position(), length)
+            self.highlighter.setHighlightRange(World.searchFormat, position - block.position(), length)
             self.highlighter.highlightBlock(block)
         else:
             self.highlighter.clearAdditionalFormats()

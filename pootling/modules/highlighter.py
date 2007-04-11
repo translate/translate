@@ -1,79 +1,47 @@
+from pootling.modules import World
 from PyQt4 import QtCore, QtGui
 
 class Highlighter(QtCore.QObject):
+    '''highlight terms in glossary, search found, and tags'''
     def __init__(self, parent = None):
         QtCore.QObject.__init__(self, parent)
         
-        # highlight format
+        # search format
         self.searchFormat = QtGui.QTextCharFormat()
         self.searchFormat.setFontWeight(QtGui.QFont.Bold)
         self.searchFormat.setForeground(QtCore.Qt.white)
         self.searchFormat.setBackground(QtCore.Qt.darkMagenta)
         
-        # glossary format
+        #        # glossary format
         self.glossaryFormat = QtGui.QTextCharFormat()
         self.glossaryFormat.setFontWeight(QtGui.QFont.Bold)
+        self.glossaryFormat.setForeground(QtCore.Qt.darkGreen)
         self.glossaryFormat.setUnderlineStyle(QtGui.QTextCharFormat.DashDotDotLine)
-        
-        self.highlightRange = QtGui.QTextLayout.FormatRange()
-        self.block = None
-        
-        self.format = {"search": self.searchFormat, "glossary":self.glossaryFormat}
-    
-#        # highlight tage
-#        tagFormat = QtGui.QTextCharFormat()
-#        tagFormat.setFontWeight(QtGui.QFont.Bold)
-#        tagFormat.setForeground(QtCore.Qt.blue)
-#        
-#        quoteFormat = QtGui.QTextCharFormat()
-#        quoteFormat.setForeground(QtCore.Qt.darkGreen)
-#        accelFormat = QtGui.QTextCharFormat()
-#        accelFormat.setForeground(QtCore.Qt.darkMagenta)
-#        
-#        tagPattern = QtCore.QRegExp("%\d+|%s|%d")
-#        accelPattern = QtCore.QRegExp("&\S")
-#        quotePattern = QtCore.QRegExp("<.+>|</.+>")
-#        
-#        self.formats = [tagFormat, accelFormat, quoteFormat]
-#        self.patterns = [tagPattern, accelPattern, quotePattern]
-#        self.expression = QtCore.QRegExp(tagPattern.pattern() + "|" + \
-#                accelPattern.pattern() + "|" + \
-#                quotePattern.pattern())
-        
-#    def highlightBlock(self, text):
-#        index = text.indexOf(self.expression)
-#        charFormat = self.formats[0]
-#        while (index >= 0):
-#            length = self.expression.matchedLength()
-#            # format the found text
-#            cap = self.expression.cap()
-#            for i in range(len(self.patterns)):
-#                if (cap.indexOf(self.patterns[i]) > -1):
-#                    charFormat = self.formats[i]
-#            self.setFormat(index, length, charFormat)
-#            index = text.indexOf(self.expression, index + length)
-#        
-#        if (self.index >= 0):
-#            self.setFormat(self.index, self.length, self.searchFormat)
-#            self.index = None
-#    
-#    def initSearch(self, index, length):
-#        self.index = index
-#        self.length = length
+            
+        self.currentblock = None
+        self.highlightRangeList = []
     
     def highlightBlock(self, block):
-        self.block = block
-        if(self.block):
-            self.block.layout().setAdditionalFormats([self.highlightRange])
-            self.block.document().markContentsDirty(self.highlightRange.start, self.highlightRange.length)
+        if (not block):
+            return
+        block.layout().setAdditionalFormats(self.highlightRangeList)
+        block.document().markContentsDirty(block.position(), block.length())
+        self.currentblock = block
     
-    def setHighlightRange(self, start = 0, length = 0):
-        self.highlightRange.start = start
-        self.highlightRange.length = length
+    def setHighlightRange(self, format, start = 0, length = 0):
+        highlightRange = QtGui.QTextLayout.FormatRange()
+        highlightRange.start = start
+        highlightRange.length = length
+        if (format == World.searchFormat):
+            highlightRange.format = self.searchFormat
+        if (format == World.glossaryFormat):
+            highlightRange.format = self.glossaryFormat
+        self.highlightRangeList.append(highlightRange)
         
     def clearAdditionalFormats(self):
-        self.setHighlightRange()
-        self.highlightBlock(self.block)
-        
-    def setHighlightFormat(self, format):
-        self.highlightRange.format = self.format[format]
+        '''clear format from current block'''
+        #TODO current block of which TextBox (txtSource or txtTarget)
+        for list in self.highlightRangeList:
+            if list.format == self.searchFormat:
+                self.highlightRangeList.remove(list)
+        self.highlightBlock(self.currentblock)

@@ -7,7 +7,7 @@
 # This program is free sofware; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
+# of the License, or (at your op tion) any later version.
 #
 # See the LICENSE file for more details. 
 #
@@ -39,7 +39,7 @@ class TUview(QtGui.QDockWidget):
         self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
         
         # create highlighter
-        self.highlighter = highlighter.Highlighter()
+        self.highlighter = highlighter.Highlighter(None)
         self.sourceLength = 0
         
     def closeEvent(self, event):
@@ -115,7 +115,7 @@ class TUview(QtGui.QDockWidget):
             self.ui.targetStacked.setCurrentIndex(0)
             if (unicode(unit.source) !=  unicode(self.ui.txtSource.toPlainText())):
                 self.ui.txtSource.setPlainText(unit.source)
-                self.emitLookup()
+                self.emit(QtCore.SIGNAL("lookupTranslation"))
             if (unicode(unit.target) !=  unicode(self.ui.txtTarget.toPlainText())):
                 self.ui.txtTarget.setPlainText(unit.target)
         else:
@@ -142,7 +142,7 @@ class TUview(QtGui.QDockWidget):
                     self.disconnect(textbox, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
                     # everytime display a unit, connect signal
                     self.connect(textbox, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
-    
+        
     def addRemoveTabWidget(self, tabWidget, length, msg_strings):
         '''Add or remove tab to a Tab widget.
         
@@ -212,28 +212,22 @@ class TUview(QtGui.QDockWidget):
         @param textField: source or target text box.
         @param position: highlight start point.
         @param length: highlight length."""
-        self.disconnect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
         if ((textField == World.source or textField == World.target)  and position != None):
             textField = ((textField == World.source) and self.ui.txtSource or self.ui.txtTarget)
             block = textField.document().findBlock(position)
-            self.highlight("search", position - block.position(), length, block)
+            block.textField = textField
+            self.highlighter.clearAdditionalFormats()
+            self.highlight(block, position - block.position(), length, World.searchFormat)
         else:
             self.highlighter.clearAdditionalFormats()
-        self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
     
-    def highlighGlossary(self, position, length = 0):
-        self.disconnect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
+    def highlighGlossary(self, position, length):
         block = self.ui.txtSource.document().findBlock(position)
-        self.highlight("glossary", position - block.position(), length, block)
-        self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
+        self.highlight(block, position - block.position(), length, World.glossaryFormat)
     
-    def highlight(self, format, start, length, block):
-        '''set highlight mode according to format.
-        
-        '''
-        self.highlighter.setHighlightFormat(format)
-        self.highlighter.setHighlightRange(start, length)
-        self.highlighter.highlightBlock(block)
+    def highlight(self, block, start, length, format):
+            self.highlighter.setHighlightRange(format, start, length)
+            self.highlighter.highlightBlock(block)
     
     def replaceText(self, textField, position, length, replacedText):
         """replace the string (at position and length) with replacedText in txtTarget.
@@ -289,13 +283,6 @@ class TUview(QtGui.QDockWidget):
         self.ui.lblComment.setVisible(bool)
         self.ui.sourceStacked.setEnabled(bool)
         self.ui.targetStacked.setEnabled(bool)
-    
-    def emitLookup(self):
-        '''emit signal to lookup unit translation or unit's terminologies translation in glossary;
-        
-        '''
-        self.emit(QtCore.SIGNAL("Lookup"))
-        
     
 if __name__ == "__main__":
     import sys, os

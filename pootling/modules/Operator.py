@@ -273,7 +273,7 @@ class Operator(QtCore.QObject):
         if (position < len(self.filteredList) and position >= 0):
             unit = self.filteredList[position]
             self.emitUnit(unit)
-    
+
     def toggleFuzzy(self):
         """toggle fuzzy state for current unit."""
         if (self.currentUnitIndex < 0):
@@ -530,9 +530,10 @@ class Operator(QtCore.QObject):
         words = unit.source.split(" ")
         for word in words:
             candidates = self.termmatcher.matches(word)
-            foundPosition = unit.source.lower().find(candidates[0].source, 0)
-            if (foundPosition):
-                self.emit(QtCore.SIGNAL("glossaryResult"), foundPosition, len(unicode(candidates[0].source)))
+            if (candidates):
+                foundPosition = unit.source.lower().find(candidates[0].source, 0)
+                if (foundPosition):
+                    self.emit(QtCore.SIGNAL("glossaryResult"), foundPosition, len(unicode(candidates[0].source)))
     
     def lookupTranslation(self):
         '''lookup text translation or text terminologies in glossary.
