@@ -286,7 +286,6 @@ def buildmanifest_in(file, scripts):
   # wordlist, portal are in the source tree but unconnected to the python code
   print >>file, "prune wordlist"
   print >>file, "prune spelling"
-  print >>file, "prune editor"
   print >>file, "prune lingua"
   print >>file, "prune portal"
   print >>file, "prune Pootle"
