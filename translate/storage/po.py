@@ -68,7 +68,8 @@ def quoteforpo(text, template=None):
     return polines
   lines = text.split("\n")
   if len(lines) > 1 or (len(lines) == 1 and len(lines[0]) > 71):
-    polines.extend(['""'])
+    if len(lines) != 2 or lines[1]:
+        polines.extend(['""'])
     for line in lines[:-1]:
       lns = textwrap.wrap(line, 76, replace_whitespace=False, expand_tabs=False, drop_whitespace=False)
       if len(lns) > 0:
