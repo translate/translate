@@ -272,6 +272,7 @@ class LISAfile(base.TranslationStore):
             posrc = xml.read()
             xml = posrc
         self.document = ourdom.parseString(xml)
+        self.encoding = self.document.encoding
         assert self.document.documentElement.tagName == self.rootNode
         self.initbody()
         termEntries = self.document.getElementsByTagName(self.UnitClass.rootNode)
