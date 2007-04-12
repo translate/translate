@@ -39,6 +39,8 @@ class TestPOCount:
         """test that we do not count XML tags as words"""
         # <br> is a word break
         self.count("A word<br>Another word", 4)
+        self.count("A word<br/>Another word", 4)
+        self.count("A word<br />Another word", 4)
         # \n is a word break
         self.count("<p>A word</p>\n<p>Another word</p>", 4)
 
