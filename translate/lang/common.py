@@ -96,7 +96,7 @@ class Common(object):
     See U{http://www.gnu.org/software/gettext/manual/html_node/gettext_150.html}.
     """
 
-    punctuation = u".,;:!?-@#$%^*_()[]{}/\\'\"<>‘’‚‛“”„‟′″‴‵‶‷‹›«»±³¹²°¿؟©®×£¥。，；！？។៕៖៘"
+    punctuation = u".,;:!?-@#$%^*_()[]{}/\\'\"<>‘’‚‛“”„‟′″‴‵‶‷‹›«»±³¹²°¿؟·©®×£¥。，；！？។៕៖៘"
 
     sentenceend = u".!?؟。！？។៕៘"
 
