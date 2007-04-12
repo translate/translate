@@ -36,49 +36,31 @@ class Preference(QtGui.QDialog):
         """ get values and display them """
         self.overviewFont = self.getFont(self.widget[0])
         self.setCaption(self.ui.lblOverView, self.overviewFont)
-        self.ui.lblOverView.setWhatsThis("<h3>Overview Font</h3>Here, it will currently displayed font name, style and size of overview font on top Dock Widget Area of MainEditor.")
         self.tuSourceFont = self.getFont(self.widget[1])
         self.setCaption(self.ui.lblSource, self.tuSourceFont)
-        self.ui.lblSource.setWhatsThis("<h3>Source Font</h3>Here, it will currently displayed font name, style and size of txtsource font on below overview of MainEditor.")
         self.tuTargetFont = self.getFont(self.widget[2])
         self.setCaption(self.ui.lblTarget, self.tuTargetFont )
-        self.ui.lblTarget.setWhatsThis("<h3>Target Font</h3>Here, it will currently displayed font name, style and size of txtTarget font on below txtSource of MainEditor.")
         self.commentFont = self.getFont(self.widget[3])
         self.setCaption(self.ui.lblComment, self.commentFont)
-        self.ui.lblComment.setWhatsThis("<h3>Comment Font</h3>Here, it will currently displayed font name, style and size of comment font on the right side of MainEditor.")
         self.overviewHeaderFont = self.getFont(self.widget[4])
         self.setCaption(self.ui.lblOverViewHeader, self.overviewHeaderFont)
-        self.ui.lblOverViewHeader.setWhatsThis("<h3>Overview Header Font</h3>Here, it will currently displayed font name, style and size of overview header on MainEditor.")
-
         self.overviewColorObj = self.getColor(self.widget[0])
         self.setTextColor(self.ui.lblOverView, self.overviewColorObj)
-        self.ui.lblOverView.setWhatsThis("<h3>Overview Color</h3>Here, it will currently displayed color of overview on top Dock Widget Area of MainEditor.")
         self.tuSourceColorObj = self.getColor(self.widget[1])
         self.setTextColor(self.ui.lblSource, self.tuSourceColorObj)
-        self.ui.lblSource.setWhatsThis("<h3>Source Color</h3>Here, it will currently displayed color of txtSource on below overview of MainEditor.")
         self.tuTargetColorObj = self.getColor(self.widget[2])
         self.setTextColor(self.ui.lblTarget, self.tuTargetColorObj)
-        self.ui.lblTarget.setWhatsThis("<h3>Target Color</h3>it will currently displayed color of txtTarget on below txtSource of MainEditor.")
         self.commentColorObj = self.getColor(self.widget[3])
         self.setTextColor(self.ui.lblComment, self.commentColorObj)
-        self.ui.lblComment.setWhatsThis("<h3>Comment Color</h3>it will currently displayed color of comment on the right side of MainEditor.")
-
+        
         self.ui.UserName.setText(World.settings.value("UserName").toString())
-        self.ui.UserName.setWhatsThis("<h3>UserName</h3>User can fill in cell of own name.")
         self.ui.EmailAddress.setText(World.settings.value("EmailAddress").toString())
-        self.ui.EmailAddress.setWhatsThis("<h3>EmailAddress</h3>User can fill in cell of own email.")
         self.ui.cbxFullLanguage.setEditText(World.settings.value("FullLanguage").toString())
-        self.ui.cbxFullLanguage.setWhatsThis("<h3>Language</h3>Choose your own language.")
         self.ui.cbxLanguageCode.setEditText(World.settings.value("Code").toString())
-        self.ui.cbxLanguageCode.setWhatsThis("<h3>Code</h3>Choose your own Code.")
         self.ui.SupportTeam.setText(World.settings.value("SupportTeam").toString())
-        self.ui.SupportTeam.setWhatsThis("<h3>Support</h3>Type email support address.")
         self.ui.cbxTimeZone.setEditText(World.settings.value("TimeZone").toString())
-        self.ui.cbxTimeZone.setWhatsThis("<h3>TimeZone</h3>Choose timeZone of your country.")
         self.ui.spinBox.setValue(World.settings.value("nPlural").toInt()[0])
-        self.ui.spinBox.setWhatsThis("<h3>Singular/Plural forms</h3>Set plural forms for a specific language")
         self.ui.lineEqaution.setText(World.settings.value("equation").toString())
-        self.ui.lineEqaution.setWhatsThis("<h3>Plural equation</h3>Set plural equation for a specific language. Pootling try to set this value for you. If no information provided, you should fill up by yourself. ")
         checkState = World.settings.value("headerAuto", QtCore.QVariant(True))
         if (checkState.toBool()):
             self.ui.chkHeaderAuto.setCheckState(QtCore.Qt.Checked)
@@ -275,7 +257,8 @@ class Preference(QtGui.QDialog):
             self.ui.setupUi(self)
             self.ui.listWidget.addItem(QtGui.QListWidgetItem(QtGui.QIcon("../images/identity.png"), self.tr("Personalize")))
             self.ui.listWidget.addItem(QtGui.QListWidgetItem(QtGui.QIcon("../images/colorize.png"), self.tr("Font & Color")))
-            self.ui.listWidget.addItem(QtGui.QListWidgetItem(QtGui.QIcon("../images/memory.png"), self.tr("Glossary-TM")))
+            self.ui.listWidget.addItem(QtGui.QListWidgetItem(QtGui.QIcon("../images/memory.png"), self.tr("TM-Glossary")))
+            self.ui.listWidget.addItem(QtGui.QListWidgetItem(QtGui.QIcon("../images/save.png"), self.tr("      Save    ")))
             self.ui.listWidget.setViewMode(QtGui.QListView.IconMode)
             self.ui.listWidget.setCurrentRow(0)
             self.ui.listWidget.setResizeMode(QtGui.QListView.Fixed)
@@ -298,35 +281,28 @@ class Preference(QtGui.QDialog):
             # connect signals
             self.connect(self.ui.chkHeaderAuto, QtCore.SIGNAL("stateChanged(int)"), self.ui.chkHeaderAuto.checkState) 
             self.connect(self.ui.bntFontOverview, QtCore.SIGNAL("clicked()"), self.fontOverview) 
-            self.ui.bntFontOverview.setWhatsThis("<h3>Overview Font</h3>You can click Choose button and select color ever you want to be used on Overview.")
             self.connect(self.ui.bntFontOverviewHeader, QtCore.SIGNAL("clicked()"), self.fontOverviewHeader)
-            self.ui.bntFontOverviewHeader.setWhatsThis("<h3>Overview Header Font</h3>You can click Choose button and select color ever you want to be used on Overview Header.")
             self.connect(self.ui.bntFontSource, QtCore.SIGNAL("clicked()"), self.fontSource) 
-            self.ui.bntFontSource.setWhatsThis("<h3>Source Font</h3>You can click Choose button and select color ever you want to be used on txtSource.")
             self.connect(self.ui.bntFontTarget, QtCore.SIGNAL("clicked()"), self.fontTarget)
-            self.ui.bntFontTarget.setWhatsThis("<h3>Target Font</h3>You can click Choose button and select color ever you want to be used on txtTarget.")
             self.connect(self.ui.bntFontComment, QtCore.SIGNAL("clicked()"), self.fontComment) 
-            self.ui.bntFontComment.setWhatsThis("<h3>Comment Font</h3>You can click Choose button and select color ever you want to be used on Comment.")
             self.connect(self.ui.bntDefaultsFont, QtCore.SIGNAL("clicked()"), self.defaultFonts)
-            self.ui.bntDefaultsFont.setWhatsThis("<h3>Defaults font</h3>You can click here if you would like Overview, Overview Header, Source, Target and Comment as default font.")
-
+            
             # for color
             self.connect(self.ui.btnColorComment, QtCore.SIGNAL("clicked()"), self.colorComment) 
-            self.ui.btnColorComment.setWhatsThis("<h3>Comment Color</h3>You can click Choose button and select color ever you want to be used on Comment.")
             self.connect(self.ui.btnColorSource, QtCore.SIGNAL("clicked()"), self.colorSource) 
-            self.ui.btnColorSource.setWhatsThis("<h3>Source Color</h3>You can click Choose button and select color ever you want to be used on txtSource.")
             self.connect(self.ui.btnColorTarget, QtCore.SIGNAL("clicked()"), self.colorTarget) 
-            self.ui.btnColorTarget.setWhatsThis("<h3>Target Color</h3>You can click Choose button and select color ever you want to be used on txtTarget.")
             self.connect(self.ui.btnColorOverview, QtCore.SIGNAL("clicked()"), self.colorOverview) 
-            self.ui.btnColorOverview.setWhatsThis("<h3>Overview Color</h3>You can click Choose button and select color ever you want to be used on Overview.")
             self.connect(self.ui.bntDefaultsColor, QtCore.SIGNAL("clicked()"), self.defaultColors)
-            self.ui.bntDefaultsColor.setWhatsThis("<h3>Defaults color</h3>You can click here if you would like Overview, Source, Target and Comment as default color.")
             
-            self.connect(self.ui.okButton, QtCore.SIGNAL("clicked()"), self.accepted)
+            #for language
             self.connect(self.ui.cbxFullLanguage, QtCore.SIGNAL("currentIndexChanged(int)"), self.setCodeIndex)
             self.connect(self.ui.cbxLanguageCode, QtCore.SIGNAL("currentIndexChanged(int)"), self.setLanguageIndex)
             self.connect(self.ui.cbxLanguageCode, QtCore.SIGNAL("currentIndexChanged(const QString &)"), self.setNPlural)
+            
+            self.connect(self.ui.okButton, QtCore.SIGNAL("clicked()"), self.accepted)
+            
             self.widget = ["overview","tuSource","tuTarget","comment", "overviewHeader"]
+            
             code =[]
             language = []
             for langCode, langInfo in data.languages.iteritems():
@@ -335,6 +311,7 @@ class Preference(QtGui.QDialog):
                 
             self.ui.cbxFullLanguage.addItems(language)
             self.ui.cbxLanguageCode.addItems(code)
+            #TODO: time zone should be also moved to toolkit.
             timeZone = ['(GMT-11:00) Midway Island, Samoa','(GMT-10:00) Hawaii','(GMT-09:00) Alaska','(GMT-08:00) Pacific Time(US & Canada); Tijuana','(GMT-07:00) Arizona','(GMT-07:00) Chihuahua, La Paz, Mazatlan','(GMT-07:00) Mountain Time(US & Canada)','(GMT-06:00) Central America','(GMT-06:00) Central Time(US & Canada)','(GMT-06:00) Guadalajara, Mexico City, Monterrey ','(GMT-06:00) Saskatchewan','(GMT-05:00) Bogota, Lima, Quito','(GMT-05:00) Eastern Time(US & Canada)','(GMT-05:00) Indiana (East)','(GMT-04:00) Atlantic Time (Canada)','(GMT-04:00) Caracas, La Paz','(GMT-04:00) Santiago','(GMT-03:30) NewFoundland','(GMT-03:00) Brasilia','(GMT-03:00) Buenos Aires, Georgetown','(GMT-03:00) Greenland','(GMT-02:00) Mid-Atlantic','(GMT-01:00) Azores','(GMT-01:00) Cape Verde Is.','(GMT) Casablanca, Monrovia','(GMT) Greenwich Mean Time: Dublin, Edinburgh, Lisbon, London','(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Viena','(GMT+01:00) Belgrade, Bratislava, Budapest, Ljubljana, Prague','(GMT+01:00) Brussels, Copenhagen, Madrid, Paris','(GMT+01:00) Sarajevo, Skopje, Warsaw, Zagreb','(GMT+01:00) West Central Africa','(GMT+02:00) Athens, Beirut, Istanbul, Minsk','(GMT+02:00)  Bucharest','(GMT+02:00) Cairo','(GMT+02:00) Harare, Pretoria','(GMT+02:00) Helsinki, kyiv, Riga, Sofia, Tailinn, Vilnius','(GMT+02:00) Jerusalem','(GMT+03:00) Baghdad','(GMT+03:00) Brasilia','(GMT+03:00) Kuwait, Riyadh','(GMT+03:00) Moscow, St. Petersburg, Volgograd','(GMT+03:00) Nairobi','(GMT+03:30) Tehran','(GMT+04:00) Abu Dhabi, Muscat','(GMT+04:00) Baku, Tbilisi, Yerevan','(GMT+04:30) Kabul','(GMT+05:00) Ekaterinburg','(GMT+05:00) Islamabad, Karachi, Tashkent','(GMT+05:30) Chennai, Kolkata, Mumbia, New Delhi','(GMT+05:45) Kathmandu','(GMT+06:00) Almaty, Novosibirsk','(GMT+06:00) Astana, Dhaka','(GMT+06:00) Sri Jayawardenpura','(GMT+06:30) Rangoon','(GMT+07:00) Bangkok, Hanoi, Jakarta','(GMT+07:00) Krasnoyarsk','(GMT+08:00) Beijing, Chongging, Hong Kong, Urumqi','(GMT+08:00) Irkutsk, UlaanBataar','(GMT+08:00)   Kuala Lumpur, Singapore','(GMT+08:00) Perth','(GMT+08:00) Taipei','(GMT+08:00) Osaka, Sapporo, Tokyo','(GMT+09:00) Seoul','(GMT+09:00) Yakutsk','(GMT+09:30) Adelaide','(GMT+09:30) Darwin','(GMT+10:00) Brisbane','(GMT+10:00) Canberra, Melbourne, Sydney','(GMT+10:00)   Guam, Port Moresby','(GMT+10:00) Hobert','(GMT+10:00) Vladivostok','(GMT+11:00) Magada, Solomon Is, New Caledonia','(GMT+12:00) Auckland, Wellington','(GMT+12:00) Fiji, Kamchatka, Marshall Is','(GMT+13:00) Nuku alofa']
             self.ui.cbxTimeZone.addItems(timeZone)
         self.initUI()

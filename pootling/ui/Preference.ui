@@ -115,7 +115,11 @@
               <number>6</number>
              </property>
              <item row="2" column="0" colspan="2" >
-              <widget class="QLineEdit" name="lineEqaution" />
+              <widget class="QLineEdit" name="lineEqaution" >
+               <property name="whatsThis" >
+                <string>&lt;h3>Plural equation&lt;/h3>Set plural equation for a specific language. Pootling tries to set this value for you. If no information provided, you should fill up by yourself.</string>
+               </property>
+              </widget>
              </item>
              <item row="1" column="0" >
               <widget class="QLabel" name="label_2" >
@@ -135,7 +139,7 @@
              <item row="0" column="0" >
               <widget class="QLabel" name="label_3" >
                <property name="text" >
-                <string>Number of single/plural form:</string>
+                <string>Number of singular/plural forms:</string>
                </property>
               </widget>
              </item>
@@ -148,6 +152,9 @@
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="whatsThis" >
+                <string>&lt;h3>Singular/Plural forms&lt;/h3>Set plural forms for a specific language. Pootling try to set this value for you. If no information provided, you should fill up by yourself.</string>
                </property>
                <property name="maximum" >
                 <number>10</number>
@@ -226,6 +233,9 @@
                <property name="acceptDrops" >
                 <bool>false</bool>
                </property>
+               <property name="whatsThis" >
+                <string>&lt;h3>Language Code&lt;/h3>Choose your own language code. If your language code isn't in the list, please type in by yourself. Pootling will try to set the correct language name, number of singular/plural form and plural equation for you.</string>
+               </property>
                <property name="editable" >
                 <bool>true</bool>
                </property>
@@ -259,6 +269,9 @@
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="whatsThis" >
+                <string>&lt;h3>Language Name&lt;/h3>Choose your own language name. If your language name isn't in the list, please type in by yourself. Pootling will try to set the correct language code, number of singular/plural form and plural equation for you.</string>
+               </property>
                <property name="editable" >
                 <bool>true</bool>
                </property>
@@ -279,6 +292,9 @@
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="whatsThis" >
+                <string>&lt;h3>Time Zone&lt;/h3>Choose a correct time zone of your country.</string>
                </property>
                <property name="editable" >
                 <bool>true</bool>
@@ -314,7 +330,7 @@
                 </sizepolicy>
                </property>
                <property name="text" >
-                <string>Full language name</string>
+                <string>Language name</string>
                </property>
               </widget>
              </item>
@@ -358,6 +374,9 @@
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="whatsThis" >
+                <string>&lt;h3>User Name&lt;/h3>Type your full name here.</string>
+               </property>
                <property name="maxLength" >
                 <number>32768</number>
                </property>
@@ -373,10 +392,17 @@
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="whatsThis" >
+                <string>&lt;h3>Email Address&lt;/h3>Type your own email.</string>
+               </property>
               </widget>
              </item>
              <item row="3" column="1" colspan="3" >
-              <widget class="QLineEdit" name="SupportTeam" />
+              <widget class="QLineEdit" name="SupportTeam" >
+               <property name="whatsThis" >
+                <string>&lt;h3>Support&lt;/h3>Type support email address.</string>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
@@ -428,6 +454,9 @@
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
+            </property>
+            <property name="whatsThis" >
+             <string>&lt;h3>Defaults Font&lt;/h3>Once this button is clicked, Overview, Source, Target and Comment will be set to default font, Serif, 10.</string>
             </property>
             <property name="text" >
              <string>Defaults Font</string>
@@ -607,6 +636,9 @@
              </item>
              <item row="2" column="3" >
               <widget class="QPushButton" name="btnColorSource" >
+               <property name="whatsThis" >
+                <string>&lt;h3>Source Color&lt;/h3>Click this button  will show up a color dialog box where you can choose color for source text.</string>
+               </property>
                <property name="text" >
                 <string>Color</string>
                </property>
@@ -614,6 +646,9 @@
              </item>
              <item row="4" column="3" >
               <widget class="QPushButton" name="btnColorComment" >
+               <property name="whatsThis" >
+                <string>&lt;h3>Comment Color&lt;/h3>Click this button  will show up a color dialog box where you can choose color for comment text.</string>
+               </property>
                <property name="text" >
                 <string>Color</string>
                </property>
@@ -628,6 +663,9 @@
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="whatsThis" >
+                <string>&lt;h3>Comment Font&lt;/h3>Click this button  will show up a font dialog box where you can select fontname, style and size for comment text.</string>
                </property>
                <property name="text" >
                 <string>Font</string>
@@ -644,6 +682,9 @@
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="whatsThis" >
+                <string>&lt;h3>Target Font&lt;/h3>Click this button  will show up a font dialog box where you can select fontname, style and size for target text.</string>
+               </property>
                <property name="text" >
                 <string>Font</string>
                </property>
@@ -659,6 +700,9 @@
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="whatsThis" >
+                <string>&lt;h3>Source Font&lt;/h3>Click this button  will show up a font dialog box where you can select fontname, style and size for source text.</string>
+               </property>
                <property name="text" >
                 <string>Font</string>
                </property>
@@ -673,6 +717,9 @@
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="whatsThis" >
+                <string>&lt;h3>Overview Font&lt;/h3>Click this button  will show up a font dialog box where you can select fontname, style and size for overview text.</string>
                </property>
                <property name="text" >
                 <string>Font</string>
@@ -699,6 +746,12 @@
                  <underline>false</underline>
                  <strikeout>false</strikeout>
                 </font>
+               </property>
+               <property name="toolTip" >
+                <string>Comment Sample</string>
+               </property>
+               <property name="whatsThis" >
+                <string>&lt;h3>Comment Sample&lt;/h3>This lable displayed the current font name, style, size and color sample of comment dock widget.</string>
                </property>
                <property name="frameShape" >
                 <enum>QFrame::StyledPanel</enum>
@@ -729,6 +782,12 @@
                  <strikeout>false</strikeout>
                 </font>
                </property>
+               <property name="toolTip" >
+                <string>Source Sample</string>
+               </property>
+               <property name="whatsThis" >
+                <string>&lt;h3>Source Sample&lt;/h3>This lable displayed the current font name, style, size and color sample of source dock widget.</string>
+               </property>
                <property name="frameShape" >
                 <enum>QFrame::StyledPanel</enum>
                </property>
@@ -758,6 +817,12 @@
                  <strikeout>false</strikeout>
                 </font>
                </property>
+               <property name="toolTip" >
+                <string>Overview Sample</string>
+               </property>
+               <property name="whatsThis" >
+                <string>&lt;h3>Overview Sample&lt;/h3>This lable displayed the current font name, style, size and color sample of overview dock widget.</string>
+               </property>
                <property name="frameShape" >
                 <enum>QFrame::StyledPanel</enum>
                </property>
@@ -775,6 +840,9 @@
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="whatsThis" >
+                <string>&lt;h3>Overview Header Font&lt;/h3>Click this button  will show up a font dialog box where you can select fontname, style and size for overview header text.</string>
                </property>
                <property name="text" >
                 <string>Font</string>
@@ -801,6 +869,12 @@
                  <underline>false</underline>
                  <strikeout>false</strikeout>
                 </font>
+               </property>
+               <property name="toolTip" >
+                <string>Overview Header Sample</string>
+               </property>
+               <property name="whatsThis" >
+                <string>&lt;h3>Overview Header Sample&lt;/h3>This lable displayed the current font name, style, size and color sample of overview header dock widget.</string>
                </property>
                <property name="frameShape" >
                 <enum>QFrame::StyledPanel</enum>
@@ -831,6 +905,12 @@
                  <strikeout>false</strikeout>
                 </font>
                </property>
+               <property name="toolTip" >
+                <string>Target Sample</string>
+               </property>
+               <property name="whatsThis" >
+                <string>&lt;h3>Target Sample&lt;/h3>This lable displayed the current font name, style, size and color sample of target dock widget.</string>
+               </property>
                <property name="frameShape" >
                 <enum>QFrame::StyledPanel</enum>
                </property>
@@ -841,6 +921,9 @@
              </item>
              <item row="3" column="3" >
               <widget class="QPushButton" name="btnColorTarget" >
+               <property name="whatsThis" >
+                <string>&lt;h3>Target Color&lt;/h3>Click this button  will show up a color dialog box where you can choose color for target text.</string>
+               </property>
                <property name="text" >
                 <string>Color</string>
                </property>
@@ -848,6 +931,9 @@
              </item>
              <item row="1" column="3" >
               <widget class="QPushButton" name="btnColorOverview" >
+               <property name="whatsThis" >
+                <string>&lt;h3>Overview Color&lt;/h3>Click this button  will show up a color dialog box where you can choose color for overview text.</string>
+               </property>
                <property name="text" >
                 <string>Color</string>
                </property>
@@ -865,6 +951,9 @@
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
+            </property>
+            <property name="whatsThis" >
+             <string>&lt;h3>Defaults Color&lt;/h3>Once this button is clicked, Overview, Source, Target and Comment will be set to default color, black.</string>
             </property>
             <property name="text" >
              <string>Defaults Color</string>
@@ -915,7 +1004,7 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="page" >
+        <widget class="QWidget" name="TM and Glossary " >
          <layout class="QGridLayout" >
           <property name="margin" >
            <number>9</number>
@@ -1227,7 +1316,7 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="page_2" >
+        <widget class="QWidget" name="Save" >
          <layout class="QGridLayout" >
           <property name="margin" >
            <number>9</number>
@@ -1390,8 +1479,40 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>UserName</tabstop>
   <tabstop>okButton</tabstop>
   <tabstop>cancelButton</tabstop>
+  <tabstop>cbxLanguageCode</tabstop>
+  <tabstop>bntFontOverviewHeader</tabstop>
+  <tabstop>SupportTeam</tabstop>
+  <tabstop>chbAddNewTerm</tabstop>
+  <tabstop>bntFontOverview</tabstop>
+  <tabstop>bntFontTarget</tabstop>
+  <tabstop>bntFontSource</tabstop>
+  <tabstop>bntFontComment</tabstop>
+  <tabstop>bntDefaultsFont</tabstop>
+  <tabstop>bntDefaultsColor</tabstop>
+  <tabstop>btnColorComment</tabstop>
+  <tabstop>btnColorTarget</tabstop>
+  <tabstop>btnColorOverview</tabstop>
+  <tabstop>cbxFullLanguage</tabstop>
+  <tabstop>cbxTimeZone</tabstop>
+  <tabstop>btnColorSource</tabstop>
+  <tabstop>chbAutoIdentTerm</tabstop>
+  <tabstop>chbChangeTerm</tabstop>
+  <tabstop>spinBox</tabstop>
+  <tabstop>lineEqaution</tabstop>
+  <tabstop>chbSuggestTranslation</tabstop>
+  <tabstop>chbMatchTerm</tabstop>
+  <tabstop>chbAutoTranslate</tabstop>
+  <tabstop>chbIgnoreFuzzy</tabstop>
+  <tabstop>chbAddTraslation</tabstop>
+  <tabstop>EmailAddress</tabstop>
+  <tabstop>chbEditTraslation</tabstop>
+  <tabstop>chkHeaderAuto</tabstop>
+  <tabstop>chbDetectTerm</tabstop>
+  <tabstop>chkUpdateTMAuto</tabstop>
+  <tabstop>listWidget</tabstop>
  </tabstops>
  <resources/>
  <connections>
