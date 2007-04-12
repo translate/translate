@@ -18,7 +18,7 @@
 #       Keo Sophon (keosophon@khmeros.info)
 #       San Titvirak (titvirak@khmeros.info)
 #       Seth Chanratha (sethchanratha@khmeros.info)
-#
+#This module is working on the display of TM in a talbe
 
 from PyQt4 import QtCore, QtGui
 from pootling.ui.Ui_TableTM import Ui_Form
@@ -59,10 +59,8 @@ class tableTM(QtGui.QDockWidget):
     def createContextMenu(self):
         # context menu of items
         self.menu = QtGui.QMenu()
-        actionCopyResult = self.menu.addAction(QtGui.QIcon("../images/identity.png"), self.tr("Copy search result to target"))
-        actionEditFile = self.menu.addAction(self.tr("Edit file: %s" % self.filepath))
-        actionChangeTranslation = self.menu.addAction(self.tr("Change translation in TM"))
-        
+        actionCopyResult = self.menu.addAction(QtGui.QIcon("../images/source.png"), self.tr("Copy search result to target"))
+        actionEditFile = self.menu.addAction(QtGui.QIcon("../images/open.png"),self.tr("Edit file"))
         self.connect(actionCopyResult, QtCore.SIGNAL("triggered()"), self.emitTarget)
         self.connect(actionEditFile, QtCore.SIGNAL("triggered()"), self.emitOpenFile)
         
@@ -71,7 +69,7 @@ class tableTM(QtGui.QDockWidget):
         
     def fillTable(self, candidates):
         '''fill each found unit into table
-        @param candidateslist:list of pofile object'''
+        @param candidates:list of pofile object'''
         
         self.ui.tblTM.setEnabled(True)
         self.ui.tblTM.clear()
@@ -81,7 +79,6 @@ class tableTM(QtGui.QDockWidget):
         
         if (not candidates):
             return
-            
         for unit in candidates:
             row = self.ui.tblTM.rowCount()
             self.ui.tblTM.setRowCount(row + 1)
@@ -95,7 +92,9 @@ class tableTM(QtGui.QDockWidget):
             self.ui.tblTM.setItem(row, 1, item)
             
             item = QtGui.QTableWidgetItem(unit.target)
+            item.setFlags(self.normalState)
             self.ui.tblTM.setItem(row, 2, item)
+          
             
             item = QtGui.QTableWidgetItem(unit.filepath)
             self.ui.tblTM.setItem(row, 3, item)
@@ -115,7 +114,7 @@ class tableTM(QtGui.QDockWidget):
         self.createContextMenu()
         self.ui.tblTM.setCurrentCell(0,0)
         self.getCurrentTarget(0,0,0,0)
-        
+
     def clearInfo(self):
         self.ui.lblPath.clear()
         self.ui.lblTranslator.clear()
