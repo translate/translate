@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # 
-# Copyright 2003-2006 Zuza Software Foundation
+# Copyright 2003-2007 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
@@ -19,7 +19,7 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""takes a .po translation file and produces word counts and other statistics"""
+"""takes a translation file and produces word counts and other statistics"""
 
 import sys
 import os
@@ -39,7 +39,7 @@ def untranslatedwords(pair):
 def wordcount(postr):
   # TODO: po class should understand KDE style plurals
   postr = sre.sub("^_n: ", "", postr)
-  postr = sre.sub("<br>", "\n", postr)
+  postr = sre.sub("<br\s*?/?>", "\n", postr)
   postr = sre.sub("<[^>]+>", "", postr)
   postr = sre.sub("\\D\\.\\D", " ", postr)
   #TODO: This should still use the correct language to count in the target 
@@ -66,12 +66,15 @@ def calcstats(units):
   sourcewords = lambda elementlist: sum(map(lambda poel: wordcounts[poel][0], elementlist))
   targetwords = lambda elementlist: sum(map(lambda poel: wordcounts[poel][1], elementlist))
   stats = {}
+
+  #units
   stats["translated"] = len(translated)
   stats["fuzzy"] = len(fuzzy)
   stats["untranslated"] = len(untranslated)
   stats["review"] = len(review)
   stats["total"] = stats["translated"] + stats["fuzzy"] + stats["untranslated"]
 
+  #words
   stats["translatedsourcewords"] = sourcewords(translated)
   stats["translatedtargetwords"] = targetwords(translated)
   stats["fuzzysourcewords"] = sourcewords(fuzzy)
