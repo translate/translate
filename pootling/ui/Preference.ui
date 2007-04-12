@@ -68,7 +68,7 @@
          <number>1</number>
         </property>
         <property name="currentIndex" >
-         <number>0</number>
+         <number>3</number>
         </property>
         <widget class="QWidget" name="personal" >
          <layout class="QGridLayout" >
@@ -1004,7 +1004,7 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="TM and Glossary " >
+        <widget class="QWidget" name="TM_Glossary " >
          <layout class="QGridLayout" >
           <property name="margin" >
            <number>9</number>
@@ -1316,7 +1316,7 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="Save" >
+        <widget class="QWidget" name="save" >
          <layout class="QGridLayout" >
           <property name="margin" >
            <number>9</number>

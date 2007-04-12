@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/k-da/Documents/poxole/trunk/pootling/ui/Preference.ui'
 #
-# Created: Thu Apr 12 10:34:33 2007
+# Created: Thu Apr 12 10:53:08 2007
 #      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!
@@ -620,10 +620,10 @@ class Ui_frmPreference(object):
         self.gridlayout5.addItem(spacerItem1,4,0,1,1)
         self.stackedWidget.addWidget(self.interface)
 
-        self.TM and Glossary  = QtGui.QWidget()
-        self.TM and Glossary .setObjectName("TM and Glossary ")
+        self.TM_Glossary  = QtGui.QWidget()
+        self.TM_Glossary .setObjectName("TM_Glossary ")
 
-        self.gridlayout7 = QtGui.QGridLayout(self.TM and Glossary )
+        self.gridlayout7 = QtGui.QGridLayout(self.TM_Glossary )
         self.gridlayout7.setMargin(9)
         self.gridlayout7.setSpacing(6)
         self.gridlayout7.setObjectName("gridlayout7")
@@ -631,7 +631,7 @@ class Ui_frmPreference(object):
         spacerItem2 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
         self.gridlayout7.addItem(spacerItem2,7,0,1,1)
 
-        self.frame_4 = QtGui.QFrame(self.TM and Glossary )
+        self.frame_4 = QtGui.QFrame(self.TM_Glossary )
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(5))
         sizePolicy.setHorizontalStretch(0)
@@ -707,13 +707,13 @@ class Ui_frmPreference(object):
         self.gridlayout8.addWidget(self.chbMatchTerm,2,0,1,1)
         self.gridlayout7.addWidget(self.frame_4,6,0,1,1)
 
-        self.line_4 = QtGui.QFrame(self.TM and Glossary )
+        self.line_4 = QtGui.QFrame(self.TM_Glossary )
         self.line_4.setFrameShape(QtGui.QFrame.HLine)
         self.line_4.setFrameShadow(QtGui.QFrame.Sunken)
         self.line_4.setObjectName("line_4")
         self.gridlayout7.addWidget(self.line_4,5,0,1,1)
 
-        self.label_6 = QtGui.QLabel(self.TM and Glossary )
+        self.label_6 = QtGui.QLabel(self.TM_Glossary )
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(5))
         sizePolicy.setHorizontalStretch(0)
@@ -728,7 +728,7 @@ class Ui_frmPreference(object):
         self.label_6.setObjectName("label_6")
         self.gridlayout7.addWidget(self.label_6,4,0,1,1)
 
-        self.label_5 = QtGui.QLabel(self.TM and Glossary )
+        self.label_5 = QtGui.QLabel(self.TM_Glossary )
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(5))
         sizePolicy.setHorizontalStretch(0)
@@ -743,7 +743,7 @@ class Ui_frmPreference(object):
         self.label_5.setObjectName("label_5")
         self.gridlayout7.addWidget(self.label_5,0,0,1,1)
 
-        self.frame_3 = QtGui.QFrame(self.TM and Glossary )
+        self.frame_3 = QtGui.QFrame(self.TM_Glossary )
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(5))
         sizePolicy.setHorizontalStretch(0)
@@ -794,7 +794,7 @@ class Ui_frmPreference(object):
         self.gridlayout10.addWidget(self.chbEditTraslation,2,0,1,1)
         self.gridlayout7.addWidget(self.frame_3,2,0,1,1)
 
-        self.line_3 = QtGui.QFrame(self.TM and Glossary )
+        self.line_3 = QtGui.QFrame(self.TM_Glossary )
         self.line_3.setFrameShape(QtGui.QFrame.HLine)
         self.line_3.setFrameShadow(QtGui.QFrame.Sunken)
         self.line_3.setObjectName("line_3")
@@ -802,17 +802,17 @@ class Ui_frmPreference(object):
 
         spacerItem5 = QtGui.QSpacerItem(20,20,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Minimum)
         self.gridlayout7.addItem(spacerItem5,3,0,1,1)
-        self.stackedWidget.addWidget(self.TM and Glossary )
+        self.stackedWidget.addWidget(self.TM_Glossary )
 
-        self.Save = QtGui.QWidget()
-        self.Save.setObjectName("Save")
+        self.save = QtGui.QWidget()
+        self.save.setObjectName("save")
 
-        self.gridlayout11 = QtGui.QGridLayout(self.Save)
+        self.gridlayout11 = QtGui.QGridLayout(self.save)
         self.gridlayout11.setMargin(9)
         self.gridlayout11.setSpacing(6)
         self.gridlayout11.setObjectName("gridlayout11")
 
-        self.chkHeaderAuto = QtGui.QCheckBox(self.Save)
+        self.chkHeaderAuto = QtGui.QCheckBox(self.save)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
         sizePolicy.setHorizontalStretch(0)
@@ -823,7 +823,7 @@ class Ui_frmPreference(object):
         self.chkHeaderAuto.setObjectName("chkHeaderAuto")
         self.gridlayout11.addWidget(self.chkHeaderAuto,2,0,1,1)
 
-        self.label_7 = QtGui.QLabel(self.Save)
+        self.label_7 = QtGui.QLabel(self.save)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(5))
         sizePolicy.setHorizontalStretch(0)
@@ -838,13 +838,13 @@ class Ui_frmPreference(object):
         self.label_7.setObjectName("label_7")
         self.gridlayout11.addWidget(self.label_7,0,0,1,1)
 
-        self.line_5 = QtGui.QFrame(self.Save)
+        self.line_5 = QtGui.QFrame(self.save)
         self.line_5.setFrameShape(QtGui.QFrame.HLine)
         self.line_5.setFrameShadow(QtGui.QFrame.Sunken)
         self.line_5.setObjectName("line_5")
         self.gridlayout11.addWidget(self.line_5,1,0,1,1)
 
-        self.chkUpdateTMAuto = QtGui.QCheckBox(self.Save)
+        self.chkUpdateTMAuto = QtGui.QCheckBox(self.save)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
         sizePolicy.setHorizontalStretch(0)
@@ -857,7 +857,7 @@ class Ui_frmPreference(object):
 
         spacerItem6 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
         self.gridlayout11.addItem(spacerItem6,4,0,1,1)
-        self.stackedWidget.addWidget(self.Save)
+        self.stackedWidget.addWidget(self.save)
         self.gridlayout1.addWidget(self.stackedWidget,0,1,1,1)
 
         self.listWidget = QtGui.QListWidget(self.frame)
@@ -894,7 +894,7 @@ class Ui_frmPreference(object):
         self.gridlayout.addItem(spacerItem7,1,0,1,1)
 
         self.retranslateUi(frmPreference)
-        self.stackedWidget.setCurrentIndex(0)
+        self.stackedWidget.setCurrentIndex(3)
         self.cbxFullLanguage.setCurrentIndex(-1)
         QtCore.QObject.connect(self.cancelButton,QtCore.SIGNAL("clicked()"),frmPreference.reject)
         QtCore.QObject.connect(self.okButton,QtCore.SIGNAL("clicked()"),frmPreference.accept)
