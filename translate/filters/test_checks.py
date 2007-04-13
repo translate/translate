@@ -119,6 +119,12 @@ def test_doublequoting():
     assert checks.passes(stdchecker.doublequoting, "\"Hot\" plate", "\"Ipuleti\" elishisa")
     assert checks.fails(stdchecker.doublequoting, "'Hot' plate", "\"Ipuleti\" elishisa")
     assert checks.passes(stdchecker.doublequoting, "\\\"Hot\\\" plate", "\\\"Ipuleti\\\" elishisa")
+
+    # We don't want the filter to complain about "untranslated" quotes in xml attributes
+    frchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="fr"))
+    assert checks.fails(frchecker.doublequoting, "Click <a href=\"page.html\" target=\"koei\">", "Clique <a href=\"page.html\">")
+    assert checks.fails(frchecker.doublequoting, "Do \"this\"", "Do \"this\"")
+    assert checks.passes(frchecker.doublequoting, "Do \"this\"", "Do « this »")
     
 def test_doublespacing():
     """tests double spacing"""
@@ -157,6 +163,9 @@ def test_endpunc():
 
     stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='km'))
     assert checks.passes(stdchecker.endpunc, "In this new version, there are some minor conversion improvements on complex style in Openoffice.org Writer.", u"នៅ​ក្នុង​កំណែ​ថ្មីនេះ មាន​ការ​កែសម្រួល​មួយ​ចំនួន​តូច​ទាក់​ទង​នឹង​ការ​បំលែង​ពុម្ពអក្សរ​ខ្មែរ​ ក្នុង​កម្មវិធី​ការិយាល័យ​ ស្លឹករឹត ដែល​មាន​ប្រើ​ប្រាស់​រចនាប័ទ្មស្មុគស្មាញច្រើន\u00a0។")
+
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='zh'))
+    assert checks.passes(stdchecker.endpunc, "To activate your account, follow this link:\n", u"要啟用戶口，請瀏覽這個鏈結：\n")
 
 def test_endwhitespace():
     """tests endwhitespace"""
@@ -341,6 +350,11 @@ def test_puncspacing():
     assert checks.passes(stdchecker.puncspacing, "One, two, three. ", "Kunye, kubili, kuthathu.")
     assert checks.fails(stdchecker.puncspacing, "One, two, three. ", "Kunye, kubili,kuthathu.")
     assert checks.passes(stdchecker.puncspacing, "One, two, three!?", "Kunye, kubili, kuthathu?")
+
+    # Some languages have padded puntuation marks
+    frchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="fr"))
+    assert checks.passes(frchecker.puncspacing, "Do \"this\"", "Do « this »")
+    assert checks.fails(frchecker.puncspacing, "Do \"this\"", "Do «this»")
 
 def test_purepunc():
     """tests messages containing only punctuation"""
