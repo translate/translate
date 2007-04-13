@@ -37,6 +37,12 @@ def getlanguage(code):
         exec("from translate.lang import %s" % code)
         exec("langclass = %s.%s" % (code, code))
         return langclass
+    except SyntaxError, e:
+        # perhaps someone is trying to import a language of which the code is 
+        # a reserved word in python (like Icelandic (is) / Oriya (or))
+        # If we want to override the classes for these languages, we can 
+        # perhaps have a convention to attempt loading code_is, for example.
+        return common.Common(code)
     except ImportError, e:
         simplercode = data.simplercode(code)
         if simplercode:
