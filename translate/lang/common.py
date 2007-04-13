@@ -87,6 +87,7 @@ class Common(object):
     
     0 is not a valid value - it must be overridden.
     Any positive integer is valid (it should probably be between 1 and 6)
+    Also see data.py
     """
     
     pluralequation = "0"
@@ -94,11 +95,38 @@ class Common(object):
 
     This is used for PO files to fill into the header.
     See U{http://www.gnu.org/software/gettext/manual/html_node/gettext_150.html}.
+    Also see data.py
     """
+    
+    commonpunc = u".,;:!?-@#$%^*_()[]{}/\\'\"<>"
+    """These punctuation marks are common in English and most languages that 
+    use latin script."""
 
-    punctuation = u".,;:!?-@#$%^*_()[]{}/\\'\"<>‘’‚‛“”„‟′″‴‵‶‷‹›«»±³¹²°¿؟·©®×£¥。，；！？។៕៖៘"
+    quotes = u"‘’‛“”„‟′″‴‵‶‷‹›«»"
+    """These are different quotation marks used by various languages."""
+
+    rtlpunc = u"،؟؛÷"
+    """These punctuation marks are used by Arabic and Persian, for example."""
+
+    CJKpunc = u"。、，；！？「」『』【】"
+    """These punctuation marks are used in certain circumstances with CJK 
+    languages."""
+
+    khmerpunc = u"។៕៖៘"
+    """These marks are only used for Khmer."""
+
+    miscpunc = u"±°¹²³·©®×£¥"
+    """The middle dot (·) is used by Greek and Georgian."""
+
+    punctuation = u"".join(commonpunc, quotes, rtlpunc, CJKpunc, khmerpunc, miscpunc)
+    """We include many types of puntuation here, simply since this is only 
+    meant to determine if something is punctuation. Hopefully we catch some 
+    languages which might not be represented with modules. Most languages won't 
+    need to override this."""
 
     sentenceend = u".!?؟。！？។៕៘"
+    """These marks can indicate a sentence end. Once again we try to account 
+    for many languages. Mostlangauges won't need to override this."""
 
     #The following tries to account for a lot of things. For the best idea of 
     #what works, see test_common.py. We try to ignore abbreviations, for 
