@@ -122,7 +122,7 @@ class Common(object):
     armenianpunc = u"։"
     """։ is the Armenian fullstop."""
 
-    miscpunc = u"±°¹²³·©®×£¥€"
+    miscpunc = u"…±°¹²³·©®×£¥€"
     """The middle dot (·) is used by Greek and Georgian."""
 
     punctuation = u"".join([commonpunc, quotes, invertedpunc, rtlpunc, CJKpunc,\
