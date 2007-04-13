@@ -46,6 +46,15 @@ except ImportError:
   except ImportError:
     def dospellcheck(text, lang):
       return []
+
+def forceunicode(string):
+  """Helper method to ensure that the parameter becomes unicode if not yet"""
+  if string is None:
+    return None
+  if isinstance(string, str):
+    encoding = getattr(string, "encoding", "utf-8")
+    string = string.decode(encoding)
+  return string
     
 def tagname(string):
   """Returns the name of the XML/HTML tag in string"""
@@ -110,6 +119,8 @@ class SeriousFilterFailure(FilterFailure):
 
 def passes(filterfunction, str1, str2):
   """returns whether the given strings pass on the given test, handling FilterFailures"""
+  str1 = forceunicode(str1)
+  str2 = forceunicode(str2)
   try:
     filterresult = filterfunction(str1, str2)
   except FilterFailure, e:
@@ -118,6 +129,8 @@ def passes(filterfunction, str1, str2):
 
 def fails(filterfunction, str1, str2):
   """returns whether the given strings fail on the given test, handling only FilterFailures"""
+  str1 = forceunicode(str1)
+  str2 = forceunicode(str2)
   try:
     filterresult = filterfunction(str1, str2)
   except SeriousFilterFailure, e:
@@ -170,18 +183,15 @@ class CheckerConfig(object):
     # TODO: allow user configuration of untranslatable words
     self.notranslatewords = dict.fromkeys([key for key in notranslatewords])
     self.musttranslatewords = dict.fromkeys([key for key in musttranslatewords])
-    if isinstance(validchars, str):
-      validchars = validchars.decode("utf-8")
+    validchars = forceunicode(validchars)
     self.validcharsmap = {}
     self.updatevalidchars(validchars)
-    if isinstance(punctuation, str):
-      punctuation = punctuation.decode("utf-8")
-    elif punctuation is None:
+    punctuation = forceunicode(punctuation)
+    if punctuation is None:
       punctuation = punctuation_chars
     self.punctuation = punctuation
-    if isinstance(endpunctuation, str):
-      endpunctuation = endpunctuation.decode("utf-8")
-    elif endpunctuation is None:
+    endpunctuation = forceunicode(endpunctuation)
+    if endpunctuation is None:
       endpunctuation = endpunctuation_chars
     self.endpunctuation = endpunctuation
     if ignoretags is None:
@@ -286,6 +296,8 @@ class TranslationChecker(object):
 
   def run_filters(self, str1, str2):
     """run all the tests in this suite, return failures as testname, message_or_exception"""
+    str1 = forceunicode(str1)
+    str2 = forceunicode(str2)
     failures = []
     ignores = self.config.lang.ignoretests[:]
     functionnames = self.defaultfilters.keys()
@@ -757,10 +769,6 @@ class StandardChecker(TranslationChecker):
     """checks that only characters specified as valid appear in the translation"""
     if not self.config.validcharsmap:
       return True
-    if isinstance(str1, str):
-      str1 = str1.decode('utf-8')
-    if isinstance(str2, str):
-      str2 = str2.decode('utf-8')
     invalid1 = str1.translate(self.config.validcharsmap)
     invalid2 = str2.translate(self.config.validcharsmap)
     invalidchars = ["'%s' (\\u%04x)" % (invalidchar.encode('utf-8'), ord(invalidchar)) for invalidchar in invalid2 if invalidchar not in invalid1]
