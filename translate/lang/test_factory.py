@@ -27,3 +27,7 @@ def test_getlanguage():
     # Test with None as language code
     language = factory.getlanguage(None)
     assert language.code == ''
+    
+    #Test with a language code that is a reserved word in Python
+    language = factory.getlanguage('is')
+    assert language.nplurals == 2
