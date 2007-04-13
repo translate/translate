@@ -180,8 +180,10 @@ class Common(object):
         iter = cls.sentencere.finditer(text)
         for item in iter:
             lastmatch = item.end()
-            yield item.group().strip()
-        yield text[lastmatch:]
+            sentence = item.group().strip()
+            if sentence: yield sentence
+        remainder = text[lastmatch:].strip()
+        if remainder: yield remainder
     sentence_iter = classmethod(sentence_iter)
             
     def sentences(cls, text):
