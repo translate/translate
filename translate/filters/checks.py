@@ -147,8 +147,6 @@ def fails_serious(filterfunction, str1, str2):
     filterresult = False
   return not filterresult
 
-punctuation_chars = u'.,;:!?-@#$%^*_()[]{}/\\\'"<>\u2018\u2019\u201a\u201b\u201c\u201d\u201e\u201f\u2032\u2033\u2034\u2035\u2036\u2037\u2039\u203a\xab\xbb\xb1\xb3\xb9\xb2\xb0\xbf\xa9\xae\xd7\xa3\xa5\u2026'
-endpunctuation_chars = u'.:!?\u2026'
 # printf syntax based on http://en.wikipedia.org/wiki/Printf which doens't cover everything we leave \w instead of specifying the exact letters as
 # this should capture printf types defined in other platforms.
 printf_pat = sre.compile('%((?:(?P<ord>\d+)\$)*(?P<fullvar>[+#-]*(?:\d+)*(?:\.\d+)*(hh\|h\|l\|ll)*(?P<type>[\w%])+))')
@@ -188,11 +186,11 @@ class CheckerConfig(object):
     self.updatevalidchars(validchars)
     punctuation = forceunicode(punctuation)
     if punctuation is None:
-      punctuation = punctuation_chars
+      punctuation = self.lang.punctuation
     self.punctuation = punctuation
     endpunctuation = forceunicode(endpunctuation)
     if endpunctuation is None:
-      endpunctuation = endpunctuation_chars
+      endpunctuation = self.lang.sentenceend
     self.endpunctuation = endpunctuation
     if ignoretags is None:
       self.ignoretags = common_ignoretags
