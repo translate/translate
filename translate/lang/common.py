@@ -132,7 +132,7 @@ class Common(object):
     languages which might not be represented with modules. Most languages won't 
     need to override this."""
 
-    sentenceend = u".!?։؟。！？។៕៘"
+    sentenceend = u".!?…։؟。！？។៕៘"
     """These marks can indicate a sentence end. Once again we try to account 
     for many languages. Mostlangauges won't need to override this."""
 
