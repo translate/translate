@@ -321,12 +321,15 @@ class TranslationChecker(object):
 
 class TeeChecker:
   """A Checker that controls multiple checkers..."""
-  def __init__(self, checkerconfig=None, excludefilters=None, limitfilters=None, checkerclasses=None, errorhandler=None):
+  def __init__(self, checkerconfig=None, excludefilters=None, limitfilters=None, checkerclasses=None, errorhandler=None, languagecode=None):
     """construct a TeeChecker from the given checkers"""
     self.limitfilters = limitfilters
     if checkerclasses is None:
       checkerclasses = [StandardChecker]
     self.checkers = [checkerclass(checkerconfig=checkerconfig, excludefilters=excludefilters, limitfilters=limitfilters, errorhandler=errorhandler) for checkerclass in checkerclasses]
+    if languagecode:
+        for checker in self.checkers:
+            checker.config.updatetargetlanguage(languagecode)
     self.combinedfilters = self.getfilters(excludefilters, limitfilters)
 
   def getfilters(self, excludefilters=None, limitfilters=None):
