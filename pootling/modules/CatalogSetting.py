@@ -55,8 +55,11 @@ class CatalogSetting(QtGui.QDialog):
         self.filedialog.show()
     
     def addLocation(self, text):
-        self.ui.listWidget.addItem(text)
-        self.catalogModified = True
+        items = self.ui.listWidget.findItems(text, QtCore.Qt.MatchCaseSensitive)
+        if (not items):
+            item = QtGui.QListWidgetItem(text)
+            self.ui.listWidget.addItem(item)
+            self.catalogModified = True
     
     def clearLocation(self):
         self.ui.listWidget.clear()
