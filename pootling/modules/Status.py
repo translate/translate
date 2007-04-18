@@ -23,6 +23,7 @@ class Status:
     
     # FIXME: toggle unit's fuzzy is not working
     def __init__(self, store):
+        store.classifyunits()
         self.numTranslated = store.translated_unitcount()
         self.numFuzzy = store.fuzzy_units()
         self.numTotal = store.translated_unitcount() + store.untranslated_unitcount()
