@@ -444,8 +444,9 @@ class StandardChecker(TranslationChecker):
   def doublequoting(self, str1, str2):
     """checks whether doublequoting is consistent between the two strings"""
     str1 = self.filteraccelerators(self.filtervariables(str1))
+    str1 = self.config.lang.punctranslate(str1)
     str2 = self.filteraccelerators(self.filtervariables(str2))
-    return helpers.countsmatch(str1, str2, ('"', '""', '\\"'))
+    return helpers.countsmatch(str1, str2, ('"', '""', '\\"', u"«", u"»"))
 
   def doublespacing(self, str1, str2):
     """checks for bad double-spaces by comparing to original"""
@@ -456,6 +457,7 @@ class StandardChecker(TranslationChecker):
   def puncspacing(self, str1, str2):
     """checks for bad spacing after punctuation"""
     str1 = self.filteraccelerators(self.filtervariables(str1))
+    str1 = self.config.lang.punctranslate(str1)
     str2 = self.filteraccelerators(self.filtervariables(str2))
     for puncchar in self.config.punctuation:
       plaincount1 = str1.count(puncchar)
@@ -610,6 +612,7 @@ class StandardChecker(TranslationChecker):
   def startpunc(self, str1, str2):
     """checks whether punctuation at the beginning of the strings match"""
     str1 = self.filteraccelerators(self.filtervariables(self.filterwordswithpunctuation(str1)))
+    str1 = self.config.lang.punctranslate(str1)
     str2 = self.filteraccelerators(self.filtervariables(self.filterwordswithpunctuation(str2)))
     return helpers.funcmatch(str1, str2, decoration.puncstart, self.config.punctuation)
 
