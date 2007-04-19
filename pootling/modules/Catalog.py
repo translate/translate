@@ -374,6 +374,8 @@ class Catalog(QtGui.QMainWindow):
         numTotal = numTranslated + numUntranslated + numFuzzy
         subVersionState = ""
         
+        revisionDate = ""
+        lastTranslator = ""
         if hasattr(store, "parseheader"):
             headerDic = store.parseheader()
             try:
@@ -384,9 +386,6 @@ class Catalog(QtGui.QMainWindow):
                 lastTranslator = str(headerDic["Last-Translator"])
             except:
                 pass
-        else:
-            revisionDate = ""
-            lastTranslator = ""
         
         return {"basename":basename, "numTranslated":numTranslated, "numFuzzy":numFuzzy, 
                 "numUntranslated":numUntranslated, "numTotal":numTotal, 
