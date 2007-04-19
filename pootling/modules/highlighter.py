@@ -18,17 +18,28 @@ class Highlighter(QtCore.QObject):
         self.glossaryFormat.setForeground(QtCore.Qt.darkGreen)
         self.glossaryFormat.setUnderlineStyle(QtGui.QTextCharFormat.DashDotDotLine)
             
-        self.currentblock = None
-        self.highlightRangeList = []
+        self.currentBlock = None
+        self.blockHighLightPair = {}
     
     def highlightBlock(self, block):
+        '''highlight on the given block
+        
+        @ param block: block of a text document to highlight
+        '''
         if (not block):
             return
-        block.layout().setAdditionalFormats(self.highlightRangeList)
+        block.layout().setAdditionalFormats(self.blockHighLightPair[block.position()])
         block.document().markContentsDirty(block.position(), block.length())
-        self.currentblock = block
+        self.currentBlock = block
     
     def setHighlightRange(self, format, start = 0, length = 0):
+        '''create a higlightRange for a block 
+        
+        @ param format: range highlight Format
+        @ param start: start of range
+        @ param length: length of range
+        @ return highlightRange: highlightRange of a block
+        '''
         highlightRange = QtGui.QTextLayout.FormatRange()
         highlightRange.start = start
         highlightRange.length = length
@@ -36,12 +47,33 @@ class Highlighter(QtCore.QObject):
             highlightRange.format = self.searchFormat
         if (format == World.glossaryFormat):
             highlightRange.format = self.glossaryFormat
-        self.highlightRangeList.append(highlightRange)
+        return highlightRange
+    
+    def setHighLight(self, block, start, length, format):
+        '''set Highlight to a block'
         
-    def clearAdditionalFormats(self):
-        '''clear format from current block'''
-        #TODO current block of which TextBox (txtSource or txtTarget)
-        for list in self.highlightRangeList:
-            if list.format == self.searchFormat:
-                self.highlightRangeList.remove(list)
-        self.highlightBlock(self.currentblock)
+        @ param block: block to highlight
+        @ param start: start of range
+        @ param length: length of range
+        @ param format: range highlight Format
+        '''
+        
+        highlightRange = self.setHighlightRange(format, start, length)
+        if self.blockHighLightPair.has_key(block.position()):
+            self.blockHighLightPair[block.position()].append(highlightRange)
+        else:
+            highlightRangeList = []
+            highlightRangeList.append(highlightRange)
+            self.blockHighLightPair[block.position()] = highlightRangeList
+        self.highlightBlock(block)
+    
+    def clearSearchFormats(self):
+        '''clear search format from current block'''
+        if (self.currentBlock):
+            blockHighlightRangeList = self.blockHighLightPair[self.currentBlock.position()]
+            for list in blockHighlightRangeList:
+                if list.format == self.searchFormat:
+                    blockHighlightRangeList.remove(list)
+            self.blockHighLightPair[self.currentBlock.position()] = blockHighlightRangeList
+            self.highlightBlock(self.currentBlock)
+        

@@ -527,14 +527,18 @@ class Operator(QtCore.QObject):
             return
         unit = self.filteredList[self.currentUnitIndex]
         #TODO: split text by space
-        words = unit.source.split(" ")
+        words = set(unit.source.split())
         for word in words:
             candidates = self.termmatcher.matches(word)
             if (candidates):
-                foundPosition = unit.source.lower().find(candidates[0].source, 0)
-                if (foundPosition):
-                    self.emit(QtCore.SIGNAL("glossaryResult"), foundPosition, len(unicode(candidates[0].source)))
-    
+                foundPosition = -1
+                while (True):
+                    foundPosition = unit.source.lower().find(candidates[0].source.lower(), foundPosition + 1)
+                    if (foundPosition >= 0):
+                        self.emit(QtCore.SIGNAL("glossaryResult"), foundPosition, len(unicode(candidates[0].source)))
+                    else:
+                        break
+                        
     def lookupTranslation(self):
         '''lookup text translation or text terminologies in glossary.
         

@@ -1,3 +1,4 @@
+
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 
@@ -39,7 +40,6 @@ class TUview(QtGui.QDockWidget):
         self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
         
         # create highlighter
-        self.highlighter = highlighter.Highlighter(None)
         self.sourceLength = 0
         
     def closeEvent(self, event):
@@ -115,6 +115,8 @@ class TUview(QtGui.QDockWidget):
             self.ui.targetStacked.setCurrentIndex(0)
             if (unicode(unit.source) !=  unicode(self.ui.txtSource.toPlainText())):
                 self.ui.txtSource.setPlainText(unit.source)
+                self.highlighter = None
+                self.highlighter = highlighter.Highlighter(None)
                 self.emit(QtCore.SIGNAL("lookupTranslation"))
             if (unicode(unit.target) !=  unicode(self.ui.txtTarget.toPlainText())):
                 self.ui.txtTarget.setPlainText(unit.target)
@@ -215,19 +217,14 @@ class TUview(QtGui.QDockWidget):
         if ((textField == World.source or textField == World.target)  and position != None):
             textField = ((textField == World.source) and self.ui.txtSource or self.ui.txtTarget)
             block = textField.document().findBlock(position)
-            block.textField = textField
-            self.highlighter.clearAdditionalFormats()
-            self.highlight(block, position - block.position(), length, World.searchFormat)
+            self.highlighter.clearSearchFormats()
+            self.highlighter.setHighLight(block, position - block.position(), length, World.searchFormat)
         else:
-            self.highlighter.clearAdditionalFormats()
+            self.highlighter.clearSearchFormats()
     
     def highlighGlossary(self, position, length):
         block = self.ui.txtSource.document().findBlock(position)
-        self.highlight(block, position - block.position(), length, World.glossaryFormat)
-    
-    def highlight(self, block, start, length, format):
-            self.highlighter.setHighlightRange(format, start, length)
-            self.highlighter.highlightBlock(block)
+        self.highlighter.setHighLight(block, position - block.position(), length, World.glossaryFormat)
     
     def replaceText(self, textField, position, length, replacedText):
         """replace the string (at position and length) with replacedText in txtTarget.
