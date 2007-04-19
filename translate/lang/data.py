@@ -70,6 +70,7 @@ languages = {
 'ko': ('Korean', 1, '0'),
 'ku': ('Kurdish', 2, '(n != 1)'),
 'lb': ('Letzeburgesch', 2, '(n != 1)'),
+'ln': ('Lingala', 2, '(n > 1)'),
 'lt': ('Lithuanian', 3, '(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2)'),
 'lv': ('Latvian', 3, '(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2)'),
 'mn': ('Mongolian', 2, '(n != 1)'),
