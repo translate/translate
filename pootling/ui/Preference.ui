@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>537</width>
+    <width>620</width>
     <height>540</height>
    </rect>
   </property>
@@ -22,10 +22,10 @@
   </property>
   <layout class="QGridLayout" >
    <property name="margin" >
-    <number>9</number>
+    <number>0</number>
    </property>
    <property name="spacing" >
-    <number>6</number>
+    <number>0</number>
    </property>
    <item row="0" column="0" colspan="3" >
     <widget class="QFrame" name="frame" >
@@ -37,10 +37,10 @@
      </property>
      <layout class="QGridLayout" >
       <property name="margin" >
-       <number>9</number>
+       <number>0</number>
       </property>
       <property name="spacing" >
-       <number>6</number>
+       <number>0</number>
       </property>
       <item row="0" column="1" >
        <widget class="QStackedWidget" name="stackedWidget" >
@@ -68,7 +68,7 @@
          <number>1</number>
         </property>
         <property name="currentIndex" >
-         <number>3</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="personal" >
          <layout class="QGridLayout" >
@@ -78,19 +78,6 @@
           <property name="spacing" >
            <number>6</number>
           </property>
-          <item row="5" column="0" >
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" >
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
           <item row="3" column="0" >
            <widget class="QFrame" name="frame_2" >
             <property name="sizePolicy" >
@@ -114,13 +101,6 @@
              <property name="spacing" >
               <number>6</number>
              </property>
-             <item row="2" column="0" colspan="2" >
-              <widget class="QLineEdit" name="lineEqaution" >
-               <property name="whatsThis" >
-                <string>&lt;h3>Plural equation&lt;/h3>Set plural equation for a specific language. Pootling tries to set this value for you. If no information provided, you should fill up by yourself.</string>
-               </property>
-              </widget>
-             </item>
              <item row="1" column="0" >
               <widget class="QLabel" name="label_2" >
                <property name="sizePolicy" >
@@ -136,10 +116,10 @@
                </property>
               </widget>
              </item>
-             <item row="0" column="0" >
-              <widget class="QLabel" name="label_3" >
-               <property name="text" >
-                <string>Number of singular/plural forms:</string>
+             <item row="2" column="0" colspan="2" >
+              <widget class="QLineEdit" name="lineEqaution" >
+               <property name="whatsThis" >
+                <string>&lt;h3>Plural equation&lt;/h3>Set plural equation for a specific language. Pootling tries to set this value for you. If no information provided, you should fill up by yourself.</string>
                </property>
               </widget>
              </item>
@@ -167,6 +147,13 @@
                </property>
                <property name="value" >
                 <number>2</number>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0" >
+              <widget class="QLabel" name="label_3" >
+               <property name="text" >
+                <string>Number of singular/plural forms:</string>
                </property>
               </widget>
              </item>
@@ -202,45 +189,6 @@
              <property name="spacing" >
               <number>6</number>
              </property>
-             <item row="3" column="0" >
-              <widget class="QLabel" name="label5" >
-               <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>0</vsizetype>
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text" >
-                <string>Support team</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="3" >
-              <widget class="QComboBox" name="cbxLanguageCode" >
-               <property name="enabled" >
-                <bool>true</bool>
-               </property>
-               <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>0</vsizetype>
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="acceptDrops" >
-                <bool>false</bool>
-               </property>
-               <property name="whatsThis" >
-                <string>&lt;h3>Language Code&lt;/h3>Choose your own language code. If your language code isn't in the list, please type in by yourself. Pootling will try to set the correct language name, number of singular/plural form and plural equation for you.</string>
-               </property>
-               <property name="editable" >
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
              <item row="4" column="0" >
               <widget class="QLabel" name="label6" >
                <property name="sizePolicy" >
@@ -253,30 +201,6 @@
                </property>
                <property name="text" >
                 <string>Time zone</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1" >
-              <widget class="QComboBox" name="cbxFullLanguage" >
-               <property name="enabled" >
-                <bool>true</bool>
-               </property>
-               <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>0</vsizetype>
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="whatsThis" >
-                <string>&lt;h3>Language Name&lt;/h3>Choose your own language name. If your language name isn't in the list, please type in by yourself. Pootling will try to set the correct language code, number of singular/plural form and plural equation for you.</string>
-               </property>
-               <property name="editable" >
-                <bool>true</bool>
-               </property>
-               <property name="currentIndex" >
-                <number>-1</number>
                </property>
               </widget>
              </item>
@@ -301,8 +225,8 @@
                </property>
               </widget>
              </item>
-             <item row="0" column="0" >
-              <widget class="QLabel" name="label1" >
+             <item row="3" column="0" >
+              <widget class="QLabel" name="label5" >
                <property name="sizePolicy" >
                 <sizepolicy>
                  <hsizetype>7</hsizetype>
@@ -312,14 +236,18 @@
                 </sizepolicy>
                </property>
                <property name="text" >
-                <string>User name</string>
-               </property>
-               <property name="textFormat" >
-                <enum>Qt::AutoText</enum>
+                <string>Support team</string>
                </property>
               </widget>
              </item>
-             <item row="2" column="0" >
+             <item row="3" column="1" colspan="3" >
+              <widget class="QLineEdit" name="SupportTeam" >
+               <property name="whatsThis" >
+                <string>&lt;h3>Support&lt;/h3>Type support email address.</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="2" >
               <widget class="QLabel" name="label3" >
                <property name="sizePolicy" >
                 <sizepolicy>
@@ -333,6 +261,48 @@
                 <string>Language name</string>
                </property>
               </widget>
+             </item>
+             <item row="2" column="0" >
+              <widget class="QLabel" name="label4" >
+               <property name="sizePolicy" >
+                <sizepolicy>
+                 <hsizetype>7</hsizetype>
+                 <vsizetype>0</vsizetype>
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text" >
+                <string>Language Code</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1" >
+              <widget class="QComboBox" name="cbxLanguageCode" >
+               <property name="enabled" >
+                <bool>true</bool>
+               </property>
+               <property name="sizePolicy" >
+                <sizepolicy>
+                 <hsizetype>7</hsizetype>
+                 <vsizetype>0</vsizetype>
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="acceptDrops" >
+                <bool>false</bool>
+               </property>
+               <property name="whatsThis" >
+                <string>&lt;h3>Language Code&lt;/h3>Choose your own language code. If your language code isn't in the list, please type in by yourself. Pootling will try to set the correct language name, number of singular/plural form and plural equation for you.</string>
+               </property>
+               <property name="editable" >
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="3" >
+              <widget class="QLineEdit" name="lineFullLang" />
              </item>
              <item row="1" column="0" >
               <widget class="QLabel" name="label2" >
@@ -349,8 +319,8 @@
                </property>
               </widget>
              </item>
-             <item row="2" column="2" >
-              <widget class="QLabel" name="label4" >
+             <item row="1" column="1" colspan="3" >
+              <widget class="QLineEdit" name="EmailAddress" >
                <property name="sizePolicy" >
                 <sizepolicy>
                  <hsizetype>7</hsizetype>
@@ -359,8 +329,8 @@
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
-               <property name="text" >
-                <string>Language Code</string>
+               <property name="whatsThis" >
+                <string>&lt;h3>Email Address&lt;/h3>Type your own email.</string>
                </property>
               </widget>
              </item>
@@ -382,8 +352,8 @@
                </property>
               </widget>
              </item>
-             <item row="1" column="1" colspan="3" >
-              <widget class="QLineEdit" name="EmailAddress" >
+             <item row="0" column="0" >
+              <widget class="QLabel" name="label1" >
                <property name="sizePolicy" >
                 <sizepolicy>
                  <hsizetype>7</hsizetype>
@@ -392,20 +362,36 @@
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
-               <property name="whatsThis" >
-                <string>&lt;h3>Email Address&lt;/h3>Type your own email.</string>
+               <property name="text" >
+                <string>User name</string>
                </property>
-              </widget>
-             </item>
-             <item row="3" column="1" colspan="3" >
-              <widget class="QLineEdit" name="SupportTeam" >
-               <property name="whatsThis" >
-                <string>&lt;h3>Support&lt;/h3>Type support email address.</string>
+               <property name="textFormat" >
+                <enum>Qt::AutoText</enum>
                </property>
               </widget>
              </item>
             </layout>
            </widget>
+          </item>
+          <item row="1" column="0" >
+           <widget class="Line" name="line" >
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
           </item>
           <item row="0" column="0" >
            <widget class="QLabel" name="label" >
@@ -425,13 +411,6 @@
             </property>
             <property name="text" >
              <string>Setting personal information</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" >
-           <widget class="Line" name="line" >
-            <property name="orientation" >
-             <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
@@ -1470,7 +1449,7 @@
      </property>
      <property name="sizeHint" >
       <size>
-       <width>341</width>
+       <width>401</width>
        <height>31</height>
       </size>
      </property>
@@ -1495,7 +1474,6 @@
   <tabstop>btnColorComment</tabstop>
   <tabstop>btnColorTarget</tabstop>
   <tabstop>btnColorOverview</tabstop>
-  <tabstop>cbxFullLanguage</tabstop>
   <tabstop>cbxTimeZone</tabstop>
   <tabstop>btnColorSource</tabstop>
   <tabstop>chbAutoIdentTerm</tabstop>

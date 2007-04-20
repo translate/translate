@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/k-da/Documents/poxole/trunk/pootling/ui/Preference.ui'
 #
-# Created: Thu Apr 12 10:53:08 2007
+# Created: Thu Apr 19 16:43:06 2007
 #      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,7 +12,7 @@ from PyQt4 import QtCore, QtGui
 class Ui_frmPreference(object):
     def setupUi(self, frmPreference):
         frmPreference.setObjectName("frmPreference")
-        frmPreference.resize(QtCore.QSize(QtCore.QRect(0,0,537,540).size()).expandedTo(frmPreference.minimumSizeHint()))
+        frmPreference.resize(QtCore.QSize(QtCore.QRect(0,0,620,540).size()).expandedTo(frmPreference.minimumSizeHint()))
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(7))
         sizePolicy.setHorizontalStretch(0)
@@ -21,8 +21,8 @@ class Ui_frmPreference(object):
         frmPreference.setSizePolicy(sizePolicy)
 
         self.gridlayout = QtGui.QGridLayout(frmPreference)
-        self.gridlayout.setMargin(9)
-        self.gridlayout.setSpacing(6)
+        self.gridlayout.setMargin(0)
+        self.gridlayout.setSpacing(0)
         self.gridlayout.setObjectName("gridlayout")
 
         self.frame = QtGui.QFrame(frmPreference)
@@ -31,8 +31,8 @@ class Ui_frmPreference(object):
         self.frame.setObjectName("frame")
 
         self.gridlayout1 = QtGui.QGridLayout(self.frame)
-        self.gridlayout1.setMargin(9)
-        self.gridlayout1.setSpacing(6)
+        self.gridlayout1.setMargin(0)
+        self.gridlayout1.setSpacing(0)
         self.gridlayout1.setObjectName("gridlayout1")
 
         self.stackedWidget = QtGui.QStackedWidget(self.frame)
@@ -56,9 +56,6 @@ class Ui_frmPreference(object):
         self.gridlayout2.setSpacing(6)
         self.gridlayout2.setObjectName("gridlayout2")
 
-        spacerItem = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
-        self.gridlayout2.addItem(spacerItem,5,0,1,1)
-
         self.frame_2 = QtGui.QFrame(self.personal)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(5))
@@ -75,10 +72,6 @@ class Ui_frmPreference(object):
         self.gridlayout3.setSpacing(6)
         self.gridlayout3.setObjectName("gridlayout3")
 
-        self.lineEqaution = QtGui.QLineEdit(self.frame_2)
-        self.lineEqaution.setObjectName("lineEqaution")
-        self.gridlayout3.addWidget(self.lineEqaution,2,0,1,2)
-
         self.label_2 = QtGui.QLabel(self.frame_2)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(5))
@@ -89,9 +82,9 @@ class Ui_frmPreference(object):
         self.label_2.setObjectName("label_2")
         self.gridlayout3.addWidget(self.label_2,1,0,1,1)
 
-        self.label_3 = QtGui.QLabel(self.frame_2)
-        self.label_3.setObjectName("label_3")
-        self.gridlayout3.addWidget(self.label_3,0,0,1,1)
+        self.lineEqaution = QtGui.QLineEdit(self.frame_2)
+        self.lineEqaution.setObjectName("lineEqaution")
+        self.gridlayout3.addWidget(self.lineEqaution,2,0,1,2)
 
         self.spinBox = QtGui.QSpinBox(self.frame_2)
 
@@ -106,6 +99,10 @@ class Ui_frmPreference(object):
         self.spinBox.setProperty("value",QtCore.QVariant(2))
         self.spinBox.setObjectName("spinBox")
         self.gridlayout3.addWidget(self.spinBox,0,1,1,1)
+
+        self.label_3 = QtGui.QLabel(self.frame_2)
+        self.label_3.setObjectName("label_3")
+        self.gridlayout3.addWidget(self.label_3,0,0,1,1)
         self.gridlayout2.addWidget(self.frame_2,3,0,1,1)
 
         self.frame_21 = QtGui.QFrame(self.personal)
@@ -126,29 +123,6 @@ class Ui_frmPreference(object):
         self.gridlayout4.setSpacing(6)
         self.gridlayout4.setObjectName("gridlayout4")
 
-        self.label5 = QtGui.QLabel(self.frame_21)
-
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.label5.sizePolicy().hasHeightForWidth())
-        self.label5.setSizePolicy(sizePolicy)
-        self.label5.setObjectName("label5")
-        self.gridlayout4.addWidget(self.label5,3,0,1,1)
-
-        self.cbxLanguageCode = QtGui.QComboBox(self.frame_21)
-        self.cbxLanguageCode.setEnabled(True)
-
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.cbxLanguageCode.sizePolicy().hasHeightForWidth())
-        self.cbxLanguageCode.setSizePolicy(sizePolicy)
-        self.cbxLanguageCode.setAcceptDrops(False)
-        self.cbxLanguageCode.setEditable(True)
-        self.cbxLanguageCode.setObjectName("cbxLanguageCode")
-        self.gridlayout4.addWidget(self.cbxLanguageCode,2,3,1,1)
-
         self.label6 = QtGui.QLabel(self.frame_21)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
@@ -158,18 +132,6 @@ class Ui_frmPreference(object):
         self.label6.setSizePolicy(sizePolicy)
         self.label6.setObjectName("label6")
         self.gridlayout4.addWidget(self.label6,4,0,1,1)
-
-        self.cbxFullLanguage = QtGui.QComboBox(self.frame_21)
-        self.cbxFullLanguage.setEnabled(True)
-
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.cbxFullLanguage.sizePolicy().hasHeightForWidth())
-        self.cbxFullLanguage.setSizePolicy(sizePolicy)
-        self.cbxFullLanguage.setEditable(True)
-        self.cbxFullLanguage.setObjectName("cbxFullLanguage")
-        self.gridlayout4.addWidget(self.cbxFullLanguage,2,1,1,1)
 
         self.cbxTimeZone = QtGui.QComboBox(self.frame_21)
         self.cbxTimeZone.setEnabled(True)
@@ -183,16 +145,19 @@ class Ui_frmPreference(object):
         self.cbxTimeZone.setObjectName("cbxTimeZone")
         self.gridlayout4.addWidget(self.cbxTimeZone,4,1,1,3)
 
-        self.label1 = QtGui.QLabel(self.frame_21)
+        self.label5 = QtGui.QLabel(self.frame_21)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.label1.sizePolicy().hasHeightForWidth())
-        self.label1.setSizePolicy(sizePolicy)
-        self.label1.setTextFormat(QtCore.Qt.AutoText)
-        self.label1.setObjectName("label1")
-        self.gridlayout4.addWidget(self.label1,0,0,1,1)
+        sizePolicy.setHeightForWidth(self.label5.sizePolicy().hasHeightForWidth())
+        self.label5.setSizePolicy(sizePolicy)
+        self.label5.setObjectName("label5")
+        self.gridlayout4.addWidget(self.label5,3,0,1,1)
+
+        self.SupportTeam = QtGui.QLineEdit(self.frame_21)
+        self.SupportTeam.setObjectName("SupportTeam")
+        self.gridlayout4.addWidget(self.SupportTeam,3,1,1,3)
 
         self.label3 = QtGui.QLabel(self.frame_21)
 
@@ -202,7 +167,34 @@ class Ui_frmPreference(object):
         sizePolicy.setHeightForWidth(self.label3.sizePolicy().hasHeightForWidth())
         self.label3.setSizePolicy(sizePolicy)
         self.label3.setObjectName("label3")
-        self.gridlayout4.addWidget(self.label3,2,0,1,1)
+        self.gridlayout4.addWidget(self.label3,2,2,1,1)
+
+        self.label4 = QtGui.QLabel(self.frame_21)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label4.sizePolicy().hasHeightForWidth())
+        self.label4.setSizePolicy(sizePolicy)
+        self.label4.setObjectName("label4")
+        self.gridlayout4.addWidget(self.label4,2,0,1,1)
+
+        self.cbxLanguageCode = QtGui.QComboBox(self.frame_21)
+        self.cbxLanguageCode.setEnabled(True)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.cbxLanguageCode.sizePolicy().hasHeightForWidth())
+        self.cbxLanguageCode.setSizePolicy(sizePolicy)
+        self.cbxLanguageCode.setAcceptDrops(False)
+        self.cbxLanguageCode.setEditable(True)
+        self.cbxLanguageCode.setObjectName("cbxLanguageCode")
+        self.gridlayout4.addWidget(self.cbxLanguageCode,2,1,1,1)
+
+        self.lineFullLang = QtGui.QLineEdit(self.frame_21)
+        self.lineFullLang.setObjectName("lineFullLang")
+        self.gridlayout4.addWidget(self.lineFullLang,2,3,1,1)
 
         self.label2 = QtGui.QLabel(self.frame_21)
 
@@ -214,15 +206,15 @@ class Ui_frmPreference(object):
         self.label2.setObjectName("label2")
         self.gridlayout4.addWidget(self.label2,1,0,1,1)
 
-        self.label4 = QtGui.QLabel(self.frame_21)
+        self.EmailAddress = QtGui.QLineEdit(self.frame_21)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.label4.sizePolicy().hasHeightForWidth())
-        self.label4.setSizePolicy(sizePolicy)
-        self.label4.setObjectName("label4")
-        self.gridlayout4.addWidget(self.label4,2,2,1,1)
+        sizePolicy.setHeightForWidth(self.EmailAddress.sizePolicy().hasHeightForWidth())
+        self.EmailAddress.setSizePolicy(sizePolicy)
+        self.EmailAddress.setObjectName("EmailAddress")
+        self.gridlayout4.addWidget(self.EmailAddress,1,1,1,3)
 
         self.UserName = QtGui.QLineEdit(self.frame_21)
 
@@ -235,20 +227,26 @@ class Ui_frmPreference(object):
         self.UserName.setObjectName("UserName")
         self.gridlayout4.addWidget(self.UserName,0,1,1,3)
 
-        self.EmailAddress = QtGui.QLineEdit(self.frame_21)
+        self.label1 = QtGui.QLabel(self.frame_21)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.EmailAddress.sizePolicy().hasHeightForWidth())
-        self.EmailAddress.setSizePolicy(sizePolicy)
-        self.EmailAddress.setObjectName("EmailAddress")
-        self.gridlayout4.addWidget(self.EmailAddress,1,1,1,3)
-
-        self.SupportTeam = QtGui.QLineEdit(self.frame_21)
-        self.SupportTeam.setObjectName("SupportTeam")
-        self.gridlayout4.addWidget(self.SupportTeam,3,1,1,3)
+        sizePolicy.setHeightForWidth(self.label1.sizePolicy().hasHeightForWidth())
+        self.label1.setSizePolicy(sizePolicy)
+        self.label1.setTextFormat(QtCore.Qt.AutoText)
+        self.label1.setObjectName("label1")
+        self.gridlayout4.addWidget(self.label1,0,0,1,1)
         self.gridlayout2.addWidget(self.frame_21,2,0,1,1)
+
+        self.line = QtGui.QFrame(self.personal)
+        self.line.setFrameShape(QtGui.QFrame.HLine)
+        self.line.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line.setObjectName("line")
+        self.gridlayout2.addWidget(self.line,1,0,1,1)
+
+        spacerItem = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
+        self.gridlayout2.addItem(spacerItem,4,0,1,1)
 
         self.label = QtGui.QLabel(self.personal)
 
@@ -264,12 +262,6 @@ class Ui_frmPreference(object):
         self.label.setFont(font)
         self.label.setObjectName("label")
         self.gridlayout2.addWidget(self.label,0,0,1,1)
-
-        self.line = QtGui.QFrame(self.personal)
-        self.line.setFrameShape(QtGui.QFrame.HLine)
-        self.line.setFrameShadow(QtGui.QFrame.Sunken)
-        self.line.setObjectName("line")
-        self.gridlayout2.addWidget(self.line,1,0,1,1)
         self.stackedWidget.addWidget(self.personal)
 
         self.interface = QtGui.QWidget()
@@ -890,12 +882,11 @@ class Ui_frmPreference(object):
         self.okButton.setObjectName("okButton")
         self.gridlayout.addWidget(self.okButton,1,1,1,1)
 
-        spacerItem7 = QtGui.QSpacerItem(341,31,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        spacerItem7 = QtGui.QSpacerItem(401,31,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
         self.gridlayout.addItem(spacerItem7,1,0,1,1)
 
         self.retranslateUi(frmPreference)
-        self.stackedWidget.setCurrentIndex(3)
-        self.cbxFullLanguage.setCurrentIndex(-1)
+        self.stackedWidget.setCurrentIndex(0)
         QtCore.QObject.connect(self.cancelButton,QtCore.SIGNAL("clicked()"),frmPreference.reject)
         QtCore.QObject.connect(self.okButton,QtCore.SIGNAL("clicked()"),frmPreference.accept)
         QtCore.QMetaObject.connectSlotsByName(frmPreference)
@@ -914,8 +905,7 @@ class Ui_frmPreference(object):
         frmPreference.setTabOrder(self.bntDefaultsColor,self.btnColorComment)
         frmPreference.setTabOrder(self.btnColorComment,self.btnColorTarget)
         frmPreference.setTabOrder(self.btnColorTarget,self.btnColorOverview)
-        frmPreference.setTabOrder(self.btnColorOverview,self.cbxFullLanguage)
-        frmPreference.setTabOrder(self.cbxFullLanguage,self.cbxTimeZone)
+        frmPreference.setTabOrder(self.btnColorOverview,self.cbxTimeZone)
         frmPreference.setTabOrder(self.cbxTimeZone,self.btnColorSource)
         frmPreference.setTabOrder(self.btnColorSource,self.chbAutoIdentTerm)
         frmPreference.setTabOrder(self.chbAutoIdentTerm,self.chbChangeTerm)
@@ -935,22 +925,21 @@ class Ui_frmPreference(object):
 
     def retranslateUi(self, frmPreference):
         frmPreference.setWindowTitle(QtGui.QApplication.translate("frmPreference", "Preference", None, QtGui.QApplication.UnicodeUTF8))
-        self.lineEqaution.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Plural equation</h3>Set plural equation for a specific language. Pootling tries to set this value for you. If no information provided, you should fill up by yourself.", None, QtGui.QApplication.UnicodeUTF8))
         self.label_2.setText(QtGui.QApplication.translate("frmPreference", "Plural equation:", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_3.setText(QtGui.QApplication.translate("frmPreference", "Number of singular/plural forms:", None, QtGui.QApplication.UnicodeUTF8))
+        self.lineEqaution.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Plural equation</h3>Set plural equation for a specific language. Pootling tries to set this value for you. If no information provided, you should fill up by yourself.", None, QtGui.QApplication.UnicodeUTF8))
         self.spinBox.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Singular/Plural forms</h3>Set plural forms for a specific language. Pootling try to set this value for you. If no information provided, you should fill up by yourself.", None, QtGui.QApplication.UnicodeUTF8))
-        self.label5.setText(QtGui.QApplication.translate("frmPreference", "Support team", None, QtGui.QApplication.UnicodeUTF8))
-        self.cbxLanguageCode.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Language Code</h3>Choose your own language code. If your language code isn\'t in the list, please type in by yourself. Pootling will try to set the correct language name, number of singular/plural form and plural equation for you.", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_3.setText(QtGui.QApplication.translate("frmPreference", "Number of singular/plural forms:", None, QtGui.QApplication.UnicodeUTF8))
         self.label6.setText(QtGui.QApplication.translate("frmPreference", "Time zone", None, QtGui.QApplication.UnicodeUTF8))
-        self.cbxFullLanguage.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Language Name</h3>Choose your own language name. If your language name isn\'t in the list, please type in by yourself. Pootling will try to set the correct language code, number of singular/plural form and plural equation for you.", None, QtGui.QApplication.UnicodeUTF8))
         self.cbxTimeZone.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Time Zone</h3>Choose a correct time zone of your country.", None, QtGui.QApplication.UnicodeUTF8))
-        self.label1.setText(QtGui.QApplication.translate("frmPreference", "User name", None, QtGui.QApplication.UnicodeUTF8))
-        self.label3.setText(QtGui.QApplication.translate("frmPreference", "Language name", None, QtGui.QApplication.UnicodeUTF8))
-        self.label2.setText(QtGui.QApplication.translate("frmPreference", "Email address", None, QtGui.QApplication.UnicodeUTF8))
-        self.label4.setText(QtGui.QApplication.translate("frmPreference", "Language Code", None, QtGui.QApplication.UnicodeUTF8))
-        self.UserName.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>User Name</h3>Type your full name here.", None, QtGui.QApplication.UnicodeUTF8))
-        self.EmailAddress.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Email Address</h3>Type your own email.", None, QtGui.QApplication.UnicodeUTF8))
+        self.label5.setText(QtGui.QApplication.translate("frmPreference", "Support team", None, QtGui.QApplication.UnicodeUTF8))
         self.SupportTeam.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Support</h3>Type support email address.", None, QtGui.QApplication.UnicodeUTF8))
+        self.label3.setText(QtGui.QApplication.translate("frmPreference", "Language name", None, QtGui.QApplication.UnicodeUTF8))
+        self.label4.setText(QtGui.QApplication.translate("frmPreference", "Language Code", None, QtGui.QApplication.UnicodeUTF8))
+        self.cbxLanguageCode.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Language Code</h3>Choose your own language code. If your language code isn\'t in the list, please type in by yourself. Pootling will try to set the correct language name, number of singular/plural form and plural equation for you.", None, QtGui.QApplication.UnicodeUTF8))
+        self.label2.setText(QtGui.QApplication.translate("frmPreference", "Email address", None, QtGui.QApplication.UnicodeUTF8))
+        self.EmailAddress.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Email Address</h3>Type your own email.", None, QtGui.QApplication.UnicodeUTF8))
+        self.UserName.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>User Name</h3>Type your full name here.", None, QtGui.QApplication.UnicodeUTF8))
+        self.label1.setText(QtGui.QApplication.translate("frmPreference", "User name", None, QtGui.QApplication.UnicodeUTF8))
         self.label.setText(QtGui.QApplication.translate("frmPreference", "Setting personal information", None, QtGui.QApplication.UnicodeUTF8))
         self.bntDefaultsFont.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Defaults Font</h3>Once this button is clicked, Overview, Source, Target and Comment will be set to default font, Serif, 10.", None, QtGui.QApplication.UnicodeUTF8))
         self.bntDefaultsFont.setText(QtGui.QApplication.translate("frmPreference", "Defaults Font", None, QtGui.QApplication.UnicodeUTF8))
