@@ -51,12 +51,12 @@ class TestOO2PO:
 
     def test_escapes_helpcontent2(self):
         """checks that a helpcontent2 entry converts escapes properly to a po entry"""
-        oosource = r"wizards	source\formwizard\dbwizres.src	0	string	RID_DB_FORM_WIZARD_START + 19				0	en-US	%s				20050924 09:13:58" % r'size *2 \\langle x \\rangle'
+        oosource = r"helpcontent2	source\text\smath\guide\parentheses.xhp	0	help	par_id3150344	4			0	en-US	size *2 \\langle x \\rangle				2002-02-02 02:02:02"
         pofile = self.oo2po(oosource)
         pounit = self.singleelement(pofile)
         poelementsrc = str(pounit)
         print poelementsrc
-        assert pounit.source == 'size *2 \\langle x \\rangle'
+        assert pounit.source == r'size *2 \\langle x \\rangle'
 
     def test_msgid_bug_error_address(self):
         """tests the we have the correct url for reporting msgid bugs"""
