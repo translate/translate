@@ -59,11 +59,14 @@ class Statistics(object):
         self.checker = pofilter.POTeeChecker(checkerclasses=checkerclasses)
 
     def fuzzy_units(self):
-        return len([self.getunits()[item] for item in self.classification["fuzzy"]])
+        """Return a list of fuzzy units."""
+        units = self.getunits()
+        return len([units[item] for item in self.classification["fuzzy"]])
 
     def translated_units(self):
         """Return a list of translated units."""
-        return [self.getunits()[item] for item in self.classification["translated"]]
+        units = self.getunits()
+        return [units[item] for item in self.classification["translated"]]
 
     def translated_unitcount(self):
         """Returns the number of translated units."""
@@ -73,7 +76,8 @@ class Statistics(object):
 
     def untranslated_units(self):
         """Return a list of untranslated units."""
-        return [self.getunits()[item] for item in self.classification["blank"]]
+        units = self.getunits()
+        return [units[item] for item in self.classification["blank"]]
 
     def untranslated_unitcount(self):
         """Returns the number of untranslated units."""
