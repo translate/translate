@@ -38,6 +38,10 @@ class oo2po:
     self.blankmsgstr = blankmsgstr
     self.long_keys = long_keys
 
+  def escape_text(self, text):
+    """Escapes sdf text to be suitable for po consumption."""
+    return text.replace("\\\\", "\a").replace("\\n", "\n").replace("\\t", "\t").replace("\\r", "\r").replace("\a", "\\\\")
+
   def makepo(self, part1, part2, translators_comment, key, subkey):
     """makes a po element out of a subkey of two parts"""
     thepo = po.pounit(encoding="UTF-8")
@@ -45,8 +49,8 @@ class oo2po:
     if getattr(translators_comment, subkey).strip() != "":
       thepo.automaticcomments.append("#. %s\n" % getattr(translators_comment, subkey))
     #TODO: Do better
-    text1 = getattr(part1, subkey).replace("\\\\", "\a").replace("\\n", "\n").replace("\\t", "\t").replace("\\r", "\r").replace("\a", "\\")
-    text2 = getattr(part2, subkey).replace("\\\\", "\a").replace("\\n", "\n").replace("\\t", "\t").replace("\\r", "\r").replace("\a", "\\")
+    text1 = self.escape_text(getattr(part1, subkey))
+    text2 = self.escape_text(getattr(part2, subkey))
     thepo.source = text1
     thepo.target = text2
     return thepo
