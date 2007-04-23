@@ -26,12 +26,12 @@ class TestPO2OO:
         return outputfile.getvalue()
 
     def roundtripstring(self, entitystring):
-        oointro, oooutro = r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	', '				20050924 09:13:58' + '\r\n'
+        oointro, oooutro = r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	', '				2002-02-02 02:02:02' + '\r\n'
         oosource = oointro + entitystring + oooutro
         ooinputfile = wStringIO.StringIO(oosource)
         ooinputfile2 = wStringIO.StringIO(oosource)
         pooutputfile = wStringIO.StringIO()
-        oo2po.convertoo(ooinputfile, pooutputfile, ooinputfile2)
+        oo2po.convertoo(ooinputfile, pooutputfile, ooinputfile2, targetlanguage='en-US')
         posource = pooutputfile.getvalue()
         poinputfile = wStringIO.StringIO(posource)
         ootemplatefile = wStringIO.StringIO(oosource)
@@ -78,6 +78,10 @@ class TestPO2OO:
         self.check_roundtrip(r'"More escapes \\\\n \\\\t \\\\r \\\\: "')
         self.check_roundtrip(r'"End Line Escape \"')
         self.check_roundtrip(r'"\\rangle \\langle')
+        self.check_roundtrip(r'\\\\<')
+        self.check_roundtrip(r'\\\<')
+        self.check_roundtrip(r'\\<')
+        self.check_roundtrip(r'\<')
 
     def test_roundtrip_quotes(self):
         """checks that (escaped) quotes in strings make it through a oo->po->oo roundtrip"""
