@@ -86,7 +86,6 @@ class Operator(QtCore.QObject):
         self.currentUnitIndex = 0
         i = 0
         for unit in self.store.units:
-            unit.x_editor_state = self.status.getStatus(unit)
             if (self.filter & unit.x_editor_state):
                 unit.x_editor_filterIndex = len(self.filteredList)
                 self.filteredList.append(unit)

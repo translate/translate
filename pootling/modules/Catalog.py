@@ -31,6 +31,7 @@ from Pootle import versioncontrol
 import pootling.modules.World as World
 from pootling.modules.FindInCatalog import FindInCatalog
 from pootling.ui.Ui_tmSetting import Ui_tmsetting
+from pootling.modules.Status import Status
 import os
 
 class Catalog(QtGui.QMainWindow):
@@ -368,9 +369,11 @@ class Catalog(QtGui.QMainWindow):
             return False
         
         basename = os.path.basename(filename)
-        numTranslated = store.translated_unitcount()
-        numFuzzy = store.fuzzy_units()
-        numUntranslated = store.untranslated_unitcount()
+        status = Status(store)
+        numTranslated = status.numTranslated
+        numFuzzy = status.numFuzzy
+        numUntranslated = status.numUntranslated
+    
         numTotal = numTranslated + numUntranslated + numFuzzy
         subVersionState = ""
         
