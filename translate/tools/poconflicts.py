@@ -26,7 +26,6 @@ from translate.misc import optrecurse
 import optparse
 import sys
 import os
-import sre
 
 class ConflictOptionParser(optrecurse.RecursiveOptionParser):
   """a specialized Option Parser for the conflict tool..."""

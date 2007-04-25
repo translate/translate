@@ -28,7 +28,7 @@ from translate.misc import quote
 from translate.misc import textwrap
 from translate.storage import base
 from translate.storage import poheader
-import sre
+import re
 import codecs
 
 # general functions for quoting / unquoting po strings
@@ -467,7 +467,7 @@ class pounit(base.TranslationUnit):
   def hastypecomment(self, typecomment):
     """check whether the given type comment is present"""
     # check for word boundaries properly by using a regular expression...
-    return sum(map(lambda tcline: len(sre.findall("\\b%s\\b" % typecomment, tcline)), self.typecomments)) != 0
+    return sum(map(lambda tcline: len(re.findall("\\b%s\\b" % typecomment, tcline)), self.typecomments)) != 0
 
   def hasmarkedcomment(self, commentmarker):
     """check whether the given comment marker is present as # (commentmarker) ..."""
@@ -484,7 +484,7 @@ class pounit(base.TranslationUnit):
         self.typecomments.append("#, %s\n" % typecomment)
       else:
         # this should handle word boundaries properly ...
-        typecomments = map(lambda tcline: sre.sub("\\b%s\\b[ \t,]*" % typecomment, "", tcline), self.typecomments)
+        typecomments = map(lambda tcline: re.sub("\\b%s\\b[ \t,]*" % typecomment, "", tcline), self.typecomments)
         self.typecomments = filter(lambda tcline: tcline.strip() != "#,", typecomments)
 
   def istranslated(self):
@@ -662,7 +662,7 @@ class pounit(base.TranslationUnit):
     # If this unit is the header, we have to get the encoding to ensure that no
     # methods are called that need the encoding before we obtained it.
     if self.isheader():
-      charset = sre.search("charset=([^\\s]+)", unquotefrompo(self.msgstr))
+      charset = re.search("charset=([^\\s]+)", unquotefrompo(self.msgstr))
       if charset:
         self.encoding = encodingToUse(charset.group(1))
     return linesprocessed
@@ -833,7 +833,7 @@ class pofile(base.TranslationStore, poheader.poheader):
     if charsetline is None:
       headerstr += "Content-Type: text/plain; charset=%s" % self.encoding
     else:
-      charset = sre.search("charset=([^ ]*)", charsetline)
+      charset = re.search("charset=([^ ]*)", charsetline)
       if charset is None:
         newcharsetline = charsetline
         if not newcharsetline.strip().endswith(";"):

@@ -26,7 +26,7 @@ from translate.filters import decoration
 from translate.filters import prefilters
 from translate.misc.multistring import multistring
 from translate.lang import factory
-import sre
+import re
 try:
   from enchant import checker
   checkers = {}
@@ -58,7 +58,7 @@ def forceunicode(string):
     
 def tagname(string):
   """Returns the name of the XML/HTML tag in string"""
-  return sre.match("<[\s]*([\w\/]*)", string).groups(1)[0]
+  return re.match("<[\s]*([\w\/]*)", string).groups(1)[0]
 
 def intuplelist(pair, list):
   """Tests to see if pair == (a,b,c) is in list, but handles None entries in 
@@ -84,7 +84,7 @@ def tagproperties(strings, ignore):
     properties += [(tag, None, None)]
     #Now we isolate the attribute pairs. We allow escaped quotes
     #TODO: remove escaped strings once usage is audited
-    pairs = sre.findall(" (\w*)=((\\\\?\".*?\\\\?\")|(\\\\?'.*?\\\\?'))", string)
+    pairs = re.findall(" (\w*)=((\\\\?\".*?\\\\?\")|(\\\\?'.*?\\\\?'))", string)
     for property, value, a, b in pairs:
       #Strip the quotes:
       value = value[1:-1]
@@ -149,7 +149,7 @@ def fails_serious(filterfunction, str1, str2):
 
 # printf syntax based on http://en.wikipedia.org/wiki/Printf which doens't cover everything we leave \w instead of specifying the exact letters as
 # this should capture printf types defined in other platforms.
-printf_pat = sre.compile('%((?:(?P<ord>\d+)\$)*(?P<fullvar>[+#-]*(?:\d+)*(?:\.\d+)*(hh\|h\|l\|ll)*(?P<type>[\w%])+))')
+printf_pat = re.compile('%((?:(?P<ord>\d+)\$)*(?P<fullvar>[+#-]*(?:\d+)*(?:\.\d+)*(hh\|h\|l\|ll)*(?P<type>[\w%])+))')
 
 #(tag, attribute, value) specifies a certain attribute which can be changed/
 #ignored if it exists inside tag. In the case where there is a third element
@@ -676,7 +676,7 @@ class StandardChecker(TranslationChecker):
     """checks the capitalisation of two strings isn't wildly different"""
     str1 = self.removevariables(prefilters.removekdecomments(str1))
     str2 = self.removevariables(str2)
-    str1 = sre.sub("[^.]( I )", " i ", str1)
+    str1 = re.sub("[^.]( I )", " i ", str1)
     capitals1 = helpers.filtercount(str1, type(str1).isupper)
     capitals2 = helpers.filtercount(str2, type(str2).isupper)
     alpha1 = helpers.filtercount(str1, type(str1).isalpha)
@@ -788,11 +788,11 @@ class StandardChecker(TranslationChecker):
   def xmltags(self, str1, str2):
     """checks that XML/HTML tags have not been translated"""
     str1 = prefilters.removekdecomments(str1)
-    tags1 = sre.findall("<[^>]+>", str1)
+    tags1 = re.findall("<[^>]+>", str1)
     if len(tags1) > 0:
       if (len(tags1[0]) == len(str1)) and not "=" in tags1[0]:
         return True
-      tags2 = sre.findall("<[^>]+>", str2)
+      tags2 = re.findall("<[^>]+>", str2)
       properties1 = tagproperties(tags1, self.config.ignoretags)
       properties2 = tagproperties(tags2, self.config.ignoretags)
       filtered1 = []
@@ -808,7 +808,7 @@ class StandardChecker(TranslationChecker):
     else:
       # No tags in str1, let's just check that none were added in str2. This 
       # might be useful for fuzzy strings wrongly unfuzzied, for example.
-      tags2 = sre.findall("<[^>]+>", str2)
+      tags2 = re.findall("<[^>]+>", str2)
       if len(tags2) > 0:
         return False
     return True
@@ -826,7 +826,7 @@ class StandardChecker(TranslationChecker):
     def numberofpatterns(string, patterns):
       number = 0
       for pattern in patterns:
-        number += len(sre.findall(pattern, string))
+        number += len(re.findall(pattern, string))
       return number
 
     sourcepatterns = ["\(s\)"]

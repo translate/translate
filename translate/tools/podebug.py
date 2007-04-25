@@ -25,7 +25,7 @@ from translate.storage import po
 from translate.misc import quote
 from translate import __version__
 import os
-import sre
+import re
 
 class podebug:
   def __init__(self, format=None):
@@ -63,7 +63,7 @@ class podebug:
   def convertfile(self, thepofile):
     filename = self.shrinkfilename(thepofile.filename)
     prefix = self.format
-    for formatstr in sre.findall("%[0-9c]*[sfFbBd]", self.format):
+    for formatstr in re.findall("%[0-9c]*[sfFbBd]", self.format):
       if formatstr.endswith("s"):
         formatted = self.shrinkfilename(thepofile.filename)
       elif formatstr.endswith("f"):

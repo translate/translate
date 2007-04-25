@@ -24,7 +24,7 @@
 from translate.storage import factory
 from translate.misc import optrecurse
 from translate.misc.multistring import multistring
-import sre
+import re
 import locale
 
 class GrepFilter:
@@ -51,7 +51,7 @@ class GrepFilter:
       self.searchstring = self.searchstring.lower()
     self.useregexp = useregexp
     if self.useregexp:
-      self.searchpattern = sre.compile(self.searchstring)
+      self.searchpattern = re.compile(self.searchstring)
     self.invertmatch = invertmatch
     self.accelchar = accelchar
 
@@ -59,8 +59,8 @@ class GrepFilter:
     if self.ignorecase:
       teststr = teststr.lower()
     if self.accelchar:
-      teststr = sre.sub(self.accelchar + self.accelchar, "#", teststr)
-      teststr = sre.sub(self.accelchar, "", teststr)
+      teststr = re.sub(self.accelchar + self.accelchar, "#", teststr)
+      teststr = re.sub(self.accelchar, "", teststr)
     if self.useregexp:
       found = self.searchpattern.search(teststr)
     else:

@@ -21,7 +21,7 @@
 """A class that does terminology matching"""
 
 from translate.search import segment
-import sre
+import re
 
 # We don't want to miss certain forms of words that only change a little
 # at the end. Now we are tying this code to English, but it should serve
@@ -55,7 +55,7 @@ class TerminologyComparer:
         # many false positives. 
 
         # First remove a possible disambiguating bracket at the end
-        b = sre.sub("\s+\(.*\)\s*$", "", b)
+        b = re.sub("\s+\(.*\)\s*$", "", b)
 
         if len(b) <= 2:
             return 0
@@ -65,7 +65,7 @@ class TerminologyComparer:
             return 100 - pos * 10 / len(a[:self.MAX_LEN])
 
         for ignorepattern in ignorepatterns:
-            newb = sre.sub(ignorepattern[0], ignorepattern[1], b)
+            newb = re.sub(ignorepattern[0], ignorepattern[1], b)
             if newb in a[:self.MAX_LEN]:
                 return 80
         return 0

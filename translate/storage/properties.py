@@ -25,7 +25,7 @@ these files are used in translating Mozilla and other software"""
 from translate.storage import base
 from translate.misc import quote
 import sys
-import sre
+import re
 
 # the rstripeols convert dos <-> unix nicely as well
 # output will be appropriate for the platform
@@ -52,7 +52,7 @@ class propunit(base.TranslationUnit):
     if rstriped and rstriped[-1] != "\\":
       msgid = rstriped
 
-    msgid = sre.sub("\\\\ ", " ", msgid)
+    msgid = re.sub("\\\\ ", " ", msgid)
     return msgid
 
   source = property(getsource, setsource)

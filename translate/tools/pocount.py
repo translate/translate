@@ -25,7 +25,7 @@ import sys
 import os
 from translate.storage import factory
 from translate.lang.common import Common
-import sre
+import re
 
 if not hasattr(__builtins__, "sum"):
   def sum(parts):
@@ -38,10 +38,10 @@ def untranslatedwords(pair):
 
 def wordcount(postr):
   # TODO: po class should understand KDE style plurals
-  postr = sre.sub("^_n: ", "", postr)
-  postr = sre.sub("<br\s*?/?>", "\n", postr)
-  postr = sre.sub("<[^>]+>", "", postr)
-  postr = sre.sub("\\D\\.\\D", " ", postr)
+  postr = re.sub("^_n: ", "", postr)
+  postr = re.sub("<br\s*?/?>", "\n", postr)
+  postr = re.sub("<[^>]+>", "", postr)
+  postr = re.sub("\\D\\.\\D", " ", postr)
   #TODO: This should still use the correct language to count in the target 
   #language
   return len(Common.words(postr))

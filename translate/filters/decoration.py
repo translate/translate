@@ -21,7 +21,7 @@
 
 """functions to get decorative/informative text out of strings..."""
 
-import sre
+import re
 
 def spacestart(str1):
   """returns all the whitespace from the start of the string"""
@@ -203,13 +203,13 @@ def getfunctions(str1, punctuation):
 
 def getemails(str1):
   """returns the email addresses that are in a string"""
-  return sre.findall('[\w\.\-]+@[\w\.\-]+', str1)
+  return re.findall('[\w\.\-]+@[\w\.\-]+', str1)
 
 def geturls(str1):
   """returns the URIs in a string"""
   URLPAT = 'https?:[\w/\.:;+\-~\%#\$?=&,()]+|www\.[\w/\.:;+\-~\%#\$?=&,()]+|' +\
            'ftp:[\w/\.:;+\-~\%#?=&,]+'
-  return sre.findall(URLPAT, str1)
+  return re.findall(URLPAT, str1)
 
 
 def countaccelerators(accelmarker, ignorelist=[]):

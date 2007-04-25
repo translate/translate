@@ -24,7 +24,7 @@
 from translate.misc import quote
 from translate.misc import dictutils
 from translate import __version__
-import sre
+import re
 import time
 
 def parseheaderstring(input):
@@ -180,8 +180,8 @@ class poheader:
     pluralformvalue = header.get('Plural-Forms', None)
     if pluralformvalue is None:
       return None, None
-    nplural = sre.findall("nplurals=(.+?);", pluralformvalue)
-    plural = sre.findall("plural=(.+?);?$", pluralformvalue)
+    nplural = re.findall("nplurals=(.+?);", pluralformvalue)
+    plural = re.findall("plural=(.+?);?$", pluralformvalue)
     if not nplural or nplural[0] == "INTEGER":
       nplural = None
     else:
