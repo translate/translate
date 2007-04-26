@@ -23,28 +23,28 @@ class Status:
     
     # FIXME: toggle unit's fuzzy is not working
     def __init__(self, store):
-        self.numTranslated = 0
-        self.numFuzzy = 0
-        self.numUntranslated = 0
-        
-        # set each unit state and calculate number of fuzzy, translated,
-        # and untranslated unit
-        for unit in store.units:
-            unit.x_editor_state = 0
-            if (unit.isheader()):
-                continue
-            if (unit.isfuzzy()):
-                unit.x_editor_state += World.fuzzy
-                self.numFuzzy += 1
-            if (unit.istranslated()):
-                unit.x_editor_state += World.translated
-                self.numTranslated += 1
-            else:
-                unit.x_editor_state += World.untranslated
-                self.numUntranslated += 1
-        
+        self.store = store
+        self.numTranslated = store.translated_unitcount()
+        self.numFuzzy = store.fuzzy_unitcount()
+        self.numUntranslated = store.untranslated_unitcount()
         self.numTotal = self.numTranslated + self.numFuzzy + self.numUntranslated
     
+    def unitState(self, unit):
+        """
+        return bitwise indicating state of unit.
+        bitwises are defined in World class.
+        """
+        state = 0
+        if (unit.isheader()):
+            return state
+        if (unit.isfuzzy()):
+            state += World.fuzzy
+        if (unit.istranslated()):
+            state += World.translated
+        else:
+            state += World.untranslated
+        return state
+        
     def markFuzzy(self, unit, fuzzy):
         unit.markfuzzy(fuzzy)
         if (fuzzy):
