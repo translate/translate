@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/ks/programming/wordforge/trunk/pootling/ui/Overview.ui'
+# Form implementation generated from reading ui file '/home/k-da/Documents/poxole/trunk/pootling/ui/Overview.ui'
 #
-# Created: Tue Feb 20 10:26:43 2007
+# Created: Thu Apr 26 16:43:12 2007
 #      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!
@@ -44,6 +44,7 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(QtGui.QApplication.translate("Form", "Overview", None, QtGui.QApplication.UnicodeUTF8))
+        self.tableOverview.setWhatsThis(QtGui.QApplication.translate("Form", "<h3>Overview</h3>This table shows original messages, translations, and status of each messages in current file.", None, QtGui.QApplication.UnicodeUTF8))
         self.tableOverview.setRowCount(0)
         self.tableOverview.clear()
         self.tableOverview.setColumnCount(0)

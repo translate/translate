@@ -47,6 +47,9 @@
        <height>0</height>
       </size>
      </property>
+     <property name="whatsThis" >
+      <string>&lt;h3>Overview&lt;/h3>This table shows original messages, translations, and status of each messages in current file.</string>
+     </property>
      <property name="tabKeyNavigation" >
       <bool>true</bool>
      </property>
