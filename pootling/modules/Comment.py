@@ -43,8 +43,6 @@ class CommentDock(QtGui.QDockWidget):
         self.ui.setupUi(self.form)
         self.setWidget(self.form)
         self.ui.txtLocationComment.hide()
-        self.ui.txtTranslatorComment.setWhatsThis("<h3>Translator Comment</h3>This is where translator can leave comments for other translators or for reviewers.")
-        self.ui.txtLocationComment.setWhatsThis("<h3>Location Comment</h3>This noneditable comment contains information about where the message is found in the souce code. It will be appeared once there is comments only. You can hide the comment editor by deactivating Views - Show Comment.")
         # create highlighter
         self.highlighter = highlighter.Highlighter(None)
         self.applySettings()
