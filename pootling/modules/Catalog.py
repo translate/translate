@@ -57,7 +57,8 @@ class Catalog(QtGui.QMainWindow):
         self.ui.toolBar.setWindowTitle("ToolBar View")
         self.ui.toolBar.setStatusTip("Toggle ToolBar View")
         
-        self.folderIcon = QtGui.QIcon("../images/folder.png")
+        self.folderIcon = QtGui.QIcon("../images/open.png")
+        self.iconFile = QtGui.QIcon("../images/source.png")
         
         # set up table appearance and behavior
         self.headerLabels = [self.tr("Name"),
@@ -143,14 +144,14 @@ class Catalog(QtGui.QMainWindow):
         
         # context menu of items
         self.menu = QtGui.QMenu()
-        actionOpen = self.menu.addAction(self.tr("Open"))
+        actionOpen = self.menu.addAction(QtGui.QIcon("../images/open.png"), self.tr("Open"))
         actionFind = self.menu.addAction(QtGui.QIcon("../images/find.png"), self.tr("Find"))
         actionShowStat = self.menu.addAction(QtGui.QIcon("../images/statistic.png"), self.tr("Show statistic"))
         self.connect(actionOpen, QtCore.SIGNAL("triggered()"), self.emitOpenFile)
         self.connect(actionFind, QtCore.SIGNAL("triggered()"), self.findBar.showFind)
         self.connect(actionShowStat, QtCore.SIGNAL("triggered()"), self.showStatistic)
         
-        
+
     def find(self, searchString, searchOptions):
         if (not (searchString and searchOptions)):
             return
@@ -200,6 +201,7 @@ class Catalog(QtGui.QMainWindow):
         filename = self.getFilename(item)
         title = unicode(os.path.basename(filename))
         
+        self.numOfFiles = 0
         stats = self.getStatsFromItem(item)
         translated = stats["translated"]
         fuzzy = stats["fuzzy"]
@@ -218,14 +220,15 @@ class Catalog(QtGui.QMainWindow):
             perFuzzy = "0%"
             perUntranslated = "0%"
         
-        message = title + ":\n" + \
+        message = "Statistic of "+ title + ":\n\n" + \
+                "Number of files: " + str(self.numOfFiles) + \
                 "\nTranslated:\t" + str(translated) + "\t" + perTranslated + \
                 "\nFuzzy:\t" + str(fuzzy) + "\t" + perFuzzy + \
                 "\nUntranslated:\t" + str(untranslated) + "\t" + perUntranslated + \
                 "\nTotal:\t" + str(int(total))
             
         QtGui.QMessageBox.information(self, self.tr("Statistic"), message , "OK")
-        
+
     def toggleHeaderItem(self):
         if (isinstance(self.sender(), QtGui.QCheckBox)):
             text = self.sender().text()
@@ -247,7 +250,6 @@ class Catalog(QtGui.QMainWindow):
     def showDialog(self):
         self.lazyInit()
         self.show()
-        
         cats = World.settings.value("CatalogPath").toStringList()
         if (cats) and (self.ui.treeCatalog.topLevelItemCount() == 0):
             self.updateCatalog()
@@ -287,13 +289,13 @@ class Catalog(QtGui.QMainWindow):
                 self.ui.treeCatalog.expandItem(item)
                 item.setText(0, os.path.dirname(path))
                 item.setIcon(0, self.folderIcon)
-                
+  
             # if file is already existed in the item's child... skip.
             if (path.endswith(".po") or path.endswith(".pot") or path.endswith(".xlf") or path.endswith(".xliff")) and (not self.ifFileExisted(path, item)):
                 childItem = QtGui.QTreeWidgetItem(item)
                 childItem.setText(0, os.path.basename(path))
                 self.fileItems.append(childItem)
-        
+
         if (os.path.isdir(path)) and (not path.endswith(".svn")):
             existedItem = self.getExistedItem(path)
             if (existedItem):
@@ -403,6 +405,7 @@ class Catalog(QtGui.QMainWindow):
             translated = int(item.text(1))
             fuzzy = int(item.text(2))
             untranslated = int(item.text(3))
+            self.numOfFiles += 1
         except:
             translated = 0
             fuzzy = 0
@@ -414,6 +417,7 @@ class Catalog(QtGui.QMainWindow):
             translated += stats["translated"]
             fuzzy += stats["fuzzy"]
             untranslated += stats["untranslated"]
+        
         
         return {"translated": translated, "fuzzy":fuzzy, "untranslated":untranslated}
     
