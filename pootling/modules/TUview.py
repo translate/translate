@@ -49,11 +49,7 @@ class TUview(QtGui.QDockWidget):
         """
         QtGui.QDockWidget.closeEvent(self, event)
         self.toggleViewAction().setChecked(False)
-        
-    def setScrollbarMaxValue(self, value):
-        """Set scrollbar maximum value according to number of index."""
-        self.ui.fileScrollBar.setMaximum(max(value - 1, 0))
-
+    
     def setScrollbarValue(self, value):
         """@param value: the new value for the scrollbar"""
         if (value < 0):
@@ -68,7 +64,8 @@ class TUview(QtGui.QDockWidget):
         @param filter: helper constants for filtering
         @param lenFilter: len of filtered items."""
         self.viewSetting(lenFilter)
-        self.setScrollbarMaxValue(lenFilter)
+        self.ui.fileScrollBar.setMaximum(max(lenFilter - 1, 0))
+        self.ui.fileScrollBar.setEnabled(bool(lenFilter))
     
     @QtCore.pyqtSignature("int")
     def emitCurrentIndex(self, value):
@@ -85,7 +82,6 @@ class TUview(QtGui.QDockWidget):
         self.disconnect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
         if (not unit):
             return
-
         self.ui.txtTarget.setReadOnly(False)
         comment = unit.getcontext()
         comment += unit.getnotes("developer")
@@ -96,7 +92,7 @@ class TUview(QtGui.QDockWidget):
             self.ui.lblComment.setText(unicode(comment))
         self.showUnit(unit)
         # set the scrollbar position
-        self.setScrollbarValue(unit.x_editor_filterIndex)
+        self.setScrollbarValue(unit.x_editor_row)
         self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
     
     def showUnit(self, unit):
@@ -107,8 +103,8 @@ class TUview(QtGui.QDockWidget):
         '''
         if (not unit.hasplural()):
             """This will be called when unit is singular.
-        @param unit: unit to consider if signal or not."""
-            #hide tab for plural unit and show the normal text boxes for signal unit.
+            @param unit: unit to consider if signal or not."""
+            # hide tab for plural unit and show the normal text boxes for signal unit.
             # display on first page which is normal text box page
             self.secondpage = False
             self.ui.sourceStacked.setCurrentIndex(0)
@@ -268,8 +264,14 @@ class TUview(QtGui.QDockWidget):
             self.ui.txtTarget.setTabStopWidth(QtGui.QFontMetrics(fontObj).width("m"*8))
     
     def viewSetting(self, arg = None):
-        bool = (arg and True or False)
-        if (bool == False):
+        
+        if (type(arg) is list):
+            lenFilter = len(arg)
+            self.ui.fileScrollBar.setMaximum(max(lenFilter - 1, 0))
+            self.ui.fileScrollBar.setEnabled(bool(lenFilter))
+        
+        value = (arg and True or False)
+        if (value == False):
             self.ui.lblComment.clear()
             self.ui.txtSource.clear()
             self.ui.txtTarget.clear()
@@ -277,9 +279,9 @@ class TUview(QtGui.QDockWidget):
                 self.ui.tabWidgetSource.widget(i).children()[1].clear()
             for i in range(self.ui.tabWidgetTarget.count()):
                 self.ui.tabWidgetTarget.widget(i).children()[1].clear()
-        self.ui.lblComment.setVisible(bool)
-        self.ui.sourceStacked.setEnabled(bool)
-        self.ui.targetStacked.setEnabled(bool)
+        self.ui.lblComment.setVisible(value)
+        self.ui.sourceStacked.setEnabled(value)
+        self.ui.targetStacked.setEnabled(value)
     
 if __name__ == "__main__":
     import sys, os

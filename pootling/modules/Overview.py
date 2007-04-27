@@ -181,7 +181,7 @@ class OverviewDock(QtGui.QDockWidget):
         if (not unit) or (not hasattr(unit, "x_editor_tableItem")):
             return
         row = self.ui.tableOverview.row(unit.x_editor_tableItem)
-        
+        unit.x_editor_row = self.visibleRow.index(row)
         targetItem = self.ui.tableOverview.item(row, 2)
         # update target column only if text has changed.
         if (targetItem.text() != unit.target):
@@ -318,7 +318,9 @@ class OverviewDock(QtGui.QDockWidget):
     def scrollToRow(self, value):
         """move to row number specified by value.
         @param value: row number."""
-        self.ui.tableOverview.selectRow(value)
+        if (len(self.visibleRow) > 0):
+            nextRow = self.visibleRow[value]
+            self.ui.tableOverview.selectRow(nextRow)
     
     def emitFirstLastUnit(self):
         currentRow = self.ui.tableOverview.currentRow()
@@ -335,6 +337,9 @@ class OverviewDock(QtGui.QDockWidget):
                 self.ui.tableOverview.selectRow(row)
     
     def getCurrentIndex(self):
+        """
+        return the current (selected) unit index.
+        """
         row = self.ui.tableOverview.currentRow()
         item = self.ui.tableOverview.item(row, 0)
         return int(item.text())
