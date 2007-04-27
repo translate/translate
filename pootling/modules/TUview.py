@@ -116,6 +116,10 @@ class TUview(QtGui.QDockWidget):
                 self.emit(QtCore.SIGNAL("lookupTranslation"))
             if (unicode(unit.target) !=  unicode(self.ui.txtTarget.toPlainText())):
                 self.ui.txtTarget.setPlainText(unit.target)
+                #move the cursor to the end of sentence.
+                cursor = self.ui.txtTarget.textCursor()
+                cursor.setPosition(len(unit.target))
+                self.ui.txtTarget.setTextCursor(cursor)
         else:
             # create source tab
             self.ui.sourceStacked.setCurrentIndex(1)
