@@ -39,7 +39,7 @@ class Status:
             return state
         if (unit.isfuzzy()):
             state += World.fuzzy
-        if (unit.istranslated()):
+        elif (unit.istranslated()):
             state += World.translated
         else:
             state += World.untranslated
