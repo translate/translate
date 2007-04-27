@@ -42,7 +42,7 @@ glossaryFormat = 2
 
 settingOrg = "WordForge"
 settingApp = "Pootling"
-settings = QtCore.QSettings(settingOrg, settingApp)
+settings = QtCore.QSettings(QtCore.QSettings.IniFormat, QtCore.QSettings.UserScope,settingOrg, settingApp)
 
 # maximum number of files in the recent file menu
 MaxRecentFiles = 9
