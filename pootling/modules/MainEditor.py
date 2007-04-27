@@ -558,6 +558,19 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionFilterFuzzy.setEnabled(bool)
         self.ui.actionFilterTranslated.setEnabled(bool)
         self.ui.actionFilterUntranslated.setEnabled(bool)
+        
+        # disconnect and reconnect fuzzy, translated, and untranslated button actions.
+        self.disconnect(self.ui.actionFilterFuzzy, QtCore.SIGNAL("toggled(bool)"), self.operator.filterFuzzy)
+        self.disconnect(self.ui.actionFilterTranslated, QtCore.SIGNAL("toggled(bool)"), self.operator.filterTranslated)
+        self.disconnect(self.ui.actionFilterUntranslated, QtCore.SIGNAL("toggled(bool)"), self.operator.filterUntranslated)
+        self.ui.actionFilterFuzzy.setChecked(True)
+        self.ui.actionFilterTranslated.setChecked(True)
+        self.ui.actionFilterUntranslated.setChecked(True)
+        self.connect(self.ui.actionFilterFuzzy, QtCore.SIGNAL("toggled(bool)"), self.operator.filterFuzzy)
+        self.connect(self.ui.actionFilterTranslated, QtCore.SIGNAL("toggled(bool)"), self.operator.filterTranslated)
+        self.connect(self.ui.actionFilterUntranslated, QtCore.SIGNAL("toggled(bool)"), self.operator.filterUntranslated)
+        
+        
         #TODO: it is enable unless Automatically lookup translation in TM is checked.
         self.ui.actionCopySearchResult2Target.setEnabled(bool)
         self.findBar.toggleViewAction().setVisible(bool)
