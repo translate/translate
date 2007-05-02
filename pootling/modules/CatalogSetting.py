@@ -34,7 +34,7 @@ class CatalogSetting(QtGui.QDialog):
     def __init__(self, parent):
         QtGui.QDialog.__init__(self, parent)
         self.subscan = None
-        self.catalogModified = False
+        
         self.ui = Ui_catalogSetting()
         self.ui.setupUi(self)
         self.setWindowTitle("Setting Catalog Manager")
@@ -50,7 +50,9 @@ class CatalogSetting(QtGui.QDialog):
         self.ui.listWidget.addItems(World.settings.value("CatalogPath").toStringList())
         self.setModal(True)
         self.ui.chbDiveIntoSubfolders.setChecked(World.settings.value("diveIntoSubCatalog").toBool())
-
+        
+        self.catalogModified = False
+        
     def showFileDialog(self):
         self.filedialog.show()
     
