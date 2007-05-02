@@ -117,7 +117,7 @@ def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similari
   outputpo.units.append(outputheaderpo)
   # Do matching
   for inputpotunit in inputpot.units:
-    if not inputpotunit.isheader():
+    if not (inputpotunit.isheader() or inputpotunit.isobsolete()):
       if templatepofile:
         possiblematches = []
         for location in inputpotunit.getlocations():
