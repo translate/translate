@@ -165,7 +165,7 @@ class TranslationUnit(Statistics):
                          - 'developer', 'programmer', 'source code' (synonyms)
 
         """
-        if self.notes:
+        if getattr(self, "notes", None):
             self.notes += '\n'+text
         else:
             self.notes = text
