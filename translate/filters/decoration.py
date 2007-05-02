@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # 
-# Copyright 2004-2006 Zuza Software Foundation
+# Copyright 2004-2007 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
@@ -22,6 +22,7 @@
 """functions to get decorative/informative text out of strings..."""
 
 import re
+import unicodedata
 
 def spacestart(str1):
   """returns all the whitespace from the start of the string"""
@@ -68,7 +69,15 @@ def isvalidaccelerator(accelerator, ignorelist=[]):
   if len(accelerator) == 0 or accelerator in ignorelist:
     return 0
   accelerator = accelerator.replace("_","")
-  return accelerator.isalnum()
+  if not accelerator.isalnum():
+      return False
+  
+  # We don't want to have accelerators on characters with diacritics, so let's 
+  # se if the character can decompose.
+  decomposition = unicodedata.decomposition(accelerator)
+  # Next we strip out any extra information like <this>
+  decomposition = re.sub("<[^>]+>", "", decomposition).strip()
+  return decomposition.count(" ") == 0
 
 def findaccelerators(str1, accelmarker, ignorelist=[]):
   """returns all the accelerators and locations in str1 marked with a given marker"""
