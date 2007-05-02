@@ -292,6 +292,10 @@ class TranslationChecker(object):
     """replaces words with punctuation with their unpunctuated equivalents..."""
     return prefilters.filterwordswithpunctuation(str1)
 
+  def filterxml(self, str1):
+    """filter out XML from the string so only text remains"""
+    return re.sub("<[^>]+>", "", str1)
+
   def run_filters(self, str1, str2):
     """run all the tests in this suite, return failures as testname, message_or_exception"""
     str1 = forceunicode(str1)
@@ -444,8 +448,10 @@ class StandardChecker(TranslationChecker):
   def doublequoting(self, str1, str2):
     """checks whether doublequoting is consistent between the two strings"""
     str1 = self.filteraccelerators(self.filtervariables(str1))
+    str1 = self.filterxml(str1)
     str1 = self.config.lang.punctranslate(str1)
     str2 = self.filteraccelerators(self.filtervariables(str2))
+    str2 = self.filterxml(str2)
     return helpers.countsmatch(str1, str2, ('"', '""', '\\"', u"«", u"»"))
 
   def doublespacing(self, str1, str2):
