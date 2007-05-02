@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/ratha/sourceforge.net/translate/trunk/pootling/ui/TableTM.ui'
+# Form implementation generated from reading ui file '/home/k-da/Documents/poxole/trunk/pootling/ui/TableTM.ui'
 #
-# Created: Tue Mar 27 11:30:47 2007
+# Created: Wed May  2 10:39:56 2007
 #      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!
@@ -14,9 +14,16 @@ class Ui_Form(object):
         Form.setObjectName("Form")
         Form.resize(QtCore.QSize(QtCore.QRect(0,0,335,439).size()).expandedTo(Form.minimumSizeHint()))
 
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(3),QtGui.QSizePolicy.Policy(3))
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(Form.sizePolicy().hasHeightForWidth())
+        Form.setSizePolicy(sizePolicy)
+        Form.setMinimumSize(QtCore.QSize(150,50))
+
         self.gridlayout = QtGui.QGridLayout(Form)
-        self.gridlayout.setMargin(9)
-        self.gridlayout.setSpacing(6)
+        self.gridlayout.setMargin(0)
+        self.gridlayout.setSpacing(0)
         self.gridlayout.setObjectName("gridlayout")
 
         self.tblTM = QtGui.QTableWidget(Form)
@@ -40,6 +47,7 @@ class Ui_Form(object):
         self.lblPath.setWindowModality(QtCore.Qt.NonModal)
         self.lblPath.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.lblPath.setFrameShape(QtGui.QFrame.NoFrame)
+        self.lblPath.setWordWrap(False)
         self.lblPath.setObjectName("lblPath")
         self.gridlayout.addWidget(self.lblPath,0,1,1,1)
 
