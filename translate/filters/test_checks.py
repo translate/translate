@@ -122,9 +122,10 @@ def test_doublequoting():
 
     # We don't want the filter to complain about "untranslated" quotes in xml attributes
     frchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="fr"))
-    assert checks.fails(frchecker.doublequoting, "Click <a href=\"page.html\" target=\"koei\">", "Clique <a href=\"page.html\">")
+    assert checks.passes(frchecker.doublequoting, "Click <a href=\"page.html\">", "Clique <a href=\"page.html\">")
     assert checks.fails(frchecker.doublequoting, "Do \"this\"", "Do \"this\"")
     assert checks.passes(frchecker.doublequoting, "Do \"this\"", "Do « this »")
+    assert checks.fails(frchecker.doublequoting, "Do \"this\"", "Do « this » « this »")
     
 def test_doublespacing():
     """tests double spacing"""
@@ -650,6 +651,8 @@ def test_xmltags():
     assert checks.fails(stdchecker.xmltags, "<b>Current Translation</b>", "<b>Traducción Actual:<b>")
     assert checks.passes(stdchecker.xmltags, "<Error>", "<Fout>")
     assert checks.fails(stdchecker.xmltags, "%d/%d translated\n(%d blank, %d fuzzy)", "<br>%d/%d μεταφρασμένα\n<br>(%d κενά, %d ασαφή)")
+    frchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="fr"))
+    assert checks.fails(frchecker.xmltags, "Click <a href=\"page.html\">", "Klik <a href=« page.html »>")
 
 def test_ooxmltags():
     """Tests the xml tags in OpenOffice.org translations for quality as done in gsicheck"""
