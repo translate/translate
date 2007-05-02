@@ -60,6 +60,9 @@ def test_accelerators():
     assert checks.passes(ooochecker.accelerators, "~File", "~Fayile") 
     assert checks.fails(ooochecker.accelerators, "~File", "Fayile") 
     assert checks.fails(ooochecker.accelerators, "File", "~Fayile") 
+
+    # We don't want an accelerator for letters with a diacritic
+    assert checks.fails(ooochecker.accelerators, "F~ile", "L~êer")
     # Problems:
     # Accelerator before variable - see test_acceleratedvariables
 
