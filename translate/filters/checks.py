@@ -141,6 +141,8 @@ def fails(filterfunction, str1, str2):
 
 def fails_serious(filterfunction, str1, str2):
   """returns whether the given strings fail on the given test, handling only SeriousFilterFailures"""
+  str1 = forceunicode(str1)
+  str2 = forceunicode(str2)
   try:
     filterresult = filterfunction(str1, str2)
   except SeriousFilterFailure, e:
