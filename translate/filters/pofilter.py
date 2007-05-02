@@ -223,7 +223,7 @@ def cmdlineparser():
     action="store_true", default=False,
     help="output automatic corrections where possible rather than describing issues")
   parser.add_option("", "--language", dest="targetlanguage", default=None, 
-                    help="set target language code (e.g. af-ZA) [required for spell check]", metavar="LANG")
+                    help="set target language code (e.g. af-ZA) [required for spell check and recommended in general]", metavar="LANG")
   parser.add_option("", "--openoffice", dest="filterclass",
     action="store_const", default=None, const=checks.OpenOfficeChecker,
     help="use the standard checks for OpenOffice translations")
