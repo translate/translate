@@ -316,11 +316,11 @@ class TestTranslationStore:
             assert store.translated_wordcount() == 2
             assert store.untranslated_wordcount() == 3
 
-        assert store.fuzzy_units() == 0
+        assert not store.fuzzy_units()
         unit1.markfuzzy(True)
         if unit1.isfuzzy():
             store.classifyunits()
-            assert store.fuzzy_units() == 1
+            assert store.fuzzy_unitcount() == 1
 
         store = self.StoreClass()
         unit1 = store.addsourceunit(u"ភាសា​ខ្មែរ")

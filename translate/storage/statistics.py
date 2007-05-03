@@ -50,7 +50,6 @@ class Statistics(object):
 #        self.init_checker(checkerstyle)
         
         self.classification = {}
-        self.classifyunits()
 
     def init_checker(self, checkerstyle=None):
         from translate.filters import checks
@@ -60,22 +59,30 @@ class Statistics(object):
 
     def fuzzy_units(self):
         """Return a list of fuzzy units."""
+        if not self.classification:
+            self.classifyunits()
         units = self.getunits()
-        return len([units[item] for item in self.classification["fuzzy"]])
+        return [units[item] for item in self.classification["fuzzy"]]
+
+    def fuzzy_unitcount(self):
+        """Returns the number of fuzzy units."""
+        return len(self.fuzzy_units())
 
     def translated_units(self):
         """Return a list of translated units."""
+        if not self.classification:
+            self.classifyunits()
         units = self.getunits()
         return [units[item] for item in self.classification["translated"]]
 
     def translated_unitcount(self):
         """Returns the number of translated units."""
-
-        translated_unitcount = len(self.translated_units())
-        return translated_unitcount
+        return len(self.translated_units())
 
     def untranslated_units(self):
         """Return a list of untranslated units."""
+        if not self.classification:
+            self.classifyunits()
         units = self.getunits()
         return [units[item] for item in self.classification["blank"]]
 
