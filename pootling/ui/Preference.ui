@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>620</width>
-    <height>540</height>
+    <width>541</width>
+    <height>372</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -22,10 +22,10 @@
   </property>
   <layout class="QGridLayout" >
    <property name="margin" >
-    <number>0</number>
+    <number>1</number>
    </property>
    <property name="spacing" >
-    <number>0</number>
+    <number>1</number>
    </property>
    <item row="0" column="0" colspan="3" >
     <widget class="QFrame" name="frame" >
@@ -37,11 +37,44 @@
      </property>
      <layout class="QGridLayout" >
       <property name="margin" >
-       <number>0</number>
+       <number>1</number>
       </property>
       <property name="spacing" >
-       <number>0</number>
+       <number>6</number>
       </property>
+      <item row="0" column="0" >
+       <widget class="QListWidget" name="listWidget" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>1</hsizetype>
+          <vsizetype>1</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize" >
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="resizeMode" >
+         <enum>QListView::Adjust</enum>
+        </property>
+        <property name="layoutMode" >
+         <enum>QListView::SinglePass</enum>
+        </property>
+        <property name="modelColumn" >
+         <number>0</number>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="1" >
        <widget class="QStackedWidget" name="stackedWidget" >
         <property name="sizePolicy" >
@@ -1027,28 +1060,6 @@
              <property name="spacing" >
               <number>6</number>
              </property>
-             <item row="0" column="0" >
-              <widget class="QCheckBox" name="chbAutoIdentTerm" >
-               <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>0</vsizetype>
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text" >
-                <string>Automatically identify and highlight terminology in glossary</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0" >
-              <widget class="QCheckBox" name="chbChangeTerm" >
-               <property name="text" >
-                <string>Possible to change translation of terminology in glossary</string>
-               </property>
-              </widget>
-             </item>
              <item row="3" column="0" >
               <widget class="QCheckBox" name="chbDetectTerm" >
                <property name="sizePolicy" >
@@ -1072,65 +1083,40 @@
                <property name="frameShadow" >
                 <enum>QFrame::Raised</enum>
                </property>
-               <layout class="QGridLayout" >
-                <property name="margin" >
-                 <number>0</number>
+               <widget class="QCheckBox" name="chbSuggestTranslation" >
+                <property name="geometry" >
+                 <rect>
+                  <x>0</x>
+                  <y>30</y>
+                  <width>223</width>
+                  <height>21</height>
+                 </rect>
                 </property>
-                <property name="spacing" >
-                 <number>5</number>
+                <property name="text" >
+                 <string>Allow translation suggestion from TM</string>
                 </property>
-                <item row="0" column="0" colspan="3" >
-                 <widget class="QCheckBox" name="chbAddNewTerm" >
-                  <property name="sizePolicy" >
-                   <sizepolicy>
-                    <hsizetype>7</hsizetype>
-                    <vsizetype>0</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="text" >
-                   <string>Add new terminology to glossary</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="2" >
-                 <spacer>
-                  <property name="orientation" >
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" >
-                   <size>
-                    <width>81</width>
-                    <height>21</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item row="1" column="1" >
-                 <widget class="QCheckBox" name="chbSuggestTranslation" >
-                  <property name="text" >
-                   <string>Allow translation suggestion from TM</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="0" >
-                 <spacer>
-                  <property name="orientation" >
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeType" >
-                   <enum>QSizePolicy::Minimum</enum>
-                  </property>
-                  <property name="sizeHint" >
-                   <size>
-                    <width>20</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-               </layout>
+               </widget>
+               <widget class="QCheckBox" name="chbAddNewTerm" >
+                <property name="geometry" >
+                 <rect>
+                  <x>0</x>
+                  <y>1</y>
+                  <width>382</width>
+                  <height>16</height>
+                 </rect>
+                </property>
+                <property name="sizePolicy" >
+                 <sizepolicy>
+                  <hsizetype>7</hsizetype>
+                  <vsizetype>0</vsizetype>
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text" >
+                 <string>Add new terminology to glossary</string>
+                </property>
+               </widget>
               </widget>
              </item>
              <item row="2" column="0" >
@@ -1140,55 +1126,51 @@
                </property>
               </widget>
              </item>
+             <item row="1" column="0" >
+              <widget class="QCheckBox" name="chbChangeTerm" >
+               <property name="text" >
+                <string>Possible to change translation of terminology in glossary</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0" >
+              <widget class="QCheckBox" name="chbAutoIdentTerm" >
+               <property name="sizePolicy" >
+                <sizepolicy>
+                 <hsizetype>7</hsizetype>
+                 <vsizetype>0</vsizetype>
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text" >
+                <string>Automatically identify and highlight terminology in glossary</string>
+               </property>
+              </widget>
+             </item>
             </layout>
            </widget>
           </item>
-          <item row="5" column="0" >
-           <widget class="Line" name="line_4" >
+          <item row="3" column="0" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType" >
+             <enum>QSizePolicy::Minimum</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="0" >
+           <widget class="Line" name="line_3" >
             <property name="orientation" >
              <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0" >
-           <widget class="QLabel" name="label_6" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>7</hsizetype>
-              <vsizetype>5</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font" >
-             <font>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="text" >
-             <string>Configure glossary usage</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0" >
-           <widget class="QLabel" name="label_5" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>7</hsizetype>
-              <vsizetype>5</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font" >
-             <font>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="text" >
-             <string>Configure translation memory usage</string>
             </property>
            </widget>
           </item>
@@ -1270,28 +1252,54 @@
             </layout>
            </widget>
           </item>
-          <item row="1" column="0" >
-           <widget class="Line" name="line_3" >
+          <item row="0" column="0" >
+           <widget class="QLabel" name="label_5" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>5</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font" >
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text" >
+             <string>Configure translation memory usage</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0" >
+           <widget class="QLabel" name="label_6" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>5</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font" >
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text" >
+             <string>Configure glossary usage</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0" >
+           <widget class="Line" name="line_4" >
             <property name="orientation" >
              <enum>Qt::Horizontal</enum>
             </property>
            </widget>
-          </item>
-          <item row="3" column="0" >
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType" >
-             <enum>QSizePolicy::Minimum</enum>
-            </property>
-            <property name="sizeHint" >
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
           </item>
          </layout>
         </widget>
@@ -1384,48 +1392,21 @@
         </widget>
        </widget>
       </item>
-      <item row="0" column="0" >
-       <widget class="QListWidget" name="listWidget" >
-        <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>1</hsizetype>
-          <vsizetype>1</vsizetype>
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize" >
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize" >
-         <size>
-          <width>100</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="resizeMode" >
-         <enum>QListView::Adjust</enum>
-        </property>
-        <property name="layoutMode" >
-         <enum>QListView::SinglePass</enum>
-        </property>
-        <property name="modelColumn" >
-         <number>0</number>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
    </item>
-   <item row="1" column="2" >
-    <widget class="QPushButton" name="cancelButton" >
-     <property name="text" >
-      <string>&amp;Cancel</string>
+   <item row="1" column="0" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
      </property>
-    </widget>
+     <property name="sizeHint" >
+      <size>
+       <width>401</width>
+       <height>31</height>
+      </size>
+     </property>
+    </spacer>
    </item>
    <item row="1" column="1" >
     <widget class="QPushButton" name="okButton" >
@@ -1442,89 +1423,51 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0" >
-    <spacer>
-     <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
+   <item row="1" column="2" >
+    <widget class="QPushButton" name="cancelButton" >
+     <property name="text" >
+      <string>&amp;Cancel</string>
      </property>
-     <property name="sizeHint" >
-      <size>
-       <width>401</width>
-       <height>31</height>
-      </size>
-     </property>
-    </spacer>
+    </widget>
    </item>
   </layout>
  </widget>
  <tabstops>
+  <tabstop>listWidget</tabstop>
   <tabstop>UserName</tabstop>
-  <tabstop>okButton</tabstop>
-  <tabstop>cancelButton</tabstop>
+  <tabstop>EmailAddress</tabstop>
   <tabstop>cbxLanguageCode</tabstop>
-  <tabstop>bntFontOverviewHeader</tabstop>
+  <tabstop>lineFullLang</tabstop>
   <tabstop>SupportTeam</tabstop>
-  <tabstop>chbAddNewTerm</tabstop>
-  <tabstop>bntFontOverview</tabstop>
-  <tabstop>bntFontTarget</tabstop>
-  <tabstop>bntFontSource</tabstop>
-  <tabstop>bntFontComment</tabstop>
-  <tabstop>bntDefaultsFont</tabstop>
-  <tabstop>bntDefaultsColor</tabstop>
-  <tabstop>btnColorComment</tabstop>
-  <tabstop>btnColorTarget</tabstop>
-  <tabstop>btnColorOverview</tabstop>
   <tabstop>cbxTimeZone</tabstop>
-  <tabstop>btnColorSource</tabstop>
-  <tabstop>chbAutoIdentTerm</tabstop>
-  <tabstop>chbChangeTerm</tabstop>
   <tabstop>spinBox</tabstop>
   <tabstop>lineEqaution</tabstop>
-  <tabstop>chbSuggestTranslation</tabstop>
-  <tabstop>chbMatchTerm</tabstop>
+  <tabstop>bntFontOverviewHeader</tabstop>
+  <tabstop>bntFontOverview</tabstop>
+  <tabstop>btnColorOverview</tabstop>
+  <tabstop>bntFontSource</tabstop>
+  <tabstop>btnColorSource</tabstop>
+  <tabstop>bntFontTarget</tabstop>
+  <tabstop>btnColorTarget</tabstop>
+  <tabstop>bntFontComment</tabstop>
+  <tabstop>btnColorComment</tabstop>
+  <tabstop>bntDefaultsFont</tabstop>
+  <tabstop>bntDefaultsColor</tabstop>
   <tabstop>chbAutoTranslate</tabstop>
   <tabstop>chbIgnoreFuzzy</tabstop>
-  <tabstop>chbAddTraslation</tabstop>
-  <tabstop>EmailAddress</tabstop>
   <tabstop>chbEditTraslation</tabstop>
-  <tabstop>chkHeaderAuto</tabstop>
+  <tabstop>chbAddTraslation</tabstop>
+  <tabstop>chbAutoIdentTerm</tabstop>
+  <tabstop>chbChangeTerm</tabstop>
+  <tabstop>chbMatchTerm</tabstop>
   <tabstop>chbDetectTerm</tabstop>
+  <tabstop>chbAddNewTerm</tabstop>
+  <tabstop>chbSuggestTranslation</tabstop>
+  <tabstop>chkHeaderAuto</tabstop>
   <tabstop>chkUpdateTMAuto</tabstop>
-  <tabstop>listWidget</tabstop>
+  <tabstop>okButton</tabstop>
+  <tabstop>cancelButton</tabstop>
  </tabstops>
  <resources/>
- <connections>
-  <connection>
-   <sender>cancelButton</sender>
-   <signal>clicked()</signal>
-   <receiver>frmPreference</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>474</x>
-     <y>362</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>179</x>
-     <y>282</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>okButton</sender>
-   <signal>clicked()</signal>
-   <receiver>frmPreference</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>384</x>
-     <y>362</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>96</x>
-     <y>254</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

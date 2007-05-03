@@ -80,7 +80,10 @@ class Preference(QtGui.QDialog):
         self.ui.chbDetectTerm.setChecked(GlossaryPreference & 8 and True or False)
         self.ui.chbAddNewTerm.setChecked(GlossaryPreference & 16 and True or False)
         self.ui.chbSuggestTranslation.setChecked(GlossaryPreference & 32 and True or False)
-    
+        
+        self.connect(self.ui.okButton, QtCore.SIGNAL("clicked()"), self.accept)
+        self.connect(self.ui.cancelButton, QtCore.SIGNAL("clicked()"), self.reject)
+        
     def accepted(self):
         """ slot ok pressed """
         self.rememberFont(self.widget[0], self.overviewFont)
@@ -317,6 +320,7 @@ class Preference(QtGui.QDialog):
             self.ui.cbxTimeZone.addItems(timeZone)
         self.initUI()
         self.show()
+        self.ui.listWidget.setFocus()
   
     def setLanguageIndex(self, langCode):
         """Set language name in line edit widget corresponding to langCode.
