@@ -238,7 +238,7 @@ class Catalog(QtGui.QMainWindow):
                     self.ui.treeCatalog.showColumn(self.headerLabels.index(text))
                 else:
                     self.ui.treeCatalog.hideColumn(self.headerLabels.index(text))
-                World.settings.setValue("Catalog." + text, QtCore.QVariant(not checked))
+                World.settings.setValue("Catalog." + text, QtCore.QVariant(checked))
 
     def updateProgress(self, value):
         if (not self.progressBar.isVisible()):
