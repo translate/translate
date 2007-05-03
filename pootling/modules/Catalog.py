@@ -233,12 +233,12 @@ class Catalog(QtGui.QMainWindow):
         if (isinstance(self.sender(), QtGui.QCheckBox)):
             text = self.sender().text()
             if text in self.headerLabels:
-                if (self.sender().isChecked()):
+                checked = self.sender().isChecked()
+                if (checked):
                     self.ui.treeCatalog.showColumn(self.headerLabels.index(text))
-                    World.settings.setValue("Catalog." + text, QtCore.QVariant(False))
                 else:
                     self.ui.treeCatalog.hideColumn(self.headerLabels.index(text))
-                    World.settings.setValue("Catalog." + text, QtCore.QVariant(True))
+                World.settings.setValue("Catalog." + text, QtCore.QVariant(not checked))
 
     def updateProgress(self, value):
         if (not self.progressBar.isVisible()):
@@ -422,46 +422,88 @@ class Catalog(QtGui.QMainWindow):
         return {"translated": translated, "fuzzy":fuzzy, "untranslated":untranslated}
     
     def setupCheckbox(self):
-        if not (World.settings.value("Catalog.Name").toBool()):
-            self.catSetting.ui.chbname.setCheckState(QtCore.Qt.Unchecked)
+        value = World.settings.value("Catalog.Name")
+        if (value.isValid()):
+            if not (value.toBool()):
+                checkState = QtCore.Qt.Unchecked
+            else:
+                checkState = QtCore.Qt.Checked
         else:
-            self.catSetting.ui.chbname.setCheckState(QtCore.Qt.Checked)
+            # on fresh start of program, if the value is not in setting yet
+            # make it True by default.
+            checkState = QtCore.Qt.Checked
+        self.catSetting.ui.chbname.setCheckState(checkState)
         
-        if not (World.settings.value("Catalog.Fuzzy").toBool()):
-            self.catSetting.ui.chbfuzzy.setCheckState(QtCore.Qt.Unchecked)
+        value = World.settings.value("Catalog.Translated")
+        if (value.isValid()):
+            if not (value.toBool()):
+                checkState = QtCore.Qt.Unchecked
+            else:
+                checkState = QtCore.Qt.Checked
         else:
-            self.catSetting.ui.chbfuzzy.setCheckState(QtCore.Qt.Checked)
+            checkState = QtCore.Qt.Checked
+        self.catSetting.ui.chbtranslated.setCheckState(checkState)
         
-        if not (World.settings.value("Catalog.Untranslated").toBool()):
-            self.catSetting.ui.chbuntranslated.setCheckState(QtCore.Qt.Unchecked)
+        value = World.settings.value("Catalog.Fuzzy")
+        if (value.isValid()):
+            if not (value.toBool()):
+                checkState = QtCore.Qt.Unchecked
+            else:
+                checkState = QtCore.Qt.Checked
         else:
-            self.catSetting.ui.chbuntranslated.setCheckState(QtCore.Qt.Checked)
+            checkState = QtCore.Qt.Checked
+        self.catSetting.ui.chbfuzzy.setCheckState(checkState)
         
-        if not (World.settings.value("Catalog.Total").toBool()):
-            self.catSetting.ui.chbtotal.setCheckState(QtCore.Qt.Unchecked)
+        value = World.settings.value("Catalog.Untranslated")
+        if (value.isValid()):
+            if not (value.toBool()):
+                checkState = QtCore.Qt.Unchecked
+            else:
+                checkState = QtCore.Qt.Checked
         else:
-            self.catSetting.ui.chbtotal.setCheckState(QtCore.Qt.Checked)
+            checkState = QtCore.Qt.Checked
+        self.catSetting.ui.chbuntranslated.setCheckState(checkState)
         
-        if not (World.settings.value("Catalog.CVS/SVN Status").toBool()):
-            self.catSetting.ui.chbSVN.setCheckState(QtCore.Qt.Unchecked)
+        value = World.settings.value("Catalog.Total")
+        if (value.isValid()):
+            if not (value.toBool()):
+                checkState = QtCore.Qt.Unchecked
+            else:
+                checkState = QtCore.Qt.Checked
         else:
-            self.catSetting.ui.chbSVN.setCheckState(QtCore.Qt.Checked)
+            checkState = QtCore.Qt.Checked
+        self.catSetting.ui.chbtotal.setCheckState(checkState)
         
-        if not (World.settings.value("Catalog.Last Revision").toBool()):
-            self.catSetting.ui.chblastrevision.setCheckState(QtCore.Qt.Unchecked)
+        value = World.settings.value("Catalog.CVS/SVN Status")
+        if (value.isValid()):
+            if not (value.toBool()):
+                checkState = QtCore.Qt.Unchecked
+            else:
+                checkState = QtCore.Qt.Checked
         else:
-            self.catSetting.ui.chblastrevision.setCheckState(QtCore.Qt.Checked)
+            checkState = QtCore.Qt.Checked
+        self.catSetting.ui.chbSVN.setCheckState(checkState)
         
-        if not (World.settings.value("Catalog.Last Translator").toBool()):
-            self.catSetting.ui.chbtranslator.setCheckState(QtCore.Qt.Unchecked)
+        value = World.settings.value("Catalog.Last Revision")
+        if (value.isValid()):
+            if not (value.toBool()):
+                checkState = QtCore.Qt.Unchecked
+            else:
+                checkState = QtCore.Qt.Checked
         else:
-            self.catSetting.ui.chbtranslator.setCheckState(QtCore.Qt.Checked)
+            checkState = QtCore.Qt.Checked
+        self.catSetting.ui.chblastrevision.setCheckState(checkState)
         
-        if not (World.settings.value("Catalog.Translated").toBool()):
-            self.catSetting.ui.chbtranslated.setCheckState(QtCore.Qt.Unchecked)
+        value = World.settings.value("Catalog.Last Translator")
+        if (value.isValid()):
+            if not (value.toBool()):
+                checkState = QtCore.Qt.Unchecked
+            else:
+                checkState = QtCore.Qt.Checked
         else:
-            self.catSetting.ui.chbtranslated.setCheckState(QtCore.Qt.Checked)
-
+            checkState = QtCore.Qt.Checked
+        self.catSetting.ui.chbtranslator.setCheckState(checkState)
+        
     def emitOpenFile(self, item=None, col=None):
         """
         Send "openFile" signal with filename.
