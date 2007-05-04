@@ -52,6 +52,7 @@ class MainWindow(QtGui.QMainWindow):
         self.maxBookmark = 10
         self.createBookmarkAction()
         self.clearBookmarks()
+        imagesdir = "../images"
         app = QtGui.QApplication.instance()
         self.connect(app, QtCore.SIGNAL("focusChanged(QWidget *,QWidget *)"), self.focusChanged)
         
@@ -90,7 +91,7 @@ class MainWindow(QtGui.QMainWindow):
        
         #add widgets to statusbar
         self.statusfuzzy = QtGui.QLabel()
-        pixmap = QtGui.QPixmap("../images/fuzzy.png")
+        pixmap = QtGui.QPixmap(os.path.join(imagesdir, "fuzzy.png"))
         self.statusfuzzy.setPixmap(pixmap.scaled(16, 16, QtCore.Qt.KeepAspectRatio))
         self.statusfuzzy.setToolTip("Current unit is fuzzy")
         
@@ -168,7 +169,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("replaceText"), self.dockComment.replaceText)
        
        # Goto menu action
-        self.ui.actionGoTo.setIcon(QtGui.QIcon("../images/goto.png"))
+        self.ui.actionGoTo.setIcon(QtGui.QIcon(os.path.join(imagesdir, "goto.png")))
         self.connect(self.ui.actionGoTo, QtCore.SIGNAL("triggered()"), self.showGoto)
         
         # Bookmarks menu action
@@ -219,6 +220,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockOverview.updateView)
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockTUview.updateView)
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockComment.updateView)
+        
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.addFuzzyIcon)
         self.connect(self.dockOverview, QtCore.SIGNAL("filteredIndex"), self.operator.setUnitFromPosition)
         self.connect(self.dockTUview, QtCore.SIGNAL("scrollToRow"), self.dockOverview.scrollToRow)
@@ -412,6 +414,8 @@ class MainWindow(QtGui.QMainWindow):
         @param QCloseEvent Object: received close event when closing mainwindows
         """
         QtGui.QMainWindow.closeEvent(self, event)
+#        if self.operator.matcherChanged:
+#            self.operator.pickleAgain()
         if self.operator.getModified():
             if self.fileaction.aboutToClose(self):
                 event.accept()
@@ -597,7 +601,7 @@ def main(inputFile = None):
         QtCore.QDir.setCurrent(os.path.join(sys.path[0], "../ui"))
     else:
         import distutils.sysconfig
-        packagesdir = distutils.sysconfig.get_python_lib(prefix="/usr/local/")
+        packagesdir = distutils.sysconfig.get_python_lib(prefix = "/usr/local")
         QtCore.QDir.setCurrent(os.path.join(packagesdir, "pootling", "ui"))
     app = QtGui.QApplication(sys.argv)
     editor = MainWindow()
