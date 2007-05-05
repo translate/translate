@@ -38,6 +38,6 @@ class el(common.Common):
 
     puncdict = {
         u"?": u";",
-        u";"; u"·",
+        u";": u"·",
     }
 
