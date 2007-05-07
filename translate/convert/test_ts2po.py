@@ -71,6 +71,27 @@ class TestTS2PO:
         assert pofile.units[1].getlocations()[0].startswith("MainWindowBase")
         assert pofile.units[1].isfuzzy()
 
+    def test_multiline(self):
+        """tests multiline message conversion"""
+        tssource = '''<!DOCTYPE TS><TS>
+<context>
+    <name>@default</name>
+    <message>
+        <source>Source with
+new line</source>
+        <translation>Test with
+new line</translation>
+    </message>
+</context>
+</TS> 
+
+'''
+        pofile = self.ts2po(tssource)
+        assert len(pofile.units) == 2
+        assert pofile.units[1].source == "Source with\nnew line"
+        assert pofile.units[1].target == "Test with\nnew line"
+        assert pofile.units[1].getlocations()[0].startswith("@default")
+
 class TestTS2POCommand(test_convert.TestConvertCommand, TestTS2PO):
     """Tests running actual ts2po commands on files"""
     convertmodule = ts2po
