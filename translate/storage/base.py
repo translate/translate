@@ -444,6 +444,7 @@ class TranslationStore(Statistics):
         #For some reason GzipFile returns 1, so we have to test for that here
         if mode == 1 or "r" in mode:
           storestring = storefile.read()
+          storefile.close()
         else:
           storestring = ""
         newstore = cls.parsestring(storestring)
