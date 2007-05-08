@@ -40,14 +40,14 @@ class Highlighter(QtCore.QObject):
         @ param length: length of range
         @ return highlightRange: highlightRange of a block
         '''
-        highlightRange = QtGui.QTextLayout.FormatRange()
-        highlightRange.start = start
-        highlightRange.length = length
+        self.highlightRange = QtGui.QTextLayout.FormatRange()
+        self.highlightRange.start = start
+        self.highlightRange.length = length
         if (format == World.searchFormat):
-            highlightRange.format = self.searchFormat
+            self.highlightRange.format = self.searchFormat
         if (format == World.glossaryFormat):
-            highlightRange.format = self.glossaryFormat
-        return highlightRange
+            self.highlightRange.format = self.glossaryFormat
+        return self.highlightRange
     
     def setHighLight(self, block, start, length, format):
         '''set Highlight to a block'
@@ -57,7 +57,6 @@ class Highlighter(QtCore.QObject):
         @ param length: length of range
         @ param format: range highlight Format
         '''
-        
         highlightRange = self.setHighlightRange(format, start, length)
         if self.blockHighLightPair.has_key(block.position()):
             self.blockHighLightPair[block.position()].append(highlightRange)

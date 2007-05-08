@@ -62,8 +62,8 @@ msgstr "unable to read file"
         length = 2
         self.commentObj.updateView(self.currentunit)
         self.commentObj.highlightSearch(World.comment, position, length)
-        self.assertEqual(self.commentObj.highlightRange.start, position)
-        self.assertEqual(self.commentObj.highlightRange.length, length )
+        self.assertEqual(self.commentObj.highlighter.highlightRange.start, position)
+        self.assertEqual(self.commentObj.highlighter.highlightRange.length, length )
 
     def testReplaceText(self):
         position = 0
