@@ -55,7 +55,7 @@ msgstr "Could not open any"
         self.assertEqual(self.slotReached, True)
     
     def testEmitStatus(self):
-        self.operator.status = Status.Status(po.pofile.parsestring(self.message).units)
+        self.operator.status = Status.Status(po.pofile.parsestring(self.message))
         QtCore.QObject.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.slot)
         self.operator.emitStatus()
         self.assertEqual(self.slotReached, True)
@@ -89,7 +89,7 @@ msgstr "Could not open any"
     
     def testFilterTranslated(self):
         self.operator.setNewStore(po.pofile.parsestring(self.message))
-        self.status = Status.Status(self.operator.store.units)
+        self.status = Status.Status(self.operator.store)
         
         self.operator.filter = World.filterAll
         #test if filter translated is checked
@@ -102,7 +102,7 @@ msgstr "Could not open any"
     
     def testFilterUntranslated(self):
         self.operator.setNewStore(po.pofile.parsestring(self.message))
-        self.status = Status.Status(self.operator.store.units)
+        self.status = Status.Status(self.operator.store)
         
         self.operator.filter = World.filterAll
         #test if filter untranslated is checked
@@ -215,15 +215,15 @@ msgstr "unable to read file"
         
         os.remove(filename)
         
-    def testModified(self):
+    def testgetModified(self):
         self.operator.setNewStore(po.pofile.parsestring(self.message))
-        # test it will return True, if _modified is true
-        self.operator._modified = True
-        self.assertEqual(self.operator.modified(), True)
+        # test it will return True, if modified is true
+        self.operator.modified = True
+        self.assertEqual(self.operator.getModified(), True)
         
-        # test it will return False, if _modified is False
-        self.operator._modified = False
-        self.assertEqual(self.operator.modified(), False)
+        # test it will return False, if modified is False
+        self.operator.modified = False
+        self.assertEqual(self.operator.getModified(), False)
         
     def testSetComment(self):
         self.operator.setNewStore(po.pofile.parsestring(self.message))
