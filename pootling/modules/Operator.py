@@ -1,4 +1,4 @@
- #!/usr/bin/python
+#!/usr/bin/python
 # -*- coding: utf8 -*-
 # Pootling
 # Copyright 2006 WordForge Foundation
@@ -483,13 +483,14 @@ class Operator(QtCore.QObject):
     def isCopyResult(self, bool):
         """Slot to recieve isCopyResult signal."""
         self.isCpResult = bool
-        
+
     def lookupUnit(self):
         if (not self.filteredList):
             return
         if (self.isCpResult):
             self.isCpResult = False
             return
+
         unit = self.filteredList[self.currentUnitIndex]
         candidates = self.lookupProcess(unit)
         self.emit(QtCore.SIGNAL("candidates"), candidates)
@@ -511,7 +512,7 @@ class Operator(QtCore.QObject):
         self.emit(QtCore.SIGNAL("readyForSave"), self.modified) 
 
     def getModified(self):
-        return (hasattr(self, "modified") and self.modified or None)
+        return ((hasattr(self, "modified") and self.modified) or False)
     
     def lookupTerm(self):
         if (not self.filteredList):
@@ -539,7 +540,16 @@ class Operator(QtCore.QObject):
                         self.emit(QtCore.SIGNAL("glossaryResult"), foundPosition, len(unicode(candidates[0].source)))
                     else:
                         break
-                        
+                    
+    def slotFindUnit(self, source):
+        """ Find a unit that contain source then emit currentUnit
+        @param source: source string used to search for unit
+        
+        """
+        unit = self.store.findunit(source)
+        if unit:
+            self.emit(QtCore.SIGNAL("currentUnit"), unit)
+        
     def lookupTranslation(self):
         '''lookup text translation or text terminologies in glossary.
         
@@ -548,3 +558,4 @@ class Operator(QtCore.QObject):
             self.lookupUnit()
         if (self.AutoIdentTerm):
             self.lookupTerm()
+            

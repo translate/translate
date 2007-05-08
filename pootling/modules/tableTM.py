@@ -24,6 +24,7 @@ from PyQt4 import QtCore, QtGui
 from pootling.ui.Ui_TableTM import Ui_Form
 import sys, os
 
+
 class tableTM(QtGui.QDockWidget):
     def __init__(self, parent):
         QtGui.QDockWidget.__init__(self, parent)
@@ -50,7 +51,6 @@ class tableTM(QtGui.QDockWidget):
         self.ui.tblTM.hideColumn(6)
         self.filepath = " "
         self.target = ""
-        self.unitindex = ""
         
         self.connect(self.ui.tblTM, QtCore.SIGNAL("currentCellChanged(int, int, int, int)"), self.getCurrentTarget)
         self.connect(self.ui.tblTM, QtCore.SIGNAL("itemDoubleClicked(QTableWidgetItem *)"), self.emitTarget)
@@ -104,8 +104,6 @@ class tableTM(QtGui.QDockWidget):
             
             item = QtGui.QTableWidgetItem(unit.date)
             self.ui.tblTM.setItem(row, 5, item)
-            item = QtGui.QTableWidgetItem(str(unit.unitindex))
-            self.ui.tblTM.setItem(row, 6, item)
             
         self.ui.tblTM.setSortingEnabled(True)
         self.ui.tblTM.sortItems(0)
@@ -128,6 +126,9 @@ class tableTM(QtGui.QDockWidget):
         """Slot to get info from the current found unit."""
         if (row < 0):
             self.clearInfo()
+        source = self.ui.tblTM.item(row, 1)
+        if (source):
+            self.source = source.text()
         target = self.ui.tblTM.item(row, 2)
         if (target):
             self.target = target.text()
@@ -141,9 +142,6 @@ class tableTM(QtGui.QDockWidget):
         date = self.ui.tblTM.item(row, 5)
         if (date):
             self.ui.lblDate.setText(date.text())
-        unitindex = self.ui.tblTM.item(row, 6)
-        if (unitindex):
-            self.unitindex = int(str(unitindex.text()))
     
     def emitTarget(self):
         self.emitIsCopyResult(True)
@@ -157,9 +155,11 @@ class tableTM(QtGui.QDockWidget):
         """
         Send "openFile" signal with filename.
         """
+        source = str(self.source)
         self.emit(QtCore.SIGNAL("openFile"), str(self.filepath))
-        self.emit(QtCore.SIGNAL("goto"), self.unitindex)
-            
+        self.emit(QtCore.SIGNAL("findUnit"), source)
+        
+        
     def filterChanged(self, filter, lenFilter):
         if (not lenFilter):
             self.ui.tblTM.setRowCount(0)

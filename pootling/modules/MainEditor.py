@@ -155,6 +155,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.findBar, QtCore.SIGNAL("initSearch"), self.operator.initSearch)
         self.connect(self.findBar, QtCore.SIGNAL("searchNext"), self.operator.searchNext)
         self.connect(self.findBar, QtCore.SIGNAL("searchPrevious"), self.operator.searchPrevious)
+        self.connect(self.table, QtCore.SIGNAL("findUnit"), self.operator.slotFindUnit)
         
         self.connect(self.findBar, QtCore.SIGNAL("replace"), self.operator.replace)
         self.connect(self.findBar, QtCore.SIGNAL("replaceAll"), self.operator.replaceAll)
@@ -220,7 +221,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockOverview.updateView)
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockTUview.updateView)
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockComment.updateView)
-        
+
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.addFuzzyIcon)
         self.connect(self.dockOverview, QtCore.SIGNAL("filteredIndex"), self.operator.setUnitFromPosition)
         self.connect(self.dockTUview, QtCore.SIGNAL("scrollToRow"), self.dockOverview.scrollToRow)
@@ -228,7 +229,7 @@ class MainWindow(QtGui.QMainWindow):
         
         self.connect(self.dockOverview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
         self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
-        
+
         self.connect(self.dockComment, QtCore.SIGNAL("commentChanged"), self.operator.setComment)
         self.connect(self.fileaction, QtCore.SIGNAL("fileSaved"), self.operator.saveStoreToFile)
         self.connect(self.fileaction, QtCore.SIGNAL("saveFile"), self.operator.setModified)
