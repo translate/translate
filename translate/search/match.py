@@ -64,32 +64,44 @@ class matcher:
                 return True
         return False
 
-    def inittm(self, store):
+    def inittm(self, stores):
         """Initialises the memory for later use. We use simple base units for 
         speedup."""
         self.existingunits = {}
         self.candidates = base.TranslationStore()
         
-        if not isinstance(store, list):
-            store = [store]
-        for file in store:
-            candidates = filter(self.usable, file.units)
-            unitindex = 1
-            for candidate in candidates:
-                simpleunit = base.TranslationUnit(candidate.source)
-                simpleunit.target = candidate.target
-                simpleunit.addnote(candidate.getnotes(origin="translator"))
-                simpleunit.filepath = file.filepath
-                simpleunit.unitindex = unitindex
-                simpleunit.translator = file.translator
-                simpleunit.date = file.date
-                unitindex += 1
-                self.candidates.units.append(simpleunit)
+        if not isinstance(stores, list):
+            stores = [stores]
+        for store in stores:
+            self.extendtm(store.units, store=store, sort=False)
         self.candidates.units.sort(sourcelencmp)
-        if not self.candidates.units:
-            raise ValueError("No usable translation memory")
         # print "TM initialised with %d candidates (%d to %d characters long)" % \
         #        (len(self.candidates.units), len(self.candidates.units[0].source), len(self.candidates.units[-1].source))
+
+    def extendtm(self, units, store=None, sort=True):
+        """Extends the memory with extra unit(s).
+        
+        @param units: The units to add to the TM.
+        @param store: Optional store from where some metadata can be retrieved
+        and associated with each unit.
+        @param sort:  Optional parameter that can be set to False to supress 
+        sorting of the candidates list. This should probably only be used in 
+        inittm().
+        """
+        if not isinstance(units, list):
+            units = [units]
+        candidates = filter(self.usable, units)
+        for candidate in candidates:
+            simpleunit = base.TranslationUnit(candidate.source)
+            simpleunit.target = candidate.target
+            simpleunit.addnote(candidate.getnotes(origin="translator"))
+            if store:
+                simpleunit.filepath = store.filepath
+                simpleunit.translator = store.translator
+                simpleunit.date = store.date
+            self.candidates.units.append(simpleunit)
+        if sort:
+            self.candidates.units.sort(sourcelencmp)
 
     def setparameters(self, max_candidates=10, min_similarity=75, max_length=70):
         """Sets the parameters without reinitialising the tm. If a parameter 
@@ -170,7 +182,6 @@ class matcher:
             newunit = po.pounit(candidate.source)
             newunit.target = candidate.target
             newunit.filepath = candidate.filepath
-            newunit.unitindex = candidate.unitindex
             newunit.translator = candidate.translator
             newunit.date = candidate.date
             candidatenotes = candidate.getnotes().strip()
