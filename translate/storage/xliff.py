@@ -214,10 +214,12 @@ class xliffunit(lisa.LISAunit):
         if text:
             self.marktranslated()
 
-    def istranslated(self):
-        targetnode = self.getlanguageNode(lang=None, index=1)
-        return not targetnode is None and \
-                (targetnode.getAttribute("state") == "translated")
+# This code is commented while this will almost always return false.
+# This way pocount, etc. works well.
+#    def istranslated(self):
+#        targetnode = self.getlanguageNode(lang=None, index=1)
+#        return not targetnode is None and \
+#                (targetnode.getAttribute("state") == "translated")
 
     def marktranslated(self):
         targetnode = self.getlanguageNode(lang=None, index=1)
