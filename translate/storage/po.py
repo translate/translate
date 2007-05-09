@@ -224,7 +224,10 @@ class pounit(base.TranslationUnit):
     """Returns the unescaped msgid"""
     multi = multistring(unquotefrompo(self.msgid), self.encoding)
     if self.hasplural():
-      multi.strings.append(unquotefrompo(self.msgid_plural))
+      pluralform = unquotefrompo(self.msgid_plural)
+      if isinstance(pluralform, str):
+          pluralform = pluralform.decode(self.encoding)
+      multi.strings.append(pluralform)
     return multi
 
   def setsource(self, source):
