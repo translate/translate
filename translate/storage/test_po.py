@@ -458,6 +458,19 @@ msgstr[0] "Sheep"
         assert unit.target == "Sheep"
         assert unit.target.strings == ["Sheep"]
 
+    def test_plural_unicode(self):
+        """tests that all parts of the multistring are unicode."""
+        posource = r'''msgid "Ców"
+msgid_plural "Cóws"
+msgstr[0] "Kóei"
+msgstr[1] "Kóeie"
+'''
+        pofile = po.pofile(wStringIO.StringIO(posource))
+        unit = pofile.units[0]
+        assert isinstance(unit.source, multistring)
+        assert isinstance(unit.source.strings[1], unicode)
+        
+
     def wtest_kde_plurals(self):
         """Tests kde-style plurals. (Bug: 191)"""
         posource = '''msgid "_n Singular\n"
