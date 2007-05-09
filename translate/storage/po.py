@@ -873,30 +873,25 @@ class pofile(base.TranslationStore, poheader.poheader):
     linesprocessed = 0
     while end <= len(lines):
       if (end == len(lines)) or (not lines[end].strip()):   # end of lines or blank line
-        finished = 0
-        while not finished:
-          newpe = self.UnitClass(encoding=self.encoding)
-          linesprocessed = newpe.parse("\n".join(lines[start:end]))
-          start += linesprocessed
-          # TODO: find a better way of working out if we actually read anything
-          if linesprocessed >= 1 and newpe.getoutput():
-            self.units.append(newpe)
-            if newpe.isheader():
-              if "Content-Type" in self.parseheader():
-                self.encoding = newpe.encoding
-              # now that we know the encoding, decode the whole file
-              if self.encoding is not None and self.encoding.lower() != 'charset':
-                lines = self.decode(lines)
-            if self.encoding is None: #still have not found an encoding, let's assume UTF-8
-              #TODO: This might be dead code
-              self.encoding = 'utf-8'
+        newpe = self.UnitClass(encoding=self.encoding)
+        linesprocessed = newpe.parse("\n".join(lines[start:end]))
+        start += linesprocessed
+        # TODO: find a better way of working out if we actually read anything
+        if linesprocessed >= 1 and newpe.getoutput():
+          self.units.append(newpe)
+          if newpe.isheader():
+            if "Content-Type" in self.parseheader():
+              self.encoding = newpe.encoding
+            # now that we know the encoding, decode the whole file
+            if self.encoding is not None and self.encoding.lower() != 'charset':
               lines = self.decode(lines)
-              self.units = []
-              start = 0
-              end = 0
-              finished = 1
-          else:
-            finished = 1
+          if self.encoding is None: #still have not found an encoding, let's assume UTF-8
+            #TODO: This might be dead code
+            self.encoding = 'utf-8'
+            lines = self.decode(lines)
+            self.units = []
+            start = 0
+            end = 0
       end = end+1
 
   def removeblanks(self):
