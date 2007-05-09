@@ -148,6 +148,15 @@ class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2PO):
         options = self.help_check(options, "--multifile=MULTIFILESTYLE")
         options = self.help_check(options, "--nonrecursiveinput", last=True)
 
+    def test_preserve_filename(self):
+        """Ensures that the filename is preserved."""
+        oosource = r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58'
+        self.create_testfile("snippet.sdf", oosource)
+        oofile = oo.oofile(self.open_testfile("snippet.sdf"))
+        assert oofile.filename.endswith("snippet.sdf")
+        oofile.parse(oosource)
+        assert oofile.filename.endswith("snippet.sdf")
+
     def test_simple_pot(self):
         """tests the simplest possible conversion to a pot file"""
         oosource = r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58'

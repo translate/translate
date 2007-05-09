@@ -133,7 +133,7 @@ class oofile:
     self.oolines = []
     self.units = []
     self.ookeys = {}
-    self.filename = "(unknown file)"
+    self.filename = ""
     self.languages = []
     if input is not None:
       self.parse(input)
@@ -153,7 +153,8 @@ class oofile:
 
   def parse(self, input):
     """parses lines and adds them to the file"""
-    self.filename = getattr(input, 'name', '')
+    if not self.filename:
+        self.filename = getattr(input, 'name', '')
     if hasattr(input, "read"):
       src = input.read()
       input.close()
