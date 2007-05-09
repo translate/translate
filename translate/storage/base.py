@@ -41,7 +41,7 @@ def force_override(method, baseclass):
     if actualclass != baseclass:
         raise NotImplementedError("%s does not reimplement %s as required by %s" % (actualclass.__name__, method.__name__, baseclass.__name__))
 
-class TranslationUnit(Statistics):
+class TranslationUnit(object):
     """Base class for translation units.
     
     Our concept of a I{translation unit} is influenced heavily by XLIFF:

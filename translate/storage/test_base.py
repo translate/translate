@@ -294,12 +294,10 @@ class TestTranslationStore:
         store = self.StoreClass()
         unit1 = store.addsourceunit("Test source")
         store.units[0].markfuzzy(False)
-        assert unit1.source_wordcount() == 2
         assert store.source_wordcount() == 2
         unit2 = store.addsourceunit("Test source 2")
         store.units[1].markfuzzy(False)
         store.classifyunits()
-        assert unit2.source_wordcount() == 3
         assert store.source_wordcount() == 5
         # If the source has also been changed, assume it's a monolingual file.
         if not unit1.source == unit1.target:
@@ -325,6 +323,4 @@ class TestTranslationStore:
         store = self.StoreClass()
         unit1 = store.addsourceunit(u"ភាសា​ខ្មែរ")
         unit2 = store.addsourceunit(u"សាលារៀន")
-        assert unit1.source_wordcount() == 2
-        assert unit2.source_wordcount() == 1
         assert store.source_wordcount() == 3
