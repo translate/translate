@@ -229,6 +229,11 @@ class Operator(QtCore.QObject):
         if (World.settings.value("headerAuto", QtCore.QVariant(True)).toBool()):
             self.emit(QtCore.SIGNAL("headerAuto"))
         
+        # force TUView to emit targetChanged
+        unit = self.getCurrentUnit()
+        self.emitUnit(unit)
+        self.emitUnit(unit)
+        
         try:
             if (fileName):
                 self.store.savefile(fileName)
@@ -259,12 +264,20 @@ class Operator(QtCore.QObject):
         # if there is no translation unit in the view.
         if (self.currentUnitIndex < 0 or not self.filteredList):
             return
+        
+        isCurrentUnit = False
         if (not unit):
             unit = self.getCurrentUnit()
+            isCurrentUnit = True
+            
         # update target for current unit
         unit.settarget(target)
         #FIXME: this mark works single not plural unit.
         self.status.markTranslated(unit, (unit.target and True or False))
+        
+        if (isCurrentUnit):
+            self.emitUnit(unit)
+        
         self.emitStatus()
         self.setModified(True)
     

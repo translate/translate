@@ -231,7 +231,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
         
         self.connect(self.dockTUview, QtCore.SIGNAL("textChanged"), self.dockOverview.updateText)
-        
+        self.connect(self.dockTUview, QtCore.SIGNAL("textChanged"), self.setSaveEnabled)
         
         self.connect(self.dockComment, QtCore.SIGNAL("commentChanged"), self.operator.setComment)
         self.connect(self.fileaction, QtCore.SIGNAL("fileSaved"), self.operator.saveStoreToFile)
@@ -279,6 +279,8 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.table, QtCore.SIGNAL("openFile"), self.openFile)
         self.connect(self.table, QtCore.SIGNAL("goto"), self.dockOverview.gotoRow)
 
+    def setSaveEnabled(self):
+        self.ui.actionSave.setEnabled(True)
 
     def updateProgress(self, value):
         if (not self.progressBar.isVisible()):

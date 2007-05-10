@@ -174,7 +174,8 @@ class OverviewDock(QtGui.QDockWidget):
     def updateText(self, text):
         self.disconnect(self.ui.tableOverview, QtCore.SIGNAL("cellChanged(int, int)"), self.emitTargetChanged)
         targetItem = self.ui.tableOverview.item(self.ui.tableOverview.currentRow(), 2)
-        targetItem.setText(text)
+        if (targetItem):
+            targetItem.setText(text)
         self.connect(self.ui.tableOverview, QtCore.SIGNAL("cellChanged(int, int)"), self.emitTargetChanged)
     
     def updateView(self, unit):
