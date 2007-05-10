@@ -229,7 +229,10 @@ class MainWindow(QtGui.QMainWindow):
         
         self.connect(self.dockOverview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
         self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
-
+        
+        self.connect(self.dockTUview, QtCore.SIGNAL("textChanged"), self.dockOverview.updateText)
+        
+        
         self.connect(self.dockComment, QtCore.SIGNAL("commentChanged"), self.operator.setComment)
         self.connect(self.fileaction, QtCore.SIGNAL("fileSaved"), self.operator.saveStoreToFile)
         self.connect(self.fileaction, QtCore.SIGNAL("saveFile"), self.operator.setModified)

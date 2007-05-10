@@ -170,7 +170,13 @@ class OverviewDock(QtGui.QDockWidget):
                     target = item.text()
                     self.markState(row, not World.fuzzy)
                     self.emit(QtCore.SIGNAL("targetChanged"), unicode(target))
-        
+    
+    def updateText(self, text):
+        self.disconnect(self.ui.tableOverview, QtCore.SIGNAL("cellChanged(int, int)"), self.emitTargetChanged)
+        targetItem = self.ui.tableOverview.item(self.ui.tableOverview.currentRow(), 2)
+        targetItem.setText(text)
+        self.connect(self.ui.tableOverview, QtCore.SIGNAL("cellChanged(int, int)"), self.emitTargetChanged)
+    
     def updateView(self, unit):
         """
         highlight the table's row, mark comment icon, mark state icon,

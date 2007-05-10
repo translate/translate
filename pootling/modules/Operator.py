@@ -253,18 +253,18 @@ class Operator(QtCore.QObject):
         self.emitUnit(unit)
         self.setModified(True)
     
-    def setTarget(self, target):
+    def setTarget(self, target, unit = None):
         """set the target to the current unit, and emit current unit.
         @param target: Unicode sting type for single unit and list type for plural unit."""
         # if there is no translation unit in the view.
         if (self.currentUnitIndex < 0 or not self.filteredList):
             return
-        unit = self.getCurrentUnit()
+        if (not unit):
+            unit = self.getCurrentUnit()
         # update target for current unit
         unit.settarget(target)
         #FIXME: this mark works single not plural unit.
         self.status.markTranslated(unit, (unit.target and True or False))
-        self.emitUnit(unit)
         self.emitStatus()
         self.setModified(True)
     

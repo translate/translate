@@ -1,4 +1,3 @@
-
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 
@@ -73,15 +72,35 @@ class TUview(QtGui.QDockWidget):
         @param value: current row."""
         self.emit(QtCore.SIGNAL("scrollToRow"), value)
     
+    def getTargets(self):
+        """
+        return target of unit which is string or list of string (plural).
+        """
+        if ((not hasattr(self, "secondpage")) or  (not self.secondpage)):
+            target = unicode(self.ui.txtTarget.toPlainText())
+        else:
+            target = []
+            for i in range(self.ui.tabWidgetTarget.count()):
+                textbox = self.ui.tabWidgetTarget.widget(i).children()[1]
+                target.append(unicode(textbox.toPlainText()))
+        return target
+    
     def updateView(self, unit):
         """Update the text in source and target, set the scrollbar position,
         remove a value from scrollbar if the unit is not in filter.
         Then recalculate scrollbar maximum value.
         @param unit: unit to set in target and source.
         @param index: value in the scrollbar to be removed.""" 
-        self.disconnect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
+        #self.disconnect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
+        self.disconnect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.textChanged)
         if (not unit):
             return
+        
+        if hasattr(self, "contentDirty") and self.contentDirty:
+            target = self.getTargets()
+            self.emit(QtCore.SIGNAL("targetChanged"), target, self.lastUnit)
+        self.contentDirty = False
+        
         self.ui.txtTarget.setReadOnly(False)
         comment = unit.getcontext()
         comment += unit.getnotes("developer")
@@ -93,8 +112,11 @@ class TUview(QtGui.QDockWidget):
         self.showUnit(unit)
         # set the scrollbar position
         self.setScrollbarValue(unit.x_editor_row)
-        self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
-    
+        #self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
+        self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.textChanged)
+        
+        self.lastUnit = unit
+        
     def showUnit(self, unit):
         ''' show unit's source and target in a normal text box if unit is single or 
         in multi tab if unit is plural and number of plural forms setting is more than 1.
@@ -141,9 +163,11 @@ class TUview(QtGui.QDockWidget):
                     # make sure it is not emit signal targetchanged everytime when unit is updated.
                     textbox = self.ui.tabWidgetTarget.widget(i).children()[1]
                     textbox.setReadOnly(False)
-                    self.disconnect(textbox, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
+                    #self.disconnect(textbox, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
+                    self.disconnect(textbox, QtCore.SIGNAL("textChanged()"), self.textChanged)
                     # everytime display a unit, connect signal
-                    self.connect(textbox, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
+                    #self.connect(textbox, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
+                    self.connect(textbox, QtCore.SIGNAL("textChanged()"), self.textChanged)
         
     def addRemoveTabWidget(self, tabWidget, length, msg_strings):
         '''Add or remove tab to a Tab widget.
@@ -175,20 +199,31 @@ class TUview(QtGui.QDockWidget):
                 textbox.setPlainText(msg_strings[i])
             textbox.setReadOnly(True)
     
-    def emitTargetChanged(self):
+    
+    def textChanged(self):
         """
-        emit targetChanged signal if target in TUview is changed.
+        @emit textchanged signal for widget that need to update text while typing.
         """
-        if ((not hasattr(self, "secondpage")) or  (not self.secondpage)):
-            self.emit(QtCore.SIGNAL("targetChanged"), unicode(self.ui.txtTarget.toPlainText()))
-        else:
-            list = []
-            for i in range(self.ui.tabWidgetTarget.count()):
-                textbox = self.ui.tabWidgetTarget.widget(i).children()[1]
-                list.append(unicode(textbox.toPlainText()))
-                # prevent infinit loop of textchanged signal everytime a plural unit target string is changed.
-                self.disconnect(textbox, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
-            self.emit(QtCore.SIGNAL("targetChanged"), list)
+        #TODO: emit targetChanged when target content is dirty, not by keypressed.
+        self.contentDirty = True
+        text = unicode(self.ui.txtTarget.toPlainText())
+        self.emit(QtCore.SIGNAL("textChanged"), text)
+    
+##    def emitTargetChanged(self):
+##        """
+##        emit targetChanged signal if target in TUview is changed.
+##        """
+##        if ((not hasattr(self, "secondpage")) or  (not self.secondpage)):
+##            self.emit(QtCore.SIGNAL("targetChanged"), unicode(self.ui.txtTarget.toPlainText()))
+##        else:
+##            list = []
+##            for i in range(self.ui.tabWidgetTarget.count()):
+##                textbox = self.ui.tabWidgetTarget.widget(i).children()[1]
+##                list.append(unicode(textbox.toPlainText()))
+##                # prevent infinit loop of textchanged signal everytime a plural unit target string is changed.
+##                #self.disconnect(textbox, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
+##                self.disconnect(textbox, QtCore.SIGNAL("textChanged()"), self.textChanged)
+##            self.emit(QtCore.SIGNAL("targetChanged"), list)
             
     def source2target(self):
         """Copy the text from source to target."""
