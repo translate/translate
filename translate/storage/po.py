@@ -451,7 +451,11 @@ class pounit(base.TranslationUnit):
         self.markfuzzy()
 
   def isheader(self):
-    return (self.msgidlen() == 0) and (self.msgstrlen() > 0) and (len(self.msgidcomments) == 0)
+    #return (self.msgidlen() == 0) and (self.msgstrlen() > 0) and (len(self.msgidcomments) == 0)
+    #rewritten here for performance:
+    return ((self.msgid == [] or self.msgid == ['""']) and 
+            not (self.msgstr == [] or self.msgstr == ['""']) 
+            and self.msgidcomments == [])
 
   def isblank(self):
     if self.isheader() or len(self.msgidcomments):
