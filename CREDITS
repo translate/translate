@@ -22,9 +22,9 @@ Javier Sola: documentation
 Marek Wieckowski: Qt ts file enhancements
 Matt Chisholm: fixes
 Matthias Klose: extra file options for converters
-Nicolas François: po4a integration
+Nicolas FranÃ§ois: po4a integration, performance
 Ognyan Kulev: testing and fixes
-Pavel Janík: testing
+Pavel JanÃ­k: testing
 Thomas Fogwill: portal code
 Tom Cato Amundsen: patch to enable pogrep to search anywhere in the PO unit
 
