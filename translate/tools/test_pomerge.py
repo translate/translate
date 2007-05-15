@@ -78,6 +78,22 @@ class TestPOMerge:
         print pofile
         assert pofile.getoutput() == expectedpo
 
+    def test_comments_with_blank_lines(self):
+        """ensure that we don't loose empty newlines in comments"""
+        templatepo = '''# # ***** BEGIN LICENSE BLOCK *****
+# Version: MPL 1.1/GPL 2.0/LGPL 2.1
+#
+# bla bla
+msgid "bla"
+msgstr "blabla"
+'''
+        newpo = templatepo
+        expectedpo =  templatepo
+        pofile = self.mergepo(templatepo, newpo)
+        pounit = self.singleunit(pofile)
+        print pofile
+        assert pofile.getoutput() == expectedpo
+
     def test_merge_dont_delete_unassociated_comments(self):
         """ensure that we do not delete comments in the PO file that are not assocaited with a message block"""
         templatepo = '''# Lonely comment\n\n# Translation comment\nmsgid "Bob"\nmsgstr "Toolmaker"\n'''
