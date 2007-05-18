@@ -59,10 +59,8 @@ def unescapehandler(escape):
 
   return po_unescape_map.get(escape, escape)
 
-def quoteforpo(text, template=None):
+def quoteforpo(text):
   """quotes the given text for a PO file, returning quoted and escaped lines"""
-  if template:
-    return quoteforpofromtemplate(text, template)
   polines = []
   if text is None:
     return polines
@@ -81,54 +79,6 @@ def quoteforpo(text, template=None):
         polines.extend(['"\\n"'])
   if lines[-1]:
     polines.extend(['"' + escapeforpo(line) + '"' for line in textwrap.wrap(lines[-1], 76, replace_whitespace=False, expand_tabs=False, drop_whitespace=False)])
-  return polines
-
-def quoteforpofromtemplate(text, template):
-  """Same as quoteforpo, but try to to use same format as template as far as
-  possible. template is a list of polines (such as pounit.msgstr)"""
-  # TODO: check whether this may alter the underlying po.msgid
-  for position, item in enumerate(template):
-    if not isinstance(item, unicode):
-      template[position] = item.decode('utf-8')
-
-  templatetext = unquotefrompo(template)
-  if templatetext and len(template) == 1:
-    return quoteforpo(text)
-
-  #unchanged is a list containing tuples indicating
-  #    (start in text, end in text, quoted part)
-  unchanged = []
-  index = -1
-  searchfrom = 0
-  for part in template:
-    unquotedpart = unquotefrompo([part])
-    if len(unquotedpart) == 0:
-      continue
-    index = text.find(unquotedpart, searchfrom)
-    if index >= 0:
-      searchfrom = index + len(unquotedpart)
-      unchanged.append((index, searchfrom, part))
-
-  #index indicates up to where in text we have processed:
-  index = 0
-  polines = []
-  while index < len(text):
-    if len(unchanged) == 0:
-      polines.extend(quoteforpo(text[index:]))
-      index = len(text)
-    else:
-      (start, end, part) = unchanged.pop(0)
-      if index < start:
-        polines.extend(quoteforpo(text[index:start]))
-      polines.append(part)
-      index = end
-
-  #Some fixups with empty ("") lines
-  if len(template) > 1 and template[0] == '""':
-    polines = ['""'] + polines
-  elif polines and polines[0] == '""':
-      polines = polines[1:]
-
   return polines
 
 def extractpoline(line):
@@ -240,9 +190,9 @@ class pounit(base.TranslationUnit):
     if isinstance(source, list):
       self.msgid = quoteforpo(source[0])
       if len(source) > 1:
-        self.msgid_plural = quoteforpo(source[1], self.msgid_plural)
+        self.msgid_plural = quoteforpo(source[1])
     else:
-      self.msgid = quoteforpo(source, self.msgid)
+      self.msgid = quoteforpo(source)
   source = property(getsource, setsource)
 
   def gettarget(self):
@@ -271,15 +221,11 @@ class pounit(base.TranslationUnit):
     if isinstance(templates, list):
       templates = {0: templates}
     if isinstance(target, list):
-      self.msgstr = dict([(i, quoteforpo(target[i], templates.get(i, None))) for i in range(len(target))])
+      self.msgstr = dict([(i, quoteforpo(target[i])) for i in range(len(target))])
     elif isinstance(target, dict):
-      self.msgstr = dict([(i, quoteforpo(targetstring, templates.get(i, None))) for i, targetstring in target.iteritems()])
+      self.msgstr = dict([(i, quoteforpo(targetstring)) for i, targetstring in target.iteritems()])
     else:
-      # TODO: Using the template parameter on headers buggers up the header layout.
-      if self.isheader():
-        self.msgstr = quoteforpo(target)
-      else:
-        self.msgstr = quoteforpo(target, template=templates.get(0, None))
+      self.msgstr = quoteforpo(target)
   target = property(gettarget, settarget)
 
   def getnotes(self, origin=None):
@@ -705,7 +651,7 @@ class pounit(base.TranslationUnit):
             comment = comment[:-len("\\n")]
           #Before we used to strip. Necessary in some cases?
           combinedcomment.append(comment)
-        partcomments = quoteforpo("_:%s" % "".join(combinedcomment), partcomments)
+        partcomments = quoteforpo("_:%s" % "".join(combinedcomment))
       # comments first, no blank leader line needed
       partstr += "\n".join(partcomments)
       partstr = quote.rstripeol(partstr)
