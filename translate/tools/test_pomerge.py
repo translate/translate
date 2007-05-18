@@ -104,68 +104,6 @@ msgstr "blabla"
         print pofile
         assert pofile.getoutput() == expectedpo
 
-    def test_preserve_format(self):
-        """Tests that the layout of the po doesn't change unnecessarily"""
-        templatepo = '''msgid "First part\\nSecond part"\nmsgstr ""\n"Eerste deel\\nTweede deel"\n'''
-        mergepo = '''msgid "First part\\n"\n"Second part"\nmsgstr ""\n"Eerste deel\\n"\n"Tweede deel"'''
-        pofile = self.mergepo(templatepo, mergepo)
-        assert str(pofile) == templatepo
-
-        templatepo = '''msgid "Use a scissor"\nmsgstr "Gebruik 'n sker "\n"om dit te doen"\n'''
-        mergepo = '''msgid "Use a scissor"\nmsgstr "Gebruik 'n skêr om dit te doen"\n'''
-        expectedpo = '''msgid "Use a scissor"\nmsgstr "Gebruik 'n skêr "\n"om dit te doen"\n'''
-        pofile = self.mergepo(templatepo, mergepo)
-        assert str(pofile) == expectedpo
-
-        templatepo = '''msgid "To do it, use a scissor, please."\nmsgstr "Om dit te doen, "\n"gebruik 'n sker, "\n"asseblief."\n'''
-        mergepo = '''msgid "To do it, use a scissor, please."\nmsgstr "Om dit te doen, gebruik 'n skêr, asseblief."\n'''
-        expectedpo = '''msgid "To do it, use a scissor, please."\nmsgstr "Om dit te doen, "\n"gebruik 'n skêr, "\n"asseblief."\n'''
-        pofile = self.mergepo(templatepo, mergepo)
-        assert str(pofile) == expectedpo
-        mergepo = '''msgid "To do it, use a scissor, please."\nmsgstr "Om dit te doen, gebruik 'n skêr, "\n"asseblief."\n'''
-        pofile = self.mergepo(templatepo, mergepo)
-        assert str(pofile) == expectedpo
-        mergepo = '''msgid "To do it, use a scissor, please."\nmsgstr ""\n"Om dit te doen, "\n"gebruik 'n skêr, asseblief."\n'''
-        pofile = self.mergepo(templatepo, mergepo)
-        assert str(pofile) == expectedpo
-
-        mergepo = '''msgid ""\n"To do it, use a scissor, "\n"please."\nmsgstr ""\n"Om dit te doen, "\n"gebruik 'n skêr, asseblief."\n'''
-        pofile = self.mergepo(templatepo, mergepo)
-        assert str(pofile) == expectedpo
-
-        templatepo = '''msgid "To do it, use a scissor, please."\nmsgstr ""\n"Om dit te doen, "\n"gebruik 'n sker, "\n"asseblief."\n'''
-        mergepo = '''msgid "To do it, use a scissor, please."\nmsgstr "Om dit te doen, gebruik 'n skêr, asseblief."\n'''
-        expectedpo = '''msgid "To do it, use a scissor, please."\nmsgstr ""\n"Om dit te doen, "\n"gebruik 'n skêr, "\n"asseblief."\n'''
-        pofile = self.mergepo(templatepo, mergepo)
-        assert str(pofile) == expectedpo
-
-        mergepo = '''msgid "To do it, use a scissor, please."\nmsgstr ""\n"Om dit te doen, gebruik 'n skêr, asseblief."\n'''
-        pofile = self.mergepo(templatepo, mergepo)
-        assert str(pofile) == expectedpo
-
-    def test_preserve_format_kde_comments(self):
-        """Test that layout related to KDE comments does not change unnecessarily"""
-        templatepo = '''msgid ""\n"_: KDE comment\\n"\n"Simple string"\nmsgstr ""\n'''
-        mergepo = '''msgid ""\n"_: KDE comment\\n"\n"Simple string"\nmsgstr "Dimpled ring"\n'''
-        expectedpo = '''msgid ""\n"_: KDE comment\\n"\n"Simple string"\nmsgstr "Dimpled ring"\n'''
-        pofile = self.mergepo(templatepo, mergepo)
-        print "Expected:\n%s\n\nMerged:\n%s" % (expectedpo, str(pofile))
-        assert str(pofile) == expectedpo
-
-        templatepo = '''msgid ""\n"_: KDE comment\\n"\n"Simple string"\nmsgstr ""\n'''
-        mergepo = '''msgid ""\n"_: KDE comment\\n"\n"Simple string"\nmsgstr "Dimpled ring"\n'''
-        expectedpo = '''msgid ""\n"_: KDE comment\\n"\n"Simple string"\nmsgstr "Dimpled ring"\n'''
-        pofile = self.mergepo(templatepo, mergepo)
-        print "Expected:\n%s\n\nMerged:\n%s" % (expectedpo, str(pofile))
-        assert str(pofile) == expectedpo
-
-        templatepo = '''msgid ""\n"_: KDE "\n"comment\\n"\n"Simple string"\nmsgstr ""\n'''
-        mergepo = '''msgid ""\n"_: KDE "\n"comment\\n"\n"Simple string"\nmsgstr "Dimpled ring"\n'''
-        expectedpo = '''msgid ""\n"_: KDE "\n"comment\\n"\n"Simple string"\nmsgstr "Dimpled ring"\n'''
-        pofile = self.mergepo(templatepo, mergepo)
-        print "Expected:\n%s\n\nMerged:\n%s" % (expectedpo, str(pofile))
-        assert str(pofile) == expectedpo
-
     def test_preserve_format_trailing_newlines(self):
         """Test that we can merge messages correctly that end with a newline"""
         templatepo = '''msgid "Simple string\\n"\nmsgstr ""\n'''
@@ -320,7 +258,7 @@ msgstr "Eerste\tTweede"
         # multiline KDE comment
         templatepo = '''msgid "_: KDE "\n"comment\\n"\n"File"\nmsgstr "File"\n\n'''
         mergepo = '''msgid "_: KDE "\n"comment\\n"\n"File"\nmsgstr "_: KDE "\n"comment\\n"\n"Ifayile"\n\n'''
-        expectedpo = '''msgid ""\n"_: KDE "\n"comment\\n"\n"File"\nmsgstr "Ifayile"\n'''
+        expectedpo = '''msgid ""\n"_: KDE comment\\n"\n"File"\nmsgstr "Ifayile"\n'''
         pofile = self.mergepo(templatepo, mergepo)
         print "Expected:\n%s\n\nMerged:\n%s" % (expectedpo, str(pofile))
         assert str(pofile) == expectedpo
