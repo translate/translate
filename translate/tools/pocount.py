@@ -36,12 +36,17 @@ def untranslatedwords(pair):
   if translation.words != 0: return 0
   return original.words
 
+kdepluralre = re.compile("^_n: ")
+brtagre = re.compile("<br\s*?/?>")
+xmltagre = re.compile("<[^>]+>")
+numberre = re.compile("\\D\\.\\D")
+
 def wordcount(postr):
   # TODO: po class should understand KDE style plurals
-  postr = re.sub("^_n: ", "", postr)
-  postr = re.sub("<br\s*?/?>", "\n", postr)
-  postr = re.sub("<[^>]+>", "", postr)
-  postr = re.sub("\\D\\.\\D", " ", postr)
+  postr = kdepluralre.sub("", postr)
+  postr = brtagre.sub("\n", postr)
+  postr = xmltagre.sub("", postr)
+  postr = numberre.sub(" ", postr)
   #TODO: This should still use the correct language to count in the target 
   #language
   return len(Common.words(postr))
