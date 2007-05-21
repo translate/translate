@@ -166,7 +166,15 @@ class tableTM(QtGui.QDockWidget):
             self.ui.tblTM.clear()
             self.ui.tblTM.setHorizontalHeaderLabels(self.headerLabels)
         self.ui.tblTM.setEnabled(not(lenFilter) and False or True)
-    
+        
+    def closeEvent(self, event):
+        """
+        set text of action object to 'show table TM' before closing table TM
+        @param QCloseEvent Object: received close event when closing widget
+        """
+        QtGui.QDockWidget.closeEvent(self, event)
+        self.toggleViewAction().setChecked(False)
+        
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     table = tableTM(None)
