@@ -158,7 +158,26 @@ msgstr ""
         string = "1 3 5 7 N " * 11
         expected = 'msgid ""\n%s\nmsgstr ""\n' % '"1 3 5 7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 "\n"7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 7 N "'
         unit = self.UnitClass(string)
-        print expected, str(unit)
+        print "Expected:"
+        print expected
+        print "Actual:"
+        print str(unit)
+        assert str(unit) == expected
+
+    def test_spacing_max_line(self):
+        """Test that the spacing of text is done the same as msgcat."""
+        idstring = "Creates a new document using an existing template iiiiiiiiiiiiiiiiiiiiiii or "
+        idstring += "opens a sample document."
+        expected = '''msgid ""
+"Creates a new document using an existing template iiiiiiiiiiiiiiiiiiiiiii or "
+"opens a sample document."
+msgstr ""
+'''
+        unit = self.UnitClass(idstring)
+        print "Expected:"
+        print expected
+        print "Actual:"
+        print str(unit)
         assert str(unit) == expected
 
     def test_extract_msgidcomments_from_text(self):

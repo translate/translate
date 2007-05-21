@@ -59,6 +59,21 @@ def unescapehandler(escape):
 
   return po_unescape_map.get(escape, escape)
 
+def wrapline(line):
+    """Wrap text for po files."""
+    wrappedlines = textwrap.wrap(line, 76, replace_whitespace=False, expand_tabs=False, drop_whitespace=False)
+
+    # Lines should not start with a space...
+    if len(wrappedlines) > 1:
+        for index, line in enumerate(wrappedlines[1:]):
+            if line.startswith(' '):
+                # Remove the space at the beginning of the line:
+                wrappedlines[index-1] = line[1:]
+
+                # Append a space to the previous line:
+                wrappedlines[index] += ' '
+    return wrappedlines
+
 def quoteforpo(text):
   """quotes the given text for a PO file, returning quoted and escaped lines"""
   polines = []
@@ -69,7 +84,7 @@ def quoteforpo(text):
     if len(lines) != 2 or lines[1]:
         polines.extend(['""'])
     for line in lines[:-1]:
-      lns = textwrap.wrap(line, 76, replace_whitespace=False, expand_tabs=False, drop_whitespace=False)
+      lns = wrapline(line)
       if len(lns) > 0:
         for ln in lns[:-1]:
           polines.extend(['"' + escapeforpo(ln) + '"'])
@@ -78,7 +93,7 @@ def quoteforpo(text):
       else:
         polines.extend(['"\\n"'])
   if lines[-1]:
-    polines.extend(['"' + escapeforpo(line) + '"' for line in textwrap.wrap(lines[-1], 76, replace_whitespace=False, expand_tabs=False, drop_whitespace=False)])
+    polines.extend(['"' + escapeforpo(line) + '"' for line in wrapline(lines[-1])])
   return polines
 
 def extractpoline(line):
