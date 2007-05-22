@@ -209,7 +209,6 @@ class Header(QtGui.QDialog):
             self.headerDic['Language-Team'] = str(Language_Team)
             self.headerDic['Last-Translator'] = str(Last_Translator)
             self.headerDic['PO-Revision-Date'] = time.strftime("%Y-%m-%d %H:%M%z")
-            self.headerDic['Report-Msgid-Bugs-To'] = 'translate-editor@lists.sourceforge.net'
             self.headerDic['Plural-Forms'] = 'nplurals=' + nPlural.toString() + '; plural=' + pluralEquation.toString() + ';'
             self.headerDic['X-Generator'] = World.settingApp + ' ' + __version__.ver
         #Plural form should be updated either the header is just created or it is already in the file.
