@@ -28,7 +28,6 @@ Supported formats are
 """ 
 
 from translate.storage import base
-from translate.misc import textwrap
 import re
 
 dokuwiki = []
