@@ -103,15 +103,16 @@ class LevenshteinComparer:
             penalty = 0
         return 100 - (dist*1.0/l2)*100 - penalty
 
-    def distance(self, a, b, stopvalue=0):
+    def distance(self, a, b, stopvalue=-1):
         """Calculates the distance for use in similarity calculation."""
         l1 = len(a)
         l2 = len(b)
-        if stopvalue == 0:
+        if stopvalue == -1:
             stopvalue = l2
         current = range(l1+1)
         for i in range(1,l2+1):
             previous, current = current, [i]+[0]*l1
+            least = l2
             for j in range(1, l1 + 1):
                 change = previous[j-1]
                 if a[j-1] != b[i-1]:
@@ -119,9 +120,10 @@ class LevenshteinComparer:
                 insert = previous[j] + 1
                 delete = current[j-1] + 1
                 current[j] = min(insert, delete, change)
+                if least > current[j]:
+                    least = current[j]
             #The smallest value in the current array is the best (lowest) value
             #that can be attained in the end if the strings are identical further
-            least = min(current)
             if least > stopvalue:
                 return least
         
