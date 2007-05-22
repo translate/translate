@@ -61,7 +61,7 @@ def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similari
       if unit.isobsolete():
         unit.resurrect()
     try:
-      fuzzyfilematcher = match.matcher(templatepo, max_candidates=1, min_similarity=75, max_length=1000)
+      fuzzyfilematcher = match.matcher(templatepo, max_candidates=1, min_similarity=min_similarity, max_length=1000)
       fuzzyfilematcher.addpercentage = False
     except ValueError:
       fuzzyfilematcher = None
@@ -88,7 +88,7 @@ def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similari
       else:
         kwargs[key] = value
   try:
-    fuzzyglobalmatcher = memory(tm, max_candidates=1, min_similarity=75, max_length=1000)
+    fuzzyglobalmatcher = memory(tm, max_candidates=1, min_similarity=min_similarity, max_length=1000)
     fuzzyglobalmatcher.addpercentage = False
   except ValueError:
     fuzzyglobalmatcher = None
@@ -175,7 +175,7 @@ def main(argv=None):
     help="The file to use as translation memory")
   parser.passthrough.append("tm")
   parser.add_option("-s", "--similarity", dest="min_similarity", default=75,
-    help="The minimum similarity for inclusion")
+    type="float", help="The minimum similarity for inclusion")
   parser.passthrough.append("min_similarity")
   parser.run(argv)
 
