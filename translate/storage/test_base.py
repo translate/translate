@@ -275,6 +275,7 @@ class TestTranslationStore:
         """Tests that markup survives the roundtrip. Most usefull for xml types."""
         store = self.StoreClass()
         unit = store.addsourceunit("<vark@hok.org> %d keer %2$s")
+        assert unit.source == "<vark@hok.org> %d keer %2$s"
         unit.target = "bla"
         assert store.translate("<vark@hok.org> %d keer %2$s") == "bla"
 
