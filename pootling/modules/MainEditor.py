@@ -184,12 +184,12 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockOverview.applySettings)
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockTUview.applySettings)
         self.connect(self.preference, QtCore.SIGNAL("TMpreference"), self.operator.setTMLookupStatus)
+        self.connect(self.preference, QtCore.SIGNAL("TMpreference"), self.showHideTableLookup)
         self.connect(self.preference, QtCore.SIGNAL("GlossaryPreference"), self.operator.setTermLookupStatus)
         
         # action setting Path of TM
         self.tmsetting = tmSetting.tmSetting(self)
         self.connect(self.ui.actionBuild_TM, QtCore.SIGNAL("triggered()"), self.tmsetting.showDialog)
-        self.connect(self.operator, QtCore.SIGNAL("noTM"), self.showTemporaryMessage)
         self.connect(self.tmsetting, QtCore.SIGNAL("matcher"), self.operator.setMatcher)
         
         # action lookup text and auto translation from TM
@@ -278,6 +278,18 @@ class MainWindow(QtGui.QMainWindow):
         
         self.connect(self.table, QtCore.SIGNAL("openFile"), self.openFile)
         self.connect(self.table, QtCore.SIGNAL("goto"), self.dockOverview.gotoRow)
+        
+    def showHideTableLookup(self, TMpreference):
+        """
+        Show or hide tableLookup according TM preference option.
+        @param TMpreference: an option for showing or hiding table Lookup.
+        """
+        self.lookupUnitStatus = (TMpreference & 1 and True or False)
+        if self.lookupUnitStatus:
+            self.table.show()
+        else:
+            self.table.toggleViewAction().setChecked(False)
+            self.table.hide()
 
     def setSaveEnabled(self):
         self.ui.actionSave.setEnabled(True)

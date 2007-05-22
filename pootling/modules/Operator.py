@@ -461,7 +461,6 @@ class Operator(QtCore.QObject):
             self.matcher = self.pickleTM.getMatcher()
         
         if (not self.matcher):
-            self.emit(QtCore.SIGNAL("noTM"), "Problem with translation memory, Build or Rebuild TM")
             return
         
         #for lookup a unit
@@ -538,7 +537,6 @@ class Operator(QtCore.QObject):
             self.termmatcher = self.pickleterm.getMatcher()
         
         if (not self.termmatcher):
-            self.emit(QtCore.SIGNAL("noTM"), "Problem with glossary, Build or Rebuild glossary")
             return
         unit = self.filteredList[self.currentUnitIndex]
         #TODO: split text by space
@@ -571,4 +569,5 @@ class Operator(QtCore.QObject):
             self.lookupUnit()
         if (self.AutoIdentTerm):
             self.lookupTerm()
+            
             
