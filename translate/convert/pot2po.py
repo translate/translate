@@ -43,6 +43,7 @@ def memory(tmfiles, max_candidates=1, min_similarity=75, max_length=1000):
 def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similarity=75):
   """reads in inputpotfile, adjusts header, writes to outputpofile. if templatepofile exists, merge translations from it into outputpofile"""
   inputpot = po.pofile(inputpotfile)
+  inputpot.makeindex()
   outputpo = po.pofile()
   # header values
   charset = "UTF-8"
