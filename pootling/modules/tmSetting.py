@@ -28,6 +28,7 @@ from pootling.modules import World
 from pootling.modules import FileDialog
 from pootling.modules.pickleTM import pickleTM
 from translate.storage import factory
+from translate.search import match
 
 class globalSetting(QtGui.QDialog):
     """Code for setting path of translation memory dialog."""
@@ -156,9 +157,17 @@ class globalSetting(QtGui.QDialog):
         
         if (len(self.filenames) <= 0):
             return
-        self.matcher = self.pickleTM.buildTMMatcher([self.filenames[0]], maxCan, minSim, maxLen)
         
-        self.iterNumber = 0
+        store = factory.getobject(self.filenames[0])
+        if (self.section == "TM"):
+            self.matcher = match.matcher(store, maxCan, minSim, maxLen)
+        else:
+            self.matcher = match.terminologymatcher(store, maxCan, minSim, maxLen)
+        
+##        self.matcher = self.pickleTM.buildTMMatcher([self.filenames[0]], maxCan, minSim, maxLen)
+        
+        # then extendTN start with self.filenames[1]
+        self.iterNumber = 1
         self.timer.start(10)
         
     def getFiles(self, path, includeSub): 
@@ -192,11 +201,13 @@ class globalSetting(QtGui.QDialog):
         @signal matcher: This signal is emitted when the timer finishes the last
         filename in self.filenames
         """
-        if (len(self.filenames) <= 0):
+        if (len(self.filenames) <= 1):
             self.timer.stop()
-            self.iterNumber = 0
+            self.iterNumber = 1
+            self.emitMatcher()
             return
         
+        # stop the timer for processing the extendtm()
         self.timer.stop()
         
         filename = self.filenames[self.iterNumber]
@@ -211,18 +222,24 @@ class globalSetting(QtGui.QDialog):
         
         if (self.iterNumber == len(self.filenames)):
             self.timer.stop()
-            self.iterNumber = 0
-            
-            self.emit(QtCore.SIGNAL("matcher"), [self.section, self.matcher])
-            
-            self.tempoRemember["enabledpath"] = self.getPathList(QtCore.Qt.Checked)
-            self.tempoRemember["disabledpath"] = self.getPathList(QtCore.Qt.Unchecked)
-            self.tempoRemember["diveintosub"] = self.ui.checkBox.isChecked()
-            self.tempoRemember["similarity"] = self.ui.spinSimilarity.value()
-            self.tempoRemember["max_candidates"] = self.ui.spinMaxCandidate.value()
-            self.tempoRemember["max_string_len"] = self.ui.spinMaxLen.value()
-            self.close()
-
+            self.iterNumber = 1
+            self.emitMatcher()
+    
+    def emitMatcher(self):
+        """
+        pickle and emit self.match, then remember the setting and
+        close the dialog.
+        """
+        self.pickleTM.pickleMatcher(self.matcher)
+        self.emit(QtCore.SIGNAL("matcher"), [self.section, self.matcher])
+        
+        self.tempoRemember["enabledpath"] = self.getPathList(QtCore.Qt.Checked)
+        self.tempoRemember["disabledpath"] = self.getPathList(QtCore.Qt.Unchecked)
+        self.tempoRemember["diveintosub"] = self.ui.checkBox.isChecked()
+        self.tempoRemember["similarity"] = self.ui.spinSimilarity.value()
+        self.tempoRemember["max_candidates"] = self.ui.spinMaxCandidate.value()
+        self.tempoRemember["max_string_len"] = self.ui.spinMaxLen.value()
+        self.close()
     
 ##    def createTM(self):
 ##        checkedItemList = self.getPathList(QtCore.Qt.Checked)
