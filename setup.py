@@ -56,6 +56,11 @@ translatescripts = [apply(join, ('translate', ) + script) for script in
                   ('services', 'lookupclient.py'),
                   ('services', 'lookupservice')]
 
+translatebashscripts = [apply(join, ('tools', ) + (script, )) for script in [
+                  'pomigrate2', 'poen', 'pocompendium', 
+                  'posplit', 'popuretext', 'poreencode'
+                  ]]
+
 def addsubpackages(subpackages):
   for subpackage in subpackages:
     initfiles.append((join(sitepackages, 'translate', subpackage),
@@ -287,7 +292,6 @@ def buildmanifest_in(file, scripts):
   print >>file, "prune wordlist"
   print >>file, "prune spelling"
   print >>file, "prune lingua"
-  print >>file, "prune portal"
   print >>file, "prune Pootle"
   print >>file, "prune pootling"
   print >>file, "prune .svn"
@@ -319,7 +323,7 @@ def standardsetup(name, version, custompackages=[], customdatafiles=[]):
   # TODO: make these end with .py ending on Windows...
   try:
     manifest_in = open("MANIFEST.in", "w")
-    buildmanifest_in(manifest_in, translatescripts)
+    buildmanifest_in(manifest_in, translatescripts + translatebashscripts)
     manifest_in.close()
   except IOError, e:
     print >> sys.stderr, "warning: could not recreate MANIFEST.in, continuing anyway. Error was %s" % e
@@ -329,7 +333,7 @@ def standardsetup(name, version, custompackages=[], customdatafiles=[]):
   if not testcsvsupport():
     csvModule = getcsvmodule()
     ext_modules.append(csvModule)
-  dosetup(name, version, packages + custompackages, datafiles + customdatafiles, translatescripts, ext_modules)
+  dosetup(name, version, packages + custompackages, datafiles + customdatafiles, translatescripts+ translatebashscripts, ext_modules)
 
 classifiers = [
   "Development Status :: 5 - Production/Stable",
