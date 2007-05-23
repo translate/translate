@@ -40,7 +40,7 @@ def memory(tmfiles, max_candidates=1, min_similarity=75, max_length=1000):
       tmmatcher = match.matcher(tmstore, max_candidates=max_candidates, min_similarity=min_similarity, max_length=max_length)
     return tmmatcher
 
-def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similarity=75):
+def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similarity=75, fuzzymatching=True):
   """reads in inputpotfile, adjusts header, writes to outputpofile. if templatepofile exists, merge translations from it into outputpofile"""
   inputpot = po.pofile(inputpotfile)
   inputpot.makeindex()
@@ -58,14 +58,17 @@ def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similari
   kwargs = {}
   if templatepofile is not None:
     templatepo = po.pofile(templatepofile)
-    for unit in templatepo.units:
-      if unit.isobsolete():
-        unit.resurrect()
-    try:
-      fuzzyfilematcher = match.matcher(templatepo, max_candidates=1, min_similarity=min_similarity, max_length=1000)
-      fuzzyfilematcher.addpercentage = False
-    except ValueError:
-      fuzzyfilematcher = None
+    fuzzyfilematcher = None
+    if fuzzymatching:
+        for unit in templatepo.units:
+          if unit.isobsolete():
+            unit.resurrect()
+        try:
+          fuzzyfilematcher = match.matcher(templatepo, max_candidates=1, min_similarity=min_similarity, max_length=1000)
+          fuzzyfilematcher.addpercentage = False
+        except ValueError:
+          pass
+
     templatepo.makeindex()
     templateheadervalues = templatepo.parseheader()
     for key, value in templateheadervalues.iteritems():
@@ -88,11 +91,13 @@ def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similari
         plural_forms = value
       else:
         kwargs[key] = value
-  try:
-    fuzzyglobalmatcher = memory(tm, max_candidates=1, min_similarity=min_similarity, max_length=1000)
-    fuzzyglobalmatcher.addpercentage = False
-  except ValueError:
-    fuzzyglobalmatcher = None
+  fuzzyglobalmatcher = None
+  if fuzzymatching:
+    try:
+      fuzzyglobalmatcher = memory(tm, max_candidates=1, min_similarity=min_similarity, max_length=1000)
+      fuzzyglobalmatcher.addpercentage = False
+    except ValueError:
+      pass
   inputheadervalues = inputpot.parseheader()
   for key, value in inputheadervalues.iteritems():
     if key in ("Project-Id-Version", "Last-Translator", "Language-Team", "PO-Revision-Date", "Content-Type", "Content-Transfer-Encoding", "Plural-Forms"):
@@ -178,6 +183,9 @@ def main(argv=None):
   parser.add_option("-s", "--similarity", dest="min_similarity", default=75,
     type="float", help="The minimum similarity for inclusion")
   parser.passthrough.append("min_similarity")
+  parser.add_option("--nofuzzymatching", dest="fuzzymatching", action="store_false", 
+          default=True, help="Disable fuzzy matching")
+  parser.passthrough.append("fuzzymatching")
   parser.run(argv)
 
 
