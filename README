@@ -114,6 +114,12 @@ tar xzf translate-N.N.tar.gz
 cd translate-N.N
 su -c ./setup.py install
 
+If you get this error along the lines of
+Unable to open /usr/lib/python2.N/config/Makefile (no such file or directory)
+while running setup.py, you need to install python-dev or libpython2.N-devel
+package. Try to install python2.N-dev or libpython2.N-devel or something 
+similar with your distribution's package manager.
+
 
 Bugs
 ----
