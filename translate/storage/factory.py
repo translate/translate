@@ -88,7 +88,7 @@ def getclass(storefile, ignore=None):
     try:
         storeclass = classes[ext]
     except KeyError:
-        raise Exception("Unknown filetype (%s)" % storefilename)
+        raise ValueError("Unknown filetype (%s)" % storefilename)
     return storeclass
 
 def getobject(storefile, ignore=None):
