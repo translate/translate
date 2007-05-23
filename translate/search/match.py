@@ -21,11 +21,12 @@
 
 """Class to perform translation memory matching from a store of translation units"""
 
-import Levenshtein
-import terminology
-import heapq
+from translate.search import lshtein
+from translate.search import terminology
 from translate.storage import base
 from translate.storage import po
+from translate.misc.multistring import multistring
+import heapq
 
 def sourcelen(unit):
     """Returns the length of the source string"""
@@ -45,7 +46,7 @@ class matcher:
         min_similarity is the minimum similarity that must be attained to be included in
         the result, comparer is an optional Comparer with similarity() function"""
         if comparer is None:
-            comparer = Levenshtein.LevenshteinComparer(max_length)
+            comparer = lshtein.LevenshteinComparer(max_length)
         self.comparer = comparer
         self.setparameters(max_candidates, min_similarity, max_length)
         self.inittm(store)
