@@ -191,8 +191,15 @@ class Header(QtGui.QDialog):
         Code = World.settings.value("Code", QtCore.QVariant(""))
         SupportTeam = World.settings.value("SupportTeam", QtCore.QVariant(""))
         TimeZone = World.settings.value("TimeZone", QtCore.QVariant(""))
-        Last_Translator = userName.toString() + '<' + emailAddress.toString() + '>'
-        Language_Team =  FullLanguage.toString() + '<' + SupportTeam.toString() + '>'
+        if (emailAddress.toString() != ""):
+            Last_Translator = userName.toString() + '<' + emailAddress.toString() + '>'
+        else:
+            Last_Translator = userName.toString()
+        if (SupportTeam.toString() !=""):
+            Language_Team =  FullLanguage.toString() + '<' + SupportTeam.toString() + '>'
+        else:
+            Language_Team =  FullLanguage.toString()
+            
         nPlural = World.settings.value("nPlural", QtCore.QVariant(str(2)))
         pluralEquation = World.settings.value("equation", QtCore.QVariant(""))
         
@@ -210,6 +217,7 @@ class Header(QtGui.QDialog):
             self.headerDic['Last-Translator'] = str(Last_Translator)
             self.headerDic['PO-Revision-Date'] = time.strftime("%Y-%m-%d %H:%M%z")
             self.headerDic['Plural-Forms'] = 'nplurals=' + nPlural.toString() + '; plural=' + pluralEquation.toString() + ';'
+            self.headerDic["Content-Type"] = "text/plain; charset=UTf-8"
             self.headerDic['X-Generator'] = World.settingApp + ' ' + __version__.ver
         #Plural form should be updated either the header is just created or it is already in the file.
         self.operator.store.updateheaderplural(int(nPlural.toString()), str(pluralEquation.toString()))
