@@ -170,6 +170,11 @@ def main():
   if "--csv" in sys.argv:
     sys.argv.remove("--csv")
     CSVstyle = True
+  try:
+    import psyco
+    psyco.full()
+  except Exception:
+    pass
   summarizer(sys.argv[1:], CSVstyle)
 
 
