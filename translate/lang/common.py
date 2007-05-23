@@ -164,7 +164,8 @@ class Common(object):
                 break
             code = data.simplercode(code)
         if not code:
-            print >> sys.stderr, "Warning: No information found about language code %s" % code
+#            print >> sys.stderr, "Warning: No information found about language code %s" % code
+            pass
 
     def punctranslate(cls, text):
         """Converts the punctuation in a string according to the rules of the 
