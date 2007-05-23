@@ -168,14 +168,20 @@ Review Messages, Review Source Words"
     summarize(filename, stats, self.CSVstyle)
     self.filecount += 1
 
-  def handlefiles(self, arg, dirname, filenames):
+  def handlefiles(self, dirname, filenames):
     for filename in filenames:
       pathname = os.path.join(dirname, filename)
-      if not os.path.isdir(pathname):
+      if os.path.isdir(pathname):
+        self.handledir(pathname)
+      else:
         self.handlefile(pathname)
 
   def handledir(self, dirname):
-    os.path.walk(dirname, self.handlefiles, None)
+    path, name = os.path.split(dirname)
+    if name in ["CSV", ".svn"]:
+      return
+    entries = os.listdir(dirname)
+    self.handlefiles(dirname, entries)
 
 def main():
   # TODO: make this handle command line options using optparse...
