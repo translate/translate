@@ -27,6 +27,7 @@ from pootling.ui.Ui_tmSetting import Ui_tmsetting
 from pootling.modules import World
 from pootling.modules import FileDialog
 from pootling.modules.pickleTM import pickleTM
+from translate.storage import factory
 
 class globalSetting(QtGui.QDialog):
     """Code for setting path of translation memory dialog."""
@@ -38,23 +39,32 @@ class globalSetting(QtGui.QDialog):
         self.title = None
         self.section = None
         self.tempoRemember = {}
+    
+    def lazyInit(self):
+        if (self.ui):
+            # already has ui
+            return
+            
+        self.ui = Ui_tmsetting()
+        self.ui.setupUi(self)
+        self.setModal(True)
+        self.filedialog = FileDialog.fileDialog(self)
+        self.setWindowTitle(self.title)
+        self.connect(self.filedialog, QtCore.SIGNAL("location"), self.addLocation)
+        self.connect(self.ui.btnOk, QtCore.SIGNAL("clicked(bool)"), self.createTM)
+        self.connect(self.ui.btnCancel, QtCore.SIGNAL("clicked(bool)"), QtCore.SLOT("close()"))
+        self.connect(self.ui.btnAdd, QtCore.SIGNAL("clicked(bool)"), self.filedialog.show)
+        self.connect(self.ui.btnRemove, QtCore.SIGNAL("clicked(bool)"), self.removeLocation)
+        self.connect(self.ui.btnRemoveAll, QtCore.SIGNAL("clicked(bool)"), self.ui.listWidget.clear)
+        self.ui.listWidget.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
         
+        # timer for extend tm
+        self.timer = QtCore.QTimer()
+        self.connect(self.timer, QtCore.SIGNAL("timeout()"), self.extendTM)
+    
     def showDialog(self):
         """Make the Translation Memory Setting dialog visible."""
-        #lazy init
-        if (not self.ui):
-            self.ui = Ui_tmsetting()
-            self.ui.setupUi(self)
-            self.setModal(True)
-            self.filedialog = FileDialog.fileDialog(self)
-            self.setWindowTitle(self.title)
-            self.connect(self.filedialog, QtCore.SIGNAL("location"), self.addLocation)
-            self.connect(self.ui.btnOk, QtCore.SIGNAL("clicked(bool)"), self.createTM)
-            self.connect(self.ui.btnCancel, QtCore.SIGNAL("clicked(bool)"), QtCore.SLOT("close()"))
-            self.connect(self.ui.btnAdd, QtCore.SIGNAL("clicked(bool)"), self.filedialog.show)
-            self.connect(self.ui.btnRemove, QtCore.SIGNAL("clicked(bool)"), self.removeLocation)
-            self.connect(self.ui.btnRemoveAll, QtCore.SIGNAL("clicked(bool)"), self.ui.listWidget.clear)
-            self.ui.listWidget.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        self.lazyInit()
         
         # get application setting file, and parse it.
         filename = World.settings.fileName()
@@ -114,10 +124,9 @@ class globalSetting(QtGui.QDialog):
             self.ui.listWidget.takeItem(self.ui.listWidget.currentRow())
     
     def closeEvent(self, event):
-        """Rememer TMpath before closing.
-        
+        """
+        Rememer TMpath before closing.
         @param event: CloseEvent Object
-        
         """
         
         World.settings.beginGroup(self.section);
@@ -129,38 +138,118 @@ class globalSetting(QtGui.QDialog):
         World.settings.setValue("max_string_len", QtCore.QVariant(self.tempoRemember["max_string_len"]))
         World.settings.endGroup();
         QtGui.QDialog.closeEvent(self, event)
-        
+    
     def createTM(self):
-        """Build base object of checked files in lists.
-        
-        @signal matcher: This signal is emitted when there is matcher
-        
         """
-        checkedItemList = self.getPathList(QtCore.Qt.Checked)
-        matcher = None
-        if (not checkedItemList):
-            self.pickleTM.removeFile()
-            QtGui.QMessageBox.critical(None, 'No file specified', 'No file specified for building TM or glossary')
-        else:
-            try:
-                #FIXME: do not hard code.
-                if (self.section == "TM"):
-                    matcher = self.pickleTM.buildTMMatcher(checkedItemList, self.ui.spinMaxCandidate.value(), self.ui.spinSimilarity.value(),  self.ui.spinMaxLen.value())
-                elif (self.section == "Glossary"):
-                    matcher = self.pickleTM.buildTermMatcher(checkedItemList, self.ui.spinMaxCandidate.value(), self.ui.spinSimilarity.value(),  self.ui.spinMaxLen.value())
-            except Exception, e:
-                self.pickleTM.removeFile()
-                QtGui.QMessageBox.critical(None, 'Error', str(e))
+        collect filename into self.filenames, create a matcher, then start a
+        timer for extend tm.
+        """
+        paths = self.getPathList(QtCore.Qt.Checked)
+        self.matcher = None
+        self.filenames = []
+        for path in paths:
+            self.getFiles(path, True)
         
-        self.emit(QtCore.SIGNAL("matcher"), [self.section, matcher])
+        maxCan = self.ui.spinMaxCandidate.value()
+        minSim = self.ui.spinSimilarity.value()
+        maxLen = self.ui.spinMaxLen.value()
         
-        self.tempoRemember["enabledpath"] = self.getPathList(QtCore.Qt.Checked)
-        self.tempoRemember["disabledpath"] = self.getPathList(QtCore.Qt.Unchecked)
-        self.tempoRemember["diveintosub"] = self.ui.checkBox.isChecked()
-        self.tempoRemember["similarity"] = self.ui.spinSimilarity.value()
-        self.tempoRemember["max_candidates"] = self.ui.spinMaxCandidate.value()
-        self.tempoRemember["max_string_len"] = self.ui.spinMaxLen.value()
-        self.close()
+        if (len(self.filenames) <= 0):
+            return
+        self.matcher = self.pickleTM.buildTMMatcher([self.filenames[0]], maxCan, minSim, maxLen)
+        
+        self.iterNumber = 0
+        self.timer.start(10)
+        
+    def getFiles(self, path, includeSub): 
+        """
+        add path to catalog tree view if it's file, if it's directory then
+        dive into it and add files.
+        """
+        path = unicode(path)
+        if (os.path.isfile(path)):
+            # if file is already existed in the item's child... skip.
+            if (path.endswith(".po") or path.endswith(".pot") or path.endswith(".xlf") or path.endswith(".xliff")):
+                self.filenames.append(path)
+        
+        if (os.path.isdir(path)) and (not path.endswith(".svn")):
+            for root, dirs, files in os.walk(path):
+                for file in files:
+                    path = os.path.join(root + os.path.sep + file)
+                    self.getFiles(path, includeSub)
+                    
+                # whether dive into subfolder
+                if (includeSub):
+                    for folder in dirs:
+                        path = os.path.join(root + os.path.sep + folder)
+                        self.getFiles(path, includeSub)
+                break
+    
+    def extendTM(self):
+        """
+        extend TM to self.matcher through self.filenames with self.iterNumber as
+        iterator.
+        @signal matcher: This signal is emitted when the timer finishes the last
+        filename in self.filenames
+        """
+        if (len(self.filenames) <= 0):
+            self.timer.stop()
+            self.iterNumber = 0
+            return
+        
+        self.timer.stop()
+        
+        filename = self.filenames[self.iterNumber]
+        store = factory.getobject(filename)
+        self.matcher.extendtm(store.units)
+        self.iterNumber += 1
+        perc = int((float(self.iterNumber) / len(self.filenames)) * 100)
+        self.ui.progressBar.setValue(perc)
+        
+        # resume timer
+        self.timer.start(10)
+        
+        if (self.iterNumber == len(self.filenames)):
+            self.timer.stop()
+            self.iterNumber = 0
+            
+            self.emit(QtCore.SIGNAL("matcher"), [self.section, self.matcher])
+            
+            self.tempoRemember["enabledpath"] = self.getPathList(QtCore.Qt.Checked)
+            self.tempoRemember["disabledpath"] = self.getPathList(QtCore.Qt.Unchecked)
+            self.tempoRemember["diveintosub"] = self.ui.checkBox.isChecked()
+            self.tempoRemember["similarity"] = self.ui.spinSimilarity.value()
+            self.tempoRemember["max_candidates"] = self.ui.spinMaxCandidate.value()
+            self.tempoRemember["max_string_len"] = self.ui.spinMaxLen.value()
+            self.close()
+
+    
+##    def createTM(self):
+##        checkedItemList = self.getPathList(QtCore.Qt.Checked)
+##        matcher = None
+##        if (not checkedItemList):
+##            self.pickleTM.removeFile()
+##            QtGui.QMessageBox.critical(None, 'No file specified', 'No file specified for building TM or glossary')
+##        else:
+##            try:
+##                #FIXME: do not hard code.
+##                if (self.section == "TM"):
+##                    matcher = self.pickleTM.buildTMMatcher(checkedItemList, self.ui.spinMaxCandidate.value(), self.ui.spinSimilarity.value(), self.ui.spinMaxLen.value())
+##                elif (self.section == "Glossary"):
+##                    matcher = self.pickleTM.buildTermMatcher(checkedItemList, self.ui.spinMaxCandidate.value(), self.ui.spinSimilarity.value(), self.ui.spinMaxLen.value())
+##            except Exception, e:
+##                self.pickleTM.removeFile()
+##                QtGui.QMessageBox.critical(None, 'Error', str(e))
+##        
+##        self.emit(QtCore.SIGNAL("matcher"), [self.section, matcher])
+##        
+##        self.tempoRemember["enabledpath"] = self.getPathList(QtCore.Qt.Checked)
+##        self.tempoRemember["disabledpath"] = self.getPathList(QtCore.Qt.Unchecked)
+##        self.tempoRemember["diveintosub"] = self.ui.checkBox.isChecked()
+##        self.tempoRemember["similarity"] = self.ui.spinSimilarity.value()
+##        self.tempoRemember["max_candidates"] = self.ui.spinMaxCandidate.value()
+##        self.tempoRemember["max_string_len"] = self.ui.spinMaxLen.value()
+##        self.close()
     
     def getPathList(self, isChecked):
         """Return list of path according to the parameter isChecked or unChecked
@@ -174,7 +263,8 @@ class globalSetting(QtGui.QDialog):
             if (not (item.checkState() ^ isChecked)):
                 itemList.append(str(item.text()))
         return itemList
-
+    
+    
 class tmSetting(globalSetting):
     def __init__(self, parent):
         globalSetting.__init__(self, parent)
