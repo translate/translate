@@ -93,8 +93,18 @@ class matcher:
             units = [units]
         candidates = filter(self.usable, units)
         for candidate in candidates:
-            simpleunit = base.TranslationUnit(candidate.source)
-            simpleunit.target = candidate.target
+            simpleunit = base.TranslationUnit("")
+            # We need to ensure that we don't pass multistrings futher, since
+            # some modules (like the native Levenshtein) can't use it.
+            if isinstance(candidate.source, multistring):
+                if len(candidate.source.strings) > 1:
+                    simpleunit.orig_source = candidate.source
+                    simpleunit.orig_target = candidate.target
+                simpleunit.source = unicode(candidate.source)
+                simpleunit.target = unicode(candidate.target)
+            else:
+                simpleunit.source = candidate.source
+                simpleunit.target = candidate.target
             simpleunit.addnote(candidate.getnotes(origin="translator"))
             if store:
                 simpleunit.filepath = store.filepath
@@ -180,6 +190,9 @@ class matcher:
         """Builds a list of units conforming to base API, with the score in the comment"""
         units = []
         for score, candidate in candidates:
+            if hasattr(candidate, "orig_source"):
+                candidate.source = candidate.orig_source
+                candidate.target = candidate.orig_target
             newunit = po.pounit(candidate.source)
             newunit.target = candidate.target
             newunit.filepath = candidate.filepath
