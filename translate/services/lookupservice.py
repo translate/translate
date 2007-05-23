@@ -61,7 +61,11 @@ class lookupServer(SimpleXMLRPCServer):
         except AttributeError:
             raise Exception('no method called "%s"' % method)
         else:
-            return func(*params)
+            try:
+                return func(*params)
+            except Exception, e:
+                print str(e)
+                return ""
     
     def internal_lookup(self, message): 
         """Could perhaps include some intelligence in future, like case trying with different casing, etc."""
