@@ -18,15 +18,27 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""A class implementing to calculate a similarity based on the Levenshtein 
-distance. See http://en.wikipedia.org/wiki/Levenshtein_distance."""
+"""A class to calculate a similarity based on the Levenshtein 
+distance. See http://en.wikipedia.org/wiki/Levenshtein_distance.
 
-from translate.search import segment
+If available, the python-Levenshtein package will be used which will provide
+better performance as it is implemented natively. See
+http://trific.ath.cx/python/levenshtein/
+"""
+
 import math
+try:
+    import Levenshtein as Levenshtein
+except Exception:
+    Levenshtein = None
 
 class LevenshteinComparer:
     def __init__(self, max_len=200):
         self.MAX_LEN = max_len
+        if Levenshtein:
+            self.distance = self.native_distance
+        else:
+            self.distance = self.python_distance
 
     def similarity(self, a, b, stoppercentage=40):
         similarity = self.similarity_real(a, b, stoppercentage)
@@ -103,8 +115,9 @@ class LevenshteinComparer:
             penalty = 0
         return 100 - (dist*1.0/l2)*100 - penalty
 
-    def distance(self, a, b, stopvalue=-1):
-        """Calculates the distance for use in similarity calculation."""
+    def python_distance(self, a, b, stopvalue=-1):
+        """Calculates the distance for use in similarity calculation. Python
+        version."""
         l1 = len(a)
         l2 = len(b)
         if stopvalue == -1:
@@ -129,9 +142,16 @@ class LevenshteinComparer:
         
         return current[l1]
 
+    def native_distance(self, a, b, stopvalue=0):
+        """Same as python_distance in functionality. This uses the fast C 
+        version if we detected it earlier.
+        
+        Note that this does not support arbitrary sequence types, but only 
+        string types."""
+        return Levenshtein.distance(a,b)
+
 if __name__=="__main__":
     from sys import argv
-    DEBUG = 1
     comparer = LevenshteinComparer()
     print "Similarity:\n%s" % comparer.similarity(argv[1],argv[2], 50)
 
