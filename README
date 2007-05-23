@@ -79,7 +79,18 @@ http://utidylib.berlios.de/
 The python-Levenshtein package will improve performance for fuzzy mathching if
 it is available. This can improve the performance of pot2po, for example.  It 
 is optional and no functionality is lost if it is not installed, only speed.
-http://trific.ath.cx/python/levenshtein/
+http://trific.ath.cx/resources/python/levenshtein/
+
+Functions in the lang.data module can supply functions to translate language 
+names using the iso-codes package. It can even translate names in the format 
+  Language (Country)
+such as
+  English (South Africa)
+This is used by Pootle 1.0 and later. If the package is not installed, the 
+language names will simply appear in English. It is therefore recommended you 
+install the iso-codes package for your distribution, but it is optional.
+Alternatively, it is also available from
+http://packages.debian.org/unstable/source/iso-codes
 
 The programs have been tested on Linux and Windows.
 
