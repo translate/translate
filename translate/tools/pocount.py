@@ -158,7 +158,11 @@ Review Messages, Review Source Words"
         self.totals[key] += stats[key]
 
   def handlefile(self, filename):
-    pof = factory.getobject(filename)
+    try:
+        pof = factory.getobject(filename)
+    except ValueError, e:
+        print str(e)
+        return
     stats = calcstats(pof.units)
     self.updatetotals(stats)
     summarize(filename, stats, self.CSVstyle)
