@@ -72,6 +72,8 @@ class lookupServer(SimpleXMLRPCServer):
         message = message.strip()
         if message == "":
             return None
+        if not isinstance(message, unicode):
+            message = unicode(message)
         try:
             unit = self.storage.findunit(message)
         except Exception:
@@ -97,6 +99,8 @@ class lookupServer(SimpleXMLRPCServer):
     def public_matches(self, message, max_candidates=15, min_similarity=50):
         """Returns matches from the storage with the associated similarity"""
         self.matcher.setparameters(max_candidates=max_candidates, min_similarity=min_similarity)
+        if not isinstance(message, unicode):
+            message = unicode(message)
         candidates = self.matcher.matches(message)
         clean_candidates = []
         for unit in candidates:
