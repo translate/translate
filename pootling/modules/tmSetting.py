@@ -27,7 +27,6 @@ from pootling.ui.Ui_tmSetting import Ui_tmsetting
 from pootling.modules import World
 from pootling.modules import FileDialog
 from pootling.modules.pickleTM import pickleTM
-from translate.storage import factory
 from translate.search import match
 
 class globalSetting(QtGui.QDialog):
@@ -158,13 +157,11 @@ class globalSetting(QtGui.QDialog):
         if (len(self.filenames) <= 0):
             return
         
-        store = factory.getobject(self.filenames[0])
+        store = self.pickleTM.createStore(self.filenames[0])
         if (self.section == "TM"):
             self.matcher = match.matcher(store, maxCan, minSim, maxLen)
         else:
             self.matcher = match.terminologymatcher(store, maxCan, minSim, maxLen)
-        
-##        self.matcher = self.pickleTM.buildTMMatcher([self.filenames[0]], maxCan, minSim, maxLen)
         
         # then extendTN start with self.filenames[1]
         self.iterNumber = 1
@@ -211,8 +208,8 @@ class globalSetting(QtGui.QDialog):
         self.timer.stop()
         
         filename = self.filenames[self.iterNumber]
-        store = factory.getobject(filename)
-        self.matcher.extendtm(store.units)
+        store = self.pickleTM.createStore(filename)
+        self.matcher.extendtm(store.units, store)
         self.iterNumber += 1
         perc = int((float(self.iterNumber) / len(self.filenames)) * 100)
         self.ui.progressBar.setValue(perc)
