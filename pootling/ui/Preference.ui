@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>541</width>
+    <width>602</width>
     <height>372</height>
    </rect>
   </property>
@@ -193,6 +193,47 @@
             </layout>
            </widget>
           </item>
+          <item row="1" column="0" >
+           <widget class="Line" name="line" >
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="0" >
+           <widget class="QLabel" name="label" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>5</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font" >
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text" >
+             <string>Setting personal information</string>
+            </property>
+           </widget>
+          </item>
           <item row="2" column="0" >
            <widget class="QFrame" name="frame_2" >
             <property name="sizePolicy" >
@@ -222,42 +263,6 @@
              <property name="spacing" >
               <number>6</number>
              </property>
-             <item row="4" column="0" >
-              <widget class="QLabel" name="label6" >
-               <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>0</vsizetype>
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text" >
-                <string>Time zone</string>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="1" colspan="3" >
-              <widget class="QComboBox" name="cbxTimeZone" >
-               <property name="enabled" >
-                <bool>true</bool>
-               </property>
-               <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>0</vsizetype>
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="whatsThis" >
-                <string>&lt;h3>Time Zone&lt;/h3>Choose a correct time zone of your country.</string>
-               </property>
-               <property name="editable" >
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
              <item row="3" column="0" >
               <widget class="QLabel" name="label5" >
                <property name="sizePolicy" >
@@ -404,47 +409,6 @@
               </widget>
              </item>
             </layout>
-           </widget>
-          </item>
-          <item row="1" column="0" >
-           <widget class="Line" name="line" >
-            <property name="orientation" >
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0" >
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" >
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="0" >
-           <widget class="QLabel" name="label" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>7</hsizetype>
-              <vsizetype>5</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font" >
-             <font>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="text" >
-             <string>Setting personal information</string>
-            </property>
            </widget>
           </item>
          </layout>
@@ -1439,7 +1403,6 @@
   <tabstop>cbxLanguageCode</tabstop>
   <tabstop>lineFullLang</tabstop>
   <tabstop>SupportTeam</tabstop>
-  <tabstop>cbxTimeZone</tabstop>
   <tabstop>spinBox</tabstop>
   <tabstop>lineEqaution</tabstop>
   <tabstop>bntFontOverviewHeader</tabstop>

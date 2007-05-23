@@ -190,7 +190,6 @@ class Header(QtGui.QDialog):
         FullLanguage = World.settings.value("FullLanguage", QtCore.QVariant(""))
         Code = World.settings.value("Code", QtCore.QVariant(""))
         SupportTeam = World.settings.value("SupportTeam", QtCore.QVariant(""))
-        TimeZone = World.settings.value("TimeZone", QtCore.QVariant(""))
         if (emailAddress.toString() != ""):
             Last_Translator = userName.toString() + '<' + emailAddress.toString() + '>'
         else:
