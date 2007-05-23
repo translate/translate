@@ -21,11 +21,12 @@
 
 """takes a translation file and produces word counts and other statistics"""
 
-import sys
-import os
 from translate.storage import factory
 from translate.lang.common import Common
+from translate.misc.multistring import multistring
 import re
+import sys
+import os
 
 if not hasattr(__builtins__, "sum"):
   def sum(parts):
@@ -54,9 +55,17 @@ def wordcount(postr):
 def wordsinpoel(poel):
   """counts the words in the source, target, taking plurals into account"""
   (sourcewords, targetwords) = (0, 0)
-  for s in poel.source.strings:
+  if isinstance(poel.source, multistring):
+    sourcestrings = poel.source.strings
+  else:
+    sourcestrings = [poel.source or ""]
+  if isinstance(poel.target, multistring):
+    targetstrings = poel.target.strings
+  else:
+    targetstrings = [poel.target or ""]
+  for s in sourcestrings:
     sourcewords += wordcount(s)
-  for s in poel.target.strings:
+  for s in targetstrings:
     targetwords += wordcount(s)
   return sourcewords, targetwords
 
