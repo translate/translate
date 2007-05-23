@@ -70,8 +70,12 @@ Python 2.3 or later is recommended.
 
 The Toolkit may still work using Python 2.2 but is now most extensively tested 
 using Python 2.4.  If you experience any errors and are using Python 2.2 or 2.3, 
-then please first check that the error also occurs in 2.3 before reporting it 
+then please first check that the error also occurs in 2.4 before reporting it 
 as a bug.
+
+Psyco can help to speed up several of the programs in the toolkit. It is
+optional, but highly recommended.
+http://psyco.sourceforge.net/
 
 The python wrapper to htmltidy is needed for po2html.
 http://utidylib.berlios.de/
