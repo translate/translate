@@ -201,6 +201,19 @@ class Header(QtGui.QDialog):
             
         nPlural = World.settings.value("nPlural", QtCore.QVariant(str(2)))
         pluralEquation = World.settings.value("equation", QtCore.QVariant(""))
+        if (pluralEquation.toString() == ""):
+            msg = "Please fill in Plural infomation in Settings/Preference/Persionalize. When you choose a language, Pootling will try to fill in these infomation. In case, your language is not in the list, please fill in this info by your own or leave it blank if you're not sure. Do you want to update the infomation?"
+            ret = QtGui.QMessageBox.question(self, self.tr("Information Settings"), 
+                    self.tr(msg),
+                    QtGui.QMessageBox.Yes | QtGui.QMessageBox.Default, 
+                    QtGui.QMessageBox.No | QtGui.QMessageBox.Escape)
+            print ret
+            if (ret == QtGui.QMessageBox.No):
+                print "No"
+                return False
+            if (ret == QtGui.QMessageBox.Yes):
+                print "yes"
+                self.emit(QtCore.SIGNAL("showPreference()"))
         
         # test if it is a po or poxliff header.
         if (not isinstance(self.operator.store, poheader.poheader)):

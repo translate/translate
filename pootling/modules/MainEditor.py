@@ -202,6 +202,7 @@ class MainWindow(QtGui.QMainWindow):
         # Edit Header
         self.headerDialog = Header(self, self.operator)
         self.connect(self.ui.actionEdit_Header, QtCore.SIGNAL("triggered()"), self.headerDialog.showDialog)
+        self.connect(self.headerDialog, QtCore.SIGNAL("showPreference()"), self.preference.showDialog)
 
         # Other actions
         self.connect(self.ui.actionFirst, QtCore.SIGNAL("triggered()"), self.dockOverview.scrollFirst)
