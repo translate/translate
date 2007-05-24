@@ -180,8 +180,7 @@ def test_endwhitespace():
 def test_escapes():
     """tests escapes"""
     stdchecker = checks.StandardChecker()
-    assert checks.passes(stdchecker.escapes, r"""_: KDE comment\n
-A sentence""", "I'm correct.")
+    assert checks.passes(stdchecker.escapes, r"""A sentence""", "I'm correct.")
     assert checks.passes(stdchecker.escapes, "A file\n", "'n Leer\n")
     assert checks.fails_serious(stdchecker.escapes, r"blah. A file", r"bleah.\n'n leer")
     assert checks.passes(stdchecker.escapes, r"A tab\t", r"'n Tab\t")
@@ -392,9 +391,6 @@ def test_singlequoting():
     assert checks.passes(stdchecker.singlequoting, "File '%s'\n", "'%s' Faele\n")
     assert checks.fails(stdchecker.singlequoting, "'Hot' plate", "Ipuleti \"elishisa\"")
     assert checks.passes(stdchecker.singlequoting, "It's here.", "Dit is hier.")
-    # We shouldn't see single quotes in KDE comments
-    assert checks.passes(stdchecker.singlequoting, r"""_: 'Migrating' formats.\n
-Converting...""", "Kugucula...")
     # Don't get confused by punctuation that touches a single quote
     assert checks.passes(stdchecker.singlequoting, "File '%s'.", "'%s' Faele.")
     assert checks.passes(stdchecker.singlequoting, "Blah 'format' blah.", "Blah blah 'sebopego'.")
@@ -429,8 +425,6 @@ def test_simplecaps():
     assert checks.passes(stdchecker.simplecaps, "Determine how &brandShortName; connects to the Internet.", "Kuma &brandShortName; hlanganisa eka Internete.")
     ## If source is ALL CAPS then we should just check that target is also ALL CAPS
     assert checks.passes(stdchecker.simplecaps, "COUPDAYS", "COUPMALANGA")
-    # KDE commens should be removed
-    assert checks.passes(stdchecker.simplecaps, "_: KDE COMMENTS\\n\nA string", "Dimpled ring")
     # Just some that at times have failed but should always pass
     assert checks.passes(stdchecker.simplecaps, "Create a query  entering an SQL statement directly.", "Yakha sibuti singena SQL inkhomba yesitatimende.")
     ooochecker = checks.OpenOfficeChecker()
@@ -503,8 +497,6 @@ def test_unchanged():
     assert checks.passes(stdchecker.unchanged, "???", "???")  # bug 178, description item 15
     assert checks.passes(stdchecker.unchanged, "&ACRONYM", "&ACRONYM") # bug 178, description item 7
     assert checks.passes(stdchecker.unchanged, "F1", "F1") # bug 178, description item 20
-    assert checks.fails(stdchecker.unchanged, r"""_: KDE comment\n
-Unchanged""", r"Unchanged") 
     # Variable only and variable plus punctuation messages should be ignored
     mozillachecker = checks.MozillaChecker()
     assert checks.passes(mozillachecker.unchanged, "$ProgramName$", "$ProgramName$") 
@@ -620,12 +612,6 @@ def test_variables_openoffice():
     assert checks.fails_serious(ooochecker.variables, "Save $file", "Stoor $leer")
     # Same variable name twice
     assert checks.fails_serious(ooochecker.variables, r"""Start %PROGRAMNAME% as %PROGRAMNAME%""", "Begin %PROGRAMNAME%")
-    # Variables hidden in KDE comments
-    assert checks.passes(ooochecker.variables, r"""_: Do not translate %PROGRAMNAME% in the text\n
-Start %PRODUCTNAME%""", "Begin %PRODUCTNAME%")
-    # Check how this interacts with the same variable name being repeated
-    assert checks.passes(ooochecker.variables, r"""_: Do not translate %PROGRAMNAME% in the text\n
-Start %PROGRAMNAME%""", "Begin %PROGRAMNAME%")
 
 def test_variables_cclicense():
     """Tests variables in Creative Commons translations."""
