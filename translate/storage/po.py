@@ -68,7 +68,7 @@ def wrapline(line):
         for index, line in enumerate(wrappedlines[1:]):
             if line.startswith(' '):
                 # Remove the space at the beginning of the line:
-                wrappedlines[index-1] = line[1:]
+                wrappedlines[index+1] = line[1:]
 
                 # Append a space to the previous line:
                 wrappedlines[index] += ' '
