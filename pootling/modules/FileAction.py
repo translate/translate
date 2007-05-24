@@ -42,7 +42,7 @@ class FileAction(QtCore.QObject):
         self.fileExtension = ""
         self.fileDescription = ""
         self.MaxRecentHistory = 10
-        self.directory = sys.path[0]
+        self.directory = QtCore.QDir.homePath()
         
     def openFile(self):
         #TODO: open one or more existing files selected
