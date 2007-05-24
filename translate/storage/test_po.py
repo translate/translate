@@ -180,6 +180,14 @@ msgstr ""
         print str(unit)
         assert str(unit) == expected
 
+    def test_wrapping_bug(self):
+        """This tests for a wrapping bug that existed at some stage."""
+        unit = self.UnitClass("")
+        message = 'Projeke ya Pootle ka boyona e ho <a href="http://translate.sourceforge.net/">translate.sourceforge.net</a> moo o ka fumanang dintlha ka source code, di mailing list jwalo jwalo.'
+        unit.target = message
+        print unit.target
+        assert unit.target == message
+
     def test_extract_msgidcomments_from_text(self):
         """Test that KDE style comments are extracted correctly."""
         unit = self.UnitClass("test source")
