@@ -144,6 +144,15 @@ class TestPOFilter(BaseTestFilter):
         self.translationstore = self.poparse(self.filetext)
         self.unit = self.translationstore.units[0]
 
+    def test_msgid_comments(self):
+        """Tests that msgid comments don't feature anywhere."""
+        posource = 'msgid "_: Capital.  ACRONYMN. (msgid) comment 3. %d Extra sentence.\\n"\n"cow"\nmsgstr "koei"\n'
+        pofile = self.poparse(posource)
+        filter_result = self.filter(pofile)
+        if len(filter_result.units):
+            print filter_result.units[0]
+        assert len(filter_result.units) == 0
+
 class TestXliffFilter(BaseTestFilter):
     """Test class for xliff-specific tests."""
     filetext = '''<?xml version="1.0" encoding="utf-8"?>
