@@ -381,7 +381,7 @@ class StandardChecker(TranslationChecker):
 
   def unchanged(self, str1, str2):
     """checks whether a translation is basically identical to the original string"""
-    str1 = self.filteraccelerators(prefilters.removekdecomments(str1))
+    str1 = self.filteraccelerators(str1)
     str2 = self.filteraccelerators(str2)
     if len(str1.strip()) == 0:
       return True
@@ -399,25 +399,24 @@ class StandardChecker(TranslationChecker):
 
   def blank(self, str1, str2):
     """checks whether a translation only contains spaces"""
-    len1 = len(prefilters.removekdecomments(str1).strip())
+    len1 = len(str1.strip())
     len2 = len(str2.strip())
     return not (len1 > 0 and len(str2) != 0 and len2 == 0)
 
   def short(self, str1, str2):
     """checks whether a translation is much shorter than the original string"""
-    len1 = len(prefilters.removekdecomments(str1).strip())
+    len1 = len(str1.strip())
     len2 = len(str2.strip())
     return not ((len1 > 0) and (0 < len2 < (len1 * 0.1)) or ((len1 > 1) and (len2 == 1)))
 
   def long(self, str1, str2):
     """checks whether a translation is much longer than the original string"""
-    len1 = len(prefilters.removekdecomments(str1).strip())
+    len1 = len(str1.strip())
     len2 = len(str2.strip())
     return not ((len1 > 0) and (0 < len1 < (len2 * 0.1)) or ((len1 == 1) and (len2 > 1))) 
 
   def escapes(self, str1, str2):
     """checks whether escaping is consistent between the two strings"""
-    str1 = prefilters.removekdecomments(str1)
     if not helpers.countsmatch(str1, str2, ("\\", "\\\\")):
       escapes1 = u", ".join([u"'%s'" % word for word in str1.split() if "\\" in word])
       escapes2 = u", ".join([u"'%s'" % word for word in str2.split() if "\\" in word])
@@ -427,7 +426,6 @@ class StandardChecker(TranslationChecker):
 
   def newlines(self, str1, str2):
     """checks whether newlines are consistent between the two strings"""
-    str1 = prefilters.removekdecomments(str1)
     if not helpers.countsmatch(str1, str2, ("\n", "\r")):
       raise FilterFailure("line endings in original don't match line endings in translation")
     else:
@@ -435,7 +433,6 @@ class StandardChecker(TranslationChecker):
 
   def tabs(self, str1, str2):
     """checks whether tabs are consistent between the two strings"""
-    str1 = prefilters.removekdecomments(str1)
     if not helpers.countmatch(str1, str2, "\t"):
       raise SeriousFilterFailure("tabs in original don't match tabs in translation")
     else:
@@ -443,7 +440,7 @@ class StandardChecker(TranslationChecker):
 
   def singlequoting(self, str1, str2):
     """checks whether singlequoting is consistent between the two strings"""
-    str1 = self.filterwordswithpunctuation(self.filteraccelerators(self.filtervariables(prefilters.removekdecomments(str1))))
+    str1 = self.filterwordswithpunctuation(self.filteraccelerators(self.filtervariables(str1)))
     str2 = self.filterwordswithpunctuation(self.filteraccelerators(self.filtervariables(str2)))
     return helpers.countsmatch(str1, str2, ("'", "''", "\\'"))
 
@@ -551,7 +548,6 @@ class StandardChecker(TranslationChecker):
 
   def variables(self, str1, str2):
     """checks whether variables of various forms are consistent between the two strings"""
-    str1 = prefilters.removekdecomments(str1)
     messages = []
     mismatch1, mismatch2 = [], []
     varnames1, varnames2 = [], []
@@ -640,7 +636,7 @@ class StandardChecker(TranslationChecker):
 
   def brackets(self, str1, str2):
     """checks that the number of brackets in both strings match"""
-    str1 = self.filtervariables(prefilters.removekdecomments(str1))
+    str1 = self.filtervariables(str1)
     str2 = self.filtervariables(str2)
     messages = []
     missing = []
@@ -662,7 +658,6 @@ class StandardChecker(TranslationChecker):
 
   def sentencecount(self, str1, str2):
     """checks that the number of sentences in both strings match"""
-    str1 = prefilters.removekdecomments(str1)
     sentences1 = self.config.sourcelang.sentences(str1)
     sentences2 = self.config.lang.sentences(str2)
     return len(sentences1) == len(sentences2)
@@ -670,7 +665,7 @@ class StandardChecker(TranslationChecker):
   def startcaps(self, str1, str2):
     """checks that the message starts with the correct capitalisation"""
     punc = self.config.punctuation
-    str1 = self.filteraccelerators(self.filtervariables(prefilters.removekdecomments(str1))).lstrip().lstrip(punc)
+    str1 = self.filteraccelerators(self.filtervariables(str1)).lstrip().lstrip(punc)
     str2 = self.filteraccelerators(self.filtervariables(str2)).lstrip().lstrip(punc)
     if len(str1) > 1 and len(str2) > 1:
       return str1[0].isupper() == str2[0].isupper()
@@ -682,7 +677,7 @@ class StandardChecker(TranslationChecker):
 
   def simplecaps(self, str1, str2):
     """checks the capitalisation of two strings isn't wildly different"""
-    str1 = self.removevariables(prefilters.removekdecomments(str1))
+    str1 = self.removevariables(str1)
     str2 = self.removevariables(str2)
     str1 = re.sub("[^.]( I )", " i ", str1)
     capitals1 = helpers.filtercount(str1, type(str1).isupper)
@@ -795,7 +790,6 @@ class StandardChecker(TranslationChecker):
 
   def xmltags(self, str1, str2):
     """checks that XML/HTML tags have not been translated"""
-    str1 = prefilters.removekdecomments(str1)
     tags1 = re.findall("<[^>]+>", str1)
     if len(tags1) > 0:
       if (len(tags1[0]) == len(str1)) and not "=" in tags1[0]:
