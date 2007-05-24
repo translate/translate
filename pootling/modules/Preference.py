@@ -58,7 +58,6 @@ class Preference(QtGui.QDialog):
         self.ui.lineFullLang.setText(World.settings.value("FullLanguage").toString())
         self.ui.cbxLanguageCode.setEditText(World.settings.value("Code").toString())
         self.ui.SupportTeam.setText(World.settings.value("SupportTeam").toString())
-        self.ui.cbxTimeZone.setEditText(World.settings.value("TimeZone").toString())
         self.ui.spinBox.setValue(World.settings.value("nPlural").toInt()[0])
         self.ui.lineEqaution.setText(World.settings.value("equation").toString())
         checkState = World.settings.value("headerAuto", QtCore.QVariant(True))
@@ -102,7 +101,6 @@ class Preference(QtGui.QDialog):
         World.settings.setValue("FullLanguage", QtCore.QVariant(self.ui.lineFullLang.text()))
         World.settings.setValue("Code", QtCore.QVariant(self.ui.cbxLanguageCode.currentText()))
         World.settings.setValue("SupportTeam", QtCore.QVariant(self.ui.SupportTeam.text()))
-        World.settings.setValue("TimeZone", QtCore.QVariant(self.ui.cbxTimeZone.currentText()))
         World.settings.setValue("nPlural", QtCore.QVariant(self.ui.spinBox.value()))
         World.settings.setValue("equation", QtCore.QVariant(self.ui.lineEqaution.text()))
         World.settings.setValue("headerAuto", QtCore.QVariant(self.ui.chkHeaderAuto.checkState() == QtCore.Qt.Checked))
@@ -313,11 +311,7 @@ class Preference(QtGui.QDialog):
                 
             code.sort()
             self.ui.cbxLanguageCode.addItems(code)
-            
-            #TODO: time zone should be also moved to toolkit.
-            timeZone = ['(GMT-11:00) Midway Island, Samoa','(GMT-10:00) Hawaii','(GMT-09:00) Alaska','(GMT-08:00) Pacific Time(US & Canada); Tijuana','(GMT-07:00) Arizona','(GMT-07:00) Chihuahua, La Paz, Mazatlan','(GMT-07:00) Mountain Time(US & Canada)','(GMT-06:00) Central America','(GMT-06:00) Central Time(US & Canada)','(GMT-06:00) Guadalajara, Mexico City, Monterrey ','(GMT-06:00) Saskatchewan','(GMT-05:00) Bogota, Lima, Quito','(GMT-05:00) Eastern Time(US & Canada)','(GMT-05:00) Indiana (East)','(GMT-04:00) Atlantic Time (Canada)','(GMT-04:00) Caracas, La Paz','(GMT-04:00) Santiago','(GMT-03:30) NewFoundland','(GMT-03:00) Brasilia','(GMT-03:00) Buenos Aires, Georgetown','(GMT-03:00) Greenland','(GMT-02:00) Mid-Atlantic','(GMT-01:00) Azores','(GMT-01:00) Cape Verde Is.','(GMT) Casablanca, Monrovia','(GMT) Greenwich Mean Time: Dublin, Edinburgh, Lisbon, London','(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Viena','(GMT+01:00) Belgrade, Bratislava, Budapest, Ljubljana, Prague','(GMT+01:00) Brussels, Copenhagen, Madrid, Paris','(GMT+01:00) Sarajevo, Skopje, Warsaw, Zagreb','(GMT+01:00) West Central Africa','(GMT+02:00) Athens, Beirut, Istanbul, Minsk','(GMT+02:00)  Bucharest','(GMT+02:00) Cairo','(GMT+02:00) Harare, Pretoria','(GMT+02:00) Helsinki, kyiv, Riga, Sofia, Tailinn, Vilnius','(GMT+02:00) Jerusalem','(GMT+03:00) Baghdad','(GMT+03:00) Brasilia','(GMT+03:00) Kuwait, Riyadh','(GMT+03:00) Moscow, St. Petersburg, Volgograd','(GMT+03:00) Nairobi','(GMT+03:30) Tehran','(GMT+04:00) Abu Dhabi, Muscat','(GMT+04:00) Baku, Tbilisi, Yerevan','(GMT+04:30) Kabul','(GMT+05:00) Ekaterinburg','(GMT+05:00) Islamabad, Karachi, Tashkent','(GMT+05:30) Chennai, Kolkata, Mumbia, New Delhi','(GMT+05:45) Kathmandu','(GMT+06:00) Almaty, Novosibirsk','(GMT+06:00) Astana, Dhaka','(GMT+06:00) Sri Jayawardenpura','(GMT+06:30) Rangoon','(GMT+07:00) Bangkok, Hanoi, Jakarta','(GMT+07:00) Krasnoyarsk','(GMT+08:00) Beijing, Chongging, Hong Kong, Urumqi','(GMT+08:00) Irkutsk, UlaanBataar','(GMT+08:00)   Kuala Lumpur, Singapore','(GMT+08:00) Perth','(GMT+08:00) Taipei','(GMT+08:00) Osaka, Sapporo, Tokyo','(GMT+09:00) Seoul','(GMT+09:00) Yakutsk','(GMT+09:30) Adelaide','(GMT+09:30) Darwin','(GMT+10:00) Brisbane','(GMT+10:00) Canberra, Melbourne, Sydney','(GMT+10:00)   Guam, Port Moresby','(GMT+10:00) Hobert',
-            '(GMT+10:00) Vladivostok','(GMT+11:00) Magada, Solomon Is, New Caledonia','(GMT+12:00) Auckland, Wellington','(GMT+12:00) Fiji, Kamchatka, Marshall Is','(GMT+13:00) Nuku alofa']
-            self.ui.cbxTimeZone.addItems(timeZone)
+    
         self.initUI()
         self.show()
         self.ui.listWidget.setFocus()
