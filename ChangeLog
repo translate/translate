@@ -1,3 +1,2463 @@
+2007-05-24 15:49  friedelwolff
+
+	* __version__.py: Version 1.0
+
+2007-05-24 15:44  friedelwolff
+
+	* setup.py: Add poclean to tools for installation
+
+2007-05-24 15:01  friedelwolff
+
+	* tools/poclean, tools/poclean.py: Add poclean to create clean
+	  files from unclean file (Trados/Wordfast) by stripping out the
+	  tw4win indicators
+
+2007-05-24 14:57  friedelwolff
+
+	* lang/hy.py: Add basic support for Armenian (hy)
+
+2007-05-24 14:34  friedelwolff
+
+	* setup.py: Add poswap to tools for installation
+
+2007-05-24 14:33  friedelwolff
+
+	* tools/poswap, tools/poswap.py: Add poswap - a tool that enables
+	  translating from another source langauge besides English
+
+2007-05-24 11:49  friedelwolff
+
+	* filters/test_checks.py: Remove tests for msgid comments (kde
+	  style comments) to reflect the new functionality of the checks
+
+2007-05-24 11:48  friedelwolff
+
+	* filters/test_pofilter.py: Test that we definitely don't pass the
+	  msgid comment (kde style comment) to pofilter
+
+2007-05-24 11:47  friedelwolff
+
+	* filters/checks.py: Remove unnecessary code to remove msgid
+	  comments (kde style comments). This is already done when parsing
+	  PO files
+
+2007-05-24 11:40  friedelwolff
+
+	* storage/po.py: Fix weird wrapping bug
+
+2007-05-24 11:39  friedelwolff
+
+	* storage/test_po.py: Test for weird wrapping bug
+
+2007-05-23 13:29  friedelwolff
+
+	* tools/pocount.py: Ignore CSV and .svn directories
+
+2007-05-23 13:06  friedelwolff
+
+	* setup.py: Package all the non-python tools as well
+
+2007-05-23 12:42  friedelwolff
+
+	* __version__.py: Version 1.0rc3
+
+2007-05-23 12:29  friedelwolff
+
+	* storage/factory.py: Raise a ValueError on unknown filetype
+
+2007-05-23 12:29  friedelwolff
+
+	* tools/pocount.py: Deal better with certain errors (like unknown
+	  file type)
+
+2007-05-23 11:44  friedelwolff
+
+	* lang/common.py: Comment out debug messages in preparation for
+	  release
+
+2007-05-23 10:56  friedelwolff
+
+	* README: Note about common installation failure
+
+2007-05-23 10:47  friedelwolff
+
+	* README: Mention psyco, fix incorrect version number
+
+2007-05-23 10:15  friedelwolff
+
+	* README: Fix python-Levenshtein URL and mention optional iso-codes
+	  dependency
+
+2007-05-23 10:01  friedelwolff
+
+	* tools/pocount.py: Handle non-PO flavoured XLIFF files properly
+
+2007-05-23 09:02  friedelwolff
+
+	* convert/pot2po.py: Add the option --nofuzzymatching to disable
+	  fuzzy matching entirely
+
+2007-05-23 09:00  friedelwolff
+
+	* services/lookupservice.py: Ensure that we are dealing with
+	  unicode strings
+
+2007-05-23 08:57  friedelwolff
+
+	* services/lookupservice.py: Deal better with errors in the called
+	  functions
+
+2007-05-23 08:56  friedelwolff
+
+	* README: Update information on Python versions and mention
+	  python-Levenshtein
+
+2007-05-23 08:52  friedelwolff
+
+	* search/match.py: Convert multistrings to unicode to avoid
+	  problems with the native Levenshtein implementation. This might
+	  also help with plural matches.
+
+2007-05-23 08:50  friedelwolff
+
+	* search/match.py: Update to new lshtein module name. Tidy up
+	  imports.
+
+2007-05-23 08:48  friedelwolff
+
+	* search/test_Levenshtein.py, search/test_lshtein.py: Move
+	  test_Levenshtein.py to test_lshtein.py for uniformity.
+
+2007-05-23 08:46  friedelwolff
+
+	* search/test_Levenshtein.py: Update to new lshtein module name
+
+2007-05-23 08:44  friedelwolff
+
+	* search/Levenshtein.py, search/lshtein.py: Move Levenshtein.py to
+	  lshtein.py to avoid clash with external package name.
+
+2007-05-23 08:41  friedelwolff
+
+	* search/Levenshtein.py: Use the fast C implementation if it is
+	  available.
+
+2007-05-23 07:25  friedelwolff
+
+	* tools/pocount.py: Use psyco if it is available
+
+2007-05-22 11:24  andreaspauley
+
+	* storage/test_base.py: Added an assertion to test_markup().
+
+2007-05-22 11:19  friedelwolff
+
+	* search/Levenshtein.py: Optimise the test for the stop condition.
+	  Allow for speedup with 100% required match
+
+2007-05-22 08:18  andreaspauley
+
+	* storage/txt.py: Removed unused import of textwrap.
+
+2007-05-22 07:18  friedelwolff
+
+	* convert/pot2po.py: Build the index for the pot file for better
+	  performance
+
+2007-05-22 07:15  friedelwolff
+
+	* convert/pot2po.py: Make min_similarity actually work properly
+
+2007-05-21 15:15  andreaspauley
+
+	* storage/po.py, storage/test_po.py: Fix a spacing issue in po
+	  files. Lines should not start with a space.
+
+2007-05-18 16:13  friedelwolff
+
+	* __version__.py: Change build number to a number for easy
+	  comparison. This fixes the problem of Pootle not complaining when
+	  used with old translate toolkit
+
+2007-05-18 16:09  friedelwolff
+
+	* __version__.py: Version 1.0rc2
+
+2007-05-18 08:58  friedelwolff
+
+	* tools/pocount.py: Use precompiled re's
+
+2007-05-18 08:53  friedelwolff
+
+	* storage/po.py: Disable code to minimise diffs (using a template
+	  to fit new postring to)
+
+2007-05-18 08:49  friedelwolff
+
+	* tools/test_pomerge.py: Don't test for minimal diffs - we rather
+	  try to follow gettext output closely.
+
+2007-05-16 11:05  friedelwolff
+
+	* lang/data.py: Provide functions to translate language names, even
+	  with country name in brackets
+
+2007-05-15 14:47  friedelwolff
+
+	* CREDITS: Convert to UTF-8. Expand the contribution of Nicolas
+	  François
+
+2007-05-15 13:32  friedelwolff
+
+	* storage/po.py: [Contributed by Nicolas François] Rewrite
+	  isheader() for performance
+
+2007-05-15 13:26  friedelwolff
+
+	* tools/test_pomerge.py: +test_comments_with_blank_lines
+
+2007-05-09 15:41  friedelwolff
+
+	* storage/xliff.py: Comment out istranslted() with explanation.
+	  This way xliff statistics should be correct.
+
+2007-05-09 15:27  friedelwolff
+
+	* storage/po.py: Simplify a parsing loop somewhat for performance.
+	  This avoids unnecessary creation of translation units
+
+2007-05-09 14:50  friedelwolff
+
+	* storage/po.py: Ensure that all multistring parts in the source is
+	  unicode
+
+2007-05-09 14:48  friedelwolff
+
+	* storage/test_po.py: Test that all multistring parts are unicode
+
+2007-05-09 12:14  friedelwolff
+
+	* storage/base.py, storage/test_base.py: Don't make a unit a
+	  statistics object as this affects performance quite badly
+
+2007-05-09 10:16  andreaspauley
+
+	* convert/test_oo2po.py, storage/oo.py: Fixed a bug where the
+	  filename got lost during oo2po conversion.
+
+2007-05-08 09:34  friedelwolff
+
+	* README: Add comment about documentation in the doc/ directory
+
+2007-05-08 09:29  friedelwolff
+
+	* search/test_match.py: Test extendtm()
+
+2007-05-08 09:29  friedelwolff
+
+	* search/match.py: Add method extendtm(units, store) to extend the
+	  TM with more units.
+
+2007-05-07 10:38  friedelwolff
+
+	* storage/base.py: Close file after reading in parsefile()
+
+2007-05-07 10:13  dwaynebailey
+
+	* convert/test_ts2po.py, convert/ts2po.py: Make sure we can carry
+	  \n from TS file to PO.
+	  We were using .msgid and .msgstr changed to .source and .target
+	  and solved the problem
+
+2007-05-05 11:58  friedelwolff
+
+	* lang/el.py: [contributed by Rail Aliev] Fix typo in dictionary
+	  decleration
+
+2007-05-03 19:40  friedelwolff
+
+	* __version__.py: Change the version to 1.0rc1
+
+2007-05-03 12:08  andreaspauley
+
+	* storage/statistics.py, storage/test_base.py: Patch contributed by
+	  Hok Kakada: Updated statistics to do lazy classification of
+	  units. Also changed method names to be more logical.
+
+2007-05-02 09:20  friedelwolff
+
+	* lang/ja.py: Some basic punctuation rules for Japanese
+
+2007-05-02 09:18  friedelwolff
+
+	* lang/test_vi.py, lang/vi.py: Some basic punctuation rules for
+	  Vietnamese
+
+2007-05-02 09:12  friedelwolff
+
+	* lang/el.py: Some basic punctuation rules for Greek
+
+2007-05-02 09:10  friedelwolff
+
+	* lang/am.py: Some basic punctuation rules for Amharic
+
+2007-05-02 08:25  friedelwolff
+
+	* convert/pot2po.py: Don't use any obsolete units the pot file
+	  might have for some reason
+
+2007-05-02 08:16  friedelwolff
+
+	* storage/base.py: Account for cases where .notes do not exist
+
+2007-05-02 07:38  friedelwolff
+
+	* filters/pofilter.py: Mentions that --language is not only for
+	  spell checking
+
+2007-05-02 07:36  friedelwolff
+
+	* filters/decoration.py: Test more elaborately for valid
+	  accelerator characters by trying to decompose to catch letters
+	  with diacritics
+
+2007-05-02 07:35  friedelwolff
+
+	* filters/test_checks.py: Test that we fail with an accelerator on
+	  a letter with a diacritic (like ê)
+
+2007-05-02 07:14  friedelwolff
+
+	* filters/test_checks.py: Test for more quoting style possibilities
+	  in combination with xml attributes
+
+2007-05-02 07:10  friedelwolff
+
+	* filters/checks.py: Ensure we are using unicode strings in
+	  fails_serious()
+
+2007-05-02 07:08  friedelwolff
+
+	* filters/checks.py: Filter out any xml before testing for valid
+	  double quotes. Incorrect attribute quoting will be tested by the
+	  xmltags test.
+
+2007-04-25 17:20  andreaspauley
+
+	* convert/html2po.py, filters/checks.py, filters/decoration.py,
+	  filters/prefilters.py, search/terminology.py, storage/po.py,
+	  storage/poheader.py, storage/properties.py, storage/xpi.py,
+	  tools/poconflicts.py, tools/pocount.py, tools/podebug.py,
+	  tools/pogrep.py: Changed sre references to re.
+
+2007-04-23 12:33  andreaspauley
+
+	* storage/statistics.py: Speed improvements by Nicolas Francois.
+
+2007-04-23 10:16  andreaspauley
+
+	* convert/oo2po.py, convert/test_oo2po.py: Fixed backslash escaping
+	  on oo2po. This fixes bug #230.
+
+2007-04-23 10:10  andreaspauley
+
+	* convert/test_po2oo.py: Updated the roundtripstring method. The
+	  targetlanguage needs to be supplied for the tests to accurately
+	  mimic what happens on the command line.
+
+2007-04-23 09:59  andreaspauley
+
+	* convert/test_oo2po.py: Change test_escapes_helpcontent2 so that
+	  it reflects what is happening in the official OpenOffice.org pot
+	  files supplied by Pavel.
+
+2007-04-19 11:26  friedelwolff
+
+	* filters/checks.py: Use lang.punctranslate to adapt the
+	  punctuation style before testing punctuation related things.
+
+2007-04-19 06:40  friedelwolff
+
+	* lang/data.py: Add Lingala plural information
+
+2007-04-17 15:53  friedelwolff
+
+	* lang/test_zh.py: Test basic Chinese punctuation translation and
+	  sentence segmenting
+
+2007-04-17 15:44  friedelwolff
+
+	* lang/zh.py: Basic support for Chinese (all types)
+
+2007-04-13 15:47  friedelwolff
+
+	* filters/test_checks.py: Test for some possible confusions with
+	  French and Chinese puntuation
+
+2007-04-13 15:42  friedelwolff
+
+	* lang/common.py: Add horizontal ellips unicode 0x2026 to
+	  sentenceend (used in test_checks)
+
+2007-04-13 15:38  friedelwolff
+
+	* lang/common.py: Add horizontal ellips unicode 0x2026 to miscpunc
+	  (used in test_checks)
+
+2007-04-13 15:37  friedelwolff
+
+	* filters/checks.py: Rather get the punctuation characters from the
+	  language module
+
+2007-04-13 15:32  friedelwolff
+
+	* filters/checks.py: Deal better with encoding problems by ensuring
+	  that strings for testing are always unicode.
+
+2007-04-13 14:28  friedelwolff
+
+	* lang/common.py: Fix syntax error in joining of punctuation lists
+
+2007-04-13 14:28  friedelwolff
+
+	* lang/test_factory.py: Test that we can correctly import Icelandic
+	  (the code 'is' is a reserved word in python and used to cause
+	  problems)
+
+2007-04-13 14:27  friedelwolff
+
+	* lang/factory.py: Handle language codes that are reserved words in
+	  python
+
+2007-04-13 10:07  friedelwolff
+
+	* lang/common.py: Add inverted (Spanish) punctuation that got
+	  dropped a few commits ago
+
+2007-04-13 09:10  friedelwolff
+
+	* lang/common.py: Add Armenian punctuation
+
+2007-04-13 08:39  friedelwolff
+
+	* lang/common.py: Split out different punctuation types for
+	  legibility and improve documentation
+
+2007-04-13 07:36  friedelwolff
+
+	* lang/common.py: Don't yield sentences that are just whitespace
+
+2007-04-13 06:37  friedelwolff
+
+	* filters/checks.py: Accept a language parameter in TeeChecker to
+	  update the configuration of each checker
+
+2007-04-12 18:42  friedelwolff
+
+	* tools/pocount.py: Catch all br tag styles. Update copyright and
+	  comments
+
+2007-04-12 18:41  friedelwolff
+
+	* tools/test_pocount.py: Test with different styles of br-tags
+	  (<br><br/><br />)
+
+2007-04-12 18:37  friedelwolff
+
+	* tools/test_pocount.py: Remove two invalid tests:
+	  test_punctuation_only: puntuation is not a word,
+	  test_kde_comments_are_not_counted: the PO class handles the kde
+	  comments and never passes them here
+
+2007-04-12 16:35  friedelwolff
+
+	* lang/fa.py: Basic punctuation support for Persian (fa)
+
+2007-04-12 16:19  friedelwolff
+
+	* lang/common.py: Add Greek middot to puntuation list
+
+2007-04-12 15:46  friedelwolff
+
+	* lang/common.py: Add fullwidth puntuation marks as well as Arabic
+	  question mark
+
+2007-04-12 13:50  andreaspauley
+
+	* storage/lisa.py: Set the object encoding to the value found in
+	  the parsed xml string. External code that uses self.encoding with
+	  po files can now do so on lisa-based files as well.
+
+2007-04-12 07:06  friedelwolff
+
+	* storage/po.py: Ensure that we don't start with an empty ""
+	  unnecessarily
+
+2007-04-11 06:11  andreaspauley
+
+	* setup.py: Removed obsolete reference to editor, this has since
+	  been reneamed to pootling.
+
+2007-04-10 11:47  andreaspauley
+
+	* setup.py: The spelling directory should not be part of the
+	  toolkit distribution.
+
+2007-04-05 14:14  friedelwolff
+
+	* tools/pocount.py: Don't try to remove kde (msgid) comments - the
+	  PO class already handles that.
+
+2007-04-05 14:12  friedelwolff
+
+	* tools/pocount.py: Rewrite pocount sanely. Don't recount stats,
+	  don't recount totals, split display from counting
+
+2007-04-05 10:11  andreaspauley
+
+	* tools/pomerge.py: Change xliff file extension to .xlf
+
+2007-04-04 14:12  friedelwolff
+
+	* storage/statistics.py: Use a dictionary .classification to store
+	  the states. Now we don't reclassify all units each time we
+	  iterate through some set. Disable some of the code about pofilter
+	  checks and don't call classifyunits in the constructor.
+
+2007-04-04 14:03  friedelwolff
+
+	* storage/test_base.py: Add in extra calls to classifyunits() to
+	  ensure that statistics are newly calculated before it is used
+
+2007-04-04 13:52  friedelwolff
+
+	* convert/xliff2po.py: Rather test for isfuzzy() as this should
+	  have the correct semantics. Currently it calls isapproved()
+	  anyway
+
+2007-04-04 13:51  friedelwolff
+
+	* convert/po2xliff.py: Always call markfuzzy() for newly created
+	  XLIFF units to ensure that the approved attribute is always set
+
+2007-04-04 13:46  friedelwolff
+
+	* storage/test_xliff.py: Update testing to reflect new fuzzy
+	  behaviour. If the approved attribute is not specified, it is 'no'
+	  and the unit is considered fuzzy
+
+2007-04-04 13:43  friedelwolff
+
+	* storage/xliff.py: Update the behaviour of isfuzzy() and
+	  markfuzzy().
+	  
+	  According to version 1.2 of the PO representation guide, only the
+	  approved
+	  attribute should be considered fuzzyness for backconversion to
+	  PO. This is
+	  the approach we now take in xliff. We still set the state and
+	  state-qualifier
+	  if there is a target, but this way we don't need a target.
+
+2007-04-04 13:42  andreaspauley
+
+	* __version__.py: Bumped version number for the release of beta 2.
+
+2007-04-04 12:59  friedelwolff
+
+	* filters/test_pofilter.py: Mark test units as approved to make
+	  them effectively not-fuzzy
+
+2007-04-04 11:35  andreaspauley
+
+	* doc/api/index.html, doc/user/toolkit-index.html: Added href's to
+	  the urls in the html placeholder documentation.
+
+2007-04-04 11:22  andreaspauley
+
+	* src/trunk/setup.py, doc/README, doc/api/index.html,
+	  doc/user/toolkit-index.html: Made changes to the setup script and
+	  some default doc files to allow setup.py to be run directly from
+	  a subversion checkout.
+
+2007-04-03 14:01  friedelwolff
+
+	* convert/xliff2po.py: Moved some comment code to poxliff and made
+	  xliff2po work with any xliff file
+
+2007-04-03 13:51  friedelwolff
+
+	* storage/lisa.py, storage/poxliff.py: Seek to start of file before
+	  reading, and don't close file after reading
+
+2007-04-03 13:50  friedelwolff
+
+	* storage/poxliff.py: Try to support the general notion of
+	  translator and developer comments and notes. Mostly carried over
+	  from xliff2po
+
+2007-04-03 11:32  friedelwolff
+
+	* convert/test_xliff2po.py: Test using a StringIO file
+
+2007-04-03 09:34  andreaspauley
+
+	* convert/xliff2po.py: Ensure that the input parameter for xliff2po
+	  conversion is a string. This is a workaround due to
+	  inconsistencies in the different conversion methods.
+
+2007-04-02 14:12  friedelwolff
+
+	* storage/xliff.py: Use the XLIFF id as the default location in
+	  XLIFF files
+
+2007-04-02 03:17  hokkakada
+
+	* storage/base.py: add more properties to base.py
+
+2007-04-02 02:45  hokkakada
+
+	* search/match.py: add more info for TM such as: filepath,
+	  translator, date, unitindex
+
+2007-03-30 12:22  friedelwolff
+
+	* storage/test_xliff.py: Test basic parsing of an xliff file with
+	  empty <target/> tag
+
+2007-03-30 12:15  friedelwolff
+
+	* storage/poxliff.py: Use iterator correctly in case of no plurals
+
+2007-03-30 12:02  friedelwolff
+
+	* storage/lisa.py: Only create a text node before a ph tag if there
+	  is text
+
+2007-03-30 12:00  andreaspauley
+
+	* storage/lisa.py: Only set the filename if it hasn't already been
+	  set. This fixes a bug in Pootle where jToolkit cannot send xliff
+	  files in plaintext to the browser because the filename has been
+	  lost.
+
+2007-03-30 10:47  friedelwolff
+
+	* storage/poxliff.py: Fix parsing of plural units. This fixes the
+	  wrong conversion of plurals from PO style XLIFF files back to PO.
+
+2007-03-29 14:15  friedelwolff
+
+	* convert/test_po2xliff.py: Test that messages with variables are
+	  converted correctly
+
+2007-03-29 14:14  friedelwolff
+
+	* misc/ourdom.py: Detect text nodes more acurately by searching
+	  through all children. Fixes the bug with variables at the start
+	  of the message
+
+2007-03-29 11:38  friedelwolff
+
+	* misc/ourdom.py: More attempts at making the XML output pretty:
+	  only indent for non-text nodes
+
+2007-03-29 11:02  friedelwolff
+
+	* storage/base.py: Implement generic isblank() correctly. This
+	  solves the problem of untranslated XLIFF units not displaying in
+	  Pootle
+
+2007-03-29 09:47  andreaspauley
+
+	* storage/base.py: Fix call to incorrect builtin method.
+
+2007-03-27 15:11  friedelwolff
+
+	* storage/lisa.py: Only append a text node if it contains anything.
+	  This avoids problems of incorrectly indenting empty fields for
+	  the purposes of pretty printing.
+
+2007-03-27 08:28  friedelwolff
+
+	* doc: Forward port doc/ directory from wordforge-0-10-branch
+
+2007-03-26 12:32  friedelwolff
+
+	* convert/test_txt2po.py: Expect the location comment in PO
+
+2007-03-26 05:58  friedelwolff
+
+	* misc/ourdom.py: Use _intern function from expatbuilder
+
+2007-03-20 10:48  andreaspauley
+
+	* convert/po2xliff.py: Change file extension from .xliff to .xlf
+
+2007-03-12 12:14  andreaspauley
+
+	* filters/checks.py, filters/test_checks.py: Added a checker for
+	  Creative Commons licenses.
+
+2007-03-09 15:25  friedelwolff
+
+	* convert/txt2po.py: Add location comments from the line numbers of
+	  the unit in the text file
+
+2007-03-09 15:24  friedelwolff
+
+	* storage/txt.py: Catch all dokuwiki headings. Implement
+	  .getlocations()
+
+2007-03-09 14:01  friedelwolff
+
+	* filters/checks.py: Remove startcaps<->simplecaps ignore entry
+
+2007-03-09 09:33  friedelwolff
+
+	* convert/test_oo2po.py: Test for bug 230
+
+2007-03-01 12:25  andreaspauley
+
+	* convert/test_po2csv.py: Test round-trip conversion (po2csv2po)
+	  with newlines.
+
+2007-03-01 11:29  friedelwolff
+
+	* lang/data.py: Fix typo where Turkish plural equation is not a
+	  string
+
+2007-03-01 10:47  andreaspauley
+
+	* convert/test_csv2po.py: Update the csv2po test to reflect the
+	  changes made yesterday to csv2po.
+
+2007-03-01 10:47  friedelwolff
+
+	* lang/test_factory.py: Test that the plural equation is retrieved
+	  from the data module
+
+2007-03-01 10:47  friedelwolff
+
+	* lang/common.py: Fix typo
+
+2007-02-28 15:21  andreaspauley
+
+	* storage/csvl10n.py: Don't remove newlines and carriage returns in
+	  field values.
+
+2007-02-28 15:17  friedelwolff
+
+	* convert/csv2po.py: Properly convert cvs unit with base class
+	  methods without doing the escaping here.
+
+2007-02-27 13:36  friedelwolff
+
+	* filters/checks.py: More preconditions to ignore certain tests.
+	  Update the target language correctly in the config.
+
+2007-02-26 13:29  andreaspauley
+
+	* convert/test_html2po.py, storage/html.py: Ensure that text
+	  containing the charset is not seen as translatable text.
+
+2007-02-26 13:24  andreaspauley
+
+	* storage/html.py: Introduce addhtmlblock() as a replacement for
+	  addcurrentblock(), and ensure that it is used troughout the code.
+
+2007-02-26 12:54  friedelwolff
+
+	* lang/factory.py: Try to simplify language code and construct an
+	  object if necessary. This now supports country codes and dialect
+	  codes.
+
+2007-02-26 12:52  friedelwolff
+
+	* lang/test_factory.py: Test more languages (country code and
+	  non-existing module)
+
+2007-02-26 12:51  friedelwolff
+
+	* lang/common.py: Use language data when constructing a language
+	  object
+
+2007-02-26 12:48  friedelwolff
+
+	* lang/data.py: Add language data (currently only plural
+	  information)
+
+2007-02-26 12:12  andreaspauley
+
+	* storage/html.py: Make strip_html() search over multiple lines.
+
+2007-02-26 11:22  andreaspauley
+
+	* convert/test_html2po.py, storage/html.py: Remove unnecessary html
+	  when converting from html to po.
+
+2007-02-23 13:38  andreaspauley
+
+	* setup.py: Include api documentation in the binary distribution.
+
+2007-02-22 15:24  andreaspauley
+
+	* storage/test_csvl10n.py, storage/test_dtd.py,
+	  storage/test_monolingual.py, storage/test_properties.py,
+	  storage/test_tbx.py, storage/test_tmx.py, storage/test_txt.py:
+	  Remove setup_method() in subclasses, in favour of the method in
+	  test_base.py
+
+2007-02-22 15:08  andreaspauley
+
+	* storage/test_base.py: Make use of the unit created by
+	  setup_method().
+
+2007-02-21 14:54  andreaspauley
+
+	* storage/test_tmx.py: Remove some whitespace in the tmx source
+	  string.
+
+2007-02-21 14:46  andreaspauley
+
+	* storage/test_tmx.py: Make a new test class for TMX units where
+	  the unit is obtained using parsestring(), as is done with
+	  factory.getobject(). This will ensure that the way LISA units is
+	  typically obtained in the wild is also used in our tests.
+	  Currently this test class only triggers the new test_isfuzzy() in
+	  a sensible way.
+
+2007-02-21 14:41  andreaspauley
+
+	* storage/base.py, storage/test_base.py: Make base just return
+	  False when doing fuzzy queries, include a base test for
+	  isfuzzy().
+
+2007-02-21 14:19  andreaspauley
+
+	* storage/test_base.py: Only test fuzzy counting for units that can
+	  be set as fuzzy.
+
+2007-02-21 12:50  friedelwolff
+
+	* convert/test_html2po.py: Improve two docstrings
+
+2007-02-21 12:50  friedelwolff
+
+	* search/terminology.py: Sort terminology suggestions according to
+	  their position in the string
+
+2007-02-20 17:40  andreaspauley
+
+	* setup.py: Include our documentation in the source distribution.
+
+2007-02-20 17:20  andreaspauley
+
+	* setup.py: Remove pootling files from our toolkit distribution.
+
+2007-02-20 15:37  friedelwolff
+
+	* lang/test_common.py: Test that apostrophes and hyphenation
+	  doesn't confuse the word segmentation.
+
+2007-02-20 15:32  friedelwolff
+
+	* lang/test_af.py: Add test for Afrikaans sentence segmentation
+	  with "'n".
+
+2007-02-20 15:30  friedelwolff
+
+	* lang/ar.py: Add module for Arabic with initial punctuation
+	  information.
+
+2007-02-20 15:09  friedelwolff
+
+	* storage/txt.py: Initial work to support better format
+	  preservation.
+
+2007-02-20 14:54  friedelwolff
+
+	* storage/txt.py: Fix flavourless text files (uninitialised
+	  variable)
+
+2007-02-20 14:03  friedelwolff
+
+	* filters/checks.py, storage/po.py: Fix encoding problem with
+	  non-ascii messages in filter messages
+
+2007-02-20 13:39  andreaspauley
+
+	* setup.py: Remove subversion directories from our distribution.
+
+2007-02-20 09:52  hokkakada
+
+	* lang/test_common.py: Use unicode instead of normal strings
+
+2007-02-20 08:14  friedelwolff
+
+	* lang/test_fr.py: Use unicode instead of normal strings
+
+2007-02-19 15:59  friedelwolff
+
+	* filters/test_checks.py: Count a sentence without an ending
+	  fullstop as a single sentence. The error should be checked by
+	  endpunc, not sentencecount.
+
+2007-02-19 15:57  friedelwolff
+
+	* filters/checks.py: Rewrite sentencecount() to use the sentence
+	  segmentation from the lang/ module
+
+2007-02-19 12:54  friedelwolff
+
+	* lang/af.py: Remove wrong comment from docstring.
+
+2007-02-19 12:46  friedelwolff
+
+	* lang/test_km.py: Test sentence segmentation in Khmer.
+
+2007-02-19 12:45  friedelwolff
+
+	* lang/test_km.py: Test punctuation translation for Khmer.
+
+2007-02-19 12:25  friedelwolff
+
+	* lang/test_fr.py: Test sentence segmentation with spaced
+	  punctuation.
+
+2007-02-19 12:24  friedelwolff
+
+	* lang/test_fr.py: Test punctuation translation from French
+
+2007-02-19 12:23  friedelwolff
+
+	* lang/fr.py: Add French specific punctuation translation (space
+	  before two part punctuation). Also handle french quotes
+	  (guillemets).
+
+2007-02-19 12:20  friedelwolff
+
+	* lang/fr.py: Add module for French (fr)
+
+2007-02-19 12:18  friedelwolff
+
+	* lang/test_common.py: Test sentence segmentation.
+
+2007-02-19 12:18  friedelwolff
+
+	* lang/test_common.py: Test word segmentation.
+
+2007-02-19 12:13  friedelwolff
+
+	* lang/common.py: Improve sentece segmentation with more involved
+	  regular expression. Derive Common from object.
+
+2007-02-19 12:09  friedelwolff
+
+	* lang/km.py: Remove wrong comment from docstring.
+
+2007-02-16 12:34  andreaspauley
+
+	* storage/base.py: Remove the need to override the __str__ and
+	  parsestring methods.
+
+2007-02-14 14:50  friedelwolff
+
+	* storage/base.py: Reorder calls to parent constructors. Handle
+	  None better in .gettargetlen(). Remove NotImplementedException.
+
+2007-02-14 14:46  friedelwolff
+
+	* storage/properties.py: Handle None source and target better.
+
+2007-02-14 13:37  andreaspauley
+
+	* setup.py: Add the lang module to setup.py
+
+2007-02-14 11:43  friedelwolff
+
+	* storage/statistics.py: Deal correctly with missing plurals.
+
+2007-02-14 11:41  friedelwolff
+
+	* storage/statistics.py: Refactor code from Pootle/statistics.py
+	  for unit classification. Everything except has-suggestion is
+	  ported. Improve constructor for languages and checker.
+
+2007-02-14 10:55  friedelwolff
+
+	* storage/statistics.py: Small cleanups. Add licence, docstrings,
+	  handle plurals, etc.
+
+2007-02-14 09:32  andreaspauley
+
+	* storage/test_factory.py, storage/xliff.py: Fixed a recursion
+	  error that was triggerred when an xliff file did not have any
+	  origin attribute in the file tag, as well as no restype attribute
+	  in trans-unit.
+
+2007-02-14 09:10  friedelwolff
+
+	* storage/base.py: Rewrite filename handling and class
+	  instantiation in .save() to work with gzip.
+
+2007-02-14 08:00  andreaspauley
+
+	* storage/base.py: Add getcontext() to base.
+
+2007-02-14 07:51  friedelwolff
+
+	* storage/base.py, storage/test_base.py: Rewrite .save() for
+	  readability and ease testing by hiding .fileobj from pickle.
+	  +Test.
+
+2007-02-14 07:51  andreaspauley
+
+	* storage/statistics.py: Use the unit iterator.
+
+2007-02-14 07:15  friedelwolff
+
+	* storage/base.py: Implement .save() to allow a file to save back
+	  to the original file. Useful for compressed formats and future
+	  database storage formats.
+
+2007-02-14 06:39  friedelwolff
+
+	* storage/po.py: Reimplement unit_iter for po to ignore obsolete
+	  units.
+
+2007-02-13 16:00  friedelwolff
+
+	* storage/test_zip.py, storage/zip.py: Module that provides the
+	  ZIPFile class that represents the archive like a directory. +Test
+
+2007-02-13 15:53  friedelwolff
+
+	* storage/directory.py, storage/test_directory.py: Test the unit
+	  iterator better and fix iterator bug.
+
+2007-02-13 15:09  andreaspauley
+
+	* lang/factory.py: Replace dash with underscore in language codes.
+
+2007-02-13 15:06  andreaspauley
+
+	* storage/base.py, storage/csvl10n.py, storage/dtd.py,
+	  storage/po.py, storage/properties.py, storage/statistics.py,
+	  storage/test_base.py, storage/test_txt.py, storage/txt.py,
+	  storage/xliff.py: Initial statistics support for the toolkit.
+
+2007-02-13 10:58  friedelwolff
+
+	* storage/factory.py, storage/test_factory.py: Support directories
+	  in factory. +test.
+
+2007-02-13 10:41  friedelwolff
+
+	* storage/test_factory.py: Test that the factory works correctly
+	  with gz and bz2 compressed files.
+
+2007-02-13 10:08  friedelwolff
+
+	* storage/base.py, storage/factory.py: Support opening a single
+	  file compressed as .bz2 or .gz. For example pt_BR.po.gz
+
+2007-02-13 09:19  friedelwolff
+
+	* storage/factory.py: Remove TODO that is already done (format
+	  guessing)
+
+2007-02-13 09:17  friedelwolff
+
+	* storage/base.py: Provide unified unit accessors for use in
+	  statistics
+
+2007-02-13 09:10  friedelwolff
+
+	* storage/directory.py, storage/test_directory.py: Initial support
+	  for directories. This provides a unified way to access files in a
+	  directory structure, and basic support for getting directory wide
+	  statistics.
+
+2007-02-13 07:49  friedelwolff
+
+	* tools/pocount.py: Use the language module to count words.
+
+2007-02-11 10:38  friedelwolff
+
+	* lang/km.py: Ignore 'startcaps' and 'simplecaps' in pofilter for
+	  Khmer
+
+2007-02-11 10:36  friedelwolff
+
+	* filters/checks.py: When gathering tests, start by ignoring
+	  specific tests for this language. Retrieve .ignoretests from the
+	  language module.
+
+2007-02-11 10:34  friedelwolff
+
+	* lang/common.py: Add .ignoretests - a list of pofilter tests for
+	  this language that must be ignored.
+
+2007-02-11 10:32  friedelwolff
+
+	* lang/common.py: Improve documenation for class variables. Update
+	  list of supported features.
+
+2007-02-11 09:09  friedelwolff
+
+	* filters/checks.py, filters/test_checks.py: Use .punctranslate()
+	  from the language to improve the endpunc test. Add a test for
+	  Khmer.
+
+2007-02-11 08:51  friedelwolff
+
+	* lang/km.py: Define .puncdict for .punctranslate() to work for
+	  Khmer
+
+2007-02-11 08:48  friedelwolff
+
+	* lang/common.py: Add .punctranslate() to convert punctuation to
+	  the rules of the language.
+
+2007-02-11 08:46  friedelwolff
+
+	* lang/factory.py: Only catch import errors while looking for a
+	  language module. Deal correctly with None
+
+2007-02-11 07:07  friedelwolff
+
+	* filters/checks.py: Use the word segmentation from the lang module
+	  rather than split().
+
+2007-02-11 07:06  friedelwolff
+
+	* filters/test_checks.py: Add extra test for acronyms with
+	  punctuation
+
+2007-02-11 07:03  friedelwolff
+
+	* lang/common.py: Move character, word and sentence segmentation
+	  from search/ to common. Word segmentation works reasonably for
+	  most languages.
+
+2007-02-11 07:01  friedelwolff
+
+	* lang/test_factory.py: Expand test with None as language code
+
+2007-02-10 11:18  andreaspauley
+
+	* storage/factory.py: Docstring improvement.
+
+2007-02-10 10:47  friedelwolff
+
+	* filters/checks.py, filters/test_checks.py: Add nplurals test that
+	  uses the lang module to determine that we have the correct number
+	  of plural forms in the target
+
+2007-02-10 10:00  friedelwolff
+
+	* lang, lang/__init__.py, lang/af.py, lang/common.py,
+	  lang/factory.py, lang/km.py, lang/test_factory.py: Initial
+	  language infrastructure in module lang
+
+2007-02-10 07:15  andreaspauley
+
+	* storage/base.py, storage/xliff.py: Some docstring improvements.
+
+2007-02-10 07:12  hokkakada
+
+	* storage/po.py: update doc strings
+
+2007-02-08 09:42  andreaspauley
+
+	* storage/html.py: Improve the check for untranslatable content.
+
+2007-02-08 09:27  andreaspauley
+
+	* convert/test_html2po.py, storage/html.py: Ignore untranslatable
+	  content in html2po.
+
+2007-02-07 16:39  andreaspauley
+
+	* storage/html.py: Use a case-insensitive regex to guess the file
+	  encoding.
+
+2007-02-07 15:19  andreaspauley
+
+	* convert/html2po.py, convert/test_html2po.py, storage/html.py:
+	  Decode html text using the supplied charset found in the meta
+	  tag.
+
+2007-02-06 16:50  andreaspauley
+
+	* convert/test_html2po.py, convert/test_txt2po.py, storage/html.py,
+	  storage/txt.py: Ensure that carriage return characters doesn't
+	  appear in po files when converting from text or html.
+
+2007-02-05 11:16  friedelwolff
+
+	* convert/test_po2txt.py: Expect --encoding parameter
+
+2007-02-05 11:08  friedelwolff
+
+	* convert/test_txt2po.py, convert/txt2po.py: Add --encoding
+	  parameter
+
+2007-02-05 10:45  friedelwolff
+
+	* storage/txt.py: Make text class more encoding aware
+
+2007-02-05 07:16  friedelwolff
+
+	* convert/po2txt.py: Support different encodings for the template
+	  file, but assume utf-8 as default
+
+2007-02-02 15:25  friedelwolff
+
+	* convert/txt2po.py, storage/txt.py: Support for MediaWiki syntax
+
+2007-02-02 14:55  friedelwolff
+
+	* convert/test_txt2po.py: Test correct conversion of dokuwiki text
+	  to PO
+
+2007-02-02 14:54  friedelwolff
+
+	* convert/txt2po.py: Add support for text file flavours
+
+2007-02-02 14:42  friedelwolff
+
+	* storage/txt.py: Initial support for wiki style syntax
+
+2007-02-02 07:46  friedelwolff
+
+	* storage/base.py: Rewrite sourceindex code to allow for any number
+	  of noun forms in the source language. Update copyright
+	  information
+
+2007-02-02 07:32  friedelwolff
+
+	* convert/txt2po.py: Fix typo
+
+2007-02-01 10:13  friedelwolff
+
+	* storage/txt.py: Add the encoding, copyright, and docstring
+
+2007-01-31 15:21  friedelwolff
+
+	* convert/test_pot2po.py: Test that automatic comments get
+	  converted correctly when the location changes
+
+2007-01-31 15:20  friedelwolff
+
+	* search/match.py: Only gather the translator notes (comments),
+	  otherwise we might end up getting programmer notes in the
+	  translator notes if the unit is used
+
+2007-01-30 17:35  dwaynebailey
+
+	* convert/po2txt.py, convert/test_po2txt.py,
+	  convert/test_txt2po.py, convert/txt2po.py, storage/test_txt.py,
+	  storage/txt.py: Create a txt.py based on the base class and adapt
+	  txt2po and po2txt to use this.
+	  There might be some minor incompatabilities but this paves the
+	  way for txt to
+	  be a fully fledged base class derived storage format.
+
+2007-01-30 14:00  andreaspauley
+
+	* README, convert/po2html.py, convert/test_po2html.py: Fix po2html
+	  so that the translations in a po file can be merged back into an
+	  html template. Used htmltidy on the html output.
+
+2007-01-29 11:11  andreaspauley
+
+	* convert/test_html2po.py, storage/html.py: Line breaks within html
+	  text were not treated correctly. Wrote some tests and a fix.
+
+2007-01-29 11:05  andreaspauley
+
+	* convert/html2po.py: Assume a file with a nonstandard extension
+	  will be in html format. I mean, the convertor IS called html2po.
+	  This is needed because the static html files used by Apache for
+	  content negotiation is named (for example) index.html.en by
+	  default.
+
+2007-01-26 07:41  andreaspauley
+
+	* storage/po.py, storage/poheader.py, tools/pomerge.py,
+	  tools/test_pomerge.py: Allows pomerge to merge po headers. This
+	  fixes TestPOMerge().test_merging_header_entries
+
+2007-01-25 07:11  friedelwolff
+
+	* search/match.py: Update the docstring to reflect new return type,
+	  etc.
+
+2007-01-24 12:55  andreaspauley
+
+	* storage/po.py, tools/test_pomerge.py: Remove any kde-style
+	  msgidcomments from the translation when merging.
+
+2007-01-24 12:25  andreaspauley
+
+	* storage/po.py, storage/test_po.py: Merged the two
+	  extract_msgidcomments methods into one.
+
+2007-01-24 11:08  andreaspauley
+
+	* storage/po.py, storage/test_po.py, tools/test_pomerge.py: Cater
+	  for kde-style msgid comments in translations. This fixes
+	  TestPOMerge().test_merging_dont_merge_kde_comments_found_in_translation.
+
+2007-01-23 16:43  andreaspauley
+
+	* tools/test_pomerge.py: Changed a test for tabs in pomerge so that
+	  the desired behaviour copy that of gettext. Marked the test as
+	  inactive for now, because making it pass breaks a lot of the
+	  layout/minimal diff tests.
+
+2007-01-22 15:35  andreaspauley
+
+	* storage/po.py: This fixes test_pomerge.test_merge_dos2unix
+
+2007-01-22 15:32  andreaspauley
+
+	* convert/pot2po.py: Small docstring change.
+
+2007-01-22 15:03  andreaspauley
+
+	* storage/factory.py: Increase the number of characters to look at
+	  when trying to guess the file type.
+
+2007-01-22 14:31  andreaspauley
+
+	* convert/test_pot2po.py: Fixed some tests.
+
+2007-01-22 13:47  dwaynebailey
+
+	* storage/test_po.py: Add a wishlist test for bug 191 - handling
+	  KDE style plurals.
+
+2007-01-22 11:39  andreaspauley
+
+	* misc/optrecurse.py: Docstring changes to RecursiveOptionParser.
+
+2007-01-19 09:40  andreaspauley
+
+	* storage/test_base.py, storage/test_properties.py: Split
+	  test_escapes() into 2 seperate tests, and force a pass for
+	  test_properties.py. Created bug 223 so as not to forget about the
+	  issue.
+
+2007-01-19 08:38  friedelwolff
+
+	* storage/xliff.py: Fix tab -> spaces
+
+2007-01-19 08:11  friedelwolff
+
+	* storage/xliff.py: Adapt remove notes to always only remove
+	  translator notes (like PO does)
+
+2007-01-19 07:26  friedelwolff
+
+	* storage/xliff.py: rewrite removenotes() to take origin parameter
+	  into account
+
+2007-01-19 07:23  andreaspauley
+
+	* __init__.py: Moved the licence text out of the docstring, and
+	  just put in a URL to to GPL.
+
+2007-01-18 14:33  friedelwolff
+
+	* storage/xliff.py: Indicate that method is for internal use only
+
+2007-01-18 14:06  andreaspauley
+
+	* __init__.py, storage/base.py: Updated some docstrings to improve
+	  the epydoc generated API documentation.
+
+2007-01-17 09:20  friedelwolff
+
+	* storage/xliff.py: Don't call getElementsByTagName on
+	  document.childNodes[0], since we might get a doctype and not a
+	  node [Fix for bug 221]
+
+2007-01-17 08:51  friedelwolff
+
+	* convert/xliff2po.py: Change expected extention from .xliff to
+	  .xlf
+
+2007-01-15 10:43  friedelwolff
+
+	* README: Fix link to toolkit documentation on the wiki
+
+2007-01-11 15:11  friedelwolff
+
+	* tools/pomerge.py: Fix tab -> spaces
+
+2007-01-11 15:09  friedelwolff
+
+	* __version__.py: Up the version to 1.0beta
+
+2007-01-11 14:53  friedelwolff
+
+	* README: Some updates to the old README file. Could use more
+	  attention.
+
+2007-01-11 14:49  friedelwolff
+
+	* storage/xliff.py: Mention that the official recommended file name
+	  extention is .xlf. Mark a TODO
+
+2007-01-11 14:45  friedelwolff
+
+	* storage/factory.py: Simplify the file type guessing code to just
+	  work with file extention
+
+2007-01-05 14:56  friedelwolff
+
+	* storage/xliff.py: Take out old modifications to minidom class and
+	  adapt file to use the new ourdom code
+
+2007-01-05 14:27  andreaspauley
+
+	* storage/po.py, storage/test_po.py: Made kde-style msgid comments
+	  available via getcontext().
+
+2007-01-05 12:28  friedelwolff
+
+	* storage/lisa.py, storage/poxliff.py, storage/tbx.py,
+	  storage/tmx.py: Remove references to minidom and replace (where
+	  necessary) with misc/ourdom
+
+2007-01-05 11:58  friedelwolff
+
+	* storage/test_factory.py: Remove roundtrip formatting test. Add
+	  assert to test for correct objects when we don't have a name
+
+2007-01-05 09:38  friedelwolff
+
+	* misc/ourdom.py: Fix the wrong layout of text nodes with nested
+	  tags and add some notes about use.
+
+2007-01-04 16:07  dwaynebailey
+
+	* storage/po.py: Add "previous msgid" structure to example PO
+	  layout. Add comments about which version of Gettext adds new
+	  features. Correct the docstring for setsource.
+
+2007-01-04 16:00  dwaynebailey
+
+	* misc/ourdom.py: Better docstring and remove reference to .ts
+
+2007-01-04 14:39  friedelwolff
+
+	* storage/ts.py: Take out the dom manipulations that are now in
+	  misc/ourdom.py and adapt to the new location
+
+2007-01-04 14:30  friedelwolff
+
+	* misc/ourdom.py: Add helper class that reimplements some dom
+	  functionalities. This is mostly just moved from storage/ts.py
+
+2007-01-04 11:06  andreaspauley
+
+	* storage/po.py, storage/test_po.py: Added message context
+	  (msgctxt) support for po.
+
+2007-01-03 14:23  dwaynebailey
+
+	* storage/test_properties.py: Fix failing test. We need to check
+	  more closely on what the spec says but until then Bye bye test.
+
+2007-01-02 11:06  friedelwolff
+
+	* storage/xliff.py: Remove specialised parsefile to rather use the
+	  inherited one, since no specialisation is necessary anymore
+
+2006-12-28 15:03  friedelwolff
+
+	* filters/checks.py: Ensure that the filtermessage is a string to
+	  avoid encoding problem in pofilter
+
+2006-12-28 08:29  friedelwolff
+
+	* convert/po2oo.py: Make unicode location a string before printing
+	  to screen. Fix for bug 211
+
+2006-12-27 14:09  friedelwolff
+
+	* storage/po.py: Detect the encoding from the header somewhat
+	  earlier. Fix for bug 193
+
+2006-12-27 11:45  friedelwolff
+
+	* storage/test_xliff.py: Typo
+
+2006-12-27 11:43  friedelwolff
+
+	* storage/xliff.py: Typo
+
+2006-12-24 10:14  andreaspauley
+
+	* storage/properties.py: Made the properties unit class call it's
+	  base constructor.
+
+2006-12-24 10:10  andreaspauley
+
+	* storage/csvl10n.py, storage/dtd.py, storage/test_csvl10n.py,
+	  storage/test_dtd.py: Made the unit classes for dtd and csv call
+	  their base class constructors, and this made some tests obsolete
+	  that previously had to override the desired behaviour.
+
+2006-12-22 10:34  friedelwolff
+
+	* storage/test_xliff.py: Update test for alt-trans implementation.
+	  Translations are now accessed with .source and .target like
+	  normal units
+
+2006-12-22 10:33  friedelwolff
+
+	* storage/xliff.py: Update support for alt-trans tags. Correctly
+	  construct target tag inside alt-trans tag. getalttrans() now
+	  returns simple units to be able to access source and target (and
+	  more in future). +delalttrans(). +Some TODO
+
+2006-12-21 20:32  dwaynebailey
+
+	* storage/ts.py: Implement writexml for .TS files so that <source>
+	  and <translation> tags are not wrapped.
+
+2006-12-19 07:39  jens_herden
+
+	* storage/poxliff.py: undo my last commit. It turned out that the
+	  bug did not exist. I am not sure which bug I saw in the past.
+
+2006-12-19 07:18  jens_herden
+
+	* storage/poxliff.py: fix for bug 208
+	  now the header is also parsed
+	  
+	  please review!
+
+2006-12-14 12:15  dwaynebailey
+
+	* convert/test_txt2po.py: Add some new tests
+
+2006-12-12 14:13  jens_herden
+
+	* storage/po.py, storage/poheader.py, storage/poxliff.py,
+	  storage/test_po.py, storage/test_poheader.py: - introduce a new
+	  class poheader
+	  - remove the old poheader form po.py
+	  - use the class in pofile and PoXliffFile
+	  - create tests for poheader (not ready for PoXliffFile because of
+	  bug 208)
+
+2006-12-12 13:43  jens_herden
+
+	* misc/dictutils.py, misc/test_dictutils.py: implement the missing
+	  pop() and test it
+
+2006-12-12 13:31  andreaspauley
+
+	* convert/xliff2oo, convert/xliff2oo.py: Initial hackish
+	  implementation of xliff2oo, based on a copy of xliff2po. Proper
+	  refactoring to follow.
+
+2006-12-12 13:28  jens_herden
+
+	* misc/dictutils.py, misc/test_dictutils.py: - fix remove in
+	  ordereddict, entry was not removed from list
+	  - create test for the fix
+
+2006-12-12 13:15  andreaspauley
+
+	* convert/oo2xliff, convert/oo2xliff.py: Initial hackish
+	  implementation of oo2xliff, based on a copy of oo2po. Proper
+	  refactoring to follow.
+
+2006-12-12 12:22  andreaspauley
+
+	* storage/xliff.py: Removed target-language from the xliff
+	  skeleton, as it is an optional attribute according to the xliff
+	  spec.
+
+2006-12-12 12:08  dwaynebailey
+
+	* convert/po2csv.py: the{po,csv} -> {po,csv}unit
+
+2006-12-12 12:02  dwaynebailey
+
+	* convert/po2csv.py: element -> unit
+
+2006-12-12 12:00  dwaynebailey
+
+	* convert/csv2po.py: the{po,csv} -> {po,csv}unit
+
+2006-12-12 11:04  dwaynebailey
+
+	* convert/csv2po.py: element -> unit
+
+2006-12-12 10:22  dwaynebailey
+
+	* convert/po2dtd.py: Convert: the{po,dtd} -> {po,dtd}unit
+
+2006-12-12 09:41  dwaynebailey
+
+	* convert/prop2po.py: Name cleanup the{po,prop} -> {po,prop}unit
+
+2006-12-12 09:34  andreaspauley
+
+	* convert/test_po2xliff.py: Specified the target language in the
+	  tests. This fixes test_language_tags.
+
+2006-12-12 09:24  andreaspauley
+
+	* storage/xliff.py: Allowed the target language to be specified for
+	  xliff.
+
+2006-12-11 09:19  andreaspauley
+
+	* tools/pocompile.py, tools/poconflicts.py, tools/pocount.py,
+	  tools/podebug.py, tools/pogrep.py, tools/pomerge.py,
+	  tools/porestructure.py: Enabled .py files in tools to be run
+	  directly, without needing the wrapper script.
+
+2006-12-11 09:10  andreaspauley
+
+	* services/lookupservice.py: Enabled lookupservice.py to be run
+	  directly, without needing the wrapper script.
+
+2006-12-11 09:07  andreaspauley
+
+	* filters/pofilter.py: Enabled pofilter.py to be run directly,
+	  without needing the wrapper script.
+
+2006-12-11 08:58  andreaspauley
+
+	* convert/csv2po.py, convert/csv2tbx.py, convert/html2po.py,
+	  convert/moz2po.py, convert/nb2po.py, convert/oo2po.py,
+	  convert/po2csv.py, convert/po2html.py, convert/po2moz.py,
+	  convert/po2nb.py, convert/po2oo.py, convert/po2tmx.py,
+	  convert/po2ts.py, convert/po2txt.py, convert/pot2po.py,
+	  convert/sxw2po.py: Enabled .py files in convert to be run
+	  directly, without needing the wrapper script.
+
+2006-12-11 08:34  andreaspauley
+
+	* convert/po2xliff.py: Enabled po2xliff.py to be run directly,
+	  without needing the wrapper script.
+
+2006-12-08 11:19  andreaspauley
+
+	* convert/test_po2xliff.py: Changed tabs to spaces.
+
+2006-12-07 07:34  andreaspauley
+
+	* storage/factory.py: Made the return value for guesstype() a bit
+	  more descriptive.
+
+2006-12-06 14:59  andreaspauley
+
+	* storage/factory.py: The previous storage factory commit broke
+	  quite a few of our tests in convert, this fixes it.
+
+2006-12-06 12:39  andreaspauley
+
+	* tools/pomerge.py: Removed a factory method inside pomerge,
+	  changed the code to rather use the updated storage factory.
+
+2006-12-06 12:38  andreaspauley
+
+	* storage/factory.py, storage/test_factory.py: The storage factory
+	  can now guess the filetype by looking at the contents of a file.
+	  Implemented for xliff and po. Wrote some new factory tests and
+	  refactored the factory tests.
+
+2006-12-05 09:26  andreaspauley
+
+	* filters/pofilter.py, filters/test_pofilter.py: Updated pofilter
+	  and the tests to use adderror() and geterrors() from the storage
+	  api, rather than add po-specific translator comments.
+
+2006-12-05 09:23  andreaspauley
+
+	* storage/base.py, storage/po.py, storage/test_base.py,
+	  storage/test_csvl10n.py, storage/test_monolingual.py,
+	  storage/test_properties.py, storage/test_tbx.py,
+	  storage/test_tmx.py, storage/xliff.py: Added 2 new methods to the
+	  base api: adderror and geterrors. Primarily for the use of
+	  pofilter. Wrote base class test for these methods, and
+	  implemented it in po and xliff.
+
+2006-12-04 12:30  andreaspauley
+
+	* storage/base.py: Replaced tabs with spaces.
+
+2006-12-01 09:55  andreaspauley
+
+	* storage/base.py, storage/properties.py, storage/test_base.py,
+	  storage/test_csvl10n.py, storage/test_dtd.py,
+	  storage/test_poxliff.py, storage/test_xliff.py, storage/xliff.py:
+	  Made sure that getnotes() behaves consistently across all storage
+	  implementations.
+
+2006-11-30 20:56  dwaynebailey
+
+	* filters/test_checks.py: Remove duplicate test
+
+2006-11-30 16:43  andreaspauley
+
+	* storage/poxliff.py: Removed unnecessary code from poxliff.py
+
+2006-11-30 15:25  andreaspauley
+
+	* storage/xliff.py: Replaced tabs with spaces in parsestring().
+
+2006-11-28 09:57  andreaspauley
+
+	* filters/pofilter.py, filters/test_pofilter.py: Made pofilter work
+	  with xliff. Refactored test_pofilter so that base class tests can
+	  be run for any file format.
+
+2006-11-28 09:54  andreaspauley
+
+	* storage/base.py, storage/po.py, storage/test_base.py,
+	  storage/test_csvl10n.py, storage/test_dtd.py,
+	  storage/test_monolingual.py, storage/test_tbx.py,
+	  storage/test_tmx.py, storage/xliff.py: Added a markreviewneeded()
+	  method to the base API, implemented it in xliff.py and po.py
+
+2006-11-23 12:17  dwaynebailey
+
+	* convert/test_pot2po.py: Mark a wishlist test
+
+2006-11-23 12:15  dwaynebailey
+
+	* convert/test_convert.py: Make sure Psyco doesn't get in the way
+
+2006-11-23 11:51  dwaynebailey
+
+	* convert/po2prop.py: Return the exit status from the parent
+	  function.
+
+2006-11-23 09:00  andreaspauley
+
+	* tools/pogrep.py, tools/test_pogrep.py: Removed all po-specific
+	  usage and naming conventions from pogrep.
+
+2006-11-22 23:08  dwaynebailey
+
+	* convert/po2txt.py, convert/test_po2txt.py: Correctly handle the
+	  non template version of po2txt. Without a template we simply use
+	  the source text. We now are able to use the source properly is
+	  the message is untranslated or fuzzy.
+
+2006-11-22 22:39  dwaynebailey
+
+	* convert/po2txt.py, convert/test_po2txt.py: When merging .txt
+	  translations into a template we will no longer use blank
+	  messages. We can optionally use fuzzy messages with teh --fuzzy
+	  and --nofuzzy options.
+
+2006-11-22 19:39  dwaynebailey
+
+	* filters/test_checks.py: Add references to bug 178 and also add
+	  some more tests for 'unchanged' issues (all of which now passs)
+
+2006-11-22 19:20  dwaynebailey
+
+	* filters/checks.py, filters/test_checks.py: Filter abbreviations
+	  of the form a.b.c. from sentences before counting sentences.
+
+2006-11-22 19:05  dwaynebailey
+
+	* filters/checks.py, filters/test_checks.py: Check that once
+	  variables and spaces are removed, that if we are left with only
+	  punctuation that we don't consider this a candidate for the
+	  'unchanged' test.
+
+2006-11-22 18:56  dwaynebailey
+
+	* filters/checks.py, filters/test_checks.py: Ignore accronyms in
+	  teh 'unchanged' test
+
+2006-11-22 11:53  dwaynebailey
+
+	* convert/test_html2po.py: Added a wishlist test to check that we
+	  can extract items within nested tags ie <div><p>This</p>And
+	  this</div>
+	  Currently we only extract the first item.
+
+2006-11-22 11:47  dwaynebailey
+
+	* convert/test_html2po.py: Add test for <div> tag
+
+2006-11-22 07:14  dwaynebailey
+
+	* convert/po2moz.py, convert/po2prop.py, convert/prop2mozfunny.py,
+	  convert/test_po2prop.py: po2prop now has the ability to output
+	  files according to the Java spec (escaped Unicode) or Mozilla
+	  (Unicode chars).
+	  The --personality option gives this ability with the default
+	  being "java". Added a test to test for the two styles.
+	  Added a wrapper function to do the Mozilla style easily and
+	  adjusted po2moz and prop2mozfunny to use this function.
+
+2006-11-22 06:50  dwaynebailey
+
+	* misc/optrecurse.py: Ignore Subversion .svn directories
+
+2006-11-21 14:27  friedelwolff
+
+	* storage/poxliff.py: Add .getheaderplural() to mimic PO
+
+2006-11-21 12:01  andreaspauley
+
+	* tools/pogrep, tools/pogrep.py, tools/test_pogrep.py: Modified
+	  pogrep to work with po and xliff interchangeably.
+
+2006-11-21 08:56  friedelwolff
+
+	* storage/lisa.py: Whitespace cleanup
+
+2006-11-21 08:51  friedelwolff
+
+	* convert/pot2po.py: Revert incorrect patch from revision 4069 to
+	  always use Project-Id-Version from the POT
+
+2006-11-21 08:22  andreaspauley
+
+	* storage/base.py, storage/po.py: Moved isempty() from po.py to
+	  base.py, and rewrote it slightly to be more generic. Added an
+	  addunit() method to base.py.
+
+2006-11-20 12:06  friedelwolff
+
+	* storage/po.py: Rewrite the plural handling logic in settarget to
+	  distinguish clearly between a single plural form language and a
+	  single (simple) string passed in a list
+
+2006-11-20 10:03  friedelwolff
+
+	* filters/checks.py: Remove debug statements commited by accident
+
+2006-11-17 08:22  dwaynebailey
+
+	* filters/checks.py, filters/test_checks.py: Change 'fails' to only
+	  work for normal failures. Rename seriousfails to 'fails_serious'
+	  to make it clearer that it realtes to 'fails'. Change all tests
+	  that create SeriousFilterFailures so that they use fails_serious.
+
+2006-11-16 15:08  friedelwolff
+
+	* filters/decoration.py, filters/test_checks.py: Don't report an
+	  empty string as purepunc. +test
+
+2006-11-16 14:50  friedelwolff
+
+	* filters/checks.py, filters/decoration.py, filters/test_checks.py:
+	  Ignore punctuation trailing functions.
+	  Example:
+	  funcA(), funcB(), and funcC().
+	  vs.
+	  funcA(), funcB() en funcC() something.
+
+2006-11-16 14:20  friedelwolff
+
+	* filters/test_checks.py: Test that the new simpleplurals logic
+	  allows a simple valid case.
+
+2006-11-16 14:16  friedelwolff
+
+	* filters/checks.py: Allow certain simpleplurals in target
+	  language. This paves the way for more flexible simpleplurals
+	  test.
+
+2006-11-16 12:42  friedelwolff
+
+	* filters/test_checks.py: Test that a failure for accelerators in
+	  Mozilla is a serious failure
+
+2006-11-16 12:39  friedelwolff
+
+	* filters/checks.py: Add the ability to mark tests as critical, and
+	  use it mark variables test critical for Mozilla
+
+2006-11-16 10:48  dwaynebailey
+
+	* filters/test_checks.py: Another Mozilla variables style - already
+	  trapped by '$(', ')' style checks but here for tracking
+
+2006-11-16 10:42  dwaynebailey
+
+	* filters/test_checks.py: Make double sure we can also detect $_VAR
+	  type variables that seem to appear in Mozilla
+
+2006-11-16 09:50  friedelwolff
+
+	* storage/po.py: Redo the logic of .isblank() to return False if
+	  there are msgidcomments. Remove weird logic.
+
+2006-11-16 08:11  dwaynebailey
+
+	* filters/test_checks.py: Add test to make sure that we can trap a
+	  kde comment even of the msgid is actually a blank msgid
+	  
+	  eg:
+	  
+	  msgid "_: comment\n"
+	  msgstr "_: comment\n"
+
+2006-11-16 06:53  jens_herden
+
+	* storage/base.py: fix indentation error
+
+2006-11-16 02:39  varsist
+
+	* storage/xliff.py: Variable name change from 'suggestion' based
+	  variables names to alttrans based
+
+2006-11-15 06:51  varsist
+
+	* storage/test_xliff.py, storage/xliff.py: Added methods to support
+	  the xliff alt-trans (suggestions) tag. Added test cases for xliff
+	  alt-trans/suggestions work
+
+2006-11-14 15:27  friedelwolff
+
+	* storage/po.py: When merging, take on the fuzzy status of the
+	  other unit
+
+2006-11-13 15:05  friedelwolff
+
+	* storage/xliff.py: Remove debugging statements that were commited
+	  by accident
+
+2006-11-13 12:13  friedelwolff
+
+	* storage/xliff.py: Move detection of PO style XLIFF files to
+	  .parsestring()
+
+2006-11-13 10:13  friedelwolff
+
+	* storage/poxliff.py: Improve logic in __eq__ for a few corner
+	  cases
+
+2006-11-13 06:21  friedelwolff
+
+	* filters/checks.py: Don't test for tabs or newlines if the message
+	  is not translated
+
+2006-11-10 15:50  friedelwolff
+
+	* storage/po.py: Don't add an empty translator comment if no string
+	  is supplied
+
+2006-11-10 15:17  friedelwolff
+
+	* storage/test_po.py: Test more PO comments functionality
+
+2006-11-08 09:41  friedelwolff
+
+	* storage/po.py: Move the plural accessor (getheaderplural()) to
+	  the poheader class to enable reuse from the poxliff class.
+
+2006-11-06 13:35  friedelwolff
+
+	* storage/lisa.py: Only parse the XML string if it contains
+	  something (return empty store object otherwise)
+
+2006-11-03 16:12  dwaynebailey
+
+	* filters/checks.py: tags2 should not have kdecomments removed
+	  Also changed tags to tags1 or tags2 as appropriate as reusing the
+	  vartiable will just create confusion.
+
+2006-11-03 11:48  friedelwolff
+
+	* filters/checks.py: If the first string contains no xml tags,
+	  check that the second also contains none. Fix for currently
+	  failing test.
+
+2006-11-02 11:01  friedelwolff
+
+	* storage/po.py: Use the dictionary with corrected keys [reported
+	  and patch by Hok Kakada]
+
+2006-11-02 10:26  friedelwolff
+
+	* storage/lisa.py: Pass constructor parameter correctly
+
+2006-11-01 07:10  friedelwolff
+
+	* filters/test_checks.py: Add an extra test that should trigger
+	  xmltags failure
+
+2006-10-31 21:44  dwaynebailey
+
+	* tools/test_pomerge.py: Fix test to work by adding some none
+	  header entries
+
+2006-10-31 21:37  dwaynebailey
+
+	* tools/test_pomerge.py: Fix test related to merging KDE comments
+	  to match new layout
+	  Add test to check that we do the right thing when mergin in
+	  header entries.
+
+2006-10-31 21:31  dwaynebailey
+
+	* tools/pocount.py: Remove references to msgid and msgstr and
+	  replave with source and target. This in preperation for making
+	  pocount less PO centric.
+
+2006-10-31 19:28  dwaynebailey
+
+	* convert/csv2po.py, convert/dtd2po.py, convert/html2po.py,
+	  convert/oo2po.py, convert/prop2po.py: Use msgctxt as our default
+	  disambiguator in the various convertors.
+
+2006-10-31 07:51  friedelwolff
+
+	* storage/base.py: Add .isblank() for PO compatibility - might be
+	  temporary
+
+2006-10-31 07:48  friedelwolff
+
+	* storage/base.py: Add .gettargetlen() to access the length of the
+	  target string and possible plural forms
+
+2006-10-30 14:50  friedelwolff
+
+	* storage/xliff.py: Fix typo (unbalanced parentheses)
+
+2006-10-30 14:20  friedelwolff
+
+	* storage/xliff.py: Implement initial .isreview() for xliff units
+
+2006-10-30 14:19  friedelwolff
+
+	* filters/pofilter.py: Don't unnecessarily check for pofilter
+	  marked comment (.isreview() already does that)
+
+2006-10-30 13:11  friedelwolff
+
+	* storage/base.py, storage/lisa.py: Use and pass unitclass
+	  parameters
+
+2006-10-29 12:10  dwaynebailey
+
+	* search/match.py: Disable verbose debugging output
+
+2006-10-28 14:26  dwaynebailey
+
+	* filters/test_checks.py: Iits a tabs test not an escapes test
+
+2006-10-27 07:38  friedelwolff
+
+	* tools/pocount.py: Fix wrong logic of .fuzzymessages() that caused
+	  pocount to always give 0 fuzzy messages
+
+2006-10-26 14:01  friedelwolff
+
+	* filters/checks.py, filters/test_checks.py: Seperate newlines test
+	  (\r and \n) and tabs test (\t) from the escapes test
+
+2006-10-26 11:29  dwaynebailey
+
+	* storage/test_dtd.py: Turn some tests into wishlist wtest_ items
+
+2006-10-26 11:26  dwaynebailey
+
+	* storage/lisa.py, storage/test_xliff.py, storage/xliff.py: Add
+	  ability to set the target language.
+
+2006-10-26 07:15  friedelwolff
+
+	* convert/test_po2oo.py: Test conversion with escpaes of \t, \r and
+	  \n
+
+2006-10-25 16:17  friedelwolff
+
+	* storage/oo.py: Escape \r and \t correctly with output
+
+2006-10-25 15:29  dwaynebailey
+
+	* convert/test_html2po.py: Change some items to wishlist by
+	  changing to wtest_
+
+2006-10-25 15:20  dwaynebailey
+
+	* convert/test_po2oo.py: Fix test to cater for change from
+	  'exclude' to 'exclude-all'
+
+2006-10-25 15:13  dwaynebailey
+
+	* convert/test_prop2po.py: Disable some wishlist tests by using
+	  wtest_
+
+2006-10-25 06:13  dwaynebailey
+
+	* convert/convert.py, convert/pot2po.py, convert/test_pot2po.py,
+	  storage/po.py, storage/test_po.py: Add a concept of an
+	  authoritative merge to po::merge. If the po file is authoritative
+	  then
+	  we abandon all sourcecomments and automaticcomments from the file
+	  being merged into the authoritative
+	  one. By default we continue with the old behaviour.
+	  
+	  Added 'msgctxt' as a duplicate style which will use Gettext
+	  0.15.x's ability to use context
+	  information to disambiguate duplicates. This will become the
+	  default mode in the future, but
+	  requires further testing.
+
+2006-10-24 16:04  friedelwolff
+
+	* storage/po.py: Remove incorrect extra unescaping
+
+2006-10-24 06:38  dwaynebailey
+
+	* filters/decoration.py: Only pull variables from a (startmaker,
+	  None) style variable if the length of the variable is > 1. Use
+	  (startmarker, 0) if you need zero length variables.
+	  This change makes all the variable tests pass.
+
+2006-10-24 05:44  dwaynebailey
+
+	* storage/po.py, storage/test_po.py: Add ability to handle msgctxt
+	  Add test for copying a msg and for making msgctxt obsolete.
+
+2006-10-23 18:05  dwaynebailey
+
+	* filters/checks.py, filters/test_checks.py: Handle the case where
+	  we have xmltag false positives. E.g. "<Error>" which looks
+	  like XML/HTML but should actually be translated.
+	  These are handles by 1) identifying them as being the same length
+	  as the source text,
+	  2) not containing any '=' sign. Thus the following would not be
+	  detected by this hack.
+	  "An <Error> occured"
+	  "<Error name="bob">"
+	  But these ones need human eyes anyway.
+
+2006-10-23 17:26  dwaynebailey
+
+	* convert/po2oo.py: Make the defalt filter action = none ie do
+	  nothing and don't warn. Until we have a way of clearly marking
+	  false positives we'll have to diable this funtionality. Also
+	  renamed exclude to exclude-all so that it is clearer what it does
+	  ie it excludes 'all' vs excludes 'serious'.
+
+2006-10-20 08:35  dwaynebailey
+
+	* storage/po.py, storage/test_po.py: Handle reflow of \n related
+	  sentences (with test). Not the cleanest hack, this section has
+	  gotten quite messy.
+
+2006-10-20 07:35  dwaynebailey
+
+	* misc/textwrap.py: Update to the lastest Python Subversion (fixes
+	  some performance issues)
+	  Reimplement the drop_whitespace feature
+
+2006-10-20 06:49  dwaynebailey
+
+	* misc/textwrap.py, storage/po.py, storage/test_po.py: Use our
+	  custom textwrap and add feature to allow the preservation of
+	  whitespace text chunks (default version clean up leading and
+	  trailing whitespace)
+	  Add test for wrapping long lines
+	  Add ability to wrap lines when we have no \n style lines. Still
+	  need to deal with message that have been broken into \n seperated
+	  lists.
+
+2006-10-20 06:05  dwaynebailey
+
+	* storage/po.py, storage/test_po.py: Add tests to check for \n
+	  newline wrapping (already works correctly)
+	  Added test and fix to place firstline > 71 chars on a wrap line
+	  ie start with msgid "" (fix and test work)
+
+2006-10-16 07:01  varsist
+
+	* convert/test_xliff2po.py, convert/xliff2po.py: xliff <note> tags
+	  now supported
+
+2006-10-13 12:03  friedelwolff
+
+	* convert/pot2po.py: Always use Project-Id-Version from the POT
+
+2006-10-12 14:52  friedelwolff
+
+	* storage/base.py, tools/pocount.py: Change .istranslated() to only
+	  return True if not fuzzy. Also adapt users
+
+2006-10-09 09:33  varsist
+
+	* convert/test_po2xliff.py, convert/xliff2po.py: getnotes() origin
+	  use
+
+2006-10-09 09:29  varsist
+
+	* storage/test_xliff.py, storage/xliff.py: correctorigin() function
+	  implemented, boolean origin check.
+
+2006-10-09 09:26  varsist
+
+	* storage/poxliff.py, storage/test_poxliff.py: getnotes() now
+	  returns notes based on origin and removes duplicate notes
+
+2006-10-07 14:54  dwaynebailey
+
+	* convert/test_pot2po.py: Make sure we are handling comments
+	  correctly when we obsolete
+
+2006-10-07 14:29  dwaynebailey
+
+	* convert/test_dtd2po.py: Fix kdecomment_merge test
+	  Disable accelerator_keys_not_in_sentence test and make it a
+	  wtest_ ie a wish
+
+2006-10-06 08:26  friedelwolff
+
+	* convert/po2txt.py: Encode output before writing to file [Reported
+	  and contributed by Maxim V. Dziumanenko]
+
+2006-10-06 08:24  friedelwolff
+
+	* convert/test_po2txt.py: Test for basic conversion and nonascii
+	  text
+
+2006-10-05 12:11  friedelwolff
+
+	* convert/pot2po.py: fix uninitialised variable
+
+2006-10-04 10:08  friedelwolff
+
+	* __version__.py: Up to mystical version 0.10.90 (just for current
+	  HEAD)
+
+2006-09-29 07:48  varsist
+
+	* storage/xliff.py: getnotes() now returns notes based on 'origin'
+	  value
+
+2006-09-29 07:44  varsist
+
+	* storage/test_xliff.py: Updated test_notes() to integrate getnotes
+	  origin parameter usage
+
+2006-09-28 07:46  friedelwolff
+
+	* storage/poxliff.py: Implement parseheader() and updateheader()
+	  for the PO header in a PO style XLIFF file
+
+2006-09-28 06:33  varsist
+
+	* storage/po.py: Additional test case in settarget()
+
+2006-09-26 07:34  friedelwolff
+
+	* convert/pot2po.py: Use correct variable and catch more specific
+	  exceptions
+
+2006-09-26 07:32  friedelwolff
+
+	* search/match.py, search/terminology.py, storage/factory.py: Small
+	  fixes to improve Pootle's use of terminology matching
+
+2006-09-26 05:38  friedelwolff
+
+	* storage/po.py: Use new poheader.header_order
+
+2006-09-21 13:18  friedelwolff
+
+	* storage/po.py: Move more header handling to new poheader class
+
+2006-09-20 14:52  friedelwolff
+
+	* storage/po.py: Move some initial PO header functionality into a
+	  seperate class
+
+2006-09-20 11:13  varsist
+
+	* storage/base.py: paramater update of getnotes()
+
+2006-09-20 10:37  varsist
+
+	* storage/test_po.py: po.getnotes parameter test
+
+2006-09-20 10:36  varsist
+
+	* storage/po.py: getnotes() manipulation to return selected
+	  comments/notes
+
+2006-09-20 07:03  varsist
+
+	* storage/test_po.py: plural check added for po.py changes in
+	  settarget method
+
+2006-09-20 07:01  varsist
+
+	* storage/po.py: Added plural check against source vs target from
+	  removed setunquotedmsgstr method
+
+2006-09-15 11:27  friedelwolff
+
+	* tools/pocount.py: Remove incorect reference to self
+
+2006-09-14 12:58  friedelwolff
+
+	* storage/po.py: Fix typo in .istranslated()
+
+2006-09-13 08:21  friedelwolff
+
+	* storage/xliff.py: Fix typo
+
+2006-09-13 07:02  friedelwolff
+
+	* storage/po.py, storage/xliff.py: Add unit.removenotes() for po
+	  and xliff
+
+2006-09-13 06:56  friedelwolff
+
+	* storage/base.py, storage/po.py: Add unit.istranslated() for base
+	  and po
+
+2006-09-13 06:50  friedelwolff
+
+	* tools/pocount.py: Factor out some counting methods [Contributed
+	  by -editor programmers]
+
+2006-09-13 05:45  friedelwolff
+
+	* storage/lisa.py: Always return a multistring from getText to
+	  simplify things elsewhere. Now .source and .target will always
+	  return multistrings
+
+2006-09-09 19:36  dwaynebailey
+
+	* convert/test_ts2po.py: Add fuziness assert for the blank message
+	  case
+	  Add a test to see that we handle 'unfinished' yet fuzzy TS
+	  entries
+
+2006-09-09 19:30  dwaynebailey
+
+	* convert/test_ts2po.py: Test for an entry that is 'unfinished'
+
+2006-09-09 19:04  dwaynebailey
+
+	* convert/test_ts2po.py: Add test for location information
+
+2006-09-07 09:37  friedelwolff
+
+	* convert/test_ts2po.py: Test for basic conversion
+
+2006-09-05 07:22  dwaynebailey
+
+	* storage/po.py: Do not merge msgidcomments.
+
+2006-09-01 06:48  dwaynebailey
+
+	* filters/test_checks.py: Test for escape checing were wrong. Added
+	  a real life example that was not being detected. Seems most of
+	  the problem was using raw strings in the tests. Most of that has
+	  been removed. Some that remain need to be checked. The test now
+	  fails correctly.
+
+2006-09-01 06:16  friedelwolff
+
+	* search/terminology.py: A few basic manipulations to have more
+	  matches
+
+2006-09-01 06:14  friedelwolff
+
+	* search/test_terminology.py: Tests for cases that are harder to
+	  match
+
+2006-08-31 06:30  dwaynebailey
+
+	* convert/test_pot2po.py: Ensure that we can merge comments with
+	  blank lines correctly.
+
+2006-08-29 15:07  dwaynebailey
+
+	* convert/test_pot2po.py: Change in position of the accelerator in
+	  the source should not make a message fuzzy. Accelerators in the
+	  target langauge are usually independent of those of the source
+	  language.
+
+2006-08-29 10:04  friedelwolff
+
+	* ChangeLog: Forward port the relevant entries from the ChangeLog
+	  from before 0.10 branch
+
+2006-08-29 08:32  friedelwolff
+
+	* storage/ts.py: Only call getElementsByTagName if the node has
+	  children
+
+2006-08-29 06:55  friedelwolff
+
+	* CREDITS: Credit Clytie Siddall
+
+2006-08-29 06:53  friedelwolff
+
+	* storage/ts.py: use basestring instead of StringTypes
+
+2006-08-29 06:51  friedelwolff
+
+	* convert/pot2po.py, convert/test_pot2po.py: [forwardport 3828:3829
+	  and 3830:3831 from 0-10-branch] Merge identical strings if msgid
+	  comments match. Fix test to not expect fuzzy
+
+2006-08-28 18:27  dwaynebailey
+
+	* convert/test_po2prop.py: Test to ensure that we create an empty
+	  property file if the template is empty and we have no associated
+	  PO file.
+
+2006-08-28 08:59  friedelwolff
+
+	* convert/po2prop.py: Strip the end of line character(s) so we can
+	  add a \n
+
+2006-08-28 07:39  dwaynebailey
+
+	* convert/po2prop.py: Covnert tabs to spaces
+
+2006-08-28 07:22  dwaynebailey
+
+	* convert/test_po2prop.py: Test to see that we merge fuzzy entries
+	  correctly.
+
+2006-08-28 07:20  dwaynebailey
+
+	* convert/test_po2prop.py: Add a test for the simplest merge
+
+2006-08-28 07:13  dwaynebailey
+
+	* convert/test_po2prop.py: Test to check that when we merge entries
+	  that are in fact blank that we do not mess with the layut from
+	  the template by adding newlines.
+
+2006-08-28 07:06  dwaynebailey
+
+	* convert/test_po2prop.py: Test to ensure that we preserve space
+	  around the equal signs from the template properties file in the
+	  new output properties file.
+
+2006-08-24 21:28  friedelwolff
+
+	* setup.py: prune editor and lingua directories
+
 2006-08-24 12:20  friedelwolff
 
 	* storage/test_po.py: Edit and disable
@@ -21,6 +2481,10 @@
 2006-08-23 13:03  friedelwolff
 
 	* __version__.py: Version 0.10rc4
+
+2006-08-23 13:01  friedelwolff
+
+	* setup.py: Remove obsolete 'includebeta' variable
 
 2006-08-23 08:47  friedelwolff
 
@@ -2305,6 +4769,11 @@
 	* tools/poconflicts.py: Ignore single letter strings when searching
 	  for conflicts.  This eliminates Mozilla accelerators and such
 	  like.
+
+2006-04-18 18:17  dwaynebailey
+
+	* trunk/setup.py: Install prop2po and po2prop as command line
+	  applications to allow .properties processing.
 
 2006-04-11 16:00  dwaynebailey
 
