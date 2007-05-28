@@ -63,8 +63,6 @@ class Header(QtGui.QDialog):
             QtCore.QObject.connect(self.ui.btnDeleteRow,QtCore.SIGNAL("clicked()"), self.deleteRow)
             
              # set up table appearance and behavior
-            self.headerLabels = [self.tr("Key"), self.tr("Value")]
-            self.ui.tableHeader.setHorizontalHeaderLabels(self.headerLabels)
             self.ui.tableHeader.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
             self.ui.tableHeader.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
             self.ui.tableHeader.horizontalHeader().setResizeMode(0, QtGui.QHeaderView.Stretch)
@@ -74,6 +72,8 @@ class Header(QtGui.QDialog):
             self.ui.tableHeader.verticalHeader().hide()
         self.ui.tableHeader.clear()
         self.ui.tableHeader.setRowCount(0)
+        self.headerLabels = [self.tr("Key"), self.tr("Value")]
+        self.ui.tableHeader.setHorizontalHeaderLabels(self.headerLabels)
         #Obtain header information from file
         otherComments, self.headerDic = self.operator.headerData()
         #remember for reset usage
@@ -190,24 +190,17 @@ class Header(QtGui.QDialog):
         FullLanguage = World.settings.value("FullLanguage", QtCore.QVariant(""))
         Code = World.settings.value("Code", QtCore.QVariant(""))
         SupportTeam = World.settings.value("SupportTeam", QtCore.QVariant(""))
-        if (emailAddress.toString() != ""):
-            Last_Translator = userName.toString() + '<' + emailAddress.toString() + '>'
-        else:
-            Last_Translator = userName.toString()
-        if (SupportTeam.toString() !=""):
-            Language_Team =  FullLanguage.toString() + '<' + SupportTeam.toString() + '>'
-        else:
-            Language_Team =  FullLanguage.toString()
-            
+        Last_Translator = userName.toString() + '<' + emailAddress.toString() + '>'
+        Language_Team = FullLanguage.toString() + '<' + SupportTeam.toString() + '>'
         nPlural = World.settings.value("nPlural", QtCore.QVariant(str(2)))
         pluralEquation = World.settings.value("equation", QtCore.QVariant(""))
-        if (pluralEquation.toString() == ""):
-            msg = "Please fill in Plural infomation in Settings/Preference/Persionalize. When you choose a language, Pootling will try to fill in these infomation. In case, your language is not in the list, please fill in this info by your own or leave it blank if you're not sure. Do you want to update the infomation?"
+        
+        if (userName.toString() == "" or emailAddress.toString() == "" or FullLanguage.toString() == "" or Code.toString() == "" or SupportTeam.toString() == "" or pluralEquation.toString() == "" ):
+            msg = "Please fill in the blank under Settings/Preference/Persionalize in order to apply your settings. Do you want to update the infomation now?"
             ret = QtGui.QMessageBox.question(self, self.tr("Information Settings"), 
                     self.tr(msg),
                     QtGui.QMessageBox.Yes | QtGui.QMessageBox.Default, 
                     QtGui.QMessageBox.No | QtGui.QMessageBox.Escape)
-            print ret
             if (ret == QtGui.QMessageBox.No):
                 print "No"
                 return False
@@ -253,7 +246,8 @@ class Header(QtGui.QDialog):
         for i in range(self.ui.tableHeader.rowCount()):
                 newHeaderDic[str(self.ui.tableHeader.item(i, 0).text())] = str(self.ui.tableHeader.item(i,1).text())
         self.operator.updateNewHeader(self.ui.txtOtherComments.toPlainText(), newHeaderDic)
-        
+
+                    
 if __name__ == "__main__":
     import sys
     # set the path for QT in order to find the icons
