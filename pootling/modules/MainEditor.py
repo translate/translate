@@ -151,6 +151,8 @@ class MainWindow(QtGui.QMainWindow):
         self.findBar = Find(self)
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.findBar)
         self.connect(self.ui.actionFind, QtCore.SIGNAL("triggered()"), self.findBar.showFind)
+        self.connect(self.ui.actionFindNext, QtCore.SIGNAL("triggered()"), self.findNext)
+        self.connect(self.ui.actionFindPrevious, QtCore.SIGNAL("triggered()"), self.findPrevious)
         self.connect(self.ui.actionReplace, QtCore.SIGNAL("triggered()"), self.findBar.showReplace)
         self.connect(self.findBar, QtCore.SIGNAL("initSearch"), self.operator.initSearch)
         self.connect(self.findBar, QtCore.SIGNAL("searchNext"), self.operator.searchNext)
@@ -164,7 +166,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("glossaryResult"), self.dockTUview.highlighGlossary)
         self.connect(self.operator, QtCore.SIGNAL("searchResult"), self.dockTUview.highlightSearch)
         self.connect(self.operator, QtCore.SIGNAL("searchResult"), self.dockComment.highlightSearch)
-        self.connect(self.operator, QtCore.SIGNAL("generalInfo"), self.showTemporaryMessage)
+        self.connect(self.operator, QtCore.SIGNAL("EOF"), self.findStatus)
         # "replaceText" sends text field, start, length, and text to replace.
         self.connect(self.operator, QtCore.SIGNAL("replaceText"), self.dockTUview.replaceText)
         self.connect(self.operator, QtCore.SIGNAL("replaceText"), self.dockComment.replaceText)
@@ -465,9 +467,30 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionPrevious.setDisabled(atFirst)
         self.ui.actionNext.setDisabled(atLast)
         self.ui.actionLast.setDisabled(atLast)
-
-    def showTemporaryMessage(self, text):
-        self.ui.statusbar.showMessage(text, 3000)
+    
+    def findNext(self):
+        """Find Next from submenu """
+        self.operator.searchNext()
+        self.findBar.ui.lineEdit.setFocus()
+        self.ui.actionFindPrevious.setEnabled(True)
+    
+    def findPrevious(self):
+        """Find Previous from submenu."""
+        self.operator.searchPrevious()
+        self.findBar.ui.lineEdit.setFocus()
+        self.ui.actionFindNext.setEnabled(True)
+        
+    def findStatus(self, text):
+        """
+        Disable Find Next or Previous Button if the search reach the end of file.
+        @param text: a string to decide which button should be diabled.
+        """
+        if (text == "Next"):
+            self.findBar.ui.findNext.setDisabled(True)
+            self.ui.actionFindNext.setDisabled(True)
+        elif (text == "Previous"):
+            self.findBar.ui.findPrevious.setDisabled(True)
+            self.ui.actionFindPrevious.setDisabled(True)
         
     def focusChanged(self, oldWidget, newWidget):
         if (oldWidget):
@@ -571,6 +594,8 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionSaveas.setEnabled(bool)
         self.ui.actionPaste.setEnabled(bool)
         self.ui.actionSelectAll.setEnabled(bool)
+        self.ui.actionFindNext.setEnabled(bool)
+        self.ui.actionFindPrevious.setEnabled(bool)
         self.ui.actionFind.setEnabled(bool)
         self.ui.actionReplace.setEnabled(bool)
         self.ui.actionCopySource2Target.setEnabled(bool)

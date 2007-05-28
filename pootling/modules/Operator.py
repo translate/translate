@@ -71,6 +71,7 @@ class Operator(QtCore.QObject):
             return
         self.setNewStore(store)
         self.emit(QtCore.SIGNAL("fileIsOK"), fileName)
+        self.fileName = fileName
       
     def setNewStore(self, store):
         """ setup the oparator with a new storage
@@ -341,7 +342,7 @@ class Operator(QtCore.QObject):
         else:
             # exhausted
             self._searchNotFound()
-            self.emit(QtCore.SIGNAL("generalInfo"), "Search has reached end of document")
+            self.emit(QtCore.SIGNAL("EOF"), "Next")
             self.searchPointer = oldSearchPointer
 
     def searchPrevious(self):
@@ -371,7 +372,7 @@ class Operator(QtCore.QObject):
         else:
             # exhausted
             self._searchNotFound()
-            self.emit(QtCore.SIGNAL("generalInfo"), "Search has reached start of document")
+            self.emit(QtCore.SIGNAL("EOF"), "Previous")
     
     def replace(self, replacedText):
         """replace the found text in the text fields.
@@ -419,7 +420,7 @@ class Operator(QtCore.QObject):
         self.setUnitFromPosition(self.searchPointer)
         textField = self.searchableText[self.currentTextField]
         self.emit(QtCore.SIGNAL("searchResult"), textField, self.foundPosition, len(unicode(self.searchString)))
-        self.emit(QtCore.SIGNAL("generalInfo"), "")
+#        self.emit(QtCore.SIGNAL("generalInfo"), "")
 
     def _searchNotFound(self):
         """emit searchResult signal with text field, position, and length."""
