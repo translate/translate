@@ -57,10 +57,30 @@ class globalSetting(QtGui.QDialog):
         self.connect(self.ui.btnRemove, QtCore.SIGNAL("clicked(bool)"), self.removeLocation)
         self.connect(self.ui.btnRemoveAll, QtCore.SIGNAL("clicked(bool)"), self.ui.listWidget.clear)
         self.ui.listWidget.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        if (self.section == "TM"):
+            self.whatsThis("Translation Memory")
+        elif (self.section == "Glossary"):
+            self.whatsThis("Glossary")
         
         # timer for extend tm
         self.timer = QtCore.QTimer()
         self.connect(self.timer, QtCore.SIGNAL("timeout()"), self.extendTM)
+    
+    def whatsThis(self, tool):
+        """Show different what'sthis for TM and glossary dialog.
+        @param tool: whether it is a TM or Glossary as type string.
+        """
+        list = "<h3>Path for " + tool + "</h3>List of path to scan for " + tool + ". Paths which are checked will be used. "
+        self.ui.listWidget.setWhatsThis(self.tr(list))
+        dive = "<h3>Dive into subfolders</h3>Check this option, " + tool + " will include subfolders of the above path(s)."
+        self.ui.checkBox.setWhatsThis(self.tr(dive))
+        sim = "<h3>Minimum similarity</h3>Minimum similarity of source string to be include in " + tool
+        self.ui.spinSimilarity.setWhatsThis(self.tr(sim))
+        candidate = "<h3>Maximum search result</h3>Number of result that will be shown in the " + tool +" lookup view."
+        self.ui.spinMaxCandidate.setWhatsThis(self.tr(candidate))
+        self.ui.spinMaxLen.setWhatsThis(self.tr("<h3>Maximum string length</h3>Maximum number of source string to search from."))
+        progress = "<h3>Build " + tool + "Process</h3>This bar shows the progression of building a " + tool + " from the above select path(s)."
+        self.ui.progressBar.setWhatsThis(self.tr(progress))
     
     def showDialog(self):
         """Make the Translation Memory Setting dialog visible."""
@@ -227,7 +247,7 @@ class globalSetting(QtGui.QDialog):
         pickle and emit self.match, then remember the setting and
         close the dialog.
         """
-        self.pickleTM.pickleMatcher(self.matcher)
+#        self.pickleTM.pickleMatcher(self.matcher)
         self.emit(QtCore.SIGNAL("matcher"), [self.section, self.matcher])
         
         self.tempoRemember["enabledpath"] = self.getPathList(QtCore.Qt.Checked)

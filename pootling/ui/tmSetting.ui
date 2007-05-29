@@ -22,11 +22,7 @@
    <item row="5" column="0" colspan="2" >
     <widget class="QCheckBox" name="checkBox" >
      <property name="whatsThis" >
-      <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">
-&lt;p style=" margin-top:14px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:large; font-weight:600;">&lt;span style=" font-size:large;">Dive into subfolders&lt;/span>&lt;/p>
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Check this option, translation memory will include subfolders of the above path(s).&lt;/p>&lt;/body>&lt;/html></string>
+      <string/>
      </property>
      <property name="text" >
       <string>Dive into Subfolders</string>
@@ -44,21 +40,13 @@ p, li { white-space: pre-wrap; }
       </sizepolicy>
      </property>
      <property name="toolTip" >
-      <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Path for translation memory&lt;/p>&lt;/body>&lt;/html></string>
+      <string/>
      </property>
      <property name="statusTip" >
-      <string>List of Translation Memory Location(s)</string>
+      <string/>
      </property>
      <property name="whatsThis" >
-      <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-size:large; font-weight:600;">Path for translation memory&lt;/span>&lt;/p>
-&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:large; font-weight:600;">&lt;/p>
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">List of path to scan for translation memory. Paths which are checked will be used.&lt;/p>&lt;/body>&lt;/html></string>
+      <string/>
      </property>
     </widget>
    </item>
@@ -177,12 +165,7 @@ p, li { white-space: pre-wrap; }
       <item row="2" column="1" >
        <widget class="QSpinBox" name="spinMaxLen" >
         <property name="whatsThis" >
-         <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-size:10pt; font-weight:600;">Maximum string length&lt;/span>&lt;/p>
-&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;/p>
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Maximum number of source string to search from.&lt;/p>&lt;/body>&lt;/html></string>
+         <string/>
         </property>
         <property name="maximum" >
          <number>100</number>
@@ -198,12 +181,7 @@ p, li { white-space: pre-wrap; }
       <item row="0" column="1" >
        <widget class="QSpinBox" name="spinSimilarity" >
         <property name="whatsThis" >
-         <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-size:10pt; font-weight:600;">Minimum similarity&lt;/span>&lt;/p>
-&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;/p>
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Minimum similarity of source string to be include in translation memory.&lt;/p>&lt;/body>&lt;/html></string>
+         <string/>
         </property>
         <property name="maximum" >
          <number>100</number>
@@ -229,12 +207,7 @@ p, li { white-space: pre-wrap; }
       <item row="1" column="1" >
        <widget class="QSpinBox" name="spinMaxCandidate" >
         <property name="whatsThis" >
-         <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-size:10pt; font-weight:600;">Maximum search result&lt;/span>&lt;/p>
-&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;/p>
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Number of result that will be shown in the TM lookup view.&lt;/p>&lt;/body>&lt;/html></string>
+         <string/>
         </property>
         <property name="maximum" >
          <number>10</number>

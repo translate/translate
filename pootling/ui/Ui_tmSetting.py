@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'unknown'
+# Form implementation generated from reading ui file '/home/k-da/Documents/poxole/trunk/pootling/ui/tmSetting.ui'
 #
-# Created: Mon May 21 16:56:01 2007
-#      by: PyQt4 UI code generator 4.0
+# Created: Tue May 29 17:44:49 2007
+#      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!
 
-import sys
 from PyQt4 import QtCore, QtGui
 
 class Ui_tmsetting(object):
@@ -132,72 +131,37 @@ class Ui_tmsetting(object):
         tmsetting.setTabOrder(self.spinMaxLen,self.btnOk)
         tmsetting.setTabOrder(self.btnOk,self.btnCancel)
 
-    def tr(self, string):
-        return QtGui.QApplication.translate("tmsetting", string, None, QtGui.QApplication.UnicodeUTF8)
-
     def retranslateUi(self, tmsetting):
-        tmsetting.setWindowTitle(self.tr("Translation Memory and glossary Settings"))
-        self.checkBox.setWhatsThis(self.tr("<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+        tmsetting.setWindowTitle(QtGui.QApplication.translate("tmsetting", "Translation Memory and glossary Settings", None, QtGui.QApplication.UnicodeUTF8))
+        self.checkBox.setText(QtGui.QApplication.translate("tmsetting", "Dive into Subfolders", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnRemoveAll.setToolTip(QtGui.QApplication.translate("tmsetting", "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
         "p, li { white-space: pre-wrap; }\n"
         "</style></head><body style=\" font-family:\'Sans Serif\'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;\">\n"
-        "<p style=\" margin-top:14px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:large; font-weight:600;\"><span style=\" font-size:large;\">Dive into subfolders</span></p>\n"
-        "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Check this option, translation memory will include subfolders of the above path(s).</p></body></html>"))
-        self.checkBox.setText(self.tr("Dive into Subfolders"))
-        self.listWidget.setToolTip(self.tr("<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+        "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">clear path(s)</p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnRemoveAll.setText(QtGui.QApplication.translate("tmsetting", " Clea&r", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnRemove.setToolTip(QtGui.QApplication.translate("tmsetting", "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
         "p, li { white-space: pre-wrap; }\n"
         "</style></head><body style=\" font-family:\'Sans Serif\'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;\">\n"
-        "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Path for translation memory</p></body></html>"))
-        self.listWidget.setStatusTip(self.tr("List of Translation Memory Location(s)"))
-        self.listWidget.setWhatsThis(self.tr("<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+        "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">delete selected path(s)</p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnRemove.setText(QtGui.QApplication.translate("tmsetting", " De&lete", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnAdd.setToolTip(QtGui.QApplication.translate("tmsetting", "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
         "p, li { white-space: pre-wrap; }\n"
         "</style></head><body style=\" font-family:\'Sans Serif\'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;\">\n"
-        "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:large; font-weight:600;\">Path for translation memory</span></p>\n"
-        "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:large; font-weight:600;\"></p>\n"
-        "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">List of path to scan for translation memory. Paths which are checked will be used.</p></body></html>"))
-        self.btnRemoveAll.setToolTip(self.tr("<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-        "p, li { white-space: pre-wrap; }\n"
-        "</style></head><body style=\" font-family:\'Sans Serif\'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;\">\n"
-        "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">clear path(s)</p></body></html>"))
-        self.btnRemoveAll.setText(self.tr(" Clea&r"))
-        self.btnRemove.setToolTip(self.tr("<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-        "p, li { white-space: pre-wrap; }\n"
-        "</style></head><body style=\" font-family:\'Sans Serif\'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;\">\n"
-        "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">delete selected path(s)</p></body></html>"))
-        self.btnRemove.setText(self.tr(" De&lete"))
-        self.btnAdd.setToolTip(self.tr("<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-        "p, li { white-space: pre-wrap; }\n"
-        "</style></head><body style=\" font-family:\'Sans Serif\'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;\">\n"
-        "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Add path for TM</p></body></html>"))
-        self.btnAdd.setText(self.tr(" &Add"))
-        self.btnCancel.setText(self.tr("&Cancel"))
-        self.btnOk.setText(self.tr("&OK"))
-        self.groupBox.setTitle(self.tr("Options"))
-        self.label_3.setText(self.tr("Maximum string length"))
-        self.spinMaxLen.setWhatsThis(self.tr("<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-        "p, li { white-space: pre-wrap; }\n"
-        "</style></head><body style=\" font-family:\'Sans Serif\'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;\">\n"
-        "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:10pt; font-weight:600;\">Maximum string length</span></p>\n"
-        "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p>\n"
-        "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Maximum number of source string to search from.</p></body></html>"))
-        self.spinSimilarity.setWhatsThis(self.tr("<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-        "p, li { white-space: pre-wrap; }\n"
-        "</style></head><body style=\" font-family:\'Sans Serif\'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;\">\n"
-        "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:10pt; font-weight:600;\">Minimum similarity</span></p>\n"
-        "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p>\n"
-        "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Minimum similarity of source string to be include in translation memory.</p></body></html>"))
-        self.label.setText(self.tr("Minimum similarity"))
-        self.spinMaxCandidate.setWhatsThis(self.tr("<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-        "p, li { white-space: pre-wrap; }\n"
-        "</style></head><body style=\" font-family:\'Sans Serif\'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;\">\n"
-        "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:10pt; font-weight:600;\">Maximum search result</span></p>\n"
-        "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p>\n"
-        "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Number of result that will be shown in the TM lookup view.</p></body></html>"))
-        self.label_2.setText(self.tr("Maximum search result"))
-        self.label_4.setText(self.tr("Locations:"))
-        self.label_6.setText(self.tr("Progress"))
+        "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Add path for TM</p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnAdd.setText(QtGui.QApplication.translate("tmsetting", " &Add", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnCancel.setText(QtGui.QApplication.translate("tmsetting", "&Cancel", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnOk.setText(QtGui.QApplication.translate("tmsetting", "&OK", None, QtGui.QApplication.UnicodeUTF8))
+        self.groupBox.setTitle(QtGui.QApplication.translate("tmsetting", "Options", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_3.setText(QtGui.QApplication.translate("tmsetting", "Maximum string length", None, QtGui.QApplication.UnicodeUTF8))
+        self.label.setText(QtGui.QApplication.translate("tmsetting", "Minimum similarity", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_2.setText(QtGui.QApplication.translate("tmsetting", "Maximum search result", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_4.setText(QtGui.QApplication.translate("tmsetting", "Locations:", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_6.setText(QtGui.QApplication.translate("tmsetting", "Progress", None, QtGui.QApplication.UnicodeUTF8))
+
 
 
 if __name__ == "__main__":
+    import sys
     app = QtGui.QApplication(sys.argv)
     tmsetting = QtGui.QWidget()
     ui = Ui_tmsetting()
