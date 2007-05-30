@@ -322,11 +322,14 @@ class MainWindow(QtGui.QMainWindow):
     def setBookmarks(self):
         unit = self.operator.getCurrentUnit()
         id = self.dockOverview.getCurrentIndex()
+        self.totalMaxlen = len(str(self.maxBookmark))
+        value = str(id).rjust(self.totalMaxlen)
 
-        reducedSource = str(id) + " : " + unit.source[:15] + "..."
+        reducedSource = value + " - " + unit.source[:15] + "..."
         bookmark = World.settings.value("bookmarkList").toStringList()
         bookmark.removeAll(reducedSource)
         bookmark.prepend(reducedSource)
+        bookmark.sort()
         while bookmark.count() > self.maxBookmark:
             bookmark.removeAt(bookmark.count() - 1)
         World.settings.setValue("bookmarkList", QtCore.QVariant(bookmark))
@@ -362,8 +365,8 @@ class MainWindow(QtGui.QMainWindow):
 
     def clearBookmarks(self):
         files = World.settings.value("bookmarkList").toStringList()
-        numRecentFiles = min(files.count(), self.maxBookmark)
-        for i in range(numRecentFiles):
+        numClear = min(files.count(), self.maxBookmark)
+        for i in range(numClear):
             self.bookmarkaction[i].setVisible(False)
         World.settings.remove("bookmarkList")
 
@@ -382,7 +385,7 @@ class MainWindow(QtGui.QMainWindow):
             self.ui.menuOpen_Recent.setEnabled(True)
         World.settings.setValue("recentFileList", QtCore.QVariant(files))
         self.updateRecentAction()
-        self.clearBookmarks()
+#        self.clearBookmarks()
         
     def startRecentAction(self):
         action = self.sender()
@@ -564,7 +567,8 @@ class MainWindow(QtGui.QMainWindow):
     def openFile(self, value):
         closed = self.closeFile()
         if (closed):
-            self.operator.getUnits(value)
+            aa = self.operator.getUnits(value)
+        self.show()
     
     def closeFile(self):
         """return True when successfully close file, else return False."""
