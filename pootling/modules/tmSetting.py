@@ -85,6 +85,7 @@ class globalSetting(QtGui.QDialog):
     def showDialog(self):
         """Make the Translation Memory Setting dialog visible."""
         self.lazyInit()
+        self.ui.progressBar.setValue(0)
         
         # get application setting file, and parse it.
         filename = World.settings.fileName()
@@ -167,8 +168,9 @@ class globalSetting(QtGui.QDialog):
         paths = self.getPathList(QtCore.Qt.Checked)
         self.matcher = None
         self.filenames = []
+        includeSub = self.ui.checkBox.isChecked()
         for path in paths:
-            self.getFiles(path, True)
+            self.getFiles(path, includeSub)
         
         maxCan = self.ui.spinMaxCandidate.value()
         minSim = self.ui.spinSimilarity.value()
