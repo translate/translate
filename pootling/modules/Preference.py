@@ -83,6 +83,16 @@ class Preference(QtGui.QDialog):
         self.connect(self.ui.okButton, QtCore.SIGNAL("clicked()"), self.accept)
         self.connect(self.ui.cancelButton, QtCore.SIGNAL("clicked()"), self.reject)
         
+        #tempory hide some features that will be included in the next version.
+        #Glossary
+        self.ui.chbChangeTerm.hide()
+        self.ui.chbMatchTerm.hide()
+        self.ui.chbAddNewTerm.hide()
+        self.ui.chbSuggestTranslation.hide()
+        self.ui.chbDetectTerm.hide()
+        #TM
+        self.ui.chbEditTraslation.hide()
+        
     def accepted(self):
         """ slot ok pressed """
         self.rememberFont(self.widget[0], self.overviewFont)
@@ -361,7 +371,7 @@ class Preference(QtGui.QDialog):
             GlossaryPreference +=32
         self.emit(QtCore.SIGNAL("GlossaryPreference"), GlossaryPreference)
         World.settings.setValue("GlossaryPreference", QtCore.QVariant(GlossaryPreference))
-    
+
 if __name__ == "__main__":
     import sys, os
     # set the path for QT in order to find the icons
