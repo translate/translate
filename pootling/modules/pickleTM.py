@@ -28,7 +28,6 @@ class pickleTM:
         Unpickle matcher from filename.
         @return matcher: matcher of TM locations
         """
-        filename = None
         matcher = None
         if (filename and os.path.exists(filename)):
             tmpFile = open(filename, 'rb')
