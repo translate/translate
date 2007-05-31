@@ -249,7 +249,9 @@ class globalSetting(QtGui.QDialog):
         pickle and emit self.match, then remember the setting and
         close the dialog.
         """
-#        self.pickleTM.pickleMatcher(self.matcher)
+        # TODO: fix error
+        print self.matcher
+        self.pickleTM.pickleMatcher(self.matcher)
         self.emit(QtCore.SIGNAL("matcher"), [self.section, self.matcher])
         
         self.tempoRemember["enabledpath"] = self.getPathList(QtCore.Qt.Checked)
@@ -259,33 +261,6 @@ class globalSetting(QtGui.QDialog):
         self.tempoRemember["max_candidates"] = self.ui.spinMaxCandidate.value()
         self.tempoRemember["max_string_len"] = self.ui.spinMaxLen.value()
         self.close()
-    
-##    def createTM(self):
-##        checkedItemList = self.getPathList(QtCore.Qt.Checked)
-##        matcher = None
-##        if (not checkedItemList):
-##            self.pickleTM.removeFile()
-##            QtGui.QMessageBox.critical(None, 'No file specified', 'No file specified for building TM or glossary')
-##        else:
-##            try:
-##                #FIXME: do not hard code.
-##                if (self.section == "TM"):
-##                    matcher = self.pickleTM.buildTMMatcher(checkedItemList, self.ui.spinMaxCandidate.value(), self.ui.spinSimilarity.value(), self.ui.spinMaxLen.value())
-##                elif (self.section == "Glossary"):
-##                    matcher = self.pickleTM.buildTermMatcher(checkedItemList, self.ui.spinMaxCandidate.value(), self.ui.spinSimilarity.value(), self.ui.spinMaxLen.value())
-##            except Exception, e:
-##                self.pickleTM.removeFile()
-##                QtGui.QMessageBox.critical(None, 'Error', str(e))
-##        
-##        self.emit(QtCore.SIGNAL("matcher"), [self.section, matcher])
-##        
-##        self.tempoRemember["enabledpath"] = self.getPathList(QtCore.Qt.Checked)
-##        self.tempoRemember["disabledpath"] = self.getPathList(QtCore.Qt.Unchecked)
-##        self.tempoRemember["diveintosub"] = self.ui.checkBox.isChecked()
-##        self.tempoRemember["similarity"] = self.ui.spinSimilarity.value()
-##        self.tempoRemember["max_candidates"] = self.ui.spinMaxCandidate.value()
-##        self.tempoRemember["max_string_len"] = self.ui.spinMaxLen.value()
-##        self.close()
     
     def getPathList(self, isChecked):
         """Return list of path according to the parameter isChecked or unChecked
