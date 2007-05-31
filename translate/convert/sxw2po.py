@@ -47,7 +47,7 @@ class OpenOfficeDocument(xmlwrapper.XMLWrapper):
     paragraphs = []
     for node in nodes:
       childns, childtag = xmlwrapper.splitnamespace(node.tag)
-      if childtag == "p":
+      if childtag == "p" or childtag == "h":
         paragraphs.append(xmlwrapper.XMLWrapper(node))
     messages = []
     for child in paragraphs:
@@ -90,7 +90,7 @@ def convertsxw(inputfile, outputfile, templates):
 
 def main(argv=None):
   from translate.convert import convert
-  formats = {"sxw":("po",convertsxw)}
+  formats = {"sxw":("po",convertsxw), "odt":("po",convertsxw)}
   parser = convert.ConvertOptionParser(formats, description=__doc__)
   parser.run(argv)
 
