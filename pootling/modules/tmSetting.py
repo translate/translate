@@ -22,11 +22,14 @@
 # This module is providing an setting path of translation memory dialog 
 
 import sys, os
+import tempfile, pickle
 from PyQt4 import QtCore, QtGui
 from pootling.ui.Ui_tmSetting import Ui_tmsetting
 from pootling.modules import World
 from pootling.modules import FileDialog
 from pootling.modules.pickleTM import pickleTM
+from translate.storage import factory
+from translate.storage import poheader
 from translate.search import match
 
 class globalSetting(QtGui.QDialog):
@@ -35,10 +38,8 @@ class globalSetting(QtGui.QDialog):
     def __init__(self, parent):
         QtGui.QDialog.__init__(self, parent)
         self.ui = None
-        self.subscan = None
         self.title = None
         self.section = None
-        self.tempoRemember = {}
     
     def lazyInit(self):
         if (self.ui):
@@ -51,23 +52,26 @@ class globalSetting(QtGui.QDialog):
         self.filedialog = FileDialog.fileDialog(self)
         self.setWindowTitle(self.title)
         self.connect(self.filedialog, QtCore.SIGNAL("location"), self.addLocation)
-        self.connect(self.ui.btnOk, QtCore.SIGNAL("clicked(bool)"), self.createTM)
+        self.connect(self.ui.btnOk, QtCore.SIGNAL("clicked(bool)"), self.buildMatcher)
         self.connect(self.ui.btnCancel, QtCore.SIGNAL("clicked(bool)"), QtCore.SLOT("close()"))
         self.connect(self.ui.btnAdd, QtCore.SIGNAL("clicked(bool)"), self.filedialog.show)
         self.connect(self.ui.btnRemove, QtCore.SIGNAL("clicked(bool)"), self.removeLocation)
         self.connect(self.ui.btnRemoveAll, QtCore.SIGNAL("clicked(bool)"), self.ui.listWidget.clear)
         self.ui.listWidget.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        
         if (self.section == "TM"):
-            self.whatsThis("Translation Memory")
+            self.setToolWhatsThis("Translation Memory")
         elif (self.section == "Glossary"):
-            self.whatsThis("Glossary")
+            self.setToolWhatsThis("Glossary")
         
         # timer for extend tm
         self.timer = QtCore.QTimer()
-        self.connect(self.timer, QtCore.SIGNAL("timeout()"), self.extendTM)
+        self.connect(self.timer, QtCore.SIGNAL("timeout()"), self.extendMatcher)
+        
     
-    def whatsThis(self, tool):
-        """Show different what'sthis for TM and glossary dialog.
+    def setToolWhatsThis(self, tool):
+        """
+        Set what's this for TM or glossary dialog.
         @param tool: whether it is a TM or Glossary as type string.
         """
         list = "<h3>Path for " + tool + "</h3>List of path to scan for " + tool + ". Paths which are checked will be used. "
@@ -88,17 +92,15 @@ class globalSetting(QtGui.QDialog):
         self.ui.progressBar.setValue(0)
         
         # get application setting file, and parse it.
-        filename = World.settings.fileName()
-        self.loadItemToList()
+        self.loadSettings()
         self.show()
         
-        # create pickleMatcher objectr
-        self.pickleTM = pickleTM(str(filename), self.section)
-    
-    def loadItemToList(self):
-        """Load remembered item to list."""
-        self.ui.listWidget.clear()
+    def loadSettings(self):
+        """
+        Load settings of TM/Glossary
+        """
         World.settings.beginGroup(self.section)
+        self.ui.listWidget.clear()
         enabledPath = World.settings.value("enabledpath").toStringList()
         disabledPath = World.settings.value("disabledpath").toStringList()
         for path in enabledPath:
@@ -106,30 +108,29 @@ class globalSetting(QtGui.QDialog):
         for path in disabledPath:
             self.addLocation(path, QtCore.Qt.Unchecked)
         
-        self.ui.checkBox.setChecked(World.settings.value("diveintosub").toBool())
-        self.ui.spinSimilarity.setValue(World.settings.value("similarity", QtCore.QVariant(75)).toInt()[0])
-        self.ui.spinMaxCandidate.setValue(World.settings.value("max_candidates", QtCore.QVariant(10)).toInt()[0])
+        includeSub = World.settings.value("diveintosub").toBool()
+        minSim = World.settings.value("similarity", QtCore.QVariant(75)).toInt()[0]
+        maxCan = World.settings.value("max_candidates", QtCore.QVariant(10)).toInt()[0]
         
         if (self.section == "TM"):
-            self.ui.spinMaxLen.setValue(World.settings.value("max_string_len", QtCore.QVariant(70)).toInt()[0])
+            maxLen = World.settings.value("max_string_len", QtCore.QVariant(70)).toInt()[0]
         elif (self.section == "Glossary"):
-            self.ui.spinMaxLen.setMaximum(500)
-            self.ui.spinMaxLen.setValue(World.settings.value(self.section + "/" + "max_string_len", QtCore.QVariant(500)).toInt()[0])
+            maxLen = World.settings.value(self.section + "/" + "max_string_len", QtCore.QVariant(500)).toInt()[0]
         
-        # temporary remember in order to clear changing when clicking cancel button
-        self.tempoRemember["enabledpath"] = enabledPath
-        self.tempoRemember["disabledpath"] = disabledPath
-        self.tempoRemember["diveintosub"] = self.ui.checkBox.isChecked()
-        self.tempoRemember["similarity"] = self.ui.spinSimilarity.value()
-        self.tempoRemember["max_candidates"] = self.ui.spinMaxCandidate.value()
-        self.tempoRemember["max_string_len"] = self.ui.spinMaxLen.value()
+        self.ui.checkBox.setChecked(includeSub)
+        self.ui.spinSimilarity.setValue(minSim)
+        self.ui.spinMaxCandidate.setValue(maxCan)
+        self.ui.spinMaxLen.setValue(maxLen)
+        
+        self.pickleFile = World.settings.value("pickleFile").toString()
+        if (not self.pickleFile):
+            handle, self.pickleFile = tempfile.mkstemp('','PKL')
         World.settings.endGroup()
     
     def addLocation(self, TMpath, checked = QtCore.Qt.Checked):
-        """Add TMpath to TM list.
-        
+        """
+        Add TMpath to TM list.
         @param TMpath: Filename as string
-        
         """
         items = self.ui.listWidget.findItems(TMpath, QtCore.Qt.MatchCaseSensitive)
         if (not items):
@@ -138,7 +139,9 @@ class globalSetting(QtGui.QDialog):
             self.ui.listWidget.addItem(item)
     
     def removeLocation(self):
-        """Remove selected path TM list."""
+        """
+        Remove selected path TM list.
+        """
         items = self.ui.listWidget.selectedItems()
         for item in items:
             self.ui.listWidget.setCurrentItem(item)
@@ -146,24 +149,13 @@ class globalSetting(QtGui.QDialog):
     
     def closeEvent(self, event):
         """
-        Rememer TMpath before closing.
         @param event: CloseEvent Object
         """
-        
-        World.settings.beginGroup(self.section);
-        World.settings.setValue("enabledpath", QtCore.QVariant(self.tempoRemember["enabledpath"]))
-        World.settings.setValue("disabledpath", QtCore.QVariant(self.tempoRemember["disabledpath"]))
-        World.settings.setValue("diveintosub", QtCore.QVariant(self.tempoRemember["diveintosub"]))
-        World.settings.setValue("similarity", QtCore.QVariant(self.tempoRemember["similarity"]))
-        World.settings.setValue( "max_candidates", QtCore.QVariant(self.tempoRemember["max_candidates"]))
-        World.settings.setValue("max_string_len", QtCore.QVariant(self.tempoRemember["max_string_len"]))
-        World.settings.endGroup();
-        QtGui.QDialog.closeEvent(self, event)
     
-    def createTM(self):
+    def buildMatcher(self):
         """
-        collect filename into self.filenames, create a matcher, then start a
-        timer for extend tm.
+        Collect filename into self.filenames, create matcher, start a
+        timer for extend tm, dump matcher, save settings.
         """
         paths = self.getPathList(QtCore.Qt.Checked)
         self.matcher = None
@@ -179,7 +171,7 @@ class globalSetting(QtGui.QDialog):
         if (len(self.filenames) <= 0):
             return
         
-        store = self.pickleTM.createStore(self.filenames[0])
+        store = self.createStore(self.filenames[0])
         if (self.section == "TM"):
             self.matcher = match.matcher(store, maxCan, minSim, maxLen)
         else:
@@ -188,6 +180,17 @@ class globalSetting(QtGui.QDialog):
         # then extendTN start with self.filenames[1]
         self.iterNumber = 1
         self.timer.start(10)
+        
+        disabledPath = self.getPathList(QtCore.Qt.Unchecked)
+        World.settings.beginGroup(self.section)
+        World.settings.setValue("enabledpath", QtCore.QVariant(paths))
+        World.settings.setValue("disabledpath", QtCore.QVariant(disabledPath))
+        World.settings.setValue("pickleFile", QtCore.QVariant(self.pickleFile))
+        World.settings.setValue("diveintosub", QtCore.QVariant(includeSub))
+        World.settings.setValue("similarity", QtCore.QVariant(minSim))
+        World.settings.setValue("max_candidates", QtCore.QVariant(maxCan))
+        World.settings.setValue("max_string_len", QtCore.QVariant(maxLen))
+        World.settings.endGroup()
         
     def getFiles(self, path, includeSub): 
         """
@@ -213,7 +216,7 @@ class globalSetting(QtGui.QDialog):
                         self.getFiles(path, includeSub)
                 break
     
-    def extendTM(self):
+    def extendMatcher(self):
         """
         extend TM to self.matcher through self.filenames with self.iterNumber as
         iterator.
@@ -224,13 +227,15 @@ class globalSetting(QtGui.QDialog):
             self.timer.stop()
             self.iterNumber = 1
             self.emitMatcher()
+            self.dumpMatcher()
+            self.close()
             return
         
-        # stop the timer for processing the extendtm()
+        # stop the timer for processing the extendMatcher()
         self.timer.stop()
         
         filename = self.filenames[self.iterNumber]
-        store = self.pickleTM.createStore(filename)
+        store = self.createStore(filename)
         self.matcher.extendtm(store.units, store)
         self.iterNumber += 1
         perc = int((float(self.iterNumber) / len(self.filenames)) * 100)
@@ -243,30 +248,50 @@ class globalSetting(QtGui.QDialog):
             self.timer.stop()
             self.iterNumber = 1
             self.emitMatcher()
+            self.dumpMatcher()
+            self.close()
     
     def emitMatcher(self):
         """
-        pickle and emit self.match, then remember the setting and
-        close the dialog.
+        emit "matcher" with self.matcher
         """
-        # TODO: fix error
-        print self.matcher
-        self.pickleTM.pickleMatcher(self.matcher)
         self.emit(QtCore.SIGNAL("matcher"), [self.section, self.matcher])
+    
+    def dumpMatcher(self):
+        """
+        call pickleTM.dumpMatcher()
+        """
+        p = pickleTM()
+        p.dumpMatcher(self.matcher, self.pickleFile)
+    
+    def createStore(self, file):
+        """
+        Create a store object from file.
+        add translator, date, and filepath properties to store object.
         
-        self.tempoRemember["enabledpath"] = self.getPathList(QtCore.Qt.Checked)
-        self.tempoRemember["disabledpath"] = self.getPathList(QtCore.Qt.Unchecked)
-        self.tempoRemember["diveintosub"] = self.ui.checkBox.isChecked()
-        self.tempoRemember["similarity"] = self.ui.spinSimilarity.value()
-        self.tempoRemember["max_candidates"] = self.ui.spinMaxCandidate.value()
-        self.tempoRemember["max_string_len"] = self.ui.spinMaxLen.value()
-        self.close()
+        @param file: as a file path or object
+        @return: store as a base object
+        """
+        try:
+            store = factory.getobject(file)
+        except:
+            store = None
+        store.filepath = file
+        if (isinstance(store, poheader.poheader)):
+            headerDic = store.parseheader()
+            store.translator = headerDic['Last-Translator']
+            store.date = headerDic['PO-Revision-Date']
+        else:
+            store.translator = ""
+            store.date = ""
+        return store
     
     def getPathList(self, isChecked):
-        """Return list of path according to the parameter isChecked or unChecked
-        
+        """
+        Return list of path according to the parameter isChecked or unChecked
         @return: itemList as list of unchecked or checked path
         """
+        
         itemList = QtCore.QStringList()
         count = self.ui.listWidget.count()
         for i in range(count):

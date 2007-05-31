@@ -457,9 +457,12 @@ class Operator(QtCore.QObject):
         
         # get matcher from when startup
         if (not hasattr(self, "matcher")):
-            confFile = World.settings.fileName()
-            self.pickleTM = pickleTM(str(confFile), "TM")
-            self.matcher = self.pickleTM.getMatcher()
+            World.settings.beginGroup("TM")
+            pickleFile = World.settings.value("pickleFile").toString()
+            World.settings.endGroup()
+            if (pickleFile):
+                p = pickleTM()
+                self.matcher = p.getMatcher(pickleFile)
         
         if (not self.matcher):
             return
@@ -533,9 +536,12 @@ class Operator(QtCore.QObject):
         
         # get glossary matcher from disk when startup
         if (not hasattr(self, "termmatcher")):
-            confFile = World.settings.fileName()
-            self.pickleterm = pickleTM(str(confFile), "Glossary")
-            self.termmatcher = self.pickleterm.getMatcher()
+            World.settings.beginGroup("Glossary")
+            pickleFile = World.settings.value("pickleFile").toString()
+            World.settings.endGroup()
+            if (pickleFile):
+                p = pickleTM()
+                self.termmatcher = p.getMatcher(pickleFile)
         
         if (not self.termmatcher):
             return
