@@ -1,12 +1,15 @@
 <ui version="4.0" >
  <class>Catalog</class>
  <widget class="QMainWindow" name="Catalog" >
+  <property name="windowModality" >
+   <enum>Qt::NonModal</enum>
+  </property>
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>531</width>
-    <height>400</height>
+    <width>581</width>
+    <height>412</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -38,6 +41,15 @@
         <pointsize>10</pointsize>
        </font>
       </property>
+      <property name="focusPolicy" >
+       <enum>Qt::NoFocus</enum>
+      </property>
+      <property name="contextMenuPolicy" >
+       <enum>Qt::DefaultContextMenu</enum>
+      </property>
+      <property name="acceptDrops" >
+       <bool>false</bool>
+      </property>
       <property name="statusTip" >
        <string/>
       </property>
@@ -53,7 +65,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>531</width>
+     <width>581</width>
      <height>28</height>
     </rect>
    </property>
@@ -62,20 +74,6 @@
      <string>&amp;File</string>
     </property>
     <addaction name="actionQuit" />
-   </widget>
-   <widget class="QMenu" name="menuHelp" >
-    <property name="title" >
-     <string>&amp;Help</string>
-    </property>
-    <addaction name="actionAbout" />
-    <addaction name="actionAboutQt" />
-   </widget>
-   <widget class="QMenu" name="menuProject" >
-    <property name="title" >
-     <string>&amp;Project</string>
-    </property>
-    <addaction name="actionConfigure" />
-    <addaction name="actionBuildTM" />
    </widget>
    <widget class="QMenu" name="menuEdit" >
     <property name="title" >
@@ -86,17 +84,39 @@
     <addaction name="actionStatistics" />
     <addaction name="actionReload" />
    </widget>
+   <widget class="QMenu" name="menuProject" >
+    <property name="title" >
+     <string>&amp;Project</string>
+    </property>
+    <addaction name="actionNew" />
+    <addaction name="actionOpen" />
+   </widget>
+   <widget class="QMenu" name="menuHelp" >
+    <property name="title" >
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="actionAbout" />
+    <addaction name="actionAboutQt" />
+   </widget>
+   <widget class="QMenu" name="menuSettings" >
+    <property name="title" >
+     <string>&amp;Settings</string>
+    </property>
+    <addaction name="actionBuild" />
+    <addaction name="actionConfigure" />
+   </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
    <addaction name="menuProject" />
+   <addaction name="menuSettings" />
    <addaction name="menuHelp" />
   </widget>
   <widget class="QStatusBar" name="statusbar" />
   <widget class="QToolBar" name="toolBar" >
    <property name="sizePolicy" >
     <sizepolicy>
-     <hsizetype>1</hsizetype>
-     <vsizetype>1</vsizetype>
+     <hsizetype>5</hsizetype>
+     <vsizetype>5</vsizetype>
      <horstretch>0</horstretch>
      <verstretch>0</verstretch>
     </sizepolicy>
@@ -167,7 +187,7 @@
   </action>
   <action name="actionFind_in_Files" >
    <property name="enabled" >
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="icon" >
     <iconset>../images/find.png</iconset>
@@ -180,6 +200,9 @@
    </property>
   </action>
   <action name="actionStatistics" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="icon" >
     <iconset>../images/statistic.png</iconset>
    </property>
@@ -193,6 +216,32 @@
   <action name="actionBuildTM" >
    <property name="text" >
     <string>&amp;Build TM</string>
+   </property>
+  </action>
+  <action name="actionNew" >
+   <property name="text" >
+    <string>New...</string>
+   </property>
+  </action>
+  <action name="actionOpen" >
+   <property name="text" >
+    <string>Open...</string>
+   </property>
+  </action>
+  <action name="actionBuild" >
+   <property name="icon" >
+    <iconset>../images/memory.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Build TM...</string>
+   </property>
+  </action>
+  <action name="actionConfigure" >
+   <property name="icon" >
+    <iconset>../images/configure.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Configure...</string>
    </property>
   </action>
  </widget>
