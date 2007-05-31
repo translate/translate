@@ -51,14 +51,13 @@ class Catalog(QtGui.QMainWindow):
         self.ui.setupUi(self)
         self.resize(720,400)
         self.autoRefresh = True
-        self.ui.actionStatistics.setEnabled(False)
 
         self.ui.toolBar.toggleViewAction()
         self.ui.toolBar.setWindowTitle("ToolBar View")
         self.ui.toolBar.setStatusTip("Toggle ToolBar View")
         
         self.folderIcon = QtGui.QIcon("../images/open.png")
-        self.iconFile = QtGui.QIcon("../images/source.png")
+        self.iconFile = QtGui.QIcon("../images/iconfile.png")
         
         # set up table appearance and behavior
         self.headerLabels = [self.tr("Name"),
@@ -71,6 +70,7 @@ class Catalog(QtGui.QMainWindow):
                             self.tr("Last Translator")]
         self.ui.treeCatalog.setColumnCount(len(self.headerLabels))
         self.ui.treeCatalog.setHeaderLabels(self.headerLabels)
+        self.ui.treeCatalog.hideColumn(5)
         self.ui.treeCatalog.header().setResizeMode(QtGui.QHeaderView.Interactive)
         self.ui.treeCatalog.setWhatsThis("The catalog manager merges all files and folders enter one treewidget and displays all po, xlf... files. the way you can easily see if a template has been added or removed. Also some information about the files is displayed.")
         
@@ -80,7 +80,6 @@ class Catalog(QtGui.QMainWindow):
         self.ui.actionQuit.setStatusTip("Quit application")
 
         # Edit menu action
-        self.ui.actionReload.setEnabled(True)
         self.connect(self.ui.actionReload, QtCore.SIGNAL("triggered()"), self.refresh)
         self.ui.actionReload.setWhatsThis("<h3>Reload</h3>Set the current files or folders to get the most up-to-date version.")
         self.ui.actionReload.setStatusTip("Reload the current files")
@@ -144,13 +143,17 @@ class Catalog(QtGui.QMainWindow):
         
         # context menu of items
         self.menu = QtGui.QMenu()
-        actionOpen = self.menu.addAction(QtGui.QIcon("../images/open.png"), self.tr("Open"))
-        actionFind = self.menu.addAction(QtGui.QIcon("../images/find.png"), self.tr("Find"))
-        actionShowStat = self.menu.addAction(QtGui.QIcon("../images/statistic.png"), self.tr("Show statistic"))
-        self.connect(actionOpen, QtCore.SIGNAL("triggered()"), self.emitOpenFile)
-        self.connect(actionFind, QtCore.SIGNAL("triggered()"), self.findBar.showFind)
-        self.connect(actionShowStat, QtCore.SIGNAL("triggered()"), self.showStatistic)
-        
+        self.actionOpen = self.menu.addAction(QtGui.QIcon("../images/open.png"), self.tr("Open"))
+        self.actionFind = self.menu.addAction(QtGui.QIcon("../images/find.png"), self.tr("Find"))
+        self.actionShowStat = self.menu.addAction(QtGui.QIcon("../images/statistic.png"), self.tr("Show statistic"))
+        if (self.autoRefresh):
+            self.actionOpen.setEnabled(False)
+            self.actionFind.setEnabled(False)
+            self.actionShowStat.setEnabled(False)
+
+        self.connect(self.actionOpen, QtCore.SIGNAL("triggered()"), self.emitOpenFile)
+        self.connect(self.actionFind, QtCore.SIGNAL("triggered()"), self.findBar.showFind)
+        self.connect(self.actionShowStat, QtCore.SIGNAL("triggered()"), self.showStatistic)
 
     def find(self, searchString, searchOptions):
         if (not (searchString and searchOptions)):
@@ -236,8 +239,10 @@ class Catalog(QtGui.QMainWindow):
                 checked = self.sender().isChecked()
                 if (checked):
                     self.ui.treeCatalog.showColumn(self.headerLabels.index(text))
+                    self.ui.treeCatalog.hideColumn(5)
                 else:
                     self.ui.treeCatalog.hideColumn(self.headerLabels.index(text))
+                    self.ui.treeCatalog.hideColumn(5)
                 World.settings.setValue("Catalog." + text, QtCore.QVariant(checked))
 
     def updateProgress(self, value):
@@ -259,7 +264,14 @@ class Catalog(QtGui.QMainWindow):
         Read data from world's "CatalogPath" and display statistic of files
         in tree view.
         """
+        # Icon enabled when toolBar not files into treeCatalog
+        self.ui.actionFind_in_Files.setEnabled(True)
         self.ui.actionStatistics.setEnabled(True)
+        self.ui.actionReload.setEnabled(True)
+        # Icon enabled when context menu not files into treeCatalog
+        self.actionOpen.setEnabled(True)
+        self.actionFind.setEnabled(True)
+        self.actionShowStat.setEnabled(True)
         self.ui.treeCatalog.clear()
         cats = World.settings.value("CatalogPath").toStringList()
         includeSub = World.settings.value("diveIntoSubCatalog").toBool()
@@ -288,12 +300,12 @@ class Catalog(QtGui.QMainWindow):
                 self.ui.treeCatalog.addTopLevelItem(item)
                 self.ui.treeCatalog.expandItem(item)
                 item.setText(0, os.path.dirname(path))
-                item.setIcon(0, self.folderIcon)
   
             # if file is already existed in the item's child... skip.
             if (path.endswith(".po") or path.endswith(".pot") or path.endswith(".xlf") or path.endswith(".xliff")) and (not self.ifFileExisted(path, item)):
                 childItem = QtGui.QTreeWidgetItem(item)
                 childItem.setText(0, os.path.basename(path))
+                childItem.setIcon(0, self.iconFile)
                 self.fileItems.append(childItem)
 
         if (os.path.isdir(path)) and (not path.endswith(".svn")):
@@ -315,18 +327,17 @@ class Catalog(QtGui.QMainWindow):
                     childItem = QtGui.QTreeWidgetItem(item)
                     childItem.setText(0, os.path.basename(path))
                 childItem.setIcon(0, self.folderIcon)
-            
+
             for root, dirs, files in os.walk(path):
                 for file in files:
                     path = os.path.join(root + os.path.sep + file)
                     self.addCatalogFile(path, includeSub, childItem)
-                    
                 # whether dive into subfolder
                 if (includeSub):
                     for folder in dirs:
                         path = os.path.join(root + os.path.sep + folder)
                         self.addCatalogFile(path, includeSub, childItem)
-                
+
                 break
     
     def getExistedItem(self, path):
@@ -372,7 +383,6 @@ class Catalog(QtGui.QMainWindow):
         numTranslated = store.translated_unitcount()
         numFuzzy = store.fuzzy_unitcount()
         numUntranslated = store.untranslated_unitcount()
-
     
         numTotal = numTranslated + numUntranslated + numFuzzy
         subVersionState = ""
@@ -483,6 +493,7 @@ class Catalog(QtGui.QMainWindow):
         else:
             checkState = QtCore.Qt.Checked
         self.catSetting.ui.chbSVN.setCheckState(checkState)
+        self.catSetting.ui.chbSVN.setVisible(False)
         
         value = World.settings.value("Catalog.Last Revision")
         if (value.isValid()):
@@ -517,7 +528,7 @@ class Catalog(QtGui.QMainWindow):
         filename = self.getFilename(item)
         if (os.path.isfile(filename)): 
             self.emit(QtCore.SIGNAL("openFile"), filename)
-    
+        
     def getFilename(self, item):
         """
         return filename join from item.text(0) to its parent.
@@ -554,13 +565,13 @@ class Catalog(QtGui.QMainWindow):
             self.timer.stop()
             self.itemNumber = 0
             return
-        
+
         self.timer.stop()
         
         item = self.fileItems[self.itemNumber]
         path = self.getFilename(item)
         childStats = self.getStats(path)
-        
+  
         if (childStats):
             item.setText(1, str(childStats["numTranslated"]))
             item.setText(2, str(childStats["numFuzzy"]))
@@ -569,7 +580,7 @@ class Catalog(QtGui.QMainWindow):
             item.setText(5, childStats["subVersionState"])
             item.setText(6, childStats["revisionDate"])
             item.setText(7, childStats["lastTranslator"])
-        
+
         self.itemNumber += 1
         
         perc = int((float(self.itemNumber) / len(self.fileItems)) * 100)
@@ -577,7 +588,6 @@ class Catalog(QtGui.QMainWindow):
         
         # start getting statistic
         self.timer.start(10)
-        
         if (self.itemNumber == len(self.fileItems)):
             self.timer.stop()
             self.itemNumber = 0
@@ -585,9 +595,13 @@ class Catalog(QtGui.QMainWindow):
     def contextMenuEvent(self, e):
         self.menu.exec_(e.globalPos())
 
-##if __name__ == "__main__":
-##    import sys, os
-##    app = QtGui.QApplication(sys.argv)
-##    catalog = Catalog(None)
-##    catalog.showDialog()
-##    sys.exit(catalog.exec_())
+def main(self):
+    # set the path for QT in order to find the icons
+    if __name__ == "__main__":
+        QtCore.QDir.setCurrent(os.path.join(sys.path[0], "../ui"))
+        app = QtGui.QApplication(sys.argv)
+        catalog = Catalog()
+        sys.exit(app.exec_())
+
+if __name__ == "__main__":
+    main()
