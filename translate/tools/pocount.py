@@ -109,13 +109,13 @@ def summarize(title, stats, CSVstyle=False):
     print
   else:
     print title
-    print "type           strings words (source) words (translation)"
-    print "translated:   %5d %10d %15d" % (stats["translated"], stats["translatedsourcewords"], stats["translatedtargetwords"])
-    print "fuzzy:        %5d %10d             n/a" % (stats["fuzzy"], stats["fuzzysourcewords"])
-    print "untranslated: %5d %10d             n/a" % (stats["untranslated"], stats["untranslatedsourcewords"])
-    print "Total:        %5d %10d %15d" % (stats["total"], stats["totalsourcewords"], stats["translatedtargetwords"])
+    print "type              strings      words (source)    words (translation)"
+    print "translated:   %5d (%3d%%) %10d (%3d%%) %15d" % (stats["translated"], stats["translated"]*100/stats["total"], stats["translatedsourcewords"], stats["translatedsourcewords"]*100/stats["totalsourcewords"], stats["translatedtargetwords"])
+    print "fuzzy:        %5d (%3d%%) %10d (%3d%%)             n/a" % (stats["fuzzy"], stats["fuzzy"]*100/stats["total"], stats["fuzzysourcewords"], stats["fuzzysourcewords"]*100/stats["totalsourcewords"] )
+    print "untranslated: %5d (%3d%%) %10d (%3d%%)             n/a" % (stats["untranslated"], stats["untranslated"]*100/stats["total"], stats["untranslatedsourcewords"], stats["untranslatedsourcewords"]*100/stats["totalsourcewords"])
+    print "Total:        %5d %17d %22d" % (stats["total"], stats["totalsourcewords"], stats["translatedtargetwords"])
     if stats["review"] > 0:
-      print "review:       %5d %10d             n/a" % (stats["review"], stats["reviewsourcewords"])
+      print "review:       %5d %17d                    n/a" % (stats["review"], stats["reviewsourcewords"])
     print
 
 def fuzzymessages(units):
@@ -195,7 +195,6 @@ def main():
   except Exception:
     pass
   summarizer(sys.argv[1:], CSVstyle)
-
 
 if __name__ == '__main__':
     main()
