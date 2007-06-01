@@ -521,6 +521,7 @@ class Operator(QtCore.QObject):
         self.addtranslation =  (TMprefrence & 4 and True or False)
     
     def setTermLookupStatus(self, GlossaryPreference):
+        print "setTermLookupStatus..."
         autoIdentifyTerm = (GlossaryPreference & 1 and True or False)
         self.ChangeTerm =  (GlossaryPreference & 2 and True or False)
         self.DetectTerm =  (GlossaryPreference & 8 and True or False)
@@ -565,7 +566,9 @@ class Operator(QtCore.QObject):
             if (pickleFile):
                 p = pickleTM()
                 self.termmatcher = p.getMatcher(pickleFile)
-        
+                
+        if (not hasattr(self, "termmatcher")):
+            return
         pattern = []
         for unit in self.termmatcher.candidates.units:
             pattern.append(unit.source)
