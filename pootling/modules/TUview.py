@@ -61,6 +61,12 @@ class TUview(QtGui.QDockWidget):
             self.targetHighlighter.setSearchString(searchString)
             self.sourceHighlighter.setSearchString("")
     
+    def setHighlightGlossary(self, bool):
+        """
+        call highlighter.setHighlightGlossary()
+        """
+        self.sourceHighlighter.setHighlightGlossary(bool)
+    
     def closeEvent(self, event):
         """
         set text of action object to 'show Detail' before closing TUview

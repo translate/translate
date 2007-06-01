@@ -54,9 +54,8 @@ class Operator(QtCore.QObject):
         self.filter = None
         TMpreference = World.settings.value("TMpreference").toInt()[0]
         self.setTMLookupStatus(TMpreference)
-        GlossaryPreference = World.settings.value("GlossaryPreference").toInt()[0]
-        self.setTermLookupStatus(GlossaryPreference)
         self.isCpResult = False
+        self.glossaryChanged = True
 
     def getUnits(self, fileName):
         """reading a file into the internal datastructure.
@@ -441,16 +440,16 @@ class Operator(QtCore.QObject):
             return
         self.lookupProcess(self.filteredList)
         
-    def setMatcher(self, list):
+    def setMatcher(self, matcher, section):
         """
         Set matcher or termmatcher to new matcher.
         @param list: contains section, and matcher
         """
-        section, matcher = list
         if (section == "TM"):
             self.matcher = matcher
         else:
             self.termmatcher = matcher
+            self.glossaryChanged = True
             self.emitGlossaryPattern()
         
     def lookupProcess(self, units):
@@ -521,15 +520,15 @@ class Operator(QtCore.QObject):
         self.addtranslation =  (TMprefrence & 4 and True or False)
     
     def setTermLookupStatus(self, GlossaryPreference):
-        print "setTermLookupStatus..."
         autoIdentifyTerm = (GlossaryPreference & 1 and True or False)
         self.ChangeTerm =  (GlossaryPreference & 2 and True or False)
         self.DetectTerm =  (GlossaryPreference & 8 and True or False)
         self.AddNewTerm =  (GlossaryPreference & 16 and True or False)
         self.SuggestTranslation =  (GlossaryPreference & 32 and True or False)
         
-        if (autoIdentifyTerm):
-            self.emitGlossaryPattern()
+        self.emit(QtCore.SIGNAL("highlightGlossary"), autoIdentifyTerm)
+        
+        
     
     def setModified(self, bool):
         self.modified = bool
@@ -558,7 +557,6 @@ class Operator(QtCore.QObject):
         """
         emit glossaryPattern for class highlighter.
         """
-        
         if (not hasattr(self, "termmatcher")):
             World.settings.beginGroup("Glossary")
             pickleFile = World.settings.value("pickleFile").toString()
@@ -567,9 +565,12 @@ class Operator(QtCore.QObject):
                 p = pickleTM()
                 self.termmatcher = p.getMatcher(pickleFile)
                 
-        if (not hasattr(self, "termmatcher")):
-            return
-        pattern = []
-        for unit in self.termmatcher.candidates.units:
-            pattern.append(unit.source)
-        self.emit(QtCore.SIGNAL("glossaryPattern"), pattern)
+        if (self.termmatcher) and (self.glossaryChanged):
+            self.glossaryChanged = False
+            pattern = []
+            for unit in self.termmatcher.candidates.units:
+                pattern.append(unit.source)
+            self.emit(QtCore.SIGNAL("glossaryPattern"), pattern)
+            
+        GlossaryPreference = World.settings.value("GlossaryPreference").toInt()[0]
+        self.setTermLookupStatus(GlossaryPreference)

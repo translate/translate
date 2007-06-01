@@ -38,6 +38,7 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         self.glossaryFormat.setFontWeight(QtGui.QFont.Bold)
         self.glossaryFormat.setForeground(QtCore.Qt.darkGreen)
         #self.glossaryFormat.setUnderlineStyle(QtGui.QTextCharFormat.DashDotDotLine)
+        self.highlightGlossary = True
         
         self.classFormat = self.glossaryFormat
         # avoid blank regular expression
@@ -49,11 +50,13 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         highlight the text according to the self.expression
         @ param text: a document text.
         """
-        index = text.indexOf(self.expression)
-        while (index >= 0):
-            length = self.expression.matchedLength()
-            self.setFormat(index, length, self.classFormat)
-            index = text.indexOf(self.expression, index + length);
+        # highlight glossary
+        if (self.highlightGlossary):
+            index = text.indexOf(self.expression)
+            while (index >= 0):
+                length = self.expression.matchedLength()
+                self.setFormat(index, length, self.classFormat)
+                index = text.indexOf(self.expression, index + length);
         
         # highlight search
         if (self.searchExpression):
@@ -89,4 +92,6 @@ class Highlighter(QtGui.QSyntaxHighlighter):
             self.searchExpression.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
         self.parent.document().markContentsDirty(0, len(self.parent.document().toPlainText()))
         
-        
+    def setHighlightGlossary(self, bool):
+        self.highlightGlossary = bool
+    

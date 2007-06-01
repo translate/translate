@@ -253,9 +253,9 @@ class globalSetting(QtGui.QDialog):
     
     def emitMatcher(self):
         """
-        emit "matcher" with self.matcher
+        emit "matcher" with self.matcher, self.section
         """
-        self.emit(QtCore.SIGNAL("matcher"), [self.section, self.matcher])
+        self.emit(QtCore.SIGNAL("matcher"), self.matcher, self.section)
     
     def dumpMatcher(self):
         """

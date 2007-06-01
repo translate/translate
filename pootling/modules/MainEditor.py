@@ -162,8 +162,8 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.findBar, QtCore.SIGNAL("replace"), self.operator.replace)
         self.connect(self.findBar, QtCore.SIGNAL("replaceAll"), self.operator.replaceAll)
         
-        # "searchFound" sends container and location to be highlighted.
         self.connect(self.operator, QtCore.SIGNAL("glossaryPattern"), self.dockTUview.setPattern)
+        self.connect(self.operator, QtCore.SIGNAL("highlightGlossary"), self.dockTUview.setHighlightGlossary)
         self.connect(self.operator, QtCore.SIGNAL("searchResult"), self.dockTUview.setSearchString)
         self.connect(self.operator, QtCore.SIGNAL("searchResult"), self.dockComment.setSearchString)
         self.connect(self.operator, QtCore.SIGNAL("EOF"), self.findStatus)
@@ -386,6 +386,8 @@ class MainWindow(QtGui.QMainWindow):
         World.settings.setValue("recentFileList", QtCore.QVariant(files))
         self.updateRecentAction()
 #        self.clearBookmarks()
+        
+        self.operator.emitGlossaryPattern()
         
     def startRecentAction(self):
         action = self.sender()
