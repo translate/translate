@@ -100,12 +100,12 @@ def calcstats(units):
 def summarize(title, stats, CSVstyle=False):
   if CSVstyle:
     print "%s, " % title,
-    print "%d, %d, %d," % stats["translated"], stats["translatedsourcewords"], stats["translatedtargetwords"]
-    print "%d, %d," % stats["fuzzy"], stats["fuzzytargetwords"]
-    print "%d, %d," % stats["untranslated"], stats["untranslatedsourcewords"]
-    print "%d, %d" % stats["total"], stats["totalsourcewords"]
+    print "%d, %d, %d," % (stats["translated"], stats["translatedsourcewords"], stats["translatedtargetwords"]),
+    print "%d, %d," % (stats["fuzzy"], stats["fuzzysourcewords"]),
+    print "%d, %d," % (stats["untranslated"], stats["untranslatedsourcewords"]),
+    print "%d, %d" % (stats["total"], stats["totalsourcewords"]),
     if stats["review"] > 0:
-      print ", %d, %d" % stats["review"], stats["reviewsourdcewords"]
+      print ", %d, %d" % (stats["review"], stats["reviewsourdcewords"])
     print
   else:
     print title
