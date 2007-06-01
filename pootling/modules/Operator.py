@@ -419,12 +419,12 @@ class Operator(QtCore.QObject):
         """emit searchResult signal with searchString."""
         self.setUnitFromPosition(self.searchPointer)
         textField = self.searchableText[self.currentTextField]
-        self.emit(QtCore.SIGNAL("searchResult"), self.searchString)
+        self.emit(QtCore.SIGNAL("searchResult"), self.searchString, textField)
     
     def _searchNotFound(self):
         """emit searchResult signal with searchString = ""."""
         textField = self.searchableText[self.currentTextField]
-        self.emit(QtCore.SIGNAL("searchResult"), "")
+        self.emit(QtCore.SIGNAL("searchResult"), "", textField)
     
     def setAfterfileClosed(self):
         self.store = None

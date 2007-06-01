@@ -76,11 +76,12 @@ class CommentDock(QtGui.QDockWidget):
             self.ui.txtTranslatorComment.setPlainText(translatorComment)
         self.connect(self.ui.txtTranslatorComment, QtCore.SIGNAL("textChanged()"), self.checkModified)
     
-    def setSearchString(self, searchString):
+    def setSearchString(self, searchString, textField):
         """
         call highlighter.setSearchString()
         """
-        self.highlighter.setSearchString(searchString)
+        if (textField == World.comment):
+            self.highlighter.setSearchString(searchString)
     
     def checkModified(self):
         if self.ui.txtTranslatorComment.document().isModified():
