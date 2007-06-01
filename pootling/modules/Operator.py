@@ -416,19 +416,16 @@ class Operator(QtCore.QObject):
         return unitString
 
     def _searchFound(self):
-        """emit searchResult signal with text field, position, and length."""
+        """emit searchResult signal with searchString."""
         self.setUnitFromPosition(self.searchPointer)
         textField = self.searchableText[self.currentTextField]
-##        self.emit(QtCore.SIGNAL("searchResult"), textField, self.foundPosition, len(unicode(self.searchString)))
-#        self.emit(QtCore.SIGNAL("generalInfo"), "")
         self.emit(QtCore.SIGNAL("searchResult"), self.searchString)
-
+    
     def _searchNotFound(self):
-        """emit searchResult signal with text field, position, and length."""
+        """emit searchResult signal with searchString = ""."""
         textField = self.searchableText[self.currentTextField]
         self.emit(QtCore.SIGNAL("searchResult"), "")
-##        self.emit(QtCore.SIGNAL("searchResult"), textField, None, None)
-
+    
     def setAfterfileClosed(self):
         self.store = None
         self.status = None

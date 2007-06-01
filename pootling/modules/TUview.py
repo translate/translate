@@ -22,7 +22,7 @@
 from PyQt4 import QtCore, QtGui
 from pootling.ui.Ui_TUview import Ui_TUview
 from pootling.modules import World
-from pootling.modules.highlighter import Highlighter, MyHighlighter
+from pootling.modules.highlighter import Highlighter
 
 class TUview(QtGui.QDockWidget):
     def __init__(self, parent):
@@ -41,20 +41,21 @@ class TUview(QtGui.QDockWidget):
         # create highlighter
         self.sourceLength = 0
         
-        self.highlighter = MyHighlighter(self.ui.txtSource)
-##        self.setPattern(["allow", "deny", "type"])
+        self.sourceHighlighter = Highlighter(self.ui.txtSource)
+        self.targetHighlighter = Highlighter(self.ui.txtTarget)
     
     def setPattern(self, patternList):
         """
         call highlighter.setPattern()
         """
-        self.highlighter.setPattern(patternList)
+        self.sourceHighlighter.setPattern(patternList)
     
     def setSearchString(self, searchString):
         """
         call highlighter.setSearchString()
         """
-        self.highlighter.setSearchString(searchString)
+        self.sourceHighlighter.setSearchString(searchString)
+        self.targetHighlighter.setSearchString(searchString)
     
     def closeEvent(self, event):
         """
@@ -148,8 +149,6 @@ class TUview(QtGui.QDockWidget):
             self.ui.targetStacked.setCurrentIndex(0)
             if (unicode(unit.source) !=  unicode(self.ui.txtSource.toPlainText())):
                 self.ui.txtSource.setPlainText(unit.source)
-##                self.highlighter = None
-##                self.highlighter = highlighter.Highlighter(None)
                 self.emit(QtCore.SIGNAL("lookupTranslation"))
             if (unicode(unit.target) !=  unicode(self.ui.txtTarget.toPlainText())):
                 self.ui.txtTarget.setPlainText(unit.target)

@@ -165,7 +165,7 @@ class MainWindow(QtGui.QMainWindow):
         # "searchFound" sends container and location to be highlighted.
         self.connect(self.operator, QtCore.SIGNAL("glossaryPattern"), self.dockTUview.setPattern)
         self.connect(self.operator, QtCore.SIGNAL("searchResult"), self.dockTUview.setSearchString)
-##        self.connect(self.operator, QtCore.SIGNAL("searchResult"), self.dockComment.highlightSearch)
+        self.connect(self.operator, QtCore.SIGNAL("searchResult"), self.dockComment.setSearchString)
         self.connect(self.operator, QtCore.SIGNAL("EOF"), self.findStatus)
         # "replaceText" sends text field, start, length, and text to replace.
         self.connect(self.operator, QtCore.SIGNAL("replaceText"), self.dockTUview.replaceText)

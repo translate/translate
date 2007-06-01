@@ -24,7 +24,7 @@ from pootling.ui.Ui_Comment import Ui_frmComment
 import pootling.modules.World as World
 from translate.storage import po
 from translate.storage import xliff
-from pootling.modules import highlighter
+from pootling.modules.highlighter import Highlighter
 
 class CommentDock(QtGui.QDockWidget):
     """
@@ -44,7 +44,7 @@ class CommentDock(QtGui.QDockWidget):
         self.setWidget(self.form)
         self.ui.txtLocationComment.hide()
         # create highlighter
-        self.highlighter = highlighter.Highlighter(None)
+        self.highlighter = Highlighter(self.ui.txtTranslatorComment)
         self.applySettings()
     
     def closeEvent(self, event):
@@ -75,26 +75,18 @@ class CommentDock(QtGui.QDockWidget):
         if (unicode(self.ui.txtTranslatorComment.toPlainText()) != unicode(translatorComment)):
             self.ui.txtTranslatorComment.setPlainText(translatorComment)
         self.connect(self.ui.txtTranslatorComment, QtCore.SIGNAL("textChanged()"), self.checkModified)
-
+    
+    def setSearchString(self, searchString):
+        """
+        call highlighter.setSearchString()
+        """
+        self.highlighter.setSearchString(searchString)
+    
     def checkModified(self):
         if self.ui.txtTranslatorComment.document().isModified():
             self.emit(QtCore.SIGNAL("commentChanged"), unicode(self.ui.txtTranslatorComment.toPlainText()))
             self.ui.txtTranslatorComment.document().setModified(False)
-
-    def highlightSearch(self, textField, position, length = 0):
-        """Highlight the text at specified position, length, and textField.
-        @param textField: source or target text box.
-        @param position: highlight start point.
-        @param length: highlight length."""
-        
-        if ((textField == World.comment) and position != None):
-            textField = self.ui.txtTranslatorComment
-            block = textField.document().findBlock(position)
-            self.highlighter.clearSearchFormats()
-            self.highlighter.setHighLight(block, position - block.position(), length, World.searchFormat)
-        else:
-            self.highlighter.clearSearchFormats()
-
+    
     def applySettings(self):
         """ set color and font to txtTranslatorComment"""
         commentColor = World.settings.value("commentColor")
