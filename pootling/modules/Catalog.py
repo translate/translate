@@ -222,15 +222,38 @@ class Catalog(QtGui.QMainWindow):
             perTranslated = "0%"
             perFuzzy = "0%"
             perUntranslated = "0%"
-        
-        message = "Statistic of "+ title + ":\n\n" + \
-                "Number of files: " + str(self.numOfFiles) + \
-                "\nTranslated:\t" + str(translated) + "\t" + perTranslated + \
-                "\nFuzzy:\t" + str(fuzzy) + "\t" + perFuzzy + \
-                "\nUntranslated:\t" + str(untranslated) + "\t" + perUntranslated + \
-                "\nTotal:\t" + str(int(total))
-            
-        QtGui.QMessageBox.information(self, self.tr("Statistic"), message , "OK")
+
+        from pootling.modules.StatisticsDialog import StatisticDialog
+        self.statisticsDialog = StatisticDialog(self)
+
+        self.lblStatistic = self.statisticsDialog.ui.lblStatistic
+        self.lblStatistic.setText(title)
+
+        self.lblNumberofFiles = self.statisticsDialog.ui.lblNumberofFiles
+        self.lblNumberofFiles.setText(str(self.numOfFiles))
+  
+        self.lblTranslated = self.statisticsDialog.ui.lblTranslated
+        self.lblTranslated.setText(str(translated))
+      
+        self.lblTransPercent = self.statisticsDialog.ui.lblTransPercent
+        self.lblTransPercent.setText(perTranslated)
+
+        self.lblFuzzy = self.statisticsDialog.ui.lblFuzzy
+        self.lblFuzzy.setText(str(fuzzy))
+
+        self.lblFuzzyPercent = self.statisticsDialog.ui.lblFuzzyPercent
+        self.lblFuzzyPercent.setText(perFuzzy)
+
+        self.lblUntranslated = self.statisticsDialog.ui.lblUntranslated
+        self.lblUntranslated.setText(str(untranslated)) 
+
+        self.lblUntranPercent = self.statisticsDialog.ui.lblUntranPercent
+        self.lblUntranPercent.setText(perUntranslated) 
+
+        self.lblTotal = self.statisticsDialog.ui.lblTotal
+        self.lblTotal.setText(str(int(total)))
+
+        self.statisticsDialog.show()
 
     def toggleHeaderItem(self):
         if (isinstance(self.sender(), QtGui.QCheckBox)):
