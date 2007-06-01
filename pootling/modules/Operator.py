@@ -419,13 +419,15 @@ class Operator(QtCore.QObject):
         """emit searchResult signal with text field, position, and length."""
         self.setUnitFromPosition(self.searchPointer)
         textField = self.searchableText[self.currentTextField]
-        self.emit(QtCore.SIGNAL("searchResult"), textField, self.foundPosition, len(unicode(self.searchString)))
+##        self.emit(QtCore.SIGNAL("searchResult"), textField, self.foundPosition, len(unicode(self.searchString)))
 #        self.emit(QtCore.SIGNAL("generalInfo"), "")
+        self.emit(QtCore.SIGNAL("searchResult"), self.searchString)
 
     def _searchNotFound(self):
         """emit searchResult signal with text field, position, and length."""
         textField = self.searchableText[self.currentTextField]
-        self.emit(QtCore.SIGNAL("searchResult"), textField, None, None)
+        self.emit(QtCore.SIGNAL("searchResult"), "")
+##        self.emit(QtCore.SIGNAL("searchResult"), textField, None, None)
 
     def setAfterfileClosed(self):
         self.store = None
@@ -435,25 +437,30 @@ class Operator(QtCore.QObject):
         self.emitNewUnits()
     
     def autoTranslate(self):
-        '''
+        """
         get TM path and start lookup
-        '''
+        """
         if (not self.filteredList):
             return
         self.lookupProcess(self.filteredList)
         
     def setMatcher(self, list):
-        '''set matcher to new matcher'''
-        if (list[0] == "TM"):
-            self.matcher = list[1]
+        """
+        Set matcher or termmatcher to new matcher.
+        @param list: contains section, and matcher
+        """
+        section, matcher = list
+        if (section == "TM"):
+            self.matcher = matcher
         else:
-            self.termmatcher = list[1]
+            self.termmatcher = matcher
+            self.emitGlossaryPattern()
         
     def lookupProcess(self, units):
-        '''process lookup translation from translation memory
-        
+        """
+        process lookup translation from translation memory
         @param units: a unit or list of units
-        '''
+        """
         
         # get matcher from when startup
         if (not hasattr(self, "matcher")):
@@ -517,24 +524,43 @@ class Operator(QtCore.QObject):
         self.addtranslation =  (TMprefrence & 4 and True or False)
     
     def setTermLookupStatus(self, GlossaryPreference):
-        self.AutoIdentTerm = (GlossaryPreference & 1 and True or False)
+        autoIdentifyTerm = (GlossaryPreference & 1 and True or False)
         self.ChangeTerm =  (GlossaryPreference & 2 and True or False)
         self.DetectTerm =  (GlossaryPreference & 8 and True or False)
         self.AddNewTerm =  (GlossaryPreference & 16 and True or False)
         self.SuggestTranslation =  (GlossaryPreference & 32 and True or False)
+        
+        if (autoIdentifyTerm):
+            self.emitGlossaryPattern()
     
     def setModified(self, bool):
         self.modified = bool
-        self.emit(QtCore.SIGNAL("readyForSave"), self.modified) 
-
+        self.emit(QtCore.SIGNAL("readyForSave"), self.modified)
+    
     def getModified(self):
         return ((hasattr(self, "modified") and self.modified) or False)
     
-    def lookupTerm(self):
-        if (not self.filteredList):
-            return
+    def slotFindUnit(self, source):
+        """
+        Find a unit that contain source then emit currentUnit
+        @param source: source string used to search for unit
+        """
+        unit = self.store.findunit(source)
+        if unit:
+            self.emit(QtCore.SIGNAL("currentUnit"), unit)
         
-        # get glossary matcher from disk when startup
+    def lookupTranslation(self):
+        """
+        lookup text translation or text terminologies in glossary.
+        """
+        if (self.lookupUnitStatus):
+            self.lookupUnit()
+    
+    def emitGlossaryPattern(self):
+        """
+        emit glossaryPattern for class highlighter.
+        """
+        
         if (not hasattr(self, "termmatcher")):
             World.settings.beginGroup("Glossary")
             pickleFile = World.settings.value("pickleFile").toString()
@@ -543,38 +569,7 @@ class Operator(QtCore.QObject):
                 p = pickleTM()
                 self.termmatcher = p.getMatcher(pickleFile)
         
-        if (not self.termmatcher):
-            return
-        unit = self.filteredList[self.currentUnitIndex]
-        #TODO: split text by space
-        words = set(unit.source.split())
-        for word in words:
-            candidates = self.termmatcher.matches(word)
-            if (candidates):
-                foundPosition = -1
-                while (True):
-                    foundPosition = unit.source.lower().find(candidates[0].source.lower(), foundPosition + 1)
-                    if (foundPosition >= 0):
-                        self.emit(QtCore.SIGNAL("glossaryResult"), foundPosition, len(unicode(candidates[0].source)))
-                    else:
-                        break
-                    
-    def slotFindUnit(self, source):
-        """ Find a unit that contain source then emit currentUnit
-        @param source: source string used to search for unit
-        
-        """
-        unit = self.store.findunit(source)
-        if unit:
-            self.emit(QtCore.SIGNAL("currentUnit"), unit)
-        
-    def lookupTranslation(self):
-        '''lookup text translation or text terminologies in glossary.
-        
-        '''
-        if (self.lookupUnitStatus):
-            self.lookupUnit()
-        if (self.AutoIdentTerm):
-            self.lookupTerm()
-            
-            
+        pattern = []
+        for unit in self.termmatcher.candidates.units:
+            pattern.append(unit.source)
+        self.emit(QtCore.SIGNAL("glossaryPattern"), pattern)

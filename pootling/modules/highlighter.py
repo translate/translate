@@ -1,10 +1,11 @@
 from pootling.modules import World
 from PyQt4 import QtCore, QtGui
 
-class Highlighter(QtCore.QObject):
-    '''highlight terms in glossary, search found, and tags'''
-    def __init__(self, parent = None):
-        QtCore.QObject.__init__(self, parent)
+class MyHighlighter(QtGui.QSyntaxHighlighter):
+    def __init__(self, parent):
+        QtGui.QSyntaxHighlighter.__init__(self, parent)
+        
+        self.parent = parent
         
         # search format
         self.searchFormat = QtGui.QTextCharFormat()
@@ -12,11 +13,76 @@ class Highlighter(QtCore.QObject):
         self.searchFormat.setForeground(QtCore.Qt.white)
         self.searchFormat.setBackground(QtCore.Qt.darkMagenta)
         
-        #        # glossary format
+        # glossary format
         self.glossaryFormat = QtGui.QTextCharFormat()
         self.glossaryFormat.setFontWeight(QtGui.QFont.Bold)
         self.glossaryFormat.setForeground(QtCore.Qt.darkGreen)
-        self.glossaryFormat.setUnderlineStyle(QtGui.QTextCharFormat.DashDotDotLine)
+        #self.glossaryFormat.setUnderlineStyle(QtGui.QTextCharFormat.DashDotDotLine)
+        
+        self.classFormat = self.glossaryFormat
+        pattern = QtCore.QString("not")
+        self.expression = QtCore.QRegExp(pattern)
+        
+        self.searchExpression = None
+    
+    def highlightBlock(self, text):
+        """
+        highlight the text according to the self.expression
+        @ param text: a document text.
+        """
+        index = text.indexOf(self.expression)
+        while (index >= 0):
+            length = self.expression.matchedLength()
+            self.setFormat(index, length, self.classFormat)
+            index = text.indexOf(self.expression, index + length);
+        
+        # highlight search
+        if (self.searchExpression):
+            index = text.indexOf(self.searchExpression)
+            while (index >= 0):
+                length = self.searchExpression.matchedLength()
+                self.setFormat(index, length, self.searchFormat)
+                index = text.indexOf(self.searchExpression, index + length);
+        
+    
+    def setPattern(self, patternList):
+        """
+        build self.expression base on given pattern.
+        @param patternList: list of string.
+        """
+        pattern = " | ".join(unicode(p) for p in patternList)
+        pattern = QtCore.QString(pattern)
+        self.expression = QtCore.QRegExp(pattern)
+        self.expression.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
+    
+    def setSearchString(self, searchString):
+        """
+        set searchExpression and call highlightBlock()
+        """
+        if (not searchString):
+            self.searchExpression = None
+            return
+            
+        self.searchExpression = QtCore.QRegExp(QtCore.QString(searchString))
+        self.searchExpression.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
+        self.highlightBlock(self.parent.toPlainText())
+        
+    
+class Highlighter(QtCore.QObject):
+    '''highlight terms in glossary, search found, and tags'''
+    def __init__(self, parent = None):
+        QtCore.QObject.__init__(self, parent)
+        # search format
+        self.searchFormat = QtGui.QTextCharFormat()
+        self.searchFormat.setFontWeight(QtGui.QFont.Bold)
+        self.searchFormat.setForeground(QtCore.Qt.white)
+        self.searchFormat.setBackground(QtCore.Qt.darkMagenta)
+        
+        # glossary format
+        self.glossaryFormat = QtGui.QTextCharFormat()
+        self.glossaryFormat.setFontWeight(QtGui.QFont.Bold)
+        self.glossaryFormat.setForeground(QtCore.Qt.darkGreen)
+        #self.glossaryFormat.setUnderlineStyle(QtGui.QTextCharFormat.DashDotDotLine)
             
         self.currentBlock = None
         self.blockHighLightPair = {}
@@ -75,4 +141,3 @@ class Highlighter(QtCore.QObject):
                     blockHighlightRangeList.remove(list)
             self.blockHighLightPair[self.currentBlock.position()] = blockHighlightRangeList
             self.highlightBlock(self.currentBlock)
-        

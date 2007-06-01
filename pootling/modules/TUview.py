@@ -22,7 +22,7 @@
 from PyQt4 import QtCore, QtGui
 from pootling.ui.Ui_TUview import Ui_TUview
 from pootling.modules import World
-from pootling.modules import highlighter
+from pootling.modules.highlighter import Highlighter, MyHighlighter
 
 class TUview(QtGui.QDockWidget):
     def __init__(self, parent):
@@ -41,6 +41,21 @@ class TUview(QtGui.QDockWidget):
         # create highlighter
         self.sourceLength = 0
         
+        self.highlighter = MyHighlighter(self.ui.txtSource)
+##        self.setPattern(["allow", "deny", "type"])
+    
+    def setPattern(self, patternList):
+        """
+        call highlighter.setPattern()
+        """
+        self.highlighter.setPattern(patternList)
+    
+    def setSearchString(self, searchString):
+        """
+        call highlighter.setSearchString()
+        """
+        self.highlighter.setSearchString(searchString)
+    
     def closeEvent(self, event):
         """
         set text of action object to 'show Detail' before closing TUview
@@ -133,8 +148,8 @@ class TUview(QtGui.QDockWidget):
             self.ui.targetStacked.setCurrentIndex(0)
             if (unicode(unit.source) !=  unicode(self.ui.txtSource.toPlainText())):
                 self.ui.txtSource.setPlainText(unit.source)
-                self.highlighter = None
-                self.highlighter = highlighter.Highlighter(None)
+##                self.highlighter = None
+##                self.highlighter = highlighter.Highlighter(None)
                 self.emit(QtCore.SIGNAL("lookupTranslation"))
             if (unicode(unit.target) !=  unicode(self.ui.txtTarget.toPlainText())):
                 self.ui.txtTarget.setPlainText(unit.target)
@@ -243,23 +258,6 @@ class TUview(QtGui.QDockWidget):
                 sourcetab = self.ui.tabWidgetSource
                 sourcetabindex = sourcetab.currentIndex()
                 self.ui.txtTarget.setPlainText(sourcetab.widget(sourcetabindex).children()[1].toPlainText())
-    
-    def highlightSearch(self, textField, position, length = 0):
-        """Highlight the text at specified position, length, and textField.
-        @param textField: source or target text box.
-        @param position: highlight start point.
-        @param length: highlight length."""
-        if ((textField == World.source or textField == World.target)  and position != None):
-            textField = ((textField == World.source) and self.ui.txtSource or self.ui.txtTarget)
-            block = textField.document().findBlock(position)
-            self.highlighter.clearSearchFormats()
-            self.highlighter.setHighLight(block, position - block.position(), length, World.searchFormat)
-        else:
-            self.highlighter.clearSearchFormats()
-    
-    def highlighGlossary(self, position, length):
-        block = self.ui.txtSource.document().findBlock(position)
-        self.highlighter.setHighLight(block, position - block.position(), length, World.glossaryFormat)
     
     def replaceText(self, textField, position, length, replacedText):
         """replace the string (at position and length) with replacedText in txtTarget.
