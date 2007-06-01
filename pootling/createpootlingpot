@@ -1,0 +1,3 @@
+#!/bin/bash
+lupdate pootling.pro
+ts2po -i pootling.ts -P pootling.pot
