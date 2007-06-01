@@ -28,7 +28,7 @@ import re
 import locale
 
 class GrepFilter:
-  def __init__(self, searchstring, searchparts, ignorecase=False, useregexp=False, invertmatch=False, accelchar=None, encoding='utf-8'):
+  def __init__(self, searchstring, searchparts, ignorecase=False, useregexp=False, invertmatch=False, accelchar=None, encoding='utf-8', includeheader=False):
     """builds a checkfilter using the given checker"""
     if isinstance(searchstring, unicode):
       self.searchstring = searchstring
@@ -54,6 +54,7 @@ class GrepFilter:
       self.searchpattern = re.compile(self.searchstring)
     self.invertmatch = invertmatch
     self.accelchar = accelchar
+    self.includeheader = includeheader
 
   def matches(self, teststr):
     if self.ignorecase:
@@ -104,6 +105,11 @@ class GrepFilter:
       # filterelement() returns True when a unit matches.
       if self.filterelement(unit):
         thenewfile.addunit(unit)
+    if self.includeheader and thenewfile.units > 0:
+      if thefile.units[0].isheader():
+        thenewfile.units.insert(0, thefile.units[0])
+      else:
+        thenewfile.units.insert(0, thenewfile.makeheader())
     return thenewfile
 
 class GrepOptionParser(optrecurse.RecursiveOptionParser):
@@ -145,7 +151,7 @@ class GrepOptionParser(optrecurse.RecursiveOptionParser):
     (options, args) = self.parse_args()
     options.inputformats = self.inputformats
     options.outputoptions = self.outputoptions
-    options.checkfilter = GrepFilter(options.searchstring, options.searchparts, options.ignorecase, options.useregexp, options.invertmatch, options.accelchar, locale.getpreferredencoding())
+    options.checkfilter = GrepFilter(options.searchstring, options.searchparts, options.ignorecase, options.useregexp, options.invertmatch, options.accelchar, locale.getpreferredencoding(), options.includeheader)
     self.usepsyco(options)
     self.recursiveprocess(options)
 
@@ -173,6 +179,9 @@ def cmdlineparser():
   parser.add_option("", "--accelerator", dest="accelchar",
     action="store", type="choice", choices=["&", "_", "~"],
     metavar="ACCELERATOR", help="ignores the given accelerator when matching")
+  parser.add_option("", "--header", dest="includeheader",
+    action="store_true", default=False,
+    help="include a PO header in the output")
   parser.set_usage()
   parser.passthrough.append('checkfilter')
   return parser
