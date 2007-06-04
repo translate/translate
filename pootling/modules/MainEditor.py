@@ -189,17 +189,18 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.preference, QtCore.SIGNAL("TMpreference"), self.showHideTableLookup)
         self.connect(self.preference, QtCore.SIGNAL("GlossaryPreference"), self.operator.setTermLookupStatus)
         
+        # action lookup text and auto translation from TM
+        self.connect(self.ui.actionAuto_translate, QtCore.SIGNAL("triggered()"), self.operator.autoTranslate)       
+        
         # action setting Path of TM
         self.tmsetting = tmSetting.tmSetting(self)
         self.connect(self.ui.actionBuild_TM, QtCore.SIGNAL("triggered()"), self.tmsetting.showDialog)
         self.connect(self.tmsetting, QtCore.SIGNAL("matcher"), self.operator.setMatcher)
         
-        # action lookup text and auto translation from TM
-        self.connect(self.ui.actionAuto_translate, QtCore.SIGNAL("triggered()"), self.operator.autoTranslate)
-        
         # action setting path of glossary
         self.glossary = tmSetting.glossarySetting(self)
         self.connect(self.ui.actionGlossary, QtCore.SIGNAL("triggered()"), self.glossary.showDialog)
+        self.connect(self.glossary, QtCore.SIGNAL("matcher"), self.operator.setMatcher)
         
         # Edit Header
         self.headerDialog = Header(self, self.operator)
