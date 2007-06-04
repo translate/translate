@@ -325,15 +325,13 @@ class Catalog(QtGui.QMainWindow):
                 item.setText(0, os.path.dirname(path))
   
             # if file is already existed in the item's child... skip.
-            noSupportedFile = True
             if (path.endswith(".po") or path.endswith(".pot") or path.endswith(".xlf") or path.endswith(".xliff")) and (not self.ifFileExisted(path, item)):
                 childItem = QtGui.QTreeWidgetItem(item)
                 childItem.setText(0, os.path.basename(path))
                 childItem.setIcon(0, self.iconFile)
                 self.fileItems.append(childItem)
             # check extension of file if not have .po or .pot or xlf and xliff files. hide folder
-                noSupportedFile = False
-            if noSupportedFile:
+            if (item.childCount() == 0):
                 item.setHidden(True)
 
         if (os.path.isdir(path)) and (not path.endswith(".svn")):
