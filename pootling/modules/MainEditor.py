@@ -50,6 +50,7 @@ class MainWindow(QtGui.QMainWindow):
         self.bookmarkaction = []
         self.setWindowTitle(World.settingApp + ' ' + __version__.ver)
         self.maxBookmark = 10
+        self.delimiter = " : "
         self.createBookmarkAction()
         self.clearBookmarks()
         imagesdir = "../images"
@@ -326,7 +327,7 @@ class MainWindow(QtGui.QMainWindow):
         self.totalMaxlen = len(str(self.maxBookmark))
         value = str(id).rjust(self.totalMaxlen)
 
-        reducedSource = value + " - " + unit.source[:15] + "..."
+        reducedSource = value + self.delimiter + unit.source[:15] + "..."
         bookmark = World.settings.value("bookmarkList").toStringList()
         bookmark.removeAll(reducedSource)
         bookmark.prepend(reducedSource)
@@ -347,7 +348,7 @@ class MainWindow(QtGui.QMainWindow):
     def startBookmarkAction(self):
         action = self.sender()
         if action:
-            index = str(action.data().toString()).split(" : ")
+            index = str(action.data().toString()).split(self.delimiter)
             self.dockOverview.gotoRow(int(index[0]))
     
     def updateBookmarkAction(self):
