@@ -24,25 +24,35 @@ from PyQt4 import QtCore, QtGui
 class Highlighter(QtGui.QSyntaxHighlighter):
     def __init__(self, parent):
         QtGui.QSyntaxHighlighter.__init__(self, parent)
-        
         self.parent = parent
         
+        # var format
+        self.varFormat = QtGui.QTextCharFormat()
+        self.varFormat.setForeground(QtCore.Qt.blue)
+        self.vars = "%\\d+|&\\w+;"
+        self.varExpression = QtCore.QRegExp(self.vars)
+        # tag format
+        self.tagFormat = QtGui.QTextCharFormat()
+        self.tagFormat.setForeground(QtCore.Qt.darkMagenta)
+        self.tags = "<b>.+</b>"
+        self.tagExpression = QtCore.QRegExp(self.tags)
+        
+        # glossary format
+        self.glsFormat = QtGui.QTextCharFormat()
+        self.glsFormat.setFontWeight(QtGui.QFont.Bold)
+        self.glsFormat.setForeground(QtCore.Qt.darkGreen)
+        self.glsFormat.setUnderlineStyle(QtGui.QTextCharFormat.DotLine)
+##        self.glsFormat.setFontUnderline(True)
+##        self.glsFormat.setUnderlineColor(QtCore.Qt.darkGreen)
+        self.highlightGlossary = True
+        self.glsExpression = None
+
         # search format
         self.searchFormat = QtGui.QTextCharFormat()
         self.searchFormat.setFontWeight(QtGui.QFont.Bold)
         self.searchFormat.setForeground(QtCore.Qt.white)
         self.searchFormat.setBackground(QtCore.Qt.darkMagenta)
-        
-        # glossary format
-        self.glossaryFormat = QtGui.QTextCharFormat()
-        self.glossaryFormat.setFontWeight(QtGui.QFont.Bold)
-        self.glossaryFormat.setForeground(QtCore.Qt.darkGreen)
-        #self.glossaryFormat.setUnderlineStyle(QtGui.QTextCharFormat.DashDotDotLine)
-        self.highlightGlossary = True
-        
-        self.classFormat = self.glossaryFormat
-        # avoid blank regular expression
-        self.expression = QtCore.QRegExp(" ")
+                
         self.searchExpression = None
     
     def highlightBlock(self, text):
@@ -50,13 +60,27 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         highlight the text according to the self.expression
         @ param text: a document text.
         """
-        # highlight glossary
-        if (self.highlightGlossary):
-            index = text.indexOf(self.expression)
-            while (index >= 0):
-                length = self.expression.matchedLength()
-                self.setFormat(index, length, self.classFormat)
-                index = text.indexOf(self.expression, index + length);
+        # highlight arguments, variable
+        varIndex = text.indexOf(self.varExpression)
+        tagIndex = text.indexOf(self.tagExpression)
+        if (self.glsExpression):
+            glsIndex = text.indexOf(self.glsExpression)
+        else:
+            glsIndex = -1
+        
+        while (tagIndex >= 0) or (varIndex >= 0) or (glsIndex >= 0):
+            length = self.tagExpression.matchedLength()
+            self.setFormat(tagIndex, length, self.tagFormat)
+            tagIndex = text.indexOf(self.tagExpression, tagIndex + length)
+            length = self.varExpression.matchedLength()
+            self.setFormat(varIndex, length, self.varFormat)
+            varIndex = text.indexOf(self.varExpression, varIndex + length)
+            
+            # highlight glossary
+            if (self.highlightGlossary) and (self.glsExpression):
+                length = self.glsExpression.matchedLength()
+                self.setFormat(glsIndex, length, self.glsFormat)
+                glsIndex = text.indexOf(self.glsExpression, glsIndex + length)
         
         # highlight search
         if (self.searchExpression):
@@ -71,13 +95,13 @@ class Highlighter(QtGui.QSyntaxHighlighter):
     
     def setPattern(self, patternList):
         """
-        build self.expression base on given pattern.
+        build self.glsExpression base on given pattern.
         @param patternList: list of string.
         """
-        pattern = " | ".join(unicode(p) for p in patternList)
-        pattern = QtCore.QString(pattern)
-        self.expression = QtCore.QRegExp(pattern)
-        self.expression.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
+        pattern = "\\b(" + "|".join(unicode(p) for p in patternList) + ")\\b"
+#        pattern = QtCore.QString(pattern)
+        self.glsExpression = QtCore.QRegExp(pattern)
+        self.glsExpression.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
     
     def setSearchString(self, searchString):
         """
