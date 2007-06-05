@@ -279,8 +279,12 @@ class globalSetting(QtGui.QDialog):
         store.filepath = file
         if (isinstance(store, poheader.poheader)):
             headerDic = store.parseheader()
-            store.translator = headerDic['Last-Translator']
-            store.date = headerDic['PO-Revision-Date']
+            store.translator = headerDic.get('Last-Translator') 
+            store.date = headerDic.get('PO-Revision-Date') 
+            if (store.translator == None):
+                store.translator = ""
+            if (store.date == None):
+                store.date = ""
         else:
             store.translator = ""
             store.date = ""
