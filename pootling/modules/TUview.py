@@ -43,6 +43,53 @@ class TUview(QtGui.QDockWidget):
         
         self.sourceHighlighter = Highlighter(self.ui.txtSource)
         self.targetHighlighter = Highlighter(self.ui.txtTarget)
+        
+        # install custom event, when txtTarget lose focus ->
+        # mark content dirty.
+##        self.ui.txtTarget.focusOutEvent = self.customFocusOutEvent
+##        self.customFocusOutEvent = QtCore.QEvent(QtCore.QEvent.FocusOut)
+        
+        # context menu of items
+        self.menu = QtGui.QMenu()
+        actionCopy = self.menu.addAction(self.tr("Copy to clipboard.."))
+        actionCopy.setEnabled(False)
+        self.actionTerm1 = self.menu.addAction("")
+##        self.actionTerm2 = self.menu.addAction("")
+##        self.actionTerm3 = self.menu.addAction("")
+##        self.actionTerm4 = self.menu.addAction("")
+##        self.connect(actionCopy, QtCore.SIGNAL("triggered()"), self.emitOpenFile)
+        
+        self.ui.txtSource.contextMenuEvent = self.customContextMenuEvent
+        self.customContextMenuEvent = QtCore.QEvent(QtCore.QEvent.ContextMenu)
+    
+    def customFocusOutEvent(self, event):
+        """
+        subclass of focusOutEvent
+        """
+        self.emitTargetChanged()
+        
+    def customContextMenuEvent(self, e):
+        """
+        subclass of toolTipEvent
+        """
+##        e.globalPos()
+        cursor = self.ui.txtSource.cursorForPosition(e.pos())
+        position = cursor.position()
+        pattern = "\\b(\\w+)\\b"
+        expression = QtCore.QRegExp(pattern)
+        
+        text = self.ui.txtSource.toPlainText()
+        index = text.lastIndexOf(expression, position)
+        length = expression.matchedLength()
+        try:
+            word = unicode(text[index:index + length])
+        except:
+            word = ""
+        
+        glossaryWords = self.sourceHighlighter.glossaryWords
+        if (word in glossaryWords):
+            self.actionTerm1.setText(word)
+            self.menu.exec_(e.globalPos())
     
     def setPattern(self, patternList):
         """
@@ -117,15 +164,11 @@ class TUview(QtGui.QDockWidget):
         Then recalculate scrollbar maximum value.
         @param unit: unit to set in target and source.
         @param index: value in the scrollbar to be removed.""" 
-        #self.disconnect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
         self.disconnect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.textChanged)
         if (not unit):
             return
         
-        if hasattr(self, "contentDirty") and self.contentDirty:
-            target = self.getTargets()
-            self.emit(QtCore.SIGNAL("targetChanged"), target, self.lastUnit)
-        self.contentDirty = False
+        self.emitTargetChanged()
         
         self.ui.txtTarget.setReadOnly(False)
         comment = unit.getcontext()
@@ -138,10 +181,12 @@ class TUview(QtGui.QDockWidget):
         self.showUnit(unit)
         # set the scrollbar position
         self.setScrollbarValue(unit.x_editor_row)
-        #self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
         self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.textChanged)
         
         self.lastUnit = unit
+        
+        # glossary words
+##        print self.sourceHighlighter.glossaryWords
         
     def showUnit(self, unit):
         ''' show unit's source and target in a normal text box if unit is single or 
@@ -184,13 +229,10 @@ class TUview(QtGui.QDockWidget):
                 self.secondpage = True
                 self.addRemoveTabWidget(self.ui.tabWidgetTarget, nplurals, unit.target.strings)
                 for i in range(self.ui.tabWidgetTarget.count()):
-                    # make sure it is not emit signal targetchanged everytime when unit is updated.
                     textbox = self.ui.tabWidgetTarget.widget(i).children()[1]
                     textbox.setReadOnly(False)
-                    #self.disconnect(textbox, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
                     self.disconnect(textbox, QtCore.SIGNAL("textChanged()"), self.textChanged)
                     # everytime display a unit, connect signal
-                    #self.connect(textbox, QtCore.SIGNAL("textChanged()"), self.emitTargetChanged)
                     self.connect(textbox, QtCore.SIGNAL("textChanged()"), self.textChanged)
         
     def addRemoveTabWidget(self, tabWidget, length, msg_strings):
@@ -228,10 +270,18 @@ class TUview(QtGui.QDockWidget):
         """
         @emit textchanged signal for widget that need to update text while typing.
         """
-        #TODO: emit targetChanged when target content is dirty, not by keypressed.
         self.contentDirty = True
         text = unicode(self.ui.txtTarget.toPlainText())
         self.emit(QtCore.SIGNAL("textChanged"), text)
+    
+    def emitTargetChanged(self):
+        """
+        @emit targetChanged signal if content is dirty.
+        """
+        if hasattr(self, "contentDirty") and self.contentDirty:
+            target = self.getTargets()
+            self.emit(QtCore.SIGNAL("targetChanged"), target, self.lastUnit)
+        self.contentDirty = False
     
 ##    def emitTargetChanged(self):
 ##        """
