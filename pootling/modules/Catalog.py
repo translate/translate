@@ -155,6 +155,10 @@ class Catalog(QtGui.QMainWindow):
         self.connect(self.actionFind, QtCore.SIGNAL("triggered()"), self.findBar.showFind)
         self.connect(self.actionShowStat, QtCore.SIGNAL("triggered()"), self.showStatistic)
 
+        # install custom menu event for treeCatalog
+        self.ui.treeCatalog.contextMenuEvent = self.customContextMenuEvent
+        self.customContextMenuEvent = QtCore.QEvent(QtCore.QEvent.ContextMenu)
+
     def find(self, searchString, searchOptions):
         if (not (searchString and searchOptions)):
             return
@@ -323,7 +327,7 @@ class Catalog(QtGui.QMainWindow):
                 self.ui.treeCatalog.addTopLevelItem(item)
                 self.ui.treeCatalog.expandItem(item)
                 item.setText(0, os.path.dirname(path))
-  
+
             # if file is already existed in the item's child... skip.
             if (path.endswith(".po") or path.endswith(".pot") or path.endswith(".xlf") or path.endswith(".xliff")) and (not self.ifFileExisted(path, item)):
                 childItem = QtGui.QTreeWidgetItem(item)
@@ -353,6 +357,9 @@ class Catalog(QtGui.QMainWindow):
                     childItem = QtGui.QTreeWidgetItem(item)
                     childItem.setText(0, os.path.basename(path))
                 childItem.setIcon(0, self.folderIcon)
+
+#            if (item.childCount() == 0):
+#                item.setHidden(True)
 
             for root, dirs, files in os.walk(path):
                 for file in files:
@@ -618,7 +625,7 @@ class Catalog(QtGui.QMainWindow):
             self.timer.stop()
             self.itemNumber = 0
     
-    def contextMenuEvent(self, e):
+    def customContextMenuEvent(self, e):
         self.menu.exec_(e.globalPos())
 
 def main(self):
