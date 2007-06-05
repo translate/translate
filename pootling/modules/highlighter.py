@@ -41,11 +41,12 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         self.glsFormat = QtGui.QTextCharFormat()
         self.glsFormat.setFontWeight(QtGui.QFont.Bold)
         self.glsFormat.setForeground(QtCore.Qt.darkGreen)
-        self.glsFormat.setUnderlineStyle(QtGui.QTextCharFormat.DotLine)
-##        self.glsFormat.setFontUnderline(True)
-##        self.glsFormat.setUnderlineColor(QtCore.Qt.darkGreen)
+##        self.glsFormat.setUnderlineStyle(QtGui.QTextCharFormat.DotLine)
+        self.glsFormat.setFontUnderline(True)
+        self.glsFormat.setUnderlineColor(QtCore.Qt.darkGreen)
         self.highlightGlossary = True
         self.glsExpression = None
+        self.glossaryWords = []
 
         # search format
         self.searchFormat = QtGui.QTextCharFormat()
@@ -60,6 +61,8 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         highlight the text according to the self.expression
         @ param text: a document text.
         """
+        self.glossaryWords = []
+        
         # highlight arguments, variable
         varIndex = text.indexOf(self.varExpression)
         tagIndex = text.indexOf(self.tagExpression)
@@ -80,6 +83,7 @@ class Highlighter(QtGui.QSyntaxHighlighter):
             if (self.highlightGlossary) and (self.glsExpression):
                 length = self.glsExpression.matchedLength()
                 self.setFormat(glsIndex, length, self.glsFormat)
+                self.glossaryWords.append(unicode(text[glsIndex:glsIndex + length]))
                 glsIndex = text.indexOf(self.glsExpression, glsIndex + length)
         
         # highlight search
