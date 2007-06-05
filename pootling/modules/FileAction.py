@@ -65,10 +65,10 @@ class FileAction(QtCore.QObject):
         # TODO: think about export in different formats
         labelSaveAs = self.tr("Save As")
         labelAllFiles = self.tr("All Files")
-        fileDialog = QtGui.QFileDialog(self.parentWidget, labelSaveAs, QtCore.QDir.homePath(), self.fileDescription + " (*" + self.fileExtension + ");;" + labelAllFiles + " (*.*)")
+        fileDialog = QtGui.QFileDialog(self.parentWidget, labelSaveAs, self.directory, self.fileDescription + " (*" + self.fileExtension + ");;" + labelAllFiles + " (*.*)")
 
         fileDialog.setHistory(World.settings.value("SaveAsHistory").toStringList())
-        fileDialog.setDirectory(QtCore.QDir(World.settings.value("SaveAsDirectory").toString()))
+        fileDialog.setDirectory(self.directory)
         fileDialog.setLabelText ( QtGui.QFileDialog.Accept, labelSaveAs)
         fileDialog.setAcceptMode(QtGui.QFileDialog.AcceptSave)
         fileDialog.setConfirmOverwrite(True)
@@ -88,7 +88,6 @@ class FileAction(QtCore.QObject):
                     newHistory.append(history.first())
                     history.removeAll(history.first())
                 World.settings.setValue("SaveAsHistory", QtCore.QVariant(newHistory))
-                World.settings.setValue("SaveAsDirectory", QtCore.QVariant(fileDialog.directory().path()))
             else:
                 QtGui.QMessageBox.information(self.parentWidget, self.tr("Information") , self.tr("Please specify the filename to save to"))
                 self.saveAs()
