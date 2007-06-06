@@ -84,16 +84,16 @@ class TUview(QtGui.QDockWidget):
         """
         self.sourceHighlighter.setPattern(patternList)
     
-    def setSearchString(self, searchString, textField):
+    def setSearchString(self, searchString, textField, foundPosition):
         """
         call highlighter.setSearchString()
         """
         if (textField == World.source):
-            self.sourceHighlighter.setSearchString(searchString)
-            self.targetHighlighter.setSearchString("")
+            self.sourceHighlighter.setSearchString(searchString, foundPosition)
+            self.targetHighlighter.setSearchString("", 0)
         elif (textField == World.target):
-            self.targetHighlighter.setSearchString(searchString)
-            self.sourceHighlighter.setSearchString("")
+            self.targetHighlighter.setSearchString(searchString, foundPosition)
+            self.sourceHighlighter.setSearchString("", 0)
     
     def setHighlightGlossary(self, bool):
         """

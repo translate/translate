@@ -54,7 +54,7 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         self.searchFormat.setForeground(QtCore.Qt.white)
         self.searchFormat.setBackground(QtCore.Qt.darkMagenta)
                 
-        self.searchExpression = None
+        self.searchString = None
     
     def highlightBlock(self, text):
         """
@@ -65,6 +65,7 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         # clear glossaryWords not by rehighlight block.
         if (self.previousBlockState() == -1):
             self.glossaryWords = []
+            self.blockWordCount = 0
         self.setCurrentBlockState(0)
         
         # highlight arguments, variable
@@ -90,17 +91,14 @@ class Highlighter(QtGui.QSyntaxHighlighter):
                 self.glossaryWords.append(unicode(self.glsExpression.capturedTexts()[0]))
                 glsIndex = text.indexOf(self.glsExpression, glsIndex + length)
             
-        
         # highlight search
-        if (self.searchExpression):
-            index = text.indexOf(self.searchExpression)
-            while (index >= 0):
-                length = self.searchExpression.matchedLength()
-                self.setFormat(index, length, self.searchFormat)
-                index = text.indexOf(self.searchExpression, index + length)
-                if (index):
-                    self.searchExpression = None
-                    break
+        if (self.searchString):
+            index = self.foundPosition - self.blockWordCount
+            self.setFormat(index, len(self.searchString), self.searchFormat)
+            cursor = self.parent.textCursor()
+            cursor.setPosition(self.blockWordCount + index)
+            self.parent.setTextCursor(cursor)
+        self.blockWordCount += len(text) + 1
     
     def refresh(self):
         """
@@ -117,17 +115,14 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         self.glsExpression = QtCore.QRegExp(pattern)
         self.glsExpression.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
     
-    def setSearchString(self, searchString):
+    def setSearchString(self, searchString, foundPosition):
         """
-        set searchExpression and make document() dirty then it will
+        set searchString and make document() dirty then it will
         re highlightBlock().
         """
         # DOTO: fix search only highlight first found...
-        if (not searchString):
-            self.searchExpression = None
-        else:
-            self.searchExpression = QtCore.QRegExp(QtCore.QString(searchString))
-            self.searchExpression.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
+        self.searchString = searchString
+        self.foundPosition = foundPosition
         self.refresh()
         
     def setHighlightGlossary(self, bool):

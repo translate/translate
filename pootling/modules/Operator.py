@@ -418,12 +418,12 @@ class Operator(QtCore.QObject):
         """emit searchResult signal with searchString."""
         self.setUnitFromPosition(self.searchPointer)
         textField = self.searchableText[self.currentTextField]
-        self.emit(QtCore.SIGNAL("searchResult"), self.searchString, textField)
+        self.emit(QtCore.SIGNAL("searchResult"), self.searchString, textField, self.foundPosition)
     
     def _searchNotFound(self):
         """emit searchResult signal with searchString = ""."""
         textField = self.searchableText[self.currentTextField]
-        self.emit(QtCore.SIGNAL("searchResult"), "", textField)
+        self.emit(QtCore.SIGNAL("searchResult"), "", textField, -1)
     
     def setAfterfileClosed(self):
         self.store = None
@@ -521,7 +521,6 @@ class Operator(QtCore.QObject):
             self.menuTerm = QtGui.QMenu()
             self.actionTerm = self.menuTerm.addAction(self.tr("Copy to clipboard:"))
             self.actionTerm.setEnabled(False)
-        self.termmatcher.setparameters(10, 100, 70)
         candidates = self.termmatcher.matches(term)
         for can in candidates:
             self.actionTerm = self.menuTerm.addAction(can.target)
