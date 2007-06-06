@@ -174,7 +174,9 @@ class TUview(QtGui.QDockWidget):
         self.lastUnit = unit
         
         # glossary words
-##        print self.sourceHighlighter.glossaryWords
+        glossaryWords = self.sourceHighlighter.glossaryWords
+        for word in glossaryWords:
+            self.emit(QtCore.SIGNAL("term"), word)
         
     def showUnit(self, unit):
         ''' show unit's source and target in a normal text box if unit is single or 

@@ -56,6 +56,7 @@ class Operator(QtCore.QObject):
         self.setTMLookupStatus(TMpreference)
         self.isCpResult = False
         self.glossaryChanged = True
+        self.termmatcher = None
 
     def getUnits(self, fileName):
         """reading a file into the internal datastructure.
@@ -513,6 +514,14 @@ class Operator(QtCore.QObject):
         unit = self.filteredList[self.currentUnitIndex]
         candidates = self.lookupProcess(unit)
         self.emit(QtCore.SIGNAL("candidates"), candidates)
+    
+    def lookupTerm(self, term):
+        """Lookup a term in glossary.
+        @param term: a word to lookup in termmatcher
+        emit glossaryTerms signal with a candidates as list of units
+        """
+        candidates = self.termmatcher.matches(term)
+        self.emit(QtCore.SIGNAL("glossaryTerms"), candidates)
     
     def popupTerm(self, term, pos):
         # context menu of items

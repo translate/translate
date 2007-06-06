@@ -35,6 +35,7 @@ from pootling.modules.AboutEditor import AboutEditor
 import pootling.modules.World as World
 from pootling.modules import tmSetting
 from pootling.modules import tableTM
+from pootling.modules import TableGlossary
 import __version__
 
 class MainWindow(QtGui.QMainWindow):
@@ -80,6 +81,9 @@ class MainWindow(QtGui.QMainWindow):
         action.setStatusTip("Toggle the Detail window")
         action.setWhatsThis("<h3>Toggle the Detail window</h3>If the Detail window is hidden then display it. If it is displayed then close it.")
         self.ui.menuWindow.insertAction(sepAction, action)
+        #Plug in glossary widget
+        self.tableGlossary = TableGlossary.TableGlossary(self)
+        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.tableGlossary)
         
         #plug in comment widget
         self.dockComment = CommentDock(self)
@@ -127,6 +131,11 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.table, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
         self.connect(self.table, QtCore.SIGNAL("isCopyResult"), self.operator.isCopyResult)
         self.connect(self.operator, QtCore.SIGNAL("filterChanged"), self.table.filterChanged)
+        
+        #Glossary
+        self.connect(self.dockTUview, QtCore.SIGNAL("term"), self.operator.lookupTerm)
+        self.connect(self.operator, QtCore.SIGNAL("glossaryTerms"), self.tableGlossary.fillTable)
+        self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.tableGlossary.newUnit)
         
         #Help menu of aboutQt
         self.ui.menuHelp.addSeparator()
