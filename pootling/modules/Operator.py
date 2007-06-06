@@ -584,7 +584,7 @@ class Operator(QtCore.QObject):
         """
         emit glossaryPattern for class highlighter.
         """
-        if (not hasattr(self, "termmatcher")):
+        if (not hasattr(self, "termmatcher")) or (not self.termmatcher):
             World.settings.beginGroup("Glossary")
             pickleFile = World.settings.value("pickleFile").toString()
             World.settings.endGroup()
