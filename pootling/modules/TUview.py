@@ -72,7 +72,6 @@ class TUview(QtGui.QDockWidget):
         """
         subclass of toolTipEvent
         """
-##        e.globalPos()
         cursor = self.ui.txtSource.cursorForPosition(e.pos())
         position = cursor.position()
         pattern = "\\b(\\w+)\\b"
@@ -82,10 +81,9 @@ class TUview(QtGui.QDockWidget):
         index = text.lastIndexOf(expression, position)
         length = expression.matchedLength()
         try:
-            word = unicode(text[index:index + length])
+            word = unicode(expression.capturedTexts()[0])
         except:
             word = ""
-        
         glossaryWords = self.sourceHighlighter.glossaryWords
         if (word in glossaryWords):
             self.actionTerm1.setText(word)
@@ -113,6 +111,7 @@ class TUview(QtGui.QDockWidget):
         call highlighter.setHighlightGlossary()
         """
         self.sourceHighlighter.setHighlightGlossary(bool)
+        self.sourceHighlighter.refresh()
     
     def closeEvent(self, event):
         """
