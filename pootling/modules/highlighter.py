@@ -61,12 +61,16 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         highlight the text according to the self.expression
         @ param text: a document text.
         """
-        self.glossaryWords = []
+        
+        # clear glossaryWords not by rehighlight block.
+        if (self.previousBlockState() == -1):
+            self.glossaryWords = []
+        self.setCurrentBlockState(0)
         
         # highlight arguments, variable
         varIndex = text.indexOf(self.varExpression)
         tagIndex = text.indexOf(self.tagExpression)
-        if (self.highlightGlossary):
+        if (self.highlightGlossary) and (self.glsExpression):
             glsIndex = text.indexOf(self.glsExpression)
         else:
             glsIndex = -1
@@ -80,10 +84,10 @@ class Highlighter(QtGui.QSyntaxHighlighter):
             varIndex = text.indexOf(self.varExpression, varIndex + length)
             
             # highlight glossary
-            if (self.highlightGlossary):
+            if (self.highlightGlossary) and (self.glsExpression):
                 length = self.glsExpression.matchedLength()
                 self.setFormat(glsIndex, length, self.glsFormat)
-                self.glossaryWords.append(unicode(text[glsIndex:glsIndex + length]))
+                self.glossaryWords.append(unicode(self.glsExpression.capturedTexts()[0]))
                 glsIndex = text.indexOf(self.glsExpression, glsIndex + length)
             
         
@@ -98,13 +102,18 @@ class Highlighter(QtGui.QSyntaxHighlighter):
                     self.searchExpression = None
                     break
     
+    def refresh(self):
+        """
+        mark contents dirty, to make it rehighlight.
+        """
+        self.parent.document().markContentsDirty(0, len(self.parent.document().toPlainText()))
+    
     def setPattern(self, patternList):
         """
         build self.glsExpression base on given pattern.
         @param patternList: list of string.
         """
         pattern = "\\b(" + "|".join(unicode(p) for p in patternList) + ")\\b"
-#        pattern = QtCore.QString(pattern)
         self.glsExpression = QtCore.QRegExp(pattern)
         self.glsExpression.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
     
@@ -119,7 +128,7 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         else:
             self.searchExpression = QtCore.QRegExp(QtCore.QString(searchString))
             self.searchExpression.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
-        self.parent.document().markContentsDirty(0, len(self.parent.document().toPlainText()))
+        self.refresh()
         
     def setHighlightGlossary(self, bool):
         self.highlightGlossary = bool
