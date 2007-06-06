@@ -44,7 +44,7 @@ class Highlighter(QtGui.QSyntaxHighlighter):
 ##        self.glsFormat.setUnderlineStyle(QtGui.QTextCharFormat.DotLine)
         self.glsFormat.setFontUnderline(True)
         self.glsFormat.setUnderlineColor(QtCore.Qt.darkGreen)
-        self.highlightGlossary = True
+        self.highlightGlossary = False
         self.glsExpression = None
         self.glossaryWords = []
 
@@ -66,7 +66,7 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         # highlight arguments, variable
         varIndex = text.indexOf(self.varExpression)
         tagIndex = text.indexOf(self.tagExpression)
-        if (self.glsExpression):
+        if (self.highlightGlossary):
             glsIndex = text.indexOf(self.glsExpression)
         else:
             glsIndex = -1
@@ -80,11 +80,12 @@ class Highlighter(QtGui.QSyntaxHighlighter):
             varIndex = text.indexOf(self.varExpression, varIndex + length)
             
             # highlight glossary
-            if (self.highlightGlossary) and (self.glsExpression):
+            if (self.highlightGlossary):
                 length = self.glsExpression.matchedLength()
                 self.setFormat(glsIndex, length, self.glsFormat)
                 self.glossaryWords.append(unicode(text[glsIndex:glsIndex + length]))
                 glsIndex = text.indexOf(self.glsExpression, glsIndex + length)
+            
         
         # highlight search
         if (self.searchExpression):
