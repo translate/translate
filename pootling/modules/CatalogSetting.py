@@ -33,8 +33,6 @@ class CatalogSetting(QtGui.QDialog):
     """
     def __init__(self, parent):
         QtGui.QDialog.__init__(self, parent)
-        self.subscan = None
-        
         self.ui = Ui_catalogSetting()
         self.ui.setupUi(self)
         self.setWindowTitle("Setting Catalog Manager")
