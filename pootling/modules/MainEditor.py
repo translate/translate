@@ -163,6 +163,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.findBar, QtCore.SIGNAL("replace"), self.operator.replace)
         self.connect(self.findBar, QtCore.SIGNAL("replaceAll"), self.operator.replaceAll)
         
+        self.connect(self.dockTUview, QtCore.SIGNAL("glossaryTerm"), self.operator.popupTerm)
         self.connect(self.operator, QtCore.SIGNAL("glossaryPattern"), self.dockTUview.setPattern)
         self.connect(self.operator, QtCore.SIGNAL("highlightGlossary"), self.dockTUview.setHighlightGlossary)
         self.connect(self.operator, QtCore.SIGNAL("searchResult"), self.dockTUview.setSearchString)

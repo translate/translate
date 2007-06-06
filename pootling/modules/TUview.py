@@ -49,16 +49,6 @@ class TUview(QtGui.QDockWidget):
 ##        self.ui.txtTarget.focusOutEvent = self.customFocusOutEvent
 ##        self.customFocusOutEvent = QtCore.QEvent(QtCore.QEvent.FocusOut)
         
-        # context menu of items
-        self.menu = QtGui.QMenu()
-        actionCopy = self.menu.addAction(self.tr("Copy to clipboard.."))
-        actionCopy.setEnabled(False)
-        self.actionTerm1 = self.menu.addAction("")
-##        self.actionTerm2 = self.menu.addAction("")
-##        self.actionTerm3 = self.menu.addAction("")
-##        self.actionTerm4 = self.menu.addAction("")
-##        self.connect(actionCopy, QtCore.SIGNAL("triggered()"), self.emitOpenFile)
-        
         self.ui.txtSource.contextMenuEvent = self.customContextMenuEvent
         self.customContextMenuEvent = QtCore.QEvent(QtCore.QEvent.ContextMenu)
     
@@ -81,13 +71,12 @@ class TUview(QtGui.QDockWidget):
         index = text.lastIndexOf(expression, position)
         length = expression.matchedLength()
         try:
-            word = unicode(expression.capturedTexts()[0])
+            term = unicode(expression.capturedTexts()[0])
         except:
-            word = ""
+            term = ""
         glossaryWords = self.sourceHighlighter.glossaryWords
-        if (word in glossaryWords):
-            self.actionTerm1.setText(word)
-            self.menu.exec_(e.globalPos())
+        if (term in glossaryWords):
+            self.emit(QtCore.SIGNAL("glossaryTerm"), term, e.globalPos())
     
     def setPattern(self, patternList):
         """
