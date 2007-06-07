@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# -*- coding: utf8 -*-
+# -*- coding: utf-8 -*-
 
 # Pootling
 # Copyright 2006 WordForge Foundation
@@ -51,16 +51,16 @@ class TUview(QtGui.QDockWidget):
         
         self.ui.txtSource.contextMenuEvent = self.customContextMenuEvent
         self.customContextMenuEvent = QtCore.QEvent(QtCore.QEvent.ContextMenu)
-    
-    def customFocusOutEvent(self, event):
-        """
-        subclass of focusOutEvent
-        """
-        self.emitTargetChanged()
+        
+##    def customFocusOutEvent(self, event):
+##        """
+##        subclass of focusOutEvent
+##        """
+##        self.emitTargetChanged()
         
     def customContextMenuEvent(self, e):
         """
-        subclass of toolTipEvent
+        subclass of contextMenuEvent
         """
         cursor = self.ui.txtSource.cursorForPosition(e.pos())
         position = cursor.position()
@@ -101,6 +101,7 @@ class TUview(QtGui.QDockWidget):
         """
         self.sourceHighlighter.setHighlightGlossary(bool)
         self.sourceHighlighter.refresh()
+        self.emitGlossaryWords()
     
     def closeEvent(self, event):
         """
@@ -172,12 +173,16 @@ class TUview(QtGui.QDockWidget):
         self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.textChanged)
         
         self.lastUnit = unit
-        
-        # glossary words
+        self.emitGlossaryWords()
+    
+    def emitGlossaryWords(self):
+        """
+        emit term signal with word found in self.sourceHighlighter.glossaryWords
+        """
         glossaryWords = self.sourceHighlighter.glossaryWords
         for word in glossaryWords:
             self.emit(QtCore.SIGNAL("term"), word)
-        
+    
     def showUnit(self, unit):
         ''' show unit's source and target in a normal text box if unit is single or 
         in multi tab if unit is plural and number of plural forms setting is more than 1.
