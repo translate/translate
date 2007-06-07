@@ -62,6 +62,7 @@ class TUview(QtGui.QDockWidget):
         """
         subclass of contextMenuEvent
         """
+        self.globalPos = e.globalPos()
         text = self.ui.txtSource.toPlainText()
         if (not text):
             return
@@ -75,7 +76,7 @@ class TUview(QtGui.QDockWidget):
         length = wordWithSpace.matchedLength()
         termWithSpace = unicode(wordWithSpace.capturedTexts()[0])
         if (termWithSpace in glossaryWords):
-            self.emit(QtCore.SIGNAL("glossaryTerm"), termWithSpace, e.globalPos())
+            self.emit(QtCore.SIGNAL("termRequest"), termWithSpace)
         else:
             withoutSpace = "\\b(\\w+)\\b"
             wordWithoutSpace = QtCore.QRegExp(withoutSpace)
@@ -84,7 +85,30 @@ class TUview(QtGui.QDockWidget):
             length = wordWithoutSpace.matchedLength()
             termWithoutSpace = unicode(wordWithoutSpace.capturedTexts()[0])
             if (termWithoutSpace in glossaryWords):
-                self.emit(QtCore.SIGNAL("glossaryTerm"), termWithoutSpace, e.globalPos())
+                self.emit(QtCore.SIGNAL("termRequest"), termWithoutSpace)
+    
+    def popupTerm(self, candidates):
+        # context menu of items
+        if (not hasattr(self, "globalPos")) or (self.globalPos == None):
+            return
+        # lazy construction of menu
+        if (not hasattr(self, "menuTerm")):
+            menuTerm = QtGui.QMenu()
+            actionTerm = menuTerm.addAction(self.tr("Copy to clipboard:"))
+            actionTerm.setEnabled(False)
+        for candidate in candidates:
+            actionTerm = menuTerm.addAction(candidate.target)
+            self.connect(actionTerm, QtCore.SIGNAL("triggered()"), self.copyTranslation)
+        menuTerm.exec_(self.globalPos)
+    
+    def copyTranslation(self):
+        """
+        copy self.sender().text() to clipboard.
+        """
+        # TODO:...
+        text = self.sender().text().toUtf8()
+##        print text
+
     
     def setPattern(self, patternList):
         """

@@ -529,28 +529,15 @@ class Operator(QtCore.QObject):
             self.cache[term] = candidates
             if (len(self.cache) > 10 ): 
                 self.cache.popitem()
-        self.emit(QtCore.SIGNAL("glossaryTerms"), candidates)
-
-    def popupTerm(self, term, pos):
-        # context menu of items
-        # lazy construction of menu
-        if (not hasattr, self, "menuTerm"):
-            self.menuTerm = QtGui.QMenu()
-            self.actionTerm = self.menuTerm.addAction(self.tr("Copy to clipboard:"))
-            self.actionTerm.setEnabled(False)
-        candidates = self.termmatcher.matches(term)
-        for can in candidates:
-            self.actionTerm = self.menuTerm.addAction(can.target)
-            self.connect(self.actionTerm, QtCore.SIGNAL("triggered()"), self.copyTerm)
-        self.menuTerm.exec_(pos)
+        return candidates
     
-    def copyTerm(self):
-        """
-        copy self.sender().text() to clipboard.
-        """
-        # TODO:...
-##        text = self.sender().text().toUtf8()
-##        print text
+    def emitGlossaryCandidates(self, term):
+        candidates = self.lookupTerm(term)
+        self.emit(QtCore.SIGNAL("glossaryCandidates"), candidates)
+    
+    def emitTermRequest(self, term):
+        candidates = self.lookupTerm(term)
+        self.emit(QtCore.SIGNAL("termRequest"), candidates)
     
     def setTMLookupStatus(self, TMprefrence):
         self.lookupUnitStatus = (TMprefrence & 1 and True or False)
