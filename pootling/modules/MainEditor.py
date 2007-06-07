@@ -133,9 +133,13 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("filterChanged"), self.table.filterChanged)
         
         #Glossary
+        # toggle TUview Term Signal
+        if self.tableGlossary.toggleViewAction().isVisible():
+            self.connect(self.dockTUview, QtCore.SIGNAL("term"), self.operator.emitGlossaryCandidates)
+        else:
+            self.disconnect(self.dockTUview, QtCore.SIGNAL("term"), self.operator.emitGlossaryCandidates)
         self.connect(self.dockTUview, QtCore.SIGNAL("termRequest"), self.operator.emitTermRequest)
         self.connect(self.operator, QtCore.SIGNAL("termRequest"), self.dockTUview.popupTerm)
-        self.connect(self.dockTUview, QtCore.SIGNAL("term"), self.operator.emitGlossaryCandidates)
         self.connect(self.operator, QtCore.SIGNAL("glossaryCandidates"), self.tableGlossary.fillTable)
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.tableGlossary.newUnit)
         
@@ -294,7 +298,7 @@ class MainWindow(QtGui.QMainWindow):
         
         self.connect(self.table, QtCore.SIGNAL("openFile"), self.openFile)
         self.connect(self.table, QtCore.SIGNAL("goto"), self.dockOverview.gotoRow)
-    
+
     def showHideTableLookup(self, TMpreference):
         """
         Show or hide tableLookup according TM preference option.
