@@ -365,6 +365,8 @@ def test_purepunc():
     assert checks.passes(stdchecker.purepunc, ".", ".")
     assert checks.passes(stdchecker.purepunc, "", "")
     assert checks.fails(stdchecker.purepunc, ".", " ")
+    assert checks.fails(stdchecker.purepunc, "Find", "'")
+    assert checks.fails(stdchecker.purepunc, "'", "Find")
 
 def test_sentencecount():
     """tests sentencecount messages"""
@@ -444,8 +446,6 @@ def test_startcaps():
     assert checks.passes(stdchecker.startcaps, "find", "vind")
     assert checks.fails(stdchecker.startcaps, "Find", "vind")
     assert checks.fails(stdchecker.startcaps, "find", "Vind")
-    assert checks.fails(stdchecker.startcaps, "Find", "'")
-    assert checks.fails(stdchecker.startcaps, "'", "Find")
     assert checks.passes(stdchecker.startcaps, "'", "'")
     assert checks.passes(stdchecker.startcaps, "\\.,/?!`'\"[]{}()@#$%^&*_-;:<>Find", "\\.,/?!`'\"[]{}()@#$%^&*_-;:<>Vind")
     # With leading whitespace
