@@ -228,3 +228,8 @@ class Common(object):
         return [s for s in cls.sentence_iter(text)]
     sentences = classmethod(sentences)
 
+    def capsstart(cls, text):
+        """Determines whether the text starts with a capital letter."""
+        stripped = text.lstrip().lstrip(cls.punctuation)
+        return stripped and stripped[0].isupper()
+
