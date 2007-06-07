@@ -59,13 +59,14 @@ class TableGlossary(QtGui.QDockWidget):
         row = self.ui.tblGlossary.rowCount()
         table = self.ui.tblGlossary
         for unit in candidates:
-            print unit.source
             for r in range(row):
                 if (table.item(r,0).text() ==  unit.source):
                     self.same = True
                     break
             if self.same:
+                self.same = False
                 continue
+            row = self.ui.tblGlossary.rowCount()
             table.setRowCount(row + 1)
             item = QtGui.QTableWidgetItem(unit.source)
             item.setFlags(self.normalState)
@@ -74,8 +75,7 @@ class TableGlossary(QtGui.QDockWidget):
             item = QtGui.QTableWidgetItem(unit.target)
             item.setFlags(self.normalState)
             table.setItem(row, 1, item)
-            self.same = False
-        
+
     def closeEvent(self, event):
         """
         Unchecked the Glossary view action.
