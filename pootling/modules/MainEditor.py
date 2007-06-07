@@ -81,9 +81,15 @@ class MainWindow(QtGui.QMainWindow):
         action.setStatusTip("Toggle the Detail window")
         action.setWhatsThis("<h3>Toggle the Detail window</h3>If the Detail window is hidden then display it. If it is displayed then close it.")
         self.ui.menuWindow.insertAction(sepAction, action)
+        
         #Plug in glossary widget
         self.tableGlossary = TableGlossary.TableGlossary(self)
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.tableGlossary)
+        action = self.tableGlossary.toggleViewAction()
+        action.setText("Glossary Lookup")
+        action.setStatusTip("Toggle the Glossary Lookup window")
+        action.setWhatsThis("<h3>Toggle the Glossary Lookup window</h3>If the Glossary Lookup window is hidden then display it. If it is displayed then close it.")
+        self.ui.menuWindow.insertAction(sepAction, action)
         
         #plug in comment widget
         self.dockComment = CommentDock(self)
@@ -663,6 +669,7 @@ class MainWindow(QtGui.QMainWindow):
             """Toggle TUview term signal."""
             if self.tableGlossary.toggleViewAction().isChecked():
                 self.connect(self.dockTUview, QtCore.SIGNAL("term"), self.operator.emitGlossaryCandidates)
+                self.dockTUview.emitGlossaryWords()
             else:
                 self.disconnect(self.dockTUview, QtCore.SIGNAL("term"), self.operator.emitGlossaryCandidates)
         
