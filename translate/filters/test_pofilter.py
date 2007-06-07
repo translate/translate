@@ -31,7 +31,6 @@ class BaseTestFilter(object):
         self.unit.settarget("REST")
         filter_result = self.filter(self.translationstore)
         assert filter_result.units[0].geterrors().has_key('startcaps')
-        assert filter_result.units[0].geterrors().has_key('simplecaps')
 
     def test_variables_across_lines(self):
         """Test that variables can span lines and still fail/pass"""

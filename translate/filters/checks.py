@@ -892,6 +892,7 @@ class StandardChecker(TranslationChecker):
                                     "isreview", "notranslatewords", "musttranslatewords",
                                     "emails", "simpleplurals", "urls", "printf",
                                     "tabs", "newlines"),
+                   "startcaps":     ("simplecaps",),
                    "unchanged":     ("doublewords",), 
                    "compendiumconflicts": ("accelerators", "brackets", "escapes", 
                                     "numbers", "startpunc", "long", "variables", 
