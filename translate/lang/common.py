@@ -232,4 +232,5 @@ class Common(object):
         """Determines whether the text starts with a capital letter."""
         stripped = text.lstrip().lstrip(cls.punctuation)
         return stripped and stripped[0].isupper()
+    capsstart = classmethod(capsstart)
 
