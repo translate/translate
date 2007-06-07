@@ -44,7 +44,7 @@ class TableGlossary(QtGui.QDockWidget):
         self.ui.tblGlossary.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
         self.ui.tblGlossary.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
         self.normalState = QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
-        self.toggleViewAction().setVisible(True)
+        self.toggleViewAction().setChecked(True)
         self.same = False
 
     def newUnit(self):
@@ -59,6 +59,7 @@ class TableGlossary(QtGui.QDockWidget):
         row = self.ui.tblGlossary.rowCount()
         table = self.ui.tblGlossary
         for unit in candidates:
+            print unit.source
             for r in range(row):
                 if (table.item(r,0).text() ==  unit.source):
                     self.same = True
@@ -77,11 +78,21 @@ class TableGlossary(QtGui.QDockWidget):
         
     def closeEvent(self, event):
         """
-        set text of action object to 'show table TM' before closing table TM
+        Unchecked the Glossary view action.
         @param QCloseEvent Object: received close event when closing widget
         """
         QtGui.QDockWidget.closeEvent(self, event)
         self.toggleViewAction().setChecked(False)
+        self.emit(QtCore.SIGNAL("closed"))
+        
+    def showEvent(self, event):
+        """
+        Checked the Glossary view action.
+        @param QShowEvent Object: received show event when showing widget
+        """
+        QtGui.QDockWidget.showEvent(self, event)
+        self.toggleViewAction().setChecked(True)
+        self.emit(QtCore.SIGNAL("shown"))
         
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

@@ -133,11 +133,8 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("filterChanged"), self.table.filterChanged)
         
         #Glossary
-        # toggle TUview Term Signal
-        if self.tableGlossary.toggleViewAction().isVisible():
-            self.connect(self.dockTUview, QtCore.SIGNAL("term"), self.operator.emitGlossaryCandidates)
-        else:
-            self.disconnect(self.dockTUview, QtCore.SIGNAL("term"), self.operator.emitGlossaryCandidates)
+        self.connect(self.tableGlossary, QtCore.SIGNAL("closed"), self.toggleTUviewTermSig)
+        self.connect(self.tableGlossary, QtCore.SIGNAL("shown"), self.toggleTUviewTermSig)
         self.connect(self.dockTUview, QtCore.SIGNAL("termRequest"), self.operator.emitTermRequest)
         self.connect(self.operator, QtCore.SIGNAL("termRequest"), self.dockTUview.popupTerm)
         self.connect(self.operator, QtCore.SIGNAL("glossaryCandidates"), self.tableGlossary.fillTable)
@@ -661,6 +658,13 @@ class MainWindow(QtGui.QMainWindow):
         self.actionOpen.setToolTip(self.tr("Open"))
         self.actionOpen.setWhatsThis("<h3>Open a file</h3>You will be asked for the name of a file to be opened and open recent file in an editor window.") 
         self.ui.toolFile.insertAction(self.ui.actionSave, self.actionOpen)
+        
+    def toggleTUviewTermSig(self):
+            """Toggle TUview term signal."""
+            if self.tableGlossary.toggleViewAction().isChecked():
+                self.connect(self.dockTUview, QtCore.SIGNAL("term"), self.operator.emitGlossaryCandidates)
+            else:
+                self.disconnect(self.dockTUview, QtCore.SIGNAL("term"), self.operator.emitGlossaryCandidates)
         
 def main(inputFile = None):
     # set the path for QT in order to find the icons
