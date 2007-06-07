@@ -471,6 +471,11 @@ def test_startcaps():
     stdchecker = checks.StandardChecker(checks.CheckerConfig(accelmarkers="&"))
     assert checks.passes(stdchecker.startcaps, "&Find", "Vi&nd")
 
+    # Language specific stuff
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='af'))
+    assert checks.passes(stdchecker.startcaps, "A cow", "'n Koei")
+    assert checks.fails(stdchecker.startcaps, "a cow", "'n Koei")
+
 def test_startpunc():
     """tests startpunc"""
     stdchecker = checks.StandardChecker()
