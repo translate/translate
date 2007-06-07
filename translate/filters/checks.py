@@ -659,9 +659,11 @@ class StandardChecker(TranslationChecker):
 
   def sentencecount(self, str1, str2):
     """checks that the number of sentences in both strings match"""
-    sentences1 = self.config.sourcelang.sentences(str1)
-    sentences2 = self.config.lang.sentences(str2)
-    return len(sentences1) == len(sentences2)
+    sentences1 = len(self.config.sourcelang.sentences(str1))
+    sentences2 = len(self.config.lang.sentences(str2))
+    if not sentences1 == sentences2:
+        raise FilterFailure("%d versus %d" % (sentences1, sentences2))
+    return True
 
   def startcaps(self, str1, str2):
     """checks that the message starts with the correct capitalisation"""
