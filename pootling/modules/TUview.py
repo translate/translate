@@ -47,10 +47,7 @@ class TUview(QtGui.QDockWidget):
         # install custom event, when txtTarget lose focus ->
         # mark content dirty.
 ##        self.ui.txtTarget.focusOutEvent = self.customFocusOutEvent
-##        self.customFocusOutEvent = QtCore.QEvent(QtCore.QEvent.FocusOut)
-        
         self.ui.txtSource.contextMenuEvent = self.customContextMenuEvent
-        self.customContextMenuEvent = QtCore.QEvent(QtCore.QEvent.ContextMenu)
         
 ##    def customFocusOutEvent(self, event):
 ##        """
@@ -100,6 +97,7 @@ class TUview(QtGui.QDockWidget):
             actionTerm = menuTerm.addAction(candidate.target)
             self.connect(actionTerm, QtCore.SIGNAL("triggered()"), self.copyTranslation)
         menuTerm.exec_(self.globalPos)
+        self.ui.txtSource.setToolTip(candidates[0].target)
     
     def copyTranslation(self):
         """
@@ -107,8 +105,6 @@ class TUview(QtGui.QDockWidget):
         """
         # TODO:...
         text = self.sender().text().toUtf8()
-##        print text
-
     
     def setPattern(self, patternList):
         """
