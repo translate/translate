@@ -419,6 +419,7 @@ def test_simplecaps():
     # We should squash 'I' in the source text as it messes with capital detection
     assert checks.passes(stdchecker.simplecaps, "if you say I want", "as jy se ek wil")
     assert checks.passes(stdchecker.simplecaps, "sentence. I want more.", "sin. Ek wil meer he.")
+    assert checks.passes(stdchecker.simplecaps, "Where are we? I can't see where we are going.", "Waar is ons? Ek kan nie sien waar ons gaan nie.")
     ## We should remove variables before checking
     stdchecker = checks.StandardChecker(checks.CheckerConfig(varmatches=[("%", 1)]))
     assert checks.passes(stdchecker.simplecaps, "Could not load %s", "A swi koteki ku panga %S")
