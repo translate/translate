@@ -51,7 +51,7 @@
      <x>0</x>
      <y>0</y>
      <width>594</width>
-     <height>29</height>
+     <height>28</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuHelp" >
@@ -106,6 +106,22 @@
     <addaction name="actionToggleFuzzy" />
     <addaction name="actionEdit_Header" />
    </widget>
+   <widget class="QMenu" name="menu_Tool" >
+    <property name="title" >
+     <string>&amp;Tool</string>
+    </property>
+    <addaction name="separator" />
+    <addaction name="actionCatalogManager" />
+    <addaction name="actionAuto_translate" />
+   </widget>
+   <widget class="QMenu" name="menuSettings" >
+    <property name="title" >
+     <string>&amp;Settings</string>
+    </property>
+    <addaction name="actionPreferences" />
+    <addaction name="actionBuild_TM" />
+    <addaction name="actionGlossary" />
+   </widget>
    <widget class="QMenu" name="menuBookmark" >
     <property name="title" >
      <string>&amp;Bookmarks</string>
@@ -114,13 +130,43 @@
     <addaction name="actionClearBookmarks" />
     <addaction name="separator" />
    </widget>
-   <widget class="QMenu" name="menu_Tool" >
+   <widget class="QMenu" name="menuProject" >
     <property name="title" >
-     <string>&amp;Tool</string>
+     <string>&amp;Project</string>
     </property>
+    <widget class="QMenu" name="menuOpenRecentProject" >
+     <property name="enabled" >
+      <bool>false</bool>
+     </property>
+     <property name="tearOffEnabled" >
+      <bool>false</bool>
+     </property>
+     <property name="title" >
+      <string>Open &amp;Recent Project    </string>
+     </property>
+     <property name="separatorsCollapsible" >
+      <bool>true</bool>
+     </property>
+    </widget>
+    <addaction name="actionNewPro" />
+    <addaction name="actionOpenPro" />
+    <addaction name="menuOpenRecentProject" />
+   </widget>
+   <widget class="QMenu" name="menuWindow" >
+    <property name="title" >
+     <string>&amp;Window</string>
+    </property>
+    <widget class="QMenu" name="menuToolbars" >
+     <property name="statusTip" >
+      <string>Hide/Show the toolbars</string>
+     </property>
+     <property name="title" >
+      <string>&amp;Toolbars</string>
+     </property>
+    </widget>
     <addaction name="separator" />
-    <addaction name="actionCatalogManager" />
-    <addaction name="actionAuto_translate" />
+    <addaction name="separator" />
+    <addaction name="menuToolbars" />
    </widget>
    <widget class="QMenu" name="menuFile" >
     <property name="title" >
@@ -146,35 +192,12 @@
     <addaction name="separator" />
     <addaction name="actionExit" />
    </widget>
-   <widget class="QMenu" name="menuWindow" >
-    <property name="title" >
-     <string>&amp;Window</string>
-    </property>
-    <widget class="QMenu" name="menuToolbars" >
-     <property name="statusTip" >
-      <string>Hide/Show the toolbars</string>
-     </property>
-     <property name="title" >
-      <string>&amp;Toolbars</string>
-     </property>
-    </widget>
-    <addaction name="separator" />
-    <addaction name="separator" />
-    <addaction name="menuToolbars" />
-   </widget>
-   <widget class="QMenu" name="menuSettings" >
-    <property name="title" >
-     <string>&amp;Settings</string>
-    </property>
-    <addaction name="actionPreferences" />
-    <addaction name="actionBuild_TM" />
-    <addaction name="actionGlossary" />
-   </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
    <addaction name="menuView" />
    <addaction name="menuGo" />
    <addaction name="menuBookmark" />
+   <addaction name="menuProject" />
    <addaction name="menu_Tool" />
    <addaction name="menuSettings" />
    <addaction name="menuWindow" />
@@ -1028,6 +1051,16 @@
    </property>
    <property name="statusTip" >
     <string>Rough translation throgh the current file</string>
+   </property>
+  </action>
+  <action name="actionNewPro" >
+   <property name="text" >
+    <string>&amp;New...         </string>
+   </property>
+  </action>
+  <action name="actionOpenPro" >
+   <property name="text" >
+    <string>&amp;Open...          </string>
    </property>
   </action>
  </widget>
