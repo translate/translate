@@ -896,6 +896,7 @@ class StandardChecker(TranslationChecker):
                                     "emails", "simpleplurals", "urls", "printf",
                                     "tabs", "newlines"),
                    "startcaps":     ("simplecaps",),
+                   "endwhitespace": ("endpunc",),
                    "unchanged":     ("doublewords",), 
                    "compendiumconflicts": ("accelerators", "brackets", "escapes", 
                                     "numbers", "startpunc", "long", "variables", 
