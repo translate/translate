@@ -45,6 +45,7 @@ class TableGlossary(QtGui.QDockWidget):
         self.ui.tblGlossary.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
         self.normalState = QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
         self.toggleViewAction().setVisible(True)
+        self.same = False
 
     def newUnit(self):
         self.ui.tblGlossary.clear()
@@ -55,17 +56,24 @@ class TableGlossary(QtGui.QDockWidget):
     def fillTable(self, candidates):
         '''fill each found unit into table
         @param candidates:list of pofile object'''
+        row = self.ui.tblGlossary.rowCount()
+        table = self.ui.tblGlossary
         for unit in candidates:
-            row = self.ui.tblGlossary.rowCount()
-            self.ui.tblGlossary.setRowCount(row + 1)
-            
+            for r in range(row):
+                if (table.item(r,0).text() ==  unit.source):
+                    self.same = True
+                    break
+            if self.same:
+                continue
+            table.setRowCount(row + 1)
             item = QtGui.QTableWidgetItem(unit.source)
             item.setFlags(self.normalState)
-            self.ui.tblGlossary.setItem(row, 0, item)
+            table.setItem(row, 0, item)
             
             item = QtGui.QTableWidgetItem(unit.target)
             item.setFlags(self.normalState)
-            self.ui.tblGlossary.setItem(row, 1, item)
+            table.setItem(row, 1, item)
+            self.same = False
         
     def closeEvent(self, event):
         """
