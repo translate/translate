@@ -664,11 +664,10 @@ class StandardChecker(TranslationChecker):
 
   def startcaps(self, str1, str2):
     """checks that the message starts with the correct capitalisation"""
-    punc = self.config.punctuation
-    str1 = self.filteraccelerators(self.filtervariables(str1)).lstrip().lstrip(punc)
-    str2 = self.filteraccelerators(self.filtervariables(str2)).lstrip().lstrip(punc)
+    str1 = self.filteraccelerators(str1)
+    str2 = self.filteraccelerators(str2)
     if len(str1) > 1 and len(str2) > 1:
-      return str1[0].isupper() == str2[0].isupper()
+      return self.config.sourcelang.capsstart(str1) == self.config.lang.capsstart(str2)
     if len(str1) == 0 and len(str2) == 0:
       return True
     if len(str1) == 0 or len(str2) == 0:
