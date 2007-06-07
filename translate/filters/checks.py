@@ -834,6 +834,8 @@ class StandardChecker(TranslationChecker):
     targetpatterns = ["\(s\)"]
     sourcecount = numberofpatterns(str1, sourcepatterns)
     targetcount = numberofpatterns(str2, targetpatterns)
+    if self.config.lang.nplurals == 1:
+        return not targetcount
     return sourcecount == targetcount
 
   def nplurals(self, str1, str2):

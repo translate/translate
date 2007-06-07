@@ -697,6 +697,11 @@ def test_simpleplurals():
     assert checks.fails(stdchecker.simpleplurals, "plural(s)", "meervoud(e)")
     assert checks.fails(stdchecker.simpleplurals, "Ungroup Metafile(s)...", "Kuvhanganyululani Metafaela(dzi)...")
 
+    # Test a language that doesn't use plurals
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='vi'))
+    assert checks.passes(stdchecker.simpleplurals, "computer(s)", u"Máy tính")
+    assert checks.fails(stdchecker.simpleplurals, "computer(s)", u"Máy tính(s)")
+
 def test_nplurals():
     """test that we can find the wrong number of plural forms"""
     stdchecker = checks.StandardChecker()
