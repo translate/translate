@@ -57,6 +57,7 @@ class Operator(QtCore.QObject):
         self.isCpResult = False
         self.glossaryChanged = True
         self.termmatcher = None
+        self.cache = {}
 
     def getUnits(self, fileName):
         """reading a file into the internal datastructure.
@@ -520,9 +521,16 @@ class Operator(QtCore.QObject):
         @param term: a word to lookup in termmatcher
         emit glossaryTerms signal with a candidates as list of units
         """
-        candidates = self.termmatcher.matches(term)
+#      use cache to improve glossary search speed within 10 terms.
+        if self.cache.has_key(term):
+            candidates = self.cache[term]
+        else:
+            candidates = self.termmatcher.matches(term)
+            self.cache[term] = candidates
+            if (len(self.cache) > 10 ): 
+                self.cache.popitem()
         self.emit(QtCore.SIGNAL("glossaryTerms"), candidates)
-    
+
     def popupTerm(self, term, pos):
         # context menu of items
         # lazy construction of menu
