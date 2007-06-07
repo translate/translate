@@ -62,21 +62,29 @@ class TUview(QtGui.QDockWidget):
         """
         subclass of contextMenuEvent
         """
+        text = self.ui.txtSource.toPlainText()
+        if (not text):
+            return
+        glossaryWords = self.sourceHighlighter.glossaryWords
         cursor = self.ui.txtSource.cursorForPosition(e.pos())
         position = cursor.position()
-        pattern = "\\b(\\w+)\\b"
-        expression = QtCore.QRegExp(pattern)
-        
-        text = self.ui.txtSource.toPlainText()
-        index = text.lastIndexOf(expression, position)
-        length = expression.matchedLength()
-        try:
-            term = unicode(expression.capturedTexts()[0])
-        except:
-            term = ""
-        glossaryWords = self.sourceHighlighter.glossaryWords
-        if (term in glossaryWords):
-            self.emit(QtCore.SIGNAL("glossaryTerm"), term, e.globalPos())
+        # first try wordWithSpace
+        withSpace = "\\b(\\w+\\s\\w+)\\b"
+        wordWithSpace = QtCore.QRegExp(withSpace)
+        index = text.lastIndexOf(wordWithSpace, position)
+        length = wordWithSpace.matchedLength()
+        termWithSpace = unicode(wordWithSpace.capturedTexts()[0])
+        if (termWithSpace in glossaryWords):
+            self.emit(QtCore.SIGNAL("glossaryTerm"), termWithSpace, e.globalPos())
+        else:
+            withoutSpace = "\\b(\\w+)\\b"
+            wordWithoutSpace = QtCore.QRegExp(withoutSpace)
+            # then wordWithoutSpace
+            index = text.lastIndexOf(wordWithoutSpace, position)
+            length = wordWithoutSpace.matchedLength()
+            termWithoutSpace = unicode(wordWithoutSpace.capturedTexts()[0])
+            if (termWithoutSpace in glossaryWords):
+                self.emit(QtCore.SIGNAL("glossaryTerm"), termWithoutSpace, e.globalPos())
     
     def setPattern(self, patternList):
         """
