@@ -679,7 +679,7 @@ class StandardChecker(TranslationChecker):
     """checks the capitalisation of two strings isn't wildly different"""
     str1 = self.removevariables(str1)
     str2 = self.removevariables(str2)
-    str1 = re.sub("[^.]( I )", " i ", str1)
+    str1 = re.sub(u"[^%s]( I )" % self.config.sourcelang.sentenceend, " i ", str1)
     capitals1 = helpers.filtercount(str1, type(str1).isupper)
     capitals2 = helpers.filtercount(str2, type(str2).isupper)
     alpha1 = helpers.filtercount(str1, type(str1).isalpha)
