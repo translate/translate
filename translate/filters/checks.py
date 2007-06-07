@@ -632,7 +632,8 @@ class StandardChecker(TranslationChecker):
     # this test is a subset of startandend
     if (decoration.ispurepunctuation(str1)):
       return str1 == str2
-    return 1
+    else:
+      return not decoration.ispurepunctuation(str2)
 
   def brackets(self, str1, str2):
     """checks that the number of brackets in both strings match"""
