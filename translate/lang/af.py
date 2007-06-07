@@ -25,6 +25,9 @@ For more information, see U{http://en.wikipedia.org/wiki/Afrikaans_language}
 """
 
 from translate.lang import common
+import re
+
+articlere = re.compile(r"'n\b")
 
 class af(common.Common):
     """This class represents Afrikaans."""
@@ -33,3 +36,15 @@ class af(common.Common):
     nplurals = 2
     pluralequation = "(n != 1)"
 
+    def capsstart(cls, text):
+        """Modify this for the indefinite article ('n)."""
+        match = articlere.search(text, 0, 20)
+        if match:
+            #construct a list of non-apostrophe punctuation:
+            nonapos = "".join(cls.punctuation.split("'"))
+            stripped = text.lstrip().lstrip(nonapos)
+            match = articlere.match(stripped)
+            if match:
+                return common.Common.capsstart(stripped[match.end():])
+        return common.Common.capsstart(text)
+    capsstart = classmethod(capsstart)
