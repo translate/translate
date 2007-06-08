@@ -46,6 +46,15 @@ class CommentDock(QtGui.QDockWidget):
         # create highlighter
         self.highlighter = Highlighter(self.ui.txtTranslatorComment)
         self.applySettings()
+        
+        self.ui.txtTranslatorComment.focusOutEvent = self.customFocusOutEvent
+        
+    def customFocusOutEvent(self, e):
+        """
+        subclass of focusOutEvent of txtTranslatorComment
+        """
+        self.emitCommentChanged()
+        return QtGui.QTextEdit.focusOutEvent(self.ui.txtTranslatorComment, e)
     
     def closeEvent(self, event):
         """
@@ -54,14 +63,16 @@ class CommentDock(QtGui.QDockWidget):
         """
         QtGui.QDockWidget.closeEvent(self, event)
         self.toggleViewAction().setChecked(False)
-
+    
     def updateView(self, unit):
         """Update the comments view
         @param unit: class unit."""
-        self.disconnect(self.ui.txtTranslatorComment, QtCore.SIGNAL("textChanged()"), self.checkModified)
         self.viewSetting(unit)
+        if hasattr(self, "lastUnit") and (self.lastUnit == unit):
+            return
         if (not unit):
             return
+        self.emitCommentChanged()
         translatorComment = ""
         locationComment = ""
         translatorComment = unit.getnotes("translator")
@@ -74,7 +85,16 @@ class CommentDock(QtGui.QDockWidget):
             self.ui.txtLocationComment.setPlainText(locationComment)
         if (unicode(self.ui.txtTranslatorComment.toPlainText()) != unicode(translatorComment)):
             self.ui.txtTranslatorComment.setPlainText(translatorComment)
-        self.connect(self.ui.txtTranslatorComment, QtCore.SIGNAL("textChanged()"), self.checkModified)
+        self.lastUnit = unit
+    
+    def emitCommentChanged(self):
+        """
+        @emit targetChanged signal if content is dirty.
+        """
+        if self.ui.txtTranslatorComment.document().isModified():
+            target = unicode(self.ui.txtTranslatorComment.toPlainText())
+            self.emit(QtCore.SIGNAL("commentChanged"), target)
+        self.ui.txtTranslatorComment.document().setModified(False)
     
     def setSearchString(self, searchString, textField):
         """
@@ -82,11 +102,6 @@ class CommentDock(QtGui.QDockWidget):
         """
         if (textField == World.comment):
             self.highlighter.setSearchString(searchString)
-    
-    def checkModified(self):
-        if self.ui.txtTranslatorComment.document().isModified():
-            self.emit(QtCore.SIGNAL("commentChanged"), unicode(self.ui.txtTranslatorComment.toPlainText()))
-            self.ui.txtTranslatorComment.document().setModified(False)
     
     def applySettings(self):
         """ set color and font to txtTranslatorComment"""
@@ -122,7 +137,7 @@ class CommentDock(QtGui.QDockWidget):
         text.replace(position, length, replacedText)
         self.ui.txtTranslatorComment.setPlainText(text)
         self.ui.txtTranslatorComment.document().setModified()
-        self.checkModified()
+        self.emitCommentChanged()
     
     def viewSetting(self, argc):
         bool = (argc and True or False)
