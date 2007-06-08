@@ -662,7 +662,7 @@ class StandardChecker(TranslationChecker):
     sentences1 = len(self.config.sourcelang.sentences(str1))
     sentences2 = len(self.config.lang.sentences(str2))
     if not sentences1 == sentences2:
-        raise FilterFailure("%d versus %d" % (sentences1, sentences2))
+        raise FilterFailure("The number of sentences differ: %d versus %d" % (sentences1, sentences2))
     return True
 
   def startcaps(self, str1, str2):
@@ -725,7 +725,7 @@ class StandardChecker(TranslationChecker):
     words = self.filteraccelerators(self.removevariables(without_newlines)).replace(".", "").lower().split()
     for word in words:
       if word == lastword:
-        return False
+        raise FilterFailure("The word '%s' is repeated" % word)
       lastword = word
     return True
 
