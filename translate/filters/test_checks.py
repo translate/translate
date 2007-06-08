@@ -433,6 +433,7 @@ def test_simplecaps():
     ooochecker = checks.OpenOfficeChecker()
     assert checks.passes(ooochecker.simplecaps, "SOLK (%PRODUCTNAME Link)", "SOLK (%PRODUCTNAME Thumanyo)")
     assert checks.passes(ooochecker.simplecaps, "%STAROFFICE Image", "Tshifanyiso tsha %STAROFFICE")
+    assert checks.passes(stdchecker.simplecaps, "Flies, flies, everywhere! Ack!", u"Vlieë, oral vlieë! Jig!")
 
 def test_spellcheck():
     """tests spell checking"""
