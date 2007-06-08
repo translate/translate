@@ -1,0 +1,361 @@
+<ui version="4.0" >
+ <class>NewProject</class>
+ <widget class="QDialog" name="NewProject" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>373</width>
+    <height>279</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Dialog</string>
+  </property>
+  <layout class="QGridLayout" >
+   <property name="margin" >
+    <number>9</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item row="1" column="0" colspan="4" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="0" column="0" colspan="4" >
+    <widget class="QStackedWidget" name="stackedWidget" >
+     <property name="enabled" >
+      <bool>true</bool>
+     </property>
+     <property name="currentIndex" >
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="page1" >
+      <layout class="QGridLayout" >
+       <property name="margin" >
+        <number>9</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item row="1" column="0" >
+        <widget class="QFrame" name="frame" >
+         <property name="frameShape" >
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow" >
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>9</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="3" column="1" colspan="2" >
+           <widget class="QComboBox" name="cbxProject" />
+          </item>
+          <item row="1" column="0" >
+           <widget class="QLabel" name="lblConfigurationfile" >
+            <property name="statusTip" >
+             <string>This is where your project is located. </string>
+            </property>
+            <property name="text" >
+             <string>Project path:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" >
+           <widget class="QLabel" name="lblprojecttype" >
+            <property name="text" >
+             <string>Project type:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" >
+           <widget class="QLabel" name="lbllabel" >
+            <property name="text" >
+             <string>Project name:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" >
+           <widget class="QLabel" name="lbllanguage" >
+            <property name="text" >
+             <string>Languages:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2" >
+           <widget class="QPushButton" name="btnBrowse" >
+            <property name="whatsThis" >
+             <string>Browse path of project for your locate.</string>
+            </property>
+            <property name="text" >
+             <string/>
+            </property>
+            <property name="icon" >
+             <iconset>../images/open.png</iconset>
+            </property>
+            <property name="iconSize" >
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1" colspan="2" >
+           <widget class="QComboBox" name="cbxLanguages" >
+            <property name="statusTip" >
+             <string/>
+            </property>
+            <property name="whatsThis" >
+             <string>Choose the localized language into which your project is going to translate.</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" colspan="2" >
+           <widget class="QLineEdit" name="projectName" >
+            <property name="whatsThis" >
+             <string>Project name is an identification of project name for you. it is shown in project path.</string>
+            </property>
+            <property name="text" >
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" >
+           <widget class="QLineEdit" name="configurationFile" >
+            <property name="whatsThis" >
+             <string>This is where your project is located. </string>
+            </property>
+            <property name="text" >
+             <string/>
+            </property>
+            <property name="readOnly" >
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item rowspan="2" row="2" column="3" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="0" column="0" >
+        <widget class="QLabel" name="lblProjectwizard" >
+         <property name="font" >
+          <font>
+           <family>DejaVu Serif Condensed</family>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text" >
+          <string>Welcome pootling wizard</string>
+         </property>
+         <property name="alignment" >
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="page1" >
+      <widget class="QFrame" name="frame_2" >
+       <property name="geometry" >
+        <rect>
+         <x>0</x>
+         <y>30</y>
+         <width>349</width>
+         <height>171</height>
+        </rect>
+       </property>
+       <property name="frameShape" >
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow" >
+        <enum>QFrame::Raised</enum>
+       </property>
+       <layout class="QGridLayout" >
+        <property name="margin" >
+         <number>9</number>
+        </property>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <item row="0" column="1" >
+         <widget class="QPushButton" name="btnAdd" >
+          <property name="toolTip" >
+           <string>Add TM</string>
+          </property>
+          <property name="whatsThis" >
+           <string>You can add po, xliff files or another folders of files on your local into listwidget.</string>
+          </property>
+          <property name="text" >
+           <string> &amp;Add</string>
+          </property>
+          <property name="icon" >
+           <iconset>../images/addTM.png</iconset>
+          </property>
+         </widget>
+        </item>
+        <item rowspan="4" row="0" column="0" >
+         <widget class="QListWidget" name="listWidget" >
+          <property name="whatsThis" >
+           <string>Listwidget is displayed items from user add files or folders.</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1" >
+         <widget class="QPushButton" name="btnClear" >
+          <property name="toolTip" >
+           <string>clear list</string>
+          </property>
+          <property name="whatsThis" >
+           <string>You can clear everything in listwidget .</string>
+          </property>
+          <property name="text" >
+           <string> &amp;Clear</string>
+          </property>
+          <property name="icon" >
+           <iconset>../images/eraser.png</iconset>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1" >
+         <widget class="QPushButton" name="btnMoveDown" >
+          <property name="sizePolicy" >
+           <sizepolicy>
+            <hsizetype>4</hsizetype>
+            <vsizetype>0</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="toolTip" >
+           <string>move down</string>
+          </property>
+          <property name="whatsThis" >
+           <string>You can move iterm in listwidget from down to up .</string>
+          </property>
+          <property name="text" >
+           <string> Do&amp;wn</string>
+          </property>
+          <property name="icon" >
+           <iconset>../images/down.png</iconset>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1" >
+         <widget class="QPushButton" name="btnMoveUp" >
+          <property name="toolTip" >
+           <string>move up</string>
+          </property>
+          <property name="whatsThis" >
+           <string>You can move iterm in listwidget from up to down </string>
+          </property>
+          <property name="text" >
+           <string> &amp;Up</string>
+          </property>
+          <property name="icon" >
+           <iconset>../images/up.png</iconset>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0" >
+         <widget class="QCheckBox" name="chbDiveIntoSubfolders" >
+          <property name="whatsThis" >
+           <string>Checked/Unchecked of Dive into Subfolders to display files as sub of main folders</string>
+          </property>
+          <property name="text" >
+           <string>Dive into Subfolders</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QLabel" name="label_4" >
+       <property name="geometry" >
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>291</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font" >
+        <font>
+         <family>DejaVu Sans Condensed</family>
+         <pointsize>12</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text" >
+        <string>Add items into list</string>
+       </property>
+       <property name="alignment" >
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </widget>
+    </widget>
+   </item>
+   <item row="2" column="1" >
+    <widget class="QPushButton" name="btnBack" >
+     <property name="text" >
+      <string>&lt; &amp;Back</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2" >
+    <widget class="QPushButton" name="btnNext" >
+     <property name="text" >
+      <string>Next ></string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="3" >
+    <widget class="QPushButton" name="btnFinish" >
+     <property name="text" >
+      <string>&amp;Finish</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" >
+    <widget class="QPushButton" name="btnCancel" >
+     <property name="text" >
+      <string>Cancel</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
