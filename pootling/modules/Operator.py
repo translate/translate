@@ -250,37 +250,41 @@ class Operator(QtCore.QObject):
                                     + fileName  + 
                                     '\n' + str(e))
     
-    def setComment(self, comment):
-        """set the comment to the current unit, and emit current unit.
-        @param comment: QString type"""
+    def setComment(self, comment, unit = None):
+        """
+        Set the comment to the current unit, and emit current unit.
+        @param comment: QString type
+        """
         if (self.currentUnitIndex < 0 or not self.filteredList):
             return
-        unit = self.getCurrentUnit()
+        newUnit = False
+        if (not unit):
+            unit = self.getCurrentUnit()
+            newUnit = True
         unit.removenotes()
         unit.addnote(unicode(comment),'translator')
-        self.emitUnit(unit)
+        if (newUnit):
+            self.emitUnit(unit)
         self.setModified(True)
     
     def setTarget(self, target, unit = None):
-        """set the target to the current unit, and emit current unit.
-        @param target: Unicode sting type for single unit and list type for plural unit."""
+        """
+        Set the curent unit target to target and emit current unit.
+        @param target: Unicode sting type for single unit and list type for plural unit.
+        """
         # if there is no translation unit in the view.
         if (self.currentUnitIndex < 0 or not self.filteredList):
             return
-        
-        isCurrentUnit = False
+        newUnit = False
         if (not unit):
             unit = self.getCurrentUnit()
-            isCurrentUnit = True
-            
+            newUnit = True
         # update target for current unit
         unit.settarget(target)
         #FIXME: this mark works single not plural unit.
         self.status.markTranslated(unit, (unit.target and True or False))
-        
-        if (isCurrentUnit):
+        if (newUnit):
             self.emitUnit(unit)
-        
         self.emitStatus()
         self.setModified(True)
     
