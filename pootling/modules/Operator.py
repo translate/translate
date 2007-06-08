@@ -57,7 +57,8 @@ class Operator(QtCore.QObject):
         self.isCpResult = False
         self.glossaryChanged = True
         self.termmatcher = None
-        self.cache = {}
+        self.cache = {} # for improve glossary search speed
+        self.TMcache = {} # for improve TM search speed
 
     def getUnits(self, fileName):
         """reading a file into the internal datastructure.
@@ -476,7 +477,15 @@ class Operator(QtCore.QObject):
         if (not isinstance(units, list)):
             if (units.isfuzzy() and self.ignoreFuzzyStatus):   # if ignore fuzzy strings is checked, ad units is fuzzy do nothing.
                 return
-            candidates = self.matcher.matches(units.source)
+                
+            # use TMcache to improve TM search speed within 20 units
+            if self.TMcache.has_key(units.source):
+                candidates = self.TMcache[units.source]
+            else:
+                candidates = self.matcher.matches(units.source)
+                self.TMcache[units.source] = candidates
+                if (len(self.TMcache) > 20 ): 
+                    self.TMcache.popitem()
             return candidates
             
        #for autoTranslate all units
@@ -521,13 +530,13 @@ class Operator(QtCore.QObject):
         @param term: a word to lookup in termmatcher
         emit glossaryTerms signal with a candidates as list of units
         """
-#      use cache to improve glossary search speed within 10 terms.
+#      use cache to improve glossary search speed within 20 terms.
         if self.cache.has_key(term):
             candidates = self.cache[term]
         else:
             candidates = self.termmatcher.matches(term)
             self.cache[term] = candidates
-            if (len(self.cache) > 10 ): 
+            if (len(self.cache) > 20 ): 
                 self.cache.popitem()
         return candidates
     
