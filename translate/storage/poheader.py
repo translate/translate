@@ -91,6 +91,20 @@ class poheader:
     "X-Generator",
     ]
 
+  def tzstring(self):
+    """Returns the timezone as a string in the format [+-]0000, eg +0200."""
+    if time.daylight:
+        tzoffset = time.altzone
+    else:
+        tzoffset = time.timezone
+
+    hours, minutes = time.gmtime(abs(tzoffset))[3:5]
+    if tzoffset > 0:
+        hours *= -1
+    tz = str("%+d" % hours).zfill(3) + str(minutes).zfill(2)
+    return tz
+
+
   def makeheaderdict(self, charset="CHARSET", encoding="ENCODING", project_id_version=None, pot_creation_date=None, po_revision_date=None, last_translator=None, language_team=None, mime_version=None, plural_forms=None, report_msgid_bugs_to=None, **kwargs):
     """create a header for the given filename. arguments are specially handled, kwargs added as key: value
     pot_creation_date can be None (current date) or a value (datetime or string)
@@ -99,17 +113,17 @@ class poheader:
     if project_id_version is None:
       project_id_version = "PACKAGE VERSION"
     if pot_creation_date is None or pot_creation_date == True:
-      pot_creation_date = time.strftime("%Y-%m-%d %H:%M%z")
+      pot_creation_date = time.strftime("%Y-%m-%d %H:%M") + self.tzstring()
     if isinstance(pot_creation_date, time.struct_time):
-      pot_creation_date = pot_creation_date.strftime("%Y-%m-%d %H:%M%z")
+      pot_creation_date = time.strftime("%Y-%m-%d %H:%M", pot_creation_date) + self.tzstring()
     if po_revision_date is None:
       po_revision_date = "YEAR-MO-DA HO:MI+ZONE"
     elif po_revision_date == False:
       po_revision_date = pot_creation_date
     elif po_revision_date == True:
-      po_revision_date = time.strftime("%Y-%m-%d %H:%M%z")
+      po_revision_date = time.strftime("%Y-%m-%d %H:%M") + self.tzstring()
     if isinstance(po_revision_date, time.struct_time):
-      po_revision_date = po_revision_date.strftime("%Y-%m-%d %H:%M%z")
+      po_revision_date = time.strftime("%Y-%m-%d %H:%M", po_revision_date) + self.tzstring()
     if last_translator is None:
       last_translator = "FULL NAME <EMAIL@ADDRESS>"
     if language_team is None:

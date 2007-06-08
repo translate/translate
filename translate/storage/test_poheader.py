@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os, time
 from translate.storage import po
 from translate.storage import poxliff
 from translate.storage import poheader
@@ -61,6 +62,106 @@ def poxliffparse(posource):
     poxli.parse(posource)
     return poxli
 
+def check_po_date(datestring):
+    """Check the validity of a PO date.
+    
+    The datestring must be in the format: 2007-06-08 10:08+0200
+    """
+
+    # We don't include the timezone offset as part of our format,
+    # because time.strptime() does not recognize %z
+    # The use of %z is deprecated in any case.
+    date_format = "%Y-%m-%d %H:%M"
+
+    # Get the timezone offset (last 4 digits):
+    tz = datestring[-4:]
+    assert type(int(tz)) == int
+
+    # Strip the timezone from the string, typically something like "+0200".
+    # This is to make the datestring conform to the specified format,
+    # we can't add %z to the format.
+    datestring = datestring[0:-5]
+
+    # Check that the date can be parsed
+    assert type(time.strptime(datestring, date_format)) == time.struct_time
+
+def test_po_dates():
+    pofile = po.pofile()
+    headerdict = pofile.makeheaderdict(po_revision_date=True)
+    check_po_date(headerdict["POT-Creation-Date"])
+    check_po_date(headerdict["PO-Revision-Date"])
+
+    headerdict = pofile.makeheaderdict(pot_creation_date=time.localtime(),
+        po_revision_date=time.localtime())
+    check_po_date(headerdict["POT-Creation-Date"])
+    check_po_date(headerdict["PO-Revision-Date"])
+
+def test_timezones():
+    pofile = po.pofile()
+
+    # The following will only work on Unix because of tzset() and %z
+    if time.__dict__.has_key('tzset'):
+        os.environ['TZ'] = 'America/Argentina/Cordoba'
+        time.tzset()
+        assert time.timezone == 10800
+        # Typically "-0300"
+        assert pofile.tzstring() == time.strftime("%z")
+
+        os.environ['TZ'] = 'Asia/Kabul'
+        time.tzset()
+        assert time.timezone == -16200
+        # Typically "+0430"
+        assert pofile.tzstring() == time.strftime("%z")
+
+        os.environ['TZ'] = 'Asia/Tehran'
+        time.tzset()
+        assert time.timezone == -12600
+        # Typically "+0330"
+        assert pofile.tzstring() == time.strftime("%z")
+
+        os.environ['TZ'] = 'Canada/Newfoundland'
+        time.tzset()
+        assert time.timezone == 12600
+        # Typically "-0230"
+        assert pofile.tzstring() == time.strftime("%z")
+
+        os.environ['TZ'] = 'US/Eastern'
+        time.tzset()
+        assert time.timezone == 18000
+        # Typically "-0400"
+        assert pofile.tzstring() == time.strftime("%z")
+
+        os.environ['TZ'] = 'Asia/Seoul'
+        time.tzset()
+        assert time.timezone == -32400
+        # Typically "+0900"
+        assert pofile.tzstring() == time.strftime("%z")
+
+        os.environ['TZ'] = 'Africa/Johannesburg'
+        time.tzset()
+        assert time.timezone == -7200
+        # Typically "+0200"
+        assert pofile.tzstring() == time.strftime("%z")
+
+        os.environ['TZ'] = 'Africa/Windhoek'
+        time.tzset()
+        assert time.timezone == -3600
+        # Typically "+0100"
+        # For some reason python's %z doesn't know about Windhoek DST
+        #assert pofile.tzstring() == time.strftime("%z")
+
+        os.environ['TZ'] = 'Egypt'
+        time.tzset()
+        assert time.timezone == -7200
+        # Typically "+0300"
+        assert pofile.tzstring() == time.strftime("%z")
+
+        os.environ['TZ'] = 'UTC'
+        time.tzset()
+        assert time.timezone == 0
+        # Typically "+0000"
+        assert pofile.tzstring() == time.strftime("%z")
+
 def test_header_blank():
 
     def compare(pofile):
@@ -73,7 +174,7 @@ def test_header_blank():
         headeritems = pofile.parseheader()
         assert headeritems["Project-Id-Version"] == "PACKAGE VERSION"
         assert headeritems["Report-Msgid-Bugs-To"] == ""
-        #assert headeritems["POT-Creation-Date"] == ""
+        check_po_date(headeritems["POT-Creation-Date"])
         assert headeritems["PO-Revision-Date"] == "YEAR-MO-DA HO:MI+ZONE"
         assert headeritems["Last-Translator"] == "FULL NAME <EMAIL@ADDRESS>"
         assert headeritems["Language-Team"] == "LANGUAGE <LL@li.org>"
