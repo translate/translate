@@ -44,16 +44,16 @@ class TUview(QtGui.QDockWidget):
         self.sourceHighlighter = Highlighter(self.ui.txtSource)
         self.targetHighlighter = Highlighter(self.ui.txtTarget)
         
-        # install custom event, when txtTarget lose focus ->
-        # mark content dirty.
-##        self.ui.txtTarget.focusOutEvent = self.customFocusOutEvent
+        # subclass of event
         self.ui.txtSource.contextMenuEvent = self.customContextMenuEvent
+        self.ui.txtTarget.focusOutEvent = self.customFocusOutEvent
         
-##    def customFocusOutEvent(self, event):
-##        """
-##        subclass of focusOutEvent
-##        """
-##        self.emitTargetChanged()
+    def customFocusOutEvent(self, e):
+        """
+        subclass of focusOutEvent of txtTarget
+        """
+        self.emitTargetChanged()
+        return QtGui.QTextEdit.focusOutEvent(self.ui.txtTarget, e)
         
     def customContextMenuEvent(self, e):
         """
@@ -85,6 +85,9 @@ class TUview(QtGui.QDockWidget):
                 self.emit(QtCore.SIGNAL("termRequest"), termWithoutSpace)
     
     def popupTerm(self, candidates):
+        """
+        popup menu of glossary word's translation.
+        """
         # context menu of items
         if (not hasattr(self, "globalPos")) or (self.globalPos == None):
             return
@@ -97,14 +100,17 @@ class TUview(QtGui.QDockWidget):
             actionTerm = menuTerm.addAction(candidate.target)
             self.connect(actionTerm, QtCore.SIGNAL("triggered()"), self.copyTranslation)
         menuTerm.exec_(self.globalPos)
-        self.ui.txtSource.setToolTip(candidates[0].target)
+        self.disconnect(actionTerm, QtCore.SIGNAL("triggered()"), self.copyTranslation)
     
     def copyTranslation(self):
         """
         copy self.sender().text() to clipboard.
         """
-        # TODO:...
-        text = self.sender().text().toUtf8()
+        # TODO: do not use QLineEdit
+        text = self.sender().text()
+        lineEdit = QtGui.QLineEdit(text)
+        lineEdit.selectAll()
+        lineEdit.copy()
     
     def setPattern(self, patternList):
         """
@@ -287,7 +293,6 @@ class TUview(QtGui.QDockWidget):
             if (unicode(msg_strings[i]) != unicode(textbox.toPlainText())):
                 textbox.setPlainText(msg_strings[i])
             textbox.setReadOnly(True)
-    
     
     def textChanged(self):
         """
