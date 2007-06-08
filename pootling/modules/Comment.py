@@ -65,11 +65,11 @@ class CommentDock(QtGui.QDockWidget):
         self.toggleViewAction().setChecked(False)
     
     def updateView(self, unit):
-        """Update the comments view
-        @param unit: class unit."""
+        """
+        Update the comments view
+        @param unit: class unit.
+        """
         self.viewSetting(unit)
-        if hasattr(self, "lastUnit") and (self.lastUnit == unit):
-            return
         if (not unit):
             return
         self.emitCommentChanged()
@@ -92,8 +92,8 @@ class CommentDock(QtGui.QDockWidget):
         @emit targetChanged signal if content is dirty.
         """
         if self.ui.txtTranslatorComment.document().isModified():
-            target = unicode(self.ui.txtTranslatorComment.toPlainText())
-            self.emit(QtCore.SIGNAL("commentChanged"), target)
+            comment = unicode(self.ui.txtTranslatorComment.toPlainText())
+            self.emit(QtCore.SIGNAL("commentChanged"), comment, self.lastUnit)
         self.ui.txtTranslatorComment.document().setModified(False)
     
     def setSearchString(self, searchString, textField):
