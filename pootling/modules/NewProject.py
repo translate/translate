@@ -87,20 +87,22 @@ class newProject(QtGui.QDialog):
 
     def projectNameAvailable(self):
           if (self.ui.projectName.text() and self.ui.configurationFile.text()):
-                self.ui.btnNext.setEnabled(True)
+              self.ui.btnNext.setEnabled(True)
+              self.value = False
           else:
-                self.ui.btnNext.setEnabled(False)
+              self.ui.btnNext.setEnabled(False)
 
     def addLocation(self, text):
-        item = QtGui.QListWidgetItem(text)
-        self.ui.configurationFile.setText(item.text())
-        self.ui.projectName.setFocus()
-        if (self.value == True):
+        if (self.value == False):
+            data = QtGui.QListWidgetItem(text)
+            self.ui.configurationFile.setText(data.text())
+        else:
+            item = QtGui.QListWidgetItem(text)
             items = self.ui.listWidget.findItems(text, QtCore.Qt.MatchCaseSensitive)
             if (not items):
                 self.ui.listWidget.addItem(item)
+                self.value = False
                 self.ui.btnFinish.setEnabled(True)
-                self.ui.btnNext.setEnabled(True)
 
     def clearLocation(self):
         self.ui.listWidget.clear()
@@ -140,16 +142,16 @@ class newProject(QtGui.QDialog):
         self.ui.stackedWidget.setCurrentIndex(1)
         self.ui.btnNext.setEnabled(False)
         self.ui.btnBack.setEnabled(True)
-        self.ui.btnFinish.setEnabled(True)
+        if (self.ui.listWidget.count()):
+            self.ui.btnFinish.setEnabled(True)
+        else:
+            self.ui.btnFinish.setEnabled(False)
 
-        self.projectname = self.ui.projectName.text().toAscii()
-        if (self.projectname.isEmpty()):
-            self.ui.btnBrowse.setEnabled(False)
-            self.ui.projectName.setFocus()
-            self.ui.btnBrowse.setEnabled(True)
+    def addItemToDict(self):
+        projectname = self.ui.projectName.text().toAscii()
         configure = self.ui.configurationFile.text()
         # Concatenate string between directory path and filename
-        path = os.path.join(configure + os.path.sep + self.projectname)
+        path = os.path.join(configure + os.path.sep + projectname)
         language = self.ui.cbxLanguages.currentText()
         projectType = self.ui.cbxProject.currentText()
         self.projectInfo = {}
@@ -162,9 +164,11 @@ class newProject(QtGui.QDialog):
         stringlist = QtCore.QStringList()
         for i in range(self.ui.listWidget.count()):
             stringlist.append(self.ui.listWidget.item(i).text())
+        self.addItemToDict()
         self.projectInfo['itemList'] = stringlist
         self.projectInfo['diveIntoSubCatalog'] = self.ui.chbDiveIntoSubfolders.isChecked()
         self.storeDataToNewFile()
+        self.clearStackedWidget()
 
     def storeDataToNewFile(self):
         proSettings = QtCore.QSettings(self.projectInfo['path'], QtCore.QSettings.IniFormat)
@@ -172,6 +176,16 @@ class newProject(QtGui.QDialog):
         proSettings.setValue("lang", QtCore.QVariant(self.projectInfo['lang']))
         proSettings.setValue("project", QtCore.QVariant(self.projectInfo['project']))
         proSettings.setValue("diveIntoSubCatalog", QtCore.QVariant(self.projectInfo['diveIntoSubCatalog']))
+
+    def clearStackedWidget(self):
+        self.ui.stackedWidget.setCurrentIndex(0)
+        self.ui.projectName.setText("") 
+        self.ui.configurationFile.setText("")
+        self.ui.cbxProject.clear()
+        self.ui.listWidget.clear()
+        self.ui.chbDiveIntoSubfolders.setChecked(False)
+        self.ui.btnBack.setEnabled(False)
+        self.ui.btnFinish.setEnabled(False)
 
     def openProject(self):
         fileOpen = QtGui.QFileDialog.getOpenFileName(self, self.tr("Open File"),
