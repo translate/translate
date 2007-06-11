@@ -427,6 +427,7 @@ class Operator(QtCore.QObject):
                 self.foundPosition, \
                 len(unicode(self.searchString)), \
                 replacedText)
+            self.searchNext()
 
     def replaceAll(self, replacedText):
         """
