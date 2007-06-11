@@ -255,6 +255,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.dockTUview, QtCore.SIGNAL("textChanged"), self.dockOverview.updateText)
         self.connect(self.dockTUview, QtCore.SIGNAL("textChanged"), self.setSaveEnabled)
         
+        self.connect(self.dockComment, QtCore.SIGNAL("textChanged"), self.dockOverview.markComment)
         self.connect(self.dockComment, QtCore.SIGNAL("commentChanged"), self.operator.setComment)
         self.connect(self.fileaction, QtCore.SIGNAL("fileSaved"), self.operator.saveStoreToFile)
         self.connect(self.fileaction, QtCore.SIGNAL("saveFile"), self.operator.setModified)

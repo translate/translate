@@ -87,10 +87,6 @@ class TUview(QtGui.QDockWidget):
         """
         Popup menu or show tooltip of glossary word's translation.
         """
-        # context menu of items
-        if (not hasattr(self, "globalPos")) or (self.globalPos == None):
-            return
-        
         if (self.requestAction == CONTEXTMENU):
             # lazy construction of menu
             if (not hasattr(self, "menuTerm")):
@@ -98,6 +94,7 @@ class TUview(QtGui.QDockWidget):
                 actionTerm = menuTerm.addAction(self.tr("Copy to clipboard:"))
                 actionTerm.setEnabled(False)
             for candidate in candidates:
+##                if (candidate.source.lower() == self.term.lower()):
                 actionTerm = menuTerm.addAction(candidate.target)
                 self.connect(actionTerm, QtCore.SIGNAL("triggered()"), self.copyTranslation)
             menuTerm.exec_(self.globalPos)
@@ -106,6 +103,7 @@ class TUview(QtGui.QDockWidget):
         elif (self.requestAction == SHOWTIP):
             tips = ""
             for candidate in candidates:
+##            if (candidate.source.lower() == self.term.lower()):
                 tips += candidate.target + "\n"
             tips = tips[:-1]
             QtGui.QToolTip.showText(self.globalPos, tips)
@@ -137,6 +135,7 @@ class TUview(QtGui.QDockWidget):
         length = wordWithSpace.matchedLength()
         termWithSpace = unicode(wordWithSpace.capturedTexts()[0])
         if (termWithSpace in glossaryWords):
+##            self.term = termWithSpace
             self.emit(QtCore.SIGNAL("termRequest"), termWithSpace)
         else:
             withoutSpace = "\\b(\\w+)\\b"
@@ -146,6 +145,7 @@ class TUview(QtGui.QDockWidget):
             length = wordWithoutSpace.matchedLength()
             termWithoutSpace = unicode(wordWithoutSpace.capturedTexts()[0])
             if (termWithoutSpace in glossaryWords):
+##                self.term = termWithoutSpace
                 self.emit(QtCore.SIGNAL("termRequest"), termWithoutSpace)
     
     def setPattern(self, patternList):
@@ -334,15 +334,16 @@ class TUview(QtGui.QDockWidget):
         """
         text = unicode(self.ui.txtTarget.toPlainText())
         self.emit(QtCore.SIGNAL("textChanged"), text)
+        self.contentDirty = True
     
     def emitTargetChanged(self):
         """
         @emit targetChanged signal if content is dirty.
         """
-        if (self.ui.txtTarget.document().isModified()) and (hasattr(self, "lastUnit")):
+        if (hasattr(self, "contentDirty") and self.contentDirty) and (hasattr(self, "lastUnit")):
             target = self.getTargets()
             self.emit(QtCore.SIGNAL("targetChanged"), target, self.lastUnit)
-        self.ui.txtTarget.document().setModified(False)
+        self.contentDirty = False
     
     def source2target(self):
         """

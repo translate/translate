@@ -295,13 +295,24 @@ class OverviewDock(QtGui.QDockWidget):
         """converting index which is integer string."""
         return str(index).rjust(self.indexMaxLen) + "  "
     
-    def markComment(self, index, note):
+    def markComment(self, index = None, note = ""):
         """
         mark icon indicate unit has comment on index column, and add tooltips.
         @param index: row in table.
         @param note: unit's comment as tooltips in index column.
         """
-        item = self.ui.tableOverview.item(index, 0)
+        if (type(index) != int):
+            note = index
+            index = None
+            
+        # get the current row
+        if (not index):
+            item = self.ui.tableOverview.item(self.ui.tableOverview.currentRow(), 0)
+        else:
+            item = self.ui.tableOverview.item(index, 0)
+        
+        if (not item):
+            return
         if (note):
             item.setIcon(self.noteIcon)
             item.setToolTip(unicode(note))

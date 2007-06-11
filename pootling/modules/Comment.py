@@ -72,6 +72,9 @@ class CommentDock(QtGui.QDockWidget):
         self.viewSetting(unit)
         if (not unit):
             return
+        
+        self.disconnect(self.ui.txtTranslatorComment, QtCore.SIGNAL("textChanged()"), self.textChanged)
+        
         self.emitCommentChanged()
         translatorComment = ""
         locationComment = ""
@@ -85,16 +88,33 @@ class CommentDock(QtGui.QDockWidget):
             self.ui.txtLocationComment.setPlainText(locationComment)
         if (unicode(self.ui.txtTranslatorComment.toPlainText()) != unicode(translatorComment)):
             self.ui.txtTranslatorComment.setPlainText(translatorComment)
+        
+        #move the cursor to the end of sentence.
+        cursor = self.ui.txtTranslatorComment.textCursor()
+        cursor.setPosition(len(unit.target))
+        self.ui.txtTranslatorComment.setTextCursor(cursor)
         self.lastUnit = unit
+        
+        self.connect(self.ui.txtTranslatorComment, QtCore.SIGNAL("textChanged()"), self.textChanged)
+    
+    def textChanged(self):
+        """
+        @emit textchanged signal for widget that need to update text while typing.
+        """
+        text = unicode(self.ui.txtTranslatorComment.toPlainText())
+        self.emit(QtCore.SIGNAL("textChanged"), text)
+        self.contentDirty = True
     
     def emitCommentChanged(self):
         """
         @emit targetChanged signal if content is dirty.
         """
-        if self.ui.txtTranslatorComment.document().isModified():
+        if (hasattr(self, "contentDirty") and self.contentDirty) and (hasattr(self, "lastUnit")):
+##        if self.ui.txtTranslatorComment.document().isModified():
             comment = unicode(self.ui.txtTranslatorComment.toPlainText())
             self.emit(QtCore.SIGNAL("commentChanged"), comment, self.lastUnit)
-        self.ui.txtTranslatorComment.document().setModified(False)
+##        self.ui.txtTranslatorComment.document().setModified(False)
+        self.contentDirty = False
     
     def setSearchString(self, searchString, textField):
         """
