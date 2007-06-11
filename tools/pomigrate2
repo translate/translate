@@ -32,7 +32,7 @@ function usage() {
 	echo "                           - use an external compendium during the migration"
         echo "   --no-wrap               - do not wrap long lines"
         echo "   --locale=lang           - set locale for newly born files"
-        echo "   -q|--quiet              - supress most output"
+        echo "   -q|--quiet              - suppress most output"
         echo "   -p|--pot2po             - use pot2po instead of msgmerge to migrate (you cannot use compendia)"
 	exit 1
 }
