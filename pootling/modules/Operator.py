@@ -529,15 +529,19 @@ class Operator(QtCore.QObject):
         self.emit(QtCore.SIGNAL("candidates"), candidates)
     
     def lookupTerm(self, term):
-        """Lookup a term in glossary.
+        """
+        Lookup a term in glossary.
         @param term: a word to lookup in termmatcher
         emit glossaryTerms signal with a candidates as list of units
         """
-#      use cache to improve glossary search speed within 20 terms.
+        # use cache to improve glossary search speed within 20 terms.
         if self.cache.has_key(term):
             candidates = self.cache[term]
         else:
             candidates = self.termmatcher.matches(term)
+            for candidate in candidates:
+                if (candidate.source.lower() != term.lower()):
+                    candidates.remove(candidate)
             self.cache[term] = candidates
             if (len(self.cache) > 20 ): 
                 self.cache.popitem()
