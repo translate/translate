@@ -200,6 +200,8 @@ class pounit(base.TranslationUnit):
     
     @param source: an unescaped source string.
     """
+    if isinstance(source, str):
+      source = source.decode(self.encoding)
     if isinstance(source, multistring):
       source = source.strings
     if isinstance(source, list):
@@ -220,6 +222,8 @@ class pounit(base.TranslationUnit):
 
   def settarget(self, target):
     """Sets the msgstr to the given (unescaped) value"""
+    if isinstance(target, str):
+      target = target.decode(self.encoding)
     if target == self.target:
       return
     if self.hasplural():
