@@ -34,9 +34,10 @@ except ImportError:
 
 class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
   """a specialized Option Parser for convertor tools..."""
-  def __init__(self, formats, usetemplates=False, usepots=False, description=None):
+  def __init__(self, formats, usetemplates=False, usepots=False, allowmissingtemplate=False, description=None):
     """construct the specialized Option Parser"""
-    optrecurse.RecursiveOptionParser.__init__(self, formats, usetemplates, description=description)
+    optrecurse.RecursiveOptionParser.__init__(self, formats, usetemplates, 
+            allowmissingtemplate=allowmissingtemplate, description=description)
     self.usepots = usepots
     self.setpotoption()
     self.set_usage()

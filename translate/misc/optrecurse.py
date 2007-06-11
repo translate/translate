@@ -49,7 +49,7 @@ class ManPageOption(optparse.Option, object):
 class RecursiveOptionParser(optparse.OptionParser, object):
   """A specialized Option Parser for recursing through directories."""
 
-  def __init__(self, formats, usetemplates=False, description=None):
+  def __init__(self, formats, usetemplates=False, allowmissingtemplate=False, description=None):
     """Construct the specialized Option Parser.
 
     @type formats: Dictionary
@@ -64,6 +64,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
     self.setformats(formats, usetemplates)
     self.setpsycooption()
     self.passthrough = []
+    self.allowmissingtemplate=allowmissingtemplate
 
   def setmanpageoption(self):
     """creates a manpage option that allows the optionparser to generate a manpage"""
@@ -418,7 +419,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         templatepath = self.gettemplatename(options, inputpath)
         # If we have a recursive template, but the template doesn't have this
         # input file, let's drop it.
-        if options.recursivetemplate and templatepath is None:
+        if options.recursivetemplate and templatepath is None and not self.allowmissingtemplate:
           self.warning("No template at %s. Skipping %s." % (templatepath, inputpath))
           continue
         outputformat, fileprocessor = self.getoutputoptions(options, inputpath, templatepath)
