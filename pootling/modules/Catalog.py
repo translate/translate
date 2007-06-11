@@ -297,6 +297,8 @@ class Catalog(QtGui.QMainWindow):
         in tree view.
         """
         # Icon enabled when toolBar not files into treeCatalog
+        self.lazyInit()
+        self.show()
         self.ui.actionFind_in_Files.setEnabled(True)
         self.ui.actionStatistics.setEnabled(True)
         self.ui.actionReload.setEnabled(True)

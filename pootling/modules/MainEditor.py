@@ -30,6 +30,7 @@ from pootling.modules.Operator import Operator
 from pootling.modules.FileAction import FileAction
 from pootling.modules.Find import Find
 from pootling.modules.Catalog import Catalog
+from pootling.modules.NewProject import newProject
 from pootling.modules.Preference import Preference
 from pootling.modules.AboutEditor import AboutEditor
 import pootling.modules.World as World
@@ -198,6 +199,12 @@ class MainWindow(QtGui.QMainWindow):
         # Bookmarks menu action
         self.connect(self.ui.actionAddBookmarks, QtCore.SIGNAL("triggered()"), self.setBookmarks)
         self.connect(self.ui.actionClearBookmarks, QtCore.SIGNAL("triggered()"), self.clearBookmarks)
+
+        # Project menu action
+        self.newProject = newProject(self)
+        self.connect(self.ui.actionNewPro, QtCore.SIGNAL("triggered()"), self.newProject.show)
+        self.connect(self.ui.actionOpenPro, QtCore.SIGNAL("triggered()"), self.newProject.openProject)
+        self.connect(self.newProject, QtCore.SIGNAL("updateCatalog"), self.Catalog.updateCatalog)
         
         # action Preferences menu 
         self.preference = Preference(self)
@@ -346,7 +353,7 @@ class MainWindow(QtGui.QMainWindow):
         unit = self.operator.getCurrentUnit()
         id = self.dockOverview.getCurrentIndex()
         self.totalMaxlen = len(str(self.maxBookmark))
-        value = str(id).rjust(self.totalMaxlen)
+        value = str(id).rjust(str(self.totalMaxlen))
 
         reducedSource = value + self.delimiter + unit.source[:15] + "..."
         bookmark = World.settings.value("bookmarkList").toStringList()
@@ -408,7 +415,7 @@ class MainWindow(QtGui.QMainWindow):
             self.ui.menuOpen_Recent.setEnabled(True)
         World.settings.setValue("recentFileList", QtCore.QVariant(files))
         self.updateRecentAction()
-#        self.clearBookmarks()
+        self.clearBookmarks()
         
         self.operator.emitGlossaryPattern()
         
