@@ -60,8 +60,10 @@ class Operator(QtCore.QObject):
         self.TMcache = {} # for improve TM search speed
 
     def getUnits(self, fileName):
-        """reading a file into the internal datastructure.
-        @param fileName: the file to open, either a string or a file object"""
+        """
+        Read a file into the internal datastructure.
+        @param fileName: the file to open, either a string or a file object.
+        """
         if (not os.path.exists(fileName)):
             QtGui.QMessageBox.critical(None, 'Error', fileName  + '\n' + 'The file doesn\'t exist.')
             return
@@ -75,8 +77,10 @@ class Operator(QtCore.QObject):
         self.fileName = fileName
       
     def setNewStore(self, store):
-        """ setup the oparator with a new storage
-        @param store: the new storage class"""
+        """
+        Setup the oparator with a new storage.
+        @param store: the new storage class.
+        """
         self.store = store
         # filter flags
         self.filter = World.filterAll
@@ -99,28 +103,37 @@ class Operator(QtCore.QObject):
         self.setModified(False)
 
     def emitNewUnits(self):
+        """
+        Emit "newUnits" signal with a list of unit.
+        """
         self.emit(QtCore.SIGNAL("newUnits"), self.filteredList)
         
     def emitStatus(self):
-        '''show total of messages in a file, fuzzy, translated messages and untranslate  messages which are not fuzzy.
-        
-        '''
+        """
+        Emit "currentStatus" signal with a string contains total, fuzzy,
+        translated, and untranslated messages of current file.
+        """
         self.emit(QtCore.SIGNAL("currentStatus"), self.status.statusString())
     
     def emitUnit(self, unit):
-        """send "currentUnit" signal with unit.
-        @param unit: class unit."""
+        """
+        Emit "currentUnit" signal with a unit.
+        @param unit: class unit.
+        """
         if (hasattr(unit, "x_editor_filterIndex")):
             self.currentUnitIndex = unit.x_editor_filterIndex
             self.searchPointer = unit.x_editor_filterIndex
         self.emit(QtCore.SIGNAL("currentUnit"), unit)
     
     def getCurrentUnit(self):
-        """return the current unit"""
+        """
+        @return the current unit.
+        """
         return self.filteredList[self.currentUnitIndex]
     
     def filterFuzzy(self, checked):
-        """add/remove fuzzy to filter, and send filter signal.
+        """
+        Add/remove fuzzy to filter, and send filter signal.
         @param checked: True or False when Fuzzy checkbox is checked or unchecked.
         """
         filter = self.filter
@@ -131,8 +144,10 @@ class Operator(QtCore.QObject):
         self.emitFiltered(filter)
     
     def filterTranslated(self, checked):
-        """add/remove translated to filter, and send filter signal.
-        @param checked: True or False when Translated checkbox is checked or unchecked."""
+        """
+        Add/remove translated to filter, and send filter signal.
+        @param checked: True or False when Translated checkbox is checked or unchecked.
+        """
         filter = self.filter
         if (checked):
             filter |= World.translated
@@ -141,7 +156,8 @@ class Operator(QtCore.QObject):
         self.emitFiltered(filter)
     
     def filterUntranslated(self, checked):
-        """add/remove untranslated to filter, and send filter signal.
+        """
+        Add/remove untranslated to filter, and send filter signal.
         @param checked: True or False when Untranslated checkbox is checked or unchecked.
         """
         filter = self.filter
@@ -152,7 +168,9 @@ class Operator(QtCore.QObject):
         self.emitFiltered(filter)
     
     def emitFiltered(self, filter):
-        """send filtered list signal according to filter."""
+        """
+        Emit "filterChanged" signal with a filter and lenght of filtered list.
+        """
         if (len(self.filteredList) > 0):
             unitBeforeFiltered = self.filteredList[self.currentUnitIndex]
         else:
@@ -176,7 +194,9 @@ class Operator(QtCore.QObject):
         self.emitUnit(unit)
 
     def headerData(self):
-        """@return Header comment and Header dictonary"""
+        """
+        @return Header comment and Header dictonary.
+        """
         if (not isinstance(self.store, poheader.poheader)):
             return (None, None)
 
@@ -188,24 +208,26 @@ class Operator(QtCore.QObject):
             return ("", {})
 
     def makeNewHeader(self, headerDic):
-          """Create a header with the information from headerDic.
-          
-          @param headerDic: a dictionary of arguments that are neccessary to form a header
-          @return: a dictionary with the header items"""
+        """
+        Create a header with the information from headerDic.
+        @param headerDic: a dictionary of arguments that are neccessary to form
+        a header.
+        @return: a dictionary with the header items.
+        """
 
-          if (hasattr(self.store, "x_generator")):
+        if (hasattr(self.store, "x_generator")):
             self.store.x_generator = World.settingApp + ' ' + __version__.ver
-          if isinstance(self.store, poheader.poheader):
-              self.store.updateheader(add=True, **headerDic)
-              self.setModified(True)
-              return self.store.makeheaderdict(**headerDic)
-          else: return {}
-          
+        if isinstance(self.store, poheader.poheader):
+            self.store.updateheader(add=True, **headerDic)
+            self.setModified(True)
+            return self.store.makeheaderdict(**headerDic)
+        else: return {}
+    
     def updateNewHeader(self, othercomments, headerDic):
-        """Will update the existing header.
-        
-        @param othercomments: The comment of header file
-        @param headerDic: A header dictionary that have information about header
+        """
+        Will update the existing header.
+        @param othercomments: The comment of header file.
+        @param headerDic: A header dictionary that has information about header.
         """
         #TODO: need to make it work with xliff file
         if (not isinstance(self.store, poheader.poheader)):
@@ -225,8 +247,8 @@ class Operator(QtCore.QObject):
 
     def saveStoreToFile(self, fileName):
         """
-        save the temporary store into a file.
-        @param fileName: String type
+        Save the temporary store into a file.
+        @param fileName: String type.
         """
         if (World.settings.value("headerAuto", QtCore.QVariant(True)).toBool()):
             self.emit(QtCore.SIGNAL("headerAuto"))
@@ -251,8 +273,9 @@ class Operator(QtCore.QObject):
     
     def setComment(self, comment, unit = None):
         """
-        Set the comment to the current unit, and emit current unit.
-        @param comment: QString type
+        Set the comment to the unit or current unit.
+        Call emitUnit() if unit is not current unit.
+        @param comment: QString type.
         """
         if (self.currentUnitIndex < 0 or not self.filteredList):
             return
@@ -268,8 +291,10 @@ class Operator(QtCore.QObject):
     
     def setTarget(self, target, unit = None):
         """
-        Set the curent unit target to target and emit current unit.
-        @param target: Unicode sting type for single unit and list type for plural unit.
+        Set the target to the unit or current unit.
+        Call emitUnit() if unit is not current unit.
+        @param target: Unicode sting type for single unit and list type for
+        plural unit.
         """
         # if there is no translation unit in the view.
         if (self.currentUnitIndex < 0 or not self.filteredList):
@@ -288,14 +313,18 @@ class Operator(QtCore.QObject):
         self.setModified(True)
     
     def setUnitFromPosition(self, position):
-        """build a unit from position and call emitUnit.
-        @param position: position inside the filtered list."""
+        """
+        Build a unit from position and call emitUnit().
+        @param position: position inside the filtered list.
+        """
         if (position < len(self.filteredList) and position >= 0):
             unit = self.filteredList[position]
             self.emitUnit(unit)
 
     def toggleFuzzy(self):
-        """toggle fuzzy state for current unit."""
+        """
+        Toggle fuzzy state for current unit.
+        """
         if (self.currentUnitIndex < 0):
             return
         unit = self.getCurrentUnit()
@@ -310,10 +339,12 @@ class Operator(QtCore.QObject):
         self.setModified(True)
     
     def initSearch(self, searchString, searchableText, matchCase):
-        """initilize the needed variables for searching.
+        """
+        Initilize the needed variables for searching.
         @param searchString: string to search for.
         @param searchableText: text fields to search through.
-        @param matchCase: bool indicates case sensitive condition."""
+        @param matchCase: bool indicates case sensitive condition.
+        """
         self.currentTextField = 0
         self.foundPosition = -1
         self.searchString = unicode(searchString)
@@ -323,7 +354,9 @@ class Operator(QtCore.QObject):
             self.searchString = self.searchString.lower()
 
     def searchNext(self):
-        """search forward through the text fields."""
+        """
+        Search forward through the text fields.
+        """
         if (not hasattr(self, "searchPointer")):
             return
         oldSearchPointer = self.searchPointer
@@ -351,7 +384,9 @@ class Operator(QtCore.QObject):
             self.searchPointer = oldSearchPointer
 
     def searchPrevious(self):
-        """search backward through the text fields."""
+        """
+        Search backward through the text fields.
+        """
         if (not hasattr(self, "searchPointer")):
             return
         while (self.searchPointer >= 0):
@@ -380,8 +415,10 @@ class Operator(QtCore.QObject):
             self.emit(QtCore.SIGNAL("EOF"), "Previous")
     
     def replace(self, replacedText):
-        """replace the found text in the text fields.
-        @param replacedText: text to replace."""
+        """
+        Replace the found text in the text fields.
+        @param replacedText: text to replace.
+        """
         self.foundPosition = -1
         if self.searchNext():
             textField = self.searchableText[self.currentTextField]
@@ -392,8 +429,10 @@ class Operator(QtCore.QObject):
                 replacedText)
 
     def replaceAll(self, replacedText):
-        """replace the found text in the text fields through out the units.
-        @param replacedText: text to replace."""
+        """
+        Replace the found text in the text fields through out the units.
+        @param replacedText: text to replace.
+        """
         self.foundPosition = -1
         while self.searchNext():
             textField = self.searchableText[self.currentTextField]
@@ -404,7 +443,9 @@ class Operator(QtCore.QObject):
                 replacedText)
         
     def _getUnitString(self):
-        """@return: the string of current text field."""
+        """
+        @return: the string of current text field.
+        """
         if (self.searchPointer >= len(self.filteredList) or self.searchPointer < 0):
             return ""
         textField = self.searchableText[self.currentTextField]
@@ -421,13 +462,19 @@ class Operator(QtCore.QObject):
         return unitString
 
     def _searchFound(self):
-        """emit searchResult signal with searchString."""
+        """
+        Emit "searchResult" signal with searchString, textField, and
+        foundPosition.
+        """
         self.setUnitFromPosition(self.searchPointer)
         textField = self.searchableText[self.currentTextField]
         self.emit(QtCore.SIGNAL("searchResult"), self.searchString, textField, self.foundPosition)
     
     def _searchNotFound(self):
-        """emit searchResult signal with searchString = ""."""
+        """
+        Emit "searchResult" signal with searchString="", textField, and
+        foundPosition... indicates result not found.
+        """
         textField = self.searchableText[self.currentTextField]
         self.emit(QtCore.SIGNAL("searchResult"), "", textField, -1)
     
@@ -440,7 +487,7 @@ class Operator(QtCore.QObject):
     
     def autoTranslate(self):
         """
-        get TM path and start lookup
+        Get TM path and start lookup
         """
         if (not self.filteredList):
             return
@@ -449,7 +496,8 @@ class Operator(QtCore.QObject):
     def setMatcher(self, matcher, section):
         """
         Set matcher or termmatcher to new matcher.
-        @param list: contains section, and matcher
+        @param matcher: class matcher.
+        @param section: string indicates TM or glossary.
         """
         if (section == "TM"):
             self.matcher = matcher
@@ -460,8 +508,8 @@ class Operator(QtCore.QObject):
         
     def lookupProcess(self, units):
         """
-        process lookup translation from translation memory
-        @param units: a unit or list of units
+        Process lookup translation from translation memory.
+        @param units: a unit or list of units.
         """
         
         # get matcher from when startup
@@ -514,7 +562,9 @@ class Operator(QtCore.QObject):
         return
         
     def isCopyResult(self, bool):
-        """Slot to recieve isCopyResult signal."""
+        """
+        Slot to recieve isCopyResult signal.
+        """
         self.isCpResult = bool
 
     def lookupUnit(self):
@@ -523,7 +573,6 @@ class Operator(QtCore.QObject):
         if (self.isCpResult):
             self.isCpResult = False
             return
-
         unit = self.filteredList[self.currentUnitIndex]
         candidates = self.lookupProcess(unit)
         self.emit(QtCore.SIGNAL("candidates"), candidates)
@@ -531,8 +580,8 @@ class Operator(QtCore.QObject):
     def lookupTerm(self, term):
         """
         Lookup a term in glossary.
-        @param term: a word to lookup in termmatcher
-        emit glossaryTerms signal with a candidates as list of units
+        @param term: a word to lookup in termmatcher.
+        @return candidates as list of units
         """
         # use cache to improve glossary search speed within 20 terms.
         if self.cache.has_key(term):
@@ -548,10 +597,16 @@ class Operator(QtCore.QObject):
         return candidates
     
     def emitGlossaryCandidates(self, term):
+        """
+        emit "glossaryCandidates" signal with a candidates as list of units.
+        """
         candidates = self.lookupTerm(term)
         self.emit(QtCore.SIGNAL("glossaryCandidates"), candidates)
     
     def emitTermRequest(self, term):
+        """
+        emit "termRequest" signal with a candidates as list of units.
+        """
         candidates = self.lookupTerm(term)
         self.emit(QtCore.SIGNAL("termRequest"), candidates)
     
@@ -579,8 +634,8 @@ class Operator(QtCore.QObject):
     
     def slotFindUnit(self, source):
         """
-        Find a unit that contain source then emit currentUnit
-        @param source: source string used to search for unit
+        Find a unit that contain source then emit currentUnit.
+        @param source: source string used to search for unit.
         """
         unit = self.store.findunit(source)
         if unit:
@@ -588,7 +643,7 @@ class Operator(QtCore.QObject):
         
     def lookupTranslation(self):
         """
-        lookup text translation or text terminologies in glossary.
+        Lookup text translation or text terminologies in glossary.
         """
         self.setTMLookupStatus()
         if (self.lookupUnitStatus):
@@ -596,7 +651,7 @@ class Operator(QtCore.QObject):
     
     def emitGlossaryPattern(self):
         """
-        emit glossaryPattern for class highlighter.
+        Emit "glossaryPattern" signal for highlighter.
         """
         if (not hasattr(self, "termmatcher")) or (not self.termmatcher):
             World.settings.beginGroup("Glossary")
