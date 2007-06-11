@@ -24,6 +24,9 @@ from pootling.ui.Ui_TUview import Ui_TUview
 from pootling.modules import World
 from pootling.modules.highlighter import Highlighter
 
+SHOWTIP = 1
+CONTEXTMENU = 2
+
 class TUview(QtGui.QDockWidget):
     def __init__(self, parent):
         QtGui.QDockWidget.__init__(self, parent)
@@ -48,23 +51,85 @@ class TUview(QtGui.QDockWidget):
         self.ui.txtSource.contextMenuEvent = self.customContextMenuEvent
         self.ui.txtTarget.focusOutEvent = self.customFocusOutEvent
         
+        self.ui.txtSource.installEventFilter(self)
+        
+    def eventFilter(self, obj, event):
+        if (obj == self.ui.txtSource):
+            if (event.type() == QtCore.QEvent.ToolTip):
+                """
+                Request a tooltip for word in position pos of txtSource.
+                """
+                self.requestAction = SHOWTIP
+                self.globalPos = event.globalPos()
+                self.emitTermRequest(event.pos())
+                return True
+            else:
+                return False
+        else:
+            return self.eventFilter(obj, event)
+    
     def customFocusOutEvent(self, e):
         """
         subclass of focusOutEvent of txtTarget
         """
         self.emitTargetChanged()
         return QtGui.QTextEdit.focusOutEvent(self.ui.txtTarget, e)
-        
+    
     def customContextMenuEvent(self, e):
         """
-        subclass of contextMenuEvent
+        Request a context menu for word in position pos of txtSource.
         """
+        self.requestAction = CONTEXTMENU
         self.globalPos = e.globalPos()
+        self.emitTermRequest(e.pos())
+    
+    def popupTerm(self, candidates):
+        """
+        Popup menu or show tooltip of glossary word's translation.
+        """
+        # context menu of items
+        if (not hasattr(self, "globalPos")) or (self.globalPos == None):
+            return
+        
+        if (self.requestAction == CONTEXTMENU):
+            # lazy construction of menu
+            if (not hasattr(self, "menuTerm")):
+                menuTerm = QtGui.QMenu()
+                actionTerm = menuTerm.addAction(self.tr("Copy to clipboard:"))
+                actionTerm.setEnabled(False)
+            for candidate in candidates:
+                actionTerm = menuTerm.addAction(candidate.target)
+                self.connect(actionTerm, QtCore.SIGNAL("triggered()"), self.copyTranslation)
+            menuTerm.exec_(self.globalPos)
+            self.disconnect(actionTerm, QtCore.SIGNAL("triggered()"), self.copyTranslation)
+        
+        elif (self.requestAction == SHOWTIP):
+            tips = ""
+            for candidate in candidates:
+                tips += candidate.target + "\n"
+            tips = tips[:-1]
+            QtGui.QToolTip.showText(self.globalPos, tips)
+            
+    
+    def copyTranslation(self):
+        """
+        copy self.sender().text() to clipboard.
+        """
+        # TODO: do not use QLineEdit
+        text = self.sender().text()
+        lineEdit = QtGui.QLineEdit(text)
+        lineEdit.selectAll()
+        lineEdit.copy()
+    
+    def emitTermRequest(self, pos):
+        """
+        Find word in txtSource from position pos, and emit termRequest signal.
+        """
         text = self.ui.txtSource.toPlainText()
         if (not text):
             return
         glossaryWords = self.sourceHighlighter.glossaryWords
-        cursor = self.ui.txtSource.cursorForPosition(e.pos())
+        cursor = self.ui.txtSource.cursorForPosition(pos)
         position = cursor.position()
         # first try wordWithSpace
         withSpace = "\\b(\\w+\\s\\w+)\\b"
@@ -83,34 +148,7 @@ class TUview(QtGui.QDockWidget):
             termWithoutSpace = unicode(wordWithoutSpace.capturedTexts()[0])
             if (termWithoutSpace in glossaryWords):
                 self.emit(QtCore.SIGNAL("termRequest"), termWithoutSpace)
-    
-    def popupTerm(self, candidates):
-        """
-        popup menu of glossary word's translation.
-        """
-        # context menu of items
-        if (not hasattr(self, "globalPos")) or (self.globalPos == None):
-            return
-        # lazy construction of menu
-        if (not hasattr(self, "menuTerm")):
-            menuTerm = QtGui.QMenu()
-            actionTerm = menuTerm.addAction(self.tr("Copy to clipboard:"))
-            actionTerm.setEnabled(False)
-        for candidate in candidates:
-            actionTerm = menuTerm.addAction(candidate.target)
-            self.connect(actionTerm, QtCore.SIGNAL("triggered()"), self.copyTranslation)
-        menuTerm.exec_(self.globalPos)
-        self.disconnect(actionTerm, QtCore.SIGNAL("triggered()"), self.copyTranslation)
-    
-    def copyTranslation(self):
-        """
-        copy self.sender().text() to clipboard.
-        """
-        # TODO: do not use QLineEdit
-        text = self.sender().text()
-        lineEdit = QtGui.QLineEdit(text)
-        lineEdit.selectAll()
-        lineEdit.copy()
+
     
     def setPattern(self, patternList):
         """
