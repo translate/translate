@@ -29,12 +29,14 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         # var format
         self.varFormat = QtGui.QTextCharFormat()
         self.varFormat.setForeground(QtCore.Qt.blue)
-        self.vars = "%\\d+|&\\w+;"
+        # variables: e.g. &python; AppName= %s %1
+        self.vars = "&\\w+;|%\\w+|\\w+="
         self.varExpression = QtCore.QRegExp(self.vars)
         # tag format
         self.tagFormat = QtGui.QTextCharFormat()
         self.tagFormat.setForeground(QtCore.Qt.darkMagenta)
-        self.tags = "<b>.+</b>"
+        # tags: e.g. <b> </ui>
+        self.tags = "<\\w+>|</\\w+>"
         self.tagExpression = QtCore.QRegExp(self.tags)
         
         # glossary format
@@ -77,12 +79,6 @@ class Highlighter(QtGui.QSyntaxHighlighter):
             glsIndex = -1
         
         while (tagIndex >= 0) or (varIndex >= 0) or (glsIndex >= 0):
-            length = self.tagExpression.matchedLength()
-            self.setFormat(tagIndex, length, self.tagFormat)
-            tagIndex = text.indexOf(self.tagExpression, tagIndex + length)
-            length = self.varExpression.matchedLength()
-            self.setFormat(varIndex, length, self.varFormat)
-            varIndex = text.indexOf(self.varExpression, varIndex + length)
             
             # highlight glossary
             if (self.highlightGlossary) and (self.glsExpression):
@@ -91,6 +87,16 @@ class Highlighter(QtGui.QSyntaxHighlighter):
                 self.glossaryWords.append(unicode(self.glsExpression.capturedTexts()[0]))
                 glsIndex = text.indexOf(self.glsExpression, glsIndex + length)
             
+            # highlight tag and variable
+            length = self.tagExpression.matchedLength()
+            self.setFormat(tagIndex, length, self.tagFormat)
+            tagIndex = text.indexOf(self.tagExpression, tagIndex + length)
+            length = self.varExpression.matchedLength()
+            self.setFormat(varIndex, length, self.varFormat)
+            varIndex = text.indexOf(self.varExpression, varIndex + length)
+            
+
+            
         # highlight search
         if (self.searchString):
             index = self.foundPosition - self.blockWordCount
@@ -98,6 +104,10 @@ class Highlighter(QtGui.QSyntaxHighlighter):
             cursor = self.parent.textCursor()
             cursor.setPosition(self.blockWordCount + index)
             self.parent.setTextCursor(cursor)
+            captured = unicode(text[index:index + len(self.searchString)])
+            if (captured.lower() == self.searchString.lower()):
+                self.searchString =None
+            
         self.blockWordCount += len(text) + 1
     
     def refresh(self):
