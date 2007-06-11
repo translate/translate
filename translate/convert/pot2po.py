@@ -176,7 +176,8 @@ def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similari
 def main(argv=None):
   from translate.convert import convert
   formats = {"pot": ("po", convertpot), ("pot", "po"): ("po", convertpot)}
-  parser = convert.ConvertOptionParser(formats, usepots=True, usetemplates=True, description=__doc__)
+  parser = convert.ConvertOptionParser(formats, usepots=True, usetemplates=True, 
+          allowmissingtemplate=True, description=__doc__)
   parser.add_option("", "--tm", dest="tm", default=None,
     help="The file to use as translation memory when fuzzy matching")
   parser.passthrough.append("tm")
