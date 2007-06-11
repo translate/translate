@@ -172,8 +172,14 @@ class OverviewDock(QtGui.QDockWidget):
                     self.emit(QtCore.SIGNAL("targetChanged"), unicode(target))
     
     def updateText(self, text):
+        """
+        Set text to current item.
+        """
         self.disconnect(self.ui.tableOverview, QtCore.SIGNAL("cellChanged(int, int)"), self.emitTargetChanged)
         targetItem = self.ui.tableOverview.item(self.ui.tableOverview.currentRow(), 2)
+        # unmark item fuzzy when text changed
+        row = self.ui.tableOverview.row(targetItem)
+        self.markState(row, not World.fuzzy)
         if (targetItem):
             targetItem.setText(text)
         self.connect(self.ui.tableOverview, QtCore.SIGNAL("cellChanged(int, int)"), self.emitTargetChanged)
@@ -212,6 +218,9 @@ class OverviewDock(QtGui.QDockWidget):
         @param state: unit's state.
         """
         item = self.ui.tableOverview.item(index, 3)
+        if (not item):
+            return
+        
         if (state & World.fuzzy):
             item.setIcon(self.fuzzyIcon)
             item.setToolTip("fuzzy")
