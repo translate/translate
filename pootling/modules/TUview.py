@@ -303,7 +303,7 @@ class TUview(QtGui.QDockWidget):
         """
         @emit targetChanged signal if content is dirty.
         """
-        if self.ui.txtTarget.document().isModified():
+        if (self.ui.txtTarget.document().isModified()) and (hasattr(self, "lastUnit")):
             target = self.getTargets()
             self.emit(QtCore.SIGNAL("targetChanged"), target, self.lastUnit)
         self.ui.txtTarget.document().setModified(False)
