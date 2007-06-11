@@ -70,7 +70,6 @@ class tableTM(QtGui.QDockWidget):
     def fillTable(self, candidates):
         '''fill each found unit into table
         @param candidates:list of pofile object'''
-        
         self.ui.tblTM.setEnabled(True)
         self.ui.tblTM.clear()
         self.ui.tblTM.setHorizontalHeaderLabels(self.headerLabels)
@@ -114,6 +113,7 @@ class tableTM(QtGui.QDockWidget):
         self.getCurrentTarget(0,0,0,0)
 
     def clearInfo(self):
+        """Clear all information in both table and labels."""
         self.ui.lblPath.clear()
         self.ui.lblTranslator.clear()
         self.ui.lblDate.clear()
@@ -144,16 +144,18 @@ class tableTM(QtGui.QDockWidget):
             self.ui.lblDate.setText(date.text())
     
     def emitTarget(self):
+        """@emit targetChanged signal and send the current target."""
         self.emitIsCopyResult(True)
         self.emit(QtCore.SIGNAL("targetChanged"), unicode(self.target))
         
     def emitIsCopyResult(self, bool = False):
+        """@emit isCopyResult signal with the boolean value."""
         self.emit(QtCore.SIGNAL("isCopyResult"), bool)
         
     
     def emitOpenFile(self):
         """
-        Send "openFile" signal with filename.
+        Send "openFile" signal with filename together with the findUnit signal with the current source.
         """
         source = str(self.source)
         self.emit(QtCore.SIGNAL("openFile"), str(self.filepath))
@@ -169,12 +171,12 @@ class tableTM(QtGui.QDockWidget):
         
     def closeEvent(self, event):
         """
-        set text of action object to 'show table TM' before closing table TM
+        Unchecked the TM Lookup view action.
         @param QCloseEvent Object: received close event when closing widget
         """
         QtGui.QDockWidget.closeEvent(self, event)
         self.toggleViewAction().setChecked(False)
-        
+
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     table = tableTM(None)
