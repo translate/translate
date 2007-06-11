@@ -109,7 +109,6 @@ class TUview(QtGui.QDockWidget):
                 tips += candidate.target + "\n"
             tips = tips[:-1]
             QtGui.QToolTip.showText(self.globalPos, tips)
-            
     
     def copyTranslation(self):
         """
@@ -148,7 +147,6 @@ class TUview(QtGui.QDockWidget):
             termWithoutSpace = unicode(wordWithoutSpace.capturedTexts()[0])
             if (termWithoutSpace in glossaryWords):
                 self.emit(QtCore.SIGNAL("termRequest"), termWithoutSpace)
-
     
     def setPattern(self, patternList):
         """
@@ -191,7 +189,7 @@ class TUview(QtGui.QDockWidget):
         self.ui.fileScrollBar.setValue(value)
         self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
         self.ui.fileScrollBar.setToolTip("%s / %s" % (value + 1,  self.ui.fileScrollBar.maximum() + 1))
-
+    
     def filterChanged(self, filter, lenFilter):
         """Adjust the scrollbar maximum according to lenFilter.
         @param filter: helper constants for filtering
@@ -257,7 +255,7 @@ class TUview(QtGui.QDockWidget):
     def showUnit(self, unit):
         """show unit's source and target in a normal text box if unit is single or 
         in multi tab if unit is plural and number of plural forms setting is more than 1.
-
+    
         @param unit: to show into source and target.
         """
         if (not unit.hasplural()):
@@ -300,7 +298,7 @@ class TUview(QtGui.QDockWidget):
                     self.disconnect(textbox, QtCore.SIGNAL("textChanged()"), self.textChanged)
                     # everytime display a unit, connect signal
                     self.connect(textbox, QtCore.SIGNAL("textChanged()"), self.textChanged)
-        
+    
     def addRemoveTabWidget(self, tabWidget, length, msg_strings):
         """
         Add or remove tab to a Tab widget.
@@ -380,7 +378,7 @@ class TUview(QtGui.QDockWidget):
         text = self.ui.txtTarget.toPlainText()
         text.replace(position, length, replacedText);
         self.ui.txtTarget.setPlainText(text)
-
+    
     def applySettings(self):
         """
         Set font and color to txtSource and txtTarget
@@ -392,7 +390,7 @@ class TUview(QtGui.QDockWidget):
             palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(QtGui.QPalette.Text), colorObj)
             palette.setColor(QtGui.QPalette.Inactive, QtGui.QPalette.ColorRole(QtGui.QPalette.Text), colorObj)
             self.ui.txtSource.setPalette(palette)
-
+        
         targetColor = World.settings.value("tuTargetColor")
         if (targetColor.isValid()):
             colorObj = QtGui.QColor(targetColor.toString())
@@ -400,13 +398,13 @@ class TUview(QtGui.QDockWidget):
             palette.setColor(QtGui.QPalette.Active,QtGui.QPalette.ColorRole(QtGui.QPalette.Text), colorObj)
             palette.setColor(QtGui.QPalette.Inactive, QtGui.QPalette.ColorRole(QtGui.QPalette.Text), colorObj)
             self.ui.txtTarget.setPalette(palette)
-
+    
         fontObj = QtGui.QFont()
         sourcefont = World.settings.value("tuSourceFont")
         if (sourcefont.isValid() and fontObj.fromString(sourcefont.toString())):
             self.ui.txtSource.setFont(fontObj)
             self.ui.txtSource.setTabStopWidth(QtGui.QFontMetrics(fontObj).width("m"*8))
-
+    
         targetfont = World.settings.value("tuTargetFont")
         if (targetfont.isValid() and fontObj.fromString(targetfont.toString())):
             self.ui.txtTarget.setFont(fontObj)
