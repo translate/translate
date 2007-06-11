@@ -51,8 +51,8 @@ class oo2po:
     #TODO: Do better
     text1 = self.escape_text(getattr(part1, subkey))
     text2 = self.escape_text(getattr(part2, subkey))
-    thepo.source = text1
-    thepo.target = text2
+    thepo.source = text1.decode('utf-8')
+    thepo.target = text2.decode('utf-8')
     return thepo
 
   def makekey(self, ookey):
