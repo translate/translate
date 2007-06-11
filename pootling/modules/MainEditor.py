@@ -137,6 +137,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.table, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
         self.connect(self.table, QtCore.SIGNAL("isCopyResult"), self.operator.isCopyResult)
         self.connect(self.operator, QtCore.SIGNAL("filterChanged"), self.table.filterChanged)
+        self.connect(self.dockTUview, QtCore.SIGNAL("lookupTranslation"), self.operator.lookupTranslation)
         
         #Glossary
         self.connect(self.tableGlossary, QtCore.SIGNAL("closed"), self.toggleTUviewTermSig)
@@ -204,12 +205,11 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockComment.applySettings)
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockOverview.applySettings)
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockTUview.applySettings)
-        self.connect(self.preference, QtCore.SIGNAL("TMpreference"), self.operator.setTMLookupStatus)
-        self.connect(self.preference, QtCore.SIGNAL("TMpreference"), self.showHideTableLookup)
-        self.connect(self.preference, QtCore.SIGNAL("GlossaryPreference"), self.operator.setTermLookupStatus)
-        
+        self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.showHideTableLookup)
+        self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.operator.setTermLookupStatus)
+
         # action lookup text and auto translation from TM
-        self.connect(self.ui.actionAuto_translate, QtCore.SIGNAL("triggered()"), self.operator.autoTranslate)       
+        self.connect(self.ui.actionAuto_translate, QtCore.SIGNAL("triggered()"), self.operator.autoTranslate)
         
         # action setting Path of TM
         self.tmsetting = tmSetting.tmSetting(self)
@@ -248,7 +248,6 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.addFuzzyIcon)
         self.connect(self.dockOverview, QtCore.SIGNAL("filteredIndex"), self.operator.setUnitFromPosition)
         self.connect(self.dockTUview, QtCore.SIGNAL("scrollToRow"), self.dockOverview.scrollToRow)
-        self.connect(self.dockTUview, QtCore.SIGNAL("lookupTranslation"), self.operator.lookupTranslation)
         
         self.connect(self.dockOverview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
         self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
@@ -302,17 +301,20 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.table, QtCore.SIGNAL("openFile"), self.openFile)
         self.connect(self.table, QtCore.SIGNAL("goto"), self.dockOverview.gotoRow)
 
-    def showHideTableLookup(self, TMpreference):
+    def showHideTableLookup(self):
         """
         Show or hide tableLookup according TM preference option.
         @param TMpreference: an option for showing or hiding table Lookup.
         """
+        TMpreference = World.settings.value("TMpreference").toInt()[0]
+        
         self.lookupUnitStatus = (TMpreference & 1 and True or False)
         if self.lookupUnitStatus:
             self.table.show()
-        else:
-            self.table.toggleViewAction().setChecked(False)
+            self.connect(self.dockTUview, QtCore.SIGNAL("lookupTranslation"), self.operator.lookupTranslation)
+        else: 
             self.table.hide()
+            self.disconnect(self.dockTUview, QtCore.SIGNAL("lookupTranslation"), self.operator.lookupTranslation)
 
     def setSaveEnabled(self):
         self.ui.actionSave.setEnabled(True)

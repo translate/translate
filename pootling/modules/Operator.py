@@ -52,8 +52,7 @@ class Operator(QtCore.QObject):
         self.currentUnitIndex = 0
         self.filteredList = []
         self.filter = None
-        TMpreference = World.settings.value("TMpreference").toInt()[0]
-        self.setTMLookupStatus(TMpreference)
+        self.setTMLookupStatus()
         self.isCpResult = False
         self.glossaryChanged = True
         self.termmatcher = None
@@ -552,12 +551,14 @@ class Operator(QtCore.QObject):
         candidates = self.lookupTerm(term)
         self.emit(QtCore.SIGNAL("termRequest"), candidates)
     
-    def setTMLookupStatus(self, TMprefrence):
-        self.lookupUnitStatus = (TMprefrence & 1 and True or False)
-        self.ignoreFuzzyStatus =  (TMprefrence & 2 and True or False)
-        self.addtranslation =  (TMprefrence & 4 and True or False)
+    def setTMLookupStatus(self):
+        TMpreference = World.settings.value("TMpreference").toInt()[0]
+        self.lookupUnitStatus = (TMpreference & 1 and True or False)
+        self.ignoreFuzzyStatus =  (TMpreference & 2 and True or False)
+        self.addtranslation =  (TMpreference & 4 and True or False)
     
-    def setTermLookupStatus(self, GlossaryPreference):
+    def setTermLookupStatus(self):
+        GlossaryPreference = World.settings.value("GlossaryPreference").toInt()[0]
         autoIdentifyTerm = (GlossaryPreference & 1 and True or False)
         self.ChangeTerm =  (GlossaryPreference & 2 and True or False)
         self.DetectTerm =  (GlossaryPreference & 8 and True or False)
@@ -585,6 +586,7 @@ class Operator(QtCore.QObject):
         """
         lookup text translation or text terminologies in glossary.
         """
+        self.setTMLookupStatus()
         if (self.lookupUnitStatus):
             self.lookupUnit()
     
@@ -606,6 +608,5 @@ class Operator(QtCore.QObject):
             for unit in self.termmatcher.candidates.units:
                 pattern.append(unit.source)
             self.emit(QtCore.SIGNAL("glossaryPattern"), pattern)
-            
-        GlossaryPreference = World.settings.value("GlossaryPreference").toInt()[0]
-        self.setTermLookupStatus(GlossaryPreference)
+
+        self.setTermLookupStatus()

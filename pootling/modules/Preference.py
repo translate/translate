@@ -114,6 +114,10 @@ class Preference(QtGui.QDialog):
         World.settings.setValue("nPlural", QtCore.QVariant(self.ui.spinBox.value()))
         World.settings.setValue("equation", QtCore.QVariant(self.ui.lineEqaution.text()))
         World.settings.setValue("headerAuto", QtCore.QVariant(self.ui.chkHeaderAuto.checkState() == QtCore.Qt.Checked))
+        TMpreference = self.setTMOptions()
+        World.settings.setValue("TMpreference", QtCore.QVariant(TMpreference))
+        GlossaryPreference = self.setGlossaryOptions()
+        World.settings.setValue("GlossaryPreference", QtCore.QVariant(GlossaryPreference))
         self.emit(QtCore.SIGNAL("settingsChanged"))
 
     def rememberFont(self, obj, fontObj):
@@ -277,17 +281,17 @@ class Preference(QtGui.QDialog):
             self.connect(self.ui.listWidget, QtCore.SIGNAL("currentRowChanged(int)"), self.changedPaged)
             
             # TM page signals
-            self.connect(self.ui.chbAutoTranslate, QtCore.SIGNAL("stateChanged(int)"), self.emitTMOptions)
-            self.connect(self.ui.chbIgnoreFuzzy, QtCore.SIGNAL("stateChanged(int)"), self.emitTMOptions)
-            self.connect(self.ui.chbAddTraslation, QtCore.SIGNAL("stateChanged(int)"), self.emitTMOptions)
+            self.connect(self.ui.chbAutoTranslate, QtCore.SIGNAL("stateChanged(int)"), self.setTMOptions)
+            self.connect(self.ui.chbIgnoreFuzzy, QtCore.SIGNAL("stateChanged(int)"), self.setTMOptions)
+            self.connect(self.ui.chbAddTraslation, QtCore.SIGNAL("stateChanged(int)"), self.setTMOptions)
             
             # Glossary page signals
-            self.connect(self.ui.chbAutoIdentTerm, QtCore.SIGNAL("stateChanged(int)"), self.emitGlossaryOptions)
-            self.connect(self.ui.chbChangeTerm, QtCore.SIGNAL("stateChanged(int)"), self.emitGlossaryOptions)
-            self.connect(self.ui.chbMatchTerm, QtCore.SIGNAL("stateChanged(int)"), self.emitGlossaryOptions)
-            self.connect(self.ui.chbDetectTerm, QtCore.SIGNAL("stateChanged(int)"), self.emitGlossaryOptions)
-            self.connect(self.ui.chbAddNewTerm, QtCore.SIGNAL("stateChanged(int)"), self.emitGlossaryOptions)
-            self.connect(self.ui.chbSuggestTranslation, QtCore.SIGNAL("stateChanged(int)"), self.emitGlossaryOptions)
+            self.connect(self.ui.chbAutoIdentTerm, QtCore.SIGNAL("stateChanged(int)"), self.setGlossaryOptions)
+            self.connect(self.ui.chbChangeTerm, QtCore.SIGNAL("stateChanged(int)"), self.setGlossaryOptions)
+            self.connect(self.ui.chbMatchTerm, QtCore.SIGNAL("stateChanged(int)"), self.setGlossaryOptions)
+            self.connect(self.ui.chbDetectTerm, QtCore.SIGNAL("stateChanged(int)"), self.setGlossaryOptions)
+            self.connect(self.ui.chbAddNewTerm, QtCore.SIGNAL("stateChanged(int)"), self.setGlossaryOptions)
+            self.connect(self.ui.chbSuggestTranslation, QtCore.SIGNAL("stateChanged(int)"), self.setGlossaryOptions)
             
             # connect signals
             self.connect(self.ui.chkHeaderAuto, QtCore.SIGNAL("stateChanged(int)"), self.ui.chkHeaderAuto.checkState) 
@@ -344,7 +348,7 @@ class Preference(QtGui.QDialog):
         '''
         self.ui.stackedWidget.setCurrentIndex(self.ui.listWidget.currentRow())
     
-    def emitTMOptions(self):
+    def setTMOptions(self):
         TMpreference = 0
         if (self.ui.chbAutoTranslate.isChecked()):
             TMpreference +=1
@@ -352,10 +356,11 @@ class Preference(QtGui.QDialog):
             TMpreference +=2
         if (self.ui.chbAddTraslation.isChecked()):
             TMpreference +=4
-        self.emit(QtCore.SIGNAL("TMpreference"), TMpreference)
-        World.settings.setValue("TMpreference", QtCore.QVariant(TMpreference))
+        return TMpreference
+#        self.emit(QtCore.SIGNAL("TMpreference"), TMpreference)
+#        World.settings.setValue("TMpreference", QtCore.QVariant(TMpreference))
     
-    def emitGlossaryOptions(self):
+    def setGlossaryOptions(self):
         GlossaryPreference = 0
         if (self.ui.chbAutoIdentTerm.isChecked()):
             GlossaryPreference +=1
@@ -369,9 +374,8 @@ class Preference(QtGui.QDialog):
             GlossaryPreference +=16
         if (self.ui.chbSuggestTranslation.isChecked()):
             GlossaryPreference +=32
-        self.emit(QtCore.SIGNAL("GlossaryPreference"), GlossaryPreference)
-        World.settings.setValue("GlossaryPreference", QtCore.QVariant(GlossaryPreference))
-
+        return GlossaryPreference
+        
 if __name__ == "__main__":
     import sys, os
     # set the path for QT in order to find the icons
