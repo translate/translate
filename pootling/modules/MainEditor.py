@@ -459,6 +459,7 @@ class MainWindow(QtGui.QMainWindow):
         """
         @param QCloseEvent Object: received close event when closing mainwindows
         """
+        QtGui.QMainWindow.closeEvent(self, event)
         self.dockTUview.emitTargetChanged()
 #        if self.operator.matcherChanged:
 #            self.operator.pickleAgain()
@@ -475,7 +476,6 @@ class MainWindow(QtGui.QMainWindow):
         state = self.saveState(1)
         World.settings.setValue("MainWindowState", QtCore.QVariant(state))
         World.settings.setValue("TuViewHidden", QtCore.QVariant(self.dockTUview.isHidden()))
-        return QtGui.QMainWindow.closeEvent(self, event)
         
     def setTitle(self, title):
         """set the title of program.
