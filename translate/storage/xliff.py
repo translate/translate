@@ -126,7 +126,7 @@ class xliffunit(lisa.LISAunit):
         if isinstance(text, str):
             text = text.decode("utf-8")
         note = self.document.createElement("note")
-        note.appendChild(self.document.createTextNode(text))
+        note.appendChild(self.document.createTextNode(text.strip()))
         if origin:
             note.setAttribute("from", origin)
         self.xmlelement.appendChild(note)        
