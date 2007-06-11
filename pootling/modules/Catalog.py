@@ -29,6 +29,7 @@ from pootling.modules.AboutEditor import AboutEditor
 from translate.storage import factory
 import pootling.modules.World as World
 from pootling.modules.FindInCatalog import FindInCatalog
+from pootling.modules.NewProject import newProject
 from pootling.ui.Ui_tmSetting import Ui_tmsetting
 import os
 
@@ -46,7 +47,6 @@ class Catalog(QtGui.QMainWindow):
         """
         if (self.ui):
             return
-        
         self.ui = Ui_Catalog()
         self.ui.setupUi(self)
         self.resize(720,400)
@@ -89,7 +89,13 @@ class Catalog(QtGui.QMainWindow):
         self.ui.actionStatistics.setWhatsThis("<h3>Statistics</h3>Show status of files that have filename, fuzzy, untranslated,translated and total of strings.")
         self.ui.actionStatistics.setStatusTip("Show status of files")
 
-        # Catalog setting's checkboxes action.
+        # a new project of Catalog Manager
+        self.Project = newProject(self)
+        self.connect(self.ui.actionNew, QtCore.SIGNAL("triggered()"), self.Project.show)
+        self.connect(self.ui.actionOpen, QtCore.SIGNAL("triggered()"), self.Project.openProject)
+        self.connect(self.Project, QtCore.SIGNAL("updateCatalog"), self.updateCatalog)
+
+        # catalog setting's checkboxes action.
         self.catSetting = CatalogSetting(self)
         self.connect(self.ui.actionConfigure, QtCore.SIGNAL("triggered()"), self.catSetting.show)
         self.connect(self.ui.actionBuildTM, QtCore.SIGNAL("triggered()"), self.buildTM)
@@ -157,7 +163,6 @@ class Catalog(QtGui.QMainWindow):
 
         # install custom menu event for treeCatalog
         self.ui.treeCatalog.contextMenuEvent = self.customContextMenuEvent
-        self.customContextMenuEvent = QtCore.QEvent(QtCore.QEvent.ContextMenu)
 
     def find(self, searchString, searchOptions):
         if (not (searchString and searchOptions)):
@@ -286,7 +291,7 @@ class Catalog(QtGui.QMainWindow):
         if (cats) and (self.ui.treeCatalog.topLevelItemCount() == 0):
             self.updateCatalog()
     
-    def updateCatalog(self):
+    def updateCatalog(self,  itemList = [],  includeSub = None):
         """
         Read data from world's "CatalogPath" and display statistic of files
         in tree view.
@@ -300,8 +305,12 @@ class Catalog(QtGui.QMainWindow):
         self.actionFind.setEnabled(True)
         self.actionShowStat.setEnabled(True)
         self.ui.treeCatalog.clear()
-        cats = World.settings.value("CatalogPath").toStringList()
-        includeSub = World.settings.value("diveIntoSubCatalog").toBool()
+        if itemList:
+            cats = itemList
+            includeSub = includeSub
+        else:
+            cats = World.settings.value("CatalogPath").toStringList()
+            includeSub = World.settings.value("diveIntoSubCatalog").toBool()
         
         self.fileItems = []
         self.itemNumber = 0
