@@ -94,7 +94,6 @@ class TUview(QtGui.QDockWidget):
                 actionTerm = menuTerm.addAction(self.tr("Copy to clipboard:"))
                 actionTerm.setEnabled(False)
             for candidate in candidates:
-##                if (candidate.source.lower() == self.term.lower()):
                 actionTerm = menuTerm.addAction(candidate.target)
                 self.connect(actionTerm, QtCore.SIGNAL("triggered()"), self.copyTranslation)
             menuTerm.exec_(self.globalPos)
@@ -103,7 +102,6 @@ class TUview(QtGui.QDockWidget):
         elif (self.requestAction == SHOWTIP):
             tips = ""
             for candidate in candidates:
-##            if (candidate.source.lower() == self.term.lower()):
                 tips += candidate.target + "\n"
             tips = tips[:-1]
             QtGui.QToolTip.showText(self.globalPos, tips)
@@ -135,7 +133,6 @@ class TUview(QtGui.QDockWidget):
         length = wordWithSpace.matchedLength()
         termWithSpace = unicode(wordWithSpace.capturedTexts()[0])
         if (termWithSpace in glossaryWords):
-##            self.term = termWithSpace
             self.emit(QtCore.SIGNAL("termRequest"), termWithSpace)
         else:
             withoutSpace = "\\b(\\w+)\\b"
@@ -145,7 +142,6 @@ class TUview(QtGui.QDockWidget):
             length = wordWithoutSpace.matchedLength()
             termWithoutSpace = unicode(wordWithoutSpace.capturedTexts()[0])
             if (termWithoutSpace in glossaryWords):
-##                self.term = termWithoutSpace
                 self.emit(QtCore.SIGNAL("termRequest"), termWithoutSpace)
     
     def setPattern(self, patternList):
@@ -191,9 +187,11 @@ class TUview(QtGui.QDockWidget):
         self.ui.fileScrollBar.setToolTip("%s / %s" % (value + 1,  self.ui.fileScrollBar.maximum() + 1))
     
     def filterChanged(self, filter, lenFilter):
-        """Adjust the scrollbar maximum according to lenFilter.
+        """
+        Adjust the scrollbar maximum according to lenFilter.
         @param filter: helper constants for filtering
-        @param lenFilter: len of filtered items."""
+        @param lenFilter: len of filtered items.
+        """
         self.viewSetting(lenFilter)
         self.ui.fileScrollBar.setMaximum(max(lenFilter - 1, 0))
         self.ui.fileScrollBar.setEnabled(bool(lenFilter))
@@ -223,7 +221,7 @@ class TUview(QtGui.QDockWidget):
         remove a value from scrollbar if the unit is not in filter.
         Then recalculate scrollbar maximum value.
         @param unit: unit class.
-        """ 
+        """
         if (not unit):
             return
         self.disconnect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.textChanged)
@@ -253,14 +251,18 @@ class TUview(QtGui.QDockWidget):
             self.emit(QtCore.SIGNAL("term"), word)
     
     def showUnit(self, unit):
-        """show unit's source and target in a normal text box if unit is single or 
-        in multi tab if unit is plural and number of plural forms setting is more than 1.
+        """
+        Show unit's source and target in a normal text box if unit is single or
+        in multi tab if unit is plural and number of plural forms setting is
+        more than 1.
     
         @param unit: to show into source and target.
         """
         if (not unit.hasplural()):
-            """This will be called when unit is singular.
-            @param unit: unit to consider if signal or not."""
+            """
+            This will be called when unit is singular.
+            @param unit: unit to consider if signal or not.
+            """
             # hide tab for plural unit and show the normal text boxes for signal unit.
             # display on first page which is normal text box page
             self.secondpage = False
@@ -271,7 +273,7 @@ class TUview(QtGui.QDockWidget):
                 self.emit(QtCore.SIGNAL("lookupTranslation"))
             if (unicode(unit.target) !=  unicode(self.ui.txtTarget.toPlainText())):
                 self.ui.txtTarget.setPlainText(unit.target)
-                #move the cursor to the end of sentence.
+                # move the cursor to the end of sentence.
                 cursor = self.ui.txtTarget.textCursor()
                 cursor.setPosition(len(unit.target))
                 self.ui.txtTarget.setTextCursor(cursor)
@@ -289,7 +291,8 @@ class TUview(QtGui.QDockWidget):
                 # display on first page which is normal text box page
                 self.secondpage = False
             else:
-                # display on second page which is tabwidget page; second page means unit is plural and number of plurals form setting is more than 1.
+                # display on second page which is tabwidget page; second page
+                # means unit is plural and number of plurals form setting is more than 1.
                 self.secondpage = True
                 self.addRemoveTabWidget(self.ui.tabWidgetTarget, nplurals, unit.target.strings)
                 for i in range(self.ui.tabWidgetTarget.count()):
@@ -430,6 +433,7 @@ class TUview(QtGui.QDockWidget):
         self.ui.lblComment.setVisible(value)
         self.ui.sourceStacked.setEnabled(value)
         self.ui.targetStacked.setEnabled(value)
+        self.contentDirty = False
     
 if __name__ == "__main__":
     import sys, os
