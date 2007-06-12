@@ -134,7 +134,7 @@ class Common(object):
 
     sentenceend = u".!?…։؟。！？។៕៘"
     """These marks can indicate a sentence end. Once again we try to account 
-    for many languages. Mostlangauges won't need to override this."""
+    for many languages. Most langauges won't need to override this."""
 
     #The following tries to account for a lot of things. For the best idea of 
     #what works, see test_common.py. We try to ignore abbreviations, for 
