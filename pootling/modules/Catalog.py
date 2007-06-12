@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# -*- coding: utf8 -*-
+# -*- coding: utf-8 -*-
 #
 # Pootling
 # Copyright 2006 WordForge Foundation
@@ -113,7 +113,6 @@ class Catalog(QtGui.QMainWindow):
         # Create Find String in Catalog
         self.findBar = FindInCatalog(self)
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.findBar)
-        self.findBar.setHidden(True)
 
         self.connect(self.ui.actionFind_in_Files, QtCore.SIGNAL("triggered()"), self.findBar.showFind)
         self.ui.actionFind_in_Files.setWhatsThis("<h3>Find</h3>You can find string ever you want in Catalog")

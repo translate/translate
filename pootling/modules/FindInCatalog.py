@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# -*- coding: utf8 -*-
+# -*- coding: utf-8 -*-
 #
 # Pootling
 # Copyright 2006 WordForge Foundation
@@ -40,6 +40,7 @@ class FindInCatalog(QtGui.QDockWidget):
         self.setFeatures(QtGui.QDockWidget.DockWidgetClosable)
         self.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
         self.connect(self.ui.find, QtCore.SIGNAL("clicked()"), self.initSearch)
+        self.setVisible(self.isHidden())
 
     def showFind(self):
       self.setWindowTitle(self.tr("Find In Catalog"))
@@ -47,9 +48,11 @@ class FindInCatalog(QtGui.QDockWidget):
       self.initSearch()
 
     def initSearch(self):
-        """ start the search process, if possible
+        """
+        Start the search process, if possible
         manage the UI elements for search
-        @signal initSearch """
+        @signal initSearch.
+        """
         searchOptions = 0
         if (self.ui.chbsource.isChecked()):
             searchOptions |= World.source
