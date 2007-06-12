@@ -346,7 +346,7 @@ class Catalog(QtGui.QMainWindow):
                 self.fileItems.append(childItem)
             # check extension of file if not have .po or .pot or xlf and xliff files. hide folder
             if (item.childCount() == 0):
-                item.setHidden(True)
+                item.parent().takeChild(0)
 
         if (os.path.isdir(path)) and (not path.endswith(".svn")):
             existedItem = self.getExistedItem(path)
