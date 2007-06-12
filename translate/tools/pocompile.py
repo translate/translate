@@ -31,6 +31,8 @@
 #  http://svn.python.org/projects/python/trunk/Tools/i18n/msgfmt.py
 #  versions 1.1
 
+"""Compile PO files into MO (Machine Object) files."""
+
 import struct
 import array
 from translate.storage import po

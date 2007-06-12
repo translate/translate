@@ -252,6 +252,7 @@ def cmdlineparser():
     default=None, type="string", metavar="FILE",
     help="read list of all valid characters from FILE (must be in UTF-8)")
   parser.passthrough.append('checkfilter')
+  parser.description=__doc__
   return parser
 
 def main():

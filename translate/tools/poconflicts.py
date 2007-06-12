@@ -184,6 +184,7 @@ def main():
   parser.add_option("", "--accelerator", dest="accelchars", default="",
     metavar="ACCELERATORS", help="ignores the given accelerator characters when matching")
   parser.set_usage()
+  parser.description=__doc__
   parser.run()
 
 
