@@ -594,8 +594,7 @@ class Operator(QtCore.QObject):
         """
         unit = self.getCurrentUnit()
         candidates = self.lookupUnit(unit)
-        if (candidates):
-            self.emit(QtCore.SIGNAL("tmCandidates"), candidates)
+        self.emit(QtCore.SIGNAL("tmCandidates"), candidates)
     
     def autoTranslate(self):
         """
