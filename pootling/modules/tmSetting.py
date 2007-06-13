@@ -22,7 +22,7 @@
 # This module is providing an setting path of translation memory dialog 
 
 import sys, os
-import tempfile, pickle
+import tempfile
 from PyQt4 import QtCore, QtGui
 from pootling.ui.Ui_tmSetting import Ui_tmsetting
 from pootling.modules import World
@@ -115,7 +115,7 @@ class globalSetting(QtGui.QDialog):
         if (self.section == "TM"):
             maxLen = World.settings.value("max_string_len", QtCore.QVariant(70)).toInt()[0]
         elif (self.section == "Glossary"):
-            maxLen = World.settings.value(self.section + "/" + "max_string_len", QtCore.QVariant(500)).toInt()[0]
+            maxLen = World.settings.value(self.section + "/" + "max_string_len", QtCore.QVariant(100)).toInt()[0]
         
         self.ui.checkBox.setChecked(includeSub)
         self.ui.spinSimilarity.setValue(minSim)
@@ -173,7 +173,7 @@ class globalSetting(QtGui.QDialog):
         
         store = self.createStore(self.filenames[0])
         if (self.section == "TM"):
-            self.matcher = match.matcher(store, maxCan, minSim, maxLen)
+            self.matcher = match.matcher(store, maxCan, minSim, maxLen, match.terminology.TerminologyComparer(maxLen))
         else:
             self.matcher = match.terminologymatcher(store, maxCan, minSim, maxLen)
         
@@ -226,8 +226,8 @@ class globalSetting(QtGui.QDialog):
         if (len(self.filenames) <= 1):
             self.timer.stop()
             self.iterNumber = 1
-            self.emitMatcher()
             self.dumpMatcher()
+            self.emitMatcher()
             self.close()
             return
         
@@ -247,8 +247,8 @@ class globalSetting(QtGui.QDialog):
         if (self.iterNumber == len(self.filenames)):
             self.timer.stop()
             self.iterNumber = 1
-            self.emitMatcher()
             self.dumpMatcher()
+            self.emitMatcher()
             self.close()
     
     def emitMatcher(self):
