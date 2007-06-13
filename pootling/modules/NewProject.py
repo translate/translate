@@ -46,6 +46,7 @@ class newProject(QtGui.QDialog):
         self.ui.lblprojecttype.hide()
         self.ui.cbxProject.hide()
         self.value = True
+        self.fileExtension = ".ini"
 
         self.connect(self.ui.btnCancel, QtCore.SIGNAL("clicked()"), self, QtCore.SLOT("reject()"))
         self.connect(self.ui.btnBack, QtCore.SIGNAL("clicked()"), self.backButton)
@@ -148,7 +149,8 @@ class newProject(QtGui.QDialog):
             self.ui.btnFinish.setEnabled(False)
 
     def addItemToDict(self):
-        projectname = self.ui.projectName.text().toAscii()
+        name = self.ui.projectName.text().toAscii()
+        projectname = name + self.fileExtension
         configure = self.ui.configurationFile.text()
         # Concatenate string between directory path and filename
         path = os.path.join(configure + os.path.sep + projectname)
@@ -189,12 +191,14 @@ class newProject(QtGui.QDialog):
 
     def openProject(self):
         fileOpen = QtGui.QFileDialog.getOpenFileName(self, self.tr("Open File"),
-                        QtCore.QDir.homePath())
+                        QtCore.QDir.homePath(),
+self.tr("IniFormat Files(*.ini)"))
         if not fileOpen.isEmpty():
             proSettings = QtCore.QSettings(fileOpen, QtCore.QSettings.IniFormat)
             itemList = proSettings.value("itemList").toStringList()
             includeSub = proSettings.value("itemList").toBool()
             self.emit(QtCore.SIGNAL("updateCatalog"), itemList,  includeSub)
+        self.emit(QtCore.SIGNAL("pathOfFileName"),  fileOpen)
 
 
 if __name__ == "__main__":
