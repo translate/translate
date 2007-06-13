@@ -52,9 +52,8 @@ class Operator(QtCore.QObject):
         self.currentUnitIndex = 0
         self.filteredList = []
         self.filter = None
-##        self.setTMLookupStatus()
-        self.isCpResult = False
         self.glossaryChanged = True
+        self.autoLookupUnit = False
         self.termMatcher = None
         self.tmMatcher = None
         self.termCache = {} # for improve glossary search speed
@@ -509,6 +508,8 @@ class Operator(QtCore.QObject):
         @param unit: class unit.
         @return candidates as list of units, or None on error.
         """
+        if (not self.autoLookupUnit):
+            return None
         # get tmMatcher from pickle
         if (not self.tmMatcher):
             World.settings.beginGroup("TM")
@@ -517,14 +518,11 @@ class Operator(QtCore.QObject):
             if (pickleFile):
                 p = pickleTM()
                 self.tmMatcher = p.getMatcher(pickleFile)
-        
         if (not self.tmMatcher):
-                return None
-        
+            return None
         # ignore fuzzy is checked.
         if (unit.isfuzzy() and self.ignoreFuzzyStatus):
             return None
-        
         # use cache to improve search speed within 20 units.
         if self.tmCache.has_key(unit.source):
             candidates = self.tmCache[unit.source]
@@ -541,10 +539,8 @@ class Operator(QtCore.QObject):
         @param term: a word to lookup in termMatcher.
         @return candidates as list of units
         """
-        
-        if (not self.identifyTerm):
+        if (not self.autoLookupTerm):
             return None
-        
         # get termMatcher from pickle
         if (not self.termMatcher):
             World.settings.beginGroup("Glossary")
@@ -553,10 +549,8 @@ class Operator(QtCore.QObject):
             if (pickleFile):
                 p = pickleTM()
                 self.termMatcher = p.getMatcher(pickleFile)
-        
         if (not self.termMatcher):
-                return None
-        
+            return None
         # emit "glossaryPattern" when glossary changed
         if (self.glossaryChanged) and (self.termMatcher):
             self.glossaryChanged = False
@@ -564,9 +558,8 @@ class Operator(QtCore.QObject):
             for unit in self.termMatcher.candidates.units:
                 pattern.append(unit.source)
             self.emit(QtCore.SIGNAL("glossaryPattern"), pattern)
-        if (term == None):
+        if (not term):
             return None
-        
         # use cache to improve glossary search speed within 20 terms.
         if self.termCache.has_key(term):
             candidates = self.termCache[term]
@@ -656,17 +649,18 @@ class Operator(QtCore.QObject):
         Set TM and Glossary settings.
         """
         TMpreference = World.settings.value("TMpreference").toInt()[0]
-        self.lookupUnitStatus = (TMpreference & 1 and True or False)
+        self.autoLookupUnit = (TMpreference & 1 and True or False)
         self.ignoreFuzzyStatus =  (TMpreference & 2 and True or False)
         self.addtranslation =  (TMpreference & 4 and True or False)
-    
+        self.emitLookupUnit()
+        
         GlossaryPreference = World.settings.value("GlossaryPreference").toInt()[0]
-        self.identifyTerm = (GlossaryPreference & 1 and True or False)
+        self.autoLookupTerm = (GlossaryPreference & 1 and True or False)
         self.ChangeTerm =  (GlossaryPreference & 2 and True or False)
         self.DetectTerm =  (GlossaryPreference & 8 and True or False)
         self.AddNewTerm =  (GlossaryPreference & 16 and True or False)
         self.SuggestTranslation =  (GlossaryPreference & 32 and True or False)
         # set pattern for glossary
         self.lookupTerm(None)
-        self.emit(QtCore.SIGNAL("highlightGlossary"), self.identifyTerm)
+        self.emit(QtCore.SIGNAL("highlightGlossary"), self.autoLookupTerm)
         
