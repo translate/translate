@@ -322,10 +322,10 @@ class MainWindow(QtGui.QMainWindow):
         self.lookupUnitStatus = (TMpreference & 1 and True or False)
         if self.lookupUnitStatus:
             self.table.show()
-            self.connect(self.dockTUview, QtCore.SIGNAL("lookupUnit"), self.operator.emitUnitRequest)
+            self.connect(self.dockTUview, QtCore.SIGNAL("lookupUnit"), self.operator.emitLookupUnit)
         else: 
             self.table.hide()
-            self.disconnect(self.dockTUview, QtCore.SIGNAL("lookupUnit"), self.operator.emitUnitRequest)
+            self.disconnect(self.dockTUview, QtCore.SIGNAL("lookupUnit"), self.operator.emitLookupUnit)
 
     def setSaveEnabled(self):
         self.ui.actionSave.setEnabled(True)
