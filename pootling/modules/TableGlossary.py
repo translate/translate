@@ -54,10 +54,14 @@ class TableGlossary(QtGui.QDockWidget):
         self.ui.tblGlossary.setRowCount(0)
                 
     def fillTable(self, candidates):
-        '''fill each found unit into table
-        @param candidates:list of pofile object'''
+        """
+        fill each found unit into table
+        @param candidates:list of pofile object
+        """
         row = self.ui.tblGlossary.rowCount()
         table = self.ui.tblGlossary
+        if (not candidates):
+            return
         for unit in candidates:
             for r in range(row):
                 if (table.item(r,0).text() ==  unit.source):
