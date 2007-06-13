@@ -24,6 +24,7 @@ from translate.storage import po
 from translate.misc import quote
 from translate.storage import poheader
 from translate.storage import xliff
+from translate.search import lshtein
 import pootling.modules.World as World
 from pootling.modules.Status import Status
 from pootling.modules.pickleTM import pickleTM
@@ -518,8 +519,12 @@ class Operator(QtCore.QObject):
             if (pickleFile):
                 p = pickleTM()
                 self.tmMatcher = p.getMatcher(pickleFile)
-        if (not self.tmMatcher):
-            return None
+                if (not self.tmMatcher):
+                    return None
+        else:
+            if (not isinstance(self.tmMatcher.comparer, lshtein.LevenshteinComparer)):
+                self.tmMatcher.comparer = lshtein.LevenshteinComparer(self.maxLen)
+
         # ignore fuzzy is checked.
         if (unit.isfuzzy() and self.ignoreFuzzyStatus):
             return None
@@ -660,6 +665,7 @@ class Operator(QtCore.QObject):
         self.DetectTerm =  (GlossaryPreference & 8 and True or False)
         self.AddNewTerm =  (GlossaryPreference & 16 and True or False)
         self.SuggestTranslation =  (GlossaryPreference & 32 and True or False)
+        self.maxLen = World.settings.value("max_string_len", QtCore.QVariant(70)).toInt()[0]
         # set pattern for glossary
         self.lookupTerm(None)
         self.emit(QtCore.SIGNAL("highlightGlossary"), self.autoLookupTerm)
