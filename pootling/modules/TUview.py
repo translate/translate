@@ -133,7 +133,7 @@ class TUview(QtGui.QDockWidget):
         length = wordWithSpace.matchedLength()
         termWithSpace = unicode(wordWithSpace.capturedTexts()[0])
         if (termWithSpace in glossaryWords):
-            self.emit(QtCore.SIGNAL("termRequest"), termWithSpace)
+            self.emit(QtCore.SIGNAL("lookupTerm"), termWithSpace)
         else:
             withoutSpace = "\\b(\\w+)\\b"
             wordWithoutSpace = QtCore.QRegExp(withoutSpace)
@@ -142,7 +142,7 @@ class TUview(QtGui.QDockWidget):
             length = wordWithoutSpace.matchedLength()
             termWithoutSpace = unicode(wordWithoutSpace.capturedTexts()[0])
             if (termWithoutSpace in glossaryWords):
-                self.emit(QtCore.SIGNAL("termRequest"), termWithoutSpace)
+                self.emit(QtCore.SIGNAL("lookupTerm"), termWithoutSpace)
     
     def setPattern(self, patternList):
         """
@@ -270,7 +270,7 @@ class TUview(QtGui.QDockWidget):
             self.ui.targetStacked.setCurrentIndex(0)
             if (unicode(unit.source) !=  unicode(self.ui.txtSource.toPlainText())):
                 self.ui.txtSource.setPlainText(unit.source)
-                self.emit(QtCore.SIGNAL("lookupTranslation"))
+                self.emit(QtCore.SIGNAL("lookupUnit"))
             if (unicode(unit.target) !=  unicode(self.ui.txtTarget.toPlainText())):
                 self.ui.txtTarget.setPlainText(unit.target)
                 # move the cursor to the end of sentence.

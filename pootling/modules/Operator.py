@@ -52,12 +52,13 @@ class Operator(QtCore.QObject):
         self.currentUnitIndex = 0
         self.filteredList = []
         self.filter = None
-        self.setTMLookupStatus()
+##        self.setTMLookupStatus()
         self.isCpResult = False
         self.glossaryChanged = True
-        self.termmatcher = None
-        self.cache = {} # for improve glossary search speed
-        self.TMcache = {} # for improve TM search speed
+        self.termMatcher = None
+        self.tmMatcher = None
+        self.termCache = {} # for improve glossary search speed
+        self.tmCache = {} # for improve TM search speed
 
     def getUnits(self, fileName):
         """
@@ -486,146 +487,146 @@ class Operator(QtCore.QObject):
         self.filter = None
         self.filteredList = []
         self.emitNewUnits()
-    
-    def autoTranslate(self):
-        """
-        Get TM path and start lookup
-        """
-        if (not self.filteredList):
-            return
-        self.lookupProcess(self.filteredList)
         
     def setMatcher(self, matcher, section):
         """
-        Set matcher or termmatcher to new matcher.
+        Set matcher or termMatcher to new matcher.
         @param matcher: class matcher.
         @param section: string indicates TM or glossary.
         """
         if (section == "TM"):
-            self.matcher = matcher
+            self.tmMatcher = matcher
+            self.tmCache = {}
         else:
-            self.termmatcher = matcher
+            self.termMatcher = matcher
+            self.termCache = {}
             self.glossaryChanged = True
-            self.emitGlossaryPattern()
-        
-    def lookupProcess(self, units):
+    
+    def lookupUnit(self, unit):
         """
-        Process lookup translation from translation memory.
-        @param units: a unit or list of units.
+        Lookup a unit translation memory.
+        @param unit: class unit.
+        @return candidates as list of units, or None on error.
         """
-        
-        # get matcher from when startup
-        if (not hasattr(self, "matcher")):
+        # get tmMatcher from pickle
+        if (not self.tmMatcher):
             World.settings.beginGroup("TM")
             pickleFile = World.settings.value("pickleFile").toString()
             World.settings.endGroup()
             if (pickleFile):
                 p = pickleTM()
-                self.matcher = p.getMatcher(pickleFile)
-        
-        if (not self.matcher):
-            return
-        
-        #for lookup a unit
-        if (not isinstance(units, list)):
-            if (units.isfuzzy() and self.ignoreFuzzyStatus):   # if ignore fuzzy strings is checked, ad units is fuzzy do nothing.
-                return
-                
-            # use TMcache to improve TM search speed within 20 units
-            if self.TMcache.has_key(units.source):
-                candidates = self.TMcache[units.source]
+                self.tmMatcher = p.getMatcher(pickleFile)
             else:
-                candidates = self.matcher.matches(units.source)
-                self.TMcache[units.source] = candidates
-                if (len(self.TMcache) > 20 ): 
-                    self.TMcache.popitem()
-            return candidates
-            
-       #for autoTranslate all units
-        for unit in units:
-            if (unit.istranslated() or not unit.source or (unit.isfuzzy() and self.ignoreFuzzyStatus)):   # if ignore fuzzy strings is checked, ad units is fuzzy do nothing.
+                return None
+        
+        # ignore fuzzy is checked.
+        if (unit.isfuzzy() and self.ignoreFuzzyStatus):
+            return None
+        
+        # use cache to improve search speed within 20 units.
+        if self.tmCache.has_key(unit.source):
+            candidates = self.tmCache[unit.source]
+        else:
+            candidates = self.tmMatcher.matches(unit.source)
+            self.tmCache[unit.source] = candidates
+            if (len(self.tmCache) > 20 ): 
+                self.tmCache.popitem()
+        return candidates
+    
+    def lookupTerm(self, term):
+        """
+        Lookup a term in glossary.
+        @param term: a word to lookup in termMatcher.
+        @return candidates as list of units
+        """
+        # get termMatcher from pickle
+        if (not self.termMatcher):
+            World.settings.beginGroup("Glossary")
+            pickleFile = World.settings.value("pickleFile").toString()
+            World.settings.endGroup()
+            if (pickleFile):
+                p = pickleTM()
+                self.termMatcher = p.getMatcher(pickleFile)
+            else:
+                return None
+        # emit "glossaryPattern" when glossary changed
+        if (self.glossaryChanged) and (self.termMatcher):
+            self.glossaryChanged = False
+            pattern = []
+            for unit in self.termMatcher.candidates.units:
+                pattern.append(unit.source)
+            self.emit(QtCore.SIGNAL("glossaryPattern"), pattern)
+        if (term == None):
+            return None
+        
+        # use cache to improve glossary search speed within 20 terms.
+        if self.termCache.has_key(term):
+            candidates = self.termCache[term]
+        else:
+            candidates = self.termMatcher.matches(term)
+            # remove not exact term from candidates
+            for candidate in candidates:
+                if (candidate.source.lower() != term.lower()):
+                    candidates.remove(candidate)
+            self.termCache[term] = candidates
+            if (len(self.termCache) > 20 ): 
+                self.termCache.popitem()
+        return candidates
+    
+    def emitGlossaryCandidates(self, term):
+        """
+        @emit "glossaryCandidates" signal as list of units.
+        """
+        candidates = self.lookupTerm(term)
+        self.emit(QtCore.SIGNAL("termCandidates"), candidates)
+    
+    def emitTermRequest(self, term):
+        """
+        @emit "termRequest" signal as list of units.
+        """
+        candidates = self.lookupTerm(term)
+        self.emit(QtCore.SIGNAL("termRequest"), candidates)
+    
+    def emitLookupUnit(self):
+        """
+        Lookup current unit's translation.
+        @emit "tmCandidates" signal as list of units.
+        """
+        unit = self.getCurrentUnit()
+        candidates = self.lookupUnit(unit)
+        if (candidates):
+            self.emit(QtCore.SIGNAL("tmCandidates"), candidates)
+    
+    def autoTranslate(self):
+        """
+        Auto translate units.
+        """
+        # for autoTranslate all units
+        for unit in self.store.units:
+            # if ignore fuzzy strings is checked, ad units is fuzzy do nothing.
+            if (unit.istranslated() or \
+                (not unit.source) or \
+                (unit.isfuzzy() and self.ignoreFuzzyStatus)):
                 continue
-            candidates = self.matcher.matches(unit.source)
+            
+            candidates = self.lookupUnit(unit)
             # no condidates continue searching in next TM
             if (not candidates):
                 continue
+            
             self.setModified(True)
             # get the best candidates for targets in overview
             unit.settarget(candidates[0].target)
-            #in XLiff, it is possible to have alternatives translation
+            # in XLiff, it is possible to have alternatives translation
             # TODO: add source original language and target language attribute
             if (isinstance(self.store, xliff.xlifffile)):
                 for i in range(1, len(candidates)):
                     unit.addalttrans(candidates[i].target)
             self.status.markTranslated(unit, True)
             self.status.markFuzzy(unit, True)
+        
         self.emitNewUnits()
         self.emitStatus()
-        return
-        
-    def isCopyResult(self, bool):
-        """
-        Slot to recieve isCopyResult signal.
-        """
-        self.isCpResult = bool
-
-    def lookupUnit(self):
-        if (not self.filteredList):
-            return
-        if (self.isCpResult):
-            self.isCpResult = False
-            return
-        unit = self.filteredList[self.currentUnitIndex]
-        candidates = self.lookupProcess(unit)
-        self.emit(QtCore.SIGNAL("candidates"), candidates)
-    
-    def lookupTerm(self, term):
-        """
-        Lookup a term in glossary.
-        @param term: a word to lookup in termmatcher.
-        @return candidates as list of units
-        """
-        # use cache to improve glossary search speed within 20 terms.
-        if self.cache.has_key(term):
-            candidates = self.cache[term]
-        else:
-            candidates = self.termmatcher.matches(term)
-            for candidate in candidates:
-                if (candidate.source.lower() != term.lower()):
-                    candidates.remove(candidate)
-            self.cache[term] = candidates
-            if (len(self.cache) > 20 ): 
-                self.cache.popitem()
-        return candidates
-    
-    def emitGlossaryCandidates(self, term):
-        """
-        emit "glossaryCandidates" signal with a candidates as list of units.
-        """
-        candidates = self.lookupTerm(term)
-        self.emit(QtCore.SIGNAL("glossaryCandidates"), candidates)
-    
-    def emitTermRequest(self, term):
-        """
-        emit "termRequest" signal with a candidates as list of units.
-        """
-        candidates = self.lookupTerm(term)
-        self.emit(QtCore.SIGNAL("termRequest"), candidates)
-    
-    def setTMLookupStatus(self):
-        TMpreference = World.settings.value("TMpreference").toInt()[0]
-        self.lookupUnitStatus = (TMpreference & 1 and True or False)
-        self.ignoreFuzzyStatus =  (TMpreference & 2 and True or False)
-        self.addtranslation =  (TMpreference & 4 and True or False)
-    
-    def setTermLookupStatus(self):
-        GlossaryPreference = World.settings.value("GlossaryPreference").toInt()[0]
-        autoIdentifyTerm = (GlossaryPreference & 1 and True or False)
-        self.ChangeTerm =  (GlossaryPreference & 2 and True or False)
-        self.DetectTerm =  (GlossaryPreference & 8 and True or False)
-        self.AddNewTerm =  (GlossaryPreference & 16 and True or False)
-        self.SuggestTranslation =  (GlossaryPreference & 32 and True or False)
-        self.emit(QtCore.SIGNAL("highlightGlossary"), autoIdentifyTerm)
     
     def setModified(self, bool):
         self.modified = bool
@@ -642,32 +643,24 @@ class Operator(QtCore.QObject):
         unit = self.store.findunit(source)
         if unit:
             self.emit(QtCore.SIGNAL("currentUnit"), unit)
-        
-    def lookupTranslation(self):
-        """
-        Lookup text translation or text terminologies in glossary.
-        """
-        self.setTMLookupStatus()
-        if (self.lookupUnitStatus):
-            self.lookupUnit()
     
-    def emitGlossaryPattern(self):
+    def applySettings(self):
         """
-        Emit "glossaryPattern" signal for highlighter.
+        Set TM and Glossary settings.
         """
-        if (not hasattr(self, "termmatcher")) or (not self.termmatcher):
-            World.settings.beginGroup("Glossary")
-            pickleFile = World.settings.value("pickleFile").toString()
-            World.settings.endGroup()
-            if (pickleFile):
-                p = pickleTM()
-                self.termmatcher = p.getMatcher(pickleFile)
-                
-        if (self.termmatcher) and (self.glossaryChanged):
-            self.glossaryChanged = False
-            pattern = []
-            for unit in self.termmatcher.candidates.units:
-                pattern.append(unit.source)
-            self.emit(QtCore.SIGNAL("glossaryPattern"), pattern)
-
-        self.setTermLookupStatus()
+        TMpreference = World.settings.value("TMpreference").toInt()[0]
+        self.lookupUnitStatus = (TMpreference & 1 and True or False)
+        self.ignoreFuzzyStatus =  (TMpreference & 2 and True or False)
+        self.addtranslation =  (TMpreference & 4 and True or False)
+    
+        GlossaryPreference = World.settings.value("GlossaryPreference").toInt()[0]
+        autoIdentifyTerm = (GlossaryPreference & 1 and True or False)
+        self.ChangeTerm =  (GlossaryPreference & 2 and True or False)
+        self.DetectTerm =  (GlossaryPreference & 8 and True or False)
+        self.AddNewTerm =  (GlossaryPreference & 16 and True or False)
+        self.SuggestTranslation =  (GlossaryPreference & 32 and True or False)
+        # set pattern for glossary
+        if (autoIdentifyTerm):
+            self.lookupTerm(None)
+        self.emit(QtCore.SIGNAL("highlightGlossary"), autoIdentifyTerm)
+        

@@ -145,13 +145,7 @@ class tableTM(QtGui.QDockWidget):
     
     def emitTarget(self):
         """@emit targetChanged signal and send the current target."""
-        self.emitIsCopyResult(True)
         self.emit(QtCore.SIGNAL("targetChanged"), unicode(self.target))
-        
-    def emitIsCopyResult(self, bool = False):
-        """@emit isCopyResult signal with the boolean value."""
-        self.emit(QtCore.SIGNAL("isCopyResult"), bool)
-        
     
     def emitOpenFile(self):
         """

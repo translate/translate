@@ -134,19 +134,21 @@ class MainWindow(QtGui.QMainWindow):
         action.setStatusTip("Toggle the TM Lookup window")
         action.setWhatsThis("<h3>Toggle the TM Lookup window</h3>If the TM Lookup window is hidden then display it. If it is displayed then close it.")
         self.ui.menuWindow.insertAction(sepAction, action)
-        self.connect(self.operator, QtCore.SIGNAL("candidates"), self.table.fillTable)
-        self.connect(self.table, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
-        self.connect(self.table, QtCore.SIGNAL("isCopyResult"), self.operator.isCopyResult)
-        self.connect(self.operator, QtCore.SIGNAL("filterChanged"), self.table.filterChanged)
-        self.connect(self.dockTUview, QtCore.SIGNAL("lookupTranslation"), self.operator.lookupTranslation)
+        
         self.connect(self.operator, QtCore.SIGNAL("requestTargetChanged"), self.dockTUview.emitTargetChanged)
         
-        #Glossary
+        # translation memory
+        self.connect(self.dockTUview, QtCore.SIGNAL("lookupUnit"), self.operator.emitLookupUnit)
+        self.connect(self.operator, QtCore.SIGNAL("tmCandidates"), self.table.fillTable)
+        self.connect(self.operator, QtCore.SIGNAL("filterChanged"), self.table.filterChanged)
+        self.connect(self.table, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
+        
+        # glossary
+        self.connect(self.dockTUview, QtCore.SIGNAL("lookupTerm"), self.operator.emitTermRequest)
+        self.connect(self.operator, QtCore.SIGNAL("termRequest"), self.dockTUview.popupTerm)
+        self.connect(self.operator, QtCore.SIGNAL("termCandidates"), self.tableGlossary.fillTable)
         self.connect(self.tableGlossary, QtCore.SIGNAL("closed"), self.toggleTUviewTermSig)
         self.connect(self.tableGlossary, QtCore.SIGNAL("shown"), self.toggleTUviewTermSig)
-        self.connect(self.dockTUview, QtCore.SIGNAL("termRequest"), self.operator.emitTermRequest)
-        self.connect(self.operator, QtCore.SIGNAL("termRequest"), self.dockTUview.popupTerm)
-        self.connect(self.operator, QtCore.SIGNAL("glossaryCandidates"), self.tableGlossary.fillTable)
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.tableGlossary.newUnit)
         
         #Help menu of aboutQt
@@ -214,7 +216,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockOverview.applySettings)
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockTUview.applySettings)
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.showHideTableLookup)
-        self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.operator.setTermLookupStatus)
+        self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.operator.applySettings)
 
         # action lookup text and auto translation from TM
         self.connect(self.ui.actionAuto_translate, QtCore.SIGNAL("triggered()"), self.operator.autoTranslate)
@@ -320,10 +322,10 @@ class MainWindow(QtGui.QMainWindow):
         self.lookupUnitStatus = (TMpreference & 1 and True or False)
         if self.lookupUnitStatus:
             self.table.show()
-            self.connect(self.dockTUview, QtCore.SIGNAL("lookupTranslation"), self.operator.lookupTranslation)
+            self.connect(self.dockTUview, QtCore.SIGNAL("lookupUnit"), self.operator.emitUnitRequest)
         else: 
             self.table.hide()
-            self.disconnect(self.dockTUview, QtCore.SIGNAL("lookupTranslation"), self.operator.lookupTranslation)
+            self.disconnect(self.dockTUview, QtCore.SIGNAL("lookupUnit"), self.operator.emitUnitRequest)
 
     def setSaveEnabled(self):
         self.ui.actionSave.setEnabled(True)
@@ -418,7 +420,7 @@ class MainWindow(QtGui.QMainWindow):
         self.updateRecentAction()
         self.clearBookmarks()
         
-        self.operator.emitGlossaryPattern()
+        self.operator.applySettings()
         
     def startRecentAction(self):
         action = self.sender()
