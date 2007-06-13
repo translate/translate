@@ -130,7 +130,10 @@ class Operator(QtCore.QObject):
         """
         @return the current unit.
         """
-        return self.filteredList[self.currentUnitIndex]
+        if (self.currentUnitIndex < len(self.filteredList)):
+            return self.filteredList[self.currentUnitIndex]
+        else:
+            return None
     
     def filterFuzzy(self, checked):
         """
@@ -524,7 +527,8 @@ class Operator(QtCore.QObject):
         else:
             if (not isinstance(self.tmMatcher.comparer, lshtein.LevenshteinComparer)):
                 self.tmMatcher.comparer = lshtein.LevenshteinComparer(self.maxLen)
-
+        if (not unit):
+            return None
         # ignore fuzzy is checked.
         if (unit.isfuzzy() and self.ignoreFuzzyStatus):
             return None
@@ -657,6 +661,7 @@ class Operator(QtCore.QObject):
         self.autoLookupUnit = (TMpreference & 1 and True or False)
         self.ignoreFuzzyStatus =  (TMpreference & 2 and True or False)
         self.addtranslation =  (TMpreference & 4 and True or False)
+        self.maxLen = World.settings.value("max_string_len", QtCore.QVariant(70)).toInt()[0]
         self.emitLookupUnit()
         
         GlossaryPreference = World.settings.value("GlossaryPreference").toInt()[0]
@@ -665,7 +670,6 @@ class Operator(QtCore.QObject):
         self.DetectTerm =  (GlossaryPreference & 8 and True or False)
         self.AddNewTerm =  (GlossaryPreference & 16 and True or False)
         self.SuggestTranslation =  (GlossaryPreference & 32 and True or False)
-        self.maxLen = World.settings.value("max_string_len", QtCore.QVariant(70)).toInt()[0]
         # set pattern for glossary
         self.lookupTerm(None)
         self.emit(QtCore.SIGNAL("highlightGlossary"), self.autoLookupTerm)
