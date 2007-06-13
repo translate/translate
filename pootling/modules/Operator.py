@@ -501,6 +501,7 @@ class Operator(QtCore.QObject):
             self.termMatcher = matcher
             self.termCache = {}
             self.glossaryChanged = True
+        self.applySettings()
     
     def lookupUnit(self, unit):
         """
@@ -516,7 +517,8 @@ class Operator(QtCore.QObject):
             if (pickleFile):
                 p = pickleTM()
                 self.tmMatcher = p.getMatcher(pickleFile)
-            else:
+        
+        if (not self.tmMatcher):
                 return None
         
         # ignore fuzzy is checked.
@@ -539,6 +541,10 @@ class Operator(QtCore.QObject):
         @param term: a word to lookup in termMatcher.
         @return candidates as list of units
         """
+        
+        if (not self.identifyTerm):
+            return None
+        
         # get termMatcher from pickle
         if (not self.termMatcher):
             World.settings.beginGroup("Glossary")
@@ -547,8 +553,10 @@ class Operator(QtCore.QObject):
             if (pickleFile):
                 p = pickleTM()
                 self.termMatcher = p.getMatcher(pickleFile)
-            else:
+        
+        if (not self.termMatcher):
                 return None
+        
         # emit "glossaryPattern" when glossary changed
         if (self.glossaryChanged) and (self.termMatcher):
             self.glossaryChanged = False
@@ -653,13 +661,12 @@ class Operator(QtCore.QObject):
         self.addtranslation =  (TMpreference & 4 and True or False)
     
         GlossaryPreference = World.settings.value("GlossaryPreference").toInt()[0]
-        autoIdentifyTerm = (GlossaryPreference & 1 and True or False)
+        self.identifyTerm = (GlossaryPreference & 1 and True or False)
         self.ChangeTerm =  (GlossaryPreference & 2 and True or False)
         self.DetectTerm =  (GlossaryPreference & 8 and True or False)
         self.AddNewTerm =  (GlossaryPreference & 16 and True or False)
         self.SuggestTranslation =  (GlossaryPreference & 32 and True or False)
         # set pattern for glossary
-        if (autoIdentifyTerm):
-            self.lookupTerm(None)
-        self.emit(QtCore.SIGNAL("highlightGlossary"), autoIdentifyTerm)
+        self.lookupTerm(None)
+        self.emit(QtCore.SIGNAL("highlightGlossary"), self.identifyTerm)
         
