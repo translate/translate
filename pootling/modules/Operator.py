@@ -325,6 +325,7 @@ class Operator(QtCore.QObject):
         """
         Toggle fuzzy state for current unit.
         """
+        self.emit(QtCore.SIGNAL("requestTargetChanged"))
         if (self.currentUnitIndex < 0):
             return
         unit = self.getCurrentUnit()

@@ -139,6 +139,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.table, QtCore.SIGNAL("isCopyResult"), self.operator.isCopyResult)
         self.connect(self.operator, QtCore.SIGNAL("filterChanged"), self.table.filterChanged)
         self.connect(self.dockTUview, QtCore.SIGNAL("lookupTranslation"), self.operator.lookupTranslation)
+        self.connect(self.operator, QtCore.SIGNAL("requestTargetChanged"), self.dockTUview.emitTargetChanged)
         
         #Glossary
         self.connect(self.tableGlossary, QtCore.SIGNAL("closed"), self.toggleTUviewTermSig)
