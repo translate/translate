@@ -63,6 +63,55 @@ class OverviewDock(QtGui.QDockWidget):
         self.connect(self.ui.tableOverview, self.changedSignal, self.emitCurrentIndex)
         self.connect(self.ui.tableOverview.model(), QtCore.SIGNAL("layoutChanged()"), self.showFilteredItems)
     
+        self.ui.tableOverview.installEventFilter(self)
+    
+    def eventFilter(self, obj, event):
+        if (obj == self.ui.tableOverview):
+            if (event.type() == QtCore.QEvent.ContextMenu):
+                """
+                Request a tooltip for word in position pos of txtSource.
+                """
+                self.tableContextMenu(event)
+                return True
+            else:
+                return False
+        else:
+            return self.eventFilter(obj, event)
+    
+    def tableContextMenu(self, event):
+        """
+        Save the position of mouse, and emit "requestUnit" signal.
+        """
+        self.globalPos = event.globalPos()
+        self.emit(QtCore.SIGNAL("requestUnit"))
+    
+    def popupTranslation(self, candidates):
+        """
+        Popup menu of translation.
+        """
+        menu = QtGui.QMenu()
+        if (candidates):
+            menuAction = menu.addAction(self.tr("Copy to target:"))
+            menuAction.setEnabled(False)
+        else:
+            menuAction = menu.addAction(self.tr("(no translation)"))
+            menuAction.setEnabled(False)
+            menu.exec_(self.globalPos)
+            return
+        
+        for candidate in candidates:
+            menuAction = menu.addAction(candidate.target)
+            self.connect(menuAction, QtCore.SIGNAL("triggered()"), self.copyToTarget)
+        menu.exec_(self.globalPos)
+        self.disconnect(menuAction, QtCore.SIGNAL("triggered()"), self.copyToTarget)
+    
+    def copyToTarget(self):
+        """
+        emit "targetChanged" signal with self.sender().text().
+        """
+        text = self.sender().text()
+        self.emit(QtCore.SIGNAL("targetChanged"), unicode(text))
+    
     def closeEvent(self, event):
         """
         set text of action object to 'show Overview' before closing Overview

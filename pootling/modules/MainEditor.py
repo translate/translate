@@ -141,6 +141,8 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("requestTargetChanged"), self.dockTUview.emitTargetChanged)
         
         # translation memory
+        self.connect(self.dockOverview, QtCore.SIGNAL("requestUnit"), self.operator.emitRequestUnit)
+        self.connect(self.operator, QtCore.SIGNAL("tmRequest"), self.dockOverview.popupTranslation)
         self.connect(self.dockTUview, QtCore.SIGNAL("lookupUnit"), self.operator.emitLookupUnit)
         self.connect(self.operator, QtCore.SIGNAL("tmCandidates"), self.table.fillTable)
         self.connect(self.operator, QtCore.SIGNAL("filterChanged"), self.table.filterChanged)

@@ -606,6 +606,16 @@ class Operator(QtCore.QObject):
         candidates = self.lookupUnit(unit)
         self.emit(QtCore.SIGNAL("tmCandidates"), candidates)
     
+    def emitRequestUnit(self):
+        """
+        Lookup current unit's translation.
+        @emit "tmRequest" signal as list of units.
+        """
+        unit = self.getCurrentUnit()
+        candidates = self.lookupUnit(unit)
+        self.emit(QtCore.SIGNAL("tmRequest"), candidates)
+    
+    
     def autoTranslate(self):
         """
         Auto translate units.
