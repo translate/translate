@@ -228,17 +228,21 @@ class Header(QtGui.QDialog):
         #TODO: why do we need this?
         if (len(self.headerDic) == 0):
             return
-        existingComment = str(self.ui.txtOtherComments.toPlainText())
-        if (existingComment.rfind(unicode(Last_Translator )) == -1):
-            self.ui.txtOtherComments.setText(existingComment + "\n"  + unicode(Last_Translator ) + "," + str(self.headerDic['PO-Revision-Date']))
+        
         if (self.ui): 
+            existingComment = str(self.ui.txtOtherComments.toPlainText())
+            if (existingComment.rfind(unicode(Last_Translator )) == -1):
+                self.ui.txtOtherComments.setPlainText(existingComment + "\n"  + unicode(Last_Translator ) + "," + str(self.headerDic['PO-Revision-Date']))
             self.addItemToTable(self.headerDic)
         return self.headerDic
     
     def updateOnSave(self):
         """Slot for headerAuto."""
         otherComments, self.headerDic = self.operator.headerData()
-        self.operator.updateNewHeader(otherComments, self.applySettings())
+        headerDic = self.applySettings()
+        if (otherComments.rfind(unicode(headerDic['Last-Translator'] )) == -1):
+            otherComments = otherComments + "\n"  + unicode(headerDic['Last-Translator'] ) + "," + str(headerDic['PO-Revision-Date'])
+        self.operator.updateNewHeader(otherComments, headerDic)
         
     def accepted(self):
         """send header information"""
