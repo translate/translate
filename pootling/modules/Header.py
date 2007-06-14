@@ -240,8 +240,9 @@ class Header(QtGui.QDialog):
         """Slot for headerAuto."""
         otherComments, self.headerDic = self.operator.headerData()
         headerDic = self.applySettings()
-        if (otherComments.rfind(unicode(headerDic['Last-Translator'] )) == -1):
-            otherComments = otherComments + "\n"  + unicode(headerDic['Last-Translator'] ) + "," + str(headerDic['PO-Revision-Date'])
+        if isinstance(otherComments, str):
+            if (otherComments.rfind(unicode(headerDic['Last-Translator'] )) == -1):
+                otherComments = otherComments + "\n"  + unicode(headerDic['Last-Translator'] ) + "," + str(headerDic['PO-Revision-Date'])
         self.operator.updateNewHeader(otherComments, headerDic)
         
     def accepted(self):
