@@ -85,9 +85,8 @@ class tableTM(QtGui.QDockWidget):
             row = self.ui.tblTM.rowCount()
             self.ui.tblTM.setRowCount(row + 1)
             
-            similarity = unit.getnotes("translator")
-            value = str(similarity).rjust(4)
-            item = QtGui.QTableWidgetItem(value)
+            similarity = unit.getnotes("translator").rjust(4)
+            item = QtGui.QTableWidgetItem(similarity)
             item.setFlags(self.normalState)
             item.setTextAlignment(QtCore.Qt.AlignRight + QtCore.Qt.AlignVCenter)
             self.ui.tblTM.setItem(row, 0, item)
