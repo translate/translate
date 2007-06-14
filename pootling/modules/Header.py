@@ -182,7 +182,7 @@ class Header(QtGui.QDialog):
         """Set user profile from Qsettings into the tableHeader.
         
             @return: Return a header as dictionary """
-            
+
         userProfileDic = {} # a dictionary store info from preference
         
         userName = World.settings.value("UserName", QtCore.QVariant(""))
@@ -194,7 +194,7 @@ class Header(QtGui.QDialog):
         Language_Team = FullLanguage.toString() + '<' + SupportTeam.toString() + '>'
         nPlural = World.settings.value("nPlural", QtCore.QVariant(str(2)))
         pluralEquation = World.settings.value("equation", QtCore.QVariant(""))
-        
+
         if (userName.toString() == "" or emailAddress.toString() == "" or FullLanguage.toString() == "" or Code.toString() == "" or SupportTeam.toString() == "" or pluralEquation.toString() == "" ):
             msg = "Please fill in the blank under Settings/Preference/Persionalize in order to apply your settings. Do you want to update the infomation now?"
             ret = QtGui.QMessageBox.question(self, self.tr("Information Settings"), 
@@ -228,6 +228,9 @@ class Header(QtGui.QDialog):
         #TODO: why do we need this?
         if (len(self.headerDic) == 0):
             return
+        existingComment = str(self.ui.txtOtherComments.toPlainText())
+        if (existingComment.rfind(unicode(Last_Translator )) == -1):
+            self.ui.txtOtherComments.setText(existingComment + "\n"  + unicode(Last_Translator ) + "," + str(self.headerDic['PO-Revision-Date']))
         if (self.ui): 
             self.addItemToTable(self.headerDic)
         return self.headerDic
