@@ -29,8 +29,8 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         # var format
         self.varFormat = QtGui.QTextCharFormat()
         self.varFormat.setForeground(QtCore.Qt.blue)
-        # variables: e.g. &python; AppName= %s %1
-        self.vars = "&\\w+;|%\\w+|\\w+=|[A-Z]\\w+[A-Z]\\w+"
+        # variables: e.g. &python; %s %1 AppName
+        self.vars = "&\\w+;|%\\w+|[A-Z][a-z]+[A-Z][a-z]+"
         self.varExpression = QtCore.QRegExp(self.vars)
         # tag format
         self.tagFormat = QtGui.QTextCharFormat()
@@ -49,13 +49,13 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         self.highlightGlossary = False
         self.glsExpression = None
         self.glossaryWords = []
-
+        
         # search format
         self.searchFormat = QtGui.QTextCharFormat()
         self.searchFormat.setFontWeight(QtGui.QFont.Bold)
         self.searchFormat.setForeground(QtCore.Qt.white)
         self.searchFormat.setBackground(QtCore.Qt.darkMagenta)
-                
+        
         self.searchString = None
     
     def highlightBlock(self, text):
@@ -79,7 +79,6 @@ class Highlighter(QtGui.QSyntaxHighlighter):
             glsIndex = -1
         
         while (tagIndex >= 0) or (varIndex >= 0) or (glsIndex >= 0):
-            
             # highlight glossary
             if (self.highlightGlossary) and (self.glsExpression):
                 length = self.glsExpression.matchedLength()
@@ -94,9 +93,7 @@ class Highlighter(QtGui.QSyntaxHighlighter):
             length = self.varExpression.matchedLength()
             self.setFormat(varIndex, length, self.varFormat)
             varIndex = text.indexOf(self.varExpression, varIndex + length)
-            
-
-            
+        
         # highlight search
         if (self.searchString):
             index = self.foundPosition - self.blockWordCount
@@ -107,7 +104,7 @@ class Highlighter(QtGui.QSyntaxHighlighter):
             captured = unicode(text[index:index + len(self.searchString)])
             if (captured.lower() == self.searchString.lower()):
                 self.searchString =None
-            
+        
         self.blockWordCount += len(text) + 1
     
     def refresh(self):
