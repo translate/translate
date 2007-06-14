@@ -318,6 +318,8 @@ class MainWindow(QtGui.QMainWindow):
         
         self.connect(self.table, QtCore.SIGNAL("openFile"), self.openFile)
         self.connect(self.table, QtCore.SIGNAL("goto"), self.dockOverview.gotoRow)
+        
+        self.operator.applySettings()
 
     def showHideTableLookup(self):
         """
@@ -428,8 +430,6 @@ class MainWindow(QtGui.QMainWindow):
         World.settings.setValue("recentFileList", QtCore.QVariant(files))
         self.updateRecentAction()
         self.clearBookmarks()
-        
-        self.operator.applySettings()
         
     def startRecentAction(self):
         action = self.sender()
