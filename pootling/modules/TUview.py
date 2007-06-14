@@ -91,6 +91,8 @@ class TUview(QtGui.QDockWidget):
             menu = QtGui.QMenu()
             menuAction = menu.addAction(self.tr("Copy to clipboard:"))
             menuAction.setEnabled(False)
+            menuAction = menu.addAction("")
+            menuAction.setSeparator(True)
             for candidate in candidates:
                 menuAction = menu.addAction(candidate.target)
                 self.connect(menuAction, QtCore.SIGNAL("triggered()"), self.copyTranslation)

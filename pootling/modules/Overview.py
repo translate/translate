@@ -93,6 +93,8 @@ class OverviewDock(QtGui.QDockWidget):
         if (candidates):
             menuAction = menu.addAction(self.tr("Copy to target:"))
             menuAction.setEnabled(False)
+            menuAction = menu.addAction("")
+            menuAction.setSeparator(True)
         else:
             menuAction = menu.addAction(self.tr("(no translation)"))
             menuAction.setEnabled(False)
