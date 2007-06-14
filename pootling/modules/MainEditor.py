@@ -125,8 +125,11 @@ class MainWindow(QtGui.QMainWindow):
         # action Tool menu of Catalog Manager
         self.Catalog = Catalog(self)
         self.connect(self.ui.actionCatalogManager, QtCore.SIGNAL("triggered()"), self.Catalog.showDialog)
+        self.connect(self.Catalog, QtCore.SIGNAL("initSearch"), self.operator.initSearch)
+        self.connect(self.Catalog, QtCore.SIGNAL("searchNext"), self.operator.searchNext)
+        self.connect(self.operator, QtCore.SIGNAL("EOF"), self.Catalog.setReachedEnd)
         
-         # TM table
+        # TM table
         self.table = tableTM.tableTM(self)
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.table)
         action = self.table.toggleViewAction()
@@ -195,7 +198,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("replaceText"), self.dockTUview.replaceText)
         self.connect(self.operator, QtCore.SIGNAL("replaceText"), self.dockComment.replaceText)
        
-       # Goto menu action
+        # Goto menu action
         self.ui.actionGoTo.setIcon(QtGui.QIcon(os.path.join(imagesdir, "goto.png")))
         self.connect(self.ui.actionGoTo, QtCore.SIGNAL("triggered()"), self.showGoto)
         

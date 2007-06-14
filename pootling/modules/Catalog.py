@@ -164,47 +164,56 @@ class Catalog(QtGui.QMainWindow):
 
         # install custom menu event for treeCatalog
         self.ui.treeCatalog.contextMenuEvent = self.customContextMenuEvent
-
+        
+        self.searchedCount = 0
+        self.reachedEnd = True
+    
+    def setReachedEnd(self):
+        self.reachedEnd = True
+    
     def find(self, searchString, searchOptions):
-        if (not (searchString and searchOptions)):
+        """
+        The search here is only determine if search string exist in filename,
+        then it connect to search function in operator.
+        """
+        if (not searchString):
+            return
+        if (self.searchedCount >= len(self.fileItems)):
+            self.searchedCount = 0
             return
         
-        for i in range(self.lastFoundNumber, len(self.fileItems)):
-            item = self.fileItems[i]
-            filename = self.getFilename(item)
-            found = self.searchInString(searchString, filename, searchOptions)
-            if (found):
-                self.ui.treeCatalog.setCurrentItem(item)
-                self.emit(QtCore.SIGNAL("openFile"), filename)
-                self.emit(QtCore.SIGNAL("goto"), found)
-                self.lastFoundNumber = i+1
-                break
+        if (self.reachedEnd):
+            self.reachedEnd = False
+            while (self.searchedCount < len(self.fileItems)):
+                item = self.fileItems[self.searchedCount]
+                self.searchedCount += 1
+            
+                filename = self.getFilename(item)
+                store = factory.getobject(filename)
+                found = -1
+                for unit in store.units:
+                    searchableText = ""
+                    if (searchOptions & World.source):
+                        searchableText += unit.source
+                    if (searchOptions & World.target):
+                        searchableText += unit.target
+                    index = searchableText.find(searchString)
+                    if (index > -1):
+                        found = index
+                        break
+                if (found >= 0):
+                    self.emit(QtCore.SIGNAL("openFile"), filename)
+                    filter = []
+                    if (searchOptions & World.source):
+                        filter.append(World.source)
+                    if (searchOptions & World.target):
+                        filter.append(World.target)
+                    self.emit(QtCore.SIGNAL("initSearch"), searchString, filter, False)
+                    self.emit(QtCore.SIGNAL("searchNext"))
+                    break
         else:
-            QtGui.QMessageBox.information(self, self.tr("Search"), 
-                    self.tr("Search has reached the end of catalog."))
-            self.lastFoundNumber = 0
-    
-    def searchInString(self, searchString, filename, searchOptions):
-          found = False
-          if (not os.path.isfile(filename)):
-              return False
-          store = factory.getobject(filename)
-          if (not store):
-              return False
-          unitIndex = 0
-          for unit in store.units:
-              searchableText = ""
-              if (searchOptions == World.source):
-                  searchableText = unit.source
-              elif (searchOptions == World.target):
-                  searchableText = unit.target
-              elif (searchOptions == (World.source + World.target)):
-                  searchableText = unit.source + unit.target
-              if (searchableText.find(searchString) != -1 ):
-                  found = unitIndex
-                  break
-              unitIndex += 1
-          return found
+            self.emit(QtCore.SIGNAL("searchNext"))
+        return
 
     def showStatistic(self):
         item = self.ui.treeCatalog.currentItem()
@@ -580,7 +589,6 @@ class Catalog(QtGui.QMainWindow):
         """
         if (not item):
             return None
-        
         filename = unicode(item.text(0))
         if (item.parent()):
             filename = os.path.join(self.getFilename(item.parent()) + os.path.sep + filename)
