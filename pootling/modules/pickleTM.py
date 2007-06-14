@@ -19,7 +19,7 @@
 #
 # This module provides interface for pickle and unpickle each matcher candidates of base object files
 
-import os, pickle
+import os, cPickle
 
 class pickleTM:
     """This class is for pickling and unpickling a matcher"""
@@ -32,7 +32,7 @@ class pickleTM:
         if (filename and os.path.exists(filename)):
             tmpFile = open(filename, 'rb')
             try:
-                matcher = pickle.load(tmpFile)
+                matcher =cPickle.load(tmpFile)
             except:
                 pass
             tmpFile.close()
@@ -45,6 +45,6 @@ class pickleTM:
         """
         #TODO: fix "can't pickle instancemethod objects"
         pickleFile = open(filename, 'w')
-        pickle.dump(matcher, pickleFile)
+        cPickle.dump(matcher, pickleFile)
         pickleFile.close()
 
