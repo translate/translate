@@ -88,16 +88,14 @@ class TUview(QtGui.QDockWidget):
         Popup menu or show tooltip of glossary word's translation.
         """
         if (self.requestAction == CONTEXTMENU):
-            # lazy construction of menu
-            if (not hasattr(self, "menuTerm")):
-                menuTerm = QtGui.QMenu()
-                actionTerm = menuTerm.addAction(self.tr("Copy to clipboard:"))
-                actionTerm.setEnabled(False)
+            menu = QtGui.QMenu()
+            menuAction = menu.addAction(self.tr("Copy to clipboard:"))
+            menuAction.setEnabled(False)
             for candidate in candidates:
-                actionTerm = menuTerm.addAction(candidate.target)
-                self.connect(actionTerm, QtCore.SIGNAL("triggered()"), self.copyTranslation)
-            menuTerm.exec_(self.globalPos)
-            self.disconnect(actionTerm, QtCore.SIGNAL("triggered()"), self.copyTranslation)
+                menuAction = menu.addAction(candidate.target)
+                self.connect(menuAction, QtCore.SIGNAL("triggered()"), self.copyTranslation)
+            menu.exec_(self.globalPos)
+            self.disconnect(menuAction, QtCore.SIGNAL("triggered()"), self.copyTranslation)
         
         elif (self.requestAction == SHOWTIP):
             tips = ""
