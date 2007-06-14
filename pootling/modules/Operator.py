@@ -661,7 +661,7 @@ class Operator(QtCore.QObject):
         """
         unit = self.store.findunit(source)
         if unit:
-            self.emit(QtCore.SIGNAL("currentUnit"), unit)
+            self.emitUnit(unit)
     
     def applySettings(self):
         """
