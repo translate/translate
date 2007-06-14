@@ -38,9 +38,10 @@ class tableTM(QtGui.QDockWidget):
         self.headerLabels = [self.tr("Similarity"),self.tr("Source"), self.tr("Target"), self.tr("Location"), self.tr("Translator"), self.tr("Date"), self.tr("Index")]
         self.ui.tblTM.setColumnCount(len(self.headerLabels))
         self.ui.tblTM.setHorizontalHeaderLabels(self.headerLabels)
-        for i in range(len(self.headerLabels)):
-            self.ui.tblTM.resizeColumnToContents(i)
-            self.ui.tblTM.horizontalHeader().setResizeMode(i, QtGui.QHeaderView.Stretch)
+        self.ui.tblTM.resizeColumnToContents(0)
+        self.ui.tblTM.horizontalHeader().setResizeMode(1, QtGui.QHeaderView.Stretch)
+        self.ui.tblTM.horizontalHeader().setResizeMode(2, QtGui.QHeaderView.Stretch)
+        self.ui.tblTM.verticalHeader().hide()
         self.ui.tblTM.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
         self.ui.tblTM.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
         self.normalState = QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
@@ -68,8 +69,10 @@ class tableTM(QtGui.QDockWidget):
         self.menu.exec_(e.globalPos())
         
     def fillTable(self, candidates):
-        '''fill each found unit into table
-        @param candidates:list of pofile object'''
+        """
+        Fill table with candidates source and target.
+        @param candidates: list of unit.
+        """
         self.ui.tblTM.setEnabled(True)
         self.ui.tblTM.clear()
         self.ui.tblTM.setHorizontalHeaderLabels(self.headerLabels)
@@ -82,8 +85,11 @@ class tableTM(QtGui.QDockWidget):
             row = self.ui.tblTM.rowCount()
             self.ui.tblTM.setRowCount(row + 1)
             
-            item = QtGui.QTableWidgetItem(unit.getnotes("translator"))
+            similarity = unit.getnotes("translator")
+            value = str(similarity).rjust(4)
+            item = QtGui.QTableWidgetItem(value)
             item.setFlags(self.normalState)
+            item.setTextAlignment(QtCore.Qt.AlignRight + QtCore.Qt.AlignVCenter)
             self.ui.tblTM.setItem(row, 0, item)
             
             item = QtGui.QTableWidgetItem(unit.source)
@@ -93,7 +99,6 @@ class tableTM(QtGui.QDockWidget):
             item = QtGui.QTableWidgetItem(unit.target)
             item.setFlags(self.normalState)
             self.ui.tblTM.setItem(row, 2, item)
-          
             
             item = QtGui.QTableWidgetItem(unit.filepath)
             self.ui.tblTM.setItem(row, 3, item)
@@ -105,7 +110,8 @@ class tableTM(QtGui.QDockWidget):
             self.ui.tblTM.setItem(row, 5, item)
             
         self.ui.tblTM.setSortingEnabled(True)
-        self.ui.tblTM.sortItems(0)
+        self.ui.tblTM.horizontalHeader().setSortIndicatorShown(False)
+        self.ui.tblTM.sortItems(0, QtCore.Qt.DescendingOrder)
         self.ui.tblTM.resizeRowsToContents()
         self.show()
         self.createContextMenu()
