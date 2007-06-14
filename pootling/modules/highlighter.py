@@ -30,7 +30,7 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         self.varFormat = QtGui.QTextCharFormat()
         self.varFormat.setForeground(QtCore.Qt.blue)
         # variables: e.g. &python; AppName= %s %1
-        self.vars = "&\\w+;|%\\w+|\\w+="
+        self.vars = "&\\w+;|%\\w+|\\w+=|[A-Z]\\w+[A-Z]\\w+"
         self.varExpression = QtCore.QRegExp(self.vars)
         # tag format
         self.tagFormat = QtGui.QTextCharFormat()
