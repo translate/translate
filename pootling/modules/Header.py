@@ -202,10 +202,8 @@ class Header(QtGui.QDialog):
                     QtGui.QMessageBox.Yes | QtGui.QMessageBox.Default, 
                     QtGui.QMessageBox.No | QtGui.QMessageBox.Escape)
             if (ret == QtGui.QMessageBox.No):
-                print "No"
-                return False
+                return self.headerDic
             if (ret == QtGui.QMessageBox.Yes):
-                print "yes"
                 self.emit(QtCore.SIGNAL("showPreference()"))
         
         # test if it is a po or poxliff header.
