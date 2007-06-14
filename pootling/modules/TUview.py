@@ -273,10 +273,7 @@ class TUview(QtGui.QDockWidget):
                 self.emit(QtCore.SIGNAL("lookupUnit"))
             if (unicode(unit.target) !=  unicode(self.ui.txtTarget.toPlainText())):
                 self.ui.txtTarget.setPlainText(unit.target)
-                # move the cursor to the end of sentence.
-                cursor = self.ui.txtTarget.textCursor()
-                cursor.setPosition(len(unit.target))
-                self.ui.txtTarget.setTextCursor(cursor)
+                self.setCursorToEnd(self.ui.txtTarget)
         else:
             # create source tab
             self.ui.sourceStacked.setCurrentIndex(1)
@@ -368,6 +365,7 @@ class TUview(QtGui.QDockWidget):
                 sourcetab = self.ui.tabWidgetSource
                 sourcetabindex = sourcetab.currentIndex()
                 self.ui.txtTarget.setPlainText(sourcetab.widget(sourcetabindex).children()[1].toPlainText())
+        self.setCursorToEnd(self.ui.txtTarget)
     
     def replaceText(self, textField, position, length, replacedText):
         """
@@ -434,6 +432,14 @@ class TUview(QtGui.QDockWidget):
         self.ui.sourceStacked.setEnabled(value)
         self.ui.targetStacked.setEnabled(value)
         self.contentDirty = False
+    
+    def setCursorToEnd(self, obj):
+        """
+        move the obj cursor to the end of text.
+        """
+        cursor = obj.textCursor()
+        cursor.setPosition(len(obj.toPlainText()))
+        obj.setTextCursor(cursor)
     
 if __name__ == "__main__":
     import sys, os
