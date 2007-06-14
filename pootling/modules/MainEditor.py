@@ -143,10 +143,12 @@ class MainWindow(QtGui.QMainWindow):
         # translation memory
         self.connect(self.dockOverview, QtCore.SIGNAL("requestUnit"), self.operator.emitRequestUnit)
         self.connect(self.operator, QtCore.SIGNAL("tmRequest"), self.dockOverview.popupTranslation)
-        self.connect(self.dockTUview, QtCore.SIGNAL("lookupUnit"), self.operator.emitLookupUnit)
+#        self.connect(self.dockTUview, QtCore.SIGNAL("lookupUnit"), self.operator.emitLookupUnit)
         self.connect(self.operator, QtCore.SIGNAL("tmCandidates"), self.table.fillTable)
         self.connect(self.operator, QtCore.SIGNAL("filterChanged"), self.table.filterChanged)
         self.connect(self.table, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
+        self.connect(self.table, QtCore.SIGNAL("closed"), self.showHideTableLookup)
+        self.connect(self.table, QtCore.SIGNAL("shown"), self.showHideTableLookup)
         
         # glossary
         self.connect(self.dockTUview, QtCore.SIGNAL("lookupTerm"), self.operator.emitTermRequest)
@@ -326,8 +328,10 @@ class MainWindow(QtGui.QMainWindow):
         
         self.lookupUnitStatus = (TMpreference & 1 and True or False)
         if self.lookupUnitStatus:
-            self.table.show()
-            self.connect(self.dockTUview, QtCore.SIGNAL("lookupUnit"), self.operator.emitLookupUnit)
+            if self.table.toggleViewAction().isChecked() == False:
+                self.disconnect(self.dockTUview, QtCore.SIGNAL("lookupUnit"), self.operator.emitLookupUnit)
+            else:
+                self.connect(self.dockTUview, QtCore.SIGNAL("lookupUnit"), self.operator.emitLookupUnit)
         else: 
             self.table.hide()
             self.disconnect(self.dockTUview, QtCore.SIGNAL("lookupUnit"), self.operator.emitLookupUnit)

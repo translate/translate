@@ -170,6 +170,16 @@ class tableTM(QtGui.QDockWidget):
         """
         QtGui.QDockWidget.closeEvent(self, event)
         self.toggleViewAction().setChecked(False)
+        self.emit(QtCore.SIGNAL("closed"))
+        
+    def showEvent(self, event):
+        """
+        Checked the TM Lookup view action.
+        @param QShowEvent Object: received show event when showing widget
+        """
+        QtGui.QDockWidget.showEvent(self, event)
+        self.toggleViewAction().setChecked(True)
+        self.emit(QtCore.SIGNAL("shown"))
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
