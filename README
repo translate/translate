@@ -126,7 +126,9 @@ Bugs
 We think there might be some :)
 
 Please send your bug reports to:
-translate-devel at lists sourceforge net
+  translate-devel at lists.sourceforge.net
+or report them at our bugzilla server at
+  http://bugs.wordforge.org/
 
 Preferably with a patch or at least a test case.
 
@@ -138,6 +140,14 @@ Please read our documentation online at
 There they are constantly being updated. Please feel free to contribute new 
 sections and suggest corrections.
 
+Most tools support the options --help and --manpage of which the output is 
+automatically generated. The output of --manpage produces output suitable for 
+formatting as a standard manpage. This can be viewed on UNIX platforms with 
+  nroff -Tutf8 -mandoc
+With pot2po as example:
+  pot2po --manpage| /usr/bin/nroff -Tutf8 -mandoc|less
+This is probably most useful for packagers to help them generate manual pages 
+for the packaged versions.
 
 Program overview
 ----------------
