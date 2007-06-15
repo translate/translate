@@ -54,120 +54,6 @@
      <height>28</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuHelp" >
-    <property name="title" >
-     <string>&amp;Help</string>
-    </property>
-    <addaction name="actionAbout" />
-    <addaction name="actionAboutQT" />
-   </widget>
-   <widget class="QMenu" name="menuGo" >
-    <property name="title" >
-     <string>&amp;Go</string>
-    </property>
-    <addaction name="actionFirst" />
-    <addaction name="actionPrevious" />
-    <addaction name="actionNext" />
-    <addaction name="actionLast" />
-    <addaction name="separator" />
-    <addaction name="actionGoTo" />
-   </widget>
-   <widget class="QMenu" name="menuView" >
-    <property name="enabled" >
-     <bool>true</bool>
-    </property>
-    <property name="title" >
-     <string>&amp;View</string>
-    </property>
-    <addaction name="actionFilterFuzzy" />
-    <addaction name="actionFilterTranslated" />
-    <addaction name="actionFilterUntranslated" />
-   </widget>
-   <widget class="QMenu" name="menuEdit" >
-    <property name="title" >
-     <string>&amp;Edit</string>
-    </property>
-    <addaction name="actionUndo" />
-    <addaction name="actionRedo" />
-    <addaction name="separator" />
-    <addaction name="actionCut" />
-    <addaction name="actionCopy" />
-    <addaction name="actionPaste" />
-    <addaction name="separator" />
-    <addaction name="actionSelectAll" />
-    <addaction name="separator" />
-    <addaction name="actionFind" />
-    <addaction name="actionFindPrevious" />
-    <addaction name="actionFindNext" />
-    <addaction name="actionReplace" />
-    <addaction name="separator" />
-    <addaction name="actionCopySource2Target" />
-    <addaction name="actionCopySearchResult2Target" />
-    <addaction name="actionToggleFuzzy" />
-    <addaction name="actionEdit_Header" />
-   </widget>
-   <widget class="QMenu" name="menu_Tool" >
-    <property name="title" >
-     <string>&amp;Tool</string>
-    </property>
-    <addaction name="separator" />
-    <addaction name="actionCatalogManager" />
-    <addaction name="actionAuto_translate" />
-   </widget>
-   <widget class="QMenu" name="menuSettings" >
-    <property name="title" >
-     <string>&amp;Settings</string>
-    </property>
-    <addaction name="actionPreferences" />
-    <addaction name="actionBuild_TM" />
-    <addaction name="actionGlossary" />
-   </widget>
-   <widget class="QMenu" name="menuBookmark" >
-    <property name="title" >
-     <string>&amp;Bookmarks</string>
-    </property>
-    <addaction name="actionAddBookmarks" />
-    <addaction name="actionClearBookmarks" />
-    <addaction name="separator" />
-   </widget>
-   <widget class="QMenu" name="menuProject" >
-    <property name="title" >
-     <string>&amp;Project</string>
-    </property>
-    <widget class="QMenu" name="menuOpenRecentProject" >
-     <property name="enabled" >
-      <bool>true</bool>
-     </property>
-     <property name="tearOffEnabled" >
-      <bool>false</bool>
-     </property>
-     <property name="title" >
-      <string>Open &amp;Recent Project    </string>
-     </property>
-     <property name="separatorsCollapsible" >
-      <bool>true</bool>
-     </property>
-    </widget>
-    <addaction name="actionNewPro" />
-    <addaction name="actionOpenPro" />
-    <addaction name="menuOpenRecentProject" />
-   </widget>
-   <widget class="QMenu" name="menuWindow" >
-    <property name="title" >
-     <string>&amp;Window</string>
-    </property>
-    <widget class="QMenu" name="menuToolbars" >
-     <property name="statusTip" >
-      <string>Hide/Show the toolbars</string>
-     </property>
-     <property name="title" >
-      <string>&amp;Toolbars</string>
-     </property>
-    </widget>
-    <addaction name="separator" />
-    <addaction name="separator" />
-    <addaction name="menuToolbars" />
-   </widget>
    <widget class="QMenu" name="menuFile" >
     <property name="title" >
      <string>&amp;File</string>
@@ -191,6 +77,118 @@
     <addaction name="actionSaveas" />
     <addaction name="separator" />
     <addaction name="actionExit" />
+   </widget>
+   <widget class="QMenu" name="menuHelp" >
+    <property name="title" >
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="actionAbout" />
+    <addaction name="actionAboutQT" />
+   </widget>
+   <widget class="QMenu" name="menuWindow" >
+    <property name="title" >
+     <string>&amp;Window</string>
+    </property>
+    <widget class="QMenu" name="menuToolbars" >
+     <property name="statusTip" >
+      <string>Hide/Show the toolbars</string>
+     </property>
+     <property name="title" >
+      <string>&amp;Toolbars</string>
+     </property>
+    </widget>
+    <addaction name="separator" />
+    <addaction name="separator" />
+    <addaction name="menuToolbars" />
+   </widget>
+   <widget class="QMenu" name="menuSettings" >
+    <property name="title" >
+     <string>&amp;Settings</string>
+    </property>
+    <addaction name="actionPreferences" />
+    <addaction name="actionBuild_TM" />
+    <addaction name="actionGlossary" />
+   </widget>
+   <widget class="QMenu" name="menu_Tool" >
+    <property name="title" >
+     <string>&amp;Tool</string>
+    </property>
+    <addaction name="separator" />
+    <addaction name="actionCatalogManager" />
+    <addaction name="actionAuto_translate" />
+   </widget>
+   <widget class="QMenu" name="menuProject" >
+    <property name="title" >
+     <string>&amp;Project</string>
+    </property>
+    <widget class="QMenu" name="menuOpenRecentProject" >
+     <property name="enabled" >
+      <bool>true</bool>
+     </property>
+     <property name="tearOffEnabled" >
+      <bool>false</bool>
+     </property>
+     <property name="title" >
+      <string>Open &amp;Recent Project    </string>
+     </property>
+     <property name="separatorsCollapsible" >
+      <bool>true</bool>
+     </property>
+    </widget>
+    <addaction name="actionNewPro" />
+    <addaction name="actionOpenPro" />
+    <addaction name="menuOpenRecentProject" />
+   </widget>
+   <widget class="QMenu" name="menuBookmark" >
+    <property name="title" >
+     <string>&amp;Bookmarks</string>
+    </property>
+    <addaction name="actionAddBookmarks" />
+    <addaction name="actionClearBookmarks" />
+    <addaction name="separator" />
+   </widget>
+   <widget class="QMenu" name="menuGo" >
+    <property name="title" >
+     <string>&amp;Go</string>
+    </property>
+    <addaction name="actionFirst" />
+    <addaction name="actionPrevious" />
+    <addaction name="actionNext" />
+    <addaction name="actionLast" />
+    <addaction name="separator" />
+    <addaction name="actionGoTo" />
+   </widget>
+   <widget class="QMenu" name="menuView" >
+    <property name="enabled" >
+     <bool>true</bool>
+    </property>
+    <property name="title" >
+     <string>&amp;View</string>
+    </property>
+    <addaction name="actionFilterUntranslated" />
+    <addaction name="actionFilterFuzzy" />
+    <addaction name="actionFilterTranslated" />
+   </widget>
+   <widget class="QMenu" name="menuEdit" >
+    <property name="title" >
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="actionUndo" />
+    <addaction name="actionRedo" />
+    <addaction name="separator" />
+    <addaction name="actionCut" />
+    <addaction name="actionCopy" />
+    <addaction name="actionPaste" />
+    <addaction name="separator" />
+    <addaction name="actionFind" />
+    <addaction name="actionFindPrevious" />
+    <addaction name="actionFindNext" />
+    <addaction name="actionReplace" />
+    <addaction name="separator" />
+    <addaction name="actionCopySource2Target" />
+    <addaction name="actionCopySearchResult2Target" />
+    <addaction name="actionToggleFuzzy" />
+    <addaction name="actionEdit_Header" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
@@ -282,9 +280,9 @@
    <attribute name="toolBarArea" >
     <number>4</number>
    </attribute>
+   <addaction name="actionFilterUntranslated" />
    <addaction name="actionFilterFuzzy" />
    <addaction name="actionFilterTranslated" />
-   <addaction name="actionFilterUntranslated" />
   </widget>
   <widget class="QToolBar" name="toolTM" >
    <property name="orientation" >
@@ -835,13 +833,13 @@
     <string>&amp;Fuzzy</string>
    </property>
    <property name="toolTip" >
-    <string>Hide/Show Fuzzy Items</string>
+    <string>Hide/Show Fuzzy Strings</string>
    </property>
    <property name="statusTip" >
-    <string>Hide/Show Fuzzy Items</string>
+    <string>Hide/Show Fuzzy Strings</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>Hide/Show Fuzzy Items&lt;/h3>If Fuzzy Items are hidden, then display them. If they are displayed, then hide them.</string>
+    <string>&lt;h3>Hide/Show Fuzzy Strings&lt;/h3>If Fuzzy Strings are hidden, then display them. If they are displayed, then hide string.</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+Alt+F</string>
@@ -864,13 +862,13 @@
     <string>&amp;Translated</string>
    </property>
    <property name="toolTip" >
-    <string>Hide/Show Translated Items</string>
+    <string>Hide/Show Translated Strings</string>
    </property>
    <property name="statusTip" >
-    <string>Hide/Show Translated Items</string>
+    <string>Hide/Show Translated Strings</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>Hide/Show Translated Items&lt;/h3>If Translated Items are hidden, then display them. If they are displayed, then hide them.</string>
+    <string>&lt;h3>Hide/Show Translated Strings&lt;/h3>If Translated Strings are hidden, then display them. If they are displayed, then hide them.</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+Alt+T</string>
@@ -893,13 +891,13 @@
     <string>&amp;Untranslated</string>
    </property>
    <property name="toolTip" >
-    <string>Hide/Show Untranslated Items</string>
+    <string>Hide/Show Untranslated Strings</string>
    </property>
    <property name="statusTip" >
-    <string>Hide/Show Untranslated Items</string>
+    <string>Hide/Show Untranslated String</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>Hide/Show Untranslated Items&lt;/h3>If Untranslated Items are hidden, then display them. If they are displayed, then hide them.</string>
+    <string>&lt;h3>Hide/Show Untranslated Strings&lt;/h3>If Untranslated String are hidden, then display them. If they are displayed, then hide String.</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+Alt+U</string>
@@ -930,19 +928,19 @@
     <bool>false</bool>
    </property>
    <property name="text" >
-    <string>&amp;GoTo Unit</string>
+    <string>&amp;GoTo String</string>
    </property>
    <property name="iconText" >
-    <string>GoTo unit</string>
+    <string>GoTo String</string>
    </property>
    <property name="toolTip" >
-    <string>GoTo unit</string>
+    <string>GoTo String</string>
    </property>
    <property name="statusTip" >
-    <string>Go to unit</string>
+    <string>Go to String</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>GoTo Unit&lt;/h3>It will go to a unit in the table, according to given index.</string>
+    <string>&lt;h3>GoTo String&lt;/h3>It will go to a string in the table, according to given index.</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+G</string>
