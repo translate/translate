@@ -90,19 +90,15 @@ class OverviewDock(QtGui.QDockWidget):
         Popup menu of translation.
         """
         menu = QtGui.QMenu()
-        if (candidates):
-            menuAction = menu.addAction(self.tr("Copy to target:"))
-            menuAction.setEnabled(False)
-            menuAction = menu.addAction("")
-            menuAction.setSeparator(True)
-        else:
+        if (not candidates):
             menuAction = menu.addAction(self.tr("(no translation)"))
-            menuAction.setEnabled(False)
             menu.exec_(self.globalPos)
             return
         
+        strCopy = self.tr("Copy to target: ")
         for candidate in candidates:
-            menuAction = menu.addAction(candidate.target)
+            menuAction = menu.addAction(strCopy + candidate.target)
+            menuAction.setData(QtCore.QVariant(candidate.target))
             self.connect(menuAction, QtCore.SIGNAL("triggered()"), self.copyToTarget)
         menu.exec_(self.globalPos)
         self.disconnect(menuAction, QtCore.SIGNAL("triggered()"), self.copyToTarget)
@@ -111,7 +107,7 @@ class OverviewDock(QtGui.QDockWidget):
         """
         emit "targetChanged" signal with self.sender().text().
         """
-        text = self.sender().text()
+        text = self.sender().data().toString()
         self.emit(QtCore.SIGNAL("targetChanged"), unicode(text))
     
     def closeEvent(self, event):
