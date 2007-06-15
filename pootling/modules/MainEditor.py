@@ -556,8 +556,6 @@ class MainWindow(QtGui.QMainWindow):
                 self.disconnect(self.ui.actionUndo, QtCore.SIGNAL("triggered()"), oldWidget.document(), QtCore.SLOT("undo()"))
                 self.disconnect(self.ui.actionRedo, QtCore.SIGNAL("triggered()"), oldWidget.document(), QtCore.SLOT("redo()"))
 
-            if (callable(getattr(oldWidget, "selectAll", None))):
-                self.disconnect(self.ui.actionSelectAll , QtCore.SIGNAL("triggered()"), oldWidget, QtCore.SLOT("selectAll()"))
         if (newWidget):
             self.connect(newWidget, QtCore.SIGNAL("copyAvailable(bool)"), self.enableCopyCut)
             self.connect(newWidget, QtCore.SIGNAL("undoAvailable(bool)"), self.enableUndo)
@@ -577,9 +575,6 @@ class MainWindow(QtGui.QMainWindow):
                     self.ui.actionPaste.setEnabled(True)
             else:
                 self.ui.actionPaste.setEnabled(False)
-            # Select All
-            if (callable(getattr(newWidget, "selectAll", None))):
-                self.connect(self.ui.actionSelectAll , QtCore.SIGNAL("triggered()"), newWidget, QtCore.SLOT("selectAll()"))
 
             if (callable(getattr(newWidget, "textCursor", None))):
                 hasSelection = newWidget.textCursor().hasSelection()
@@ -639,7 +634,6 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.action_Close.setEnabled(bool)
         self.ui.actionSaveas.setEnabled(bool)
         self.ui.actionPaste.setEnabled(bool)
-        self.ui.actionSelectAll.setEnabled(bool)
         self.ui.actionFindNext.setEnabled(bool)
         self.ui.actionFindPrevious.setEnabled(bool)
         self.ui.actionFind.setEnabled(bool)
