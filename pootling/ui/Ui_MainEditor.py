@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/ratha/sourceforge.net/translate/trunk/pootling/ui/MainEditor.ui'
 #
-# Created: Thu Jun  7 13:42:52 2007
+# Created: Fri Jun 15 15:55:45 2007
 #      by: PyQt4 UI code generator 4.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -58,7 +58,7 @@ class Ui_MainWindow(object):
         self.menuProject.setObjectName("menuProject")
 
         self.menuOpenRecentProject = QtGui.QMenu(self.menuProject)
-        self.menuOpenRecentProject.setEnabled(False)
+        self.menuOpenRecentProject.setEnabled(True)
         self.menuOpenRecentProject.setTearOffEnabled(False)
         self.menuOpenRecentProject.setSeparatorsCollapsible(True)
         self.menuOpenRecentProject.setObjectName("menuOpenRecentProject")
@@ -380,12 +380,11 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuHelp.menuAction())
         self.toolFile.addAction(self.actionSave)
         self.toolFile.addAction(self.actionSaveas)
-        self.toolFile.addAction(self.actionExit)
         self.toolEdit.addAction(self.actionUndo)
         self.toolEdit.addAction(self.actionRedo)
         self.toolEdit.addAction(self.actionCut)
+        self.toolEdit.addAction(self.actionCopy)
         self.toolEdit.addAction(self.actionPaste)
-        self.toolNavigation.addAction(self.actionCopy)
         self.toolNavigation.addAction(self.actionFirst)
         self.toolNavigation.addAction(self.actionPrevious)
         self.toolNavigation.addAction(self.actionNext)

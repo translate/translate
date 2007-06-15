@@ -136,7 +136,7 @@
     </property>
     <widget class="QMenu" name="menuOpenRecentProject" >
      <property name="enabled" >
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="tearOffEnabled" >
       <bool>false</bool>
@@ -225,7 +225,6 @@
    </attribute>
    <addaction name="actionSave" />
    <addaction name="actionSaveas" />
-   <addaction name="actionExit" />
   </widget>
   <widget class="QToolBar" name="toolEdit" >
    <property name="enabled" >
@@ -243,6 +242,7 @@
    <addaction name="actionUndo" />
    <addaction name="actionRedo" />
    <addaction name="actionCut" />
+   <addaction name="actionCopy" />
    <addaction name="actionPaste" />
   </widget>
   <widget class="QToolBar" name="toolNavigation" >
@@ -267,7 +267,6 @@
    <attribute name="toolBarArea" >
     <number>4</number>
    </attribute>
-   <addaction name="actionCopy" />
    <addaction name="actionFirst" />
    <addaction name="actionPrevious" />
    <addaction name="actionNext" />
