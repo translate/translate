@@ -89,13 +89,27 @@ class TUview(QtGui.QDockWidget):
         """
         if (self.requestAction == CONTEXTMENU):
             menu = QtGui.QMenu()
-            menuAction = menu.addAction(self.tr("Copy to clipboard:"))
-            menuAction.setEnabled(False)
-            menuAction = menu.addAction("")
-            menuAction.setSeparator(True)
+            strCopy = self.tr("Copy \"")
+            strToClip = self.tr("\" to clipboard")
+            strReplace = self.tr("Replace \"")
+            strWith = self.tr("\" with \"")
+            strInTarget = self.tr("\" in target")
+            text = self.ui.txtTarget.toPlainText()
+            
             for candidate in candidates:
-                menuAction = menu.addAction(candidate.target)
+                menuAction = menu.addAction(strCopy + candidate.target + strToClip)
+                menuAction.setData(QtCore.QVariant(candidate.target))
                 self.connect(menuAction, QtCore.SIGNAL("triggered()"), self.copyTranslation)
+                
+                expression = QtCore.QRegExp(candidate.source, QtCore.Qt.CaseInsensitive)
+                index = text.indexOf(expression)
+                if (index >= 0):
+                    length = expression.matchedLength()
+                    cText = expression.capturedTexts()[0]
+                    menuAction = menu.addAction(strReplace + cText + strWith + candidate.target + strInTarget)
+                    menuAction.setData(QtCore.QVariant([cText, candidate.target]))
+                    self.connect(menuAction, QtCore.SIGNAL("triggered()"), self.replaceTranslation)
+            
             menu.exec_(self.globalPos)
             self.disconnect(menuAction, QtCore.SIGNAL("triggered()"), self.copyTranslation)
         
@@ -108,13 +122,29 @@ class TUview(QtGui.QDockWidget):
     
     def copyTranslation(self):
         """
-        copy self.sender().text() to clipboard.
+        Copy self.sender().data() to clipboard.
         """
         # TODO: do not use QLineEdit
-        text = self.sender().text()
+        text = self.sender().data().toString()
         lineEdit = QtGui.QLineEdit(text)
         lineEdit.selectAll()
         lineEdit.copy()
+    
+    def replaceTranslation(self):
+        """
+        Replace self.sender().data()[0] with self.sender().data()[1]
+        in txtTarget.
+        """
+        source, target = self.sender().data().toStringList()
+        text = self.ui.txtTarget.toPlainText()
+        expression = QtCore.QRegExp(source, QtCore.Qt.CaseInsensitive)
+        index = text.indexOf(expression)
+        while (index >= 0):
+            length = expression.matchedLength()
+            text.replace(index, length, target)
+            index = text.indexOf(expression)
+        self.ui.txtTarget.setPlainText(text)
+
     
     def emitTermRequest(self, pos):
         """
