@@ -64,8 +64,8 @@ class FileAction(QtCore.QObject):
     def saveAs(self):
         # TODO: think about export in different formats
         labelSaveAs = self.tr("Save As")
-        labelAllFiles = self.tr("All Files")
-        fileDialog = QtGui.QFileDialog(self.parentWidget, labelSaveAs, self.directory, self.fileDescription + " (*" + self.fileExtension + ");;" + labelAllFiles + " (*.*)")
+        self.fileExtension = "." + self.fileExtension
+        fileDialog = QtGui.QFileDialog(self.parentWidget, labelSaveAs, self.directory, self.fileDescription + " (*" + str(self.fileExtension) + ")" )
 
         fileDialog.setHistory(World.settings.value("SaveAsHistory").toStringList())
         fileDialog.setDirectory(self.directory)
@@ -133,15 +133,13 @@ class FileAction(QtCore.QObject):
         """emit signal fileOpened, with a filename as string"""
         # get default file extension and description
         (path, fileName) = os.path.split(str(self.fileName).lower())
-        if (fileName.endswith(".po")):
-            self.fileExtension = ".po"
-            self.fileDescription = "Po Files"
-        elif (fileName.endswith(".pot")):
-            self.fileExtension = ".pot"
-            self.fileDescription = "Po TemplateFiles"
-        elif (fileName.endswith(".xlf")):
-            self.fileExtension = ".xlf"
-            self.fileDescription = "XLIFF Files"
+        extension = {"po": "Po Files", "pot": "Po Template Files", 
+            "xliff": "XLIFF Files", "xlf": "XLIFF Files", 
+            "tmx": "Translation Memory Files", "tbx": "Term based Files"}
+        fileName, ext = os.path.splitext(fileName)
+        ext = ext[len(os.path.extsep):].lower()
+        self.fileExtension = ext
+        self.fileDescription = extension.get(ext) 
         self.emit(QtCore.SIGNAL("fileOpened"), str(self.fileName))
     
 if __name__ == "__main__":
