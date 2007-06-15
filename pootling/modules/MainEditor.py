@@ -366,10 +366,8 @@ class MainWindow(QtGui.QMainWindow):
     def setBookmarks(self):
         unit = self.operator.getCurrentUnit()
         id = self.dockOverview.getCurrentIndex()
-        self.totalMaxlen = len(str(self.maxBookmark))
-        value = str(id).rjust(str(self.totalMaxlen))
 
-        reducedSource = value + self.delimiter + unit.source[:15] + "..."
+        reducedSource = str(id) + self.delimiter + unit.source[:15] + "..."
         bookmark = World.settings.value("bookmarkList").toStringList()
         bookmark.removeAll(reducedSource)
         bookmark.prepend(reducedSource)
@@ -501,10 +499,9 @@ class MainWindow(QtGui.QMainWindow):
         
     def setTitle(self, title):
         """set the title of program.
-        @param title: title string."""
+        @param title: a filename with full path, type as string."""
         if (title):
-            shownName = QtCore.QFileInfo(title).fileName()
-            self.setWindowTitle(self.tr("%1[*] - %2").arg(shownName).arg(World.settingApp))
+            self.setWindowTitle(self.tr("%1[*] - %2").arg(title).arg(World.settingApp))
 
     def toggleFirstLastUnit(self, atFirst, atLast):
         """set enable/disable first, previous, next, and last unit buttons
