@@ -52,6 +52,7 @@ class Catalog(QtGui.QMainWindow):
         self.resize(720,400)
         self.autoRefresh = True
         self.recentProject = []
+        self.startOpenFile()
 
         self.ui.toolBar.toggleViewAction()
         self.ui.toolBar.setWindowTitle("ToolBar View")
@@ -95,7 +96,7 @@ class Catalog(QtGui.QMainWindow):
         self.connect(self.ui.actionNew, QtCore.SIGNAL("triggered()"), self.Project.show)
         self.connect(self.ui.actionOpen, QtCore.SIGNAL("triggered()"), self.Project.openProject)
         self.connect(self.Project, QtCore.SIGNAL("updateCatalog"), self.updateCatalog)
-        self.connect(self.Project, QtCore.SIGNAL("pathOfFileName"), self.startRecentProject)
+        self.connect(self.Project, QtCore.SIGNAL("pathOfFileName"), self.setOpening)
 
         # catalog setting's checkboxes action.
         self.catSetting = CatalogSetting(self)
@@ -645,6 +646,14 @@ class Catalog(QtGui.QMainWindow):
             self.timer.stop()
             self.itemNumber = 0
 
+    def startOpenFile(self):
+        files = World.settings.value("recentProjectList").toStringList()
+        if (files):
+            self.createRecentProject()
+            self.ui.menuOpenRecentProject.setEnabled(True)
+        else:
+            self.ui.menuOpenRecentProject.setEnabled(False)
+
     def createRecentProject(self):
         for i in range(World.MaxRecentFiles):
             self.recentProject.append(QtGui.QAction(self))
@@ -658,12 +667,20 @@ class Catalog(QtGui.QMainWindow):
         self.ui.menuOpenRecentProject.setEnabled(False)
         self.updateRecentProject()
 
-    def startRecentProject(self, item):
-        if (not item):
-          return None
+    def startRecentProject(self):
+        action = self.sender()
+        filename = action.data().toString()
+        self.setOpening(filename)
+
+    def setOpening(self, filename):
+        proSettings = QtCore.QSettings(filename, QtCore.QSettings.IniFormat)
+        itemList = proSettings.value("itemList").toStringList()
+        includeSub = proSettings.value("itemList").toBool()
+        self.updateCatalog(itemList,  includeSub)
+        
         files = World.settings.value("recentProjectList").toStringList()
-        files.removeAll(item)
-        files.prepend(item)
+        files.removeAll(filename)
+        files.prepend(filename)
         while files.count() > World.MaxRecentFiles:
             files.removeAt(files.count() - 1)
         if (files.count() > 0):
@@ -690,6 +707,9 @@ class Catalog(QtGui.QMainWindow):
             self.recentProject[i].setText(self.tr("&" + str(i+1) + ": ") + project[i])
             self.recentProject[i].setData(QtCore.QVariant(project[i]))
             self.recentProject[i].setVisible(True)
+
+        for j in range(numRecentProject, World.MaxRecentFiles):
+            self.recentProject[j].setVisible(False)
 
     def customContextMenuEvent(self, e):
         self.menu.exec_(e.globalPos())

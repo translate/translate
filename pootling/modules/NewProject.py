@@ -194,11 +194,11 @@ class newProject(QtGui.QDialog):
                         QtCore.QDir.homePath(),
 self.tr("IniFormat Files(*.ini)"))
         if not fileOpen.isEmpty():
-            proSettings = QtCore.QSettings(fileOpen, QtCore.QSettings.IniFormat)
-            itemList = proSettings.value("itemList").toStringList()
-            includeSub = proSettings.value("itemList").toBool()
-            self.emit(QtCore.SIGNAL("updateCatalog"), itemList,  includeSub)
-        self.emit(QtCore.SIGNAL("pathOfFileName"),  fileOpen)
+#            proSettings = QtCore.QSettings(fileOpen, QtCore.QSettings.IniFormat)
+#            itemList = proSettings.value("itemList").toStringList()
+#            includeSub = proSettings.value("itemList").toBool()
+#            self.emit(QtCore.SIGNAL("updateCatalog"), itemList,  includeSub)
+            self.emit(QtCore.SIGNAL("pathOfFileName"),  fileOpen)
 
 
 if __name__ == "__main__":
