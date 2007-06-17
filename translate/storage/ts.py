@@ -20,7 +20,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-"""module for parsing Qt .ts files for translation"""
+"""module for parsing Qt .ts files for translation
+
+U{TS file format 4.3<http://doc.trolltech.com/4.3/linguist-ts-file-format.html>}, 
+U{Example<http://svn.ez.no/svn/ezcomponents/trunk/Translation/docs/linguist-format.txt>}
+"""
 
 from translate.misc import ourdom
 
