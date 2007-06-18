@@ -733,14 +733,24 @@ class pounit(base.TranslationUnit):
     return postr
 
   def getlocations(self):
-    """returns the list of locations from sourcecomments in the po element"""
+    """Get a list of locations from sourcecomments in the PO unit
+
+    rtype: List
+    return: A list of the locations with '#: ' stripped
+
+    """
     locations = []
     for sourcecomment in self.sourcecomments:
       locations += quote.rstripeol(sourcecomment)[3:].split()
     return locations
 
   def addlocation(self, location):
-    """add to sourcecomments"""
+    """Add a location to sourcecomments in the PO unit
+
+    @param location: Text location e.g. 'file.c:23' does not include #:
+    @type location: String
+
+    """
     self.sourcecomments.append("#: %s\n" % location)
 
   def extract_msgidcomments(self, text=None):
