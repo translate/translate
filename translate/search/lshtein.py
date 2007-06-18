@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # 
-# Copyright 2006 Zuza Software Foundation
+# Copyright 2006-2007 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
