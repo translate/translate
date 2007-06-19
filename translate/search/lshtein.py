@@ -27,18 +27,51 @@ http://trific.ath.cx/python/levenshtein/
 """
 
 import math
+
+def python_distance(a, b, stopvalue=-1):
+    """Calculates the distance for use in similarity calculation. Python
+    version."""
+    l1 = len(a)
+    l2 = len(b)
+    if stopvalue == -1:
+        stopvalue = l2
+    current = range(l1+1)
+    for i in range(1,l2+1):
+        previous, current = current, [i]+[0]*l1
+        least = l2
+        for j in range(1, l1 + 1):
+            change = previous[j-1]
+            if a[j-1] != b[i-1]:
+                change = change + 1
+            insert = previous[j] + 1
+            delete = current[j-1] + 1
+            current[j] = min(insert, delete, change)
+            if least > current[j]:
+                least = current[j]
+        #The smallest value in the current array is the best (lowest) value
+        #that can be attained in the end if the strings are identical further
+        if least > stopvalue:
+            return least
+    
+    return current[l1]
+
+def native_distance(a, b, stopvalue=0):
+    """Same as python_distance in functionality. This uses the fast C 
+    version if we detected it earlier.
+    
+    Note that this does not support arbitrary sequence types, but only 
+    string types."""
+    return Levenshtein.distance(a,b)
+
 try:
     import Levenshtein as Levenshtein
+    distance = native_distance
 except Exception:
-    Levenshtein = None
+    distance = python_distance
 
 class LevenshteinComparer:
     def __init__(self, max_len=200):
         self.MAX_LEN = max_len
-        if Levenshtein:
-            self.distance = self.native_distance
-        else:
-            self.distance = self.python_distance
 
     def similarity(self, a, b, stoppercentage=40):
         similarity = self.similarity_real(a, b, stoppercentage)
@@ -105,7 +138,7 @@ class LevenshteinComparer:
         
         #The actual value in the array that would represent a giveup situation:
         stopvalue = math.ceil((100.0 - stoppercentage)/100 * l2)
-        dist = self.distance(a, b, stopvalue)
+        dist = distance(a, b, stopvalue)
         if dist > stopvalue:
             return stoppercentage - 1.0
         
@@ -115,40 +148,6 @@ class LevenshteinComparer:
             penalty = 0
         return 100 - (dist*1.0/l2)*100 - penalty
 
-    def python_distance(self, a, b, stopvalue=-1):
-        """Calculates the distance for use in similarity calculation. Python
-        version."""
-        l1 = len(a)
-        l2 = len(b)
-        if stopvalue == -1:
-            stopvalue = l2
-        current = range(l1+1)
-        for i in range(1,l2+1):
-            previous, current = current, [i]+[0]*l1
-            least = l2
-            for j in range(1, l1 + 1):
-                change = previous[j-1]
-                if a[j-1] != b[i-1]:
-                    change = change + 1
-                insert = previous[j] + 1
-                delete = current[j-1] + 1
-                current[j] = min(insert, delete, change)
-                if least > current[j]:
-                    least = current[j]
-            #The smallest value in the current array is the best (lowest) value
-            #that can be attained in the end if the strings are identical further
-            if least > stopvalue:
-                return least
-        
-        return current[l1]
-
-    def native_distance(self, a, b, stopvalue=0):
-        """Same as python_distance in functionality. This uses the fast C 
-        version if we detected it earlier.
-        
-        Note that this does not support arbitrary sequence types, but only 
-        string types."""
-        return Levenshtein.distance(a,b)
 
 if __name__=="__main__":
     from sys import argv

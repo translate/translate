@@ -34,6 +34,8 @@ ignorepatterns = [("y\s*$", "ie"),          #category/categories, identify/ident
                   ("[\s-]*", ""),           #down time / downtime, pre-order / preorder
                   ("-", " "),               #pre-order / pre order
                   (" ", "-"),               #pre order / pre-order
+                  ("ise$", "ize"),          #authorise / authorize
+                  ("[zs]ation", "ize"),          #authorise / authorize
                  ]
 
 class TerminologyComparer:

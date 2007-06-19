@@ -5,12 +5,12 @@ class TestLevenshtein:
     def test_basic_distance(self):
         """Tests distance correctness with a few basic values"""
         levenshtein = lshtein.LevenshteinComparer()
-        assert levenshtein.distance("word", "word") == 0
-        assert levenshtein.distance("word", "") == 4
-        assert levenshtein.distance("", "word") == 4
-        assert levenshtein.distance("word", "word 2") == 2
-        assert levenshtein.distance("words", "word") == 1
-        assert levenshtein.distance("word", "woord") == 1
+        assert lshtein.distance("word", "word") == 0
+        assert lshtein.distance("word", "") == 4
+        assert lshtein.distance("", "word") == 4
+        assert lshtein.distance("word", "word 2") == 2
+        assert lshtein.distance("words", "word") == 1
+        assert lshtein.distance("word", "woord") == 1
 
     def test_basic_similarity(self):
         """Tests similarity correctness with a few basic values"""
