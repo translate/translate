@@ -12,6 +12,8 @@ def test_punctranslate():
     assert language.punctranslate(u"abc efg? hij!") == u"abc efg ? hij !"
     assert language.punctranslate(u"Delete file: %s?") == u"Delete file : %s ?"
     assert language.punctranslate(u'The user "root"') == u"The user « root »"
+    assert language.punctranslate(u'The user "root"?') == u"The user « root » ?"
+    assert language.punctranslate(u'Watch the " mark') == u'Watch the " mark'
 
 def test_sentences():
     """Tests basic functionality of sentence segmentation."""
