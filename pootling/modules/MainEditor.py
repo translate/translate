@@ -215,6 +215,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionNewPro, QtCore.SIGNAL("triggered()"), self.newProject.show)
         self.connect(self.ui.actionOpenPro, QtCore.SIGNAL("triggered()"), self.newProject.openProject)
         self.connect(self.newProject, QtCore.SIGNAL("updateCatalog"), self.Catalog.updateCatalog)
+        self.connect(self.newProject, QtCore.SIGNAL("pathOfFileName"), self.Catalog.setOpening)
         
         # action Preferences menu 
         self.preference = Preference(self)
