@@ -36,6 +36,14 @@ class af(common.Common):
     nplurals = 2
     pluralequation = "(n != 1)"
 
+    sentenceend = u".!?…"
+    sentencere = re.compile(r""".*? #any text, but match non-greedy
+                            [%s]    #the puntuation for sentence ending
+                            \s+     #the space after the puntuation
+                            (?='n\s[A-Z\d]|[^'a-z]|'[^n])
+                            #lookahead that next part starts with caps or 'n followed by caps
+                            """ % sentenceend, re.VERBOSE)
+
     def capsstart(cls, text):
         """Modify this for the indefinite article ('n)."""
         match = articlere.search(text, 0, 20)
