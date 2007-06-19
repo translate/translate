@@ -37,9 +37,9 @@ class af(common.Common):
     pluralequation = "(n != 1)"
 
     sentenceend = u".!?…"
-    sentencere = re.compile(r""".*? #any text, but match non-greedy
-                            [%s]    #the puntuation for sentence ending
-                            \s+     #the space after the puntuation
+    sentencere = re.compile(r""".*?     #any text, but match non-greedy
+                            [%s]        #the puntuation for sentence ending
+                            \s+         #the spacing after the puntuation
                             (?='n\s[A-Z\d]|[^'a-z]|'[^n])
                             #lookahead that next part starts with caps or 'n followed by caps
                             """ % sentenceend, re.VERBOSE)
