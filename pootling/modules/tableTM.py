@@ -35,7 +35,7 @@ class tableTM(QtGui.QDockWidget):
         self.ui.setupUi(self.form)
         self.setWidget(self.form)
         self.ui.tblTM.setEnabled(False)
-        self.headerLabels = [self.tr("Similarity"),self.tr("Source"), self.tr("Target"), self.tr("Location"), self.tr("Translator"), self.tr("Date"), self.tr("Index")]
+        self.headerLabels = [self.tr("Similarity"),self.tr("Source"), self.tr("Target")]
         self.ui.tblTM.setColumnCount(len(self.headerLabels))
         self.ui.tblTM.setHorizontalHeaderLabels(self.headerLabels)
         self.ui.tblTM.resizeColumnToContents(0)
@@ -46,10 +46,7 @@ class tableTM(QtGui.QDockWidget):
         self.ui.tblTM.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
         self.normalState = QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
         self.ui.tblTM.selectRow(0)
-        self.ui.tblTM.hideColumn(3)
-        self.ui.tblTM.hideColumn(4)
-        self.ui.tblTM.hideColumn(5)
-        self.ui.tblTM.hideColumn(6)
+        self.infoIcon = QtGui.QIcon("../images/TM_info.png")
         self.filepath = " "
         self.target = ""
         
@@ -84,7 +81,6 @@ class tableTM(QtGui.QDockWidget):
         for unit in candidates:
             row = self.ui.tblTM.rowCount()
             self.ui.tblTM.setRowCount(row + 1)
-            
             similarity = unit.getnotes("translator").rjust(4)
             item = QtGui.QTableWidgetItem(similarity)
             item.setFlags(self.normalState)
@@ -99,14 +95,8 @@ class tableTM(QtGui.QDockWidget):
             item.setFlags(self.normalState)
             self.ui.tblTM.setItem(row, 2, item)
             
-            item = QtGui.QTableWidgetItem(unit.filepath)
-            self.ui.tblTM.setItem(row, 3, item)
-            
-            item = QtGui.QTableWidgetItem(unit.translator)
-            self.ui.tblTM.setItem(row, 4, item)
-            
-            item = QtGui.QTableWidgetItem(unit.date)
-            self.ui.tblTM.setItem(row, 5, item)
+            tooltips = "<h3>Source: </h3>" + unit.source + "<h3> Target: </h3>" + unit.target + "<h3>Found in: </h3>" + unit.filepath + "<h3> Translator: </h3>" + unit.translator + "<h3> Date: </h3>" + unit.date
+            self.setToolTip(row, tooltips)
             
         self.ui.tblTM.setSortingEnabled(True)
         self.ui.tblTM.horizontalHeader().setSortIndicatorShown(False)
@@ -119,9 +109,6 @@ class tableTM(QtGui.QDockWidget):
 
     def clearInfo(self):
         """Clear all information in both table and labels."""
-        self.ui.lblPath.clear()
-        self.ui.lblTranslator.clear()
-        self.ui.lblDate.clear()
         self.ui.tblTM.clear()
         self.ui.tblTM.setRowCount(0)
         self.target = ""
@@ -138,16 +125,7 @@ class tableTM(QtGui.QDockWidget):
         if (target):
             self.target = target.text()
         filepath = self.ui.tblTM.item(row, 3)
-        if (filepath):
-            self.filepath = filepath.text()
-            self.ui.lblPath.setText(self.filepath)
-        translator = self.ui.tblTM.item(row, 4)
-        if (translator):
-            self.ui.lblTranslator.setText(translator.text())
-        date = self.ui.tblTM.item(row, 5)
-        if (date):
-            self.ui.lblDate.setText(date.text())
-    
+
     def emitTarget(self):
         """@emit targetChanged signal and send the current target."""
         self.emit(QtCore.SIGNAL("targetChanged"), unicode(self.target))
@@ -168,6 +146,25 @@ class tableTM(QtGui.QDockWidget):
             self.ui.tblTM.setHorizontalHeaderLabels(self.headerLabels)
         self.ui.tblTM.setEnabled(not(lenFilter) and False or True)
         
+    def setToolTip(self, index = None, tooltips = ""):
+        """
+        mark icon indicate unit has more info and add tooltips.
+        @param index: row in table.
+        @param tooltips: more info about candidates such as which file the candidate locates, who is the translator and when.
+        """
+
+        # get the current row
+        if (not index):
+            item = self.ui.tblTM.item(0, 0)
+        else:
+            item = self.ui.tblTM.item(index, 0)
+        
+        if (not item):
+            return
+        if (tooltips):
+            item.setIcon(self.infoIcon)
+            item.setToolTip(unicode(tooltips))
+
     def closeEvent(self, event):
         """
         Unchecked the TM Lookup view action.
