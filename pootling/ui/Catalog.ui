@@ -84,13 +84,6 @@
     <addaction name="actionStatistics" />
     <addaction name="actionReload" />
    </widget>
-   <widget class="QMenu" name="menuProject" >
-    <property name="title" >
-     <string>&amp;Project</string>
-    </property>
-    <addaction name="actionNew" />
-    <addaction name="actionOpen" />
-   </widget>
    <widget class="QMenu" name="menuHelp" >
     <property name="title" >
      <string>&amp;Help</string>
@@ -104,6 +97,22 @@
     </property>
     <addaction name="actionBuild" />
     <addaction name="actionConfigure" />
+   </widget>
+   <widget class="QMenu" name="menuProject" >
+    <property name="title" >
+     <string>&amp;Project</string>
+    </property>
+    <widget class="QMenu" name="menuOpenRecentProject" >
+     <property name="enabled" >
+      <bool>false</bool>
+     </property>
+     <property name="title" >
+      <string>Open &amp;Recent Project</string>
+     </property>
+    </widget>
+    <addaction name="actionNew" />
+    <addaction name="actionOpen" />
+    <addaction name="menuOpenRecentProject" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />

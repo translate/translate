@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file '/home/ratha/sourceforge.net/translate/trunk/pootling/ui/Catalog.ui'
 #
-# Created: Thu May 31 14:27:41 2007
-#      by: PyQt4 UI code generator 4-snapshot-20070212
+# Created: Thu Jun  7 12:08:00 2007
+#      by: PyQt4 UI code generator 4.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -31,7 +31,7 @@ class Ui_Catalog(object):
 
         self.treeCatalog = QtGui.QTreeWidget(self.centralwidget)
 
-        font = QtGui.QFont(self.treeCatalog.font())
+        font = QtGui.QFont()
         font.setPointSize(10)
         self.treeCatalog.setFont(font)
         self.treeCatalog.setFocusPolicy(QtCore.Qt.NoFocus)
@@ -52,14 +52,18 @@ class Ui_Catalog(object):
         self.menuEdit = QtGui.QMenu(self.menubar)
         self.menuEdit.setObjectName("menuEdit")
 
-        self.menuProject = QtGui.QMenu(self.menubar)
-        self.menuProject.setObjectName("menuProject")
-
         self.menuHelp = QtGui.QMenu(self.menubar)
         self.menuHelp.setObjectName("menuHelp")
 
         self.menuSettings = QtGui.QMenu(self.menubar)
         self.menuSettings.setObjectName("menuSettings")
+
+        self.menuProject = QtGui.QMenu(self.menubar)
+        self.menuProject.setObjectName("menuProject")
+
+        self.menuOpenRecentProject = QtGui.QMenu(self.menuProject)
+        self.menuOpenRecentProject.setEnabled(False)
+        self.menuOpenRecentProject.setObjectName("menuOpenRecentProject")
         Catalog.setMenuBar(self.menubar)
 
         self.statusbar = QtGui.QStatusBar(Catalog)
@@ -129,12 +133,13 @@ class Ui_Catalog(object):
         self.menuEdit.addSeparator()
         self.menuEdit.addAction(self.actionStatistics)
         self.menuEdit.addAction(self.actionReload)
-        self.menuProject.addAction(self.actionNew)
-        self.menuProject.addAction(self.actionOpen)
         self.menuHelp.addAction(self.actionAbout)
         self.menuHelp.addAction(self.actionAboutQt)
         self.menuSettings.addAction(self.actionBuild)
         self.menuSettings.addAction(self.actionConfigure)
+        self.menuProject.addAction(self.actionNew)
+        self.menuProject.addAction(self.actionOpen)
+        self.menuProject.addAction(self.menuOpenRecentProject.menuAction())
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
         self.menubar.addAction(self.menuProject.menuAction())
@@ -153,9 +158,10 @@ class Ui_Catalog(object):
         Catalog.setWindowTitle(QtGui.QApplication.translate("Catalog", "Catalog Manager", None, QtGui.QApplication.UnicodeUTF8))
         self.menuFile.setTitle(QtGui.QApplication.translate("Catalog", "&File", None, QtGui.QApplication.UnicodeUTF8))
         self.menuEdit.setTitle(QtGui.QApplication.translate("Catalog", "&Edit", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuProject.setTitle(QtGui.QApplication.translate("Catalog", "&Project", None, QtGui.QApplication.UnicodeUTF8))
         self.menuHelp.setTitle(QtGui.QApplication.translate("Catalog", "&Help", None, QtGui.QApplication.UnicodeUTF8))
         self.menuSettings.setTitle(QtGui.QApplication.translate("Catalog", "&Settings", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuProject.setTitle(QtGui.QApplication.translate("Catalog", "&Project", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuOpenRecentProject.setTitle(QtGui.QApplication.translate("Catalog", "Open &Recent Project", None, QtGui.QApplication.UnicodeUTF8))
         self.actionQuit.setText(QtGui.QApplication.translate("Catalog", "&Quit", None, QtGui.QApplication.UnicodeUTF8))
         self.actionQuit.setShortcut(QtGui.QApplication.translate("Catalog", "Ctrl+Q", None, QtGui.QApplication.UnicodeUTF8))
         self.actionAbout.setText(QtGui.QApplication.translate("Catalog", "About", None, QtGui.QApplication.UnicodeUTF8))
