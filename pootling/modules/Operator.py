@@ -24,7 +24,6 @@ from translate.storage import po
 from translate.misc import quote
 from translate.storage import poheader
 from translate.storage import xliff
-from translate.search import lshtein
 import pootling.modules.World as World
 from pootling.modules.Status import Status
 from pootling.modules.pickleTM import pickleTM
