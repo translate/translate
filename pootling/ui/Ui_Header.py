@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/ks/programming/wordforge/trunk/pootling/ui/Header.ui'
+# Form implementation generated from reading ui file '/home/k-da/Documents/poxole/trunk/pootling/ui/Header.ui'
 #
-# Created: Tue Feb 20 16:03:31 2007
+# Created: Tue Jun 19 11:17:36 2007
 #      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,7 +12,7 @@ from PyQt4 import QtCore, QtGui
 class Ui_frmHeader(object):
     def setupUi(self, frmHeader):
         frmHeader.setObjectName("frmHeader")
-        frmHeader.resize(QtCore.QSize(QtCore.QRect(0,0,443,587).size()).expandedTo(frmHeader.minimumSizeHint()))
+        frmHeader.resize(QtCore.QSize(QtCore.QRect(0,0,766,587).size()).expandedTo(frmHeader.minimumSizeHint()))
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(7))
         sizePolicy.setHorizontalStretch(0)
