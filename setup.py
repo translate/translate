@@ -59,7 +59,7 @@ translatescripts = [apply(join, ('translate', ) + script) for script in
                   ('services', 'lookupservice')]
 
 translatebashscripts = [apply(join, ('tools', ) + (script, )) for script in [
-                  'pomigrate2', 'poen', 'pocompendium', 'poglossary'
+                  'pomigrate2', 'poen', 'pocompendium', 'poglossary', 
                   'posplit', 'popuretext', 'poreencode'
                   ]]
 
