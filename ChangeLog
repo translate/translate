@@ -1,3 +1,260 @@
+2007-06-19 10:45  friedelwolff
+
+	* search/terminology.py: Revert accidental commit to terminology.py
+	  as part of r5895
+
+2007-06-19 10:30  friedelwolff
+
+	* search/lshtein.py, search/terminology.py, search/test_lshtein.py:
+	  Make use of a module level distance function to avoid
+	  instancemethod that gives problem with pickling
+
+2007-06-19 08:39  friedelwolff
+
+	* __version__.py: Version 1.0.1
+
+2007-06-19 08:38  friedelwolff
+
+	* lang/af.py, lang/common.py: Always allow multiple characters of
+	  whitespace after sentence end. Layout comments pretier.
+
+2007-06-19 08:25  friedelwolff
+
+	* lang/af.py: Edit the punctuation and regular expression for
+	  detecting sentence boundaries to work properly with the
+	  indefinite article ('n)
+
+2007-06-19 08:24  friedelwolff
+
+	* lang/test_af.py: Test for more cases of the indefinite article
+	  ('n)
+
+2007-06-19 08:20  friedelwolff
+
+	* lang/test_fr.py: Extra test for French quoting and spacing
+
+2007-06-19 08:17  friedelwolff
+
+	* misc/optrecurse.py: Also skip over the _darcs directory by
+	  default
+
+2007-06-19 08:06  friedelwolff
+
+	* tools/pocount.py: Also skip over the _darcs directory by default
+
+2007-06-18 18:31  dwaynebailey
+
+	* storage/po.py: Improve comments for getlocations and addlocation
+
+2007-06-18 09:05  friedelwolff
+
+	* search/lshtein.py: Update copyright dates
+
+2007-06-17 14:53  dwaynebailey
+
+	* storage/ts.py: Add links to TS format documentation
+
+2007-06-14 15:06  friedelwolff
+
+	* README: Mention bugzilla and the --manpage options
+
+2007-06-14 15:01  friedelwolff
+
+	* misc/optparse.py, misc/optrecurse.py: [Contributed by Nicolas
+	  François] Provide proper groff output for the --manpage option of
+	  the converters
+
+2007-06-14 14:56  friedelwolff
+
+	* tools/pocompendium: Use msgfilter with --keep-header to avoid
+	  editing of the header that can break things
+
+2007-06-12 14:11  friedelwolff
+
+	* filters/pofilter.py, tools/pocompile.py, tools/poconflicts.py,
+	  tools/pogrep.py: [Contributed by Nicolas François] Provide
+	  docstring descriptions for tools that didn't have. This is used
+	  to generate the man pages and help text of these tools.
+
+2007-06-12 08:48  friedelwolff
+
+	* lang/common.py: Fix typo in docstring
+
+2007-06-11 16:04  friedelwolff
+
+	* __version__.py: Version 1.0.1rc1
+
+2007-06-11 13:11  friedelwolff
+
+	* convert/txt2po.py: Use base class API instead of manipulating the
+	  PO comments directly
+
+2007-06-11 13:05  friedelwolff
+
+	* convert/pot2po.py: Pass parameter allowmissingtemplate=True to
+	  ConvertOptionParser to allow matching input (POT) with
+	  non-existing template (PO). This solves bug 248.
+
+2007-06-11 13:03  friedelwolff
+
+	* convert/convert.py, misc/optrecurse.py: Add an option
+	  'allowmissingtemplate' which allows matching an input with a
+	  'None' template. This is part of the solution for bug 248..
+
+2007-06-11 11:13  friedelwolff
+
+	* lang/common.py: Fix typo in docstring
+
+2007-06-11 10:22  friedelwolff
+
+	* convert/oo2po.py: Decode utf-8 string before assigning to source
+	  and target of po unit. Would also solve bug 249, but now only for
+	  performance
+
+2007-06-11 10:09  friedelwolff
+
+	* storage/xliff.py: Strip notes to avoid unnecessary newlines
+
+2007-06-11 10:01  friedelwolff
+
+	* storage/po.py: Ensure that we decode incoming source and target
+	  strings before using. Fix for bug 249
+
+2007-06-11 08:00  dwaynebailey
+
+	* convert/pot2po.py: Clarify option messages
+
+2007-06-11 07:22  dwaynebailey
+
+	* tools/pomigrate2: Correct spelling mistake
+
+2007-06-08 12:36  friedelwolff
+
+	* filters/test_checks.py: Add failing simplecaps test
+
+2007-06-08 12:34  friedelwolff
+
+	* filters/checks.py: Give more descriptive messages in doublewords
+	  and sentencecount checks
+
+2007-06-08 10:44  andreaspauley
+
+	* storage/poheader.py, storage/test_poheader.py: Calculated
+	  timezone offset to cater for the fact that time.strftime('%z') on
+	  Windows does not supply the same info as on Linux. Added some
+	  time related unit tests and fixed two bugs that popped up with
+	  these tests.
+
+2007-06-07 15:48  friedelwolff
+
+	* filters/checks.py: Mention the number of sentences in
+	  sentencecount for the benefit of the user
+
+2007-06-07 14:18  friedelwolff
+
+	* filters/checks.py: Use the end of sentence punctuation in the
+	  configuration's source language to fix incorrect squashing of
+	  English' capital 'I' after question marks
+
+2007-06-07 14:16  friedelwolff
+
+	* filters/test_checks.py: Test that we also handle English 'I'
+	  correctly after question mark
+
+2007-06-07 14:09  friedelwolff
+
+	* filters/checks.py: Don't test for endpunc if endwhitespace failed
+
+2007-06-07 12:51  friedelwolff
+
+	* filters/checks.py: Also trigger the purepunc test if the
+	  translation only contains punctuation and the source didn't
+
+2007-06-07 12:49  friedelwolff
+
+	* filters/checks.py, filters/test_checks.py: For languages without
+	  plurals, only trigger simpleplurals if '(s)' is present in the
+	  translation. Test with Vietnamese examples.
+
+2007-06-07 12:35  friedelwolff
+
+	* filters/test_checks.py: Test that we can access language specific
+	  startcaps testing
+
+2007-06-07 12:32  friedelwolff
+
+	* filters/checks.py, filters/test_pofilter.py: Don't test
+	  simplecaps if startcaps failed. Update test that expected it
+	  differently.
+
+2007-06-07 12:31  friedelwolff
+
+	* filters/checks.py: in startcaps(), use capsstart() in the
+	  language module to determine if something stats with a capital
+	  letter
+
+2007-06-07 12:28  friedelwolff
+
+	* lang/af.py: Override capsstart() to deal correctly with the
+	  indefinite article ('n)
+
+2007-06-07 12:27  friedelwolff
+
+	* lang/test_af.py: Test that the indefinite article('n) doesn't
+	  confuse capsstart()
+
+2007-06-07 12:26  friedelwolff
+
+	* lang/test_common.py: Test capsstart()
+
+2007-06-07 12:25  friedelwolff
+
+	* lang/common.py: Make capsstart() a classmethod
+
+2007-06-07 12:01  friedelwolff
+
+	* lang/common.py: Add capsstart() which can be a language dependent
+	  check to see if text starts with a capital letter
+
+2007-06-07 11:58  friedelwolff
+
+	* filters/test_checks.py: Move tests with pure punctuation in
+	  source or targets from startpunc test to purepunc test
+
+2007-06-04 15:07  friedelwolff
+
+	* tools/poswap: Fix copyright dates to be correct
+
+2007-06-01 12:21  dwaynebailey
+
+	* tools/pocount.py: Bug 245. Fix problems with pocount --csv
+	  
+	  Mostly errors in print statements after fix to put the stats in a
+	  dictionary. Now works as expected.
+
+2007-06-01 03:42  dwaynebailey
+
+	* tools/pogrep.py: Add option --header, to add a header to the
+	  output from pogrep
+
+2007-05-31 08:12  dwaynebailey
+
+	* tools/pocount.py: Add percentage values to the raw word and
+	  string counts
+
+2007-05-31 08:11  dwaynebailey
+
+	* convert/po2ts.py: Correct docstring
+
+2007-05-31 06:59  dwaynebailey
+
+	* convert/sxw2po.py: Extract headers, allow odt documents to be
+	  processed.
+
+2007-05-25 10:29  friedelwolff
+
+	* ChangeLog: Update ChangeLog before 1.0 release
+
 2007-05-24 15:49  friedelwolff
 
 	* __version__.py: Version 1.0
