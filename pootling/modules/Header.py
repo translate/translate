@@ -37,6 +37,7 @@ class Header(QtGui.QDialog):
         self.operator = operator
         QtCore.QObject.connect(self.operator, QtCore.SIGNAL("headerAuto"), self.updateOnSave)
         self.ui = None
+        self.poheader = None
         
     def setupUI(self):
         self.ui = Ui_frmHeader()
@@ -213,12 +214,14 @@ class Header(QtGui.QDialog):
         #if header doesn't exist, call makeheader, otherwise, only update from setting
         if not header:
             (path, fileName) = os.path.split(str(self.operator.fileName).lower())
-            userProfileDic = {'charset':"CHARSET", 'encoding':"ENCODING", 'project_id_version': fileName, 'pot_creation_date':None, 'po_revision_date': False, 'last_translator': str(Last_Translator), 'language_team':str(Language_Team), 'mime_version':None, 'plural_forms':None, 'report_msgid_bugs_to':'translate-editor@lists.sourceforge.net'}
+            userProfileDic = {'charset':"CHARSET", 'encoding':"ENCODING", 'project_id_version': fileName, 'pot_creation_date':None, 'po_revision_date': False, 'last_translator': str(Last_Translator), 'language_team':str(Language_Team), 'mime_version':None, 'plural_forms':None, 'report_msgid_bugs_to':None}
             self.headerDic = self.operator.makeNewHeader(userProfileDic)
         else:
+            if self.poheader == None:
+                self.poheader = poheader.poheader()
             self.headerDic['Language-Team'] = unicode(Language_Team)
             self.headerDic['Last-Translator'] = unicode(Last_Translator)
-            self.headerDic['PO-Revision-Date'] = time.strftime("%Y-%m-%d %H:%M%z")
+            self.headerDic['PO-Revision-Date'] = time.strftime("%Y-%m-%d %H:%M") + self.poheader.tzstring()
             self.headerDic['Plural-Forms'] = 'nplurals=' + nPlural.toString() + '; plural=' + pluralEquation.toString() + ';'
             self.headerDic["Content-Type"] = "text/plain; charset=UTf-8"
             self.headerDic['X-Generator'] = World.settingApp + ' ' + __version__.ver
@@ -250,7 +253,7 @@ class Header(QtGui.QDialog):
         newHeaderDic = {} # a dictionary that hold all header infomation from header table.
         #set all the infomation into a dictionary
         for i in range(self.ui.tableHeader.rowCount()):
-                newHeaderDic[str(self.ui.tableHeader.item(i, 0).text())] = unicode(self.ui.tableHeader.item(i,1).text())
+            newHeaderDic[str(self.ui.tableHeader.item(i, 0).text())] = unicode(self.ui.tableHeader.item(i,1).text())
         self.operator.updateNewHeader(self.ui.txtOtherComments.toPlainText(), newHeaderDic)
 
                     
