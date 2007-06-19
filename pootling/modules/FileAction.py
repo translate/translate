@@ -48,7 +48,7 @@ class FileAction(QtCore.QObject):
         #TODO: open one or more existing files selected
         newFileName = QtGui.QFileDialog.getOpenFileName(self.parentWidget, self.tr("Open File"),
                         self.directory,
-                        self.tr("All Supported Files (*.po *.pot *.xliff *.xlf *tmx *tbx);;PO Files (*.po *.pot);;XLIFF Files (*.xliff *.xlf);;Translation Memory Files (*tmx);;Termbased Files (*tbx);;All Files (*)"))
+                        self.tr("All Supported Files (*.po *.pot *.xliff *.xlf *tmx *tbx);;PO Files and PO Template Files (*.po *.pot);;XLIFF Files (*.xliff *.xlf);;Translation Memory eXchange (TMX) Files (*tmx);;TermBase eXchange (TBX) Files (*tbx);;All Files (*)"))
         if not newFileName.isEmpty():
             # remember last open file's directory.
             self.directory = os.path.dirname(str(newFileName))
@@ -133,9 +133,9 @@ class FileAction(QtCore.QObject):
         """emit signal fileOpened, with a filename as string"""
         # get default file extension and description
         (path, fileName) = os.path.split(str(self.fileName).lower())
-        extension = {"po": "Po Files", "pot": "Po Template Files", 
+        extension = {"po": "PO Files", "pot": "PO Template Files", 
             "xliff": "XLIFF Files", "xlf": "XLIFF Files", 
-            "tmx": "Translation Memory Files", "tbx": "Term based Files"}
+            "tmx": "Translation Memory eXchange (TMX) Files", "tbx": "TermBase eXchange (TBX) Files"}
         fileName, ext = os.path.splitext(fileName)
         ext = ext[len(os.path.extsep):].lower()
         self.fileExtension = ext
