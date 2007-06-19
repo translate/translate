@@ -173,7 +173,7 @@ class globalSetting(QtGui.QDialog):
         
         store = self.createStore(self.filenames[0])
         if (self.section == "TM"):
-            self.matcher = match.matcher(store, maxCan, minSim, maxLen, match.terminology.TerminologyComparer(maxLen))
+            self.matcher = match.matcher(store, maxCan, minSim, maxLen)
         else:
             self.matcher = match.terminologymatcher(store, maxCan, minSim, maxLen)
         

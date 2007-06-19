@@ -524,9 +524,7 @@ class Operator(QtCore.QObject):
                 self.tmMatcher = p.getMatcher(pickleFile)
                 if (not self.tmMatcher):
                     return None
-        else:
-            if (not isinstance(self.tmMatcher.comparer, lshtein.LevenshteinComparer)):
-                self.tmMatcher.comparer = lshtein.LevenshteinComparer(self.maxLen)
+
         if (not unit):
             return None
         # ignore fuzzy is checked.
@@ -680,6 +678,7 @@ class Operator(QtCore.QObject):
         self.DetectTerm =  (GlossaryPreference & 8 and True or False)
         self.AddNewTerm =  (GlossaryPreference & 16 and True or False)
         self.SuggestTranslation =  (GlossaryPreference & 32 and True or False)
+
         # set pattern for glossary
         self.lookupTerm(None)
         self.emit(QtCore.SIGNAL("highlightGlossary"), self.autoLookupTerm)

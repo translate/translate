@@ -43,7 +43,6 @@ class pickleTM:
         Pickle matcher to a filename.
         @param matcher: matcher of TM files or Glossary files
         """
-        #TODO: fix "can't pickle instancemethod objects"
         pickleFile = open(filename, 'w')
         cPickle.dump(matcher, pickleFile)
         pickleFile.close()
