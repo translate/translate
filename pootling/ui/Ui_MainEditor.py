@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/ratha/sourceforge.net/translate/trunk/pootling/ui/MainEditor.ui'
 #
-# Created: Fri Jun 15 17:03:57 2007
+# Created: Tue Jun 19 17:34:31 2007
 #      by: PyQt4 UI code generator 4.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -54,15 +54,6 @@ class Ui_MainWindow(object):
         self.menu_Tool = QtGui.QMenu(self.menubar)
         self.menu_Tool.setObjectName("menu_Tool")
 
-        self.menuProject = QtGui.QMenu(self.menubar)
-        self.menuProject.setObjectName("menuProject")
-
-        self.menuOpenRecentProject = QtGui.QMenu(self.menuProject)
-        self.menuOpenRecentProject.setEnabled(True)
-        self.menuOpenRecentProject.setTearOffEnabled(False)
-        self.menuOpenRecentProject.setSeparatorsCollapsible(True)
-        self.menuOpenRecentProject.setObjectName("menuOpenRecentProject")
-
         self.menuBookmark = QtGui.QMenu(self.menubar)
         self.menuBookmark.setObjectName("menuBookmark")
 
@@ -75,6 +66,9 @@ class Ui_MainWindow(object):
 
         self.menuEdit = QtGui.QMenu(self.menubar)
         self.menuEdit.setObjectName("menuEdit")
+
+        self.menuProject = QtGui.QMenu(self.menubar)
+        self.menuProject.setObjectName("menuProject")
         MainWindow.setMenuBar(self.menubar)
 
         self.statusbar = QtGui.QStatusBar(MainWindow)
@@ -335,9 +329,6 @@ class Ui_MainWindow(object):
         self.menu_Tool.addSeparator()
         self.menu_Tool.addAction(self.actionCatalogManager)
         self.menu_Tool.addAction(self.actionAuto_translate)
-        self.menuProject.addAction(self.actionNewPro)
-        self.menuProject.addAction(self.actionOpenPro)
-        self.menuProject.addAction(self.menuOpenRecentProject.menuAction())
         self.menuBookmark.addAction(self.actionAddBookmarks)
         self.menuBookmark.addAction(self.actionClearBookmarks)
         self.menuBookmark.addSeparator()
@@ -366,6 +357,8 @@ class Ui_MainWindow(object):
         self.menuEdit.addAction(self.actionCopySearchResult2Target)
         self.menuEdit.addAction(self.actionToggleFuzzy)
         self.menuEdit.addAction(self.actionEdit_Header)
+        self.menuProject.addAction(self.actionNewPro)
+        self.menuProject.addAction(self.actionOpenPro)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
         self.menubar.addAction(self.menuView.menuAction())
@@ -406,12 +399,11 @@ class Ui_MainWindow(object):
         self.menuToolbars.setTitle(QtGui.QApplication.translate("MainWindow", "&Toolbars", None, QtGui.QApplication.UnicodeUTF8))
         self.menuSettings.setTitle(QtGui.QApplication.translate("MainWindow", "&Settings", None, QtGui.QApplication.UnicodeUTF8))
         self.menu_Tool.setTitle(QtGui.QApplication.translate("MainWindow", "&Tool", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuProject.setTitle(QtGui.QApplication.translate("MainWindow", "&Project", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuOpenRecentProject.setTitle(QtGui.QApplication.translate("MainWindow", "Open &Recent Project    ", None, QtGui.QApplication.UnicodeUTF8))
         self.menuBookmark.setTitle(QtGui.QApplication.translate("MainWindow", "&Bookmarks", None, QtGui.QApplication.UnicodeUTF8))
         self.menuGo.setTitle(QtGui.QApplication.translate("MainWindow", "&Go", None, QtGui.QApplication.UnicodeUTF8))
         self.menuView.setTitle(QtGui.QApplication.translate("MainWindow", "&View", None, QtGui.QApplication.UnicodeUTF8))
         self.menuEdit.setTitle(QtGui.QApplication.translate("MainWindow", "&Edit", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuProject.setTitle(QtGui.QApplication.translate("MainWindow", "&Project", None, QtGui.QApplication.UnicodeUTF8))
         self.toolFile.setWindowTitle(QtGui.QApplication.translate("MainWindow", "&File Toolbar", None, QtGui.QApplication.UnicodeUTF8))
         self.toolFile.setToolTip(QtGui.QApplication.translate("MainWindow", "Save", None, QtGui.QApplication.UnicodeUTF8))
         self.toolFile.setStatusTip(QtGui.QApplication.translate("MainWindow", "Save", None, QtGui.QApplication.UnicodeUTF8))
@@ -576,8 +568,8 @@ class Ui_MainWindow(object):
         self.actionGlossary1.setStatusTip(QtGui.QApplication.translate("MainWindow", "Configure the glosary\'s path", None, QtGui.QApplication.UnicodeUTF8))
         self.actionAuto_translate1.setText(QtGui.QApplication.translate("MainWindow", "Auto Translate", None, QtGui.QApplication.UnicodeUTF8))
         self.actionAuto_translate1.setStatusTip(QtGui.QApplication.translate("MainWindow", "Rough translation throgh the current file", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionNewPro.setText(QtGui.QApplication.translate("MainWindow", "&New...         ", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionOpenPro.setText(QtGui.QApplication.translate("MainWindow", "&Open...          ", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionNewPro.setText(QtGui.QApplication.translate("MainWindow", "&New...   ", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionOpenPro.setText(QtGui.QApplication.translate("MainWindow", "&Open...   ", None, QtGui.QApplication.UnicodeUTF8))
 
 
 

@@ -117,28 +117,6 @@
     <addaction name="actionCatalogManager" />
     <addaction name="actionAuto_translate" />
    </widget>
-   <widget class="QMenu" name="menuProject" >
-    <property name="title" >
-     <string>&amp;Project</string>
-    </property>
-    <widget class="QMenu" name="menuOpenRecentProject" >
-     <property name="enabled" >
-      <bool>true</bool>
-     </property>
-     <property name="tearOffEnabled" >
-      <bool>false</bool>
-     </property>
-     <property name="title" >
-      <string>Open &amp;Recent Project    </string>
-     </property>
-     <property name="separatorsCollapsible" >
-      <bool>true</bool>
-     </property>
-    </widget>
-    <addaction name="actionNewPro" />
-    <addaction name="actionOpenPro" />
-    <addaction name="menuOpenRecentProject" />
-   </widget>
    <widget class="QMenu" name="menuBookmark" >
     <property name="title" >
      <string>&amp;Bookmarks</string>
@@ -189,6 +167,13 @@
     <addaction name="actionCopySearchResult2Target" />
     <addaction name="actionToggleFuzzy" />
     <addaction name="actionEdit_Header" />
+   </widget>
+   <widget class="QMenu" name="menuProject" >
+    <property name="title" >
+     <string>&amp;Project</string>
+    </property>
+    <addaction name="actionNewPro" />
+    <addaction name="actionOpenPro" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
@@ -1052,12 +1037,12 @@
   </action>
   <action name="actionNewPro" >
    <property name="text" >
-    <string>&amp;New...         </string>
+    <string>&amp;New...   </string>
    </property>
   </action>
   <action name="actionOpenPro" >
    <property name="text" >
-    <string>&amp;Open...          </string>
+    <string>&amp;Open...   </string>
    </property>
   </action>
  </widget>
