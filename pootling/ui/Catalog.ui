@@ -69,12 +69,6 @@
      <height>28</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuFile" >
-    <property name="title" >
-     <string>&amp;File</string>
-    </property>
-    <addaction name="actionQuit" />
-   </widget>
    <widget class="QMenu" name="menuEdit" >
     <property name="title" >
      <string>&amp;Edit</string>
@@ -114,6 +108,12 @@
     <addaction name="actionOpen" />
     <addaction name="menuOpenRecentProject" />
    </widget>
+   <widget class="QMenu" name="menuFile" >
+    <property name="title" >
+     <string>&amp;File</string>
+    </property>
+    <addaction name="actionQuit" />
+   </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
    <addaction name="menuProject" />
@@ -145,7 +145,6 @@
    <attribute name="toolBarArea" >
     <number>4</number>
    </attribute>
-   <addaction name="actionQuit" />
    <addaction name="actionFind_in_Files" />
    <addaction name="actionStatistics" />
    <addaction name="actionReload" />
