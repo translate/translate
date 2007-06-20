@@ -89,15 +89,10 @@ class TUview(QtGui.QDockWidget):
         """
         if (self.requestAction == CONTEXTMENU):
             menu = QtGui.QMenu()
-            strCopy = self.tr("Copy \"")
-            strToClip = self.tr("\" to clipboard")
-            strReplace = self.tr("Replace \"")
-            strWith = self.tr("\" with \"")
-            strInTarget = self.tr("\" in target")
             text = self.ui.txtTarget.toPlainText()
             
             for candidate in candidates:
-                menuAction = menu.addAction(strCopy + candidate.target + strToClip)
+                menuAction = menu.addAction("Copy \"%s\" to clipboard." % candidate.target)
                 menuAction.setData(QtCore.QVariant(candidate.target))
                 self.connect(menuAction, QtCore.SIGNAL("triggered()"), self.copyTranslation)
                 
@@ -106,7 +101,7 @@ class TUview(QtGui.QDockWidget):
                 if (index >= 0):
                     length = expression.matchedLength()
                     cText = expression.capturedTexts()[0]
-                    menuAction = menu.addAction(strReplace + cText + strWith + candidate.target + strInTarget)
+                    menuAction = menu.addAction("Replace \"%s\" with \"%s\" in target." % (cText, candidate.target))
                     menuAction.setData(QtCore.QVariant([cText, candidate.target]))
                     self.connect(menuAction, QtCore.SIGNAL("triggered()"), self.replaceTranslation)
             
@@ -390,11 +385,13 @@ class TUview(QtGui.QDockWidget):
             # here targetview is always normal text box, but unit could be single or plural.
             sourceview_as_tab = self.ui.sourceStacked.currentIndex()
             if (not sourceview_as_tab):
-                self.ui.txtTarget.setPlainText(self.ui.txtSource.toPlainText())
+                self.ui.txtTarget.selectAll()
+                self.ui.txtTarget.insertPlainText(self.ui.txtSource.toPlainText())
             else:
                 sourcetab = self.ui.tabWidgetSource
                 sourcetabindex = sourcetab.currentIndex()
-                self.ui.txtTarget.setPlainText(sourcetab.widget(sourcetabindex).children()[1].toPlainText())
+                self.ui.txtTarget.selectAll()
+                self.ui.txtTarget.insertPlainText(sourcetab.widget(sourcetabindex).children()[1].toPlainText())
         self.setCursorToEnd(self.ui.txtTarget)
     
     def replaceText(self, textField, position, length, replacedText):
