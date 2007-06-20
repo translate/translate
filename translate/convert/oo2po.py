@@ -45,7 +45,7 @@ class oo2po:
   def makepo(self, part1, part2, translators_comment, key, subkey):
     """makes a po element out of a subkey of two parts"""
     thepo = po.pounit(encoding="UTF-8")
-    thepo.sourcecomments.append("#: " + key + "." + subkey + "\n")
+    thepo.addlocation(key + "." + subkey)
     if getattr(translators_comment, subkey).strip() != "":
       thepo.addnote(getattr(translators_comment, subkey), "developer")
     #TODO: Do better

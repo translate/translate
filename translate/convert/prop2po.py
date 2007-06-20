@@ -29,8 +29,6 @@ from translate.storage import po
 from translate.storage import properties
 from translate import __version__
 
-eol = "\n"
-
 class prop2po:
   """convert a .properties file to a .po file for handling the translation..."""
   def convertfile(self, thepropfile, duplicatestyle="msgid_comment"):
@@ -112,7 +110,7 @@ class prop2po:
     # TODO: handle multiline msgid
     if propunit.isblank():
       return None
-    pounit.sourcecomments.append("#: "+propunit.name+eol)
+    pounit.addlocation(propunit.name)
     pounit.source = propunit.source
     pounit.target = ""
     return pounit

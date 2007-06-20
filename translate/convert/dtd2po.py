@@ -38,7 +38,7 @@ class dtd2po:
   def convertcomments(self,thedtd,thepo):
     entity = quote.rstripeol(thedtd.entity)
     if len(entity) > 0:
-      thepo.sourcecomments.append("#: " + thedtd.entity + "\n")
+      thepo.addlocation(thedtd.entity)
     for commenttype,comment in thedtd.comments:
       # handle groups
       if (commenttype == "locgroupstart"):

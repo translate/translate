@@ -72,7 +72,7 @@ class sxw2po:
       if not message: continue
       blocknum += 1
       thepo = po.pounit(encoding="UTF-8")
-      thepo.sourcecomments.append("#: %s:%d\n" % (filename,blocknum))
+      thepo.addlocation("%s:%d" % (filename,blocknum))
       thepo.msgid = [quote.quotestr(quote.rstripeol(message), escapeescapes=1)]
       if len(thepo.msgid) > 1:
         thepo.msgid = [quote.quotestr("")] + thepo.msgid

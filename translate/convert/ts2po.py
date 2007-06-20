@@ -31,7 +31,7 @@ class ts2po:
   def convertmessage(self, contextname, messagenum, source, target, msgcomments, transtype):
     """makes a pounit from the given message"""
     thepo = po.pounit(encoding="UTF-8")
-    thepo.sourcecomments.append("#: %s#%d\n" % (contextname, messagenum))
+    thepo.addlocation("%s#%d" % (contextname, messagenum))
     thepo.source = source
     thepo.target = target
     if len(msgcomments)>0:

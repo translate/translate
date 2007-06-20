@@ -40,7 +40,7 @@ class xliff2po:
     #Location comments
     locations = transunit.getlocations()
     if locations:
-      thepo.sourcecomments.append("#: %s\n" % " ".join(locations))
+      thepo.addlocation("%s" % " ".join(locations))
 
     #NOTE: Supporting both <context> and <note> tags in xliff files for comments
     #Translator comments

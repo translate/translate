@@ -32,7 +32,7 @@ class nb2po:
   def makepounit(self, filename, fieldname, fieldvalue):
     """makes a pounit"""
     thepo = po.pounit(encoding="UTF-8")
-    thepo.sourcecomments.append("#: %s#%s\n" % (filename,fieldname))
+    thepo.addlocation("%s#%s" % (filename,fieldname))
     thepo.msgid = []
     lines = fieldvalue.split("\n")
     for linenum in range(len(lines)):
