@@ -82,8 +82,8 @@ class dtd2po:
       thepo.source = ""
     thepo.target = ""
 
-  def convertelement(self,thedtd):
-    """converts a dtd element to a po element, returns None if empty or not for translation"""
+  def convertunit(self,thedtd):
+    """converts a dtd unit to a po unit, returns None if empty or not for translation"""
     if thedtd is None:
       return None
     if getattr(thedtd, "entityparameter", None) == "SYSTEM":
@@ -131,9 +131,9 @@ class dtd2po:
   labelsuffixes = (".label", ".title")
   accesskeysuffixes = (".accesskey", ".accessKey", ".akey")
 
-  def convertmixedelement(self,labeldtd,accesskeydtd):
-    labelpo = self.convertelement(labeldtd)
-    accesskeypo = self.convertelement(accesskeydtd)
+  def convertmixedunit(self, labeldtd, accesskeydtd):
+    labelpo = self.convertunit(labeldtd)
+    accesskeypo = self.convertunit(accesskeydtd)
     if labelpo is None:
       return accesskeypo
     if accesskeypo is None:
@@ -207,10 +207,10 @@ class dtd2po:
           # check if this could be a mixed entity (labelsuffix and ".accesskey")
 
   def convertdtdunit(self, thedtdfile, thedtd, mixbucket="dtd"):
-    """converts a dtd element from thedtdfile to a po element, handling mixed entities along the way..."""
+    """converts a dtd unit from thedtdfile to a po unit, handling mixed entities along the way..."""
     # keep track of whether acceskey and label were combined
     if thedtd.entity in self.mixedentities:
-      # use special convertmixed element which produces one pounit with
+      # use special convertmixed unit which produces one pounit with
       # both combined for the label and None for the accesskey
       alreadymixed = self.mixedentities[thedtd.entity].get(mixbucket, None)
       if alreadymixed:
@@ -241,7 +241,7 @@ class dtd2po:
               else:
                 labelentity = None
                 accesskeyentity = None
-        thepo = self.convertmixedelement(labeldtd, accesskeydtd)
+        thepo = self.convertmixedunit(labeldtd, accesskeydtd)
         if thepo is not None:
           if accesskeyentity is not None:
             self.mixedentities[accesskeyentity][mixbucket] = True
@@ -254,7 +254,7 @@ class dtd2po:
             self.mixedentities[accesskeyentity][mixbucket] = False
           if labelentity is not None:
             self.mixedentities[labelentity][mixbucket] = False
-    return self.convertelement(thedtd)
+    return self.convertunit(thedtd)
 
   def convertfile(self, thedtdfile):
     thepofile = po.pofile()
@@ -263,7 +263,7 @@ class dtd2po:
     thepofile.units.append(headerpo)
     thedtdfile.makeindex()
     self.findmixedentities(thedtdfile)
-    # go through the dtd and convert each element
+    # go through the dtd and convert each unit
     for thedtd in thedtdfile.units:
       if thedtd.isnull():
         continue
@@ -282,7 +282,7 @@ class dtd2po:
     self.findmixedentities(origdtdfile)
     translateddtdfile.makeindex()
     self.findmixedentities(translateddtdfile)
-    # go through the dtd files and convert each element
+    # go through the dtd files and convert each unit
     for origdtd in origdtdfile.units:
       if origdtd.isnull():
         continue
