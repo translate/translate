@@ -138,7 +138,7 @@ class TUview(QtGui.QDockWidget):
             length = expression.matchedLength()
             text.replace(index, length, target)
             index = text.indexOf(expression)
-        self.ui.txtTarget.setPlainText(text)
+        self.setTargetText(text)
 
     
     def emitTermRequest(self, pos):
@@ -385,13 +385,11 @@ class TUview(QtGui.QDockWidget):
             # here targetview is always normal text box, but unit could be single or plural.
             sourceview_as_tab = self.ui.sourceStacked.currentIndex()
             if (not sourceview_as_tab):
-                self.ui.txtTarget.selectAll()
-                self.ui.txtTarget.insertPlainText(self.ui.txtSource.toPlainText())
+                self.setTargetText(self.ui.txtSource.toPlainText())
             else:
                 sourcetab = self.ui.tabWidgetSource
                 sourcetabindex = sourcetab.currentIndex()
-                self.ui.txtTarget.selectAll()
-                self.ui.txtTarget.insertPlainText(sourcetab.widget(sourcetabindex).children()[1].toPlainText())
+                self.setTargetText(sourcetab.widget(sourcetabindex).children()[1].toPlainText())
         self.setCursorToEnd(self.ui.txtTarget)
     
     def replaceText(self, textField, position, length, replacedText):
@@ -463,10 +461,20 @@ class TUview(QtGui.QDockWidget):
     def setCursorToEnd(self, obj):
         """
         move the obj cursor to the end of text.
+        @param obj: QTextEdit object.
         """
         cursor = obj.textCursor()
         cursor.setPosition(len(obj.toPlainText()))
         obj.setTextCursor(cursor)
+    
+    def setTargetText(self, text):
+        """
+        Set text of txtTarget while keep undo history.
+        @param text: text for txtTarget.
+        """
+        self.ui.txtTarget.selectAll()
+        self.ui.txtTarget.insertPlainText(text)
+
     
 if __name__ == "__main__":
     import sys, os
