@@ -35,7 +35,7 @@ class prop2po:
     """converts a .properties file to a .po file..."""
     thepofile = po.pofile()
     headerpo = thepofile.makeheader(charset="UTF-8", encoding="8bit", x_accelerator_marker="&")
-    headerpo.othercomments.append("# extracted from %s\n" % thepropfile.filename)
+    headerpo.addnote("extracted from %s" % thepropfile.filename)
     # we try and merge the header po with any comments at the start of the properties file
     appendedheader = 0
     waitingcomments = []
@@ -60,7 +60,7 @@ class prop2po:
     """converts two .properties files to a .po file..."""
     thepofile = po.pofile()
     headerpo = thepofile.makeheader(charset="UTF-8", encoding="8bit")
-    headerpo.othercomments.append("# extracted from %s, %s\n" % (origpropfile.filename, translatedpropfile.filename))
+    headerpo.addnote("extracted from %s, %s" % (origpropfile.filename, translatedpropfile.filename))
     translatedpropfile.makeindex()
     # we try and merge the header po with any comments at the start of the properties file
     appendedheader = 0

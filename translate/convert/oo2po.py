@@ -106,7 +106,7 @@ class oo2po:
     # create a header for the file
     bug_url = 'http://qa.openoffice.org/issues/enter_bug.cgi' + ('''?subcomponent=ui&comment=&short_desc=Localization issue in file: %(filename)s&component=l10n&form_name=enter_issue''' % {"filename": theoofile.filename}).replace(" ", "%20").replace(":", "%3A")
     headerpo = thepofile.makeheader(charset="UTF-8", encoding="8bit", x_accelerator_marker="~", report_msgid_bugs_to=bug_url)
-    headerpo.othercomments.append("# extracted from %s\n" % theoofile.filename)
+    headerpo.addnote("extracted from %s" % theoofile.filename)
     thepofile.units.append(headerpo)
     # go through the oo and convert each element
     for theoo in theoofile.units:
