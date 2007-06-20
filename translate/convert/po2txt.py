@@ -43,7 +43,7 @@ class po2txt:
     return "\n".join([textwrap.fill(line, self.wrap, replace_whitespace=False) for line in message.split("\n")])
 
   def convertfile(self, inputpo, includefuzzy):
-    """converts a file to .po format"""
+    """converts a file to txt format"""
     txtresult = ""
     for pounit in inputpo.units:
       if pounit.isheader():
@@ -55,7 +55,7 @@ class po2txt:
     return txtresult.rstrip()
  
   def mergefile(self, inputpo, templatetext, includefuzzy):
-    """converts a file to .po format"""
+    """converts a file to txt format"""
     txtresult = templatetext
     # TODO: make a list of blocks of text and translate them individually
     # rather than using replace
