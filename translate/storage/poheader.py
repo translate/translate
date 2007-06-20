@@ -43,7 +43,10 @@ def parseheaderstring(input):
 def update(existing, add=False, **kwargs):
   """Update an existing header dictionary with the values in kwargs, adding new values 
   only if add is true. 
-  @return updated dictionary"""
+
+  @return: Updated dictionary of header entries
+  @rtype: dict
+  """
   headerargs = dictutils.ordereddict()
   fixedargs = dictutils.cidict()
   for key, value in kwargs.items():
@@ -109,7 +112,10 @@ class poheader:
     """create a header for the given filename. arguments are specially handled, kwargs added as key: value
     pot_creation_date can be None (current date) or a value (datetime or string)
     po_revision_date can be None (form), False (=pot_creation_date), True (=now), or a value (datetime or string)
-    @return a dictionary with the header items"""
+
+    @return: Dictionary with the header items
+    @rtype: dict
+    """
     if project_id_version is None:
       project_id_version = "PACKAGE VERSION"
     if pot_creation_date is None or pot_creation_date == True:
@@ -217,7 +223,7 @@ class poheader:
     
     This header is assumed to be the template.
     
-    @type otherstore: L{TranslationStore}
+    @type otherstore: L{base.TranslationStore}
     
     """
 
@@ -229,3 +235,48 @@ class poheader:
       Language_Team      = newvalues['Language-Team'],
       Plural_Forms       = newvalues['Plural-Forms']
     )
+
+  def updatecontributor(self, name, email=None):
+    """Add contribution comments
+    """
+    header = self.header()
+    prelines = []
+    contriblines = []
+    postlines = []
+    contribexists = False
+    incontrib = False
+    outcontrib = False
+    for line in header.othercomments:
+      line = line[2:].strip()
+      if line == "Contributors:":
+        incontrib = True
+      if line == "" and incontrib:
+        incontrib = False
+        outcontrib = True
+      if incontrib and line != "Contributors:":
+        contriblines.append(line)
+      if not incontrib and not outcontrib:
+        prelines.append(line)
+      if not incontrib and outcontrib:
+        postlines.append(line)
+
+    year = time.strftime("%Y")
+    for line in contriblines:
+      if name in line:
+         if email and email not in line:
+           contribexists = False
+         else:
+           contribexists = True
+           break
+    if not contribexists:
+      # Add a new contributor
+      if email:
+        contriblines.append("%s <%s>, %s" % (name, email, year))
+      else:
+        contriblines.append("%s, %s" % (name, year))
+
+    header.removenotes()
+    header.addnote("\n".join(prelines))
+    header.addnote("Contributors:")
+    header.addnote("\n".join(contriblines))
+    header.addnote("\n".join(postlines))
