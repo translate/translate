@@ -31,6 +31,7 @@ import pootling.modules.World as World
 from pootling.modules.FindInCatalog import FindInCatalog
 from pootling.modules.NewProject import newProject
 from pootling.ui.Ui_tmSetting import Ui_tmsetting
+import __version__
 import os
 
 class Catalog(QtGui.QMainWindow):
@@ -53,7 +54,7 @@ class Catalog(QtGui.QMainWindow):
         self.autoRefresh = True
         self.recentProject = []
         self.startOpenFile()
-
+        self.setWindowTitle(World.settingApp + ' ' + __version__.ver)
         self.ui.toolBar.toggleViewAction()
         self.ui.toolBar.setWindowTitle("ToolBar View")
         self.ui.toolBar.setStatusTip("Toggle ToolBar View")
@@ -330,6 +331,7 @@ class Catalog(QtGui.QMainWindow):
         
         for catalogFile in cats:
             catalogFile = unicode(catalogFile)
+            self.setWindowTitle(((catalogFile != "") and (catalogFile + ' - ') or catalogFile) + World.settingApp + ' ' + __version__.ver)
             self.addCatalogFile(catalogFile, includeSub, None)
         
         self.ui.treeCatalog.resizeColumnToContents(0)
