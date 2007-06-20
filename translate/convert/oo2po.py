@@ -47,7 +47,7 @@ class oo2po:
     thepo = po.pounit(encoding="UTF-8")
     thepo.sourcecomments.append("#: " + key + "." + subkey + "\n")
     if getattr(translators_comment, subkey).strip() != "":
-      thepo.automaticcomments.append("#. %s\n" % getattr(translators_comment, subkey))
+      thepo.addnote(getattr(translators_comment, subkey), "developer")
     #TODO: Do better
     text1 = self.escape_text(getattr(part1, subkey))
     text2 = self.escape_text(getattr(part2, subkey))
