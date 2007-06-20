@@ -1,3 +1,19 @@
+2007-06-20 07:57  dwaynebailey
+
+	* convert/po2txt.py: Fix docstrings
+
+2007-06-19 14:55  friedelwolff
+
+	* setup.py: Fix typo in translatebashscripts
+
+2007-06-19 14:41  friedelwolff
+
+	* setup.py: Install poglossary
+
+2007-06-19 11:46  friedelwolff
+
+	* ChangeLog: Update ChangeLog before release of 1.0.1
+
 2007-06-19 10:45  friedelwolff
 
 	* search/terminology.py: Revert accidental commit to terminology.py
