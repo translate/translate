@@ -357,8 +357,8 @@ class Catalog(QtGui.QMainWindow):
                 childItem.setIcon(0, self.iconFile)
                 self.fileItems.append(childItem)
             # check extension of file if not have .po or .pot or xlf and xliff files. hide folder
-            if (item.childCount() == 0):
-                item.parent().takeChild(0)
+#            if (item.childCount() == 0):
+#                item.parent().takeChild(0)
 
         if (os.path.isdir(path)) and (not path.endswith(".svn")):
             existedItem = self.getExistedItem(path)
@@ -675,9 +675,13 @@ class Catalog(QtGui.QMainWindow):
     def setOpening(self, filename):
         proSettings = QtCore.QSettings(filename, QtCore.QSettings.IniFormat)
         itemList = proSettings.value("itemList").toStringList()
+        # set location of filename to list Widget of Catalog Setting when click open recent project.
+        self.catSetting.clearLocation()
+        for location in itemList:
+            self.catSetting.addLocation(location)
         includeSub = proSettings.value("itemList").toBool()
         self.updateCatalog(itemList,  includeSub)
-        
+
         files = World.settings.value("recentProjectList").toStringList()
         files.removeAll(filename)
         files.prepend(filename)
