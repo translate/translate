@@ -25,6 +25,7 @@ similar wiki type files.
 Supported formats are 
   - Plain text
   - dokuwiki
+  - MediaWiki
 """ 
 
 from translate.storage import base
@@ -97,7 +98,6 @@ class TxtFile(base.TranslationStore):
     UnitClass = TxtUnit
     def __init__(self, inputfile=None, flavour=None, encoding="utf-8"):
         base.TranslationStore.__init__(self, unitclass=self.UnitClass)
-        self.units = []
         self.filename = getattr(inputfile, 'name', '')
         self.flavour = flavours.get(flavour, [])
         if inputfile is not None:
@@ -107,7 +107,6 @@ class TxtFile(base.TranslationStore):
 
     def parse(self, lines):
         """Read in text lines and create txtunits from the blocks of text"""
-        self.units = []
         block = []
         startline = 0
         pretext = ""
