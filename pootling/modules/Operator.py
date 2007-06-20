@@ -90,14 +90,14 @@ class Operator(QtCore.QObject):
 
         self.filteredList = []
         self.currentUnitIndex = 0
-        i = 0
         for unit in self.store.units:
             # set x_editor_state for all units.
+            if (unit.source == None or unit.target == None):
+                continue
             unit.x_editor_state = self.status.unitState(unit)
             if (self.filter & unit.x_editor_state):
                 unit.x_editor_filterIndex = len(self.filteredList)
                 self.filteredList.append(unit)
-            i += 1
         self.emitNewUnits()
         self.setUnitFromPosition(0)
         self.setModified(False)
