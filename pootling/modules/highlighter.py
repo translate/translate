@@ -30,7 +30,7 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         self.varFormat = QtGui.QTextCharFormat()
         self.varFormat.setForeground(QtCore.Qt.blue)
         # variables: e.g. &python; %s %1 AppName
-        self.vars = "&\\w+;|%\\w+|[A-Z][a-z]+[A-Z][a-z]+"
+        self.vars = "&\\w+;|%\\w+|[A-Z][a-z]+[A-Z][a-z](\\w)+"
         self.varExpression = QtCore.QRegExp(self.vars)
         # tag format
         self.tagFormat = QtGui.QTextCharFormat()
@@ -118,7 +118,7 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         build self.glsExpression base on given pattern.
         @param patternList: list of string.
         """
-        pattern = "\\b(" + "|".join(unicode(p) for p in patternList) + ")\\b"
+        pattern = "\\b(" + "|".join(p for p in patternList) + ")\\b"
         self.glsExpression = QtCore.QRegExp(pattern)
         self.glsExpression.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
     
