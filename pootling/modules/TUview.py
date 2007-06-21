@@ -131,6 +131,8 @@ class TUview(QtGui.QDockWidget):
         in txtTarget.
         """
         source, target = self.sender().data().toStringList()
+        if (source.toLower() == target.toLower()):
+            return
         text = self.ui.txtTarget.toPlainText()
         expression = QtCore.QRegExp(source, QtCore.Qt.CaseInsensitive)
         index = text.indexOf(expression)
