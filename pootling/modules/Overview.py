@@ -69,7 +69,7 @@ class OverviewDock(QtGui.QDockWidget):
         if (obj == self.ui.tableOverview):
             if (event.type() == QtCore.QEvent.ContextMenu):
                 """
-                Request a tooltip for word in position pos of txtSource.
+                Request a translation for unit's source.
                 """
                 self.tableContextMenu(event)
                 return True
@@ -147,7 +147,6 @@ class OverviewDock(QtGui.QDockWidget):
                 oldValue = value
         self.ui.tableOverview.setSortingEnabled(True)
         self.ui.tableOverview.sortItems(0)
-        self.ui.tableOverview.resizeRowsToContents()
         self.setUpdatesEnabled(True)
     
     def filterChanged(self, filter, lenFilter):
@@ -175,14 +174,22 @@ class OverviewDock(QtGui.QDockWidget):
         unit.x_editor_tableItem = item
         self.ui.tableOverview.setItem(row, 0, item)
         self.markComment(row, unit.getnotes())
-        
-        item = QtGui.QTableWidgetItem(unit.source)
+        # source field
+        source = unit.source
+        line = source.find("\n")
+        if (line >= 0):
+            source = source[:line] + "..."
+        item = QtGui.QTableWidgetItem(source)
         item.setFlags(self.normalState)
         self.ui.tableOverview.setItem(row, 1, item)
-        
-        item = QtGui.QTableWidgetItem(unit.target)
+        # target field
+        target = unit.target
+        line = target.find("\n")
+        if (line >= 0):
+            target = target[:line] + "..."
+        item = QtGui.QTableWidgetItem(target)
         self.ui.tableOverview.setItem(row, 2, item)
-        
+        # note field
         item = QtGui.QTableWidgetItem()
         item.setFlags(self.normalState)
         self.ui.tableOverview.setItem(row, 3, item)
@@ -209,7 +216,6 @@ class OverviewDock(QtGui.QDockWidget):
         if (not self.updatesEnabled()):
             return
         if (col == 2):
-            self.ui.tableOverview.resizeRowToContents(row)
             # if target column changed, emit signal.
             if (row == self.ui.tableOverview.currentRow()):
                 item = self.ui.tableOverview.item(row, 2)
@@ -228,6 +234,9 @@ class OverviewDock(QtGui.QDockWidget):
         row = self.ui.tableOverview.row(targetItem)
         self.markState(row, not World.fuzzy)
         if (targetItem):
+            line = text.find("\n")
+            if (line >= 0):
+                text = text[:line] + "..."
             targetItem.setText(text)
         self.connect(self.ui.tableOverview, QtCore.SIGNAL("cellChanged(int, int)"), self.emitTargetChanged)
     
@@ -245,7 +254,11 @@ class OverviewDock(QtGui.QDockWidget):
         targetItem = self.ui.tableOverview.item(row, 2)
         # update target column only if text has changed.
         if (targetItem.text() != unit.target):
-            targetItem.setText(unit.target)
+            target = unit.target
+            line = target.find("\n")
+            if (line >= 0):
+                target = target[:line] + "..."
+            targetItem.setText(target)
         
         self.markComment(row, unit.getnotes())
         self.markState(row, unit.x_editor_state)
@@ -332,7 +345,6 @@ class OverviewDock(QtGui.QDockWidget):
                     i += 1
                 else:
                     self.ui.tableOverview.hideRow(row)
-        self.ui.tableOverview.resizeRowsToContents()
         self.setUpdatesEnabled(True)
         self.ui.tableOverview.repaint()
         self.visibleRow.sort()
