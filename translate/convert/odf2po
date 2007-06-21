@@ -19,11 +19,18 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-"""extracts localizable strings from openoffice sxw files to Gettext .po files
-You can convert them back yourself :-)"""
+"""Extracts localizable strings from OpenDocument files to Gettext .po files
 
-from translate.convert import sxw2po
+Files supported include: 
+- .odt (Wordprocessor documents)
+- .ods (Spreadsheets)
+- .odp (Presentations)
+- .sxw (old OpenOffice.org 1.0 Wordprocessor documents)
+
+@todo: There is no back convertor"""
+
+from translate.convert import odf2po
 
 if __name__ == '__main__':
-  sxw2po.main()
+  odf2po.main()
 

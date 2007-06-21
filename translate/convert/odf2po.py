@@ -20,77 +20,40 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-"""Converts a OpenOffice Writer files to Gettext .po files"""
+"""Converts OpenDocument files to Gettext .po files"""
 
 from translate.storage import po
+from translate.storage import odf
 from translate.misc import quote
-from translate.misc import xmlwrapper
-import zipfile
 
-class OpenOfficeDocument(xmlwrapper.XMLWrapper):
-  def __init__(self, xmlstring, startnum=0):
-    root = xmlwrapper.BuildTree(xmlstring)
-    xmlwrapper.XMLWrapper.__init__(self, root)
-    if self.tag != "document-content": raise ValueError("root %r != 'document-content'" % self.tag)
-    self.body = self.getchild("body")
-
-  def excludeiterator(self, obj, excludetags):
-    nodes = []
-    for node in obj._children:
-      if xmlwrapper.splitnamespace(node.tag)[1] not in excludetags:
-        nodes.append(node)
-        nodes.extend(self.excludeiterator(node, excludetags))
-    return nodes
-
-  def getmessages(self):
-    nodes = self.excludeiterator(self.body.obj, ["tracked-changes"])
-    paragraphs = []
-    for node in nodes:
-      childns, childtag = xmlwrapper.splitnamespace(node.tag)
-      if childtag == "p" or childtag == "h":
-        paragraphs.append(xmlwrapper.XMLWrapper(node))
-    messages = []
-    for child in paragraphs:
-      text = child.getplaintext().strip()
-      messages.append(text)
-    return messages
-
-class sxw2po:
-  def convertfile(self, inputfile, filename):
+class odf2po:
+  def convertfile(self, inputfile):
     """converts a file to .po format"""
     thepofile = po.pofile()
+    filename = getattr(inputfile, "name", "unkown")
     headerpo = thepofile.makeheader(charset="UTF-8", encoding="8bit")
+    headerpo.addnote("extracted from %s\n" % filename)
     thepofile.units.append(headerpo)
-    try:
-      z = zipfile.ZipFile(filename, 'r')
-      contents = z.read("content.xml")
-    except (ValueError, zipfile.BadZipfile):
-      contents = open(filename, 'r').read()
-    sxwdoc = OpenOfficeDocument(contents)
+    odfdoc = odf.ODFFile(inputfile)
     blocknum = 0
-    for message in sxwdoc.getmessages():
-      if not message: continue
+    for unit in odfdoc.getunits():
+      if not unit: continue
       blocknum += 1
-      thepo = po.pounit(encoding="UTF-8")
-      thepo.addlocation("%s:%d" % (filename,blocknum))
-      thepo.msgid = [quote.quotestr(quote.rstripeol(message), escapeescapes=1)]
-      if len(thepo.msgid) > 1:
-        thepo.msgid = [quote.quotestr("")] + thepo.msgid
-      thepo.msgstr = []
-      thepofile.units.append(thepo)
+      newunit = thepofile.addsourceunit(unit.source)
+      newunit.addlocations("%s:%d" % (filename, blocknum))
     return thepofile
 
-def convertsxw(inputfile, outputfile, templates):
+def convertodf(inputfile, outputfile, templates):
   """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
-  convertor = sxw2po()
-  outputpo = convertor.convertfile(inputfile, getattr(inputfile, "name", "unknown"))
+  convertor = odf2po()
+  outputpo = convertor.convertfile(inputfile)
   outputposrc = str(outputpo)
   outputfile.write(outputposrc)
   return 1
 
 def main(argv=None):
   from translate.convert import convert
-  formats = {"sxw":("po",convertsxw), "odt":("po",convertsxw)}
+  formats = {"sxw":("po",convertodf), "odt":("po",convertodf), "ods":("po",convertodf), "odp":("po",convertodf)}
   parser = convert.ConvertOptionParser(formats, description=__doc__)
   parser.run(argv)
 
