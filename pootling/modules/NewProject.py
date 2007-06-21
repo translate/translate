@@ -47,7 +47,7 @@ class newProject(QtGui.QDialog):
         self.ui.cbxProject.hide()
         self.value = True
         self.fileExtension = ".ini"
-
+        
         self.connect(self.ui.btnCancel, QtCore.SIGNAL("clicked()"), self, QtCore.SLOT("reject()"))
         self.connect(self.ui.btnBack, QtCore.SIGNAL("clicked()"), self.backButton)
         self.connect(self.ui.btnNext, QtCore.SIGNAL("clicked()"), self.nextButton)
@@ -79,22 +79,19 @@ class newProject(QtGui.QDialog):
 
     def showFileDialog(self):
         self.filedialog.show()
-        if (self.value == True):
+        if (self.value):
             self.filedialog.setWindowTitle("Choosing path of filename")
-            self.value = False
         else:
             self.filedialog.setWindowTitle("Choosing file or a directory")
-            self.value = True
 
     def projectNameAvailable(self):
           if (self.ui.projectName.text() and self.ui.configurationFile.text()):
               self.ui.btnNext.setEnabled(True)
-              self.value = False
           else:
               self.ui.btnNext.setEnabled(False)
 
     def addLocation(self, text):
-        if (self.value == False):
+        if (self.value):
             data = QtGui.QListWidgetItem(text)
             self.ui.configurationFile.setText(data.text())
         else:
@@ -102,13 +99,11 @@ class newProject(QtGui.QDialog):
             items = self.ui.listWidget.findItems(text, QtCore.Qt.MatchCaseSensitive)
             if (not items):
                 self.ui.listWidget.addItem(item)
-                self.value = False
                 self.ui.btnFinish.setEnabled(True)
 
     def clearLocation(self):
         self.ui.listWidget.clear()
         self.ui.btnFinish.setEnabled(False)
-        self.value = False
         self.catalogModified = True
         self.ui.chbDiveIntoSubfolders.setChecked(False)
 
@@ -138,11 +133,13 @@ class newProject(QtGui.QDialog):
         self.ui.btnBack.setEnabled(False)
         self.ui.btnFinish.setEnabled(False)
         self.ui.projectName.setFocus()
+        self.value = True
 
     def nextButton(self):
         self.ui.stackedWidget.setCurrentIndex(1)
         self.ui.btnNext.setEnabled(False)
         self.ui.btnBack.setEnabled(True)
+        self.value = False
         if (self.ui.listWidget.count()):
             self.ui.btnFinish.setEnabled(True)
         else:
