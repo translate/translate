@@ -267,6 +267,7 @@ class OverviewDock(QtGui.QDockWidget):
         if (not unit) or (not hasattr(unit, "x_editor_tableItem")):
             self.unit = None
             return
+        self.targetBeforeEdit = None
         self.unit = unit
         row = self.ui.tableOverview.row(unit.x_editor_tableItem)
         unit.x_editor_row = self.visibleRow.index(row)
