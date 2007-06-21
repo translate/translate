@@ -110,18 +110,16 @@ class CommentDock(QtGui.QDockWidget):
         @emit targetChanged signal if content is dirty.
         """
         if (hasattr(self, "contentDirty") and self.contentDirty) and (hasattr(self, "lastUnit")):
-##        if self.ui.txtTranslatorComment.document().isModified():
             comment = unicode(self.ui.txtTranslatorComment.toPlainText())
             self.emit(QtCore.SIGNAL("commentChanged"), comment, self.lastUnit)
-##        self.ui.txtTranslatorComment.document().setModified(False)
         self.contentDirty = False
     
-    def setSearchString(self, searchString, textField):
+    def setSearchString(self, searchString, textField, foundPosition):
         """
         call highlighter.setSearchString()
         """
         if (textField == World.comment):
-            self.highlighter.setSearchString(searchString)
+            self.highlighter.setSearchString(searchString, foundPosition)
     
     def applySettings(self):
         """ set color and font to txtTranslatorComment"""
