@@ -62,7 +62,8 @@ class OverviewDock(QtGui.QDockWidget):
         self.changedSignal = QtCore.SIGNAL("currentCellChanged(int, int, int, int)")
         self.connect(self.ui.tableOverview, self.changedSignal, self.emitCurrentIndex)
         self.connect(self.ui.tableOverview.model(), QtCore.SIGNAL("layoutChanged()"), self.showFilteredItems)
-    
+        self.connect(self.ui.tableOverview, QtCore.SIGNAL("cellDoubleClicked(int, int)"), self.fillTarget)
+        
         self.ui.tableOverview.installEventFilter(self)
     
     def eventFilter(self, obj, event):
@@ -73,6 +74,13 @@ class OverviewDock(QtGui.QDockWidget):
                 """
                 self.tableContextMenu(event)
                 return True
+            elif (event.type() == QtCore.QEvent.FocusIn):
+                """
+                Check to see if target has modified, item focus out
+                and table widget focus in.
+                """
+                self.emitTargetChanged()
+                return False
             else:
                 return False
         else:
@@ -123,6 +131,7 @@ class OverviewDock(QtGui.QDockWidget):
         set the filter to filterAll, fill the table with units.
         @param units: list of unit class.
         """
+        self.targetBeforeEdit = None
         self.viewSetting(units)
         if (not units):
             self.emitFirstLastUnit()
@@ -208,27 +217,37 @@ class OverviewDock(QtGui.QDockWidget):
             index = item.data(QtCore.Qt.UserRole).toInt()[0]
             self.emit(QtCore.SIGNAL("filteredIndex"), index)
         
-    def emitTargetChanged(self, row, col):
+    def emitTargetChanged(self):
         """
         emit targetChanged signal if target column has changed.
         """
-        # prevent function from working while adding unit to list.
-        if (not self.updatesEnabled()):
-            return
-        if (col == 2):
-            # if target column changed, emit signal.
-            if (row == self.ui.tableOverview.currentRow()):
-                item = self.ui.tableOverview.item(row, 2)
-                if hasattr(item, "text"):
-                    target = item.text()
-                    self.markState(row, not World.fuzzy)
-                    self.emit(QtCore.SIGNAL("targetChanged"), unicode(target))
+        targetItem = self.ui.tableOverview.item(self.ui.tableOverview.currentRow(), 2)
+        targetAfterEdit = targetItem.text()
+        if (targetAfterEdit != self.targetBeforeEdit) and (self.targetBeforeEdit != None):
+            # target has changed
+            self.emit(QtCore.SIGNAL("targetChanged"), unicode(targetAfterEdit))
+        
+        if (self.unit):
+            self.updateText(self.unit.target)
+        return
+    
+    def fillTarget(self, row, column):
+        """
+        Fill current item row #2 with self.unit.target.
+        This call when user double click on target field to edit.
+        """
+        targetItem = self.ui.tableOverview.item(self.ui.tableOverview.currentRow(), 2)
+        # unmark item fuzzy when text changed
+        row = self.ui.tableOverview.row(targetItem)
+        self.markState(row, not World.fuzzy)
+        if (targetItem and self.unit):
+            self.targetBeforeEdit = self.unit.target
+            targetItem.setText(self.targetBeforeEdit)
     
     def updateText(self, text):
         """
         Set text to current item.
         """
-        self.disconnect(self.ui.tableOverview, QtCore.SIGNAL("cellChanged(int, int)"), self.emitTargetChanged)
         targetItem = self.ui.tableOverview.item(self.ui.tableOverview.currentRow(), 2)
         # unmark item fuzzy when text changed
         row = self.ui.tableOverview.row(targetItem)
@@ -238,7 +257,6 @@ class OverviewDock(QtGui.QDockWidget):
             if (line >= 0):
                 text = text[:line] + "..."
             targetItem.setText(text)
-        self.connect(self.ui.tableOverview, QtCore.SIGNAL("cellChanged(int, int)"), self.emitTargetChanged)
     
     def updateView(self, unit):
         """
@@ -246,9 +264,10 @@ class OverviewDock(QtGui.QDockWidget):
         and set the target text according to unit.
         @param unit: unit class
         """
-        self.disconnect(self.ui.tableOverview, QtCore.SIGNAL("cellChanged(int, int)"), self.emitTargetChanged)
         if (not unit) or (not hasattr(unit, "x_editor_tableItem")):
+            self.unit = None
             return
+        self.unit = unit
         row = self.ui.tableOverview.row(unit.x_editor_tableItem)
         unit.x_editor_row = self.visibleRow.index(row)
         targetItem = self.ui.tableOverview.item(row, 2)
@@ -269,7 +288,6 @@ class OverviewDock(QtGui.QDockWidget):
         
         self.ui.tableOverview.scrollToItem(unit.x_editor_tableItem)
         self.emitFirstLastUnit()
-        self.connect(self.ui.tableOverview, QtCore.SIGNAL("cellChanged(int, int)"), self.emitTargetChanged)
     
     def markState(self, index, state):
         """
