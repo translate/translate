@@ -95,9 +95,9 @@ class OverviewDock(QtGui.QDockWidget):
             menu.exec_(self.globalPos)
             return
         
-        strCopy = self.tr("Copy to target: ")
+        strCopy = self.tr("Copy to target:")
         for candidate in candidates:
-            menuAction = menu.addAction(strCopy + candidate.target)
+            menuAction = menu.addAction("%s %s" % (strCopy, candidate.target))
             menuAction.setData(QtCore.QVariant(candidate.target))
             self.connect(menuAction, QtCore.SIGNAL("triggered()"), self.copyToTarget)
         menu.exec_(self.globalPos)
