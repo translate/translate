@@ -36,6 +36,7 @@
 import struct
 import array
 from translate.storage import factory
+from translate.storage import po
 
 def mounpack(mofile='messages.mo'):
   """Helper to unpack Gettext MO files into a Python string"""
@@ -99,6 +100,10 @@ class POCompile:
             source = ""
           else:
             source = "\0".join(thepo.source.strings)
+            if hasattr(thepo, "msgidcomments"):
+              source = po.unquotefrompo(thepo.msgidcomments) + source
+            if hasattr(thepo, "msgctxt"):
+              source = po.unquotefrompo(thepo.msgctxt) + "\x04" + source
           target = "\0".join(thepo.target.strings)
           MESSAGES[source.encode("utf-8")] = target
     return self.generate(MESSAGES)
