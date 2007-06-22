@@ -108,13 +108,13 @@ class POCompile:
     return self.generate(MESSAGES)
 
 def convertmo(inputfile, outputfile, templatefile, includefuzzy=False):
-  """reads in inputfile using po, converts using pocompile, writes to outputfile"""
+  """reads in a base class derived inputfile, converts using pocompile, writes to outputfile"""
   # note that templatefile is not used, but it is required by the converter...
-  inputpo = factory.getobject(inputfile)
-  if inputpo.isempty():
+  input = factory.getobject(inputfile)
+  if input.isempty():
     return 0
   convertor = POCompile()
-  outputmo = convertor.convertfile(inputpo, includefuzzy)
+  outputmo = convertor.convertfile(input, includefuzzy)
   outputfile.write(outputmo)
   return 1
 
