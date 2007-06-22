@@ -143,12 +143,9 @@ class MainWindow(QtGui.QMainWindow):
         # translation memory
         self.connect(self.dockOverview, QtCore.SIGNAL("requestUnit"), self.operator.emitRequestUnit)
         self.connect(self.operator, QtCore.SIGNAL("tmRequest"), self.dockOverview.popupTranslation)
-#        self.connect(self.dockTUview, QtCore.SIGNAL("lookupUnit"), self.operator.emitLookupUnit)
         self.connect(self.operator, QtCore.SIGNAL("tmCandidates"), self.table.fillTable)
         self.connect(self.operator, QtCore.SIGNAL("filterChanged"), self.table.filterChanged)
         self.connect(self.table, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
-        self.connect(self.table, QtCore.SIGNAL("closed"), self.showHideTableLookup)
-        self.connect(self.table, QtCore.SIGNAL("shown"), self.showHideTableLookup)
         
         # glossary
         self.connect(self.dockTUview, QtCore.SIGNAL("lookupTerm"), self.operator.emitTermRequest)
@@ -157,6 +154,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.tableGlossary, QtCore.SIGNAL("closed"), self.toggleTUviewTermSig)
         self.connect(self.tableGlossary, QtCore.SIGNAL("shown"), self.toggleTUviewTermSig)
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.tableGlossary.newUnit)
+        self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.table.newUnit)
         
         #Help menu of aboutQt
         self.ui.menuHelp.addSeparator()
@@ -223,7 +221,6 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockComment.applySettings)
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockOverview.applySettings)
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockTUview.applySettings)
-        self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.showHideTableLookup)
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.operator.applySettings)
 
         # action lookup text and auto translation from TM
@@ -321,24 +318,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.table, QtCore.SIGNAL("goto"), self.dockOverview.gotoRow)
         
         self.operator.applySettings()
-
-    def showHideTableLookup(self):
-        """
-        Show or hide tableLookup according TM preference option.
-        @param TMpreference: an option for showing or hiding table Lookup.
-        """
-        TMpreference = World.settings.value("TMpreference").toInt()[0]
-        
-        self.lookupUnitStatus = (TMpreference & 1 and True or False)
-        if self.lookupUnitStatus:
-            if self.table.toggleViewAction().isChecked() == False:
-                self.disconnect(self.dockTUview, QtCore.SIGNAL("lookupUnit"), self.operator.emitLookupUnit)
-            else:
-                self.connect(self.dockTUview, QtCore.SIGNAL("lookupUnit"), self.operator.emitLookupUnit)
-        else: 
-            self.table.hide()
-            self.disconnect(self.dockTUview, QtCore.SIGNAL("lookupUnit"), self.operator.emitLookupUnit)
-
+    
     def setSaveEnabled(self):
         self.ui.actionSave.setEnabled(True)
 

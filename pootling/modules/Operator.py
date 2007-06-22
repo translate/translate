@@ -127,7 +127,10 @@ class Operator(QtCore.QObject):
             self.currentUnitIndex = unit.x_editor_filterIndex
             self.searchPointer = unit.x_editor_filterIndex
         self.emit(QtCore.SIGNAL("currentUnit"), unit)
-    
+        
+        if (self.autoLookupUnit):
+            self.emitLookupUnit()
+        
     def getCurrentUnit(self):
         """
         @return the current unit.
@@ -259,11 +262,6 @@ class Operator(QtCore.QObject):
         if (World.settings.value("headerAuto", QtCore.QVariant(True)).toBool()):
             self.emit(QtCore.SIGNAL("headerAuto"))
         
-        # force TUView to emit targetChanged
-        unit = self.getCurrentUnit()
-        self.emitUnit(unit)
-        self.emitUnit(unit)
-        
         try:
             if (fileName):
                 self.store.savefile(fileName)
@@ -313,10 +311,14 @@ class Operator(QtCore.QObject):
         unit.settarget(target)
         #FIXME: this mark works single not plural unit.
         self.status.markTranslated(unit, (unit.target and True or False))
+            
         if (newUnit):
             self.emitUnit(unit)
         self.emitStatus()
         self.setModified(True)
+        
+        
+        
     
     def setUnitFromPosition(self, position):
         """
@@ -364,7 +366,8 @@ class Operator(QtCore.QObject):
         """
         Search forward through the text fields.
         """
-        if (not hasattr(self, "searchPointer")):
+        if (not hasattr(self, "searchPointer")) or \
+            (not hasattr(self, "searchableText")):
             return
         oldSearchPointer = self.searchPointer
         while (self.searchPointer < len(self.filteredList)):
@@ -669,19 +672,19 @@ class Operator(QtCore.QObject):
         """
         TMpreference = World.settings.value("TMpreference").toInt()[0]
         self.autoLookupUnit = (TMpreference & 1 and True or False)
-        self.ignoreFuzzyStatus =  (TMpreference & 2 and True or False)
-        self.addtranslation =  (TMpreference & 4 and True or False)
+        self.ignoreFuzzyStatus = (TMpreference & 2 and True or False)
+        self.addTranslation = (TMpreference & 4 and True or False)
         self.maxLen = World.settings.value("max_string_len", QtCore.QVariant(70)).toInt()[0]
-        self.emitLookupUnit()
         
         GlossaryPreference = World.settings.value("GlossaryPreference").toInt()[0]
         self.autoLookupTerm = (GlossaryPreference & 1 and True or False)
-        self.ChangeTerm =  (GlossaryPreference & 2 and True or False)
-        self.DetectTerm =  (GlossaryPreference & 8 and True or False)
-        self.AddNewTerm =  (GlossaryPreference & 16 and True or False)
-        self.SuggestTranslation =  (GlossaryPreference & 32 and True or False)
+        self.ChangeTerm = (GlossaryPreference & 2 and True or False)
+        self.DetectTerm = (GlossaryPreference & 8 and True or False)
+        self.AddNewTerm = (GlossaryPreference & 16 and True or False)
+        self.SuggestTranslation = (GlossaryPreference & 32 and True or False)
 
         # set pattern for glossary
         self.lookupTerm(None)
         self.emit(QtCore.SIGNAL("highlightGlossary"), self.autoLookupTerm)
-        
+    
+

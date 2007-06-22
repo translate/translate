@@ -70,12 +70,6 @@ class tableTM(QtGui.QDockWidget):
         Fill table with candidates source and target.
         @param candidates: list of unit.
         """
-        self.ui.tblTM.setEnabled(True)
-        self.ui.tblTM.clear()
-        self.ui.tblTM.setHorizontalHeaderLabels(self.headerLabels)
-        self.ui.tblTM.setSortingEnabled(False)
-        self.ui.tblTM.setRowCount(0)
-        
         if (not candidates):
             return
         for unit in candidates:
@@ -139,7 +133,6 @@ class tableTM(QtGui.QDockWidget):
         self.emit(QtCore.SIGNAL("openFile"), str(self.filepath))
         self.emit(QtCore.SIGNAL("findUnit"), source)
         
-        
     def filterChanged(self, filter, lenFilter):
         if (not lenFilter):
             self.ui.tblTM.setRowCount(0)
@@ -184,6 +177,16 @@ class tableTM(QtGui.QDockWidget):
         QtGui.QDockWidget.showEvent(self, event)
         self.toggleViewAction().setChecked(True)
         self.emit(QtCore.SIGNAL("shown"))
+    
+    def newUnit(self):
+        """
+        Clear table to be filled by a new unit.
+        """
+        self.ui.tblTM.setEnabled(True)
+        self.ui.tblTM.clear()
+        self.ui.tblTM.setHorizontalHeaderLabels(self.headerLabels)
+        self.ui.tblTM.setSortingEnabled(False)
+        self.ui.tblTM.setRowCount(0)
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

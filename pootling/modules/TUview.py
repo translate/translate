@@ -299,7 +299,6 @@ class TUview(QtGui.QDockWidget):
             self.ui.targetStacked.setCurrentIndex(0)
             if (unicode(unit.source) !=  unicode(self.ui.txtSource.toPlainText())):
                 self.ui.txtSource.setPlainText(unit.source)
-                self.emit(QtCore.SIGNAL("lookupUnit"))
             if (unicode(unit.target) !=  unicode(self.ui.txtTarget.toPlainText())):
                 self.ui.txtTarget.setPlainText(unit.target)
                 self.setCursorToEnd(self.ui.txtTarget)
