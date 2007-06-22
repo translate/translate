@@ -67,7 +67,6 @@ class globalSetting(QtGui.QDialog):
         # timer for extend tm
         self.timer = QtCore.QTimer()
         self.connect(self.timer, QtCore.SIGNAL("timeout()"), self.extendMatcher)
-        
     
     def setToolWhatsThis(self, tool):
         """
@@ -127,6 +126,18 @@ class globalSetting(QtGui.QDialog):
             handle, self.pickleFile = tempfile.mkstemp('','PKL')
         World.settings.endGroup()
     
+    def buildFromPath(self, paths):
+        """
+        Add path to list Widget.
+        @param path: is filename in the list
+        """
+        self.showDialog()
+        self.ui.listWidget.clear()
+        for path in paths:
+            self.addLocation(path)
+        self.hide()
+        self.buildMatcher()
+    
     def addLocation(self, TMpath, checked = QtCore.Qt.Checked):
         """
         Add TMpath to TM list.
@@ -147,16 +158,12 @@ class globalSetting(QtGui.QDialog):
             self.ui.listWidget.setCurrentItem(item)
             self.ui.listWidget.takeItem(self.ui.listWidget.currentRow())
     
-    def closeEvent(self, event):
-        """
-        @param event: CloseEvent Object
-        """
-    
     def buildMatcher(self):
         """
         Collect filename into self.filenames, create matcher, start a
         timer for extend tm, dump matcher, save settings.
         """
+        # get filenames from checked list.
         paths = self.getPathList(QtCore.Qt.Checked)
         self.matcher = None
         self.filenames = []
@@ -164,11 +171,11 @@ class globalSetting(QtGui.QDialog):
         for path in paths:
             self.getFiles(path, includeSub)
         
-        maxCan = self.ui.spinMaxCandidate.value()
-        minSim = self.ui.spinSimilarity.value()
-        maxLen = self.ui.spinMaxLen.value()
-
+        # Save dialog settings.
         disabledPath = self.getPathList(QtCore.Qt.Unchecked)
+        minSim = self.ui.spinSimilarity.value()
+        maxCan = self.ui.spinMaxCandidate.value()
+        maxLen = self.ui.spinMaxLen.value()
         World.settings.beginGroup(self.section)
         World.settings.setValue("enabledpath", QtCore.QVariant(paths))
         World.settings.setValue("disabledpath", QtCore.QVariant(disabledPath))
@@ -178,17 +185,18 @@ class globalSetting(QtGui.QDialog):
         World.settings.setValue("max_candidates", QtCore.QVariant(maxCan))
         World.settings.setValue("max_string_len", QtCore.QVariant(maxLen))
         World.settings.endGroup()
+        
+        # close dialog if no filename.
         if (len(self.filenames) <= 0):
             self.close()
             return
-        
+        # start build matcher with self.filenames[0]
         store = self.createStore(self.filenames[0])
         if (self.section == "TM"):
             self.matcher = match.matcher(store, maxCan, minSim, maxLen)
         else:
             self.matcher = match.terminologymatcher(store, maxCan, minSim, maxLen)
-        
-        # then extendTN start with self.filenames[1]
+        # extend matcher, start with self.filenames[1]
         self.iterNumber = 1
         self.timer.start(10)
         
@@ -303,7 +311,6 @@ class globalSetting(QtGui.QDialog):
             if (not (item.checkState() ^ isChecked)):
                 itemList.append(str(item.text()))
         return itemList
-    
     
 class tmSetting(globalSetting):
     def __init__(self, parent):

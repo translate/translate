@@ -54,7 +54,8 @@ class Catalog(QtGui.QMainWindow):
         self.autoRefresh = True
         self.recentProject = []
         self.startOpenFile()
-        self.setWindowTitle(World.settingApp + ' ' + __version__.ver)
+        title = self.tr("%s Catalog Manager" % (World.settingApp))
+        self.setWindowTitle(title)
         self.ui.toolBar.toggleViewAction()
         self.ui.toolBar.setWindowTitle("ToolBar View")
         self.ui.toolBar.setStatusTip("Toggle ToolBar View")
@@ -102,7 +103,7 @@ class Catalog(QtGui.QMainWindow):
         # catalog setting's checkboxes action.
         self.catSetting = CatalogSetting(self)
         self.connect(self.ui.actionConfigure, QtCore.SIGNAL("triggered()"), self.catSetting.show)
-        self.connect(self.ui.actionBuildTM, QtCore.SIGNAL("triggered()"), self.buildTM)
+        self.connect(self.ui.actionBuild, QtCore.SIGNAL("triggered()"), self.emitBuildTM)
         self.ui.actionConfigure.setWhatsThis("<h3>Configure...</h3>Set the configuration items with your prefered values.")
         self.ui.actionConfigure.setStatusTip("Set the prefered configuration")
         self.connect(self.catSetting.ui.chbname, QtCore.SIGNAL("stateChanged(int)"), self.toggleHeaderItem)
@@ -331,7 +332,8 @@ class Catalog(QtGui.QMainWindow):
         
         for catalogFile in cats:
             catalogFile = unicode(catalogFile)
-            self.setWindowTitle(((catalogFile != "") and (catalogFile + ' - ') or catalogFile) + World.settingApp + ' ' + __version__.ver)
+            title = unicode(self.tr("%s - %s Catalog Manager")) % (unicode(catalogFile), World.settingApp)
+            self.setWindowTitle(str(title))
             self.addCatalogFile(catalogFile, includeSub, None)
         
         self.ui.treeCatalog.resizeColumnToContents(0)
@@ -604,17 +606,29 @@ class Catalog(QtGui.QMainWindow):
         else:
             self.settings.sync()
 
-    def buildTM(self):
-        """Build Translation Memory"""
-        cats = self.ui.treeCatalog.topLevelItem(0)
-        if cats:
-            catalogPath = cats.text(0)
-            self.tmSetting = tmSetting.tmSetting(None)
-            self.tmSetting.showDialog()
-            self.tmSetting.addLocation(catalogPath)
-            self.tmSetting.createTM()
-        else:
-            return
+    def emitBuildTM(self):
+        """
+        Build the translation memory from catalog.
+        """
+        catPaths = []
+        self.itemNumber = 0
+        self.timer.stop()
+        for i in range(self.ui.treeCatalog.topLevelItemCount()):
+            topItem = self.ui.treeCatalog.topLevelItem(i)
+            catPath = self.getFilename(topItem)
+            catPaths.append(catPath)
+        item = catPaths[self.itemNumber]
+        self.itemNumber += 1
+        perc = int((float(self.itemNumber) / len(catPaths)) * 100)
+        self.updateProgress(perc)
+        # resume timer
+        self.timer.start(10)
+        
+        if (self.itemNumber == len(catPaths)):
+            self.timer.stop()
+            self.itemNumber = 1
+
+        self.emit(QtCore.SIGNAL("buildTM"), catPaths)
     
     def updateStatistic(self):
         if (len(self.fileItems) <= 0):
