@@ -145,7 +145,9 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("tmRequest"), self.dockOverview.popupTranslation)
         self.connect(self.operator, QtCore.SIGNAL("tmCandidates"), self.table.fillTable)
         self.connect(self.operator, QtCore.SIGNAL("filterChanged"), self.table.filterChanged)
+        self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.table.newUnit)
         self.connect(self.table, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
+        self.connect(self.table, QtCore.SIGNAL("visible"), self.operator.setTmLookup)
         
         # glossary
         self.connect(self.dockTUview, QtCore.SIGNAL("lookupTerm"), self.operator.emitTermRequest)
@@ -154,7 +156,6 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.tableGlossary, QtCore.SIGNAL("closed"), self.toggleTUviewTermSig)
         self.connect(self.tableGlossary, QtCore.SIGNAL("shown"), self.toggleTUviewTermSig)
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.tableGlossary.newUnit)
-        self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.table.newUnit)
         
         #Help menu of aboutQt
         self.ui.menuHelp.addSeparator()

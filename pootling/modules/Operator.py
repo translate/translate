@@ -128,8 +128,7 @@ class Operator(QtCore.QObject):
             self.searchPointer = unit.x_editor_filterIndex
         self.emit(QtCore.SIGNAL("currentUnit"), unit)
         
-        if (self.autoLookupUnit):
-            self.emitLookupUnit()
+        self.emitLookupUnit()
         
     def getCurrentUnit(self):
         """
@@ -605,9 +604,15 @@ class Operator(QtCore.QObject):
         Lookup current unit's translation.
         @emit "tmCandidates" signal as list of units.
         """
-        unit = self.getCurrentUnit()
-        candidates = self.lookupUnit(unit)
-        self.emit(QtCore.SIGNAL("tmCandidates"), candidates)
+        if (not hasattr(self, "lookupForTable")):
+            self.lookupForTable = False
+        
+        if (self.lookupForTable):
+            unit = self.getCurrentUnit()
+            candidates = self.lookupUnit(unit)
+            self.emit(QtCore.SIGNAL("tmCandidates"), candidates)
+        else:
+            self.emit(QtCore.SIGNAL("tmCandidates"), None)
     
     def emitRequestUnit(self):
         """
@@ -618,6 +623,15 @@ class Operator(QtCore.QObject):
         candidates = self.lookupUnit(unit)
         self.emit(QtCore.SIGNAL("tmRequest"), candidates)
     
+    def setTmLookup(self, bool):
+        """
+        Set whether to auto lookup the current unit, e.g. tmTable is not
+        visible, so don't bother to lookup unit.
+        """
+        self.lookupForTable = bool
+        # when tm table shown, it need to be filled.
+        if (bool):
+            self.emitLookupUnit()
     
     def autoTranslate(self):
         """
@@ -675,6 +689,7 @@ class Operator(QtCore.QObject):
         self.ignoreFuzzyStatus = (TMpreference & 2 and True or False)
         self.addTranslation = (TMpreference & 4 and True or False)
         self.maxLen = World.settings.value("max_string_len", QtCore.QVariant(70)).toInt()[0]
+        self.emitLookupUnit()
         
         GlossaryPreference = World.settings.value("GlossaryPreference").toInt()[0]
         self.autoLookupTerm = (GlossaryPreference & 1 and True or False)
@@ -682,9 +697,8 @@ class Operator(QtCore.QObject):
         self.DetectTerm = (GlossaryPreference & 8 and True or False)
         self.AddNewTerm = (GlossaryPreference & 16 and True or False)
         self.SuggestTranslation = (GlossaryPreference & 32 and True or False)
-
+        
         # set pattern for glossary
         self.lookupTerm(None)
         self.emit(QtCore.SIGNAL("highlightGlossary"), self.autoLookupTerm)
-    
 

@@ -70,6 +70,9 @@ class tableTM(QtGui.QDockWidget):
         Fill table with candidates source and target.
         @param candidates: list of unit.
         """
+        if (not self.isVisible()):
+            return
+            
         if (not candidates):
             return
         for unit in candidates:
@@ -167,7 +170,7 @@ class tableTM(QtGui.QDockWidget):
         """
         QtGui.QDockWidget.closeEvent(self, event)
         self.toggleViewAction().setChecked(False)
-        self.emit(QtCore.SIGNAL("closed"))
+        self.emit(QtCore.SIGNAL("visible"), False)
         
     def showEvent(self, event):
         """
@@ -176,7 +179,7 @@ class tableTM(QtGui.QDockWidget):
         """
         QtGui.QDockWidget.showEvent(self, event)
         self.toggleViewAction().setChecked(True)
-        self.emit(QtCore.SIGNAL("shown"))
+        self.emit(QtCore.SIGNAL("visible"), True)
     
     def newUnit(self):
         """
