@@ -32,6 +32,7 @@ class CommentDock(QtGui.QDockWidget):
     
     @signal commentChanged(): emitted when Comment view's document is modified.
     @signal copyAvailable(bool): emitted when text is selected or de-selected in the Comment view.
+    @signal textChanged(): emitted everytime Comment view's document is modified.
     """
     
     def __init__(self, parent):
@@ -117,6 +118,8 @@ class CommentDock(QtGui.QDockWidget):
     def setSearchString(self, searchString, textField, foundPosition):
         """
         call highlighter.setSearchString()
+        @param searchString: string to be searched for
+        @param textField: where to search for the searchString, i.e. source, target or comment text box.
         """
         if (textField == World.comment):
             self.highlighter.setSearchString(searchString, foundPosition)
@@ -144,8 +147,8 @@ class CommentDock(QtGui.QDockWidget):
                 self.ui.txtTranslatorComment.setFont(fontObj)
                 
     def replaceText(self, textField, position, length, replacedText):
-        """replace the string (at position and length) with replacedText in txtTarget.
-        @param textField: source or target text box.
+        """replace the string (at position and length) with replacedText in txtTranslatorComment.
+        @param textField: where to search for the text, i.e. source, target or comment text box.
         @param position: old string's start point.
         @param length: old string's length.
         @param replacedText: string to replace."""
@@ -157,7 +160,10 @@ class CommentDock(QtGui.QDockWidget):
         self.ui.txtTranslatorComment.document().setModified()
         self.emitCommentChanged()
     
-    def viewSetting(self, argc):
+    def viewSetting(self, unit):
+        """Set the view status of txtLocationComment and txtLocationComment.
+        @param unit: if not unit, hide location comment textbox and clear the translator comment box.
+        """
         bool = (argc and True or False)
         self.ui.txtTranslatorComment.setEnabled(bool)
         if (bool == False):
