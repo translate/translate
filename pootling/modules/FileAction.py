@@ -48,7 +48,7 @@ class FileAction(QtCore.QObject):
         #TODO: open one or more existing files selected
         newFileName = QtGui.QFileDialog.getOpenFileName(self.parentWidget, self.tr("Open File"),
                         self.directory,
-                        self.tr("All Supported Files (*.po *.pot *.xliff *.xlf *tmx *tbx);;PO Files and PO Template Files (*.po *.pot);;XLIFF Files (*.xliff *.xlf);;Translation Memory eXchange (TMX) Files (*tmx);;TermBase eXchange (TBX) Files (*tbx);;All Files (*)"))
+                        self.tr("All Supported Files (*.po *.pot *.xliff *.xlf *.tmx *.tbx);;PO Files and PO Template Files (*.po *.pot);;XLIFF Files (*.xliff *.xlf);;Translation Memory eXchange (TMX) Files (*.tmx);;TermBase eXchange (TBX) Files (*.tbx);;All Files (*)"))
         if not newFileName.isEmpty():
             # remember last open file's directory.
             self.directory = os.path.dirname(str(newFileName))
@@ -64,7 +64,7 @@ class FileAction(QtCore.QObject):
     def saveAs(self):
         # TODO: think about export in different formats
         labelSaveAs = self.tr("Save As")
-        self.fileExtension = "." + self.fileExtension
+        self.fileExtension = self.fileExtension
         fileDialog = QtGui.QFileDialog(self.parentWidget, labelSaveAs, self.directory, self.fileDescription + " (*" + str(self.fileExtension) + ")" )
 
         fileDialog.setHistory(World.settings.value("SaveAsHistory").toStringList())
@@ -138,7 +138,7 @@ class FileAction(QtCore.QObject):
             "tmx": "Translation Memory eXchange (TMX) Files", "tbx": "TermBase eXchange (TBX) Files"}
         fileName, ext = os.path.splitext(fileName)
         ext = ext[len(os.path.extsep):].lower()
-        self.fileExtension = ext
+        self.fileExtension = "." + ext
         self.fileDescription = extension.get(ext) 
         self.emit(QtCore.SIGNAL("fileOpened"), str(self.fileName))
     
