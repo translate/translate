@@ -167,8 +167,19 @@ class globalSetting(QtGui.QDialog):
         maxCan = self.ui.spinMaxCandidate.value()
         minSim = self.ui.spinSimilarity.value()
         maxLen = self.ui.spinMaxLen.value()
-        
+
+        disabledPath = self.getPathList(QtCore.Qt.Unchecked)
+        World.settings.beginGroup(self.section)
+        World.settings.setValue("enabledpath", QtCore.QVariant(paths))
+        World.settings.setValue("disabledpath", QtCore.QVariant(disabledPath))
+        World.settings.setValue("pickleFile", QtCore.QVariant(self.pickleFile))
+        World.settings.setValue("diveintosub", QtCore.QVariant(includeSub))
+        World.settings.setValue("similarity", QtCore.QVariant(minSim))
+        World.settings.setValue("max_candidates", QtCore.QVariant(maxCan))
+        World.settings.setValue("max_string_len", QtCore.QVariant(maxLen))
+        World.settings.endGroup()
         if (len(self.filenames) <= 0):
+            self.close()
             return
         
         store = self.createStore(self.filenames[0])
@@ -180,17 +191,6 @@ class globalSetting(QtGui.QDialog):
         # then extendTN start with self.filenames[1]
         self.iterNumber = 1
         self.timer.start(10)
-        
-        disabledPath = self.getPathList(QtCore.Qt.Unchecked)
-        World.settings.beginGroup(self.section)
-        World.settings.setValue("enabledpath", QtCore.QVariant(paths))
-        World.settings.setValue("disabledpath", QtCore.QVariant(disabledPath))
-        World.settings.setValue("pickleFile", QtCore.QVariant(self.pickleFile))
-        World.settings.setValue("diveintosub", QtCore.QVariant(includeSub))
-        World.settings.setValue("similarity", QtCore.QVariant(minSim))
-        World.settings.setValue("max_candidates", QtCore.QVariant(maxCan))
-        World.settings.setValue("max_string_len", QtCore.QVariant(maxLen))
-        World.settings.endGroup()
         
     def getFiles(self, path, includeSub): 
         """
