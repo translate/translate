@@ -164,7 +164,7 @@ class CommentDock(QtGui.QDockWidget):
         """Set the view status of txtLocationComment and txtLocationComment.
         @param unit: if not unit, hide location comment textbox and clear the translator comment box.
         """
-        bool = (argc and True or False)
+        bool = (unit and True or False)
         self.ui.txtTranslatorComment.setEnabled(bool)
         if (bool == False):
             self.ui.txtLocationComment.hide()
