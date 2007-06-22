@@ -91,19 +91,19 @@ class POCompile:
       output = output + strs
       return output
 
-  def convertfile(self, thepofile, includefuzzy=False):
+  def convertfile(self, inputfile, includefuzzy=False):
     MESSAGES = {}
-    for thepo in thepofile.units:
-      if thepo.istranslated() or (thepo.isfuzzy() and includefuzzy and thepo.target):
-          if thepo.isheader():
+    for unit in inputfile.units:
+      if unit.istranslated() or (unit.isfuzzy() and includefuzzy and unit.target):
+          if unit.isheader():
             source = ""
           else:
-            source = "\0".join(thepo.source.strings)
-            if hasattr(thepo, "msgidcomments"):
-              source = po.unquotefrompo(thepo.msgidcomments) + source
-            if hasattr(thepo, "msgctxt"):
-              source = po.unquotefrompo(thepo.msgctxt) + "\x04" + source
-          target = "\0".join(thepo.target.strings)
+            source = "\0".join(unit.source.strings)
+            if hasattr(unit, "msgidcomments"):
+              source = po.unquotefrompo(unit.msgidcomments) + source
+            if hasattr(unit, "msgctxt"):
+              source = po.unquotefrompo(unit.msgctxt) + "\x04" + source
+          target = "\0".join(unit.target.strings)
           MESSAGES[source.encode("utf-8")] = target
     return self.generate(MESSAGES)
 
