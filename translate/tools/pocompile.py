@@ -94,8 +94,7 @@ class POCompile:
   def convertfile(self, thepofile, includefuzzy=False):
     MESSAGES = {}
     for thepo in thepofile.units:
-      if thepo.istranslated():
-        if not thepo.isfuzzy() or includefuzzy:
+      if thepo.istranslated() or (thepo.isfuzzy() and includefuzzy and thepo.target):
           if thepo.isheader():
             source = ""
           else:
