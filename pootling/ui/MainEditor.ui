@@ -54,13 +54,67 @@
      <height>28</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuBookmark" >
+    <property name="title" >
+     <string>&amp;Bookmarks</string>
+    </property>
+    <addaction name="actionAddBookmarks" />
+    <addaction name="actionClearBookmarks" />
+    <addaction name="separator" />
+   </widget>
+   <widget class="QMenu" name="menuEdit" >
+    <property name="title" >
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="actionUndo" />
+    <addaction name="actionRedo" />
+    <addaction name="separator" />
+    <addaction name="actionCut" />
+    <addaction name="actionCopy" />
+    <addaction name="actionPaste" />
+    <addaction name="separator" />
+    <addaction name="actionFind" />
+    <addaction name="actionFindPrevious" />
+    <addaction name="actionFindNext" />
+    <addaction name="actionReplace" />
+    <addaction name="separator" />
+    <addaction name="actionCopySource2Target" />
+    <addaction name="actionCopySearchResult2Target" />
+    <addaction name="actionToggleFuzzy" />
+    <addaction name="actionEdit_Header" />
+   </widget>
+   <widget class="QMenu" name="menuView" >
+    <property name="enabled" >
+     <bool>true</bool>
+    </property>
+    <property name="title" >
+     <string>&amp;View</string>
+    </property>
+    <addaction name="actionFilterUntranslated" />
+    <addaction name="actionFilterFuzzy" />
+    <addaction name="actionFilterTranslated" />
+   </widget>
+   <widget class="QMenu" name="menuGo" >
+    <property name="title" >
+     <string>&amp;Go</string>
+    </property>
+    <addaction name="actionFirst" />
+    <addaction name="actionPrevious" />
+    <addaction name="actionNext" />
+    <addaction name="actionLast" />
+    <addaction name="separator" />
+    <addaction name="actionGoTo" />
+   </widget>
    <widget class="QMenu" name="menuFile" >
     <property name="title" >
      <string>&amp;File</string>
     </property>
     <widget class="QMenu" name="menuOpen_Recent" >
      <property name="statusTip" >
-      <string>Open the file that used to be opened</string>
+      <string>Open the file that used to be opened.</string>
+     </property>
+     <property name="whatsThis" >
+      <string>&lt;h3>Open Recent&lt;/h>Use this to open the file that used to be opened.</string>
      </property>
      <property name="title" >
       <string>Open &amp;Recent</string>
@@ -116,57 +170,6 @@
     <addaction name="separator" />
     <addaction name="actionCatalogManager" />
     <addaction name="actionAuto_translate" />
-   </widget>
-   <widget class="QMenu" name="menuBookmark" >
-    <property name="title" >
-     <string>&amp;Bookmarks</string>
-    </property>
-    <addaction name="actionAddBookmarks" />
-    <addaction name="actionClearBookmarks" />
-    <addaction name="separator" />
-   </widget>
-   <widget class="QMenu" name="menuGo" >
-    <property name="title" >
-     <string>&amp;Go</string>
-    </property>
-    <addaction name="actionFirst" />
-    <addaction name="actionPrevious" />
-    <addaction name="actionNext" />
-    <addaction name="actionLast" />
-    <addaction name="separator" />
-    <addaction name="actionGoTo" />
-   </widget>
-   <widget class="QMenu" name="menuView" >
-    <property name="enabled" >
-     <bool>true</bool>
-    </property>
-    <property name="title" >
-     <string>&amp;View</string>
-    </property>
-    <addaction name="actionFilterUntranslated" />
-    <addaction name="actionFilterFuzzy" />
-    <addaction name="actionFilterTranslated" />
-   </widget>
-   <widget class="QMenu" name="menuEdit" >
-    <property name="title" >
-     <string>&amp;Edit</string>
-    </property>
-    <addaction name="actionUndo" />
-    <addaction name="actionRedo" />
-    <addaction name="separator" />
-    <addaction name="actionCut" />
-    <addaction name="actionCopy" />
-    <addaction name="actionPaste" />
-    <addaction name="separator" />
-    <addaction name="actionFind" />
-    <addaction name="actionFindPrevious" />
-    <addaction name="actionFindNext" />
-    <addaction name="actionReplace" />
-    <addaction name="separator" />
-    <addaction name="actionCopySource2Target" />
-    <addaction name="actionCopySearchResult2Target" />
-    <addaction name="actionToggleFuzzy" />
-    <addaction name="actionEdit_Header" />
    </widget>
    <widget class="QMenu" name="menuProject" >
     <property name="title" >
@@ -292,10 +295,10 @@
     <string>Open</string>
    </property>
    <property name="statusTip" >
-    <string>Open a file</string>
+    <string>Open a file.</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>Open&lt;/h3>You will be asked for the name of a file to be opened and open recent file in an editor window.</string>
+    <string>&lt;h3>Open&lt;/h3>Use this to open existed file for edit.</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+O</string>
@@ -312,10 +315,10 @@
     <string>&amp;Save</string>
    </property>
    <property name="statusTip" >
-    <string>Save a file</string>
+    <string>Save the current file.</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>Save a file&lt;/h3>Save the contents of current editor window.</string>
+    <string>&lt;h3>Save&lt;/h3>Use this to save the current file.</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+S</string>
@@ -329,16 +332,19 @@
     <iconset>../images/filesaveas.png</iconset>
    </property>
    <property name="text" >
-    <string>Save &amp;As</string>
+    <string>Save &amp;As...</string>
    </property>
    <property name="iconText" >
     <string>Save As...</string>
    </property>
+   <property name="toolTip" >
+    <string>Save As...</string>
+   </property>
    <property name="statusTip" >
-    <string>Save File As</string>
+    <string>Save the current contents to a new file.</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>Save File As&lt;/h3> Save the contents of the current editor to a new file. The file can be entered in a file selection dialog.</string>
+    <string>&lt;h3>Save As&lt;/h3>Use this to save the current contents to a new file. The file name can be entered in a file selection dialog.</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+Shift+S</string>
@@ -355,10 +361,10 @@
     <string>Quit</string>
    </property>
    <property name="statusTip" >
-    <string>Quit the application</string>
+    <string>Quit the application.</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>Quit the application&lt;/h3>This quits the application. Any unsaved changes may be saved first.</string>
+    <string>&lt;h3>Quit&lt;/h3>Use this to quit the application. Any unsaved changes will be prompted.</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+Q</string>
@@ -375,10 +381,10 @@
     <string>&amp;Undo</string>
    </property>
    <property name="statusTip" >
-    <string>Undo the last change</string>
+    <string>Undo the last change.</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>Undo&lt;/h3>Undo the last change done in the current editor.</string>
+    <string>&lt;h3>Undo&lt;/h3>Use this to undo the last change done in the editor.</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+Z</string>
@@ -395,10 +401,10 @@
     <string>Re&amp;do</string>
    </property>
    <property name="statusTip" >
-    <string>Redo the last change</string>
+    <string>Redo the last change.</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>Redo&lt;/h3>Redo the last change done in the current editor.</string>
+    <string>&lt;h3>Redo&lt;/h3>Use this to redo the last change done in the editor.</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+Shift+Z</string>
@@ -415,10 +421,10 @@
     <string>Cu&amp;t</string>
    </property>
    <property name="statusTip" >
-    <string>Cut the selection</string>
+    <string>Cut the selected text.</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>Cut&lt;/h3>Cut the selected text of the current editor to the clipboard.</string>
+    <string>&lt;h3>Cut&lt;/h3>Use this to cut the selected text to the clipboard.</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+X</string>
@@ -438,10 +444,10 @@
     <string>&amp;Copy</string>
    </property>
    <property name="statusTip" >
-    <string>Copy the selection</string>
+    <string>Copy the selected text.</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>Copy&lt;/h3>Copy the selected text of the current editor to the clipboard.</string>
+    <string>&lt;h3>Copy&lt;/h3>Use this to copy the selected text to the clipboard.</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+C</string>
@@ -464,10 +470,10 @@
     <string>Paste</string>
    </property>
    <property name="statusTip" >
-    <string>Paste the last cut/copied text</string>
+    <string>Paste the last cut/copied text.</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>Paste&lt;/h3>Paste the last cut/copies text from the clipboard to the current editor.</string>
+    <string>&lt;h3>Paste&lt;/h3>Use this to paste the last cut/copies text from the clipboard to the editor.</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+V</string>
@@ -484,10 +490,10 @@
     <string>&amp;Find</string>
    </property>
    <property name="statusTip" >
-    <string>Find for a text</string>
+    <string>Find text in the shown strings.</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>Find&lt;/h3>Search for some text in the table. The Find dialog will be shown at the bottom of editor to enter searchtext and options.</string>
+    <string>&lt;h3>Find&lt;/h3>Use this to find text in the shown strings. The find dialog will show at the bottom of the editor.</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+F</string>
@@ -560,11 +566,14 @@
    <property name="text" >
     <string>&amp;First</string>
    </property>
+   <property name="toolTip" >
+    <string>First</string>
+   </property>
    <property name="statusTip" >
-    <string>Go to first unit</string>
+    <string>Go to the first string.</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>First&lt;/h3>Move to first row of the table.</string>
+    <string>&lt;h3>First&lt;/h3>Go to the first string in the table.</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+PgUp</string>
@@ -581,10 +590,10 @@
     <string>&amp;Previous</string>
    </property>
    <property name="statusTip" >
-    <string>Go to previous unit</string>
+    <string>Go to the previous string.</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>Previous&lt;/h3>Move to previous row inside the table.</string>
+    <string>&lt;h3>Previous&lt;/h3>Go to the previous string in the table.</string>
    </property>
    <property name="shortcut" >
     <string>PgUp</string>
@@ -601,10 +610,10 @@
     <string>&amp;Next</string>
    </property>
    <property name="statusTip" >
-    <string>Go to next unit</string>
+    <string>Go to the next string.</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>Next&lt;/h3>Move to next row inside the table.</string>
+    <string>&lt;h3>Next&lt;/h3>Go to the next string in the table.</string>
    </property>
    <property name="shortcut" >
     <string>PgDown</string>
@@ -621,10 +630,10 @@
     <string>&amp;Last</string>
    </property>
    <property name="statusTip" >
-    <string>Go to last unit</string>
+    <string>Go to the last string.</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>Last&lt;/h3>Move to last row of the table.</string>
+    <string>&lt;h3>Last&lt;/h3>Go to the last string in the table.</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+PgDown</string>
@@ -635,13 +644,19 @@
     <bool>false</bool>
    </property>
    <property name="text" >
-    <string>Cop&amp;y Source to Target</string>
+    <string>Cop&amp;y Source To Target</string>
+   </property>
+   <property name="iconText" >
+    <string>Copy Source To Target</string>
+   </property>
+   <property name="toolTip" >
+    <string>Copy Source To Target</string>
    </property>
    <property name="statusTip" >
-    <string>Copy source to target</string>
+    <string>Copy current string from source field to target field.</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>Copy source to target&lt;/h3>It will copy current unit's source to current unit's target.</string>
+    <string>&lt;h3>Copy Source To Target&lt;/h3>Use this to copy current string from source field to target field.</string>
    </property>
    <property name="shortcut" >
     <string>F2</string>
@@ -652,13 +667,19 @@
     <bool>false</bool>
    </property>
    <property name="text" >
-    <string>To&amp;ggle fuzzy</string>
+    <string>To&amp;ggle Fuzzy</string>
+   </property>
+   <property name="iconText" >
+    <string>Toggle Fuzzy</string>
+   </property>
+   <property name="toolTip" >
+    <string>Toggle Fuzzy</string>
    </property>
    <property name="statusTip" >
-    <string>Toggle current unit's fuzzy status</string>
+    <string>Toggle fuzzy for current string.</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>Toggle current unit's fuzzy status&lt;/h3>If current unit is fuzzy, then set to it unfuzzy. If it is unfuzzy, then set it to fuzzy.</string>
+    <string>&lt;h3>Toggle Fuzzy&lt;/h3>Use this to set current string to fuzzy or unset it.</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+U</string>
@@ -696,10 +717,10 @@
     <string>&amp;Replace</string>
    </property>
    <property name="statusTip" >
-    <string>Replace some text</string>
+    <string>Replace text in the shown strings.</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>Replace&lt;/h3>Search for some text in the table and replace it. A dialog is shown to enter the search text, the replacement text and options for the search and replace.</string>
+    <string>&lt;h3>Replace&lt;/h3>Use this to find text in the shown strings to replace. The find and replace dialog will show at the bottom of the editor.</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+R</string>
@@ -722,10 +743,10 @@
     <string>Find Next</string>
    </property>
    <property name="statusTip" >
-    <string>Find next occurrance of text</string>
+    <string>Find next occurrance of text.</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>Find next&lt;/h3>Find next occurrance of text in the table. The previously entered searchtext and options are reused.</string>
+    <string>&lt;h3>Find Next&lt;/h3>Use this to find the next occurrance of search text in the shown strings.</string>
    </property>
    <property name="shortcut" >
     <string>F3</string>
@@ -742,10 +763,10 @@
     <string>Find Pre&amp;vious</string>
    </property>
    <property name="statusTip" >
-    <string>Find previous occurrance of text</string>
+    <string>Find previous occurrance of text.</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>Find previous&lt;/h3>Find previous occurrance of text in the table. The previously entered searchtext and options are reused.</string>
+    <string>&lt;h3>Find Previous&lt;/h3>Use this to find the previous occurrance of search text in the shown strings.</string>
    </property>
    <property name="shortcut" >
     <string>Shift+F3</string>
@@ -776,10 +797,10 @@
     <string>&amp;Header...</string>
    </property>
    <property name="statusTip" >
-    <string>Open header dialog</string>
+    <string>Open header dialog.</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>Open header dialog&lt;/h3>Open the dialog to edit the header information.</string>
+    <string>&lt;h3>Open header dialog&lt;/h3>Use this to open the dialog to edit the header information.</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+H</string>
@@ -793,7 +814,10 @@
     <string>&amp;Preferences...</string>
    </property>
    <property name="statusTip" >
-    <string>Set common options for personality, font/color, TM/Glosary, Save</string>
+    <string>Set common options for personality, font and color, translation memory and glossary, and save.</string>
+   </property>
+   <property name="whatsThis" >
+    <string>&lt;h3>Preferences&lt;/h3>Use this to set common options for personality, font and color, translation memory and glossary, and save.</string>
    </property>
   </action>
   <action name="actionToolbars" >
@@ -818,13 +842,13 @@
     <string>&amp;Fuzzy</string>
    </property>
    <property name="toolTip" >
-    <string>Hide/Show Fuzzy Strings</string>
+    <string>Show/Hide fuzzy strings</string>
    </property>
    <property name="statusTip" >
-    <string>Hide/Show Fuzzy Strings</string>
+    <string>Show or hide the fuzzy strings.</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>Hide/Show Fuzzy Strings&lt;/h3>If Fuzzy Strings are hidden, then display them. If they are displayed, then hide string.</string>
+    <string>&lt;h3>Fuzzy&lt;/h3>Use this to show or hide the fuzzy strings.</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+Alt+F</string>
@@ -847,13 +871,13 @@
     <string>&amp;Translated</string>
    </property>
    <property name="toolTip" >
-    <string>Hide/Show Translated Strings</string>
+    <string>Show/Hide translated strings</string>
    </property>
    <property name="statusTip" >
-    <string>Hide/Show Translated Strings</string>
+    <string>Show or hide the translated strings.</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>Hide/Show Translated Strings&lt;/h3>If Translated Strings are hidden, then display them. If they are displayed, then hide them.</string>
+    <string>&lt;h3>Translated&lt;/h3>Use this show or hide the translated strings.</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+Alt+T</string>
@@ -876,13 +900,13 @@
     <string>&amp;Untranslated</string>
    </property>
    <property name="toolTip" >
-    <string>Hide/Show Untranslated Strings</string>
+    <string>Show/Hide untranslated strings</string>
    </property>
    <property name="statusTip" >
-    <string>Hide/Show Untranslated String</string>
+    <string>Show or hide the untranslated strings.</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>Hide/Show Untranslated Strings&lt;/h3>If Untranslated String are hidden, then display them. If they are displayed, then hide String.</string>
+    <string>&lt;h3>Untranslated&lt;/h3>Use this to show or hide the untranslated strings.</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+Alt+U</string>
@@ -899,10 +923,10 @@
     <string>&amp;Close</string>
    </property>
    <property name="statusTip" >
-    <string>Close the current opened file</string>
+    <string>Close the current opened file.</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>Close the current opened file&lt;/h3>You will be asked whether to save the current opened file.</string>
+    <string>&lt;h3>Close the current file&lt;/h3>Use this to close the current opened file.</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+W</string>
@@ -913,19 +937,19 @@
     <bool>false</bool>
    </property>
    <property name="text" >
-    <string>&amp;GoTo String</string>
+    <string>&amp;String Number...</string>
    </property>
    <property name="iconText" >
-    <string>GoTo String</string>
+    <string>String Number</string>
    </property>
    <property name="toolTip" >
-    <string>GoTo String</string>
+    <string>String Number</string>
    </property>
    <property name="statusTip" >
-    <string>Go to String</string>
+    <string>Go to string number...</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>GoTo String&lt;/h3>It will go to a string in the table, according to given index.</string>
+    <string>&lt;h3>GoTo String&lt;/h3>Go to the string number specified by user.</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+G</string>
@@ -942,10 +966,10 @@
     <string>&amp;Add Bookmarks</string>
    </property>
    <property name="statusTip" >
-    <string>Add bookmark on current unit</string>
+    <string>Add a bookmark of the current string.</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>Add Bookmarks&lt;/h3> A mark on current unit will be added.</string>
+    <string>&lt;h3>Add Bookmarks&lt;/h3>Use this to add a bookmark of the current string</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+B</string>
@@ -956,10 +980,10 @@
     <string>&amp;Clear Bookmarks</string>
    </property>
    <property name="statusTip" >
-    <string>Clear bookmarks</string>
+    <string>Clear all the bookmarks.</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>Clear all marks&lt;/h3>All marks of units will be cleared.</string>
+    <string>&lt;h3>Clear Bookmarks&lt;/h3>Use this to clear all the bookmarks.</string>
    </property>
    <property name="shortcut" >
     <string/>
@@ -975,7 +999,10 @@
     <string>Catalog Manager...</string>
    </property>
    <property name="statusTip" >
-    <string>Configure the Catalog Manager</string>
+    <string>Open catalog manager.</string>
+   </property>
+   <property name="whatsThis" >
+    <string>&lt;h3>Catalog Manager&lt;/h3>Use this to open catalog manager.</string>
    </property>
   </action>
   <action name="actionBuild_TM" >
@@ -999,10 +1026,19 @@
     <iconset>../images/source.png</iconset>
    </property>
    <property name="text" >
-    <string>Copy Search Result to Target</string>
+    <string>Copy &amp;Translation To Target</string>
+   </property>
+   <property name="iconText" >
+    <string>Copy Translation To Target</string>
+   </property>
+   <property name="toolTip" >
+    <string>Copy Translation To Target</string>
    </property>
    <property name="statusTip" >
-    <string>Copy search result from translation memory to target</string>
+    <string>Copy the most similar translation to target field.</string>
+   </property>
+   <property name="whatsThis" >
+    <string>&lt;h3>Copy Translation To Target&lt;/h3>Use this to copy the most similar translation to target field.</string>
    </property>
   </action>
   <action name="actionBuild_TM" >
@@ -1013,18 +1049,27 @@
     <string>Build &amp;TM...</string>
    </property>
    <property name="toolTip" >
-    <string>Build Translation Memory</string>
+    <string>Build the translation memory.</string>
    </property>
    <property name="statusTip" >
-    <string>Configure the Translation Memory's path</string>
+    <string>Build the translation memory.</string>
+   </property>
+   <property name="whatsThis" >
+    <string>&lt;h3>Build TM&lt;/h3>Use this to build the translation memory.</string>
    </property>
   </action>
   <action name="actionGlossary" >
    <property name="text" >
     <string>Build Gl&amp;ossary...</string>
    </property>
+   <property name="toolTip" >
+    <string>Build the glossary.</string>
+   </property>
    <property name="statusTip" >
-    <string>Configure the glosary's path</string>
+    <string>Build the glossary.</string>
+   </property>
+   <property name="whatsThis" >
+    <string>&lt;h3>Build Glossary&lt;/h3>Use this to build the glossary.</string>
    </property>
   </action>
   <action name="actionAuto_translate" >
@@ -1032,17 +1077,32 @@
     <string>Auto Translate</string>
    </property>
    <property name="statusTip" >
-    <string>Rough translation throgh the current file</string>
+    <string>Translate the whole strings automatically.</string>
+   </property>
+   <property name="whatsThis" >
+    <string>&lt;h3>&lt;/h3>Use this to translate the whole strings automatically.</string>
    </property>
   </action>
   <action name="actionNewPro" >
    <property name="text" >
     <string>&amp;New...   </string>
    </property>
+   <property name="statusTip" >
+    <string>This opens a dialog for entering  the information for a new project.</string>
+   </property>
+   <property name="whatsThis" >
+    <string>&lt;h3>New...&lt;/h3>Use this to open a dialog for entering  the information for a new project.</string>
+   </property>
   </action>
   <action name="actionOpenPro" >
    <property name="text" >
     <string>&amp;Open...   </string>
+   </property>
+   <property name="statusTip" >
+    <string>This open an existing project.</string>
+   </property>
+   <property name="whatsThis" >
+    <string>&lt;h3>Open&lt;/h3>Use this to open an existing project.</string>
    </property>
   </action>
  </widget>
