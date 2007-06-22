@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# -*- coding: utf8 -*-
+# -*- coding: utf-8 -*-
 #
 # Pootling
 # Copyright 2006 WordForge Foundation
@@ -103,9 +103,9 @@ class OverviewDock(QtGui.QDockWidget):
             menu.exec_(self.globalPos)
             return
         
-        strCopy = self.tr("Copy to target:")
         for candidate in candidates:
-            menuAction = menu.addAction("%s %s" % (strCopy, candidate.target))
+            strCopy = unicode(self.tr("Copy \"%s\" to target.")) % unicode(candidate.target)
+            menuAction = menu.addAction(strCopy)
             menuAction.setData(QtCore.QVariant(candidate.target))
             self.connect(menuAction, QtCore.SIGNAL("triggered()"), self.copyToTarget)
         menu.exec_(self.globalPos)

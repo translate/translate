@@ -92,7 +92,8 @@ class TUview(QtGui.QDockWidget):
             text = self.ui.txtTarget.toPlainText()
             
             for candidate in candidates:
-                menuAction = menu.addAction("Copy \"%s\" to clipboard." % candidate.target)
+                strCopy = unicode(self.tr("Copy \"%s\" to clipboard.")) % unicode(candidate.target)
+                menuAction = menu.addAction(strCopy)
                 menuAction.setData(QtCore.QVariant(candidate.target))
                 self.connect(menuAction, QtCore.SIGNAL("triggered()"), self.copyTranslation)
                 
@@ -101,7 +102,8 @@ class TUview(QtGui.QDockWidget):
                 if (index >= 0):
                     length = expression.matchedLength()
                     cText = expression.capturedTexts()[0]
-                    menuAction = menu.addAction("Replace \"%s\" with \"%s\" in target." % (cText, candidate.target))
+                    strReplace = unicode(self.tr("Replace \"%s\" with \"%s\" in target.")) % (unicode(cText), unicode(candidate.target))
+                    menuAction = menu.addAction(strReplace)
                     menuAction.setData(QtCore.QVariant([cText, candidate.target]))
                     self.connect(menuAction, QtCore.SIGNAL("triggered()"), self.replaceTranslation)
             
