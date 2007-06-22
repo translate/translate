@@ -92,8 +92,11 @@ class Operator(QtCore.QObject):
         self.currentUnitIndex = 0
         for unit in self.store.units:
             # set x_editor_state for all units.
-            if (unit.source == None or unit.target == None):
+
+            if (unit.source == None):
                 continue
+            if (unit.target == None):
+                unit.target = ""
             unit.x_editor_state = self.status.unitState(unit)
             if (self.filter & unit.x_editor_state):
                 unit.x_editor_filterIndex = len(self.filteredList)
