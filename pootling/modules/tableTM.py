@@ -94,9 +94,10 @@ class tableTM(QtGui.QDockWidget):
             item = QtGui.QTableWidgetItem(unit.target)
             item.setFlags(self.normalState)
             self.ui.tblTM.setItem(row, 2, item)
-            
-            tooltips = "<h3>Source: </h3>" + unit.source + "<h3> Target: </h3>" + unit.target + "<h3>Found in: </h3>" + unit.filepath + "<h3> Translator: </h3>" + unit.translator + "<h3> Date: </h3>" + unit.date
-            self.setToolTip(row, tooltips)
+            tooltips = "<h5>Found in: </h5>" + unit.filepath + "<h5> Translator: </h5>" + unit.translator + "<h5> Date: </h5>" + unit.date
+            self.setToolTip(row, 0, tooltips, self.infoIcon)
+            self.setToolTip(row, 1, unit.source )
+            self.setToolTip(row, 2, unit.target)
             
         self.ui.tblTM.setSortingEnabled(True)
         self.ui.tblTM.horizontalHeader().setSortIndicatorShown(False)
@@ -146,23 +147,24 @@ class tableTM(QtGui.QDockWidget):
             self.ui.tblTM.setHorizontalHeaderLabels(self.headerLabels)
         self.ui.tblTM.setEnabled(not(lenFilter) and False or True)
         
-    def setToolTip(self, index = None, tooltips = ""):
+    def setToolTip(self, index = None, col = 0, tooltips = "", icon = QtGui.QIcon()):
         """
         mark icon indicate unit has more info and add tooltips.
         @param index: row in table.
+        @param col: column to set tooltips.
         @param tooltips: more info about candidates such as which file the candidate locates, who is the translator and when.
+        @param icon: icon to set to col.
         """
-
         # get the current row
         if (not index):
-            item = self.ui.tblTM.item(0, 0)
+            item = self.ui.tblTM.item(0, col)
         else:
-            item = self.ui.tblTM.item(index, 0)
+            item = self.ui.tblTM.item(index, col)
         
         if (not item):
             return
         if (tooltips):
-            item.setIcon(self.infoIcon)
+            item.setIcon(icon)
             item.setToolTip(unicode(tooltips))
 
     def closeEvent(self, event):
