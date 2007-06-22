@@ -35,11 +35,16 @@
 
 import struct
 import array
-from translate.storage import po
+from translate.storage import factory
+
+def mounpack(mofile='messages.mo'):
+  """Helper to unpack Gettext MO files into a Python string"""
+  f = open(mofile)
+  s = f.read()
+  print "\\x%02x"*len(s) % tuple(map(ord, s))
+  f.close()
 
 class POCompile:
-
-  MESSAGES = {}
 
   def generate(self, MESSAGES):
       "Return the generated output."
@@ -87,19 +92,21 @@ class POCompile:
 
   def convertfile(self, thepofile, includefuzzy=False):
     MESSAGES = {}
-    #themofile = self.make(thepofile)
     for thepo in thepofile.units:
-      if not thepo.isblank():
+      if thepo.istranslated():
         if not thepo.isfuzzy() or includefuzzy:
-          msgid = po.unquotefrompo(thepo.msgid, joinwithlinebreak=False).replace("\\n", "\n")
-          msgstr = po.unquotefrompo(thepo.msgstr, joinwithlinebreak=False).replace("\\n", "\n")
-          MESSAGES[msgid] = msgstr
+          if thepo.isheader():
+            source = ""
+          else:
+            source = "\0".join(thepo.source.strings)
+          target = "\0".join(thepo.target.strings)
+          MESSAGES[source.encode("utf-8")] = target
     return self.generate(MESSAGES)
 
 def convertmo(inputfile, outputfile, templatefile, includefuzzy=False):
   """reads in inputfile using po, converts using pocompile, writes to outputfile"""
   # note that templatefile is not used, but it is required by the converter...
-  inputpo = po.pofile(inputfile)
+  inputpo = factory.getobject(inputfile)
   if inputpo.isempty():
     return 0
   convertor = POCompile()
@@ -109,7 +116,7 @@ def convertmo(inputfile, outputfile, templatefile, includefuzzy=False):
 
 def main():
   from translate.convert import convert
-  formats = {"po":("mo", convertmo)}
+  formats = {"po":("mo", convertmo), "xlf":("mo", convertmo)}
   parser = convert.ConvertOptionParser(formats, usepots=False, description=__doc__)
   parser.add_fuzzy_option()
   parser.run()
