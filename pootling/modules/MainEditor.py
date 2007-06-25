@@ -341,7 +341,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionRedo.setEnabled(bool)
 
     def showGoto(self):
-        value, ok = QtGui.QInputDialog.getInteger(self, self.tr("Goto"), self.tr("Unit Index:"), 1, 1, self.operator.status.numTotal)
+        value, ok = QtGui.QInputDialog.getInteger(self, self.tr("Goto"), self.tr("String Number:"), 1, 1, self.operator.status.numTotal)
         if ok:
             self.dockOverview.gotoRow(value)
 
@@ -639,7 +639,6 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionFilterFuzzy, QtCore.SIGNAL("toggled(bool)"), self.operator.filterFuzzy)
         self.connect(self.ui.actionFilterTranslated, QtCore.SIGNAL("toggled(bool)"), self.operator.filterTranslated)
         self.connect(self.ui.actionFilterUntranslated, QtCore.SIGNAL("toggled(bool)"), self.operator.filterUntranslated)
-        
         
         #TODO: it is enable unless Automatically lookup translation in TM is checked.
         self.ui.actionCopySearchResult2Target.setEnabled(bool)
