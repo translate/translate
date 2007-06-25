@@ -692,6 +692,7 @@ class Catalog(QtGui.QMainWindow):
         proSettings = QtCore.QSettings(filename, QtCore.QSettings.IniFormat)
         itemList = proSettings.value("itemList").toStringList()
         # set location of filename to list Widget of Catalog Setting when click open recent project.
+        self.catSetting = CatalogSetting(self)
         self.catSetting.clearLocation()
         for location in itemList:
             self.catSetting.addLocation(location)
