@@ -170,6 +170,8 @@ class Catalog(QtGui.QMainWindow):
         
         self.searchedCount = 0
         self.reachedEnd = True
+        # bool indicates progress bar need update as TM progresses.
+        self.allowUpdate = False
     
     def setReachedEnd(self):
         self.reachedEnd = True
@@ -291,9 +293,18 @@ class Catalog(QtGui.QMainWindow):
                 World.settings.setValue("Catalog." + text, QtCore.QVariant(checked))
 
     def updateProgress(self, value):
+        """
+        Set the value for the progress bar.
+        self.allowUpdate is a condition wether to update or not, use to protect
+        other class call.
+        @param value: value to set.
+        """
+        if (not self.allowUpdate):
+           return
         if (not self.progressBar.isVisible()):
             self.progressBar.setVisible(True)
         elif (value == 100):
+            self.allowUpdate = False
             self.progressBar.setVisible(False)
         self.progressBar.setValue(value)
         
@@ -337,6 +348,7 @@ class Catalog(QtGui.QMainWindow):
             self.addCatalogFile(catalogFile, includeSub, None)
         
         self.ui.treeCatalog.resizeColumnToContents(0)
+        self.allowUpdate = True
         self.timer.start(10)
     
     def addCatalogFile(self, path, includeSub, item):
@@ -605,29 +617,17 @@ class Catalog(QtGui.QMainWindow):
             self.updateCatalog()
         else:
             self.settings.sync()
-
+    
     def emitBuildTM(self):
         """
-        Build the translation memory from catalog.
+        Emit "buildTM" signal with catalog paths.
         """
         catPaths = []
-        self.itemNumber = 0
-        self.timer.stop()
         for i in range(self.ui.treeCatalog.topLevelItemCount()):
             topItem = self.ui.treeCatalog.topLevelItem(i)
             catPath = self.getFilename(topItem)
             catPaths.append(catPath)
-        item = catPaths[self.itemNumber]
-        self.itemNumber += 1
-        perc = int((float(self.itemNumber) / len(catPaths)) * 100)
-        self.updateProgress(perc)
-        # resume timer
-        self.timer.start(10)
-        
-        if (self.itemNumber == len(catPaths)):
-            self.timer.stop()
-            self.itemNumber = 1
-
+        self.allowUpdate = True
         self.emit(QtCore.SIGNAL("buildTM"), catPaths)
     
     def updateStatistic(self):

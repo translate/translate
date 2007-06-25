@@ -52,7 +52,7 @@ class globalSetting(QtGui.QDialog):
         self.filedialog = FileDialog.fileDialog(self)
         self.setWindowTitle(self.title)
         self.connect(self.filedialog, QtCore.SIGNAL("location"), self.addLocation)
-        self.connect(self.ui.btnOk, QtCore.SIGNAL("clicked(bool)"), self.buildMatcher)
+        self.connect(self.ui.btnOk, QtCore.SIGNAL("clicked(bool)"), self.startBuild)
         self.connect(self.ui.btnCancel, QtCore.SIGNAL("clicked(bool)"), QtCore.SLOT("close()"))
         self.connect(self.ui.btnAdd, QtCore.SIGNAL("clicked(bool)"), self.filedialog.show)
         self.connect(self.ui.btnRemove, QtCore.SIGNAL("clicked(bool)"), self.removeLocation)
@@ -126,18 +126,6 @@ class globalSetting(QtGui.QDialog):
             handle, self.pickleFile = tempfile.mkstemp('','PKL')
         World.settings.endGroup()
     
-    def buildFromPath(self, paths):
-        """
-        Add path to list Widget.
-        @param path: is filename in the list
-        """
-        self.showDialog()
-        self.ui.listWidget.clear()
-        for path in paths:
-            self.addLocation(path)
-        self.hide()
-        self.buildMatcher()
-    
     def addLocation(self, TMpath, checked = QtCore.Qt.Checked):
         """
         Add TMpath to TM list.
@@ -158,16 +146,22 @@ class globalSetting(QtGui.QDialog):
             self.ui.listWidget.setCurrentItem(item)
             self.ui.listWidget.takeItem(self.ui.listWidget.currentRow())
     
-    def buildMatcher(self):
+    def startBuild(self):
         """
-        Collect filename into self.filenames, create matcher, start a
-        timer for extend tm, dump matcher, save settings.
+        Collect filename into self.filenames, call buildMatcher(),
+        dump matcher, and save settings.
         """
         # get filenames from checked list.
         paths = self.getPathList(QtCore.Qt.Checked)
+        includeSub = self.ui.checkBox.isChecked()
+        self.buildMatcher(paths, includeSub)
+    
+    def buildMatcher(self, paths, includeSub = True):
+        """
+        create matcher, start a timer for extend tm.
+        """
         self.matcher = None
         self.filenames = []
-        includeSub = self.ui.checkBox.isChecked()
         for path in paths:
             self.getFiles(path, includeSub)
         
@@ -198,6 +192,7 @@ class globalSetting(QtGui.QDialog):
             self.matcher = match.terminologymatcher(store, maxCan, minSim, maxLen)
         # extend matcher, start with self.filenames[1]
         self.iterNumber = 1
+        self.timer.stop()
         self.timer.start(10)
         
     def getFiles(self, path, includeSub): 
@@ -248,6 +243,7 @@ class globalSetting(QtGui.QDialog):
         self.iterNumber += 1
         perc = int((float(self.iterNumber) / len(self.filenames)) * 100)
         self.ui.progressBar.setValue(perc)
+        self.emit(QtCore.SIGNAL("buildPercentage"), perc)
         
         # resume timer
         self.timer.start(10)

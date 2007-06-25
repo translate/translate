@@ -313,7 +313,8 @@ class MainWindow(QtGui.QMainWindow):
         self.findBar.setHidden(True)
         
         self.connect(self.Catalog, QtCore.SIGNAL("openFile"), self.openFile)
-        self.connect(self.Catalog, QtCore.SIGNAL("buildTM"), self.tmsetting.buildFromPath)
+        self.connect(self.Catalog, QtCore.SIGNAL("buildTM"), self.tmsetting.buildMatcher)
+        self.connect(self.tmsetting, QtCore.SIGNAL("buildPercentage"), self.Catalog.updateProgress)
         
         self.connect(self.table, QtCore.SIGNAL("openFile"), self.openFile)
         self.connect(self.table, QtCore.SIGNAL("goto"), self.dockOverview.gotoRow)
