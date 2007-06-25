@@ -95,8 +95,6 @@ class Operator(QtCore.QObject):
 
             if (unit.source == None):
                 continue
-            if (unit.target == None):
-                unit.target = ""
             unit.x_editor_state = self.status.unitState(unit)
             if (self.filter & unit.x_editor_state):
                 unit.x_editor_filterIndex = len(self.filteredList)
@@ -109,7 +107,8 @@ class Operator(QtCore.QObject):
         """
         Emit "newUnits" signal with a list of unit.
         """
-        self.emit(QtCore.SIGNAL("newUnits"), self.filteredList)
+        if self.filteredList: 
+            self.emit(QtCore.SIGNAL("newUnits"), self.filteredList)
         
     def emitStatus(self):
         """
@@ -203,6 +202,7 @@ class Operator(QtCore.QObject):
 
     def headerData(self):
         """
+        Get header info from the file.
         @return Header comment and Header dictonary.
         """
         if (not isinstance(self.store, poheader.poheader)):
@@ -315,9 +315,6 @@ class Operator(QtCore.QObject):
             self.emitUnit(unit)
         self.emitStatus()
         self.setModified(True)
-        
-        
-        
     
     def setUnitFromPosition(self, position):
         """
