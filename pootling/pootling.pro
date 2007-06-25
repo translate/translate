@@ -3,6 +3,6 @@
  SOURCES         = ./modules/*.py\
 		   ./ui/*.py
  FORMS 		= ./ui/*.ui
- TRANSLATIONS    = pootling.ts
+ TRANSLATIONS    = po/pootling.ts
 
  CODECFORSRC     = UTF-8
