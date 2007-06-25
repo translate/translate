@@ -19,24 +19,13 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-# NOTE:
-# This is a class created from the original msgfmt.py written by 
-# Martin v. Löwis <loewis@informatik.hu-berlin.de> which is release
-# as part of 4Suite (Python tools and libraries for XML processing and databases.)
-# which is itself released under the Apache License.  If there is any conflict
-# between the Apache license and the GPL then the Apache license is the one that
-# applies to the changes made to this file.
-#
-# 2006-06-07: Updated using:
-#  http://svn.python.org/projects/python/trunk/Tools/i18n/msgfmt.py
-#  versions 1.1
-
-"""Compile PO files into MO (Machine Object) files."""
+"""Compile base class files into Gettext MO (Machine Object) files."""
 
 import struct
 import array
 from translate.storage import factory
 from translate.storage import po
+from translate.storage import mo
 
 def mounpack(mofile='messages.mo'):
   """Helper to unpack Gettext MO files into a Python string"""
@@ -47,65 +36,23 @@ def mounpack(mofile='messages.mo'):
 
 class POCompile:
 
-  def generate(self, MESSAGES):
-      "Return the generated output."
-      keys = MESSAGES.keys()
-      # the keys are sorted in the .mo file
-      keys.sort()
-      offsets = []
-      ids = strs = ''
-      for id in keys:
-          # For each string, we need size and file offset.  Each string is NUL
-          # terminated; the NUL does not count into the size.
-          # TODO: We don't handle plural forms
-          # TODO: We don't do any encoding detection from the PO Header
-          id = id.encode('utf-8')
-          str = MESSAGES[id].encode('utf-8')
-          offsets.append((len(ids), len(id), len(strs), len(str)))
-          ids = ids + id + '\0'
-          strs = strs + str + '\0'
-      output = ''
-      # The header is 7 32-bit unsigned integers.  We don't use hash tables, so
-      # the keys start right after the index tables.
-      # translated string.
-      keystart = 7*4+16*len(keys)
-      # and the values start after the keys
-      valuestart = keystart + len(ids)
-      koffsets = []
-      voffsets = []
-      # The string table first has the list of keys, then the list of values.
-      # Each entry has first the size of the string, then the file offset.
-      for o1, l1, o2, l2 in offsets:
-          koffsets = koffsets + [l1, o1+keystart]
-          voffsets = voffsets + [l2, o2+valuestart]
-      offsets = koffsets + voffsets
-      output = struct.pack("Iiiiiii",
-                           0x950412deL,        # Magic
-                           0,                 # Version
-                           len(keys),         # # of entries
-                           7*4,               # start of key index
-                           7*4+len(keys)*8,   # start of value index
-                           0, 0)              # size and offset of hash table
-      output = output + array.array("i", offsets).tostring()
-      output = output + ids
-      output = output + strs
-      return output
-
   def convertfile(self, inputfile, includefuzzy=False):
     MESSAGES = {}
+    outputfile = mo.mofile()
     for unit in inputfile.units:
       if unit.istranslated() or (unit.isfuzzy() and includefuzzy and unit.target):
+          mounit = mo.mounit()
           if unit.isheader():
-            source = ""
+            mounit.source = ""
           else:
-            source = "\0".join(unit.source.strings)
+            mounit.source = unit.source
             if hasattr(unit, "msgidcomments"):
-              source = po.unquotefrompo(unit.msgidcomments) + source
+              mounit.source.strings[0] = po.unquotefrompo(unit.msgidcomments) + mounit.source.strings[0]
             if hasattr(unit, "msgctxt"):
-              source = po.unquotefrompo(unit.msgctxt) + "\x04" + source
-          target = "\0".join(unit.target.strings)
-          MESSAGES[source.encode("utf-8")] = target
-    return self.generate(MESSAGES)
+              mounit.msgctxt = po.unquotefrompo(unit.msgctxt)
+          mounit.target = unit.target
+          outputfile.addunit(mounit)
+    return str(outputfile)
 
 def convertmo(inputfile, outputfile, templatefile, includefuzzy=False):
   """reads in a base class derived inputfile, converts using pocompile, writes to outputfile"""
