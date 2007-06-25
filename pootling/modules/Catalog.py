@@ -299,7 +299,7 @@ class Catalog(QtGui.QMainWindow):
         other class call.
         @param value: value to set.
         """
-        if (not self.allowUpdate):
+        if (not hasattr(self, "allowUpdate")) or (not self.allowUpdate):
            return
         if (not self.progressBar.isVisible()):
             self.progressBar.setVisible(True)
