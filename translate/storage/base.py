@@ -91,7 +91,7 @@ class TranslationUnit(object):
         """Sets the target string to the given value."""
 
         self.target = target
-    
+
     def gettargetlen(self):
         """Returns the length of the target string.
         
@@ -185,7 +185,7 @@ class TranslationUnit(object):
         
         """
 
-        raise NotImplementedError
+        pass
 
     def geterrors(self):
         """Get all error messages.
@@ -194,7 +194,7 @@ class TranslationUnit(object):
         
         """
 
-        raise NotImplementedError
+        return []
 
     def markreviewneeded(self, needsreview=True, explanation=None):
         """Marks the unit to indicate whether it needs review.
@@ -204,7 +204,7 @@ class TranslationUnit(object):
         
         """
 
-        raise NotImplementedError
+        pass
 
     def istranslated(self):
         """Indicates whether this unit is translated.
