@@ -15,6 +15,44 @@ class TestXLIFFUnit(test_base.TestTranslationUnit):
         from test_base.py"""
         assert self.unit.isfuzzy()
 
+    def test_markreview(self):
+        """Tests if we can mark the unit to need review."""
+        unit = self.unit
+        # We have to explicitly set the target to nothing, otherwise xliff
+        # tests will fail.
+        # Can we make it default behavior for the UnitClass?
+        unit.target = ""
+
+        unit.addnote("Test note 1", origin="translator")
+        unit.addnote("Test note 2", origin="translator")
+        original_notes = unit.getnotes(origin="translator")
+
+        assert not unit.isreview()
+        unit.markreviewneeded()
+        assert unit.isreview()
+        unit.markreviewneeded(False)
+        assert not unit.isreview()
+        assert unit.getnotes(origin="translator") == original_notes
+        unit.markreviewneeded(explanation="Double check spelling.")
+        assert unit.isreview()
+        notes = unit.getnotes(origin="translator")
+        assert notes.count("Double check spelling.") == 1
+
+    def test_errors(self):
+        """Tests that we can add and retrieve error messages for a unit."""
+        unit = self.unit
+
+        assert len(unit.geterrors()) == 0
+        unit.adderror(errorname='test1', errortext='Test error message 1.')
+        unit.adderror(errorname='test2', errortext='Test error message 2.')
+        unit.adderror(errorname='test3', errortext='Test error message 3.')
+        assert len(unit.geterrors()) == 3
+        assert unit.geterrors()['test1'] == 'Test error message 1.'
+        assert unit.geterrors()['test2'] == 'Test error message 2.'
+        assert unit.geterrors()['test3'] == 'Test error message 3.'
+        unit.adderror(errorname='test1', errortext='New error 1.')
+        assert unit.geterrors()['test1'] == 'New error 1.'
+
 class TestXLIFFfile(test_base.TestTranslationStore):
     StoreClass = xliff.xlifffile
     def test_basic(self):

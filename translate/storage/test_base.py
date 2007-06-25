@@ -58,10 +58,10 @@ class TestTranslationUnit:
         assert unit1 == unit1
         assert unit1 == unit2
         assert unit1 != unit4
-        unit1.settarget("Stressed Ting")
-        unit2.settarget("Stressed Ting")
-        unit5.settarget("Stressed Bling")
-        unit6.settarget("Stressed Ting")
+        unit1.target = "Stressed Ting"
+        unit2.target = "Stressed Ting"
+        unit5.target = "Stressed Bling"
+        unit6.target = "Stressed Ting"
         assert unit1 == unit2
         assert unit1 != unit3
         assert unit4 != unit5
@@ -70,11 +70,11 @@ class TestTranslationUnit:
     def test_target(self):
         unit = self.unit
         assert not unit.target
-        unit.settarget("Stressed Ting")
+        unit.target = "Stressed Ting"
         assert unit.target == "Stressed Ting"
-        unit.settarget("Stressed Bling")
+        unit.target = "Stressed Bling"
         assert unit.target == "Stressed Bling"
-        unit.settarget("")
+        unit.target = ""
         assert unit.target == ""
 
     def test_escapes(self):
@@ -105,34 +105,6 @@ class TestTranslationUnit:
             print "special:", repr(special) + '|'
             assert unit.source == special
 
-    def test_markreview(self):
-        """Tests if we can mark the unit to need review."""
-        unit = self.unit
-        # We have to explicitly set the target to nothing, otherwise xliff
-        # tests will fail.
-        # Can we make it default behavior for the UnitClass?
-        unit.target = ""
-
-        unit.addnote("Test note 1", origin="translator")
-        unit.addnote("Test note 2", origin="translator")
-        original_notes = unit.getnotes(origin="translator")
-
-        # The base class methods won't be implemented:
-        if self.__module__.endswith('test_base'):
-            assert test.raises(NotImplementedError, unit.markreviewneeded) 
-            return
-
-        assert not unit.isreview()
-        unit.markreviewneeded()
-        assert unit.isreview()
-        unit.markreviewneeded(False)
-        assert not unit.isreview()
-        assert unit.getnotes(origin="translator") == original_notes
-        unit.markreviewneeded(explanation="Double check spelling.")
-        assert unit.isreview()
-        notes = unit.getnotes(origin="translator")
-        assert notes.count("Double check spelling.") == 1
-
     def test_note_sanity(self):
         """Tests that all subclasses of the base behaves consistently with regards to notes."""
         unit = self.unit
@@ -153,26 +125,6 @@ class TestTranslationUnit:
         expected_notes = u"Test note 1\nTest note 2\nTest note 3"
         actual_notes = unit.getnotes()
         assert actual_notes == expected_notes
-
-    def test_errors(self):
-        """Tests that we can add and retrieve error messages for a unit."""
-        unit = self.unit
-
-        # The base class methods won't be implemented:
-        if self.__module__.endswith('test_base'):
-            assert test.raises(NotImplementedError, unit.markreviewneeded) 
-            return
-
-        assert len(unit.geterrors()) == 0
-        unit.adderror(errorname='test1', errortext='Test error message 1.')
-        unit.adderror(errorname='test2', errortext='Test error message 2.')
-        unit.adderror(errorname='test3', errortext='Test error message 3.')
-        assert len(unit.geterrors()) == 3
-        assert unit.geterrors()['test1'] == 'Test error message 1.'
-        assert unit.geterrors()['test2'] == 'Test error message 2.'
-        assert unit.geterrors()['test3'] == 'Test error message 3.'
-        unit.adderror(errorname='test1', errortext='New error 1.')
-        assert unit.geterrors()['test1'] == 'New error 1.'
 
 class TestTranslationStore:
     """Tests a TranslationStore.
@@ -306,7 +258,7 @@ class TestTranslationStore:
             assert store.untranslated_unitcount() == 2
             assert store.translated_wordcount() == 0
             assert store.untranslated_wordcount() == 5
-        unit1.settarget("Toets bron teks")
+        unit1.target = "Toets bron teks"
         store.classifyunits()
         # If the source has also been changed, assume it's a monolingual file.
         if not unit1.source == unit1.target:
