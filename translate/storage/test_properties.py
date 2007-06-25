@@ -9,12 +9,6 @@ from py import test
 class TestPropUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = properties.propunit
 
-    def test_errors(self):
-        """Assert the fact that geterrors() and adderror() is not (yet) implemented.
-        This test needs to be removed when these methods get implemented."""
-        assert test.raises(NotImplementedError, self.unit.geterrors)
-        assert test.raises(NotImplementedError, self.unit.adderror, 'testname', 'Test error')
-
     def test_difficult_escapes(self):
         """It doesn't seem that properties files can store double backslashes.
         

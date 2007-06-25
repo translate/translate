@@ -8,8 +8,6 @@ from py import test
 class TestTxtUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = txt.TxtUnit
 
-    def test_markreview(self):
-        assert test.raises(NotImplementedError, self.unit.markreviewneeded)
 
 class TestTxtFile(test_monolingual.TestMonolingualStore):
     StoreClass = txt.TxtFile

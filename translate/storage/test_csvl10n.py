@@ -8,15 +8,6 @@ from py import test
 class TestCSVUnit(test_base.TestTranslationUnit):
     UnitClass = csvl10n.csvunit
 
-    def test_markreview(self):
-        assert test.raises(NotImplementedError, self.unit.markreviewneeded)
-    
-    def test_errors(self):
-        """Assert the fact that geterrors() and adderror() is not (yet) implemented.
-        This test needs to be removed when these methods get implemented."""
-        assert test.raises(NotImplementedError, self.unit.geterrors)
-        assert test.raises(NotImplementedError, self.unit.adderror, 'testname', 'Test error')
-
 class TestCSV(test_base.TestTranslationStore):
     StoreClass = csvl10n.csvfile
 

@@ -21,8 +21,6 @@ def test_roundtrip_quoting():
 class TestDTDUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = dtd.dtdunit
 
-    def test_markreview(self):
-        assert test.raises(NotImplementedError, self.unit.markreviewneeded)
     
 class TestDTD(test_monolingual.TestMonolingualStore):
     StoreClass = dtd.dtdfile
