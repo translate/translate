@@ -32,6 +32,7 @@ class TestFileAction(unittest.TestCase):
         self.fileName = ""
         
     def testOpenFile(self):
+        """Test that if the Ok button on OpenFile dialog is clicked, return True."""
         QtCore.QObject.connect(self.fileActionObj, QtCore.SIGNAL("fileOpened"), self.slot)
         isFileName = self.fileActionObj.openFile()
         if isFileName:
@@ -41,22 +42,32 @@ class TestFileAction(unittest.TestCase):
             self.assertEqual(self.slotReached, False)
     
     def testSave(self):
+        """Test that the file for save and the opened file are the same."""
         QtCore.QObject.connect(self.fileActionObj, QtCore.SIGNAL("fileSaved"), self.slot)
         self.fileActionObj.fileName = QtCore.QString("example")
         self.fileActionObj.save()
         self.assertEqual(self.fileName, self.fileActionObj.fileName)
         
     def testSaveAs(self):
+        """Test that we can save to the same format as opened file."""
+        QtCore.QObject.connect(self.fileActionObj, QtCore.SIGNAL("fileSaved"), self.slot)
+        # test with po file
         self.fileActionObj.fileName = "example.po"
         self.fileActionObj.fileExtension = ".po"
-        QtCore.QObject.connect(self.fileActionObj, QtCore.SIGNAL("fileSaved"), self.slot)
         self.fileActionObj.saveAs()
         if (len(self.fileName) > 0):
             self.assertEqual(QtCore.QString(self.fileName).endsWith("po",  QtCore.Qt.CaseInsensitive), True)
      
+        # test with xliff file
+        self.fileActionObj.fileName = "example.xliff"
+        self.fileActionObj.fileExtension = ".xliff"
+        self.fileActionObj.saveAs()
+        if (len(self.fileName) > 0):
+            self.assertEqual(QtCore.QString(self.fileName).endsWith("xliff",  QtCore.Qt.CaseInsensitive), True)
+            
     def slot(self, fileName):
         self.fileName = fileName
-        self.slotReached = True    
+        self.slotReached = True
         
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
