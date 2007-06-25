@@ -98,6 +98,12 @@ def calcstats(units):
   return stats
 
 def summarize(title, stats, CSVstyle=False):
+  def percent(denominator, devisor):
+    if devisor == 0:
+      return 0
+    else:
+      return denominator*100/devisor
+
   if CSVstyle:
     print "%s, " % title,
     print "%d, %d, %d," % (stats["translated"], stats["translatedsourcewords"], stats["translatedtargetwords"]),
@@ -110,9 +116,9 @@ def summarize(title, stats, CSVstyle=False):
   else:
     print title
     print "type              strings      words (source)    words (translation)"
-    print "translated:   %5d (%3d%%) %10d (%3d%%) %15d" % (stats["translated"], stats["translated"]*100/stats["total"], stats["translatedsourcewords"], stats["translatedsourcewords"]*100/stats["totalsourcewords"], stats["translatedtargetwords"])
-    print "fuzzy:        %5d (%3d%%) %10d (%3d%%)             n/a" % (stats["fuzzy"], stats["fuzzy"]*100/stats["total"], stats["fuzzysourcewords"], stats["fuzzysourcewords"]*100/stats["totalsourcewords"] )
-    print "untranslated: %5d (%3d%%) %10d (%3d%%)             n/a" % (stats["untranslated"], stats["untranslated"]*100/stats["total"], stats["untranslatedsourcewords"], stats["untranslatedsourcewords"]*100/stats["totalsourcewords"])
+    print "translated:   %5d (%3d%%) %10d (%3d%%) %15d" % (stats["translated"], percent(stats["translated"], stats["total"]), stats["translatedsourcewords"], percent(stats["translatedsourcewords"], stats["totalsourcewords"]), stats["translatedtargetwords"])
+    print "fuzzy:        %5d (%3d%%) %10d (%3d%%)             n/a" % (stats["fuzzy"], percent(stats["fuzzy"], stats["total"]), stats["fuzzysourcewords"], percent(stats["fuzzysourcewords"], stats["totalsourcewords"]) )
+    print "untranslated: %5d (%3d%%) %10d (%3d%%)             n/a" % (stats["untranslated"], percent(stats["untranslated"], stats["total"]), stats["untranslatedsourcewords"], percent(stats["untranslatedsourcewords"], stats["totalsourcewords"]))
     print "Total:        %5d %17d %22d" % (stats["total"], stats["totalsourcewords"], stats["translatedtargetwords"])
     if stats["review"] > 0:
       print "review:       %5d %17d                    n/a" % (stats["review"], stats["reviewsourcewords"])
