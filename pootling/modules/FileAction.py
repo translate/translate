@@ -45,6 +45,9 @@ class FileAction(QtCore.QObject):
         self.directory = QtCore.QDir.homePath()
         
     def openFile(self):
+        """Open an OpenFile dialog.
+       @return: Returns True if ok button is click.
+       """
         #TODO: open one or more existing files selected
         newFileName = QtGui.QFileDialog.getOpenFileName(self.parentWidget, self.tr("Open File"),
                         self.directory,
@@ -62,6 +65,7 @@ class FileAction(QtCore.QObject):
         self.emitFileSaved()
         
     def saveAs(self):
+        """Open an SaveAs File dialog."""
         # TODO: think about export in different formats
         labelSaveAs = self.tr("Save As")
         self.fileExtension = self.fileExtension
@@ -127,7 +131,7 @@ class FileAction(QtCore.QObject):
         """
         if (filename):
             self.fileName = filename
-        self.emit(QtCore.SIGNAL("fileSaved"), str(filename)) 
+        self.emit(QtCore.SIGNAL("fileSaved"), str(self.fileName)) 
         
     def emitFileOpened(self):
         """emit signal fileOpened, with a filename as string"""
