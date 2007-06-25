@@ -10,7 +10,7 @@ class TestPOCount:
         """simple helper to check the respective word counts"""
         poelement = po.pounit(source)
         if target is not None:
-          poelement.settarget(target)
+          poelement.target = target
         wordssource, wordstarget = pocount.wordsinpoel(poelement)
         print 'Source (expected=%d; actual=%d): "%s"' % (expectedsource, wordssource, source)
         assert wordssource == expectedsource

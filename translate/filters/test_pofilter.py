@@ -28,20 +28,20 @@ class BaseTestFilter(object):
 
     def test_simplefail(self):
         """checks that an obviously wrong string fails"""
-        self.unit.settarget("REST")
+        self.unit.target = "REST"
         filter_result = self.filter(self.translationstore)
         assert filter_result.units[0].geterrors().has_key('startcaps')
 
     def test_variables_across_lines(self):
         """Test that variables can span lines and still fail/pass"""
-        self.unit.setsource('"At &timeBombURL."\n"label;."')
-        self.unit.settarget('"Tydens &tydBombURL."\n"etiket;."')
+        self.unit.source = '"At &timeBombURL."\n"label;."'
+        self.unit.target = '"Tydens &tydBombURL."\n"etiket;."'
         filter_result = self.filter(self.translationstore)
         assert len(filter_result.units) == 0
 
     def test_ignore_if_already_marked(self):
         """check that we don't add another failing marker if the message is already marked as failed"""
-        self.unit.settarget('')
+        self.unit.target = ''
         filter_result = self.filter(self.translationstore, cmdlineoptions=["--test=untranslated"])
         errors = filter_result.units[0].geterrors()
         assert len(errors) == 1
@@ -124,8 +124,8 @@ class BaseTestFilter(object):
 
     def test_unicode(self):
         """tests that we can handle UTF-8 encoded characters when there is no known header specified encoding"""
-        self.unit.setsource(u'Bézier curve')
-        self.unit.settarget(u'Bézier-kurwe')
+        self.unit.source = u'Bézier curve'
+        self.unit.target = u'Bézier-kurwe'
         filter_result = self.filter(self.translationstore)
         assert len(filter_result.units) == 0
 
