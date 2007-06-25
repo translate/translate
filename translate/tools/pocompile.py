@@ -27,13 +27,6 @@ from translate.storage import factory
 from translate.storage import po
 from translate.storage import mo
 
-def mounpack(mofile='messages.mo'):
-  """Helper to unpack Gettext MO files into a Python string"""
-  f = open(mofile)
-  s = f.read()
-  print "\\x%02x"*len(s) % tuple(map(ord, s))
-  f.close()
-
 class POCompile:
 
   def convertfile(self, inputfile, includefuzzy=False):

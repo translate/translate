@@ -47,6 +47,13 @@ import re
 
 MOMAGIC = 0x950412deL
 
+def mounpack(mofile='messages.mo'):
+  """Helper to unpack Gettext MO files into a Python string"""
+  f = open(mofile)
+  s = f.read()
+  print "\\x%02x"*len(s) % tuple(map(ord, s))
+  f.close()
+
 class mounit(base.TranslationUnit):
     """A class representing a .mo translation message."""
     def __init__(self, source=None):
