@@ -78,19 +78,11 @@
     <addaction name="actionStatistics" />
     <addaction name="actionReload" />
    </widget>
-   <widget class="QMenu" name="menuHelp" >
+   <widget class="QMenu" name="menuFile" >
     <property name="title" >
-     <string>&amp;Help</string>
+     <string>&amp;File</string>
     </property>
-    <addaction name="actionAbout" />
-    <addaction name="actionAboutQt" />
-   </widget>
-   <widget class="QMenu" name="menuSettings" >
-    <property name="title" >
-     <string>&amp;Settings</string>
-    </property>
-    <addaction name="actionBuild" />
-    <addaction name="actionConfigure" />
+    <addaction name="actionQuit" />
    </widget>
    <widget class="QMenu" name="menuProject" >
     <property name="title" >
@@ -100,6 +92,15 @@
      <property name="enabled" >
       <bool>false</bool>
      </property>
+     <property name="toolTip" >
+      <string>This open recent project.</string>
+     </property>
+     <property name="statusTip" >
+      <string>This open recent project.</string>
+     </property>
+     <property name="whatsThis" >
+      <string>&lt;h3>Open recent project&lt;/h3>Use this to be asked for the name exist of project in catalog manager.</string>
+     </property>
      <property name="title" >
       <string>Open &amp;Recent Project</string>
      </property>
@@ -108,11 +109,19 @@
     <addaction name="actionOpen" />
     <addaction name="menuOpenRecentProject" />
    </widget>
-   <widget class="QMenu" name="menuFile" >
+   <widget class="QMenu" name="menuSettings" >
     <property name="title" >
-     <string>&amp;File</string>
+     <string>&amp;Settings</string>
     </property>
-    <addaction name="actionQuit" />
+    <addaction name="actionBuild" />
+    <addaction name="actionConfigure" />
+   </widget>
+   <widget class="QMenu" name="menuHelp" >
+    <property name="title" >
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="actionAbout" />
+    <addaction name="actionAboutQt" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
@@ -157,6 +166,12 @@
    <property name="text" >
     <string>&amp;Quit</string>
    </property>
+   <property name="statusTip" >
+    <string>Quit the application.</string>
+   </property>
+   <property name="whatsThis" >
+    <string>&lt;h3>Quit&lt;/h3>Use this to quit the application. Any unsaved changes will be prompted.</string>
+   </property>
    <property name="shortcut" >
     <string>Ctrl+Q</string>
    </property>
@@ -165,10 +180,22 @@
    <property name="text" >
     <string>About</string>
    </property>
+   <property name="statusTip" >
+    <string>Display information about this software.</string>
+   </property>
+   <property name="whatsThis" >
+    <string>Display information about this software.</string>
+   </property>
   </action>
   <action name="actionAboutQt" >
    <property name="text" >
     <string>About Qt</string>
+   </property>
+   <property name="statusTip" >
+    <string>Display information about the Qt toolkit.</string>
+   </property>
+   <property name="whatsThis" >
+    <string>Display information about the Qt toolkit.</string>
    </property>
   </action>
   <action name="actionReload" >
@@ -203,6 +230,12 @@
    <property name="text" >
     <string>&amp;Find in Files...</string>
    </property>
+   <property name="statusTip" >
+    <string>Find text in the shown strings.</string>
+   </property>
+   <property name="whatsThis" >
+    <string>&lt;h3>Find&lt;/h3>Use this to find text in the shown strings. The find dialog will show at the bottom of the editor.</string>
+   </property>
    <property name="shortcut" >
     <string>Ctrl+F</string>
    </property>
@@ -230,10 +263,22 @@
    <property name="text" >
     <string>New...</string>
    </property>
+   <property name="statusTip" >
+    <string>This opens a dialog for entering  the information for a new project.</string>
+   </property>
+   <property name="whatsThis" >
+    <string>&lt;h3>New...&lt;/h3>Use this to open a dialog for entering  the information for a new project.</string>
+   </property>
   </action>
   <action name="actionOpen" >
    <property name="text" >
     <string>Open...</string>
+   </property>
+   <property name="statusTip" >
+    <string>This open an existing project.</string>
+   </property>
+   <property name="whatsThis" >
+    <string>&lt;h3>Open&lt;/h3>Use this to open an existing project.</string>
    </property>
   </action>
   <action name="actionBuild" >
@@ -242,6 +287,15 @@
    </property>
    <property name="text" >
     <string>Build TM...</string>
+   </property>
+   <property name="toolTip" >
+    <string>Build the translation memory.</string>
+   </property>
+   <property name="statusTip" >
+    <string>Build the translation memory.</string>
+   </property>
+   <property name="whatsThis" >
+    <string>&lt;h3>Build TM&lt;/h3>Use this to build the translation memory.</string>
    </property>
   </action>
   <action name="actionConfigure" >
