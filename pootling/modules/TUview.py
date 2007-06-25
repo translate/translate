@@ -28,6 +28,13 @@ SHOWTIP = 1
 CONTEXTMENU = 2
 
 class TUview(QtGui.QDockWidget):
+    """
+    Code for TUview.
+    
+    @signal scrollToRow: emited with value as row start from 0.
+    @signal term: emited with word found in self.sourceHighlighter.glossaryWords
+    @signal targetChanged: emitted content in textTarget is dirty.
+    """
     def __init__(self, parent):
         QtGui.QDockWidget.__init__(self, parent)
         self.setObjectName("detailDock")
@@ -147,7 +154,7 @@ class TUview(QtGui.QDockWidget):
     
     def emitTermRequest(self, pos):
         """
-        Find word in txtSource from position pos, and emit termRequest signal.
+        Find word in txtSource from position pos, and emit lookupTerm signal.
         """
         text = self.ui.txtSource.toPlainText()
         if (not text):
@@ -218,6 +225,7 @@ class TUview(QtGui.QDockWidget):
     def filterChanged(self, filter, lenFilter):
         """
         Adjust the scrollbar maximum according to lenFilter.
+        
         @param filter: helper constants for filtering
         @param lenFilter: len of filtered items.
         """
@@ -300,7 +308,7 @@ class TUview(QtGui.QDockWidget):
             if (unicode(unit.source) !=  unicode(self.ui.txtSource.toPlainText())):
                 self.ui.txtSource.setPlainText(unit.source)
             if (unicode(unit.target) !=  unicode(self.ui.txtTarget.toPlainText())):
-                self.ui.txtTarget.setPlainText(unit.target)
+                self.ui.txtTarget.setPlainText(unit.target or "")
                 self.setCursorToEnd(self.ui.txtTarget)
         else:
             # create source tab
