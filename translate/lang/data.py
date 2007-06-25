@@ -115,6 +115,8 @@ def simplercode(code):
     if not code:
         return code
 
+    # The @ modifier is used for script variants of the same language, like 
+    # sr@Latn or gez_ER@abegede
     modifier = code.rfind("@")
     if modifier >= 0:
         return code[:modifier]
