@@ -66,10 +66,7 @@
    <item row="3" column="2" >
     <widget class="QPushButton" name="btnRemoveAll" >
      <property name="toolTip" >
-      <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">clear path(s)&lt;/p>&lt;/body>&lt;/html></string>
+      <string>Clear path(s)</string>
      </property>
      <property name="text" >
       <string> Clea&amp;r</string>
@@ -88,10 +85,7 @@ p, li { white-space: pre-wrap; }
    <item row="2" column="2" >
     <widget class="QPushButton" name="btnRemove" >
      <property name="toolTip" >
-      <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">delete selected path(s)&lt;/p>&lt;/body>&lt;/html></string>
+      <string>Delete selected path(s)</string>
      </property>
      <property name="text" >
       <string> De&amp;lete</string>
@@ -110,10 +104,7 @@ p, li { white-space: pre-wrap; }
    <item row="1" column="2" >
     <widget class="QPushButton" name="btnAdd" >
      <property name="toolTip" >
-      <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Add path for TM&lt;/p>&lt;/body>&lt;/html></string>
+      <string>Add file or directory path(s)</string>
      </property>
      <property name="text" >
       <string> &amp;Add</string>

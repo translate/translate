@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/k-da/Documents/poxole/trunk/pootling/ui/tmSetting.ui'
 #
-# Created: Tue May 29 17:44:49 2007
+# Created: Mon Jun 25 20:06:00 2007
 #      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!
@@ -134,20 +134,11 @@ class Ui_tmsetting(object):
     def retranslateUi(self, tmsetting):
         tmsetting.setWindowTitle(QtGui.QApplication.translate("tmsetting", "Translation Memory and glossary Settings", None, QtGui.QApplication.UnicodeUTF8))
         self.checkBox.setText(QtGui.QApplication.translate("tmsetting", "Dive into Subfolders", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnRemoveAll.setToolTip(QtGui.QApplication.translate("tmsetting", "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-        "p, li { white-space: pre-wrap; }\n"
-        "</style></head><body style=\" font-family:\'Sans Serif\'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;\">\n"
-        "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">clear path(s)</p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnRemoveAll.setToolTip(QtGui.QApplication.translate("tmsetting", "Clear path(s)", None, QtGui.QApplication.UnicodeUTF8))
         self.btnRemoveAll.setText(QtGui.QApplication.translate("tmsetting", " Clea&r", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnRemove.setToolTip(QtGui.QApplication.translate("tmsetting", "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-        "p, li { white-space: pre-wrap; }\n"
-        "</style></head><body style=\" font-family:\'Sans Serif\'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;\">\n"
-        "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">delete selected path(s)</p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnRemove.setToolTip(QtGui.QApplication.translate("tmsetting", "Delete selected path(s)", None, QtGui.QApplication.UnicodeUTF8))
         self.btnRemove.setText(QtGui.QApplication.translate("tmsetting", " De&lete", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnAdd.setToolTip(QtGui.QApplication.translate("tmsetting", "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-        "p, li { white-space: pre-wrap; }\n"
-        "</style></head><body style=\" font-family:\'Sans Serif\'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;\">\n"
-        "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Add path for TM</p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnAdd.setToolTip(QtGui.QApplication.translate("tmsetting", "Add file or directory path(s)", None, QtGui.QApplication.UnicodeUTF8))
         self.btnAdd.setText(QtGui.QApplication.translate("tmsetting", " &Add", None, QtGui.QApplication.UnicodeUTF8))
         self.btnCancel.setText(QtGui.QApplication.translate("tmsetting", "&Cancel", None, QtGui.QApplication.UnicodeUTF8))
         self.btnOk.setText(QtGui.QApplication.translate("tmsetting", "&OK", None, QtGui.QApplication.UnicodeUTF8))
