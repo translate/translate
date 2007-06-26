@@ -286,17 +286,24 @@ msgstr "unable to read file"
         #TODO: test with plural unit.
     
     def testToggleFuzzy(self):
+        """Test that Toggle fuzzy state for current unit is working correctly."""
         self.operator.setNewStore(po.pofile.parsestring(self.message))
+        # the unit is first fuzzy, call toggleFuzzy(), the unit must not be fuzzy
         self.operator.toggleFuzzy()
         self.assertEqual(self.operator.store.units[0].isfuzzy(), False)
+        # calling toggleFuzzy() again, the unit must be fuzzy again.
+        self.operator.toggleFuzzy()
+        self.assertEqual(self.operator.store.units[0].isfuzzy(), True)
     
     def testInitSearch(self):
+        """Test the initilized variables for searching. """
         self.operator.initSearch('Aaa', [World.source, World.target, World.comment], False)
         self.assertEqual(self.operator.searchString, str('aaa'))
         self.assertEqual(self.operator.searchableText, [World.source, World.target, World.comment])
         self.assertEqual(self.operator.matchCase, False)
         
     def testSearchNext(self):
+        """Test Search forward through the text fields. """
         self.operator.setNewStore(po.pofile.parsestring(self.message))
         self.operator.initSearch('To', [World.source, World.target, World.comment], False)
         
@@ -317,6 +324,7 @@ msgstr "unable to read file"
         self.assertEqual(self.operator.searchPointer, 0)
     
     def testSearchPrevious(self):
+        """Test Search backward through the text fields. """
         self.operator.setNewStore(po.pofile.parsestring(self.message))
         self.operator.searchPointer = 1
         self.operator.initSearch('To', [World.source, World.target, World.comment], False)
@@ -348,30 +356,45 @@ msgstr "unable to read file"
         self.assertEqual(self.operator.foundPosition, -1)
     
     def test_getUnitString(self):
+        """Test that we will get the correct unit string."""
         self.operator.setNewStore(po.pofile.parsestring(self.message))
         self.operator.searchableText = [World.source, World.target]
         self.operator.matchCase = True
+        #get string in target
         self.operator.currentTextField = 1
         self.assertEqual(self.operator._getUnitString(), u"unable, to read file")
-    
-    def testSearchFound(self):
+        #get string in source
+        self.operator.currentTextField = 0
+        self.assertEqual(self.operator._getUnitString(), u'Unable to open file for reading.')
+        
+    def test_SearchFound(self):
+        """Test that the signal 'searchResult' is emitted when search found"""
         QtCore.QObject.connect(self.operator, QtCore.SIGNAL("searchResult"), self.slot)
         self.operator.setNewStore(po.pofile.parsestring(self.message))
         self.operator.initSearch("temporary", [World.source, World.target], True)
+        # test search found backward
+        self.operator.searchPrevious()
+        self.assertEqual(self.slotReached, True)
+        self.assertEqual(self.operator.searchableText[self.operator.currentTextField], 2)
+        # test search found forward
         self.operator.searchNext()
         self.assertEqual(self.slotReached, True)
+        self.assertEqual(self.operator.searchString, "temporary")
         self.assertEqual(self.operator.searchableText[self.operator.currentTextField], 1)
-    
+
     def test_SearchNotFound(self):
+        """Test that the signal 'searchResult' is emitted when search not found"""
         QtCore.QObject.connect(self.operator, QtCore.SIGNAL("searchResult"), self.slot)
-        self.operator.searchableText = [World.source, World.target]
-        self.operator.currentTextField = 0
-        self.operator._searchNotFound()
+        self.operator.setNewStore(po.pofile.parsestring(self.message))
+        self.operator.initSearch("Pootling0.2", [World.source, World.target], True)
+        self.operator.searchPrevious()
         self.assertEqual(self.slotReached, True)
-    
+        self.assertEqual(self.operator.searchString, "Pootling0.2")
+
     def slot(self):
         self.slotReached = True
         self.call += 1
+        
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
     unittest.main()
