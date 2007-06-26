@@ -23,6 +23,7 @@
 
 from translate.storage import base
 from translate.storage import po
+from translate.storage import mo
 from translate.storage import csvl10n
 from translate.storage import xliff
 from translate.storage import poxliff
@@ -35,9 +36,11 @@ from bz2 import BZ2File
 
 #TODO: Monolingual formats (with template?)
 
-classes = {"po": po.pofile, "pot": po.pofile, "csv": csvl10n.csvfile, 
-            "xliff": xliff.xlifffile, "xlf": xliff.xlifffile, 
-            "tmx": tmx.tmxfile, "tbx": tbx.tbxfile}
+classes = {"po": po.pofile, "pot": po.pofile, 
+           "mo": mo.mofile, "gmo": mo.mofile, 
+           "csv": csvl10n.csvfile, 
+           "xliff": xliff.xlifffile, "xlf": xliff.xlifffile, 
+           "tmx": tmx.tmxfile, "tbx": tbx.tbxfile}
 
 decompressclass = {
     'gz': GzipFile,
