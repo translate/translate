@@ -50,7 +50,7 @@ class csv2tbx:
     """converts csv element to tbx element"""
     #TODO: handle comments/source in thecsv.comment
     term = tbx.tbxunit(thecsv.source)
-    term.settarget(thecsv.target.decode('utf-8'))
+    term.target = thecsv.target.decode('utf-8')
     return term
 
   def convertfile(self, thecsvfile):
