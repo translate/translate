@@ -20,15 +20,14 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-"""script that converts a .po file with translations based on a .pot file
-generated from a OpenOffice localization .oo back to the .oo (but translated)
-Uses the original .oo to do the conversion as this makes sure we don't
-leave out any unincluded stuff..."""
+"""Converts an base class file (XLIFF or .po) with translations back to 
+OpenOffice format (but translated).  Uses the original .sdf file as a template
+for the conversion to ensure that all messages are included stuff."""
 
 import sys
 import os
 from translate.storage import oo
-from translate.storage import po
+from translate.storage import factory
 from translate.filters import pofilter
 from translate.filters import checks
 from translate.filters import autocorrect 
@@ -56,7 +55,7 @@ class reoo:
     self.includefuzzy = includefuzzy
 
   def makekey(self, ookey):
-    """converts an oo key tuple into a key identifier for the po file"""
+    """converts an oo key tuple into a key identifier for the source file"""
     project, sourcefile, resourcetype, groupid, localid, platform = ookey
     sourcefile = sourcefile.replace('\\','/')
     if self.long_keys:
@@ -74,11 +73,11 @@ class reoo:
     return oo.normalizefilename(key)
 
   def makeindex(self):
-    """makes an index of the oo keys that are used in the po file"""
+    """makes an index of the oo keys that are used in the source file"""
     self.index = {}
     for ookey, theoo in self.o.ookeys.iteritems():
-      pokey = self.makekey(ookey)
-      self.index[pokey] = theoo
+      sourcekey = self.makekey(ookey)
+      self.index[sourcekey] = theoo
 
   def readoo(self, of):
     """read in the oo from the file"""
@@ -87,9 +86,9 @@ class reoo:
     self.o.parse(oosrc)
     self.makeindex()
 
-  def handlepoelement(self, thepo):
+  def handleunit(self, unit):
     # TODO: make this work for multiple columns in oo...
-    locations = thepo.getlocations()
+    locations = unit.getlocations()
     # technically our formats should just have one location for each entry...
     # but we handle multiple ones just to be safe...
     for location in locations:
@@ -104,20 +103,20 @@ class reoo:
       if self.index.has_key(key):
         # now we need to replace the definition of entity with msgstr
         theoo = self.index[key] # find the oo
-        self.applytranslation(key, subkey, theoo, thepo)
+        self.applytranslation(key, subkey, theoo, unit)
       else:
         print >>sys.stderr, "couldn't find key %s from po in %d keys" % (key, len(self.index))
         try:
-          polines = str(thepo)
-          if isinstance(polines, unicode):
-            polines = polines.encode("utf-8")
-          print >>sys.stderr, polines
+          sourceunitlines = str(unit)
+          if isinstance(sourceunitlines, unicode):
+            sourceunitlines = sourceunitlines.encode("utf-8")
+          print >>sys.stderr, sourceunitlines
         except:
-          print >>sys.stderr, "error outputting po %r" % (str(thepo),)
+          print >>sys.stderr, "error outputting source unit %r" % (str(unit),)
 
-  def applytranslation(self, key, subkey, theoo, thepo):
-    """applies the translation for entity in the po element to the dtd element"""
-    if not self.includefuzzy and thepo.isfuzzy():
+  def applytranslation(self, key, subkey, theoo, unit):
+    """applies the translation from the source unit to the oo unit"""
+    if not self.includefuzzy and unit.isfuzzy():
       return
     makecopy = False
     if self.languages is None:
@@ -134,9 +133,8 @@ class reoo:
         makecopy = True
     if makecopy:
       part2 = oo.ooline(part1.getparts())
-    # this converts the po-style string to a dtd-style string
-    unquotedid = po.unquotefrompo(thepo.msgid, joinwithlinebreak=False)
-    unquotedstr = po.unquotefrompo(thepo.msgstr, joinwithlinebreak=False)
+    unquotedid = unit.source
+    unquotedstr = unit.target
     # check there aren't missing entities...
     if len(unquotedstr.strip()) == 0:
       return
@@ -153,13 +151,13 @@ class reoo:
     if makecopy:
       theoo.addline(part2)
 
-  def convertfile(self, inputpo):
-    self.p = inputpo
+  def convertfile(self, sourcestore):
+    self.p = sourcestore
     # translate the strings
-    for thepo in self.p.units:
+    for unit in self.p.units:
       # there may be more than one element due to msguniq merge
-      if filter.validelement(thepo, self.p.filename, self.filteraction):
-        self.handlepoelement(thepo)
+      if filter.validelement(unit, self.p.filename, self.filteraction):
+        self.handleunit(unit)
     # return the modified oo file object
     return self.o
 
@@ -167,15 +165,15 @@ def getmtime(filename):
   import stat
   return time.localtime(os.stat(filename)[stat.ST_MTIME])
 
-class oopocheckfilter(pofilter.pocheckfilter):
-  def validelement(self, thepo, filename, filteraction):
-    """Returns whether or not to use thepo in conversion. (filename is just for error reporting)"""
+class oocheckfilter(pofilter.pocheckfilter):
+  def validelement(self, unit, filename, filteraction):
+    """Returns whether or not to use unit in conversion. (filename is just for error reporting)"""
     if filteraction == "none": return True
-    filterresult = self.filterelement(thepo)
+    filterresult = self.filterelement(unit)
     if filterresult:
       if filterresult != autocorrect:
         for filtername, filtermessage in filterresult:
-          location = thepo.getlocations()[0].encode('utf-8')
+          location = unit.getlocations()[0].encode('utf-8')
           if filtername in self.options.error:
             print >> sys.stderr, "Error at %s::%s: %s" % (filename, location, filtermessage)
             return not filteraction in ["exclude-all", "exclude-serious"]
@@ -200,12 +198,11 @@ class oofilteroptions:
   autocorrect = False
 
 options = oofilteroptions()
-filter = oopocheckfilter(options, [checks.OpenOfficeChecker, pofilter.StandardPOChecker], checks.openofficeconfig)
+filter = oocheckfilter(options, [checks.OpenOfficeChecker, pofilter.StandardPOChecker], checks.openofficeconfig)
 
 def convertoo(inputfile, outputfile, templatefile, sourcelanguage=None, targetlanguage=None, timestamp=None, includefuzzy=False, multifilestyle="single", filteraction=None):
-  inputpo = po.pofile()
-  inputpo.parse(inputfile.read())
-  inputpo.filename = getattr(inputfile, 'name', '')
+  inputsource = factory.getobject(inputfile)
+  inputsource.filename = getattr(inputfile, 'name', '')
   if not targetlanguage:
     raise ValueError("You must specify the target language")
   if not sourcelanguage:
@@ -216,10 +213,9 @@ def convertoo(inputfile, outputfile, templatefile, sourcelanguage=None, targetla
   languages = (sourcelanguage, targetlanguage)
   if templatefile is None:
     raise ValueError("must have template file for oo files")
-    # convertor = po2oo()
   else:
     convertor = reoo(templatefile, languages=languages, timestamp=timestamp, includefuzzy=includefuzzy, long_keys=multifilestyle != "single", filteraction=filteraction)
-  outputoo = convertor.convertfile(inputpo)
+  outputoo = convertor.convertfile(inputsource)
   # TODO: check if we need to manually delete missing items
   outputoosrc = str(outputoo)
   outputfile.write(outputoosrc)
@@ -227,7 +223,7 @@ def convertoo(inputfile, outputfile, templatefile, sourcelanguage=None, targetla
 
 def main(argv=None):
   from translate.convert import convert
-  formats = {("po", "oo"):("oo", convertoo)}
+  formats = {("po", "oo"):("oo", convertoo), ("xlf", "oo"):("oo", convertoo)}
   # always treat the input as an archive unless it is a directory
   archiveformats = {(None, "output"): oo.oomultifile, (None, "template"): oo.oomultifile}
   parser = convert.ArchiveConvertOptionParser(formats, usetemplates=True, description=__doc__, archiveformats=archiveformats)
@@ -248,7 +244,6 @@ def main(argv=None):
   parser.passthrough.append("timestamp")
   parser.passthrough.append("filteraction")
   parser.run(argv)
-
 
 if __name__ == '__main__':
     main()

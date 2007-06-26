@@ -490,10 +490,6 @@ class pounit(base.TranslationUnit):
       self.removenotes()
       self.addnote(newnotes, origin="translator")
       
-
-  def isnotblank(self):
-    return not self.isblank()
-
   def isobsolete(self):
     return self.obsolete
 
@@ -872,10 +868,6 @@ class pofile(base.TranslationStore, poheader.poheader):
             start = 0
             end = 0
       end = end+1
-
-  def removeblanks(self):
-    """remove any units which say they are blank"""
-    self.units = filter(self.UnitClass.isnotblank, self.units)
 
   def removeduplicates(self, duplicatestyle="merge"):
     """make sure each msgid is unique ; merge comments etc from duplicates into original"""

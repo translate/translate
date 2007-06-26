@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-"""Converts OpenOffice.org exported .oo files to Gettext .po files"""
+"""Converts OpenOffice.org exported .oo files to Gettext .po or XLIFF files"""
 
 import os
 from translate.storage import po
@@ -39,24 +39,26 @@ class oo2po:
     self.long_keys = long_keys
 
   def escape_text(self, text):
-    """Escapes sdf text to be suitable for po consumption."""
+    """Escapes sdf text to be suitable for unit consumption."""
     return text.replace("\\\\", "\a").replace("\\n", "\n").replace("\\t", "\t").replace("\\r", "\r").replace("\a", "\\\\")
 
-  def makepo(self, part1, part2, translators_comment, key, subkey):
-    """makes a po element out of a subkey of two parts"""
-    thepo = po.pounit(encoding="UTF-8")
-    thepo.addlocation(key + "." + subkey)
-    if getattr(translators_comment, subkey).strip() != "":
-      thepo.addnote(getattr(translators_comment, subkey), "developer")
+  def maketargetunit(self, part1, part2, translators_comment, key, subkey):
+    """makes a base unit (.po or XLIFF) out of a subkey of two parts"""
     #TODO: Do better
     text1 = self.escape_text(getattr(part1, subkey))
+    if text1 == "":
+      return None
     text2 = self.escape_text(getattr(part2, subkey))
-    thepo.source = text1.decode('utf-8')
-    thepo.target = text2.decode('utf-8')
-    return thepo
+
+    unit = po.pounit(text1.decode('utf-8'), encoding="UTF-8")
+    unit.target = text2.decode('utf-8')
+    unit.addlocation(key + "." + subkey)
+    if getattr(translators_comment, subkey).strip() != "":
+      unit.addnote(getattr(translators_comment, subkey), origin="developer")
+    return unit
 
   def makekey(self, ookey):
-    """converts an oo key tuple into a key identifier for the po file"""
+    """converts an oo key tuple into a key identifier for the base class file (.po or XLIFF)"""
     project, sourcefile, resourcetype, groupid, localid, platform = ookey
     sourcefile = sourcefile.replace('\\','/')
     if self.long_keys:
@@ -74,7 +76,7 @@ class oo2po:
     return oo.normalizefilename(key)
 
   def convertelement(self, theoo):
-    """convert an oo element into a list of po units"""
+    """convert an oo element into a list of base units (.po or XLIFF)"""
     if self.sourcelanguage in theoo.languages:
       part1 = theoo.languages[self.sourcelanguage]
     else:
@@ -94,29 +96,28 @@ class oo2po:
     else:
       translators_comment = oo.ooline()
     key = self.makekey(part1.getkey())
-    textpo = self.makepo(part1, part2, translators_comment, key, 'text')
-    quickhelppo = self.makepo(part1, part2, translators_comment, key, 'quickhelptext')
-    titlepo = self.makepo(part1, part2, translators_comment, key, 'title')
-    polist = [textpo, quickhelppo, titlepo]
-    return polist
+    unitlist = []
+    for subkey in ("text", "quickhelptext", "title"):
+      unit = self.maketargetunit(part1, part2, translators_comment, key, subkey)
+      if unit is not None:
+        unitlist.append(unit)
+    return unitlist
 
   def convertfile(self, theoofile, duplicatestyle="msgctxt"):
-    """converts an entire oo file to .po format"""
-    thepofile = po.pofile()
+    """converts an entire oo file to a base class format (.po or XLIFF)"""
+    thetargetfile = po.pofile()
     # create a header for the file
     bug_url = 'http://qa.openoffice.org/issues/enter_bug.cgi' + ('''?subcomponent=ui&comment=&short_desc=Localization issue in file: %(filename)s&component=l10n&form_name=enter_issue''' % {"filename": theoofile.filename}).replace(" ", "%20").replace(":", "%3A")
-    headerpo = thepofile.makeheader(charset="UTF-8", encoding="8bit", x_accelerator_marker="~", report_msgid_bugs_to=bug_url)
+    headerpo = thetargetfile.makeheader(charset="UTF-8", encoding="8bit", x_accelerator_marker="~", report_msgid_bugs_to=bug_url)
     headerpo.addnote("extracted from %s" % theoofile.filename)
-    thepofile.units.append(headerpo)
+    thetargetfile.units.append(headerpo)
     # go through the oo and convert each element
     for theoo in theoofile.units:
-      polist = self.convertelement(theoo)
-      for thepo in polist:
-        thepofile.units.append(thepo)
-    thepofile.removeblanks()
-    # TODO: add a switch for duplicates...
-    thepofile.removeduplicates(duplicatestyle)
-    return thepofile
+      unitlist = self.convertelement(theoo)
+      for unit in unitlist:
+        thetargetfile.addunit(unit)
+    thetargetfile.removeduplicates(duplicatestyle)
+    return thetargetfile
 
 def verifyoptions(options):
   """verifies the commandline options"""
@@ -141,11 +142,11 @@ def convertoo(inputfile, outputfile, templates, pot=False, sourcelanguage=None, 
   if targetlanguage and targetlanguage not in fromfile.languages:
     print "Warning: targetlanguage %s not found in inputfile (contains %s)" % (targetlanguage, ", ".join(fromfile.languages))
   convertor = oo2po(sourcelanguage, targetlanguage, blankmsgstr=pot, long_keys=multifilestyle!="single")
-  outputpo = convertor.convertfile(fromfile, duplicatestyle)
-  if outputpo.isempty():
+  newfile = convertor.convertfile(fromfile, duplicatestyle)
+  if newfile.isempty():
     return 0
-  outputposrc = str(outputpo)
-  outputfile.write(outputposrc)
+  newoutputsrc = str(newfile)
+  outputfile.write(newoutputsrc)
   return 1
 
 def main(argv=None):
@@ -166,7 +167,6 @@ def main(argv=None):
   parser.passthrough.append("targetlanguage")
   parser.verifyoptions = verifyoptions
   parser.run(argv)
-
 
 if __name__ == '__main__':
     main()

@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-"""Converts OpenOffice.org exported .oo files to xliff files"""
+"""Converts OpenOffice.org exported .oo files to Gettext .po or XLIFF files"""
 
 import os
 from translate.storage import xliff
@@ -38,21 +38,28 @@ class oo2xliff:
     self.blankmsgstr = blankmsgstr
     self.long_keys = long_keys
 
-  def makexliffunit(self, part1, part2, translators_comment, key, subkey):
-    """makes a xliff element out of a subkey of two parts"""
+  def escape_text(self, text):
+    """Escapes sdf text to be suitable for unit consumption."""
+    return text.replace("\\\\", "\a").replace("\\n", "\n").replace("\\t", "\t").replace("\\r", "\r").replace("\a", "\\")
+
+  def maketargetunit(self, part1, part2, translators_comment, key, subkey):
+    """makes a base unit (.po or XLIFF) out of a subkey of two parts"""
     #TODO: Do better
-    text1 = getattr(part1, subkey).replace("\\\\", "\a").replace("\\n", "\n").replace("\\t", "\t").replace("\\r", "\r").replace("\a", "\\")
-    text2 = getattr(part2, subkey).replace("\\\\", "\a").replace("\\n", "\n").replace("\\t", "\t").replace("\\r", "\r").replace("\a", "\\")
+    text1 = self.escape_text(getattr(part1, subkey))
+    if text1 == "":
+      return None
+    text2 = self.escape_text(getattr(part2, subkey))
 
     unit = xliff.xliffunit(text1)
     unit.target = text2
+    unit.markfuzzy(False)
     unit.addnote(key + "." + subkey + "\n", origin="location")
     if getattr(translators_comment, subkey).strip() != "":
-      unit.addnote("%s" % getattr(translators_comment, subkey), origin="developer")
+      unit.addnote(getattr(translators_comment, subkey), origin="developer")
     return unit
 
   def makekey(self, ookey):
-    """converts an oo key tuple into a key identifier for the xliff file"""
+    """converts an oo key tuple into a key identifier for the base class file (.po or XLIFF)"""
     project, sourcefile, resourcetype, groupid, localid, platform = ookey
     sourcefile = sourcefile.replace('\\','/')
     if self.long_keys:
@@ -70,7 +77,7 @@ class oo2xliff:
     return oo.normalizefilename(key)
 
   def convertelement(self, theoo):
-    """convert an oo element into a list of xliff units"""
+    """convert an oo element into a list of base units (.po or XLIFF)"""
     if self.sourcelanguage in theoo.languages:
       part1 = theoo.languages[self.sourcelanguage]
     else:
@@ -90,23 +97,24 @@ class oo2xliff:
     else:
       translators_comment = oo.ooline()
     key = self.makekey(part1.getkey())
-    textunit = self.makexliffunit(part1, part2, translators_comment, key, 'text')
-    quickhelpunit = self.makexliffunit(part1, part2, translators_comment, key, 'quickhelptext')
-    titleunit = self.makexliffunit(part1, part2, translators_comment, key, 'title')
-    unitlist = [textunit, quickhelpunit, titleunit]
+    unitlist = []
+    for subkey in ("text", "quickhelptext", "title"):
+      unit = self.maketargetunit(part1, part2, translators_comment, key, subkey)
+      if unit is not None:
+        unitlist.append(unit)
     return unitlist
 
   def convertfile(self, theoofile, duplicatestyle="msgctxt"):
-    """converts an entire oo file to xliff format"""
-    thefile = xliff.xlifffile()
+    """converts an entire oo file to a base class format (.po or XLIFF)"""
+    thetargetfile = xliff.xlifffile()
     # create a header for the file
     bug_url = 'http://qa.openoffice.org/issues/enter_bug.cgi' + ('''?subcomponent=ui&comment=&short_desc=Localization issue in file: %(filename)s&component=l10n&form_name=enter_issue''' % {"filename": theoofile.filename}).replace(" ", "%20").replace(":", "%3A")
     # go through the oo and convert each element
     for theoo in theoofile.units:
       unitlist = self.convertelement(theoo)
       for unit in unitlist:
-        thefile.addunit(unit)
-    return thefile
+        thetargetfile.addunit(unit)
+    return thetargetfile
 
 def verifyoptions(options):
   """verifies the commandline options"""
@@ -131,16 +139,16 @@ def convertoo(inputfile, outputfile, templates, pot=False, sourcelanguage=None, 
   if targetlanguage and targetlanguage not in fromfile.languages:
     print "Warning: targetlanguage %s not found in inputfile (contains %s)" % (targetlanguage, ", ".join(fromfile.languages))
   convertor = oo2xliff(sourcelanguage, targetlanguage, blankmsgstr=pot, long_keys=multifilestyle!="single")
-  outputxliff = convertor.convertfile(fromfile, duplicatestyle)
-  if outputxliff.isempty():
+  newfile = convertor.convertfile(fromfile, duplicatestyle)
+  if newfile.isempty():
     return 0
-  outputxliff = str(outputxliff)
-  outputfile.write(outputxliff)
+  newoutputsrc = str(newfile)
+  outputfile.write(newoutputsrc)
   return 1
 
 def main(argv=None):
   from translate.convert import convert
-  formats = {"oo":("xliff",convertoo), "sdf":("xliff",convertoo)}
+  formats = {"oo":("xlf",convertoo), "sdf":("xlf",convertoo)}
   # always treat the input as an archive unless it is a directory
   archiveformats = {(None, "input"): oo.oomultifile}
   parser = convert.ArchiveConvertOptionParser(formats, usepots=True, description=__doc__, archiveformats=archiveformats)
