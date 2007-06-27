@@ -579,6 +579,10 @@ class pounit(base.TranslationUnit):
         inmsgstr = 0
         inmsgid_comment = 0
       elif line.startswith('msgid'):
+        # if we just finished a msgstr or msgid_plural, there is probably an 
+        # empty line missing between the units, so let's stop the parsing now.
+        if inmsgstr or inmsgid_plural:
+          break
         inmsgctxt = 0
         inmsgid = 1
         inmsgid_plural = 0
