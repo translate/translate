@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # 
-# Copyright 2005, 2006 Zuza Software Foundation
+# Copyright 2005-2007 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
@@ -21,6 +21,7 @@
 
 """conflict finder for gettext .po localization files"""
 
+from translate.storage import factory
 from translate.storage import po
 from translate.misc import optrecurse
 import optparse
@@ -102,31 +103,30 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
     self.buildconflictmap()
     self.outputconflicts(options)
 
-  def unquote(self, postr, options):
-    """returns the unquoted postr that contains the text to be matched"""
-    unquoted = po.unquotefrompo(postr, False)
+  def clean(self, string, options):
+    """returns the cleaned string that contains the text to be matched"""
     if options.ignorecase:
-      unquoted = unquoted.lower()
+      string = string.lower()
     for accelerator in options.accelchars:
-      unquoted = unquoted.replace(accelerator, "")
-    unquoted = unquoted.strip()
-    return unquoted
+      string = string.replace(accelerator, "")
+    string = string.strip()
+    return string
 
   def processfile(self, fileprocessor, options, fullinputpath):
     """process an individual file"""
     inputfile = self.openinputfile(options, fullinputpath)
-    inputpofile = po.pofile(inputfile)
-    for thepo in inputpofile.units:
-      if not (thepo.isheader() or thepo.isblankmsgstr()):
-        if thepo.hasplural():
+    inputfile = factory.getobject(inputfile)
+    for unit in inputfile.units:
+      if not (unit.isheader() or unit.isblankmsgstr()):
+        if unit.hasplural():
           continue
         if not options.invert:
-          msgid = self.unquote(thepo.msgid, options)
-          msgstr = self.unquote(thepo.msgstr, options)
+          source  = self.clean(unit.source, options)
+          target = self.clean(unit.target, options)
         else:
-          msgstr = self.unquote(thepo.msgid, options)
-          msgid = self.unquote(thepo.msgstr, options)
-        self.textmap.setdefault(msgid, []).append((msgstr, thepo, fullinputpath))
+          target = self.clean(unit.source, options)
+          source = self.clean(unit.target, options)
+        self.textmap.setdefault(source, []).append((target, unit, fullinputpath))
 
   def flatten(self, text, joinchar):
     """flattens text to just be words"""
@@ -141,23 +141,23 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
   def buildconflictmap(self):
     """work out which strings are conflicting"""
     self.conflictmap = {}
-    for msgid, translations in self.textmap.iteritems():
-      if len(msgid) <= 1:
+    for source, translations in self.textmap.iteritems():
+      if len(source) <= 1:
         continue
       if len(translations) > 1:
-        uniquetranslations = dict.fromkeys([msgstr for msgstr, thepo, filename in translations])
+        uniquetranslations = dict.fromkeys([target for target, unit, filename in translations])
         if len(uniquetranslations) > 1:
-          self.conflictmap[self.flatten(msgid, " ")] = translations
+          self.conflictmap[self.flatten(source, " ")] = translations
 
   def outputconflicts(self, options):
     """saves the result of the conflict match"""
     print "%d/%d different strings have conflicts" % (len(self.conflictmap), len(self.textmap))
     reducedmap = {}
-    for msgid, translations in self.conflictmap.iteritems():
-      words = msgid.split()
+    for source, translations in self.conflictmap.iteritems():
+      words = source.split()
       words.sort(lambda x, y: cmp(len(x), len(y)))
-      msgid = words[-1]
-      reducedmap.setdefault(msgid, []).extend(translations)
+      source = words[-1]
+      reducedmap.setdefault(source, []).extend(translations)
     # reduce plurals
     plurals = {}
     for word in reducedmap:
@@ -165,13 +165,13 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
         plurals[word] = word + "s"
     for word, pluralword in plurals.iteritems():
       reducedmap[word].extend(reducedmap.pop(pluralword))
-    for msgid, translations in reducedmap.iteritems():
-      flatmsgid = self.flatten(msgid, "-")
-      fulloutputpath = os.path.join(options.output, flatmsgid + os.extsep + "po")
+    for source, translations in reducedmap.iteritems():
+      flatsource = self.flatten(source, "-")
+      fulloutputpath = os.path.join(options.output, flatsource + os.extsep + "po")
       conflictfile = po.pofile()
-      for msgstr, thepo, filename in translations:
-        thepo.othercomments.append("# (poconflicts) %s\n" % filename)
-        conflictfile.units.append(thepo)
+      for target, unit, filename in translations:
+        unit.othercomments.append("# (poconflicts) %s\n" % filename)
+        conflictfile.units.append(unit)
       open(fulloutputpath, "w").write(str(conflictfile))
 
 def main():
