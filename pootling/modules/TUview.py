@@ -94,6 +94,9 @@ class TUview(QtGui.QDockWidget):
         """
         Popup menu or show tooltip of glossary word's translation.
         """
+        if (not candidates):
+            return
+        
         if (self.requestAction == CONTEXTMENU):
             menu = QtGui.QMenu()
             text = self.ui.txtTarget.toPlainText()
