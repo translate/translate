@@ -22,6 +22,7 @@
 from PyQt4 import QtCore, QtGui
 from translate.search import match
 from translate.storage import po
+from translate.storage import xliff
 
 import os, sys
 import unittest
@@ -54,7 +55,7 @@ msgstr "Could not open any"
   </body>
  </file>
 </xliff>'''
-        store = po.pofile.parsestring(XMLskeleton)
+        store = xliff.xlifffile.parsestring(XMLskeleton)
         matcher = match.matcher(store, 10, 75, 300)
         self.pickle.dumpMatcher(matcher, self.pickleFile)
         # if file exists.
