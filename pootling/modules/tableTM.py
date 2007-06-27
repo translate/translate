@@ -35,7 +35,7 @@ class tableTM(QtGui.QDockWidget):
         self.ui.setupUi(self.form)
         self.setWidget(self.form)
         self.ui.tblTM.setEnabled(False)
-        self.headerLabels = [self.tr("Similarity"),self.tr("Source"), self.tr("Target")]
+        self.headerLabels = [self.tr("Match"),self.tr("Source"), self.tr("Target")]
         self.ui.tblTM.setColumnCount(len(self.headerLabels))
         self.ui.tblTM.setHorizontalHeaderLabels(self.headerLabels)
         self.ui.tblTM.resizeColumnToContents(0)
@@ -47,12 +47,10 @@ class tableTM(QtGui.QDockWidget):
         self.normalState = QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
         self.ui.tblTM.selectRow(0)
         self.infoIcon = QtGui.QIcon("../images/TM_info.png")
-        self.filepath = " "
-        self.target = ""
         
-        self.connect(self.ui.tblTM, QtCore.SIGNAL("currentCellChanged(int, int, int, int)"), self.getCurrentTarget)
         self.connect(self.ui.tblTM, QtCore.SIGNAL("itemDoubleClicked(QTableWidgetItem *)"), self.emitTarget)
         self.createContextMenu()
+        self.allowUpdate = True
         
     def createContextMenu(self):
         # context menu of items
@@ -70,6 +68,9 @@ class tableTM(QtGui.QDockWidget):
         Fill table with candidates source and target.
         @param candidates: list of unit.
         """
+        if (not self.allowUpdate):
+            self.allowUpdate = True
+            return
         if (not self.isVisible()):
             return
             
@@ -80,15 +81,20 @@ class tableTM(QtGui.QDockWidget):
             self.ui.tblTM.setRowCount(row + 1)
             similarity = unit.getnotes("translator").rjust(4)
             item = QtGui.QTableWidgetItem(similarity)
+            item.setData(QtCore.Qt.UserRole, QtCore.QVariant(unit.filepath))
             item.setFlags(self.normalState)
             item.setTextAlignment(QtCore.Qt.AlignRight + QtCore.Qt.AlignVCenter)
             self.ui.tblTM.setItem(row, 0, item)
             
-            item = QtGui.QTableWidgetItem(unit.source)
+            source = self.shorten(unit.source)
+            item = QtGui.QTableWidgetItem(source)
+            item.setData(QtCore.Qt.UserRole, QtCore.QVariant(unit.source))
             item.setFlags(self.normalState)
             self.ui.tblTM.setItem(row, 1, item)
             
-            item = QtGui.QTableWidgetItem(unit.target)
+            target = self.shorten(unit.target)
+            item = QtGui.QTableWidgetItem(target)
+            item.setData(QtCore.Qt.UserRole, QtCore.QVariant(unit.target))
             item.setFlags(self.normalState)
             self.ui.tblTM.setItem(row, 2, item)
             tooltips = "<h5>Found in: </h5>" + unit.filepath + "<h5> Translator: </h5>" + unit.translator + "<h5> Date: </h5>" + unit.date
@@ -103,45 +109,34 @@ class tableTM(QtGui.QDockWidget):
         self.show()
         self.createContextMenu()
         self.ui.tblTM.setCurrentCell(0,0)
-        self.getCurrentTarget(0,0,0,0)
-
-    def clearInfo(self):
-        """Clear all information in both table and labels."""
-        self.ui.tblTM.clear()
-        self.ui.tblTM.setRowCount(0)
-        self.target = ""
-        self.filepath = ""
-        
-    def getCurrentTarget(self, row, col, preRow, preCol):
-        """Slot to get info from the current found unit."""
-        if (row < 0):
-            self.clearInfo()
-        source = self.ui.tblTM.item(row, 1)
-        if (source):
-            self.source = source.text()
-        target = self.ui.tblTM.item(row, 2)
-        if (target):
-            self.target = target.text()
-        filepath = self.ui.tblTM.item(row, 3)
-
+    
     def emitTarget(self):
-        """@emit targetChanged signal and send the current target."""
-        self.emit(QtCore.SIGNAL("targetChanged"), unicode(self.target))
+        """
+        Send "targetChanged" signal with target as string.
+        """
+        # don't allow fill table since the unit's target is same from here.
+        self.allowUpdate = False
+        row = self.ui.tblTM.currentRow()
+        item = self.ui.tblTM.item(row, 2)
+        if (item):
+            target = item.data(QtCore.Qt.UserRole).toString()
+            self.emit(QtCore.SIGNAL("targetChanged"), unicode(target))
     
     def emitOpenFile(self):
         """
-        Send "openFile" signal with filename together with the findUnit signal with the current source.
+        Send "openFile" signal with filename together with the findUnit signal
+        with the current source.
         """
-        source = str(self.source)
-        self.emit(QtCore.SIGNAL("openFile"), str(self.filepath))
-        self.emit(QtCore.SIGNAL("findUnit"), source)
+        row = self.ui.tblTM.currentRow()
+        item = self.ui.tblTM.item(row, 0)
+        if (item):
+            filepath = unicode(item.data(QtCore.Qt.UserRole).toString())
+            self.emit(QtCore.SIGNAL("openFile"), filepath)
         
-    def filterChanged(self, filter, lenFilter):
-        if (not lenFilter):
-            self.ui.tblTM.setRowCount(0)
-            self.ui.tblTM.clear()
-            self.ui.tblTM.setHorizontalHeaderLabels(self.headerLabels)
-        self.ui.tblTM.setEnabled(not(lenFilter) and False or True)
+        item = self.ui.tblTM.item(row, 1)
+        if (item):
+            source = unicode(item.data(QtCore.Qt.UserRole).toString())
+            self.emit(QtCore.SIGNAL("findUnit"), source)
         
     def setToolTip(self, index = None, col = 0, tooltips = "", icon = QtGui.QIcon()):
         """
@@ -185,11 +180,22 @@ class tableTM(QtGui.QDockWidget):
         """
         Clear table to be filled by a new unit.
         """
+        if (not self.allowUpdate):
+            return
         self.ui.tblTM.setEnabled(True)
         self.ui.tblTM.clear()
         self.ui.tblTM.setHorizontalHeaderLabels(self.headerLabels)
         self.ui.tblTM.setSortingEnabled(False)
         self.ui.tblTM.setRowCount(0)
+    
+    def shorten(self, text):
+        """
+        Return the first part of text, seperated by new line and filled with three dots.
+        """
+        line = text.find("\n")
+        if (line >= 0):
+            text = text[:line] + "..."
+        return text
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

@@ -144,7 +144,6 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.dockOverview, QtCore.SIGNAL("requestUnit"), self.operator.emitRequestUnit)
         self.connect(self.operator, QtCore.SIGNAL("tmRequest"), self.dockOverview.popupTranslation)
         self.connect(self.operator, QtCore.SIGNAL("tmCandidates"), self.table.fillTable)
-        self.connect(self.operator, QtCore.SIGNAL("filterChanged"), self.table.filterChanged)
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.table.newUnit)
         self.connect(self.table, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
         self.connect(self.table, QtCore.SIGNAL("visible"), self.operator.setTmLookup)
@@ -610,7 +609,6 @@ class MainWindow(QtGui.QMainWindow):
         self.operator.setAfterfileClosed()
         self.ui.actionSave.setEnabled(False)
         self.statuslabel.setText("")
-        self.table.clearInfo()
     
     def OpeningClosingFile(self, filename, bool):
         self.setWindowTitle(((filename != "") and (filename + ' - ') or filename) + World.settingApp + ' ' + __version__.ver)
