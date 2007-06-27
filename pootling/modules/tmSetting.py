@@ -61,8 +61,10 @@ class globalSetting(QtGui.QDialog):
         
         if (self.section == "TM"):
             self.setToolWhatsThis("Translation Memory")
+            self.ui.spinMaxLen.setMaximum(500)
         elif (self.section == "Glossary"):
             self.setToolWhatsThis("Glossary")
+            self.ui.spinMaxLen.setMaximum(100)
         
         # timer for extend tm
         self.timer = QtCore.QTimer()
@@ -186,10 +188,12 @@ class globalSetting(QtGui.QDialog):
             return
         # start build matcher with self.filenames[0]
         store = self.createStore(self.filenames[0])
-        if (self.section == "TM"):
-            self.matcher = match.matcher(store, maxCan, minSim, maxLen)
-        else:
-            self.matcher = match.terminologymatcher(store, maxCan, minSim, maxLen)
+        self.matcher = None
+        if (store):
+            if (self.section == "TM"):
+                self.matcher = match.matcher(store, maxCan, minSim, maxLen)
+            else:
+                self.matcher = match.terminologymatcher(store, maxCan, minSim, maxLen)
         # extend matcher, start with self.filenames[1]
         self.iterNumber = 1
         self.timer.stop()
@@ -239,7 +243,14 @@ class globalSetting(QtGui.QDialog):
         
         filename = self.filenames[self.iterNumber]
         store = self.createStore(filename)
-        self.matcher.extendtm(store.units, store)
+        if (store):
+            if (self.matcher):
+                self.matcher.extendtm(store.units, store)
+            else:
+                if (self.section == "TM"):
+                    self.matcher = match.matcher(store, maxCan, minSim, maxLen)
+                else:
+                    self.matcher = match.terminologymatcher(store, maxCan, minSim, maxLen)
         self.iterNumber += 1
         perc = int((float(self.iterNumber) / len(self.filenames)) * 100)
         self.ui.progressBar.setValue(perc)
@@ -280,6 +291,7 @@ class globalSetting(QtGui.QDialog):
             store = factory.getobject(file)
         except:
             store = None
+            return None
         store.filepath = file
         if (isinstance(store, poheader.poheader)):
             headerDic = store.parseheader()
