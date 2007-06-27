@@ -709,3 +709,22 @@ msgstr[1] "Koeie"
         print "__str__", str(oldfile)
         assert len(oldfile.units) == 2
         assert str(oldfile).find("# old lonesome comment\n\n") >= 0
+    
+    def test_malformed_units(self):
+        """Test that we handle malformed units reasonably."""
+        posource = 'msgid "thing\nmsgstr "ding"\nmsgid "Second thing"\nmsgstr "Tweede ding"\n'
+        pofile = self.poparse(posource)
+        assert len(pofile.units) == 2
+
+    def test_malformed_obsolete_units(self):
+        """Test that we handle malformed obsolete units reasonably."""
+        posource = '''msgid "thing
+msgstr "ding"
+
+#~ msgid "Second thing"
+#~ msgstr "Tweede ding"
+#~ msgid "Third thing"
+#~ msgstr "Derde ding"
+'''
+        pofile = self.poparse(posource)
+        assert len(pofile.units) == 3
