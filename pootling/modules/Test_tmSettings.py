@@ -25,6 +25,7 @@ import os, sys
 import unittest
 import tempfile
 from pootling.modules import tmSetting
+from translate.search import match
         
 class Test_tmSetting(unittest.TestCase):
     
@@ -34,21 +35,6 @@ class Test_tmSetting(unittest.TestCase):
         self.tm.lazyInit()
         self.glossary.lazyInit()
         self.tm.filenames = []
-        self.message = '''msgid ""
-msgstr ""
-"POT-Creation-Date: 2005-05-18 21:23+0200\n"
-"PO-Revision-Date: 2006-11-27 11:50+0700\n"
-"Project-Id-Version: cupsdconf\n"
-""
-# aaaaa
-#: kfaximage.cpp:189
-msgid "Unable to open file for reading."
-msgstr "unable to read file"
-'''
-        fp, self.filename = tempfile.mkstemp('.po')
-        fp = open(self.filename,'w')
-        fp.write(self.message)
-        fp.close()
         
     def testAddLocation(self):
         """Test Add TMpath to TM list."""
@@ -111,8 +97,8 @@ msgstr "unable to read file"
         for filepath in filepaths:
             os.remove(filepath)
         #Test test if it is a directrory and includeSub is True, dive into sub
-        dirpathTop = tempfile.mkdtemp('TEST','','/tmp')
-        dirpath = tempfile.mkdtemp('TEST','', dirpathTop)
+        dirpathTop = tempfile.mkdtemp('','TEST','/tmp')
+        dirpath = tempfile.mkdtemp('','TEST', dirpathTop)
         self.tm.getFiles(dirpath, True)
         #No supported file in the folder, so the number of files remains unchanged.
         self.assertEqual(len(self.tm.filenames), 3)
@@ -123,6 +109,9 @@ msgstr "unable to read file"
         #Have supported file in the chile folder, but we choose to include sub, so the number of files changed.
         self.tm.getFiles(dirpathTop, True)
         self.assertEqual(len(self.tm.filenames), 4)
+        os.remove(filepath)
+        os.rmdir(dirpath)
+        os.rmdir(dirpathTop)
         
     def testGetPathList(self):
         """Test that it returns a list of path according to the parameter isChecked or unChecked """
@@ -135,19 +124,61 @@ msgstr "unable to read file"
          #If the path is not checked
         itemList = self.tm.getPathList(QtCore.Qt.Unchecked)
         self.assertEqual(len(itemList), 0)
+        
     def testCreateStore(self):
         """Test that it creates a store object from file.
         add translator, date, and filepath properties to store object."""
-        store = self.tm.createStore(self.filename)
+        message = '''msgid ""
+msgstr ""
+"POT-Creation-Date: 2005-05-18 21:23+0200\n"
+"PO-Revision-Date: 2006-11-27 11:50+0700\n"
+"Project-Id-Version: cupsdconf\n"
+""
+# aaaaa
+#: kfaximage.cpp:189
+msgid "Unable to open file for reading."
+msgstr "unable to read file"
+'''
+
+        fp, filename = tempfile.mkstemp('.po')
+        fp = open(filename,'w')
+        fp.write(message)
+        fp.close()
+        store = self.tm.createStore(filename)
         self.assertEqual(store.translator, "")
         self.assertEqual(store.date,"2006-11-27 11:50+0700")
-        self.assertEqual(store.filepath, self.filename)
-        self.assertEqual(store.filepath, self.filename)
+        self.assertEqual(store.filepath, filename)
+        self.assertEqual(store.filepath, filename)
         self.assertEqual(store.units[1].source, "Unable to open file for reading.")
         self.assertEqual(store.units[1].target, "unable to read file")
-        os.remove(self.filename)
+        os.remove(filename)
         
+    def testBuildMatcher(self):
+        """Test that we can build the correct matcher. """
+        self.tm.section = 'TM'
+        self.tm.ui.spinSimilarity.setValue(75)
+        self.tm.ui.spinMaxCandidate.setValue(10)
+        self.tm.ui.spinMaxLen.setValue(70)
+        handle, self.tm.pickleFile = tempfile.mkstemp('','PKL')
+        dirpathTop = tempfile.mkdtemp('','TEST','/tmp')
+        dirpath = tempfile.mkdtemp('','TEST', dirpathTop)
+        #Test that it do nothing if no filename
+        self.tm.buildMatcher(QtCore.QStringList(dirpath), True)
+        self.assertEqual(self.tm.matcher, None)
+        self.assertEqual(isinstance(self.tm.matcher,match.matcher), False)
+        self.assertEqual(isinstance(self.tm.matcher,match.terminologymatcher), False)
         
+        # Test that it starts to build matcher with given file
+        handle, path = tempfile.mkstemp('.po','',dirpath)
+        self.tm.buildMatcher(QtCore.QStringList(path), True)
+        self.assertEqual(isinstance(self.tm.matcher,match.matcher), True)
+        self.assertEqual(isinstance(self.tm.matcher,match.terminologymatcher), False)
+        os.remove(path)
+        os.rmdir(dirpath)
+        os.rmdir(dirpathTop)
+        
+        os.remove(self.tm.pickleFile)
+
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
     unittest.main()
