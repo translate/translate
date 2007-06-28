@@ -393,13 +393,12 @@ class MainWindow(QtGui.QMainWindow):
         for i in range(numClear):
             self.bookmarkaction[i].setVisible(False)
         World.settings.remove("bookmarkList")
-
-    def setOpening(self, fileName): 
+    
+    def AppendOpenRecent(self, fileName):
         """
-        set status after open a file
-        @param fileName string, the filename to open
+        Append the recentely opened file to the open recent list.
+        @param fileName string, the filename to append to Open Recent.
         """
-        self.OpeningClosingFile(fileName, True)
         files = World.settings.value("recentFileList").toStringList()
         files.removeAll(fileName)
         files.prepend(fileName)
@@ -409,6 +408,14 @@ class MainWindow(QtGui.QMainWindow):
             self.ui.menuOpen_Recent.setEnabled(True)
         World.settings.setValue("recentFileList", QtCore.QVariant(files))
         self.updateRecentAction()
+        
+    def setOpening(self, fileName): 
+        """
+        Set status after open a file.
+        @param fileName string, the filename to open
+        """
+        self.OpeningClosingFile(fileName, True)
+        self.AppendOpenRecent(fileName)
         self.clearBookmarks()
         
     def startRecentAction(self):
@@ -439,7 +446,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def updateRecentAction(self):
         """
-        Update recent actions of Open Recent Files with names of recent opened files
+        Update recent actions of Open Recent Files with names of recentely opened files
         """
         if (not len(self.ui.menuOpen_Recent.actions())):
             self.createRecentAction()
@@ -484,6 +491,8 @@ class MainWindow(QtGui.QMainWindow):
         @param title: a filename with full path, type as string."""
         if (title):
             self.setWindowTitle(self.tr("%1[*] - %2").arg(title).arg(World.settingApp))
+            self.AppendOpenRecent(title)
+            
 
     def toggleFirstLastUnit(self, atFirst, atLast):
         """set enable/disable first, previous, next, and last unit buttons
