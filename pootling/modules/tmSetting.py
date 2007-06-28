@@ -73,6 +73,13 @@ class globalSetting(QtGui.QDialog):
         # timer for extend tm
         self.timer = QtCore.QTimer()
         self.connect(self.timer, QtCore.SIGNAL("timeout()"), self.extendMatcher)
+        
+        # get pickleFile
+        World.settings.beginGroup(self.section)
+        self.pickleFile = World.settings.value("pickleFile").toString()
+        if (not self.pickleFile):
+            handle, self.pickleFile = tempfile.mkstemp('','PKL')
+        World.settings.endGroup()
     
     def setToolWhatsThis(self, tool):
         """
@@ -98,39 +105,38 @@ class globalSetting(QtGui.QDialog):
         
         # get application setting file, and parse it.
         self.loadSettings()
+        self.ui.btnOk.setEnabled(True)
         self.show()
         
     def loadSettings(self):
         """
         Load settings of TM/Glossary
         """
-        World.settings.beginGroup(self.section)
         self.ui.listWidget.clear()
+        World.settings.beginGroup(self.section)
         enabledPath = World.settings.value("enabledpath").toStringList()
         disabledPath = World.settings.value("disabledpath").toStringList()
         for path in enabledPath:
             self.addLocation(path)
         for path in disabledPath:
             self.addLocation(path, QtCore.Qt.Unchecked)
-        
         includeSub = World.settings.value("diveintosub").toBool()
-        minSim = World.settings.value("similarity", QtCore.QVariant(75)).toInt()[0]
-        maxCan = World.settings.value("max_candidates", QtCore.QVariant(10)).toInt()[0]
+        minSim = self.getMinimumSimilarity()
+        maxCan = self.getMaximumCandidates()
+        maxLen = self.getMaximumLenght()
+        World.settings.endGroup()
         
-        if (self.section == "TM"):
-            maxLen = World.settings.value("max_string_len", QtCore.QVariant(70)).toInt()[0]
-        elif (self.section == "Glossary"):
-            maxLen = World.settings.value(self.section + "/" + "max_string_len", QtCore.QVariant(100)).toInt()[0]
+##        if (self.section == "TM"):
+##            maxLen = World.settings.value("max_string_len", QtCore.QVariant(70)).toInt()[0]
+##        elif (self.section == "Glossary"):
+##            maxLen = World.settings.value(self.section + "/" + "max_string_len", QtCore.QVariant(100)).toInt()[0]
         
         self.ui.checkBox.setChecked(includeSub)
         self.ui.spinSimilarity.setValue(minSim)
         self.ui.spinMaxCandidate.setValue(maxCan)
         self.ui.spinMaxLen.setValue(maxLen)
         
-        self.pickleFile = World.settings.value("pickleFile").toString()
-        if (not self.pickleFile):
-            handle, self.pickleFile = tempfile.mkstemp('','PKL')
-        World.settings.endGroup()
+        
     
     def addLocation(self, TMpath, checked = QtCore.Qt.Checked):
         """
@@ -157,45 +163,60 @@ class globalSetting(QtGui.QDialog):
         Collect filename into self.filenames, call buildMatcher(),
         dump matcher, and save settings.
         """
-        # get filenames from checked list.
-        paths = self.getPathList(QtCore.Qt.Checked)
-        includeSub = self.ui.checkBox.isChecked()
-        self.buildMatcher(paths, includeSub)
-    
-    def buildMatcher(self, paths, includeSub = True):
-        """
-        Create matcher, start a timer for extend tm.
-        @param paths: file or directory path for building
-        @param includeSub: a bool value; dive into sub, if it is true
-        """
-        self.matcher = None
-        self.filenames = []
-        for path in paths:
-            self.getFiles(path, includeSub)
+        self.ui.btnOk.setEnabled(False)
         
-        # Save dialog settings.
+        # get filenames from checked list.
+        enabledPath = self.getPathList(QtCore.Qt.Checked)
+        includeSub = self.ui.checkBox.isChecked()
+        self.buildMatcher(enabledPath, includeSub)
+        
         disabledPath = self.getPathList(QtCore.Qt.Unchecked)
         minSim = self.ui.spinSimilarity.value()
         maxCan = self.ui.spinMaxCandidate.value()
         maxLen = self.ui.spinMaxLen.value()
+        
+        # save some settings
         World.settings.beginGroup(self.section)
-        World.settings.setValue("enabledpath", QtCore.QVariant(paths))
         World.settings.setValue("disabledpath", QtCore.QVariant(disabledPath))
         World.settings.setValue("pickleFile", QtCore.QVariant(self.pickleFile))
-        World.settings.setValue("diveintosub", QtCore.QVariant(includeSub))
         World.settings.setValue("similarity", QtCore.QVariant(minSim))
         World.settings.setValue("max_candidates", QtCore.QVariant(maxCan))
         World.settings.setValue("max_string_len", QtCore.QVariant(maxLen))
         World.settings.endGroup()
         
+    def buildMatcher(self, paths, includeSub=True):
+        """
+        create matcher, start a timer for extend tm.
+        """
+        self.lazyInit()
+        
+        # save some settings
+        World.settings.beginGroup(self.section)
+        World.settings.setValue("enabledpath", QtCore.QVariant(paths))
+        World.settings.setValue("diveintosub", QtCore.QVariant(includeSub))
+        World.settings.endGroup()
+        
+        self.matcher = None
+        self.filenames = []
+        for path in paths:
+            self.getFiles(path, includeSub)
+        
         # close dialog if no filename.
         if (len(self.filenames) <= 0):
+            self.timer.stop()
+            self.iterNumber = 1
+            self.dumpMatcher()
+            self.emitMatcher()
             self.close()
             return
+        
         # start build matcher with self.filenames[0]
         store = self.createStore(self.filenames[0])
         self.matcher = None
         if (store):
+            maxCan = self.getMaximumCandidates()
+            minSim = self.getMinimumSimilarity()
+            maxLen = self.getMaximumLenght()
             if (self.section == "TM"):
                 self.matcher = match.matcher(store, maxCan, minSim, maxLen)
             else:
@@ -252,6 +273,9 @@ class globalSetting(QtGui.QDialog):
             if (self.matcher):
                 self.matcher.extendtm(store.units, store)
             else:
+                maxCan = self.getMaximumCandidates()
+                minSim = self.getMinimumSimilarity()
+                maxLen = self.getMaximumLenght()
                 if (self.section == "TM"):
                     self.matcher = match.matcher(store, maxCan, minSim, maxLen)
                 else:
@@ -325,6 +349,24 @@ class globalSetting(QtGui.QDialog):
             if (not (item.checkState() ^ isChecked)):
                 itemList.append(str(item.text()))
         return itemList
+    
+    def getMaximumCandidates(self):
+        World.settings.beginGroup(self.section)
+        result = World.settings.value("max_candidates", QtCore.QVariant(10)).toInt()[0]
+        World.settings.endGroup()
+        return result
+        
+    def getMinimumSimilarity(self):
+        World.settings.beginGroup(self.section)
+        result = World.settings.value("similarity", QtCore.QVariant(75)).toInt()[0]
+        World.settings.endGroup()
+        return result
+        
+    def getMaximumLenght(self):
+        World.settings.beginGroup(self.section)
+        result = World.settings.value("max_string_len", QtCore.QVariant(70)).toInt()[0]
+        World.settings.endGroup()
+        return result
     
 class tmSetting(globalSetting):
     def __init__(self, parent):
