@@ -52,9 +52,13 @@ class CatalogSetting(QtGui.QDialog):
         self.catalogModified = False
         
     def showFileDialog(self):
+        """Open the file dialog where you can choose both file and directory. """
         self.filedialog.show()
     
     def addLocation(self, text):
+        """Add path to Catalog list.
+        @param text: File or directory path as QString
+        """
         items = self.ui.listWidget.findItems(text, QtCore.Qt.MatchCaseSensitive)
         if (not items):
             item = QtGui.QListWidgetItem(text)
@@ -62,11 +66,13 @@ class CatalogSetting(QtGui.QDialog):
             self.catalogModified = True
     
     def clearLocation(self):
+        """Clear all paths from the Catalog List and also unchecked DiveIntoSubCatalog checkbox."""
         self.ui.listWidget.clear()
         self.catalogModified = True
         self.ui.chbDiveIntoSubfolders.setChecked(False)
     
     def removeLocation(self):
+        """Remove the selected path from the Catalog list."""
         self.ui.listWidget.takeItem(self.ui.listWidget.currentRow())
         self.catalogModified = True
     
@@ -91,10 +97,16 @@ class CatalogSetting(QtGui.QDialog):
         self.moveItem(1)
     
     def rememberDive(self):
+        """ Remember the check state of diveIntoSubCatalog"""
         World.settings.setValue("diveIntoSubCatalog", QtCore.QVariant(self.ui.chbDiveIntoSubfolders.isChecked()))
         self.catalogModified = True
 
     def closeEvent(self, event):
+        """Save CatalogPath to Qsettings before closing dialog. Then emit singnal updateCatalog.
+       @param QCloseEvent Object: received close event when closing widget
+       
+       @signal updateCatalog: emitted when CatalogPath is modified.
+       """
         stringlist = QtCore.QStringList()
         for i in range(self.ui.listWidget.count()):
             stringlist.append(self.ui.listWidget.item(i).text())
