@@ -116,27 +116,22 @@ class globalSetting(QtGui.QDialog):
         World.settings.beginGroup(self.section)
         enabledPath = World.settings.value("enabledpath").toStringList()
         disabledPath = World.settings.value("disabledpath").toStringList()
+        includeSub = World.settings.value("diveintosub").toBool()
+        World.settings.endGroup()
+        
         for path in enabledPath:
             self.addLocation(path)
         for path in disabledPath:
             self.addLocation(path, QtCore.Qt.Unchecked)
-        includeSub = World.settings.value("diveintosub").toBool()
+        
         minSim = self.getMinimumSimilarity()
         maxCan = self.getMaximumCandidates()
         maxLen = self.getMaximumLenght()
-        World.settings.endGroup()
-        
-##        if (self.section == "TM"):
-##            maxLen = World.settings.value("max_string_len", QtCore.QVariant(70)).toInt()[0]
-##        elif (self.section == "Glossary"):
-##            maxLen = World.settings.value(self.section + "/" + "max_string_len", QtCore.QVariant(100)).toInt()[0]
         
         self.ui.checkBox.setChecked(includeSub)
         self.ui.spinSimilarity.setValue(minSim)
         self.ui.spinMaxCandidate.setValue(maxCan)
         self.ui.spinMaxLen.setValue(maxLen)
-        
-        
     
     def addLocation(self, TMpath, checked = QtCore.Qt.Checked):
         """
@@ -165,16 +160,10 @@ class globalSetting(QtGui.QDialog):
         """
         self.ui.btnOk.setEnabled(False)
         
-        # get filenames from checked list.
-        enabledPath = self.getPathList(QtCore.Qt.Checked)
-        includeSub = self.ui.checkBox.isChecked()
-        self.buildMatcher(enabledPath, includeSub)
-        
         disabledPath = self.getPathList(QtCore.Qt.Unchecked)
         minSim = self.ui.spinSimilarity.value()
         maxCan = self.ui.spinMaxCandidate.value()
         maxLen = self.ui.spinMaxLen.value()
-        
         # save some settings
         World.settings.beginGroup(self.section)
         World.settings.setValue("disabledpath", QtCore.QVariant(disabledPath))
@@ -183,6 +172,11 @@ class globalSetting(QtGui.QDialog):
         World.settings.setValue("max_candidates", QtCore.QVariant(maxCan))
         World.settings.setValue("max_string_len", QtCore.QVariant(maxLen))
         World.settings.endGroup()
+        
+        # get filenames from checked list.
+        enabledPath = self.getPathList(QtCore.Qt.Checked)
+        includeSub = self.ui.checkBox.isChecked()
+        self.buildMatcher(enabledPath, includeSub)
         
     def buildMatcher(self, paths, includeSub=True):
         """
@@ -363,8 +357,12 @@ class globalSetting(QtGui.QDialog):
         return result
         
     def getMaximumLenght(self):
+        if (self.section == "TM"):
+            defValue = 100
+        else:
+            defValue = 70
         World.settings.beginGroup(self.section)
-        result = World.settings.value("max_string_len", QtCore.QVariant(70)).toInt()[0]
+        result = World.settings.value("max_string_len", QtCore.QVariant(defValue)).toInt()[0]
         World.settings.endGroup()
         return result
     
