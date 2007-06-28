@@ -29,7 +29,7 @@ from pootling.modules import FileDialog
 
 class CatalogSetting(QtGui.QDialog):
     """
-    Code for setting path of translation memory dialog
+    Code for setting path of catalog dialog
     """
     def __init__(self, parent):
         QtGui.QDialog.__init__(self, parent)

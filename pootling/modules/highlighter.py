@@ -126,8 +126,9 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         """
         set searchString and make document() dirty then it will
         re highlightBlock().
+        @param searchString: string to be searched for
+        @param foundPosition: Position of found string in the document
         """
-        # DOTO: fix search only highlight first found...
         self.searchString = searchString
         self.foundPosition = foundPosition
         self.refresh()
