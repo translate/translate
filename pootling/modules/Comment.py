@@ -92,7 +92,7 @@ class CommentDock(QtGui.QDockWidget):
         
         #move the cursor to the end of sentence.
         cursor = self.ui.txtTranslatorComment.textCursor()
-        cursor.setPosition(len(unit.target))
+        cursor.setPosition(len(unit.target or ""))
         self.ui.txtTranslatorComment.setTextCursor(cursor)
         self.lastUnit = unit
         

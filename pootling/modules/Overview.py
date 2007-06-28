@@ -192,7 +192,7 @@ class OverviewDock(QtGui.QDockWidget):
         item.setFlags(self.normalState)
         self.ui.tableOverview.setItem(row, 1, item)
         # target field
-        target = unit.target
+        target = unit.target or ""
         line = target.find("\n")
         if (line >= 0):
             target = target[:line] + "..."
@@ -228,7 +228,7 @@ class OverviewDock(QtGui.QDockWidget):
             self.emit(QtCore.SIGNAL("targetChanged"), unicode(targetAfterEdit))
         
         if (self.unit):
-            self.updateText(self.unit.target)
+            self.updateText(self.unit.target or "")
         return
     
     def fillTarget(self, row, column):
@@ -274,8 +274,8 @@ class OverviewDock(QtGui.QDockWidget):
         targetItem = self.ui.tableOverview.item(row, 2)
         # update target column only if text has changed.
         if (targetItem.text() != unit.target):
-            target = unit.target
-            line = target.find("\n")
+            target = unit.target or ""
+            line = target.find("\n") 
             if (line >= 0):
                 target = target[:line] + "..."
             targetItem.setText(target)
