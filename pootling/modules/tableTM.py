@@ -18,7 +18,7 @@
 #       Keo Sophon (keosophon@khmeros.info)
 #       San Titvirak (titvirak@khmeros.info)
 #       Seth Chanratha (sethchanratha@khmeros.info)
-#This module is working on the display of TM in a talbe
+#This module is working on the display of TM in a table
 
 from PyQt4 import QtCore, QtGui
 from pootling.ui.Ui_TableTM import Ui_Form
@@ -26,6 +26,16 @@ import sys, os
 
 
 class tableTM(QtGui.QDockWidget):
+    """
+    This class works with the display of translation memory in a table
+    
+    @signal itemDoubleClicked(QTableWidgetItem *): emitted when doubled clicking on tableWidgetItem
+    @signal targetChanged: emitted with target as string when itemDoubleClicked(QTableWidgetItem *) is emitted.
+    @signal openFile: emitted with filename together with the findUnit signal
+    @signal findUnit: emitted with the current source.
+    @signal visible: emitted with the bool value to toggleViewAction
+    
+    """
     def __init__(self, parent):
         QtGui.QDockWidget.__init__(self, parent)
         self.setObjectName("miscDock")
@@ -201,5 +211,5 @@ if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     table = tableTM(None)
     table.show()
-    sys.exit(table.exec_())
+    sys.exit(app.exec_())
 
