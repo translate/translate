@@ -35,6 +35,7 @@ class TestTableTM(unittest.TestCase):
     def setUp(self):
         self.tableTM = tableTM.tableTM(None)
         self.slotReached = False
+        self.call = 0
         message = '''# aaaaa
 #: kfaximage.cpp:189
 #, fuzzy
@@ -69,6 +70,48 @@ msgstr "open any"
         self.tableTM.fillTable(candidates)
         self.assertEqual(len(candidates), 2)
         self.assertEqual(len(candidates), self.tableTM.ui.tblTM.rowCount())
+    
+    def testEmitSignal(self):
+        """ Test that the signal is emitted only have item."""
+        QtCore.QObject.connect(self.tableTM, QtCore.SIGNAL("targetChanged"), self.slot)
+        QtCore.QObject.connect(self.tableTM, QtCore.SIGNAL("openFile"), self.slot)
+        QtCore.QObject.connect(self.tableTM, QtCore.SIGNAL("findUnit"), self.slot)
+        
+        # Test that if there is no candidates, the signal is not emitted
+        candidates = []
+        self.tableTM.setVisible(True)
+        self.tableTM.fillTable(candidates)
+        self.tableTM.emitTarget()
+        self.assertEqual(self.slotReached, False)
+        
+        #Test with candidates
+        candidates = self.matcher.candidates.units
+        self.tableTM.allowUpdate = True
+        for i in range(len(candidates)):
+            self.matcher.candidates.units[i].filepath = "/tmp/a.po"
+        
+        self.tableTM.fillTable(candidates)
+        self.assertEqual(len(candidates), 2)
+        self.assertEqual(len(candidates), self.tableTM.ui.tblTM.rowCount())
+        self.tableTM.ui.tblTM.selectRow(0)
+        self.tableTM.emitTarget()
+        self.tableTM.emitOpenFile()
+        self.assertEqual(self.slotReached, True)
+        self.assertEqual(self.call, 3)
+    
+    def testShorten(self):
+        """Test that it returns only the first part of text, seperated by new line and filled with three dots. """
+        text = "first line \n second line\n"
+        text = self.tableTM.shorten(text)
+        self.assertEqual(text, "first line ...")
+        
+        text = "first line \n second line\n third line "
+        text = self.tableTM.shorten(text)
+        self.assertEqual(text, "first line ...")
+        
+    def slot(self):
+        self.slotReached = True
+        self.call +=1
         
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
