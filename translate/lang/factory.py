@@ -24,6 +24,8 @@
 from translate.lang import common
 from translate.lang import data
 
+prefix = "code_"
+
 def getlanguage(code):
     """This returns a language class.
 
@@ -32,18 +34,23 @@ def getlanguage(code):
     if code:
         code = code.replace("-", "_")
     try:
-        if code is None:
-            raise ImportError ("Can't determine language code")
-        exec("from translate.lang import %s" % code)
-        exec("langclass = %s.%s" % (code, code))
-        return langclass
-    except SyntaxError, e:
-        # perhaps someone is trying to import a language of which the code is 
-        # a reserved word in python (like Icelandic (is) / Oriya (or))
-        # If we want to override the classes for these languages, we can 
-        # perhaps have a convention to attempt loading code_is, for example.
-        return common.Common(code)
+        try:
+            if code is None:
+                raise ImportError ("Can't determine language code")
+            exec("from translate.lang import %s" % code)
+            exec("langclass = %s.%s" % (code, code))
+            return langclass
+        except SyntaxError, e:
+            # Someone is probably trying to import a language of which the code
+            # is a reserved word in python (like Icelandic (is) / Oriya (or))
+            # The convention to handle these is to have it in a file like  
+            # code_is, for example.
+            exec("from translate.lang import %s%s" % (prefix, code))
+            exec("langclass = %s%s.%s%s" % (prefix, code, prefix, code))
+            return langclass
     except ImportError, e:
+        if code and code.startswith(prefix):
+            code = code[:len(prefix)]
         simplercode = data.simplercode(code)
         if simplercode:
             relatedlanguage = getlanguage(simplercode)
