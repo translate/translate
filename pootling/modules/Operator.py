@@ -665,7 +665,7 @@ class Operator(QtCore.QObject):
         self.modified = bool
         self.emit(QtCore.SIGNAL("readyForSave"), self.modified)
     
-    def getModified(self):
+    def isModified(self):
         return ((hasattr(self, "modified") and self.modified) or False)
     
     def slotFindUnit(self, source):

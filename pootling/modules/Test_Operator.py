@@ -248,16 +248,16 @@ msgstr "unable to read file"
         
         os.remove(filename)
         
-    def testgetModified(self):
-        """Test that the getModified interface is correct."""
+    def testisModified(self):
+        """Test that the isModified interface is correct."""
         self.operator.setNewStore(po.pofile.parsestring(self.message))
         # test it will return True, if modified is true
         self.operator.modified = True
-        self.assertEqual(self.operator.getModified(), True)
+        self.assertEqual(self.operator.isModified(), True)
         
         # test it will return False, if modified is False
         self.operator.modified = False
-        self.assertEqual(self.operator.getModified(), False)
+        self.assertEqual(self.operator.isModified(), False)
         
     def testSetComment(self):
         """Test that we can set comment to the store correctly  """

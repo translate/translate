@@ -469,10 +469,7 @@ class MainWindow(QtGui.QMainWindow):
         @param QCloseEvent Object: received close event when closing mainwindows
         """
         QtGui.QMainWindow.closeEvent(self, event)
-        self.dockTUview.emitTargetChanged()
-#        if self.operator.matcherChanged:
-#            self.operator.pickleAgain()
-        if self.operator.getModified():
+        if self.operator.isModified():
             if self.fileaction.aboutToClose(self):
                 event.accept()
             else:
@@ -600,7 +597,7 @@ class MainWindow(QtGui.QMainWindow):
     
     def closeFile(self):
         """return True when successfully close file, else return False."""
-        if (not self.operator.getModified()):
+        if (not self.operator.isModified()):
             self.setClosingFile()
         else:
             if self.fileaction.aboutToClose(self):
