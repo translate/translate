@@ -33,7 +33,11 @@ from translate.storage import poheader
 from translate.search import match
 
 class globalSetting(QtGui.QDialog):
-    """Code for setting path of translation memory dialog."""
+    """Code for setting path of translation memory and Glossary dialog.
+    
+    @signal matcher: emitted with self.matcher, self.section when the timer finishes the last filename in self.filenames 
+    @signal buildPercentage: emitted with percentage to update progress bar
+    """
     
     def __init__(self, parent):
         QtGui.QDialog.__init__(self, parent)
@@ -88,7 +92,7 @@ class globalSetting(QtGui.QDialog):
         self.ui.progressBar.setWhatsThis(self.tr(progress))
     
     def showDialog(self):
-        """Make the Translation Memory Setting dialog visible."""
+        """Make the Translation Memory or Glossary Setting dialog visible."""
         self.lazyInit()
         self.ui.progressBar.setValue(0)
         
@@ -160,7 +164,9 @@ class globalSetting(QtGui.QDialog):
     
     def buildMatcher(self, paths, includeSub = True):
         """
-        create matcher, start a timer for extend tm.
+        Create matcher, start a timer for extend tm.
+        @param paths: file or directory path for building
+        @param includeSub: a bool value; dive into sub, if it is true
         """
         self.matcher = None
         self.filenames = []
@@ -201,8 +207,9 @@ class globalSetting(QtGui.QDialog):
         
     def getFiles(self, path, includeSub): 
         """
-        add path to catalog tree view if it's file, if it's directory then
-        dive into it and add files.
+        Get the filenames. Only supported files are taken into account; and if it's directory and includeSub is True, dive into it and add files.
+        @param paths: file or directory path for adding to Catalog
+        @param includeSub: a bool value; dive into sub, if it is true
         """
         path = unicode(path)
         if (os.path.isfile(path)):
@@ -225,10 +232,9 @@ class globalSetting(QtGui.QDialog):
     
     def extendMatcher(self):
         """
-        extend TM to self.matcher through self.filenames with self.iterNumber as
-        iterator.
-        @signal matcher: This signal is emitted when the timer finishes the last
-        filename in self.filenames
+        extend TM to self.matcher through self.filenames with self.iterNumber as iterator.
+        @signal matcher: This signal is emitted with self.matcher, self.section when the timer finishes the last filename in self.filenames 
+        @signal buildPercentage: emitted with percentage to update progress bar
         """
         if (len(self.filenames) <= 1):
             self.timer.stop()
@@ -240,7 +246,6 @@ class globalSetting(QtGui.QDialog):
         
         # stop the timer for processing the extendMatcher()
         self.timer.stop()
-        
         filename = self.filenames[self.iterNumber]
         store = self.createStore(filename)
         if (store):
@@ -309,6 +314,7 @@ class globalSetting(QtGui.QDialog):
     def getPathList(self, isChecked):
         """
         Return list of path according to the parameter isChecked or unChecked
+        @param isChecked: as bool type
         @return: itemList as list of unchecked or checked path
         """
         
