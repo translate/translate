@@ -63,18 +63,19 @@ class Operator(QtCore.QObject):
         """
         Read a file into the internal datastructure.
         @param fileName: the file to open, either a string or a file object.
+        @return True of False indicates success open of file.
         """
         if (not os.path.exists(fileName)):
             QtGui.QMessageBox.critical(None, 'Error', fileName  + '\n' + 'The file doesn\'t exist.')
-            return
+            return False
         try:
             store = factory.getobject(fileName)
         except Exception, e:
             QtGui.QMessageBox.critical(None, 'Error', 'Error while trying to read file ' + fileName  + '\n' + str(e))
-            return
+            return False
         self.setNewStore(store)
-        self.emit(QtCore.SIGNAL("fileIsOK"), fileName)
         self.fileName = fileName
+        return True
       
     def setNewStore(self, store):
         """

@@ -285,7 +285,6 @@ class MainWindow(QtGui.QMainWindow):
         # set file status information to text label of status bar.
         self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.statuslabel.setText)
         self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.openFile)
-        self.connect(self.operator, QtCore.SIGNAL("fileIsOK"), self.setOpening)
 
         # progress bar
         self.progressBar = QtGui.QProgressBar()
@@ -402,20 +401,12 @@ class MainWindow(QtGui.QMainWindow):
         World.settings.setValue("recentFileList", QtCore.QVariant(files))
         self.updateRecentAction()
         
-    def setOpening(self, fileName): 
-        """
-        Set status after open a file.
-        @param fileName string, the filename to open
-        """
-        self.setStatusForFile(fileName)
-        self.prependOpenRecent(fileName)
-        self.clearBookmarks()
-        
     def startRecentAction(self):
         action = self.sender()
         if action:
             # TODO: remove filename from recent file if it doesn't exist.
-            self.fileaction.setFileName(action.data().toString())
+            filename = unicode(action.data().toString())
+            self.openFile(filename)
     
     def clearRecentAction(self):
         self.ui.menuOpen_Recent.clear()
@@ -586,9 +577,17 @@ class MainWindow(QtGui.QMainWindow):
                 self.ui.statusbar.addWidget(self.statusfuzzy)
     
     def openFile(self, filename):
+        """
+        Open filename and prepend it in recent list.
+        @param filename: file to open.
+        """
         closed = self.closeFile()
         if (closed):
-            self.operator.getUnits(filename)
+            if (self.operator.getUnits(filename)):
+                self.fileaction.setFileName(filename)
+                self.setStatusForFile(filename)
+                self.prependOpenRecent(filename)
+                self.clearBookmarks()
         self.show()
     
     def closeFile(self, force = False):
@@ -683,7 +682,7 @@ def main(inputFile = None):
     
     if (inputFile):
         if os.path.exists(inputFile):
-            editor.fileaction.setFileName(inputFile)
+            self.openFile(inputFile)
         else:
             msg = editor.tr("%1 file name doesn't exist").arg(inputFile)
             QtGui.QMessageBox.warning(editor, editor.tr("File not found") , msg)

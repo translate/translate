@@ -129,7 +129,6 @@ class FileAction(QtCore.QObject):
         @param filename: file's name as QString
         """
         self.filename = filename
-        self.emitFileOpened()
         # remember last open file's directory.
         self.directory = os.path.dirname(unicode(filename))
     
