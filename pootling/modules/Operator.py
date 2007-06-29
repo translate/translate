@@ -522,8 +522,8 @@ class Operator(QtCore.QObject):
             if (pickleFile):
                 p = pickleTM()
                 self.tmMatcher = p.getMatcher(pickleFile)
-                if (not self.tmMatcher):
-                    return None
+        if (not self.tmMatcher):
+            return None
 
         if (not unit):
             return None

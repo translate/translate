@@ -77,9 +77,9 @@ class globalSetting(QtGui.QDialog):
         # get pickleFile
         World.settings.beginGroup(self.section)
         self.pickleFile = World.settings.value("pickleFile").toString()
+        World.settings.endGroup()
         if (not self.pickleFile):
             handle, self.pickleFile = tempfile.mkstemp('','PKL')
-        World.settings.endGroup()
     
     def setToolWhatsThis(self, tool):
         """
@@ -167,7 +167,6 @@ class globalSetting(QtGui.QDialog):
         # save some settings
         World.settings.beginGroup(self.section)
         World.settings.setValue("disabledpath", QtCore.QVariant(disabledPath))
-        World.settings.setValue("pickleFile", QtCore.QVariant(self.pickleFile))
         World.settings.setValue("similarity", QtCore.QVariant(minSim))
         World.settings.setValue("max_candidates", QtCore.QVariant(maxCan))
         World.settings.setValue("max_string_len", QtCore.QVariant(maxLen))
@@ -188,6 +187,7 @@ class globalSetting(QtGui.QDialog):
         World.settings.beginGroup(self.section)
         World.settings.setValue("enabledpath", QtCore.QVariant(paths))
         World.settings.setValue("diveintosub", QtCore.QVariant(includeSub))
+        World.settings.setValue("pickleFile", QtCore.QVariant(self.pickleFile))
         World.settings.endGroup()
         
         self.matcher = None
