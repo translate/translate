@@ -139,13 +139,12 @@ class tableTM(QtGui.QDockWidget):
         """
         row = self.ui.tblTM.currentRow()
         item = self.ui.tblTM.item(row, 0)
-        if (item):
+        itemSource = self.ui.tblTM.item(row, 1)
+        source = None
+        if (item and itemSource):
+            source = unicode(itemSource.data(QtCore.Qt.UserRole).toString())
             filepath = unicode(item.data(QtCore.Qt.UserRole).toString())
             self.emit(QtCore.SIGNAL("openFile"), filepath)
-        
-        item = self.ui.tblTM.item(row, 1)
-        if (item):
-            source = unicode(item.data(QtCore.Qt.UserRole).toString())
             self.emit(QtCore.SIGNAL("findUnit"), source)
         
     def setToolTip(self, index = None, col = 0, tooltips = "", icon = QtGui.QIcon()):
