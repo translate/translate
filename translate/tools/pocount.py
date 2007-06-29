@@ -22,6 +22,7 @@
 """takes a translation file and produces word counts and other statistics"""
 
 from translate.storage import factory
+from translate.storage import statistics
 from translate.lang.common import Common
 from translate.misc.multistring import multistring
 import re
@@ -32,53 +33,48 @@ if not hasattr(__builtins__, "sum"):
   def sum(parts):
     return reduce(int.__add__, parts, 0)
 
-def untranslatedwords(pair):
-  original, translation = pair
-  if translation.words != 0: return 0
-  return original.words
-
 kdepluralre = re.compile("^_n: ")
 brtagre = re.compile("<br\s*?/?>")
 xmltagre = re.compile("<[^>]+>")
 numberre = re.compile("\\D\\.\\D")
 
-def wordcount(postr):
+def wordcount(string):
   # TODO: po class should understand KDE style plurals
-  postr = kdepluralre.sub("", postr)
-  postr = brtagre.sub("\n", postr)
-  postr = xmltagre.sub("", postr)
-  postr = numberre.sub(" ", postr)
+  string = kdepluralre.sub("", string)
+  string = brtagre.sub("\n", string)
+  string = xmltagre.sub("", string)
+  string = numberre.sub(" ", string)
   #TODO: This should still use the correct language to count in the target 
   #language
-  return len(Common.words(postr))
+  return len(Common.words(string))
 
-def wordsinpoel(poel):
+def wordsinunit(unit):
   """counts the words in the source, target, taking plurals into account"""
   (sourcewords, targetwords) = (0, 0)
-  if isinstance(poel.source, multistring):
-    sourcestrings = poel.source.strings
+  if isinstance(unit.source, multistring):
+    sourcestrings = unit.source.strings
   else:
-    sourcestrings = [poel.source or ""]
-  if isinstance(poel.target, multistring):
-    targetstrings = poel.target.strings
+    sourcestrings = [unit.source or ""]
+  if isinstance(unit.target, multistring):
+    targetstrings = unit.target.strings
   else:
-    targetstrings = [poel.target or ""]
+    targetstrings = [unit.target or ""]
   for s in sourcestrings:
     sourcewords += wordcount(s)
   for s in targetstrings:
     targetwords += wordcount(s)
   return sourcewords, targetwords
 
-def calcstats(units):
+def calcstats(store):
   # ignore totally blank or header units
-  units = filter(lambda poel: not poel.isheader(), units)
+  units = filter(lambda unit: not unit.isheader(), store.units)
   translated = translatedmessages(units)
   fuzzy = fuzzymessages(units)
-  review = filter(lambda poel: poel.isreview(), units)
+  review = filter(lambda unit: unit.isreview(), units)
   untranslated = untranslatedmessages(units)
-  wordcounts = dict(map(lambda poel: (poel, wordsinpoel(poel)), units))
-  sourcewords = lambda elementlist: sum(map(lambda poel: wordcounts[poel][0], elementlist))
-  targetwords = lambda elementlist: sum(map(lambda poel: wordcounts[poel][1], elementlist))
+  wordcounts = dict(map(lambda unit: (unit, wordsinunit(unit)), units))
+  sourcewords = lambda elementlist: sum(map(lambda unit: wordcounts[unit][0], elementlist))
+  targetwords = lambda elementlist: sum(map(lambda unit: wordcounts[unit][1], elementlist))
   stats = {}
 
   #units
@@ -184,11 +180,11 @@ Review Messages, Review Source Words"
 
   def handlefile(self, filename):
     try:
-        pof = factory.getobject(filename)
+        store = factory.getobject(filename)
     except ValueError, e:
         print str(e)
         return
-    stats = calcstats(pof.units)
+    stats = calcstats(store)
     self.updatetotals(stats)
     summarize(filename, stats, self.CSVstyle)
     self.filecount += 1
