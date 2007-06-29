@@ -611,6 +611,8 @@ class MainWindow(QtGui.QMainWindow):
         Enable/disable buttons according to availability of filename.
         @param filename: filename to set title and determine enable/disable.
         """
+        self.ui.actionSave.setEnabled(False)
+        
         value = bool(filename)
         self.setTitle(filename)
         self.ui.action_Close.setEnabled(value)
@@ -680,9 +682,11 @@ def main(inputFile = None):
     editor = MainWindow()
     editor.show()
     
+    print os.path.abspath(inputFile)
+    
     if (inputFile):
         if os.path.exists(inputFile):
-            self.openFile(inputFile)
+            editor.openFile(inputFile)
         else:
             msg = editor.tr("%1 file name doesn't exist").arg(inputFile)
             QtGui.QMessageBox.warning(editor, editor.tr("File not found") , msg)
