@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# -*- coding: utf8 -*-
+# -*- coding: utf-8 -*-
 #
 # Pootling
 # Copyright 2006 WordForge Foundation
@@ -38,16 +38,17 @@ class FileAction(QtCore.QObject):
         """
         QtCore.QObject.__init__(self)
         self.parentWidget = parent
-        self.fileName = None
+        self.filename = None
         self.fileExtension = ""
         self.fileDescription = ""
         self.MaxRecentHistory = 10
         self.directory = QtCore.QDir.homePath()
         
     def openFile(self):
-        """Open an OpenFile dialog.
-       @return: Returns True if ok button is click.
-       """
+        """
+        Open an OpenFile dialog.
+        @return: Returns True if ok button is click.
+        """
         #TODO: open one or more existing files selected
         newFileName = QtGui.QFileDialog.getOpenFileName(self.parentWidget, self.tr("Open File"),
                         self.directory,
@@ -55,17 +56,19 @@ class FileAction(QtCore.QObject):
         if not newFileName.isEmpty():
             # remember last open file's directory.
             self.directory = os.path.dirname(str(newFileName))
-            self.fileName = newFileName
+            self.filename = newFileName
             self.emitFileOpened()
             return True
         else:
             return False
 
     def save(self):
-        self.emitFileSaved()
+        self.emitFileToSave(self.filename)
         
     def saveAs(self):
-        """Open an SaveAs File dialog."""
+        """
+        Open an SaveAs File dialog.
+        """
         # TODO: think about export in different formats
         labelSaveAs = self.tr("Save As")
         self.fileExtension = self.fileExtension
@@ -85,66 +88,70 @@ class FileAction(QtCore.QObject):
                 if (not fileForSave.endsWith(self.fileExtension,  QtCore.Qt.CaseInsensitive)):
                     # add extension according to existing open file
                     fileForSave.append(self.fileExtension)
-                self.emitFileSaved(fileForSave)
+                self.filename = fileForSave
+                self.emitFileToSave(self.filename)
+                
                 history = fileDialog.history()
                 newHistory = QtCore.QStringList()
                 while (not history.isEmpty() and newHistory.count() < self.MaxRecentHistory):
                     newHistory.append(history.first())
                     history.removeAll(history.first())
                 World.settings.setValue("SaveAsHistory", QtCore.QVariant(newHistory))
+                
             else:
                 QtGui.QMessageBox.information(self.parentWidget, self.tr("Information") , self.tr("Please specify the filename to save to"))
                 self.saveAs()
                 
-    def aboutToClose(self, main):
-        """Action before closing the program when file has modified"""
-        ret = QtGui.QMessageBox.question(main, self.tr("File Modified"),
+    def clearedModified(self, parent):
+        """
+        Return bool indicates it has cleared the content modified.
+        """
+        ret = QtGui.QMessageBox.question(parent, self.tr("File Modified"),
                     self.tr("The file has been modified.\n"
                             "Do you want to save your changes?"),
                     QtGui.QMessageBox.Yes | QtGui.QMessageBox.Default,
                     QtGui.QMessageBox.No,
                     QtGui.QMessageBox.Cancel | QtGui.QMessageBox.Escape)
-        if ret == QtGui.QMessageBox.Cancel:
-            return False
-        if ret == QtGui.QMessageBox.No:
-            self.fileName = ""
-            self.emit(QtCore.SIGNAL("saveFile"), False)
-        elif ret == QtGui.QMessageBox.Yes:
+        
+        if (ret == QtGui.QMessageBox.Yes):
             self.save()
-        return True
+            return True
+        elif (ret == QtGui.QMessageBox.No):
+            # reset file name
+            self.filename = ""
+            return True
+        elif (ret == QtGui.QMessageBox.Cancel):
+            return False
     
     def setFileName(self, filename):
         """
         Assign the name of an opened file to a local variable.
         @param filename: file's name as QString
         """
-        self.fileName = filename
+        self.filename = filename
         self.emitFileOpened()
         # remember last open file's directory.
-        self.directory = os.path.dirname(str(filename))
+        self.directory = os.path.dirname(unicode(filename))
     
-    def emitFileSaved(self, filename = ""):
-        """emit signal fileSaved when a file is saved
-        
-        @param filename: file's name as QString. If filename is empty,
-        it will use the existing open file.
+    def emitFileToSave(self, filename):
         """
-        if (filename):
-            self.fileName = filename
-        self.emit(QtCore.SIGNAL("fileSaved"), str(self.fileName)) 
+        Send "fileToSave" signal with a file name.
+        @param filename: file's name as QString.
+        """
+        self.emit(QtCore.SIGNAL("fileToSave"), unicode(filename)) 
         
     def emitFileOpened(self):
         """emit signal fileOpened, with a filename as string"""
         # get default file extension and description
-        (path, fileName) = os.path.split(str(self.fileName).lower())
+        (path, filename) = os.path.split(str(self.filename).lower())
         extension = {"po": "PO Files", "pot": "PO Template Files", 
             "xliff": "XLIFF Files", "xlf": "XLIFF Files", 
             "tmx": "Translation Memory eXchange (TMX) Files", "tbx": "TermBase eXchange (TBX) Files"}
-        fileName, ext = os.path.splitext(fileName)
+        filename, ext = os.path.splitext(filename)
         ext = ext[len(os.path.extsep):].lower()
         self.fileExtension = "." + ext
         self.fileDescription = extension.get(ext) 
-        self.emit(QtCore.SIGNAL("fileOpened"), str(self.fileName))
+        self.emit(QtCore.SIGNAL("fileOpened"), str(self.filename))
     
 if __name__ == "__main__":
     # set the path for QT in order to find the icons

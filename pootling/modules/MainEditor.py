@@ -266,17 +266,13 @@ class MainWindow(QtGui.QMainWindow):
         
         self.connect(self.dockOverview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
         self.connect(self.dockTUview, QtCore.SIGNAL("targetChanged"), self.operator.setTarget)
-        
         self.connect(self.dockTUview, QtCore.SIGNAL("textChanged"), self.dockOverview.updateText)
-        self.connect(self.dockTUview, QtCore.SIGNAL("textChanged"), self.setSaveEnabled)
-        
         self.connect(self.dockComment, QtCore.SIGNAL("textChanged"), self.dockOverview.markComment)
         self.connect(self.dockComment, QtCore.SIGNAL("commentChanged"), self.operator.setComment)
-        self.connect(self.fileaction, QtCore.SIGNAL("fileSaved"), self.operator.saveStoreToFile)
-        self.connect(self.fileaction, QtCore.SIGNAL("saveFile"), self.operator.setModified)
-        self.connect(self.operator, QtCore.SIGNAL("readyForSave"), self.ui.actionSave.setEnabled)
+        self.connect(self.fileaction, QtCore.SIGNAL("fileToSave"), self.operator.saveStoreToFile)
+        self.connect(self.operator, QtCore.SIGNAL("contentModified"), self.ui.actionSave.setEnabled)
 
-        self.connect(self.fileaction, QtCore.SIGNAL("fileSaved"), self.setTitle)
+        self.connect(self.fileaction, QtCore.SIGNAL("fileToSave"), self.setTitle)
         self.connect(self.dockOverview, QtCore.SIGNAL("toggleFirstLastUnit"), self.toggleFirstLastUnit)
 
         self.connect(self.operator, QtCore.SIGNAL("newUnits"), self.dockOverview.slotNewUnits)
@@ -320,9 +316,6 @@ class MainWindow(QtGui.QMainWindow):
         
         self.operator.applySettings()
     
-    def setSaveEnabled(self):
-        self.ui.actionSave.setEnabled(True)
-
     def updateProgress(self, value):
         if (not self.progressBar.isVisible()):
             self.progressBar.setVisible(True)
@@ -394,7 +387,7 @@ class MainWindow(QtGui.QMainWindow):
             self.bookmarkaction[i].setVisible(False)
         World.settings.remove("bookmarkList")
     
-    def AppendOpenRecent(self, fileName):
+    def prependOpenRecent(self, fileName):
         """
         Append the recentely opened file to the open recent list.
         @param fileName string, the filename to append to Open Recent.
@@ -414,8 +407,8 @@ class MainWindow(QtGui.QMainWindow):
         Set status after open a file.
         @param fileName string, the filename to open
         """
-        self.OpeningClosingFile(fileName, True)
-        self.AppendOpenRecent(fileName)
+        self.setStatusForFile(fileName)
+        self.prependOpenRecent(fileName)
         self.clearBookmarks()
         
     def startRecentAction(self):
@@ -469,8 +462,8 @@ class MainWindow(QtGui.QMainWindow):
         @param QCloseEvent Object: received close event when closing mainwindows
         """
         QtGui.QMainWindow.closeEvent(self, event)
-        if self.operator.isModified():
-            if self.fileaction.aboutToClose(self):
+        if (self.operator.isModified()):
+            if (self.fileaction.clearedModified(self)):
                 event.accept()
             else:
                 event.ignore()
@@ -483,14 +476,17 @@ class MainWindow(QtGui.QMainWindow):
         World.settings.setValue("MainWindowState", QtCore.QVariant(state))
         World.settings.setValue("TuViewHidden", QtCore.QVariant(self.dockTUview.isHidden()))
         
-    def setTitle(self, title):
-        """set the title of program.
-        @param title: a filename with full path, type as string."""
-        if (title):
-            self.setWindowTitle(self.tr("%1[*] - %2").arg(title).arg(World.settingApp))
-            self.AppendOpenRecent(title)
-            
-
+    def setTitle(self, filename):
+        """
+        set the title of program.
+        @param filename: a filename with full path, type as string.
+        """
+        if (filename):
+            self.setWindowTitle("%s - %s" % (filename, World.settingApp))
+            self.prependOpenRecent(filename)
+        else:
+            self.setWindowTitle(World.settingApp)
+    
     def toggleFirstLastUnit(self, atFirst, atLast):
         """set enable/disable first, previous, next, and last unit buttons
         @param atFirst: bool indicates that the unit is at first place
@@ -589,50 +585,50 @@ class MainWindow(QtGui.QMainWindow):
                 self.statusfuzzy.setVisible(True)
                 self.ui.statusbar.addWidget(self.statusfuzzy)
     
-    def openFile(self, value):
+    def openFile(self, filename):
         closed = self.closeFile()
         if (closed):
-            aa = self.operator.getUnits(value)
+            self.operator.getUnits(filename)
         self.show()
     
-    def closeFile(self):
-        """return True when successfully close file, else return False."""
-        if (not self.operator.isModified()):
-            self.setClosingFile()
-        else:
-            if self.fileaction.aboutToClose(self):
-                self.setClosingFile()
+    def closeFile(self, force = False):
+        """
+        Return True when successfully close file, else return False.
+        @param force: bool whether to check is contend is modified.
+        """
+        if (force) or (not self.operator.isModified()):
+            self.setStatusForFile(None)
+            self.operator.closeFile()
+            self.statuslabel.setText("")
+        elif (self.operator.isModified()):
+            if self.fileaction.clearedModified(self):
+                self.closeFile(True)
             else:
                 return False
         return True
-
-    def setClosingFile(self):
-        """
-        set status after closing a file
-        """
-        filename = ""
-        self.OpeningClosingFile(filename, False)
-        self.operator.setAfterfileClosed()
-        self.ui.actionSave.setEnabled(False)
-        self.statuslabel.setText("")
     
-    def OpeningClosingFile(self, filename, bool):
-        self.setWindowTitle(((filename != "") and (filename + ' - ') or filename) + World.settingApp + ' ' + __version__.ver)
-        self.ui.action_Close.setEnabled(bool)
-        self.ui.actionSaveas.setEnabled(bool)
-        self.ui.actionPaste.setEnabled(bool)
-        self.ui.actionFindNext.setEnabled(bool)
-        self.ui.actionFindPrevious.setEnabled(bool)
-        self.ui.actionFind.setEnabled(bool)
-        self.ui.actionReplace.setEnabled(bool)
-        self.ui.actionCopySource2Target.setEnabled(bool)
-        self.ui.actionEdit_Header.setEnabled(bool)
-        self.ui.actionGoTo.setEnabled(bool)
-        self.ui.actionAddBookmarks.setEnabled(bool)
-        self.ui.actionToggleFuzzy.setEnabled(bool)
-        self.ui.actionFilterFuzzy.setEnabled(bool)
-        self.ui.actionFilterTranslated.setEnabled(bool)
-        self.ui.actionFilterUntranslated.setEnabled(bool)
+    def setStatusForFile(self, filename):
+        """
+        Enable/disable buttons according to availability of filename.
+        @param filename: filename to set title and determine enable/disable.
+        """
+        value = bool(filename)
+        self.setTitle(filename)
+        self.ui.action_Close.setEnabled(value)
+        self.ui.actionSaveas.setEnabled(value)
+        self.ui.actionPaste.setEnabled(value)
+        self.ui.actionFindNext.setEnabled(value)
+        self.ui.actionFindPrevious.setEnabled(value)
+        self.ui.actionFind.setEnabled(value)
+        self.ui.actionReplace.setEnabled(value)
+        self.ui.actionCopySource2Target.setEnabled(value)
+        self.ui.actionEdit_Header.setEnabled(value)
+        self.ui.actionGoTo.setEnabled(value)
+        self.ui.actionAddBookmarks.setEnabled(value)
+        self.ui.actionToggleFuzzy.setEnabled(value)
+        self.ui.actionFilterFuzzy.setEnabled(value)
+        self.ui.actionFilterTranslated.setEnabled(value)
+        self.ui.actionFilterUntranslated.setEnabled(value)
         
         # disconnect and reconnect fuzzy, translated, and untranslated button actions.
         self.disconnect(self.ui.actionFilterFuzzy, QtCore.SIGNAL("toggled(bool)"), self.operator.filterFuzzy)
@@ -646,8 +642,8 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionFilterUntranslated, QtCore.SIGNAL("toggled(bool)"), self.operator.filterUntranslated)
         
         #TODO: it is enable unless Automatically lookup translation in TM is checked.
-        self.ui.actionCopySearchResult2Target.setEnabled(bool)
-        self.findBar.toggleViewAction().setVisible(bool)
+        self.ui.actionCopySearchResult2Target.setEnabled(value)
+        self.findBar.toggleViewAction().setVisible(value)
     
     def addOpenToBar(self):
         '''add Open action or menu Open_Recent action to toolbar

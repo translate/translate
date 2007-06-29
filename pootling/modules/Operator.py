@@ -87,12 +87,11 @@ class Operator(QtCore.QObject):
         # get status for units
         self.status = Status(self.store)
         self.emitStatus()
-
+        
         self.filteredList = []
         self.currentUnitIndex = 0
         for unit in self.store.units:
             # set x_editor_state for all units.
-
             if (unit.source == None):
                 continue
             unit.x_editor_state = self.status.unitState(unit)
@@ -107,8 +106,7 @@ class Operator(QtCore.QObject):
         """
         Emit "newUnits" signal with a list of unit.
         """
-        if self.filteredList: 
-            self.emit(QtCore.SIGNAL("newUnits"), self.filteredList)
+        self.emit(QtCore.SIGNAL("newUnits"), self.filteredList)
         
     def emitStatus(self):
         """
@@ -260,7 +258,6 @@ class Operator(QtCore.QObject):
         """
         if (World.settings.value("headerAuto", QtCore.QVariant(True)).toBool()):
             self.emit(QtCore.SIGNAL("headerAuto"))
-        
         try:
             if (fileName):
                 self.store.savefile(fileName)
@@ -485,12 +482,13 @@ class Operator(QtCore.QObject):
         textField = self.searchableText[self.currentTextField]
         self.emit(QtCore.SIGNAL("searchResult"), "", textField, -1)
     
-    def setAfterfileClosed(self):
+    def closeFile(self):
         self.store = None
         self.status = None
         self.filter = None
         self.filteredList = []
         self.emitNewUnits()
+        self.emitUnit(None)
         
     def setMatcher(self, matcher, section):
         """
@@ -663,7 +661,7 @@ class Operator(QtCore.QObject):
     
     def setModified(self, bool):
         self.modified = bool
-        self.emit(QtCore.SIGNAL("readyForSave"), self.modified)
+        self.emit(QtCore.SIGNAL("contentModified"), self.modified)
     
     def isModified(self):
         return ((hasattr(self, "modified") and self.modified) or False)
