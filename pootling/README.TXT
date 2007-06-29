@@ -1,8 +1,8 @@
-                        Pootling (V.0.1.1)
+                        Pootling (V.0.2)
 Copyright (c) 2006 by The WordForge Foundation (All Rights Reserved)
                         ww.wordforge.org
 
-Version 0.1.1  Date: 12 January 2007
+Version 0.2 rc1 Date: 31 Jun 2007
 
 Developed by:
   Hok Kakada (hokkakada@khmeros.info)
@@ -14,32 +14,29 @@ Developed by:
 * How it works
 * References
 * Requirement
+* Installation
 * Running
 * Bug reporting
 
 How it works
 ------------
-Pootling is a program for translating PO and XLIFF files.
+Pootling, a WordForge Translation Offline Editor, is a user friendly translation program that makes the translation process simpler. It is an offspring of Pootle, a web-based translation engine.  Pootling is a very advanced compuer-aided localization based on the intelligent use of Translation Manager, Glossary manager and Catalog Manager.
+Pootling can handle a number of file types such as PO, XLIFF, TMX, TBX...
+is a program for translating PO and XLIFF files.
+
+Please read its manual for how to use it.
 
 References
 ----------
 Bugzilla: http://bugs.wordforge.org/
 Wiki: http://translate.sourceforge.net/wiki
+website: www.khmeros.info
 
-Requirements
+Main Requirements
 ------------
 
-WordForge Translation Editor, pootling.v0.1.1, requires the Translate Toolkit. 
-It requires a version that was not yet released at the time of this release of 
-pootling, but you can find a beta version of the toolkit here: 
-http://translate.sourceforge.net/snapshots/translate-toolkit-1.0beta/ 
+WordForge Translation Editor, pootling.v0.2, requires the Translate Toolkit 1.0.1 or later version.  that can be downloaded at https://sourceforge.net/project/showfiles.php?group_id=91920&package_id=97082 
 
-Please note that this is not an official release and is for testing pootling 
-0.1.1, there might be bugs if you use this beta version in other programs.
-When translate-toolkit 1.0 is released, you are recommended to use it.
-
-If you want the stable release of the toolkit, visit 
-http://translate.sourceforge.net
 
 The Translate Toolkit requires Python 2.3 or higher. It must be installed 
 properly, i.e. it needs to be accessible in your PYTHONPATH. Please see the 
@@ -47,22 +44,22 @@ file README in the translate toolkit for details.
 
 Other required tools:
 ----------------------
-For Unix / Linux users:
+For Developers on Unix / Linux platform:
 
 sip-4.4.5 or higher a Python C/C++ Bindings Generator
 http://www.riverbankcomputing.co.uk/sip/
 
-PyQt-x11-gpl-4.0 or highe, the Python bindings for the Qt GUI toolkit
+PyQt-x11-gpl-4.0 or higher, the Python bindings for the Qt GUI toolkit
 http://www.riverbankcomputing.co.uk/pyqt
 
-Qt4.2 or higher, a GUI toolkit
+Qt4.1 or higher, a GUI toolkit
 http://www.trolltech.com/developer/downloads/qt
 
 Python 2.3 or higher (shipped with most Linux distributions)
 http://www.python.org/
 
 
-For Windows users:
+For Dovelopers on Windows platform:
 
 PyQt-x11-gpl-4.1.1, the Python bindings for the Qt GUI toolkit
 http://www.riverbankcomputing.co.uk/pyqt/
@@ -76,7 +73,7 @@ http://sourceforge.net/project/showfiles.php?group_id=133361
 minGW-3.1.0-1, ("Minimalistic GNU for Windows")
 http://mingw.org/
 
-Python2.5, a powerful programming language
+Python2.4 or higher, a powerful programming language
 http://www.python.org/
 
 
@@ -84,8 +81,20 @@ For making a Windows installer you will need sip:
 sip-4.5.2, a Python C/C++ Bindings Generator
 http://www.riverbankcomputing.co.uk/sip/
 
-Running
--------
+Installation
+------------
+We provide a number of way to have pootling installed.
+1. RPM package:
+       1. You must be root: 
+             su
+       2. Install
+             rpm -ihv pootling-editor.rpm
+2.Compile from source:
+            python pootlingsetup.py
+Then you can run pootling-editor.py command as other commands.
+
+Running from source code
+-----------------------
 
     python pootling-editor.py [OPTION] [filename]
 
@@ -95,7 +104,14 @@ options:
   --version   show program's version number and exit
   -h, --help  show this help message and exit
 
-  
+Running as a simple user
+-----------------------
+In this release, we try to make it easy for our end users.
+Download only Easy-Pootling, go into this folder and double click on the pootling executable file.
+You will get Pootling to run only one click (no other requirements)
+
+Note: Unfortunately, This Easy-Pootling support only python2.5
+
 Bug Reporting/Feature requests
 ------------------------------
 You can always report bugs or feature requests on the mailing list, but it is 
