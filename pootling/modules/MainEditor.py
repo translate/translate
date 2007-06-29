@@ -682,8 +682,6 @@ def main(inputFile = None):
     editor = MainWindow()
     editor.show()
     
-    print os.path.abspath(inputFile)
-    
     if (inputFile):
         if os.path.exists(inputFile):
             editor.openFile(inputFile)
