@@ -334,9 +334,6 @@ class TUview(QtGui.QDockWidget):
                 for i in range(self.ui.tabWidgetTarget.count()):
                     textbox = self.ui.tabWidgetTarget.widget(i).children()[1]
                     textbox.setReadOnly(False)
-                    self.disconnect(textbox, QtCore.SIGNAL("textChanged()"), self.textChanged)
-                    # everytime display a unit, connect signal
-                    self.connect(textbox, QtCore.SIGNAL("textChanged()"), self.textChanged)
     
     def addRemoveTabWidget(self, tabWidget, length, msg_strings):
         """
@@ -371,9 +368,10 @@ class TUview(QtGui.QDockWidget):
         """
         @emit textchanged signal for widget that need to update text while typing.
         """
-        text = unicode(self.ui.txtTarget.toPlainText())
-        self.emit(QtCore.SIGNAL("textChanged"), text)
-        self.contentDirty = True
+        if (self.ui.txtTarget.document().isUndoAvailable()):
+            text = unicode(self.ui.txtTarget.toPlainText())
+            self.emit(QtCore.SIGNAL("textChanged"), text)
+            self.contentDirty = True
     
     def emitTargetChanged(self):
         """

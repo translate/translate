@@ -102,9 +102,10 @@ class CommentDock(QtGui.QDockWidget):
         """
         @emit textchanged signal for widget that need to update text while typing.
         """
-        text = unicode(self.ui.txtTranslatorComment.toPlainText())
-        self.emit(QtCore.SIGNAL("textChanged"), text)
-        self.contentDirty = True
+        if (self.ui.txtTranslatorComment.document().isUndoAvailable()):
+            text = unicode(self.ui.txtTranslatorComment.toPlainText())
+            self.emit(QtCore.SIGNAL("textChanged"), text)
+            self.contentDirty = True
     
     def emitCommentChanged(self):
         """
