@@ -20,8 +20,9 @@
 # This module is working on the main windows of Editor
 
 from optparse import OptionParser
-from modules import MainEditor
-import sys
+from pootling.modules import MainEditor
+from PyQt4 import QtCore, QtGui
+import sys, os
 
 if (sys.argv[0].endswith('py')):
     py = 'python '
@@ -44,5 +45,6 @@ argc = len(args)
 if (len(sys.argv) == 1):
     MainEditor.main()
 
-inputFileName = args[0]
+path = QtCore.QDir.currentPath()
+inputFileName = os.path.join(str(path),args[0])
 MainEditor.main(inputFileName)
