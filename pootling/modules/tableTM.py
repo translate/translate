@@ -89,8 +89,14 @@ class tableTM(QtGui.QDockWidget):
         for unit in candidates:
             row = self.ui.tblTM.rowCount()
             self.ui.tblTM.setRowCount(row + 1)
-            similarity = unit.getnotes("translator").rjust(4)
-            item = QtGui.QTableWidgetItem(similarity)
+            
+            match = (unit.getnotes("translator"))[:-1]
+            try:
+                match = int(match)
+                match = (str(match) + "%").rjust(4)
+            except ValueError:
+                match = ""
+            item = QtGui.QTableWidgetItem(match)
             item.setData(QtCore.Qt.UserRole, QtCore.QVariant(unit.filepath))
             item.setFlags(self.normalState)
             item.setTextAlignment(QtCore.Qt.AlignRight + QtCore.Qt.AlignVCenter)
