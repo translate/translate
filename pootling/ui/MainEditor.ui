@@ -51,7 +51,7 @@
      <x>0</x>
      <y>0</y>
      <width>594</width>
-     <height>28</height>
+     <height>29</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuBookmark" >
@@ -155,14 +155,6 @@
     <addaction name="separator" />
     <addaction name="menuToolbars" />
    </widget>
-   <widget class="QMenu" name="menuSettings" >
-    <property name="title" >
-     <string>&amp;Settings</string>
-    </property>
-    <addaction name="actionPreferences" />
-    <addaction name="actionBuild_TM" />
-    <addaction name="actionGlossary" />
-   </widget>
    <widget class="QMenu" name="menu_Tool" >
     <property name="title" >
      <string>&amp;Tool</string>
@@ -177,6 +169,14 @@
     </property>
     <addaction name="actionNewPro" />
     <addaction name="actionOpenPro" />
+   </widget>
+   <widget class="QMenu" name="menuSettings" >
+    <property name="title" >
+     <string>&amp;Settings</string>
+    </property>
+    <addaction name="actionPreferences" />
+    <addaction name="actionBuild_TM" />
+    <addaction name="actionGlossary" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
@@ -271,15 +271,6 @@
    <addaction name="actionFilterUntranslated" />
    <addaction name="actionFilterFuzzy" />
    <addaction name="actionFilterTranslated" />
-  </widget>
-  <widget class="QToolBar" name="toolTM" >
-   <property name="orientation" >
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <attribute name="toolBarArea" >
-    <number>4</number>
-   </attribute>
-   <addaction name="actionBuild_TM" />
   </widget>
   <action name="actionOpen" >
    <property name="icon" >
@@ -1046,7 +1037,7 @@
     <iconset>../images/memory.png</iconset>
    </property>
    <property name="text" >
-    <string>Build &amp;TM...</string>
+    <string>Build TM</string>
    </property>
    <property name="toolTip" >
     <string>Build the translation memory.</string>

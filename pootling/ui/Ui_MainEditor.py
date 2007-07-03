@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/ratha/sourceforge.net/translate/trunk/pootling/ui/MainEditor.ui'
+# Form implementation generated from reading ui file '/home/k-da/Documents/poxole/trunk/pootling/ui/MainEditor.ui'
 #
-# Created: Fri Jun 22 10:32:39 2007
-#      by: PyQt4 UI code generator 4.2
+# Created: Mon Jul  2 09:43:44 2007
+#      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -29,7 +29,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0,0,594,28))
+        self.menubar.setGeometry(QtCore.QRect(0,0,594,29))
         self.menubar.setObjectName("menubar")
 
         self.menuBookmark = QtGui.QMenu(self.menubar)
@@ -61,14 +61,14 @@ class Ui_MainWindow(object):
         self.menuToolbars = QtGui.QMenu(self.menuWindow)
         self.menuToolbars.setObjectName("menuToolbars")
 
-        self.menuSettings = QtGui.QMenu(self.menubar)
-        self.menuSettings.setObjectName("menuSettings")
-
         self.menu_Tool = QtGui.QMenu(self.menubar)
         self.menu_Tool.setObjectName("menu_Tool")
 
         self.menuProject = QtGui.QMenu(self.menubar)
         self.menuProject.setObjectName("menuProject")
+
+        self.menuSettings = QtGui.QMenu(self.menubar)
+        self.menuSettings.setObjectName("menuSettings")
         MainWindow.setMenuBar(self.menubar)
 
         self.statusbar = QtGui.QStatusBar(MainWindow)
@@ -97,11 +97,6 @@ class Ui_MainWindow(object):
         self.toolFilter.setOrientation(QtCore.Qt.Horizontal)
         self.toolFilter.setObjectName("toolFilter")
         MainWindow.addToolBar(self.toolFilter)
-
-        self.toolTM = QtGui.QToolBar(MainWindow)
-        self.toolTM.setOrientation(QtCore.Qt.Horizontal)
-        self.toolTM.setObjectName("toolTM")
-        MainWindow.addToolBar(self.toolTM)
 
         self.actionOpen = QtGui.QAction(MainWindow)
         self.actionOpen.setIcon(QtGui.QIcon("../images/open.png"))
@@ -351,14 +346,14 @@ class Ui_MainWindow(object):
         self.menuWindow.addSeparator()
         self.menuWindow.addSeparator()
         self.menuWindow.addAction(self.menuToolbars.menuAction())
-        self.menuSettings.addAction(self.actionPreferences)
-        self.menuSettings.addAction(self.actionBuild_TM)
-        self.menuSettings.addAction(self.actionGlossary)
         self.menu_Tool.addSeparator()
         self.menu_Tool.addAction(self.actionCatalogManager)
         self.menu_Tool.addAction(self.actionAuto_translate)
         self.menuProject.addAction(self.actionNewPro)
         self.menuProject.addAction(self.actionOpenPro)
+        self.menuSettings.addAction(self.actionPreferences)
+        self.menuSettings.addAction(self.actionBuild_TM)
+        self.menuSettings.addAction(self.actionGlossary)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
         self.menubar.addAction(self.menuView.menuAction())
@@ -383,7 +378,6 @@ class Ui_MainWindow(object):
         self.toolFilter.addAction(self.actionFilterUntranslated)
         self.toolFilter.addAction(self.actionFilterFuzzy)
         self.toolFilter.addAction(self.actionFilterTranslated)
-        self.toolTM.addAction(self.actionBuild_TM)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -402,9 +396,9 @@ class Ui_MainWindow(object):
         self.menuWindow.setTitle(QtGui.QApplication.translate("MainWindow", "&Window", None, QtGui.QApplication.UnicodeUTF8))
         self.menuToolbars.setStatusTip(QtGui.QApplication.translate("MainWindow", "Hide/Show the toolbars", None, QtGui.QApplication.UnicodeUTF8))
         self.menuToolbars.setTitle(QtGui.QApplication.translate("MainWindow", "&Toolbars", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuSettings.setTitle(QtGui.QApplication.translate("MainWindow", "&Settings", None, QtGui.QApplication.UnicodeUTF8))
         self.menu_Tool.setTitle(QtGui.QApplication.translate("MainWindow", "&Tool", None, QtGui.QApplication.UnicodeUTF8))
         self.menuProject.setTitle(QtGui.QApplication.translate("MainWindow", "&Project", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuSettings.setTitle(QtGui.QApplication.translate("MainWindow", "&Settings", None, QtGui.QApplication.UnicodeUTF8))
         self.toolFile.setWindowTitle(QtGui.QApplication.translate("MainWindow", "&File Toolbar", None, QtGui.QApplication.UnicodeUTF8))
         self.toolFile.setToolTip(QtGui.QApplication.translate("MainWindow", "Save", None, QtGui.QApplication.UnicodeUTF8))
         self.toolFile.setStatusTip(QtGui.QApplication.translate("MainWindow", "Save", None, QtGui.QApplication.UnicodeUTF8))
@@ -573,7 +567,7 @@ class Ui_MainWindow(object):
         self.actionCopySearchResult2Target.setToolTip(QtGui.QApplication.translate("MainWindow", "Copy Translation To Target", None, QtGui.QApplication.UnicodeUTF8))
         self.actionCopySearchResult2Target.setStatusTip(QtGui.QApplication.translate("MainWindow", "Copy the most similar translation to target field.", None, QtGui.QApplication.UnicodeUTF8))
         self.actionCopySearchResult2Target.setWhatsThis(QtGui.QApplication.translate("MainWindow", "<h3>Copy Translation To Target</h3>Use this to copy the most similar translation to target field.", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionBuild_TM1.setText(QtGui.QApplication.translate("MainWindow", "Build &TM...", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionBuild_TM1.setText(QtGui.QApplication.translate("MainWindow", "Build TM", None, QtGui.QApplication.UnicodeUTF8))
         self.actionBuild_TM1.setToolTip(QtGui.QApplication.translate("MainWindow", "Build the translation memory.", None, QtGui.QApplication.UnicodeUTF8))
         self.actionBuild_TM1.setStatusTip(QtGui.QApplication.translate("MainWindow", "Build the translation memory.", None, QtGui.QApplication.UnicodeUTF8))
         self.actionBuild_TM1.setWhatsThis(QtGui.QApplication.translate("MainWindow", "<h3>Build TM</h3>Use this to build the translation memory.", None, QtGui.QApplication.UnicodeUTF8))
