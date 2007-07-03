@@ -42,7 +42,10 @@ class FileAction(QtCore.QObject):
         self.fileExtension = ""
         self.fileDescription = ""
         self.MaxRecentHistory = 10
-        self.directory = QtCore.QDir.homePath()
+        
+        self.directory = World.settings.value("workingDir").toString()
+        if (not self.directory) or (not os.path.exists(self.directory)):
+            self.directory = QtCore.QDir.homePath()
         
     def openFile(self):
         """
@@ -131,6 +134,7 @@ class FileAction(QtCore.QObject):
         self.filename = filename
         # remember last open file's directory.
         self.directory = os.path.dirname(unicode(filename))
+        World.settings.setValue("workingDir", QtCore.QVariant(self.directory))
     
     def emitFileToSave(self, filename):
         """
