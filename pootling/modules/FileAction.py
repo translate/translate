@@ -27,8 +27,8 @@ class FileAction(QtCore.QObject):
     """
     Code for the actions in File menu.
     
-    @signal fileSaved(string): emitted when a file is saved. 'string' is the filename as QString.
-    @signal fileOpened(string): emitted when a file is opened. 'string' is the filename as QString.
+    @signal fileToSave(string): emitted when a file is saved. 'string' is the filename as QString.
+    @signal fileToOpen(string): emitted when a file is opened. 'string' is the filename as QString.
     """
 
     def __init__(self, parent):
@@ -56,15 +56,14 @@ class FileAction(QtCore.QObject):
         newFileName = QtGui.QFileDialog.getOpenFileName(self.parentWidget, self.tr("Open File"),
                         self.directory,
                         self.tr("All Supported Files (*.po *.pot *.xliff *.xlf *.tmx *.tbx);;PO Files and PO Template Files (*.po *.pot);;XLIFF Files (*.xliff *.xlf);;Translation Memory eXchange (TMX) Files (*.tmx);;TermBase eXchange (TBX) Files (*.tbx);;All Files (*)"))
-        if not newFileName.isEmpty():
+        if (newFileName.isEmpty()):
+            return False
+        else:
             # remember last open file's directory.
-            self.directory = os.path.dirname(str(newFileName))
-            self.filename = newFileName
+            self.setFileProperty(newFileName)
             self.emitFileOpened()
             return True
-        else:
-            return False
-
+    
     def save(self):
         self.emitFileToSave(self.filename)
         
@@ -74,7 +73,6 @@ class FileAction(QtCore.QObject):
         """
         # TODO: think about export in different formats
         labelSaveAs = self.tr("Save As")
-        self.fileExtension = self.fileExtension
         fileDialog = QtGui.QFileDialog(self.parentWidget, labelSaveAs, self.directory, self.fileDescription + " (*" + str(self.fileExtension) + ")" )
 
         fileDialog.setHistory(World.settings.value("SaveAsHistory").toStringList())
@@ -126,7 +124,7 @@ class FileAction(QtCore.QObject):
         elif (ret == QtGui.QMessageBox.Cancel):
             return False
     
-    def setFileName(self, filename):
+    def setFileProperty(self, filename):
         """
         Assign the name of an opened file to a local variable.
         @param filename: file's name as QString
@@ -134,6 +132,15 @@ class FileAction(QtCore.QObject):
         self.filename = filename
         # remember last open file's directory.
         self.directory = os.path.dirname(unicode(filename))
+        
+        extension = {"po": "PO Files", "pot": "PO Template Files", 
+            "xliff": "XLIFF Files", "xlf": "XLIFF Files", 
+            "tmx": "Translation Memory eXchange (TMX) Files", "tbx": "TermBase eXchange (TBX) Files"}
+        filename, ext = os.path.splitext(filename)
+        ext = ext[len(os.path.extsep):].lower()
+        self.fileExtension = "." + ext
+        self.fileDescription = extension.get(ext) 
+        
         World.settings.setValue("workingDir", QtCore.QVariant(self.directory))
     
     def emitFileToSave(self, filename):
@@ -144,17 +151,10 @@ class FileAction(QtCore.QObject):
         self.emit(QtCore.SIGNAL("fileToSave"), unicode(filename)) 
         
     def emitFileOpened(self):
-        """emit signal fileOpened, with a filename as string"""
-        # get default file extension and description
-        (path, filename) = os.path.split(str(self.filename).lower())
-        extension = {"po": "PO Files", "pot": "PO Template Files", 
-            "xliff": "XLIFF Files", "xlf": "XLIFF Files", 
-            "tmx": "Translation Memory eXchange (TMX) Files", "tbx": "TermBase eXchange (TBX) Files"}
-        filename, ext = os.path.splitext(filename)
-        ext = ext[len(os.path.extsep):].lower()
-        self.fileExtension = "." + ext
-        self.fileDescription = extension.get(ext) 
-        self.emit(QtCore.SIGNAL("fileOpened"), str(self.filename))
+        """
+        Send "fileToOpen" signal with a filename as string.
+        """
+        self.emit(QtCore.SIGNAL("fileToOpen"), str(self.filename))
     
 if __name__ == "__main__":
     # set the path for QT in order to find the icons

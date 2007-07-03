@@ -284,7 +284,7 @@ class MainWindow(QtGui.QMainWindow):
 
         # set file status information to text label of status bar.
         self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.statuslabel.setText)
-        self.connect(self.fileaction, QtCore.SIGNAL("fileOpened"), self.openFile)
+        self.connect(self.fileaction, QtCore.SIGNAL("fileToOpen"), self.openFile)
 
         # progress bar
         self.progressBar = QtGui.QProgressBar()
@@ -584,7 +584,7 @@ class MainWindow(QtGui.QMainWindow):
         closed = self.closeFile()
         if (closed):
             if (self.operator.getUnits(filename)):
-                self.fileaction.setFileName(filename)
+                self.fileaction.setFileProperty(filename)
                 self.setStatusForFile(filename)
                 self.prependOpenRecent(filename)
                 self.clearBookmarks()
