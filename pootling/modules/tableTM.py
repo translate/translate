@@ -65,8 +65,8 @@ class tableTM(QtGui.QDockWidget):
     def createContextMenu(self):
         # context menu of items
         self.menu = QtGui.QMenu()
-        actionCopyResult = self.menu.addAction(QtGui.QIcon("../images/source.png"), self.tr("Copy search result to target"))
-        actionEditFile = self.menu.addAction(QtGui.QIcon("../images/open.png"),self.tr("Edit file"))
+        actionCopyResult = self.menu.addAction(QtGui.QIcon("../images/source.png"), self.tr("Copy Translation To Target"))
+        actionEditFile = self.menu.addAction(QtGui.QIcon("../images/open.png"),self.tr("Edit File"))
         self.connect(actionCopyResult, QtCore.SIGNAL("triggered()"), self.emitTarget)
         self.connect(actionEditFile, QtCore.SIGNAL("triggered()"), self.emitOpenFile)
         
