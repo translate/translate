@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# -*- coding: utf8 -*-
+# -*- coding: utf-8 -*-
 #
 # Pootling
 # Copyright 2006 WordForge Foundation
@@ -92,7 +92,7 @@ class CommentDock(QtGui.QDockWidget):
         
         #move the cursor to the end of sentence.
         cursor = self.ui.txtTranslatorComment.textCursor()
-        cursor.setPosition(len(unit.target or ""))
+        cursor.setPosition(len(translatorComment or ""))
         self.ui.txtTranslatorComment.setTextCursor(cursor)
         self.lastUnit = unit
         
