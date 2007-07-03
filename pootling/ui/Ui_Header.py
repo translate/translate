@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/k-da/Documents/poxole/trunk/pootling/ui/Header.ui'
+# Form implementation generated from reading ui file '/home/ratha/sourceforge.net/translate/trunk/pootling/ui/Header.ui'
 #
-# Created: Tue Jun 19 11:17:36 2007
-#      by: PyQt4 UI code generator 4-snapshot-20070212
+# Created: Tue Jul  3 17:42:02 2007
+#      by: PyQt4 UI code generator 4.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -27,23 +27,43 @@ class Ui_frmHeader(object):
         self.gridlayout.setSpacing(6)
         self.gridlayout.setObjectName("gridlayout")
 
-        self.frame = QtGui.QFrame(frmHeader)
+        self.splitter1 = QtGui.QSplitter(frmHeader)
+        self.splitter1.setOrientation(QtCore.Qt.Vertical)
+        self.splitter1.setObjectName("splitter1")
 
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(5))
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.frame.sizePolicy().hasHeightForWidth())
-        self.frame.setSizePolicy(sizePolicy)
-        self.frame.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.frame.setFrameShadow(QtGui.QFrame.Raised)
-        self.frame.setObjectName("frame")
+        self.splitter = QtGui.QSplitter(self.splitter1)
+        self.splitter.setOrientation(QtCore.Qt.Vertical)
+        self.splitter.setObjectName("splitter")
 
-        self.gridlayout1 = QtGui.QGridLayout(self.frame)
+        self.groupBox1 = QtGui.QGroupBox(self.splitter)
+        self.groupBox1.setObjectName("groupBox1")
+
+        self.gridlayout1 = QtGui.QGridLayout(self.groupBox1)
         self.gridlayout1.setMargin(9)
         self.gridlayout1.setSpacing(6)
         self.gridlayout1.setObjectName("gridlayout1")
 
-        self.tableHeader = QtGui.QTableWidget(self.frame)
+        self.txtOtherComments = QtGui.QTextEdit(self.groupBox1)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(7))
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.txtOtherComments.sizePolicy().hasHeightForWidth())
+        self.txtOtherComments.setSizePolicy(sizePolicy)
+        self.txtOtherComments.setMinimumSize(QtCore.QSize(16,16))
+        self.txtOtherComments.setTabChangesFocus(True)
+        self.txtOtherComments.setObjectName("txtOtherComments")
+        self.gridlayout1.addWidget(self.txtOtherComments,0,0,1,1)
+
+        self.groupBox = QtGui.QGroupBox(self.splitter1)
+        self.groupBox.setObjectName("groupBox")
+
+        self.gridlayout2 = QtGui.QGridLayout(self.groupBox)
+        self.gridlayout2.setMargin(9)
+        self.gridlayout2.setSpacing(6)
+        self.gridlayout2.setObjectName("gridlayout2")
+
+        self.tableHeader = QtGui.QTableWidget(self.groupBox)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(7))
         sizePolicy.setHorizontalStretch(0)
@@ -63,9 +83,54 @@ class Ui_frmHeader(object):
         self.tableHeader.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
         self.tableHeader.setShowGrid(True)
         self.tableHeader.setObjectName("tableHeader")
-        self.gridlayout1.addWidget(self.tableHeader,0,0,5,1)
+        self.gridlayout2.addWidget(self.tableHeader,0,0,5,1)
 
-        self.btnDeleteRow = QtGui.QPushButton(self.frame)
+        self.btnDown = QtGui.QPushButton(self.groupBox)
+        self.btnDown.setEnabled(False)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(1),QtGui.QSizePolicy.Policy(1))
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.btnDown.sizePolicy().hasHeightForWidth())
+        self.btnDown.setSizePolicy(sizePolicy)
+        self.btnDown.setIcon(QtGui.QIcon("../images/down.png"))
+        self.btnDown.setObjectName("btnDown")
+        self.gridlayout2.addWidget(self.btnDown,1,1,1,1)
+
+        self.btnUp = QtGui.QPushButton(self.groupBox)
+        self.btnUp.setEnabled(False)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(1),QtGui.QSizePolicy.Policy(1))
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.btnUp.sizePolicy().hasHeightForWidth())
+        self.btnUp.setSizePolicy(sizePolicy)
+        self.btnUp.setIcon(QtGui.QIcon("../images/up.png"))
+        self.btnUp.setObjectName("btnUp")
+        self.gridlayout2.addWidget(self.btnUp,0,1,1,1)
+
+        self.btnInsertRow = QtGui.QPushButton(self.groupBox)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(1),QtGui.QSizePolicy.Policy(1))
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.btnInsertRow.sizePolicy().hasHeightForWidth())
+        self.btnInsertRow.setSizePolicy(sizePolicy)
+
+        font = QtGui.QFont()
+        font.setFamily("Sans Serif")
+        font.setPointSize(9)
+        font.setWeight(50)
+        font.setItalic(False)
+        font.setUnderline(False)
+        font.setStrikeOut(False)
+        font.setBold(False)
+        self.btnInsertRow.setFont(font)
+        self.btnInsertRow.setIcon(QtGui.QIcon("../images/add.png"))
+        self.btnInsertRow.setObjectName("btnInsertRow")
+        self.gridlayout2.addWidget(self.btnInsertRow,3,1,1,1)
+
+        self.btnDeleteRow = QtGui.QPushButton(self.groupBox)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(1),QtGui.QSizePolicy.Policy(1))
         sizePolicy.setHorizontalStretch(0)
@@ -280,7 +345,7 @@ class Ui_frmHeader(object):
         palette.setBrush(QtGui.QPalette.Disabled,QtGui.QPalette.AlternateBase,brush)
         self.btnDeleteRow.setPalette(palette)
 
-        font = QtGui.QFont(self.btnDeleteRow.font())
+        font = QtGui.QFont()
         font.setFamily("Sans Serif")
         font.setPointSize(9)
         font.setWeight(50)
@@ -292,60 +357,11 @@ class Ui_frmHeader(object):
         self.btnDeleteRow.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.btnDeleteRow.setIcon(QtGui.QIcon("../images/minus.png"))
         self.btnDeleteRow.setObjectName("btnDeleteRow")
-        self.gridlayout1.addWidget(self.btnDeleteRow,4,1,1,1)
+        self.gridlayout2.addWidget(self.btnDeleteRow,4,1,1,1)
 
-        self.btnInsertRow = QtGui.QPushButton(self.frame)
-
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(1),QtGui.QSizePolicy.Policy(1))
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.btnInsertRow.sizePolicy().hasHeightForWidth())
-        self.btnInsertRow.setSizePolicy(sizePolicy)
-
-        font = QtGui.QFont(self.btnInsertRow.font())
-        font.setFamily("Sans Serif")
-        font.setPointSize(9)
-        font.setWeight(50)
-        font.setItalic(False)
-        font.setUnderline(False)
-        font.setStrikeOut(False)
-        font.setBold(False)
-        self.btnInsertRow.setFont(font)
-        self.btnInsertRow.setIcon(QtGui.QIcon("../images/add.png"))
-        self.btnInsertRow.setObjectName("btnInsertRow")
-        self.gridlayout1.addWidget(self.btnInsertRow,3,1,1,1)
-
-        self.btnUp = QtGui.QPushButton(self.frame)
-        self.btnUp.setEnabled(False)
-
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(1),QtGui.QSizePolicy.Policy(1))
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.btnUp.sizePolicy().hasHeightForWidth())
-        self.btnUp.setSizePolicy(sizePolicy)
-        self.btnUp.setIcon(QtGui.QIcon("../images/up.png"))
-        self.btnUp.setObjectName("btnUp")
-        self.gridlayout1.addWidget(self.btnUp,0,1,1,1)
-
-        self.btnDown = QtGui.QPushButton(self.frame)
-        self.btnDown.setEnabled(False)
-
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(1),QtGui.QSizePolicy.Policy(1))
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.btnDown.sizePolicy().hasHeightForWidth())
-        self.btnDown.setSizePolicy(sizePolicy)
-        self.btnDown.setIcon(QtGui.QIcon("../images/down.png"))
-        self.btnDown.setObjectName("btnDown")
-        self.gridlayout1.addWidget(self.btnDown,1,1,1,1)
-
-        spacerItem = QtGui.QSpacerItem(20,141,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
-        self.gridlayout1.addItem(spacerItem,2,1,1,1)
-        self.gridlayout.addWidget(self.frame,3,0,1,1)
-
-        self.label = QtGui.QLabel(frmHeader)
-        self.label.setObjectName("label")
-        self.gridlayout.addWidget(self.label,0,0,1,1)
+        spacerItem = QtGui.QSpacerItem(79,51,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
+        self.gridlayout2.addItem(spacerItem,2,1,1,1)
+        self.gridlayout.addWidget(self.splitter1,0,0,2,2)
 
         self.hboxlayout = QtGui.QHBoxLayout()
         self.hboxlayout.setMargin(0)
@@ -371,22 +387,7 @@ class Ui_frmHeader(object):
         self.cancelButton = QtGui.QPushButton(frmHeader)
         self.cancelButton.setObjectName("cancelButton")
         self.hboxlayout.addWidget(self.cancelButton)
-        self.gridlayout.addLayout(self.hboxlayout,4,0,1,1)
-
-        self.label_2 = QtGui.QLabel(frmHeader)
-        self.label_2.setObjectName("label_2")
-        self.gridlayout.addWidget(self.label_2,2,0,1,1)
-
-        self.txtOtherComments = QtGui.QTextEdit(frmHeader)
-
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(3))
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.txtOtherComments.sizePolicy().hasHeightForWidth())
-        self.txtOtherComments.setSizePolicy(sizePolicy)
-        self.txtOtherComments.setTabChangesFocus(True)
-        self.txtOtherComments.setObjectName("txtOtherComments")
-        self.gridlayout.addWidget(self.txtOtherComments,1,0,1,1)
+        self.gridlayout.addLayout(self.hboxlayout,2,0,1,2)
 
         self.retranslateUi(frmHeader)
         QtCore.QObject.connect(self.okButton,QtCore.SIGNAL("clicked()"),frmHeader.accept)
@@ -404,24 +405,24 @@ class Ui_frmHeader(object):
 
     def retranslateUi(self, frmHeader):
         frmHeader.setWindowTitle(QtGui.QApplication.translate("frmHeader", "Header", None, QtGui.QApplication.UnicodeUTF8))
+        self.groupBox1.setTitle(QtGui.QApplication.translate("frmHeader", "Comment", None, QtGui.QApplication.UnicodeUTF8))
+        self.groupBox.setTitle(QtGui.QApplication.translate("frmHeader", "Header", None, QtGui.QApplication.UnicodeUTF8))
         self.tableHeader.setColumnCount(2)
         self.tableHeader.clear()
         self.tableHeader.setColumnCount(2)
         self.tableHeader.setRowCount(0)
-        self.btnDeleteRow.setToolTip(QtGui.QApplication.translate("frmHeader", "delete row", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnDeleteRow.setText(QtGui.QApplication.translate("frmHeader", " &Remove", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnInsertRow.setToolTip(QtGui.QApplication.translate("frmHeader", "Insert row", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnInsertRow.setText(QtGui.QApplication.translate("frmHeader", " &Insert", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnUp.setToolTip(QtGui.QApplication.translate("frmHeader", "Move up", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnUp.setText(QtGui.QApplication.translate("frmHeader", "&Up", None, QtGui.QApplication.UnicodeUTF8))
         self.btnDown.setToolTip(QtGui.QApplication.translate("frmHeader", "Move down", None, QtGui.QApplication.UnicodeUTF8))
         self.btnDown.setText(QtGui.QApplication.translate("frmHeader", "&Down", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("frmHeader", "Comment", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnUp.setToolTip(QtGui.QApplication.translate("frmHeader", "Move up", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnUp.setText(QtGui.QApplication.translate("frmHeader", "&Up", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnInsertRow.setToolTip(QtGui.QApplication.translate("frmHeader", "Insert row", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnInsertRow.setText(QtGui.QApplication.translate("frmHeader", " &Insert", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnDeleteRow.setToolTip(QtGui.QApplication.translate("frmHeader", "delete row", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnDeleteRow.setText(QtGui.QApplication.translate("frmHeader", " &Remove", None, QtGui.QApplication.UnicodeUTF8))
         self.resetButton.setText(QtGui.QApplication.translate("frmHeader", "Re&set", None, QtGui.QApplication.UnicodeUTF8))
         self.applyButton.setText(QtGui.QApplication.translate("frmHeader", "&Apply Settings", None, QtGui.QApplication.UnicodeUTF8))
         self.okButton.setText(QtGui.QApplication.translate("frmHeader", "&OK", None, QtGui.QApplication.UnicodeUTF8))
         self.cancelButton.setText(QtGui.QApplication.translate("frmHeader", "&Cancel", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_2.setText(QtGui.QApplication.translate("frmHeader", "Header", None, QtGui.QApplication.UnicodeUTF8))
 
 
 
