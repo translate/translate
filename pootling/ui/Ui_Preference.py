@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/k-da/Documents/poxole/trunk/pootling/ui/Preference.ui'
 #
-# Created: Mon Jun 11 16:38:27 2007
+# Created: Mon Jul  2 22:09:35 2007
 #      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!
@@ -913,9 +913,9 @@ class Ui_frmPreference(object):
         self.Source_2.setText(QtGui.QApplication.translate("frmPreference", "Source", None, QtGui.QApplication.UnicodeUTF8))
         self.label_4.setText(QtGui.QApplication.translate("frmPreference", "Font & Color for Your Views", None, QtGui.QApplication.UnicodeUTF8))
         self.bntDefaultsFont.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Defaults Font</h3>Once this button is clicked, Overview, Source, Target and Comment will be set to default font, Serif, 10.", None, QtGui.QApplication.UnicodeUTF8))
-        self.bntDefaultsFont.setText(QtGui.QApplication.translate("frmPreference", "Defaults Font", None, QtGui.QApplication.UnicodeUTF8))
+        self.bntDefaultsFont.setText(QtGui.QApplication.translate("frmPreference", "Default Font", None, QtGui.QApplication.UnicodeUTF8))
         self.bntDefaultsColor.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Defaults Color</h3>Once this button is clicked, Overview, Source, Target and Comment will be set to default color, black.", None, QtGui.QApplication.UnicodeUTF8))
-        self.bntDefaultsColor.setText(QtGui.QApplication.translate("frmPreference", "Defaults Color", None, QtGui.QApplication.UnicodeUTF8))
+        self.bntDefaultsColor.setText(QtGui.QApplication.translate("frmPreference", "Default Color", None, QtGui.QApplication.UnicodeUTF8))
         self.chbDetectTerm.setText(QtGui.QApplication.translate("frmPreference", "Detect new terminology", None, QtGui.QApplication.UnicodeUTF8))
         self.chbSuggestTranslation.setText(QtGui.QApplication.translate("frmPreference", "Allow translation suggestion from TM", None, QtGui.QApplication.UnicodeUTF8))
         self.chbAddNewTerm.setText(QtGui.QApplication.translate("frmPreference", "Add new terminology to glossary", None, QtGui.QApplication.UnicodeUTF8))
