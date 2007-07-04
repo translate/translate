@@ -126,9 +126,11 @@ class FileAction(QtCore.QObject):
     
     def setFileProperty(self, filename):
         """
-        Assign the name of an opened file to a local variable.
-        @param filename: file's name as QString
+        Set information such as directory, extension, and description from
+        filename.
+        @param filename: name of file as unicode string.
         """
+        filename = unicode(filename)
         self.filename = filename
         # remember last open file's directory.
         self.directory = os.path.dirname(unicode(filename))
@@ -136,7 +138,7 @@ class FileAction(QtCore.QObject):
         extension = {"po": "PO Files", "pot": "PO Template Files", 
             "xliff": "XLIFF Files", "xlf": "XLIFF Files", 
             "tmx": "Translation Memory eXchange (TMX) Files", "tbx": "TermBase eXchange (TBX) Files"}
-        filename, ext = os.path.splitext(filename)
+        name, ext = os.path.splitext(filename)
         ext = ext[len(os.path.extsep):].lower()
         self.fileExtension = "." + ext
         self.fileDescription = extension.get(ext) 
