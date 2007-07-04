@@ -226,10 +226,8 @@ class OverviewDock(QtGui.QDockWidget):
         if (targetAfterEdit != self.targetBeforeEdit) and (self.targetBeforeEdit != None):
             # target has changed
             self.emit(QtCore.SIGNAL("targetChanged"), unicode(targetAfterEdit))
-        
-        if (self.unit):
-            self.updateText(self.unit.target or "")
-        return
+            if (self.unit):
+                self.updateText(self.unit.target or "")
     
     def fillTarget(self, row, column):
         """
