@@ -57,6 +57,7 @@ class Catalog(QtGui.QMainWindow):
         title = self.tr("%s Catalog Manager" % (World.settingApp))
         self.setWindowTitle(title)
         self.ui.toolBar.toggleViewAction()
+        self.ui.actionBuild.setEnabled(False)
         self.ui.toolBar.setWindowTitle("ToolBar View")
         self.ui.toolBar.setStatusTip("Toggle toolbar view")
         
@@ -311,7 +312,6 @@ class Catalog(QtGui.QMainWindow):
     def showDialog(self):
         self.lazyInit()
         self.show()
-        self.ui.actionBuild.setEnabled(False)
         cats = World.settings.value("CatalogPath").toStringList()
         if (cats) and (self.ui.treeCatalog.topLevelItemCount() == 0):
             self.updateCatalog()
@@ -327,6 +327,7 @@ class Catalog(QtGui.QMainWindow):
         self.ui.actionFind_in_Files.setEnabled(True)
         self.ui.actionStatistics.setEnabled(True)
         self.ui.actionReload.setEnabled(True)
+        self.ui.actionBuild.setEnabled(True)
 
         # Icon enabled when context menu not files into treeCatalog
         self.actionOpen.setEnabled(True)
