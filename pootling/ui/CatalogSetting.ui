@@ -12,6 +12,9 @@
   <property name="windowTitle" >
    <string>Catalog Settings</string>
   </property>
+  <property name="toolTip" >
+   <string/>
+  </property>
   <layout class="QGridLayout" >
    <property name="margin" >
     <number>9</number>
@@ -28,6 +31,12 @@
       <number>0</number>
      </property>
      <widget class="QWidget" name="tab" >
+      <property name="toolTip" >
+       <string/>
+      </property>
+      <property name="whatsThis" >
+       <string/>
+      </property>
       <attribute name="title" >
        <string>&amp;File</string>
       </attribute>
@@ -53,11 +62,14 @@
        </item>
        <item row="6" column="0" >
         <widget class="QCheckBox" name="chbDiveIntoSubfolders" >
+         <property name="toolTip" >
+          <string>Dive into subfolders</string>
+         </property>
          <property name="whatsThis" >
-          <string>Checked/Unchecked of Dive into Subfolders to display files as sub of main folders</string>
+          <string>&lt;h3>Dive into subfolders&lt;/h3>Use this to checked/unchecked to display sub's file under main folder.</string>
          </property>
          <property name="text" >
-          <string>Dive into Subfolders</string>
+          <string>Dive into subfolders</string>
          </property>
         </widget>
        </item>
@@ -66,8 +78,11 @@
          <property name="toolTip" >
           <string>Add TM</string>
          </property>
+         <property name="statusTip" >
+          <string/>
+         </property>
          <property name="whatsThis" >
-          <string>You can add po, xliff files or another folders of files on your local into listwidget.</string>
+          <string>&lt;h3>Add TM&lt;/h3>Use this to add po, xliff files or another folders of file on your local into listwidget.</string>
          </property>
          <property name="text" >
           <string> &amp;Add</string>
@@ -79,18 +94,21 @@
        </item>
        <item rowspan="5" row="1" column="0" >
         <widget class="QListWidget" name="listWidget" >
+         <property name="toolTip" >
+          <string>Listwidget</string>
+         </property>
          <property name="whatsThis" >
-          <string>Listwidget is displayed items from user add files or folders.</string>
+          <string>&lt;h3>Listwidget&lt;/h3>Listwidget is displayed items from user add files or folders.</string>
          </property>
         </widget>
        </item>
        <item row="4" column="1" >
         <widget class="QPushButton" name="btnMoveUp" >
          <property name="toolTip" >
-          <string>move up</string>
+          <string>Move Up</string>
          </property>
          <property name="whatsThis" >
-          <string>You can move iterm in listwidget from up to down </string>
+          <string>&lt;h3>Move Up&lt;/h3>Use this to move iterm in listwidget from up to down </string>
          </property>
          <property name="text" >
           <string> &amp;Up</string>
@@ -110,10 +128,10 @@
        <item row="3" column="1" >
         <widget class="QPushButton" name="btnClear" >
          <property name="toolTip" >
-          <string>clear list</string>
+          <string>Clear List</string>
          </property>
          <property name="whatsThis" >
-          <string>You can clear everything in listwidget .</string>
+          <string>&lt;h3>Clear List&lt;/h3>Use this to clear everything in listwidget .</string>
          </property>
          <property name="text" >
           <string> &amp;Clear</string>
@@ -134,10 +152,10 @@
           </sizepolicy>
          </property>
          <property name="toolTip" >
-          <string>move down</string>
+          <string>Move Down</string>
          </property>
          <property name="whatsThis" >
-          <string>You can move iterm in listwidget from down to up .</string>
+          <string>&lt;h3>Move Down&lt;/h3>Use this to move iterm in listwidget from down to up .</string>
          </property>
          <property name="text" >
           <string> Do&amp;wn</string>
@@ -161,7 +179,7 @@
           <string>Delete TM</string>
          </property>
          <property name="whatsThis" >
-          <string>You can delete po, xliff files or another folders of files from listwidget.</string>
+          <string>&lt;h3>Delete TM&lt;/h3>Use this to delete po, xliff files or another folders of files from listwidget.</string>
          </property>
          <property name="text" >
           <string> De&amp;lete</string>
@@ -174,6 +192,9 @@
       </layout>
      </widget>
      <widget class="QWidget" name="tab_3" >
+      <property name="whatsThis" >
+       <string/>
+      </property>
       <attribute name="title" >
        <string>Catalog &amp;View</string>
       </attribute>
@@ -214,8 +235,11 @@
           </property>
           <item row="1" column="1" >
            <widget class="QCheckBox" name="chbtotal" >
+            <property name="toolTip" >
+             <string>Total</string>
+            </property>
             <property name="whatsThis" >
-             <string>Checked/Unchecked to Display total's files on the catalog manager.</string>
+             <string>&lt;h3>Total&lt;/h3>Use this to checked/unchecked to display total number of strings in file on the catalog manager.</string>
             </property>
             <property name="text" >
              <string>Total</string>
@@ -227,8 +251,11 @@
           </item>
           <item row="1" column="0" >
            <widget class="QCheckBox" name="chbtranslated" >
+            <property name="toolTip" >
+             <string>Translated</string>
+            </property>
             <property name="whatsThis" >
-             <string>Checked/Unchecked to Display last translator's files on the catalog manager.</string>
+             <string>&lt;h3>Translated&lt;/h3>Use this to checked/unchecked to display number of string in file was translated on the catalog manager.</string>
             </property>
             <property name="text" >
              <string>Translated</string>
@@ -240,8 +267,11 @@
           </item>
           <item row="2" column="0" >
            <widget class="QCheckBox" name="chbfuzzy" >
+            <property name="toolTip" >
+             <string>Fuzzy</string>
+            </property>
             <property name="whatsThis" >
-             <string>Checked/Unchecked to Display untranslated's files on the catalog manager.</string>
+             <string>&lt;h3>Fuzzy&lt;/h3>Use this to checked/unchecked to display fuzzy number in file on the catalog manager.</string>
             </property>
             <property name="text" >
              <string>Fuzzy</string>
@@ -253,8 +283,11 @@
           </item>
           <item row="0" column="1" >
            <widget class="QCheckBox" name="chbuntranslated" >
+            <property name="toolTip" >
+             <string>Untranslated</string>
+            </property>
             <property name="whatsThis" >
-             <string>Checked/Unchecked to Display fuzzy's files on the catalog manager.</string>
+             <string>&lt;h3>Untranslated&lt;/h3>Use this to checked/unchecked to display number of string in file was untranslated on the catalog manager.</string>
             </property>
             <property name="text" >
              <string>Untranslated</string>
@@ -266,8 +299,11 @@
           </item>
           <item row="2" column="1" >
            <widget class="QCheckBox" name="chbSVN" >
+            <property name="toolTip" >
+             <string>CVS/SVN Status</string>
+            </property>
             <property name="whatsThis" >
-             <string>Checked/Unchecked to Display name's files on the catalog manager.</string>
+             <string>&lt;h3>CVS/SVN Status&lt;/h3>Use this to checked/unchecked to display status of file in local or cvs/svn server on the catalog manager.</string>
             </property>
             <property name="text" >
              <string>CVS/SVN Status</string>
@@ -279,8 +315,11 @@
           </item>
           <item row="0" column="2" >
            <widget class="QCheckBox" name="chblastrevision" >
+            <property name="toolTip" >
+             <string>Last Revision</string>
+            </property>
             <property name="whatsThis" >
-             <string>Checked/Unchecked to Display last revision's files on the catalog manager.</string>
+             <string>&lt;h3>Last Revision&lt;/h3>Use this to checked/unchecked to display date/time in file was saved by the last translator on the catalog manager.</string>
             </property>
             <property name="text" >
              <string>Last Revision</string>
@@ -292,8 +331,11 @@
           </item>
           <item row="1" column="2" >
            <widget class="QCheckBox" name="chbtranslator" >
+            <property name="toolTip" >
+             <string>Last Translator</string>
+            </property>
             <property name="whatsThis" >
-             <string>Checked/Unchecked to Display cvs/svn status's files on the catalog manager.</string>
+             <string>&lt;h3>Last Translator&lt;/h3>Use this to checked/unchecked to display last translator's name in file on the catalog manager.</string>
             </property>
             <property name="text" >
              <string>Last Translator</string>
@@ -305,8 +347,14 @@
           </item>
           <item row="0" column="0" >
            <widget class="QCheckBox" name="chbname" >
+            <property name="toolTip" >
+             <string>Name</string>
+            </property>
+            <property name="statusTip" >
+             <string/>
+            </property>
             <property name="whatsThis" >
-             <string>Checked/Unchecked to Display translated's files on the catalog manager.</string>
+             <string>&lt;h3>Name&lt;/h3>Use this to checked/unchecked to display file name on the catalog manager.</string>
             </property>
             <property name="text" >
              <string>Name</string>
@@ -332,6 +380,9 @@
    </item>
    <item row="2" column="1" >
     <widget class="QPushButton" name="btnOk" >
+     <property name="toolTip" >
+      <string/>
+     </property>
      <property name="text" >
       <string>&amp;OK</string>
      </property>
