@@ -58,7 +58,7 @@ class Catalog(QtGui.QMainWindow):
         self.setWindowTitle(title)
         self.ui.toolBar.toggleViewAction()
         self.ui.toolBar.setWindowTitle("ToolBar View")
-        self.ui.toolBar.setStatusTip("Toggle ToolBar View")
+        self.ui.toolBar.setStatusTip("Toggle toolbar view")
         
         self.folderIcon = QtGui.QIcon("../images/open.png")
         self.iconFile = QtGui.QIcon("../images/iconfile.png")
@@ -311,6 +311,7 @@ class Catalog(QtGui.QMainWindow):
     def showDialog(self):
         self.lazyInit()
         self.show()
+        self.ui.actionBuild.setEnabled(False)
         cats = World.settings.value("CatalogPath").toStringList()
         if (cats) and (self.ui.treeCatalog.topLevelItemCount() == 0):
             self.updateCatalog()
@@ -326,6 +327,7 @@ class Catalog(QtGui.QMainWindow):
         self.ui.actionFind_in_Files.setEnabled(True)
         self.ui.actionStatistics.setEnabled(True)
         self.ui.actionReload.setEnabled(True)
+
         # Icon enabled when context menu not files into treeCatalog
         self.actionOpen.setEnabled(True)
         self.actionFind.setEnabled(True)
@@ -337,7 +339,15 @@ class Catalog(QtGui.QMainWindow):
         else:
             cats = World.settings.value("CatalogPath").toStringList()
             includeSub = World.settings.value("diveIntoSubCatalog").toBool()
-        
+            self.ui.actionBuild.setEnabled(True)
+            # when signal of catalogPath is empty. icon on treewidget of toolbar is disabled
+            if (cats.isEmpty()):
+                self.ui.actionFind_in_Files.setEnabled(False)
+                self.ui.actionStatistics.setEnabled(False)
+                self.ui.actionReload.setEnabled(False)
+                self.ui.actionBuild.setEnabled(False)
+                self.progressBar.setVisible(False)
+
         self.fileItems = []
         self.itemNumber = 0
         
@@ -696,6 +706,9 @@ class Catalog(QtGui.QMainWindow):
         self.catSetting.clearLocation()
         for location in itemList:
             self.catSetting.addLocation(location)
+            self.catSetting.show()
+        World.settings.setValue("CatalogPath", QtCore.QVariant(itemList))
+
         includeSub = proSettings.value("itemList").toBool()
         self.updateCatalog(itemList,  includeSub)
 
