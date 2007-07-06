@@ -354,7 +354,8 @@ class TUview(QtGui.QDockWidget):
             text = unicode(self.ui.txtTarget.toPlainText())
             self.targetStrings[i] = text
         
-        if (self.ui.txtTarget.document().isUndoAvailable()):
+        if (self.ui.txtTarget.document().isUndoAvailable()) or \
+            (self.ui.txtTarget.document().isRedoAvailable()):
             text = unicode(self.ui.txtTarget.toPlainText())
             self.emit(QtCore.SIGNAL("textChanged"), text, i)
             self.contentDirty = True
