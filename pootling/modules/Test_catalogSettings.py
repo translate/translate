@@ -17,13 +17,12 @@
 #       San Titvirak (titvirak@khmeros.info)
 #       Seth Chanratha (sethchanratha@khmeros.info)
 # 
-# This module is working on tests for tmSetting classes
+# This module is working on tests for catalogSetting classes
 
 from PyQt4 import QtCore, QtGui
 from pootling.ui.Ui_CatalogSetting import Ui_catalogSetting
 import os, sys
 import unittest
-import tempfile
 from pootling.modules import CatalogSetting
         
 class Test_catalogSetting(unittest.TestCase):
