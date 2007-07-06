@@ -40,3 +40,13 @@ is to actually translate it into Khmer.
 
 *When open the project file, the file/directory paths for Catalog don't add to location list yet.
  Even the refresh button is clicked.
+
+* Add the capability to have more than one file open at a time, being able to switch among them and easily copy terms.
+
+* enable search to disregard the "&" character
+ 
+*enable sorting to disregard "&" as well
+
+* enable suggestions from other .po files to show up no matter whether they contain "&" or "[tab]" or keyboard shortcuts.
+
+* Add translation to Translation Memory
