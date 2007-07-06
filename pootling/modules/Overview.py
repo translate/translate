@@ -248,7 +248,6 @@ class OverviewDock(QtGui.QDockWidget):
         targetItem = self.ui.tableOverview.item(self.ui.tableOverview.currentRow(), 2)
         # unmark item fuzzy when text changed
         row = self.ui.tableOverview.row(targetItem)
-        self.markState(row, not World.fuzzy)
         if (targetItem and self.unit):
             self.targetBeforeEdit = self.unit.target
             targetItem.setText(self.targetBeforeEdit)
