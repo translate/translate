@@ -48,5 +48,6 @@ class pickleTM:
             cPickle.dump(matcher, pickleFile)
             pickleFile.close()
         else:
-            os.remove(filename)
+            if not filename:
+                os.remove(filename)
 
