@@ -4,6 +4,8 @@
 # Pootling
 # Copyright 2006 WordForge Foundation
 #
+# Version 0.1 (29 December 2006)
+#
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
@@ -186,12 +188,8 @@ class newProject(QtGui.QDialog):
     def openProject(self):
         fileOpen = QtGui.QFileDialog.getOpenFileName(self, self.tr("Open File"),
                         QtCore.QDir.homePath(),
-self.tr("IniFormat Files(*.ini)"))
+self.tr("Ini file fomat (*.ini)"))
         if not fileOpen.isEmpty():
-#            proSettings = QtCore.QSettings(fileOpen, QtCore.QSettings.IniFormat)
-#            itemList = proSettings.value("itemList").toStringList()
-#            includeSub = proSettings.value("itemList").toBool()
-#            self.emit(QtCore.SIGNAL("updateCatalog"), itemList,  includeSub)
             self.emit(QtCore.SIGNAL("pathOfFileName"),  fileOpen)
 
 
