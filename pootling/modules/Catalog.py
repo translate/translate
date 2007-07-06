@@ -4,8 +4,6 @@
 # Pootling
 # Copyright 2006 WordForge Foundation
 #
-# Version 0.1 (29 December 2006)
-#
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
@@ -32,7 +30,7 @@ from pootling.modules.FindInCatalog import FindInCatalog
 from pootling.modules.NewProject import newProject
 from pootling.ui.Ui_tmSetting import Ui_tmsetting
 import __version__
-import os
+import os, sys
 
 class Catalog(QtGui.QMainWindow):
     """
@@ -180,7 +178,10 @@ class Catalog(QtGui.QMainWindow):
     def find(self, searchString, searchOptions):
         """
         The search here is only determine if search string exist in filename,
-        then it connect to search function in operator.
+        then it connects to search function in operator.
+        
+        @param searchString: Text a string to be search for
+        @param searchOptions: the location where you want to search for (source or target); type as integer defined in world.
         """
         if (not searchString):
             return
@@ -200,9 +201,9 @@ class Catalog(QtGui.QMainWindow):
                 for unit in store.units:
                     searchableText = ""
                     if (searchOptions & World.source):
-                        searchableText += unit.source
+                        searchableText += unit.source or ""
                     if (searchOptions & World.target):
-                        searchableText += unit.target
+                        searchableText += unicode(unit.target)
                     index = searchableText.find(searchString)
                     if (index > -1):
                         found = index
@@ -222,6 +223,7 @@ class Catalog(QtGui.QMainWindow):
         return
 
     def showStatistic(self):
+        """Show statistic message in a dialog. """
         item = self.ui.treeCatalog.currentItem()
         if (not item):
             return
@@ -281,6 +283,7 @@ class Catalog(QtGui.QMainWindow):
         self.statisticsDialog.show()
 
     def toggleHeaderItem(self):
+        """Show or hide the header label of catalog main window."""
         if (isinstance(self.sender(), QtGui.QCheckBox)):
             text = self.sender().text()
             if text in self.headerLabels:
@@ -296,7 +299,7 @@ class Catalog(QtGui.QMainWindow):
     def updateProgress(self, value):
         """
         Set the value for the progress bar.
-        self.allowUpdate is a condition wether to update or not, use to protect
+        self.allowUpdate is a condition whether to update or not, use to protect
         other class call.
         @param value: value to set.
         """
@@ -310,6 +313,7 @@ class Catalog(QtGui.QMainWindow):
         self.progressBar.setValue(value)
         
     def showDialog(self):
+        """Display the Catalog main window with configured information."""
         self.lazyInit()
         self.show()
         cats = World.settings.value("CatalogPath").toStringList()
@@ -366,6 +370,10 @@ class Catalog(QtGui.QMainWindow):
         """
         add path to catalog tree view if it's file, if it's directory then
         dive into it and add files.
+        
+        @param path: file or directory path to set to the catalog tree view.
+        @param includeSub: If it is True, dive into subfolder
+        @param item: childItem in the folder
         """
         if (os.path.isfile(path)):
             existedItem = self.getExistedItem(os.path.dirname(path))
@@ -451,6 +459,7 @@ class Catalog(QtGui.QMainWindow):
         return a dictionary which consist of basename, translatedCount, fuzzyCount,
         untranslatedCount, totalCount, subVersionState, revisionDate, lastTranslator
         or return False when error.
+        
         @param filename: path and file name.
         """
         try:
@@ -514,6 +523,8 @@ class Catalog(QtGui.QMainWindow):
         return {"translated": translated, "fuzzy":fuzzy, "untranslated":untranslated}
     
     def setupCheckbox(self):
+        """Set checked or unchecked mark for the header label of Catalog main window."""
+        
         value = World.settings.value("Catalog.Name")
         if (value.isValid()):
             if not (value.toBool()):
@@ -623,6 +634,8 @@ class Catalog(QtGui.QMainWindow):
         return filename
     
     def refresh(self):
+        """Slot to refresh Catalog information."""
+        
         self.settings = QtCore.QSettings()
         if self.autoRefresh:
             self.updateCatalog()
@@ -642,6 +655,7 @@ class Catalog(QtGui.QMainWindow):
         self.emit(QtCore.SIGNAL("buildTM"), catPaths)
     
     def updateStatistic(self):
+        """Update statistic information once adding file to the Catalog tree."""
         if (len(self.fileItems) <= 0):
             self.timer.stop()
             self.itemNumber = 0
@@ -682,6 +696,7 @@ class Catalog(QtGui.QMainWindow):
             self.ui.menuOpenRecentProject.setEnabled(False)
 
     def createRecentProject(self):
+        """Update open recent project list."""
         for i in range(World.MaxRecentFiles):
             self.recentProject.append(QtGui.QAction(self))
             self.recentProject[i].setVisible(False)
@@ -695,11 +710,17 @@ class Catalog(QtGui.QMainWindow):
         self.updateRecentProject()
 
     def startRecentProject(self):
+        """Get the choosen file from the open recent project and open the file."""
         action = self.sender()
         filename = action.data().toString()
         self.setOpening(filename)
 
     def setOpening(self, filename):
+        """ 
+        Open the project with the given filename; add the path(s) to Catalog list and
+        the filename to the open recent project list.
+        @param filename: the project name to open
+        """
         proSettings = QtCore.QSettings(filename, QtCore.QSettings.IniFormat)
         itemList = proSettings.value("itemList").toStringList()
         # set location of filename to list Widget of Catalog Setting when click open recent project.
@@ -724,6 +745,7 @@ class Catalog(QtGui.QMainWindow):
         self.updateRecentProject()
 
     def clearRecentProject(self):
+        """Slot to clear all path in open recent project list."""
         self.ui.menuOpenRecentProject.clear()
         self.ui.menuOpenRecentProject.setEnabled(False)
         World.settings.remove("recentProjectList")
@@ -749,12 +771,13 @@ class Catalog(QtGui.QMainWindow):
     def customContextMenuEvent(self, e):
         self.menu.exec_(e.globalPos())
 
-def main(self):
+def main():
     # set the path for QT in order to find the icons
     if __name__ == "__main__":
         QtCore.QDir.setCurrent(os.path.join(sys.path[0], "../ui"))
         app = QtGui.QApplication(sys.argv)
         catalog = Catalog()
+        catalog.showDialog()
         sys.exit(app.exec_())
 
 if __name__ == "__main__":
