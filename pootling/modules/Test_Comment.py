@@ -45,7 +45,8 @@ msgstr "unable to read file"
         """Test that signal commentChanged is emitted and reach the specific slot."""
         QtCore.QObject.connect(self.commentObj, QtCore.SIGNAL("commentChanged"), self.slot)
         QtCore.QObject.connect(self.commentObj, QtCore.SIGNAL("textChanged"), self.slot)
-        self.commentObj.ui.txtTranslatorComment.document().setModified(True)
+        self.commentObj.ui.txtTranslatorComment.selectAll()
+        self.commentObj.ui.txtTranslatorComment.insertPlainText('text')
         self.commentObj.textChanged()
         self.commentObj.emitCommentChanged()
         self.assertEqual(self.slotReached, True)
@@ -53,7 +54,8 @@ msgstr "unable to read file"
     def testTextChanged(self):
         """Test that signal textchanged is emitted while typing."""
         QtCore.QObject.connect(self.commentObj, QtCore.SIGNAL("textChanged"), self.slot)
-        self.commentObj.ui.txtTranslatorComment.document().setModified(True)
+        self.commentObj.ui.txtTranslatorComment.selectAll()
+        self.commentObj.ui.txtTranslatorComment.insertPlainText('text')
         self.commentObj.textChanged()
         self.assertEqual(self.slotReached, True)
         
