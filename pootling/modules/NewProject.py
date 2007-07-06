@@ -4,8 +4,6 @@
 # Pootling
 # Copyright 2006 WordForge Foundation
 #
-# Version 0.1 (29 December 2006)
-#
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
@@ -25,7 +23,6 @@
 from PyQt4 import QtCore, QtGui
 from pootling.ui.Ui_NewProject import Ui_NewProject
 from pootling.modules import FileDialog
-from translate.lang import common
 import translate.lang.data as data
 import pootling.modules.World as World
 import os
