@@ -264,7 +264,8 @@ class OverviewDock(QtGui.QDockWidget):
         targetItem = self.ui.tableOverview.item(self.ui.tableOverview.currentRow(), 2)
         # unmark item fuzzy when text changed
         row = self.ui.tableOverview.row(targetItem)
-        self.markState(row, not World.fuzzy)
+        self.unit.x_editor_state &= ~World.fuzzy
+        self.markState(row, self.unit.x_editor_state)
         if (targetItem):
             line = text.find("\n")
             if (line >= 0):
