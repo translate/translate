@@ -92,6 +92,7 @@ class Preference(QtGui.QDialog):
         self.ui.chbDetectTerm.hide()
         #TM
         self.ui.chbEditTraslation.hide()
+        self.ui.chbAddTraslation.hide()
         
     def accepted(self):
         """ slot ok pressed """
