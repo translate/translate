@@ -88,7 +88,7 @@ msgstr "unable to read file"
         self.assertEqual(self.commentObj.highlighter.foundPosition, foundPosition )
 
     def testReplaceText(self):
-        """Test that the replacing text is correct at the right positio and length."""
+        """Test that the replacing text is correct at the right position and length."""
         position = 0
         length = 2
         self.commentObj.updateView(self.currentunit)
