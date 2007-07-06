@@ -52,6 +52,8 @@ class OverviewDock(QtGui.QDockWidget):
         self.fuzzyIcon = QtGui.QIcon("../images/fuzzy.png")
         self.noteIcon = QtGui.QIcon("../images/note.png")
         self.approvedIcon = QtGui.QIcon("../images/approved.png")
+        self.pluralIcon = QtGui.QIcon("../images/plural.png")
+        self.pluralFuzzyIcon = QtGui.QIcon("../images/pluralfuzzy.png")
         self.blankIcon = QtGui.QIcon()
         self.normalState = QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
         self.indexMaxLen = 0
@@ -225,7 +227,16 @@ class OverviewDock(QtGui.QDockWidget):
         targetAfterEdit = targetItem.text()
         if (targetAfterEdit != self.targetBeforeEdit) and (self.targetBeforeEdit != None):
             # target has changed
-            self.emit(QtCore.SIGNAL("targetChanged"), unicode(targetAfterEdit))
+            target = unicode(targetAfterEdit)
+            if (self.unit and self.unit.hasplural()):
+                # change only the first string of plural
+                string0 = target
+                target = []
+                for string in self.unit.target.strings:
+                    target.append(string)
+                target[0] = string0
+                
+            self.emit(QtCore.SIGNAL("targetChanged"), target)
             if (self.unit):
                 self.updateText(self.unit.target or "")
     
@@ -242,10 +253,15 @@ class OverviewDock(QtGui.QDockWidget):
             self.targetBeforeEdit = self.unit.target
             targetItem.setText(self.targetBeforeEdit)
     
-    def updateText(self, text):
+    def updateText(self, text, plural = 0):
         """
         Set text to current item.
+        @param text: text to set in target column.
+        @param plural: bool to indicate a current text need to update.
         """
+        if (plural):
+            # do not update plural strings.
+            return
         targetItem = self.ui.tableOverview.item(self.ui.tableOverview.currentRow(), 2)
         # unmark item fuzzy when text changed
         row = self.ui.tableOverview.row(targetItem)
@@ -270,12 +286,10 @@ class OverviewDock(QtGui.QDockWidget):
         row = self.ui.tableOverview.row(unit.x_editor_tableItem)
         unit.x_editor_row = self.visibleRow.index(row)
         targetItem = self.ui.tableOverview.item(row, 2)
+        
         # update target column only if text has changed.
         if (targetItem.text() != unit.target):
-            target = unit.target or ""
-            line = target.find("\n") 
-            if (line >= 0):
-                target = target[:line] + "..."
+            target = self.shorten(unit.target or "")
             targetItem.setText(target)
         
         self.markComment(row, unit.getnotes())
@@ -299,24 +313,30 @@ class OverviewDock(QtGui.QDockWidget):
             return
         
         if (state & World.fuzzy):
-            item.setIcon(self.fuzzyIcon)
-            item.setToolTip("fuzzy")
-            
+            if (state & World.plural):
+                item.setIcon(self.pluralFuzzyIcon)
+                item.setToolTip("Plural string is fuzzy")
+            else:
+                item.setIcon(self.fuzzyIcon)
+                item.setToolTip("String is fuzzy")
             self.ui.tableOverview.item(index, 0).setBackgroundColor(self.fuzzyColor)
             self.ui.tableOverview.item(index, 1).setBackgroundColor(self.fuzzyColor)
             self.ui.tableOverview.item(index, 2).setBackgroundColor(self.fuzzyColor)
             item.setBackgroundColor(self.fuzzyColor)
-            
+        
         else:
             # TODO: do not setBackgroundColor when item is not dirty yet.
-            item.setIcon(self.blankIcon)
-            item.setToolTip("")
-            
+            if (state & World.plural):
+                item.setIcon(self.pluralIcon)
+                item.setToolTip("Plural strings")
+            else:
+                item.setIcon(self.blankIcon)
+                item.setToolTip("")
             self.ui.tableOverview.item(index, 0).setBackgroundColor(self.blankColor)
             self.ui.tableOverview.item(index, 1).setBackgroundColor(self.blankColor)
             self.ui.tableOverview.item(index, 2).setBackgroundColor(self.blankColor)
             item.setBackgroundColor(self.blankColor)
-
+    
     def applySettings(self):
         """
         set color and font to the table.
@@ -455,6 +475,15 @@ class OverviewDock(QtGui.QDockWidget):
         self.ui.tableOverview.setHorizontalHeaderLabels(self.headerLabels)
         self.ui.tableOverview.setRowCount(0)
         self.ui.tableOverview.setEnabled(bool)
+    
+    def shorten(self, text):
+        """
+        Cut the text which has more than one line and append with three dots.
+        """
+        line = text.find("\n") 
+        if (line >= 0):
+            text = text[:line] + "..."
+        return text
     
 if __name__ == "__main__":
     import sys, os
