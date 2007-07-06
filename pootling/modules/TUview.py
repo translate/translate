@@ -326,7 +326,7 @@ class TUview(QtGui.QDockWidget):
             self.ui.tabWidgetSource.setCurrentIndex(0)
             
             self.targetStrings = unit.target.strings
-            for i in range(nplurals - 1):
+            for i in range(nplurals):
                 if (len(self.targetStrings) < (nplurals - 1)):
                     self.targetStrings.append("")
                 textbox = QtGui.QTextEdit()
