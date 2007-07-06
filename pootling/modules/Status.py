@@ -28,6 +28,7 @@ class Status:
         self.numFuzzy = store.fuzzy_unitcount()
         self.numUntranslated = store.untranslated_unitcount()
         self.numTotal = self.numTranslated + self.numFuzzy + self.numUntranslated
+        self.nplurals = World.settings.value("nPlural").toInt()[0]
     
     def unitState(self, unit):
         """
@@ -43,6 +44,10 @@ class Status:
             state += World.translated
         else:
             state += World.untranslated
+        
+        if (unit.hasplural() and (self.nplurals > 1)):
+            state += World.plural
+        
         return state
         
     def markFuzzy(self, unit, fuzzy):

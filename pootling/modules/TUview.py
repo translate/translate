@@ -348,6 +348,7 @@ class TUview(QtGui.QDockWidget):
         """
         @emit textchanged signal for widget that need to update text while typing.
         """
+        i = 0
         if (self.targetStrings):
             i = self.ui.tabWidgetTarget.currentIndex()
             text = unicode(self.ui.txtTarget.toPlainText())
@@ -355,7 +356,7 @@ class TUview(QtGui.QDockWidget):
         
         if (self.ui.txtTarget.document().isUndoAvailable()):
             text = unicode(self.ui.txtTarget.toPlainText())
-            self.emit(QtCore.SIGNAL("textChanged"), text)
+            self.emit(QtCore.SIGNAL("textChanged"), text, i)
             self.contentDirty = True
     
     def emitTargetChanged(self):
@@ -430,10 +431,6 @@ class TUview(QtGui.QDockWidget):
             self.ui.lblComment.clear()
             self.ui.txtSource.clear()
             self.ui.txtTarget.clear()
-            for i in range(self.ui.tabWidgetSource.count()):
-                self.ui.tabWidgetSource.widget(i).children()[1].clear()
-            for i in range(self.ui.tabWidgetTarget.count()):
-                self.ui.tabWidgetTarget.widget(i).children()[1].clear()
         self.ui.lblComment.setVisible(value)
         self.ui.sourceStacked.setEnabled(value)
         self.ui.targetStacked.setEnabled(value)

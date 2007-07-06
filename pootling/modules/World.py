@@ -25,6 +25,7 @@ header = 0
 fuzzy = 1
 translated = 2
 untranslated = 4
+plural = 8
 filterAll = 4 + 2 + 1
 
 source = 1
