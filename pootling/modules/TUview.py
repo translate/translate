@@ -48,6 +48,9 @@ class TUview(QtGui.QDockWidget):
         self.applySettings()
         self.connect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
         
+        self.connect(self.ui.tabWidgetSource, QtCore.SIGNAL("currentChanged(int)"), self.sourceIndexChanged)
+        self.connect(self.ui.tabWidgetTarget, QtCore.SIGNAL("currentChanged(int)"), self.targetIndexChanged)
+        
         # create highlighter
         self.sourceLength = 0
         
@@ -59,6 +62,22 @@ class TUview(QtGui.QDockWidget):
         self.ui.txtTarget.focusOutEvent = self.customFocusOutEvent
         
         self.ui.txtSource.installEventFilter(self)
+    
+    def sourceIndexChanged(self, int):
+        textbox = self.ui.tabWidgetSource.widget(int)
+        try:
+            source = self.sourceStrings[int]
+        except IndexError:
+            source = ""
+        textbox.setPlainText(source)
+    
+    def targetIndexChanged(self, int):
+        textbox = self.ui.tabWidgetTarget.widget(int)
+        try:
+            target = self.targetStrings[int]
+        except IndexError:
+            target = ""
+        textbox.setPlainText(target)
         
     def eventFilter(self, obj, event):
         if (obj == self.ui.txtSource):
@@ -242,19 +261,6 @@ class TUview(QtGui.QDockWidget):
         @param value: current row."""
         self.emit(QtCore.SIGNAL("scrollToRow"), value)
     
-    def getTargets(self):
-        """
-        return target of unit which is string or list of string (plural).
-        """
-        if ((not hasattr(self, "secondpage")) or  (not self.secondpage)):
-            target = unicode(self.ui.txtTarget.toPlainText())
-        else:
-            target = []
-            for i in range(self.ui.tabWidgetTarget.count()):
-                textbox = self.ui.tabWidgetTarget.widget(i).children()[1]
-                target.append(unicode(textbox.toPlainText()))
-        return target
-    
     def updateView(self, unit):
         """
         Update the text in source and target, set the scrollbar position,
@@ -298,76 +304,55 @@ class TUview(QtGui.QDockWidget):
     
         @param unit: to show into source and target.
         """
-        if (not unit.hasplural()):
-            """
-            This will be called when unit is singular.
-            @param unit: unit to consider if signal or not.
-            """
-            # hide tab for plural unit and show the normal text boxes for signal unit.
-            # display on first page which is normal text box page
-            self.secondpage = False
-            self.ui.sourceStacked.setCurrentIndex(0)
-            self.ui.targetStacked.setCurrentIndex(0)
+        nplurals = World.settings.value("nPlural").toInt()[0]
+        isPlural = unit.hasplural() and (nplurals > 1)
+        self.ui.sourceStacked.setCurrentIndex((nplurals and isPlural) or 0)
+        self.ui.targetStacked.setCurrentIndex((nplurals and isPlural) or 0)
+        
+        if (isPlural):
+            # plural
+            for i in range(self.ui.tabWidgetSource.count()):
+                self.ui.tabWidgetSource.removeTab(0)
+            for i in range(self.ui.tabWidgetTarget.count()):
+                self.ui.tabWidgetTarget.removeTab(0)
+            
+            self.sourceStrings = unit.source.strings
+            for i in range(len(unit.source.strings)):
+                textbox = QtGui.QTextEdit()
+                textbox.setReadOnly(True)
+                textbox.setDocument(self.ui.txtSource.document())
+                self.ui.tabWidgetSource.addTab(textbox, "Plural %d" % (i + 1))
+                self.ui.tabWidgetSource.setCurrentIndex(i)
+            self.ui.tabWidgetSource.setCurrentIndex(0)
+            
+            self.targetStrings = unit.target.strings
+            for i in range(nplurals - 1):
+                if (len(self.targetStrings) < (nplurals - 1)):
+                    self.targetStrings.append("")
+                textbox = QtGui.QTextEdit()
+                textbox.setDocument(self.ui.txtTarget.document())
+                self.ui.tabWidgetTarget.addTab(textbox, "Plural %d" % (i + 1))
+                self.ui.tabWidgetTarget.setCurrentIndex(i)
+            self.ui.tabWidgetTarget.setCurrentIndex(0)
+        else:
+            # singular
+            self.sourceStrings = []
+            self.targetStrings = []
             if (unicode(unit.source) !=  unicode(self.ui.txtSource.toPlainText())):
                 self.ui.txtSource.setPlainText(unit.source)
             if (unicode(unit.target) !=  unicode(self.ui.txtTarget.toPlainText())):
                 self.ui.txtTarget.setPlainText(unit.target or "")
                 self.setCursorToEnd(self.ui.txtTarget)
-        else:
-            # create source tab
-            self.ui.sourceStacked.setCurrentIndex(1)
-            self.addRemoveTabWidget(self.ui.tabWidgetSource, len(unit.source.strings), unit.source.strings)
-            
-            # create target tab
-            nplurals = World.settings.value("nPlural").toInt()[0]
-            self.ui.targetStacked.setCurrentIndex((nplurals > 1) and 1 or 0)
-            if (not (nplurals > 1)):
-                if (unicode(unit.target) !=  unicode(self.ui.txtTarget.toPlainText())):
-                    self.ui.txtTarget.setPlainText(unit.target)
-                # display on first page which is normal text box page
-                self.secondpage = False
-            else:
-                # display on second page which is tabwidget page; second page
-                # means unit is plural and number of plurals form setting is more than 1.
-                self.secondpage = True
-                self.addRemoveTabWidget(self.ui.tabWidgetTarget, nplurals, unit.target.strings)
-                for i in range(self.ui.tabWidgetTarget.count()):
-                    textbox = self.ui.tabWidgetTarget.widget(i).children()[1]
-                    textbox.setReadOnly(False)
-    
-    def addRemoveTabWidget(self, tabWidget, length, msg_strings):
-        """
-        Add or remove tab to a Tab widget.
-        @param tabWidget: QTabWidget
-        @param length: amount of tab as int type
-        @param msg_strings: list of strings to set to textbox in each tab of tabWidget
-        """
-        count = tabWidget.count()
-        if (not (count  == length)):
-            while (count > length):
-                count -= 1
-                tabWidget.removeTab(count)
-            while (count < length):
-                count += 1
-                widget = QtGui.QWidget()
-                gridlayout = QtGui.QGridLayout(widget)
-                gridlayout.setMargin(0)
-                gridlayout.setSpacing(0)
-                textedit = QtGui.QTextEdit()
-                gridlayout.addWidget(textedit)
-                tabWidget.addTab(widget, "Plural " + str(count))
-            # add each source string of a unit to widget
-        minloop = min(count, len(msg_strings))
-        for i in range(minloop):
-            textbox = tabWidget.widget(i).children()[1]
-            if (unicode(msg_strings[i]) != unicode(textbox.toPlainText())):
-                textbox.setPlainText(msg_strings[i])
-            textbox.setReadOnly(True)
     
     def textChanged(self):
         """
         @emit textchanged signal for widget that need to update text while typing.
         """
+        if (self.targetStrings):
+            i = self.ui.tabWidgetTarget.currentIndex()
+            text = unicode(self.ui.txtTarget.toPlainText())
+            self.targetStrings[i] = text
+        
         if (self.ui.txtTarget.document().isUndoAvailable()):
             text = unicode(self.ui.txtTarget.toPlainText())
             self.emit(QtCore.SIGNAL("textChanged"), text)
@@ -378,7 +363,7 @@ class TUview(QtGui.QDockWidget):
         @emit targetChanged signal if content is dirty.
         """
         if (hasattr(self, "contentDirty") and self.contentDirty) and (hasattr(self, "lastUnit")):
-            target = self.getTargets()
+            target = self.targetStrings or unicode(self.ui.txtTarget.toPlainText())
             self.emit(QtCore.SIGNAL("targetChanged"), target, self.lastUnit)
         self.contentDirty = False
     
@@ -386,22 +371,7 @@ class TUview(QtGui.QDockWidget):
         """
         Copy the text from source to target.
         """
-        # if secondpage means unit is plural and number of plural forms setting is more than 1.
-        if (self.secondpage):
-            targettab =self.ui.tabWidgetTarget
-            targettabindex = targettab.currentIndex()
-            sourcetab = self.ui.tabWidgetSource
-            sourcetabindex = sourcetab.currentIndex()
-            targettab.widget(targettabindex).children()[1].setPlainText(sourcetab.widget(sourcetabindex).children()[1].toPlainText())
-        else:
-            # here targetview is always normal text box, but unit could be single or plural.
-            sourceview_as_tab = self.ui.sourceStacked.currentIndex()
-            if (not sourceview_as_tab):
-                self.setTargetText(self.ui.txtSource.toPlainText())
-            else:
-                sourcetab = self.ui.tabWidgetSource
-                sourcetabindex = sourcetab.currentIndex()
-                self.setTargetText(sourcetab.widget(sourcetabindex).children()[1].toPlainText())
+        self.setTargetText(self.ui.txtSource.toPlainText())
         self.setCursorToEnd(self.ui.txtTarget)
     
     def replaceText(self, textField, position, length, replacedText):
@@ -450,7 +420,6 @@ class TUview(QtGui.QDockWidget):
             self.ui.txtTarget.setTabStopWidth(QtGui.QFontMetrics(fontObj).width("m"*8))
     
     def viewSetting(self, arg = None):
-        
         if (type(arg) is list):
             lenFilter = len(arg)
             self.ui.fileScrollBar.setMaximum(max(lenFilter - 1, 0))
