@@ -43,9 +43,9 @@ class CatalogSetting(QtGui.QDialog):
         self.connect(self.ui.btnMoveUp, QtCore.SIGNAL("clicked(bool)"), self.moveUp)
         self.connect(self.ui.btnMoveDown, QtCore.SIGNAL("clicked(bool)"), self.moveDown)
         self.connect(self.ui.chbDiveIntoSubfolders, QtCore.SIGNAL("stateChanged(int)"), self.rememberDive)
-        self.ui.listWidget.addItems(World.settings.value("CatalogPath").toStringList())
+##        self.ui.listWidget.addItems(World.settings.value("CatalogPath").toStringList())
         self.setModal(True)
-        self.ui.chbDiveIntoSubfolders.setChecked(World.settings.value("diveIntoSubCatalog").toBool())
+##        self.ui.chbDiveIntoSubfolders.setChecked(World.settings.value("diveIntoSubCatalog").toBool())
         
         self.catalogModified = False
         
@@ -98,7 +98,12 @@ class CatalogSetting(QtGui.QDialog):
         """ Remember the check state of diveIntoSubCatalog"""
         World.settings.setValue("diveIntoSubCatalog", QtCore.QVariant(self.ui.chbDiveIntoSubfolders.isChecked()))
         self.catalogModified = True
-
+    
+    def showEvent(self, event):
+        self.ui.listWidget.clear()
+        self.ui.listWidget.addItems(World.settings.value("CatalogPath").toStringList())
+        self.ui.chbDiveIntoSubfolders.setChecked(World.settings.value("diveIntoSubCatalog").toBool())
+    
     def closeEvent(self, event):
         """Save CatalogPath to Qsettings before closing dialog. Then emit singnal updateCatalog.
        @param QCloseEvent Object: received close event when closing widget

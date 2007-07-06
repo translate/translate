@@ -320,7 +320,7 @@ class Catalog(QtGui.QMainWindow):
         if (cats) and (self.ui.treeCatalog.topLevelItemCount() == 0):
             self.updateCatalog()
     
-    def updateCatalog(self,  itemList = [],  includeSub = None):
+    def updateCatalog(self, cats = [], includeSub = True):
         """
         Read data from world's "CatalogPath" and display statistic of files
         in tree view.
@@ -338,21 +338,19 @@ class Catalog(QtGui.QMainWindow):
         self.actionFind.setEnabled(True)
         self.actionShowStat.setEnabled(True)
         self.ui.treeCatalog.clear()
-        if itemList:
-            cats = itemList
-            includeSub = includeSub
-        else:
+        
+        if (not cats):
             cats = World.settings.value("CatalogPath").toStringList()
             includeSub = World.settings.value("diveIntoSubCatalog").toBool()
             self.ui.actionBuild.setEnabled(True)
-            # when signal of catalogPath is empty. icon on treewidget of toolbar is disabled
-            if (cats.isEmpty()):
-                self.ui.actionFind_in_Files.setEnabled(False)
-                self.ui.actionStatistics.setEnabled(False)
-                self.ui.actionReload.setEnabled(False)
-                self.ui.actionBuild.setEnabled(False)
-                self.progressBar.setVisible(False)
-
+        # when signal of catalogPath is empty. icon on treewidget of toolbar is disabled
+        if (cats.isEmpty()):
+            self.ui.actionFind_in_Files.setEnabled(False)
+            self.ui.actionStatistics.setEnabled(False)
+            self.ui.actionReload.setEnabled(False)
+            self.ui.actionBuild.setEnabled(False)
+            self.progressBar.setVisible(False)
+        
         self.fileItems = []
         self.itemNumber = 0
         
@@ -721,19 +719,14 @@ class Catalog(QtGui.QMainWindow):
         the filename to the open recent project list.
         @param filename: the project name to open
         """
-        proSettings = QtCore.QSettings(filename, QtCore.QSettings.IniFormat)
-        itemList = proSettings.value("itemList").toStringList()
-        # set location of filename to list Widget of Catalog Setting when click open recent project.
-        self.catSetting = CatalogSetting(self)
-        self.catSetting.clearLocation()
-        for location in itemList:
-            self.catSetting.addLocation(location)
-            self.catSetting.show()
-        World.settings.setValue("CatalogPath", QtCore.QVariant(itemList))
-
-        includeSub = proSettings.value("itemList").toBool()
-        self.updateCatalog(itemList,  includeSub)
-
+        catSettings = QtCore.QSettings(filename, QtCore.QSettings.IniFormat)
+        catalogPath = catSettings.value("itemList").toStringList()
+        includeSub = catSettings.value("itemList").toBool()
+        self.updateCatalog(catalogPath, includeSub)
+        
+        World.settings.setValue("CatalogPath", QtCore.QVariant(catalogPath))
+        World.settings.setValue("diveIntoSubCatalog", QtCore.QVariant(includeSub))
+        
         files = World.settings.value("recentProjectList").toStringList()
         files.removeAll(filename)
         files.prepend(filename)
