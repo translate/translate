@@ -243,7 +243,7 @@ class Operator(QtCore.QObject):
         header = self.store.header()
         if (header):
             header.removenotes()
-            header.addnote(str(othercomments))
+            header.addnote(unicode(othercomments))
             #TODO this code is also in the library po.py, so we should combine it.
             header.msgid = ['""']
             headeritems = self.store.makeheaderdict(**headerDic)
