@@ -32,7 +32,11 @@ from translate.storage import tbx
 
 import os
 from gzip import GzipFile
-from bz2 import BZ2File
+try:
+    # bz2 is not available on python 2.3
+    from bz2 import BZ2File
+except ImportError:
+    BZ2File = None
 
 #TODO: Monolingual formats (with template?)
 
@@ -44,8 +48,9 @@ classes = {"po": po.pofile, "pot": po.pofile,
 
 decompressclass = {
     'gz': GzipFile,
-    'bz2': BZ2File,
 }
+if BZ2File:
+    decompressclass['bz2'] = BZ2File
 
 def guessextention(storefile):
     """Guesses the type of a file object by looking at the first few characters.
