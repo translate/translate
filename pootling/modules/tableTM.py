@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 #
-# Pootling
-# Copyright 2006 WordForge Foundation
+#Copyright (c) 2006 - 2007 by The WordForge Foundation
+#                       www.wordforge.org
 #
 # Version 0.1 (29 December 2006)
 #

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
-# Pootling
-# Copyright 2006 WordForge Foundation
+#Copyright (c) 2006 - 2007 by The WordForge Foundation
+#                       www.wordforge.org
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -675,9 +675,13 @@ def main(inputFile = None):
     if __name__ == "__main__":
         QtCore.QDir.setCurrent(os.path.join(sys.path[0], "../ui"))
     else:
+#        try:
+#            QtCore.QDir.setCurrent(os.path.join(sys.path[0], "../images"))
+#        except Exception, e:
         import distutils.sysconfig
         packagesdir = distutils.sysconfig.get_python_lib(prefix = "/usr/local")
         QtCore.QDir.setCurrent(os.path.join(packagesdir, "pootling", "ui"))
+            
     app = QtGui.QApplication(sys.argv)
     editor = MainWindow()
     editor.show()
