@@ -26,7 +26,7 @@ from pootling.ui.Ui_Header import Ui_frmHeader
 import pootling.modules.World as World
 from translate.storage import poheader
 
-import __version__
+from pootling import __version__
 
 class Header(QtGui.QDialog):
     """Hold infomation of Header file.

@@ -28,7 +28,7 @@ import pootling.modules.World as World
 from pootling.modules.Status import Status
 from pootling.modules.pickleTM import pickleTM
 import os, sys
-import __version__
+from pootling import __version__
 
 
 class Operator(QtCore.QObject):

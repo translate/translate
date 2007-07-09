@@ -32,7 +32,7 @@ from translate.storage import factory
 from translate.misc import wStringIO
 from translate.storage import po
 from PyQt4 import QtCore, QtGui
-import __version__
+from pootling import __version__
 
 class TestOperator(unittest.TestCase):
     def setUp(self):

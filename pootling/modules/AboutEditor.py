@@ -20,7 +20,7 @@
 # This module is providing an About dialog
 
 from PyQt4 import QtCore, QtGui
-import  __version__
+from pootling import  __version__
 
 class AboutEditor(QtGui.QDialog):
     def __init__(self, parent):

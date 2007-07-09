@@ -29,7 +29,7 @@ import pootling.modules.World as World
 from pootling.modules.FindInCatalog import FindInCatalog
 from pootling.modules.NewProject import newProject
 from pootling.ui.Ui_tmSetting import Ui_tmsetting
-import __version__
+from pootling import __version__
 import os, sys
 
 class Catalog(QtGui.QMainWindow):

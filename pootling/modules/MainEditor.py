@@ -37,7 +37,7 @@ import pootling.modules.World as World
 from pootling.modules import tmSetting
 from pootling.modules import tableTM
 from pootling.modules import TableGlossary
-import __version__
+from pootling import __version__
 
 class MainWindow(QtGui.QMainWindow):
     """
