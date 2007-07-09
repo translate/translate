@@ -1,8 +1,6 @@
 #!/usr/bin/python
-# WordForge Translation Editor
-# Copyright 2006 WordForge Foundation
-#
-# Version 0.1 (29 December 2006)
+#Copyright (c) 2006 - 2007 by The WordForge Foundation
+#                       www.wordforge.org
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -23,6 +21,7 @@ from optparse import OptionParser
 from pootling.modules import MainEditor
 from PyQt4 import QtCore, QtGui
 import sys, os
+import __version__
 
 if (sys.argv[0].endswith('py')):
     py = 'python '
@@ -30,14 +29,14 @@ else:
     py = ''
 usage = py + """%prog [OPTION] [filename]\n
 if the filename is given, the editor will open the file."""
+strPro = "%prog Version" + ' '  + __version__.ver
+strVersion = strPro + ' \n\
+Copyright (C) 2006-2007 The WordForge Foundation. www.wordforge.org\
+This is free software. You may redistribute copies of it under the terms of\
+the GNU General Public License <http://www.gnu.org/licenses/gpl.html>.\
+There is NO WARRANTY, to the extent permitted by law.\
+Written by Hok Kakada, Keo Sophon, San Titvirak, Seth Chanratha.'
 
-strVersion = """%prog Version 0.1\n
-Copyright (C) 2006 The WordForge Foundation. www.khmeros.info.
-This is free software. You may redistribute copies of it under the terms of
-the GNU Lesser General Public License <http://www.gnu.org/licenses/lgpl.html>.
-There is NO WARRANTY, to the extent permitted by law.
-Written by Hok Kakada, Keo Sophon, San Titvirak, Seth Chanratha.
-"""
 parser = OptionParser(usage = usage, version = strVersion)
                   
 (options, args) = parser.parse_args()
@@ -48,3 +47,5 @@ if (len(sys.argv) == 1):
 path = QtCore.QDir.currentPath()
 inputFileName = os.path.join(str(path),args[0])
 MainEditor.main(inputFileName)
+
+
