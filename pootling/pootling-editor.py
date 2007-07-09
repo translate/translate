@@ -38,14 +38,20 @@ There is NO WARRANTY, to the extent permitted by law.\
 Written by Hok Kakada, Keo Sophon, San Titvirak, Seth Chanratha.'
 
 parser = OptionParser(usage = usage, version = strVersion)
+
+
+parser.add_option("-p", "--prefix", action="store_true", dest="prefix", default=False, 
+                  help="Use this option if your Pootling is located in /usr/lib/ not in /usr/local/lib")
                   
 (options, args) = parser.parse_args()
+prefix = False
+if (options.prefix):
+    prefix = True
+    
 argc = len(args)
 if (len(sys.argv) == 1):
     MainEditor.main()
 
 path = QtCore.QDir.currentPath()
 inputFileName = os.path.join(str(path),args[0])
-MainEditor.main(inputFileName)
-
-
+MainEditor.main(inputFileName, prefix)
