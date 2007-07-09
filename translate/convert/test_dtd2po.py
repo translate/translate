@@ -255,9 +255,9 @@ class TestDTD2PO:
         pofile = self.dtd2po(dtdlanguage, dtdtemplate)
         print pofile
         assert pofile.units[3].source == "Manage Certificates..."
-        assert pofile.units[3].target == "ﺇﺩﺍﺭﺓ ﺎﻠﺸﻫﺍﺩﺎﺗ..."
+        assert pofile.units[3].target == u"ﺇﺩﺍﺭﺓ ﺎﻠﺸﻫﺍﺩﺎﺗ..."
         assert pofile.units[4].source == "M"
-        assert pofile.units[4].target == "ﺩ"
+        assert pofile.units[4].target == u"ﺩ"
 
     def wtest_accelerator_keys_not_in_sentence(self):
         """tests to ensure that we can manage accelerator keys that are not part of the transated sentence eg in Chinese"""
