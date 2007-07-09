@@ -278,7 +278,8 @@ class Preference(QtGui.QDialog):
             self.ui.listWidget.setViewMode(QtGui.QListView.IconMode)
             self.ui.listWidget.setCurrentRow(0)
             self.ui.listWidget.setResizeMode(QtGui.QListView.Fixed)
-            self.ui.listWidget.setDragDropMode(QtGui.QAbstractItemView.NoDragDrop)
+            #This setDragDropMode is mentioned in Qt4.2 only
+#            self.ui.listWidget.setDragDropMode(QtGui.QAbstractItemView.NoDragDrop)
             self.connect(self.ui.listWidget, QtCore.SIGNAL("currentRowChanged(int)"), self.changedPaged)
             
             # TM page signals
