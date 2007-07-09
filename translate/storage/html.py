@@ -73,8 +73,8 @@ class htmlfile(HTMLParser, base.TranslationStore):
       We look for 'charset=' within a meta tag to do this.
       """
 
-      pattern = '''<meta.*content.*=.*charset.*=\\s*([^\\s]*)\\s*["']'''
-      result = re.findall(pattern, htmlsrc, re.I)
+      pattern = '''(?i)<meta.*content.*=.*charset.*=\\s*([^\\s]*)\\s*["']'''
+      result = re.findall(pattern, htmlsrc)
       encoding = None
       if result:
           encoding = result[0]
@@ -117,8 +117,8 @@ class htmlfile(HTMLParser, base.TranslationStore):
     """
     text = text.strip()
 
-    pattern = '^<[^>]*>(.*)</.*>$'
-    result = re.findall(pattern, text, re.DOTALL)
+    pattern = '(?s)^<[^>]*>(.*)</.*>$'
+    result = re.findall(pattern, text)
     if len(result) == 1:
         text = self.strip_html(result[0])
     return text
@@ -127,7 +127,7 @@ class htmlfile(HTMLParser, base.TranslationStore):
     """Check if the supplied HTML snippet has any content that needs to be translated."""
 
     text = text.strip()
-    result = re.findall('.*(charset.*=.*)', text, re.IGNORECASE)
+    result = re.findall('(?i).*(charset.*=.*)', text)
     if len(result) == 1:
       return False
 
