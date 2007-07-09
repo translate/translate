@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 from translate.convert import po2prop
 from translate.convert import prop2po

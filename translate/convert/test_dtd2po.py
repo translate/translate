@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 from translate.convert import dtd2po
 from translate.convert import test_convert
