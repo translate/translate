@@ -670,7 +670,7 @@ class MainWindow(QtGui.QMainWindow):
             else:
                 self.disconnect(self.dockTUview, QtCore.SIGNAL("term"), self.operator.emitGlossaryCandidates)
         
-def main(inputFile = None, prefix = False):
+def main(inputFile = None):
     # set the path for QT in order to find the icons
     if __name__ == "__main__":
         QtCore.QDir.setCurrent(os.path.join(sys.path[0], "../ui"))
@@ -679,11 +679,13 @@ def main(inputFile = None, prefix = False):
 #            QtCore.QDir.setCurrent(os.path.join(sys.path[0], "../images"))
 #        except Exception, e:
         import distutils.sysconfig
-        if prefix:
-            packagesdir = distutils.sysconfig.get_python_lib()
+        packagesdir = distutils.sysconfig.get_python_lib()
+        sitepackages = packagesdir.replace(sys.prefix + os.sep, '')
+        if os.path.exists(os.path.join(sitepackages, "pootling")):
+            QtCore.QDir.setCurrent(os.path.join(sitepackages, "pootling", "ui"))
         else:
             packagesdir = distutils.sysconfig.get_python_lib(prefix = "/usr/local")
-        QtCore.QDir.setCurrent(os.path.join(packagesdir, "pootling", "ui"))
+            QtCore.QDir.setCurrent(os.path.join(packagesdir, "pootling", "ui"))
             
     app = QtGui.QApplication(sys.argv)
     editor = MainWindow()
