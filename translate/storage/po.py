@@ -769,6 +769,17 @@ class pounit(base.TranslationUnit):
     """Get the message context."""
     return unquotefrompo(self.msgctxt) + self.extract_msgidcomments()
 
+  def getid(self):
+    """Returns a unique identifier for this unit."""
+    context = self.getcontext()
+    if self.msgidcomments:
+      id = ":_ %s\n%s" % (context, id)
+    elif context:
+      id = "%s\04%s" % (context, id)
+    else:
+      id = self.source
+    return id
+
 class pofile(base.TranslationStore, poheader.poheader):
   """this represents a .po file containing various units"""
   UnitClass = pounit
