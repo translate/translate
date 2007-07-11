@@ -106,6 +106,17 @@ class TranslationUnit(object):
             length += sum([len(pluralform) for pluralform in strings[1:]])
         return length
 
+    def getid(self):
+        """A unique identifier for this unit.
+
+        @rtype: string
+        @return: an identifier for this unit that is unique in the store
+
+        Derived classes should override this in a way that guarantees a unique
+        identifier for each unit in the store.
+        """
+        return self.source
+
     def getlocations(self):
         """A list of source code locations.
         
