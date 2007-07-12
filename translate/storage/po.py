@@ -773,7 +773,7 @@ class pounit(base.TranslationUnit):
     """Returns a unique identifier for this unit."""
     context = self.getcontext()
     if self.msgidcomments:
-      id = ":_ %s\n%s" % (context, id)
+      id = "_: %s\n%s" % (context, id)
     elif context:
       id = "%s\04%s" % (context, id)
     else:
