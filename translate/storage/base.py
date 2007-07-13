@@ -415,6 +415,15 @@ class TranslationStore(Statistics):
           return False
       return True
 
+    def _assignname(self):
+        """Tries to work out what the name of the filesystem file is and 
+        assigns it to .filename."""
+        fileobj = getattr(self, "fileobj", None)
+        if fileobj:
+            filename = getattr(fileobj, "name", getattr(fileobj, "filename", None))
+            if filename:
+                self.filename = filename
+
     def parsestring(cls, storestring):
         """Converts the string representation back to an object."""
 
@@ -423,11 +432,11 @@ class TranslationStore(Statistics):
 
     def savefile(self, storefile):
         """Writes the string representation to the given file (or filename)."""
-
-        storestring = str(self)
         if isinstance(storefile, basestring):
             storefile = open(storefile, "w")
         self.fileobj = storefile
+        self._assignname()
+        storestring = str(self)
         storefile.write(storestring)
         storefile.close()
 
@@ -460,6 +469,7 @@ class TranslationStore(Statistics):
           storestring = ""
         newstore = cls.parsestring(storestring)
         newstore.fileobj = storefile
+        newstore._assignname()
         return newstore
     parsefile = classmethod(parsefile)
 
