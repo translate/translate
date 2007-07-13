@@ -57,7 +57,7 @@ class dtd2po:
     if self.currentgroup is not None:
       thepo.othercomments.append("# " + quote.stripcomment(self.currentgroup) + "\n")
     if entity.endswith(".height") or entity.endswith(".width") or entity.endswith(".size"):
-      thepo.msgidcomments.append(quote.quotestr("_: Do not translate this.  Only change the numeric values if you need this dialogue box to appear bigger.\\n"))
+      thepo.addnote("Do not translate this.  Only change the numeric values if you need this dialogue box to appear bigger", origin="developer")
 
   def convertstrings(self,thedtd,thepo):
     # extract the string, get rid of quoting
