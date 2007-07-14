@@ -47,9 +47,9 @@ class dtd2po:
       elif (commenttype == "locgroupend"):
         groupcomment = comment.replace('END','GROUP')
         self.currentgroup = None
-      # handle msgidcomments
-      if commenttype == "msgidcomment":
-        thepo.msgidcomments.append(comment + "\n")
+      # handle automatic comment
+      if commenttype == "automaticcomment":
+        thepo.addnote(comment, origin="developer")
       # handle normal comments
       else:
         thepo.othercomments.append("# " + quote.stripcomment(comment) + "\n")
@@ -116,9 +116,8 @@ class dtd2po:
             # finished this for loop
             break
           else:
-            # convert it into a msgidcomment, to be processed by convertcomments
-            # the actualnote is followed by a literal \n
-            thedtd.comments[commentnum] = ("msgidcomment",quote.quotestr("_: "+actualnote+"\\n"))
+            # convert it into an automatic comment, to be processed by convertcomments
+            thedtd.comments[commentnum] = ("automaticcomment", actualnote)
     # do a standard translation
     self.convertcomments(thedtd,thepo)
     self.convertstrings(thedtd,thepo)
