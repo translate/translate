@@ -1,19 +1,20 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/ratha/sourceforge.net/translate/trunk/pootling/ui/FindInCatalog.ui'
+# Form implementation generated from reading ui file 'unknown'
 #
-# Created: Tue Mar  6 09:00:56 2007
-#      by: PyQt4 UI code generator 4-snapshot-20070212
+# Created: Tue Jun 12 10:22:09 2007
+#      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
 
+import sys
 from PyQt4 import QtCore, QtGui
 
 class Ui_frmFind(object):
     def setupUi(self, frmFind):
         frmFind.setObjectName("frmFind")
         frmFind.setEnabled(True)
-        frmFind.resize(QtCore.QSize(QtCore.QRect(0,0,695,44).size()).expandedTo(frmFind.minimumSizeHint()))
+        frmFind.resize(QtCore.QSize(QtCore.QRect(0,0,695,26).size()).expandedTo(frmFind.minimumSizeHint()))
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(1),QtGui.QSizePolicy.Policy(1))
         sizePolicy.setHorizontalStretch(0)
@@ -23,7 +24,7 @@ class Ui_frmFind(object):
         frmFind.setAutoFillBackground(True)
 
         self.gridlayout = QtGui.QGridLayout(frmFind)
-        self.gridlayout.setMargin(9)
+        self.gridlayout.setMargin(0)
         self.gridlayout.setSpacing(6)
         self.gridlayout.setObjectName("gridlayout")
 
@@ -76,17 +77,18 @@ class Ui_frmFind(object):
         QtCore.QMetaObject.connectSlotsByName(frmFind)
         frmFind.setTabOrder(self.lineEdit,self.find)
 
-    def retranslateUi(self, frmFind):
-        frmFind.setWindowTitle(QtGui.QApplication.translate("frmFind", "Find", None, QtGui.QApplication.UnicodeUTF8))
-        self.find.setText(QtGui.QApplication.translate("frmFind", " &Find", None, QtGui.QApplication.UnicodeUTF8))
-        self.lblFind.setText(QtGui.QApplication.translate("frmFind", "Find String in Files:", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbsource.setText(QtGui.QApplication.translate("frmFind", "S&ource", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbtarget.setText(QtGui.QApplication.translate("frmFind", "T&arget", None, QtGui.QApplication.UnicodeUTF8))
+    def tr(self, string):
+        return QtGui.QApplication.translate("frmFind", string, None, QtGui.QApplication.UnicodeUTF8)
 
+    def retranslateUi(self, frmFind):
+        frmFind.setWindowTitle(self.tr("Find"))
+        self.find.setText(self.tr(" &Find"))
+        self.lblFind.setText(self.tr("Find String in Files:"))
+        self.chbsource.setText(self.tr("S&ource"))
+        self.chbtarget.setText(self.tr("T&arget"))
 
 
 if __name__ == "__main__":
-    import sys
     app = QtGui.QApplication(sys.argv)
     frmFind = QtGui.QWidget()
     ui = Ui_frmFind()
