@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# -*- coding: utf8 -*-
+# -*- coding: utf-8 -*-
 #
 #Copyright (c) 2006 - 2007 by The WordForge Foundation
 #                       www.wordforge.org
@@ -63,7 +63,8 @@ class fileDialog(QtGui.QDialog):
     def addLocation(self):
         self.ui.treeView.scrollTo(self.ui.treeView.currentIndex())
         self.ui.treeView.resizeColumnToContents(0)
-        self.ui.lineLocation.setText(self.dir.filePath(self.ui.treeView.currentIndex()))
+        path = self.dir.filePath(self.ui.treeView.currentIndex())
+        self.ui.lineLocation.setText(path.replace("/", os.path.sep))
     
     def emitLocation(self):
         self.emit(QtCore.SIGNAL("location"), self.ui.lineLocation.text())

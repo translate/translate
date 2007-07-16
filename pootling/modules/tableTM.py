@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# -*- coding: utf8 -*-
+# -*- coding: utf-8 -*-
 #
 #Copyright (c) 2006 - 2007 by The WordForge Foundation
 #                       www.wordforge.org
@@ -48,8 +48,8 @@ class tableTM(QtGui.QDockWidget):
         self.headerLabels = [self.tr("Match"),self.tr("Source"), self.tr("Target")]
         self.ui.tblTM.setColumnCount(len(self.headerLabels))
         self.ui.tblTM.setHorizontalHeaderLabels(self.headerLabels)
-        self.ui.tblTM.resizeColumnToContents(0)
-        self.ui.tblTM.horizontalHeader().setResizeMode(1, QtGui.QHeaderView.Stretch)
+        self.ui.tblTM.horizontalHeader().resizeSection(0, 60)
+        self.ui.tblTM.horizontalHeader().setResizeMode(1, QtGui.QHeaderView.Interactive)
         self.ui.tblTM.horizontalHeader().setResizeMode(2, QtGui.QHeaderView.Stretch)
         self.ui.tblTM.verticalHeader().hide()
         self.ui.tblTM.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)

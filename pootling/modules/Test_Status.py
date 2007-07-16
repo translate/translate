@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# -*- coding: utf8 -*-
+# -*- coding: utf-8 -*-
 
 #Copyright (c) 2006 - 2007 by The WordForge Foundation
 #                       www.wordforge.org

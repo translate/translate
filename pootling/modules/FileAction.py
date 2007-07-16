@@ -60,7 +60,7 @@ class FileAction(QtCore.QObject):
             return False
         else:
             # remember last open file's directory.
-            self.setFileProperty(newFileName)
+            self.setFileProperty(newFileName.replace("/", os.path.sep))
             self.emitFileOpened()
             return True
     

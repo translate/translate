@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# -*- coding: utf8 -*-
+# -*- coding: utf-8 -*-
 #
 #Copyright (c) 2006 - 2007 by The WordForge Foundation
 #                       www.wordforge.org
@@ -44,7 +44,7 @@ class pickleTM:
         @param matcher: matcher of TM files or Glossary files
         """
         if (matcher):
-            pickleFile = open(filename, 'w')
+            pickleFile = open(filename, 'wb')
             cPickle.dump(matcher, pickleFile)
             pickleFile.close()
         else:

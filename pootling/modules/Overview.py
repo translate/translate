@@ -224,6 +224,8 @@ class OverviewDock(QtGui.QDockWidget):
         emit targetChanged signal if target column has changed.
         """
         targetItem = self.ui.tableOverview.item(self.ui.tableOverview.currentRow(), 2)
+        if (not hasattr(targetItem, "text")):
+            return
         targetAfterEdit = targetItem.text()
         if (targetAfterEdit != self.targetBeforeEdit) and (self.targetBeforeEdit != None):
             # target has changed

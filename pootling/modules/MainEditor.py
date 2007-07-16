@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# -*- coding: utf8 -*-
+# -*- coding: utf-8 -*-
 #Copyright (c) 2006 - 2007 by The WordForge Foundation
 #                       www.wordforge.org
 #
@@ -678,12 +678,7 @@ def main(inputFile = None):
 #        try:
 #            QtCore.QDir.setCurrent(os.path.join(sys.path[0], "../images"))
 #        except Exception, e:
-        import distutils.sysconfig
-        packagesdir = distutils.sysconfig.get_python_lib()
-        sitepackages = packagesdir.replace(sys.prefix + os.sep, '')
-        if os.path.exists(os.path.join(sitepackages, "pootling")):
-            QtCore.QDir.setCurrent(os.path.join(sitepackages, "pootling", "ui"))
-        else:
+            import distutils.sysconfig
             packagesdir = distutils.sysconfig.get_python_lib(prefix = "/usr/local")
             QtCore.QDir.setCurrent(os.path.join(packagesdir, "pootling", "ui"))
             
