@@ -30,43 +30,9 @@ import re
 import sys
 import os
 
-if not hasattr(__builtins__, "sum"):
-  def sum(parts):
-    return reduce(int.__add__, parts, 0)
-
-kdepluralre = re.compile("^_n: ")
-brtagre = re.compile("<br\s*?/?>")
-xmltagre = re.compile("<[^>]+>")
-numberre = re.compile("\\D\\.\\D")
-
-def wordcount(string):
-  # TODO: po class should understand KDE style plurals
-  string = kdepluralre.sub("", string)
-  string = brtagre.sub("\n", string)
-  string = xmltagre.sub("", string)
-  string = numberre.sub(" ", string)
-  #TODO: This should still use the correct language to count in the target 
-  #language
-  return len(Common.words(string))
-
-def wordsinunit(unit):
-  """counts the words in the source, target, taking plurals into account"""
-  (sourcewords, targetwords) = (0, 0)
-  if isinstance(unit.source, multistring):
-    sourcestrings = unit.source.strings
-  else:
-    sourcestrings = [unit.source or ""]
-  if isinstance(unit.target, multistring):
-    targetstrings = unit.target.strings
-  else:
-    targetstrings = [unit.target or ""]
-  for s in sourcestrings:
-    sourcewords += wordcount(s)
-  for s in targetstrings:
-    targetwords += wordcount(s)
-  return sourcewords, targetwords
-
 def calcstats_old(filename):
+  """This is the previous implementation of calcstats() and is left for
+  comparison and debuging purposes."""
   # ignore totally blank or header units
   try:
       store = factory.getobject(filename)
@@ -78,7 +44,7 @@ def calcstats_old(filename):
   fuzzy = fuzzymessages(units)
   review = filter(lambda unit: unit.isreview(), units)
   untranslated = untranslatedmessages(units)
-  wordcounts = dict(map(lambda unit: (unit, wordsinunit(unit)), units))
+  wordcounts = dict(map(lambda unit: (unit, statsdb.wordsinunit(unit)), units))
   sourcewords = lambda elementlist: sum(map(lambda unit: wordcounts[unit][0], elementlist))
   targetwords = lambda elementlist: sum(map(lambda unit: wordcounts[unit][1], elementlist))
   stats = {}
@@ -191,7 +157,7 @@ Review Messages, Review Source Words"
         self.totals[key] += stats[key]
 
   def handlefile(self, filename):
-    stats = calcstats_old(filename)
+    stats = calcstats(filename)
     if stats:
         self.updatetotals(stats)
         summarize(filename, stats, self.CSVstyle)
