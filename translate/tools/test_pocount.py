@@ -3,6 +3,7 @@
 
 from translate.tools import pocount
 from translate.storage import po
+from translate.storage import statsdb
 from translate.misc import wStringIO
 
 class TestPOCount:
@@ -11,7 +12,7 @@ class TestPOCount:
         poelement = po.pounit(source)
         if target is not None:
           poelement.target = target
-        wordssource, wordstarget = pocount.wordsinunit(poelement)
+        wordssource, wordstarget = statsdb.wordsinunit(poelement)
         print 'Source (expected=%d; actual=%d): "%s"' % (expectedsource, wordssource, source)
         assert wordssource == expectedsource
         if target is not None:
