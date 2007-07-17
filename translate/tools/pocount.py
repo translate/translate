@@ -23,6 +23,7 @@
 
 from translate.storage import factory
 from translate.storage import statistics
+from translate.storage import statsdb
 from translate.lang.common import Common
 from translate.misc.multistring import multistring
 import re
@@ -65,8 +66,13 @@ def wordsinunit(unit):
     targetwords += wordcount(s)
   return sourcewords, targetwords
 
-def calcstats(store):
+def calcstats_old(filename):
   # ignore totally blank or header units
+  try:
+      store = factory.getobject(filename)
+  except ValueError, e:
+      print str(e)
+      return {}
   units = filter(lambda unit: not unit.isheader(), store.units)
   translated = translatedmessages(units)
   fuzzy = fuzzymessages(units)
@@ -94,6 +100,12 @@ def calcstats(store):
                                 stats["fuzzysourcewords"] + \
                                 stats["untranslatedsourcewords"]
   return stats
+
+def calcstats(filename):
+  statscache = statsdb.StatsCache()
+  return statscache.filetotals(filename)
+  store.calctotals()
+  return store.stats
 
 def summarize(title, stats, CSVstyle=False):
   def percent(denominator, devisor):
@@ -179,15 +191,11 @@ Review Messages, Review Source Words"
         self.totals[key] += stats[key]
 
   def handlefile(self, filename):
-    try:
-        store = factory.getobject(filename)
-    except ValueError, e:
-        print str(e)
-        return
-    stats = calcstats(store)
-    self.updatetotals(stats)
-    summarize(filename, stats, self.CSVstyle)
-    self.filecount += 1
+    stats = calcstats_old(filename)
+    if stats:
+        self.updatetotals(stats)
+        summarize(filename, stats, self.CSVstyle)
+        self.filecount += 1
 
   def handlefiles(self, dirname, filenames):
     for filename in filenames:
