@@ -490,20 +490,24 @@ class StandardChecker(TranslationChecker):
 
   def puncspacing(self, str1, str2):
     """checks for bad spacing after punctuation"""
+    if str1.find(u" ") == -1:
+      return True
     str1 = self.filteraccelerators(self.filtervariables(str1))
     str1 = self.config.lang.punctranslate(str1)
     str2 = self.filteraccelerators(self.filtervariables(str2))
     for puncchar in self.config.punctuation:
       plaincount1 = str1.count(puncchar)
       plaincount2 = str2.count(puncchar)
+      if not plaincount1 or plaincount1 != plaincount2:
+        continue
       spacecount1 = str1.count(puncchar+" ")
       spacecount2 = str2.count(puncchar+" ")
-      if plaincount1 == plaincount2 and spacecount1 != spacecount2:
+      if spacecount1 != spacecount2:
         # handle extra spaces that are because of transposed punctuation
         if str1.endswith(puncchar) != str2.endswith(puncchar) and abs(spacecount1-spacecount2) == 1:
           continue
-        return 0
-    return 1
+        return False
+    return True
 
   def printf(self, str1, str2):
     """checks whether printf format strings match"""
