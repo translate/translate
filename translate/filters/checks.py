@@ -348,20 +348,20 @@ class TranslationChecker(UnitChecker):
   def run_test(self, test, unit):
     """Runs the given test on the given unit.
     
-    Note that this can raise a FilterFailure as part of normal operation"""
-    if unit.hasplural():
+    Note that this can raise a FilterFailure as part of normal operation."""
+    if self.hasplural:
       for pluralform in unit.target.strings:
         if not test(self.str1, pluralform):
           return False
     else:
       return test(self.str1, self.str2)
-    return True
 
   def run_filters(self, unit):
-      """Do some optimisation by caching.source and .target for the benefit of
-      run_test()."""
+      """Do some optimisation by caching some data of the unit for the benefit 
+      of run_test()."""
       self.str1 = unicode(unit.source)
       self.str2 = unicode(unit.target)
+      self.hasplural = unit.hasplural()
       return super(TranslationChecker, self).run_filters(unit)
 
 class TeeChecker:
