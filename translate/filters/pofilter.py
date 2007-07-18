@@ -26,34 +26,12 @@ from translate.filters import autocorrect
 from translate.misc import optrecurse
 import os
 
-class POChecker(checks.TranslationChecker):
-  """allows advanced checks that have access to the whole po element, not just strings"""
-  def __init__(self, checkerconfig, excludefilters=None, limitfilters=None, errorhandler=None):
-    """construct the POChecker..."""
-    super(POChecker, self).__init__(checkerconfig, excludefilters, limitfilters, errorhandler)
-
-  def run_test(self, test, unit):
-    """Runs the given test on the given unit.
-    
-    Note that this can raise a FilterFailure as part of normal operation"""
-    return test(unit)
-  
-class StandardPOChecker(POChecker):
-  """The standard checks for PO units"""
-  def isfuzzy(self, thepo):
-    """check if the po element has been marked fuzzy"""
-    return not thepo.isfuzzy()
-
-  def isreview(self, thepo):
-    """check if the po element has been marked review"""
-    return not thepo.isreview()
-
 class pocheckfilter:
   def __init__(self, options, checkerclasses=None, checkerconfig=None):
     # excludefilters={}, limitfilters=None, includeheader=False, includefuzzy=True, includereview=True, autocorrect=False):
     """builds a checkfilter using the given checker (a list is allowed too)"""
     if checkerclasses is None:
-      checkerclasses = [checks.StandardChecker, StandardPOChecker]
+      checkerclasses = [checks.StandardChecker, checks.StandardUnitChecker]
     self.checker = checks.TeeChecker(checkerconfig=checkerconfig, excludefilters=options.excludefilters, limitfilters=options.limitfilters, checkerclasses=checkerclasses)
     self.options = options
 
@@ -64,17 +42,17 @@ class pocheckfilter:
     filterdocs.sort()
     return "\n".join(filterdocs)
 
-  def filterelement(self, thepo):
+  def filterunit(self, unit):
     """runs filters on an element"""
-    if thepo.isheader(): return []
-    if not self.options.includefuzzy and thepo.isfuzzy(): return []
-    if not self.options.includereview and thepo.isreview(): return []
-    failures = self.checker.run_filters(thepo)
+    if unit.isheader(): return []
+    if not self.options.includefuzzy and unit.isfuzzy(): return []
+    if not self.options.includereview and unit.isreview(): return []
+    failures = self.checker.run_filters(unit)
     if failures and self.options.autocorrect:
       # we can't get away with bad unquoting / requoting if we're going to change the result...
-      correction = autocorrect.correct(thepo.source, thepo.target)
+      correction = autocorrect.correct(unit.source, unit.target)
       if correction:
-        thepo.target = correction
+        unit.target = correction
         return autocorrect
       else:
         # ignore failures we can't correct when in autocorrect mode
@@ -89,7 +67,7 @@ class pocheckfilter:
       - A new translation store object with the results of the filter included."""
     newtransfile = type(transfile)()
     for unit in transfile.units:
-      filterresult = self.filterelement(unit)
+      filterresult = self.filterunit(unit)
       if filterresult:
         if filterresult != autocorrect:
           for filtername, filtermessage in filterresult:
@@ -120,9 +98,9 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
     """parses the arguments, and runs recursiveprocess with the resulting options"""
     (options, args) = self.parse_args()
     if options.filterclass is None:
-      checkerclasses = [checks.StandardChecker, StandardPOChecker]
+      checkerclasses = [checks.StandardChecker, checks.StandardUnitChecker]
     else:
-      checkerclasses = [options.filterclass, StandardPOChecker]
+      checkerclasses = [options.filterclass, checks.StandardUnitChecker]
     checkerconfig = checks.CheckerConfig(targetlanguage=options.targetlanguage)
     if options.notranslatefile:
       if not os.path.exists(options.notranslatefile):

@@ -235,7 +235,8 @@ class CheckerConfig(object):
       self.lang = factory.getlanguage(langcode)
 
 class TranslationChecker(object):
-  """Base Checker class which does the checking based on functions available in derived classes"""
+  """Parent Checker class which does the checking based on functions available 
+  in derived classes."""
   preconditions = {}
 
   def __init__(self, checkerconfig=None, excludefilters=None, limitfilters=None, errorhandler=None):
@@ -1001,6 +1002,30 @@ projectcheckers = {
   "gnome": GnomeChecker,
   "creativecommons": CCLicenseChecker
   }
+
+
+class UnitChecker(TranslationChecker):
+  """A checker that passes whole units to the checks, not just (source, target)."""
+  def __init__(self, checkerconfig, excludefilters=None, limitfilters=None, errorhandler=None):
+    super(UnitChecker, self).__init__(checkerconfig, excludefilters, limitfilters, errorhandler)
+
+  def run_test(self, test, unit):
+    """Runs the given test on the given unit.
+    
+    Note that this can raise a FilterFailure as part of normal operation"""
+    return test(unit)
+  
+
+class StandardUnitChecker(UnitChecker):
+  """The standard checks for common checks on translation units."""
+  def isfuzzy(self, unit):
+    """Check if the unithas been marked fuzzy."""
+    return not unit.isfuzzy()
+
+  def isreview(self, unit):
+    """Check if the unit has been marked review."""
+    return not unit.isreview()
+
 
 def runtests(str1, str2, ignorelist=()):
   """verifies that the tests pass for a pair of strings"""
