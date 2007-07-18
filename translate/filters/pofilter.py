@@ -63,18 +63,6 @@ class POChecker(checks.TranslationChecker):
             ignores.append(ignoredfunctionname)
     return failures
 
-class POTeeChecker(checks.TeeChecker):
-  """A Checker that can control the POChecker as well as standard checkers"""
-  def run_filters(self, thepo):
-    """run all the tests in the checker's suites"""
-    failures = []
-    for checker in self.checkers:
-      if isinstance(checker, POChecker):
-        failures.extend(checker.run_filters(thepo))
-      else:
-        failures.extend(checker.run_filters(thepo))
-    return failures
-
 class StandardPOChecker(POChecker):
   """The standard checks for PO units"""
   def isfuzzy(self, thepo):
@@ -91,7 +79,7 @@ class pocheckfilter:
     """builds a checkfilter using the given checker (a list is allowed too)"""
     if checkerclasses is None:
       checkerclasses = [checks.StandardChecker, StandardPOChecker]
-    self.checker = POTeeChecker(checkerconfig=checkerconfig, excludefilters=options.excludefilters, limitfilters=options.limitfilters, checkerclasses=checkerclasses)
+    self.checker = checks.TeeChecker(checkerconfig=checkerconfig, excludefilters=options.excludefilters, limitfilters=options.limitfilters, checkerclasses=checkerclasses)
     self.options = options
 
   def getfilterdocs(self):
