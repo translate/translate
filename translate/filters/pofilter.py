@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # 
-# Copyright 2004-2006 Zuza Software Foundation
+# Copyright 2004-2007 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
@@ -48,7 +48,12 @@ class POChecker(checks.TranslationChecker):
         filterresult = filterfunction(thepo)
       except checks.FilterFailure, e:
         filterresult = False
-        filtermessage = e
+        filtermessage = str(e).decode('utf-8')
+      except Exception, e:
+        if self.errorhandler is None:
+          raise ValueError("error in filter %s: %r, %r, %s" % (functionname, thepo.source, thepo.target, e))
+        else:
+          filterresult = self.errorhandler(functionname, thepo.source, thepo.target, e)
       if not filterresult:
         # we test some preconditions that aren't actually a cause for failure...
         if functionname in self.defaultfilters:
