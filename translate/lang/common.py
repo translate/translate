@@ -173,6 +173,8 @@ class Common(object):
     def punctranslate(cls, text):
         """Converts the punctuation in a string according to the rules of the 
         language."""
+        if not cls.puncdict:
+            return text
         newtext = ""
         #TODO: look at po::escapeforpo() for performance idea
         for i,c in enumerate(text):
