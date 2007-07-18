@@ -198,7 +198,7 @@ class oofilteroptions:
   autocorrect = False
 
 options = oofilteroptions()
-filter = oocheckfilter(options, [checks.OpenOfficeChecker, pofilter.StandardPOChecker], checks.openofficeconfig)
+filter = oocheckfilter(options, [checks.OpenOfficeChecker, checks.StandardUnitChecker], checks.openofficeconfig)
 
 def convertoo(inputfile, outputfile, templatefile, sourcelanguage=None, targetlanguage=None, timestamp=None, includefuzzy=False, multifilestyle="single", filteraction=None):
   inputsource = factory.getobject(inputfile)
