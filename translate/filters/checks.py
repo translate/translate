@@ -114,7 +114,8 @@ class FilterFailure(Exception):
     Exception.__init__(self, messages)
 
 class SeriousFilterFailure(FilterFailure):
-  """This exception signals that a Filter didn't pass, and the bad translation might break an application (so the string will be marked fuzzy)"""
+  """This exception signals that a Filter didn't pass, and the bad translation 
+  might break an application (so the string will be marked fuzzy)"""
   pass
 
 def passes(filterfunction, str1, str2):
@@ -298,10 +299,10 @@ class TranslationChecker(object):
     """filter out XML from the string so only text remains"""
     return re.sub("<[^>]+>", "", str1)
 
-  def run_filters(self, str1, str2):
+  def run_filters(self, unit):
     """run all the tests in this suite, return failures as testname, message_or_exception"""
-    str1 = forceunicode(str1)
-    str2 = forceunicode(str2)
+    str1 = forceunicode(unit.source)
+    str2 = forceunicode(unit.target)
     failures = []
     ignores = self.config.lang.ignoretests[:]
     functionnames = self.defaultfilters.keys()
@@ -316,13 +317,19 @@ class TranslationChecker(object):
         continue
       filtermessage = filterfunction.__doc__
       try:
-        filterresult = filterfunction(str1, str2)
+        if unit.hasplural():
+          filterresult = True
+          for pluralform in unit.target.strings:
+            filterresult = filterfunction(str1, pluralform)
+            if not filterresult:
+              break
+        else:
+          filterresult = filterfunction(str1, str2)
       except FilterFailure, e:
         filterresult = False
         filtermessage = str(e).decode('utf-8')
       except Exception, e:
         if self.errorhandler is None:
-          raise
           raise ValueError("error in filter %s: %r, %r, %s" % (functionname, str1, str2, e))
         else:
           filterresult = self.errorhandler(functionname, str1, str2, e)
@@ -364,11 +371,11 @@ class TeeChecker:
           print >>sys.stderr, "warning: could not find filter %s" % filtername
     return self.combinedfilters
 
-  def run_filters(self, str1, str2):
+  def run_filters(self, unit):
     """run all the tests in the checker's suites"""
     failures = []
     for checker in self.checkers:
-      failures.extend(checker.run_filters(str1, str2))
+      failures.extend(checker.run_filters(unit))
     return failures
 
 
@@ -991,8 +998,13 @@ projectcheckers = {
 
 def runtests(str1, str2, ignorelist=()):
   """verifies that the tests pass for a pair of strings"""
+  from translate.storage import base
+  str1 = forceunicode(str1)
+  str2 = forceunicode(str2)
+  unit = base.TranslationUnit(str1)
+  unit.target = str2
   checker = StandardChecker(excludefilters=ignorelist)
-  failures = checker.run_filters(str1, str2)
+  failures = checker.run_filters(unit)
   for testname, message in failures:
     print "failure: %s: %s\n  %r\n  %r" % (testname, message, str1, str2)
   return failures

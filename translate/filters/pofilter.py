@@ -65,14 +65,14 @@ class POChecker(checks.TranslationChecker):
 
 class POTeeChecker(checks.TeeChecker):
   """A Checker that can control the POChecker as well as standard checkers"""
-  def run_filters(self, thepo, str1, str2):
+  def run_filters(self, thepo):
     """run all the tests in the checker's suites"""
     failures = []
     for checker in self.checkers:
       if isinstance(checker, POChecker):
         failures.extend(checker.run_filters(thepo))
       else:
-        failures.extend(checker.run_filters(str1, str2))
+        failures.extend(checker.run_filters(thepo))
     return failures
 
 class StandardPOChecker(POChecker):
@@ -106,23 +106,16 @@ class pocheckfilter:
     if thepo.isheader(): return []
     if not self.options.includefuzzy and thepo.isfuzzy(): return []
     if not self.options.includereview and thepo.isreview(): return []
-    source = thepo.source
-    target = thepo.target
-    if thepo.hasplural():
-      failures = self.checker.run_filters(thepo, source, target)
-      for plural in target.strings[1:]:
-        failures += self.checker.run_filters(thepo, source, plural)
-    else:
-      failures = self.checker.run_filters(thepo, source, target)
-      if failures and self.options.autocorrect:
-        # we can't get away with bad unquoting / requoting if we're going to change the result...
-        correction = autocorrect.correct(source, target)
-        if correction:
-          thepo.target = correction
-          return autocorrect
-        else:
-          # ignore failures we can't correct when in autocorrect mode
-          return []
+    failures = self.checker.run_filters(thepo)
+    if failures and self.options.autocorrect:
+      # we can't get away with bad unquoting / requoting if we're going to change the result...
+      correction = autocorrect.correct(thepo.source, thepo.target)
+      if correction:
+        thepo.target = correction
+        return autocorrect
+      else:
+        # ignore failures we can't correct when in autocorrect mode
+        return []
     return failures
 
   def filterfile(self, transfile):
