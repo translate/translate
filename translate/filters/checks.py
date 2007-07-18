@@ -299,10 +299,22 @@ class TranslationChecker(object):
     """filter out XML from the string so only text remains"""
     return re.sub("<[^>]+>", "", str1)
 
+  def run_test(self, test, unit):
+    """Runs the given test on the given unit.
+    
+    Note that this can raise a FilterFailure as part of normal operation"""
+    str1 = unicode(unit.source)
+    str2 = unicode(unit.target)
+    if unit.hasplural():
+      for pluralform in unit.target.strings:
+        if not test(str1, pluralform):
+          return False
+    else:
+      return test(str1, str2)
+    return True
+
   def run_filters(self, unit):
     """run all the tests in this suite, return failures as testname, message_or_exception"""
-    str1 = forceunicode(unit.source)
-    str2 = forceunicode(unit.target)
     failures = []
     ignores = self.config.lang.ignoretests[:]
     functionnames = self.defaultfilters.keys()
@@ -317,22 +329,16 @@ class TranslationChecker(object):
         continue
       filtermessage = filterfunction.__doc__
       try:
-        if unit.hasplural():
-          filterresult = True
-          for pluralform in unit.target.strings:
-            filterresult = filterfunction(str1, pluralform)
-            if not filterresult:
-              break
-        else:
-          filterresult = filterfunction(str1, str2)
+        filterresult = self.run_test(filterfunction, unit)
       except FilterFailure, e:
         filterresult = False
         filtermessage = str(e).decode('utf-8')
       except Exception, e:
         if self.errorhandler is None:
-          raise ValueError("error in filter %s: %r, %r, %s" % (functionname, str1, str2, e))
+          raise ValueError("error in filter %s: %r, %r, %s" % \
+                  (functionname, unit.source, unit.target, e))
         else:
-          filterresult = self.errorhandler(functionname, str1, str2, e)
+          filterresult = self.errorhandler(functionname, unit.source, unit.target, e)
       if not filterresult:
         # we test some preconditions that aren't actually a cause for failure...
         if functionname in self.defaultfilters:

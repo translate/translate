@@ -32,37 +32,12 @@ class POChecker(checks.TranslationChecker):
     """construct the POChecker..."""
     super(POChecker, self).__init__(checkerconfig, excludefilters, limitfilters, errorhandler)
 
-  def run_filters(self, thepo):
-    """run all the tests in this suite"""
-    failures = []
-    ignores = []
-    functionnames = self.defaultfilters.keys()
-    priorityfunctionnames = self.preconditions.keys()
-    otherfunctionnames = filter(lambda functionname: functionname not in self.preconditions, functionnames)
-    for functionname in priorityfunctionnames + otherfunctionnames:
-      if functionname in ignores:
-        continue
-      filterfunction = getattr(self, functionname)
-      filtermessage = filterfunction.__doc__
-      try:
-        filterresult = filterfunction(thepo)
-      except checks.FilterFailure, e:
-        filterresult = False
-        filtermessage = str(e).decode('utf-8')
-      except Exception, e:
-        if self.errorhandler is None:
-          raise ValueError("error in filter %s: %r, %r, %s" % (functionname, thepo.source, thepo.target, e))
-        else:
-          filterresult = self.errorhandler(functionname, thepo.source, thepo.target, e)
-      if not filterresult:
-        # we test some preconditions that aren't actually a cause for failure...
-        if functionname in self.defaultfilters:
-          failures.append((functionname, filtermessage))
-        if functionname in self.preconditions:
-          for ignoredfunctionname in self.preconditions[functionname]:
-            ignores.append(ignoredfunctionname)
-    return failures
-
+  def run_test(self, test, unit):
+    """Runs the given test on the given unit.
+    
+    Note that this can raise a FilterFailure as part of normal operation"""
+    return test(unit)
+  
 class StandardPOChecker(POChecker):
   """The standard checks for PO units"""
   def isfuzzy(self, thepo):
