@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # 
-# Copyright 2004-2006 Zuza Software Foundation
+# Copyright 2004-2007 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
@@ -234,21 +234,20 @@ class CheckerConfig(object):
       """Updates the target language in the config to the given target language"""
       self.lang = factory.getlanguage(langcode)
 
-class TranslationChecker(object):
+class UnitChecker(object):
   """Parent Checker class which does the checking based on functions available 
   in derived classes."""
   preconditions = {}
 
   def __init__(self, checkerconfig=None, excludefilters=None, limitfilters=None, errorhandler=None):
-    """construct the TranslationChecker..."""
     self.errorhandler = errorhandler
     if checkerconfig is None:
       self.setconfig(CheckerConfig())
     else:
       self.setconfig(checkerconfig)
-    # exclude functions defined in TranslationChecker from being treated as tests...
+    # exclude functions defined in UnitChecker from being treated as tests...
     self.helperfunctions = {}
-    for functionname in dir(TranslationChecker):
+    for functionname in dir(UnitChecker):
       function = getattr(self, functionname)
       if callable(function):
         self.helperfunctions[functionname] = function
@@ -304,15 +303,7 @@ class TranslationChecker(object):
     """Runs the given test on the given unit.
     
     Note that this can raise a FilterFailure as part of normal operation"""
-    str1 = unicode(unit.source)
-    str2 = unicode(unit.target)
-    if unit.hasplural():
-      for pluralform in unit.target.strings:
-        if not test(str1, pluralform):
-          return False
-    else:
-      return test(str1, str2)
-    return True
+    return test(unit)
 
   def run_filters(self, unit):
     """run all the tests in this suite, return failures as testname, message_or_exception"""
@@ -348,6 +339,30 @@ class TranslationChecker(object):
           for ignoredfunctionname in self.preconditions[functionname]:
             ignores.append(ignoredfunctionname)
     return failures
+
+class TranslationChecker(UnitChecker):
+  """A checker that passes whole units to the checks, not just (source, target)."""
+  def __init__(self, checkerconfig=None, excludefilters=None, limitfilters=None, errorhandler=None):
+    super(TranslationChecker, self).__init__(checkerconfig, excludefilters, limitfilters, errorhandler)
+
+  def run_test(self, test, unit):
+    """Runs the given test on the given unit.
+    
+    Note that this can raise a FilterFailure as part of normal operation"""
+    if unit.hasplural():
+      for pluralform in unit.target.strings:
+        if not test(self.str1, pluralform):
+          return False
+    else:
+      return test(self.str1, self.str2)
+    return True
+
+  def run_filters(self, unit):
+      """Do some optimisation by caching.source and .target for the benefit of
+      run_test()."""
+      self.str1 = unicode(unit.source)
+      self.str2 = unicode(unit.target)
+      return super(TranslationChecker, self).run_filters(unit)
 
 class TeeChecker:
   """A Checker that controls multiple checkers..."""
@@ -1004,22 +1019,10 @@ projectcheckers = {
   }
 
 
-class UnitChecker(TranslationChecker):
-  """A checker that passes whole units to the checks, not just (source, target)."""
-  def __init__(self, checkerconfig, excludefilters=None, limitfilters=None, errorhandler=None):
-    super(UnitChecker, self).__init__(checkerconfig, excludefilters, limitfilters, errorhandler)
-
-  def run_test(self, test, unit):
-    """Runs the given test on the given unit.
-    
-    Note that this can raise a FilterFailure as part of normal operation"""
-    return test(unit)
-  
-
 class StandardUnitChecker(UnitChecker):
   """The standard checks for common checks on translation units."""
   def isfuzzy(self, unit):
-    """Check if the unithas been marked fuzzy."""
+    """Check if the unit has been marked fuzzy."""
     return not unit.isfuzzy()
 
   def isreview(self, unit):
