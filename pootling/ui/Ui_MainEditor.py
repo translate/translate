@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/k-da/Documents/poxole/trunk/pootling/ui/MainEditor.ui'
 #
-# Created: Mon Jul  2 09:43:44 2007
+# Created: Thu Jul 19 11:21:48 2007
 #      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!
@@ -35,13 +35,6 @@ class Ui_MainWindow(object):
         self.menuBookmark = QtGui.QMenu(self.menubar)
         self.menuBookmark.setObjectName("menuBookmark")
 
-        self.menuEdit = QtGui.QMenu(self.menubar)
-        self.menuEdit.setObjectName("menuEdit")
-
-        self.menuView = QtGui.QMenu(self.menubar)
-        self.menuView.setEnabled(True)
-        self.menuView.setObjectName("menuView")
-
         self.menuGo = QtGui.QMenu(self.menubar)
         self.menuGo.setObjectName("menuGo")
 
@@ -69,6 +62,13 @@ class Ui_MainWindow(object):
 
         self.menuSettings = QtGui.QMenu(self.menubar)
         self.menuSettings.setObjectName("menuSettings")
+
+        self.menuView = QtGui.QMenu(self.menubar)
+        self.menuView.setEnabled(True)
+        self.menuView.setObjectName("menuView")
+
+        self.menuEdit = QtGui.QMenu(self.menubar)
+        self.menuEdit.setObjectName("menuEdit")
         MainWindow.setMenuBar(self.menubar)
 
         self.statusbar = QtGui.QStatusBar(MainWindow)
@@ -305,28 +305,13 @@ class Ui_MainWindow(object):
 
         self.actionOpenPro = QtGui.QAction(MainWindow)
         self.actionOpenPro.setObjectName("actionOpenPro")
+
+        self.actionClear_Fuzzies = QtGui.QAction(MainWindow)
+        self.actionClear_Fuzzies.setEnabled(False)
+        self.actionClear_Fuzzies.setObjectName("actionClear_Fuzzies")
         self.menuBookmark.addAction(self.actionAddBookmarks)
         self.menuBookmark.addAction(self.actionClearBookmarks)
         self.menuBookmark.addSeparator()
-        self.menuEdit.addAction(self.actionUndo)
-        self.menuEdit.addAction(self.actionRedo)
-        self.menuEdit.addSeparator()
-        self.menuEdit.addAction(self.actionCut)
-        self.menuEdit.addAction(self.actionCopy)
-        self.menuEdit.addAction(self.actionPaste)
-        self.menuEdit.addSeparator()
-        self.menuEdit.addAction(self.actionFind)
-        self.menuEdit.addAction(self.actionFindPrevious)
-        self.menuEdit.addAction(self.actionFindNext)
-        self.menuEdit.addAction(self.actionReplace)
-        self.menuEdit.addSeparator()
-        self.menuEdit.addAction(self.actionCopySource2Target)
-        self.menuEdit.addAction(self.actionCopySearchResult2Target)
-        self.menuEdit.addAction(self.actionToggleFuzzy)
-        self.menuEdit.addAction(self.actionEdit_Header)
-        self.menuView.addAction(self.actionFilterUntranslated)
-        self.menuView.addAction(self.actionFilterFuzzy)
-        self.menuView.addAction(self.actionFilterTranslated)
         self.menuGo.addAction(self.actionFirst)
         self.menuGo.addAction(self.actionPrevious)
         self.menuGo.addAction(self.actionNext)
@@ -354,6 +339,26 @@ class Ui_MainWindow(object):
         self.menuSettings.addAction(self.actionPreferences)
         self.menuSettings.addAction(self.actionBuild_TM)
         self.menuSettings.addAction(self.actionGlossary)
+        self.menuView.addAction(self.actionFilterUntranslated)
+        self.menuView.addAction(self.actionFilterFuzzy)
+        self.menuView.addAction(self.actionFilterTranslated)
+        self.menuEdit.addAction(self.actionUndo)
+        self.menuEdit.addAction(self.actionRedo)
+        self.menuEdit.addSeparator()
+        self.menuEdit.addAction(self.actionCut)
+        self.menuEdit.addAction(self.actionCopy)
+        self.menuEdit.addAction(self.actionPaste)
+        self.menuEdit.addSeparator()
+        self.menuEdit.addAction(self.actionFind)
+        self.menuEdit.addAction(self.actionFindPrevious)
+        self.menuEdit.addAction(self.actionFindNext)
+        self.menuEdit.addAction(self.actionReplace)
+        self.menuEdit.addSeparator()
+        self.menuEdit.addAction(self.actionCopySource2Target)
+        self.menuEdit.addAction(self.actionCopySearchResult2Target)
+        self.menuEdit.addAction(self.actionToggleFuzzy)
+        self.menuEdit.addAction(self.actionClear_Fuzzies)
+        self.menuEdit.addAction(self.actionEdit_Header)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
         self.menubar.addAction(self.menuView.menuAction())
@@ -385,8 +390,6 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Form", None, QtGui.QApplication.UnicodeUTF8))
         self.menuBookmark.setTitle(QtGui.QApplication.translate("MainWindow", "&Bookmarks", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuEdit.setTitle(QtGui.QApplication.translate("MainWindow", "&Edit", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuView.setTitle(QtGui.QApplication.translate("MainWindow", "&View", None, QtGui.QApplication.UnicodeUTF8))
         self.menuGo.setTitle(QtGui.QApplication.translate("MainWindow", "&Go", None, QtGui.QApplication.UnicodeUTF8))
         self.menuFile.setTitle(QtGui.QApplication.translate("MainWindow", "&File", None, QtGui.QApplication.UnicodeUTF8))
         self.menuOpen_Recent.setStatusTip(QtGui.QApplication.translate("MainWindow", "Open the file that used to be opened.", None, QtGui.QApplication.UnicodeUTF8))
@@ -399,6 +402,8 @@ class Ui_MainWindow(object):
         self.menu_Tool.setTitle(QtGui.QApplication.translate("MainWindow", "&Tool", None, QtGui.QApplication.UnicodeUTF8))
         self.menuProject.setTitle(QtGui.QApplication.translate("MainWindow", "&Project", None, QtGui.QApplication.UnicodeUTF8))
         self.menuSettings.setTitle(QtGui.QApplication.translate("MainWindow", "&Settings", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuView.setTitle(QtGui.QApplication.translate("MainWindow", "&View", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuEdit.setTitle(QtGui.QApplication.translate("MainWindow", "&Edit", None, QtGui.QApplication.UnicodeUTF8))
         self.toolFile.setWindowTitle(QtGui.QApplication.translate("MainWindow", "&File Toolbar", None, QtGui.QApplication.UnicodeUTF8))
         self.toolFile.setToolTip(QtGui.QApplication.translate("MainWindow", "Save", None, QtGui.QApplication.UnicodeUTF8))
         self.toolFile.setStatusTip(QtGui.QApplication.translate("MainWindow", "Save", None, QtGui.QApplication.UnicodeUTF8))
@@ -584,6 +589,7 @@ class Ui_MainWindow(object):
         self.actionOpenPro.setText(QtGui.QApplication.translate("MainWindow", "&Open...   ", None, QtGui.QApplication.UnicodeUTF8))
         self.actionOpenPro.setStatusTip(QtGui.QApplication.translate("MainWindow", "This open an existing project.", None, QtGui.QApplication.UnicodeUTF8))
         self.actionOpenPro.setWhatsThis(QtGui.QApplication.translate("MainWindow", "<h3>Open</h3>Use this to open an existing project.", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionClear_Fuzzies.setText(QtGui.QApplication.translate("MainWindow", "Clear All Fuzzies", None, QtGui.QApplication.UnicodeUTF8))
 
 
 
