@@ -323,6 +323,15 @@ class Operator(QtCore.QObject):
             unit = self.filteredList[position]
             self.emitUnit(unit)
 
+    def clearFuzzies(self):
+        """Clear fuzzies."""
+        for unit in self.store.units:
+            if (unit.x_editor_state & World.fuzzy):
+                self.status.markFuzzy(unit, False)
+                self.emitUnit(unit)
+        self.emitStatus()
+        self.setModified(True)
+        
     def toggleFuzzy(self):
         """
         Toggle fuzzy state for current unit.

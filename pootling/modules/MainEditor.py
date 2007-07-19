@@ -254,6 +254,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionFilterTranslated, QtCore.SIGNAL("toggled(bool)"), self.operator.filterTranslated)
         self.connect(self.ui.actionFilterUntranslated, QtCore.SIGNAL("toggled(bool)"), self.operator.filterUntranslated)
         self.connect(self.ui.actionToggleFuzzy, QtCore.SIGNAL("triggered()"), self.operator.toggleFuzzy)
+        self.connect(self.ui.actionClear_Fuzzies, QtCore.SIGNAL("triggered()"), self.operator.clearFuzzies)
     
         # "currentUnit" sends currentUnit, currentIndex
         self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.dockOverview.updateView)
@@ -627,6 +628,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionGoTo.setEnabled(value)
         self.ui.actionAddBookmarks.setEnabled(value)
         self.ui.actionToggleFuzzy.setEnabled(value)
+        self.ui.actionClear_Fuzzies.setEnabled(value)
         self.ui.actionFilterFuzzy.setEnabled(value)
         self.ui.actionFilterTranslated.setEnabled(value)
         self.ui.actionFilterUntranslated.setEnabled(value)
@@ -675,12 +677,9 @@ def main(inputFile = None):
     if __name__ == "__main__":
         QtCore.QDir.setCurrent(os.path.join(sys.path[0], "../ui"))
     else:
-#        try:
-#            QtCore.QDir.setCurrent(os.path.join(sys.path[0], "../images"))
-#        except Exception, e:
-            import distutils.sysconfig
-            packagesdir = distutils.sysconfig.get_python_lib(prefix = "/usr/local")
-            QtCore.QDir.setCurrent(os.path.join(packagesdir, "pootling", "ui"))
+        import distutils.sysconfig
+        packagesdir = distutils.sysconfig.get_python_lib(prefix = "/usr/local")
+        QtCore.QDir.setCurrent(os.path.join(packagesdir, "pootling", "ui"))
             
     app = QtGui.QApplication(sys.argv)
     editor = MainWindow()
