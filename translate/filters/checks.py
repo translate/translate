@@ -117,38 +117,6 @@ class SeriousFilterFailure(FilterFailure):
   might break an application (so the string will be marked fuzzy)"""
   pass
 
-def passes(filterfunction, str1, str2):
-  """returns whether the given strings pass on the given test, handling FilterFailures"""
-  str1 = forceunicode(str1)
-  str2 = forceunicode(str2)
-  try:
-    filterresult = filterfunction(str1, str2)
-  except FilterFailure, e:
-    filterresult = False
-  return filterresult
-
-def fails(filterfunction, str1, str2):
-  """returns whether the given strings fail on the given test, handling only FilterFailures"""
-  str1 = forceunicode(str1)
-  str2 = forceunicode(str2)
-  try:
-    filterresult = filterfunction(str1, str2)
-  except SeriousFilterFailure, e:
-    filterresult = True
-  except FilterFailure, e:
-    filterresult = False
-  return not filterresult
-
-def fails_serious(filterfunction, str1, str2):
-  """returns whether the given strings fail on the given test, handling only SeriousFilterFailures"""
-  str1 = forceunicode(str1)
-  str2 = forceunicode(str2)
-  try:
-    filterresult = filterfunction(str1, str2)
-  except SeriousFilterFailure, e:
-    filterresult = False
-  return not filterresult
-
 # printf syntax based on http://en.wikipedia.org/wiki/Printf which doens't cover everything we leave \w instead of specifying the exact letters as
 # this should capture printf types defined in other platforms.
 printf_pat = re.compile('%((?:(?P<ord>\d+)\$)*(?P<fullvar>[+#-]*(?:\d+)*(?:\.\d+)*(hh\|h\|l\|ll)*(?P<type>[\w%])+))')
