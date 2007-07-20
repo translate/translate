@@ -24,7 +24,6 @@
 from translate.filters import helpers
 from translate.filters import decoration
 from translate.filters import prefilters
-from translate.misc.multistring import multistring
 from translate.lang import factory
 import re
 try:
@@ -874,17 +873,6 @@ class StandardChecker(TranslationChecker):
         return not targetcount
     return sourcecount == targetcount
 
-  def nplurals(self, str1, str2):
-    """Checks for the correct number of noun forms for plural translations."""
-    if isinstance(str1, multistring) and isinstance(str2, multistring):
-      # if we don't have a valid nplurals value, don't run the test
-      if len(str1.strings) > 1 and self.config.lang.nplurals != 0:
-        return len(str2.strings) == self.config.lang.nplurals
-      else:
-        return True
-    else:
-      return True
-
   def spellcheck(self, str1, str2):
     """checks words that don't pass a spell check"""
     if not self.config.targetlanguage:
@@ -1032,6 +1020,15 @@ class StandardUnitChecker(UnitChecker):
   def isreview(self, unit):
     """Check if the unit has been marked review."""
     return not unit.isreview()
+
+  def nplurals(self, unit):
+    """Checks for the correct number of noun forms for plural translations."""
+    if unit.hasplural():
+      # if we don't have a valid nplurals value, don't run the test
+      nplurals = self.config.lang.nplurals
+      if nplurals > 0:
+        return len(unit.target.strings) == nplurals
+    return True
 
 
 def runtests(str1, str2, ignorelist=()):
