@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from translate.filters import checks
-from translate.misc.multistring import multistring
+from translate.storage import po 
 
 def test_defaults():
     """tests default setup and that checks aren't altered by other constructions"""
@@ -705,18 +705,42 @@ def test_simpleplurals():
     assert checks.fails(stdchecker.simpleplurals, "computer(s)", u"Máy tính(s)")
 
 def test_nplurals():
-    """test that we can find the wrong number of plural forms"""
-    stdchecker = checks.StandardChecker()
-    assert checks.passes(stdchecker.nplurals, multistring(["%d file", "%d files"]), multistring([u"%d lêer", u"%d lêers"]))
+    """Test that we can find the wrong number of plural forms. Note that this
+    test uses a UnitChecker, not a translation checker."""
+    checker = checks.StandardUnitChecker()
+    unit = po.pounit("")
 
-    stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='af'))
-    assert checks.passes(stdchecker.nplurals, "%d files", "%d lêer")
-    assert checks.passes(stdchecker.nplurals, multistring(["%d file", "%d files"]), multistring([u"%d lêer", u"%d lêers"]))
-    assert checks.fails(stdchecker.nplurals, multistring(["%d file", "%d files"]), multistring([u"%d lêer", u"%d lêers", u"%d lêeeeers"]))
-    assert checks.fails(stdchecker.nplurals, multistring(["%d file", "%d files"]), multistring([u"%d lêer"]))
+    unit.source = ["%d file", "%d files"]
+    unit.target = [u"%d lêer", u"%d lêers"]
+    assert checker.nplurals(unit)
 
-    stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='km'))
-    assert checks.passes(stdchecker.nplurals, "%d files", "%d ឯកសារ")
-    assert checks.passes(stdchecker.nplurals, multistring(["%d file", "%d files"]), multistring([u"%d ឯកសារ"]))
-    assert checks.fails(stdchecker.nplurals, multistring(["%d file", "%d files"]), multistring([u"%d ឯកសារ", u"%d lêers"]))
+    checker = checks.StandardUnitChecker(checks.CheckerConfig(targetlanguage='af'))
+    unit.source = "%d files"
+    unit.target = "%d lêer"
+    assert checker.nplurals(unit)
+
+    unit.source = ["%d file", "%d files"]
+    unit.target = [u"%d lêer", u"%d lêers"]
+    assert checker.nplurals(unit)
+
+    unit.source = ["%d file", "%d files"]
+    unit.target = [u"%d lêer", u"%d lêers", u"%d lêeeeers"]
+    assert not checker.nplurals(unit)
+
+    unit.source = ["%d file", "%d files"]
+    unit.target = [u"%d lêer"]
+    assert not checker.nplurals(unit)
+
+    checker = checks.StandardUnitChecker(checks.CheckerConfig(targetlanguage='km'))
+    unit.source = "%d files"
+    unit.target = "%d ឯកសារ"
+    assert checker.nplurals(unit)
+
+    unit.source = ["%d file", "%d files"]
+    unit.target = [u"%d ឯកសារ"]
+    assert checker.nplurals(unit)
+
+    unit.source = ["%d file", "%d files"]
+    unit.target = [u"%d ឯកសារ", u"%d lêers"]
+    assert not checker.nplurals(unit)
 
