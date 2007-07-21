@@ -101,7 +101,7 @@ languages = {
 'uk': ('Ukrainian', 3, '(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'),
 'vi': ('Vietnamese',1 , '0'),
 'wa': ('Walloon', 2, '(n > 1)'),
-# Chinese is diffictult because the main devide is on script, not really 
+# Chinese is difficult because the main divide is on script, not really 
 # country. Simplified Chinese is used mostly in China, Singapore and Malaysia.
 # Traditional Chinese is used mostly in Hong Kong, Taiwan and Macau.
 'zh_CN': ('Chinese (China)', 1, '0'),
