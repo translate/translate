@@ -170,7 +170,7 @@ class oocheckfilter(pofilter.pocheckfilter):
   def validelement(self, unit, filename, filteraction):
     """Returns whether or not to use unit in conversion. (filename is just for error reporting)"""
     if filteraction == "none": return True
-    filterresult = self.filterelement(unit)
+    filterresult = self.filterunit(unit)
     if filterresult:
       if filterresult != autocorrect:
         for filtername, filtermessage in filterresult:
