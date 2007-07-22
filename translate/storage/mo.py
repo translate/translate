@@ -45,7 +45,7 @@ import struct
 import array
 import re
 
-MOMAGIC = 0x950412deL
+MO_MAGIC_NUMBER = 0x950412deL
 
 def mounpack(mofile='messages.mo'):
   """Helper to unpack Gettext MO files into a Python string"""
@@ -126,7 +126,7 @@ class mofile(base.TranslationStore):
             voffsets = voffsets + [l2, o2+valuestart]
         offsets = koffsets + voffsets
         output = struct.pack("Iiiiiii",
-                             MOMAGIC,           # Magic
+                             MO_MAGIC_NUMBER,   # Magic
                              0,                 # Version
                              len(keys),         # # of entries
                              7*4,               # start of key index
@@ -154,19 +154,17 @@ class mofile(base.TranslationStore):
             mosrc = input.read()
             input.close()
             input = mosrc
-        little, lversion = struct.unpack("<Li", input[:8])
-        big, bversion = struct.unpack(">Li", input[:8])
-        if little == MOMAGIC:
+        little, = struct.unpack("<L", input[:4])
+        big, = struct.unpack(">L", input[:4])
+        if little == MO_MAGIC_NUMBER:
             endian = "<"
-            version = lversion
-        elif big == MOMAGIC:
+        elif big == MO_MAGIC_NUMBER:
             endian = ">"
-            version = bversion
         else:
             raise ValueError("This is not an MO file")
+        magic, version, lenkeys, startkey, startvalue, sizehash, offsethash = struct.unpack("%sLiiiiii" % endian, input[:(7*4)])
         if version > 1:
             raise ValueError("Unable to process MO files with versions > 1.  This is a %d version MO file" % version)
-        magic, version, lenkeys, startkey, startvalue, sizehash, offsethash = struct.unpack("%sLiiiiii" % endian, input[:(7*4)])
         encoding = 'UTF-8'
         for i in range(lenkeys):
             nextkey = startkey+(i*2*4)
