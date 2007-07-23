@@ -31,7 +31,7 @@ applies to the changes made to this file.
 
 U{Version 1.1 of msgfmt.py<http://svn.python.org/projects/python/trunk/Tools/i18n/msgfmt.py>}
 
-The coding of .mo files from produced from documentation in Gettext 0.16 and from observation
+The coding of .mo files was produced from documentation in Gettext 0.16 and from observation
 and testing of existing .mo files in the wild.
 
 The class does not implement any of the hashing componets of Gettext.  This will probably
