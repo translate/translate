@@ -136,6 +136,26 @@ class StatsCache:
         self.cur.execute("""CREATE INDEX IF NOT EXISTS fileidindex
             ON units(fileid);""")
 
+        self.con.commit()
+
+    def _getstoredfileid(self, filename):
+        """Attempt to load find the fileid of the given file, if it hasn't been
+        updated since the last record update.
+
+        None is returned if either the file's record is not found, or if it is
+        not up to date.
+
+        @rtype: String or None
+        """
+        absolutepath = os.path.abspath(filename)
+        mtime = os.path.getmtime(absolutepath)
+        self.cur.execute("SELECT fileid, mtime FROM files WHERE path=?;", (absolutepath,))
+        filerow = self.cur.fetchone()
+        if not filerow or filerow[1] != mtime:
+            return None
+        else:
+            return filerow[0]
+
     def cachestore(self, store):
         """Calculates and caches the statistics of the given store 
         unconditionally."""
@@ -168,19 +188,14 @@ class StatsCache:
     def filetotals(self, filename):
         """Retrieves the statistics for the given file if possible, otherwise 
         delegates to cachestore()."""
-        absolutepath = os.path.abspath(filename)
-        mtime = os.path.getmtime(absolutepath)
-        self.cur.execute("SELECT fileid, mtime FROM files WHERE path=?;", (absolutepath,))
-        filerow = self.cur.fetchone()
-        if not filerow or filerow[1] != mtime:
+        fileid = self._getstoredfileid(filename)
+        if not fileid:
             try:
                 store = factory.getobject(filename)
                 fileid = self.cachestore(store)
             except ValueError, e:
                 print str(e)
                 return
-        else:
-            fileid = filerow[0]
 
         self.cur.execute("""SELECT 
             state,
