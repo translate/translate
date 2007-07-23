@@ -24,27 +24,9 @@
 from translate.filters import helpers
 from translate.filters import decoration
 from translate.filters import prefilters
+from translate.filters import spelling
 from translate.lang import factory
 import re
-try:
-  from enchant import checker
-  checkers = {}
-  def dospellcheck(text, lang):
-    if lang in checkers:
-      c = checkers[lang]
-    else:
-      checkers[lang] = checker.SpellChecker(lang)
-      c = checkers[lang]
-    c.set_text(text)
-    for err in c:
-      yield err.word, err.wordpos, err.suggest()
-except ImportError:
-  try:
-    from jToolkit import spellcheck
-    dospellcheck = spellcheck.check
-  except ImportError:
-    def dospellcheck(text, lang):
-      return []
 
 def forceunicode(string):
   """Helper method to ensure that the parameter becomes unicode if not yet"""
@@ -849,9 +831,9 @@ class StandardChecker(TranslationChecker):
     str2 = self.filteraccelerators(self.filtervariables(str2))
     ignore1 = []
     messages = []
-    for word, index, suggestions in dospellcheck(str1, lang="en"):
+    for word, index, suggestions in spelling.check(str1, lang="en"):
       ignore1.append(word)
-    for word, index, suggestions in dospellcheck(str2, lang=self.config.targetlanguage):
+    for word, index, suggestions in spelling.check(str2, lang=self.config.targetlanguage):
       if word in ignore1:
         continue
       # hack to ignore hyphenisation rules
