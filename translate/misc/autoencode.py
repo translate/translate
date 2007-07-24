@@ -19,7 +19,8 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""Supports a hybrid Unicode string that knows which encoding is preferable, and uses this when converting to a string."""
+"""Supports a hybrid Unicode string that knows which encoding is preferable, 
+and uses this when converting to a string."""
 
 class autoencode(unicode):
     def __new__(newtype, string=u"", encoding=None, errors=None):
@@ -39,7 +40,7 @@ class autoencode(unicode):
                 try:
                     newstring = unicode.__new__(newtype, string, encoding)
                 except LookupError, e:
-                    raise ValueError(e.message)
+                    raise ValueError(str(e))
             elif encoding is None:
                 newstring = unicode.__new__(newtype, string, errors)
             else:
