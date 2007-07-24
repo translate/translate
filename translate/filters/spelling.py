@@ -29,9 +29,9 @@ try:
     def check(text, lang):
         if not lang in checkers:
             checkers[lang] = checker.SpellChecker(lang)
-        checker = checkers[lang]
-        checker.set_text(text)
-        for err in checker:
+        spellchecker = checkers[lang]
+        spellchecker.set_text(text)
+        for err in spellchecker:
             yield err.word, err.wordpos, err.suggest()
 
 except ImportError:
