@@ -180,8 +180,8 @@ class CheckerConfig(object):
     self.validcharsmap.update(validcharsmap)
 
   def updatetargetlanguage(self, langcode):
-      """Updates the target language in the config to the given target language"""
-      self.lang = factory.getlanguage(langcode)
+    """Updates the target language in the config to the given target language"""
+    self.lang = factory.getlanguage(langcode)
 
 class UnitChecker(object):
   """Parent Checker class which does the checking based on functions available 
@@ -306,12 +306,12 @@ class TranslationChecker(UnitChecker):
       return test(self.str1, self.str2)
 
   def run_filters(self, unit):
-      """Do some optimisation by caching some data of the unit for the benefit 
-      of run_test()."""
-      self.str1 = unicode(unit.source)
-      self.str2 = unicode(unit.target)
-      self.hasplural = unit.hasplural()
-      return super(TranslationChecker, self).run_filters(unit)
+    """Do some optimisation by caching some data of the unit for the benefit 
+    of run_test()."""
+    self.str1 = unicode(unit.source)
+    self.str2 = unicode(unit.target)
+    self.hasplural = unit.hasplural()
+    return super(TranslationChecker, self).run_filters(unit)
 
 class TeeChecker:
   """A Checker that controls multiple checkers..."""
@@ -322,8 +322,8 @@ class TeeChecker:
       checkerclasses = [StandardChecker]
     self.checkers = [checkerclass(checkerconfig=checkerconfig, excludefilters=excludefilters, limitfilters=limitfilters, errorhandler=errorhandler) for checkerclass in checkerclasses]
     if languagecode:
-        for checker in self.checkers:
-            checker.config.updatetargetlanguage(languagecode)
+      for checker in self.checkers:
+        checker.config.updatetargetlanguage(languagecode)
     self.combinedfilters = self.getfilters(excludefilters, limitfilters)
 
   def getfilters(self, excludefilters=None, limitfilters=None):
@@ -644,7 +644,7 @@ class StandardChecker(TranslationChecker):
     sentences1 = len(self.config.sourcelang.sentences(str1))
     sentences2 = len(self.config.lang.sentences(str2))
     if not sentences1 == sentences2:
-        raise FilterFailure("The number of sentences differ: %d versus %d" % (sentences1, sentences2))
+      raise FilterFailure("The number of sentences differ: %d versus %d" % (sentences1, sentences2))
     return True
 
   def startcaps(self, str1, str2):
@@ -820,7 +820,7 @@ class StandardChecker(TranslationChecker):
     sourcecount = numberofpatterns(str1, sourcepatterns)
     targetcount = numberofpatterns(str2, targetpatterns)
     if self.config.lang.nplurals == 1:
-        return not targetcount
+      return not targetcount
     return sourcecount == targetcount
 
   def spellcheck(self, str1, str2):

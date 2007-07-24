@@ -70,7 +70,7 @@ def isvalidaccelerator(accelerator, ignorelist=[]):
     return 0
   accelerator = accelerator.replace("_","")
   if not accelerator.isalnum():
-      return False
+    return False
   
   # We don't want to have accelerators on characters with diacritics, so let's 
   # se if the character can decompose.

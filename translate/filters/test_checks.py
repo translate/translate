@@ -3,36 +3,36 @@ from translate.filters import checks
 from translate.storage import po 
 
 def passes(filterfunction, str1, str2):
-  """returns whether the given strings pass on the given test, handling FilterFailures"""
-  str1 = checks.forceunicode(str1)
-  str2 = checks.forceunicode(str2)
-  try:
-    filterresult = filterfunction(str1, str2)
-  except checks.FilterFailure, e:
-    filterresult = False
-  return filterresult
+    """returns whether the given strings pass on the given test, handling FilterFailures"""
+    str1 = checks.forceunicode(str1)
+    str2 = checks.forceunicode(str2)
+    try:
+        filterresult = filterfunction(str1, str2)
+    except checks.FilterFailure, e:
+        filterresult = False
+    return filterresult
 
 def fails(filterfunction, str1, str2):
-  """returns whether the given strings fail on the given test, handling only FilterFailures"""
-  str1 = checks.forceunicode(str1)
-  str2 = checks.forceunicode(str2)
-  try:
-    filterresult = filterfunction(str1, str2)
-  except checks.SeriousFilterFailure, e:
-    filterresult = True
-  except checks.FilterFailure, e:
-    filterresult = False
-  return not filterresult
+    """returns whether the given strings fail on the given test, handling only FilterFailures"""
+    str1 = checks.forceunicode(str1)
+    str2 = checks.forceunicode(str2)
+    try:
+        filterresult = filterfunction(str1, str2)
+    except checks.SeriousFilterFailure, e:
+        filterresult = True
+    except checks.FilterFailure, e:
+        filterresult = False
+    return not filterresult
 
 def fails_serious(filterfunction, str1, str2):
-  """returns whether the given strings fail on the given test, handling only SeriousFilterFailures"""
-  str1 = checks.forceunicode(str1)
-  str2 = checks.forceunicode(str2)
-  try:
-    filterresult = filterfunction(str1, str2)
-  except checks.SeriousFilterFailure, e:
-    filterresult = False
-  return not filterresult
+    """returns whether the given strings fail on the given test, handling only SeriousFilterFailures"""
+    str1 = checks.forceunicode(str1)
+    str2 = checks.forceunicode(str2)
+    try:
+        filterresult = filterfunction(str1, str2)
+    except checks.SeriousFilterFailure, e:
+        filterresult = False
+    return not filterresult
 
 
 def test_defaults():
@@ -305,7 +305,7 @@ def test_musttranslatewords():
     ## We need to define more word separators to allow us to find those hidden untranslated items
     #assert fails(stdchecker.musttranslatewords, "Click OK", "Blah we-OK")
     # Don't get confused when variables are the same as a musttranslate word
-    stdchecker = checks.StandardChecker(checks.CheckerConfig(varmatches=[("%", None),], musttranslatewords=["OK"]))
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(varmatches=[("%", None), ], musttranslatewords=["OK"]))
     assert passes(stdchecker.musttranslatewords, "Click %OK to start", "Kliek %OK om te begin")
     # Unicode
     assert fails(stdchecker.musttranslatewords, "Click OK", u"Kiḽikani OK")
@@ -314,7 +314,7 @@ def test_notranslatewords():
     """tests stopwords"""
     stdchecker = checks.StandardChecker(checks.CheckerConfig(notranslatewords=[]))
     assert passes(stdchecker.notranslatewords, "This uses Mozilla of course", "hierdie gebruik le mozille natuurlik")
-    stdchecker = checks.StandardChecker(checks.CheckerConfig(notranslatewords=["Mozilla","Opera"]))
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(notranslatewords=["Mozilla", "Opera"]))
     assert fails(stdchecker.notranslatewords, "This uses Mozilla of course", "hierdie gebruik le mozille natuurlik")
     assert passes(stdchecker.notranslatewords, "This uses Mozilla of course", "hierdie gebruik Mozilla natuurlik")
     assert fails(stdchecker.notranslatewords, "This uses Mozilla. Don't you?", "hierdie gebruik le mozille soos jy")
@@ -329,7 +329,7 @@ def test_notranslatewords():
     assert fails(stdchecker.notranslatewords, "Click Mozilla!", "Kliek Motzille!")
     assert passes(stdchecker.notranslatewords, "Click Mozilla!", "Kliek Mozilla!")
     assert fails(stdchecker.notranslatewords, "Searches (From Opera)", "adosako (kusukela ku- Ophera)")
-    stdchecker = checks.StandardChecker(checks.CheckerConfig(notranslatewords=["Sun","NeXT"]))
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(notranslatewords=["Sun", "NeXT"]))
     assert fails(stdchecker.notranslatewords, "Sun/NeXT Audio", "Odio dza Ḓuvha/TeVHELAHO")
     assert passes(stdchecker.notranslatewords, "Sun/NeXT Audio", "Odio dza Sun/NeXT")
     stdchecker = checks.StandardChecker(checks.CheckerConfig(notranslatewords=["sendmail"]))

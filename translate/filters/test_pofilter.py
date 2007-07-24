@@ -16,7 +16,7 @@ class BaseTestFilter(object):
         options, args = pofilter.cmdlineparser().parse_args(["xxx.po"] + cmdlineoptions)
         checkerclasses = [checks.StandardChecker, checks.StandardUnitChecker]
         if checkerconfig is None:
-          checkerconfig = checks.CheckerConfig()
+            checkerconfig = checks.CheckerConfig()
         checkfilter = pofilter.pocheckfilter(options, checkerclasses, checkerconfig)
         tofile = checkfilter.filterfile(translationstore)
         return tofile
