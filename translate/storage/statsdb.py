@@ -139,7 +139,7 @@ class StatsCache:
         self.con.commit()
 
     def _getstoredfileid(self, filename):
-        """Attempt to load find the fileid of the given file, if it hasn't been
+        """Attempt to find the fileid of the given file, if it hasn't been
         updated since the last record update.
 
         None is returned if either the file's record is not found, or if it is
@@ -169,7 +169,7 @@ class StatsCache:
         fileid = self.cur.lastrowid
         unitvalues = []
         for index, unit in enumerate(store.units):
-            if unit.source and not unit.isheader():
+            if unit.istranslatable():
                 sourcewords, targetwords = wordsinunit(unit)
                 unitvalues.append((unit.getid(), fileid, index, \
                                 unit.source, unit.target, \
@@ -199,7 +199,7 @@ class StatsCache:
 
         self.cur.execute("""SELECT 
             state,
-            count(unitindex) as total,
+            count(unitid) as total,
             sum(sourcewords) as sourcewords,
             sum(targetwords) as targetwords
             FROM units WHERE fileid=?
@@ -208,10 +208,10 @@ class StatsCache:
 
         totals = emptystats()
         for stateset in values:
-            state = statefromdb(stateset[0])
-            totals[state] = stateset[1] or 0
-            totals[state + "sourcewords"] = stateset[2]
-            totals[state + "targetwords"] = stateset[3]
+            state = statefromdb(stateset[0])            # state
+            totals[state] = stateset[1] or 0            # total
+            totals[state + "sourcewords"] = stateset[2] # sourcewords
+            totals[state + "targetwords"] = stateset[3] # targetwords
         totals["total"] = totals["untranslated"] + totals["translated"] + totals["fuzzy"]
         totals["totalsourcewords"] = totals["untranslatedsourcewords"] + \
                 totals["translatedsourcewords"] + \
