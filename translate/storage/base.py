@@ -228,6 +228,14 @@ class TranslationUnit(object):
 
         return bool(self.target) and not self.isfuzzy()
 
+    def istranslatable(self):
+        """Indicates whether this unit can be translated.
+
+        This should be used to distinguish real units for translation from
+        header, obsolete, binary or other blank units.
+        """
+        return True
+
     def isfuzzy(self):
         """Indicates whether this unit is fuzzy."""
 
