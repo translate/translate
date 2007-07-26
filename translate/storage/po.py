@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # 
-# Copyright 2002-2006 Zuza Software Foundation
+# Copyright 2002-2007 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
@@ -461,6 +461,9 @@ class pounit(base.TranslationUnit):
 
   def istranslated(self):
     return super(pounit, self).istranslated() and not self.isobsolete()
+
+  def istranslatable(self):
+    return not (self.isheader() or self.isblank())
 
   def isfuzzy(self):
     return self.hastypecomment("fuzzy")

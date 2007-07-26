@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2005-2006 Zuza Software Foundation
+# Copyright 2005-2007 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
@@ -220,6 +220,12 @@ class xliffunit(lisa.LISAunit):
 #        targetnode = self.getlanguageNode(lang=None, index=1)
 #        return not targetnode is None and \
 #                (targetnode.getAttribute("state") == "translated")
+
+    def istranslatable(self):
+        value = self.xmlelement.getAttribute("translate")
+        if value and value.lower() == 'no':
+            return False
+        return True
 
     def marktranslated(self):
         targetnode = self.getlanguageNode(lang=None, index=1)
