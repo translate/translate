@@ -55,6 +55,15 @@ class TestXLIFFUnit(test_base.TestTranslationUnit):
 
 class TestXLIFFfile(test_base.TestTranslationStore):
     StoreClass = xliff.xlifffile
+    skeleton = '''<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
+        <file original="doc.txt" source-language="en-US">
+                <body>
+                        %s
+                </body>
+        </file>
+</xliff>'''
+
     def test_basic(self):
         xlifffile = xliff.xlifffile()
         assert xlifffile.units == []
@@ -178,19 +187,16 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         #assert unit.isfuzzy()
 
     def test_parsing(self):
-        xlfsource = '''<?xml version="1.0" encoding="utf-8"?>
-<xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
-        <file datatype="po" original="doc.txt" source-language="en-US">
-                <body>
-                        <trans-unit id="2" xml:space="preserve">
-                                <source>&amp;Applications</source>
-                                <target/>
-                        </trans-unit>
-                </body>
-        </file>
-</xliff>'''
+        xlfsource = self.skeleton % \
+        '''<trans-unit id="1" xml:space="preserve">
+               <source>File</source>
+               <target/>
+           </trans-unit>'''
         xlifffile = xliff.xlifffile.parsestring(xlfsource)
-        assert len(xlifffile.units) == 1
-        print xlifffile.units[0].source
-        assert xlifffile.units[0].source == "&Applications"
+        assert xlifffile.units[0].istranslatable()
+        xlifffile.units[0].xmlelement.setAttribute("translate", "no")
+        assert not xlifffile.units[0].istranslatable()
+        xlifffile.units[0].xmlelement.setAttribute("translate", "yes")
+        assert xlifffile.units[0].istranslatable()
+
 
