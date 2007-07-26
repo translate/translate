@@ -22,6 +22,23 @@ def test_roundtrip_quoting():
 class TestPOUnit(test_base.TestTranslationUnit):
     UnitClass = po.pounit
 
+    def test_istranslatable(self):
+        """Tests for the correct behaviour of istranslatable()."""
+        unit = self.UnitClass("Message")
+        assert unit.istranslatable()
+
+        unit.source = ""
+        assert not unit.istranslatable()
+        # simulate a header
+        unit.target = "PO-Revision-Date: 2006-02-09 23:33+0200\n"
+        assert unit.isheader()
+        assert not unit.istranslatable()
+
+        unit.source = "Message"
+        unit.target = "Boodskap"
+        unit.makeobsolete()
+        assert not unit.istranslatable()
+
     def test_plurals(self):
         """Tests that plurals are handled correctly."""
         unit = self.UnitClass("Cow")
