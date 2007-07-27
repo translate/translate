@@ -45,7 +45,7 @@ parser = OptionParser(usage = usage, version = strVersion)
 argc = len(args)
 if (len(sys.argv) == 1):
     MainEditor.main()
-
-path = QtCore.QDir.currentPath()
-inputFileName = os.path.join(str(path),args[0])
-MainEditor.main(inputFileName)
+else:
+    path = QtCore.QDir.currentPath()
+    inputFileName = os.path.abspath(args[0])
+    MainEditor.main(inputFileName)
