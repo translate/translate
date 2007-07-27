@@ -128,6 +128,12 @@ class TUview(QtGui.QDockWidget):
                 
                 expression = QtCore.QRegExp(candidate.source, QtCore.Qt.CaseInsensitive)
                 index = text.indexOf(expression)
+                
+                strReplaceCursor = unicode(self.tr("Copy \"%s\" to cusor position in target.")) % (unicode(candidate.target))
+                menuAction = menu.addAction(strReplaceCursor)
+                menuAction.setData(QtCore.QVariant([candidate.target]))
+                self.connect(menuAction, QtCore.SIGNAL("triggered()"), self.replaceTranslationInCursor)
+                    
                 if (index >= 0):
                     length = expression.matchedLength()
                     cText = expression.capturedTexts()[0]
@@ -172,8 +178,29 @@ class TUview(QtGui.QDockWidget):
             text.replace(index, length, target)
             index = text.indexOf(expression)
         self.setTargetText(text)
+        self.ui.txtTarget.setFocus()
 
-    
+    def replaceTranslationInCursor(self):
+        """Copy self.sender().data() to cusor position​ in textT`arget"""
+        text = self.ui.txtTarget.toPlainText()
+        cText =  self.sender().data().toStringList()[0]
+        cursor = self.ui.txtTarget.textCursor()
+        cursor = cursor.position()
+        if (len(text) <= 0):
+            text = cText
+            self.setTargetText(cText)
+        elif (cursor == len(text)):
+            text = text + cText
+            self.setTargetText(text)
+        else:
+            text = text[:cursor] + cText + text[cursor:]
+            self.setTargetText(text)
+        self.ui.txtTarget.setFocus()
+        cursorPost = len(text[:cursor] + cText)
+        cursor = self.ui.txtTarget.textCursor()
+        cursor.setPosition(cursorPost)
+        self.ui.txtTarget.setTextCursor(cursor)
+        
     def emitTermRequest(self, pos):
         """
         Find word in txtSource from position pos, and emit lookupTerm signal.
@@ -272,6 +299,7 @@ class TUview(QtGui.QDockWidget):
             return
         self.disconnect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.textChanged)
         self.ui.txtTarget.setReadOnly(False)
+        self.ui.txtTarget.setFocus()
         self.emitTargetChanged()
         comment = unit.getcontext()
         comment += unit.getnotes("developer")
@@ -374,6 +402,7 @@ class TUview(QtGui.QDockWidget):
         Copy the text from source to target.
         """
         self.setTargetText(self.ui.txtSource.toPlainText())
+        self.ui.txtTarget.setFocus()
         self.setCursorToEnd(self.ui.txtTarget)
     
     def replaceText(self, textField, position, length, replacedText):
