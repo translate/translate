@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/ratha/sourceforge.net/translate/trunk/pootling/ui/Catalog.ui'
+# Form implementation generated from reading ui file 'unknown'
 #
-# Created: Mon Jun 25 17:25:23 2007
-#      by: PyQt4 UI code generator 4.2
+# Created: Mon Jul 23 10:00:42 2007
+#      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
 
+import sys
 from PyQt4 import QtCore, QtGui
 
 class Ui_Catalog(object):
@@ -31,7 +32,7 @@ class Ui_Catalog(object):
 
         self.treeCatalog = QtGui.QTreeWidget(self.centralwidget)
 
-        font = QtGui.QFont()
+        font = QtGui.QFont(self.treeCatalog.font())
         font.setPointSize(10)
         self.treeCatalog.setFont(font)
         self.treeCatalog.setFocusPolicy(QtCore.Qt.NoFocus)
@@ -128,6 +129,11 @@ class Ui_Catalog(object):
         self.actionConfigure1 = QtGui.QAction(Catalog)
         self.actionConfigure1.setIcon(QtGui.QIcon("../images/configure.png"))
         self.actionConfigure1.setObjectName("actionConfigure1")
+
+        self.actionStop = QtGui.QAction(Catalog)
+        self.actionStop.setEnabled(False)
+        self.actionStop.setIcon(QtGui.QIcon("../images/stop.png"))
+        self.actionStop.setObjectName("actionStop")
         self.menuEdit.addAction(self.actionFind_in_Files)
         self.menuEdit.addSeparator()
         self.menuEdit.addAction(self.actionStatistics)
@@ -148,58 +154,61 @@ class Ui_Catalog(object):
         self.toolBar.addAction(self.actionFind_in_Files)
         self.toolBar.addAction(self.actionStatistics)
         self.toolBar.addAction(self.actionReload)
+        self.toolBar.addAction(self.actionStop)
         self.toolBar.addAction(self.actionConfigure)
 
         self.retranslateUi(Catalog)
         QtCore.QMetaObject.connectSlotsByName(Catalog)
 
-    def retranslateUi(self, Catalog):
-        Catalog.setWindowTitle(QtGui.QApplication.translate("Catalog", "Catalog Manager", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuEdit.setTitle(QtGui.QApplication.translate("Catalog", "&Edit", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuFile.setTitle(QtGui.QApplication.translate("Catalog", "&File", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuProject.setTitle(QtGui.QApplication.translate("Catalog", "&Project", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuOpenRecentProject.setToolTip(QtGui.QApplication.translate("Catalog", "This open recent project.", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuOpenRecentProject.setStatusTip(QtGui.QApplication.translate("Catalog", "This open recent project.", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuOpenRecentProject.setWhatsThis(QtGui.QApplication.translate("Catalog", "<h3>Open recent project</h3>Use this to be asked for the name exist of project in catalog manager.", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuOpenRecentProject.setTitle(QtGui.QApplication.translate("Catalog", "Open &Recent Project", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuSettings.setTitle(QtGui.QApplication.translate("Catalog", "&Settings", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuHelp.setTitle(QtGui.QApplication.translate("Catalog", "&Help", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionQuit.setText(QtGui.QApplication.translate("Catalog", "&Quit", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionQuit.setStatusTip(QtGui.QApplication.translate("Catalog", "Quit the application.", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionQuit.setWhatsThis(QtGui.QApplication.translate("Catalog", "<h3>Quit</h3>Use this to quit the application. Any unsaved changes will be prompted.", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionQuit.setShortcut(QtGui.QApplication.translate("Catalog", "Ctrl+Q", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionAbout.setText(QtGui.QApplication.translate("Catalog", "About", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionAbout.setStatusTip(QtGui.QApplication.translate("Catalog", "Display information about this software.", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionAbout.setWhatsThis(QtGui.QApplication.translate("Catalog", "Display information about this software.", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionAboutQt.setText(QtGui.QApplication.translate("Catalog", "About Qt", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionAboutQt.setStatusTip(QtGui.QApplication.translate("Catalog", "Display information about the Qt toolkit.", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionAboutQt.setWhatsThis(QtGui.QApplication.translate("Catalog", "Display information about the Qt toolkit.", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionReload.setText(QtGui.QApplication.translate("Catalog", "&Reload", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionReload.setShortcut(QtGui.QApplication.translate("Catalog", "F5", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionConfigure.setText(QtGui.QApplication.translate("Catalog", "&Configure...", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionFind_in_Files.setText(QtGui.QApplication.translate("Catalog", "&Find in Files...", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionFind_in_Files.setStatusTip(QtGui.QApplication.translate("Catalog", "Find text in the shown strings.", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionFind_in_Files.setWhatsThis(QtGui.QApplication.translate("Catalog", "<h3>Find</h3>Use this to find text in the shown strings. The find dialog will show at the bottom of the editor.", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionFind_in_Files.setShortcut(QtGui.QApplication.translate("Catalog", "Ctrl+F", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionStatistics.setText(QtGui.QApplication.translate("Catalog", "&Statistics", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionStatistics.setShortcut(QtGui.QApplication.translate("Catalog", "Ctrl+S", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionBuildTM.setText(QtGui.QApplication.translate("Catalog", "&Build TM", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionNew.setText(QtGui.QApplication.translate("Catalog", "New...", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionNew.setStatusTip(QtGui.QApplication.translate("Catalog", "This opens a dialog for entering  the information for a new project.", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionNew.setWhatsThis(QtGui.QApplication.translate("Catalog", "<h3>New...</h3>Use this to open a dialog for entering  the information for a new project.", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionOpen.setText(QtGui.QApplication.translate("Catalog", "Open...", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionOpen.setStatusTip(QtGui.QApplication.translate("Catalog", "This open an existing project.", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionOpen.setWhatsThis(QtGui.QApplication.translate("Catalog", "<h3>Open</h3>Use this to open an existing project.", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionBuild.setText(QtGui.QApplication.translate("Catalog", "Build TM...", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionBuild.setToolTip(QtGui.QApplication.translate("Catalog", "Build the translation memory.", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionBuild.setStatusTip(QtGui.QApplication.translate("Catalog", "Build the translation memory.", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionBuild.setWhatsThis(QtGui.QApplication.translate("Catalog", "<h3>Build TM</h3>Use this to build the translation memory.", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionConfigure1.setText(QtGui.QApplication.translate("Catalog", "Configure...", None, QtGui.QApplication.UnicodeUTF8))
+    def tr(self, string):
+        return QtGui.QApplication.translate("Catalog", string, None, QtGui.QApplication.UnicodeUTF8)
 
+    def retranslateUi(self, Catalog):
+        Catalog.setWindowTitle(self.tr("Catalog Manager"))
+        self.menuEdit.setTitle(self.tr("&Edit"))
+        self.menuFile.setTitle(self.tr("&File"))
+        self.menuProject.setTitle(self.tr("&Project"))
+        self.menuOpenRecentProject.setToolTip(self.tr("This open recent project."))
+        self.menuOpenRecentProject.setStatusTip(self.tr("This open recent project."))
+        self.menuOpenRecentProject.setWhatsThis(self.tr("<h3>Open recent project</h3>Use this to be asked for the name exist of project in catalog manager."))
+        self.menuOpenRecentProject.setTitle(self.tr("Open &Recent Project"))
+        self.menuSettings.setTitle(self.tr("&Settings"))
+        self.menuHelp.setTitle(self.tr("&Help"))
+        self.actionQuit.setText(self.tr("&Quit"))
+        self.actionQuit.setStatusTip(self.tr("Quit the application."))
+        self.actionQuit.setWhatsThis(self.tr("<h3>Quit</h3>Use this to quit the application. Any unsaved changes will be prompted."))
+        self.actionQuit.setShortcut(self.tr("Ctrl+Q"))
+        self.actionAbout.setText(self.tr("About"))
+        self.actionAbout.setStatusTip(self.tr("Display information about this software."))
+        self.actionAbout.setWhatsThis(self.tr("Display information about this software."))
+        self.actionAboutQt.setText(self.tr("About Qt"))
+        self.actionAboutQt.setStatusTip(self.tr("Display information about the Qt toolkit."))
+        self.actionAboutQt.setWhatsThis(self.tr("Display information about the Qt toolkit."))
+        self.actionReload.setText(self.tr("&Reload"))
+        self.actionReload.setShortcut(self.tr("F5"))
+        self.actionConfigure.setText(self.tr("&Configure..."))
+        self.actionFind_in_Files.setText(self.tr("&Find in Files..."))
+        self.actionFind_in_Files.setStatusTip(self.tr("Find text in the shown strings."))
+        self.actionFind_in_Files.setWhatsThis(self.tr("<h3>Find</h3>Use this to find text in the shown strings. The find dialog will show at the bottom of the editor."))
+        self.actionFind_in_Files.setShortcut(self.tr("Ctrl+F"))
+        self.actionStatistics.setText(self.tr("&Statistics"))
+        self.actionStatistics.setShortcut(self.tr("Ctrl+S"))
+        self.actionBuildTM.setText(self.tr("&Build TM"))
+        self.actionNew.setText(self.tr("New..."))
+        self.actionNew.setStatusTip(self.tr("This opens a dialog for entering  the information for a new project."))
+        self.actionNew.setWhatsThis(self.tr("<h3>New...</h3>Use this to open a dialog for entering  the information for a new project."))
+        self.actionOpen.setText(self.tr("Open..."))
+        self.actionOpen.setStatusTip(self.tr("This open an existing project."))
+        self.actionOpen.setWhatsThis(self.tr("<h3>Open</h3>Use this to open an existing project."))
+        self.actionBuild.setText(self.tr("Build TM..."))
+        self.actionBuild.setToolTip(self.tr("Build the translation memory."))
+        self.actionBuild.setStatusTip(self.tr("Build the translation memory."))
+        self.actionBuild.setWhatsThis(self.tr("<h3>Build TM</h3>Use this to build the translation memory."))
+        self.actionConfigure1.setText(self.tr("Configure..."))
+        self.actionStop.setText(self.tr("Stop"))
 
 
 if __name__ == "__main__":
-    import sys
     app = QtGui.QApplication(sys.argv)
     Catalog = QtGui.QMainWindow()
     ui = Ui_Catalog()

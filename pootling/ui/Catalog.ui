@@ -157,6 +157,7 @@
    <addaction name="actionFind_in_Files" />
    <addaction name="actionStatistics" />
    <addaction name="actionReload" />
+   <addaction name="actionStop" />
    <addaction name="actionConfigure" />
   </widget>
   <action name="actionQuit" >
@@ -304,6 +305,17 @@
    </property>
    <property name="text" >
     <string>Configure...</string>
+   </property>
+  </action>
+  <action name="actionStop" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
+   <property name="icon" >
+    <iconset>../images/stop.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Stop</string>
    </property>
   </action>
  </widget>

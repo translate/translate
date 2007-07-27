@@ -23,7 +23,6 @@ import sys, os
 from PyQt4 import QtCore, QtGui
 from pootling.ui.Ui_CatalogSetting import Ui_catalogSetting
 from pootling.modules import World
-from pootling.modules import FileDialog
 
 class CatalogSetting(QtGui.QDialog):
     """
@@ -35,8 +34,6 @@ class CatalogSetting(QtGui.QDialog):
         self.ui.setupUi(self)
         self.setWindowTitle("Setting Catalog Manager")
         self.connect(self.ui.btnAdd, QtCore.SIGNAL("clicked(bool)"), self.showFileDialog)
-        self.filedialog = FileDialog.fileDialog(self)
-        self.connect(self.filedialog, QtCore.SIGNAL("location"), self.addLocation)
         self.connect(self.ui.btnOk, QtCore.SIGNAL("clicked(bool)"), QtCore.SLOT("close()"))
         self.connect(self.ui.btnDelete, QtCore.SIGNAL("clicked(bool)"), self.removeLocation)
         self.connect(self.ui.btnClear, QtCore.SIGNAL("clicked(bool)"), self.clearLocation)
@@ -48,18 +45,26 @@ class CatalogSetting(QtGui.QDialog):
         self.catalogModified = False
         
     def showFileDialog(self):
-        """Open the file dialog where you can choose both file and directory. """
-        self.filedialog.show()
-    
-    def addLocation(self, text):
-        """Add path to Catalog list.
-        @param text: File or directory path as QString
         """
-        items = self.ui.listWidget.findItems(text, QtCore.Qt.MatchCaseSensitive)
-        if (not items):
-            item = QtGui.QListWidgetItem(text)
-            self.ui.listWidget.addItem(item)
-            self.catalogModified = True
+        Open the file dialog where you can choose both file and directory.
+        Add path to Catalog list.
+        """
+        self.directory = World.settings.value("workingDir").toString()
+        dialog = QtGui.QFileDialog()
+        filenames = dialog.getOpenFileNames(
+                    self,
+                    self.tr("Open File"),
+                    self.directory,
+                    self.tr("All Supported Files (*.po *.pot *.xliff *.xlf *.tmx *.tbx);;PO Files and PO Template Files (*.po *.pot);;XLIFF Files (*.xliff *.xlf);;Translation Memory eXchange (TMX) Files (*.tmx);;TermBase eXchange (TBX) Files (*.tbx);;All Files (*)"), 0,
+                    QtGui.QFileDialog.DontUseNativeDialog)
+        
+        if (filenames):
+            for filename in filenames:
+                items = self.ui.listWidget.findItems(filename, QtCore.Qt.MatchCaseSensitive)
+                if (not items):
+                    item = QtGui.QListWidgetItem(filename)
+                    self.ui.listWidget.addItem(item)
+                    self.catalogModified = True
     
     def clearLocation(self):
         """Clear all paths from the Catalog List and also unchecked DiveIntoSubCatalog checkbox."""

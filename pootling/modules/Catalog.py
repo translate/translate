@@ -77,17 +77,20 @@ class Catalog(QtGui.QMainWindow):
         self.ui.treeCatalog.header().setResizeMode(QtGui.QHeaderView.Interactive)
         self.ui.treeCatalog.setWhatsThis("The catalog manager merges all files and folders enter one treewidget and displays all po, xlf... files. the way you can easily see if a template has been added or removed. Also some information about the files is displayed.")
         
-        # File menu action
+        # Quit action
         self.connect(self.ui.actionQuit, QtCore.SIGNAL("triggered()"), QtCore.SLOT("close()"))
-        self.ui.actionQuit.setWhatsThis("<h3>Quit</h3>Quit Catalog")
-        self.ui.actionQuit.setStatusTip("Quit application")
-
-        # Edit menu action
+        
+        # Reload action
         self.connect(self.ui.actionReload, QtCore.SIGNAL("triggered()"), self.refresh)
         self.ui.actionReload.setWhatsThis("<h3>Reload</h3>Set the current files or folders to get the most up-to-date version.")
         self.ui.actionReload.setStatusTip("Reload the current files")
-
-        # create statistics action
+        
+        # Stop action
+        self.connect(self.ui.actionStop, QtCore.SIGNAL("triggered()"), self.stopUpdate)
+        self.ui.actionStop.setWhatsThis("<h3>Stop</h3>Stop loading catalog.")
+        self.ui.actionStop.setStatusTip("Stop loading catalog.")
+        
+        # Statistic action
         self.connect(self.ui.actionStatistics, QtCore.SIGNAL("triggered()"), self.showStatistic)
         self.ui.actionStatistics.setWhatsThis("<h3>Statistics</h3>Show status of files that have filename, fuzzy, untranslated,translated and total of strings.")
         self.ui.actionStatistics.setStatusTip("Show status of files")
@@ -325,15 +328,15 @@ class Catalog(QtGui.QMainWindow):
         Read data from world's "CatalogPath" and display statistic of files
         in tree view.
         """
-        # Icon enabled when toolBar not files into treeCatalog
+        # enable action buttons
         self.lazyInit()
         self.show()
         self.ui.actionFind_in_Files.setEnabled(True)
         self.ui.actionStatistics.setEnabled(True)
         self.ui.actionReload.setEnabled(True)
+        self.ui.actionStop.setEnabled(True)
         self.ui.actionBuild.setEnabled(True)
 
-        # Icon enabled when context menu not files into treeCatalog
         self.actionOpen.setEnabled(True)
         self.actionFind.setEnabled(True)
         self.actionShowStat.setEnabled(True)
@@ -348,6 +351,7 @@ class Catalog(QtGui.QMainWindow):
             self.ui.actionFind_in_Files.setEnabled(False)
             self.ui.actionStatistics.setEnabled(False)
             self.ui.actionReload.setEnabled(False)
+            self.ui.actionStop.setEnabled(False)
             self.ui.actionBuild.setEnabled(False)
             self.progressBar.setVisible(False)
         
@@ -684,7 +688,11 @@ class Catalog(QtGui.QMainWindow):
         if (self.itemNumber == len(self.fileItems)):
             self.timer.stop()
             self.itemNumber = 0
-
+    
+    def stopUpdate(self):
+        self.timer.stop()
+        self.updateProgress(100)
+    
     def startOpenFile(self):
         files = World.settings.value("recentProjectList").toStringList()
         if (files):

@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>406</width>
-    <height>331</height>
+    <height>309</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -47,20 +47,17 @@
        <property name="spacing" >
         <number>6</number>
        </property>
-       <item row="7" column="0" >
-        <spacer>
-         <property name="orientation" >
-          <enum>Qt::Vertical</enum>
+       <item rowspan="6" row="1" column="0" >
+        <widget class="QListWidget" name="listWidget" >
+         <property name="toolTip" >
+          <string>Listwidget</string>
          </property>
-         <property name="sizeHint" >
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
+         <property name="whatsThis" >
+          <string>&lt;h3>Listwidget&lt;/h3>Listwidget is displayed items from user add files or folders.</string>
          </property>
-        </spacer>
+        </widget>
        </item>
-       <item row="6" column="0" >
+       <item row="7" column="0" >
         <widget class="QCheckBox" name="chbDiveIntoSubfolders" >
          <property name="toolTip" >
           <string>Dive into subfolders</string>
@@ -70,6 +67,21 @@
          </property>
          <property name="text" >
           <string>Dive into subfolders</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0" >
+        <widget class="QLabel" name="label_4" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>5</hsizetype>
+           <vsizetype>4</vsizetype>
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text" >
+          <string>Locations:</string>
          </property>
         </widget>
        </item>
@@ -89,79 +101,6 @@
          </property>
          <property name="icon" >
           <iconset>../images/addTM.png</iconset>
-         </property>
-        </widget>
-       </item>
-       <item rowspan="5" row="1" column="0" >
-        <widget class="QListWidget" name="listWidget" >
-         <property name="toolTip" >
-          <string>Listwidget</string>
-         </property>
-         <property name="whatsThis" >
-          <string>&lt;h3>Listwidget&lt;/h3>Listwidget is displayed items from user add files or folders.</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="1" >
-        <widget class="QPushButton" name="btnMoveUp" >
-         <property name="toolTip" >
-          <string>Move Up</string>
-         </property>
-         <property name="whatsThis" >
-          <string>&lt;h3>Move Up&lt;/h3>Use this to move iterm in listwidget from up to down </string>
-         </property>
-         <property name="text" >
-          <string> &amp;Up</string>
-         </property>
-         <property name="icon" >
-          <iconset>../images/up.png</iconset>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0" >
-        <widget class="QLabel" name="label_4" >
-         <property name="text" >
-          <string>Locations:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1" >
-        <widget class="QPushButton" name="btnClear" >
-         <property name="toolTip" >
-          <string>Clear List</string>
-         </property>
-         <property name="whatsThis" >
-          <string>&lt;h3>Clear List&lt;/h3>Use this to clear everything in listwidget .</string>
-         </property>
-         <property name="text" >
-          <string> &amp;Clear</string>
-         </property>
-         <property name="icon" >
-          <iconset>../images/eraser.png</iconset>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="1" >
-        <widget class="QPushButton" name="btnMoveDown" >
-         <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>4</hsizetype>
-           <vsizetype>0</vsizetype>
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="toolTip" >
-          <string>Move Down</string>
-         </property>
-         <property name="whatsThis" >
-          <string>&lt;h3>Move Down&lt;/h3>Use this to move iterm in listwidget from down to up .</string>
-         </property>
-         <property name="text" >
-          <string> Do&amp;wn</string>
-         </property>
-         <property name="icon" >
-          <iconset>../images/down.png</iconset>
          </property>
         </widget>
        </item>
@@ -188,6 +127,75 @@
           <iconset>../images/removeTM.png</iconset>
          </property>
         </widget>
+       </item>
+       <item row="3" column="1" >
+        <widget class="QPushButton" name="btnClear" >
+         <property name="toolTip" >
+          <string>Clear List</string>
+         </property>
+         <property name="whatsThis" >
+          <string>&lt;h3>Clear List&lt;/h3>Use this to clear everything in listwidget .</string>
+         </property>
+         <property name="text" >
+          <string> &amp;Clear</string>
+         </property>
+         <property name="icon" >
+          <iconset>../images/eraser.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1" >
+        <widget class="QPushButton" name="btnMoveUp" >
+         <property name="toolTip" >
+          <string>Move Up</string>
+         </property>
+         <property name="whatsThis" >
+          <string>&lt;h3>Move Up&lt;/h3>Use this to move iterm in listwidget from up to down </string>
+         </property>
+         <property name="text" >
+          <string> &amp;Up</string>
+         </property>
+         <property name="icon" >
+          <iconset>../images/up.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1" >
+        <widget class="QPushButton" name="btnMoveDown" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>1</hsizetype>
+           <vsizetype>0</vsizetype>
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip" >
+          <string>Move Down</string>
+         </property>
+         <property name="whatsThis" >
+          <string>&lt;h3>Move Down&lt;/h3>Use this to move iterm in listwidget from down to up .</string>
+         </property>
+         <property name="text" >
+          <string> Do&amp;wn</string>
+         </property>
+         <property name="icon" >
+          <iconset>../images/down.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item rowspan="2" row="6" column="1" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>20</width>
+           <height>31</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>
@@ -378,7 +386,7 @@
      </widget>
     </widget>
    </item>
-   <item row="2" column="1" >
+   <item row="1" column="1" >
     <widget class="QPushButton" name="btnOk" >
      <property name="toolTip" >
       <string/>
@@ -388,15 +396,15 @@
      </property>
     </widget>
    </item>
-   <item rowspan="2" row="1" column="0" >
+   <item row="1" column="0" >
     <spacer>
      <property name="orientation" >
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="sizeHint" >
       <size>
-       <width>311</width>
-       <height>28</height>
+       <width>191</width>
+       <height>20</height>
       </size>
      </property>
     </spacer>
