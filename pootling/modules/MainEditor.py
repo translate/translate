@@ -602,6 +602,8 @@ class MainWindow(QtGui.QMainWindow):
             self.setStatusForFile(None)
             self.operator.closeFile()
             self.statuslabel.setText("")
+            self.ui.actionSave.setEnabled(False)
+            self.operator.setModified(False)
         elif (self.operator.isModified()):
             if self.fileaction.clearedModified(self):
                 self.closeFile(True)
