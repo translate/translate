@@ -59,9 +59,9 @@ class TUview(QtGui.QDockWidget):
         
         # subclass of event
         self.ui.txtSource.contextMenuEvent = self.customContextMenuEvent
-        self.ui.txtTarget.focusOutEvent = self.customFocusOutEvent
         
         self.ui.txtSource.installEventFilter(self)
+        self.contentDirty = False
     
     def sourceIndexChanged(self, int):
         textbox = self.ui.tabWidgetSource.widget(int)
@@ -93,13 +93,6 @@ class TUview(QtGui.QDockWidget):
                 return False
         else:
             return self.eventFilter(obj, event)
-    
-    def customFocusOutEvent(self, e):
-        """
-        subclass of focusOutEvent of txtTarget
-        """
-        self.emitTargetChanged()
-        return QtGui.QTextEdit.focusOutEvent(self.ui.txtTarget, e)
     
     def customContextMenuEvent(self, e):
         """
@@ -297,7 +290,7 @@ class TUview(QtGui.QDockWidget):
         """
         if (not unit):
             return
-        self.disconnect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.textChanged)
+        self.disconnect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitTextChanged)
         self.ui.txtTarget.setReadOnly(False)
         self.ui.txtTarget.setFocus()
         self.emitTargetChanged()
@@ -311,10 +304,11 @@ class TUview(QtGui.QDockWidget):
         self.showUnit(unit)
         # set the scrollbar position
         self.setScrollbarValue(unit.x_editor_row)
-        self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.textChanged)
+        self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitTextChanged)
         
-        self.lastUnit = unit
+        self.currentUnit = unit
         self.emitGlossaryWords()
+        self.emitTargetChanged()
     
     def emitGlossaryWords(self):
         """
@@ -372,29 +366,21 @@ class TUview(QtGui.QDockWidget):
                 self.ui.txtTarget.setPlainText(unit.target or "")
                 self.setCursorToEnd(self.ui.txtTarget)
     
-    def textChanged(self):
+    def emitTextChanged(self):
         """
         @emit textchanged signal for widget that need to update text while typing.
         """
-        i = 0
-        if (self.targetStrings):
-            i = self.ui.tabWidgetTarget.currentIndex()
-            text = unicode(self.ui.txtTarget.toPlainText())
-            self.targetStrings[i] = text
-        
-        if (self.ui.txtTarget.document().isUndoAvailable()) or \
-            (self.ui.txtTarget.document().isRedoAvailable()):
-            text = unicode(self.ui.txtTarget.toPlainText())
-            self.emit(QtCore.SIGNAL("textChanged"), text, i)
-            self.contentDirty = True
+        text = unicode(self.ui.txtTarget.toPlainText())
+        self.emit(QtCore.SIGNAL("textChanged"), text)
+        self.contentDirty = True
     
     def emitTargetChanged(self):
         """
         @emit targetChanged signal if content is dirty.
         """
-        if (hasattr(self, "contentDirty") and self.contentDirty) and (hasattr(self, "lastUnit")):
+        if (self.contentDirty) and (hasattr(self, "currentUnit")):
             target = self.targetStrings or unicode(self.ui.txtTarget.toPlainText())
-            self.emit(QtCore.SIGNAL("targetChanged"), target, self.lastUnit)
+            self.emit(QtCore.SIGNAL("targetChanged"), target, self.currentUnit)
         self.contentDirty = False
     
     def source2target(self):

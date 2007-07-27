@@ -171,7 +171,7 @@ class MainWindow(QtGui.QMainWindow):
         self.fileaction = FileAction(self)
         self.connect(self.ui.actionOpen, QtCore.SIGNAL("triggered()"), self.fileaction.openFile)
         self.connect(self.ui.action_Close, QtCore.SIGNAL("triggered()"), self.closeFile)
-        self.connect(self.ui.actionSave, QtCore.SIGNAL("triggered()"), self.fileaction.save)
+        self.connect(self.ui.actionSave, QtCore.SIGNAL("triggered()"), self.saveFile)
         self.connect(self.ui.actionSaveas, QtCore.SIGNAL("triggered()"), self.fileaction.saveAs)
         self.connect(self.ui.actionExit, QtCore.SIGNAL("triggered()"), QtCore.SLOT("close()"))
         self.createRecentAction()
@@ -271,7 +271,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.dockComment, QtCore.SIGNAL("textChanged"), self.dockOverview.markComment)
         self.connect(self.dockComment, QtCore.SIGNAL("commentChanged"), self.operator.setComment)
         self.connect(self.fileaction, QtCore.SIGNAL("fileToSave"), self.operator.saveStoreToFile)
-        self.connect(self.operator, QtCore.SIGNAL("contentModified"), self.ui.actionSave.setEnabled)
+        self.connect(self.dockTUview, QtCore.SIGNAL("textChanged"), self.setSaveEnabled)
 
         self.connect(self.fileaction, QtCore.SIGNAL("fileToSave"), self.setTitle)
         self.connect(self.dockOverview, QtCore.SIGNAL("toggleFirstLastUnit"), self.toggleFirstLastUnit)
@@ -453,6 +453,7 @@ class MainWindow(QtGui.QMainWindow):
         """
         @param QCloseEvent Object: received close event when closing mainwindows
         """
+        self.dockTUview.emitTargetChanged()
         QtGui.QMainWindow.closeEvent(self, event)
         if (self.operator.isModified()):
             if (self.fileaction.clearedModified(self)):
@@ -596,6 +597,7 @@ class MainWindow(QtGui.QMainWindow):
         Return True when successfully close file, else return False.
         @param force: bool whether to check is contend is modified.
         """
+        self.dockTUview.emitTargetChanged()
         if (force) or (not self.operator.isModified()):
             self.setStatusForFile(None)
             self.operator.closeFile()
@@ -671,7 +673,22 @@ class MainWindow(QtGui.QMainWindow):
                 self.dockTUview.emitGlossaryWords()
             else:
                 self.disconnect(self.dockTUview, QtCore.SIGNAL("term"), self.operator.emitGlossaryCandidates)
-        
+    
+    def setSaveEnabled(self, text):
+        """
+        Set save button enabled immediatly as text has changed.
+        """
+        if (not self.ui.actionSave.isEnabled()):
+            self.ui.actionSave.setEnabled(True)
+    
+    def saveFile(self):
+        """
+        Call fileaction.save() and set save button disable.
+        """
+        self.fileaction.save()
+        self.ui.actionSave.setEnabled(False)
+    
+    
 def main(inputFile = None):
     # set the path for QT in order to find the icons
     if __name__ == "__main__":

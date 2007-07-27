@@ -260,7 +260,7 @@ class OverviewDock(QtGui.QDockWidget):
         @param text: text to set in target column.
         @param plural: bool to indicate a current text need to update.
         """
-        if (plural):
+        if (plural) or (not self.unit):
             # do not update plural strings.
             return
         targetItem = self.ui.tableOverview.item(self.ui.tableOverview.currentRow(), 2)

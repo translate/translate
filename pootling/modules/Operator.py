@@ -257,6 +257,7 @@ class Operator(QtCore.QObject):
         Save the temporary store into a file.
         @param fileName: String type.
         """
+        self.emit(QtCore.SIGNAL("requestTargetChanged"))
         if (World.settings.value("headerAuto", QtCore.QVariant(True)).toBool()):
             self.emit(QtCore.SIGNAL("headerAuto"))
         try:
