@@ -390,6 +390,14 @@ class TUview(QtGui.QDockWidget):
         self.setTargetText(self.ui.txtSource.toPlainText())
         self.ui.txtTarget.setFocus()
         self.setCursorToEnd(self.ui.txtTarget)
+        
+    def translation2target(self, translation):
+        """
+        Copy the translation from TM to target.
+        """
+        self.setTargetText(translation)
+        self.ui.txtTarget.setFocus()
+        self.setCursorToEnd(self.ui.txtTarget)
     
     def replaceText(self, textField, position, length, replacedText):
         """

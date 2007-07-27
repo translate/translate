@@ -30,7 +30,7 @@ class tableTM(QtGui.QDockWidget):
     This class works with the display of translation memory in a table
     
     @signal itemDoubleClicked(QTableWidgetItem *): emitted when doubled clicking on tableWidgetItem
-    @signal targetChanged: emitted with target as string when itemDoubleClicked(QTableWidgetItem *) is emitted.
+    @signal translation2target: emitted with target as string when itemDoubleClicked(QTableWidgetItem *) is emitted.
     @signal openFile: emitted with filename together with the findUnit signal
     @signal findUnit: emitted with the current source.
     @signal visible: emitted with the bool value to toggleViewAction
@@ -136,7 +136,7 @@ class tableTM(QtGui.QDockWidget):
         item = self.ui.tblTM.item(row, 2)
         if (item):
             target = item.data(QtCore.Qt.UserRole).toString()
-            self.emit(QtCore.SIGNAL("targetChanged"), unicode(target))
+            self.emit(QtCore.SIGNAL("translation2target"), unicode(target))
     
     def emitOpenFile(self):
         """
