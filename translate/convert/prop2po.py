@@ -47,12 +47,12 @@ class prop2po:
         if propunit.isblank():
           pounit = headerpo
         else:
-          thepofile.units.append(headerpo)
+          thepofile.addunit(headerpo)
         appendedheader = 1
       if pounit is not None:
         pounit.othercomments = waitingcomments + pounit.othercomments
         waitingcomments = []
-        thepofile.units.append(pounit)
+        thepofile.addunit(pounit)
     thepofile.removeduplicates(duplicatestyle)
     return thepofile
 
@@ -75,7 +75,7 @@ class prop2po:
         if origprop.isblank():
           origpo = headerpo
         else:
-          thepofile.units.append(headerpo)
+          thepofile.addunit(headerpo)
         appendedheader = 1
       # try and find a translation of the same name...
       if origprop.name in translatedpropfile.locationindex:
@@ -89,7 +89,7 @@ class prop2po:
           origpo.target = translatedpo.source
         origpo.othercomments = waitingcomments + origpo.othercomments
         waitingcomments = []
-        thepofile.units.append(origpo)
+        thepofile.addunit(origpo)
       elif translatedpo is not None:
         print >>sys.stderr, "error converting original properties definition %s" % origprop.name
     thepofile.removeduplicates(duplicatestyle)
