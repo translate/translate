@@ -24,7 +24,6 @@ these files are used in translating Mozilla and other software"""
 
 from translate.storage import base
 from translate.misc import quote
-import sys
 import re
 
 # the rstripeols convert dos <-> unix nicely as well
