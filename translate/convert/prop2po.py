@@ -31,7 +31,7 @@ from translate import __version__
 
 class prop2po:
   """convert a .properties file to a .po file for handling the translation..."""
-  def convertfile(self, thepropfile, duplicatestyle="msgid_comment"):
+  def convertfile(self, thepropfile, duplicatestyle="msgctxt"):
     """converts a .properties file to a .po file..."""
     thepofile = po.pofile()
     headerpo = thepofile.makeheader(charset="UTF-8", encoding="8bit", x_accelerator_marker="&")
