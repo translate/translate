@@ -258,7 +258,7 @@ class dtd2po:
   def convertfile(self, thedtdfile):
     thepofile = po.pofile()
     headerpo = thepofile.makeheader(charset="UTF-8", encoding="8bit", x_accelerator_marker="&")
-    headerpo.addnote("extracted from %s" % thedtdfile.filename)
+    headerpo.addnote("extracted from %s" % thedtdfile.filename, "developer")
     thepofile.units.append(headerpo)
     thedtdfile.makeindex()
     self.findmixedentities(thedtdfile)
@@ -275,7 +275,7 @@ class dtd2po:
   def mergefiles(self, origdtdfile, translateddtdfile):
     thepofile = po.pofile()
     headerpo = thepofile.makeheader(charset="UTF-8", encoding="8bit")
-    headerpo.addnote("extracted from %s, %s" % (origdtdfile.filename, translateddtdfile.filename))
+    headerpo.addnote("extracted from %s, %s" % (origdtdfile.filename, translateddtdfile.filename), "developer")
     thepofile.units.append(headerpo)
     origdtdfile.makeindex()
     self.findmixedentities(origdtdfile)

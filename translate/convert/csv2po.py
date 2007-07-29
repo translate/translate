@@ -146,7 +146,7 @@ class csv2po:
       headerpo.msgstr = [line.replace("CHARSET", "UTF-8").replace("ENCODING", "8bit") for line in headerpo.msgstr]
     else:
       headerpo = self.pofile.makeheader(charset="UTF-8", encoding="8bit")
-    headerpo.addnote("extracted from %s" % self.csvfile.filename)
+    headerpo.addnote("extracted from %s" % self.csvfile.filename, "developer")
     mightbeheader = True
     for csvunit in self.csvfile.units:
       if self.charset is not None:

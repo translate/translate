@@ -35,7 +35,7 @@ class txt2po:
     """converts a file to .po format"""
     thepofile = po.pofile()
     headerpo = thepofile.makeheader(charset="UTF-8", encoding="8bit")
-    headerpo.addnote("extracted from %s" % thetxtfile.filename)
+    headerpo.addnote("extracted from %s" % thetxtfile.filename, "developer")
     thepofile.units.append(headerpo)
     for txtunit in thetxtfile.units:
        newunit = thepofile.addsourceunit(txtunit.source)
