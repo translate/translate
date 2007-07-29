@@ -55,22 +55,23 @@ class propunit(base.TranslationUnit):
     """construct a blank propunit"""
     super(propunit, self).__init__(source)
     self.name = ""
+    self.value = ""
     self.comments = []
     self.source = source
 
   def setsource(self, source):
     """Sets the source AND the target to be equal"""
-    self.msgid = quote.mozillapropertiesencode(source or "")
+    self.value = quote.mozillapropertiesencode(source or "")
 
   def getsource(self):
-    msgid = quote.mozillapropertiesdecode(self.msgid)
-    msgid = msgid.lstrip(" ")
-    rstriped = msgid.rstrip(" ")
+    value = quote.mozillapropertiesdecode(self.value)
+    value = value.lstrip(" ")
+    rstriped = value.rstrip(" ")
     if rstriped and rstriped[-1] != "\\":
-      msgid = rstriped
+      value = rstriped
 
-    msgid = re.sub("\\\\ ", " ", msgid)
-    return msgid
+    value = re.sub("\\\\ ", " ", value)
+    return value
 
   source = property(getsource, setsource)
 
@@ -95,9 +96,9 @@ class propunit(base.TranslationUnit):
     if self.isblank():
       return "".join(self.comments + ["\n"])
     else:
-      if "\\u" in self.msgid:
-        self.msgid = quote.mozillapropertiesencode(quote.mozillapropertiesdecode(self.msgid))
-      return "".join(self.comments + ["%s=%s\n" % (self.name, self.msgid)])
+      if "\\u" in self.value:
+        self.value = quote.mozillapropertiesencode(quote.mozillapropertiesdecode(self.value))
+      return "".join(self.comments + ["%s=%s\n" % (self.name, self.value)])
 
   def getlocations(self):
     return [self.name]
@@ -113,7 +114,7 @@ class propunit(base.TranslationUnit):
 
   def isblank(self):
     """returns whether this is a blank element, containing only comments..."""
-    return not (self.name or self.msgid)
+    return not (self.name or self.value)
 
 class propfile(base.TranslationStore):
   """this class represents a .properties file, made up of propunits"""
@@ -131,20 +132,20 @@ class propfile(base.TranslationStore):
   def parse(self, propsrc):
     """read the source of a properties file in and include them as units"""
     newunit = propunit()
-    inmultilinemsgid = 0
+    inmultilinevalue = 0
     lines = propsrc.split("\n")
     for line in lines:
-      # handle multiline msgid if we're in one
+      # handle multiline value if we're in one
       line = quote.rstripeol(line)
-      if inmultilinemsgid:
-        newunit.msgid += line.lstrip()
+      if inmultilinevalue:
+        newunit.value += line.lstrip()
         # see if there's more
-        inmultilinemsgid = (newunit.msgid[-1:] == '\\')
+        inmultilinevalue = (newunit.value[-1:] == '\\')
         # if we're still waiting for more...
-        if inmultilinemsgid:
+        if inmultilinevalue:
           # strip the backslash
-          newunit.msgid = newunit.msgid[:-1]
-        if not inmultilinemsgid:
+          newunit.value = newunit.value[:-1]
+        if not inmultilinevalue:
           # we're finished, add it to the list...
           self.units.append(newunit)
           newunit = propunit()
@@ -166,16 +167,16 @@ class propfile(base.TranslationStore):
         # otherwise, this is a definition
         else:
           newunit.name = line[:equalspos].strip()
-          newunit.msgid = line[equalspos+1:].lstrip()
+          newunit.value = line[equalspos+1:].lstrip()
           # backslash at end means carry string on to next line
-          if newunit.msgid[-1:] == '\\':
-            inmultilinemsgid = 1
-            newunit.msgid = newunit.msgid[:-1]
+          if newunit.value[-1:] == '\\':
+            inmultilinevalue = 1
+            newunit.value = newunit.value[:-1]
           else:
             self.units.append(newunit)
             newunit = propunit()
     # see if there is a leftover one...
-    if inmultilinemsgid or len(newunit.comments) > 0:
+    if inmultilinevalue or len(newunit.comments) > 0:
       self.units.append(newunit)
 
   def __str__(self):
