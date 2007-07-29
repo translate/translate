@@ -20,7 +20,22 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 """classes that hold units of .properties files (propunit) or entire files (propfile)
-these files are used in translating Mozilla and other software"""
+these files are used in translating Mozilla and other software
+
+@note: The following {.properties file description<http://java.sun.com/j2se/1.4.2/docs/api/java/util/Properties.html>}
+and {example <http://www.exampledepot.com/egs/java.util/Props.html>} give some good references to the .properties
+specification.  A simple summary of what is permissible follows.
+
+# a comment
+! a comment
+    
+a = a string
+b = a string with escape sequences \t \n \r \\ \" \' \ (space) \u0123
+c = a string with a continuation line \
+    continuation line
+d.e.f = another string
+
+"""
 
 from translate.storage import base
 from translate.misc import quote
