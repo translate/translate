@@ -140,18 +140,6 @@ do=translate me
         pofile = self.prop2po(propsource)
         assert self.countelements(pofile) == 1
 
-    def wtest_localization_notes(self):
-        """check that we fold localisation notes into KDE comments"""
-        propsource = '''# Description of import module
-## @name OUTLOOKIMPORT_DESCRIPTION
-## @loc None
-## LOCALIZATION NOTE (2001): In this item, don't translate "Outlook"
-2001=Outlook mail and address books
-'''
-        pofile = self.prop2po(propsource)
-        pounit = self.singleelement(pofile)
-        assert pounit.source == '''_: In this item, don't translate "Outlook"\\n\nOutlook mail and address books'''
-
     def test_emptyproperty(self):
         """checks that empty property definitions survive into po file"""
         propsource = '# comment\ncredit='
