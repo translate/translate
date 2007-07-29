@@ -19,12 +19,14 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""classes that hold units of .properties files (propunit) or entire files (propfile)
-these files are used in translating Mozilla and other software
+"""classes that hold units of .properties files (propunit) or entire files
+(propfile) these files are used in translating Mozilla and other software
 
-@note: The following {.properties file description<http://java.sun.com/j2se/1.4.2/docs/api/java/util/Properties.html>}
-and {example <http://www.exampledepot.com/egs/java.util/Props.html>} give some good references to the .properties
-specification.  A simple summary of what is permissible follows.
+@note: The following {.properties file
+description<http://java.sun.com/j2se/1.4.2/docs/api/java/util/Properties.html>}
+and {example <http://www.exampledepot.com/egs/java.util/Props.html>} give some
+good references to the .properties specification.  A simple summary of what is
+permissible follows.
 
 # a comment
 ! a comment
@@ -47,7 +49,8 @@ import re
 eol = "\n"
 
 class propunit(base.TranslationUnit):
-  """an element of a properties file i.e. a name and value, and any comments associated"""
+  """an element of a properties file i.e. a name and value, and any comments
+  associated"""
   def __init__(self, source=""):
     """construct a blank propunit"""
     super(propunit, self).__init__(source)
