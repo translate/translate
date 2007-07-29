@@ -261,7 +261,7 @@ class pounit(base.TranslationUnit):
     # Let's drop the last newline
     return comments[:-1]
 
-  def addnote(self, text, origin=None):
+  def addnote(self, text, origin=None, position="append"):
     """This is modeled on the XLIFF method. See xliff.py::xliffunit.addnote"""
     # We don't want to put in an empty '#' without a real comment:
     if not text:
@@ -269,10 +269,19 @@ class pounit(base.TranslationUnit):
     commentlist = self.othercomments
     linestart = "# "
     if origin in ["programmer", "developer", "source code"]:
+      autocomments = True
       commentlist = self.automaticcomments
       linestart = "#. "
     text = text.split("\n")
-    commentlist += [linestart + line + "\n" for line in text]
+    if position == "append":
+      commentlist += [linestart + line + "\n" for line in text]
+    else:
+      newcomments = [linestart + line + "\n" for line in text]
+      newcomments += [line for line in commentlist]
+      if autocomments:
+        self.automaticcomments = newcomments
+      else:
+        self.othercomments = newcomments
     
   def removenotes(self):
     """Remove all the translator's notes (other comments)"""

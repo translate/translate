@@ -40,9 +40,12 @@ class prop2po:
     appendedheader = 0
     waitingcomments = []
     for propunit in thepropfile.units:
-      pounit = self.convertunit(propunit)
+      pounit = self.convertunit(propunit, "developer")
       if pounit is None:
         waitingcomments.extend(propunit.comments)
+      # FIXME the storage class should not be creating blank units
+      if pounit is "discard":
+        continue
       if not appendedheader:
         if propunit.isblank():
           pounit = headerpo
@@ -50,7 +53,7 @@ class prop2po:
           thepofile.addunit(headerpo)
         appendedheader = 1
       if pounit is not None:
-        pounit.othercomments = waitingcomments + pounit.othercomments
+        pounit.addnote("".join(waitingcomments).rstrip(), "developer", position="prepend")
         waitingcomments = []
         thepofile.addunit(pounit)
     thepofile.removeduplicates(duplicatestyle)
@@ -67,9 +70,12 @@ class prop2po:
     waitingcomments = []
     # loop through the original file, looking at units one by one
     for origprop in origpropfile.units:
-      origpo = self.convertunit(origprop)
+      origpo = self.convertunit(origprop, "developer")
       if origpo is None:
         waitingcomments.extend(origprop.comments)
+      # FIXME the storage class should not be creating blank units
+      if origpo is "discard":
+        continue
       # handle the header case specially...
       if not appendedheader:
         if origprop.isblank():
@@ -80,14 +86,15 @@ class prop2po:
       # try and find a translation of the same name...
       if origprop.name in translatedpropfile.locationindex:
         translatedprop = translatedpropfile.locationindex[origprop.name]
-        translatedpo = self.convertunit(translatedprop)
+        # Need to check that this comment is not a copy of the developer comments
+        translatedpo = self.convertunit(translatedprop, "translator")
       else:
         translatedpo = None
       # if we have a valid po unit, get the translation and add it...
       if origpo is not None:
         if translatedpo is not None and not blankmsgstr:
           origpo.target = translatedpo.source
-        origpo.othercomments = waitingcomments + origpo.othercomments
+        origpo.addnote("".join(waitingcomments).rstrip(), "developer", position="prepend")
         waitingcomments = []
         thepofile.addunit(origpo)
       elif translatedpo is not None:
@@ -95,7 +102,7 @@ class prop2po:
     thepofile.removeduplicates(duplicatestyle)
     return thepofile
 
-  def convertunit(self, propunit):
+  def convertunit(self, propunit, commenttype):
     """Converts a .properties unit to a .po unit. Returns None if empty
     or not for translation."""
     if propunit is None:
@@ -105,8 +112,8 @@ class prop2po:
     if hasattr(propunit, "comments"):
       for comment in propunit.comments:
         if "DONT_TRANSLATE" in comment:
-          return None
-      pounit.othercomments.extend(propunit.comments)
+          return "discard"
+      pounit.addnote("".join(propunit.comments).rstrip(), commenttype)
     # TODO: handle multiline msgid
     if propunit.isblank():
       return None

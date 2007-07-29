@@ -121,8 +121,7 @@ reduce the number of cached connections."""
 prefPanel-smime=Security'''
         pofile = self.prop2po(propsource)
         pounit = self.singleelement(pofile)
-        # FIXME This should probably become "#. Comment" to be fully correct in PO format
-        assert pounit.othercomments == ["# Comment\n"]
+        assert pounit.automaticcomments == ["#. # Comment\n"]
 
     def wtest_folding_accesskeys(self):
         """check that we can fold various accesskeys into their associated label (bug #115)"""
@@ -134,11 +133,12 @@ cmd_addEngine_accesskey = A'''
 
     def test_dont_translate(self):
         """check that we know how to ignore don't translate instructions in properties files (bug #116)"""
-        propsource = '''# LOCALIZATION NOTE (1029): DONT_TRANSLATE.
-1029=forward.msg
+        propsource = '''# LOCALIZATION NOTE (dont): DONT_TRANSLATE.
+dont=don't translate me
+do=translate me
 '''
         pofile = self.prop2po(propsource)
-        assert self.countelements(pofile) == 0
+        assert self.countelements(pofile) == 1
 
     def wtest_localization_notes(self):
         """check that we fold localisation notes into KDE comments"""
@@ -158,6 +158,7 @@ cmd_addEngine_accesskey = A'''
         pofile = self.prop2po(propsource)
         pounit = self.singleelement(pofile)
         assert "credit" in str(pounit)
+        assert "#. # comment" in str(pounit)
 
     def test_emptyproperty_translated(self):
         """checks that if we translate an empty property it makes it into the PO"""
@@ -178,10 +179,19 @@ cmd_addEngine_accesskey = A'''
 
     def test_unassociated_comments(self):
         """check that we can handle comments not directly associated with a property"""
-        propsource = '''#### Commnet\n\nprop=value\n'''
+        propsource = '''# Header comment\n\n# Comment\n\nprop=value\n'''
         pofile = self.prop2po(propsource)
         unit = self.singleelement(pofile)
         assert unit.source == "value"
+        assert unit.getnotes("developer") == "# Comment"
+
+    def test_unassociated_comment_order(self):
+        """check that we can handle the order of unassociated comments"""
+        propsource = '''# Header comment\n\n# 1st Unassociated comment\n\n# 2nd Connected comment\nprop=value\n'''
+        pofile = self.prop2po(propsource)
+        unit = self.singleelement(pofile)
+        assert unit.source == "value"
+        assert unit.getnotes("developer") == "# 1st Unassociated comment\n# 2nd Connected comment"
 
 class TestProp2POCommand(test_convert.TestConvertCommand, TestProp2PO):
     """Tests running actual prop2po commands on files"""
