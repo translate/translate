@@ -57,7 +57,7 @@ class po2html:
         htmlresult += self.wrapmessage(thepo.source) + "\n" + "\n"
     return htmlresult.encode('utf-8')
  
-  def mergefile(self, inputpo, templatetext):
+  def mergefile(self, inputpo, templatetext, includefuzzy):
     """converts a file to .po format"""
     htmlresult = templatetext.replace("\n", " ")
     if isinstance(htmlresult, str):
@@ -69,7 +69,11 @@ class po2html:
       if thepo.isheader():
         continue
       msgid = thepo.source
-      msgstr = self.wrapmessage(thepo.target)
+      msgstr = None
+      if includefuzzy or not thepo.isfuzzy():
+        msgstr = self.wrapmessage(thepo.target)
+      else:
+        msgstr = self.wrapmessage(thepo.source)
       if msgstr.strip():
         htmlresult = htmlresult.replace(msgid, msgstr, 1)
     htmlresult = htmlresult.encode('utf-8')
@@ -85,7 +89,7 @@ def converthtml(inputfile, outputfile, templatefile, wrap=None, includefuzzy=Fal
     outputhtml = convertor.convertfile(inputpo, includefuzzy)
   else:
     templatetext = templatefile.read()
-    outputhtml = convertor.mergefile(inputpo, templatetext)
+    outputhtml = convertor.mergefile(inputpo, templatetext, includefuzzy)
   outputfilepos = outputfile.tell()
   outputfile.write(outputhtml)
   return 1
