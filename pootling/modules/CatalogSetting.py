@@ -55,8 +55,7 @@ class CatalogSetting(QtGui.QDialog):
                     self,
                     self.tr("Open File"),
                     self.directory,
-                    self.tr("All Supported Files (*.po *.pot *.xliff *.xlf *.tmx *.tbx);;PO Files and PO Template Files (*.po *.pot);;XLIFF Files (*.xliff *.xlf);;Translation Memory eXchange (TMX) Files (*.tmx);;TermBase eXchange (TBX) Files (*.tbx);;All Files (*)"), 0,
-                    QtGui.QFileDialog.DontUseNativeDialog)
+                    self.tr("All Supported Files (*.po *.pot *.xliff *.xlf *.tmx *.tbx);;PO Files and PO Template Files (*.po *.pot);;XLIFF Files (*.xliff *.xlf);;Translation Memory eXchange (TMX) Files (*.tmx);;TermBase eXchange (TBX) Files (*.tbx);;All Files (*)"))
         
         if (filenames):
             for filename in filenames:
