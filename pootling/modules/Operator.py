@@ -177,6 +177,7 @@ class Operator(QtCore.QObject):
         """
         Emit "filterChanged" signal with a filter and lenght of filtered list.
         """
+        self.emit(QtCore.SIGNAL("requestTargetChanged"))
         if (len(self.filteredList) > 0):
             unitBeforeFiltered = self.filteredList[self.currentUnitIndex]
         else:
@@ -343,8 +344,10 @@ class Operator(QtCore.QObject):
         unit = self.getCurrentUnit()
         if (unit.x_editor_state & World.fuzzy):
             self.status.markFuzzy(unit, False)
+            self.contentChanged()
         elif (unit.x_editor_state & World.translated):
             self.status.markFuzzy(unit, True)
+            self.contentChanged()
         else:
             return
         self.emitUnit(unit)
@@ -707,4 +710,12 @@ class Operator(QtCore.QObject):
         # set pattern for glossary
         self.lookupTerm(None)
         self.emit(QtCore.SIGNAL("highlightGlossary"), self.autoLookupTerm)
-
+    
+    def contentChanged(self, something = None):
+        """
+        A signal indicate that content has changed, which will trigger to send 
+        "enableSave" for save button.
+        """
+        self.emit(QtCore.SIGNAL("enableSave"))
+    
+    

@@ -271,7 +271,9 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.dockComment, QtCore.SIGNAL("textChanged"), self.dockOverview.markComment)
         self.connect(self.dockComment, QtCore.SIGNAL("commentChanged"), self.operator.setComment)
         self.connect(self.fileaction, QtCore.SIGNAL("fileToSave"), self.operator.saveStoreToFile)
-        self.connect(self.dockTUview, QtCore.SIGNAL("textChanged"), self.setSaveEnabled)
+##        self.connect(self.dockTUview, QtCore.SIGNAL("textChanged"), self.setSaveEnabled)
+        self.connect(self.dockTUview, QtCore.SIGNAL("textChanged"), self.operator.contentChanged)
+        self.connect(self.operator, QtCore.SIGNAL("enableSave"), self.setSaveEnabled)
 
         self.connect(self.fileaction, QtCore.SIGNAL("fileToSave"), self.setTitle)
         self.connect(self.dockOverview, QtCore.SIGNAL("toggleFirstLastUnit"), self.toggleFirstLastUnit)
@@ -676,9 +678,9 @@ class MainWindow(QtGui.QMainWindow):
             else:
                 self.disconnect(self.dockTUview, QtCore.SIGNAL("term"), self.operator.emitGlossaryCandidates)
     
-    def setSaveEnabled(self, text):
+    def setSaveEnabled(self):
         """
-        Set save button enabled immediatly as text has changed.
+        Set save button enabled immediatly as text, fuzzy status has changed.
         """
         if (not self.ui.actionSave.isEnabled()):
             self.ui.actionSave.setEnabled(True)
