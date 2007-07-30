@@ -59,7 +59,7 @@ class prop2po:
     thepofile.removeduplicates(duplicatestyle)
     return thepofile
 
-  def mergefiles(self, origpropfile, translatedpropfile, blankmsgstr=False, duplicatestyle="msgid_comment"):
+  def mergefiles(self, origpropfile, translatedpropfile, blankmsgstr=False, duplicatestyle="msgctxt"):
     """converts two .properties files to a .po file..."""
     thepofile = po.pofile()
     headerpo = thepofile.makeheader(charset="UTF-8", encoding="8bit")
