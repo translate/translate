@@ -132,9 +132,8 @@ class propfile(base.TranslationStore):
   def parse(self, propsrc):
     """read the source of a properties file in and include them as units"""
     newunit = propunit()
-    inmultilinevalue = 0
-    lines = propsrc.split("\n")
-    for line in lines:
+    inmultilinevalue = False
+    for line in propsrc.split("\n"):
       # handle multiline value if we're in one
       line = quote.rstripeol(line)
       if inmultilinevalue:
@@ -147,7 +146,7 @@ class propfile(base.TranslationStore):
           newunit.value = newunit.value[:-1]
         if not inmultilinevalue:
           # we're finished, add it to the list...
-          self.units.append(newunit)
+          self.addunit(newunit)
           newunit = propunit()
       # otherwise, this could be a comment
       elif line.strip()[:1] == '#':
@@ -157,7 +156,7 @@ class propfile(base.TranslationStore):
       elif not line.strip():
         # this is a blank line...
         if str(newunit).strip():
-          self.units.append(newunit)
+          self.addunit(newunit)
           newunit = propunit()
       else:
         equalspos = line.find('=')
@@ -170,14 +169,14 @@ class propfile(base.TranslationStore):
           newunit.value = line[equalspos+1:].lstrip()
           # backslash at end means carry string on to next line
           if newunit.value[-1:] == '\\':
-            inmultilinevalue = 1
+            inmultilinevalue = True
             newunit.value = newunit.value[:-1]
           else:
-            self.units.append(newunit)
+            self.addunit(newunit)
             newunit = propunit()
     # see if there is a leftover one...
     if inmultilinevalue or len(newunit.comments) > 0:
-      self.units.append(newunit)
+      self.addunit(newunit)
 
   def __str__(self):
     """convert the units back to lines"""
