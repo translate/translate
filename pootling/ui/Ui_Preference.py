@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'Preference.ui'
+# Form implementation generated from reading ui file '/home/ratha/sourceforge.net/translate/trunk/pootling/ui/Preference.ui'
 #
-# Created: Thu Jul 12 09:58:53 2007
-#      by: PyQt4 UI code generator 4.1.1
+# Created: Tue Jul 31 15:26:34 2007
+#      by: PyQt4 UI code generator 4.2
 #
 # WARNING! All changes made in this file will be lost!
 
-import sys
 from PyQt4 import QtCore, QtGui
 
 class Ui_frmPreference(object):
     def setupUi(self, frmPreference):
         frmPreference.setObjectName("frmPreference")
-        frmPreference.resize(QtCore.QSize(QtCore.QRect(0,0,485,333).size()).expandedTo(frmPreference.minimumSizeHint()))
+        frmPreference.resize(QtCore.QSize(QtCore.QRect(0,0,483,333).size()).expandedTo(frmPreference.minimumSizeHint()))
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(7))
         sizePolicy.setHorizontalStretch(0)
@@ -22,7 +21,7 @@ class Ui_frmPreference(object):
         frmPreference.setSizePolicy(sizePolicy)
 
         self.gridlayout = QtGui.QGridLayout(frmPreference)
-        self.gridlayout.setMargin(0)
+        self.gridlayout.setMargin(9)
         self.gridlayout.setSpacing(6)
         self.gridlayout.setObjectName("gridlayout")
 
@@ -32,7 +31,7 @@ class Ui_frmPreference(object):
         self.frame.setObjectName("frame")
 
         self.gridlayout1 = QtGui.QGridLayout(self.frame)
-        self.gridlayout1.setMargin(0)
+        self.gridlayout1.setMargin(9)
         self.gridlayout1.setSpacing(6)
         self.gridlayout1.setObjectName("gridlayout1")
 
@@ -208,7 +207,7 @@ class Ui_frmPreference(object):
         sizePolicy.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
         self.label.setSizePolicy(sizePolicy)
 
-        font = QtGui.QFont(self.label.font())
+        font = QtGui.QFont()
         font.setWeight(75)
         font.setBold(True)
         self.label.setFont(font)
@@ -233,13 +232,16 @@ class Ui_frmPreference(object):
         self.gridlayout4.setSpacing(6)
         self.gridlayout4.setObjectName("gridlayout4")
 
+        spacerItem1 = QtGui.QSpacerItem(20,61,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
+        self.gridlayout4.addItem(spacerItem1,4,0,1,2)
+
         self.bntDefaultsColor = QtGui.QPushButton(self.interface)
         self.bntDefaultsColor.setObjectName("bntDefaultsColor")
-        self.gridlayout4.addWidget(self.bntDefaultsColor,3,2,1,1)
+        self.gridlayout4.addWidget(self.bntDefaultsColor,3,3,1,1)
 
         self.bntDefaultsFont = QtGui.QPushButton(self.interface)
         self.bntDefaultsFont.setObjectName("bntDefaultsFont")
-        self.gridlayout4.addWidget(self.bntDefaultsFont,3,1,1,1)
+        self.gridlayout4.addWidget(self.bntDefaultsFont,3,2,1,1)
 
         self.frame2 = QtGui.QFrame(self.interface)
 
@@ -373,28 +375,29 @@ class Ui_frmPreference(object):
         self.label2_4.setIndent(0)
         self.label2_4.setObjectName("label2_4")
         self.gridlayout5.addWidget(self.label2_4,0,0,1,1)
-        self.gridlayout4.addWidget(self.frame2,2,0,1,3)
-
-        spacerItem1 = QtGui.QSpacerItem(20,61,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
-        self.gridlayout4.addItem(spacerItem1,4,0,1,1)
+        self.gridlayout4.addWidget(self.frame2,2,0,1,4)
 
         self.line_2 = QtGui.QFrame(self.interface)
         self.line_2.setFrameShape(QtGui.QFrame.HLine)
         self.line_2.setFrameShadow(QtGui.QFrame.Sunken)
         self.line_2.setObjectName("line_2")
-        self.gridlayout4.addWidget(self.line_2,1,0,1,3)
+        self.gridlayout4.addWidget(self.line_2,1,0,1,4)
 
         self.label_4 = QtGui.QLabel(self.interface)
 
-        font = QtGui.QFont(self.label_4.font())
+        font = QtGui.QFont()
         font.setWeight(75)
         font.setBold(True)
         self.label_4.setFont(font)
         self.label_4.setObjectName("label_4")
-        self.gridlayout4.addWidget(self.label_4,0,0,1,3)
+        self.gridlayout4.addWidget(self.label_4,0,0,1,4)
 
         spacerItem2 = QtGui.QSpacerItem(40,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
         self.gridlayout4.addItem(spacerItem2,3,0,1,1)
+
+        self.bntAdjustAllFont = QtGui.QPushButton(self.interface)
+        self.bntAdjustAllFont.setObjectName("bntAdjustAllFont")
+        self.gridlayout4.addWidget(self.bntAdjustAllFont,3,1,1,1)
         self.stackedWidget.addWidget(self.interface)
 
         self.TM_Glossary  = QtGui.QWidget()
@@ -541,7 +544,7 @@ class Ui_frmPreference(object):
         sizePolicy.setHeightForWidth(self.label_5.sizePolicy().hasHeightForWidth())
         self.label_5.setSizePolicy(sizePolicy)
 
-        font = QtGui.QFont(self.label_5.font())
+        font = QtGui.QFont()
         font.setWeight(75)
         font.setBold(True)
         self.label_5.setFont(font)
@@ -556,7 +559,7 @@ class Ui_frmPreference(object):
         sizePolicy.setHeightForWidth(self.label_6.sizePolicy().hasHeightForWidth())
         self.label_6.setSizePolicy(sizePolicy)
 
-        font = QtGui.QFont(self.label_6.font())
+        font = QtGui.QFont()
         font.setWeight(75)
         font.setBold(True)
         self.label_6.setFont(font)
@@ -611,7 +614,7 @@ class Ui_frmPreference(object):
         sizePolicy.setHeightForWidth(self.label_7.sizePolicy().hasHeightForWidth())
         self.label_7.setSizePolicy(sizePolicy)
 
-        font = QtGui.QFont(self.label_7.font())
+        font = QtGui.QFont()
         font.setWeight(75)
         font.setBold(True)
         self.label_7.setFont(font)
@@ -749,6 +752,7 @@ class Ui_frmPreference(object):
         self.label2_5.setText(QtGui.QApplication.translate("frmPreference", "Overview", None, QtGui.QApplication.UnicodeUTF8))
         self.label2_4.setText(QtGui.QApplication.translate("frmPreference", "Overview header", None, QtGui.QApplication.UnicodeUTF8))
         self.label_4.setText(QtGui.QApplication.translate("frmPreference", "Font & Color", None, QtGui.QApplication.UnicodeUTF8))
+        self.bntAdjustAllFont.setText(QtGui.QApplication.translate("frmPreference", "Adjust All Fonts", None, QtGui.QApplication.UnicodeUTF8))
         self.chbDetectTerm.setText(QtGui.QApplication.translate("frmPreference", "Detect new terminology", None, QtGui.QApplication.UnicodeUTF8))
         self.chbSuggestTranslation.setText(QtGui.QApplication.translate("frmPreference", "Allow translation suggestion from TM", None, QtGui.QApplication.UnicodeUTF8))
         self.chbAddNewTerm.setText(QtGui.QApplication.translate("frmPreference", "Add new terminology to glossary", None, QtGui.QApplication.UnicodeUTF8))
@@ -771,3 +775,13 @@ class Ui_frmPreference(object):
         self.cancelButton.setText(QtGui.QApplication.translate("frmPreference", "&Cancel", None, QtGui.QApplication.UnicodeUTF8))
         self.okButton.setText(QtGui.QApplication.translate("frmPreference", "&OK", None, QtGui.QApplication.UnicodeUTF8))
 
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtGui.QApplication(sys.argv)
+    frmPreference = QtGui.QDialog()
+    ui = Ui_frmPreference()
+    ui.setupUi(frmPreference)
+    frmPreference.show()
+    sys.exit(app.exec_())
