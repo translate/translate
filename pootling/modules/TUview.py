@@ -77,6 +77,7 @@ class TUview(QtGui.QDockWidget):
             target = self.targetStrings[int]
         except IndexError:
             target = ""
+        self.emitTargetChanged()
         textbox.setPlainText(target)
         
     def eventFilter(self, obj, event):
@@ -294,6 +295,8 @@ class TUview(QtGui.QDockWidget):
         self.ui.txtTarget.setReadOnly(False)
         self.ui.txtTarget.setFocus()
         self.emitTargetChanged()
+        
+        # set comment
         comment = unit.getcontext()
         comment += unit.getnotes("developer")
         if (comment == ""):
@@ -301,36 +304,11 @@ class TUview(QtGui.QDockWidget):
         else:
             self.ui.lblComment.show()
             self.ui.lblComment.setText(unicode(comment))
-        self.showUnit(unit)
-        # set the scrollbar position
-        self.setScrollbarValue(unit.x_editor_row)
-        self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitTextChanged)
         
-        self.currentUnit = unit
-        self.emitGlossaryWords()
-        self.emitTargetChanged()
-    
-    def emitGlossaryWords(self):
-        """
-        emit term signal with word found in self.sourceHighlighter.glossaryWords
-        """
-        glossaryWords = self.sourceHighlighter.glossaryWords
-        for word in glossaryWords:
-            self.emit(QtCore.SIGNAL("term"), word)
-    
-    def showUnit(self, unit):
-        """
-        Show unit's source and target in a normal text box if unit is single or
-        in multi tab if unit is plural and number of plural forms setting is
-        more than 1.
-    
-        @param unit: to show into source and target.
-        """
-        nplurals = World.settings.value("nPlural").toInt()[0]
-        isPlural = unit.hasplural() and (nplurals > 1)
-        self.ui.sourceStacked.setCurrentIndex((nplurals and isPlural) or 0)
-        self.ui.targetStacked.setCurrentIndex((nplurals and isPlural) or 0)
-        
+        # set source and target, singular or plural.
+        isPlural = unit.hasplural() and (self.nplurals > 1)
+        self.ui.sourceStacked.setCurrentIndex((self.nplurals and isPlural) or 0)
+        self.ui.targetStacked.setCurrentIndex((self.nplurals and isPlural) or 0)
         if (isPlural):
             # plural
             for i in range(self.ui.tabWidgetSource.count()):
@@ -348,8 +326,8 @@ class TUview(QtGui.QDockWidget):
             self.ui.tabWidgetSource.setCurrentIndex(0)
             
             self.targetStrings = unit.target.strings
-            for i in range(nplurals):
-                if (len(self.targetStrings) < nplurals):
+            for i in range(self.nplurals):
+                if (len(self.targetStrings) < self.nplurals):
                     self.targetStrings.append("")
                 textbox = QtGui.QTextEdit()
                 textbox.setDocument(self.ui.txtTarget.document())
@@ -365,6 +343,70 @@ class TUview(QtGui.QDockWidget):
             if (unicode(unit.target) !=  unicode(self.ui.txtTarget.toPlainText())):
                 self.ui.txtTarget.setPlainText(unit.target or "")
                 self.setCursorToEnd(self.ui.txtTarget)
+        
+        # set the scrollbar position
+        self.setScrollbarValue(unit.x_editor_row)
+        self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitTextChanged)
+        
+        self.currentUnit = unit
+        self.emitGlossaryWords()
+        self.emitTargetChanged()
+    
+    def emitGlossaryWords(self):
+        """
+        emit term signal with word found in self.sourceHighlighter.glossaryWords
+        """
+        glossaryWords = self.sourceHighlighter.glossaryWords
+        for word in glossaryWords:
+            self.emit(QtCore.SIGNAL("term"), word)
+    
+##    def showUnit(self, unit):
+##        """
+##        Show unit's source and target in a normal text box if unit is single or
+##        in multi tab if unit is plural and number of plural forms setting is
+##        more than 1.
+##    
+##        @param unit: to show into source and target.
+##        """
+##        nplurals = World.settings.value("nPlural").toInt()[0]
+##        isPlural = unit.hasplural() and (nplurals > 1)
+##        self.ui.sourceStacked.setCurrentIndex((nplurals and isPlural) or 0)
+##        self.ui.targetStacked.setCurrentIndex((nplurals and isPlural) or 0)
+##        
+##        if (isPlural):
+##            # plural
+##            for i in range(self.ui.tabWidgetSource.count()):
+##                self.ui.tabWidgetSource.removeTab(0)
+##            for i in range(self.ui.tabWidgetTarget.count()):
+##                self.ui.tabWidgetTarget.removeTab(0)
+##            
+##            self.sourceStrings = unit.source.strings
+##            for i in range(len(unit.source.strings)):
+##                textbox = QtGui.QTextEdit()
+##                textbox.setReadOnly(True)
+##                textbox.setDocument(self.ui.txtSource.document())
+##                self.ui.tabWidgetSource.addTab(textbox, "Plural %d" % (i + 1))
+##                self.ui.tabWidgetSource.setCurrentIndex(i)
+##            self.ui.tabWidgetSource.setCurrentIndex(0)
+##            
+##            self.targetStrings = unit.target.strings
+##            for i in range(nplurals):
+##                if (len(self.targetStrings) < nplurals):
+##                    self.targetStrings.append("")
+##                textbox = QtGui.QTextEdit()
+##                textbox.setDocument(self.ui.txtTarget.document())
+##                self.ui.tabWidgetTarget.addTab(textbox, "Plural %d" % (i + 1))
+##                self.ui.tabWidgetTarget.setCurrentIndex(i)
+##            self.ui.tabWidgetTarget.setCurrentIndex(0)
+##        else:
+##            # singular
+##            self.sourceStrings = []
+##            self.targetStrings = []
+##            if (unicode(unit.source) !=  unicode(self.ui.txtSource.toPlainText())):
+##                self.ui.txtSource.setPlainText(unit.source)
+##            if (unicode(unit.target) !=  unicode(self.ui.txtTarget.toPlainText())):
+##                self.ui.txtTarget.setPlainText(unit.target or "")
+##                self.setCursorToEnd(self.ui.txtTarget)
     
     def emitTextChanged(self):
         """
@@ -415,7 +457,8 @@ class TUview(QtGui.QDockWidget):
     
     def applySettings(self):
         """
-        Set font and color to txtSource and txtTarget
+        Get settings from World and apply such as font, color, number of
+        plural.
         """
         sourceColor = World.settings.value("tuSourceColor")
         if (sourceColor.isValid()):
@@ -443,7 +486,9 @@ class TUview(QtGui.QDockWidget):
         if (targetfont.isValid() and fontObj.fromString(targetfont.toString())):
             self.ui.txtTarget.setFont(fontObj)
             self.ui.txtTarget.setTabStopWidth(QtGui.QFontMetrics(fontObj).width("m"*8))
-    
+        
+        self.nplurals = World.settings.value("nPlural").toInt()[0]
+        
     def viewSetting(self, arg = None):
         if (type(arg) is list):
             lenFilter = len(arg)
