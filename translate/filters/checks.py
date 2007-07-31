@@ -325,6 +325,7 @@ class TeeChecker:
       for checker in self.checkers:
         checker.config.updatetargetlanguage(languagecode)
     self.combinedfilters = self.getfilters(excludefilters, limitfilters)
+    self.config = checkerconfig or self.checkers[0].config
 
   def getfilters(self, excludefilters=None, limitfilters=None):
     """returns dictionary of available filters, including/excluding those in the given lists"""
