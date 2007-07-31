@@ -70,8 +70,6 @@ def calcstats_old(filename):
 def calcstats(filename):
   statscache = statsdb.StatsCache()
   return statscache.filetotals(filename)
-  store.calctotals()
-  return store.stats
 
 def summarize(title, stats, CSVstyle=False):
   def percent(denominator, devisor):
