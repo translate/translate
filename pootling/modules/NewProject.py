@@ -56,8 +56,8 @@ class newProject(QtGui.QDialog):
         self.connect(self.ui.configurationFile, QtCore.SIGNAL("textChanged(QString)"), self.projectNameAvailable)
 
         # call dialog box of FileDialog
-        self.connect(self.ui.btnBrowse, QtCore.SIGNAL("clicked()"), self.showFileDialog)
-        self.connect(self.ui.btnAdd, QtCore.SIGNAL("clicked()"), self.showFileDialog)
+        self.connect(self.ui.btnBrowse, QtCore.SIGNAL("clicked()"), self.showDialog)
+        self.connect(self.ui.btnAdd, QtCore.SIGNAL("clicked()"), self.showLocation)
         self.filedialog = FileDialog.fileDialog(self)
         self.connect(self.filedialog, QtCore.SIGNAL("location"), self.addLocation)
         self.connect(self.ui.btnClear, QtCore.SIGNAL("clicked()"), self.clearLocation)
@@ -76,12 +76,17 @@ class newProject(QtGui.QDialog):
             language.sort()
         self.ui.cbxLanguages.addItems(language)
 
-    def showFileDialog(self):
+    def showDialog(self):
         self.filedialog.show()
-        if (self.value):
-            self.filedialog.setWindowTitle("Choosing path of filename")
-        else:
-            self.filedialog.setWindowTitle("Choosing file or a directory")
+        self.filedialog.setWindowTitle("Choosing path of filename")
+        self.filedialog.ui.btnAdd.setText("&Ok")
+
+    def showLocation(self):
+        self.filedialog.show()
+        self.filedialog.setWindowTitle("Choosing file or a directory")
+        print dir(self.filedialog)
+        self.filedialog.goHome()
+        self.filedialog.ui.btnAdd.setText("&Add")
 
     def projectNameAvailable(self):
           if (self.ui.projectName.text() and self.ui.configurationFile.text()):
@@ -93,11 +98,21 @@ class newProject(QtGui.QDialog):
         if (self.value):
             data = QtGui.QListWidgetItem(text)
             self.ui.configurationFile.setText(data.text())
+            self.filedialog.hide()
         else:
             item = QtGui.QListWidgetItem(text)
             items = self.ui.listWidget.findItems(text, QtCore.Qt.MatchCaseSensitive)
             if (not items):
                 self.ui.listWidget.addItem(item)
+                red = QtGui.QMessageBox.information(None, self.tr("item in the list widget"), 
+                            self.tr("Item was added into listWidget already!\n"
+                            "Would you like to add more item into listWidget!"), 
+                            QtGui.QMessageBox.Yes, 
+                            QtGui.QMessageBox.No)
+                if (red == QtGui.QMessageBox.Yes):
+                    return True
+                else:
+                    self.filedialog.hide()
                 self.ui.btnFinish.setEnabled(True)
 
     def clearLocation(self):
