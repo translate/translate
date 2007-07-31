@@ -170,6 +170,11 @@ class Common(object):
 #            print >> sys.stderr, "Warning: No information found about language code %s" % code
             pass
 
+    def __repr__(self):
+        """Give a simple string representation without address information to 
+        be able to store it in text for comparison later."""
+        return "<class 'translate.lang.common.Common'>"
+
     def punctranslate(cls, text):
         """Converts the punctuation in a string according to the rules of the 
         language."""
