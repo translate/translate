@@ -207,6 +207,20 @@ class Preference(QtGui.QDialog):
         self.setCaption(self.ui.lblComment, self.defaultFont)
         self.commentFont = self.defaultFont
 
+    def AdjustAllFonts(self):
+        """ slot to open font selection dialog """
+        self.adjustAllFonts = self.setFont(self.widget[1])
+        self.overviewHeaderFont = self.adjustAllFonts
+        self.setCaption(self.ui.lblOverViewHeader, self.overviewHeaderFont)
+        self.overviewFont = self.adjustAllFonts
+        self.setCaption(self.ui.lblOverView, self.overviewFont)
+        self.tuSourceFont = self.adjustAllFonts
+        self.setCaption(self.ui.lblSource, self.tuSourceFont)
+        self.tuTargetFont = self.adjustAllFonts
+        self.setCaption(self.ui.lblTarget, self.tuTargetFont)
+        self.commentFont = self.adjustAllFonts
+        self.setCaption(self.ui.lblComment, self.commentFont)
+
     def defaultColors(self):
         """slot Set default colors"""
         self.setTextColor(self.ui.lblOverView, self.defaultColor)
@@ -302,6 +316,8 @@ class Preference(QtGui.QDialog):
             self.connect(self.ui.bntFontTarget, QtCore.SIGNAL("clicked()"), self.fontTarget)
             self.connect(self.ui.bntFontComment, QtCore.SIGNAL("clicked()"), self.fontComment) 
             self.connect(self.ui.bntDefaultsFont, QtCore.SIGNAL("clicked()"), self.defaultFonts)
+            # set adjust all fonts for all widget
+            self.connect(self.ui.bntAdjustAllFont, QtCore.SIGNAL("clicked()"), self.AdjustAllFonts)
             
             # for color
             self.connect(self.ui.btnColorComment, QtCore.SIGNAL("clicked()"), self.colorComment) 
