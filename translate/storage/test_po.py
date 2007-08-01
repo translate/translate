@@ -745,3 +745,19 @@ msgstr "ding"
 '''
         pofile = self.poparse(posource)
         assert len(pofile.units) == 3
+
+    def test_uniforum_po(self):
+        """Test that we handle Uniforum PO files."""
+        posource = '''# File: ../somefile.cpp, line: 33
+msgid "thing
+msgstr "ding"
+#
+# File: anotherfile.cpp, line: 34
+msgid "second"
+msgstr "tweede"
+'''
+        pofile = self.poparse(posource)
+        assert len(pofile.units) == 2
+        # FIXME we still need to handle this correctly for proper Uniforum support if required
+        #assert pofile.units[0].getlocations() == "File: somefile, line: 300"
+        #assert pofile.units[1].getlocations() == "File: anotherfile, line: 200"
