@@ -136,6 +136,24 @@ class StatsCache:
         self.cur.execute("""CREATE INDEX IF NOT EXISTS fileidindex
             ON units(fileid);""")
 
+        self.cur.execute("""CREATE TABLE IF NOT EXISTS checkerconfigs(
+            configid INTEGER PRIMARY KEY AUTOINCREMENT,
+            config VARCHAR);""")
+
+        self.cur.execute("""CREATE INDEX IF NOT EXISTS configindex
+            ON checkerconfigs(config);""")
+
+        self.cur.execute("""CREATE TABLE IF NOT EXISTS uniterrors(
+            errorid INTEGER PRIMARY KEY AUTOINCREMENT,
+            unitindex INTEGER NOT NULL,
+            fileid INTEGER NOT NULL,
+            configid INTEGER NOT NULL,
+            name VARCHAR NOT NULL,
+            message VARCHAR);""")
+
+        self.cur.execute("""CREATE INDEX IF NOT EXISTS uniterrorindex
+            ON uniterrors(fileid, configid);""")
+        
         self.con.commit()
 
     def _getstoredfileid(self, filename):
@@ -155,6 +173,17 @@ class StatsCache:
             return None
         else:
             return filerow[0]
+
+    def _getstoredcheckerconfig(self, checker):
+        """See if this checker configuration has been used before."""
+        config = str(checker.config.__dict__)
+        self.cur.execute("""SELECT configid, config FROM checkerconfigs WHERE 
+            config=?;""", (config,))
+        configrow = self.cur.fetchone()
+        if not configrow or configrow[1] != config:
+            return None
+        else:
+            return configrow[0]
 
     def cachestore(self, store):
         """Calculates and caches the statistics of the given store 
@@ -178,6 +207,7 @@ class StatsCache:
 
         self.cur.execute("""DELETE FROM units WHERE
             fileid=?""", (fileid,))
+        # executemany is non-standard
         self.cur.executemany("""INSERT INTO units
             (unitid, fileid, unitindex, source, target, sourcewords, targetwords, state) 
             values (?, ?, ?, ?, ?, ?, ?, ?);""",
@@ -218,3 +248,88 @@ class StatsCache:
                 totals["fuzzysourcewords"]
         return totals
 
+    def cachestorechecks(self, fileid, store, checker, configid):
+        """Calculates and caches the error statistics of the given store 
+        unconditionally."""
+        # We always want to store one dummy error to know that we have actually
+        # run the checks on this file with the current checker configuration
+        unitvalues = [(-1, fileid, configid, "noerror", "")]
+        for index, unit in enumerate(store.units):
+            if unit.istranslatable():
+                failures = checker.run_filters(unit)
+                for failure in failures:
+                    unitvalues.append((index, fileid, configid, failure[0], failure[1]))
+
+        self.cur.execute("""DELETE FROM uniterrors WHERE
+            fileid=?""", (fileid,))
+        # executemany is non-standard
+        self.cur.executemany("""INSERT INTO uniterrors
+            (unitindex, fileid, configid, name, message) 
+            values (?, ?, ?, ?, ?);""",
+            unitvalues)
+        self.con.commit()
+        return fileid
+
+    def filechecks(self, filename, checker, store=None):
+        """Retrieves the error statistics for the given file if possible, 
+        otherwise delegates to cachestorechecks()."""
+        fileid = self._getstoredfileid(filename)
+        configid = self._getstoredcheckerconfig(checker)
+        try:
+            if not fileid:
+                store = store or factory.getobject(filename)
+                fileid = self.cachestore(store)
+            if not configid:
+                self.cur.execute("""INSERT INTO checkerconfigs
+                    (configid, config) values (NULL, ?);""", 
+                    (str(checker.config.__dict__),))
+                configid = self.cur.lastrowid
+        except ValueError, e:
+            print str(e)
+            return
+
+        def geterrors():
+            self.cur.execute("""SELECT 
+                name,
+                unitindex
+                FROM uniterrors WHERE fileid=? and configid
+                ORDER BY unitindex;""", (fileid,))
+            return self.cur.fetchall()
+
+        values = geterrors()
+        if not values:
+            # This could happen if we haven't done the checks before, or we the
+            # file changed, or we are using a different configuration
+            store = store or factory.getobject(filename)
+            self.cachestorechecks(fileid, store, checker, configid)
+            values = geterrors()
+
+        errors = {}
+        for value in values:
+            if value[1] == -1:
+                continue
+            if not value[0] in errors:
+                errors[value[0]] = []           #value[0] is the error name
+            errors[value[0]].append(value[1])   #value[1] is the unitindex
+
+        return errors
+
+    def filestats(self, filename, checker, store=None):
+        """complete stats"""
+        stats = {"total": [], "translated": [], "fuzzy": [], "untranslated": []}
+
+        stats.update(self.filechecks(filename, checker, store))
+        fileid = self._getstoredfileid(filename)
+
+        self.cur.execute("""SELECT 
+            state,
+            unitindex
+            FROM units WHERE fileid=?
+            ORDER BY unitindex;""", (fileid,))
+
+        values = self.cur.fetchall()
+        for value in values:
+            stats[statefromdb(value[0])].append(value[1])
+            stats["total"].append(value[1])
+
+        return stats
