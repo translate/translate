@@ -44,7 +44,7 @@ def prop2inc(pf):
     if unit.isblank():
       pendingblanks.append("\n")
     else:
-      definition = "#define %s %s\n" % (unit.name, unit.msgid.replace("\n", "\\n"))
+      definition = "#define %s %s\n" % (unit.name, unit.value.replace("\n", "\\n"))
       if isinstance(definition, unicode):
         definition = definition.encode("UTF-8")
       for blank in pendingblanks:
@@ -64,7 +64,7 @@ def prop2it(pf):
     if unit.isblank():
       yield "\n"
     else:
-      definition = "%s=%s\n" % (unit.name, unit.msgid)
+      definition = "%s=%s\n" % (unit.name, unit.value)
       if isinstance(definition, unicode):
         definition = definition.encode("UTF-8")
       yield definition
