@@ -33,6 +33,8 @@ class fa(common.Common):
     nplurals = 1
     pluralequation = "0"
 
+    listseperator = u"، "
+
     puncdict = {
         u",": u"،",
         u";": u"؛",
@@ -43,3 +45,4 @@ class fa(common.Common):
     ignoretests = ["startcaps", "simplecaps"]
     #TODO: check persian numerics
     #TODO: zwj and zwnj?
+    #French quoting?

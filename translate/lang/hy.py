@@ -34,6 +34,8 @@ class hy(common.Common):
     nplurals = 2
     pluralequation = "(n > 1)"
 
+    listseperator = u"，"
+
     puncdict = {
         u".": u"。",
         u",": u"，",

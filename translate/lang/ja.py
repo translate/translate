@@ -34,6 +34,8 @@ class ja(common.Common):
     nplurals = 1
     pluralequation = "0"
 
+    listseperator = u"、"
+
     sentenceend = u"。！？!?"
 
     # Compared to common.py, we make the space after the sentence ending 
