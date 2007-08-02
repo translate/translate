@@ -173,7 +173,10 @@ class Common(object):
     def __repr__(self):
         """Give a simple string representation without address information to 
         be able to store it in text for comparison later."""
-        return "<class 'translate.lang.common.Common'>"
+        detail = ""
+        if self.code:
+            detail = "(%s)" % self.code
+        return "<class 'translate.lang.common.Common%s'>" % detail
 
     def punctranslate(cls, text):
         """Converts the punctuation in a string according to the rules of the 
