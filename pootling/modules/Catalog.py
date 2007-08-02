@@ -354,6 +354,9 @@ class Catalog(QtGui.QMainWindow):
             self.ui.actionStop.setEnabled(False)
             self.ui.actionBuild.setEnabled(False)
             self.progressBar.setVisible(False)
+            self.actionOpen.setEnabled(False)
+            self.actionFind.setEnabled(False)
+            self.actionShowStat.setEnabled(False)
         
         self.fileItems = []
         self.itemNumber = 0
