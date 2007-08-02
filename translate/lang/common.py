@@ -98,6 +98,11 @@ class Common(object):
     Also see data.py
     """
     
+    listseperator = u", "
+    """This string is used to seperate lists of textual elements. Most 
+    languages probably can stick with the default comma, but Arabic and some
+    Asian languages might want to override this."""
+    
     commonpunc = u".,;:!?-@#$%^*_()[]{}/\\'\"<>"
     """These punctuation marks are common in English and most languages that 
     use latin script."""
