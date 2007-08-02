@@ -640,7 +640,6 @@ class Catalog(QtGui.QMainWindow):
     
     def refresh(self):
         """Slot to refresh Catalog information."""
-        
         self.settings = QtCore.QSettings()
         if self.autoRefresh:
             self.updateCatalog()
@@ -747,6 +746,18 @@ class Catalog(QtGui.QMainWindow):
             self.ui.menuOpenRecentProject.setEnabled(True)
         World.settings.setValue("recentProjectList", QtCore.QVariant(files))
         self.updateRecentProject()
+        if not(os.path.isfile(filename)):
+            titled = unicode(self.tr("%s was not found.\n do you want to remove it from list?")) % (unicode(filename))
+            ret = QtGui.QMessageBox.question(self, self.tr("Error"), 
+                    titled,
+                    QtGui.QMessageBox.Yes | QtGui.QMessageBox.Default, 
+                    QtGui.QMessageBox.No | QtGui.QMessageBox.Escape) 
+            if (ret == QtGui.QMessageBox.No):
+                return False
+            if (ret == QtGui.QMessageBox.Yes):
+                files.removeAt(0)
+                World.settings.setValue("recentProjectList", QtCore.QVariant(files))
+                self.updateRecentProject()
 
     def clearRecentProject(self):
         """Slot to clear all path in open recent project list."""
