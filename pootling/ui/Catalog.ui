@@ -69,20 +69,25 @@
      <height>28</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuEdit" >
-    <property name="title" >
-     <string>&amp;Edit</string>
-    </property>
-    <addaction name="actionFind_in_Files" />
-    <addaction name="separator" />
-    <addaction name="actionStatistics" />
-    <addaction name="actionReload" />
-   </widget>
    <widget class="QMenu" name="menuFile" >
     <property name="title" >
      <string>&amp;File</string>
     </property>
     <addaction name="actionQuit" />
+   </widget>
+   <widget class="QMenu" name="menuSettings" >
+    <property name="title" >
+     <string>&amp;Settings</string>
+    </property>
+    <addaction name="actionBuild" />
+    <addaction name="actionConfigure" />
+   </widget>
+   <widget class="QMenu" name="menuHelp" >
+    <property name="title" >
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="actionAbout" />
+    <addaction name="actionAboutQt" />
    </widget>
    <widget class="QMenu" name="menuProject" >
     <property name="title" >
@@ -109,19 +114,15 @@
     <addaction name="actionOpen" />
     <addaction name="menuOpenRecentProject" />
    </widget>
-   <widget class="QMenu" name="menuSettings" >
+   <widget class="QMenu" name="menuEdit" >
     <property name="title" >
-     <string>&amp;Settings</string>
+     <string>&amp;Edit</string>
     </property>
-    <addaction name="actionBuild" />
-    <addaction name="actionConfigure" />
-   </widget>
-   <widget class="QMenu" name="menuHelp" >
-    <property name="title" >
-     <string>&amp;Help</string>
-    </property>
-    <addaction name="actionAbout" />
-    <addaction name="actionAboutQt" />
+    <addaction name="actionFind_in_Files" />
+    <addaction name="separator" />
+    <addaction name="actionStatistics" />
+    <addaction name="actionReload" />
+    <addaction name="actionStop" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
@@ -316,6 +317,9 @@
    </property>
    <property name="text" >
     <string>Stop</string>
+   </property>
+   <property name="shortcut" >
+    <string>Esc</string>
    </property>
   </action>
  </widget>
