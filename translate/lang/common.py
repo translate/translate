@@ -190,7 +190,7 @@ class Common(object):
             return text
         newtext = ""
         #TODO: look at po::escapeforpo() for performance idea
-        for i,c in enumerate(text):
+        for c in text:
             if c in cls.puncdict:
                 newtext += cls.puncdict[c]
             else:
