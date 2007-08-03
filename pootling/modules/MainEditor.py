@@ -127,7 +127,6 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionCatalogManager, QtCore.SIGNAL("triggered()"), self.Catalog.showDialog)
         self.connect(self.Catalog, QtCore.SIGNAL("initSearch"), self.operator.initSearch)
         self.connect(self.Catalog, QtCore.SIGNAL("searchNext"), self.operator.searchNext)
-        self.connect(self.operator, QtCore.SIGNAL("EOF"), self.Catalog.setReachedEnd)
         
         # TM table
         self.table = tableTM.tableTM(self)
@@ -180,12 +179,12 @@ class MainWindow(QtGui.QMainWindow):
         self.findBar = Find(self)
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.findBar)
         self.connect(self.ui.actionFind, QtCore.SIGNAL("triggered()"), self.findBar.showFind)
-        self.connect(self.ui.actionFindNext, QtCore.SIGNAL("triggered()"), self.findNext)
-        self.connect(self.ui.actionFindPrevious, QtCore.SIGNAL("triggered()"), self.findPrevious)
+        self.connect(self.ui.actionFindNext, QtCore.SIGNAL("triggered()"), self.searchNext)
+        self.connect(self.ui.actionFindPrevious, QtCore.SIGNAL("triggered()"), self.searchPrevious)
         self.connect(self.ui.actionReplace, QtCore.SIGNAL("triggered()"), self.findBar.showReplace)
         self.connect(self.findBar, QtCore.SIGNAL("initSearch"), self.operator.initSearch)
-        self.connect(self.findBar, QtCore.SIGNAL("searchNext"), self.operator.searchNext)
-        self.connect(self.findBar, QtCore.SIGNAL("searchPrevious"), self.operator.searchPrevious)
+        self.connect(self.findBar, QtCore.SIGNAL("searchNext"), self.searchNext)
+        self.connect(self.findBar, QtCore.SIGNAL("searchPrevious"), self.searchPrevious)
         self.connect(self.table, QtCore.SIGNAL("findUnit"), self.operator.slotFindUnit)
         
         self.connect(self.findBar, QtCore.SIGNAL("replace"), self.operator.replace)
@@ -492,16 +491,18 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionNext.setDisabled(atLast)
         self.ui.actionLast.setDisabled(atLast)
     
-    def findNext(self):
+    def searchNext(self):
         """Find Next from submenu """
         self.operator.searchNext()
         self.findBar.ui.lineEdit.setFocus()
+        self.findBar.ui.findPrevious.setEnabled(True)
         self.ui.actionFindPrevious.setEnabled(True)
     
-    def findPrevious(self):
+    def searchPrevious(self):
         """Find Previous from submenu."""
         self.operator.searchPrevious()
         self.findBar.ui.lineEdit.setFocus()
+        self.findBar.ui.findNext.setEnabled(True)
         self.ui.actionFindNext.setEnabled(True)
         
     def findStatus(self, text):
@@ -509,6 +510,7 @@ class MainWindow(QtGui.QMainWindow):
         Disable Find Next or Previous Button if the search reach the end of file.
         @param text: a string to decide which button should be diabled.
         """
+        self.Catalog.setReachedEnd()
         if (text == "Next"):
             self.findBar.ui.findNext.setDisabled(True)
             self.ui.actionFindNext.setDisabled(True)

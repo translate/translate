@@ -132,13 +132,9 @@ class Find(QtGui.QDockWidget):
 
     def findNext(self):
         self.emit(QtCore.SIGNAL("searchNext"))
-        self.ui.lineEdit.setFocus()
-        self.ui.findPrevious.setEnabled(True)
     
     def findPrevious(self):
         self.emit(QtCore.SIGNAL("searchPrevious"))
-        self.ui.lineEdit.setFocus()
-        self.ui.findNext.setEnabled(True)
     
     def replace(self):
         self.emit(QtCore.SIGNAL("replace"), self.ui.lineEdit_2.text())

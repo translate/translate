@@ -364,27 +364,32 @@ class Operator(QtCore.QObject):
         self.currentTextField = 0
         self.foundPosition = -1
         self.searchString = unicode(searchString)
+        if (searchString):
+            self.srcExpression = QtCore.QRegExp("&?".join(unicode(searchString)))
+        else:
+            self.srcExpression = None
+        
         self.searchableText = searchableText
         self.matchCase = matchCase
-        if (not matchCase):
-            self.searchString = self.searchString.lower()
+        if (not matchCase) and (self.srcExpression):
+            self.srcExpression.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
 
     def searchNext(self):
         """
-        Search forward through the text fields.
+        Search forward through the text fields or unit.
         """
         if (not hasattr(self, "searchPointer")) or \
             (not hasattr(self, "searchableText")):
             return
         oldSearchPointer = self.searchPointer
-        while (self.searchPointer < len(self.filteredList)):
-            unitString = self._getUnitString()
-            self.foundPosition = unitString.find(self.searchString, self.foundPosition + 1)
+        while (self.searchPointer < len(self.filteredList)) and self.srcExpression:
+            unitString = QtCore.QString(self._getUnitString())
+            self.foundPosition = unitString.indexOf(self.srcExpression, self.foundPosition + 1)
+            self.searchString = unicode(self.srcExpression.capturedTexts()[0])
             # found in current textField
             if (self.foundPosition >= 0):
                 self._searchFound()
                 return True
-                #break
             else:
                 # next textField
                 if (self.currentTextField < len(self.searchableText) - 1):
