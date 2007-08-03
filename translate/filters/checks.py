@@ -302,6 +302,8 @@ class TranslationChecker(UnitChecker):
       for pluralform in unit.target.strings:
         if not test(self.str1, pluralform):
           return False
+      else:
+        return True
     else:
       return test(self.str1, self.str2)
 
