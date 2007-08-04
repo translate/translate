@@ -45,7 +45,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
       options.output = args[-1]
       args = args[:-1]
     if not options.output:
-        self.error("output file is required")
+      self.error("output file is required")
     if args:
       self.error("You have used an invalid combination of --input, --output and freestanding args")
     if isinstance(options.input, list) and len(options.input) == 1:
@@ -189,4 +189,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+  main()
