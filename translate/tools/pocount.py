@@ -35,10 +35,10 @@ def calcstats_old(filename):
   comparison and debuging purposes."""
   # ignore totally blank or header units
   try:
-      store = factory.getobject(filename)
+    store = factory.getobject(filename)
   except ValueError, e:
-      print str(e)
-      return {}
+    print str(e)
+    return {}
   units = filter(lambda unit: not unit.isheader(), store.units)
   translated = translatedmessages(units)
   fuzzy = fuzzymessages(units)
@@ -116,13 +116,13 @@ def summarize(title, stats, CSVstyle=False):
     print
 
 def fuzzymessages(units):
-    return filter(lambda unit: unit.isfuzzy() and unit.target, units)
+  return filter(lambda unit: unit.isfuzzy() and unit.target, units)
 
 def translatedmessages(units):
-    return filter(lambda unit: unit.istranslated(), units)
+  return filter(lambda unit: unit.istranslated(), units)
 
 def untranslatedmessages(units):
-    return filter(lambda unit: not (unit.istranslated() or unit.isfuzzy()) and unit.source, units)
+  return filter(lambda unit: not (unit.istranslated() or unit.isfuzzy()) and unit.source, units)
 
 class summarizer:
   def __init__(self, filenames, CSVstyle):
@@ -150,16 +150,16 @@ Review Messages, Review Source Words"
   def updatetotals(self, stats):
     """Update self.totals with the statistics in stats."""
     for key in stats.keys():
-        if not self.totals.has_key(key):
-            self.totals[key] = 0
-        self.totals[key] += stats[key]
+      if not self.totals.has_key(key):
+        self.totals[key] = 0
+      self.totals[key] += stats[key]
 
   def handlefile(self, filename):
     stats = calcstats(filename)
     if stats:
-        self.updatetotals(stats)
-        summarize(filename, stats, self.CSVstyle)
-        self.filecount += 1
+      self.updatetotals(stats)
+      summarize(filename, stats, self.CSVstyle)
+      self.filecount += 1
 
   def handlefiles(self, dirname, filenames):
     for filename in filenames:
@@ -190,4 +190,4 @@ def main():
   summarizer(sys.argv[1:], CSVstyle)
 
 if __name__ == '__main__':
-    main()
+  main()
