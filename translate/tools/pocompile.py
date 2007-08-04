@@ -21,8 +21,6 @@
 
 """Compile base class files into Gettext MO (Machine Object) files."""
 
-import struct
-import array
 from translate.storage import factory
 from translate.storage import po
 from translate.storage import mo
@@ -30,31 +28,30 @@ from translate.storage import mo
 class POCompile:
 
   def convertfile(self, inputfile, includefuzzy=False):
-    MESSAGES = {}
     outputfile = mo.mofile()
     for unit in inputfile.units:
       if unit.istranslated() or (unit.isfuzzy() and includefuzzy and unit.target):
-          mounit = mo.mounit()
-          if unit.isheader():
-            mounit.source = ""
-          else:
-            mounit.source = unit.source
-            if hasattr(unit, "msgidcomments"):
-              mounit.source.strings[0] = po.unquotefrompo(unit.msgidcomments) + mounit.source.strings[0]
-            if hasattr(unit, "msgctxt"):
-              mounit.msgctxt = po.unquotefrompo(unit.msgctxt)
-          mounit.target = unit.target
-          outputfile.addunit(mounit)
+        mounit = mo.mounit()
+        if unit.isheader():
+          mounit.source = ""
+        else:
+          mounit.source = unit.source
+          if hasattr(unit, "msgidcomments"):
+            mounit.source.strings[0] = po.unquotefrompo(unit.msgidcomments) + mounit.source.strings[0]
+          if hasattr(unit, "msgctxt"):
+            mounit.msgctxt = po.unquotefrompo(unit.msgctxt)
+        mounit.target = unit.target
+        outputfile.addunit(mounit)
     return str(outputfile)
 
 def convertmo(inputfile, outputfile, templatefile, includefuzzy=False):
   """reads in a base class derived inputfile, converts using pocompile, writes to outputfile"""
   # note that templatefile is not used, but it is required by the converter...
-  input = factory.getobject(inputfile)
-  if input.isempty():
+  inputstore = factory.getobject(inputfile)
+  if inputstore.isempty():
     return 0
   convertor = POCompile()
-  outputmo = convertor.convertfile(input, includefuzzy)
+  outputmo = convertor.convertfile(inputstore, includefuzzy)
   outputfile.write(outputmo)
   return 1
 
@@ -66,4 +63,4 @@ def main():
   parser.run()
 
 if __name__ == '__main__':
-    main()
+  main()
