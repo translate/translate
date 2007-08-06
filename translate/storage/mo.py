@@ -87,7 +87,10 @@ class mofile(base.TranslationStore):
         """Output a string representation of the MO data file"""
         MESSAGES = {}
         for unit in self.units:
-            source = "".join(unit.msgidcomments) + "\0".join(unit.source.strings)
+            if isinstance(unit.source, multistring):
+                source = "".join(unit.msgidcomments) + "\0".join(unit.source.strings)
+            else:
+                source = "".join(unit.msgidcomments) + unit.source
             if unit.msgctxt:
                 source = "".join(unit.msgctxt) + "\x04" + source
             if isinstance(unit.target, multistring):
@@ -186,4 +189,4 @@ class mofile(base.TranslationStore):
             newunit.settarget(target)
             if context is not None:
                 newunit.msgctxt.append(context)
-            self.units.append(newunit)
+            self.addunit(newunit)
