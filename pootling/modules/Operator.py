@@ -114,7 +114,7 @@ class Operator(QtCore.QObject):
         Emit "currentStatus" signal with a string contains total, fuzzy,
         translated, and untranslated messages of current file.
         """
-        self.emit(QtCore.SIGNAL("currentStatus"), self.status.statusString())
+        self.emit(QtCore.SIGNAL("currentStatus"), self.status.getStatus())
     
     def emitUnit(self, unit):
         """
@@ -264,6 +264,7 @@ class Operator(QtCore.QObject):
         try:
             if (fileName):
                 self.store.savefile(fileName)
+                self.emit(QtCore.SIGNAL("returnFilename"), unicode(fileName))
             else:
                 self.store.save()
             self.setModified(False)

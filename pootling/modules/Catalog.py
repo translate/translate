@@ -61,7 +61,6 @@ class Catalog(QtGui.QMainWindow):
         
         self.folderIcon = QtGui.QIcon("../images/open.png")
         self.iconFile = QtGui.QIcon("../images/iconfile.png")
-        
         # set up table appearance and behavior
         self.headerLabels = [self.tr("Name"),
                             self.tr("Translated"),
@@ -435,6 +434,16 @@ class Catalog(QtGui.QMainWindow):
 
                 break
     
+    def updateFileStatus(self, filename, untran, fuzzy, tran):
+        if (not self.isVisible()):
+            return
+        for item in self.fileItems:
+            if filename == self.getFilename(item):
+                item.setText(1, str(tran))
+                item.setText(2, str(fuzzy))
+                item.setText(3, str(untran))
+                break
+
     def getExistedItem(self, path):
         """
         Get existed item in the tree's top level. If the item existed, it returns

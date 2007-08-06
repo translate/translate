@@ -81,15 +81,8 @@ class Status:
             self.numTranslated -= 1
             unit.x_editor_state &= ~World.translated
             unit.x_editor_state |= World.untranslated
-    
-    def statusString(self):
+
+    def getStatus(self):
         '''show total of messages in a file, fuzzy, translated messages and untranslate  messages which are not fuzzy.
-        
         '''
-        # Untranslated messages, here, are not fuzzy messages (for user-easy understainding)
-        statusString = "Total: " + str(self.numTotal) + "  |  " + \
-                "Fuzzy: " +  str(self.numFuzzy) + "  |  " + \
-                "Translated: " +  str(self.numTranslated) + "  |  " + \
-                "Untranslated: " + str(self.numTotal - self.numTranslated - self.numFuzzy)
-        return statusString
-    
+        return [self.numTotal - self.numTranslated - self.numFuzzy, self.numFuzzy, self.numTranslated]

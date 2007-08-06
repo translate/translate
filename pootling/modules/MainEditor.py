@@ -273,6 +273,9 @@ class MainWindow(QtGui.QMainWindow):
 ##        self.connect(self.dockTUview, QtCore.SIGNAL("textChanged"), self.setSaveEnabled)
         self.connect(self.dockTUview, QtCore.SIGNAL("textChanged"), self.operator.contentChanged)
         self.connect(self.operator, QtCore.SIGNAL("enableSave"), self.setSaveEnabled)
+        
+        # get "returnFilename" signal from operator of saveStoreToFile function
+        self.connect(self.operator, QtCore.SIGNAL("returnFilename"), self.updateStatistic)
 
         self.connect(self.fileaction, QtCore.SIGNAL("fileToSave"), self.setTitle)
         self.connect(self.dockOverview, QtCore.SIGNAL("toggleFirstLastUnit"), self.toggleFirstLastUnit)
@@ -285,7 +288,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("filterChanged"), self.dockTUview.filterChanged)
 
         # set file status information to text label of status bar.
-        self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.statuslabel.setText)
+        self.connect(self.operator, QtCore.SIGNAL("currentStatus"), self.setStatus)
         self.connect(self.fileaction, QtCore.SIGNAL("fileToOpen"), self.openFile)
 
         # progress bar
@@ -694,7 +697,24 @@ class MainWindow(QtGui.QMainWindow):
         self.fileaction.save()
         self.ui.actionSave.setEnabled(False)
     
-    
+    def updateStatistic(self, filename):
+        """
+        Call Operator.saveStoreToFile() to return signal of filename
+        """
+        self.Catalog.updateFileStatus(filename, self.numUntran, self.numFuzzy, self.numTran)
+
+    def setStatus(self, list1):
+        self.numUntran = list1[0]
+        self.numFuzzy= list1[1]
+        self.numTran= list1[2]
+        self.numTotal = self.numUntran + self.numFuzzy + self.numTran
+        statusString = "Total: " + str(self.numTotal) + "  |  " + \
+                "Fuzzy: " +  str(self.numFuzzy) + "  |  " + \
+                "Translated: " +  str(self.numTran) + "  |  " + \
+                "Untranslated: " + str(self.numUntran)
+        self.statuslabel.setText(statusString)
+
+
 def main(inputFile = None):
     # set the path for QT in order to find the icons
     if __name__ == "__main__":
