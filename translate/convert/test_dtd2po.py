@@ -98,8 +98,8 @@ class TestDTD2PO:
         assert "credit.translation" in str(unit)
         assert po.unquotefrompo(unit.msgstr) == "Translators Names"
 
-    def test_kdecomment_merge(self):
-        """test that LOCALIZATION NOTES are added properly as KDE comments and merged with duplicate comments"""
+    def test_localisation_note_merge(self):
+        """test that LOCALIZATION NOTES are added properly as #. comments and disambiguated with msgctxt entries"""
         dtdtemplate = '<!--LOCALIZATION NOTE (%s): Some note -->\n' + \
             '<!ENTITY %s "Source text">\n'
         dtdsource = dtdtemplate % ("note1.label", "note1.label") + dtdtemplate % ("note2.label", "note2.label")
@@ -107,8 +107,8 @@ class TestDTD2PO:
         pofile.units = pofile.units[1:]
         posource = str(pofile)
         print posource
-        assert posource.count('"_:') == 2
-        assert posource.count('\\n') == 2
+        assert posource.count('#.') == 2
+        assert posource.count('msgctxt') == 2
 
     def test_donttranslate_simple(self):
         """check that we handle DONT_TRANSLATE messages properly"""
