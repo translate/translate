@@ -42,7 +42,10 @@ class po2xliff:
       unit.target = target
       #Explicetely marking the fuzzy state will ensure that normal (translated)
       #units in the PO file end up as approved in the XLIFF file.
-      unit.markfuzzy(thepo.isfuzzy())
+      if target:
+          unit.markfuzzy(thepo.isfuzzy())
+      else:
+          unit.markapproved(False)
       
       #Handle #: location comments
       for location in thepo.getlocations():
