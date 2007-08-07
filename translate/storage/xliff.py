@@ -167,8 +167,15 @@ class xliffunit(lisa.LISAunit):
         return errordict
 
     def isapproved(self):
-        """States whether this unit is approved"""
+        """States whether this unit is approved."""
         return self.xmlelement.getAttribute("approved") == "yes"
+
+    def markapproved(self, value=True):
+        """Mark this unit as approved."""
+        if value:
+            self.xmlelement.setAttribute("approved", "yes")
+        else:
+            self.xmlelement.setAttribute("approved", "no")
 
     def isreview(self):
         """States whether this unit needs to be reviewed"""
@@ -196,9 +203,9 @@ class xliffunit(lisa.LISAunit):
                 
     def markfuzzy(self, value=True):
         if value:
-            self.xmlelement.setAttribute("approved", "no")
+            self.markapproved(False)
         else:
-            self.xmlelement.setAttribute("approved", "yes")
+            self.markapproved(True)
         targetnode = self.getlanguageNode(lang=None, index=1)
         if targetnode:
             if value:
