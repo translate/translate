@@ -30,7 +30,7 @@ from translate.misc import quote
 from translate import __version__
 
 class dtd2po:
-  def __init__(self, blankmsgstr=False, duplicatestyle="msgid_comment"):
+  def __init__(self, blankmsgstr=False, duplicatestyle="msgctxt"):
     self.currentgroup = None
     self.blankmsgstr = blankmsgstr
     self.duplicatestyle = duplicatestyle
@@ -142,6 +142,8 @@ class dtd2po:
     thepo.sourcecomments += accesskeypo.sourcecomments
     thepo.msgidcomments += labelpo.msgidcomments
     thepo.msgidcomments += accesskeypo.msgidcomments
+    thepo.automaticcomments += labelpo.automaticcomments
+    thepo.automaticcomments += accesskeypo.automaticcomments
     thepo.othercomments += labelpo.othercomments
     thepo.othercomments += accesskeypo.othercomments
     # redo the strings from original dtd...
@@ -207,7 +209,7 @@ class dtd2po:
 
   def convertdtdunit(self, thedtdfile, thedtd, mixbucket="dtd"):
     """converts a dtd unit from thedtdfile to a po unit, handling mixed entities along the way..."""
-    # keep track of whether acceskey and label were combined
+    # keep track of whether accesskey and label were combined
     if thedtd.entity in self.mixedentities:
       # use special convertmixed unit which produces one pounit with
       # both combined for the label and None for the accesskey
