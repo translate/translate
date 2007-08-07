@@ -115,8 +115,10 @@ def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similari
   # Get the header comments and fuzziness state
   if templatepofile is not None:
     if templatepo.units[0].isheader():    
-      if templatepo.units[0].getnotes():
-        outputheaderpo.addnote(templatepo.units[0].getnotes())
+      if templatepo.units[0].getnotes("translator"):
+        outputheaderpo.addnote(templatepo.units[0].getnotes("translator"), "translator")
+      if inputpot.units[0].getnotes("developer"):
+        outputheaderpo.addnote(inputpot.units[0].getnotes("developer"), "developer")
       outputheaderpo.markfuzzy(templatepo.units[0].isfuzzy())
   elif inputpot.units[0].isheader():
     outputheaderpo.addnote(inputpot.units[0].getnotes())
