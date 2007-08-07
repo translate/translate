@@ -76,7 +76,8 @@ class pocheckfilter:
               unit.markfuzzy()
         newtransfile.addunit(unit)
     if self.options.includeheader and newtransfile.units > 0:
-      newtransfile.units.insert(0, newtransfile.makeheader("UTF-8", "8bit"))
+      newtransfile.units.insert(0, newtransfile.makeheader())
+      newtransfile.changeencoding("UTF-8")
     return newtransfile
 
 class FilterOptionParser(optrecurse.RecursiveOptionParser):
