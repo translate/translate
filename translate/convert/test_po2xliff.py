@@ -272,3 +272,26 @@ msgstr "%s%s%s%s het %s sy/haar vriend/vriendin gemaak%s%s"'''
         print xliff.units[0].source
         assert xliff.units[0].source == "%s%s%s%s has made %s his or her buddy%s%s"
 
+    def test_approved(self):
+        minipo = r'''#, fuzzy
+msgid "two"
+msgstr "pedi"
+
+msgid "three"
+msgstr "raro"
+
+msgid "four"
+msgid ""
+'''
+        xliff = self.po2xliff(minipo)
+        print "The generated xml:"
+        xmltext = str(xliff)
+        print xmltext
+        assert len(xliff.units) == 3
+        assert xliff.units[0].xmlelement.getAttribute("approved") == "no"
+        assert not xliff.units[0].isapproved()
+        assert xliff.units[1].xmlelement.getAttribute("approved") == "yes"
+        assert xliff.units[1].isapproved()
+        assert xliff.units[2].xmlelement.getAttribute("approved") == "no"
+        assert not xliff.units[2].isapproved()
+
