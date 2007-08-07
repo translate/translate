@@ -114,7 +114,10 @@ class Operator(QtCore.QObject):
         Emit "currentStatus" signal with a string contains total, fuzzy,
         translated, and untranslated messages of current file.
         """
-        self.emit(QtCore.SIGNAL("currentStatus"), self.status.getStatus())
+        if self.status:
+            statusList = self.status.getStatus()
+            statusList.append(self.currentUnitIndex +1 )
+            self.emit(QtCore.SIGNAL("currentStatus"), statusList)
     
     def emitUnit(self, unit):
         """
@@ -125,7 +128,7 @@ class Operator(QtCore.QObject):
             self.currentUnitIndex = unit.x_editor_filterIndex
             self.searchPointer = unit.x_editor_filterIndex
         self.emit(QtCore.SIGNAL("currentUnit"), unit)
-        
+        self.emitStatus()
         self.emitLookupUnit()
         
     def getCurrentUnit(self):

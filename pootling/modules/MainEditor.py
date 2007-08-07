@@ -703,15 +703,19 @@ class MainWindow(QtGui.QMainWindow):
         """
         self.Catalog.updateFileStatus(filename, self.numUntran, self.numFuzzy, self.numTran)
 
-    def setStatus(self, list1):
-        self.numUntran = list1[0]
-        self.numFuzzy= list1[1]
-        self.numTran= list1[2]
+    def setStatus(self, statusList):
+        """Set status that contain current, total, untranslated, translated to the current file."""
+        self.numUntran = statusList[0]
+        self.numFuzzy= statusList[1]
+        self.numTran= statusList[2]
+        current = statusList[3]
         self.numTotal = self.numUntran + self.numFuzzy + self.numTran
-        statusString = "Total: " + str(self.numTotal) + "  |  " + \
+        
+        statusString = "Current: " + str(current) +"/" + str(self.numTotal) + "  |  " + \
+                "Untranslated: " + str(self.numUntran) + "  |  " + \
                 "Fuzzy: " +  str(self.numFuzzy) + "  |  " + \
-                "Translated: " +  str(self.numTran) + "  |  " + \
-                "Untranslated: " + str(self.numUntran)
+                "Translated: " +  str(self.numTran)
+                
         self.statuslabel.setText(statusString)
 
 
