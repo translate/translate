@@ -22,11 +22,7 @@
 """takes a translation file and produces word counts and other statistics"""
 
 from translate.storage import factory
-from translate.storage import statistics
 from translate.storage import statsdb
-from translate.lang.common import Common
-from translate.misc.multistring import multistring
-import re
 import sys
 import os
 

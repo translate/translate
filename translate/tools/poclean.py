@@ -27,7 +27,6 @@ with only the target text in from a text version of the RTF.
 """
 
 from translate.storage import factory
-from translate.misc import optrecurse
 from translate.misc.multistring import multistring
 import re
 

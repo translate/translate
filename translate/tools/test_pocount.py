@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from translate.tools import pocount
 from translate.storage import po
 from translate.storage import statsdb
-from translate.misc import wStringIO
 
 class TestPOCount:
     def count(self, source, expectedsource, target=None, expectedtarget=None):

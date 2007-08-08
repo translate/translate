@@ -23,7 +23,6 @@
 
 from translate.storage import po
 from translate.misc import quote
-from translate import __version__
 import os
 import re
 
