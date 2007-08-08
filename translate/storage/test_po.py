@@ -148,25 +148,25 @@ class TestPOUnit(test_base.TestTranslationUnit):
         assert unit.geterrors()['test1'] == 'New error 1.'
 
     def test_no_plural_settarget(self):
-	"""tests that target handling of file with no plural is correct"""
-	# plain text, no plural test
-	unit = self.UnitClass("Tree")
-	unit.target = "ki"
-	assert unit.target.strings == ["ki"]
-	assert unit.source.strings == ["Tree"]
-	assert unit.hasplural() == False
-
-	# plural test with multistring
-	unit.setsource(["Tree", "Trees"])
-	assert unit.source.strings == ["Tree", "Trees"]
-	assert unit.hasplural()
-	unit.target = multistring(["ki", "ni ki"])
-	assert unit.target.strings == ["ki", "ni ki"]
-
-	# test of msgid with no plural and msgstr with plural
-	unit = self.UnitClass("Tree")
-	assert raises(ValueError, unit.settarget, [u"ki", u"ni ki"])
-	assert unit.hasplural() == False
+        """tests that target handling of file with no plural is correct"""
+        # plain text, no plural test
+        unit = self.UnitClass("Tree")
+        unit.target = "ki"
+        assert unit.target.strings == ["ki"]
+        assert unit.source.strings == ["Tree"]
+        assert unit.hasplural() == False
+        
+        # plural test with multistring
+        unit.setsource(["Tree", "Trees"])
+        assert unit.source.strings == ["Tree", "Trees"]
+        assert unit.hasplural()
+        unit.target = multistring(["ki", "ni ki"])
+        assert unit.target.strings == ["ki", "ni ki"]
+        
+        # test of msgid with no plural and msgstr with plural
+        unit = self.UnitClass("Tree")
+        assert raises(ValueError, unit.settarget, [u"ki", u"ni ki"])
+        assert unit.hasplural() == False
 
     def test_wrap_firstlines(self):
         '''tests that we wrap the first line correctly a first line if longer then 71 chars
@@ -564,7 +564,7 @@ msgstr "Een\n"
         pofile = self.poparse(posource)
         assert len(pofile.units) == 1
         unit = pofile.units[0]
-	assert unit.hasplural() == True
+        assert unit.hasplural() == True
         assert isinstance(unit.source, multistring)
         print unit.source.strings
         assert unit.source == "Singular"
