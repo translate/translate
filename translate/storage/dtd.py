@@ -113,12 +113,12 @@ class dtdunit(base.TranslationUnit):
       linesprocessed += 1
       # print "line(%d,%d): " % (self.incomment,self.inentity),line[:-1]
       if not self.incomment:
-        if (line.find('<!--') <> -1):
+        if (line.find('<!--') != -1):
           self.incomment = 1
           self.continuecomment = 0
           # now work out the type of comment, and save it (remember we're not in the comment yet)
           (comment, dummy) = quote.extract(line,"<!--","-->",None,0)
-          if comment.find('LOCALIZATION NOTE') <> -1:
+          if comment.find('LOCALIZATION NOTE') != -1:
             l = quote.findend(comment,'LOCALIZATION NOTE')
             while (comment[l] == ' '): l += 1
             if comment.find('FILE',l) == l:
@@ -149,7 +149,7 @@ class dtdunit(base.TranslationUnit):
             comment += '\n'
         # check if there's actually an entity definition that's commented out
         # TODO: parse these, store as obsolete messages
-        # if comment.find('<!ENTITY') <> -1:
+        # if comment.find('<!ENTITY') != -1:
         #   # remove the entity from the comment
         #   comment, dummy = quote.extractwithoutquotes(comment, ">", "<!ENTITY", None, 1)
         # depending on the type of comment (worked out at the start), put it in the right place
