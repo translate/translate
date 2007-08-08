@@ -25,8 +25,6 @@
 import os
 from translate.storage import xliff
 from translate.storage import oo
-from translate.misc import quote
-from translate import __version__
 
 # TODO: support using one GSI file as template, another as input (for when English is in one and translation in another)
 
