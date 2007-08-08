@@ -27,8 +27,6 @@ leave out any unexpected stuff..."""
 
 from translate.misc import quote
 from translate.storage import po
-from translate.storage import properties
-from translate import __version__
 
 eol = "\n"
 

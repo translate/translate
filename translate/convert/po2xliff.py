@@ -27,8 +27,6 @@ You can convert back from xliff to po using xliff2po.
 
 from translate.storage import po
 from translate.storage import poxliff
-from translate.misc import quote
-from xml.dom import minidom
 
 class po2xliff:
   def convertunit(self, xlifffile, thepo, filename):

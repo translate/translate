@@ -4,10 +4,7 @@
 from translate.convert import po2tmx
 from translate.convert import test_convert
 from translate.misc import wStringIO
-from translate.storage import po
 from translate.storage import tmx
-import os
-from py import test
 
 class TestPO2TMX:
 

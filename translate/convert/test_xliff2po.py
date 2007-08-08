@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 from translate.convert import xliff2po
-from translate.storage import po
 from translate.misc import wStringIO
 
 class TestXLIFF2PO:
@@ -17,8 +16,8 @@ class TestXLIFF2PO:
     def xliff2po(self, xliffsource):
         """helper that converts xliff source to po source without requiring files"""
         inputfile = wStringIO.StringIO(xliffsource)
-	convertor = xliff2po.xliff2po()
-	outputpo = convertor.convertfile(inputfile)
+        convertor = xliff2po.xliff2po()
+        outputpo = convertor.convertfile(inputfile)
         print "The generated po:"
         print str(outputpo)
         return outputpo
@@ -58,9 +57,9 @@ Content-Transfer-Encoding: 8bit'''
         assert pofile.translate("gras") == "utshani"
         assert pofile.translate("bla") is None
         potext = str(pofile)
-	assert potext.index('# Zulu translation of program ABC') == 0
-	assert potext.index('msgid "gras"\n')
-	assert potext.index('msgstr "utshani"\n')
+        assert potext.index('# Zulu translation of program ABC') == 0
+        assert potext.index('msgid "gras"\n')
+        assert potext.index('msgstr "utshani"\n')
         assert potext.index('MIME-Version: 1.0\\n')
 
     def test_translatorcomments(self):

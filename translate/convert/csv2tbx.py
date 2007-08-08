@@ -21,8 +21,6 @@
 
 """simple script to convert a comma-separated values (.csv) file to a gettext .tbx glossary file"""
 
-import sys
-from translate.misc import quote
 from translate.misc import sparse
 from translate.storage import tbx
 from translate.storage import csvl10n

@@ -2,12 +2,9 @@
 # -*- coding: utf-8 -*-
 
 from translate.convert import po2prop
-from translate.convert import prop2po
 from translate.convert import test_convert
 from translate.misc import wStringIO
 from translate.storage import po
-from translate.storage import properties
-from py import test
 
 class TestPO2Prop:
     def po2prop(self, posource):

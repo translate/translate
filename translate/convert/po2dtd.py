@@ -25,7 +25,6 @@ either done using a template or just using the .po file"""
 from translate.storage import dtd
 from translate.storage import po
 from translate.misc import quote
-from translate import __version__
 import warnings
 
 # labelsuffixes and accesskeysuffixes are combined to accelerator notation

@@ -168,8 +168,8 @@ class TestDTD2PO:
         assert po.unquotefrompo(unit.msgid, True) == "First line then \nnext lines."
 
     def test_accesskeys_folding(self):
-	"""test that we fold accesskeys into message strings"""
-	dtdsource_template = '<!ENTITY  fileSaveAs.%s "Save As...">\n<!ENTITY  fileSaveAs.%s "S">\n'
+        """test that we fold accesskeys into message strings"""
+        dtdsource_template = '<!ENTITY  fileSaveAs.%s "Save As...">\n<!ENTITY  fileSaveAs.%s "S">\n'
         lang_template = '<!ENTITY  fileSaveAs.%s "Gcina ka...">\n<!ENTITY  fileSaveAs.%s "G">\n'
         for label in ("label", "title"):
           for accesskey in ("accesskey", "accessKey", "akey"):
@@ -184,7 +184,7 @@ class TestDTD2PO:
 
     def test_accesskeys_mismatch(self):
         """check that we can handle accesskeys that don't match and thus can't be folded into the .label entry"""
-	dtdsource = '<!ENTITY  fileSave.label "Save">\n' + \
+        dtdsource = '<!ENTITY  fileSave.label "Save">\n' + \
            '<!ENTITY  fileSave.accesskey "z">\n'
         pofile = self.dtd2po(dtdsource)
         assert self.countelements(pofile) == 2

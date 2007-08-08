@@ -25,7 +25,6 @@ You can convert back to .ts using po2ts"""
 
 from translate.storage import po
 from translate.storage import ts
-from translate.misc import quote
 
 class ts2po:
   def convertmessage(self, contextname, messagenum, source, target, msgcomments, transtype):

@@ -23,15 +23,12 @@
 either done using a template or just using the .po file"""
 
 import os.path
-import sys
 from translate.convert import po2dtd
 from translate.convert import po2prop
 from translate.convert import po2html
 from translate.convert import prop2mozfunny
 from translate.storage import xpi
-from translate import __version__
 from translate.convert import convert
-import StringIO
 
 class MozConvertOptionParser(convert.ArchiveConvertOptionParser):
   def __init__(self, formats, usetemplates=False, usepots=False, description=None):

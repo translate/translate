@@ -24,10 +24,8 @@ gettext .pot format for translation.
 does a line-by-line conversion..."""
 
 import sys
-from translate.misc import quote
 from translate.storage import po
 from translate.storage import properties
-from translate import __version__
 
 class prop2po:
   """convert a .properties file to a .po file for handling the translation..."""

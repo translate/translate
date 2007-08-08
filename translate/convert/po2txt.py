@@ -24,8 +24,6 @@
 You can generate the po files using txt2po"""
 
 from translate.storage import po
-from translate.storage import txt
-from translate.misc import quote
 try:
   import textwrap
 except:

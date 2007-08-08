@@ -21,11 +21,9 @@
 
 """converts properties files back to funny mozilla files"""
 
-import string
 from translate.storage import properties
 from translate.convert import po2prop
 from translate.convert import mozfunny2prop
-from translate.misc import quote
 from translate.misc.wStringIO import StringIO
 
 def prop2inc(pf):

@@ -25,7 +25,6 @@ You can convert from .ts to .po using ts2po"""
 
 from translate.storage import po
 from translate.storage import ts
-from translate.misc import quote
 
 class po2ts:
   def convertfile(self, inputpo, templatefile=None):

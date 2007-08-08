@@ -24,7 +24,6 @@
 
 from translate.storage import po
 from translate.storage import tmx
-from translate.misc import quote
 from translate.convert import convert
 from translate.misc import wStringIO
 import os

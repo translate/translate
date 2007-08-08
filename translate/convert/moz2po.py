@@ -26,7 +26,6 @@ from translate.convert import prop2po
 from translate.convert import html2po
 from translate.convert import mozfunny2prop
 from translate.storage import xpi
-from translate import __version__
 from translate.convert import convert
 
 def main(argv=None):

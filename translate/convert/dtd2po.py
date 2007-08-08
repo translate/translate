@@ -27,7 +27,6 @@ You can convert back to .dtd using po2dtd.py"""
 from translate.storage import po
 from translate.storage import dtd
 from translate.misc import quote
-from translate import __version__
 
 class dtd2po:
   def __init__(self, blankmsgstr=False, duplicatestyle="msgctxt"):

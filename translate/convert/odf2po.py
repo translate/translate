@@ -24,7 +24,6 @@
 
 from translate.storage import po
 from translate.storage import odf
-from translate.misc import quote
 
 class odf2po:
   def convertfile(self, inputfile):

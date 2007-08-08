@@ -1,11 +1,9 @@
 #!/usr/bin/env python
 
 from translate.convert import po2xliff
-from translate.misc import wStringIO
 from translate.storage import po
 from translate.storage import poxliff
 from translate.storage import lisa
-from py import test
 
 class TestPO2XLIFF:
 

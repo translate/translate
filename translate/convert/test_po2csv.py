@@ -20,11 +20,11 @@ class TestPO2CSV:
         """helper that converts csv source to po source without requiring files"""
         inputfile = wStringIO.StringIO(csvsource)
         inputcsv = csvl10n.csvfile(inputfile)
-	if template:
-          templatefile = wStringIO.StringIO(template)
-          inputpot = po.pofile(templatefile)
-	else:
-	  inputpot = None
+        if template:
+            templatefile = wStringIO.StringIO(template)
+            inputpot = po.pofile(templatefile)
+        else:
+            inputpot = None
         convertor = csv2po.csv2po(templatepo=inputpot)
         outputpo = convertor.convertfile(inputcsv)
         return outputpo

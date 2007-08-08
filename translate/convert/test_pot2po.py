@@ -4,7 +4,6 @@ from translate.convert import pot2po
 from translate.convert import test_convert
 from translate.misc import wStringIO
 from translate.storage import po
-from py import test
 import warnings
 
 class TestPOT2PO:

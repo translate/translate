@@ -5,8 +5,6 @@ from translate.convert import oo2po
 from translate.convert import test_convert
 from translate.misc import wStringIO
 from translate.storage import po
-from translate.storage import oo
-from py import test
 import warnings
 import os
 
@@ -57,12 +55,12 @@ class TestPO2OO:
 
     def test_pofilter(self):
         """Tests integration with pofilter"""
-	#Some bad po with a few errors:
-	posource = '#: sourcefile.bla#ID_NUMBER.txet.gnirts\nmsgid "<tag cow=\\"3\\">Mistake."\nmsgstr "  <etiket koei=\\"3\\">(fout) "'
+        #Some bad po with a few errors:
+        posource = '#: sourcefile.bla#ID_NUMBER.txet.gnirts\nmsgid "<tag cow=\\"3\\">Mistake."\nmsgstr "  <etiket koei=\\"3\\">(fout) "'
         filter = po2oo.filter
-	pofile = po.pofile()
-	pofile.parse(posource)
-	assert not filter.validelement(pofile.units[0], "dummyname.po", "exclude-all")
+        pofile = po.pofile()
+        pofile.parse(posource)
+        assert not filter.validelement(pofile.units[0], "dummyname.po", "exclude-all")
 
     def test_roundtrip_simple(self):
         """checks that simple strings make it through a oo->po->oo roundtrip"""

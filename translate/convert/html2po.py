@@ -25,7 +25,6 @@ You can merge translated strings back using po2html"""
 
 from translate.storage import po
 from translate.storage import html
-from translate.misc import quote
 
 class html2po:
   def convertfile(self, inputfile, filename, includeheader, includeuntagged=False, duplicatestyle="msgid_comment"):

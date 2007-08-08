@@ -25,7 +25,6 @@ You can convert back to .txt using po2txt"""
 
 from translate.storage import txt
 from translate.storage import po
-from translate.misc import quote
 
 class txt2po:
   def __init__(self, duplicatestyle="msgctxt"):

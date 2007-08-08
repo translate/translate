@@ -22,7 +22,6 @@
 """converts comma-separated values (.csv) files to gettext .po localization files"""
 
 import sys
-from translate.misc import quote
 from translate.misc import sparse
 from translate.storage import po
 from translate.storage import csvl10n
