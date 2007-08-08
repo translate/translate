@@ -23,7 +23,6 @@
 
 from translate.misc import quote
 import re
-from translate.filters import helpers
 from translate.filters import decoration
 
 # filters that the string is passed through before certain tests:
