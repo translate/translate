@@ -31,10 +31,7 @@ from translate.storage import factory
 from translate.filters import pofilter
 from translate.filters import checks
 from translate.filters import autocorrect 
-from translate.misc import optparse
-from translate.misc import quote
 import time
-from translate import __version__
 
 class reoo:
   def __init__(self, templatefile, languages=None, timestamp=None, includefuzzy=False, long_keys=False, filteraction="exclude"):
