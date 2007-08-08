@@ -27,6 +27,7 @@
 """
 
 from translate import lang
+from translate.lang import factory
 
 # calling classifyunits() in the constructor is probably not ideal. 
 # idea: have a property for .classification that calls it if necessary
