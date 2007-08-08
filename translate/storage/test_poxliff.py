@@ -2,10 +2,7 @@
 
 from translate.storage import poxliff
 from translate.storage import test_xliff
-from translate.misc import wStringIO
 from translate.misc.multistring import multistring
-
-from py import test
 
 class TestPOXLIFFUnit(test_xliff.TestXLIFFUnit):
     UnitClass = poxliff.PoXliffUnit

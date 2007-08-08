@@ -3,7 +3,6 @@
 from translate.storage import tmx
 from translate.storage import test_base
 from translate.misc import wStringIO
-from py import test
 
 class TestTMXUnit(test_base.TestTranslationUnit):
     UnitClass = tmx.tmxunit

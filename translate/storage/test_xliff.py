@@ -2,10 +2,6 @@
 
 from translate.storage import xliff
 from translate.storage import test_base
-from translate.misc import wStringIO
-from translate.misc.multistring import multistring
-
-from py import test
 
 class TestXLIFFUnit(test_base.TestTranslationUnit):
     UnitClass = xliff.xliffunit

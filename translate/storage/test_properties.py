@@ -4,7 +4,6 @@
 from translate.storage import properties
 from translate.storage import test_monolingual
 from translate.misc import wStringIO
-from py import test
 
 class TestPropUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = properties.propunit

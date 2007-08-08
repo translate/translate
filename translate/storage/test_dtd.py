@@ -3,7 +3,6 @@
 from translate.storage import dtd
 from translate.storage import test_monolingual
 from translate.misc import wStringIO
-from py import test
 
 def test_roundtrip_quoting():
     specials = ['Fish & chips', 'five < six', 'six > five',

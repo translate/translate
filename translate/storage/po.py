@@ -29,7 +29,6 @@ from translate.misc import textwrap
 from translate.storage import base
 from translate.storage import poheader
 import re
-import codecs
 
 # general functions for quoting / unquoting po strings
 

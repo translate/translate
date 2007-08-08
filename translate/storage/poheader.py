@@ -21,7 +21,6 @@
 
 """class that handles all header functions for a header in a po file"""
 
-from translate.misc import quote
 from translate.misc import dictutils
 from translate import __version__
 import re

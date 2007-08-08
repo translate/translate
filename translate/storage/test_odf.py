@@ -3,7 +3,6 @@
 from translate.storage import odf
 from translate.storage import test_monolingual
 from translate.misc import wStringIO
-from py import test
 
 class TestODFUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = odf.ODFUnit
