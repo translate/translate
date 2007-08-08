@@ -25,7 +25,6 @@ For more information, see U{http://en.wikipedia.org/wiki/Armenian_language}
 """
 
 from translate.lang import common
-import re
 
 class hy(common.Common):
     """This class represents Armenian."""
