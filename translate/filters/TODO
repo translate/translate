@@ -15,7 +15,6 @@ bugs
     in msgid and two in msgstr, probably similarly the other way round.
   isreview, isfuzzy - are listed as having to pass the untranslated
     precondition but still appear - they should not.
-  doublewords - sees double variables as an error
 
 other checks
   plural checks - check plural forms against the Gettext plural header
