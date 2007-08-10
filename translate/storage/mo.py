@@ -97,7 +97,8 @@ class mofile(base.TranslationStore):
                 target = "\0".join(unit.target.strings)
             else:
                 target = unit.target
-            MESSAGES[source.encode("utf-8")] = target
+            if unit.target:
+                MESSAGES[source.encode("utf-8")] = target
         keys = MESSAGES.keys()
         # the keys are sorted in the .mo file
         keys.sort()
