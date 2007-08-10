@@ -36,7 +36,8 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         self.tagFormat = QtGui.QTextCharFormat()
         self.tagFormat.setForeground(QtCore.Qt.darkMagenta)
         # tags: e.g. <b> </ui>
-        self.tags = "<\\w+>|</\\w+>"
+        self.tags = "<\\w+.*>[^<]|</\\w+>"
+##        self.tags = "<.+(!>)>|</\\w+>"
         self.tagExpression = QtCore.QRegExp(self.tags)
         
         # glossary format
@@ -70,22 +71,22 @@ class Highlighter(QtGui.QSyntaxHighlighter):
             self.blockWordCount = 0
         self.setCurrentBlockState(0)
         
-        # highlight arguments, variable
-        varIndex = text.indexOf(self.varExpression)
-        tagIndex = text.indexOf(self.tagExpression)
         if (self.highlightGlossary) and (self.glsExpression):
             glsIndex = text.indexOf(self.glsExpression)
         else:
             glsIndex = -1
-        
-        while (tagIndex >= 0) or (varIndex >= 0) or (glsIndex >= 0):
+        while (glsIndex >= 0):
             # highlight glossary
             if (self.highlightGlossary) and (self.glsExpression):
                 length = self.glsExpression.matchedLength()
                 self.setFormat(glsIndex, length, self.glsFormat)
                 self.glossaryWords.append(unicode(self.glsExpression.capturedTexts()[0]))
                 glsIndex = text.indexOf(self.glsExpression, glsIndex + length)
-            
+        
+        # highlight arguments, variable
+        varIndex = text.indexOf(self.varExpression)
+        tagIndex = text.indexOf(self.tagExpression)
+        while (tagIndex >= 0) or (varIndex >= 0):
             # highlight tag and variable
             length = self.tagExpression.matchedLength()
             self.setFormat(tagIndex, length, self.tagFormat)
@@ -103,7 +104,7 @@ class Highlighter(QtGui.QSyntaxHighlighter):
             self.parent.setTextCursor(cursor)
             captured = unicode(text[index:index + len(self.searchString)])
             if (captured.lower() == self.searchString.lower()):
-                self.searchString =None
+                self.searchString = None
         
         self.blockWordCount += len(text) + 1
     
