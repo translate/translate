@@ -55,7 +55,7 @@ class FileAction(QtCore.QObject):
         #TODO: open one or more existing files selected
         newFileName = QtGui.QFileDialog.getOpenFileName(self.parentWidget, self.tr("Open File"),
                         self.directory,
-                        self.tr("All Supported Files (*.po *.pot *.xliff *.xlf *.tmx *.tbx);;PO Files and PO Template Files (*.po *.pot);;XLIFF Files (*.xliff *.xlf);;Translation Memory eXchange (TMX) Files (*.tmx);;TermBase eXchange (TBX) Files (*.tbx);;All Files (*)"))
+                        self.tr(";;".join(World.fileFilters)))
         if (newFileName.isEmpty()):
             return False
         else:

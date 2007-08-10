@@ -47,3 +47,10 @@ settings = QtCore.QSettings(QtCore.QSettings.IniFormat, QtCore.QSettings.UserSco
 
 # maximum number of files in the recent file menu
 MaxRecentFiles = 9
+
+fileFilters = ["All Supported Files (*.po *.pot *.xliff *.xlf *.tmx *.tbx)", 
+        "PO Files and PO Template Files (*.po *.pot)",
+        "XLIFF Files (*.xliff *.xlf)",
+        "Translation Memory eXchange (TMX) Files (*.tmx)",
+        "TermBase eXchange (TBX) Files (*.tbx)",
+        "All Files (*)"]

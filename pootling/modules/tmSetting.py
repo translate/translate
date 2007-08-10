@@ -3,7 +3,6 @@
 #
 #Copyright (c) 2006 - 2007 by The WordForge Foundation
 #                       www.wordforge.org
-
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -52,12 +51,10 @@ class globalSetting(QtGui.QDialog):
         self.ui = Ui_tmsetting()
         self.ui.setupUi(self)
         self.setModal(True)
-        self.filedialog = FileDialog.fileDialog(self)
         self.setWindowTitle(self.title)
-        self.connect(self.filedialog, QtCore.SIGNAL("location"), self.addLocation)
         self.connect(self.ui.btnOk, QtCore.SIGNAL("clicked(bool)"), self.startBuild)
         self.connect(self.ui.btnCancel, QtCore.SIGNAL("clicked(bool)"), QtCore.SLOT("close()"))
-        self.connect(self.ui.btnAdd, QtCore.SIGNAL("clicked(bool)"), self.filedialog.show)
+        self.connect(self.ui.btnAdd, QtCore.SIGNAL("clicked(bool)"), self.showFileDialog)
         self.connect(self.ui.btnRemove, QtCore.SIGNAL("clicked(bool)"), self.removeLocation)
         self.connect(self.ui.btnRemoveAll, QtCore.SIGNAL("clicked(bool)"), self.ui.listWidget.clear)
         self.ui.listWidget.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
@@ -96,6 +93,20 @@ class globalSetting(QtGui.QDialog):
         self.ui.spinMaxLen.setWhatsThis(self.tr("<h3>Maximum string length</h3>Maximum number of source string to search from."))
         progress = "<h3>Build " + tool + "Process</h3>This bar shows the progression of building a " + tool + " from the above select path(s)."
         self.ui.progressBar.setWhatsThis(self.tr(progress))
+    
+    def showFileDialog(self):
+        """
+        Open the file dialog where you can choose both file and directory.
+        Add path to Catalog list.
+        """
+        directory = World.settings.value("workingDir").toString()
+        filenames = FileDialog.fileDialog().getExistingPath(
+                self,
+                directory,
+                World.fileFilters)
+        if (filenames):
+            for filename in filenames:
+                self.addLocation(filename)
     
     def showDialog(self):
         """Make the Translation Memory or Glossary Setting dialog visible."""

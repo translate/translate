@@ -44,7 +44,6 @@ class newProject(QtGui.QDialog):
         self.ui.btnFinish.setEnabled(False)
         self.ui.lblprojecttype.hide()
         self.ui.cbxProject.hide()
-        self.value = True
         self.fileExtension = ".ini"
         
         self.connect(self.ui.btnCancel, QtCore.SIGNAL("clicked()"), self, QtCore.SLOT("reject()"))
@@ -57,9 +56,7 @@ class newProject(QtGui.QDialog):
 
         # call dialog box of FileDialog
         self.connect(self.ui.btnBrowse, QtCore.SIGNAL("clicked()"), self.showDialog)
-        self.connect(self.ui.btnAdd, QtCore.SIGNAL("clicked()"), self.showLocation)
-        self.filedialog = FileDialog.fileDialog(self)
-        self.connect(self.filedialog, QtCore.SIGNAL("location"), self.addLocation)
+        self.connect(self.ui.btnAdd, QtCore.SIGNAL("clicked()"), self.showFileDialog)
         self.connect(self.ui.btnClear, QtCore.SIGNAL("clicked()"), self.clearLocation)
         self.connect(self.ui.btnMoveUp, QtCore.SIGNAL("clicked(bool)"), self.moveUp)
         self.connect(self.ui.btnMoveDown, QtCore.SIGNAL("clicked(bool)"), self.moveDown)
@@ -76,18 +73,40 @@ class newProject(QtGui.QDialog):
             language.sort()
         self.ui.cbxLanguages.addItems(language)
 
+    def showFileDialog(self):
+        """
+        Open the file dialog where you can choose both file and directory.
+        Add path to Catalog list.
+        """
+        directory = World.settings.value("workingDir").toString()
+        filenames = FileDialog.fileDialog().getExistingPath(
+                self,
+                directory,
+                World.fileFilters)
+        if (filenames):
+            for filename in filenames:
+                self.addLocation(filename)
+
     def showDialog(self):
-        self.filedialog.show()
-        self.filedialog.setWindowTitle("Choosing path of filename")
-        self.filedialog.ui.btnAdd.setText("&Ok")
+        directory = World.settings.value("workingDir").toString()
+        filenames = FileDialog.fileDialog().getExistingPath(self, directory, self.tr("Directory"))
+        if (filenames and len(filenames) >= 1):
+            self.ui.configurationFile.setText(filenames[0])
 
-    def showLocation(self):
-        self.filedialog.show()
-        self.filedialog.setWindowTitle("Choosing file or a directory")
-        print dir(self.filedialog)
-        self.filedialog.goHome()
-        self.filedialog.ui.btnAdd.setText("&Add")
-
+    def showFileDialog(self):
+        """
+        Open the file dialog where you can choose both file and directory.
+        Add path to Catalog list.
+        """
+        directory = World.settings.value("workingDir").toString()
+        filenames = FileDialog.fileDialog().getExistingPath(
+                self,
+                directory,
+                World.fileFilters)
+        if (filenames):
+            for filename in filenames:
+                self.addLocation(filename)
+        
     def projectNameAvailable(self):
           if (self.ui.projectName.text() and self.ui.configurationFile.text()):
               self.ui.btnNext.setEnabled(True)
@@ -95,32 +114,18 @@ class newProject(QtGui.QDialog):
               self.ui.btnNext.setEnabled(False)
 
     def addLocation(self, text):
-        if (self.value):
-            data = QtGui.QListWidgetItem(text)
-            self.ui.configurationFile.setText(data.text())
-            self.filedialog.hide()
-        else:
+        items = self.ui.listWidget.findItems(text, QtCore.Qt.MatchCaseSensitive)
+        if (not items):
             item = QtGui.QListWidgetItem(text)
-            items = self.ui.listWidget.findItems(text, QtCore.Qt.MatchCaseSensitive)
-            if (not items):
-                self.ui.listWidget.addItem(item)
-                red = QtGui.QMessageBox.information(None, self.tr("item in the list widget"), 
-                            self.tr("Item was added into listWidget already!\n"
-                            "Would you like to add more item into listWidget!"), 
-                            QtGui.QMessageBox.Yes, 
-                            QtGui.QMessageBox.No)
-                if (red == QtGui.QMessageBox.Yes):
-                    return True
-                else:
-                    self.filedialog.hide()
-                self.ui.btnFinish.setEnabled(True)
-
+            self.ui.listWidget.addItem(item)
+            self.ui.btnFinish.setEnabled(True)
+    
     def clearLocation(self):
         self.ui.listWidget.clear()
         self.ui.btnFinish.setEnabled(False)
         self.catalogModified = True
         self.ui.chbDiveIntoSubfolders.setChecked(False)
-
+    
     def moveItem(self, distance):
         '''move an item up or down depending on distance
         @param distance: int'''
@@ -147,13 +152,11 @@ class newProject(QtGui.QDialog):
         self.ui.btnBack.setEnabled(False)
         self.ui.btnFinish.setEnabled(False)
         self.ui.projectName.setFocus()
-        self.value = True
 
     def nextButton(self):
         self.ui.stackedWidget.setCurrentIndex(1)
         self.ui.btnNext.setEnabled(False)
         self.ui.btnBack.setEnabled(True)
-        self.value = False
         if (self.ui.listWidget.count()):
             self.ui.btnFinish.setEnabled(True)
         else:

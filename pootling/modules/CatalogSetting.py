@@ -23,6 +23,7 @@ import sys, os
 from PyQt4 import QtCore, QtGui
 from pootling.ui.Ui_CatalogSetting import Ui_catalogSetting
 from pootling.modules import World
+from pootling.modules import FileDialog
 
 class CatalogSetting(QtGui.QDialog):
     """
@@ -43,20 +44,17 @@ class CatalogSetting(QtGui.QDialog):
         self.setModal(True)
         
         self.catalogModified = False
-        
+    
     def showFileDialog(self):
         """
         Open the file dialog where you can choose both file and directory.
         Add path to Catalog list.
         """
-        self.directory = World.settings.value("workingDir").toString()
-        dialog = QtGui.QFileDialog()
-        filenames = dialog.getOpenFileNames(
-                    self,
-                    self.tr("Open File"),
-                    self.directory,
-                    self.tr("All Supported Files (*.po *.pot *.xliff *.xlf *.tmx *.tbx);;PO Files and PO Template Files (*.po *.pot);;XLIFF Files (*.xliff *.xlf);;Translation Memory eXchange (TMX) Files (*.tmx);;TermBase eXchange (TBX) Files (*.tbx);;All Files (*)"))
-        
+        directory = World.settings.value("workingDir").toString()
+        filenames = FileDialog.fileDialog().getExistingPath(
+                self,
+                directory,
+                World.fileFilters)
         if (filenames):
             for filename in filenames:
                 items = self.ui.listWidget.findItems(filename, QtCore.Qt.MatchCaseSensitive)
