@@ -36,8 +36,7 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         self.tagFormat = QtGui.QTextCharFormat()
         self.tagFormat.setForeground(QtCore.Qt.darkMagenta)
         # tags: e.g. <b> </ui>
-        self.tags = "<\\w+.*>[^<]|</\\w+>"
-##        self.tags = "<.+(!>)>|</\\w+>"
+        self.tags = "<\\w+>|</\\w+>"
         self.tagExpression = QtCore.QRegExp(self.tags)
         
         # glossary format

@@ -36,7 +36,7 @@ class fileDialog(QtGui.QDialog):
             self.dialog.setFileMode(self.dialog.Directory)
     
     def getExistingPath(self, parent, directory, filter):
-        self.dialog = QtGui.QFileDialog(parent)
+        self.dialog = QtGui.QFileDialog(parent, self.tr("Choose file or directory"))
         self.dialog.setDirectory(directory)
         
         if (not filter):
