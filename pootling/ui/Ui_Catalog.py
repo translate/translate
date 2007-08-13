@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/ratha/sourceforge.net/translate/trunk/pootling/ui/Catalog.ui'
 #
-# Created: Wed Aug  1 16:06:32 2007
+# Created: Mon Aug 13 16:24:37 2007
 #      by: PyQt4 UI code generator 4.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -49,11 +49,8 @@ class Ui_Catalog(object):
         self.menuFile = QtGui.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
 
-        self.menuSettings = QtGui.QMenu(self.menubar)
-        self.menuSettings.setObjectName("menuSettings")
-
-        self.menuHelp = QtGui.QMenu(self.menubar)
-        self.menuHelp.setObjectName("menuHelp")
+        self.menuEdit = QtGui.QMenu(self.menubar)
+        self.menuEdit.setObjectName("menuEdit")
 
         self.menuProject = QtGui.QMenu(self.menubar)
         self.menuProject.setObjectName("menuProject")
@@ -62,8 +59,11 @@ class Ui_Catalog(object):
         self.menuOpenRecentProject.setEnabled(False)
         self.menuOpenRecentProject.setObjectName("menuOpenRecentProject")
 
-        self.menuEdit = QtGui.QMenu(self.menubar)
-        self.menuEdit.setObjectName("menuEdit")
+        self.menuSettings = QtGui.QMenu(self.menubar)
+        self.menuSettings.setObjectName("menuSettings")
+
+        self.menuHelp = QtGui.QMenu(self.menubar)
+        self.menuHelp.setObjectName("menuHelp")
         Catalog.setMenuBar(self.menubar)
 
         self.statusbar = QtGui.QStatusBar(Catalog)
@@ -133,19 +133,26 @@ class Ui_Catalog(object):
         self.actionStop.setEnabled(False)
         self.actionStop.setIcon(QtGui.QIcon("../images/stop.png"))
         self.actionStop.setObjectName("actionStop")
+
+        self.actionClose = QtGui.QAction(Catalog)
+        self.actionClose.setEnabled(False)
+        self.actionClose.setIcon(QtGui.QIcon("../images/fileclose.png"))
+        self.actionClose.setObjectName("actionClose")
         self.menuFile.addAction(self.actionQuit)
-        self.menuSettings.addAction(self.actionBuild)
-        self.menuSettings.addAction(self.actionConfigure)
-        self.menuHelp.addAction(self.actionAbout)
-        self.menuHelp.addAction(self.actionAboutQt)
-        self.menuProject.addAction(self.actionNew)
-        self.menuProject.addAction(self.actionOpen)
-        self.menuProject.addAction(self.menuOpenRecentProject.menuAction())
         self.menuEdit.addAction(self.actionFind_in_Files)
         self.menuEdit.addSeparator()
         self.menuEdit.addAction(self.actionStatistics)
         self.menuEdit.addAction(self.actionReload)
         self.menuEdit.addAction(self.actionStop)
+        self.menuProject.addAction(self.actionNew)
+        self.menuProject.addAction(self.actionOpen)
+        self.menuProject.addAction(self.menuOpenRecentProject.menuAction())
+        self.menuProject.addSeparator()
+        self.menuProject.addAction(self.actionClose)
+        self.menuSettings.addAction(self.actionBuild)
+        self.menuSettings.addAction(self.actionConfigure)
+        self.menuHelp.addAction(self.actionAbout)
+        self.menuHelp.addAction(self.actionAboutQt)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
         self.menubar.addAction(self.menuProject.menuAction())
@@ -163,14 +170,14 @@ class Ui_Catalog(object):
     def retranslateUi(self, Catalog):
         Catalog.setWindowTitle(QtGui.QApplication.translate("Catalog", "Catalog Manager", None, QtGui.QApplication.UnicodeUTF8))
         self.menuFile.setTitle(QtGui.QApplication.translate("Catalog", "&File", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuSettings.setTitle(QtGui.QApplication.translate("Catalog", "&Settings", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuHelp.setTitle(QtGui.QApplication.translate("Catalog", "&Help", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuEdit.setTitle(QtGui.QApplication.translate("Catalog", "&Edit", None, QtGui.QApplication.UnicodeUTF8))
         self.menuProject.setTitle(QtGui.QApplication.translate("Catalog", "&Project", None, QtGui.QApplication.UnicodeUTF8))
         self.menuOpenRecentProject.setToolTip(QtGui.QApplication.translate("Catalog", "This open recent project.", None, QtGui.QApplication.UnicodeUTF8))
         self.menuOpenRecentProject.setStatusTip(QtGui.QApplication.translate("Catalog", "This open recent project.", None, QtGui.QApplication.UnicodeUTF8))
         self.menuOpenRecentProject.setWhatsThis(QtGui.QApplication.translate("Catalog", "<h3>Open recent project</h3>Use this to be asked for the name exist of project in catalog manager.", None, QtGui.QApplication.UnicodeUTF8))
         self.menuOpenRecentProject.setTitle(QtGui.QApplication.translate("Catalog", "Open &Recent Project", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuEdit.setTitle(QtGui.QApplication.translate("Catalog", "&Edit", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuSettings.setTitle(QtGui.QApplication.translate("Catalog", "&Settings", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuHelp.setTitle(QtGui.QApplication.translate("Catalog", "&Help", None, QtGui.QApplication.UnicodeUTF8))
         self.actionQuit.setText(QtGui.QApplication.translate("Catalog", "&Quit", None, QtGui.QApplication.UnicodeUTF8))
         self.actionQuit.setStatusTip(QtGui.QApplication.translate("Catalog", "Quit the application.", None, QtGui.QApplication.UnicodeUTF8))
         self.actionQuit.setWhatsThis(QtGui.QApplication.translate("Catalog", "<h3>Quit</h3>Use this to quit the application. Any unsaved changes will be prompted.", None, QtGui.QApplication.UnicodeUTF8))
@@ -204,6 +211,8 @@ class Ui_Catalog(object):
         self.actionConfigure1.setText(QtGui.QApplication.translate("Catalog", "Configure...", None, QtGui.QApplication.UnicodeUTF8))
         self.actionStop.setText(QtGui.QApplication.translate("Catalog", "Stop", None, QtGui.QApplication.UnicodeUTF8))
         self.actionStop.setShortcut(QtGui.QApplication.translate("Catalog", "Esc", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionClose.setText(QtGui.QApplication.translate("Catalog", "Close", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionClose.setShortcut(QtGui.QApplication.translate("Catalog", "Ctrl+W", None, QtGui.QApplication.UnicodeUTF8))
 
 
 

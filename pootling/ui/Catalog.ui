@@ -75,19 +75,15 @@
     </property>
     <addaction name="actionQuit" />
    </widget>
-   <widget class="QMenu" name="menuSettings" >
+   <widget class="QMenu" name="menuEdit" >
     <property name="title" >
-     <string>&amp;Settings</string>
+     <string>&amp;Edit</string>
     </property>
-    <addaction name="actionBuild" />
-    <addaction name="actionConfigure" />
-   </widget>
-   <widget class="QMenu" name="menuHelp" >
-    <property name="title" >
-     <string>&amp;Help</string>
-    </property>
-    <addaction name="actionAbout" />
-    <addaction name="actionAboutQt" />
+    <addaction name="actionFind_in_Files" />
+    <addaction name="separator" />
+    <addaction name="actionStatistics" />
+    <addaction name="actionReload" />
+    <addaction name="actionStop" />
    </widget>
    <widget class="QMenu" name="menuProject" >
     <property name="title" >
@@ -113,16 +109,22 @@
     <addaction name="actionNew" />
     <addaction name="actionOpen" />
     <addaction name="menuOpenRecentProject" />
-   </widget>
-   <widget class="QMenu" name="menuEdit" >
-    <property name="title" >
-     <string>&amp;Edit</string>
-    </property>
-    <addaction name="actionFind_in_Files" />
     <addaction name="separator" />
-    <addaction name="actionStatistics" />
-    <addaction name="actionReload" />
-    <addaction name="actionStop" />
+    <addaction name="actionClose" />
+   </widget>
+   <widget class="QMenu" name="menuSettings" >
+    <property name="title" >
+     <string>&amp;Settings</string>
+    </property>
+    <addaction name="actionBuild" />
+    <addaction name="actionConfigure" />
+   </widget>
+   <widget class="QMenu" name="menuHelp" >
+    <property name="title" >
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="actionAbout" />
+    <addaction name="actionAboutQt" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
@@ -320,6 +322,20 @@
    </property>
    <property name="shortcut" >
     <string>Esc</string>
+   </property>
+  </action>
+  <action name="actionClose" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
+   <property name="icon" >
+    <iconset>../images/fileclose.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Close</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+W</string>
    </property>
   </action>
  </widget>
