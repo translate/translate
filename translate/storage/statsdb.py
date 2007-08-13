@@ -200,6 +200,8 @@ class StatsCache:
         for index, unit in enumerate(store.units):
             if unit.istranslatable():
                 sourcewords, targetwords = wordsinunit(unit)
+                
+                # what about plurals in .source and .target?
                 unitvalues.append((unit.getid(), fileid, index, \
                                 unit.source, unit.target, \
                                 sourcewords, targetwords, \
@@ -308,9 +310,10 @@ class StatsCache:
         for value in values:
             if value[1] == -1:
                 continue
-            if not value[0] in errors:
-                errors[value[0]] = []           #value[0] is the error name
-            errors[value[0]].append(value[1])   #value[1] is the unitindex
+            checkkey = 'check-' + value[0]      #value[0] is the error name
+            if not checkkey in errors:
+                errors[checkkey] = []
+            errors[checkkey].append(value[1])   #value[1] is the unitindex
 
         return errors
 
