@@ -100,6 +100,7 @@ class Catalog(QtGui.QMainWindow):
         self.connect(self.ui.actionOpen, QtCore.SIGNAL("triggered()"), self.Project.openProject)
         self.connect(self.Project, QtCore.SIGNAL("updateCatalog"), self.updateCatalog)
         self.connect(self.Project, QtCore.SIGNAL("pathOfFileName"), self.setOpening)
+        self.connect(self.ui.actionClose, QtCore.SIGNAL("triggered()"), self.closeProject)
 
         # catalog setting's checkboxes action.
         self.catSetting = CatalogSetting(self)
@@ -195,6 +196,7 @@ class Catalog(QtGui.QMainWindow):
             self.reachedEnd = False
             while (self.searchedCount < len(self.fileItems)):
                 item = self.fileItems[self.searchedCount]
+                self.ui.treeCatalog.setCurrentItem(item)
                 self.searchedCount += 1
             
                 filename = self.getFilename(item)
@@ -339,6 +341,8 @@ class Catalog(QtGui.QMainWindow):
         self.actionOpen.setEnabled(True)
         self.actionFind.setEnabled(True)
         self.actionShowStat.setEnabled(True)
+        self.findBar.setEnabled(True)
+        self.findBar.hide()
         self.ui.treeCatalog.clear()
         
         if (not cats):
@@ -734,6 +738,7 @@ class Catalog(QtGui.QMainWindow):
             self.ui.menuOpenRecentProject.setEnabled(True)
         else:
             self.ui.menuOpenRecentProject.setEnabled(False)
+            self.ui.actionClose.setEnabled(False)
 
     def createRecentProject(self):
         """Update open recent project list."""
@@ -776,6 +781,7 @@ class Catalog(QtGui.QMainWindow):
             files.removeAt(files.count() - 1)
         if (files.count() > 0):
             self.ui.menuOpenRecentProject.setEnabled(True)
+            self.ui.actionClose.setEnabled(True)
         World.settings.setValue("recentProjectList", QtCore.QVariant(files))
         self.updateRecentProject()
         if not(os.path.isfile(filename)):
@@ -795,6 +801,7 @@ class Catalog(QtGui.QMainWindow):
         """Slot to clear all path in open recent project list."""
         self.ui.menuOpenRecentProject.clear()
         self.ui.menuOpenRecentProject.setEnabled(False)
+        self.ui.actionClose.setEnabled(False)
         World.settings.remove("recentProjectList")
 
     def updateRecentProject(self):
@@ -814,6 +821,23 @@ class Catalog(QtGui.QMainWindow):
 
         for j in range(numRecentProject, World.MaxRecentFiles):
             self.recentProject[j].setVisible(False)
+
+    def closeProject(self):
+        self.ui.treeCatalog.clear()
+        # disable action buttons
+        self.ui.actionClose.setEnabled(False)
+        self.ui.actionFind_in_Files.setEnabled(False)
+        self.ui.actionStatistics.setEnabled(False)
+        self.ui.actionReload.setEnabled(False)
+        self.ui.actionStop.setEnabled(False)
+        self.ui.actionBuild.setEnabled(False)
+        self.actionOpen.setEnabled(False)
+        self.actionFind.setEnabled(False)
+        self.actionShowStat.setEnabled(False)
+        self.findBar.setEnabled(False)
+        
+        World.settings.remove("CatalogPath")
+        World.settings.remove("diveIntoSubCatalog")
 
     def customContextMenuEvent(self, e):
         self.menu.exec_(e.globalPos())
