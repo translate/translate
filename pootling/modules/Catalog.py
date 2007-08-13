@@ -370,6 +370,29 @@ class Catalog(QtGui.QMainWindow):
         self.allowUpdate = True
         self.timer.start(10)
     
+    def keyPressEvent(self, event):
+        # press up arrow key
+        if (event.key() == 16777235):
+            try:
+                while (self.searchedCount < len(self.fileItems)):
+                    item = self.fileItems[self.searchedCount]
+                    self.ui.treeCatalog.setCurrentItem(item)
+                    break
+                self.searchedCount -= 1
+            except:
+                return 
+
+        # press down arrow key
+        if (event.key() == 16777237):
+            try:
+                while (self.searchedCount < len(self.fileItems)):
+                    item = self.fileItems[self.searchedCount]
+                    self.ui.treeCatalog.setCurrentItem(item)
+                    break
+                self.searchedCount += 1
+            except:
+                    return 
+
     def addCatalogFile(self, path, includeSub, item):
         """
         add path to catalog tree view if it's file, if it's directory then
