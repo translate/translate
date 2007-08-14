@@ -72,6 +72,8 @@ class Catalog(QtGui.QMainWindow):
                             self.tr("Last Translator")]
         self.ui.treeCatalog.setColumnCount(len(self.headerLabels))
         self.ui.treeCatalog.setHeaderLabels(self.headerLabels)
+        self.ui.treeCatalog.setSortingEnabled(True)
+        self.ui.treeCatalog.sortItems(0, QtCore.Qt.AscendingOrder)
         self.ui.treeCatalog.hideColumn(5)
         self.ui.treeCatalog.header().setResizeMode(QtGui.QHeaderView.Interactive)
         self.ui.treeCatalog.setWhatsThis("The catalog manager merges all files and folders enter one treewidget and displays all po, xlf... files. the way you can easily see if a template has been added or removed. Also some information about the files is displayed.")
