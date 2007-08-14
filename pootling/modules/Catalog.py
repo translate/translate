@@ -372,30 +372,37 @@ class Catalog(QtGui.QMainWindow):
         
         self.ui.treeCatalog.resizeColumnToContents(0)
         self.allowUpdate = True
+        item = self.fileItems[0]
+        self.ui.treeCatalog.setCurrentItem(item)
         self.timer.start(10)
     
     def keyPressEvent(self, event):
         # press up arrow key
         if (event.key() == 16777235):
             try:
-                while (self.searchedCount < len(self.fileItems)):
+                if (self.searchedCount > 0):
+                    self.searchedCount -= 1
                     item = self.fileItems[self.searchedCount]
                     self.ui.treeCatalog.setCurrentItem(item)
-                    break
-                self.searchedCount -= 1
+                else:
+                    self.searchedCount = len(self.fileItems)
             except:
                 return 
 
         # press down arrow key
         if (event.key() == 16777237):
             try:
-                while (self.searchedCount < len(self.fileItems)):
+                if (self.searchedCount < len(self.fileItems)):
+                    self.searchedCount += 1
                     item = self.fileItems[self.searchedCount]
                     self.ui.treeCatalog.setCurrentItem(item)
-                    break
-                self.searchedCount += 1
+                else:
+                    self.searchedCount = 0
             except:
                     return 
+        # press Enter key to open the file.
+        if (event.key() == 16777220):
+            self.emitOpenFile()
 
     def addCatalogFile(self, path, includeSub, item):
         """
