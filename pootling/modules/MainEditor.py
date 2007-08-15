@@ -701,13 +701,13 @@ class MainWindow(QtGui.QMainWindow):
         """
         Call Operator.saveStoreToFile() to return signal of filename
         """
-        self.Catalog.updateFileStatus(filename, self.numUntran, self.numFuzzy, self.numTran)
+        self.Catalog.updateFileStatus(filename)
 
     def setStatus(self, statusList):
         """Set status that contain current, total, untranslated, translated to the current file."""
         self.numUntran = statusList[0]
-        self.numFuzzy= statusList[1]
-        self.numTran= statusList[2]
+        self.numFuzzy = statusList[1]
+        self.numTran = statusList[2]
         current = statusList[3]
         self.numTotal = self.numUntran + self.numFuzzy + self.numTran
         

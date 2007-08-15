@@ -470,14 +470,19 @@ class Catalog(QtGui.QMainWindow):
 
                 break
     
-    def updateFileStatus(self, filename, untran, fuzzy, tran):
+    def updateFileStatus(self, filename):
         if (not self.isVisible()):
             return
         for item in self.fileItems:
             if filename == self.getFilename(item):
-                item.setText(1, str(tran))
-                item.setText(2, str(fuzzy))
-                item.setText(3, str(untran))
+                statusDic = self.getStats(filename)
+                item.setText(1, str(statusDic["numTranslated"]))
+                item.setText(2, str(statusDic["numFuzzy"]))
+                item.setText(3, str(statusDic["numUntranslated"]))
+                item.setText(4, str(statusDic["numTotal"]))
+                item.setText(5, statusDic["subVersionState"])
+                item.setText(6, statusDic["revisionDate"])
+                item.setText(7, statusDic["lastTranslator"])
                 break
 
     def getExistedItem(self, path):
