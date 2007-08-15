@@ -780,6 +780,21 @@ class Catalog(QtGui.QMainWindow):
         the filename to the open recent project list.
         @param filename: the project name to open
         """
+        files = World.settings.value("recentProjectList").toStringList()
+        if not(os.path.isfile(filename)):
+            titled = unicode(self.tr("%s was not found.\n do you want to remove it from list?")) % (unicode(filename))
+            ret = QtGui.QMessageBox.question(self, self.tr("Error"), 
+                titled,
+                QtGui.QMessageBox.Yes | QtGui.QMessageBox.Default, 
+                QtGui.QMessageBox.No | QtGui.QMessageBox.Escape) 
+            if (ret == QtGui.QMessageBox.Yes):
+                index = files.indexOf(QtCore.QRegExp(filename))
+                files.removeAt(index)
+                World.settings.setValue("recentProjectList", QtCore.QVariant(files))
+            self.ui.treeCatalog.clear()
+            self.updateRecentProject()
+            return False
+
         catSettings = QtCore.QSettings(filename, QtCore.QSettings.IniFormat)
         catalogPath = catSettings.value("itemList").toStringList()
         includeSub = catSettings.value("itemList").toBool()
@@ -788,7 +803,7 @@ class Catalog(QtGui.QMainWindow):
         World.settings.setValue("CatalogPath", QtCore.QVariant(catalogPath))
         World.settings.setValue("diveIntoSubCatalog", QtCore.QVariant(includeSub))
         
-        files = World.settings.value("recentProjectList").toStringList()
+#        files = World.settings.value("recentProjectList").toStringList()
         files.removeAll(filename)
         files.prepend(filename)
         while files.count() > World.MaxRecentFiles:
@@ -798,18 +813,6 @@ class Catalog(QtGui.QMainWindow):
             self.ui.actionClose.setEnabled(True)
         World.settings.setValue("recentProjectList", QtCore.QVariant(files))
         self.updateRecentProject()
-        if not(os.path.isfile(filename)):
-            titled = unicode(self.tr("%s was not found.\n do you want to remove it from list?")) % (unicode(filename))
-            ret = QtGui.QMessageBox.question(self, self.tr("Error"), 
-                    titled,
-                    QtGui.QMessageBox.Yes | QtGui.QMessageBox.Default, 
-                    QtGui.QMessageBox.No | QtGui.QMessageBox.Escape) 
-            if (ret == QtGui.QMessageBox.No):
-                return False
-            if (ret == QtGui.QMessageBox.Yes):
-                files.removeAt(0)
-                World.settings.setValue("recentProjectList", QtCore.QVariant(files))
-                self.updateRecentProject()
 
     def clearRecentProject(self):
         """Slot to clear all path in open recent project list."""
