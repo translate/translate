@@ -185,16 +185,14 @@ class Common(object):
     def punctranslate(cls, text):
         """Converts the punctuation in a string according to the rules of the 
         language."""
-        if not cls.puncdict:
-            return text
-        newtext = ""
-        #TODO: look at po::escapeforpo() for performance idea
-        for c in text:
-            if c in cls.puncdict:
-                newtext += cls.puncdict[c]
-            else:
-                newtext += c
-        return newtext
+#        TODO: look at po::escapeforpo() for performance idea
+        for source, target in cls.puncdict.iteritems():
+            text = text.replace(source, target)
+        # Let's account for cases where a punctuation symbol plus a space is 
+        # replaced, but the space won't exist at the end of a message
+        if text and text[-1] + " " in cls.puncdict:
+            text = text[:-1] + cls.puncdict[text[-1] + " "]
+        return text
     punctranslate = classmethod(punctranslate)
 
     def character_iter(cls, text):
