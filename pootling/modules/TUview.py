@@ -431,7 +431,7 @@ class TUview(QtGui.QDockWidget):
         """
         self.setTargetText(self.ui.txtSource.toPlainText())
         self.ui.txtTarget.setFocus()
-        self.setCursorToEnd(self.ui.txtTarget)
+        self.setCursorToHome(self.ui.txtTarget)
         
     def translation2target(self, translation):
         """
@@ -504,6 +504,15 @@ class TUview(QtGui.QDockWidget):
         self.ui.sourceStacked.setEnabled(value)
         self.ui.targetStacked.setEnabled(value)
         self.contentDirty = False
+        
+    def setCursorToHome(self, obj):
+        """
+        move the obj cursor to the beginning of the first line.
+        @param obj: QTextEdit object.
+        """
+        cursor = obj.textCursor()
+        cursor.setPosition(0)
+        obj.setTextCursor(cursor)
     
     def setCursorToEnd(self, obj):
         """
