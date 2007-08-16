@@ -331,12 +331,26 @@ class Operator(QtCore.QObject):
 
     def clearFuzzies(self):
         """Clear fuzzies."""
-        for unit in self.store.units:
-            if (unit.x_editor_state & World.fuzzy):
-                self.status.markFuzzy(unit, False)
-                self.emitUnit(unit)
-        self.emitStatus()
-        self.setModified(True)
+        result = QtGui.QMessageBox.warning(None, self.tr("Clear all fuzzies warning"),
+                    self.tr("You might lose some translation process  information, and this action cannot be undone. You should uncheck all options in Preferences/TM-Glossary for speed improvement. Are you sure you want to clear all fuzzies?"),
+                    QtGui.QMessageBox.Yes | QtGui.QMessageBox.Default,
+                    QtGui.QMessageBox.No | QtGui.QMessageBox.Escape)
+        if (result == QtGui.QMessageBox.Yes):
+            value, i = 0 , 0
+            lenFuzzyUnit = self.status.numFuzzy
+            for unit in self.store.units:
+                if (unit.x_editor_state & World.fuzzy):
+                    self.status.markFuzzy(unit, False)
+                    self.emitUnit(unit)
+                    i  += 1
+                    value = int((i * 100) / lenFuzzyUnit)
+                    self.emit(QtCore.SIGNAL("progressBarValue"), value)
+                    
+            self.emitStatus()
+            self.setModified(True)
+            return True
+        else:
+            return
         
     def toggleFuzzy(self):
         """
@@ -365,6 +379,8 @@ class Operator(QtCore.QObject):
         @param searchableText: text fields to search through.
         @param matchCase: bool indicates case sensitive condition.
         """
+#        if not(searching):
+#            QtGui.QMessageBox.information(None, self.tr("Find In Catalog") , unicode(self.tr("%s was not found.")) % (unicode(searchString)))
         self.currentTextField = 0
         self.foundPosition = -1
         self.searchString = unicode(searchString)
