@@ -63,9 +63,9 @@ class Catalog(QtGui.QMainWindow):
         self.iconFile = QtGui.QIcon("../images/iconfile.png")
         # set up table appearance and behavior
         self.headerLabels = [self.tr("Name"),
-                            self.tr("Translated"),
-                            self.tr("Fuzzy"),
                             self.tr("Untranslated"),
+                            self.tr("Fuzzy"),
+                            self.tr("Translated"),
                             self.tr("Total"),
                             self.tr("CVS/SVN Status"),
                             self.tr("Last Revision"),
@@ -476,9 +476,9 @@ class Catalog(QtGui.QMainWindow):
         for item in self.fileItems:
             if filename == self.getFilename(item):
                 statusDic = self.getStats(filename)
-                item.setText(1, str(statusDic["numTranslated"]))
+                item.setText(1, str(statusDic["numUntranslated"]))
                 item.setText(2, str(statusDic["numFuzzy"]))
-                item.setText(3, str(statusDic["numUntranslated"]))
+                item.setText(3, str(statusDic["numTranslated"]))
                 item.setText(4, str(statusDic["numTotal"]))
                 item.setText(5, statusDic["subVersionState"])
                 item.setText(6, statusDic["revisionDate"])
@@ -546,11 +546,11 @@ class Catalog(QtGui.QMainWindow):
             except:
                 pass
         
-        return {"basename":basename, "numTranslated":numTranslated, "numFuzzy":numFuzzy, 
-                "numUntranslated":numUntranslated, "numTotal":numTotal, 
+        return {"basename":basename, "numUntranslated":numUntranslated, "numFuzzy":numFuzzy, 
+                "numTranslated":numTranslated ,"numTotal":numTotal, 
                 "subVersionState":subVersionState, "revisionDate":revisionDate, 
                 "lastTranslator":lastTranslator}
-    
+
     def getStatsFromItem(self, item):
         """
         get number of translated, untranslated, and fuzzy units from item.
@@ -575,7 +575,7 @@ class Catalog(QtGui.QMainWindow):
             untranslated += stats["untranslated"]
         
         
-        return {"translated": translated, "fuzzy":fuzzy, "untranslated":untranslated}
+        return {"untranslated":untranslated, "fuzzy":fuzzy, "translated": translated}
     
     def setupCheckbox(self):
         """Set checked or unchecked mark for the header label of Catalog main window."""
@@ -722,9 +722,9 @@ class Catalog(QtGui.QMainWindow):
         childStats = self.getStats(path)
   
         if (childStats):
-            item.setText(1, str(childStats["numTranslated"]))
+            item.setText(1, str(childStats["numUntranslated"]))
             item.setText(2, str(childStats["numFuzzy"]))
-            item.setText(3, str(childStats["numUntranslated"]))
+            item.setText(3, str(childStats["numTranslated"]))
             item.setText(4, str(childStats["numTotal"]))
             item.setText(5, childStats["subVersionState"])
             item.setText(6, childStats["revisionDate"])
