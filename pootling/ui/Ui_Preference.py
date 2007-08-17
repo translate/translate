@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/ratha/sourceforge.net/translate/trunk/pootling/ui/Preference.ui'
+# Form implementation generated from reading ui file '/home/k-da/Documents/poxole/trunk/pootling/ui/Preference.ui'
 #
-# Created: Tue Jul 31 15:26:34 2007
-#      by: PyQt4 UI code generator 4.2
+# Created: Fri Aug 17 14:11:20 2007
+#      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,7 +12,7 @@ from PyQt4 import QtCore, QtGui
 class Ui_frmPreference(object):
     def setupUi(self, frmPreference):
         frmPreference.setObjectName("frmPreference")
-        frmPreference.resize(QtCore.QSize(QtCore.QRect(0,0,483,333).size()).expandedTo(frmPreference.minimumSizeHint()))
+        frmPreference.resize(QtCore.QSize(QtCore.QRect(0,0,531,333).size()).expandedTo(frmPreference.minimumSizeHint()))
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(7))
         sizePolicy.setHorizontalStretch(0)
@@ -21,9 +21,26 @@ class Ui_frmPreference(object):
         frmPreference.setSizePolicy(sizePolicy)
 
         self.gridlayout = QtGui.QGridLayout(frmPreference)
-        self.gridlayout.setMargin(9)
-        self.gridlayout.setSpacing(6)
+        self.gridlayout.setMargin(0)
+        self.gridlayout.setSpacing(0)
         self.gridlayout.setObjectName("gridlayout")
+
+        spacerItem = QtGui.QSpacerItem(40,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        self.gridlayout.addItem(spacerItem,1,0,1,1)
+
+        self.okButton = QtGui.QPushButton(frmPreference)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(1),QtGui.QSizePolicy.Policy(0))
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.okButton.sizePolicy().hasHeightForWidth())
+        self.okButton.setSizePolicy(sizePolicy)
+        self.okButton.setObjectName("okButton")
+        self.gridlayout.addWidget(self.okButton,1,1,1,1)
+
+        self.cancelButton = QtGui.QPushButton(frmPreference)
+        self.cancelButton.setObjectName("cancelButton")
+        self.gridlayout.addWidget(self.cancelButton,1,2,1,1)
 
         self.frame = QtGui.QFrame(frmPreference)
         self.frame.setFrameShape(QtGui.QFrame.NoFrame)
@@ -31,8 +48,8 @@ class Ui_frmPreference(object):
         self.frame.setObjectName("frame")
 
         self.gridlayout1 = QtGui.QGridLayout(self.frame)
-        self.gridlayout1.setMargin(9)
-        self.gridlayout1.setSpacing(6)
+        self.gridlayout1.setMargin(0)
+        self.gridlayout1.setSpacing(0)
         self.gridlayout1.setObjectName("gridlayout1")
 
         self.stackedWidget = QtGui.QStackedWidget(self.frame)
@@ -207,7 +224,7 @@ class Ui_frmPreference(object):
         sizePolicy.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
         self.label.setSizePolicy(sizePolicy)
 
-        font = QtGui.QFont()
+        font = QtGui.QFont(self.label.font())
         font.setWeight(75)
         font.setBold(True)
         self.label.setFont(font)
@@ -220,8 +237,8 @@ class Ui_frmPreference(object):
         self.line.setObjectName("line")
         self.gridlayout2.addWidget(self.line,1,0,1,1)
 
-        spacerItem = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
-        self.gridlayout2.addItem(spacerItem,3,0,1,1)
+        spacerItem1 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
+        self.gridlayout2.addItem(spacerItem1,3,0,1,1)
         self.stackedWidget.addWidget(self.personal)
 
         self.interface = QtGui.QWidget()
@@ -232,8 +249,8 @@ class Ui_frmPreference(object):
         self.gridlayout4.setSpacing(6)
         self.gridlayout4.setObjectName("gridlayout4")
 
-        spacerItem1 = QtGui.QSpacerItem(20,61,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
-        self.gridlayout4.addItem(spacerItem1,4,0,1,2)
+        spacerItem2 = QtGui.QSpacerItem(20,61,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
+        self.gridlayout4.addItem(spacerItem2,4,0,1,2)
 
         self.bntDefaultsColor = QtGui.QPushButton(self.interface)
         self.bntDefaultsColor.setObjectName("bntDefaultsColor")
@@ -385,15 +402,15 @@ class Ui_frmPreference(object):
 
         self.label_4 = QtGui.QLabel(self.interface)
 
-        font = QtGui.QFont()
+        font = QtGui.QFont(self.label_4.font())
         font.setWeight(75)
         font.setBold(True)
         self.label_4.setFont(font)
         self.label_4.setObjectName("label_4")
         self.gridlayout4.addWidget(self.label_4,0,0,1,4)
 
-        spacerItem2 = QtGui.QSpacerItem(40,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
-        self.gridlayout4.addItem(spacerItem2,3,0,1,1)
+        spacerItem3 = QtGui.QSpacerItem(40,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        self.gridlayout4.addItem(spacerItem3,3,0,1,1)
 
         self.bntAdjustAllFont = QtGui.QPushButton(self.interface)
         self.bntAdjustAllFont.setObjectName("bntAdjustAllFont")
@@ -408,8 +425,8 @@ class Ui_frmPreference(object):
         self.gridlayout6.setSpacing(6)
         self.gridlayout6.setObjectName("gridlayout6")
 
-        spacerItem3 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
-        self.gridlayout6.addItem(spacerItem3,7,0,1,1)
+        spacerItem4 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
+        self.gridlayout6.addItem(spacerItem4,7,0,1,1)
 
         self.frame_4 = QtGui.QFrame(self.TM_Glossary )
 
@@ -476,8 +493,8 @@ class Ui_frmPreference(object):
         self.gridlayout7.addWidget(self.chbAutoIdentTerm,0,0,1,1)
         self.gridlayout6.addWidget(self.frame_4,6,0,1,1)
 
-        spacerItem4 = QtGui.QSpacerItem(20,20,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Minimum)
-        self.gridlayout6.addItem(spacerItem4,3,0,1,1)
+        spacerItem5 = QtGui.QSpacerItem(20,20,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Minimum)
+        self.gridlayout6.addItem(spacerItem5,3,0,1,1)
 
         self.line_3 = QtGui.QFrame(self.TM_Glossary )
         self.line_3.setFrameShape(QtGui.QFrame.HLine)
@@ -544,7 +561,7 @@ class Ui_frmPreference(object):
         sizePolicy.setHeightForWidth(self.label_5.sizePolicy().hasHeightForWidth())
         self.label_5.setSizePolicy(sizePolicy)
 
-        font = QtGui.QFont()
+        font = QtGui.QFont(self.label_5.font())
         font.setWeight(75)
         font.setBold(True)
         self.label_5.setFont(font)
@@ -559,7 +576,7 @@ class Ui_frmPreference(object):
         sizePolicy.setHeightForWidth(self.label_6.sizePolicy().hasHeightForWidth())
         self.label_6.setSizePolicy(sizePolicy)
 
-        font = QtGui.QFont()
+        font = QtGui.QFont(self.label_6.font())
         font.setWeight(75)
         font.setBold(True)
         self.label_6.setFont(font)
@@ -603,8 +620,8 @@ class Ui_frmPreference(object):
         self.gridlayout10.addWidget(self.chkHeaderAuto,0,0,1,1)
         self.gridlayout9.addWidget(self.frame_6,2,0,1,1)
 
-        spacerItem5 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
-        self.gridlayout9.addItem(spacerItem5,3,0,1,1)
+        spacerItem6 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
+        self.gridlayout9.addItem(spacerItem6,3,0,1,1)
 
         self.label_7 = QtGui.QLabel(self.save)
 
@@ -614,7 +631,7 @@ class Ui_frmPreference(object):
         sizePolicy.setHeightForWidth(self.label_7.sizePolicy().hasHeightForWidth())
         self.label_7.setSizePolicy(sizePolicy)
 
-        font = QtGui.QFont()
+        font = QtGui.QFont(self.label_7.font())
         font.setWeight(75)
         font.setBold(True)
         self.label_7.setFont(font)
@@ -627,6 +644,61 @@ class Ui_frmPreference(object):
         self.line_5.setObjectName("line_5")
         self.gridlayout9.addWidget(self.line_5,1,0,1,1)
         self.stackedWidget.addWidget(self.save)
+
+        self.page = QtGui.QWidget()
+        self.page.setObjectName("page")
+
+        self.gridlayout11 = QtGui.QGridLayout(self.page)
+        self.gridlayout11.setMargin(9)
+        self.gridlayout11.setSpacing(6)
+        self.gridlayout11.setObjectName("gridlayout11")
+
+        spacerItem7 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
+        self.gridlayout11.addItem(spacerItem7,3,0,1,1)
+
+        self.frame_7 = QtGui.QFrame(self.page)
+        self.frame_7.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.frame_7.setFrameShadow(QtGui.QFrame.Raised)
+        self.frame_7.setObjectName("frame_7")
+
+        self.gridlayout12 = QtGui.QGridLayout(self.frame_7)
+        self.gridlayout12.setMargin(0)
+        self.gridlayout12.setSpacing(6)
+        self.gridlayout12.setObjectName("gridlayout12")
+
+        self.chkCursorHome = QtGui.QCheckBox(self.frame_7)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(0))
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.chkCursorHome.sizePolicy().hasHeightForWidth())
+        self.chkCursorHome.setSizePolicy(sizePolicy)
+        self.chkCursorHome.setChecked(True)
+        self.chkCursorHome.setObjectName("chkCursorHome")
+        self.gridlayout12.addWidget(self.chkCursorHome,0,0,1,1)
+        self.gridlayout11.addWidget(self.frame_7,2,0,1,1)
+
+        self.line_6 = QtGui.QFrame(self.page)
+        self.line_6.setFrameShape(QtGui.QFrame.HLine)
+        self.line_6.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line_6.setObjectName("line_6")
+        self.gridlayout11.addWidget(self.line_6,1,0,1,1)
+
+        self.label_8 = QtGui.QLabel(self.page)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(5))
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_8.sizePolicy().hasHeightForWidth())
+        self.label_8.setSizePolicy(sizePolicy)
+
+        font = QtGui.QFont(self.label_8.font())
+        font.setWeight(75)
+        font.setBold(True)
+        self.label_8.setFont(font)
+        self.label_8.setObjectName("label_8")
+        self.gridlayout11.addWidget(self.label_8,0,0,1,1)
+        self.stackedWidget.addWidget(self.page)
         self.gridlayout1.addWidget(self.stackedWidget,0,1,1,1)
 
         self.listWidget = QtGui.QListWidget(self.frame)
@@ -644,23 +716,6 @@ class Ui_frmPreference(object):
         self.listWidget.setObjectName("listWidget")
         self.gridlayout1.addWidget(self.listWidget,0,0,1,1)
         self.gridlayout.addWidget(self.frame,0,0,1,3)
-
-        self.cancelButton = QtGui.QPushButton(frmPreference)
-        self.cancelButton.setObjectName("cancelButton")
-        self.gridlayout.addWidget(self.cancelButton,1,2,1,1)
-
-        self.okButton = QtGui.QPushButton(frmPreference)
-
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(1),QtGui.QSizePolicy.Policy(0))
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.okButton.sizePolicy().hasHeightForWidth())
-        self.okButton.setSizePolicy(sizePolicy)
-        self.okButton.setObjectName("okButton")
-        self.gridlayout.addWidget(self.okButton,1,1,1,1)
-
-        spacerItem6 = QtGui.QSpacerItem(321,31,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
-        self.gridlayout.addItem(spacerItem6,1,0,1,1)
 
         self.retranslateUi(frmPreference)
         self.stackedWidget.setCurrentIndex(0)
@@ -699,6 +754,8 @@ class Ui_frmPreference(object):
 
     def retranslateUi(self, frmPreference):
         frmPreference.setWindowTitle(QtGui.QApplication.translate("frmPreference", "Preferences", None, QtGui.QApplication.UnicodeUTF8))
+        self.okButton.setText(QtGui.QApplication.translate("frmPreference", "&OK", None, QtGui.QApplication.UnicodeUTF8))
+        self.cancelButton.setText(QtGui.QApplication.translate("frmPreference", "&Cancel", None, QtGui.QApplication.UnicodeUTF8))
         self.spinBox.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Singular/Plural forms</h3>Set plural forms for a specific language. Pootling try to set this value for you. If no information provided, you should fill up by yourself or leave it blank if you are not sure.", None, QtGui.QApplication.UnicodeUTF8))
         self.lineEqaution.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Plural equation</h3>Set plural equation for a specific language. Pootling tries to set this value for you. If no information provided, you should fill up by yourself or leave it blank if you are not sure.", None, QtGui.QApplication.UnicodeUTF8))
         self.label_3.setText(QtGui.QApplication.translate("frmPreference", "Number of singular/plural forms:", None, QtGui.QApplication.UnicodeUTF8))
@@ -772,8 +829,9 @@ class Ui_frmPreference(object):
         self.chkHeaderAuto.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Update header on save</h3>Check this opton to automatically have your header updated while saving. The information will be querried from Personalize tab. ", None, QtGui.QApplication.UnicodeUTF8))
         self.chkHeaderAuto.setText(QtGui.QApplication.translate("frmPreference", "Update header on save", None, QtGui.QApplication.UnicodeUTF8))
         self.label_7.setText(QtGui.QApplication.translate("frmPreference", "Options for Saving File", None, QtGui.QApplication.UnicodeUTF8))
-        self.cancelButton.setText(QtGui.QApplication.translate("frmPreference", "&Cancel", None, QtGui.QApplication.UnicodeUTF8))
-        self.okButton.setText(QtGui.QApplication.translate("frmPreference", "&OK", None, QtGui.QApplication.UnicodeUTF8))
+        self.chkCursorHome.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Update header on save</h3>Check this opton to automatically have your header updated while saving. The information will be querried from Personalize tab. ", None, QtGui.QApplication.UnicodeUTF8))
+        self.chkCursorHome.setText(QtGui.QApplication.translate("frmPreference", "Cursor to the beginning of first line after Copy Source To Target.", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_8.setText(QtGui.QApplication.translate("frmPreference", "Options for Editor", None, QtGui.QApplication.UnicodeUTF8))
 
 
 
