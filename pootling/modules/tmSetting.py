@@ -134,6 +134,9 @@ class globalSetting(QtGui.QDialog):
         for path in disabledPath:
             self.addLocation(path, QtCore.Qt.Unchecked)
         
+        if (len(enabledPath) > 0) or (len(disabledPath) > 0):
+            self.ui.listWidget.setCurrentRow(0)
+        
         minSim = self.getMinimumSimilarity()
         maxCan = self.getMaximumCandidates()
         maxLen = self.getMaximumLenght()
