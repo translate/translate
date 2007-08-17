@@ -46,10 +46,9 @@ class newProject(QtGui.QDialog):
         self.ui.cbxProject.hide()
         self.fileExtension = ".ini"
         
-        self.connect(self.ui.btnCancel, QtCore.SIGNAL("clicked()"), self, QtCore.SLOT("reject()"))
+        self.connect(self.ui.btnCancel, QtCore.SIGNAL("clicked()"), self.clearContent)
         self.connect(self.ui.btnBack, QtCore.SIGNAL("clicked()"), self.backButton)
         self.connect(self.ui.btnNext, QtCore.SIGNAL("clicked()"), self.nextButton)
-        self.connect(self.ui.btnFinish, QtCore.SIGNAL("clicked()"), self, QtCore.SLOT("accept()"))
         self.connect(self.ui.btnFinish, QtCore.SIGNAL("clicked()"), self.finishButton)
         self.connect(self.ui.projectName, QtCore.SIGNAL("textChanged(QString)"), self.projectNameAvailable)
         self.connect(self.ui.configurationFile, QtCore.SIGNAL("textChanged(QString)"), self.projectNameAvailable)
@@ -89,7 +88,6 @@ class newProject(QtGui.QDialog):
             directory = os.path.dirname(unicode(filenames[0]))
             World.settings.setValue("workingDir", QtCore.QVariant(directory))
 
-
     def showDialog(self):
         directory = World.settings.value("workingDir").toString()
         filenames = FileDialog.fileDialog().getExistingPath(self, directory, self.tr("Directory"))
@@ -97,8 +95,7 @@ class newProject(QtGui.QDialog):
             self.ui.configurationFile.setText(filenames[0])
             directory = os.path.dirname(unicode(filenames[0]))
             World.settings.setValue("workingDir", QtCore.QVariant(directory))
-            
-        
+
     def projectNameAvailable(self):
           if (self.ui.projectName.text() and self.ui.configurationFile.text()):
               self.ui.btnNext.setEnabled(True)
@@ -118,6 +115,17 @@ class newProject(QtGui.QDialog):
         self.catalogModified = True
         self.ui.chbDiveIntoSubfolders.setChecked(False)
     
+    def clearContent(self):
+        self.ui.stackedWidget.setCurrentIndex(0)
+        self.ui.projectName.setText("") 
+        self.ui.configurationFile.setText("")
+        self.ui.cbxLanguages.setCurrentIndex(0)
+        self.ui.listWidget.clear()
+        self.ui.chbDiveIntoSubfolders.setChecked(False)
+        self.ui.btnBack.setEnabled(False)
+        self.ui.projectName.setFocus()
+        self.close()
+
     def moveItem(self, distance):
         '''move an item up or down depending on distance
         @param distance: int'''
