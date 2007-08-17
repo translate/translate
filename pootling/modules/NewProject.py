@@ -86,26 +86,18 @@ class newProject(QtGui.QDialog):
         if (filenames):
             for filename in filenames:
                 self.addLocation(filename)
+            directory = os.path.dirname(unicode(filenames[0]))
+            World.settings.setValue("workingDir", QtCore.QVariant(directory))
+
 
     def showDialog(self):
         directory = World.settings.value("workingDir").toString()
         filenames = FileDialog.fileDialog().getExistingPath(self, directory, self.tr("Directory"))
         if (filenames and len(filenames) >= 1):
             self.ui.configurationFile.setText(filenames[0])
-
-    def showFileDialog(self):
-        """
-        Open the file dialog where you can choose both file and directory.
-        Add path to Catalog list.
-        """
-        directory = World.settings.value("workingDir").toString()
-        filenames = FileDialog.fileDialog().getExistingPath(
-                self,
-                directory,
-                World.fileFilters)
-        if (filenames):
-            for filename in filenames:
-                self.addLocation(filename)
+            directory = os.path.dirname(unicode(filenames[0]))
+            World.settings.setValue("workingDir", QtCore.QVariant(directory))
+            
         
     def projectNameAvailable(self):
           if (self.ui.projectName.text() and self.ui.configurationFile.text()):
@@ -204,11 +196,16 @@ class newProject(QtGui.QDialog):
         self.ui.btnFinish.setEnabled(False)
 
     def openProject(self):
+        """ Open a file dialog for choosing project file as .ini formata"""
+        directory = World.settings.value("workingDir").toString()
+        
         fileOpen = QtGui.QFileDialog.getOpenFileName(self, self.tr("Open File"),
-                        QtCore.QDir.homePath(),
+                        directory,
 self.tr("Ini file fomat (*.ini)"))
         if not fileOpen.isEmpty():
             self.emit(QtCore.SIGNAL("pathOfFileName"),  fileOpen)
+            directory = os.path.dirname(unicode(filename))
+            World.settings.setValue("workingDir", QtCore.QVariant(directory))
 
 
 if __name__ == "__main__":

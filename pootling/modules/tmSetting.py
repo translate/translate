@@ -107,6 +107,8 @@ class globalSetting(QtGui.QDialog):
         if (filenames):
             for filename in filenames:
                 self.addLocation(filename)
+            directory = os.path.dirname(unicode(filenames[0]))
+            World.settings.setValue("workingDir", QtCore.QVariant(directory))
     
     def showDialog(self):
         """Make the Translation Memory or Glossary Setting dialog visible."""

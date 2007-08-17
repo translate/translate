@@ -62,6 +62,9 @@ class CatalogSetting(QtGui.QDialog):
                     item = QtGui.QListWidgetItem(filename)
                     self.ui.listWidget.addItem(item)
                     self.catalogModified = True
+            directory = os.path.dirname(unicode(filenames[0]))
+            World.settings.setValue("workingDir", QtCore.QVariant(directory))
+
     
     def clearLocation(self):
         """Clear all paths from the Catalog List and also unchecked DiveIntoSubCatalog checkbox."""
