@@ -56,6 +56,7 @@ class MainWindow(QtGui.QMainWindow):
         self.createBookmarkAction()
         self.clearBookmarks()
         imagesdir = "../images"
+        self.ui.actionAuto_translate.setEnabled(False)
         app = QtGui.QApplication.instance()
         self.connect(app, QtCore.SIGNAL("focusChanged(QWidget *,QWidget *)"), self.focusChanged)
         
@@ -300,6 +301,7 @@ class MainWindow(QtGui.QMainWindow):
         self.progressBar.setVisible(False)
         self.ui.statusbar.addPermanentWidget(self.progressBar)
         self.connect(self.dockOverview, QtCore.SIGNAL("progressBarValue"), self.updateProgress)
+        self.connect(self.operator, QtCore.SIGNAL("progressBarValue"), self.updateProgress)
 
         # get the last state of mainwindows's toolbars and dockwidgets
         state = World.settings.value("MainWindowState")
@@ -610,6 +612,7 @@ class MainWindow(QtGui.QMainWindow):
             self.operator.closeFile()
             self.statuslabel.setText("")
             self.ui.actionSave.setEnabled(False)
+            self.ui.actionAuto_translate.setEnabled(False)
             self.operator.setModified(False)
         elif (self.operator.isModified()):
             if self.fileaction.clearedModified(self):
@@ -658,6 +661,7 @@ class MainWindow(QtGui.QMainWindow):
         #TODO: it is enable unless Automatically lookup translation in TM is checked.
         self.ui.actionCopySearchResult2Target.setEnabled(value)
         self.findBar.toggleViewAction().setVisible(value)
+        self.ui.actionAuto_translate.setEnabled(True)
     
     def addOpenToBar(self):
         '''add Open action or menu Open_Recent action to toolbar
@@ -724,6 +728,9 @@ def main(inputFile = None):
     if __name__ == "__main__":
         QtCore.QDir.setCurrent(os.path.join(sys.path[0], "../ui"))
     else:
+#        try:
+#            QtCore.QDir.setCurrent(os.path.join(sys.path[0], "../images"))
+#        except Exception, e:
         import distutils.sysconfig
         packagesdir = distutils.sysconfig.get_python_lib(prefix = "/usr/local")
         QtCore.QDir.setCurrent(os.path.join(packagesdir, "pootling", "ui"))
