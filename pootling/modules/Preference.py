@@ -65,6 +65,12 @@ class Preference(QtGui.QDialog):
         else:
             self.ui.chkHeaderAuto.setCheckState(QtCore.Qt.Unchecked)
         
+        checkCurHome = World.settings.value("cursorHome", QtCore.QVariant(True))
+        if (checkCurHome.toBool()):
+            self.ui.chkCursorHome.setCheckState(QtCore.Qt.Checked)
+        else:
+            self.ui.chkCursorHome.setCheckState(QtCore.Qt.Unchecked)
+            
         # TODO: set checkstateOptions of TM preference here when applicaiton is running
         TMpreference = World.settings.value("TMpreference").toInt()[0]
         self.ui.chbAutoTranslate.setChecked(TMpreference & 1 and True or False)
@@ -114,6 +120,7 @@ class Preference(QtGui.QDialog):
         World.settings.setValue("nPlural", QtCore.QVariant(self.ui.spinBox.value()))
         World.settings.setValue("equation", QtCore.QVariant(self.ui.lineEqaution.text()))
         World.settings.setValue("headerAuto", QtCore.QVariant(self.ui.chkHeaderAuto.checkState() == QtCore.Qt.Checked))
+        World.settings.setValue("cursorHome", QtCore.QVariant(self.ui.chkCursorHome.checkState() == QtCore.Qt.Checked))
         TMpreference = self.setTMOptions()
         World.settings.setValue("TMpreference", QtCore.QVariant(TMpreference))
         GlossaryPreference = self.setGlossaryOptions()
@@ -288,6 +295,7 @@ class Preference(QtGui.QDialog):
             self.ui.listWidget.addItem(QtGui.QListWidgetItem(QtGui.QIcon("../images/colorize.png"), self.tr("Font & Color")))
             self.ui.listWidget.addItem(QtGui.QListWidgetItem(QtGui.QIcon("../images/memory.png"), self.tr("TM-Glossary")))
             self.ui.listWidget.addItem(QtGui.QListWidgetItem(QtGui.QIcon("../images/save.png"), self.tr("      Save    ")))
+            self.ui.listWidget.addItem(QtGui.QListWidgetItem(QtGui.QIcon("../images/editor.png"), self.tr("      Editor    ")))
             self.ui.listWidget.setViewMode(QtGui.QListView.IconMode)
             self.ui.listWidget.setCurrentRow(0)
             self.ui.listWidget.setResizeMode(QtGui.QListView.Fixed)
@@ -310,6 +318,7 @@ class Preference(QtGui.QDialog):
             
             # connect signals
             self.connect(self.ui.chkHeaderAuto, QtCore.SIGNAL("stateChanged(int)"), self.ui.chkHeaderAuto.checkState) 
+            self.connect(self.ui.chkCursorHome, QtCore.SIGNAL("stateChanged(int)"), self.ui.chkCursorHome.checkState) 
             self.connect(self.ui.bntFontOverview, QtCore.SIGNAL("clicked()"), self.fontOverview) 
             self.connect(self.ui.bntFontOverviewHeader, QtCore.SIGNAL("clicked()"), self.fontOverviewHeader)
             self.connect(self.ui.bntFontSource, QtCore.SIGNAL("clicked()"), self.fontSource) 
