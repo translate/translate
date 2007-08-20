@@ -431,7 +431,10 @@ class TUview(QtGui.QDockWidget):
         """
         self.setTargetText(self.ui.txtSource.toPlainText())
         self.ui.txtTarget.setFocus()
-        self.setCursorToHome(self.ui.txtTarget)
+        if (World.settings.value("cursorHome", QtCore.QVariant(True)).toBool()):
+            self.setCursorToHome(self.ui.txtTarget)
+        else:
+            self.setCursorToEnd(self.ui.txtTarget)
         
     def translation2target(self, translation):
         """
