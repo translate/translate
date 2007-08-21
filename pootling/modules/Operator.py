@@ -58,6 +58,7 @@ class Operator(QtCore.QObject):
         self.tmMatcher = None
         self.termCache = {} # for improve glossary search speed
         self.tmCache = {} # for improve TM search speed
+        self.searchFound = False
 
     def getUnits(self, fileName):
         """
@@ -116,7 +117,7 @@ class Operator(QtCore.QObject):
         """
         if self.status:
             statusList = self.status.getStatus()
-            statusList.append(self.currentUnitIndex +1 )
+            statusList.append(self.currentUnitIndex + 1)
             self.emit(QtCore.SIGNAL("currentStatus"), statusList)
     
     def emitUnit(self, unit):
@@ -126,7 +127,11 @@ class Operator(QtCore.QObject):
         """
         if (hasattr(unit, "x_editor_filterIndex")):
             self.currentUnitIndex = unit.x_editor_filterIndex
-            self.searchPointer = unit.x_editor_filterIndex
+        
+        if (hasattr(self, "searchFields")) and (not self.searchFound):
+            self.foundPosition = -1
+            self.currentField = self.searchFields[0]
+        
         self.emit(QtCore.SIGNAL("currentUnit"), unit)
         self.emitStatus()
         self.emitLookupUnit()
@@ -371,89 +376,100 @@ class Operator(QtCore.QObject):
         self.emitStatus()
         self.setModified(True)
     
-    def initSearch(self, searchString, searchableText, matchCase):
+    def initSearch(self, searchString = None, searchFields = None, matchCase = None):
         """
         Initilize the needed variables for searching.
         @param searchString: string to search for.
-        @param searchableText: text fields to search through.
+        @param searchFields: text fields to search through.
         @param matchCase: bool indicates case sensitive condition.
         """
-#        if not(searching):
-#            QtGui.QMessageBox.information(None, self.tr("Find In Catalog") , unicode(self.tr("%s was not found.")) % (unicode(searchString)))
-        self.currentTextField = 0
+        if (not searchString) or (not searchFields):
+            return
+        
         self.foundPosition = -1
         self.searchString = unicode(searchString)
-        if (searchString):
-            self.srcExpression = QtCore.QRegExp("&?".join(unicode(searchString)))
-        else:
-            self.srcExpression = None
+        self.searchFields = searchFields
+        self.currentField = self.searchFields[0]
         
-        self.searchableText = searchableText
-        self.matchCase = matchCase
-        if (not matchCase) and (self.srcExpression):
-            self.srcExpression.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
-
+        # self.srcExpression = QtCore.QRegExp(searchString)
+        # self.srcExpression = QtCore.QRegExp("&?".join(unicode(searchString)))
+        # if (matchCase):
+        #     self.srcExpression.setCaseSensitivity(QtCore.Qt.CaseSensitive)
+        # else:
+        #     self.srcExpression.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
+        
     def searchNext(self):
         """
-        Search forward through the text fields or unit.
+        Search forward through units/text fields.
         """
-        if (not hasattr(self, "searchPointer")) or \
-            (not hasattr(self, "searchableText")):
+        if (not hasattr(self, "searchFields")):
             return
-        oldSearchPointer = self.searchPointer
-        while (self.searchPointer < len(self.filteredList)) and self.srcExpression:
-            unitString = QtCore.QString(self._getUnitString())
-            self.foundPosition = unitString.indexOf(self.srcExpression, self.foundPosition + 1)
-            self.searchString = unicode(self.srcExpression.capturedTexts()[0])
-            # found in current textField
-            if (self.foundPosition >= 0):
-                self._searchFound()
-                return True
-            else:
-                # next textField
-                if (self.currentTextField < len(self.searchableText) - 1):
-                    self.currentTextField += 1
-                    continue
-                # next unit
-                else:
-                    self.currentTextField = 0
-                    self.searchPointer += 1
+        
+        currentUnit = self.getCurrentUnit()
+        resumePoint = self.filteredList.index(currentUnit)
+        for unit in (self.filteredList[resumePoint:] + self.filteredList[:resumePoint]):
+            resumeField = self.searchFields.index(self.currentField)
+            # slice the first path out, since we came thru it already.
+            for field in self.searchFields[resumeField:]:
+                unitString = self._getStringFromUnit(unit, field)
+                self.foundPosition = unitString.find(self.searchString, self.foundPosition + 1)
+##                self.foundPosition = unitString.indexOf(self.srcExpression, self.foundPosition + 1)
+                if (self.foundPosition > -1):
+                    self.currentField = field
+                    break
+            if (self.foundPosition > -1):
+                self._searchFound(unit)
+                break
+            self.currentField = self.searchFields[0]
+            self.foundPosition = -1
         else:
             # exhausted
             self._searchNotFound()
-            self.emit(QtCore.SIGNAL("EOF"), "Next")
-            self.searchPointer = oldSearchPointer
+##            self.emit(QtCore.SIGNAL("EOF"), "Next")
 
     def searchPrevious(self):
         """
-        Search backward through the text fields.
+        Search backward through units/text fields.
         """
-        if (not hasattr(self, "searchPointer")):
+        if (not hasattr(self, "searchFields")):
             return
-        while (self.searchPointer >= 0):
-            unitString = self._getUnitString()
-            self.foundPosition = unitString.rfind(self.searchString, 0, self.foundPosition)
-            # found in current textField
-            if (self.foundPosition >= 0):
-                self._searchFound()
+        
+        currentUnit = self.getCurrentUnit()
+        resumePoint = self.filteredList.index(currentUnit) + 1
+        for unit in reversed(self.filteredList[resumePoint:] + self.filteredList[:resumePoint]):
+            resumeField = self.searchFields.index(self.currentField) + 1
+            # get back from where we came thru to the first.
+            for field in reversed(self.searchFields[:resumeField]):
+                unitString = self._getStringFromUnit(unit, field)
+##                self.foundPosition = unitString.lastIndexOf(self.srcExpression, self.foundPosition - 1)
+                self.foundPosition = unitString.rfind(self.searchString, 0, self.foundPosition)
+                if (self.foundPosition > -1):
+                    self.currentField = field
+                    break
+            if (self.foundPosition > -1):
+                self._searchFound(unit)
                 break
-            else:
-                # previous textField
-                if (self.currentTextField > 0):
-                    self.currentTextField -= 1
-                    unitString = self._getUnitString()
-                    self.foundPosition = len(unitString)
-                    continue
-                # previous unit
-                else:
-                    self.currentTextField = len(self.searchableText) - 1
-                    self.searchPointer -= 1
-                unitString = self._getUnitString()
-                self.foundPosition = len(unitString)
+            self.currentField = self.searchFields[0]
+            self.foundPosition = -1
         else:
             # exhausted
             self._searchNotFound()
-            self.emit(QtCore.SIGNAL("EOF"), "Previous")
+##            self.emit(QtCore.SIGNAL("EOF"), "Previous")
+    
+    def _getStringFromUnit(self, unit, field):
+        """
+        Return QString of unit's field; source, target, or comment.
+        """
+        if (field == World.source):
+            unitString = unit.source
+        elif (field == World.target):
+            unitString = unit.target
+        elif (field == World.comment):
+            unitString = unit.getnotes()
+        else:
+            unitString = ""
+##        return QtCore.QString(unitString)
+        return unitString
     
     def replace(self, replacedText):
         """
@@ -462,7 +478,7 @@ class Operator(QtCore.QObject):
         """
         self.foundPosition = -1
         if self.searchNext():
-            textField = self.searchableText[self.currentTextField]
+            textField = self.searchFields[self.currentField]
             self.emit(QtCore.SIGNAL("replaceText"), \
                 textField, \
                 self.foundPosition, \
@@ -477,48 +493,31 @@ class Operator(QtCore.QObject):
         """
         self.foundPosition = -1
         while self.searchNext():
-            textField = self.searchableText[self.currentTextField]
+            textField = self.searchFields[self.currentField]
             self.emit(QtCore.SIGNAL("replaceText"), \
                 textField, \
                 self.foundPosition, \
                 len(unicode(self.searchString)), \
                 replacedText)
-        
-    def _getUnitString(self):
-        """
-        @return: the string of current text field.
-        """
-        if (self.searchPointer >= len(self.filteredList) or self.searchPointer < 0):
-            return ""
-        textField = self.searchableText[self.currentTextField]
-        if (textField == World.source):
-            unitString = self.filteredList[self.searchPointer].source
-        elif (textField == World.target):
-            unitString = self.filteredList[self.searchPointer].target
-        elif (textField == World.comment):
-            unitString = self.filteredList[self.searchPointer].getnotes()
-        else:
-            unitString = ""
-        if (not self.matchCase):
-            unitString = unitString.lower()
-        return unitString
 
-    def _searchFound(self):
+    def _searchFound(self, unit):
         """
         Emit "searchResult" signal with searchString, textField, and
         foundPosition.
         """
-        self.setUnitFromPosition(self.searchPointer)
-        textField = self.searchableText[self.currentTextField]
-        self.emit(QtCore.SIGNAL("searchResult"), self.searchString, textField, self.foundPosition)
+        self.searchFound = True
+        self.emitUnit(unit)
+##        searchString = unicode(self.srcExpression.capturedTexts()[0])
+        self.emit(QtCore.SIGNAL("searchResult"), self.searchString, self.currentField, self.foundPosition)
+        self.searchFound = False
     
     def _searchNotFound(self):
         """
         Emit "searchResult" signal with searchString="", textField, and
         foundPosition... indicates result not found.
         """
-        textField = self.searchableText[self.currentTextField]
-        self.emit(QtCore.SIGNAL("searchResult"), "", textField, -1)
+        #textField = self.searchFields[self.currentField]
+        self.emit(QtCore.SIGNAL("searchResult"), "", self.currentField, -1)
     
     def closeFile(self):
         self.store = None
