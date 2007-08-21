@@ -227,7 +227,7 @@ class StatsCache:
                 fileid = self.cachestore(store)
             except ValueError, e:
                 print str(e)
-                return
+                return {}
 
         self.cur.execute("""SELECT 
             state,
@@ -288,7 +288,7 @@ class StatsCache:
                 configid = self.cur.lastrowid
         except ValueError, e:
             print str(e)
-            return
+            return {}
 
         def geterrors():
             self.cur.execute("""SELECT 
