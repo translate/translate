@@ -294,8 +294,8 @@ class StatsCache:
             self.cur.execute("""SELECT 
                 name,
                 unitindex
-                FROM uniterrors WHERE fileid=? and configid
-                ORDER BY unitindex;""", (fileid,))
+                FROM uniterrors WHERE fileid=? and configid=?
+                ORDER BY unitindex;""", (fileid, configid))
             return self.cur.fetchall()
 
         values = geterrors()
