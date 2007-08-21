@@ -290,7 +290,10 @@ class UnitChecker(object):
     return failures
 
 class TranslationChecker(UnitChecker):
-  """A checker that passes whole units to the checks, not just (source, target)."""
+  """A checker that passes source and target strings to the checks, not the 
+  whole unit.
+  
+  This provides some speedup and simplifies testing."""
   def __init__(self, checkerconfig=None, excludefilters=None, limitfilters=None, errorhandler=None):
     super(TranslationChecker, self).__init__(checkerconfig, excludefilters, limitfilters, errorhandler)
 
@@ -316,7 +319,7 @@ class TranslationChecker(UnitChecker):
     return super(TranslationChecker, self).run_filters(unit)
 
 class TeeChecker:
-  """A Checker that controls multiple checkers..."""
+  """A Checker that controls multiple checkers."""
   def __init__(self, checkerconfig=None, excludefilters=None, limitfilters=None, checkerclasses=None, errorhandler=None, languagecode=None):
     """construct a TeeChecker from the given checkers"""
     self.limitfilters = limitfilters
@@ -354,7 +357,7 @@ class TeeChecker:
 
 
 class StandardChecker(TranslationChecker):
-  """simply defines a bunch of tests..."""
+  """The basic test suite for source -> target translations."""
   def untranslated(self, str1, str2):
     """checks whether a string has been translated at all"""
     str2 = prefilters.removekdecomments(str2)
