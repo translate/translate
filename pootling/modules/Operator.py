@@ -336,18 +336,17 @@ class Operator(QtCore.QObject):
                     QtGui.QMessageBox.Yes | QtGui.QMessageBox.Default,
                     QtGui.QMessageBox.No | QtGui.QMessageBox.Escape)
         if (result == QtGui.QMessageBox.Yes):
-            value, i = 0 , 0
-            lenFuzzyUnit = self.status.numFuzzy
+            self.emit(QtCore.SIGNAL("requestTargetChanged"))
+            value, i = 0 , 0.0
+            lenUnit = len(self.store.units)
             for unit in self.store.units:
                 if (unit.x_editor_state & World.fuzzy):
                     self.status.markFuzzy(unit, False)
                     self.emitUnit(unit)
-                    i  += 1
-                    value = int((i * 100) / lenFuzzyUnit)
-                    self.emit(QtCore.SIGNAL("progressBarValue"), value)
-                    
-            self.emitStatus()
-            self.setModified(True)
+                i  += 1
+                value = int((i / lenUnit) * 100)
+                self.emit(QtCore.SIGNAL("progressBarValue"), value)
+            self.contentChanged()
             return True
         else:
             return
