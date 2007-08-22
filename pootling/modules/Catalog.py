@@ -72,6 +72,7 @@ class Catalog(QtGui.QMainWindow):
                             self.tr("Last Translator")]
         self.ui.treeCatalog.setColumnCount(len(self.headerLabels))
         self.ui.treeCatalog.setHeaderLabels(self.headerLabels)
+        #TODO will think about casesensitive
         self.ui.treeCatalog.setSortingEnabled(True)
         self.ui.treeCatalog.sortItems(0, QtCore.Qt.AscendingOrder)
         self.ui.treeCatalog.hideColumn(5)
@@ -476,10 +477,10 @@ class Catalog(QtGui.QMainWindow):
         for item in self.fileItems:
             if filename == self.getFilename(item):
                 statusDic = self.getStats(filename)
-                item.setText(1, str(statusDic["numUntranslated"]))
-                item.setText(2, str(statusDic["numFuzzy"]))
-                item.setText(3, str(statusDic["numTranslated"]))
-                item.setText(4, str(statusDic["numTotal"]))
+                item.setText(1, (str(statusDic["numUntranslated"])).rjust(4))
+                item.setText(2, (str(statusDic["numFuzzy"])).rjust(4))
+                item.setText(3, (str(statusDic["numTranslated"])).rjust(4))
+                item.setText(4, (str(statusDic["numTotal"])).rjust(4))
                 item.setText(5, statusDic["subVersionState"])
                 item.setText(6, statusDic["revisionDate"])
                 item.setText(7, statusDic["lastTranslator"])
@@ -722,10 +723,10 @@ class Catalog(QtGui.QMainWindow):
         childStats = self.getStats(path)
   
         if (childStats):
-            item.setText(1, str(childStats["numUntranslated"]))
-            item.setText(2, str(childStats["numFuzzy"]))
-            item.setText(3, str(childStats["numTranslated"]))
-            item.setText(4, str(childStats["numTotal"]))
+            item.setText(1, (str(childStats["numUntranslated"])).rjust(4))
+            item.setText(2, (str(childStats["numFuzzy"])).rjust(4))
+            item.setText(3, (str(childStats["numTranslated"])).rjust(4))
+            item.setText(4, (str(childStats["numTotal"])).rjust(4))
             item.setText(5, childStats["subVersionState"])
             item.setText(6, childStats["revisionDate"])
             item.setText(7, childStats["lastTranslator"])
