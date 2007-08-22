@@ -791,6 +791,7 @@ class Catalog(QtGui.QMainWindow):
             if (ret == QtGui.QMessageBox.Yes):
                 index = files.indexOf(QtCore.QRegExp(filename))
                 files.removeAt(index)
+                self.closeProject()
                 World.settings.setValue("recentProjectList", QtCore.QVariant(files))
             self.ui.treeCatalog.clear()
             self.updateRecentProject()

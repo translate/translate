@@ -212,7 +212,7 @@ class newProject(QtGui.QDialog):
 self.tr("Ini file fomat (*.ini)"))
         if not fileOpen.isEmpty():
             self.emit(QtCore.SIGNAL("pathOfFileName"),  fileOpen)
-            directory = os.path.dirname(unicode(filename))
+            directory = os.path.dirname(unicode(fileOpen))
             World.settings.setValue("workingDir", QtCore.QVariant(directory))
 
 
