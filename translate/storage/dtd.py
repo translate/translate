@@ -327,13 +327,6 @@ class dtdfile(base.TranslationStore):
           warnings.warn("%s\nError occured between lines %d and %d:\n%s" % (e, start+1, end, "\n".join(lines[start:end])))
         start += linesprocessed
 
-  def parsestring(cls, dtdsrc):
-    """read the source code of a dtd file in and include them as dtdunits in a new dtdfile object"""
-    newdtdfile = dtdfile()
-    newdtdfile.parse(dtdsrc)
-    return newdtdfile
-  parsestring = classmethod(parsestring)
-
   def __str__(self):
     """convert to a string. double check that unicode is handled somehow here"""
     source = self.getoutput()

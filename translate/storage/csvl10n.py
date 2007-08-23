@@ -182,13 +182,6 @@ class csvfile(base.TranslationStore):
     csvfile.reset()
     return "".join(csvfile.readlines())
 
-  def parsestring(cls, storestring):
-    """Parses the csv file contents in the storestring"""
-    parsedfile = csvfile()
-    parsedfile.parse(storestring)
-    return parsedfile
-  parsestring = classmethod(parsestring)
-
 
 if __name__ == '__main__':
   import sys

@@ -848,13 +848,6 @@ class pofile(base.TranslationStore, poheader.poheader):
       headerstr = headerstr.replace(charsetline, newcharsetline, 1)
     header.msgstr = quoteforpo(headerstr)
 
-  def parsestring(cls, storestring):
-    """Parses the po file contents in the storestring and returns a new pofile object (classmethod, constructor)"""
-    parsedfile = pofile()
-    parsedfile.parse(storestring)
-    return parsedfile
-  parsestring = classmethod(parsestring)
-
   def parse(self, input):
     """parses the given file or file source string"""
     if hasattr(input, 'name'):

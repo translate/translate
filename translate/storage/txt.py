@@ -111,6 +111,8 @@ class TxtFile(base.TranslationStore):
         startline = 0
         pretext = ""
         posttext = ""
+        if not isinstance(lines, list):
+            lines = lines.split("\n")
         for linenum in range(len(lines)):
             line = lines[linenum].rstrip("\n").rstrip("\r")
             for rule, prere, postre in self.flavour:
@@ -141,12 +143,6 @@ class TxtFile(base.TranslationStore):
         if block:
             unit = self.addsourceunit("\n".join(block))
             unit.addlocation("%s:%d" % (self.filename, startline + 1))
-
-    def parsestring(self, lines):
-        newtxtfile = TxtFile()
-        newtxtfile.parse(lines.split("\n"))
-        return newtxtfile
-    parsestring = classmethod(parsestring)
 
     def __str__(self):
         source = self.getoutput()

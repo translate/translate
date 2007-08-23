@@ -434,9 +434,15 @@ class TranslationStore(Statistics):
 
     def parsestring(cls, storestring):
         """Converts the string representation back to an object."""
-
-        return pickle.loads(storestring)
+        newstore = cls()
+        if storestring:
+            newstore.parse(storestring)
+        return newstore
     parsestring = classmethod(parsestring)
+
+    def parse(self, data):
+        """parser to process the given source string"""
+        self.units = pickle.loads(data).units
 
     def savefile(self, storefile):
         """Writes the string representation to the given file (or filename)."""

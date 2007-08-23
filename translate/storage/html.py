@@ -92,13 +92,6 @@ class htmlfile(HTMLParser, base.TranslationStore):
     htmlsrc = self.do_encoding(htmlsrc)
     self.feed(htmlsrc)
 
-  def parsestring(cls, storestring):
-    """Parses the html file contents in the storestring"""
-    parsedfile = htmlfile()
-    parsedfile.parse(storestring)
-    return parsedfile
-  parsestring = classmethod(parsestring)
-
   def addhtmlblock(self, text):
     text = self.strip_html(text)
     if self.has_translatable_content(text):

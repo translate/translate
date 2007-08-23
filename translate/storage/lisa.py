@@ -282,14 +282,6 @@ class LISAfile(base.TranslationStore):
             term = self.UnitClass.createfromxmlElement(entry, self.document)
             self.units.append(term)
 
-    def parsestring(cls, storestring):
-        """Parses the string to return the correct file object"""
-        newstore = cls()
-        if storestring:
-            newstore.parse(storestring)
-        return newstore
-    parsestring = classmethod(parsestring)
-
     def __del__(self):
         """clean up the document if required"""
         if hasattr(self, "document"):

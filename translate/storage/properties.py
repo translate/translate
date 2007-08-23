@@ -185,13 +185,6 @@ class propfile(base.TranslationStore):
       lines.append(str(unit))
     return "".join(lines)
 
-  def parsestring(cls, storestring):
-    """Parses the properties file contents in the storestring"""
-    parsedfile = propfile()
-    parsedfile.parse(storestring)
-    return parsedfile
-  parsestring = classmethod(parsestring)
-
 if __name__ == '__main__':
   import sys
   pf = propfile(sys.stdin)
