@@ -26,7 +26,10 @@
 @license: U{GPL <http://www.fsf.org/licensing/licenses/gpl.html>}
 """
 
-import pickle
+try:
+    import cPickle as pickle
+except:
+    import pickle
 from exceptions import NotImplementedError
 from translate.storage.statistics import Statistics
 
