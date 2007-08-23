@@ -413,20 +413,20 @@ class TranslationStore(Statistics):
         return dump
 
     def isempty(self):
-      """Returns True if the object doesn't contain any translation units."""
+        """Returns True if the object doesn't contain any translation units."""
 
-      if len(self.units) == 0:
+        if len(self.units) == 0:
+            return True
+        # Skip the first unit if it is a header.
+        if self.units[0].isheader():
+            units = self.units[1:]
+        else:
+            units = self.units
+
+        for unit in units:
+            if not unit.isblank():
+                return False
         return True
-      # Skip the first unit if it is a header.
-      if self.units[0].isheader():
-        units = self.units[1:]
-      else:
-        units = self.units
-
-      for unit in units:
-        if not unit.isblank():
-          return False
-      return True
 
     def _assignname(self):
         """Tries to work out what the name of the filesystem file is and 
@@ -482,10 +482,10 @@ class TranslationStore(Statistics):
         mode = getattr(storefile, "mode", "r")
         #For some reason GzipFile returns 1, so we have to test for that here
         if mode == 1 or "r" in mode:
-          storestring = storefile.read()
-          storefile.close()
+            storestring = storefile.read()
+            storefile.close()
         else:
-          storestring = ""
+            storestring = ""
         newstore = cls.parsestring(storestring)
         newstore.fileobj = storefile
         newstore._assignname()
