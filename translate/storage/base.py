@@ -298,9 +298,11 @@ class TranslationUnit(object):
         newunit.target = unit.target
         newunit.markfuzzy(unit.isfuzzy())
         locations = unit.getlocations()
-        if locations: newunit.addlocations(locations)
+        if locations: 
+            newunit.addlocations(locations)
         notes = unit.getnotes()
-        if notes: newunit.addnote(notes)
+        if notes: 
+            newunit.addnote(notes)
         return newunit
     buildfromunit = classmethod(buildfromunit)
 
