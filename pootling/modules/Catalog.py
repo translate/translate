@@ -363,6 +363,9 @@ class Catalog(QtGui.QMainWindow):
             self.actionOpen.setEnabled(False)
             self.actionFind.setEnabled(False)
             self.actionShowStat.setEnabled(False)
+            title = unicode(self.tr("%s Catalog Manager")) % (World.settingApp)
+            self.setWindowTitle(str(title))
+            return 
         
         self.fileItems = []
         self.itemNumber = 0
