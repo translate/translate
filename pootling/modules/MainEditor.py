@@ -463,10 +463,10 @@ class MainWindow(QtGui.QMainWindow):
         QtGui.QMainWindow.closeEvent(self, event)
         if (self.operator.isModified()):
             if (self.fileaction.clearedModified(self)):
+                self.operator.setModified(False)
                 event.accept()
             else:
                 event.ignore()
-        
         # remember last geometry
         World.settings.setValue("lastGeometry", QtCore.QVariant(self.geometry()))
         
