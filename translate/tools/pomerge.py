@@ -27,52 +27,52 @@ from translate.storage import po
 from translate.storage import xliff 
 from translate.storage.poheader import poheader
 
-def mergepofiles(p1, p2, mergeblanks, mergecomments):
-  """Take any new translations in p2 and write them into p1."""
+def mergepofiles(store1, store2, mergeblanks, mergecomments):
+  """Take any new translations in store2 and write them into store1."""
 
-  for po2 in p2.units:
-    if po2.isheader():
-      if isinstance(p1, poheader):
-        p1.mergeheaders(p2)
+  for unit2 in store2.units:
+    if unit2.isheader():
+      if isinstance(store1, poheader):
+        store1.mergeheaders(store2)
       # Skip header units
       continue
     # there may be more than one entity due to msguniq merge
-    entities = po2.getlocations()
+    entities = unit2.getlocations()
     if len(entities) == 0:
-      source = po2.source
-      po1 = None
-      if source in p1.sourceindex:
-        po1 = p1.sourceindex[source]
-      if po1 is None:
-        sys.stderr.write(str(po2) + "\n")
+      source = unit2.source
+      unit1 = None
+      if source in store1.sourceindex:
+        unit1 = store1.sourceindex[source]
+      if unit1 is None:
+        sys.stderr.write(str(unit2) + "\n")
       else:
-        # finally set the new definition in po1
-        po1.merge(po2, overwrite=True)
+        # finally set the new definition in unit1
+        unit1.merge(unit2, overwrite=True)
     for entity in entities:
-      po1 = None
-      if p1.locationindex.has_key(entity):
+      unit1 = None
+      if store1.locationindex.has_key(entity):
         # now we need to replace the definition of entity with msgstr
-        po1 = p1.locationindex[entity] # find the other po
-      # check if this is a duplicate in p2...
-      if p2.locationindex.has_key(entity):
-        if p2.locationindex[entity] is None:
-          po1 = None
+        unit1 = store1.locationindex[entity] # find the other po
+      # check if this is a duplicate in store2...
+      if store2.locationindex.has_key(entity):
+        if store2.locationindex[entity] is None:
+          unit1 = None
       # if locationindex was not unique, use the sourceindex
-      if po1 is None:
-        source = po2.source
-        if source in p1.sourceindex:
-          po1 = p1.sourceindex[source]
+      if unit1 is None:
+        source = unit2.source
+        if source in store1.sourceindex:
+          unit1 = store1.sourceindex[source]
       # check if we found a matching po element
-      if po1 is None:
+      if unit1 is None:
         print >>sys.stderr, "# the following po element was not found"
-        sys.stderr.write(str(po2) + "\n")
+        sys.stderr.write(str(unit2) + "\n")
       else:
         if not mergeblanks:
-          target = po2.target
+          target = unit2.target
           if len(target.strip()) == 0: continue
-        # finally set the new definition in po1
-        po1.merge(po2, overwrite=True, comments=mergecomments)
-  return p1
+        # finally set the new definition in unit1
+        unit1.merge(unit2, overwrite=True, comments=mergecomments)
+  return store1
 
 def str2bool(option):
   """Convert a string value to boolean
