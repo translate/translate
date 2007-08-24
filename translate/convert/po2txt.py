@@ -69,15 +69,15 @@ class po2txt:
 
 def converttxt(inputfile, outputfile, templatefile, wrap=None, includefuzzy=False, encoding='utf-8'):
   """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
-  inputpo = po.pofile(inputfile)
+  inputstore = po.pofile(inputfile)
   convertor = po2txt(wrap=wrap)
   if templatefile is None:
-    outputtxt = convertor.convertfile(inputpo, includefuzzy)
+    outputstring = convertor.convertfile(inputstore, includefuzzy)
   else:
     templatetext = templatefile.read().decode(encoding)
-    outputtxt = convertor.mergefile(inputpo, templatetext, includefuzzy)
+    outputstring = convertor.mergefile(inputstore, templatetext, includefuzzy)
   outputfilepos = outputfile.tell()
-  outputfile.write(outputtxt.encode('utf-8'))
+  outputfile.write(outputstring.encode('utf-8'))
   return 1
 
 def main(argv=None):
