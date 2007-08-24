@@ -32,7 +32,7 @@ class podebug:
     else:
       self.format = format
 
-  def openofficeignore(self, location):
+  def openofficeignore(self, locations):
     for location in locations:
       if location.startswith("Common.xcu#..Common.View.Localisation"):
         return True
