@@ -131,7 +131,7 @@ def mergexliff(inputfile, outputfile, templatefile, mergeblanks="no", mergecomme
   templatestore.makeindex()
   inputstore.makeindex()
   outputstore = mergepofiles(templatestore, inputstore, mergeblanks, mergecomments)
-  if len(outputstore.units) == 0:
+  if outputstore.isempty():
     return 0
   outputfile.write(str(outputstore))
   return 1
