@@ -23,7 +23,7 @@
 """script to translate a set of plain text message files using gettext .po localization
 You can generate the po files using txt2po"""
 
-from translate.storage import po
+from translate.storage import factory
 try:
   import textwrap
 except:
@@ -69,7 +69,7 @@ class po2txt:
 
 def converttxt(inputfile, outputfile, templatefile, wrap=None, includefuzzy=False, encoding='utf-8'):
   """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
-  inputstore = po.pofile(inputfile)
+  inputstore = factory.getobject(inputfile)
   convertor = po2txt(wrap=wrap)
   if templatefile is None:
     outputstring = convertor.convertfile(inputstore, includefuzzy)
@@ -84,7 +84,7 @@ def main(argv=None):
   from translate.misc import stdiotell
   import sys
   sys.stdout = stdiotell.StdIOWrapper(sys.stdout)
-  formats = {("po", "txt"):("txt",converttxt), ("po"):("txt",converttxt)}
+  formats = {("po", "txt"):("txt", converttxt), ("po"):("txt", converttxt), ("xlf", "txt"):("txt", converttxt), ("xlf"):("txt", converttxt)}
   parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
   parser.add_option("", "--encoding", dest="encoding", default='utf-8', type="string",
       help="The encoding of the template file (default: UTF-8)")
