@@ -50,24 +50,24 @@ class podebug:
     unit.target = prefix + unit.target
     return unit
 
-  def convertfile(self, thepofile):
-    filename = self.shrinkfilename(thepofile.filename)
+  def convertfile(self, store):
+    filename = self.shrinkfilename(store.filename)
     prefix = self.format
     for formatstr in re.findall("%[0-9c]*[sfFbBd]", self.format):
       if formatstr.endswith("s"):
-        formatted = self.shrinkfilename(thepofile.filename)
+        formatted = self.shrinkfilename(store.filename)
       elif formatstr.endswith("f"):
-        formatted = thepofile.filename
+        formatted = store.filename
         formatted = os.path.splitext(formatted)[0]
       elif formatstr.endswith("F"):
-        formatted = thepofile.filename
+        formatted = store.filename
       elif formatstr.endswith("b"):
-        formatted = os.path.basename(thepofile.filename)
+        formatted = os.path.basename(store.filename)
         formatted = os.path.splitext(formatted)[0]
       elif formatstr.endswith("B"):
-        formatted = os.path.basename(thepofile.filename)
+        formatted = os.path.basename(store.filename)
       elif formatstr.endswith("d"):
-        formatted = os.path.dirname(thepofile.filename)
+        formatted = os.path.dirname(store.filename)
       else:
         continue
       formatoptions = formatstr[1:-1]
@@ -78,11 +78,11 @@ class podebug:
         if length:
           formatted = formatted[:int(length)]
       prefix = prefix.replace(formatstr, formatted)
-    for thepo in thepofile.units:
-      if thepo.isheader() or thepo.isblank():
+    for unit in store.units:
+      if unit.isheader() or unit.isblank():
         continue
-      thepo = self.convertunit(thepo, prefix)
-    return thepofile
+      unit = self.convertunit(unit, prefix)
+    return store
 
   def shrinkfilename(self, filename):
     if filename.startswith("." + os.sep):
