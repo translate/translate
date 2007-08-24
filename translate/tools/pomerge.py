@@ -75,6 +75,13 @@ def mergepofiles(p1, p2, mergeblanks, mergecomments):
   return p1
 
 def str2bool(option):
+  """Convert a string value to boolean
+
+  @param option: yes, true, 1, no, false, 0
+  @type option: String
+  @rtype: Boolean
+
+  """
   option = option.lower()
   if option in ("yes", "true", "1"):
     return True
