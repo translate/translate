@@ -118,8 +118,7 @@ def convertnb(inputfile, outputfile, templates):
   outputfilepos = outputfile.tell()
   includeheader = outputfilepos == 0
   outputpo = convertor.convertfile(inputfile, getattr(inputfile, "name", "unknown"), includeheader)
-  outputposrc = str(outputpo)
-  outputfile.write(outputposrc)
+  outputfile.write(str(outputpo))
   return 1
 
 def main(argv=None):

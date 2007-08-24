@@ -131,8 +131,7 @@ def convertprop(inputfile, outputfile, templatefile, pot=False, duplicatestyle="
     outputpo = convertor.mergefiles(templateprop, inputprop, blankmsgstr=pot, duplicatestyle=duplicatestyle)
   if outputpo.isempty():
     return 0
-  outputposrc = str(outputpo)
-  outputfile.write(outputposrc)
+  outputfile.write(str(outputpo))
   return 1
 
 def main(argv=None):

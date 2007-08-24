@@ -79,8 +79,7 @@ def convertcsv(inputfile, outputfile, templatefile, columnorder=None):
     return 0
   convertor = po2csv()
   outputcsv = convertor.convertfile(inputpo,columnorder)
-  outputcsvsrc = str(outputcsv)
-  outputfile.write(outputcsvsrc)
+  outputfile.write(str(outputcsv))
   return 1
 
 def main(argv=None):

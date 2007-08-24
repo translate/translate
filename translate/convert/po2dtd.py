@@ -262,8 +262,7 @@ def convertdtd(inputfile, outputfile, templatefile, includefuzzy=False):
     templatedtd = dtd.dtdfile(templatefile)
     convertor = redtd(templatedtd)
   outputdtd = convertor.convertfile(inputpo, includefuzzy)
-  outputdtdsrc = str(outputdtd)
-  outputfile.write(outputdtdsrc)
+  outputfile.write(str(outputdtd))
   return 1
 
 def main(argv=None):

@@ -186,8 +186,7 @@ def convertcsv(inputfile, outputfile, templatefile, charset=None, columnorder=No
   outputpo = convertor.convertfile(inputcsv)
   if outputpo.isempty():
     return 0
-  outputposrc = str(outputpo)
-  outputfile.write(outputposrc)
+  outputfile.write(str(outputpo))
   return 1
 
 def main(argv=None):

@@ -49,8 +49,7 @@ def converttxt(inputfile, outputfile, templates, duplicatestyle="msgctxt", encod
   outputpo = convertor.convertfile(inputtxt)
   if outputpo.isempty():
     return 0
-  outputposrc = str(outputpo)
-  outputfile.write(outputposrc)
+  outputfile.write(str(outputpo))
   return 1
 
 def main(argv=None):

@@ -214,8 +214,7 @@ def convertoo(inputfile, outputfile, templatefile, sourcelanguage=None, targetla
     convertor = reoo(templatefile, languages=languages, timestamp=timestamp, includefuzzy=includefuzzy, long_keys=multifilestyle != "single", filteraction=filteraction)
   outputoo = convertor.convertfile(inputsource)
   # TODO: check if we need to manually delete missing items
-  outputoosrc = str(outputoo)
-  outputfile.write(outputoosrc)
+  outputfile.write(str(outputoo))
   return True
 
 def main(argv=None):

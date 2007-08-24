@@ -79,8 +79,7 @@ def convertxliff(inputfile, outputfile, templates):
   """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
   convertor = xliff2po()
   outputpo = convertor.convertfile(inputfile)
-  outputposrc = str(outputpo)
-  outputfile.write(outputposrc)
+  outputfile.write(str(outputpo))
   return 1
 
 def main(argv=None):

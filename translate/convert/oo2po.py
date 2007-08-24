@@ -143,8 +143,7 @@ def convertoo(inputfile, outputfile, templates, pot=False, sourcelanguage=None, 
   newfile = convertor.convertfile(fromfile, duplicatestyle)
   if newfile.isempty():
     return 0
-  newoutputsrc = str(newfile)
-  outputfile.write(newoutputsrc)
+  outputfile.write(str(newfile))
   return 1
 
 def main(argv=None):
