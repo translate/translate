@@ -22,7 +22,6 @@
 """simple script to insert debug messages into po file translations"""
 
 from translate.storage import factory
-from translate.misc import quote
 import os
 import re
 
