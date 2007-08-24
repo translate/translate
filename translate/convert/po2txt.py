@@ -76,7 +76,6 @@ def converttxt(inputfile, outputfile, templatefile, wrap=None, includefuzzy=Fals
   else:
     templatetext = templatefile.read().decode(encoding)
     outputstring = convertor.mergefile(inputstore, templatetext, includefuzzy)
-  outputfilepos = outputfile.tell()
   outputfile.write(outputstring.encode('utf-8'))
   return 1
 
