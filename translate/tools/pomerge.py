@@ -99,18 +99,18 @@ def mergepo(inputfile, outputfile, templatefile, mergeblanks="no", mergecomments
     mergeblanks = str2bool(mergeblanks)
   except ValueError:
     raise ValueError("invalid mergeblanks value: %r" % mergeblanks)
-  inputpo = factory.getobject(inputfile)
+  inputstore = factory.getobject(inputfile)
   if templatefile is None:
     # just merge nothing
-    templatepo = po.pofile()
+    templatestore = po.pofile()
   else:
-    templatepo = po.pofile(templatefile)
-  templatepo.makeindex()
-  inputpo.makeindex()
-  outputpo = mergepofiles(templatepo, inputpo, mergeblanks, mergecomments)
-  if outputpo.isempty():
+    templatestore = po.pofile(templatefile)
+  templatestore.makeindex()
+  inputstore.makeindex()
+  outputstore = mergepofiles(templatestore, inputstore, mergeblanks, mergecomments)
+  if outputstore.isempty():
     return 0
-  outputfile.write(str(outputpo))
+  outputfile.write(str(outputstore))
   return 1
 
 def mergexliff(inputfile, outputfile, templatefile, mergeblanks="no", mergecomments="yes"):
@@ -122,18 +122,18 @@ def mergexliff(inputfile, outputfile, templatefile, mergeblanks="no", mergecomme
     mergeblanks = str2bool(mergeblanks)
   except ValueError:
     raise ValueError("invalid mergeblanks value: %r" % mergeblanks)
-  inputpo = factory.getobject(inputfile)
+  inputstore = factory.getobject(inputfile)
   if templatefile is None:
     # just merge nothing
-    templatexliff = xliff.xlifffile()
+    templatestore = xliff.xlifffile()
   else:
-    templatexliff = xliff.xlifffile(templatefile)
-  templatexliff.makeindex()
-  inputpo.makeindex()
-  outputxliff = mergepofiles(templatexliff, inputpo, mergeblanks, mergecomments)
-  if len(outputxliff.units) == 0:
+    templatestore = xliff.xlifffile(templatefile)
+  templatestore.makeindex()
+  inputstore.makeindex()
+  outputstore = mergepofiles(templatestore, inputstore, mergeblanks, mergecomments)
+  if len(outputstore.units) == 0:
     return 0
-  outputfile.write(str(outputxliff))
+  outputfile.write(str(outputstore))
   return 1
 
 def main():
