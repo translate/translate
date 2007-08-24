@@ -70,7 +70,7 @@ class GrepFilter:
       found = not found
     return found
 
-  def filterelement(self, unit):
+  def filterunit(self, unit):
     """runs filters on an element"""
     if unit.isheader(): return []
 
@@ -102,8 +102,7 @@ class GrepFilter:
     """runs filters on a translation file object"""
     thenewfile = type(thefile)()
     for unit in thefile.units:
-      # filterelement() returns True when a unit matches.
-      if self.filterelement(unit):
+      if self.filterunit(unit):
         thenewfile.addunit(unit)
     if self.includeheader and thenewfile.units > 0:
       if thefile.units[0].isheader():
