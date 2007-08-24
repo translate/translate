@@ -122,7 +122,7 @@ def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similari
       outputheaderpo.markfuzzy(templatepo.units[0].isfuzzy())
   elif inputpot.units[0].isheader():
     outputheaderpo.addnote(inputpot.units[0].getnotes())
-  outputpo.units.append(outputheaderpo)
+  outputpo.addunit(outputheaderpo)
   # Do matching
   for inputpotunit in inputpot.units:
     if not (inputpotunit.isheader() or inputpotunit.isobsolete()):
@@ -153,13 +153,13 @@ def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similari
             fuzzycandidates = fuzzyglobalmatcher.matches(inputpotunit.source)
             if fuzzycandidates:
               inputpotunit.merge(fuzzycandidates[0])
-        outputpo.units.append(inputpotunit)
+        outputpo.addunit(inputpotunit)
       else:
         if fuzzyglobalmatcher:
           fuzzycandidates = fuzzyglobalmatcher.matches(inputpotunit.source)
           if fuzzycandidates:
             inputpotunit.merge(fuzzycandidates[0])
-        outputpo.units.append(inputpotunit)
+        outputpo.addunit(inputpotunit)
 
   #Let's take care of obsoleted messages
   if templatepofile:
@@ -170,7 +170,7 @@ def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similari
         unit.makeobsolete()
         newlyobsoleted.append(unit)
       elif unit.isobsolete():
-        outputpo.units.append(unit)
+        outputpo.addunit(unit)
     outputpo.units.extend(newlyobsoleted)
   outputpofile.write(str(outputpo))
   return 1
