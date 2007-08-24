@@ -183,7 +183,7 @@ def main(argv=None):
   parser.add_option("", "--tm", dest="tm", default=None,
     help="The file to use as translation memory when fuzzy matching")
   parser.passthrough.append("tm")
-  defaultsimilarity=75
+  defaultsimilarity = 75
   parser.add_option("-s", "--similarity", dest="min_similarity", default=defaultsimilarity,
     type="float", help="The minimum similarity for inclusion (default: %d%%)" % defaultsimilarity)
   parser.passthrough.append("min_similarity")
