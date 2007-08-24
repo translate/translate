@@ -43,15 +43,15 @@ class podebug:
         return True
     return False
                      
-  def convertunit(self, thepo, prefix):
+  def convertunit(self, unit, prefix):
     if self.openofficeignore(unit.getlocations()):
-      return thepo
-    msgstr = po.unquotefrompo(thepo.msgstr)
+      return unit
+    msgstr = po.unquotefrompo(unit.msgstr)
     if not msgstr:
-      msgstr = po.unquotefrompo(thepo.msgid)
+      msgstr = po.unquotefrompo(unit.msgid)
     msgstr = prefix + msgstr
-    thepo.msgstr = [quote.quotestr(line) for line in msgstr.split('\n')]
-    return thepo
+    unit.msgstr = [quote.quotestr(line) for line in msgstr.split('\n')]
+    return unit
 
   def convertfile(self, thepofile):
     filename = self.shrinkfilename(thepofile.filename)
