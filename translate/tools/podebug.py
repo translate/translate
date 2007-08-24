@@ -33,24 +33,18 @@ class podebug:
     else:
       self.format = format
 
-  def openofficeignore(self, source):
-    if source.startswith("Common.xcu#..Common.View.Localisation"):
-      return True
-    elif source.startswith("profile.lng#STR_DIR_MENU_NEW_"):
-      return True
-    elif source.startswith("profile.lng#STR_DIR_MENU_WIZARD_"):
-      return True
+  def openofficeignore(self, location):
+    for location in locations:
+      if location.startswith("Common.xcu#..Common.View.Localisation"):
+        return True
+      elif location.startswith("profile.lng#STR_DIR_MENU_NEW_"):
+        return True
+      elif location.startswith("profile.lng#STR_DIR_MENU_WIZARD_"):
+        return True
     return False
                      
-  def convertsource(self, thepo):
-    sourceparts = []
-    for sourcecomment in thepo.sourcecomments:
-      sourceparts.append(sourcecomment.replace("#:","",1).strip())
-    return " ".join(sourceparts)
-
   def convertelement(self, thepo, prefix):
-    source = self.convertsource(thepo)
-    if self.openofficeignore(source):
+    if self.openofficeignore(unit.getlocations()):
       return thepo
     msgstr = po.unquotefrompo(thepo.msgstr)
     if not msgstr:
