@@ -43,7 +43,7 @@ class podebug:
         return True
     return False
                      
-  def convertelement(self, thepo, prefix):
+  def convertunit(self, thepo, prefix):
     if self.openofficeignore(unit.getlocations()):
       return thepo
     msgstr = po.unquotefrompo(thepo.msgstr)
@@ -84,7 +84,7 @@ class podebug:
     for thepo in thepofile.units:
       if thepo.isheader() or thepo.isblank():
         continue
-      thepo = self.convertelement(thepo, prefix)
+      thepo = self.convertunit(thepo, prefix)
     return thepofile
 
   def shrinkfilename(self, filename):
