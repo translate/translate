@@ -40,30 +40,30 @@ class po2txt:
       return message
     return "\n".join([textwrap.fill(line, self.wrap, replace_whitespace=False) for line in message.split("\n")])
 
-  def convertfile(self, inputpo, includefuzzy):
+  def convertfile(self, inputstore, includefuzzy):
     """converts a file to txt format"""
     txtresult = ""
-    for pounit in inputpo.units:
-      if pounit.isheader():
+    for unit in inputstore.units:
+      if unit.isheader():
         continue
-      if pounit.isblankmsgstr() or (not includefuzzy and pounit.isfuzzy()):
-        txtresult += self.wrapmessage(pounit.source) + "\n" + "\n"
+      if unit.isblankmsgstr() or (not includefuzzy and unit.isfuzzy()):
+        txtresult += self.wrapmessage(unit.source) + "\n" + "\n"
       else:
-        txtresult += self.wrapmessage(pounit.target) + "\n" + "\n"
+        txtresult += self.wrapmessage(unit.target) + "\n" + "\n"
     return txtresult.rstrip()
  
-  def mergefile(self, inputpo, templatetext, includefuzzy):
+  def mergefile(self, inputstore, templatetext, includefuzzy):
     """converts a file to txt format"""
     txtresult = templatetext
     # TODO: make a list of blocks of text and translate them individually
     # rather than using replace
-    for pounit in inputpo.units:
-      if pounit.isheader():
+    for unit in inputstore.units:
+      if unit.isheader():
         continue
-      if not pounit.isfuzzy() or includefuzzy:
-        txtsource = pounit.source
-        txttarget = self.wrapmessage(pounit.target)
-        if not pounit.isblankmsgstr():
+      if not unit.isfuzzy() or includefuzzy:
+        txtsource = unit.source
+        txttarget = self.wrapmessage(unit.target)
+        if not unit.isblankmsgstr():
           txtresult = txtresult.replace(txtsource, txttarget)
     return txtresult
 
