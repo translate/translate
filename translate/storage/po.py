@@ -979,12 +979,6 @@ class pofile(base.TranslationStore, poheader.poheader):
       newlines.append(line)
     return newlines
 
-  def todict(self):
-    """returns a dictionary of units based on msgid"""
-    # NOTE: these units are quoted strings
-    # TODO: make them unquoted strings, if useful...
-    return dict([(" ".join(poel.msgid), poel) for poel in self.units])
-
   def unit_iter(self):
     for unit in self.units:
       if not (unit.isheader() or unit.isobsolete()):
