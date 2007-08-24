@@ -947,9 +947,9 @@ class pofile(base.TranslationStore, poheader.poheader):
   def getoutput(self):
     """convert the units back to lines"""
     lines = []
-    for pe in self.units:
-      pesrc = str(pe) + "\n"
-      lines.append(pesrc)
+    for unit in self.units:
+      unitsrc = str(unit) + "\n"
+      lines.append(unitsrc)
     lines = "".join(self.encode(lines)).rstrip()
     #After the last pounit we will have \n\n and we only want to end in \n:
     if lines: lines += "\n"
