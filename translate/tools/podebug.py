@@ -112,12 +112,12 @@ class podebug:
 def convertpo(inputfile, outputfile, templatefile, format=None):
   """reads in inputfile using po, changes to have debug strings, writes to outputfile"""
   # note that templatefile is not used, but it is required by the converter...
-  inputpo = po.pofile(inputfile)
-  if inputpo.isempty():
+  inputstore = po.pofile(inputfile)
+  if inputstore.isempty():
     return 0
   convertor = podebug(format=format)
-  outputpo = convertor.convertfile(inputpo)
-  outputfile.write(str(outputpo))
+  outputstore = convertor.convertfile(inputstore)
+  outputfile.write(str(outputstore))
   return 1
 
 def main():
