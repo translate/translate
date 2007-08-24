@@ -45,6 +45,7 @@ class podebug:
   def convertunit(self, unit, prefix):
     if self.openofficeignore(unit.getlocations()):
       return unit
+    # TODO: This does not yet handle plurals elegantly
     if not unit.istranslated():
       unit.target = unit.source
     unit.target = prefix + unit.target
