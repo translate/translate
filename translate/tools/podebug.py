@@ -21,7 +21,7 @@
 
 """simple script to insert debug messages into po file translations"""
 
-from translate.storage import po
+from translate.storage import factory
 from translate.misc import quote
 import os
 import re
@@ -112,7 +112,7 @@ class podebug:
 def convertpo(inputfile, outputfile, templatefile, format=None):
   """reads in inputfile using po, changes to have debug strings, writes to outputfile"""
   # note that templatefile is not used, but it is required by the converter...
-  inputstore = po.pofile(inputfile)
+  inputstore = factory.getobject(inputfile)
   if inputstore.isempty():
     return 0
   convertor = podebug(format=format)
@@ -122,7 +122,7 @@ def convertpo(inputfile, outputfile, templatefile, format=None):
 
 def main():
   from translate.convert import convert
-  formats = {"po":("po",convertpo)}
+  formats = {"po":("po", convertpo), "xlf":("xlf", convertpo)}
   parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
   # TODO: add documentation on format strings...
   parser.add_option("-f", "--format", dest="format", default="[%s] ", help="specify format string")
