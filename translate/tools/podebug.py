@@ -46,11 +46,9 @@ class podebug:
   def convertunit(self, unit, prefix):
     if self.openofficeignore(unit.getlocations()):
       return unit
-    msgstr = po.unquotefrompo(unit.msgstr)
-    if not msgstr:
-      msgstr = po.unquotefrompo(unit.msgid)
-    msgstr = prefix + msgstr
-    unit.msgstr = [quote.quotestr(line) for line in msgstr.split('\n')]
+    if not unit.istranslated():
+      unit.target = unit.source
+    unit.target = prefix + unit.target
     return unit
 
   def convertfile(self, thepofile):
