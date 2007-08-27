@@ -6,15 +6,16 @@ make the lives of localizers both more productive and less frustrating.
 The Toolkit is part of the translate.sourceforge.net project, 
 hosted at http://translate.sourceforge.net/
 
-The software includes programs to covert localization formats to the common PO
-format and programs to check and manage PO files.  The documentation includes
-guides on using the tools, running a localization project and how to localize
-various projects from OpenOffice.org to Mozilla.
+The software includes programs to covert localization formats to the common 
+PO, and emerging XLIFF format.  Programs to check and manage PO and XLIFF 
+files.  Online documentation includes guides on using the tools, running a 
+localization project and how to localize various projects from OpenOffice.org 
+to Mozilla.
 
 At its core the software contains a set of classes for handling various 
 localization storage formats: DTD, properties, OpenOffice.org GSI/SDF,
-CSV and of course PO and XLIFF.  It also provides scripts to convert between 
-these formats.
+CSV, MO, Qt .ts and of course PO and XLIFF.  It also provides scripts to 
+convert between these formats.
 
 Also part of the Toolkit are Python programs to create word counts, merge
 translations and perform various checks on PO and XLIFF files.
@@ -80,7 +81,7 @@ http://psyco.sourceforge.net/
 The python wrapper to htmltidy is needed for po2html.
 http://utidylib.berlios.de/
 
-The python-Levenshtein package will improve performance for fuzzy mathching if
+The python-Levenshtein package will improve performance for fuzzy matching if
 it is available. This can improve the performance of pot2po, for example.  It 
 is optional and no functionality is lost if it is not installed, only speed.
 http://trific.ath.cx/resources/python/levenshtein/
@@ -155,25 +156,25 @@ Program overview
 Use --help to find the syntax and options for all programs.
 
 * Converters
-oo2po, po2oo - convert between OpenOffice.org GSI files and PO
-moz2po, po2moz - convert from a Mozilla XPI file and PO.  Including unpacking
+oo2po - convert between OpenOffice.org GSI files and PO
+oo2xliff - convert between OpenOffice.org GSI files and XLIFF
+moz2po - convert from a Mozilla XPI file and PO.  Including unpacking
 	and building a translated XPI.
-txt2po, po2txt - convert simple text files to PO
-sxw2po - convert OpenOffice.org Writer files to PO
-csv2po, po2csv - convert PO format to CSV for editing in a spreadsheet program
-ts2po, po2ts - convert Qt Linguist (.ts) files to PO
+txt2po - convert simple text files to PO
+csv2po - convert PO format to CSV for editing in a spreadsheet program
+ts2po  - convert Qt Linguist (.ts) files to PO
 html2po - convert HTML to PO (beta)
 pot2po - PO file initialiser
+prop2po - convert Java .properties files to PO
+dtd2po - for conversion of DTD to PO (used by moz2po)
 
 * Tools
+pocompile - create a Gettext MO files from PO or XLIFF files
 pomerge - merge corrected translations from pofilter back into your existing
 	PO files.
 pogrep - find words in PO files
-pofilter - run any of the 28 checks on your PO files
+pofilter - run any of the 40+ checks on your PO files
 podebug - Create comment in your PO files' msgstr which can then be used to quickly track down
 	mistranslations as the comments appear in the application.
-
-* Other Converters
-These are not called directly but used in moz2po
-dtd2po, po2dtd, prop2po, po2prop - for conversion of DTD and .properties files
-	to PO format.
+poconflicts - identify conflicting use of terms
+pocount - count translatable file formats (PO, XLIFF)
