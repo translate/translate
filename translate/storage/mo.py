@@ -109,7 +109,7 @@ class mofile(base.TranslationStore):
             # terminated; the NUL does not count into the size.
             # TODO: We don't handle plural forms
             # TODO: We don't do any encoding detection from the PO Header
-            id = id.encode('utf-8')
+            id = id     # id is already encoded for use as a dictionary key
             str = MESSAGES[id].encode('utf-8')
             offsets.append((len(ids), len(id), len(strs), len(str)))
             ids = ids + id + '\0'
