@@ -344,7 +344,7 @@ def eitherquotestr(source):
 
 def findend(string, substring):
   s = string.find(substring)
-  if s <> -1:
+  if s != -1:
     s += len(substring)
   return s
 
