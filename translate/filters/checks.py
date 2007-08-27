@@ -26,6 +26,7 @@ from translate.filters import decoration
 from translate.filters import prefilters
 from translate.filters import spelling
 from translate.lang import factory
+from translate.storage import xliff
 import re
 
 def forceunicode(string):
@@ -228,6 +229,10 @@ class UnitChecker(object):
     self.removevarfilter =  [prefilters.filtervariables(startmatch, endmatch, prefilters.varnone)
                         for startmatch, endmatch in self.config.varmatches]
 
+  def setsuggestionstore(self, store):
+    """Sets the filename that a checker should use for evaluating suggestions."""
+    self.suggestion_store = store
+
   def filtervariables(self, str1):
     """filter out variables from str1"""
     return helpers.multifilter(str1, self.varfilters)
@@ -354,6 +359,11 @@ class TeeChecker:
     for checker in self.checkers:
       failures.extend(checker.run_filters(unit))
     return failures
+
+  def setsuggestionstore(self, store):
+    """Sets the filename that a checker should use for evaluating suggestions."""
+    for checker in self.checkers:
+      checker.setsuggestionstore(store)
 
 
 class StandardChecker(TranslationChecker):
@@ -985,6 +995,18 @@ class StandardUnitChecker(UnitChecker):
       if nplurals > 0:
         return len(unit.target.strings) == nplurals
     return True
+
+  def hassuggestion(self, unit):
+    """Checks if there is at least one suggested translation for this unit."""
+    self.suggestion_store = getattr(self, 'suggestion_store', None)
+    suggestions = []
+    if self.suggestion_store:
+        source = unit.source
+        suggestions = [unit for unit in self.suggestion_store.units if unit.source == source]
+    elif isinstance(unit, xliff.xliffunit):
+        # TODO: we probably want to filter them somehow
+        suggestions = unit.getalttrans()
+    return not bool(suggestions)
 
 
 def runtests(str1, str2, ignorelist=()):
