@@ -52,11 +52,17 @@ class zh(common.Common):
     # fullwidth comma ("，"). If comma is used as seperation of list items like
     # "apple, orange, grape, .....", "、" is used.
     puncdict = {
-        u".": u"。",
-        u";": u"；",
-        u":": u"：",
-        u"!": u"！",
-        u"?": u"？",
+        u". ": u"。",
+        u"; ": u"；",
+        u": ": u"：",
+        u"! ": u"！",
+        u"? ": u"？",
+        u".\n": u"。\n",
+        u";\n": u"；\n",
+        u":\n": u"：\n",
+        u"!\n": u"！\n",
+        u"?\n": u"？",
+        u"% ": u"%",
     }
 
     ignoretests = ["startcaps", "simplecaps"]
