@@ -35,7 +35,7 @@ def find_all(searchin, substr):
       location += len(substr)
   return locations
 
-def extract(source,startdelim,enddelim,escape=None,startinstring=False,allowreentry=True):
+def extract(source, startdelim, enddelim, escape=None, startinstring=False, allowreentry=True):
   """Extracts a doublequote-delimited string from a string, allowing for backslash-escaping
   returns tuple of (quoted string with quotes, still in string at end)"""
   # note that this returns the quote characters as well... even internally
@@ -85,28 +85,28 @@ def extract(source,startdelim,enddelim,escape=None,startinstring=False,allowreen
       lastpos = pos
   if instring:
     extracted += source[lastpos:]
-  return (extracted,instring)
+  return (extracted, instring)
 
-def extractfromlines(lines,startdelim,enddelim,escape):
+def extractfromlines(lines, startdelim, enddelim, escape):
   """Calls extract over multiple lines, remembering whether in the string or not"""
   result = ""
   instring = 0
   for line in lines:
-    (string,instring) = extract(line,startdelim,enddelim,escape,instring)
+    (string, instring) = extract(line, startdelim, enddelim, escape, instring)
     result += string
     if not instring: break
   return result
 
 def extractstr(source):
   "Extracts a doublequote-delimited string from a string, allowing for backslash-escaping"
-  (string,instring) = extract(source,'"','"','\\')
+  (string, instring) = extract(source, '"', '"', '\\')
   return string
 
 def extractcomment(lines):
   "Extracts <!-- > XML comments from lines"
-  return extractfromlines(lines,"<!--","-->",None)
+  return extractfromlines(lines, "<!--", "-->", None)
 
-def extractwithoutquotes(source,startdelim,enddelim,escape=None,startinstring=False,includeescapes=True,allowreentry=True):
+def extractwithoutquotes(source, startdelim, enddelim, escape=None, startinstring=False, includeescapes=True, allowreentry=True):
   """Extracts a doublequote-delimited string from a string, allowing for backslash-escaping
   includeescapes can also be a function that takes the whole escaped string and returns the replaced version"""
   instring = startinstring
@@ -188,7 +188,7 @@ def extractwithoutquotes(source,startdelim,enddelim,escape=None,startinstring=Fa
           last_epos = epos + lenescape
       section = new_section + section[last_epos:]
     extracted += section
-  return (extracted,instring)
+  return (extracted, instring)
 
 def escapequotes(source, escapeescapes=0):
   "Returns the same string, with double quotes escaped with backslash"
@@ -342,7 +342,7 @@ def eitherquotestr(source):
   else:
     return quotestr(source)
 
-def findend(string,substring):
+def findend(string, substring):
   s = string.find(substring)
   if s <> -1:
     s += len(substring)
@@ -351,16 +351,16 @@ def findend(string,substring):
 def rstripeol(string):
   return string.rstrip("\r\n")
 
-def stripcomment(comment,startstring="<!--",endstring="-->"):
+def stripcomment(comment, startstring="<!--", endstring="-->"):
   cstart = comment.find(startstring)
   if cstart == -1:
     cstart = 0
   else:
     cstart += len(startstring)
-  cend = comment.find(endstring,cstart)
+  cend = comment.find(endstring, cstart)
   return comment[cstart:cend].strip()
 
-def unstripcomment(comment,startstring="<!-- ",endstring=" -->\n"):
+def unstripcomment(comment, startstring="<!-- ", endstring=" -->\n"):
   return startstring+comment.strip()+endstring
 
 def encodewithdict(unencoded, encodedict):
@@ -380,11 +380,11 @@ def makeutf8(d):
 
 def testcase():
   x = ' "this" " is " "a" " test!" '
-  print extract(x,'"','"',None)
-  print extract(x,'"','"','!')
-  print extractwithoutquotes(x,'"','"',None)
-  print extractwithoutquotes(x,'"','"','!')
-  print extractwithoutquotes(x,'"','"','!',includeescapes=False)
+  print extract(x, '"', '"', None)
+  print extract(x, '"', '"', '!')
+  print extractwithoutquotes(x, '"', '"', None)
+  print extractwithoutquotes(x, '"', '"', '!')
+  print extractwithoutquotes(x, '"', '"', '!', includeescapes=False)
 
 if __name__ == '__main__':
   testcase()
