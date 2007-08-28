@@ -156,17 +156,20 @@ class StatsCache:
         
         self.con.commit()
 
-    def _getstoredfileid(self, filename):
+    def _getstoredfileid(self, filename, optmtime=-1):
         """Attempt to find the fileid of the given file, if it hasn't been
         updated since the last record update.
 
         None is returned if either the file's record is not found, or if it is
         not up to date.
 
+        @param filename: the filename to retrieve the id for
+        @param optmtime: an optional mtime to consider in addition to the mtime of
+        the given file
         @rtype: String or None
         """
         absolutepath = os.path.abspath(filename)
-        mtime = os.path.getmtime(absolutepath)
+        mtime = max(optmtime, os.path.getmtime(absolutepath))
         self.cur.execute("SELECT fileid, mtime FROM files WHERE path=?;", (absolutepath,))
         filerow = self.cur.fetchone()
         if not filerow or filerow[1] != mtime:
@@ -209,7 +212,7 @@ class StatsCache:
 
         self.cur.execute("""DELETE FROM units WHERE
             fileid=?""", (fileid,))
-        # executemany is non-standard
+        # XXX: executemany is non-standard
         self.cur.executemany("""INSERT INTO units
             (unitid, fileid, unitindex, source, target, sourcewords, targetwords, state) 
             values (?, ?, ?, ?, ?, ?, ?, ?);""",
@@ -262,9 +265,11 @@ class StatsCache:
                 for failure in failures:
                     unitvalues.append((index, fileid, configid, failure[0], failure[1]))
 
+        # Let's purge all previous failures because they will probably just
+        # fill up the database without much use.
         self.cur.execute("""DELETE FROM uniterrors WHERE
-            fileid=?""", (fileid,))
-        # executemany is non-standard
+            fileid=?;""", (fileid,))
+        # XXX: executemany is non-standard
         self.cur.executemany("""INSERT INTO uniterrors
             (unitindex, fileid, configid, name, message) 
             values (?, ?, ?, ?, ?);""",
@@ -275,7 +280,20 @@ class StatsCache:
     def filechecks(self, filename, checker, store=None):
         """Retrieves the error statistics for the given file if possible, 
         otherwise delegates to cachestorechecks()."""
-        fileid = self._getstoredfileid(filename)
+        root, ext = os.path.splitext(filename)
+        suggestion_filename = None
+        suggestion_mtime = -1
+        if ext == os.path.extsep + "po":
+            # For a PO file there might be an associated file with suggested
+            # translations. If either file changed, we want to regenerate the
+            # statistics.
+            suggestion_filename = filename + os.path.extsep + 'pending'
+            if not os.path.exists(suggestion_filename):
+                suggestion_filename = None
+                suggestion_mtime = -1
+            else:
+                suggestion_mtime = os.path.getmtime(suggestion_filename)
+        fileid = self._getstoredfileid(filename, suggestion_mtime)
         configid = self._getstoredcheckerconfig(checker)
         try:
             if not fileid:
@@ -303,6 +321,8 @@ class StatsCache:
             # This could happen if we haven't done the checks before, or we the
             # file changed, or we are using a different configuration
             store = store or factory.getobject(filename)
+            if suggestion_filename:
+                checker.setsuggestionstore(factory.getobject(suggestion_filename, ignore=os.path.extsep+ 'pending'))
             self.cachestorechecks(fileid, store, checker, configid)
             values = geterrors()
 
