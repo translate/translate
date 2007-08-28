@@ -6,7 +6,11 @@ from translate.storage.directory import Directory
 from translate.misc import wStringIO
 
 from gzip import GzipFile
-from bz2 import BZ2File
+try:
+    # bz2 is not available on python 2.3
+    from bz2 import BZ2File
+except ImportError:
+    BZ2File = None
 import os
 
 def classname(filename):
@@ -104,6 +108,8 @@ class BaseTestFactory:
 
     def test_bz2file(self):
         """Test that we can open a gzip file correctly."""
+        if not BZ2File:
+            return
         filename = os.path.join(self.testdir, self.filename + '.bz2')
         bz2file = BZ2File(filename, mode="wb")
         bz2file.write(self.file_content)
