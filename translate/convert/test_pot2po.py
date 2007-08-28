@@ -135,6 +135,28 @@ class TestPOT2PO:
         newpounit = self.singleunit(newpo)
         assert str(newpounit) == poexpected
 
+    def test_empty_commentlines(self):
+        potsource = '''#: paneSecurity.title
+msgid "Security"
+msgstr ""
+'''
+        posource = '''# - Contributor(s):
+# -
+# - Alternatively, the
+# -
+#: paneSecurity.title
+msgid "Security"
+msgstr "Sekuriteit"
+'''
+        poexpected = posource
+        newpo = self.convertpot(potsource, posource)
+        newpounit = self.singleunit(newpo)
+        print "expected"
+        print poexpected
+        print "got:"
+        print str(newpounit)
+        assert str(newpounit) == poexpected
+
     def test_merging_msgidcomments(self):
         """ensure that we can merge msgidcomments messages"""
         potsource = r'''#: window.width
@@ -323,6 +345,24 @@ msgstr ""
         newpounit = self.singleunit(newpo)
         assert str(newpounit) == poexpected
         
+    def test_merging_typecomments(self):
+        """Test that we can merge with typecomments"""
+        potsource = '''#: file.c:1\n#, c-format\nmsgid "%d pipes"\nmsgstr ""\n''' 
+        posource = '''#: file.c:2\nmsgid "%d pipes"\nmsgstr "%d pype"\n'''
+        poexpected = '''#: file.c:1\n#, c-format\nmsgid "%d pipes"\nmsgstr "%d pype"\n'''
+        newpo = self.convertpot(potsource, posource)
+        newpounit = self.singleunit(newpo)
+        print newpounit
+        assert str(newpounit) == poexpected
+
+        potsource = '''#: file.c:1\n#, c-format\nmsgid "%d computers"\nmsgstr ""\n''' 
+        posource = '''#: file.c:2\n#, c-format\nmsgid "%s computers "\nmsgstr "%s-rekenaars"\n'''
+        poexpected = '''#: file.c:1\n#, fuzzy, c-format\nmsgid "%d computers"\nmsgstr "%s-rekenaars"\n'''
+        newpo = self.convertpot(potsource, posource)
+        newpounit = self.singleunit(newpo)
+        assert newpounit.isfuzzy()
+        assert newpounit.hastypecomment("c-format")
+
 class TestPOT2POCommand(test_convert.TestConvertCommand, TestPOT2PO):
     """Tests running actual pot2po commands on files"""
     convertmodule = pot2po
