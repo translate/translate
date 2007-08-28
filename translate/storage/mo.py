@@ -107,7 +107,6 @@ class mofile(base.TranslationStore):
         for id in keys:
             # For each string, we need size and file offset.  Each string is NUL
             # terminated; the NUL does not count into the size.
-            # TODO: We don't handle plural forms
             # TODO: We don't do any encoding detection from the PO Header
             str = MESSAGES[id].encode('utf-8') # id is already encoded for use as a dictionary key
             offsets.append((len(ids), len(id), len(strs), len(str)))
