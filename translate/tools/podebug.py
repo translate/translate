@@ -45,10 +45,15 @@ class podebug:
   def convertunit(self, unit, prefix):
     if self.openofficeignore(unit.getlocations()):
       return unit
-    # TODO: This does not yet handle plurals elegantly
     if not unit.istranslated():
       unit.target = unit.source
-    unit.target = prefix + unit.target
+    if unit.hasplural():
+        strings = unit.target.strings
+        for i, string in enumerate(strings):
+           strings[i] = prefix + string
+        unit.target = strings
+    else:
+        unit.target = prefix + unit.target
     return unit
 
   def convertfile(self, store):
