@@ -389,11 +389,13 @@ class pounit(base.TranslationUnit):
         list1.extend(["%s %s%s" % (prefix,item,lineend) for item in splitlist2 if not item in splitlist1])
       else:
         #Normal merge, but conform to list1 newline style
-        for item in list2:
-          if lineend:
-            item = item.rstrip() + lineend
-          if item not in list1:
-            list1.append(item)
+        if list1 != list2:
+          for item in list2:
+            if lineend:
+              item = item.rstrip() + lineend
+            # avoid duplicate comment lines (this might cause some problems)
+            if item not in list1 or len(item) < 5:
+              list1.append(item)
     if not isinstance(otherpo, pounit):
       super(pounit, self).merge(otherpo, overwrite, comments)
       return
