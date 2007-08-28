@@ -25,6 +25,7 @@ from translate.storage import base
 from translate.storage import po
 from translate.storage import mo
 from translate.storage import csvl10n
+from translate.storage import qm
 from translate.storage import xliff
 from translate.storage import poxliff
 from translate.storage import tmx
@@ -43,6 +44,7 @@ except ImportError:
 classes = {"po": po.pofile, "pot": po.pofile, 
            "mo": mo.mofile, "gmo": mo.mofile, 
            "csv": csvl10n.csvfile, 
+           "qm": qm.qmfile, 
            "xliff": xliff.xlifffile, "xlf": xliff.xlifffile, 
            "tmx": tmx.tmxfile, "tbx": tbx.tbxfile}
 
