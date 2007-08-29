@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>260</width>
-    <height>227</height>
+    <width>298</width>
+    <height>275</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -34,34 +34,8 @@
       <property name="spacing" >
        <number>6</number>
       </property>
-      <item row="0" column="2" colspan="2" >
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>20</width>
-          <height>111</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="7" column="2" >
-       <widget class="QLabel" name="lblFuzzy" >
-        <property name="frameShape" >
-         <enum>QFrame::NoFrame</enum>
-        </property>
-        <property name="text" >
-         <string/>
-        </property>
-        <property name="alignment" >
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="3" >
-       <widget class="QLabel" name="lblFuzzyPercent" >
+      <item row="3" column="3" >
+       <widget class="QLabel" name="lblUntranPercent" >
         <property name="frameShape" >
          <enum>QFrame::NoFrame</enum>
         </property>
@@ -74,7 +48,32 @@
        </widget>
       </item>
       <item row="3" column="2" >
-       <widget class="QLabel" name="lblNumberofFiles" >
+       <widget class="QLabel" name="lblUntranslated" >
+        <property name="frameShape" >
+         <enum>QFrame::NoFrame</enum>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+        <property name="alignment" >
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" colspan="2" >
+       <widget class="QLabel" name="label_4" >
+        <property name="font" >
+         <font>
+          <pointsize>9</pointsize>
+         </font>
+        </property>
+        <property name="text" >
+         <string>  Untranslated:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="3" >
+       <widget class="QLabel" name="lblTransPercent" >
         <property name="frameShape" >
          <enum>QFrame::NoFrame</enum>
         </property>
@@ -99,8 +98,32 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="3" >
-       <widget class="QLabel" name="lblTransPercent" >
+      <item row="5" column="0" >
+       <widget class="QLabel" name="label_2" >
+        <property name="font" >
+         <font>
+          <pointsize>9</pointsize>
+         </font>
+        </property>
+        <property name="text" >
+         <string>  Translated:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="2" >
+       <widget class="QLabel" name="label" >
+        <property name="font" >
+         <font>
+          <pointsize>9</pointsize>
+         </font>
+        </property>
+        <property name="text" >
+         <string>  Number of files:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="3" >
+       <widget class="QLabel" name="lblTotalPercent" >
         <property name="frameShape" >
          <enum>QFrame::NoFrame</enum>
         </property>
@@ -112,7 +135,56 @@
         </property>
        </widget>
       </item>
-      <item row="11" column="2" >
+      <item row="7" column="0" colspan="4" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>258</width>
+          <height>16</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QLabel" name="label_6" >
+        <property name="font" >
+         <font>
+          <pointsize>9</pointsize>
+         </font>
+        </property>
+        <property name="text" >
+         <string>  Statistic of :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0" >
+       <widget class="QLabel" name="label_3" >
+        <property name="font" >
+         <font>
+          <pointsize>9</pointsize>
+         </font>
+        </property>
+        <property name="text" >
+         <string>  Fuzzy:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0" >
+       <widget class="QLabel" name="label_5" >
+        <property name="font" >
+         <font>
+          <pointsize>9</pointsize>
+         </font>
+        </property>
+        <property name="text" >
+         <string>  Total:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="2" >
        <widget class="QLabel" name="lblTotal" >
         <property name="frameShape" >
          <enum>QFrame::NoFrame</enum>
@@ -128,131 +200,59 @@
         </property>
        </widget>
       </item>
-      <item row="11" column="0" >
-       <widget class="QLabel" name="label_5" >
-        <property name="font" >
-         <font>
-          <pointsize>9</pointsize>
-         </font>
+      <item row="2" column="2" >
+       <widget class="QLabel" name="lblNumberofFiles" >
+        <property name="frameShape" >
+         <enum>QFrame::NoFrame</enum>
         </property>
         <property name="text" >
-         <string>  Total:</string>
+         <string/>
+        </property>
+        <property name="alignment" >
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
       </item>
-      <item row="9" column="0" colspan="2" >
-       <widget class="QLabel" name="label_4" >
-        <property name="font" >
-         <font>
-          <pointsize>9</pointsize>
-         </font>
+      <item row="4" column="3" >
+       <widget class="QLabel" name="lblFuzzyPercent" >
+        <property name="frameShape" >
+         <enum>QFrame::NoFrame</enum>
         </property>
         <property name="text" >
-         <string>  Untranslated:</string>
+         <string/>
+        </property>
+        <property name="alignment" >
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
       </item>
-      <item row="7" column="0" >
-       <widget class="QLabel" name="label_3" >
-        <property name="font" >
-         <font>
-          <pointsize>9</pointsize>
-         </font>
+      <item row="4" column="2" >
+       <widget class="QLabel" name="lblFuzzy" >
+        <property name="frameShape" >
+         <enum>QFrame::NoFrame</enum>
         </property>
         <property name="text" >
-         <string>  Fuzzy:</string>
+         <string/>
+        </property>
+        <property name="alignment" >
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
       </item>
-      <item row="5" column="0" >
-       <widget class="QLabel" name="label_2" >
-        <property name="font" >
-         <font>
-          <pointsize>9</pointsize>
-         </font>
-        </property>
-        <property name="text" >
-         <string>  Translated:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0" colspan="2" >
-       <widget class="QLabel" name="label" >
-        <property name="font" >
-         <font>
-          <pointsize>9</pointsize>
-         </font>
-        </property>
-        <property name="text" >
-         <string>  Number of files:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" >
-       <widget class="QLabel" name="label_6" >
-        <property name="font" >
-         <font>
-          <pointsize>9</pointsize>
-         </font>
-        </property>
-        <property name="text" >
-         <string>  Statistic of :</string>
-        </property>
-       </widget>
-      </item>
-      <item row="12" column="0" colspan="4" >
+      <item row="0" column="2" colspan="2" >
        <spacer>
         <property name="orientation" >
          <enum>Qt::Vertical</enum>
         </property>
         <property name="sizeHint" >
          <size>
-          <width>195</width>
+          <width>121</width>
           <height>16</height>
          </size>
         </property>
        </spacer>
       </item>
-      <item row="9" column="2" >
-       <widget class="QLabel" name="lblUntranslated" >
-        <property name="frameShape" >
-         <enum>QFrame::NoFrame</enum>
-        </property>
-        <property name="text" >
-         <string/>
-        </property>
-        <property name="alignment" >
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="3" >
-       <widget class="QLabel" name="lblUntranPercent" >
-        <property name="frameShape" >
-         <enum>QFrame::NoFrame</enum>
-        </property>
-        <property name="text" >
-         <string/>
-        </property>
-        <property name="alignment" >
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="11" column="3" >
-       <widget class="QLabel" name="lblTotalPercent" >
-        <property name="frameShape" >
-         <enum>QFrame::NoFrame</enum>
-        </property>
-        <property name="text" >
-         <string/>
-        </property>
-        <property name="alignment" >
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1" colspan="2" >
+      <item row="1" column="1" colspan="3" >
        <widget class="QLabel" name="lblStatistic" >
         <property name="frameShape" >
          <enum>QFrame::NoFrame</enum>
@@ -261,21 +261,11 @@
          <string/>
         </property>
         <property name="alignment" >
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         <set>Qt::AlignCenter</set>
         </property>
        </widget>
       </item>
      </layout>
-    </widget>
-   </item>
-   <item row="2" column="1" >
-    <widget class="QPushButton" name="btnOk" >
-     <property name="text" >
-      <string>&amp;OK</string>
-     </property>
-     <property name="shortcut" >
-      <string/>
-     </property>
     </widget>
    </item>
    <item row="2" column="0" >
@@ -306,6 +296,16 @@
      </property>
      <property name="alignment" >
       <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1" >
+    <widget class="QPushButton" name="btnOk" >
+     <property name="text" >
+      <string>&amp;OK</string>
+     </property>
+     <property name="shortcut" >
+      <string/>
      </property>
     </widget>
    </item>
