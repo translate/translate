@@ -54,6 +54,8 @@ class Find(QtGui.QDockWidget):
         self.connect(self.ui.incomment, QtCore.SIGNAL("stateChanged(int)"), self.initSearch)
         self.connect(self.ui.matchcase, QtCore.SIGNAL("stateChanged(int)"), self.initSearch)
         self.connect(self.ui.lineEdit, QtCore.SIGNAL("textChanged(const QString &)"), self._textChanged)
+        
+        self.defaultBase = False
 
     def _textChanged(self, txt):
         """ private slot
@@ -86,6 +88,14 @@ class Find(QtGui.QDockWidget):
             self.setToolTip(msg)
             self.setStatusTip(msg)
             self._enableSearch(False)
+        
+        if (not self.defaultBase):
+            self.defaultBase = True
+            color = QtGui.QColor(255, 255, 255)
+            palette = self.ui.lineEdit.palette()
+            palette.setColor(QtGui.QPalette.Active, QtGui.QPalette.Base, color)
+            self.ui.lineEdit.update()
+        
 
     def _enableSearch(self, enabled):
         """ enable or disable the means to search 
@@ -143,6 +153,32 @@ class Find(QtGui.QDockWidget):
     def replaceAll(self):
         self.emit(QtCore.SIGNAL("replaceAll"), self.ui.lineEdit_2.text())
         self.ui.lineEdit_2.setFocus()
+    
+    def setColorStatus(self, message):
+        """
+        colorize the search text box; yellow for reached end, red for not found.
+        """
+        if (message == "reachedEnd"):
+            color = QtGui.QColor(255, 255, 127)
+            palette = self.ui.lineEdit.palette()
+            palette.setColor(QtGui.QPalette.Active, QtGui.QPalette.Base, color)
+            self.ui.lineEdit.update()
+            self.defaultBase = False
+            
+        elif (message == "notFound"):
+            color = QtGui.QColor(255, 85, 85)
+            palette = self.ui.lineEdit.palette()
+            palette.setColor(QtGui.QPalette.Active, QtGui.QPalette.Base, color)
+            self.ui.lineEdit.update()
+            self.defaultBase = False
+        
+        elif (message == "found") and (not self.defaultBase):
+            color = QtGui.QColor(255, 255, 255)
+            palette = self.ui.lineEdit.palette()
+            palette.setColor(QtGui.QPalette.Active, QtGui.QPalette.Base, color)
+            self.ui.lineEdit.update()
+            self.defaultBase = True
+        
     
 if __name__ == "__main__":
     import sys, os
