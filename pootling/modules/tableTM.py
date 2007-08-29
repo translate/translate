@@ -86,6 +86,7 @@ class tableTM(QtGui.QDockWidget):
             
         if (not candidates):
             return
+        self.newUnit()
         for unit in candidates:
             row = self.ui.tblTM.rowCount()
             self.ui.tblTM.setRowCount(row + 1)

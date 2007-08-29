@@ -144,7 +144,6 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.dockOverview, QtCore.SIGNAL("requestUnit"), self.operator.emitRequestUnit)
         self.connect(self.operator, QtCore.SIGNAL("tmRequest"), self.dockOverview.popupTranslation)
         self.connect(self.operator, QtCore.SIGNAL("tmCandidates"), self.table.fillTable)
-        self.connect(self.operator, QtCore.SIGNAL("currentUnit"), self.table.newUnit)
         self.connect(self.table, QtCore.SIGNAL("translation2target"), self.dockTUview.translation2target)
         self.connect(self.table, QtCore.SIGNAL("visible"), self.operator.setTmLookup)
         
