@@ -186,6 +186,8 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.findBar, QtCore.SIGNAL("searchNext"), self.searchNext)
         self.connect(self.findBar, QtCore.SIGNAL("searchPrevious"), self.searchPrevious)
         self.connect(self.table, QtCore.SIGNAL("findUnit"), self.operator.slotFindUnit)
+        self.connect(self.operator, QtCore.SIGNAL("searchStatus"), self.findBar.setColorStatus)
+        self.connect(self.operator, QtCore.SIGNAL("searchStatus"), self.displayTempMessage)
         
         self.connect(self.findBar, QtCore.SIGNAL("replace"), self.operator.replace)
         self.connect(self.findBar, QtCore.SIGNAL("replaceAll"), self.operator.replaceAll)
@@ -194,7 +196,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("highlightGlossary"), self.dockTUview.setHighlightGlossary)
         self.connect(self.operator, QtCore.SIGNAL("searchResult"), self.dockTUview.setSearchString)
         self.connect(self.operator, QtCore.SIGNAL("searchResult"), self.dockComment.setSearchString)
-        self.connect(self.operator, QtCore.SIGNAL("EOF"), self.findStatus)
+##        self.connect(self.operator, QtCore.SIGNAL("searchStatus"), self.Catalog.setReachedEnd)
         # "replaceText" sends text field, start, length, and text to replace.
         self.connect(self.operator, QtCore.SIGNAL("replaceText"), self.dockTUview.replaceText)
         self.connect(self.operator, QtCore.SIGNAL("replaceText"), self.dockComment.replaceText)
@@ -499,28 +501,28 @@ class MainWindow(QtGui.QMainWindow):
         """Find Next from submenu """
         self.operator.searchNext()
         self.findBar.ui.lineEdit.setFocus()
-        self.findBar.ui.findPrevious.setEnabled(True)
-        self.ui.actionFindPrevious.setEnabled(True)
+##        self.findBar.ui.findPrevious.setEnabled(True)
+##        self.ui.actionFindPrevious.setEnabled(True)
     
     def searchPrevious(self):
         """Find Previous from submenu."""
         self.operator.searchPrevious()
         self.findBar.ui.lineEdit.setFocus()
-        self.findBar.ui.findNext.setEnabled(True)
-        self.ui.actionFindNext.setEnabled(True)
+##        self.findBar.ui.findNext.setEnabled(True)
+##        self.ui.actionFindNext.setEnabled(True)
         
-    def findStatus(self, text):
-        """
-        Disable Find Next or Previous Button if the search reach the end of file.
-        @param text: a string to decide which button should be diabled.
-        """
-        self.Catalog.setReachedEnd()
-        if (text == "Next"):
-            self.findBar.ui.findNext.setDisabled(True)
-            self.ui.actionFindNext.setDisabled(True)
-        elif (text == "Previous"):
-            self.findBar.ui.findPrevious.setDisabled(True)
-            self.ui.actionFindPrevious.setDisabled(True)
+##    def findStatus(self, text):
+##        """
+##        Disable Find Next or Previous Button if the search reach the end of file.
+##        @param text: a string to decide which button should be diabled.
+##        """
+####        self.Catalog.setReachedEnd()
+##        if (text == "Next"):
+##            self.findBar.ui.findNext.setDisabled(True)
+##            self.ui.actionFindNext.setDisabled(True)
+##        elif (text == "Previous"):
+##            self.findBar.ui.findPrevious.setDisabled(True)
+##            self.ui.actionFindPrevious.setDisabled(True)
         
     def focusChanged(self, oldWidget, newWidget):
         if (oldWidget):
@@ -707,20 +709,32 @@ class MainWindow(QtGui.QMainWindow):
         self.Catalog.updateFileStatus(filename)
 
     def setStatus(self, statusList):
-        """Set status that contain current, total, untranslated, translated to the current file."""
-        self.numUntran = statusList[0]
-        self.numFuzzy = statusList[1]
-        self.numTran = statusList[2]
+        """
+        Set status that contain current, total, untranslated, translated to the current file.
+        """
+        numUntran = statusList[0]
+        numFuzzy = statusList[1]
+        numTran = statusList[2]
         current = statusList[3]
-        self.numTotal = self.numUntran + self.numFuzzy + self.numTran
+        numTotal = numUntran + numFuzzy + numTran
         
-        statusString = "Current: " + str(current) +"/" + str(self.numTotal) + "  |  " + \
-                "Untranslated: " + str(self.numUntran) + "  |  " + \
-                "Fuzzy: " +  str(self.numFuzzy) + "  |  " + \
-                "Translated: " +  str(self.numTran)
+        statusString = "Current: " + str(current) +"/" + str(numTotal) + "  |  " + \
+                "Untranslated: " + str(numUntran) + "  |  " + \
+                "Fuzzy: " +  str(numFuzzy) + "  |  " + \
+                "Translated: " +  str(numTran)
                 
         self.statuslabel.setText(statusString)
-
+    
+    def displayTempMessage(self, message):
+        """
+        display a quick message for 5 seconds in status bar.
+        """
+        if (message == "reachedEnd"):
+            message = self.tr("Search has reached the end.")
+            self.ui.statusbar.showMessage(message, 5000)
+        elif (message == "notFound"):
+            message = self.tr("Search was not found.")
+            self.ui.statusbar.showMessage(message, 5000)
 
 def main(inputFile = None):
     # set the path for QT in order to find the icons
