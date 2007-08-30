@@ -741,6 +741,8 @@ class Operator(QtCore.QObject):
         
         self.emitNewUnits()
         self.emitStatus()
+        if (len(self.filteredList) > 0):
+            self.emitUnit(self.filteredList[0])
     
     def setModified(self, bool):
         self.modified = bool
