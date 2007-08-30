@@ -72,13 +72,12 @@ class Catalog(QtGui.QMainWindow):
                             self.tr("Last Translator")]
         self.ui.treeCatalog.setColumnCount(len(self.headerLabels))
         self.ui.treeCatalog.setHeaderLabels(self.headerLabels)
-        #TODO will think about casesensitive
         self.ui.treeCatalog.setSortingEnabled(True)
         self.ui.treeCatalog.sortItems(0, QtCore.Qt.AscendingOrder)
         self.ui.treeCatalog.hideColumn(5)
         self.ui.treeCatalog.header().setResizeMode(QtGui.QHeaderView.Interactive)
         self.ui.treeCatalog.setWhatsThis("The catalog manager merges all files and folders enter one treewidget and displays all po, xlf... files. the way you can easily see if a template has been added or removed. Also some information about the files is displayed.")
-        
+
         # Quit action
         self.connect(self.ui.actionQuit, QtCore.SIGNAL("triggered()"), QtCore.SLOT("close()"))
         
@@ -152,7 +151,7 @@ class Catalog(QtGui.QMainWindow):
         self.connect(self.ui.treeCatalog.model(), QtCore.SIGNAL("layoutChanged()"), self.sort)
         self.connect(self.ui.treeCatalog, QtCore.SIGNAL("currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)"), self.itemChanged)
         self.setupCheckbox()
-
+                
         # timer..
         self.timer = QtCore.QTimer()
         self.connect(self.timer, QtCore.SIGNAL("timeout()"), self.updateStatistic)
@@ -408,12 +407,19 @@ class Catalog(QtGui.QMainWindow):
         self.sort()
         self.ui.treeCatalog.resizeColumnToContents(0)
         self.allowUpdate = True
-        item = self.fileItems[0]
-        self.ui.treeCatalog.setCurrentItem(item)
+        if (self.fileItems):
+            item = self.fileItems.sort()
+            self.ui.treeCatalog.setCurrentItem(item)
+        self.ui.treeCatalog.setFocus()
         self.timer.start(10)
         
         self.ui.treeCatalog.setFocus()
     
+    def keyReleaseEvent(self, event):
+        # press Enter key to open the file.
+        if (event.key() == 16777220) and (self.ui.treeCatalog.currentItem()):
+            self.emitOpenFile()
+
     def addCatalogFile(self, path, includeSub, item):
         """
         add path to catalog tree view if it's file, if it's directory then
