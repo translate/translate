@@ -223,6 +223,8 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockOverview.applySettings)
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.dockTUview.applySettings)
         self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.operator.applySettings)
+        self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.table.applySettings)
+        self.connect(self.preference, QtCore.SIGNAL("settingsChanged"), self.tableGlossary.applySettings)
 
         # action lookup text and auto translation from TM
         self.connect(self.ui.actionAuto_translate, QtCore.SIGNAL("triggered()"), self.operator.autoTranslate)
