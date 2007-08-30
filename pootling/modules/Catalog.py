@@ -265,6 +265,7 @@ class Catalog(QtGui.QMainWindow):
             return
         
         filename = self.getFilename(item)
+        
         title = unicode(os.path.basename(filename))
         
         self.numOfFiles = 0
@@ -408,7 +409,7 @@ class Catalog(QtGui.QMainWindow):
         self.ui.treeCatalog.resizeColumnToContents(0)
         self.allowUpdate = True
         if (self.fileItems):
-            item = self.fileItems.sort()
+            item = self.fileItems[0]
             self.ui.treeCatalog.setCurrentItem(item)
         self.ui.treeCatalog.setFocus()
         self.timer.start(10)
@@ -805,7 +806,7 @@ class Catalog(QtGui.QMainWindow):
                 files.removeAt(index)
                 self.closeProject()
                 World.settings.setValue("recentProjectList", QtCore.QVariant(files))
-            self.ui.treeCatalog.clear()
+#            self.ui.treeCatalog.clear()
             self.updateRecentProject()
             return False
 
