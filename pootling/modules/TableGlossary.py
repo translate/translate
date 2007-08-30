@@ -22,6 +22,7 @@
 from PyQt4 import QtCore, QtGui
 from pootling.ui.Ui_TableGlossary import Ui_Form
 import sys, os
+import pootling.modules.World as World
 
 
 class TableGlossary(QtGui.QDockWidget):
@@ -44,7 +45,29 @@ class TableGlossary(QtGui.QDockWidget):
         self.ui.tblGlossary.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
         self.normalState = QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
         self.toggleViewAction().setChecked(True)
+        self.ui.tblGlossary.resizeRowsToContents()
         self.same = False
+        self.applySettings()
+        
+    def applySettings(self):
+        """
+        set color and font to the TM table.
+        """
+        glossaryColor = World.settings.value("glossaryColor")
+        if (glossaryColor.isValid()):
+            colorObj = QtGui.QColor(glossaryColor.toString())
+            palette = self.ui.tblGlossary.palette()
+            palette.setColor(QtGui.QPalette.Active, QtGui.QPalette.ColorRole(QtGui.QPalette.Text), colorObj)
+            palette.setColor(QtGui.QPalette.Inactive, QtGui.QPalette.ColorRole(QtGui.QPalette.Text), colorObj)
+            self.ui.tblGlossary.setPalette(palette)
+
+        font = World.settings.value("glossaryFont")
+        if (font.isValid()):
+            fontObj = QtGui.QFont()
+            if (fontObj.fromString(font.toString())):
+              self.ui.tblGlossary.setFont(fontObj)
+              
+        self.ui.tblGlossary.resizeRowsToContents()
 
     def newUnit(self):
         self.ui.tblGlossary.clear()

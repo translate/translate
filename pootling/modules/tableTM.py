@@ -4,8 +4,6 @@
 #Copyright (c) 2006 - 2007 by The WordForge Foundation
 #                       www.wordforge.org
 #
-# Version 0.1 (29 December 2006)
-#
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
@@ -23,6 +21,7 @@
 from PyQt4 import QtCore, QtGui
 from pootling.ui.Ui_TableTM import Ui_Form
 import sys, os
+import pootling.modules.World as World
 
 
 class tableTM(QtGui.QDockWidget):
@@ -52,6 +51,7 @@ class tableTM(QtGui.QDockWidget):
         self.ui.tblTM.horizontalHeader().setResizeMode(1, QtGui.QHeaderView.Interactive)
         self.ui.tblTM.horizontalHeader().setResizeMode(2, QtGui.QHeaderView.Stretch)
         self.ui.tblTM.verticalHeader().hide()
+        self.ui.tblTM.resizeRowsToContents()
         self.ui.tblTM.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
         self.ui.tblTM.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
         self.normalState = QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
@@ -61,6 +61,27 @@ class tableTM(QtGui.QDockWidget):
         self.connect(self.ui.tblTM, QtCore.SIGNAL("itemDoubleClicked(QTableWidgetItem *)"), self.emitTarget)
         self.createContextMenu()
         self.allowUpdate = True
+        self.applySettings()
+        
+    def applySettings(self):
+        """
+        set color and font to the TM table.
+        """
+        TMColor = World.settings.value("TMColor")
+        if (TMColor.isValid()):
+            colorObj = QtGui.QColor(TMColor.toString())
+            palette = self.ui.tblTM.palette()
+            palette.setColor(QtGui.QPalette.Active, QtGui.QPalette.ColorRole(QtGui.QPalette.Text), colorObj)
+            palette.setColor(QtGui.QPalette.Inactive, QtGui.QPalette.ColorRole(QtGui.QPalette.Text), colorObj)
+            self.ui.tblTM.setPalette(palette)
+
+        font = World.settings.value("TMFont")
+        if (font.isValid()):
+            fontObj = QtGui.QFont()
+            if (fontObj.fromString(font.toString())):
+              self.ui.tblTM.setFont(fontObj)
+              
+        self.ui.tblTM.resizeRowsToContents()
         
     def createContextMenu(self):
         # context menu of items

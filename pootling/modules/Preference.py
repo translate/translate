@@ -43,6 +43,12 @@ class Preference(QtGui.QDialog):
         self.setCaption(self.ui.lblComment, self.commentFont)
         self.overviewHeaderFont = self.getFont(self.widget[4])
         self.setCaption(self.ui.lblOverViewHeader, self.overviewHeaderFont)
+        self.TMFont = self.getFont(self.widget[5])
+        self.setCaption(self.ui.lblTM, self.TMFont)
+        self.glossaryFont = self.getFont(self.widget[6])
+        self.setCaption(self.ui.lblGlossary, self.glossaryFont)
+        
+        
         self.overviewColorObj = self.getColor(self.widget[0])
         self.setTextColor(self.ui.lblOverView, self.overviewColorObj)
         self.tuSourceColorObj = self.getColor(self.widget[1])
@@ -51,6 +57,10 @@ class Preference(QtGui.QDialog):
         self.setTextColor(self.ui.lblTarget, self.tuTargetColorObj)
         self.commentColorObj = self.getColor(self.widget[3])
         self.setTextColor(self.ui.lblComment, self.commentColorObj)
+        self.TMColorObj = self.getColor(self.widget[5])
+        self.setTextColor(self.ui.lblTM, self.TMColorObj)
+        self.glossaryColorObj = self.getColor(self.widget[6])
+        self.setTextColor(self.ui.lblGlossary, self.glossaryColorObj)
         
         self.ui.UserName.setText(World.settings.value("UserName").toString())
         self.ui.EmailAddress.setText(World.settings.value("EmailAddress").toString())
@@ -106,11 +116,15 @@ class Preference(QtGui.QDialog):
         self.rememberFont(self.widget[2], self.tuTargetFont)
         self.rememberFont(self.widget[3], self.commentFont)
         self.rememberFont(self.widget[4], self.overviewHeaderFont)
+        self.rememberFont(self.widget[5], self.TMFont)
+        self.rememberFont(self.widget[6], self.glossaryFont)
 
         self.rememberColor(self.widget[0], self.overviewColorObj)
         self.rememberColor(self.widget[1], self.tuSourceColorObj)
         self.rememberColor(self.widget[2], self.tuTargetColorObj)
         self.rememberColor(self.widget[3], self.commentColorObj)
+        self.rememberColor(self.widget[5], self.TMColorObj)
+        self.rememberColor(self.widget[6], self.glossaryColorObj)
 
         World.settings.setValue("UserName", QtCore.QVariant(self.ui.UserName.text()))
         World.settings.setValue("EmailAddress", QtCore.QVariant(self.ui.EmailAddress.text()))
@@ -163,6 +177,16 @@ class Preference(QtGui.QDialog):
         """ slot to open font selection dialog """
         self.overviewHeaderFont = self.setFont(self.widget[4])
         self.setCaption(self.ui.lblOverViewHeader, self.overviewHeaderFont)
+        
+    def fontTM(self):
+        """ slot to open font selection dialog """
+        self.TMFont = self.setFont(self.widget[5])
+        self.setCaption(self.ui.lblTM, self.TMFont)
+    
+    def fontGlossary(self):
+        """ slot to open font selection dialog """
+        self.glossaryFont = self.setFont(self.widget[6])
+        self.setCaption(self.ui.lblGlossary, self.glossaryFont)
 
     def colorOverview(self):
         """ slot to open color selection dialog """
@@ -183,6 +207,16 @@ class Preference(QtGui.QDialog):
         """ slot to open font selection dialog """
         self.commentColorObj = self.setColor(self.widget[3])
         self.setTextColor(self.ui.lblComment, self.commentColorObj)
+        
+    def colorTM(self):
+        """ slot to open font selection dialog """
+        self.TMColorObj = self.setColor(self.widget[5])
+        self.setTextColor(self.ui.lblTM, self.TMColorObj)
+    
+    def colorGlossary(self):
+        """ slot to open font selection dialog """
+        self.glossaryColorObj = self.setColor(self.widget[6])
+        self.setTextColor(self.ui.lblGlossary, self.glossaryColorObj)
 
     def getFont(self, obj):
         """@return obj: font object created from settings
@@ -213,6 +247,10 @@ class Preference(QtGui.QDialog):
         self.tuTargetFont = self.defaultFont
         self.setCaption(self.ui.lblComment, self.defaultFont)
         self.commentFont = self.defaultFont
+        self.setCaption(self.ui.lblTM, self.defaultFont)
+        self.TMFont = self.defaultFont
+        self.setCaption(self.ui.lblGlossary, self.defaultFont)
+        self.glossaryFont = self.defaultFont
 
     def AdjustAllFonts(self):
         """ slot to open font selection dialog """
@@ -227,6 +265,10 @@ class Preference(QtGui.QDialog):
         self.setCaption(self.ui.lblTarget, self.tuTargetFont)
         self.commentFont = self.adjustAllFonts
         self.setCaption(self.ui.lblComment, self.commentFont)
+        self.TMFont = self.adjustAllFonts
+        self.setCaption(self.ui.lblTM, self.TMFont)
+        self.glossaryFont = self.adjustAllFonts
+        self.setCaption(self.ui.lblGlossary, self.glossaryFont)
 
     def defaultColors(self):
         """slot Set default colors"""
@@ -238,6 +280,10 @@ class Preference(QtGui.QDialog):
         self.tuTargetColorObj = self.defaultColor
         self.setTextColor(self.ui.lblComment, self.defaultColor)
         self.commentColorObj = self.defaultColor
+        self.setTextColor(self.ui.lblTM, self.defaultColor)
+        self.TMColorObj = self.defaultColor
+        self.setTextColor(self.ui.lblGlossary, self.defaultColor)
+        self.glossaryColorObj = self.defaultColor
 
     def setCaption(self, lbl, fontObj):
         """ create the text from the font object and set the widget lable
@@ -324,6 +370,8 @@ class Preference(QtGui.QDialog):
             self.connect(self.ui.bntFontSource, QtCore.SIGNAL("clicked()"), self.fontSource) 
             self.connect(self.ui.bntFontTarget, QtCore.SIGNAL("clicked()"), self.fontTarget)
             self.connect(self.ui.bntFontComment, QtCore.SIGNAL("clicked()"), self.fontComment) 
+            self.connect(self.ui.bntFontTM, QtCore.SIGNAL("clicked()"), self.fontTM) 
+            self.connect(self.ui.bntFontGlossary, QtCore.SIGNAL("clicked()"), self.fontGlossary) 
             self.connect(self.ui.bntDefaultsFont, QtCore.SIGNAL("clicked()"), self.defaultFonts)
             # set adjust all fonts for all widget
             self.connect(self.ui.bntAdjustAllFont, QtCore.SIGNAL("clicked()"), self.AdjustAllFonts)
@@ -333,6 +381,8 @@ class Preference(QtGui.QDialog):
             self.connect(self.ui.btnColorSource, QtCore.SIGNAL("clicked()"), self.colorSource) 
             self.connect(self.ui.btnColorTarget, QtCore.SIGNAL("clicked()"), self.colorTarget) 
             self.connect(self.ui.btnColorOverview, QtCore.SIGNAL("clicked()"), self.colorOverview) 
+            self.connect(self.ui.btnColorTM, QtCore.SIGNAL("clicked()"), self.colorTM) 
+            self.connect(self.ui.btnColorGlossary, QtCore.SIGNAL("clicked()"), self.colorGlossary) 
             self.connect(self.ui.bntDefaultsColor, QtCore.SIGNAL("clicked()"), self.defaultColors)
             
             #for language
@@ -341,7 +391,7 @@ class Preference(QtGui.QDialog):
             
             self.connect(self.ui.okButton, QtCore.SIGNAL("clicked()"), self.accepted)
             
-            self.widget = ["overview","tuSource","tuTarget","comment", "overviewHeader"]
+            self.widget = ["overview","tuSource","tuTarget","comment", "overviewHeader", "TM", "Glossary"]
             
             code =[]
             language = []
