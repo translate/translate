@@ -196,7 +196,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.operator, QtCore.SIGNAL("highlightGlossary"), self.dockTUview.setHighlightGlossary)
         self.connect(self.operator, QtCore.SIGNAL("searchResult"), self.dockTUview.setSearchString)
         self.connect(self.operator, QtCore.SIGNAL("searchResult"), self.dockComment.setSearchString)
-##        self.connect(self.operator, QtCore.SIGNAL("searchStatus"), self.Catalog.setReachedEnd)
+        self.connect(self.operator, QtCore.SIGNAL("searchStatus"), self.Catalog.setSearchStatus)
         # "replaceText" sends text field, start, length, and text to replace.
         self.connect(self.operator, QtCore.SIGNAL("replaceText"), self.dockTUview.replaceText)
         self.connect(self.operator, QtCore.SIGNAL("replaceText"), self.dockComment.replaceText)

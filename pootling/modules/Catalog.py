@@ -128,7 +128,7 @@ class Catalog(QtGui.QMainWindow):
         self.ui.actionFind_in_Files.setWhatsThis("<h3>Find</h3>You can find string ever you want in Catalog")
         self.ui.actionFind_in_Files.setStatusTip("Search for a text")
         # emit findfiles signal from FindInCatalog file
-        self.connect(self.findBar, QtCore.SIGNAL("initSearch"), self.find)
+        self.connect(self.findBar, QtCore.SIGNAL("findNext"), self.findNext)
 
         # progress bar
         self.progressBar = QtGui.QProgressBar()
@@ -149,6 +149,8 @@ class Catalog(QtGui.QMainWindow):
         
         self.connect(self.catSetting, QtCore.SIGNAL("updateCatalog"), self.updateCatalog)
         self.connect(self.ui.treeCatalog, QtCore.SIGNAL("itemDoubleClicked(QTreeWidgetItem *, int)"), self.emitOpenFile)
+        self.connect(self.ui.treeCatalog.model(), QtCore.SIGNAL("layoutChanged()"), self.sort)
+        self.connect(self.ui.treeCatalog, QtCore.SIGNAL("currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)"), self.itemChanged)
         self.setupCheckbox()
 
         # timer..
@@ -169,65 +171,93 @@ class Catalog(QtGui.QMainWindow):
         self.connect(self.actionOpen, QtCore.SIGNAL("triggered()"), self.emitOpenFile)
         self.connect(self.actionFind, QtCore.SIGNAL("triggered()"), self.findBar.showFind)
         self.connect(self.actionShowStat, QtCore.SIGNAL("triggered()"), self.showStatistic)
-
+        
         # install custom menu event for treeCatalog
         self.ui.treeCatalog.contextMenuEvent = self.customContextMenuEvent
         
-        self.searchedCount = 0
-        self.reachedEnd = True
+        self.reachedEnd = False
+        self.currentFileOpen = None
+        self.searchString = None
         # bool indicates progress bar need update as TM progresses.
         self.allowUpdate = False
     
-    def setReachedEnd(self):
-        self.reachedEnd = True
+    def itemChanged(self, item, column):
+        """
+        slot item changed, reset self.reachedEnd, self.currentFileOpen.
+        """
+        self.reachedEnd = False
+        self.currentFileOpen = None
     
-    def find(self, searchString, searchOptions):
+    def setSearchStatus(self, message):
+        """
+        Set search status so that we can determine the search is end at operator.
+        """
+        if (message == "reachedEnd"):
+            self.reachedEnd = True
+    
+    def findNext(self, searchString, searchOptions):
         """
         The search here is only determine if search string exist in filename,
         then it connects to search function in operator.
         
-        @param searchString: Text a string to be search for
-        @param searchOptions: the location where you want to search for (source or target); type as integer defined in world.
+        @param searchString: text to search for; type string.
+        @param searchOptions: source and/or target; type as integer defined in world.
         """
         if (not searchString):
             return
-        if (self.searchedCount >= len(self.fileItems)):
-            self.searchedCount = 0
+        
+        if (not self.reachedEnd) and (self.currentFileOpen) and (searchString == self.searchString):
+            self.emit(QtCore.SIGNAL("searchNext"))
             return
         
-        if (self.reachedEnd):
-            self.reachedEnd = False
-            while (self.searchedCount < len(self.fileItems)):
-                item = self.fileItems[self.searchedCount]
-                self.ui.treeCatalog.setCurrentItem(item)
-                self.searchedCount += 1
-            
-                filename = self.getFilename(item)
-                store = factory.getobject(filename)
-                found = -1
-                for unit in store.units:
-                    searchableText = ""
-                    if (searchOptions & World.source):
-                        searchableText += unit.source or ""
-                    if (searchOptions & World.target):
-                        searchableText += unicode(unit.target)
-                    index = searchableText.find(searchString)
-                    if (index > -1):
-                        found = index
-                        break
-                if (found >= 0):
-                    self.emit(QtCore.SIGNAL("openFile"), filename)
-                    filter = []
-                    if (searchOptions & World.source):
-                        filter.append(World.source)
-                    if (searchOptions & World.target):
-                        filter.append(World.target)
-                    self.emit(QtCore.SIGNAL("initSearch"), searchString, filter, False)
-                    self.emit(QtCore.SIGNAL("searchNext"))
+        currentItem = self.ui.treeCatalog.currentItem()
+        resumePoint = self.fileItems.index(currentItem)
+        for item in self.fileItems[resumePoint:] + self.fileItems[:resumePoint]:
+            filename = self.getFilename(item)
+            if (filename == self.currentFileOpen) and (self.reachedEnd):
+                continue
+            # first find if it is in the file or not.
+            store = factory.getobject(filename)
+            found = -1
+            for unit in store.units:
+                searchableText = ""
+                if (searchOptions & World.source):
+                    searchableText += unit.source or ""
+                if (searchOptions & World.target):
+                    searchableText += unicode(unit.target)
+                index = searchableText.find(searchString)
+                if (index > -1):
+                    found = index
                     break
+            if (found >= 0):
+                # use operator's find next signal.
+                self.currentFileOpen = filename
+                self.searchString = searchString
+                self.ui.treeCatalog.setCurrentItem(item)
+                self.emit(QtCore.SIGNAL("openFile"), filename)
+                filter = []
+                if (searchOptions & World.source):
+                    filter.append(World.source)
+                if (searchOptions & World.target):
+                    filter.append(World.target)
+                self.emit(QtCore.SIGNAL("initSearch"), searchString, filter, False)
+                self.emit(QtCore.SIGNAL("searchNext"))
+                break
+            self.reachedEnd = False
         else:
-            self.emit(QtCore.SIGNAL("searchNext"))
-        return
+            self.currentFileOpen = None
+            self.searchString = None
+    
+    def _getStringFromUnit(self, unit, fields):
+        """
+        Return QString of unit's field; source, target, or comment.
+        """
+        unitString = ""
+        if (fields & World.source):
+            unitString += unit.source
+        if (fields & World.target):
+            unitString += unit.target
+        return unitString
 
     def showStatistic(self):
         """Show statistic message in a dialog. """
@@ -367,7 +397,6 @@ class Catalog(QtGui.QMainWindow):
             self.setWindowTitle(str(title))
             return 
         
-        self.fileItems = []
         self.itemNumber = 0
         
         for catalogFile in cats:
@@ -376,40 +405,15 @@ class Catalog(QtGui.QMainWindow):
             self.setWindowTitle(str(title))
             self.addCatalogFile(catalogFile, includeSub, None)
         
+        self.sort()
         self.ui.treeCatalog.resizeColumnToContents(0)
         self.allowUpdate = True
         item = self.fileItems[0]
         self.ui.treeCatalog.setCurrentItem(item)
         self.timer.start(10)
+        
+        self.ui.treeCatalog.setFocus()
     
-    def keyPressEvent(self, event):
-        # press up arrow key
-        if (event.key() == 16777235):
-            try:
-                if (self.searchedCount > 0):
-                    self.searchedCount -= 1
-                    item = self.fileItems[self.searchedCount]
-                    self.ui.treeCatalog.setCurrentItem(item)
-                else:
-                    self.searchedCount = len(self.fileItems)
-            except:
-                return 
-
-        # press down arrow key
-        if (event.key() == 16777237):
-            try:
-                if (self.searchedCount < len(self.fileItems)):
-                    self.searchedCount += 1
-                    item = self.fileItems[self.searchedCount]
-                    self.ui.treeCatalog.setCurrentItem(item)
-                else:
-                    self.searchedCount = 0
-            except:
-                    return 
-        # press Enter key to open the file.
-        if (event.key() == 16777220):
-            self.emitOpenFile()
-
     def addCatalogFile(self, path, includeSub, item):
         """
         add path to catalog tree view if it's file, if it's directory then
@@ -434,7 +438,6 @@ class Catalog(QtGui.QMainWindow):
                 childItem = QtGui.QTreeWidgetItem(item)
                 childItem.setText(0, os.path.basename(path))
                 childItem.setIcon(0, self.iconFile)
-                self.fileItems.append(childItem)
             # check extension of file if not have .po or .pot or xlf and xliff files. hide folder
 #            if (item.childCount() == 0):
 #                item.parent().takeChild(0)
@@ -685,7 +688,7 @@ class Catalog(QtGui.QMainWindow):
         """
         return filename join from item.text(0) to its parent.
         """
-        if (not item):
+        if (not hasattr(item, "text")):
             return None
         filename = unicode(item.text(0))
         if (item.parent()):
@@ -863,6 +866,25 @@ class Catalog(QtGui.QMainWindow):
 
     def customContextMenuEvent(self, e):
         self.menu.exec_(e.globalPos())
+    
+    def sort(self):
+        """
+        re-arrange the fileItems to suit the sorting order.
+        """
+        self.fileItems = []
+        for i in range(self.ui.treeCatalog.topLevelItemCount()):
+            item = self.ui.treeCatalog.topLevelItem(i)
+            self.fileItems += self.getItems(item)
+    
+    def getItems(self, items):
+        """
+        return a list of item in items.
+        """
+        item = [items]
+        # children
+        for i in range(items.childCount()):
+            item += self.getItems(items.child(i))
+        return item
 
 def main():
     # set the path for QT in order to find the icons

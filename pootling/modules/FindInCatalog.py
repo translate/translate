@@ -39,19 +39,18 @@ class FindInCatalog(QtGui.QDockWidget):
         action.setStatusTip("Toggle Find In Catalog")
         self.setFeatures(QtGui.QDockWidget.DockWidgetClosable)
         self.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
-        self.connect(self.ui.find, QtCore.SIGNAL("clicked()"), self.initSearch)
+        self.connect(self.ui.find, QtCore.SIGNAL("clicked()"), self.findNext)
         self.setVisible(self.isHidden())
 
     def showFind(self):
-      self.setWindowTitle(self.tr("Find In Catalog"))
-      self.setVisible(self.isHidden())
-      self.initSearch()
+        self.setWindowTitle(self.tr("Find In Catalog"))
+        self.setVisible(self.isHidden())
 
-    def initSearch(self):
+    def findNext(self):
         """
         Start the search process, if possible
         manage the UI elements for search
-        @signal initSearch.
+        @signal findNext.
         """
         searchOptions = 0
         if (self.ui.chbsource.isChecked()):
@@ -65,7 +64,7 @@ class FindInCatalog(QtGui.QDockWidget):
             self.ui.lineEdit.setFocus()
             self.ui.lineEdit.setWhatsThis("Here you can enter the text you want to search for!")
             searchString = unicode(self.ui.lineEdit.text())
-            self.emit(QtCore.SIGNAL("initSearch"), searchString, searchOptions)
+            self.emit(QtCore.SIGNAL("findNext"), searchString, searchOptions)
         else:
             msg = QtCore.QString(self.tr("Please select first of source or target checkbox or both of them!"))
             self.setToolTip(msg)
