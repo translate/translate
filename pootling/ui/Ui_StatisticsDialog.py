@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/ratha/sourceforge.net/translate/trunk/pootling/ui/StatisticsDialog.ui'
 #
-# Created: Wed Aug 29 10:07:54 2007
+# Created: Thu Aug 30 16:48:52 2007
 #      by: PyQt4 UI code generator 4.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -29,17 +29,17 @@ class Ui_StatisticsDialog(object):
         self.gridlayout1.setSpacing(6)
         self.gridlayout1.setObjectName("gridlayout1")
 
+        self.lblTransPercent = QtGui.QLabel(self.frame)
+        self.lblTransPercent.setFrameShape(QtGui.QFrame.NoFrame)
+        self.lblTransPercent.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.lblTransPercent.setObjectName("lblTransPercent")
+        self.gridlayout1.addWidget(self.lblTransPercent,3,3,1,1)
+
         self.lblUntranPercent = QtGui.QLabel(self.frame)
         self.lblUntranPercent.setFrameShape(QtGui.QFrame.NoFrame)
         self.lblUntranPercent.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.lblUntranPercent.setObjectName("lblUntranPercent")
-        self.gridlayout1.addWidget(self.lblUntranPercent,3,3,1,1)
-
-        self.lblUntranslated = QtGui.QLabel(self.frame)
-        self.lblUntranslated.setFrameShape(QtGui.QFrame.NoFrame)
-        self.lblUntranslated.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
-        self.lblUntranslated.setObjectName("lblUntranslated")
-        self.gridlayout1.addWidget(self.lblUntranslated,3,2,1,1)
+        self.gridlayout1.addWidget(self.lblUntranPercent,5,3,1,1)
 
         self.label_4 = QtGui.QLabel(self.frame)
 
@@ -48,18 +48,6 @@ class Ui_StatisticsDialog(object):
         self.label_4.setFont(font)
         self.label_4.setObjectName("label_4")
         self.gridlayout1.addWidget(self.label_4,3,0,1,2)
-
-        self.lblTransPercent = QtGui.QLabel(self.frame)
-        self.lblTransPercent.setFrameShape(QtGui.QFrame.NoFrame)
-        self.lblTransPercent.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
-        self.lblTransPercent.setObjectName("lblTransPercent")
-        self.gridlayout1.addWidget(self.lblTransPercent,5,3,1,1)
-
-        self.lblTranslated = QtGui.QLabel(self.frame)
-        self.lblTranslated.setFrameShape(QtGui.QFrame.NoFrame)
-        self.lblTranslated.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
-        self.lblTranslated.setObjectName("lblTranslated")
-        self.gridlayout1.addWidget(self.lblTranslated,5,2,1,1)
 
         self.label_2 = QtGui.QLabel(self.frame)
 
@@ -143,6 +131,18 @@ class Ui_StatisticsDialog(object):
         self.lblStatistic.setAlignment(QtCore.Qt.AlignCenter)
         self.lblStatistic.setObjectName("lblStatistic")
         self.gridlayout1.addWidget(self.lblStatistic,1,1,1,3)
+
+        self.lblTranslated = QtGui.QLabel(self.frame)
+        self.lblTranslated.setFrameShape(QtGui.QFrame.NoFrame)
+        self.lblTranslated.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.lblTranslated.setObjectName("lblTranslated")
+        self.gridlayout1.addWidget(self.lblTranslated,3,2,1,1)
+
+        self.lblUntranslated = QtGui.QLabel(self.frame)
+        self.lblUntranslated.setFrameShape(QtGui.QFrame.NoFrame)
+        self.lblUntranslated.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.lblUntranslated.setObjectName("lblUntranslated")
+        self.gridlayout1.addWidget(self.lblUntranslated,5,2,1,1)
         self.gridlayout.addWidget(self.frame,1,0,1,2)
 
         spacerItem2 = QtGui.QSpacerItem(41,26,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
