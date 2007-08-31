@@ -108,7 +108,9 @@ class mofile(base.TranslationStore):
             # For each string, we need size and file offset.  Each string is NUL
             # terminated; the NUL does not count into the size.
             # TODO: We don't do any encoding detection from the PO Header
-            str = MESSAGES[id].encode('utf-8') # id is already encoded for use as a dictionary key
+            str = MESSAGES[id] # id is already encoded for use as a dictionary key
+            if isinstance(str, unicode):
+                str = str.encode('utf-8')
             offsets.append((len(ids), len(id), len(strs), len(str)))
             ids = ids + id + '\0'
             strs = strs + str + '\0'
