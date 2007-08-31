@@ -82,7 +82,7 @@ class TestTranslationUnit:
         escaping roundtrip."""
         unit = self.unit
         specials = ['Fish & chips', 'five < six', 'six > five', 'five &lt; six',
-                    'Use &nbsp;', 'Use &amp;nbsp;', 'Use &amp;amp;nbsp;'
+                    'Use &nbsp;', 'Use &amp;nbsp;', 'Use &amp;amp;nbsp;',
                     'A "solution"', "skop 'n bal", '"""', "'''", u'µ',
                     '\n', '\t', '\r', '\r\n', '\\r', '\\', '\\\r'] 
         for special in specials:
