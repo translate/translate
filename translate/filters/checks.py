@@ -261,7 +261,7 @@ class UnitChecker(object):
 
   def run_filters(self, unit):
     """run all the tests in this suite, return failures as testname, message_or_exception"""
-    failures = []
+    failures = {}
     ignores = self.config.lang.ignoretests[:]
     functionnames = self.defaultfilters.keys()
     priorityfunctionnames = self.preconditions.keys()
@@ -288,7 +288,7 @@ class UnitChecker(object):
       if not filterresult:
         # we test some preconditions that aren't actually a cause for failure...
         if functionname in self.defaultfilters:
-          failures.append((functionname, filtermessage))
+          failures[functionname] = filtermessage
         if functionname in self.preconditions:
           for ignoredfunctionname in self.preconditions[functionname]:
             ignores.append(ignoredfunctionname)
@@ -355,9 +355,9 @@ class TeeChecker:
 
   def run_filters(self, unit):
     """run all the tests in the checker's suites"""
-    failures = []
+    failures = {}
     for checker in self.checkers:
-      failures.extend(checker.run_filters(unit))
+      failures.update(checker.run_filters(unit))
     return failures
 
   def setsuggestionstore(self, store):

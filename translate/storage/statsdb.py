@@ -262,8 +262,8 @@ class StatsCache:
         for index, unit in enumerate(store.units):
             if unit.istranslatable():
                 failures = checker.run_filters(unit)
-                for failure in failures:
-                    unitvalues.append((index, fileid, configid, failure[0], failure[1]))
+                for checkname, checkmessage in failures.iteritems():
+                    unitvalues.append((index, fileid, configid, checkname, checkmessage))
 
         # Let's purge all previous failures because they will probably just
         # fill up the database without much use.

@@ -70,7 +70,7 @@ class pocheckfilter:
       filterresult = self.filterunit(unit)
       if filterresult:
         if filterresult != autocorrect:
-          for filtername, filtermessage in filterresult:
+          for filtername, filtermessage in filterresult.iteritems():
             unit.adderror(filtername, filtermessage)
             if isinstance(filtermessage, checks.SeriousFilterFailure):
               unit.markfuzzy()
