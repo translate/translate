@@ -201,7 +201,9 @@ class TestTranslationStore:
         """Tests converting to a string and parsing the resulting string"""
         store = self.StoreClass()
         unit1 = store.addsourceunit("Test String")
-        unit2 = store.addsourceunit("Blessed String")
+        unit1.target = "Test String"
+        unit2 = store.addsourceunit("Test String 2")
+        unit2.target = "Test String 2"
         newstore = self.reparse(store)
         self.check_equality(store, newstore)
 
@@ -209,7 +211,9 @@ class TestTranslationStore:
         """Tests saving to and loading from files"""
         store = self.StoreClass()
         unit1 = store.addsourceunit("Test String")
-        unit2 = store.addsourceunit("Blessed String")
+        unit1.target = "Test String"
+        unit2 = store.addsourceunit("Test String 2")
+        unit2.target = "Test String 2"
         store.savefile(self.filename)
         newstore = self.StoreClass.parsefile(self.filename)
         self.check_equality(store, newstore)
@@ -218,6 +222,9 @@ class TestTranslationStore:
         """Tests that we can save directly back to the original file."""
         store = self.StoreClass()
         unit1 = store.addsourceunit("Test String")
+        unit1.target = "Test String"
+        unit2 = store.addsourceunit("Test String 2")
+        unit2.target = "Test String 2"
         store.savefile(self.filename)
         store.save()
         newstore = self.StoreClass.parsefile(self.filename)
