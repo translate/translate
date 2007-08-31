@@ -145,8 +145,8 @@ class Statistics(object):
             source = source.decode(getattr(unit, "encoding", "utf-8"))
         #TODO: decoding should not be done here
 #        checkresult = self.checker.run_filters(unit, source, target)
-        checkresult = []
-        for checkname, checkmessage in checkresult:
+        checkresult = {}
+        for checkname, checkmessage in checkresult.iteritems():
             classes.append("check-" + checkname)
         return classes
 
