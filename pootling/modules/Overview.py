@@ -268,7 +268,8 @@ class OverviewDock(QtGui.QDockWidget):
         row = self.ui.tableOverview.row(targetItem)
         self.unit.x_editor_state &= ~World.fuzzy
         self.markState(row, self.unit.x_editor_state)
-        if (targetItem):
+        if (targetItem) and (not self.ui.tableOverview.isRowHidden(row)):
+            # shorten text for display only.
             line = text.find("\n")
             if (line >= 0):
                 text = text[:line] + "..."
