@@ -797,7 +797,7 @@ class Catalog(QtGui.QMainWindow):
         files = World.settings.value("recentProjectList").toStringList()
         if not(os.path.isfile(filename)):
             titled = unicode(self.tr("%s was not found.\n do you want to remove it from list?")) % (unicode(filename))
-            ret = QtGui.QMessageBox.question(self, self.tr("Error"), 
+            ret = QtGui.QMessageBox.critical(self, self.tr("Error"), 
                 titled,
                 QtGui.QMessageBox.Yes | QtGui.QMessageBox.Default, 
                 QtGui.QMessageBox.No | QtGui.QMessageBox.Escape) 
