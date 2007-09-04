@@ -51,7 +51,7 @@ class Catalog(QtGui.QMainWindow):
         self.resize(720,400)
         self.autoRefresh = True
         self.recentProject = []
-        self.startOpenFile()
+        self.openRecentPro()
         title = self.tr("%s Catalog Manager" % (World.settingApp))
         self.setWindowTitle(title)
         self.ui.toolBar.toggleViewAction()
@@ -76,25 +76,18 @@ class Catalog(QtGui.QMainWindow):
         self.ui.treeCatalog.sortItems(0, QtCore.Qt.AscendingOrder)
         self.ui.treeCatalog.hideColumn(5)
         self.ui.treeCatalog.header().setResizeMode(QtGui.QHeaderView.Interactive)
-        self.ui.treeCatalog.setWhatsThis("The catalog manager merges all files and folders enter one treewidget and displays all po, xlf... files. the way you can easily see if a template has been added or removed. Also some information about the files is displayed.")
 
         # Quit action
         self.connect(self.ui.actionQuit, QtCore.SIGNAL("triggered()"), QtCore.SLOT("close()"))
         
         # Reload action
         self.connect(self.ui.actionReload, QtCore.SIGNAL("triggered()"), self.refresh)
-        self.ui.actionReload.setWhatsThis("<h3>Reload</h3>Set the current files or folders to get the most up-to-date version.")
-        self.ui.actionReload.setStatusTip("Reload the current files")
         
         # Stop action
         self.connect(self.ui.actionStop, QtCore.SIGNAL("triggered()"), self.stopUpdate)
-        self.ui.actionStop.setWhatsThis("<h3>Stop</h3>Stop loading catalog.")
-        self.ui.actionStop.setStatusTip("Stop loading catalog.")
         
         # Statistic action
         self.connect(self.ui.actionStatistics, QtCore.SIGNAL("triggered()"), self.showStatistic)
-        self.ui.actionStatistics.setWhatsThis("<h3>Statistics</h3>Show status of files that have filename, fuzzy, untranslated,translated and total of strings.")
-        self.ui.actionStatistics.setStatusTip("Show status of files")
 
         # a new project of Catalog Manager
         self.Project = newProject(self)
@@ -106,10 +99,9 @@ class Catalog(QtGui.QMainWindow):
 
         # catalog setting's checkboxes action.
         self.catSetting = CatalogSetting(self)
+        self.ui.actionConfigure.setWhatsThis("<h3>Configure</h3>Configure the translated file paths in a project and can toogle the view of Catalog Manager")
         self.connect(self.ui.actionConfigure, QtCore.SIGNAL("triggered()"), self.catSetting.show)
         self.connect(self.ui.actionBuild, QtCore.SIGNAL("triggered()"), self.emitBuildTM)
-        self.ui.actionConfigure.setWhatsThis("<h3>Configure...</h3>Set the configuration items with your prefered values.")
-        self.ui.actionConfigure.setStatusTip("Set the prefered configuration")
         self.connect(self.catSetting.ui.chbname, QtCore.SIGNAL("stateChanged(int)"), self.toggleHeaderItem)
         self.connect(self.catSetting.ui.chbfuzzy, QtCore.SIGNAL("stateChanged(int)"), self.toggleHeaderItem)
         self.connect(self.catSetting.ui.chblastrevision, QtCore.SIGNAL("stateChanged(int)"), self.toggleHeaderItem)
@@ -124,8 +116,6 @@ class Catalog(QtGui.QMainWindow):
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.findBar)
 
         self.connect(self.ui.actionFind_in_Files, QtCore.SIGNAL("triggered()"), self.findBar.showFind)
-        self.ui.actionFind_in_Files.setWhatsThis("<h3>Find</h3>You can find string ever you want in Catalog")
-        self.ui.actionFind_in_Files.setStatusTip("Search for a text")
         # emit findfiles signal from FindInCatalog file
         self.connect(self.findBar, QtCore.SIGNAL("findNext"), self.findNext)
         self.connect(self.findBar, QtCore.SIGNAL("returnSignal"), self._setFocusOnCatalog)
@@ -181,16 +171,23 @@ class Catalog(QtGui.QMainWindow):
         # bool indicates progress bar need update as TM progresses.
         self.allowUpdate = False
     
-    def itemChanged(self, item, column):
+    def itemChanged(self, curItem, preItem):
         """
         slot item changed, reset self.reachedEnd, self.currentFileOpen.
+        
+        @param curItem: QTreeWidgetItem
+        @param preItem: QTreeWidgetItem
+        These two params are not used at the moment.
         """
+        
         self.reachedEnd = False
         self.currentFileOpen = None
     
     def setSearchStatus(self, message):
         """
         Set search status so that we can determine the search is end at operator.
+        
+        @param message: a string tells about the status of search process.
         """
         if (message == "reachedEnd"):
             self.reachedEnd = True
@@ -252,7 +249,10 @@ class Catalog(QtGui.QMainWindow):
     
     def _getStringFromUnit(self, unit, fields):
         """
-        Return QString of unit's field; source, target, or comment.
+        Return QString of unit's field; source, target.
+        
+        @param unit: class unit.
+        @param fields: members of class unit such as source or target.
         """
         unitString = ""
         if (fields & World.source):
@@ -341,7 +341,8 @@ class Catalog(QtGui.QMainWindow):
         Set the value for the progress bar.
         self.allowUpdate is a condition whether to update or not, use to protect
         other class call.
-        @param value: value to set.
+        
+        @param value: value to set, type as int.
         """
         if (not hasattr(self, "allowUpdate")) or (not self.allowUpdate):
            return
@@ -364,6 +365,8 @@ class Catalog(QtGui.QMainWindow):
         """
         Read data from world's "CatalogPath" and display statistic of files
         in tree view.
+        @ param cats : a list of file or folder paths
+        @ param includeSub : a boolean variable. If true, dive into sub folder.
         """
         # enable action buttons
         self.lazyInit()
@@ -422,7 +425,8 @@ class Catalog(QtGui.QMainWindow):
         self.ui.treeCatalog.setFocus()
     
     def keyReleaseEvent(self, event):
-#        item = self.ui.treeCatalog.currentItem()
+        """ A subclass for keyReleaseEvent."""
+
         # press Enter key to open the file.
         if (event.key() == 16777220) and (self.ui.treeCatalog.currentItem()):
             self.emitOpenFile()
@@ -507,6 +511,11 @@ class Catalog(QtGui.QMainWindow):
                 break
     
     def updateFileStatus(self, filename):
+        """
+        Update status of a file.
+        
+       @param filename: the file whose status will be updated.
+        """
         if (not self.isVisible()):
             return
         for item in self.fileItems:
@@ -523,8 +532,10 @@ class Catalog(QtGui.QMainWindow):
 
     def getExistedItem(self, path):
         """
-        Get existed item in the tree's top level. If the item existed, it returns
+        Check if the path is duplicated. If it is duplicated, returns
         the item, otherwise returns False.
+        
+        @param path: file or directory path to check if it is duplicated.
         """
         for i in range(self.ui.treeCatalog.topLevelItemCount()):
             item = self.ui.treeCatalog.topLevelItem(i)
@@ -536,6 +547,9 @@ class Catalog(QtGui.QMainWindow):
         """
         Get existed item in the tree's top level. If the item existed, it returns
         the item, otherwise returns False.
+        
+        @param path: file or directory path to get if it is existed.
+        @param item: file or directory path to get if it is existed.
         """
         if (not hasattr(item, "childCount")):
             return False
@@ -547,11 +561,11 @@ class Catalog(QtGui.QMainWindow):
     
     def getStats(self, filename):
         """
-        return a dictionary which consist of basename, translatedCount, fuzzyCount,
-        untranslatedCount, totalCount, subVersionState, revisionDate, lastTranslator
-        or return False when error.
+        return a dictionary which consists of basename, translatedCount, fuzzyCount,
+        untranslatedCount, totalCount, subVersionState, revisionDate, lastTranslator from the filename.
+        return False when error.
         
-        @param filename: path and file name.
+        @param filename: path and file name whose status is returned.
         """
         try:
             store = factory.getobject(filename)
@@ -589,7 +603,8 @@ class Catalog(QtGui.QMainWindow):
 
     def getStatsFromItem(self, item):
         """
-        get number of translated, untranslated, and fuzzy units from item.
+        get number of untranslated, fuzzy, and translated units from item.
+        
         @param item: treewidget item which has at least those four fields.
         @return dictionary of stats.
         """
@@ -614,7 +629,7 @@ class Catalog(QtGui.QMainWindow):
         return {"untranslated":untranslated, "fuzzy":fuzzy, "translated": translated}
     
     def setupCheckbox(self):
-        """Set checked or unchecked mark for the header label of Catalog main window."""
+        """Set checked or unchecked for the header label of Catalog main window."""
         
         value = World.settings.value("Catalog.Name")
         if (value.isValid()):
@@ -702,6 +717,9 @@ class Catalog(QtGui.QMainWindow):
     def emitOpenFile(self, item=None, col=None):
         """
         Send "openFile" signal with filename.
+        
+        @param item: type as treewidget item 
+        @param col: type as int. 
         """
         if (not item):
             try:
@@ -710,12 +728,16 @@ class Catalog(QtGui.QMainWindow):
                 return
         
         filename = self.getFilename(item)
+
         if (os.path.isfile(filename)): 
             self.emit(QtCore.SIGNAL("openFile"), filename)
         
     def getFilename(self, item):
         """
         return filename join from item.text(0) to its parent.
+        
+        @ param item: type as treewidget item. column must be 0 because
+                                the filename is in the first col.
         """
         if (not hasattr(item, "text")):
             return None
@@ -778,10 +800,13 @@ class Catalog(QtGui.QMainWindow):
             self.itemNumber = 0
     
     def stopUpdate(self):
+    
+        """ Stop loading the file(s) into Catalog treeview."""
         self.timer.stop()
         self.updateProgress(100)
     
-    def startOpenFile(self):
+    def openRecentPro(self):
+        """ Show the openRecentProject list, there is a recent opened project."""
         files = World.settings.value("recentProjectList").toStringList()
         if (files):
             self.createRecentProject()
@@ -791,7 +816,7 @@ class Catalog(QtGui.QMainWindow):
             self.ui.actionClose.setEnabled(False)
 
     def createRecentProject(self):
-        """Update open recent project list."""
+        """Create the virtual list and update open recent project list."""
         for i in range(World.MaxRecentFiles):
             self.recentProject.append(QtGui.QAction(self))
             self.recentProject[i].setVisible(False)
@@ -877,6 +902,7 @@ class Catalog(QtGui.QMainWindow):
             self.recentProject[j].setVisible(False)
 
     def closeProject(self):
+        """ When the project is closed, disable some views."""
         self.ui.treeCatalog.clear()
         # disable action buttons
         self.ui.actionClose.setEnabled(False)
@@ -894,20 +920,20 @@ class Catalog(QtGui.QMainWindow):
         World.settings.remove("diveIntoSubCatalog")
 
     def customContextMenuEvent(self, e):
+        """ A subclass for customContextMenu event."""
         self.menu.exec_(e.globalPos())
     
     def sort(self):
-        """
-        re-arrange the fileItems to suit the sorting order.
-        """
+        """ Re-arrange the fileItems to suit the sorting order."""
         self.fileItems = []
         for i in range(self.ui.treeCatalog.topLevelItemCount()):
             item = self.ui.treeCatalog.topLevelItem(i)
             self.fileItems += self.getItems(item)
     
     def getItems(self, items):
-        """
-        return a list of item in items.
+        """ Return a list of item in items.
+        
+        @ param items: type as treewidget item.
         """
         item = [items]
         # children
