@@ -48,14 +48,14 @@ class CommentDock(QtGui.QDockWidget):
         self.highlighter = Highlighter(self.ui.txtTranslatorComment)
         self.applySettings()
         
-        self.ui.txtTranslatorComment.focusOutEvent = self.customFocusOutEvent
-        
-    def customFocusOutEvent(self, e):
-        """
-        subclass of focusOutEvent of txtTranslatorComment
-        """
-        self.emitCommentChanged()
-        return QtGui.QTextEdit.focusOutEvent(self.ui.txtTranslatorComment, e)
+##        self.ui.txtTranslatorComment.focusOutEvent = self.customFocusOutEvent
+##        
+##    def customFocusOutEvent(self, e):
+##        """
+##        subclass of focusOutEvent of txtTranslatorComment
+##        """
+##        self.emitCommentChanged()
+##        return QtGui.QTextEdit.focusOutEvent(self.ui.txtTranslatorComment, e)
     
     def closeEvent(self, event):
         """
@@ -94,7 +94,7 @@ class CommentDock(QtGui.QDockWidget):
         cursor = self.ui.txtTranslatorComment.textCursor()
         cursor.setPosition(len(translatorComment or ""))
         self.ui.txtTranslatorComment.setTextCursor(cursor)
-        self.lastUnit = unit
+        self.currentUnit = unit
         
         self.connect(self.ui.txtTranslatorComment, QtCore.SIGNAL("textChanged()"), self.textChanged)
     
@@ -111,9 +111,9 @@ class CommentDock(QtGui.QDockWidget):
         """
         @emit targetChanged signal if content is dirty.
         """
-        if (hasattr(self, "contentDirty") and self.contentDirty) and (hasattr(self, "lastUnit")):
+        if (hasattr(self, "contentDirty") and self.contentDirty) and (hasattr(self, "currentUnit")):
             comment = unicode(self.ui.txtTranslatorComment.toPlainText())
-            self.emit(QtCore.SIGNAL("commentChanged"), comment, self.lastUnit)
+            self.emit(QtCore.SIGNAL("commentChanged"), comment, self.currentUnit)
         self.contentDirty = False
     
     def setSearchString(self, searchString, textField, foundPosition):

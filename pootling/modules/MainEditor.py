@@ -274,8 +274,8 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.dockComment, QtCore.SIGNAL("textChanged"), self.dockOverview.markComment)
         self.connect(self.dockComment, QtCore.SIGNAL("commentChanged"), self.operator.setComment)
         self.connect(self.fileaction, QtCore.SIGNAL("fileToSave"), self.operator.saveStoreToFile)
-##        self.connect(self.dockTUview, QtCore.SIGNAL("textChanged"), self.setSaveEnabled)
         self.connect(self.dockTUview, QtCore.SIGNAL("textChanged"), self.operator.contentChanged)
+        self.connect(self.dockComment, QtCore.SIGNAL("textChanged"), self.operator.contentChanged)
         self.connect(self.operator, QtCore.SIGNAL("enableSave"), self.setSaveEnabled)
         
         # get "returnFilename" signal from operator of saveStoreToFile function
@@ -463,6 +463,7 @@ class MainWindow(QtGui.QMainWindow):
         @param QCloseEvent Object: received close event when closing mainwindows
         """
         self.dockTUview.emitTargetChanged()
+        self.dockComment.emitCommentChanged()
         QtGui.QMainWindow.closeEvent(self, event)
         if (self.operator.isModified()):
             if (self.fileaction.clearedModified(self)):
@@ -610,6 +611,7 @@ class MainWindow(QtGui.QMainWindow):
         @param force: bool whether to check is contend is modified.
         """
         self.dockTUview.emitTargetChanged()
+        self.dockComment.emitCommentChanged()
         if (force) or (not self.operator.isModified()):
             self.setStatusForFile(None)
             self.operator.closeFile()
