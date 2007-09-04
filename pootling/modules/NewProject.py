@@ -163,7 +163,7 @@ class newProject(QtGui.QDialog):
             self.ui.btnFinish.setEnabled(False)
 
     def addItemToDict(self):
-        name = self.ui.projectName.text().toAscii()
+        name = self.ui.projectName.text()   
         projectname = name + self.fileExtension
         configure = self.ui.configurationFile.text()
         # Concatenate string between directory path and filename
@@ -171,9 +171,10 @@ class newProject(QtGui.QDialog):
         language = self.ui.cbxLanguages.currentText()
         projectType = self.ui.cbxProject.currentText()
         self.projectInfo = {}
-        self.projectInfo['path'] = path 
-        self.projectInfo['lang'] = language
-        self.projectInfo['project'] = projectType
+        self.projectInfo['projectName'] = name
+        self.projectInfo['pathname'] = path 
+        self.projectInfo['language'] = language
+#        self.projectInfo['project'] = projectType
 
     def finishButton(self ):
         # In case project name is empty, next button can not go to... 
@@ -181,16 +182,17 @@ class newProject(QtGui.QDialog):
         for i in range(self.ui.listWidget.count()):
             stringlist.append(self.ui.listWidget.item(i).text())
         self.addItemToDict()
-        self.projectInfo['itemList'] = stringlist
+        self.projectInfo['path'] = stringlist
         self.projectInfo['diveIntoSubCatalog'] = self.ui.chbDiveIntoSubfolders.isChecked()
         self.storeDataToNewFile()
         self.clearStackedWidget()
 
     def storeDataToNewFile(self):
-        proSettings = QtCore.QSettings(self.projectInfo['path'], QtCore.QSettings.IniFormat)
-        proSettings.setValue("itemList", QtCore.QVariant(self.projectInfo['itemList']))
-        proSettings.setValue("lang", QtCore.QVariant(self.projectInfo['lang']))
-        proSettings.setValue("project", QtCore.QVariant(self.projectInfo['project']))
+        proSettings = QtCore.QSettings(self.projectInfo['pathname'], QtCore.QSettings.IniFormat)
+        proSettings.setValue("path", QtCore.QVariant(self.projectInfo['path']))
+        proSettings.setValue("projectName", QtCore.QVariant(self.projectInfo['projectName']))
+        proSettings.setValue("language", QtCore.QVariant(self.projectInfo['language']))
+#        proSettings.setValue("project", QtCore.QVariant(self.projectInfo['project']))
         proSettings.setValue("diveIntoSubCatalog", QtCore.QVariant(self.projectInfo['diveIntoSubCatalog']))
 
     def clearStackedWidget(self):
@@ -202,6 +204,8 @@ class newProject(QtGui.QDialog):
         self.ui.chbDiveIntoSubfolders.setChecked(False)
         self.ui.btnBack.setEnabled(False)
         self.ui.btnFinish.setEnabled(False)
+        self.ui.cbxLanguages.setCurrentIndex(0)
+        self.close()
 
     def openProject(self):
         """ Open a file dialog for choosing project file as .ini formata"""

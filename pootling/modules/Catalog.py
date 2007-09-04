@@ -416,30 +416,15 @@ class Catalog(QtGui.QMainWindow):
         self.ui.treeCatalog.resizeColumnToContents(0)
         self.allowUpdate = True
         self._setFocusOnCatalog()
-#        if (self.fileItems):
-#            item = self.fileItems[0]
-#            self.ui.treeCatalog.setCurrentItem(item)
-#        self.ui.treeCatalog.setFocus()
         self.timer.start(10)
         
         self.ui.treeCatalog.setFocus()
     
     def keyReleaseEvent(self, event):
         """ A subclass for keyReleaseEvent."""
-
         # press Enter key to open the file.
         if (event.key() == 16777220) and (self.ui.treeCatalog.currentItem()):
             self.emitOpenFile()
-            
-#        # pree Up arrow to select current item of title bar
-#        if (event.key() == 16777235):
-#            title = unicode(self.tr("%s - %s  Catalog Manager")) % (unicode(item.text(0)), World.settingApp)
-#            self.setWindowTitle(str(title))
-#            
-#        # pree Down arrow to select current item of title bar
-#        if (event.key() == 16777237):
-#            title = unicode(self.tr("%s - %s  Catalog Manager")) % (unicode(item.text(0)), World.settingApp)
-#            self.setWindowTitle(str(title))
 
     def _setFocusOnCatalog(self):
         if (self.fileItems):
@@ -804,7 +789,7 @@ class Catalog(QtGui.QMainWindow):
         """ Stop loading the file(s) into Catalog treeview."""
         self.timer.stop()
         self.updateProgress(100)
-    
+
     def openRecentPro(self):
         """ Show the openRecentProject list, there is a recent opened project."""
         files = World.settings.value("recentProjectList").toStringList()
@@ -858,8 +843,8 @@ class Catalog(QtGui.QMainWindow):
             return False
 
         catSettings = QtCore.QSettings(filename, QtCore.QSettings.IniFormat)
-        catalogPath = catSettings.value("itemList").toStringList()
-        includeSub = catSettings.value("itemList").toBool()
+        catalogPath = catSettings.value("path").toStringList()
+        includeSub = catSettings.value("path").toBool()
         self.updateCatalog(catalogPath, includeSub)
         
         World.settings.setValue("CatalogPath", QtCore.QVariant(catalogPath))
