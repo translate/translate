@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/ratha/sourceforge.net/translate/trunk/pootling/ui/Catalog.ui'
+# Form implementation generated from reading ui file '/home/k-da/Documents/poxole/trunk/pootling/ui/Catalog.ui'
 #
-# Created: Mon Aug 13 16:24:37 2007
-#      by: PyQt4 UI code generator 4.2
+# Created: Tue Sep  4 14:37:52 2007
+#      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -13,7 +13,7 @@ class Ui_Catalog(object):
     def setupUi(self, Catalog):
         Catalog.setObjectName("Catalog")
         Catalog.setWindowModality(QtCore.Qt.NonModal)
-        Catalog.resize(QtCore.QSize(QtCore.QRect(0,0,581,412).size()).expandedTo(Catalog.minimumSizeHint()))
+        Catalog.resize(QtCore.QSize(QtCore.QRect(0,0,359,412).size()).expandedTo(Catalog.minimumSizeHint()))
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(7))
         sizePolicy.setHorizontalStretch(0)
@@ -31,7 +31,7 @@ class Ui_Catalog(object):
 
         self.treeCatalog = QtGui.QTreeWidget(self.centralwidget)
 
-        font = QtGui.QFont()
+        font = QtGui.QFont(self.treeCatalog.font())
         font.setPointSize(10)
         self.treeCatalog.setFont(font)
         self.treeCatalog.setFocusPolicy(QtCore.Qt.NoFocus)
@@ -43,7 +43,7 @@ class Ui_Catalog(object):
         Catalog.setCentralWidget(self.centralwidget)
 
         self.menubar = QtGui.QMenuBar(Catalog)
-        self.menubar.setGeometry(QtCore.QRect(0,0,581,28))
+        self.menubar.setGeometry(QtCore.QRect(0,0,359,29))
         self.menubar.setObjectName("menubar")
 
         self.menuFile = QtGui.QMenu(self.menubar)
@@ -169,12 +169,13 @@ class Ui_Catalog(object):
 
     def retranslateUi(self, Catalog):
         Catalog.setWindowTitle(QtGui.QApplication.translate("Catalog", "Catalog Manager", None, QtGui.QApplication.UnicodeUTF8))
+        self.treeCatalog.setWhatsThis(QtGui.QApplication.translate("Catalog", "<h3>Catalog Manager</h3>Catalog Manager is a central place where you can see all files in your project as tree with the statistic information such as the number of untranslated strings, fuzzy strings, translated strings, total number of entries, file location, last revision and last translator.", None, QtGui.QApplication.UnicodeUTF8))
         self.menuFile.setTitle(QtGui.QApplication.translate("Catalog", "&File", None, QtGui.QApplication.UnicodeUTF8))
         self.menuEdit.setTitle(QtGui.QApplication.translate("Catalog", "&Edit", None, QtGui.QApplication.UnicodeUTF8))
         self.menuProject.setTitle(QtGui.QApplication.translate("Catalog", "&Project", None, QtGui.QApplication.UnicodeUTF8))
         self.menuOpenRecentProject.setToolTip(QtGui.QApplication.translate("Catalog", "This open recent project.", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuOpenRecentProject.setStatusTip(QtGui.QApplication.translate("Catalog", "This open recent project.", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuOpenRecentProject.setWhatsThis(QtGui.QApplication.translate("Catalog", "<h3>Open recent project</h3>Use this to be asked for the name exist of project in catalog manager.", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuOpenRecentProject.setStatusTip(QtGui.QApplication.translate("Catalog", "Open the recent project.", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuOpenRecentProject.setWhatsThis(QtGui.QApplication.translate("Catalog", "<h3>Open recent project</h3>Use this to open the project file that was just opened lately.", None, QtGui.QApplication.UnicodeUTF8))
         self.menuOpenRecentProject.setTitle(QtGui.QApplication.translate("Catalog", "Open &Recent Project", None, QtGui.QApplication.UnicodeUTF8))
         self.menuSettings.setTitle(QtGui.QApplication.translate("Catalog", "&Settings", None, QtGui.QApplication.UnicodeUTF8))
         self.menuHelp.setTitle(QtGui.QApplication.translate("Catalog", "&Help", None, QtGui.QApplication.UnicodeUTF8))
@@ -184,34 +185,44 @@ class Ui_Catalog(object):
         self.actionQuit.setShortcut(QtGui.QApplication.translate("Catalog", "Ctrl+Q", None, QtGui.QApplication.UnicodeUTF8))
         self.actionAbout.setText(QtGui.QApplication.translate("Catalog", "About", None, QtGui.QApplication.UnicodeUTF8))
         self.actionAbout.setStatusTip(QtGui.QApplication.translate("Catalog", "Display information about this software.", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionAbout.setWhatsThis(QtGui.QApplication.translate("Catalog", "Display information about this software.", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionAbout.setWhatsThis(QtGui.QApplication.translate("Catalog", "<h3>About</h3>Display information about this software.", None, QtGui.QApplication.UnicodeUTF8))
         self.actionAboutQt.setText(QtGui.QApplication.translate("Catalog", "About Qt", None, QtGui.QApplication.UnicodeUTF8))
         self.actionAboutQt.setStatusTip(QtGui.QApplication.translate("Catalog", "Display information about the Qt toolkit.", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionAboutQt.setWhatsThis(QtGui.QApplication.translate("Catalog", "Display information about the Qt toolkit.", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionAboutQt.setWhatsThis(QtGui.QApplication.translate("Catalog", "<h3>About Qt</h3>Display information about the Qt toolkit.", None, QtGui.QApplication.UnicodeUTF8))
         self.actionReload.setText(QtGui.QApplication.translate("Catalog", "&Reload", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionReload.setStatusTip(QtGui.QApplication.translate("Catalog", "Reload the current files", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionReload.setWhatsThis(QtGui.QApplication.translate("Catalog", "<h3>Reload</h3>Set the current files or folders to get the most up-to-date version.", None, QtGui.QApplication.UnicodeUTF8))
         self.actionReload.setShortcut(QtGui.QApplication.translate("Catalog", "F5", None, QtGui.QApplication.UnicodeUTF8))
         self.actionConfigure.setText(QtGui.QApplication.translate("Catalog", "&Configure...", None, QtGui.QApplication.UnicodeUTF8))
         self.actionFind_in_Files.setText(QtGui.QApplication.translate("Catalog", "&Find in Files...", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionFind_in_Files.setStatusTip(QtGui.QApplication.translate("Catalog", "Find text in the shown strings.", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionFind_in_Files.setWhatsThis(QtGui.QApplication.translate("Catalog", "<h3>Find</h3>Use this to find text in the shown strings. The find dialog will show at the bottom of the editor.", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionFind_in_Files.setStatusTip(QtGui.QApplication.translate("Catalog", "Find string through files", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionFind_in_Files.setWhatsThis(QtGui.QApplication.translate("Catalog", "<h3>Find</h3>Use this to find a word or a string through all files of the current project in the Catalog Manager. The find dialog will be shown at the bottom of the editor.", None, QtGui.QApplication.UnicodeUTF8))
         self.actionFind_in_Files.setShortcut(QtGui.QApplication.translate("Catalog", "Ctrl+F", None, QtGui.QApplication.UnicodeUTF8))
         self.actionStatistics.setText(QtGui.QApplication.translate("Catalog", "&Statistics", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionStatistics.setStatusTip(QtGui.QApplication.translate("Catalog", "Show status of selected file or folder", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionStatistics.setWhatsThis(QtGui.QApplication.translate("Catalog", "<h3>Statistics</h3>Show status of selected file or folder with information about filename, untranslated, fuzzy, translated and total number of strings.", None, QtGui.QApplication.UnicodeUTF8))
         self.actionStatistics.setShortcut(QtGui.QApplication.translate("Catalog", "Ctrl+S", None, QtGui.QApplication.UnicodeUTF8))
         self.actionBuildTM.setText(QtGui.QApplication.translate("Catalog", "&Build TM", None, QtGui.QApplication.UnicodeUTF8))
         self.actionNew.setText(QtGui.QApplication.translate("Catalog", "New...", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionNew.setStatusTip(QtGui.QApplication.translate("Catalog", "This opens a dialog for entering  the information for a new project.", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionNew.setStatusTip(QtGui.QApplication.translate("Catalog", "Opens a new project dialog...", None, QtGui.QApplication.UnicodeUTF8))
         self.actionNew.setWhatsThis(QtGui.QApplication.translate("Catalog", "<h3>New...</h3>Use this to open a dialog for entering  the information for a new project.", None, QtGui.QApplication.UnicodeUTF8))
         self.actionOpen.setText(QtGui.QApplication.translate("Catalog", "Open...", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionOpen.setStatusTip(QtGui.QApplication.translate("Catalog", "This open an existing project.", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionOpen.setStatusTip(QtGui.QApplication.translate("Catalog", "Open an existing project...", None, QtGui.QApplication.UnicodeUTF8))
         self.actionOpen.setWhatsThis(QtGui.QApplication.translate("Catalog", "<h3>Open</h3>Use this to open an existing project.", None, QtGui.QApplication.UnicodeUTF8))
         self.actionBuild.setText(QtGui.QApplication.translate("Catalog", "Build TM...", None, QtGui.QApplication.UnicodeUTF8))
         self.actionBuild.setToolTip(QtGui.QApplication.translate("Catalog", "Build the translation memory.", None, QtGui.QApplication.UnicodeUTF8))
         self.actionBuild.setStatusTip(QtGui.QApplication.translate("Catalog", "Build the translation memory.", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionBuild.setWhatsThis(QtGui.QApplication.translate("Catalog", "<h3>Build TM</h3>Use this to build the translation memory.", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionBuild.setWhatsThis(QtGui.QApplication.translate("Catalog", "<h3>Build TM</h3>Use this to build the translation memory from the list of files in Catalog.", None, QtGui.QApplication.UnicodeUTF8))
         self.actionConfigure1.setText(QtGui.QApplication.translate("Catalog", "Configure...", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionConfigure1.setStatusTip(QtGui.QApplication.translate("Catalog", "Set the prefered configuration", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionConfigure1.setWhatsThis(QtGui.QApplication.translate("Catalog", "<h3>Configure...</h3>Configure the translated file paths in a project and can toogle the view of Catalog Manager.", None, QtGui.QApplication.UnicodeUTF8))
         self.actionStop.setText(QtGui.QApplication.translate("Catalog", "Stop", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionStop.setStatusTip(QtGui.QApplication.translate("Catalog", "Stop loading catalog.", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionStop.setWhatsThis(QtGui.QApplication.translate("Catalog", "<h3>Stop</h3>Stop loading catalog.", None, QtGui.QApplication.UnicodeUTF8))
         self.actionStop.setShortcut(QtGui.QApplication.translate("Catalog", "Esc", None, QtGui.QApplication.UnicodeUTF8))
         self.actionClose.setText(QtGui.QApplication.translate("Catalog", "Close", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionClose.setStatusTip(QtGui.QApplication.translate("Catalog", "Close project", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionClose.setWhatsThis(QtGui.QApplication.translate("Catalog", "<h3>Close</h3>Use this to close the opening project. The Catalog treeview will be cleared.", None, QtGui.QApplication.UnicodeUTF8))
         self.actionClose.setShortcut(QtGui.QApplication.translate("Catalog", "Ctrl+W", None, QtGui.QApplication.UnicodeUTF8))
 
 
