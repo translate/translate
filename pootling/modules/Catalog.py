@@ -128,6 +128,7 @@ class Catalog(QtGui.QMainWindow):
         self.ui.actionFind_in_Files.setStatusTip("Search for a text")
         # emit findfiles signal from FindInCatalog file
         self.connect(self.findBar, QtCore.SIGNAL("findNext"), self.findNext)
+        self.connect(self.findBar, QtCore.SIGNAL("returnSignal"), self._setFocusOnCatalog)
 
         # progress bar
         self.progressBar = QtGui.QProgressBar()
@@ -217,6 +218,8 @@ class Catalog(QtGui.QMainWindow):
                 continue
             # first find if it is in the file or not.
             store = factory.getobject(filename)
+            if not(hasattr(store, "units")):
+                continue
             found = -1
             for unit in store.units:
                 searchableText = ""
@@ -401,26 +404,45 @@ class Catalog(QtGui.QMainWindow):
         
         for catalogFile in cats:
             catalogFile = unicode(catalogFile)
-            title = unicode(self.tr("%s - %s Catalog Manager")) % (unicode(catalogFile), World.settingApp)
+            title = unicode(self.tr("%s - %s  Catalog Manager")) % (unicode(catalogFile), World.settingApp)
             self.setWindowTitle(str(title))
+
             self.addCatalogFile(catalogFile, includeSub, None)
         
         self.sort()
         self.ui.treeCatalog.resizeColumnToContents(0)
         self.allowUpdate = True
-        if (self.fileItems):
-            item = self.fileItems[0]
-            self.ui.treeCatalog.setCurrentItem(item)
-        self.ui.treeCatalog.setFocus()
+        self._setFocusOnCatalog()
+#        if (self.fileItems):
+#            item = self.fileItems[0]
+#            self.ui.treeCatalog.setCurrentItem(item)
+#        self.ui.treeCatalog.setFocus()
         self.timer.start(10)
         
         self.ui.treeCatalog.setFocus()
     
     def keyReleaseEvent(self, event):
+#        item = self.ui.treeCatalog.currentItem()
         # press Enter key to open the file.
         if (event.key() == 16777220) and (self.ui.treeCatalog.currentItem()):
             self.emitOpenFile()
+            
+#        # pree Up arrow to select current item of title bar
+#        if (event.key() == 16777235):
+#            title = unicode(self.tr("%s - %s  Catalog Manager")) % (unicode(item.text(0)), World.settingApp)
+#            self.setWindowTitle(str(title))
+#            
+#        # pree Down arrow to select current item of title bar
+#        if (event.key() == 16777237):
+#            title = unicode(self.tr("%s - %s  Catalog Manager")) % (unicode(item.text(0)), World.settingApp)
+#            self.setWindowTitle(str(title))
 
+    def _setFocusOnCatalog(self):
+        if (self.fileItems):
+            item = self.fileItems[0]
+            self.ui.treeCatalog.setCurrentItem(item)
+            self.ui.treeCatalog.setFocus()
+    
     def addCatalogFile(self, path, includeSub, item):
         """
         add path to catalog tree view if it's file, if it's directory then

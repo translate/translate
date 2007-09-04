@@ -41,10 +41,18 @@ class FindInCatalog(QtGui.QDockWidget):
         self.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
         self.connect(self.ui.find, QtCore.SIGNAL("clicked()"), self.findNext)
         self.setVisible(self.isHidden())
+        self.possible = True
 
     def showFind(self):
-        self.setWindowTitle(self.tr("Find In Catalog"))
-        self.setVisible(self.isHidden())
+        if (self.possible):
+            self.setVisible(self.isHidden())
+            self.setWindowTitle(self.tr("Find In Catalog"))
+            self.ui.lineEdit.setFocus()
+            self.possible = False
+        else:
+            self.hide()
+            self.possible = True
+            self.emit(QtCore.SIGNAL("returnSignal"))
 
     def findNext(self):
         """
@@ -69,6 +77,13 @@ class FindInCatalog(QtGui.QDockWidget):
             msg = QtCore.QString(self.tr("Please select first of source or target checkbox or both of them!"))
             self.setToolTip(msg)
             self.setStatusTip(msg)
+
+    def closeEvent(self, event):
+        """
+        @param QCloseEvent Object: received close event when closing widget
+        """
+        QtGui.QDockWidget.closeEvent(self, event)
+        self.emit(QtCore.SIGNAL("returnSignal"))
 
 
 if __name__ == "__main__":
