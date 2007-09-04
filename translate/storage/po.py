@@ -258,7 +258,7 @@ class pounit(base.TranslationUnit):
     else:
       raise ValueError("Comment type not valid")
     # Let's drop the last newline
-    return comments[:-1]
+    return comments[:-1].decode(self.encoding)
 
   def addnote(self, text, origin=None, position="append"):
     """This is modeled on the XLIFF method. See xliff.py::xliffunit.addnote"""

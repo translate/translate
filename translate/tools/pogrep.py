@@ -24,6 +24,7 @@
 from translate.storage import factory
 from translate.misc import optrecurse
 from translate.misc.multistring import multistring
+from translate.lang import data
 import re
 import locale
 
@@ -34,6 +35,7 @@ class GrepFilter:
       self.searchstring = searchstring
     else:
       self.searchstring = searchstring.decode(encoding)
+    self.searchstring = data.normalize(self.searchstring)
     if searchparts:
       # For now we still support the old terminology, except for the old 'source'
       # which has a new meaning now.
@@ -57,6 +59,7 @@ class GrepFilter:
     self.includeheader = includeheader
 
   def matches(self, teststr):
+    teststr = data.normalize(teststr)
     if self.ignorecase:
       teststr = teststr.lower()
     if self.accelchar:
@@ -95,7 +98,7 @@ class GrepFilter:
     if self.search_notes:
       return self.matches(unit.getnotes(origin="translator"))
     if self.search_locations:
-      return self.matches(" ".join(unit.getlocations()))
+      return self.matches(u" ".join(unit.getlocations()))
     return False
 
   def filterfile(self, thefile):

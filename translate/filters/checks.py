@@ -26,6 +26,7 @@ from translate.filters import decoration
 from translate.filters import prefilters
 from translate.filters import spelling
 from translate.lang import factory
+from translate.lang import data
 from translate.storage import xliff
 import re
 
@@ -36,6 +37,7 @@ def forceunicode(string):
   if isinstance(string, str):
     encoding = getattr(string, "encoding", "utf-8")
     string = string.decode(encoding)
+  string = data.normalize(string)
   return string
     
 def tagname(string):
@@ -132,8 +134,8 @@ class CheckerConfig(object):
     self.accelmarkers = accelmarkers
     self.varmatches = varmatches
     # TODO: allow user configuration of untranslatable words
-    self.notranslatewords = dict.fromkeys([key for key in notranslatewords])
-    self.musttranslatewords = dict.fromkeys([key for key in musttranslatewords])
+    self.notranslatewords = dict.fromkeys([forceunicode(key) for key in notranslatewords])
+    self.musttranslatewords = dict.fromkeys([forceunicode(key) for key in musttranslatewords])
     validchars = forceunicode(validchars)
     self.validcharsmap = {}
     self.updatevalidchars(validchars)
@@ -177,7 +179,7 @@ class CheckerConfig(object):
     """updates the map that eliminates valid characters"""
     if validchars is None:
       return True
-    validcharsmap = dict([(ord(validchar), None) for validchar in validchars])
+    validcharsmap = dict([(ord(validchar), None) for validchar in forceunicode(validchars)])
     self.validcharsmap.update(validcharsmap)
 
   def updatetargetlanguage(self, langcode):
@@ -318,8 +320,8 @@ class TranslationChecker(UnitChecker):
   def run_filters(self, unit):
     """Do some optimisation by caching some data of the unit for the benefit 
     of run_test()."""
-    self.str1 = unicode(unit.source)
-    self.str2 = unicode(unit.target)
+    self.str1 = forceunicode(unit.source)
+    self.str2 = forceunicode(unit.target)
     self.hasplural = unit.hasplural()
     return super(TranslationChecker, self).run_filters(unit)
 

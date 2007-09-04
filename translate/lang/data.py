@@ -21,6 +21,8 @@
 
 """This module stores information and functionality that relates to plurals."""
 
+import unicodedata
+
 # The key is the language code, which may contain country codes and modifiers.
 # The value is a tuple: (Full name in English, nplurals, plural equation)
 
@@ -168,4 +170,13 @@ def gettext_country(langcode):
         t = gettext.translation('iso_3166', languages=[langcode], fallback=True)
         iso3166[langcode] = t.ugettext
     return iso3166[langcode]
+
+def normalize(string, normal_form="NFC"):
+    """Return a unicode string in its normalized form
+    
+    @param sting: The string to be normalized
+    @param normal_form: NFC (default), NFD, NFCK, NFDK
+    @return: Normalized string
+    """
+    return unicodedata.normalize(normal_form, string)
 

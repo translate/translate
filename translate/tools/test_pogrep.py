@@ -83,6 +83,23 @@ class TestPOGrep:
           poresult = self.pogrep(source, search, ["--regexp"])
           assert poresult == expected
 
+    def test_unicode_normalise(self):
+        """check that we normlise unicode strings before comparing"""
+        source_template = u'# comment\n#: test.c\nmsgid "test"\nmsgstr "t%sst"\n'
+        # é, e + '
+        # Ḽ, L + ^
+        # Ṏ
+        groups = [(u"\u00e9", u"\u0065\u0301"), \
+                  (u"\u1e3c", u"\u004c\u032d"), \
+                  (u"\u1e4e", u"\u004f\u0303\u0308", u"\u00d5\u0308")]
+        for letters in groups:
+            for source_letter in letters:
+                source = source_template % source_letter
+                for search_letter in letters:
+                    print search_letter.encode('utf-8')
+                    poresult = self.pogrep(source, search_letter)
+                    assert poresult == source.encode('utf-8')
+
 class TestXLiffGrep:
     xliff_skeleton = '''<?xml version="1.0" ?>
 <xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">

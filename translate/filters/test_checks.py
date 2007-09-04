@@ -339,6 +339,9 @@ def test_notranslatewords():
     assert fails(stdchecker.notranslatewords, " - %PRODUCTNAME Base: Relation design", " - %PRODUCTNAME Sisekelo: Umsiko wekuhlobana")
     stdchecker = checks.StandardChecker(checks.CheckerConfig(notranslatewords=["Writer"]))
     assert fails(stdchecker.notranslatewords, "&[ProductName] Writer/Web", "&[ProductName] Umbhali/iWebhu")
+    # Unicode - different decompositions
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(notranslatewords=[u"\u1e3cike"]))
+    assert passes(stdchecker.notranslatewords, u"You \u1e3cike me", u"Ek \u004c\u032dike jou")
 
 def test_numbers():
     """test numbers"""
@@ -564,6 +567,12 @@ def test_validchars():
     stdchecker = checks.StandardChecker(checks.CheckerConfig(validchars='⠁⠂⠃⠄⠅⠆⠇⠈⠉⠊⠋⠌⠍⠎⠏⠐⠑⠒⠓⠔⠕⠖⠗⠘⠙⠚⠛⠜⠝⠞⠟⠠⠡⠢⠣⠤⠥⠦⠧⠨⠩⠪⠫⠬⠭⠮⠯⠰'))
     assert passes(stdchecker.validchars, "Our target language is all non-ascii", "⠁⠂⠃⠄⠆⠇⠈⠉⠜⠝⠞⠟⠠⠡⠢⠣⠤⠥⠦⠧⠨⠩⠪⠫")
     assert fails(stdchecker.validchars, "Our target language is all non-ascii", "Some ascii⠁⠂⠃⠄⠆⠇⠈⠉⠜⠝⠞⠟⠠⠡⠢⠣⠤⠥⠦⠧⠨⠩⠪⠫")
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(validchars=u'\u004c\u032d'))
+    assert passes(stdchecker.validchars, "This sentence contains valid chars", u"\u004c\u032d")
+    assert passes(stdchecker.validchars, "This sentence contains valid chars", u"\u1e3c")
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(validchars=u'\u1e3c'))
+    assert passes(stdchecker.validchars, "This sentence contains valid chars", u"\u1e3c")
+    assert passes(stdchecker.validchars, "This sentence contains valid chars", u"\u004c\u032d")
 
 def test_variables_kde():
     """tests variables in KDE translations"""
