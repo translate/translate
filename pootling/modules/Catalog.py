@@ -262,7 +262,9 @@ class Catalog(QtGui.QMainWindow):
         return unitString
 
     def showStatistic(self):
-        """Show statistic message in a dialog. """
+        """
+        Show statistic message in a dialog.
+        """
         item = self.ui.treeCatalog.currentItem()
         if (not item):
             return
@@ -323,7 +325,9 @@ class Catalog(QtGui.QMainWindow):
         self.statisticsDialog.show()
 
     def toggleHeaderItem(self):
-        """Show or hide the header label of catalog main window."""
+        """
+        Show or hide the header label of catalog main window.
+        """
         if (isinstance(self.sender(), QtGui.QCheckBox)):
             text = self.sender().text()
             if text in self.headerLabels:
@@ -354,7 +358,9 @@ class Catalog(QtGui.QMainWindow):
         self.progressBar.setValue(value)
         
     def showDialog(self):
-        """Display the Catalog main window with configured information."""
+        """
+        Display the Catalog main window with configured information.
+        """
         self.lazyInit()
         self.show()
         cats = World.settings.value("CatalogPath").toStringList()
@@ -365,8 +371,9 @@ class Catalog(QtGui.QMainWindow):
         """
         Read data from world's "CatalogPath" and display statistic of files
         in tree view.
-        @ param cats : a list of file or folder paths
-        @ param includeSub : a boolean variable. If true, dive into sub folder.
+        
+        @param cats : a list of file or folder paths
+        @param includeSub : a boolean variable. If true, dive into sub folder.
         """
         # enable action buttons
         self.lazyInit()
@@ -421,12 +428,17 @@ class Catalog(QtGui.QMainWindow):
         self.ui.treeCatalog.setFocus()
     
     def keyReleaseEvent(self, event):
-        """ A subclass for keyReleaseEvent."""
+        """
+        A subclass for keyReleaseEvent.
+        """
         # press Enter key to open the file.
         if (event.key() == 16777220) and (self.ui.treeCatalog.currentItem()):
             self.emitOpenFile()
 
     def _setFocusOnCatalog(self):
+        """
+        Set focus on the first item in Catalog treeview.
+        """
         if (self.fileItems):
             item = self.fileItems[0]
             self.ui.treeCatalog.setCurrentItem(item)
@@ -520,7 +532,8 @@ class Catalog(QtGui.QMainWindow):
         Check if the path is duplicated. If it is duplicated, returns
         the item, otherwise returns False.
         
-        @param path: file or directory path to check if it is duplicated.
+        @param path: file or directory path getting from Catalog
+                            Location list to check if it is duplicated.
         """
         for i in range(self.ui.treeCatalog.topLevelItemCount()):
             item = self.ui.treeCatalog.topLevelItem(i)
@@ -530,11 +543,11 @@ class Catalog(QtGui.QMainWindow):
     
     def ifFileExisted(self, path, item):
         """
-        Get existed item in the tree's top level. If the item existed, it returns
+        Get existed item in the view. If the item existed, it returns
         the item, otherwise returns False.
         
         @param path: file or directory path to get if it is existed.
-        @param item: file or directory path to get if it is existed.
+        @param item: QTreeWidgetItem
         """
         if (not hasattr(item, "childCount")):
             return False
@@ -552,12 +565,12 @@ class Catalog(QtGui.QMainWindow):
         
         @param filename: path and file name whose status is returned.
         """
+        if (not os.path.isfile(filename)):
+            return False
+        
         try:
             store = factory.getobject(filename)
         except:
-            return False
-        
-        if (not os.path.isfile(filename)):
             return False
         
         basename = os.path.basename(filename)
@@ -614,7 +627,9 @@ class Catalog(QtGui.QMainWindow):
         return {"untranslated":untranslated, "fuzzy":fuzzy, "translated": translated}
     
     def setupCheckbox(self):
-        """Set checked or unchecked for the header label of Catalog main window."""
+        """
+        Set checked or unchecked for the header label of Catalog main window.
+        """
         
         value = World.settings.value("Catalog.Name")
         if (value.isValid()):
@@ -732,7 +747,9 @@ class Catalog(QtGui.QMainWindow):
         return filename
     
     def refresh(self):
-        """Slot to refresh Catalog information."""
+        """
+        Slot to refresh Catalog information.
+        """
         self.settings = QtCore.QSettings()
         if self.autoRefresh:
             self.updateCatalog()
@@ -752,7 +769,9 @@ class Catalog(QtGui.QMainWindow):
         self.emit(QtCore.SIGNAL("buildTM"), catPaths)
     
     def updateStatistic(self):
-        """Update statistic information once adding file to the Catalog tree."""
+        """
+        Update statistic information once adding file to the Catalog tree.
+        """
         if (len(self.fileItems) <= 0):
             self.timer.stop()
             self.itemNumber = 0
@@ -785,13 +804,16 @@ class Catalog(QtGui.QMainWindow):
             self.itemNumber = 0
     
     def stopUpdate(self):
-    
-        """ Stop loading the file(s) into Catalog treeview."""
+        """
+        Stop loading the file(s) into Catalog treeview.
+        """
         self.timer.stop()
         self.updateProgress(100)
 
     def openRecentPro(self):
-        """ Show the openRecentProject list, there is a recent opened project."""
+        """
+        Show the openRecentProject list, there is a recent opened project.
+        """
         files = World.settings.value("recentProjectList").toStringList()
         if (files):
             self.createRecentProject()
@@ -801,7 +823,9 @@ class Catalog(QtGui.QMainWindow):
             self.ui.actionClose.setEnabled(False)
 
     def createRecentProject(self):
-        """Create the virtual list and update open recent project list."""
+        """
+        Create the virtual list and update open recent project list.
+        """
         for i in range(World.MaxRecentFiles):
             self.recentProject.append(QtGui.QAction(self))
             self.recentProject[i].setVisible(False)
@@ -815,7 +839,9 @@ class Catalog(QtGui.QMainWindow):
         self.updateRecentProject()
 
     def startRecentProject(self):
-        """Get the choosen file from the open recent project and open the file."""
+        """
+        Get the choosen file from the open recent project and open the file.
+        """
         action = self.sender()
         filename = action.data().toString()
         self.setOpening(filename)
@@ -824,6 +850,7 @@ class Catalog(QtGui.QMainWindow):
         """ 
         Open the project with the given filename; add the path(s) to Catalog list and
         the filename to the open recent project list.
+        
         @param filename: the project name to open
         """
         files = World.settings.value("recentProjectList").toStringList()
@@ -844,7 +871,7 @@ class Catalog(QtGui.QMainWindow):
 
         catSettings = QtCore.QSettings(filename, QtCore.QSettings.IniFormat)
         catalogPath = catSettings.value("path").toStringList()
-        includeSub = catSettings.value("path").toBool()
+        includeSub = catSettings.value("diveIntoSubCatalog").toBool()
         self.updateCatalog(catalogPath, includeSub)
         
         World.settings.setValue("CatalogPath", QtCore.QVariant(catalogPath))
@@ -862,7 +889,9 @@ class Catalog(QtGui.QMainWindow):
         self.updateRecentProject()
 
     def clearRecentProject(self):
-        """Slot to clear all path in open recent project list."""
+        """
+        Slot to clear all path in open recent project list.
+        """
         self.ui.menuOpenRecentProject.clear()
         self.ui.menuOpenRecentProject.setEnabled(False)
         self.ui.actionClose.setEnabled(False)
@@ -887,7 +916,9 @@ class Catalog(QtGui.QMainWindow):
             self.recentProject[j].setVisible(False)
 
     def closeProject(self):
-        """ When the project is closed, disable some views."""
+        """
+        When the project is closed, disable some views.
+        """
         self.ui.treeCatalog.clear()
         # disable action buttons
         self.ui.actionClose.setEnabled(False)
@@ -905,20 +936,25 @@ class Catalog(QtGui.QMainWindow):
         World.settings.remove("diveIntoSubCatalog")
 
     def customContextMenuEvent(self, e):
-        """ A subclass for customContextMenu event."""
+        """
+        A subclass for customContextMenu event.
+        """
         self.menu.exec_(e.globalPos())
     
     def sort(self):
-        """ Re-arrange the fileItems to suit the sorting order."""
+        """
+        Re-arrange the fileItems to suit the sorting order.
+        """
         self.fileItems = []
         for i in range(self.ui.treeCatalog.topLevelItemCount()):
             item = self.ui.treeCatalog.topLevelItem(i)
             self.fileItems += self.getItems(item)
     
     def getItems(self, items):
-        """ Return a list of item in items.
+        """
+        Return a list of item in items.
         
-        @ param items: type as treewidget item.
+        @param items: type as treewidget item.
         """
         item = [items]
         # children
