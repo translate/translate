@@ -734,11 +734,15 @@ class MainWindow(QtGui.QMainWindow):
         display a quick message for 5 seconds in status bar.
         """
         if (message == "reachedEnd"):
-            message = self.tr("Search has reached the end.")
-            self.ui.statusbar.showMessage(message, 5000)
+            self.message = self.tr("Search has reached the end.")
+            self.ui.statusbar.showMessage(self.message, 3000)
         elif (message == "notFound"):
-            message = self.tr("Search was not found.")
-            self.ui.statusbar.showMessage(message, 5000)
+            self.message = self.tr("Search was not found.")
+            self.ui.statusbar.showMessage(self.message, 3000)
+        elif (message == "found"):
+            if (hasattr(self, "message")) and (self.message != ""):
+                self.ui.statusbar.showMessage("", 0000)
+            self.message = ""
 
 def main(inputFile = None):
     # set the path for QT in order to find the icons
