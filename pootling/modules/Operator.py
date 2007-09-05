@@ -62,6 +62,7 @@ class Operator(QtCore.QObject):
         self.lastFoundUnit = None
         self.searchStartIndex = 0
         self.searchFields = None
+        self.status = None
 
     def getUnits(self, fileName):
         """
@@ -86,15 +87,19 @@ class Operator(QtCore.QObject):
         Setup the oparator with a new storage.
         @param store: the new storage class.
         """
+        self.filteredList = []
         self.store = store
         # filter flags
         self.filter = World.filterAll
+        self.setModified(False)
+        self.currentUnitIndex = 0
+        
+        if (not store):
+            return
+        
         # get status for units
         self.status = Status(self.store)
-        self.emitStatus()
         
-        self.filteredList = []
-        self.currentUnitIndex = 0
         for unit in self.store.units:
             # set x_editor_state for all units.
             if (unit.source == None):
@@ -105,7 +110,6 @@ class Operator(QtCore.QObject):
                 self.filteredList.append(unit)
         self.emitNewUnits()
         self.setUnitFromPosition(0)
-        self.setModified(False)
 
     def emitNewUnits(self):
         """
@@ -118,7 +122,7 @@ class Operator(QtCore.QObject):
         Emit "currentStatus" signal with a string contains total, fuzzy,
         translated, and untranslated messages of current file.
         """
-        if self.status:
+        if (self.status):
             statusList = self.status.getStatus()
             statusList.append(self.currentUnitIndex + 1)
             self.emit(QtCore.SIGNAL("currentStatus"), statusList)
