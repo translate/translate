@@ -53,6 +53,9 @@ class Status:
         return state
         
     def markFuzzy(self, unit, fuzzy):
+        if (unit.isfuzzy() and fuzzy):
+            return
+            
         unit.markfuzzy(fuzzy)
         if (fuzzy):
             self.numFuzzy += 1
@@ -83,6 +86,8 @@ class Status:
             unit.x_editor_state |= World.untranslated
 
     def getStatus(self):
-        '''show total of messages in a file, fuzzy, translated messages and untranslate  messages which are not fuzzy.
-        '''
-        return [self.numTotal - self.numTranslated - self.numFuzzy, self.numFuzzy, self.numTranslated]
+        """
+        Return number of untranslated, fuzzy, and translated units as list.
+        """
+        untranslated = self.numTotal - self.numTranslated - self.numFuzzy
+        return [untranslated, self.numFuzzy, self.numTranslated]
