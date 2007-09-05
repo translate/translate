@@ -749,7 +749,7 @@ msgstr "ding"
     def test_uniforum_po(self):
         """Test that we handle Uniforum PO files."""
         posource = '''# File: ../somefile.cpp, line: 33
-msgid "thing
+msgid "thing"
 msgstr "ding"
 #
 # File: anotherfile.cpp, line: 34
