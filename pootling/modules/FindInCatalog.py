@@ -54,6 +54,12 @@ class FindInCatalog(QtGui.QDockWidget):
             self.possible = True
             self.emit(QtCore.SIGNAL("returnSignal"))
 
+    def keyReleaseEvent(self, event):
+        """ A subclass for keyReleaseEvent."""
+        # press Enter key to open the file.
+        if (event.key() == 16777220):
+            self.findNext()
+
     def findNext(self):
         """
         Start the search process, if possible
