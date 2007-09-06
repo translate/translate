@@ -411,8 +411,8 @@ class pounit(base.TranslationUnit):
         mergelists(self.sourcecomments, otherpo.sourcecomments, split=True)
     if self.isblankmsgstr() or overwrite:
       # Remove kde-style comments from the translation (if any).
-      if self.extract_msgidcomments(otherpo.target):
-        otherpo.target = otherpo.target.replace('_: ' + otherpo.extract_msgidcomments()+ '\n', '')
+      if self._extract_msgidcomments(otherpo.target):
+        otherpo.target = otherpo.target.replace('_: ' + otherpo._extract_msgidcomments()+ '\n', '')
       self.target = otherpo.target
       if self.source != otherpo.source:
         self.markfuzzy()
@@ -766,7 +766,7 @@ class pounit(base.TranslationUnit):
     """
     self.sourcecomments.append("#: %s\n" % location)
 
-  def extract_msgidcomments(self, text=None):
+  def _extract_msgidcomments(self, text=None):
     """Extract KDE style msgid comments from the unit.
     
     @rtype: String
@@ -780,7 +780,7 @@ class pounit(base.TranslationUnit):
 
   def getcontext(self):
     """Get the message context."""
-    return unquotefrompo(self.msgctxt) + self.extract_msgidcomments()
+    return unquotefrompo(self.msgctxt) + self._extract_msgidcomments()
 
   def getid(self):
     """Returns a unique identifier for this unit."""
