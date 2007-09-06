@@ -76,17 +76,18 @@ class globalSetting(QtGui.QDialog):
         World.settings.endGroup()
         if (not self.pickleFile):
             handle, self.pickleFile = tempfile.mkstemp('','PKL')
-    
+
     def setToolWhatsThis(self, tool):
         """
         Set what's this for TM or glossary dialog.
-        @param tool: whether it is a TM or Glossary as type string.
+        
+        @param tool: whether it is a TM or Glossary, type as string.
         """
         list = "<h3>Path for " + tool + "</h3>List of path to scan for " + tool + ". Paths which are checked will be used. "
         self.ui.listWidget.setWhatsThis(self.tr(list))
         dive = "<h3>Dive into subfolders</h3>Check this option, " + tool + " will include subfolders of the above path(s)."
         self.ui.checkBox.setWhatsThis(self.tr(dive))
-        sim = "<h3>Minimum similarity</h3>Minimum similarity of source string to be include in " + tool
+        sim = "<h3>Minimum similarity</h3>Minimum similarity of source strings to be include in " + tool
         self.ui.spinSimilarity.setWhatsThis(self.tr(sim))
         candidate = "<h3>Maximum search result</h3>Number of result that will be shown in the " + tool +" lookup view."
         self.ui.spinMaxCandidate.setWhatsThis(self.tr(candidate))
@@ -111,7 +112,9 @@ class globalSetting(QtGui.QDialog):
             World.settings.setValue("workingDir", QtCore.QVariant(directory))
     
     def showDialog(self):
-        """Make the Translation Memory or Glossary Setting dialog visible."""
+        """
+        Make the Translation Memory or Glossary Setting dialog visible.
+        """
         self.lazyInit()
         self.ui.progressBar.setValue(0)
         
@@ -151,6 +154,7 @@ class globalSetting(QtGui.QDialog):
     def addLocation(self, TMpath, checked = QtCore.Qt.Checked):
         """
         Add TMpath to TM list.
+        
         @param TMpath: Filename as string
         """
         items = self.ui.listWidget.findItems(TMpath, QtCore.Qt.MatchCaseSensitive)
@@ -237,9 +241,11 @@ class globalSetting(QtGui.QDialog):
         
     def getFiles(self, path, includeSub): 
         """
-        Get the filenames. Only supported files are taken into account; and if it's directory and includeSub is True, dive into it and add files.
-        @param paths: file or directory path for adding to Catalog
-        @param includeSub: a bool value; dive into sub, if it is true
+        Get the filenames. Only supported files are taken into account;
+        and if it's directory and includeSub is True, dive into it and add files.
+        
+        @param paths: file or directory path for adding to Catalog.
+        @param includeSub: a bool value; dive into sub, if it is true.
         """
         path = unicode(path)
         if (os.path.isfile(path)):
@@ -262,8 +268,11 @@ class globalSetting(QtGui.QDialog):
     
     def extendMatcher(self):
         """
-        extend TM to self.matcher through self.filenames with self.iterNumber as iterator.
-        @signal matcher: This signal is emitted with self.matcher, self.section when the timer finishes the last filename in self.filenames 
+        extend TM to self.matcher through self.filenames with self.iterNumber 
+        as iterator.
+        
+        @signal matcher: This signal is emitted with self.matcher, 
+            self.section when the timer finishes the last filename in self.filenames 
         @signal buildPercentage: emitted with percentage to update progress bar
         """
         if (len(self.filenames) <= 1):
@@ -346,7 +355,8 @@ class globalSetting(QtGui.QDialog):
     
     def getPathList(self, isChecked):
         """
-        Return list of path according to the parameter isChecked or unChecked
+        Return list of path according to the parameter isChecked or unChecked.
+        
         @param isChecked: as bool type
         @return: itemList as list of unchecked or checked path
         """
@@ -360,18 +370,27 @@ class globalSetting(QtGui.QDialog):
         return itemList
     
     def getMaximumCandidates(self):
+        """
+        Return the maximum candidates number as integer.
+        """
         World.settings.beginGroup(self.section)
         result = World.settings.value("max_candidates", QtCore.QVariant(10)).toInt()[0]
         World.settings.endGroup()
         return result
         
     def getMinimumSimilarity(self):
+        """"
+        Return the minimum similarity as integer.
+        """
         World.settings.beginGroup(self.section)
         result = World.settings.value("similarity", QtCore.QVariant(75)).toInt()[0]
         World.settings.endGroup()
         return result
         
     def getMaximumLenght(self):
+        """
+        returen the maximum string lenth
+        """
         if (self.section == "TM"):
             defValue = 100
         else:

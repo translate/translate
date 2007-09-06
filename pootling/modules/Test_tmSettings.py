@@ -37,21 +37,23 @@ class Test_tmSetting(unittest.TestCase):
         self.tm.filenames = []
         
     def testAddLocation(self):
-        """Test Add TMpath to TM list."""
+        """
+        Test Add TMpath to TM list.
+        """
     
-        #Test that the items in the list same as the path that we add into.
+        # Test that the items in the list same as the path that we add into.
         TMpath = '/tmp/a.po'
         self.tm.addLocation(TMpath, QtCore.Qt.Checked)
         items = self.tm.getPathList(QtCore.Qt.Checked)
         self.assertEqual(str(items[0]), TMpath)
         
-        #Test that the path cannot be duplicated.
+        # Test that the path cannot be duplicated.
         TMpath = '/tmp/a.po'
         self.tm.addLocation(TMpath, QtCore.Qt.Checked)
         items = self.tm.getPathList(QtCore.Qt.Checked)
         self.assertEqual(str(items[0]), TMpath)
         
-        #Test with different path
+        # Test with different path
         TMpath = '/tmp/b.xlf'
         self.tm.addLocation(TMpath, QtCore.Qt.Checked)
         items = self.tm.getPathList(QtCore.Qt.Checked)
@@ -59,13 +61,15 @@ class Test_tmSetting(unittest.TestCase):
         self.assertEqual(len(items), 2)
         self.assertEqual(str(items[1]), '/tmp/b.xlf')
         
-        #Test addlocation with GlossarySetting
+        # Test addlocation with GlossarySetting
         self.glossary.addLocation(TMpath, QtCore.Qt.Checked)
         items = self.glossary.getPathList(QtCore.Qt.Checked)
         self.assertEqual(str(items[0]), TMpath)
     
     def testRemoveLocation(self):
-        """Test Remove selected TMpath from TM list."""
+        """
+        Test Remove selected TMpath from TM list.
+        """
         self.tm.ui.listWidget.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
         TMpath = '/tmp/b.xlf'
         self.tm.addLocation(TMpath, QtCore.Qt.Checked)
@@ -76,9 +80,11 @@ class Test_tmSetting(unittest.TestCase):
         self.assertEqual(len(items), 0)
     
     def testGetFiles(self):
-        """Test that we get the correct filenames and includeSub is working correctly."""
+        """
+        Test that we get the correct filenames and includeSub is working correctly.
+        """
         filepaths = []
-        #Test that it include only the supported files.
+        # Test that it include only the supported files.
         for i in range(2):
             handle, filepath = tempfile.mkstemp('.xlf')
             filepaths.append(filepath)
@@ -89,24 +95,24 @@ class Test_tmSetting(unittest.TestCase):
         filepaths.append(filepath)
         self.tm.getFiles(filepath, True)
         self.assertEqual(self.tm.filenames[2], filepaths[2])
-        #Test that the unsupported filetype is not included.
+        # Test that the unsupported filetype is not included.
         handle, filepath = tempfile.mkstemp('.exe')
         filepaths.append(filepath)
         self.tm.getFiles(filepath, True)
         self.assertEqual(len(self.tm.filenames), 3)
         for filepath in filepaths:
             os.remove(filepath)
-        #Test test if it is a directrory and includeSub is True, dive into sub
+        # Test test if it is a directrory and includeSub is True, dive into sub
         dirpathTop = tempfile.mkdtemp('','TEST','/tmp')
         dirpath = tempfile.mkdtemp('','TEST', dirpathTop)
         self.tm.getFiles(dirpath, True)
-        #No supported file in the folder, so the number of files remains unchanged.
+        # No supported file in the folder, so the number of files remains unchanged.
         self.assertEqual(len(self.tm.filenames), 3)
         handle, filepath = tempfile.mkstemp('.po','',dirpath)
-        #Have supported file in the chile folder, but we choose not to include sub, so the number of files remains unchanged.
+        # Have supported file in the chile folder, but we choose not to include sub, so the number of files remains unchanged.
         self.tm.getFiles(dirpathTop, False)
         self.assertEqual(len(self.tm.filenames), 3)
-        #Have supported file in the chile folder, but we choose to include sub, so the number of files changed.
+        # Have supported file in the chile folder, but we choose to include sub, so the number of files changed.
         self.tm.getFiles(dirpathTop, True)
         self.assertEqual(len(self.tm.filenames), 4)
         os.remove(filepath)
@@ -114,20 +120,24 @@ class Test_tmSetting(unittest.TestCase):
         os.rmdir(dirpathTop)
         
     def testGetPathList(self):
-        """Test that it returns a list of path according to the parameter isChecked or unChecked """
+        """
+        Test that it returns a list of path according to the parameter isChecked or unChecked.
+        """
         TMpath = '/tmp/a.po'
         self.tm.addLocation(TMpath, QtCore.Qt.Checked)
-        #If the path is checked
+        # If the path is checked
         itemList = self.tm.getPathList(QtCore.Qt.Checked)
         self.assertEqual(str(itemList[0]), TMpath)
         
-         #If the path is not checked
+         # If the path is not checked
         itemList = self.tm.getPathList(QtCore.Qt.Unchecked)
         self.assertEqual(len(itemList), 0)
         
     def testCreateStore(self):
-        """Test that it creates a store object from file.
-        add translator, date, and filepath properties to store object."""
+        """
+        Test that it creates a store object from file.
+        add translator, date, and filepath properties to store object.
+        """
         message = '''msgid ""
 msgstr ""
 "POT-Creation-Date: 2005-05-18 21:23+0200\n"
@@ -154,7 +164,9 @@ msgstr "unable to read file"
         os.remove(filename)
         
     def testBuildMatcher(self):
-        """Test that we can build the correct matcher. """
+        """
+        Test that we can build the correct matcher.
+        """
         self.tm.section = 'TM'
         self.tm.ui.spinSimilarity.setValue(75)
         self.tm.ui.spinMaxCandidate.setValue(10)
@@ -162,7 +174,8 @@ msgstr "unable to read file"
         handle, self.tm.pickleFile = tempfile.mkstemp('','PKL')
         dirpathTop = tempfile.mkdtemp('','TEST','/tmp')
         dirpath = tempfile.mkdtemp('','TEST', dirpathTop)
-        #Test that it do nothing if no filename
+        
+        # Test that it do nothing if no filename
         self.tm.buildMatcher(QtCore.QStringList(dirpath), True)
         self.assertEqual(self.tm.matcher, None)
         self.assertEqual(isinstance(self.tm.matcher,match.matcher), False)
