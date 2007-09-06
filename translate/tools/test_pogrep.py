@@ -65,9 +65,9 @@ class TestPOGrep:
                                          (poascii, queryunicode, ''),
                                          (pounicode, queryascii, ''),
                                          (pounicode, queryunicode, pounicode)]:
-          print "Source:\n%s\nSearch: %s\n" % (source, search)
-          poresult = self.pogrep(source, search)
-          assert poresult == expected
+            print "Source:\n%s\nSearch: %s\n" % (source, search)
+            poresult = self.pogrep(source, search)
+            assert poresult == expected
 
     def test_unicode_message_regex_searchstring(self):
         """check that we can grep unicode messages and use unicode regex search strings"""
@@ -79,9 +79,9 @@ class TestPOGrep:
                                          (poascii, queryunicode, ''),
                                          (pounicode, queryascii, ''),
                                          (pounicode, queryunicode, pounicode)]:
-          print "Source:\n%s\nSearch: %s\n" % (source, search)
-          poresult = self.pogrep(source, search, ["--regexp"])
-          assert poresult == expected
+            print "Source:\n%s\nSearch: %s\n" % (source, search)
+            poresult = self.pogrep(source, search, ["--regexp"])
+            assert poresult == expected
 
     def test_unicode_normalise(self):
         """check that we normlise unicode strings before comparing"""
