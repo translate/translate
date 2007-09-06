@@ -69,15 +69,9 @@
      <x>0</x>
      <y>0</y>
      <width>359</width>
-     <height>29</height>
+     <height>28</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuFile" >
-    <property name="title" >
-     <string>&amp;File</string>
-    </property>
-    <addaction name="actionQuit" />
-   </widget>
    <widget class="QMenu" name="menuEdit" >
     <property name="title" >
      <string>&amp;Edit</string>
@@ -87,6 +81,26 @@
     <addaction name="actionStatistics" />
     <addaction name="actionReload" />
     <addaction name="actionStop" />
+   </widget>
+   <widget class="QMenu" name="menuHelp" >
+    <property name="title" >
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="actionAbout" />
+    <addaction name="actionAboutQt" />
+   </widget>
+   <widget class="QMenu" name="menuFile" >
+    <property name="title" >
+     <string>&amp;File</string>
+    </property>
+    <addaction name="actionQuit" />
+   </widget>
+   <widget class="QMenu" name="menuSettings" >
+    <property name="title" >
+     <string>&amp;Settings</string>
+    </property>
+    <addaction name="actionBuild" />
+    <addaction name="actionConfigure" />
    </widget>
    <widget class="QMenu" name="menuProject" >
     <property name="title" >
@@ -115,20 +129,6 @@
     <addaction name="separator" />
     <addaction name="actionClose" />
    </widget>
-   <widget class="QMenu" name="menuSettings" >
-    <property name="title" >
-     <string>&amp;Settings</string>
-    </property>
-    <addaction name="actionBuild" />
-    <addaction name="actionConfigure" />
-   </widget>
-   <widget class="QMenu" name="menuHelp" >
-    <property name="title" >
-     <string>&amp;Help</string>
-    </property>
-    <addaction name="actionAbout" />
-    <addaction name="actionAboutQt" />
-   </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
    <addaction name="menuProject" />
@@ -137,6 +137,9 @@
   </widget>
   <widget class="QStatusBar" name="statusbar" />
   <widget class="QToolBar" name="toolBar" >
+   <property name="enabled" >
+    <bool>true</bool>
+   </property>
    <property name="sizePolicy" >
     <sizepolicy>
      <hsizetype>5</hsizetype>
@@ -160,6 +163,10 @@
    <attribute name="toolBarArea" >
     <number>4</number>
    </attribute>
+   <addaction name="actionNew" />
+   <addaction name="actionSave" />
+   <addaction name="actionSaveAs" />
+   <addaction name="separator" />
    <addaction name="actionFind_in_Files" />
    <addaction name="actionStatistics" />
    <addaction name="actionReload" />
@@ -279,6 +286,9 @@
    </property>
   </action>
   <action name="actionNew" >
+   <property name="icon" >
+    <iconset>../images/new.png</iconset>
+   </property>
    <property name="text" >
     <string>New...</string>
    </property>
@@ -369,6 +379,28 @@
    </property>
    <property name="shortcut" >
     <string>Ctrl+W</string>
+   </property>
+  </action>
+  <action name="actionSave" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
+   <property name="icon" >
+    <iconset>../images/save.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionSaveAs" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
+   <property name="icon" >
+    <iconset>../images/filesaveas.png</iconset>
+   </property>
+   <property name="text" >
+    <string>saveAs</string>
    </property>
   </action>
  </widget>

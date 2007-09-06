@@ -93,7 +93,8 @@ class Catalog(QtGui.QMainWindow):
         self.Project = newProject(self)
         self.connect(self.ui.actionNew, QtCore.SIGNAL("triggered()"), self.Project.show)
         self.connect(self.ui.actionOpen, QtCore.SIGNAL("triggered()"), self.Project.openProject)
-        self.connect(self.Project, QtCore.SIGNAL("updateCatalog"), self.updateCatalog)
+        self.connect(self.ui.actionSave, QtCore.SIGNAL("triggered()"), self.saveCatalog)
+        self.connect(self.ui.actionSaveAs, QtCore.SIGNAL("triggered()"), self.saveCatalogAs)
         self.connect(self.Project, QtCore.SIGNAL("pathOfFileName"), self.setOpening)
         self.connect(self.ui.actionClose, QtCore.SIGNAL("triggered()"), self.closeProject)
 
@@ -110,7 +111,7 @@ class Catalog(QtGui.QMainWindow):
         self.connect(self.catSetting.ui.chbtotal, QtCore.SIGNAL("stateChanged(int)"), self.toggleHeaderItem)
         self.connect(self.catSetting.ui.chbSVN, QtCore.SIGNAL("stateChanged(int)"), self.toggleHeaderItem)
         self.connect(self.catSetting.ui.chbtranslated, QtCore.SIGNAL("stateChanged(int)"), self.toggleHeaderItem)
-
+        
         # Create Find String in Catalog
         self.findBar = FindInCatalog(self)
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.findBar)
@@ -170,10 +171,14 @@ class Catalog(QtGui.QMainWindow):
         self.searchString = None
         # bool indicates progress bar need update as TM progresses.
         self.allowUpdate = False
+        self.catalogModified = False
+        self.catalogPath = []
+        self.includeSub = False
     
     def itemChanged(self, curItem, preItem):
         """
-        slot item changed, reset self.reachedEnd, self.currentFileOpen.
+        slot item changed, use to reset self.reachedEnd, self.currentFileOpen
+        to mark the start of search circle.
         
         @param curItem: QTreeWidgetItem
         @param preItem: QTreeWidgetItem
@@ -215,7 +220,7 @@ class Catalog(QtGui.QMainWindow):
                 continue
             # first find if it is in the file or not.
             store = factory.getobject(filename)
-            if not(hasattr(store, "units")):
+            if (not hasattr(store, "units")):
                 continue
             found = -1
             for unit in store.units:
@@ -224,7 +229,7 @@ class Catalog(QtGui.QMainWindow):
                     searchableText += unit.source or ""
                 if (searchOptions & World.target):
                     searchableText += unicode(unit.target)
-                index = searchableText.find(searchString)
+                index = searchableText.lower().find(searchString.lower())
                 if (index > -1):
                     found = index
                     break
@@ -363,21 +368,30 @@ class Catalog(QtGui.QMainWindow):
         """
         self.lazyInit()
         self.show()
-        cats = World.settings.value("CatalogPath").toStringList()
-        if (cats) and (self.ui.treeCatalog.topLevelItemCount() == 0):
-            self.updateCatalog()
-    
-    def updateCatalog(self, cats = [], includeSub = True):
-        """
-        Read data from world's "CatalogPath" and display statistic of files
-        in tree view.
         
-        @param cats : a list of file or folder paths
-        @param includeSub : a boolean variable. If true, dive into sub folder.
+        # current project filename
+        self.currentProject = World.settings.value("CatalogProject").toString()
+        
+        if (self.ui.treeCatalog.topLevelItemCount() == 0):
+            # first look if there's current project previously opened.
+            if (self.currentProject):
+                self.setOpening(self.currentProject)
+    
+    def updateCatalog(self, cats, includeSub):
         """
-        # enable action buttons
-        self.lazyInit()
-        self.show()
+        Read data from "cats" and display statistic of files in tree view.
+        
+        @param cats: a list of file or folder paths
+        @param includeSub: a boolean variable. If true, dive into sub folder.
+        """
+        self.catalogPath = cats
+        self.includeSub = includeSub
+        
+        if (self.catalogPath):
+            self.ui.actionSaveAs.setEnabled(True)
+        if (self.ui.treeCatalog.topLevelItemCount() != 0):
+            self.setCatalogModified(True)
+        
         self.ui.actionFind_in_Files.setEnabled(True)
         self.ui.actionStatistics.setEnabled(True)
         self.ui.actionReload.setEnabled(True)
@@ -389,14 +403,11 @@ class Catalog(QtGui.QMainWindow):
         self.actionShowStat.setEnabled(True)
         self.findBar.setEnabled(True)
         self.findBar.hide()
+        
         self.ui.treeCatalog.clear()
         
-        if (not cats):
-            cats = World.settings.value("CatalogPath").toStringList()
-            includeSub = World.settings.value("diveIntoSubCatalog").toBool()
-            self.ui.actionBuild.setEnabled(True)
         # when signal of catalogPath is empty. icon on treewidget of toolbar is disabled
-        if (cats.isEmpty()):
+        if (not cats):
             self.ui.actionFind_in_Files.setEnabled(False)
             self.ui.actionStatistics.setEnabled(False)
             self.ui.actionReload.setEnabled(False)
@@ -410,22 +421,23 @@ class Catalog(QtGui.QMainWindow):
             self.setWindowTitle(str(title))
             return 
         
-        self.itemNumber = 0
+        # update contents in catalog setting.
+        self.catSetting.setCatalogSetting(cats, includeSub)
         
         for catalogFile in cats:
             catalogFile = unicode(catalogFile)
             title = unicode(self.tr("%s - %s  Catalog Manager")) % (unicode(catalogFile), World.settingApp)
             self.setWindowTitle(str(title))
-
             self.addCatalogFile(catalogFile, includeSub, None)
         
         self.sort()
         self.ui.treeCatalog.resizeColumnToContents(0)
         self.allowUpdate = True
         self._setFocusOnCatalog()
-        self.timer.start(10)
         
         self.ui.treeCatalog.setFocus()
+        self.itemNumber = 0
+        self.timer.start(10)
     
     def keyReleaseEvent(self, event):
         """
@@ -504,14 +516,15 @@ class Catalog(QtGui.QMainWindow):
                     for folder in dirs:
                         path = os.path.join(root + os.path.sep + folder)
                         self.addCatalogFile(path, includeSub, childItem)
-
                 break
+            
+        self.ui.treeCatalog.expandItem(item)
     
     def updateFileStatus(self, filename):
         """
         Update status of a file.
         
-       @param filename: the file whose status will be updated.
+        @param filename: the file whose status will be updated.
         """
         if (not self.isVisible()):
             return
@@ -750,11 +763,19 @@ class Catalog(QtGui.QMainWindow):
         """
         Slot to refresh Catalog information.
         """
-        self.settings = QtCore.QSettings()
-        if self.autoRefresh:
-            self.updateCatalog()
-        else:
-            self.settings.sync()
+        self.stopUpdate()
+        
+        for item in self.fileItems:
+            item.setText(1, "")
+            item.setText(2, "")
+            item.setText(3, "")
+            item.setText(4, "")
+            item.setText(5, "")
+            item.setText(6, "")
+            item.setText(7, "")
+        
+        self.itemNumber = 0
+        self.timer.start(10)
     
     def emitBuildTM(self):
         """
@@ -853,6 +874,8 @@ class Catalog(QtGui.QMainWindow):
         
         @param filename: the project name to open
         """
+        self.setCurrentProject(filename)
+        
         files = World.settings.value("recentProjectList").toStringList()
         if not(os.path.isfile(filename)):
             titled = unicode(self.tr("%s was not found.\n do you want to remove it from list?")) % (unicode(filename))
@@ -874,9 +897,6 @@ class Catalog(QtGui.QMainWindow):
         includeSub = catSettings.value("diveIntoSubCatalog").toBool()
         self.updateCatalog(catalogPath, includeSub)
         
-        World.settings.setValue("CatalogPath", QtCore.QVariant(catalogPath))
-        World.settings.setValue("diveIntoSubCatalog", QtCore.QVariant(includeSub))
-        
 #        files = World.settings.value("recentProjectList").toStringList()
         files.removeAll(filename)
         files.prepend(filename)
@@ -884,7 +904,6 @@ class Catalog(QtGui.QMainWindow):
             files.removeAt(files.count() - 1)
         if (files.count() > 0):
             self.ui.menuOpenRecentProject.setEnabled(True)
-            self.ui.actionClose.setEnabled(True)
         World.settings.setValue("recentProjectList", QtCore.QVariant(files))
         self.updateRecentProject()
 
@@ -894,7 +913,6 @@ class Catalog(QtGui.QMainWindow):
         """
         self.ui.menuOpenRecentProject.clear()
         self.ui.menuOpenRecentProject.setEnabled(False)
-        self.ui.actionClose.setEnabled(False)
         World.settings.remove("recentProjectList")
 
     def updateRecentProject(self):
@@ -919,9 +937,11 @@ class Catalog(QtGui.QMainWindow):
         """
         When the project is closed, disable some views.
         """
+        self.stopUpdate()
+        self.saveBeforeLose()
+        
         self.ui.treeCatalog.clear()
         # disable action buttons
-        self.ui.actionClose.setEnabled(False)
         self.ui.actionFind_in_Files.setEnabled(False)
         self.ui.actionStatistics.setEnabled(False)
         self.ui.actionReload.setEnabled(False)
@@ -932,8 +952,12 @@ class Catalog(QtGui.QMainWindow):
         self.actionShowStat.setEnabled(False)
         self.findBar.setEnabled(False)
         
-        World.settings.remove("CatalogPath")
-        World.settings.remove("diveIntoSubCatalog")
+        self.catalogPath = []
+        self.includeSub = False
+        self.setCatalogModified(False)
+        self.setCurrentProject("")
+        self.catSetting.setCatalogSetting(self.catalogPath, self.includeSub)
+        
 
     def customContextMenuEvent(self, e):
         """
@@ -949,6 +973,10 @@ class Catalog(QtGui.QMainWindow):
         for i in range(self.ui.treeCatalog.topLevelItemCount()):
             item = self.ui.treeCatalog.topLevelItem(i)
             self.fileItems += self.getItems(item)
+##            
+##        for i in range(self.ui.treeCatalog.topLevelItemCount()):
+##            item = self.ui.treeCatalog.topLevelItem(i)
+##            self.sortItemsByType(item, i)
     
     def getItems(self, items):
         """
@@ -961,6 +989,101 @@ class Catalog(QtGui.QMainWindow):
         for i in range(items.childCount()):
             item += self.getItems(items.child(i))
         return item
+
+##    def sortItemsByType(self, items, index):
+##        """
+##        type items: QTreeWidgetItem.
+##        """
+##        if (not items):
+##            return
+##        
+##        for i in range(items.childCount()):
+##            item = items.child(i)
+##            self.sortItemsByType(item, i)
+##        
+##        name = self.getFilename(items)
+##        if os.path.isdir(name):
+##            parent = items.parent()
+##            if (parent):
+##                print "will take", items, "at", index
+##                print "will add", items, "at 0"
+####                parent.takeChild(index)
+####                parent.insertChild(0, items)
+##    
+
+    def setCatalogModified(self, bool):
+        self.catalogModified = bool
+        self.ui.actionSave.setEnabled(bool)
+        if (self.catalogPath):
+            self.ui.actionSaveAs.setEnabled(True)
+        else:
+            self.ui.actionSaveAs.setEnabled(False)
+    
+    def setCurrentProject(self, filename):
+        """
+        Save filename to World.settings as current catalog filename.
+        """
+        self.currentProject = filename
+        World.settings.setValue("CatalogProject", QtCore.QVariant(self.currentProject))
+        if (filename):
+            self.ui.actionClose.setEnabled(True)
+        else:
+            self.ui.actionClose.setEnabled(False)
+    
+    def saveBeforeLose(self):
+        """
+        Look if the contents has been modified and ask to save.
+        """
+        if (self.catalogModified):
+            ret = QtGui.QMessageBox.question(self, self.tr("Catalog Modified"),
+                self.tr("The catalog has been modified.\n"
+                        "Do you want to save changes?"),
+                QtGui.QMessageBox.Yes | QtGui.QMessageBox.Default,
+                QtGui.QMessageBox.No,
+                QtGui.QMessageBox.Cancel | QtGui.QMessageBox.Escape)
+            
+            if (ret == QtGui.QMessageBox.Yes):
+                self.saveCatalog(self.currentProject)
+    
+    def saveCatalog(self, filename = None):
+        """
+        Save catalog contents to filename.
+        """
+        if (not filename):
+            filename = self.currentProject
+        
+        if (filename):
+            catalog = QtCore.QSettings(filename, QtCore.QSettings.IniFormat)
+            catalog.setValue("path", QtCore.QVariant(self.catalogPath))
+            catalog.setValue("diveIntoSubCatalog", QtCore.QVariant(self.includeSub))
+            self.setCatalogModified(False)
+        else:
+            self.saveCatalogAs()
+    
+    def saveCatalogAs(self):
+        """
+        Save catalog contents as new file.
+        """
+        directory = World.settings.value("workingDir").toString()
+        filename = QtGui.QFileDialog.getSaveFileName(self,
+                    self.tr("Save File As"),
+                    directory,
+                    self.tr("Ini file fomat (*.ini)"))
+        if (filename):
+            if (not filename.endsWith(".ini", QtCore.Qt.CaseInsensitive)):
+                filename = filename + ".ini"
+            self.saveCatalog(filename)
+            self.setCurrentProject(filename)
+    
+    def closeEvent(self, event):
+        """
+        Action before close catalog dialog.
+        @param even: QCloseEvent Object
+        
+        @signal updateCatalog: emitted when CatalogPath is modified.
+        """
+        QtGui.QMainWindow.closeEvent(self, event)
+        self.saveBeforeLose()
 
 def main():
     # set the path for QT in order to find the icons

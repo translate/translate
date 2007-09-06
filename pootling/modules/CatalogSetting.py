@@ -44,6 +44,8 @@ class CatalogSetting(QtGui.QDialog):
         self.setModal(True)
         
         self.catalogModified = False
+        self.catalogPath = []
+        self.includeSub = False
     
     def showFileDialog(self):
         """
@@ -61,25 +63,31 @@ class CatalogSetting(QtGui.QDialog):
                 if (not items):
                     item = QtGui.QListWidgetItem(filename)
                     self.ui.listWidget.addItem(item)
-                    self.catalogModified = True
+            self.catalogModified = True
             directory = os.path.dirname(unicode(filenames[0]))
             World.settings.setValue("workingDir", QtCore.QVariant(directory))
 
     
     def clearLocation(self):
-        """Clear all paths from the Catalog List and also unchecked DiveIntoSubCatalog checkbox."""
+        """
+        Clear all paths from the Catalog List and also unchecked DiveIntoSubCatalog checkbox.
+        """
         self.ui.listWidget.clear()
         self.catalogModified = True
         self.ui.chbDiveIntoSubfolders.setChecked(False)
     
     def removeLocation(self):
-        """Remove the selected path from the Catalog list."""
+        """
+        Remove the selected path from the Catalog list.
+        """
         self.ui.listWidget.takeItem(self.ui.listWidget.currentRow())
         self.catalogModified = True
     
     def moveItem(self, distance):
-        '''move an item up or down depending on distance
-        @param distance: int'''
+        """
+        move an item up or down depending on distance
+        @param distance: int
+        """
         currentrow = self.ui.listWidget.currentRow()
         currentItem = self.ui.listWidget.item(currentrow)
         distanceItem = self.ui.listWidget.item(currentrow + distance)
@@ -90,22 +98,31 @@ class CatalogSetting(QtGui.QDialog):
             self.ui.listWidget.setCurrentRow(currentrow + distance)
         
     def moveUp(self):
-        '''move item up'''
+        """
+        move item up
+        """
         self.moveItem(-1)
     
     def moveDown(self):
-        '''move item down'''
+        """
+        move item down
+        """
         self.moveItem(1)
     
     def rememberDive(self):
-        """ Remember the check state of diveIntoSubCatalog"""
-        World.settings.setValue("diveIntoSubCatalog", QtCore.QVariant(self.ui.chbDiveIntoSubfolders.isChecked()))
-        self.catalogModified = True
+        """
+        Remember the check state of diveIntoSubCatalog
+        """
+##        World.settings.setValue("diveIntoSubCatalog", QtCore.QVariant(self.ui.chbDiveIntoSubfolders.isChecked()))
+        if (self.ui.chbDiveIntoSubfolders.isChecked() != self.includeSub):
+            self.catalogModified = True
     
     def showEvent(self, event):
         self.ui.listWidget.clear()
-        self.ui.listWidget.addItems(World.settings.value("CatalogPath").toStringList())
-        self.ui.chbDiveIntoSubfolders.setChecked(World.settings.value("diveIntoSubCatalog").toBool())
+##        self.ui.listWidget.addItems(World.settings.value("CatalogPath").toStringList())
+        self.ui.listWidget.addItems(self.catalogPath)
+##        self.ui.chbDiveIntoSubfolders.setChecked(World.settings.value("diveIntoSubCatalog").toBool())
+        self.ui.chbDiveIntoSubfolders.setChecked(self.includeSub)
     
     def closeEvent(self, event):
         """
@@ -114,15 +131,23 @@ class CatalogSetting(QtGui.QDialog):
         
         @signal updateCatalog: emitted when CatalogPath is modified.
         """
+        includeSub = self.ui.chbDiveIntoSubfolders.isChecked()
         stringlist = QtCore.QStringList()
         for i in range(self.ui.listWidget.count()):
             stringlist.append(self.ui.listWidget.item(i).text())
-        World.settings.setValue("CatalogPath", QtCore.QVariant(stringlist))
+##        World.settings.setValue("CatalogPath", QtCore.QVariant(stringlist))
         QtGui.QDialog.closeEvent(self, event)
         
         if (self.catalogModified):
-            self.emit(QtCore.SIGNAL("updateCatalog"))
+            self.emit(QtCore.SIGNAL("updateCatalog"), stringlist, includeSub)
             self.catalogModified = False
+    
+    def setCatalogSetting(self, path, includeSub):
+        """
+        Set catalog path and include sub directories flag.
+        """
+        self.catalogPath = path
+        self.includeSub = includeSub
 
 
 if __name__ == "__main__":
