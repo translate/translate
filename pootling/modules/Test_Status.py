@@ -98,7 +98,6 @@ msgstr "unable to read file"
         self.assertEqual(type(statusList), list)
         # assert there is 0 untranslated, 1 fuzzy, and 0 translated.
         self.assertEqual(statusList, [0, 1, 0])
-        
-        
+
 if __name__ == '__main__':
     unittest.main()

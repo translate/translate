@@ -25,6 +25,11 @@ class Status:
     
     # FIXME: toggle unit's fuzzy is not working
     def __init__(self, store):
+        """
+        Set the number of translated, fuzzy, untranslated units to global variables.
+        
+        @param store: the new storage class.
+        """
         self.store = store
         self.numTranslated = store.translated_unitcount()
         self.numFuzzy = store.fuzzy_unitcount()
@@ -36,6 +41,8 @@ class Status:
         """
         return bitwise indicating state of unit.
         bitwises are defined in World class.
+        
+        @param unit: a class unit whose state is returned.
         """
         state = 0
         if (unit.isheader()):
@@ -53,6 +60,12 @@ class Status:
         return state
         
     def markFuzzy(self, unit, fuzzy):
+        """
+        toggle fuzzy status of a given unit.
+        
+        @param unit: a class unit whose fuzzy status is toggled.
+        @param fuzzy: type as bool.
+        """
         if (unit.isfuzzy() and fuzzy):
             return
             
@@ -69,6 +82,12 @@ class Status:
             unit.x_editor_state |= World.translated
 
     def markTranslated(self, unit, translated):
+        """
+        toggle translated status of a given unit.
+        
+        @param unit: a class unit whose translated status is toggled.
+        @param translated: type as bool.
+        """
         if (unit.isfuzzy()):
             self.markFuzzy(unit, False)
 
