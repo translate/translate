@@ -84,21 +84,21 @@ class reprop:
         if quote.rstripeol(line)[-1:] == '\\':
           self.inmultilinemsgid = 1
         # now deal with the current string...
-        name = line[:equalspos].strip()
+        key = line[:equalspos].strip()
         # Calculate space around the equal sign
-        preeqspace = line.lstrip()[line.lstrip().find(' '):equalspos]
-        posteqspacestart = len(line[equalspos+1:])
-        posteqspaceend = len(line[equalspos+1:].lstrip())
-        posteqspace = line[equalspos+1:equalspos+(posteqspacestart-posteqspaceend)+1]
-        if self.inputdict.has_key(name):
+        prespace = line.lstrip()[line.lstrip().find(' '):equalspos]
+        postspacestart = len(line[equalspos+1:])
+        postspaceend = len(line[equalspos+1:].lstrip())
+        postspace = line[equalspos+1:equalspos+(postspacestart-postspaceend)+1]
+        if self.inputdict.has_key(key):
           self.inecho = 0
-          postr = self.inputdict[name]
-          if isinstance(postr, str):
-            postr = postr.decode('utf8')
+          value = self.inputdict[key]
+          if isinstance(value, str):
+            value = value.decode('utf8')
           if self.personality == "mozilla":
-            returnline = name+preeqspace+"="+posteqspace+quote.mozillapropertiesencode(postr)+eol
+            returnline = key+prespace+"="+postspace+quote.mozillapropertiesencode(value)+eol
           else:
-            returnline = name+preeqspace+"="+posteqspace+quote.javapropertiesencode(postr)+eol
+            returnline = key+prespace+"="+postspace+quote.javapropertiesencode(value)+eol
         else:
           self.inecho = 1
           returnline = line+eol
