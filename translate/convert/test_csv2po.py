@@ -22,7 +22,7 @@ class TestCSV2PO:
 
     def singleelement(self, storage):
         """checks that the pofile contains a single non-header element, and returns it"""
-        print storage.getoutput()
+        print str(storage)
         assert len(storage.units) == 1
         return storage.units[0]
 

@@ -76,7 +76,7 @@ class TestPOMerge:
         pofile = self.mergepo(templatepo, newpo)
         pounit = self.singleunit(pofile)
         print pofile
-        assert pofile.getoutput() == expectedpo
+        assert str(pofile) == expectedpo
 
     def test_comments_with_blank_lines(self):
         """ensure that we don't loose empty newlines in comments"""
@@ -92,7 +92,7 @@ msgstr "blabla"
         pofile = self.mergepo(templatepo, newpo)
         pounit = self.singleunit(pofile)
         print pofile
-        assert pofile.getoutput() == expectedpo
+        assert str(pofile) == expectedpo
 
     def test_merge_dont_delete_unassociated_comments(self):
         """ensure that we do not delete comments in the PO file that are not assocaited with a message block"""
@@ -102,7 +102,7 @@ msgstr "blabla"
         pofile = self.mergepo(templatepo, mergepo)
 #        pounit = self.singleunit(pofile)
         print pofile
-        assert pofile.getoutput() == expectedpo
+        assert str(pofile) == expectedpo
 
     def test_preserve_format_trailing_newlines(self):
         """Test that we can merge messages correctly that end with a newline"""

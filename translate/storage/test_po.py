@@ -512,7 +512,7 @@ msgstr ""
         thepo.target = halfstr
         assert halfstr in str(thepo).decode("UTF-8")
         thepo.target = halfstr.encode("UTF-8")
-        assert halfstr.encode("UTF-8") in thepo.getoutput()
+        assert halfstr.encode("UTF-8") in str(thepo)
 
     def test_plurals(self):
         posource = r'''msgid "Cow"

@@ -704,10 +704,10 @@ class pounit(base.TranslationUnit):
 
   def __str__(self):
     """convert to a string. double check that unicode is handled somehow here"""
-    output = self.getoutput()
+    output = self._getoutput()
     return self._encodeifneccessary(output)
 
-  def getoutput(self):
+  def _getoutput(self):
     """return this po element as a string"""
     lines = []
     lines.extend(self.othercomments)
@@ -872,7 +872,7 @@ class pofile(base.TranslationStore, poheader.poheader):
         linesprocessed = newpe.parse("\n".join(lines[start:end]))
         start += linesprocessed
         # TODO: find a better way of working out if we actually read anything
-        if linesprocessed >= 1 and newpe.getoutput():
+        if linesprocessed >= 1 and newpe._getoutput():
           self.units.append(newpe)
           if newpe.isheader():
             if "Content-Type" in self.parseheader():
@@ -941,12 +941,12 @@ class pofile(base.TranslationStore, poheader.poheader):
 
   def __str__(self):
     """convert to a string. double check that unicode is handled somehow here"""
-    output = self.getoutput()
+    output = self._getoutput()
     if isinstance(output, unicode):
       return output.encode(getattr(self, "encoding", "UTF-8"))
     return output
 
-  def getoutput(self):
+  def _getoutput(self):
     """convert the units back to lines"""
     lines = []
     for unit in self.units:
