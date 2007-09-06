@@ -64,7 +64,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
     self.setformats(formats, usetemplates)
     self.setpsycooption()
     self.passthrough = []
-    self.allowmissingtemplate=allowmissingtemplate
+    self.allowmissingtemplate = allowmissingtemplate
 
   def setmanpageoption(self):
     """creates a manpage option that allows the optionparser to generate a manpage"""
@@ -106,7 +106,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
     file.write(self.format_manpage())
 
   def setpsycooption(self):
-    psycomodes=["none", "full", "profile"]
+    psycomodes = ["none", "full", "profile"]
     psycooption = optparse.Option(None, "--psyco", dest="psyco", default=None,
                     choices=psycomodes, metavar="MODE",
                     help="use psyco to speed up the operation, modes: %s" % (", ".join(psycomodes)))

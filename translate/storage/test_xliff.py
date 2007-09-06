@@ -183,11 +183,11 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         #assert unit.isfuzzy()
 
     def test_parsing(self):
-        xlfsource = self.skeleton % \
-        '''<trans-unit id="1" xml:space="preserve">
-               <source>File</source>
-               <target/>
-           </trans-unit>'''
+        xlfsource = self.skeleton \
+          % '''<trans-unit id="1" xml:space="preserve">
+                   <source>File</source>
+                   <target/>
+               </trans-unit>'''
         xlifffile = xliff.xlifffile.parsestring(xlfsource)
         assert xlifffile.units[0].istranslatable()
         xlifffile.units[0].xmlelement.setAttribute("translate", "no")

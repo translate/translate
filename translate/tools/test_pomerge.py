@@ -216,7 +216,7 @@ msgstr "Eerste\tTweede"
         assert len(xlifffile.units) == 1
         unit = xlifffile.units[0]
         assert unit.source == "red"
-        assert unit.target== "rooi"
+        assert unit.target == "rooi"
 
     def test_po_into_xliff(self):
         templatexliff = self.xliffskeleton % '''<trans-unit>
@@ -228,7 +228,7 @@ msgstr "Eerste\tTweede"
         assert len(xlifffile.units) == 1
         unit = xlifffile.units[0]
         assert unit.source == "red"
-        assert unit.target== "rooi"
+        assert unit.target == "rooi"
         
     def test_xliff_into_po(self):
         templatepo = '# my comment\nmsgid "red"\nmsgstr ""'

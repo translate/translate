@@ -145,7 +145,7 @@ class csvfile(base.TranslationStore):
   UnitClass = csvunit
   def __init__(self, inputfile=None, fieldnames=None):
     base.TranslationStore.__init__(self, unitclass = self.UnitClass)
-    self.units= []
+    self.units = []
     if fieldnames is None:
       self.fieldnames = ['comment', 'source', 'target']
     else:

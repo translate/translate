@@ -186,7 +186,7 @@ def cmdlineparser():
     help="include a PO header in the output")
   parser.set_usage()
   parser.passthrough.append('checkfilter')
-  parser.description=__doc__
+  parser.description = __doc__
   return parser
 
 def main():

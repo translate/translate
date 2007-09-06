@@ -54,7 +54,7 @@ class htmlfile(HTMLParser, base.TranslationStore):
   includeattrs = ["alt", "summary", "standby", "abbr", "content"]
 
   def __init__(self, includeuntaggeddata=None, inputfile=None):
-    self.units= []
+    self.units = []
     self.filename = getattr(inputfile, 'name', None) 
     self.currentblock = ""
     self.currentblocknum = 0

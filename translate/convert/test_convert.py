@@ -8,7 +8,7 @@ from py import test
 
 class TestConvertCommand:
     """Tests running actual commands on files"""
-    convertmodule=convert
+    convertmodule = convert
     defaultoptions = {"progress": "none", "psyco": "none"}
 
     def setup_method(self, method):

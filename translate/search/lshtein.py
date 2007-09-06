@@ -149,7 +149,7 @@ class LevenshteinComparer:
         return 100 - (dist*1.0/l2)*100 - penalty
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     from sys import argv
     comparer = LevenshteinComparer()
     print "Similarity:\n%s" % comparer.similarity(argv[1],argv[2], 50)

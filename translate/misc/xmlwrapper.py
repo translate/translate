@@ -70,7 +70,7 @@ class XMLWrapper:
       self.attrib[key] = value
   def getchild(self, searchtag, tagclass=None):
     """get a child with the given tag name"""
-    if tagclass is None: tagclass=XMLWrapper
+    if tagclass is None: tagclass = XMLWrapper
     for childobj in self.obj.getiterator():
       # getiterator() includes self...
       if childobj == self.obj: continue
@@ -81,7 +81,7 @@ class XMLWrapper:
     raise KeyError("could not find child with tag %r" % searchtag)
   def getchildren(self, searchtag, tagclass=None, excludetags=[]):
     """get all children with the given tag name"""
-    if tagclass is None: tagclass=XMLWrapper
+    if tagclass is None: tagclass = XMLWrapper
     childobjects = []
     for childobj in self.obj.getiterator():
       # getiterator() includes self...
