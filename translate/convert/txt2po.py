@@ -53,8 +53,8 @@ def converttxt(inputfile, outputfile, templates, duplicatestyle="msgctxt", encod
   return 1
 
 def main(argv=None):
-  from translate.misc import stdiotell
   from translate.convert import convert
+  from translate.misc import stdiotell
   import sys
   sys.stdout = stdiotell.StdIOWrapper(sys.stdout)
   formats = {"txt":("po",converttxt), "*":("po",converttxt)}

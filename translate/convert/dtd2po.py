@@ -331,7 +331,6 @@ def convertdtd(inputfile, outputfile, templatefile, pot=False, duplicatestyle="m
   return 1
 
 def main(argv=None):
-  # handle command line options
   from translate.convert import convert
   formats = {"dtd": ("po", convertdtd), ("dtd", "dtd"): ("po", convertdtd)}
   parser = convert.ConvertOptionParser(formats, usetemplates=True, usepots=True, description=__doc__)
