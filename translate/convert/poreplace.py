@@ -43,8 +43,7 @@ class poreplace:
     if inputstore.isempty():
       return 0
     outputstore = self.convertfile(inputstore)
-    outputposrc = str(outputstore)
-    outputfile.write(outputposrc)
+    outputfile.write(str(outputstore))
     return 1
 
 def main(converterclass, argv=None):

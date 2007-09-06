@@ -78,8 +78,7 @@ def convertcsv(inputfile, outputfile, templatefile, charset=None, columnorder=No
   outputstore = convertor.convertfile(inputstore)
   if len(outputstore.units) == 0:
     return 0
-  outputtbxsrc = str(outputstore)
-  outputfile.write(outputtbxsrc)
+  outputfile.write(str(outputstore))
   return 1
 
 def main():
