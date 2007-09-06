@@ -151,7 +151,7 @@ class pounit(base.TranslationUnit):
   def __init__(self, source=None, encoding="UTF-8"):
     self.encoding = encodingToUse(encoding)
     self.obsolete = False
-    self.initallcomments(blankall=True)
+    self._initallcomments(blankall=True)
     self.msgctxt = []
     self.msgid = []
     self.msgid_pluralcomments = []
@@ -166,7 +166,7 @@ class pounit(base.TranslationUnit):
       self.setsource(source)
     super(pounit, self).__init__(source)
 
-  def initallcomments(self, blankall=False):
+  def _initallcomments(self, blankall=False):
     """Initialises allcomments"""
     if blankall:
       self.othercomments = []
@@ -313,7 +313,7 @@ class pounit(base.TranslationUnit):
     newpo.visiblecomments = self.visiblecomments[:]
     newpo.obsolete = self.obsolete
     newpo.msgidcomments = self.msgidcomments[:]
-    newpo.initallcomments()
+    newpo._initallcomments()
     newpo.msgctxt = self.msgctxt[:]
     newpo.msgid = self.msgid[:]
     newpo.msgid_pluralcomments = self.msgid_pluralcomments[:]
