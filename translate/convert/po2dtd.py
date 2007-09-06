@@ -122,10 +122,10 @@ def getmixedentities(entities):
             mixedentities += [entity,entitybase+akeytype]
   return mixedentities
 
-def applytranslation(entity, dtdunit, pounit, mixedentities):
+def applytranslation(entity, dtdunit, inputunit, mixedentities):
   """applies the translation for entity in the po unit to the dtd unit"""
   # this converts the po-style string to a dtd-style string
-  unquotedid, unquotedstr = dounquotepo(pounit)
+  unquotedid, unquotedstr = dounquotepo(inputunit)
   # check there aren't missing entities...
   if len(unquotedstr.strip()) == 0:
     return
@@ -159,28 +159,28 @@ class redtd:
   def __init__(self, dtdfile):
     self.dtdfile = dtdfile
 
-  def convertfile(self, pofile, includefuzzy=False):
+  def convertfile(self, inputstore, includefuzzy=False):
     # translate the strings
-    for pounit in pofile.units:
+    for inunit in inputstore.units:
       # there may be more than one entity due to msguniq merge
-      if includefuzzy or not pounit.isfuzzy():
-        self.handlepounit(pounit)
+      if includefuzzy or not inunit.isfuzzy():
+        self.handleinunit(inunit)
     return self.dtdfile
 
-  def handlepounit(self, pounit):
-    entities = pounit.getlocations()
+  def handleinunit(self, inunit):
+    entities = inunit.getlocations()
     mixedentities = getmixedentities(entities)
     for entity in entities:
       if self.dtdfile.index.has_key(entity):
         # now we need to replace the definition of entity with msgstr
         dtdunit = self.dtdfile.index[entity] # find the dtd
-        applytranslation(entity, dtdunit, pounit, mixedentities)
+        applytranslation(entity, dtdunit, inunit, mixedentities)
 
 class po2dtd:
   """this is a convertor class that creates a new dtd file based on a po file without a template"""
-  def convertcomments(self, pounit, dtdunit):
+  def convertcomments(self, inputunit, dtdunit):
     # get the entity from sourcecomments
-    entitiesstr = " ".join([sourcecomment[2:].strip() for sourcecomment in pounit.sourcecomments])
+    entitiesstr = " ".join([sourcecomment[2:].strip() for sourcecomment in inputunit.sourcecomments])
     #  # entitystr, instring = quote.extract(sourcecomment, "#:","\n",None)
     #  entitiesstr += sourcecomment[2:].strip()
     entities = entitiesstr.split()
@@ -196,21 +196,21 @@ class po2dtd:
 
      # typecomments are for example #, fuzzy
     types = []
-    for typecomment in pounit.typecomments:
+    for typecomment in inputunit.typecomments:
       # typestr, instring = quote.extract(typecomment, "#,","\n",None)
       types.append(quote.unstripcomment(typecomment[2:]))
     for typedescr in types:
       dtdunit.comments.append(("potype", typedescr+'\n'))
     # visiblecomments are for example #_ note to translator
     visibles = []
-    for visiblecomment in pounit.visiblecomments:
+    for visiblecomment in inputunit.visiblecomments:
       # visiblestr, instring = quote.extract(visiblecomment,"#_","\n",None)
       visibles.append(quote.unstripcomment(visiblecomment[2:]))
     for visible in visibles:
       dtdunit.comments.append(("visible", visible+'\n'))
     # othercomments are normal e.g. # another comment
     others = []
-    for othercomment in pounit.othercomments:
+    for othercomment in inputunit.othercomments:
       # otherstr, instring = quote.extract(othercomment,"#","\n",None)
       others.append(quote.unstripcomment(othercomment[2:]))
     for other in others:
@@ -218,7 +218,7 @@ class po2dtd:
       if (other.find('LOCALIZATION NOTE') == -1) or (other.find('GROUP') == -1):
         dtdunit.comments.append(("comment", other))
     # msgidcomments are special - they're actually localization notes
-    for msgidcomment in pounit.msgidcomments:
+    for msgidcomment in inputunit.msgidcomments:
       unquotedmsgidcomment = quote.extractwithoutquotes(msgidcomment,'"','"','\\',includeescapes=0)[0]
       actualnote = unquotedmsgidcomment.replace("_:","",1)
       if actualnote[-2:] == '\\n':
@@ -226,10 +226,10 @@ class po2dtd:
       locnote = quote.unstripcomment("LOCALIZATION NOTE ("+dtdunit.entity+"): "+actualnote)
       dtdunit.comments.append(("locnote", locnote))
 
-  def convertstrings(self, pounit, dtdunit):
+  def convertstrings(self, inputunit, dtdunit):
     # currently let's just get the msgid back
-    unquotedid = po.unquotefrompo(pounit.msgid, False)
-    unquotedstr = po.unquotefrompo(pounit.msgstr, False)
+    unquotedid = po.unquotefrompo(inputunit.msgid, False)
+    unquotedstr = po.unquotefrompo(inputunit.msgstr, False)
     # choose the msgstr unless it's empty, in which case choose the msgid
     if len(unquotedstr) == 0:
       unquoted = unquotedid
@@ -238,21 +238,21 @@ class po2dtd:
     unquoted = removeinvalidamps(dtdunit.entity, unquoted)
     dtdunit.definition = dtd.quotefordtd(unquoted)
 
-  def convertunit(self, pounit):
+  def convertunit(self, inputunit):
     dtdunit = dtd.dtdunit()
-    self.convertcomments(pounit, dtdunit)
-    self.convertstrings(pounit, dtdunit)
+    self.convertcomments(inputunit, dtdunit)
+    self.convertstrings(inputunit, dtdunit)
     return dtdunit
 
-  def convertfile(self, thepofile, includefuzzy=False):
-    thedtdfile = dtd.dtdfile()
+  def convertfile(self, inputstore, includefuzzy=False):
+    outputstore = dtd.dtdfile()
     self.currentgroups = []
-    for pounit in thepofile.units:
-      if includefuzzy or not pounit.isfuzzy():
-        dtdunit = self.convertunit(pounit)
+    for inputunit in inputstore.units:
+      if includefuzzy or not inputunit.isfuzzy():
+        dtdunit = self.convertunit(inputunit)
         if dtdunit is not None:
-          thedtdfile.units.append(dtdunit)
-    return thedtdfile
+          outputstore.units.append(dtdunit)
+    return outputstore
 
 def convertdtd(inputfile, outputfile, templatefile, includefuzzy=False):
   inputstore = po.pofile(inputfile)

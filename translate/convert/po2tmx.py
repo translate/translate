@@ -31,24 +31,25 @@ import os
 class po2tmx:
   def convertfile(self, inputfile, sourcelanguage='en', targetlanguage=None):
     """converts a .po file to TMX file"""
-    thepofile = inputfile
-    for thepo in thepofile.elements:
-      if thepo.isheader() or thepo.isblank() or thepo.isblankmsgstr() or thepo.isfuzzy():
+    # TODO: This seems to not be used... remove it
+    inputstore = inputfile
+    for inunit in inputstore.units:
+      if inunit.isheader() or inunit.isblank() or inunit.isblankmsgstr() or inunit.isfuzzy():
         continue
-      source = thepo.source
-      translation = thepo.target
+      source = inunit.source
+      translation = inunit.target
       # TODO place source location in comments
       tmxfile.addtranslation(source, sourcelanguage, translation, targetlanguage)
     return str(tmxfile)
   
   def convertfiles(self, inputfile, tmxfile, sourcelanguage='en', targetlanguage=None):
     """converts a .po file (possibly many) to TMX file"""
-    thepofile = po.pofile(inputfile)
-    for thepo in thepofile.units:
-      if thepo.isheader() or thepo.isblank() or thepo.isblankmsgstr() or thepo.isfuzzy():
+    inputstore = po.pofile(inputfile)
+    for inunit in inputstore.units:
+      if inunit.isheader() or inunit.isblank() or inunit.isblankmsgstr() or inunit.isfuzzy():
         continue
-      source = thepo.source
-      translation = thepo.target
+      source = inunit.source
+      translation = inunit.target
       # TODO place source location in comments
       tmxfile.addtranslation(source, sourcelanguage, translation, targetlanguage)
 

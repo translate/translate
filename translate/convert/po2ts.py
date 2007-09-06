@@ -27,34 +27,34 @@ from translate.storage import po
 from translate.storage import ts
 
 class po2ts:
-  def convertfile(self, inputpo, templatefile=None):
+  def convertfile(self, inputstore, templatefile=None):
     """converts a .po file to .ts format (using a template .ts file if given)"""
     if templatefile is None: 
       tsfile = ts.QtTsParser()
     else:
       tsfile = ts.QtTsParser(templatefile)
-    for thepo in inputpo.units:
-      if thepo.isheader() or thepo.isblank():
+    for inputunit in inputstore.units:
+      if inputunit.isheader() or inputunit.isblank():
         continue
-      source = thepo.source
-      translation = thepo.target
-      if len(thepo.othercomments) >0 :
+      source = inputunit.source
+      translation = inputunit.target
+      if len(inputunit.othercomments) >0 :
         extractline = lambda line: line[2:-1]
         joiner = "\n"
-        comment = joiner.join([extractline(line) for line in thepo.othercomments])
+        comment = joiner.join([extractline(line) for line in inputunit.othercomments])
       else:
         comment = None
       transtype = None
-      if thepo.isfuzzy():
+      if inputunit.isfuzzy():
         transtype = "unfinished"
-      elif len(thepo.visiblecomments) > 0:
-        if thepo.visiblecomments[0] == "#_ OBSOLETE\n":
+      elif len(inputunit.visiblecomments) > 0:
+        if inputunit.visiblecomments[0] == "#_ OBSOLETE\n":
           transtype = "obsolete" 
       if isinstance(source, str):
         source = source.decode("utf-8")
       if isinstance(translation, str):
         translation = translation.decode("utf-8")
-      for sourcelocation in thepo.getlocations():
+      for sourcelocation in inputunit.getlocations():
         if "#" in sourcelocation:
           contextname = sourcelocation[:sourcelocation.find("#")]
         else:

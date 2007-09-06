@@ -33,31 +33,31 @@ eol = "\n"
 class reprop:
   def __init__(self, templatefile):
     self.templatefile = templatefile
-    self.podict = {}
+    self.inputdict = {}
 
-  def convertfile(self, pofile, personality, includefuzzy=False):
+  def convertfile(self, inputstore, personality, includefuzzy=False):
     self.personality = personality
     self.inmultilinemsgid = 0
     self.inecho = 0
-    self.makepodict(pofile, includefuzzy)
+    self.makestoredict(inputstore, includefuzzy)
     outputlines = []
     for line in self.templatefile.readlines():
       outputstr = self.convertline(line)
       outputlines.append(outputstr)
     return outputlines
 
-  def makepodict(self, pofile, includefuzzy=False):
+  def makestoredict(self, store, includefuzzy=False):
     # make a dictionary of the translations
-    for thepo in pofile.units:
-      if includefuzzy or not thepo.isfuzzy():
+    for unit in store.units:
+      if includefuzzy or not unit.isfuzzy():
         # there may be more than one entity due to msguniq merge
-        for entity in thepo.getlocations():
-          propstring = thepo.target
+        for entity in unit.getlocations():
+          propstring = unit.target
           
           # NOTE: triple-space as a string means leave it empty (special signal)
           if len(propstring.strip()) == 0 and propstring != "   ":
-            propstring = thepo.source
-          self.podict[entity] = propstring
+            propstring = unit.source
+          self.inputdict[entity] = propstring
 
   def convertline(self, line):
     returnline = ""
@@ -90,9 +90,9 @@ class reprop:
         posteqspacestart = len(line[equalspos+1:])
         posteqspaceend = len(line[equalspos+1:].lstrip())
         posteqspace = line[equalspos+1:equalspos+(posteqspacestart-posteqspaceend)+1]
-        if self.podict.has_key(name):
+        if self.inputdict.has_key(name):
           self.inecho = 0
-          postr = self.podict[name]
+          postr = self.inputdict[name]
           if isinstance(postr, str):
             postr = postr.decode('utf8')
           if self.personality == "mozilla":

@@ -45,19 +45,19 @@ class po2html:
       return message
     return "\n".join([textwrap.fill(line, self.wrap, replace_whitespace=False) for line in message.split("\n")])
 
-  def convertfile(self, inputpo, includefuzzy):
+  def convertfile(self, inputstore, includefuzzy):
     """converts a file to .po format"""
     htmlresult = ""
-    for thepo in inputpo.units:
-      if thepo.isheader():
+    for inputunit in inputstore.units:
+      if inputunit.isheader():
         continue
-      if includefuzzy or not thepo.isfuzzy():
-        htmlresult += self.wrapmessage(thepo.target) + "\n" + "\n"
+      if includefuzzy or not inputunit.isfuzzy():
+        htmlresult += self.wrapmessage(inputunit.target) + "\n" + "\n"
       else:
-        htmlresult += self.wrapmessage(thepo.source) + "\n" + "\n"
+        htmlresult += self.wrapmessage(inputunit.source) + "\n" + "\n"
     return htmlresult.encode('utf-8')
  
-  def mergefile(self, inputpo, templatetext, includefuzzy):
+  def mergefile(self, inputstore, templatetext, includefuzzy):
     """converts a file to .po format"""
     htmlresult = templatetext.replace("\n", " ")
     if isinstance(htmlresult, str):
@@ -65,15 +65,15 @@ class po2html:
       htmlresult = htmlresult.decode('utf-8')
     # TODO: use the algorithm from html2po to get blocks and translate them individually
     # rather than using replace
-    for thepo in inputpo.units:
-      if thepo.isheader():
+    for inputunit in inputstore.units:
+      if inputunit.isheader():
         continue
-      msgid = thepo.source
+      msgid = inputunit.source
       msgstr = None
-      if includefuzzy or not thepo.isfuzzy():
-        msgstr = self.wrapmessage(thepo.target)
+      if includefuzzy or not inputunit.isfuzzy():
+        msgstr = self.wrapmessage(inputunit.target)
       else:
-        msgstr = self.wrapmessage(thepo.source)
+        msgstr = self.wrapmessage(inputunit.source)
       if msgstr.strip():
         htmlresult = htmlresult.replace(msgid, msgstr, 1)
     htmlresult = htmlresult.encode('utf-8')

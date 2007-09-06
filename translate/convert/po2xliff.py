@@ -29,28 +29,28 @@ from translate.storage import po
 from translate.storage import poxliff
 
 class po2xliff:
-  def convertunit(self, xlifffile, thepo, filename):
+  def convertunit(self, outputstore, inputunit, filename):
     """creates a transunit node"""
-    source = thepo.source
-    target = thepo.target
-    if thepo.isheader():
-      unit = xlifffile.addheaderunit(target, filename)
+    source = inputunit.source
+    target = inputunit.target
+    if inputunit.isheader():
+      unit = outputstore.addheaderunit(target, filename)
     else:
-      unit = xlifffile.addsourceunit(source, filename, True)
+      unit = outputstore.addsourceunit(source, filename, True)
       unit.target = target
       #Explicetely marking the fuzzy state will ensure that normal (translated)
       #units in the PO file end up as approved in the XLIFF file.
       if target:
-          unit.markfuzzy(thepo.isfuzzy())
+          unit.markfuzzy(inputunit.isfuzzy())
       else:
           unit.markapproved(False)
       
       #Handle #: location comments
-      for location in thepo.getlocations():
+      for location in inputunit.getlocations():
         unit.createcontextgroup("po-reference", self.contextlist(location), purpose="location")
       
       #Handle #. automatic comments
-      comment = "\n".join([comment[3:-1] for comment in thepo.automaticcomments])
+      comment = "\n".join([comment[3:-1] for comment in inputunit.automaticcomments])
       if comment:
         unit.createcontextgroup("po-entry", [("x-po-autocomment", comment)], purpose="information")
         unit.addnote(comment, origin="developer")
@@ -59,7 +59,7 @@ class po2xliff:
 
 
     #Handle # other comments
-    comment = "\n".join([comment[2:-1] for comment in thepo.othercomments])
+    comment = "\n".join([comment[2:-1] for comment in inputunit.othercomments])
     if comment:
       unit.createcontextgroup("po-entry", [("x-po-trancomment", comment)], purpose="information")
       unit.addnote(comment, origin="po-translator")
@@ -77,18 +77,18 @@ class po2xliff:
       contexts.append(("linenumber", linenumber))
     return contexts
     
-  def convertfile(self, thepofile, templatefile=None, **kwargs):
+  def convertfile(self, inputstore, templatefile=None, **kwargs):
     """converts a .po file to .xlf format"""
     if templatefile is None: 
-      xlifffile = poxliff.PoXliffFile(**kwargs)
+      outputstore = poxliff.PoXliffFile(**kwargs)
     else:
-      xlifffile = poxliff.PoXliffFile(templatefile, **kwargs)
-    filename = thepofile.filename
-    for thepo in thepofile.units:
-      if thepo.isblank():
+      outputstore = poxliff.PoXliffFile(templatefile, **kwargs)
+    filename = inputstore.filename
+    for inputunit in inputstore.units:
+      if inputunit.isblank():
         continue
-      transunitnode = self.convertunit(xlifffile, thepo, filename)
-    return str(xlifffile)
+      transunitnode = self.convertunit(outputstore, inputunit, filename)
+    return str(outputstore)
 
 def convertpo(inputfile, outputfile, templatefile):
   """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
