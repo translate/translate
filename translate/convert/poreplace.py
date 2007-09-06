@@ -43,6 +43,8 @@ class poreplace:
     if inputstore.isempty():
       return 0
     outputstore = self.convertfile(inputstore)
+    if outputstore.isempty():
+      return 0
     outputfile.write(str(outputstore))
     return 1
 

@@ -46,6 +46,8 @@ def convertodf(inputfile, outputfile, templates):
   """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
   convertor = odf2po()
   outputstore = convertor.convertfile(inputfile)
+  if outputstore.isempty():
+    return 0
   outputfile.write(str(outputstore))
   return 1
 
