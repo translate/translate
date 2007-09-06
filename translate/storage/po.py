@@ -652,11 +652,11 @@ class pounit(base.TranslationUnit):
         self.encoding = encodingToUse(charset.group(1))
     return linesprocessed
 
-  def getmsgpartstr(self, partname, partlines, partcomments=""):
+  def _getmsgpartstr(self, partname, partlines, partcomments=""):
     if isinstance(partlines, dict):
       partkeys = partlines.keys()
       partkeys.sort()
-      return "".join([self.getmsgpartstr("%s[%d]" % (partname, partkey), partlines[partkey], partcomments) for partkey in partkeys])
+      return "".join([self._getmsgpartstr("%s[%d]" % (partname, partkey), partlines[partkey], partcomments) for partkey in partkeys])
     partstr = partname + " "
     partstartline = 0
     if len(partlines) > 0 and len(partcomments) == 0:
@@ -715,11 +715,11 @@ class pounit(base.TranslationUnit):
       lines.extend(self.typecomments)
       obsoletelines = []
       if self.obsoletemsgctxt:
-        obsoletelines.append(self.getmsgpartstr("#~ msgctxt", self.obsoletemsgctxt))
-      obsoletelines.append(self.getmsgpartstr("#~ msgid", self.obsoletemsgid, self.obsoletemsgidcomments))
+        obsoletelines.append(self._getmsgpartstr("#~ msgctxt", self.obsoletemsgctxt))
+      obsoletelines.append(self._getmsgpartstr("#~ msgid", self.obsoletemsgid, self.obsoletemsgidcomments))
       if self.obsoletemsgid_plural or self.obsoletemsgid_pluralcomments:
-        obsoletelines.append(self.getmsgpartstr("#~ msgid_plural", self.obsoletemsgid_plural, self.obsoletemsgid_pluralcomments))
-      obsoletelines.append(self.getmsgpartstr("#~ msgstr", self.obsoletemsgstr))
+        obsoletelines.append(self._getmsgpartstr("#~ msgid_plural", self.obsoletemsgid_plural, self.obsoletemsgid_pluralcomments))
+      obsoletelines.append(self._getmsgpartstr("#~ msgstr", self.obsoletemsgstr))
       for index, obsoleteline in enumerate(obsoletelines):
         # We need to account for a multiline msgid or msgstr here
         obsoletelines[index] = obsoleteline.replace('\n"', '\n#~ "')
@@ -736,11 +736,11 @@ class pounit(base.TranslationUnit):
     lines.extend(self.typecomments)
     lines.extend(self.visiblecomments)
     if self.msgctxt:
-      lines.append(self.getmsgpartstr("msgctxt", self.msgctxt))
-    lines.append(self.getmsgpartstr("msgid", self.msgid, self.msgidcomments))
+      lines.append(self._getmsgpartstr("msgctxt", self.msgctxt))
+    lines.append(self._getmsgpartstr("msgid", self.msgid, self.msgidcomments))
     if self.msgid_plural or self.msgid_pluralcomments:
-      lines.append(self.getmsgpartstr("msgid_plural", self.msgid_plural, self.msgid_pluralcomments))
-    lines.append(self.getmsgpartstr("msgstr", self.msgstr))
+      lines.append(self._getmsgpartstr("msgid_plural", self.msgid_plural, self.msgid_pluralcomments))
+    lines.append(self._getmsgpartstr("msgstr", self.msgstr))
     lines = [self.encodeifneccessary(line) for line in lines]
     postr = "".join(lines)
     return postr
