@@ -318,16 +318,16 @@ class dtd2po:
 
 def convertdtd(inputfile, outputfile, templatefile, pot=False, duplicatestyle="msgctxt"):
   """reads in inputfile and templatefile using dtd, converts using dtd2po, writes to outputfile"""
-  inputdtd = dtd.dtdfile(inputfile)
+  inputstore = dtd.dtdfile(inputfile)
   convertor = dtd2po(blankmsgstr=pot, duplicatestyle=duplicatestyle)
   if templatefile is None:
-    outputpo = convertor.convertfile(inputdtd)
+    outputstore = convertor.convertfile(inputstore)
   else:
-    templatedtd = dtd.dtdfile(templatefile)
-    outputpo = convertor.mergefiles(templatedtd, inputdtd)
-  if outputpo.isempty():
+    templatestore = dtd.dtdfile(templatefile)
+    outputstore = convertor.mergefiles(templatestore, inputstore)
+  if outputstore.isempty():
     return 0
-  outputfile.write(str(outputpo))
+  outputfile.write(str(outputstore))
   return 1
 
 def main(argv=None):

@@ -74,12 +74,12 @@ class po2csv:
 def convertcsv(inputfile, outputfile, templatefile, columnorder=None):
   """reads in inputfile using po, converts using po2csv, writes to outputfile"""
   # note that templatefile is not used, but it is required by the converter...
-  inputpo = po.pofile(inputfile)
-  if inputpo.isempty():
+  inputstore = po.pofile(inputfile)
+  if inputstore.isempty():
     return 0
   convertor = po2csv()
-  outputcsv = convertor.convertfile(inputpo,columnorder)
-  outputfile.write(str(outputcsv))
+  outputstore = convertor.convertfile(inputstore,columnorder)
+  outputfile.write(str(outputstore))
   return 1
 
 def main(argv=None):

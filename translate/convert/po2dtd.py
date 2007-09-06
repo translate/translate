@@ -255,14 +255,14 @@ class po2dtd:
     return thedtdfile
 
 def convertdtd(inputfile, outputfile, templatefile, includefuzzy=False):
-  inputpo = po.pofile(inputfile)
+  inputstore = po.pofile(inputfile)
   if templatefile is None:
     convertor = po2dtd()
   else:
-    templatedtd = dtd.dtdfile(templatefile)
-    convertor = redtd(templatedtd)
-  outputdtd = convertor.convertfile(inputpo, includefuzzy)
-  outputfile.write(str(outputdtd))
+    templatestore = dtd.dtdfile(templatefile)
+    convertor = redtd(templatestore)
+  outputstore = convertor.convertfile(inputstore, includefuzzy)
+  outputfile.write(str(outputstore))
   return 1
 
 def main(argv=None):

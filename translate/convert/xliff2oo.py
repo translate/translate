@@ -199,8 +199,8 @@ options = oofilteroptions()
 filter = oocheckfilter(options, [checks.OpenOfficeChecker, checks.StandardUnitChecker], checks.openofficeconfig)
 
 def convertoo(inputfile, outputfile, templatefile, sourcelanguage=None, targetlanguage=None, timestamp=None, includefuzzy=False, multifilestyle="single", filteraction=None):
-  inputsource = factory.getobject(inputfile)
-  inputsource.filename = getattr(inputfile, 'name', '')
+  inputstore = factory.getobject(inputfile)
+  inputstore.filename = getattr(inputfile, 'name', '')
   if not targetlanguage:
     raise ValueError("You must specify the target language")
   if not sourcelanguage:
@@ -213,9 +213,9 @@ def convertoo(inputfile, outputfile, templatefile, sourcelanguage=None, targetla
     raise ValueError("must have template file for oo files")
   else:
     convertor = reoo(templatefile, languages=languages, timestamp=timestamp, includefuzzy=includefuzzy, long_keys=multifilestyle != "single", filteraction=filteraction)
-  outputoo = convertor.convertfile(inputsource)
+  outputstore = convertor.convertfile(inputstore)
   # TODO: check if we need to manually delete missing items
-  outputoosrc = str(outputoo)
+  outputoosrc = str(outputstore)
   outputfile.write(outputoosrc)
   return True
 

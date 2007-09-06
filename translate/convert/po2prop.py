@@ -111,13 +111,13 @@ def convertmozillaprop(inputfile, outputfile, templatefile, includefuzzy=False):
   return convertprop(inputfile, outputfile, templatefile, personality="mozilla", includefuzzy=includefuzzy)
 
 def convertprop(inputfile, outputfile, templatefile, personality, includefuzzy=False):
-  inputpo = po.pofile(inputfile)
+  inputstore = po.pofile(inputfile)
   if templatefile is None:
     raise ValueError("must have template file for properties files")
     # convertor = po2prop()
   else:
     convertor = reprop(templatefile)
-  outputproplines = convertor.convertfile(inputpo, personality, includefuzzy)
+  outputproplines = convertor.convertfile(inputstore, personality, includefuzzy)
   outputfile.writelines(outputproplines)
   return 1
 

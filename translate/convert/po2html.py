@@ -83,15 +83,15 @@ class po2html:
 
 def converthtml(inputfile, outputfile, templatefile, wrap=None, includefuzzy=False):
   """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
-  inputpo = po.pofile(inputfile)
+  inputstore = po.pofile(inputfile)
   convertor = po2html(wrap=wrap)
   if templatefile is None:
-    outputhtml = convertor.convertfile(inputpo, includefuzzy)
+    outputstring = convertor.convertfile(inputstore, includefuzzy)
   else:
-    templatetext = templatefile.read()
-    outputhtml = convertor.mergefile(inputpo, templatetext, includefuzzy)
+    templatestring = templatefile.read()
+    outputstring = convertor.mergefile(inputstore, templatestring, includefuzzy)
   outputfilepos = outputfile.tell()
-  outputfile.write(outputhtml)
+  outputfile.write(outputstring)
   return 1
 
 def main(argv=None):

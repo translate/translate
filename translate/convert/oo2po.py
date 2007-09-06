@@ -123,27 +123,27 @@ def verifyoptions(options):
     raise ValueError("You must specify the target language unless generating POT files (-P)")
 
 def convertoo(inputfile, outputfile, templates, pot=False, sourcelanguage=None, targetlanguage=None, duplicatestyle="msgid_comment", multifilestyle="single"):
-  """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
-  fromfile = oo.oofile()
+  """reads in stdin using inputstore class, converts using convertorclass, writes to stdout"""
+  inputstore = oo.oofile()
   if hasattr(inputfile, "filename"):
-    fromfile.filename = inputfile.filename
+    inputstore.filename = inputfile.filename
   filesrc = inputfile.read()
-  fromfile.parse(filesrc)
+  inputstore.parse(filesrc)
   if not sourcelanguage:
-    testlangtype = targetlanguage or (fromfile and fromfile.languages[0]) or ""
+    testlangtype = targetlanguage or (inputstore and inputstore.languages[0]) or ""
     if testlangtype.isdigit():
       sourcelanguage = "01"
     else:
       sourcelanguage = "en-US"
-  if not sourcelanguage in fromfile.languages:
-    print "Warning: sourcelanguage %s not found in inputfile (contains %s)" % (sourcelanguage, ", ".join(fromfile.languages))
-  if targetlanguage and targetlanguage not in fromfile.languages:
-    print "Warning: targetlanguage %s not found in inputfile (contains %s)" % (targetlanguage, ", ".join(fromfile.languages))
+  if not sourcelanguage in inputstore.languages:
+    print "Warning: sourcelanguage %s not found in inputfile (contains %s)" % (sourcelanguage, ", ".join(inputstore.languages))
+  if targetlanguage and targetlanguage not in inputstore.languages:
+    print "Warning: targetlanguage %s not found in inputfile (contains %s)" % (targetlanguage, ", ".join(inputstore.languages))
   convertor = oo2po(sourcelanguage, targetlanguage, blankmsgstr=pot, long_keys=multifilestyle!="single")
-  newfile = convertor.convertfile(fromfile, duplicatestyle)
-  if newfile.isempty():
+  outputstore = convertor.convertfile(inputstore, duplicatestyle)
+  if outputstore.isempty():
     return 0
-  outputfile.write(str(newfile))
+  outputfile.write(str(outputstore))
   return 1
 
 def main(argv=None):

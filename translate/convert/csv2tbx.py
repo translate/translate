@@ -73,12 +73,12 @@ class csv2tbx:
 
 def convertcsv(inputfile, outputfile, templatefile, charset=None, columnorder=None):
   """reads in inputfile using csvl10n, converts using csv2tbx, writes to outputfile"""
-  inputcsv = csvl10n.csvfile(inputfile, fieldnames=columnorder)
+  inputstore = csvl10n.csvfile(inputfile, fieldnames=columnorder)
   convertor = csv2tbx(charset=charset)
-  outputtbx = convertor.convertfile(inputcsv)
-  if len(outputtbx.units) == 0:
+  outputstore = convertor.convertfile(inputstore)
+  if len(outputstore.units) == 0:
     return 0
-  outputtbxsrc = str(outputtbx)
+  outputtbxsrc = str(outputstore)
   outputfile.write(outputtbxsrc)
   return 1
 

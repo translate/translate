@@ -122,20 +122,19 @@ class prop2po:
 
 def convertprop(inputfile, outputfile, templatefile, pot=False, duplicatestyle="msgctxt"):
   """reads in inputfile using properties, converts using prop2po, writes to outputfile"""
-  inputprop = properties.propfile(inputfile)
+  inputstore = properties.propfile(inputfile)
   convertor = prop2po()
   if templatefile is None:
-    outputpo = convertor.convertfile(inputprop, duplicatestyle=duplicatestyle)
+    outputstore = convertor.convertfile(inputstore, duplicatestyle=duplicatestyle)
   else:
-    templateprop = properties.propfile(templatefile)
-    outputpo = convertor.mergefiles(templateprop, inputprop, blankmsgstr=pot, duplicatestyle=duplicatestyle)
-  if outputpo.isempty():
+    templatestore = properties.propfile(templatefile)
+    outputstore = convertor.mergefiles(templatestore, inputstore, blankmsgstr=pot, duplicatestyle=duplicatestyle)
+  if outputstore.isempty():
     return 0
-  outputfile.write(str(outputpo))
+  outputfile.write(str(outputstore))
   return 1
 
 def main(argv=None):
-  # handle command line options
   from translate.convert import convert
   formats = {"properties": ("po", convertprop), ("properties", "properties"): ("po", convertprop)}
   parser = convert.ConvertOptionParser(formats, usetemplates=True, usepots=True, description=__doc__)

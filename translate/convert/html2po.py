@@ -45,8 +45,8 @@ def converthtml(inputfile, outputfile, templates, includeuntagged=False, pot=Fal
   convertor = html2po()
   outputfilepos = outputfile.tell()
   includeheader = outputfilepos == 0
-  outputpo = convertor.convertfile(inputfile, getattr(inputfile, "name", "unknown"), includeheader, includeuntagged, duplicatestyle=duplicatestyle)
-  outputfile.write(str(outputpo))
+  outputstore = convertor.convertfile(inputfile, getattr(inputfile, "name", "unknown"), includeheader, includeuntagged, duplicatestyle=duplicatestyle)
+  outputfile.write(str(outputstore))
   return 1
 
 def main(argv=None):

@@ -92,12 +92,12 @@ class po2xliff:
 
 def convertpo(inputfile, outputfile, templatefile):
   """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
-  inputpo = po.pofile(inputfile)
-  if inputpo.isempty():
+  inputstore = po.pofile(inputfile)
+  if inputstore.isempty():
     return 0
   convertor = po2xliff()
-  outputxliff = convertor.convertfile(inputpo, templatefile)
-  outputfile.write(outputxliff)
+  outputstring = convertor.convertfile(inputstore, templatefile)
+  outputfile.write(outputstring)
   return 1
 
 def main(argv=None):

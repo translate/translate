@@ -177,16 +177,16 @@ class csv2po:
 
 def convertcsv(inputfile, outputfile, templatefile, charset=None, columnorder=None, duplicatestyle="msgctxt"):
   """reads in inputfile using csvl10n, converts using csv2po, writes to outputfile"""
-  inputcsv = csvl10n.csvfile(inputfile, fieldnames=columnorder)
+  inputstore = csvl10n.csvfile(inputfile, fieldnames=columnorder)
   if templatefile is None:
     convertor = csv2po(charset=charset, duplicatestyle=duplicatestyle)
   else:
-    templatepo = po.pofile(templatefile)
-    convertor = csv2po(templatepo, charset=charset, duplicatestyle=duplicatestyle)
-  outputpo = convertor.convertfile(inputcsv)
-  if outputpo.isempty():
+    templatestore = po.pofile(templatefile)
+    convertor = csv2po(templatestore, charset=charset, duplicatestyle=duplicatestyle)
+  outputstore = convertor.convertfile(inputstore)
+  if outputstore.isempty():
     return 0
-  outputfile.write(str(outputpo))
+  outputfile.write(str(outputstore))
   return 1
 
 def main(argv=None):
