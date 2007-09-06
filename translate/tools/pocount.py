@@ -132,7 +132,7 @@ Untranslated Source Words, Total Message, Total Source Words, \
 Review Messages, Review Source Words"
     for filename in filenames:
       if not os.path.exists(filename):
-        print >>sys.stderr, "cannot process %s: does not exist" % filename
+        print >> sys.stderr, "cannot process %s: does not exist" % filename
         continue
       elif os.path.isdir(filename):
         self.handledir(filename)

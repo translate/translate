@@ -153,7 +153,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         errorinfo = ""
       if errorinfo:
         msg += ": " + errorinfo
-    print >>sys.stderr, "\n%s: warning: %s" % (optparse.get_prog_name(), msg)
+    print >> sys.stderr, "\n%s: warning: %s" % (optparse.get_prog_name(), msg)
 
   def getusagestring(self, option):
     """returns the usage string for the given option"""
@@ -173,7 +173,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
     if getattr(option, "optionalswitch", False):
       optionstring = "\\fR[\\fP%s\\fR]\\fP" % optionstring
     if option.metavar:
-      optionstring += " \\fI%s\\fP"%option.metavar
+      optionstring += " \\fI%s\\fP" % option.metavar
     if getattr(option, "required", False):
       return optionstring
     else:
@@ -376,7 +376,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
     """sets up a progress bar appropriate to the options and files"""
     if options.progress in ('bar', 'verbose'):
       self.progressbar = self.progresstypes[options.progress](0, len(allfiles))
-      print >>sys.stderr, "processing %d files..." % len(allfiles)
+      print >> sys.stderr, "processing %d files..." % len(allfiles)
     else:
       self.progressbar = self.progresstypes[options.progress]()
 

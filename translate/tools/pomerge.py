@@ -64,7 +64,7 @@ def mergepofiles(store1, store2, mergeblanks, mergecomments):
           unit1 = store1.sourceindex[source]
       # check if we found a matching po element
       if unit1 is None:
-        print >>sys.stderr, "# the following po element was not found"
+        print >> sys.stderr, "# the following po element was not found"
         sys.stderr.write(str(unit2) + "\n")
       else:
         if not mergeblanks:

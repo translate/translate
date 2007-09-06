@@ -48,13 +48,13 @@ def intuplelist(pair, list):
   """Tests to see if pair == (a,b,c) is in list, but handles None entries in 
   list as wildcards (only allowed in positions "a" and "c"). We take a shortcut
   by only considering "c" if "b" has already matched."""
-  a,b,c = pair
-  if (b,c) == (None, None):
+  a, b, c = pair
+  if (b, c) == (None, None):
     #This is a tagname
     return pair
   for pattern in list:
-    x,y,z = pattern
-    if (x,y) in [(a,b), (None, b)]:
+    x, y, z = pattern
+    if (x, y) in [(a, b), (None, b)]:
       if z in [None, c]:
         return pattern
   return pair
@@ -352,7 +352,7 @@ class TeeChecker:
       for filtername in limitfilters:
         if not filtername in self.combinedfilters:
           import sys
-          print >>sys.stderr, "warning: could not find filter %s" % filtername
+          print >> sys.stderr, "warning: could not find filter %s" % filtername
     return self.combinedfilters
 
   def run_filters(self, unit):

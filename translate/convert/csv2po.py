@@ -102,13 +102,13 @@ class csv2po:
       if len(thepolist) > 1:
         csvfilename = getattr(self.csvfile, "filename", "(unknown)")
         matches = "\n  ".join(["possible match: " + pounit.source for pounit in thepolist])
-        print >>sys.stderr, "%s - csv entry not found in pofile, multiple matches found:\n  location\t%s\n  original\t%s\n  translation\t%s\n  %s" % (csvfilename, csvunit.comment, csvunit.source, csvunit.target, matches)
+        print >> sys.stderr, "%s - csv entry not found in pofile, multiple matches found:\n  location\t%s\n  original\t%s\n  translation\t%s\n  %s" % (csvfilename, csvunit.comment, csvunit.source, csvunit.target, matches)
         self.unmatched += 1
         return
       pounit = thepolist[0]
     else:
       csvfilename = getattr(self.csvfile, "filename", "(unknown)")
-      print >>sys.stderr, "%s - csv entry not found in pofile:\n  location\t%s\n  original\t%s\n  translation\t%s" % (csvfilename, csvunit.comment, csvunit.source, csvunit.target)
+      print >> sys.stderr, "%s - csv entry not found in pofile:\n  location\t%s\n  original\t%s\n  translation\t%s" % (csvfilename, csvunit.comment, csvunit.source, csvunit.target)
       self.unmatched += 1
       return
     csvtarget = [quotecsvstr(line) for line in csvunit.target.split('\n')]
@@ -125,7 +125,7 @@ class csv2po:
       elif simplify(csvunit.source) == simplify(pluralid):
         pounit.msgstr[1] = csvtarget
       else:
-        print >>sys.stderr, "couldn't work out singular or plural: %r, %r, %r" %  \
+        print >> sys.stderr, "couldn't work out singular or plural: %r, %r, %r" %  \
           (csvunit.source, singularid, pluralid)
         self.unmatched += 1
         return

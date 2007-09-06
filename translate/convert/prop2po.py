@@ -96,7 +96,7 @@ class prop2po:
         waitingcomments = []
         thepofile.addunit(origpo)
       elif translatedpo is not None:
-        print >>sys.stderr, "error converting original properties definition %s" % origprop.name
+        print >> sys.stderr, "error converting original properties definition %s" % origprop.name
     thepofile.removeduplicates(duplicatestyle)
     return thepofile
 

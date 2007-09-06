@@ -234,7 +234,7 @@ class TestDTD2PO:
 
     def test_unassociable_accelerator(self):
         """test to see that we can handle accelerator keys that cannot be associated correctly"""
-        dtdsource ='<!ENTITY  managecerts.button "Manage Certificates...">\n<!ENTITY  managecerts.accesskey "M">'
+        dtdsource = '<!ENTITY  managecerts.button "Manage Certificates...">\n<!ENTITY  managecerts.accesskey "M">'
         pofile = self.dtd2po(dtdsource)
         assert pofile.units[1].source == "Manage Certificates..."
         assert pofile.units[2].source == "M"

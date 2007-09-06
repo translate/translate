@@ -102,14 +102,14 @@ class reoo:
         theoo = self.index[key] # find the oo
         self.applytranslation(key, subkey, theoo, unit)
       else:
-        print >>sys.stderr, "couldn't find key %s from po in %d keys" % (key, len(self.index))
+        print >> sys.stderr, "couldn't find key %s from po in %d keys" % (key, len(self.index))
         try:
           sourceunitlines = str(unit)
           if isinstance(sourceunitlines, unicode):
             sourceunitlines = sourceunitlines.encode("utf-8")
-          print >>sys.stderr, sourceunitlines
+          print >> sys.stderr, sourceunitlines
         except:
-          print >>sys.stderr, "error outputting source unit %r" % (str(unit),)
+          print >> sys.stderr, "error outputting source unit %r" % (str(unit),)
 
   def applytranslation(self, key, subkey, theoo, unit):
     """applies the translation from the source unit to the oo unit"""

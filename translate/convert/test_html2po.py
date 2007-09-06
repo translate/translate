@@ -355,7 +355,7 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
         pofile.units[1].target = 'Projekte'
         pofile.units[2].target = 'Tuisblad'
         htmlresult = self.po2html(str(pofile), htmlsource).replace('\n', ' ').replace('= "', '="').replace('> <', '><')
-        snippet ='<td width="96%"><strong><font class="headingwhite">Projekte</font></strong></td>'
+        snippet = '<td width="96%"><strong><font class="headingwhite">Projekte</font></strong></td>'
         assert snippet in htmlresult
         snippet = '<td width="96%"><a href="index.html">Tuisblad</a></td>'
         assert snippet in htmlresult
