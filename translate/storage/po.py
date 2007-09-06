@@ -695,7 +695,7 @@ class pounit(base.TranslationUnit):
       partstr += partline + '\n'
     return partstr
 
-  def encodeifneccessary(self, output):
+  def _encodeifneccessary(self, output):
     """encodes unicode strings and returns other strings unchanged"""
     if isinstance(output, unicode):
       encoding = encodingToUse(getattr(self, "encoding", "UTF-8"))
@@ -705,7 +705,7 @@ class pounit(base.TranslationUnit):
   def __str__(self):
     """convert to a string. double check that unicode is handled somehow here"""
     output = self.getoutput()
-    return self.encodeifneccessary(output)
+    return self._encodeifneccessary(output)
 
   def getoutput(self):
     """return this po element as a string"""
@@ -724,7 +724,7 @@ class pounit(base.TranslationUnit):
         # We need to account for a multiline msgid or msgstr here
         obsoletelines[index] = obsoleteline.replace('\n"', '\n#~ "')
       lines.extend(obsoletelines)
-      lines = [self.encodeifneccessary(line) for line in lines]
+      lines = [self._encodeifneccessary(line) for line in lines]
       return "".join(lines)
     # if there's no msgid don't do msgid and string, unless we're the header
     # this will also discard any comments other than plain othercomments...
@@ -741,7 +741,7 @@ class pounit(base.TranslationUnit):
     if self.msgid_plural or self.msgid_pluralcomments:
       lines.append(self._getmsgpartstr("msgid_plural", self.msgid_plural, self.msgid_pluralcomments))
     lines.append(self._getmsgpartstr("msgstr", self.msgstr))
-    lines = [self.encodeifneccessary(line) for line in lines]
+    lines = [self._encodeifneccessary(line) for line in lines]
     postr = "".join(lines)
     return postr
 
