@@ -84,7 +84,9 @@ class tableTM(QtGui.QDockWidget):
         self.ui.tblTM.resizeRowsToContents()
         
     def createContextMenu(self):
-        # context menu of items
+        """
+        context menu of items
+        """
         self.menu = QtGui.QMenu()
         actionCopyResult = self.menu.addAction(QtGui.QIcon("../images/source.png"), self.tr("Copy Translation To Target"))
         actionEditFile = self.menu.addAction(QtGui.QIcon("../images/open.png"),self.tr("Edit File"))
@@ -97,6 +99,7 @@ class tableTM(QtGui.QDockWidget):
     def fillTable(self, candidates):
         """
         Fill table with candidates source and target.
+        
         @param candidates: list of unit.
         """
         if (not self.allowUpdate):
@@ -178,9 +181,11 @@ class tableTM(QtGui.QDockWidget):
     def setToolTip(self, index = None, col = 0, tooltips = "", icon = QtGui.QIcon()):
         """
         mark icon indicate unit has more info and add tooltips.
+        
         @param index: row in table.
         @param col: column to set tooltips.
-        @param tooltips: more info about candidates such as which file the candidate locates, who is the translator and when.
+        @param tooltips: more info about candidates such as which file the 
+            candidate locates, who is the translator and when.
         @param icon: icon to set to col.
         """
         # get the current row
@@ -198,6 +203,7 @@ class tableTM(QtGui.QDockWidget):
     def closeEvent(self, event):
         """
         Unchecked the TM Lookup view action.
+        
         @param QCloseEvent Object: received close event when closing widget
         """
         QtGui.QDockWidget.closeEvent(self, event)
@@ -207,6 +213,7 @@ class tableTM(QtGui.QDockWidget):
     def showEvent(self, event):
         """
         Checked the TM Lookup view action.
+        
         @param QShowEvent Object: received show event when showing widget
         """
         QtGui.QDockWidget.showEvent(self, event)

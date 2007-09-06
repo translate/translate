@@ -54,14 +54,16 @@ msgstr "open any"
         self.matcher = match.matcher(store, 10, 75, 300)
         
     def testfillTable(self):
-        """Test that the candidates is filled correctly in the table."""
+        """
+        Test that the candidates is filled correctly in the table.
+        """
         
-        #Test with no candidates
+        # Test with no candidates
         candidates = []
         self.tableTM.fillTable(candidates)
         self.assertEqual(len(candidates), 0)
         
-        #Test with candidates
+        # Test with candidates
         candidates = self.matcher.candidates.units
         self.tableTM.setVisible(True)
         for i in range(len(candidates)):
@@ -72,8 +74,10 @@ msgstr "open any"
         self.assertEqual(len(candidates), self.tableTM.ui.tblTM.rowCount())
     
     def testEmitSignal(self):
-        """ Test that the signal is emitted only have item."""
-        QtCore.QObject.connect(self.tableTM, QtCore.SIGNAL("targetChanged"), self.slot)
+        """
+        Test that the signal is emitted only have item.
+        """
+        QtCore.QObject.connect(self.tableTM, QtCore.SIGNAL("translation2target"), self.slot)
         QtCore.QObject.connect(self.tableTM, QtCore.SIGNAL("openFile"), self.slot)
         QtCore.QObject.connect(self.tableTM, QtCore.SIGNAL("findUnit"), self.slot)
         
@@ -100,7 +104,9 @@ msgstr "open any"
         self.assertEqual(self.call, 3)
     
     def testShorten(self):
-        """Test that it returns only the first part of text, seperated by new line and filled with three dots. """
+        """
+        Test that it returns only the first part of text, seperated by new line and filled with three dots. 
+        """
         text = "first line \n second line\n"
         text = self.tableTM.shorten(text)
         self.assertEqual(text, "first line ...")
