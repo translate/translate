@@ -64,11 +64,11 @@ class po2csv:
     for inputunit in inputstore.units:
       outputunit = self.convertunit(inputunit)
       if outputunit is not None:
-        outputstore.units.append(outputunit)
+        outputstore.addunit(outputunit)
       if inputunit.hasplural():
         outputunit = self.convertplurals(inputunit)
         if outputunit is not None:
-          outputstore.units.append(outputunit)
+          outputstore.addunit(outputunit)
     return outputstore
 
 def convertcsv(inputfile, outputfile, templatefile, columnorder=None):

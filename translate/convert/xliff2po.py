@@ -72,7 +72,7 @@ class xliff2po:
     # TODO: support multiple files
     for transunit in XliffFile.units:
         thepo = self.converttransunit(transunit)
-        thepofile.units.append(thepo)
+        thepofile.addunit(thepo)
     return thepofile
 
 def convertxliff(inputfile, outputfile, templates):

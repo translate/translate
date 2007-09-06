@@ -33,7 +33,7 @@ class html2po:
     htmlparser = html.htmlfile(includeuntaggeddata=includeuntagged, inputfile=inputfile)
     if includeheader:
       headerpo = thepofile.makeheader(charset="UTF-8", encoding="8bit")
-      thepofile.units.append(headerpo)
+      thepofile.addunit(headerpo)
     for htmlunit in htmlparser.units:
       thepo = thepofile.addsourceunit(htmlunit.source)
       thepo.addlocations(htmlunit.getlocations())

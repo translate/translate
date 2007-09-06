@@ -32,7 +32,7 @@ class odf2po:
     filename = getattr(inputfile, "name", "unkown")
     headerpo = thepofile.makeheader(charset="UTF-8", encoding="8bit")
     headerpo.addnote("extracted from %s\n" % filename, "developer")
-    thepofile.units.append(headerpo)
+    thepofile.addunit(headerpo)
     odfdoc = odf.ODFFile(inputfile)
     blocknum = 0
     for unit in odfdoc.getunits():

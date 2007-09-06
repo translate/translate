@@ -164,7 +164,7 @@ class csvfile(base.TranslationStore):
     for row in reader:
       newce = self.UnitClass()
       newce.fromdict(row)
-      self.units.append(newce)
+      self.addunit(newce)
 
   def __str__(self):
     """convert to a string. double check that unicode is handled somehow here"""

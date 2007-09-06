@@ -163,7 +163,7 @@ class csv2po:
         self.handlecsvunit(csvunit)
       else:
         pounit = self.convertunit(csvunit)
-        self.pofile.units.append(pounit)
+        self.pofile.addunit(pounit)
     self.pofile.removeduplicates(self.duplicatestyle)
     return self.pofile
 

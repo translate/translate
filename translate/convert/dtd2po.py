@@ -260,7 +260,7 @@ class dtd2po:
     thepofile = po.pofile()
     headerpo = thepofile.makeheader(charset="UTF-8", encoding="8bit", x_accelerator_marker="&")
     headerpo.addnote("extracted from %s" % thedtdfile.filename, "developer")
-    thepofile.units.append(headerpo)
+    thepofile.addunit(headerpo)
     thedtdfile.makeindex()
     self.findmixedentities(thedtdfile)
     # go through the dtd and convert each unit
@@ -269,7 +269,7 @@ class dtd2po:
         continue
       thepo = self.convertdtdunit(thedtdfile, thedtd)
       if thepo is not None:
-        thepofile.units.append(thepo)
+        thepofile.addunit(thepo)
     thepofile.removeduplicates(self.duplicatestyle)
     return thepofile
 
@@ -277,7 +277,7 @@ class dtd2po:
     thepofile = po.pofile()
     headerpo = thepofile.makeheader(charset="UTF-8", encoding="8bit")
     headerpo.addnote("extracted from %s, %s" % (origdtdfile.filename, translateddtdfile.filename), "developer")
-    thepofile.units.append(headerpo)
+    thepofile.addunit(headerpo)
     origdtdfile.makeindex()
     self.findmixedentities(origdtdfile)
     translateddtdfile.makeindex()
@@ -312,7 +312,7 @@ class dtd2po:
       if origpo is not None:
         if translatedpo is not None and not self.blankmsgstr:
           origpo.msgstr = translatedpo.msgid
-        thepofile.units.append(origpo)
+        thepofile.addunit(origpo)
     thepofile.removeduplicates(self.duplicatestyle)
     return thepofile
 

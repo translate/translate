@@ -251,7 +251,7 @@ class po2dtd:
       if includefuzzy or not inputunit.isfuzzy():
         dtdunit = self.convertunit(inputunit)
         if dtdunit is not None:
-          outputstore.units.append(dtdunit)
+          outputstore.addunit(dtdunit)
     return outputstore
 
 def convertdtd(inputfile, outputfile, templatefile, includefuzzy=False):

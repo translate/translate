@@ -48,7 +48,7 @@ class ts2po:
     tsfile = ts.QtTsParser(inputfile)
     thepofile = po.pofile()
     headerpo = thepofile.makeheader(charset="UTF-8", encoding="8bit")
-    thepofile.units.append(headerpo)
+    thepofile.addunit(headerpo)
     for contextname, messages in tsfile.iteritems():
       messagenum = 0
       for message in messages:
@@ -58,7 +58,7 @@ class ts2po:
         comment = tsfile.getmessagecomment(message)
         transtype = tsfile.getmessagetype(message)
         thepo = self.convertmessage(contextname, messagenum, source, translation, comment, transtype)
-        thepofile.units.append(thepo)
+        thepofile.addunit(thepo)
     return thepofile
 
 def convertts(inputfile, outputfile, templates):
