@@ -57,8 +57,8 @@ class TestOO2PO:
         oosource = r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58'
         pofile = self.oo2po(oosource)
         pounit = self.singleelement(pofile)
-        assert po.unquotefrompo(pounit.msgid) == "Character"
-        assert po.unquotefrompo(pounit.msgstr) == ""
+        assert pounit.source == "Character"
+        assert pounit.target == ""
 
     def test_escapes(self):
         """checks that a simple oo entry converts escapes properly to a po entry"""
@@ -164,8 +164,8 @@ class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2PO):
         self.run_command("simple.oo", "simple.pot", pot=True, nonrecursiveinput=True)
         pofile = po.pofile(self.open_testfile("simple.pot"))
         poelement = self.singleelement(pofile)
-        assert po.unquotefrompo(poelement.msgid) == "Character"
-        assert po.unquotefrompo(poelement.msgstr) == ""
+        assert poelement.source == "Character"
+        assert poelement.target == ""
 
     def test_simple_po(self):
         """tests the simplest possible conversion to a po file"""
@@ -175,8 +175,8 @@ class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2PO):
         self.run_command("simple.oo", "simple.po", lang="ku", nonrecursiveinput=True)
         pofile = po.pofile(self.open_testfile("simple.po"))
         poelement = self.singleelement(pofile)
-        assert po.unquotefrompo(poelement.msgid) == "Character"
-        assert po.unquotefrompo(poelement.msgstr) == "Karakter"
+        assert poelement.source == "Character"
+        assert poelement.target == "Karakter"
 
     def test_onefile_nonrecursive(self):
         """tests the --multifile=onefile option and make sure it doesn't produce a directory"""

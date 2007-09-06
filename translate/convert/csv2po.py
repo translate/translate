@@ -61,7 +61,7 @@ class csv2po:
       for comment in pounit.sourcecomments:
         commentparts.append(comment.replace("#:","",1).strip())
       joinedcomment = " ".join(commentparts)
-      unquotedid = po.unquotefrompo(pounit.msgid)
+      source = pounit.source
       # the definitive way to match is by source comment (joinedcomment)
       if joinedcomment in self.commentindex:
         # unless more than one thing matches...
@@ -69,15 +69,15 @@ class csv2po:
       else:
         self.commentindex[joinedcomment] = pounit
       # do simpler matching in case things have been mangled...
-      simpleid = simplify(unquotedid)
+      simpleid = simplify(source)
       # but check for duplicates
-      if simpleid in self.simpleindex and not (unquotedid in self.sourceindex):
+      if simpleid in self.simpleindex and not (source in self.sourceindex):
         # keep a list of them...
         self.simpleindex[simpleid].append(pounit)
       else:
         self.simpleindex[simpleid] = [pounit]
       # also match by standard msgid
-      self.sourceindex[unquotedid] = pounit
+      self.sourceindex[source] = pounit
     for comment in self.duplicatecomments:
       if comment in self.commentindex:
         del self.commentindex[comment]
@@ -101,7 +101,7 @@ class csv2po:
       thepolist = self.simpleindex[simplify(csvunit.source)]
       if len(thepolist) > 1:
         csvfilename = getattr(self.csvfile, "filename", "(unknown)")
-        matches = "\n  ".join(["possible match: " + po.unquotefrompo(pounit.msgid) for pounit in thepolist])
+        matches = "\n  ".join(["possible match: " + pounit.source for pounit in thepolist])
         print >>sys.stderr, "%s - csv entry not found in pofile, multiple matches found:\n  location\t%s\n  original\t%s\n  translation\t%s\n  %s" % (csvfilename, csvunit.comment, csvunit.source, csvunit.target, matches)
         self.unmatched += 1
         return

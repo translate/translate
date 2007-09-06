@@ -56,8 +56,8 @@ class TestPOMerge:
         inputpo = '''#: simple.test\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n'''
         pofile = self.mergepo(templatepo, inputpo)
         pounit = self.singleunit(pofile)
-        assert po.unquotefrompo(pounit.msgid) == "Simple String"
-        assert po.unquotefrompo(pounit.msgstr) == "Dimpled Ring"
+        assert pounit.source == "Simple String"
+        assert pounit.target == "Dimpled Ring"
 
     def test_replacemerge(self):
         """checks that a simple po entry merges OK"""
@@ -65,8 +65,8 @@ class TestPOMerge:
         inputpo = '''#: simple.test\nmsgid "Simple String"\nmsgstr "Dimpled King"\n'''
         pofile = self.mergepo(templatepo, inputpo)
         pounit = self.singleunit(pofile)
-        assert po.unquotefrompo(pounit.msgid) == "Simple String"
-        assert po.unquotefrompo(pounit.msgstr) == "Dimpled King"
+        assert pounit.source == "Simple String"
+        assert pounit.target == "Dimpled King"
 
     def test_reflowed_source_comments(self):
         """ensure that we don't duplicate source comments (locations) if they have been reflowed"""

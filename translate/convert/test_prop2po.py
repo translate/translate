@@ -48,7 +48,7 @@ class TestProp2PO:
         pofile = self.prop2po(propsource)
         pounit = self.singleelement(pofile)
         assert pounit.source == "Save file"
-        assert po.unquotefrompo(pounit.msgstr) == ""
+        assert pounit.target == ""
 
     def test_convertprop(self):
         """checks that the convertprop function is working"""
@@ -57,7 +57,7 @@ class TestProp2PO:
         pofile = po.pofile(wStringIO.StringIO(posource))
         pounit = self.singleelement(pofile)
         assert pounit.source == "Save file"
-        assert po.unquotefrompo(pounit.msgstr) == ""
+        assert pounit.target == ""
 
     def test_emptyentry(self):
         """checks that an empty properties entry survive into the po file, bug 15"""

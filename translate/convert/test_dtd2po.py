@@ -47,15 +47,15 @@ class TestDTD2PO:
         dtdsource = '<!ENTITY test.me "bananas for sale">\n'
         pofile = self.dtd2po(dtdsource)
         pounit = self.singleelement(pofile)
-        assert po.unquotefrompo(pounit.msgid) == "bananas for sale"
-        assert po.unquotefrompo(pounit.msgstr) == ""
+        assert pounit.source == "bananas for sale"
+        assert pounit.target == ""
         # Now with a template language
         dtdtemplate = '<!ENTITY test.me "bananas for sale">\n'
         dtdtranslated = '<!ENTITY test.me "piesangs te koop">\n'
         pofile = self.dtd2po(dtdtranslated, dtdtemplate)
         pounit = self.singleelement(pofile)
-        assert po.unquotefrompo(pounit.msgid) == "bananas for sale"
-        assert po.unquotefrompo(pounit.msgstr) == "piesangs te koop"
+        assert pounit.source == "bananas for sale"
+        assert pounit.target == "piesangs te koop"
 
     def test_convertdtd(self):
         """checks that the convertdtd function is working"""
@@ -63,15 +63,15 @@ class TestDTD2PO:
         posource = self.convertdtd(dtdsource)
         pofile = po.pofile(wStringIO.StringIO(posource))
         unit = self.singleelement(pofile)
-        assert po.unquotefrompo(unit.msgid) == "Save As..."
-        assert po.unquotefrompo(unit.msgstr) == ""
+        assert unit.source == "Save As..."
+        assert unit.target == ""
 
     def test_apos(self):
         """apostrophe should not break a single-quoted entity definition, bug 69"""
         dtdsource = "<!ENTITY test.me 'bananas &apos; for sale'>\n"
         pofile = self.dtd2po(dtdsource)
         pounit = self.singleelement(pofile)
-        assert po.unquotefrompo(pounit.msgid) == "bananas ' for sale"
+        assert pounit.source == "bananas ' for sale"
 
     def test_quotes(self):
         """quotes should be handled in a single-quoted entity definition"""
@@ -79,7 +79,7 @@ class TestDTD2PO:
         pofile = self.dtd2po(dtdsource)
         pounit = self.singleelement(pofile)
         print str(pounit)
-        assert po.unquotefrompo(pounit.msgid) == '"Bananas" for sale'
+        assert pounit.source == '"Bananas" for sale'
 
     def test_emptyentity(self):
         """checks that empty entity definitions survive into po file, bug 15"""
@@ -96,7 +96,7 @@ class TestDTD2PO:
         unit = self.singleelement(pofile)
         print unit
         assert "credit.translation" in str(unit)
-        assert po.unquotefrompo(unit.msgstr) == "Translators Names"
+        assert unit.target == "Translators Names"
 
     def test_localisation_note_merge(self):
         """test that LOCALIZATION NOTES are added properly as #. comments and disambiguated with msgctxt entries"""
@@ -203,7 +203,7 @@ class TestDTD2PO:
         dtdsource = '<!ENTITY mainWindow.titlemodifiermenuseparator " - ">'
         pofile = self.dtd2po(dtdsource)
         unit = self.singleelement(pofile)
-        assert po.unquotefrompo(unit.msgid) == " - "
+        assert unit.source == " - "
         # Double line and spaces
         dtdsource = '<!ENTITY mainWindow.titlemodifiermenuseparator " - with a newline\n    and more text">'
         pofile = self.dtd2po(dtdsource)
@@ -221,7 +221,7 @@ class TestDTD2PO:
         print thedtd
         print thepo.msgid
         # \n in a dtd should also appear as \n in the PO file
-        assert po.unquotefrompo(thepo.msgid) == r"A hard coded newline.\nAnd tab\t and a \r carriage return."
+        assert thepo.source == r"A hard coded newline.\nAnd tab\t and a \r carriage return."
 
     def test_abandoned_accelerator(self):
         """test that when a language DTD has an accelerator but the template DTD does not that we abandon the accelerator"""
@@ -229,8 +229,8 @@ class TestDTD2PO:
         dtdlanguage = '<!ENTITY test.label "Toets">\n<!ENTITY test.accesskey "T">\n'
         pofile = self.dtd2po(dtdlanguage, dtdtemplate)
         unit = self.singleelement(pofile)
-        assert po.unquotefrompo(unit.msgid) == "Test"
-        assert po.unquotefrompo(unit.msgstr) == "Toets"
+        assert unit.source == "Test"
+        assert unit.target == "Toets"
 
     def test_unassociable_accelerator(self):
         """test to see that we can handle accelerator keys that cannot be associated correctly"""

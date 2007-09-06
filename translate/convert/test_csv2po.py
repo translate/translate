@@ -37,8 +37,8 @@ class TestCSV2PO:
         pofile = self.csv2po(csvheader + csvsource)
         pounit = self.singleelement(pofile)
         assert pounit.sourcecomments == ["#: " + "intl.charset.default" + "\n"]
-        assert po.unquotefrompo(pounit.msgid) == "ISO-8859-1"
-        assert po.unquotefrompo(pounit.msgstr) == "UTF-16"
+        assert pounit.source == "ISO-8859-1"
+        assert pounit.target == "UTF-16"
 
     def test_simpleentity_with_template(self):
         """checks that a simple csv entry definition converts properly to a po entry"""
@@ -51,8 +51,8 @@ msgstr ""
         pofile = self.csv2po(csvsource, potsource)
         pounit = self.singleelement(pofile)
         assert pounit.sourcecomments == ["#: " + "intl.charset.default" + "\n"]
-        assert po.unquotefrompo(pounit.msgid) == "ISO-8859-1"
-        assert po.unquotefrompo(pounit.msgstr) == "UTF-16"
+        assert pounit.source == "ISO-8859-1"
+        assert pounit.target == "UTF-16"
 
     def test_newlines(self):
         """tests multiline po entries"""
