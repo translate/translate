@@ -608,10 +608,11 @@ class MainWindow(QtGui.QMainWindow):
     def closeFile(self, force = False):
         """
         Return True when successfully close file, else return False.
-        @param force: bool whether to check is contend is modified.
+        @param force: bool whether to check if content is modified.
         """
         self.dockTUview.emitTargetChanged()
         self.dockComment.emitCommentChanged()
+        
         if (force) or (not self.operator.isModified()):
             self.setStatusForFile(None)
             self.operator.closeFile()
@@ -667,6 +668,10 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionCopySearchResult2Target.setEnabled(value)
         self.findBar.toggleViewAction().setVisible(value)
         self.ui.actionAuto_translate.setEnabled(True)
+        self.table.ui.tblTM.clear()
+        self.table.ui.tblTM.setRowCount(0)
+        self.table.ui.tblTM.setEnabled(value)
+        self.tableGlossary.ui.tblGlossary.setEnabled(value)
     
     def addOpenToBar(self):
         '''add Open action or menu Open_Recent action to toolbar
