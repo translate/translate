@@ -51,7 +51,7 @@
      <x>0</x>
      <y>0</y>
      <width>594</width>
-     <height>29</height>
+     <height>28</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuBookmark" >
@@ -100,52 +100,6 @@
     <addaction name="separator" />
     <addaction name="actionExit" />
    </widget>
-   <widget class="QMenu" name="menuHelp" >
-    <property name="title" >
-     <string>&amp;Help</string>
-    </property>
-    <addaction name="actionAbout" />
-    <addaction name="actionAboutQT" />
-   </widget>
-   <widget class="QMenu" name="menuWindow" >
-    <property name="title" >
-     <string>&amp;Window</string>
-    </property>
-    <widget class="QMenu" name="menuToolbars" >
-     <property name="statusTip" >
-      <string>Hide/Show the toolbars</string>
-     </property>
-     <property name="title" >
-      <string>&amp;Toolbars</string>
-     </property>
-    </widget>
-    <addaction name="separator" />
-    <addaction name="separator" />
-    <addaction name="menuToolbars" />
-   </widget>
-   <widget class="QMenu" name="menu_Tool" >
-    <property name="title" >
-     <string>&amp;Tool</string>
-    </property>
-    <addaction name="separator" />
-    <addaction name="actionCatalogManager" />
-    <addaction name="actionAuto_translate" />
-   </widget>
-   <widget class="QMenu" name="menuProject" >
-    <property name="title" >
-     <string>&amp;Project</string>
-    </property>
-    <addaction name="actionNewPro" />
-    <addaction name="actionOpenPro" />
-   </widget>
-   <widget class="QMenu" name="menuSettings" >
-    <property name="title" >
-     <string>&amp;Settings</string>
-    </property>
-    <addaction name="actionPreferences" />
-    <addaction name="actionBuild_TM" />
-    <addaction name="actionGlossary" />
-   </widget>
    <widget class="QMenu" name="menuView" >
     <property name="enabled" >
      <bool>true</bool>
@@ -178,6 +132,53 @@
     <addaction name="actionToggleFuzzy" />
     <addaction name="actionClear_Fuzzies" />
     <addaction name="actionEdit_Header" />
+   </widget>
+   <widget class="QMenu" name="menuHelp" >
+    <property name="title" >
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="actionAbout" />
+    <addaction name="actionAboutQT" />
+   </widget>
+   <widget class="QMenu" name="menuWindow" >
+    <property name="title" >
+     <string>&amp;Window</string>
+    </property>
+    <widget class="QMenu" name="menuToolbars" >
+     <property name="statusTip" >
+      <string>Hide/Show the toolbars</string>
+     </property>
+     <property name="title" >
+      <string>&amp;Toolbars</string>
+     </property>
+    </widget>
+    <addaction name="separator" />
+    <addaction name="separator" />
+    <addaction name="menuToolbars" />
+   </widget>
+   <widget class="QMenu" name="menu_Tool" >
+    <property name="title" >
+     <string>&amp;Tool</string>
+    </property>
+    <addaction name="separator" />
+    <addaction name="actionCatalogManager" />
+    <addaction name="actionAuto_translate" />
+   </widget>
+   <widget class="QMenu" name="menuSettings" >
+    <property name="title" >
+     <string>&amp;Settings</string>
+    </property>
+    <addaction name="actionPreferences" />
+    <addaction name="actionBuild_TM" />
+    <addaction name="actionGlossary" />
+   </widget>
+   <widget class="QMenu" name="menuProject" >
+    <property name="title" >
+     <string>&amp;Project</string>
+    </property>
+    <addaction name="actionNewPro" />
+    <addaction name="actionOpenPro" />
+    <addaction name="actionProperties" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
@@ -987,6 +988,9 @@
    </property>
   </action>
   <action name="actionCatalogManager" >
+   <property name="icon" >
+    <iconset>../images/catalog.png</iconset>
+   </property>
    <property name="text" >
     <string>Catalog Manager...</string>
    </property>
@@ -997,12 +1001,7 @@
     <string>&lt;h3>Catalog Manager&lt;/h3>Use this to open catalog manager.</string>
    </property>
   </action>
-  <action name="actionBuild_TM" >
-   <property name="text" >
-    <string>Build &amp;TM</string>
-   </property>
-  </action>
-  <action name="actionGlossary" >
+  <action name="actionBuildGlossary" >
    <property name="enabled" >
     <bool>true</bool>
    </property>
@@ -1038,7 +1037,7 @@
     <iconset>../images/memory.png</iconset>
    </property>
    <property name="text" >
-    <string>Build TM</string>
+    <string>Build TM...</string>
    </property>
    <property name="toolTip" >
     <string>Build the translation memory.</string>
@@ -1054,11 +1053,14 @@
    <property name="text" >
     <string>Build Gl&amp;ossary...</string>
    </property>
+   <property name="iconText" >
+    <string>Build Glossary</string>
+   </property>
    <property name="toolTip" >
-    <string>Build the glossary.</string>
+    <string>Build the glossary</string>
    </property>
    <property name="statusTip" >
-    <string>Build the glossary.</string>
+    <string>Build the glossary</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>Build Glossary&lt;/h3>Use this to build the glossary.</string>
@@ -1103,6 +1105,14 @@
    </property>
    <property name="text" >
     <string>Clear All Fuzzies</string>
+   </property>
+  </action>
+  <action name="actionProperties" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
+   <property name="text" >
+    <string>&amp;Properties</string>
    </property>
   </action>
  </widget>
