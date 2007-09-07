@@ -110,6 +110,7 @@ class Operator(QtCore.QObject):
                 self.filteredList.append(unit)
         self.emitNewUnits()
         self.setUnitFromPosition(0)
+        self.emitUnit(self.filteredList[0])
 
     def emitNewUnits(self):
         """
