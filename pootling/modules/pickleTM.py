@@ -22,10 +22,13 @@
 import os, cPickle
 
 class pickleTM:
-    """This class is for pickling and unpickling a matcher"""
+    """
+    This class is for pickling and unpickling a matcher.
+    """
     def getMatcher(self, filename):
         """
         Unpickle matcher from filename.
+        
         @return matcher: matcher of TM locations
         """
         matcher = None
@@ -41,6 +44,7 @@ class pickleTM:
     def dumpMatcher(self, matcher, filename):
         """
         Pickle matcher to a filename.
+        
         @param matcher: matcher of TM files or Glossary files
         """
         if (matcher):
