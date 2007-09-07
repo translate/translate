@@ -61,9 +61,15 @@ class TUview(QtGui.QDockWidget):
         self.ui.txtSource.contextMenuEvent = self.customContextMenuEvent
         
         self.ui.txtSource.installEventFilter(self)
+
         self.contentDirty = False
-    
+
     def sourceIndexChanged(self, int):
+        """
+        Slot to receive currentChanged signal when switching source tab.
+        
+        @param int: the index of the tab, type as int.
+        """
         textbox = self.ui.tabWidgetSource.widget(int)
         try:
             source = self.sourceStrings[int]
@@ -72,6 +78,11 @@ class TUview(QtGui.QDockWidget):
         textbox.setPlainText(source)
     
     def targetIndexChanged(self, int):
+        """
+        Slot to receive currentChanged signal when switching target tab.
+        
+        @param int: the index of the tab, type as int.
+        """
         textbox = self.ui.tabWidgetTarget.widget(int)
         try:
             target = self.targetStrings[int]
@@ -81,6 +92,12 @@ class TUview(QtGui.QDockWidget):
         textbox.setPlainText(target)
         
     def eventFilter(self, obj, event):
+        """
+        Subclass of eventFilter.
+        
+        @param obj: an obj whose event will be filtered.
+        @param event: type as QEvent.
+        """
         if (obj == self.ui.txtSource):
             if (event.type() == QtCore.QEvent.ToolTip):
                 """
@@ -98,14 +115,33 @@ class TUview(QtGui.QDockWidget):
     def customContextMenuEvent(self, e):
         """
         Request a context menu for word in position pos of txtSource.
+        
+        @param e: type as QContextMenuEvent
         """
         self.requestAction = CONTEXTMENU
+        self.copyMenu()
         self.globalPos = e.globalPos()
         self.emitTermRequest(e.pos())
+        
+    def copyMenu(self):
+        """
+        Create a copy context menu.
+        """
+        if (self.requestAction == CONTEXTMENU):
+            textCursor = self.ui.txtSource.textCursor()
+            selected = textCursor.selectedText()
+            if selected:
+                menu = QtGui.QMenu()
+                menuAction = menu.addAction(unicode(self.tr("copy")))
+                menuAction.setData(QtCore.QVariant(selected))
+                self.connect(menuAction, QtCore.SIGNAL("triggered()"), self.copyTranslation)
+                menu.exec_(QtGui.QCursor.pos())
     
     def popupTerm(self, candidates):
         """
         Popup menu or show tooltip of glossary word's translation.
+        
+        @param candidates: as list of units.
         """
         if (not candidates):
             return
@@ -113,8 +149,19 @@ class TUview(QtGui.QDockWidget):
         if (self.requestAction == CONTEXTMENU):
             menu = QtGui.QMenu()
             text = self.ui.txtTarget.toPlainText()
-            
+            textCursor = self.ui.txtSource.textCursor()
+            selected = textCursor.selectedText()
+            if selected:
+                self.copyMenu()
+                return
+                
             for candidate in candidates:
+#                if selected and (str(selected).lower() == str(candidate.source).lower()) or not selected:
+                srcCopy = unicode(self.tr("Copy \"%s\" to clipboard.")) % unicode(candidate.source)
+                menuAction = menu.addAction(srcCopy)
+                menuAction.setData(QtCore.QVariant(candidate.source))
+                self.connect(menuAction, QtCore.SIGNAL("triggered()"), self.copyTranslation)
+            
                 strCopy = unicode(self.tr("Copy \"%s\" to clipboard.")) % unicode(candidate.target)
                 menuAction = menu.addAction(strCopy)
                 menuAction.setData(QtCore.QVariant(candidate.target))
@@ -135,7 +182,7 @@ class TUview(QtGui.QDockWidget):
                     menuAction = menu.addAction(strReplace)
                     menuAction.setData(QtCore.QVariant([cText, candidate.target]))
                     self.connect(menuAction, QtCore.SIGNAL("triggered()"), self.replaceTranslation)
-            
+
             menu.exec_(self.globalPos)
             self.disconnect(menuAction, QtCore.SIGNAL("triggered()"), self.copyTranslation)
         
@@ -174,10 +221,15 @@ class TUview(QtGui.QDockWidget):
         self.setTargetText(text)
         self.ui.txtTarget.setFocus()
 
-    def replaceTranslationInCursor(self):
-        """Copy self.sender().data() to cusor position​ in textT`arget"""
+    def replaceTranslationInCursor(self, replaceText=""):
+        """
+        Copy self.sender().data() to cusor position​ in textTarget.
+        """
         text = self.ui.txtTarget.toPlainText()
-        cText =  self.sender().data().toStringList()[0]
+        if (replaceText == ""):
+            cText =  self.sender().data().toStringList()[0]
+        else:
+            cText = replaceText
         cursor = self.ui.txtTarget.textCursor()
         cursor = cursor.position()
         if (len(text) <= 0):
@@ -226,6 +278,8 @@ class TUview(QtGui.QDockWidget):
     def setPattern(self, patternList):
         """
         call highlighter.setPattern()
+        
+        @param patternList: a list of pattern 
         """
         self.sourceHighlighter.setPattern(patternList)
     
@@ -250,14 +304,18 @@ class TUview(QtGui.QDockWidget):
     
     def closeEvent(self, event):
         """
-        set text of action object to 'show Detail' before closing TUview
+        set text of action object to 'show Detail' before closing TUview.
+        
         @param QCloseEvent Object: received close event when closing widget
         """
         QtGui.QDockWidget.closeEvent(self, event)
         self.toggleViewAction().setChecked(False)
+        
     
     def setScrollbarValue(self, value):
-        """@param value: the new value for the scrollbar"""
+        """
+        @param value: the new value for the scrollbar.
+        """
         if (value < 0):
             value = 0
         self.disconnect(self.ui.fileScrollBar, QtCore.SIGNAL("valueChanged(int)"), self.emitCurrentIndex)
@@ -287,6 +345,7 @@ class TUview(QtGui.QDockWidget):
         Update the text in source and target, set the scrollbar position,
         remove a value from scrollbar if the unit is not in filter.
         Then recalculate scrollbar maximum value.
+        
         @param unit: unit class.
         """
         if (not unit):
@@ -346,7 +405,7 @@ class TUview(QtGui.QDockWidget):
         
         # set the scrollbar position
         self.setScrollbarValue(unit.x_editor_row)
-        self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitTextChanged)
+        self.connect(self.ui.txtTarget, QtCore.SIGNAL("teemxtChanged()"), self.emitTextChanged)
         
         self.currentUnit = unit
         self.emitGlossaryWords()
@@ -360,54 +419,6 @@ class TUview(QtGui.QDockWidget):
         for word in glossaryWords:
             self.emit(QtCore.SIGNAL("term"), word)
     
-##    def showUnit(self, unit):
-##        """
-##        Show unit's source and target in a normal text box if unit is single or
-##        in multi tab if unit is plural and number of plural forms setting is
-##        more than 1.
-##    
-##        @param unit: to show into source and target.
-##        """
-##        nplurals = World.settings.value("nPlural").toInt()[0]
-##        isPlural = unit.hasplural() and (nplurals > 1)
-##        self.ui.sourceStacked.setCurrentIndex((nplurals and isPlural) or 0)
-##        self.ui.targetStacked.setCurrentIndex((nplurals and isPlural) or 0)
-##        
-##        if (isPlural):
-##            # plural
-##            for i in range(self.ui.tabWidgetSource.count()):
-##                self.ui.tabWidgetSource.removeTab(0)
-##            for i in range(self.ui.tabWidgetTarget.count()):
-##                self.ui.tabWidgetTarget.removeTab(0)
-##            
-##            self.sourceStrings = unit.source.strings
-##            for i in range(len(unit.source.strings)):
-##                textbox = QtGui.QTextEdit()
-##                textbox.setReadOnly(True)
-##                textbox.setDocument(self.ui.txtSource.document())
-##                self.ui.tabWidgetSource.addTab(textbox, "Plural %d" % (i + 1))
-##                self.ui.tabWidgetSource.setCurrentIndex(i)
-##            self.ui.tabWidgetSource.setCurrentIndex(0)
-##            
-##            self.targetStrings = unit.target.strings
-##            for i in range(nplurals):
-##                if (len(self.targetStrings) < nplurals):
-##                    self.targetStrings.append("")
-##                textbox = QtGui.QTextEdit()
-##                textbox.setDocument(self.ui.txtTarget.document())
-##                self.ui.tabWidgetTarget.addTab(textbox, "Plural %d" % (i + 1))
-##                self.ui.tabWidgetTarget.setCurrentIndex(i)
-##            self.ui.tabWidgetTarget.setCurrentIndex(0)
-##        else:
-##            # singular
-##            self.sourceStrings = []
-##            self.targetStrings = []
-##            if (unicode(unit.source) !=  unicode(self.ui.txtSource.toPlainText())):
-##                self.ui.txtSource.setPlainText(unit.source)
-##            if (unicode(unit.target) !=  unicode(self.ui.txtTarget.toPlainText())):
-##                self.ui.txtTarget.setPlainText(unit.target or "")
-##                self.setCursorToEnd(self.ui.txtTarget)
-    
     def emitTextChanged(self):
         """
         @emit textchanged signal for widget that need to update text while typing.
@@ -418,7 +429,8 @@ class TUview(QtGui.QDockWidget):
     
     def emitTargetChanged(self):
         """
-        @emit targetChanged signal if content is dirty.
+        @emit targetChanged signal if content is dirty 
+        with target and currentUnit.
         """
         if (self.contentDirty) and (hasattr(self, "currentUnit")):
             target = self.targetStrings or unicode(self.ui.txtTarget.toPlainText())
@@ -447,6 +459,7 @@ class TUview(QtGui.QDockWidget):
     def replaceText(self, textField, position, length, replacedText):
         """
         replace the string (at position and length) with replacedText in txtTarget.
+        
         @param textField: source or target text box.
         @param position: old string's start point.
         @param length: old string's length.
@@ -493,12 +506,20 @@ class TUview(QtGui.QDockWidget):
         self.nplurals = World.settings.value("nPlural").toInt()[0]
         
     def viewSetting(self, arg = None):
+        """
+        Set the view to Detail view: scrollbar, 
+        
+        @param arg: type as list
+        """
+        
         if (type(arg) is list):
             lenFilter = len(arg)
             self.ui.fileScrollBar.setMaximum(max(lenFilter - 1, 0))
             self.ui.fileScrollBar.setEnabled(bool(lenFilter))
-        
+        # value: a bool value just to set the widget visible or not.
+        # value = True means there is at leaset a unit.
         value = (arg and True or False)
+
         if (value == False):
             self.ui.lblComment.clear()
             self.ui.txtSource.clear()
@@ -511,15 +532,17 @@ class TUview(QtGui.QDockWidget):
     def setCursorToHome(self, obj):
         """
         move the obj cursor to the beginning of the first line.
+        
         @param obj: QTextEdit object.
         """
         cursor = obj.textCursor()
         cursor.setPosition(0)
         obj.setTextCursor(cursor)
-    
+        
     def setCursorToEnd(self, obj):
         """
         move the obj cursor to the end of text.
+        
         @param obj: QTextEdit object.
         """
         cursor = obj.textCursor()
@@ -529,6 +552,7 @@ class TUview(QtGui.QDockWidget):
     def setTargetText(self, text):
         """
         Set text of txtTarget while keep undo history.
+        
         @param text: text for txtTarget.
         """
         self.ui.txtTarget.selectAll()
