@@ -54,3 +54,7 @@ fileFilters = ["All Supported Files (*.po *.pot *.xliff *.xlf *.tmx *.tbx)",
         "Translation Memory eXchange (TMX) Files (*.tmx)",
         "TermBase eXchange (TBX) Files (*.tbx)",
         "All Files (*)"]
+
+# Project mode
+projectNew = 1
+projectProperty = 2

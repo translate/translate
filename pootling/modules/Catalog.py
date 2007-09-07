@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-#Copyright (c) 2006 - 2007 by The WordForge Foundation
-#                       www.wordforge.org
+# Copyright (c) 2006 - 2007 by The WordForge Foundation
+# www.wordforge.org
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -50,8 +50,7 @@ class Catalog(QtGui.QMainWindow):
         self.ui.setupUi(self)
         self.resize(720,400)
         self.autoRefresh = True
-        self.recentProject = []
-        self.openRecentPro()
+        self.updateRecentProject()
         title = self.tr("%s Catalog Manager" % (World.settingApp))
         self.setWindowTitle(title)
         self.ui.toolBar.toggleViewAction()
@@ -91,12 +90,14 @@ class Catalog(QtGui.QMainWindow):
 
         # a new project of Catalog Manager
         self.Project = newProject(self)
-        self.connect(self.ui.actionNew, QtCore.SIGNAL("triggered()"), self.Project.show)
+        self.connect(self.ui.actionNew, QtCore.SIGNAL("triggered()"), self.showNewProject)
         self.connect(self.ui.actionOpen, QtCore.SIGNAL("triggered()"), self.Project.openProject)
         self.connect(self.ui.actionSave, QtCore.SIGNAL("triggered()"), self.saveCatalog)
         self.connect(self.ui.actionSaveAs, QtCore.SIGNAL("triggered()"), self.saveCatalogAs)
-        self.connect(self.Project, QtCore.SIGNAL("pathOfFileName"), self.setOpening)
         self.connect(self.ui.actionClose, QtCore.SIGNAL("triggered()"), self.closeProject)
+        self.connect(self.ui.actionProperties, QtCore.SIGNAL("triggered()"), self.showProjectProperties)
+        self.connect(self.Project, QtCore.SIGNAL("openProject"), self.openProject)
+        self.connect(self.Project, QtCore.SIGNAL("NewProperty"), self.setProperty)
 
         # catalog setting's checkboxes action.
         self.catSetting = CatalogSetting(self)
@@ -138,7 +139,6 @@ class Catalog(QtGui.QMainWindow):
         self.connect(self.ui.actionAbout, QtCore.SIGNAL("triggered()"), self.aboutDialog.showDialog)
         self.connect(self.ui.actionAboutQt, QtCore.SIGNAL("triggered()"), QtGui.qApp, QtCore.SLOT("aboutQt()"))
         
-        self.connect(self.catSetting, QtCore.SIGNAL("updateCatalog"), self.updateCatalog)
         self.connect(self.ui.treeCatalog, QtCore.SIGNAL("itemDoubleClicked(QTreeWidgetItem *, int)"), self.emitOpenFile)
         self.connect(self.ui.treeCatalog.model(), QtCore.SIGNAL("layoutChanged()"), self.sort)
         self.connect(self.ui.treeCatalog, QtCore.SIGNAL("currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)"), self.itemChanged)
@@ -172,7 +172,10 @@ class Catalog(QtGui.QMainWindow):
         # bool indicates progress bar need update as TM progresses.
         self.allowUpdate = False
         self.catalogModified = False
-        self.catalogPath = []
+        
+        self.projectName = ""
+        self.projectPath = []
+        self.projectLang = ""
         self.includeSub = False
     
     def itemChanged(self, curItem, preItem):
@@ -375,7 +378,7 @@ class Catalog(QtGui.QMainWindow):
         if (self.ui.treeCatalog.topLevelItemCount() == 0):
             # first look if there's current project previously opened.
             if (self.currentProject):
-                self.setOpening(self.currentProject)
+                self.openProject(self.currentProject)
     
     def updateCatalog(self, cats, includeSub):
         """
@@ -384,13 +387,11 @@ class Catalog(QtGui.QMainWindow):
         @param cats: a list of file or folder paths
         @param includeSub: a boolean variable. If true, dive into sub folder.
         """
-        self.catalogPath = cats
+        self.projectPath = cats
         self.includeSub = includeSub
         
-        if (self.catalogPath):
+        if (self.projectPath):
             self.ui.actionSaveAs.setEnabled(True)
-        if (self.ui.treeCatalog.topLevelItemCount() != 0):
-            self.setCatalogModified(True)
         
         self.ui.actionFind_in_Files.setEnabled(True)
         self.ui.actionStatistics.setEnabled(True)
@@ -406,7 +407,7 @@ class Catalog(QtGui.QMainWindow):
         
         self.ui.treeCatalog.clear()
         
-        # when signal of catalogPath is empty. icon on treewidget of toolbar is disabled
+        # when signal of is empty. icon on treewidget of toolbar is disabled
         if (not cats):
             self.ui.actionFind_in_Files.setEnabled(False)
             self.ui.actionStatistics.setEnabled(False)
@@ -421,8 +422,8 @@ class Catalog(QtGui.QMainWindow):
             self.setWindowTitle(str(title))
             return 
         
-        # update contents in catalog setting.
-        self.catSetting.setCatalogSetting(cats, includeSub)
+##        # update contents in catalog setting.
+##        self.catSetting.setCatalogSetting(cats, includeSub)
         
         for catalogFile in cats:
             catalogFile = unicode(catalogFile)
@@ -831,82 +832,48 @@ class Catalog(QtGui.QMainWindow):
         self.timer.stop()
         self.updateProgress(100)
 
-    def openRecentPro(self):
+    def updateRecentProject(self):
         """
-        Show the openRecentProject list, there is a recent opened project.
+        Open openRecentProject list in World, and update it in recent open menu.
+        Put current project on top of list.
         """
-        files = World.settings.value("recentProjectList").toStringList()
-        if (files):
-            self.createRecentProject()
+        
+        projectList = World.settings.value("recentProjectList").toStringList()
+        currentProject = World.settings.value("CatalogProject").toString()
+        
+        if (currentProject):
+            # remove from list if it's already existed.
+            currentProjectIndex = projectList.indexOf(currentProject)
+            if (currentProjectIndex >= 0):
+                projectList.removeAt(currentProjectIndex)
+            # then add current project at top
+            projectList.prepend(currentProject)
+        
+        # remove older recent files when reached max count.
+        while (projectList.count() > World.MaxRecentFiles + 1):
+            projectList.removeAt(World.MaxRecentFiles + 1)
+        World.settings.setValue("recentProjectList", QtCore.QVariant(projectList))
+        
+        i = 0
+        self.ui.menuOpenRecentProject.clear()
+        for project in projectList:
+            i += 1
+            recentAction = QtGui.QAction(self)
+            recentAction.setText(self.tr("&" + str(i) + ": ") + project)
+            recentAction.setData(QtCore.QVariant(project))
+            self.ui.menuOpenRecentProject.addAction(recentAction)
+            self.connect(recentAction, QtCore.SIGNAL("triggered()"), self.openRecentProject)
+        
+        self.ui.menuOpenRecentProject.addSeparator()
+        clearAction = QtGui.QAction(self.tr("&Clear"), self)
+        self.ui.menuOpenRecentProject.addAction(clearAction)
+        self.connect(clearAction, QtCore.SIGNAL("triggered()"), self.clearRecentProject)
+        
+        if (projectList):
             self.ui.menuOpenRecentProject.setEnabled(True)
         else:
             self.ui.menuOpenRecentProject.setEnabled(False)
-            self.ui.actionClose.setEnabled(False)
-
-    def createRecentProject(self):
-        """
-        Create the virtual list and update open recent project list.
-        """
-        for i in range(World.MaxRecentFiles):
-            self.recentProject.append(QtGui.QAction(self))
-            self.recentProject[i].setVisible(False)
-            self.connect(self.recentProject[i], QtCore.SIGNAL("triggered()"), self.startRecentProject)
-            self.ui.menuOpenRecentProject.addAction(self.recentProject[i])
-        self.ui.menuOpenRecentProject.addSeparator()
-        self.clearAction = QtGui.QAction("&Clear", self)
-        self.connect(self.clearAction, QtCore.SIGNAL("triggered()"), self.clearRecentProject)
-        self.ui.menuOpenRecentProject.addAction(self.clearAction)
-        self.ui.menuOpenRecentProject.setEnabled(False)
-        self.updateRecentProject()
-
-    def startRecentProject(self):
-        """
-        Get the choosen file from the open recent project and open the file.
-        """
-        action = self.sender()
-        filename = action.data().toString()
-        self.setOpening(filename)
-
-    def setOpening(self, filename):
-        """ 
-        Open the project with the given filename; add the path(s) to Catalog list and
-        the filename to the open recent project list.
         
-        @param filename: the project name to open
-        """
-        self.setCurrentProject(filename)
-        
-        files = World.settings.value("recentProjectList").toStringList()
-        if not(os.path.isfile(filename)):
-            titled = unicode(self.tr("%s was not found.\n do you want to remove it from list?")) % (unicode(filename))
-            ret = QtGui.QMessageBox.critical(self, self.tr("Error"), 
-                titled,
-                QtGui.QMessageBox.Yes | QtGui.QMessageBox.Default, 
-                QtGui.QMessageBox.No | QtGui.QMessageBox.Escape) 
-            if (ret == QtGui.QMessageBox.Yes):
-                index = files.indexOf(QtCore.QRegExp(filename))
-                files.removeAt(index)
-                self.closeProject()
-                World.settings.setValue("recentProjectList", QtCore.QVariant(files))
-#            self.ui.treeCatalog.clear()
-            self.updateRecentProject()
-            return False
-
-        catSettings = QtCore.QSettings(filename, QtCore.QSettings.IniFormat)
-        catalogPath = catSettings.value("path").toStringList()
-        includeSub = catSettings.value("diveIntoSubCatalog").toBool()
-        self.updateCatalog(catalogPath, includeSub)
-        
-#        files = World.settings.value("recentProjectList").toStringList()
-        files.removeAll(filename)
-        files.prepend(filename)
-        while files.count() > World.MaxRecentFiles:
-            files.removeAt(files.count() - 1)
-        if (files.count() > 0):
-            self.ui.menuOpenRecentProject.setEnabled(True)
-        World.settings.setValue("recentProjectList", QtCore.QVariant(files))
-        self.updateRecentProject()
-
     def clearRecentProject(self):
         """
         Slot to clear all path in open recent project list.
@@ -915,30 +882,59 @@ class Catalog(QtGui.QMainWindow):
         self.ui.menuOpenRecentProject.setEnabled(False)
         World.settings.remove("recentProjectList")
 
-    def updateRecentProject(self):
+    def openRecentProject(self):
         """
-        Update recent project of open recent project with names of recent opened project
+        Get the file from the open recent list and call openProject().
         """
-        if (not len(self.ui.menuOpenRecentProject.actions())):
-            self.createRecentProject()
-        project = World.settings.value("recentProjectList").toStringList()
-        if (project.count() > 0):
-            self.ui.menuOpenRecentProject.setEnabled(True)
-        numRecentProject = min(project.count(), World.MaxRecentFiles)
-        for i in range(numRecentProject):
-            self.recentProject[i].setText(self.tr("&" + str(i+1) + ": ") + project[i])
-            self.recentProject[i].setData(QtCore.QVariant(project[i]))
-            self.recentProject[i].setVisible(True)
+        action = self.sender()
+        filename = action.data().toString()
+        self.openProject(filename)
 
-        for j in range(numRecentProject, World.MaxRecentFiles):
-            self.recentProject[j].setVisible(False)
-
+    def openProject(self, filename):
+        """ 
+        Close current project and open filename as a project in catalog.
+        
+        @param filename: the project file (.ini) to open in catalog.
+        """
+        self.closeProject()
+        
+        if (not(os.path.isfile(filename))):
+            titled = unicode(self.tr("%s was not found.\nDo you want to remove it from list?")) % (unicode(filename))
+            ret = QtGui.QMessageBox.critical(self, self.tr("Error"), 
+                titled,
+                QtGui.QMessageBox.Yes | QtGui.QMessageBox.Default, 
+                QtGui.QMessageBox.No | QtGui.QMessageBox.Escape) 
+            if (ret == QtGui.QMessageBox.Yes):
+                projectList = World.settings.value("recentProjectList").toStringList()
+                filenameIndex = projectList.indexOf(filename)
+                if (filenameIndex >= 0):
+                    projectList.removeAt(filenameIndex)
+                World.settings.setValue("recentProjectList", QtCore.QVariant(projectList))
+                self.updateRecentProject()
+            return False
+        
+        self.setCurrentProject(filename)
+        catalog = QtCore.QSettings(filename, QtCore.QSettings.IniFormat)
+        
+        self.projectName = catalog.value("name").toString()
+        self.projectLang = catalog.value("language").toString()
+        self.projectPath = catalog.value("path").toStringList()
+        self.includeSub = catalog.value("includeSub").toBool()
+        
+        self.updateCatalog(self.projectPath, True)
+        self.updateRecentProject()
+    
     def closeProject(self):
         """
         When the project is closed, disable some views.
         """
         self.stopUpdate()
         self.saveBeforeLose()
+        
+        self.projectName = ""
+        self.projectLang = ""
+        self.projectPath = []
+        self.includeSub = False
         
         self.ui.treeCatalog.clear()
         # disable action buttons
@@ -952,13 +948,9 @@ class Catalog(QtGui.QMainWindow):
         self.actionShowStat.setEnabled(False)
         self.findBar.setEnabled(False)
         
-        self.catalogPath = []
-        self.includeSub = False
         self.setCatalogModified(False)
         self.setCurrentProject("")
-        self.catSetting.setCatalogSetting(self.catalogPath, self.includeSub)
-        
-
+    
     def customContextMenuEvent(self, e):
         """
         A subclass for customContextMenu event.
@@ -1014,7 +1006,7 @@ class Catalog(QtGui.QMainWindow):
     def setCatalogModified(self, bool):
         self.catalogModified = bool
         self.ui.actionSave.setEnabled(bool)
-        if (self.catalogPath):
+        if (self.projectPath):
             self.ui.actionSaveAs.setEnabled(True)
         else:
             self.ui.actionSaveAs.setEnabled(False)
@@ -1030,8 +1022,35 @@ class Catalog(QtGui.QMainWindow):
         World.settings.setValue("CatalogProject", QtCore.QVariant(self.currentProject))
         if (filename):
             self.ui.actionClose.setEnabled(True)
+            self.ui.actionProperties.setEnabled(True)
         else:
             self.ui.actionClose.setEnabled(False)
+            self.ui.actionProperties.setEnabled(False)
+    
+    def setProperty(self, name, path, lang, locations, includeSub):
+        """
+        Slot to set project properties from NewProject.
+        """
+        
+        if (self.projectPath != locations) or (self.includeSub != includeSub):
+            self.updateCatalog(locations, includeSub)
+            self.projectPath = locations
+            self.includeSub = includeSub
+            self.setCatalogModified(True)
+        
+        if (self.projectName != name):
+            self.projectName = name
+            self.setCatalogModified(True)
+            
+        if (self.currentProject != path):
+            self.currentProject = path
+            self.setCatalogModified(True)
+            
+        if (self.projectLang != lang):
+            self.projectLang = lang
+            self.setCatalogModified(True)
+            
+        
     
     def saveBeforeLose(self):
         """
@@ -1056,10 +1075,15 @@ class Catalog(QtGui.QMainWindow):
             filename = self.currentProject
         
         if (filename):
-            catalog = QtCore.QSettings(filename, QtCore.QSettings.IniFormat)
-            catalog.setValue("path", QtCore.QVariant(self.catalogPath))
-            catalog.setValue("diveIntoSubCatalog", QtCore.QVariant(self.includeSub))
+            self.Project.setProperty(self.projectName,
+                filename,
+                self.projectLang,
+                self.projectPath,
+                self.includeSub)
+            self.Project.saveProject(filename)
             self.setCatalogModified(False)
+            self.setCurrentProject(filename)
+            self.updateRecentProject()
         else:
             self.saveCatalogAs()
     
@@ -1076,18 +1100,44 @@ class Catalog(QtGui.QMainWindow):
             if (not filename.endsWith(".ini", QtCore.Qt.CaseInsensitive)):
                 filename = filename + ".ini"
             self.saveCatalog(filename)
-            self.setCurrentProject(filename)
+            
     
     def closeEvent(self, event):
         """
         Action before close catalog dialog.
         @param even: QCloseEvent Object
         
-        @signal updateCatalog: emitted when CatalogPath is modified.
+        @signal updateCatalog: emitted when self.projectPath is modified.
         """
         QtGui.QMainWindow.closeEvent(self, event)
         self.saveBeforeLose()
-
+    
+    def showNewProject(self):
+        """
+        Show project dialog configured for new.
+        """
+##        self.closeProject()
+        self.Project.setProperty("",
+                "",
+                "",
+                [],
+                False)
+        self.Project.showProject(World.projectNew)
+    
+    def showProjectProperties(self):
+        """
+        Show project dialog configured for properties.
+        """
+        filePath = os.path.abspath(unicode(self.currentProject))
+        if (not os.path.isfile(filePath)):
+            filePath = ""
+        self.Project.setProperty(self.projectName,
+                filePath,
+                self.projectLang,
+                self.projectPath,
+                self.includeSub)
+        self.Project.showProject(World.projectProperty)
+    
 def main():
     # set the path for QT in order to find the icons
     if __name__ == "__main__":

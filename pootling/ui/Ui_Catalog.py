@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'unknown'
 #
-# Created: Thu Sep  6 14:53:23 2007
+# Created: Fri Sep  7 10:04:55 2007
 #      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -14,7 +14,7 @@ class Ui_Catalog(object):
     def setupUi(self, Catalog):
         Catalog.setObjectName("Catalog")
         Catalog.setWindowModality(QtCore.Qt.NonModal)
-        Catalog.resize(QtCore.QSize(QtCore.QRect(0,0,359,412).size()).expandedTo(Catalog.minimumSizeHint()))
+        Catalog.resize(QtCore.QSize(QtCore.QRect(0,0,458,431).size()).expandedTo(Catalog.minimumSizeHint()))
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(7))
         sizePolicy.setHorizontalStretch(0)
@@ -44,7 +44,7 @@ class Ui_Catalog(object):
         Catalog.setCentralWidget(self.centralwidget)
 
         self.menubar = QtGui.QMenuBar(Catalog)
-        self.menubar.setGeometry(QtCore.QRect(0,0,359,28))
+        self.menubar.setGeometry(QtCore.QRect(0,0,458,28))
         self.menubar.setObjectName("menubar")
 
         self.menuEdit = QtGui.QMenu(self.menubar)
@@ -52,9 +52,6 @@ class Ui_Catalog(object):
 
         self.menuHelp = QtGui.QMenu(self.menubar)
         self.menuHelp.setObjectName("menuHelp")
-
-        self.menuFile = QtGui.QMenu(self.menubar)
-        self.menuFile.setObjectName("menuFile")
 
         self.menuSettings = QtGui.QMenu(self.menubar)
         self.menuSettings.setObjectName("menuSettings")
@@ -65,6 +62,9 @@ class Ui_Catalog(object):
         self.menuOpenRecentProject = QtGui.QMenu(self.menuProject)
         self.menuOpenRecentProject.setEnabled(False)
         self.menuOpenRecentProject.setObjectName("menuOpenRecentProject")
+
+        self.menuFile = QtGui.QMenu(self.menubar)
+        self.menuFile.setObjectName("menuFile")
         Catalog.setMenuBar(self.menubar)
 
         self.statusbar = QtGui.QStatusBar(Catalog)
@@ -122,6 +122,7 @@ class Ui_Catalog(object):
         self.actionNew.setObjectName("actionNew")
 
         self.actionOpen = QtGui.QAction(Catalog)
+        self.actionOpen.setIcon(QtGui.QIcon("../images/open.png"))
         self.actionOpen.setObjectName("actionOpen")
 
         self.actionBuild = QtGui.QAction(Catalog)
@@ -151,6 +152,11 @@ class Ui_Catalog(object):
         self.actionSaveAs.setEnabled(False)
         self.actionSaveAs.setIcon(QtGui.QIcon("../images/filesaveas.png"))
         self.actionSaveAs.setObjectName("actionSaveAs")
+
+        self.actionProperties = QtGui.QAction(Catalog)
+        self.actionProperties.setEnabled(False)
+        self.actionProperties.setIcon(QtGui.QIcon("../images/folder_home.png"))
+        self.actionProperties.setObjectName("actionProperties")
         self.menuEdit.addAction(self.actionFind_in_Files)
         self.menuEdit.addSeparator()
         self.menuEdit.addAction(self.actionStatistics)
@@ -158,27 +164,31 @@ class Ui_Catalog(object):
         self.menuEdit.addAction(self.actionStop)
         self.menuHelp.addAction(self.actionAbout)
         self.menuHelp.addAction(self.actionAboutQt)
-        self.menuFile.addAction(self.actionQuit)
         self.menuSettings.addAction(self.actionBuild)
         self.menuSettings.addAction(self.actionConfigure)
         self.menuProject.addAction(self.actionNew)
         self.menuProject.addAction(self.actionOpen)
         self.menuProject.addAction(self.menuOpenRecentProject.menuAction())
-        self.menuProject.addSeparator()
         self.menuProject.addAction(self.actionClose)
+        self.menuProject.addSeparator()
+        self.menuProject.addAction(self.actionProperties)
+        self.menuFile.addAction(self.actionQuit)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
         self.menubar.addAction(self.menuProject.menuAction())
         self.menubar.addAction(self.menuSettings.menuAction())
         self.menubar.addAction(self.menuHelp.menuAction())
         self.toolBar.addAction(self.actionNew)
+        self.toolBar.addAction(self.actionOpen)
         self.toolBar.addAction(self.actionSave)
         self.toolBar.addAction(self.actionSaveAs)
         self.toolBar.addSeparator()
-        self.toolBar.addAction(self.actionFind_in_Files)
-        self.toolBar.addAction(self.actionStatistics)
         self.toolBar.addAction(self.actionReload)
         self.toolBar.addAction(self.actionStop)
+        self.toolBar.addSeparator()
+        self.toolBar.addAction(self.actionFind_in_Files)
+        self.toolBar.addAction(self.actionStatistics)
+        self.toolBar.addAction(self.actionProperties)
         self.toolBar.addAction(self.actionConfigure)
 
         self.retranslateUi(Catalog)
@@ -192,13 +202,13 @@ class Ui_Catalog(object):
         self.treeCatalog.setWhatsThis(self.tr("<h3>Catalog Manager</h3>Catalog Manager is a central place where you can see all files in your project as tree with the statistic information such as the number of untranslated strings, fuzzy strings, translated strings, total number of entries, file location, last revision and last translator."))
         self.menuEdit.setTitle(self.tr("&Edit"))
         self.menuHelp.setTitle(self.tr("&Help"))
-        self.menuFile.setTitle(self.tr("&File"))
         self.menuSettings.setTitle(self.tr("&Settings"))
         self.menuProject.setTitle(self.tr("&Project"))
         self.menuOpenRecentProject.setToolTip(self.tr("This open recent project."))
         self.menuOpenRecentProject.setStatusTip(self.tr("Open the recent project."))
         self.menuOpenRecentProject.setWhatsThis(self.tr("<h3>Open recent project</h3>Use this to open the project file that was just opened lately."))
         self.menuOpenRecentProject.setTitle(self.tr("Open &Recent Project"))
+        self.menuFile.setTitle(self.tr("&File"))
         self.actionQuit.setText(self.tr("&Quit"))
         self.actionQuit.setStatusTip(self.tr("Quit the application."))
         self.actionQuit.setWhatsThis(self.tr("<h3>Quit</h3>Use this to quit the application. Any unsaved changes will be prompted."))
@@ -246,6 +256,7 @@ class Ui_Catalog(object):
         self.actionClose.setShortcut(self.tr("Ctrl+W"))
         self.actionSave.setText(self.tr("Save"))
         self.actionSaveAs.setText(self.tr("saveAs"))
+        self.actionProperties.setText(self.tr("Properties"))
 
 
 if __name__ == "__main__":

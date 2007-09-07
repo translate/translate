@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>406</width>
-    <height>309</height>
+    <width>359</width>
+    <height>250</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -22,381 +22,169 @@
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item row="0" column="0" colspan="2" >
-    <widget class="QTabWidget" name="tabOptions" >
-     <property name="whatsThis" >
-      <string>​</string>
+   <item row="1" column="0" colspan="2" >
+    <widget class="QFrame" name="frame" >
+     <property name="frameShape" >
+      <enum>QFrame::StyledPanel</enum>
      </property>
-     <property name="currentIndex" >
-      <number>0</number>
+     <property name="frameShadow" >
+      <enum>QFrame::Raised</enum>
      </property>
-     <widget class="QWidget" name="tab" >
-      <property name="toolTip" >
-       <string/>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>9</number>
       </property>
-      <property name="whatsThis" >
-       <string/>
+      <property name="spacing" >
+       <number>6</number>
       </property>
-      <attribute name="title" >
-       <string>&amp;File</string>
-      </attribute>
-      <layout class="QGridLayout" >
-       <property name="margin" >
-        <number>9</number>
-       </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
-       <item rowspan="6" row="1" column="0" >
-        <widget class="QListWidget" name="listWidget" >
-         <property name="toolTip" >
-          <string>Listwidget</string>
-         </property>
-         <property name="whatsThis" >
-          <string>&lt;h3>Listwidget&lt;/h3>Listwidget is displayed items from user add files or folders.</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="0" >
-        <widget class="QCheckBox" name="chbDiveIntoSubfolders" >
-         <property name="toolTip" >
-          <string>Dive into subfolders</string>
-         </property>
-         <property name="whatsThis" >
-          <string>&lt;h3>Dive into subfolders&lt;/h3>Use this to checked/unchecked to display sub's file under main folder.</string>
-         </property>
-         <property name="text" >
-          <string>Dive into subfolders</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0" >
-        <widget class="QLabel" name="label_4" >
-         <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>5</hsizetype>
-           <vsizetype>4</vsizetype>
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text" >
-          <string>Locations:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1" >
-        <widget class="QPushButton" name="btnAdd" >
-         <property name="toolTip" >
-          <string>Add TM</string>
-         </property>
-         <property name="statusTip" >
-          <string/>
-         </property>
-         <property name="whatsThis" >
-          <string>&lt;h3>Add TM&lt;/h3>Use this to add po, xliff files or another folders of file on your local into listwidget.</string>
-         </property>
-         <property name="text" >
-          <string> &amp;Add</string>
-         </property>
-         <property name="icon" >
-          <iconset>../images/addTM.png</iconset>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1" >
-        <widget class="QPushButton" name="btnDelete" >
-         <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>1</hsizetype>
-           <vsizetype>0</vsizetype>
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="toolTip" >
-          <string>Delete TM</string>
-         </property>
-         <property name="whatsThis" >
-          <string>&lt;h3>Delete TM&lt;/h3>Use this to delete po, xliff files or another folders of files from listwidget.</string>
-         </property>
-         <property name="text" >
-          <string> De&amp;lete</string>
-         </property>
-         <property name="icon" >
-          <iconset>../images/removeTM.png</iconset>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1" >
-        <widget class="QPushButton" name="btnClear" >
-         <property name="toolTip" >
-          <string>Clear List</string>
-         </property>
-         <property name="whatsThis" >
-          <string>&lt;h3>Clear List&lt;/h3>Use this to clear everything in listwidget .</string>
-         </property>
-         <property name="text" >
-          <string> &amp;Clear</string>
-         </property>
-         <property name="icon" >
-          <iconset>../images/eraser.png</iconset>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="1" >
-        <widget class="QPushButton" name="btnMoveUp" >
-         <property name="toolTip" >
-          <string>Move Up</string>
-         </property>
-         <property name="whatsThis" >
-          <string>&lt;h3>Move Up&lt;/h3>Use this to move iterm in listwidget from up to down </string>
-         </property>
-         <property name="text" >
-          <string> &amp;Up</string>
-         </property>
-         <property name="icon" >
-          <iconset>../images/up.png</iconset>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="1" >
-        <widget class="QPushButton" name="btnMoveDown" >
-         <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>1</hsizetype>
-           <vsizetype>0</vsizetype>
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="toolTip" >
-          <string>Move Down</string>
-         </property>
-         <property name="whatsThis" >
-          <string>&lt;h3>Move Down&lt;/h3>Use this to move iterm in listwidget from down to up .</string>
-         </property>
-         <property name="text" >
-          <string> Do&amp;wn</string>
-         </property>
-         <property name="icon" >
-          <iconset>../images/down.png</iconset>
-         </property>
-        </widget>
-       </item>
-       <item rowspan="2" row="6" column="1" >
-        <spacer>
-         <property name="orientation" >
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" >
-          <size>
-           <width>20</width>
-           <height>31</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="tab_3" >
-      <property name="whatsThis" >
-       <string/>
-      </property>
-      <attribute name="title" >
-       <string>Catalog &amp;View</string>
-      </attribute>
-      <layout class="QGridLayout" >
-       <property name="margin" >
-        <number>9</number>
-       </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
-       <item row="2" column="0" >
-        <spacer>
-         <property name="orientation" >
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" >
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="1" column="0" >
-        <widget class="QFrame" name="frame" >
-         <property name="frameShape" >
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow" >
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item row="1" column="1" >
-           <widget class="QCheckBox" name="chbtotal" >
-            <property name="toolTip" >
-             <string>Total</string>
-            </property>
-            <property name="whatsThis" >
-             <string>&lt;h3>Total&lt;/h3>Use this to checked/unchecked to display total number of strings in file on the catalog manager.</string>
-            </property>
-            <property name="text" >
-             <string>Total</string>
-            </property>
-            <property name="checked" >
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" >
-           <widget class="QCheckBox" name="chbtranslated" >
-            <property name="toolTip" >
-             <string>Translated</string>
-            </property>
-            <property name="whatsThis" >
-             <string>&lt;h3>Translated&lt;/h3>Use this to checked/unchecked to display number of string in file was translated on the catalog manager.</string>
-            </property>
-            <property name="text" >
-             <string>Translated</string>
-            </property>
-            <property name="checked" >
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0" >
-           <widget class="QCheckBox" name="chbfuzzy" >
-            <property name="toolTip" >
-             <string>Fuzzy</string>
-            </property>
-            <property name="whatsThis" >
-             <string>&lt;h3>Fuzzy&lt;/h3>Use this to checked/unchecked to display fuzzy number in file on the catalog manager.</string>
-            </property>
-            <property name="text" >
-             <string>Fuzzy</string>
-            </property>
-            <property name="checked" >
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" >
-           <widget class="QCheckBox" name="chbuntranslated" >
-            <property name="toolTip" >
-             <string>Untranslated</string>
-            </property>
-            <property name="whatsThis" >
-             <string>&lt;h3>Untranslated&lt;/h3>Use this to checked/unchecked to display number of string in file was untranslated on the catalog manager.</string>
-            </property>
-            <property name="text" >
-             <string>Untranslated</string>
-            </property>
-            <property name="checked" >
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1" >
-           <widget class="QCheckBox" name="chbSVN" >
-            <property name="toolTip" >
-             <string>CVS/SVN Status</string>
-            </property>
-            <property name="whatsThis" >
-             <string>&lt;h3>CVS/SVN Status&lt;/h3>Use this to checked/unchecked to display status of file in local or cvs/svn server on the catalog manager.</string>
-            </property>
-            <property name="text" >
-             <string>CVS/SVN Status</string>
-            </property>
-            <property name="checked" >
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2" >
-           <widget class="QCheckBox" name="chblastrevision" >
-            <property name="toolTip" >
-             <string>Last Revision</string>
-            </property>
-            <property name="whatsThis" >
-             <string>&lt;h3>Last Revision&lt;/h3>Use this to checked/unchecked to display date/time in file was saved by the last translator on the catalog manager.</string>
-            </property>
-            <property name="text" >
-             <string>Last Revision</string>
-            </property>
-            <property name="checked" >
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2" >
-           <widget class="QCheckBox" name="chbtranslator" >
-            <property name="toolTip" >
-             <string>Last Translator</string>
-            </property>
-            <property name="whatsThis" >
-             <string>&lt;h3>Last Translator&lt;/h3>Use this to checked/unchecked to display last translator's name in file on the catalog manager.</string>
-            </property>
-            <property name="text" >
-             <string>Last Translator</string>
-            </property>
-            <property name="checked" >
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0" >
-           <widget class="QCheckBox" name="chbname" >
-            <property name="toolTip" >
-             <string>Name</string>
-            </property>
-            <property name="statusTip" >
-             <string/>
-            </property>
-            <property name="whatsThis" >
-             <string>&lt;h3>Name&lt;/h3>Use this to checked/unchecked to display file name on the catalog manager.</string>
-            </property>
-            <property name="text" >
-             <string>Name</string>
-            </property>
-            <property name="checked" >
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="0" column="0" >
-        <widget class="QLabel" name="label" >
-         <property name="text" >
-          <string>Show Columns:</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
+      <item row="3" column="1" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="2" column="1" >
+       <widget class="QCheckBox" name="chbSVN" >
+        <property name="toolTip" >
+         <string>CVS/SVN Status</string>
+        </property>
+        <property name="whatsThis" >
+         <string>&lt;h3>CVS/SVN Status&lt;/h3>Use this to checked/unchecked to display status of file in local or cvs/svn server on the catalog manager.</string>
+        </property>
+        <property name="text" >
+         <string>CVS/SVN Status</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" >
+       <widget class="QCheckBox" name="chbname" >
+        <property name="toolTip" >
+         <string>Name</string>
+        </property>
+        <property name="statusTip" >
+         <string/>
+        </property>
+        <property name="whatsThis" >
+         <string>&lt;h3>Name&lt;/h3>Use this to checked/unchecked to display file name on the catalog manager.</string>
+        </property>
+        <property name="text" >
+         <string>Name</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2" >
+       <widget class="QCheckBox" name="chbtranslator" >
+        <property name="toolTip" >
+         <string>Last Translator</string>
+        </property>
+        <property name="whatsThis" >
+         <string>&lt;h3>Last Translator&lt;/h3>Use this to checked/unchecked to display last translator's name in file on the catalog manager.</string>
+        </property>
+        <property name="text" >
+         <string>Last Translator</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2" >
+       <widget class="QCheckBox" name="chblastrevision" >
+        <property name="toolTip" >
+         <string>Last Revision</string>
+        </property>
+        <property name="whatsThis" >
+         <string>&lt;h3>Last Revision&lt;/h3>Use this to checked/unchecked to display date/time in file was saved by the last translator on the catalog manager.</string>
+        </property>
+        <property name="text" >
+         <string>Last Revision</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="QCheckBox" name="chbuntranslated" >
+        <property name="toolTip" >
+         <string>Untranslated</string>
+        </property>
+        <property name="whatsThis" >
+         <string>&lt;h3>Untranslated&lt;/h3>Use this to checked/unchecked to display number of string in file was untranslated on the catalog manager.</string>
+        </property>
+        <property name="text" >
+         <string>Untranslated</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" >
+       <widget class="QCheckBox" name="chbfuzzy" >
+        <property name="toolTip" >
+         <string>Fuzzy</string>
+        </property>
+        <property name="whatsThis" >
+         <string>&lt;h3>Fuzzy&lt;/h3>Use this to checked/unchecked to display fuzzy number in file on the catalog manager.</string>
+        </property>
+        <property name="text" >
+         <string>Fuzzy</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QCheckBox" name="chbtranslated" >
+        <property name="toolTip" >
+         <string>Translated</string>
+        </property>
+        <property name="whatsThis" >
+         <string>&lt;h3>Translated&lt;/h3>Use this to checked/unchecked to display number of string in file was translated on the catalog manager.</string>
+        </property>
+        <property name="text" >
+         <string>Translated</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" >
+       <widget class="QCheckBox" name="chbtotal" >
+        <property name="toolTip" >
+         <string>Total</string>
+        </property>
+        <property name="whatsThis" >
+         <string>&lt;h3>Total&lt;/h3>Use this to checked/unchecked to display total number of strings in file on the catalog manager.</string>
+        </property>
+        <property name="text" >
+         <string>Total</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
-   <item row="1" column="1" >
-    <widget class="QPushButton" name="btnOk" >
-     <property name="toolTip" >
-      <string/>
-     </property>
-     <property name="text" >
-      <string>&amp;OK</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0" >
+   <item row="2" column="0" >
     <spacer>
      <property name="orientation" >
       <enum>Qt::Horizontal</enum>
@@ -409,17 +197,34 @@
      </property>
     </spacer>
    </item>
+   <item row="0" column="0" colspan="2" >
+    <widget class="QLabel" name="label" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>5</hsizetype>
+       <vsizetype>0</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text" >
+      <string>Show Columns:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1" >
+    <widget class="QPushButton" name="btnOk" >
+     <property name="toolTip" >
+      <string/>
+     </property>
+     <property name="text" >
+      <string>&amp;OK</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <tabstops>
-  <tabstop>tabOptions</tabstop>
-  <tabstop>listWidget</tabstop>
-  <tabstop>btnAdd</tabstop>
-  <tabstop>btnDelete</tabstop>
-  <tabstop>btnClear</tabstop>
-  <tabstop>btnMoveUp</tabstop>
-  <tabstop>btnMoveDown</tabstop>
-  <tabstop>chbDiveIntoSubfolders</tabstop>
   <tabstop>chbname</tabstop>
   <tabstop>chbtranslated</tabstop>
   <tabstop>chbfuzzy</tabstop>

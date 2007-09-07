@@ -8,8 +8,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>359</width>
-    <height>412</height>
+    <width>458</width>
+    <height>431</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -68,7 +68,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>359</width>
+     <width>458</width>
      <height>28</height>
     </rect>
    </property>
@@ -88,12 +88,6 @@
     </property>
     <addaction name="actionAbout" />
     <addaction name="actionAboutQt" />
-   </widget>
-   <widget class="QMenu" name="menuFile" >
-    <property name="title" >
-     <string>&amp;File</string>
-    </property>
-    <addaction name="actionQuit" />
    </widget>
    <widget class="QMenu" name="menuSettings" >
     <property name="title" >
@@ -126,8 +120,15 @@
     <addaction name="actionNew" />
     <addaction name="actionOpen" />
     <addaction name="menuOpenRecentProject" />
-    <addaction name="separator" />
     <addaction name="actionClose" />
+    <addaction name="separator" />
+    <addaction name="actionProperties" />
+   </widget>
+   <widget class="QMenu" name="menuFile" >
+    <property name="title" >
+     <string>&amp;File</string>
+    </property>
+    <addaction name="actionQuit" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
@@ -164,13 +165,16 @@
     <number>4</number>
    </attribute>
    <addaction name="actionNew" />
+   <addaction name="actionOpen" />
    <addaction name="actionSave" />
    <addaction name="actionSaveAs" />
    <addaction name="separator" />
-   <addaction name="actionFind_in_Files" />
-   <addaction name="actionStatistics" />
    <addaction name="actionReload" />
    <addaction name="actionStop" />
+   <addaction name="separator" />
+   <addaction name="actionFind_in_Files" />
+   <addaction name="actionStatistics" />
+   <addaction name="actionProperties" />
    <addaction name="actionConfigure" />
   </widget>
   <action name="actionQuit" >
@@ -300,6 +304,9 @@
    </property>
   </action>
   <action name="actionOpen" >
+   <property name="icon" >
+    <iconset>../images/open.png</iconset>
+   </property>
    <property name="text" >
     <string>Open...</string>
    </property>
@@ -401,6 +408,17 @@
    </property>
    <property name="text" >
     <string>saveAs</string>
+   </property>
+  </action>
+  <action name="actionProperties" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
+   <property name="icon" >
+    <iconset>../images/folder_home.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Properties</string>
    </property>
   </action>
  </widget>

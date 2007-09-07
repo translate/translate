@@ -34,121 +34,12 @@ class CatalogSetting(QtGui.QDialog):
         self.ui = Ui_catalogSetting()
         self.ui.setupUi(self)
         self.setWindowTitle("Setting Catalog Manager")
-        self.connect(self.ui.btnAdd, QtCore.SIGNAL("clicked(bool)"), self.showFileDialog)
         self.connect(self.ui.btnOk, QtCore.SIGNAL("clicked(bool)"), QtCore.SLOT("close()"))
-        self.connect(self.ui.btnDelete, QtCore.SIGNAL("clicked(bool)"), self.removeLocation)
-        self.connect(self.ui.btnClear, QtCore.SIGNAL("clicked(bool)"), self.clearLocation)
-        self.connect(self.ui.btnMoveUp, QtCore.SIGNAL("clicked(bool)"), self.moveUp)
-        self.connect(self.ui.btnMoveDown, QtCore.SIGNAL("clicked(bool)"), self.moveDown)
-        self.connect(self.ui.chbDiveIntoSubfolders, QtCore.SIGNAL("stateChanged(int)"), self.rememberDive)
         self.setModal(True)
         
         self.catalogModified = False
         self.catalogPath = []
         self.includeSub = False
-    
-    def showFileDialog(self):
-        """
-        Open the file dialog where you can choose both file and directory.
-        Add path to Catalog list.
-        """
-        directory = World.settings.value("workingDir").toString()
-        filenames = FileDialog.fileDialog().getExistingPath(
-                self,
-                directory,
-                World.fileFilters)
-        if (filenames):
-            for filename in filenames:
-                items = self.ui.listWidget.findItems(filename, QtCore.Qt.MatchCaseSensitive)
-                if (not items):
-                    item = QtGui.QListWidgetItem(filename)
-                    self.ui.listWidget.addItem(item)
-            self.catalogModified = True
-            directory = os.path.dirname(unicode(filenames[0]))
-            World.settings.setValue("workingDir", QtCore.QVariant(directory))
-
-    
-    def clearLocation(self):
-        """
-        Clear all paths from the Catalog List and also unchecked DiveIntoSubCatalog checkbox.
-        """
-        self.ui.listWidget.clear()
-        self.catalogModified = True
-        self.ui.chbDiveIntoSubfolders.setChecked(False)
-    
-    def removeLocation(self):
-        """
-        Remove the selected path from the Catalog list.
-        """
-        self.ui.listWidget.takeItem(self.ui.listWidget.currentRow())
-        self.catalogModified = True
-    
-    def moveItem(self, distance):
-        """
-        move an item up or down depending on distance
-        @param distance: int
-        """
-        currentrow = self.ui.listWidget.currentRow()
-        currentItem = self.ui.listWidget.item(currentrow)
-        distanceItem = self.ui.listWidget.item(currentrow + distance)
-        if (distanceItem):
-            temp = distanceItem.text()
-            distanceItem.setText(currentItem.text())
-            currentItem.setText(temp)
-            self.ui.listWidget.setCurrentRow(currentrow + distance)
-        
-    def moveUp(self):
-        """
-        move item up
-        """
-        self.moveItem(-1)
-    
-    def moveDown(self):
-        """
-        move item down
-        """
-        self.moveItem(1)
-    
-    def rememberDive(self):
-        """
-        Remember the check state of diveIntoSubCatalog
-        """
-##        World.settings.setValue("diveIntoSubCatalog", QtCore.QVariant(self.ui.chbDiveIntoSubfolders.isChecked()))
-        if (self.ui.chbDiveIntoSubfolders.isChecked() != self.includeSub):
-            self.catalogModified = True
-    
-    def showEvent(self, event):
-        self.ui.listWidget.clear()
-##        self.ui.listWidget.addItems(World.settings.value("CatalogPath").toStringList())
-        self.ui.listWidget.addItems(self.catalogPath)
-##        self.ui.chbDiveIntoSubfolders.setChecked(World.settings.value("diveIntoSubCatalog").toBool())
-        self.ui.chbDiveIntoSubfolders.setChecked(self.includeSub)
-    
-    def closeEvent(self, event):
-        """
-        Save CatalogPath to Qsettings before closing dialog. Then emit singnal updateCatalog.
-        @param QCloseEvent Object: received close event when closing widget
-        
-        @signal updateCatalog: emitted when CatalogPath is modified.
-        """
-        includeSub = self.ui.chbDiveIntoSubfolders.isChecked()
-        stringlist = QtCore.QStringList()
-        for i in range(self.ui.listWidget.count()):
-            stringlist.append(self.ui.listWidget.item(i).text())
-##        World.settings.setValue("CatalogPath", QtCore.QVariant(stringlist))
-        QtGui.QDialog.closeEvent(self, event)
-        
-        if (self.catalogModified):
-            self.emit(QtCore.SIGNAL("updateCatalog"), stringlist, includeSub)
-            self.catalogModified = False
-    
-    def setCatalogSetting(self, path, includeSub):
-        """
-        Set catalog path and include sub directories flag.
-        """
-        self.catalogPath = path
-        self.includeSub = includeSub
-
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
