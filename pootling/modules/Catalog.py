@@ -1023,6 +1023,9 @@ class Catalog(QtGui.QMainWindow):
         """
         Save filename to World.settings as current catalog filename.
         """
+        self.lazyInit()
+        self.show()
+        
         self.currentProject = filename
         World.settings.setValue("CatalogProject", QtCore.QVariant(self.currentProject))
         if (filename):
