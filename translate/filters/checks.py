@@ -19,7 +19,16 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""this is a set of validation checks that can be done on original strings and translations"""
+"""This is a set of validation checks that can be performed on translation 
+units.
+
+Derivatives of UnitChecker (like StandardUnitChecker) check translation units,
+and derivatives of TranslationChecker (like StandardChecker) check 
+(source, target) translation pairs.
+
+When adding a new test here, please document and explain the behaviour on the 
+U{wiki <http://translate.sourceforge.net/wiki/toolkit/pofilter_tests>}.
+"""
 
 from translate.filters import helpers
 from translate.filters import decoration
@@ -60,8 +69,9 @@ def intuplelist(pair, list):
   return pair
 
 def tagproperties(strings, ignore):
-  """Returns all the properties in the XML/HTML tag string as (tagname,propertyname,propertyvalue),
-  but ignore those combinations specified in ignore."""
+  """Returns all the properties in the XML/HTML tag string as 
+  (tagname, propertyname, propertyvalue), but ignore those combinations 
+  specified in ignore."""
   properties = []
   for string in strings:
     tag = tagname(string)
@@ -82,10 +92,10 @@ def tagproperties(strings, ignore):
         properties += [(tag, property, value)]
   return properties
     
-# actual test methods
 
 class FilterFailure(Exception):
-  """This exception signals that a Filter didn't pass, and gives an explanation / comment"""
+  """This exception signals that a Filter didn't pass, and gives an explanation 
+  or a comment"""
   def __init__(self, messages):
     if not isinstance(messages, list):
       messages = [messages]
@@ -118,8 +128,11 @@ common_canchangetags = [("img", "alt", None)]
 
 class CheckerConfig(object):
   """object representing the configuration of a checker"""
-  def __init__(self, targetlanguage=None, accelmarkers=None, varmatches=None, notranslatewords=None, musttranslatewords=None, validchars=None, punctuation=None, endpunctuation=None, ignoretags=None, canchangetags=None, criticaltests=None):
-    # make sure that we initialise empty lists properly (default arguments get reused!)
+  def __init__(self, targetlanguage=None, accelmarkers=None, varmatches=None, 
+          notranslatewords=None, musttranslatewords=None, validchars=None, 
+          punctuation=None, endpunctuation=None, ignoretags=None, 
+          canchangetags=None, criticaltests=None):
+    # we have to initialise empty lists properly (default arguments get reused)
     if accelmarkers is None:
       accelmarkers = []
     if varmatches is None:
@@ -206,7 +219,8 @@ class UnitChecker(object):
     self.defaultfilters = self.getfilters(excludefilters, limitfilters)
 
   def getfilters(self, excludefilters=None, limitfilters=None):
-    """returns dictionary of available filters, including/excluding those in the given lists"""
+    """returns dictionary of available filters, including/excluding those in 
+    the given lists"""
     filters = {}
     if limitfilters is None:
       # use everything available unless instructed
@@ -248,7 +262,7 @@ class UnitChecker(object):
     return helpers.multifilter(str1, self.accfilters)
 
   def filterwordswithpunctuation(self, str1):
-    """replaces words with punctuation with their unpunctuated equivalents..."""
+    """replaces words with punctuation with their unpunctuated equivalents"""
     return prefilters.filterwordswithpunctuation(str1)
 
   def filterxml(self, str1):
@@ -288,7 +302,7 @@ class UnitChecker(object):
         else:
           filterresult = self.errorhandler(functionname, unit.source, unit.target, e)
       if not filterresult:
-        # we test some preconditions that aren't actually a cause for failure...
+        # we test some preconditions that aren't actually a cause for failure
         if functionname in self.defaultfilters:
           failures[functionname] = filtermessage
         if functionname in self.preconditions:
@@ -327,7 +341,8 @@ class TranslationChecker(UnitChecker):
 
 class TeeChecker:
   """A Checker that controls multiple checkers."""
-  def __init__(self, checkerconfig=None, excludefilters=None, limitfilters=None, checkerclasses=None, errorhandler=None, languagecode=None):
+  def __init__(self, checkerconfig=None, excludefilters=None, limitfilters=None, 
+          checkerclasses=None, errorhandler=None, languagecode=None):
     """construct a TeeChecker from the given checkers"""
     self.limitfilters = limitfilters
     if checkerclasses is None:
@@ -340,7 +355,8 @@ class TeeChecker:
     self.config = checkerconfig or self.checkers[0].config
 
   def getfilters(self, excludefilters=None, limitfilters=None):
-    """returns dictionary of available filters, including/excluding those in the given lists"""
+    """returns dictionary of available filters, including/excluding those in 
+    the given lists"""
     if excludefilters is None:
       excludefilters = {}
     filterslist = [checker.getfilters(excludefilters, limitfilters) for checker in self.checkers]
@@ -586,15 +602,15 @@ class StandardChecker(TranslationChecker):
     return True
 
   def functions(self, str1, str2):
-    """checks to see that function names are not translated"""
+    """checks that function names are not translated"""
     return helpers.funcmatch(str1, str2, decoration.getfunctions, self.config.punctuation)
 
   def emails(self, str1, str2):
-    """checks to see that emails are not translated"""
+    """checks that emails are not translated"""
     return helpers.funcmatch(str1, str2, decoration.getemails)
 
   def urls(self, str1, str2):
-    """checks to see that URLs are not translated"""
+    """checks that URLs are not translated"""
     return helpers.funcmatch(str1, str2, decoration.geturls)
 
   def numbers(self, str1, str2):
@@ -764,7 +780,8 @@ class StandardChecker(TranslationChecker):
     return True
 
   def musttranslatewords(self, str1, str2):
-    """checks that words configured as definitely translatable don't appear in the translation"""
+    """checks that words configured as definitely translatable don't appear in 
+    the translation"""
     if not self.config.musttranslatewords:
       return True
     str1 = self.removevariables(str1)
@@ -1064,5 +1081,4 @@ if __name__ == '__main__':
              (r"forgot to translate", r"  ")
             ]
   batchruntests(testset)
-
 
