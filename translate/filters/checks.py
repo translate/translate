@@ -709,7 +709,6 @@ class StandardChecker(TranslationChecker):
       allowed += decoration.getvariables(startmatch, endmatch)(str1)
     allowed += self.config.musttranslatewords.keys()
     str1 = self.filteraccelerators(self.filtervariables(str1))
-    str1 = filter(lambda s: s.isspace() or s.isalnum(), str1)
     iter = self.config.lang.word_iter(str1)
     str2 = self.filteraccelerators(self.filtervariables(str2))
     for word in iter:
