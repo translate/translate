@@ -665,6 +665,15 @@ class StandardChecker(TranslationChecker):
       raise FilterFailure("The number of sentences differ: %d versus %d" % (sentences1, sentences2))
     return True
 
+  def options(self, str1, str2):
+    """checks that options are not translated"""
+    str1 = self.filtervariables(str1)
+    for word1 in str1.split():
+      if word1.startswith("--"):
+        if not word1 in str2:
+          return False
+    return True
+
   def startcaps(self, str1, str2):
     """checks that the message starts with the correct capitalisation"""
     str1 = self.filteraccelerators(str1)

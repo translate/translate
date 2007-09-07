@@ -368,6 +368,12 @@ def test_numbers():
     # You should be able to reorder numbers
     assert passes(stdchecker.numbers, "40-bit RC2 encryption with RSA and an MD5", "Umbhalo ocashile i-RC2 onamabhithi angu-40 one-RSA ne-MD5")
 
+def test_options():
+    """tests command line options e.g. --option"""
+    stdchecker = checks.StandardChecker()
+    assert passes(stdchecker.options, "--help", "--help")
+    assert fails(stdchecker.options, "--help", "--hulp")
+
 def test_printf():
     """tests printf style variables"""
     # This should really be a subset of the variable checks
