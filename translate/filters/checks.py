@@ -686,8 +686,11 @@ class StandardChecker(TranslationChecker):
     str1 = self.filtervariables(str1)
     for word1 in str1.split():
       if word1.startswith("--"):
-        if not word1 in str2:
-          return False
+        parts = word1.split("=")
+        if not parts[0] in str2:
+          raise FilterFailure("The option %s does not occur or is translated in the translation." % parts[0]) 
+        if len(parts) > 1 and parts[1] in str2:
+          raise FilterFailure("The parameter %(param)s in option %(option)s is not translated." % {"param": parts[0], "option": parts[1]})
     return True
 
   def startcaps(self, str1, str2):

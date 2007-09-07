@@ -373,6 +373,9 @@ def test_options():
     stdchecker = checks.StandardChecker()
     assert passes(stdchecker.options, "--help", "--help")
     assert fails(stdchecker.options, "--help", "--hulp")
+    assert fails(stdchecker.options, "--input=FILE", "--input=FILE")
+    assert passes(stdchecker.options, "--input=FILE", "--input=LÊER")
+    assert fails(stdchecker.options, "--input=FILE", "--tovoer=LÊER")
 
 def test_printf():
     """tests printf style variables"""
