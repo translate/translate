@@ -26,7 +26,7 @@ from translate.storage import csvl10n
 
 class po2csv:
   def convertstring(self, unitstring):
-    return po.unquotefrompo(unitstring, joinwithlinebreak=False)
+    return po.unquotefrompo(unitstring)
 
   def convertcomments(self, inputunit):
     commentparts = []

@@ -103,8 +103,8 @@ def removeinvalidamps(entity, unquotedstr):
   return unquotedstr
 
 def dounquotepo(pounit):
-  unquotedid = po.unquotefrompo(pounit.msgid, False)
-  unquotedstr = po.unquotefrompo(pounit.msgstr, False)
+  unquotedid = po.unquotefrompo(pounit.msgid)
+  unquotedstr = po.unquotefrompo(pounit.msgstr)
   return unquotedid, unquotedstr
 
 def getmixedentities(entities):
@@ -228,8 +228,8 @@ class po2dtd:
 
   def convertstrings(self, inputunit, dtdunit):
     # currently let's just get the msgid back
-    unquotedid = po.unquotefrompo(inputunit.msgid, False)
-    unquotedstr = po.unquotefrompo(inputunit.msgstr, False)
+    unquotedid = po.unquotefrompo(inputunit.msgid)
+    unquotedstr = po.unquotefrompo(inputunit.msgstr)
     # choose the msgstr unless it's empty, in which case choose the msgid
     if len(unquotedstr) == 0:
       unquoted = unquotedid
