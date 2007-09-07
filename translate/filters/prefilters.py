@@ -19,13 +19,12 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""this is a set of string filters that should be run before the results are analysed..."""
+"""This is a set of string filters that strings can be passed through before
+certain tests."""
 
+from translate.filters import decoration
 from translate.misc import quote
 import re
-from translate.filters import decoration
-
-# filters that the string is passed through before certain tests:
 
 def removekdecomments(str1):
   """removed kde-style po comments i.e. starting with _: and ending with litteral \\n"""
@@ -64,8 +63,6 @@ def filteraccelerators(accelmarker):
     return fstr1
   return filtermarkedaccelerators
 
-ignorevariables = ["amp"]
-
 def varname(variable, startmarker, endmarker):
   """a simple variable filter that returns the variable name without the marking punctuation"""
   return variable
@@ -77,17 +74,20 @@ def varname(variable, startmarker, endmarker):
   else:
     return variable[variable.find(startmarker)+len(startmarker):variable.rfind(endmarker)]
 
-def varnone(variable, startmarker, endmarker):
-  """a simple variable filter that returns an emoty string"""
-  return ""
-
 def filtervariables(startmarker, endmarker, varfilter):
-  """returns a function that filters variables marked using startmarker and endmarker in strings"""
-  if startmarker is None: startmarkerlen = 0
-  else: startmarkerlen = len(startmarker)
-  if endmarker is None: endmarkerlen = 0
-  elif type(endmarker) == int: endmarkerlen = 0
-  else: endmarkerlen = len(endmarker)
+  """returns a function that filters variables marked using startmarker and 
+  endmarker in strings"""
+  if startmarker is None:
+    startmarkerlen = 0
+  else:
+    startmarkerlen = len(startmarker)
+  if endmarker is None:
+    endmarkerlen = 0
+  elif type(endmarker) == int:
+    endmarkerlen = 0
+  else:
+    endmarkerlen = len(endmarker)
+
   def filtermarkedvariables(str1):
     """modifies the variables in str1 marked with a given marker, using a given filter"""
     varlocs = decoration.findmarkedvariables(str1, startmarker, endmarker)
@@ -108,7 +108,8 @@ wordswithpunctuation = ["'n","'t" # Afrikaans
 wordswithpunctuation = dict([(word, filter(str.isalnum, word)) for word in wordswithpunctuation])
 
 def filterwordswithpunctuation(str1):
-  """goes through a list of known words that have punctuation and removes the punctuation from them"""
+  """goes through a list of known words that have punctuation and removes the 
+  punctuation from them"""
   occurrences = []
   for word, replacement in wordswithpunctuation.iteritems():
     occurrences.extend([(pos, word, replacement) for pos in quote.find_all(str1, word)])
@@ -137,5 +138,4 @@ def filterwordswithpunctuation(str1):
     return newstr1
   else:
     return str1
-
 
