@@ -50,58 +50,56 @@ msgstr "Could not open"
         self.status = Status.Status(self.store)
 
     def testCloseEvent(self):
-        """Test that after closing the tuviewDock, uncheck TUview in submenu."""
+        """
+        Test that after closing the tuviewDock, uncheck TUview in submenu.
+        """
         close_event = QtGui.QCloseEvent()
         self.tuview.closeEvent(close_event)
         self.assertEqual(self.tuview.toggleViewAction().isChecked(), False)
         
     def testEmitCurrentIndex(self):
-        """Test that the slot is reached. """
+        """
+        Test that the slot is reached.
+        """
         QtCore.QObject.connect(self.tuview, QtCore.SIGNAL("scrollToRow"), self.slot)
         self.tuview.emitCurrentIndex(4)
         self.tuview.ui.fileScrollBar.setValue(4)
         self.assertEqual(self.slotReached, True)
         
     def testEmitGlossaryWords(self):
-        """Test that the single 'term' is emitted. """
+        """
+        Test that the single 'term' is emitted.
+        """
         QtCore.QObject.connect(self.tuview, QtCore.SIGNAL("term"), self.slot)
         self.tuview.sourceHighlighter.glossaryWords = ['pootling','translation','editor']
         self.tuview.emitGlossaryWords()
         self.assertEqual(self.slotReached, True)
         
-    def testGetTargets(self):
-        """Test that we get the correct target"""
-        #single unit
-        self.tuview.secondpage = False
-        self.tuview.ui.txtTarget.setPlainText("hello")
-        target = self.tuview.getTargets()
-        self.assertEqual(target, "hello")
-        #plural unit
-        self.tuview.secondpage = True
-        self.tuview.ui.tabWidgetTarget.widget(0).children()[1].setPlainText("hello")
-        target = self.tuview.getTargets()
-        self.assertEqual(target, ["hello"])
-        
 #    def testEmitTermRequest(self):
-#        """Test that the single 'lookupTerm' is emitted. """
+#        """
+#        Test that the single 'lookupTerm' is emitted.
+#        """
 #        QtCore.QObject.connect(self.tuview, QtCore.SIGNAL("lookupTerm"), self.slot)
 #        self.tuview.ui.txtSource.setPlainText("Pootling is an offline translation editor")
-#        self.tuview.sourceHighlighter.glossaryWords = ['pootling','translation','editor']
+#        self.tuview.sourceHighlighter.glossaryWords = ['Pootling','offline translation','editor']
 #
-#        pos = QtCore.QPoint(5,5)
+#        pos = QtCore.QPoint(5,16)
 #        self.tuview.emitTermRequest(pos)
 #        # test with word with space
 #        self.assertEqual(self.slotReached, True)
 #        #TODO: test with word without space
     
     def testFilterChanged(self):
-        """Test that we can adjust the scrollbar maximum according to lenFilter."""
+        """
+        Test that we can adjust the scrollbar maximum according to lenFilter.
+        """
         filter = World.fuzzy + World.translated + World.untranslated
         self.tuview.filterChanged(filter, 2)
         self.assertEqual(self.tuview.ui.fileScrollBar.maximum(), 1)  #fileScrollBar start from 0
         
     def testUpdateView(self):
-        """Test that we can
+        """
+        Test that we can
         1. Update the text in source and target, set the scrollbar position,
         2. Remove a value from scrollbar if the unit is not in filter.
         3. Recalculate scrollbar maximum value.
@@ -111,26 +109,31 @@ msgstr "Could not open"
         self.tuview.updateView(self.currentunit)
         self.assertEqual(self.tuview.ui.txtSource.toPlainText(), self.currentunit.source)
         self.assertEqual(self.tuview.ui.txtTarget.toPlainText(), self.currentunit.target)
-
         
     def testEmitTargetChanged(self):
-        """Test that signal targetChanged is emitted and reach the specific slot."""
+        """
+        Test that signal targetChanged is emitted and reach the specific slot.
+        """
         QtCore.QObject.connect(self.tuview, QtCore.SIGNAL("targetChanged"), self.slot)
         QtCore.QObject.connect(self.tuview, QtCore.SIGNAL("textChanged"), self.slot)
         self.tuview.ui.txtTarget.document().setModified(True)
-        self.tuview.textChanged()
+        self.tuview.emitTextChanged()
         self.tuview.emitTargetChanged()
         self.assertEqual(self.slotReached, True)
         
-    def testTextChanged(self):
-        """Test that signal textchanged is emitted while typing."""
+    def testEmitTextChanged(self):
+        """
+        Test that signal emitTextChanged is emitted while typing.
+        """
         QtCore.QObject.connect(self.tuview, QtCore.SIGNAL("textChanged"), self.slot)
         self.tuview.ui.txtTarget.document().setModified(True)
-        self.tuview.textChanged()
+        self.tuview.emitTextChanged()
         self.assertEqual(self.slotReached, True)
     
     def testSource2Target(self):
-        """Test that text in source and target are the same after copying from source to target."""
+        """
+        Test that text in source and target are the same after copying from source to target.
+        """
         self.tuview.ui.txtSource.setPlainText('a')
         # test with single unit
         self.tuview.secondpage = False
@@ -141,7 +144,9 @@ msgstr "Could not open"
 
         
     def testSetSearchString(self):
-        """Test that it takes the right string and the correct fondPosition to search for."""
+        """
+        Test that it takes the right string and the correct fondPosition to search for.
+        """
         self.currentunit.x_editor_row = None
         foundPosition = 1
         self.tuview.updateView(self.currentunit)
@@ -156,7 +161,9 @@ msgstr "Could not open"
         self.assertEqual(self.tuview.sourceHighlighter.foundPosition, foundPosition )
         
     def testReplaceText(self):
-        """Test that the replacing text is correct at the right position and length."""
+        """
+        Test that the replacing text is correct at the right position and length.
+        """
         position = 0
         length = 2
         self.tuview.ui.txtTarget.setPlainText('hello')
@@ -164,7 +171,9 @@ msgstr "Could not open"
         self.assertEqual(str(self.tuview.ui.txtTarget.toPlainText()), 'kllo')
         
     def testViewSetting(self):
-        """Test that view status of txtSource and txtTarget is correct."""
+        """
+        Test that view status of txtSource and txtTarget is correct.
+        """
         self.currentunit.x_editor_row = None
         self.tuview.toggleViewAction().setChecked(True)
         #Test for single unit
