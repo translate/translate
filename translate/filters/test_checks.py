@@ -123,6 +123,8 @@ def test_accronyms():
     assert passes(stdchecker.acronyms, "OK", "Kulungile")
     # Assert punctuation should not hide accronyms
     assert fails(stdchecker.acronyms, "Location (URL) not found", "Blah blah blah")
+    # Test '-W' (bug 283)
+    assert passes(stdchecker.acronyms, "%s: option `-W %s' is ambiguous", "%s: opsie '-W %s' is dubbelsinnig")
 
 def test_blank():
     """tests blank"""
