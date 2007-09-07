@@ -90,12 +90,18 @@ class newProject(QtGui.QDialog):
     
     def showDirDialog(self):
         directory = World.settings.value("workingDir").toString()
-        filenames = FileDialog.fileDialog().getExistingPath(self, directory, self.tr("Directory"))
+##        filenames = FileDialog.fileDialog().getExistingPath(self, directory, self.tr("Directory"))
         
-        if (filenames and len(filenames) >= 1):
-            self.ui.entryPath.setText(filenames[0])
+        filename = QtGui.QFileDialog.getSaveFileName(self,
+                    self.tr("Save File As"),
+                    directory,
+                    self.tr("Ini file fomat (*.ini)"))
+        if (filename):
+            if (not filename.endsWith(".ini", QtCore.Qt.CaseInsensitive)):
+                filename = filename + ".ini"
+            self.ui.entryPath.setText(filename)
             
-            directory = os.path.dirname(unicode(filenames[0]))
+            directory = os.path.dirname(unicode(filename))
             World.settings.setValue("workingDir", QtCore.QVariant(directory))
     
     def addLocation(self, text):
@@ -152,6 +158,8 @@ class newProject(QtGui.QDialog):
             filename = self.ui.entryPath.text()
             if (filename):
                 self.saveProject(filename)
+                self.emit(QtCore.SIGNAL("openProject"), filename)
+            self.close()
         
         elif (self.mode == World.projectProperty):
             self.close()
