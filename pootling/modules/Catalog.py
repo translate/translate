@@ -177,6 +177,9 @@ class Catalog(QtGui.QMainWindow):
         self.projectLang = ""
         self.includeSub = False
         self.notFoundString = None
+        
+        # current project filename
+        self.currentProject = World.settings.value("CatalogProject").toString()
     
     def itemChanged(self, curItem, preItem):
         """
@@ -380,9 +383,6 @@ class Catalog(QtGui.QMainWindow):
         """
         self.lazyInit()
         self.show()
-        
-        # current project filename
-        self.currentProject = World.settings.value("CatalogProject").toString()
         
         if (self.ui.treeCatalog.topLevelItemCount() == 0):
             # first look if there's current project previously opened.
@@ -931,6 +931,8 @@ class Catalog(QtGui.QMainWindow):
         title = unicode(self.tr("%s - %s Catalog Manager")) % (self.projectName, World.settingApp)
         self.setWindowTitle(title)
         
+        self.emit(QtCore.SIGNAL("projectOpened"), True)
+        
         self.updateCatalog(self.projectPath, True)
         self.updateRecentProject()
     
@@ -961,6 +963,7 @@ class Catalog(QtGui.QMainWindow):
         self.setCatalogModified(False)
         self.setCurrentProject("")
         self.setWindowTitle(self.tr("%s Catalog Manager" % (World.settingApp)))
+        self.emit(QtCore.SIGNAL("projectOpened"), False)
     
     def customContextMenuEvent(self, e):
         """
@@ -1139,9 +1142,18 @@ class Catalog(QtGui.QMainWindow):
         """
         Show project dialog configured for properties.
         """
+        self.lazyInit()
         filePath = os.path.abspath(unicode(self.currentProject))
         if (not os.path.isfile(filePath)):
             filePath = ""
+        
+        if (not self.projectName):
+            catalog = QtCore.QSettings(filePath, QtCore.QSettings.IniFormat)
+            self.projectName = catalog.value("name").toString()
+            self.projectLang = catalog.value("language").toString()
+            self.projectPath = catalog.value("path").toStringList()
+            self.includeSub = catalog.value("includeSub").toBool()
+        
         self.Project.setProperty(self.projectName,
                 filePath,
                 self.projectLang,

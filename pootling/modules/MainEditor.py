@@ -213,6 +213,8 @@ class MainWindow(QtGui.QMainWindow):
         self.newProject = newProject(self)
         self.connect(self.ui.actionNewPro, QtCore.SIGNAL("triggered()"), self.newProject.show)
         self.connect(self.ui.actionOpenPro, QtCore.SIGNAL("triggered()"), self.newProject.openProject)
+        self.connect(self.ui.actionProperties, QtCore.SIGNAL("triggered()"), self.Catalog.showProjectProperties)
+        self.connect(self.Catalog, QtCore.SIGNAL("projectOpened"), self.ui.actionProperties.setEnabled)
         self.connect(self.newProject, QtCore.SIGNAL("updateCatalog"), self.Catalog.updateCatalog)
         self.connect(self.newProject, QtCore.SIGNAL("pathOfFileName"), self.Catalog.openProject)
         
@@ -324,6 +326,9 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.table, QtCore.SIGNAL("goto"), self.dockOverview.gotoRow)
         
         self.operator.applySettings()
+        catalogProject = World.settings.value("CatalogProject").toString()
+        self.ui.actionProperties.setEnabled(bool(catalogProject))
+        
     
     def updateProgress(self, value):
         if (not self.progressBar.isVisible()):
