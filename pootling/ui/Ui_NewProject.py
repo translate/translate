@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'unknown'
+# Form implementation generated from reading ui file '/home/k-da/Documents/poxole/trunk/pootling/ui/NewProject.ui'
 #
-# Created: Fri Sep  7 16:34:05 2007
-#      by: PyQt4 UI code generator 4.0
+# Created: Mon Sep 10 16:31:51 2007
+#      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!
 
-import sys
 from PyQt4 import QtCore, QtGui
 
 class Ui_NewProject(object):
@@ -189,40 +188,50 @@ class Ui_NewProject(object):
         NewProject.setTabOrder(self.checkIncludeSub,self.btnOK)
         NewProject.setTabOrder(self.btnOK,self.btnCancel)
 
-    def tr(self, string):
-        return QtGui.QApplication.translate("NewProject", string, None, QtGui.QApplication.UnicodeUTF8)
-
     def retranslateUi(self, NewProject):
-        NewProject.setWindowTitle(self.tr("Dialog"))
-        self.btnAdd.setToolTip(self.tr("Add catalog file or folder"))
-        self.btnAdd.setText(self.tr(" &Add"))
-        self.listLocation.setToolTip(self.tr("The locations contain files or folders of your project."))
-        self.comboLanguage.setToolTip(self.tr("The language which you translate to."))
-        self.lblprojecttype.setText(self.tr("Type:"))
-        self.lbllabel.setText(self.tr("Name:"))
-        self.lbllanguage.setText(self.tr("Language:"))
-        self.lblConfigurationfile.setStatusTip(self.tr("This is where your project is located. "))
-        self.lblConfigurationfile.setText(self.tr("Path:"))
-        self.entryName.setToolTip(self.tr("The name of your project."))
-        self.checkIncludeSub.setToolTip(self.tr("Check to include sub folders in each location."))
-        self.checkIncludeSub.setText(self.tr("Dive into sub folders"))
-        self.entryPath.setToolTip(self.tr("The place where you store your project file."))
-        self.btnBrowse.setWhatsThis(self.tr("Browse path of project for your locate."))
-        self.label.setText(self.tr("Location:"))
-        self.btnMoveDown.setToolTip(self.tr("Move down"))
-        self.btnMoveDown.setText(self.tr(" Do&wn"))
-        self.btnMoveUp.setToolTip(self.tr("Move up"))
-        self.btnMoveUp.setText(self.tr(" &Up"))
-        self.btnDelete.setToolTip(self.tr("Delete catalog file or folder"))
-        self.btnDelete.setText(self.tr(" &Delete"))
-        self.btnClear.setToolTip(self.tr("Clear list"))
-        self.btnClear.setText(self.tr(" &Clear"))
-        self.lblProjectwizard.setText(self.tr("Configure Project"))
-        self.btnOK.setText(self.tr("&OK"))
-        self.btnCancel.setText(self.tr("&Cancel"))
+        NewProject.setWindowTitle(QtGui.QApplication.translate("NewProject", "Dialog", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnAdd.setToolTip(QtGui.QApplication.translate("NewProject", "Add catalog file or folder", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnAdd.setWhatsThis(QtGui.QApplication.translate("NewProject", "<h3>File/Folder path</h3>Select the file or folder path from the file selection dialog.", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnAdd.setText(QtGui.QApplication.translate("NewProject", " &Add", None, QtGui.QApplication.UnicodeUTF8))
+        self.listLocation.setToolTip(QtGui.QApplication.translate("NewProject", "The locations contain files or folders of your project.", None, QtGui.QApplication.UnicodeUTF8))
+        self.listLocation.setWhatsThis(QtGui.QApplication.translate("NewProject", "<h3>File locations</h3>This list contains all file and folder locations for the project. You can  add, delete, or clear paths from the list. You can also move the selected item up amd down.", None, QtGui.QApplication.UnicodeUTF8))
+        self.comboLanguage.setToolTip(QtGui.QApplication.translate("NewProject", "The language which you translate to.", None, QtGui.QApplication.UnicodeUTF8))
+        self.comboLanguage.setWhatsThis(QtGui.QApplication.translate("NewProject", "<h3>Localized language</h3> Choose the language to which you are  going to translate.", None, QtGui.QApplication.UnicodeUTF8))
+        self.lblprojecttype.setText(QtGui.QApplication.translate("NewProject", "Type:", None, QtGui.QApplication.UnicodeUTF8))
+        self.lbllabel.setText(QtGui.QApplication.translate("NewProject", "Name:", None, QtGui.QApplication.UnicodeUTF8))
+        self.comboProject.setWhatsThis(QtGui.QApplication.translate("NewProject", "<h3>Project type</h3> Choose the type of your project; for example, KDE, OpenOffice.org...", None, QtGui.QApplication.UnicodeUTF8))
+        self.lbllanguage.setText(QtGui.QApplication.translate("NewProject", "Language:", None, QtGui.QApplication.UnicodeUTF8))
+        self.lblConfigurationfile.setStatusTip(QtGui.QApplication.translate("NewProject", "This is where your project is located. ", None, QtGui.QApplication.UnicodeUTF8))
+        self.lblConfigurationfile.setText(QtGui.QApplication.translate("NewProject", "Path:", None, QtGui.QApplication.UnicodeUTF8))
+        self.entryName.setToolTip(QtGui.QApplication.translate("NewProject", "The name of your project.", None, QtGui.QApplication.UnicodeUTF8))
+        self.entryName.setWhatsThis(QtGui.QApplication.translate("NewProject", "<h3>Project name</h3>Enter the project name.", None, QtGui.QApplication.UnicodeUTF8))
+        self.checkIncludeSub.setToolTip(QtGui.QApplication.translate("NewProject", "Check to include sub folders in each location.", None, QtGui.QApplication.UnicodeUTF8))
+        self.checkIncludeSub.setWhatsThis(QtGui.QApplication.translate("NewProject", "<h3>Dive into sub folders</h3>Check to include sub directories.", None, QtGui.QApplication.UnicodeUTF8))
+        self.checkIncludeSub.setText(QtGui.QApplication.translate("NewProject", "Dive into sub folders", None, QtGui.QApplication.UnicodeUTF8))
+        self.entryPath.setToolTip(QtGui.QApplication.translate("NewProject", "The place where you store your project file.", None, QtGui.QApplication.UnicodeUTF8))
+        self.entryPath.setWhatsThis(QtGui.QApplication.translate("NewProject", "<h3>Project path</h3>Enter the project path with filename (.ini).", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnBrowse.setWhatsThis(QtGui.QApplication.translate("NewProject", "<h3>Project path</h3>Select the project directory via a file selection dialog. The project filename(.ini) can be typed or choosed from here.", None, QtGui.QApplication.UnicodeUTF8))
+        self.label.setText(QtGui.QApplication.translate("NewProject", "Location:", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnMoveDown.setToolTip(QtGui.QApplication.translate("NewProject", "Move down", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnMoveDown.setWhatsThis(QtGui.QApplication.translate("NewProject", "<h3>Move down</h3>Move the selected path down.", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnMoveDown.setText(QtGui.QApplication.translate("NewProject", " Do&wn", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnMoveUp.setToolTip(QtGui.QApplication.translate("NewProject", "Move up", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnMoveUp.setWhatsThis(QtGui.QApplication.translate("NewProject", "<h3>Move up</h3>Move the selected path up.", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnMoveUp.setText(QtGui.QApplication.translate("NewProject", " &Up", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnDelete.setToolTip(QtGui.QApplication.translate("NewProject", "Delete catalog file or folder", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnDelete.setWhatsThis(QtGui.QApplication.translate("NewProject", "<h3>Delete</h3>Delete the selected path from the list.", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnDelete.setText(QtGui.QApplication.translate("NewProject", " &Delete", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnClear.setToolTip(QtGui.QApplication.translate("NewProject", "Clear list", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnClear.setWhatsThis(QtGui.QApplication.translate("NewProject", "<h3>Clear</h3>Clear all paths from the list.", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnClear.setText(QtGui.QApplication.translate("NewProject", " &Clear", None, QtGui.QApplication.UnicodeUTF8))
+        self.lblProjectwizard.setText(QtGui.QApplication.translate("NewProject", "Configure Project", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnOK.setText(QtGui.QApplication.translate("NewProject", "&OK", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnCancel.setText(QtGui.QApplication.translate("NewProject", "&Cancel", None, QtGui.QApplication.UnicodeUTF8))
+
 
 
 if __name__ == "__main__":
+    import sys
     app = QtGui.QApplication(sys.argv)
     NewProject = QtGui.QDialog()
     ui = Ui_NewProject()

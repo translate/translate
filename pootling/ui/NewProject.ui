@@ -56,7 +56,7 @@
          <string>Add catalog file or folder</string>
         </property>
         <property name="whatsThis" >
-         <string/>
+         <string>&lt;h3>File/Folder path&lt;/h3>Select the file or folder path from the file selection dialog.</string>
         </property>
         <property name="text" >
          <string> &amp;Add</string>
@@ -71,12 +71,18 @@
         <property name="toolTip" >
          <string>The locations contain files or folders of your project.</string>
         </property>
+        <property name="whatsThis" >
+         <string>&lt;h3>File locations&lt;/h3>This list contains all file and folder locations for the project. You can  add, delete, or clear paths from the list. You can also move the selected item up amd down.</string>
+        </property>
        </widget>
       </item>
       <item row="2" column="1" colspan="2" >
        <widget class="QComboBox" name="comboLanguage" >
         <property name="toolTip" >
          <string>The language which you translate to.</string>
+        </property>
+        <property name="whatsThis" >
+         <string>&lt;h3>Localized language&lt;/h3> Choose the language to which you are  going to translate.</string>
         </property>
        </widget>
       </item>
@@ -95,7 +101,11 @@
        </widget>
       </item>
       <item row="3" column="1" colspan="2" >
-       <widget class="QComboBox" name="comboProject" />
+       <widget class="QComboBox" name="comboProject" >
+        <property name="whatsThis" >
+         <string>&lt;h3>Project type&lt;/h3> Choose the type of your project; for example, KDE, OpenOffice.org...</string>
+        </property>
+       </widget>
       </item>
       <item row="2" column="0" >
        <widget class="QLabel" name="lbllanguage" >
@@ -119,6 +129,9 @@
         <property name="toolTip" >
          <string>The name of your project.</string>
         </property>
+        <property name="whatsThis" >
+         <string>&lt;h3>Project name&lt;/h3>Enter the project name.</string>
+        </property>
         <property name="text" >
          <string/>
         </property>
@@ -129,6 +142,9 @@
         <property name="toolTip" >
          <string>Check to include sub folders in each location.</string>
         </property>
+        <property name="whatsThis" >
+         <string>&lt;h3>Dive into sub folders&lt;/h3>Check to include sub directories.</string>
+        </property>
         <property name="text" >
          <string>Dive into sub folders</string>
         </property>
@@ -138,6 +154,9 @@
        <widget class="QLineEdit" name="entryPath" >
         <property name="toolTip" >
          <string>The place where you store your project file.</string>
+        </property>
+        <property name="whatsThis" >
+         <string>&lt;h3>Project path&lt;/h3>Enter the project path with filename (.ini).</string>
         </property>
         <property name="text" >
          <string/>
@@ -158,7 +177,7 @@
          </sizepolicy>
         </property>
         <property name="whatsThis" >
-         <string>Browse path of project for your locate.</string>
+         <string>&lt;h3>Project path&lt;/h3>Select the project directory via a file selection dialog. The project filename(.ini) can be typed or choosed from here.</string>
         </property>
         <property name="text" >
          <string/>
@@ -208,7 +227,7 @@
          <string>Move down</string>
         </property>
         <property name="whatsThis" >
-         <string/>
+         <string>&lt;h3>Move down&lt;/h3>Move the selected path down.</string>
         </property>
         <property name="text" >
          <string> Do&amp;wn</string>
@@ -224,7 +243,7 @@
          <string>Move up</string>
         </property>
         <property name="whatsThis" >
-         <string/>
+         <string>&lt;h3>Move up&lt;/h3>Move the selected path up.</string>
         </property>
         <property name="text" >
          <string> &amp;Up</string>
@@ -240,7 +259,7 @@
          <string>Delete catalog file or folder</string>
         </property>
         <property name="whatsThis" >
-         <string/>
+         <string>&lt;h3>Delete&lt;/h3>Delete the selected path from the list.</string>
         </property>
         <property name="text" >
          <string> &amp;Delete</string>
@@ -256,7 +275,7 @@
          <string>Clear list</string>
         </property>
         <property name="whatsThis" >
-         <string/>
+         <string>&lt;h3>Clear&lt;/h3>Clear all paths from the list.</string>
         </property>
         <property name="text" >
          <string> &amp;Clear</string>
