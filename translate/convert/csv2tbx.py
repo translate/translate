@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # 
-# Copyright 2006 Zuza Software Foundation
+# Copyright 2006-2007 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
@@ -44,21 +44,14 @@ class csv2tbx:
     """construct the converter..."""
     self.charset = charset
 
-  def convertelement(self,thecsv):
-    """converts csv element to tbx element"""
-    #TODO: handle comments/source in thecsv.comment
-    term = tbx.tbxunit(thecsv.source)
-    term.target = thecsv.target.decode('utf-8')
-    return term
-
   def convertfile(self, thecsvfile):
     """converts a csvfile to a tbxfile, and returns it. uses templatepo if given at construction"""
     mightbeheader = True
     self.tbxfile = tbx.tbxfile()
     for thecsv in thecsvfile.units:
       if self.charset is not None:
-        thecsv.source = thecsv.source.decode(self.charset)
-        thecsv.target = thecsv.target.decode(self.charset)
+        thecsv.source = thecsv.source
+        thecsv.target = thecsv.target
       if mightbeheader:
         # ignore typical header strings...
         mightbeheader = False
@@ -67,7 +60,8 @@ class csv2tbx:
           continue
         if len(thecsv.comment.strip()) == 0 and thecsv.source.find("Content-Type:") != -1:
           continue
-      term = self.convertelement(thecsv)
+      term = tbx.tbxunit.buildfromunit(thecsv)
+      # TODO: we might want to get the location or other information from CSV
       self.tbxfile.addunit(term)
     return self.tbxfile
 
