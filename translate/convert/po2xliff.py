@@ -50,7 +50,7 @@ class po2xliff:
         unit.createcontextgroup("po-reference", self.contextlist(location), purpose="location")
       
       #Handle #. automatic comments
-      comment = "\n".join([comment[3:-1] for comment in inputunit.automaticcomments])
+      comment = inputunit.getnotes("developer")
       if comment:
         unit.createcontextgroup("po-entry", [("x-po-autocomment", comment)], purpose="information")
         unit.addnote(comment, origin="developer")
@@ -59,7 +59,7 @@ class po2xliff:
 
 
     #Handle # other comments
-    comment = "\n".join([comment[2:-1] for comment in inputunit.othercomments])
+    comment = inputunit.getnotes("translator")
     if comment:
       unit.createcontextgroup("po-entry", [("x-po-trancomment", comment)], purpose="information")
       unit.addnote(comment, origin="po-translator")

@@ -19,16 +19,41 @@ class TestPO2TS:
         assert len(storage.units) == 1
         return storage.units[0]
 
-    def test_simpleentity(self):
+    def test_simpleunit(self):
         """checks that a simple po entry definition converts properly to a ts entry"""
         minipo = r'''#: term.cpp
 msgid "Term"
 msgstr "asdf"'''
         tsfile = self.po2ts(minipo)
         print tsfile
-        assert "term.cpp" in tsfile
-        assert "Term" in tsfile
-        assert "asdf" in tsfile
+        assert "<name>term.cpp</name>" in tsfile
+        assert "<source>Term</source>" in tsfile
+        assert "<translation>asdf</translation>" in tsfile
+        assert "<comment>" not in tsfile
+
+    def test_fullunit(self):
+        """check that an entry with various settings is converted correctly"""
+        posource = '''# Translator comment
+#. Automatic comment
+#: location.cpp:100
+msgid "Source"
+msgstr "Target"
+'''
+        tsfile = self.po2ts(posource)
+        print tsfile
+        # The other section are a duplicate of test_simplentry
+        # FIXME need to think about auto vs trans comments maybe in TS v1.1
+        assert "<comment>Translator comment</comment>" in tsfile
+
+    def test_fuzzyunit(self):
+        """check that we handle fuzzy units correctly"""
+        posource = '''#: term.cpp
+#, fuzzy
+msgid "Source"
+msgstr "Target"'''
+        tsfile = self.po2ts(posource)
+        print tsfile
+        assert '''<translation type="unfinished">Target</translation>''' in tsfile
 
 class TestPO2TSCommand(test_convert.TestConvertCommand, TestPO2TS):
     """Tests running actual po2ts commands on files"""

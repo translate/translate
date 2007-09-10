@@ -38,12 +38,7 @@ class po2ts:
         continue
       source = inputunit.source
       translation = inputunit.target
-      if len(inputunit.othercomments) >0 :
-        extractline = lambda line: line[2:-1]
-        joiner = "\n"
-        comment = joiner.join([extractline(line) for line in inputunit.othercomments])
-      else:
-        comment = None
+      comment = inputunit.getnotes("translator")
       transtype = None
       if inputunit.isfuzzy():
         transtype = "unfinished"

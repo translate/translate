@@ -46,12 +46,12 @@ class xliff2po:
     #Translator comments
     trancomments = transunit.getnotes("translator")
     if trancomments:
-      thepo.othercomments.extend(["# %s\n" % comment for comment in trancomments.split("\n")])
+      thepo.addnote(trancomments, origin="translator")
     
     #Automatic and Developer comments
     autocomments = transunit.getnotes("developer")
     if autocomments:
-      thepo.automaticcomments.extend(["#. %s\n" % comment for comment in autocomments.split("\n")])
+      thepo.addnote(autocomments, origin="developer")
 
     #See 5.6.1 of the spec. We should not check fuzzyness, but approved attribute
     if transunit.isfuzzy():

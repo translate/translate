@@ -33,8 +33,8 @@ class ts2po:
     thepo.addlocation("%s#%d" % (contextname, messagenum))
     thepo.source = source
     thepo.target = target
-    if len(msgcomments)>0:
-      thepo.othercomments.append("# %s\n" %(msgcomments))
+    if len(msgcomments) > 0:
+      thepo.addnote(msgcomments)
     if transtype == "unfinished" and not thepo.isblankmsgstr():
       thepo.markfuzzy()
     if transtype == "obsolete":
