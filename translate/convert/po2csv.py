@@ -29,10 +29,7 @@ class po2csv:
     return po.unquotefrompo(unitstring)
 
   def convertcomments(self, inputunit):
-    commentparts = []
-    for comment in inputunit.sourcecomments:
-      commentparts.append(comment.replace("#:","",1).strip())
-    return " ".join(commentparts)
+    return " ".join(inputunit.getlocations())
 
   def convertunit(self, inputunit):
     csvunit = csvl10n.csvunit()

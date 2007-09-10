@@ -57,10 +57,7 @@ class csv2po:
     self.simpleindex = {}
     self.duplicatecomments = []
     for pounit in self.pofile.units:
-      commentparts = []
-      for comment in pounit.sourcecomments:
-        commentparts.append(comment.replace("#:","",1).strip())
-      joinedcomment = " ".join(commentparts)
+      joinedcomment = " ".join(pounit.getlocations())
       source = pounit.source
       # the definitive way to match is by source comment (joinedcomment)
       if joinedcomment in self.commentindex:
