@@ -177,6 +177,7 @@ class Catalog(QtGui.QMainWindow):
         self.projectPath = []
         self.projectLang = ""
         self.includeSub = False
+        self.notFoundString = None
     
     def itemChanged(self, curItem, preItem):
         """
@@ -211,6 +212,12 @@ class Catalog(QtGui.QMainWindow):
         if (not searchString):
             return
         
+        # if it starts with last-not-found string, do not search.
+        if (self.notFoundString) and (searchString[:len(self.notFoundString)] == self.notFoundString):
+            self.findBar.setColorStatus("notFound")
+            self.ui.statusbar.showMessage(self.tr("Search was not found."), 3000)
+            return
+        
         if (not self.reachedEnd) and (self.currentFileOpen) and (searchString == self.searchString):
             self.emit(QtCore.SIGNAL("searchNext"))
             return
@@ -237,7 +244,7 @@ class Catalog(QtGui.QMainWindow):
                     found = index
                     break
             if (found >= 0):
-                # use operator's find next signal.
+                self.notFoundString = None
                 self.currentFileOpen = filename
                 self.searchString = searchString
                 self.ui.treeCatalog.setCurrentItem(item)
@@ -252,8 +259,11 @@ class Catalog(QtGui.QMainWindow):
                 break
             self.reachedEnd = False
         else:
+            self.notFoundString = searchString
             self.currentFileOpen = None
             self.searchString = None
+            self.findBar.setColorStatus("notFound")
+            self.ui.statusbar.showMessage(self.tr("Search was not found."), 3000)
     
     def _getStringFromUnit(self, unit, fields):
         """

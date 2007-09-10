@@ -40,8 +40,11 @@ class FindInCatalog(QtGui.QDockWidget):
         self.setFeatures(QtGui.QDockWidget.DockWidgetClosable)
         self.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
         self.connect(self.ui.find, QtCore.SIGNAL("clicked()"), self.findNext)
+        self.connect(self.ui.lineEdit, QtCore.SIGNAL("textChanged(QString)"), self.setColorStatus)
         self.setVisible(self.isHidden())
         self.possible = True
+        
+        self.defaultBase = False
 
     def showFind(self):
         if (self.possible):
@@ -53,9 +56,12 @@ class FindInCatalog(QtGui.QDockWidget):
             self.hide()
             self.possible = True
             self.emit(QtCore.SIGNAL("returnSignal"))
+        self.ui.lineEdit.setFocus()
 
     def keyReleaseEvent(self, event):
-        """ A subclass for keyReleaseEvent."""
+        """
+        A subclass for keyReleaseEvent.
+        """
         # press Enter key to open the file.
         if (event.key() == 16777220):
             self.findNext()
@@ -90,6 +96,25 @@ class FindInCatalog(QtGui.QDockWidget):
         """
         QtGui.QDockWidget.closeEvent(self, event)
         self.emit(QtCore.SIGNAL("returnSignal"))
+
+    def setColorStatus(self, message):
+        """
+        colorize the search text box; yellow for reached end, red for not found.
+        """
+        
+        if (message == "notFound"):
+            color = QtGui.QColor(255, 85, 85)
+            palette = self.ui.lineEdit.palette()
+            palette.setColor(QtGui.QPalette.Active, QtGui.QPalette.Base, color)
+            self.ui.lineEdit.update()
+            self.defaultBase = False
+        
+        elif (message) and (not self.defaultBase):
+            color = QtGui.QColor(255, 255, 255)
+            palette = self.ui.lineEdit.palette()
+            palette.setColor(QtGui.QPalette.Active, QtGui.QPalette.Base, color)
+            self.ui.lineEdit.update()
+            self.defaultBase = True
 
 
 if __name__ == "__main__":
