@@ -423,9 +423,10 @@ class TUview(QtGui.QDockWidget):
         """
         @emit textchanged signal for widget that need to update text while typing.
         """
-        text = unicode(self.ui.txtTarget.toPlainText())
-        self.emit(QtCore.SIGNAL("textChanged"), text)
-        self.contentDirty = True
+        if (self.ui.txtTarget.document().isModified()):
+            text = unicode(self.ui.txtTarget.toPlainText())
+            self.emit(QtCore.SIGNAL("textChanged"), text)
+            self.contentDirty = True
     
     def emitTargetChanged(self):
         """
