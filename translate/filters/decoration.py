@@ -73,7 +73,7 @@ def isvalidaccelerator(accelerator, ignorelist=[]):
     return False
   
   # We don't want to have accelerators on characters with diacritics, so let's 
-  # se if the character can decompose.
+  # see if the character can decompose.
   decomposition = unicodedata.decomposition(accelerator)
   # Next we strip out any extra information like <this>
   decomposition = re.sub("<[^>]+>", "", decomposition).strip()
@@ -219,7 +219,6 @@ def geturls(str1):
   URLPAT = 'https?:[\w/\.:;+\-~\%#\$?=&,()]+|www\.[\w/\.:;+\-~\%#\$?=&,()]+|' +\
            'ftp:[\w/\.:;+\-~\%#?=&,]+'
   return re.findall(URLPAT, str1)
-
 
 def countaccelerators(accelmarker, ignorelist=[]):
   """returns a function that counts the number of accelerators marked with the given marker"""
