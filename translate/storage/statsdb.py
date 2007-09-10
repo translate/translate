@@ -98,11 +98,29 @@ def emptystats():
         stats[state + "targetwords"] = 0
     return stats
 
+def suggestioninfo(filename):
+    """Provides the filename of the associated file containing suggestions and 
+    its mtime, if it exists."""
+    root, ext = os.path.splitext(filename)
+    suggestion_filename = None
+    suggestion_mtime = -1
+    if ext == os.path.extsep + "po":
+        # For a PO file there might be an associated file with suggested
+        # translations. If either file changed, we want to regenerate the
+        # statistics.
+        suggestion_filename = filename + os.path.extsep + 'pending'
+        if os.path.exists(suggestion_filename):
+            suggestion_filename = None
+        else:
+            suggestion_mtime = os.path.getmtime(suggestion_filename)
+    return suggestion_filename, suggestion_mtime
+
 class StatsCache:
 
     def __init__(self, statsfile=None):
         if not statsfile:
             userdir = os.path.expanduser("~")
+            #TODO: find a better solution for Windows
             cachedir = os.path.join(userdir, ".wordforge")
             if not os.path.exists(cachedir):
                 os.mkdir(cachedir)
@@ -156,7 +174,7 @@ class StatsCache:
         
         self.con.commit()
 
-    def _getstoredfileid(self, filename, optmtime=-1):
+    def _getstoredfileid(self, filename, optmtime=-1, checkmtime=True):
         """Attempt to find the fileid of the given file, if it hasn't been
         updated since the last record update.
 
@@ -169,13 +187,22 @@ class StatsCache:
         @rtype: String or None
         """
         absolutepath = os.path.abspath(filename)
-        mtime = max(optmtime, os.path.getmtime(absolutepath))
-        self.cur.execute("SELECT fileid, mtime FROM files WHERE path=?;", (absolutepath,))
+        self.cur.execute("""SELECT fileid, mtime FROM files 
+                WHERE path=?;""", (absolutepath,))
         filerow = self.cur.fetchone()
-        if not filerow or filerow[1] != mtime:
-            return None
-        else:
-            return filerow[0]
+        mtime = max(optmtime, os.path.getmtime(absolutepath))
+        if checkmtime:
+            if not filerow or filerow[1] != mtime:
+                return None
+        if filerow:
+            fileid = filerow[0]
+            if not checkmtime:
+                # Update the mtime of the file
+                self.cur.execute("""UPDATE files 
+                        SET mtime=? 
+                        WHERE fileid=?;""", (mtime, fileid))
+            return fileid
+        return None
 
     def _getstoredcheckerconfig(self, checker):
         """See if this checker configuration has been used before."""
@@ -188,6 +215,29 @@ class StatsCache:
         else:
             return configrow[0]
 
+    def _cacheunitstats(self, units, fileid, unitindex=None):
+        """Cache the statistics for the supplied unit(s)."""
+        unitvalues = []
+        for index, unit in enumerate(units):
+            if unit.istranslatable():
+                sourcewords, targetwords = wordsinunit(unit)
+                if unitindex:
+                    index = unitindex
+                # what about plurals in .source and .target?
+                unitvalues.append((unit.getid(), fileid, index, \
+                                unit.source, unit.target, \
+                                sourcewords, targetwords, \
+                                statefordb(unit)))
+        # XXX: executemany is non-standard
+        self.cur.executemany("""INSERT INTO units
+            (unitid, fileid, unitindex, source, target, sourcewords, targetwords, state) 
+            values (?, ?, ?, ?, ?, ?, ?, ?);""",
+            unitvalues)
+        self.con.commit()
+        if unitindex:
+            return statefromdb(statefordb(units[0]))
+        return ""
+
     def cachestore(self, store):
         """Calculates and caches the statistics of the given store 
         unconditionally."""
@@ -199,25 +249,9 @@ class StatsCache:
             (fileid, path, mtime, toolkitbuild) values (NULL, ?, ?, ?);""", 
             (absolutepath, mtime, toolkitversion.build))
         fileid = self.cur.lastrowid
-        unitvalues = []
-        for index, unit in enumerate(store.units):
-            if unit.istranslatable():
-                sourcewords, targetwords = wordsinunit(unit)
-                
-                # what about plurals in .source and .target?
-                unitvalues.append((unit.getid(), fileid, index, \
-                                unit.source, unit.target, \
-                                sourcewords, targetwords, \
-                                statefordb(unit)))
-
         self.cur.execute("""DELETE FROM units WHERE
             fileid=?""", (fileid,))
-        # XXX: executemany is non-standard
-        self.cur.executemany("""INSERT INTO units
-            (unitid, fileid, unitindex, source, target, sourcewords, targetwords, state) 
-            values (?, ?, ?, ?, ?, ?, ?, ?);""",
-            unitvalues)
-        self.con.commit()
+        self._cacheunitstats(store.units, fileid)
         return fileid
 
     def filetotals(self, filename):
@@ -253,46 +287,80 @@ class StatsCache:
                 totals["fuzzysourcewords"]
         return totals
 
-    def cachestorechecks(self, fileid, store, checker, configid):
-        """Calculates and caches the error statistics of the given store 
-        unconditionally."""
+    def _cacheunitschecks(self, units, fileid, configid, checker, unitindex=None):
+        """Helper method for cachestorechecks() and recacheunit()"""
         # We always want to store one dummy error to know that we have actually
         # run the checks on this file with the current checker configuration
-        unitvalues = [(-1, fileid, configid, "noerror", "")]
-        for index, unit in enumerate(store.units):
+        dummy = (-1, fileid, configid, "noerror", "")
+        unitvalues = [dummy]
+        # if we are doing a single unit, we want to return the checknames
+        errornames = []
+        for index, unit in enumerate(units):
             if unit.istranslatable():
+                # Correctly assign the unitindex
+                if unitindex:
+                    index = unitindex
                 failures = checker.run_filters(unit)
                 for checkname, checkmessage in failures.iteritems():
                     unitvalues.append((index, fileid, configid, checkname, checkmessage))
+                    errornames.append("check-" + checkname)
+        checker.setsuggestionstore(None)
 
-        # Let's purge all previous failures because they will probably just
-        # fill up the database without much use.
-        self.cur.execute("""DELETE FROM uniterrors WHERE
-            fileid=?;""", (fileid,))
+
+        if unitindex:
+            # We are only updating a single unit, so we don't want to add an 
+            # extra noerror-entry
+            unitvalues.remove(dummy)
+            errornames.append("total")
+
         # XXX: executemany is non-standard
         self.cur.executemany("""INSERT INTO uniterrors
             (unitindex, fileid, configid, name, message) 
             values (?, ?, ?, ?, ?);""",
             unitvalues)
         self.con.commit()
+        return errornames
+
+    def cachestorechecks(self, fileid, store, checker, configid):
+        """Calculates and caches the error statistics of the given store 
+        unconditionally."""
+        # Let's purge all previous failures because they will probably just
+        # fill up the database without much use.
+        self.cur.execute("""DELETE FROM uniterrors WHERE
+            fileid=?;""", (fileid,))
+        self._cacheunitschecks(store.units, fileid, configid, checker)
         return fileid
+
+    def recacheunit(self, filename, checker, unit):
+        """Recalculate all information for a specific unit. This is necessary
+        for updating all statistics when a translation of a unit took place, 
+        for example.
+        
+        This method assumes that everything was up to date before (file totals,
+        checks, checker config, etc."""
+        suggestion_filename, suggestion_mtime = suggestioninfo(filename)
+        fileid = self._getstoredfileid(filename, suggestion_mtime, checkmtime=False)
+        configid = self._getstoredcheckerconfig(checker)
+        unitid = unit.getid()
+        # get the unit index
+        self.cur.execute("""SELECT unitindex FROM units WHERE
+            fileid=? AND unitid=?;""", (fileid, unitid))
+        unitindex = self.cur.fetchone()[0]
+        self.cur.execute("""DELETE FROM units WHERE
+            fileid=? AND unitid=?;""", (fileid, unitid))
+        state = [self._cacheunitstats([unit], fileid, unitindex)]
+        # remove the current errors
+        self.cur.execute("""DELETE FROM uniterrors WHERE
+            fileid=? AND unitindex=?;""", (fileid, unitindex))
+        if suggestion_filename:
+            checker.setsuggestionstore(factory.getobject(suggestion_filename, ignore=os.path.extsep+ 'pending'))
+        state.extend(self._cacheunitschecks([unit], fileid, configid, checker, unitindex))
+        return state
 
     def filechecks(self, filename, checker, store=None):
         """Retrieves the error statistics for the given file if possible, 
         otherwise delegates to cachestorechecks()."""
-        root, ext = os.path.splitext(filename)
-        suggestion_filename = None
-        suggestion_mtime = -1
-        if ext == os.path.extsep + "po":
-            # For a PO file there might be an associated file with suggested
-            # translations. If either file changed, we want to regenerate the
-            # statistics.
-            suggestion_filename = filename + os.path.extsep + 'pending'
-            if not os.path.exists(suggestion_filename):
-                suggestion_filename = None
-                suggestion_mtime = -1
-            else:
-                suggestion_mtime = os.path.getmtime(suggestion_filename)
+        suggestion_filename, suggestion_mtime = suggestioninfo(filename)
         fileid = self._getstoredfileid(filename, suggestion_mtime)
         configid = self._getstoredcheckerconfig(checker)
         try:
