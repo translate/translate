@@ -415,7 +415,7 @@
     <bool>false</bool>
    </property>
    <property name="icon" >
-    <iconset>../images/folder_home.png</iconset>
+    <iconset>../images/properties.png</iconset>
    </property>
    <property name="text" >
     <string>Properties</string>

@@ -51,8 +51,7 @@ class Catalog(QtGui.QMainWindow):
         self.resize(720,400)
         self.autoRefresh = True
         self.updateRecentProject()
-        title = self.tr("%s Catalog Manager" % (World.settingApp))
-        self.setWindowTitle(title)
+        self.setWindowTitle(self.tr("%s Catalog Manager" % (World.settingApp)))
         self.ui.toolBar.toggleViewAction()
         self.ui.actionBuild.setEnabled(False)
         self.ui.toolBar.setWindowTitle("ToolBar View")
@@ -428,8 +427,6 @@ class Catalog(QtGui.QMainWindow):
             self.actionOpen.setEnabled(False)
             self.actionFind.setEnabled(False)
             self.actionShowStat.setEnabled(False)
-            title = unicode(self.tr("%s Catalog Manager")) % (World.settingApp)
-            self.setWindowTitle(str(title))
             return 
         
 ##        # update contents in catalog setting.
@@ -437,8 +434,8 @@ class Catalog(QtGui.QMainWindow):
         
         for catalogFile in cats:
             catalogFile = unicode(catalogFile)
-            title = unicode(self.tr("%s - %s  Catalog Manager")) % (unicode(catalogFile), World.settingApp)
-            self.setWindowTitle(str(title))
+##            title = unicode(self.tr("%s - %s  Catalog Manager")) % (unicode(catalogFile), World.settingApp)
+##            self.setWindowTitle(str(title))
             self.addCatalogFile(catalogFile, includeSub, None)
         
         self.sort()
@@ -931,6 +928,9 @@ class Catalog(QtGui.QMainWindow):
         self.projectPath = catalog.value("path").toStringList()
         self.includeSub = catalog.value("includeSub").toBool()
         
+        title = unicode(self.tr("%s - %s Catalog Manager")) % (self.projectName, World.settingApp)
+        self.setWindowTitle(title)
+        
         self.updateCatalog(self.projectPath, True)
         self.updateRecentProject()
     
@@ -960,6 +960,7 @@ class Catalog(QtGui.QMainWindow):
         
         self.setCatalogModified(False)
         self.setCurrentProject("")
+        self.setWindowTitle(self.tr("%s Catalog Manager" % (World.settingApp)))
     
     def customContextMenuEvent(self, e):
         """
