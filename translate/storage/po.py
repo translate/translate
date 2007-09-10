@@ -142,7 +142,6 @@ class pounit(base.TranslationUnit):
   # automaticcomments = []  #   #. comment extracted from the source code
   # sourcecomments = []     #   #: sourcefile.xxx:35
   # typecomments = []       #   #, fuzzy
-  # visiblecomments = []    #   #_ note to translator  (this is nonsense)
   # msgidcomments = []      #   _: within msgid
   # msgctxt
   # msgid = []
@@ -173,14 +172,12 @@ class pounit(base.TranslationUnit):
       self.automaticcomments = []
       self.sourcecomments = []
       self.typecomments = []
-      self.visiblecomments = []
       self.msgidcomments = []
       self.obsoletemsgidcomments = []
     self.allcomments = [self.othercomments, 
                         self.automaticcomments, 
                         self.sourcecomments, 
                         self.typecomments, 
-                        self.visiblecomments, 
                         self.msgidcomments,
                         self.obsoletemsgidcomments]
 
@@ -310,7 +307,6 @@ class pounit(base.TranslationUnit):
     newpo.automaticcomments = self.automaticcomments[:]
     newpo.sourcecomments = self.sourcecomments[:]
     newpo.typecomments = self.typecomments[:]
-    newpo.visiblecomments = self.visiblecomments[:]
     newpo.obsolete = self.obsolete
     newpo.msgidcomments = self.msgidcomments[:]
     newpo._initallcomments()
@@ -402,7 +398,6 @@ class pounit(base.TranslationUnit):
     if comments:
       mergelists(self.othercomments, otherpo.othercomments)
       mergelists(self.typecomments, otherpo.typecomments)
-      mergelists(self.visiblecomments, otherpo.visiblecomments)
       if not authoritative:
         # We don't bring across otherpo.automaticcomments as we consider ourself
         # to be the the authority.  Same applies to otherpo.msgidcomments
@@ -572,8 +567,6 @@ class pounit(base.TranslationUnit):
           self.sourcecomments.append(line)
         elif line[1] == ',':
           self.typecomments.append(line)
-        elif line[1] == '_':
-          self.visiblecomments.append(line)
         elif line[1] == '~':
           line = line[3:]
           self.obsolete = True
@@ -734,7 +727,6 @@ class pounit(base.TranslationUnit):
     lines.extend(self.automaticcomments)
     lines.extend(self.sourcecomments)
     lines.extend(self.typecomments)
-    lines.extend(self.visiblecomments)
     if self.msgctxt:
       lines.append(self._getmsgpartstr("msgctxt", self.msgctxt))
     lines.append(self._getmsgpartstr("msgid", self.msgid, self.msgidcomments))

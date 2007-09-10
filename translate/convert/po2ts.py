@@ -42,8 +42,7 @@ class po2ts:
       transtype = None
       if inputunit.isfuzzy():
         transtype = "unfinished"
-      elif len(inputunit.visiblecomments) > 0:
-        if inputunit.visiblecomments[0] == "#_ OBSOLETE\n":
+      elif inputunit.getnotes("developer") == "(obsolete)":
           transtype = "obsolete" 
       if isinstance(source, str):
         source = source.decode("utf-8")

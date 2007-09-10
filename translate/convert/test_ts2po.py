@@ -83,13 +83,29 @@ new line</translation>
     </message>
 </context>
 </TS> 
-
 '''
         pofile = self.ts2po(tssource)
         assert len(pofile.units) == 2
         assert pofile.units[1].source == "Source with\nnew line"
         assert pofile.units[1].target == "Test with\nnew line"
         assert pofile.units[1].getlocations()[0].startswith("@default")
+
+    def test_obsolete(self):
+        """test the handling of obsolete TS entries"""
+        tssource = '''<!DOCTYPE TS><TS>
+<context>
+    <name>Obsoleted</name>
+    <message>
+        <source>Failed</source>
+        <translation type="obsolete">Mislukt</translation>
+    </message>
+</context>
+</TS>
+'''
+        pofile = self.ts2po(tssource)
+        assert pofile.units[1].getnotes("developer") == "(obsolete)"
+        # Test that we aren't following the old style
+        assert "_ OBSOLETE" not in pofile.units[1].getnotes()
 
 class TestTS2POCommand(test_convert.TestConvertCommand, TestTS2PO):
     """Tests running actual ts2po commands on files"""

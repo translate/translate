@@ -39,7 +39,7 @@ class ts2po:
       thepo.markfuzzy()
     if transtype == "obsolete":
       # This should use the Gettext obsolete method but it would require quite a bit of work
-      thepo.visiblecomments.append("#_ OBSOLETE\n")
+      thepo.addnote("(obsolete)", origin="developer")
       # using the fact that -- quote -- "(this is nonsense)"
     return thepo
 

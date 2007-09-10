@@ -201,13 +201,6 @@ class po2dtd:
       types.append(quote.unstripcomment(typecomment[2:]))
     for typedescr in types:
       dtdunit.comments.append(("potype", typedescr+'\n'))
-    # visiblecomments are for example #_ note to translator
-    visibles = []
-    for visiblecomment in inputunit.visiblecomments:
-      # visiblestr, instring = quote.extract(visiblecomment,"#_","\n",None)
-      visibles.append(quote.unstripcomment(visiblecomment[2:]))
-    for visible in visibles:
-      dtdunit.comments.append(("visible", visible+'\n'))
     # othercomments are normal e.g. # another comment
     others = []
     for othercomment in inputunit.othercomments:

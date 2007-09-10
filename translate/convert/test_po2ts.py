@@ -55,6 +55,17 @@ msgstr "Target"'''
         print tsfile
         assert '''<translation type="unfinished">Target</translation>''' in tsfile
 
+    def test_obsolete(self):
+        """test that we can take back obsolete messages"""
+        posource = '''#. (obsolete)
+#: term.cpp
+msgid "Source"
+msgstr "Target"'''
+        tsfile = self.po2ts(posource)
+        print tsfile
+        assert '''<translation type="obsolete">Target</translation>''' in tsfile
+        
+
 class TestPO2TSCommand(test_convert.TestConvertCommand, TestPO2TS):
     """Tests running actual po2ts commands on files"""
     convertmodule = po2ts
