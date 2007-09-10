@@ -74,6 +74,10 @@ def varname(variable, startmarker, endmarker):
   else:
     return variable[variable.find(startmarker)+len(startmarker):variable.rfind(endmarker)]
 
+def varnone(variable, startmarker, endmarker):
+  """a simple variable filter that returns an emoty string"""
+  return ""
+
 def filtervariables(startmarker, endmarker, varfilter):
   """returns a function that filters variables marked using startmarker and 
   endmarker in strings"""
