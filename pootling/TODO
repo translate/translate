@@ -1,8 +1,5 @@
 *do not crash when a not welformed xliff was read.
 
-*Ctrl-S while in the edit widget does not save data.  You have to tab
-out before string is updated i.e. you can lose data
-
 *Lots of requests to save file when nothing was changed.  Some seem to
 be related to if you have plurals ie the tabs exist
 
@@ -28,8 +25,6 @@ is to actually translate it into Khmer.
 
 *In catalog manager, skip not to display the folder that doesn't have supported file
 
-*Once file is saved, update the statistic of the currently opening file.
-
 *Assign shortcut (Ctrl + %d) to copy the glossary definition to clipboard
 
 *Assign shortcut to switch tab for plural tab in Detail view
@@ -37,9 +32,6 @@ is to actually translate it into Khmer.
 *Make Pootling able to open ts file directly
 
 *Test cases
-
-*When open the project file, the file/directory paths for Catalog don't add to location list yet.
- Even the refresh button is clicked.
 
 * Add the capability to have more than one file open at a time, being able to switch among them and easily copy terms.
 
