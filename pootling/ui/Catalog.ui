@@ -69,7 +69,7 @@
      <x>0</x>
      <y>0</y>
      <width>458</width>
-     <height>28</height>
+     <height>29</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuEdit" >
@@ -82,19 +82,18 @@
     <addaction name="actionReload" />
     <addaction name="actionStop" />
    </widget>
+   <widget class="QMenu" name="menuFile" >
+    <property name="title" >
+     <string>&amp;File</string>
+    </property>
+    <addaction name="actionQuit" />
+   </widget>
    <widget class="QMenu" name="menuHelp" >
     <property name="title" >
      <string>&amp;Help</string>
     </property>
     <addaction name="actionAbout" />
     <addaction name="actionAboutQt" />
-   </widget>
-   <widget class="QMenu" name="menuSettings" >
-    <property name="title" >
-     <string>&amp;Settings</string>
-    </property>
-    <addaction name="actionBuild" />
-    <addaction name="actionConfigure" />
    </widget>
    <widget class="QMenu" name="menuProject" >
     <property name="title" >
@@ -123,12 +122,14 @@
     <addaction name="actionClose" />
     <addaction name="separator" />
     <addaction name="actionProperties" />
+    <addaction name="separator" />
+    <addaction name="actionBuildTM" />
    </widget>
-   <widget class="QMenu" name="menuFile" >
+   <widget class="QMenu" name="menuSettings" >
     <property name="title" >
-     <string>&amp;File</string>
+     <string>&amp;Settings</string>
     </property>
-    <addaction name="actionQuit" />
+    <addaction name="actionPreferences" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
@@ -175,7 +176,7 @@
    <addaction name="actionFind_in_Files" />
    <addaction name="actionStatistics" />
    <addaction name="actionProperties" />
-   <addaction name="actionConfigure" />
+   <addaction name="actionPreferences" />
   </widget>
   <action name="actionQuit" >
    <property name="icon" >
@@ -185,10 +186,10 @@
     <string>&amp;Quit</string>
    </property>
    <property name="statusTip" >
-    <string>Quit the application.</string>
+    <string>Quit Catalog Manager</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>Quit&lt;/h3>Use this to quit the application. Any unsaved changes will be prompted.</string>
+    <string>&lt;h3>Quit&lt;/h3>Use this to quit Catalog Manager. Any unsaved changes to the current project will be prompted.</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+Q</string>
@@ -199,7 +200,7 @@
     <string>About</string>
    </property>
    <property name="statusTip" >
-    <string>Display information about this software.</string>
+    <string>Display information about this software...</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>About&lt;/h3>Display information about this software.</string>
@@ -210,7 +211,7 @@
     <string>About Qt</string>
    </property>
    <property name="statusTip" >
-    <string>Display information about the Qt toolkit.</string>
+    <string>Display information about the Qt toolkit...</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>About Qt&lt;/h3>Display information about the Qt toolkit.</string>
@@ -227,21 +228,13 @@
     <string>&amp;Reload</string>
    </property>
    <property name="statusTip" >
-    <string>Reload the current files</string>
+    <string>Reload the current project</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>Reload&lt;/h3>Set the current files or folders to get the most up-to-date version.</string>
+    <string>&lt;h3>Reload&lt;/h3>Set the current project to get the most up-to-date version.</string>
    </property>
    <property name="shortcut" >
     <string>F5</string>
-   </property>
-  </action>
-  <action name="actionConfigure" >
-   <property name="icon" >
-    <iconset>../images/configure.png</iconset>
-   </property>
-   <property name="text" >
-    <string>&amp;Configure...</string>
    </property>
   </action>
   <action name="actionFind_in_Files" >
@@ -255,7 +248,7 @@
     <string>&amp;Find in Files...</string>
    </property>
    <property name="statusTip" >
-    <string>Find string through files</string>
+    <string>Find string through files...</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>Find&lt;/h3>Use this to find a word or a string through all files of the current project in the Catalog Manager. The find dialog will be shown at the bottom of the editor.</string>
@@ -275,7 +268,7 @@
     <string>&amp;Statistics</string>
    </property>
    <property name="statusTip" >
-    <string>Show status of selected file or folder</string>
+    <string>Show status of selected file or folder...</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>Statistics&lt;/h3>Show status of selected file or folder with information about filename, untranslated, fuzzy, translated and total number of strings.</string>
@@ -284,23 +277,18 @@
     <string>Ctrl+S</string>
    </property>
   </action>
-  <action name="actionBuildTM" >
-   <property name="text" >
-    <string>&amp;Build TM</string>
-   </property>
-  </action>
   <action name="actionNew" >
    <property name="icon" >
     <iconset>../images/new.png</iconset>
    </property>
    <property name="text" >
-    <string>New...</string>
+    <string>&amp;New...</string>
    </property>
    <property name="statusTip" >
-    <string>Opens a new project dialog...</string>
+    <string>Create a new project...</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>New...&lt;/h3>Use this to open a dialog for entering  the information for a new project.</string>
+    <string>&lt;h3>New&lt;/h3>Use this to open a dialog for entering  the information for a new project.</string>
    </property>
   </action>
   <action name="actionOpen" >
@@ -308,7 +296,7 @@
     <iconset>../images/open.png</iconset>
    </property>
    <property name="text" >
-    <string>Open...</string>
+    <string>&amp;Open...</string>
    </property>
    <property name="statusTip" >
     <string>Open an existing project...</string>
@@ -317,35 +305,24 @@
     <string>&lt;h3>Open&lt;/h3>Use this to open an existing project.</string>
    </property>
   </action>
-  <action name="actionBuild" >
-   <property name="icon" >
-    <iconset>../images/memory.png</iconset>
-   </property>
-   <property name="text" >
-    <string>Build TM...</string>
-   </property>
-   <property name="toolTip" >
-    <string>Build the translation memory.</string>
-   </property>
-   <property name="statusTip" >
-    <string>Build the translation memory.</string>
-   </property>
-   <property name="whatsThis" >
-    <string>&lt;h3>Build TM&lt;/h3>Use this to build the translation memory from the list of files in Catalog.</string>
-   </property>
-  </action>
-  <action name="actionConfigure" >
+  <action name="actionPreferences" >
    <property name="icon" >
     <iconset>../images/configure.png</iconset>
    </property>
    <property name="text" >
-    <string>Configure...</string>
+    <string>&amp;Preferences...</string>
+   </property>
+   <property name="iconText" >
+    <string>Preferences</string>
+   </property>
+   <property name="toolTip" >
+    <string>Preferences</string>
    </property>
    <property name="statusTip" >
-    <string>Set the prefered configuration</string>
+    <string>Set the view of Catalog Manager...</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>Configure...&lt;/h3>Configure the translated file paths in a project and can toogle the view of Catalog Manager.</string>
+    <string>&lt;h3>Catalog Manager Preferences&lt;/h3>Open a dialog where you can toogle the view of Catalog Manager.</string>
    </property>
   </action>
   <action name="actionStop" >
@@ -359,7 +336,7 @@
     <string>Stop</string>
    </property>
    <property name="statusTip" >
-    <string>Stop loading catalog.</string>
+    <string>Stop loading catalog</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>Stop&lt;/h3>Stop loading catalog.</string>
@@ -376,10 +353,10 @@
     <iconset>../images/fileclose.png</iconset>
    </property>
    <property name="text" >
-    <string>Close</string>
+    <string>&amp;Close</string>
    </property>
    <property name="statusTip" >
-    <string>Close project</string>
+    <string>Close the current project</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>Close&lt;/h3>Use this to close the opening project. The Catalog treeview will be cleared.</string>
@@ -398,6 +375,12 @@
    <property name="text" >
     <string>Save</string>
    </property>
+   <property name="statusTip" >
+    <string>Save changes to the current project</string>
+   </property>
+   <property name="whatsThis" >
+    <string>&lt;h3>Save&lt;/h3>This action is enable only when you made change to the current project.</string>
+   </property>
   </action>
   <action name="actionSaveAs" >
    <property name="enabled" >
@@ -409,6 +392,12 @@
    <property name="text" >
     <string>saveAs</string>
    </property>
+   <property name="statusTip" >
+    <string>Save the current project to the new one...</string>
+   </property>
+   <property name="whatsThis" >
+    <string>&lt;h3>Save As&lt;/h3>Save the current project to the new file. The filename can be entered from the file selection dialog.</string>
+   </property>
   </action>
   <action name="actionProperties" >
    <property name="enabled" >
@@ -418,7 +407,30 @@
     <iconset>../images/properties.png</iconset>
    </property>
    <property name="text" >
-    <string>Properties</string>
+    <string>&amp;Properties</string>
+   </property>
+   <property name="statusTip" >
+    <string>Open a Project Properties dialog...</string>
+   </property>
+   <property name="whatsThis" >
+    <string>&lt;h3>Properties&lt;/h3>Use this to open a current project's property dialog. Here, you can change the project name, path, language, files' location.</string>
+   </property>
+  </action>
+  <action name="actionBuildTM" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
+   <property name="icon" >
+    <iconset>../images/memory.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Build TM</string>
+   </property>
+   <property name="statusTip" >
+    <string>Build Translation Memory from Catalog immediately</string>
+   </property>
+   <property name="whatsThis" >
+    <string>&lt;h3> Build TM &lt;/h3>This action will build a new Translation Memory from all locations in the current project. Your old Translation Memory will be lost. This might take long time depended on the number of files in the locations. You will see the progress bar running during building.</string>
    </property>
   </action>
  </widget>
