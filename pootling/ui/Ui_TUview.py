@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/ks/programming/wordforge/trunk/pootling/ui/TUview.ui'
+# Form implementation generated from reading ui file '/home/k-da/Documents/poxole/trunk/pootling/ui/TUview.ui'
 #
-# Created: Wed Mar  7 15:02:31 2007
+# Created: Mon Jul 30 09:12:20 2007
 #      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!
@@ -301,7 +301,7 @@ class Ui_TUview(object):
         self.gridlayout4.setObjectName("gridlayout4")
 
         self.txtTarget = QtGui.QTextEdit(self.page3)
-        self.txtTarget.setTabChangesFocus(True)
+        self.txtTarget.setTabChangesFocus(False)
         self.txtTarget.setUndoRedoEnabled(False)
         self.txtTarget.setReadOnly(True)
         self.txtTarget.setTabStopWidth(79)

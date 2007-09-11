@@ -639,7 +639,7 @@
            <string>&lt;h3>Translated String&lt;/h3>This editor displays and lets you edit the translation of the currently displayed string.</string>
           </property>
           <property name="tabChangesFocus" >
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
           <property name="undoRedoEnabled" >
            <bool>false</bool>
