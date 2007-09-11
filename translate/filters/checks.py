@@ -175,7 +175,7 @@ class CheckerConfig(object):
   def update(self, otherconfig):
     """combines the info in otherconfig into this config object"""
     self.targetlanguage = otherconfig.targetlanguage or self.targetlanguage
-    self.lang = otherconfig.lang
+    self.updatetargetlanguage(self.targetlanguage)
     self.accelmarkers.extend(otherconfig.accelmarkers)
     self.varmatches.extend(otherconfig.varmatches)
     self.notranslatewords.update(otherconfig.notranslatewords)
