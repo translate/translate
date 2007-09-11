@@ -25,19 +25,6 @@ from translate.misc import sparse
 from translate.storage import tbx
 from translate.storage import csvl10n
 
-def replacestrings(source, *pairs):
-  for orig, new in pairs:
-    source = source.replace(orig, new)
-  return source
-
-def quotecsvstr(source):
-  return '"' + replacestrings(source, ('\\"','"'), ('"','\\"'), ("\\\\'", "\\'"), ('\\\\n', '\\n')) + '"'
-
-def simplify(string):
-  return filter(type(string).isalnum, string)
-  tokens = sparse.SimpleParser().tokenize(string)
-  return " ".join(tokens)
-
 class csv2tbx:
   """a class that takes translations from a .csv file and puts them in a .tbx file"""
   def __init__(self, charset=None):
@@ -49,9 +36,6 @@ class csv2tbx:
     mightbeheader = True
     self.tbxfile = tbx.tbxfile()
     for thecsv in thecsvfile.units:
-      if self.charset is not None:
-        thecsv.source = thecsv.source
-        thecsv.target = thecsv.target
       if mightbeheader:
         # ignore typical header strings...
         mightbeheader = False
