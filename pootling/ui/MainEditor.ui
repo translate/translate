@@ -51,7 +51,7 @@
      <x>0</x>
      <y>0</y>
      <width>594</width>
-     <height>28</height>
+     <height>29</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuBookmark" >
@@ -288,7 +288,7 @@
     <string>Open</string>
    </property>
    <property name="statusTip" >
-    <string>Open a file.</string>
+    <string>Open a file...</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>Open&lt;/h3>Use this to open existed file for edit.</string>
@@ -308,7 +308,7 @@
     <string>&amp;Save</string>
    </property>
    <property name="statusTip" >
-    <string>Save the current file.</string>
+    <string>Save the current file</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>Save&lt;/h3>Use this to save the current file.</string>
@@ -328,13 +328,13 @@
     <string>Save &amp;As...</string>
    </property>
    <property name="iconText" >
-    <string>Save As...</string>
+    <string>Save As</string>
    </property>
    <property name="toolTip" >
-    <string>Save As...</string>
+    <string>Save As</string>
    </property>
    <property name="statusTip" >
-    <string>Save the current contents to a new file.</string>
+    <string>Save the current contents to a new file...</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>Save As&lt;/h3>Use this to save the current contents to a new file. The file name can be entered in a file selection dialog.</string>
@@ -354,7 +354,7 @@
     <string>Quit</string>
    </property>
    <property name="statusTip" >
-    <string>Quit the application.</string>
+    <string>Quit the application</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>Quit&lt;/h3>Use this to quit the application. Any unsaved changes will be prompted.</string>
@@ -374,7 +374,7 @@
     <string>&amp;Undo</string>
    </property>
    <property name="statusTip" >
-    <string>Undo the last change.</string>
+    <string>Undo the last change</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>Undo&lt;/h3>Use this to undo the last change done in the editor.</string>
@@ -394,7 +394,7 @@
     <string>Re&amp;do</string>
    </property>
    <property name="statusTip" >
-    <string>Redo the last change.</string>
+    <string>Redo the last change</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>Redo&lt;/h3>Use this to redo the last change done in the editor.</string>
@@ -414,7 +414,7 @@
     <string>Cu&amp;t</string>
    </property>
    <property name="statusTip" >
-    <string>Cut the selected text.</string>
+    <string>Cut the selected text</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>Cut&lt;/h3>Use this to cut the selected text to the clipboard.</string>
@@ -437,7 +437,7 @@
     <string>&amp;Copy</string>
    </property>
    <property name="statusTip" >
-    <string>Copy the selected text.</string>
+    <string>Copy the selected text</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>Copy&lt;/h3>Use this to copy the selected text to the clipboard.</string>
@@ -463,7 +463,7 @@
     <string>Paste</string>
    </property>
    <property name="statusTip" >
-    <string>Paste the last cut/copied text.</string>
+    <string>Paste the last cut/copied text</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>Paste&lt;/h3>Use this to paste the last cut/copies text from the clipboard to the editor.</string>
@@ -483,7 +483,7 @@
     <string>&amp;Find</string>
    </property>
    <property name="statusTip" >
-    <string>Find text in the shown strings.</string>
+    <string>Find text in the shown strings...</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>Find&lt;/h3>Use this to find text in the shown strings. The find dialog will show at the bottom of the editor.</string>
@@ -497,7 +497,7 @@
     <string>&amp;About Pootling</string>
    </property>
    <property name="statusTip" >
-    <string>Display some information about this software.</string>
+    <string>Display some information about this software...</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>About Pootling&lt;/h3>Display some information about this software.</string>
@@ -530,7 +530,7 @@
     <string>About Qt</string>
    </property>
    <property name="statusTip" >
-    <string>Display some information about the Qt Toolkit.</string>
+    <string>Display some information about the Qt Toolkit...</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>About Qt&lt;/h3>Display some information about the Qt Toolkit.</string>
@@ -563,7 +563,7 @@
     <string>First</string>
    </property>
    <property name="statusTip" >
-    <string>Go to the first string.</string>
+    <string>Go to the first string</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>First&lt;/h3>Go to the first string in the table.</string>
@@ -583,7 +583,7 @@
     <string>&amp;Previous</string>
    </property>
    <property name="statusTip" >
-    <string>Go to the previous string.</string>
+    <string>Go to the previous string</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>Previous&lt;/h3>Go to the previous string in the table.</string>
@@ -603,7 +603,7 @@
     <string>&amp;Next</string>
    </property>
    <property name="statusTip" >
-    <string>Go to the next string.</string>
+    <string>Go to the next string</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>Next&lt;/h3>Go to the next string in the table.</string>
@@ -623,7 +623,7 @@
     <string>&amp;Last</string>
    </property>
    <property name="statusTip" >
-    <string>Go to the last string.</string>
+    <string>Go to the last string</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>Last&lt;/h3>Go to the last string in the table.</string>
@@ -646,7 +646,7 @@
     <string>Copy Source To Target</string>
    </property>
    <property name="statusTip" >
-    <string>Copy current string from source field to target field.</string>
+    <string>Copy current string from source field to target field</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>Copy Source To Target&lt;/h3>Use this to copy current string from source field to target field.</string>
@@ -669,7 +669,7 @@
     <string>Toggle Fuzzy</string>
    </property>
    <property name="statusTip" >
-    <string>Toggle fuzzy for current string.</string>
+    <string>Toggle fuzzy for current string</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>Toggle Fuzzy&lt;/h3>Use this to set current string to fuzzy or unset it.</string>
@@ -710,7 +710,7 @@
     <string>&amp;Replace</string>
    </property>
    <property name="statusTip" >
-    <string>Replace text in the shown strings.</string>
+    <string>Replace text in the shown strings...</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>Replace&lt;/h3>Use this to find text in the shown strings to replace. The find and replace dialog will show at the bottom of the editor.</string>
@@ -790,7 +790,7 @@
     <string>&amp;Header...</string>
    </property>
    <property name="statusTip" >
-    <string>Open header dialog.</string>
+    <string>Open header dialog...</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>Open header dialog&lt;/h3>Use this to open the dialog to edit the header information.</string>
@@ -805,6 +805,9 @@
    </property>
    <property name="text" >
     <string>&amp;Preferences...</string>
+   </property>
+   <property name="toolTip" >
+    <string>Preferences...</string>
    </property>
    <property name="statusTip" >
     <string>Set common options for personality, font and color, translation memory and glossary, and save.</string>
@@ -916,7 +919,7 @@
     <string>&amp;Close</string>
    </property>
    <property name="statusTip" >
-    <string>Close the current opened file.</string>
+    <string>Close the current opened file</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>Close the current file&lt;/h3>Use this to close the current opened file.</string>
@@ -959,7 +962,7 @@
     <string>&amp;Add Bookmarks</string>
    </property>
    <property name="statusTip" >
-    <string>Add a bookmark of the current string.</string>
+    <string>Add a bookmark of the current string</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>Add Bookmarks&lt;/h3>Use this to add a bookmark of the current string</string>
@@ -973,7 +976,7 @@
     <string>&amp;Clear Bookmarks</string>
    </property>
    <property name="statusTip" >
-    <string>Clear all the bookmarks.</string>
+    <string>Clear all the bookmarks</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>Clear Bookmarks&lt;/h3>Use this to clear all the bookmarks.</string>
@@ -995,10 +998,10 @@
     <string>Catalog Manager...</string>
    </property>
    <property name="statusTip" >
-    <string>Open catalog manager.</string>
+    <string>Open Catalog Manager window...</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>Catalog Manager&lt;/h3>Use this to open catalog manager.</string>
+    <string>&lt;h3>Catalog Manager&lt;/h3>Use this to open Catalog Manager window.</string>
    </property>
   </action>
   <action name="actionBuildGlossary" >
@@ -1078,22 +1081,28 @@
    </property>
   </action>
   <action name="actionNewPro" >
+   <property name="icon" >
+    <iconset>../images/projectNew.png</iconset>
+   </property>
    <property name="text" >
     <string>&amp;New...   </string>
    </property>
    <property name="statusTip" >
-    <string>This opens a dialog for entering  the information for a new project.</string>
+    <string>This opens a dialog for entering  the information for a new project...</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>New...&lt;/h3>Use this to open a dialog for entering  the information for a new project.</string>
+    <string>&lt;h3>New&lt;/h3>Use this to open a dialog for entering  the information for a new project.</string>
    </property>
   </action>
   <action name="actionOpenPro" >
+   <property name="icon" >
+    <iconset>../images/projectOpen.png</iconset>
+   </property>
    <property name="text" >
     <string>&amp;Open...   </string>
    </property>
    <property name="statusTip" >
-    <string>This open an existing project.</string>
+    <string>This open an existing project...</string>
    </property>
    <property name="whatsThis" >
     <string>&lt;h3>Open&lt;/h3>Use this to open an existing project.</string>
@@ -1104,15 +1113,36 @@
     <bool>false</bool>
    </property>
    <property name="text" >
-    <string>Clear All Fuzzies</string>
+    <string>Clear All Fuzzy Strings</string>
+   </property>
+   <property name="iconText" >
+    <string>Clear All Fuzzy Strings</string>
+   </property>
+   <property name="toolTip" >
+    <string>Clear All Fuzzy Strings</string>
+   </property>
+   <property name="statusTip" >
+    <string>Clear all fuzzy status</string>
+   </property>
+   <property name="whatsThis" >
+    <string>&lt;h3>Clear All Fuzzy Strings&lt;/h3>This will take out the fuzzy status from all strings. You might lose some translation process  information, and this action cannot be undone. You should uncheck all options in Preferences/TM-Glossary for speed improvement. Are you sure you want to clear all fuzzies?</string>
    </property>
   </action>
   <action name="actionProperties" >
    <property name="enabled" >
     <bool>false</bool>
    </property>
+   <property name="icon" >
+    <iconset>../images/properties.png</iconset>
+   </property>
    <property name="text" >
     <string>&amp;Properties</string>
+   </property>
+   <property name="statusTip" >
+    <string>Open a Project Properties dialog...</string>
+   </property>
+   <property name="whatsThis" >
+    <string>&lt;h3>Properties&lt;/h3>Use this to open a current project properties dialog. Here, you can change the project name, path, language, files' location.</string>
    </property>
   </action>
  </widget>
