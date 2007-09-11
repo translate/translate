@@ -21,7 +21,7 @@
 
 import sys, os
 from PyQt4 import QtCore, QtGui
-from pootling.ui.Ui_CatalogSetting import Ui_catalogSetting
+from pootling.ui.Ui_CatalogSetting import Ui_catPreferences
 from pootling.modules import World
 from pootling.modules import FileDialog
 
@@ -31,9 +31,9 @@ class CatalogSetting(QtGui.QDialog):
     """
     def __init__(self, parent):
         QtGui.QDialog.__init__(self, parent)
-        self.ui = Ui_catalogSetting()
+        self.ui = Ui_catPreferences()
         self.ui.setupUi(self)
-        self.setWindowTitle("Setting Catalog Manager")
+#        self.setWindowTitle("Setting Catalog Manager")
         self.connect(self.ui.btnOk, QtCore.SIGNAL("clicked(bool)"), QtCore.SLOT("close()"))
         self.setModal(True)
         

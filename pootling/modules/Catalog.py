@@ -53,7 +53,7 @@ class Catalog(QtGui.QMainWindow):
         self.updateRecentProject()
         self.setWindowTitle(self.tr("%s Catalog Manager" % (World.settingApp)))
         self.ui.toolBar.toggleViewAction()
-        self.ui.actionBuild.setEnabled(False)
+        self.ui.actionBuildTM.setEnabled(False)
         self.ui.toolBar.setWindowTitle("ToolBar View")
         self.ui.toolBar.setStatusTip("Toggle toolbar view")
         
@@ -100,9 +100,8 @@ class Catalog(QtGui.QMainWindow):
 
         # catalog setting's checkboxes action.
         self.catSetting = CatalogSetting(self)
-        self.ui.actionConfigure.setWhatsThis("<h3>Configure</h3>Configure the translated file paths in a project and can toogle the view of Catalog Manager")
-        self.connect(self.ui.actionConfigure, QtCore.SIGNAL("triggered()"), self.catSetting.show)
-        self.connect(self.ui.actionBuild, QtCore.SIGNAL("triggered()"), self.emitBuildTM)
+        self.connect(self.ui.actionPreferences, QtCore.SIGNAL("triggered()"), self.catSetting.show)
+        self.connect(self.ui.actionBuildTM, QtCore.SIGNAL("triggered()"), self.emitBuildTM)
         self.connect(self.catSetting.ui.chbname, QtCore.SIGNAL("stateChanged(int)"), self.toggleHeaderItem)
         self.connect(self.catSetting.ui.chbfuzzy, QtCore.SIGNAL("stateChanged(int)"), self.toggleHeaderItem)
         self.connect(self.catSetting.ui.chblastrevision, QtCore.SIGNAL("stateChanged(int)"), self.toggleHeaderItem)
@@ -406,7 +405,7 @@ class Catalog(QtGui.QMainWindow):
         self.ui.actionStatistics.setEnabled(True)
         self.ui.actionReload.setEnabled(True)
         self.ui.actionStop.setEnabled(True)
-        self.ui.actionBuild.setEnabled(True)
+        self.ui.actionBuildTM.setEnabled(True)
 
         self.actionOpen.setEnabled(True)
         self.actionFind.setEnabled(True)
@@ -422,7 +421,7 @@ class Catalog(QtGui.QMainWindow):
             self.ui.actionStatistics.setEnabled(False)
             self.ui.actionReload.setEnabled(False)
             self.ui.actionStop.setEnabled(False)
-            self.ui.actionBuild.setEnabled(False)
+            self.ui.actionBuildTM.setEnabled(False)
             self.progressBar.setVisible(False)
             self.actionOpen.setEnabled(False)
             self.actionFind.setEnabled(False)
@@ -954,7 +953,7 @@ class Catalog(QtGui.QMainWindow):
         self.ui.actionStatistics.setEnabled(False)
         self.ui.actionReload.setEnabled(False)
         self.ui.actionStop.setEnabled(False)
-        self.ui.actionBuild.setEnabled(False)
+        self.ui.actionBuildTM.setEnabled(False)
         self.actionOpen.setEnabled(False)
         self.actionFind.setEnabled(False)
         self.actionShowStat.setEnabled(False)
