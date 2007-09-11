@@ -921,7 +921,7 @@ class StandardChecker(TranslationChecker):
                    "startcaps":     ("simplecaps",),
                    "endwhitespace": ("endpunc",),
                    "startwhitespace":("startpunc",),
-                   "unchanged":     ("doublewords", "options"), 
+                   "unchanged":     ("doublewords",), 
                    "compendiumconflicts": ("accelerators", "brackets", "escapes", 
                                     "numbers", "startpunc", "long", "variables", 
                                     "startcaps", "sentencecount", "simplecaps",
