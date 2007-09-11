@@ -1,16 +1,16 @@
 <ui version="4.0" >
- <class>catalogSetting</class>
- <widget class="QWidget" name="catalogSetting" >
+ <class>catPreferences</class>
+ <widget class="QWidget" name="catPreferences" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>359</width>
+    <width>387</width>
     <height>250</height>
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Catalog Settings</string>
+   <string>Catalog Manager Preferences</string>
   </property>
   <property name="toolTip" >
    <string/>
