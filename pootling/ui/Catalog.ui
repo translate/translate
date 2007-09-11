@@ -95,6 +95,12 @@
     <addaction name="actionAbout" />
     <addaction name="actionAboutQt" />
    </widget>
+   <widget class="QMenu" name="menuSettings" >
+    <property name="title" >
+     <string>&amp;Settings</string>
+    </property>
+    <addaction name="actionPreferences" />
+   </widget>
    <widget class="QMenu" name="menuProject" >
     <property name="title" >
      <string>&amp;Project</string>
@@ -124,12 +130,6 @@
     <addaction name="actionProperties" />
     <addaction name="separator" />
     <addaction name="actionBuildTM" />
-   </widget>
-   <widget class="QMenu" name="menuSettings" >
-    <property name="title" >
-     <string>&amp;Settings</string>
-    </property>
-    <addaction name="actionPreferences" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
@@ -279,7 +279,7 @@
   </action>
   <action name="actionNew" >
    <property name="icon" >
-    <iconset>../images/new.png</iconset>
+    <iconset>../images/projectNew.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;New...</string>
@@ -293,7 +293,7 @@
   </action>
   <action name="actionOpen" >
    <property name="icon" >
-    <iconset>../images/open.png</iconset>
+    <iconset>../images/projectOpen.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Open...</string>
@@ -413,7 +413,7 @@
     <string>Open a Project Properties dialog...</string>
    </property>
    <property name="whatsThis" >
-    <string>&lt;h3>Properties&lt;/h3>Use this to open a current project's property dialog. Here, you can change the project name, path, language, files' location.</string>
+    <string>&lt;h3>Properties&lt;/h3>Use this to open a current project properties dialog. Here, you can change the project name, path, language, files' location.</string>
    </property>
   </action>
   <action name="actionBuildTM" >

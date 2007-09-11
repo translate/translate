@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/k-da/Documents/poxole/trunk/pootling/ui/Catalog.ui'
 #
-# Created: Tue Sep 11 10:07:39 2007
+# Created: Tue Sep 11 12:07:25 2007
 #      by: PyQt4 UI code generator 4-snapshot-20070212
 #
 # WARNING! All changes made in this file will be lost!
@@ -55,15 +55,15 @@ class Ui_Catalog(object):
         self.menuHelp = QtGui.QMenu(self.menubar)
         self.menuHelp.setObjectName("menuHelp")
 
+        self.menuSettings = QtGui.QMenu(self.menubar)
+        self.menuSettings.setObjectName("menuSettings")
+
         self.menuProject = QtGui.QMenu(self.menubar)
         self.menuProject.setObjectName("menuProject")
 
         self.menuOpenRecentProject = QtGui.QMenu(self.menuProject)
         self.menuOpenRecentProject.setEnabled(False)
         self.menuOpenRecentProject.setObjectName("menuOpenRecentProject")
-
-        self.menuSettings = QtGui.QMenu(self.menubar)
-        self.menuSettings.setObjectName("menuSettings")
         Catalog.setMenuBar(self.menubar)
 
         self.statusbar = QtGui.QStatusBar(Catalog)
@@ -110,11 +110,11 @@ class Ui_Catalog(object):
         self.actionStatistics.setObjectName("actionStatistics")
 
         self.actionNew = QtGui.QAction(Catalog)
-        self.actionNew.setIcon(QtGui.QIcon("../images/new.png"))
+        self.actionNew.setIcon(QtGui.QIcon("../images/projectNew.png"))
         self.actionNew.setObjectName("actionNew")
 
         self.actionOpen = QtGui.QAction(Catalog)
-        self.actionOpen.setIcon(QtGui.QIcon("../images/open.png"))
+        self.actionOpen.setIcon(QtGui.QIcon("../images/projectOpen.png"))
         self.actionOpen.setObjectName("actionOpen")
 
         self.actionPreferences = QtGui.QAction(Catalog)
@@ -158,6 +158,7 @@ class Ui_Catalog(object):
         self.menuFile.addAction(self.actionQuit)
         self.menuHelp.addAction(self.actionAbout)
         self.menuHelp.addAction(self.actionAboutQt)
+        self.menuSettings.addAction(self.actionPreferences)
         self.menuProject.addAction(self.actionNew)
         self.menuProject.addAction(self.actionOpen)
         self.menuProject.addAction(self.menuOpenRecentProject.menuAction())
@@ -166,7 +167,6 @@ class Ui_Catalog(object):
         self.menuProject.addAction(self.actionProperties)
         self.menuProject.addSeparator()
         self.menuProject.addAction(self.actionBuildTM)
-        self.menuSettings.addAction(self.actionPreferences)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
         self.menubar.addAction(self.menuProject.menuAction())
@@ -194,12 +194,12 @@ class Ui_Catalog(object):
         self.menuEdit.setTitle(QtGui.QApplication.translate("Catalog", "&Edit", None, QtGui.QApplication.UnicodeUTF8))
         self.menuFile.setTitle(QtGui.QApplication.translate("Catalog", "&File", None, QtGui.QApplication.UnicodeUTF8))
         self.menuHelp.setTitle(QtGui.QApplication.translate("Catalog", "&Help", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuSettings.setTitle(QtGui.QApplication.translate("Catalog", "&Settings", None, QtGui.QApplication.UnicodeUTF8))
         self.menuProject.setTitle(QtGui.QApplication.translate("Catalog", "&Project", None, QtGui.QApplication.UnicodeUTF8))
         self.menuOpenRecentProject.setToolTip(QtGui.QApplication.translate("Catalog", "This open recent project.", None, QtGui.QApplication.UnicodeUTF8))
         self.menuOpenRecentProject.setStatusTip(QtGui.QApplication.translate("Catalog", "Open the recent project.", None, QtGui.QApplication.UnicodeUTF8))
         self.menuOpenRecentProject.setWhatsThis(QtGui.QApplication.translate("Catalog", "<h3>Open recent project</h3>Use this to open the project file that was just opened lately.", None, QtGui.QApplication.UnicodeUTF8))
         self.menuOpenRecentProject.setTitle(QtGui.QApplication.translate("Catalog", "Open &Recent Project", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuSettings.setTitle(QtGui.QApplication.translate("Catalog", "&Settings", None, QtGui.QApplication.UnicodeUTF8))
         self.actionQuit.setText(QtGui.QApplication.translate("Catalog", "&Quit", None, QtGui.QApplication.UnicodeUTF8))
         self.actionQuit.setStatusTip(QtGui.QApplication.translate("Catalog", "Quit Catalog Manager", None, QtGui.QApplication.UnicodeUTF8))
         self.actionQuit.setWhatsThis(QtGui.QApplication.translate("Catalog", "<h3>Quit</h3>Use this to quit Catalog Manager. Any unsaved changes to the current project will be prompted.", None, QtGui.QApplication.UnicodeUTF8))
@@ -249,7 +249,7 @@ class Ui_Catalog(object):
         self.actionSaveAs.setWhatsThis(QtGui.QApplication.translate("Catalog", "<h3>Save As</h3>Save the current project to the new file. The filename can be entered from the file selection dialog.", None, QtGui.QApplication.UnicodeUTF8))
         self.actionProperties.setText(QtGui.QApplication.translate("Catalog", "&Properties", None, QtGui.QApplication.UnicodeUTF8))
         self.actionProperties.setStatusTip(QtGui.QApplication.translate("Catalog", "Open a Project Properties dialog...", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionProperties.setWhatsThis(QtGui.QApplication.translate("Catalog", "<h3>Properties</h3>Use this to open a current project\'s property dialog. Here, you can change the project name, path, language, files\' location.", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionProperties.setWhatsThis(QtGui.QApplication.translate("Catalog", "<h3>Properties</h3>Use this to open a current project properties dialog. Here, you can change the project name, path, language, files\' location.", None, QtGui.QApplication.UnicodeUTF8))
         self.actionBuildTM.setText(QtGui.QApplication.translate("Catalog", "Build TM", None, QtGui.QApplication.UnicodeUTF8))
         self.actionBuildTM.setStatusTip(QtGui.QApplication.translate("Catalog", "Build Translation Memory from Catalog immediately", None, QtGui.QApplication.UnicodeUTF8))
         self.actionBuildTM.setWhatsThis(QtGui.QApplication.translate("Catalog", "<h3> Build TM </h3>This action will build a new Translation Memory from all locations in the current project. Your old Translation Memory will be lost. This might take long time depended on the number of files in the locations. You will see the progress bar running during building.", None, QtGui.QApplication.UnicodeUTF8))
