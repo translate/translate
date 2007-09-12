@@ -93,7 +93,7 @@ class Catalog(QtGui.QMainWindow):
         self.connect(self.ui.actionOpen, QtCore.SIGNAL("triggered()"), self.openProject)
         self.connect(self.ui.actionSave, QtCore.SIGNAL("triggered()"), self.Project.saveProject)
         self.connect(self.ui.actionSaveAs, QtCore.SIGNAL("triggered()"), self.Project.saveProject)
-        self.connect(self.ui.actionClose, QtCore.SIGNAL("triggered()"), self.Project.closeProject)
+        self.connect(self.ui.actionClose, QtCore.SIGNAL("triggered()"), self.closeProject)
         self.connect(self.ui.actionProperties, QtCore.SIGNAL("triggered()"), self.showProperties)
         self.connect(self.Project, QtCore.SIGNAL("updateCatalog"), self.updateCatalog)
         self.connect(self.Project, QtCore.SIGNAL("hasModified"), self.setModified)
@@ -380,7 +380,7 @@ class Catalog(QtGui.QMainWindow):
             # first look if there's current project previously opened.
             currentProject = World.settings.value("CurrentProject").toString()
             if (currentProject):
-                self.Project.openProject(currentProject)
+                self.openProject(currentProject)
     
     def updateCatalog(self, cats, includeSub, name):
         """
@@ -411,6 +411,9 @@ class Catalog(QtGui.QMainWindow):
             self.progressBar.setVisible(False)
             self.ui.treeCatalog.clear()
             return
+        
+        if (not self.isVisible()):
+            self.showDialog()
         
         title = unicode(self.tr("%s - %s  Catalog Manager")) % (unicode(name), World.settingApp)
         self.setWindowTitle(str(title))
@@ -894,7 +897,7 @@ class Catalog(QtGui.QMainWindow):
                 self.updateRecentProject()
             return
         
-        self.Project.openProject(filename)
+        self.openProject(filename)
     
     def customContextMenuEvent(self, e):
         """
@@ -956,17 +959,34 @@ class Catalog(QtGui.QMainWindow):
         self.ui.actionSave.setEnabled(bool)
     
     def showNew(self):
+        """
+        Slot to call Project.showNew()
+        """
         self.lazyInit()
         self.Project.showNew()
         
     def showProperties(self):
+        """
+        Slot to call Project.showProperties()
+        """
         self.lazyInit()
         self.Project.showProperties()
     
-    def openProject(self):
+    def openProject(self, filename = None):
+        """
+        Slot to call Project.openProject().
+        """
+        self.emit(QtCore.SIGNAL("projectOpened"), True)
         self.lazyInit()
-        if (self.Project.openProject()):
-            self.show()
+        self.Project.openProject(filename)
+    
+    def closeProject(self):
+        """
+        Stop update to avoid crash and call Project.closeProject().
+        """
+        self.emit(QtCore.SIGNAL("projectOpened"), False)
+        self.stopUpdate()
+        self.Project.closeProject()
     
     def saveBeforeLose(self):
         """

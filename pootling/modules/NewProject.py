@@ -341,6 +341,17 @@ class newProject(QtGui.QDialog):
         """
         Show current project properties.
         """
+        if (not self.filename):
+            filename = World.settings.value("CurrentProject").toString()
+            if (filename):
+                # Get project properties
+                catalog = QtCore.QSettings(filename, QtCore.QSettings.IniFormat)
+                self.name = catalog.value("name").toString()
+                self.filename = filename
+                self.lang = catalog.value("language").toString()
+                self.path = catalog.value("path").toStringList()
+                self.includeSub = catalog.value("includeSub").toBool()
+        
         self.mode = World.projectProperty
         self.setWindowTitle(self.tr("Project Properties"))
         self.ui.btnOK.setText(self.tr("OK"))
@@ -362,5 +373,5 @@ if __name__ == "__main__":
     import os, sys
     app = QtGui.QApplication(sys.argv)
     Newpro = newProject(None)
-    Newpro.showNew()
+    Newpro.showProperties()
     sys.exit(Newpro.exec_())

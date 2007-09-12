@@ -209,13 +209,10 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.ui.actionAddBookmarks, QtCore.SIGNAL("triggered()"), self.setBookmarks)
         self.connect(self.ui.actionClearBookmarks, QtCore.SIGNAL("triggered()"), self.clearBookmarks)
 
-##        # Project menu action
-##        self.newProject = newProject(self)
-        
         self.connect(self.ui.actionNewPro, QtCore.SIGNAL("triggered()"), self.Catalog.showNew)
         self.connect(self.ui.actionOpenPro, QtCore.SIGNAL("triggered()"), self.Catalog.openProject)
         self.connect(self.ui.actionProperties, QtCore.SIGNAL("triggered()"), self.Catalog.showProperties)
-##        self.connect(self.Catalog, QtCore.SIGNAL("projectOpened"), self.ui.actionProperties.setEnabled)
+        self.connect(self.Catalog, QtCore.SIGNAL("projectOpened"), self.ui.actionProperties.setEnabled)
         
         # action Preferences menu 
         self.preference = Preference(self)
@@ -325,7 +322,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.table, QtCore.SIGNAL("goto"), self.dockOverview.gotoRow)
         
         self.operator.applySettings()
-        catalogProject = World.settings.value("CatalogProject").toString()
+        catalogProject = World.settings.value("CurrentProject").toString()
         self.ui.actionProperties.setEnabled(bool(catalogProject))
         
     
