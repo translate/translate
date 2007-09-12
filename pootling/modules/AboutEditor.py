@@ -70,7 +70,7 @@ class AboutEditor(QtGui.QDialog):
 class AboutTab(QtGui.QWidget):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
-        name = "<center><br><br><br><b>  Pootling </b></br></center><center><br> Version " +  __version__.ver + "</br><br>Copyright 2006 WordForge Foundation.</br></center>"
+        name = "<center><br><br><br><b>  Pootling </b></br></center><center><br> Version " +  __version__.ver + "</br><br>Copyright @ 2006 - 2007 WordForge Foundation.</br><br>www.wordforge.org</a></center>"
         fileNameLabel = QtGui.QLabel(self.tr(name))
         mainLayout = QtGui.QVBoxLayout()
         mainLayout.addWidget(fileNameLabel)
@@ -115,5 +115,5 @@ if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     tabdialog = AboutEditor(None)
     tabdialog.showDialog()
-    sys.exit(tabdialog.exec_())
+    sys.exit(app.exec_())
 
