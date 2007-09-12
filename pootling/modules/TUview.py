@@ -405,7 +405,7 @@ class TUview(QtGui.QDockWidget):
         
         # set the scrollbar position
         self.setScrollbarValue(unit.x_editor_row)
-        self.connect(self.ui.txtTarget, QtCore.SIGNAL("teemxtChanged()"), self.emitTextChanged)
+        self.connect(self.ui.txtTarget, QtCore.SIGNAL("textChanged()"), self.emitTextChanged)
         
         self.currentUnit = unit
         self.emitGlossaryWords()

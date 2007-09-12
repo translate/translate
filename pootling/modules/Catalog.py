@@ -979,6 +979,7 @@ class Catalog(QtGui.QMainWindow):
         self.emit(QtCore.SIGNAL("projectOpened"), True)
         self.lazyInit()
         self.Project.openProject(filename)
+        self.updateRecentProject()
     
     def closeProject(self):
         """
