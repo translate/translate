@@ -169,7 +169,7 @@ class oocheckfilter(pofilter.pocheckfilter):
     filterresult = self.filterunit(unit)
     if filterresult:
       if filterresult != autocorrect:
-        for filtername, filtermessage in filterresult:
+        for filtername, filtermessage in filterresult.iteritems():
           location = unit.getlocations()[0].encode('utf-8')
           if filtername in self.options.error:
             print >> sys.stderr, "Error at %s::%s: %s" % (filename, location, filtermessage)
