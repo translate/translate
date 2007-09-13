@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/k-da/Documents/poxole/trunk/pootling/ui/Preference.ui'
+# Form implementation generated from reading ui file 'unknown'
 #
-# Created: Wed Aug 29 10:46:29 2007
-#      by: PyQt4 UI code generator 4-snapshot-20070212
+# Created: Wed Sep 12 11:54:24 2007
+#      by: PyQt4 UI code generator 4.0
 #
 # WARNING! All changes made in this file will be lost!
 
+import sys
 from PyQt4 import QtCore, QtGui
 
 class Ui_frmPreference(object):
     def setupUi(self, frmPreference):
         frmPreference.setObjectName("frmPreference")
-        frmPreference.resize(QtCore.QSize(QtCore.QRect(0,0,593,389).size()).expandedTo(frmPreference.minimumSizeHint()))
+        frmPreference.resize(QtCore.QSize(QtCore.QRect(0,0,570,372).size()).expandedTo(frmPreference.minimumSizeHint()))
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(7))
         sizePolicy.setHorizontalStretch(0)
@@ -31,7 +32,7 @@ class Ui_frmPreference(object):
         self.frame.setObjectName("frame")
 
         self.gridlayout1 = QtGui.QGridLayout(self.frame)
-        self.gridlayout1.setMargin(9)
+        self.gridlayout1.setMargin(0)
         self.gridlayout1.setSpacing(6)
         self.gridlayout1.setObjectName("gridlayout1")
 
@@ -64,8 +65,8 @@ class Ui_frmPreference(object):
         sizePolicy.setHeightForWidth(self.frame_2.sizePolicy().hasHeightForWidth())
         self.frame_2.setSizePolicy(sizePolicy)
         self.frame_2.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.frame_2.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.frame_2.setFrameShadow(QtGui.QFrame.Raised)
+        self.frame_2.setFrameShape(QtGui.QFrame.NoFrame)
+        self.frame_2.setLineWidth(1)
         self.frame_2.setObjectName("frame_2")
 
         self.gridlayout3 = QtGui.QGridLayout(self.frame_2)
@@ -236,25 +237,7 @@ class Ui_frmPreference(object):
         self.line_2.setFrameShape(QtGui.QFrame.HLine)
         self.line_2.setFrameShadow(QtGui.QFrame.Sunken)
         self.line_2.setObjectName("line_2")
-        self.gridlayout4.addWidget(self.line_2,1,0,1,4)
-
-        self.bntAdjustAllFont = QtGui.QPushButton(self.interface)
-        self.bntAdjustAllFont.setObjectName("bntAdjustAllFont")
-        self.gridlayout4.addWidget(self.bntAdjustAllFont,3,1,1,1)
-
-        spacerItem1 = QtGui.QSpacerItem(20,61,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
-        self.gridlayout4.addItem(spacerItem1,4,0,1,1)
-
-        self.bntDefaultsColor = QtGui.QPushButton(self.interface)
-        self.bntDefaultsColor.setObjectName("bntDefaultsColor")
-        self.gridlayout4.addWidget(self.bntDefaultsColor,3,3,1,1)
-
-        self.bntDefaultsFont = QtGui.QPushButton(self.interface)
-        self.bntDefaultsFont.setObjectName("bntDefaultsFont")
-        self.gridlayout4.addWidget(self.bntDefaultsFont,3,2,1,1)
-
-        spacerItem2 = QtGui.QSpacerItem(40,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
-        self.gridlayout4.addItem(spacerItem2,3,0,1,1)
+        self.gridlayout4.addWidget(self.line_2,1,0,1,1)
 
         self.label_4 = QtGui.QLabel(self.interface)
 
@@ -263,7 +246,7 @@ class Ui_frmPreference(object):
         font.setBold(True)
         self.label_4.setFont(font)
         self.label_4.setObjectName("label_4")
-        self.gridlayout4.addWidget(self.label_4,0,0,1,4)
+        self.gridlayout4.addWidget(self.label_4,0,0,1,1)
 
         self.frame2 = QtGui.QFrame(self.interface)
 
@@ -272,8 +255,6 @@ class Ui_frmPreference(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.frame2.sizePolicy().hasHeightForWidth())
         self.frame2.setSizePolicy(sizePolicy)
-        self.frame2.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.frame2.setFrameShadow(QtGui.QFrame.Raised)
         self.frame2.setObjectName("frame2")
 
         self.gridlayout5 = QtGui.QGridLayout(self.frame2)
@@ -281,146 +262,32 @@ class Ui_frmPreference(object):
         self.gridlayout5.setSpacing(6)
         self.gridlayout5.setObjectName("gridlayout5")
 
-        self.lblOverViewHeader = QtGui.QLabel(self.frame2)
+        self.bntAdjustAllFont = QtGui.QPushButton(self.frame2)
+        self.bntAdjustAllFont.setObjectName("bntAdjustAllFont")
+        self.gridlayout5.addWidget(self.bntAdjustAllFont,7,1,1,1)
 
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(1))
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.lblOverViewHeader.sizePolicy().hasHeightForWidth())
-        self.lblOverViewHeader.setSizePolicy(sizePolicy)
-        self.lblOverViewHeader.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.lblOverViewHeader.setObjectName("lblOverViewHeader")
-        self.gridlayout5.addWidget(self.lblOverViewHeader,0,1,1,1)
+        self.bntDefaultsFont = QtGui.QPushButton(self.frame2)
+        self.bntDefaultsFont.setObjectName("bntDefaultsFont")
+        self.gridlayout5.addWidget(self.bntDefaultsFont,7,2,1,1)
 
-        self.lblGlossary = QtGui.QLabel(self.frame2)
-
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(1))
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.lblGlossary.sizePolicy().hasHeightForWidth())
-        self.lblGlossary.setSizePolicy(sizePolicy)
-        self.lblGlossary.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.lblGlossary.setObjectName("lblGlossary")
-        self.gridlayout5.addWidget(self.lblGlossary,6,1,1,1)
-
-        self.lblsupportteam_4 = QtGui.QLabel(self.frame2)
-        self.lblsupportteam_4.setObjectName("lblsupportteam_4")
-        self.gridlayout5.addWidget(self.lblsupportteam_4,6,0,1,1)
-
-        self.bntFontGlossary = QtGui.QPushButton(self.frame2)
-        self.bntFontGlossary.setObjectName("bntFontGlossary")
-        self.gridlayout5.addWidget(self.bntFontGlossary,6,2,1,1)
+        self.bntDefaultsColor = QtGui.QPushButton(self.frame2)
+        self.bntDefaultsColor.setObjectName("bntDefaultsColor")
+        self.gridlayout5.addWidget(self.bntDefaultsColor,7,3,1,1)
 
         self.btnColorGlossary = QtGui.QPushButton(self.frame2)
         self.btnColorGlossary.setObjectName("btnColorGlossary")
         self.gridlayout5.addWidget(self.btnColorGlossary,6,3,1,1)
 
-        self.btnColorTM = QtGui.QPushButton(self.frame2)
-        self.btnColorTM.setObjectName("btnColorTM")
-        self.gridlayout5.addWidget(self.btnColorTM,5,3,1,1)
-
-        self.bntFontTM = QtGui.QPushButton(self.frame2)
-        self.bntFontTM.setObjectName("bntFontTM")
-        self.gridlayout5.addWidget(self.bntFontTM,5,2,1,1)
-
-        self.lblTM = QtGui.QLabel(self.frame2)
+        self.lblTarget = QtGui.QLabel(self.frame2)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(1))
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.lblTM.sizePolicy().hasHeightForWidth())
-        self.lblTM.setSizePolicy(sizePolicy)
-        self.lblTM.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.lblTM.setObjectName("lblTM")
-        self.gridlayout5.addWidget(self.lblTM,5,1,1,1)
-
-        self.lblsupportteam_3 = QtGui.QLabel(self.frame2)
-        self.lblsupportteam_3.setObjectName("lblsupportteam_3")
-        self.gridlayout5.addWidget(self.lblsupportteam_3,5,0,1,1)
-
-        self.btnColorComment = QtGui.QPushButton(self.frame2)
-        self.btnColorComment.setObjectName("btnColorComment")
-        self.gridlayout5.addWidget(self.btnColorComment,4,3,1,1)
-
-        self.bntFontComment = QtGui.QPushButton(self.frame2)
-        self.bntFontComment.setObjectName("bntFontComment")
-        self.gridlayout5.addWidget(self.bntFontComment,4,2,1,1)
-
-        self.lblComment = QtGui.QLabel(self.frame2)
-
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(1))
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.lblComment.sizePolicy().hasHeightForWidth())
-        self.lblComment.setSizePolicy(sizePolicy)
-        self.lblComment.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.lblComment.setObjectName("lblComment")
-        self.gridlayout5.addWidget(self.lblComment,4,1,1,1)
-
-        self.lblsupportteam_2 = QtGui.QLabel(self.frame2)
-        self.lblsupportteam_2.setObjectName("lblsupportteam_2")
-        self.gridlayout5.addWidget(self.lblsupportteam_2,4,0,1,1)
-
-        self.Source_2 = QtGui.QLabel(self.frame2)
-        self.Source_2.setObjectName("Source_2")
-        self.gridlayout5.addWidget(self.Source_2,2,0,1,1)
-
-        self.label2_4 = QtGui.QLabel(self.frame2)
-        self.label2_4.setScaledContents(True)
-        self.label2_4.setWordWrap(True)
-        self.label2_4.setIndent(0)
-        self.label2_4.setObjectName("label2_4")
-        self.gridlayout5.addWidget(self.label2_4,0,0,1,1)
-
-        self.label2_5 = QtGui.QLabel(self.frame2)
-        self.label2_5.setScaledContents(True)
-        self.label2_5.setWordWrap(True)
-        self.label2_5.setIndent(0)
-        self.label2_5.setObjectName("label2_5")
-        self.gridlayout5.addWidget(self.label2_5,1,0,1,1)
-
-        self.label4_3 = QtGui.QLabel(self.frame2)
-        self.label4_3.setObjectName("label4_3")
-        self.gridlayout5.addWidget(self.label4_3,3,0,1,1)
-
-        self.btnColorTarget = QtGui.QPushButton(self.frame2)
-        self.btnColorTarget.setObjectName("btnColorTarget")
-        self.gridlayout5.addWidget(self.btnColorTarget,3,3,1,1)
-
-        self.btnColorSource = QtGui.QPushButton(self.frame2)
-        self.btnColorSource.setObjectName("btnColorSource")
-        self.gridlayout5.addWidget(self.btnColorSource,2,3,1,1)
-
-        self.btnColorOverview = QtGui.QPushButton(self.frame2)
-        self.btnColorOverview.setObjectName("btnColorOverview")
-        self.gridlayout5.addWidget(self.btnColorOverview,1,3,1,1)
-
-        self.bntFontTarget = QtGui.QPushButton(self.frame2)
-        self.bntFontTarget.setObjectName("bntFontTarget")
-        self.gridlayout5.addWidget(self.bntFontTarget,3,2,1,1)
-
-        self.bntFontSource = QtGui.QPushButton(self.frame2)
-        self.bntFontSource.setObjectName("bntFontSource")
-        self.gridlayout5.addWidget(self.bntFontSource,2,2,1,1)
-
-        self.bntFontOverview = QtGui.QPushButton(self.frame2)
-        self.bntFontOverview.setObjectName("bntFontOverview")
-        self.gridlayout5.addWidget(self.bntFontOverview,1,2,1,1)
-
-        self.bntFontOverviewHeader = QtGui.QPushButton(self.frame2)
-        self.bntFontOverviewHeader.setObjectName("bntFontOverviewHeader")
-        self.gridlayout5.addWidget(self.bntFontOverviewHeader,0,2,1,1)
-
-        self.lblOverView = QtGui.QLabel(self.frame2)
-
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(1))
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.lblOverView.sizePolicy().hasHeightForWidth())
-        self.lblOverView.setSizePolicy(sizePolicy)
-        self.lblOverView.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.lblOverView.setObjectName("lblOverView")
-        self.gridlayout5.addWidget(self.lblOverView,1,1,1,1)
+        sizePolicy.setHeightForWidth(self.lblTarget.sizePolicy().hasHeightForWidth())
+        self.lblTarget.setSizePolicy(sizePolicy)
+        self.lblTarget.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.lblTarget.setObjectName("lblTarget")
+        self.gridlayout5.addWidget(self.lblTarget,3,1,1,1)
 
         self.lblSource = QtGui.QLabel(self.frame2)
 
@@ -433,17 +300,146 @@ class Ui_frmPreference(object):
         self.lblSource.setObjectName("lblSource")
         self.gridlayout5.addWidget(self.lblSource,2,1,1,1)
 
-        self.lblTarget = QtGui.QLabel(self.frame2)
+        self.lblOverView = QtGui.QLabel(self.frame2)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(1))
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.lblTarget.sizePolicy().hasHeightForWidth())
-        self.lblTarget.setSizePolicy(sizePolicy)
-        self.lblTarget.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.lblTarget.setObjectName("lblTarget")
-        self.gridlayout5.addWidget(self.lblTarget,3,1,1,1)
-        self.gridlayout4.addWidget(self.frame2,2,0,1,4)
+        sizePolicy.setHeightForWidth(self.lblOverView.sizePolicy().hasHeightForWidth())
+        self.lblOverView.setSizePolicy(sizePolicy)
+        self.lblOverView.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.lblOverView.setObjectName("lblOverView")
+        self.gridlayout5.addWidget(self.lblOverView,1,1,1,1)
+
+        self.bntFontOverviewHeader = QtGui.QPushButton(self.frame2)
+        self.bntFontOverviewHeader.setObjectName("bntFontOverviewHeader")
+        self.gridlayout5.addWidget(self.bntFontOverviewHeader,0,2,1,1)
+
+        self.bntFontOverview = QtGui.QPushButton(self.frame2)
+        self.bntFontOverview.setObjectName("bntFontOverview")
+        self.gridlayout5.addWidget(self.bntFontOverview,1,2,1,1)
+
+        self.bntFontSource = QtGui.QPushButton(self.frame2)
+        self.bntFontSource.setObjectName("bntFontSource")
+        self.gridlayout5.addWidget(self.bntFontSource,2,2,1,1)
+
+        self.bntFontTarget = QtGui.QPushButton(self.frame2)
+        self.bntFontTarget.setObjectName("bntFontTarget")
+        self.gridlayout5.addWidget(self.bntFontTarget,3,2,1,1)
+
+        self.btnColorOverview = QtGui.QPushButton(self.frame2)
+        self.btnColorOverview.setObjectName("btnColorOverview")
+        self.gridlayout5.addWidget(self.btnColorOverview,1,3,1,1)
+
+        self.btnColorSource = QtGui.QPushButton(self.frame2)
+        self.btnColorSource.setObjectName("btnColorSource")
+        self.gridlayout5.addWidget(self.btnColorSource,2,3,1,1)
+
+        self.btnColorTarget = QtGui.QPushButton(self.frame2)
+        self.btnColorTarget.setObjectName("btnColorTarget")
+        self.gridlayout5.addWidget(self.btnColorTarget,3,3,1,1)
+
+        self.label4_3 = QtGui.QLabel(self.frame2)
+        self.label4_3.setObjectName("label4_3")
+        self.gridlayout5.addWidget(self.label4_3,3,0,1,1)
+
+        self.label2_5 = QtGui.QLabel(self.frame2)
+        self.label2_5.setScaledContents(True)
+        self.label2_5.setWordWrap(True)
+        self.label2_5.setIndent(0)
+        self.label2_5.setObjectName("label2_5")
+        self.gridlayout5.addWidget(self.label2_5,1,0,1,1)
+
+        self.label2_4 = QtGui.QLabel(self.frame2)
+        self.label2_4.setScaledContents(True)
+        self.label2_4.setWordWrap(True)
+        self.label2_4.setIndent(0)
+        self.label2_4.setObjectName("label2_4")
+        self.gridlayout5.addWidget(self.label2_4,0,0,1,1)
+
+        self.Source_2 = QtGui.QLabel(self.frame2)
+        self.Source_2.setObjectName("Source_2")
+        self.gridlayout5.addWidget(self.Source_2,2,0,1,1)
+
+        self.lblsupportteam_2 = QtGui.QLabel(self.frame2)
+        self.lblsupportteam_2.setObjectName("lblsupportteam_2")
+        self.gridlayout5.addWidget(self.lblsupportteam_2,4,0,1,1)
+
+        self.lblComment = QtGui.QLabel(self.frame2)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(1))
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.lblComment.sizePolicy().hasHeightForWidth())
+        self.lblComment.setSizePolicy(sizePolicy)
+        self.lblComment.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.lblComment.setObjectName("lblComment")
+        self.gridlayout5.addWidget(self.lblComment,4,1,1,1)
+
+        self.bntFontComment = QtGui.QPushButton(self.frame2)
+        self.bntFontComment.setObjectName("bntFontComment")
+        self.gridlayout5.addWidget(self.bntFontComment,4,2,1,1)
+
+        self.btnColorComment = QtGui.QPushButton(self.frame2)
+        self.btnColorComment.setObjectName("btnColorComment")
+        self.gridlayout5.addWidget(self.btnColorComment,4,3,1,1)
+
+        self.lblsupportteam_3 = QtGui.QLabel(self.frame2)
+        self.lblsupportteam_3.setObjectName("lblsupportteam_3")
+        self.gridlayout5.addWidget(self.lblsupportteam_3,5,0,1,1)
+
+        self.lblTM = QtGui.QLabel(self.frame2)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(1))
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.lblTM.sizePolicy().hasHeightForWidth())
+        self.lblTM.setSizePolicy(sizePolicy)
+        self.lblTM.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.lblTM.setObjectName("lblTM")
+        self.gridlayout5.addWidget(self.lblTM,5,1,1,1)
+
+        self.bntFontTM = QtGui.QPushButton(self.frame2)
+        self.bntFontTM.setObjectName("bntFontTM")
+        self.gridlayout5.addWidget(self.bntFontTM,5,2,1,1)
+
+        self.btnColorTM = QtGui.QPushButton(self.frame2)
+        self.btnColorTM.setObjectName("btnColorTM")
+        self.gridlayout5.addWidget(self.btnColorTM,5,3,1,1)
+
+        self.bntFontGlossary = QtGui.QPushButton(self.frame2)
+        self.bntFontGlossary.setObjectName("bntFontGlossary")
+        self.gridlayout5.addWidget(self.bntFontGlossary,6,2,1,1)
+
+        self.lblsupportteam_4 = QtGui.QLabel(self.frame2)
+        self.lblsupportteam_4.setObjectName("lblsupportteam_4")
+        self.gridlayout5.addWidget(self.lblsupportteam_4,6,0,1,1)
+
+        self.lblGlossary = QtGui.QLabel(self.frame2)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(1))
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.lblGlossary.sizePolicy().hasHeightForWidth())
+        self.lblGlossary.setSizePolicy(sizePolicy)
+        self.lblGlossary.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.lblGlossary.setObjectName("lblGlossary")
+        self.gridlayout5.addWidget(self.lblGlossary,6,1,1,1)
+
+        self.lblOverViewHeader = QtGui.QLabel(self.frame2)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(7),QtGui.QSizePolicy.Policy(1))
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.lblOverViewHeader.sizePolicy().hasHeightForWidth())
+        self.lblOverViewHeader.setSizePolicy(sizePolicy)
+        self.lblOverViewHeader.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.lblOverViewHeader.setObjectName("lblOverViewHeader")
+        self.gridlayout5.addWidget(self.lblOverViewHeader,0,1,1,1)
+        self.gridlayout4.addWidget(self.frame2,2,0,1,1)
+
+        spacerItem1 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
+        self.gridlayout4.addItem(spacerItem1,3,0,1,1)
         self.stackedWidget.addWidget(self.interface)
 
         self.TM_Glossary  = QtGui.QWidget()
@@ -454,8 +450,8 @@ class Ui_frmPreference(object):
         self.gridlayout6.setSpacing(6)
         self.gridlayout6.setObjectName("gridlayout6")
 
-        spacerItem3 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
-        self.gridlayout6.addItem(spacerItem3,7,0,1,1)
+        spacerItem2 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
+        self.gridlayout6.addItem(spacerItem2,7,0,1,1)
 
         self.frame_4 = QtGui.QFrame(self.TM_Glossary )
 
@@ -464,8 +460,6 @@ class Ui_frmPreference(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.frame_4.sizePolicy().hasHeightForWidth())
         self.frame_4.setSizePolicy(sizePolicy)
-        self.frame_4.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.frame_4.setFrameShadow(QtGui.QFrame.Raised)
         self.frame_4.setObjectName("frame_4")
 
         self.gridlayout7 = QtGui.QGridLayout(self.frame_4)
@@ -522,8 +516,8 @@ class Ui_frmPreference(object):
         self.gridlayout7.addWidget(self.chbAutoIdentTerm,0,0,1,1)
         self.gridlayout6.addWidget(self.frame_4,6,0,1,1)
 
-        spacerItem4 = QtGui.QSpacerItem(20,20,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Minimum)
-        self.gridlayout6.addItem(spacerItem4,3,0,1,1)
+        spacerItem3 = QtGui.QSpacerItem(20,20,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Minimum)
+        self.gridlayout6.addItem(spacerItem3,3,0,1,1)
 
         self.line_3 = QtGui.QFrame(self.TM_Glossary )
         self.line_3.setFrameShape(QtGui.QFrame.HLine)
@@ -538,8 +532,6 @@ class Ui_frmPreference(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.frame_3.sizePolicy().hasHeightForWidth())
         self.frame_3.setSizePolicy(sizePolicy)
-        self.frame_3.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.frame_3.setFrameShadow(QtGui.QFrame.Raised)
         self.frame_3.setObjectName("frame_3")
 
         self.gridlayout8 = QtGui.QGridLayout(self.frame_3)
@@ -628,8 +620,6 @@ class Ui_frmPreference(object):
         self.gridlayout9.setObjectName("gridlayout9")
 
         self.frame_6 = QtGui.QFrame(self.save)
-        self.frame_6.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.frame_6.setFrameShadow(QtGui.QFrame.Raised)
         self.frame_6.setObjectName("frame_6")
 
         self.gridlayout10 = QtGui.QGridLayout(self.frame_6)
@@ -649,8 +639,8 @@ class Ui_frmPreference(object):
         self.gridlayout10.addWidget(self.chkHeaderAuto,0,0,1,1)
         self.gridlayout9.addWidget(self.frame_6,2,0,1,1)
 
-        spacerItem5 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
-        self.gridlayout9.addItem(spacerItem5,3,0,1,1)
+        spacerItem4 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
+        self.gridlayout9.addItem(spacerItem4,3,0,1,1)
 
         self.label_7 = QtGui.QLabel(self.save)
 
@@ -682,12 +672,10 @@ class Ui_frmPreference(object):
         self.gridlayout11.setSpacing(6)
         self.gridlayout11.setObjectName("gridlayout11")
 
-        spacerItem6 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
-        self.gridlayout11.addItem(spacerItem6,3,0,1,1)
+        spacerItem5 = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
+        self.gridlayout11.addItem(spacerItem5,3,0,1,1)
 
         self.frame_7 = QtGui.QFrame(self.page)
-        self.frame_7.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.frame_7.setFrameShadow(QtGui.QFrame.Raised)
         self.frame_7.setObjectName("frame_7")
 
         self.gridlayout12 = QtGui.QGridLayout(self.frame_7)
@@ -746,8 +734,8 @@ class Ui_frmPreference(object):
         self.gridlayout1.addWidget(self.listWidget,0,0,1,1)
         self.gridlayout.addWidget(self.frame,0,0,1,3)
 
-        spacerItem7 = QtGui.QSpacerItem(40,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
-        self.gridlayout.addItem(spacerItem7,1,0,1,1)
+        spacerItem6 = QtGui.QSpacerItem(40,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        self.gridlayout.addItem(spacerItem6,1,0,1,1)
 
         self.okButton = QtGui.QPushButton(frmPreference)
 
@@ -782,7 +770,12 @@ class Ui_frmPreference(object):
         frmPreference.setTabOrder(self.bntFontTarget,self.btnColorTarget)
         frmPreference.setTabOrder(self.btnColorTarget,self.bntFontComment)
         frmPreference.setTabOrder(self.bntFontComment,self.btnColorComment)
-        frmPreference.setTabOrder(self.btnColorComment,self.bntDefaultsFont)
+        frmPreference.setTabOrder(self.btnColorComment,self.bntFontTM)
+        frmPreference.setTabOrder(self.bntFontTM,self.btnColorTM)
+        frmPreference.setTabOrder(self.btnColorTM,self.bntFontGlossary)
+        frmPreference.setTabOrder(self.bntFontGlossary,self.btnColorGlossary)
+        frmPreference.setTabOrder(self.btnColorGlossary,self.bntAdjustAllFont)
+        frmPreference.setTabOrder(self.bntAdjustAllFont,self.bntDefaultsFont)
         frmPreference.setTabOrder(self.bntDefaultsFont,self.bntDefaultsColor)
         frmPreference.setTabOrder(self.bntDefaultsColor,self.chbAutoTranslate)
         frmPreference.setTabOrder(self.chbAutoTranslate,self.chbIgnoreFuzzy)
@@ -795,108 +788,114 @@ class Ui_frmPreference(object):
         frmPreference.setTabOrder(self.chbDetectTerm,self.chbAddNewTerm)
         frmPreference.setTabOrder(self.chbAddNewTerm,self.chbSuggestTranslation)
         frmPreference.setTabOrder(self.chbSuggestTranslation,self.chkHeaderAuto)
-        frmPreference.setTabOrder(self.chkHeaderAuto,self.okButton)
+        frmPreference.setTabOrder(self.chkHeaderAuto,self.chkCursorHome)
+        frmPreference.setTabOrder(self.chkCursorHome,self.okButton)
         frmPreference.setTabOrder(self.okButton,self.cancelButton)
 
-    def retranslateUi(self, frmPreference):
-        frmPreference.setWindowTitle(QtGui.QApplication.translate("frmPreference", "Preferences", None, QtGui.QApplication.UnicodeUTF8))
-        self.spinBox.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Singular/Plural forms</h3>Set plural forms for a specific language. Pootling try to set this value for you. If no information provided, you should fill up by yourself or leave it blank if you are not sure.", None, QtGui.QApplication.UnicodeUTF8))
-        self.lineEqaution.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Plural equation</h3>Set plural equation for a specific language. Pootling tries to set this value for you. If no information provided, you should fill up by yourself or leave it blank if you are not sure.", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_3.setText(QtGui.QApplication.translate("frmPreference", "Number of singular/plural forms:", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_2.setText(QtGui.QApplication.translate("frmPreference", "Plural equation:", None, QtGui.QApplication.UnicodeUTF8))
-        self.label1.setText(QtGui.QApplication.translate("frmPreference", "User name", None, QtGui.QApplication.UnicodeUTF8))
-        self.UserName.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>User Name</h3>Type your full name here.", None, QtGui.QApplication.UnicodeUTF8))
-        self.EmailAddress.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Email Address</h3>Type your own email.", None, QtGui.QApplication.UnicodeUTF8))
-        self.label2.setText(QtGui.QApplication.translate("frmPreference", "Email address", None, QtGui.QApplication.UnicodeUTF8))
-        self.lineFullLang.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Language name</h3>Your full language name, for example, \"Khmer\", an official language of Cambodia.", None, QtGui.QApplication.UnicodeUTF8))
-        self.cbxLanguageCode.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Language Code</h3>Choose your own language code. If your language code isn\'t in the list, please type in by yourself. Pootling will try to set the correct language name, number of singular/plural form and plural equation for you.", None, QtGui.QApplication.UnicodeUTF8))
-        self.label4.setText(QtGui.QApplication.translate("frmPreference", "Language Code", None, QtGui.QApplication.UnicodeUTF8))
-        self.label3.setText(QtGui.QApplication.translate("frmPreference", "Language name", None, QtGui.QApplication.UnicodeUTF8))
-        self.SupportTeam.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Support</h3>Type support email address.", None, QtGui.QApplication.UnicodeUTF8))
-        self.label5.setText(QtGui.QApplication.translate("frmPreference", "Support team", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("frmPreference", "Personal Information", None, QtGui.QApplication.UnicodeUTF8))
-        self.bntAdjustAllFont.setText(QtGui.QApplication.translate("frmPreference", "Adjust All Fonts", None, QtGui.QApplication.UnicodeUTF8))
-        self.bntDefaultsColor.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Defaults Color</h3>Once this button is clicked, Overview, Source, Target and Comment will be set to default color, black.", None, QtGui.QApplication.UnicodeUTF8))
-        self.bntDefaultsColor.setText(QtGui.QApplication.translate("frmPreference", "Default Color", None, QtGui.QApplication.UnicodeUTF8))
-        self.bntDefaultsFont.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Defaults Font</h3>Once this button is clicked, Overview, Source, Target and Comment will be set to default font, Serif, 10.", None, QtGui.QApplication.UnicodeUTF8))
-        self.bntDefaultsFont.setText(QtGui.QApplication.translate("frmPreference", "Default Font", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_4.setText(QtGui.QApplication.translate("frmPreference", "Font & Color", None, QtGui.QApplication.UnicodeUTF8))
-        self.lblOverViewHeader.setToolTip(QtGui.QApplication.translate("frmPreference", "Overview Header Sample", None, QtGui.QApplication.UnicodeUTF8))
-        self.lblOverViewHeader.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Overview Header Sample</h3>This lable displayed the current font name, style, size and color sample of overview header dock widget.", None, QtGui.QApplication.UnicodeUTF8))
-        self.lblGlossary.setToolTip(QtGui.QApplication.translate("frmPreference", "Comment Sample", None, QtGui.QApplication.UnicodeUTF8))
-        self.lblGlossary.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Comment Sample</h3>This lable displayed the current font name, style, size and color sample of comment dock widget.", None, QtGui.QApplication.UnicodeUTF8))
-        self.lblsupportteam_4.setText(QtGui.QApplication.translate("frmPreference", "Glossary Lookup", None, QtGui.QApplication.UnicodeUTF8))
-        self.bntFontGlossary.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Comment Font</h3>Click this button  will show up a font dialog box where you can select fontname, style and size for comment text.", None, QtGui.QApplication.UnicodeUTF8))
-        self.bntFontGlossary.setText(QtGui.QApplication.translate("frmPreference", "Font", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnColorGlossary.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Comment Color</h3>Click this button  will show up a color dialog box where you can choose color for comment text.", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnColorGlossary.setText(QtGui.QApplication.translate("frmPreference", "Color", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnColorTM.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Comment Color</h3>Click this button  will show up a color dialog box where you can choose color for comment text.", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnColorTM.setText(QtGui.QApplication.translate("frmPreference", "Color", None, QtGui.QApplication.UnicodeUTF8))
-        self.bntFontTM.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Comment Font</h3>Click this button  will show up a font dialog box where you can select fontname, style and size for comment text.", None, QtGui.QApplication.UnicodeUTF8))
-        self.bntFontTM.setText(QtGui.QApplication.translate("frmPreference", "Font", None, QtGui.QApplication.UnicodeUTF8))
-        self.lblTM.setToolTip(QtGui.QApplication.translate("frmPreference", "Comment Sample", None, QtGui.QApplication.UnicodeUTF8))
-        self.lblTM.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Comment Sample</h3>This lable displayed the current font name, style, size and color sample of comment dock widget.", None, QtGui.QApplication.UnicodeUTF8))
-        self.lblsupportteam_3.setText(QtGui.QApplication.translate("frmPreference", "TM Lookup", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnColorComment.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Comment Color</h3>Click this button  will show up a color dialog box where you can choose color for comment text.", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnColorComment.setText(QtGui.QApplication.translate("frmPreference", "Color", None, QtGui.QApplication.UnicodeUTF8))
-        self.bntFontComment.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Comment Font</h3>Click this button  will show up a font dialog box where you can select fontname, style and size for comment text.", None, QtGui.QApplication.UnicodeUTF8))
-        self.bntFontComment.setText(QtGui.QApplication.translate("frmPreference", "Font", None, QtGui.QApplication.UnicodeUTF8))
-        self.lblComment.setToolTip(QtGui.QApplication.translate("frmPreference", "Comment Sample", None, QtGui.QApplication.UnicodeUTF8))
-        self.lblComment.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Comment Sample</h3>This lable displayed the current font name, style, size and color sample of comment dock widget.", None, QtGui.QApplication.UnicodeUTF8))
-        self.lblsupportteam_2.setText(QtGui.QApplication.translate("frmPreference", "Comment", None, QtGui.QApplication.UnicodeUTF8))
-        self.Source_2.setText(QtGui.QApplication.translate("frmPreference", "Source", None, QtGui.QApplication.UnicodeUTF8))
-        self.label2_4.setText(QtGui.QApplication.translate("frmPreference", "Overview header", None, QtGui.QApplication.UnicodeUTF8))
-        self.label2_5.setText(QtGui.QApplication.translate("frmPreference", "Overview", None, QtGui.QApplication.UnicodeUTF8))
-        self.label4_3.setText(QtGui.QApplication.translate("frmPreference", "Target", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnColorTarget.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Target Color</h3>Click this button  will show up a color dialog box where you can choose color for target text.", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnColorTarget.setText(QtGui.QApplication.translate("frmPreference", "Color", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnColorSource.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Source Color</h3>Click this button  will show up a color dialog box where you can choose color for source text.", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnColorSource.setText(QtGui.QApplication.translate("frmPreference", "Color", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnColorOverview.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Overview Color</h3>Click this button  will show up a color dialog box where you can choose color for overview text.", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnColorOverview.setText(QtGui.QApplication.translate("frmPreference", "Color", None, QtGui.QApplication.UnicodeUTF8))
-        self.bntFontTarget.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Target Font</h3>Click this button  will show up a font dialog box where you can select fontname, style and size for target text.", None, QtGui.QApplication.UnicodeUTF8))
-        self.bntFontTarget.setText(QtGui.QApplication.translate("frmPreference", "Font", None, QtGui.QApplication.UnicodeUTF8))
-        self.bntFontSource.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Source Font</h3>Click this button  will show up a font dialog box where you can select fontname, style and size for source text.", None, QtGui.QApplication.UnicodeUTF8))
-        self.bntFontSource.setText(QtGui.QApplication.translate("frmPreference", "Font", None, QtGui.QApplication.UnicodeUTF8))
-        self.bntFontOverview.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Overview Font</h3>Click this button  will show up a font dialog box where you can select fontname, style and size for overview text.", None, QtGui.QApplication.UnicodeUTF8))
-        self.bntFontOverview.setText(QtGui.QApplication.translate("frmPreference", "Font", None, QtGui.QApplication.UnicodeUTF8))
-        self.bntFontOverviewHeader.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Overview Header Font</h3>Click this button  will show up a font dialog box where you can select fontname, style and size for overview header text.", None, QtGui.QApplication.UnicodeUTF8))
-        self.bntFontOverviewHeader.setText(QtGui.QApplication.translate("frmPreference", "Font", None, QtGui.QApplication.UnicodeUTF8))
-        self.lblOverView.setToolTip(QtGui.QApplication.translate("frmPreference", "Overview Sample", None, QtGui.QApplication.UnicodeUTF8))
-        self.lblOverView.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Overview Sample</h3>This lable displayed the current font name, style, size and color sample of overview dock widget.", None, QtGui.QApplication.UnicodeUTF8))
-        self.lblSource.setToolTip(QtGui.QApplication.translate("frmPreference", "Source Sample", None, QtGui.QApplication.UnicodeUTF8))
-        self.lblSource.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Source Sample</h3>This lable displayed the current font name, style, size and color sample of source dock widget.", None, QtGui.QApplication.UnicodeUTF8))
-        self.lblTarget.setToolTip(QtGui.QApplication.translate("frmPreference", "Target Sample", None, QtGui.QApplication.UnicodeUTF8))
-        self.lblTarget.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Target Sample</h3>This lable displayed the current font name, style, size and color sample of target dock widget.", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbDetectTerm.setText(QtGui.QApplication.translate("frmPreference", "Detect new terminology", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbSuggestTranslation.setText(QtGui.QApplication.translate("frmPreference", "Allow translation suggestion from TM", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbAddNewTerm.setText(QtGui.QApplication.translate("frmPreference", "Add new terminology to glossary", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbMatchTerm.setText(QtGui.QApplication.translate("frmPreference", "Alert if the terminology\'s translation doesn\'t match", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbChangeTerm.setText(QtGui.QApplication.translate("frmPreference", "Possible to change translation of terminology in glossary", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbAutoIdentTerm.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Highlight glossary term</h3> This option is recommended to be used. You will see the green and underlined terms in TUview ( source section). It indicates that those terms are in Glossary.", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbAutoIdentTerm.setText(QtGui.QApplication.translate("frmPreference", "Highlight glossary term in Detail view", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbAutoTranslate.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Lookup translation in TM</h3> If this option is checked, you will get a TM Lookup Table soon after clicking on OK button. From that table, you will see the relevent translated unit(s) that had already been built and stored in memory.", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbAutoTranslate.setText(QtGui.QApplication.translate("frmPreference", "Lookup translation in TM", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbIgnoreFuzzy.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Ignore Fuzzy Strings</h3> If this option is checked, the fuzzy string will not be searching for from the Translation Memory.", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbIgnoreFuzzy.setText(QtGui.QApplication.translate("frmPreference", "Don\'t lookup fuzzy strings", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbAddTraslation.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Add new Translation to Translation Memory</h3> If this option is checked, all new translation units will be added to the Translation Memory for later use after saving.", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbAddTraslation.setText(QtGui.QApplication.translate("frmPreference", "Add new translation to TM", None, QtGui.QApplication.UnicodeUTF8))
-        self.chbEditTraslation.setText(QtGui.QApplication.translate("frmPreference", "Possible to change translation in TM", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_5.setText(QtGui.QApplication.translate("frmPreference", "Options for Using Translation Memory", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_6.setText(QtGui.QApplication.translate("frmPreference", "Options for Using Glossary", None, QtGui.QApplication.UnicodeUTF8))
-        self.chkHeaderAuto.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Update header on save</h3>Check this opton to automatically have your header updated while saving. The information will be querried from Personalize tab. ", None, QtGui.QApplication.UnicodeUTF8))
-        self.chkHeaderAuto.setText(QtGui.QApplication.translate("frmPreference", "Update header on save", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_7.setText(QtGui.QApplication.translate("frmPreference", "Options for Saving File", None, QtGui.QApplication.UnicodeUTF8))
-        self.chkCursorHome.setWhatsThis(QtGui.QApplication.translate("frmPreference", "<h3>Update header on save</h3>Check this opton to automatically have your header updated while saving. The information will be querried from Personalize tab. ", None, QtGui.QApplication.UnicodeUTF8))
-        self.chkCursorHome.setText(QtGui.QApplication.translate("frmPreference", "Cursor to the beginning of first line after Copy Source To Target.", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_8.setText(QtGui.QApplication.translate("frmPreference", "Options for Editor", None, QtGui.QApplication.UnicodeUTF8))
-        self.okButton.setText(QtGui.QApplication.translate("frmPreference", "&OK", None, QtGui.QApplication.UnicodeUTF8))
-        self.cancelButton.setText(QtGui.QApplication.translate("frmPreference", "&Cancel", None, QtGui.QApplication.UnicodeUTF8))
+    def tr(self, string):
+        return QtGui.QApplication.translate("frmPreference", string, None, QtGui.QApplication.UnicodeUTF8)
 
+    def retranslateUi(self, frmPreference):
+        frmPreference.setWindowTitle(self.tr("Preferences"))
+        self.spinBox.setWhatsThis(self.tr("<h3>Singular/Plural forms</h3>Set plural forms for a specific language. Pootling try to set this value for you. If no information provided, you should fill up by yourself or leave it blank if you are not sure."))
+        self.lineEqaution.setWhatsThis(self.tr("<h3>Plural equation</h3>Set plural equation for a specific language. Pootling tries to set this value for you. If no information provided, you should fill up by yourself or leave it blank if you are not sure."))
+        self.label_3.setText(self.tr("Number of singular/plural forms:"))
+        self.label_2.setText(self.tr("Plural equation:"))
+        self.label1.setText(self.tr("User name"))
+        self.UserName.setWhatsThis(self.tr("<h3>User Name</h3>Type your full name here."))
+        self.EmailAddress.setWhatsThis(self.tr("<h3>Email Address</h3>Type your own email."))
+        self.label2.setText(self.tr("Email address"))
+        self.lineFullLang.setWhatsThis(self.tr("<h3>Language name</h3>Your full language name, for example, \"Khmer\", an official language of Cambodia."))
+        self.cbxLanguageCode.setWhatsThis(self.tr("<h3>Language Code</h3>Choose your own language code. If your language code isn\'t in the list, please type in by yourself. Pootling will try to set the correct language name, number of singular/plural form and plural equation for you."))
+        self.label4.setText(self.tr("Language Code"))
+        self.label3.setText(self.tr("Language name"))
+        self.SupportTeam.setWhatsThis(self.tr("<h3>Support</h3>Type support email address."))
+        self.label5.setText(self.tr("Support team"))
+        self.label.setText(self.tr("Personal Information"))
+        self.label_4.setText(self.tr("Font & Color"))
+        self.bntAdjustAllFont.setText(self.tr("Adjust All Fonts"))
+        self.bntDefaultsFont.setWhatsThis(self.tr("<h3>Defaults Font</h3>Once this button is clicked, Overview, Source, Target and Comment will be set to default font, Serif, 10."))
+        self.bntDefaultsFont.setText(self.tr("Default Font"))
+        self.bntDefaultsColor.setWhatsThis(self.tr("<h3>Defaults Color</h3>Once this button is clicked, Overview, Source, Target and Comment will be set to default color, black."))
+        self.bntDefaultsColor.setText(self.tr("Default Color"))
+        self.btnColorGlossary.setWhatsThis(self.tr("<h3>Comment Color</h3>Click this button  will show up a color dialog box where you can choose color for comment text."))
+        self.btnColorGlossary.setText(self.tr("Color"))
+        self.lblTarget.setToolTip(self.tr("Target Sample"))
+        self.lblTarget.setWhatsThis(self.tr("<h3>Target Sample</h3>This lable displayed the current font name, style, size and color sample of target dock widget."))
+        self.lblSource.setToolTip(self.tr("Source Sample"))
+        self.lblSource.setWhatsThis(self.tr("<h3>Source Sample</h3>This lable displayed the current font name, style, size and color sample of source dock widget."))
+        self.lblOverView.setToolTip(self.tr("Overview Sample"))
+        self.lblOverView.setWhatsThis(self.tr("<h3>Overview Sample</h3>This lable displayed the current font name, style, size and color sample of overview dock widget."))
+        self.bntFontOverviewHeader.setWhatsThis(self.tr("<h3>Overview Header Font</h3>Click this button  will show up a font dialog box where you can select fontname, style and size for overview header text."))
+        self.bntFontOverviewHeader.setText(self.tr("Font"))
+        self.bntFontOverview.setWhatsThis(self.tr("<h3>Overview Font</h3>Click this button  will show up a font dialog box where you can select fontname, style and size for overview text."))
+        self.bntFontOverview.setText(self.tr("Font"))
+        self.bntFontSource.setWhatsThis(self.tr("<h3>Source Font</h3>Click this button  will show up a font dialog box where you can select fontname, style and size for source text."))
+        self.bntFontSource.setText(self.tr("Font"))
+        self.bntFontTarget.setWhatsThis(self.tr("<h3>Target Font</h3>Click this button  will show up a font dialog box where you can select fontname, style and size for target text."))
+        self.bntFontTarget.setText(self.tr("Font"))
+        self.btnColorOverview.setWhatsThis(self.tr("<h3>Overview Color</h3>Click this button  will show up a color dialog box where you can choose color for overview text."))
+        self.btnColorOverview.setText(self.tr("Color"))
+        self.btnColorSource.setWhatsThis(self.tr("<h3>Source Color</h3>Click this button  will show up a color dialog box where you can choose color for source text."))
+        self.btnColorSource.setText(self.tr("Color"))
+        self.btnColorTarget.setWhatsThis(self.tr("<h3>Target Color</h3>Click this button  will show up a color dialog box where you can choose color for target text."))
+        self.btnColorTarget.setText(self.tr("Color"))
+        self.label4_3.setText(self.tr("Target"))
+        self.label2_5.setText(self.tr("Overview"))
+        self.label2_4.setText(self.tr("Overview header"))
+        self.Source_2.setText(self.tr("Source"))
+        self.lblsupportteam_2.setText(self.tr("Comment"))
+        self.lblComment.setToolTip(self.tr("Comment Sample"))
+        self.lblComment.setWhatsThis(self.tr("<h3>Comment Sample</h3>This lable displayed the current font name, style, size and color sample of comment dock widget."))
+        self.bntFontComment.setWhatsThis(self.tr("<h3>Comment Font</h3>Click this button  will show up a font dialog box where you can select fontname, style and size for comment text."))
+        self.bntFontComment.setText(self.tr("Font"))
+        self.btnColorComment.setWhatsThis(self.tr("<h3>Comment Color</h3>Click this button  will show up a color dialog box where you can choose color for comment text."))
+        self.btnColorComment.setText(self.tr("Color"))
+        self.lblsupportteam_3.setText(self.tr("TM Lookup"))
+        self.lblTM.setToolTip(self.tr("Comment Sample"))
+        self.lblTM.setWhatsThis(self.tr("<h3>Comment Sample</h3>This lable displayed the current font name, style, size and color sample of comment dock widget."))
+        self.bntFontTM.setWhatsThis(self.tr("<h3>Comment Font</h3>Click this button  will show up a font dialog box where you can select fontname, style and size for comment text."))
+        self.bntFontTM.setText(self.tr("Font"))
+        self.btnColorTM.setWhatsThis(self.tr("<h3>Comment Color</h3>Click this button  will show up a color dialog box where you can choose color for comment text."))
+        self.btnColorTM.setText(self.tr("Color"))
+        self.bntFontGlossary.setWhatsThis(self.tr("<h3>Comment Font</h3>Click this button  will show up a font dialog box where you can select fontname, style and size for comment text."))
+        self.bntFontGlossary.setText(self.tr("Font"))
+        self.lblsupportteam_4.setText(self.tr("Glossary Lookup"))
+        self.lblGlossary.setToolTip(self.tr("Comment Sample"))
+        self.lblGlossary.setWhatsThis(self.tr("<h3>Comment Sample</h3>This lable displayed the current font name, style, size and color sample of comment dock widget."))
+        self.lblOverViewHeader.setToolTip(self.tr("Overview Header Sample"))
+        self.lblOverViewHeader.setWhatsThis(self.tr("<h3>Overview Header Sample</h3>This lable displayed the current font name, style, size and color sample of overview header dock widget."))
+        self.chbDetectTerm.setText(self.tr("Detect new terminology"))
+        self.chbSuggestTranslation.setText(self.tr("Allow translation suggestion from TM"))
+        self.chbAddNewTerm.setText(self.tr("Add new terminology to glossary"))
+        self.chbMatchTerm.setText(self.tr("Alert if the terminology\'s translation doesn\'t match"))
+        self.chbChangeTerm.setText(self.tr("Possible to change translation of terminology in glossary"))
+        self.chbAutoIdentTerm.setWhatsThis(self.tr("<h3>Highlight glossary term</h3> This option is recommended to be used. You will see the green and underlined terms in TUview ( source section). It indicates that those terms are in Glossary."))
+        self.chbAutoIdentTerm.setText(self.tr("Highlight glossary term in Detail view"))
+        self.chbAutoTranslate.setWhatsThis(self.tr("<h3>Lookup translation in TM</h3> If this option is checked, you will get a TM Lookup Table soon after clicking on OK button. From that table, you will see the relevent translated unit(s) that had already been built and stored in memory."))
+        self.chbAutoTranslate.setText(self.tr("Lookup translation in TM"))
+        self.chbIgnoreFuzzy.setWhatsThis(self.tr("<h3>Ignore Fuzzy Strings</h3> If this option is checked, the fuzzy string will not be searching for from the Translation Memory."))
+        self.chbIgnoreFuzzy.setText(self.tr("Don\'t lookup fuzzy strings"))
+        self.chbAddTraslation.setWhatsThis(self.tr("<h3>Add new Translation to Translation Memory</h3> If this option is checked, all new translation units will be added to the Translation Memory for later use after saving."))
+        self.chbAddTraslation.setText(self.tr("Add new translation to TM"))
+        self.chbEditTraslation.setText(self.tr("Possible to change translation in TM"))
+        self.label_5.setText(self.tr("Options for Using Translation Memory"))
+        self.label_6.setText(self.tr("Options for Using Glossary"))
+        self.chkHeaderAuto.setWhatsThis(self.tr("<h3>Update header on save</h3>Check this opton to automatically have your header updated while saving. The information will be querried from Personalize tab. "))
+        self.chkHeaderAuto.setText(self.tr("Update header on save"))
+        self.label_7.setText(self.tr("Options for Saving File"))
+        self.chkCursorHome.setWhatsThis(self.tr("<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+        "p, li { white-space: pre-wrap; }\n"
+        "</style></head><body style=\" font-family:\'Sans Serif\'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;\">\n"
+        "<p style=\" margin-top:14px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:large; font-weight:600;\"><span style=\" font-size:large;\">Options for Editor</span></p>\n"
+        "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Set to move cursor to the beginning of string after copied source to target, otherwise keep the cursor untouched.</p></body></html>"))
+        self.chkCursorHome.setText(self.tr("Move cursor to the beginning of string after copied source to target."))
+        self.label_8.setText(self.tr("Options for Editor"))
+        self.okButton.setText(self.tr("&OK"))
+        self.cancelButton.setText(self.tr("&Cancel"))
 
 
 if __name__ == "__main__":
-    import sys
     app = QtGui.QApplication(sys.argv)
     frmPreference = QtGui.QDialog()
     ui = Ui_frmPreference()

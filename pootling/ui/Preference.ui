@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>593</width>
-    <height>389</height>
+    <width>570</width>
+    <height>372</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -37,7 +37,7 @@
      </property>
      <layout class="QGridLayout" >
       <property name="margin" >
-       <number>9</number>
+       <number>0</number>
       </property>
       <property name="spacing" >
        <number>6</number>
@@ -92,10 +92,10 @@
              <enum>Qt::NoFocus</enum>
             </property>
             <property name="frameShape" >
-             <enum>QFrame::StyledPanel</enum>
+             <enum>QFrame::NoFrame</enum>
             </property>
-            <property name="frameShadow" >
-             <enum>QFrame::Raised</enum>
+            <property name="lineWidth" >
+             <number>1</number>
             </property>
             <layout class="QGridLayout" >
              <property name="margin" >
@@ -363,67 +363,14 @@
           <property name="spacing" >
            <number>6</number>
           </property>
-          <item row="1" column="0" colspan="4" >
+          <item row="1" column="0" >
            <widget class="Line" name="line_2" >
             <property name="orientation" >
              <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
-          <item row="3" column="1" >
-           <widget class="QPushButton" name="bntAdjustAllFont" >
-            <property name="text" >
-             <string>Adjust All Fonts</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0" >
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" >
-             <size>
-              <width>20</width>
-              <height>61</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="3" column="3" >
-           <widget class="QPushButton" name="bntDefaultsColor" >
-            <property name="whatsThis" >
-             <string>&lt;h3>Defaults Color&lt;/h3>Once this button is clicked, Overview, Source, Target and Comment will be set to default color, black.</string>
-            </property>
-            <property name="text" >
-             <string>Default Color</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="2" >
-           <widget class="QPushButton" name="bntDefaultsFont" >
-            <property name="whatsThis" >
-             <string>&lt;h3>Defaults Font&lt;/h3>Once this button is clicked, Overview, Source, Target and Comment will be set to default font, Serif, 10.</string>
-            </property>
-            <property name="text" >
-             <string>Default Font</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0" >
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" >
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="0" colspan="4" >
+          <item row="0" column="0" >
            <widget class="QLabel" name="label_4" >
             <property name="font" >
              <font>
@@ -436,7 +383,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0" colspan="4" >
+          <item row="2" column="0" >
            <widget class="QFrame" name="frame2" >
             <property name="sizePolicy" >
              <sizepolicy>
@@ -446,12 +393,6 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="frameShape" >
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="frameShadow" >
-             <enum>QFrame::Raised</enum>
-            </property>
             <layout class="QGridLayout" >
              <property name="margin" >
               <number>9</number>
@@ -459,68 +400,30 @@
              <property name="spacing" >
               <number>6</number>
              </property>
-             <item row="0" column="1" >
-              <widget class="QLabel" name="lblOverViewHeader" >
-               <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>1</vsizetype>
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="toolTip" >
-                <string>Overview Header Sample</string>
-               </property>
-               <property name="whatsThis" >
-                <string>&lt;h3>Overview Header Sample&lt;/h3>This lable displayed the current font name, style, size and color sample of overview header dock widget.</string>
-               </property>
-               <property name="frameShape" >
-                <enum>QFrame::StyledPanel</enum>
-               </property>
+             <item row="7" column="1" >
+              <widget class="QPushButton" name="bntAdjustAllFont" >
                <property name="text" >
-                <string/>
+                <string>Adjust All Fonts</string>
                </property>
               </widget>
              </item>
-             <item row="6" column="1" >
-              <widget class="QLabel" name="lblGlossary" >
-               <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>1</vsizetype>
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="toolTip" >
-                <string>Comment Sample</string>
-               </property>
+             <item row="7" column="2" >
+              <widget class="QPushButton" name="bntDefaultsFont" >
                <property name="whatsThis" >
-                <string>&lt;h3>Comment Sample&lt;/h3>This lable displayed the current font name, style, size and color sample of comment dock widget.</string>
-               </property>
-               <property name="frameShape" >
-                <enum>QFrame::StyledPanel</enum>
+                <string>&lt;h3>Defaults Font&lt;/h3>Once this button is clicked, Overview, Source, Target and Comment will be set to default font, Serif, 10.</string>
                </property>
                <property name="text" >
-                <string/>
+                <string>Default Font</string>
                </property>
               </widget>
              </item>
-             <item row="6" column="0" >
-              <widget class="QLabel" name="lblsupportteam_4" >
-               <property name="text" >
-                <string>Glossary Lookup</string>
-               </property>
-              </widget>
-             </item>
-             <item row="6" column="2" >
-              <widget class="QPushButton" name="bntFontGlossary" >
+             <item row="7" column="3" >
+              <widget class="QPushButton" name="bntDefaultsColor" >
                <property name="whatsThis" >
-                <string>&lt;h3>Comment Font&lt;/h3>Click this button  will show up a font dialog box where you can select fontname, style and size for comment text.</string>
+                <string>&lt;h3>Defaults Color&lt;/h3>Once this button is clicked, Overview, Source, Target and Comment will be set to default color, black.</string>
                </property>
                <property name="text" >
-                <string>Font</string>
+                <string>Default Color</string>
                </property>
               </widget>
              </item>
@@ -534,28 +437,8 @@
                </property>
               </widget>
              </item>
-             <item row="5" column="3" >
-              <widget class="QPushButton" name="btnColorTM" >
-               <property name="whatsThis" >
-                <string>&lt;h3>Comment Color&lt;/h3>Click this button  will show up a color dialog box where you can choose color for comment text.</string>
-               </property>
-               <property name="text" >
-                <string>Color</string>
-               </property>
-              </widget>
-             </item>
-             <item row="5" column="2" >
-              <widget class="QPushButton" name="bntFontTM" >
-               <property name="whatsThis" >
-                <string>&lt;h3>Comment Font&lt;/h3>Click this button  will show up a font dialog box where you can select fontname, style and size for comment text.</string>
-               </property>
-               <property name="text" >
-                <string>Font</string>
-               </property>
-              </widget>
-             </item>
-             <item row="5" column="1" >
-              <widget class="QLabel" name="lblTM" >
+             <item row="3" column="1" >
+              <widget class="QLabel" name="lblTarget" >
                <property name="sizePolicy" >
                 <sizepolicy>
                  <hsizetype>7</hsizetype>
@@ -565,208 +448,10 @@
                 </sizepolicy>
                </property>
                <property name="toolTip" >
-                <string>Comment Sample</string>
+                <string>Target Sample</string>
                </property>
                <property name="whatsThis" >
-                <string>&lt;h3>Comment Sample&lt;/h3>This lable displayed the current font name, style, size and color sample of comment dock widget.</string>
-               </property>
-               <property name="frameShape" >
-                <enum>QFrame::StyledPanel</enum>
-               </property>
-               <property name="text" >
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item row="5" column="0" >
-              <widget class="QLabel" name="lblsupportteam_3" >
-               <property name="text" >
-                <string>TM Lookup</string>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="3" >
-              <widget class="QPushButton" name="btnColorComment" >
-               <property name="whatsThis" >
-                <string>&lt;h3>Comment Color&lt;/h3>Click this button  will show up a color dialog box where you can choose color for comment text.</string>
-               </property>
-               <property name="text" >
-                <string>Color</string>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="2" >
-              <widget class="QPushButton" name="bntFontComment" >
-               <property name="whatsThis" >
-                <string>&lt;h3>Comment Font&lt;/h3>Click this button  will show up a font dialog box where you can select fontname, style and size for comment text.</string>
-               </property>
-               <property name="text" >
-                <string>Font</string>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="1" >
-              <widget class="QLabel" name="lblComment" >
-               <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>1</vsizetype>
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="toolTip" >
-                <string>Comment Sample</string>
-               </property>
-               <property name="whatsThis" >
-                <string>&lt;h3>Comment Sample&lt;/h3>This lable displayed the current font name, style, size and color sample of comment dock widget.</string>
-               </property>
-               <property name="frameShape" >
-                <enum>QFrame::StyledPanel</enum>
-               </property>
-               <property name="text" >
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="0" >
-              <widget class="QLabel" name="lblsupportteam_2" >
-               <property name="text" >
-                <string>Comment</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0" >
-              <widget class="QLabel" name="Source_2" >
-               <property name="text" >
-                <string>Source</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0" >
-              <widget class="QLabel" name="label2_4" >
-               <property name="text" >
-                <string>Overview header</string>
-               </property>
-               <property name="scaledContents" >
-                <bool>true</bool>
-               </property>
-               <property name="wordWrap" >
-                <bool>true</bool>
-               </property>
-               <property name="indent" >
-                <number>0</number>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0" >
-              <widget class="QLabel" name="label2_5" >
-               <property name="text" >
-                <string>Overview</string>
-               </property>
-               <property name="scaledContents" >
-                <bool>true</bool>
-               </property>
-               <property name="wordWrap" >
-                <bool>true</bool>
-               </property>
-               <property name="indent" >
-                <number>0</number>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="0" >
-              <widget class="QLabel" name="label4_3" >
-               <property name="text" >
-                <string>Target</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="3" >
-              <widget class="QPushButton" name="btnColorTarget" >
-               <property name="whatsThis" >
-                <string>&lt;h3>Target Color&lt;/h3>Click this button  will show up a color dialog box where you can choose color for target text.</string>
-               </property>
-               <property name="text" >
-                <string>Color</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="3" >
-              <widget class="QPushButton" name="btnColorSource" >
-               <property name="whatsThis" >
-                <string>&lt;h3>Source Color&lt;/h3>Click this button  will show up a color dialog box where you can choose color for source text.</string>
-               </property>
-               <property name="text" >
-                <string>Color</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="3" >
-              <widget class="QPushButton" name="btnColorOverview" >
-               <property name="whatsThis" >
-                <string>&lt;h3>Overview Color&lt;/h3>Click this button  will show up a color dialog box where you can choose color for overview text.</string>
-               </property>
-               <property name="text" >
-                <string>Color</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="2" >
-              <widget class="QPushButton" name="bntFontTarget" >
-               <property name="whatsThis" >
-                <string>&lt;h3>Target Font&lt;/h3>Click this button  will show up a font dialog box where you can select fontname, style and size for target text.</string>
-               </property>
-               <property name="text" >
-                <string>Font</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="2" >
-              <widget class="QPushButton" name="bntFontSource" >
-               <property name="whatsThis" >
-                <string>&lt;h3>Source Font&lt;/h3>Click this button  will show up a font dialog box where you can select fontname, style and size for source text.</string>
-               </property>
-               <property name="text" >
-                <string>Font</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="2" >
-              <widget class="QPushButton" name="bntFontOverview" >
-               <property name="whatsThis" >
-                <string>&lt;h3>Overview Font&lt;/h3>Click this button  will show up a font dialog box where you can select fontname, style and size for overview text.</string>
-               </property>
-               <property name="text" >
-                <string>Font</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="2" >
-              <widget class="QPushButton" name="bntFontOverviewHeader" >
-               <property name="whatsThis" >
-                <string>&lt;h3>Overview Header Font&lt;/h3>Click this button  will show up a font dialog box where you can select fontname, style and size for overview header text.</string>
-               </property>
-               <property name="text" >
-                <string>Font</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1" >
-              <widget class="QLabel" name="lblOverView" >
-               <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>1</vsizetype>
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="toolTip" >
-                <string>Overview Sample</string>
-               </property>
-               <property name="whatsThis" >
-                <string>&lt;h3>Overview Sample&lt;/h3>This lable displayed the current font name, style, size and color sample of overview dock widget.</string>
+                <string>&lt;h3>Target Sample&lt;/h3>This lable displayed the current font name, style, size and color sample of target dock widget.</string>
                </property>
                <property name="frameShape" >
                 <enum>QFrame::StyledPanel</enum>
@@ -800,8 +485,8 @@
                </property>
               </widget>
              </item>
-             <item row="3" column="1" >
-              <widget class="QLabel" name="lblTarget" >
+             <item row="1" column="1" >
+              <widget class="QLabel" name="lblOverView" >
                <property name="sizePolicy" >
                 <sizepolicy>
                  <hsizetype>7</hsizetype>
@@ -811,10 +496,293 @@
                 </sizepolicy>
                </property>
                <property name="toolTip" >
-                <string>Target Sample</string>
+                <string>Overview Sample</string>
                </property>
                <property name="whatsThis" >
-                <string>&lt;h3>Target Sample&lt;/h3>This lable displayed the current font name, style, size and color sample of target dock widget.</string>
+                <string>&lt;h3>Overview Sample&lt;/h3>This lable displayed the current font name, style, size and color sample of overview dock widget.</string>
+               </property>
+               <property name="frameShape" >
+                <enum>QFrame::StyledPanel</enum>
+               </property>
+               <property name="text" >
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2" >
+              <widget class="QPushButton" name="bntFontOverviewHeader" >
+               <property name="whatsThis" >
+                <string>&lt;h3>Overview Header Font&lt;/h3>Click this button  will show up a font dialog box where you can select fontname, style and size for overview header text.</string>
+               </property>
+               <property name="text" >
+                <string>Font</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2" >
+              <widget class="QPushButton" name="bntFontOverview" >
+               <property name="whatsThis" >
+                <string>&lt;h3>Overview Font&lt;/h3>Click this button  will show up a font dialog box where you can select fontname, style and size for overview text.</string>
+               </property>
+               <property name="text" >
+                <string>Font</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="2" >
+              <widget class="QPushButton" name="bntFontSource" >
+               <property name="whatsThis" >
+                <string>&lt;h3>Source Font&lt;/h3>Click this button  will show up a font dialog box where you can select fontname, style and size for source text.</string>
+               </property>
+               <property name="text" >
+                <string>Font</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="2" >
+              <widget class="QPushButton" name="bntFontTarget" >
+               <property name="whatsThis" >
+                <string>&lt;h3>Target Font&lt;/h3>Click this button  will show up a font dialog box where you can select fontname, style and size for target text.</string>
+               </property>
+               <property name="text" >
+                <string>Font</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="3" >
+              <widget class="QPushButton" name="btnColorOverview" >
+               <property name="whatsThis" >
+                <string>&lt;h3>Overview Color&lt;/h3>Click this button  will show up a color dialog box where you can choose color for overview text.</string>
+               </property>
+               <property name="text" >
+                <string>Color</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="3" >
+              <widget class="QPushButton" name="btnColorSource" >
+               <property name="whatsThis" >
+                <string>&lt;h3>Source Color&lt;/h3>Click this button  will show up a color dialog box where you can choose color for source text.</string>
+               </property>
+               <property name="text" >
+                <string>Color</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="3" >
+              <widget class="QPushButton" name="btnColorTarget" >
+               <property name="whatsThis" >
+                <string>&lt;h3>Target Color&lt;/h3>Click this button  will show up a color dialog box where you can choose color for target text.</string>
+               </property>
+               <property name="text" >
+                <string>Color</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0" >
+              <widget class="QLabel" name="label4_3" >
+               <property name="text" >
+                <string>Target</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0" >
+              <widget class="QLabel" name="label2_5" >
+               <property name="text" >
+                <string>Overview</string>
+               </property>
+               <property name="scaledContents" >
+                <bool>true</bool>
+               </property>
+               <property name="wordWrap" >
+                <bool>true</bool>
+               </property>
+               <property name="indent" >
+                <number>0</number>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0" >
+              <widget class="QLabel" name="label2_4" >
+               <property name="text" >
+                <string>Overview header</string>
+               </property>
+               <property name="scaledContents" >
+                <bool>true</bool>
+               </property>
+               <property name="wordWrap" >
+                <bool>true</bool>
+               </property>
+               <property name="indent" >
+                <number>0</number>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0" >
+              <widget class="QLabel" name="Source_2" >
+               <property name="text" >
+                <string>Source</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0" >
+              <widget class="QLabel" name="lblsupportteam_2" >
+               <property name="text" >
+                <string>Comment</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="1" >
+              <widget class="QLabel" name="lblComment" >
+               <property name="sizePolicy" >
+                <sizepolicy>
+                 <hsizetype>7</hsizetype>
+                 <vsizetype>1</vsizetype>
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="toolTip" >
+                <string>Comment Sample</string>
+               </property>
+               <property name="whatsThis" >
+                <string>&lt;h3>Comment Sample&lt;/h3>This lable displayed the current font name, style, size and color sample of comment dock widget.</string>
+               </property>
+               <property name="frameShape" >
+                <enum>QFrame::StyledPanel</enum>
+               </property>
+               <property name="text" >
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="2" >
+              <widget class="QPushButton" name="bntFontComment" >
+               <property name="whatsThis" >
+                <string>&lt;h3>Comment Font&lt;/h3>Click this button  will show up a font dialog box where you can select fontname, style and size for comment text.</string>
+               </property>
+               <property name="text" >
+                <string>Font</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="3" >
+              <widget class="QPushButton" name="btnColorComment" >
+               <property name="whatsThis" >
+                <string>&lt;h3>Comment Color&lt;/h3>Click this button  will show up a color dialog box where you can choose color for comment text.</string>
+               </property>
+               <property name="text" >
+                <string>Color</string>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="0" >
+              <widget class="QLabel" name="lblsupportteam_3" >
+               <property name="text" >
+                <string>TM Lookup</string>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="1" >
+              <widget class="QLabel" name="lblTM" >
+               <property name="sizePolicy" >
+                <sizepolicy>
+                 <hsizetype>7</hsizetype>
+                 <vsizetype>1</vsizetype>
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="toolTip" >
+                <string>Comment Sample</string>
+               </property>
+               <property name="whatsThis" >
+                <string>&lt;h3>Comment Sample&lt;/h3>This lable displayed the current font name, style, size and color sample of comment dock widget.</string>
+               </property>
+               <property name="frameShape" >
+                <enum>QFrame::StyledPanel</enum>
+               </property>
+               <property name="text" >
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="2" >
+              <widget class="QPushButton" name="bntFontTM" >
+               <property name="whatsThis" >
+                <string>&lt;h3>Comment Font&lt;/h3>Click this button  will show up a font dialog box where you can select fontname, style and size for comment text.</string>
+               </property>
+               <property name="text" >
+                <string>Font</string>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="3" >
+              <widget class="QPushButton" name="btnColorTM" >
+               <property name="whatsThis" >
+                <string>&lt;h3>Comment Color&lt;/h3>Click this button  will show up a color dialog box where you can choose color for comment text.</string>
+               </property>
+               <property name="text" >
+                <string>Color</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="2" >
+              <widget class="QPushButton" name="bntFontGlossary" >
+               <property name="whatsThis" >
+                <string>&lt;h3>Comment Font&lt;/h3>Click this button  will show up a font dialog box where you can select fontname, style and size for comment text.</string>
+               </property>
+               <property name="text" >
+                <string>Font</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="0" >
+              <widget class="QLabel" name="lblsupportteam_4" >
+               <property name="text" >
+                <string>Glossary Lookup</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="1" >
+              <widget class="QLabel" name="lblGlossary" >
+               <property name="sizePolicy" >
+                <sizepolicy>
+                 <hsizetype>7</hsizetype>
+                 <vsizetype>1</vsizetype>
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="toolTip" >
+                <string>Comment Sample</string>
+               </property>
+               <property name="whatsThis" >
+                <string>&lt;h3>Comment Sample&lt;/h3>This lable displayed the current font name, style, size and color sample of comment dock widget.</string>
+               </property>
+               <property name="frameShape" >
+                <enum>QFrame::StyledPanel</enum>
+               </property>
+               <property name="text" >
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1" >
+              <widget class="QLabel" name="lblOverViewHeader" >
+               <property name="sizePolicy" >
+                <sizepolicy>
+                 <hsizetype>7</hsizetype>
+                 <vsizetype>1</vsizetype>
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="toolTip" >
+                <string>Overview Header Sample</string>
+               </property>
+               <property name="whatsThis" >
+                <string>&lt;h3>Overview Header Sample&lt;/h3>This lable displayed the current font name, style, size and color sample of overview header dock widget.</string>
                </property>
                <property name="frameShape" >
                 <enum>QFrame::StyledPanel</enum>
@@ -826,6 +794,19 @@
              </item>
             </layout>
            </widget>
+          </item>
+          <item row="3" column="0" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </widget>
@@ -859,12 +840,6 @@
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
-            </property>
-            <property name="frameShape" >
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="frameShadow" >
-             <enum>QFrame::Raised</enum>
             </property>
             <layout class="QGridLayout" >
              <property name="margin" >
@@ -1000,12 +975,6 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="frameShape" >
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="frameShadow" >
-             <enum>QFrame::Raised</enum>
-            </property>
             <layout class="QGridLayout" >
              <property name="margin" >
               <number>0</number>
@@ -1138,12 +1107,6 @@
           </property>
           <item row="2" column="0" >
            <widget class="QFrame" name="frame_6" >
-            <property name="frameShape" >
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="frameShadow" >
-             <enum>QFrame::Raised</enum>
-            </property>
             <layout class="QGridLayout" >
              <property name="margin" >
               <number>0</number>
@@ -1241,12 +1204,6 @@
           </item>
           <item row="2" column="0" >
            <widget class="QFrame" name="frame_7" >
-            <property name="frameShape" >
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="frameShadow" >
-             <enum>QFrame::Raised</enum>
-            </property>
             <layout class="QGridLayout" >
              <property name="margin" >
               <number>0</number>
@@ -1265,10 +1222,14 @@
                 </sizepolicy>
                </property>
                <property name="whatsThis" >
-                <string>&lt;h3>Update header on save&lt;/h3>Check this opton to automatically have your header updated while saving. The information will be querried from Personalize tab. </string>
+                <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">
+&lt;p style=" margin-top:14px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:large; font-weight:600;">&lt;span style=" font-size:large;">Options for Editor&lt;/span>&lt;/p>
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Set to move cursor to the beginning of string after copied source to target, otherwise keep the cursor untouched.&lt;/p>&lt;/body>&lt;/html></string>
                </property>
                <property name="text" >
-                <string>Cursor to the beginning of first line after Copy Source To Target.</string>
+                <string>Move cursor to the beginning of string after copied source to target.</string>
                </property>
                <property name="checked" >
                 <bool>true</bool>
@@ -1401,6 +1362,11 @@
   <tabstop>btnColorTarget</tabstop>
   <tabstop>bntFontComment</tabstop>
   <tabstop>btnColorComment</tabstop>
+  <tabstop>bntFontTM</tabstop>
+  <tabstop>btnColorTM</tabstop>
+  <tabstop>bntFontGlossary</tabstop>
+  <tabstop>btnColorGlossary</tabstop>
+  <tabstop>bntAdjustAllFont</tabstop>
   <tabstop>bntDefaultsFont</tabstop>
   <tabstop>bntDefaultsColor</tabstop>
   <tabstop>chbAutoTranslate</tabstop>
@@ -1414,6 +1380,7 @@
   <tabstop>chbAddNewTerm</tabstop>
   <tabstop>chbSuggestTranslation</tabstop>
   <tabstop>chkHeaderAuto</tabstop>
+  <tabstop>chkCursorHome</tabstop>
   <tabstop>okButton</tabstop>
   <tabstop>cancelButton</tabstop>
  </tabstops>
