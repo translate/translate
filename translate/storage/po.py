@@ -329,13 +329,13 @@ class pounit(base.TranslationUnit):
       newpo.obsoletemsgstr = self.obsoletemsgstr[:]
     return newpo
 
-  def msgidlen(self):
+  def _msgidlen(self):
     if self.hasplural():
       return len(unquotefrompo(self.msgid).strip()) + len(unquotefrompo(self.msgid_plural).strip())
     else:
       return len(unquotefrompo(self.msgid).strip())
 
-  def msgstrlen(self):
+  def _msgstrlen(self):
     if isinstance(self.msgstr, dict):
       combinedstr = "\n".join([unquotefrompo(msgstr).strip() for msgstr in self.msgstr.itervalues()])
       return len(combinedstr.strip())
@@ -421,7 +421,7 @@ class pounit(base.TranslationUnit):
         self.markfuzzy()
 
   def isheader(self):
-    #return (self.msgidlen() == 0) and (self.msgstrlen() > 0) and (len(self.msgidcomments) == 0)
+    #return (self._msgidlen() == 0) and (self._msgstrlen() > 0) and (len(self.msgidcomments) == 0)
     #rewritten here for performance:
     return ((self.msgid == [] or self.msgid == ['""']) and 
             not (self.msgstr == [] or self.msgstr == ['""']) 
@@ -430,7 +430,7 @@ class pounit(base.TranslationUnit):
   def isblank(self):
     if self.isheader() or len(self.msgidcomments):
       return False
-    if (self.msgidlen() == 0) and (self.msgstrlen() == 0):
+    if (self._msgidlen() == 0) and (self._msgstrlen() == 0):
       return True
     return False
     # TODO: remove:
