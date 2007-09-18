@@ -64,9 +64,10 @@ def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similari
           if unit.isobsolete():
             unit.resurrect()
         try:
-          fuzzyfilematcher = match.matcher(templatepo, max_candidates=1, min_similarity=min_similarity, max_length=1000)
+          fuzzyfilematcher = match.matcher(templatepo, max_candidates=1, min_similarity=min_similarity, max_length=1000, usefuzzy=True)
           fuzzyfilematcher.addpercentage = False
         except ValueError:
+          # Probably no usable units
           pass
 
     templatepo.makeindex()
