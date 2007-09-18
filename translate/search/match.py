@@ -41,7 +41,7 @@ def sourcelencmp(x, y):
 
 class matcher:
     """A class that will do matching and store configuration for the matching process"""
-    def __init__(self, store, max_candidates=10, min_similarity=75, max_length=70, comparer=None):
+    def __init__(self, store, max_candidates=10, min_similarity=75, max_length=70, comparer=None, usefuzzy=False):
         """max_candidates is the maximum number of candidates that should be assembled,
         min_similarity is the minimum similarity that must be attained to be included in
         the result, comparer is an optional Comparer with similarity() function"""
@@ -49,6 +49,7 @@ class matcher:
             comparer = lshtein.LevenshteinComparer(max_length)
         self.comparer = comparer
         self.setparameters(max_candidates, min_similarity, max_length)
+        self.usefuzzy = usefuzzy
         self.inittm(store)
         self.addpercentage = True
         
@@ -57,7 +58,7 @@ class matcher:
         #TODO: We might want to consider more attributes, such as approved, reviewed, etc.
         source = unit.source
         target = unit.target
-        if source and target and not unit.isfuzzy():
+        if source and target and (self.usefuzzy or not unit.isfuzzy()):
             if source in self.existingunits and self.existingunits[source] == target:
                 return False
             else:
@@ -106,6 +107,7 @@ class matcher:
                 simpleunit.source = candidate.source
                 simpleunit.target = candidate.target
             simpleunit.addnote(candidate.getnotes(origin="translator"))
+            simpleunit.fuzzy = candidate.isfuzzy()
             if store:
                 simpleunit.filepath = store.filepath
                 simpleunit.translator = store.translator
@@ -195,6 +197,7 @@ class matcher:
                 candidate.target = candidate.orig_target
             newunit = po.pounit(candidate.source)
             newunit.target = candidate.target
+            newunit.markfuzzy(candidate.fuzzy)
             newunit.filepath = candidate.filepath
             newunit.translator = candidate.translator
             newunit.date = candidate.date
