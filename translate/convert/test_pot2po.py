@@ -52,6 +52,32 @@ class TestPOT2PO:
         newpo = self.convertpot(potsource, posource)
         assert str(self.singleunit(newpo)) == posource
 
+    def test_merging_plurals_with_fuzzy_matching(self):
+        """test that when we merge PO files with a fuzzy message that it remains fuzzy"""
+        potsource = r'''#: file.cpp:2
+msgid "%d manual"
+msgid_plural "%d manuals"
+msgstr[0] ""
+msgstr[1] ""
+'''
+        posource = r'''#: file.cpp:3
+#, fuzzy
+msgid "%d manual"
+msgid_plural "%d manuals"
+msgstr[0] "%d handleiding."
+msgstr[1] "%d handleidings."
+'''
+        # The #: comment and msgid's are different between the pot and the po
+        poexpected = r'''#: file.cpp:2
+#, fuzzy
+msgid "%d manual"
+msgid_plural "%d manuals"
+msgstr[0] "%d handleiding."
+msgstr[1] "%d handleidings."
+'''
+        newpo = self.convertpot(potsource, posource)
+        assert str(self.singleunit(newpo)) == poexpected
+
     def xtest_merging_msgid_change(self):
         """tests that if the msgid changes but the location stays the same that we merge"""
         potsource = '''#: simple.label\n#: simple.accesskey\nmsgid "Its &hard coding a newline.\\n"\nmsgstr ""\n'''
