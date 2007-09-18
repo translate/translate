@@ -895,9 +895,9 @@ class pofile(base.TranslationStore, poheader.poheader):
       if thepo.isheader():
         uniqueelements.append(thepo)
       if duplicatestyle.startswith("msgid_comment"):
-        msgid = unquotefrompo(thepo.msgidcomments) + unquotefrompo(thepo.msgid)
+        msgid = thepo._extract_msgidcomments() + thepo.source
       else:
-        msgid = unquotefrompo(thepo.msgid)
+        msgid = thepo.source
       if duplicatestyle == "msgid_comment_all":
         addcomment(thepo)
         uniqueelements.append(thepo)
