@@ -439,7 +439,7 @@ class pounit(base.TranslationUnit):
 
   def isblankmsgstr(self):
     """checks whether the msgstr is blank"""
-    return self.msgstrlen() == 0
+    return self._msgstrlen() == 0
 
   def hastypecomment(self, typecomment):
     """check whether the given type comment is present"""
