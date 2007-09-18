@@ -892,14 +892,13 @@ class pofile(base.TranslationStore, poheader.poheader):
       thepo.msgidcomments.append('"_: %s\\n"' % " ".join(thepo.getlocations()))
       markedpos.append(thepo)
     for thepo in self.units:
+      if thepo.isheader():
+        uniqueelements.append(thepo)
       if duplicatestyle.startswith("msgid_comment"):
         msgid = unquotefrompo(thepo.msgidcomments) + unquotefrompo(thepo.msgid)
       else:
         msgid = unquotefrompo(thepo.msgid)
-      if thepo.isheader():
-        # header msgids shouldn't be merged...
-        uniqueelements.append(thepo)
-      elif duplicatestyle == "msgid_comment_all":
+      if duplicatestyle == "msgid_comment_all":
         addcomment(thepo)
         uniqueelements.append(thepo)
       elif msgid in msgiddict:
