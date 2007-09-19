@@ -38,6 +38,28 @@ class TestPOT2PO:
         newpo = self.convertpot(potsource)
         assert str(self.singleunit(newpo)) == potsource
 
+    def test_convertpot_blank_plurals(self):
+        """checks that the convertpot function is working for initialising plurals correctly"""
+        potsource = r'''msgid ""
+msgstr""
+
+msgid "%d manual"
+msgid_plural "%d manuals"
+msgstr[0] ""
+msgstr[1] ""
+'''
+        posource = r'''msgid ""
+msgstr""
+"Plural-Forms: nplurals=1; plural=0;\n"
+'''
+
+        poexpected = r'''msgid "%d manual"
+msgid_plural "%d manuals"
+msgstr[0] ""
+'''
+        newpo = self.convertpot(potsource, posource)
+        assert str(self.singleunit(newpo)) == poexpected
+
     def test_merging_simple(self):
         """checks that the convertpot function is working for a simple merge"""
         potsource = '''#: simple.label\n#: simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n'''
