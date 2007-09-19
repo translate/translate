@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # 
-# Copyright 2004-2006 Zuza Software Foundation
+# Copyright 2004-2007 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
@@ -24,6 +24,7 @@
 from translate.storage import po
 from translate.storage import factory
 from translate.search import match
+from translate.misc.multistring import multistring
 
 # We don't want to reinitialise the TM each time, so let's store it here.
 tmmatcher = None
@@ -154,13 +155,17 @@ def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similari
             fuzzycandidates = fuzzyglobalmatcher.matches(inputpotunit.source)
             if fuzzycandidates:
               inputpotunit.merge(fuzzycandidates[0])
-        outputpo.addunit(inputpotunit)
       else:
         if fuzzyglobalmatcher:
           fuzzycandidates = fuzzyglobalmatcher.matches(inputpotunit.source)
           if fuzzycandidates:
             inputpotunit.merge(fuzzycandidates[0])
-        outputpo.addunit(inputpotunit)
+      if inputpotunit.hasplural() and len(inputpotunit.target) == 0:
+        # Let's ensure that we have the correct number of plural forms:
+        nplurals, plural = outputpo.getheaderplural()
+        if nplurals.isdigit() and nplurals != '2':
+          inputpotunit.target = multistring([""]*int(nplurals))
+      outputpo.addunit(inputpotunit)
 
   #Let's take care of obsoleted messages
   if templatepofile:
