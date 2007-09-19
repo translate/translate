@@ -38,7 +38,7 @@ class po2xliff:
     else:
       unit = outputstore.addsourceunit(source, filename, True)
       unit.target = target
-      #Explicetely marking the fuzzy state will ensure that normal (translated)
+      #Explicitly marking the fuzzy state will ensure that normal (translated)
       #units in the PO file end up as approved in the XLIFF file.
       if target:
           unit.markfuzzy(inputunit.isfuzzy())
