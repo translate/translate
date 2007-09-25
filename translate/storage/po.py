@@ -891,9 +891,11 @@ class pofile(base.TranslationStore, poheader.poheader):
     def addcomment(thepo):
       thepo.msgidcomments.append('"_: %s\\n"' % " ".join(thepo.getlocations()))
       markedpos.append(thepo)
+
     for thepo in self.units:
       if thepo.isheader():
         uniqueelements.append(thepo)
+        continue
       if duplicatestyle.startswith("msgid_comment"):
         msgid = thepo._extract_msgidcomments() + thepo.source
       else:
