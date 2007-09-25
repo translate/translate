@@ -94,12 +94,9 @@ def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similari
       else:
         kwargs[key] = value
   fuzzyglobalmatcher = None
-  if fuzzymatching:
-    try:
-      fuzzyglobalmatcher = memory(tm, max_candidates=1, min_similarity=min_similarity, max_length=1000)
-      fuzzyglobalmatcher.addpercentage = False
-    except ValueError:
-      pass
+  if fuzzymatching and tm:
+    fuzzyglobalmatcher = memory(tm, max_candidates=1, min_similarity=min_similarity, max_length=1000)
+    fuzzyglobalmatcher.addpercentage = False
   inputheadervalues = inputpot.parseheader()
   for key, value in inputheadervalues.iteritems():
     if key in ("Project-Id-Version", "Last-Translator", "Language-Team", "PO-Revision-Date", "Content-Type", "Content-Transfer-Encoding", "Plural-Forms"):
