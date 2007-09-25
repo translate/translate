@@ -160,7 +160,7 @@ def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similari
       if inputpotunit.hasplural() and len(inputpotunit.target) == 0:
         # Let's ensure that we have the correct number of plural forms:
         nplurals, plural = outputpo.getheaderplural()
-        if nplurals.isdigit() and nplurals != '2':
+        if nplurals and nplurals.isdigit() and nplurals != '2':
           inputpotunit.target = multistring([""]*int(nplurals))
       outputpo.addunit(inputpotunit)
 
