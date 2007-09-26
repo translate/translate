@@ -54,7 +54,7 @@ decompressclass = {
 if BZ2File:
     decompressclass['bz2'] = BZ2File
 
-def guessextention(storefile):
+def _guessextention(storefile):
     """Guesses the type of a file object by looking at the first few characters.
     The return value is a file extention ."""
     start = storefile.read(200).strip()
@@ -67,17 +67,17 @@ def guessextention(storefile):
     storefile.seek(0)
     return extention
 
-def getdummyname(storefile):
+def _getdummyname(storefile):
     """Provides a dummy name for a file object without a name attribute, by guessing the file type."""
-    return 'dummy.' + guessextention(storefile)
+    return 'dummy.' + _guessextention(storefile)
 
-def getname(storefile):
+def _getname(storefile):
     """returns the filename"""
     if storefile is None:
         raise ValueError("This method cannot magically produce a filename when given None as input.")
     if not isinstance(storefile, basestring):
         if not hasattr(storefile, "name"):
-            storefilename = getdummyname(storefile)
+            storefilename = _getdummyname(storefile)
         else:
             storefilename = storefile.name
     else:
@@ -87,7 +87,7 @@ def getname(storefile):
 def getclass(storefile, ignore=None):
     """Factory that returns the applicable class for the type of file presented.
     Specify ignore to ignore some part at the back of the name (like .gz). """
-    storefilename = getname(storefile)
+    storefilename = _getname(storefile)
     if ignore and storefilename.endswith(ignore):
         storefilename = storefile[:-len(ignore)]
     root, ext = os.path.splitext(storefilename)
@@ -116,7 +116,7 @@ def getobject(storefile, ignore=None):
         if os.path.isdir(storefile) or storefile.endswith(os.path.sep):
             from translate.storage import directory
             return directory.Directory(storefile)
-    storefilename = getname(storefile)
+    storefilename = _getname(storefile)
     storeclass = getclass(storefilename, ignore)
     if os.path.exists(storefilename) or not getattr(storefile, "closed", True):
         name, ext = os.path.splitext(storefilename)
