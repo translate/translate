@@ -55,22 +55,6 @@ class QtTsParser:
       namenode.appendChild(nametext)
       contextnode.appendChild(namenode)
       self.document.documentElement.appendChild(contextnode)
-    if contextname in self.indexcontextnodes:
-      messagesourceindex = self.indexcontextnodes[contextname]
-    else:
-      messagesourceindex = {}
-      for message in self.getmessagenodes(contextnode):
-        messagesource = self.getmessagesource(message).strip()
-        messagesourceindex[messagesource] = message
-      self.indexcontextnodes[contextname] = messagesourceindex
-    message = messagesourceindex.get(source.strip(), None)
-    if message is not None:
-      translationnode = ourdom.getFirstElementByTagName(message, "translation")
-      newtranslationnode = self.document.createElement("translation")
-      translationtext = self.document.createTextNode(translation)
-      newtranslationnode.appendChild(translationtext)
-      message.replaceChild(newtranslationnode, translationnode)
-      return True
     if not createifmissing:
       return False
     messagenode = self.document.createElement("message")
@@ -90,7 +74,6 @@ class QtTsParser:
       translationnode.setAttribute("type",transtype)
     messagenode.appendChild(translationnode)
     contextnode.appendChild(messagenode)
-    messagesourceindex[source.strip()] = messagenode
     return True
 
   def getxml(self):
