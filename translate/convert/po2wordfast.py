@@ -59,7 +59,7 @@ class wfmultifile:
         mode = 'w'
     self.mode = mode
     self.multifilename = os.path.splitext(filename)[0]
-    self.wffile = wf.WordfastTMFile()
+    self.wffile = wordfast.WordfastTMFile()
 
   def openoutputfile(self, subfile):
     """returns a pseudo-file object for the given subfile"""
