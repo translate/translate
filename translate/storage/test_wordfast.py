@@ -23,6 +23,22 @@ class TestWFTime(object):
 class TestWFUnit(test_base.TestTranslationUnit):
     UnitClass = wf.WordfastUnit
 
+    def test_difficult_escapes(self):
+        """Wordfast files need to perform magic with escapes.
+        
+        Wordfast does not accept line breaks in its TM (even though they would be
+        valid in CSV) thus we turn \\n into \n and reimplement the base class test but
+        eliminate a few of the actual tests.
+        """
+        unit = self.unit
+        specials = ['\\"', '\\ ',
+                    '\\\n', '\\\t', '\\\\r', '\\\\"']
+        for special in specials:
+            unit.source = special
+            print "unit.source:", repr(unit.source) + '|'
+            print "special:", repr(special) + '|'
+            assert unit.source == special
+
     def test_wordfast_escaping(self):
         """Check handling of &'NN; style escaping"""
         def compare(real, escaped):
@@ -36,7 +52,7 @@ class TestWFUnit(test_base.TestTranslationUnit):
         for escaped, real in wf.WF_ESCAPE_MAP[:16]: # Only common and Windows, not testing Mac
             compare(real, escaped)
         # Real world cases
-        unit = seld.UnitClass("Open &File. ’n Probleem.")
+        unit = self.UnitClass("Open &File. ’n Probleem.")
         assert unit.dict['source'] == "Open &'26;File. &'92;n Probleem."
 
     def test_newlines(self):
