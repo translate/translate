@@ -30,6 +30,7 @@ from translate.storage import xliff
 from translate.storage import poxliff
 from translate.storage import tmx
 from translate.storage import tbx
+from translate.storage import wordfast
 
 import os
 from gzip import GzipFile
@@ -45,8 +46,10 @@ classes = {"po": po.pofile, "pot": po.pofile,
            "mo": mo.mofile, "gmo": mo.mofile, 
            "csv": csvl10n.csvfile, 
            "qm": qm.qmfile, 
+           "_wftm": wordfast.WordfastTMFile,
            "xliff": xliff.xlifffile, "xlf": xliff.xlifffile, 
            "tmx": tmx.tmxfile, "tbx": tbx.tbxfile}
+"""Dictionary of file extensions and their associated class.  _ext is a pseudo extension, that is their is no real extension by that name."""
 
 decompressclass = {
     'gz': GzipFile,
@@ -54,14 +57,39 @@ decompressclass = {
 if BZ2File:
     decompressclass['bz2'] = BZ2File
 
+def _examine_txt(storefile):
+    """Determine the true filetype for a .txt file"""
+    if isinstance(storefile, basestring) and os.path.exists(storefile):
+        storefile = open(storefile)
+    try:
+        start = storefile.read(600).strip()
+    except AttributeError:
+        raise ValueError("Need to read object to determine type")
+    # Some encoding magic for Wordfast
+    if wordfast.TAB_UTF16 in start.split("\n")[0]:
+        encoding = 'utf-16'
+    else:
+        encoding = 'iso-8859-1'
+    start = start.decode(encoding).encode('utf-8')
+    if '%Wordfast TM' in start:
+        pseudo_extension = '_wftm'
+    else:
+        raise ValueError("Failed to guess file type.")
+    storefile.seek(0)
+    return pseudo_extension
+
+hiddenclasses = {"txt": _examine_txt}
+
 def _guessextention(storefile):
     """Guesses the type of a file object by looking at the first few characters.
     The return value is a file extention ."""
-    start = storefile.read(200).strip()
+    start = storefile.read(300).strip()
     if '<xliff ' in start:
         extention = 'xlf'
     elif 'msgid "' in start:
         extention = 'po'
+    elif '%Wordfast TM' in start:
+        extention = 'txt'
     else:
         raise ValueError("Failed to guess file type.")
     storefile.seek(0)
@@ -92,9 +120,17 @@ def getclass(storefile, ignore=None):
         storefilename = storefile[:-len(ignore)]
     root, ext = os.path.splitext(storefilename)
     ext = ext[len(os.path.extsep):].lower()
+    decomp = None
     if ext in decompressclass:
+        decomp = ext
         root, ext = os.path.splitext(root)
         ext = ext[len(os.path.extsep):].lower()
+    if ext in hiddenclasses:
+        guesserfn = hiddenclasses[ext]
+        if decomp:
+            ext = guesserfn(decompressclass[decomp](storefile))
+        else:
+            ext = guesserfn(storefile)
     try:
         storeclass = classes[ext]
     except KeyError:
@@ -117,7 +153,7 @@ def getobject(storefile, ignore=None):
             from translate.storage import directory
             return directory.Directory(storefile)
     storefilename = _getname(storefile)
-    storeclass = getclass(storefilename, ignore)
+    storeclass = getclass(storefile, ignore)
     if os.path.exists(storefilename) or not getattr(storefile, "closed", True):
         name, ext = os.path.splitext(storefilename)
         ext = ext[len(os.path.extsep):].lower()
