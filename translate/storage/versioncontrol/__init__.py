@@ -25,12 +25,13 @@ To implement support for a new version control system, inherit the class
 GenericRevisionControlSystem. 
 
 TODO:
-    * move to the translate toolkit and split into different files
+    * add authenticatin handling
+    * 'commitdirectory' should do a single commit instead of one for each file
+    * maybe implement some caching for 'get_versioned_object' - check profiler
 """
 
 import re
 import os
-import translate.storage.versioncontrol
 
 DEFAULT_RCS = ["svn", "cvs", "darcs", "git", "bzr"]
 """the names of all supported revision control systems
@@ -238,6 +239,27 @@ class GenericRevisionControlSystem:
                 + " 'update' is missing")
 
 
+def get_versioned_objects_recursive(
+        location,
+        versioning_systems=DEFAULT_RCS,
+        follow_symlinks=True):
+    """return a list of objcts, each pointing to a file below this directory
+    """
+    rcs_objs = []
+    
+    def scan_directory(arg, dirname, fnames):
+        for fname in fnames:
+            full_fname = os.path.join(dirname, fname)
+            if os.path.isfile(full_fname):
+                try:
+                    rcs_objs.append(get_versioned_object(full_fname,
+                            versioning_systems, follow_symlinks))
+                except IOError:
+                    pass
+
+    os.path.walk(location, scan_directory, None)
+    return rcs_objs
+
 def get_versioned_object(
         location,
         versioning_systems=DEFAULT_RCS,
@@ -268,6 +290,26 @@ def getcleanfile(filename, revision=None):
 
 def commitfile(filename, message=None):
     return get_versioned_object(filename).commit(message)
+
+def commitdirectory(directory, message=None):
+    """commit all files below the given directory
+
+    files that are just symlinked into the directory are supported, too
+    """
+    # for now all files are committed separately
+    # should we combine them into one commit?
+    for rcs_obj in get_versioned_objects_recursive(directory):
+        rcs_obj.commit(message)
+
+def updatedirectory(directory):
+    """update all files below the given directory
+
+    files that are just symlinked into the directory are supported, too
+    """
+    # for now all files are updated separately
+    # should we combine them into one update?
+    for rcs_obj in get_versioned_objects_recursive(directory):
+        rcs_obj.update()
 
 def hasversioning(item):
     try:
