@@ -24,6 +24,10 @@
 
 U{TS file format 4.3<http://doc.trolltech.com/4.3/linguist-ts-file-format.html>}, 
 U{Example<http://svn.ez.no/svn/ezcomponents/trunk/Translation/docs/linguist-format.txt>}
+
+U{Specification of the valid variable entries <http://doc.trolltech.com/4.3/qstring.html#arg>}, 
+U{2 <http://doc.trolltech.com/4.3/qstring.html#arg-2>}
+
 """
 
 from translate.misc import ourdom
