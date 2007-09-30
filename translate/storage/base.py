@@ -424,7 +424,7 @@ class TranslationStore(Statistics):
             units = self.units
 
         for unit in units:
-            if not unit.isblank() and not unit.isobsolete():
+            if not unit.isblank():
                 return False
         return True
 
