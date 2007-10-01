@@ -35,7 +35,7 @@ class ts2po:
     thepo.target = target
     if len(msgcomments) > 0:
       thepo.addnote(msgcomments)
-    if transtype == "unfinished" and not thepo.isblankmsgstr():
+    if transtype == "unfinished" and thepo.istranslated():
       thepo.markfuzzy()
     if transtype == "obsolete":
       # This should use the Gettext obsolete method but it would require quite a bit of work

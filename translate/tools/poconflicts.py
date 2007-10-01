@@ -117,16 +117,17 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
     inputfile = self.openinputfile(options, fullinputpath)
     inputfile = factory.getobject(inputfile)
     for unit in inputfile.units:
-      if not (unit.isheader() or unit.isblankmsgstr()):
-        if unit.hasplural():
-          continue
-        if not options.invert:
-          source  = self.clean(unit.source, options)
-          target = self.clean(unit.target, options)
-        else:
-          target = self.clean(unit.source, options)
-          source = self.clean(unit.target, options)
-        self.textmap.setdefault(source, []).append((target, unit, fullinputpath))
+      if unit.isheader() or not unit.istranslated():
+        continue
+      if unit.hasplural():
+        continue
+      if not options.invert:
+        source  = self.clean(unit.source, options)
+        target = self.clean(unit.target, options)
+      else:
+        target = self.clean(unit.source, options)
+        source = self.clean(unit.target, options)
+      self.textmap.setdefault(source, []).append((target, unit, fullinputpath))
 
   def flatten(self, text, joinchar):
     """flattens text to just be words"""

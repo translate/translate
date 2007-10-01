@@ -34,7 +34,7 @@ class po2tmx:
     # TODO: This seems to not be used... remove it
     inputstore = inputfile
     for inunit in inputstore.units:
-      if inunit.isheader() or inunit.isblank() or inunit.isblankmsgstr() or inunit.isfuzzy():
+      if inunit.isheader() or inunit.isblank() or not inunit.istranslated() or inunit.isfuzzy():
         continue
       source = inunit.source
       translation = inunit.target
@@ -46,7 +46,7 @@ class po2tmx:
     """converts a .po file (possibly many) to TMX file"""
     inputstore = po.pofile(inputfile)
     for inunit in inputstore.units:
-      if inunit.isheader() or inunit.isblank() or inunit.isblankmsgstr() or inunit.isfuzzy():
+      if inunit.isheader() or inunit.isblank() or not inunit.istranslated() or inunit.isfuzzy():
         continue
       source = inunit.source
       translation = inunit.target

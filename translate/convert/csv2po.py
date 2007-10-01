@@ -164,14 +164,6 @@ class csv2po:
     self.pofile.removeduplicates(self.duplicatestyle)
     return self.pofile
 
-  def getmissing(self):
-    """get the number of missing translations..."""
-    # TODO: work out how to print out the following if in verbose mode
-    missing = 0
-    for pounit in self.pofile.units:
-      if pounit.isblankmsgstr():
-        missing += 1
-
 def convertcsv(inputfile, outputfile, templatefile, charset=None, columnorder=None, duplicatestyle="msgctxt"):
   """reads in inputfile using csvl10n, converts using csv2po, writes to outputfile"""
   inputstore = csvl10n.csvfile(inputfile, fieldnames=columnorder)

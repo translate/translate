@@ -46,7 +46,7 @@ class po2txt:
     for unit in inputstore.units:
       if unit.isheader():
         continue
-      if unit.isblankmsgstr() or (not includefuzzy and unit.isfuzzy()):
+      if not unit.istranslated() or (not includefuzzy and unit.isfuzzy()):
         txtresult += self.wrapmessage(unit.source) + "\n" + "\n"
       else:
         txtresult += self.wrapmessage(unit.target) + "\n" + "\n"
@@ -63,7 +63,7 @@ class po2txt:
       if not unit.isfuzzy() or includefuzzy:
         txtsource = unit.source
         txttarget = self.wrapmessage(unit.target)
-        if not unit.isblankmsgstr():
+        if unit.istranslated():
           txtresult = txtresult.replace(txtsource, txttarget)
     return txtresult
 
