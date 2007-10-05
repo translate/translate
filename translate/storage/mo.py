@@ -2,7 +2,15 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2007 Zuza Software Foundation
+#
+# the function "__str__" was derived from Python v2.4
+#       (Tools/i18n/msgfmt.py - function "generate"):
+#   Written by Martin v. Löwis <loewis@informatik.hu-berlin.de>
+#   Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006 Python Software Foundation.
+#   All rights reserved.
+#   original license: Python Software Foundation (version 2)
 # 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
@@ -21,15 +29,6 @@
 #
 
 """module for parsing Gettext .mo files for translation
-
-@note: This is a class created from the original msgfmt.py written by 
-Martin v. LÃ¶wis <loewis@informatik.hu-berlin.de> which is release
-as part of 4Suite (Python tools and libraries for XML processing and databases.)
-which is itself released under the Apache License.  If there is any conflict
-between the Apache license and the GPL then the Apache license is the one that
-applies to the changes made to this file.
-
-U{Version 1.1 of msgfmt.py<http://svn.python.org/projects/python/trunk/Tools/i18n/msgfmt.py>}
 
 The coding of .mo files was produced from documentation in Gettext 0.16 and from observation
 and testing of existing .mo files in the wild.
@@ -85,6 +84,7 @@ class mofile(base.TranslationStore):
 
     def __str__(self):
         """Output a string representation of the MO data file"""
+        # check the header of this file for the copyright note of this function
         MESSAGES = {}
         for unit in self.units:
             if isinstance(unit.source, multistring):
