@@ -117,7 +117,7 @@ def getclass(storefile, ignore=None):
     Specify ignore to ignore some part at the back of the name (like .gz). """
     storefilename = _getname(storefile)
     if ignore and storefilename.endswith(ignore):
-        storefilename = storefile[:-len(ignore)]
+        storefilename = storefilename[:-len(ignore)]
     root, ext = os.path.splitext(storefilename)
     ext = ext[len(os.path.extsep):].lower()
     decomp = None
