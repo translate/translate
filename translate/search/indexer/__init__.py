@@ -22,8 +22,7 @@
 #
 
 
-""" indexer.py
-	Handles indexing and searching the index
+""" Handles indexing and searching the index
 """
 
 import os, os.path
@@ -205,7 +204,24 @@ def StandardAnalyzer():
 	return indexer.StandardAnalyzer()
 
 class IndexerBase:
+    """base class to be inherited by all real implementations
+    """
+
 	def __init__(self, config, analyzer=None, encoding=None, errorhandler=None):
+		"""initialize the basic properties of an indexer
+
+		@type config: objects
+		@param config: must containt at least "indexdir" (location of the
+			indexer database) and may contain a two-dimensional dictionary
+			"types" describing available converters (see function
+			'decodeContents' below)
+		@type analyzer: object
+		@param analyzer: defaults to "StandardAnalyzer"
+		@type encoding: string
+		@param encoding: defaults to "iso-8859-1"
+		@type errorhandler: object
+		@param errorhandler: defaults to jToolkit.ConsoleErrorHandler()
+		"""
 		if not HAVE_INDEXER:
 			raise ImportError("Indexer not present (PyLucene or lupy)")
 		if analyzer is None:
@@ -232,24 +248,48 @@ class IndexerBase:
 					self.types[firstPart+"/"+key2] = value
 
 	def indexFiles(self, fileNames, ID=None):
+		"""real indexer implementations must override this function"""
 		raise NotImplementedError("IndexerBase.indexFiles")
 
 	def indexFields(self, fieldDicts):
+		"""real indexer implementations must override this function"""
 		raise NotImplementedError("IndexerBase.indexFields")
 
 	def startIndex(self):
+		"""real indexer implementations must override this function"""
 		raise NotImplementedError("IndexerBase.startIndex")
 
 	def commitIndex(self):
+		"""real indexer implementations must override this function"""
 		raise NotImplementedError("IndexerBase.commitIndex")
 
 	def deleteIndex(self):
+		"""real indexer implementations must override this function"""
 		raise NotImplementedError("IndexerBase.deleteIndex")
 
 	def decodeContents(self, contenttype, contents):
+		"""check if an external converter is defined for the type and run it
+
+		External converters may be defined when initializing the indexer class
+		via the "config" argument. It may contain a dictionary "types"
+		containing datasets like the following:
+			{ "text": { "plain": "/usr/bin/plaintext_converter '$1' '$2'" } }
+		The program '/usr/bin/plaintext_converter' reads the content of file
+		'$1' and writes the converted output to '$2'.
+		One or both parameters may be omitted - thus falling back to stdout
+		respective stdin/stdout.
+
+		@type contenttype: string
+		@param contenttype: e.g. "text/plain"
+		@type contents: string
+		@param contents: the data to be converted
+		@rtype: string
+		@return: utf8-encoded string of converted input data
+		"""
 		if contenttype in self.types.keys():
 			# Attempt to run the program
-			# This will either require 1 temporary file, 2 temporary files or none
+			# This will either require 1 temporary file (input),
+			# 2 temporary files (input/output) or none (use stdin/stdout)
 			inFileName = outFileName = None
 			command = self.types[contenttype]
 			if command.find('$1') != -1:
@@ -279,6 +319,7 @@ class IndexerBase:
 					os.remove(inFileName)
 				return reply
 			except:
+				# TODO: narrow this 'except' down to OSError
 				self.errorhandler.logerror("Could not run command specified for content-type %s. Command = %s"
 						% (contenttype, command))
 				return None
@@ -345,7 +386,7 @@ class Indexer(IndexerBase):
 
 	def indexFiles(self, fileNames, ID=None):
 		if self.writer is None:
-			self.errorhandler.logerror("indexer.py: indexFiles called without initialising the writer")
+			self.errorhandler.logerror("indexer: indexFiles called without initialising the writer")
 			return False
 		for file in fileNames:
 			fp = open(file)
@@ -358,13 +399,13 @@ class Indexer(IndexerBase):
 			if ID is not None:
 				doc.add(indexer.Field("recordID",ID,True,True,True))
 			self.writer.addDocument(doc)
-			self.errorhandler.logtrace("indexer.py: Indexing file %s" % file)
+			self.errorhandler.logtrace("indexer: Indexing file %s" % file)
 
 	def indexFields(self, fieldDicts):
 		""" fieldDicts should be an array of dictionaries
 		Each dictionary should be searchField:fieldContents in structure"""
 		if self.writer is None:
-			self.errorhandler.logerror("indexer.py: indexFields called without initialising the writer")
+			self.errorhandler.logerror("indexer: indexFields called without initialising the writer")
 			return False
 		if type(fieldDicts) == dict:
 			fieldDicts = [fieldDicts]

@@ -32,7 +32,7 @@ class darcs(GenericRevisionControlSystem):
     def update(self, revision=None):
         """Does a clean update of the given path
 
-        @param: revision: ignored for darcs
+        @param revision: ignored for darcs
         """
         # revert local changes (avoids conflicts)
         command = ["darcs", "revert", "--repodir", self.root_dir, 
@@ -69,7 +69,7 @@ class darcs(GenericRevisionControlSystem):
     def getcleanfile(self, revision=None):
         """Get a clean version of a file from the darcs repository
 
-        @param: revision: ignored for darcs
+        @param revision: ignored for darcs
         """
         import os
         filename = os.path.join(self.root_dir, self.RCS_METADIR, 'pristine',
