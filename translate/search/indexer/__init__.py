@@ -204,8 +204,8 @@ def StandardAnalyzer():
 	return indexer.StandardAnalyzer()
 
 class IndexerBase:
-    """base class to be inherited by all real implementations
-    """
+	"""base class to be inherited by all real implementations
+	"""
 
 	def __init__(self, config, analyzer=None, encoding=None, errorhandler=None):
 		"""initialize the basic properties of an indexer
