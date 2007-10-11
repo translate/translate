@@ -62,8 +62,10 @@ def main(argv=None):
   parser.add_option("", "--encoding", dest="encoding", default='utf-8', type="string",
       help="The encoding of the input file (default: UTF-8)")
   parser.passthrough.append("encoding")
-  parser.add_option("", "--flavour", dest="flavour", default=None,
-      help="The flavour of text file: plain (default), dokuwiki, mediawiki")
+  parser.add_option("", "--flavour", dest="flavour", default="plain",
+      type="choice", choices=["plain", "dokuwiki", "mediawiki"],
+      help="The flavour of text file: plain (default), dokuwiki, mediawiki",
+      metavar="FLAVOUR")
   parser.passthrough.append("flavour")
   parser.add_duplicates_option()
   parser.run(argv)
