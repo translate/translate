@@ -22,6 +22,7 @@
 """string processing utilities for extracting strings with various kinds of delimiters"""
 
 import logging
+import htmlentitydefs
 
 def find_all(searchin, substr):
   """returns a list of locations where substr occurs in searchin
@@ -200,6 +201,43 @@ def escapequotes(source, escapeescapes=0):
 def escapesinglequotes(source):
   "Returns the same string, with single quotes doubled"
   return source.replace("'","''")
+
+def htmlentityencode(source):
+  """encodes source using HTML entities e.g. © -> &copy;"""
+  output = ""
+  for char in source:
+    charnum = ord(char)
+    if charnum in htmlentitydefs.codepoint2name:
+      output += "&%s;" % htmlentitydefs.codepoint2name[charnum]
+    else:
+      output += str(char)
+  return output
+
+def htmlentitydecode(source):
+  """decodes source using HTML entities e.g. &copy; -> ©"""
+  output = u""
+  inentity = False
+  for char in source:
+    if char == "&":
+       inentity = True
+       possibleentity = ""
+       continue
+    if inentity:
+      if char == ";":
+        if len(possibleentity) > 0 and possibleentity in htmlentitydefs.name2codepoint:
+          output += unichr(htmlentitydefs.name2codepoint[possibleentity])
+          inentity = False
+        else:
+          output += "&" + possibleentity + ";"
+          inentity = False
+      elif char == " ":
+        output += "&" + possibleentity + char
+        inentity = False
+      else:
+        possibleentity += char
+    else:
+      output += char
+  return output
 
 def javapropertiesencode(source):
   """encodes source in the escaped-unicode encoding used by Java .properties files"""
