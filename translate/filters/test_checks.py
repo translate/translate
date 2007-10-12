@@ -378,6 +378,7 @@ def test_options():
     assert fails(stdchecker.options, "--input=FILE", "--tovoer=LÊER")
     # We don't want just any '--' to trigger this test - the error will be confusing
     assert passes(stdchecker.options, "Hello! -- Hi", "Hallo! &mdash; Haai")
+    assert passes(stdchecker.options, "--blank--", "--vide--")
 
 def test_printf():
     """tests printf style variables"""

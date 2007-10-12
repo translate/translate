@@ -685,7 +685,7 @@ class StandardChecker(TranslationChecker):
     """checks that options are not translated"""
     str1 = self.filtervariables(str1)
     for word1 in str1.split():
-      if word1 != "--" and word1.startswith("--"):
+      if word1 != "--" and word1.startswith("--") and word1[-1].isalnum():
         parts = word1.split("=")
         if not parts[0] in str2:
           raise FilterFailure("The option %s does not occur or is translated in the translation." % parts[0]) 
