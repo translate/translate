@@ -24,13 +24,25 @@
 from translate.storage import factory
 import os
 import re
+import md5
 
 class podebug:
-  def __init__(self, format=None):
+  def __init__(self, format=None, rewritestyle=None, hash=None):
     if format is None:
       self.format = ""
     else:
       self.format = format
+    if rewritestyle is not None:
+      self.rewritefunc = getattr(self, "rewrite_%s" % rewritestyle)
+    else:
+      self.rewritefunc = None
+    self.hash = hash
+
+  def rewrite_xxx(self, string):
+    return "xxx%sxxx" % string
+
+  def rewrite_en(self, string):
+    return string
 
   def openofficeignore(self, locations):
     for location in locations:
@@ -45,7 +57,15 @@ class podebug:
   def convertunit(self, unit, prefix):
     if self.openofficeignore(unit.getlocations()):
       return unit
-    if not unit.istranslated():
+    if self.hash:
+      if unit.getlocations():
+        hashable = unit.getlocations()[0]
+      else:
+        hashable = unit.source
+      prefix = md5.new(hashable).hexdigest()[:self.hash] + " "
+    if self.rewritefunc:
+      unit.target = self.rewritefunc(unit.source)
+    elif not unit.istranslated():
       unit.target = unit.source
     if unit.hasplural():
         strings = unit.target.strings
@@ -106,13 +126,13 @@ class podebug:
       baseshrunk = baseshrunk[:baseshrunk.find(".")]
     return dirshrunk + baseshrunk
 
-def convertpo(inputfile, outputfile, templatefile, format=None):
+def convertpo(inputfile, outputfile, templatefile, format=None, rewritestyle=None, hash=None):
   """reads in inputfile using po, changes to have debug strings, writes to outputfile"""
   # note that templatefile is not used, but it is required by the converter...
   inputstore = factory.getobject(inputfile)
   if inputstore.isempty():
     return 0
-  convertor = podebug(format=format)
+  convertor = podebug(format=format, rewritestyle=rewritestyle, hash=hash)
   outputstore = convertor.convertfile(inputstore)
   outputfile.write(str(outputstore))
   return 1
@@ -123,7 +143,13 @@ def main():
   parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
   # TODO: add documentation on format strings...
   parser.add_option("-f", "--format", dest="format", default="[%s] ", help="specify format string")
+  rewritestylelist = ["xxx", "en"]
+  parser.add_option("", "--rewrite", dest="rewritestyle", 
+    type="choice", choices=rewritestylelist, metavar="STYLE", help="the translation rewrite style: %s" % ", ".join(rewritestylelist))
+  parser.add_option("", "--hash", dest="hash", metavar="LENGTH", type="int", help="add an md5 hash to translations")
   parser.passthrough.append("format")
+  parser.passthrough.append("rewritestyle")
+  parser.passthrough.append("hash")
   parser.run()
 
 
