@@ -765,9 +765,10 @@ class pofile(pocommon.pofile):
     headerpo.markfuzzy()
     headerpo.msgid = ['""']
     headeritems = self.makeheaderdict(**kwargs)
-    headerpo.msgstr = ['""']
+    headervalue = ""
     for (key, value) in headeritems.items():
-        headerpo.msgstr.append(quote.quotestr("%s: %s\\n" % (key, value)))
+        headervalue += "%s: %s\n" % (key, value)
+    headerpo.target = headervalue
     return headerpo
 
   def changeencoding(self, newencoding):
