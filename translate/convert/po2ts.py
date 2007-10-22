@@ -40,7 +40,7 @@ class po2ts:
       translation = inputunit.target
       comment = inputunit.getnotes("translator")
       transtype = None
-      if inputunit.isfuzzy():
+      if not inputunit.istranslated():
         transtype = "unfinished"
       elif inputunit.getnotes("developer") == "(obsolete)":
           transtype = "obsolete" 
