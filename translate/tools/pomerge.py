@@ -140,7 +140,7 @@ def main():
   from translate.convert import convert
   pooutput = ("po", mergepo)
   potoutput = ("pot", mergepo)
-  xliffoutput = ("xliff", mergexliff)
+  xliffoutput = ("xlf", mergexliff)
   formats = {("po", "po"): pooutput, ("po", "pot"): pooutput, ("pot", "po"): pooutput, ("pot", "pot"): potoutput,
              "po": pooutput, "pot": pooutput,
              ("xlf", "po"): pooutput, ("xlf", "pot"): pooutput,
