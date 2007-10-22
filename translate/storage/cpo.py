@@ -441,21 +441,6 @@ class pofile(pocommon.pofile):
             self._gpo_memory_file = gpo.po_file_create()
             self._gpo_message_iterator = gpo.po_message_iterator(self._gpo_memory_file, None)
 
-    def makeheader(self, **kwargs):
-        """create a header for the given filename. arguments are specially handled, kwargs added as key: value
-        pot_creation_date can be None (current date) or a value (datetime or string)
-        po_revision_date can be None (form), False (=pot_creation_date), True (=now), or a value (datetime or string)"""
-    
-        headerpo = self.UnitClass(encoding=self._encoding)
-        headerpo.markfuzzy()
-        headerpo.source = ""
-        headeritems = self.makeheaderdict(**kwargs)
-        headeritemstring = []
-        for (key, value) in headeritems.items():
-            headeritemstring.append("%s: %s\n" % (key, value))
-        headerpo.target = "".join(headeritemstring)
-        return headerpo
-
     def addunit(self, unit):
         gpo.po_message_insert(self._gpo_message_iterator, unit._gpo_message)
         self.units.append(unit)
