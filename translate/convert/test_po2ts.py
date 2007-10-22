@@ -65,6 +65,20 @@ msgstr "Target"'''
         print tsfile
         assert '''<translation type="obsolete">Target</translation>''' in tsfile
         
+    def test_duplicates(self):
+        """test that we can handle duplicates in the same context block"""
+        posource = '''#: @@@#1
+msgid "English"
+msgstr "a"
+
+#: @@@#3
+msgid "English"
+msgstr "b"
+'''
+        tsfile = self.po2ts(posource)
+        print tsfile
+        assert tsfile.find("English") != tsfile.rfind("English")
+        
 
 class TestPO2TSCommand(test_convert.TestConvertCommand, TestPO2TS):
     """Tests running actual po2ts commands on files"""
