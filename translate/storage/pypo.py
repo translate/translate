@@ -29,6 +29,9 @@ from translate.misc import textwrap
 from translate.storage import pocommon
 import re
 
+lsep = "\n#: "
+"""Seperator for #: entries"""
+
 # general functions for quoting / unquoting po strings
 
 po_unescape_map = {"\\r": "\r", "\\t": "\t", '\\"': '"', '\\n': '\n', '\\\\': '\\'}

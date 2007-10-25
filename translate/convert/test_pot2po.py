@@ -34,7 +34,7 @@ class TestPOT2PO:
 
     def test_convertpot_blank(self):
         """checks that the convertpot function is working for a simple file initialisation"""
-        potsource = '''#: simple.label\n#: simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n'''
+        potsource = '''#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n''' % po.lsep
         newpo = self.convertpot(potsource)
         assert str(self.singleunit(newpo)) == potsource
 
@@ -62,15 +62,15 @@ msgstr[0] ""
 
     def test_merging_simple(self):
         """checks that the convertpot function is working for a simple merge"""
-        potsource = '''#: simple.label\n#: simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n'''
-        posource = '''#: simple.label\n#: simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n'''
+        potsource = '''#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n''' % po.lsep
+        posource = '''#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n''' % po.lsep
         newpo = self.convertpot(potsource, posource)
         assert str(self.singleunit(newpo)) == posource
 
     def test_merging_messages_marked_fuzzy(self):
         """test that when we merge PO files with a fuzzy message that it remains fuzzy"""
-        potsource = '''#: simple.label\n#: simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n'''
-        posource = '''#: simple.label\n#: simple.accesskey\n#, fuzzy\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n'''
+        potsource = '''#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n''' % po.lsep
+        posource = '''#: simple.label%ssimple.accesskey\n#, fuzzy\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n''' % po.lsep
         newpo = self.convertpot(potsource, posource)
         assert str(self.singleunit(newpo)) == posource
 
@@ -111,18 +111,18 @@ msgstr[1] "%d handleidings."
 
     def test_merging_location_change(self):
         """tests that if the location changes but the msgid stays the same that we merge"""
-        potsource = '''#: new_simple.label\n#: new_simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n'''
-        posource = '''#: simple.label\n#: simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n'''
-        poexpected = '''#: new_simple.label\n#: new_simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n'''
+        potsource = '''#: new_simple.label%snew_simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n''' % po.lsep
+        posource = '''#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n''' % po.lsep
+        poexpected = '''#: new_simple.label%snew_simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n''' % po.lsep
         newpo = self.convertpot(potsource, posource)
         print newpo
         assert str(self.singleunit(newpo)) == poexpected
 
     def test_merging_location_and_whitespace_change(self):
         """test that even if the location changes that if the msgid only has whitespace changes we can still merge"""
-        potsource = '''#: singlespace.label\n#: singlespace.accesskey\nmsgid "&We have spaces"\nmsgstr ""\n'''
-        posource = '''#: doublespace.label\n#: doublespace.accesskey\nmsgid "&We  have  spaces"\nmsgstr "&One  het  spasies"\n'''
-        poexpected = '''#: singlespace.label\n#: singlespace.accesskey\n#, fuzzy\nmsgid "&We have spaces"\nmsgstr "&One  het  spasies"\n'''
+        potsource = '''#: singlespace.label%ssinglespace.accesskey\nmsgid "&We have spaces"\nmsgstr ""\n''' % po.lsep
+        posource = '''#: doublespace.label%sdoublespace.accesskey\nmsgid "&We  have  spaces"\nmsgstr "&One  het  spasies"\n''' % po.lsep
+        poexpected = '''#: singlespace.label%ssinglespace.accesskey\n#, fuzzy\nmsgid "&We have spaces"\nmsgstr "&One  het  spasies"\n''' % po.lsep
         newpo = self.convertpot(potsource, posource)
         print newpo
         assert str(self.singleunit(newpo)) == poexpected

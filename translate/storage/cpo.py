@@ -35,6 +35,9 @@ import os
 import pypo
 import re
 
+lsep = " "
+"""Seperator for #: entries"""
+
 STRING = c_char_p
 
 # Structures
