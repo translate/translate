@@ -279,7 +279,7 @@ msgid "three"
 msgstr "raro"
 
 msgid "four"
-msgid ""
+msgstr ""
 '''
         xliff = self.po2xliff(minipo)
         print "The generated xml:"
