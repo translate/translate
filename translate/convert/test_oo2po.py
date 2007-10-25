@@ -108,31 +108,30 @@ class TestOO2PO:
         xcommentsource = r"wizards	source\formwizard\dbwizres.src	0	string	RID_DB_FORM_WIZARD_START + 19				0	x-comment	%s		%s	%s	20050924 09:13:58"
         # Real comment
         comment = "Comment"
-        expected = comment + "\n"
         commentsource = en_USsource + '\n' + xcommentsource % (comment, comment, comment)
         pofile = self.oo2po(commentsource)
         textunit = pofile.units[1]
         assert textunit.source == "Text"
-        assert '#. %s' % expected in textunit.automaticcomments
+        assert comment in textunit.getnotes("developer")
         quickhelpunit = pofile.units[2]
         assert quickhelpunit.source == "Quickhelp"
-        assert '#. %s' % expected in quickhelpunit.automaticcomments
+        assert comment in quickhelpunit.getnotes("developer")
         titleunit = pofile.units[3]
         assert titleunit.source == "Title"
-        assert '#. %s' % expected in titleunit.automaticcomments
+        assert comment in titleunit.getnotes("developer")
         # Whitespace and blank
         for comment in ("   ", ""):
           commentsource = en_USsource + '\n' + xcommentsource % (comment, comment, comment)
           pofile = self.oo2po(commentsource)
           textunit = pofile.units[1]
           assert textunit.source == "Text"
-          assert textunit.automaticcomments == []
+          assert textunit.getnotes("developer") == ""
           quickhelpunit = pofile.units[2]
           assert quickhelpunit.source == "Quickhelp"
-          assert quickhelpunit.automaticcomments == []
+          assert quickhelpunit.getnotes("developer") == ""
           titleunit = pofile.units[3]
           assert titleunit.source == "Title"
-          assert titleunit.automaticcomments == []
+          assert titleunit.getnotes("developer") == ""
 
 class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2PO):
     """Tests running actual oo2po commands on files"""
