@@ -33,7 +33,9 @@ class xliff2po:
     thepo = po.pounit()
 
     #Header
-    if not transunit.getrestype() == "x-gettext-domain-header":
+    if transunit.getrestype() == "x-gettext-domain-header":
+      thepo.source = ""
+    else:
       thepo.source = transunit.source
     thepo.target = transunit.target
 
