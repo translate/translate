@@ -130,6 +130,27 @@ class TestPO2DTD:
         dtdsource = str(dtdfile)
         assert "Dimpled Ring" in dtdsource
 
+    def test_entities_two(self):
+        """test the error ouput when we find two entities"""
+        simplestring = '''#: simple.string second.string\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n'''
+        dtdfile = self.po2dtd(simplestring)
+        dtdsource = str(dtdfile)
+        assert "CONVERSION NOTE - multiple entities" in dtdsource
+
+    def test_entities(self):
+        """tests that entities are correctly idnetified in the dtd"""
+        simplestring = '''#: simple.string\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n'''
+        dtdfile = self.po2dtd(simplestring)
+        dtdsource = str(dtdfile)
+        assert dtdsource.startswith("<!ENTITY simple.string")
+
+    def test_comments_translator(self):
+        """tests for translator comments"""
+        simplestring = '''# Comment1\n# Comment2\n#: simple.string\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n'''
+        dtdfile = self.po2dtd(simplestring)
+        dtdsource = str(dtdfile)
+        assert dtdsource.startswith("<!-- Comment1 -->")
+
     def test_retains_hashprefix(self):
         """tests that hash prefixes in the dtd are retained"""
         hashpo = '''#: lang.version\nmsgid "__MOZILLA_LOCALE_VERSION__"\nmsgstr "__MOZILLA_LOCALE_VERSION__"\n'''
