@@ -176,7 +176,8 @@ def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similari
         newlyobsoleted.append(unit)
       elif unit.isobsolete():
         outputpo.addunit(unit)
-    outputpo.units.extend(newlyobsoleted)
+    for unit in newlyobsoleted:
+      outputpo.addunit(unit)
   outputpofile.write(str(outputpo))
   return 1
 
