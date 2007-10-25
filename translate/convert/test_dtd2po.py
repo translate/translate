@@ -33,6 +33,7 @@ class TestDTD2PO:
         """checks that the pofile contains a single non-header element, and returns it"""
         assert len(pofile.units) == 2
         assert pofile.units[0].isheader()
+        print pofile.units[1]
         return pofile.units[1]
 
     def countelements(self, pofile):
@@ -104,8 +105,7 @@ class TestDTD2PO:
             '<!ENTITY %s "Source text">\n'
         dtdsource = dtdtemplate % ("note1.label", "note1.label") + dtdtemplate % ("note2.label", "note2.label")
         pofile = self.dtd2po(dtdsource)
-        pofile.units = pofile.units[1:]
-        posource = str(pofile)
+        posource = str(pofile.units[1]) + str(pofile.units[2])
         print posource
         assert posource.count('#.') == 2
         assert posource.count('msgctxt') == 2
@@ -159,13 +159,13 @@ class TestDTD2PO:
         pounit = self.singleelement(pofile)
         # We still need to decide how we handle line line breaks in the DTD entities.  It seems that we should actually
         # drop the line break but this has not been implemented yet.
-        assert po.unquotefrompo(pounit.msgid, True) == "First line then \nnext lines."
+        assert pounit.source == "First line then \nnext lines."
         # No space at the end of the line
         dtdsource = '<!ENTITY  noupdatesfound.intro "First line then\n' + \
           '                                          next lines.">\n'
         pofile = self.dtd2po(dtdsource)
-        unit = self.singleelement(pofile)
-        assert po.unquotefrompo(unit.msgid, True) == "First line then \nnext lines."
+        pounit = self.singleelement(pofile)
+        assert pounit.source == "First line then \nnext lines."
 
     def test_accesskeys_folding(self):
         """test that we fold accesskeys into message strings"""
@@ -195,7 +195,7 @@ class TestDTD2PO:
           '                                          next lines.">\n'
         pofile = self.dtd2po(dtdsource)
         unit = self.singleelement(pofile)
-        assert po.unquotefrompo(unit.msgid, True) == "First line then \nnext lines."
+        assert unit.source == "First line then \nnext lines."
 
     def test_preserving_spaces(self):
         """test that we preserve space that appear at the start of the first line of a DTD entity"""
@@ -208,7 +208,8 @@ class TestDTD2PO:
         dtdsource = '<!ENTITY mainWindow.titlemodifiermenuseparator " - with a newline\n    and more text">'
         pofile = self.dtd2po(dtdsource)
         unit = self.singleelement(pofile)
-        assert po.unquotefrompo(unit.msgid, True) == " - with a newline \nand more text"
+        print repr(unit.source)
+        assert unit.source == " - with a newline \nand more text"
 
     def test_escaping_newline_tabs(self):
         """test that we handle all kinds of newline permutations"""
@@ -219,7 +220,7 @@ class TestDTD2PO:
         thepo = po.pounit()
         converter.convertstrings(thedtd, thepo)
         print thedtd
-        print thepo.msgid
+        print thepo.source
         # \n in a dtd should also appear as \n in the PO file
         assert thepo.source == r"A hard coded newline.\nAnd tab\t and a \r carriage return."
 
@@ -283,13 +284,13 @@ class TestDTD2PO:
         assert self.countelements(pofile) == 0
 
     def test_linewraps(self):
-        """check that empty line wraps are not placed in po file"""
+        """check that redundant line wraps are removed from the po file"""
         dtdsource = '''<!ENTITY generic.longDesc "
 <p>Test me.</p>
 ">'''
         pofile = self.dtd2po(dtdsource)
         pounit = self.singleelement(pofile)
-        assert po.unquotefrompo(pounit.msgid, True) == "<p>Test me.</p>"
+        assert pounit.source == "<p>Test me.</p>"
 
     def test_merging_with_new_untranslated(self):
         """test that when we merge in new untranslated strings with existing translations we manage the encodings properly"""
