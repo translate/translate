@@ -271,7 +271,7 @@ msgstr "Sertifikate"
     def test_merging_obsoleting_messages(self):
         """check that we obsolete messages no longer present in the new file"""
         potsource = ''
-        posource = '# Some comment\n#: obsoleteme:10\nmsgid "One"\nmsgstr "Een"\n'
+        posource = '# Some comment\n#. Extracted comment\n#: obsoleteme:10\nmsgid "One"\nmsgstr "Een"\n'
         expected = '# Some comment\n#~ msgid "One"\n#~ msgstr "Een"\n'
         newpo = self.convertpot(potsource, posource)
         print str(newpo)
