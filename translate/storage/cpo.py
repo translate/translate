@@ -532,7 +532,8 @@ class pofile(pocommon.pofile):
             posrc = input.read()
             input.close()
             input = posrc
-        if not os.path.isfile(input):
+        isafile = os.path.isfile(input)
+        if not isafile:
             # This is not a file - we write the string to a temporary file
             tmpfile = os.tmpnam()
             f = open(tmpfile, "w")
@@ -542,7 +543,7 @@ class pofile(pocommon.pofile):
         self._gpo_memory_file = gpo.po_file_read_v3(input, xerror_handler)
         if self._gpo_memory_file is None:
             print "Error:"
-        if tmpfile:
+        if not isafile:
             os.remove(tmpfile)
         # Handle xerrors here
         self._header = gpo.po_file_domain_header(self._gpo_memory_file, None)
