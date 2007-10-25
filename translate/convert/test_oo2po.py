@@ -100,7 +100,7 @@ class TestOO2PO:
         bug_url = '''http://qa.openoffice.org/issues/enter_bug.cgi''' + ('''?subcomponent=ui&comment=&short_desc=Localization issue in file: &component=l10n&form_name=enter_issue''').replace(" ", "%20").replace(":", "%3A")
         pofile = self.oo2po(oosource)
         assert pofile.units[0].isheader()
-        assert bug_url in str(pofile.units[0])
+        assert pofile.parseheader()["Report-Msgid-Bugs-To"] == bug_url
 
     def test_x_comment_inclusion(self):
         """test that we can merge x-comment language entries into comment sections of the PO file"""
