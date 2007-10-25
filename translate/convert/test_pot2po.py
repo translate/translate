@@ -295,8 +295,8 @@ msgstr "Sertifikate"
         assert len(newpo.units) == 3
         assert newpo.units[0].isheader()
         assert newpo.units[2].isobsolete()
-        newpo.units = newpo.units[1:]
-        assert str(newpo) == potsource + "\n" + posource
+        assert str(newpo.units[1]) == potsource
+        assert str(newpo.units[2]) == posource
 
         # Now test with real units present in posource
         posource2 = '''msgid "Old"\nmsgstr "Oud"\n'''
@@ -304,8 +304,8 @@ msgstr "Sertifikate"
         assert len(newpo.units) == 3
         assert newpo.units[0].isheader()
         assert newpo.units[2].isobsolete()
-        newpo.units = newpo.units[1:]
-        assert str(newpo) == potsource + "\n" + posource
+        assert str(newpo.units[1]) == potsource
+        assert str(newpo.units[2]) == posource
 
     def test_merging_resurect_obsolete_messages(self):
         """check that we can reuse old obsolete messages if the message comes back"""
