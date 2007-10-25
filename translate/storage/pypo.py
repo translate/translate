@@ -147,7 +147,7 @@ class pounit(pocommon.pounit):
   # msgstr = []
 
   def __init__(self, source=None, encoding="UTF-8"):
-    self.encoding = encodingToUse(encoding)
+    self._encoding = encodingToUse(encoding)
     self.obsolete = False
     self._initallcomments(blankall=True)
     self.msgctxt = []
@@ -182,11 +182,11 @@ class pounit(pocommon.pounit):
 
   def getsource(self):
     """Returns the unescaped msgid"""
-    multi = multistring(unquotefrompo(self.msgid), self.encoding)
+    multi = multistring(unquotefrompo(self.msgid), self._encoding)
     if self.hasplural():
       pluralform = unquotefrompo(self.msgid_plural)
       if isinstance(pluralform, str):
-          pluralform = pluralform.decode(self.encoding)
+          pluralform = pluralform.decode(self._encoding)
       multi.strings.append(pluralform)
     return multi
 
@@ -196,7 +196,7 @@ class pounit(pocommon.pounit):
     @param source: an unescaped source string.
     """
     if isinstance(source, str):
-      source = source.decode(self.encoding)
+      source = source.decode(self._encoding)
     if isinstance(source, multistring):
       source = source.strings
     if isinstance(source, list):
@@ -210,15 +210,15 @@ class pounit(pocommon.pounit):
   def gettarget(self):
     """Returns the unescaped msgstr"""
     if isinstance(self.msgstr, dict):
-      multi = multistring(map(unquotefrompo, self.msgstr.values()), self.encoding)
+      multi = multistring(map(unquotefrompo, self.msgstr.values()), self._encoding)
     else:
-      multi = multistring(unquotefrompo(self.msgstr), self.encoding)
+      multi = multistring(unquotefrompo(self.msgstr), self._encoding)
     return multi
 
   def settarget(self, target):
     """Sets the msgstr to the given (unescaped) value"""
     if isinstance(target, str):
-      target = target.decode(self.encoding)
+      target = target.decode(self._encoding)
     if target == self.target:
       return
     if self.hasplural():
@@ -254,7 +254,7 @@ class pounit(pocommon.pounit):
     else:
       raise ValueError("Comment type not valid")
     # Let's drop the last newline
-    return comments[:-1].decode(self.encoding)
+    return comments[:-1].decode(self._encoding)
 
   def addnote(self, text, origin=None, position="append"):
     """This is modeled on the XLIFF method. See xliff.py::xliffunit.addnote"""
@@ -600,7 +600,7 @@ class pounit(pocommon.pounit):
     if self.isheader():
       charset = re.search("charset=([^\\s]+)", unquotefrompo(self.msgstr))
       if charset:
-        self.encoding = encodingToUse(charset.group(1))
+        self._encoding = encodingToUse(charset.group(1))
     return linesprocessed
 
   def _getmsgpartstr(self, partname, partlines, partcomments=""):
@@ -752,13 +752,13 @@ class pofile(pocommon.pofile):
     pocommon.pofile.__init__(self, unitclass=unitclass)
     self.units = []
     self.filename = ''
-    self.encoding = encodingToUse(encoding)
+    self._encoding = encodingToUse(encoding)
     if inputfile is not None:
       self.parse(inputfile)
 
   def changeencoding(self, newencoding):
     """changes the encoding on the file"""
-    self.encoding = encodingToUse(newencoding)
+    self._encoding = encodingToUse(newencoding)
     if not self.units:
       return
     header = self.header()
@@ -772,17 +772,17 @@ class pofile(pocommon.pofile):
       if key.strip() != "Content-Type": continue
       charsetline = line
     if charsetline is None:
-      headerstr += "Content-Type: text/plain; charset=%s" % self.encoding
+      headerstr += "Content-Type: text/plain; charset=%s" % self._encoding
     else:
       charset = re.search("charset=([^ ]*)", charsetline)
       if charset is None:
         newcharsetline = charsetline
         if not newcharsetline.strip().endswith(";"):
           newcharsetline += ";"
-        newcharsetline += " charset=%s" % self.encoding
+        newcharsetline += " charset=%s" % self._encoding
       else:
         charset = charset.group(1)
-        newcharsetline = charsetline.replace("charset=%s" % charset, "charset=%s" % self.encoding, 1)
+        newcharsetline = charsetline.replace("charset=%s" % charset, "charset=%s" % self._encoding, 1)
       headerstr = headerstr.replace(charsetline, newcharsetline, 1)
     header.msgstr = quoteforpo(headerstr)
 
@@ -804,7 +804,7 @@ class pofile(pocommon.pofile):
     linesprocessed = 0
     while end <= len(lines):
       if (end == len(lines)) or (not lines[end].strip()):   # end of lines or blank line
-        newpe = self.UnitClass(encoding=self.encoding)
+        newpe = self.UnitClass(encoding=self._encoding)
         linesprocessed = newpe.parse("\n".join(lines[start:end]))
         start += linesprocessed
         # TODO: find a better way of working out if we actually read anything
@@ -812,13 +812,13 @@ class pofile(pocommon.pofile):
           self.units.append(newpe)
           if newpe.isheader():
             if "Content-Type" in self.parseheader():
-              self.encoding = newpe.encoding
+              self._encoding = newpe._encoding
             # now that we know the encoding, decode the whole file
-            if self.encoding is not None and self.encoding.lower() != 'charset':
+            if self._encoding is not None and self._encoding.lower() != 'charset':
               lines = self.decode(lines)
-          if self.encoding is None: #still have not found an encoding, let's assume UTF-8
+          if self._encoding is None: #still have not found an encoding, let's assume UTF-8
             #TODO: This might be dead code
-            self.encoding = 'utf-8'
+            self._encoding = 'utf-8'
             lines = self.decode(lines)
             self.units = []
             start = 0
@@ -894,9 +894,9 @@ class pofile(pocommon.pofile):
     return lines
 
   def encode(self, lines):
-    """encode any unicode strings in lines in self.encoding"""
+    """encode any unicode strings in lines in self._encoding"""
     newlines = []
-    encoding = self.encoding
+    encoding = self._encoding
     if encoding is None or encoding.lower() == "charset":
       encoding = 'UTF-8'
     for line in lines:
@@ -906,14 +906,14 @@ class pofile(pocommon.pofile):
     return newlines
 
   def decode(self, lines):
-    """decode any non-unicode strings in lines with self.encoding"""
+    """decode any non-unicode strings in lines with self._encoding"""
     newlines = []
     for line in lines:
-      if isinstance(line, str) and self.encoding is not None and self.encoding.lower() != "charset":
+      if isinstance(line, str) and self._encoding is not None and self._encoding.lower() != "charset":
         try:
-          line = line.decode(self.encoding)
+          line = line.decode(self._encoding)
         except UnicodeError, e:
-          raise UnicodeError("Error decoding line with encoding %r: %s. Line is %r" % (self.encoding, e, line))
+          raise UnicodeError("Error decoding line with encoding %r: %s. Line is %r" % (self._encoding, e, line))
       newlines.append(line)
     return newlines
 
