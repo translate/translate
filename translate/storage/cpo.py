@@ -255,6 +255,8 @@ class pounit(pocommon.pounit):
             comments = gpo.po_message_extracted_comments(self._gpo_message)
         else:
             raise ValueError("Comment type not valid")
+        # FIXME this fixes a bug in Gettext that returns leading space with comments
+        comments = "\n".join([line[1:] for line in comments.split("\n")])
         # Let's drop the last newline
         return unicode(comments[:-1])
 
