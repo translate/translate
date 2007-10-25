@@ -51,10 +51,10 @@ class dtd2po:
         thepo.addnote(comment, origin="developer")
       # handle normal comments
       else:
-        thepo.othercomments.append("# " + quote.stripcomment(comment) + "\n")
+        thepo.addnote(quote.stripcomment(comment), origin="translator")
     # handle group stuff
     if self.currentgroup is not None:
-      thepo.othercomments.append("# " + quote.stripcomment(self.currentgroup) + "\n")
+      thepo.addnote(quote.stripcomment(self.currentgroup), origin="translator")
     if entity.endswith(".height") or entity.endswith(".width") or entity.endswith(".size"):
       thepo.addnote("Do not translate this.  Only change the numeric values if you need this dialogue box to appear bigger", origin="developer")
 
@@ -64,19 +64,18 @@ class dtd2po:
     # escape backslashes... but not if they're for a newline
     # unquoted = unquoted.replace("\\", "\\\\").replace("\\\\n", "\\n")
     # now split the string into lines and quote them
-    lines = [po.escapeforpo(line) for line in unquoted.split('\n')]
+    lines = unquoted.split('\n')
     while lines and not lines[0].strip():
       del lines[0]
     while lines and not lines[-1].strip():
       del lines[-1]
     # quotes have been escaped already by escapeforpo, so just add the start and end quotes
-    simplequotestr = lambda line: '"' + line + '"'
     if len(lines) > 1:
-      thepo.msgid = [simplequotestr(lines[0].rstrip() + ' ')] + \
-              [simplequotestr(line.strip() + ' ') for line in lines[1:-1]] + \
-              [simplequotestr(lines[-1].lstrip())]
+      thepo.source = "\n".join([lines[0].rstrip() + ' '] + \
+              [line.strip() + ' ' for line in lines[1:-1]] + \
+              [lines[-1].lstrip()])
     elif lines:
-      thepo.msgid = [simplequotestr(lines[0])]
+      thepo.source = lines[0]
     else:
       thepo.source = ""
     thepo.target = ""
@@ -137,14 +136,14 @@ class dtd2po:
     if accesskeypo is None:
       return labelpo
     thepo = po.pounit(encoding="UTF-8")
-    thepo.sourcecomments += labelpo.sourcecomments
-    thepo.sourcecomments += accesskeypo.sourcecomments
-    thepo.msgidcomments += labelpo.msgidcomments
-    thepo.msgidcomments += accesskeypo.msgidcomments
-    thepo.automaticcomments += labelpo.automaticcomments
-    thepo.automaticcomments += accesskeypo.automaticcomments
-    thepo.othercomments += labelpo.othercomments
-    thepo.othercomments += accesskeypo.othercomments
+    thepo.addlocations(labelpo.getlocations())
+    thepo.addlocations(accesskeypo.getlocations())
+    thepo.msgidcomment = thepo._extract_msgidcomments() + labelpo._extract_msgidcomments()
+    thepo.msgidcomment = thepo._extract_msgidcomments() + accesskeypo._extract_msgidcomments()
+    thepo.addnote(labelpo.getnotes("developer"), "developer")
+    thepo.addnote(accesskeypo.getnotes("developer"), "developer")
+    thepo.addnote(labelpo.getnotes("translator"), "translator")
+    thepo.addnote(accesskeypo.getnotes("translator"), "translator")
     # redo the strings from original dtd...
     label = dtd.unquotefromdtd(labeldtd.definition).decode('UTF-8')
     accesskey = dtd.unquotefromdtd(accesskeydtd.definition).decode('UTF-8')
@@ -184,10 +183,8 @@ class dtd2po:
     else:
       # can't currently mix accesskey if it's not in label
       return None
-    # now split the string into lines and quote them, like in convertstrings
-    msgid = [quote.quotestr(line) for line in label.split('\n')]
-    thepo.msgid = msgid
-    thepo.msgstr = ['""']
+    thepo.source = label
+    thepo.target = ""
     return thepo
 
   def findmixedentities(self, thedtdfile):
@@ -311,7 +308,7 @@ class dtd2po:
         translatedpo = None
       if origpo is not None:
         if translatedpo is not None and not self.blankmsgstr:
-          origpo.msgstr = translatedpo.msgid
+          origpo.target = translatedpo.source
         thepofile.addunit(origpo)
     thepofile.removeduplicates(self.duplicatestyle)
     return thepofile
