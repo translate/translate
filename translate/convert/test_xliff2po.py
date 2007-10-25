@@ -19,6 +19,7 @@ class TestXLIFF2PO:
         convertor = xliff2po.xliff2po()
         outputpo = convertor.convertfile(inputfile)
         print "The generated po:"
+        print type(outputpo)
         print str(outputpo)
         return outputpo
 	
@@ -53,6 +54,7 @@ Content-Transfer-Encoding: 8bit'''
     <target>utshani</target>
   </trans-unit>''') % (headertext, headertext)
 
+        print minixlf
         pofile = self.xliff2po(minixlf)
         assert pofile.translate("gras") == "utshani"
         assert pofile.translate("bla") is None
@@ -79,7 +81,6 @@ it</note>
         assert pofile.translate("bla") is None
         unit = pofile.units[0]
         assert unit.getnotes("translator") == "Couldn't do\nit"
-        assert unit.othercomments == ["# Couldn't do\n", "# it\n"]
         potext = str(pofile)
         assert potext.index("# Couldn't do\n# it\n") >= 0
 
@@ -100,7 +101,6 @@ garbage</note>
         assert pofile.translate("bla") is None
         unit = pofile.units[0]
         assert unit.getnotes("developer") == "Note that this is\ngarbage"
-        assert unit.automaticcomments == ["#. Note that this is\n", "#. garbage\n"]
         potext = str(pofile)
         assert potext.index("#. Note that this is\n#. garbage\n") >= 0
 
@@ -163,6 +163,7 @@ garbage</note>
         </trans-unit>
 </group>'''
         pofile = self.xliff2po(minixlf)
+        print str(pofile)
         potext = str(pofile)
         assert len(pofile.units) == 1
         assert potext.index('msgid_plural "cows"')
