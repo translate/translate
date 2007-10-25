@@ -124,11 +124,11 @@ msgstr "omskakel"
         unit = pofile.units[0]
 
         assert unit.getcontext() == 'noun'
-        assert unit.getnotes() == ' Test comment'
+        assert unit.getnotes() == 'Test comment'
 
         unit = pofile.units[1]
         assert unit.getcontext() == 'verb'
-        assert unit.getnotes() == ' Test comment 2'
+        assert unit.getnotes() == 'Test comment 2'
 
 
     def test_parse_advanced_context(self):
@@ -157,15 +157,15 @@ msgstr "omskakel"
         unit = pofile.units[0]
 
         assert unit.getcontext() == 'Noun. A person that changes his or her ways.'
-        assert unit.getnotes() == ' Test multiline context'
+        assert unit.getnotes() == 'Test multiline context'
 
         unit = pofile.units[1]
         assert unit.getcontext() == 'Verb. Converting from "something" to "something else".'
-        assert unit.getnotes() == ' Test quotes'
+        assert unit.getnotes() == 'Test quotes'
         
         unit = pofile.units[2]
         assert unit.getcontext() == 'Verb.\nConverting from "something" to "something else".'
-        assert unit.getnotes() == ' Test quotes, newlines and multiline.'
+        assert unit.getnotes() == 'Test quotes, newlines and multiline.'
  
     def test_kde_context(self):
         """Tests that kde-style msgid comments can be retrieved via getcontext()."""
@@ -188,11 +188,11 @@ msgstr "omskakel"
         unit = pofile.units[0]
 
         assert unit.getcontext() == 'Noun'
-        assert unit.getnotes() == ' Test comment'
+        assert unit.getnotes() == 'Test comment'
 
         unit = pofile.units[1]
         assert unit.getcontext() == 'Verb. _: The action of changing.'
-        assert unit.getnotes() == ' Test comment 2'
+        assert unit.getnotes() == 'Test comment 2'
 
 #    def test_merge_mixed_sources(self):
 #        """checks that merging works with different source location styles"""
