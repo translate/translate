@@ -1,0 +1,57 @@
+These are the tasks to merge toolkit-C-po branch into trunk:
+
+- oo2po
+++ Commit all oo2po changes
+++ Merge test_oo2po into trunk
+-- Run test across a release of oo2po with CPO and without and explain any difference.
+--- Use plain comparison
+--- Run through msgcat to get same pypo and cpo output
+--- Run test with clean 1.0.1 vs trunk (some changes with #. might confuse things)
+
+- xliff2po
+++ Commit all xx2po changes
+++ Merge test_xx2po into trunk
+-- Run test across a release of oo2po with CPO and without and explain any difference.
+--- Use plain comparison
+--- Run through msgcat to get same pypo and cpo output
+--- Run test with clean 1.0.1 vs trunk (some changes with #. might confuse things)
+
+- pot2po
+++ Commit all xx2po changes
+++ Merge test_xx2po into trunk (mostly taking the current tests from quilt
+++ Hacked a work around #: tests (pypo and cpo have different behaviour)
+-- Blank comment test fails # -> #[space] in cpo
+-- Obsoleting (libgettexpo behaviour does not follow msgmerge - bug reported to gettext)
+
+- dtd2po
+++ Commit all po2dtd and dtd2po changes
+++ Merge test_xx2po into trunk (added some additional tests)
+-- Need to test in conjunction with a Mozilla migration
+
+- cpo
+-- introduce check to ensure that our space removal hack only happens in older versions on libgettextpo
+-- Check that we free memory properly.  Run a simulated run.
+-- Profile - hey what the heck lets try at least win some ground
+--- profile counting (parsing)
+--- profile oo2po (serlialisation)
+--- profile pofilter (both and message manipulation)
+-- fix tmp file hack
++++ Report bug to Gettext to allow string parsing (done, might happen but they did question why we need strings anyway?)
+-- Move an shared pypo tests in test_po reenable any if needed
+-- Examine again for shared code (hint anything without gpo.* is likely shareable)
+
+- po
+-- Make everything output a header no header becomes an option
+--- pogrep
+--- poconflicts
+--- pofilter
+--- check that we merge headers correctly
+---- options in pomerge to not merge the header
+-- Determine how to do out current unit level checks
+-- Handle failures more gracefully
+-- Switch default to CPO
+
+- moz2po
+- prop2po
+- txt2po
+- etc, etc
