@@ -59,13 +59,6 @@ class TestProp2PO:
         assert pounit.source == "Save file"
         assert pounit.target == ""
 
-    def test_emptyentry(self):
-        """checks that an empty properties entry survive into the po file, bug 15"""
-        propsource = 'CONFIGENTRY=\n'
-        pofile = self.prop2po(propsource)
-        pounit = self.singleelement(pofile)
-        assert "CONFIGENTRY" in str(pounit)
-
     def test_tab_at_end_of_string(self):
         """check that we preserve tabs at the end of a string"""
         propsource = r"TAB_AT_END=This setence has a tab at the end.\t"
@@ -141,22 +134,26 @@ do=translate me
         assert self.countelements(pofile) == 1
 
     def test_emptyproperty(self):
-        """checks that empty property definitions survive into po file"""
+        """checks that empty property definitions survive into po file, bug 15"""
         propsource = '# comment\ncredit='
         pofile = self.prop2po(propsource)
         pounit = self.singleelement(pofile)
-        assert "credit" in str(pounit)
-        assert "#. # comment" in str(pounit)
+        assert pounit.getlocations() == ["credit"]
+        assert pounit.getcontext() == "credit"
+        assert "#. # comment" in str(pofile)
+        assert pounit.source == ""
 
     def test_emptyproperty_translated(self):
         """checks that if we translate an empty property it makes it into the PO"""
         proptemplate = 'credit='
         propsource = 'credit=Translators Names'
         pofile = self.prop2po(propsource, proptemplate)
-        unit = self.singleelement(pofile)
-        print unit
-        assert "credit" in str(unit)
-        assert unit.target == "Translators Names"
+        pounit = self.singleelement(pofile)
+        assert pounit.getlocations() == ["credit"]
+        # FIXME we don't seem to get a _: comment but we should
+        #assert pounit.getcontext() == "credit"
+        assert pounit.source == ""
+        assert pounit.target == "Translators Names"
 
     def test_newlines_in_value(self):
         """check that we can carry newlines that appear in the property value into the PO"""
