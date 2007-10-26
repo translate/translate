@@ -372,6 +372,8 @@ class pounit(pocommon.pounit):
         return gpo.po_message_is_obsolete(self._gpo_message)
 
     def makeobsolete(self):
+        # FIXME: libgettexpo currently does not reset other data, we probably want to do that
+        # but a better solution would be for libgettextpo to output correct data on serialisation
         gpo.po_message_set_obsolete(self._gpo_message, True)
 
     def resurrect(self):
