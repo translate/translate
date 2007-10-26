@@ -25,9 +25,6 @@ from translate.storage import po
 from translate.storage import csvl10n
 
 class po2csv:
-  def convertstring(self, unitstring):
-    return po.unquotefrompo(unitstring)
-
   def convertcomments(self, inputunit):
     return " ".join(inputunit.getlocations())
 
@@ -41,19 +38,15 @@ class po2csv:
       return None
     else:
       csvunit.comment = self.convertcomments(inputunit)
-      csvunit.source = self.convertstring(inputunit.msgid)
-      # avoid plurals
-      target = inputunit.msgstr
-      if isinstance(target, dict):
-        target = inputunit.msgstr[0]
-      csvunit.target = self.convertstring(target)
+      csvunit.source = inputunit.source.strings[0]
+      csvunit.target = inputunit.target.strings[0]
     return csvunit
 
   def convertplurals(self, inputunit):
     csvunit = csvl10n.csvunit()
     csvunit.comment = self.convertcomments(inputunit)
-    csvunit.source = self.convertstring(inputunit.msgid_plural)
-    csvunit.target = self.convertstring(inputunit.msgstr[1])
+    csvunit.source = inputunit.source.strings[1]
+    csvunit.target = inputunit.target.strings[1]
     return csvunit
 
   def convertfile(self, inputstore, columnorder=None):
