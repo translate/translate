@@ -108,26 +108,25 @@ class csv2po:
       print >> sys.stderr, "%s - csv entry not found in pofile:\n  location\t%s\n  original\t%s\n  translation\t%s" % (csvfilename, csvunit.comment, csvunit.source, csvunit.target)
       self.unmatched += 1
       return
-    csvtarget = [quotecsvstr(line) for line in csvunit.target.split('\n')]
     if pounit.hasplural():
       # we need to work out whether we matched the singular or the plural
-      singularid = po.unquotefrompo(pounit.msgid)
-      pluralid = po.unquotefrompo(pounit.msgid_plural)
+      singularid = pounit.source.strings[0]
+      pluralid = pounit.source.strings[1]
       if csvunit.source == singularid:
-        pounit.msgstr[0] = csvtarget
+        pounit.msgstr[0] = csvunit.target
       elif csvunit.source == pluralid:
-        pounit.msgstr[1] = csvtarget
+        pounit.msgstr[1] = csvunit.target
       elif simplify(csvunit.source) == simplify(singularid):
-        pounit.msgstr[0] = csvtarget
+        pounit.msgstr[0] = csvunit.target
       elif simplify(csvunit.source) == simplify(pluralid):
-        pounit.msgstr[1] = csvtarget
+        pounit.msgstr[1] = csvunit.target
       else:
         print >> sys.stderr, "couldn't work out singular or plural: %r, %r, %r" %  \
           (csvunit.source, singularid, pluralid)
         self.unmatched += 1
         return
     else:
-      pounit.msgstr = csvtarget
+      pounit.target = csvunit.target
 
   def convertfile(self, thecsvfile):
     """converts a csvfile to a pofile, and returns it. uses templatepo if given at construction"""
