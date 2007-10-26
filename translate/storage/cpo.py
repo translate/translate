@@ -259,7 +259,8 @@ class pounit(pocommon.pounit):
         else:
             raise ValueError("Comment type not valid")
         # FIXME this fixes a bug in Gettext that returns leading space with comments
-        comments = "\n".join([line[1:] for line in comments.split("\n")])
+        if comments:
+            comments = "\n".join([line[1:] for line in comments.split("\n")])
         # Let's drop the last newline
         return unicode(comments[:-1])
 
@@ -285,8 +286,8 @@ class pounit(pocommon.pounit):
         else:
             newnotes = "\n".join(line.rstrip() for line in text.split("\n"))
         # FIXME; workaround the need for leading spaces when adding comments to PO files in libgettexpo
-        newnotes = "\n".join([" " + line for line in newnotes.split("\n")])
         if newnotes:
+            newnotes = "\n".join([" " + line for line in newnotes.split("\n")])
             if origin in ["programmer", "developer", "source code"]:
                 gpo.po_message_set_extracted_comments(self._gpo_message, newnotes)
             else:
