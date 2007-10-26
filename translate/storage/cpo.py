@@ -506,8 +506,19 @@ class pofile(pocommon.pofile):
         self.units = uniqueelements
 
     def __str__(self):
+        def hackobsolete():
+            """Remove all entries not output by msgmerge when unit is obsolete.  Work around for bug in libgettextpo"""
+            # FIXME Do version test in case they fix this bug
+            for unit in self.units:
+                if unit.isobsolete():
+                    gpo.po_message_set_extracted_comments(unit._gpo_message, "")
+                    location = gpo.po_message_filepos(unit._gpo_message, 0)
+                    while location:
+                        gpo.po_message_remove_filepos(unit._gpo_message, 0)
+                        location = gpo.po_message_filepos(unit._gpo_message, 0)
         outputstring = ""
         if self._gpo_memory_file:
+            hackobsolete()
             outputfile = os.tmpnam()
             f = open(outputfile, "w")
             self._gpo_memory_file = gpo.po_file_write_v2(self._gpo_memory_file, outputfile, xerror_handler)
