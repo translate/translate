@@ -36,7 +36,7 @@ class TestCSV2PO:
         # With header
         pofile = self.csv2po(csvheader + csvsource)
         pounit = self.singleelement(pofile)
-        assert pounit.sourcecomments == ["#: " + "intl.charset.default" + "\n"]
+        assert pounit.getlocations() == ['intl.charset.default']
         assert pounit.source == "ISO-8859-1"
         assert pounit.target == "UTF-16"
 
@@ -50,7 +50,7 @@ msgstr ""
 ''' 
         pofile = self.csv2po(csvsource, potsource)
         pounit = self.singleelement(pofile)
-        assert pounit.sourcecomments == ["#: " + "intl.charset.default" + "\n"]
+        assert pounit.getlocations() == ['intl.charset.default']
         assert pounit.source == "ISO-8859-1"
         assert pounit.target == "UTF-16"
 
@@ -62,7 +62,7 @@ wat lank aanhou"
 '''
         pofile = self.csv2po(minicsv)
         unit = self.singleelement(pofile)
-        assert unit.sourcecomments == ["#: Random comment\nwith continuation\n"]
+        assert unit.getlocations() == ['Random', 'comment', 'with', 'continuation']
         assert unit.source == "Original text"
         print unit.target
         assert unit.target == "Langdradige teks\nwat lank aanhou"
