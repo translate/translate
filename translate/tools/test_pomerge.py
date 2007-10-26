@@ -81,7 +81,7 @@ class TestPOMerge:
         """ensure that we don't duplicate source comments (locations) if they have been reflowed"""
         templatepo = '''#: newMenu.label\n#: newMenu.accesskey\nmsgid "&New"\nmsgstr ""\n'''
         newpo = '''#: newMenu.label newMenu.accesskey\nmsgid "&New"\nmsgstr "&Nuwe"\n'''
-        expectedpo = '''#: newMenu.label\n#: newMenu.accesskey\nmsgid "&New"\nmsgstr "&Nuwe"\n'''
+        expectedpo = '''#: newMenu.label%snewMenu.accesskey\nmsgid "&New"\nmsgstr "&Nuwe"\n''' % po.lsep
         pofile = self.mergepo(templatepo, newpo)
         pounit = self.singleunit(pofile)
         print pofile
@@ -286,20 +286,18 @@ msgid "_: sendMessageCheckWindowTitle sendMessageCheckWindowTitle.accesskey\n"
 "Send Message"
 msgstr ""
 '''
-        mergepo = r'''#: sendMsgTitle
-#: sendMsgTitle.accesskey
+        mergepo = r'''#: sendMsgTitle%ssendMsgTitle.accesskey
 msgid ""
 "_: sendMsgTitle sendMsgTitle.accesskey\n"
 "Send Message"
 msgstr "Stuur"
 
-#: sendMessageCheckWindowTitle
-#: sendMessageCheckWindowTitle.accesskey
+#: sendMessageCheckWindowTitle%ssendMessageCheckWindowTitle.accesskey
 msgid ""
 "_: sendMessageCheckWindowTitle sendMessageCheckWindowTitle.accesskey\n"
 "Send Message"
 msgstr "Stuur"
-'''
+''' % (po.lsep, po.lsep)
         expectedpo = mergepo
         pofile = self.mergepo(templatepo, mergepo)
         print "Expected:\n%s\n---\nMerged:\n%s\n---" % (expectedpo, str(pofile))
