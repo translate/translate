@@ -46,10 +46,10 @@ class po2txt:
     for unit in inputstore.units:
       if unit.isheader():
         continue
-      if not unit.istranslated() or (not includefuzzy and unit.isfuzzy()):
-        txtresult += self.wrapmessage(unit.source) + "\n" + "\n"
-      else:
+      if unit.istranslated() or (includefuzzy and unit.isfuzzy()):
         txtresult += self.wrapmessage(unit.target) + "\n" + "\n"
+      else:
+        txtresult += self.wrapmessage(unit.source) + "\n" + "\n"
     return txtresult.rstrip()
  
   def mergefile(self, inputstore, templatetext, includefuzzy):
