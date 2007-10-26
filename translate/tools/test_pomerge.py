@@ -68,6 +68,15 @@ class TestPOMerge:
         assert pounit.source == "Simple String"
         assert pounit.target == "Dimpled King"
 
+    def test_merging_locations(self):
+        """check that locations on seperate lines are output in Gettext form of all on one line"""
+        templatepo = '''#: location.c:1\n#: location.c:2\nmsgid "Simple String"\nmsgstr ""\n'''
+        inputpo = '''#: location.c:1\n#: location.c:2\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n'''
+        expectedpo = '''#: location.c:1%slocation.c:2\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n''' % po.lsep
+        pofile = self.mergepo(templatepo, inputpo)
+        print pofile
+        assert str(pofile) == expectedpo
+
     def test_reflowed_source_comments(self):
         """ensure that we don't duplicate source comments (locations) if they have been reflowed"""
         templatepo = '''#: newMenu.label\n#: newMenu.accesskey\nmsgid "&New"\nmsgstr ""\n'''
