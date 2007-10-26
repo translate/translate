@@ -85,7 +85,7 @@ wat lank aanhou"
         print str(csvfile)
         pofile = self.csv2po(minicsv)
         unit = pofile.units[0]
-        assert unit.msgid == ['''"Hello \\"Everyone\\""''']
+        assert unit.source == 'Hello "Everyone"'
         assert pofile.findunit('Hello "Everyone"').target == 'Good day "All"'
         print str(pofile)
         for unit in pofile.units:
@@ -113,7 +113,7 @@ msgstr ""
 ''' 
         pofile = self.csv2po(csvsource, potsource)
         pounit = self.singleelement(pofile)
-        assert pounit.msgidcomments[0] == r'"_: KDE comment\n"'
+        assert pounit._extract_msgidcomments() == 'KDE comment'
         assert pounit.source == "Source"
         assert pounit.target == "Target"
 
