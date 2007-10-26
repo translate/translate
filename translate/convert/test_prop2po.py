@@ -121,7 +121,7 @@ reduce the number of cached connections."""
 prefPanel-smime=Security'''
         pofile = self.prop2po(propsource)
         pounit = self.singleelement(pofile)
-        assert pounit.automaticcomments == ["#. # Comment\n"]
+        assert pounit.getnotes("developer") == "# Comment"
 
     def wtest_folding_accesskeys(self):
         """check that we can fold various accesskeys into their associated label (bug #115)"""
