@@ -102,8 +102,8 @@ class TestProp2PO:
         propsource = 'nb = %s\n' % unistring
         pofile = self.prop2po(propsource)
         pounit = self.singleelement(pofile)
-        print repr(pofile.units[0].msgstr)
-        print repr(pounit.msgid)
+        print repr(pofile.units[0].target)
+        print repr(pounit.source)
         assert pounit.source == u'Norsk bokm\u00E5l'
 
     def test_multiline_escaping(self):
@@ -112,7 +112,7 @@ class TestProp2PO:
 of connections to this server. If so, use the Advanced IMAP Server Settings dialog to \
 reduce the number of cached connections."""
         pofile = self.prop2po(propsource)
-        print repr(pofile.units[1].msgstr)
+        print repr(pofile.units[1].target)
         assert self.countelements(pofile) == 1
 
     def test_comments(self):
