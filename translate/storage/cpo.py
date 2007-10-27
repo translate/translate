@@ -287,7 +287,13 @@ class pounit(pocommon.pounit):
             newnotes = "\n".join(line.rstrip() for line in text.split("\n"))
         # FIXME; workaround the need for leading spaces when adding comments to PO files in libgettexpo
         if newnotes:
-            newnotes = "\n".join([" " + line for line in newnotes.split("\n")])
+            newlines = []
+            for line in newnotes.split("\n"):
+                if line:
+                    newlines.append(" " + line)
+                else:
+                    newlines.append(line)
+            newnotes = "\n".join(newlines)
             if origin in ["programmer", "developer", "source code"]:
                 gpo.po_message_set_extracted_comments(self._gpo_message, newnotes)
             else:
