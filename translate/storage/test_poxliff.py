@@ -30,12 +30,12 @@ class TestPOXLIFFUnit(test_xliff.TestXLIFFUnit):
     def test_ids(self):
         """Tests that ids are assigned correctly, especially for plurals"""
         unit = self.UnitClass("gras")
-        assert unit.getid() == ""
+        assert not unit.getid()
         unit.setid("4")
         assert unit.getid() == "4"
 
         unit = self.UnitClass(multistring(["shoe", "shoes"]))
-        assert unit.getid() == ""
+        assert not unit.getid()
         unit.setid("20")
         assert unit.getid() == "20"
         assert unit.units[1].getid() == "20[1]"
