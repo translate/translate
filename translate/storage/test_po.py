@@ -344,6 +344,17 @@ msgstr "tweede"
         assert unit.isobsolete()
         assert str(pofile) == posource
 
+    def test_header_escapes(self):
+        pofile = self.StoreClass()
+        header = pofile.makeheader(**{"Report-Msgid-Bugs-To": r"http://qa.openoffice.org/issues/enter_bug.cgi?subcomponent=ui&comment=&short_desc=Localization%20issue%20in%20file%3A%20dbaccess\source\core\resource.oo&component=l10n&form_name=enter_issue"})
+        pofile.addunit(header)
+        filecontents = str(pofile)
+        print filecontents
+        # We need to make sure that the \r didn't get misrepresented as a 
+        # carriage return, but as a slash (escaped) followed by a normal 'r'
+        assert r'\source\core\resource' in pofile.header().target
+        assert r're\\resource' in filecontents
+
     def test_makeobsolete(self):
         """Tests making a unit obsolete"""
         posource = '#. The automatic one\n#: test.c\nmsgid "test"\nmsgstr "rest"\n'
