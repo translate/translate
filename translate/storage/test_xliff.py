@@ -179,7 +179,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert unit.target is None
         print unit
         unit.markfuzzy(True)
-        assert unit.xmlelement.getAttribute("approved") == "no"
+        assert 'approved="no"' in str(unit)
         #assert unit.isfuzzy()
 
     def test_parsing(self):
@@ -190,9 +190,21 @@ class TestXLIFFfile(test_base.TestTranslationStore):
                </trans-unit>'''
         xlifffile = xliff.xlifffile.parsestring(xlfsource)
         assert xlifffile.units[0].istranslatable()
-        xlifffile.units[0].xmlelement.setAttribute("translate", "no")
+
+        xlfsource = self.skeleton \
+          % '''<trans-unit id="1" xml:space="preserve" translate="no">
+                   <source>File</source>
+                   <target/>
+               </trans-unit>'''
+        xlifffile = xliff.xlifffile.parsestring(xlfsource)
         assert not xlifffile.units[0].istranslatable()
-        xlifffile.units[0].xmlelement.setAttribute("translate", "yes")
+
+        xlfsource = self.skeleton \
+          % '''<trans-unit id="1" xml:space="preserve" translate="yes">
+                   <source>File</source>
+                   <target/>
+               </trans-unit>'''
+        xlifffile = xliff.xlifffile.parsestring(xlfsource)
         assert xlifffile.units[0].istranslatable()
 
 
