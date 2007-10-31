@@ -55,7 +55,8 @@ msgstr "Toepassings"
         assert xliff.translate("Applications") == "Toepassings"
         assert xliff.translate("bla") is None
         xmltext = str(xliff)
-        assert xmltext.index('<xliff version="1.1"')
+        assert xmltext.index('<xliff ') >= 0
+        assert xmltext.index(' version="1.1"') >= 0
         assert xmltext.index('<file')
         assert xmltext.index('source-language')
         assert xmltext.index('datatype')
@@ -118,7 +119,7 @@ msgstr "Gebruik \\\"."
         print xmltext
         assert xliff.translate('Hello "Everyone"') == 'Good day "All"'
         assert xliff.translate(r'Use \".') == r'Gebruik \".'
-        assert xmltext.find(r'\&quot;') > 0
+        assert xmltext.find(r'\&quot;') > 0 or xmltext.find(r'\"') > 0
         assert xmltext.find(r"\\") == -1
 
     def getcontexttuples(self, node):
