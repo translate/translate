@@ -97,33 +97,6 @@ class TestCPOFile(test_po.TestPOFile):
 #        assert str(pofile.units[0]).count("source1") == 2
 #        assert str(pofile.units[1]).count("source2") == 2
   
-    def test_kde_context(self):
-        """Tests that kde-style msgid comments can be retrieved via getcontext()."""
-        posource = '''# Test comment
-#: source1
-msgid ""
-"_: Noun\\n"
-"convert"
-msgstr "bekeerling"
-
-# Test comment 2
-#: source2
-msgid ""
-"_: Verb. _: "
-"The action of changing.\\n"
-"convert"
-msgstr "omskakel"
-'''
-        pofile = self.poparse(posource)
-        unit = pofile.units[0]
-
-        assert unit.getcontext() == 'Noun'
-        assert unit.getnotes() == 'Test comment'
-
-        unit = pofile.units[1]
-        assert unit.getcontext() == 'Verb. _: The action of changing.'
-        assert unit.getnotes() == 'Test comment 2'
-
 #    def test_merge_mixed_sources(self):
 #        """checks that merging works with different source location styles"""
 #        posource = '''
