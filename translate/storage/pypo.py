@@ -831,7 +831,7 @@ class pofile(pocommon.pofile):
   def removeduplicates(self, duplicatestyle="merge"):
     """make sure each msgid is unique ; merge comments etc from duplicates into original"""
     msgiddict = {}
-    uniqueelements = []
+    uniqueunits = []
     # we sometimes need to keep track of what has been marked
     # TODO: this is using a list as the pos aren't hashable, but this is slow...
     markedpos = []
@@ -845,38 +845,38 @@ class pofile(pocommon.pofile):
         msgid = unquotefrompo(thepo.msgid)
       if thepo.isheader():
         # header msgids shouldn't be merged...
-        uniqueelements.append(thepo)
+        uniqueunits.append(thepo)
       elif duplicatestyle == "msgid_comment_all":
         addcomment(thepo)
-        uniqueelements.append(thepo)
+        uniqueunits.append(thepo)
       elif msgid in msgiddict:
         if duplicatestyle == "merge":
           if msgid:
             msgiddict[msgid].merge(thepo)
           else:
             addcomment(thepo)
-            uniqueelements.append(thepo)
+            uniqueunits.append(thepo)
         elif duplicatestyle == "keep":
-          uniqueelements.append(thepo)
+          uniqueunits.append(thepo)
         elif duplicatestyle == "msgid_comment":
           origpo = msgiddict[msgid]
           if origpo not in markedpos:
             addcomment(origpo)
           addcomment(thepo)
-          uniqueelements.append(thepo)
+          uniqueunits.append(thepo)
         elif duplicatestyle == "msgctxt":
           origpo = msgiddict[msgid]
           if origpo not in markedpos:
             origpo.msgctxt.append('"%s"' % " ".join(origpo.getlocations()))
             markedpos.append(thepo)
           thepo.msgctxt.append('"%s"' % " ".join(thepo.getlocations()))
-          uniqueelements.append(thepo)
+          uniqueunits.append(thepo)
       else:
         if not msgid and duplicatestyle != "keep":
           addcomment(thepo)
         msgiddict[msgid] = thepo
-        uniqueelements.append(thepo)
-    self.units = uniqueelements
+        uniqueunits.append(thepo)
+    self.units = uniqueunits
 
   def __str__(self):
     """convert to a string. double check that unicode is handled somehow here"""
