@@ -153,15 +153,6 @@ class TestPYPOFile(test_po.TestPOFile):
         regenposource = str(pofile)
         assert regenposource.count("_:") == 1
 
-    def test_merge_duplicates(self):
-        """checks that merging duplicates works"""
-        posource = '#: source1\nmsgid "test me"\nmsgstr ""\n\n#: source2\nmsgid "test me"\nmsgstr ""\n'
-        pofile = self.poparse(posource)
-        assert len(pofile.units) == 2
-        pofile.removeduplicates("merge")
-        assert len(pofile.units) == 1
-        assert pofile.units[0].getlocations() == ["source1", "source2"]
-
     def test_merge_duplicates_msgctxt(self):
         """checks that merging duplicates works for msgctxt"""
         posource = '#: source1\nmsgid "test me"\nmsgstr ""\n\n#: source2\nmsgid "test me"\nmsgstr ""\n'

@@ -509,6 +509,13 @@ class pofile(pocommon.pofile):
                     addcomment(thepo)
                 msgiddict[msgid] = thepo
                 uniqueunits.append(thepo)
+        new_gpo_memory_file = gpo.po_file_create()
+        new_gpo_message_iterator = gpo.po_message_iterator(new_gpo_memory_file, None)
+        for unit in uniqueunits:
+            gpo.po_message_insert(new_gpo_message_iterator, unit._gpo_message)
+        gpo.po_message_iterator_free(self._gpo_message_iterator)
+        self._gpo_message_iterator = new_gpo_message_iterator
+        self._gpo_memory_file = new_gpo_memory_file
         self.units = uniqueunits
 
     def __str__(self):

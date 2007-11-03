@@ -417,3 +417,12 @@ msgstr[1] "Koeie"
         print "Result:\n%s" % pofile
         assert str(unit) == poexpected
 
+    def test_merge_duplicates(self):
+        """checks that merging duplicates works"""
+        posource = '#: source1\nmsgid "test me"\nmsgstr ""\n\n#: source2\nmsgid "test me"\nmsgstr ""\n'
+        pofile = self.poparse(posource)
+        #assert len(pofile.units) == 2
+        pofile.removeduplicates("merge")
+        assert len(pofile.units) == 1
+        assert pofile.units[0].getlocations() == ["source1", "source2"]
+        print pofile
