@@ -163,68 +163,7 @@ class TestPYPOFile(test_po.TestPOFile):
         assert len(pofile.units) == 2
         assert str(pofile.units[0]).count("source1") == 2
         assert str(pofile.units[1]).count("source2") == 2
-  
-    def test_parse_context(self):
-        """Tests that msgctxt is parsed correctly and that it is accessible via the api methods."""
-        posource = '''# Test comment
-#: source1
-msgctxt "noun"
-msgid "convert"
-msgstr "bekeerling"
 
-# Test comment 2
-#: source2
-msgctxt "verb"
-msgid "convert"
-msgstr "omskakel"
-'''
-        pofile = self.poparse(posource)
-        unit = pofile.units[0]
-
-        assert unit.getcontext() == 'noun'
-        assert unit.getnotes() == 'Test comment'
-
-        unit = pofile.units[1]
-        assert unit.getcontext() == 'verb'
-        assert unit.getnotes() == 'Test comment 2'
-
-
-    def test_parse_advanced_context(self):
-        """Tests that some weird possible msgctxt scenarios are parsed correctly."""
-        posource = r'''# Test multiline context
-#: source1
-msgctxt "Noun."
-" A person that changes his or her ways."
-msgid "convert"
-msgstr "bekeerling"
-
-# Test quotes
-#: source2
-msgctxt "Verb. Converting from \"something\" to \"something else\"."
-msgid "convert"
-msgstr "omskakel"
-
-# Test quotes, newlines and multiline.
-#: source3
-msgctxt "Verb.\nConverting from \"something\""
-" to \"something else\"."
-msgid "convert"
-msgstr "omskakel"
-'''
-        pofile = self.poparse(posource)
-        unit = pofile.units[0]
-
-        assert unit.getcontext() == 'Noun. A person that changes his or her ways.'
-        assert unit.getnotes() == 'Test multiline context'
-
-        unit = pofile.units[1]
-        assert unit.getcontext() == 'Verb. Converting from "something" to "something else".'
-        assert unit.getnotes() == 'Test quotes'
-        
-        unit = pofile.units[2]
-        assert unit.getcontext() == 'Verb.\nConverting from "something" to "something else".'
-        assert unit.getnotes() == 'Test quotes, newlines and multiline.'
- 
     def test_kde_context(self):
         """Tests that kde-style msgid comments can be retrieved via getcontext()."""
         posource = '''# Test comment
@@ -251,7 +190,7 @@ msgstr "omskakel"
         unit = pofile.units[1]
         assert unit.getcontext() == 'Verb. _: The action of changing.'
         assert unit.getnotes() == 'Test comment 2'
-
+  
     def test_merge_mixed_sources(self):
         """checks that merging works with different source location styles"""
         posource = '''
