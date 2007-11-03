@@ -340,18 +340,6 @@ msgstr ""
         assert pofile.units[0].sourcecomments == ["#: source comment\n"]
         assert pofile.units[0].typecomments == ["#, fuzzy\n"]
 
-    def test_multiline_obsolete(self):
-        """Tests for correct output of mulitline obsolete messages"""
-        posource = '#~ msgid "Old thing\\n"\n#~ "Second old thing"\n#~ msgstr "Ou ding\\n"\n#~ "Tweede ou ding"\n'
-        pofile = self.poparse(posource)
-        assert pofile.isempty()
-        assert len(pofile.units) == 1
-        unit = pofile.units[0]
-        assert unit.isobsolete()
-        print str(pofile)
-        print posource
-        assert str(pofile) == posource
-
     def test_unassociated_comments(self):
         """tests behaviour of unassociated comments."""
         oldsource = '# old lonesome comment\n\nmsgid "one"\nmsgstr "een"\n'

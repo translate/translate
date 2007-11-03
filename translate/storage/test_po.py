@@ -417,6 +417,18 @@ msgstr[1] "Koeie"
         print "Result:\n%s" % pofile
         assert str(unit) == poexpected
 
+    def test_multiline_obsolete(self):
+        """Tests for correct output of mulitline obsolete messages"""
+        posource = '#~ msgid "Old thing\\n"\n#~ "Second old thing"\n#~ msgstr "Ou ding\\n"\n#~ "Tweede ou ding"\n'
+        pofile = self.poparse(posource)
+        assert pofile.isempty()
+        assert len(pofile.units) == 1
+        unit = pofile.units[0]
+        assert unit.isobsolete()
+        print str(pofile)
+        print posource
+        assert str(pofile) == posource
+
     def test_merge_duplicates(self):
         """checks that merging duplicates works"""
         posource = '#: source1\nmsgid "test me"\nmsgstr ""\n\n#: source2\nmsgid "test me"\nmsgstr ""\n'
