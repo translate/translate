@@ -439,6 +439,25 @@ msgstr[1] "Koeie"
         assert pofile.units[0].getlocations() == ["source1", "source2"]
         print pofile
 
+    def test_merge_mixed_sources(self):
+        """checks that merging works with different source location styles"""
+        posource = '''
+#: source1
+#: source2
+msgid "test"
+msgstr ""
+
+#: source1 source2
+msgid "test"
+msgstr ""
+'''
+        pofile = self.poparse(posource)
+        print str(pofile)
+        pofile.removeduplicates("merge")
+        print str(pofile)
+        assert len(pofile.units) == 1
+        assert pofile.units[0].getlocations() == ["source1", "source2"]
+
     def test_parse_context(self):
         """Tests that msgctxt is parsed correctly and that it is accessible via the api methods."""
         posource = '''# Test comment
