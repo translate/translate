@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 from translate.filters import checks
+from translate.lang import data
 from translate.storage import po 
 
 def passes(filterfunction, str1, str2):
     """returns whether the given strings pass on the given test, handling FilterFailures"""
-    str1 = checks.forceunicode(str1)
-    str2 = checks.forceunicode(str2)
+    str1 = data.forceunicode(str1)
+    str2 = data.forceunicode(str2)
     try:
         filterresult = filterfunction(str1, str2)
     except checks.FilterFailure, e:
@@ -14,8 +15,8 @@ def passes(filterfunction, str1, str2):
 
 def fails(filterfunction, str1, str2):
     """returns whether the given strings fail on the given test, handling only FilterFailures"""
-    str1 = checks.forceunicode(str1)
-    str2 = checks.forceunicode(str2)
+    str1 = data.forceunicode(str1)
+    str2 = data.forceunicode(str2)
     try:
         filterresult = filterfunction(str1, str2)
     except checks.SeriousFilterFailure, e:
@@ -26,8 +27,8 @@ def fails(filterfunction, str1, str2):
 
 def fails_serious(filterfunction, str1, str2):
     """returns whether the given strings fail on the given test, handling only SeriousFilterFailures"""
-    str1 = checks.forceunicode(str1)
-    str2 = checks.forceunicode(str2)
+    str1 = data.forceunicode(str1)
+    str2 = data.forceunicode(str2)
     try:
         filterresult = filterfunction(str1, str2)
     except checks.SeriousFilterFailure, e:
