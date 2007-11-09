@@ -39,16 +39,6 @@ from translate.lang import data
 from translate.storage import xliff
 import re
 
-def forceunicode(string):
-  """Helper method to ensure that the parameter becomes unicode if not yet"""
-  if string is None:
-    return None
-  if isinstance(string, str):
-    encoding = getattr(string, "encoding", "utf-8")
-    string = string.decode(encoding)
-  string = data.normalize(string)
-  return string
-    
 def tagname(string):
   """Returns the name of the XML/HTML tag in string"""
   return re.match("<[\s]*([\w\/]*)", string).groups(1)[0]
@@ -147,16 +137,16 @@ class CheckerConfig(object):
     self.accelmarkers = accelmarkers
     self.varmatches = varmatches
     # TODO: allow user configuration of untranslatable words
-    self.notranslatewords = dict.fromkeys([forceunicode(key) for key in notranslatewords])
-    self.musttranslatewords = dict.fromkeys([forceunicode(key) for key in musttranslatewords])
-    validchars = forceunicode(validchars)
+    self.notranslatewords = dict.fromkeys([data.forceunicode(key) for key in notranslatewords])
+    self.musttranslatewords = dict.fromkeys([data.forceunicode(key) for key in musttranslatewords])
+    validchars = data.forceunicode(validchars)
     self.validcharsmap = {}
     self.updatevalidchars(validchars)
-    punctuation = forceunicode(punctuation)
+    punctuation = data.forceunicode(punctuation)
     if punctuation is None:
       punctuation = self.lang.punctuation
     self.punctuation = punctuation
-    endpunctuation = forceunicode(endpunctuation)
+    endpunctuation = data.forceunicode(endpunctuation)
     if endpunctuation is None:
       endpunctuation = self.lang.sentenceend
     self.endpunctuation = endpunctuation
@@ -192,7 +182,7 @@ class CheckerConfig(object):
     """updates the map that eliminates valid characters"""
     if validchars is None:
       return True
-    validcharsmap = dict([(ord(validchar), None) for validchar in forceunicode(validchars)])
+    validcharsmap = dict([(ord(validchar), None) for validchar in data.forceunicode(validchars)])
     self.validcharsmap.update(validcharsmap)
 
   def updatetargetlanguage(self, langcode):
@@ -334,8 +324,8 @@ class TranslationChecker(UnitChecker):
   def run_filters(self, unit):
     """Do some optimisation by caching some data of the unit for the benefit 
     of run_test()."""
-    self.str1 = forceunicode(unit.source)
-    self.str2 = forceunicode(unit.target)
+    self.str1 = data.forceunicode(unit.source)
+    self.str2 = data.forceunicode(unit.target)
     self.hasplural = unit.hasplural()
     return super(TranslationChecker, self).run_filters(unit)
 
@@ -1047,8 +1037,8 @@ class StandardUnitChecker(UnitChecker):
 def runtests(str1, str2, ignorelist=()):
   """verifies that the tests pass for a pair of strings"""
   from translate.storage import base
-  str1 = forceunicode(str1)
-  str2 = forceunicode(str2)
+  str1 = data.forceunicode(str1)
+  str2 = data.forceunicode(str2)
   unit = base.TranslationUnit(str1)
   unit.target = str2
   checker = StandardChecker(excludefilters=ignorelist)
