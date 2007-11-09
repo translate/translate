@@ -180,3 +180,13 @@ def normalize(string, normal_form="NFC"):
     """
     return unicodedata.normalize(normal_form, string)
 
+def forceunicode(string):
+    """Helper method to ensure that the parameter becomes unicode if not yet"""
+    if string is None:
+        return None
+    if isinstance(string, str):
+        encoding = getattr(string, "encoding", "utf-8")
+        string = string.decode(encoding)
+    string = normalize(string)
+    return string
+    
