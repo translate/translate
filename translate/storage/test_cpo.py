@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from translate.storage import cpo as po
 from translate.storage import test_po
+from translate.storage import cpo
 from translate.misc.multistring import multistring
 from translate.misc import wStringIO
 from py.test import raises
 
 class TestCPOUnit(test_po.TestPOUnit):
-    UnitClass = po.pounit
+    UnitClass = cpo.pounit
 
     def test_plurals(self):
         """Tests that plurals are handled correctly."""
@@ -73,7 +73,7 @@ class TestCPOUnit(test_po.TestPOUnit):
         assert unit.getnotes() == "# Double commented comment"
 
 class TestCPOFile(test_po.TestPOFile):
-    StoreClass = po.pofile
+    StoreClass = cpo.pofile
     def test_msgidcomments(self):
         """checks that we handle msgid comments"""
         posource = 'msgid "test me"\nmsgstr ""'

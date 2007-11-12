@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from translate.storage import pypo as po
 from translate.storage import test_po
+from translate.storage import pypo
 from translate.misc.multistring import multistring
 from translate.misc import wStringIO
 from py.test import raises
 
 class TestPYPOUnit(test_po.TestPOUnit):
-    UnitClass = po.pounit
+    UnitClass = pypo.pounit
 
     def test_plurals(self):
         """Tests that plurals are handled correctly."""
@@ -142,7 +142,7 @@ msgstr ""
         assert str(unit) == expected
 
 class TestPYPOFile(test_po.TestPOFile):
-    StoreClass = po.pofile
+    StoreClass = pypo.pofile
     def test_combine_msgidcomments(self):
         """checks that we don't get duplicate msgid comments"""
         posource = 'msgid "test me"\nmsgstr ""'
@@ -173,8 +173,8 @@ class TestPYPOFile(test_po.TestPOFile):
         assert len(pofile.units) == 2
         print pofile.units[0].msgidcomments
         print pofile.units[1].msgidcomments
-        assert po.unquotefrompo(pofile.units[0].msgidcomments) == "_: source1\n"
-        assert po.unquotefrompo(pofile.units[1].msgidcomments) == "_: source2\n"
+        assert pypo.unquotefrompo(pofile.units[0].msgidcomments) == "_: source1\n"
+        assert pypo.unquotefrompo(pofile.units[1].msgidcomments) == "_: source2\n"
 
     def test_msgid_comment(self):
         """checks that when adding msgid_comments we place them on a newline"""
@@ -183,8 +183,8 @@ class TestPYPOFile(test_po.TestPOFile):
         assert len(pofile.units) == 2
         pofile.removeduplicates("msgid_comment")
         assert len(pofile.units) == 2
-        assert po.unquotefrompo(pofile.units[0].msgidcomments) == "_: source0\n"
-        assert po.unquotefrompo(pofile.units[1].msgidcomments) == "_: source1\n"
+        assert pypo.unquotefrompo(pofile.units[0].msgidcomments) == "_: source0\n"
+        assert pypo.unquotefrompo(pofile.units[1].msgidcomments) == "_: source1\n"
         # Now lets check for formating
         for i in (0, 1):
           expected = '''#: source%d\nmsgid ""\n"_: source%d\\n"\n"Same"\nmsgstr ""\n''' % (i, i)
@@ -198,8 +198,8 @@ class TestPYPOFile(test_po.TestPOFile):
         pofile.removeduplicates("keep")
         assert len(pofile.units) == 2
         # check we don't add msgidcomments
-        assert po.unquotefrompo(pofile.units[0].msgidcomments) == ""
-        assert po.unquotefrompo(pofile.units[1].msgidcomments) == ""
+        assert pypo.unquotefrompo(pofile.units[0].msgidcomments) == ""
+        assert pypo.unquotefrompo(pofile.units[1].msgidcomments) == ""
 
     def test_output_str_unicode(self):
         """checks that we can str(element) which is in unicode"""
