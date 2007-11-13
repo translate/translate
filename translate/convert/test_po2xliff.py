@@ -122,11 +122,11 @@ msgstr "Gebruik \\\"."
         assert xmltext.find(r'\&quot;') > 0 or xmltext.find(r'\"') > 0
         assert xmltext.find(r"\\") == -1
 
-    def getcontexttuples(self, node):
+    def getcontexttuples(self, node, namespace):
         """Returns all the information in the context nodes as a list of tuples
         of (type, text)"""
-        contexts = node.getElementsByTagName("context")
-        return [(context.getAttribute("context-type"), lisa.getText([context])) for context in contexts]
+        contexts = node.findall(".//{%s}context" % namespace)
+        return [(context.get("context-type"), lisa.getText(context)) for context in contexts]
 
     def test_locationcomments(self):
         minipo = r'''#: file.c:123 asdf.c
@@ -140,12 +140,12 @@ msgstr "kunye"
         assert xliff.translate("one") == "kunye"
         assert len(xliff.units) == 1
         node = xliff.units[0].xmlelement
-        contextgroups = node.getElementsByTagName("context-group")
+        contextgroups = node.findall(".//%s" % xliff.namespaced("context-group"))
         assert len(contextgroups) == 2
         for group in contextgroups:
-            assert group.getAttribute("name") == "po-reference"
-            assert group.getAttribute("purpose") == "location"
-        tuples = self.getcontexttuples(node)
+            assert group.get("name") == "po-reference"
+            assert group.get("purpose") == "location"
+        tuples = self.getcontexttuples(node, xliff.namespace)
         assert tuples == [("sourcefile", "file.c"), ("linenumber", "123"), ("sourcefile", "asdf.c")]
 
     def test_othercomments(self):
@@ -161,12 +161,12 @@ msgstr "kunye"
         assert xliff.translate("one") == "kunye"
         assert len(xliff.units) == 1
         node = xliff.units[0].xmlelement
-        contextgroups = node.getElementsByTagName("context-group")
+        contextgroups = node.findall(".//%s" % xliff.namespaced("context-group"))
         assert len(contextgroups) == 1
         for group in contextgroups:
-            assert group.getAttribute("name") == "po-entry"
-            assert group.getAttribute("purpose") == "information"
-        tuples = self.getcontexttuples(node)
+            assert group.get("name") == "po-entry"
+            assert group.get("purpose") == "information"
+        tuples = self.getcontexttuples(node, xliff.namespace)
         assert tuples == [("x-po-trancomment", "Translate?\nHow?")]
 
         assert xliff.units[0].getnotes("translator") == "Translate?\nHow?"
@@ -185,12 +185,12 @@ msgstr "kunye"
         assert xliff.translate("one") == "kunye"
         assert len(xliff.units) == 1
         node = xliff.units[0].xmlelement
-        contextgroups = node.getElementsByTagName("context-group")
+        contextgroups = node.findall(".//%s" % xliff.namespaced("context-group"))
         assert len(contextgroups) == 1
         for group in contextgroups:
-            assert group.getAttribute("name") == "po-entry"
-            assert group.getAttribute("purpose") == "information"
-        tuples = self.getcontexttuples(node)
+            assert group.get("name") == "po-entry"
+            assert group.get("purpose") == "information"
+        tuples = self.getcontexttuples(node, xliff.namespace)
         assert tuples == [("x-po-autocomment", "Don't translate.\nPlease")]
 
     def test_header(self):
@@ -208,9 +208,9 @@ msgstr ""
         assert len(xliff.units) == 1
         unit = xliff.units[0]
         assert unit.source == unit.target == "MIME-Version: 1.0\n"
-        assert unit.xmlelement.getAttribute("restype") == "x-gettext-domain-header"
-        assert unit.xmlelement.getAttribute("approved") == "no"
-        assert unit.xmlelement.getAttribute("xml:space") == "preserve"
+        assert unit.xmlelement.get("restype") == "x-gettext-domain-header"
+        assert unit.xmlelement.get("approved") == "no"
+        assert unit.xmlelement.get("{%s}space" % lisa.XML_NS) == "preserve"
         assert unit.getnotes("po-translator") == "Pulana  Translation for bla\nHallo Ma!"
 
     def test_fuzzy(self):
@@ -287,10 +287,10 @@ msgstr ""
         xmltext = str(xliff)
         print xmltext
         assert len(xliff.units) == 3
-        assert xliff.units[0].xmlelement.getAttribute("approved") == "no"
+        assert xliff.units[0].xmlelement.get("approved") == "no"
         assert not xliff.units[0].isapproved()
-        assert xliff.units[1].xmlelement.getAttribute("approved") == "yes"
+        assert xliff.units[1].xmlelement.get("approved") == "yes"
         assert xliff.units[1].isapproved()
-        assert xliff.units[2].xmlelement.getAttribute("approved") == "no"
+        assert xliff.units[2].xmlelement.get("approved") == "no"
         assert not xliff.units[2].isapproved()
 

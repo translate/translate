@@ -5,6 +5,7 @@ from translate.convert import po2tmx
 from translate.convert import test_convert
 from translate.misc import wStringIO
 from translate.storage import tmx
+from translate.storage import lisa
 
 class TestPO2TMX:
 
@@ -55,17 +56,17 @@ msgstr "Toepassings"
         tmx = self.po2tmx(minipo, sourcelanguage="xh")
         print "The generated xml:"
         print str(tmx)
-        header = tmx.document.getElementsByTagName("header")[0]
-        assert header.getAttribute("srclang") == "xh"
+        header = tmx.document.find("header")
+        assert header.get("srclang") == "xh"
         
     def test_targetlanguage(self):
         minipo = 'msgid "String"\nmsgstr "String"\n'
         tmx = self.po2tmx(minipo, targetlanguage="xh")
         print "The generated xml:"
         print str(tmx)
-        tuv = tmx.document.getElementsByTagName("tuv")[1]
+        tuv = tmx.document.findall(".//%s" % tmx.namespaced("tuv"))[1]
         #tag[0] will be the source, we want the target tuv
-        assert tuv.getAttribute("xml:lang") == "xh"
+        assert tuv.get("{%s}lang" % lisa.XML_NS) == "xh"
         
     def test_multiline(self):
         """Test multiline po entry"""
@@ -128,7 +129,8 @@ msgstr "Drie"
         tmx = self.po2tmx(minipo)
         print "The generated xml:"
         print str(tmx)
-        assert len(tmx.document.getElementsByTagName("tu")) == 0
+        assert "<tu" not in str(tmx)
+        assert len(tmx.units) == 0
 
     def test_nonascii(self):
         """Tests that non-ascii conversion works."""

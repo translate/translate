@@ -108,26 +108,26 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         unit = xlifffile.addsourceunit("Concept")
         unit.addnote("Please buy bread")
         assert unit.getnotes() == "Please buy bread"
-        notenodes = unit.xmlelement.getElementsByTagName("note")
+        notenodes = unit.xmlelement.findall(".//%s" % unit.namespaced("note"))
         assert len(notenodes) == 1
 
         unit.addnote("Please buy milk", origin="Mom")
-        notenodes = unit.xmlelement.getElementsByTagName("note")
+        notenodes = unit.xmlelement.findall(".//%s" % unit.namespaced("note"))
         assert len(notenodes) == 2
-        assert not notenodes[0].hasAttribute("from")
-        assert notenodes[1].getAttribute("from") == "Mom"
+        assert not "from" in notenodes[0].attrib
+        assert notenodes[1].get("from") == "Mom"
         assert unit.getnotes(origin="Mom") == "Please buy milk"
 
         unit.addnote("Don't forget the beer", origin="Dad")
-        notenodes = unit.xmlelement.getElementsByTagName("note")
+        notenodes = unit.xmlelement.findall(".//%s" % unit.namespaced("note"))
         assert len(notenodes) == 3
-        assert notenodes[1].getAttribute("from") == "Mom"
-        assert notenodes[2].getAttribute("from") == "Dad"
+        assert notenodes[1].get("from") == "Mom"
+        assert notenodes[2].get("from") == "Dad"
         assert unit.getnotes(origin="Dad") == "Don't forget the beer"
 
         assert not unit.getnotes(origin="Bob") == "Please buy bread\nPlease buy milk\nDon't forget the beer"
-        assert not notenodes[2].getAttribute("from") == "Mom"
-        assert not notenodes[0].hasAttribute("from")
+        assert not notenodes[2].get("from") == "Mom"
+        assert not "from" in notenodes[0].attrib
         assert unit.getnotes() == "Please buy bread\nPlease buy milk\nDon't forget the beer"
         assert unit.correctorigin(notenodes[2], "ad") == True
         assert unit.correctorigin(notenodes[2], "om") == False
