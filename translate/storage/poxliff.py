@@ -27,8 +27,7 @@ from translate.storage import xliff
 from translate.storage import lisa 
 from translate.storage import poheader
 from translate.misc.multistring import multistring
-from translate.misc import ourdom
-import xml
+from lxml import etree
 import re
 
 def hasplurals(thing):
@@ -38,22 +37,18 @@ def hasplurals(thing):
 
 class PoXliffUnit(xliff.xliffunit):
     """A class to specifically handle the plural units created from a po file."""
-    def __init__(self, source, document=None, empty=False):
+    def __init__(self, source, empty=False):
         self.units = []
-        if document:
-            self.document = document
-        else:
-            self.document = ourdom.Document()
             
         if empty:
             return
 
         if not hasplurals(source):
-            super(PoXliffUnit, self).__init__(source, self.document)
+            super(PoXliffUnit, self).__init__(source)
             return
 
-        self.xmlelement = self.document.createElement("group")
-        self.xmlelement.setAttribute("restype", "x-gettext-plurals")
+        self.xmlelement = etree.Element(self.namespaced("group"))
+        self.xmlelement.set("restype", "x-gettext-plurals")
         self.setsource(source)
 
     def __eq__(self, other):
@@ -83,13 +78,15 @@ class PoXliffUnit(xliff.xliffunit):
             target = self.target
             for unit in self.units:
                 try:
-                    self.xmlelement.removeChild(unit.xmlelement)
+                    self.xmlelement.remove(unit.xmlelement)
                 except xml.dom.NotFoundErr:
                     pass
             self.units = []
             for s in source.strings:
-                self.units.append(xliff.xliffunit(s, self.document))
-                self.xmlelement.appendChild(self.units[-1].xmlelement)
+                newunit = xliff.xliffunit(s)
+#                newunit.namespace = self.namespace #XXX?necessary?
+                self.units.append(newunit)
+                self.xmlelement.append(newunit.xmlelement)
             self.target = target
 
     def getsource(self):
@@ -139,11 +136,10 @@ class PoXliffUnit(xliff.xliffunit):
         """Add a note specifically in a "note" tag"""
         if isinstance(text, str):
             text = text.decode("utf-8")
-        note = self.document.createElement("note")
-        note.appendChild(self.document.createTextNode(text))
+        note = etree.SubElement(self.xmlelement, self.namespaced("note"))
+        note.text = text
         if origin:
-            note.setAttribute("from", origin)
-        self.xmlelement.appendChild(note)
+            note.set("from", origin)
         for unit in self.units[1:]:
             unit.addnote(text, origin)
 
@@ -182,7 +178,7 @@ class PoXliffUnit(xliff.xliffunit):
             unit.marktranslated()
 
     def setid(self, id):
-        self.xmlelement.setAttribute("id", id)
+        self.xmlelement.set("id", id)
         if len(self.units) > 1:
             for i in range(len(self.units)):
                 self.units[i].setid("%s[%d]" % (id, i))
@@ -232,24 +228,28 @@ class PoXliffUnit(xliff.xliffunit):
         return "\n".join(comments)
 
     def isheader(self):
-        return "gettext-domain-header" in self.getrestype()
+        return "gettext-domain-header" in (self.getrestype() or "")
 
-    def createfromxmlElement(cls, element, document):
-        if element.tagName == "trans-unit":
-            object = cls(None, document=document, empty=True)
+    def createfromxmlElement(cls, element, namespace=None):
+        if element.tag.endswith("trans-unit"):
+            object = cls(None, empty=True)
             object.xmlelement = element
+            object.namespace = namespace
             return object
-        assert element.tagName == "group"
-        group = cls(None, document, empty=True)
+        assert element.tag.endswith("group")
+        group = cls(None, empty=True)
         group.xmlelement = element
-        units = element.getElementsByTagName("trans-unit")
+        group.namespace = namespace
+        units = element.findall('.//%s' % group.namespaced('trans-unit'))
         for unit in units:
-            group.units.append(xliff.xliffunit.createfromxmlElement(unit, document))
+            subunit = xliff.xliffunit.createfromxmlElement(unit)
+            subunit.namespace = namespace
+            group.units.append(subunit)
         return group
     createfromxmlElement = classmethod(createfromxmlElement)
 
     def hasplural(self):
-        return self.xmlelement.tagName == "group"
+        return self.xmlelement.tag == self.namespaced("group")
 
 
 class PoXliffFile(xliff.xlifffile, poheader.poheader):
@@ -268,9 +268,9 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
     def addheaderunit(self, target, filename):
         unit = self.addsourceunit(target, filename, True)
         unit.target = target
-        unit.xmlelement.setAttribute("restype", "x-gettext-domain-header")
-        unit.xmlelement.setAttribute("approved", "no")
-        unit.xmlelement.setAttribute("xml:space", "preserve")
+        unit.xmlelement.set("restype", "x-gettext-domain-header")
+        unit.xmlelement.set("approved", "no")
+        lisa.setXMLspace(unit.xmlelement, "preserve")
         return unit
 
     def addplural(self, source, target, filename, createifmissing=False):
@@ -290,20 +290,20 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
         pluralnum = 0
         group = self.creategroup(filename, True, restype="x-gettext-plural")
         for (src, tgt) in zip(sources, targets):
-            unit = self.UnitClass(src, self.document)
+            unit = self.UnitClass(src)
             unit.target = tgt
             unit.setid("%d[%d]" % (self._messagenum, pluralnum))
             pluralnum += 1
-            group.appendChild(unit.xmlelement)
+            group.append(unit.xmlelement)
             self.units.append(unit)
 
         if pluralnum < sourcel:
             for string in sources[pluralnum:]:
-                unit = self.UnitClass(src, self.document)
-                unit.xmlelement.setAttribute("translate", "no")
+                unit = self.UnitClass(src)
+                unit.xmlelement.set("translate", "no")
                 unit.setid("%d[%d]" % (self._messagenum, pluralnum))
                 pluralnum += 1
-                group.appendChild(unit.xmlelement)
+                group.append(unit.xmlelement)
                 self.units.append(unit)
         
         return self.units[-pluralnum]
@@ -313,7 +313,7 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
         #TODO: Make more robust
         def ispluralgroup(node):
             """determines whether the xml node refers to a getttext plural"""
-            return node.getAttribute("restype") == "x-gettext-plurals"
+            return node.get("restype") == "x-gettext-plurals"
         
         def isnonpluralunit(node):
             """determindes whether the xml node contains a plural like id.
@@ -321,23 +321,23 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
             We want to filter out all the plural nodes, except the very first
             one in each group.
             """
-            return re.match(r"\d+\[[123456]\]$", node.getAttribute("id")) is None
+            return re.match(r"\d+\[[123456]\]$", node.get("id") or "") is None
 
         def pluralunits(pluralgroups):
             for pluralgroup in pluralgroups:
-                yield self.UnitClass.createfromxmlElement(pluralgroup, self.document)
+                yield self.UnitClass.createfromxmlElement(pluralgroup, namespace=self.namespace)
         
         self.filename = getattr(xml, 'name', '')
         if hasattr(xml, "read"):
             xml.seek(0)
             xmlsrc = xml.read()
             xml = xmlsrc
-        self.document = ourdom.parseString(xml)
-        assert self.document.documentElement.tagName == self.rootNode
+        self.document = etree.fromstring(xml).getroottree()
         self.initbody()
-        groups = self.document.getElementsByTagName("group")
+        assert self.document.getroot().tag == self.namespaced(self.rootNode)
+        groups = self.document.findall(".//%s" % self.namespaced("group"))
         pluralgroups = filter(ispluralgroup, groups)
-        termEntries = self.document.getElementsByTagName(self.UnitClass.rootNode)
+        termEntries = self.body.findall('.//%s' % self.namespaced(self.UnitClass.rootNode))
         if termEntries is None:
             return
 
@@ -349,7 +349,7 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
             nextplural = None
 
         for entry in singularunits:
-            term = self.UnitClass.createfromxmlElement(entry, self.document)
+            term = self.UnitClass.createfromxmlElement(entry, namespace=self.namespace)
             if nextplural and unicode(term.source) in nextplural.source.strings:
                 self.units.append(nextplural)
                 try:

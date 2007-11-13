@@ -23,6 +23,7 @@
 """module for parsing TMX translation memeory files"""
 
 from translate.storage import lisa
+from lxml import etree
 
 from translate import __version__
 
@@ -36,14 +37,10 @@ class tmxunit(lisa.LISAunit):
         """returns a langset xml Element setup with given parameters"""
         if isinstance(text, str):
             text = text.decode("utf-8")
-        langset = self.document.createElement(self.languageNode)
-        assert self.document == langset.ownerDocument
-        langset.setAttribute("xml:lang", lang)
-        seg = self.document.createElement(self.textNode)
-        segtext = self.document.createTextNode(text)
-        
-        langset.appendChild(seg)
-        seg.appendChild(segtext)
+        langset = etree.Element(self.languageNode)
+        lisa.setXMLlang(langset, lang)
+        seg = etree.SubElement(langset ,self.textNode)
+        seg.text = text
         return langset
 
 
@@ -60,24 +57,25 @@ class tmxfile(lisa.LISAfile):
 </tmx>'''
     
     def addheader(self):
-        headernode = self.document.getElementsByTagName("header")[0]
-        headernode.setAttribute("creationtool", "Translate Toolkit - po2tmx")
-        headernode.setAttribute("creationtoolversion", __version__.ver)
-        headernode.setAttribute("segtype", "sentence")
-        headernode.setAttribute("o-tmf", "UTF-8")
-        headernode.setAttribute("adminlang", "en")
+        headernode = self.document.find("//%s" % self.namespaced("header"))
+        headernode.set("creationtool", "Translate Toolkit - po2tmx")
+        headernode.set("creationtoolversion", __version__.ver)
+        headernode.set("segtype", "sentence")
+        headernode.set("o-tmf", "UTF-8")
+        headernode.set("adminlang", "en")
         #TODO: consider adminlang. Used for notes, etc. Possibly same as targetlanguage
-        headernode.setAttribute("srclang", self.sourcelanguage)
-        headernode.setAttribute("datatype", "PlainText")
-        #headernode.setAttribute("creationdate", "YYYYMMDDTHHMMSSZ"
-        #headernode.setAttribute("creationid", "CodeSyntax"
+        headernode.set("srclang", self.sourcelanguage)
+        headernode.set("datatype", "PlainText")
+        #headernode.set("creationdate", "YYYYMMDDTHHMMSSZ"
+        #headernode.set("creationid", "CodeSyntax"
 
     def addtranslation(self, source, srclang, translation, translang):
         """addtranslation method for testing old unit tests"""
         unit = self.addsourceunit(source)
         unit.target = translation
-        unit.xmlelement.getElementsByTagName("tuv")[0].setAttribute("xml:lang", srclang)
-        unit.xmlelement.getElementsByTagName("tuv")[1].setAttribute("xml:lang", translang)
+        tuvs = unit.xmlelement.findall('.//%s' % self.namespaced('tuv'))
+        lisa.setXMLlang(tuvs[0], srclang)
+        lisa.setXMLlang(tuvs[1], translang)
 
     def translate(self, sourcetext, sourcelang=None, targetlang=None):
         """method to test old unit tests"""

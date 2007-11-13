@@ -23,6 +23,7 @@
 """module for handling TBX glossary files"""
 
 from translate.storage import lisa
+from lxml import etree
 
 class tbxunit(lisa.LISAunit):
     """A single term in the TBX file. 
@@ -35,16 +36,11 @@ Provisional work is done to make several languages possible."""
         """returns a langset xml Element setup with given parameters"""
         if isinstance(text, str):
             text = text.decode("utf-8")
-        langset = self.document.createElement(self.languageNode)
-        assert self.document == langset.ownerDocument
-        langset.setAttribute("xml:lang", lang)
-        tig = self.document.createElement("tig") # or ntig with termGrp inside
-        term = self.document.createElement(self.textNode)
-        termtext = self.document.createTextNode(text)
-        
-        langset.appendChild(tig)
-        tig.appendChild(term)
-        term.appendChild(termtext)
+        langset = etree.Element(self.languageNode)
+        lisa.setXMLlang(langset, lang)
+        tig = etree.SubElement(langset, "tig") # or ntig with termGrp inside
+        term = etree.SubElement(tig, self.textNode)
+        term.text = text
         return langset
 
 
@@ -57,14 +53,14 @@ class tbxfile(lisa.LISAfile):
 <!DOCTYPE martif PUBLIC "ISO 12200:1999A//DTD MARTIF core (DXFcdV04)//EN" "TBXcdv04.dtd">
 <martif type="TBX">
 <martifHeader>
- <fileDesc>
-  <sourceDesc><p>Translate Toolkit - csv2tbx</p></sourceDesc>
- </fileDesc>
+<fileDesc>
+<sourceDesc><p>Translate Toolkit - csv2tbx</p></sourceDesc>
+</fileDesc>
 </martifHeader>
 <text><body></body></text>
 </martif>'''
 
     def addheader(self):
         """Initialise headers with TBX specific things."""
-        self.document.documentElement.setAttribute("xml:lang", self.sourcelanguage)
+        lisa.setXMLlang(self.document.getroot(), self.sourcelanguage)
 

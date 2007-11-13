@@ -23,27 +23,18 @@
 """Parent class for LISA standards (TMX, TBX, XLIFF)"""
 
 from translate.storage import base
-from translate.misc.multistring import multistring
-from translate.misc import ourdom
+from translate.lang import data
+from lxml import etree
 
-# Note that it is important that the local "ourdom" class is used. The builtin 
-# pretty printing of XML is not correct in minidom. Therefore take care to 
-# only instantiate classes from ourdom, and to call those functions as needed.
-#
-# For example: ourdom.Element, ourdom.Document, ourdom.parseString
-
-def getText(nodelist):
+def getText(node):
     """joins together the text from all the text nodes in the nodelist and their children"""
-    rc = []
-    if not isinstance(nodelist, list):
-        nodelist = [nodelist]
-    for node in nodelist:
-        if node.nodeType == node.TEXT_NODE:
-            rc.append(node.data)
-        elif node.nodeType == node.ELEMENT_NODE:
-            rc += getText(node.childNodes)
-    return multistring(''.join(rc))
-    #return "".join([t.data for t in node.childNodes if t.nodeType == t.TEXT_NODE])
+    # node.xpath is very slow, so we only use it if there are children
+    # TODO: consider rewriting by iterating over children
+    if node:    # The etree way of testing for children
+        return node.xpath("string()") # specific to lxml.etree
+    else:
+        return data.forceunicode(node.text) or u""
+        # if node.text is none, we want to return "" since the tag is there
 
 def _findAllMatches(text,re_obj):
     'generate match objects for all @re_obj matches in @text'
@@ -68,6 +59,28 @@ def _getPhMatches(text):
     matches.sort(lambda a,b: cmp(a.start(),b.start()))
     return matches
 
+XML_NS = 'http://www.w3.org/XML/1998/namespace'
+
+def setXMLlang(node, lang):
+    """Sets the xml:lang attribute on node"""
+    node.set("{%s}lang" % XML_NS, lang)
+
+def setXMLspace(node, value):
+    """Sets the xml:space attribute on node"""
+    node.set("{%s}space" % XML_NS, value)
+
+def namespaced(namespace, name):
+    """Returns name in Clark notation within the given namespace.
+
+    For example namespaced("source") in an XLIFF document might return
+        {urn:oasis:names:tc:xliff:document:1.1}source
+    This is needed throughout lxml.
+    """
+    if namespace:
+        return "{%s}%s" % (namespace, name)
+    else:
+        return name
+
 class LISAunit(base.TranslationUnit):
     """A single unit in the file. 
 Provisional work is done to make several languages possible."""
@@ -79,15 +92,13 @@ Provisional work is done to make several languages possible."""
     #The name of the innermost element of this unit type:(term, seg)
     textNode = ""
 
-    def __init__(self, source, document=None, empty=False):
+    namespace = None
+
+    def __init__(self, source, empty=False):
         """Constructs a unit containing the given source string"""
-        if document:
-            self.document = document
-        else:
-            self.document = ourdom.Document()
         if empty:
             return
-        self.xmlelement = self.document.createElement(self.rootNode)
+        self.xmlelement = etree.Element(self.rootNode)
         #add descrip, note, etc.
 
         super(LISAunit, self).__init__(source)
@@ -106,13 +117,23 @@ Provisional work is done to make several languages possible."""
                 return False
         return True
 
+    def namespaced(self, name):
+        """Returns name in Clark notation.
+
+        For example namespaced("source") in an XLIFF document might return
+            {urn:oasis:names:tc:xliff:document:1.1}source
+        This is needed throughout lxml.
+        """
+        return namespaced(self.namespace, name)
+
     def setsource(self, source, sourcelang='en'):
+        source = data.forceunicode(source)
         languageNodes = self.getlanguageNodes()
         sourcelanguageNode = self.createlanguageNode(sourcelang, source, "source")
         if len(languageNodes) > 0:
-            self.xmlelement.replaceChild(sourcelanguageNode, languageNodes[0])
+            self.xmlelement[0] = sourcelanguageNode
         else:
-            self.xmlelement.appendChild(sourcelanguageNode)
+            self.xmlelement.append(sourcelanguageNode)
 
     def getsource(self):
         return self.getNodeText(self.getlanguageNode(lang=None, index=0))
@@ -121,6 +142,7 @@ Provisional work is done to make several languages possible."""
     def settarget(self, text, lang='xx', append=False):
         #XXX: we really need the language - can't really be optional
         """Sets the "target" string (second language), or alternatively appends to the list"""
+        text = data.forceunicode(text)
         #Firstly deal with reinitialising to None or setting to identical string
         if self.gettarget() == text:
             return
@@ -129,11 +151,11 @@ Provisional work is done to make several languages possible."""
         if not text is None:
             languageNode = self.createlanguageNode(lang, text, "target")
             if append or len(languageNodes) == 1:
-                self.xmlelement.appendChild(languageNode)
+                self.xmlelement.append(languageNode)
             else:
-                self.xmlelement.insertBefore(languageNode, languageNodes[1])
+                self.xmlelement.insert(1, languageNode)
         if not append and len(languageNodes) > 1:
-            self.xmlelement.removeChild(languageNodes[1])
+            self.xmlelement.remove(languageNodes[1])
 
     def gettarget(self, lang=None):
         """retrieves the "target" text (second entry), or the entry in the 
@@ -152,27 +174,36 @@ Provisional work is done to make several languages possible."""
 
     def createPHnodes(self, parent, text):
         """Create the text node in parent containing all the ph tags"""
-        if isinstance(text, str):
-            text = text.decode("utf-8")
-        start = 0
-        for i,m in enumerate(_getPhMatches(text)):
+        matches = _getPhMatches(text)
+        if not matches:
+            parent.text = text
+            return
+
+        # Now we know there will definitely be some ph tags
+        start = matches[0].start()
+        pretext = text[:start]
+        if pretext:
+            parent.text = pretext
+        lasttag = parent
+        for i, m in enumerate(matches):
             #pretext
             pretext = text[start:m.start()]
+            # this will never happen with the first ph tag
             if pretext:
-                parent.appendChild(self.document.createTextNode(pretext))
+                lasttag.tail = pretext
             #ph node
-            phnode = ourdom.Element("ph")
-            phnode.setAttribute("id", str(i+1))
-            phnode.appendChild(self.document.createTextNode(m.group()))
-            parent.appendChild(phnode)
+            phnode = etree.SubElement(parent, "ph")
+            phnode.set("id", str(i+1))
+            phnode.text = m.group()
+            lasttag = phnode
             start = m.end()
         #post text
         if text[start:]:
-            parent.appendChild(self.document.createTextNode(text[start:]))
+            lasttag.tail = text[start:]
 
     def getlanguageNodes(self):
         """Returns a list of all nodes that contain per language information."""
-        return self.xmlelement.getElementsByTagName(self.languageNode)
+        return self.xmlelement.findall(self.namespaced(self.languageNode))
 
     def getlanguageNode(self, lang=None, index=None):
         """Retrieves a languageNode either by language or by index"""
@@ -181,7 +212,7 @@ Provisional work is done to make several languages possible."""
         languageNodes = self.getlanguageNodes()
         if lang:
             for set in languageNodes:
-                if set.getAttribute("xml:lang") == lang:
+                if set.get("{%s}lang" % XML_NS) == lang:
                     return set
         else:#have to use index
             if index >= len(languageNodes):
@@ -195,18 +226,18 @@ Provisional work is done to make several languages possible."""
         if languageNode is None:
             return None
         if self.textNode:
-            terms = languageNode.getElementsByTagName(self.textNode)
+            terms = languageNode.findall('.//%s' % self.namespaced(self.textNode))
             if len(terms) == 0:
                 return None
-            return getText([terms[0]])
+            return getText(terms[0])
         else:
-            return getText([languageNode])
+            return getText(languageNode)
 
     def __str__(self):
-        return self.xmlelement.toxml().encode('utf-8')
+        return etree.tostring(self.xmlelement, pretty_print=True, encoding='utf-8')
 
-    def createfromxmlElement(cls, element, document):
-        term = cls(None, document=document, empty=True)
+    def createfromxmlElement(cls, element):
+        term = cls(None, empty=True)
         term.xmlelement = element
         return term
     createfromxmlElement = classmethod(createfromxmlElement)
@@ -221,24 +252,38 @@ class LISAfile(base.TranslationStore):
     #The XML skeleton to use for empty construction:
     XMLskeleton = ""
 
+    namespace = None
+
     def __init__(self, inputfile=None, sourcelanguage='en', targetlanguage=None, unitclass=None):
         super(LISAfile, self).__init__(unitclass=unitclass)
         self.setsourcelanguage(sourcelanguage)
         self.settargetlanguage(targetlanguage)
         if inputfile is not None:
             self.parse(inputfile)
-            assert self.document.documentElement.tagName == self.rootNode
+            assert self.document.getroot().tag == self.namespaced(self.rootNode)
         else:
-            self.parse(self.XMLskeleton)
+            # We strip out newlines to ensure that spaces in the skeleton doesn't
+            # interfere with the the pretty printing of lxml
+            self.parse(self.XMLskeleton.replace("\n", ""))
             self.addheader()
 
     def addheader(self):
         """Method to be overridden to initialise headers, etc."""
         pass
 
+    def namespaced(self, name):
+        """Returns name in Clark notation.
+
+        For example namespaced("source") in an XLIFF document might return
+            {urn:oasis:names:tc:xliff:document:1.1}source
+        This is needed throughout lxml.
+        """
+        return namespaced(self.namespace, name)
+
     def initbody(self):
-        """Initialises self.body so it never needs to be retrieved from the DOM again."""
-        self.body = self.document.getElementsByTagName(self.bodyNode)[0]
+        """Initialises self.body so it never needs to be retrieved from the XML again."""
+        self.namespace = self.document.getroot().nsmap.get(None, None)
+        self.body = self.document.find('//%s' % self.namespaced(self.bodyNode))
 
     def setsourcelanguage(self, sourcelanguage):
         """Sets the source language for this store"""
@@ -251,17 +296,18 @@ class LISAfile(base.TranslationStore):
     def addsourceunit(self, source):
         #TODO: miskien moet hierdie eerder addsourcestring of iets genoem word?
         """Adds and returns a new unit with the given string as first entry."""
-        newunit = self.UnitClass(source, self.document)
+        newunit = self.UnitClass(source)
         self.addunit(newunit)
         return newunit
 
     def addunit(self, unit):
-        self.body.appendChild(unit.xmlelement)
+        unit.namespace = self.namespace
+        self.body.append(unit.xmlelement)
         self.units.append(unit)
 
     def __str__(self):
         """Converts to a string containing the file's XML"""
-        return self.document.toprettyxml(indent="\t", encoding="utf-8")
+        return etree.tostring(self.document, pretty_print=True, encoding='utf-8')
 
     def parse(self, xml):
         """Populates this object from the given xml string"""
@@ -271,19 +317,15 @@ class LISAfile(base.TranslationStore):
             xml.seek(0)
             posrc = xml.read()
             xml = posrc
-        self.document = ourdom.parseString(xml)
-        self.encoding = self.document.encoding
-        assert self.document.documentElement.tagName == self.rootNode
+        self.document = etree.fromstring(xml).getroottree()
+        self.encoding = self.document.docinfo.encoding
         self.initbody()
-        termEntries = self.document.getElementsByTagName(self.UnitClass.rootNode)
+        assert self.document.getroot().tag == self.namespaced(self.rootNode)
+        termEntries = self.body.findall('.//%s' % self.namespaced(self.UnitClass.rootNode))
         if termEntries is None:
             return
         for entry in termEntries:
-            term = self.UnitClass.createfromxmlElement(entry, self.document)
+            term = self.UnitClass.createfromxmlElement(entry)
+            term.namespace = self.namespace
             self.units.append(term)
-
-    def __del__(self):
-        """clean up the document if required"""
-        if hasattr(self, "document"):
-            self.document.unlink()
 
