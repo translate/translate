@@ -170,3 +170,15 @@ garbage</note>
         assert potext.index('msgstr[0] "inkomo"')
         assert potext.index('msgstr[1] "iinkomo"')
 
+
+class TestBasicXLIFF2PO(TestXLIFF2PO):
+    """This tests a basic XLIFF file without xmlns attribute"""
+
+    xliffskeleton = '''<?xml version="1.0" ?>
+<xliff version="1.1">
+  <file original="filename.po" source-language="en-US" datatype="po">
+    <body>
+        %s
+    </body>
+  </file>
+</xliff>'''
