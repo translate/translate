@@ -133,7 +133,7 @@ def convertoo(inputfile, outputfile, templates, pot=False, sourcelanguage=None, 
       sourcelanguage = "en-US"
   if not sourcelanguage in inputstore.languages:
     print "Warning: sourcelanguage %s not found in inputfile (contains %s)" % (sourcelanguage, ", ".join(inputstore.languages))
-  if targetlanguage and targetlanguage not in inputstore.languages:
+  if not pot and targetlanguage and targetlanguage not in inputstore.languages:
     print "Warning: targetlanguage %s not found in inputfile (contains %s)" % (targetlanguage, ", ".join(inputstore.languages))
   convertor = oo2xliff(sourcelanguage, targetlanguage, blankmsgstr=pot, long_keys=multifilestyle!="single")
   outputstore = convertor.convertfile(inputstore, duplicatestyle)
