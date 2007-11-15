@@ -129,6 +129,16 @@ class BaseTestFilter(object):
         filter_result = self.filter(self.translationstore)
         assert len(filter_result.units) == 0
 
+    def test_preconditions(self):
+        """tests that the preconditions work correctly"""
+        self.unit.source = "File"
+        self.unit.target = ""
+        filter_result= self.filter(self.translationstore)
+        # We should only get one error (untranslated), and nothing else
+        assert len(filter_result.units) == 1
+        unit = filter_result.units[0]
+        assert len(unit.geterrors()) == 1
+
 class TestPOFilter(BaseTestFilter):
     """Test class for po-specific tests."""
     filetext = '#: test.c\nmsgid "test"\nmsgstr "rest"\n'
