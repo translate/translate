@@ -115,9 +115,12 @@ def suggestioninfo(filename):
             suggestion_mtime = os.path.getmtime(suggestion_filename)
     return suggestion_filename, suggestion_mtime
 
-class StatsCache:
+class StatsCache(object):
+    """An object instantiated as a singleton for each statsfile that provides 
+    access to the database cache from a pool of StatsCache objects."""
+    caches = {}
 
-    def __init__(self, statsfile=None):
+    def __new__(cls, statsfile=None):
         if not statsfile:
             userdir = os.path.expanduser("~")
             #TODO: find a better solution for Windows
@@ -125,9 +128,16 @@ class StatsCache:
             if not os.path.exists(cachedir):
                 os.mkdir(cachedir)
             statsfile = os.path.join(cachedir, "stats.db")
-        self.con = dbapi2.connect(statsfile)
-        self.cur = self.con.cursor()
-        self.create()
+        statsfile = os.path.abspath(statsfile)
+        # First see if a cache for this file already exists:
+        if statsfile in cls.caches:
+            return cls.caches[statsfile]
+        # No existing cache. Let's build a new one and keep a copy
+        cache = cls.caches[statsfile] = object.__new__(cls)
+        cache.con = dbapi2.connect(statsfile)
+        cache.cur = cache.con.cursor()
+        cache.create()
+        return cache
 
     def create(self):
         """Create all tables and indexes."""
