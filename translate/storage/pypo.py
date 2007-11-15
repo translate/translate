@@ -26,6 +26,7 @@ from __future__ import generators
 from translate.misc.multistring import multistring
 from translate.misc import quote
 from translate.misc import textwrap
+from translate.lang import data
 from translate.storage import pocommon
 import re
 
@@ -257,13 +258,14 @@ class pounit(pocommon.pounit):
     else:
       raise ValueError("Comment type not valid")
     # Let's drop the last newline
-    return comments[:-1].decode(self._encoding)
+    return comments[:-1]
 
   def addnote(self, text, origin=None, position="append"):
     """This is modeled on the XLIFF method. See xliff.py::xliffunit.addnote"""
     # We don't want to put in an empty '#' without a real comment:
     if not text:
       return
+    text = data.forceunicode(text)
     commentlist = self.othercomments
     linestart = "# "
     if origin in ["programmer", "developer", "source code"]:
@@ -506,6 +508,9 @@ class pounit(pocommon.pounit):
     return len(self.msgid_plural) > 0
 
   def parse(self, src):
+    if isinstance(src, str):
+      # This has not been decoded yet, so we need to make a plan
+      src = src.decode(self._encoding)
     inmsgctxt = 0
     inmsgid = 0
     inmsgid_comment = 0
