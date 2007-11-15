@@ -997,6 +997,7 @@ projectcheckers = {
   "openoffice": OpenOfficeChecker,
   "mozilla": MozillaChecker,
   "kde": KdeChecker,
+  "wx": KdeChecker,
   "gnome": GnomeChecker,
   "creativecommons": CCLicenseChecker
   }

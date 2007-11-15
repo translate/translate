@@ -176,6 +176,9 @@ def cmdlineparser():
   parser.add_option("", "--kde", dest="filterclass",
     action="store_const", default=None, const=checks.KdeChecker,
     help="use the standard checks for KDE translations")
+  parser.add_option("", "--wx", dest="filterclass",
+    action="store_const", default=None, const=checks.KdeChecker,
+    help="use the standard checks for wxWidgets translations")
   parser.add_option("", "--excludefilter", dest="excludefilters",
     action="append", default=[], type="string", metavar="FILTER",
     help="don't use FILTER when filtering")
