@@ -391,6 +391,7 @@ def test_printf():
     assert passes(stdchecker.printf, "I am %#100.50hhf", "Ek is %#100.50hhf")
     assert fails(stdchecker.printf, "I am %#100s", "Ek is %10s")
     assert fails(stdchecker.printf, "... for user %.100s on %.100s:", "... lomuntu osebenzisa i-%. I-100s e-100s:")
+    assert passes(stdchecker.printf, "%dMB", "%d MG")
     # Reordering
     assert passes(stdchecker.printf, "String %s and number %d", "String %1$s en nommer %2$d")
     assert passes(stdchecker.printf, "String %1$s and number %2$d", "String %1$s en nommer %2$d")
