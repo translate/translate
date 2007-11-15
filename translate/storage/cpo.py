@@ -25,6 +25,7 @@ gettext-style .po (or .pot) files are used in translations for KDE et al (see kb
 from translate.misc.multistring import multistring
 from translate.storage import pocommon
 from translate.misc import quote
+from translate.lang import data
 from ctypes import *
 import ctypes.util
 try:
@@ -262,12 +263,13 @@ class pounit(pocommon.pounit):
         if comments:
             comments = "\n".join([line[1:] for line in comments.split("\n")])
         # Let's drop the last newline
-        return unicode(comments[:-1])
+        return comments[:-1].decode(self._encoding)
 
     def addnote(self, text, origin=None, position="append"):
         if not text:
             return
-        oldnotes = self.getnotes(origin).encode('utf-8')
+        text = data.forceunicode(text)
+        oldnotes = self.getnotes(origin)
         newnotes = None
         if oldnotes:
             if position == "append":
