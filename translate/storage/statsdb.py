@@ -109,7 +109,7 @@ def suggestioninfo(filename):
         # translations. If either file changed, we want to regenerate the
         # statistics.
         suggestion_filename = filename + os.path.extsep + 'pending'
-        if os.path.exists(suggestion_filename):
+        if not os.path.exists(suggestion_filename):
             suggestion_filename = None
         else:
             suggestion_mtime = os.path.getmtime(suggestion_filename)
