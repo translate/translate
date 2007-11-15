@@ -39,7 +39,7 @@ class fa(common.Common):
         u",": u"،",
         u";": u"؛",
         u"?": u"؟",
-        u"%": u"÷",
+        u"%": u"٪",
     }
 
     ignoretests = ["startcaps", "simplecaps"]
