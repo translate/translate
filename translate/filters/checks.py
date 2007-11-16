@@ -121,7 +121,7 @@ class CheckerConfig(object):
   def __init__(self, targetlanguage=None, accelmarkers=None, varmatches=None, 
           notranslatewords=None, musttranslatewords=None, validchars=None, 
           punctuation=None, endpunctuation=None, ignoretags=None, 
-          canchangetags=None, criticaltests=None):
+          canchangetags=None, criticaltests=None, credit_sources=None):
     # we have to initialise empty lists properly (default arguments get reused)
     if accelmarkers is None:
       accelmarkers = []
@@ -161,6 +161,9 @@ class CheckerConfig(object):
     if criticaltests is None:
       criticaltests = []
     self.criticaltests = criticaltests
+    if credit_sources is None:
+      credit_sources = []
+    self.credit_sources = credit_sources
 
   def update(self, otherconfig):
     """combines the info in otherconfig into this config object"""
@@ -177,6 +180,7 @@ class CheckerConfig(object):
     self.ignoretags = otherconfig.ignoretags
     self.canchangetags = otherconfig.canchangetags
     self.criticaltests.extend(otherconfig.criticaltests)
+    self.credit_sources = otherconfig.credit_sources
 
   def updatevalidchars(self, validchars):
     """updates the map that eliminates valid characters"""
@@ -885,6 +889,10 @@ class StandardChecker(TranslationChecker):
       raise FilterFailure(messages)
     return True
 
+  def credits(self, str1, str2):
+    """checks for messages containing translation credits instead of normal translations."""
+    return not str1 in self.config.credit_sources
+
   # If the precondition filter is run and fails then the other tests listed are ignored
   preconditions = {"untranslated": ("simplecaps", "variables", "startcaps",
                                     "accelerators", "brackets", "endpunc",
@@ -905,6 +913,14 @@ class StandardChecker(TranslationChecker):
                                     "filepaths", "purepunc", "doublespacing",
                                     "sentencecount", "numbers", "isfuzzy",
                                     "isreview", "notranslatewords", "musttranslatewords",
+                                    "emails", "simpleplurals", "urls", "printf",
+                                    "tabs", "newlines", "functions", "options"),
+                    "credits":      ("simplecaps", "variables", "startcaps",
+                                    "accelerators", "brackets", "endpunc",
+                                    "acronyms", "xmltags", "startpunc",
+                                    "escapes", "doublequoting", "singlequoting", 
+                                    "filepaths", "doublespacing",
+                                    "sentencecount", "numbers",
                                     "emails", "simpleplurals", "urls", "printf",
                                     "tabs", "newlines", "functions", "options"),
                    "purepunc":      ("startcaps", "options"),
@@ -955,7 +971,8 @@ class MozillaChecker(StandardChecker):
 
 gnomeconfig = CheckerConfig(
   accelmarkers = ["_"],
-  varmatches = [("%", 1), ("$(", ")")]
+  varmatches = [("%", 1), ("$(", ")")],
+  credit_sources = [u"translator-credits"]
   )
 
 class GnomeChecker(StandardChecker):
@@ -969,7 +986,8 @@ class GnomeChecker(StandardChecker):
 
 kdeconfig = CheckerConfig(
   accelmarkers = ["&"],
-  varmatches = [("%", 1)]
+  varmatches = [("%", 1)],
+  credit_sources = [u"Your names", u"Your emails", u"ROLES_OF_TRANSLATORS"]
   )
 
 class KdeChecker(StandardChecker):
