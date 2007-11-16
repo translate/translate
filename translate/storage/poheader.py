@@ -135,8 +135,6 @@ class poheader:
       language_team = "LANGUAGE <LL@li.org>"
     if mime_version is None:
       mime_version = "1.0"
-    if plural_forms is None:
-      plural_forms = "nplurals=INTEGER; plural=EXPRESSION;"
     if report_msgid_bugs_to is None:
       report_msgid_bugs_to = ""
 
@@ -150,7 +148,8 @@ class poheader:
     defaultargs["MIME-Version"] = mime_version
     defaultargs["Content-Type"] = "text/plain; charset=%s" % charset
     defaultargs["Content-Transfer-Encoding"] = encoding
-    defaultargs["Plural-Forms"] = plural_forms
+    if plural_forms:
+      defaultargs["Plural-Forms"] = plural_forms
     defaultargs["X-Generator"] = self.x_generator
 
     return update(defaultargs, add=True, **kwargs)
