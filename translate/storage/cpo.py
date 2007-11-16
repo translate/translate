@@ -78,7 +78,12 @@ def xerror2_cb(severity, message1, filename1, lineno1, column1, nultiline_p1, me
 
 # Load libgettextpo
 lib_location = ctypes.util.find_library('gettextpo')
-gpo = cdll.LoadLibrary(lib_location)
+if not lib_location:
+    gpo = cdll.libgettextpo
+else:
+    gpo = cdll.LoadLibrary(lib_location)
+if not gpo:
+    raise ImportError("gettext PO library not found")
 
 
 # Setup return and paramater types
