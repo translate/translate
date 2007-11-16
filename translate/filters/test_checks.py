@@ -811,3 +811,23 @@ def test_nplurals():
     unit.target = [u"%d ឯកសារ", u"%d lêers"]
     assert not checker.nplurals(unit)
 
+def test_credits():
+    """tests credits"""
+    stdchecker = checks.StandardChecker()
+    assert passes(stdchecker.credits, "File", "iFayile") 
+    assert passes(stdchecker.credits, "&File", "&Fayile") 
+    assert passes(stdchecker.credits, "translator-credits", "Ekke, ekke!") 
+    assert passes(stdchecker.credits, "Your names", "Ekke, ekke!") 
+    assert passes(stdchecker.credits, "ROLES_OF_TRANSLATORS", "Ekke, ekke!") 
+    kdechecker = checks.KdeChecker()
+    assert passes(kdechecker.credits, "File", "iFayile") 
+    assert passes(kdechecker.credits, "&File", "&Fayile") 
+    assert passes(kdechecker.credits, "translator-credits", "Ekke, ekke!") 
+    assert fails(kdechecker.credits, "Your names", "Ekke, ekke!") 
+    assert fails(kdechecker.credits, "ROLES_OF_TRANSLATORS", "Ekke, ekke!") 
+    gnomechecker = checks.GnomeChecker()
+    assert passes(gnomechecker.credits, "File", "iFayile") 
+    assert passes(gnomechecker.credits, "&File", "&Fayile") 
+    assert fails(gnomechecker.credits, "translator-credits", "Ekke, ekke!") 
+    assert passes(gnomechecker.credits, "Your names", "Ekke, ekke!") 
+    assert passes(gnomechecker.credits, "ROLES_OF_TRANSLATORS", "Ekke, ekke!") 
