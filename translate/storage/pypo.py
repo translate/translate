@@ -249,12 +249,12 @@ class pounit(pocommon.pounit):
   def getnotes(self, origin=None):
     """Return comments based on origin value (programmer, developer, source code and translator)"""
     if origin == None:
-      comments = "".join([comment[2:] for comment in self.othercomments])
-      comments += "".join([comment[3:] for comment in self.automaticcomments])
+      comments = u"".join([comment[2:] for comment in self.othercomments])
+      comments += u"".join([comment[3:] for comment in self.automaticcomments])
     elif origin == "translator":
-      comments = "".join ([comment[2:] for comment in self.othercomments])
+      comments = u"".join ([comment[2:] for comment in self.othercomments])
     elif origin in ["programmer", "developer", "source code"]:
-      comments = "".join([comment[3:] for comment in self.automaticcomments])
+      comments = u"".join([comment[3:] for comment in self.automaticcomments])
     else:
       raise ValueError("Comment type not valid")
     # Let's drop the last newline
