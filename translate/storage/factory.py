@@ -22,15 +22,15 @@
 """factory methods to build real storage objects that conform to base.py"""
 
 from translate.storage import base
-from translate.storage import po
-from translate.storage import mo
 from translate.storage import csvl10n
-from translate.storage import qm
-from translate.storage import xliff
+from translate.storage import mo
+from translate.storage import po
 from translate.storage import poxliff
-from translate.storage import tmx
+from translate.storage import qm
 from translate.storage import tbx
+from translate.storage import tmx
 from translate.storage import wordfast
+from translate.storage import xliff
 
 import os
 from gzip import GzipFile
@@ -42,13 +42,16 @@ except ImportError:
 
 #TODO: Monolingual formats (with template?)
 
-classes = {"po": po.pofile, "pot": po.pofile, 
-           "mo": mo.mofile, "gmo": mo.mofile, 
+classes = {
            "csv": csvl10n.csvfile, 
+           "po": po.pofile, "pot": po.pofile, 
+           "mo": mo.mofile, "gmo": mo.mofile, 
            "qm": qm.qmfile, 
+           "tbx": tbx.tbxfile,
+           "tmx": tmx.tmxfile, 
            "_wftm": wordfast.WordfastTMFile,
            "xliff": xliff.xlifffile, "xlf": xliff.xlifffile, 
-           "tmx": tmx.tmxfile, "tbx": tbx.tbxfile}
+          }
 """Dictionary of file extensions and their associated class.  _ext is a pseudo extension, that is their is no real extension by that name."""
 
 decompressclass = {
