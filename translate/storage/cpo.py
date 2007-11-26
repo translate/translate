@@ -171,7 +171,7 @@ class pounit(pocommon.pounit):
                 if remainder:
                     return remainder.group(1)
                 else:
-                    return ""
+                    return u""
             else:
                 return text
         singular = remove_msgid_comments(gpo.po_message_msgid(self._gpo_message))
@@ -184,7 +184,7 @@ class pounit(pocommon.pounit):
                 multi.strings.append(pluralform)
             return multi
         else:
-            return ""
+            return u""
 
     def setsource(self, source):
         if isinstance(source, multistring):
@@ -213,9 +213,9 @@ class pounit(pocommon.pounit):
             if plurals:
                 multi = multistring(plurals, encoding=self._encoding)
             else:
-                multi = multistring("")
+                multi = multistring(u"")
         else:
-            multi = multistring(gpo.po_message_msgstr(self._gpo_message) or "", encoding=self._encoding)
+            multi = multistring(gpo.po_message_msgstr(self._gpo_message) or u"", encoding=self._encoding)
         return multi
 
     def settarget(self, target):
@@ -351,7 +351,7 @@ class pounit(pocommon.pounit):
             self.markfuzzy()
 
     def isheader(self):
-        return self.source == "" and self.target != ""
+        return self.source == u"" and self.target != u""
 
     def isblank(self):
         return len(self.source) == 0 and len(self.target) == 0
@@ -409,7 +409,7 @@ class pounit(pocommon.pounit):
             msgidcomment = re.search("_: (.*)\n", text)
             if msgidcomment:
                 return msgidcomment.group(1).decode(self._encoding)
-        return ""
+        return u""
 
     def __str__(self):
         pf = pofile()

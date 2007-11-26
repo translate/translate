@@ -108,10 +108,10 @@ def extractpoline(line):
 
 def unquotefrompo(postr, joinwithlinebreak=False):
   if joinwithlinebreak:
-    joiner = "\n"
+    joiner = u"\n"
     if postr and postr[0] == '""': postr = postr[1:]
   else:
-    joiner = ""
+    joiner = u""
   return joiner.join([extractpoline(line) for line in postr])
 
 def encodingToUse(encoding):
