@@ -408,7 +408,7 @@ class pounit(pocommon.pounit):
         if text:
             msgidcomment = re.search("_: (.*)\n", text)
             if msgidcomment:
-                return msgidcomment.group(1)
+                return msgidcomment.group(1).decode(self._encoding)
         return ""
 
     def __str__(self):
