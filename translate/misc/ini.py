@@ -42,7 +42,7 @@ Example:
 # Backward-compatiable with ConfigParser
 
 import re
-import config
+from iniparse import config
 from sets import Set
 from ConfigParser import DEFAULTSECT, ParsingError, MissingSectionHeaderError
 
@@ -105,7 +105,7 @@ class SectionLine(LineType):
 
 
 class OptionLine(LineType):
-    def __init__(self, name, value, separator='=', comment=None,
+    def __init__(self, name, value, separator=' = ', comment=None,
                  comment_separator=None, comment_offset=-1, line=None):
         super(OptionLine, self).__init__(line)
         self.name = name
@@ -116,15 +116,15 @@ class OptionLine(LineType):
         self.comment_offset = comment_offset
 
     def to_string(self):
-        out = '%s %s %s' % (self.name, self.separator, self.value)
+        out = '%s%s%s' % (self.name, self.separator, self.value)
         if self.comment is not None:
             # try to preserve indentation of comments
             out = (out+' ').ljust(self.comment_offset)
             out = out + self.comment_separator + self.comment
         return out
 
-    regex = re.compile(r'^(?P<name>[^:=\s[][^:=]*)'
-                       r'\s*(?P<sep>[:=])\s*'
+    regex = re.compile(r'^(?P<name>[^:=\s[][^:=\s]*)'
+                       r'(?P<sep>\s*[:=]\s*)'
                        r'(?P<value>.*)$')
 
     def parse(cls, line):
