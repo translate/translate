@@ -137,11 +137,11 @@ class csv2po:
     else:
       mergemode = True
     if self.pofile.units and self.pofile.units[0].isheader():
-      headerpo = self.pofile.units[0]
-      headerpo.msgstr = [line.replace("CHARSET", "UTF-8").replace("ENCODING", "8bit") for line in headerpo.msgstr]
+      targetheader = self.pofile.units[0]
+      targetheader.msgstr = [line.replace("CHARSET", "UTF-8").replace("ENCODING", "8bit") for line in targetheader.msgstr]
     else:
-      headerpo = self.pofile.makeheader(charset="UTF-8", encoding="8bit")
-    headerpo.addnote("extracted from %s" % self.csvfile.filename, "developer")
+      targetheader = self.pofile.makeheader(charset="UTF-8", encoding="8bit")
+    targetheader.addnote("extracted from %s" % self.csvfile.filename, "developer")
     mightbeheader = True
     for csvunit in self.csvfile.units:
       if self.charset is not None:

@@ -108,20 +108,20 @@ def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similari
       mime_version = value
     else:
       kwargs[key] = value
-  outputheaderpo = thetargetfile.makeheader(charset=charset, encoding=encoding, project_id_version=project_id_version,
+  targetheader = thetargetfile.makeheader(charset=charset, encoding=encoding, project_id_version=project_id_version,
     pot_creation_date=pot_creation_date, po_revision_date=po_revision_date, last_translator=last_translator,
     language_team=language_team, mime_version=mime_version, plural_forms=plural_forms, **kwargs)
   # Get the header comments and fuzziness state
   if templatepofile is not None:
     if templatepo.units[0].isheader():    
       if templatepo.units[0].getnotes("translator"):
-        outputheaderpo.addnote(templatepo.units[0].getnotes("translator"), "translator")
+        targetheader.addnote(templatepo.units[0].getnotes("translator"), "translator")
       if inputpot.units[0].getnotes("developer"):
-        outputheaderpo.addnote(inputpot.units[0].getnotes("developer"), "developer")
-      outputheaderpo.markfuzzy(templatepo.units[0].isfuzzy())
+        targetheader.addnote(inputpot.units[0].getnotes("developer"), "developer")
+      targetheader.markfuzzy(templatepo.units[0].isfuzzy())
   elif inputpot.units[0].isheader():
-    outputheaderpo.addnote(inputpot.units[0].getnotes())
-  thetargetfile.addunit(outputheaderpo)
+    targetheader.addnote(inputpot.units[0].getnotes())
+  thetargetfile.addunit(targetheader)
   # Do matching
   for inputpotunit in inputpot.units:
     if not (inputpotunit.isheader() or inputpotunit.isobsolete()):

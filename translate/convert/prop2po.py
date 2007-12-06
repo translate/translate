@@ -32,8 +32,8 @@ class prop2po:
   def convertfile(self, thepropfile, duplicatestyle="msgctxt"):
     """converts a .properties file to a .po file..."""
     thetargetfile = po.pofile()
-    headerpo = thetargetfile.makeheader(charset="UTF-8", encoding="8bit", x_accelerator_marker="&")
-    headerpo.addnote("extracted from %s" % thepropfile.filename, "developer")
+    targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit", x_accelerator_marker="&")
+    targetheader.addnote("extracted from %s" % thepropfile.filename, "developer")
     # we try and merge the header po with any comments at the start of the properties file
     appendedheader = 0
     waitingcomments = []
@@ -46,9 +46,9 @@ class prop2po:
         continue
       if not appendedheader:
         if propunit.isblank():
-          pounit = headerpo
+          pounit = targetheader
         else:
-          thetargetfile.addunit(headerpo)
+          thetargetfile.addunit(targetheader)
         appendedheader = 1
       if pounit is not None:
         pounit.addnote("".join(waitingcomments).rstrip(), "developer", position="prepend")
@@ -60,8 +60,8 @@ class prop2po:
   def mergefiles(self, origpropfile, translatedpropfile, blankmsgstr=False, duplicatestyle="msgctxt"):
     """converts two .properties files to a .po file..."""
     thetargetfile = po.pofile()
-    headerpo = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
-    headerpo.addnote("extracted from %s, %s" % (origpropfile.filename, translatedpropfile.filename), "developer")
+    targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
+    targetheader.addnote("extracted from %s, %s" % (origpropfile.filename, translatedpropfile.filename), "developer")
     translatedpropfile.makeindex()
     # we try and merge the header po with any comments at the start of the properties file
     appendedheader = 0
@@ -77,9 +77,9 @@ class prop2po:
       # handle the header case specially...
       if not appendedheader:
         if origprop.isblank():
-          origpo = headerpo
+          origpo = targetheader
         else:
-          thetargetfile.addunit(headerpo)
+          thetargetfile.addunit(targetheader)
         appendedheader = 1
       # try and find a translation of the same name...
       if origprop.name in translatedpropfile.locationindex:

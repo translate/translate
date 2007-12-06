@@ -255,9 +255,9 @@ class dtd2po:
 
   def convertfile(self, thedtdfile):
     thetargetfile = po.pofile()
-    headerpo = thetargetfile.makeheader(charset="UTF-8", encoding="8bit", x_accelerator_marker="&")
-    headerpo.addnote("extracted from %s" % thedtdfile.filename, "developer")
-    thetargetfile.addunit(headerpo)
+    targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit", x_accelerator_marker="&")
+    targetheader.addnote("extracted from %s" % thedtdfile.filename, "developer")
+    thetargetfile.addunit(targetheader)
     thedtdfile.makeindex()
     self.findmixedentities(thedtdfile)
     # go through the dtd and convert each unit
@@ -272,9 +272,9 @@ class dtd2po:
 
   def mergefiles(self, origdtdfile, translateddtdfile):
     thetargetfile = po.pofile()
-    headerpo = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
-    headerpo.addnote("extracted from %s, %s" % (origdtdfile.filename, translateddtdfile.filename), "developer")
-    thetargetfile.addunit(headerpo)
+    targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
+    targetheader.addnote("extracted from %s, %s" % (origdtdfile.filename, translateddtdfile.filename), "developer")
+    thetargetfile.addunit(targetheader)
     origdtdfile.makeindex()
     self.findmixedentities(origdtdfile)
     translateddtdfile.makeindex()

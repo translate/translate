@@ -33,9 +33,9 @@ class txt2po:
   def convertfile(self, thetxtfile):
     """converts a file to .po format"""
     thetargetfile = po.pofile()
-    headerpo = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
-    headerpo.addnote("extracted from %s" % thetxtfile.filename, "developer")
-    thetargetfile.addunit(headerpo)
+    targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
+    targetheader.addnote("extracted from %s" % thetxtfile.filename, "developer")
+    thetargetfile.addunit(targetheader)
     for txtunit in thetxtfile.units:
        newunit = thetargetfile.addsourceunit(txtunit.source)
        newunit.addlocations(txtunit.getlocations())

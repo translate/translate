@@ -33,9 +33,9 @@ class ini2po:
   def convertfile(self, theinifile, duplicatestyle="msgctxt"):
     """converts a .ini file to a .po file..."""
     thetargetfile = po.pofile()
-    headerpo = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
-    headerpo.addnote("extracted from %s" % theinifile.filename, "developer")
-    thetargetfile.addunit(headerpo)
+    targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
+    targetheader.addnote("extracted from %s" % theinifile.filename, "developer")
+    thetargetfile.addunit(targetheader)
     for iniunit in theinifile.units:
       pounit = self.convertunit(iniunit, "developer")
       if pounit is not None:
@@ -46,9 +46,9 @@ class ini2po:
   def mergefiles(self, originifile, translatedinifile, blankmsgstr=False, duplicatestyle="msgctxt"):
     """converts two .ini files to a .po file..."""
     thetargetfile = po.pofile()
-    headerpo = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
-    headerpo.addnote("extracted from %s, %s" % (originifile.filename, translatedinifile.filename), "developer")
-    thetargetfile.addunit(headerpo)
+    targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
+    targetheader.addnote("extracted from %s, %s" % (originifile.filename, translatedinifile.filename), "developer")
+    thetargetfile.addunit(targetheader)
     translatedinifile.makeindex()
     for origini in originifile.units:
       origpo = self.convertunit(origini, "developer")

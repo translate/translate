@@ -30,9 +30,9 @@ class odf2po:
     """converts a file to .po format"""
     thetargetfile = po.pofile()
     filename = getattr(inputfile, "name", "unkown")
-    headerpo = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
-    headerpo.addnote("extracted from %s\n" % filename, "developer")
-    thetargetfile.addunit(headerpo)
+    targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
+    targetheader.addnote("extracted from %s\n" % filename, "developer")
+    thetargetfile.addunit(targetheader)
     odfdoc = odf.ODFFile(inputfile)
     blocknum = 0
     for unit in odfdoc.getunits():
