@@ -141,7 +141,7 @@ def runfilter(inputfile, outputfile, templatefile, checkfilter=None):
   return 1
 
 def cmdlineparser():
-  formats = {"po":("po", runfilter), "pot":("pot", runfilter), "xliff":("xliff", runfilter), "xlf":("xlf", runfilter), "xlff":("xlff", runfilter), None:("po", runfilter)}
+  formats = {"po":("po", runfilter), "pot":("pot", runfilter), "xliff":("xliff", runfilter), "xlf":("xlf", runfilter), None:("po", runfilter)}
 
   parser = FilterOptionParser(formats)
   parser.add_option("", "--review", dest="includereview",
