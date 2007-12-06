@@ -247,6 +247,9 @@ class xliffunit(lisa.LISAunit):
     def getid(self):
         return self.xmlelement.get("id") or ""
 
+    def addlocation(self, location):
+        self.setid(location)
+
     def getlocations(self):
         return [self.getid()]
 

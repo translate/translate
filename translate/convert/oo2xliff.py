@@ -51,7 +51,7 @@ class oo2xliff:
     unit = xliff.xliffunit(text1)
     unit.target = text2
     unit.markfuzzy(False)
-    unit.addnote(key + "." + subkey + "\n", origin="location")
+    unit.addlocation(key + "." + subkey)
     if getattr(translators_comment, subkey).strip() != "":
       unit.addnote(getattr(translators_comment, subkey), origin="developer")
     return unit
