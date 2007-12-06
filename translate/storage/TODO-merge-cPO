@@ -1,5 +1,8 @@
 These are the tasks to merge toolkit-C-po branch into trunk:
 
+ISSUES
+- ctypes cdll.LoadLibrary cannot find libraries in /usr/local/lib
+
 - oo2po
 ++ Commit all oo2po changes
 ++ Merge test_oo2po into trunk
