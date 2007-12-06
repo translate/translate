@@ -46,9 +46,9 @@ class ts2po:
   def convertfile(self, inputfile):
     """converts a .ts file to .po format"""
     tsfile = ts.QtTsParser(inputfile)
-    thepofile = po.pofile()
-    headerpo = thepofile.makeheader(charset="UTF-8", encoding="8bit")
-    thepofile.addunit(headerpo)
+    thetargetfile = po.pofile()
+    headerpo = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
+    thetargetfile.addunit(headerpo)
     for contextname, messages in tsfile.iteritems():
       messagenum = 0
       for message in messages:
@@ -58,8 +58,8 @@ class ts2po:
         comment = tsfile.getmessagecomment(message)
         transtype = tsfile.getmessagetype(message)
         thepo = self.convertmessage(contextname, messagenum, source, translation, comment, transtype)
-        thepofile.addunit(thepo)
-    return thepofile
+        thetargetfile.addunit(thepo)
+    return thetargetfile
 
 def convertts(inputfile, outputfile, templates):
   """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""

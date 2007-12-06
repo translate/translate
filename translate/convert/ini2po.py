@@ -32,23 +32,23 @@ class ini2po:
   """convert a .ini file to a .po file for handling the translation..."""
   def convertfile(self, theinifile, duplicatestyle="msgctxt"):
     """converts a .ini file to a .po file..."""
-    thepofile = po.pofile()
-    headerpo = thepofile.makeheader(charset="UTF-8", encoding="8bit")
+    thetargetfile = po.pofile()
+    headerpo = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
     headerpo.addnote("extracted from %s" % theinifile.filename, "developer")
-    thepofile.addunit(headerpo)
+    thetargetfile.addunit(headerpo)
     for iniunit in theinifile.units:
       pounit = self.convertunit(iniunit, "developer")
       if pounit is not None:
-        thepofile.addunit(pounit)
-    thepofile.removeduplicates(duplicatestyle)
-    return thepofile
+        thetargetfile.addunit(pounit)
+    thetargetfile.removeduplicates(duplicatestyle)
+    return thetargetfile
 
   def mergefiles(self, originifile, translatedinifile, blankmsgstr=False, duplicatestyle="msgctxt"):
     """converts two .ini files to a .po file..."""
-    thepofile = po.pofile()
-    headerpo = thepofile.makeheader(charset="UTF-8", encoding="8bit")
+    thetargetfile = po.pofile()
+    headerpo = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
     headerpo.addnote("extracted from %s, %s" % (originifile.filename, translatedinifile.filename), "developer")
-    thepofile.addunit(headerpo)
+    thetargetfile.addunit(headerpo)
     translatedinifile.makeindex()
     for origini in originifile.units:
       origpo = self.convertunit(origini, "developer")
@@ -63,11 +63,11 @@ class ini2po:
       if origpo is not None:
         if translatedpo is not None and not blankmsgstr:
           origpo.target = translatedpo.source
-        thepofile.addunit(origpo)
+        thetargetfile.addunit(origpo)
       elif translatedpo is not None:
         print >> sys.stderr, "error converting original ini definition %s" % origini.name
-    thepofile.removeduplicates(duplicatestyle)
-    return thepofile
+    thetargetfile.removeduplicates(duplicatestyle)
+    return thetargetfile
 
   def convertunit(self, iniunit, commenttype):
     """Converts a .ini unit to a .po unit. Returns None if empty

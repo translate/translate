@@ -29,16 +29,16 @@ from translate.storage import html
 class html2po:
   def convertfile(self, inputfile, filename, includeheader, includeuntagged=False, duplicatestyle="msgid_comment"):
     """converts a html file to .po format"""
-    thepofile = po.pofile()
+    thetargetfile = po.pofile()
     htmlparser = html.htmlfile(includeuntaggeddata=includeuntagged, inputfile=inputfile)
     if includeheader:
-      headerpo = thepofile.makeheader(charset="UTF-8", encoding="8bit")
-      thepofile.addunit(headerpo)
+      headerpo = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
+      thetargetfile.addunit(headerpo)
     for htmlunit in htmlparser.units:
-      thepo = thepofile.addsourceunit(htmlunit.source)
+      thepo = thetargetfile.addsourceunit(htmlunit.source)
       thepo.addlocations(htmlunit.getlocations())
-    thepofile.removeduplicates(duplicatestyle)
-    return thepofile
+    thetargetfile.removeduplicates(duplicatestyle)
+    return thetargetfile
 
 def converthtml(inputfile, outputfile, templates, includeuntagged=False, pot=False, duplicatestyle="msgctxt"):
   """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""

@@ -45,7 +45,7 @@ def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similari
   """reads in inputpotfile, adjusts header, writes to outputpofile. if templatepofile exists, merge translations from it into outputpofile"""
   inputpot = po.pofile(inputpotfile)
   inputpot.makeindex()
-  outputpo = po.pofile()
+  thetargetfile = po.pofile()
   # header values
   charset = "UTF-8"
   encoding = "8bit"
@@ -108,7 +108,7 @@ def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similari
       mime_version = value
     else:
       kwargs[key] = value
-  outputheaderpo = outputpo.makeheader(charset=charset, encoding=encoding, project_id_version=project_id_version,
+  outputheaderpo = thetargetfile.makeheader(charset=charset, encoding=encoding, project_id_version=project_id_version,
     pot_creation_date=pot_creation_date, po_revision_date=po_revision_date, last_translator=last_translator,
     language_team=language_team, mime_version=mime_version, plural_forms=plural_forms, **kwargs)
   # Get the header comments and fuzziness state
@@ -121,7 +121,7 @@ def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similari
       outputheaderpo.markfuzzy(templatepo.units[0].isfuzzy())
   elif inputpot.units[0].isheader():
     outputheaderpo.addnote(inputpot.units[0].getnotes())
-  outputpo.addunit(outputheaderpo)
+  thetargetfile.addunit(outputheaderpo)
   # Do matching
   for inputpotunit in inputpot.units:
     if not (inputpotunit.isheader() or inputpotunit.isobsolete()):
@@ -159,10 +159,10 @@ def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similari
             inputpotunit.merge(fuzzycandidates[0])
       if inputpotunit.hasplural() and len(inputpotunit.target) == 0:
         # Let's ensure that we have the correct number of plural forms:
-        nplurals, plural = outputpo.getheaderplural()
+        nplurals, plural = thetargetfile.getheaderplural()
         if nplurals and nplurals.isdigit() and nplurals != '2':
           inputpotunit.target = multistring([""]*int(nplurals))
-      outputpo.addunit(inputpotunit)
+      thetargetfile.addunit(inputpotunit)
 
   #Let's take care of obsoleted messages
   if templatepofile:
@@ -175,10 +175,10 @@ def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similari
         unit.makeobsolete()
         newlyobsoleted.append(unit)
       elif unit.isobsolete():
-        outputpo.addunit(unit)
+        thetargetfile.addunit(unit)
     for unit in newlyobsoleted:
-      outputpo.addunit(unit)
-  outputpofile.write(str(outputpo))
+      thetargetfile.addunit(unit)
+  outputpofile.write(str(thetargetfile))
   return 1
 
 def main(argv=None):

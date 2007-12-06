@@ -69,13 +69,13 @@ class xliff2po:
     if not isinstance(inputfile, (file, wStringIO.StringIO)):
         inputfile = str(inputfile)
     XliffFile = xliff.xlifffile.parsestring(inputfile)
-    thepofile = po.pofile()
-    headerpo = thepofile.makeheader(charset="UTF-8", encoding="8bit")
+    thetargetfile = po.pofile()
+    headerpo = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
     # TODO: support multiple files
     for transunit in XliffFile.units:
         thepo = self.converttransunit(transunit)
-        thepofile.addunit(thepo)
-    return thepofile
+        thetargetfile.addunit(thepo)
+    return thetargetfile
 
 def convertxliff(inputfile, outputfile, templates):
   """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""

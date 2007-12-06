@@ -32,15 +32,15 @@ class txt2po:
 
   def convertfile(self, thetxtfile):
     """converts a file to .po format"""
-    thepofile = po.pofile()
-    headerpo = thepofile.makeheader(charset="UTF-8", encoding="8bit")
+    thetargetfile = po.pofile()
+    headerpo = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
     headerpo.addnote("extracted from %s" % thetxtfile.filename, "developer")
-    thepofile.addunit(headerpo)
+    thetargetfile.addunit(headerpo)
     for txtunit in thetxtfile.units:
-       newunit = thepofile.addsourceunit(txtunit.source)
+       newunit = thetargetfile.addsourceunit(txtunit.source)
        newunit.addlocations(txtunit.getlocations())
-    thepofile.removeduplicates(self.duplicatestyle)
-    return thepofile
+    thetargetfile.removeduplicates(self.duplicatestyle)
+    return thetargetfile
 
 def converttxt(inputfile, outputfile, templates, duplicatestyle="msgctxt", encoding="utf-8", flavour=None):
   """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""

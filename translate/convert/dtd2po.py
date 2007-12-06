@@ -254,10 +254,10 @@ class dtd2po:
     return self.convertunit(thedtd)
 
   def convertfile(self, thedtdfile):
-    thepofile = po.pofile()
-    headerpo = thepofile.makeheader(charset="UTF-8", encoding="8bit", x_accelerator_marker="&")
+    thetargetfile = po.pofile()
+    headerpo = thetargetfile.makeheader(charset="UTF-8", encoding="8bit", x_accelerator_marker="&")
     headerpo.addnote("extracted from %s" % thedtdfile.filename, "developer")
-    thepofile.addunit(headerpo)
+    thetargetfile.addunit(headerpo)
     thedtdfile.makeindex()
     self.findmixedentities(thedtdfile)
     # go through the dtd and convert each unit
@@ -266,15 +266,15 @@ class dtd2po:
         continue
       thepo = self.convertdtdunit(thedtdfile, thedtd)
       if thepo is not None:
-        thepofile.addunit(thepo)
-    thepofile.removeduplicates(self.duplicatestyle)
-    return thepofile
+        thetargetfile.addunit(thepo)
+    thetargetfile.removeduplicates(self.duplicatestyle)
+    return thetargetfile
 
   def mergefiles(self, origdtdfile, translateddtdfile):
-    thepofile = po.pofile()
-    headerpo = thepofile.makeheader(charset="UTF-8", encoding="8bit")
+    thetargetfile = po.pofile()
+    headerpo = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
     headerpo.addnote("extracted from %s, %s" % (origdtdfile.filename, translateddtdfile.filename), "developer")
-    thepofile.addunit(headerpo)
+    thetargetfile.addunit(headerpo)
     origdtdfile.makeindex()
     self.findmixedentities(origdtdfile)
     translateddtdfile.makeindex()
@@ -309,9 +309,9 @@ class dtd2po:
       if origpo is not None:
         if translatedpo is not None and not self.blankmsgstr:
           origpo.target = translatedpo.source
-        thepofile.addunit(origpo)
-    thepofile.removeduplicates(self.duplicatestyle)
-    return thepofile
+        thetargetfile.addunit(origpo)
+    thetargetfile.removeduplicates(self.duplicatestyle)
+    return thetargetfile
 
 def convertdtd(inputfile, outputfile, templatefile, pot=False, duplicatestyle="msgctxt"):
   """reads in inputfile and templatefile using dtd, converts using dtd2po, writes to outputfile"""

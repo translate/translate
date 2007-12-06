@@ -28,19 +28,19 @@ from translate.storage import odf
 class odf2po:
   def convertfile(self, inputfile):
     """converts a file to .po format"""
-    thepofile = po.pofile()
+    thetargetfile = po.pofile()
     filename = getattr(inputfile, "name", "unkown")
-    headerpo = thepofile.makeheader(charset="UTF-8", encoding="8bit")
+    headerpo = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
     headerpo.addnote("extracted from %s\n" % filename, "developer")
-    thepofile.addunit(headerpo)
+    thetargetfile.addunit(headerpo)
     odfdoc = odf.ODFFile(inputfile)
     blocknum = 0
     for unit in odfdoc.getunits():
       if not unit: continue
       blocknum += 1
-      newunit = thepofile.addsourceunit(unit.source)
+      newunit = thetargetfile.addsourceunit(unit.source)
       newunit.addlocations("%s:%d" % (filename, blocknum))
-    return thepofile
+    return thetargetfile
 
 def convertodf(inputfile, outputfile, templates):
   """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""

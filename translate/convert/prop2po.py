@@ -31,8 +31,8 @@ class prop2po:
   """convert a .properties file to a .po file for handling the translation..."""
   def convertfile(self, thepropfile, duplicatestyle="msgctxt"):
     """converts a .properties file to a .po file..."""
-    thepofile = po.pofile()
-    headerpo = thepofile.makeheader(charset="UTF-8", encoding="8bit", x_accelerator_marker="&")
+    thetargetfile = po.pofile()
+    headerpo = thetargetfile.makeheader(charset="UTF-8", encoding="8bit", x_accelerator_marker="&")
     headerpo.addnote("extracted from %s" % thepropfile.filename, "developer")
     # we try and merge the header po with any comments at the start of the properties file
     appendedheader = 0
@@ -48,19 +48,19 @@ class prop2po:
         if propunit.isblank():
           pounit = headerpo
         else:
-          thepofile.addunit(headerpo)
+          thetargetfile.addunit(headerpo)
         appendedheader = 1
       if pounit is not None:
         pounit.addnote("".join(waitingcomments).rstrip(), "developer", position="prepend")
         waitingcomments = []
-        thepofile.addunit(pounit)
-    thepofile.removeduplicates(duplicatestyle)
-    return thepofile
+        thetargetfile.addunit(pounit)
+    thetargetfile.removeduplicates(duplicatestyle)
+    return thetargetfile
 
   def mergefiles(self, origpropfile, translatedpropfile, blankmsgstr=False, duplicatestyle="msgctxt"):
     """converts two .properties files to a .po file..."""
-    thepofile = po.pofile()
-    headerpo = thepofile.makeheader(charset="UTF-8", encoding="8bit")
+    thetargetfile = po.pofile()
+    headerpo = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
     headerpo.addnote("extracted from %s, %s" % (origpropfile.filename, translatedpropfile.filename), "developer")
     translatedpropfile.makeindex()
     # we try and merge the header po with any comments at the start of the properties file
@@ -79,7 +79,7 @@ class prop2po:
         if origprop.isblank():
           origpo = headerpo
         else:
-          thepofile.addunit(headerpo)
+          thetargetfile.addunit(headerpo)
         appendedheader = 1
       # try and find a translation of the same name...
       if origprop.name in translatedpropfile.locationindex:
@@ -94,11 +94,11 @@ class prop2po:
           origpo.target = translatedpo.source
         origpo.addnote("".join(waitingcomments).rstrip(), "developer", position="prepend")
         waitingcomments = []
-        thepofile.addunit(origpo)
+        thetargetfile.addunit(origpo)
       elif translatedpo is not None:
         print >> sys.stderr, "error converting original properties definition %s" % origprop.name
-    thepofile.removeduplicates(duplicatestyle)
-    return thepofile
+    thetargetfile.removeduplicates(duplicatestyle)
+    return thetargetfile
 
   def convertunit(self, propunit, commenttype):
     """Converts a .properties unit to a .po unit. Returns None if empty
