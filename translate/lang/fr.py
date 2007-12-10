@@ -53,11 +53,17 @@ class fr(common.Common):
         text = super(cls, cls).punctranslate(text)
 
         def convertquotation(match):
-            return u"« %s »" % match.group()[1:-1]
-
+            prefix = match.group(1)
+            # Let's see that we didn't perhaps match an XML tag property like
+            # <a href="something">
+            if prefix == u"=":
+                return match.group(0)
+            return u"%s« %s »" % (prefix, match.group(2))
+        
         # Check that there is an even number of double quotes, otherwise it is
         # probably not safe to convert them.
         if text.count(u'"') % 2 == 0:
-            text = re.sub('"[^"]+"', convertquotation, text)
+            text = re.sub('(.|^)"([^"]+)"', convertquotation, text)
+
         return text
     punctranslate = classmethod(punctranslate)
