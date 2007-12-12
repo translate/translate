@@ -51,7 +51,7 @@ class dtd2po:
         thepo.addnote(comment, origin="developer")
       # handle normal comments
       else:
-        thepo.addnote(quote.stripcomment(comment), origin="translator")
+        thepo.addnote(quote.stripcomment(comment), origin="developer")
     # handle group stuff
     if self.currentgroup is not None:
       thepo.addnote(quote.stripcomment(self.currentgroup), origin="translator")
