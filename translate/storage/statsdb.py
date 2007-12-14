@@ -43,6 +43,8 @@ brtagre = re.compile("<br\s*?/?>")
 xmltagre = re.compile("<[^>]+>")
 numberre = re.compile("\\D\\.\\D")
 
+state_strings = {0: "untranslated", 1: "translated", 2: "fuzzy"}
+
 def wordcount(string):
     # TODO: po class should understand KDE style plurals
     string = kdepluralre.sub("", string)
@@ -80,14 +82,6 @@ def statefordb(unit):
     if unit.isfuzzy() and unit.target:
         return 2
     return 0
-
-def statefromdb(state):
-    """Converts a database state number to the text version."""
-    if state == 1:
-        return "translated"
-    if state == 2:
-        return "fuzzy"
-    return "untranslated"
 
 def emptystats():
     """Returns a dictionary with all statistics initalised to 0."""
@@ -245,7 +239,7 @@ class StatsCache(object):
             unitvalues)
         self.con.commit()
         if unitindex:
-            return statefromdb(statefordb(units[0]))
+            return state_strings[statefordb(units[0])]
         return ""
 
     def cachestore(self, store):
@@ -265,7 +259,9 @@ class StatsCache(object):
         return fileid
 
     def directorytotals(self, dirname):
-        """Retrieves thestatistics for a given directory, all summed."""
+        """Retrieves the stored statistics for a given directory, all summed.
+        
+        Note that this does not check for mtimes or the presence of files."""
         absolutepath = os.path.abspath(dirname)
         self.cur.execute("""SELECT
             state,
@@ -302,7 +298,7 @@ class StatsCache(object):
 
         totals = emptystats()
         for stateset in values:
-            state = statefromdb(stateset[0])            # state
+            state = state_strings[stateset[0]]          # state
             totals[state] = stateset[1] or 0            # total
             totals[state + "sourcewords"] = stateset[2] # sourcewords
             totals[state + "targetwords"] = stateset[3] # targetwords
@@ -445,7 +441,7 @@ class StatsCache(object):
 
         values = self.cur.fetchall()
         for value in values:
-            stats[statefromdb(value[0])].append(value[1])
+            stats[state_strings[value[0]]].append(value[1])
             stats["total"].append(value[1])
 
         return stats
