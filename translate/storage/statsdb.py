@@ -264,6 +264,21 @@ class StatsCache(object):
         self._cacheunitstats(store.units, fileid)
         return fileid
 
+    def directorytotals(self, dirname):
+        """Retrieves thestatistics for a given directory, all summed."""
+        absolutepath = os.path.abspath(dirname)
+        self.cur.execute("""SELECT
+            state,
+            count(unitid) as total,
+            sum(sourcewords) as sourcewords,
+            sum(targetwords) as targetwords
+            FROM units WHERE fileid IN
+                (SELECT fileid from files
+                WHERE substr(path, 0, ?)=?)
+            GROUP BY state;""", (len(absolutepath), absolutepath))
+        totals = emptystats()
+        return self.cur.fetchall()
+
     def filetotals(self, filename):
         """Retrieves the statistics for the given file if possible, otherwise 
         delegates to cachestore()."""
