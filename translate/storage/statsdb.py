@@ -113,16 +113,20 @@ class StatsCache(object):
     """An object instantiated as a singleton for each statsfile that provides 
     access to the database cache from a pool of StatsCache objects."""
     caches = {}
+    defaultfile = None
 
     def __new__(cls, statsfile=None):
         if not statsfile:
-            userdir = os.path.expanduser("~")
-            #TODO: find a better solution for Windows
-            cachedir = os.path.join(userdir, ".wordforge")
-            if not os.path.exists(cachedir):
-                os.mkdir(cachedir)
-            statsfile = os.path.join(cachedir, "stats.db")
-        statsfile = os.path.realpath(statsfile)
+            if not cls.defaultfile:
+                userdir = os.path.expanduser("~")
+                #TODO: find a better solution for Windows
+                cachedir = os.path.join(userdir, ".wordforge")
+                if not os.path.exists(cachedir):
+                    os.mkdir(cachedir)
+                cls.defaultfile = os.path.realpath(os.path.join(cachedir, "stats.db"))
+            statsfile = cls.defaultfile
+        else:
+            statsfile = os.path.realpath(statsfile)
         # First see if a cache for this file already exists:
         if statsfile in cls.caches:
             return cls.caches[statsfile]
