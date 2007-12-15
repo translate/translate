@@ -41,8 +41,9 @@ the part that breaks the file into sections.
 
 from translate.storage import base
 from translate.misc.multistring import multistring
-import struct
 import codecs
+import struct
+import sys
 
 QM_MAGIC_NUMBER = (0x3CB86418L, 0xCAEF9C95L, 0xCD211CBFL, 0x60A1BDDDL)
 
@@ -159,5 +160,5 @@ class qmfile(base.TranslationStore):
                     subsection_name = "Context16"
                 else:
                     subsection_name = "Unkown"
-                print "Unimplemented: %s %s" % (subsection, subsection_name)
+                print >> sys.stderr, "Unimplemented: %s %s" % (subsection, subsection_name)
                 return
