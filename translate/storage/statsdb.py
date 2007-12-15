@@ -122,7 +122,7 @@ class StatsCache(object):
             if not os.path.exists(cachedir):
                 os.mkdir(cachedir)
             statsfile = os.path.join(cachedir, "stats.db")
-        statsfile = os.path.abspath(statsfile)
+        statsfile = os.path.realpath(statsfile)
         # First see if a cache for this file already exists:
         if statsfile in cls.caches:
             return cls.caches[statsfile]
@@ -190,11 +190,11 @@ class StatsCache(object):
         the given file
         @rtype: String or None
         """
-        absolutepath = os.path.abspath(filename)
+        realpath = os.path.realpath(filename)
         self.cur.execute("""SELECT fileid, mtime FROM files 
-                WHERE path=?;""", (absolutepath,))
+                WHERE path=?;""", (realpath,))
         filerow = self.cur.fetchone()
-        mtime = max(optmtime, os.path.getmtime(absolutepath))
+        mtime = max(optmtime, os.path.getmtime(realpath))
         if checkmtime:
             if not filerow or filerow[1] != mtime:
                 return None
@@ -245,13 +245,13 @@ class StatsCache(object):
     def cachestore(self, store):
         """Calculates and caches the statistics of the given store 
         unconditionally."""
-        absolutepath = os.path.abspath(store.filename)
-        mtime = os.path.getmtime(absolutepath)
+        realpath = os.path.realpath(store.filename)
+        mtime = os.path.getmtime(realpath)
         self.cur.execute("""DELETE FROM files WHERE
-            path=?;""", (absolutepath,))
+            path=?;""", (realpath,))
         self.cur.execute("""INSERT INTO files 
             (fileid, path, mtime, toolkitbuild) values (NULL, ?, ?, ?);""", 
-            (absolutepath, mtime, toolkitversion.build))
+            (realpath, mtime, toolkitversion.build))
         fileid = self.cur.lastrowid
         self.cur.execute("""DELETE FROM units WHERE
             fileid=?""", (fileid,))
@@ -262,7 +262,7 @@ class StatsCache(object):
         """Retrieves the stored statistics for a given directory, all summed.
         
         Note that this does not check for mtimes or the presence of files."""
-        absolutepath = os.path.abspath(dirname)
+        realpath = os.path.realpath(dirname)
         self.cur.execute("""SELECT
             state,
             count(unitid) as total,
@@ -271,7 +271,7 @@ class StatsCache(object):
             FROM units WHERE fileid IN
                 (SELECT fileid from files
                 WHERE substr(path, 0, ?)=?)
-            GROUP BY state;""", (len(absolutepath), absolutepath))
+            GROUP BY state;""", (len(realpath), realpath))
         totals = emptystats()
         return self.cur.fetchall()
 
