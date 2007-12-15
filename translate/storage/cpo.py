@@ -292,7 +292,7 @@ class pounit(pocommon.pounit):
             else:
                 newnotes = text + '\n' + oldnotes
         else:
-            newnotes = "\n".join(line.rstrip() for line in text.split("\n"))
+            newnotes = "\n".join([line.rstrip() for line in text.split("\n")])
         # FIXME; workaround the need for leading spaces when adding comments to PO files in libgettexpo
         if newnotes:
             newlines = []
