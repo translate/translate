@@ -31,7 +31,6 @@ try:
 except:
     import pickle
 from exceptions import NotImplementedError
-from translate.storage.statistics import Statistics
 
 def force_override(method, baseclass):
     """Forces derived classes to override method."""
@@ -306,7 +305,7 @@ class TranslationUnit(object):
         return newunit
     buildfromunit = classmethod(buildfromunit)
 
-class TranslationStore(Statistics):
+class TranslationStore(object):
     """Base class for stores for multiple translation units of type UnitClass."""
 
     UnitClass = TranslationUnit
