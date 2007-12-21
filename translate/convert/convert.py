@@ -61,7 +61,7 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
 
   def add_multifile_option(self, default="single"):
     """adds an option to say how to split the po/pot files"""
-    self.add_option("", "--multifile", dest="multifilestyle", default="single",
+    self.add_option("", "--multifile", dest="multifilestyle", default=default,
       type="choice", choices=["single", "toplevel", "onefile"],
       help="how to split po/pot files (single, toplevel or onefile)", metavar="MULTIFILESTYLE")
     self.passthrough.append("multifilestyle")
