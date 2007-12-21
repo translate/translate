@@ -115,6 +115,7 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
                       action="store_true", dest="pot", default=False, \
                       help="output PO Templates (.pot) rather than PO files (.po)")
       self.define_option(potoption)
+      self.passthrough.append("pot")
 
   def verifyoptions(self, options):
     """verifies that the options are valid (required options are present, etc)"""

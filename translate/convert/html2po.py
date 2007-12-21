@@ -60,7 +60,6 @@ def main(argv=None):
                     help="include untagged sections")
   parser.passthrough.append("includeuntagged")
   parser.add_duplicates_option()
-  parser.passthrough.append("pot")
   parser.run(argv)
 
 
