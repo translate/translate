@@ -12,7 +12,7 @@ class TestPO2Prop:
         inputfile = wStringIO.StringIO(posource)
         inputpo = po.pofile(inputfile)
         convertor = po2prop.po2prop()
-        outputprop = convertor.convertfile(inputpo)
+        outputprop = convertor.convertstore(inputpo)
         return outputprop
 
     def merge2prop(self, propsource, posource, personality="java"):
@@ -22,7 +22,7 @@ class TestPO2Prop:
         templatefile = wStringIO.StringIO(propsource)
         #templateprop = properties.propfile(templatefile)
         convertor = po2prop.reprop(templatefile)
-        outputprop = convertor.convertfile(inputpo, personality=personality)
+        outputprop = convertor.convertstore(inputpo, personality=personality)
         print outputprop
         return outputprop
 

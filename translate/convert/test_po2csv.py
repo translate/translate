@@ -13,7 +13,7 @@ class TestPO2CSV:
         inputfile = wStringIO.StringIO(posource)
         inputpo = po.pofile(inputfile)
         convertor = po2csv.po2csv()
-        outputcsv = convertor.convertfile(inputpo)
+        outputcsv = convertor.convertstore(inputpo)
         return outputcsv
 
     def csv2po(self, csvsource, template=None):

@@ -49,7 +49,7 @@ class po2csv:
     csvunit.target = inputunit.target.strings[1]
     return csvunit
 
-  def convertfile(self, inputstore, columnorder=None):
+  def convertstore(self, inputstore, columnorder=None):
     outputstore = csvl10n.csvfile(fieldnames=columnorder)
     for inputunit in inputstore.units:
       outputunit = self.convertunit(inputunit)
@@ -68,7 +68,7 @@ def convertcsv(inputfile, outputfile, templatefile, columnorder=None):
   if inputstore.isempty():
     return 0
   convertor = po2csv()
-  outputstore = convertor.convertfile(inputstore,columnorder)
+  outputstore = convertor.convertstore(inputstore, columnorder)
   outputfile.write(str(outputstore))
   return 1
 

@@ -148,7 +148,7 @@ class reoo:
     if makecopy:
       theoo.addline(part2)
 
-  def convertfile(self, sourcestore):
+  def convertstore(self, sourcestore):
     self.p = sourcestore
     # translate the strings
     for unit in self.p.units:
@@ -212,7 +212,7 @@ def convertoo(inputfile, outputfile, templatefile, sourcelanguage=None, targetla
     raise ValueError("must have template file for oo files")
   else:
     convertor = reoo(templatefile, languages=languages, timestamp=timestamp, includefuzzy=includefuzzy, long_keys=multifilestyle != "single", filteraction=filteraction)
-  outputstore = convertor.convertfile(inputstore)
+  outputstore = convertor.convertstore(inputstore)
   # TODO: check if we need to manually delete missing items
   outputfile.write(str(outputstore))
   return True

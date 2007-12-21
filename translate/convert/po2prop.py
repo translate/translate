@@ -35,7 +35,7 @@ class reprop:
     self.templatefile = templatefile
     self.inputdict = {}
 
-  def convertfile(self, inputstore, personality, includefuzzy=False):
+  def convertstore(self, inputstore, personality, includefuzzy=False):
     self.personality = personality
     self.inmultilinemsgid = 0
     self.inecho = 0
@@ -117,7 +117,7 @@ def convertprop(inputfile, outputfile, templatefile, personality, includefuzzy=F
     # convertor = po2prop()
   else:
     convertor = reprop(templatefile)
-  outputproplines = convertor.convertfile(inputstore, personality, includefuzzy)
+  outputproplines = convertor.convertstore(inputstore, personality, includefuzzy)
   outputfile.writelines(outputproplines)
   return 1
 

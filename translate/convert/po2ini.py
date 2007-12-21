@@ -35,7 +35,7 @@ class reini:
     self.templatestore = ini.inifile(templatefile)
     self.inputdict = {}
 
-  def convertfile(self, inputstore, includefuzzy=False):
+  def convertstore(self, inputstore, includefuzzy=False):
     self.makestoredict(inputstore, includefuzzy)
     for unit in self.templatestore.units:
       for location in unit.getlocations():
@@ -59,7 +59,7 @@ def convertini(inputfile, outputfile, templatefile, includefuzzy=False):
     raise ValueError("must have template file for ini files")
   else:
     convertor = reini(templatefile)
-  outputstring = convertor.convertfile(inputstore, includefuzzy)
+  outputstring = convertor.convertstore(inputstore, includefuzzy)
   outputfile.write(outputstring)
   return 1
 

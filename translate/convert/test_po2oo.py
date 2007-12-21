@@ -128,7 +128,7 @@ class TestPO2OOCommand(test_convert.TestConvertCommand, TestPO2OO):
 
     def merge2oo(self, oosource, posource):
         """helper that merges po translations to oo source through files"""
-        outputoo = convertor.convertfile(inputpo)
+        outputoo = convertor.convertstore(inputpo)
         return outputoo
 
     def convertoo(self, posource, ootemplate, language="en-US"):

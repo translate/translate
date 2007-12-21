@@ -40,7 +40,7 @@ class po2txt:
       return message
     return "\n".join([textwrap.fill(line, self.wrap, replace_whitespace=False) for line in message.split("\n")])
 
-  def convertfile(self, inputstore, includefuzzy):
+  def convertstore(self, inputstore, includefuzzy):
     """converts a file to txt format"""
     txtresult = ""
     for unit in inputstore.units:
@@ -52,7 +52,7 @@ class po2txt:
         txtresult += self.wrapmessage(unit.source) + "\n" + "\n"
     return txtresult.rstrip()
  
-  def mergefile(self, inputstore, templatetext, includefuzzy):
+  def mergestore(self, inputstore, templatetext, includefuzzy):
     """converts a file to txt format"""
     txtresult = templatetext
     # TODO: make a list of blocks of text and translate them individually
@@ -72,10 +72,10 @@ def converttxt(inputfile, outputfile, templatefile, wrap=None, includefuzzy=Fals
   inputstore = factory.getobject(inputfile)
   convertor = po2txt(wrap=wrap)
   if templatefile is None:
-    outputstring = convertor.convertfile(inputstore, includefuzzy)
+    outputstring = convertor.convertstore(inputstore, includefuzzy)
   else:
-    templatetext = templatefile.read().decode(encoding)
-    outputstring = convertor.mergefile(inputstore, templatetext, includefuzzy)
+    templatestring = templatefile.read().decode(encoding)
+    outputstring = convertor.mergestore(inputstore, templatestring, includefuzzy)
   outputfile.write(outputstring.encode('utf-8'))
   return 1
 

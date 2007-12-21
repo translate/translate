@@ -77,7 +77,7 @@ class po2xliff:
       contexts.append(("linenumber", linenumber))
     return contexts
     
-  def convertfile(self, inputstore, templatefile=None, **kwargs):
+  def convertstore(self, inputstore, templatefile=None, **kwargs):
     """converts a .po file to .xlf format"""
     if templatefile is None: 
       outputstore = poxliff.PoXliffFile(**kwargs)
@@ -96,7 +96,7 @@ def convertpo(inputfile, outputfile, templatefile):
   if inputstore.isempty():
     return 0
   convertor = po2xliff()
-  outputstring = convertor.convertfile(inputstore, templatefile)
+  outputstring = convertor.convertstore(inputstore, templatefile)
   outputfile.write(outputstring)
   return 1
 

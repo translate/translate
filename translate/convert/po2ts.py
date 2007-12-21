@@ -27,7 +27,7 @@ from translate.storage import po
 from translate.storage import ts
 
 class po2ts:
-  def convertfile(self, inputstore, templatefile=None):
+  def convertstore(self, inputstore, templatefile=None):
     """converts a .po file to .ts format (using a template .ts file if given)"""
     if templatefile is None: 
       tsfile = ts.QtTsParser()
@@ -62,7 +62,7 @@ def convertpo(inputfile, outputfile, templatefile):
   if inputstore.isempty():
     return 0
   convertor = po2ts()
-  outputstring = convertor.convertfile(inputstore, templatefile)
+  outputstring = convertor.convertstore(inputstore, templatefile)
   outputfile.write(outputstring)
   return 1
 

@@ -154,7 +154,7 @@ class redtd:
   def __init__(self, dtdfile):
     self.dtdfile = dtdfile
 
-  def convertfile(self, inputstore, includefuzzy=False):
+  def convertstore(self, inputstore, includefuzzy=False):
     # translate the strings
     for inunit in inputstore.units:
       # there may be more than one entity due to msguniq merge
@@ -214,7 +214,7 @@ class po2dtd:
     self.convertstrings(inputunit, dtdunit)
     return dtdunit
 
-  def convertfile(self, inputstore, includefuzzy=False):
+  def convertstore(self, inputstore, includefuzzy=False):
     outputstore = dtd.dtdfile()
     self.currentgroups = []
     for inputunit in inputstore.units:
@@ -231,7 +231,7 @@ def convertdtd(inputfile, outputfile, templatefile, includefuzzy=False):
   else:
     templatestore = dtd.dtdfile(templatefile)
     convertor = redtd(templatestore)
-  outputstore = convertor.convertfile(inputstore, includefuzzy)
+  outputstore = convertor.convertstore(inputstore, includefuzzy)
   outputfile.write(str(outputstore))
   return 1
 

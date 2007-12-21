@@ -11,7 +11,7 @@ class TestPO2TS:
         inputfile = wStringIO.StringIO(posource)
         inputpo = po.pofile(inputfile)
         convertor = po2ts.po2ts()
-        outputts = convertor.convertfile(inputpo)
+        outputts = convertor.convertstore(inputpo)
         return outputts
 
     def singleelement(self, storage):

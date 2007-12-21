@@ -21,7 +21,7 @@ class TestPO2DTD:
         inputfile = wStringIO.StringIO(posource)
         inputpo = po.pofile(inputfile)
         convertor = po2dtd.po2dtd()
-        outputdtd = convertor.convertfile(inputpo)
+        outputdtd = convertor.convertstore(inputpo)
         return outputdtd
 
     def merge2dtd(self, dtdsource, posource):
@@ -31,7 +31,7 @@ class TestPO2DTD:
         templatefile = wStringIO.StringIO(dtdsource)
         templatedtd = dtd.dtdfile(templatefile)
         convertor = po2dtd.redtd(templatedtd)
-        outputdtd = convertor.convertfile(inputpo)
+        outputdtd = convertor.convertstore(inputpo)
         return outputdtd
 
     def convertdtd(self, posource, dtdtemplate):
