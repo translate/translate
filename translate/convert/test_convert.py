@@ -105,8 +105,8 @@ class TestConvertCommand:
         # the convertsummary might be wrapped. this will probably unwrap it
         assert convertsummary in help_string.replace("\n", " ")
         usageline = help_string[:help_string.find("\n")]
-        assert usageline.startswith("usage: ") and "[--version] [-h|--help]" in usageline
-        options = help_string[help_string.find("options:\n"):]
+        assert usageline.startswith("Usage: ") and "[--version] [-h|--help]" in usageline
+        options = help_string[help_string.find("Options:\n"):]
         options = options[options.find("\n")+1:]
         options = self.help_check(options, "--progress=PROGRESS")
         options = self.help_check(options, "--version")
@@ -114,8 +114,8 @@ class TestConvertCommand:
         options = self.help_check(options, "--manpage")
         options = self.help_check(options, "--errorlevel=ERRORLEVEL")
         options = self.help_check(options, "--psyco=MODE")
-        options = self.help_check(options, "-iINPUT, --input=INPUT")
-        options = self.help_check(options, "-xEXCLUDE, --exclude=EXCLUDE")
-        options = self.help_check(options, "-oOUTPUT, --output=OUTPUT")
+        options = self.help_check(options, "-i INPUT, --input=INPUT")
+        options = self.help_check(options, "-x EXCLUDE, --exclude=EXCLUDE")
+        options = self.help_check(options, "-o OUTPUT, --output=OUTPUT")
         return options
 

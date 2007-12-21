@@ -123,7 +123,7 @@ class TestPO2OOCommand(test_convert.TestConvertCommand, TestPO2OO):
         options = self.help_check(options, "--filteraction")
         options = self.help_check(options, "--fuzzy")
         options = self.help_check(options, "--nofuzzy")
-        options = self.help_check(options, "-tTEMPLATE, --template=TEMPLATE")
+        options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
         options = self.help_check(options, "--multifile=MULTIFILESTYLE", last=True)
 
     def merge2oo(self, oosource, posource):

@@ -223,7 +223,7 @@ class TestPO2DTDCommand(test_convert.TestConvertCommand, TestPO2DTD):
     def test_help(self):
         """tests getting help"""
         options = test_convert.TestConvertCommand.test_help(self)
-        options = self.help_check(options, "-tTEMPLATE, --template=TEMPLATE")
+        options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
         options = self.help_check(options, "--fuzzy")
         options = self.help_check(options, "--nofuzzy", last=True)
 

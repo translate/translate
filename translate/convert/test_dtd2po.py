@@ -334,5 +334,5 @@ class TestDTD2POCommand(test_convert.TestConvertCommand, TestDTD2PO):
         """tests getting help"""
         options = test_convert.TestConvertCommand.test_help(self)
         options = self.help_check(options, "-P, --pot")
-        options = self.help_check(options, "-tTEMPLATE, --template=TEMPLATE")
+        options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
         options = self.help_check(options, "--duplicates=DUPLICATESTYLE", last=True)
