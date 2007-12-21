@@ -11,7 +11,7 @@ class TestTxt2PO:
         inputfile = wStringIO.StringIO(txtsource)
         inputtxt = txt.TxtFile(inputfile)
         convertor = txt2po.txt2po()
-        outputpo = convertor.convertfile(inputtxt)
+        outputpo = convertor.convertstore(inputtxt)
         return outputpo
 
     def singleelement(self, storage):
@@ -64,7 +64,7 @@ class TestDoku2po:
         inputfile = wStringIO.StringIO(txtsource)
         inputtxt = txt.TxtFile(inputfile, flavour="dokuwiki")
         convertor = txt2po.txt2po()
-        outputpo = convertor.convertfile(inputtxt)
+        outputpo = convertor.convertstore(inputtxt)
         return outputpo
 
     def singleelement(self, storage):

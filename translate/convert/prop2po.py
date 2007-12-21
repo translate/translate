@@ -29,7 +29,7 @@ from translate.storage import properties
 
 class prop2po:
   """convert a .properties file to a .po file for handling the translation..."""
-  def convertfile(self, thepropfile, duplicatestyle="msgctxt"):
+  def convertstore(self, thepropfile, duplicatestyle="msgctxt"):
     """converts a .properties file to a .po file..."""
     thetargetfile = po.pofile()
     targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit", x_accelerator_marker="&")
@@ -57,7 +57,7 @@ class prop2po:
     thetargetfile.removeduplicates(duplicatestyle)
     return thetargetfile
 
-  def mergefiles(self, origpropfile, translatedpropfile, blankmsgstr=False, duplicatestyle="msgctxt"):
+  def mergestore(self, origpropfile, translatedpropfile, blankmsgstr=False, duplicatestyle="msgctxt"):
     """converts two .properties files to a .po file..."""
     thetargetfile = po.pofile()
     targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
@@ -125,10 +125,10 @@ def convertprop(inputfile, outputfile, templatefile, pot=False, duplicatestyle="
   inputstore = properties.propfile(inputfile)
   convertor = prop2po()
   if templatefile is None:
-    outputstore = convertor.convertfile(inputstore, duplicatestyle=duplicatestyle)
+    outputstore = convertor.convertstore(inputstore, duplicatestyle=duplicatestyle)
   else:
     templatestore = properties.propfile(templatefile)
-    outputstore = convertor.mergefiles(templatestore, inputstore, blankmsgstr=pot, duplicatestyle=duplicatestyle)
+    outputstore = convertor.mergestore(templatestore, inputstore, blankmsgstr=pot, duplicatestyle=duplicatestyle)
   if outputstore.isempty():
     return 0
   outputfile.write(str(outputstore))

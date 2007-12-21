@@ -14,11 +14,11 @@ class TestDTD2PO:
         inputdtd = dtd.dtdfile(inputfile)
         convertor = dtd2po.dtd2po()
         if not dtdtemplate:
-          outputpo = convertor.convertfile(inputdtd)
+          outputpo = convertor.convertstore(inputdtd)
         else:
           templatefile = wStringIO.StringIO(dtdtemplate)
           templatedtd = dtd.dtdfile(templatefile)
-          outputpo = convertor.mergefiles(templatedtd, inputdtd)
+          outputpo = convertor.mergestore(templatedtd, inputdtd)
         return outputpo
 
     def convertdtd(self, dtdsource):

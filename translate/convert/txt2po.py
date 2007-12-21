@@ -30,7 +30,7 @@ class txt2po:
   def __init__(self, duplicatestyle="msgctxt"):
     self.duplicatestyle = duplicatestyle
 
-  def convertfile(self, thetxtfile):
+  def convertstore(self, thetxtfile):
     """converts a file to .po format"""
     thetargetfile = po.pofile()
     targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
@@ -46,7 +46,7 @@ def converttxt(inputfile, outputfile, templates, duplicatestyle="msgctxt", encod
   """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
   inputstore = txt.TxtFile(inputfile, encoding=encoding, flavour=flavour)
   convertor = txt2po(duplicatestyle=duplicatestyle)
-  outputstore = convertor.convertfile(inputstore)
+  outputstore = convertor.convertstore(inputstore)
   if outputstore.isempty():
     return 0
   outputfile.write(str(outputstore))

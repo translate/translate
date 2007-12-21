@@ -20,7 +20,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-"""Converts OpenOffice.org exported .oo files to Gettext .po or XLIFF files"""
+"""Converts OpenOffice.org exported .oo files to Gettext .po or XLIFF files. 
+User documentation: http://translate.sourceforge.net/wiki/toolkit/oo2po
+"""
 
 import os
 from translate.storage import po
@@ -101,7 +103,7 @@ class oo2po:
         unitlist.append(unit)
     return unitlist
 
-  def convertfile(self, theoofile, duplicatestyle="msgctxt"):
+  def convertstore(self, theoofile, duplicatestyle="msgctxt"):
     """converts an entire oo file to a base class format (.po or XLIFF)"""
     thetargetfile = po.pofile()
     # create a header for the file
@@ -139,7 +141,7 @@ def convertoo(inputfile, outputfile, templates, pot=False, sourcelanguage=None, 
   if targetlanguage and targetlanguage not in inputstore.languages:
     print "Warning: targetlanguage %s not found in inputfile (contains %s)" % (targetlanguage, ", ".join(inputstore.languages))
   convertor = oo2po(sourcelanguage, targetlanguage, blankmsgstr=pot, long_keys=multifilestyle!="single")
-  outputstore = convertor.convertfile(inputstore, duplicatestyle)
+  outputstore = convertor.convertstore(inputstore, duplicatestyle)
   if outputstore.isempty():
     return 0
   outputfile.write(str(outputstore))

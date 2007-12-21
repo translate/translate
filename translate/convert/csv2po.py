@@ -128,7 +128,7 @@ class csv2po:
     else:
       pounit.target = csvunit.target
 
-  def convertfile(self, thecsvfile):
+  def convertstore(self, thecsvfile):
     """converts a csvfile to a pofile, and returns it. uses templatepo if given at construction"""
     self.csvfile = thecsvfile
     if self.pofile is None:
@@ -171,7 +171,7 @@ def convertcsv(inputfile, outputfile, templatefile, charset=None, columnorder=No
   else:
     templatestore = po.pofile(templatefile)
     convertor = csv2po(templatestore, charset=charset, duplicatestyle=duplicatestyle)
-  outputstore = convertor.convertfile(inputstore)
+  outputstore = convertor.convertstore(inputstore)
   if outputstore.isempty():
     return 0
   outputfile.write(str(outputstore))

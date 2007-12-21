@@ -26,7 +26,7 @@ from translate.storage import po
 from translate.storage import odf
 
 class odf2po:
-  def convertfile(self, inputfile):
+  def convertstore(self, inputfile):
     """converts a file to .po format"""
     thetargetfile = po.pofile()
     filename = getattr(inputfile, "name", "unkown")
@@ -45,7 +45,7 @@ class odf2po:
 def convertodf(inputfile, outputfile, templates):
   """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
   convertor = odf2po()
-  outputstore = convertor.convertfile(inputfile)
+  outputstore = convertor.convertstore(inputfile)
   if outputstore.isempty():
     return 0
   outputfile.write(str(outputstore))

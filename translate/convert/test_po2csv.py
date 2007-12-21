@@ -26,7 +26,7 @@ class TestPO2CSV:
         else:
             inputpot = None
         convertor = csv2po.csv2po(templatepo=inputpot)
-        outputpo = convertor.convertfile(inputcsv)
+        outputpo = convertor.convertstore(inputcsv)
         return outputpo
 
     def singleelement(self, storage):

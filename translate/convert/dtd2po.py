@@ -253,7 +253,7 @@ class dtd2po:
             self.mixedentities[labelentity][mixbucket] = False
     return self.convertunit(thedtd)
 
-  def convertfile(self, thedtdfile):
+  def convertstore(self, thedtdfile):
     thetargetfile = po.pofile()
     targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit", x_accelerator_marker="&")
     targetheader.addnote("extracted from %s" % thedtdfile.filename, "developer")
@@ -270,7 +270,7 @@ class dtd2po:
     thetargetfile.removeduplicates(self.duplicatestyle)
     return thetargetfile
 
-  def mergefiles(self, origdtdfile, translateddtdfile):
+  def mergestore(self, origdtdfile, translateddtdfile):
     thetargetfile = po.pofile()
     targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
     targetheader.addnote("extracted from %s, %s" % (origdtdfile.filename, translateddtdfile.filename), "developer")
@@ -318,10 +318,10 @@ def convertdtd(inputfile, outputfile, templatefile, pot=False, duplicatestyle="m
   inputstore = dtd.dtdfile(inputfile)
   convertor = dtd2po(blankmsgstr=pot, duplicatestyle=duplicatestyle)
   if templatefile is None:
-    outputstore = convertor.convertfile(inputstore)
+    outputstore = convertor.convertstore(inputstore)
   else:
     templatestore = dtd.dtdfile(templatefile)
-    outputstore = convertor.mergefiles(templatestore, inputstore)
+    outputstore = convertor.mergestore(templatestore, inputstore)
   if outputstore.isempty():
     return 0
   outputfile.write(str(outputstore))

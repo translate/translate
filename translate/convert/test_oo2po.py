@@ -14,7 +14,7 @@ class TestOO2PO:
         """helper that converts oo source to po source without requiring files"""
         inputoo = oo.oofile(oosource)
         convertor = oo2po.oo2po(sourcelanguage, targetlanguage)
-        outputpo = convertor.convertfile(inputoo)
+        outputpo = convertor.convertstore(inputoo)
         return outputpo
 
     def singleelement(self, pofile):
