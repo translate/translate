@@ -23,12 +23,7 @@ import sys
 import os.path
 import fnmatch
 import traceback
-try:
-  import optparse
-  if optparse.__version__ < "1.4.1+":
-    raise ImportError("optparse version not compatible")
-except ImportError:
-  from translate.misc import optparse
+import optparse
 from translate.misc import progressbar
 from translate import __version__
 try:
@@ -45,6 +40,33 @@ class ManPageOption(optparse.Option, object):
       parser.print_manpage()
       sys.exit(0)
     return super(ManPageOption, self).take_action(action, dest, opt, value, values, parser)
+
+class ManHelpFormatter (optparse.HelpFormatter):
+  def __init__ (self,
+              indent_increment=0,
+              max_help_position=0,
+              width=80,
+              short_first=1):
+    optparse.HelpFormatter.__init__(
+      self, indent_increment, max_help_position, width, short_first)
+
+  def format_option_strings (self, option):
+    """Return a comma-separated list of option strings & metavariables."""
+    if option.takes_value():
+      metavar = option.metavar or option.dest.upper()
+      metavar = '\\fI%s\\fP'%metavar
+      short_opts = [sopt + metavar for sopt in option._short_opts]
+      long_opts = [lopt + "\\fR=\\fP" + metavar for lopt in option._long_opts]
+    else:
+      short_opts = option._short_opts
+      long_opts = option._long_opts
+
+    if self.short_first:
+      opts = short_opts + long_opts
+    else:
+      opts = long_opts + short_opts
+
+    return '\\fB%s\\fP'%("\\fR, \\fP".join(opts))
 
 class RecursiveOptionParser(optparse.OptionParser, object):
   """A specialized Option Parser for recursing through directories."""
@@ -91,7 +113,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
     usage += "\\fP"
     result.append('%s\n' % formatprog(usage))
     result.append('.SH OPTIONS\n')
-    optparse.ManHelpFormatter().store_option_strings(self)
+    ManHelpFormatter().store_option_strings(self)
     result.append('.PP\n')
     for option in self.option_list:
       result.append('.TP\n')
