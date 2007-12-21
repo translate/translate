@@ -24,7 +24,6 @@
 from translate.storage import factory
 from translate.storage import po
 from translate.misc import optrecurse
-import optparse
 import sys
 import os
 
@@ -76,7 +75,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
           self.warning("Output directory does not exist. Attempting to create")
           os.mkdir(options.output)
         except:
-          self.error(optparse.OptionValueError("Output directory does not exist, attempt to create failed"))
+          self.error(optrecurse.optparse.OptionValueError("Output directory does not exist, attempt to create failed"))
       if isinstance(options.input, list):
         inputfiles = self.recurseinputfilelist(options)
       else:

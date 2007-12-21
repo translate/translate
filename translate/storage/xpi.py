@@ -528,10 +528,7 @@ class XpiFile(ZipFileCatcher):
     return self.openoutputstream(jarfilename, filename)
 
 if __name__ == '__main__':
-  try:
-    import optparse
-  except ImportError:
-    from translate.misc import optparse
+  import optparse
   optparser = optparse.OptionParser(version="%prog "+__version__.ver)
   optparser.usage = "%prog [-l|-x] [options] file.xpi"
   optparser.add_option("-l", "--list", help="list files", \

@@ -24,7 +24,6 @@
 import sys, os
 from translate.storage import po
 from translate.misc import optrecurse
-from translate.misc import optparse
 
 class SplitOptionParser(optrecurse.RecursiveOptionParser):
     """a specialized Option Parser for posplit"""
@@ -51,7 +50,7 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
                 #TODO: maybe we should only allow it to be created, otherwise we mess up an existing tree...
                 os.mkdir(options.output)
             except:
-                self.error(optparse.OptionValueError("Output directory does not exist, attempt to create failed"))
+                self.error(optrecurse.optparse.OptionValueError("Output directory does not exist, attempt to create failed"))
         if self.isrecursive(options.input, 'input') and getattr(options, "allowrecursiveinput", True):
             if isinstance(options.input, list):
                 inputfiles = self.recurseinputfilelist(options)
