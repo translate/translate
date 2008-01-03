@@ -244,7 +244,7 @@ class poheader:
     contribexists = False
     incontrib = False
     outcontrib = False
-    for line in header.othercomments:
+    for line in header.getnotes("translator"):
       line = line[2:].strip()
       if line == "Contributors:":
         incontrib = True
