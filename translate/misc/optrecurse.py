@@ -117,7 +117,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
     result.append('.PP\n')
     for option in self.option_list:
       result.append('.TP\n')
-      result.append('%s\n'%option.option_strings)
+      result.append('%s\n'%option)
       result.append('%s\n'%option.help)
     return "".join(result)
 
