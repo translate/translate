@@ -238,6 +238,8 @@ class poheader:
     """Add contribution comments
     """
     header = self.header()
+    if not header:
+      return
     prelines = []
     contriblines = []
     postlines = []
