@@ -96,7 +96,7 @@ class GrepFilter:
           return True
 
     if self.search_notes:
-      return self.matches(unit.getnotes(origin="translator"))
+      return self.matches(unit.getnotes())
     if self.search_locations:
       return self.matches(u" ".join(unit.getlocations()))
     return False
