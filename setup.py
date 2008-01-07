@@ -54,6 +54,7 @@ translatescripts = [apply(join, ('translate', ) + script) for script in
                   ('tools', 'pogrep'),
                   ('tools', 'pomerge'),
                   ('tools', 'porestructure'),
+                  ('tools', 'posegment'),
                   ('tools', 'poswap'),
                   ('tools', 'poclean'),
                   ('services', 'lookupclient.py'),

@@ -226,21 +226,23 @@ class Common(object):
         return [w for w in cls.word_iter(text)]
     words = classmethod(words)
 
-    def sentence_iter(cls, text):
+    def sentence_iter(cls, text, strip=True):
         """Returns an iterator over the sentences in text."""
         lastmatch = 0
         iter = cls.sentencere.finditer(text)
         for item in iter:
             lastmatch = item.end()
-            sentence = item.group().strip()
+            sentence = item.group()
+            if strip: sentence = sentence.strip()
             if sentence: yield sentence
-        remainder = text[lastmatch:].strip()
+        remainder = text[lastmatch:]
+        if strip: remainder = remainder.strip()
         if remainder: yield remainder
     sentence_iter = classmethod(sentence_iter)
             
-    def sentences(cls, text):
+    def sentences(cls, text, strip=True):
         """Returns a list of senteces in text."""
-        return [s for s in cls.sentence_iter(text)]
+        return [s for s in cls.sentence_iter(text, strip=strip)]
     sentences = classmethod(sentences)
 
     def capsstart(cls, text):
