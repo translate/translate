@@ -26,6 +26,8 @@ from translate import __version__
 import re
 import time
 
+author_re = re.compile(r".*<\S+@\S+>.*\d{4,4}")
+
 def parseheaderstring(input):
   """Parses an input string with the definition of a PO header and returns 
   the interpreted values as a dictionary"""
@@ -248,26 +250,29 @@ class poheader:
     outcontrib = False
     for line in header.getnotes("translator").split('\n'):
       line = line.strip()
-      if line == "Contributors:":
+      if line == u"FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.":
         incontrib = True
+        continue
+      if author_re.match(line):
+        incontrib = True
+        contriblines.append(line)
+        continue
       if line == "" and incontrib:
         incontrib = False
         outcontrib = True
-      if incontrib and line != "Contributors:":
+      if incontrib:
         contriblines.append(line)
-      if not incontrib and not outcontrib:
+      elif not outcontrib:
         prelines.append(line)
-      if not incontrib and outcontrib:
+      else:
         postlines.append(line)
 
     year = time.strftime("%Y")
+    contribexists = False
     for line in contriblines:
-      if name in line:
-         if email and email not in line:
-           contribexists = False
-         else:
-           contribexists = True
-           break
+      if name in line and (email is None or email in line):
+        contribexists = True
+        break
     if not contribexists:
       # Add a new contributor
       if email:
@@ -277,6 +282,5 @@ class poheader:
 
     header.removenotes()
     header.addnote("\n".join(prelines))
-    header.addnote("Contributors:")
     header.addnote("\n".join(contriblines))
     header.addnote("\n".join(postlines))
