@@ -71,6 +71,10 @@ class mounit(base.TranslationUnit):
         """Is this a header entry?"""
         return self.source == ""
 
+    def istranslatable(self):
+        """Is this message translateable?"""
+        return bool(self.source)
+
 class mofile(base.TranslationStore):
     """A class representing a .mo file."""
     UnitClass = mounit
