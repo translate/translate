@@ -37,6 +37,7 @@ except ImportError:
     from pysqlite2 import dbapi2
 import os.path
 import re
+import sys
 
 kdepluralre = re.compile("^_n: ")
 brtagre = re.compile("<br\s*?/?>")
@@ -288,7 +289,7 @@ class StatsCache(object):
                 store = factory.getobject(filename)
                 fileid = self.cachestore(store)
             except ValueError, e:
-                print str(e)
+                print >> sys.stderr, str(e)
                 return {}
 
         self.cur.execute("""SELECT 
@@ -398,7 +399,7 @@ class StatsCache(object):
                     (str(checker.config.__dict__),))
                 configid = self.cur.lastrowid
         except ValueError, e:
-            print str(e)
+            print >> sys.stderr, str(e)
             return {}
 
         def geterrors():
