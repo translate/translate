@@ -22,7 +22,7 @@
 See U{http://translate.sourceforge.net} or U{http://translate.org.za} for more information.
 
 @organization: Zuza Software Foundation
-@copyright: 2002-2007 Zuza Software Foundation
+@copyright: 2002-2008 Zuza Software Foundation
 @license: U{GPL <http://www.fsf.org/licensing/licenses/gpl.html>}
 
 """
