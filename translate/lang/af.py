@@ -36,6 +36,7 @@ class af(common.Common):
     nplurals = 2
     pluralequation = "(n != 1)"
 
+    punctuation = u"".join([common.Common.commonpunc, common.Common.quotes, common.Common.miscpunc])
     sentenceend = u".!?…"
     sentencere = re.compile(r""".*?     #any text, but match non-greedy
                             [%s]        #the puntuation for sentence ending
