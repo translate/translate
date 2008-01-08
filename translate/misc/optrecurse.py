@@ -88,6 +88,9 @@ class RecursiveOptionParser(optparse.OptionParser, object):
     self.passthrough = []
     self.allowmissingtemplate = allowmissingtemplate
 
+  def get_prog_name(self):
+    return os.path.basename(sys.argv[0])
+
   def setmanpageoption(self):
     """creates a manpage option that allows the optionparser to generate a manpage"""
     manpageoption = ManPageOption(None, "--manpage", dest="manpage", default=False, action="manpage",
