@@ -41,7 +41,7 @@ def memory(tmfiles, max_candidates=1, min_similarity=75, max_length=1000):
       tmmatcher = match.matcher(tmstore, max_candidates=max_candidates, min_similarity=min_similarity, max_length=max_length)
     return tmmatcher
 
-def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similarity=75, fuzzymatching=True):
+def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similarity=75, fuzzymatching=True, **kwargs):
   """reads in inputpotfile, adjusts header, writes to outputpofile. if templatepofile exists, merge translations from it into outputpofile"""
   inputpot = po.pofile(inputpotfile)
   inputpot.makeindex()
