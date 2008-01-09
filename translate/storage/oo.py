@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # 
-# Copyright 2002-2006 Zuza Software Foundation
+# Copyright 2002-2008 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
@@ -25,10 +25,13 @@ See http://l10n.openoffice.org/L10N_Framework/Intermediate_file_format.html
 FIXME: add simple test which reads in a file and writes it out again"""
 
 import os
+import re
 import sys
 from translate.misc import quote
 from translate.misc import wStringIO
 import warnings
+
+# File normalisation
 
 normalfilenamechars = "/#.0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 normalizetable = ""
@@ -55,7 +58,62 @@ def normalizefilename(filename):
   else:
     return filename.translate(unormalizetable)
 
-class ooline:
+# These are functions that deal with escaping and unescaping of the text fields
+# of the SDF file. These should only be applied to the text column. 
+# The fields quickhelptext and title are assumed to carry no escaping.
+# 
+# The escaping of all strings except those coming from .xhp (helpcontent2) 
+# sourcefiles work as follows:
+#   (newline)         ->  \n
+#   (carriage return) ->  \r
+#   (tab)             ->  \t
+# Backslash characters (\) and single quotes (') are not consistently escaped,
+# and are therefore left as they are.
+# 
+# For strings coming from .xhp (helpcontent2) sourcefiles the following 
+# characters are escaped inside XML tags only:
+#   <  ->  \<  when used with lowercase tagnames (with some exceptions)
+#   >  ->  \>  when used with lowercase tagnames (with some exceptions)
+#   "  ->  \"  around XML properties
+# The following is consistently escaped in .xhp strings (not only in XML tags):
+#   \  ->  \\
+
+def escape_text(text):
+  """Escapes SDF text to be suitable for unit consumption."""
+  return text.replace("\n", "\\n").replace("\t", "\\t").replace("\r", "\\r")
+  
+def unescape_text(text):
+  """Unescapes SDF text to be suitable for unit consumption."""
+  return text.replace("\\\\", "\a").replace("\\n", "\n").replace("\\t", "\t").replace("\\r", "\r").replace("\a", "\\\\")
+
+helptagre = re.compile('''<[/]??[a-z_\-]+?(?:| [a-z]+?=".*?")[/]??>''')
+
+def escape_help_text(text):
+  """Escape the help text as it would be in an SDF file
+
+  <, >, " are only escaped in <[[:lower:]]> tags
+  some HTML tags make it in in lowercase so those are dealt with
+  some OpenOffice.org Help tags are not escaped
+  """
+  text = text.replace("\\", "\\\\")
+  for tag in helptagre.findall(text):
+    escapethistag = True
+    if tag in ["<br>", "<h1>", "</h1>", "<img ...>", "<->"]:
+      escapethistag = False
+    for skip in ["<font", "<node", "<help_section"]:
+      if tag.startswith(skip):
+         escapethistag = False
+    if escapethistag:
+      escaped_tag = ("\\<" + tag[1:-1] + "\\>").replace('"', '\\"')
+      text = text.replace(tag, escaped_tag)
+  return text
+
+def unescape_help_text(text):
+  """Unescapes normal text to be suitable for writing to the SDF file."""
+  return text.replace(r"\<", "<").replace(r"\>", ">").replace(r'\"', '"').replace(r"\\", "\\")
+
+
+class ooline(object):
   """this represents one line, one translation in an .oo file"""
   def __init__(self, parts=None):
     """construct an ooline from its parts"""
@@ -78,13 +136,28 @@ class ooline:
       parts = tuple(newparts)
     self.project, self.sourcefile, self.dummy, self.resourcetype, \
       self.groupid, self.localid, self.helpid, self.platform, self.width, \
-      self.languageid, self.text, self.helptext, self.quickhelptext, self.title, self.timestamp = parts
+      self.languageid, self._text, self.helptext, self.quickhelptext, self.title, self.timestamp = parts
 
   def getparts(self):
     """return a list of parts in this line"""
     return (self.project, self.sourcefile, self.dummy, self.resourcetype,
             self.groupid, self.localid, self.helpid, self.platform, self.width, 
-            self.languageid, self.text, self.helptext, self.quickhelptext, self.title, self.timestamp)
+            self.languageid, self._text, self.helptext, self.quickhelptext, self.title, self.timestamp)
+
+  def gettext(self):
+    """Obtains the text column and handle escaping."""
+    if self.sourcefile.endswith(".xhp"):
+      return unescape_help_text(self._text)
+    else:
+      return unescape_text(self._text)
+    
+  def settext(self, text):
+    """Sets the text column and handle escaping."""
+    if self.sourcefile.endswith(".xhp"):
+      self._text = escape_help_text(text)
+    else:
+      self._text = escape_text(text)
+  text = property(gettext, settext)
 
   def __str__(self):
     """convert to a string. double check that unicode is handled somehow here"""
@@ -95,7 +168,7 @@ class ooline:
 
   def getoutput(self):
     """return a line in tab-delimited form"""
-    parts = [part.replace("\n", "\\n").replace("\t", "\\t").replace("\r", "\\r") for part in self.getparts()]
+    parts = self.getparts()
     return "\t".join(parts)
 
   def getkey(self):
