@@ -6,22 +6,31 @@ from translate.convert import po2oo
 from translate.convert import test_convert
 from translate.misc import wStringIO
 from translate.storage import po
+from translate.storage.poheader import poheader
 from translate.storage import oo
 import os
 
 class TestOO2PO:
-    def oo2po(self, oosource, sourcelanguage='en-US', targetlanguage='af-ZA'):
+    target_filetype = po.pofile
+    conversion_module = oo2po
+    conversion_class = oo2po.oo2po
+
+    def convert(self, oosource, sourcelanguage='en-US', targetlanguage='af-ZA'):
         """helper that converts oo source to po source without requiring files"""
         inputoo = oo.oofile(oosource)
-        convertor = oo2po.oo2po(sourcelanguage, targetlanguage)
+        convertor = self.conversion_class(sourcelanguage, targetlanguage)
         outputpo = convertor.convertstore(inputoo)
         return outputpo
 
     def singleelement(self, pofile):
         """checks that the pofile contains a single non-header element, and returns it"""
-        assert len(pofile.units) == 2
-        assert pofile.units[0].isheader()
-        return pofile.units[1]
+        if isinstance(pofile, poheader):
+            assert len(pofile.units) == 2
+            assert pofile.units[0].isheader()
+            return pofile.units[1]
+        else:
+            assert len(pofile.units) == 1
+            return pofile.units[0]
 
     def roundtripstring(self, filename, entitystring):
         """Convert the supplied string as part of an OpenOffice.org GSI file to po and back.
@@ -35,7 +44,7 @@ class TestOO2PO:
         ootemplatefile = wStringIO.StringIO(oosource)
         pooutputfile = wStringIO.StringIO()
 
-        oo2po.convertoo(ooinputfile, pooutputfile, ootemplatefile, targetlanguage='en-US')
+        self.conversion_module.convertoo(ooinputfile, pooutputfile, ootemplatefile, targetlanguage='en-US')
         posource = pooutputfile.getvalue()
 
         poinputfile = wStringIO.StringIO(posource)
@@ -53,7 +62,7 @@ class TestOO2PO:
     def test_simpleentity(self):
         """checks that a simple oo entry converts properly to a po entry"""
         oosource = r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58'
-        pofile = self.oo2po(oosource)
+        pofile = self.convert(oosource)
         pounit = self.singleelement(pofile)
         assert pounit.source == "Character"
         assert pounit.target == ""
@@ -61,7 +70,7 @@ class TestOO2PO:
     def test_escapes(self):
         """checks that a simple oo entry converts escapes properly to a po entry"""
         oosource = r"wizards	source\formwizard\dbwizres.src	0	string	RID_DB_FORM_WIZARD_START + 19				0	en-US	Newline \n Newline Tab \t Tab CR \r CR				20050924 09:13:58"
-        pofile = self.oo2po(oosource)
+        pofile = self.convert(oosource)
         pounit = self.singleelement(pofile)
         poelementsrc = str(pounit)
         print poelementsrc
@@ -80,7 +89,7 @@ class TestOO2PO:
 
     def test_double_escapes(self):
         oosource = r"helpcontent2	source\text\shared\01\02100001.xhp	0	help	par_id3150670 35				0	en-US	\\<				2002-02-02 02:02:02"
-        pofile = self.oo2po(oosource)
+        pofile = self.convert(oosource)
         pounit = self.singleelement(pofile)
         poelementsrc = str(pounit)
         print poelementsrc
@@ -89,7 +98,7 @@ class TestOO2PO:
     def test_escapes_helpcontent2(self):
         """checks that a helpcontent2 entry converts escapes properly to a po entry"""
         oosource = r"helpcontent2	source\text\smath\guide\parentheses.xhp	0	help	par_id3150344	4			0	en-US	size *2 \\langle x \\rangle				2002-02-02 02:02:02"
-        pofile = self.oo2po(oosource)
+        pofile = self.convert(oosource)
         pounit = self.singleelement(pofile)
         poelementsrc = str(pounit)
         print poelementsrc
@@ -99,7 +108,7 @@ class TestOO2PO:
         """tests the we have the correct url for reporting msgid bugs"""
         oosource = r"wizards	source\formwizard\dbwizres.src	0	string	RID_DB_FORM_WIZARD_START + 19				0	en-US	Newline \n Newline Tab \t Tab CR \r CR				20050924 09:13:58"
         bug_url = '''http://qa.openoffice.org/issues/enter_bug.cgi''' + ('''?subcomponent=ui&comment=&short_desc=Localization issue in file: &component=l10n&form_name=enter_issue''').replace(" ", "%20").replace(":", "%3A")
-        pofile = self.oo2po(oosource)
+        pofile = self.convert(oosource)
         assert pofile.units[0].isheader()
         assert pofile.parseheader()["Report-Msgid-Bugs-To"] == bug_url
 
@@ -110,27 +119,35 @@ class TestOO2PO:
         # Real comment
         comment = "Comment"
         commentsource = en_USsource + '\n' + xcommentsource % (comment, comment, comment)
-        pofile = self.oo2po(commentsource)
-        textunit = pofile.units[1]
+        pofile = self.convert(commentsource)
+        if isinstance(pofile, poheader):
+            units = pofile.units[1:]
+        else:
+            units = pofile.units
+        textunit = units[0]
         assert textunit.source == "Text"
         assert comment in textunit.getnotes("developer")
-        quickhelpunit = pofile.units[2]
+        quickhelpunit = units[1]
         assert quickhelpunit.source == "Quickhelp"
         assert comment in quickhelpunit.getnotes("developer")
-        titleunit = pofile.units[3]
+        titleunit = units[2]
         assert titleunit.source == "Title"
         assert comment in titleunit.getnotes("developer")
         # Whitespace and blank
         for comment in ("   ", ""):
           commentsource = en_USsource + '\n' + xcommentsource % (comment, comment, comment)
-          pofile = self.oo2po(commentsource)
-          textunit = pofile.units[1]
+          pofile = self.convert(commentsource)
+          if isinstance(pofile, poheader):
+              units = pofile.units[1:]
+          else:
+              units = pofile.units
+          textunit = units[0]
           assert textunit.source == "Text"
           assert textunit.getnotes("developer") == ""
-          quickhelpunit = pofile.units[2]
+          quickhelpunit = units[1]
           assert quickhelpunit.source == "Quickhelp"
           assert quickhelpunit.getnotes("developer") == ""
-          titleunit = pofile.units[3]
+          titleunit = units[2]
           assert titleunit.source == "Title"
           assert titleunit.getnotes("developer") == ""
 
@@ -162,7 +179,7 @@ class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2PO):
         oosource = r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58'
         self.create_testfile("simple.oo", oosource)
         self.run_command("simple.oo", "simple.pot", pot=True, nonrecursiveinput=True)
-        pofile = po.pofile(self.open_testfile("simple.pot"))
+        pofile = self.target_filetype(self.open_testfile("simple.pot"))
         poelement = self.singleelement(pofile)
         assert poelement.source == "Character"
         assert poelement.target == ""
@@ -173,7 +190,7 @@ class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2PO):
         oosource2 = r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	ku	Karakter				20050924 09:13:58'
         self.create_testfile("simple.oo", oosource1 + "\n" + oosource2)
         self.run_command("simple.oo", "simple.po", lang="ku", nonrecursiveinput=True)
-        pofile = po.pofile(self.open_testfile("simple.po"))
+        pofile = self.target_filetype(self.open_testfile("simple.po"))
         poelement = self.singleelement(pofile)
         assert poelement.source == "Character"
         assert poelement.target == "Karakter"
@@ -197,7 +214,7 @@ sd	source\ui\animations\CustomAnimationSchemesPane.src	0	checkbox	DLG_CUSTOMANIM
 '''
         self.create_testfile("simple.oo", oosource)
         self.run_command("simple.oo", "simple.po", language="fr", multifile="onefile", error="traceback")
-        pofile = po.pofile(self.open_testfile("simple.po"))
+        pofile = self.target_filetype(self.open_testfile("simple.po"))
         assert len(pofile.units) == 2
         assert pofile.units[1].target == u"Aperçu automatique"
 
