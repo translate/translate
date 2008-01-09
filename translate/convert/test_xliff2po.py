@@ -17,7 +17,7 @@ class TestXLIFF2PO:
         """helper that converts xliff source to po source without requiring files"""
         inputfile = wStringIO.StringIO(xliffsource)
         convertor = xliff2po.xliff2po()
-        outputpo = convertor.convertfile(inputfile)
+        outputpo = convertor.convertstore(inputfile)
         print "The generated po:"
         print type(outputpo)
         print str(outputpo)
