@@ -100,6 +100,7 @@ def main(argv=None):
   formats = {"ini": ("po", convertini), ("ini", "ini"): ("po", convertini)}
   parser = convert.ConvertOptionParser(formats, usetemplates=True, usepots=True, description=__doc__)
   parser.add_duplicates_option()
+  parser.passthrough.append("pot")
   parser.run(argv)
 
 if __name__ == '__main__':

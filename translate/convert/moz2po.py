@@ -46,6 +46,7 @@ def main(argv=None):
     formats[replaceformat] = (replaceformat, replacer.searchreplaceinput)
   parser = convert.ArchiveConvertOptionParser(formats, usetemplates=True, usepots=True, description=__doc__, archiveformats={"xpi": xpi.XpiFile})
   parser.add_duplicates_option()
+  parser.passthrough.append("pot")
   parser.run(argv)
 
 

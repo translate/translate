@@ -157,6 +157,7 @@ def main(argv=None):
   parser.add_option("", "--nonrecursiveinput", dest="allowrecursiveinput", default=True, action="store_false", help="don't treat the input oo as a recursive store")
   parser.add_duplicates_option()
   parser.add_multifile_option()
+  parser.passthrough.append("pot")
   parser.passthrough.append("sourcelanguage")
   parser.passthrough.append("targetlanguage")
   parser.verifyoptions = verifyoptions
