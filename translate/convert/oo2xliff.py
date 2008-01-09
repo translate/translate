@@ -100,7 +100,7 @@ class oo2xliff:
         unitlist.append(unit)
     return unitlist
 
-  def convertfile(self, theoofile, duplicatestyle="msgctxt"):
+  def convertstore(self, theoofile, duplicatestyle="msgctxt"):
     """converts an entire oo file to a base class format (.po or XLIFF)"""
     thetargetfile = xliff.xlifffile()
     # create a header for the file
@@ -134,7 +134,7 @@ def convertoo(inputfile, outputfile, templates, pot=False, sourcelanguage=None, 
   if not pot and targetlanguage and targetlanguage not in inputstore.languages:
     print "Warning: targetlanguage %s not found in inputfile (contains %s)" % (targetlanguage, ", ".join(inputstore.languages))
   convertor = oo2xliff(sourcelanguage, targetlanguage, blankmsgstr=pot, long_keys=multifilestyle!="single")
-  outputstore = convertor.convertfile(inputstore, duplicatestyle)
+  outputstore = convertor.convertstore(inputstore, duplicatestyle)
   if outputstore.isempty():
     return 0
   outputfile.write(str(outputstore))
