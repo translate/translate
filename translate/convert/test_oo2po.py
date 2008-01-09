@@ -23,15 +23,14 @@ class TestOO2PO:
         assert pofile.units[0].isheader()
         return pofile.units[1]
 
-    def roundtripstring(self, entitystring):
+    def roundtripstring(self, filename, entitystring):
         """Convert the supplied string as part of an OpenOffice.org GSI file to po and back.
         
         Return the string once it has been through all the conversions."""
 
-        oointro = r'helpcontent2	source\text\shared\01\02100001.xhp	0	help	par_id3150670 35				0	en-US	'
-        oooutro = r'				2002-02-02 02:02:02' + '\r\n'
+        ootemplate = r'helpcontent2	%s	0	help	par_id3150670 35				0	en-US	%s				2002-02-02 02:02:02'
 
-        oosource = oointro + entitystring + oooutro
+        oosource = ootemplate % (filename, entitystring)
         ooinputfile = wStringIO.StringIO(oosource)
         ootemplatefile = wStringIO.StringIO(oosource)
         pooutputfile = wStringIO.StringIO()
@@ -45,12 +44,11 @@ class TestOO2PO:
         po2oo.convertoo(poinputfile, oooutputfile, ootemplatefile, targetlanguage="en-US")
         ooresult = oooutputfile.getvalue()
         print "original oo:\n", oosource, "po version:\n", posource, "output oo:\n", ooresult
-        assert ooresult.startswith(oointro) and ooresult.endswith(oooutro)
-        return ooresult[len(oointro):-len(oooutro)]
+        return ooresult.split('\t')[10]
 
-    def check_roundtrip(self, text):
+    def check_roundtrip(self, filename, text):
         """Checks that the text converted to po and back is the same as the original."""
-        assert self.roundtripstring(text) == text
+        assert self.roundtripstring(filename, text) == text
 
     def test_simpleentity(self):
         """checks that a simple oo entry converts properly to a po entry"""
@@ -72,10 +70,13 @@ class TestOO2PO:
         assert "CR \r CR" in pounit.source 
 
     def test_roundtrip_escape(self):
-        self.check_roundtrip(r'\\\\<')
-        self.check_roundtrip(r'\\\<')
-        self.check_roundtrip(r'\\<')
-        self.check_roundtrip(r'\<')
+        self.check_roundtrip('strings.src', r'The given command is not a SELECT statement.\nOnly queries are allowed.')
+        self.check_roundtrip('source\ui\dlg\AutoControls_tmpl.hrc', r';\t59\t,\t44\t:\t58\t{Tab}\t9\t{Space}\t32')
+        self.check_roundtrip('inc_openoffice\windows\msi_languages\Nsis.ulf', r'The installation files must be unpacked and copied to your hard disk in preparation for the installation. After that, the %PRODUCTNAME installation will start automatically.\r\n\r\nClick \'Next\' to continue.')
+        self.check_roundtrip('file.xhp', r'\<asdf\>')
+        self.check_roundtrip('file.xhp', r'\<asdf prop=\"value\"\>')
+        self.check_roundtrip('file.xhp', r'\<asdf prop=\"value\"\>marked up text\</asdf\>')
+        self.check_roundtrip('address_auto.xhp', r'''example, \<item type=\"literal\"\>'Harry\\'s Bar'.\</item\>''')
 
     def test_double_escapes(self):
         oosource = r"helpcontent2	source\text\shared\01\02100001.xhp	0	help	par_id3150670 35				0	en-US	\\<				2002-02-02 02:02:02"
@@ -83,7 +84,7 @@ class TestOO2PO:
         pounit = self.singleelement(pofile)
         poelementsrc = str(pounit)
         print poelementsrc
-        assert pounit.source == r"\\<"
+        assert pounit.source == r"\<"
 
     def test_escapes_helpcontent2(self):
         """checks that a helpcontent2 entry converts escapes properly to a po entry"""
@@ -92,7 +93,7 @@ class TestOO2PO:
         pounit = self.singleelement(pofile)
         poelementsrc = str(pounit)
         print poelementsrc
-        assert pounit.source == r'size *2 \\langle x \\rangle'
+        assert pounit.source == r'size *2 \langle x \rangle'
 
     def test_msgid_bug_error_address(self):
         """tests the we have the correct url for reporting msgid bugs"""
