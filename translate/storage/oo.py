@@ -119,6 +119,12 @@ def unescape_help_text(text):
   """Unescapes normal text to be suitable for writing to the SDF file."""
   return text.replace(r"\<", "<").replace(r"\>", ">").replace(r'\"', '"').replace(r"\\", "\\")
 
+def encode_if_needed_utf8(text):
+  """Encode a Unicode string the the specified encoding"""
+  if isinstance(text, unicode):
+    return text.encode('UTF-8')
+  return text
+
 
 class ooline(object):
   """this represents one line, one translation in an .oo file"""
@@ -168,10 +174,7 @@ class ooline(object):
 
   def __str__(self):
     """convert to a string. double check that unicode is handled somehow here"""
-    source = self.getoutput()
-    if isinstance(source, unicode):
-      return source.encode("UTF-8")
-    return source
+    return encode_if_needed_utf8(self.getoutput())
 
   def getoutput(self):
     """return a line in tab-delimited form"""
@@ -196,10 +199,7 @@ class oounit:
 
   def __str__(self):
     """convert to a string. double check that unicode is handled somehow here"""
-    source = self.getoutput()
-    if isinstance(source, unicode):
-      return source.encode("UTF-8")
-    return source
+    return encode_if_needed_utf8(self.getoutput())
 
   def getoutput(self):
     """return the lines in tab-delimited form"""
@@ -250,10 +250,7 @@ class oofile:
 
   def __str__(self):
     """convert to a string. double check that unicode is handled somehow here"""
-    source = self.getoutput()
-    if isinstance(source, unicode):
-      return source.encode("UTF-8")
-    return source
+    return encode_if_needed_utf8(self.getoutput())
 
   def getoutput(self):
     """converts all the lines back to tab-delimited form"""
