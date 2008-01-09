@@ -115,6 +115,10 @@ class StatsCache(object):
     access to the database cache from a pool of StatsCache objects."""
     caches = {}
     defaultfile = None
+    con = None
+    """This cache's connection"""
+    cur = None
+    """The current cursor"""
 
     def __new__(cls, statsfile=None):
         if not statsfile:
