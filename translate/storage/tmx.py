@@ -39,7 +39,7 @@ class tmxunit(lisa.LISAunit):
             text = text.decode("utf-8")
         langset = etree.Element(self.languageNode)
         lisa.setXMLlang(langset, lang)
-        seg = etree.SubElement(langset ,self.textNode)
+        seg = etree.SubElement(langset, self.textNode)
         seg.text = text
         return langset
 

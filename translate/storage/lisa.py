@@ -22,6 +22,8 @@
 
 """Parent class for LISA standards (TMX, TBX, XLIFF)"""
 
+import re
+
 from translate.storage import base
 from translate.lang import data
 from lxml import etree
@@ -36,8 +38,8 @@ def getText(node):
         return data.forceunicode(node.text) or u""
         # if node.text is none, we want to return "" since the tag is there
 
-def _findAllMatches(text,re_obj):
-    'generate match objects for all @re_obj matches in @text'
+def _findAllMatches(text, re_obj):
+    """generate match objects for all @re_obj matches in @text."""
     start = 0
     max = len(text)
     while start < max:
@@ -46,14 +48,13 @@ def _findAllMatches(text,re_obj):
         yield m
         start = m.end()
 
-import re
-placeholders = ['(%[diouxXeEfFgGcrs])',r'(\\+.?)','(%[0-9]$lx)','(%[0-9]\$[a-z])','(<.+?>)']
+placeholders = ['(%[diouxXeEfFgGcrs])', r'(\\+.?)', '(%[0-9]$lx)', '(%[0-9]\$[a-z])', '(<.+?>)']
 re_placeholders = [re.compile(ph) for ph in placeholders]
 def _getPhMatches(text):
     'return list of regexp matchobjects for with all place holders in the @text'
     matches = []
     for re_ph in re_placeholders:
-        matches.extend(list(_findAllMatches(text,re_ph)))
+        matches.extend(list(_findAllMatches(text, re_ph)))
 
     # sort them so they come sequentially
     matches.sort(lambda a,b: cmp(a.start(),b.start()))

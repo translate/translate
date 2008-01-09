@@ -318,8 +318,8 @@ class xlifffile(lisa.LISAfile):
 </xliff>'''
     namespace = 'urn:oasis:names:tc:xliff:document:1.1'
 
-    def __init__(self,*args,**kwargs):
-        lisa.LISAfile.__init__(self,*args,**kwargs)
+    def __init__(self, *args, **kwargs):
+        lisa.LISAfile.__init__(self, *args, **kwargs)
         self._filename = "NoName"
         self._messagenum = 0
 
