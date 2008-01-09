@@ -28,13 +28,13 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-"""module for parsing Gettext .mo files for translation
+"""Module for parsing Gettext .mo files for translation.
 
-The coding of .mo files was produced from documentation in Gettext 0.16 and from observation
-and testing of existing .mo files in the wild.
+The coding of .mo files was produced from documentation in Gettext 0.16 and 
+from observation and testing of existing .mo files in the wild.
 
-The class does not implement any of the hashing componets of Gettext.  This will probably
-make the output file slower in some instances.
+The class does not implement any of the hashing componets of Gettext.  This 
+will probably make the output file slower in some instances.
 """
 
 from translate.storage import base
@@ -46,12 +46,12 @@ import re
 
 MO_MAGIC_NUMBER = 0x950412deL
 
-def mounpack(mofile='messages.mo'):
-  """Helper to unpack Gettext MO files into a Python string"""
-  f = open(mofile)
-  s = f.read()
-  print "\\x%02x"*len(s) % tuple(map(ord, s))
-  f.close()
+def mounpack(filename='messages.mo'):
+    """Helper to unpack Gettext MO files into a Python string"""
+    f = open(filename)
+    s = f.read()
+    print "\\x%02x"*len(s) % tuple(map(ord, s))
+    f.close()
 
 class mounit(base.TranslationUnit):
     """A class representing a .mo translation message."""
@@ -84,7 +84,7 @@ class mofile(base.TranslationStore):
         self.units = []
         self.filename = ''
         if inputfile is not None:
-          self.parsestring(inputfile)
+            self.parsestring(inputfile)
 
     def __str__(self):
         """Output a string representation of the MO data file"""
@@ -112,12 +112,12 @@ class mofile(base.TranslationStore):
             # For each string, we need size and file offset.  Each string is NUL
             # terminated; the NUL does not count into the size.
             # TODO: We don't do any encoding detection from the PO Header
-            str = MESSAGES[id] # id is already encoded for use as a dictionary key
-            if isinstance(str, unicode):
-                str = str.encode('utf-8')
-            offsets.append((len(ids), len(id), len(strs), len(str)))
+            string = MESSAGES[id] # id is already encoded for use as a dictionary key
+            if isinstance(string, unicode):
+                string = string.encode('utf-8')
+            offsets.append((len(ids), len(id), len(strs), len(string)))
             ids = ids + id + '\0'
-            strs = strs + str + '\0'
+            strs = strs + string + '\0'
         output = ''
         # The header is 7 32-bit unsigned integers.  We don't use hash tables, so
         # the keys start right after the index tables.
