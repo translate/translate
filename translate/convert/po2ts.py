@@ -69,7 +69,7 @@ def convertpo(inputfile, outputfile, templatefile):
 def main(argv=None):
   from translate.convert import convert
   formats = {"po": ("ts", convertpo), ("po", "ts"): ("ts", convertpo)}
-  parser = convert.ConvertOptionParser(formats, usepots=True, usetemplates=True, description=__doc__)
+  parser = convert.ConvertOptionParser(formats, usepots=False, usetemplates=True, description=__doc__)
   parser.run(argv)
 
 
