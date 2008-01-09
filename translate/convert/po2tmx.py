@@ -96,7 +96,7 @@ class TmxOptionParser(convert.ArchiveConvertOptionParser):
 def main(argv=None):
   formats = {"po": ("tmx", convertpo), ("po", "tmx"): ("tmx", convertpo)}
   archiveformats = {(None, "output"): tmxmultifile, (None, "template"): tmxmultifile}
-  parser = TmxOptionParser(formats, usepots=True, usetemplates=False, description=__doc__, archiveformats=archiveformats)
+  parser = TmxOptionParser(formats, usepots=False, usetemplates=False, description=__doc__, archiveformats=archiveformats)
   parser.add_option("-l", "--language", dest="targetlanguage", default=None, 
                     help="set target language code (e.g. af-ZA) [required]", metavar="LANG")
   parser.add_option("", "--source-language", dest="sourcelanguage", default='en', 
