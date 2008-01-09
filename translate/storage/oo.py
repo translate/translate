@@ -170,7 +170,7 @@ class ooline(object):
     """convert to a string. double check that unicode is handled somehow here"""
     source = self.getoutput()
     if isinstance(source, unicode):
-      return source.encode(getattr(self, "encoding", "UTF-8"))
+      return source.encode("UTF-8")
     return source
 
   def getoutput(self):
@@ -198,7 +198,7 @@ class oounit:
     """convert to a string. double check that unicode is handled somehow here"""
     source = self.getoutput()
     if isinstance(source, unicode):
-      return source.encode(getattr(self, "encoding", "UTF-8"))
+      return source.encode("UTF-8")
     return source
 
   def getoutput(self):
@@ -252,7 +252,7 @@ class oofile:
     """convert to a string. double check that unicode is handled somehow here"""
     source = self.getoutput()
     if isinstance(source, unicode):
-      return source.encode(getattr(self, "encoding", "UTF-8"))
+      return source.encode("UTF-8")
     return source
 
   def getoutput(self):
