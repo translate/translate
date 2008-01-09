@@ -25,7 +25,6 @@ from translate.storage import base
 from translate.storage import csvl10n
 from translate.storage import mo
 from translate.storage import po
-from translate.storage import poxliff
 from translate.storage import qm
 from translate.storage import tbx
 from translate.storage import tmx
