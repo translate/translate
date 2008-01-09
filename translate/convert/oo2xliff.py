@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2003-2006 Zuza Software Foundation
+# Copyright 2003-2008 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
@@ -20,7 +20,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-"""Converts OpenOffice.org exported .oo files to Gettext .po or XLIFF files"""
+"""Converts OpenOffice.org exported .oo files to Gettext .po or XLIFF files. 
+User documentation: http://translate.sourceforge.net/wiki/toolkit/oo2po
+"""
 
 import os
 from translate.storage import xliff
@@ -36,17 +38,13 @@ class oo2xliff:
     self.blankmsgstr = blankmsgstr
     self.long_keys = long_keys
 
-  def escape_text(self, text):
-    """Escapes sdf text to be suitable for unit consumption."""
-    return text.replace("\\\\", "\a").replace("\\n", "\n").replace("\\t", "\t").replace("\\r", "\r").replace("\a", "\\")
-
   def maketargetunit(self, part1, part2, translators_comment, key, subkey):
     """makes a base unit (.po or XLIFF) out of a subkey of two parts"""
     #TODO: Do better
-    text1 = self.escape_text(getattr(part1, subkey))
+    text1 = getattr(part1, subkey)
     if text1 == "":
       return None
-    text2 = self.escape_text(getattr(part2, subkey))
+    text2 = getattr(part2, subkey)
 
     unit = xliff.xliffunit(text1)
     unit.target = text2
