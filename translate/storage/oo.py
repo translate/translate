@@ -19,10 +19,17 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""classes that hold units of .oo files (oounit) or entire files (oofile)
-these are specific .oo files for localisation exported by OpenOffice - SDF format
-See http://l10n.openoffice.org/L10N_Framework/Intermediate_file_format.html
-FIXME: add simple test which reads in a file and writes it out again"""
+"""
+Classes that hold units of .oo files (oounit) or entire files (oofile).
+
+These are specific .oo files for localisation exported by OpenOffice.org - SDF 
+format (previously knows as GSI files). For an overview of the format, see
+http://l10n.openoffice.org/L10N_Framework/Intermediate_file_format.html
+
+The behaviour in terms of escaping is explained in detail in the programming
+comments.
+"""
+# FIXME: add simple test which reads in a file and writes it out again
 
 import os
 import re
@@ -89,11 +96,11 @@ def unescape_text(text):
 helptagre = re.compile('''<[/]??[a-z_\-]+?(?:| [a-z]+?=".*?")[/]??>''')
 
 def escape_help_text(text):
-  """Escape the help text as it would be in an SDF file
+  """Escapes the help text as it would be in an SDF file.
 
-  <, >, " are only escaped in <[[:lower:]]> tags
-  some HTML tags make it in in lowercase so those are dealt with
-  some OpenOffice.org Help tags are not escaped
+  <, >, " are only escaped in <[[:lower:]]> tags. Some HTML tags make it in in 
+  lowercase so those are dealt with. Some OpenOffice.org help tags are not 
+  escaped.
   """
   text = text.replace("\\", "\\\\")
   for tag in helptagre.findall(text):
