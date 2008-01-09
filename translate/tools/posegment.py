@@ -48,7 +48,7 @@ class segment:
                 print unit.source
         return units
 
-    def convertfile(self, fromstore):
+    def convertstore(self, fromstore):
         tostore = type(fromstore)()
         for unit in fromstore.units:
             newunits = self.segmentunit(unit)
@@ -63,7 +63,7 @@ def segmentfile(inputfile, outputfile, templatefile, format=None, rewritestyle=N
   if inputstore.isempty():
     return 0
   convertor = segment()
-  outputstore = convertor.convertfile(inputstore)
+  outputstore = convertor.convertstore(inputstore)
   outputfile.write(str(outputstore))
   return 1
 
