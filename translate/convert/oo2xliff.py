@@ -25,6 +25,7 @@ User documentation: http://translate.sourceforge.net/wiki/toolkit/oo2po
 """
 
 import os
+import sys
 from translate.storage import xliff
 from translate.storage import oo
 
@@ -77,7 +78,7 @@ class oo2xliff:
     if self.sourcelanguage in theoo.languages:
       part1 = theoo.languages[self.sourcelanguage]
     else:
-      print "/".join(theoo.lines[0].getkey()), "language not found: %s" % (self.sourcelanguage)
+      print >> sys.stderr, "/".join(theoo.lines[0].getkey()), "language not found: %s" % (self.sourcelanguage)
       return []
     if self.blankmsgstr:
       # use a blank part2
@@ -130,9 +131,9 @@ def convertoo(inputfile, outputfile, templates, pot=False, sourcelanguage=None, 
     else:
       sourcelanguage = "en-US"
   if not sourcelanguage in inputstore.languages:
-    print "Warning: sourcelanguage %s not found in inputfile (contains %s)" % (sourcelanguage, ", ".join(inputstore.languages))
+    print >> sys.stderr, "Warning: sourcelanguage %s not found in inputfile (contains %s)" % (sourcelanguage, ", ".join(inputstore.languages))
   if not pot and targetlanguage and targetlanguage not in inputstore.languages:
-    print "Warning: targetlanguage %s not found in inputfile (contains %s)" % (targetlanguage, ", ".join(inputstore.languages))
+    print >> sys.stderr, "Warning: targetlanguage %s not found in inputfile (contains %s)" % (targetlanguage, ", ".join(inputstore.languages))
   convertor = oo2xliff(sourcelanguage, targetlanguage, blankmsgstr=pot, long_keys=multifilestyle!="single")
   outputstore = convertor.convertstore(inputstore, duplicatestyle)
   if outputstore.isempty():
