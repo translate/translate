@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2003-2006 Zuza Software Foundation
+# Copyright 2003-2007 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
@@ -38,17 +38,13 @@ class oo2po:
     self.blankmsgstr = blankmsgstr
     self.long_keys = long_keys
 
-  def escape_text(self, text):
-    """Escapes sdf text to be suitable for unit consumption."""
-    return text.replace("\\\\", "\a").replace("\\n", "\n").replace("\\t", "\t").replace("\\r", "\r").replace("\a", "\\\\")
-
   def maketargetunit(self, part1, part2, translators_comment, key, subkey):
     """makes a base unit (.po or XLIFF) out of a subkey of two parts"""
     #TODO: Do better
-    text1 = self.escape_text(getattr(part1, subkey))
+    text1 = getattr(part1, subkey)
     if text1 == "":
       return None
-    text2 = self.escape_text(getattr(part2, subkey))
+    text2 = getattr(part2, subkey)
 
     unit = po.pounit(text1.decode('utf-8'), encoding="UTF-8")
     unit.target = text2.decode('utf-8')
