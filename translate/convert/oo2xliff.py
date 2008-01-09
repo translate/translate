@@ -145,7 +145,7 @@ def main(argv=None):
   formats = {"oo":("xlf",convertoo), "sdf":("xlf",convertoo)}
   # always treat the input as an archive unless it is a directory
   archiveformats = {(None, "input"): oo.oomultifile}
-  parser = convert.ArchiveConvertOptionParser(formats, usepots=True, description=__doc__, archiveformats=archiveformats)
+  parser = convert.ArchiveConvertOptionParser(formats, usepots=False, description=__doc__, archiveformats=archiveformats)
   parser.add_option("-l", "--language", dest="targetlanguage", default=None,
     help="set target language to extract from oo file (e.g. af-ZA)", metavar="LANG")
   parser.add_option("", "--source-language", dest="sourcelanguage", default=None, 
