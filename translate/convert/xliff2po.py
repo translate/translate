@@ -61,7 +61,7 @@ class xliff2po:
     
     return thepo
 
-  def convertfile(self, inputfile):
+  def convertstore(self, inputfile):
     """converts a .xliff file to .po format"""
     # XXX: The inputfile is converted to string because Pootle supplies
     # XXX: a PootleFile object as input which cannot be sent to PoXliffFile.
@@ -80,7 +80,7 @@ class xliff2po:
 def convertxliff(inputfile, outputfile, templates):
   """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
   convertor = xliff2po()
-  outputstore = convertor.convertfile(inputfile)
+  outputstore = convertor.convertstore(inputfile)
   if outputstore.isempty():
     return 0
   outputfile.write(str(outputstore))
