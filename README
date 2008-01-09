@@ -74,6 +74,19 @@ tested using Python 2.4.  If you experience any errors and are using Python 2.2
 or 2.3, please first check that the error also occurs in 2.4 or 2.5 before 
 reporting it as a bug.
 
+The package lxml is needed for XML file processing. Version 1.3.4 and upwards 
+should work. Alpha versions of lxml 2.0.0 have been tested.
+http://codespeak.net/lxml/
+
+Python 2.5 includes pysqlite, but pysqlite2 needs to be installed if you are 
+using an older version of Python.
+http://www.initd.org/tracker/pysqlite/wiki/pysqlite
+
+When the environment variable USECPO is set to 1, the toolkit will attempt to 
+use libgettextpo from the gettext-tools package (it might have a slightly 
+different name on your distribution). This can greatly speed up access to PO 
+files, but has not yet been tested as extensively. Feedback is most welcome.
+
 Psyco can help to speed up several of the programs in the toolkit. It is
 optional, but highly recommended.
 http://psyco.sourceforge.net/
