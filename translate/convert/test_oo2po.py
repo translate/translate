@@ -85,6 +85,8 @@ class TestOO2PO:
         self.check_roundtrip('file.xhp', r'\<asdf\>')
         self.check_roundtrip('file.xhp', r'\<asdf prop=\"value\"\>')
         self.check_roundtrip('file.xhp', r'\<asdf prop=\"value\"\>marked up text\</asdf\>')
+        self.check_roundtrip('file.xhp', r'\<asdf prop=\"value>>\"\>')
+        self.check_roundtrip('file.xhp', r'''\<asdf prop=\"value>>\"\>'Next'>> or "<<Previous"\</asdf\>''')
         self.check_roundtrip('address_auto.xhp', r'''example, \<item type=\"literal\"\>'Harry\\'s Bar'.\</item\>''')
 
     def test_double_escapes(self):
