@@ -40,9 +40,10 @@ class zh(common.Common):
 
     # Compared to common.py, we make the space after the sentence ending 
     # optional and don't demand an uppercase letter to follow.
-    sentencere = re.compile(r""".*? #any text, but match non-greedy
-                            [%s]    #the puntuation for sentence ending
-                            \s*    #the optional space after the puntuation
+    sentencere = re.compile(r"""(?s)    #make . also match newlines    
+                            .*?         #any text, but match non-greedy
+                            [%s]        #the puntuation for sentence ending
+                            \s*         #the optional space after the puntuation
                             """ % sentenceend, re.VERBOSE)
 
     # The following transformation rules should be mostly useful for all types

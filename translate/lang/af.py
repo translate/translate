@@ -38,7 +38,8 @@ class af(common.Common):
 
     punctuation = u"".join([common.Common.commonpunc, common.Common.quotes, common.Common.miscpunc])
     sentenceend = u".!?…"
-    sentencere = re.compile(r""".*?     #any text, but match non-greedy
+    sentencere = re.compile(r"""(?s)    #make . also match newlines
+                            .*?         #anything, but match non-greedy
                             [%s]        #the puntuation for sentence ending
                             \s+         #the spacing after the puntuation
                             (?='n\s[A-Z\d]|[^'a-z]|'[^n])
