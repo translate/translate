@@ -39,9 +39,25 @@ from translate.lang import data
 from translate.storage import xliff
 import re
 
+# These are some regular expressions that are compiled for use in some tests
+
+# printf syntax based on http://en.wikipedia.org/wiki/Printf which doens't cover everything we leave \w instead of specifying the exact letters as
+# this should capture printf types defined in other platforms.
+printf_pat = re.compile('%((?:(?P<ord>\d+)\$)*(?P<fullvar>[+#-]*(?:\d+)*(?:\.\d+)*(hh\|h\|l\|ll)*(?P<type>[\w%])))')
+
+# TODO: compile all regular expressions once
+tagname_re = re.compile("<[\s]*([\w\/]*)")
+
+# We allow escaped quotes, probably for old escaping style of OOo helpcontent
+#TODO: remove escaped strings once usage is audited
+property_re = re.compile(" (\w*)=((\\\\?\".*?\\\\?\")|(\\\\?'.*?\\\\?'))")
+
+# The whole tag
+tag_re = re.compile("<[^>]+>")
+
 def tagname(string):
   """Returns the name of the XML/HTML tag in string"""
-  return re.match("<[\s]*([\w\/]*)", string).groups(1)[0]
+  return tagname_re.match(string).groups(1)[0]
 
 def intuplelist(pair, list):
   """Tests to see if pair == (a,b,c) is in list, but handles None entries in 
@@ -66,9 +82,8 @@ def tagproperties(strings, ignore):
   for string in strings:
     tag = tagname(string)
     properties += [(tag, None, None)]
-    #Now we isolate the attribute pairs. We allow escaped quotes
-    #TODO: remove escaped strings once usage is audited
-    pairs = re.findall(" (\w*)=((\\\\?\".*?\\\\?\")|(\\\\?'.*?\\\\?'))", string)
+    #Now we isolate the attribute pairs. 
+    pairs = property_re.findall(string)
     for property, value, a, b in pairs:
       #Strip the quotes:
       value = value[1:-1]
@@ -101,10 +116,6 @@ class SeriousFilterFailure(FilterFailure):
   """This exception signals that a Filter didn't pass, and the bad translation 
   might break an application (so the string will be marked fuzzy)"""
   pass
-
-# printf syntax based on http://en.wikipedia.org/wiki/Printf which doens't cover everything we leave \w instead of specifying the exact letters as
-# this should capture printf types defined in other platforms.
-printf_pat = re.compile('%((?:(?P<ord>\d+)\$)*(?P<fullvar>[+#-]*(?:\d+)*(?:\.\d+)*(hh\|h\|l\|ll)*(?P<type>[\w%])))')
 
 #(tag, attribute, value) specifies a certain attribute which can be changed/
 #ignored if it exists inside tag. In the case where there is a third element
@@ -261,7 +272,7 @@ class UnitChecker(object):
 
   def filterxml(self, str1):
     """filter out XML from the string so only text remains"""
-    return re.sub("<[^>]+>", "", str1)
+    return tag_re.sub("", str1)
 
   def run_test(self, test, unit):
     """Runs the given test on the given unit.
@@ -703,6 +714,8 @@ class StandardChecker(TranslationChecker):
     """checks the capitalisation of two strings isn't wildly different"""
     str1 = self.removevariables(str1)
     str2 = self.removevariables(str2)
+    # TODO: review this. The 'I' is specific to English, so it probably serves
+    # no purpose to get sourcelang.sentenceend
     str1 = re.sub(u"[^%s]( I )" % self.config.sourcelang.sentenceend, " i ", str1)
     capitals1 = helpers.filtercount(str1, type(str1).isupper)
     capitals2 = helpers.filtercount(str2, type(str2).isupper)
@@ -816,11 +829,11 @@ class StandardChecker(TranslationChecker):
 
   def xmltags(self, str1, str2):
     """checks that XML/HTML tags have not been translated"""
-    tags1 = re.findall("<[^>]+>", str1)
+    tags1 = tag_re.findall(str1)
     if len(tags1) > 0:
       if (len(tags1[0]) == len(str1)) and not "=" in tags1[0]:
         return True
-      tags2 = re.findall("<[^>]+>", str2)
+      tags2 = tag_re.findall(str2)
       properties1 = tagproperties(tags1, self.config.ignoretags)
       properties2 = tagproperties(tags2, self.config.ignoretags)
       filtered1 = []
@@ -836,7 +849,7 @@ class StandardChecker(TranslationChecker):
     else:
       # No tags in str1, let's just check that none were added in str2. This 
       # might be useful for fuzzy strings wrongly unfuzzied, for example.
-      tags2 = re.findall("<[^>]+>", str2)
+      tags2 = tag_re.findall(str2)
       if len(tags2) > 0:
         return False
     return True
