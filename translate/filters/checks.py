@@ -45,7 +45,7 @@ import re
 # this should capture printf types defined in other platforms.
 printf_pat = re.compile('%((?:(?P<ord>\d+)\$)*(?P<fullvar>[+#-]*(?:\d+)*(?:\.\d+)*(hh\|h\|l\|ll)*(?P<type>[\w%])))')
 
-# TODO: compile all regular expressions once
+# The name of the XML tag
 tagname_re = re.compile("<[\s]*([\w\/]*)")
 
 # We allow escaped quotes, probably for old escaping style of OOo helpcontent
