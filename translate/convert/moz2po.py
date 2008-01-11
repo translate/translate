@@ -29,25 +29,25 @@ from translate.storage import xpi
 from translate.convert import convert
 
 def main(argv=None):
-  formats = {(None, "*"): ("*", convert.copytemplate),
-             ("*", "*"): ("*", convert.copyinput),
-             "*": ("*", convert.copyinput)}
-  # handle formats that convert to .po files
-  converters = [("dtd", dtd2po.convertdtd), ("properties", prop2po.convertprop), ("xhtml", html2po.converthtml), ("html", html2po.converthtml),
-      ("it", mozfunny2prop.it2po), ("ini", mozfunny2prop.ini2po), ("inc", mozfunny2prop.inc2po)]
-  for format, converter in converters:
-    formats[(format, format)] = (format + ".po", converter)
-    formats[format] = (format + ".po", converter)
-  # handle search and replace
-  replacer = convert.Replacer("en-US", "${locale}")
-  for replaceformat in ("js", "rdf", "manifest"):
-    formats[(None, replaceformat)] = (replaceformat, replacer.searchreplacetemplate)
-    formats[(replaceformat, replaceformat)] = (replaceformat, replacer.searchreplaceinput)
-    formats[replaceformat] = (replaceformat, replacer.searchreplaceinput)
-  parser = convert.ArchiveConvertOptionParser(formats, usetemplates=True, usepots=True, description=__doc__, archiveformats={"xpi": xpi.XpiFile})
-  parser.add_duplicates_option()
-  parser.passthrough.append("pot")
-  parser.run(argv)
+    formats = {(None, "*"): ("*", convert.copytemplate),
+            ("*", "*"): ("*", convert.copyinput),
+            "*": ("*", convert.copyinput)}
+    # handle formats that convert to .po files
+    converters = [("dtd", dtd2po.convertdtd), ("properties", prop2po.convertprop), ("xhtml", html2po.converthtml), ("html", html2po.converthtml),
+            ("it", mozfunny2prop.it2po), ("ini", mozfunny2prop.ini2po), ("inc", mozfunny2prop.inc2po)]
+    for format, converter in converters:
+        formats[(format, format)] = (format + ".po", converter)
+        formats[format] = (format + ".po", converter)
+    # handle search and replace
+    replacer = convert.Replacer("en-US", "${locale}")
+    for replaceformat in ("js", "rdf", "manifest"):
+        formats[(None, replaceformat)] = (replaceformat, replacer.searchreplacetemplate)
+        formats[(replaceformat, replaceformat)] = (replaceformat, replacer.searchreplaceinput)
+        formats[replaceformat] = (replaceformat, replacer.searchreplaceinput)
+    parser = convert.ArchiveConvertOptionParser(formats, usetemplates=True, usepots=True, description=__doc__, archiveformats={"xpi": xpi.XpiFile})
+    parser.add_duplicates_option()
+    parser.passthrough.append("pot")
+    parser.run(argv)
 
 
 if __name__ == '__main__':

@@ -27,52 +27,52 @@ from translate.storage import po
 from translate.storage import ts
 
 class ts2po:
-  def convertmessage(self, contextname, messagenum, source, target, msgcomments, transtype):
-    """makes a pounit from the given message"""
-    thepo = po.pounit(encoding="UTF-8")
-    thepo.addlocation("%s#%d" % (contextname, messagenum))
-    thepo.source = source
-    thepo.target = target
-    if len(msgcomments) > 0:
-      thepo.addnote(msgcomments)
-    if transtype == "unfinished" and thepo.istranslated():
-      thepo.markfuzzy()
-    if transtype == "obsolete":
-      # This should use the Gettext obsolete method but it would require quite a bit of work
-      thepo.addnote("(obsolete)", origin="developer")
-      # using the fact that -- quote -- "(this is nonsense)"
-    return thepo
+    def convertmessage(self, contextname, messagenum, source, target, msgcomments, transtype):
+        """makes a pounit from the given message"""
+        thepo = po.pounit(encoding="UTF-8")
+        thepo.addlocation("%s#%d" % (contextname, messagenum))
+        thepo.source = source
+        thepo.target = target
+        if len(msgcomments) > 0:
+            thepo.addnote(msgcomments)
+        if transtype == "unfinished" and thepo.istranslated():
+            thepo.markfuzzy()
+        if transtype == "obsolete":
+            # This should use the Gettext obsolete method but it would require quite a bit of work
+            thepo.addnote("(obsolete)", origin="developer")
+            # using the fact that -- quote -- "(this is nonsense)"
+        return thepo
 
-  def convertfile(self, inputfile):
-    """converts a .ts file to .po format"""
-    tsfile = ts.QtTsParser(inputfile)
-    thetargetfile = po.pofile()
-    targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
-    thetargetfile.addunit(targetheader)
-    for contextname, messages in tsfile.iteritems():
-      messagenum = 0
-      for message in messages:
-        messagenum += 1
-        source = tsfile.getmessagesource(message)
-        translation = tsfile.getmessagetranslation(message)
-        comment = tsfile.getmessagecomment(message)
-        transtype = tsfile.getmessagetype(message)
-        thepo = self.convertmessage(contextname, messagenum, source, translation, comment, transtype)
-        thetargetfile.addunit(thepo)
-    return thetargetfile
+    def convertfile(self, inputfile):
+        """converts a .ts file to .po format"""
+        tsfile = ts.QtTsParser(inputfile)
+        thetargetfile = po.pofile()
+        targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
+        thetargetfile.addunit(targetheader)
+        for contextname, messages in tsfile.iteritems():
+            messagenum = 0
+            for message in messages:
+                messagenum += 1
+                source = tsfile.getmessagesource(message)
+                translation = tsfile.getmessagetranslation(message)
+                comment = tsfile.getmessagecomment(message)
+                transtype = tsfile.getmessagetype(message)
+                thepo = self.convertmessage(contextname, messagenum, source, translation, comment, transtype)
+                thetargetfile.addunit(thepo)
+        return thetargetfile
 
 def convertts(inputfile, outputfile, templates):
-  """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
-  convertor = ts2po()
-  outputstore = convertor.convertfile(inputfile)
-  if outputstore.isempty():
-    return 0
-  outputfile.write(str(outputstore))
-  return 1
+    """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
+    convertor = ts2po()
+    outputstore = convertor.convertfile(inputfile)
+    if outputstore.isempty():
+        return 0
+    outputfile.write(str(outputstore))
+    return 1
 
 def main(argv=None):
-  from translate.convert import convert
-  formats = {"ts":("po",convertts)}
-  parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
-  parser.run(argv)
+    from translate.convert import convert
+    formats = {"ts":("po",convertts)}
+    parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
+    parser.run(argv)
 

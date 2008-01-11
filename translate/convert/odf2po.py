@@ -26,36 +26,36 @@ from translate.storage import po
 from translate.storage import odf
 
 class odf2po:
-  def convertstore(self, inputfile):
-    """converts a file to .po format"""
-    thetargetfile = po.pofile()
-    filename = getattr(inputfile, "name", "unkown")
-    targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
-    targetheader.addnote("extracted from %s\n" % filename, "developer")
-    thetargetfile.addunit(targetheader)
-    odfdoc = odf.ODFFile(inputfile)
-    blocknum = 0
-    for unit in odfdoc.getunits():
-      if not unit: continue
-      blocknum += 1
-      newunit = thetargetfile.addsourceunit(unit.source)
-      newunit.addlocations("%s:%d" % (filename, blocknum))
-    return thetargetfile
+    def convertstore(self, inputfile):
+        """converts a file to .po format"""
+        thetargetfile = po.pofile()
+        filename = getattr(inputfile, "name", "unkown")
+        targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
+        targetheader.addnote("extracted from %s\n" % filename, "developer")
+        thetargetfile.addunit(targetheader)
+        odfdoc = odf.ODFFile(inputfile)
+        blocknum = 0
+        for unit in odfdoc.getunits():
+            if not unit: continue
+            blocknum += 1
+            newunit = thetargetfile.addsourceunit(unit.source)
+            newunit.addlocations("%s:%d" % (filename, blocknum))
+        return thetargetfile
 
 def convertodf(inputfile, outputfile, templates):
-  """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
-  convertor = odf2po()
-  outputstore = convertor.convertstore(inputfile)
-  if outputstore.isempty():
-    return 0
-  outputfile.write(str(outputstore))
-  return 1
+    """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
+    convertor = odf2po()
+    outputstore = convertor.convertstore(inputfile)
+    if outputstore.isempty():
+        return 0
+    outputfile.write(str(outputstore))
+    return 1
 
 def main(argv=None):
-  from translate.convert import convert
-  formats = {"sxw":("po",convertodf), "odt":("po",convertodf), "ods":("po",convertodf), "odp":("po",convertodf)}
-  parser = convert.ConvertOptionParser(formats, description=__doc__)
-  parser.run(argv)
+    from translate.convert import convert
+    formats = {"sxw":("po",convertodf), "odt":("po",convertodf), "ods":("po",convertodf), "odp":("po",convertodf)}
+    parser = convert.ConvertOptionParser(formats, description=__doc__)
+    parser.run(argv)
 
 
 if __name__ == '__main__':

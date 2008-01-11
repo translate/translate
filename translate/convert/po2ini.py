@@ -30,47 +30,47 @@ from translate.storage import factory
 from translate.storage import ini
 
 class reini:
-  def __init__(self, templatefile):
-    self.templatefile = templatefile
-    self.templatestore = ini.inifile(templatefile)
-    self.inputdict = {}
+    def __init__(self, templatefile):
+        self.templatefile = templatefile
+        self.templatestore = ini.inifile(templatefile)
+        self.inputdict = {}
 
-  def convertstore(self, inputstore, includefuzzy=False):
-    self.makestoredict(inputstore, includefuzzy)
-    for unit in self.templatestore.units:
-      for location in unit.getlocations():
-        unit.target = self.inputdict[location]
-    return str(self.templatestore)
+    def convertstore(self, inputstore, includefuzzy=False):
+        self.makestoredict(inputstore, includefuzzy)
+        for unit in self.templatestore.units:
+            for location in unit.getlocations():
+                unit.target = self.inputdict[location]
+        return str(self.templatestore)
 
-  def makestoredict(self, store, includefuzzy=False):
-    # make a dictionary of the translations
-    for unit in store.units:
-      if includefuzzy or not unit.isfuzzy():
-        # there may be more than one entity due to msguniq merge
-        for location in unit.getlocations():
-          inistring = unit.target
-          if len(inistring.strip()) == 0:
-            inistring = unit.source
-          self.inputdict[location] = inistring
+    def makestoredict(self, store, includefuzzy=False):
+        # make a dictionary of the translations
+        for unit in store.units:
+            if includefuzzy or not unit.isfuzzy():
+                # there may be more than one entity due to msguniq merge
+                for location in unit.getlocations():
+                    inistring = unit.target
+                    if len(inistring.strip()) == 0:
+                        inistring = unit.source
+                    self.inputdict[location] = inistring
 
 def convertini(inputfile, outputfile, templatefile, includefuzzy=False):
-  inputstore = factory.getobject(inputfile)
-  if templatefile is None:
-    raise ValueError("must have template file for ini files")
-  else:
-    convertor = reini(templatefile)
-  outputstring = convertor.convertstore(inputstore, includefuzzy)
-  outputfile.write(outputstring)
-  return 1
+    inputstore = factory.getobject(inputfile)
+    if templatefile is None:
+        raise ValueError("must have template file for ini files")
+    else:
+        convertor = reini(templatefile)
+    outputstring = convertor.convertstore(inputstore, includefuzzy)
+    outputfile.write(outputstring)
+    return 1
 
 def main(argv=None):
-  # handle command line options
-  from translate.convert import convert
-  formats = {("po", "ini"): ("ini", convertini)}
-  parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
-  parser.add_fuzzy_option()
-  parser.run(argv)
+    # handle command line options
+    from translate.convert import convert
+    formats = {("po", "ini"): ("ini", convertini)}
+    parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
+    parser.add_fuzzy_option()
+    parser.run(argv)
 
 if __name__ == '__main__':
-  main()
+    main()
 

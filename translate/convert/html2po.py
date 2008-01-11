@@ -27,42 +27,42 @@ from translate.storage import po
 from translate.storage import html
 
 class html2po:
-  def convertfile(self, inputfile, filename, includeheader, includeuntagged=False, duplicatestyle="msgid_comment"):
-    """converts a html file to .po format"""
-    thetargetfile = po.pofile()
-    htmlparser = html.htmlfile(includeuntaggeddata=includeuntagged, inputfile=inputfile)
-    if includeheader:
-      targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
-      thetargetfile.addunit(targetheader)
-    for htmlunit in htmlparser.units:
-      thepo = thetargetfile.addsourceunit(htmlunit.source)
-      thepo.addlocations(htmlunit.getlocations())
-    thetargetfile.removeduplicates(duplicatestyle)
-    return thetargetfile
+    def convertfile(self, inputfile, filename, includeheader, includeuntagged=False, duplicatestyle="msgid_comment"):
+        """converts a html file to .po format"""
+        thetargetfile = po.pofile()
+        htmlparser = html.htmlfile(includeuntaggeddata=includeuntagged, inputfile=inputfile)
+        if includeheader:
+            targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
+            thetargetfile.addunit(targetheader)
+        for htmlunit in htmlparser.units:
+            thepo = thetargetfile.addsourceunit(htmlunit.source)
+            thepo.addlocations(htmlunit.getlocations())
+        thetargetfile.removeduplicates(duplicatestyle)
+        return thetargetfile
 
 def converthtml(inputfile, outputfile, templates, includeuntagged=False, pot=False, duplicatestyle="msgctxt"):
-  """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
-  convertor = html2po()
-  outputfilepos = outputfile.tell()
-  includeheader = outputfilepos == 0
-  outputstore = convertor.convertfile(inputfile, getattr(inputfile, "name", "unknown"), includeheader, includeuntagged, duplicatestyle=duplicatestyle)
-  outputfile.write(str(outputstore))
-  return 1
+    """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
+    convertor = html2po()
+    outputfilepos = outputfile.tell()
+    includeheader = outputfilepos == 0
+    outputstore = convertor.convertfile(inputfile, getattr(inputfile, "name", "unknown"), includeheader, includeuntagged, duplicatestyle=duplicatestyle)
+    outputfile.write(str(outputstore))
+    return 1
 
 def main(argv=None):
-  from translate.convert import convert
-  from translate.misc import stdiotell
-  import sys
-  sys.stdout = stdiotell.StdIOWrapper(sys.stdout)
-  formats = {"html":("po",converthtml), "htm":("po",converthtml), "xhtml":("po",converthtml), None:("po",converthtml)}
-  parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
-  parser.add_option("-u", "--untagged", dest="includeuntagged", default=False, action="store_true",
-                    help="include untagged sections")
-  parser.passthrough.append("includeuntagged")
-  parser.add_duplicates_option()
-  parser.passthrough.append("pot")
-  parser.run(argv)
+    from translate.convert import convert
+    from translate.misc import stdiotell
+    import sys
+    sys.stdout = stdiotell.StdIOWrapper(sys.stdout)
+    formats = {"html":("po",converthtml), "htm":("po",converthtml), "xhtml":("po",converthtml), None:("po",converthtml)}
+    parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
+    parser.add_option("-u", "--untagged", dest="includeuntagged", default=False, action="store_true",
+            help="include untagged sections")
+    parser.passthrough.append("includeuntagged")
+    parser.add_duplicates_option()
+    parser.passthrough.append("pot")
+    parser.run(argv)
 
 
 if __name__ == '__main__':
-  main()
+    main()

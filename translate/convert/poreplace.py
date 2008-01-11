@@ -26,36 +26,36 @@
 from translate.storage import po
 
 class poreplace:
-  def convertstring(self, postr):
-    """does the conversion required on the given string (nothing in this case)"""
-    return postr
+    def convertstring(self, postr):
+        """does the conversion required on the given string (nothing in this case)"""
+        return postr
 
-  def convertfile(self, thepofile):
-    """goes through a po file and converts each element"""
-    for thepo in thepofile.units:
-      thepo.msgstr = [self.convertstring(postr) for postr in thepo.msgstr]
-    return thepofile
+    def convertfile(self, thepofile):
+        """goes through a po file and converts each element"""
+        for thepo in thepofile.units:
+            thepo.msgstr = [self.convertstring(postr) for postr in thepo.msgstr]
+        return thepofile
 
-  def convertpo(self, inputfile, outputfile, templatefile):
-    """reads in inputfile using po, converts using poreplace, writes to outputfile"""
-    # note that templatefile is not used, but it is required by the converter...
-    inputstore = po.pofile(inputfile)
-    if inputstore.isempty():
-      return 0
-    outputstore = self.convertfile(inputstore)
-    if outputstore.isempty():
-      return 0
-    outputfile.write(str(outputstore))
-    return 1
+    def convertpo(self, inputfile, outputfile, templatefile):
+        """reads in inputfile using po, converts using poreplace, writes to outputfile"""
+        # note that templatefile is not used, but it is required by the converter...
+        inputstore = po.pofile(inputfile)
+        if inputstore.isempty():
+            return 0
+        outputstore = self.convertfile(inputstore)
+        if outputstore.isempty():
+            return 0
+        outputfile.write(str(outputstore))
+        return 1
 
 def main(converterclass, argv=None):
-  # handle command line options
-  from translate.convert import convert
-  replacer = converterclass()
-  formats = {"po":("po",replacer.convertpo), "pot":("pot", replacer.convertpo)}
-  parser = convert.ConvertOptionParser(formats, usepots=True)
-  parser.run(argv)
+    # handle command line options
+    from translate.convert import convert
+    replacer = converterclass()
+    formats = {"po":("po",replacer.convertpo), "pot":("pot", replacer.convertpo)}
+    parser = convert.ConvertOptionParser(formats, usepots=True)
+    parser.run(argv)
 
 if __name__ == '__main__':
-  main(poreplace)
+    main(poreplace)
 
