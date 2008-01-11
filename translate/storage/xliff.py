@@ -426,7 +426,7 @@ class xlifffile(lisa.LISAfile):
         """adds the given trans-unit to the last used body node if the filename has changed it uses the slow method instead (will create the nodes required if asked). Returns success"""
         if self._filename != filename:
             if not self.switchfile(filename, createifmissing):
-              return None
+                return None
         unit = super(xlifffile, self).addsourceunit(source)
         self._messagenum += 1
         unit.setid("%d" % self._messagenum)
@@ -458,7 +458,7 @@ class xlifffile(lisa.LISAfile):
         """adds a group tag into the specified file"""
         if self._filename != filename:
             if not self.switchfile(filename, createifmissing):
-              return None
+                return None
         group = etree.SubElement(self.body, self.namespaced("group"))
         if restype:
             group.set("restype", restype)
