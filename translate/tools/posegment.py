@@ -57,22 +57,22 @@ class segment:
         return tostore
 
 def segmentfile(inputfile, outputfile, templatefile, format=None, rewritestyle=None, hash=None):
-  """reads in inputfile, segments it then, writes to outputfile"""
-  # note that templatefile is not used, but it is required by the converter...
-  inputstore = factory.getobject(inputfile)
-  if inputstore.isempty():
-    return 0
-  convertor = segment()
-  outputstore = convertor.convertstore(inputstore)
-  outputfile.write(str(outputstore))
-  return 1
+    """reads in inputfile, segments it then, writes to outputfile"""
+    # note that templatefile is not used, but it is required by the converter...
+    inputstore = factory.getobject(inputfile)
+    if inputstore.isempty():
+        return 0
+    convertor = segment()
+    outputstore = convertor.convertstore(inputstore)
+    outputfile.write(str(outputstore))
+    return 1
 
 def main():
-  from translate.convert import convert
-  formats = {"po":("po", segmentfile), "xlf":("xlf", segmentfile), "tmx": ("tmx", segmentfile)}
-  parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
-  parser.run()
+    from translate.convert import convert
+    formats = {"po":("po", segmentfile), "xlf":("xlf", segmentfile), "tmx": ("tmx", segmentfile)}
+    parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
+    parser.run()
 
 
 if __name__ == '__main__':
-  main()
+    main()
