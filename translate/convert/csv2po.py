@@ -19,7 +19,11 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""convert Comma-Separated Value (.csv) files to Gettext PO localization files"""
+"""convert Comma-Separated Value (.csv) files to Gettext PO localization files
+
+See: http://translate.sourceforge.net/wiki/toolkit/csv2po for examples and 
+usage instructions
+"""
 
 import sys
 from translate.misc import sparse

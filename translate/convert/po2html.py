@@ -20,7 +20,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-"""convert Gettext PO localization files to HTML files"""
+"""convert Gettext PO localization files to HTML files
+
+see: http://translate.sourceforge.net/wiki/toolkit/po2html for examples and 
+usage instructions
+"""
 
 from translate.storage import po
 try:

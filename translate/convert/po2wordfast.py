@@ -20,7 +20,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-"""convert Gettext PO localization files to a Wordfast translation memory file"""
+"""convert Gettext PO localization files to a Wordfast translation memory file
+
+see: http://translate.sourceforge.net/wiki/toolkit/po2wordfast for examples and 
+usage instructions
+"""
 
 from translate.storage import po
 from translate.storage import wordfast

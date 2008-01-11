@@ -22,7 +22,8 @@
 
 """convert an OpenOffice.org (SDF) localization file to Gettext PO localization files
 
-User documentation: http://translate.sourceforge.net/wiki/toolkit/oo2po
+See: http://translate.sourceforge.net/wiki/toolkit/oo2po for examples and 
+usage instructions
 """
 
 import os

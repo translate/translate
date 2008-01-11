@@ -20,7 +20,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-"""convert Gettext PO localization files to Java/Mozilla .properties files"""
+"""convert Gettext PO localization files to Java/Mozilla .properties files
+
+see: http://translate.sourceforge.net/wiki/toolkit/po2prop for examples and 
+usage instructions
+"""
 
 from translate.misc import quote
 from translate.storage import po

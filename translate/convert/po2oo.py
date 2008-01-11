@@ -20,7 +20,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-"""convert Gettext PO localization files to an OpenOffice.org (SDF) localization file"""
+"""convert Gettext PO localization files to an OpenOffice.org (SDF) localization file
+
+see: http://translate.sourceforge.net/wiki/toolkit/po2oo for examples and 
+usage instructions
+"""
 
 import sys
 import os

@@ -20,7 +20,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-"""convert plain text (.txt) files to Gettext PO localization files"""
+"""convert plain text (.txt) files to Gettext PO localization files
+
+See: http://translate.sourceforge.net/wiki/toolkit/txt2po for examples and 
+usage instructions
+"""
 
 from translate.storage import txt
 from translate.storage import po
