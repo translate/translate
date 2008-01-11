@@ -1058,11 +1058,11 @@ class StandardUnitChecker(UnitChecker):
         self.suggestion_store = getattr(self, 'suggestion_store', None)
         suggestions = []
         if self.suggestion_store:
-                source = unit.source
-                suggestions = [unit for unit in self.suggestion_store.units if unit.source == source]
+            source = unit.source
+            suggestions = [unit for unit in self.suggestion_store.units if unit.source == source]
         elif isinstance(unit, xliff.xliffunit):
-                # TODO: we probably want to filter them somehow
-                suggestions = unit.getalttrans()
+            # TODO: we probably want to filter them somehow
+            suggestions = unit.getalttrans()
         return not bool(suggestions)
 
 
