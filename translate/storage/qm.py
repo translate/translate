@@ -48,11 +48,11 @@ import sys
 QM_MAGIC_NUMBER = (0x3CB86418L, 0xCAEF9C95L, 0xCD211CBFL, 0x60A1BDDDL)
 
 def qmunpack(qmfile='messages.mo'):
-  """Helper to unpack Qt .qm files into a Python string"""
-  f = open(qmfile)
-  s = f.read()
-  print "\\x%02x"*len(s) % tuple(map(ord, s))
-  f.close()
+    """Helper to unpack Qt .qm files into a Python string"""
+    f = open(qmfile)
+    s = f.read()
+    print "\\x%02x"*len(s) % tuple(map(ord, s))
+    f.close()
 
 class qmunit(base.TranslationUnit):
     """A class representing a .qm translation message."""
@@ -68,7 +68,7 @@ class qmfile(base.TranslationStore):
         self.units = []
         self.filename = ''
         if inputfile is not None:
-          self.parsestring(inputfile)
+            self.parsestring(inputfile)
 
     def __str__(self):
         """Output a string representation of the .qm data file"""
