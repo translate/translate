@@ -49,144 +49,144 @@ import re
 eol = "\n"
 
 class propunit(base.TranslationUnit):
-  """an element of a properties file i.e. a name and value, and any comments
-  associated"""
-  def __init__(self, source=""):
-    """construct a blank propunit"""
-    super(propunit, self).__init__(source)
-    self.name = ""
-    self.value = ""
-    self.comments = []
-    self.source = source
+    """an element of a properties file i.e. a name and value, and any comments
+    associated"""
+    def __init__(self, source=""):
+        """construct a blank propunit"""
+        super(propunit, self).__init__(source)
+        self.name = ""
+        self.value = ""
+        self.comments = []
+        self.source = source
 
-  def setsource(self, source):
-    """Sets the source AND the target to be equal"""
-    self.value = quote.mozillapropertiesencode(source or "")
+    def setsource(self, source):
+        """Sets the source AND the target to be equal"""
+        self.value = quote.mozillapropertiesencode(source or "")
 
-  def getsource(self):
-    value = quote.mozillapropertiesdecode(self.value)
-    value = value.lstrip(" ")
-    rstriped = value.rstrip(" ")
-    if rstriped and rstriped[-1] != "\\":
-      value = rstriped
+    def getsource(self):
+        value = quote.mozillapropertiesdecode(self.value)
+        value = value.lstrip(" ")
+        rstriped = value.rstrip(" ")
+        if rstriped and rstriped[-1] != "\\":
+            value = rstriped
 
-    value = re.sub("\\\\ ", " ", value)
-    return value
+        value = re.sub("\\\\ ", " ", value)
+        return value
 
-  source = property(getsource, setsource)
+    source = property(getsource, setsource)
 
-  def settarget(self, target):
-    """Note: this also sets the .source attribute!"""
-    # TODO: shouldn't this just call the .source property? no quoting done here...
-    self.source = target
+    def settarget(self, target):
+        """Note: this also sets the .source attribute!"""
+        # TODO: shouldn't this just call the .source property? no quoting done here...
+        self.source = target
 
-  def gettarget(self):
-    return self.source
-  target = property(gettarget, settarget)
+    def gettarget(self):
+        return self.source
+    target = property(gettarget, settarget)
 
-  def __str__(self):
-    """convert to a string. double check that unicode is handled somehow here"""
-    source = self.getoutput()
-    if isinstance(source, unicode):
-      return source.encode(getattr(self, "encoding", "UTF-8"))
-    return source
+    def __str__(self):
+        """convert to a string. double check that unicode is handled somehow here"""
+        source = self.getoutput()
+        if isinstance(source, unicode):
+            return source.encode(getattr(self, "encoding", "UTF-8"))
+        return source
 
-  def getoutput(self):
-    """convert the element back into formatted lines for a .properties file"""
-    if self.isblank():
-      return "".join(self.comments + ["\n"])
-    else:
-      if "\\u" in self.value:
-        self.value = quote.mozillapropertiesencode(quote.mozillapropertiesdecode(self.value))
-      return "".join(self.comments + ["%s=%s\n" % (self.name, self.value)])
+    def getoutput(self):
+        """convert the element back into formatted lines for a .properties file"""
+        if self.isblank():
+            return "".join(self.comments + ["\n"])
+        else:
+            if "\\u" in self.value:
+                self.value = quote.mozillapropertiesencode(quote.mozillapropertiesdecode(self.value))
+            return "".join(self.comments + ["%s=%s\n" % (self.name, self.value)])
 
-  def getlocations(self):
-    return [self.name]
+    def getlocations(self):
+        return [self.name]
 
-  def addnote(self, note, origin=None):
-    self.comments.append(note)
+    def addnote(self, note, origin=None):
+        self.comments.append(note)
 
-  def getnotes(self, origin=None):
-    return '\n'.join(self.comments)
+    def getnotes(self, origin=None):
+        return '\n'.join(self.comments)
 
-  def removenotes(self):
-    self.comments = []
+    def removenotes(self):
+        self.comments = []
 
-  def isblank(self):
-    """returns whether this is a blank element, containing only comments..."""
-    return not (self.name or self.value)
+    def isblank(self):
+        """returns whether this is a blank element, containing only comments..."""
+        return not (self.name or self.value)
 
 class propfile(base.TranslationStore):
-  """this class represents a .properties file, made up of propunits"""
-  UnitClass = propunit
-  def __init__(self, inputfile=None):
-    """construct a propfile, optionally reading in from inputfile"""
-    super(propfile, self).__init__(unitclass = self.UnitClass)
-    self.units = []
-    self.filename = getattr(inputfile, 'name', '')
-    if inputfile is not None:
-      propsrc = inputfile.read()
-      inputfile.close()
-      self.parse(propsrc)
+    """this class represents a .properties file, made up of propunits"""
+    UnitClass = propunit
+    def __init__(self, inputfile=None):
+        """construct a propfile, optionally reading in from inputfile"""
+        super(propfile, self).__init__(unitclass = self.UnitClass)
+        self.units = []
+        self.filename = getattr(inputfile, 'name', '')
+        if inputfile is not None:
+            propsrc = inputfile.read()
+            inputfile.close()
+            self.parse(propsrc)
 
-  def parse(self, propsrc):
-    """read the source of a properties file in and include them as units"""
-    newunit = propunit()
-    inmultilinevalue = False
-    for line in propsrc.split("\n"):
-      # handle multiline value if we're in one
-      line = quote.rstripeol(line)
-      if inmultilinevalue:
-        newunit.value += line.lstrip()
-        # see if there's more
-        inmultilinevalue = (newunit.value[-1:] == '\\')
-        # if we're still waiting for more...
-        if inmultilinevalue:
-          # strip the backslash
-          newunit.value = newunit.value[:-1]
-        if not inmultilinevalue:
-          # we're finished, add it to the list...
-          self.addunit(newunit)
-          newunit = propunit()
-      # otherwise, this could be a comment
-      elif line.strip()[:1] == '#':
-        # add a comment
-        line = quote.escapecontrols(line)
-        newunit.comments.append(line+"\n")
-      elif not line.strip():
-        # this is a blank line...
-        if str(newunit).strip():
-          self.addunit(newunit)
-          newunit = propunit()
-      else:
-        equalspos = line.find('=')
-        # if no equals, just ignore it
-        if equalspos == -1:
-          continue
-        # otherwise, this is a definition
-        else:
-          newunit.name = line[:equalspos].strip()
-          newunit.value = line[equalspos+1:].lstrip()
-          # backslash at end means carry string on to next line
-          if newunit.value[-1:] == '\\':
-            inmultilinevalue = True
-            newunit.value = newunit.value[:-1]
-          else:
+    def parse(self, propsrc):
+        """read the source of a properties file in and include them as units"""
+        newunit = propunit()
+        inmultilinevalue = False
+        for line in propsrc.split("\n"):
+            # handle multiline value if we're in one
+            line = quote.rstripeol(line)
+            if inmultilinevalue:
+                newunit.value += line.lstrip()
+                # see if there's more
+                inmultilinevalue = (newunit.value[-1:] == '\\')
+                # if we're still waiting for more...
+                if inmultilinevalue:
+                    # strip the backslash
+                    newunit.value = newunit.value[:-1]
+                if not inmultilinevalue:
+                    # we're finished, add it to the list...
+                    self.addunit(newunit)
+                    newunit = propunit()
+            # otherwise, this could be a comment
+            elif line.strip()[:1] == '#':
+                # add a comment
+                line = quote.escapecontrols(line)
+                newunit.comments.append(line+"\n")
+            elif not line.strip():
+                # this is a blank line...
+                if str(newunit).strip():
+                    self.addunit(newunit)
+                    newunit = propunit()
+            else:
+                equalspos = line.find('=')
+                # if no equals, just ignore it
+                if equalspos == -1:
+                    continue
+                # otherwise, this is a definition
+                else:
+                    newunit.name = line[:equalspos].strip()
+                    newunit.value = line[equalspos+1:].lstrip()
+                    # backslash at end means carry string on to next line
+                    if newunit.value[-1:] == '\\':
+                        inmultilinevalue = True
+                        newunit.value = newunit.value[:-1]
+                    else:
+                        self.addunit(newunit)
+                        newunit = propunit()
+        # see if there is a leftover one...
+        if inmultilinevalue or len(newunit.comments) > 0:
             self.addunit(newunit)
-            newunit = propunit()
-    # see if there is a leftover one...
-    if inmultilinevalue or len(newunit.comments) > 0:
-      self.addunit(newunit)
 
-  def __str__(self):
-    """convert the units back to lines"""
-    lines = []
-    for unit in self.units:
-      lines.append(str(unit))
-    return "".join(lines)
+    def __str__(self):
+        """convert the units back to lines"""
+        lines = []
+        for unit in self.units:
+            lines.append(str(unit))
+        return "".join(lines)
 
 if __name__ == '__main__':
-  import sys
-  pf = propfile(sys.stdin)
-  sys.stdout.write(str(pf))
+    import sys
+    pf = propfile(sys.stdin)
+    sys.stdout.write(str(pf))
 
