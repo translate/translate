@@ -70,7 +70,7 @@ class TxtUnit(base.TranslationUnit):
     def setsource(self, source):
         """Sets the definition to the quoted value of source"""
         if isinstance(source, str):
-          source = source.decode(self.encoding)
+            source = source.decode(self.encoding)
         self._source = source
 
     def getsource(self):
@@ -101,8 +101,8 @@ class TxtFile(base.TranslationStore):
         self.filename = getattr(inputfile, 'name', '')
         self.flavour = flavours.get(flavour, [])
         if inputfile is not None:
-          txtsrc = inputfile.readlines()
-          self.parse(txtsrc)
+            txtsrc = inputfile.readlines()
+            self.parse(txtsrc)
         self.encoding = "utf-8"
 
     def parse(self, lines):
