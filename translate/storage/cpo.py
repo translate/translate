@@ -324,32 +324,32 @@ class pounit(pocommon.pounit):
         """
 
         if not isinstance(otherpo, pounit):
-          super(pounit, self).merge(otherpo, overwrite, comments)
-          return
+            super(pounit, self).merge(otherpo, overwrite, comments)
+            return
         if comments:
-          self.addnote(otherpo.getnotes("translator"), origin="translator", position="merge")
-          # FIXME mergelists(self.typecomments, otherpo.typecomments)
-          if not authoritative:
-            # We don't bring across otherpo.automaticcomments as we consider ourself
-            # to be the the authority.  Same applies to otherpo.msgidcomments
-            self.addnote(otherpo.getnotes("developer"), origin="developer", position="merge")
-            self.msgidcomment = otherpo._extract_msgidcomments() or None
-            self.addlocations(otherpo.getlocations())
+            self.addnote(otherpo.getnotes("translator"), origin="translator", position="merge")
+            # FIXME mergelists(self.typecomments, otherpo.typecomments)
+            if not authoritative:
+                # We don't bring across otherpo.automaticcomments as we consider ourself
+                # to be the the authority.  Same applies to otherpo.msgidcomments
+                self.addnote(otherpo.getnotes("developer"), origin="developer", position="merge")
+                self.msgidcomment = otherpo._extract_msgidcomments() or None
+                self.addlocations(otherpo.getlocations())
         if not self.istranslated() or overwrite:
-          # Remove kde-style comments from the translation (if any).
-          if self._extract_msgidcomments(otherpo.target):
-            otherpo.target = otherpo.target.replace('_: ' + otherpo._extract_msgidcomments()+ '\n', '')
-          self.target = otherpo.target
-          if self.source != otherpo.source:
-            self.markfuzzy()
-          else:
-            self.markfuzzy(otherpo.isfuzzy())
+            # Remove kde-style comments from the translation (if any).
+            if self._extract_msgidcomments(otherpo.target):
+                otherpo.target = otherpo.target.replace('_: ' + otherpo._extract_msgidcomments()+ '\n', '')
+            self.target = otherpo.target
+            if self.source != otherpo.source:
+                self.markfuzzy()
+            else:
+                self.markfuzzy(otherpo.isfuzzy())
         elif not otherpo.istranslated():
-          if self.source != otherpo.source:
-            self.markfuzzy()
+            if self.source != otherpo.source:
+                self.markfuzzy()
         else:
-          if self.target != otherpo.target:
-            self.markfuzzy()
+            if self.target != otherpo.target:
+                self.markfuzzy()
 
     def isheader(self):
         return self.source == u"" and self.target != u""
