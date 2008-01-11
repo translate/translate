@@ -186,7 +186,7 @@ class po2dtd:
             dtdunit.entity = ""
 
         if inputunit.isfuzzy():
-             dtdunit.comments.append(("potype", "fuzzy\n"))
+            dtdunit.comments.append(("potype", "fuzzy\n"))
         for note in inputunit.getnotes("translator").split("\n"):
             if not note:
                 continue
