@@ -245,9 +245,9 @@ class UnitChecker(object):
     """sets the accelerator list"""
     self.config = config
     self.accfilters = [prefilters.filteraccelerators(accelmarker) for accelmarker in self.config.accelmarkers]
-    self.varfilters =  [prefilters.filtervariables(startmatch, endmatch, prefilters.varname)
+    self.varfilters = [prefilters.filtervariables(startmatch, endmatch, prefilters.varname)
                         for startmatch, endmatch in self.config.varmatches]
-    self.removevarfilter =  [prefilters.filtervariables(startmatch, endmatch, prefilters.varnone)
+    self.removevarfilter = [prefilters.filtervariables(startmatch, endmatch, prefilters.varnone)
                         for startmatch, endmatch in self.config.varmatches]
 
   def setsuggestionstore(self, store):
