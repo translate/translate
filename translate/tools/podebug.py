@@ -53,7 +53,7 @@ class podebug:
       elif location.startswith("profile.lng#STR_DIR_MENU_WIZARD_"):
         return True
     return False
-                     
+
   def convertunit(self, unit, prefix):
     if self.openofficeignore(unit.getlocations()):
       return unit
