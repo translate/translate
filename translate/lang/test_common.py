@@ -43,6 +43,8 @@ def test_sentences():
     assert sentences == [u"Apples, bananas, etc. are nice."]
     sentences = language.sentences(u"Apples, bananas, etc.\nNext part")
     assert sentences == [u"Apples, bananas, etc.", u"Next part"]
+    sentences = language.sentences(u"No font for displaying text in encoding '%s' found,\nbut an alternative encoding '%s' is available.\nDo you want to use this encoding (otherwise you will have to choose another one)?")
+    assert sentences == [u"No font for displaying text in encoding '%s' found,\nbut an alternative encoding '%s' is available.", u"Do you want to use this encoding (otherwise you will have to choose another one)?"]
 
 def test_capsstart():
     """Tests that the indefinite article ('n) doesn't confuse startcaps()."""
