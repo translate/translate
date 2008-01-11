@@ -19,7 +19,7 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""Converts Mozilla .dtd and .properties files to Gettext .po files"""
+"""convert Mozilla .dtd and .properties files to Gettext PO localization files"""
 
 from translate.convert import dtd2po
 from translate.convert import prop2po

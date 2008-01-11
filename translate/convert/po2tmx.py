@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-"""Converts Gettext .po files to a TMX translation memory file"""
+"""convert Gettext PO localization files to a TMX (Translation Memory eXchange) file"""
 
 from translate.storage import po
 from translate.storage import tmx

@@ -20,10 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-"""script that converts a .po file with translations based on a .pot file
-generated from a Mozilla localization .properties back to the .properties (but translated)
-Uses the original .properties to do the conversion as this makes sure we don't
-leave out any unexpected stuff..."""
+"""convert Gettext PO localization files to Java/Mozilla .properties files"""
 
 from translate.misc import quote
 from translate.storage import po

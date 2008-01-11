@@ -19,7 +19,7 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""simple script to convert a comma-separated values (.csv) file to a gettext .tbx glossary file"""
+"""convert Comma-Separated Value (.csv) files to a TermBase eXchange (.tbx) glossary file"""
 
 from translate.misc import sparse
 from translate.storage import tbx

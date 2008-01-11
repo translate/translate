@@ -20,8 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-"""script to translate a set of plain text message files using gettext .po localization
-You can generate the po files using txt2po"""
+"""convert Gettext PO localization files to plain text (.txt) files"""
 
 from translate.storage import factory
 try:

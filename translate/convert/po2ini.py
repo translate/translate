@@ -20,10 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-"""script that converts a .po file with translations based on a .pot file
-generated from a Mozilla localization .ini back to the .ini (but translated)
-Uses the original .ini to do the conversion as this makes sure we don't
-leave out any unexpected stuff..."""
+"""convert Gettext PO localization files to .ini files"""
 
 from translate.misc import quote
 from translate.storage import factory

@@ -20,9 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-"""Converts an base class file (XLIFF or .po) with translations back to 
-OpenOffice format (but translated).  Uses the original .sdf file as a template
-for the conversion to ensure that all messages are included stuff."""
+"""convert Gettext PO localization files to an OpenOffice.org (SDF) localization file"""
 
 import sys
 import os

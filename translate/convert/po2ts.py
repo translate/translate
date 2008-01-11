@@ -20,8 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-"""Converts Gettext .po files to Qt .ts localization files
-You can convert from .ts to .po using ts2po"""
+"""convert Gettext PO localization files to Qt Linguist (.ts) files"""
 
 from translate.storage import po
 from translate.storage import ts

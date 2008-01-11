@@ -19,9 +19,7 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""simple script to convert a mozilla .properties localization file to a
-gettext .pot format for translation.
-does a line-by-line conversion..."""
+"""convert Java/Mozilla .properties files to Gettext PO localization files"""
 
 import sys
 from translate.storage import po

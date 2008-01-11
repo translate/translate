@@ -20,8 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-"""translates html files using gettext .po localization
-You can generate the po files using html2po"""
+"""convert Gettext PO localization files to HTML files"""
 
 from translate.storage import po
 try:

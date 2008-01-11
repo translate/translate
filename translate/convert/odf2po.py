@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-"""Converts OpenDocument files to Gettext .po files"""
+"""convert OpenDocument (ODF) files to Gettext PO localization files"""
 
 from translate.storage import po
 from translate.storage import odf

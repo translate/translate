@@ -19,7 +19,7 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""convert gettext .po localization files to comma-separated values (.csv) files"""
+"""convert Gettext PO localization files to Comma-Separated Value (.csv) files"""
 
 from translate.storage import po
 from translate.storage import csvl10n

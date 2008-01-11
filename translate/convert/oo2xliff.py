@@ -20,7 +20,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-"""Converts OpenOffice.org exported .oo files to Gettext .po or XLIFF files. 
+"""convert an OpenOffice.org (SDF) localization file to XLIFF localization files
+
 User documentation: http://translate.sourceforge.net/wiki/toolkit/oo2po
 """
 

@@ -20,8 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-"""Converts .xliff localization files to Gettext .po files
-You can convert back to .xliff using po2xliff"""
+"""convert XLIFF localization files to Gettext PO localization files"""
 
 from translate.storage import po
 from translate.storage import xliff
