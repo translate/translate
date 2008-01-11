@@ -121,7 +121,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
       if unit.hasplural():
         continue
       if not options.invert:
-        source  = self.clean(unit.source, options)
+        source = self.clean(unit.source, options)
         target = self.clean(unit.target, options)
       else:
         target = self.clean(unit.source, options)
