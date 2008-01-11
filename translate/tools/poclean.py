@@ -58,7 +58,7 @@ def runclean(inputfile, outputfile, templatefile):
 
     cleanfile(fromfile)
 #    if fromfile.isempty():
-#      return False
+#        return False
     outputfile.write(str(fromfile))
     return True
 
