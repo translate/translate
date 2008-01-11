@@ -69,7 +69,7 @@ def segmentfile(inputfile, outputfile, templatefile, format=None, rewritestyle=N
 
 def main():
   from translate.convert import convert
-  formats = {"po":("po", segmentfile), "xlf":("xlf", segmentfile)}
+  formats = {"po":("po", segmentfile), "xlf":("xlf", segmentfile), "tmx": ("tmx", segmentfile)}
   parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
   parser.run()
 
