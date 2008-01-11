@@ -63,17 +63,17 @@ class pounit(base.TranslationUnit):
 
 class pofile(base.TranslationStore, poheader.poheader):
 
-  def makeheader(self, **kwargs):
-    """create a header for the given filename. arguments are specially handled, kwargs added as key: value
-    pot_creation_date can be None (current date) or a value (datetime or string)
-    po_revision_date can be None (form), False (=pot_creation_date), True (=now), or a value (datetime or string)"""
+    def makeheader(self, **kwargs):
+        """create a header for the given filename. arguments are specially handled, kwargs added as key: value
+        pot_creation_date can be None (current date) or a value (datetime or string)
+        po_revision_date can be None (form), False (=pot_creation_date), True (=now), or a value (datetime or string)"""
 
-    headerpo = self.UnitClass(encoding=self._encoding)
-    headerpo.markfuzzy()
-    headerpo.source = ""
-    headeritems = self.makeheaderdict(**kwargs)
-    headervalue = ""
-    for (key, value) in headeritems.items():
-        headervalue += "%s: %s\n" % (key, value)
-    headerpo.target = headervalue
-    return headerpo
+        headerpo = self.UnitClass(encoding=self._encoding)
+        headerpo.markfuzzy()
+        headerpo.source = ""
+        headeritems = self.makeheaderdict(**kwargs)
+        headervalue = ""
+        for (key, value) in headeritems.items():
+            headervalue += "%s: %s\n" % (key, value)
+        headerpo.target = headervalue
+        return headerpo
