@@ -22,17 +22,22 @@
 """Segment PO files at the sentence level"""
 
 from translate.storage import factory
-from translate.lang.common import Common as lang
+from translate.lang import factory as lang_factory
 import os
 import re
 
 class segment:
 
+    def __init__(self, sourcelang, targetlang, stripspaces=True):
+        self.sourcelang = sourcelang
+        self.targetlang = targetlang
+        self.stripspaces = stripspaces
+
     def segmentunit(self, unit):
         if unit.isheader() or unit.hasplural():
             return [unit]
-        sourcesegments = lang.sentences(unit.source, strip=False)
-        targetsegments = lang.sentences(unit.target, strip=False)
+        sourcesegments = self.sourcelang.sentences(unit.source, strip=self.stripspaces)
+        targetsegments = self.targetlang.sentences(unit.target, strip=self.stripspaces)
         if unit.istranslated() and (len(sourcesegments) != len(targetsegments)):
             return [unit]
         units = []
@@ -56,13 +61,15 @@ class segment:
                 tostore.addunit(newunit)
         return tostore
 
-def segmentfile(inputfile, outputfile, templatefile, format=None, rewritestyle=None, hash=None):
+def segmentfile(inputfile, outputfile, templatefile, sourcelanguage="en", targetlanguage=None, stripspaces=True):
     """reads in inputfile, segments it then, writes to outputfile"""
     # note that templatefile is not used, but it is required by the converter...
     inputstore = factory.getobject(inputfile)
     if inputstore.isempty():
         return 0
-    convertor = segment()
+    sourcelang = lang_factory.getlanguage(sourcelanguage)
+    targetlang = lang_factory.getlanguage(targetlanguage)
+    convertor = segment(sourcelang, targetlang, stripspaces=stripspaces)
     outputstore = convertor.convertstore(inputstore)
     outputfile.write(str(outputstore))
     return 1
@@ -71,6 +78,15 @@ def main():
     from translate.convert import convert
     formats = {"po":("po", segmentfile), "xlf":("xlf", segmentfile), "tmx": ("tmx", segmentfile)}
     parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
+    parser.add_option("-l", "--language", dest="targetlanguage", default=None,
+            help="the target language code", metavar="LANG")
+    parser.add_option("", "--source-language", dest="sourcelanguage", default=None, 
+            help="the source language code (default 'en')", metavar="LANG")
+    parser.passthrough.append("sourcelanguage")
+    parser.passthrough.append("targetlanguage")
+    parser.add_option("", "--keepspaces", dest="stripspaces", action="store_false",
+            default=True, help="Disable automatic stripping of whitespace")
+    parser.passthrough.append("stripspaces")
     parser.run()
 
 
