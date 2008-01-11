@@ -68,12 +68,12 @@ class podebug:
         elif not unit.istranslated():
             unit.target = unit.source
         if unit.hasplural():
-                strings = unit.target.strings
-                for i, string in enumerate(strings):
-                     strings[i] = prefix + string
-                unit.target = strings
+            strings = unit.target.strings
+            for i, string in enumerate(strings):
+                strings[i] = prefix + string
+            unit.target = strings
         else:
-                unit.target = prefix + unit.target
+            unit.target = prefix + unit.target
         return unit
 
     def convertfile(self, store):
