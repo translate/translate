@@ -49,8 +49,6 @@ class segment:
             else:
                 newunit.target = targetsegments[i]
             units.append(newunit)
-            for unit in units:
-                print unit.source
         return units
 
     def convertstore(self, fromstore):
