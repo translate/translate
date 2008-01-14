@@ -215,7 +215,7 @@ sd	source\ui\animations\CustomAnimationSchemesPane.src	0	checkbox	DLG_CUSTOMANIM
 sd	source\ui\animations\CustomAnimationSchemesPane.src	0	checkbox	DLG_CUSTOMANIMATION_SCHEMES_PANE	4			0	fr	Aperçu automatique				20060725 03:26:42
 '''
         self.create_testfile("simple.oo", oosource)
-        self.run_command("simple.oo", "simple.po", language="fr", multifile="onefile", error="traceback")
+        self.run_command("simple.oo", "simple.po", language="fr", multifile="onefile", error="traceback", duplicates="merge")
         pofile = self.target_filetype(self.open_testfile("simple.po"))
         assert len(pofile.units) == 2
         assert pofile.units[1].target == u"Aperçu automatique"
