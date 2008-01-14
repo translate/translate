@@ -24,6 +24,8 @@
 For more information, see U{http://en.wikipedia.org/wiki/Khmer_language}
 """
 
+import re
+
 from translate.lang import common
 
 class km(common.Common):
@@ -33,6 +35,19 @@ class km(common.Common):
     nplurals = 1
     pluralequation = "0"
 
+    khmerpunc = u"។៕៖៘"
+    """These marks are only used for Khmer."""
+
+    punctuation = u"".join([common.Common.commonpunc, common.Common.quotes, common.Common.miscpunc, khmerpunc])
+
+    sentenceend = u"!?…។៕៘"
+
+    sentencere = re.compile(r"""(?s)    #make . also match newlines
+                            .*?         #anything, but match non-greedy
+                            [%s]        #the puntuation for sentence ending
+                            \s+         #the spacing after the puntuation
+                            (?=[^a-z\d])#lookahead that next part starts with caps
+                            """ % sentenceend, re.VERBOSE)
     #\u00a0 is non-breaking space
     puncdict = {
         u".": u"\u00a0។",

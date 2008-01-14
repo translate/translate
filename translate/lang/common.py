@@ -120,9 +120,6 @@ class Common(object):
     """These punctuation marks are used in certain circumstances with CJK 
     languages."""
 
-    khmerpunc = u"។៕៖៘"
-    """These marks are only used for Khmer."""
-
     armenianpunc = u"։"
     """։ is the Armenian fullstop."""
 
@@ -133,13 +130,13 @@ class Common(object):
     """The middle dot (·) is used by Greek and Georgian."""
 
     punctuation = u"".join([commonpunc, quotes, invertedpunc, rtlpunc, CJKpunc,\
-            khmerpunc, armenianpunc, indicpunc, miscpunc])
+            armenianpunc, indicpunc, miscpunc])
     """We include many types of punctuation here, simply since this is only 
     meant to determine if something is punctuation. Hopefully we catch some 
     languages which might not be represented with modules. Most languages won't 
     need to override this."""
 
-    sentenceend = u".!?…։؟।。！？។៕៘"
+    sentenceend = u".!?…։؟।。！？"
     """These marks can indicate a sentence end. Once again we try to account 
     for many languages. Most langauges won't need to override this."""
 
