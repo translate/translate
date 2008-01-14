@@ -19,5 +19,6 @@ def test_sentences():
     """Tests basic functionality of sentence segmentation."""
     language = factory.getlanguage('km')
     sentences = language.sentences(u"លក្ខណៈ​​នេះ​អាច​ឲ្យ​យើងធ្វើ​ជាតូបនីយកម្មកម្មវិធី​កុំព្យូទ័រ​ ។ លក្ខណៈ​​នេះ​អាច​ឲ្យ​យើងធ្វើ​ជាតូបនីយកម្មកម្មវិធី​កុំព្យូទ័រ​ ។")
+    print sentences
     assert sentences == [u"លក្ខណៈ​​នេះ​អាច​ឲ្យ​យើងធ្វើ​ជាតូបនីយកម្មកម្មវិធី​កុំព្យូទ័រ​ ។", u"លក្ខណៈ​​នេះ​អាច​ឲ្យ​យើងធ្វើ​ជាតូបនីយកម្មកម្មវិធី​កុំព្យូទ័រ​ ។"]
 
