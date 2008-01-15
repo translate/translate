@@ -35,6 +35,10 @@ class hy(common.Common):
     nplurals = 2
     pluralequation = "(n > 1)"
 
+    armenianpunc = u"։՝՜՞"
+
+    punctuation = u"".join([common.Common.commonpunc, common.Common.quotes, common.Common.miscpunc, armenianpunc])
+
     sentenceend = u"։՝՜…"
 
     sentencere = re.compile(r"""(?s)    #make . also match newlines
