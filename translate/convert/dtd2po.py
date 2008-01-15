@@ -71,7 +71,7 @@ class dtd2po:
             del lines[-1]
         # quotes have been escaped already by escapeforpo, so just add the start and end quotes
         if len(lines) > 1:
-            thepo.source = "".join([lines[0].rstrip() + ' '] + \
+            thepo.source = "\n".join([lines[0].rstrip() + ' '] + \
                     [line.strip() + ' ' for line in lines[1:-1]] + \
                     [lines[-1].lstrip()])
         elif lines:
