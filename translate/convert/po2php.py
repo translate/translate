@@ -63,7 +63,10 @@ class rephp:
         if self.inmultilinemsgid:
             msgid = quote.rstripeol(line).strip()
             # see if there's more
-            self.inmultilinemsgid = (msgid[-2:] != "%s;" % self.quotechar)
+            endpos = line.rfind("%s;" % self.quotechar)
+            # if there was no '; or the quote is escaped, we have to continue
+            if endpos == -1 or line[endpos-1] == '\\':
+                self.inmultilinemsgid = 1
             # if we're echoing...
             if self.inecho:
                 returnline = line
@@ -96,8 +99,10 @@ class rephp:
                 else:
                     self.inecho = 1
                     returnline = line+eol
-                # no string termination at end means carry string on to next line
-                if quote.rstripeol(line)[-2:] != "%s;" % self.quotechar:
+                # no string termination means carry string on to next line
+                endpos = line.rfind("%s;" % self.quotechar)
+                # if there was no '; or the quote is escaped, we have to continue
+                if endpos == -1 or line[endpos-1] == '\\':
                     self.inmultilinemsgid = 1
         if isinstance(returnline, unicode):
             returnline = returnline.encode('utf-8')
