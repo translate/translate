@@ -97,8 +97,9 @@ class TestDTD2PO:
         unit = self.singleelement(pofile)
         print unit
         assert "credit.translation" in str(unit)
+        # We don't want this to simply be seen as a header:
+        assert len(unit.getid()) != 0
         assert unit.target == "Translators Names"
-        # Check that we don't stuff up in mergeduplicates
 
     def test_localisaton_note_simple(self):
         """test the simple localisation more becomes a #. comment"""
