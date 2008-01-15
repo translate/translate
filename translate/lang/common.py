@@ -123,17 +123,20 @@ class Common(object):
     indicpunc = u"।॥॰"
     """These punctuation marks are used by several Indic languages."""
 
+    ethiopicpunc = u"።፤፣"
+    """These punctuation marks are used by several Ethiopic languages."""
+
     miscpunc = u"…±°¹²³·©®×£¥€"
     """The middle dot (·) is used by Greek and Georgian."""
 
     punctuation = u"".join([commonpunc, quotes, invertedpunc, rtlpunc, CJKpunc,\
-            indicpunc, miscpunc])
+            indicpunc, ethiopicpunc, miscpunc])
     """We include many types of punctuation here, simply since this is only 
     meant to determine if something is punctuation. Hopefully we catch some 
     languages which might not be represented with modules. Most languages won't 
     need to override this."""
 
-    sentenceend = u".!?…։؟।。！？"
+    sentenceend = u".!?…։؟।。！？።"
     """These marks can indicate a sentence end. Once again we try to account 
     for many languages. Most langauges won't need to override this."""
 
