@@ -24,6 +24,8 @@
 For more information, see U{http://en.wikipedia.org/wiki/Oriya_language}
 """
 
+import re
+
 from translate.lang import common
 
 class code_or(common.Common):
