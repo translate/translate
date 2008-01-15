@@ -352,7 +352,11 @@ class pounit(pocommon.pounit):
                 self.markfuzzy()
 
     def isheader(self):
-        return self.source == u"" and self.target != u""
+        #return self.source == u"" and self.target != u""
+        # we really want to make sure that there is no msgidcomment or msgctxt
+        return gpo.po_message_msgid(self._gpo_message) == u"" and \
+                self.target != u"" and \
+                gpo.po_message_msgctxt(self._gpo_message) != u""
 
     def isblank(self):
         return len(self.source) == 0 and len(self.target) == 0
