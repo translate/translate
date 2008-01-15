@@ -157,6 +157,11 @@ class Common(object):
     ignoretests = []
     """List of pofilter tests for this language that must be ignored."""
 
+    checker = None
+    """A language specific checker (see filters.checks).
+
+    This doesn't need to be supplied, but will be used if it exists."""
+
     def __init__(self, code):
         """This constructor is used if we need to instantiate an abject (not 
         the usual setup). This will mostly when the factory is asked for a
