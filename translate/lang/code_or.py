@@ -33,7 +33,7 @@ class code_or(common.Common):
     nplurals = 2
     pluralequation = "(n != 1)"
 
-    sentenceend = u"।!?"
+    sentenceend = u"।!?…"
 
     sentencere = re.compile(r"""(?s)    #make . also match newlines
                             .*?         #anything, but match non-greedy

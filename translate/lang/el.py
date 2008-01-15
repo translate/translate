@@ -36,7 +36,7 @@ class el(common.Common):
     pluralequation = "(n != 1)"
 
     # Greek uses ; as question mark and the middot instead
-    sentenceend = u".!;"
+    sentenceend = u".!;…"
 
     sentencere = re.compile(r"""(?s)    #make . also match newlines
                             .*?         #anything, but match non-greedy

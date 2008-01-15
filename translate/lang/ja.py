@@ -36,7 +36,7 @@ class ja(common.Common):
 
     listseperator = u"、"
 
-    sentenceend = u"。！？!?"
+    sentenceend = u"。！？!?…"
 
     # Compared to common.py, we make the space after the sentence ending 
     # optional and don't demand an uppercase letter to follow.
