@@ -32,7 +32,12 @@ class pocheckfilter:
         """builds a checkfilter using the given checker (a list is allowed too)"""
         if checkerclasses is None:
             checkerclasses = [checks.StandardChecker, checks.StandardUnitChecker]
-        self.checker = checks.TeeChecker(checkerconfig=checkerconfig, excludefilters=options.excludefilters, limitfilters=options.limitfilters, checkerclasses=checkerclasses)
+        self.checker = checks.TeeChecker(checkerconfig=checkerconfig, \
+                excludefilters=options.excludefilters, \
+                limitfilters=options.limitfilters, \
+                checkerclasses=checkerclasses, \
+                languagecode=checkerconfig.targetlanguage
+        )
         self.options = options
 
     def getfilterdocs(self):
