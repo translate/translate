@@ -38,7 +38,7 @@ class rephp:
         self.inputdict = {}
 
     def convertstore(self, inputstore, includefuzzy=False):
-        self.inmultilinemsgid = 0
+        self.inmultilinemsgid = False
         self.inecho = 0
         self.makestoredict(inputstore, includefuzzy)
         outputlines = []
@@ -65,8 +65,8 @@ class rephp:
             # see if there's more
             endpos = line.rfind("%s;" % self.quotechar)
             # if there was no '; or the quote is escaped, we have to continue
-            if endpos == -1 or line[endpos-1] == '\\':
-                self.inmultilinemsgid = 1
+            if endpos >= 0 and line[endpos-1] != '\\':
+                self.inmultilinemsgid = False
             # if we're echoing...
             if self.inecho:
                 returnline = line
@@ -103,7 +103,7 @@ class rephp:
                 endpos = line.rfind("%s;" % self.quotechar)
                 # if there was no '; or the quote is escaped, we have to continue
                 if endpos == -1 or line[endpos-1] == '\\':
-                    self.inmultilinemsgid = 1
+                    self.inmultilinemsgid = True
         if isinstance(returnline, unicode):
             returnline = returnline.encode('utf-8')
         return returnline
