@@ -83,16 +83,17 @@ class rephp:
             else:
                 # now deal with the current string...
                 key = line[:equalspos].strip()
+                lookupkey = key.replace(" ", "")
                 # Calculate space around the equal sign
-                prespace = line.lstrip()[line.lstrip().find(' '):equalspos]
+                prespace = line.lstrip()[line.lstrip().find(']')+1:equalspos]
                 postspacestart = len(line[equalspos+1:])
                 postspaceend = len(line[equalspos+1:].lstrip())
                 postspace = line[equalspos+1:equalspos+(postspacestart-postspaceend)+1]
                 self.quotechar = line[equalspos+(postspacestart-postspaceend)+1]
                 print key
-                if self.inputdict.has_key(key):
+                if self.inputdict.has_key(lookupkey):
                     self.inecho = 0
-                    value = php.phpencode(self.inputdict[key], self.quotechar)
+                    value = php.phpencode(self.inputdict[lookupkey], self.quotechar)
                     if isinstance(value, str):
                         value = value.decode('utf8')
                     returnline = key + prespace + "=" + postspace + self.quotechar + value + self.quotechar + ';' + eol

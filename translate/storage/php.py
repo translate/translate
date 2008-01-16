@@ -138,7 +138,7 @@ class phpfile(base.TranslationStore):
                 newunit.addnote(line.strip(), "developer")
             equalpos = line.find("=")
             if equalpos != -1 and not invalue:
-                newunit.addlocation(line[:equalpos].strip())
+                newunit.addlocation(line[:equalpos].strip().replace(" ", ""))
                 value = line[equalpos+1:].lstrip()[1:]
                 valuequote = line[equalpos+1:].lstrip()[0]
                 lastvalue = ""

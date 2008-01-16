@@ -59,9 +59,18 @@ msgstr ""'''
 
     def test_merging_fuzzy(self):
         """check merging a fuzzy translation"""
-        posource = '''#: name\n#, fuzzy\nmsgid "value"\nmsgstr "waarde"\n'''
+        posource = '''#: $lang['name']\n#, fuzzy\nmsgid "value"\nmsgstr "waarde"\n'''
         phptemplate = '''$lang['name']  =  'value';\n'''
         phpexpected = '''$lang['name']  =  'value';\n'''
+        phpfile = self.merge2php(phptemplate, posource)
+        print phpfile
+        assert phpfile == [phpexpected]
+
+    def test_locations_with_spaces(self):
+        """check that a location with spaces in php but spaces removed in PO is used correctly"""
+        posource = '''#: $lang['name']\nmsgid "value"\nmsgstr "waarde"\n'''
+        phptemplate = '''$lang[ 'name' ]  =  'value';\n'''
+        phpexpected = '''$lang[ 'name' ]  =  'waarde';\n'''
         phpfile = self.merge2php(phptemplate, posource)
         print phpfile
         assert phpfile == [phpexpected]
