@@ -133,12 +133,10 @@ class TestPOFile(test_base.TestTranslationStore):
 
     def pomerge(self, oldmessage, newmessage, authoritative):
         """helper that merges two messages"""
-        dummyfile = wStringIO.StringIO(oldmessage)
-        oldpofile = self.StoreClass(dummyfile)
+        oldpofile = self.poparse(oldmessage)
         oldunit = oldpofile.units[0]
-        dummyfile2 = wStringIO.StringIO(newmessage)
         if newmessage:
-          newpofile = self.StoreClass(dummyfile2)
+          newpofile = self.poparse(newmessage)
           newunit = newpofile.units[0]
         else:
           newunit = oldpofile.UnitClass()
@@ -173,7 +171,7 @@ msgstr "TRANSLATED-STRING"'''
     def test_parse_source_string(self):
         """parse a string"""
         posource = '#: test.c\nmsgid "test"\nmsgstr "rest"\n'
-        pofile = self.StoreClass(posource)
+        pofile = self.poparse(posource)
         assert len(pofile.units) == 1
 
     def test_parse_file(self):
@@ -195,7 +193,7 @@ msgid_plural "Cows"
 msgstr[0] "Koei"
 msgstr[1] "Koeie"
 '''
-        pofile = self.StoreClass(wStringIO.StringIO(posource))
+        pofile = self.poparse(posource)
         assert len(pofile.units) == 1
         unit = pofile.units[0]
         assert isinstance(unit.target, multistring)
@@ -207,7 +205,7 @@ msgstr[1] "Koeie"
 msgid_plural "Skape"
 msgstr[0] "Sheep"
 '''
-        pofile = self.StoreClass(wStringIO.StringIO(posource))
+        pofile = self.poparse(posource)
         assert len(pofile.units) == 1
         unit = pofile.units[0]
         assert isinstance(unit.target, multistring)
@@ -222,7 +220,7 @@ msgid_plural "Cóws"
 msgstr[0] "Kóei"
 msgstr[1] "Kóeie"
 '''
-        pofile = self.StoreClass(wStringIO.StringIO(posource))
+        pofile = self.poparse(posource)
         unit = pofile.units[0]
         assert isinstance(unit.source, multistring)
         assert isinstance(unit.source.strings[1], unicode)
