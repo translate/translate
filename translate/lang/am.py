@@ -24,6 +24,8 @@
 For more information, see U{http://en.wikipedia.org/wiki/Amharic_language}
 """
 
+import re
+
 from translate.lang import common
 
 class am(common.Common):
@@ -35,8 +37,16 @@ class am(common.Common):
 
     listseperator = u"፣ "
 
+    sentenceend = u"።!?…"
+
+    sentencere = re.compile(r"""(?s)    #make . also match newlines
+                            .*?         #anything, but match non-greedy
+                            [%s]        #the puntuation for sentence ending
+                            \s*         #optional spacing after the puntuation
+                            """ % sentenceend, re.VERBOSE)
+    
     puncdict = {
-        u".": u" ።",
+        u".": u"።",
         u";": u"፤",
         u",": u"፣",
     }
