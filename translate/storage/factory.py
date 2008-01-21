@@ -21,18 +21,6 @@
 
 """factory methods to build real storage objects that conform to base.py"""
 
-from translate.storage import base
-from translate.storage import csvl10n
-from translate.storage import mo
-from translate.storage import po
-from translate.storage import poxliff
-#Although poxliff is unused in this module, it is referenced in test_factory
-from translate.storage import qm
-from translate.storage import tbx
-from translate.storage import tmx
-from translate.storage import wordfast
-from translate.storage import xliff
-
 import os
 from gzip import GzipFile
 try:
@@ -40,6 +28,28 @@ try:
     from bz2 import BZ2File
 except ImportError:
     BZ2File = None
+import sys
+
+from translate.storage import base
+from translate.storage import csvl10n
+from translate.storage import mo
+from translate.storage import po
+#Although poxliff is unused in this module, it is referenced in test_factory
+from translate.storage import qm
+from translate.storage import wordfast
+#Let's try to import the XML formats carefully. They might fail if the user
+#doesn't have lxml installed. Let's try to continue gracefully, but print an 
+#informative warning.
+try:
+    from translate.storage import poxliff
+    from translate.storage import tbx
+    from translate.storage import tmx
+    from translate.storage import xliff
+    support_xml = True
+except ImportError, e:
+    print >> sys.stderr, str(e)
+    support_xml = False
+
 
 #TODO: Monolingual formats (with template?)
 
@@ -48,12 +58,18 @@ classes = {
            "po": po.pofile, "pot": po.pofile, 
            "mo": mo.mofile, "gmo": mo.mofile, 
            "qm": qm.qmfile, 
+           "_wftm": wordfast.WordfastTMFile,
+          }
+"""Dictionary of file extensions and their associated class.  
+
+_ext is a pseudo extension, that is their is no real extension by that name."""
+
+if support_xml:
+    classes.update({
            "tbx": tbx.tbxfile,
            "tmx": tmx.tmxfile, 
-           "_wftm": wordfast.WordfastTMFile,
            "xliff": xliff.xlifffile, "xlf": xliff.xlifffile, 
-          }
-"""Dictionary of file extensions and their associated class.  _ext is a pseudo extension, that is their is no real extension by that name."""
+    })
 
 decompressclass = {
     'gz': GzipFile,

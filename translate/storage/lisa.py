@@ -26,7 +26,10 @@ import re
 
 from translate.storage import base
 from translate.lang import data
-from lxml import etree
+try:
+    from lxml import etree
+except ImportError, e:
+    raise ImportError("lxml is not installed. It might be possible to continue without support for XML formats.")
 
 def getText(node):
     """joins together the text from all the text nodes in the nodelist and their children"""
