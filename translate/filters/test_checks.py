@@ -111,7 +111,7 @@ def xtest_acceleratedvariables():
     assert passes(ooochecker.acceleratedvariables, "%PRODUCTNAME% ~Options", "%PRODUCTNAME% ~Ikhetho")
     
 
-def test_accronyms():
+def test_acronyms():
     """tests acronyms"""
     stdchecker = checks.StandardChecker()
     assert passes(stdchecker.acronyms, "An HTML file", "'n HTML leer")
