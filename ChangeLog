@@ -1,3 +1,2836 @@
+2008-01-22 07:03  friedelwolff
+
+	* __version__.py: Version 1.1.0
+
+2008-01-22 07:01  friedelwolff
+
+	* README: Mention dependency on iniparse
+
+2008-01-22 06:52  friedelwolff
+
+	* storage/statsdb.py: Implement some logic to provide a better
+	  directory name on Windows
+
+2008-01-21 14:33  friedelwolff
+
+	* lang/am.py: Some minor changes that seem to be better while we
+	  wait for feedback
+
+2008-01-21 07:33  friedelwolff
+
+	* storage/factory.py, storage/lisa.py: Try to continue without XML
+	  support if importing the XML formats fail
+
+2008-01-21 06:28  friedelwolff
+
+	* filters/test_checks.py: Fix typo
+
+2008-01-18 10:25  friedelwolff
+
+	* storage/test_po.py: Rewrite some tests to use proper helper
+	  methods
+
+2008-01-16 06:45  dwaynebailey
+
+	* convert/po2php.py, convert/test_php2po.py,
+	  convert/test_po2php.py, storage/php.py, storage/test_php.py:
+	  Allow php arrays to contain spaces in the array syntax, e.g.
+	  $lang[ 'name ']
+
+2008-01-15 20:37  friedelwolff
+
+	* filters/checks.py: Use a language's own checker if it has one
+
+2008-01-15 20:36  friedelwolff
+
+	* lang/common.py: Placeholder for a language's own checker
+
+2008-01-15 20:22  friedelwolff
+
+	* filters/pofilter.py: Pass the language through to the TeeChecker
+	  as well.
+
+2008-01-15 15:19  friedelwolff
+
+	* setup.py: Install po2wordfast, php2po and po2php
+
+2008-01-15 15:16  friedelwolff
+
+	* __version__.py: Version 1.1.0rc2. Also increase the buildnumber
+	  to 11000
+
+2008-01-15 15:14  friedelwolff
+
+	* convert/php2po, convert/po2php: Add command wrappers for php2po
+	  and po2php
+
+2008-01-15 15:03  friedelwolff
+
+	* convert/po2php.py: Fix a logic bug and replace 0/1 with real
+	  booleans
+
+2008-01-15 14:45  friedelwolff
+
+	* convert/convert.py: Change default duplicate style to msgctxt and
+	  adapt help text
+
+2008-01-15 13:56  friedelwolff
+
+	* storage/cpo.py: check the complete msgid (including
+	  msgidcomments) as well as msgctxt in .isheader()
+
+2008-01-15 13:50  friedelwolff
+
+	* storage/pypo.py: Also test for the presence of msgctxt and
+	  sourcecomments in pounit.isheader(). This solves bug 307
+
+2008-01-15 13:41  friedelwolff
+
+	* convert/test_dtd2po.py: Check that removeduplicates() gets it
+	  right with empty translation strings
+
+2008-01-15 13:06  friedelwolff
+
+	* convert/po2php.py: Be more flexible with detection of statement
+	  endings
+
+2008-01-15 12:14  friedelwolff
+
+	* convert/dtd2po.py, convert/test_dtd2po.py: Revert r6750 restoring
+	  multiline DTDs. We should review whitespace stripping.
+
+2008-01-15 08:21  friedelwolff
+
+	* lang/common.py: Add punctuation set 'ethiopicpunc' used in
+	  Amharic and other Ethiopian languages
+
+2008-01-15 08:20  friedelwolff
+
+	* lang/code_or.py: import re as needed
+
+2008-01-15 08:09  friedelwolff
+
+	* lang/common.py, lang/hy.py: Move Armenian specific puncutation
+	  data to hy.py since no reuse is likely for other languages. This
+	  should provide a small speedup as well.
+
+2008-01-15 08:05  friedelwolff
+
+	* lang/hy.py: Add HORIZONTAL ELLIPSIS (…) to sentenceend
+
+2008-01-15 08:00  friedelwolff
+
+	* README: Mention that lxml has dependencies on libxml2 and libxslt
+
+2008-01-15 07:52  friedelwolff
+
+	* lang/ko.py, lang/test_ko.py: Basic support for Korean (basically
+	  just disabling startcaps and simplecaps)
+
+2008-01-15 07:40  friedelwolff
+
+	* lang/code_or.py, lang/el.py, lang/ja.py, lang/zh.py: Add
+	  HORIZONTAL ELLIPSIS (…) to sentenceend where it was missing
+
+2008-01-14 16:31  friedelwolff
+
+	* lang/code_or.py, lang/test_or.py: Add basic support for Oriya
+	  (or)
+
+2008-01-14 16:27  friedelwolff
+
+	* lang/he.py: Add basic hebrew support (disabling startcaps and
+	  simplecaps)
+
+2008-01-14 15:20  friedelwolff
+
+	* convert/test_oo2po.py: Specify the duplicate style explicitely in
+	  case the default gets changed (anticipated)
+
+2008-01-14 12:15  friedelwolff
+
+	* lang/hy.py: Fix some typos (using fullwidth characters) and
+	  implement sentenceend and sentencere
+
+2008-01-14 11:49  friedelwolff
+
+	* lang/common.py, lang/km.py: Move Khmer specific puncutation data
+	  to km.py since no reuse is likely for other languages. This
+	  should provide minimal speedup as well.
+
+2008-01-14 11:43  friedelwolff
+
+	* lang/test_km.py: Print debugging output in test
+
+2008-01-14 11:14  friedelwolff
+
+	* lang/el.py: Specify the sentencere so to take customised
+	  sentenceend into consideration
+
+2008-01-14 11:13  friedelwolff
+
+	* lang/test_el.py: Test the Greek (el) language module
+
+2008-01-14 08:18  dwaynebailey
+
+	* convert/php2po.py, convert/po2php.py, convert/test_php2po.py,
+	  convert/test_po2php.py, storage/php.py, storage/test_php.py:
+	  First version of php2po converter. Will convert php style arrays
+	  usually used for localisation into PO files and back.
+	  One bug remains in the backconversion; lines with trailing
+	  comments are not correctly replaced output i.e ...blah';//some
+	  comment
+
+2008-01-12 08:41  friedelwolff
+
+	* tools/posegment.py: Remove debugging output
+
+2008-01-11 16:22  friedelwolff
+
+	* lang/af.py, lang/common.py, lang/ja.py, lang/zh.py: Use re flag
+	  's' (DOTALL) to ensure that newlines don't confuse segmentation
+
+2008-01-11 16:16  friedelwolff
+
+	* lang/test_common.py: Test sentences are segmented correctly
+	  accross newlines ('\n')
+
+2008-01-11 15:15  dwaynebailey
+
+	* convert/po2oo.py, convert/xliff2oo.py: Remove code that
+	  eliminated whitespace only translations.
+
+2008-01-11 14:22  friedelwolff
+
+	* tools/posegment.py: Add and implement options --language,
+	  --source-language and --stripspaces
+
+2008-01-11 13:39  friedelwolff
+
+	* tools/podebug.py, tools/pomerge.py: Change current spacing
+	  convention of double spaces to four spaces
+
+2008-01-11 13:25  friedelwolff
+
+	* convert/oo2po.py, convert/oo2xliff.py, convert/po2dtd.py,
+	  convert/po2ts.py: Fix a few spacing errors that slipped through
+
+2008-01-11 13:18  friedelwolff
+
+	* convert/convert.py: Change current spacing convention of double
+	  spaces to four spaces
+
+2008-01-11 13:17  dwaynebailey
+
+	* convert/po2wordfast.py: Using POT files doesn't make much sense
+	  here.
+
+2008-01-11 13:10  dwaynebailey
+
+	* convert/csv2po.py, convert/html2po.py, convert/moz2po.py,
+	  convert/oo2po.py, convert/po2csv.py, convert/po2html.py,
+	  convert/po2moz.py, convert/po2oo.py, convert/po2prop.py,
+	  convert/po2tmx.py, convert/po2ts.py, convert/po2txt.py,
+	  convert/po2wordfast.py, convert/po2xliff.py, convert/pot2po.py,
+	  convert/prop2po.py, convert/ts2po.py, convert/txt2po.py,
+	  convert/xliff2po.py: Add URLs to the wiki documentation in all
+	  __doc__ strings.
+
+2008-01-11 13:09  friedelwolff
+
+	* filters/checks.py: Fix mixed spacing to all be four spaces
+
+2008-01-11 13:01  friedelwolff
+
+	* storage/csvl10n.py, storage/dtd.py, storage/html.py,
+	  storage/poheader.py, storage/properties.py, storage/pypo.py,
+	  storage/ts.py, storage/xpi.py: Change current spacing convention
+	  of double spaces to four spaces
+
+2008-01-11 12:50  dwaynebailey
+
+	* convert/csv2po.py, convert/csv2tbx.py, convert/html2po.py,
+	  convert/ini2po.py, convert/moz2po.py, convert/odf2po.py,
+	  convert/oo2po.py, convert/oo2xliff.py, convert/po2csv.py,
+	  convert/po2html.py, convert/po2ini.py, convert/po2moz.py,
+	  convert/po2oo.py, convert/po2prop.py, convert/po2tmx.py,
+	  convert/po2ts.py, convert/po2txt.py, convert/po2wordfast.py,
+	  convert/po2xliff.py, convert/pot2po.py, convert/prop2po.py,
+	  convert/ts2po.py, convert/txt2po.py, convert/xliff2oo.py,
+	  convert/xliff2po.py: Fix first line __doc__ strings to ensure
+	  that we have a good and consistent converter descriptor (needed
+	  by --manpage and help option)
+	  
+	  Tool descriptions can now be developed and URLs added.
+
+2008-01-11 12:44  friedelwolff
+
+	* storage/xliff.py: Fix mixed spacing to all be four spaces
+
+2008-01-11 12:40  friedelwolff
+
+	* storage/txt.py: Fix mixed spacing to all be four spaces
+
+2008-01-11 12:35  friedelwolff
+
+	* storage/qm.py: Fix mixed spacing to all be four spaces
+
+2008-01-11 12:27  friedelwolff
+
+	* storage/pocommon.py: Fix mixed spacing to all be four spaces
+
+2008-01-11 12:24  friedelwolff
+
+	* storage/ini.py: Fix wrong indentation (should be four spaces like
+	  the rest of the file)
+
+2008-01-11 12:18  friedelwolff
+
+	* storage/cpo.py: Fix mixed spacing to all be four spaces
+
+2008-01-11 12:12  friedelwolff
+
+	* services/lookupclient.py: Change current spacing convention of
+	  double spaces to four spaces
+
+2008-01-11 12:08  friedelwolff
+
+	* convert/csv2po.py, convert/csv2tbx.py, convert/dtd2po.py,
+	  convert/html2po.py, convert/ini2po.py, convert/moz2po.py,
+	  convert/mozfunny2prop.py, convert/odf2po.py, convert/oo2po.py,
+	  convert/oo2xliff.py, convert/po2csv.py, convert/po2dtd.py,
+	  convert/po2html.py, convert/po2ini.py, convert/po2moz.py,
+	  convert/po2oo.py, convert/po2prop.py, convert/po2tmx.py,
+	  convert/po2ts.py, convert/po2txt.py, convert/po2xliff.py,
+	  convert/poreplace.py, convert/pot2po.py,
+	  convert/prop2mozfunny.py, convert/prop2po.py, convert/ts2po.py,
+	  convert/txt2po.py, convert/xliff2oo.py, convert/xliff2po.py:
+	  Change current spacing convention of double spaces to four spaces
+
+2008-01-11 11:52  friedelwolff
+
+	* misc/optrecurse.py: Generate the DESCRIPTION section of man pages
+	  from the part of the docstring following two newlines (\n\n)
+
+2008-01-11 10:46  friedelwolff
+
+	* convert/ini2po.py: Correct copyright date (was totally incorrect
+	  before) - should only be 2007
+
+2008-01-11 10:43  friedelwolff
+
+	* convert/ini2po.py: Update copyright date
+
+2008-01-11 10:33  friedelwolff
+
+	* filters/test_autocorrect.py: Change current spacing convention of
+	  double spaces to four spaces
+
+2008-01-11 10:29  friedelwolff
+
+	* filters/autocorrect.py, filters/checks.py, filters/decoration.py,
+	  filters/helpers.py, filters/pofilter.py, filters/prefilters.py:
+	  Change current spacing convention of double spaces to four spaces
+
+2008-01-11 10:18  friedelwolff
+
+	* filters/checks.py: Remove TODO, add comment
+
+2008-01-11 10:10  friedelwolff
+
+	* filters/checks.py: Fix some weird spacing in assignments
+
+2008-01-11 10:04  friedelwolff
+
+	* filters/checks.py: Precompile regular expressions
+
+2008-01-11 08:18  friedelwolff
+
+	* tools/pocompile.py, tools/poconflicts.py, tools/pocount.py,
+	  tools/podebug.py, tools/pogrep.py: Change current spacing
+	  convention of double spaces to four spaces
+
+2008-01-11 08:16  friedelwolff
+
+	* tools/posegment.py: Fix inconsistent spacing to be four spaces
+
+2008-01-11 08:15  friedelwolff
+
+	* tools/poclean.py: Fix incorrect spacing in commented code
+
+2008-01-11 08:03  friedelwolff
+
+	* tools/pogrep.py: Update copyright dates
+
+2008-01-11 07:47  friedelwolff
+
+	* tools/podebug.py: Remove unnecessary space between methods
+
+2008-01-11 07:25  friedelwolff
+
+	* tools/poconflicts.py: Fix spacing around '='
+
+2008-01-11 07:23  friedelwolff
+
+	* tools/posegment.py: Support tmx files as well
+
+2008-01-10 11:49  friedelwolff
+
+	* storage/oo.py: Fix inconsistent spacing and long lines. Moving to
+	  standard spacing for this file.
+
+2008-01-10 09:19  dwaynebailey
+
+	* convert/test_oo2po.py: Add some roundtrip examples with >> ' and
+	  " in the text and in some attributes.
+
+2008-01-09 19:30  dwaynebailey
+
+	* storage/oo.py: Move encoding checking to a function
+	  encode_if_needed_utf8()
+
+2008-01-09 15:22  friedelwolff
+
+	* storage/factory.py: Revert r6822, and explain why the poxliff
+	  import is needed
+
+2008-01-09 15:15  friedelwolff
+
+	* convert/convert.py, convert/dtd2po.py, convert/html2po.py,
+	  convert/ini2po.py, convert/moz2po.py, convert/oo2po.py,
+	  convert/prop2po.py: (Partially) revert commit 6780, just to play
+	  safe.
+
+2008-01-09 14:08  friedelwolff
+
+	* lang/data.py: Leave a comment about possible extra sources of
+	  useful information on language codes
+
+2008-01-09 14:06  friedelwolff
+
+	* README: Mention the new dependencies: lxml, pysqlite,
+	  libgettextpo
+
+2008-01-09 14:04  friedelwolff
+
+	* storage/statsdb.py: Declare the object variables .con and .cur
+	  explicitly
+
+2008-01-09 14:03  friedelwolff
+
+	* storage/factory.py: Remove an unused import
+
+2008-01-09 14:00  friedelwolff
+
+	* storage/lisa.py, storage/tmx.py, storage/xliff.py: Fix some
+	  pylint complaints (mostly argument spacing)
+
+2008-01-09 13:58  friedelwolff
+
+	* storage/mo.py: Better docstring. Correct some issues shown by
+	  pylint (indentation and bad names)
+
+2008-01-09 13:08  friedelwolff
+
+	* convert/test_xliff2po.py: Replace convertfile with convertstore
+
+2008-01-09 09:39  friedelwolff
+
+	* convert/xliff2po.py: Rename convertfile to convertstore as done
+	  elsewhere in commits 6782 and 6783
+
+2008-01-09 09:37  friedelwolff
+
+	* convert/xliff2oo.py: Rename convertfile to convertstore as done
+	  elsewhere in commits 6782 and 6783
+
+2008-01-09 09:07  friedelwolff
+
+	* doc/index.html: Update and slightly rewrite index for
+	  documentation
+
+2008-01-09 08:35  friedelwolff
+
+	* storage/oo.py: Don't attempt to support other encodings, SDF
+	  files must be UTF-8
+
+2008-01-09 08:31  friedelwolff
+
+	* convert/oo2po.py, convert/oo2xliff.py: Write error output to
+	  sys.stderr
+
+2008-01-09 08:24  friedelwolff
+
+	* tools/posegment: Set svn:executable for posegment
+
+2008-01-09 08:16  friedelwolff
+
+	* convert/test_oo2xliff.py: Test for oo2xliff overriding
+	  test_oo2po. Might dissappear in future if oo2xliff is merged into
+	  oo2po.
+
+2008-01-09 08:15  friedelwolff
+
+	* convert/test_oo2po.py: Adapt tests to enable easier overriding
+	  and customisation (for upcoming test_oo2xliff)
+
+2008-01-09 08:10  friedelwolff
+
+	* convert/oo2xliff.py: Change usepots to False (no more -P --pot
+	  option)
+
+2008-01-09 08:09  friedelwolff
+
+	* tools/posegment.py: Rename convertfile to convertstore as done
+	  elsewhere in commits 6782 and 6783
+
+2008-01-09 08:08  friedelwolff
+
+	* convert/oo2xliff.py: Rename convertfile to convertstore as done
+	  elsewhere in commits 6782 and 6783
+
+2008-01-09 08:05  friedelwolff
+
+	* convert/oo2xliff.py: Align oo2xliff with the new escaping as done
+	  in oo2po
+
+2008-01-09 08:00  friedelwolff
+
+	* convert/po2ts.py, convert/test_po2ts.py: Change usepots to False
+	  (no more -P --pot option)
+
+2008-01-09 07:58  friedelwolff
+
+	* convert/po2tmx.py, convert/test_po2tmx.py: Change usepots to
+	  False (no more -P --pot option)
+
+2008-01-09 06:45  friedelwolff
+
+	* convert/oo2po.py: Update the copyright date
+
+2008-01-09 06:40  friedelwolff
+
+	* storage/oo.py: Improve docstings
+
+2008-01-09 06:31  friedelwolff
+
+	* convert/oo2po.py: Remove escaping from converter (now done in the
+	  storage class, oo.py)
+
+2008-01-09 06:29  friedelwolff
+
+	* convert/test_oo2po.py: Change the test to the new expected
+	  behaviour in terms of escaping (especially for helpcontent2)
+
+2008-01-09 06:23  friedelwolff
+
+	* storage/oo.py: Implement new rules for escaping and unescaping of
+	  SDF files. Different rules are used for strings from .xhp
+	  (helpcontent2) sourcefiles, and all escaping and unescaping is
+	  now done here instead of in the converters.
+
+2008-01-09 06:21  friedelwolff
+
+	* convert/test_convert.py: Take differences between differernt
+	  versions of optparse into account for testing converter help text
+	  in test_help()
+
+2008-01-08 13:43  friedelwolff
+
+	* lang/af.py: Specify Afrikaans punctuation more exactly overriding
+	  base language
+
+2008-01-08 13:42  friedelwolff
+
+	* convert/pot2po.py: Accept **kwargs in convertpot for the sake of
+	  the changes done in r6780
+
+2008-01-08 13:39  friedelwolff
+
+	* __init__.py: Update copyright date
+
+2008-01-08 12:37  friedelwolff
+
+	* misc/optrecurse.py: Only catch IO errors - we don't want anything
+	  else
+
+2008-01-08 12:35  friedelwolff
+
+	* misc/optrecurse.py: Put back get_prog_name() that got lost
+	  somewhere
+
+2008-01-07 13:34  dwaynebailey
+
+	* setup.py lang/common.py, tools/posegment, tools/posegment.py: Add
+	  posegment tool
+
+2008-01-07 13:33  friedelwolff
+
+	* __version__.py: Update version to 1.1.0rc1
+
+2008-01-07 12:54  friedelwolff
+
+	* storage/mo.py: Implement .istranslatable()
+
+2008-01-07 12:53  friedelwolff
+
+	* storage/poheader.py: Partially rewrite updatecontributor(). The
+	  'Contributors:' line is removed and updating from files with
+	  existing headers should work. The msgmerge template ('FIRST
+	  AUTHOR <EMAIL@ADDRESS>, YEAR.') is now replaced with the first
+	  entry.
+
+2008-01-07 12:50  friedelwolff
+
+	* storage/statsdb.py: Print errors out to stderr instead of stdout
+
+2008-01-07 12:46  friedelwolff
+
+	* tools/pogrep.py: Search through all comments, not just translator
+	  comments
+
+2008-01-03 14:27  friedelwolff
+
+	* storage/poheader.py: Adapt to proper notes strings now that
+	  .getnotes() is used
+
+2008-01-03 14:10  friedelwolff
+
+	* storage/poheader.py: Don't update header in .updatecontributor()
+	  if no header is found
+
+2008-01-03 14:09  friedelwolff
+
+	* storage/poheader.py: Use .getnotes() accessor in
+	  .updatecontributor()
+
+2008-01-03 06:04  dwaynebailey
+
+	* misc/optrecurse.py: Fix manpage generation after upgrade to
+	  latest optparse
+
+2007-12-21 15:30  dwaynebailey
+
+	* convert/csv2po.py, convert/dtd2po.py, convert/ini2po.py,
+	  convert/odf2po.py, convert/oo2po.py, convert/prop2po.py,
+	  convert/test_csv2po.py, convert/test_dtd2po.py,
+	  convert/test_oo2po.py, convert/test_po2csv.py,
+	  convert/test_prop2po.py, convert/test_txt2po.py,
+	  convert/txt2po.py: Change: convertfiles -> convertstore
+
+2007-12-21 15:21  dwaynebailey
+
+	* convert/po2csv.py, convert/po2dtd.py, convert/po2html.py,
+	  convert/po2ini.py, convert/po2oo.py, convert/po2prop.py,
+	  convert/po2ts.py, convert/po2txt.py, convert/po2xliff.py,
+	  convert/test_po2csv.py, convert/test_po2dtd.py,
+	  convert/test_po2oo.py, convert/test_po2prop.py,
+	  convert/test_po2ts.py, convert/test_po2xliff.py: Rename:
+	  convertfile -> convertstore
+
+2007-12-21 14:32  dwaynebailey
+
+	* misc/optrecurse.py: get_prog_name is a class method now not a
+	  function.
+
+2007-12-21 13:11  dwaynebailey
+
+	* convert/convert.py, convert/dtd2po.py, convert/html2po.py,
+	  convert/ini2po.py, convert/moz2po.py, convert/oo2po.py,
+	  convert/oo2xliff.py, convert/prop2po.py: Move passthrough into
+	  function and out of converters.
+
+2007-12-21 13:07  dwaynebailey
+
+	* convert/test_convert.py, convert/test_csv2po.py,
+	  convert/test_dtd2po.py, convert/test_moz2po.py,
+	  convert/test_po2dtd.py, convert/test_po2html.py,
+	  convert/test_po2moz.py, convert/test_po2oo.py,
+	  convert/test_po2prop.py, convert/test_po2tmx.py,
+	  convert/test_po2ts.py, convert/test_po2txt.py,
+	  convert/test_pot2po.py, convert/test_prop2po.py: Fix help text
+	  tests to take into account changes in newer optparse.py. This
+	  means
+	  that these tests will probably fail in older versions of Python.
+
+2007-12-21 12:57  dwaynebailey
+
+	* convert/convert.py: Set the deafult for multifile option
+	  correctly
+
+2007-12-21 12:49  dwaynebailey
+
+	* storage/xpi.py, tools/poconflicts.py, tools/porestructure.py:
+	  Remove reference to our version of optparse and import optparse
+	  from optrecurse as needed.
+
+2007-12-21 12:34  dwaynebailey
+
+	* misc/optparse.py, misc/optrecurse.py: Move toolkit specific
+	  changes in optparse to optrecurse, change reference accoringly.
+	  Use system optparse (correct version has been available since
+	  Python 2.3, which is the lowest version we currently support)
+
+2007-12-21 06:37  dwaynebailey
+
+	* convert/test_pot2po.py: Catch last option.
+
+2007-12-15 16:32  friedelwolff
+
+	* storage/qm.py: Output error message to stderr
+
+2007-12-15 16:02  friedelwolff
+
+	* storage/test_base.py: Remove test_store_stats() that was testing
+	  the old statistics API (now removed)
+
+2007-12-15 15:31  friedelwolff
+
+	* storage/statsdb.py: [Contributed by Nicolas François] Store the
+	  default database filename to avoid unnecessary filesystem
+	  activity
+
+2007-12-15 12:23  friedelwolff
+
+	* storage/statsdb.py: Use os.path.realpath() instead of
+	  os.path.abspath() - this resolves names taking links and
+	  non-canonical names into account (// in the name, for example).
+	  This could avoid some duplicates.
+
+2007-12-15 11:40  friedelwolff
+
+	* storage/cpo.py: Rewrite a generator expression for compatibility
+	  with python 2.3
+
+2007-12-15 11:23  friedelwolff
+
+	* storage/base.py: Don't override the (unused) Statistics class for
+	  translation stores - just overhead that isn't used at the moment
+
+2007-12-15 10:51  friedelwolff
+
+	* storage/cpo.py: Rather write out error messages to stderr
+
+2007-12-14 15:17  friedelwolff
+
+	* storage/statsdb.py: Remove statefromdb() and all users - rather
+	  use a dictionary
+
+2007-12-14 12:30  friedelwolff
+
+	* storage/statsdb.py: +directorytotals() to provide totals for all
+	  files combined in the given directory (no mtimes are checked; no
+	  file presense is tested)
+
+2007-12-13 16:33  dwaynebailey
+
+	* storage/ini.py: Add copyright header and some descriptive text.
+
+2007-12-12 15:37  dwaynebailey
+
+	* convert/dtd2po.py, convert/test_dtd2po.py: Make ordinary
+	  LOCALIZATION NOTE comments into developer comments. Now all
+	  comments from the source dtd file should go into #. comments in
+	  PO.
+
+2007-12-12 15:33  dwaynebailey
+
+	* convert/dtd2po.py, convert/test_dtd2po.py: Line continuations in
+	  .dtd should not carry over a \n into PO, they are now just
+	  treated as pretty printing and removed before PO processing.
+
+2007-12-10 08:57  friedelwolff
+
+	* lang/fr.py: Ignore XML properties ('=' before quotes) for quote
+	  translation
+
+2007-12-10 08:56  friedelwolff
+
+	* lang/test_fr.py: Test properly that quoted XML properties are not
+	  changed
+
+2007-12-06 06:23  dwaynebailey
+
+	* convert/csv2po.py, convert/dtd2po.py, convert/html2po.py,
+	  convert/ini2po.py, convert/odf2po.py, convert/oo2po.py,
+	  convert/pot2po.py, convert/prop2po.py, convert/ts2po.py,
+	  convert/txt2po.py, convert/xliff2po.py: Change headerpo ->
+	  targetheader in all *2po convertors, prep to ensure target
+	  agnostic convertors.
+
+2007-12-06 06:21  dwaynebailey
+
+	* convert/dtd2po.py, convert/html2po.py, convert/ini2po.py,
+	  convert/odf2po.py, convert/pot2po.py, convert/prop2po.py,
+	  convert/ts2po.py, convert/txt2po.py, convert/xliff2po.py: Change
+	  thepofile -> thetargetfile in all *2po convertors.
+
+2007-12-06 06:15  dwaynebailey
+
+	* storage/pocommon.py: Add copyright header.
+
+2007-12-06 05:56  dwaynebailey
+
+	* convert/ini2po, convert/ini2po.py, convert/po2ini,
+	  convert/po2ini.py, misc/ini.py, storage/ini.py: Add ini file
+	  parser class and functions.
+
+2007-12-06 05:53  dwaynebailey
+
+	* misc/ini.py: Add ini.py from iniparse module. This will allow us
+	  to modify it until changes make it into upstream.
+
+2007-12-06 05:50  dwaynebailey
+
+	* convert/oo2xliff.py, convert/xliff2oo.py, storage/xliff.py:
+	  Implement addlocation in xliff.py and adjust xliff2oo and
+	  oo2xliff to use these.
+
+2007-12-06 05:45  dwaynebailey
+
+	* filters/pofilter.py: Remove xlff file type support, it is not a
+	  vlid type of file.
+
+2007-12-06 05:28  dwaynebailey
+
+	* convert/TODO: Update TODO list
+
+2007-12-06 05:25  dwaynebailey
+
+	* storage/TODO-merge-cPO: Add a new issue
+
+2007-11-26 11:19  friedelwolff
+
+	* storage/cpo.py, storage/pypo.py: Always use empty unicode strings
+	  (u"") instead of empty normal strings ("")
+
+2007-11-26 11:18  friedelwolff
+
+	* storage/cpo.py: Decode msgid comments so that they are unicode
+	  strings
+
+2007-11-23 10:46  dwaynebailey
+
+	* lang/data.py: Add Thai
+
+2007-11-21 16:26  dwaynebailey
+
+	* storage/factory.py: Sort the class imports alphabetically.
+
+2007-11-17 09:46  friedelwolff
+
+	* storage/pypo.py: Ensure that returned notes are unicde, even if
+	  empty. This ensures that unicodedata.normalize() doesn't complain
+
+2007-11-16 19:37  friedelwolff
+
+	* __version__.py: Update version number to 1.1.0beta1
+
+2007-11-16 19:31  friedelwolff
+
+	* storage/poheader.py: Don't add Plural-Forms header unless
+	  specifically given
+
+2007-11-16 19:27  friedelwolff
+
+	* storage/cpo.py: Improve library loading on Windows and raise
+	  ImportError if we can't import libgettextpo
+
+2007-11-16 08:36  friedelwolff
+
+	* filters/checks.py: Implement a credits check that identifies
+	  units with translation credits instead of normal translations.
+	  Implement identification for GNOME and KDE (GUI and
+	  documentation)
+
+2007-11-16 08:31  friedelwolff
+
+	* filters/test_checks.py: Check for translator credits
+
+2007-11-15 14:47  friedelwolff
+
+	* storage/cpo.py: Ensure that only unicode data is used to set
+	  notes. Decode comments using the internal decoding.
+
+2007-11-15 14:46  friedelwolff
+
+	* storage/pypo.py: Ensure that only unicode strings are ever
+	  parsed. This ensures correct handling of non-ascii comments, for
+	  example. Remove the incorrect decoding of comments, which sould
+	  be unicode.
+
+2007-11-15 14:18  friedelwolff
+
+	* filters/checks.py, filters/pofilter.py: Add wxWidgets as a
+	  checker type (identical to the KDE checker)
+
+2007-11-15 14:15  friedelwolff
+
+	* filters/test_pofilter.py: Test that the preconditions work
+	  correctly and tests aren't run unnecessarily
+
+2007-11-15 13:52  friedelwolff
+
+	* filters/checks.py: Fix the printf detection to only check for
+	  single character type specifiers
+
+2007-11-15 13:48  friedelwolff
+
+	* filters/test_checks.py: check that spacing doesn't trigger the
+	  print test
+
+2007-11-15 13:36  friedelwolff
+
+	* lang/ar.py, lang/fa.py: Fix incorrect percentage signs for Arabic
+	  (ar) and Persian (fa) (÷ -> ٪)
+
+2007-11-15 13:30  friedelwolff
+
+	* storage/statsdb.py: Fix wrong logic for non-existant suggestions
+	  files
+
+2007-11-15 13:30  friedelwolff
+
+	* storage/statsdb.py: Reimplement instantiation of StatsCache by
+	  limiting it to one cache per statsfile
+
+2007-11-13 10:00  friedelwolff
+
+	* storage/lisa.py, storage/poxliff.py, storage/tbx.py,
+	  storage/tmx.py, storage/xliff.py: Rewrite the minidom specific
+	  parts of the XML storage types with lxml code for performance.
+
+2007-11-13 09:49  friedelwolff
+
+	* convert/test_po2tmx.py, convert/test_po2xliff.py,
+	  storage/test_xliff.py: Adapt tests for the move from minidom to
+	  lxml
+
+2007-11-13 09:48  friedelwolff
+
+	* convert/test_xliff2po.py: Also test with an XLIFF file without an
+	  xmlns attribute
+
+2007-11-13 09:45  friedelwolff
+
+	* convert/oo2xliff.py: Handle requirement for target language
+	  slightly different than for oo2po
+
+2007-11-12 16:36  dwaynebailey
+
+	* storage/test_cpo.py, storage/test_pypo.py: import cpo and pypo
+	  directly don't hide behind: import xpo as po
+
+2007-11-09 08:38  friedelwolff
+
+	* filters/test_checks.py: Adapt calls to forceunicode()
+
+2007-11-09 08:37  friedelwolff
+
+	* lang/data.py: forceunicode() moved here from filters/checks.py
+
+2007-11-09 08:36  friedelwolff
+
+	* filters/checks.py: Move forceunicode() to lang.data
+
+2007-11-03 10:17  dwaynebailey
+
+	* storage/test_cpo.py, storage/test_po.py, storage/test_pypo.py:
+	  Move test_merge_mixed_sources to test_po.py
+
+2007-11-03 10:05  dwaynebailey
+
+	* storage/test_cpo.py, storage/test_po.py, storage/test_pypo.py:
+	  Move test_kde_context to test_po.py
+
+2007-11-03 09:59  dwaynebailey
+
+	* storage/test_cpo.py, storage/test_po.py, storage/test_pypo.py:
+	  Move test_parse_context and test_parse_advanced_context to
+	  test_po.py
+
+2007-11-03 09:51  dwaynebailey
+
+	* storage/test_po.py, storage/test_pypo.py: Move
+	  test_multiline_obsolete to the common test_po
+
+2007-11-03 09:42  dwaynebailey
+
+	* storage/cpo.py, storage/test_cpo.py, storage/test_po.py,
+	  storage/test_pypo.py: Delete units that where removed in
+	  removeduplicates by creating a new cpo file
+	  and copying them to that (since there is no delete function in
+	  cpo). Move
+	  the test for merging to test_po.py.
+
+2007-11-03 08:53  dwaynebailey
+
+	* storage/cpo.py, storage/pypo.py: Rename: element -> unit
+
+2007-10-31 15:03  friedelwolff
+
+	* convert/test_po2xliff.py: Rewrite slightly to make transition to
+	  lxml easier
+
+2007-10-30 13:59  friedelwolff
+
+	* storage/test_xliff.py: Rewrite tests slightly to enable easier
+	  migration to lxml
+
+2007-10-29 15:24  friedelwolff
+
+	* storage/test_poxliff.py: Rewrite ID test slightly to enable
+	  transition to lxml
+
+2007-10-29 15:23  friedelwolff
+
+	* storage/test_po.py: Test escapes in the header.
+
+2007-10-27 11:56  dwaynebailey
+
+	* storage/TODO-merge-cPO: Update: all convert/ tests passing at the
+	  same rate for cpo as pypo
+
+2007-10-27 10:44  dwaynebailey
+
+	* storage/test_cpo.py, storage/test_po.py, storage/test_pypo.py:
+	  Move test_makeobsolete* into the common test_po.py module.
+
+2007-10-27 09:47  dwaynebailey
+
+	* storage/cpo.py: Change padding hack to only add whitespace
+	  padding if the comment is not a blank line.
+
+2007-10-27 09:35  dwaynebailey
+
+	* storage/cpo.py: Name the obsolete workaround function more
+	  clearly.
+
+2007-10-26 16:22  dwaynebailey
+
+	* storage/cpo.py: Work around libgettetpo bug in that it doens't
+	  remove #: and #. entries for obsolete entries on output.
+	  This hack makes it behanve like msgmerge
+
+2007-10-26 16:04  dwaynebailey
+
+	* convert/test_prop2po.py: Remove test_emptyentry, its duplicaed in
+	  test_emptyproperty
+	  Make tests for detailed instead of: 'blah' in str(unit)
+
+2007-10-26 15:59  dwaynebailey
+
+	* convert/test_prop2po.py: Remove accesors to msg* and replace with
+	  source/target
+
+2007-10-26 15:56  dwaynebailey
+
+	* convert/test_prop2po.py: Merge form toolkit-C-po branch:
+	  6538 - Replace direct access to po.automaticcomments with
+	  getnotes("developer") in various tests.
+
+2007-10-26 15:42  dwaynebailey
+
+	* convert/po2csv.py: Merge from toolkit-C-po
+	  6574 - Use base class accessors.
+
+2007-10-26 15:37  dwaynebailey
+
+	* convert/test_csv2po.py: Fix tests to remove pypo specific
+	  accesors.
+
+2007-10-26 15:35  dwaynebailey
+
+	* convert/csv2po.py: Merge from toolkit-C-po branch
+	  6566 - Use base class accesors.
+
+2007-10-26 15:34  dwaynebailey
+
+	* convert/test_csv2po.py: Merge from toolkit-C-po branch:
+	  6539 - Remove direct po.sourcecomment usage and replace with
+	  getlocations()
+
+2007-10-26 15:24  dwaynebailey
+
+	* convert/po2txt.py: Merge from toolkit-C-po branch:
+	  6543 - Simplify the logic.
+
+2007-10-26 09:51  dwaynebailey
+
+	* storage/TODO-merge-cPO: TODO list for the cPO merging
+
+2007-10-26 05:26  dwaynebailey
+
+	* storage/cpo.py: Add note about libgettextpo obsolete behaviour
+
+2007-10-26 05:25  dwaynebailey
+
+	* storage/cpo.py: Only do libgettext workaround if we have data to
+	  process.
+
+2007-10-26 05:22  dwaynebailey
+
+	* tools/test_pomerge.py: Use po.lsep to manage format output
+	  differences between cpo and pypo
+
+2007-10-26 05:16  dwaynebailey
+
+	* tools/test_pomerge.py: Add location test
+
+2007-10-25 22:54  dwaynebailey
+
+	* convert/test_dtd2po.py: Merge from toolkit-C-po branch
+	  6669 - Adjust test to not user old pypo style accesors but use
+	  base class methods.
+
+2007-10-25 22:48  dwaynebailey
+
+	* convert/dtd2po.py: Merge from toolkit-C-po branch
+	  6540 - Remove the use of po.othercomments and replace with
+	  getnotes("translator")
+	  6569 - Use base class accessors to be able to dump various
+	  escaping functions (po.escapeforpo, simplequotestr). Use methods
+	  addlocations(), addnote() instead of direct access to the lists.
+
+2007-10-25 22:42  dwaynebailey
+
+	* convert/test_po2dtd.py: Merge from toolkit-C-po branch:
+	  6539:6540 {A number of additional tests}
+
+2007-10-25 22:31  dwaynebailey
+
+	* convert/po2dtd.py: Merge from toolkit-C-po branch:
+	  6539 - Remove direct po.sourcecomment usage and replace with
+	  getlocations()
+	  6540 - Remove the use of po.othercomments and replace with
+	  getnotes("translator")
+	  6541 - Cleanup code around po.typecomments
+	  6542 - Remove unquotefrompo from po2dtd convertor.
+	  6568 - Use po.isfuzzy() and po._extract_msgidcomments() instead
+	  of direct access to po.typecomments and po.msgidcomments
+
+2007-10-25 22:14  dwaynebailey
+
+	* convert/test_pot2po.py: Work around cpo iability to select a
+	  range over the iterbale units.
+
+2007-10-25 22:07  dwaynebailey
+
+	* convert/test_pot2po.py, storage/cpo.py, storage/pypo.py: Hack to
+	  define lsep a variable that holds the seperator for #: entries.
+	  cpo - [space]
+	  pypo - \n#:[space]
+	  This allows the test to run on both implemenations.
+
+2007-10-25 21:51  dwaynebailey
+
+	* convert/test_pot2po.py: Add #. comments to obsoleting test.
+
+2007-10-25 21:49  dwaynebailey
+
+	* convert/pot2po.py: Merge from toolkit-C-po branch:
+	  r6563: Add newly obsolete units using addunit().
+
+2007-10-25 21:21  dwaynebailey
+
+	* convert/test_po2xliff.py: Merge from toolkit-C-po branch:
+	  r6658 - Correct a test PO entry
+
+2007-10-25 21:19  dwaynebailey
+
+	* convert/test_xliff2po.py: Merge branch toolkit-C-po:
+	  r6538 - Replace direct access to po.automaticcomments with
+	  getnotes("developer") in various tests.
+	  r6540 - Remove the use of po.othercomments and replace with
+	  getnotes("translator")
+
+2007-10-25 21:16  dwaynebailey
+
+	* convert/xliff2po.py: Merge from toolkit-C-po r6565 - Make the
+	  source blank in PO for a header entry. Reverse the logic to make
+	  it readable.
+
+2007-10-25 20:46  dwaynebailey
+
+	* convert/test_oo2po.py: Merge toolkit-C-po branch (r6549:6538) -
+	  Replace direct access to po.automaticcomments with
+	  getnotes("developer") in various tests
+
+2007-10-25 15:20  dwaynebailey
+
+	* convert/test_oo2po.py: Fix bug_url test since we now properly
+	  escape and wrap PO header entries.
+
+2007-10-25 15:09  dwaynebailey
+
+	* storage/pocommon.py, storage/pypo.py: Privatise encoding
+
+2007-10-25 13:14  dwaynebailey
+
+	* storage/cpo.py: Work around where libgettextpo needs all added
+	  comments to have a leading space.
+
+2007-10-25 13:09  dwaynebailey
+
+	* storage/test_cpo.py: Adjust tests to remove leading spaces
+
+2007-10-25 13:06  dwaynebailey
+
+	* storage/cpo.py: Work around the problem that current libgettextpo
+	  returns a leading space with all notes.
+
+2007-10-25 12:48  dwaynebailey
+
+	* storage/cpo.py: Use needtmpfile for tmpfile sections, easier to
+	  understand.
+
+2007-10-25 12:47  dwaynebailey
+
+	* storage/cpo.py: Correctly handle case when the input is a file.
+	  i.e. you only need to remove temporary files if the input was a
+	  string.
+
+2007-10-22 15:45  dwaynebailey
+
+	* tools/podebug.py: Remove executable property
+
+2007-10-22 15:26  friedelwolff
+
+	* convert/test_po2ts.py: test that we can handle duplicates in the
+	  same context block
+
+2007-10-22 15:24  friedelwolff
+
+	* convert/po2ts.py: Determine unit usability with .istranslated()
+	  rather than .isfuzzy()
+
+2007-10-22 15:18  friedelwolff
+
+	* setup.py: Install oo2xliff and xliff2oo
+
+2007-10-22 14:42  friedelwolff
+
+	* storage/cpo.py, storage/pocommon.py, storage/pypo.py: Move
+	  makeheader to pocommon.py. It contains no implementation specific
+	  code now.
+
+2007-10-22 13:24  friedelwolff
+
+	* tools/pomerge.py: Use the correct extention for output XLIFF
+	  files (.xlf)
+
+2007-10-22 12:03  friedelwolff
+
+	* storage/pypo.py: Don't handle quoting and escaping in
+	  makeheader(). This solves a problem with the '\' character in
+	  certain header values causing it to be interpreted as an escaped
+	  cariage return.
+
+2007-10-19 15:36  dwaynebailey
+
+	* tools/podebug.py: Add two new options:
+	  --rewrite - currently has two modes 'en' which does the same as
+	  msgen and copies source
+	  to target, and 'xxx' which adds xxx as affixes to the source
+	  string and places it in
+	  the target. Any other rewrite functions can be added by coding a
+	  rewrite_XXX method.
+	  --hash - adds a hash to the start of the target based on 1) first
+	  location if present
+	  else 2) source.
+
+2007-10-12 06:25  dwaynebailey
+
+	* filters/checks.py, filters/test_checks.py: Ignore text that looks
+	  like an option but isn't (e.g. --blank-- ) by checking that it
+	  end in an alpha numeric character.
+
+2007-10-11 21:09  dwaynebailey
+
+	* search/indexer/__init__.py: Fix comment indent
+
+2007-10-11 13:28  dwaynebailey
+
+	* convert/txt2po.py: Convert --flavour option to a choice. Now
+	  catches errors where the flavour
+	  is not known.
+
+2007-10-11 10:35  dwaynebailey
+
+	* misc/quote.py, misc/test_quote.py: Add functions to encode and
+	  decode HTML entities in a string. It does not yet handle numeric
+	  style escaping &#1234; just the list of XHTML 1.0 entity
+	  definitions.
+
+2007-10-09 21:17  larskr
+
+	* lang, services, storage/versioncontrol: ignore pre-compiled
+	  python files for svn
+
+2007-10-08 23:34  larskr
+
+	* search/indexer/__init__.py, storage/versioncontrol/cvs.py,
+	  storage/versioncontrol/darcs.py: improve some comments
+
+2007-10-06 09:30  larskr
+
+	* search/indexer, search/indexer/__init__.py: imported
+	  'jToolkit/data/indexer.py' from jToolkit 0.7.8
+	  added a copyright note to the new file
+	  imports of 'indexer' adapted
+
+2007-10-06 03:02  larskr
+
+	* storage/factory.py: fix error ("TypeError: unsubscriptable
+	  object") for "storefile" being a file object instead of a string
+
+2007-10-05 12:15  larskr
+
+	* storage/mo.py: clarified copyright and license of mo.py code
+
+2007-10-01 12:51  dwaynebailey
+
+	* storage/po.py, storage/test_po.py: Merge from toolkit-C-po
+	  r6458:6622 - second attempt to merge from the branch.
+
+2007-10-01 12:16  dwaynebailey
+
+	* convert/csv2po.py, convert/po2tmx.py, convert/po2txt.py,
+	  convert/ts2po.py, tools/poconflicts.py: Merge from branch
+	  toolkit-C-po r6536 (Remove all usage of isblankmsgstr)
+
+2007-09-30 17:34  dwaynebailey
+
+	* storage/base.py, storage/cpo.py: Revert isempty change in base.py
+	  and implement in cpo.py
+
+2007-09-30 05:09  dwaynebailey
+
+	* storage/test_factory.py: Correct reference to class.
+
+2007-09-29 14:25  dwaynebailey
+
+	* storage/cpo.py: Remove debug code
+
+2007-09-29 14:18  dwaynebailey
+
+	* storage/base.py, storage/cpo.py, storage/po.py,
+	  storage/pocommon.py, storage/pypo.py, storage/test_cpo.py,
+	  storage/test_po.py, storage/test_pypo.py: Merge
+	  branch/toolkit-C-po changes r6459:6622 into trunk.
+	  
+	  These are only the PO related files. All users of the PO classes
+	  still need to be migrated. The tools still use the Python PO
+	  implementation but by using the environment variables USECPO=1
+	  you can force the tools to use the C PO version (USECPO=0 forces
+	  the use of Python PO). Using USECPO will report the
+	  implementation
+	  being used, without USECPO operation continue as normal.
+	  
+	  Common tests are in test_po while implementation specific test or
+	  tests that differ slightly are in test_pypo and test_cpo.
+	  
+	  The next steps will be to merge changes made to the tools the use
+	  po.py into trunk. This will be done slowly to ensure that tests
+	  and operation continue as normal. On the branch almost all tests
+	  are functioning correctly. This will not be so on trunk until all
+	  tests have been ported.
+
+2007-09-28 20:11  dwaynebailey
+
+	* storage/ts.py: Add notes refering to replaceables.
+
+2007-09-28 20:08  dwaynebailey
+
+	* storage/test_wordfast.py: Add difficult escapes and fix another
+	  test.
+
+2007-09-28 19:57  dwaynebailey
+
+	* convert/po2wordfast, convert/po2wordfast.py: Fix indentation
+
+2007-09-28 19:49  dwaynebailey
+
+	* convert/po2wordfast.py: Correct class reference
+
+2007-09-28 19:42  dwaynebailey
+
+	* convert/po2wordfast, convert/po2wordfast.py, storage/factory.py,
+	  storage/test_factory.py, storage/test_wordfast.py,
+	  storage/wordfast.py: Add Wordfast TM format
+	  - storage class for Wordfast TM
+	  - Convertor for PO to Wordfast format
+	  - Adapt factory to detect Wordfast, includes changes to help
+	  explore file content if the class cannot be fully determined from
+	  the file extension.
+
+2007-09-28 09:56  larskr
+
+	* storage/versioncontrol/__init__.py: committing and updating of
+	  whole directories is now possible
+	  TODOs updated
+
+2007-09-26 14:57  friedelwolff
+
+	* storage/ts.py: Handle duplicate entries separately. This fixes a
+	  bug seen with Virtualbox files.
+
+2007-09-26 09:29  dwaynebailey
+
+	* storage/factory.py: Privatise functions within the factory.
+
+2007-09-25 08:49  friedelwolff
+
+	* convert/pot2po.py: Test whether we got nplurals before using it
+
+2007-09-25 08:38  friedelwolff
+
+	* convert/pot2po.py: Don't catch exceptions during construction of
+	  fuzzyglobalmatcher. Only attempt to construct the TM if we have a
+	  file.
+
+2007-09-25 07:38  friedelwolff
+
+	* storage/po.py: Correct the header handling logic in
+	  removeduplicates()
+
+2007-09-19 14:59  friedelwolff
+
+	* convert/po2xliff.py: Fix a typo in a comment
+
+2007-09-19 10:37  friedelwolff
+
+	* convert/pot2po.py: Don't obsolete the header
+
+2007-09-19 10:36  friedelwolff
+
+	* convert/pot2po.py: Ensure that we initialise plural units with
+	  the correct number of parts. This fixes bug 238.
+
+2007-09-19 10:35  friedelwolff
+
+	* convert/test_pot2po.py: Test that we initialise plural units with
+	  the correct number of parts (bug 238)
+
+2007-09-18 14:26  dwaynebailey
+
+	* storage/po.py: Remove unquotefrompo and use base class accessors.
+
+2007-09-18 14:08  dwaynebailey
+
+	* storage/po.py: Fix forgotten msgstrlen -> _msgstrlen
+
+2007-09-18 13:31  friedelwolff
+
+	* convert/pot2po.py: Use fuzzy units for fuzzy matching. This
+	  solves bug 237.
+
+2007-09-18 12:50  friedelwolff
+
+	* convert/test_pot2po.py: Test for proper migration of a fuzzy
+	  plural unit with changing msgid and changing location (bug 239).
+
+2007-09-18 12:49  friedelwolff
+
+	* search/match.py: Allow the matcher class to optionally use fuzzy
+	  units
+
+2007-09-18 10:51  dwaynebailey
+
+	* storage/po.py: When removing duplicates bail out early for a
+	  header.
+
+2007-09-18 10:00  dwaynebailey
+
+	* storage/po.py: Privatise msgstrlen and msgidlen
+
+2007-09-14 09:42  friedelwolff
+
+	* convert/xliff2oo.py: Update to new pofilter checker API
+
+2007-09-14 09:08  friedelwolff
+
+	* storage/versioncontrol, storage/versioncontrol/__init__.py,
+	  storage/versioncontrol/bzr.py, storage/versioncontrol/cvs.py,
+	  storage/versioncontrol/darcs.py, storage/versioncontrol/git.py,
+	  storage/versioncontrol/svn.py: [Contributed by Larse Kruse]
+	  Move the version control code from Pootle to the translate
+	  toolkit.
+	  This splits the code into different files for each version
+	  control sytem, and
+	  implements the public functions in the module (__init__).
+
+2007-09-12 08:13  dwaynebailey
+
+	* convert/po2oo.py: pofilter now returns a dict not a list.
+
+2007-09-11 14:15  friedelwolff
+
+	* convert/csv2tbx.py: Remove unnecessary and unused code
+
+2007-09-11 10:51  friedelwolff
+
+	* filters/checks.py: Remove 'options' from the precondition of
+	  'unchanged' - this could hide errors
+
+2007-09-11 09:15  friedelwolff
+
+	* filters/checks.py: add options to the test preconditions
+
+2007-09-11 09:12  friedelwolff
+
+	* filters/checks.py: Don't trigger the options test for lone '--'
+	  words
+
+2007-09-11 09:08  friedelwolff
+
+	* filters/test_checks.py: Test that the options test isn't
+	  triggered for lone '--' words
+
+2007-09-11 08:07  friedelwolff
+
+	* filters/test_checks.py: Test Afrikaans specific startcaps more
+	  exhaustively
+
+2007-09-11 07:48  friedelwolff
+
+	* filters/checks.py: Don't overwrite config.lang in update() - this
+	  could loose the language information
+
+2007-09-10 18:02  dwaynebailey
+
+	* convert/csv2po.py, convert/po2csv.py: Use getlocations instead of
+	  units.sourcecomments
+
+2007-09-10 10:32  friedelwolff
+
+	* convert/csv2tbx.py: Simplify by not handling encoding here (it is
+	  done in the storage format)
+
+2007-09-10 10:08  friedelwolff
+
+	* filters/decoration.py: Fix typo and spacing
+
+2007-09-10 09:14  friedelwolff
+
+	* filters/prefilters.py: Restore varnone() (it is used in
+	  checks.py)
+
+2007-09-10 09:06  friedelwolff
+
+	* storage/statsdb.py: Refactor several pieces and implement
+	  recacheunit() for use from Pootle (currently only on the diet
+	  branch)
+
+2007-09-10 08:01  dwaynebailey
+
+	* convert/po2dtd.py, convert/po2ts.py, convert/test_po2ts.py,
+	  convert/test_ts2po.py, convert/ts2po.py, storage/po.py: Remove
+	  visible comments (#_ ). This is from the very early days of the
+	  toolkit
+	  and was only really used by Qt TS conversion. It is not standard
+	  and better
+	  handled using proper structures in PO.
+	  po2dtd - were not used by the code
+	  ts2po - change '#_ OBSOLETE' to use a '#. (obsolete)' automatic
+	  comment.
+	  This should eventually use proper PO obsoleting. Also handle the
+	  reverse.
+	  Add tests for obsolete messages.
+	  po.py - remove all structure and code for visiblecomments
+
+2007-09-10 07:37  dwaynebailey
+
+	* convert/po2ts.py, convert/po2xliff.py, convert/test_po2ts.py,
+	  convert/ts2po.py, convert/xliff2po.py: Change direct list based
+	  comment access to use getnotes()
+	  Expand po2ts testing to test:
+	  - comments/notes,
+	  - check that we've put the data into the correct TS tags.
+	  - fuzzy conversion
+
+2007-09-07 13:39  friedelwolff
+
+	* filters/prefilters.py: Improve layout of code and docstrings
+
+2007-09-07 11:06  dwaynebailey
+
+	* filters/checks.py, filters/test_checks.py: Expand options test to
+	  catch --input=FILE type options and check that the paramter has
+	  been translated. Raise nice errors if the test fails.
+
+2007-09-07 10:53  friedelwolff
+
+	* filters/checks.py: Simplify and reflow some docstrings. Mention
+	  the wiki page that describes the tests.
+
+2007-09-07 10:28  dwaynebailey
+
+	* filters/checks.py, filters/test_checks.py: Add 'options' test
+	  that ensures the command line options e.g. --help remain
+	  untranslated.
+
+2007-09-07 10:15  friedelwolff
+
+	* filters/checks.py: Remove unnecessary punctuation filtering - the
+	  word iterator filters it already.
+
+2007-09-07 10:14  friedelwolff
+
+	* lang/common.py: Add grave accent (U+0060) to list of common
+	  punctuation. This would have prevented bug 283.
+
+2007-09-07 10:04  friedelwolff
+
+	* filters/checks.py: filter out punctuation in aconyms test. This
+	  fixes bug 283.
+
+2007-09-07 10:03  friedelwolff
+
+	* filters/test_checks.py: Test that punctuation doesn't cause
+	  confusion for the acronyms test (bug 283)
+
+2007-09-07 08:40  dwaynebailey
+
+	* convert/po2csv.py, convert/po2dtd.py: Default second paramater
+	  for unquotefrompo, joinwithlinebreak is False. Thus remove all
+	  explicit setting to False.
+
+2007-09-07 07:41  dwaynebailey
+
+	* convert/csv2po.py, convert/dtd2po.py, convert/moz2po.py,
+	  convert/mozfunny2prop.py, convert/oo2po.py, convert/oo2xliff.py,
+	  convert/po2csv.py, convert/po2dtd.py, convert/po2moz.py,
+	  convert/po2oo.py, convert/pot2po.py, convert/prop2mozfunny.py,
+	  convert/prop2po.py, convert/xliff2oo.py: Remove property
+	  svn:executable
+
+2007-09-06 17:35  dwaynebailey
+
+	* convert/po2prop.py: Cleanup for readability
+
+2007-09-06 17:33  dwaynebailey
+
+	* convert/csv2po.py, convert/dtd2po.py, convert/html2po.py,
+	  convert/odf2po.py, convert/oo2po.py, convert/po2csv.py,
+	  convert/po2dtd.py, convert/ts2po.py, convert/txt2po.py,
+	  convert/xliff2po.py, storage/csvl10n.py: Change unit.append to
+	  base class addunit()
+
+2007-09-06 17:31  dwaynebailey
+
+	* convert/po2csv.py, convert/po2dtd.py, convert/po2html.py,
+	  convert/po2prop.py, convert/po2tmx.py, convert/po2ts.py,
+	  convert/po2xliff.py: Convert the po side and some of the other
+	  side to generic names:
+	  thepofile -> inputstore
+	  thepo -> unit/inputunit
+	  etc.
+
+2007-09-06 17:10  dwaynebailey
+
+	* convert/test_convert.py, misc/optrecurse.py, misc/xmlwrapper.py,
+	  search/lshtein.py, storage/csvl10n.py, storage/html.py,
+	  storage/test_tmx.py, storage/test_xliff.py, storage/txt.py,
+	  tools/poconflicts.py, tools/pogrep.py, tools/test_pomerge.py:
+	  Cleanup: operrator not preceded by a space.
+
+2007-09-06 17:09  dwaynebailey
+
+	* convert/csv2po.py, convert/po2oo.py, convert/prop2po.py,
+	  convert/test_dtd2po.py, convert/test_html2po.py,
+	  convert/xliff2oo.py, filters/checks.py, misc/optrecurse.py,
+	  tools/pocount.py, tools/pomerge.py: Correct: operator not
+	  followed by a space.
+
+2007-09-06 17:08  dwaynebailey
+
+	* tools/test_pogrep.py: Fix indentation
+
+2007-09-06 17:05  dwaynebailey
+
+	* convert/odf2po.py, convert/poreplace.py, convert/ts2po.py,
+	  convert/xliff2po.py: Align convertXXX functions.
+
+2007-09-06 17:01  dwaynebailey
+
+	* convert/dtd2po.py, convert/txt2po.py: Align main functions in
+	  convertors.
+
+2007-09-06 16:57  dwaynebailey
+
+	* convert/test_csv2po.py, convert/test_txt2po.py, storage/po.py,
+	  storage/test_po.py, tools/test_pomerge.py: Make po.getouput
+	  private. Change calls to po.getouput to rather use str(store)
+
+2007-09-06 16:52  dwaynebailey
+
+	* storage/po.py, storage/test_po.py: Make extract_msgidcomments
+	  private.
+
+2007-09-06 16:49  dwaynebailey
+
+	* storage/po.py: Make encodeifneccessary private
+
+2007-09-06 16:47  dwaynebailey
+
+	* storage/po.py: Make getmsgpartstr private
+
+2007-09-06 16:45  dwaynebailey
+
+	* storage/po.py: Make initallcomments private.
+
+2007-09-06 16:43  dwaynebailey
+
+	* convert/csv2po.py, convert/test_csv2po.py,
+	  convert/test_dtd2po.py, convert/test_oo2po.py,
+	  convert/test_prop2po.py, tools/test_pomerge.py: Remove
+	  po.unquotefrompo used outside of po.py and replace with po.target
+	  and po.source instead
+
+2007-09-06 16:20  dwaynebailey
+
+	* convert/csv2tbx.py, convert/oo2po.py, convert/oo2xliff.py,
+	  convert/poreplace.py, convert/xliff2oo.py: Remove uneeded
+	  temporary string variables.
+
+2007-09-06 16:17  dwaynebailey
+
+	* convert/csv2po.py, convert/csv2tbx.py, convert/dtd2po.py,
+	  convert/html2po.py, convert/odf2po.py, convert/oo2po.py,
+	  convert/oo2xliff.py, convert/po2csv.py, convert/po2dtd.py,
+	  convert/po2html.py, convert/po2oo.py, convert/po2prop.py,
+	  convert/po2ts.py, convert/po2xliff.py, convert/poreplace.py,
+	  convert/prop2po.py, convert/ts2po.py, convert/txt2po.py,
+	  convert/xliff2oo.py, convert/xliff2po.py: Convert all format
+	  specific eg inputpo naming to a format agnostic form i.e.
+	  inputsource.
+	  Align names:
+	  *source is a TranslationStore
+	  *file is a file object
+
+2007-09-05 07:10  dwaynebailey
+
+	* storage/test_po.py: Fix closing quote in a test.
+
+2007-09-04 13:21  dwaynebailey
+
+	* filters/checks.py, filters/test_checks.py, lang/data.py,
+	  storage/po.py, tools/pogrep.py, tools/test_pogrep.py: Normalise
+	  unicode data in searches and tests. This allows composed
+	  characters, with different
+	  unicode values, to be compared correctly.
+
+2007-08-31 15:26  friedelwolff
+
+	* filters/checks.py: Configure more test preconditions
+
+2007-08-31 14:18  friedelwolff
+
+	* storage/statistics.py: Update statistics.py to the
+	  pofilter::run_filters() API change of r6334
+
+2007-08-31 14:11  friedelwolff
+
+	* storage/test_base.py: Adapt base class test so that it can work
+	  for MO files:
+	  - MO files only store translated strings, so we need to have
+	  target strings
+	  - MO files store source strings in a sorted way, so writing the
+	  file can cause
+	  reordering of the units, so we need to presort them to avoid
+	  surprises.
+
+2007-08-31 13:50  friedelwolff
+
+	* storage/mo.py: Don't encode the target unless it is unicode
+
+2007-08-31 10:03  friedelwolff
+
+	* filters/checks.py, filters/pofilter.py, storage/statsdb.py:
+	  Change checks::run_filters() API to return a dictionary
+
+2007-08-31 07:50  dwaynebailey
+
+	* storage/test_base.py: Add missing comma
+
+2007-08-28 14:54  friedelwolff
+
+	* storage/po.py: Handle merging of certain duplicate message lines
+	  slightly better
+
+2007-08-28 14:36  friedelwolff
+
+	* convert/test_pot2po.py: Test for correct handling of empty
+	  comment lines and of type comments
+
+2007-08-28 11:40  friedelwolff
+
+	* storage/statsdb.py: Pass information to the checker about Pootle
+	  style .pending files for the new hassuggestions check in the case
+	  of PO files. Do proper handling of the mtimes of both files.
+
+2007-08-28 08:19  friedelwolff
+
+	* storage/test_factory.py: Lessen the noise when testing on Python
+	  2.3 that doesn't support BZ2File
+
+2007-08-28 07:05  dwaynebailey
+
+	* storage/factory.py, storage/qm.py: Add pasrsing support for Qt
+	  .qm file format.
+
+2007-08-28 06:25  dwaynebailey
+
+	* storage/mo.py: We do handle plural forms.
+
+2007-08-28 06:17  dwaynebailey
+
+	* storage/mo.py: Remove redundant statement.
+
+2007-08-28 05:42  dwaynebailey
+
+	* tools/podebug.py: Correctly handle plural tagging.
+
+2007-08-27 14:39  friedelwolff
+
+	* filters/checks.py: +hassuggestion test to implement the pootle
+	  functionality here. +setsuggestionstore to allow external users
+	  to set the file to use to look for suggestions.
+
+2007-08-27 14:21  friedelwolff
+
+	* storage/mo.py: Don't reencode the msgid as utf-8. This solves the
+	  traceback with files with non-ascii characters in a msgid
+
+2007-08-27 10:52  dwaynebailey
+
+	* misc/quote.py: Change <> to !=
+
+2007-08-27 10:51  dwaynebailey
+
+	* misc/quote.py: Correct [comma] to be [comma][space] for
+	  readability
+
+2007-08-27 10:50  dwaynebailey
+
+	* misc/quote.py: Correct indentation
+
+2007-08-27 09:19  friedelwolff
+
+	* lang/ja.py, lang/zh.py: Transform punctuation more correctly by
+	  also removing spaces when double width punctuation is used.
+
+2007-08-27 07:45  dwaynebailey
+
+	* README: Update the README to refer to also refer to XLIFF work
+	  and add some tools that where not listed.
+
+2007-08-27 05:59  dwaynebailey
+
+	* convert/nb2po, convert/nb2po.py, convert/po2nb, convert/po2nb.py:
+	  No longer used and clutering refactoring.
+
+2007-08-24 14:35  dwaynebailey
+
+	* convert/csv2po.py, convert/dtd2po.py, convert/html2po.py,
+	  convert/nb2po.py, convert/odf2po.py, convert/oo2po.py,
+	  convert/po2csv.py, convert/po2dtd.py, convert/po2oo.py,
+	  convert/prop2po.py, convert/ts2po.py, convert/txt2po.py,
+	  convert/xliff2po.py: Remove temporary variables for store to
+	  string conversion.
+
+2007-08-24 14:24  dwaynebailey
+
+	* convert/po2txt.py: Use factory class and add ability to use XLIFF
+	  files as input.
+
+2007-08-24 14:22  dwaynebailey
+
+	* convert/po2txt.py: Remove unused file position call.
+
+2007-08-24 14:20  dwaynebailey
+
+	* convert/po2txt.py: Rename: inputpo -> inputstore, outputtxt ->
+	  outputstring
+
+2007-08-24 14:17  dwaynebailey
+
+	* convert/po2txt.py: Rename: *po -> *store, pounit -> unit
+
+2007-08-24 14:13  dwaynebailey
+
+	* convert/po2txt.py: Fix indentation
+
+2007-08-24 14:11  dwaynebailey
+
+	* convert/pot2po.py: Simple code cleanup
+
+2007-08-24 14:10  dwaynebailey
+
+	* convert/pot2po.py: Use .addunit instead of .units.append
+
+2007-08-24 13:32  dwaynebailey
+
+	* storage/po.py: Rename: pe -> unit
+
+2007-08-24 13:28  dwaynebailey
+
+	* storage/po.py: Remove unused todict function
+
+2007-08-24 13:25  dwaynebailey
+
+	* storage/po.py: remove executable flag
+
+2007-08-24 07:45  dwaynebailey
+
+	* storage/properties.py: Remove executable
+
+2007-08-24 07:34  dwaynebailey
+
+	* tools/podebug.py: Comment about the lack of plural tagging
+	  support
+
+2007-08-24 07:26  dwaynebailey
+
+	* tools/podebug.py: Typo
+
+2007-08-24 07:22  dwaynebailey
+
+	* tools/podebug.py: Rename: thepofile -> store, thepo -> unit
+
+2007-08-24 07:18  dwaynebailey
+
+	* tools/podebug.py: quote no longer used
+
+2007-08-24 07:17  dwaynebailey
+
+	* tools/podebug.py: Simplify by removing msgstr/msgid convolution.
+	  Remove the need for unquotefrompo
+	  and makes it base class friendly.
+
+2007-08-24 07:13  dwaynebailey
+
+	* tools/podebug.py: Rename: thepo -> unit
+
+2007-08-24 07:12  dwaynebailey
+
+	* tools/podebug.py: Rename: convertelement -> convertunit
+
+2007-08-24 06:51  dwaynebailey
+
+	* tools/podebug.py: Remove our mangling of sourcecomments and
+	  replace it with getlocations. Remove
+	  convertsource as its not needed. In openofficeignore,
+	  s/source/location/
+
+2007-08-24 06:40  dwaynebailey
+
+	* tools/podebug.py: Use factory to load appropriate storage class
+
+2007-08-24 06:33  dwaynebailey
+
+	* tools/podebug.py: Rename: inputpo -> inputstore, etc
+
+2007-08-24 06:29  dwaynebailey
+
+	* tools/pomerge.py: Rename: p{1,2} -> store{1,2}, po{1,2} ->
+	  unit{1,2}
+
+2007-08-24 06:26  dwaynebailey
+
+	* tools/pomerge.py: Use isempty()
+
+2007-08-24 06:25  dwaynebailey
+
+	* tools/pomerge.py: inputpo -> inputstore, outputpo -> outputstore,
+	  templatepo -> templatestore (same for *xliff)
+
+2007-08-24 06:12  dwaynebailey
+
+	* tools/pomerge.py: Add docstring to str2bool
+
+2007-08-24 06:08  dwaynebailey
+
+	* tools/pogrep.py: element -> unit
+	  Remove redundant comment
+
+2007-08-23 07:38  dwaynebailey
+
+	* storage/base.py: Fix indentation
+
+2007-08-23 07:37  dwaynebailey
+
+	* storage/base.py: Put statements on their own lines.
+
+2007-08-23 07:36  dwaynebailey
+
+	* storage/base.py: Fix docstring
+
+2007-08-23 07:35  dwaynebailey
+
+	* storage/base.py: Use cPickle and fallback to pickle if needed.
+
+2007-08-23 07:23  dwaynebailey
+
+	* storage/base.py, storage/csvl10n.py, storage/dtd.py,
+	  storage/html.py, storage/lisa.py, storage/mo.py, storage/po.py,
+	  storage/properties.py, storage/txt.py: Remove parsestring from
+	  derived classes and implement a generic version in base.py.
+	  Implemented
+	  basic parse method in base.py and adjusted txt.py to the new
+	  parsestring.
+
+2007-08-21 14:22  friedelwolff
+
+	* storage/statsdb.py: select unit errors based on the correct
+	  configuration identifier
+
+2007-08-21 10:39  friedelwolff
+
+	* storage/statsdb.py: Return an empty dictionary in case of error
+	  conditions
+
+2007-08-21 09:39  friedelwolff
+
+	* filters/checks.py: Correct or simplify some docstrings
+
+2007-08-15 13:39  friedelwolff
+
+	* lang/common.py: Rather use str.replace() for punctranslate().
+	  This allows for replacing multi-character strings which is
+	  necessary for collapsing the punctuation spacing for Chinese and
+	  Japanese. This also seems slightly faster.
+
+2007-08-13 13:10  friedelwolff
+
+	* storage/statsdb.py: Prepend check names with 'check-' according
+	  to the convention in Pootle.
+
+2007-08-10 12:50  dwaynebailey
+
+	* storage/mo.py: Don't output units without any target.
+
+2007-08-10 10:15  dwaynebailey
+
+	* storage/test_mo.py: Test derived class correctly.
+
+2007-08-08 23:08  dwaynebailey
+
+	* convert/test_po2dtd.py: Removed test. This example is not present
+	  in the Mozilla DTD files and in fact would it seem not be a valid
+	  DTD in its own right.
+
+2007-08-08 22:51  dwaynebailey
+
+	* storage/statistics.py: Revert and add import of language factory.
+	  Needed by lschtein distance measurements.
+
+2007-08-08 22:28  dwaynebailey
+
+	* convert/csv2po.py, convert/csv2tbx.py, convert/dtd2po.py,
+	  convert/html2po.py, convert/moz2po.py, convert/odf2po.py,
+	  convert/po2dtd.py, convert/po2moz.py, convert/po2nb.py,
+	  convert/po2prop.py, convert/po2tmx.py, convert/po2ts.py,
+	  convert/po2txt.py, convert/po2xliff.py, convert/prop2mozfunny.py,
+	  convert/prop2po.py, convert/test_csv2po.py,
+	  convert/test_dtd2po.py, convert/test_html2po.py,
+	  convert/test_moz2po.py, convert/test_odf2po.py,
+	  convert/test_po2csv.py, convert/test_po2html.py,
+	  convert/test_po2moz.py, convert/test_po2oo.py,
+	  convert/test_po2prop.py, convert/test_po2tmx.py,
+	  convert/test_po2ts.py, convert/test_po2txt.py,
+	  convert/test_po2xliff.py, convert/test_pot2po.py,
+	  convert/test_ts2po.py, convert/test_txt2po.py,
+	  convert/test_xliff2po.py, convert/ts2po.py, convert/txt2po.py:
+	  Tabs -> Spaces
+	  Remove unused imports
+
+2007-08-08 22:06  dwaynebailey
+
+	* tools/poclean.py, tools/pocount.py, tools/podebug.py,
+	  tools/test_pocount.py: Remove uneeded imports
+
+2007-08-08 22:02  dwaynebailey
+
+	* storage/po.py, storage/poheader.py, storage/statistics.py,
+	  storage/test_csvl10n.py, storage/test_dtd.py, storage/test_mo.py,
+	  storage/test_monolingual.py, storage/test_odf.py,
+	  storage/test_poxliff.py, storage/test_properties.py,
+	  storage/test_tmx.py, storage/test_txt.py, storage/test_xliff.py:
+	  Remove uneeded imports
+
+2007-08-08 21:48  dwaynebailey
+
+	* storage/tbx.py: Tabs - > Spaces
+	  Remove unused import of base
+
+2007-08-08 21:42  dwaynebailey
+
+	* storage/dtd.py: Prefer != to <>
+
+2007-08-08 21:38  dwaynebailey
+
+	* storage/test_po.py: Tabs -> Spaces
+
+2007-08-08 21:36  dwaynebailey
+
+	* storage/test_tbx.py: Tabs -> Spaces. Remove unused imports
+
+2007-08-08 21:33  dwaynebailey
+
+	* filters/prefilters.py: Remove unused import
+
+2007-08-08 21:18  dwaynebailey
+
+	* lang/common.py, lang/hy.py: Remove unused imports
+
+2007-08-08 20:40  dwaynebailey
+
+	* convert/oo2xliff.py: Remove unused imports
+
+2007-08-08 20:38  dwaynebailey
+
+	* convert/xliff2oo.py: Remove unused imports
+
+2007-08-08 20:35  dwaynebailey
+
+	* convert/oo2po.py: Remove unused imports
+
+2007-08-08 20:34  dwaynebailey
+
+	* convert/po2oo.py: Remove unused imports
+
+2007-08-08 20:31  dwaynebailey
+
+	* convert/convert.py: Remove unused imports
+
+2007-08-08 20:25  dwaynebailey
+
+	* filters/TODO: Fixed previously we don't see double variables as
+	  an error.
+
+2007-08-07 14:29  friedelwolff
+
+	* convert/test_po2xliff.py: +test_approved()
+
+2007-08-07 14:23  friedelwolff
+
+	* convert/po2xliff.py: Mark an untranslated PO unit as not approved
+	  in the XLIFF file
+
+2007-08-07 14:22  friedelwolff
+
+	* storage/xliff.py: Add method xliffunit.markapproved() to set the
+	  approved attribute. Use it in markfuzzy()
+
+2007-08-07 12:50  friedelwolff
+
+	* convert/pot2po.py: Support developer (automatic) comments in the
+	  header
+
+2007-08-07 12:04  friedelwolff
+
+	* filters/pofilter.py: Fix a problem when run with --header
+
+2007-08-07 11:32  dwaynebailey
+
+	* convert/test_dtd2po.py: Fix a test related to KDE comment
+	  disambiguation to test for #. and msgctxt entries instead.
+
+2007-08-07 09:45  friedelwolff
+
+	* convert/dtd2po.py: Merge automaticcomments for mixed units (units
+	  merged with their accelerators). Typo.
+
+2007-08-06 08:37  dwaynebailey
+
+	* storage/mo.py: Hanlde non-multistring text. Use addunit instead
+	  of appening units.
+
+2007-08-04 08:09  dwaynebailey
+
+	* tools/poswap.py: Fix indentation
+
+2007-08-04 08:08  dwaynebailey
+
+	* tools/porestructure.py: Fox indentation
+
+2007-08-04 08:06  dwaynebailey
+
+	* tools/pomerge.py: Fox indentation
+
+2007-08-04 08:05  dwaynebailey
+
+	* tools/pogrep.py: Fix indentation
+
+2007-08-04 08:04  dwaynebailey
+
+	* tools/podebug.py: Fix indentation
+
+2007-08-04 08:02  dwaynebailey
+
+	* tools/pocount.py: Fix indentation
+
+2007-08-04 07:56  dwaynebailey
+
+	* tools/poconflicts.py: Fix indentation
+
+2007-08-04 07:53  dwaynebailey
+
+	* tools/pocompile.py: Remove undeeded imports of struct and array,
+	  ineeded MESSAGES dict. Fix indents. Rename variables for clarity.
+
+2007-08-03 11:26  friedelwolff
+
+	* lang/common.py: Use plain for instead of enumerate() - provides a
+	  small speedup
+
+2007-08-03 10:22  friedelwolff
+
+	* filters/TODO: Update the TODO list (perhaps more to remove/add)
+
+2007-08-03 10:13  friedelwolff
+
+	* filters/checks.py: Ensure that we have a proper exit condition if
+	  no tests failed in a plural unit
+
+2007-08-02 13:34  dwaynebailey
+
+	* convert/prop2mozfunny.py: Fix to align with changes made to
+	  properties storage class
+
+2007-08-02 09:28  friedelwolff
+
+	* lang/am.py, lang/ar.py, lang/fa.py, lang/hy.py, lang/ja.py,
+	  lang/zh.py: Add appropriate list seperators for Japanese (ja),
+	  Amharic (am), Arabic (ar), Armenian (hy), Chinese (zh) and
+	  Persian (fa)
+
+2007-08-02 09:26  friedelwolff
+
+	* lang/common.py: Add .listseperator - a simple string that can be
+	  used to join lists of strings in an appropriate way for the
+	  language
+
+2007-08-02 09:25  friedelwolff
+
+	* lang/common.py: Change __repr__() to include the language code if
+	  present
+
+2007-08-01 14:55  friedelwolff
+
+	* storage/statsdb.py: Add tables (checkerconfigs, uniterrors) and
+	  initial implementations to deal with more complete unit
+	  statistics.
+
+2007-08-01 10:53  dwaynebailey
+
+	* storage/test_po.py: Test to ensure that we can parse Uniforum
+	  style PO files. We don't dso anything sensible with the # File:
+	  syntax and probably won't ever :)
+
+2007-07-31 15:30  friedelwolff
+
+	* tools/pocount.py: Remove dead code that was left by accident
+
+2007-07-31 15:25  friedelwolff
+
+	* filters/checks.py: Store the configuration in the TeeChecker for
+	  the sake of comparing checker configurations
+
+2007-07-31 15:23  friedelwolff
+
+	* lang/common.py: Implement __repr__() for lang.common.Common to
+	  enable us to create meaningful text representations of checker
+	  configurations
+
+2007-07-31 09:52  friedelwolff
+
+	* CREDITS: Credit Kaloian Doganov
+
+2007-07-30 15:46  friedelwolff
+
+	* convert/po2html.py: [Contributed by Kaloian Doganov] Honour the
+	  --nofuzzy option
+
+2007-07-30 09:51  dwaynebailey
+
+	* convert/prop2po.py: Prefer msgctxt merging of duplicates when
+	  merging two properties files into one PO file.
+
+2007-07-30 09:45  dwaynebailey
+
+	* storage/properties.py: Use addunit instead of units.append
+	  Convert 0/1 to False/True
+	  Remove temporary variable lines - to make things cleaner
+
+2007-07-29 13:04  dwaynebailey
+
+	* storage/properties.py: Rename msgid -> value
+
+2007-07-29 12:58  dwaynebailey
+
+	* storage/properties.py: Reflow some text
+
+2007-07-29 12:49  dwaynebailey
+
+	* storage/properties.py: Add a note with some good references to
+	  .properties files.
+
+2007-07-29 12:44  dwaynebailey
+
+	* storage/properties.py: Uneeded import of sys
+
+2007-07-29 12:35  dwaynebailey
+
+	* convert/prop2po.py: Prefer msgctxt for disambiguation of units
+
+2007-07-29 12:34  dwaynebailey
+
+	* convert/test_prop2po.py: We are storing these notes in
+	  'developer' comments - so this requirement is no longer needed.
+
+2007-07-29 11:57  dwaynebailey
+
+	* convert/csv2po.py, convert/dtd2po.py, convert/odf2po.py,
+	  convert/oo2po.py, convert/prop2po.py, convert/txt2po.py: Add
+	  'extracted from' as a translator comment so that its know that
+	  this is automatically created and can be discarded.
+
+2007-07-29 11:34  dwaynebailey
+
+	* convert/prop2po.py, convert/test_prop2po.py, storage/po.py:
+	  Properly ignore DONT_TRANSLATE i.e. using a return value of
+	  'discard' but should fix storage class to not return empty units,
+	  fix test.
+	  Make all source comments into 'developer' comments: #. in PO,
+	  ensure that we keep the same comment order by adding a 'position'
+	  option to adding comments in PO. This is hackish and needs to be
+	  fixed in the storage class.
+	  Comments from target .properties files should be added as
+	  translator comments, but doesn't work yet, needs some thought and
+	  logic to discard comments that are actually developer comments in
+	  translator comment style.
+
+2007-07-28 20:38  dwaynebailey
+
+	* convert/prop2po.py: Use base class addunit() instead of
+	  units.append()
+
+2007-07-26 11:24  friedelwolff
+
+	* storage/statsdb.py: Small cleanups. Use istranslatable().
+
+2007-07-26 11:09  friedelwolff
+
+	* storage/test_xliff.py: Create an XLIFF skeleton string for easier
+	  testing. Test .istranslatable()
+
+2007-07-26 11:08  friedelwolff
+
+	* storage/test_po.py: Test .istranslatable()
+
+2007-07-26 11:03  friedelwolff
+
+	* storage/po.py, storage/xliff.py: +implementations of
+	  .istranslatable() for PO and XLIFF
+
+2007-07-26 11:00  friedelwolff
+
+	* storage/base.py: Add unit method .istranslatable() to indicate
+	  whether the unit can be translated.
+
+2007-07-25 10:45  friedelwolff
+
+	* misc/multistring.py: Fix comparissons in python 2.5 by
+	  implementing __ne__ and __eq__ and rewriting __cmp__
+
+2007-07-24 13:51  friedelwolff
+
+	* misc/autoencode.py: Avoid using Exception.message that is only
+	  available in Python 2.5
+
+2007-07-24 13:27  friedelwolff
+
+	* filters/spelling.py: Avoid duplicate name ('checker') in
+	  namespace after importing enchant
+
+2007-07-24 06:19  dwaynebailey
+
+	* convert/csv2po.py, convert/csv2tbx.py, convert/html2po.py: Indent
+	  correctly (pylint)
+
+2007-07-24 06:17  dwaynebailey
+
+	* filters/checks.py, filters/decoration.py, filters/pofilter.py,
+	  filters/test_checks.py, filters/test_pofilter.py: Indent
+	  correctly and some changes with comma seperated lists and spacing
+	  around equals signs (pylint errors)
+
+2007-07-23 15:34  friedelwolff
+
+	* README: Correct the information about Python versions
+
+2007-07-23 13:59  friedelwolff
+
+	* lang/data.py: Add plural information for Malagasy (mg) and
+	  Papiamento (pap)
+
+2007-07-23 13:26  friedelwolff
+
+	* storage/statsdb.py: Move the file modification detection to a
+	  separate function
+
+2007-07-23 13:24  friedelwolff
+
+	* storage/mo.py: Fix a typo in a docstring
+
+2007-07-23 09:37  friedelwolff
+
+	* filters/checks.py: Use the spell checking code that moved to a
+	  seperate module
+
+2007-07-23 09:34  friedelwolff
+
+	* filters/spelling.py: Move spelling functionality from checks.py
+	  into a seperate file
+
+2007-07-22 12:11  dwaynebailey
+
+	* storage/mo.py: Cleanup naming for clarity and data extraction to
+	  only extract version once.
+
+2007-07-22 11:26  dwaynebailey
+
+	* convert/xliff2oo.py: Rename function to match po2oo.py fix
+
+2007-07-22 11:24  dwaynebailey
+
+	* misc/autoencode.py, misc/test_autoencode.py: Throw an exception
+	  if we don't know the encoding.
+
+2007-07-21 07:43  dwaynebailey
+
+	* lang/data.py: Spelling corrections
+
+2007-07-20 14:16  friedelwolff
+
+	* filters/checks.py, filters/test_checks.py: Move the helper
+	  methods for the tests (passes(), fails(), fails_serious()) to
+	  test_checks.py. No other change.
+
+2007-07-20 08:09  friedelwolff
+
+	* filters/test_checks.py: Adapt the tests for nplurals now that it
+	  is a unit level test
+
+2007-07-20 08:08  friedelwolff
+
+	* filters/checks.py: Simplify the nplurals test and move it to
+	  StandardUnitChecker where it should be
+
+2007-07-18 13:29  friedelwolff
+
+	* filters/checks.py: Cache unit.hasplural() for minor speedup in
+	  TranslationChecker
+
+2007-07-18 12:58  friedelwolff
+
+	* filters/checks.py: Optimise puncspacing - a very expensive test.
+	  This reduces runtime for this test by more than 20%.
+
+2007-07-18 12:50  friedelwolff
+
+	* convert/po2oo.py: Rename filterelement -> filterunit
+
+2007-07-18 12:22  friedelwolff
+
+	* lang/common.py: Only do punctranslate() if we have data to work
+	  with
+
+2007-07-18 12:12  friedelwolff
+
+	* filters/checks.py: Make TranslationChecker to be UnitChecker and
+	  derive TranslationChecker to enable an important optimisation as
+	  a simple customisation
+
+2007-07-18 11:32  friedelwolff
+
+	* convert/po2oo.py, convert/xliff2oo.py: Rename POChecker ->
+	  UnitChecker
+
+2007-07-18 11:20  friedelwolff
+
+	* filters/checks.py, filters/pofilter.py, filters/test_pofilter.py:
+	  Move pocount.POChecker -> checks.UnitChecker and
+	  pocount.StandardPOChecker -> checks.StandardUnitChecker. Renaming
+	  'element' and 'thepo' -> unit
+
+2007-07-18 11:01  friedelwolff
+
+	* filters/checks.py, filters/pofilter.py: Remove run_filters() from
+	  POChecker and implement run_test() to account for the differences
+	  that are necessary in POChecker and TranslationChecker
+
+2007-07-18 09:36  friedelwolff
+
+	* filters/pofilter.py: Remove POTeeChecker - not needed anymore
+
+2007-07-18 09:31  friedelwolff
+
+	* filters/checks.py, filters/pofilter.py: Change run_filtes() to
+	  always accept a unit. This should pave the way for a single
+	  implementation. +Minor cleanups.
+
+2007-07-18 08:17  friedelwolff
+
+	* filters/pofilter.py: Add better error handling to
+	  POChecker::run_filters() by syncing with
+	  TranslationChecker::run_filters()
+
+2007-07-17 10:43  friedelwolff
+
+	* tools/pocount.py: Enable the new caching code and remove the
+	  duplicated word counting code
+
+2007-07-17 07:27  friedelwolff
+
+	* tools/test_pocount.py: Adapt the test to use
+	  statsdb.wordsinunit() as it will be removed from pocount
+
+2007-07-17 07:15  friedelwolff
+
+	* tools/pocount.py: Provide an alternative implementation of
+	  calcstats() that uses statsdb. Move some error handling around to
+	  accomplish this.
+
+2007-07-16 15:28  friedelwolff
+
+	* storage/statsdb.py: An initial implementation for a database
+	  cache for translation statistics
+
+2007-07-16 12:22  friedelwolff
+
+	* storage/po.py: Fix variable declaration order for .getid()
+
+2007-07-14 17:07  dwaynebailey
+
+	* convert/dtd2po.py: Move last of the kdecomments to developer
+	  comments.
+
+2007-07-13 15:18  dwaynebailey
+
+	* convert/dtd2po.py: Add these notes as developer comments and use
+	  the base class API. A first small step towards being target
+	  format agnostic and opening up XLIFF.
+
+2007-07-13 14:26  friedelwolff
+
+	* storage/base.py: Try to ensure that the store always has a
+	  .filename attribute
+
+2007-07-12 08:58  friedelwolff
+
+	* storage/po.py: Fix a typo with the generation of a unit ID with
+	  msgid comment
+
+2007-07-11 14:08  friedelwolff
+
+	* storage/po.py: Implement .getid() for a pounit to use msgid
+	  comments and msgctxt with the source string to form a unique id
+
+2007-07-11 14:07  friedelwolff
+
+	* storage/base.py: Add method unit.getid() to return an identifier
+	  for the unit. The default implementation returns the source
+
+2007-07-10 10:25  friedelwolff
+
+	* misc/xmlwrapper.py: Fix the ElementTree import for Python 2.5
+
+2007-07-10 07:24  dwaynebailey
+
+	* misc/xmlwrapper.py: Fix ElementTree import for Python 2.5
+
+2007-07-09 16:20  friedelwolff
+
+	* storage/html.py: Rewrite some regular expressions for
+	  compatibility with Python 2.3
+
+2007-07-09 16:19  friedelwolff
+
+	* convert/test_po2tmx.py, convert/test_po2xliff.py: Remove the
+	  unused import of xmlval and xmlproc
+
+2007-07-09 10:56  friedelwolff
+
+	* filters/test_autocorrect.py: Specify the file encoding to make
+	  python 2.5 happy
+
+2007-07-09 10:45  friedelwolff
+
+	* convert/test_dtd2po.py, convert/test_oo2po.py,
+	  convert/test_po2txt.py, convert/test_ts2po.py: Specify the file
+	  encoding and indicate unicode strings to make python 2.5 happy
+
+2007-07-09 08:23  friedelwolff
+
+	* convert/test_convert.py, convert/test_dtd2po.py,
+	  convert/test_po2prop.py: Specify the file encoding to make python
+	  2.5 happy
+
+2007-07-06 11:59  friedelwolff
+
+	* storage/factory.py: Test for bz2 support for compatibility with
+	  Python 2.3
+
+2007-06-29 06:26  friedelwolff
+
+	* tools/test_pocount.py: Adapt to new wording in pocount.py
+
+2007-06-29 06:25  friedelwolff
+
+	* tools/pocount.py: Lots of rewording for format neutrality. No
+	  functional change.
+
+2007-06-28 14:26  friedelwolff
+
+	* lang/factory.py: Support languages that have a language code that
+	  is a reserved word like Oriya (or) and Icelandic (is). By
+	  convention, their modules will be called code_or.py or
+	  code_is.py.
+
+2007-06-27 14:59  friedelwolff
+
+	* tools/poconflicts.py: Remove po specific terminology. Almost
+	  ready to work with xliff.
+
+2007-06-27 09:02  friedelwolff
+
+	* storage/po.py: Handle units that are not seperated by an empty
+	  line. This fixes bug 256
+
+2007-06-27 08:53  friedelwolff
+
+	* storage/test_po.py: Test that we handle units that aren't
+	  separated by an empty line (bug 256)
+
+2007-06-26 14:36  dwaynebailey
+
+	* tools/pocount.py: Its CVS not CSV :)
+
+2007-06-26 12:30  friedelwolff
+
+	* lang/common.py: Add some Indic (Devanagari) punctuation
+
+2007-06-26 12:18  friedelwolff
+
+	* tools/pocount.py: Limit line length for readability
+
+2007-06-26 11:07  dwaynebailey
+
+	* storage/factory.py: Add .mo support to the factory. Also clean up
+	  the lists of files a bit.
+
+2007-06-26 07:52  friedelwolff
+
+	* search/match.py: Update copyright dates
+
+2007-06-26 07:51  friedelwolff
+
+	* convert/csv2tbx.py: Replace unnecessary call to .settarget() with
+	  normal member assignment (.target =)
+
+2007-06-26 06:22  dwaynebailey
+
+	* convert/oo2po.py, convert/oo2xliff.py, convert/po2oo.py,
+	  convert/xliff2oo.py, storage/po.py: Alignment of oo2{xlf,po}:
+	  These are two tools, they should be one and they share a lot of
+	  code.
+	  This first commit aligns comments: XLIFF/PO -> target/source
+	  format, and
+	  aligns variable names between each instance: poelement -> unit
+	  and
+	  xliffunit -> unit etc.
+	  Removed unquotefrompo (this needs further testing but should be
+	  OK)
+	  Each convertor po2oo and xliff2oo can actually do both formats as
+	  we've used
+	  the factory class.
+	  We now only add units that actually exits otherwise we return
+	  none from
+	  maktargetunit(): This solves the blank unit problem in oo2xliff
+	  and
+	  removes, removeblanks() and isnotblank() from the po class.
+	  We now use 'xlf' not 'xliff' for the format extension.
+
+2007-06-25 14:39  dwaynebailey
+
+	* storage/mo.py, tools/pocompile.py: Move mounpack helper to the mo
+	  class.
+
+2007-06-25 14:38  friedelwolff
+
+	* lang/data.py: +Comment to explain the @ modifier in locales
+
+2007-06-25 13:51  friedelwolff
+
+	* filters/test_pofilter.py, tools/test_pocount.py: Replace
+	  unnecessary calls to .settarget() with normal member assignments
+	  (.target =)
+
+2007-06-25 13:50  friedelwolff
+
+	* storage/test_csvl10n.py, storage/test_dtd.py,
+	  storage/test_monolingual.py, storage/test_properties.py,
+	  storage/test_tbx.py, storage/test_tmx.py, storage/test_txt.py:
+	  Remove the tests test_markreview() and test_errors() that were
+	  expecting exceptions before
+
+2007-06-25 13:47  friedelwolff
+
+	* storage/test_base.py, storage/test_po.py, storage/test_xliff.py:
+	  Remove test_markreview() and test_errors() from test_base and
+	  move to test_po and test_xliff. Replace unnecessary calls to
+	  settarget() with normal member assignments.
+
+2007-06-25 13:46  dwaynebailey
+
+	* storage/mo.py, storage/test_mo.py, tools/pocompile.py: Add
+	  Gettext .mo (Machine Object), the compiled PO format as a base
+	  class
+	  derived format. Move code from pocompile into the .mo class and
+	  adjust
+	  pocompile to use the storage class.
+	  The test_mo is basic and needs tests added for the various things
+	  found in
+	  an MO file.
+
+2007-06-25 13:44  friedelwolff
+
+	* storage/base.py: Give sane default implementations to adderror(),
+	  geterrors(), markreviewneeded()
+
+2007-06-25 08:56  dwaynebailey
+
+	* tools/pocount.py: Prevent potential divide by zero errors in the
+	  percentage calculations.
+
+2007-06-22 15:10  dwaynebailey
+
+	* tools/pocompile.py: Remove references to PO
+
+2007-06-22 15:05  dwaynebailey
+
+	* tools/pocompile.py: Less references to PO since we can also
+	  compile from XLIFF
+
+2007-06-22 14:58  dwaynebailey
+
+	* tools/pocompile.py: Make sure that the --fuzzy option works
+	  again. Again a PO specific hack that
+	  isn't elegant.
+
+2007-06-22 14:28  dwaynebailey
+
+	* tools/pocompile.py: Add handling of msgctxt and KDE style
+	  comments in the compilation.
+	  We can now compile all types of PO files into MO files. This is
+	  hackish
+	  and the format specific stuff should go elsewhere but its a good
+	  start.
+
+2007-06-22 14:07  dwaynebailey
+
+	* tools/pocompile.py: Make pocompile able to compile plural
+	  messages
+	  Also ensure that it can compile PoXliff and normal XLIFF files
+	  into MO
+	  A few fixes to ensure that we add headers correctly, that we only
+	  use translated entries and that the headers or source strings can
+	  be UTF-8.
+	  Add an mounpack helper funtion to convert an MO file into hex
+
+2007-06-21 08:25  dwaynebailey
+
+	* convert/odf2po, convert/odf2po.py, convert/test_odf2po.py,
+	  storage/odf.py, storage/test_odf.py: Pull the ODF parser from the
+	  convertor and add it as a base class derived format.
+	  It is not fully base class compliant. There is a base class test
+	  but as yet it
+	  doesn't mean much.
+	  Major renaming across the files to change element -> unit, sxw ->
+	  odf and refer to
+	  the generic odf as apposed to Writer/sxw/etc.
+	  The extraction to PO still works but there is off course still no
+	  po2odf available
+	  but hopefully as we clean up the class we'll get there. Till then
+	  its not much use
+	  except for testing.
+	  The main problem now with our created PO file is that we are
+	  stripping all XML tags,
+	  which in most cases is OK but we lose in paragraph markings,
+	  style changes, etc.
+	  We shouldn't do that.
+	  What does seem to be emerging though is that this could become a
+	  generic
+	  xml2{xliff,po} convertor as there seem to be some standard
+	  recipes for what needs to be
+	  translated. We'll see.
+
+2007-06-21 08:02  dwaynebailey
+
+	* convert/test_odf2po.py: Migrate sxw2po -> odf2po (this somehow
+	  got left out)
+
+2007-06-21 07:53  dwaynebailey
+
+	* convert/odf2po, convert/odf2po.py, convert/sxw2po,
+	  convert/sxw2po.py, convert/test_sxw2po.py: Migrate sxw2po ->
+	  odf2po
+
+2007-06-20 17:33  dwaynebailey
+
+	* storage/txt.py: We also do Mediawiki so update comment
+	  Remove redundant setting of .units
+
+2007-06-20 17:27  dwaynebailey
+
+	* storage/poheader.py: Cleanup some comments
+	  Add a conceptial updatecontributor method - needs testing and
+	  checking, its not used and I'm not 100% sure its wxactly what we
+	  want.
+
+2007-06-20 17:03  dwaynebailey
+
+	* convert/dtd2po.py: Change element -> unit
+
+2007-06-20 16:59  dwaynebailey
+
+	* convert/csv2po.py, convert/dtd2po.py, convert/oo2po.py,
+	  convert/prop2po.py, convert/txt2po.py: Make sure "extracted from"
+	  comments are added using addnote function calls
+
+2007-06-20 16:58  dwaynebailey
+
+	* convert/dtd2po.py, convert/nb2po.py, convert/oo2po.py,
+	  convert/prop2po.py, convert/sxw2po.py, convert/ts2po.py,
+	  convert/xliff2po.py: Change direct comment access to addlocation
+	  function calls
+
+2007-06-20 16:56  dwaynebailey
+
+	* convert/oo2po.py: Replace direct comment access with addnote call
+
+2007-06-20 16:29  dwaynebailey
+
+	* convert/odfxml: Tool to unpack and ODF file for l10n analysis
+
+2007-06-20 08:49  friedelwolff
+
+	* ChangeLog: Update ChangeLog with the latest changes before 1.0.1
+
 2007-06-20 07:57  dwaynebailey
 
 	* convert/po2txt.py: Fix docstrings
