@@ -124,8 +124,11 @@ class StatsCache(object):
         if not statsfile:
             if not cls.defaultfile:
                 userdir = os.path.expanduser("~")
-                #TODO: find a better solution for Windows
-                cachedir = os.path.join(userdir, ".wordforge")
+                cachedir = None
+                if os.name == "nt":
+                    cachedir = os.path.join(userdir, "Translate Toolkit")
+                else:
+                    cachedir = os.path.join(userdir, ".translate_toolkit")
                 if not os.path.exists(cachedir):
                     os.mkdir(cachedir)
                 cls.defaultfile = os.path.realpath(os.path.join(cachedir, "stats.db"))
