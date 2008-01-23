@@ -122,7 +122,6 @@ class propfile(base.TranslationStore):
     def __init__(self, inputfile=None):
         """construct a propfile, optionally reading in from inputfile"""
         super(propfile, self).__init__(unitclass = self.UnitClass)
-        self.units = []
         self.filename = getattr(inputfile, 'name', '')
         if inputfile is not None:
             propsrc = inputfile.read()
