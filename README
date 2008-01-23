@@ -103,7 +103,7 @@ http://code.google.com/p/iniparse/
 The python-Levenshtein package will improve performance for fuzzy matching if
 it is available. This can improve the performance of pot2po, for example.  It 
 is optional and no functionality is lost if it is not installed, only speed.
-http://trific.ath.cx/resources/python/levenshtein/
+https://sourceforge.net/project/showfiles.php?group_id=91920&package_id=260161
 
 Functions in the lang.data module can supply functions to translate language 
 names using the iso-codes package. It can even translate names in the format 
