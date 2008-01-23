@@ -154,7 +154,7 @@ Preferably with a patch or at least a test case.
 
 
 Documentation
-------------
+-----------
 Please read our documentation online at 
   http://translate.sourceforge.net/wiki/toolkit/index
 There they are constantly being updated. Please feel free to contribute new 
@@ -175,25 +175,37 @@ Program overview
 Use --help to find the syntax and options for all programs.
 
 * Converters
-oo2po - convert between OpenOffice.org GSI files and PO
+oo2po    - convert between OpenOffice.org GSI files and PO
 oo2xliff - convert between OpenOffice.org GSI files and XLIFF
-moz2po - convert from a Mozilla XPI file and PO.  Including unpacking
-	and building a translated XPI.
-txt2po - convert simple text files to PO
-csv2po - convert PO format to CSV for editing in a spreadsheet program
-ts2po  - convert Qt Linguist (.ts) files to PO
-html2po - convert HTML to PO (beta)
-pot2po - PO file initialiser
-prop2po - convert Java .properties files to PO
-dtd2po - for conversion of DTD to PO (used by moz2po)
+moz2po   - convert from a Mozilla XPI file and PO.  Including unpacking
+           and building a translated XPI.
+csv2po   - convert PO format to CSV for editing in a spreadsheet program
+php2po   - PHP localisable string arrays converter.
+ts2po    - convert Qt Linguist (.ts) files to PO
+txt2po   - convert simple text files to PO
+html2po  - convert HTML to PO (beta)
+xliff2po - XLIFF (XML Localisation Interchange File Format) converter
+prop2po  - convert Java .properties files to PO
+po2wordfast - Wordfast Translation Memory converter
+po2tmx   - TMX (Translation Memory Exchange) converter
+pot2po   - PO file initialiser
+csv2tbx  - Create TBX (TermBase eXchange) files from Comma Separated Value (CSV) files
 
-* Tools
-pocompile - create a Gettext MO files from PO or XLIFF files
-pomerge - merge corrected translations from pofilter back into your existing
-	PO files.
-pogrep - find words in PO files
+* Tools (Quality Assurance)
 pofilter - run any of the 40+ checks on your PO files
-podebug - Create comment in your PO files' msgstr which can then be used to quickly track down
-	mistranslations as the comments appear in the application.
+pomerge  - merge corrected translations from pofilter back into your existing
+           PO files.
 poconflicts - identify conflicting use of terms
-pocount - count translatable file formats (PO, XLIFF)
+porestructure - restructures po files according to poconflict directives
+pogrep   - find words in PO files
+
+* Tools (Other)
+pocompile - create a Gettext MO files from PO or XLIFF files
+pocount   - count translatable file formats (PO, XLIFF)
+podebug   - Create comment in your PO files' msgstr which can then be used to quickly 
+            track down mistranslations as the comments appear in the application.
+posegment - Break a PO or XLIFF files into sentence segments, useful 
+            for creating a segmented translation memory.
+poswap    - uses a translation of another language that you would rather use 
+            than English as source language
+
