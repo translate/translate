@@ -35,7 +35,7 @@ project=$3
 rm_accel="-su"
 
 output=glossary
-tmpdir=$(mktemp -d)
+tmpdir=$(mktemp -d tmp.XXXXXXXXXX)
 scriptpath=$(dirname $0)
 
 pogrep --header --search=msgid -e "^\w+(\s+\w+){0,$words}$" $input $tmpdir/short

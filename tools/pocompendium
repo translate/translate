@@ -95,7 +95,7 @@ fi
 output=$1
 shift
 
-tmp_dir=`mktemp -d`
+tmp_dir=`mktemp -d tmp.XXXXXXXXXX`
 
 if [ $1 == "-d" ]; then
 	shift
@@ -160,14 +160,14 @@ msgcat -o $output `find $tmp_dir -name "*.po"`
 
 # Extract only errors if requested
 if [ $option_errors -eq 1 ] ; then
-	tmp=`mktemp`
+	tmp=`mktemp tmp.XXXXXXXXXX`
 	msgattrib --only-fuzzy $output > $tmp
 	mv $tmp $output
 fi
 
 # Extract only correct translations if requested
 if [ $option_correct -eq 1 ] ; then
-	tmp=`mktemp`
+	tmp=`mktemp tmp.XXXXXXXXXX`
 	msgattrib --translated --no-fuzzy $output > $tmp
 	mv $tmp $output
 fi

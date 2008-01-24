@@ -93,7 +93,7 @@ do
 	rm -f `find po-updated/$lang -name "*.po"`
 	
 	# Protect the real original PO dir
-	temp_po=`mktemp -d`
+	temp_po=`mktemp -d tmp.XXXXXXXXXX`
 	cp -rp po/$lang/* $temp_po
 	
 	##### Hacks - pre po2moz ########
