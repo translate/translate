@@ -52,6 +52,10 @@ def convertmo(inputfile, outputfile, templatefile, includefuzzy=False):
         return 0
     convertor = POCompile()
     outputmo = convertor.convertfile(inputstore, includefuzzy)
+    # We have to make sure that we write the files in binary mode, therefore we
+    # reopen the file accordingly
+    outputfile.close()
+    outputfile = open(outputfile.name, 'wb')
     outputfile.write(outputmo)
     return 1
 
