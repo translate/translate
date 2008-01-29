@@ -34,13 +34,13 @@ from translate.storage import base
 from translate.storage import csvl10n
 from translate.storage import mo
 from translate.storage import po
-#Although poxliff is unused in this module, it is referenced in test_factory
 from translate.storage import qm
 from translate.storage import wordfast
 #Let's try to import the XML formats carefully. They might fail if the user
 #doesn't have lxml installed. Let's try to continue gracefully, but print an 
 #informative warning.
 try:
+    #Although poxliff is unused in this module, it is referenced in test_factory
     from translate.storage import poxliff
     from translate.storage import tbx
     from translate.storage import tmx
