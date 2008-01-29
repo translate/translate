@@ -27,6 +27,7 @@ http://trific.ath.cx/python/levenshtein/
 """
 
 import math
+import sys
 
 def python_distance(a, b, stopvalue=-1):
     """Calculates the distance for use in similarity calculation. Python
@@ -67,6 +68,7 @@ try:
     import Levenshtein as Levenshtein
     distance = native_distance
 except Exception:
+    print >> sys.stderr, "Python-Levenshtein not found. Continuing with built-in (slower) fuzzy matching."
     distance = python_distance
 
 class LevenshteinComparer:
