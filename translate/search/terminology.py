@@ -20,7 +20,6 @@
 
 """A class that does terminology matching"""
 
-from translate.search import segment
 import re
 
 # We don't want to miss certain forms of words that only change a little
@@ -36,6 +35,8 @@ ignorepatterns = [("y\s*$", "ie"),          #category/categories, identify/ident
                   (" ", "-"),               #pre order / pre-order
                  ]
 
+#TODO: compile regexes
+
 class TerminologyComparer:
     def __init__(self, max_len=500):
         self.MAX_LEN = max_len
@@ -43,12 +44,10 @@ class TerminologyComparer:
     def similarity(self, a, b, stoppercentage=40):
         """returns the match quality of term b in the text a"""
         # We could segment the words, but mostly it will give less ideal 
-        # results, since we'll miss plurals, etc.  We also can't search for
-        # multiword terms, such as "Free Software"
+        # results, since we'll miss plurals, etc. Then we also can't search for
+        # multiword terms, such as "Free Software". Ideally we should use a 
+        # stemmer, like the Porter stemmer.
         
-        #words = segment.words(a)
-        #if b in words:
-
         # So we just see if the word occurs anywhere. This is not perfect since
         # we might get more than we bargained for. The term "form" will be found
         # in the word "format", for example. A word like "at" will trigger too
