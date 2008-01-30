@@ -207,7 +207,7 @@ class TranslationUnit(object):
         
         """
 
-        return []
+        return {}
 
     def markreviewneeded(self, needsreview=True, explanation=None):
         """Marks the unit to indicate whether it needs review.
