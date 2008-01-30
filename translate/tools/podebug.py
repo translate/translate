@@ -76,7 +76,7 @@ class podebug:
             unit.target = prefix + unit.target
         return unit
 
-    def convertfile(self, store):
+    def convertstore(self, store):
         filename = self.shrinkfilename(store.filename)
         prefix = self.format
         for formatstr in re.findall("%[0-9c]*[sfFbBd]", self.format):
@@ -133,7 +133,7 @@ def convertpo(inputfile, outputfile, templatefile, format=None, rewritestyle=Non
     if inputstore.isempty():
         return 0
     convertor = podebug(format=format, rewritestyle=rewritestyle, hash=hash)
-    outputstore = convertor.convertfile(inputstore)
+    outputstore = convertor.convertstore(inputstore)
     outputfile.write(str(outputstore))
     return 1
 

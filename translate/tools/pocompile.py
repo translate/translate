@@ -27,7 +27,7 @@ from translate.storage import mo
 
 class POCompile:
 
-    def convertfile(self, inputfile, includefuzzy=False):
+    def convertstore(self, inputfile, includefuzzy=False):
         outputfile = mo.mofile()
         for unit in inputfile.units:
             if unit.istranslated() or (unit.isfuzzy() and includefuzzy and unit.target):
@@ -51,7 +51,7 @@ def convertmo(inputfile, outputfile, templatefile, includefuzzy=False):
     if inputstore.isempty():
         return 0
     convertor = POCompile()
-    outputmo = convertor.convertfile(inputstore, includefuzzy)
+    outputmo = convertor.convertstore(inputstore, includefuzzy)
     # We have to make sure that we write the files in binary mode, therefore we
     # reopen the file accordingly
     outputfile.close()
