@@ -1,19 +1,28 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from translate.storage import po
-from translate.storage import xliff
+from translate.storage import factory
 from translate.filters import pofilter
 from translate.filters import checks
 from translate.misc import wStringIO
 
 class BaseTestFilter(object):
     """Base class for filter tests."""
+
+    filename = ""
+
+    def parse_text(self, filetext):
+        """helper that parses xliff file content without requiring files"""
+        dummyfile = wStringIO.StringIO(filetext)
+        dummyfile.name = self.filename
+        store = factory.getobject(dummyfile)
+        return store
+
     def filter(self, translationstore, checkerconfig=None, cmdlineoptions=None):
         """Helper that passes a translations store through a filter, and returns the resulting store."""
         if cmdlineoptions is None:
             cmdlineoptions = []
-        options, args = pofilter.cmdlineparser().parse_args(["xxx.po"] + cmdlineoptions)
+        options, args = pofilter.cmdlineparser().parse_args([self.filename] + cmdlineoptions)
         checkerclasses = [checks.StandardChecker, checks.StandardUnitChecker]
         if checkerconfig is None:
             checkerconfig = checks.CheckerConfig()
@@ -142,21 +151,16 @@ class BaseTestFilter(object):
 class TestPOFilter(BaseTestFilter):
     """Test class for po-specific tests."""
     filetext = '#: test.c\nmsgid "test"\nmsgstr "rest"\n'
-
-    def poparse(self, posource):
-        """helper that parses po source without requiring files"""
-        dummyfile = wStringIO.StringIO(posource)
-        pofile = po.pofile(dummyfile)
-        return pofile
+    filename = 'test.po'
 
     def setup_method(self, method):
-        self.translationstore = self.poparse(self.filetext)
+        self.translationstore = self.parse_text(self.filetext)
         self.unit = self.translationstore.units[0]
 
     def test_msgid_comments(self):
         """Tests that msgid comments don't feature anywhere."""
         posource = 'msgid "_: Capital.  ACRONYMN. (msgid) comment 3. %d Extra sentence.\\n"\n"cow"\nmsgstr "koei"\n'
-        pofile = self.poparse(posource)
+        pofile = self.parse_text(posource)
         filter_result = self.filter(pofile)
         if len(filter_result.units):
             print filter_result.units[0]
@@ -175,12 +179,7 @@ class TestXliffFilter(BaseTestFilter):
   </body>
 </file>
 </xliff>'''
-
-    def xliffparse(self, filetext):
-        """helper that parses xliff file content without requiring files"""
-        dummyfile = wStringIO.StringIO(filetext)
-        xliffstore = xliff.xlifffile(dummyfile)
-        return xliffstore
+    filename = "test.xlf"
 
     def set_store_review(review=True):
         self.filetext = '''<?xml version="1.0" encoding="utf-8"?>
@@ -195,9 +194,9 @@ class TestXliffFilter(BaseTestFilter):
 </file>
 </xliff>'''
 
-        self.translationstore = self.xliffparse(self.filetext)
+        self.translationstore = self.parse_text(self.filetext)
         self.unit = self.translationstore.units[0]
 
     def setup_method(self, method):
-        self.translationstore = self.xliffparse(self.filetext)
+        self.translationstore = self.parse_text(self.filetext)
         self.unit = self.translationstore.units[0]
