@@ -200,3 +200,42 @@ class TestXliffFilter(BaseTestFilter):
     def setup_method(self, method):
         self.translationstore = self.parse_text(self.filetext)
         self.unit = self.translationstore.units[0]
+
+class TestTMXFilter(BaseTestFilter):
+    """Test class for TMX-specific tests."""
+    filetext = '''<!DOCTYPE tmx SYSTEM "tmx14.dtd">
+<tmx version="1.4">
+  <header creationtool="Translate Toolkit - po2tmx" creationtoolversion="1.1.1rc1" segtype="sentence" o-tmf="UTF-8" adminlang="en" srclang="en
+" datatype="PlainText"/>
+  <body>
+    <tu>
+      <tuv xml:lang="en">
+        <seg>test</seg>
+      </tuv>
+      <tuv xml:lang="af">
+        <seg>rest</seg>
+      </tuv>
+    </tu>
+  </body>
+</tmx>'''
+    filename = "test.tmx"
+
+    def setup_method(self, method):
+        self.translationstore = self.parse_text(self.filetext)
+        self.unit = self.translationstore.units[0]
+
+    def test_test_against_fuzzy(self):
+        """TMX doesn't support fuzzy"""
+        pass
+
+    def test_test_against_review(self):
+        """TMX doesn't support review"""
+        pass
+
+    def test_isfuzzy(self):
+        """TMX doesn't support fuzzy"""
+        pass
+
+    def test_isreview(self):
+        """TMX doesn't support review"""
+        pass
