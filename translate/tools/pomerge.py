@@ -102,32 +102,9 @@ def mergepo(inputfile, outputfile, templatefile, mergeblanks="no", mergecomments
     inputstore = factory.getobject(inputfile)
     if templatefile is None:
         # just merge nothing
-        templatestore = po.pofile()
+        templatestore = type(inputstore)()
     else:
-        templatestore = po.pofile(templatefile)
-    templatestore.makeindex()
-    inputstore.makeindex()
-    outputstore = mergepofiles(templatestore, inputstore, mergeblanks, mergecomments)
-    if outputstore.isempty():
-        return 0
-    outputfile.write(str(outputstore))
-    return 1
-
-def mergexliff(inputfile, outputfile, templatefile, mergeblanks="no", mergecomments="yes"):
-    try:
-        mergecomments = str2bool(mergecomments)
-    except ValueError:
-        raise ValueError("invalid mergecomments value: %r" % mergecomments)
-    try:
-        mergeblanks = str2bool(mergeblanks)
-    except ValueError:
-        raise ValueError("invalid mergeblanks value: %r" % mergeblanks)
-    inputstore = factory.getobject(inputfile)
-    if templatefile is None:
-        # just merge nothing
-        templatestore = xliff.xlifffile()
-    else:
-        templatestore = xliff.xlifffile(templatefile)
+        templatestore = factory.getobject(templatefile)
     templatestore.makeindex()
     inputstore.makeindex()
     outputstore = mergepofiles(templatestore, inputstore, mergeblanks, mergecomments)
@@ -140,7 +117,7 @@ def main():
     from translate.convert import convert
     pooutput = ("po", mergepo)
     potoutput = ("pot", mergepo)
-    xliffoutput = ("xlf", mergexliff)
+    xliffoutput = ("xlf", mergepo)
     formats = {("po", "po"): pooutput, ("po", "pot"): pooutput, ("pot", "po"): pooutput, ("pot", "pot"): potoutput,
                 "po": pooutput, "pot": pooutput,
                 ("xlf", "po"): pooutput, ("xlf", "pot"): pooutput,
