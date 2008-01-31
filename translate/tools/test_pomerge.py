@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from translate.tools import pomerge
+from translate.storage import factory
 from translate.storage import po
 from translate.storage import xliff 
 from translate.misc import wStringIO
@@ -16,12 +17,12 @@ class TestPOMerge:
   </file>
 </xliff>'''
 
-    def mergepo(self, templatesource, inputsource):
+    def mergestore(self, templatesource, inputsource):
         """merges the sources of the given files and returns a new pofile object"""
         templatefile = wStringIO.StringIO(templatesource)
         inputfile = wStringIO.StringIO(inputsource)
         outputfile = wStringIO.StringIO()
-        assert pomerge.mergepo(inputfile, outputfile, templatefile)
+        assert pomerge.mergestore(inputfile, outputfile, templatefile)
         outputpostring = outputfile.getvalue()
         outputpofile = po.pofile(outputpostring)
         return outputpofile
@@ -31,7 +32,7 @@ class TestPOMerge:
         templatefile = wStringIO.StringIO(templatesource)
         inputfile = wStringIO.StringIO(inputsource)
         outputfile = wStringIO.StringIO()
-        assert pomerge.mergexliff(inputfile, outputfile, templatefile)
+        assert pomerge.mergestore(inputfile, outputfile, templatefile)
         outputxliffstring = outputfile.getvalue()
         print "Generated XML:"
         print outputxliffstring
@@ -54,7 +55,7 @@ class TestPOMerge:
         """checks that a simple po entry merges OK"""
         templatepo = '''#: simple.test\nmsgid "Simple String"\nmsgstr ""\n'''
         inputpo = '''#: simple.test\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n'''
-        pofile = self.mergepo(templatepo, inputpo)
+        pofile = self.mergestore(templatepo, inputpo)
         pounit = self.singleunit(pofile)
         assert pounit.source == "Simple String"
         assert pounit.target == "Dimpled Ring"
@@ -63,7 +64,7 @@ class TestPOMerge:
         """checks that a simple po entry merges OK"""
         templatepo = '''#: simple.test\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n'''
         inputpo = '''#: simple.test\nmsgid "Simple String"\nmsgstr "Dimpled King"\n'''
-        pofile = self.mergepo(templatepo, inputpo)
+        pofile = self.mergestore(templatepo, inputpo)
         pounit = self.singleunit(pofile)
         assert pounit.source == "Simple String"
         assert pounit.target == "Dimpled King"
@@ -73,7 +74,7 @@ class TestPOMerge:
         templatepo = '''#: location.c:1\n#: location.c:2\nmsgid "Simple String"\nmsgstr ""\n'''
         inputpo = '''#: location.c:1\n#: location.c:2\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n'''
         expectedpo = '''#: location.c:1%slocation.c:2\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n''' % po.lsep
-        pofile = self.mergepo(templatepo, inputpo)
+        pofile = self.mergestore(templatepo, inputpo)
         print pofile
         assert str(pofile) == expectedpo
 
@@ -82,7 +83,7 @@ class TestPOMerge:
         templatepo = '''#: newMenu.label\n#: newMenu.accesskey\nmsgid "&New"\nmsgstr ""\n'''
         newpo = '''#: newMenu.label newMenu.accesskey\nmsgid "&New"\nmsgstr "&Nuwe"\n'''
         expectedpo = '''#: newMenu.label%snewMenu.accesskey\nmsgid "&New"\nmsgstr "&Nuwe"\n''' % po.lsep
-        pofile = self.mergepo(templatepo, newpo)
+        pofile = self.mergestore(templatepo, newpo)
         pounit = self.singleunit(pofile)
         print pofile
         assert str(pofile) == expectedpo
@@ -98,7 +99,7 @@ msgstr "blabla"
 '''
         newpo = templatepo
         expectedpo =  templatepo
-        pofile = self.mergepo(templatepo, newpo)
+        pofile = self.mergestore(templatepo, newpo)
         pounit = self.singleunit(pofile)
         print pofile
         assert str(pofile) == expectedpo
@@ -108,7 +109,7 @@ msgstr "blabla"
         templatepo = '''# Lonely comment\n\n# Translation comment\nmsgid "Bob"\nmsgstr "Toolmaker"\n'''
         mergepo = '''# Translation comment\nmsgid "Bob"\nmsgstr "Builder"\n'''
         expectedpo = '''# Lonely comment\n\n# Translation comment\nmsgid "Bob"\nmsgstr "Builder"\n'''
-        pofile = self.mergepo(templatepo, mergepo)
+        pofile = self.mergestore(templatepo, mergepo)
 #        pounit = self.singleunit(pofile)
         print pofile
         assert str(pofile) == expectedpo
@@ -118,14 +119,14 @@ msgstr "blabla"
         templatepo = '''msgid "Simple string\\n"\nmsgstr ""\n'''
         mergepo = '''msgid "Simple string\\n"\nmsgstr "Dimpled ring\\n"\n'''
         expectedpo = '''msgid "Simple string\\n"\nmsgstr "Dimpled ring\\n"\n'''
-        pofile = self.mergepo(templatepo, mergepo)
+        pofile = self.mergestore(templatepo, mergepo)
         print "Expected:\n%s\n\nMerged:\n%s" % (expectedpo, str(pofile))
         assert str(pofile) == expectedpo
 
         templatepo = '''msgid ""\n"Simple string\\n"\nmsgstr ""\n'''
         mergepo = '''msgid ""\n"Simple string\\n"\nmsgstr ""\n"Dimpled ring\\n"\n'''
         expectedpo = '''msgid ""\n"Simple string\\n"\nmsgstr "Dimpled ring\\n"\n'''
-        pofile = self.mergepo(templatepo, mergepo)
+        pofile = self.mergestore(templatepo, mergepo)
         print "Expected:\n%s\n\nMerged:\n%s" % (expectedpo, str(pofile))
         assert str(pofile) == expectedpo
 
@@ -134,21 +135,21 @@ msgstr "blabla"
         templatepo = '''msgid "Target type:"\nmsgstr "Doelsoort"\n\n'''
         mergepo = '''msgid "Target type:"\nmsgstr "Doelsoort:"\n'''
         expectedpo = mergepo
-        pofile = self.mergepo(templatepo, mergepo)
+        pofile = self.mergestore(templatepo, mergepo)
         print "Expected:\n%s\n\nMerged:\n%s" % (expectedpo, str(pofile))
         assert str(pofile) == expectedpo
 
         templatepo = '''msgid "&Select"\nmsgstr "Kies"\n\n'''
         mergepo = '''msgid "&Select"\nmsgstr "&Kies"\n'''
         expectedpo = mergepo
-        pofile = self.mergepo(templatepo, mergepo)
+        pofile = self.mergestore(templatepo, mergepo)
         print "Expected:\n%s\n\nMerged:\n%s" % (expectedpo, str(pofile))
         assert str(pofile) == expectedpo
 
         templatepo = '''msgid "en-us, en"\nmsgstr "en-us, en"\n'''
         mergepo = '''msgid "en-us, en"\nmsgstr "af-za, af, en-za, en-gb, en-us, en"\n'''
         expectedpo = mergepo
-        pofile = self.mergepo(templatepo, mergepo)
+        pofile = self.mergestore(templatepo, mergepo)
         print "Expected:\n%s\n\nMerged:\n%s" % (expectedpo, str(pofile))
         assert str(pofile) == expectedpo
 
@@ -157,14 +158,14 @@ msgstr "blabla"
         templatepo = '''msgid "First"\nmsgstr ""\n\nmsgid "Second"\nmsgstr ""\n'''
         mergepo = '''msgid "First"\nmsgstr "Eerste"\n\nmsgid "Second"\nmsgstr "Tweede"\n'''
         expectedpo = '''msgid "First"\nmsgstr "Eerste"\n\nmsgid "Second"\nmsgstr "Tweede"\n'''
-        pofile = self.mergepo(templatepo, mergepo)
+        pofile = self.mergestore(templatepo, mergepo)
         print "Expected:\n%s\n\nMerged:\n%s" % (expectedpo, str(pofile))
         assert str(pofile) == expectedpo
 
         templatepo = '''msgid "First"\nmsgstr ""\n\nmsgid "Second"\nmsgstr ""\n\n'''
         mergepo = '''msgid "First"\nmsgstr "Eerste"\n\nmsgid "Second"\nmsgstr "Tweede"\n'''
         expectedpo = '''msgid "First"\nmsgstr "Eerste"\n\nmsgid "Second"\nmsgstr "Tweede"\n'''
-        pofile = self.mergepo(templatepo, mergepo)
+        pofile = self.mergestore(templatepo, mergepo)
         print "Expected:\n%s\n\nMerged:\n%s" % (expectedpo, str(pofile))
         assert str(pofile) == expectedpo
 
@@ -177,7 +178,7 @@ msgstr "blabla"
         expectedpo = r'''imsgid "First\tSecond"
 msgstr "Eerste\tTweede"
 '''
-        pofile = self.mergepo(templatepo, mergepo)
+        pofile = self.mergestore(templatepo, mergepo)
         print "Expected:\n%s\n\nMerged:\n%s" % (expectedpo, str(pofile))
         assert str(pofile) == expectedpo
 
@@ -186,7 +187,7 @@ msgstr "Eerste\tTweede"
         templatepo = '''#: filename\nmsgid "Desktop Background.bmp"\nmsgstr "Desktop Background.bmp"\n\n'''
         mergepo = '''# (pofilter) unchanged: please translate\n#: filename\nmsgid "Desktop Background.bmp"\nmsgstr "Desktop Background.bmp"\n'''
         expectedpo = mergepo
-        pofile = self.mergepo(templatepo, mergepo)
+        pofile = self.mergestore(templatepo, mergepo)
         print "Expected:\n%s\n\nMerged:\n%s" % (expectedpo, str(pofile))
         assert str(pofile) == expectedpo
 
@@ -195,21 +196,21 @@ msgstr "Eerste\tTweede"
         templatepo = '''# User comment\n# (pofilter) Translate Toolkit comment\n#. Automatic comment\n#: location_comment.c:110\nmsgid "File"\nmsgstr "File"\n\n'''
         mergepo =  '''# User comment\r\n# (pofilter) Translate Toolkit comment\r\n#. Automatic comment\r\n#: location_comment.c:110\r\nmsgid "File"\r\nmsgstr "Ifayile"\r\n\r\n'''
         expectedpo = '''# User comment\n# (pofilter) Translate Toolkit comment\n#. Automatic comment\n#: location_comment.c:110\nmsgid "File"\nmsgstr "Ifayile"\n'''
-        pofile = self.mergepo(templatepo, mergepo)
+        pofile = self.mergestore(templatepo, mergepo)
         assert str(pofile) == expectedpo
 
         # Unassociated comment
         templatepo = '''# Lonely comment\n\n#: location_comment.c:110\nmsgid "Bob"\nmsgstr "Toolmaker"\n'''
         mergepo = '''# Lonely comment\r\n\r\n#: location_comment.c:110\r\nmsgid "Bob"\r\nmsgstr "Builder"\r\n\r\n'''
         expectedpo = '''# Lonely comment\n\n#: location_comment.c:110\nmsgid "Bob"\nmsgstr "Builder"\n'''
-        pofile = self.mergepo(templatepo, mergepo)
+        pofile = self.mergestore(templatepo, mergepo)
         assert str(pofile) == expectedpo
 
         # New comment
         templatepo = '''#: location_comment.c:110\nmsgid "File"\nmsgstr "File"\n\n'''
         mergepo =  '''# User comment\r\n# (pofilter) Translate Toolkit comment\r\n#: location_comment.c:110\r\nmsgid "File"\r\nmsgstr "Ifayile"\r\n\r\n'''
         expectedpo = '''# User comment\n# (pofilter) Translate Toolkit comment\n#: location_comment.c:110\nmsgid "File"\nmsgstr "Ifayile"\n'''
-        pofile = self.mergepo(templatepo, mergepo)
+        pofile = self.mergestore(templatepo, mergepo)
         assert str(pofile) == expectedpo
 
     def test_xliff_into_xliff(self):
@@ -246,7 +247,7 @@ msgstr "Eerste\tTweede"
         <target>rooi</target>
 </trans-unit>'''
         expectedpo = '# my comment\nmsgid "red"\nmsgstr "rooi"\n'
-        pofile = self.mergepo(templatepo, mergexliff)
+        pofile = self.mergestore(templatepo, mergexliff)
         assert str(pofile) == expectedpo
 
     def test_merging_dont_merge_kde_comments_found_in_translation(self):
@@ -255,7 +256,7 @@ msgstr "Eerste\tTweede"
         templatepo = '''msgid "_: KDE comment\\n"\n"File"\nmsgstr "File"\n\n'''
         mergepo = '''msgid "_: KDE comment\\n"\n"File"\nmsgstr "_: KDE comment\\n"\n"Ifayile"\n\n'''
         expectedpo = '''msgid ""\n"_: KDE comment\\n"\n"File"\nmsgstr "Ifayile"\n'''
-        pofile = self.mergepo(templatepo, mergepo)
+        pofile = self.mergestore(templatepo, mergepo)
         print "Expected:\n%s\n\nMerged:\n%s" % (expectedpo, str(pofile))
         assert str(pofile) == expectedpo
         
@@ -268,7 +269,7 @@ msgstr "Eerste\tTweede"
         templatepo = '''msgid "_: KDE "\n"comment\\n"\n"File"\nmsgstr "File"\n\n'''
         mergepo = '''msgid "_: KDE "\n"comment\\n"\n"File"\nmsgstr "_: KDE "\n"comment\\n"\n"Ifayile"\n\n'''
         expectedpo = '''msgid ""\n"_: KDE comment\\n"\n"File"\nmsgstr "Ifayile"\n'''
-        pofile = self.mergepo(templatepo, mergepo)
+        pofile = self.mergestore(templatepo, mergepo)
         print "Expected:\n%s\n\nMerged:\n%s" % (expectedpo, str(pofile))
         assert str(pofile) == expectedpo
 
@@ -299,7 +300,7 @@ msgid ""
 msgstr "Stuur"
 ''' % (po.lsep, po.lsep)
         expectedpo = mergepo
-        pofile = self.mergepo(templatepo, mergepo)
+        pofile = self.mergestore(templatepo, mergepo)
         print "Expected:\n%s\n---\nMerged:\n%s\n---" % (expectedpo, str(pofile))
         assert str(pofile) == expectedpo
 
@@ -361,6 +362,6 @@ msgstr ""
 msgid "Simple String"
 msgstr "Dimpled Ring"
 '''
-        pofile = self.mergepo(templatepo, mergepo)
+        pofile = self.mergestore(templatepo, mergepo)
         print "Expected:\n%s\n---\nMerged:\n%s\n---" % (expectedpo, str(pofile))
         assert str(pofile) == expectedpo
