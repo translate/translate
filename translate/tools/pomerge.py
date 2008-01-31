@@ -27,7 +27,7 @@ from translate.storage import po
 from translate.storage import xliff 
 from translate.storage.poheader import poheader
 
-def mergepofiles(store1, store2, mergeblanks, mergecomments):
+def mergestores(store1, store2, mergeblanks, mergecomments):
     """Take any new translations in store2 and write them into store1."""
 
     for unit2 in store2.units:
@@ -90,7 +90,7 @@ def str2bool(option):
     else:
         raise ValueError("invalid boolean value: %r" % option)
 
-def mergepo(inputfile, outputfile, templatefile, mergeblanks="no", mergecomments="yes"):
+def mergestore(inputfile, outputfile, templatefile, mergeblanks="no", mergecomments="yes"):
     try:
         mergecomments = str2bool(mergecomments)
     except ValueError:
@@ -107,7 +107,7 @@ def mergepo(inputfile, outputfile, templatefile, mergeblanks="no", mergecomments
         templatestore = factory.getobject(templatefile)
     templatestore.makeindex()
     inputstore.makeindex()
-    outputstore = mergepofiles(templatestore, inputstore, mergeblanks, mergecomments)
+    outputstore = mergestores(templatestore, inputstore, mergeblanks, mergecomments)
     if outputstore.isempty():
         return 0
     outputfile.write(str(outputstore))
@@ -115,9 +115,9 @@ def mergepo(inputfile, outputfile, templatefile, mergeblanks="no", mergecomments
 
 def main():
     from translate.convert import convert
-    pooutput = ("po", mergepo)
-    potoutput = ("pot", mergepo)
-    xliffoutput = ("xlf", mergepo)
+    pooutput = ("po", mergestore)
+    potoutput = ("pot", mergestore)
+    xliffoutput = ("xlf", mergestore)
     formats = {("po", "po"): pooutput, ("po", "pot"): pooutput, ("pot", "po"): pooutput, ("pot", "pot"): potoutput,
                 "po": pooutput, "pot": pooutput,
                 ("xlf", "po"): pooutput, ("xlf", "pot"): pooutput,
