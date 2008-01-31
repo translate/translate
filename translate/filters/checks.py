@@ -180,7 +180,7 @@ class CheckerConfig(object):
         """combines the info in otherconfig into this config object"""
         self.targetlanguage = otherconfig.targetlanguage or self.targetlanguage
         self.updatetargetlanguage(self.targetlanguage)
-        self.accelmarkers.extend(otherconfig.accelmarkers)
+        self.accelmarkers.extend([c for c in otherconfig.accelmarkers if not c in self.accelmarkers])
         self.varmatches.extend(otherconfig.varmatches)
         self.notranslatewords.update(otherconfig.notranslatewords)
         self.musttranslatewords.update(otherconfig.musttranslatewords)
