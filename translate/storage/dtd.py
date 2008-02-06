@@ -311,7 +311,8 @@ class dtdfile(base.TranslationStore):
                     break
                 if lines[end].find('<!ENTITY') > -1:
                     foundentity = 1
-                if foundentity and len(lines[end]) == 0:
+                if foundentity and (lines[end].find('">') > -1 or lines[end].find("'>") > -1):
+                    end += 1
                     break
                 end += 1
             # print "processing from %d to %d" % (start,end)
