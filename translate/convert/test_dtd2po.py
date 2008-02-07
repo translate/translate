@@ -215,14 +215,15 @@ class TestDTD2PO:
 
     def test_multiline_with_blankline(self):
         """test that we can process a multiline entity that has a blank line in it, bug 331"""
-        dtdsource = '''\n<!ENTITY multiline.text "
+        dtdsource = '''
+<!ENTITY multiline.text "
 Some text
 
 Some other text
 ">'''
         pofile = self.dtd2po(dtdsource)
         unit = self.singleelement(pofile)
-        assert unit.source == "Some text \n\nSome other text"
+        assert unit.source == "Some text \n \nSome other text"
 
     def test_preserving_spaces(self):
         """test that we preserve space that appear at the start of the first line of a DTD entity"""
