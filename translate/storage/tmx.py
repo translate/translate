@@ -70,6 +70,23 @@ class tmxunit(lisa.LISAunit):
         for note in notes:
             self.xmlelement.remove(note)
 
+    def adderror(self, errorname, errortext):
+        """Adds an error message to this unit."""
+        #TODO: consider factoring out: some duplication between XLIFF and TMX
+        text = errorname + ': ' + errortext
+        self.addnote(text, origin="pofilter")
+
+    def geterrors(self):
+        """Get all error messages."""
+        #TODO: consider factoring out: some duplication between XLIFF and TMX
+        notelist = self.getnotelist(origin="pofilter")
+        errordict = {}
+        for note in notelist:
+            errorname, errortext = note.split(': ')
+            errordict[errorname] = errortext
+        return errordict
+
+
 class tmxfile(lisa.LISAfile):
     """Class representing a TMX file store."""
     UnitClass = tmxunit
