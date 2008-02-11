@@ -43,6 +43,32 @@ class tmxunit(lisa.LISAunit):
         seg.text = text
         return langset
 
+    def addnote(self, text, origin=None):
+        """Add a note specifically in a "note" tag.
+        
+        The origin parameter is ignored"""
+        if isinstance(text, str):
+            text = text.decode("utf-8")
+        note = etree.SubElement(self.xmlelement, self.namespaced("note"))
+        note.text = text.strip()
+ 
+    def getnotelist(self, origin=None):
+        """Private method that returns the text from notes.
+        
+        The origin parameter is ignored.."""
+        note_nodes = self.xmlelement.findall(".//%s" % self.namespaced("note"))
+        note_list = [lisa.getText(note) for note in note_nodes]
+
+        return note_list 
+
+    def getnotes(self, origin=None):
+        return '\n'.join(self.getnotelist(origin=origin))
+
+    def removenotes(self):
+        """Remove all the translator notes."""
+        notes = self.xmlelement.findall(".//%s" % self.namespaced("note"))
+        for note in notes:
+            self.xmlelement.remove(note)
 
 class tmxfile(lisa.LISAfile):
     """Class representing a TMX file store."""
