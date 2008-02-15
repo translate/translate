@@ -78,14 +78,23 @@ def xerror2_cb(severity, message1, filename1, lineno1, column1, nultiline_p1, me
 
 
 # Load libgettextpo
-lib_location = ctypes.util.find_library('gettextpo')
-if not lib_location:
-    gpo = cdll.libgettextpo
+gpo = None
+# 'gettextpo' is recognised on Unix, while only 'libgettextpo' is recognised on
+# windows. Therefore we test both.
+names = ['gettextpo', 'libgettextpo']
+for name in names:
+    lib_location = ctypes.util.find_library(name)
+    if lib_location:
+        gpo = cdll.LoadLibrary(lib_location)
+        if gpo:
+            break
 else:
-    gpo = cdll.LoadLibrary(lib_location)
-if not gpo:
-    raise ImportError("gettext PO library not found")
-
+    # Now we are getting desperate, so let's guess a unix type DLL that might 
+    # be in LD_LIBRARY_PATH or loaded with LD_PRELOAD
+    try:
+        gpo = cdll.LoadLibrary('libgettextpo.so')
+    except OSError, e:
+        raise ImportError("gettext PO library not found")
 
 # Setup return and paramater types
 # File access
