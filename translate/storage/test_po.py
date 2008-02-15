@@ -545,20 +545,22 @@ msgstr "omskakel"
   
     def test_id(self):
         """checks that ids work correctly"""
-        unit = self.StoreClass.UnitClass("Tree")
-        assert unit.getid() == "Tree"
-        unit.source = ["Tree", "Trees"]
-        assert unit.getid() == "Tree\0Trees"
+        posource = r'''
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2006-02-09 23:33+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8-bit\n"
 
-        posource = r'''# Test comment
-#: source1
+msgid "plant"
+msgstr ""
+
 msgid ""
 "_: Noun\n"
 "convert"
 msgstr "bekeerling"
 
-# Test comment 2
-#: source2
 msgctxt "verb"
 msgid ""
 "convert"
@@ -569,7 +571,9 @@ msgid_plural "trees"
 msgstr[0] ""
 '''
         pofile = self.poparse(posource)
-        assert pofile.units[0].getid() == "_: Noun\nconvert"
-        assert pofile.units[1].getid() == "verb\04convert"
-        assert pofile.units[2].getid() == "tree\0trees"
+        assert pofile.units[0].getid() == ""
+        assert pofile.units[1].getid() == "plant"
+        assert pofile.units[2].getid() == "_: Noun\nconvert"
+        assert pofile.units[3].getid() == "verb\04convert"
+        assert pofile.units[4].getid() == "tree\0trees"
 
