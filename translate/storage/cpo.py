@@ -19,8 +19,16 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""classes that hold units of .po files (pounit) or entire files (pofile)
-gettext-style .po (or .pot) files are used in translations for KDE et al (see kbabel)"""
+"""Classes that hold units of .po files (pounit) or entire files (pofile).
+
+Gettext-style .po (or .pot) files are used in translations for KDE, GNOME and
+many other projects.
+
+This uses libgettextpo from the gettext package. Any version before 0.17 will
+at least cause some subtle bugs or may not work at all. Developers might want
+to have a look at gettext-tools/libgettextpo/gettext-po.h from the gettext
+package for the public API of the library.
+"""
 
 from translate.misc.multistring import multistring
 from translate.storage import pocommon
