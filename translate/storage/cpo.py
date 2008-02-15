@@ -383,9 +383,7 @@ class pounit(pocommon.pounit):
     def isheader(self):
         #return self.source == u"" and self.target != u""
         # we really want to make sure that there is no msgidcomment or msgctxt
-        return gpo.po_message_msgid(self._gpo_message) == u"" and \
-                self.target != u"" and \
-                gpo.po_message_msgctxt(self._gpo_message) != u""
+        return self.getid() == "" and len(self.target) > 0
 
     def isblank(self):
         return len(self.source) == 0 and len(self.target) == 0
