@@ -543,3 +543,33 @@ msgstr "omskakel"
         assert unit.getcontext() == 'Verb. _: The action of changing.'
         assert unit.getnotes() == 'Test comment 2'
   
+    def test_id(self):
+        """checks that ids work correctly"""
+        unit = self.StoreClass.UnitClass("Tree")
+        assert unit.getid() == "Tree"
+        unit.source = ["Tree", "Trees"]
+        assert unit.getid() == "Tree\0Trees"
+
+        posource = r'''# Test comment
+#: source1
+msgid ""
+"_: Noun\n"
+"convert"
+msgstr "bekeerling"
+
+# Test comment 2
+#: source2
+msgctxt "verb"
+msgid ""
+"convert"
+msgstr "omskakel"
+
+msgid "tree"
+msgid_plural "trees"
+msgstr[0] ""
+'''
+        pofile = self.poparse(posource)
+        assert pofile.units[0].getid() == "_: Noun\nconvert"
+        assert pofile.units[1].getid() == "verb\04convert"
+        assert pofile.units[2].getid() == "tree\0trees"
+
