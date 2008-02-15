@@ -636,13 +636,15 @@ class pofile(pocommon.pofile):
             newunit = pounit(gpo_message=newmessage)
             self.units.append(newunit)
             newmessage = gpo.po_next_message(self._gpo_message_iterator)
-#        self._free_iterator()
+        self._free_iterator()
 
-#    def __del__(self):
-#        self._free_iterator()
-#        if self._gpo_memory_file is not None:
-#            gpo.po_file_free(self._gpo_memory_file)
-#
-#    def _free_iterator(self):
-#        if self._gpo_message_iterator is not None:
-#            gpo.po_message_iterator_free(self._gpo_message_iterator)
+    def __del__(self):
+        self._free_iterator()
+        if self._gpo_memory_file is not None:
+            gpo.po_file_free(self._gpo_memory_file)
+            self._gpo_memory_file = None
+
+    def _free_iterator(self):
+        if self._gpo_message_iterator is not None:
+            gpo.po_message_iterator_free(self._gpo_message_iterator)
+            self._gpo_message_iterator = None
