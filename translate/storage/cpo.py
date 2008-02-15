@@ -255,6 +255,18 @@ class pounit(pocommon.pounit):
                 gpo.po_message_set_msgstr(self._gpo_message, target)
     target = property(gettarget, settarget)
 
+    def getid(self):
+        """The unique identifier for this unit according to the convensions in
+        .mo files."""
+        id = gpo.po_message_msgid(self._gpo_message)
+        plural = gpo.po_message_msgid_plural(self._gpo_message)
+        if not plural is None:
+            id = '%s\0%s' % (id, plural)
+        context = gpo.po_message_msgctxt(self._gpo_message)
+        if context:
+            id = "%s\04%s" % (context, id)
+        return id
+
     def getnotes(self, origin=None):
         if origin == None:
             comments = gpo.po_message_comments(self._gpo_message) + \
