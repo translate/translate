@@ -78,8 +78,8 @@ def xerror_cb(severity, message, filename, lineno, column, multilint_p, message_
     if severity == 2:
         raise ValueError(message_text)
 
-def xerror2_cb(severity, message1, filename1, lineno1, column1, nultiline_p1, message_text1, message2, filename2, lineno2, column2, multiline_p2, message_text2):
-    print >> sys.stderr, "xerror2_cb", severity, message1, filename1, lineno1, column1, nultiline_p1, message_text1, message2, filename2, lineno2, column2, multiline_p2, message_text2
+def xerror2_cb(severity, message1, filename1, lineno1, column1, multiline_p1, message_text1, message2, filename2, lineno2, column2, multiline_p2, message_text2):
+    print >> sys.stderr, "xerror2_cb", severity, message1, filename1, lineno1, column1, multiline_p1, message_text1, message2, filename2, lineno2, column2, multiline_p2, message_text2
     if severity == 2:
         raise ValueError(message_text)
 
