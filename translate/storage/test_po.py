@@ -119,6 +119,16 @@ class TestPOUnit(test_base.TestTranslationUnit):
         kdetext = "_: Simple comment\nsimple text"
         assert unit._extract_msgidcomments(kdetext) == "Simple comment"
 
+    def test_isheader(self):
+        """checks that we deal correctly with headers."""
+        unit = self.UnitClass()
+        unit.target = "PO-Revision-Date: 2006-02-09 23:33+0200\n"
+        assert unit.isheader()
+        unit.source = "Some English string"
+        assert not unit.isheader()
+        unit.source = u"Goeiemôre"
+        assert not unit.isheader()
+
 class TestPOFile(test_base.TestTranslationStore):
     StoreClass = po.pofile
     def poparse(self, posource):
