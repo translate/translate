@@ -282,7 +282,7 @@ class pounit(pocommon.pounit):
         context = gpo.po_message_msgctxt(self._gpo_message)
         if context:
             id = "%s\04%s" % (context, id)
-        return id
+        return id or ""
 
     def getnotes(self, origin=None):
         if origin == None:
