@@ -745,7 +745,7 @@ class pounit(pocommon.pounit):
     def getid(self):
         """Returns a unique identifier for this unit."""
         context = self.getcontext()
-        id = self.source
+        id = '\0'.join(self.source.strings)
         if self.msgidcomments:
             id = "_: %s\n%s" % (context, id)
         elif context:
