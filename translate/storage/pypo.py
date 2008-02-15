@@ -745,7 +745,12 @@ class pounit(pocommon.pounit):
     def getid(self):
         """Returns a unique identifier for this unit."""
         context = self.getcontext()
-        id = '\0'.join(self.source.strings)
+        # Gettext does not consider the plural to determine duplicates, only 
+        # the msgid. For generation of .mo files, we might want to use this
+        # code to generate the entry for the hash table, but for now, it is 
+        # commented out for conformance to gettext.
+#        id = '\0'.join(self.source.strings)
+        id = self.source
         if self.msgidcomments:
             id = "_: %s\n%s" % (context, id)
         elif context:

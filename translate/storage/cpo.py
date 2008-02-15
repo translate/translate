@@ -276,9 +276,13 @@ class pounit(pocommon.pounit):
         """The unique identifier for this unit according to the convensions in
         .mo files."""
         id = gpo.po_message_msgid(self._gpo_message)
-        plural = gpo.po_message_msgid_plural(self._gpo_message)
-        if not plural is None:
-            id = '%s\0%s' % (id, plural)
+        # Gettext does not consider the plural to determine duplicates, only 
+        # the msgid. For generation of .mo files, we might want to use this
+        # code to generate the entry for the hash table, but for now, it is 
+        # commented out for conformance to gettext.
+#        plural = gpo.po_message_msgid_plural(self._gpo_message)
+#        if not plural is None:
+#            id = '%s\0%s' % (id, plural)
         context = gpo.po_message_msgctxt(self._gpo_message)
         if context:
             id = "%s\04%s" % (context, id)

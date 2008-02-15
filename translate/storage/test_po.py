@@ -585,5 +585,9 @@ msgstr[0] ""
         assert pofile.units[1].getid() == "plant"
         assert pofile.units[2].getid() == "_: Noun\nconvert"
         assert pofile.units[3].getid() == "verb\04convert"
-        assert pofile.units[4].getid() == "tree\0trees"
+        # Gettext does not consider the plural to determine duplicates, only 
+        # the msgid. For generation of .mo files, we might want to use this
+        # code to generate the entry for the hash table, but for now, it is 
+        # commented out for conformance to gettext.
+#        assert pofile.units[4].getid() == "tree\0trees"
 
