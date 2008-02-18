@@ -94,7 +94,7 @@ def unescape_text(text):
     return text.replace("\\\\", "\a").replace("\\n", "\n").replace("\\t", "\t").\
            replace("\\r", "\r").replace("\a", "\\\\")
 
-helptagre = re.compile('''<[/]??[a-z_\-]+?(?:| +[a-z]+?=".*?")[/]?? *>''')
+helptagre = re.compile('''<[/]??[a-z_\-]+?(?:| +[a-z]+?=".*?") *[/]??>''')
 
 def escape_help_text(text):
     """Escapes the help text as it would be in an SDF file.
