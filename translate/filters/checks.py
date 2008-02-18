@@ -36,7 +36,13 @@ from translate.filters import prefilters
 from translate.filters import spelling
 from translate.lang import factory
 from translate.lang import data
-from translate.storage import xliff
+# The import of xliff could fail if the user doesn't have lxml installed. For
+# now we try to continue gracefully to help users who aren't interested in 
+# support for XLIFF or other XML formats.
+try:
+    from translate.storage import xliff
+except ImportError, e:
+    xliff = None
 import re
 
 # These are some regular expressions that are compiled for use in some tests
@@ -1065,7 +1071,7 @@ class StandardUnitChecker(UnitChecker):
         if self.suggestion_store:
             source = unit.source
             suggestions = [unit for unit in self.suggestion_store.units if unit.source == source]
-        elif isinstance(unit, xliff.xliffunit):
+        elif xliff and isinstance(unit, xliff.xliffunit):
             # TODO: we probably want to filter them somehow
             suggestions = unit.getalttrans()
         return not bool(suggestions)
