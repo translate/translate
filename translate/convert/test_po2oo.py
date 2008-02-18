@@ -108,6 +108,26 @@ class TestPO2OO:
         assert po2oo.convertoo(inputfile, outputfile, templatefile, targetlanguage="af-ZA")
         assert "\tKolom1\\tKolom2\\r\\n\t" in outputfile.getvalue()
 
+    def test_helpcontent_escapes(self):
+        """test to ensure that we convert helpcontent escapes correctly"""
+        # Note how this test specifically uses incorrect spacing in the 
+        # translation. The extra space before 'hid' and an extra space before
+        # the closing tag should not confuse us.
+        oosource = r'helpcontent2	source\text\shared\3dsettings_toolbar.xhp	0	help	par_idN1056A				0	en-US	\<ahelp hid=\".\"\>The 3D-Settings toolbar controls properties of selected 3D objects.\</ahelp\>				2002-02-02 02:02:02' + '\r\n'
+        posource = r'''#: 3dsettings_toolbar.xhp#par_idN1056A.help.text
+msgid ""
+"<ahelp hid=\".\">The 3D-Settings toolbar controls properties of selected 3D "
+"ob jects.</ahelp>"
+msgstr ""
+"<ahelp  hid=\".\" >Zeee 3DDDD-Settings toolbar controls properties of selected 3D "
+"objects.</ahelp>"
+'''
+        inputfile = wStringIO.StringIO(posource)
+        outputfile = wStringIO.StringIO()
+        templatefile = wStringIO.StringIO(oosource)
+        assert po2oo.convertoo(inputfile, outputfile, templatefile, targetlanguage="af-ZA")
+        assert r"\<ahelp  hid=\".\" \>Zeee 3DDDD-Settings toolbar controls properties of selected 3D objects.\</ahelp\>" in outputfile.getvalue()
+
 class TestPO2OOCommand(test_convert.TestConvertCommand, TestPO2OO):
     """Tests running actual po2oo commands on files"""
     convertmodule = po2oo
