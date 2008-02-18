@@ -127,7 +127,10 @@ def convertoo(inputfile, outputfile, templates, pot=False, sourcelanguage=None, 
     """reads in stdin using inputstore class, converts using convertorclass, writes to stdout"""
     inputstore = oo.oofile()
     if hasattr(inputfile, "filename"):
-        inputstore.filename = inputfile.filename
+        inputfilename = inputfile.filename
+    else:
+        inputfilename = "(input file name not known)"
+    inputstore.filename = inputfilename
     inputstore.parse(inputfile.read())
     if not sourcelanguage:
         testlangtype = targetlanguage or (inputstore and inputstore.languages[0]) or ""
@@ -136,9 +139,9 @@ def convertoo(inputfile, outputfile, templates, pot=False, sourcelanguage=None, 
         else:
             sourcelanguage = "en-US"
     if not sourcelanguage in inputstore.languages:
-        print >> sys.stderr, "Warning: sourcelanguage %s not found in inputfile (contains %s)" % (sourcelanguage, ", ".join(inputstore.languages))
+        print >> sys.stderr, "Warning: sourcelanguage '%s' not found in inputfile '%s' (contains %s)" % (sourcelanguage, inputfilename, ", ".join(inputstore.languages))
     if targetlanguage and targetlanguage not in inputstore.languages:
-        print >> sys.stderr, "Warning: targetlanguage %s not found in inputfile (contains %s)" % (targetlanguage, ", ".join(inputstore.languages))
+        print >> sys.stderr, "Warning: targetlanguage '%s' not found in inputfile '%s' (contains %s)" % (targetlanguage, inputfilename, ", ".join(inputstore.languages))
     convertor = oo2po(sourcelanguage, targetlanguage, blankmsgstr=pot, long_keys=multifilestyle!="single")
     outputstore = convertor.convertstore(inputstore, duplicatestyle)
     if outputstore.isempty():
