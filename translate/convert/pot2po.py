@@ -116,7 +116,7 @@ def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similari
         pot_creation_date=pot_creation_date, po_revision_date=po_revision_date, last_translator=last_translator,
         language_team=language_team, mime_version=mime_version, plural_forms=plural_forms, **kwargs)
     # Get the header comments and fuzziness state
-    if templatepofile is not None:
+    if templatepofile is not None and len(templatepo.units) > 0:
         if templatepo.units[0].isheader():
             if templatepo.units[0].getnotes("translator"):
                 targetheader.addnote(templatepo.units[0].getnotes("translator"), "translator")
