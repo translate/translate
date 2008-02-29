@@ -45,6 +45,24 @@ def import_pylucene():
 	except:
 		return None, False
 
+def get_version_pylucene():
+	if indexer.LUCENE_VERSION.startswith("1."):
+		return 1
+	else:
+		return 2
+
+def Occur(required, prohibited):
+	if   required == True  and prohibited == False:
+		return PyLucene.BooleanClause.Occur.MUST
+	elif required == False and prohibited == False:
+		return PyLucene.BooleanClause.Occur.SHOULD
+	elif required == False and prohibited == True:
+		return PyLucene.BooleanClause.Occur.MUST_NOT
+	else:
+		# It is an error to specify a clause as both required
+		# and prohibited
+		return None
+
 class Wrapper:
 	def __init__(self, **kwargs):
 		for key, value in kwargs.iteritems():
@@ -393,11 +411,28 @@ class Indexer(IndexerBase):
 			contents = unicode(fp.read(), self.encoding)
 			fp.close()
 			doc = indexer.Document()
-			doc.add(indexer.Field("file_name",os.path.basename(file),True,True,True))
+			if get_version_pylucene() == 1:
+				doc.add(indexer.Field("file_name",
+						os.path.basename(file), True, True, True))
+			else:
+				doc.add(indexer.Field("file_name", os.path.basename(file),
+						PyLucene.Field.Store.YES,
+						PyLucene.Field.Index.TOKENIZED))
 			if len(contents) > 0:
-				doc.add(indexer.Field("file_contents", contents, True, True, True))
+				if get_version_pylucene() == 1:
+					doc.add(indexer.Field("file_contents", contents,
+							True, True, True))
+				else:
+					doc.add(indexer.Field("file_contents", contents,
+							PyLucene.Field.Store.YES,
+							PyLucene.Field.Index.TOKENIZED))
 			if ID is not None:
-				doc.add(indexer.Field("recordID",ID,True,True,True))
+				if get_version_pylucene() == 1:
+					doc.add(indexer.Field("recordID", ID, True, True, True))
+				else:
+					doc.add(indexer.Field("recordID", ID,
+							PyLucene.Field.Store.YES,
+							PyLucene.Field.Index.TOKENIZED))
 			self.writer.addDocument(doc)
 			self.errorhandler.logtrace("indexer: Indexing file %s" % file)
 
@@ -421,7 +456,12 @@ class Indexer(IndexerBase):
 						value = value.decode("charmap")
 				if not isinstance(value, (str, unicode)):
 					value = str(value)
-				doc.add(indexer.Field(str(field), value, True, True, True))
+				if get_version_pylucene() == 1:
+					doc.add(indexer.Field(str(field), value, True, True, True))
+				else:
+					doc.add(indexer.Field(str(field), value,
+							PyLucene.Field.Store.YES,
+							PyLucene.Field.Index.TOKENIZED))
 			self.writer.addDocument(doc)
 
 	def startIndex(self):
@@ -438,7 +478,10 @@ class Indexer(IndexerBase):
 		self.dirLock.acquire()
 		try:
 			self.writer = indexer.IndexWriter(self.storeDir, self.analyzer, create)
-			self.writer.maxFieldLength = 1048576
+			if get_version_pylucene() == 1:
+				self.writer.maxFieldLength = 1048576
+			else:
+				self.writer.setMaxFieldLength(1048576)
 			success = True
 		except Exception,e:
 			self.errorhandler.logerror("Failed to create index.  %s" % self.errorhandler.traceback_str())
@@ -531,7 +574,10 @@ class Searcher:
 		"""searches the given fieldName with the given search string, returning required fields
 		returnedFieldChoices is a tuple of valid combinations of fields to return (each of which is a list)
 		for simplicity you can also give a single string that is a field choice or a single list of fields"""
-		query = indexer.QueryParser.parse(search, fieldName, self.analyzer)
+		if get_version_pylucene() == 1:
+			query = indexer.QueryParser.parse(search, fieldName, self.analyzer)
+		else:
+			query = indexer.QueryParser(fieldName, self.analyzer).parse(search)
 		return self.search(query, returnedFieldChoices)
 
 	def searchFields(self, fieldSearches, returnedFieldChoices, requireall=False):
@@ -546,15 +592,24 @@ class Searcher:
 		combinedquery = indexer.BooleanQuery()
 		for fieldSearch in fieldSearches:
 			if isinstance(fieldSearch, indexer.BooleanQuery):
-				clause = indexer.BooleanClause(fieldSearch, requireall, False)
+				if get_version_pylucene() == 1:
+					clause = indexer.BooleanClause(fieldSearch,
+							requireall, False)
+				else:
+					clause = indexer.BooleanClause(fieldSearch,
+							Occur(requireall, False))
 				combinedquery.add(clause)
 			elif isinstance(fieldSearch, tuple):
 				fieldName, search = fieldSearch
 				analyzer = self.analyzer
 				if isinstance(analyzer, PerFieldAnalyzer):
 					analyzer = analyzer.getAnalyzer(fieldName)
-				query = indexer.QueryParser.parse(search, fieldName, analyzer)
-				combinedquery.add(query, requireall, False)
+				if get_version_pylucene() == 1:
+					query = indexer.QueryParser.parse(search, fieldName, analyzer)
+					combinedquery.add(query, requireall, False)
+				else:
+					query = indexer.QueryParser(fieldName,analyzer).parse(search)
+					combinedquery.add(query, Occur(requireall, False))
 			else:
 				raise ValueError("unexpected value in fieldSearch: %r" % fieldSearch)
 		return combinedquery
@@ -562,7 +617,10 @@ class Searcher:
 	def notQuery(self, query):
 		"""returns a query that matches everything but the query"""
 		notquery = indexer.BooleanQuery()
-		clause = indexer.BooleanClause(query, False, True)
+		if get_version_pylucene() == 1:
+			clause = indexer.BooleanClause(query, False, True)
+		else:
+			clause = indexer.BooleanClause(query, Occur(False, True))
 		notquery.add(clause)
 		return notquery
 
@@ -707,7 +765,10 @@ class Searcher:
 		query = indexer.BooleanQuery()
 		analyzer = indexer.StandardAnalyzer()
 		for keyfield in IDFields.keys():
-			query.add(indexer.QueryParser.parse(IDFields[keyfield], keyfield, analyzer), True, False)
+			if get_version_pylucene() == 1:
+				query.add(indexer.QueryParser.parse(IDFields[keyfield], keyfield, analyzer), True, False)
+			else:
+				query.add(indexer.QueryParser.parse(IDFields[keyfield], keyfield, analyzer), Occur(True, False))
 		hits = self.search(query)
 		modifiedFields.update(IDFields)
 		for hit, doc in hits:
