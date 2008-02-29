@@ -106,7 +106,7 @@ class matcher:
             else:
                 simpleunit.source = candidate.source
                 simpleunit.target = candidate.target
-            simpleunit.addnote(candidate.getnotes(origin="translator"))
+            simpleunit.addnote(candidate.getnotes())
             simpleunit.fuzzy = candidate.isfuzzy()
             if store:
                 simpleunit.filepath = store.filepath
