@@ -106,7 +106,11 @@ class matcher:
             else:
                 simpleunit.source = candidate.source
                 simpleunit.target = candidate.target
-            simpleunit.addnote(candidate.getnotes())
+            # If we now only get translator comments, we don't get programmer 
+            # comments in TM suggestions (in Pootle, for example). If we get all
+            # notes, pot2po adds all previous comments as translator comments
+            # in the new po file
+            simpleunit.addnote(candidate.getnotes(origin="translator"))
             simpleunit.fuzzy = candidate.isfuzzy()
             if store:
                 simpleunit.filepath = store.filepath
