@@ -311,7 +311,7 @@ class LISAfile(base.TranslationStore):
 
     def __str__(self):
         """Converts to a string containing the file's XML"""
-        return etree.tostring(self.document, pretty_print=True, encoding='utf-8')
+        return etree.tostring(self.document, pretty_print=True, xml_declaration=True, encoding='utf-8')
 
     def parse(self, xml):
         """Populates this object from the given xml string"""
