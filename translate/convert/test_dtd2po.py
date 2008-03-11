@@ -225,6 +225,16 @@ Some other text
         unit = self.singleelement(pofile)
         assert unit.source == "Some text \n \nSome other text"
 
+    def test_mulitline_closing_quotes(self):
+        """test that we support various styles and spaces after closing quotes on multiline entities"""
+        dtdsource = '''
+<!ENTITY pref.plural '<span>opsies</span><span
+                      class="noWin">preferences</span>' >
+'''
+        pofile = self.dtd2po(dtdsource)
+        unit = self.singleelement(pofile)
+        assert unit.source == '<span>opsies</span><span \nclass="noWin">preferences</span>'
+
     def test_preserving_spaces(self):
         """test that we preserve space that appear at the start of the first line of a DTD entity"""
         # Space before first character

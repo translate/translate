@@ -25,6 +25,7 @@ these are specific .dtd files for localisation used by mozilla"""
 from translate.storage import base
 from translate.misc import quote
 
+import re
 import sys
 import warnings
 
@@ -311,7 +312,7 @@ class dtdfile(base.TranslationStore):
                     break
                 if lines[end].find('<!ENTITY') > -1:
                     foundentity = 1
-                if foundentity and (lines[end].find('">') > -1 or lines[end].find("'>") > -1):
+                if foundentity and re.match("[\"']\s*>", lines[end]):
                     end += 1
                     break
                 end += 1
