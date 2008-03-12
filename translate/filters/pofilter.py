@@ -18,7 +18,15 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""simple script to run all check filters on gettext .po localization file(s)"""
+"""Perform quality checks on Gettext PO, XLIFF and TMX localization files
+
+Snippet files whenever a test fails.  These can be examined, corrected and 
+merged back into the originals using pomerge
+
+See: http://translate.sourceforge.net/wiki/toolkit/pofilter for examples and
+usage instructions and http://translate.sourceforge.net/wiki/toolkit/pofilter_tests
+for full descriptions of all tests
+"""
 
 from translate.storage import factory
 from translate.filters import checks
