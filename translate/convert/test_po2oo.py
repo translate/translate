@@ -128,6 +128,19 @@ msgstr ""
         assert po2oo.convertoo(inputfile, outputfile, templatefile, targetlanguage="af-ZA")
         assert r"\<ahelp  hid=\".\" \>Zeee 3DDDD-Settings toolbar controls properties of selected 3D objects.\</ahelp\>" in outputfile.getvalue()
 
+    def test_helpcontent_escapes2(self):
+        """test to ensure that we convert helpcontent escapes correctly"""
+        oosource = r'helpcontent2	source\text\scalc\05\empty_cells.xhp	0	help	par_id2629474				0	en-US	A1: <empty>				2002-02-02 02:02:02' + '\r\n'
+        posource = r'''#: empty_cells.xhp#par_id2629474.help.text 
+msgid "A1: <empty>"
+msgstr "Aa1: <empty>"
+'''
+        inputfile = wStringIO.StringIO(posource)
+        outputfile = wStringIO.StringIO()
+        templatefile = wStringIO.StringIO(oosource)
+        assert po2oo.convertoo(inputfile, outputfile, templatefile, targetlanguage="af-ZA")
+        assert r"Aa1: <empty>" in outputfile.getvalue()
+
 class TestPO2OOCommand(test_convert.TestConvertCommand, TestPO2OO):
     """Tests running actual po2oo commands on files"""
     convertmodule = po2oo
