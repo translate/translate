@@ -88,6 +88,15 @@ class TestPO2OO:
         self.check_roundtrip(r'''"Single-Quote Escape \' "''')
         self.check_roundtrip(r"""'Both Quotes "" '' '""")
 
+    def xtest_roundtrip_spaces(self):
+        # FIXME: this test fails because the resultant PO file returns as po.isempty since .isblank returns true
+        # which is caused by isblankmsgtr returning True.  Its a complete mess which would mean unravelling lots
+        # of yuch in pypo.  Until we have time to do that unravelling we're diabling this test.  You can reenable 
+        # once we've fixed that.
+        """checks that (escaped) quotes in strings make it through a oo->po->oo roundtrip"""
+        self.check_roundtrip(" ")
+        self.check_roundtrip(u"\u00a0")
+
     def test_default_timestamp(self):
         """test to ensure that we revert to the default timestamp"""
         oointro, oooutro = r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Text				', '\r\n'

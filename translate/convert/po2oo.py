@@ -135,7 +135,7 @@ class reoo:
         unquotedid = unit.source
         unquotedstr = unit.target
         # If there is no translation, we don't want to add a line
-        if len(unquotedstr.strip()) == 0:
+        if len(unquotedstr) == 0:
             return
         if isinstance(unquotedstr, unicode):
             unquotedstr = unquotedstr.encode("UTF-8")
