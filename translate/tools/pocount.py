@@ -19,7 +19,12 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""takes a translation file and produces word counts and other statistics"""
+"""Create string and word counts for supported localization files including:
+XLIFF, TMX, Gettex PO and MO, Qt .ts and .qm, Wordfast TM, etc
+
+See: http://translate.sourceforge.net/wiki/toolkit/pocount for examples and
+usage instructions
+"""
 
 from translate.storage import factory
 from translate.storage import statsdb

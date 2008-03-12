@@ -19,7 +19,14 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""script that merges .po files and overrides translations"""
+"""Merges XLIFF and Gettext PO localization files
+
+Snippet file produced by pogrep or updated by a translator can be merged into
+existing files
+
+See: http://translate.sourceforge.net/wiki/toolkit/pomerge for examples and 
+usage instructions
+"""
 
 import sys
 from translate.storage import factory

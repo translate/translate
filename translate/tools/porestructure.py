@@ -19,7 +19,12 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""script that restructures po files from poconflicts into the original directory tree"""
+"""Restructure Gettxt PO files produced by poconflicts into the original 
+directory tree for merging using pomerge
+
+See: http://translate.sourceforge.net/wiki/toolkit/porestructure for examples and
+usage instructions
+"""
 
 import sys, os
 from translate.storage import po

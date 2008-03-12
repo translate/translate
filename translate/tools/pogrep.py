@@ -19,7 +19,14 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""grep for localization files in various formats, eg. gettext .po and xliff"""
+"""Grep XLIFF, Gettext PO and TMX localization files
+
+Matches are output to snippet files of the same type which can then be reviewed 
+and later merged using pomerge
+
+See: http://translate.sourceforge.net/wiki/toolkit/pogrep for examples and
+usage instructions
+"""
 
 from translate.storage import factory
 from translate.misc import optrecurse

@@ -19,7 +19,11 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""Compile base class files into Gettext MO (Machine Object) files."""
+"""Compile XLIFF and Gettext PO localization files into Gettext MO (Machine Object) files
+
+See: http://translate.sourceforge.net/wiki/toolkit/pocompile for examples and 
+usage instructions
+"""
 
 from translate.storage import factory
 from translate.storage import po

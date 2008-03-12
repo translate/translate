@@ -30,6 +30,9 @@ To translate Kurdish (ku) through French:
 
 To convert the fr-ku files back to en-ku:
     po2swap --reverse -i fr/ -t fr-ku -o en-ku
+
+See: http://translate.sourceforge.net/wiki/toolkit/poswap for further examples and
+usage instructions
 """
 
 from translate.storage import po

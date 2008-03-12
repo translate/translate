@@ -19,7 +19,11 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""Segment PO files at the sentence level"""
+"""Segment Gettext PO, XLIFF and TMX localization files at the sentence level
+
+See: http://translate.sourceforge.net/wiki/toolkit/posegment for examples and
+usage instructions
+"""
 
 from translate.storage import factory
 from translate.lang import factory as lang_factory
