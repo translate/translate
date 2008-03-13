@@ -639,12 +639,18 @@ class pofile(pocommon.pofile):
         self._free_iterator()
 
     def __del__(self):
+        # We currently disable this while we still get segmentation faults.
+        # Note that this is definitely leaking memory because of this.
+        return
         self._free_iterator()
         if self._gpo_memory_file is not None:
             gpo.po_file_free(self._gpo_memory_file)
             self._gpo_memory_file = None
 
     def _free_iterator(self):
+        # We currently disable this while we still get segmentation faults.
+        # Note that this is definitely leaking memory because of this.
+        return
         if self._gpo_message_iterator is not None:
             gpo.po_message_iterator_free(self._gpo_message_iterator)
             self._gpo_message_iterator = None
