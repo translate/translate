@@ -42,11 +42,25 @@ def import_pylucene():
 	try:
 		import PyLucene
 		return PyLucene, True
-	except:
-		return None, False
+	except ImportError:
+		# try again with "lucene" (for PyLucene v2.3)
+		try:
+			import lucene
+			# pylucene v2.3.0/1 causes segmentation faults
+			# see https://bugzilla.osafoundation.org/show_bug.cgi?id=11928
+			if lucene.VERSION > "2.3.1":
+				# ok - this version should be fixed (hopefully)
+				PyLucene = lucene
+				return lucene, True
+			else:
+				# we want to avoid a silent crash caused by a segmentation fault
+				print "WARNING: PyLucene v2.3.0/1 causes segmentation faults - please upgrade if possible. Skipping PyLucene ..."
+				return None, False
+		except:
+			return None, False
 
 def get_version_pylucene():
-	if indexer.LUCENE_VERSION.startswith("1."):
+	if indexer.VERSION.startswith("1."):
 		return 1
 	else:
 		return 2
