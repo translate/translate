@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # 
-# Copyright 2006-2007 Zuza Software Foundation
+# Copyright 2006-2008 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
@@ -416,14 +416,8 @@ class TranslationStore(object):
 
         if len(self.units) == 0:
             return True
-        # Skip the first unit if it is a header.
-        if self.units[0].isheader():
-            units = self.units[1:]
-        else:
-            units = self.units
-
-        for unit in units:
-            if not unit.isblank():
+        for unit in self.units:
+            if not (unit.isblank() or unit.isheader()):
                 return False
         return True
 
