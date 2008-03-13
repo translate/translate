@@ -66,7 +66,7 @@ translatescripts = [apply(join, ('translate', ) + script) for script in
 
 translatebashscripts = [apply(join, ('tools', ) + (script, )) for script in [
                   'pomigrate2', 'poen', 'pocompendium', 'poglossary', 
-                  'posplit', 'popuretext', 'poreencode'
+                  'posplit', 'popuretext', 'poreencode', 'pocommentclean'
                   ]]
 
 def addsubpackages(subpackages):
