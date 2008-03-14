@@ -48,6 +48,9 @@ class podebug:
     def rewrite_en(self, string):
         return string
 
+    def rewrite_blank(self, string):
+        return ""
+
     def openofficeignore(self, locations):
         for location in locations:
             if location.startswith("Common.xcu#..Common.View.Localisation"):
@@ -147,7 +150,7 @@ def main():
     parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
     # TODO: add documentation on format strings...
     parser.add_option("-f", "--format", dest="format", default="[%s] ", help="specify format string")
-    rewritestylelist = ["xxx", "en"]
+    rewritestylelist = ["xxx", "en", "blank"]
     parser.add_option("", "--rewrite", dest="rewritestyle", 
         type="choice", choices=rewritestylelist, metavar="STYLE", help="the translation rewrite style: %s" % ", ".join(rewritestylelist))
     parser.add_option("", "--hash", dest="hash", metavar="LENGTH", type="int", help="add an md5 hash to translations")
