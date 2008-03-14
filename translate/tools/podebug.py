@@ -37,9 +37,7 @@ class podebug:
         else:
             self.format = format
         if rewritestyle is not None:
-            self.rewritefunc = getattr(self, "rewrite_%s" % rewritestyle)
-        else:
-            self.rewritefunc = None
+            self.rewritefunc = getattr(self, "rewrite_%s" % rewritestyle, None)
         self.hash = hash
 
     def rewrite_xxx(self, string):
