@@ -31,12 +31,13 @@ import re
 import md5
 
 class podebug:
-    def __init__(self, format=None, rewritestyle=None, hash=None):
+    def __init__(self, format=None, rewritestyle=None, hash=None, ignoreoption=None):
         if format is None:
             self.format = ""
         else:
             self.format = format
         self.rewritefunc = getattr(self, "rewrite_%s" % rewritestyle, None)
+        self.ignorefunc = getattr(self, "ignore_%s" % ignoreoption, None)
         self.hash = hash
 
     def rewrite_xxx(self, string):
@@ -48,7 +49,7 @@ class podebug:
     def rewrite_blank(self, string):
         return ""
 
-    def openofficeignore(self, locations):
+    def ignore_openoffice(self, locations):
         for location in locations:
             if location.startswith("Common.xcu#..Common.View.Localisation"):
                 return True
@@ -58,9 +59,23 @@ class podebug:
                 return True
         return False
 
+    def ignore_mozilla(self, locations):
+        if len(locations) == 1 and locations[0].lower().endswith(".accesskey"):
+            return True
+        for location in locations:
+            if location.endswith(".height") or location.endswith(".width") or \
+                    location.endswith(".macWidth") or location.endswith(".unixWidth"):
+                return True
+            if location == "brandShortName" or location == "brandFullName" or location == "vendorShortName":
+                return True
+            if location.lower().endswith(".commandkey") or location.endswith(".key"):
+                return True
+        return False
+
     def convertunit(self, unit, prefix):
-        if self.openofficeignore(unit.getlocations()):
-            return unit
+        if self.ignorefunc:
+            if self.ignorefunc(unit.getlocations()):
+                return unit
         if self.hash:
             if unit.getlocations():
                 hashable = unit.getlocations()[0]
@@ -130,13 +145,13 @@ class podebug:
             baseshrunk = baseshrunk[:baseshrunk.find(".")]
         return dirshrunk + baseshrunk
 
-def convertpo(inputfile, outputfile, templatefile, format=None, rewritestyle=None, hash=None):
+def convertpo(inputfile, outputfile, templatefile, format=None, rewritestyle=None, hash=None, ignoreoption=None):
     """reads in inputfile using po, changes to have debug strings, writes to outputfile"""
     # note that templatefile is not used, but it is required by the converter...
     inputstore = factory.getobject(inputfile)
     if inputstore.isempty():
         return 0
-    convertor = podebug(format=format, rewritestyle=rewritestyle, hash=hash)
+    convertor = podebug(format=format, rewritestyle=rewritestyle, hash=hash, ignoreoption=ignoreoption)
     outputstore = convertor.convertstore(inputstore)
     outputfile.write(str(outputstore))
     return 1
@@ -150,9 +165,13 @@ def main():
     rewritestylelist = ["xxx", "en", "blank"]
     parser.add_option("", "--rewrite", dest="rewritestyle", 
         type="choice", choices=rewritestylelist, metavar="STYLE", help="the translation rewrite style: %s" % ", ".join(rewritestylelist))
+    ignoreoptionlist = ["openoffice", "mozilla"]
+    parser.add_option("", "--ignore", dest="ignoreoption", 
+        type="choice", choices=ignoreoptionlist, metavar="APPLICATION", help="apply tagging ignore rules for the given application: %s" % ", ".join(ignoreoptionlist))
     parser.add_option("", "--hash", dest="hash", metavar="LENGTH", type="int", help="add an md5 hash to translations")
     parser.passthrough.append("format")
     parser.passthrough.append("rewritestyle")
+    parser.passthrough.append("ignoreoption")
     parser.passthrough.append("hash")
     parser.run()
 
