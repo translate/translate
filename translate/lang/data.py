@@ -62,7 +62,7 @@ languages = {
 'he': ('Hebrew', 2, '(n != 1)'),
 'hi': ('Hindi', 2, '(n != 1)'),
 'hr': ('Croatian', 3, '(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'),
-'hu': ('Hungarian', 1, '0'),
+'hu': ('Hungarian', 2, '(n != 1)'),
 'id': ('Indonesian', 1, '0'),
 'is': ('Icelandic', 2, '(n != 1)'),
 'it': ('Italian', 2, '(n != 1)'),
