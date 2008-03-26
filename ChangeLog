@@ -1,3 +1,409 @@
+2008-03-18 21:26  friedelwolff
+
+	* lang/data.py: Correct plural information for Hungarian
+
+2008-03-18 14:27  friedelwolff
+
+	* __version__.py: Version 1.1.1
+
+2008-03-18 12:01  friedelwolff
+
+	* search/indexer/__init__.py: Disable support for lucene 2.3 while
+	  we don't yet support it.
+
+2008-03-17 07:44  dwaynebailey
+
+	* tools/podebug.py: Break "ignore" rules into application soecific
+	  rules. Add all infrastructure to
+	  allow a user to specify which ignore rules to apply. Implement
+	  ignore rules
+	  for Mozilla.
+
+2008-03-14 16:57  dwaynebailey
+
+	* tools/podebug.py: Fix getattr to work when we don't have any
+	  rewritestyle.
+
+2008-03-14 15:20  dwaynebailey
+
+	* tools/podebug.py: Cleaner use of getattr
+
+2008-03-14 13:31  dwaynebailey
+
+	* tools/podebug.py: Add a 'blank' rewrite style. This will simply
+	  remove the translations from a PO file.
+
+2008-03-14 12:52  friedelwolff
+
+	* lang/test_ar.py: Test Arabic (ar) punctuation translation and
+	  sentence segmentation
+
+2008-03-14 12:50  friedelwolff
+
+	* lang/test_am.py: Test Amharic (am) punctuation translation and
+	  sentence segmentation
+
+2008-03-14 12:48  friedelwolff
+
+	* lang/ml.py: Basic support for Malayalam (disabling case-related
+	  tests)
+
+2008-03-14 12:38  friedelwolff
+
+	* lang/ur.py: Update copyright date and remove comments inherited
+	  from fa.py
+
+2008-03-13 14:21  friedelwolff
+
+	* lang/ur.py: Basic support for Urdu (punctuation)
+
+2008-03-13 12:39  friedelwolff
+
+	* storage/base.py: Simplify TranslationStore.isempty() - hopefully
+	  a small performance improvement
+
+2008-03-13 09:39  friedelwolff
+
+	* setup.py: Install pocommentclean
+
+2008-03-13 08:56  friedelwolff
+
+	* storage/cpo.py: Temporarily disable freeing the memory - this
+	  still causes segmentation faults. The current code will leak
+	  memory, but mostly works and leaves things available for somebody
+	  to finish this development work.
+
+2008-03-13 08:06  larskr
+
+	* search/indexer/__init__.py: change the version check from
+	  "PYLUCENE_VERSION" to "VERSION" (tested for v1.9, v.2.2 and
+	  v.2.3)
+	  support for PyLucene v2.3 added (the module name changed)
+	  print warning and skip loading for PyLucene v2.3.0/1 - these
+	  versions cause a segmentation fault
+
+2008-03-12 21:12  dwaynebailey
+
+	* filters/pofilter.py: Improve doc string
+
+2008-03-12 21:07  dwaynebailey
+
+	* tools/pocompile.py, tools/poconflicts.py, tools/pocount.py,
+	  tools/podebug.py, tools/pogrep.py, tools/pomerge.py,
+	  tools/porestructure.py, tools/posegment.py, tools/poswap.py:
+	  Update doc strings for better manpage creation. Added wiki URLs
+	  for all docs.
+
+2008-03-12 20:53  friedelwolff
+
+	* CREDITS: Credit Lars Kruse
+
+2008-03-12 20:42  dwaynebailey
+
+	* misc/optrecurse.py: Fixe a typo in the first (commented line) of
+	  the generated manpages, eliminates
+	  some error message from generated documentation. Patch
+	  contributed by Nicolas FRANCOIS.
+
+2008-03-12 13:36  dwaynebailey
+
+	* convert/roundtrip-OOo: Add a roundtrip scrip that will download
+	  and test rountrip. If you see any lines following
+	  the analysis phase then there are issues that need to be fixed.
+	  No lines means we're A OK.
+
+2008-03-12 13:34  dwaynebailey
+
+	* convert/po2oo.py, convert/test_po2oo.py: Handle entities that are
+	  just spaces correctly. This should fix ' ' non-breaking space and
+	  friends.
+	  A test is included but it is disabled becuase of issues in pypo
+	  chain (isempty, isblank, isblankmsgstr)
+
+2008-03-12 11:50  friedelwolff
+
+	* storage/oo.py: Add '<empty>' as an exception for escaping in
+	  helpcontent
+
+2008-03-12 11:47  friedelwolff
+
+	* convert/test_po2oo.py: Test for special non-escaped string with
+	  '<empty>' from OOo300DEVm2, reported by Kevin Scannell
+
+2008-03-11 11:27  dwaynebailey
+
+	* convert/test_dtd2po.py, storage/dtd.py: Fix so that multiline
+	  entries can end on '[space]> if needed.
+
+2008-03-05 14:13  friedelwolff
+
+	* storage/lisa.py: Force writing out an XML decleration. This fixes
+	  bug 344 and restores compatibility with at least OmegaT and WF.
+
+2008-03-03 13:18  friedelwolff
+
+	* search/match.py: Revert r7040 that broke comments migration
+	  inpot2po. Add comment explaining the problem.
+
+2008-02-29 13:08  friedelwolff
+
+	* __version__.py: Version 1.1.1rc4
+
+2008-02-29 08:31  friedelwolff
+
+	* search/match.py: Add all notes to TM matches (this shows #.
+	  comments from the terminology project in the tooltips of Pootle
+	  terminology matches, for example)
+
+2008-02-29 07:40  friedelwolff
+
+	* convert/pot2po.py: Test that the template PO file actually has
+	  any units before trying to use them
+
+2008-02-29 07:37  friedelwolff
+
+	* search/indexer/__init__.py: Update code to work both with
+	  PyLucene 1 and 2. Contributed by Nicolas François and Lars Kruse.
+
+2008-02-18 11:08  friedelwolff
+
+	* storage/oo.py: Rather allow spaces only before the '/' in self
+	  closing tags
+
+2008-02-18 10:10  friedelwolff
+
+	* filters/checks.py: Attempt to continue as meaningfully as
+	  possible when lxml is not installed
+
+2008-02-18 09:24  friedelwolff
+
+	* __version__.py: Version 1.1.1rc3
+
+2008-02-18 09:22  friedelwolff
+
+	* storage/oo.py: Allow more liberal spacing around properties and
+	  closing tags for helpcontent tags
+
+2008-02-18 09:21  friedelwolff
+
+	* convert/oo2po.py: Improve error message on missing languages
+
+2008-02-18 09:20  friedelwolff
+
+	* convert/test_po2oo.py: Test escaping of helpcontent with unusual
+	  spacing around properties and closing tags
+
+2008-02-18 07:43  friedelwolff
+
+	* convert/po2oo.py, convert/xliff2oo.py: Don't add lines
+	  corresponding to untranslated units. (basically a revert of
+	  revision 6863)
+
+2008-02-15 14:40  friedelwolff
+
+	* storage/cpo.py: Reenable the code to free memory. Fix it by
+	  setting the references to None
+
+2008-02-15 13:57  friedelwolff
+
+	* storage/cpo.py, storage/pypo.py, storage/test_po.py: Don't take
+	  plurals into consideration for pounit.getid().
+	  
+	  Gettext does not consider the plural to determine duplicates,
+	  only
+	  the msgid. For generation of .mo files, we might want to use the
+	  plural
+	  code to generate the entry for the hash table, but for now, it is
+	  commented out for conformance to duplicate detection in gettext.
+
+2008-02-15 13:45  friedelwolff
+
+	* storage/cpo.py: Ensure that pounit.getid() never returns None
+
+2008-02-15 13:44  friedelwolff
+
+	* storage/cpo.py: Rewrite pounit.isheader() to work with non-ascii
+	  msgids
+
+2008-02-15 13:43  friedelwolff
+
+	* storage/test_po.py: Test pounit.isheader()
+
+2008-02-15 13:42  friedelwolff
+
+	* storage/test_po.py: More uniform testing in test_id(). +Header
+	  test.
+
+2008-02-15 09:39  friedelwolff
+
+	* storage/cpo.py: Raise exceptions on on all gettext PO errors, not
+	  just fatal ones. Now we should fail on format errors, etc. This
+	  closes bug 299.
+
+2008-02-15 09:28  friedelwolff
+
+	* storage/cpo.py: Fix incorrect variable name in xerror2_cb()
+
+2008-02-15 09:27  friedelwolff
+
+	* storage/cpo.py: Align variables of xerror2_cb() with those in
+	  gettext
+
+2008-02-15 09:15  friedelwolff
+
+	* storage/cpo.py: Update docstring for the module so people (me)
+	  know where to find the header file in gettext. Also mention
+	  necessary versions.
+
+2008-02-15 08:59  friedelwolff
+
+	* storage/cpo.py: use find_library on Windows as well, and make
+	  sure we can use libraries loaded from LD_LIBRARY_PATH or with
+	  LD_PRELOAD
+
+2008-02-15 08:27  friedelwolff
+
+	* storage/cpo.py: Implement pounit.getid() for cpo. This closes bug
+	  308.
+
+2008-02-15 08:25  friedelwolff
+
+	* storage/pypo.py: Take plurals into consideration in unit.getid()
+
+2008-02-15 07:29  friedelwolff
+
+	* storage/test_po.py: Tets getid implementation for PO (must
+	  correspond to mo)
+
+2008-02-14 18:08  dwaynebailey
+
+	* setup.py: Package ini2po
+
+2008-02-13 15:24  friedelwolff
+
+	* storage/xliff.py: Add notes about refactoring possibilities
+
+2008-02-11 13:54  friedelwolff
+
+	* storage/tmx.py: Support errors in TMX (this should complete
+	  pofilter support for TMX)
+
+2008-02-11 09:46  friedelwolff
+
+	* storage/tmx.py: Support notes in TMX
+
+2008-02-07 07:23  friedelwolff
+
+	* __version__.py: Version 1.1.1rc2
+
+2008-02-07 05:17  dwaynebailey
+
+	* convert/test_dtd2po.py: Slightly change test to pass with current
+	  \n processing code.
+
+2008-02-06 12:50  dwaynebailey
+
+	* storage/dtd.py: Fixes the premature termination of DTD entities.
+
+2008-02-02 12:32  dwaynebailey
+
+	* convert/test_dtd2po.py: Add test for bug 331; losing last part of
+	  a DTD entry.
+
+2008-01-31 14:54  friedelwolff
+
+	* filters/checks.py: Don't cause duplicate accelerators when
+	  updating a checker configuration
+
+2008-01-31 09:10  friedelwolff
+
+	* tools/test_pomerge.py: Adapt to API change in pomerge. Renaming
+	  almost complete, just some customisation left for some xliff
+	  tests
+
+2008-01-31 09:08  friedelwolff
+
+	* tools/pomerge.py: Terminolgy update (file/po -> store)
+
+2008-01-31 09:07  friedelwolff
+
+	* tools/pogrep.py: Support TMX, reflow formats dictionary
+
+2008-01-31 09:06  friedelwolff
+
+	* filters/pofilter.py: Also support TMX
+
+2008-01-30 16:25  friedelwolff
+
+	* tools/pocompile.py, tools/podebug.py: Complete API change for
+	  translate.tools (convertfile -> convertstore)
+
+2008-01-30 10:44  friedelwolff
+
+	* filters/test_pofilter.py: Test TMX support. Bypass some methods
+	  that are not relevant to TMX.
+
+2008-01-30 10:42  friedelwolff
+
+	* filters/test_pofilter.py: Factor out helper methods to make it
+	  easier to extend things
+
+2008-01-30 09:44  friedelwolff
+
+	* storage/base.py: Return {} in .geterrors() as API demands
+
+2008-01-30 09:29  friedelwolff
+
+	* tools/pomerge.py: remove unnecessary mergexliff() and adapt
+	  mergepo() to function for all file types
+
+2008-01-29 16:11  friedelwolff
+
+	* search/segment.py: +Comment to mark deprecation
+
+2008-01-29 16:07  friedelwolff
+
+	* search/terminology.py: Remove unnecessary import and commented
+	  code. Update comments.
+
+2008-01-29 16:05  friedelwolff
+
+	* storage/factory.py: Move comment about poxliff to the new place
+	  where it is imported
+
+2008-01-29 15:36  friedelwolff
+
+	* search/lshtein.py: Print a warning to stderr if
+	  python-Levenshtein is not found
+
+2008-01-28 07:52  friedelwolff
+
+	* tools/pocompile.py: Write .mo files in binary mode
+
+2008-01-24 21:22  friedelwolff
+
+	* setup.py: Include subpackages storage.version and search.indexer
+
+2008-01-24 21:09  friedelwolff
+
+	* __version__.py: Version 1.1.1rc1
+
+2008-01-23 11:10  friedelwolff
+
+	* README: Update URL for downloading python-Levenshtein
+
+2008-01-23 07:05  dwaynebailey
+
+	* README: Add a number of missing tools
+
+2008-01-23 06:31  dwaynebailey
+
+	* storage/properties.py: Remove uneeded units list
+
+2008-01-22 08:56  friedelwolff
+
+	* ChangeLog: Update ChangeLog before release of 1.1.0
+
 2008-01-22 07:03  friedelwolff
 
 	* __version__.py: Version 1.1.0
