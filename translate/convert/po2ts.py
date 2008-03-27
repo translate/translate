@@ -30,7 +30,7 @@ from translate.storage import po
 from translate.storage import ts
 
 class po2ts:
-    def convertstore(self, inputstore, templatefile=None):
+    def convertstore(self, inputstore, templatefile=None, context=None):
         """converts a .po file to .ts format (using a template .ts file if given)"""
         if templatefile is None: 
             tsfile = ts.QtTsParser()
@@ -52,20 +52,23 @@ class po2ts:
             if isinstance(translation, str):
                 translation = translation.decode("utf-8")
             for sourcelocation in inputunit.getlocations():
-                if "#" in sourcelocation:
-                    contextname = sourcelocation[:sourcelocation.find("#")]
+                if context is None:
+                    if "#" in sourcelocation:
+                        contextname = sourcelocation[:sourcelocation.find("#")]
+                    else:
+                        contextname = sourcelocation
                 else:
-                    contextname = sourcelocation
+                    contextname = context
                 tsfile.addtranslation(contextname, source, translation, comment, transtype, createifmissing=True)
         return tsfile.getxml()
 
-def convertpo(inputfile, outputfile, templatefile):
+def convertpo(inputfile, outputfile, templatefile, context):
     """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
     inputstore = po.pofile(inputfile)
     if inputstore.isempty():
         return 0
     convertor = po2ts()
-    outputstring = convertor.convertstore(inputstore, templatefile)
+    outputstring = convertor.convertstore(inputstore, templatefile, context)
     outputfile.write(outputstring)
     return 1
 
@@ -73,6 +76,9 @@ def main(argv=None):
     from translate.convert import convert
     formats = {"po": ("ts", convertpo), ("po", "ts"): ("ts", convertpo)}
     parser = convert.ConvertOptionParser(formats, usepots=False, usetemplates=True, description=__doc__)
+    parser.add_option("-c", "--context", dest="context", default=None,
+                      help="use supplied context instead of the one in the .po file comment")
+    parser.passthrough.append("context")
     parser.run(argv)
 
 
