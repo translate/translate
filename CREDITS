@@ -2,7 +2,7 @@ Translate Toolkit Credits
 =========================
 
 See the README file for an explanation of what the Translate Toolkit is
-See the ChangeLog (or cvs history) for more detailed credits
+See the ChangeLog (or version control history) for more detailed credits
 These are people who have contributed documentation or code, but bug reports are also a valuable contribution!
 Many people have contributed suggestions etc on the translate-devel list and these are also appreciated
 If you've been left out, let us know!
@@ -29,4 +29,4 @@ Ognyan Kulev: testing and fixes
 Pavel Janík: testing
 Thomas Fogwill: portal code
 Tom Cato Amundsen: patch to enable pogrep to search anywhere in the PO unit
-
+Torsten Martinsen: patches to po2ts
