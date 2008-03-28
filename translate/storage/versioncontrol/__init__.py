@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # 
-# Copyright 2004-2007 Zuza Software Foundation
+# Copyright 2004-2008 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
@@ -33,7 +33,7 @@ TODO:
 import re
 import os
 
-DEFAULT_RCS = ["svn", "cvs", "darcs", "git", "bzr"]
+DEFAULT_RCS = ["svn", "cvs", "darcs", "git", "bzr", "hg"]
 """the names of all supported revision control systems
 
 modules of the same name containing a class with the same name are expected
