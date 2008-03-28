@@ -22,7 +22,6 @@
 
 """convert Gettext PO localization files to .ini files"""
 
-from translate.misc import quote
 from translate.storage import factory
 from translate.storage import ini
 
