@@ -205,6 +205,14 @@ class TestPO2DTD:
         print dtdfile
         assert str(dtdfile) == dtdexpected
 
+    def test_comments(self):
+        """test that we preserve comments, bug 351"""
+        posource = '''#: name\nmsgid "Text"\nmsgstr "Teks"'''
+        dtdtemplate = '''<!ENTITY name "%s">\n<!-- \n\nexample -->\n'''
+        dtdfile = self.merge2dtd(dtdtemplate % "Text", posource)
+        print dtdfile
+        assert str(dtdfile) == dtdtemplate % "Teks"
+
 class TestPO2DTDCommand(test_convert.TestConvertCommand, TestPO2DTD):
     """Tests running actual po2dtd commands on files"""
     convertmodule = po2dtd
