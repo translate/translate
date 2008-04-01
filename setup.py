@@ -140,6 +140,7 @@ class InnoScript:
           self.pathname = os.path.join(self.dist_dir, self.name + os.extsep + "iss")
         else:
           self.pathname = pathname
+# See http://www.jrsoftware.org/isfaq.php for more InnoSetup config options.
         ofi = self.file = open(self.pathname, "w")
         print >> ofi, "; WARNING: This script has been created by py2exe. Changes to this script"
         print >> ofi, "; will be overwritten the next time py2exe is run!"
@@ -150,6 +151,9 @@ class InnoScript:
         print >> ofi, r"DefaultGroupName=%s" % self.name
         print >> ofi, r"OutputBaseFilename=%s-%s-setup" % (self.name, self.version)
         print >> ofi
+#        print >> ofi, r"[Registry]" #TODO: Fix this so that the toolkit's exes will be in the user's path.
+#        print >> ofi, r'Root: HKCU; Subkey: "Env\Path"; ValueType: expandsz; ValueName: ""; ValueData: "{app}"'
+#        print >> ofi
         print >> ofi, r"[Files]"
         for path in self.exe_files + self.other_files:
             print >> ofi, r'Source: "%s"; DestDir: "{app}\%s"; Flags: ignoreversion' % (path, os.path.dirname(path))
@@ -316,6 +320,7 @@ class TranslateDistribution(Distribution):
     py2exeoptions["excludes"] = ["PyLucene", "Tkconstants", "Tkinter", "tcl", "translate.misc._csv"]
     version = attrs.get("version", translateversion)
     py2exeoptions["dist_dir"] = "translate-toolkit-%s" % version
+    py2exeoptions["includes"] = ["lxml", "lxml._elementpath", "psyco"]
     options = {"py2exe": py2exeoptions}
     baseattrs['options'] = options
     if py2exe:
