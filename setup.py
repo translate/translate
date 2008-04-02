@@ -150,22 +150,21 @@ class InnoScript:
         print >> ofi, r"DefaultDirName={pf}\%s" % self.name
         print >> ofi, r"DefaultGroupName=%s" % self.name
         print >> ofi, r"OutputBaseFilename=%s-%s-setup" % (self.name, self.version)
+        print >> ofi, r"ChangesEnvironment=yes"
         print >> ofi
-#        print >> ofi, r"[Registry]" #TODO: Fix this so that the toolkit's exes will be in the user's path.
-#        print >> ofi, r'Root: HKCU; Subkey: "Env\Path"; ValueType: expandsz; ValueName: ""; ValueData: "{app}"'
-#        print >> ofi
         print >> ofi, r"[Files]"
         for path in self.exe_files + self.other_files:
             print >> ofi, r'Source: "%s"; DestDir: "{app}\%s"; Flags: ignoreversion' % (path, os.path.dirname(path))
         print >> ofi
         print >> ofi, r"[Icons]"
-        for path in self.exe_files:
-            if path in self.install_scripts:
-                continue
-            linkname = os.path.splitext(os.path.basename(path))[0]
-            print >> ofi, r'Name: "{group}\%s"; Filename: "{app}\%s"; WorkingDir: "{app}"; Flags: dontcloseonexit' % \
-                  (linkname, path)
-        print >> ofi, 'Name: "{group}\Uninstall %s"; Filename: "{uninstallexe}"' % self.name
+        print >> ofi, r'Name: "{group}\Documentation"; Filename: "{app}\doc\index.html";'
+        print >> ofi, r'Name: "{group}\Translate Toolkit Command Prompt"; Filename: "cmd.exe"'
+        print >> ofi, r'Name: "{group}\Uninstall %s"; Filename: "{uninstallexe}"' % self.name
+        print >> ofi
+        print >> ofi, r"[Registry]"
+        # TODO: Move the code to update the Path environment variable to a Python script which will be invoked by the [Run] section (below)
+        print >> ofi, r'Root: HKCU; Subkey: "Environment"; ValueType: expandsz; ValueName: "Path"; ValueData: "{reg:HKCU\Environment,Path|};{app};"'
+        print >> ofi        
         if self.install_scripts:
             print >> ofi, r"[Run]"
             for path in self.install_scripts:
