@@ -89,6 +89,12 @@ class TestOO2PO:
         self.check_roundtrip('file.xhp', r'''\<asdf prop=\"value>>\"\>'Next'>> or "<<Previous"\</asdf\>''')
         self.check_roundtrip('address_auto.xhp', r'''example, \<item type=\"literal\"\>'Harry\\'s Bar'.\</item\>''')
 
+    def xtest_roundtrip_whitespaceonly(self):
+        """check items that are only special instances of whitespce"""
+        # FIXME We can't roundtrip this yet because of some problems in the oo class handling
+        self.check_roundtrip('choose_chart_type.xhp', r' ')
+        self.check_roundtrip('choose_chart_type.xhp', '\xc2\xa0')
+
     def test_double_escapes(self):
         oosource = r"helpcontent2	source\text\shared\01\02100001.xhp	0	help	par_id3150670 35				0	en-US	\\<				2002-02-02 02:02:02"
         pofile = self.convert(oosource)
