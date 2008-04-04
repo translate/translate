@@ -28,18 +28,20 @@ usage instructions
 
 from translate.misc import quote
 from translate.storage import po
+from translate.storage import rc
 
 eol = "\n"
 
 class rerc:
     def __init__(self, templatefile):
         self.templatefile = templatefile
+        self.templatestore = rc.rcfile(templatefile)
         self.inputdict = {}
 
     def convertstore(self, inputstore, includefuzzy=False):
         self.makestoredict(inputstore, includefuzzy)
         outputlines = []
-        for block in self.templatefile.blocks:
+        for block in self.templatestore.blocks:
             outputlines.append(self.convertblock(block))
         return outputlines
 
