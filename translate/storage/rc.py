@@ -140,7 +140,7 @@ class rcfile(base.TranslationStore):
                          L?                                    # Unkown prefix see ./dlls/shlwapi/shlwapi_En.rc
                          "(?P<value>.*?)"                                      # String value
                          (?:\s*,\s*|[\n])                          # FIXME ./dlls/mshtml/En.rc ID_DWL_DIALOG.LTEXT.ID_DWL_STATUS
-                         (?P<name>.*?|),
+                         (?P<name>.*?|)\s*(?:/[*].*?[*]/|),
                          """, re.DOTALL + re.VERBOSE)
         MENU_RE = re.compile("""
                          (?P<type>POPUP|MENUITEM)
