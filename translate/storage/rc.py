@@ -170,6 +170,7 @@ class rcfile(base.TranslationStore):
                     languagesection = True
                 else:
                     print >> sys.stderr, "Can only process one language section"
+                    self.blocks = self.blocks[:blocknum]
                     break
             if block.startswith("/*"):  # Comments
                 #print "comment"
