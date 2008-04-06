@@ -27,6 +27,9 @@ from translate.storage import rc
 
 class rc2po:
     """convert a .rc file to a .po file for handling the translation..."""
+    def __init__(self, charset=None):
+        self.charset = charset
+
     def convertstore(self, thercfile, duplicatestyle="msgctxt"):
         """converts a .rc file to a .po file..."""
         thetargetfile = po.pofile()
@@ -74,14 +77,14 @@ class rc2po:
         # escape unicode
         pounit = po.pounit(encoding="UTF-8")
         pounit.addlocation("".join(rcunit.getlocations()))
-        pounit.source = rcunit.source
+        pounit.source = rcunit.source.decode(self.charset)
         pounit.target = ""
         return pounit
 
-def convertrc(inputfile, outputfile, templatefile, pot=False, duplicatestyle="msgctxt"):
+def convertrc(inputfile, outputfile, templatefile, pot=False, duplicatestyle="msgctxt", charset=None):
     """reads in inputfile using rc, converts using rc2po, writes to outputfile"""
     inputstore = rc.rcfile(inputfile)
-    convertor = rc2po()
+    convertor = rc2po(charset=charset)
     if templatefile is None:
         outputstore = convertor.convertstore(inputstore, duplicatestyle=duplicatestyle)
     else:
@@ -96,8 +99,12 @@ def main(argv=None):
     from translate.convert import convert
     formats = {"rc": ("po", convertrc), ("rc", "rc"): ("po", convertrc)}
     parser = convert.ConvertOptionParser(formats, usetemplates=True, usepots=True, description=__doc__)
+    defaultcharset="cp1252"
+    parser.add_option("", "--charset", dest="charset", default=defaultcharset,
+        help="charset to use to decode the RC files (default: %s)" % defaultcharset, metavar="CHARSET")
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
+    parser.passthrough.append("charset")
     parser.run(argv)
 
 if __name__ == '__main__':
