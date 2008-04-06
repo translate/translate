@@ -55,6 +55,7 @@ class rcunit(base.TranslationUnit):
         self._value = ""
         self.comments = []
         self.source = source
+        self.match = None
 
     def setsource(self, source):
         """Sets the source AND the target to be equal"""
@@ -153,16 +154,16 @@ class rcfile(base.TranslationStore):
 
         self.blocks = BLOCKS_RE.findall(rcsrc)
 
-        for block in self.blocks:
+        for blocknum, block in enumerate(self.blocks):
             #print block.split("\n")[0]
             if block.startswith("STRINGTABLE"):
                 #print "stringtable:\n %s------\n" % block
-                for name, value in STRINGTABLE_RE.findall(block): 
-                    if not value:
+                for match in STRINGTABLE_RE.finditer(block): 
+                    if not match.groupdict()['value']:
                         continue
-                    newunit = rcunit(escape_to_python(value))
-                    newunit.name = "STRINGTABLE." + name
-                    #print newunit.name, newunit.source
+                    newunit = rcunit(escape_to_python(match.groupdict()['value']))
+                    newunit.name = "STRINGTABLE." + match.groupdict()['name']
+                    newunit.match = match 
                     self.addunit(newunit)
             if block.startswith("LANGUAGE"):
                 #print "language"
@@ -180,30 +181,38 @@ class rcfile(base.TranslationStore):
                 dialogname = dialog["dialogname"]
                 dialogtype = dialog["dialogtype"]
                 #print "dialog: %s" % dialogname
-                for type, value, name in DIALOG_RE.findall(block):
-                    newunit = rcunit(escape_to_python(value))
-                    if not value:
+                for match in DIALOG_RE.finditer(block):
+                    if not match.groupdict()['value']:
                         continue
+                    type = match.groupdict()['type']
+                    value = match.groupdict()['value']
+                    name = match.groupdict()['name']
+                    newunit = rcunit(escape_to_python(value))
                     if type == "CAPTION" or type == "Caption":
                         newunit.name = "%s.%s.%s" % (dialogtype, dialogname, type)
                     elif name == -1:
                         newunit.name = "%s.%s.%s.%s" % (dialogtype, dialogname, type, value)
                     else:
                         newunit.name = "%s.%s.%s.%s" % (dialogtype, dialogname, type, name)
+                    newunit.match = match 
                     self.addunit(newunit)
             if re.match("[0-9A-Z_]+\s+MENU", block) is not None:
                 menuname = re.match("(?P<menuname>[0-9A-Z_]+)\s+MENU", block).groupdict()["menuname"]
                 #print "menu: %s" % menuname
-                for type, value, name in MENU_RE.findall(block):
-                    newunit = rcunit(escape_to_python(value))
-                    if not value:
+                for match in DIALOG_RE.finditer(block):
+                    if not match.groupdict()['value']:
                         continue
+                    type = match.groupdict()['type']
+                    value = match.groupdict()['value']
+                    name = match.groupdict()['name']
+                    newunit = rcunit(escape_to_python(value))
                     if type == "POPUP":
                         newunit.name = "MENU.%s.%s" % (menuname, type)
                     elif name == -1:
                         newunit.name = "MENU.%s.%s.%s" % (menuname, type, value)
                     else:
                         newunit.name = "MENU.%s.%s.%s" % (menuname, type, name)
+                    newunit.match = match 
                     self.addunit(newunit)
          
     def __str__(self):

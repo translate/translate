@@ -40,10 +40,12 @@ class rerc:
 
     def convertstore(self, inputstore, includefuzzy=False):
         self.makestoredict(inputstore, includefuzzy)
-        outputlines = []
+        outputblocks = []
         for block in self.templatestore.blocks:
-            outputlines.append(self.convertblock(block))
-        return outputlines
+            outputblocks.append(self.convertblock(block))
+        outputblocks.insert(0, "#pragma code_page(65001)\n")
+        outputblocks.append("#pragma code_page(default)")
+        return outputblocks
 
     def makestoredict(self, store, includefuzzy=False):
         """ make a dictionary of the translations"""
@@ -53,13 +55,21 @@ class rerc:
                     rcstring = unit.target
                     if len(rcstring.strip()) == 0:
                         rcstring = unit.source
-                    self.inputdict[location] = rcstring
+                    self.inputdict[location] = rc.escape_to_rc(rcstring)
 
     def convertblock(self, block):
-        returnblock = ""
-        if isinstance(returnblock, unicode):
-            returnblock = returnblock.encode('utf-8')
-        return returnblock
+        newblock = block
+        if isinstance(newblock, unicode):
+            newblock = newblock.encode('utf-8')
+        for unit in self.templatestore.units:
+            location = unit.getlocations()[0]
+            if self.inputdict.has_key(location):
+                if self.inputdict[location] != unit.match.groupdict()['value']:
+                    newmatch = unit.match.group().replace(unit.match.groupdict()['value'], self.inputdict[location])
+                    newblock = newblock.replace(unit.match.group(), newmatch)
+        if isinstance(newblock, unicode):
+            newblock = newblock.encode('utf-8')
+        return newblock
 
 def convertrc(inputfile, outputfile, templatefile, includefuzzy=False):
     inputstore = po.pofile(inputfile)
