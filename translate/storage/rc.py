@@ -36,8 +36,15 @@ def escape_to_python(string):
     pystring = re.sub("\\\\\\\n", "", pystring)       # backslash newline line continuation
     pystring = re.sub("\\\\n", "\n", pystring)        # Convert escaped newline to a real newline
     pystring = re.sub("\\\\t", "\t", pystring)        # Convert escape tab to a real tab
-    pystring = re.sub("\\\\\\\\", "\\\\", pystring)   # Convert escape backslash to a real escaped backslosh
+    pystring = re.sub("\\\\\\\\", "\\\\", pystring)   # Convert escape backslash to a real escaped backslash
     return pystring
+
+def escape_to_rc(string):
+    """escape a given Python string into a valid .rc string"""
+    rcstring = re.sub("\\\\", "\\\\\\\\", string)
+    rcstring = re.sub("\t", "\\\\t", rcstring)
+    rcstring = re.sub("\n", "\\\\n", rcstring)
+    return rcstring
 
 class rcunit(base.TranslationUnit):
     """a unit of an rc file"""
