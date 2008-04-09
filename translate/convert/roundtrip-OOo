@@ -10,8 +10,8 @@ cd $gsidir
 
 # Get files from Pavel
 echo "Downloading files:"
-#wget -N --retr-symlinks ftp://ftp.linux.cz/pub/localization/OpenOffice.org/devel/POT/OpenOffice.org-POT-stable-latest.tar.gz
-#wget -N --retr-symlinks ftp://ftp.linux.cz/pub/localization/OpenOffice.org/devel/POT/OpenOffice.org-POT-latest.tar.gz
+wget -N --retr-symlinks ftp://ftp.linux.cz/pub/localization/OpenOffice.org/devel/POT/OpenOffice.org-POT-stable-latest.tar.gz
+wget -N --retr-symlinks ftp://ftp.linux.cz/pub/localization/OpenOffice.org/devel/POT/OpenOffice.org-POT-latest.tar.gz
 
 for gsi in $(ls OpenOffice.org*.tar.gz)
 do
@@ -33,7 +33,7 @@ do
 	po2oo -l en-XX -t en-US.sdf $enpodir en-XX.sdf
 	
 	# Check for lines that are not duplicated
-	echo "Analysing:"
+	echo "Analysing (if you see nothing, then that is good):"
 	cut -f11,13,14 en-XX.sdf | uniq -u
 
 	rm -rf pot en-US.sdf $potdir/* $enpodir/*
