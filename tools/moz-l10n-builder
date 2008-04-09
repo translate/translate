@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2005 Zuza Software Foundation
+# Copyright 2005, 2007-2008 Zuza Software Foundation
 #
 # This file is part of The Translate Toolkit.
 #
@@ -22,26 +22,112 @@
 # and creates XPIs and Windows .exe files.
 
 # Prerequisites:
-# nsis installer
-# wine - to run the nsis installer
-# translate toolkit - together with the bash scripts pomigrate2 and friends
-# l10n.mk patch - patch to enable some make functionality needed in existing makefiles
-# Checout of Mozilla and l10n/ sources with mozilla/client.mk checked out to the correct branch or releaes tag
-# Firefox and/or Thunderbird Windows .exe - an existing en-US build that we will unwrap and remake with your translations. In this case you probably want to be building on a RELEASE not BRANCH tag.
+# * nsis installer
+# * wine - to run the nsis installer
+# * Translate Toolkit - together with the bash scripts pomigrate2 and friends
+# * l10n.mk patch - patch to enable some make functionality needed in 
+#   existing makefiles
+# * Checkout of Mozilla and l10n/ sources with mozilla/client.mk checked 
+#   out to the correct branch or releaes tag
+# * Firefox and/or Thunderbird Windows .exe - an existing en-US build 
+#   that we will unwrap and remake with your translations. In this 
+#   case you probably want to be building on a RELEASE not BRANCH tag.
 
-lang=$*
-langs="af en_ZA nr nso ss st tn ts ve xh zu"
+langs="af en_ZA nr nso ss st tn ts ve xh zu en_DE"
+#tag='FIREFOX_3_0b4_RELEASE'
+#mozilladir="mozilla3b4"
+mozilladir="mozilla"
+langpackrelease=1
 
-if [ $# -lt 1 ]; then
-	echo "Usage: `basename $0` <language|ALL>"
-	exit
+if [ "$tag" != "" ]; then
+	tag="-r $tag"
+else
+	tag="-A"
 fi
 
-# Get latest files from CVS
-(cd mozilla; cvs up client.mk; make -f client.mk l10n-checkout)
-# Make latest POT file
-rm -rf l10n/en-US
-(cd mozilla; make -f tools/l10n/l10n.mk pot-create)
+
+function usage() {
+        echo "Usage `basename $0` [options] <lang|ALL>"
+        echo
+        echo "Options:"
+        echo "   --mozilla-checkout       - update of the Mozilla l10n files and POT files"
+        echo "   --update-translations    - update translations"
+        echo "   --diff                   - create diffs for migrated translations and l10n/"
+        echo "   --langpack               - build a langpack"
+        echo "   --debug                  - add podebug debug markers"
+        exit 1
+}
+
+# Define some options
+option_mozilla_checkout=""
+option_update_translations="" 
+option_diff=""
+option_langpack=""
+option_debug=""
+
+
+while true
+do
+        case $1 in
+                --mozilla-checkout)
+                        option_mozilla_checkout="mozilla_checkout"
+                        shift
+                        ;;
+                --update-translations)
+                        option_update_translations="update_translations"
+                        shift
+                        ;;
+                --diff)
+                        option_diff="option_diff"
+                        shift
+                        ;;
+                --langpack)
+                        option_langpack="option_langpack"
+                        shift
+                        ;;
+                --debug)
+                        option_debug="option_debug"
+			use_fuzzy="--fuzzy"
+                        shift
+                        ;;
+                -*|--*)
+                        usage
+                        ;;
+                *)
+                        break
+                        ;;
+        esac
+done
+
+lang=$*
+
+if [ $# -lt 1 ]; then
+	usage
+fi
+
+# Check for programs that we need to use
+for program in moz2po po2moz txt2po po2txt pomigrate2 podebug
+do
+	if ! which $program >/dev/null; then
+		echo "Missing program: $program"
+		exit 1
+	fi
+done
+
+if [ "$option_mozilla_checkout" != "" ]; then
+	#(cd $mozilladir; cvs up $tag browser/config client.mk build config )
+	(cd $mozilladir; cvs up $tag client.mk; make -f client.mk l10n-checkout)
+	# Make latest POT file
+	rm -rf l10n/en-US l10n/pot
+	(cd $mozilladir; python tools/l10n/l10n.py en-US)
+	(cd l10n
+	moz2po -P --duplicates=msgctxt en-US pot
+	txt2po -P en-US/browser/README.txt pot/browser/README.txt.pot
+	txt2po -P en-US/browser/os2/README.txt pot/browser/os2/README.txt.pot
+	txt2po -P en-US/mail/README.txt pot/mail/README.txt.pot
+	txt2po -P en-US/mail/os2/README.txt pot/mail/os2/README.txt.pot
+	)
+fi
 
 function copyfile {
 	filename=$1
@@ -82,40 +168,55 @@ do
 	echo "Language: $lang"
 	buildlang=$(echo $lang | sed "s/_/-/g")
 
-	# Get the lastest po files
-	( cd po; svn up $lang)
-	
-	# Migrate language from current PO to latest POT
-	mkdir -p po-updated
-	cp -rp po/.svn po-updated
-	rm -rf po-updated/$lang
-	cp -rp po/$lang po-updated
-	rm -f `find po-updated/$lang -name "*.po"`
-	
-	# Protect the real original PO dir
-	temp_po=`mktemp -d tmp.XXXXXXXXXX`
-	cp -rp po/$lang/* $temp_po
-	
-	##### Hacks - pre po2moz ########
-	# Fix the fact that various editor files are in the wrong place
-	if [ "$lang" == "zu" -o "$lang" == "xh" ]; then
-		rm -rf $temp_po/editor/ui
-		mkdir -p $temp_po/editor/ui
-		mv $temp_po/editor/chrome $temp_po/editor/ui
-	fi
+	if [ "$lang" != "en_DE" ]; then
+		if [ "$option_update_translations" != "" ]; then
+			# Get the lastest po and l10n files
+			( cd po; svn up $lang)
+			( cd l10n; cvs up $lang)
+		fi
+		
+		# Migrate language from current PO to latest POT
+        	rm -rf po-updated/.svn
+		cp -rp po/.svn po-updated
+		rm -rf po-updated/$lang
+		cp -rp po/$lang po-updated
+		rm -f `find po-updated/$lang -name "*.po"`
+		
+		# Protect the real original PO dir
+		
+		temp_po=`mktemp -d`
+		cp -rp po/$lang/* $temp_po
+		
+		##### Hacks - pre po2moz ########
+		# Fix the fact that various editor files are in the wrong place
+		if [ "$lang" == "zu" -o "$lang" == "xh" ]; then
+			rm -rf $temp_po/editor/ui
+			mkdir -p $temp_po/editor/ui
+			mv $temp_po/editor/chrome $temp_po/editor/ui
+		fi
 
-	# Fix for languages that have no Windows codepage
-	if [ "$lang" == "ve" ]; then
-		cp -p po/en-ZA/browser/installer/*.properties $temp_po/browser/installer/
-	fi
+		# Fix for languages that have no Windows codepage
+		if [ "$lang" == "ve" ]; then
+			cp -p po/en_ZA/browser/installer/*.properties $temp_po/browser/installer/
+		fi
 
-	~/download/translate/src/tools/pomigrate2 --use-compendium --quiet --pot2po $temp_po po-updated/$lang l10n/pot
+		~/dev/lm/trunk/tools/pomigrate2 --similarity=75 --use-compendium --quiet --pot2po $temp_po po-updated/$lang l10n/pot
+		#~/dev/lm/trunk/tools/pomigrate2 --similarity=75 --use-compendium=c-af.po --quiet --pot2po $temp_po po-updated/$lang l10n/pot
+		#~/dev/lm/trunk/tools/pomigrate2 --quiet --pot2po $temp_po po-updated/$lang l10n/pot
+	else
+		rm -rf po-updated/$lang
+		mkdir -p po-updated/$lang
+		poen l10n/pot po-updated/$lang
+	fi
 	rm -f `find po-updated/$lang -name "*.xhtml.po" -o -name "*.html.po"`
-	
-	
-	# Recreate l10n related files - delete existing in case they are no longer present
+
+        if [ "$option_debug" != "" -o "$lang" == "en_DE" ]; then
+		(cd po-updated/$lang; podebug --errorlevel=traceback --ignore=mozilla . .)
+	fi
+
+	# Create l10n related files
 	rm -rf `find l10n/$buildlang -name "*.properties" -o -name "*.dtd"`
-	po2moz --errorlevel=traceback --exclude=".svn" -t l10n/en-US po-updated/$lang l10n/$buildlang
+	po2moz --errorlevel=traceback --exclude=".svn" $use_fuzzy -t l10n/en-US po-updated/$lang l10n/$buildlang
 	
 	##### Hacks - post po2moz ########
 	# Hack to fix creating Thunderbird instaler
@@ -127,22 +228,18 @@ do
 	fi
 
 	# Copy and update non-translatable files
-	copyfiletype "*.xhtml" $buildlang
+	copyfiletype "*.xhtml" $buildlang # Our XHTML and HTML is broken
 	copyfiletype "*.html" $buildlang
-	copyfiletype "*.rdf" $buildlang
-	copyfile browser/README.txt $buildlang
+	copyfiletype "*.rdf" $buildlang   # Don't support .rdf files
 	copyfile browser/extra-jar.mn $buildlang
 	copyfile browser/firefox-l10n.js $buildlang
 	copyfile browser/microsummary-generators/list.txt $buildlang
-	copyfile browser/os2/README.txt $buildlang
 	copyfile browser/profile/chrome/userChrome-example.css $buildlang
 	copyfile browser/profile/chrome/userContent-example.css $buildlang
 	#copydir browser/searchplugins $buildlang # Only need the list.txt file
 	copyfile browser/searchplugins/list.txt $buildlang
 	copyfile extensions/reporter/chrome/reporterOverlay.properties $buildlang
-	copyfile mail/README.txt $buildlang
 	copyfile mail/all-l10n.js $buildlang
-	copyfile mail/os2/README.txt $buildlang
 	copyfile toolkit/chrome/global/intl.css $buildlang
 	#copyfile toolkit/installer/windows/charset.mk $buildlang
 
@@ -151,21 +248,21 @@ do
 	sed -i "/^#define MSG_USAGE/s/\\\t/\t/g" l10n/$buildlang/browser/installer/installer.inc
 
 	# Fix bookmark file to point to the locale
+	# FIXME - need some way to preserve this file if its been translated already
 	sed -i "s/en-US/$buildlang/g" l10n/$buildlang/browser/profile/bookmarks.html
 
-	# Create a diff files for checking
-	(cd l10n; cvs diff $buildlang > ../diff/$lang-l10n.diff)
-	(cd po-updated/$lang; svn diff > ../../diff/$lang-po.diff)
+	if [ "$option_diff" != "" ]; then
+		(cd l10n; cvs diff --new-file $buildlang > ../diff/$lang-l10n.diff)
+		(cd po-updated/$lang; svn diff --diff-cmd diff -x "-u --ignore-matching-lines=^\"POT\|^\"X-Gene" > ../../diff/$lang-po.diff)
+	fi
 	
 	# Cleanup
 	rm -rf $temp_po
 	
-	# Build Firefox XPI and installer
-	( cd mozilla/browser/locales; make langpack-$buildlang MOZ_BRANDING_DIRECTORY=other-licenses/branding/firefox LANGPACK_FILE='$(_ABS_DIST)'"/install/Firefox-Languagepack-"'$(MOZ_APP_VERSION).$(AB_CD)'".xpi" )
-	( cd mozilla/browser/locales; make repackage-win32-installer-$buildlang MOZ_BRANDING_DIRECTORY=other-licenses/branding/firefox WIN32_INSTALLER_IN=../../../Firefox-Setup-2.0.exe WIN32_INSTALLER_OUT='$(_ABS_DIST)'"/install/sea/Firefox-Setup-"'$(MOZ_APP_VERSION).$(AB_CD)'".exe" )
-
-	# Build Thunderbird XPI and installer
-#        ( cd mozilla/mail/locales; make langpack-$buildlang MOZ_BRANDING_DIRECTORY=other-licenses/branding/thunderbird LANGPACK_FILE='$(_ABS_DIST)'"/install/Thunderbird-Languagepack-"'$(MOZ_APP_VERSION).$(AB_CD)'".xpi" )
-#        ( cd mozilla/mail/locales; make repackage-win32-installer-$buildlang MOZ_BRANDING_DIRECTORY=other-licenses/branding/thunderbird WIN32_INSTALLER_IN=../../../Thunderbird-Setup-2.0.exe WIN32_INSTALLER_OUT='$(_ABS_DIST)'"/install/sea/Thunderbird-Setup-"'$(MOZ_APP_VERSION).$(AB_CD)'".exe" )
-
+	if [ "$option_langpack" != "" ]; then
+		# Build XPI and installer
+		( cd $mozilladir; ./configure --disable-compile-environment --disable-xft --enable-application=browser )
+		( cd $mozilladir/browser/locales; make langpack-$buildlang MOZ_BRANDING_DIRECTORY=other-licenses/branding/firefox LANGPACK_FILE='$(_ABS_DIST)'"/install/Firefox-Languagepack-"'$(MOZ_APP_VERSION)'-$langpackrelease'.$(AB_CD)'".xpi" )
+#		( cd $mozilladir/browser/locales; make repackage-win32-installer-af MOZ_BRANDING_DIRECTORY=other-licenses/branding/firefox WIN32_INSTALLER_IN=../../../Firefox-Setup-2.0.exe WIN32_INSTALLER_OUT='$(_ABS_DIST)'"/install/sea/Firefox-Setup-"'$(MOZ_APP_VERSION).$(AB_CD)'".exe" )
+	fi
 done
