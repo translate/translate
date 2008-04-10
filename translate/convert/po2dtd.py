@@ -39,10 +39,10 @@ def getlabel(unquotedstr):
     # except that &entity; needs to be avoided...
     amppos = 0
     while amppos >= 0:
-        amppos = unquotedstr.find("&",amppos)
+        amppos = unquotedstr.find("&", amppos)
         if amppos != -1:
             amppos += 1
-            semipos = unquotedstr.find(";",amppos)
+            semipos = unquotedstr.find(";", amppos)
             if semipos != -1:
                 if unquotedstr[amppos:semipos].isalnum():
                     continue
@@ -60,10 +60,10 @@ def getaccesskey(unquotedstr):
     # but we must avoid proper entities i.e. &gt; etc...
     amppos = 0
     while amppos >= 0:
-        amppos = unquotedstr.find("&",amppos)
+        amppos = unquotedstr.find("&", amppos)
         if amppos != -1:
             amppos += 1
-            semipos = unquotedstr.find(";",amppos)
+            semipos = unquotedstr.find(";", amppos)
             if semipos != -1:
                 if unquotedstr[amppos:semipos].isalnum():
                     # what we have found is an entity, not a shortcut key...
@@ -80,13 +80,13 @@ def removeinvalidamps(entity, unquotedstr):
     amppos = 0
     invalidamps = []
     while amppos >= 0:
-        amppos = unquotedstr.find("&",amppos)
+        amppos = unquotedstr.find("&", amppos)
         if amppos != -1:
             amppos += 1
-            semipos = unquotedstr.find(";",amppos)
+            semipos = unquotedstr.find(";", amppos)
             if semipos != -1:
                 checkentity = unquotedstr[amppos:semipos]
-                if checkentity.replace('.','').isalnum():
+                if checkentity.replace('.', '').isalnum():
                     # what we have found is an entity, not a problem...
                     continue
                 elif checkentity[0] == '#' and checkentity[1:].isalnum():
@@ -114,7 +114,7 @@ def getmixedentities(entities):
                 for akeytype in accesskeysuffixes:
                     if entitybase + akeytype in entities:
                         # add both versions to the list of mixed entities
-                        mixedentities += [entity,entitybase+akeytype]
+                        mixedentities += [entity, entitybase+akeytype]
     return mixedentities
 
 def applytranslation(entity, dtdunit, inputunit, mixedentities):

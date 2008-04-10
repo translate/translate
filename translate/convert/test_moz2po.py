@@ -4,7 +4,7 @@ from translate.convert import moz2po
 from translate.convert import test_convert
 
 class TestMoz2PO:
-  pass
+    pass
 
 class TestMoz2POCommand(test_convert.TestConvertCommand, TestMoz2PO):
     """Tests running actual moz2po commands on files"""

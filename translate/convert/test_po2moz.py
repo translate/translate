@@ -4,7 +4,7 @@ from translate.convert import po2moz
 from translate.convert import test_convert
 
 class TestPO2Moz:
-  pass
+    pass
 
 class TestPO2MozCommand(test_convert.TestConvertCommand, TestPO2Moz):
     """Tests running actual po2moz commands on files"""

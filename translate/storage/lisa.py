@@ -60,7 +60,7 @@ def _getPhMatches(text):
         matches.extend(list(_findAllMatches(text, re_ph)))
 
     # sort them so they come sequentially
-    matches.sort(lambda a,b: cmp(a.start(),b.start()))
+    matches.sort(lambda a, b: cmp(a.start(), b.start()))
     return matches
 
 XML_NS = 'http://www.w3.org/XML/1998/namespace'

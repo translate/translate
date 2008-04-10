@@ -40,8 +40,8 @@ class txt2po:
         targetheader.addnote("extracted from %s" % thetxtfile.filename, "developer")
         thetargetfile.addunit(targetheader)
         for txtunit in thetxtfile.units:
-             newunit = thetargetfile.addsourceunit(txtunit.source)
-             newunit.addlocations(txtunit.getlocations())
+            newunit = thetargetfile.addsourceunit(txtunit.source)
+            newunit.addlocations(txtunit.getlocations())
         thetargetfile.removeduplicates(self.duplicatestyle)
         return thetargetfile
 
@@ -60,7 +60,7 @@ def main(argv=None):
     from translate.misc import stdiotell
     import sys
     sys.stdout = stdiotell.StdIOWrapper(sys.stdout)
-    formats = {"txt":("po",converttxt), "*":("po",converttxt)}
+    formats = {"txt":("po", converttxt), "*":("po", converttxt)}
     parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
     parser.add_option("", "--encoding", dest="encoding", default='utf-8', type="string",
             help="The encoding of the input file (default: UTF-8)")

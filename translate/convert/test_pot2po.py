@@ -17,9 +17,9 @@ class TestPOT2PO:
         """helper that converts pot source to po source without requiring files"""
         potfile = wStringIO.StringIO(potsource)
         if posource:
-          pofile = wStringIO.StringIO(posource)
+            pofile = wStringIO.StringIO(posource)
         else:
-          pofile = None
+            pofile = None
         pooutfile = wStringIO.StringIO()
         pot2po.convertpot(potfile, pooutfile, pofile)
         pooutfile.seek(0)

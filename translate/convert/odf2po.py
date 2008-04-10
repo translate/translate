@@ -53,7 +53,7 @@ def convertodf(inputfile, outputfile, templates):
 
 def main(argv=None):
     from translate.convert import convert
-    formats = {"sxw":("po",convertodf), "odt":("po",convertodf), "ods":("po",convertodf), "odp":("po",convertodf)}
+    formats = {"sxw":("po", convertodf), "odt":("po", convertodf), "ods":("po", convertodf), "odp":("po", convertodf)}
     parser = convert.ConvertOptionParser(formats, description=__doc__)
     parser.run(argv)
 

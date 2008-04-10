@@ -14,11 +14,11 @@ class TestPhp2PO:
         inputphp = php.phpfile(inputfile)
         convertor = php2po.php2po()
         if phptemplate:
-          templatefile = wStringIO.StringIO(phptemplate)
-          templatephp = php.phpfile(templatefile)
-          outputpo = convertor.mergestore(templatephp, inputphp)
+            templatefile = wStringIO.StringIO(phptemplate)
+            templatephp = php.phpfile(templatefile)
+            outputpo = convertor.mergestore(templatephp, inputphp)
         else:
-          outputpo = convertor.convertstore(inputphp)
+            outputpo = convertor.convertstore(inputphp)
         return outputpo
 
     def convertphp(self, phpsource):

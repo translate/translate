@@ -12,18 +12,18 @@ class TestMonolingualUnit(test_base.TestTranslationUnit):
     UnitClass = base.TranslationUnit
 
     def test_target(self):
-      pass
+        pass
 
 
 class TestMonolingualStore(test_base.TestTranslationStore):
     StoreClass = base.TranslationStore
 
     def test_translate(self):
-      pass
+        pass
 
     def test_markup(self):
-      pass
+        pass
 
     def test_nonascii(self):
-      pass
+        pass
 

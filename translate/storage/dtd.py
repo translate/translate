@@ -43,7 +43,7 @@ def unquotefromdtd(source):
     # extract the string, get rid of quoting
     if len(source) == 0: source = '""'
     quotechar = source[0]
-    extracted,quotefinished = quote.extractwithoutquotes(source,quotechar,quotechar,allowreentry=False)
+    extracted, quotefinished = quote.extractwithoutquotes(source, quotechar, quotechar, allowreentry=False)
     if quotechar == "'" and "&apos;" in extracted:
         extracted = extracted.replace("&apos;", "'")
     # the quote characters should be the first and last characters in the string
@@ -118,15 +118,15 @@ class dtdunit(base.TranslationUnit):
                     self.incomment = 1
                     self.continuecomment = 0
                     # now work out the type of comment, and save it (remember we're not in the comment yet)
-                    (comment, dummy) = quote.extract(line,"<!--","-->",None,0)
+                    (comment, dummy) = quote.extract(line, "<!--", "-->", None, 0)
                     if comment.find('LOCALIZATION NOTE') != -1:
                         l = quote.findend(comment,'LOCALIZATION NOTE')
                         while (comment[l] == ' '): l += 1
-                        if comment.find('FILE',l) == l:
+                        if comment.find('FILE', l) == l:
                             self.commenttype = "locfile"
-                        elif comment.find('BEGIN',l) == l:
+                        elif comment.find('BEGIN', l) == l:
                             self.commenttype = "locgroupstart"
-                        elif comment.find('END',l) == l:
+                        elif comment.find('END', l) == l:
                             self.commenttype = "locgroupend"
                         else:
                             self.commenttype = "locnote"
@@ -136,7 +136,7 @@ class dtdunit(base.TranslationUnit):
 
             if self.incomment:
                 # some kind of comment
-                (comment, self.incomment) = quote.extract(line,"<!--","-->",None,self.continuecomment)
+                (comment, self.incomment) = quote.extract(line, "<!--", "-->", None, self.continuecomment)
                 # print "comment(%d,%d): " % (self.incomment,self.continuecomment),comment
                 self.continuecomment = self.incomment
                 # strip the comment out of what will be parsed
@@ -155,7 +155,7 @@ class dtdunit(base.TranslationUnit):
                 #     comment, dummy = quote.extractwithoutquotes(comment, ">", "<!ENTITY", None, 1)
                 # depending on the type of comment (worked out at the start), put it in the right place
                 # make it record the comment and type as a tuple
-                commentpair = (self.commenttype,comment)
+                commentpair = (self.commenttype, comment)
                 if self.commenttype == "locfile":
                     self.locfilenotes.append(commentpair)
                 elif self.commenttype == "locgroupstart":
@@ -208,7 +208,7 @@ class dtdunit(base.TranslationUnit):
                             self.entityhelp = None
                             continue
                         elif self.entitypart == "definition":
-                            self.entityhelp = (e,line[e])
+                            self.entityhelp = (e, line[e])
                             self.instring = 0
                 if self.entitypart == "parameter":
                     paramstart = e
@@ -221,7 +221,7 @@ class dtdunit(base.TranslationUnit):
                         continue
                     if line[0] in ('"', "'"):
                         self.entitypart = "definition"
-                        self.entityhelp = (e,line[e])
+                        self.entityhelp = (e, line[e])
                         self.instring = 0
                 if self.entitypart == "definition":
                     if self.entityhelp is None:
@@ -229,18 +229,18 @@ class dtdunit(base.TranslationUnit):
                         while (e < len(line) and line[e].isspace()): e += 1
                         if e == len(line):
                             continue
-                        self.entityhelp = (e,line[e])
+                        self.entityhelp = (e, line[e])
                         self.instring = 0
                     # actually the lines below should remember instring, rather than using it as dummy
                     e = self.entityhelp[0]
                     if (self.entityhelp[1] == "'"):
-                        (defpart,self.instring) = quote.extract(line[e:],"'","'",startinstring=self.instring,allowreentry=False)
+                        (defpart, self.instring) = quote.extract(line[e:], "'", "'", startinstring=self.instring, allowreentry=False)
                     elif (self.entityhelp[1] == '"'):
-                        (defpart,self.instring) = quote.extract(line[e:],'"','"',startinstring=self.instring,allowreentry=False)
+                        (defpart, self.instring) = quote.extract(line[e:], '"', '"', startinstring=self.instring, allowreentry=False)
                     else:
                         raise ValueError("Unexpected quote character... %r" % (self.entityhelp[1]))
                     # for any following lines, start at the beginning of the line. remember the quote character
-                    self.entityhelp = (0,self.entityhelp[1])
+                    self.entityhelp = (0, self.entityhelp[1])
                     self.definition += defpart
                     if not self.instring:
                         self.inentity = 0
@@ -249,9 +249,9 @@ class dtdunit(base.TranslationUnit):
         # uncomment this line to debug processing
         if 0:
             for attr in dir(self):
-                r = repr(getattr(self,attr))
+                r = repr(getattr(self, attr))
                 if len(r) > 60: r = r[:57]+"..."
-                self.comments.append(("comment","self.%s = %s" % (attr,r) ))
+                self.comments.append(("comment", "self.%s = %s" % (attr, r) ))
         return linesprocessed
 
     def __str__(self):
@@ -264,7 +264,7 @@ class dtdunit(base.TranslationUnit):
     def getoutput(self):
         """convert the dtd entity back to string form"""
         lines = []
-        lines.extend([comment for commenttype,comment in self.comments])
+        lines.extend([comment for commenttype, comment in self.comments])
         lines.extend(self.unparsedlines)
         if self.isnull():
             result = "".join(lines)

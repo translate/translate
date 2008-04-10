@@ -102,7 +102,7 @@ def main(argv=None):
     from translate.misc import stdiotell
     import sys
     sys.stdout = stdiotell.StdIOWrapper(sys.stdout)
-    formats = {("po", "htm"):("htm",converthtml), ("po", "html"):("html",converthtml), ("po", "xhtml"):("xhtml",converthtml), ("po"):("html",converthtml)}
+    formats = {("po", "htm"):("htm", converthtml), ("po", "html"):("html", converthtml), ("po", "xhtml"):("xhtml", converthtml), ("po"):("html", converthtml)}
     parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
     if textwrap is not None:
         parser.add_option("-w", "--wrap", dest="wrap", default=None, type="int",

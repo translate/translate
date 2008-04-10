@@ -34,11 +34,11 @@ class dtd2po:
         self.blankmsgstr = blankmsgstr
         self.duplicatestyle = duplicatestyle
 
-    def convertcomments(self,thedtd,thepo):
+    def convertcomments(self, thedtd, thepo):
         entity = quote.rstripeol(thedtd.entity)
         if len(entity) > 0:
             thepo.addlocation(thedtd.entity)
-        for commenttype,comment in thedtd.comments:
+        for commenttype, comment in thedtd.comments:
             # handle groups
             if (commenttype == "locgroupstart"):
                 groupcomment = comment.replace('BEGIN','GROUP')
@@ -58,7 +58,7 @@ class dtd2po:
         if entity.endswith(".height") or entity.endswith(".width") or entity.endswith(".size"):
             thepo.addnote("Do not translate this.  Only change the numeric values if you need this dialogue box to appear bigger", origin="developer")
 
-    def convertstrings(self,thedtd,thepo):
+    def convertstrings(self, thedtd, thepo):
         # extract the string, get rid of quoting
         unquoted = dtd.unquotefromdtd(thedtd.definition).replace("\r", "")
         # escape backslashes... but not if they're for a newline
@@ -80,7 +80,7 @@ class dtd2po:
             thepo.source = ""
         thepo.target = ""
 
-    def convertunit(self,thedtd):
+    def convertunit(self, thedtd):
         """converts a dtd unit to a po unit, returns None if empty or not for translation"""
         if thedtd is None:
             return None
@@ -89,19 +89,19 @@ class dtd2po:
         thepo = po.pounit(encoding="UTF-8")
         # remove unwanted stuff
         for commentnum in range(len(thedtd.comments)):
-            commenttype,locnote = thedtd.comments[commentnum]
+            commenttype, locnote = thedtd.comments[commentnum]
             # if this is a localization note
             if commenttype == 'locnote':
                 # parse the locnote into the entity and the actual note
                 typeend = quote.findend(locnote,'LOCALIZATION NOTE')
                 # parse the id
-                idstart = locnote.find('(',typeend)
+                idstart = locnote.find('(', typeend)
                 if idstart == -1: continue
-                idend = locnote.find(')',idstart+1)
+                idend = locnote.find(')', idstart+1)
                 entity = locnote[idstart+1:idend].strip()
                 # parse the actual note
-                actualnotestart = locnote.find(':',idend+1)
-                actualnoteend = locnote.find('-->',idend)
+                actualnotestart = locnote.find(':', idend+1)
+                actualnoteend = locnote.find('-->', idend)
                 actualnote = locnote[actualnotestart+1:actualnoteend].strip()
                 # if it's for this entity, process it
                 if thedtd.entity == entity:
@@ -117,8 +117,8 @@ class dtd2po:
                         # convert it into an automatic comment, to be processed by convertcomments
                         thedtd.comments[commentnum] = ("automaticcomment", actualnote)
         # do a standard translation
-        self.convertcomments(thedtd,thepo)
-        self.convertstrings(thedtd,thepo)
+        self.convertcomments(thedtd, thepo)
+        self.convertstrings(thedtd, thepo)
         if thepo.isblank() and not thepo.getlocations():
             return None
         else:

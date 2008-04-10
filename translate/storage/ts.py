@@ -75,7 +75,7 @@ class QtTsParser:
         translationtext = self.document.createTextNode(translation)
         translationnode.appendChild(translationtext)
         if transtype:
-            translationnode.setAttribute("type",transtype)
+            translationnode.setAttribute("type", transtype)
         messagenode.appendChild(translationnode)
         contextnode.appendChild(messagenode)
         return True

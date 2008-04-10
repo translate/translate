@@ -37,7 +37,7 @@ def python_distance(a, b, stopvalue=-1):
     if stopvalue == -1:
         stopvalue = l2
     current = range(l1+1)
-    for i in range(1,l2+1):
+    for i in range(1, l2+1):
         previous, current = current, [i]+[0]*l1
         least = l2
         for j in range(1, l1 + 1):
@@ -62,7 +62,7 @@ def native_distance(a, b, stopvalue=0):
     
     Note that this does not support arbitrary sequence types, but only 
     string types."""
-    return Levenshtein.distance(a,b)
+    return Levenshtein.distance(a, b)
 
 try:
     import Levenshtein as Levenshtein
@@ -117,7 +117,7 @@ class LevenshteinComparer:
             return 0
         #Let's make l1 the smallest
         if l1 > l2:
-            l1,l2 = l2,l1
+            l1, l2 = l2, l1
             a, b = b, a
             
         #maxsimilarity is the maximum similarity that can be attained as constrained
@@ -154,5 +154,5 @@ class LevenshteinComparer:
 if __name__ == "__main__":
     from sys import argv
     comparer = LevenshteinComparer()
-    print "Similarity:\n%s" % comparer.similarity(argv[1],argv[2], 50)
+    print "Similarity:\n%s" % comparer.similarity(argv[1], argv[2], 50)
 

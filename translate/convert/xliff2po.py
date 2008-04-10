@@ -91,7 +91,7 @@ def convertxliff(inputfile, outputfile, templates):
 
 def main(argv=None):
     from translate.convert import convert
-    formats = {"xlf":("po",convertxliff)}
+    formats = {"xlf":("po", convertxliff)}
     parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
     parser.run(argv)
 

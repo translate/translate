@@ -14,11 +14,11 @@ class TestDTD2PO:
         inputdtd = dtd.dtdfile(inputfile)
         convertor = dtd2po.dtd2po()
         if not dtdtemplate:
-          outputpo = convertor.convertstore(inputdtd)
+            outputpo = convertor.convertstore(inputdtd)
         else:
-          templatefile = wStringIO.StringIO(dtdtemplate)
-          templatedtd = dtd.dtdfile(templatefile)
-          outputpo = convertor.mergestore(templatedtd, inputdtd)
+            templatefile = wStringIO.StringIO(dtdtemplate)
+            templatedtd = dtd.dtdfile(templatefile)
+            outputpo = convertor.mergestore(templatedtd, inputdtd)
         return outputpo
 
     def convertdtd(self, dtdsource):
@@ -39,9 +39,9 @@ class TestDTD2PO:
     def countelements(self, pofile):
         """returns the number of non-header items"""
         if pofile.units[0].isheader():
-          return len(pofile.units) - 1
+            return len(pofile.units) - 1
         else:
-          return len(pofile.units)
+            return len(pofile.units)
 
     def test_simpleentity(self):
         """checks that a simple dtd entity definition converts properly to a po entry"""
@@ -188,15 +188,15 @@ class TestDTD2PO:
         dtdsource_template = '<!ENTITY  fileSaveAs.%s "Save As...">\n<!ENTITY  fileSaveAs.%s "S">\n'
         lang_template = '<!ENTITY  fileSaveAs.%s "Gcina ka...">\n<!ENTITY  fileSaveAs.%s "G">\n'
         for label in ("label", "title"):
-          for accesskey in ("accesskey", "accessKey", "akey"):
-            pofile = self.dtd2po(dtdsource_template % (label, accesskey))
-            pounit = self.singleelement(pofile)
-            assert pounit.source == "&Save As..."
-            # Test with template (bug 155)
-            pofile = self.dtd2po(lang_template % (label, accesskey), dtdsource_template % (label, accesskey))
-            pounit = self.singleelement(pofile)
-            assert pounit.source == "&Save As..."
-            assert pounit.target == "&Gcina ka..."
+            for accesskey in ("accesskey", "accessKey", "akey"):
+                pofile = self.dtd2po(dtdsource_template % (label, accesskey))
+                pounit = self.singleelement(pofile)
+                assert pounit.source == "&Save As..."
+                # Test with template (bug 155)
+                pofile = self.dtd2po(lang_template % (label, accesskey), dtdsource_template % (label, accesskey))
+                pounit = self.singleelement(pofile)
+                assert pounit.source == "&Save As..."
+                assert pounit.target == "&Gcina ka..."
 
     def test_accesskeys_mismatch(self):
         """check that we can handle accesskeys that don't match and thus can't be folded into the .label entry"""

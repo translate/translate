@@ -76,7 +76,7 @@ def convertts(inputfile, outputfile, templates):
 
 def main(argv=None):
     from translate.convert import convert
-    formats = {"ts":("po",convertts)}
+    formats = {"ts":("po", convertts)}
     parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
     parser.run(argv)
 

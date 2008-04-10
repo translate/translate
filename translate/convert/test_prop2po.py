@@ -14,11 +14,11 @@ class TestProp2PO:
         inputprop = properties.propfile(inputfile)
         convertor = prop2po.prop2po()
         if proptemplate:
-          templatefile = wStringIO.StringIO(proptemplate)
-          templateprop = properties.propfile(templatefile)
-          outputpo = convertor.mergestore(templateprop, inputprop)
+            templatefile = wStringIO.StringIO(proptemplate)
+            templateprop = properties.propfile(templatefile)
+            outputpo = convertor.mergestore(templateprop, inputprop)
         else:
-          outputpo = convertor.convertstore(inputprop)
+            outputpo = convertor.convertstore(inputprop)
         return outputpo
 
     def convertprop(self, propsource):

@@ -82,11 +82,11 @@ class TestConvertCommand:
         assert option in options 
         newoptions = []
         for line in options.splitlines():
-          if option in line or not line.lstrip().startswith("-"):
-            continue
-          newoptions.append(line)
+            if option in line or not line.lstrip().startswith("-"):
+                continue
+            newoptions.append(line)
         if last:
-           assert newoptions == []
+            assert newoptions == []
         return "\n".join(newoptions)
 
     def test_help(self):

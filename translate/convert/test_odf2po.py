@@ -4,7 +4,7 @@ from translate.convert import odf2po
 from translate.convert import test_convert
 
 class TestODF2PO:
-  pass
+    pass
 
 class TestODF2POCommand(test_convert.TestConvertCommand, TestODF2PO):
     """Tests running actual odf2po commands on files"""

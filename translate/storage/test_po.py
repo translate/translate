@@ -146,10 +146,10 @@ class TestPOFile(test_base.TestTranslationStore):
         oldpofile = self.poparse(oldmessage)
         oldunit = oldpofile.units[0]
         if newmessage:
-          newpofile = self.poparse(newmessage)
-          newunit = newpofile.units[0]
+            newpofile = self.poparse(newmessage)
+            newunit = newpofile.units[0]
         else:
-          newunit = oldpofile.UnitClass()
+            newunit = oldpofile.UnitClass()
         oldunit.merge(newunit, authoritative=authoritative)
         print oldunit
         return str(oldunit)

@@ -190,7 +190,7 @@ class PoXliffUnit(xliff.xliffunit):
         for group in groups:
             sourcefile = ""
             linenumber = ""
-            for (type,text) in group:
+            for (type, text) in group:
                 if type == "sourcefile":
                     sourcefile = text
                 elif type == "linenumber":
@@ -210,7 +210,7 @@ class PoXliffUnit(xliff.xliffunit):
         comments = []
         for group in groups:
             commentpairs = filter(hasautocomment, group)
-            for (type,text) in commentpairs:
+            for (type, text) in commentpairs:
                 comments.append(text)
         return "\n".join(comments)
     
@@ -223,7 +223,7 @@ class PoXliffUnit(xliff.xliffunit):
         comments = []
         for group in groups:
             commentpairs = filter(hastrancomment, group)
-            for (type,text) in commentpairs:
+            for (type, text) in commentpairs:
                 comments.append(text)
         return "\n".join(comments)
 

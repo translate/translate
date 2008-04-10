@@ -37,7 +37,7 @@ class SimpleDictReader:
     def __init__(self, fileobj, fieldnames):
         self.fieldnames = fieldnames
         self.contents = fileobj.read()
-        self.parser = sparse.SimpleParser(defaulttokenlist=[",", "\n"],whitespacechars="\r")
+        self.parser = sparse.SimpleParser(defaulttokenlist=[",", "\n"], whitespacechars="\r")
         self.parser.stringescaping = 0
         self.parser.quotechars = '"'
         self.tokens = self.parser.tokenize(self.contents)

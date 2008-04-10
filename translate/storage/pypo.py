@@ -103,7 +103,7 @@ def extractpoline(line):
      
     @param line: a quoted line from a po file (msgid or msgstr)
     """
-    extracted = quote.extractwithoutquotes(line,'"','"','\\',includeescapes=unescapehandler)[0]
+    extracted = quote.extractwithoutquotes(line, '"', '"', '\\', includeescapes=unescapehandler)[0]
     return extracted
 
 def unquotefrompo(postr, joinwithlinebreak=False):
@@ -368,7 +368,7 @@ class pounit(pocommon.pounit):
                 for item in list2:
                     splitlist2.extend(item.split()[1:])
                     prefix = item.split()[0]
-                list1.extend(["%s %s%s" % (prefix,item,lineend) for item in splitlist2 if not item in splitlist1])
+                list1.extend(["%s %s%s" % (prefix, item, lineend) for item in splitlist2 if not item in splitlist1])
             else:
                 #Normal merge, but conform to list1 newline style
                 if list1 != list2:

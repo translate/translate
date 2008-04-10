@@ -25,15 +25,15 @@ class TestHTML2PO:
         """helper to check that we got the expected number of messages"""
         actual = len(pofile.units)
         if actual > 0:
-          if pofile.units[0].isheader():
-            actual = actual - 1
+            if pofile.units[0].isheader():
+                actual = actual - 1
         print pofile
         assert actual == expected
 
     def compareunit(self, pofile, unitnumber, expected):
         """helper to validate a PO message"""
         if not pofile.units[0].isheader():
-          unitnumber = unitnumber - 1
+            unitnumber = unitnumber - 1
         print 'unit source: ' + str(pofile.units[unitnumber].source) + '|'
         print 'expected: ' + expected.encode('utf-8') + '|'
         assert unicode(pofile.units[unitnumber].source) == unicode(expected)

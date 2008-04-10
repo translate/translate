@@ -42,9 +42,9 @@ class TestPOMerge:
     def countunits(self, pofile):
         """returns the number of non-header items"""
         if pofile.units[0].isheader():
-          return len(pofile.units) - 1
+            return len(pofile.units) - 1
         else:
-          return len(pofile.units)
+            return len(pofile.units)
 
     def singleunit(self, pofile):
         """checks that the pofile contains a single non-header unit, and returns it"""

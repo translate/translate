@@ -147,7 +147,7 @@ class matcher:
         translation memory. If self.addpercentage is true (default) the match 
         quality is given as a percentage in the notes.
         """
-        bestcandidates = [(0.0,None)]*self.MAX_CANDIDATES
+        bestcandidates = [(0.0, None)]*self.MAX_CANDIDATES
         heapq.heapify(bestcandidates)
         #We use self.MIN_SIMILARITY, but if we already know we have max_candidates
         #that are better, we can adjust min_similarity upwards for speedup

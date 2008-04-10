@@ -143,21 +143,21 @@ class TestOO2PO:
         assert comment in titleunit.getnotes("developer")
         # Whitespace and blank
         for comment in ("   ", ""):
-          commentsource = en_USsource + '\n' + xcommentsource % (comment, comment, comment)
-          pofile = self.convert(commentsource)
-          if isinstance(pofile, poheader):
-              units = pofile.units[1:]
-          else:
-              units = pofile.units
-          textunit = units[0]
-          assert textunit.source == "Text"
-          assert textunit.getnotes("developer") == ""
-          quickhelpunit = units[1]
-          assert quickhelpunit.source == "Quickhelp"
-          assert quickhelpunit.getnotes("developer") == ""
-          titleunit = units[2]
-          assert titleunit.source == "Title"
-          assert titleunit.getnotes("developer") == ""
+            commentsource = en_USsource + '\n' + xcommentsource % (comment, comment, comment)
+            pofile = self.convert(commentsource)
+            if isinstance(pofile, poheader):
+                units = pofile.units[1:]
+            else:
+                units = pofile.units
+            textunit = units[0]
+            assert textunit.source == "Text"
+            assert textunit.getnotes("developer") == ""
+            quickhelpunit = units[1]
+            assert quickhelpunit.source == "Quickhelp"
+            assert quickhelpunit.getnotes("developer") == ""
+            titleunit = units[2]
+            assert titleunit.source == "Title"
+            assert titleunit.getnotes("developer") == ""
 
 class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2PO):
     """Tests running actual oo2po commands on files"""
