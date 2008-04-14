@@ -33,11 +33,13 @@ from translate.storage import rc
 eol = "\n"
 
 class rerc:
-    def __init__(self, templatefile, charset="utf-8"):
+    def __init__(self, templatefile, charset="utf-8", lang=None, sublang=None):
         self.templatefile = templatefile
         self.templatestore = rc.rcfile(templatefile)
         self.inputdict = {}
         self.charset = charset
+        self.lang = lang
+        self.sublang = sublang
 
     def convertstore(self, inputstore, includefuzzy=False):
         self.makestoredict(inputstore, includefuzzy)
@@ -63,6 +65,8 @@ class rerc:
         newblock = block
         if isinstance(newblock, unicode):
             newblock = newblock.encode('utf-8')
+        if newblock.startswith("LANGUAGE"):
+            return "LANGUAGE %s, %s" % (self.lang, self.sublang)
         for unit in self.templatestore.units:
             location = unit.getlocations()[0]
             if self.inputdict.has_key(location):
@@ -73,13 +77,15 @@ class rerc:
             newblock = newblock.encode(self.charset)
         return newblock
 
-def convertrc(inputfile, outputfile, templatefile, includefuzzy=False, charset=None):
+def convertrc(inputfile, outputfile, templatefile, includefuzzy=False, charset=None, lang=None, sublang=None):
     inputstore = po.pofile(inputfile)
+    if not lang:
+        raise ValueError("must specify a target language")
     if templatefile is None:
         raise ValueError("must have template file for rc files")
         # convertor = po2rc()
     else:
-        convertor = rerc(templatefile, charset)
+        convertor = rerc(templatefile, charset, lang, sublang)
     outputrclines = convertor.convertstore(inputstore, includefuzzy)
     outputfile.writelines(outputrclines)
     return 1
@@ -92,7 +98,14 @@ def main(argv=None):
     defaultcharset = "utf-8"
     parser.add_option("", "--charset", dest="charset", default=defaultcharset,
         help="charset to use to decode the RC files (default: %s)" % defaultcharset, metavar="CHARSET")
+    parser.add_option("-l", "--lang", dest="lang", default=None,
+        help="LANG entry", metavar="LANG")
+    defaultsublang="SUBLANG_DEFAULT"
+    parser.add_option("", "--sublang", dest="sublang", default=defaultsublang,
+        help="SUBLANG entry (default: %s)" % defaultsublang, metavar="SUBLANG")
     parser.passthrough.append("charset")
+    parser.passthrough.append("lang")
+    parser.passthrough.append("sublang")
     parser.add_fuzzy_option()
     parser.run(argv)
 
