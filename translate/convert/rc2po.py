@@ -97,7 +97,8 @@ def convertrc(inputfile, outputfile, templatefile, pot=False, duplicatestyle="ms
 
 def main(argv=None):
     from translate.convert import convert
-    formats = {"rc": ("po", convertrc), ("rc", "rc"): ("po", convertrc)}
+    formats = {"rc": ("po", convertrc), ("rc", "rc"): ("po", convertrc), 
+               "nls": ("po", convertrc), ("nls", "nls"): ("po", convertrc)}
     parser = convert.ConvertOptionParser(formats, usetemplates=True, usepots=True, description=__doc__)
     defaultcharset="cp1252"
     parser.add_option("", "--charset", dest="charset", default=defaultcharset,
