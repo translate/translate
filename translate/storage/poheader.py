@@ -187,6 +187,11 @@ class poheader:
                 self.units.insert(0, header)
         else:
             headeritems = update(self.parseheader(), add, **kwargs)
+            keys = headeritems.keys()
+            if not "Content-Type" in keys or "charset=CHARSET" in headeritems["Content-Type"]:
+                headeritems["Content-Type"] = "text/plain; charset=UTF-8"
+            if not "Content-Transfer-Encoding" in keys or "ENCODING" in headeritems["Content-Transfer-Encoding"]:
+                headeritems["Content-Transfer-Encoding"] = "8bit"
             headerString = ""
             for key, value in headeritems.items():
                 headerString += "%s: %s\n" % (key, value)
