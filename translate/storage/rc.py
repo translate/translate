@@ -190,8 +190,8 @@ class rcfile(base.TranslationStore):
                     newunit = rcunit(escape_to_python(value))
                     if type == "CAPTION" or type == "Caption":
                         newunit.name = "%s.%s.%s" % (dialogtype, dialogname, type)
-                    elif name == -1:
-                        newunit.name = "%s.%s.%s.%s" % (dialogtype, dialogname, type, value)
+                    elif name == "-1":
+                        newunit.name = "%s.%s.%s.%s" % (dialogtype, dialogname, type, value.replace(" ", "_"))
                     else:
                         newunit.name = "%s.%s.%s.%s" % (dialogtype, dialogname, type, name)
                     newunit.match = match 
@@ -208,8 +208,8 @@ class rcfile(base.TranslationStore):
                     newunit = rcunit(escape_to_python(value))
                     if type == "POPUP":
                         newunit.name = "MENU.%s.%s" % (menuname, type)
-                    elif name == -1:
-                        newunit.name = "MENU.%s.%s.%s" % (menuname, type, value)
+                    elif name == "-1":
+                        newunit.name = "MENU.%s.%s.%s" % (menuname, type, value.replace(" ", "_"))
                     else:
                         newunit.name = "MENU.%s.%s.%s" % (menuname, type, name)
                     newunit.match = match 
