@@ -132,7 +132,7 @@ class rcfile(base.TranslationStore):
                          """, re.DOTALL + re.VERBOSE)
         STRINGTABLE_RE = re.compile("""
                          (?P<name>[0-9A-Za-z_]+?),?\s*
-                         "(?P<value>.*?)"[\n]
+                         L?"(?P<value>.*?)"\s*[\n]
                          """, re.DOTALL + re.VERBOSE)
         DIALOG_RE = re.compile("""
                          (?P<type>AUTOCHECKBOX|AUTORADIOBUTTON|CAPTION|Caption|CHECKBOX|CTEXT|CONTROL|DEFPUSHBUTTON|
