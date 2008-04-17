@@ -5,7 +5,7 @@
 #
 # the function "__str__" was derived from Python v2.4
 #       (Tools/i18n/msgfmt.py - function "generate"):
-#   Written by Martin v. Löwis <loewis@informatik.hu-berlin.de>
+#   Written by Martin v. LÃ¶wis <loewis@informatik.hu-berlin.de>
 #   Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006 Python Software Foundation.
 #   All rights reserved.
 #   original license: Python Software Foundation (version 2)
