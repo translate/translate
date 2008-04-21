@@ -134,7 +134,7 @@ class WordfastTime(object):
         """Set the time_sturct object using a Wordfast time formated string
 
         @param timestring: A Wordfast time string (YYYMMDD~hhmmss)
-        @param type: String
+        @type timestring: String
         """
         self._time = time.strptime(timestring, WF_TIMEFORMAT)
     timestring = property(get_timestring, set_timestring)
