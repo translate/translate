@@ -106,7 +106,7 @@ def escape_help_text(text):
     text = text.replace("\\", "\\\\")
     for tag in helptagre.findall(text):
         escapethistag = True
-        if tag in ["<br>", "<h1>", "</h1>", "<img ...>", "<->", "<empty>"]:
+        if tag in ["<br>", "<h1>", "</h1>", "<img ...>", "<->", "<empty>", "<ref>", "<references>"]:
             escapethistag = False
         for skip in ["<font", "<node", "<help_section"]:
             if tag.startswith(skip):
