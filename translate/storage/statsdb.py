@@ -419,7 +419,7 @@ class StatsCache(object):
 
         values = geterrors()
         if not values:
-            # This could happen if we haven't done the checks before, or we the
+            # This could happen if we haven't done the checks before, or the
             # file changed, or we are using a different configuration
             store = store or factory.getobject(filename)
             if suggestion_filename:
