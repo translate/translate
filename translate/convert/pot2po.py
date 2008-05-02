@@ -130,7 +130,7 @@ def convertpot_stores(inputpot, templatepo, tm=None, min_similarity=75, fuzzymat
             if inputpot.units[0].getnotes("developer"):
                 targetheader.addnote(inputpot.units[0].getnotes("developer"), "developer")
             targetheader.markfuzzy(templatepo.units[0].isfuzzy())
-    elif inputpot.units[0].isheader():
+    elif len(inputpot.units) > 0 and inputpot.units[0].isheader():
         targetheader.addnote(inputpot.units[0].getnotes())
     thetargetfile.addunit(targetheader)
     # Do matching
