@@ -50,6 +50,9 @@ class tmxunit(lisa.LISAunit):
         id = self.xmlelement.get("tuid", "")
         return id or super(tmxunit, self).getid()
 
+    def istranslatable(self):
+        return bool(self.source)
+
     def addnote(self, text, origin=None):
         """Add a note specifically in a "note" tag.
         
