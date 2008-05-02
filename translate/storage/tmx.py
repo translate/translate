@@ -43,6 +43,13 @@ class tmxunit(lisa.LISAunit):
         seg.text = text
         return langset
 
+    def getid(self):
+        """Returns the identifier for this unit. The optional tuid property is 
+        used if available, otherwise we inherit .getid(). Note that the tuid 
+        property is only mandated to be unique from TMX 2.0."""
+        id = self.xmlelement.get("tuid", "")
+        return id or super(tmxunit, self).getid()
+
     def addnote(self, text, origin=None):
         """Add a note specifically in a "note" tag.
         
