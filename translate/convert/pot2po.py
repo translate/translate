@@ -46,8 +46,16 @@ def memory(tmfiles, max_candidates=1, min_similarity=75, max_length=1000):
     return tmmatcher
 
 def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similarity=75, fuzzymatching=True, **kwargs):
-    """reads in inputpotfile, adjusts header, writes to outputpofile. if templatepofile exists, merge translations from it into outputpofile"""
     inputpot = po.pofile(inputpotfile)
+    templatepo = None
+    if templatepofile is not None:
+        templatepo = po.pofile(templatepofile)
+    outputpo = convertpot_stores(inputpot, templatepo, tm, min_similarity, fuzzymatching, **kwargs)
+    outputpofile.write(str(outputpo))
+    return 1
+
+def convertpot_stores(inputpot, templatepo, tm=None, min_similarity=75, fuzzymatching=True, **kwargs):
+    """reads in inputpotfile, adjusts header, writes to outputpofile. if templatepofile exists, merge translations from it into outputpofile"""
     inputpot.makeindex()
     thetargetfile = po.pofile()
     # header values
@@ -61,8 +69,7 @@ def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similari
     mime_version = None
     plural_forms = None
     kwargs = {}
-    if templatepofile is not None:
-        templatepo = po.pofile(templatepofile)
+    if templatepo is not None:
         fuzzyfilematcher = None
         if fuzzymatching:
             for unit in templatepo.units:
@@ -116,7 +123,7 @@ def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similari
         pot_creation_date=pot_creation_date, po_revision_date=po_revision_date, last_translator=last_translator,
         language_team=language_team, mime_version=mime_version, plural_forms=plural_forms, **kwargs)
     # Get the header comments and fuzziness state
-    if templatepofile is not None and len(templatepo.units) > 0:
+    if templatepo is not None and len(templatepo.units) > 0:
         if templatepo.units[0].isheader():
             if templatepo.units[0].getnotes("translator"):
                 targetheader.addnote(templatepo.units[0].getnotes("translator"), "translator")
@@ -129,7 +136,7 @@ def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similari
     # Do matching
     for inputpotunit in inputpot.units:
         if not (inputpotunit.isheader() or inputpotunit.isobsolete()):
-            if templatepofile:
+            if templatepo:
                 possiblematches = []
                 for location in inputpotunit.getlocations():
                     templatepounit = templatepo.locationindex.get(location, None)
@@ -169,7 +176,7 @@ def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similari
             thetargetfile.addunit(inputpotunit)
 
     #Let's take care of obsoleted messages
-    if templatepofile:
+    if templatepo:
         newlyobsoleted = []
         for unit in templatepo.units:
             if unit.isheader():
@@ -182,8 +189,7 @@ def convertpot(inputpotfile, outputpofile, templatepofile, tm=None, min_similari
                 thetargetfile.addunit(unit)
         for unit in newlyobsoleted:
             thetargetfile.addunit(unit)
-    outputpofile.write(str(thetargetfile))
-    return 1
+    return thetargetfile
 
 def main(argv=None):
     from translate.convert import convert
