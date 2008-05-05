@@ -757,6 +757,10 @@ class StandardChecker(TranslationChecker):
         str1 = self.filteraccelerators(self.filtervariables(str1))
         iter = self.config.lang.word_iter(str1)
         str2 = self.filteraccelerators(self.filtervariables(str2))
+        #TODO: strip XML? - should provide better error messsages
+        # see mail/chrome/messanger/smime.properties.po
+        #TODO: consider limiting the word length for recognising acronyms to 
+        #something like 5/6 characters
         for word in iter:
             if word.isupper() and len(word) > 1 and word not in allowed:
                 if str2.find(word) == -1:
