@@ -207,6 +207,9 @@ def test_endpunc():
     stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='zh'))
     assert passes(stdchecker.endpunc, "To activate your account, follow this link:\n", u"要啟用戶口，請瀏覽這個鏈結：\n")
 
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='vi'))
+    assert passes(stdchecker.endpunc, "Do you want to delete the XX dialog?", u"Bạn có muốn xoá hộp thoại XX không?")
+
 def test_endwhitespace():
     """tests endwhitespace"""
     stdchecker = checks.StandardChecker()
