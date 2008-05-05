@@ -453,6 +453,7 @@ def test_singlequoting():
     # Real examples
     assert passes(stdchecker.singlequoting, "A nickname that identifies this publishing site (e.g.: 'MySite')", "Vito ro duvulela leri tirhisiwaka ku kuma sayiti leri ro kandziyisa (xik.: 'Sayiti ra Mina')")
     assert passes(stdchecker.singlequoting, "isn't", "ayikho")
+    assert passes(stdchecker.singlequoting, "Required (can't send message unless all recipients have certificates)", "Verlang (kan nie boodskappe versend tensy al die ontvangers sertifikate het nie)")
     # Afrikaans 'n
     assert passes(stdchecker.singlequoting, "Please enter a different site name.", "Tik 'n ander werfnaam in.")
     assert passes(stdchecker.singlequoting, "\"%name%\" already exists. Please enter a different site name.", "\"%name%\" bestaan reeds. Tik 'n ander werfnaam in.")
