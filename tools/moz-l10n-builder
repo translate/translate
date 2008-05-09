@@ -116,6 +116,9 @@ done
 
 if [ "$option_mozilla_checkout" != "" ]; then
 	#(cd $mozilladir; cvs up $tag browser/config client.mk build config )
+        if [ ! -d $mozilladir ]; then
+		cvs -d:pserver:anonymous@cvs-mirror.mozilla.org:/cvsroot co $tag $mozilladir/client.mk
+	fi
 	(cd $mozilladir; cvs up $tag client.mk; make -f client.mk l10n-checkout)
 	# Make latest POT file
 	rm -rf l10n/en-US l10n/pot
