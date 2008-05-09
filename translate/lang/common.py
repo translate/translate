@@ -162,20 +162,29 @@ class Common(object):
 
     This doesn't need to be supplied, but will be used if it exists."""
 
-    def __init__(self, code):
-        """This constructor is used if we need to instantiate an abject (not 
-        the usual setup). This will mostly when the factory is asked for a
-        language for which we don't have a dedicated class."""
-        self.code = code or ""
+    _languages = {}
+
+    def __new__(cls, code):
+        """This returns the language class for the given code, following a 
+        singleton like approach (only one object per language)."""
+        code = code or ""
+        # First see if a language object for this code already exists
+        if code in cls._languages:
+            return cls._languages[code]
+        # No existing language. Let's build a new one and keep a copy
+        language = cls._languages[code] = object.__new__(cls)
+
+        language.code = code
         while code:
             langdata = data.languages.get(code, None)
             if langdata:
-                self.fullname, self.nplurals, self.pluralequation = langdata
+                language.fullname, language.nplurals, language.pluralequation = langdata
                 break
             code = data.simplercode(code)
         if not code:
 #            print >> sys.stderr, "Warning: No information found about language code %s" % code
             pass
+        return language
 
     def __repr__(self):
         """Give a simple string representation without address information to 

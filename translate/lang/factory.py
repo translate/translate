@@ -39,7 +39,7 @@ def getlanguage(code):
                 raise ImportError ("Can't determine language code")
             exec("from translate.lang import %s" % code)
             exec("langclass = %s.%s" % (code, code))
-            return langclass
+            return langclass(code)
         except SyntaxError, e:
             # Someone is probably trying to import a language of which the code
             # is a reserved word in python (like Icelandic (is) / Oriya (or))
@@ -47,7 +47,7 @@ def getlanguage(code):
             # code_is, for example.
             exec("from translate.lang import %s%s" % (prefix, code))
             exec("langclass = %s%s.%s%s" % (prefix, code, prefix, code))
-            return langclass
+            return langclass(code)
     except ImportError, e:
         if code and code.startswith(prefix):
             code = code[:len(prefix)]
