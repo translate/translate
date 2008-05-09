@@ -41,6 +41,7 @@ mozversion=3
 
 l10ndir="l10n"
 mozilladir="mozilla"
+podir="po"
 potpacks="potpacks"
 
 if [ "$tag" != "" ]; then
@@ -201,21 +202,21 @@ do
 	if [ "$lang" != "en_DE" ]; then
 		if [ "$option_update_translations" != "" ]; then
 			# Get the lastest po and l10n files
-			( cd po; svn up $lang)
+			( cd $podir; svn up $lang)
 			( cd $l10ndir; cvs up $lang)
 		fi
 		
 		# Migrate language from current PO to latest POT
-        	rm -rf po-updated/.svn
-		cp -rp po/.svn po-updated
-		rm -rf po-updated/$lang
-		cp -rp po/$lang po-updated
-		rm -f `find po-updated/$lang -name "*.po"`
+        	rm -rf $podir-updated/.svn
+		cp -rp $podir/.svn $podir-updated
+		rm -rf $podir-updated/$lang
+		cp -rp $podir/$lang $podir-updated
+		rm -f `find $podir-updated/$lang -name "*.po"`
 		
 		# Protect the real original PO dir
 		
 		temp_po=`mktemp -d`
-		cp -rp po/$lang/* $temp_po
+		cp -rp $podir/$lang/* $temp_po
 		
 		##### Hacks - pre po2moz ########
 		# Fix the fact that various editor files are in the wrong place
@@ -227,29 +228,29 @@ do
 
 		# Fix for languages that have no Windows codepage
 		if [ "$lang" == "ve" ]; then
-			cp -p po/en_ZA/browser/installer/*.properties $temp_po/browser/installer/
+			cp -p $podir/en_ZA/browser/installer/*.properties $temp_po/browser/installer/
 		fi
 
-		pomigrate2 --use-compendium --quiet --pot2po $temp_po po-updated/$lang $l10ndir/pot
+		pomigrate2 --use-compendium --quiet --pot2po $temp_po $podir-updated/$lang $l10ndir/pot
 	else
-		rm -rf po-updated/$lang
-		mkdir -p po-updated/$lang
-		poen $l10ndir/pot po-updated/$lang
+		rm -rf $podir-updated/$lang
+		mkdir -p $podir-updated/$lang
+		poen $l10ndir/pot $podir-updated/$lang
 	fi
 	rm -f `find po-updated/$lang -name "*.xhtml.po" -o -name "*.html.po"`
 
         if [ "$option_debug" != "" -o "$lang" == "en_DE" ]; then
-		(cd po-updated/$lang; podebug --errorlevel=traceback --ignore=mozilla . .)
+		(cd $podir-updated/$lang; podebug --errorlevel=traceback --ignore=mozilla . .)
 	fi
 
 	# Create l10n related files
 	rm -rf `find $l10ndir/$buildlang -name "*.properties" -o -name "*.dtd"`
-	po2moz --errorlevel=traceback --exclude=".svn" $use_fuzzy -t $l10ndir/en-US po-updated/$lang $l10ndir/$buildlang
+	po2moz --errorlevel=traceback --exclude=".svn" $use_fuzzy -t $l10ndir/en-US $podir-updated/$lang $l10ndir/$buildlang
 	
 	##### Hacks - post po2moz ########
 	# Hack to fix creating Thunderbird instaler
-	if [ -f po-updated/$lang/mail/installer/installer.inc.po ]; then
-		cp po-updated/$lang/mail/installer/installer.inc.po /tmp/installer.$lang.properties.po
+	if [ -f $podir-updated/$lang/mail/installer/installer.inc.po ]; then
+		cp $podir-updated/$lang/mail/installer/installer.inc.po /tmp/installer.$lang.properties.po
 		cp $l10ndir/en-US/mail/installer/installer.inc /tmp/installer.properties
 		po2prop  --progress=none --errorlevel=traceback -t /tmp/installer.properties /tmp/installer.$lang.properties.po /tmp/installer.$lang.properties
 		mv /tmp/installer.$lang.properties $l10ndir/$buildlang/mail/installer/installer.inc
@@ -283,7 +284,7 @@ do
 
 	if [ "$option_diff" != "" ]; then
 		(cd $l10ndir; cvs diff --new-file $buildlang > ../diff/$lang-l10n.diff)
-		(cd po-updated/$lang; svn diff --diff-cmd diff -x "-u --ignore-matching-lines=^\"POT\|^\"X-Gene" > ../../diff/$lang-po.diff)
+		(cd $podir-updated/$lang; svn diff --diff-cmd diff -x "-u --ignore-matching-lines=^\"POT\|^\"X-Gene" > ../../diff/$lang-po.diff)
 	fi
 	
 	# Cleanup
