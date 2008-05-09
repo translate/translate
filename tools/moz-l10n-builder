@@ -239,14 +239,14 @@ do
 		mkdir -p $podir-updated/$lang
 		poen $l10ndir/pot $podir-updated/$lang
 	fi
-	rm -f `find po-updated/$lang -name "*.xhtml.po" -o -name "*.html.po"`
+	rm -f `find $podir-updated/$lang -name "*.xhtml.po" -o -name "*.html.po"`
 
         if [ "$option_debug" != "" -o "$lang" == "en_DE" ]; then
 		(cd $podir-updated/$lang; podebug --errorlevel=traceback --ignore=mozilla . .)
 	fi
 
 	# Create l10n related files
-	rm -rf `find $l10ndir/$buildlang -name "*.properties" -o -name "*.dtd"`
+	[ -d $l10ndir/$buildlang ] && rm -rf `find $l10ndir/$buildlang -name "*.properties" -o -name "*.dtd"`
 	po2moz --errorlevel=traceback --exclude=".svn" $use_fuzzy -t $l10ndir/en-US $podir-updated/$lang $l10ndir/$buildlang
 	
 	##### Hacks - post po2moz ########
