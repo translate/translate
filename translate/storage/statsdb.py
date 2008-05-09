@@ -113,7 +113,7 @@ def suggestioninfo(filename):
 class StatsCache(object):
     """An object instantiated as a singleton for each statsfile that provides 
     access to the database cache from a pool of StatsCache objects."""
-    caches = {}
+    _caches = {}
     defaultfile = None
     con = None
     """This cache's connection"""
@@ -136,10 +136,10 @@ class StatsCache(object):
         else:
             statsfile = os.path.realpath(statsfile)
         # First see if a cache for this file already exists:
-        if statsfile in cls.caches:
-            return cls.caches[statsfile]
+        if statsfile in cls._caches:
+            return cls._caches[statsfile]
         # No existing cache. Let's build a new one and keep a copy
-        cache = cls.caches[statsfile] = object.__new__(cls)
+        cache = cls._caches[statsfile] = object.__new__(cls)
         cache.con = dbapi2.connect(statsfile)
         cache.cur = cache.con.cursor()
         cache.create()
@@ -338,7 +338,6 @@ class StatsCache(object):
                     unitvalues.append((index, fileid, configid, checkname, checkmessage))
                     errornames.append("check-" + checkname)
         checker.setsuggestionstore(None)
-
 
         if unitindex:
             # We are only updating a single unit, so we don't want to add an 
