@@ -25,7 +25,7 @@ For more information, see U{http://en.wikipedia.org/wiki/Vietnamese_language}
 """
 
 from translate.lang import common
-from translate.lang.fr import fr
+from translate.lang import fr
 
 class vi(common.Common):
     """This class represents Vietnamese."""
@@ -34,7 +34,20 @@ class vi(common.Common):
     nplurals = 1
     pluralequation = "0"
 
+    # Vietnamese uses similar rules for spacing two-part punctuation marks as 
+    # French, but does not use a space before '?'.
+    puncdict = {}
+    for c in u":;!#":
+        puncdict[c] = u" %s" % c
+
     def punctranslate(cls, text):
-        return fr.punctranslate(text)
+        """Implement some extra features for quotation marks.
+        
+        Known shortcomings:
+            - % and $ are not touched yet for fear of variables
+            - Double spaces might be introduced
+        """
+        text = super(cls, cls).punctranslate(text)
+        return fr.guillemets(text)
     punctranslate = classmethod(punctranslate)
 
