@@ -40,6 +40,7 @@ mozilladir="mozilla"
 langpackrelease=1
 targetapp=browser
 mozversion=3
+potpacks=potpacks
 
 if [ "$tag" != "" ]; then
 	tag="-r $tag"
@@ -55,6 +56,7 @@ function usage() {
         echo "   --mozilla-checkout       - update of the Mozilla l10n files and POT files"
         echo "   --update-translations    - update translations"
         echo "   --diff                   - create diffs for migrated translations and l10n/"
+        echo "   --potpack                - create packages of the en-US and pot directories with today's timestamp in $potpacks/"
         echo "   --langpack               - build a langpack"
         echo "   --debug                  - add podebug debug markers"
         exit 1
@@ -64,6 +66,7 @@ function usage() {
 option_mozilla_checkout=""
 option_update_translations="" 
 option_diff=""
+option_potpack=""
 option_langpack=""
 option_debug=""
 
@@ -81,6 +84,10 @@ do
                         ;;
                 --diff)
                         option_diff="option_diff"
+                        shift
+                        ;;
+                --potpack)
+                        option_potpack="option_potpack"
                         shift
                         ;;
                 --langpack)
@@ -142,6 +149,14 @@ if [ "$option_mozilla_checkout" != "" ]; then
 	fi
 	)
 fi
+
+if [ "$option_potpack" != "" ]; then
+	mkdir -p $potpacks
+	timestamp=$(date +"%Y%m%d")
+	tar cjf $potpacks/$targetapp-$mozversion-$timestamp.tar.bz2 l10n/en-US l10n/pot
+	zip -qr9 $potpacks/$targetapp-$mozversion-$timestamp.zip l10n/en-US l10n/pot
+fi
+	
 
 function copyfile {
 	filename=$1
