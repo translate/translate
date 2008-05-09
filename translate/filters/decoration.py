@@ -167,15 +167,10 @@ def getvariables(startmarker, endmarker):
 def getnumbers(str1):
     """returns any numbers that are in the string"""
     # TODO: handle locale-based periods e.g. 2,5 for Afrikaans
+    assert isinstance(str1, unicode)
     numbers = []
     innumber = False
-    try:
-        wasstr = isinstance(str1, str)
-        if wasstr:
-            str1 = str1.decode('utf8')
-        degreesign = u'\xb0'
-    except:
-        degreesign = None
+    degreesign = u'\xb0'
     lastnumber = ""
     carryperiod = ""
     for chr1 in str1:
@@ -200,8 +195,6 @@ def getnumbers(str1):
     if innumber:
         if lastnumber:
             numbers.append(lastnumber)
-    if wasstr and degreesign:
-        numbers = [number.encode('utf8') for number in numbers]
     return numbers
 
 def getfunctions(str1, punctuation):
