@@ -259,7 +259,7 @@ do
 	# Cleanup
 	rm -rf $temp_po
 	
-	if [ "$option_langpack" != "" ]; then
+	if [ "$option_langpack" != "" -a -d $mozilladir ]; then
 		# Build XPI and installer
 		( cd $mozilladir; ./configure --disable-compile-environment --disable-xft --enable-application=browser )
 		( cd $mozilladir/browser/locales; make langpack-$buildlang MOZ_BRANDING_DIRECTORY=other-licenses/branding/firefox LANGPACK_FILE='$(_ABS_DIST)'"/install/Firefox-Languagepack-"'$(MOZ_APP_VERSION)'-$langpackrelease'.$(AB_CD)'".xpi" )
