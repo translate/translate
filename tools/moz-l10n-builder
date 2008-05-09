@@ -35,12 +35,13 @@
 
 langs="af en_ZA nr nso ss st tn ts ve xh zu en_DE"
 #tag='FIREFOX_3_0b4_RELEASE'
-#mozilladir="mozilla3b4"
-mozilladir="mozilla"
 langpackrelease=1
 targetapp=browser
 mozversion=3
-potpacks=potpacks
+
+l10ndir="l10n"
+mozilladir="mozilla"
+potpacks="potpacks"
 
 if [ "$tag" != "" ]; then
 	tag="-r $tag"
@@ -134,12 +135,12 @@ if [ "$option_mozilla_checkout" != "" ]; then
 	make -f client.mk l10n-checkout MOZ_CO_PROJECT=$targetapp
 	)
 	# Make latest POT file
-	rm -rf l10n/en-US l10n/pot
+	rm -rf $l10ndir/en-US $l10ndir/pot
 	(cd $mozilladir
 	cvs up tools/l10n
-	python tools/l10n/l10n.py --app=$targetapp en-US
+	python tools/l10n/l10n.py --dest="../$l10ndir" --app=$targetapp en-US
 	)
-	(cd l10n
+	(cd $l10ndir
 	moz2po -P --duplicates=msgctxt en-US pot
 	if [ $mozversion != "3" ]; then
 		txt2po -P en-US/browser/README.txt pot/browser/README.txt.pot
@@ -153,8 +154,8 @@ fi
 if [ "$option_potpack" != "" ]; then
 	mkdir -p $potpacks
 	timestamp=$(date +"%Y%m%d")
-	tar cjf $potpacks/$targetapp-$mozversion-$timestamp.tar.bz2 l10n/en-US l10n/pot
-	zip -qr9 $potpacks/$targetapp-$mozversion-$timestamp.zip l10n/en-US l10n/pot
+	tar cjf $potpacks/$targetapp-$mozversion-$timestamp.tar.bz2 $l10ndir/en-US $l10ndir/pot
+	zip -qr9 $potpacks/$targetapp-$mozversion-$timestamp.zip $l10ndir/en-US $l10ndir/pot
 fi
 	
 
@@ -162,16 +163,16 @@ function copyfile {
 	filename=$1
 	language=$2
 	directory=$(dirname $filename)
-	if [ -f l10n/en-US/$filename ]; then
-		mkdir -p l10n/$language/$directory
-		cp -p l10n/en-US/$filename l10n/$language/$directory
+	if [ -f $l10ndir/en-US/$filename ]; then
+		mkdir -p $l10ndir/$language/$directory
+		cp -p $l10ndir/en-US/$filename $l10ndir/$language/$directory
 	fi
 }
 
 function copyfiletype {
 	filetype=$1
 	language=$2
-	files=$(cd l10n/en-US; find . -name "$filetype")
+	files=$(cd $l10ndir/en-US; find . -name "$filetype")
 	for file in $files
 	do
 		copyfile $file $language
@@ -181,7 +182,7 @@ function copyfiletype {
 function copydir {
 	dir=$1
 	language=$2
-	files=$(cd l10n/en-US/$dir; find . -type f | egrep -v CVS)
+	files=$(cd $l10ndir/en-US/$dir; find . -type f | egrep -v CVS)
 	for file in $files
 	do
 		copyfile $dir/$file $language
@@ -201,7 +202,7 @@ do
 		if [ "$option_update_translations" != "" ]; then
 			# Get the lastest po and l10n files
 			( cd po; svn up $lang)
-			( cd l10n; cvs up $lang)
+			( cd $l10ndir; cvs up $lang)
 		fi
 		
 		# Migrate language from current PO to latest POT
@@ -229,13 +230,13 @@ do
 			cp -p po/en_ZA/browser/installer/*.properties $temp_po/browser/installer/
 		fi
 
-		~/dev/lm/trunk/tools/pomigrate2 --similarity=75 --use-compendium --quiet --pot2po $temp_po po-updated/$lang l10n/pot
-		#~/dev/lm/trunk/tools/pomigrate2 --similarity=75 --use-compendium=c-af.po --quiet --pot2po $temp_po po-updated/$lang l10n/pot
-		#~/dev/lm/trunk/tools/pomigrate2 --quiet --pot2po $temp_po po-updated/$lang l10n/pot
+		~/dev/lm/trunk/tools/pomigrate2 --similarity=75 --use-compendium --quiet --pot2po $temp_po po-updated/$lang $l10ndir/pot
+		#~/dev/lm/trunk/tools/pomigrate2 --similarity=75 --use-compendium=c-af.po --quiet --pot2po $temp_po po-updated/$lang $l10ndir/pot
+		#~/dev/lm/trunk/tools/pomigrate2 --quiet --pot2po $temp_po po-updated/$lang $l10ndir/pot
 	else
 		rm -rf po-updated/$lang
 		mkdir -p po-updated/$lang
-		poen l10n/pot po-updated/$lang
+		poen $l10ndir/pot po-updated/$lang
 	fi
 	rm -f `find po-updated/$lang -name "*.xhtml.po" -o -name "*.html.po"`
 
@@ -244,16 +245,16 @@ do
 	fi
 
 	# Create l10n related files
-	rm -rf `find l10n/$buildlang -name "*.properties" -o -name "*.dtd"`
-	po2moz --errorlevel=traceback --exclude=".svn" $use_fuzzy -t l10n/en-US po-updated/$lang l10n/$buildlang
+	rm -rf `find $l10ndir/$buildlang -name "*.properties" -o -name "*.dtd"`
+	po2moz --errorlevel=traceback --exclude=".svn" $use_fuzzy -t $l10ndir/en-US po-updated/$lang $l10ndir/$buildlang
 	
 	##### Hacks - post po2moz ########
 	# Hack to fix creating Thunderbird instaler
 	if [ -f po-updated/$lang/mail/installer/installer.inc.po ]; then
 		cp po-updated/$lang/mail/installer/installer.inc.po /tmp/installer.$lang.properties.po
-		cp l10n/en-US/mail/installer/installer.inc /tmp/installer.properties
+		cp $l10ndir/en-US/mail/installer/installer.inc /tmp/installer.properties
 		po2prop  --progress=none --errorlevel=traceback -t /tmp/installer.properties /tmp/installer.$lang.properties.po /tmp/installer.$lang.properties
-		mv /tmp/installer.$lang.properties l10n/$buildlang/mail/installer/installer.inc
+		mv /tmp/installer.$lang.properties $l10ndir/$buildlang/mail/installer/installer.inc
 	fi
 
 	# Copy and update non-translatable files
@@ -274,16 +275,16 @@ do
 
 	# Clean up where we made real tabs \t
 	if [ $mozversion != "3" ]; then
-		sed -i "/^USAGE_MSG/s/\\\t/\t/g" l10n/$buildlang/toolkit/installer/unix/install.it
-		sed -i "/^#define MSG_USAGE/s/\\\t/\t/g" l10n/$buildlang/browser/installer/installer.inc
+		sed -i "/^USAGE_MSG/s/\\\t/\t/g" $l10ndir/$buildlang/toolkit/installer/unix/install.it
+		sed -i "/^#define MSG_USAGE/s/\\\t/\t/g" $l10ndir/$buildlang/browser/installer/installer.inc
 	fi
 
 	# Fix bookmark file to point to the locale
 	# FIXME - need some way to preserve this file if its been translated already
-	sed -i "s/en-US/$buildlang/g" l10n/$buildlang/browser/profile/bookmarks.html
+	sed -i "s/en-US/$buildlang/g" $l10ndir/$buildlang/browser/profile/bookmarks.html
 
 	if [ "$option_diff" != "" ]; then
-		(cd l10n; cvs diff --new-file $buildlang > ../diff/$lang-l10n.diff)
+		(cd $l10ndir; cvs diff --new-file $buildlang > ../diff/$lang-l10n.diff)
 		(cd po-updated/$lang; svn diff --diff-cmd diff -x "-u --ignore-matching-lines=^\"POT\|^\"X-Gene" > ../../diff/$lang-po.diff)
 	fi
 	
