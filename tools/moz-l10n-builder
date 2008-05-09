@@ -207,11 +207,13 @@ do
 		fi
 		
 		# Migrate language from current PO to latest POT
-        	rm -rf $podir-updated/.svn
-		cp -rp $podir/.svn $podir-updated
-		rm -rf $podir-updated/$lang
-		cp -rp $podir/$lang $podir-updated
-		rm -f `find $podir-updated/$lang -name "*.po"`
+		if [ -d $podir ]; then
+        		rm -rf $podir-updated/.svn
+			cp -rp $podir/.svn $podir-updated
+			rm -rf $podir-updated/$lang
+			cp -rp $podir/$lang $podir-updated
+			rm -f `find $podir-updated/$lang -name "*.po"`
+		fi
 		
 		# Protect the real original PO dir
 		
