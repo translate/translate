@@ -230,9 +230,7 @@ do
 			cp -p po/en_ZA/browser/installer/*.properties $temp_po/browser/installer/
 		fi
 
-		~/dev/lm/trunk/tools/pomigrate2 --similarity=75 --use-compendium --quiet --pot2po $temp_po po-updated/$lang $l10ndir/pot
-		#~/dev/lm/trunk/tools/pomigrate2 --similarity=75 --use-compendium=c-af.po --quiet --pot2po $temp_po po-updated/$lang $l10ndir/pot
-		#~/dev/lm/trunk/tools/pomigrate2 --quiet --pot2po $temp_po po-updated/$lang $l10ndir/pot
+		pomigrate2 --similarity=75 --use-compendium --quiet --pot2po $temp_po po-updated/$lang $l10ndir/pot
 	else
 		rm -rf po-updated/$lang
 		mkdir -p po-updated/$lang
