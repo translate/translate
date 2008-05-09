@@ -38,6 +38,7 @@ langs="af en_ZA nr nso ss st tn ts ve xh zu en_DE"
 #mozilladir="mozilla3b4"
 mozilladir="mozilla"
 langpackrelease=1
+targetapp=browser
 
 if [ "$tag" != "" ]; then
 	tag="-r $tag"
@@ -118,17 +119,17 @@ if [ "$option_mozilla_checkout" != "" ]; then
 	#(cd $mozilladir; cvs up $tag browser/config client.mk build config )
         if [ ! -d $mozilladir ]; then
 		cvs -d:pserver:anonymous@cvs-mirror.mozilla.org:/cvsroot co $tag $mozilladir/client.mk
-		cvs -d:pserver:anonymous@cvs-mirror.mozilla.org:/cvsroot co mozilla/tools/l10n
+		cvs -d:pserver:anonymous@cvs-mirror.mozilla.org:/cvsroot co $mozilladir/tools/l10n
 	fi
 	(cd $mozilladir
 	cvs up $tag client.mk
-	make -f client.mk l10n-checkout
+	make -f client.mk l10n-checkout MOZ_CO_PROJECT=$targetapp
 	)
 	# Make latest POT file
 	rm -rf l10n/en-US l10n/pot
 	(cd $mozilladir
-	cvs up mozilla/tools/l10n
-	python tools/l10n/l10n.py en-US
+	cvs up tools/l10n
+	python tools/l10n/l10n.py --app=$targetapp en-US
 	)
 	(cd l10n
 	moz2po -P --duplicates=msgctxt en-US pot
