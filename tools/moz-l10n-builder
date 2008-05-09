@@ -39,6 +39,7 @@ langs="af en_ZA nr nso ss st tn ts ve xh zu en_DE"
 mozilladir="mozilla"
 langpackrelease=1
 targetapp=browser
+mozversion=3
 
 if [ "$tag" != "" ]; then
 	tag="-r $tag"
@@ -133,10 +134,12 @@ if [ "$option_mozilla_checkout" != "" ]; then
 	)
 	(cd l10n
 	moz2po -P --duplicates=msgctxt en-US pot
-	txt2po -P en-US/browser/README.txt pot/browser/README.txt.pot
-	txt2po -P en-US/browser/os2/README.txt pot/browser/os2/README.txt.pot
-	txt2po -P en-US/mail/README.txt pot/mail/README.txt.pot
-	txt2po -P en-US/mail/os2/README.txt pot/mail/os2/README.txt.pot
+	if [ $mozversion != "3" ]; then
+		txt2po -P en-US/browser/README.txt pot/browser/README.txt.pot
+		txt2po -P en-US/browser/os2/README.txt pot/browser/os2/README.txt.pot
+		txt2po -P en-US/mail/README.txt pot/mail/README.txt.pot
+		txt2po -P en-US/mail/os2/README.txt pot/mail/os2/README.txt.pot
+	fi
 	)
 fi
 
@@ -255,8 +258,10 @@ do
 	#copyfile toolkit/installer/windows/charset.mk $buildlang
 
 	# Clean up where we made real tabs \t
-	sed -i "/^USAGE_MSG/s/\\\t/\t/g" l10n/$buildlang/toolkit/installer/unix/install.it
-	sed -i "/^#define MSG_USAGE/s/\\\t/\t/g" l10n/$buildlang/browser/installer/installer.inc
+	if [ $mozversion != "3" ]; then
+		sed -i "/^USAGE_MSG/s/\\\t/\t/g" l10n/$buildlang/toolkit/installer/unix/install.it
+		sed -i "/^#define MSG_USAGE/s/\\\t/\t/g" l10n/$buildlang/browser/installer/installer.inc
+	fi
 
 	# Fix bookmark file to point to the locale
 	# FIXME - need some way to preserve this file if its been translated already
