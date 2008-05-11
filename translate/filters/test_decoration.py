@@ -42,3 +42,14 @@ def test_getnumbers():
     #assert decoration.getnumbers(u"R5,99") == ["5.99"]
     #assert decoration.getnumbers(u"1\u00a0000,99") == ["1000.99"]
     assert decoration.getnumbers(u"36°") == [u"36°"]
+
+def test_getfunctions():
+    """test operation of getfunctions()"""
+    punctuation = "().?!"
+    assert decoration.getfunctions(u"", punctuation) == []
+    assert decoration.getfunctions(u"There is no function", punctuation) == []
+    assert decoration.getfunctions(u"Use the getfunction() function.", punctuation) == ["getfunction()"]
+    assert decoration.getfunctions(u"The module.getfunction() method", punctuation) == ["module.getfunction()"]
+    assert decoration.getfunctions(u"The function().function() function", punctuation) == ["function().function()"]
+    assert decoration.getfunctions(u"Deprecated, use function().", punctuation) == ["function()"]
+    assert decoration.getfunctions(u"Deprecated, use function() or other().", punctuation) == ["function()", "other()"]
