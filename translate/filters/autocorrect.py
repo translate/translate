@@ -23,8 +23,10 @@
 
 from translate.filters import decoration
 
-def simplecorrect(msgid, msgstr):
+def correct(msgid, msgstr):
     """runs a set of easy automatic corrections"""
+    assert isinstance(msgid, unicode)
+    assert isinstance(msgstr, unicode)
     if msgstr == "":
         return msgstr
     if "..." in msgid and u"…" in msgstr:
@@ -43,18 +45,3 @@ def simplecorrect(msgid, msgstr):
         elif msgid[:1].islower() and msgstr[:1].isupper():
             return msgstr[:1].lower() + msgstr[1:]
     return None
-
-def correct(msgid, msgstr):
-    """runs a set of easy automatic corrections, handling unicode etc"""
-    if isinstance(msgid, str):
-        msgid = msgid.decode("utf-8")
-    if isinstance(msgstr, str):
-        msgstr = msgstr.decode("utf-8")
-        wasstr = True
-    else:
-        wasstr = False
-    correction = simplecorrect(msgid, msgstr)
-    if correction and wasstr:
-        return correction.encode("utf-8")
-    return correction
-
