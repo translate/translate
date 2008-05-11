@@ -15,6 +15,15 @@ def test_spacestart():
     # Some exotic spaces
     assert decoration.spacestart(u"\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200aStart") == u"\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a"
 
+def test_isvalidaccelerator():
+    """test the isvalidaccelerator() function"""
+    assert decoration.isvalidaccelerator("") == False
+    assert decoration.isvalidaccelerator(u"a") == True
+    assert decoration.isvalidaccelerator(u"1") == True
+    # TODO check if we even use ignorelist which is here "aeiou"
+    assert decoration.isvalidaccelerator(u"a", "aeiou") == False
+    assert decoration.isvalidaccelerator(u"ḽ") == False
+
 def test_find_marked_variables():
     """check that we cna identify variables correctly, first value is start location, i
     second is avtual variable sans decoations"""

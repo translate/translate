@@ -67,7 +67,7 @@ def ispurepunctuation(str1):
 def isvalidaccelerator(accelerator, ignorelist=[]):
     """returns whether the given accelerator string is a valid one..."""
     if len(accelerator) == 0 or accelerator in ignorelist:
-        return 0
+        return False
     accelerator = accelerator.replace("_","")
     if not accelerator.isalnum():
         return False
