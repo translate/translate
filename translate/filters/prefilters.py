@@ -114,15 +114,13 @@ wordswithpunctuation = dict([(word, filter(str.isalnum, word)) for word in words
 def filterwordswithpunctuation(str1):
     """goes through a list of known words that have punctuation and removes the 
     punctuation from them"""
+    assert isinstance(str1, unicode)
     occurrences = []
     for word, replacement in wordswithpunctuation.iteritems():
         occurrences.extend([(pos, word, replacement) for pos in quote.find_all(str1, word)])
     for match in re.finditer("(?u)\w+'\w+", str1):
         word = match.group()
-        if isinstance(word, unicode):
-            replacement = filter(unicode.isalnum, word)
-        else:
-            replacement = filter(str.isalnum, word)
+        replacement = filter(unicode.isalnum, word)
         occurrences.append((match.start(), word, replacement))
     occurrences.sort()
     replacements = []
