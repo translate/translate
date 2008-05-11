@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 """tests decoration handling functions that are used by checks"""
 
@@ -31,3 +31,14 @@ def test_find_marked_variables():
     variables = decoration.findmarkedvariables("The &variable.variable; string", "&", ";")
     assert variables == [(4, "variable.variable")]
 
+def test_getnumbers():
+    """test operation of getnumbers()"""
+    assert decoration.getnumbers(u"") == []
+    assert decoration.getnumbers(u"No numbers") == []
+    assert decoration.getnumbers(u"Nine 9 nine") == ["9"]
+    assert decoration.getnumbers(u"Two numbers: 2 and 3") == ["2", "3"]
+    assert decoration.getnumbers(u"R5.99") == ["5.99"]
+    # TODO fix these so that we are able to consider locale specific numbers
+    #assert decoration.getnumbers(u"R5,99") == ["5.99"]
+    #assert decoration.getnumbers(u"1\u00a0000,99") == ["1000.99"]
+    assert decoration.getnumbers(u"36°") == [u"36°"]
