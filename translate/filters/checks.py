@@ -903,10 +903,7 @@ class StandardChecker(TranslationChecker):
             # hack to ignore hyphenisation rules
             if word in suggestions:
                 continue
-            if isinstance(str2, unicode) or isinstance(str1, unicode):
-                messages.append(u"check spelling of %s (could be %s)" % (word, u" / ".join(suggestions)))
-            else:
-                messages.append("check spelling of %s (could be %s)" % (word, " / ".join(suggestions)))
+            messages.append(u"check spelling of %s (could be %s)" % (word, u" / ".join(suggestions)))
         if messages:
             raise FilterFailure(messages)
         return True
