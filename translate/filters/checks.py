@@ -789,14 +789,8 @@ class StandardChecker(TranslationChecker):
         #The above is full of strange quotes and things in utf-8 encoding.
         #single apostrophe perhaps problematic in words like "doesn't"
         for seperator in self.config.punctuation:
-            if isinstance(str1, unicode):
-                str1 = str1.replace(seperator, u" ")
-            else:
-                str1 = str1.replace(seperator.encode("utf-8"), " ")
-            if isinstance(str2, unicode):
-                str2 = str2.replace(seperator, u" ")
-            else:
-                str2 = str2.replace(seperator.encode("utf-8"), " ")
+            str1 = str1.replace(seperator, u" ")
+            str2 = str2.replace(seperator, u" ")
         words1 = self.filteraccelerators(str1).split()
         words2 = self.filteraccelerators(str2).split()
         stopwords = [word for word in words1 if word in self.config.notranslatewords and word not in words2]
