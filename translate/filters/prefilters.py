@@ -123,16 +123,10 @@ def filterwordswithpunctuation(str1):
         replacement = filter(unicode.isalnum, word)
         occurrences.append((match.start(), word, replacement))
     occurrences.sort()
-    replacements = []
-    for pos, word, replacement in occurrences:
-        previouschar = (pos == 0) and " " or str1[pos-1]
-        nextchar = (pos+len(word) == len(str1)) and " " or str1[pos+len(word)]
-        if (previouschar.isspace() or previouschar == '"') and (nextchar.isspace() or nextchar == '"'):
-            replacements.append((pos, word, replacement))
-    if replacements:
+    if occurrences:
         lastpos = 0
         newstr1 = ""
-        for pos, word, replacement in replacements:
+        for pos, word, replacement in occurrences:
             newstr1 += str1[lastpos:pos]
             newstr1 += replacement
             lastpos = pos + len(word)
