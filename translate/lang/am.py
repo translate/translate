@@ -30,10 +30,6 @@ from translate.lang import common
 
 class am(common.Common):
     """This class represents Amharic."""
-    code = "am"
-    fullname = "Amharic"
-    nplurals = 2
-    pluralequation = "(n > 1)"
 
     listseperator = u"፣ "
 

@@ -30,10 +30,6 @@ from translate.lang import common
 
 class el(common.Common):
     """This class represents Greek."""
-    code = "el"
-    fullname = "Greek"
-    nplurals = 2
-    pluralequation = "(n != 1)"
 
     # Greek uses ; as question mark and the middot instead
     sentenceend = u".!;…"

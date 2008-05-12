@@ -31,10 +31,6 @@ articlere = re.compile(r"'n\b")
 
 class af(common.Common):
     """This class represents Afrikaans."""
-    code = "af"
-    fullname = "Afrikaans"
-    nplurals = 2
-    pluralequation = "(n != 1)"
 
     punctuation = u"".join([common.Common.commonpunc, common.Common.quotes, common.Common.miscpunc])
     sentenceend = u".!?…"

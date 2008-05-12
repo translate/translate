@@ -44,10 +44,6 @@ def guillemets(text):
 
 class fr(common.Common):
     """This class represents French."""
-    code = "fr"
-    fullname = "French"
-    nplurals = 2
-    pluralequation = "(n > 1)"
 
     # According to http://french.about.com/library/writing/bl-punctuation.htm, 
     # in French, a space is required both before and after all two- (or more) 

@@ -28,10 +28,6 @@ from translate.lang import common
 
 class ar(common.Common):
     """This class represents Arabic."""
-    code = "ar"
-    fullname = "Arabic"
-    nplurals = 6
-    pluralequation = "n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n>=3 && n<=10 ? 3 : n>=11 && n<=99 ? 4 : 5"
 
     listseperator = u"، "
 

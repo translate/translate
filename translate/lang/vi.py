@@ -29,10 +29,6 @@ from translate.lang import fr
 
 class vi(common.Common):
     """This class represents Vietnamese."""
-    code = "vi"
-    fullname = "Vietnamese"
-    nplurals = 1
-    pluralequation = "0"
 
     # Vietnamese uses similar rules for spacing two-part punctuation marks as 
     # French, but does not use a space before '?'.

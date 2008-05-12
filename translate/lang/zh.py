@@ -29,10 +29,6 @@ import re
 
 class zh(common.Common):
     """This class represents Chinese."""
-    code = "zh"
-    fullname = "Chinese"
-    nplurals = 1
-    pluralequation = "0"
 
     listseperator = u"、"
 

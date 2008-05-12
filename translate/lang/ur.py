@@ -28,10 +28,6 @@ from translate.lang import common
 
 class ur(common.Common):
     """This class represents Urdu."""
-    code = "ur"
-    fullname = "Urdu"
-    nplurals = 1
-    pluralequation = "0"
 
     listseperator = u"، "
 

@@ -25,13 +25,8 @@ For more information, see U{http://en.wikipedia.org/wiki/Hebrew_language}
 """
 
 from translate.lang import common
-import re
 
 class he(common.Common):
     """This class represents Hebrew."""
-    code = "he"
-    fullname = "Hebrew"
-    nplurals = 2
-    pluralequation = "(n != 1)"
 
     ignoretests = ["startcaps", "simplecaps"]

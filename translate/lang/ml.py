@@ -25,13 +25,8 @@ For more information, see U{http://en.wikipedia.org/wiki/Malayalam_language}
 """
 
 from translate.lang import common
-import re
 
 class ml(common.Common):
     """This class represents Malayalam."""
-    code = "ml"
-    fullname = "Malayalam"
-    nplurals = 2
-    pluralequation = "(n != 1)"
 
     ignoretests = ["startcaps", "simplecaps"]

@@ -29,10 +29,6 @@ import re
 
 class ja(common.Common):
     """This class represents Japanese."""
-    code = "ja"
-    fullname = "Japanese"
-    nplurals = 1
-    pluralequation = "0"
 
     listseperator = u"、"
 

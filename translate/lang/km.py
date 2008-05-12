@@ -30,10 +30,6 @@ from translate.lang import common
 
 class km(common.Common):
     """This class represents Khmer."""
-    code = "km"
-    fullname = "Khmer"
-    nplurals = 1
-    pluralequation = "0"
 
     khmerpunc = u"។៕៖៘"
     """These marks are only used for Khmer."""

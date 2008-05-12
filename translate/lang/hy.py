@@ -30,10 +30,6 @@ from translate.lang import common
 
 class hy(common.Common):
     """This class represents Armenian."""
-    code = "hy"
-    fullname = "Armenian"
-    nplurals = 2
-    pluralequation = "(n > 1)"
 
     armenianpunc = u"։՝՜՞"
 

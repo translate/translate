@@ -25,13 +25,8 @@ For more information, see U{http://en.wikipedia.org/wiki/Korean_language}
 """
 
 from translate.lang import common
-import re
 
 class ko(common.Common):
     """This class represents Korean."""
-    code = "ko"
-    fullname = "Korean"
-    nplurals = 1
-    pluralequation = "0"
 
     ignoretests = ["startcaps", "simplecaps"]
