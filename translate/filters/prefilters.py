@@ -28,6 +28,7 @@ import re
 
 def removekdecomments(str1):
     """removed kde-style po comments i.e. starting with _: and ending with litteral \\n"""
+    assert isinstance(str1, unicode)
     iskdecomment = False
     lines = str1.split("\n")
     removelines = []

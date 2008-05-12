@@ -5,6 +5,11 @@
 
 from translate.filters import prefilters
 
+def test_removekdecomments():
+    assert prefilters.removekdecomments(u"Some sṱring") == u"Some sṱring"
+    assert prefilters.removekdecomments(u"_: Commenṱ\\n\nSome sṱring") == u"Some sṱring"
+    assert prefilters.removekdecomments(u"_: Commenṱ\\n\n") == u""
+
 def test_filterwordswithpunctuation():
     string = u"Nothing in here."
     filtered = prefilters.filterwordswithpunctuation(string)
