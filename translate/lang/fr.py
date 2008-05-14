@@ -40,6 +40,12 @@ def guillemets(text):
     # probably not safe to convert them.
     if text.count(u'"') % 2 == 0:
         text = re.sub('(.|^)"([^"]+)"', convertquotation, text)
+    singlecount = text.count(u"'") 
+    if singlecount:
+        if singlecount % 2 == 0:
+            text = re.sub("(.|^)'([^']+)'", convertquotation, text)
+        if singlecount == text.count(u'`'):
+            text = re.sub("(.|^)`([^']+)'", convertquotation, text)
     return text
 
 class fr(common.Common):
