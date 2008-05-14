@@ -166,6 +166,9 @@ def test_doublequoting():
     assert passes(frchecker.doublequoting, "Do \"this\"", "Do « this »")
     assert fails(frchecker.doublequoting, "Do \"this\"", "Do « this » « this »")
     
+    vichecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="vi"))
+    assert passes(vichecker.doublequoting, 'Save "File"', u"Lưu « Tập tin »")
+    
 def test_doublespacing():
     """tests double spacing"""
     stdchecker = checks.StandardChecker()
@@ -465,6 +468,10 @@ def test_singlequoting():
     assert passes(mozillachecker.singlequoting, "&Don't import anything", "&Moenie enigiets invoer nie")
     ooochecker = checks.OpenOfficeChecker()
     assert passes(ooochecker.singlequoting, "~Don't import anything", "~Moenie enigiets invoer nie")
+
+    vichecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="vi"))
+    assert passes(vichecker.doublequoting, "Save 'File'", u"Lưu « Tập tin »")
+    assert passes(vichecker.doublequoting, "Save `File'", u"Lưu « Tập tin »")
 
 def test_simplecaps():
     """tests simple caps"""
