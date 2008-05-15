@@ -106,13 +106,8 @@ def extractpoline(line):
     extracted = quote.extractwithoutquotes(line, '"', '"', '\\', includeescapes=unescapehandler)[0]
     return extracted
 
-def unquotefrompo(postr, joinwithlinebreak=False):
-    if joinwithlinebreak:
-        joiner = u"\n"
-        if postr and postr[0] == '""': postr = postr[1:]
-    else:
-        joiner = u""
-    return joiner.join([extractpoline(line) for line in postr])
+def unquotefrompo(postr):
+    return u"".join([extractpoline(line) for line in postr])
 
 def encodingToUse(encoding):
     """Tests whether the given encoding is known in the python runtime, or returns utf-8.
@@ -780,8 +775,8 @@ class pofile(pocommon.pofile):
         if not header or header.isblank():
             return
         charsetline = None
-        headerstr = unquotefrompo(header.msgstr, True)
-        for line in headerstr.split("\\n"):
+        headerstr = unquotefrompo(header.msgstr)
+        for line in headerstr.split("\n"):
             if not ":" in line: continue
             key, value = line.strip().split(":", 1)
             if key.strip() != "Content-Type": continue
