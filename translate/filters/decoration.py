@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # 
-# Copyright 2004-2007 Zuza Software Foundation
+# Copyright 2004-2008 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
@@ -23,6 +23,7 @@
 
 import re
 import unicodedata
+from translate.lang import data
 
 def spacestart(str1):
     """returns all the whitespace from the start of the string"""
@@ -64,22 +65,39 @@ def ispurepunctuation(str1):
         if c.isalpha(): return 0
     return len(str1)
 
-def isvalidaccelerator(accelerator, ignorelist=[]):
-    """returns whether the given accelerator string is a valid one..."""
-    if len(accelerator) == 0 or accelerator in ignorelist:
-        return False
-    accelerator = accelerator.replace("_","")
-    if not accelerator.isalnum():
-        return False
-    
-    # We don't want to have accelerators on characters with diacritics, so let's 
-    # see if the character can decompose.
-    decomposition = unicodedata.decomposition(accelerator)
-    # Next we strip out any extra information like <this>
-    decomposition = re.sub("<[^>]+>", "", decomposition).strip()
-    return decomposition.count(" ") == 0
+def isvalidaccelerator(accelerator, acceptlist=None):
+    """returns whether the given accelerator character is valid
 
-def findaccelerators(str1, accelmarker, ignorelist=[]):
+    @type accelerator: character
+    @param accelerator: A character to be checked for accelerator validity
+    @type acceptlist: String
+    @param acceptlist: A list of characters that are permissible as accelerators
+    @rtype: Boolean
+    @return: True if the supplied character is an acceptable accelerator
+    """
+    assert isinstance(accelerator, unicode)
+    assert isinstance(acceptlist, unicode) or acceptlist is None
+    if len(accelerator) == 0:
+        return False
+    if acceptlist is not None:
+        acceptlist = data.normalize(acceptlist)
+        if accelerator in acceptlist:
+            return True
+        return False
+    else:
+        # Old code path - ensures that we don't get a large number of regressions
+        accelerator = accelerator.replace("_","")
+        if not accelerator.isalnum():
+            return False
+
+        # We don't want to have accelerators on characters with diacritics, so let's 
+        # see if the character can decompose.
+        decomposition = unicodedata.decomposition(accelerator)
+        # Next we strip out any extra information like <this>
+        decomposition = re.sub("<[^>]+>", "", decomposition).strip()
+        return decomposition.count(" ") == 0
+
+def findaccelerators(str1, accelmarker, acceptlist=None):
     """returns all the accelerators and locations in str1 marked with a given marker"""
     accelerators = []
     badaccelerators = []
@@ -94,7 +112,7 @@ def findaccelerators(str1, accelmarker, ignorelist=[]):
             if accelend > len(str1): break
             accelerator = str1[currentpos:accelend]
             currentpos = accelend
-            if isvalidaccelerator(accelerator, ignorelist):
+            if isvalidaccelerator(accelerator, acceptlist):
                 accelerators.append((accelstart, accelerator))
             else:
                 badaccelerators.append((accelstart, accelerator))
@@ -145,11 +163,11 @@ def findmarkedvariables(str1, startmarker, endmarker, ignorelist=[]):
                     variables.append((startmatch, variable))
     return variables
 
-def getaccelerators(accelmarker, ignorelist=[]):
+def getaccelerators(accelmarker, acceptlist=None):
     """returns a function that gets a list of accelerators marked using accelmarker"""
     def getmarkedaccelerators(str1):
         """returns all the accelerators in str1 marked with a given marker"""
-        acclocs, badlocs = findaccelerators(str1, accelmarker, ignorelist)
+        acclocs, badlocs = findaccelerators(str1, accelmarker, acceptlist)
         accelerators = [accelerator for accelstart, accelerator in acclocs]
         badaccelerators = [accelerator for accelstart, accelerator in badlocs]
         return accelerators, badaccelerators
@@ -213,11 +231,11 @@ def geturls(str1):
             'ftp:[\w/\.:;+\-~\%#?=&,]+'
     return re.findall(URLPAT, str1)
 
-def countaccelerators(accelmarker, ignorelist=[]):
+def countaccelerators(accelmarker, acceptlist=None):
     """returns a function that counts the number of accelerators marked with the given marker"""
     def countmarkedaccelerators(str1):
         """returns all the variables in str1 marked with a given marker"""
-        acclocs, badlocs = findaccelerators(str1, accelmarker, ignorelist)
+        acclocs, badlocs = findaccelerators(str1, accelmarker, acceptlist)
         return len(acclocs), len(badlocs)
     return countmarkedaccelerators
 

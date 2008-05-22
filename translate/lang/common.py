@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # 
-# Copyright 2007 Zuza Software Foundation
+# Copyright 2007-2008 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
@@ -163,6 +163,9 @@ class Common(object):
     This doesn't need to be supplied, but will be used if it exists."""
 
     _languages = {}
+
+    validaccel = None
+    """Characters that can be used as accelerators (access keys) i.e. Alt+X where X is the accelerator.  These can include combining diacritics as long as they are accessible from the users keyboard in a single keystroke, but normally they would be at least precomposed characters.  All characters, lower and upper, are included in the list."""
 
     def __new__(cls, code):
         """This returns the language class for the given code, following a 

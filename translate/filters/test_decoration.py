@@ -17,12 +17,15 @@ def test_spacestart():
 
 def test_isvalidaccelerator():
     """test the isvalidaccelerator() function"""
-    assert decoration.isvalidaccelerator("") == False
+    # Mostly this tests the old code path where acceptlist is None
+    assert decoration.isvalidaccelerator(u"") == False
     assert decoration.isvalidaccelerator(u"a") == True
     assert decoration.isvalidaccelerator(u"1") == True
-    # TODO check if we even use ignorelist which is here "aeiou"
-    assert decoration.isvalidaccelerator(u"a", "aeiou") == False
     assert decoration.isvalidaccelerator(u"ḽ") == False
+    # Test new code path where we actually have an acceptlist
+    assert decoration.isvalidaccelerator(u"a", u"aeiou") == True
+    assert decoration.isvalidaccelerator(u"ḽ", u"ḓṱḽṋṅ") == True
+    assert decoration.isvalidaccelerator(u"a", u"ḓṱḽṋṅ") == False
 
 def test_find_marked_variables():
     """check that we cna identify variables correctly, first value is start location, i

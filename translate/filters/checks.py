@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # 
-# Copyright 2004-2007 Zuza Software Foundation
+# Copyright 2004-2008 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
@@ -539,10 +539,11 @@ class StandardChecker(TranslationChecker):
         str2 = self.filtervariables(str2)
         messages = []
         for accelmarker in self.config.accelmarkers:
-            counter = decoration.countaccelerators(accelmarker)
-            count1, countbad1 = counter(str1)
-            count2, countbad2 = counter(str2)
-            getaccel = decoration.getaccelerators(accelmarker)
+            counter1 = decoration.countaccelerators(accelmarker, self.config.sourcelang.validaccel)
+            counter2 = decoration.countaccelerators(accelmarker, self.config.lang.validaccel)
+            count1, countbad1 = counter1(str1)
+            count2, countbad2 = counter2(str2)
+            getaccel = decoration.getaccelerators(accelmarker, self.config.lang.validaccel)
             accel2, bad2 = getaccel(str2)
             if count1 == count2:
                 continue

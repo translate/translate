@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # 
-# Copyright 2004-2006 Zuza Software Foundation
+# Copyright 2004-2008 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
@@ -46,15 +46,13 @@ def removekdecomments(str1):
     lines = [lines[linenum] for linenum in range(len(lines)) if linenum not in removelines]
     return "\n".join(lines)
 
-ignoreaccelerators = []
-
 def filteraccelerators(accelmarker):
     """returns a function that filters accelerators marked using accelmarker in strings"""
     if accelmarker is None: accelmarkerlen = 0
     else: accelmarkerlen = len(accelmarker)
     def filtermarkedaccelerators(str1):
         """modifies the accelerators in str1 marked with a given marker, using a given filter"""
-        acclocs, badlocs = decoration.findaccelerators(str1, accelmarker, ignoreaccelerators)
+        acclocs, badlocs = decoration.findaccelerators(str1, accelmarker)
         fstr1, pos = "", 0
         for accelstart, accelerator in acclocs:
             fstr1 += str1[pos:accelstart]

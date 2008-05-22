@@ -97,6 +97,9 @@ def test_accelerators():
 
     # We don't want an accelerator for letters with a diacritic
     assert fails(ooochecker.accelerators, "F~ile", "L~êer")
+    # Bug 289: accept accented accelerator characters
+    afchecker = checks.StandardChecker(checks.CheckerConfig(accelmarkers="&", targetlanguage="fi"))
+    assert passes(afchecker.accelerators, "&Reload Frame", "P&äivitä kehys")
     # Problems:
     # Accelerator before variable - see test_acceleratedvariables
 
