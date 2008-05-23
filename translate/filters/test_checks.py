@@ -506,6 +506,9 @@ def test_spellcheck():
     stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="af"))
     assert passes(stdchecker.spellcheck, "Great trek", "Groot trek")
     assert fails(stdchecker.spellcheck, "Final deadline", "End of the road")
+    # Bug 289: filters accelerators before spell checking
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(accelmarkers="&", targetlanguage="fi"))
+    assert passes(stdchecker.spellcheck, "&Reload Frame", "P&äivitä kehys")
 
 def test_startcaps():
     """tests starting capitals"""

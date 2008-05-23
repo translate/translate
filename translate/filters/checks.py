@@ -268,9 +268,9 @@ class UnitChecker(object):
         """remove variables from str1"""
         return helpers.multifilter(str1, self.removevarfilter)
 
-    def filteraccelerators(self, str1):
+    def filteraccelerators(self, str1, acceptlist=None):
         """filter out accelerators from str1"""
-        return helpers.multifilter(str1, self.accfilters)
+        return helpers.multifilter(str1, self.accfilters, acceptlist)
 
     def filterwordswithpunctuation(self, str1):
         """replaces words with punctuation with their unpunctuated equivalents"""
@@ -465,6 +465,7 @@ class StandardChecker(TranslationChecker):
             raise SeriousFilterFailure("tabs in original don't match tabs in translation")
         else:
             return True
+
 
     def singlequoting(self, str1, str2):
         """checks whether singlequoting is consistent between the two strings"""
@@ -892,8 +893,8 @@ class StandardChecker(TranslationChecker):
         """checks words that don't pass a spell check"""
         if not self.config.targetlanguage:
             return True
-        str1 = self.filteraccelerators(self.filtervariables(str1))
-        str2 = self.filteraccelerators(self.filtervariables(str2))
+        str1 = self.filteraccelerators(self.filtervariables(str1), self.config.sourcelang.validaccel)
+        str2 = self.filteraccelerators(self.filtervariables(str2), self.config.lang.validaccel)
         ignore1 = []
         messages = []
         for word, index, suggestions in spelling.check(str1, lang="en"):

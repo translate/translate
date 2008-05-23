@@ -55,10 +55,10 @@ def filtertestmethod(testmethod, strfilter):
     filteredmethod.name = getattr(testmethod, 'name', testmethod.__name__)
     return filteredmethod
 
-def multifilter(str1, strfilters):
+def multifilter(str1, strfilters, *args):
     """passes str1 through a list of filters"""
     for strfilter in strfilters:
-        str1 = strfilter(str1)
+        str1 = strfilter(str1, *args)
     return str1
 
 def multifiltertestmethod(testmethod, strfilters):
