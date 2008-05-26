@@ -23,10 +23,6 @@
 
 import operator
 
-def isalnum_u(s):
-    """checks whether a string is all alphanumeric, allowing any unicode characters >= 0x80 to pass the test"""
-    return s.isalnum() or reduce(operator.and_, [c.isalnum() or c >= "\x80" for c in s], True)
-
 def countmatch(str1, str2, countstr):
     """checks whether countstr occurs the same number of times in str1 and str2"""
     return str1.count(countstr) == str2.count(countstr)
