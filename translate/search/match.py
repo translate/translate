@@ -159,10 +159,14 @@ class matcher:
         # minimum source string length to be considered
         startlength = self.getstartlength(min_similarity, text)
         startindex = 0
-        for index, candidate in enumerate(self.candidates.units):
-            if len(candidate.source) >= startlength:
-                startindex = index
-                break
+
+        endindex = len(self.candidates.units)
+        while startindex < endindex:
+            mid = (startindex + endindex) // 2
+            if sourcelen(self.candidates.units[mid]) < startlength:
+                startindex = mid + 1
+            else:
+                endindex = mid
         
         # maximum source string length to be considered
         stoplength = self.getstoplength(min_similarity, text) 
