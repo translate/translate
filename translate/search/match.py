@@ -148,18 +148,18 @@ class matcher:
         quality is given as a percentage in the notes.
         """
         bestcandidates = [(0.0, None)]*self.MAX_CANDIDATES
-        heapq.heapify(bestcandidates)
         #We use self.MIN_SIMILARITY, but if we already know we have max_candidates
         #that are better, we can adjust min_similarity upwards for speedup
         min_similarity = self.MIN_SIMILARITY
         
         # We want to limit our search in self.candidates, so we want to ignore
-        # all units with a source string that is too short or too long
+        # all units with a source string that is too short or too long. We use
+        # a binary search to find the shortest string, from where we start our
+        # search in the candidates.
 
         # minimum source string length to be considered
         startlength = self.getstartlength(min_similarity, text)
         startindex = 0
-
         endindex = len(self.candidates.units)
         while startindex < endindex:
             mid = (startindex + endindex) // 2
@@ -170,6 +170,7 @@ class matcher:
         
         # maximum source string length to be considered
         stoplength = self.getstoplength(min_similarity, text) 
+        lowestscore = 0
 
         for candidate in self.candidates.units[startindex:]:
             cmpstring = candidate.source
@@ -178,12 +179,13 @@ class matcher:
             similarity = self.comparer.similarity(text, cmpstring, min_similarity)
             if similarity < min_similarity:
                 continue
-            lowestscore = bestcandidates[0][0]
             if similarity > lowestscore:
-                targetstring = candidate.target
                 heapq.heapreplace(bestcandidates, (similarity, candidate))
-                if min_similarity < bestcandidates[0][0]:
-                    min_similarity = bestcandidates[0][0]
+                lowestscore = bestcandidates[0][0]
+                if lowestscore >= 100:
+                    break
+                if min_similarity < lowestscore:
+                    min_similarity = lowestscore
                     stoplength = self.getstoplength(min_similarity, text) 
         
         #Remove the empty ones:
@@ -193,6 +195,7 @@ class matcher:
         bestcandidates = filter(notzero, bestcandidates)
         #Sort for use as a general list, and reverse so the best one is at index 0
         bestcandidates.sort()
+        # We reverse as separate step for compatibility with Python 2.3
         bestcandidates.reverse()
         return self.buildunits(bestcandidates)
 
