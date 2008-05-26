@@ -219,9 +219,9 @@ def htmlentitydecode(source):
     inentity = False
     for char in source:
         if char == "&":
-             inentity = True
-             possibleentity = ""
-             continue
+            inentity = True
+            possibleentity = ""
+            continue
         if inentity:
             if char == ";":
                 if len(possibleentity) > 0 and possibleentity in htmlentitydefs.name2codepoint:
