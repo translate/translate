@@ -438,7 +438,8 @@ class StatsCache(object):
         return errors
 
     def filestats(self, filename, checker, store=None):
-        """complete stats"""
+        """Return a dictionary of property names mapping sets of unit 
+        indices with those properties."""
         stats = {"total": [], "translated": [], "fuzzy": [], "untranslated": []}
 
         stats.update(self.filechecks(filename, checker, store))
@@ -455,4 +456,30 @@ class StatsCache(object):
             stats[state_strings[value[0]]].append(value[1])
             stats["total"].append(value[1])
 
+        return stats
+      
+    def unitstats(self, filename, _lang=None, _store=None):
+        # For now, lang and store are unused. lang will allow the user to
+        # base stats information on the given language. See the commented
+        # line containing stats.update below. 
+        """Return a dictionary of property names mapping to arrays which
+        map unit indices to property values.
+        
+        Please note that this is different from filestats, since filestats
+        supplies sets of unit indices with a given property, whereas this
+        method supplies arrays which map unit indices to given values."""
+        stats = {"sourcewordcount": [], "targetwordcount": []}
+        
+        #stats.update(self.unitchecks(filename, lang, store))
+        fileid = self._getstoredfileid(filename)
+        
+        self.cur.execute("""SELECT
+          sourcewords, targetwords
+          FROM units WHERE fileid=?
+          ORDER BY unitindex;""", (fileid,))
+
+        for sourcecount, targetcount in self.cur.fetchall():
+            stats["sourcewordcount"].append(sourcecount)
+            stats["targetwordcount"].append(targetcount)
+        
         return stats
