@@ -39,14 +39,14 @@ def makefixtagproc(namespacemap):
         namespace_uri, tag = tag[1:].split("}", 1)
         prefix = namespaces.get(namespace_uri)
         if prefix is None:
-                if namespace_uri in namespacemap:
-                    prefix = namespacemap[namespace_uri]
-                else:
-                    prefix = "ns%d" % len(namespaces)
-                namespaces[namespace_uri] = prefix
-                xmlns = ("xmlns:%s" % prefix, namespace_uri)
+            if namespace_uri in namespacemap:
+                prefix = namespacemap[namespace_uri]
+            else:
+                prefix = "ns%d" % len(namespaces)
+            namespaces[namespace_uri] = prefix
+            xmlns = ("xmlns:%s" % prefix, namespace_uri)
         else:
-                xmlns = None
+            xmlns = None
         return "%s:%s" % (prefix, tag), xmlns
     return fixtag
 
