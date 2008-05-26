@@ -1,17 +1,17 @@
 import zlib # implied prerequisite
 import zipfile, os, StringIO, tempfile
 try:
-  from test.test_support import TestFailed
+    from test.test_support import TestFailed
 except ImportError:
-  class TestFailed(Exception):
-    pass
+    class TestFailed(Exception):
+        pass
 from translate.misc import zipfileext
 
 BrokenStringIO = StringIO.StringIO
 class FixedStringIO(BrokenStringIO):
-  def truncate(self, size=None):
-    BrokenStringIO.truncate(self, size)
-    self.len = len(self.buf)
+    def truncate(self, size=None):
+        BrokenStringIO.truncate(self, size)
+        self.len = len(self.buf)
 
 StringIO.StringIO = FixedStringIO
 
@@ -41,7 +41,7 @@ def deleteTest(srcname, f, compression, srccontents):
 
     zip = zipfileext.ZipFileExt(f, "a", compression)   # Modify the ZIP archive
     for deletename in deletenames:
-      zip.delete(deletename)
+        zip.delete(deletename)
     zip.close()
 
     zip = zipfileext.ZipFileExt(f, "r", compression)   # Read the ZIP archive
