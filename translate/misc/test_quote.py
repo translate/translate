@@ -44,9 +44,9 @@ def test_extractwithoutquotes():
     assert quote.extractwithoutquotes("<quoted\\>", "<", ">", "\\", 0, False) == ("quoted>", True)
 
 def isnewlineortabescape(escape):
-  if escape == "\\n" or escape == "\\t":
-    return escape
-  return escape[-1]
+    if escape == "\\n" or escape == "\\t":
+        return escape
+    return escape[-1]
 
 def test_extractwithoutquotes_passfunc():
     """tests the extractwithoutquotes function with a function for includeescapes as a parameter"""
@@ -54,24 +54,24 @@ def test_extractwithoutquotes_passfunc():
 
 class TestQuote:
 
-  def test_mozilla_control_escapes(self):
-      """test that we do \uNNNN escapes for certain control characters instead of converting to UTF-8 characters"""
-      prefix, suffix = "bling", "blang"
-      for control in (u"\u0005", u"\u0006", u"\u0007", u"\u0011"):
-        string = prefix + control + suffix
-        assert quote.escapecontrols(string) == string
+    def test_mozilla_control_escapes(self):
+        """test that we do \uNNNN escapes for certain control characters instead of converting to UTF-8 characters"""
+        prefix, suffix = "bling", "blang"
+        for control in (u"\u0005", u"\u0006", u"\u0007", u"\u0011"):
+            string = prefix + control + suffix
+            assert quote.escapecontrols(string) == string
 
-  def test_quote_wrapping(self):
-      """test that we can wrap strings in double quotes"""
-      string = 'A string'
-      assert quote.quotestr(string) == '"A string"'
-      list = ['One', 'Two']
-      assert quote.quotestr(list) == '"One"\n"Two"'
+    def test_quote_wrapping(self):
+        """test that we can wrap strings in double quotes"""
+        string = 'A string'
+        assert quote.quotestr(string) == '"A string"'
+        list = ['One', 'Two']
+        assert quote.quotestr(list) == '"One"\n"Two"'
 
-  def test_htmlencoding(self):
-      """test that we can encode and decode HTML entities"""
-      raw_encoded = [(u"€", "&euro;"), (u"©", "&copy;"), (u'"', "&quot;")]
-      for raw, encoded in raw_encoded:
-        assert quote.htmlentityencode(raw) == encoded
-        assert quote.htmlentitydecode(encoded) == raw
+    def test_htmlencoding(self):
+        """test that we can encode and decode HTML entities"""
+        raw_encoded = [(u"€", "&euro;"), (u"©", "&copy;"), (u'"', "&quot;")]
+        for raw, encoded in raw_encoded:
+            assert quote.htmlentityencode(raw) == encoded
+            assert quote.htmlentitydecode(encoded) == raw
 
