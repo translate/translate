@@ -144,6 +144,12 @@ class CheckerConfig(object):
         self.varmatches = self_init_list(varmatches)
         self.criticaltests = self_init_list(criticaltests)
         self.credit_sources = self._init_list(credit_sources)
+        # Inits with default values
+        self.punctuation = self._init_default(data.forceunicode(punctuation),  self.lang.punctuation)
+        self.endpunctuation = self._init_default(data.forceunicode(endpunctuation), self.lang.sentenceend)
+        self.ignoretags = self._init_default(ignoretags, common_ignoretags)
+        self.canchangetags = self._init_default(canchangetags, common_canchangetags)
+        # Other data
         self.targetlanguage = targetlanguage
         self.updatetargetlanguage(targetlanguage)
         self.sourcelang = factory.getlanguage('en')
@@ -153,22 +159,6 @@ class CheckerConfig(object):
         validchars = data.forceunicode(validchars)
         self.validcharsmap = {}
         self.updatevalidchars(validchars)
-        punctuation = data.forceunicode(punctuation)
-        if punctuation is None:
-            punctuation = self.lang.punctuation
-        self.punctuation = punctuation
-        endpunctuation = data.forceunicode(endpunctuation)
-        if endpunctuation is None:
-            endpunctuation = self.lang.sentenceend
-        self.endpunctuation = endpunctuation
-        if ignoretags is None:
-            self.ignoretags = common_ignoretags
-        else:
-            self.ignoretags = ignoretags
-        if canchangetags is None:
-            self.canchangetags = common_canchangetags
-        else:
-            self.canchangetags = canchangetags
 
     def _init_list(self, list):
         """initialise configuration paramaters that are lists
@@ -180,6 +170,17 @@ class CheckerConfig(object):
         if list is None:
             list = []
         return list
+
+    def _init_default(self, param, default):
+        """initialise parameters that can have default options
+
+        @param param: the user supplied paramater value
+        @param default: default values when param is not specified
+        @return: the paramater as specified by the user of the default settings
+        """
+        if param is None:
+            return default
+        return param
 
     def update(self, otherconfig):
         """combines the info in otherconfig into this config object"""
