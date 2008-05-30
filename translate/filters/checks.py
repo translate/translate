@@ -140,9 +140,9 @@ class CheckerConfig(object):
                     punctuation=None, endpunctuation=None, ignoretags=None, 
                     canchangetags=None, criticaltests=None, credit_sources=None):
         # Init lists
-        self.accelmarkers = self_init_list(accelmarkers)
-        self.varmatches = self_init_list(varmatches)
-        self.criticaltests = self_init_list(criticaltests)
+        self.accelmarkers = self._init_list(accelmarkers)
+        self.varmatches = self._init_list(varmatches)
+        self.criticaltests = self._init_list(criticaltests)
         self.credit_sources = self._init_list(credit_sources)
         # Inits with default values
         self.punctuation = self._init_default(data.forceunicode(punctuation),  self.lang.punctuation)
@@ -154,8 +154,8 @@ class CheckerConfig(object):
         self.updatetargetlanguage(targetlanguage)
         self.sourcelang = factory.getlanguage('en')
         # TODO: allow user configuration of untranslatable words
-        self.notranslatewords = dict.fromkeys([data.forceunicode(key) for key in self_init_list(notranslatewords)])
-        self.musttranslatewords = dict.fromkeys([data.forceunicode(key) for key in self_init_list(musttranslatewords)])
+        self.notranslatewords = dict.fromkeys([data.forceunicode(key) for key in self._init_list(notranslatewords)])
+        self.musttranslatewords = dict.fromkeys([data.forceunicode(key) for key in self._init_list(musttranslatewords)])
         validchars = data.forceunicode(validchars)
         self.validcharsmap = {}
         self.updatevalidchars(validchars)
