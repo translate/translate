@@ -139,23 +139,17 @@ class CheckerConfig(object):
                     notranslatewords=None, musttranslatewords=None, validchars=None, 
                     punctuation=None, endpunctuation=None, ignoretags=None, 
                     canchangetags=None, criticaltests=None, credit_sources=None):
-        # we have to initialise empty lists properly (default arguments get reused)
-        if accelmarkers is None:
-            accelmarkers = []
-        if varmatches is None:
-            varmatches = []
-        if musttranslatewords is None:
-            musttranslatewords = []
-        if notranslatewords is None:
-            notranslatewords = []
+        # Init lists
+        self.accelmarkers = self_init_list(accelmarkers)
+        self.varmatches = self_init_list(varmatches)
+        self.criticaltests = self_init_list(criticaltests)
+        self.credit_sources = self._init_list(credit_sources)
         self.targetlanguage = targetlanguage
         self.updatetargetlanguage(targetlanguage)
         self.sourcelang = factory.getlanguage('en')
-        self.accelmarkers = accelmarkers
-        self.varmatches = varmatches
         # TODO: allow user configuration of untranslatable words
-        self.notranslatewords = dict.fromkeys([data.forceunicode(key) for key in notranslatewords])
-        self.musttranslatewords = dict.fromkeys([data.forceunicode(key) for key in musttranslatewords])
+        self.notranslatewords = dict.fromkeys([data.forceunicode(key) for key in self_init_list(notranslatewords)])
+        self.musttranslatewords = dict.fromkeys([data.forceunicode(key) for key in self_init_list(musttranslatewords)])
         validchars = data.forceunicode(validchars)
         self.validcharsmap = {}
         self.updatevalidchars(validchars)
@@ -175,12 +169,17 @@ class CheckerConfig(object):
             self.canchangetags = common_canchangetags
         else:
             self.canchangetags = canchangetags
-        if criticaltests is None:
-            criticaltests = []
-        self.criticaltests = criticaltests
-        if credit_sources is None:
-            credit_sources = []
-        self.credit_sources = credit_sources
+
+    def _init_list(self, list):
+        """initialise configuration paramaters that are lists
+
+        @type list: List
+        @param list: None (we'll initialise a blank list) or a list paramater
+        @rtype: List
+        """
+        if list is None:
+            list = []
+        return list
 
     def update(self, otherconfig):
         """combines the info in otherconfig into this config object"""
