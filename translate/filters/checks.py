@@ -144,15 +144,16 @@ class CheckerConfig(object):
         self.varmatches = self._init_list(varmatches)
         self.criticaltests = self._init_list(criticaltests)
         self.credit_sources = self._init_list(credit_sources)
+        # Lang data
+        self.targetlanguage = targetlanguage
+        self.updatetargetlanguage(targetlanguage)
+        self.sourcelang = factory.getlanguage('en')
         # Inits with default values
         self.punctuation = self._init_default(data.forceunicode(punctuation),  self.lang.punctuation)
         self.endpunctuation = self._init_default(data.forceunicode(endpunctuation), self.lang.sentenceend)
         self.ignoretags = self._init_default(ignoretags, common_ignoretags)
         self.canchangetags = self._init_default(canchangetags, common_canchangetags)
         # Other data
-        self.targetlanguage = targetlanguage
-        self.updatetargetlanguage(targetlanguage)
-        self.sourcelang = factory.getlanguage('en')
         # TODO: allow user configuration of untranslatable words
         self.notranslatewords = dict.fromkeys([data.forceunicode(key) for key in self._init_list(notranslatewords)])
         self.musttranslatewords = dict.fromkeys([data.forceunicode(key) for key in self._init_list(musttranslatewords)])
