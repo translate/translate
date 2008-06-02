@@ -233,13 +233,17 @@ class poheader:
         """
 
         newvalues = otherstore.parseheader()
-        self.updateheader(
-            Project_Id_Version = newvalues['Project-Id-Version'],
-            PO_Revision_Date   = newvalues['PO-Revision-Date'],
-            Last_Translator    = newvalues['Last-Translator'],
-            Language_Team      = newvalues['Language-Team'],
-            Plural_Forms       = newvalues['Plural-Forms']
-        )
+        retain = {
+                "Project_Id_Version": newvalues['Project-Id-Version'],
+                "PO_Revision_Date"  : newvalues['PO-Revision-Date'],
+                "Last_Translator"   : newvalues['Last-Translator'],
+                "Language_Team"     : newvalues['Language-Team'],
+        }
+        # not necessarily there:
+        plurals = newvalues.get('Plural-Forms', None)
+        if plurals:
+            retain['Plural-Forms'] = plurals
+        self.updateheader(retain)
 
     def updatecontributor(self, name, email=None):
         """Add contribution comments
