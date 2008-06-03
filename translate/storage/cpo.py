@@ -44,6 +44,7 @@ import os
 import pypo
 import re
 import sys
+import tempfile
 
 lsep = " "
 """Seperator for #: entries"""
@@ -576,14 +577,11 @@ class pofile(pocommon.pofile):
         outputstring = ""
         if self._gpo_memory_file:
             obsolete_workaround()
-            outputfile = os.tmpnam()
-            f = open(outputfile, "w")
-            self._gpo_memory_file = gpo.po_file_write_v2(self._gpo_memory_file, outputfile, xerror_handler)
-            f.close()
-            f = open(outputfile, "r")
+            f = tempfile.NamedTemporaryFile(prefix='translate', suffix='.po')
+            self._gpo_memory_file = gpo.po_file_write_v2(self._gpo_memory_file, f.name, xerror_handler)
+            f.seek(0)
             outputstring = f.read()
             f.close()
-            os.remove(outputfile)
         return outputstring
 
     def isempty(self):
@@ -606,23 +604,27 @@ class pofile(pocommon.pofile):
             self.filename = input.name
         elif not getattr(self, 'filename', ''):
             self.filename = ''
+
         if hasattr(input, "read"):
             posrc = input.read()
             input.close()
             input = posrc
+
         needtmpfile = not os.path.isfile(input)
         if needtmpfile:
             # This is not a file - we write the string to a temporary file
-            tmpfile = os.tmpnam()
-            f = open(tmpfile, "w")
-            f.write(input)
-            f.close()
-            input = tmpfile
+            fd, fname = tempfile.mkstemp(prefix='translate', suffix='.po')
+            os.write(fd, input)
+            input = fname
+            os.close(fd)
+
         self._gpo_memory_file = gpo.po_file_read_v3(input, xerror_handler)
         if self._gpo_memory_file is None:
             print >> sys.stderr, "Error:"
+
         if needtmpfile:
-            os.remove(tmpfile)
+            os.remove(input)
+
         # Handle xerrors here
         self._header = gpo.po_file_domain_header(self._gpo_memory_file, None)
         if self._header:
