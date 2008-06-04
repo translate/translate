@@ -21,14 +21,26 @@
 
 """An API to provide spell checking for use in checks or elsewhere."""
 
+import sys
+
+available = False
+
 # Let us see what is available in our preferred order
 try:
     # Enchant
-    from enchant import checker
+    from enchant import checker, DictNotFoundError
+    available = True
     checkers = {}
     def check(text, lang):
         if not lang in checkers:
-            checkers[lang] = checker.SpellChecker(lang)
+            try:
+                checkers[lang] = checker.SpellChecker(lang)
+            except DictNotFoundError, e:
+                print >> sys.stderr, str(e)
+                checkers[lang] = None
+
+        if not checkers[lang]:
+            return
         spellchecker = checkers[lang]
         spellchecker.set_text(text)
         for err in spellchecker:
@@ -39,9 +51,10 @@ except ImportError:
         # jToolkit might be installed and might give access to aspell, for 
         # example
         from jToolkit import spellcheck
+        available = True
         check = spellcheck.check
     except ImportError:
-        
+
         def check(text, lang):
             return []
 

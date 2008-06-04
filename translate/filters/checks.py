@@ -894,6 +894,8 @@ class StandardChecker(TranslationChecker):
         """checks words that don't pass a spell check"""
         if not self.config.targetlanguage:
             return True
+        if not spelling.available:
+            return True
         str1 = self.filteraccelerators(self.filtervariables(str1), self.config.sourcelang.validaccel)
         str2 = self.filteraccelerators(self.filtervariables(str2), self.config.lang.validaccel)
         ignore1 = []
