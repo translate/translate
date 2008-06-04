@@ -903,6 +903,8 @@ class StandardChecker(TranslationChecker):
         for word, index, suggestions in spelling.check(str1, lang="en"):
             ignore1.append(word)
         for word, index, suggestions in spelling.check(str2, lang=self.config.targetlanguage):
+            if word in self.config.notranslatewords:
+                continue
             if word in ignore1:
                 continue
             # hack to ignore hyphenisation rules

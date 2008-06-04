@@ -509,6 +509,11 @@ def test_spellcheck():
     # Bug 289: filters accelerators before spell checking
     stdchecker = checks.StandardChecker(checks.CheckerConfig(accelmarkers="&", targetlanguage="fi"))
     assert passes(stdchecker.spellcheck, "&Reload Frame", "P&äivitä kehys")
+    # Ensure we don't check notranslatewords
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="af"))
+    assert fails(stdchecker.spellcheck, "Mozilla is wonderful", "Mozilla is wonderlik")
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="af", notranslatewords=["Mozilla"]))
+    assert passes(stdchecker.spellcheck, "Mozilla is wonderful", "Mozilla is wonderlik")
 
 def test_startcaps():
     """tests starting capitals"""
