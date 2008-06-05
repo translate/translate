@@ -243,7 +243,7 @@ class poheader:
         plurals = newvalues.get('Plural-Forms', None)
         if plurals:
             retain['Plural-Forms'] = plurals
-        self.updateheader(retain)
+        self.updateheader(**retain)
 
     def updatecontributor(self, name, email=None):
         """Add contribution comments
