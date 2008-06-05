@@ -19,13 +19,13 @@
 
 """reads a set of .po or .pot files to produce a pootle-terminology.pot"""
 
-from translate.storage import factory
 from translate.lang import factory as lang_factory
-from translate.storage import po
 from translate.misc import optrecurse
-import sys
+from translate.storage import po
+from translate.storage import factory
 import os
 import re
+import sys
 
 class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
     """a specialized Option Parser for the terminology tool..."""
@@ -125,8 +125,9 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
         for inputpath in inputfiles:
             self.files += 1
             fullinputpath = self.getfullinputpath(options, inputpath)
+            success = True
             try:
-                success = self.processfile(None, options, fullinputpath)
+                self.processfile(None, options, fullinputpath)
             except Exception, error:
                 if isinstance(error, KeyboardInterrupt):
                     raise
@@ -210,7 +211,7 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
                         if 'phrase' in ignore:
                             # add trailing phrases in previous words
                             while len(words) > 2:
-                                if 'skip' in self.stopwords.get(words.pop(0),defaultignore):
+                                if 'skip' in self.stopwords.get(words.pop(0), defaultignore):
                                     skips -= 1
                                 self.addphrases(words, skips, translation)
                             words = []
@@ -221,7 +222,7 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
                                 skips += 1
                             if len(words) > options.termlength + skips:
                                 while len(words) > options.termlength + skips:
-                                    if 'skip' in self.stopwords.get(words.pop(0),defaultignore):
+                                    if 'skip' in self.stopwords.get(words.pop(0), defaultignore):
                                         skips -= 1
                                 self.addphrases(words, skips, translation)
                             else:
@@ -229,7 +230,7 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
                 if options.termlength > 1:
                     # add trailing phrases in sentence after reaching end
                     while options.termlength > 1 and len(words) > 2:
-                        if 'skip' in self.stopwords.get(words.pop(0),defaultignore):
+                        if 'skip' in self.stopwords.get(words.pop(0), defaultignore):
                             skips -= 1
                         self.addphrases(words, skips, translation)
 
@@ -263,8 +264,8 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
                     if target != "":
                         targets.setdefault(target, []).append(filename)
                     if term.lower() == unit.source.strip().lower():
-                        sourcenotes[unit.getnotes("source code")] = None;
-                        transnotes[unit.getnotes("translator")] = None;
+                        sourcenotes[unit.getnotes("source code")] = None
+                        transnotes[unit.getnotes("translator")] = None
                 else:
                     unit.settarget("")
                 unit.setsource(term)
@@ -303,25 +304,25 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
                 termunit.addnote(sourcenote, "source code")
             for transnote in transnotes.keys():
                 termunit.addnote(transnote, "translator")
-            for file, count in filecounts.iteritems():
-                termunit.othercomments.append("# (poterminology) %s (%d)\n" % (file, count))
+            for filename, count in filecounts.iteritems():
+                termunit.othercomments.append("# (poterminology) %s (%d)\n" % (filename, count))
             terms[term] = (((10 * numfiles) + numsources, termunit))
         # reduce subphrase
         termlist = terms.keys()
         print >> sys.stderr, "%d terms after thresholding" % len(termlist)
-        termlist.sort(lambda x, y: cmp(len(x),len(y)))
+        termlist.sort(lambda x, y: cmp(len(x), len(y)))
         for term in termlist:
             words = term.split()
             if len(words) <= 2:
                 continue
             while len(words) > 2:
                 words.pop()
-                if terms[term][0] == terms.get(' '.join(words),[0])[0]:
+                if terms[term][0] == terms.get(' '.join(words), [0])[0]:
                     del terms[' '.join(words)]
             words = term.split()
             while len(words) > 2:
                 words.pop(0)
-                if terms[term][0] == terms.get(' '.join(words),[0])[0]:
+                if terms[term][0] == terms.get(' '.join(words), [0])[0]:
                     del terms[' '.join(words)]
         print >> sys.stderr, "%d terms after subphrase reduction" % len(terms.keys())
         termitems = terms.values()
@@ -330,7 +331,7 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
         while len(options.sortorders) > 0:
             order = options.sortorders.pop()
             if order == "frequency":
-                termitems.sort(lambda x, y: cmp(y[0],x[0]))
+                termitems.sort(lambda x, y: cmp(y[0], x[0]))
             elif order == "dictionary":
                 termitems.sort(lambda x, y: cmp(x[1].source.lower(), y[1].source.lower()))
             elif order == "length":
