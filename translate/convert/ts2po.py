@@ -31,6 +31,9 @@ from translate.storage import po
 from translate.storage import ts
 
 class ts2po:
+    def __init__(self, duplicatestyle="msgctxt"):
+        self.duplicatestyle = duplicatestyle
+
     def convertmessage(self, contextname, messagenum, source, target, msgcomments, transtype):
         """makes a pounit from the given message"""
         thepo = po.pounit(encoding="UTF-8")
@@ -63,11 +66,12 @@ class ts2po:
                 transtype = tsfile.getmessagetype(message)
                 thepo = self.convertmessage(contextname, messagenum, source, translation, comment, transtype)
                 thetargetfile.addunit(thepo)
+        thetargetfile.removeduplicates(self.duplicatestyle)
         return thetargetfile
 
-def convertts(inputfile, outputfile, templates):
+def convertts(inputfile, outputfile, templates, duplicatestyle="msgctxt"):
     """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
-    convertor = ts2po()
+    convertor = ts2po(duplicatestyle=duplicatestyle)
     outputstore = convertor.convertfile(inputfile)
     if outputstore.isempty():
         return 0
@@ -78,5 +82,6 @@ def main(argv=None):
     from translate.convert import convert
     formats = {"ts":("po", convertts)}
     parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
+    parser.add_duplicates_option()
     parser.run(argv)
 
