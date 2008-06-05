@@ -3,36 +3,44 @@ from translate.filters import checks
 from translate.lang import data
 from translate.storage import po 
 
+def strprep(str1, str2, message=None):
+    return data.forceunicode(str1), data.forceunicode(str2), data.forceunicode(message)
+
 def passes(filterfunction, str1, str2):
     """returns whether the given strings pass on the given test, handling FilterFailures"""
-    str1 = data.forceunicode(str1)
-    str2 = data.forceunicode(str2)
+    str1, str2, no_message = strprep(str1, str2)
     try:
         filterresult = filterfunction(str1, str2)
     except checks.FilterFailure, e:
         filterresult = False
     return filterresult
 
-def fails(filterfunction, str1, str2):
+def fails(filterfunction, str1, str2, message=None):
     """returns whether the given strings fail on the given test, handling only FilterFailures"""
-    str1 = data.forceunicode(str1)
-    str2 = data.forceunicode(str2)
+    str1, str2, message = strprep(str1, str2, message)
     try:
         filterresult = filterfunction(str1, str2)
     except checks.SeriousFilterFailure, e:
         filterresult = True
     except checks.FilterFailure, e:
-        filterresult = False
+        if message:
+            filterresult = str(e).decode('utf-8') != message
+            print str(e)
+        else:
+            filterresult = False
     return not filterresult
 
-def fails_serious(filterfunction, str1, str2):
+def fails_serious(filterfunction, str1, str2, message=None):
     """returns whether the given strings fail on the given test, handling only SeriousFilterFailures"""
-    str1 = data.forceunicode(str1)
-    str2 = data.forceunicode(str2)
+    str1, str2, message = strprep(str1, str2, message)
     try:
         filterresult = filterfunction(str1, str2)
     except checks.SeriousFilterFailure, e:
-        filterresult = False
+        if message:
+            filterresult = str(e).decode('utf-8') != message
+            print str(e)
+        else:
+            filterresult = False
     return not filterresult
 
 
@@ -64,6 +72,13 @@ def test_accelerator_markers():
     assert gnomechecker.config.accelmarkers == ["_"]
     kdechecker = checks.KdeChecker()
     assert kdechecker.config.accelmarkers == ["&"]
+
+def test_messages():
+    """test that our helpers can check for messages and that these error messages can contain Unicode"""
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(validchars='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'))
+    assert fails(stdchecker.validchars, "Some unexpected characters", "©", "invalid chars: '©' (\\u00a9)")
+    stdchecker = checks.StandardChecker()
+    assert fails_serious(stdchecker.escapes, r"A tab", r"'n Ṱab\t", r"""escapes in original () don't match escapes in translation ('Ṱab\t')""")
     
 def test_accelerators():
     """tests accelerators"""
