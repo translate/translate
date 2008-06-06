@@ -110,13 +110,8 @@ class FilterFailure(Exception):
     def __init__(self, messages):
         if not isinstance(messages, list):
             messages = [messages]
-        strmessages = []
-        for message in messages:
-            if isinstance(message, unicode):
-                message = message.encode("utf-8")
-            strmessages.append(message)
-        messages = ", ".join(strmessages)
-        Exception.__init__(self, messages)
+        assert isinstance(messages[0], unicode)  # Assumption: all of same type
+        Exception.__init__(self, u", ".join(messages))
 
 class SeriousFilterFailure(FilterFailure):
     """This exception signals that a Filter didn't pass, and the bad translation 
@@ -306,7 +301,7 @@ class UnitChecker(object):
                 filterresult = self.run_test(filterfunction, unit)
             except FilterFailure, e:
                 filterresult = False
-                filtermessage = str(e).decode('utf-8')
+                filtermessage = e.message
             except Exception, e:
                 if self.errorhandler is None:
                     raise ValueError("error in filter %s: %r, %r, %s" % \
@@ -423,7 +418,7 @@ class StandardChecker(TranslationChecker):
         str1 = self.removevariables(str1)
         str2 = self.removevariables(str2)
         if not (str1.strip().isdigit() or len(str1) < 2 or decoration.ispurepunctuation(str1.strip())) and (str1.strip().lower() == str2.strip().lower()):
-            raise FilterFailure("please translate")
+            raise FilterFailure(u"please translate")
         return True
 
     def blank(self, str1, str2):
@@ -456,14 +451,14 @@ class StandardChecker(TranslationChecker):
     def newlines(self, str1, str2):
         """checks whether newlines are consistent between the two strings"""
         if not helpers.countsmatch(str1, str2, ("\n", "\r")):
-            raise FilterFailure("line endings in original don't match line endings in translation")
+            raise FilterFailure(u"line endings in original don't match line endings in translation")
         else:
             return True
 
     def tabs(self, str1, str2):
         """checks whether tabs are consistent between the two strings"""
         if not helpers.countmatch(str1, str2, "\t"):
-            raise SeriousFilterFailure("tabs in original don't match tabs in translation")
+            raise SeriousFilterFailure(u"tabs in original don't match tabs in translation")
         else:
             return True
 
@@ -553,9 +548,9 @@ class StandardChecker(TranslationChecker):
                 if countbad2 == 1:
                     messages.append("accelerator %s appears before an invalid accelerator character '%s' (eg. space)" % (accelmarker, bad2[0]))
                 else:
-                    messages.append("accelerator %s is missing from translation" % accelmarker)
+                    messages.append(u"accelerator %s is missing from translation" % accelmarker)
             elif count1 == 0:
-                messages.append("accelerator %s does not occur in original and should not be in translation" % accelmarker)
+                messages.append(u"accelerator %s does not occur in original and should not be in translation" % accelmarker)
             elif count1 == 1 and count2 > count1:
                 messages.append("accelerator %s is repeated in translation" % accelmarker)
             else:
@@ -685,9 +680,9 @@ class StandardChecker(TranslationChecker):
             elif count2 > count1:
                 extra.append("'%s'" % bracket)
         if missing:
-            messages.append("translation is missing %s" % ", ".join(missing))
+            messages.append(u"translation is missing %s" % ", ".join(missing))
         if extra:
-            messages.append("translation has extra %s" % ", ".join(extra))
+            messages.append(u"translation has extra %s" % ", ".join(extra))
         if messages:
             raise FilterFailure(messages)
         return True
@@ -697,7 +692,7 @@ class StandardChecker(TranslationChecker):
         sentences1 = len(self.config.sourcelang.sentences(str1))
         sentences2 = len(self.config.lang.sentences(str2))
         if not sentences1 == sentences2:
-            raise FilterFailure("The number of sentences differ: %d versus %d" % (sentences1, sentences2))
+            raise FilterFailure(u"The number of sentences differ: %d versus %d" % (sentences1, sentences2))
         return True
 
     def options(self, str1, str2):
@@ -826,9 +821,9 @@ class StandardChecker(TranslationChecker):
             return True
         invalid1 = str1.translate(self.config.validcharsmap)
         invalid2 = str2.translate(self.config.validcharsmap)
-        invalidchars = ["'%s' (\\u%04x)" % (invalidchar.encode('utf-8'), ord(invalidchar)) for invalidchar in invalid2 if invalidchar not in invalid1]
+        invalidchars = [u"'%s' (\\u%04x)" % (invalidchar, ord(invalidchar)) for invalidchar in invalid2 if invalidchar not in invalid1]
         if invalidchars:
-            raise FilterFailure("invalid chars: %s" % (", ".join(invalidchars)))
+            raise FilterFailure(u"invalid chars: %s" % (u", ".join(invalidchars)))
         return True
 
     def filepaths(self, str1, str2):
