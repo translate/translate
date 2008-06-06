@@ -93,12 +93,21 @@ def emptystats():
         stats[state + "targetwords"] = 0
     return stats
 
+def get_mod_info(file_path):
+    file_stat = os.stat(file_path)
+    # First, we multiply the mtime by 1000 to shift any millisecond values
+    # left of the .
+    # Then we make the somewhat daring assumption that 64 bits should be
+    # enough for any translation file size. To make space for the translation
+    # file size bits, we shift the mtime left by 64 bits.
+    return (long(file_stat.st_mtime * 1000) << 64) + file_stat.st_size
+
 def suggestioninfo(filename):
     """Provides the filename of the associated file containing suggestions and 
-    its mtime, if it exists."""
+    its mod_info, if it exists."""
     root, ext = os.path.splitext(filename)
     suggestion_filename = None
-    suggestion_mtime = -1
+    suggestion_mod_info = -1
     if ext == os.path.extsep + "po":
         # For a PO file there might be an associated file with suggested
         # translations. If either file changed, we want to regenerate the
@@ -107,8 +116,8 @@ def suggestioninfo(filename):
         if not os.path.exists(suggestion_filename):
             suggestion_filename = None
         else:
-            suggestion_mtime = os.path.getmtime(suggestion_filename)
-    return suggestion_filename, suggestion_mtime
+            suggestion_mod_info = get_mod_info(suggestion_filename)
+    return suggestion_filename, suggestion_mod_info
 
 class StatsCache(object):
     """An object instantiated as a singleton for each statsfile that provides 
@@ -150,8 +159,13 @@ class StatsCache(object):
         self.cur.execute("""CREATE TABLE IF NOT EXISTS files(
             fileid INTEGER PRIMARY KEY AUTOINCREMENT,
             path VARCHAR NOT NULL UNIQUE,
-            mtime INTEGER NOT NULL,
+            mod_info CHAR(50) NOT NULL,
             toolkitbuild INTEGER NOT NULL);""")
+        # mod_info should never be larger than about 138 bits as computed by
+        # get_mod_info. This is because st_mtime is at most 64 bits, multiplying
+        # by 1000 adds at most 10 bits and file_stat.st_size is at most 64 bits.
+        # Therefore, we should get away with 50 decimal digits (actually, we need
+        # math.log((1 << 139) - 1, 10) = 41.8 characters, but whatever).
 
         self.cur.execute("""CREATE UNIQUE INDEX IF NOT EXISTS filepathindex
             ON files (path);""")
@@ -190,7 +204,7 @@ class StatsCache(object):
         
         self.con.commit()
 
-    def _getstoredfileid(self, filename, optmtime=-1, checkmtime=True):
+    def _getstoredfileid(self, filename, opt_mod_info=-1, check_mod_info=True):
         """Attempt to find the fileid of the given file, if it hasn't been
         updated since the last record update.
 
@@ -198,25 +212,25 @@ class StatsCache(object):
         not up to date.
 
         @param filename: the filename to retrieve the id for
-        @param optmtime: an optional mtime to consider in addition to the mtime of
-        the given file
+        @param opt_mod_info: an optional mod_info to consider in addition 
+        to the mod_info of the given file
         @rtype: String or None
         """
         realpath = os.path.realpath(filename)
-        self.cur.execute("""SELECT fileid, mtime FROM files 
+        self.cur.execute("""SELECT fileid, mod_info FROM files 
                 WHERE path=?;""", (realpath,))
         filerow = self.cur.fetchone()
-        mtime = max(optmtime, os.path.getmtime(realpath))
-        if checkmtime:
-            if not filerow or filerow[1] != mtime:
+        mod_info = max(opt_mod_info, get_mod_info(realpath))
+        if check_mod_info:
+            if not filerow or long(filerow[1]) != mod_info:
                 return None
         if filerow:
             fileid = filerow[0]
-            if not checkmtime:
-                # Update the mtime of the file
+            if not check_mod_info:
+                # Update the mod_info of the file
                 self.cur.execute("""UPDATE files 
-                        SET mtime=? 
-                        WHERE fileid=?;""", (mtime, fileid))
+                        SET mod_info=? 
+                        WHERE fileid=?;""", (str(mod_info), fileid))
             return fileid
         return None
 
@@ -258,12 +272,12 @@ class StatsCache(object):
         """Calculates and caches the statistics of the given store 
         unconditionally."""
         realpath = os.path.realpath(store.filename)
-        mtime = os.path.getmtime(realpath)
+        mod_info = get_mod_info(realpath)
         self.cur.execute("""DELETE FROM files WHERE
             path=?;""", (realpath,))
         self.cur.execute("""INSERT INTO files 
-            (fileid, path, mtime, toolkitbuild) values (NULL, ?, ?, ?);""", 
-            (realpath, mtime, toolkitversion.build))
+            (fileid, path, mod_info, toolkitbuild) values (NULL, ?, ?, ?);""", 
+            (realpath, str(mod_info), toolkitversion.build))
         fileid = self.cur.lastrowid
         self.cur.execute("""DELETE FROM units WHERE
             fileid=?""", (fileid,))
@@ -273,7 +287,7 @@ class StatsCache(object):
     def directorytotals(self, dirname):
         """Retrieves the stored statistics for a given directory, all summed.
         
-        Note that this does not check for mtimes or the presence of files."""
+        Note that this does not check for mod_infos or the presence of files."""
         realpath = os.path.realpath(dirname)
         self.cur.execute("""SELECT
             state,
@@ -370,8 +384,8 @@ class StatsCache(object):
         
         This method assumes that everything was up to date before (file totals,
         checks, checker config, etc."""
-        suggestion_filename, suggestion_mtime = suggestioninfo(filename)
-        fileid = self._getstoredfileid(filename, suggestion_mtime, checkmtime=False)
+        suggestion_filename, suggestion_mod_info = suggestioninfo(filename)
+        fileid = self._getstoredfileid(filename, suggestion_mod_info, check_mod_info=False)
         configid = self._getstoredcheckerconfig(checker)
         unitid = unit.getid()
         # get the unit index
@@ -392,8 +406,8 @@ class StatsCache(object):
     def filechecks(self, filename, checker, store=None):
         """Retrieves the error statistics for the given file if possible, 
         otherwise delegates to cachestorechecks()."""
-        suggestion_filename, suggestion_mtime = suggestioninfo(filename)
-        fileid = self._getstoredfileid(filename, suggestion_mtime)
+        suggestion_filename, suggestion_mod_info = suggestioninfo(filename)
+        fileid = self._getstoredfileid(filename, suggestion_mod_info)
         configid = self._getstoredcheckerconfig(checker)
         try:
             if not fileid:
