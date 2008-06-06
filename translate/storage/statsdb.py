@@ -204,7 +204,7 @@ class StatsCache(object):
         
         self.con.commit()
 
-    def _getstoredfileid(self, filename, opt_mod_info=-1, check_mod_info=True):
+    def _getfileid(self, filename, opt_mod_info=-1, check_mod_info=True, store=None):
         """Attempt to find the fileid of the given file, if it hasn't been
         updated since the last record update.
 
@@ -213,17 +213,14 @@ class StatsCache(object):
 
         @param filename: the filename to retrieve the id for
         @param opt_mod_info: an optional mod_info to consider in addition 
-        to the mod_info of the given file
+        to the actual mod_info of the given file
         @rtype: String or None
-        """
+        """    
         realpath = os.path.realpath(filename)
-        self.cur.execute("""SELECT fileid, mod_info FROM files 
+        self.cur.execute("""SELECT fileid, mod_info FROM files
                 WHERE path=?;""", (realpath,))
         filerow = self.cur.fetchone()
-        mod_info = max(opt_mod_info, get_mod_info(realpath))
-        if check_mod_info:
-            if not filerow or long(filerow[1]) != mod_info:
-                return None
+        mod_info = max(opt_mod_info, get_mod_info(realpath))        
         if filerow:
             fileid = filerow[0]
             if not check_mod_info:
@@ -231,8 +228,13 @@ class StatsCache(object):
                 self.cur.execute("""UPDATE files 
                         SET mod_info=? 
                         WHERE fileid=?;""", (str(mod_info), fileid))
-            return fileid
-        return None
+                return fileid
+            if long(filerow[1]) == mod_info:
+                return fileid
+        # We can only ignore the mod_info if the row already exists:
+        assert check_mod_info        
+        store = store or factory.getobject(filename)
+        return self.cachestore(store)
 
     def _getstoredcheckerconfig(self, checker):
         """See if this checker configuration has been used before."""
@@ -304,11 +306,10 @@ class StatsCache(object):
     def filetotals(self, filename):
         """Retrieves the statistics for the given file if possible, otherwise 
         delegates to cachestore()."""
-        fileid = self._getstoredfileid(filename)
+        fileid = None
         if not fileid:
             try:
-                store = factory.getobject(filename)
-                fileid = self.cachestore(store)
+                fileid = self._getfileid(filename)
             except ValueError, e:
                 print >> sys.stderr, str(e)
                 return {}
@@ -385,7 +386,7 @@ class StatsCache(object):
         This method assumes that everything was up to date before (file totals,
         checks, checker config, etc."""
         suggestion_filename, suggestion_mod_info = suggestioninfo(filename)
-        fileid = self._getstoredfileid(filename, suggestion_mod_info, check_mod_info=False)
+        fileid = self._getfileid(filename, suggestion_mod_info, check_mod_info=False)
         configid = self._getstoredcheckerconfig(checker)
         unitid = unit.getid()
         # get the unit index
@@ -402,17 +403,15 @@ class StatsCache(object):
             checker.setsuggestionstore(factory.getobject(suggestion_filename, ignore=os.path.extsep+ 'pending'))
         state.extend(self._cacheunitschecks([unit], fileid, configid, checker, unitindex))
         return state
-
+    
     def filechecks(self, filename, checker, store=None):
         """Retrieves the error statistics for the given file if possible, 
         otherwise delegates to cachestorechecks()."""
         suggestion_filename, suggestion_mod_info = suggestioninfo(filename)
-        fileid = self._getstoredfileid(filename, suggestion_mod_info)
+        fileid = None
         configid = self._getstoredcheckerconfig(checker)
         try:
-            if not fileid:
-                store = store or factory.getobject(filename)
-                fileid = self.cachestore(store)
+            fileid = self._getfileid(filename, suggestion_mod_info, store=store)
             if not configid:
                 self.cur.execute("""INSERT INTO checkerconfigs
                     (configid, config) values (NULL, ?);""", 
@@ -457,7 +456,7 @@ class StatsCache(object):
         stats = {"total": [], "translated": [], "fuzzy": [], "untranslated": []}
 
         stats.update(self.filechecks(filename, checker, store))
-        fileid = self._getstoredfileid(filename)
+        fileid = self._getfileid(filename, store=store)
 
         self.cur.execute("""SELECT 
             state,
@@ -472,7 +471,7 @@ class StatsCache(object):
 
         return stats
       
-    def unitstats(self, filename, _lang=None, _store=None):
+    def unitstats(self, filename, _lang=None, store=None):
         # For now, lang and store are unused. lang will allow the user to
         # base stats information on the given language. See the commented
         # line containing stats.update below. 
@@ -485,7 +484,7 @@ class StatsCache(object):
         stats = {"sourcewordcount": [], "targetwordcount": []}
         
         #stats.update(self.unitchecks(filename, lang, store))
-        fileid = self._getstoredfileid(filename)
+        fileid = self._getfileid(filename, store=store)
         
         self.cur.execute("""SELECT
           sourcewords, targetwords
