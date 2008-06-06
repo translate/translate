@@ -74,7 +74,7 @@ def update(existing, add=False, **kwargs):
     return headerargs
 
 
-class poheader:
+class poheader(object):
     """This class implements functionality for manipulation of po file headers.
     This class is a mix-in class and useless on its own. It must be used from all
     classes which represent a po file"""
