@@ -206,6 +206,18 @@ class CheckerConfig(object):
         """Updates the target language in the config to the given target language"""
         self.lang = factory.getlanguage(langcode)
 
+def cache_results(f):
+    def cached_f(self, param1):
+        key = (f.__name__, param1)
+        res_cache = self.results_cache
+        if key in res_cache:
+            return res_cache[key]
+        else:
+            value = f(self, param1)
+            res_cache[key] = value
+            return value
+    return cached_f
+
 class UnitChecker(object):
     """Parent Checker class which does the checking based on functions available 
     in derived classes."""
@@ -224,6 +236,8 @@ class UnitChecker(object):
             if callable(function):
                 self.helperfunctions[functionname] = function
         self.defaultfilters = self.getfilters(excludefilters, limitfilters)
+        
+        self.results_cache = {}
 
     def getfilters(self, excludefilters=None, limitfilters=None):
         """returns dictionary of available filters, including/excluding those in 
@@ -259,22 +273,31 @@ class UnitChecker(object):
     def filtervariables(self, str1):
         """filter out variables from str1"""
         return helpers.multifilter(str1, self.varfilters)
+    filtervariables = cache_results(filtervariables)
 
     def removevariables(self, str1):
         """remove variables from str1"""
         return helpers.multifilter(str1, self.removevarfilter)
+    removevariables = cache_results(removevariables)
 
-    def filteraccelerators(self, str1, acceptlist=None):
+    def filteraccelerators(self, str1):
+        """filter out accelerators from str1"""
+        return helpers.multifilter(str1, self.accfilters, None)
+    filteraccelerators = cache_results(filteraccelerators)
+
+    def filteraccelerators_by_list(self, str1, acceptlist=None):
         """filter out accelerators from str1"""
         return helpers.multifilter(str1, self.accfilters, acceptlist)
 
     def filterwordswithpunctuation(self, str1):
         """replaces words with punctuation with their unpunctuated equivalents"""
         return prefilters.filterwordswithpunctuation(str1)
+    filterwordswithpunctuation = cache_results(filterwordswithpunctuation)
 
     def filterxml(self, str1):
         """filter out XML from the string so only text remains"""
         return tag_re.sub("", str1)
+    filterxml = cache_results(filterxml)
 
     def run_test(self, test, unit):
         """Runs the given test on the given unit.
@@ -344,6 +367,7 @@ class TranslationChecker(UnitChecker):
         self.str1 = data.forceunicode(unit.source)
         self.str2 = data.forceunicode(unit.target)
         self.hasplural = unit.hasplural()
+        self.results_cache = {}
         return super(TranslationChecker, self).run_filters(unit)
 
 class TeeChecker:
@@ -891,8 +915,8 @@ class StandardChecker(TranslationChecker):
             return True
         if not spelling.available:
             return True
-        str1 = self.filteraccelerators(self.filtervariables(str1), self.config.sourcelang.validaccel)
-        str2 = self.filteraccelerators(self.filtervariables(str2), self.config.lang.validaccel)
+        str1 = self.filteraccelerators_by_list(self.filtervariables(str1), self.config.sourcelang.validaccel)
+        str2 = self.filteraccelerators_by_list(self.filtervariables(str2), self.config.lang.validaccel)
         ignore1 = []
         messages = []
         for word, index, suggestions in spelling.check(str1, lang="en"):
