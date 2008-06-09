@@ -504,10 +504,7 @@ class pounit(pocommon.pounit):
         """returns whether this pounit contains plural strings..."""
         return len(self.msgid_plural) > 0
 
-    def parse(self, src):
-        if isinstance(src, str):
-            # This has not been decoded yet, so we need to make a plan
-            src = src.decode(self._encoding)
+    def parselines(self, lines):
         inmsgctxt = 0
         inmsgid = 0
         inmsgid_comment = 0
@@ -515,7 +512,7 @@ class pounit(pocommon.pounit):
         inmsgstr = 0
         msgstr_pluralid = None
         linesprocessed = 0
-        for line in src.split("\n"):
+        for line in lines:
             line = line + "\n"
             linesprocessed += 1
             if len(line) == 0:
@@ -607,6 +604,12 @@ class pounit(pocommon.pounit):
             if charset:
                 self._encoding = encodingToUse(charset.group(1))
         return linesprocessed
+
+    def parse(self, src):
+        if isinstance(src, str):
+            # This has not been decoded yet, so we need to make a plan
+            src = src.decode(self._encoding)
+        return self.parselines(src.split("\n"))
 
     def _getmsgpartstr(self, partname, partlines, partcomments=""):
         if isinstance(partlines, dict):
@@ -815,7 +818,7 @@ class pofile(pocommon.pofile):
         while end <= len(lines):
             if (end == len(lines)) or (not lines[end].strip()):  # end of lines or blank line
                 newpe = self.UnitClass(encoding=self._encoding)
-                linesprocessed = newpe.parse("\n".join(lines[start:end]))
+                linesprocessed = newpe.parselines(lines[start:end])
                 start += linesprocessed
                 # TODO: find a better way of working out if we actually read anything
                 if linesprocessed >= 1 and newpe._getoutput():
