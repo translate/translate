@@ -132,7 +132,7 @@ def findmarkedvariables(str1, startmarker, endmarker, ignorelist=[]):
                 # handle case without an end marker - use any non-alphanumeric character as the end marker, var must be len > 1
                 endmatch = currentpos
                 for n in range(currentpos, len(str1)):
-                    if not str1[n].isalnum():
+                    if not (str1[n].isalnum() or str1[n] == '_'):
                         endmatch = n
                         break
                 if currentpos == endmatch: endmatch = len(str1)

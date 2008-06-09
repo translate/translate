@@ -670,6 +670,8 @@ def test_variables_mozilla():
     assert fails_serious(mozillachecker.variables, "About $ProgramName$", "Oor $NaamVanProgam$")
     assert passes(mozillachecker.variables, "About $_CLICK", "Oor $_CLICK")
     assert fails_serious(mozillachecker.variables, "About $_CLICK", "Oor $_KLIK")
+    assert passes(mozillachecker.variables, "About $_CLICK and more", "Oor $_CLICK en meer")
+    assert fails_serious(mozillachecker.variables, "About $_CLICK and more", "Oor $_KLIK en meer")
     assert passes(mozillachecker.variables, "About $(^NameDA)", "Oor $(^NameDA)")
     assert fails_serious(mozillachecker.variables, "About $(^NameDA)", "Oor $(^NaamDA)")
     # Double variable problem
