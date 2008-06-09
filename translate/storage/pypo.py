@@ -815,6 +815,7 @@ class pofile(pocommon.pofile):
         end = 0
         # make only the first one the header
         linesprocessed = 0
+        is_decoded = False
         while end <= len(lines):
             if (end == len(lines)) or (not lines[end].strip()):  # end of lines or blank line
                 newpe = self.UnitClass(encoding=self._encoding)
@@ -823,19 +824,17 @@ class pofile(pocommon.pofile):
                 # TODO: find a better way of working out if we actually read anything
                 if linesprocessed >= 1 and newpe._getoutput():
                     self.units.append(newpe)
-                    if newpe.isheader():
-                        if "Content-Type" in self.parseheader():
-                            self._encoding = newpe._encoding
-                        # now that we know the encoding, decode the whole file
-                        if self._encoding is not None and self._encoding.lower() != 'charset':
-                            lines = self.decode(lines)
-                    if self._encoding is None: #still have not found an encoding, let's assume UTF-8
-                        #TODO: This might be dead code
-                        self._encoding = 'utf-8'
+                    if not is_decoded:
+                        if newpe.isheader(): # If there is a header...
+                            if "Content-Type" in self.parseheader(): # and a Content-Type...
+                                if self._encoding.lower() != 'charset': # with a valid charset...
+                                    self._encoding = newpe._encoding # then change the encoding
+                                    # otherwise we'll decode using UTF-8
                         lines = self.decode(lines)
                         self.units = []
                         start = 0
                         end = 0
+                        is_decoded = True
             end = end+1
 
     def removeduplicates(self, duplicatestyle="merge"):
