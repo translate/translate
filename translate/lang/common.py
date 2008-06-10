@@ -152,7 +152,8 @@ class Common(object):
                             """ % sentenceend, re.VERBOSE)
     
     puncdict = {}
-    """A dictionary of punctuation transformation rules that can be used by punctranslate()."""
+    """A dictionary of punctuation transformation rules that can be used by 
+    punctranslate()."""
 
     ignoretests = []
     """List of pofilter tests for this language that must be ignored."""
@@ -165,7 +166,11 @@ class Common(object):
     _languages = {}
 
     validaccel = None
-    """Characters that can be used as accelerators (access keys) i.e. Alt+X where X is the accelerator.  These can include combining diacritics as long as they are accessible from the users keyboard in a single keystroke, but normally they would be at least precomposed characters.  All characters, lower and upper, are included in the list."""
+    """Characters that can be used as accelerators (access keys) i.e. Alt+X 
+    where X is the accelerator.  These can include combining diacritics as 
+    long as they are accessible from the users keyboard in a single keystroke,
+    but normally they would be at least precomposed characters. All characters,
+    lower and upper, are included in the list."""
 
     def __new__(cls, code):
         """This returns the language class for the given code, following a 
