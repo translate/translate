@@ -219,19 +219,6 @@ def import_setup_module(modulename, modulepath):
   modfile, pathname, description = imp.find_module(modulename, [modulepath])
   return imp.load_module(modulename, modfile, pathname, description)
 
-# need csv support for versions prior to Python 2.3
-def testcsvsupport():
-  try:
-    import csv
-    return 1
-  except ImportError:
-    return 0
-
-def getcsvmodule():
-  csvPath = join('translate', 'misc')
-  csvSetup = import_setup_module('setup', join(os.getcwd(), 'translate', 'misc'))
-  return csvSetup.csvExtension(csvPath)
-
 def map_data_file (data_file):
   """remaps a data_file (could be a directory) to a different location
   This version gets rid of Lib\\site-packages, etc"""
@@ -254,11 +241,6 @@ def getdatafiles():
   datafiles = initfiles + infofiles
   def listfiles(srcdir):
     return join(sitepackages, srcdir), [join(srcdir, f) for f in os.listdir(srcdir) if os.path.isfile(join(srcdir, f))]
-  includecsv = 0
-  if includecsv:
-    # TODO: work out csv.so/pyd
-    csvModuleFile = (sitepackages, ['_csv.so'])
-    datafiles.append(csvModuleFile)
   docfiles = []
   docwalk=os.walk(os.path.join('translate', 'doc'))
   for docs in docwalk:
@@ -316,7 +298,7 @@ class TranslateDistribution(Distribution):
     py2exeoptions = {}
     py2exeoptions["packages"] = ["translate", "encodings"]
     py2exeoptions["compressed"] = True
-    py2exeoptions["excludes"] = ["PyLucene", "Tkconstants", "Tkinter", "tcl", "translate.misc._csv"]
+    py2exeoptions["excludes"] = ["PyLucene", "Tkconstants", "Tkinter", "tcl"]
     version = attrs.get("version", translateversion)
     py2exeoptions["dist_dir"] = "translate-toolkit-%s" % version
     py2exeoptions["includes"] = ["lxml", "lxml._elementpath", "psyco"]
@@ -343,9 +325,6 @@ def standardsetup(name, version, custompackages=[], customdatafiles=[]):
   addsubpackages(subpackages)
   datafiles = getdatafiles()
   ext_modules = []
-  if not testcsvsupport():
-    csvModule = getcsvmodule()
-    ext_modules.append(csvModule)
   dosetup(name, version, packages + custompackages, datafiles + customdatafiles, translatescripts+ translatebashscripts, ext_modules)
 
 classifiers = [
