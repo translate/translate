@@ -125,9 +125,16 @@ Installation
 To install the Translate Toolkit
 
 * Windows
-Double Click on translate-N.N-py2exe.zip and extract to a directory
-From a DOS Window 
-<path-to-tools>\<command>
+Double Click on translate-toolkit-N.N-setup.exe (the larger download file).
+This installer contains all dependencies you will need, including Python. To 
+use any of the command line tools, just type their name in a command window.
+For example:
+  moz2po --version
+
+Alternatively you can install the smaller translate-toolkit-N.N.N.win32.exe
+This needs an existing Python installation, and assumes you will install all 
+the dependencies yourself. You will probably need to edit your PATH environment
+variable to be able to use the tools in any command window. 
 
 * Linux
 tar xzf translate-N.N.tar.gz
