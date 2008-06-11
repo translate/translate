@@ -23,12 +23,7 @@
 or entire files (csvfile) for use with localisation
 """
 
-try:
-    # try to import the standard csv module, included from Python 2.3
-    import csv
-except:
-    # if it doesn't work, use our local copy of it...
-    from translate.misc import csv
+import csv
 
 from translate.misc import sparse
 from translate.storage import base
