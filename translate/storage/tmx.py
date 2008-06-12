@@ -96,6 +96,16 @@ class tmxunit(lisa.LISAunit):
             errordict[errorname] = errortext
         return errordict
 
+    def copy(self):
+        """Make a copy of the translation unit.
+
+        We don't want to make a deep copy - this could duplicate the whole XML 
+        tree. For now we just serialise and reparse the unit's XML."""
+        #TODO: check performance
+        new_unit = self.__class__(None, empty=True)
+        new_unit.xmlelement = etree.fromstring(etree.tostring(self.xmlelement))
+        return new_unit
+
 
 class tmxfile(lisa.LISAfile):
     """Class representing a TMX file store."""
