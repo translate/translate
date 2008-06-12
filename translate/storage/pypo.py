@@ -819,7 +819,13 @@ class pofile(pocommon.pofile):
         while end <= len(lines):
             if (end == len(lines)) or (not lines[end].strip()):  # end of lines or blank line
                 newpe = self.UnitClass(encoding=self._encoding)
-                linesprocessed = newpe.parselines(lines[start:end])
+                unit_lines = lines[start:end]
+                # We need to work carefully if we haven't decoded properly yet.
+                # So let's solve this temporarily until we actually get the
+                # encoding from the header.
+                if not is_decoded:
+                    unit_lines = [line.decode('ascii', 'ignore') for line in unit_lines]
+                linesprocessed = newpe.parselines(unit_lines)
                 start += linesprocessed
                 # TODO: find a better way of working out if we actually read anything
                 if linesprocessed >= 1 and newpe._getoutput():
