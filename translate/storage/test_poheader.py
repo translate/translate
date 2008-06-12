@@ -101,12 +101,6 @@ def test_timezones():
 
     # The following will only work on Unix because of tzset() and %z
     if time.__dict__.has_key('tzset'):
-        os.environ['TZ'] = 'America/Argentina/Cordoba'
-        time.tzset()
-        assert time.timezone == 10800
-        # Typically "-0300"
-        assert pofile.tzstring() == time.strftime("%z")
-
         os.environ['TZ'] = 'Asia/Kabul'
         time.tzset()
         assert time.timezone == -16200
