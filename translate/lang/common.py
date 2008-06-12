@@ -249,6 +249,7 @@ class Common(object):
     def sentence_iter(cls, text, strip=True):
         """Returns an iterator over the sentences in text."""
         lastmatch = 0
+        text = text or ""
         iter = cls.sentencere.finditer(text)
         for item in iter:
             lastmatch = item.end()
