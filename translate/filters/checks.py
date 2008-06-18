@@ -307,6 +307,7 @@ class UnitChecker(object):
 
     def run_filters(self, unit):
         """run all the tests in this suite, return failures as testname, message_or_exception"""
+        self.results_cache = {}
         failures = {}
         ignores = self.config.lang.ignoretests[:]
         functionnames = self.defaultfilters.keys()
@@ -338,6 +339,7 @@ class UnitChecker(object):
                 if functionname in self.preconditions:
                     for ignoredfunctionname in self.preconditions[functionname]:
                         ignores.append(ignoredfunctionname)
+        self.results_cache = {}
         return failures
 
 class TranslationChecker(UnitChecker):
@@ -367,7 +369,6 @@ class TranslationChecker(UnitChecker):
         self.str1 = data.forceunicode(unit.source)
         self.str2 = data.forceunicode(unit.target)
         self.hasplural = unit.hasplural()
-        self.results_cache = {}
         return super(TranslationChecker, self).run_filters(unit)
 
 class TeeChecker:
