@@ -25,6 +25,7 @@ import __init__ as indexer
 import CommonIndexer
 import os
 import sys
+import shutil
 
 DATABASE = "tmp-index"
 
@@ -55,9 +56,7 @@ def clean_database():
     if not os.path.exists(dbase_dir):
         return
     # recursively remove the directory
-    for item in os.listdir(dbase_dir):
-        os.remove(os.path.join(dbase_dir, item))
-    os.rmdir(dbase_dir)
+    shutil.rmtree(dbase_dir)
 
 def create_example_content(database):
     """add some defined documents to the database
@@ -455,5 +454,6 @@ if __name__ == "__main__":
         test_searching()
         # TODO: add test for document deletion
         # TODO: add test for transaction handling
+        # TODO: add test for multiple engine/database handling in "get_indexer"
     clean_database()
 
