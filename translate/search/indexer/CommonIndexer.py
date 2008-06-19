@@ -25,6 +25,7 @@ base class for interfaces to indexing engines for pootle
 """
 
 import translate.lang.data
+import os
 
 __revision__ = "$Id$"
 
@@ -64,8 +65,14 @@ class CommonDatabase(object):
     """the default analyzer to be used if nothing is configured"""
 
     QUERY_TYPE = None
+    """override this with the query class of the implementation"""
+    
+    INDEX_DIRECTORY_NAME = None
+    """override this with a string to be used as the name of the indexing
+    directory/file in the filesystem
+    """
 
-    def __init__(self, location, analyzer=None):
+    def __init__(self, basedir, analyzer=None, create_allowed=True):
         """initialize or open an indexing database
 
         Any derived class must override __init__.
@@ -75,24 +82,36 @@ class CommonDatabase(object):
                 is incompatible (e.g. created by a different indexing engine)
             OSError: the database failed to initialize
 
-        @param location: the path to the database (usually a directory)
-        @type location: str
+        Any implementation can rely on the "self.location" attribute to be set
+        by the __init__ function of the super class.
+
+        @param basedir: the parent directory of the database
+        @type basedir: str
         @param analyzer: bitwise combination of possible analyzer flags
             to be used as the default analyzer for this database. Leave it empty
             to use the system default analyzer (self.ANALYZER_DEFAULT).
             see self.ANALYZER_TOKENIZE, self.ANALYZER_PARTIAL, ...
         @type analyzer: int
+        @param create_allowed: create the database, if necessary; default: True
+        @type create_allowed: bool
         @throws: OSError, ValueError
         """
+        # just do some checks
+        if self.QUERY_TYPE is None:
+            raise NotImplementedError("Incomplete indexer implementation: " \
+                    + "'QUERY_TYPE' is undefined")
+        if self.INDEX_DIRECTORY_NAME is None:
+            raise NotImplementedError("Incomplete indexer implementation: " \
+                    + "'INDEX_DIRECTORY_NAME' is undefined")
+        self.location = os.path.join(basedir, self.INDEX_DIRECTORY_NAME)
+        if (not create_allowed) and (not os.path.exists(self.location)):
+            raise OSError("Indexer: the database does not exist - and I am" \
+                    + " not configured to create it.")
         if analyzer is None:
             self.analyzer = self.ANALYZER_DEFAULT
         else:
             self.analyzer = analyzer
         self.field_analyzers = {}
-        # just do some checks
-        if self.QUERY_TYPE is None:
-            raise NotImplementedError("Incomplete indexer implementation: " \
-                    + "'QUERY_TYPE' is undefined")
 
     def flush(self, optimize=False):
         """flush the content of the database - to force changes to be written

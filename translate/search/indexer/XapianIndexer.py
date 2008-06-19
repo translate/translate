@@ -51,8 +51,9 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
     """
 
     QUERY_TYPE = xapian.Query
+    INDEX_DIRECTORY_NAME = "xapian"
 
-    def __init__(self, location, analyzer=None):
+    def __init__(self, basedir, analyzer=None, create_allowed=True):
         """initialize or open a xapian database
 
         The following exceptions can be raised:
@@ -60,19 +61,21 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
                 is incompatible (e.g. created by a different indexing engine)
             OSError: the database failed to initialize
 
-        @param location: the path to the database (usually a directory)
-        @type location: str
+        @param basedir: the parent directory of the database
+        @type basedir: str
         @param analyzer: bitwise combination of possible analyzer flags
             to be used as the default analyzer for this database. Leave it empty
             to use the system default analyzer (self.ANALYZER_DEFAULT).
             see self.ANALYZER_TOKENIZE, self.ANALYZER_PARTIAL, ...
         @type analyzer: int
+        @param create_allowed: create the database, if necessary; default: True
+        @type create_allowed: bool
         @throws: OSError, ValueError
         """
         # call the __init__ function of our parent
-        super(XapianDatabase, self).__init__(location, analyzer)
-        self.location = location
-        if os.path.exists(location):
+        super(XapianDatabase, self).__init__(basedir, analyzer=analyzer,
+                create_allowed=create_allowed)
+        if os.path.exists(self.location):
             # try to open an existing database
             try:
                 self.database = xapian.WritableDatabase(self.location,
@@ -83,6 +86,18 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
                         % (self.location, err_msg))
         else:
             # create a new database
+            if not create_allowed:
+                raise OSError("Indexer: skipping database creation")
+            try:
+                # create the parent directory if it does not exist
+                parent_path = os.path.dirname(self.location)
+                if not os.path.isdir(parent_path):
+                    # recursively create all directories up to parent_path
+                    os.makedirs(parent_path)
+            except IOError, err_msg:
+                raise OSError("Indexer: failed to create the parent " \
+                        + "directory (%s) of the indexing database: %s" \
+                        % (parent_path, err_msg))
             try:
                 self.database = xapian.WritableDatabase(self.location,
                         xapian.DB_CREATE_OR_OPEN)

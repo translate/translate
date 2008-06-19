@@ -62,8 +62,9 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
     """manage and use a pylucene indexing database"""
 
     QUERY_TYPE = PyLucene.Query
+    INDEX_DIRECTORY_NAME = "lucene"
 
-    def __init__(self, location, analyzer=None):
+    def __init__(self, basedir, analyzer=None, create_allowed=True):
         """initialize or open an indexing database
 
         Any derived class must override __init__.
@@ -73,17 +74,19 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
                 is incompatible (e.g. created by a different indexing engine)
             OSError: the database failed to initialize
 
-        @param location: the path to the database (usually a directory)
-        @type location: str
+        @param basedir: the parent directory of the database
+        @type basedir: str
         @param analyzer: bitwise combination of possible analyzer flags
             to be used as the default analyzer for this database. Leave it empty
             to use the system default analyzer (self.ANALYZER_DEFAULT).
             see self.ANALYZER_TOKENIZE, self.ANALYZER_PARTIAL, ...
         @type analyzer: int
+        @param create_allowed: create the database, if necessary; default: True
+        @type create_allowed: bool
         @throws: OSError, ValueError
         """
-        super(PyLuceneDatabase, self).__init__(location, analyzer)
-        self.location = location
+        super(PyLuceneDatabase, self).__init__(basedir, analyzer=analyzer,
+                create_allowed=create_allowed)
         self.pyl_analyzer = PyLucene.StandardAnalyzer()
         self.writer = None
         self.reader = None
@@ -98,6 +101,18 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
             #errorstr = str(e).strip() + "\n" + self.errorhandler.traceback_str()
             #DEBUG_FOO("could not open index, so going to create: " + errorstr)
             # Create the index, so we can open cached readers on it
+            if not create_allowed:
+                raise OSError("Indexer: skipping database creation")
+            try:
+                # create the parent directory if it does not exist
+                parent_path = os.path.dirname(self.location)
+                if not os.path.isdir(parent_path):
+                    # recursively create all directories up to parent_path
+                    os.makedirs(parent_path)
+            except IOError, err_msg:
+                raise OSError("Indexer: failed to create the parent " \
+                        + "directory (%s) of the indexing database: %s" \
+                        % (parent_path, err_msg))
             try:
                 tempwriter = PyLucene.IndexWriter(self.location,
                         self.pyl_analyzer, True)

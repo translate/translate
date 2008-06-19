@@ -29,15 +29,13 @@ __revision__ = "$Id$"
 
 import CommonIndexer
 import os
+import shutil
 
 """ TODO for indexing engines:
     * get rid of jToolkit.glock dependency
     * add partial matching at the beginning of a term
-    * decide how to handle migration from database directory style A to B
-        (e.g.: pylucene was removed, so xapian is now used instead)
     * do a proper cleanup - e.g.: the pylucene lockfiles remain in /tmp/
     * do unittests for PyLucene v1.x
-    * add compatibility for xapian before v1.0 (TermGenerator is missing)
     """
 
 def _get_available_indexers():
@@ -134,7 +132,7 @@ _AVAILABLE_INDEXERS = _get_available_indexers()
 HAVE_INDEXER = bool(_AVAILABLE_INDEXERS)
 
 
-def get_indexer(location, preference=[]):
+def get_indexer(basedir, preference=[]):
     """return an appropriate indexer for the given directory
 
     If the directory already exists, then we check, if one of the available
@@ -148,8 +146,9 @@ def get_indexer(location, preference=[]):
         OSError: any error that could occour while creating or opening the
             database
 
-    @param location: the directory where the indexing database should be stored
-    @type location: string
+    @param basedir: the parent directory of (possible) different indexing
+             databases
+    @type basedir: string
     @return: the class of the most appropriate indexer
     @rtype: subclass of CommonIndexer.CommonDatabase
     @throws: IndexError
@@ -159,19 +158,23 @@ def get_indexer(location, preference=[]):
     # sort available indexers by preference
     preferred_indexers = _sort_indexers_by_preference(_AVAILABLE_INDEXERS,
             preference)
-    if os.path.exists(location):
+    if os.path.exists(basedir):
         for index_class in preferred_indexers:
             try:
-                # the first match is sufficient
-                return index_class(location)
+                # the first match is sufficient - but we do not want to
+                # create a new database, if a database for another
+                # indexing engine could exist. Thus we try it read-only first.
+                return index_class(basedir, create_allowed=False)
             except (ValueError, OSError):
                 # invalid type of database or some other error
                 continue
-    # the database does not exist yet or we did not find an appropriate
-    # class that can handle it - so we just take the first available
-    # indexing engine
-    # this may result in a ValueError or an OSError
-    return preferred_indexers[0](location)
+        # the database does not exist yet or we did not find an appropriate
+        # class that can handle it - so we remove the whole base directory
+        shutil.rmtree(basedir, ignore_errors=True)
+        print "Deleting invalid indexing directory '%s'" % basedir
+    # the database does not exist or it was deleted (see above)
+    # we choose the first available indexing engine
+    return preferred_indexers[0](basedir)
 
 
 if __name__ == "__main__":
