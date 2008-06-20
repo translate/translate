@@ -19,7 +19,7 @@ class TestTMXUnitFromParsedString(TestTMXUnit):
                                 <seg>Test String</seg>
                         </tuv>
                         <tuv xml:lang="af">
-                                <seg>Toets String</seg>
+                                <seg></seg>
                         </tuv>
                 </tu>
         </body>
