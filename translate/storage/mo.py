@@ -53,6 +53,29 @@ def mounpack(filename='messages.mo'):
     print "\\x%02x"*len(s) % tuple(map(ord, s))
     f.close()
 
+def my_swap4(result):
+    c0 = (result >> 0) & 0xff
+    c1 = (result >> 8) & 0xff
+    c2 = (result >> 16) & 0xff
+    c3 = (result >> 24) & 0xff
+
+    return (c0 << 24) | (c1 << 16) | (c2 << 8) | c3
+
+def hashpjw(str_param):
+   HASHWORDBITS = 32
+   hval = 0
+   g = None
+   s = str_param
+   for s in str_param:
+       hval = hval << 4
+       hval += ord(s)
+       g = hval & 0xf << (HASHWORDBITS - 4)
+       if (g != 0):
+           hval = hval ^ g >> (HASHWORDBITS - 8)
+           hval = hval ^ g
+   return hval
+
+
 class mounit(base.TranslationUnit):
     """A class representing a .mo translation message."""
     def __init__(self, source=None):
@@ -89,6 +112,24 @@ class mofile(base.TranslationStore):
     def __str__(self):
         """Output a string representation of the MO data file"""
         # check the header of this file for the copyright note of this function
+        def add_to_hash_table(string, i):
+            V = hashpjw(string)
+            S = hash_size <= 2 and 3 or hash_size # Taken from gettext-0.17:gettext-tools/src/wrote-mo.c:408-409
+            hash_cursor = V % S;
+            orig_hash_cursor = hash_cursor;
+            increment = 1 + (V % (S - 2));
+            while True:
+                index = hash_table[hash_cursor]
+                if (index == 0):
+                    hash_table[hash_cursor] = i + 1
+                    break
+                hash_cursor += increment
+                hash_cursor = hash_cursor % S
+                assert(hash_cursor != orig_hash_cursor)
+ 
+        if len(self.units) == 0:
+            return ''
+        hash_size = int(len(self.units) * 1.4)
         MESSAGES = {}
         for unit in self.units:
             if isinstance(unit.source, multistring):
@@ -103,15 +144,17 @@ class mofile(base.TranslationStore):
                 target = unit.target
             if unit.target:
                 MESSAGES[source.encode("utf-8")] = target
+        hash_table = array.array("L", [0] * hash_size)
         keys = MESSAGES.keys()
         # the keys are sorted in the .mo file
         keys.sort()
         offsets = []
         ids = strs = ''
-        for id in keys:
+        for i, id in enumerate(keys):
             # For each string, we need size and file offset.  Each string is NUL
             # terminated; the NUL does not count into the size.
             # TODO: We don't do any encoding detection from the PO Header
+            add_to_hash_table(id, i)
             string = MESSAGES[id] # id is already encoded for use as a dictionary key
             if isinstance(string, unicode):
                 string = string.encode('utf-8')
@@ -122,7 +165,7 @@ class mofile(base.TranslationStore):
         # The header is 7 32-bit unsigned integers.  We don't use hash tables, so
         # the keys start right after the index tables.
         # translated string.
-        keystart = 7*4+16*len(keys)
+        keystart = 7*4+16*len(keys)+hash_size*4
         # and the values start after the keys
         valuestart = keystart + len(ids)
         koffsets = []
@@ -139,8 +182,9 @@ class mofile(base.TranslationStore):
                              len(keys),         # # of entries
                              7*4,               # start of key index
                              7*4+len(keys)*8,   # start of value index
-                             0, 0)              # size and offset of hash table
+                             hash_size, 7*4+2*(len(keys)*8))              # size and offset of hash table
         output = output + array.array("i", offsets).tostring()
+        output = output + hash_table.tostring()
         output = output + ids
         output = output + strs
         return output
