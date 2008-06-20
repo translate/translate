@@ -355,9 +355,17 @@ class TranslationChecker(UnitChecker):
         
         Note that this can raise a FilterFailure as part of normal operation."""
         if self.hasplural:
+            filtermessages = []
+            filterresult = True
             for pluralform in unit.target.strings:
-                if not test(self.str1, data.forceunicode(pluralform)):
-                    return False
+                try:
+                    if not test(self.str1, pluralform):
+                        filterresult = False
+                except FilterFailure, e:
+                    filterresult = False
+                    filtermessages.append( str(e).decode('utf-8') )
+            if not filterresult:
+                raise FilterFailure(filtermessages)
             else:
                 return True
         else:
