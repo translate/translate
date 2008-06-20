@@ -18,6 +18,11 @@
 # You should have received a copy of the GNU General Public License
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+#
+# Requires: git v.1.5.3
+# For git v1.5.2 take a look at http://bugs.locamotion.org/show_bug.cgi?id=347
+#
 
 
 from translate.storage.versioncontrol import run_command
