@@ -359,13 +359,12 @@ class TranslationChecker(UnitChecker):
             filterresult = True
             for pluralform in unit.target.strings:
                 try:
-                    print "Ek lewe!", pluralform
                     if not test(self.str1, pluralform):
                         filterresult = False
                 except FilterFailure, e:
                     filterresult = False
                     filtermessages.append( str(e).decode('utf-8') )
-            if not filterresult:
+            if not filterresult and filtermessages:
                 raise FilterFailure(filtermessages)
             else:
                 return True
@@ -378,7 +377,6 @@ class TranslationChecker(UnitChecker):
         self.str1 = data.forceunicode(unit.source)
         self.str2 = data.forceunicode(unit.target)
         self.hasplural = unit.hasplural()
-        print "Ek lewe!"
         return super(TranslationChecker, self).run_filters(unit)
 
 class TeeChecker:
@@ -542,24 +540,19 @@ class StandardChecker(TranslationChecker):
 
     def printf(self, str1, str2):
         """checks whether printf format strings match"""
-        print "printf(%s, %s)" % (str1, str2)
         count1 = count2 = None
         for var_num2, match2 in enumerate(printf_pat.finditer(str2)):
-            print 'xx'
             count2 = var_num2 + 1
             if match2.group('ord'):
                 for var_num1, match1 in enumerate(printf_pat.finditer(str1)):
-                    print "ab"
                     count1 = var_num1 + 1
                     if int(match2.group('ord')) == var_num1 + 1:
                         if match2.group('fullvar') != match1.group('fullvar'):
                             return 0
             else:
                 for var_num1, match1 in enumerate(printf_pat.finditer(str1)):
-                    print "ac"
                     count1 = var_num1 + 1
                     if (var_num1 == var_num2) and (match1.group('fullvar') != match2.group('fullvar')):
-                        print "acc"
                         return 0
 
         if count2 is None:
