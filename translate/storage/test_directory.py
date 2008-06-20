@@ -49,10 +49,12 @@ class TestDirectory(object):
     def test_basic(self):
         """Tests basic functionality."""
         files = ["a.po", "b.po", "c.po"]
+        files.sort()
         self.touchfiles(self.testdir, files)
 
         d = directory.Directory(self.testdir)
         filenames = [name for dir, name in d.getfiles()]
+        filenames.sort()
         assert filenames == files
 
     def test_structure(self):
@@ -63,8 +65,11 @@ class TestDirectory(object):
         self.touchfiles(os.path.join(self.testdir, "bla"), files)
         
         d = directory.Directory(self.testdir)
-        filenames = [name for dir, name in d.getfiles()]
-        assert filenames == files*2
+        filenames = [name for dirname, name in d.getfiles()]
+        filenames.sort()
+        files = files*2
+        files.sort()
+        assert filenames == files
 
     def test_getunits(self):
         """Tests basic functionality."""
