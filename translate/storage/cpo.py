@@ -306,7 +306,8 @@ class pounit(pocommon.pounit):
         return comments[:-1].decode(self._encoding)
 
     def addnote(self, text, origin=None, position="append"):
-        if not text:
+        # ignore empty strings and strings without non-space characters
+        if (not text) or (not text.strip()):
             return
         text = data.forceunicode(text)
         oldnotes = self.getnotes(origin)
