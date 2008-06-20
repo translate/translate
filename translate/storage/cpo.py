@@ -238,16 +238,23 @@ class pounit(pocommon.pounit):
         return multi
 
     def settarget(self, target):
+        # for plural strings: convert 'target' into a list
         if self.hasplural():
             if isinstance(target, multistring):
                 target = target.strings
             elif isinstance(target, basestring):
                 target = [target]
+        # for non-plurals: check number of items in 'target'
         elif isinstance(target,(dict, list)):
             if len(target) == 1:
                 target = target[0]
             else:
                 raise ValueError("po msgid element has no plural but msgstr has %d elements (%s)" % (len(target), target))
+        # empty the previous list of messages
+        # TODO: the "pypo" implementation does not remove the previous items of
+        #   the target, if self.target == target (essentially: comparing only
+        #   the first item of a plural string with the single new string)
+        #   Maybe this behaviour should be unified.
         if isinstance(target, (dict, list)):
             i = 0
             message = gpo.po_message_msgstr_plural(self._gpo_message, i)
@@ -255,15 +262,18 @@ class pounit(pocommon.pounit):
                 gpo.po_message_set_msgstr_plural(self._gpo_message, i, None)
                 i += 1
                 message = gpo.po_message_msgstr_plural(self._gpo_message, i)
+        # add the items of a list
         if isinstance(target, list):
             for i in range(len(target)):
                 targetstring = target[i]
                 if isinstance(targetstring, unicode):
                     targetstring = targetstring.encode(self._encoding)
                 gpo.po_message_set_msgstr_plural(self._gpo_message, i, targetstring)
+        # add the values of a dict
         elif isinstance(target, dict):
             for i, targetstring in enumerate(target.itervalues()):
                 gpo.po_message_set_msgstr_plural(self._gpo_message, i, targetstring)
+        # add a single string
         else:
             if isinstance(target, unicode):
                 target = target.encode(self._encoding)
