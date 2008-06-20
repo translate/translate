@@ -18,9 +18,6 @@ class TestTMXUnitFromParsedString(TestTMXUnit):
                         <tuv xml:lang="en">
                                 <seg>Test String</seg>
                         </tuv>
-                        <tuv xml:lang="af">
-                                <seg></seg>
-                        </tuv>
                 </tu>
         </body>
 </tmx>'''
