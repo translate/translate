@@ -105,56 +105,56 @@ def test_timezones():
         time.tzset()
         assert time.timezone == -16200
         # Typically "+0430"
-        assert pofile.tzstring() == time.strftime("%z")
+        assert poheader.tzstring() == time.strftime("%z")
 
         os.environ['TZ'] = 'Asia/Tehran'
         time.tzset()
         assert time.timezone == -12600
         # Typically "+0330"
-        assert pofile.tzstring() == time.strftime("%z")
+        assert poheader.tzstring() == time.strftime("%z")
 
         os.environ['TZ'] = 'Canada/Newfoundland'
         time.tzset()
         assert time.timezone == 12600
         # Typically "-0230"
-        assert pofile.tzstring() == time.strftime("%z")
+        assert poheader.tzstring() == time.strftime("%z")
 
         os.environ['TZ'] = 'US/Eastern'
         time.tzset()
         assert time.timezone == 18000
         # Typically "-0400"
-        assert pofile.tzstring() == time.strftime("%z")
+        assert poheader.tzstring() == time.strftime("%z")
 
         os.environ['TZ'] = 'Asia/Seoul'
         time.tzset()
         assert time.timezone == -32400
         # Typically "+0900"
-        assert pofile.tzstring() == time.strftime("%z")
+        assert poheader.tzstring() == time.strftime("%z")
 
         os.environ['TZ'] = 'Africa/Johannesburg'
         time.tzset()
         assert time.timezone == -7200
         # Typically "+0200"
-        assert pofile.tzstring() == time.strftime("%z")
+        assert poheader.tzstring() == time.strftime("%z")
 
         os.environ['TZ'] = 'Africa/Windhoek'
         time.tzset()
         assert time.timezone == -3600
         # Typically "+0100"
         # For some reason python's %z doesn't know about Windhoek DST
-        #assert pofile.tzstring() == time.strftime("%z")
+        #assert poheader.tzstring() == time.strftime("%z")
 
         os.environ['TZ'] = 'Egypt'
         time.tzset()
         assert time.timezone == -7200
         # Typically "+0300"
-        assert pofile.tzstring() == time.strftime("%z")
+        assert poheader.tzstring() == time.strftime("%z")
 
         os.environ['TZ'] = 'UTC'
         time.tzset()
         assert time.timezone == 0
         # Typically "+0000"
-        assert pofile.tzstring() == time.strftime("%z")
+        assert poheader.tzstring() == time.strftime("%z")
 
 def test_header_blank():
 
