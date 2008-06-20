@@ -301,7 +301,7 @@ class pounit(pocommon.pounit):
             raise ValueError("Comment type not valid")
         # FIXME this fixes a bug in Gettext that returns leading space with comments
         if comments:
-            comments = "\n".join([line[1:] for line in comments.split("\n")])
+            comments = "\n".join([line.strip() for line in comments.split("\n")])
         # Let's drop the last newline
         return comments[:-1].decode(self._encoding)
 
