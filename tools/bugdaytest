@@ -9,7 +9,7 @@ srcdir="`cd "${scriptdir}" ; cd .. ; pwd`"
 
 logfile=${hostname}-${timestamp}.log
 
-versions=$(PootleServer --version)
+versions=$(Pootle/PootleServer --version)
 
 cd "$srcdir"
 mkdir -p testlogs
