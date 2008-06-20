@@ -325,7 +325,7 @@ class UnitChecker(object):
                 filterresult = self.run_test(filterfunction, unit)
             except FilterFailure, e:
                 filterresult = False
-                filtermessage = e.message
+                filtermessage = e.args[0]
             except Exception, e:
                 if self.errorhandler is None:
                     raise ValueError("error in filter %s: %r, %r, %s" % \

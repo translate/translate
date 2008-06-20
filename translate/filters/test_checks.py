@@ -24,8 +24,9 @@ def fails(filterfunction, str1, str2, message=None):
         filterresult = True
     except checks.FilterFailure, e:
         if message:
-            filterresult = e.message != message
-            print e.message.encode('utf-8')
+            exc_message = e.args[0]
+            filterresult = exc_message != message
+            print exc_message.encode('utf-8')
         else:
             filterresult = False
     return not filterresult
@@ -37,8 +38,9 @@ def fails_serious(filterfunction, str1, str2, message=None):
         filterresult = filterfunction(str1, str2)
     except checks.SeriousFilterFailure, e:
         if message:
-            filterresult = e.message != message
-            print e.message.encode('utf-8')
+            exc_message = e.args[0]
+            filterresult = exc_message != message
+            print exc_message.encode('utf-8')
         else:
             filterresult = False
     return not filterresult
