@@ -343,6 +343,8 @@ Some other text
         """test that we we manage the case where we merge and their is no template file"""
         # If we supply a template file we should fail if the template file does not exist or is blank.  We should
         # not put the translation in as the source.
+        # TODO: this test fails, since line 16 checks for "not dtdtemplate"
+        #   instead of checking for "dtdtemplate is None". What is correct?
         dtdtemplate = ''
         dtdsource = '<!ENTITY no.template "Target">'
         pofile = self.dtd2po(dtdsource, dtdtemplate)
