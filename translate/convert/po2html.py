@@ -78,6 +78,9 @@ class po2html:
             else:
                 msgstr = self.wrapmessage(inputunit.source)
             if msgstr.strip():
+                # TODO: "msgid" is already html-encoded ("&" -> "&amp;"), while
+                #   "msgstr" is not encoded -> thus the replace fails
+                #   see test_po2html.py in line 67
                 htmlresult = htmlresult.replace(msgid, msgstr, 1)
         htmlresult = htmlresult.encode('utf-8')
         if tidy:
