@@ -132,7 +132,7 @@ _AVAILABLE_INDEXERS = _get_available_indexers()
 HAVE_INDEXER = bool(_AVAILABLE_INDEXERS)
 
 
-def get_indexer(basedir, preference=[]):
+def get_indexer(basedir, preference=None):
     """return an appropriate indexer for the given directory
 
     If the directory already exists, then we check, if one of the available
@@ -155,6 +155,8 @@ def get_indexer(basedir, preference=[]):
     """
     if not _AVAILABLE_INDEXERS:
         raise IndexError("Indexer: no indexing engines are available")
+    if preference is None:
+        preference = []
     # sort available indexers by preference
     preferred_indexers = _sort_indexers_by_preference(_AVAILABLE_INDEXERS,
             preference)
