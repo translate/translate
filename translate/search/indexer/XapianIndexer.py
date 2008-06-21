@@ -24,7 +24,11 @@
 interface to the xapian indexing engine for the translate toolkit
 
 Xapian v1.0 or higher is supported.
-See XapianIndexer0.py for an interface for Xapian v0.x.
+
+If you are interested in writing an interface for Xapian 0.x, then
+you should checkout the following:
+    svn export -r 7235 https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate-search-indexer-generic-merging/translate/search/indexer/
+It is not completely working, but it should give you a good start.
 """
 
 __revision__ = "$Id$"

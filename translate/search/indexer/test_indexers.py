@@ -33,7 +33,7 @@ DATABASE = "tmp-index"
 default_engine = "" 
 
 # order of tests to be done
-ORDER_OF_TESTS = [ "XapianIndexer", "XapianIndexer0", "PyLuceneIndexer", "PyLuceneIndexer1" ]
+ORDER_OF_TESTS = [ "XapianIndexer", "PyLuceneIndexer", "PyLuceneIndexer1" ]
 
 
 def _get_indexer(location):
