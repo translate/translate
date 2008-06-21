@@ -56,8 +56,6 @@ class TestTranslationUnit:
         unit5 = self.UnitClass("Blessed String")
         unit6 = self.UnitClass("Blessed String")
         assert unit1 == unit1
-        # FIXME: shouldn't we compare "unit2" and "unit3"? The current test
-        #   breaks "test_tmx", since it initializes "self.unit" differently
         assert unit1 == unit2
         assert unit1 != unit4
         unit1.target = "Stressed Ting"
