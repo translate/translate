@@ -38,6 +38,7 @@ except ImportError:
 import os.path
 import re
 import sys
+import stat
 
 kdepluralre = re.compile("^_n: ")
 brtagre = re.compile("<br\s*?/?>")
@@ -93,9 +94,16 @@ def emptystats():
         stats[state + "targetwords"] = 0
     return stats
 
-def get_mod_info(file_path, errors_return_empty=False):
+# We allow the caller to specify which value to return when errors_return_empty
+# is True. We do this, since Poolte wants None to be returned when it calls
+# get_mod_info directly, whereas we want an integer to be returned for 
+# uses of get_mod_info within this module.
+# TODO: Get rid of empty_return when Pootle code is improved to not require
+#       this.
+def get_mod_info(file_path, errors_return_empty=False, empty_return=0):
     try:
         file_stat = os.stat(file_path)
+        assert not stat.S_ISDIR(file_stat.st_mode)
         # First, we multiply the mtime by 1000 to shift any millisecond values
         # left of the .
         # Then we make the somewhat daring assumption that 64 bits should be
@@ -104,7 +112,7 @@ def get_mod_info(file_path, errors_return_empty=False):
         return (long(file_stat.st_mtime * 1000) << 64) + file_stat.st_size
     except:
         if errors_return_empty:
-            return 0
+            return empty_return
         else:
             raise
 
