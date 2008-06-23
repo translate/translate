@@ -27,7 +27,7 @@ from translate.misc.multistring import multistring
 from translate.misc import quote
 from translate.misc import textwrap
 from translate.lang import data
-from translate.storage import pocommon
+from translate.storage import pocommon, base
 import re
 
 lsep = "\n#: "
@@ -801,47 +801,50 @@ class pofile(pocommon.pofile):
 
     def parse(self, input):
         """parses the given file or file source string"""
-        if hasattr(input, 'name'):
-            self.filename = input.name
-        elif not getattr(self, 'filename', ''):
-            self.filename = ''
-        if hasattr(input, "read"):
-            posrc = input.read()
-            input.close()
-            input = posrc
-        # TODO: change this to a proper parser that doesn't do line-by-line madness
-        lines = input.split("\n")
-        start = 0
-        end = 0
-        # make only the first one the header
-        linesprocessed = 0
-        is_decoded = False
-        while end <= len(lines):
-            if (end == len(lines)) or (not lines[end].strip()):  # end of lines or blank line
-                newpe = self.UnitClass(encoding=self._encoding)
-                unit_lines = lines[start:end]
-                # We need to work carefully if we haven't decoded properly yet.
-                # So let's solve this temporarily until we actually get the
-                # encoding from the header.
-                if not is_decoded:
-                    unit_lines = [line.decode('ascii', 'ignore') for line in unit_lines]
-                linesprocessed = newpe.parselines(unit_lines)
-                start += linesprocessed
-                # TODO: find a better way of working out if we actually read anything
-                if linesprocessed >= 1 and newpe._getoutput():
-                    self.units.append(newpe)
+        try:
+            if hasattr(input, 'name'):
+                self.filename = input.name
+            elif not getattr(self, 'filename', ''):
+                self.filename = ''
+            if hasattr(input, "read"):
+                posrc = input.read()
+                input.close()
+                input = posrc
+            # TODO: change this to a proper parser that doesn't do line-by-line madness
+            lines = input.split("\n")
+            start = 0
+            end = 0
+            # make only the first one the header
+            linesprocessed = 0
+            is_decoded = False
+            while end <= len(lines):
+                if (end == len(lines)) or (not lines[end].strip()):  # end of lines or blank line
+                    newpe = self.UnitClass(encoding=self._encoding)
+                    unit_lines = lines[start:end]
+                    # We need to work carefully if we haven't decoded properly yet.
+                    # So let's solve this temporarily until we actually get the
+                    # encoding from the header.
                     if not is_decoded:
-                        if newpe.isheader(): # If there is a header...
-                            if "Content-Type" in self.parseheader(): # and a Content-Type...
-                                if self._encoding.lower() != 'charset': # with a valid charset...
-                                    self._encoding = newpe._encoding # then change the encoding
-                                    # otherwise we'll decode using UTF-8
-                        lines = self.decode(lines)
-                        self.units = []
-                        start = 0
-                        end = 0
-                        is_decoded = True
-            end = end+1
+                        unit_lines = [line.decode('ascii', 'ignore') for line in unit_lines]
+                    linesprocessed = newpe.parselines(unit_lines)
+                    start += linesprocessed
+                    # TODO: find a better way of working out if we actually read anything
+                    if linesprocessed >= 1 and newpe._getoutput():
+                        self.units.append(newpe)
+                        if not is_decoded:
+                            if newpe.isheader(): # If there is a header...
+                                if "Content-Type" in self.parseheader(): # and a Content-Type...
+                                    if self._encoding.lower() != 'charset': # with a valid charset...
+                                        self._encoding = newpe._encoding # then change the encoding
+                                        # otherwise we'll decode using UTF-8
+                            lines = self.decode(lines)
+                            self.units = []
+                            start = 0
+                            end = 0
+                            is_decoded = True
+                end = end+1
+        except Exception, e:
+            raise base.ParseError()
 
     def removeduplicates(self, duplicatestyle="merge"):
         """make sure each msgid is unique ; merge comments etc from duplicates into original"""

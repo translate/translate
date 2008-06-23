@@ -27,7 +27,7 @@
 """
 
 from translate import __version__ as toolkitversion
-from translate.storage import factory
+from translate.storage import factory, base
 from translate.misc.multistring import multistring
 from translate.lang.common import Common
 
@@ -93,16 +93,22 @@ def emptystats():
         stats[state + "targetwords"] = 0
     return stats
 
-def get_mod_info(file_path):
-    file_stat = os.stat(file_path)
-    # First, we multiply the mtime by 1000 to shift any millisecond values
-    # left of the .
-    # Then we make the somewhat daring assumption that 64 bits should be
-    # enough for any translation file size. To make space for the translation
-    # file size bits, we shift the mtime left by 64 bits.
-    return (long(file_stat.st_mtime * 1000) << 64) + file_stat.st_size
+def get_mod_info(file_path, errors_return_empty=False):
+    try:
+        file_stat = os.stat(file_path)
+        # First, we multiply the mtime by 1000 to shift any millisecond values
+        # left of the .
+        # Then we make the somewhat daring assumption that 64 bits should be
+        # enough for any translation file size. To make space for the translation
+        # file size bits, we shift the mtime left by 64 bits.
+        return (long(file_stat.st_mtime * 1000) << 64) + file_stat.st_size
+    except:
+        if errors_return_empty:
+            return 0
+        else:
+            raise
 
-def suggestioninfo(filename):
+def suggestioninfo(filename, **kwargs):
     """Provides the filename of the associated file containing suggestions and 
     its mod_info, if it exists."""
     root, ext = os.path.splitext(filename)
@@ -116,7 +122,7 @@ def suggestioninfo(filename):
         if not os.path.exists(suggestion_filename):
             suggestion_filename = None
         else:
-            suggestion_mod_info = get_mod_info(suggestion_filename)
+            suggestion_mod_info = get_mod_info(suggestion_filename, **kwargs)
     return suggestion_filename, suggestion_mod_info
 
 class StatsCache(object):
@@ -204,7 +210,7 @@ class StatsCache(object):
         
         self.con.commit()
 
-    def _getfileid(self, filename, opt_mod_info=-1, check_mod_info=True, store=None):
+    def _getfileid(self, filename, opt_mod_info=-1, check_mod_info=True, store=None, errors_return_empty=False):
         """Attempt to find the fileid of the given file, if it hasn't been
         updated since the last record update.
 
@@ -220,21 +226,27 @@ class StatsCache(object):
         self.cur.execute("""SELECT fileid, mod_info FROM files
                 WHERE path=?;""", (realpath,))
         filerow = self.cur.fetchone()
-        mod_info = max(opt_mod_info, get_mod_info(realpath))        
-        if filerow:
-            fileid = filerow[0]
-            if not check_mod_info:
-                # Update the mod_info of the file
-                self.cur.execute("""UPDATE files 
-                        SET mod_info=? 
-                        WHERE fileid=?;""", (str(mod_info), fileid))
-                return fileid
-            if long(filerow[1]) == mod_info:
-                return fileid
-        # We can only ignore the mod_info if the row already exists:
-        assert check_mod_info        
-        store = store or factory.getobject(filename)
-        return self.cachestore(store)
+        try:
+            mod_info = max(opt_mod_info, get_mod_info(realpath))        
+            if filerow:
+                fileid = filerow[0]
+                if not check_mod_info:
+                    # Update the mod_info of the file
+                    self.cur.execute("""UPDATE files 
+                            SET mod_info=? 
+                            WHERE fileid=?;""", (str(mod_info), fileid))
+                    return fileid
+                if long(filerow[1]) == mod_info:
+                    return fileid
+            # We can only ignore the mod_info if the row already exists:
+            assert check_mod_info        
+            store = store or factory.getobject(filename)
+            return self.cachestore(store)
+        except (base.ParseError, IOError, OSError):
+            if errors_return_empty:
+                return -1
+            else:
+                raise
 
     def _getstoredcheckerconfig(self, checker):
         """See if this checker configuration has been used before."""
@@ -303,13 +315,13 @@ class StatsCache(object):
         totals = emptystats()
         return self.cur.fetchall()
 
-    def filetotals(self, filename):
+    def filetotals(self, filename, **kwargs):
         """Retrieves the statistics for the given file if possible, otherwise 
         delegates to cachestore()."""
         fileid = None
         if not fileid:
             try:
-                fileid = self._getfileid(filename)
+                fileid = self._getfileid(filename, **kwargs)
             except ValueError, e:
                 print >> sys.stderr, str(e)
                 return {}
@@ -404,14 +416,14 @@ class StatsCache(object):
         state.extend(self._cacheunitschecks([unit], fileid, configid, checker, unitindex))
         return state
     
-    def filechecks(self, filename, checker, store=None):
+    def filechecks(self, filename, checker, store=None, **kwargs):
         """Retrieves the error statistics for the given file if possible, 
         otherwise delegates to cachestorechecks()."""
-        suggestion_filename, suggestion_mod_info = suggestioninfo(filename)
+        suggestion_filename, suggestion_mod_info = suggestioninfo(filename, **kwargs)
         fileid = None
         configid = self._getstoredcheckerconfig(checker)
         try:
-            fileid = self._getfileid(filename, suggestion_mod_info, store=store)
+            fileid = self._getfileid(filename, suggestion_mod_info, store=store, **kwargs)
             if not configid:
                 self.cur.execute("""INSERT INTO checkerconfigs
                     (configid, config) values (NULL, ?);""", 
@@ -450,13 +462,13 @@ class StatsCache(object):
 
         return errors
 
-    def filestats(self, filename, checker, store=None):
+    def filestats(self, filename, checker, store=None, **kwargs):
         """Return a dictionary of property names mapping sets of unit 
         indices with those properties."""
         stats = {"total": [], "translated": [], "fuzzy": [], "untranslated": []}
 
-        stats.update(self.filechecks(filename, checker, store))
-        fileid = self._getfileid(filename, store=store)
+        stats.update(self.filechecks(filename, checker, store, **kwargs))
+        fileid = self._getfileid(filename, store=store, **kwargs)
 
         self.cur.execute("""SELECT 
             state,
@@ -471,7 +483,7 @@ class StatsCache(object):
 
         return stats
       
-    def unitstats(self, filename, _lang=None, store=None):
+    def unitstats(self, filename, _lang=None, store=None, **kwargs):
         # For now, lang and store are unused. lang will allow the user to
         # base stats information on the given language. See the commented
         # line containing stats.update below. 
@@ -484,7 +496,7 @@ class StatsCache(object):
         stats = {"sourcewordcount": [], "targetwordcount": []}
         
         #stats.update(self.unitchecks(filename, lang, store))
-        fileid = self._getfileid(filename, store=store)
+        fileid = self._getfileid(filename, store=store, **kwargs)
         
         self.cur.execute("""SELECT
           sourcewords, targetwords
