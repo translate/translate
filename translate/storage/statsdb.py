@@ -104,12 +104,7 @@ def get_mod_info(file_path, errors_return_empty=False, empty_return=0):
     try:
         file_stat = os.stat(file_path)
         assert not stat.S_ISDIR(file_stat.st_mode)
-        # First, we multiply the mtime by 1000 to shift any millisecond values
-        # left of the .
-        # Then we make the somewhat daring assumption that 64 bits should be
-        # enough for any translation file size. To make space for the translation
-        # file size bits, we shift the mtime left by 64 bits.
-        return (long(file_stat.st_mtime * 1000) << 64) + file_stat.st_size
+        return (file_stat.st_mtime, file_stat.st_size)
     except:
         if errors_return_empty:
             return empty_return
@@ -132,6 +127,19 @@ def suggestioninfo(filename, **kwargs):
         else:
             suggestion_mod_info = get_mod_info(suggestion_filename, **kwargs)
     return suggestion_filename, suggestion_mod_info
+
+def parse_mod_info(string):
+    try:
+        tokens = string.strip("()").split(",")
+        if os.stat_float_times():
+            return (float(tokens[0]), long(tokens[1]))
+        else:
+            return (int(tokens[0]), long(tokens[1]))
+    except:
+        return (-1, -1)
+
+def dump_mod_info(mod_info):
+    return str(mod_info)
 
 class StatsCache(object):
     """An object instantiated as a singleton for each statsfile that provides 
@@ -218,7 +226,7 @@ class StatsCache(object):
         
         self.con.commit()
 
-    def _getfileid(self, filename, opt_mod_info=-1, check_mod_info=True, store=None, errors_return_empty=False):
+    def _getfileid(self, filename, opt_mod_info=(-1, -1), check_mod_info=True, store=None, errors_return_empty=False):
         """Attempt to find the fileid of the given file, if it hasn't been
         updated since the last record update.
 
@@ -242,14 +250,14 @@ class StatsCache(object):
                     # Update the mod_info of the file
                     self.cur.execute("""UPDATE files 
                             SET mod_info=? 
-                            WHERE fileid=?;""", (str(mod_info), fileid))
+                            WHERE fileid=?;""", (dump_mod_info(mod_info), fileid))
                     return fileid
-                if long(filerow[1]) == mod_info:
+                if parse_mod_info(filerow[1]) == mod_info:
                     return fileid
             # We can only ignore the mod_info if the row already exists:
             assert check_mod_info        
             store = store or factory.getobject(filename)
-            return self.cachestore(store)
+            return self._cachestore(store, mod_info)
         except (base.ParseError, IOError, OSError, AssertionError):
             if errors_return_empty:
                 return -1
@@ -290,16 +298,16 @@ class StatsCache(object):
             return state_strings[statefordb(units[0])]
         return ""
 
-    def cachestore(self, store):
+    def _cachestore(self, store, mod_info):
         """Calculates and caches the statistics of the given store 
         unconditionally."""
         realpath = os.path.realpath(store.filename)
-        mod_info = get_mod_info(realpath)
+        os.utime(realpath, (mod_info[0], mod_info[0]))
         self.cur.execute("""DELETE FROM files WHERE
             path=?;""", (realpath,))
         self.cur.execute("""INSERT INTO files 
             (fileid, path, mod_info, toolkitbuild) values (NULL, ?, ?, ?);""", 
-            (realpath, str(mod_info), toolkitversion.build))
+            (realpath, dump_mod_info(mod_info), toolkitversion.build))
         fileid = self.cur.lastrowid
         self.cur.execute("""DELETE FROM units WHERE
             fileid=?""", (fileid,))
