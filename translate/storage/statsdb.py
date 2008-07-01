@@ -250,7 +250,7 @@ class StatsCache(object):
             assert check_mod_info        
             store = store or factory.getobject(filename)
             return self.cachestore(store)
-        except (base.ParseError, IOError, OSError):
+        except (base.ParseError, IOError, OSError, AssertionError):
             if errors_return_empty:
                 return -1
             else:
