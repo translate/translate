@@ -39,17 +39,23 @@ class git(GenericRevisionControlSystem):
         """
         import os
         return os.path.join(self.root_dir, self.RCS_METADIR)
+
+    def _get_git_command(self, args):
+        """prepends generic git arguments to conrete ones
+        """
+        command = ["git", "--git-dir", self._get_git_dir(), "--work-tree", self.root_dir]
+        command.extend(args)
+        return command
     
     def update(self, revision=None):
         """Does a clean update of the given path"""
         # git checkout
-        command = ["git", "--git-dir", self._get_git_dir(),
-                "checkout", self.location_rel]
+        command = self._get_git_command(["checkout", self.location_rel])
         exitcode, output_checkout, error = run_command(command)
         if exitcode != 0:
             raise IOError("[GIT] checkout failed (%s): %s" % (command, error))
         # pull changes
-        command = ["git", "--git-dir", self._get_git_dir(), "pull"]
+        command = self._get_git_command(["pull"])
         exitcode, output_pull, error = run_command(command)
         if exitcode != 0:
             raise IOError("[GIT] pull failed (%s): %s" % (command, error))
@@ -58,22 +64,25 @@ class git(GenericRevisionControlSystem):
     def commit(self, message=None):
         """Commits the file and supplies the given commit message if present"""
         # add the file
-        command = ["git", "--git-dir", self._get_git_dir(),
-                "add", self.location_rel]
+        command = self._get_git_command(["add", self.location_rel])
         exitcode, output_add, error = run_command(command)
         if exitcode != 0:
             raise IOError("[GIT] add of ('%s', '%s') failed: %s" \
                     % (self.root_dir, self.location_rel, error))
         # commit file
-        command = ["git", "--git-dir", self._get_git_dir(), "commit"]
+        command = self._get_git_command(["commit"])
         if message:
             command.extend(["-m", message])
         exitcode, output_commit, error = run_command(command)
         if exitcode != 0:
+            if len(error):
+                msg = error
+            else:
+                msg = output_commit
             raise IOError("[GIT] commit of ('%s', '%s') failed: %s" \
-                    % (self.root_dir, self.location_rel, error))
+                    % (self.root_dir, self.location_rel, msg))
         # push changes
-        command = ["git", "--git-dir", self._get_git_dir(), "push"]
+        command = self._get_git_command(["push"])
         exitcode, output_push, error = run_command(command)
         if exitcode != 0:
             raise IOError("[GIT] push of ('%s', '%s') failed: %s" \
@@ -83,8 +92,7 @@ class git(GenericRevisionControlSystem):
     def getcleanfile(self, revision=None):
         """Get a clean version of a file from the git repository"""
         # run git-show
-        command = ["git", "--git-dir", self._get_git_dir(), "show",
-                "HEAD:%s" % self.location_rel]
+        command = self._get_git_command(["show", "HEAD:%s" % self.location_rel])
         exitcode, output, error = run_command(command)
         if exitcode != 0:
             raise IOError("[GIT] 'show' failed for ('%s', %s): %s" \
