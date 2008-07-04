@@ -51,7 +51,7 @@ def __get_rcs_class(name):
             module = __import__("translate.storage.versioncontrol.%s" % name,
                     globals(), {}, name)
             rcs_class = getattr(module, name)
-        except [ImportError, AttributeError]:
+        except (ImportError, AttributeError):
             return None
         __CACHED_RCS_CLASSES[name] = rcs_class
     return __CACHED_RCS_CLASSES[name]
@@ -241,11 +241,13 @@ class GenericRevisionControlSystem:
 
 def get_versioned_objects_recursive(
         location,
-        versioning_systems=DEFAULT_RCS,
+        versioning_systems=None,
         follow_symlinks=True):
-    """return a list of objcts, each pointing to a file below this directory
+    """return a list of objects, each pointing to a file below this directory
     """
     rcs_objs = []
+    if versioning_systems is None:
+        versioning_systems = DEFAULT_RCS
     
     def scan_directory(arg, dirname, fnames):
         for fname in fnames:
@@ -262,9 +264,11 @@ def get_versioned_objects_recursive(
 
 def get_versioned_object(
         location,
-        versioning_systems=DEFAULT_RCS,
+        versioning_systems=None,
         follow_symlinks=True):
     """return a versioned object for the given file"""
+    if versioning_systems is None:
+        versioning_systems = DEFAULT_RCS
     # go through all RCS and return a versioned object if possible
     for vers_sys in versioning_systems:
         try:
@@ -280,6 +284,17 @@ def get_versioned_object(
                 follow_symlinks = False)
     # if everything fails:
     raise IOError("Could not find version control information: %s" % location)
+
+def get_available_version_control_systems():
+    """ return the class objects of all locally available version control
+    systems
+    """
+    result = []
+    for rcs in DEFAULT_RCS:
+        rcs_class = __get_rcs_class(rcs)
+        if rcs_class:
+            result.append(rcs_class)
+    return result
 
 # stay compatible to the previous version
 def updatefile(filename):
@@ -324,8 +339,14 @@ def hasversioning(item):
 if __name__ == "__main__":
     import sys
     filenames = sys.argv[1:]
-    for filename in filenames:
-        contents = getcleanfile(filename)
-        sys.stdout.write("\n\n******** %s ********\n\n" % filename)
-        sys.stdout.write(contents)
+    if filenames:
+        # try to retrieve the given (local) file from a repository
+        for filename in filenames:
+            contents = getcleanfile(filename)
+            sys.stdout.write("\n\n******** %s ********\n\n" % filename)
+            sys.stdout.write(contents)
+    else:
+        # print the names of locally available version control systems
+        for rcs in get_available_version_control_systems():
+            print rcs
 
