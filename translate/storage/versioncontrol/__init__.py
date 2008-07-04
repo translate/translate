@@ -78,13 +78,17 @@ try:
         exitcode, the output and the error as a tuple.
         """
         # ok - we use "subprocess"
-        proc = subprocess.Popen(args = command,
-                stdout = subprocess.PIPE,
-                stderr = subprocess.PIPE,
-                stdin = subprocess.PIPE)
-        (output, error) = proc.communicate()
-        ret = proc.returncode
-        return ret, output, error
+        try:
+            proc = subprocess.Popen(args = command,
+                    stdout = subprocess.PIPE,
+                    stderr = subprocess.PIPE,
+                    stdin = subprocess.PIPE)
+            (output, error) = proc.communicate()
+            ret = proc.returncode
+            return ret, output, error
+        except OSError, err_msg:
+            # failed to run the program (e.g. the executable was not found)
+            return -1, "", err_msg
 
 except ImportError:
     # fallback for python < 2.4
@@ -93,6 +97,10 @@ except ImportError:
     def run_command(command):
         """Runs a command (array of program name and arguments) and returns the
         exitcode, the output and the error as a tuple.
+
+        There is no need to check for exceptions (like for subprocess above),
+        since popen2 opens a shell that will fail with an error code in case
+        of a missing executable.
         """
         escaped_command = " ".join([__shellescape(arg) for arg in command])
         proc = popen2.Popen3(escaped_command, True)
