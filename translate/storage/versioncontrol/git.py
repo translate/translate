@@ -20,13 +20,20 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 #
-# Requires: git v.1.5.3
+# Requires: git v1.5.3 (or higher)
 # For git v1.5.2 take a look at http://bugs.locamotion.org/show_bug.cgi?id=347
 #
 
 
 from translate.storage.versioncontrol import run_command
 from translate.storage.versioncontrol import GenericRevisionControlSystem
+
+
+def is_available():
+    """check if git is installed"""
+    exitcode, output_revert, error = run_command(["git", "--version"])
+    return exitcode == 0
+
 
 class git(GenericRevisionControlSystem):
     """Class to manage items under revision control of git."""

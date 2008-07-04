@@ -23,6 +23,13 @@
 from translate.storage.versioncontrol import run_command
 from translate.storage.versioncontrol import GenericRevisionControlSystem
 
+
+def is_available():
+    """check if darcs is installed"""
+    exitcode, output_revert, error = run_command(["darcs", "--version"])
+    return exitcode == 0
+
+
 class darcs(GenericRevisionControlSystem):
     """Class to manage items under revision control of darcs."""
 

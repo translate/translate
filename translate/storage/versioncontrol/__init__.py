@@ -25,7 +25,7 @@ To implement support for a new version control system, inherit the class
 GenericRevisionControlSystem. 
 
 TODO:
-    * add authenticatin handling
+    * add authentication handling
     * 'commitdirectory' should do a single commit instead of one for each file
     * maybe implement some caching for 'get_versioned_object' - check profiler
 """
@@ -50,9 +50,17 @@ def __get_rcs_class(name):
         try:
             module = __import__("translate.storage.versioncontrol.%s" % name,
                     globals(), {}, name)
-            rcs_class = getattr(module, name)
+            # the module function "is_available" must return "True"
+            if (hasattr(module, "is_available") and \
+                    callable(module.is_available) and \
+                    module.is_available()):
+                # we found an appropriate module
+                rcs_class = getattr(module, name)
+            else:
+                # the RCS client does not seem to be installed
+                rcs_class = None
         except (ImportError, AttributeError):
-            return None
+            rcs_class = None
         __CACHED_RCS_CLASSES[name] = rcs_class
     return __CACHED_RCS_CLASSES[name]
 
@@ -346,6 +354,10 @@ if __name__ == "__main__":
             sys.stdout.write("\n\n******** %s ********\n\n" % filename)
             sys.stdout.write(contents)
     else:
+        # first: make sure, that the translate toolkit is available
+        # (useful if "python __init__.py" was called without an appropriate
+        # PYTHONPATH)
+        import translate.storage.versioncontrol
         # print the names of locally available version control systems
         for rcs in get_available_version_control_systems():
             print rcs

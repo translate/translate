@@ -23,6 +23,13 @@ import os
 from translate.storage.versioncontrol import run_command
 from translate.storage.versioncontrol import GenericRevisionControlSystem
 
+
+def is_available():
+    """check if cvs is installed"""
+    exitcode, output_revert, error = run_command(["cvs", "--version"])
+    return exitcode == 0
+
+
 class cvs(GenericRevisionControlSystem):
     """Class to manage items under revision control of CVS."""
 
