@@ -62,7 +62,7 @@ class git(GenericRevisionControlSystem):
         return os.path.join(self.root_dir, self.RCS_METADIR)
 
     def _get_git_command(self, args):
-        """prepends generic git arguments to conrete ones
+        """prepends generic git arguments to default ones
         """
         command = ["git", "--git-dir", self._get_git_dir(), "--work-tree", self.root_dir]
         command.extend(args)
