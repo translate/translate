@@ -33,7 +33,7 @@ TODO:
 import re
 import os
 
-DEFAULT_RCS = ["svn", "cvs", "darcs", "git", "bzr", "hg"]
+DEFAULT_RCS = ["svn", "cvs", "darcs", "git", "git_old", "bzr", "hg"]
 """the names of all supported revision control systems
 
 modules of the same name containing a class with the same name are expected

@@ -20,8 +20,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 #
-# Requires: git v1.5.3 (or higher)
-# For git v1.5.2 (or below) use "git_old.py".
+# Requires: git v1.5.2 or below
+# For git v1.5.3 (or higher) use "git.py" instead
+#
+# this module for git support is supposed to be removed as soon as no major
+# distribution contains git before v1.5.3 anymore
 #
 
 
@@ -31,25 +34,25 @@ import re
 
 
 def is_available():
-    """check if git v1.5.3 (or higher) is installed"""
+    """check if git v1.5.2 (or below) is installed"""
     exitcode, output, error = run_command(["git", "--version"])
     if exitcode != 0:
         # no client available
         return False
     # check if the version number is below 1.5.3
-    # synchronize any changes below with "is_available" in "git_old.py"
+    # synchronize any changes below with "is_available" in "git.py"
     if re.search(r'\s0\.', output) or \
             re.search(r'\s1\.[0-4]$', output) or \
             re.search(r'\s1\.[0-4]\.', output) or \
             re.search(r'\s1\.5$', output) or \
             re.search(r'\s1\.5\.[0-2]', output):
         # git seems to be below v1.5.3
-        return False
+        return True
     # git seems to be at v1.5.3 or higher
-    return True
+    return False
 
 
-class git(GenericRevisionControlSystem):
+class git_old(GenericRevisionControlSystem):
     """Class to manage items under revision control of git."""
 
     RCS_METADIR = ".git"
