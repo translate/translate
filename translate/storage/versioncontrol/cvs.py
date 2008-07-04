@@ -26,7 +26,7 @@ from translate.storage.versioncontrol import GenericRevisionControlSystem
 
 def is_available():
     """check if cvs is installed"""
-    exitcode, output_revert, error = run_command(["cvs", "--version"])
+    exitcode, output, error = run_command(["cvs", "--version"])
     return exitcode == 0
 
 

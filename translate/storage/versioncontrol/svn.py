@@ -26,7 +26,7 @@ from translate.storage.versioncontrol import GenericRevisionControlSystem
 
 def is_available():
     """check if svn is installed"""
-    exitcode, output_revert, error = run_command(["svn", "--version"])
+    exitcode, output, error = run_command(["svn", "--version"])
     return exitcode == 0
 
 

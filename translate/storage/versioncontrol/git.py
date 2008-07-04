@@ -31,7 +31,7 @@ from translate.storage.versioncontrol import GenericRevisionControlSystem
 
 def is_available():
     """check if git is installed"""
-    exitcode, output_revert, error = run_command(["git", "--version"])
+    exitcode, output, error = run_command(["git", "--version"])
     return exitcode == 0
 
 

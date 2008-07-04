@@ -27,7 +27,7 @@ from translate.storage.versioncontrol import GenericRevisionControlSystem
 
 def is_available():
     """check if bzr is installed"""
-    exitcode, output_revert, error = run_command(["bzr", "version"])
+    exitcode, output, error = run_command(["bzr", "version"])
     return exitcode == 0
 
 

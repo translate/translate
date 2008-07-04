@@ -26,7 +26,7 @@ from translate.storage.versioncontrol import GenericRevisionControlSystem
 
 def is_available():
     """check if hg is installed"""
-    exitcode, output_revert, error = run_command(["hg", "--version"])
+    exitcode, output, error = run_command(["hg", "--version"])
     return exitcode == 0
 
 

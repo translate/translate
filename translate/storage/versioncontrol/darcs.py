@@ -26,7 +26,7 @@ from translate.storage.versioncontrol import GenericRevisionControlSystem
 
 def is_available():
     """check if darcs is installed"""
-    exitcode, output_revert, error = run_command(["darcs", "--version"])
+    exitcode, output, error = run_command(["darcs", "--version"])
     return exitcode == 0
 
 
