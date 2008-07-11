@@ -88,12 +88,47 @@ class htmlfile(HTMLParser, base.TranslationStore):
         else:
             return htmlsrc
 
+    def phprep(self, text):
+        """Replaces all instances of PHP with placeholder tags, and returns
+        the new text and a dictionary of tags.  The current implementation
+        replaces <?foo?> with <?md5(foo)?>.  The hash => code conversions
+        are stored in self.phpdict for later use in restoring the real PHP.
+
+        The purpose of this is to remove all potential "tag-like" code from
+        inside PHP.  The hash looks nothing like an HTML tag, but the following
+        PHP:
+          $a < $b ? $c : ($d > $e ? $f : $g)
+        looks like it contains an HTML tag:
+          < $b ? $c : ($d >
+        to nearly any regex.  Hence, we replace all contents of PHP with simple
+        strings to help our regexes out.
+
+        """
+        
+        import md5 
+       
+        self.phpdict = {}
+        result = re.findall('(?s)<\?(.*?)\?>', text)
+        for cmd in result:
+            h = md5.new(cmd).hexdigest()
+            self.phpdict[h] = cmd
+            text = text.replace(cmd,h)
+        return text
+    
+    def reintrophp(self, text):
+        """Replaces the PHP placeholders in text with the real code"""
+        for hash, code in self.phpdict.items():
+            text = text.replace(hash, code) 
+        return text
+
     def parse(self, htmlsrc):
         htmlsrc = self.do_encoding(htmlsrc)
+        htmlsrc = self.phprep(htmlsrc) #Clear out the PHP before parsing
         self.feed(htmlsrc)
 
     def addhtmlblock(self, text):
         text = self.strip_html(text)
+        text = self.reintrophp(text) #Before adding anything, restore PHP
         if self.has_translatable_content(text):
             self.currentblocknum += 1
             unit = self.addsourceunit(text)
@@ -110,7 +145,31 @@ class htmlfile(HTMLParser, base.TranslationStore):
         """
         text = text.strip()
 
-        pattern = '(?s)^<[^>]*>(.*)</.*>$'
+        # If all that is left is PHP, return ""
+        result = re.findall('(?s)^<\?.*?\?>$', text)
+        if len(result) == 1:
+            return "" 
+
+        # These two patterns are the same; the first one is more concise...
+        #pattern = '(?s)^<[^?>](?:(?:[^>]|(?:<\?.*?\?>))*[^?>])?>(.*)</.*[^?]>$'
+        pattern = re.compile(r'''
+        (?s)^       # We allow newlines, and match start of line
+        <[^?>]      # Match start of tag and the first character (not ? or >)
+        (?:
+          (?:
+            [^>]    # Anything that's not a > is valid tag material
+              |     
+            (?:<\?.*?\?>) # Matches <? foo ?> lazily; PHP is valid
+          )*        # Repeat over valid tag material 
+          [^?>]     # If we have > 1 char, the last char can't be ? or >
+        )?          # The repeated chars are optional, so that <a>, <p> work 
+        >           # Match ending > of opening tag
+
+        (.*)        # Match actual contents of tag
+
+        </.*[^?]>   # Match ending tag; can't end with ?> and must be >=1 char 
+        $           # Match end of line
+        ''', re.VERBOSE)
         result = re.findall(pattern, text)
         if len(result) == 1:
             text = self.strip_html(result[0])
@@ -128,8 +187,10 @@ class htmlfile(HTMLParser, base.TranslationStore):
         if text == '&nbsp;':
             return False
 
-        pattern = '<[^>]*>'
+        pattern = '<\?.*?\?>' # Lazily strip all PHP
         result = re.sub(pattern, '', text).strip()
+        pattern = '<[^>]*>' #Strip all HTML tags
+        result = re.sub(pattern, '', result).strip()
         if result:
             return True
         else:
@@ -191,6 +252,9 @@ class htmlfile(HTMLParser, base.TranslationStore):
     def handle_comment(self, data):
         # we don't do anything with comments
         pass
+    
+    def handle_pi(self, data):
+        self.handle_data("<?%s>" % data)
 
 class POHTMLParser(htmlfile):
     pass

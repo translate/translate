@@ -49,6 +49,13 @@ class TestHTML2PO:
         pofile = self.html2po(markup)
         self.countunits(pofile, 0)
 
+    def check_phpsnippet(self, php):
+        """Given a snippet of php, put it into an HTML shell and see
+        if the results are as expected"""
+        self.check_single('<html><head></head><body><p><a href="'+php+'/site.html">Body text</a></p></body></html>', "Body text")
+        self.check_single('<html><head></head><body><p>More things in <a href="'+php+'/site.html">Body text</a></p></body></html>', 'More things in <a href="'+php+'/site.html">Body text</a>')
+        self.check_null('<html><head></head><body><p>'+php+'</p></body></html>')
+
     def test_htmllang(self):
         """test to ensure that we no longer use the lang attribure"""
         markup = '''<html lang="en"><head><title>My title</title></head><body></body></html>'''
@@ -160,7 +167,7 @@ newlines.</p></body></html>
 
     def test_tag_table_summary(self):
         """Test that we can extract the summary attribute."""
-        self.check_single( '''<html><head></head><body><table summary="Table summary"></table></body></html>''', "Table summary")
+        self.check_single('''<html><head></head><body><table summary="Table summary"></table></body></html>''', "Table summary")
 
     def test_table_simple(self):
         """Test that we can fully extract a simple table."""
@@ -359,6 +366,48 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
         assert snippet in htmlresult
         snippet = '<td width="96%"><a href="index.html">Tuisblad</a></td>'
         assert snippet in htmlresult
+
+    def test_php(self):
+        """Test that PHP snippets don't interfere"""
+
+        # A simple string 
+        self.check_phpsnippet('''<?=$phpvariable?>''')
+        
+        # Contains HTML tag charcters (< and >)
+        self.check_phpsnippet('''<?=($a < $b ? $foo : ($b > c ? $bar : $cat))?>''')
+        
+        # Make sure basically any symbol can be handled
+        self.check_phpsnippet(''' <? asdfghjkl qwertyuiop 1234567890!@#$%^&*()-=_+[]\{}|;':",./<>? ?> ''')
+
+    def test_multiple_php(self):
+        """Test multiple PHP snippets in a string to make sure they get restored properly"""
+        php1 = '''<?=$phpvariable?>''' 
+        php2 = '''<?=($a < $b ? $foo : ($b > c ? $bar : $cat))?>'''
+        php3 = '''<? asdfghjklqwertyuiop1234567890!@#$%^&*()-=_+[]\{}|;':",./<>? ?>'''
+
+        # Put 3 different strings into an html string
+        innertext = '<a href="'+php1+'/site.html">Body text</a> and some '+php2+' more text '+php2+php3
+        htmlsource = '<html><head></head><body><p>'+innertext+'</p></body></html>'
+        self.check_single(htmlsource, innertext)
+
+    def test_php_multiline(self):
+
+        # A multi-line php string to test
+        php1 = '''<? abc
+def
+ghi ?>'''
+        
+        # Scatter the php strings throughout the file, and show what the translation should be
+        innertext = '<a href="'+php1+'/site.html">Body text</a> and some '+php1+' more text '+php1+php1
+        innertrans = '<a href="'+php1+'/site.html">Texte de corps</a> et encore de '+php1+' plus de texte '+php1+php1
+    
+        htmlsource = '<html><head></head><body><p>'+innertext+'</p></body></html>' # Current html file 
+        transsource = '<html><head></head><body><p>'+innertrans+'</p></body></html>' # Expected translation
+         
+        pofile = self.html2po(htmlsource)
+        pofile.units[0].target = innertrans # Register the translation in the PO file
+        htmlresult = self.po2html(pofile, htmlsource)
+        assert htmlresult == transsource
 
 class TestHTML2POCommand(test_convert.TestConvertCommand, TestHTML2PO):
     """Tests running actual html2po commands on files"""
