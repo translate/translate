@@ -101,6 +101,8 @@ class mounit(base.TranslationUnit):
 class mofile(base.TranslationStore):
     """A class representing a .mo file."""
     UnitClass = mounit
+    Mimetypes  = ["application/x-mo"]
+    Extensions = ["mo"]
     def __init__(self, inputfile=None, unitclass=mounit):
         self.UnitClass = unitclass
         base.TranslationStore.__init__(self, unitclass=unitclass)

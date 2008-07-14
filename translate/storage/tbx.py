@@ -47,6 +47,8 @@ Provisional work is done to make several languages possible."""
 class tbxfile(lisa.LISAfile):
     """Class representing a TBX file store."""
     UnitClass = tbxunit
+    Mimetypes  = ["application/x-tbx"]
+    Extensions = ["tbx"]
     rootNode = "martif"
     bodyNode = "body"
     XMLskeleton = '''<?xml version="1.0"?>

@@ -312,6 +312,8 @@ class TranslationStore(object):
     """Base class for stores for multiple translation units of type UnitClass."""
 
     UnitClass = TranslationUnit
+    Mimetypes = None
+    Extensions = None
 
     def __init__(self, unitclass=None):
         """Constructs a blank TranslationStore."""

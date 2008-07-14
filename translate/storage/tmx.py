@@ -110,6 +110,8 @@ class tmxunit(lisa.LISAunit):
 class tmxfile(lisa.LISAfile):
     """Class representing a TMX file store."""
     UnitClass = tmxunit
+    Mimetypes  = ["application/x-tmx"]
+    Extensions = ["tmx"]
     rootNode = "tmx"
     bodyNode = "body"
     XMLskeleton = '''<?xml version="1.0" encoding="utf-8"?>

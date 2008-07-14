@@ -62,6 +62,8 @@ class qmunit(base.TranslationUnit):
 class qmfile(base.TranslationStore):
     """A class representing a .qm file."""
     UnitClass = qmunit
+    Mimetypes  = ["application/x-qm"]
+    Extensions = ["qm"]
     def __init__(self, inputfile=None, unitclass=qmunit):
         self.UnitClass = unitclass
         base.TranslationStore.__init__(self, unitclass=unitclass)
