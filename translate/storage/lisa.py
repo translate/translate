@@ -65,6 +65,10 @@ def _getPhMatches(text):
 
 XML_NS = 'http://www.w3.org/XML/1998/namespace'
 
+def getXMLlang(node):
+    """Sets the xml:lang attribute on node"""
+    return node.get("{%s}lang" % XML_NS)
+
 def setXMLlang(node, lang):
     """Sets the xml:lang attribute on node"""
     node.set("{%s}lang" % XML_NS, lang)
@@ -216,7 +220,7 @@ Provisional work is done to make several languages possible."""
         languageNodes = self.getlanguageNodes()
         if lang:
             for set in languageNodes:
-                if set.get("{%s}lang" % XML_NS) == lang:
+                if getXMLlang(set) == lang:
                     return set
         else:#have to use index
             if index >= len(languageNodes):
