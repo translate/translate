@@ -158,6 +158,20 @@ def unquotefrompo(postr, joinwithlinebreak=False):
 def encodingToUse(encoding):
     return pypo.encodingToUse(encoding)
 
+def get_libgettextpo_version():
+    """Returns the libgettextpo version
+
+    @return: a three-value tuple containing the libgettextpo version in the
+    following format:
+        (major version, minor version, subminor version)
+    """
+    libversion = c_long.in_dll(gpo, 'libgettextpo_version')
+    major = libversion.value >> 16
+    minor = libversion.value >> 8
+    subminor = libversion.value - (major << 16) - (minor << 8)
+    return major, minor, subminor
+
+
 class pounit(pocommon.pounit):
     def __init__(self, source=None, encoding='utf-8', gpo_message=None):
         self._encoding = encoding
@@ -309,8 +323,8 @@ class pounit(pocommon.pounit):
             comments = gpo.po_message_extracted_comments(self._gpo_message)
         else:
             raise ValueError("Comment type not valid")
-        # FIXME this fixes a bug in Gettext that returns leading space with comments
-        if comments:
+
+        if comments and get_libgettextpo_version() < (0, 17, 0):
             comments = "\n".join([line.strip() for line in comments.split("\n")])
         # Let's drop the last newline
         return comments[:-1].decode(self._encoding)
@@ -338,11 +352,12 @@ class pounit(pocommon.pounit):
                 newnotes = text + '\n' + oldnotes
         else:
             newnotes = "\n".join([line.rstrip() for line in text.split("\n")])
-        # FIXME; workaround the need for leading spaces when adding comments to PO files in libgettexpo
+
         if newnotes:
             newlines = []
+            needs_space = get_libgettextpo_version() < (0, 17, 0)
             for line in newnotes.split("\n"):
-                if line:
+                if line and needs_space:
                     newlines.append(" " + line)
                 else:
                     newlines.append(line)
