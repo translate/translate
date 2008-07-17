@@ -308,10 +308,12 @@ class LISAfile(base.TranslationStore):
         self.addunit(newunit)
         return newunit
 
-    def addunit(self, unit):
+    def addunit(self, unit, new=True):
         unit.namespace = self.namespace
-        self.body.append(unit.xmlelement)
+        unit._store = self
         self.units.append(unit)
+        if new:
+            self.body.append(unit.xmlelement)
 
     def __str__(self):
         """Converts to a string containing the file's XML"""
@@ -334,6 +336,5 @@ class LISAfile(base.TranslationStore):
             return
         for entry in termEntries:
             term = self.UnitClass.createfromxmlElement(entry)
-            term.namespace = self.namespace
-            self.units.append(term)
+            self.addunit(term, new=False)
 
