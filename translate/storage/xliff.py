@@ -309,7 +309,8 @@ class xliffunit(lisa.LISAunit):
 class xlifffile(lisa.LISAfile):
     """Class representing a XLIFF file store."""
     UnitClass = xliffunit
-    Mimetypes  = ["application/x-xliff"]
+    Name = "XLIFF file"
+    Mimetypes  = ["application/x-xliff", "application/x-xliff+xml"]
     Extensions = ["xlf", "xliff"]
     rootNode = "xliff"
     bodyNode = "body"

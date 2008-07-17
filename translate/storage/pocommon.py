@@ -62,7 +62,8 @@ class pounit(base.TranslationUnit):
             self.addnote(newnotes, origin="translator")
 
 class pofile(base.TranslationStore, poheader.poheader):
-    Mimetypes  = ["text/x-po", "text/x-pot"]
+    Name = "Gettext PO file"
+    Mimetypes  = ["text/x-gettext-catalog", "text/x-po", "text/x-pot"]
     Extensions = ["po", "pot"]
 
     def makeheader(self, **kwargs):

@@ -184,3 +184,21 @@ def getobject(storefile, ignore=None):
         store = storeclass()
     return store
 
+def supported_files():
+    """Returns data about all supported files
+
+    @return: list of type that include (name, extensions, mimetypes)
+    @rtype: list
+    """
+
+    supported = []
+    processed = []
+    for supported_class in classes.itervalues():
+        name = getattr(supported_class, "Name", None)
+        if name is None or name in processed:
+            continue
+        processed.append(name)
+        extensions = getattr(supported_class, "Extensions", None)
+        mimetypes = getattr(supported_class, "Mimetypes", None)
+        supported.extend([(name, extensions, mimetypes)])
+    return supported
