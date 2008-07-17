@@ -134,10 +134,10 @@ Provisional work is done to make several languages possible."""
         """
         return namespaced(self.namespace, name)
 
-    def setsource(self, source, sourcelang='en'):
-        source = data.forceunicode(source)
+    def setsource(self, text, sourcelang='en'):
+        text = data.forceunicode(text)
         languageNodes = self.getlanguageNodes()
-        sourcelanguageNode = self.createlanguageNode(sourcelang, source, "source")
+        sourcelanguageNode = self.createlanguageNode(sourcelang, text, "source")
         if len(languageNodes) > 0:
             self.xmlelement[0] = sourcelanguageNode
         else:
