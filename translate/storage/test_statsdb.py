@@ -136,7 +136,7 @@ class TestStatsDb:
 
     def make_file_and_return_id(self, cache, filename):
         cache.cur.execute("""
-            SELECT fileid, mod_info FROM files
+            SELECT fileid, st_mtime, st_size FROM files
             WHERE path=?;""", (os.path.realpath(filename),))
         return cache.cur.fetchone()
         
