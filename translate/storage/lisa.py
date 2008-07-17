@@ -302,8 +302,7 @@ class LISAfile(base.TranslationStore):
 
     def addunit(self, unit, new=True):
         unit.namespace = self.namespace
-        unit._store = self
-        self.units.append(unit)
+        super(LISAfile, self).addunit(unit)
         if new:
             self.body.append(unit.xmlelement)
 
