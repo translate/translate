@@ -49,6 +49,40 @@ class podebug:
     def rewrite_blank(self, string):
         return ""
 
+    def rewrite_chef(self, string):
+        """Rewrite using Mock Swedish as made famous by Monty Python"""
+        # From Dive into Python which itself got it elsewhere http://www.renderx.com/demos/examples/diveintopython.pdf
+        subs = (
+               (r'a([nu])', r'u\1'),
+               (r'A([nu])', r'U\1'),
+               (r'a\B', r'e'),
+               (r'A\B', r'E'),
+               (r'en\b', r'ee'),
+               (r'\Bew', r'oo'),
+               (r'\Be\b', r'e-a'),
+               (r'\be', r'i'),
+               (r'\bE', r'I'),
+               (r'\Bf', r'ff'),
+               (r'\Bir', r'ur'),
+               (r'(\w*?)i(\w*?)$', r'\1ee\2'),
+               (r'\bow', r'oo'),
+               (r'\bo', r'oo'),
+               (r'\bO', r'Oo'),
+               (r'the', r'zee'),
+               (r'The', r'Zee'),
+               (r'th\b', r't'),
+               (r'\Btion', r'shun'),
+               (r'\Bu', r'oo'),
+               (r'\BU', r'Oo'),
+               (r'v', r'f'),
+               (r'V', r'F'),
+               (r'w', r'w'),
+               (r'W', r'W'),
+               (r'([a-z])[.]', r'\1. Bork Bork Bork!'))
+        for a, b in subs:
+            string = re.sub(a, b, string)
+        return string
+
     def ignore_openoffice(self, locations):
         for location in locations:
             if location.startswith("Common.xcu#..Common.View.Localisation"):
@@ -162,7 +196,7 @@ def main():
     parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
     # TODO: add documentation on format strings...
     parser.add_option("-f", "--format", dest="format", default="[%s] ", help="specify format string")
-    rewritestylelist = ["xxx", "en", "blank"]
+    rewritestylelist = ["xxx", "en", "blank", "chef"]
     parser.add_option("", "--rewrite", dest="rewritestyle", 
         type="choice", choices=rewritestylelist, metavar="STYLE", help="the translation rewrite style: %s" % ", ".join(rewritestylelist))
     ignoreoptionlist = ["openoffice", "mozilla"]
