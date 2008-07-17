@@ -94,6 +94,18 @@ def emptystats():
         stats[state + "targetwords"] = 0
     return stats
 
+def emptyfiletotals():
+    return {}
+
+def emptyfilechecks():
+    return {}
+
+def emptyfilestats():
+    return {"total": [], "translated": [], "fuzzy": [], "untranslated": []}
+
+def emptyunitstats():
+    return {"sourcewordcount": [], "targetwordcount": []}
+
 # We allow the caller to specify which value to return when errors_return_empty
 # is True. We do this, since Poolte wants None to be returned when it calls
 # get_mod_info directly, whereas we want an integer to be returned for 
@@ -409,7 +421,7 @@ class StatsCache(object):
                 configid = self.cur.lastrowid
         except ValueError, e:
             print >> sys.stderr, str(e)
-            return {}
+            return emptyfilechecks()
 
         def geterrors():
             self.cur.execute("""SELECT 
@@ -443,7 +455,7 @@ class StatsCache(object):
     def filestats(self, filename, checker, store=None):
         """Return a dictionary of property names mapping sets of unit 
         indices with those properties."""
-        stats = {"total": [], "translated": [], "fuzzy": [], "untranslated": []}
+        stats = emptyfilestats()
 
         stats.update(self.filechecks(filename, checker, store))
         fileid = self._getfileid(filename, store=store)
@@ -471,7 +483,7 @@ class StatsCache(object):
         Please note that this is different from filestats, since filestats
         supplies sets of unit indices with a given property, whereas this
         method supplies arrays which map unit indices to given values."""
-        stats = {"sourcewordcount": [], "targetwordcount": []}
+        stats = emptyunitstats()
         
         #stats.update(self.unitchecks(filename, lang, store))
         fileid = self._getfileid(filename, store=store)
