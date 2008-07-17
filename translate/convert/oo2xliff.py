@@ -105,6 +105,8 @@ class oo2xliff:
     def convertstore(self, theoofile, duplicatestyle="msgctxt"):
         """converts an entire oo file to a base class format (.po or XLIFF)"""
         thetargetfile = xliff.xlifffile()
+        thetargetfile.setsourcelanguage(self.sourcelanguage)
+        thetargetfile.settargetlanguage(self.targetlanguage)
         # create a header for the file
         bug_url = 'http://qa.openoffice.org/issues/enter_bug.cgi' + ('''?subcomponent=ui&comment=&short_desc=Localization issue in file: %(filename)s&component=l10n&form_name=enter_issue''' % {"filename": theoofile.filename}).replace(" ", "%20").replace(":", "%3A")
         # go through the oo and convert each element
