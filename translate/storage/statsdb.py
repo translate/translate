@@ -110,13 +110,15 @@ def get_mod_info(file_path, errors_return_empty=False, empty_return=0):
             return empty_return
         else:
             raise
+          
+NULL_MOD_INFO = (-1, -1)
 
 def suggestioninfo(filename, **kwargs):
     """Provides the filename of the associated file containing suggestions and 
     its mod_info, if it exists."""
     root, ext = os.path.splitext(filename)
     suggestion_filename = None
-    suggestion_mod_info = -1
+    suggestion_mod_info = NULL_MOD_INFO
     if ext == os.path.extsep + "po":
         # For a PO file there might be an associated file with suggested
         # translations. If either file changed, we want to regenerate the
@@ -127,19 +129,6 @@ def suggestioninfo(filename, **kwargs):
         else:
             suggestion_mod_info = get_mod_info(suggestion_filename, **kwargs)
     return suggestion_filename, suggestion_mod_info
-
-def parse_mod_info(string):
-    try:
-        tokens = string.strip("()").split(",")
-        if os.stat_float_times():
-            return (float(tokens[0]), long(tokens[1]))
-        else:
-            return (int(tokens[0]), long(tokens[1]))
-    except:
-        return (-1, -1)
-
-def dump_mod_info(mod_info):
-    return str(mod_info)
 
 class StatsCache(object):
     """An object instantiated as a singleton for each statsfile that provides 
@@ -181,13 +170,9 @@ class StatsCache(object):
         self.cur.execute("""CREATE TABLE IF NOT EXISTS files(
             fileid INTEGER PRIMARY KEY AUTOINCREMENT,
             path VARCHAR NOT NULL UNIQUE,
-            mod_info CHAR(50) NOT NULL,
+            st_mtime INTEGER NOT NULL,
+            st_size INTEGER NOT NULL,
             toolkitbuild INTEGER NOT NULL);""")
-        # mod_info should never be larger than about 138 bits as computed by
-        # get_mod_info. This is because st_mtime is at most 64 bits, multiplying
-        # by 1000 adds at most 10 bits and file_stat.st_size is at most 64 bits.
-        # Therefore, we should get away with 50 decimal digits (actually, we need
-        # math.log((1 << 139) - 1, 10) = 41.8 characters, but whatever).
 
         self.cur.execute("""CREATE UNIQUE INDEX IF NOT EXISTS filepathindex
             ON files (path);""")
@@ -226,7 +211,7 @@ class StatsCache(object):
         
         self.con.commit()
 
-    def _getfileid(self, filename, opt_mod_info=(-1, -1), check_mod_info=True, store=None, errors_return_empty=False):
+    def _getfileid(self, filename, opt_mod_info=NULL_MOD_INFO, check_mod_info=True, store=None, errors_return_empty=False):
         """Attempt to find the fileid of the given file, if it hasn't been
         updated since the last record update.
 
@@ -239,7 +224,7 @@ class StatsCache(object):
         @rtype: String or None
         """    
         realpath = os.path.realpath(filename)
-        self.cur.execute("""SELECT fileid, mod_info FROM files
+        self.cur.execute("""SELECT fileid, st_mtime, st_size FROM files
                 WHERE path=?;""", (realpath,))
         filerow = self.cur.fetchone()
         try:
@@ -249,10 +234,10 @@ class StatsCache(object):
                 if not check_mod_info:
                     # Update the mod_info of the file
                     self.cur.execute("""UPDATE files 
-                            SET mod_info=? 
-                            WHERE fileid=?;""", (dump_mod_info(mod_info), fileid))
+                            SET st_mtime=?, st_size=? 
+                            WHERE fileid=?;""", (mod_info[0], mod_info[1], fileid))
                     return fileid
-                if parse_mod_info(filerow[1]) == mod_info:
+                if (filerow[1], filerow[2]) == mod_info:
                     return fileid
             # We can only ignore the mod_info if the row already exists:
             assert check_mod_info        
@@ -306,8 +291,8 @@ class StatsCache(object):
         self.cur.execute("""DELETE FROM files WHERE
             path=?;""", (realpath,))
         self.cur.execute("""INSERT INTO files 
-            (fileid, path, mod_info, toolkitbuild) values (NULL, ?, ?, ?);""", 
-            (realpath, dump_mod_info(mod_info), toolkitversion.build))
+            (fileid, path, st_mtime, st_size, toolkitbuild) values (NULL, ?, ?, ?, ?);""", 
+            (realpath, mod_info[0], mod_info[1], toolkitversion.build))
         fileid = self.cur.lastrowid
         self.cur.execute("""DELETE FROM units WHERE
             fileid=?""", (fileid,))
