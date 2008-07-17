@@ -111,6 +111,8 @@ class GrepFilter:
     def filterfile(self, thefile):
         """runs filters on a translation file object"""
         thenewfile = type(thefile)()
+        thenewfile.setsourcelanguage(transfile.sourcelanguage)
+        thenewfile.settargetlanguage(transfile.targetlanguage)
         for unit in thefile.units:
             if self.filterunit(unit):
                 thenewfile.addunit(unit)
