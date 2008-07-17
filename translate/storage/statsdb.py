@@ -100,16 +100,10 @@ def emptystats():
 # uses of get_mod_info within this module.
 # TODO: Get rid of empty_return when Pootle code is improved to not require
 #       this.
-def get_mod_info(file_path, errors_return_empty=False, empty_return=0):
-    try:
-        file_stat = os.stat(file_path)
-        assert not stat.S_ISDIR(file_stat.st_mode)
-        return (file_stat.st_mtime, file_stat.st_size)
-    except:
-        if errors_return_empty:
-            return empty_return
-        else:
-            raise
+def get_mod_info(file_path):
+    file_stat = os.stat(file_path)
+    assert not stat.S_ISDIR(file_stat.st_mode)
+    return file_stat.st_mtime, file_stat.st_size
 
 def suggestion_extension():
     return os.path.extsep + 'pending'
@@ -301,13 +295,13 @@ class StatsCache(object):
         totals = emptystats()
         return self.cur.fetchall()
 
-    def filetotals(self, filename, **kwargs):
+    def filetotals(self, filename):
         """Retrieves the statistics for the given file if possible, otherwise 
         delegates to cachestore()."""
         fileid = None
         if not fileid:
             try:
-                fileid = self._getfileid(filename, **kwargs)
+                fileid = self._getfileid(filename)
             except ValueError, e:
                 print >> sys.stderr, str(e)
                 return {}
@@ -401,13 +395,13 @@ class StatsCache(object):
         state.extend(self._cacheunitschecks([unit], fileid, configid, checker, unitindex))
         return state
     
-    def filechecks(self, filename, checker, store=None, **kwargs):
+    def filechecks(self, filename, checker, store=None):
         """Retrieves the error statistics for the given file if possible, 
         otherwise delegates to cachestorechecks()."""
         fileid = None
         configid = self._getstoredcheckerconfig(checker)
         try:
-            fileid = self._getfileid(filename, store=store, **kwargs)
+            fileid = self._getfileid(filename, store=store)
             if not configid:
                 self.cur.execute("""INSERT INTO checkerconfigs
                     (configid, config) values (NULL, ?);""", 
@@ -446,13 +440,13 @@ class StatsCache(object):
 
         return errors
 
-    def filestats(self, filename, checker, store=None, **kwargs):
+    def filestats(self, filename, checker, store=None):
         """Return a dictionary of property names mapping sets of unit 
         indices with those properties."""
         stats = {"total": [], "translated": [], "fuzzy": [], "untranslated": []}
 
-        stats.update(self.filechecks(filename, checker, store, **kwargs))
-        fileid = self._getfileid(filename, store=store, **kwargs)
+        stats.update(self.filechecks(filename, checker, store))
+        fileid = self._getfileid(filename, store=store)
 
         self.cur.execute("""SELECT 
             state,
@@ -467,7 +461,7 @@ class StatsCache(object):
 
         return stats
       
-    def unitstats(self, filename, _lang=None, store=None, **kwargs):
+    def unitstats(self, filename, _lang=None, store=None):
         # For now, lang and store are unused. lang will allow the user to
         # base stats information on the given language. See the commented
         # line containing stats.update below. 
@@ -480,7 +474,7 @@ class StatsCache(object):
         stats = {"sourcewordcount": [], "targetwordcount": []}
         
         #stats.update(self.unitchecks(filename, lang, store))
-        fileid = self._getfileid(filename, store=store, **kwargs)
+        fileid = self._getfileid(filename, store=store)
         
         self.cur.execute("""SELECT
           sourcewords, targetwords
