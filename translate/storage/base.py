@@ -326,6 +326,14 @@ class TranslationStore(object):
             self.UnitClass = unitclass
         super(TranslationStore, self).__init__()
 
+    def setsourcelanguage(self, sourcelanguage):
+        """Sets the source language for this store"""
+        self.sourcelanguage = sourcelanguage
+
+    def settargetlanguage(self, targetlanguage):
+        """Sets the target language for this store"""
+        self.targetlanguage = targetlanguage
+
     def unit_iter(self):
         """Iterator over all the units in this store."""
         for unit in self.units:

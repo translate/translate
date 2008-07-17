@@ -293,14 +293,6 @@ class LISAfile(base.TranslationStore):
         self.namespace = self.document.getroot().nsmap.get(None, None)
         self.body = self.document.find('//%s' % self.namespaced(self.bodyNode))
 
-    def setsourcelanguage(self, sourcelanguage):
-        """Sets the source language for this store"""
-        self.sourcelanguage = sourcelanguage
-
-    def settargetlanguage(self, targetlanguage):
-        """Sets the target language for this store"""
-        self.targetlanguage = targetlanguage
-
     def addsourceunit(self, source):
         #TODO: miskien moet hierdie eerder addsourcestring of iets genoem word?
         """Adds and returns a new unit with the given string as first entry."""
