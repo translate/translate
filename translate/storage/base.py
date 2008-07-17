@@ -75,6 +75,7 @@ class TranslationUnit(object):
     def __init__(self, source):
         """Constructs a TranslationUnit containing the given source string."""
 
+        self._store = None
         self.source = source
         self.target = None
         self.notes = ""
@@ -276,6 +277,12 @@ class TranslationUnit(object):
         #TODO: Reconsider
         return False
 
+    def getsourcelanguage(self):
+        return getattr(self._store, "sourcelanguage", "en")
+
+    def gettargetlanguage(self):
+        return getattr(self._store, "targetlanguage", None)
+
     def merge(self, otherunit, overwrite=False, comments=True):
         """Do basic format agnostic merging."""
 
@@ -355,7 +362,7 @@ class TranslationStore(object):
         @param unit: The unit that will be added.
         
         """
-
+        unit._store = self
         self.units.append(unit)
 
     def addsourceunit(self, source):
