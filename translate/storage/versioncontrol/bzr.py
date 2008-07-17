@@ -56,7 +56,7 @@ class bzr(GenericRevisionControlSystem):
     def commit(self, message=None):
         """Commits the file and supplies the given commit message if present"""
         # bzr commit
-        command = ["bzw", "commit"]
+        command = ["bzr", "commit"]
         if message:
             command.extend(["-m", message])
         # the filename is the last argument
