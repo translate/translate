@@ -322,6 +322,8 @@ class TranslationStore(object):
         self.filepath = None
         self.translator = ""
         self.date = ""
+        self.sourcelanguage = None
+        self.targetlanguage = None
         if unitclass:
             self.UnitClass = unitclass
         super(TranslationStore, self).__init__()
