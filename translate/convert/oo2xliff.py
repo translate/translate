@@ -123,7 +123,10 @@ def convertoo(inputfile, outputfile, templates, pot=False, sourcelanguage=None, 
     """reads in stdin using inputstore class, converts using convertorclass, writes to stdout"""
     inputstore = oo.oofile()
     if hasattr(inputfile, "filename"):
-        inputstore.filename = inputfile.filename
+        inputfilename = inputfile.filename
+    else:
+        inputfilename = "(input file name not known)"
+    inputstore.filename = inputfilename
     inputstore.parse(inputfile.read())
     if not sourcelanguage:
         testlangtype = targetlanguage or (inputstore and inputstore.languages[0]) or ""
