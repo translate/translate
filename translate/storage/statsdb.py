@@ -95,7 +95,7 @@ def emptystats():
     return stats
 
 def emptyfiletotals():
-    return {}
+    return {"total": 0}
 
 def emptyfilechecks():
     return {}
