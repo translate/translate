@@ -59,13 +59,17 @@ class hg(GenericRevisionControlSystem):
             raise IOError("[Mercurial] error running '%s': %s" % (command, error))
         return output_revert + output_pull + output_update
 
-    def commit(self, message=None):
+    def commit(self, message=None, author=None):
         """Commits the file and supplies the given commit message if present"""
         if message is None:
             message = ""
         # commit changes
-        command = ["hg", "-R", self.root_dir, "commit", "-m", message,
-                self.location_abs]
+        command = ["hg", "-R", self.root_dir, "commit", "-m", message]
+        # add the 'author' argument, if it was given
+        if author:
+            command.extend(["--user", author])
+        # the location is the last argument
+        command.append(self.location_abs)
         exitcode, output_commit, error = run_command(command)
         if exitcode != 0:
             raise IOError("[Mercurial] Error running '%s': %s" \

@@ -53,12 +53,14 @@ class bzr(GenericRevisionControlSystem):
                     % (self.location_abs, error))
         return output_revert + output_pull
 
-    def commit(self, message=None):
+    def commit(self, message=None, author=None):
         """Commits the file and supplies the given commit message if present"""
         # bzr commit
         command = ["bzr", "commit"]
         if message:
             command.extend(["-m", message])
+        if author:
+            command.extend(["--author", author])
         # the filename is the last argument
         command.append(self.location_abs)
         exitcode, output_commit, error = run_command(command)

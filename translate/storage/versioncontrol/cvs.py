@@ -126,8 +126,11 @@ class cvs(GenericRevisionControlSystem):
         else:
             return output
 
-    def commit(self, message=None):
-        """Commits the file and supplies the given commit message if present"""
+    def commit(self, message=None, author=None):
+        """Commits the file and supplies the given commit message if present
+        
+        the 'author' parameter is not suitable for CVS, thus it is ignored
+        """
         working_dir = os.path.dirname(self.location_abs)
         filename = os.path.basename(self.location_abs)
         original_dir = os.getcwd()

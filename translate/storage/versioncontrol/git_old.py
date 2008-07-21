@@ -114,7 +114,7 @@ class git_old(GenericRevisionControlSystem):
             raise IOError("[GIT] pull failed (%s): %s" % (command, error))
         return output_checkout + output_pull
 
-    def commit(self, message=None):
+    def commit(self, message=None, author=None):
         """Commits the file and supplies the given commit message if present"""
         working_dir = os.path.dirname(self.location_abs)
         original_dir = os.getcwd()
@@ -147,6 +147,8 @@ class git_old(GenericRevisionControlSystem):
         command = self._get_git_command(["commit"])
         if message:
             command.extend(["-m", message])
+        if author:
+            command.extend(["--author", author])
         exitcode, output_commit, error = run_command(command)
         if exitcode != 0:
             # something went wrong - go back to the original directory

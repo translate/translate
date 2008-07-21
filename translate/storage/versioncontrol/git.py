@@ -82,7 +82,7 @@ class git(GenericRevisionControlSystem):
             raise IOError("[GIT] pull failed (%s): %s" % (command, error))
         return output_checkout + output_pull
 
-    def commit(self, message=None):
+    def commit(self, message=None, author=None):
         """Commits the file and supplies the given commit message if present"""
         # add the file
         command = self._get_git_command(["add", self.location_rel])
@@ -94,6 +94,8 @@ class git(GenericRevisionControlSystem):
         command = self._get_git_command(["commit"])
         if message:
             command.extend(["-m", message])
+        if author:
+            command.extend(["--author", author])
         exitcode, output_commit, error = run_command(command)
         if exitcode != 0:
             if len(error):

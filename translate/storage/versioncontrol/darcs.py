@@ -54,13 +54,18 @@ class darcs(GenericRevisionControlSystem):
             raise IOError("[Darcs] error running '%s': %s" % (command, error))
         return output_revert + output_pull
 
-    def commit(self, message=None):
+    def commit(self, message=None, author=None):
         """Commits the file and supplies the given commit message if present"""
         if message is None:
             message = ""
         # set change message
         command = ["darcs", "record", "-a", "--repodir", self.root_dir,
-                "--skip-long-comment", "-m", message, self.location_rel]
+                "--skip-long-comment", "-m", message]
+        # add the 'author' to the list of arguments if it was given
+        if author:
+            command.extend(["--author", author])
+        # the location of the file is the last argument
+        command.append(self.location_rel)
         exitcode, output_record, error = run_command(command)
         if exitcode != 0:
             raise IOError("[Darcs] Error running darcs command '%s': %s" \

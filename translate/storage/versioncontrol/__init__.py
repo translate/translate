@@ -243,7 +243,7 @@ class GenericRevisionControlSystem:
                 + " 'getcleanfile' is missing")
 
 
-    def commit(self, revision=None):
+    def commit(self, revision=None, author=None):
         """Dummy to be overridden by real implementations"""
         raise NotImplementedError("Incomplete RCS interface implementation:" \
                 + " 'commit' is missing")
@@ -319,10 +319,10 @@ def updatefile(filename):
 def getcleanfile(filename, revision=None):
     return get_versioned_object(filename).getcleanfile(revision)
 
-def commitfile(filename, message=None):
-    return get_versioned_object(filename).commit(message)
+def commitfile(filename, message=None, author=None):
+    return get_versioned_object(filename).commit(message=message, author=author)
 
-def commitdirectory(directory, message=None):
+def commitdirectory(directory, message=None, author=None):
     """commit all files below the given directory
 
     files that are just symlinked into the directory are supported, too
@@ -330,7 +330,7 @@ def commitdirectory(directory, message=None):
     # for now all files are committed separately
     # should we combine them into one commit?
     for rcs_obj in get_versioned_objects_recursive(directory):
-        rcs_obj.commit(message)
+        rcs_obj.commit(message=message, author=author)
 
 def updatedirectory(directory):
     """update all files below the given directory

@@ -57,8 +57,11 @@ class svn(GenericRevisionControlSystem):
                     % (command, error))
         return output_revert + output_update
 
-    def commit(self, message=None):
-        """commit the file and return the given message if present"""
+    def commit(self, message=None, author=None):
+        """commit the file and return the given message if present
+
+        the 'author' parameter is not suitable for SVN, thus it is ignored
+        """
         command = ["svn", "-q", "--non-interactive", "commit"]
         if message:
             command.extend(["-m", message])
