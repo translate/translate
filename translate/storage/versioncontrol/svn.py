@@ -60,11 +60,13 @@ class svn(GenericRevisionControlSystem):
     def commit(self, message=None, author=None):
         """commit the file and return the given message if present
 
-        the 'author' parameter is not suitable for SVN, thus it is ignored
+        the 'author' parameter is used for revision property 'translate:author'
         """
         command = ["svn", "-q", "--non-interactive", "commit"]
         if message:
             command.extend(["-m", message])
+        if author:
+            command.extend(["--with-revprop", "translate:author=%s" % author])
         # the location is the last argument
         command.append(self.location_abs)
         exitcode, output, error = run_command(command)
