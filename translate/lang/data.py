@@ -140,7 +140,17 @@ import re
 iso639 = {}
 iso3166 = {}
 
-dialectre = re.compile(r"([^(\s]+)\s*\(([^)]+)\)")
+langcode_re = re.compile("^[a-z]{2,3}([_-][A-Z]{2,3}|)(@[a-zA-Z0-9]+|)$")
+variant_re = re.compile("^[_-][A-Z]{2,3}(@[a-zA-Z0-9]+|)$")
+
+def languagematch(languagecode, otherlanguagecode):
+    """matches a languagecode to another, ignoring regions in the second"""
+    if languagecode is None:
+      return langcode_re.match(otherlanguagecode)
+    return languagecode == otherlanguagecode or \
+      (otherlanguagecode.startswith(languagecode) and variant_re.match(otherlanguagecode[len(languagecode):]))
+
+dialect_name_re = re.compile(r"([^(\s]+)\s*\(([^)]+)\)")
 
 def tr_lang(langcode):
     """Gives a function that can translate a language name, even in the form 
@@ -150,7 +160,7 @@ def tr_lang(langcode):
     countryfunc = gettext_country(langcode)
 
     def handlelanguage(name):
-        match = dialectre.match(name)
+        match = dialect_name_re.match(name)
         if match:
             language, country = match.groups()
             return u"%s (%s)" % (langfunc(language), countryfunc(country))
