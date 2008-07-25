@@ -55,6 +55,7 @@ function usage() {
         echo "Usage `basename $0` [options] <lang|ALL>"
         echo
         echo "Options:"
+        echo "   --mozilla-product        - which product to build (default: $targetapp)"
         echo "   --mozilla-checkout       - update of the Mozilla l10n files and POT files"
         echo "   --update-translations    - update translations"
         echo "   --diff                   - create diffs for migrated translations and l10n/"
@@ -76,6 +77,11 @@ option_debug=""
 while true
 do
         case $1 in
+                --mozilla-product*)
+			tempproduct=$(echo $1 | sed "s/--mozilla-product=\?//")
+                        targetapp=${tempproduct:-$targetapp}
+                        shift
+                        ;;
                 --mozilla-checkout)
                         option_mozilla_checkout="mozilla_checkout"
                         shift
@@ -294,8 +300,8 @@ do
 	
 	if [ "$option_langpack" != "" -a -d $mozilladir ]; then
 		# Build XPI and installer
-		( cd $mozilladir; ./configure --disable-compile-environment --disable-xft --enable-application=browser )
-		( cd $mozilladir/browser/locales; make langpack-$buildlang MOZ_BRANDING_DIRECTORY=other-licenses/branding/firefox LANGPACK_FILE='$(_ABS_DIST)'"/install/Firefox-Languagepack-"'$(MOZ_APP_VERSION)'-$langpackrelease'.$(AB_CD)'".xpi" )
-#		( cd $mozilladir/browser/locales; make repackage-win32-installer-af MOZ_BRANDING_DIRECTORY=other-licenses/branding/firefox WIN32_INSTALLER_IN=../../../Firefox-Setup-2.0.exe WIN32_INSTALLER_OUT='$(_ABS_DIST)'"/install/sea/Firefox-Setup-"'$(MOZ_APP_VERSION).$(AB_CD)'".exe" )
+		( cd $mozilladir; ./configure --disable-compile-environment --disable-xft --enable-application=$targetapp )
+		( cd $mozilladir/$targetapp/locales; make langpack-$buildlang MOZ_BRANDING_DIRECTORY=other-licenses/branding/firefox LANGPACK_FILE='$(_ABS_DIST)'"/install/Firefox-Languagepack-"'$(MOZ_APP_VERSION)'-$langpackrelease'.$(AB_CD)'".xpi" )
+#		( cd $mozilladir/$targetapp/locales; make repackage-win32-installer-af MOZ_BRANDING_DIRECTORY=other-licenses/branding/firefox WIN32_INSTALLER_IN=../../../Firefox-Setup-2.0.exe WIN32_INSTALLER_OUT='$(_ABS_DIST)'"/install/sea/Firefox-Setup-"'$(MOZ_APP_VERSION).$(AB_CD)'".exe" )
 	fi
 done
