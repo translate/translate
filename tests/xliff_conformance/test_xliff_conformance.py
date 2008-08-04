@@ -22,11 +22,16 @@
 import os
 import os.path as path
 from subprocess import call
+from lxml import etree
+
+schema = None
 
 def xmllint(fullpath):
-    return call(['xmllint', '--noout', '--schema', 'xliff-core-1.1.xsd', fullpath]) == 0
+    return schema.validate(etree.parse(fullpath))
 
 def setup_module(module):
+    global schema
+    schema = etree.XMLSchema(etree.parse('xliff-core-1.1.xsd'))
     os.chdir(path.dirname(__file__))
 
 def find_files(base, check_ext):
