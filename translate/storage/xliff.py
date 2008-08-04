@@ -259,7 +259,14 @@ class xliffunit(lisa.LISAunit):
         """Add the context group to the trans-unit with contexts a list with
         (type, text) tuples describing each context."""
         assert contexts
-        group = etree.SubElement(self.xmlelement, self.namespaced("context-group"))
+        group = etree.Element(self.namespaced("context-group"))
+        # context-group tags must appear at the start within <group>
+        # tags. Otherwise it must be appended to the end of a group
+        # of tags.
+        if self.xmlelement.tag == self.namespaced("group"):
+            self.xmlelement.insert(0, group)
+        else:
+            self.xmlelement.append(group)
         group.set("name", name)
         if purpose:
             group.set("purpose", purpose)
