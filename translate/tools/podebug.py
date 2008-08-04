@@ -83,6 +83,16 @@ class podebug:
             string = re.sub(a, b, string)
         return string
 
+    REWRITE_UNICODE_MAP = u"ȦƁƇḒḖƑƓĦĪĴĶĿḾȠǾƤɊŘŞŦŬṼẆẊẎẐ" + u"[\\]^_`" + u"ȧƀƈḓḗƒɠħīĵķŀḿƞǿƥɋřşŧŭṽẇẋẏẑ"
+    def rewrite_unicode(self, string):
+        """Convert to Unicode characters that look like the source string"""
+        def transpose(char):
+            loc = ord(char)-65
+            if loc < 0 or loc > 56:
+                return char
+            return self.REWRITE_UNICODE_MAP[loc]
+        return "".join(map(transpose, string))
+
     def ignore_openoffice(self, locations):
         for location in locations:
             if location.startswith("Common.xcu#..Common.View.Localisation"):
@@ -196,7 +206,7 @@ def main():
     parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
     # TODO: add documentation on format strings...
     parser.add_option("-f", "--format", dest="format", default="[%s] ", help="specify format string")
-    rewritestylelist = ["xxx", "en", "blank", "chef"]
+    rewritestylelist = ["xxx", "en", "blank", "chef", "unicode"]
     parser.add_option("", "--rewrite", dest="rewritestyle", 
         type="choice", choices=rewritestylelist, metavar="STYLE", help="the translation rewrite style: %s" % ", ".join(rewritestylelist))
     ignoreoptionlist = ["openoffice", "mozilla"]
