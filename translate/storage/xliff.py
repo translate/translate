@@ -236,7 +236,7 @@ class xliffunit(lisa.LISAunit):
 
     def marktranslated(self):
         targetnode = self.getlanguageNode(lang=None, index=1)
-        if not targetnode:
+        if targetnode is None:
             return
         if self.isfuzzy() and "state-qualifier" in targetnode.attrib:
             #TODO: consider

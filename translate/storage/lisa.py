@@ -35,7 +35,7 @@ def getText(node):
     """joins together the text from all the text nodes in the nodelist and their children"""
     # node.xpath is very slow, so we only use it if there are children
     # TODO: consider rewriting by iterating over children
-    if node:    # The etree way of testing for children
+    if node is not None:    # The etree way of testing for children
         return node.xpath("string()") # specific to lxml.etree
     else:
         return data.forceunicode(node.text) or u""
