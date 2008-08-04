@@ -40,6 +40,10 @@ class podebug:
         self.ignorefunc = getattr(self, "ignore_%s" % ignoreoption, None)
         self.hash = hash
 
+    def rewritelist(cls):
+        return [rewrite.replace("rewrite_", "") for rewrite in dir(cls) if rewrite.startswith("rewrite_")]
+    rewritelist = classmethod(rewritelist)
+
     def rewrite_xxx(self, string):
         return "xxx%sxxx" % string
 
@@ -92,6 +96,10 @@ class podebug:
                 return char
             return self.REWRITE_UNICODE_MAP[loc]
         return "".join(map(transpose, string))
+
+    def ignorelist(cls):
+        return [rewrite.replace("ignore_", "") for rewrite in dir(cls) if rewrite.startswith("ignore_")]
+    ignorelist = classmethod(ignorelist)
 
     def ignore_openoffice(self, locations):
         for location in locations:
@@ -206,12 +214,10 @@ def main():
     parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
     # TODO: add documentation on format strings...
     parser.add_option("-f", "--format", dest="format", default="[%s] ", help="specify format string")
-    rewritestylelist = ["xxx", "en", "blank", "chef", "unicode"]
     parser.add_option("", "--rewrite", dest="rewritestyle", 
-        type="choice", choices=rewritestylelist, metavar="STYLE", help="the translation rewrite style: %s" % ", ".join(rewritestylelist))
-    ignoreoptionlist = ["openoffice", "mozilla"]
+        type="choice", choices=podebug.rewritelist(), metavar="STYLE", help="the translation rewrite style: %s" % ", ".join(podebug.rewritelist()))
     parser.add_option("", "--ignore", dest="ignoreoption", 
-        type="choice", choices=ignoreoptionlist, metavar="APPLICATION", help="apply tagging ignore rules for the given application: %s" % ", ".join(ignoreoptionlist))
+        type="choice", choices=podebug.ignorelist(), metavar="APPLICATION", help="apply tagging ignore rules for the given application: %s" % ", ".join(podebug.ignorelist()))
     parser.add_option("", "--hash", dest="hash", metavar="LENGTH", type="int", help="add an md5 hash to translations")
     parser.passthrough.append("format")
     parser.passthrough.append("rewritestyle")
