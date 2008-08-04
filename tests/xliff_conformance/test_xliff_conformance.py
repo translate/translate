@@ -42,6 +42,11 @@ def test_open_office_to_xliff():
     for filepath in find_files('fr', '.xlf'):
         assert xmllint(filepath)
 
+def test_po_to_xliff():
+    OUTPUT = 'af-pootle.xlf'
+    assert call(['po2xliff', 'af-pootle.po', OUTPUT]) == 0
+    assert xmllint(OUTPUT)
+
 def teardown_module(module):
     # TODO: Add code to remove the automatically generated files
     pass
