@@ -28,6 +28,11 @@ from translate.misc import quote
 import re
 import sys
 import warnings
+try:
+    from lxml import etree
+    import StringIO
+except ImportError:
+    etree = None
 
 def quotefordtd(source):
     if '"' in source:
@@ -332,6 +337,12 @@ class dtdfile(base.TranslationStore):
     def __str__(self):
         """convert to a string. double check that unicode is handled somehow here"""
         source = self.getoutput()
+        if etree is not None:
+            try:
+                dtd = etree.DTD(StringIO.StringIO(re.sub("#expand", "", source)))
+            except etree.DTDParseError:
+                warnings.warn("DTD file '%s' does not validate" % self.filename)
+                return None
         if isinstance(source, unicode):
             return source.encode(getattr(self, "encoding", "UTF-8"))
         return source
