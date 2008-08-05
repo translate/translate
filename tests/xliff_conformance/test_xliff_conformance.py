@@ -31,8 +31,8 @@ def xmllint(fullpath):
 
 def setup_module(module):
     global schema
-    schema = etree.XMLSchema(etree.parse('xliff-core-1.1.xsd'))
     os.chdir(path.dirname(__file__))
+    schema = etree.XMLSchema(etree.parse('xliff-core-1.1.xsd'))
 
 def find_files(base, check_ext):
     for dirpath, _dirnames, filenames in os.walk(base):
