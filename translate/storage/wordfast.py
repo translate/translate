@@ -112,6 +112,13 @@ def _wf_to_char(string):
         string = string.replace("\\n", "\n").replace("\\t", "\t")
     return string
 
+class WordfastDialect(csv.Dialect):
+    """Describe the properties of a Wordfast generated TAB-delimited file."""
+    delimiter = "\t"
+    lineterminator = "\r\n"
+    quoting = csv.QUOTE_NONE
+csv.register_dialect("wordfast", WordfastDialect)
+
 class WordfastTime(object):
     """Manages time stamps in the Wordfast format of YYYYMMDD~hhmmss"""
     def __init__(self, newtime=None):
@@ -296,9 +303,9 @@ class WordfastTMFile(base.TranslationStore):
             input = input.decode(self._encoding).encode('utf-8')
         except:
             raise ValueError("Wordfast files are either UTF-16 (UCS2) or ISO-8859-1 encoded")
-        for header in csv.DictReader(input.split("\n")[:1], fieldnames=WF_FIELDNAMES_HEADER, dialect="excel-tab"):
+        for header in csv.DictReader(input.split("\n")[:1], fieldnames=WF_FIELDNAMES_HEADER, dialect="wordfast"):
             self.header = WordfastHeader(header)
-        lines = csv.DictReader(input.split("\n")[1:], fieldnames=WF_FIELDNAMES, dialect="excel-tab")
+        lines = csv.DictReader(input.split("\n")[1:], fieldnames=WF_FIELDNAMES, dialect="wordfast")
         for line in lines:
             newunit = WordfastUnit()
             newunit.dict = line
@@ -307,7 +314,7 @@ class WordfastTMFile(base.TranslationStore):
     def __str__(self):
         output = csv.StringIO()
         header_output = csv.StringIO()
-        writer = csv.DictWriter(output, fieldnames=WF_FIELDNAMES, dialect="excel-tab")
+        writer = csv.DictWriter(output, fieldnames=WF_FIELDNAMES, dialect="wordfast")
         unit_count = 0
         for unit in self.units:
             if unit.istranslated():
@@ -317,7 +324,7 @@ class WordfastTMFile(base.TranslationStore):
             return ""
         output.reset()
         self.header.tucount = unit_count
-        outheader = csv.DictWriter(header_output, fieldnames=WF_FIELDNAMES_HEADER, dialect="excel-tab")
+        outheader = csv.DictWriter(header_output, fieldnames=WF_FIELDNAMES_HEADER, dialect="wordfast")
         outheader.writerow(self.header.header)
         header_output.reset()
         decoded = "".join(header_output.readlines() + output.readlines()).decode('utf-8')
