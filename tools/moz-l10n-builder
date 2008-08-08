@@ -62,6 +62,7 @@ function usage() {
         echo "   --potpack                - create packages of the en-US and pot directories with today's timestamp in $potpacks/"
         echo "   --langpack               - build a langpack"
         echo "   --debug                  - add podebug debug markers"
+		echo "   --recover                - build PO files from Mozilla's l10n files"
         exit 1
 }
 
@@ -72,6 +73,7 @@ option_diff=""
 option_potpack=""
 option_langpack=""
 option_debug=""
+option_recovery=""
 
 
 while true
@@ -104,9 +106,13 @@ do
                         ;;
                 --debug)
                         option_debug="option_debug"
-			use_fuzzy="--fuzzy"
+						use_fuzzy="--fuzzy"
                         shift
-                        ;;
+						;;
+				--recovery)
+						option_recovery="option_recovery"
+						shift
+						;;
                 -*|--*)
                         usage
                         ;;
@@ -122,6 +128,19 @@ if [ $# -lt 1 ]; then
 	usage
 fi
 
+case $lang in
+	ALL)
+		if [ ! -f $mozilladir/$targetapp/locales/shipped-locales ]; then
+			echo "Error: Could not find '$mozilladir/$targetapp/locales/shipped-locales'"
+			exit 1
+		fi
+		langs=$(cat $mozilladir/$targetapp/locales/shipped-locales | awk '{ print $1 }')
+		;;
+	ZA)
+		langs="af en_ZA nr nso ss st tn ts ve xh zu"
+		;;
+esac
+
 # Check for programs that we need to use
 for program in moz2po po2moz txt2po po2txt pomigrate2 podebug
 do
@@ -133,7 +152,7 @@ done
 
 if [ "$option_mozilla_checkout" != "" ]; then
 	#(cd $mozilladir; cvs up $tag browser/config client.mk build config )
-        if [ ! -d $mozilladir ]; then
+	if [ ! -d $mozilladir ]; then
 		cvs -d:pserver:anonymous@cvs-mirror.mozilla.org:/cvsroot co $tag $mozilladir/client.mk
 		cvs -d:pserver:anonymous@cvs-mirror.mozilla.org:/cvsroot co $mozilladir/tools/l10n
 	fi
@@ -141,6 +160,22 @@ if [ "$option_mozilla_checkout" != "" ]; then
 	cvs up $tag client.mk
 	make -f client.mk l10n-checkout MOZ_CO_PROJECT=$targetapp
 	)
+
+	if [ ! -d $l10ndir ]; then
+		cvs -d:pserver:anonymous@cvs-mirror.mozilla.org:/l10n co -d $l10ndir -l l10n
+	fi
+	(cd $l10ndir
+	
+	for lang in $langs
+	do
+		if [ -d $lang ]; then
+			cvs up $lang
+		else
+			cvs -d:pserver:anonymous@cvs.mozilla.org:/l10n co $lang
+		fi
+	done
+	)
+
 	# Make latest POT file
 	rm -rf $l10ndir/en-US $l10ndir/pot
 	(cd $mozilladir
@@ -196,10 +231,6 @@ function copydir {
 	done
 }
 
-if [ "$lang" != "ALL" ]; then
-	langs=$lang
-fi
-
 for lang in $langs
 do
 	echo "Language: $lang"
@@ -214,7 +245,7 @@ do
 		
 		# Migrate language from current PO to latest POT
 		if [ -d $podir ]; then
-        		rm -rf $podir-updated/.svn
+			rm -rf $podir-updated/.svn
 			cp -rp $podir/.svn $podir-updated
 			rm -rf $podir-updated/$lang
 			cp -rp $podir/$lang $podir-updated
@@ -301,7 +332,12 @@ do
 	if [ "$option_langpack" != "" -a -d $mozilladir ]; then
 		# Build XPI and installer
 		( cd $mozilladir; ./configure --disable-compile-environment --disable-xft --enable-application=$targetapp )
-		( cd $mozilladir/$targetapp/locales; make langpack-$buildlang MOZ_BRANDING_DIRECTORY=other-licenses/branding/firefox LANGPACK_FILE='$(_ABS_DIST)'"/install/Firefox-Languagepack-"'$(MOZ_APP_VERSION)'-$langpackrelease'.$(AB_CD)'".xpi" )
+		( 
+		cd $mozilladir/$targetapp/locales;
+		make langpack-$buildlang \
+			MOZ_BRANDING_DIRECTORY=other-licenses/branding/firefox \
+			LANGPACK_FILE='$(_ABS_DIST)'"/install/Firefox-Languagepack-"'$(MOZ_APP_VERSION)'-$langpackrelease'.$(AB_CD)'".xpi"
+		)
 #		( cd $mozilladir/$targetapp/locales; make repackage-win32-installer-af MOZ_BRANDING_DIRECTORY=other-licenses/branding/firefox WIN32_INSTALLER_IN=../../../Firefox-Setup-2.0.exe WIN32_INSTALLER_OUT='$(_ABS_DIST)'"/install/sea/Firefox-Setup-"'$(MOZ_APP_VERSION).$(AB_CD)'".exe" )
 	fi
 done
