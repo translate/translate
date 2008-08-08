@@ -117,6 +117,10 @@ class WordfastDialect(csv.Dialect):
     delimiter = "\t"
     lineterminator = "\r\n"
     quoting = csv.QUOTE_NONE
+    # We need to define the following 3 items for csv in Python < 2.5
+    doublequote = False
+    skipinitialspace = False
+    escapechar = ''
 csv.register_dialect("wordfast", WordfastDialect)
 
 class WordfastTime(object):
