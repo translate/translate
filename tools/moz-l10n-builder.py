@@ -45,16 +45,45 @@ mozversion = '3'
 l10ndir = 'l10n'
 mozilladir = "mozilla"
 podir = "po"
+podir_recover = podir + '-recover'
 podir_updated = podir + '-updated'
 potpacks = "potpacks"
 
 USAGE='Usage: %prog [options] <langs...|ALL>'
 
-def run(cmd):
+class CommandError(StandardError):
+    """Exception raised if a command does not return its expected value."""
+
+    def __init__(self, cmd, status):
+        self.cmd = cmd
+        self.status = status
+
+    def __str__(self):
+        return '"%s" return unexptected status %d' % (self.cmd, self.status)
+
+##### Utility Functions #####
+def delfiles(pattern, path, files):
+    """Delete files with names in C{files} matching glob-pattern C{glob} in the
+        directory specified by C{path}.
+
+        This function is meant to be used with C{os.path.walk}
+        """
+    path = os.path.abspath(path)
+    match_files = glob.glob( os.path.join(path, pattern) )
+    for f in files:
+        if os.path.join(path, f) in match_files:
+            os.unlink(os.path.join(path, f))
+
+def run(cmd, expected_status=0):
     print '$$$ ' + cmd
-    if cmd.startswith('cvs') or cmd.startswith('make'):
-        return -1
-    return os.system(cmd)
+
+    if cmd.startswith('cvs'):
+        return
+
+    cmd_status = os.system(cmd)
+    if cmd_status != expected_status:
+        print '!!! "%s" returned unexpected status %d' % (cmd, cmd_status)
+        #raise CommandError(cmd, cmd_status)
 
 def get_langs(lang_args):
     """Returns the languages to handle based on the languages specified on the
@@ -84,6 +113,7 @@ def get_langs(lang_args):
         langs = lang_args
 
     return langs
+#############################
 
 def checkout(cvstag, langs):
     """Check-out needed files from Mozilla's CVS."""
@@ -103,23 +133,26 @@ def checkout(cvstag, langs):
         )
 
     os.chdir(mozilladir)
-    pass # run('cvs up %(tag)s client.mk' % {'tag': cvstag})
+    run('cvs up %(tag)s client.mk' % {'tag': cvstag})
     run('make -f client.mk l10n-checkout MOZ_CO_PROJECT=%s' % (targetapp))
+    os.chdir(olddir)
+
     if not os.path.exists(l10ndir):
         run('cvs -d:pserver:anonymous@cvs-mirror.mozilla.org:/l10n co -d %s -l l10n' % (l10ndir))
 
     os.chdir(l10ndir)
     for lang in langs:
-        if os.path.exists(lang):
+        if os.path.isdir(lang):
             run('cvs up %s' % (lang))
         else:
             run('cvs -d:pserver:anonymous@cvs.mozilla.org:/l10n co %s' % lang)
+    os.chdir(olddir)
 
     # Make latest POT file
-    shutil.rmtree('en-US')
-    shutil.rmtree('pot')
+    shutil.rmtree( os.path.join(l10ndir, 'en-US') )
+    shutil.rmtree( os.path.join(l10ndir, 'pot') )
 
-    os.chdir(os.path.join(olddir, mozilladir))
+    os.chdir(mozilladir)
     run('cvs up tools/l10n')
     run('python tools/l10n/l10n.py --dest="../%s" --app=%s en-US' % (l10ndir, targetapp))
     os.chdir(olddir)
@@ -133,8 +166,22 @@ def checkout(cvstag, langs):
                     'en-US/mail/README.txt pot/mail/README.txt.pot',
                     'en-US/mail/os2/README.txt pot/mail/os2/README.txt.pot' ]:
             txt2po.main(['-P', f])
-
     os.chdir(olddir)
+
+def recover(langs):
+    for lang in langs:
+        if not os.path.isdir(os.path.join(podir_recover, lang)):
+            os.makedirs(os.path.join(podir_recover, lang))
+
+        moz2po.main(
+            [
+                '--errorlevel=traceback', '--duplicates=msgctxt',
+                '--exclude=.#*',
+                '-t', os.path.join(mozilladir, l10ndir, 'en-US'),
+                os.path.join(l10ndir, lang),
+                os.path.join(podir_recover, lang)
+            ]
+        )
 
 def pack_pot():
     import time
@@ -154,28 +201,29 @@ def pre_po2moz_hacks(lang, buildlang, debug):
 
     # Protect the real original PO dir
     temp_po = tempfile.mkdtemp()
-    for f in glob.glob(os.path.join(podir, lang, '*')):
-        shutil.copy2(f, temp_po)
+    shutil.copytree( os.path.join(podir, lang), os.path.join(temp_po, lang) )
 
     if lang in ['zu', 'xh']:
-        dirname = os.path.join(temp_po, 'editor', 'ui')
+        dirname = os.path.join(temp_po, lang, 'editor', 'ui')
         shutil.rmtree(dirname)
         os.makedirs(dirname)
-        shutil.move(os.path.join(temp_po, 'editor', 'chrome'), dirname)
+        shutil.move(os.path.join(temp_po, lang, 'editor', 'chrome'), dirname)
 
     # Fix for languages that have no Windows codepage
     if lang == 've':
         src  = os.path.join(podir, 'en_ZA', 'browser', 'installer', '*.properties')
-        dest = os.path.join(temp_po, 'browser', 'installer')
+        dest = os.path.join(temp_po, lang, 'browser', 'installer')
         shutil.copytree(src, dest)
 
-    old = temp_po
+    old = os.path.join(temp_po, lang)
     new = os.path.join(podir_updated, lang)
     templates = os.path.join(l10ndir, 'pot')
     run('pomigrate2 --use-compendium --quiet --pot2po %s %s %s' % (old, new, templates))
 
+    os.path.walk(os.path.join(podir_updated, lang), delfiles, '*.html.po')
+    os.path.walk(os.path.join(podir_updated, lang), delfiles, '*.xhtml.po')
     # FIXME: The line below should be replaced with a os.path.walk/os.unlink combo
-    run('rm -f `find %s/%s -name "*.xhtml.po" -o -name "*.html.po"`' % (podir_updated, lang))
+    #run('rm -f `find %s/%s -name "*.xhtml.po" -o -name "*.html.po"`' % (podir_updated, lang))
 
     if debug:
         olddir = os.getcwd()
@@ -185,9 +233,10 @@ def pre_po2moz_hacks(lang, buildlang, debug):
 
     # Create l10n related files
     if os.path.isdir( os.path.join(l10ndir, buildlang) ):
-        dir = os.path.join(l10ndir, buildlang)
+        os.path.walk(os.path.join(l10ndir, buildlang), delfiles, '*.dtd')
+        os.path.walk(os.path.join(l10ndir, buildlang), delfiles, '*.properties')
         # FIXME: The line below should be replaced with a os.path.walk/os.unlink combo
-        run('rm -rf `find %s -name "*.properties" -o -name "*.dtd"`' % (dir))
+        #run('rm -rf `find %s -name "*.properties" -o -name "*.dtd"`' % (dir))
 
     shutil.rmtree(temp_po)
 
@@ -222,7 +271,46 @@ def post_po2moz_hacks(lang, buildlang):
 
         shutil.rmtree(tempdir)
 
-def process_langs(langs, update_transl, debug):
+    def copyfile(filename, language):
+        dir = os.path.dirname(filename)
+
+        if os.path.isfile( os.path.join(l10ndir, 'en-US', filename)):
+            try:
+                os.makedirs( os.path.join(l10ndir, language, dir) )
+            except OSError:
+                pass # Don't worry if the directory already exists
+            shutil.copy2(
+                os.path.join(l10ndir, 'en-US', filename),
+                os.path.join(l10ndir, language, dir)
+            )
+
+    def copyfiletype(filetype, language):
+        def checkfiles(filetype, dir, files):
+            for f in files:
+                if f.endswith(filetype):
+                    copyfile(os.path.join(dir, f), language)
+
+        os.path.walk(os.path.join(l10ndir, 'en-US'), checkfiles, filetype)
+
+    # Copy and update non-translatable files
+    for ft in ('.xhtml', '.html', '.rdf'):
+        copyfiletype(ft, buildlang)
+
+    for f in (
+            os.path.join('browser', 'extra-jar.mn'), # FIXME: Replace browser with targetapp?
+            os.path.join('browser', 'firefox-l10n.js'),
+            os.path.join('browser', 'microsummary-generators', 'list.txt'),
+            os.path.join('browser', 'profile', 'chrome', 'userChrome-example.css'),
+            os.path.join('browser', 'profile', 'chrome', 'userContent-example.css'),
+            os.path.join('browser', 'searchplugins', 'list.txt'),
+            os.path.join('extensions', 'reporter', 'chrome', 'reporterOverlay.properties'),
+            os.path.join('mail', 'all-l10n.js'),
+            os.path.join('toolkit', 'chrome', 'global', 'intl.css')
+        ):
+        copyfile(f, buildlang)
+
+
+def migrate_langs(langs, update_transl, debug):
     for lang in langs:
         print 'Language: %s' % (lang)
 
@@ -240,28 +328,30 @@ def process_langs(langs, update_transl, debug):
 
         # Migrate language from current PO to latest POT
         if os.path.isdir(podir):
-            shutil.rmtree( os.path.join(podir_updated, '.svn') )
-            shutil.copytree( os.path.join(podir, '.svn'), podir_updated )
-            shutil.rmtree( os.path.join(podir_updated, lang) )
-            shutil.copytree( os.path.join(podir, lang), podir_updated )
-            # FIXME: The line below should be replaced with a os.path.walk/os.unlink combo
-            run('rm -f `find %s/%s -name "*.po"`' % (podir_updated, lang))
+            if os.path.isdir( os.path.join(podir, '.svn') ):
+                shutil.rmtree( os.path.join(podir_updated, '.svn') )
+                shutil.copytree( os.path.join(podir, '.svn'), podir_updated )
+            if os.path.isdir(os.path.join(podir_updated, lang)):
+                shutil.rmtree( os.path.join(podir_updated, lang) )
+            shutil.copytree( os.path.join(podir, lang), os.path.join(podir_updated, lang) )
+            os.path.walk(os.path.join(podir_updated, lang), delfiles, '*.po')
+            #run('rm -f `find %s/%s -name "*.po"`' % (podir_updated, lang))
 
         pre_po2moz_hacks(lang, buildlang, debug)
 
-        use_fuzzy = debug and '--fuzzy' or ''
-
         ###################################################
-        po2moz.main(
-            [
-                '--errorlevel=traceback',
-                '--exclude=".svn"',
-                use_fuzzy,
-                '-t', os.path.join(l10ndir, 'en-US'),
-                os.path.join(podir_updated, lang),
-                os.path.join(l10ndir, buildlang)
-            ]
-        )
+        args = [
+            '--errorlevel=traceback',
+            '--exclude=".svn"',
+            '-t', os.path.join(l10ndir, 'en-US'),
+            '-i', os.path.join(podir_updated, lang),
+            '-o', os.path.join(l10ndir, buildlang)
+        ]
+
+        if debug:
+            args.append('--fuzzy')
+
+        po2moz.main(args)
         ###################################################
 
         post_po2moz_hacks(lang, buildlang)
@@ -281,6 +371,9 @@ def process_langs(langs, update_transl, debug):
 def create_diff(langs):
     """Create CVS-diffs for all languages."""
 
+    if not os.path.isdir('diff'):
+        os.mkdir('diff')
+
     for lang in langs:
         buildlang = lang.replace('_', '-')
         olddir = os.getcwd()
@@ -298,36 +391,22 @@ def create_diff(langs):
 def create_langpacks(langs):
     """Builds a XPI and installers for languages."""
     for lang in langs:
-        olddir = os.getcwd()
-
         buildlang = lang.replace('_', '-')
+
+        olddir = os.getcwd()
 
         os.chdir(mozilladir)
         run('./configure --disable-compile-environment --disable-xft --enable-application=%s' % (targetapp))
+        os.chdir(olddir)
+
+        os.chdir(os.path.join(mozilladir, targetapp, 'locales'))
         langpack_name = 'langpack-' + buildlang
         moz_brand_dir = os.path.join('other-licenses', 'branding', 'firefox')
-        langpack_file = os.path.join('$(_ABS_DIST)', 'install', 'Firefox-Languagepack-$(MOZ_APP_VERSION)-%s.$(AB_CD).xpi' % langpack_release)
+        langpack_file = os.path.join("'$(_ABS_DIST)'", 'install', "Firefox-Languagepack-'$(MOZ_APP_VERSION)'-%s.'$(AB_CD)'.xpi" % langpack_release)
         run('make %s MOZ_BRANDING_DIRECTORY=%s LANGPACK_FILE=%s' % (langpack_name, moz_brand_dir, langpack_file))
         # The commented out (and very long) line below was found commented out in the source script as well.
         #( cd $mozilladir/$targetapp/locales; make repackage-win32-installer-af MOZ_BRANDING_DIRECTORY=other-licenses/branding/firefox WIN32_INSTALLER_IN=../../../Firefox-Setup-2.0.exe WIN32_INSTALLER_OUT='$(_ABS_DIST)'"/install/sea/Firefox-Setup-"'$(MOZ_APP_VERSION).$(AB_CD)'".exe" )
-
         os.chdir(olddir)
-
-def recover(langs):
-    olddir = os.getcwd()
-
-    os.chdir(mozilladir)
-    for lang in langs:
-        moz2po.main(
-            [
-                '--errorlevel=traceback', '--duplicates=msgctxt',
-                '--exclude=.#*',
-                '-t', os.path.join(l10ndir, 'en-US'),
-                os.path.join(l10ndir, lang),
-                os.path.join(podir, lang)
-            ]
-        )
-    os.chdir(olddir)
 
 
 def create_option_parser():
@@ -349,6 +428,13 @@ def create_option_parser():
         action='store_true',
         default=False,
         help="Update of the Mozilla l10n files and POT files"
+    )
+    parser.add_option(
+        '--recover',
+        dest='recover',
+        action='store_true',
+        default=False,
+        help="build PO files from Mozilla's l10n files"
     )
     parser.add_option(
         '--mozilla-tag',
@@ -391,13 +477,6 @@ def create_option_parser():
         default=False,
         help="Add podebug debug markers"
     )
-    parser.add_option(
-        '--recover',
-        dest='recover',
-        action='store_true',
-        default=False,
-        help="build PO files from Mozilla's l10n files"
-    )
 
     return parser
 
@@ -415,7 +494,7 @@ def main():
     if options.potpack:
         pack_pot()
 
-    process_langs(langs, options.update_translations, options.debug)
+    migrate_langs(langs, options.update_translations, options.debug)
 
     if options.diff:
         create_diff(langs)
