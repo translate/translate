@@ -367,7 +367,7 @@ class TranslationChecker(UnitChecker):
             if not filterresult and filtermessages:
                 raise FilterFailure(filtermessages)
             else:
-                return True
+                return filterresult
         else:
             return test(self.str1, self.str2)
 
