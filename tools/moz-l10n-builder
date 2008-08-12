@@ -62,7 +62,6 @@ function usage() {
         echo "   --potpack                - create packages of the en-US and pot directories with today's timestamp in $potpacks/"
         echo "   --langpack               - build a langpack"
         echo "   --debug                  - add podebug debug markers"
-		echo "   --recover                - build PO files from Mozilla's l10n files"
         exit 1
 }
 
