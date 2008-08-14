@@ -423,6 +423,14 @@ def test_printf():
     assert passes(stdchecker.printf, "String %1$s and number %2$d", "String %1$s en nommer %2$d")
     assert passes(stdchecker.printf, "String %s and number %d", "Nommer %2$d and string %1$s")
     assert fails(stdchecker.printf, "String %s and number %d", "Nommer %1$d and string %2$s")
+    # checking python format strings
+    assert passes(stdchecker.printf, "String %(1)s and number %(2)d", "Nommer %(2)d en string %(1)s")
+    assert passes(stdchecker.printf, "String %(str)s and number %(num)d", "Nommer %(num)d en string %(str)s")
+    assert fails(stdchecker.printf, "String %(str)s and number %(num)d", "Nommer %(nommer)d en string %(str)s")
+    assert fails(stdchecker.printf, "String %(str)s and number %(num)d", "Nommer %(num)d en string %s")
+    # checking omitted plural format string placeholder %.0s
+    stdchecker.hasplural = 1
+    assert passes(stdchecker.printf, "%d plurals", "%.0s plural")
 
 def test_puncspacing():
     """tests spacing after punctuation"""

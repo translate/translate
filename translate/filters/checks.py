@@ -49,7 +49,8 @@ import re
 
 # printf syntax based on http://en.wikipedia.org/wiki/Printf which doens't cover everything we leave \w instead of specifying the exact letters as
 # this should capture printf types defined in other platforms.
-printf_pat = re.compile('%((?:(?P<ord>\d+)\$)*(?P<fullvar>[+#-]*(?:\d+)*(?:\.\d+)*(hh\|h\|l\|ll)*(?P<type>[\w%])))')
+# extended to support Python named format specifiers
+printf_pat = re.compile('%((?:(?P<ord>\d+)\$|\((?P<key>\w+)\))?(?P<fullvar>[+#-]*(?:\d+)?(?:\.\d+)?(hh\|h\|l\|ll)?(?P<type>[\w%])))')
 
 # The name of the XML tag
 tagname_re = re.compile("<[\s]*([\w\/]*)")
@@ -540,18 +541,38 @@ class StandardChecker(TranslationChecker):
 
     def printf(self, str1, str2):
         """checks whether printf format strings match"""
-        count1 = count2 = None
+        count1 = count2 = plural = None
+        # self.hasplural only set by run_filters, not always available
+        if 'hasplural' in self.__dict__:
+            plural = self.hasplural
         for var_num2, match2 in enumerate(printf_pat.finditer(str2)):
             count2 = var_num2 + 1
+            str2key = match2.group('key')
             if match2.group('ord'):
                 for var_num1, match1 in enumerate(printf_pat.finditer(str1)):
                     count1 = var_num1 + 1
                     if int(match2.group('ord')) == var_num1 + 1:
                         if match2.group('fullvar') != match1.group('fullvar'):
                             return 0
+            elif str2key:
+                str1key = None
+                for var_num1, match1 in enumerate(printf_pat.finditer(str1)):
+                    count1 = var_num1 + 1
+                    if match1.group('key') and str2key == match1.group('key'):
+                        str1key = match1.group('key')
+                        # '%.0s' "placeholder" in plural will match anything
+                        if plural and match2.group('fullvar') == '.0s':
+                            continue
+                        if match1.group('fullvar') != match2.group('fullvar'):
+                            return 0
+                if str1key == None:
+                    return 0
             else:
                 for var_num1, match1 in enumerate(printf_pat.finditer(str1)):
                     count1 = var_num1 + 1
+                    # '%.0s' "placeholder" in plural will match anything
+                    if plural and match2.group('fullvar') == '.0s':
+                        continue
                     if (var_num1 == var_num2) and (match1.group('fullvar') != match2.group('fullvar')):
                         return 0
 
