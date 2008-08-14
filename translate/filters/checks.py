@@ -759,10 +759,10 @@ class StandardChecker(TranslationChecker):
         # TODO: review this. The 'I' is specific to English, so it probably serves
         # no purpose to get sourcelang.sentenceend
         str1 = re.sub(u"[^%s]( I )" % self.config.sourcelang.sentenceend, " i ", str1)
-        capitals1 = helpers.filtercount(str1, type(str1).isupper)
-        capitals2 = helpers.filtercount(str2, type(str2).isupper)
-        alpha1 = helpers.filtercount(str1, type(str1).isalpha)
-        alpha2 = helpers.filtercount(str2, type(str2).isalpha)
+        capitals1 = helpers.filtercount(str1, unicode.isupper)
+        capitals2 = helpers.filtercount(str2, unicode.isupper)
+        alpha1 = helpers.filtercount(str1, unicode.isalpha)
+        alpha2 = helpers.filtercount(str2, unicode.isalpha)
         # Capture the all caps case
         if capitals1 == alpha1:
             return capitals2 == alpha2
