@@ -272,6 +272,7 @@ class CommonDatabase(object):
             A dictionary will be treated as fieldname:value combinations.
             If the fieldname is None then the value will be interpreted as a
             plain term or as a list of plain terms.
+            Lists of terms are indexed separately.
             Lists of strings are treated as plain terms.
         @type data: dict | list of str
         """
@@ -296,8 +297,12 @@ class CommonDatabase(object):
                                 (self.ANALYZER_DEFAULT & self.ANALYZER_TOKENIZE > 0))
                 else:
                     analyze_settings = self.get_field_analyzers(key)
-                    self._add_field_term(doc, key, self._decode(value),
-                            (analyze_settings & self.ANALYZER_TOKENIZE > 0))
+                    # handle multiple terms
+                    if not isinstance(value, list):
+                        value = [value]
+                    for one_term in value:
+                        self._add_field_term(doc, key, self._decode(one_term),
+                                (analyze_settings & self.ANALYZER_TOKENIZE > 0))
             elif isinstance(dataset, basestring):
                 self._add_plain_term(doc, self._decode(dataset),
                         (self.ANALYZER_DEFAULT & self.ANALYZER_TOKENIZE > 0))

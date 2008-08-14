@@ -85,7 +85,9 @@ def create_example_content(database):
     database.index_document({"fname2": "qaz wsx", None: "edc rfv"})
     # check a filename with the exact analyzer
     database.index_document({"fname2": "foo-bar.po"})
-    assert _get_number_of_docs(database) == 9
+    # add a list of terms for a keyword
+    database.index_document({"multiple": ["foo", "bar"]})
+    assert _get_number_of_docs(database) == 10
 
 def test_create_database():
     """create a new database from scratch"""
@@ -348,6 +350,27 @@ def test_searching():
     # clean up
     clean_database()
 
+
+def test_multiple_terms():
+    """test if multiple terms can be added to a keyword"""
+    # clean up everything first
+    clean_database()
+    # initialize the database with example content
+    new_db = _get_indexer(DATABASE)
+    create_example_content(new_db)
+    # check for the first item ("foo")
+    q_multiple1 = new_db.make_query({"multiple": "f"},
+            analyzer=new_db.ANALYZER_PARTIAL)
+    r_multiple1 = new_db.get_query_result(q_multiple1).get_matches(0,10)
+    assert r_multiple1[0] == 1
+    # check for the second item ("bar")
+    q_multiple2 = new_db.make_query({"multiple": "bar"})
+    r_multiple2 = new_db.get_query_result(q_multiple2).get_matches(0,10)
+    assert r_multiple2[0] == 1
+    # clean up
+    clean_database()
+
+
 def show_database(database):
     """print the complete database - for debugging purposes"""
     if hasattr(database, "database"):
@@ -452,6 +475,7 @@ if __name__ == "__main__":
         test_lower_upper_case()
         test_tokenizing()
         test_searching()
+        test_multiple_terms()
         # TODO: add test for document deletion
         # TODO: add test for transaction handling
         # TODO: add test for multiple engine/database handling in "get_indexer"
