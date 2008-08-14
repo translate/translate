@@ -49,6 +49,7 @@ podir = "po"
 podir_recover = podir + '-recover'
 podir_updated = podir + '-updated'
 potpacks = "potpacks"
+popacks = 'popacks'
 
 USAGE='Usage: %prog [options] <langs...|ALL>'
 
@@ -211,6 +212,20 @@ def pack_pot():
 
     run('tar cjf %(potpacks)s/%(targetapp)s-%(mozversion)s-%(timestamp)s.tar.bz2 %(l10ndir)s/en-US %(l10ndir)s/pot' % globals())
     run('zip -qr9 %(potpacks)s/%(targetapp)s-%(mozversion)s-%(timestamp)s.zip %(l10ndir)s/en-US %(l10ndir)s/pot' % globals())
+
+def pack_po(langs):
+    global timestamp
+    timestamp = time.strftime('%Y%m%d')
+
+    try:
+        os.makedirs(popacks)
+    except OSError:
+        pass
+
+    global lang
+    for lang in langs:
+        run('tar cjf %(popacks)s/%(targetapp)s-%(mozversion)s-%(lang)s-%(timestamp)s.tar.bz2 %(l10ndir)s/%(lang)s' % globals())
+        run('zip -qr9 %(popacks)s/%(targetapp)s-%(mozversion)s-%(lang)s-%(timestamp)s.zip %(l10ndir)s/%(lang)s' % globals())
 
 def pre_po2moz_hacks(lang, buildlang, debug):
     """Hacks that should be run before running C{po2moz}."""
@@ -480,6 +495,13 @@ def create_option_parser():
         help="Create packages of the en-US and POT directories with today's timestamp"
     )
     parser.add_option(
+        '--popack',
+        dest='popack',
+        action='store_true',
+        default=False,
+        help="Create packages of all specified languages' PO-files with today's timestamp"
+    )
+    parser.add_option(
         '--langpack',
         dest='langpack',
         action='store_true',
@@ -496,29 +518,51 @@ def create_option_parser():
 
     return parser
 
-def main():
-    options, args = create_option_parser().parse_args()
-    targetapp = options.mozproduct
-    langs = get_langs(args)
+def main(
+        langs=['ALL'], mozproduct='browser', mozcheckout=False, tag='-A',
+        recover=False, potpack=False, popack=False, update_trans=False,
+        debug=False, diff=False, langpack=False
+        ):
+    targetapp = mozproduct
+    langs = get_langs(langs)
 
-    if options.mozcheckout:
-        checkout(options.moztag, langs)
+    if mozcheckout:
+        checkout(moztag, langs)
 
-    if options.recover:
+    if recover:
         recover(langs)
 
-    if options.potpack:
+    if potpack:
         pack_pot()
 
-    migrate_langs(langs, options.update_translations, options.debug)
+    migrate_langs(langs, update_trans, debug)
 
-    if options.diff:
+    if popack:
+        pack_po(langs)
+
+    if diff:
         create_diff(langs)
 
-    if options.langpack:
+    if langpack:
         create_langpacks(langs)
 
 
+def main_cmd_line():
+    options, args = create_option_parser().parse_args()
+
+    main(
+        langs=args,
+        mozproduct=targetapp,
+        mozcheckout=options.mozcheckout,
+        tag=options.moztag,
+        recover=options.recover,
+        potpack=options.potpack,
+        popack=options.popack,
+        update_trans=options.update_translations,
+        debug=options.debug,
+        diff=options.diff,
+        langpack=options.langpack
+    )
 
 if __name__ == '__main__':
-    main()
+    main_cmd_line()
