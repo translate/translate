@@ -31,6 +31,7 @@ import glob
 import os
 import shutil
 import tempfile
+import time
 
 from translate.convert import moz2po
 from translate.convert import po2moz
@@ -96,6 +97,14 @@ def get_langs(lang_args):
 
     langs = []
 
+    if isinstance(lang_args, str):
+        if lang_args == 'ALL':
+            lang_args = ['ALL']
+        elif lang_args == 'ZA':
+            lang_args = ['ZA']
+        else:
+            lang_args = []
+
     if not lang_args:
         print USAGE
         exit(1)
@@ -160,7 +169,15 @@ def checkout(cvstag, langs):
     os.chdir(l10ndir)
     moz2po.main(["-P", "--duplicates=msgctxt", "en-US", "pot"])
 
-    if mozversion != '3':
+    # Delete the help-related POT-files, seeing as Firefox help is now on-line.
+    try:
+        shutil.rmtree(os.path.join('pot', 'browser', 'chrome', 'help'))
+    except OSError, oe:
+        # "No such file or directory" errors are fine. The rest we raise again.
+        if oe.errno != 2:
+            raise oe
+
+    if mozversion < '3':
         for f in [  'en-US/browser/README.txt pot/browser/README.txt.pot',
                     'en-US/browser/os2/README.txt pot/browser/os2/README.txt.pot',
                     'en-US/mail/README.txt pot/mail/README.txt.pot',
@@ -184,7 +201,6 @@ def recover(langs):
         )
 
 def pack_pot():
-    import time
     global timestamp
     timestamp = time.strftime('%Y%m%d')
 
