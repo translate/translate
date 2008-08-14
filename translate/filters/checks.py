@@ -791,7 +791,7 @@ class StandardChecker(TranslationChecker):
         if capitals1 == 0 or capitals1 == 1:
             return capitals2 == capitals1
         elif capitals1 < len(str1) / 10:
-            return capitals2 < len(str2) / 8
+            return capitals2 <= len(str2) / 8
         elif len(str1) < 10:
             return abs(capitals1 - capitals2) < 3
         elif capitals1 > len(str1) * 6 / 10:
