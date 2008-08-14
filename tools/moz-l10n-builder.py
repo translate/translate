@@ -3,7 +3,7 @@
 #
 # Copyright 2008 Zuza Software Foundation
 #
-# This file is part of Spelt
+# This file is part of the Translate Toolkit.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -108,7 +108,7 @@ def get_langs(lang_args):
 
     elif lang_args[0] == 'ZA':
         # South African languages
-        langs =["af", "en_ZA", "nr", "nso", "ss", "st", "tn", "ts", "ve", "xh", "zu"]
+        langs = ["af", "en_ZA", "nr", "nso", "ss", "st", "tn", "ts", "ve", "xh", "zu"]
     else:
         langs = lang_args
 
@@ -154,7 +154,7 @@ def checkout(cvstag, langs):
 
     os.chdir(mozilladir)
     run('cvs up tools/l10n')
-    run('python tools/l10n/l10n.py --dest="../%s" --app=%s en-US' % (l10ndir, targetapp))
+    run('python tools/l10n/l10n.py --dest="%s" --app=%s en-US' % (os.path.join('..', l10ndir), targetapp))
     os.chdir(olddir)
 
     os.chdir(l10ndir)
@@ -297,7 +297,7 @@ def post_po2moz_hacks(lang, buildlang):
         copyfiletype(ft, buildlang)
 
     for f in (
-            os.path.join('browser', 'extra-jar.mn'), # FIXME: Replace browser with targetapp?
+            os.path.join('browser', 'extra-jar.mn'),
             os.path.join('browser', 'firefox-l10n.js'),
             os.path.join('browser', 'microsummary-generators', 'list.txt'),
             os.path.join('browser', 'profile', 'chrome', 'userChrome-example.css'),
@@ -360,7 +360,7 @@ def migrate_langs(langs, update_transl, debug):
         # TODO: copyfiletype and copyfile lines (299-312)
 
         # Clean up where we made real tabs \t
-        if mozversion != '3':
+        if mozversion < '3':
             run('sed -i "/^USAGE_MSG/s/\\\t/\t/g" %s/%s/toolkit/installer/unix/install.it' % (l10ndir, buildlang))
             run('sed -i "/^#define MSG_USAGE/s/\\\t/\t/g" %s/%s/browser/installer/installer.inc' % (l10ndir, buildlang))
 
