@@ -177,7 +177,7 @@ class CommonDatabase(object):
                 result.append(self._create_query_for_field(field, value,
                         analyzer=analyzer))
             # parse plaintext queries
-            elif isinstance(query, str):
+            elif isinstance(query, basestring):
                 if analyzer is None:
                     analyzer = self.analyzer
                 # perform unicode normalization
@@ -286,7 +286,7 @@ class CommonDatabase(object):
                 if key is None:
                     if isinstance(value, list):
                         terms = value[:]
-                    elif isinstance(value, str):
+                    elif isinstance(value, basestring):
                         terms = [value]
                     else:
                         raise ValueError("Invalid data type to be indexed: %s" \
@@ -298,7 +298,7 @@ class CommonDatabase(object):
                     analyze_settings = self.get_field_analyzers(key)
                     self._add_field_term(doc, key, self._decode(value),
                             (analyze_settings & self.ANALYZER_TOKENIZE > 0))
-            elif isinstance(dataset, str):
+            elif isinstance(dataset, basestring):
                 self._add_plain_term(doc, self._decode(dataset),
                         (self.ANALYZER_DEFAULT & self.ANALYZER_TOKENIZE > 0))
             else:

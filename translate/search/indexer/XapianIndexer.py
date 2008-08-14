@@ -348,7 +348,7 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         @rtype: list of dicts
         """
         result = []
-        if isinstance(fieldnames, str):
+        if isinstance(fieldnames, basestring):
             fieldnames = [fieldnames]
         self._walk_matches(query, _extract_fieldvalues, (result, fieldnames))
         return result

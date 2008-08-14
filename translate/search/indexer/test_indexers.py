@@ -68,8 +68,8 @@ def create_example_content(database):
     """
     # a reasonable foo-bar entry
     database.index_document(["foo", "bar", "med"])
-    # and something more for another document
-    database.index_document(["foo", "bar", "HELO"])
+    # and something more for another document with a unicode string
+    database.index_document(["foo", "bar", u"HELO"])
     # another similar one - but with "barr" instead of "bar"
     database.index_document(["foo", "barr", "med", "HELO"])
     # some field indexed document data
