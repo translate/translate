@@ -1137,8 +1137,8 @@ def runtests(str1, str2, ignorelist=()):
     unit.target = str2
     checker = StandardChecker(excludefilters=ignorelist)
     failures = checker.run_filters(unit)
-    for testname, message in failures:
-        print "failure: %s: %s\n  %r\n  %r" % (testname, message, str1, str2)
+    for test in failures:
+        print "failure: %s: %s\n  %r\n  %r" % (test, failures[test], str1, str2)
     return failures
 
 def batchruntests(pairs):
