@@ -174,7 +174,7 @@ class xliffunit(lisa.LISAunit):
         """Mark this unit as approved."""
         if value:
             self.xmlelement.set("approved", "yes")
-        else:
+        elif self.isapproved():
             self.xmlelement.set("approved", "no")
 
     def isreview(self):
