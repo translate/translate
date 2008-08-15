@@ -209,7 +209,7 @@ msgstr ""
         unit = xliff.units[0]
         assert unit.source == unit.target == "MIME-Version: 1.0\n"
         assert unit.xmlelement.get("restype") == "x-gettext-domain-header"
-        assert unit.xmlelement.get("approved") == "no"
+        assert unit.xmlelement.get("approved") != "yes"
         assert unit.xmlelement.get("{%s}space" % lisa.XML_NS) == "preserve"
         assert unit.getnotes("po-translator") == "Pulana  Translation for bla\nHallo Ma!"
 
@@ -287,10 +287,10 @@ msgstr ""
         xmltext = str(xliff)
         print xmltext
         assert len(xliff.units) == 3
-        assert xliff.units[0].xmlelement.get("approved") == "no"
+        assert xliff.units[0].xmlelement.get("approved") != "yes"
         assert not xliff.units[0].isapproved()
         assert xliff.units[1].xmlelement.get("approved") == "yes"
         assert xliff.units[1].isapproved()
-        assert xliff.units[2].xmlelement.get("approved") == "no"
+        assert xliff.units[2].xmlelement.get("approved") != "yes"
         assert not xliff.units[2].isapproved()
 
