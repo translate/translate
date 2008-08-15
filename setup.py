@@ -243,11 +243,12 @@ def getdatafiles():
   def listfiles(srcdir):
     return join(sitepackages, srcdir), [join(srcdir, f) for f in os.listdir(srcdir) if os.path.isfile(join(srcdir, f))]
   docfiles = []
-  docwalk=os.walk(os.path.join('translate', 'doc'))
-  for docs in docwalk:
-    if not '.svn' in docs[0]:
-      docfiles.append(listfiles(docs[0]))
-  datafiles += docfiles
+  for subdir in ['doc', 'share']:
+    docwalk=os.walk(os.path.join('translate', subdir))
+    for docs in docwalk:
+      if not '.svn' in docs[0]:
+        docfiles.append(listfiles(docs[0]))
+    datafiles += docfiles
   return datafiles
 
 def buildinfolinks():
