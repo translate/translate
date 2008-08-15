@@ -39,6 +39,7 @@ import os.path
 import re
 import sys
 import stat
+from collections import defaultdict
 
 kdepluralre = re.compile("^_n: ")
 brtagre = re.compile("<br\s*?/?>")
@@ -85,7 +86,7 @@ def statefordb(unit):
         return 2
     return 0
 
-def emptystats():
+def emptyfiletotals():
     """Returns a dictionary with all statistics initalised to 0."""
     stats = {}
     for state in ["total", "translated", "fuzzy", "untranslated", "review"]:
@@ -94,11 +95,8 @@ def emptystats():
         stats[state + "targetwords"] = 0
     return stats
 
-def emptyfiletotals():
-    return {"total": 0}
-
 def emptyfilechecks():
-    return {}
+    return defaultdict(list)
 
 def emptyfilestats():
     return {"total": [], "translated": [], "fuzzy": [], "untranslated": []}
@@ -290,23 +288,6 @@ class StatsCache(object):
         self._cacheunitstats(store.units, fileid)
         return fileid
 
-    def directorytotals(self, dirname):
-        """Retrieves the stored statistics for a given directory, all summed.
-        
-        Note that this does not check for mod_infos or the presence of files."""
-        realpath = os.path.realpath(dirname)
-        self.cur.execute("""SELECT
-            state,
-            count(unitid) as total,
-            sum(sourcewords) as sourcewords,
-            sum(targetwords) as targetwords
-            FROM units WHERE fileid IN
-                (SELECT fileid from files
-                WHERE substr(path, 0, ?)=?)
-            GROUP BY state;""", (len(realpath), realpath))
-        totals = emptystats()
-        return self.cur.fetchall()
-
     def filetotals(self, filename):
         """Retrieves the statistics for the given file if possible, otherwise 
         delegates to cachestore()."""
@@ -316,7 +297,7 @@ class StatsCache(object):
                 fileid = self._getfileid(filename)
             except ValueError, e:
                 print >> sys.stderr, str(e)
-                return {}
+                return emptyfiletotals()
 
         self.cur.execute("""SELECT 
             state,
@@ -327,7 +308,7 @@ class StatsCache(object):
             GROUP BY state;""", (fileid,))
         values = self.cur.fetchall()
 
-        totals = emptystats()
+        totals = emptyfiletotals()
         for stateset in values:
             state = state_strings[stateset[0]]          # state
             totals[state] = stateset[1] or 0            # total
@@ -441,7 +422,7 @@ class StatsCache(object):
             self.cachestorechecks(fileid, store, checker, configid)
             values = geterrors()
 
-        errors = {}
+        errors = emptyfilechecks()
         for value in values:
             if value[1] == -1:
                 continue
