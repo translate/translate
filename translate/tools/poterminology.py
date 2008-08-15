@@ -115,7 +115,7 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
                         continue
                     elif stoptype == '/':
                         self.stoprelist.append(re.compile(stopline[1:-1]+'$'))
-                    else:                    
+                    else:
                         self.stopwords[stopline[1:-1]] = actions[stoptype]
             except KeyError, character:
                 self.warning("Bad line in stopword list %s starts with" % (options.stopwordfile), options, sys.exc_info())
@@ -342,6 +342,16 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
             termfile.units.append(unit)
         open(options.output, "w").write(str(termfile))
 
+def find_installed_file(filename):
+    root = __file__
+    if os.path.islink(root):
+        root = os.path.realpath(root)
+    filepath = os.path.join( os.path.dirname(os.path.abspath(root)), os.path.pardir, 'share', filename )
+
+    if not os.path.exists(filepath):
+        return None
+    return filepath
+
 def main():
     formats = {"po":("po", None), None:("po", None)}
     parser = TerminologyOptionParser(formats)
@@ -365,7 +375,7 @@ def main():
                       type="choice", choices=parser.sortorders, metavar="ORDER",
                       help="output sort order(s): %s (default is all orders in the above priority)" % ', '.join(parser.sortorders))
     parser.add_option("-S", "--stopword-list", type="string", dest="stopwordfile",
-                      help="name of file containing stopword list", metavar="FILENAME")
+                      help="name of file containing stopword list", metavar="FILENAME", default=find_installed_file('stoplist-en'))
     parser.add_option("", "--source-language", dest="sourcelanguage", default="en",
                       help="the source language code (default 'en')", metavar="LANG")
     parser.add_option("-v", "--invert", dest="invert",
