@@ -39,7 +39,7 @@ def sourcelencmp(x, y):
     ylen = sourcelen(y)
     return cmp(xlen, ylen)
 
-class matcher:
+class matcher(object):
     """A class that will do matching and store configuration for the matching process"""
     def __init__(self, store, max_candidates=10, min_similarity=75, max_length=70, comparer=None, usefuzzy=False):
         """max_candidates is the maximum number of candidates that should be assembled,
