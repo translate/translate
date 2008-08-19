@@ -39,7 +39,6 @@ import os.path
 import re
 import sys
 import stat
-from collections import defaultdict
 
 kdepluralre = re.compile("^_n: ")
 brtagre = re.compile("<br\s*?/?>")
@@ -96,7 +95,7 @@ def emptyfiletotals():
     return stats
 
 def emptyfilechecks():
-    return defaultdict(list)
+    return {}
 
 def emptyfilestats():
     return {"total": [], "translated": [], "fuzzy": [], "untranslated": []}
