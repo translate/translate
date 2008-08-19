@@ -353,7 +353,7 @@ def find_installed_file(filename):
     return filepath
 
 def main():
-    formats = {"po":("po", None), None:("po", None)}
+    formats = {"po":("po", None), "pot": ("pot", None), None:("po", None)}
     parser = TerminologyOptionParser(formats)
     parser.add_option("-I", "--ignore-case", dest="ignorecase",
         action="store_true", default=False, help="make all terms lowercase")
