@@ -253,8 +253,6 @@ def pre_po2moz_hacks(lang, buildlang, debug):
 
     os.path.walk(os.path.join(podir_updated, lang), delfiles, '*.html.po')
     os.path.walk(os.path.join(podir_updated, lang), delfiles, '*.xhtml.po')
-    # FIXME: The line below should be replaced with a os.path.walk/os.unlink combo
-    #run('rm -f `find %s/%s -name "*.xhtml.po" -o -name "*.html.po"`' % (podir_updated, lang))
 
     if debug:
         olddir = os.getcwd()
@@ -266,8 +264,6 @@ def pre_po2moz_hacks(lang, buildlang, debug):
     if os.path.isdir( os.path.join(l10ndir, buildlang) ):
         os.path.walk(os.path.join(l10ndir, buildlang), delfiles, '*.dtd')
         os.path.walk(os.path.join(l10ndir, buildlang), delfiles, '*.properties')
-        # FIXME: The line below should be replaced with a os.path.walk/os.unlink combo
-        #run('rm -rf `find %s -name "*.properties" -o -name "*.dtd"`' % (dir))
 
     shutil.rmtree(temp_po)
 
@@ -366,7 +362,6 @@ def migrate_langs(langs, update_transl, debug):
                 shutil.rmtree( os.path.join(podir_updated, lang) )
             shutil.copytree( os.path.join(podir, lang), os.path.join(podir_updated, lang) )
             os.path.walk(os.path.join(podir_updated, lang), delfiles, '*.po')
-            #run('rm -f `find %s/%s -name "*.po"`' % (podir_updated, lang))
 
         pre_po2moz_hacks(lang, buildlang, debug)
 
