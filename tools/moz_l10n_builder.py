@@ -63,7 +63,9 @@ class CommandError(StandardError):
     def __str__(self):
         return '"%s" return unexptected status %d' % (self.cmd, self.status)
 
+
 ##### Utility Functions #####
+
 def delfiles(pattern, path, files):
     """Delete files with names in C{files} matching glob-pattern C{glob} in the
         directory specified by C{path}.
@@ -87,7 +89,7 @@ def run(cmd, expected_status=0):
         print '!!! "%s" returned unexpected status %d' % (cmd, cmd_status)
         #raise CommandError(cmd, cmd_status)
 
-def get_langs(lang_args):
+def get_langs(lang_args, cvstag):
     """Returns the languages to handle based on the languages specified on the
         command-line.
 
@@ -116,7 +118,7 @@ def get_langs(lang_args):
 
         if not os.path.exists(locales_filename):
             # mozilladir is not check out from CVS yet... do it now, no questions asked
-            checkout_mozilla_dir()
+            checkout_mozilla_dir(cvstag)
 
         for line in open(locales_filename).readlines():
             langs.append(line.split()[0])
@@ -128,9 +130,11 @@ def get_langs(lang_args):
         langs = lang_args
 
     return langs
+
 #############################
 
-def checkout_mozilla_dir():
+
+def checkout_mozilla_dir(cvstag):
     if not os.path.exists(mozilladir):
         run(
             'cvs -d:pserver:anonymous@cvs-mirror.mozilla.org:/cvsroot co %(tag)s %(mozdir)s/client.mk' % \
@@ -145,10 +149,8 @@ def checkout(cvstag, langs):
     """Check-out needed files from Mozilla's CVS."""
 
     olddir = os.getcwd()
-    if cvstag != '-A':
-        cvstag = "-r %s" % (cvstag)
 
-    checkout_mozilla_dir()
+    checkout_mozilla_dir(cvstag)
 
     os.chdir(mozilladir)
     run('cvs up %(tag)s client.mk' % {'tag': cvstag})
@@ -527,7 +529,10 @@ def main(
         debug=False, diff=False, langpack=False
         ):
     targetapp = mozproduct
-    langs = get_langs(langs)
+    if moztag != '-A':
+        moztag = "-r %s" % (moztag)
+
+    langs = get_langs(langs, moztag)
 
     if mozcheckout:
         checkout(moztag, langs)
