@@ -29,6 +29,7 @@
 
 import glob
 import os
+import popen2
 import shutil
 import tempfile
 import time
@@ -85,7 +86,7 @@ def run(cmd, expected_status=0, no_out=False, no_err=False):
         cmd = cmd + ' > ' + os.devnull
     elif no_err:
         cmd = cmd + ' 2> ' + os.devnull
-    print '$$$ ' + cmd
+    print '>>> %s $ %s' % (os.getcwd(), cmd)
 
     cmd_status = os.system(cmd)
     if cmd_status != expected_status:
