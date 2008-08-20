@@ -113,6 +113,11 @@ def get_langs(lang_args):
     if lang_args[0] == 'ALL':
         # Get all available languages from the locales file
         locales_filename = os.path.join(mozilladir, targetapp, 'locales', 'shipped-locales')
+
+        if not os.path.exists(locales_filename):
+            # mozilladir is not check out from CVS yet... do it now, no questions asked
+            checkout_mozilla_dir()
+
         for line in open(locales_filename).readlines():
             langs.append(line.split()[0])
 
@@ -125,13 +130,7 @@ def get_langs(lang_args):
     return langs
 #############################
 
-def checkout(cvstag, langs):
-    """Check-out needed files from Mozilla's CVS."""
-
-    olddir = os.getcwd()
-    if cvstag != '-A':
-        cvstag = "-r %s" % (cvstag)
-
+def checkout_mozilla_dir():
     if not os.path.exists(mozilladir):
         run(
             'cvs -d:pserver:anonymous@cvs-mirror.mozilla.org:/cvsroot co %(tag)s %(mozdir)s/client.mk' % \
@@ -141,6 +140,15 @@ def checkout(cvstag, langs):
             'cvs -d:pserver:anonymous@cvs-mirror.mozilla.org:/cvsroot co %(mozdir)s/tools/l10n' % \
             {'mozdir': mozilladir}
         )
+
+def checkout(cvstag, langs):
+    """Check-out needed files from Mozilla's CVS."""
+
+    olddir = os.getcwd()
+    if cvstag != '-A':
+        cvstag = "-r %s" % (cvstag)
+
+    checkout_mozilla_dir()
 
     os.chdir(mozilladir)
     run('cvs up %(tag)s client.mk' % {'tag': cvstag})
