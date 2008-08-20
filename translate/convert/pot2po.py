@@ -76,7 +76,7 @@ def convertpot_stores(inputpot, templatepo, tm=None, min_similarity=75, fuzzymat
                 if unit.isobsolete():
                     unit.resurrect()
             try:
-                fuzzyfilematcher = match.matcher(templatepo, max_candidates=1, min_similarity=min_similarity, max_length=1000, usefuzzy=True)
+                fuzzyfilematcher = match.matcher(templatepo, max_candidates=1, min_similarity=min_similarity, max_length=3000, usefuzzy=True)
                 fuzzyfilematcher.addpercentage = False
             except ValueError:
                 # Probably no usable units
