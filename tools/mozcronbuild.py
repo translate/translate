@@ -25,12 +25,12 @@ from tools import moz_l10n_builder
 
 MOZDIR = os.path.join( os.path.expanduser('~'), 'mozbuild' )
 
-def build_langs():
+def build_langs(langs):
     olddir = os.getcwd()
     os.chdir(MOZDIR)
 
     moz_l10n_builder.main(
-        langs='ALL',
+        langs=langs,
         mozcheckout=True,
         recover=True,
         potpack=True,
@@ -58,11 +58,14 @@ def create_option_parser():
 
     return parser
 
-def main():
+def main(langs):
+    if not langs:
+        langs = ['ALL']
+
     if not os.path.isdir(MOZDIR):
         os.makedirs(MOZDIR)
 
-    build_langs()
+    build_langs(langs)
     check_potpacks()
     update_rss()
 
@@ -70,7 +73,7 @@ def main_cmd_line():
     """Processes command-line arguments and send them to main()."""
     options, args = create_option_parser().parse_args()
 
-    main()
+    main(args) # args == langs to build
 
 if __name__ == '__main__':
     main_cmd_line()
