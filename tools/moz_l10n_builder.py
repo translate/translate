@@ -156,14 +156,20 @@ def checkout(cvstag, langs):
     os.chdir(olddir)
 
     if not os.path.exists(l10ndir):
-        run('cvs -d:pserver:anonymous@cvs-mirror.mozilla.org:/l10n co -d %s -l l10n' % (l10ndir))
+        run(
+            'cvs -d:pserver:anonymous@cvs-mirror.mozilla.org:/l10n co -d %s -l l10n' % (l10ndir),
+            no_out=True, no_err=True
+        )
 
     os.chdir(l10ndir)
     for lang in langs:
         if os.path.isdir(lang):
-            run('cvs up %s' % (lang))
+            run('cvs up %s' % (lang), no_out=True, no_err=True)
         else:
-            run('cvs -d:pserver:anonymous@cvs-mirror.mozilla.org:/l10n co -d %s l10n/%s' % (lang, lang))
+            run(
+                'cvs -d:pserver:anonymous@cvs-mirror.mozilla.org:/l10n co -d %s l10n/%s' % (lang, lang),
+                no_out=True, no_err=True
+            )
     os.chdir(olddir)
 
     # Make latest POT file
@@ -176,8 +182,11 @@ def checkout(cvstag, langs):
                 raise oe
 
     os.chdir(mozilladir)
-    run('cvs up tools/l10n')
-    run('python tools/l10n/l10n.py --dest="%s" --app=%s en-US' % (join(os.pardir, l10ndir), targetapp))
+    run('cvs up tools/l10n', no_out=True, no_err=True)
+    run(
+        'python tools/l10n/l10n.py --dest="%s" --app=%s en-US' % (join(os.pardir, l10ndir), targetapp),
+        no_out=True, no_err=True
+    )
     os.chdir(olddir)
 
     os.chdir(l10ndir)
@@ -223,8 +232,14 @@ def pack_pot():
     except OSError:
         pass
 
-    run('tar cjf %(potpacks)s/%(targetapp)s-%(mozversion)s-%(timestamp)s.tar.bz2 %(l10ndir)s/en-US %(l10ndir)s/pot' % globals())
-    run('zip -qr9 %(potpacks)s/%(targetapp)s-%(mozversion)s-%(timestamp)s.zip %(l10ndir)s/en-US %(l10ndir)s/pot' % globals())
+    run(
+        'tar cjf %(potpacks)s/%(targetapp)s-%(mozversion)s-%(timestamp)s.tar.bz2 %(l10ndir)s/en-US %(l10ndir)s/pot' % globals(),
+        no_out=True, no_err=True
+    )
+    run(
+        'zip -qr9 %(potpacks)s/%(targetapp)s-%(mozversion)s-%(timestamp)s.zip %(l10ndir)s/en-US %(l10ndir)s/pot' % globals(),
+        no_out=True, no_err=True
+    )
 
 def pack_po(langs):
     global timestamp
@@ -237,8 +252,14 @@ def pack_po(langs):
 
     global lang
     for lang in langs:
-        run('tar cjf %(popacks)s/%(targetapp)s-%(mozversion)s-%(lang)s-%(timestamp)s.tar.bz2 %(l10ndir)s/%(lang)s' % globals())
-        run('zip -qr9 %(popacks)s/%(targetapp)s-%(mozversion)s-%(lang)s-%(timestamp)s.zip %(l10ndir)s/%(lang)s' % globals())
+        run(
+            'tar cjf %(popacks)s/%(targetapp)s-%(mozversion)s-%(lang)s-%(timestamp)s.tar.bz2 %(l10ndir)s/%(lang)s' % globals(),
+            no_out=True, no_err=True
+        )
+        run(
+            'zip -qr9 %(popacks)s/%(targetapp)s-%(mozversion)s-%(lang)s-%(timestamp)s.zip %(l10ndir)s/%(lang)s' % globals(),
+            no_out=True, no_err=True
+        )
 
 def pre_po2moz_hacks(lang, buildlang, debug):
     """Hacks that should be run before running C{po2moz}."""
@@ -262,7 +283,7 @@ def pre_po2moz_hacks(lang, buildlang, debug):
     old = join(temp_po, lang)
     new = join(podir_updated, lang)
     templates = join(l10ndir, 'pot')
-    run('pomigrate2 --use-compendium --quiet --pot2po %s %s %s' % (old, new, templates))
+    run('pomigrate2 --use-compendium --quiet --pot2po %s %s %s' % (old, new, templates), no_out=True, no_err=True)
 
     os.path.walk(join(podir_updated, lang), delfiles, '*.html.po')
     os.path.walk(join(podir_updated, lang), delfiles, '*.xhtml.po')
@@ -270,7 +291,7 @@ def pre_po2moz_hacks(lang, buildlang, debug):
     if debug:
         olddir = os.getcwd()
         os.chdir(join("%s" % (podir_updated), lang))
-        run('podebug --errorlevel=traceback --ignore=mozilla . .')
+        run('podebug --errorlevel=traceback --ignore=mozilla . .', no_out=True, no_err=True)
         os.chdir(olddir)
 
     # Create l10n related files
@@ -370,11 +391,11 @@ def migrate_langs(langs, recover, update_transl, debug):
         if update_transl:
             olddir = os.getcwd()
             os.chdir(podir)
-            run('svn up %s' % (lang))
+            run('svn up %s' % (lang), no_out=True, no_err=True)
             os.chdir(olddir)
 
             os.chdir(l10ndir)
-            run('cvs up %s' % (lang))
+            run('cvs up %s' % (lang), no_out=True, no_err=True)
             os.chdir(olddir)
 
         # Migrate language from current PO to latest POT
@@ -410,12 +431,12 @@ def migrate_langs(langs, recover, update_transl, debug):
 
         # Clean up where we made real tabs \t
         if mozversion < '3':
-            run('sed -i "/^USAGE_MSG/s/\\\t/\t/g" %s/%s/toolkit/installer/unix/install.it' % (l10ndir, buildlang))
-            run('sed -i "/^#define MSG_USAGE/s/\\\t/\t/g" %s/%s/browser/installer/installer.inc' % (l10ndir, buildlang))
+            run('sed -i "/^USAGE_MSG/s/\\\t/\t/g" %s/%s/toolkit/installer/unix/install.it' % (l10ndir, buildlang), no_out=True, no_err=True)
+            run('sed -i "/^#define MSG_USAGE/s/\\\t/\t/g" %s/%s/browser/installer/installer.inc' % (l10ndir, buildlang), no_out=True, no_err=True)
 
         # Fix bookmark file to point to the locale
         # FIXME - need some way to preserve this file if its been translated already
-        run('sed -i "s/en-US/%s/g" %s/%s/browser/profile/bookmarks.html' % (buildlang, l10ndir, buildlang))
+        run('sed -i "s/en-US/%s/g" %s/%s/browser/profile/bookmarks.html' % (buildlang, l10ndir, buildlang), no_out=True, no_err=True)
 
 def create_diff(langs):
     """Create CVS-diffs for all languages."""
@@ -429,12 +450,12 @@ def create_diff(langs):
 
         os.chdir(l10ndir)
         outfile = join(os.pardir, 'diff', lang+'-l10n.diff')
-        run('cvs diff --newfile %s > %s' % (buildlang, outfile))
+        run('cvs diff --newfile %s > %s' % (buildlang, outfile), no_out=True, no_err=True)
         os.chdir(olddir)
 
         os.chdir(join(podir_updated, lang))
         outfile = join(os.pardir, os.pardir, 'diff', lang+'-po.diff')
-        run('svn diff --diff-cmd diff -x "-u --ignore-matching-lines=^\"POT\|^\"X-Gene" > %s' % (outfile))
+        run('svn diff --diff-cmd diff -x "-u --ignore-matching-lines=^\"POT\|^\"X-Gene" > %s' % (outfile), no_out=True, no_err=True)
         os.chdir(olddir)
 
 def create_langpacks(langs):
@@ -445,14 +466,14 @@ def create_langpacks(langs):
         olddir = os.getcwd()
 
         os.chdir(mozilladir)
-        run('./configure --disable-compile-environment --disable-xft --enable-application=%s' % (targetapp))
+        run('./configure --disable-compile-environment --disable-xft --enable-application=%s' % (targetapp), no_out=True, no_err=True)
         os.chdir(olddir)
 
         os.chdir(join(mozilladir, targetapp, 'locales'))
         langpack_name = 'langpack-' + buildlang
         moz_brand_dir = join('other-licenses', 'branding', 'firefox')
         langpack_file = join("'$(_ABS_DIST)'", 'install', "Firefox-Languagepack-'$(MOZ_APP_VERSION)'-%s.'$(AB_CD)'.xpi" % langpack_release)
-        run('make %s MOZ_BRANDING_DIRECTORY=%s LANGPACK_FILE=%s' % (langpack_name, moz_brand_dir, langpack_file))
+        run('make %s MOZ_BRANDING_DIRECTORY=%s LANGPACK_FILE=%s' % (langpack_name, moz_brand_dir, langpack_file), no_out=True, no_err=True)
         # The commented out (and very long) line below was found commented out in the source script as well.
         #( cd $mozilladir/$targetapp/locales; make repackage-win32-installer-af MOZ_BRANDING_DIRECTORY=other-licenses/branding/firefox WIN32_INSTALLER_IN=../../../Firefox-Setup-2.0.exe WIN32_INSTALLER_OUT='$(_ABS_DIST)'"/install/sea/Firefox-Setup-"'$(MOZ_APP_VERSION).$(AB_CD)'".exe" )
         os.chdir(olddir)
