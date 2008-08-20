@@ -186,7 +186,7 @@ def checkout(cvstag, langs):
             txt2po.main(['-P', f])
     os.chdir(olddir)
 
-def recover(langs):
+def recover_langs(langs):
     for lang in langs:
         if not os.path.isdir(os.path.join(podir_recover, lang)):
             os.makedirs(os.path.join(podir_recover, lang))
@@ -514,7 +514,7 @@ def create_option_parser():
     return parser
 
 def main(
-        langs=['ALL'], mozproduct='browser', mozcheckout=False, tag='-A',
+        langs=['ALL'], mozproduct='browser', mozcheckout=False, moztag='-A',
         recover=False, potpack=False, popack=False, update_trans=False,
         debug=False, diff=False, langpack=False
         ):
@@ -525,7 +525,7 @@ def main(
         checkout(moztag, langs)
 
     if recover:
-        recover(langs)
+        recover_langs(langs)
 
     if potpack:
         pack_pot()
@@ -549,7 +549,7 @@ def main_cmd_line():
         langs=args,
         mozproduct=targetapp,
         mozcheckout=options.mozcheckout,
-        tag=options.moztag,
+        moztag=options.moztag,
         recover=options.recover,
         potpack=options.potpack,
         popack=options.popack,
