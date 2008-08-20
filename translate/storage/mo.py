@@ -62,18 +62,18 @@ def my_swap4(result):
     return (c0 << 24) | (c1 << 16) | (c2 << 8) | c3
 
 def hashpjw(str_param):
-   HASHWORDBITS = 32
-   hval = 0
-   g = None
-   s = str_param
-   for s in str_param:
-       hval = hval << 4
-       hval += ord(s)
-       g = hval & 0xf << (HASHWORDBITS - 4)
-       if (g != 0):
-           hval = hval ^ g >> (HASHWORDBITS - 8)
-           hval = hval ^ g
-   return hval
+    HASHWORDBITS = 32
+    hval = 0
+    g = None
+    s = str_param
+    for s in str_param:
+        hval = hval << 4
+        hval += ord(s)
+        g = hval & 0xf << (HASHWORDBITS - 4)
+        if (g != 0):
+            hval = hval ^ g >> (HASHWORDBITS - 8)
+            hval = hval ^ g
+    return hval
 
 
 class mounit(base.TranslationUnit):
@@ -117,7 +117,7 @@ class mofile(base.TranslationStore):
         # check the header of this file for the copyright note of this function
         def add_to_hash_table(string, i):
             V = hashpjw(string)
-            S = hash_size <= 2 and 3 or hash_size # Taken from gettext-0.17:gettext-tools/src/wrote-mo.c:408-409
+            S = hash_size <= 2 and 3 or hash_size # Taken from gettext-0.17:gettext-tools/src/write-mo.c:408-409
             hash_cursor = V % S;
             orig_hash_cursor = hash_cursor;
             increment = 1 + (V % (S - 2));
@@ -128,7 +128,7 @@ class mofile(base.TranslationStore):
                     break
                 hash_cursor += increment
                 hash_cursor = hash_cursor % S
-                assert(hash_cursor != orig_hash_cursor)
+                assert (hash_cursor != orig_hash_cursor)
  
         if len(self.units) == 0:
             return ''
@@ -165,9 +165,7 @@ class mofile(base.TranslationStore):
             ids = ids + id + '\0'
             strs = strs + string + '\0'
         output = ''
-        # The header is 7 32-bit unsigned integers.  We don't use hash tables, so
-        # the keys start right after the index tables.
-        # translated string.
+        # The header is 7 32-bit unsigned integers
         keystart = 7*4+16*len(keys)+hash_size*4
         # and the values start after the keys
         valuestart = keystart + len(ids)
