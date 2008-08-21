@@ -262,15 +262,9 @@ def pre_po2moz_hacks(lang, buildlang, debug):
     temp_po = tempfile.mkdtemp()
     shutil.copytree( join(podir, lang), join(temp_po, lang) )
 
-    if lang in ['zu', 'xh']:
-        dirname = join(temp_po, lang, 'editor', 'ui')
-        shutil.rmtree(dirname)
-        os.makedirs(dirname)
-        shutil.move(join(temp_po, lang, 'editor', 'chrome'), dirname)
-
     # Fix for languages that have no Windows codepage
     if lang == 've':
-        srcs = glob.glob(join(podir, 'en_ZA', 'browser', 'installer'), '*.properties')
+        srcs = glob.glob(join(podir, 'en_ZA', 'browser', 'installer', '*.properties'))
         dest = join(temp_po, lang, 'browser', 'installer')
 
         for src in srcs:
