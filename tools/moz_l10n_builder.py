@@ -207,7 +207,7 @@ def checkout(cvstag, langs):
 def recover_langs(langs):
     print 'Recovering...'
     for lang in langs:
-        print '    %s...' % (lang)
+        print '    %s' % (lang)
         if not os.path.isdir(join(podir_recover, lang)):
             os.makedirs(join(podir_recover, lang))
 
