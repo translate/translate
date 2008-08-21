@@ -270,9 +270,11 @@ def pre_po2moz_hacks(lang, buildlang, debug):
 
     # Fix for languages that have no Windows codepage
     if lang == 've':
-        src  = join(podir, 'en_ZA', 'browser', 'installer', '*.properties')
+        srcs = glob.glob(join(podir, 'en_ZA', 'browser', 'installer'), '*.properties')
         dest = join(temp_po, lang, 'browser', 'installer')
-        shutil.copytree(src, dest)
+
+        for src in srcs:
+            shutil.copy2(src, dest)
 
     old = join(temp_po, lang)
     new = join(podir_updated, lang)
