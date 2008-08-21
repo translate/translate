@@ -34,6 +34,7 @@ def build_langs(langs, verbose):
         mozcheckout=True,
         recover=True,
         potpack=True,
+        potincl=['README.mozilla'],
         popack=True,
         update_trans=True,
         verbose=verbose

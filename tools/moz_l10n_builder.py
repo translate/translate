@@ -144,7 +144,7 @@ def get_langs(lang_args):
 def checkout(cvstag, langs):
     """Check-out needed files from Mozilla's CVS."""
 
-    print 'Checking out...'
+    print 'Checking out'
 
     olddir = os.getcwd()
     if cvstag != '-A':
@@ -205,7 +205,7 @@ def checkout(cvstag, langs):
     os.chdir(olddir)
 
 def recover_langs(langs):
-    print 'Recovering...'
+    print 'Recovering'
     for lang in langs:
         print '    %s' % (lang)
         if not os.path.isdir(join(podir_recover, lang)):
@@ -216,10 +216,17 @@ def recover_langs(langs):
              join(l10ndir, lang),
              join(podir_recover, lang)])
 
-def pack_pot():
+def pack_pot(includes):
     print 'Packing POT files'
     global timestamp
     timestamp = time.strftime('%Y%m%d')
+
+    inc = []
+    for fn in includes:
+        if not os.path.exists(fn):
+            print '!!! Warning: Path "%s" does not exist. Skipped.' % (fn)
+        else:
+            inc.append(fn)
 
     try:
         os.makedirs(potpacks)
@@ -228,12 +235,12 @@ def pack_pot():
 
     packname = join(potpacks, '%s-%s-%s' % (targetapp, mozversion, timestamp))
     run(['tar', 'cjf', packname+'.tar.bz2',
-         join(l10ndir, 'en-US'), join(l10ndir, 'pot') ])
+         join(l10ndir, 'en-US'), join(l10ndir, 'pot') ] + inc)
     run(['zip', '-qr9', packname+'.zip',
-         join(l10ndir, 'en-US'), join(l10ndir, 'pot') ])
+         join(l10ndir, 'en-US'), join(l10ndir, 'pot') ] + inc)
 
 def pack_po(langs):
-    print 'Creating PO-packs...'
+    print 'Creating PO-packs'
     global timestamp
     timestamp = time.strftime('%Y%m%d')
 
@@ -355,7 +362,7 @@ def post_po2moz_hacks(lang, buildlang):
 
 
 def migrate_langs(langs, recover, update_transl, debug):
-    print 'Migrating...'
+    print 'Migrating'
     for lang in langs:
         print '    %s' % (lang)
 
@@ -428,7 +435,7 @@ def migrate_langs(langs, recover, update_transl, debug):
 def create_diff(langs):
     """Create CVS-diffs for all languages."""
 
-    print 'Creating diffs...'
+    print 'Creating diffs'
     if not os.path.isdir('diff'):
         os.mkdir('diff')
 
@@ -449,7 +456,7 @@ def create_diff(langs):
 
 def create_langpacks(langs):
     """Builds a XPI and installers for languages."""
-    print 'Creating langpacks...'
+    print 'Creating langpacks'
 
     for lang in langs:
         print '    %s' % (lang)
@@ -533,6 +540,13 @@ def create_option_parser():
         help="Create packages of the en-US and POT directories with today's timestamp"
     )
     parser.add_option(
+        '-pi', '--pot-include',
+        dest='potincl',
+        action='append',
+        default=[],
+        help='Files to include in the POT pack (only used with --potpack)'
+    )
+    parser.add_option(
         '--popack',
         dest='popack',
         action='store_true',
@@ -558,8 +572,9 @@ def create_option_parser():
 
 def main(
         langs=['ALL'], mozproduct='browser', mozcheckout=False, moztag='-A',
-        recover=False, potpack=False, popack=False, update_trans=False,
-        debug=False, diff=False, langpack=False, verbose=True
+        recover=False, potpack=False, potincl=[], popack=False,
+        update_trans=False, debug=False, diff=False, langpack=False,
+        verbose=True
         ):
     global options
     options['verbose'] = verbose
@@ -573,7 +588,7 @@ def main(
         recover_langs(langs)
 
     if potpack:
-        pack_pot()
+        pack_pot(potincl)
 
     migrate_langs(langs, recover, update_trans, debug)
 
@@ -600,6 +615,7 @@ def main_cmd_line():
         moztag=options.moztag,
         recover=options.recover,
         potpack=options.potpack,
+        potincl=options.potincl,
         popack=options.popack,
         update_trans=options.update_translations,
         debug=options.debug,
