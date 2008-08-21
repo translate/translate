@@ -58,7 +58,8 @@ podir_updated = podir + '-updated'
 potpacks = "potpacks"
 popacks = 'popacks'
 
-options = {} # Global program options
+devnull = open(os.devnull, 'wb')
+options = { 'verbose': True } # Global program options
 USAGE='Usage: %prog [options] <langs...|ALL>'
 
 class CommandError(StandardError):
@@ -84,22 +85,16 @@ def delfiles(pattern, path, files):
         if join(path, f) in match_files:
             os.unlink(join(path, f))
 
-def run(cmd, expected_status=0, stdout=False, stderr=True, shell=False):
-    err = PIPE
-    out = PIPE
-
-    if stdout and stderr:
-        err = STDOUT
-
+def run(cmd, expected_status=0, stdout=devnull, stderr=devnull, shell=False):
     global options
     if options['verbose']:
         print '>>> %s $ %s' % (os.getcwd(), ' '.join(cmd))
-    p = Popen(cmd, stdout=out, stderr=err, shell=shell)
+    p = Popen(cmd, stdout=stdout, stderr=stderr, shell=shell)
     cmd_status = p.wait()
 
-    if stdout:
+    if stdout == PIPE:
         print p.stdout.read()
-    elif stderr:
+    elif stderr == PIPE:
         print p.stderr.read()
 
     if cmd_status != expected_status:
@@ -141,6 +136,8 @@ def get_langs(lang_args):
     else:
         langs = lang_args
 
+    print 'Selected languages: %s' % (' '.join(langs))
+
     return langs
 #############################
 
@@ -165,6 +162,7 @@ def checkout(cvstag, langs):
 
     os.chdir(l10ndir)
     for lang in langs:
+        print 'Checking out %s...' % (lang)
         if os.path.isdir(lang):
             run(['cvs', 'up', lang])
         else:
@@ -206,15 +204,17 @@ def checkout(cvstag, langs):
 
 def recover_langs(langs):
     for lang in langs:
+        print 'Recovering %s...' % (lang)
         if not os.path.isdir(join(podir_recover, lang)):
             os.makedirs(join(podir_recover, lang))
 
-        run(['moz2po', '--errorlevel=traceback', '--duplicates=msgctxt', '--exclude=.#*',
+        run(['moz2po', '--errorlevel=traceback', '--duplicates=msgctxt', '--exclude=".#*"',
              '-t', join(l10ndir, 'en-US'),
              join(l10ndir, lang),
              join(podir_recover, lang)])
 
 def pack_pot():
+    print 'Packing POT files'
     global timestamp
     timestamp = time.strftime('%Y%m%d')
 
@@ -239,6 +239,7 @@ def pack_po(langs):
         pass
 
     for lang in langs:
+        print 'Creating %s PO-pack...' % (lang)
         packname = join(popacks, '%s-%s-%s-%s' % (targetapp, mozversion, lang, timestamp))
         run(['tar', 'cjf', packname+'.tar.bz2', join(l10ndir, lang)])
         run(['zip', '-qr9', packname+'.zip', join(l10ndir, lang)])
@@ -351,7 +352,7 @@ def post_po2moz_hacks(lang, buildlang):
 
 def migrate_langs(langs, recover, update_transl, debug):
     for lang in langs:
-        print 'Language: %s' % (lang)
+        print 'Migrating %s' % (lang)
 
         buildlang=lang.replace('_', '-')
 
@@ -426,23 +427,24 @@ def create_diff(langs):
         os.mkdir('diff')
 
     for lang in langs:
+        print 'Creating %s diff...' % (lang)
         buildlang = lang.replace('_', '-')
         olddir = os.getcwd()
 
         os.chdir(l10ndir)
         outfile = join(os.pardir, 'diff', lang+'-l10n.diff')
-        run(['cvs', 'diff', '--newfile', buildlang, '>', outfile], shell=True)
+        run(['cvs', 'diff', '--newfile', buildlang], stdout=open(outfile, 'w'))
         os.chdir(olddir)
 
         os.chdir(join(podir_updated, lang))
         outfile = join(os.pardir, os.pardir, 'diff', lang+'-po.diff')
-        run(['svn', 'diff', '--diff-cmd', 'diff -x "-u --ignore-matching-lines=^\"POT\|^\"X-Gene"',
-             '>', outfile], shell=True)
+        run(['svn', 'diff', '--diff-cmd', 'diff -x "-u --ignore-matching-lines=^\"POT\|^\"X-Gene"'], stdout=open(outfile, 'w'))
         os.chdir(olddir)
 
 def create_langpacks(langs):
     """Builds a XPI and installers for languages."""
     for lang in langs:
+        print 'Creating %s langpack...' % (lang)
         buildlang = lang.replace('_', '-')
 
         olddir = os.getcwd()
@@ -575,6 +577,9 @@ def main(
 
     if langpack:
         create_langpacks(langs)
+
+    print 'FIN'
+    devnull.close()
 
 
 def main_cmd_line():
