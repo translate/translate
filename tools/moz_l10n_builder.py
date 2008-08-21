@@ -144,6 +144,8 @@ def get_langs(lang_args):
 def checkout(cvstag, langs):
     """Check-out needed files from Mozilla's CVS."""
 
+    print 'Checking out...'
+
     olddir = os.getcwd()
     if cvstag != '-A':
         cvstag = "-r %s" % (cvstag)
@@ -162,7 +164,7 @@ def checkout(cvstag, langs):
 
     os.chdir(l10ndir)
     for lang in langs:
-        print 'Checking out %s...' % (lang)
+        print '    %s' % (lang)
         if os.path.isdir(lang):
             run(['cvs', 'up', lang])
         else:
@@ -203,8 +205,9 @@ def checkout(cvstag, langs):
     os.chdir(olddir)
 
 def recover_langs(langs):
+    print 'Recovering...'
     for lang in langs:
-        print 'Recovering %s...' % (lang)
+        print '    %s...' % (lang)
         if not os.path.isdir(join(podir_recover, lang)):
             os.makedirs(join(podir_recover, lang))
 
@@ -230,6 +233,7 @@ def pack_pot():
          join(l10ndir, 'en-US'), join(l10ndir, 'pot') ])
 
 def pack_po(langs):
+    print 'Creating PO-packs...'
     global timestamp
     timestamp = time.strftime('%Y%m%d')
 
@@ -239,7 +243,7 @@ def pack_po(langs):
         pass
 
     for lang in langs:
-        print 'Creating %s PO-pack...' % (lang)
+        print '    %s' % (lang)
         packname = join(popacks, '%s-%s-%s-%s' % (targetapp, mozversion, lang, timestamp))
         run(['tar', 'cjf', packname+'.tar.bz2', join(l10ndir, lang)])
         run(['zip', '-qr9', packname+'.zip', join(l10ndir, lang)])
@@ -351,8 +355,9 @@ def post_po2moz_hacks(lang, buildlang):
 
 
 def migrate_langs(langs, recover, update_transl, debug):
+    print 'Migrating...'
     for lang in langs:
-        print 'Migrating %s' % (lang)
+        print '    %s' % (lang)
 
         buildlang=lang.replace('_', '-')
 
@@ -423,11 +428,12 @@ def migrate_langs(langs, recover, update_transl, debug):
 def create_diff(langs):
     """Create CVS-diffs for all languages."""
 
+    print 'Creating diffs...'
     if not os.path.isdir('diff'):
         os.mkdir('diff')
 
     for lang in langs:
-        print 'Creating %s diff...' % (lang)
+        print '    %s' % (lang)
         buildlang = lang.replace('_', '-')
         olddir = os.getcwd()
 
@@ -443,8 +449,10 @@ def create_diff(langs):
 
 def create_langpacks(langs):
     """Builds a XPI and installers for languages."""
+    print 'Creating langpacks...'
+
     for lang in langs:
-        print 'Creating %s langpack...' % (lang)
+        print '    %s' % (lang)
         buildlang = lang.replace('_', '-')
 
         olddir = os.getcwd()
