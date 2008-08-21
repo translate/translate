@@ -25,7 +25,7 @@ from tools import moz_l10n_builder
 
 MOZDIR = os.path.join( os.path.expanduser('~'), 'mozbuild' )
 
-def build_langs(langs):
+def build_langs(langs, verbose):
     olddir = os.getcwd()
     os.chdir(MOZDIR)
 
@@ -36,6 +36,7 @@ def build_langs(langs):
         potpack=True,
         popack=True,
         update_trans=True,
+        verbose=verbose
     )
 
     os.chdir(olddir)
@@ -55,17 +56,24 @@ def create_option_parser():
     from optparse import OptionParser
 
     parser = OptionParser(usage=USAGE)
+    parser.add_option(
+        '-q', '--quiet',
+        dest='verbose',
+        action='store_false',
+        default=True,
+        help='Print as little as possible output.'
+    )
 
     return parser
 
-def main(langs):
+def main(langs, verbose):
     if not langs:
         langs = ['ALL']
 
     if not os.path.isdir(MOZDIR):
         os.makedirs(MOZDIR)
 
-    build_langs(langs)
+    build_langs(langs, verbose)
     check_potpacks()
     update_rss()
 
@@ -73,7 +81,7 @@ def main_cmd_line():
     """Processes command-line arguments and send them to main()."""
     options, args = create_option_parser().parse_args()
 
-    main(args) # args == langs to build
+    main(args, options.verbose) # args == langs to build
 
 if __name__ == '__main__':
     main_cmd_line()
