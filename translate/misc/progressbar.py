@@ -132,7 +132,7 @@ def test(progressbar):
     import time
     for n in range(progressbar.min, progressbar.max+1, 5):
         progressbar.amount = n
-        progressbar.show()
+        progressbar.show("Some message")
         time.sleep(0.2)
 
 if __name__ == '__main__':
