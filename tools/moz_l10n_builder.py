@@ -130,8 +130,9 @@ def get_langs(lang_args):
             # Get all available languages from the locales file
             locales_filename = join(mozilladir, targetapp, 'locales', 'shipped-locales')
             for line in open(locales_filename).readlines():
-                if lang != 'en-US':
-                    langs.append(line.split()[0])
+                langcode = line.split()[0]
+                if langcode != 'en-US':
+                    langs.append(langcode)
 
         elif lang == 'ZA':
             # South African languages
