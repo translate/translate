@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2007 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -53,12 +53,12 @@ def wordcount(string):
     string = brtagre.sub("\n", string)
     string = xmltagre.sub("", string)
     string = numberre.sub(" ", string)
-    #TODO: This should still use the correct language to count in the target 
+    #TODO: This should still use the correct language to count in the target
     #language
     return len(Common.words(string))
 
 def wordsinunit(unit):
-    """Counts the words in the unit's source and target, taking plurals into 
+    """Counts the words in the unit's source and target, taking plurals into
     account. The target words are only counted if the unit is translated."""
     (sourcewords, targetwords) = (0, 0)
     if isinstance(unit.source, multistring):
@@ -105,7 +105,7 @@ def emptyunitstats():
 
 # We allow the caller to specify which value to return when errors_return_empty
 # is True. We do this, since Poolte wants None to be returned when it calls
-# get_mod_info directly, whereas we want an integer to be returned for 
+# get_mod_info directly, whereas we want an integer to be returned for
 # uses of get_mod_info within this module.
 # TODO: Get rid of empty_return when Pootle code is improved to not require
 #       this.
@@ -121,7 +121,7 @@ def suggestion_filename(filename):
     return filename + suggestion_extension()
 
 class StatsCache(object):
-    """An object instantiated as a singleton for each statsfile that provides 
+    """An object instantiated as a singleton for each statsfile that provides
     access to the database cache from a pool of StatsCache objects."""
     _caches = {}
     defaultfile = None
@@ -177,7 +177,7 @@ class StatsCache(object):
             state INTEGER,
             sourcewords INTEGER,
             targetwords INTEGER);""")
-        
+
         self.cur.execute("""CREATE INDEX IF NOT EXISTS fileidindex
             ON units(fileid);""")
 
@@ -198,7 +198,7 @@ class StatsCache(object):
 
         self.cur.execute("""CREATE INDEX IF NOT EXISTS uniterrorindex
             ON uniterrors(fileid, configid);""")
-        
+
         self.con.commit()
 
     def _getfileid(self, filename, check_mod_info=True, store=None, errors_return_empty=False):
@@ -209,10 +209,10 @@ class StatsCache(object):
         not up to date.
 
         @param filename: the filename to retrieve the id for
-        @param opt_mod_info: an optional mod_info to consider in addition 
+        @param opt_mod_info: an optional mod_info to consider in addition
         to the actual mod_info of the given file
         @rtype: String or None
-        """    
+        """
         realpath = os.path.realpath(filename)
         self.cur.execute("""SELECT fileid, st_mtime, st_size FROM files
                 WHERE path=?;""", (realpath,))
@@ -223,14 +223,14 @@ class StatsCache(object):
                 fileid = filerow[0]
                 if not check_mod_info:
                     # Update the mod_info of the file
-                    self.cur.execute("""UPDATE files 
-                            SET st_mtime=?, st_size=? 
+                    self.cur.execute("""UPDATE files
+                            SET st_mtime=?, st_size=?
                             WHERE fileid=?;""", (mod_info[0], mod_info[1], fileid))
                     return fileid
                 if (filerow[1], filerow[2]) == mod_info:
                     return fileid
             # We can only ignore the mod_info if the row already exists:
-            assert check_mod_info        
+            assert check_mod_info
             store = store or factory.getobject(realpath)
             return self._cachestore(store, realpath, mod_info)
         except (base.ParseError, IOError, OSError, AssertionError):
@@ -242,7 +242,7 @@ class StatsCache(object):
     def _getstoredcheckerconfig(self, checker):
         """See if this checker configuration has been used before."""
         config = str(checker.config.__dict__)
-        self.cur.execute("""SELECT configid, config FROM checkerconfigs WHERE 
+        self.cur.execute("""SELECT configid, config FROM checkerconfigs WHERE
             config=?;""", (config,))
         configrow = self.cur.fetchone()
         if not configrow or configrow[1] != config:
@@ -265,7 +265,7 @@ class StatsCache(object):
                                 statefordb(unit)))
         # XXX: executemany is non-standard
         self.cur.executemany("""INSERT INTO units
-            (unitid, fileid, unitindex, source, target, sourcewords, targetwords, state) 
+            (unitid, fileid, unitindex, source, target, sourcewords, targetwords, state)
             values (?, ?, ?, ?, ?, ?, ?, ?);""",
             unitvalues)
         self.con.commit()
@@ -274,12 +274,12 @@ class StatsCache(object):
         return ""
 
     def _cachestore(self, store, realpath, mod_info):
-        """Calculates and caches the statistics of the given store 
+        """Calculates and caches the statistics of the given store
         unconditionally."""
         self.cur.execute("""DELETE FROM files WHERE
             path=?;""", (realpath,))
-        self.cur.execute("""INSERT INTO files 
-            (fileid, path, st_mtime, st_size, toolkitbuild) values (NULL, ?, ?, ?, ?);""", 
+        self.cur.execute("""INSERT INTO files
+            (fileid, path, st_mtime, st_size, toolkitbuild) values (NULL, ?, ?, ?, ?);""",
             (realpath, mod_info[0], mod_info[1], toolkitversion.build))
         fileid = self.cur.lastrowid
         self.cur.execute("""DELETE FROM units WHERE
@@ -288,7 +288,7 @@ class StatsCache(object):
         return fileid
 
     def filetotals(self, filename):
-        """Retrieves the statistics for the given file if possible, otherwise 
+        """Retrieves the statistics for the given file if possible, otherwise
         delegates to cachestore()."""
         fileid = None
         if not fileid:
@@ -296,9 +296,9 @@ class StatsCache(object):
                 fileid = self._getfileid(filename)
             except ValueError, e:
                 print >> sys.stderr, str(e)
-                return emptyfiletotals()
+                return {}
 
-        self.cur.execute("""SELECT 
+        self.cur.execute("""SELECT
             state,
             count(unitid) as total,
             sum(sourcewords) as sourcewords,
@@ -339,21 +339,21 @@ class StatsCache(object):
         checker.setsuggestionstore(None)
 
         if unitindex:
-            # We are only updating a single unit, so we don't want to add an 
+            # We are only updating a single unit, so we don't want to add an
             # extra noerror-entry
             unitvalues.remove(dummy)
             errornames.append("total")
 
         # XXX: executemany is non-standard
         self.cur.executemany("""INSERT INTO uniterrors
-            (unitindex, fileid, configid, name, message) 
+            (unitindex, fileid, configid, name, message)
             values (?, ?, ?, ?, ?);""",
             unitvalues)
         self.con.commit()
         return errornames
 
     def cachestorechecks(self, fileid, store, checker, configid):
-        """Calculates and caches the error statistics of the given store 
+        """Calculates and caches the error statistics of the given store
         unconditionally."""
         # Let's purge all previous failures because they will probably just
         # fill up the database without much use.
@@ -364,9 +364,9 @@ class StatsCache(object):
 
     def recacheunit(self, filename, checker, unit):
         """Recalculate all information for a specific unit. This is necessary
-        for updating all statistics when a translation of a unit took place, 
+        for updating all statistics when a translation of a unit took place,
         for example.
-        
+
         This method assumes that everything was up to date before (file totals,
         checks, checker config, etc."""
         fileid = self._getfileid(filename, check_mod_info=False)
@@ -386,9 +386,9 @@ class StatsCache(object):
             checker.setsuggestionstore(factory.getobject(suggestion_filename(filename), ignore=suggestion_extension()))
         state.extend(self._cacheunitschecks([unit], fileid, configid, checker, unitindex))
         return state
-    
+
     def filechecks(self, filename, checker, store=None):
-        """Retrieves the error statistics for the given file if possible, 
+        """Retrieves the error statistics for the given file if possible,
         otherwise delegates to cachestorechecks()."""
         fileid = None
         configid = self._getstoredcheckerconfig(checker)
@@ -396,7 +396,7 @@ class StatsCache(object):
             fileid = self._getfileid(filename, store=store)
             if not configid:
                 self.cur.execute("""INSERT INTO checkerconfigs
-                    (configid, config) values (NULL, ?);""", 
+                    (configid, config) values (NULL, ?);""",
                     (str(checker.config.__dict__),))
                 configid = self.cur.lastrowid
         except ValueError, e:
@@ -404,7 +404,7 @@ class StatsCache(object):
             return emptyfilechecks()
 
         def geterrors():
-            self.cur.execute("""SELECT 
+            self.cur.execute("""SELECT
                 name,
                 unitindex
                 FROM uniterrors WHERE fileid=? and configid=?
@@ -433,14 +433,14 @@ class StatsCache(object):
         return errors
 
     def filestats(self, filename, checker, store=None):
-        """Return a dictionary of property names mapping sets of unit 
+        """Return a dictionary of property names mapping sets of unit
         indices with those properties."""
         stats = emptyfilestats()
 
         stats.update(self.filechecks(filename, checker, store))
         fileid = self._getfileid(filename, store=store)
 
-        self.cur.execute("""SELECT 
+        self.cur.execute("""SELECT
             state,
             unitindex
             FROM units WHERE fileid=?
@@ -452,22 +452,22 @@ class StatsCache(object):
             stats["total"].append(value[1])
 
         return stats
-      
+
     def unitstats(self, filename, _lang=None, store=None):
         # For now, lang and store are unused. lang will allow the user to
         # base stats information on the given language. See the commented
-        # line containing stats.update below. 
+        # line containing stats.update below.
         """Return a dictionary of property names mapping to arrays which
         map unit indices to property values.
-        
+
         Please note that this is different from filestats, since filestats
         supplies sets of unit indices with a given property, whereas this
         method supplies arrays which map unit indices to given values."""
         stats = emptyunitstats()
-        
+
         #stats.update(self.unitchecks(filename, lang, store))
         fileid = self._getfileid(filename, store=store)
-        
+
         self.cur.execute("""SELECT
           sourcewords, targetwords
           FROM units WHERE fileid=?
@@ -476,5 +476,5 @@ class StatsCache(object):
         for sourcecount, targetcount in self.cur.fetchall():
             stats["sourcewordcount"].append(sourcecount)
             stats["targetwordcount"].append(targetcount)
-        
+
         return stats
