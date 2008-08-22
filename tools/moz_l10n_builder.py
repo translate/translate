@@ -57,6 +57,7 @@ podir_recover = podir + '-recover'
 podir_updated = podir + '-updated'
 potpacks = "potpacks"
 popacks = 'popacks'
+products = { 'browser': 'firefox' } #Simple mapping of possible "targetapp"s to product names.
 
 devnull = open(os.devnull, 'wb')
 options = { 'verbose': True } # Global program options
@@ -85,7 +86,7 @@ def delfiles(pattern, path, files):
         if join(path, f) in match_files:
             os.unlink(join(path, f))
 
-def run(cmd, expected_status=0, stdout=devnull, stderr=devnull, shell=False):
+def run(cmd, expected_status=0, stdout=None, stderr=None, shell=False):
     global options
     if options['verbose']:
         print '>>> %s $ %s' % (os.getcwd(), ' '.join(cmd))
@@ -98,7 +99,7 @@ def run(cmd, expected_status=0, stdout=devnull, stderr=devnull, shell=False):
         print p.stderr.read()
 
     if cmd_status != expected_status:
-        print '!!! "%s" returned unexpected status %d' % (cmd, cmd_status)
+        print '!!! "%s" returned unexpected status %d' % (' '.join(cmd), cmd_status)
         #raise CommandError(cmd, cmd_status)
 
 def get_langs(lang_args):
@@ -124,17 +125,20 @@ def get_langs(lang_args):
         print USAGE
         exit(1)
 
-    if lang_args[0] == 'ALL':
-        # Get all available languages from the locales file
-        locales_filename = join(mozilladir, targetapp, 'locales', 'shipped-locales')
-        for line in open(locales_filename).readlines():
-            langs.append(line.split()[0])
+    for lang in lang_args:
+        if lang == 'ALL':
+            # Get all available languages from the locales file
+            locales_filename = join(mozilladir, targetapp, 'locales', 'shipped-locales')
+            for line in open(locales_filename).readlines():
+                langs.append(line.split()[0])
 
-    elif lang_args[0] == 'ZA':
-        # South African languages
-        langs = ["af", "en_ZA", "nr", "nso", "ss", "st", "tn", "ts", "ve", "xh", "zu"]
-    else:
-        langs = lang_args
+        elif lang == 'ZA':
+            # South African languages
+            langs = langs + ["af", "en_ZA", "nr", "nso", "ss", "st", "tn", "ts", "ve", "xh", "zu"]
+        else:
+            langs.append(lang)
+
+    langs = list(set(langs)) # Remove duplicates from langs
 
     print 'Selected languages: %s' % (' '.join(langs))
 
@@ -165,10 +169,11 @@ def checkout(cvstag, langs):
     os.chdir(l10ndir)
     for lang in langs:
         print '    %s' % (lang)
-        if os.path.isdir(lang):
-            run(['cvs', 'up', lang])
+        buildlang=lang.replace('_', '-')
+        if os.path.isdir(buildlang):
+            run(['cvs', 'up', buildlang])
         else:
-            run(['cvs', '-d:pserver:anonymous@cvs-mirror.mozilla.org:/l10n', 'co', '-d', lang, join('l10n', lang)])
+            run(['cvs', '-d:pserver:anonymous@cvs-mirror.mozilla.org:/l10n', 'co', '-d', buildlang, join('l10n', buildlang)])
     os.chdir(olddir)
 
     # Make latest POT file
@@ -208,13 +213,14 @@ def recover_langs(langs):
     print 'Recovering'
     for lang in langs:
         print '    %s' % (lang)
-        if not os.path.isdir(join(podir_recover, lang)):
-            os.makedirs(join(podir_recover, lang))
+        buildlang = lang.replace('_', '-')
+        if not os.path.isdir(join(podir_recover, buildlang)):
+            os.makedirs(join(podir_recover, buildlang))
 
         run(['moz2po', '--errorlevel=traceback', '--duplicates=msgctxt', '--exclude=".#*"',
              '-t', join(l10ndir, 'en-US'),
-             join(l10ndir, lang),
-             join(podir_recover, lang)])
+             join(l10ndir, buildlang),
+             join(podir_recover, buildlang)])
 
 def pack_pot(includes):
     print 'Packing POT files'
@@ -233,7 +239,7 @@ def pack_pot(includes):
     except OSError:
         pass
 
-    packname = join(potpacks, '%s-%s-%s' % (targetapp, mozversion, timestamp))
+    packname = join(potpacks, '%s-%s-%s' % (products[targetapp], mozversion, timestamp))
     run(['tar', 'cjf', packname+'.tar.bz2',
          join(l10ndir, 'en-US'), join(l10ndir, 'pot') ] + inc)
     run(['zip', '-qr9', packname+'.zip',
@@ -251,9 +257,10 @@ def pack_po(langs):
 
     for lang in langs:
         print '    %s' % (lang)
-        packname = join(popacks, '%s-%s-%s-%s' % (targetapp, mozversion, lang, timestamp))
-        run(['tar', 'cjf', packname+'.tar.bz2', join(l10ndir, lang)])
-        run(['zip', '-qr9', packname+'.zip', join(l10ndir, lang)])
+        buildlang=lang.replace('_', '-')
+        packname = join(popacks, '%s-%s-%s-%s' % (products[targetapp], mozversion, buildlang, timestamp))
+        run(['tar', 'cjf', packname+'.tar.bz2', join(l10ndir, buildlang)])
+        run(['zip', '-qr9', packname+'.zip', join(l10ndir, buildlang)])
 
 def pre_po2moz_hacks(lang, buildlang, debug):
     """Hacks that should be run before running C{po2moz}."""
@@ -319,15 +326,19 @@ def post_po2moz_hacks(lang, buildlang):
         shutil.rmtree(tempdir)
 
     def copyfile(filename, language):
-        dir = os.path.dirname(filename)
+        enUS = join(l10ndir, 'en-US')
+        dir, filename = os.path.split(filename)
 
-        if os.path.isfile(join(l10ndir, 'en-US', filename)):
+        if dir.startswith(enUS):
+            dir = dir[len(enUS)+1:]
+
+        if os.path.isfile(join(enUS, dir, filename)):
             try:
                 os.makedirs(join(l10ndir, language, dir))
             except OSError:
                 pass # Don't worry if the directory already exists
             shutil.copy2(
-                join(l10ndir, 'en-US', filename),
+                join(enUS, dir, filename),
                 join(l10ndir, language, dir)
             )
 
@@ -346,13 +357,15 @@ def post_po2moz_hacks(lang, buildlang):
     for f in (
             join('browser', 'extra-jar.mn'),
             join('browser', 'firefox-l10n.js'),
+            join('browser', 'README.txt'),
             join('browser', 'microsummary-generators', 'list.txt'),
             join('browser', 'profile', 'chrome', 'userChrome-example.css'),
             join('browser', 'profile', 'chrome', 'userContent-example.css'),
             join('browser', 'searchplugins', 'list.txt'),
             join('extensions', 'reporter', 'chrome', 'reporterOverlay.properties'),
             join('mail', 'all-l10n.js'),
-            join('toolkit', 'chrome', 'global', 'intl.css')
+            join('toolkit', 'chrome', 'global', 'intl.css'),
+            join('toolkit', 'installer', 'windows', 'charset.mk')
         ):
         copyfile(f, buildlang)
 
@@ -412,9 +425,6 @@ def migrate_langs(langs, recover, update_transl, debug):
         ###################################################
 
         post_po2moz_hacks(lang, buildlang)
-
-        # Copy and update non-translatable files
-        # TODO: copyfiletype and copyfile lines (299-312)
 
         # Clean up where we made real tabs \t
         if mozversion < '3':
@@ -536,11 +546,18 @@ def create_option_parser():
         help="Create packages of the en-US and POT directories with today's timestamp"
     )
     parser.add_option(
-        '-pi', '--pot-include',
+        '--pot-include',
         dest='potincl',
         action='append',
         default=[],
         help='Files to include in the POT pack (only used with --potpack)'
+    )
+    parser.add_option(
+        '--nomigrate',
+        dest='migrate',
+        action='store_false',
+        default=True,
+        help="Don't migrate"
     )
     parser.add_option(
         '--popack',
@@ -568,7 +585,7 @@ def create_option_parser():
 
 def main(
         langs=['ALL'], mozproduct='browser', mozcheckout=False, moztag='-A',
-        recover=False, potpack=False, potincl=[], popack=False,
+        recover=False, potpack=False, potincl=[], migrate=True, popack=False,
         update_trans=False, debug=False, diff=False, langpack=False,
         verbose=True
         ):
@@ -586,7 +603,8 @@ def main(
     if potpack:
         pack_pot(potincl)
 
-    migrate_langs(langs, recover, update_trans, debug)
+    if migrate:
+        migrate_langs(langs, recover, update_trans, debug)
 
     if popack:
         pack_po(langs)
@@ -612,6 +630,7 @@ def main_cmd_line():
         recover=options.recover,
         potpack=options.potpack,
         potincl=options.potincl,
+        migrate=options.migrate,
         popack=options.popack,
         update_trans=options.update_translations,
         debug=options.debug,
