@@ -243,6 +243,9 @@ def buildmanifest_in(file, scripts):
   print >>file, "prune .svn"
   # translate toolkit is in the same source tree but distributed separately
   print >>file, "prune translate"
+  print >>file, "prune virtaal"
+  print >>file, "prune spelt"
+  print >>file, "prune corpuscatcher"
   print >>file, "include Pootle/*.prefs"
   print >>file, "graft Pootle/html"
   print >>file, "graft Pootle/templates"
