@@ -23,7 +23,7 @@
 (propfile) these files are used in translating Mozilla and other software
 
 @note: The following {.properties file
-description<http://java.sun.com/j2se/6/docs/api/java/util/Properties.html#load(java.io.Reader)>}
+description<http://java.sun.com/j2se/1.4.2/docs/api/java/util/Properties.html#load(java.io.Reader)>}
 and {example <http://www.exampledepot.com/egs/java.util/Props.html>} give some
 good references to the .properties specification.  A simple summary of what is
 permissible follows.
