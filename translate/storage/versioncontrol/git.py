@@ -20,33 +20,19 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 #
-# Requires: git v1.5.3 (or higher)
-# For git v1.5.2 (or below) use "git_old.py".
+# Requires: git
 #
 
 
 from translate.storage.versioncontrol import run_command
 from translate.storage.versioncontrol import GenericRevisionControlSystem
-import re
+import os
 
 
 def is_available():
-    """check if git v1.5.3 (or higher) is installed"""
+    """check if git is installed"""
     exitcode, output, error = run_command(["git", "--version"])
-    if exitcode != 0:
-        # no client available
-        return False
-    # check if the version number is below 1.5.3
-    # synchronize any changes below with "is_available" in "git_old.py"
-    if re.search(r'\s0\.', output) or \
-            re.search(r'\s1\.[0-4]$', output) or \
-            re.search(r'\s1\.[0-4]\.', output) or \
-            re.search(r'\s1\.5$', output) or \
-            re.search(r'\s1\.5\.[0-2]', output):
-        # git seems to be below v1.5.3
-        return False
-    # git seems to be at v1.5.3 or higher
-    return True
+    return exitcode == 0
 
 
 class git(GenericRevisionControlSystem):
@@ -58,13 +44,12 @@ class git(GenericRevisionControlSystem):
     def _get_git_dir(self):
         """git requires the git metadata directory for every operation
         """
-        import os
         return os.path.join(self.root_dir, self.RCS_METADIR)
 
     def _get_git_command(self, args):
         """prepends generic git arguments to default ones
         """
-        command = ["git", "--git-dir", self._get_git_dir(), "--work-tree", self.root_dir]
+        command = ["git", "--git-dir", self._get_git_dir()]
         command.extend(args)
         return command
     
@@ -72,12 +57,12 @@ class git(GenericRevisionControlSystem):
         """Does a clean update of the given path"""
         # git checkout
         command = self._get_git_command(["checkout", self.location_rel])
-        exitcode, output_checkout, error = run_command(command)
+        exitcode, output_checkout, error = run_command(command, self.root_dir)
         if exitcode != 0:
             raise IOError("[GIT] checkout failed (%s): %s" % (command, error))
         # pull changes
         command = self._get_git_command(["pull"])
-        exitcode, output_pull, error = run_command(command)
+        exitcode, output_pull, error = run_command(command, self.root_dir)
         if exitcode != 0:
             raise IOError("[GIT] pull failed (%s): %s" % (command, error))
         return output_checkout + output_pull
@@ -86,7 +71,7 @@ class git(GenericRevisionControlSystem):
         """Commits the file and supplies the given commit message if present"""
         # add the file
         command = self._get_git_command(["add", self.location_rel])
-        exitcode, output_add, error = run_command(command)
+        exitcode, output_add, error = run_command(command, self.root_dir)
         if exitcode != 0:
             raise IOError("[GIT] add of ('%s', '%s') failed: %s" \
                     % (self.root_dir, self.location_rel, error))
@@ -96,7 +81,7 @@ class git(GenericRevisionControlSystem):
             command.extend(["-m", message])
         if author:
             command.extend(["--author", author])
-        exitcode, output_commit, error = run_command(command)
+        exitcode, output_commit, error = run_command(command, self.root_dir)
         if exitcode != 0:
             if len(error):
                 msg = error
@@ -106,7 +91,7 @@ class git(GenericRevisionControlSystem):
                     % (self.root_dir, self.location_rel, msg))
         # push changes
         command = self._get_git_command(["push"])
-        exitcode, output_push, error = run_command(command)
+        exitcode, output_push, error = run_command(command, self.root_dir)
         if exitcode != 0:
             raise IOError("[GIT] push of ('%s', '%s') failed: %s" \
                     % (self.root_dir, self.location_rel, error))
@@ -116,7 +101,7 @@ class git(GenericRevisionControlSystem):
         """Get a clean version of a file from the git repository"""
         # run git-show
         command = self._get_git_command(["show", "HEAD:%s" % self.location_rel])
-        exitcode, output, error = run_command(command)
+        exitcode, output, error = run_command(command, self.root_dir)
         if exitcode != 0:
             raise IOError("[GIT] 'show' failed for ('%s', %s): %s" \
                     % (self.root_dir, self.location_rel, error))

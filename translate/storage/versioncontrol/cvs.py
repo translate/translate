@@ -74,39 +74,21 @@ class cvs(GenericRevisionControlSystem):
     def update(self, revision=None):
         """Does a clean update of the given path"""
         working_dir = os.path.dirname(self.location_abs)
-        filename = os.path.basename(self.location_abs)
+        filename = self.location_abs
         filename_backup = filename + os.path.extsep + "bak"
-        original_dir = os.getcwd()
-        if working_dir:
-            try:
-                # first: check if we are allowed to _change_ to the current dir
-                # (of course, we are already here, but that does not mean so much)
-                os.chdir(original_dir)
-            except OSError, error:
-                raise IOError("[CVS] could not change to directory (%s): %s" \
-                        % (original_dir, error))
-            try:
-                # change to the parent directory of the CVS managed file
-                os.chdir(working_dir)
-            except OSError, error:
-                raise IOError("[CVS] could not change to directory (%s): %s" \
-                        % (working_dir, error))
+        # rename the file to be updated
         try:
             os.rename(filename, filename_backup)
         except OSError, error:
-            # something went wrong - go back to the original directory
-            try:
-                os.chdir(original_dir)
-            except OSError:
-                pass
             raise IOError("[CVS] could not move the file '%s' to '%s': %s" % \
                     (filename, filename_backup, error))
         command = ["cvs", "-Q", "update", "-C"]
         if revision:
             command.extend(["-r", revision])
         # the filename is the last argument
-        command.append(filename)
-        exitcode, output, error = run_command(command)
+        command.append(os.path.basename(filename))
+        # run the command within the given working_dir
+        exitcode, output, error = run_command(command, working_dir)
         # restore backup in case of an error - remove backup for success
         try:
             if exitcode != 0:
@@ -115,14 +97,10 @@ class cvs(GenericRevisionControlSystem):
                 os.remove(filename_backup)
         except OSError:
             pass
-        # always go back to the original directory
-        try:
-            os.chdir(original_dir)
-        except OSError:
-            pass
         # raise an error or return successfully - depending on the CVS command
         if exitcode != 0:
-            raise IOError("[CVS] Error running CVS command '%s': %s" % (command, error))
+            raise IOError("[CVS] Error running CVS command '%s': %s" \
+                    % (command, error))
         else:
             return output
 
@@ -133,35 +111,16 @@ class cvs(GenericRevisionControlSystem):
         """
         working_dir = os.path.dirname(self.location_abs)
         filename = os.path.basename(self.location_abs)
-        original_dir = os.getcwd()
-        if working_dir:
-            try:
-                # first: check if we are allowed to _change_ to the current dir
-                # (of course, we are already here, but that does not mean so much)
-                os.chdir(original_dir)
-            except OSError, error:
-                raise IOError("[CVS] could not change to directory (%s): %s" \
-                        % (original_dir, error))
-            try:
-                # change to the parent directory of the CVS managed file
-                os.chdir(working_dir)
-            except OSError, error:
-                raise IOError("[CVS] could not change to directory (%s): %s" \
-                        % (working_dir, error))
         command = ["cvs", "-Q", "commit"]
         if message:
             command.extend(["-m", message])
         # the filename is the last argument
         command.append(filename)
-        exitcode, output, error = run_command(command)
-        # always go back to the original directory
-        try:
-            os.chdir(original_dir)
-        except OSError:
-            pass
+        exitcode, output, error = run_command(command, working_dir)
         # raise an error or return successfully - depending on the CVS command
         if exitcode != 0:
-            raise IOError("[CVS] Error running CVS command '%s': %s" % (command, error))
+            raise IOError("[CVS] Error running CVS command '%s': %s" \
+                    % (command, error))
         else:
             return output
 
