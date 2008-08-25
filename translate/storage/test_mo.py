@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 
+import StringIO
 import subprocess
 import os.path
 
 from translate.storage import test_base
 from translate.storage import mo
+from translate.storage import factory
 
 class TestMOUnit(test_base.TestTranslationUnit):
     UnitClass = mo.mounit
@@ -125,6 +127,12 @@ class TestMOFile(test_base.TestTranslationStore):
 
             subprocess.call(['msgfmt', PO_FILE, '-o', MO_MSGFMT])
             subprocess.call(['pocompile', PO_FILE, MO_POCOMPILE])
+
+            store = factory.getobject(StringIO.StringIO(posource))
+            if store.isempty() and not os.path.exists(MO_POCOMPILE):
+                # pocompile doesn't create MO files for empty PO files, so we
+                # can skip the checks here.
+                continue
 
             mo_msgfmt_f = open(MO_MSGFMT)
             mo_pocompile_f = open(MO_POCOMPILE)
