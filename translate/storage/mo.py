@@ -75,6 +75,25 @@ def hashpjw(str_param):
             hval = hval ^ g
     return hval
 
+def get_next_prime_number(start):
+    # find the smallest prime number that is greater or equal "start"
+    def is_prime(num):
+        # special small numbers
+        if (num < 2) or (num == 4):
+            return False
+        if (num == 2) or (num == 3):
+            return True
+        # check for numbers > 4
+        for divider in range(2, num/2):
+            if num % divider == 0:
+                return False
+        return True
+
+    candidate = start
+    while not is_prime(candidate):
+        candidate += 1
+    return candidate
+
 
 class mounit(base.TranslationUnit):
     """A class representing a .mo translation message."""
@@ -129,10 +148,13 @@ class mofile(base.TranslationStore):
                 hash_cursor += increment
                 hash_cursor = hash_cursor % S
                 assert (hash_cursor != orig_hash_cursor)
- 
-        if len(self.units) == 0:
-            return ''
-        hash_size = int(len(self.units) * 1.4)
+
+        # hash_size should be the smallest prime number that is greater
+        # or equal (4 / 3 * N) - where N is the number of keys/units.
+        # see gettext-0.17:gettext-tools/src/write-mo.c:406
+        hash_size = get_next_prime_number(int((len(self.units) * 4) / 3))
+        if hash_size <= 2:
+            hash_size = 3
         MESSAGES = {}
         for unit in self.units:
             if isinstance(unit.source, multistring):
@@ -184,10 +206,12 @@ class mofile(base.TranslationStore):
                              7*4,               # start of key index
                              7*4+len(keys)*8,   # start of value index
                              hash_size, 7*4+2*(len(keys)*8))              # size and offset of hash table
-        output = output + array.array("i", offsets).tostring()
-        output = output + hash_table.tostring()
-        output = output + ids
-        output = output + strs
+        # additional data is not necessary for empty mo files
+        if (len(keys) > 0):
+            output = output + array.array("i", offsets).tostring()
+            output = output + hash_table.tostring()
+            output = output + ids
+            output = output + strs
         return output
 
     def parse(self, input):
