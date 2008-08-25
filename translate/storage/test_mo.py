@@ -112,7 +112,7 @@ class TestMOFile(test_base.TestTranslationStore):
     def teardown_method(self, method):
         test_base.TestTranslationStore.teardown_method(self, method)
         self.remove_po_and_mo()
-    
+
     def test_output(self):
         for posource in posources:
             print "PO source file"
@@ -122,13 +122,13 @@ class TestMOFile(test_base.TestTranslationStore):
             out_file = open(PO_FILE, 'w')
             out_file.write(posource)
             out_file.close()
-            
+
             subprocess.call(['msgfmt', PO_FILE, '-o', MO_MSGFMT])
             subprocess.call(['pocompile', PO_FILE, MO_POCOMPILE])
-            
+
             mo_msgfmt_f = open(MO_MSGFMT)
             mo_pocompile_f = open(MO_POCOMPILE)
-            
+
             try:
                 mo_msgfmt = mo_msgfmt_f.read()
                 print "msgfmt output:"
