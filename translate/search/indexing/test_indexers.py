@@ -47,7 +47,7 @@ def _get_indexer(location):
     @return: the resulting indexing engine instance
     @rtype: CommonIndexer.CommonDatabase
     """
-    return indexer.get_indexer(location, [default_engine])
+    return indexing.get_indexer(location, [default_engine])
 
 def clean_database():
     """remove an existing database"""
