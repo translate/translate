@@ -21,7 +21,7 @@
 #
 
 
-import __init__ as indexer
+import __init__ as indexing
 import CommonIndexer
 import os
 import sys
