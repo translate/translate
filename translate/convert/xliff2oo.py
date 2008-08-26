@@ -218,7 +218,7 @@ def convertoo(inputfile, outputfile, templatefile, sourcelanguage=None, targetla
 
 def main(argv=None):
     from translate.convert import convert
-    formats = {("po", "oo"):("oo", convertoo), ("xlf", "oo"):("oo", convertoo)}
+    formats = {("po", "oo"):("oo", convertoo), ("xlf", "oo"):("oo", convertoo), ("xlf", "sdf"):("sdf", convertoo)}
     # always treat the input as an archive unless it is a directory
     archiveformats = {(None, "output"): oo.oomultifile, (None, "template"): oo.oomultifile}
     parser = convert.ArchiveConvertOptionParser(formats, usetemplates=True, description=__doc__, archiveformats=archiveformats)
