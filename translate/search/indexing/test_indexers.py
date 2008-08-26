@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2008 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -21,7 +21,7 @@
 #
 
 
-import __init__ as indexer
+import __init__ as indexing
 import CommonIndexer
 import os
 import sys
@@ -30,14 +30,14 @@ import shutil
 DATABASE = "tmp-index"
 
 # overwrite this value to change the preferred indexing engine
-default_engine = "" 
+default_engine = ""
 
 # order of tests to be done
 ORDER_OF_TESTS = [ "XapianIndexer", "PyLuceneIndexer", "PyLuceneIndexer1" ]
 
 
 def _get_indexer(location):
-    """wrapper around "indexer.get_indexer" to enable a globally preferred
+    """wrapper around "indexing.get_indexer" to enable a globally preferred
     indexing engine selection
 
     create an indexer based on the preference order 'default_engine'
@@ -47,7 +47,7 @@ def _get_indexer(location):
     @return: the resulting indexing engine instance
     @rtype: CommonIndexer.CommonDatabase
     """
-    return indexer.get_indexer(location, [default_engine])
+    return indexing.get_indexer(location, [default_engine])
 
 def clean_database():
     """remove an existing database"""
