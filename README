@@ -7,18 +7,18 @@ The Toolkit is part of the translate.sourceforge.net project,
 hosted at http://translate.sourceforge.net/
 
 The software includes programs to covert localization formats to the common 
-PO, and emerging XLIFF format.  Programs to check and manage PO and XLIFF 
-files.  Online documentation includes guides on using the tools, running a 
-localization project and how to localize various projects from OpenOffice.org 
-to Mozilla.
+PO, and emerging XLIFF format.  There are also programs to check and manage PO 
+and XLIFF files.  Online documentation includes guides on using the tools, 
+running a localization project and how to localize various projects from 
+OpenOffice.org to Mozilla.
 
 At its core the software contains a set of classes for handling various 
 localization storage formats: DTD, properties, OpenOffice.org GSI/SDF,
-CSV, MO, Qt .ts and of course PO and XLIFF.  It also provides scripts to 
-convert between these formats.
+CSV, MO, Qt .ts, TMX, TBX, WordFast txt, Gettext .mo,  and of course PO and 
+XLIFF.  It also provides scripts to convert between these formats.
 
 Also part of the Toolkit are Python programs to create word counts, merge
-translations and perform various checks on PO and XLIFF files.
+translations and perform various checks on translation files.
 
 
 Download
@@ -215,4 +215,6 @@ posegment - Break a PO or XLIFF files into sentence segments, useful
             for creating a segmented translation memory.
 poswap    - uses a translation of another language that you would rather use 
             than English as source language
+poterminology - analise PO or POT files to build a list of frequently occuring
+                words and phrases
 
