@@ -14,8 +14,9 @@ OpenOffice.org to Mozilla.
 
 At its core the software contains a set of classes for handling various 
 localization storage formats: DTD, properties, OpenOffice.org GSI/SDF,
-CSV, MO, Qt .ts, TMX, TBX, WordFast txt, Gettext .mo,  and of course PO and 
-XLIFF.  It also provides scripts to convert between these formats.
+CSV, MO, Qt .ts, TMX, TBX, WordFast txt, Gettext .mo, Windows RC, and 
+of course PO and XLIFF.  It also provides scripts to convert between 
+these formats.
 
 Also part of the Toolkit are Python programs to create word counts, merge
 translations and perform various checks on translation files.
