@@ -119,18 +119,21 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
             checkerclasses = [options.filterclass, checks.StandardUnitChecker]
         checkerconfig = checks.CheckerConfig(targetlanguage=options.targetlanguage)
         if options.notranslatefile:
+            options.notranslatefile = os.path.expanduser(options.notranslatefile)
             if not os.path.exists(options.notranslatefile):
                 self.error("notranslatefile %r does not exist" % options.notranslatefile)
             notranslatewords = [line.strip() for line in open(options.notranslatefile).readlines()]
             notranslatewords = dict.fromkeys([key for key in notranslatewords])
             checkerconfig.notranslatewords.update(notranslatewords)
         if options.musttranslatefile:
+            options.musttranslatefile = os.path.expanduser(options.musttranslatefile)
             if not os.path.exists(options.musttranslatefile):
                 self.error("musttranslatefile %r does not exist" % options.musttranslatefile)
             musttranslatewords = [line.strip() for line in open(options.musttranslatefile).readlines()]
             musttranslatewords = dict.fromkeys([key for key in musttranslatewords])
             checkerconfig.musttranslatewords.update(musttranslatewords)
         if options.validcharsfile:
+            options.validcharsfile = os.path.expanduser(options.validcharsfile)
             if not os.path.exists(options.validcharsfile):
                 self.error("validcharsfile %r does not exist" % options.validcharsfile)
             validchars = open(options.validcharsfile).read()
