@@ -146,12 +146,13 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
         """work out which strings are conflicting"""
         self.conflictmap = {}
         for source, translations in self.textmap.iteritems():
+            source = self.flatten(source, " ")
             if len(source) <= 1:
                 continue
             if len(translations) > 1:
                 uniquetranslations = dict.fromkeys([target for target, unit, filename in translations])
                 if len(uniquetranslations) > 1:
-                    self.conflictmap[self.flatten(source, " ")] = translations
+                    self.conflictmap[source] = translations
 
     def outputconflicts(self, options):
         """saves the result of the conflict match"""
