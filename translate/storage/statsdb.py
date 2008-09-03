@@ -18,6 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+from UserDict import UserDict
 
 """Module to provide a cache of statistics in a database.
 
@@ -77,22 +78,100 @@ def wordsinunit(unit):
         targetwords += wordcount(s)
     return sourcewords, targetwords
 
+class Record(UserDict):
+    def __init__(self, keys, values=None):
+        if values == None:
+            values = (0 for i in keys)
+        self.keys = keys
+        self.data = dict(zip(keys, values))
+
+    def to_tuple(self):
+        return tuple(self[key] for key in self.keys)
+
+    def __add__(self, other):
+        result = Record(self.keys)
+        for key in self.keys:
+            result[key] = self[key] + other[key]
+        return result
+
+    def __sub__(self, other):
+        result = Record(self.keys)
+        for key in self.keys:
+            result[key] = self[key] - other[key]
+        return result
+
+    def db_repr(self):
+      return ",".join(repr(x) for x in self.to_tuple())
+
+OTHER, TRANSLATED, FUZZY = 0, 1, 2
 def statefordb(unit):
     """Returns the numeric database state for the unit."""
     if unit.istranslated():
-        return 1
+        return TRANSLATED
     if unit.isfuzzy() and unit.target:
-        return 2
-    return 0
+        return FUZZY
+    return OTHER
+
+class FileTotals(object):
+    keys = ['translatedsourcewords',
+            'translated',
+            'fuzzysourcewords',
+            'fuzzy',
+            'totalsourcewords',
+            'total']
+
+    def db_keys(self):
+      return ",".join(self.keys)
+
+    def __init__(self, cur):
+        self.cur = cur
+        self.cur.execute("""
+            CREATE TABLE IF NOT EXISTS filetotals(
+                fileid                INTEGER PRIMARY KEY AUTOINCREMENT,
+                translatedsourcewords INTEGER NOT NULL,
+                translated            INTEGER NOT NULL,
+                fuzzysourcewords      INTEGER NOT NULL,
+                fuzzy                 INTEGER NOT NULL,
+                totalsourcewords      INTEGER NOT NULL,
+                total                 INTEGER NOT NULL);""")
+
+    def new_record(cls, state_for_db=None, sourcewords=None):
+        record = Record(cls.keys)
+        if state_for_db is not None:
+            record['total'] = 1
+            record['totalsourcewords'] = sourcewords
+            if state_for_db is TRANSLATED:
+                record['translated'] = 1
+                record['translatedsourcewords'] = sourcewords
+            elif state_for_db is FUZZY:
+                record['fuzzy'] = 1
+                record['fuzzysourcewords'] = sourcewords
+        return record
+        
+    new_record = classmethod(new_record)
+
+    def __getitem__(self, fileid):
+        result = self.cur.execute("""
+            SELECT %(keys)s
+            FROM   filetotals
+            WHERE  fileid=?;""" % {'keys': self.db_keys()}, (fileid,))
+        return Record(FileTotals.keys, result.fetchone())
+
+    def __setitem__(self, fileid, record):
+        self.cur.execute("""
+            INSERT OR REPLACE into filetotals
+            VALUES (%(fileid)d, %(vals)s);
+        """ % {'fileid': fileid, 'vals': record.db_repr()})
+
+    def __delitem__(self, fileid):
+        self.cur.execute("""
+            DELETE FROM filetotals
+            WHERE fileid=?;
+        """,  (fileid,))
 
 def emptyfiletotals():
     """Returns a dictionary with all statistics initalised to 0."""
-    stats = {}
-    for state in ["total", "translated", "fuzzy", "untranslated", "review"]:
-        stats[state] = 0
-        stats[state + "sourcewords"] = 0
-        stats[state + "targetwords"] = 0
-    return stats
+    return FileTotals.new_record()
 
 def emptyfilechecks():
     return {}
@@ -157,6 +236,8 @@ class StatsCache(object):
 
     def create(self):
         """Create all tables and indexes."""
+        self.file_totals = FileTotals(self.cur)
+
         self.cur.execute("""CREATE TABLE IF NOT EXISTS files(
             fileid INTEGER PRIMARY KEY AUTOINCREMENT,
             path VARCHAR NOT NULL UNIQUE,
@@ -250,7 +331,7 @@ class StatsCache(object):
         else:
             return configrow[0]
 
-    def _cacheunitstats(self, units, fileid, unitindex=None):
+    def _cacheunitstats(self, units, fileid, unitindex=None, file_totals_record=FileTotals.new_record()):
         """Cache the statistics for the supplied unit(s)."""
         unitvalues = []
         for index, unit in enumerate(units):
@@ -263,11 +344,13 @@ class StatsCache(object):
                                 unit.source, unit.target, \
                                 sourcewords, targetwords, \
                                 statefordb(unit)))
+                file_totals_record = file_totals_record + FileTotals.new_record(statefordb(unit), sourcewords)
         # XXX: executemany is non-standard
         self.cur.executemany("""INSERT INTO units
             (unitid, fileid, unitindex, source, target, sourcewords, targetwords, state)
             values (?, ?, ?, ?, ?, ?, ?, ?);""",
             unitvalues)
+        self.file_totals[fileid] = file_totals_record
         self.con.commit()
         if unitindex:
             return state_strings[statefordb(units[0])]
@@ -297,27 +380,7 @@ class StatsCache(object):
             except ValueError, e:
                 print >> sys.stderr, str(e)
                 return {}
-
-        self.cur.execute("""SELECT
-            state,
-            count(unitid) as total,
-            sum(sourcewords) as sourcewords,
-            sum(targetwords) as targetwords
-            FROM units WHERE fileid=?
-            GROUP BY state;""", (fileid,))
-        values = self.cur.fetchall()
-
-        totals = emptyfiletotals()
-        for stateset in values:
-            state = state_strings[stateset[0]]          # state
-            totals[state] = stateset[1] or 0            # total
-            totals[state + "sourcewords"] = stateset[2] # sourcewords
-            totals[state + "targetwords"] = stateset[3] # targetwords
-        totals["total"] = totals["untranslated"] + totals["translated"] + totals["fuzzy"]
-        totals["totalsourcewords"] = totals["untranslatedsourcewords"] + \
-                totals["translatedsourcewords"] + \
-                totals["fuzzysourcewords"]
-        return totals
+        return self.file_totals[fileid]
 
     def _cacheunitschecks(self, units, fileid, configid, checker, unitindex=None):
         """Helper method for cachestorechecks() and recacheunit()"""
@@ -362,6 +425,14 @@ class StatsCache(object):
         self._cacheunitschecks(store.units, fileid, configid, checker)
         return fileid
 
+    def get_unit_stats(self, fileid, unitid):
+        values = self.cur.execute("""
+            SELECT   state, sourcewords
+            FROM     units
+            WHERE    fileid=? AND unitid=?
+        """, (fileid, unitid))
+        return values.fetchone()
+
     def recacheunit(self, filename, checker, unit):
         """Recalculate all information for a specific unit. This is necessary
         for updating all statistics when a translation of a unit took place,
@@ -372,7 +443,11 @@ class StatsCache(object):
         fileid = self._getfileid(filename, check_mod_info=False)
         configid = self._getstoredcheckerconfig(checker)
         unitid = unit.getid()
+        sourcewords, _targetwords = wordsinunit(unit)
         # get the unit index
+        self.file_totals[fileid] = self.file_totals[fileid] - \
+                                   FileTotals.new_record(*self.get_unit_stats(fileid, unitid)) + \
+                                   FileTotals.new_record(statefordb(unit), sourcewords)
         self.cur.execute("""SELECT unitindex FROM units WHERE
             fileid=? AND unitid=?;""", (fileid, unitid))
         unitindex = self.cur.fetchone()[0]
