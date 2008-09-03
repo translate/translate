@@ -462,39 +462,56 @@ class StatsCache(object):
         state.extend(self._cacheunitschecks([unit], fileid, configid, checker, unitindex))
         return state
 
-    def filechecks(self, filename, checker, store=None):
-        """Retrieves the error statistics for the given file if possible,
-        otherwise delegates to cachestorechecks()."""
-        fileid = None
-        configid = self._getstoredcheckerconfig(checker)
-        try:
-            fileid = self._getfileid(filename, store=store)
-            if not configid:
-                self.cur.execute("""INSERT INTO checkerconfigs
-                    (configid, config) values (NULL, ?);""",
-                    (str(checker.config.__dict__),))
-                configid = self.cur.lastrowid
-        except ValueError, e:
-            print >> sys.stderr, str(e)
-            return emptyfilechecks()
-
+    def _checkerrors(self, filename, fileid, configid, checker, store):
         def geterrors():
             self.cur.execute("""SELECT
                 name,
                 unitindex
                 FROM uniterrors WHERE fileid=? and configid=?
                 ORDER BY unitindex;""", (fileid, configid))
-            return self.cur.fetchall()
+            return self.cur.fetchone(), self.cur
 
-        values = geterrors()
-        if not values:
-            # This could happen if we haven't done the checks before, or the
-            # file changed, or we are using a different configuration
-            store = store or factory.getobject(filename)
-            if os.path.exists(suggestion_filename(filename)):
-                checker.setsuggestionstore(factory.getobject(suggestion_filename(filename), ignore=suggestion_extension()))
-            self.cachestorechecks(fileid, store, checker, configid)
-            values = geterrors()
+        first, cur = geterrors()
+        if first is not None:
+            return first, cur
+        
+        # This could happen if we haven't done the checks before, or the
+        # file changed, or we are using a different configuration
+        store = store or factory.getobject(filename)
+        if os.path.exists(suggestion_filename(filename)):
+            checker.setsuggestionstore(factory.getobject(suggestion_filename(filename), ignore=suggestion_extension()))
+        self.cachestorechecks(fileid, store, checker, configid)
+        return geterrors()
+
+    def _geterrors(self, filename, fileid, configid, checker, store):
+        result = []
+        first, cur = self._checkerrors(filename, fileid, configid, checker, store)
+        result.append(first)
+        result.extend(cur.fetchall())
+        return result
+
+    def _get_config_id(self, fileid, checker):
+        configid = self._getstoredcheckerconfig(checker)
+        if configid:
+            return configid
+        self.cur.execute("""INSERT INTO checkerconfigs
+            (configid, config) values (NULL, ?);""",
+            (str(checker.config.__dict__),))
+        return self.cur.lastrowid
+
+    def filechecks(self, filename, checker, store=None):
+        """Retrieves the error statistics for the given file if possible,
+        otherwise delegates to cachestorechecks()."""
+        fileid = None
+        configid = None
+        try:
+            fileid = self._getfileid(filename, store=store)
+            configid = self._get_config_id(fileid, checker)
+        except ValueError, e:
+            print >> sys.stderr, str(e)
+            return emptyfilechecks()
+
+        values = self._geterrors(filename, fileid, configid, checker, store)
 
         errors = emptyfilechecks()
         for value in values:
@@ -507,6 +524,17 @@ class StatsCache(object):
 
         return errors
 
+    def file_fails_test(self, filename, checker, name):
+        fileid = self._getfileid(filename)
+        configid = self._get_config_id(fileid, checker) 
+        self._checkerrors(filename, fileid, configid, checker, None)
+        self.cur.execute("""SELECT
+            name,
+            unitindex
+            FROM uniterrors 
+            WHERE fileid=? and configid=? and name=?;""", (fileid, configid, name))
+        return self.cur.fetchone() is not None
+        
     def filestats(self, filename, checker, store=None):
         """Return a dictionary of property names mapping sets of unit
         indices with those properties."""
