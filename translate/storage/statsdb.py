@@ -445,15 +445,14 @@ class StatsCache(object):
         unitid = unit.getid()
         sourcewords, _targetwords = wordsinunit(unit)
         # get the unit index
-        self.file_totals[fileid] = self.file_totals[fileid] - \
-                                   FileTotals.new_record(*self.get_unit_stats(fileid, unitid)) + \
-                                   FileTotals.new_record(statefordb(unit), sourcewords)
+        totals_without_unit = self.file_totals[fileid] - \
+                                   FileTotals.new_record(*self.get_unit_stats(fileid, unitid))
         self.cur.execute("""SELECT unitindex FROM units WHERE
             fileid=? AND unitid=?;""", (fileid, unitid))
         unitindex = self.cur.fetchone()[0]
         self.cur.execute("""DELETE FROM units WHERE
             fileid=? AND unitid=?;""", (fileid, unitid))
-        state = [self._cacheunitstats([unit], fileid, unitindex)]
+        state = [self._cacheunitstats([unit], fileid, unitindex, totals_without_unit)]
         # remove the current errors
         self.cur.execute("""DELETE FROM uniterrors WHERE
             fileid=? AND unitindex=?;""", (fileid, unitindex))
