@@ -71,6 +71,7 @@ languages = {
 'km': ('Khmer', 1, '0'),
 'ko': ('Korean', 1, '0'),
 'ku': ('Kurdish', 2, '(n != 1)'),
+'ky': ('Kyrgyz', 1, '0'),
 'lb': ('Letzeburgesch', 2, '(n != 1)'),
 'ln': ('Lingala', 2, '(n > 1)'),
 'lt': ('Lithuanian', 3, '(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2)'),
