@@ -126,7 +126,6 @@ class mofile(base.TranslationStore):
     def __init__(self, inputfile=None, unitclass=mounit):
         self.UnitClass = unitclass
         base.TranslationStore.__init__(self, unitclass=unitclass)
-        self.units = []
         self.filename = ''
         if inputfile is not None:
             self.parsestring(inputfile)
