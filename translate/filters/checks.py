@@ -439,19 +439,20 @@ class StandardChecker(TranslationChecker):
 
     def unchanged(self, str1, str2):
         """checks whether a translation is basically identical to the original string"""
-        str1 = self.filteraccelerators(str1)
-        str2 = self.filteraccelerators(str2)
-        if len(str1.strip()) == 0:
+        str1 = self.removevariables(self.filteraccelerators(str1)).strip()
+        str2 = self.removevariables(self.filteraccelerators(str2)).strip()
+        if len(str1) < 2:
             return True
         if str1.isupper() and str1 == str2:
             return True
         if self.config.notranslatewords:
             words1 = str1.split()
             if len(words1) == 1 and [word for word in words1 if word in self.config.notranslatewords]:
+            #currently equivalent to:
+            #   if len(words1) == 1 and words1[0] in self.config.notranslatewords:
+            #why do we only test for one notranslate word?
                 return True
-        str1 = self.removevariables(str1)
-        str2 = self.removevariables(str2)
-        if not (str1.strip().isdigit() or len(str1) < 2 or decoration.ispurepunctuation(str1.strip())) and (str1.strip().lower() == str2.strip().lower()):
+        if str1.isalpha() and str1.lower() == str2.lower():
             raise FilterFailure(u"please translate")
         return True
 
