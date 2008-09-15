@@ -100,6 +100,7 @@ def test_accelerators():
     assert passes(gnomechecker.accelerators, "_File", "_Fayile") 
     assert fails(gnomechecker.accelerators, "_File", "Fayile") 
     assert fails(gnomechecker.accelerators, "File", "_Fayile") 
+    assert fails(gnomechecker.accelerators, "_File", "_Fayil_e") 
     mozillachecker = checks.MozillaChecker()
     assert passes(mozillachecker.accelerators, "&File", "&Fayile") 
     assert fails_serious(mozillachecker.accelerators, "&File", "Fayile") 
