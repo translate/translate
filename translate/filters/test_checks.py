@@ -454,6 +454,7 @@ def test_purepunc():
     assert fails(stdchecker.purepunc, ".", " ")
     assert fails(stdchecker.purepunc, "Find", "'")
     assert fails(stdchecker.purepunc, "'", "Find")
+    assert passes(stdchecker.purepunc, "year measurement template|2000", "2000")
 
 def test_sentencecount():
     """tests sentencecount messages"""
