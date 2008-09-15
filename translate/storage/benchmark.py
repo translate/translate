@@ -93,22 +93,25 @@ if __name__ == "__main__":
     for sample_file_sizes in [
       # num_dirs, files_per_dir, strings_per_file, source_words_per_string, target_words_per_string
       # (1, 1, 2, 2, 2),
-      (1, 1, 10000, 5, 10),
+      (1, 1, 10000, 5, 10),   # Creat 1 very large file with German like ratios or source to target
+      # (100, 10, 10, 5, 10),   # Create lots of directories and files with smaller then avarage size
       # (1, 5, 10, 10, 10),
       # (1, 10, 10, 10, 10),
       # (5, 10, 10, 10, 10),
       # (5, 10, 100, 20, 20),
       # (10, 20, 100, 10, 10),
+      # (10, 20, 100, 10, 10),   
+      # (100, 2, 140, 3, 3),  # OpenOffice.org approximate ratios
       ]:
         benchmarker = TranslateBenchmarker("BenchmarkDir", storeclass)
         benchmarker.clear_test_dir()
         benchmarker.create_sample_files(*sample_file_sizes)
-        methods = ["parse_file", ]
-        for methodname in methods:
+        methods = [("create_sample_files", "*sample_file_sizes"), ("parse_file", ""), ]
+        for methodname, methodparam in methods:
             print methodname, "%d dirs, %d files, %d strings, %d/%d words" % sample_file_sizes
             print "_______________________________________________________"
             statsfile = "%s_%s" % (methodname, storetype) + '_%d_%d_%d_%d_%d.stats' % sample_file_sizes
-            profile.run('benchmarker.%s()' % methodname, statsfile)
+            profile.run('benchmarker.%s(%s)' % (methodname, methodparam), statsfile)
             stats = pstats.Stats(statsfile)
             stats.sort_stats('cumulative').print_stats(20)
             print "_______________________________________________________"
