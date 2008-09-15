@@ -600,15 +600,15 @@ class StandardChecker(TranslationChecker):
                 continue
             if count1 == 1 and count2 == 0:
                 if countbad2 == 1:
-                    messages.append("accelerator %s appears before an invalid accelerator character '%s' (eg. space)" % (accelmarker, bad2[0]))
+                    messages.append(u"accelerator %s appears before an invalid accelerator character '%s' (eg. space)" % (accelmarker, bad2[0]))
                 else:
                     messages.append(u"accelerator %s is missing from translation" % accelmarker)
             elif count1 == 0:
                 messages.append(u"accelerator %s does not occur in original and should not be in translation" % accelmarker)
             elif count1 == 1 and count2 > count1:
-                messages.append("accelerator %s is repeated in translation" % accelmarker)
+                messages.append(u"accelerator %s is repeated in translation" % accelmarker)
             else:
-                messages.append("accelerator %s occurs %d time(s) in original and %d time(s) in translation" % (accelmarker, count1, count2))
+                messages.append(u"accelerator %s occurs %d time(s) in original and %d time(s) in translation" % (accelmarker, count1, count2))
         if messages:
             if "accelerators" in self.config.criticaltests:
                 raise SeriousFilterFailure(messages)
@@ -623,9 +623,9 @@ class StandardChecker(TranslationChecker):
 #            for variablestart, variableend in self.config.varmatches:
 #                error = accelerator + variablestart
 #                if str1.find(error) >= 0:
-#                    messages.append("original has an accelerated variable")
+#                    messages.append(u"original has an accelerated variable")
 #                if str2.find(error) >= 0:
-#                    messages.append("translation has an accelerated variable")
+#                    messages.append(u"translation has an accelerated variable")
 #        if messages:
 #            raise FilterFailure(messages)
 #        return True
@@ -660,9 +660,9 @@ class StandardChecker(TranslationChecker):
                 mismatch1.extend(vars1)
                 mismatch2.extend(vars2)
         if mismatch1:
-            messages.append("do not translate: %s" % ", ".join(mismatch1))
+            messages.append(u"do not translate: %s" % ", ".join(mismatch1))
         elif mismatch2:
-            messages.append("translation contains variables not in original: %s" % ", ".join(mismatch2))
+            messages.append(u"translation contains variables not in original: %s" % ", ".join(mismatch2))
         if messages and mismatch1:
             raise SeriousFilterFailure(messages)
         elif messages:
