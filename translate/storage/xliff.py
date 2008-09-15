@@ -402,6 +402,20 @@ class xlifffile(lisa.LISAfile):
                 return self.getdatatype(filenames[0])
         return ""
 
+    def getdate(self, filename=None):
+        """Returns the date attribute for the file. If no filename is given,
+        the date of the first file is given. If the date attribute is not
+        specified, None is returned."""
+        if filename:
+            node = self.getfilenode(filename)
+            if not node is None:
+                return node.get("date")
+        else:
+            filenames = self.getfilenames()
+            if len(filenames) > 0 and filenames[0] != "NoName":
+                return self.getdate(filenames[0])
+        return None
+
     def removedefaultfile(self):
         """We want to remove the default file-tag as soon as possible if we 
         know if still present and empty."""
