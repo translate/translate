@@ -62,7 +62,8 @@ def puncend(str1, punctuation):
 def ispurepunctuation(str1):
     """checks whether the string is entirely punctuation"""
     for c in str1:
-        if c.isalpha(): return 0
+        if c.isalnum():
+            return False
     return len(str1)
 
 def isvalidaccelerator(accelerator, acceptlist=None):
