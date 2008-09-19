@@ -79,46 +79,51 @@ def wordsinunit(unit):
     return sourcewords, targetwords
 
 class Record(UserDict):
-    def __init__(self, keys, values=None):
-        if values == None:
-            values = (0 for i in keys)
-        self.keys = keys
-        self.data = dict(zip(keys, values))
+    def __init__(self, record_keys, record_values=None, compute_derived_values = lambda x: x):
+        if record_values == None:
+            record_values = (0 for _i in record_keys)
+        self.record_keys = record_keys
+        self.data = dict(zip(record_keys, record_values))
+        self._compute_derived_values = compute_derived_values
+        self._compute_derived_values(self)
 
     def to_tuple(self):
-        return tuple(self[key] for key in self.keys)
+        return tuple(self[key] for key in self.record_keys)
 
     def __add__(self, other):
-        result = Record(self.keys)
-        for key in self.keys:
+        result = Record(self.record_keys)
+        for key in self.keys():
             result[key] = self[key] + other[key]
+        self._compute_derived_values(self)
         return result
 
     def __sub__(self, other):
-        result = Record(self.keys)
-        for key in self.keys:
+        result = Record(self.record_keys)
+        for key in self.keys():
             result[key] = self[key] - other[key]
+        self._compute_derived_values(self)
         return result
 
-    def db_repr(self):
-      return ",".join(repr(x) for x in self.to_tuple())
+    def as_string_for_db(self):
+      return ",".join([repr(x) for x in self.to_tuple()])
 
-OTHER, TRANSLATED, FUZZY = 0, 1, 2
+UNTRANSLATED, TRANSLATED, FUZZY = 0, 1, 2
 def statefordb(unit):
     """Returns the numeric database state for the unit."""
     if unit.istranslated():
         return TRANSLATED
     if unit.isfuzzy() and unit.target:
         return FUZZY
-    return OTHER
+    return UNTRANSLATED
 
 class FileTotals(object):
     keys = ['translatedsourcewords',
-            'translated',
             'fuzzysourcewords',
+            'untranslatedsourcewords',
+            'translated',
             'fuzzy',
-            'totalsourcewords',
-            'total']
+            'untranslated',
+            'translatedtargetwords']
 
     def db_keys(self):
       return ",".join(self.keys)
@@ -127,22 +132,25 @@ class FileTotals(object):
         self.cur = cur
         self.cur.execute("""
             CREATE TABLE IF NOT EXISTS filetotals(
-                fileid                INTEGER PRIMARY KEY AUTOINCREMENT,
-                translatedsourcewords INTEGER NOT NULL,
-                translated            INTEGER NOT NULL,
-                fuzzysourcewords      INTEGER NOT NULL,
-                fuzzy                 INTEGER NOT NULL,
-                totalsourcewords      INTEGER NOT NULL,
-                total                 INTEGER NOT NULL);""")
+                fileid                  INTEGER PRIMARY KEY AUTOINCREMENT,
+                translatedsourcewords   INTEGER NOT NULL,
+                fuzzysourcewords        INTEGER NOT NULL,
+                untranslatedsourcewords INTEGER NOT NULL,
+                translated              INTEGER NOT NULL,
+                fuzzy                   INTEGER NOT NULL,
+                untranslated            INTEGER NOT NULL,
+                translatedtargetwords   INTEGER NOT NULL);""")
 
-    def new_record(cls, state_for_db=None, sourcewords=None):
-        record = Record(cls.keys)
+    def new_record(cls, state_for_db=None, sourcewords=None, targetwords=None):
+        record = Record(cls.keys, compute_derived_values = cls._compute_derived_values)
         if state_for_db is not None:
-            record['total'] = 1
-            record['totalsourcewords'] = sourcewords
+            if state_for_db is UNTRANSLATED:
+                record['untranslated'] = 1
+                record['untranslatedsourcewords'] = sourcewords
             if state_for_db is TRANSLATED:
                 record['translated'] = 1
                 record['translatedsourcewords'] = sourcewords
+                record['translatedtargetwords'] = targetwords                
             elif state_for_db is FUZZY:
                 record['fuzzy'] = 1
                 record['fuzzysourcewords'] = sourcewords
@@ -150,18 +158,28 @@ class FileTotals(object):
         
     new_record = classmethod(new_record)
 
+    def _compute_derived_values(cls, record):
+        record["total"]            = record["untranslated"] + \
+                                     record["translated"] + \
+                                     record["fuzzy"]
+        record["totalsourcewords"] = record["untranslatedsourcewords"] + \
+                                     record["translatedsourcewords"] + \
+                                     record["fuzzysourcewords"]
+        record["review"]           = 0
+    _compute_derived_values = classmethod(_compute_derived_values)
+
     def __getitem__(self, fileid):
         result = self.cur.execute("""
             SELECT %(keys)s
             FROM   filetotals
             WHERE  fileid=?;""" % {'keys': self.db_keys()}, (fileid,))
-        return Record(FileTotals.keys, result.fetchone())
+        return Record(FileTotals.keys, result.fetchone(), self._compute_derived_values)
 
     def __setitem__(self, fileid, record):
         self.cur.execute("""
             INSERT OR REPLACE into filetotals
             VALUES (%(fileid)d, %(vals)s);
-        """ % {'fileid': fileid, 'vals': record.db_repr()})
+        """ % {'fileid': fileid, 'vals': record.as_string_for_db()})
 
     def __delitem__(self, fileid):
         self.cur.execute("""
@@ -216,14 +234,17 @@ class StatsCache(object):
                 cache.cur = cache.con.cursor()
             
             def clear_old_data(cache):
-                cache.cur.execute("""SELECT toolkitbuild FROM files""")
-                val = cache.cur.fetchone()
-                if val is not None:
-                    if val[0] < toolkitversion.build:
-                        del cache
-                        os.unlink(statsfile)
-                        return True
-                return False
+                try:
+                    cache.cur.execute("""SELECT toolkitbuild FROM files""")
+                    val = cache.cur.fetchone()
+                    if val is not None:
+                        if val[0] < toolkitversion.build:
+                            del cache
+                            os.unlink(statsfile)
+                            return True
+                    return False
+                except dbapi2.OperationalError:
+                    return False
             
             cache = cls._caches[statsfile] = object.__new__(cls)
             connect(cache)
@@ -362,7 +383,7 @@ class StatsCache(object):
                                 unit.source, unit.target, \
                                 sourcewords, targetwords, \
                                 statefordb(unit)))
-                file_totals_record = file_totals_record + FileTotals.new_record(statefordb(unit), sourcewords)
+                file_totals_record = file_totals_record + FileTotals.new_record(statefordb(unit), sourcewords, targetwords)
         # XXX: executemany is non-standard
         self.cur.executemany("""INSERT INTO units
             (unitid, fileid, unitindex, source, target, sourcewords, targetwords, state)
@@ -445,7 +466,7 @@ class StatsCache(object):
 
     def get_unit_stats(self, fileid, unitid):
         values = self.cur.execute("""
-            SELECT   state, sourcewords
+            SELECT   state, sourcewords, targetwords
             FROM     units
             WHERE    fileid=? AND unitid=?
         """, (fileid, unitid))
@@ -461,7 +482,6 @@ class StatsCache(object):
         fileid = self._getfileid(filename, check_mod_info=False)
         configid = self._getstoredcheckerconfig(checker)
         unitid = unit.getid()
-        sourcewords, _targetwords = wordsinunit(unit)
         # get the unit index
         totals_without_unit = self.file_totals[fileid] - \
                                    FileTotals.new_record(*self.get_unit_stats(fileid, unitid))
