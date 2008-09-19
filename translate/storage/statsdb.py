@@ -210,6 +210,28 @@ class StatsCache(object):
     """The current cursor"""
 
     def __new__(cls, statsfile=None):
+        def make_database(statsfile):
+            def connect(cache):
+                cache.con = dbapi2.connect(statsfile)
+                cache.cur = cache.con.cursor()
+            
+            def clear_old_data(cache):
+                cache.cur.execute("""SELECT toolkitbuild FROM files""")
+                val = cache.cur.fetchone()
+                if val is not None:
+                    if val[0] < toolkitversion.build:
+                        del cache
+                        os.unlink(statsfile)
+                        return True
+                return False
+            
+            cache = cls._caches[statsfile] = object.__new__(cls)
+            connect(cache)
+            if clear_old_data(cache):
+                connect(cache)
+            cache.create()
+            return cache
+
         if not statsfile:
             if not cls.defaultfile:
                 userdir = os.path.expanduser("~")
@@ -227,15 +249,11 @@ class StatsCache(object):
         # First see if a cache for this file already exists:
         if statsfile in cls._caches:
             return cls._caches[statsfile]
-        # No existing cache. Let's build a new one and keep a copy
-        cache = cls._caches[statsfile] = object.__new__(cls)
-        cache.con = dbapi2.connect(statsfile)
-        cache.cur = cache.con.cursor()
-        cache.create()
-        return cache
+        # No existing cache. Let's build a new one and keep a copy        
+        return make_database(statsfile)
 
     def create(self):
-        """Create all tables and indexes."""
+        """Create all tables and indexes."""        
         self.file_totals = FileTotals(self.cur)
 
         self.cur.execute("""CREATE TABLE IF NOT EXISTS files(
