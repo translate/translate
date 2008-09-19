@@ -135,6 +135,14 @@ From the GNU gettext manual:
      msgstr TRANSLATED-STRING
 """
 
+def extractstr(string):
+    left = string.find('"')
+    right = string.rfind('"')
+    if right > -1:
+        return string[left:right+1]
+    else:
+        return string[left:] + '"'
+
 class pounit(pocommon.pounit):
     # othercomments = []      #   # this is another comment
     # automaticcomments = []  #   #. comment extracted from the source code
@@ -563,7 +571,7 @@ class pounit(pocommon.pounit):
                     msgstr_pluralid = int(line[len('msgstr['):line.find(']')].strip())
                 else:
                     msgstr_pluralid = None
-            extracted = quote.extractstr(line)
+            extracted = extractstr(line)
             if not extracted is None:
                 if inmsgctxt:
                     self.msgctxt.append(extracted)
