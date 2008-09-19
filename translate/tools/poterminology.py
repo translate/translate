@@ -17,7 +17,11 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""reads a set of .po or .pot files to produce a pootle-terminology.pot"""
+"""reads a set of .po or .pot files to produce a pootle-terminology.pot
+
+See: http://translate.sourceforge.net/wiki/toolkit/poterminology for examples and
+usage instructions
+"""
 
 from translate.lang import factory as lang_factory
 from translate.misc import optrecurse
