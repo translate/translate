@@ -36,7 +36,9 @@ def getText(node):
     # node.xpath is very slow, so we only use it if there are children
     # TODO: consider rewriting by iterating over children
     if node is not None:    # The etree way of testing for children
-        return node.xpath("string()") # specific to lxml.etree
+        # Only non-ASCII strings are returned as unicode, so we have to force
+        # the ASCII-only ones to be unicode as well
+        return unicode(node.xpath("string()")) # specific to lxml.etree
     else:
         return data.forceunicode(node.text) or u""
         # if node.text is none, we want to return "" since the tag is there
