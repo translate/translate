@@ -111,7 +111,7 @@ class TestXLiffGrep:
 </xliff>'''
 
     xliff_text = xliff_skeleton % '''<trans-unit>
-  <source>red</source>
+  <source>rêd</source>
   <target>rooi</target>
 </trans-unit>'''
 
@@ -134,8 +134,8 @@ class TestXLiffGrep:
         """grep for a simple string."""
         xliff_text = self.xliff_text
         xliff_file = self.xliff_parse(xliff_text)
-        xliff_result = self.xliff_parse(self.xliff_grep(xliff_text, "red"))
-        assert xliff_result.units[0].getsource() == u"red"
+        xliff_result = self.xliff_parse(self.xliff_grep(xliff_text, "rêd"))
+        assert xliff_result.units[0].getsource() == u"rêd"
         assert xliff_result.units[0].gettarget() == u"rooi"
 
         xliff_result = self.xliff_parse(self.xliff_grep(xliff_text, "unavailable string"))
