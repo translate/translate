@@ -27,7 +27,8 @@ format. While converters haven't been updated to use this module, we retain
 both.
 
 U{TS file format 4.3<http://doc.trolltech.com/4.3/linguist-ts-file-format.html>}, 
-U{Example<http://svn.ez.no/svn/ezcomponents/trunk/Translation/docs/linguist-format.txt>}
+U{Example<http://svn.ez.no/svn/ezcomponents/trunk/Translation/docs/linguist-format.txt>}, 
+U{Plurals forms<http://www.koders.com/cpp/fidE7B7E83C54B9036EB7FA0F27BC56BCCFC4B9DF34.aspx#L200>}
 
 U{Specification of the valid variable entries <http://doc.trolltech.com/4.3/qstring.html#arg>}, 
 U{2 <http://doc.trolltech.com/4.3/qstring.html#arg-2>}
@@ -38,6 +39,25 @@ from translate.misc.multistring import multistring
 from lxml import etree
 
 # TODO: handle translation types
+
+NPLURALS = {
+'jp': 1,
+'en': 2,
+'fr': 2,
+'lv': 3,
+'ga': 3,
+'cs': 3,
+'sk': 3,
+'mk': 3,
+'lt': 3,
+'ru': 3,
+'pl': 3,
+'ro': 3,
+'sl': 4,
+'mt': 4,
+'cy': 5,
+'ar': 6,
+}
 
 class tsunit(lisa.LISAunit):
     """A single term in the xliff file."""
@@ -72,6 +92,14 @@ class tsunit(lisa.LISAunit):
             return not node is None
         return filter(not_none, [self._getsourcenode(), self._gettargetnode()])
 
+    def getsource(self):
+        sourcenode = self._getsourcenode()
+        if self.hasplural():
+            return multistring([sourcenode.text])
+        else:
+            return sourcenode.text
+    source = property(getsource, lisa.LISAunit.setsource)
+
     def settarget(self, text):
         #Firstly deal with reinitialising to None or setting to identical string
         if self.gettarget() == text:
@@ -101,6 +129,7 @@ class tsunit(lisa.LISAunit):
             return multistring([node.text for node in numerus_nodes])
         else:
             return targetnode.text
+    target = property(gettarget, settarget)
 
     def hasplural(self):
         return self.xmlelement.get("numerus") == "yes"
@@ -271,4 +300,10 @@ class tsfile(lisa.LISAfile):
         if self.body is None:
             return False
         return True
-    
+
+    def nplural(self):
+        lang = self.body.get("language")
+        if NPLURALS.has_key(lang):
+            return NPLURALS[lang]
+        else:
+            return 1
