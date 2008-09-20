@@ -112,6 +112,8 @@ def _guessextention(storefile):
         extention = 'po'
     elif '%Wordfast TM' in start:
         extention = 'txt'
+    elif '<!DOCTYPE TS>' in start:
+        extention = 'ts'
     else:
         raise ValueError("Failed to guess file type.")
     storefile.seek(0)
