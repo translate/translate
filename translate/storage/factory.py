@@ -45,6 +45,7 @@ try:
     from translate.storage import tbx
     from translate.storage import tmx
     from translate.storage import xliff
+    from translate.storage import ts2 as ts
     support_xml = True
 except ImportError, e:
     print >> sys.stderr, str(e)
@@ -69,6 +70,7 @@ if support_xml:
            "tbx": tbx.tbxfile,
            "tmx": tmx.tmxfile, 
            "xliff": xliff.xlifffile, "xlf": xliff.xlifffile, 
+           "ts": ts.tsfile,
     })
 
 decompressclass = {
