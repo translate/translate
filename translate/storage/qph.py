@@ -71,7 +71,7 @@ class QphUnit(lisa.LISAunit):
         if targetnode is None:
             etree.SubElement(self.xmlelement, self.namespaced("target"))
             return None
-        return targetnode.text
+        return targetnode.text or ""
     target = property(gettarget, settarget)
 
     def addnote(self, text, origin=None):
