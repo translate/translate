@@ -185,7 +185,11 @@ class tsunit(lisa.LISAunit):
 
     def getid(self):
 #        return self._context_node.text + self.source 
-        return self.xmlelement.getparent().find("name").text + self.source
+        context_name = self.xmlelement.getparent().find("name").text
+        if context_name is not None:
+            return context_name + self.source
+        else:
+            return self.source
 
     def getcontext(self):
         return self.xmlelement.getparent().find("name").text
