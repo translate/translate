@@ -30,6 +30,21 @@ def is_available():
     exitcode, output, error = run_command(["bzr", "version"])
     return exitcode == 0
 
+def get_version():
+    """return a tuple of (major, minor) for the installed bazaar client"""
+    import re
+    command = ["bzr", "--version"]
+    exitcode, output, error = run_command(command)
+    if exitcode == 0:
+        version_line = output.splitlines()[0]
+        version_match = re.search(r"\d+\.\d+", version_line)
+        if version_match:
+            major, minor = version_match.group().split(".")
+            if (major.isdigit() and minor.isdigit()):
+                return (int(major), int(minor))
+    # if anything broke before, then we return the invalid version number
+    return (0, 0)
+
 
 class bzr(GenericRevisionControlSystem):
     """Class to manage items under revision control of bzr."""
@@ -59,7 +74,8 @@ class bzr(GenericRevisionControlSystem):
         command = ["bzr", "commit"]
         if message:
             command.extend(["-m", message])
-        if author:
+        # the "--author" argument is supported since bzr v0.91rc1
+        if author and (get_version() >= (0, 91)):
             command.extend(["--author", author])
         # the filename is the last argument
         command.append(self.location_abs)

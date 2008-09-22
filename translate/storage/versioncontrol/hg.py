@@ -29,6 +29,21 @@ def is_available():
     exitcode, output, error = run_command(["hg", "--version"])
     return exitcode == 0
 
+def get_version():
+    """return a tuple of (major, minor) for the installed bazaar client"""
+    import re
+    command = ["hg", "--version"]
+    exitcode, output, error = run_command(command)
+    if exitcode == 0:
+        version_line = output.splitlines()[0]
+        version_match = re.search(r"\d+\.\d+", version_line)
+        if version_match:
+            major, minor = version_match.group().split(".")
+            if (major.isdigit() and minor.isdigit()):
+                return (int(major), int(minor))
+    # if anything broke before, then we return the invalid version number
+    return (0, 0)
+
 
 class hg(GenericRevisionControlSystem):
     """Class to manage items under revision control of mercurial."""
@@ -65,8 +80,8 @@ class hg(GenericRevisionControlSystem):
             message = ""
         # commit changes
         command = ["hg", "-R", self.root_dir, "commit", "-m", message]
-        # add the 'author' argument, if it was given
-        if author:
+        # add the 'author' argument, if it was given (only supported since v1.0)
+        if author and (get_version() >= (1, 0)):
             command.extend(["--user", author])
         # the location is the last argument
         command.append(self.location_abs)

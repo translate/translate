@@ -29,6 +29,17 @@ def is_available():
     exitcode, output, error = run_command(["svn", "--version"])
     return exitcode == 0
 
+def get_version():
+    """return a tuple of (major, minor) for the installed subversion client"""
+    command = ["svn", "--version", "--quiet"]
+    exitcode, output, error = run_command(command)
+    if exitcode == 0:
+        major, minor = output.strip().split(".")[0:2]
+        if (major.isdigit() and minor.isdigit()):
+            return (int(major), int(minor))
+    # something went wrong above
+    return (0, 0)
+
 
 class svn(GenericRevisionControlSystem):
     """Class to manage items under revision control of Subversion."""
@@ -65,7 +76,8 @@ class svn(GenericRevisionControlSystem):
         command = ["svn", "-q", "--non-interactive", "commit"]
         if message:
             command.extend(["-m", message])
-        if author:
+        # the "--with-revprop" argument is support since svn v1.5
+        if author and (get_version() >= (1,5)):
             command.extend(["--with-revprop", "translate:author=%s" % author])
         # the location is the last argument
         command.append(self.location_abs)
