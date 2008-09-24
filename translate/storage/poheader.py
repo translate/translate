@@ -223,6 +223,14 @@ class poheader(object):
             nplurals = int(nplurals)
         self.updateheader(add=True, Plural_Forms = "nplurals=%d; plural=%s;" % (nplurals, plural) )
 
+    def gettargetlanguage(self):
+        header = self.parseheader()
+        return header.get('Language')
+
+    def settargetlanguage(self, lang):
+        if isinstance(lang, basestr) and len(lang) > 1:
+            self.updateheader(add=True, Language=lang)
+
     def mergeheaders(self, otherstore):
         """Merges another header with this header.
         
