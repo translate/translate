@@ -221,7 +221,7 @@ class poheader(object):
         """update the Plural-Form PO header"""
         if isinstance(nplurals, basestring):
             nplurals = int(nplurals)
-        self.updateheader( Plural_Forms = "nplurals=%d; plural=%s;" % (nplurals, plural) )
+        self.updateheader(add=True, Plural_Forms = "nplurals=%d; plural=%s;" % (nplurals, plural) )
 
     def mergeheaders(self, otherstore):
         """Merges another header with this header.
