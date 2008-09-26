@@ -117,6 +117,11 @@ install the iso-codes package for your distribution, but it is optional.
 Alternatively, it is also available from
 http://packages.debian.org/unstable/source/iso-codes
 
+The package vobject is needed for ical2po and po2ical.  Versions from
+0.6.0 have been tested, 0.6.5 is required to fix a Lotus Notes related
+calendars.
+http://vobject.skyhouseconsulting.com/
+
 The programs have been tested on Linux and Windows.
 
 
@@ -198,6 +203,8 @@ po2wordfast - Wordfast Translation Memory converter
 po2tmx   - TMX (Translation Memory Exchange) converter
 pot2po   - PO file initialiser
 csv2tbx  - Create TBX (TermBase eXchange) files from Comma Separated Value (CSV) files
+ini2po   - convert .ini files to to PO
+ical2po  - Convert iCalendar files (*.ics) to PO
 
 * Tools (Quality Assurance)
 pofilter - run any of the 40+ checks on your PO files
