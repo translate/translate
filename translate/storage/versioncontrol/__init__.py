@@ -21,13 +21,13 @@
 
 """This module manages interaction with version control systems.
 
-To implement support for a new version control system, inherit the class
-GenericRevisionControlSystem. 
-
-TODO:
-    * add authentication handling
-    * 'commitdirectory' should do a single commit instead of one for each file
-    * maybe implement some caching for 'get_versioned_object' - check profiler
+   To implement support for a new version control system, inherit the class
+   GenericRevisionControlSystem. 
+   
+   TODO:
+     - add authentication handling
+     - 'commitdirectory' should do a single commit instead of one for each file
+     - maybe implement some caching for 'get_versioned_object' - check profiler
 """
 
 import re
@@ -142,9 +142,9 @@ class GenericRevisionControlSystem:
     overriden by all implementations that derive from this class.
 
     By default, all implementations can rely on the following attributes:
-        root_dir: the parent of the metadata directory of the working copy
-        location_abs: the absolute path of the RCS object
-        location_rel: the path of the RCS object relative to 'root_dir'
+      - root_dir: the parent of the metadata directory of the working copy
+      - location_abs: the absolute path of the RCS object
+      - location_rel: the path of the RCS object relative to 'root_dir'
     """
 
     RCS_METADIR = None
@@ -185,10 +185,11 @@ class GenericRevisionControlSystem:
     def _find_rcs_directory(self, rcs_obj):
         """Try to find the metadata directory of the RCS
 
-        returns a tuple:
-            the absolute path of the directory, that contains the metadata directory
-            the absolute path of the RCS object
-            the relative path of the RCS object based on the directory above
+        @rtype: tuple
+        @return:
+          - the absolute path of the directory, that contains the metadata directory
+          - the absolute path of the RCS object
+          - the relative path of the RCS object based on the directory above
         """
         rcs_obj_dir = os.path.dirname(os.path.abspath(rcs_obj))
         if os.path.isdir(os.path.join(rcs_obj_dir, self.RCS_METADIR)):
