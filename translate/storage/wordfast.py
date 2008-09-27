@@ -37,6 +37,16 @@
 
    The dialect of the TSV files is specified by L{WordfastDialect}.
 
+   Encoding
+   --------
+   The files are UTF-16 or ISO-8859-1 (Latin1) encoded.  These choices
+   are most likely because Microsoft Word is the base editing tool for
+   Wordfast.
+
+   The format is tab seperated so We are able to detect UTF-16 vs Latin1 
+   by searching for the occurance of a UTF-16 tab character and then
+   continuing with the parsing.
+
    Timestamps
    ----------
    L{WordfastTime} allows for the correct management of the Wordfast
