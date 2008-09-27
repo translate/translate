@@ -77,13 +77,12 @@ class CommonDatabase(object):
 
         Any derived class must override __init__.
 
-        The following exceptions can be raised:
-            ValueError: the given location exists, but the database type
-                is incompatible (e.g. created by a different indexing engine)
-            OSError: the database failed to initialize
-
         Any implementation can rely on the "self.location" attribute to be set
         by the __init__ function of the super class.
+
+        @raise ValueError: the given location exists, but the database type
+                is incompatible (e.g. created by a different indexing engine)
+        @raise OSError: the database failed to initialize
 
         @param basedir: the parent directory of the database
         @type basedir: str
@@ -94,7 +93,6 @@ class CommonDatabase(object):
         @type analyzer: int
         @param create_allowed: create the database, if necessary; default: True
         @type create_allowed: bool
-        @throws: OSError, ValueError
         """
         # just do some checks
         if self.QUERY_TYPE is None:
@@ -134,7 +132,7 @@ class CommonDatabase(object):
         the previously defined default setting.
 
         @param args: queries or search string or description of field query
-            examples:
+            examples::
                 [xapian.Query("foo"), xapian.Query("bar")]
                 xapian.Query("foo")
                 "bar"
@@ -470,8 +468,10 @@ class CommonDatabase(object):
         """use this function if you want to do something with every single match
         of a query
 
-        example: self._walk_matches(query, function_for_match, arg_for_func)
+        example::
+             self._walk_matches(query, function_for_match, arg_for_func)
             'function_for_match' expects only one argument: the matched object
+
         @param query: a query object of the real implementation
         @type query: xapian.Query | PyLucene.Query
         @param function: the function to execute with every match
@@ -503,7 +503,7 @@ class CommonDatabase(object):
 
         @param field_analyzers: mapping of field names and analyzers
         @type field_analyzers: dict containing field names and analyzers
-        @throws: TypeError for invalid values in 'field_analyzers'
+        @raise TypeError: invalid values in 'field_analyzers'
         """
         for field, analyzer in field_analyzers.items():
             # check for invald input types
@@ -582,7 +582,7 @@ class CommonEnquire(object):
         @type number: int
         @return: a set of matching entries and some statistics
         @rtype: tuple of (returned number, available number, matches)
-                "matches" is a dictionary of
+                "matches" is a dictionary of::
                     ["rank", "percent", "document", "docid"]
         """
         raise NotImplementedError("Incomplete indexing implementation: " \
