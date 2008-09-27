@@ -26,7 +26,7 @@ interface to the xapian indexing engine for the translate toolkit
 Xapian v1.0 or higher is supported.
 
 If you are interested in writing an interface for Xapian 0.x, then
-you should checkout the following:
+you should checkout the following::
     svn export -r 7235 https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate-search-indexer-generic-merging/translate/search/indexer/
 It is not completely working, but it should give you a good start.
 """
@@ -60,10 +60,9 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
     def __init__(self, basedir, analyzer=None, create_allowed=True):
         """initialize or open a xapian database
 
-        The following exceptions can be raised:
-            ValueError: the given location exists, but the database type
+        @raise ValueError: the given location exists, but the database type
                 is incompatible (e.g. created by a different indexing engine)
-            OSError: the database failed to initialize
+        @raise OSError: the database failed to initialize
 
         @param basedir: the parent directory of the database
         @type basedir: str
@@ -74,7 +73,6 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         @type analyzer: int
         @param create_allowed: create the database, if necessary; default: True
         @type create_allowed: bool
-        @throws: OSError, ValueError
         """
         # call the __init__ function of our parent
         super(XapianDatabase, self).__init__(basedir, analyzer=analyzer,
@@ -383,7 +381,7 @@ class XapianEnquire(CommonIndexer.CommonEnquire):
         @type number: int
         @return: a set of matching entries and some statistics
         @rtype: tuple of (returned number, available number, matches)
-                "matches" is a dictionary of
+                "matches" is a dictionary of::
                     ["rank", "percent", "document", "docid"]
         """
         matches = self.enquire.get_mset(start, number)
@@ -426,7 +424,7 @@ def _extract_fieldvalues(match, (result, fieldnames)):
     @param result: the resulting dict will be added to this list
     @type result: list of dict
     @param fieldnames: the names of the fields to be added to the dict
-    @type result: list of str
+    @type fieldnames: list of str
     """
     # prepare empty dict
     item_fields = {}
