@@ -97,20 +97,20 @@ class LevenshteinComparer:
 
     def similarity_real(self, a, b, stoppercentage=40):
         """Returns the similarity between a and b based on Levenshtein distance. It
-    can stop prematurely as soon as it sees that a and b will be no simmilar than
-    the percentage specified in stoppercentage.
+           can stop prematurely as soon as it sees that a and b will be no simmilar than
+           the percentage specified in stoppercentage.
 
-    The Levenshtein distance is calculated, but the following should be noted:
-        * Only the first MAX_LEN characters are considered. Long strings differing
-          at the end will therefore seem to match better than they should. See the
-          use of the variable penalty to lessen the effect of this.
-        * Strings with widely different lengths give the opportunity for shortcut.
-          This is by definition of the Levenshtein distance: the distance will be 
-          at least as much as the difference in string length.
-        * Calculation is stopped as soon as a similarity of stoppercentage becomes
-          unattainable. See the use of the variable stopvalue.
-        * Implementation uses memory O(min(len(a), len(b))
-        * Excecution time is O(len(a)*len(b))
+           The Levenshtein distance is calculated, but the following should be noted:
+               - Only the first MAX_LEN characters are considered. Long strings differing
+                 at the end will therefore seem to match better than they should. See the
+                 use of the variable penalty to lessen the effect of this.
+               - Strings with widely different lengths give the opportunity for shortcut.
+                 This is by definition of the Levenshtein distance: the distance will be 
+                 at least as much as the difference in string length.
+               - Calculation is stopped as soon as a similarity of stoppercentage becomes
+                 unattainable. See the use of the variable stopvalue.
+               - Implementation uses memory O(min(len(a), len(b))
+               - Excecution time is O(len(a)*len(b))
     """
         l1, l2 = len(a), len(b)
         if l1 == 0 or l2 == 0:
