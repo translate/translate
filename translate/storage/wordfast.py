@@ -24,21 +24,29 @@
    Wordfast TM format is the Translation Memory format used by the 
    U{Wordfast<http://www.wordfast.net/>} computer aided translation tool.
 
+   It is a bilingual base class derived format with L{WordfastTMFile}
+   and L{WordfastUnit} providing file and unit level access.
+
    Implementation
    ==============
    The implementation covers the full requirements of a Wordfast TM file.
-   The files are simple CSV files that can be read by Microsoft Excel.
-   They use the .txt extension which does make it more difficult to 
-   automatically identify such files.
+   The files are simple Tab Seperated Value (TSV) files that can be read 
+   by Microsoft Excel and other spreadsheet programs.  They use the .txt 
+   extension which does make it more difficult to automatically identify 
+   such files.
+
+   The dialect of the TSV files is specified by L{WordfastDialect}.
 
    Timestamps
    ----------
-   The Wordfast timestamp YYYYMMDD~HHMMSS are managed correctly.  However
-   timestamps on individual units are not updated when edited.
+   L{WordfastTime} allows for the correct management of the Wordfast
+   YYYYMMDD~HHMMSS timestamps.  However, timestamps on individual units are 
+   not updated when edited.
 
    Header
    ------
-   The header is fully implemented through observing the behaviour of the
+   L{WordfastHeader} provides header management support.  The header 
+   functionality is fully implemented through observing the behaviour of the
    files in real use cases, input from the Wordfast programmers and 
    public documentation.
 
@@ -54,6 +62,8 @@
         we where able to observe all possible escapes. Unfortunately the
         escaping differs slightly between Windows and Mac version.  This
         might cause errors in future.
+   Functions allow for L{conversion to Unicode<_wf_to_char>} and L{back to 
+   Wordfast escapes<_char_to_wf>}.
 
    Extended Attributes
    -------------------
