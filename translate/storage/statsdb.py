@@ -323,15 +323,13 @@ class StatsCache(object):
 
     def _getfileid(self, filename, check_mod_info=True, store=None, errors_return_empty=False):
         """Attempt to find the fileid of the given file, if it hasn't been
-        updated since the last record update.
+           updated since the last record update.
 
-        None is returned if either the file's record is not found, or if it is
-        not up to date.
+           None is returned if either the file's record is not found, or if it is
+           not up to date.
 
-        @param filename: the filename to retrieve the id for
-        @param opt_mod_info: an optional mod_info to consider in addition
-        to the actual mod_info of the given file
-        @rtype: String or None
+           @param filename: the filename to retrieve the id for
+           @rtype: String or None
         """
         realpath = os.path.realpath(filename)
         self.cur.execute("""SELECT fileid, st_mtime, st_size FROM files
