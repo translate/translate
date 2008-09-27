@@ -69,10 +69,9 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
 
         Any derived class must override __init__.
 
-        The following exceptions can be raised:
-            ValueError: the given location exists, but the database type
+        @raise ValueError: the given location exists, but the database type
                 is incompatible (e.g. created by a different indexing engine)
-            OSError: the database failed to initialize
+        @raise OSError: the database failed to initialize
 
         @param basedir: the parent directory of the database
         @type basedir: str
@@ -83,7 +82,6 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         @type analyzer: int
         @param create_allowed: create the database, if necessary; default: True
         @type create_allowed: bool
-        @throws: OSError, ValueError
         """
         super(PyLuceneDatabase, self).__init__(basedir, analyzer=analyzer,
                 create_allowed=create_allowed)
@@ -202,11 +200,11 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         @type require_all: bool
         @param analyzer: the analyzer to be used
             possible analyzers are:
-                CommonDatabase.ANALYZER_TOKENIZE
+             -  L{CommonDatabase.ANALYZER_TOKENIZE}
                     the field value is splitted to be matched word-wise
-                CommonDatabase.ANALYZER_PARTIAL
+             -  L{CommonDatabase.ANALYZER_PARTIAL}
                     the field value must start with the query string
-                CommonDatabase.ANALYZER_EXACT
+             -  L{CommonDatabase.ANALYZER_EXACT}
                     keep special characters and the like
         @type analyzer: bool
         @return: resulting query object
@@ -240,11 +238,11 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         @type value: str
         @param analyzer: the analyzer to be used
             possible analyzers are:
-                CommonDatabase.ANALYZER_TOKENIZE
+              - L{CommonDatabase.ANALYZER_TOKENIZE}
                     the field value is splitted to be matched word-wise
-                CommonDatabase.ANALYZER_PARTIAL
+              - L{CommonDatabase.ANALYZER_PARTIAL}
                     the field value must start with the query string
-                CommonDatabase.ANALYZER_EXACT
+              - L{CommonDatabase.ANALYZER_EXACT}
                     keep special characters and the like
         @type analyzer: bool
         @return: resulting query object
@@ -481,7 +479,7 @@ class PyLuceneHits(CommonIndexer.CommonEnquire):
         @type number: int
         @return: a set of matching entries and some statistics
         @rtype: tuple of (returned number, available number, matches)
-                "matches" is a dictionary of
+                "matches" is a dictionary of::
                     ["rank", "percent", "document", "docid"]
         """
         # check if requested results do not exist
