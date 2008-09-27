@@ -26,9 +26,9 @@ class TestWFUnit(test_base.TestTranslationUnit):
     def test_difficult_escapes(self):
         """Wordfast files need to perform magic with escapes.
         
-        Wordfast does not accept line breaks in its TM (even though they would be
-        valid in CSV) thus we turn \\n into \n and reimplement the base class test but
-        eliminate a few of the actual tests.
+           Wordfast does not accept line breaks in its TM (even though they would be
+           valid in CSV) thus we turn \\n into \n and reimplement the base class test but
+           eliminate a few of the actual tests.
         """
         unit = self.unit
         specials = ['\\"', '\\ ',
