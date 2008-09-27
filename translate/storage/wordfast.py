@@ -135,7 +135,8 @@ TAB_UTF16 = "\x00\x09"
 def _char_to_wf(string):
     """Char -> Wordfast &'XX; escapes
     
-    @note: Full roundtripping is not possible because of the escaping of \n and \t"""
+       Full roundtripping is not possible because of the escaping of NEWLINE \\n 
+       and TAB \\t"""
     # FIXME there is no platform check to ensure that we use Mac encodings when running on a Mac
     if string:
         for code, char in WF_ESCAPE_MAP:
