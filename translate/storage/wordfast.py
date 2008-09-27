@@ -20,6 +20,45 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 """Manage the Wordfast Translation Memory format
+
+   Wordfast TM format is the Translation Memory format used by the 
+   U{Wordfast<http://www.wordfast.net/>} computer aided translation tool.
+
+   Implementation
+   ==============
+   The implementation covers the full requirements of a Wordfast TM file.
+   The files are simple CSV files that can be read by Microsoft Excel.
+   They use the .txt extension which does make it more difficult to 
+   automatically identify such files.
+
+   Timestamps
+   ----------
+   The Wordfast timestamp YYYYMMDD~HHMMSS are managed correctly.  However
+   timestamps on individual units are not updated when edited.
+
+   Header
+   ------
+   The header is fully implemented through observing the behaviour of the
+   files in real use cases, input from the Wordfast programmers and 
+   public documentation.
+
+   Escaping
+   --------
+   Wordfast TM implements a form of escaping that covers two aspects:
+     1. Placeable: bold, formating, etc.  These are left as is and ignored.
+        It is up to the editor and future placeable implementation to manage
+        these.
+     2. Escapes: items that may confuse Excel or translators are 
+        escaped as &'XX;. These are fully implemented and are converted to
+        and from Unicode.  By observing behaviour and reading documentation
+        we where able to observe all possible escapes. Unfortunately the
+        escaping differs slightly between Windows and Mac version.  This
+        might cause errors in future.
+
+   Extended Attributes
+   -------------------
+   The last 4 columns allow users to define and manage extended attributes.
+   These are left as is and are not directly managed byour implemenation.
 """
 
 import csv
