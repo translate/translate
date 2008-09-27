@@ -139,19 +139,17 @@ def get_indexer(basedir, preference=None):
     indexers knows how to handle it. Otherwise we return the first available
     indexer.
 
-    The following exceptions can be thrown:
-        IndexError: there is no indexing engine available
-        ValueError: the database location already exists, but we did not find
-            a suitable indexing engine for it
-        OSError: any error that could occour while creating or opening the
-            database
+    @raise IndexError: there is no indexing engine available
+    @raise ValueError: the database location already exists, but we did not find
+                       a suitable indexing engine for it
+    @raise OSError: any error that could occour while creating or opening the
+                    database
 
     @param basedir: the parent directory of (possible) different indexing
              databases
     @type basedir: string
     @return: the class of the most appropriate indexer
-    @rtype: subclass of CommonIndexer.CommonDatabase
-    @throws: IndexError
+    @rtype: subclass of L{CommonIndexer.CommonDatabase}
     """
     if not _AVAILABLE_INDEXERS:
         raise IndexError("Indexer: no indexing engines are available")
