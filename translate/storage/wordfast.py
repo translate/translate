@@ -27,6 +27,14 @@
    It is a bilingual base class derived format with L{WordfastTMFile}
    and L{WordfastUnit} providing file and unit level access.
 
+   Wordfast tools
+   ==============
+   Wordfast is a computer aided translation tool.  It is an application
+   built on top of Microsoft Word and is implemented as a rather 
+   sophisticated set of macros.  Understanding that helps us understand
+   many of the seemingly strange choices around this format including:
+   encoding, escaping and file naming.
+
    Implementation
    ==============
    The implementation covers the full requirements of a Wordfast TM file.
