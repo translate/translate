@@ -21,6 +21,37 @@
 
 """Class that manages iCalender files for translation
 
+   Implementation
+   ==============
+   iCalendar files follow the U{RFC2445<http://tools.ietf.org/html/rfc2445>}
+   specification.
+
+   The iCalendar specification uses the following naming conventions:
+     - Component: an event, journal entry, timezone, etc
+     - Property: a property of a component: summary, description, start time, etc
+     - Attribute: an attribute of a property, e.g. language
+
+   The following are localisable in this implementation:
+     - VEVENT component: SUMMARY, DESCRIPTION, COMMENT and LOCATION properties
+
+   While other items could be localised this is not seen as important until use
+   cases arise.  In such a case simply adjusting the component.name and 
+   property.name lists to include these will allow expanded localisation.
+
+   LANGUAGE Attribute
+   ------------------
+   While the iCalendar format allows items to have a language attribute this is 
+   not used. The reason being that for most of the items that we localise they
+   are only allowed to occur zero or once.  Thus 'summary' would ideally
+   be present in multiple languages in one file, the format does not allow
+   such multiple entries.  This is unfortunate as it prevents the creation
+   of a single multilingual iCalendar file.
+
+   Future Format Support
+   ===================== 
+   As this format used U{vobject<http://vobject.skyhouseconsulting.com/>} which
+   supports various formats including U{vCard<http://en.wikipedia.org/wiki/VCard>}
+   it is possible to expand this format to understand those if needed.
 
 """
 from translate.storage import base
