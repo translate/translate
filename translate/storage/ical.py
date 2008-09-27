@@ -89,7 +89,7 @@ class icalfile(base.TranslationStore):
             input = StringIO(input)
             self._icalfile = vobject.readComponents(input).next()
         else:
-            self._icalfile = vobject.readComponents(open(inout)).next()
+            self._icalfile = vobject.readComponents(open(input)).next()
         for component in self._icalfile.components():
             if component.name == "VEVENT":
                 for property in component.getChildren():
