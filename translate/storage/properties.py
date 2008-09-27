@@ -20,23 +20,28 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 """classes that hold units of .properties files (propunit) or entire files
-(propfile) these files are used in translating Mozilla and other software
+   (propfile) these files are used in translating Mozilla and other software
+   
+   The following U{.properties file
+   description<http://java.sun.com/j2se/1.4.2/docs/api/java/util/Properties.html#load(java.io.Reader)>}
+   and U{example <http://www.exampledepot.com/egs/java.util/Props.html>} give some
+   good references to the .properties specification.
 
-@note: The following {.properties file
-description<http://java.sun.com/j2se/1.4.2/docs/api/java/util/Properties.html#load(java.io.Reader)>}
-and {example <http://www.exampledepot.com/egs/java.util/Props.html>} give some
-good references to the .properties specification.  A simple summary of what is
-permissible follows.
-
-# a comment
-! a comment
-    
-a = a string
-b = a string with escape sequences \t \n \r \\ \" \' \ (space) \u0123
-c = a string with a continuation line \
-    continuation line
-d.e.f = another string
-
+   Implementation
+   ==============
+   A simple summary of what is permissible follows.
+   
+   Comments::
+     # a comment
+     ! a comment
+       
+   Name and Value pairs::
+     # Note that the b and c are escaped for epydoc rendering
+     a = a string
+     d.e.f = another string
+     b = a string with escape sequences \\t \\n \\r \\\\ \\" \\' \\ (space) \u0123
+     c = a string with a continuation line \\
+         continuation line
 """
 
 from translate.storage import base
