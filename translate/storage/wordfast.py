@@ -141,6 +141,7 @@ WF_ESCAPE_MAP = (
 """Mapping of Wordfast &'XX; escapes to correct Unicode characters"""
 
 TAB_UTF16 = "\x00\x09"
+"""The tab \\t character as it would appear in UTF-16 encoding"""
 
 def _char_to_wf(string):
     """Char -> Wordfast &'XX; escapes
