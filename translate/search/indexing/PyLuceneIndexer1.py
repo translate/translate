@@ -54,11 +54,11 @@ class PyLuceneDatabase(PyLuceneIndexer.PyLuceneDatabase):
         @type require_all: bool
         @param analyzer: the analyzer to be used
             possible analyzers are:
-                CommonDatabase.ANALYZER_TOKENIZE
+              - L{CommonDatabase.ANALYZER_TOKENIZE}
                     the field value is splitted to be matched word-wise
-                CommonDatabase.ANALYZER_PARTIAL
+              - L{CommonDatabase.ANALYZER_PARTIAL}
                     the field value must start with the query string
-                CommonDatabase.ANALYZER_EXACT
+              - L{CommonDatabase.ANALYZER_EXACT}
                     keep special characters and the like
         @type analyzer: bool
         @return: resulting query object
@@ -97,11 +97,11 @@ class PyLuceneDatabase(PyLuceneIndexer.PyLuceneDatabase):
         @type value: str
         @param analyzer: the analyzer to be used
             possible analyzers are:
-                CommonDatabase.ANALYZER_TOKENIZE
+              - L{CommonDatabase.ANALYZER_TOKENIZE}
                     the field value is splitted to be matched word-wise
-                CommonDatabase.ANALYZER_PARTIAL
+              - L{CommonDatabase.ANALYZER_PARTIAL}
                     the field value must start with the query string
-                CommonDatabase.ANALYZER_EXACT
+              - L{CommonDatabase.ANALYZER_EXACT}
                     keep special characters and the like
         @type analyzer: bool
         @return: resulting query object
