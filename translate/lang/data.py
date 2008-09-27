@@ -154,9 +154,9 @@ def languagematch(languagecode, otherlanguagecode):
 dialect_name_re = re.compile(r"([^(\s]+)\s*\(([^)]+)\)")
 
 def tr_lang(langcode):
-    """Gives a function that can translate a language name, even in the form 
-        "language (country)"
-    into the language with iso code langcode."""
+    """Gives a function that can translate a language name, even in the form::
+           "language (country)"
+       into the language with iso code langcode."""
     langfunc = gettext_lang(langcode)
     countryfunc = gettext_country(langcode)
 
@@ -189,9 +189,9 @@ def gettext_country(langcode):
 def normalize(string, normal_form="NFC"):
     """Return a unicode string in its normalized form
     
-    @param sting: The string to be normalized
-    @param normal_form: NFC (default), NFD, NFCK, NFDK
-    @return: Normalized string
+       @param string: The string to be normalized
+       @param normal_form: NFC (default), NFD, NFCK, NFDK
+       @return: Normalized string
     """
     return unicodedata.normalize(normal_form, string)
 
