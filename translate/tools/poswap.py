@@ -25,10 +25,10 @@ source language.
 Ensure that the two po files correspond 100% to the same pot file before using
 this.
 
-To translate Kurdish (ku) through French:
+To translate Kurdish (ku) through French::
     po2swap -i fr/ -t ku -o fr-ku
 
-To convert the fr-ku files back to en-ku:
+To convert the fr-ku files back to en-ku::
     po2swap --reverse -i fr/ -t fr-ku -o en-ku
 
 See: http://translate.sourceforge.net/wiki/toolkit/poswap for further examples and
