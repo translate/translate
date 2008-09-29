@@ -68,5 +68,8 @@ class fr(common.Common):
             - Double spaces might be introduced
         """
         text = super(cls, cls).punctranslate(text)
+        # We might get problems where we got a space in URIs such as
+        # http ://
+        text = text.replace(u" ://", "://")
         return guillemets(text)
     punctranslate = classmethod(punctranslate)
