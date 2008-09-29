@@ -8,6 +8,8 @@ def test_punctranslate():
     language = factory.getlanguage('zh')
     assert language.punctranslate(u"abc efg") == u"abc efg"
     assert language.punctranslate(u"abc efg.") == u"abc efg。"
+    assert language.punctranslate(u"(abc efg).") == u"(abc efg)。"
+    assert language.punctranslate(u"abc efg...") == u"abc efg..."
 
 def test_sentences():
     """Tests basic functionality of sentence segmentation."""
