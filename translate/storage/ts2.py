@@ -93,6 +93,7 @@ class tsunit(lisa.LISAunit):
         return filter(not_none, [self._getsourcenode(), self._gettargetnode()])
 
     def getsource(self):
+        # TODO: support <byte>. See bug 528.
         sourcenode = self._getsourcenode()
         if self.hasplural():
             return multistring([sourcenode.text])
@@ -311,3 +312,14 @@ class tsfile(lisa.LISAfile):
             return NPLURALS[lang]
         else:
             return 1
+
+    def __str__(self):
+        """Converts to a string containing the file's XML.
+        
+        We have to override this to ensure mimic the Qt convention:
+            - no XML decleration
+            - plain DOCTYPE that lxml seems to ignore
+        """
+        return "<!DOCTYPE TS>" + etree.tostring(self.document, pretty_print=True, xml_declaration=False, encoding='utf-8')
+
+
