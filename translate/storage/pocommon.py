@@ -63,7 +63,7 @@ class pounit(base.TranslationUnit):
 
 class pofile(base.TranslationStore, poheader.poheader):
     Name = "Gettext PO file"
-    Mimetypes  = ["text/x-gettext-catalog", "text/x-po", "text/x-pot"]
+    Mimetypes  = ["text/x-gettext-catalog", "text/x-gettext-translation", "text/x-po", "text/x-pot"]
     Extensions = ["po", "pot"]
 
     def makeheader(self, **kwargs):
