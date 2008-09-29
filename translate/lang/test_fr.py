@@ -27,6 +27,7 @@ def test_punctranslate():
     assert language.punctranslate(u"The <a href='info'>user</a> 'root'?") == u"The <a href='info'>user</a> « root » ?"
     #Broken because we test for equal number of ` and ' in the string
     #assert language.punctranslate(u"The <a href='info'>user</a> `root'?") == u"The <a href='info'>user</a> « root » ?"
+    assert language.punctranslate(u"The <a href='http://koeie'>user</a>") == u"The <a href='http://koeie'>user</a>"
 
 def test_sentences():
     """Tests basic functionality of sentence segmentation."""
