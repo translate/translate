@@ -292,7 +292,7 @@ class tsfile(lisa.LISAfile):
     def switchcontext(self, contextname, createifmissing=False):
         """Switch the current context to the one named contextname, optionally 
         creating it if it doesn't exist."""
-        self._context_name = contextname
+        self._contextname = contextname
         contextnode = self.getcontextnode(contextname)
         if contextnode is None:
             if not createifmissing:
