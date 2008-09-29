@@ -97,6 +97,8 @@ class Common(object):
     See U{http://www.gnu.org/software/gettext/manual/html_node/gettext_150.html}.
     Also see data.py
     """
+    # Don't change these defaults of nplurals or pluralequation willy-nilly:
+    # some code probably depends on these for unrecognised languages
     
     listseperator = u", "
     """This string is used to seperate lists of textual elements. Most 
