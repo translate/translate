@@ -128,7 +128,7 @@ class tsunit(lisa.LISAunit):
             numerus_nodes = targetnode.findall(self.namespaced("numerusform"))
             return multistring([node.text for node in numerus_nodes])
         else:
-            return targetnode.text or ""
+            return targetnode.text or u""
     target = property(gettarget, settarget)
 
     def hasplural(self):
