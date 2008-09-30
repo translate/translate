@@ -40,9 +40,9 @@
 # override regex match below for phrases with 'no'
 +no
 
-# ignore phrases with one or two-character words (unless =word appears below)
+# ignore all one or two-character words (unless =word appears below)
 /..?
-# ignore phrases with parenthesis
+# ignore words with parenthesis, typically function() calls and the like
 /.*\(.*
 # ignore numbers, both cardinal (e.g. 1,234.0) and ordinal (e.g. 1st, 22nd)
 /[0-9,.]+(st|nd|rd)?
