@@ -6,7 +6,7 @@
 # A line beginning with a '!' specifies upper- / lower-case mapping for words
 # or phrases before comparison with this stoplist (no mapping is applied to
 # the words or regex in this file, only to the source messages).  The second
-# second character on this line must be one of the following:
+# character on this line must be one of the following:
 #
 # 'C' no uppercase / lowercase mapping is performed
 # 'F' 'Title Case" words / terms are folded to lower case (default)
@@ -45,7 +45,7 @@
 # ignore words with parenthesis, typically function() calls and the like
 /.*\(.*
 # ignore numbers, both cardinal (e.g. 1,234.0) and ordinal (e.g. 1st, 22nd)
-/[0-9,.]+(st|nd|rd)?
+/[0-9,.]+(st|nd|rd|th)?
 
 # allow these words by themselves and don't count against length for phrases
 :off
