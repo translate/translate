@@ -52,25 +52,42 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
         (options, args) = optrecurse.optparse.OptionParser.parse_args(self, args, values)
         # some intelligence as to what reasonable people might give on the command line
         if args and not options.input:
-            if not options.output and len(args) > 1:
+            if not options.output and not options.update and len(args) > 1:
                 options.input = args[:-1]
                 args = args[-1:]
             else:
                 options.input = args
                 args = []
-        if args and not options.output:
+        # don't overwrite last freestanding argument file, to avoid accidents
+        # due to shell wildcard expansion
+        if args and not options.output and not options.update:
+            if os.path.lexists(args[-1]) and not os.path.isdir(args[-1]):
+                self.error("To overwrite %s, specify it with -o/--output or -u/--update" % (args[-1]))
             options.output = args[-1]
             args = args[:-1]
-        if not options.output:
-            options.output = "pootle-terminology.pot"
+        if options.output and options.update:
+            self.error("You cannot use both -u/--update and -o/--output")
         if args:
-            self.error("You have used an invalid combination of --input, --output and freestanding args")
+            self.error("You have used an invalid combination of -i/--input, -o/--output, -u/--update and freestanding args")
         if isinstance(options.input, list) and len(options.input) == 1:
             options.input = options.input[0]
             if options.inputmin == None:
                 options.inputmin = 1
+        elif not isinstance(options.input, list) and not os.path.isdir(options.input):
+            if options.inputmin == None:
+                options.inputmin = 1
         elif options.inputmin == None:
             options.inputmin = 2
+        if options.update:
+            options.output = options.update
+            if isinstance(options.input, list):
+                options.input.append(options.update)
+            elif options.input:
+                options.input = [options.input, options.update]
+            else:
+                options.input = options.update
+        if not options.output:
+            options.output = "pootle-terminology.pot"
         return (options, args)
 
     def set_usage(self, usage=None):
@@ -386,6 +403,10 @@ def parse_stopword_file(option, opt_str, value, parser):
 def main():
     formats = {"po":("po", None), "pot": ("pot", None), None:("po", None)}
     parser = TerminologyOptionParser(formats)
+
+    parser.add_option("-u", "--update", type="string", dest="update",
+        metavar="UPDATEFILE", help="update terminology in UPDATEFILE")
+
     parser.add_option("-I", "--ignore-case", dest="ignorecase",
         action="store_true", default=False, help="make all terms lowercase")
     parser.add_option("-F", "--fold-titlecase", dest="foldtitle",
