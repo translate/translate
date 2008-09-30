@@ -365,6 +365,13 @@ def find_installed_file(filename):
         return None
     return filepath
 
+def fold_case_option(option, opt_str, value, parser):
+    parser.values.ignorecase = False
+    parser.values.foldtitle = True
+
+def preserve_case_option(option, opt_str, value, parser):
+    parser.values.ignorecase = parser.values.foldtitle = False
+
 def parse_stopword_file(option, opt_str, value, parser):
 
     actions = { '+': frozenset(), ':': frozenset(['skip']),
@@ -407,11 +414,6 @@ def main():
     parser.add_option("-u", "--update", type="string", dest="update",
         metavar="UPDATEFILE", help="update terminology in UPDATEFILE")
 
-    parser.add_option("-I", "--ignore-case", dest="ignorecase",
-        action="store_true", default=False, help="make all terms lowercase")
-    parser.add_option("-F", "--fold-titlecase", dest="foldtitle",
-        action="store_true", default=False, help="fold \"Title Case\" to lowercase")
-
     parser.stopwords = {}
     parser.stoprelist = []
     parser.stopfoldtitle = True
@@ -421,6 +423,14 @@ def main():
         action="callback", callback=parse_stopword_file,
         help="read stopword (term exclusion) list from STOPFILE (default %s)" % defaultstopfile,
         default=defaultstopfile)
+
+    parser.set_defaults(foldtitle = True, ignorecase = False)
+    parser.add_option("-F", "--fold-titlecase", callback=fold_case_option,
+        action="callback", help="fold \"Title Case\" to lowercase (default)")
+    parser.add_option("-C", "--preserve-case", callback=preserve_case_option,
+        action="callback", help="preserve all uppercase/lowercase")
+    parser.add_option("-I", "--ignore-case", dest="ignorecase",
+        action="store_true", help="make all terms lowercase")
 
     parser.add_option("", "--accelerator", dest="accelchars", default="",
         metavar="ACCELERATORS", help="ignores the given accelerator characters when matching")
