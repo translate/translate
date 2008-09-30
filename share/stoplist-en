@@ -1,11 +1,24 @@
 #
 # Stoplist of common English words to exclude from terminology
 #
-# Lines beginning with a '#' are comments
+# Lines beginning with a '#' are comments; empty lines are ignored
+#
+# A line beginning with a '!' specifies upper- / lower-case mapping for words
+# or phrases before comparison with this stoplist (no mapping is applied to
+# the words or regex in this file, only to the source messages).  The second
+# second character on this line must be one of the following:
+#
+# 'C' no uppercase / lowercase mapping is performed
+# 'F' 'Title Case" words / terms are folded to lower case (default)
+# 'I' all words are mapped to lowercase 
+#
+# (note that this uppercase / lowercase mapping is independent of -F/-C/-I
+#  arguments for case sensitivity provided to poterminology itself)
 #
 # Lines beginning with a '/' are regex patterns - any word that matches will
 # be ignored by itself, and any phrase containing it will be ignored as well
-# (note, regex patterns will NOT be checked if an exact word match is found)
+# (note, regex patterns will NOT be checked if an exact word match is found,
+# and regex patterns are always applied to individual words, not phrases)
 #
 # All other lines should begin with one of the following characters, which
 # indicate whether the word should be ignored (as a word alone), disregarded
@@ -20,12 +33,25 @@
 # '>' ignore word alone, disregarded (for --term-word-length) inside phrase
 # '@' ignore word alone, and ignore any phrase containing it
 #
+
+# apply title-case folding to words before comparing with this stoplist
+!F
+
+# override regex match below for phrases with 'no'
 +no
-/.*\(.*
+
+# ignore phrases with one or two-character words (unless =word appears below)
 /..?
+# ignore phrases with parenthesis
+/.*\(.*
+# ignore numbers, both cardinal (e.g. 1,234.0) and ordinal (e.g. 1st, 22nd)
 /[0-9,.]+(st|nd|rd)?
+
+# allow these words by themselves and don't count against length for phrases
 :off
 :on
+
+# allow these words by themselves, but ignore any phrases containing them
 <first
 <hello
 <last
@@ -34,6 +60,8 @@
 <second
 <welcome
 <yes
+
+# ignore these words by themselves, but allow phrases containing them
 =able
 =about
 =above
@@ -41,6 +69,7 @@
 =accordingly
 =across
 =actually
+=ad
 =after
 =afterwards
 =again
@@ -168,7 +197,6 @@
 =easy
 =edu
 =effects
-=eg
 =either
 =else
 =elsewhere
@@ -418,7 +446,6 @@
 =puts
 =quickly
 =quite
-=qv
 =really
 =reasonably
 =regarding
@@ -528,7 +555,6 @@
 =various
 =via
 =viz
-=vs
 =w
 =want
 =wanted
@@ -567,7 +593,6 @@
 =worked
 =working
 =works
-=would
 =year
 =years
 =yet
@@ -578,6 +603,12 @@
 =your
 =yourself
 =yourselves
+
+# ignore these words by themselves, but allow phrases containing them, and
+# don't count against length for phrases
+#
+# (possible additions to this list for multi-lingual text: >di >el >le)
+#
 >a
 >an
 >and
@@ -593,6 +624,8 @@
 >the
 >to
 >und
+
+# ignore these words and any phrases containing them
 @ain't
 @aint
 @al
@@ -615,6 +648,7 @@
 @don
 @don't
 @dont
+@eg
 @eight
 @eighteen
 @eighth
@@ -696,6 +730,7 @@
 @others
 @ours
 @perhaps
+@qv
 @rather
 @rd
 @re
@@ -777,6 +812,7 @@
 @vi
 @vii
 @viii
+@vs
 @was
 @wasn't
 @wasnt
@@ -800,6 +836,7 @@
 @will
 @won't
 @wont
+@would
 @wouldn't
 @wouldnt
 @www
