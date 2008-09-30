@@ -121,6 +121,9 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
                 inputfiles = [options.input]
         if os.path.isdir(options.output):
             options.output = os.path.join(options.output,"pootle-terminology.pot")
+        # load default stopfile if no -S options were given
+        if self.defaultstopfile:
+            parse_stopword_file(None, "-S", self.defaultstopfile, self)
         self.glossary = {}
         self.initprogressbar(inputfiles, options)
         for inputpath in inputfiles:
@@ -397,15 +400,16 @@ def parse_stopword_file(option, opt_str, value, parser):
                 elif stopline[1] == 'I':
                     parser.stopignorecase = True
                 else:
-                    parser.warning("%s line %d - bad case mapping directive" % (options.stopwordfile, line), options, ("", stopline[:2]))
+                    parser.warning("%s line %d - bad case mapping directive" % (value, line), parser.values, ("", stopline[:2]))
             elif stoptype == '/':
                 parser.stoprelist.append(re.compile(stopline[1:-1]+'$'))
             else:
                 parser.stopwords[stopline[1:-1]] = actions[stoptype]
     except KeyError, character:
-        parser.warning("%s line %d - bad stopword entry starts with" % (options.stopwordfile, line), options, sys.exc_info())
-        parser.warning("%s line %d" % (options.stopwordfile, line + 1), options, ("", "all lines after error ignored" ))
+        parser.warning("%s line %d - bad stopword entry starts with" % (value, line), parser.values, sys.exc_info())
+        parser.warning("%s line %d" % (value, line + 1), parser.values, ("", "all lines after error ignored" ))
     stopfile.close()
+    parser.defaultstopfile = None
 
 def main():
     formats = {"po":("po", None), "pot": ("pot", None), None:("po", None)}
@@ -418,11 +422,11 @@ def main():
     parser.stoprelist = []
     parser.stopfoldtitle = True
     parser.stopignorecase = False
-    defaultstopfile = find_installed_file('stoplist-en')
+    parser.defaultstopfile = find_installed_file('stoplist-en')
     parser.add_option("-S", "--stopword-list", type="string", metavar="STOPFILE", 
         action="callback", callback=parse_stopword_file,
-        help="read stopword (term exclusion) list from STOPFILE (default %s)" % defaultstopfile,
-        default=defaultstopfile)
+        help="read stopword (term exclusion) list from STOPFILE (default %s)" % parser.defaultstopfile,
+        default=parser.defaultstopfile)
 
     parser.set_defaults(foldtitle = True, ignorecase = False)
     parser.add_option("-F", "--fold-titlecase", callback=fold_case_option,
