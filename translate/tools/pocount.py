@@ -172,7 +172,7 @@ Review Messages, Review Source Words"
 
     def handledir(self, dirname):
         path, name = os.path.split(dirname)
-        if name in ["CVS", ".svn", "_darcs"]:
+        if name in ["CVS", ".svn", "_darcs", ".git", ".hg"]:
             return
         entries = os.listdir(dirname)
         self.handlefiles(dirname, entries)
