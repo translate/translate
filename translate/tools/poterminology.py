@@ -104,26 +104,6 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
                 inputfiles = [options.input]
         if os.path.isdir(options.output):
             options.output = os.path.join(options.output,"pootle-terminology.pot")
-        self.stopwords = {}
-        self.stoprelist = []
-        actions = { '+': frozenset(), ':': frozenset(['skip']),
-                    '<': frozenset(['phrase']), '=': frozenset(['word']),
-                    '>': frozenset(['word','skip']),
-                    '@': frozenset(['word','phrase']) }
-        if options.stopwordfile != None:
-            stopfile = open(options.stopwordfile, "r")
-            try:
-                for stopline in stopfile:
-                    stoptype = stopline[0]
-                    if stoptype == '#' or stoptype == "\n":
-                        continue
-                    elif stoptype == '/':
-                        self.stoprelist.append(re.compile(stopline[1:-1]+'$'))
-                    else:
-                        self.stopwords[stopline[1:-1]] = actions[stoptype]
-            except KeyError, character:
-                self.warning("Bad line in stopword list %s starts with" % (options.stopwordfile), options, sys.exc_info())
-            stopfile.close()
         self.glossary = {}
         self.initprogressbar(inputfiles, options)
         for inputpath in inputfiles:
@@ -151,20 +131,30 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
         string = string.strip()
         return string
 
+    def stopmap(self, word):
+        """return case-mapped stopword for input word"""
+        if self.stopignorecase or (self.stopfoldtitle and word.istitle()):
+            word = word.lower()
+        return word
+
+    def stopword(self, word, defaultset=frozenset()):
+        """return stoplist frozenset for input word"""
+        return self.stopwords.get(self.stopmap(word),defaultset)
+
     def addphrases(self, words, skips, translation, partials=True):
         """adds (sub)phrases with non-skipwords and more than one word"""
         if (len(words) > skips + 1 and
-            'skip' not in self.stopwords.get(words[0], frozenset()) and
-            'skip' not in self.stopwords.get(words[-1], frozenset())):
+            'skip' not in self.stopword(words[0]) and
+            'skip' not in self.stopword(words[-1])):
             self.glossary.setdefault(' '.join(words), []).append(translation)
         if partials:
             part = list(words)
             while len(part) > 2:
-                if 'skip' in self.stopwords.get(part.pop(), frozenset()):
+                if 'skip' in self.stopword(part.pop()):
                     skips -= 1
                 if (len(part) > skips + 1 and
-                    'skip' not in self.stopwords.get(part[0], frozenset()) and
-                    'skip' not in self.stopwords.get(part[-1], frozenset())):
+                    'skip' not in self.stopword(part[0]) and
+                    'skip' not in self.stopword(part[-1])):
                     self.glossary.setdefault(' '.join(part), []).append(translation)
 
     def processfile(self, fileprocessor, options, fullinputpath):
@@ -192,14 +182,15 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
                 words = []
                 skips = 0
                 for word in sourcelang.words(sentence):
+                    stword = self.stopmap(word)
                     if options.ignorecase or (options.foldtitle and word.istitle()):
                         word = word.lower()
                     ignore = defaultignore
-                    if word in self.stopwords:
-                        ignore = self.stopwords[word]
+                    if stword in self.stopwords:
+                        ignore = self.stopwords[stword]
                     else:
                         for stopre in self.stoprelist:
-                            if stopre.match(word) != None:
+                            if stopre.match(stword) != None:
                                 ignore = rematchignore
                                 break
                     translation = (source, target, unit, fullinputpath)
@@ -215,7 +206,7 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
                         if 'phrase' in ignore:
                             # add trailing phrases in previous words
                             while len(words) > 2:
-                                if 'skip' in self.stopwords.get(words.pop(0), defaultignore):
+                                if 'skip' in self.stopword(words.pop(0)):
                                     skips -= 1
                                 self.addphrases(words, skips, translation)
                             words = []
@@ -226,7 +217,7 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
                                 skips += 1
                             if len(words) > options.termlength + skips:
                                 while len(words) > options.termlength + skips:
-                                    if 'skip' in self.stopwords.get(words.pop(0), defaultignore):
+                                    if 'skip' in self.stopword(words.pop(0)):
                                         skips -= 1
                                 self.addphrases(words, skips, translation)
                             else:
@@ -234,7 +225,8 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
                 if options.termlength > 1:
                     # add trailing phrases in sentence after reaching end
                     while options.termlength > 1 and len(words) > 2:
-                        if 'skip' in self.stopwords.get(words.pop(0), defaultignore):
+                        
+                        if 'skip' in self.stopword(words.pop(0)):
                             skips -= 1
                         self.addphrases(words, skips, translation)
 
@@ -350,11 +342,46 @@ def find_installed_file(filename):
     root = __file__
     if os.path.islink(root):
         root = os.path.realpath(root)
-    filepath = os.path.join( os.path.dirname(os.path.abspath(root)), os.path.pardir, 'share', filename )
+    filepath = os.path.join( os.path.dirname(os.path.dirname(os.path.abspath(root))), 'share', filename )
 
     if not os.path.exists(filepath):
         return None
     return filepath
+
+def parse_stopword_file(option, opt_str, value, parser):
+
+    actions = { '+': frozenset(), ':': frozenset(['skip']),
+                '<': frozenset(['phrase']), '=': frozenset(['word']),
+                '>': frozenset(['word','skip']),
+                '@': frozenset(['word','phrase']) }
+
+    stopfile = open(value, "r")
+    line = 0
+    try:
+        for stopline in stopfile:
+            line += 1
+            stoptype = stopline[0]
+            if stoptype == '#' or stoptype == "\n":
+                continue
+            elif stoptype == '!':
+                if stopline[1] == 'C':
+                    parser.stopfoldtitle = False
+                    parser.stopignorecase = False
+                elif stopline[1] == 'F':
+                    parser.stopfoldtitle = True
+                    parser.stopignorecase = False
+                elif stopline[1] == 'I':
+                    parser.stopignorecase = True
+                else:
+                    parser.warning("%s line %d - bad case mapping directive" % (options.stopwordfile, line), options, ("", stopline[:2]))
+            elif stoptype == '/':
+                parser.stoprelist.append(re.compile(stopline[1:-1]+'$'))
+            else:
+                parser.stopwords[stopline[1:-1]] = actions[stoptype]
+    except KeyError, character:
+        parser.warning("%s line %d - bad stopword entry starts with" % (options.stopwordfile, line), options, sys.exc_info())
+        parser.warning("%s line %d" % (options.stopwordfile, line + 1), options, ("", "all lines after error ignored" ))
+    stopfile.close()
 
 def main():
     formats = {"po":("po", None), "pot": ("pot", None), None:("po", None)}
@@ -363,25 +390,37 @@ def main():
         action="store_true", default=False, help="make all terms lowercase")
     parser.add_option("-F", "--fold-titlecase", dest="foldtitle",
         action="store_true", default=False, help="fold \"Title Case\" to lowercase")
+
+    parser.stopwords = {}
+    parser.stoprelist = []
+    parser.stopfoldtitle = True
+    parser.stopignorecase = False
+    defaultstopfile = find_installed_file('stoplist-en')
+    parser.add_option("-S", "--stopword-list", type="string", metavar="STOPFILE", 
+        action="callback", callback=parse_stopword_file,
+        help="read stopword (term exclusion) list from STOPFILE (default %s)" % defaultstopfile,
+        default=defaultstopfile)
+
     parser.add_option("", "--accelerator", dest="accelchars", default="",
         metavar="ACCELERATORS", help="ignores the given accelerator characters when matching")
+
     parser.add_option("-t", "--term-words", type="int", dest="termlength", default="3",
-                      help="generate terms of up to LENGTH words (default 3)", metavar="LENGTH")
+        help="generate terms of up to LENGTH words (default 3)", metavar="LENGTH")
     parser.add_option("", "--inputs-needed", type="int", dest="inputmin",
-                      help="omit terms appearing in less than MIN input files (default 1 - 2 if multiple input files)", metavar="MIN")
+        help="omit terms appearing in less than MIN input files (default 2, or 1 if only one input file)", metavar="MIN")
     parser.add_option("", "--fullmsg-needed", type="int", dest="fullmsgmin", default="1",
-                      help="omit full message terms appearing in less than MIN different messages (default 1)", metavar="MIN")
+        help="omit full message terms appearing in less than MIN different messages (default 1)", metavar="MIN")
     parser.add_option("", "--substr-needed", type="int", dest="substrmin", default="2",
-                      help="omit substring-only terms appearing in less than MIN different messages (default 2)", metavar="MIN")
+        help="omit substring-only terms appearing in less than MIN different messages (default 2)", metavar="MIN")
     parser.add_option("", "--locs-needed", type="int", dest="locmin", default="2",
-                      help="omit terms appearing in less than MIN different original source files (default 2)", metavar="MIN")
+        help="omit terms appearing in less than MIN different original source files (default 2)", metavar="MIN")
+
     parser.add_option("", "--sort", dest="sortorders", action="append",
-                      type="choice", choices=parser.sortorders, metavar="ORDER",
-                      help="output sort order(s): %s (default is all orders in the above priority)" % ', '.join(parser.sortorders))
-    parser.add_option("-S", "--stopword-list", type="string", dest="stopwordfile",
-                      help="name of file containing stopword list", metavar="FILENAME", default=find_installed_file('stoplist-en'))
+        type="choice", choices=parser.sortorders, metavar="ORDER",
+        help="output sort order(s): %s (default is all orders in the above priority)" % ', '.join(parser.sortorders))
+
     parser.add_option("", "--source-language", dest="sourcelanguage", default="en",
-                      help="the source language code (default 'en')", metavar="LANG")
+        help="the source language code (default 'en')", metavar="LANG")
     parser.add_option("-v", "--invert", dest="invert",
         action="store_true", default=False, help="invert the source and target languages for terminology")
     parser.set_usage()
