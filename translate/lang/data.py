@@ -193,7 +193,10 @@ def normalize(string, normal_form="NFC"):
        @param normal_form: NFC (default), NFD, NFCK, NFDK
        @return: Normalized string
     """
-    return unicodedata.normalize(normal_form, string)
+    if string is None:
+        return None
+    else:
+        return unicodedata.normalize(normal_form, string)
 
 def forceunicode(string):
     """Helper method to ensure that the parameter becomes unicode if not yet"""
