@@ -66,6 +66,8 @@ class GrepFilter:
         self.includeheader = includeheader
 
     def matches(self, teststr):
+        if teststr is None:
+            return False
         teststr = data.normalize(teststr)
         if self.ignorecase:
             teststr = teststr.lower()
