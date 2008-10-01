@@ -103,7 +103,7 @@ class TxtFile(base.TranslationStore):
         if inputfile is not None:
             txtsrc = inputfile.readlines()
             self.parse(txtsrc)
-        self.encoding = "utf-8"
+        self.encoding = encoding
 
     def parse(self, lines):
         """Read in text lines and create txtunits from the blocks of text"""
