@@ -36,6 +36,7 @@ U{2 <http://doc.trolltech.com/4.3/qstring.html#arg-2>}
 
 from translate.storage import lisa
 from translate.misc.multistring import multistring
+from translate.lang import data
 from lxml import etree
 
 # TODO: handle translation types
@@ -98,7 +99,7 @@ class tsunit(lisa.LISAunit):
         if self.hasplural():
             return multistring([sourcenode.text])
         else:
-            return sourcenode.text
+            return data.forceunicode(sourcenode.text)
     source = property(getsource, lisa.LISAunit.setsource)
 
     def settarget(self, text):
@@ -129,7 +130,7 @@ class tsunit(lisa.LISAunit):
             numerus_nodes = targetnode.findall(self.namespaced("numerusform"))
             return multistring([node.text for node in numerus_nodes])
         else:
-            return targetnode.text or u""
+            return data.forceunicode(targetnode.text) or u""
     target = property(gettarget, settarget)
 
     def hasplural(self):
