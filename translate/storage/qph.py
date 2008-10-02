@@ -30,7 +30,6 @@ Linguist and may be used by any number of projects and applications.
 """
 
 from translate.storage import lisa
-from translate.misc.multistring import multistring
 from lxml import etree
 
 class QphUnit(lisa.LISAunit):
@@ -59,20 +58,6 @@ class QphUnit(lisa.LISAunit):
         def not_none(node):
             return not node is None
         return filter(not_none, [self._getsourcenode(), self._gettargetnode()])
-
-    def settarget(self, text):
-        #Firstly deal with reinitialising to None or setting to identical string
-        if self.gettarget() == text:
-            return
-        self._gettargetnode().text = text
-
-    def gettarget(self):
-        targetnode = self._gettargetnode()
-        if targetnode is None:
-            etree.SubElement(self.xmlelement, self.namespaced("target"))
-            return None
-        return targetnode.text or u""
-    target = property(gettarget, settarget)
 
     def addnote(self, text, origin=None):
         """Add a note specifically in a "definition" tag"""
