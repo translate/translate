@@ -360,7 +360,7 @@ class TranslationChecker(UnitChecker):
             filterresult = True
             for pluralform in unit.target.strings:
                 try:
-                    if not test(self.str1, pluralform):
+                    if not test(self.str1, unicode(pluralform)):
                         filterresult = False
                 except FilterFailure, e:
                     filterresult = False
@@ -757,9 +757,9 @@ class StandardChecker(TranslationChecker):
             if word1 != "--" and word1.startswith("--") and word1[-1].isalnum():
                 parts = word1.split("=")
                 if not parts[0] in str2:
-                    raise FilterFailure("The option %s does not occur or is translated in the translation." % parts[0]) 
+                    raise FilterFailure(u"The option %s does not occur or is translated in the translation." % parts[0]) 
                 if len(parts) > 1 and parts[1] in str2:
-                    raise FilterFailure("The parameter %(param)s in option %(option)s is not translated." % {"param": parts[0], "option": parts[1]})
+                    raise FilterFailure(u"The parameter %(param)s in option %(option)s is not translated." % {"param": parts[1], "option": parts[0]})
         return True
 
     def startcaps(self, str1, str2):
