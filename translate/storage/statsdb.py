@@ -237,11 +237,12 @@ class StatsCache(object):
                 try:
                     cache.cur.execute("""SELECT toolkitbuild FROM files""")
                     val = cache.cur.fetchone()
-                    if val is not None:
-                        if val[0] < toolkitversion.build:
-                            del cache
-                            os.unlink(statsfile)
-                            return True
+                    # If the database is empty, we have no idea whether its layout
+                    # is correct, so we might as well delete it.
+                    if val is None or val[0] < toolkitversion.build:
+                        del cache
+                        os.unlink(statsfile)
+                        return True
                     return False
                 except dbapi2.OperationalError:
                     return False
