@@ -30,11 +30,15 @@
 
 """Module for parsing Gettext .mo files for translation.
 
-The coding of .mo files was produced from documentation in Gettext 0.16 and 
-from observation and testing of existing .mo files in the wild.
+The coding of .mo files was produced from U{Gettext documentation
+<http://www.gnu.org/software/gettext/manual/gettext.html#MO-Files>},
+Pythons msgfmt.py and by observing and testing existing .mo files in the wild.
 
-The class does not implement any of the hashing componets of Gettext.  This 
-will probably make the output file slower in some instances.
+The hash algorithm is implemented for MO files, this should result in 
+faster access of the MO file.  The hash is optional for Gettext
+and is not needed for reading or writing MO files, in this implementation
+it is always on and does produce sometimes different results to Gettext
+in very small files.
 """
 
 from translate.storage import base
