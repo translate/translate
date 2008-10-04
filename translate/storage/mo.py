@@ -123,6 +123,8 @@ class mofile(base.TranslationStore):
     Name = "Gettext MO file"
     Mimetypes  = ["application/x-gettext-catalog", "application/x-mo"]
     Extensions = ["mo", "gmo"]
+    _binary = True
+
     def __init__(self, inputfile=None, unitclass=mounit):
         self.UnitClass = unitclass
         base.TranslationStore.__init__(self, unitclass=unitclass)

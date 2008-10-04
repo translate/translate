@@ -64,6 +64,7 @@ class qmfile(base.TranslationStore):
     UnitClass = qmunit
     Mimetypes  = ["application/x-qm"]
     Extensions = ["qm"]
+    _binary = True
     def __init__(self, inputfile=None, unitclass=qmunit):
         self.UnitClass = unitclass
         base.TranslationStore.__init__(self, unitclass=unitclass)
