@@ -319,9 +319,15 @@ class TranslationStore(object):
     """Base class for stores for multiple translation units of type UnitClass."""
 
     UnitClass = TranslationUnit
+    """The class of units that will be instantiated and used by this class"""
+    Name = "Base translation store"
+    """The human usable name of this store type"""
     Mimetypes = None
+    """A list of MIME types associated with this store type"""
     Extensions = None
+    """A list of file extentions associated with this store type"""
     _binary = False
+    """Indicates whether a file should be accessed as a binary file."""
 
     def __init__(self, unitclass=None):
         """Constructs a blank TranslationStore."""
