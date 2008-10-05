@@ -229,7 +229,7 @@ class tsfile(lisa.LISAfile):
     """Class representing a XLIFF file store."""
     UnitClass = tsunit
     Name = "Qt Linguist Translation File"
-    Mimetypes  = ["Qt Linguist Translation File"]
+    Mimetypes  = ["application/x-linguist"]
     Extensions = ["ts"]
     rootNode = "TS"
     # We will switch out .body to fit with the context we are working on
