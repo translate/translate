@@ -286,6 +286,7 @@ def buildmanifest_in(file, scripts):
     print >>file, "include %s" % scriptname
   print >> file, "# include our documentation"
   print >> file, "graft translate/doc"
+  print >> file, "graft translate/share"
   # wordlist, portal are in the source tree but unconnected to the python code
   print >>file, "prune wordlist"
   print >>file, "prune spelling"
