@@ -43,6 +43,10 @@ try:
     from translate.storage import xliff
 except ImportError, e:
     xliff = None
+# The import of xliff fail silently in the absence of lxml if another module
+# already tried to import it unsuccessfully, so let's make 100% sure:
+if not hasattr(xliff, "xliffunit"):
+    xliff = None
 import re
 
 # These are some regular expressions that are compiled for use in some tests
