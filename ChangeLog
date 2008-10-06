@@ -1,3 +1,2069 @@
+2008-10-06 12:37  friedelwolff
+
+	* CREDITS: Credit Miklos for work on version control
+
+2008-10-06 10:14  friedelwolff
+
+	* filters/checks.py: Make 100% sure the xliff imported
+	  successfully. Pofilter should now work correctly when lxml is not
+	  installed.
+
+2008-10-06 10:12  friedelwolff
+
+	* filters/checks.py: Deal properly with unicode arguments to
+	  exceptions, even for Python 2.3 that doesn't have .args
+
+2008-10-06 09:55  friedelwolff
+
+	* filters/spelling.py: Force the multistring to unicode to avoid
+	  problems with Python 2.3 and enchant
+
+2008-10-05 22:34  dwaynebailey
+
+	* storage/ts2.py: Add mimetype for .ts
+
+2008-10-04 13:12  friedelwolff
+
+	* storage/base.py: Add a default 'Name' field for the store (to be
+	  overridden) and document all store-level variables
+
+2008-10-04 13:11  dwaynebailey
+
+	* storage/mo.py: Improve docstring. Point to the Gettext
+	  information on MO and say something
+	  about hashing.
+
+2008-10-04 13:08  friedelwolff
+
+	* storage/base.py, storage/mo.py, storage/qm.py: Use a variable
+	  _binary in the store to indicate if file access should be binary
+	  (non-binary by default, overridden for mo and qm). This fixes bug
+	  538.
+
+2008-10-03 11:53  winterstream
+
+	* storage/statsdb.py: The stats database code checks to see whether
+	  the database
+	  version matches the current toolkit build and deletes the
+	  database if it does not.
+	  
+	  If however the database is empty, this cannot be verified.
+	  
+	  The database layout needs to be fixed though. We'll do that
+	  later. This patch should fix things in the mean time.
+
+2008-10-02 22:40  friedelwolff
+
+	* filters/checks.py: Cast multistring to plain unicode to simplify
+	  things. Ensure failures have unicode messages. Fix incorrectly
+	  ordered parameters
+
+2008-10-02 12:13  friedelwolff
+
+	* storage/qph.py: Remove methods that override methods that work
+	  fine in the parent class. This fixes bug 533.
+
+2008-10-02 12:12  friedelwolff
+
+	* storage/ts2.py: Ensure source and target is always unicode
+
+2008-10-01 08:56  dwaynebailey
+
+	* tools/pogrep.py: Catch strings(source/target) that are None and
+	  don't try to search them.
+
+2008-10-01 08:54  dwaynebailey
+
+	* lang/data.py: unicodedata.normalize does not accept None so make
+	  sure we catch this.
+
+2008-10-01 08:52  dwaynebailey
+
+	* storage/txt.py: Actually use the encoding that we supply in
+	  __init__
+
+2008-09-30 20:21  dwaynebailey
+
+	* misc/optrecurse.py, tools/pocount.py: Exclude GIT, Mercurial and
+	  Bazaar RCS special directories
+
+2008-09-30 20:17  dwaynebailey
+
+	* tools/pocount.py: Ignore Mercurial and GIT hidden directories.
+
+2008-09-30 19:42  dupuy
+
+	* share/stoplist-en: remove second "second" from comment
+	  add 'th' to ordinal number part of regex to ignore/exclude 4th
+	  19th 100th
+
+2008-09-30 17:26  dupuy
+
+	* share/stoplist-en: better comments for regexes
+
+2008-09-30 09:43  dupuy
+
+	* tools/poterminology.py: fix proper handling of default stoplist
+	  with no -S options that was broken by
+	  r8553 (I botched the split-up of the poterminology into
+	  "orthogonal" patches)
+
+2008-09-30 07:26  dupuy
+
+	* tools/poterminology.py: change default case mapping behavior to
+	  -F/--fold-titlecase
+	  add new -C/--preserve-case mapping behavior for old default
+	  multiple -C/-F/-I options can now be given, the last one wins
+
+2008-09-30 07:19  dupuy
+
+	* tools/poterminology.py: add new -u/--update argument; file is
+	  used for both input and output
+	  (currently "-u XXX" is mostly equivalent to "-i XXX -o XXX" but
+	  this can
+	  be made smarter later on; for now, -u argument does not increase
+	  default
+	  --inputs-needed to 2) -- only one of -u/-o can be used in any
+	  command line
+	  refuse to overwrite existing output file implicitly specified by
+	  freestanding
+	  arguments; this provides protection against shell wildcard
+	  expansion accidents
+
+2008-09-30 07:06  dupuy
+
+	* share/stoplist-en: minor adjustments to default stoplist:
+	  enhanced self-documenting comments
+	  use new case mapping directive to enable title-case folding
+	  allow phrases with 'ad' (e.g. 'ad hoc')
+	  ignore phrases with 'eg' 'qv' 'vs' 'would'
+
+2008-09-30 07:01  dupuy
+
+	* tools/poterminology.py: support specification of multiple
+	  stoplist files
+	  enhance format of stoplist file to include case mapping directive
+	  (for upper-/title-/lower-case mapping of words before stoplist
+	  comparison)
+
+2008-09-29 21:15  friedelwolff
+
+	* storage/poheader.py: Indicate the correct position in the header
+	  for the new 'Language' field
+
+2008-09-29 19:04  friedelwolff
+
+	* storage/ts2.py: Work around the default output options to align
+	  better with Qt .ts defaults. +DOCTYPE, -XML decleration
+
+2008-09-29 17:24  friedelwolff
+
+	* lang/fr.py: Correct the case where URIs were incorrectly spaced
+	  for punctuation translation (' ://' -> '://')
+
+2008-09-29 17:23  friedelwolff
+
+	* lang/test_fr.py: Test that URIs are not spaced incorrectly due to
+	  punctuation translation
+
+2008-09-29 17:21  friedelwolff
+
+	* lang/common.py: Add a note about plural defaults
+
+2008-09-29 17:20  friedelwolff
+
+	* lang/common.py: Minor tweak for punctuation translation at the
+	  end of text. This fixes ellipses for Chinese.
+
+2008-09-29 17:16  friedelwolff
+
+	* lang/test_zh.py: Test some more cases with full stops (.) and
+	  ellipses (...)
+
+2008-09-29 15:04  friedelwolff
+
+	* storage/pocommon.py: Add another MIME type
+	  'text/x-gettext-translation' as that is currently used by other
+	  apps in the ~/.recently_used.xbel
+
+2008-09-29 14:01  friedelwolff
+
+	* storage/mo.py: Return an empty unicode instead of normal string
+
+2008-09-29 08:28  friedelwolff
+
+	* storage/ts2.py: Return an empty unicode instead of normal string
+
+2008-09-29 08:27  friedelwolff
+
+	* storage/ts2.py: Fix incorrect variable name
+
+2008-09-29 08:18  friedelwolff
+
+	* storage/qph.py: Return an empty unicode instead of normal string
+
+2008-09-27 09:19  dwaynebailey
+
+	* tools/poswap.py: docstring: use literal blocks
+
+2008-09-27 09:15  dwaynebailey
+
+	* search/indexing/CommonIndexer.py: docstring: add @raise, various
+	  indent fixes
+
+2008-09-27 09:11  dwaynebailey
+
+	* search/indexing/PyLuceneIndexer.py: docstring: add @riase,
+	  correct list and add some links
+
+2008-09-27 09:08  dwaynebailey
+
+	* search/indexing/PyLuceneIndexer1.py: docstring: create list and
+	  add links
+
+2008-09-27 09:02  dwaynebailey
+
+	* search/indexing/XapianIndexer.py: docstring: fix some varibales
+	  incorrectly names, indentation and add @raise
+
+2008-09-27 08:58  dwaynebailey
+
+	* search/indexing/__init__.py: docstring: use @raise markup and add
+	  a link
+
+2008-09-27 08:46  dwaynebailey
+
+	* search/lshtein.py: docstring: fix indentation and list
+
+2008-09-27 08:42  dwaynebailey
+
+	* lang/common.py, lang/data.py: docstring: format and layout fixes
+
+2008-09-27 08:35  dwaynebailey
+
+	* storage/html.py: docstring: convert some examples to literals
+
+2008-09-27 08:33  dwaynebailey
+
+	* storage/cpo.py: docstring: fix indentation and return values
+
+2008-09-27 08:30  dwaynebailey
+
+	* storage/lisa.py: docstring: fix reference links
+
+2008-09-27 08:25  dwaynebailey
+
+	* storage/lisa.py: docstring fixes
+
+2008-09-27 08:22  dwaynebailey
+
+	* storage/properties.py: docstring: Fix epydoc rendering issues and
+	  escaping
+
+2008-09-27 08:10  dwaynebailey
+
+	* storage/statsdb.py: docstring: Indent correctly and remove stale
+	  documentation
+
+2008-09-27 08:07  dwaynebailey
+
+	* storage/test_wordfast.py: Fix docstring indentation
+
+2008-09-27 08:05  dwaynebailey
+
+	* storage/versioncontrol/__init__.py: epoydoc cleanups
+
+2008-09-27 07:59  dwaynebailey
+
+	* storage/wordfast.py: Add explanation of Wordfast tools base on MS
+	  Word
+
+2008-09-27 07:57  dwaynebailey
+
+	* storage/wordfast.py: Add section on encoding
+
+2008-09-27 07:53  dwaynebailey
+
+	* storage/wordfast.py: Document UTF-16 tab constant
+
+2008-09-27 07:52  dwaynebailey
+
+	* storage/wordfast.py: Add many cross reference to the actual
+	  functions
+
+2008-09-27 07:40  dwaynebailey
+
+	* storage/wordfast.py: Fix _char_to_wf docstring
+
+2008-09-27 07:35  dwaynebailey
+
+	* storage/wordfast.py: Add implementation docstring
+
+2008-09-27 07:15  dwaynebailey
+
+	* storage/ical.py: Add docstring
+
+2008-09-27 06:56  dwaynebailey
+
+	* storage/ical.py: Fix misnamed variable
+
+2008-09-26 14:22  dwaynebailey
+
+	* README: Add notes about vobject for ical2po
+	  Add ical2po and ini2po to the list of converters
+
+2008-09-24 20:27  friedelwolff
+
+	* storage/poheader.py: Add accessors to manipulate the
+	  targetlanguage of a poheader implementation. This feature will
+	  appear in gettext 0.18.
+
+2008-09-24 20:25  friedelwolff
+
+	* storage/poheader.py: When updating a header with plural
+	  information, add the Plural-Forms entry if it is not yet there
+
+2008-09-24 16:16  friedelwolff
+
+	* storage/test_ts2.py: Unit tests for the new ts2.py
+
+2008-09-24 14:27  dwaynebailey
+
+	* convert/ical2po, convert/ical2po.py, convert/po2ical,
+	  convert/po2ical.py, storage/ical.py: Add iCalendar conversion
+	  support:
+	  * This uses the vobject library to access .ics files.
+	  * We only process relevant text properties in VEVENT objects.
+	  We could process other entries but why?
+	  * vobject should be >= 0.6.5
+	  
+	  On a positive note, these where implemented based on ini.py
+	  and the limited amount that needed to be implemented for
+	  ical.py and po2ical/ical2po highlighted that we are close
+	  to making this generic enough that by simply adding a format
+	  we get a converter at not extra cost.
+	  
+	  Happy localising of Calendars!
+
+2008-09-22 16:44  friedelwolff
+
+	* lang/test_or.py: Test that a country code doesn't mix up the
+	  factory in the case of special codes (python reserved words)
+
+2008-09-22 14:11  sumpfralle
+
+	* storage/versioncontrol/bzr.py, storage/versioncontrol/hg.py,
+	  storage/versioncontrol/svn.py: adding version dependencies for
+	  the "author" attribute:
+	  * svn: since v1.5
+	  * bzr: sinve v0.91
+	  * cvs: not supported
+	  * darcs: at least since v1.09 according to changelog (this
+	  version is in debian
+	  stable - thus a check does not seem to be important)
+	  * git: since v1.4.3 (this is way older than the package in debian
+	  stable, thus
+	  a check should not be necessary)
+	  * hg: since v1.0
+
+2008-09-21 12:55  dwaynebailey
+
+	* storage/qph.py: Return an empty string if the unit is
+	  untranslated
+
+2008-09-21 12:47  dwaynebailey
+
+	* storage/ts2.py: Return an empty string if the translation is
+	  empty
+
+2008-09-21 02:11  dwaynebailey
+
+	* storage/ts2.py: Manage empty context name
+
+2008-09-21 01:19  dwaynebailey
+
+	* storage/factory.py, storage/qph.py: Add .qph - Qt Phrase Book
+	  support based on ts2
+
+2008-09-20 23:48  dwaynebailey
+
+	* storage/ts2.py: Fixes to get plural entries working in virtaal:
+	  * Add list of languages and plural forms, include reference to
+	  source. This might be better placed
+	  in lang/data.py but since it is hard coded for all of Qt this is
+	  probably a better spot.
+	  * Implement getsource: this allows us to force the source into a
+	  multistring, in .ts the source
+	  will always be a single entry never multiple as in PO. With this
+	  the generic hasplural will work
+	  * Add decorators for source and target, seems we get the parent
+	  ones if not added
+	  * Add nplural fuction to find the language and return the number
+	  of plural forms
+	  * Retrieve the nplural value if we are editing a .ts store.
+
+2008-09-20 20:34  friedelwolff
+
+	* storage/factory.py: Add format support for detecting .ts content
+
+2008-09-20 20:20  friedelwolff
+
+	* storage/factory.py: Add support for ts2 as ts
+
+2008-09-20 20:14  friedelwolff
+
+	* storage/ts2.py: Initial support for new Qt linguist (.ts) files
+
+2008-09-20 13:29  dwaynebailey
+
+	* convert/po2dtd.py: Update copyright dates
+
+2008-09-20 10:26  dwaynebailey
+
+	* storage/benchmark.py: Remove unused imports
+
+2008-09-20 09:02  dwaynebailey
+
+	* storage/benchmark.py: s/profile/cProfile/
+
+2008-09-19 21:40  friedelwolff
+
+	* storage/lisa.py: Ensure that we return unicode strings when
+	  dealing using xpath("string()")
+
+2008-09-19 21:39  friedelwolff
+
+	* tools/test_pogrep.py: Bring in something non-ASCII for better
+	  testing
+
+2008-09-19 15:32  friedelwolff
+
+	* __version__.py: Version 1.2.0-rc1
+
+2008-09-19 14:59  winterstream
+
+	* storage/pypo.py: quote.extractstr is called very often. The
+	  underlying function is
+	  quite heavyweight and adds quite a bit of runtime overhead.
+	  
+	  And yet, all we need is to find the left " (the quote) and the
+	  right
+	  " in a string and to return a string with the quotes intact. This
+	  is done much faster as done in the new little extractstr
+	  implementation
+	  in pypo.py.
+
+2008-09-19 14:56  winterstream
+
+	* __version__.py, storage/statsdb.py: 1. Change the members 'keys'
+	  and 'values' in Record to 'record_keys'
+	  and 'record_values', so as to avoid confusion with the methods
+	  named 'keys' and 'values'.
+	  
+	  2. Added the callback compute_derived_values to Record, so that
+	  it
+	  can compute values which are derived from its other values and
+	  keep these up to date. The class FileTotals makes use of this;
+	  the method FileTotals._compute_derived_values computes values for
+	  "total", "totalsourcewords" and "review" from the values
+	  retrieved
+	  from the database.
+	  
+	  3. Renamed OTHER to UNTRANSLATED.
+	  
+	  4. Renamed Record.db_repr to Record.as_string_for_db.
+	  
+	  5. Updated get_unit_stats to retrieve targetwords from the
+	  database,
+	  since FileTotals now also requires this value.
+	  
+	  6. Changed the values stored inside the database.
+	  
+	  7. Bumped up the toolkit build number.
+
+2008-09-19 14:44  winterstream
+
+	* storage/statsdb.py: If we bump up the toolkit's version number,
+	  we delete the current stats
+	  cache database, if it has an old version number.
+	  
+	  This is not ideal and in the future, we'll probably name stats
+	  cache
+	  database files differently as we change the database layout, so
+	  that
+	  multiple versions of the toolkit software will be able to
+	  coexist.
+
+2008-09-19 10:32  friedelwolff
+
+	* tools/poterminology.py: +Link to wiki in poterminology's
+	  docstring (and therefore also --help text)
+
+2008-09-15 20:27  dwaynebailey
+
+	* storage/benchmark.py: Benchmark the creation of files
+
+2008-09-15 10:56  friedelwolff
+
+	* storage/xliff.py: Add an accessor for the file tag's date
+	  attribute
+
+2008-09-15 10:53  friedelwolff
+
+	* filters/test_checks.py: Test that purepunc won't barf on numeric
+	  translation with stupid GNOME context markers
+
+2008-09-15 10:51  friedelwolff
+
+	* filters/test_checks.py: Ensure that we fail if a translation
+	  contains two accelerators
+
+2008-09-15 10:51  friedelwolff
+
+	* filters/checks.py: Rewrite radically to simplify and optimise.
+	  Correct the incorrect use of decoration.ispurepunctuation
+
+2008-09-15 10:46  friedelwolff
+
+	* filters/decoration.py: ispurepunctuation() should not be true for
+	  numeric strings. Rewrite in more modern style.
+
+2008-09-15 06:41  friedelwolff
+
+	* filters/checks.py: All messages must be unicode (check line 114)
+
+2008-09-12 06:48  dwaynebailey
+
+	* storage/qm.py: Raise and error if our file is to short
+
+2008-09-12 05:03  dwaynebailey
+
+	* storage/mo.py: No need to declare self.units inheritted from
+	  base.py
+
+2008-09-12 04:23  dwaynebailey
+
+	* storage/benchmark.py: Remove all the Pootle stuff
+	  Make the script format agnostic
+	  Allow command line to specify which storage format you want to
+	  profile
+
+2008-09-12 04:18  dwaynebailey
+
+	* storage/benchmark.py: Copy old benchmarking script from Pootle
+
+2008-09-11 11:41  dwaynebailey
+
+	* lang/data.py: Add Kyrgyz
+
+2008-09-08 12:59  winterstream
+
+	* storage/statsdb.py: _cacheunitstats adds stats totals, so we
+	  should only subtract the
+	  value of the old stats in recacheunit.
+
+2008-09-03 19:42  winterstream
+
+	* storage/statsdb.py: Added file_fails_test which does a quick test
+	  to determine whether
+	  any units in a file fail the test passed in the name parameter.
+	  
+	  Since file_fails_test also needs to ensure that file checks have
+	  been run before doing its work, the common code from filechecks
+	  was factored out so that both file_fails_test and filechecks can
+	  use it.
+
+2008-09-03 19:38  winterstream
+
+	* storage/statsdb.py: Store the file totals in the database. This
+	  uses a simple
+	  ORM scheme and will soon be replaced by something better
+	  (from Mozilla).
+	  
+	  Storing the totals in the database should help to fix some
+	  of the out-of-date stats problems that we had.
+
+2008-08-28 16:11  friedelwolff
+
+	* tools/poconflicts.py: Ensure that there is still some source
+	  string left after self.flatten(). If there is nothing left (for a
+	  string such as '...' we probably want to ignore it anyway.
+
+2008-08-28 06:29  dwaynebailey
+
+	* filters/pofilter.py: Do user expansion of input filename to allow
+	  ~ expansion to user home directory.
+
+2008-08-27 09:33  dwaynebailey
+
+	* README: Don't forget Windows RC file support
+
+2008-08-27 08:10  friedelwolff
+
+	* README: Some updates - supported formats +poterminology, etc.
+
+2008-08-26 15:14  friedelwolff
+
+	* __version__.py: Version 1.2-beta2
+
+2008-08-26 14:57  friedelwolff
+
+	* search/indexing/test_indexers.py: Adapt import to new module name
+
+2008-08-26 14:55  friedelwolff
+
+	* search/indexing/test_indexers.py: Adapt import to new module name
+
+2008-08-26 14:54  dwaynebailey
+
+	* convert/po2oo.py, convert/xliff2oo.py: Allow .sdf files as
+	  templates and output for onefile OOo conversion. Fixes bug 487
+
+2008-08-26 14:53  friedelwolff
+
+	* search/indexing: Restore translate/search/indexer of revision
+	  8187 at translate/search/indexing to maintain version history
+
+2008-08-26 14:50  friedelwolff
+
+	* search/indexer: Remove directories in incorrect state after
+	  directory rename git-svn (version history was discarded)
+
+2008-08-26 14:49  friedelwolff
+
+	* search/indexing: Remove directories in incorrect state after
+	  directory rename git-svn (version history was discarded)
+
+2008-08-26 14:44  friedelwolff
+
+	* search/indexing/CommonIndexer.py,
+	  search/indexing/PyLuceneIndexer.py,
+	  search/indexing/PyLuceneIndexer1.py,
+	  search/indexing/XapianIndexer.py, search/indexing/__init__.py,
+	  search/indexing/test_indexers.py: Remove files that were
+	  incorrectly added by git-svn (version history was discarded)
+
+2008-08-26 14:37  winterstream
+
+	* search/indexer/CommonIndexer.py,
+	  search/indexer/PyLuceneIndexer.py,
+	  search/indexer/PyLuceneIndexer1.py,
+	  search/indexer/XapianIndexer.py, search/indexer/__init__.py,
+	  search/indexer/test_indexers.py, search/indexing,
+	  search/indexing/CommonIndexer.py,
+	  search/indexing/PyLuceneIndexer.py,
+	  search/indexing/PyLuceneIndexer1.py,
+	  search/indexing/XapianIndexer.py, search/indexing/__init__.py,
+	  search/indexing/test_indexers.py: Rename the module named indexer
+	  to indexing.
+
+2008-08-26 08:09  winterstream
+
+	* misc/quote.py: dict.fromkeys(lst).keys() is equal to lst, but
+	  slower! So we'll just substitute
+	  and gain speed!
+
+2008-08-25 22:31  sumpfralle
+
+	* storage/versioncontrol/__init__.py,
+	  storage/versioncontrol/cvs.py, storage/versioncontrol/git.py,
+	  storage/versioncontrol/git_old.py: versioncontrol interface:
+	  * simplify chdir to specific working directories for different
+	  VCS
+	  (based on a patch of Wynand Winterbach)
+	  * remove obsolete "git_old" module
+
+2008-08-25 15:41  dwaynebailey
+
+	* storage/properties.py: Revert r7983 seems those docs just went
+	  and disappeared
+
+2008-08-25 15:37  walter_l
+
+	* storage/test_mo.py: Commented out a test-case, because the
+	  hash-size is different compared to gettext,
+	  since we're not counting untranslated units.
+
+2008-08-25 15:35  walter_l
+
+	* storage/mo.py: Applied sumpfralle's patch
+	  (http://bugs.locamotion.org/attachment.cgi?id=214&action=view) to
+	  use
+	  prime numbers in hashing .mo files.
+
+2008-08-25 15:34  friedelwolff
+
+	* CREDITS: Credit Walter Leibbrandt and Wynand Winterbach
+
+2008-08-25 11:24  walter_l
+
+	* storage/test_mo.py: Fixed .mo test to anticipate the fact that
+	  pocompile ignores empty .po files.
+
+2008-08-25 10:58  walter_l
+
+	* storage/test_mo.py: Cosmetic changes - removed unnecessary
+	  trailing spaces.
+
+2008-08-22 16:40  winterstream
+
+	* storage/statsdb.py: filetotals should return an empty dictionary
+	  if it fails to compute
+	  the stats for a file. This is what pocount expects, since
+	  otherwise
+	  pocount reports stats for non-translation files.
+
+2008-08-21 15:32  friedelwolff
+
+	* __version__.py: up the build number
+
+2008-08-21 15:05  friedelwolff
+
+	* misc/progressbar.py: Fix the example code to run
+
+2008-08-20 15:34  friedelwolff
+
+	* __version__.py: Version 1.2-beta1
+
+2008-08-20 11:36  friedelwolff
+
+	* storage/mo.py: Fix indentation, typo, stale comment about not
+	  support hash tables
+
+2008-08-20 10:56  friedelwolff
+
+	* convert/pot2po.py: Increase the length of translations considered
+	  for reuse from the old PO file (this does not affect the limits
+	  of the TM macher). This mostly fixes bug 346.
+
+2008-08-19 14:51  friedelwolff
+
+	* storage/statsdb.py: Remove the use of collections.defaultdict
+	  (only available from Python 2.5)
+
+2008-08-19 09:43  friedelwolff
+
+	* tools/poterminology.py: Support pot files
+
+2008-08-15 15:51  walter_l
+
+	* tools/poterminology.py: Set stopwords-en to be loaded by default
+	  in poterminology.py unless -S was specified.
+
+2008-08-15 14:54  walter_l
+
+	* share, share/stoplist-en: Added translate/share and included its
+	  content as data files in setup.py.
+
+2008-08-15 12:38  winterstream
+
+	* storage/statsdb.py: Renamed emptystats to emptyfiletotals so that
+	  there is symmetry in the
+	  naming of the functions which return empty stats structures.
+	  
+	  Let emptyfilechecks return a defaultdict so that other code won't
+	  fail
+	  when trying to access tests which are non-existant.
+	  
+	  Finally, directorytotals - which was never used - was removed.
+
+2008-08-15 11:28  friedelwolff
+
+	* search/match.py: Make matcher a new-style class
+
+2008-08-15 10:38  friedelwolff
+
+	* convert/test_po2xliff.py: Rewrite the testing for the approved
+	  attribute slightly to also work with left out attributes (meaning
+	  'no' - not approved)
+
+2008-08-15 10:37  friedelwolff
+
+	* storage/xliff.py: Don't set the approved attribute unnecessarily.
+	  Before this could add an approved=no where there was nothing
+	  before (defaulting to no according to the XLIFF specification)
+
+2008-08-14 23:36  sumpfralle
+
+	* search/indexer/CommonIndexer.py, search/indexer/test_indexers.py:
+	  add support for multiple terms in a field (given as a list)
+
+2008-08-14 23:31  sumpfralle
+
+	* search/indexer/CommonIndexer.py,
+	  search/indexer/PyLuceneIndexer.py,
+	  search/indexer/PyLuceneIndexer1.py,
+	  search/indexer/XapianIndexer.py, search/indexer/test_indexers.py:
+	  add support for unicode terms and a corresponding test
+
+2008-08-14 14:33  friedelwolff
+
+	* TESTING: Some notes for testing. See bug 475 for the inspiration.
+
+2008-08-14 14:28  friedelwolff
+
+	* CREDITS: Expand Alexander Dupuy's activities
+
+2008-08-14 14:10  friedelwolff
+
+	* filters/checks.py: [Contributed by Alexander Dupuy] Fix
+	  runtests() for testing from __main__.
+
+2008-08-14 14:05  friedelwolff
+
+	* filters/checks.py: [Contributed by Alexander Dupuy] Be more
+	  lenient in the simplecaps test. This fixes the currently failing
+	  test.
+
+2008-08-14 14:02  friedelwolff
+
+	* filters/checks.py, filters/test_checks.py: [Contributed by
+	  Alexder Dupuy] Support omitting format specifiers in plural form
+	  translations. Check bug 475.
+
+2008-08-14 13:57  friedelwolff
+
+	* filters/checks.py: Only support unicode.isupper since input must
+	  be unicode strings
+
+2008-08-12 11:36  friedelwolff
+
+	* filters/checks.py: [Contributed by Alexader Dupuy] Return the
+	  correct filterresult if a test failed without filtermessages
+	  (when no FilterFailure) is raised). See bug 345 for more detail.
+
+2008-08-12 11:33  friedelwolff
+
+	* filters/test_checks.py: Augment the spellcheck test to more
+	  deliberately show what we want. The test broke if you happened to
+	  have 'Mozilla' in your personal wordlist for aspell for Afrikaans
+	  where you execute the tests.
+
+2008-08-08 15:55  dwaynebailey
+
+	* storage/wordfast.py: Python <2.5 needs us to be more specific
+	  about the dialect options. The missing requirements
+	  are now added which should prevent failure in factory.py.
+
+2008-08-06 13:33  dwaynebailey
+
+	* storage/wordfast.py: Add a Wordfast CSV dialect. This solves bug
+	  #472.
+	  * Wordfast now correctly handles the roundtripping of quoted
+	  characters.
+	  * It also sorts out a newline issue.
+
+2008-08-05 10:05  dwaynebailey
+
+	* tests/xliff_conformance/test_xliff_conformance.py: Ensure we can
+	  run the test from outside of the test directory
+
+2008-08-04 18:09  dwaynebailey
+
+	* storage/properties.py: Update reference to .properties
+	  specification
+
+2008-08-04 18:06  dwaynebailey
+
+	* storage/dtd.py: Check the DTD file for validity by parsing it
+	  returing __str__
+
+2008-08-04 10:35  winterstream
+
+	* tests/xliff_conformance/test_xliff_conformance.py: Schema
+	  validation is now done with lxml's facilities instead of by
+	  invoking
+	  xmllint.
+
+2008-08-04 10:26  winterstream
+
+	* storage/xliff.py: Modified the XLIFF output to conform to the
+	  XLIFF 1.1 schema.
+
+2008-08-04 10:02  dwaynebailey
+
+	* storage/lisa.py, storage/xliff.py: Fix FutureWarning error by
+	  using: if elem is not None
+
+2008-08-04 09:14  winterstream
+
+	* tests/xliff_conformance/af-pootle.po,
+	  tests/xliff_conformance/test_xliff_conformance.py: Added a test
+	  to check the output of po2xliff. Sadly, it currently fails,
+	  which means that we're outputtting invalid XLIFF files.
+
+2008-08-04 09:02  winterstream
+
+	* tests, tests/xliff_conformance,
+	  tests/xliff_conformance/en-US.sdf,
+	  tests/xliff_conformance/test_xliff_conformance.py,
+	  tests/xliff_conformance/xliff-core-1.1.xsd: Added a basic
+	  functional test to ensure that our tools produce valid
+	  XLIFF 1.1 files.
+	  
+	  Currently, there is only one test, which uses oo2xliff to convert
+	  an
+	  OpenOffice.org SDF file to a set of XLIFF files. xmllint then
+	  checks
+	  each of these files against the XLIFF 1.1 Schema.
+
+2008-08-04 08:57  dwaynebailey
+
+	* tools/podebug.py: Create class methods that will return available
+	  rewrite functions and ignore rules. Adapt optparse section to use
+	  these functions.
+
+2008-08-04 08:54  dwaynebailey
+
+	* tools/podebug.py: Add Unicode rewrite style. This converts all
+	  plain ASCII chars to characters in the Unicode range that look
+	  the same as the ASCII. This would allow a translator or
+	  programmer to build a test translation that can validate the use
+	  of Unicode characters in translated strings.
+
+2008-07-24 20:11  friedelwolff
+
+	* lang/data.py: [Contributed by Suresh Chandrasekharan] Move the
+	  language matching code from Pootle to the toolkit
+
+2008-07-23 17:09  sumpfralle
+
+	* storage/versioncontrol/svn.py: [Contributed by Daniel Schafer]
+	  add versioned svn property "translate:author"
+
+2008-07-21 00:35  sumpfralle
+
+	* storage/versioncontrol/__init__.py,
+	  storage/versioncontrol/bzr.py, storage/versioncontrol/cvs.py,
+	  storage/versioncontrol/darcs.py, storage/versioncontrol/git.py,
+	  storage/versioncontrol/git_old.py, storage/versioncontrol/hg.py,
+	  storage/versioncontrol/svn.py: add support for the 'author' tag
+	  to various revision control systems (contributed by Miklos Vajna)
+
+2008-07-18 12:40  winterstream
+
+	* storage/statsdb.py: Added a default field to emptystats()
+
+2008-07-17 17:46  winterstream
+
+	* storage/test_statsdb.py: Updated the statsdb test to reflect the
+	  change in the database layout
+
+2008-07-17 17:45  winterstream
+
+	* storage/statsdb.py: Added these functions to allow users of the
+	  stats code to
+	  use default values for the various stats functions. This
+	  is useful if an error is raised when
+
+2008-07-17 17:44  winterstream
+
+	* storage/statsdb.py: Removed the HORRIBLE hack whereby one could
+	  pass parameters to the stats
+	  code in order to get it not to throw an exception.
+	  
+	  I ought to have my coding licence revoked. But at least until
+	  then, I
+	  can try to restore my karma by restoring the code to a better
+	  state.
+	  
+	  So anyway, if you call one of the stats functions on a
+	  non-existant or
+	  illegal file, it's your responsibility to deal with the
+	  exceptions
+	  that might pop out.
+
+2008-07-17 17:43  winterstream
+
+	* storage/statsdb.py: Simplified the stats handling code related to
+	  suggestion files.
+	  
+	  If a user modifies a suggestion file without using our tools,
+	  she simply has to ask the toolkit to recompute the stats (and
+	  this will only affect the has-suggestion test). If she doesn't
+	  the toolkit will have out-of-date suggestion stats, but that's
+	  okay.
+
+2008-07-17 17:43  winterstream
+
+	* storage/statsdb.py: Instead of storing a Python tuple in the
+	  database, simply store
+	  the data into two separate columns.
+
+2008-07-17 17:12  dwaynebailey
+
+	* tools/podebug.py: Add Mock Swedish rewrite style
+
+2008-07-17 16:57  dwaynebailey
+
+	* storage/factory.py, storage/mo.py, storage/pocommon.py,
+	  storage/tbx.py, storage/tmx.py, storage/wordfast.py,
+	  storage/xliff.py: Implent a function to return all known
+	  multilingual formats, their extensions and mimetypes
+	  Add names to formats (to be localised sometime in the future)
+	  Add missing extensions and mimetypes
+	  Remove knowledge for formats from virtaal
+
+2008-07-17 14:53  friedelwolff
+
+	* storage/base.py: Keep a reference in unit._store to the
+	  containing translation store. Provide accessors in the unit class
+	  that enables us to access the source and target language of the
+	  containing document.
+
+2008-07-17 14:21  friedelwolff
+
+	* storage/cpo.py: Provide access to the libgettextpo version and
+	  use this to enable workarounds
+	  for bugs related to notes in certain libgettextpo versions.
+	  
+	  [Contributed by George Yoshikazu Kussumoto as part of GSoC2008]
+
+2008-07-17 13:01  friedelwolff
+
+	* storage/lisa.py: Inherit base.py's addunit() instead of
+	  duplicating some of it here
+
+2008-07-17 12:58  friedelwolff
+
+	* storage/lisa.py: Reword parameter in setsource to text to align
+	  more with settarget()
+
+2008-07-17 08:42  sumpfralle
+
+	* storage/versioncontrol/bzr.py: fix typo in bzr module
+
+2008-07-17 08:32  friedelwolff
+
+	* storage/base.py: Initialise .sourcelanguage and .targetlanguage
+	  to None. They are mostly not yet used anyway.
+
+2008-07-17 08:09  friedelwolff
+
+	* convert/oo2po.py, convert/oo2xliff.py: Set the source and target
+	  language of the output files
+
+2008-07-17 08:07  friedelwolff
+
+	* convert/oo2xliff.py: Merge in changes in handling of the input
+	  filename from oo2po.py
+
+2008-07-17 08:02  friedelwolff
+
+	* convert/oo2xliff.py: Merge in changes in error messages from
+	  oo2po.py
+
+2008-07-17 07:58  friedelwolff
+
+	* tools/pogrep.py: Typo in variable names
+
+2008-07-17 07:55  friedelwolff
+
+	* tools/pogrep.py: Set the source and target language of the
+	  filtered file for the sake of formats where this matters.
+
+2008-07-17 07:51  friedelwolff
+
+	* filters/pofilter.py: Set the source and target language of the
+	  filtered file for the sake of formats where this matters.
+
+2008-07-17 07:44  friedelwolff
+
+	* storage/base.py, storage/lisa.py: Move .setsourcelanguage() and
+	  .settargetlanguage() from lisa.py to base.py
+
+2008-07-17 07:41  friedelwolff
+
+	* storage/lisa.py: Add a parameter to .addunit() to indicate if the
+	  unit needs to be added to the XML structure
+
+2008-07-17 07:40  friedelwolff
+
+	* storage/lisa.py: +Helper fucntion to get the xml:lang attribute
+	  of an lxml node
+
+2008-07-17 07:38  friedelwolff
+
+	* storage/test_mo.py: Rewrite file access for proper functioning
+	  with py.test. +More debugging information.
+
+2008-07-14 09:33  winterstream
+
+	* storage/base.py, storage/csvl10n.py, storage/mo.py,
+	  storage/pocommon.py, storage/qm.py, storage/tbx.py,
+	  storage/tmx.py, storage/wordfast.py, storage/xliff.py: Added
+	  mimetype and file extension information for the stores.
+
+2008-07-11 17:31  friedelwolff
+
+	* CREDITS: Credit Alexander Dupuy, Danschafer and Geoffrey
+	  Hutchison
+
+2008-07-11 17:16  danschafer
+
+	* convert/test_html2po.py, storage/html.py: Modifications to
+	  html.py and test_html2po.py related to PHP parsing; see
+	  https://bugzilla.mozilla.org/show_bug.cgi?id=437342
+
+2008-07-04 03:37  sumpfralle
+
+	* storage/versioncontrol/git.py, storage/versioncontrol/git_old.py:
+	  for git v1.5.2 (and below): chdir to the directory of the target
+	  file before executing git
+
+2008-07-04 02:16  sumpfralle
+
+	* storage/versioncontrol/__init__.py: catch OSError (e.g.
+	  executable not found) when using "subprocess" for execution -
+	  this simplifies error handling for all RCS modules
+
+2008-07-04 02:00  sumpfralle
+
+	* storage/versioncontrol/__init__.py,
+	  storage/versioncontrol/git.py, storage/versioncontrol/git_old.py:
+	  add "git_old" (unfinished) to the repository
+	  add version checks for the two available git modules
+
+2008-07-04 01:37  sumpfralle
+
+	* storage/versioncontrol/bzr.py, storage/versioncontrol/cvs.py,
+	  storage/versioncontrol/darcs.py, storage/versioncontrol/git.py,
+	  storage/versioncontrol/hg.py, storage/versioncontrol/svn.py: fix
+	  misleading variable name
+
+2008-07-04 01:32  sumpfralle
+
+	* storage/versioncontrol/__init__.py,
+	  storage/versioncontrol/bzr.py, storage/versioncontrol/cvs.py,
+	  storage/versioncontrol/darcs.py, storage/versioncontrol/git.py,
+	  storage/versioncontrol/hg.py, storage/versioncontrol/svn.py: add
+	  "is_available" function to all version control modules
+	  (this allows separate modules for different versions of an RCS
+	  client)
+	  
+	  This change should also speed up version control handling in
+	  general, since
+	  version control systems that are not installed (-> no local
+	  client available)
+	  are ignored after initialization.
+
+2008-07-04 01:04  sumpfralle
+
+	* storage/versioncontrol/__init__.py: small improvements of the
+	  version control systems handling:
+	  - fix improper except statement (exceptions tuple instead of a
+	  list)
+	  - avoid lists as default parameter values
+	  - add function for collecting the list of available version
+	  control systems
+	  - print the list of available VCS if __init__.py is executed
+	  without parameters
+
+2008-07-02 23:48  sumpfralle
+
+	* storage/versioncontrol/git.py: fix git support for v1.5.3 (or
+	  higher) by setting "--work-tree"
+	  this patch was contributed by Miklos Vajna
+
+2008-07-01 20:08  winterstream
+
+	* storage/statsdb.py: Improved the mod_info storage scheme to store
+	  a tuple of the mtime and size of a file
+	  instead of the truly ugly integer scheme that I cooked up in what
+	  could only have been
+	  the result of too many hours of coding (and hence the concomitant
+	  loss of reason).
+
+2008-07-01 20:06  winterstream
+
+	* storage/statsdb.py: _getfileid of a directory will raise an
+	  AssertionError. We
+	  deal with this by adding AssertionError to the list of
+	  exceptions caught in _getfileid.
+
+2008-06-24 13:11  winterstream
+
+	* storage/test_mo.py: Added a test to ensure that the output of
+	  msgfmt and pocompile are identical for
+	  files of 1, 2, 3, 4 and 5 units.
+
+2008-06-23 12:49  winterstream
+
+	* storage/statsdb.py: Modified get_mod_info to raise an exception
+	  when it is passed a directory.
+
+2008-06-23 12:47  winterstream
+
+	* storage/base.py, storage/pypo.py, storage/statsdb.py: Added some
+	  robustness to the stasistics code to handle corrupt files.
+	  The boolean parameter errors_return_empty can be passed to a
+	  number
+	  of the methods in Statdb; if errors_return_empty is true, then
+	  they
+	  will not raise exceptions, but instead return empty or zero
+	  values.
+	  
+	  Created a ParseError exception which should be raised by parsers
+	  which
+	  run into parsing problems. So far, only pypo.py does this (and in
+	  a
+	  somewhat rudimentary way).
+
+2008-06-21 23:14  sumpfralle
+
+	* storage/test_base.py: revert r7643 - the comment was obsolete due
+	  to the previous commit r7635
+	  sorry for the noise!
+
+2008-06-21 11:18  sumpfralle
+
+	* storage/test_base.py: test_tmx: add a comment regarding a failed
+	  test
+
+2008-06-21 10:50  sumpfralle
+
+	* convert/po2html.py: po2html: add comment for failed test
+
+2008-06-21 10:17  sumpfralle
+
+	* convert/test_dtd2po.py: added comment to a failed test
+
+2008-06-21 09:43  sumpfralle
+
+	* search/indexer/XapianIndexer.py, search/indexer/test_indexers.py:
+	  remove references to obsolete xapian (v0.x) interface
+
+2008-06-21 09:42  sumpfralle
+
+	* search/indexer/__init__.py: fix unsafe use of a default argument
+
+2008-06-20 23:13  sumpfralle
+
+	* misc/zipfileext.py: fix test for python2.5
+
+2008-06-20 22:43  sumpfralle
+
+	* storage/test_directory.py: fix tests: directory
+
+2008-06-20 22:30  sumpfralle
+
+	* storage/cpo.py: add comments
+	  add a note regarding a difference between the pypo and the cpo
+	  implementation
+
+2008-06-20 18:32  friedelwolff
+
+	* storage/test_tmx.py: Leave the target out entirely to satisfy the
+	  expectations of test_base.py. This fixes the last broken test.
+
+2008-06-20 18:30  friedelwolff
+
+	* storage/test_tmx.py: Leave the target segment empty to satisfy
+	  the expectations of test_base.py. This fixes a broken test.
+
+2008-06-20 17:38  walter_l
+
+	* storage/mo.py: Attempt to fix bug #326 based on the gettext
+	  source.
+
+2008-06-20 16:05  sumpfralle
+
+	* storage/cpo.py, storage/test_po.py: ignore notes without
+	  non-space characters (Closes: #417)
+
+2008-06-20 15:54  sumpfralle
+
+	* storage/cpo.py: fixed: the first character of each note was
+	  cutted - this should only happen for a space character
+
+2008-06-20 14:18  friedelwolff
+
+	* filters/checks.py: Fix an issue introduced in commit 7623 - don't
+	  raise FilterFailure with an empty list of messages.
+
+2008-06-20 14:15  sumpfralle
+
+	* storage/versioncontrol/git.py: add comment for git version
+	  requirement (Closes: #347)
+
+2008-06-20 13:47  friedelwolff
+
+	* filters/checks.py: [Contributed by Nicolas François] Test all
+	  plural forms of a plural unit, even if some errors occurred in
+	  the first form. Combine all messages into one FilterFailure which
+	  is propagated up. This completely fixes bug 345.
+
+2008-06-20 13:01  friedelwolff
+
+	* filters/checks.py: [Contributed by Nicolas François] Test all
+	  plural forms of a plural unit, even if some errors occurred in
+	  the first form. Combine all messages into one FilterFailure which
+	  is propagated up. This completely fixes bug 345.
+
+2008-06-20 12:14  friedelwolff
+
+	* filters/checks.py: Convert each plural form to unicode before
+	  passing to individual tests. This fixes the worst part of bug
+	  122. More to come.
+
+2008-06-20 11:30  walter_l
+
+	* storage/poheader.py, storage/test_poheader.py: Moved
+	  translate.storage.poheader.poheader.tzstring() out of its parent
+	  class to
+	  translate.storage.poheader.tzstring() (directly to the poheader
+	  sub-module).
+	  The function does not use the class or an instance, anyway.
+
+2008-06-20 09:21  walter_l
+
+	* filters/checks.py, filters/test_checks.py: Replaced usage of
+	  exception.message with exception.args[0], which is equivalent
+	  within this commit's context.
+	  
+	  This fixes bug 424.
+
+2008-06-19 23:28  sumpfralle
+
+	* search/indexer/test_indexers.py: indexer: adapted tests for new
+	  directory layout
+
+2008-06-19 20:52  sumpfralle
+
+	* search/indexer/CommonIndexer.py,
+	  search/indexer/PyLuceneIndexer.py,
+	  search/indexer/XapianIndexer.py, search/indexer/__init__.py: use
+	  different sub-directories for databases of different indexing
+	  engines
+	  rename the indexing directory from ".poindex-PROJECT-LANGUAGE" to
+	  ".translation_index"
+	  note for UPGRADING: you have to remove old indexing directories
+	  manually
+	  
+	  these changes are meant to ease migrations from one indexing
+	  engine to another and to
+	  allow different indexing engines to be on the same server
+
+2008-06-18 14:12  winterstream
+
+	* filters/checks.py: Moved the results_cache clearing code to the
+	  appropriate method. It should
+	  afterall be in the run_filters method of the base class.
+
+2008-06-14 09:20  friedelwolff
+
+	* search/indexer/__init__.py: Merge new indexing work from
+	  translate-search-indexer-generic-merging branch. A total rewrite
+	  of __init__ unrelated to the previous implementation.
+
+2008-06-14 09:18  friedelwolff
+
+	* search/indexer/__init__.py: Remove old indexing code inherited
+	  from jToolkit.
+
+2008-06-14 09:15  friedelwolff
+
+	* search/indexer/XapianIndexer.py: Merge new indexing work from
+	  translate-search-indexer-generic-merging branch. Trying to
+	  maintain the version history by copying.
+
+2008-06-14 09:15  friedelwolff
+
+	* search/indexer/test_indexers.py: Merge new indexing work from
+	  translate-search-indexer-generic-merging branch. Trying to
+	  maintain the version history by copying.
+
+2008-06-14 09:14  friedelwolff
+
+	* search/indexer/PyLuceneIndexer.py: Merge new indexing work from
+	  translate-search-indexer-generic-merging branch. Trying to
+	  maintain the version history by copying.
+
+2008-06-14 09:14  friedelwolff
+
+	* search/indexer/PyLuceneIndexer1.py: Merge new indexing work from
+	  translate-search-indexer-generic-merging branch. Trying to
+	  maintain the version history by copying.
+
+2008-06-14 09:13  friedelwolff
+
+	* search/indexer/CommonIndexer.py: Merge new indexing work from
+	  translate-search-indexer-generic-merging branch. Trying to
+	  maintain the version history by copying.
+
+2008-06-12 13:09  friedelwolff
+
+	* __version__.py: Version 1.2-alpha3
+
+2008-06-12 11:12  friedelwolff
+
+	* lang/common.py: Ensure that the sentence iterator works if passed
+	  None (possible with some translation formats)
+
+2008-06-12 10:46  friedelwolff
+
+	* storage/tmx.py: Implement .copy() for the TMX translation unit.
+	  This fixes bug 414.
+
+2008-06-12 09:34  friedelwolff
+
+	* storage/pypo.py: While we don't have an encoding for processing a
+	  header, let's decode it as ASCII while ignoring errors. We redo
+	  it later properly, so this is just to get the initial encoding.
+
+2008-06-12 09:32  friedelwolff
+
+	* storage/test_poheader.py: Remove failing test for Cordoba,
+	  Argentina - probably a dailight savings issue, or something.
+	  Probably not so interesting while the others all pass.
+
+2008-06-11 13:29  friedelwolff
+
+	* README: Explain Windows installation better
+
+2008-06-11 10:28  friedelwolff
+
+	* misc/_csv.c, misc/csv.py, storage/csvl10n.py: Remove old CSV
+	  modules that are part of Python since version 2.3 (the minimum we
+	  support). Adapt improts.
+
+2008-06-10 08:46  friedelwolff
+
+	* lang/common.py: Trim some docstrings to sane widths
+
+2008-06-09 16:44  winterstream
+
+	* filters/checks.py: A number of methods in UnitChecker were called
+	  very, very frequently
+	  and this contributed a lot to the running time of checks.
+	  
+	  Now, the results of a number of these methods are memoized (by
+	  the
+	  decorator cache_results). The cached results are cleared every
+	  time
+	  that TranslationChecker.run_test is called.
+	  
+	  On a small OpenOffice project, this has sliced the computation
+	  time
+	  of stats quite a lot and it should never result in a slow-down.
+	  
+	  Note that the decorator is deliberately specialized to accept
+	  only
+	  single argument methods. This is to avoid the runtime cost of
+	  unpacking
+	  arbitrary numbers of parameters.
+
+2008-06-09 12:35  winterstream
+
+	* filters/decoration.py, filters/test_checks.py: An underscore is a
+	  valid variable name character. filtermarkedvariables did not
+	  allow
+	  for this. The current code would work for variable names with
+	  underscores, if these
+	  variables were the last tokens in the string; the unit tests
+	  happened only to have
+	  tested this case, which made them pass.
+	  
+	  The fix is simple: simply add a check for the underscore
+	  character.
+	  
+	  Also added unit tests to cover this bug.
+
+2008-06-09 12:25  winterstream
+
+	* storage/pypo.py: Read the first unit from a po file without
+	  decoding the characters;
+	  that is, everything is read into a Python str type. Then check to
+	  see if there is a header; if there is, then try to determine the
+	  file encoding from that and set the file encoding. Otherwise,
+	  leave
+	  the file encoding at the default (UTF-8).
+	  
+	  Then, decode the file contents and restart the parsing.
+	  
+	  Originally, the parser would assume a UTF-8 encoding until it hit
+	  a Content-Type declaration which specified the file encoding.
+	  Only
+	  then would it change the decoding scheme.
+	  
+	  This worked fine for non-UTF-8 files which contained only ASCII
+	  characters in the header (which appeared before the Content-Type
+	  declaration), but raised an exception if any non-ASCII characters
+	  appeared there, since a UTF decoding error occured.
+	  
+	  This patch both simplifies the original code and fixed this bug.
+
+2008-06-09 12:21  winterstream
+
+	* storage/pypo.py: Po parsing now works directly with an array of
+	  lines. The previous
+	  version split the entire file contents into an array of lines,
+	  only
+	  to join subarrays into strings, which it would pass to the unit
+	  parser,
+	  which in its turn would split the strings into arrays of lines.
+	  This
+	  inefficiency was remedied by simply factoring out the line array
+	  handling code of the unit parsing code and calling that directly
+	  on the main array of lines (from the file parsing method).
+
+2008-06-06 14:25  dwaynebailey
+
+	* filters/checks.py, filters/test_checks.py: Make all error
+	  messages Unicode.
+	  Adapt test and remove function that convert Unicode error
+	  messages
+
+2008-06-06 09:24  winterstream
+
+	* storage/test_statsdb.py: Added some tests for StatsDB.
+
+2008-06-06 09:23  winterstream
+
+	* storage/statsdb.py: StatsDb._getstoredfileid could return None.
+	  This was a problem in methods which
+	  used _getstoredfileid, since some expected the return value not
+	  to be None.
+	  
+	  It turns out that there is no use for a None return value. So if
+	  there is no
+	  stored fileid, then we simply generate it with cachestore. Since
+	  we're not just
+	  returning stored fileids, _getstoredfileid was renamed to
+	  _getfileid. Naturally,
+	  those methods that handled the case where None was returned could
+	  have that code
+	  removed.
+
+2008-06-06 09:23  winterstream
+
+	* storage/statsdb.py: Originally, statsdb compared the mtime of a
+	  file to the mtime it had stored in the DB to see whether the file
+	  changed.
+	  
+	  On some file systems, mtime only has one second resolution, which
+	  means
+	  that if a file changes quickly enough after the statsdb has
+	  stored its
+	  mtime, the statsdb won't realize that the file has changed, and
+	  it will
+	  therefore supply incorrect stats about the file.
+	  
+	  In order for this to be ameliorated, we now also take the file
+	  size into
+	  account and we store a value which contains mtime bits as well as
+	  file
+	  size bits into the database. The only files which can now slip
+	  past the
+	  system are files which are modified soon enough and which retain
+	  their
+	  sizes. And honestly, such files, if they are valid translation
+	  files,
+	  are so unlikely to contain significant changes which maintain the
+	  file
+	  size that they can be ignored.
+
+2008-06-06 09:22  winterstream
+
+	* storage/poheader.py: Change poheader to a new-style class.
+
+2008-06-05 17:10  friedelwolff
+
+	* convert/test_ts2po.py: Add new commandline option
+
+2008-06-05 16:18  friedelwolff
+
+	* storage/poheader.py: Fix dictionary used as function argument.
+	  This fixes the broken test in test_pomerge.
+
+2008-06-05 16:15  friedelwolff
+
+	* tools/poterminology.py: Some small, mostly cosmetic changes
+
+2008-06-05 14:13  friedelwolff
+
+	* convert/ts2po.py: Handle duplicates properly [contributed by
+	  Geoffrey Hutchison]
+
+2008-06-05 08:18  dwaynebailey
+
+	* filters/test_checks.py: Add ability to validate that is we fail
+	  or fail_serious that the error message is correct.
+	  If the message is not correct we will still fail, also added
+	  tests to exercise this new path in both type.
+
+2008-06-04 18:56  dwaynebailey
+
+	* filters/checks.py, filters/test_checks.py: Don't spellcheck
+	  notranslatewords
+
+2008-06-04 11:43  friedelwolff
+
+	* filters/checks.py, filters/spelling.py: Improve the error
+	  checking in the case of absent checkers or absent dictionaries
+	  for specific languages
+
+2008-06-03 09:34  walter_l
+
+	* storage/cpo.py: One of two commits for bug 350's fix (other
+	  commit will be for Pootle).
+	  Use of the tempfile module has replaced the use of os.tmpnam(),
+	  which is apparently insecure.
+
+2008-06-02 13:44  friedelwolff
+
+	* storage/poheader.py: When merging headers in .mergeheaders(),
+	  take into account that the Plural-Forms header might not be there
+
+2008-05-30 18:36  dwaynebailey
+
+	* filters/checks.py: Initialise lang data first
+
+2008-05-30 18:35  dwaynebailey
+
+	* filters/checks.py: Fix brokeness
+
+2008-05-30 18:32  dwaynebailey
+
+	* filters/checks.py: Cleanup CheckerConfig initialisation by
+	  creating a method to initialise paramaters that can be set to a
+	  default value if none is supplied
+
+2008-05-30 18:30  dwaynebailey
+
+	* filters/checks.py: Cleanup CheckerConfig initialisation by
+	  creating a method to initialise lists
+
+2008-05-26 20:33  dwaynebailey
+
+	* misc/wStringIO.py: Fix indentation
+
+2008-05-26 20:32  dwaynebailey
+
+	* misc/test_zipfileext.py: Fix indentation
+
+2008-05-26 20:29  dwaynebailey
+
+	* misc/progressbar.py: Fix indentation
+
+2008-05-26 20:25  dwaynebailey
+
+	* misc/test_quote.py: Fix indentation
+
+2008-05-26 20:18  dwaynebailey
+
+	* misc/xmlwrapper.py: Fix whitespace indentation
+
+2008-05-26 20:14  dwaynebailey
+
+	* misc/quote.py: Fix some broken whitespace
+
+2008-05-26 20:11  dwaynebailey
+
+	* misc/optrecurse.py: Fix remaining whitespace issues
+
+2008-05-26 16:41  dwaynebailey
+
+	* filters/helpers.py: Remove isalnum_u - unused
+
+2008-05-26 10:52  friedelwolff
+
+	* search/match.py: Small cleanups and comments. A small improvement
+	  for the case where we already have MAX_CANDIDATES candidates
+	  (likely in some cases with pot2po where MAX_CANDIDATES==1, for
+	  example).
+
+2008-05-26 10:42  friedelwolff
+
+	* search/match.py: Replace the code that searches for the starting
+	  position of the search range with a binary search. Thisgives a
+	  noticable performance increase for a large TM.
+
+2008-05-26 09:54  winterstream
+
+	* storage/statsdb.py: Pootle requires a way to determine
+	  precomputed property values PER UNIT
+	  (as opposed to StatsCache.filestats which supplies only sets of
+	  unit
+	  indices which correspond to given properties). This is necessary
+	  for
+	  example, if one wants to compute the source word count of a unit.
+	  
+	  For this reason, StatsCache.unitstats was added to supply arrays
+	  which
+	  map unit indices to property values. This may therefore return
+	  dictionaries
+	  such as
+	  { 'sourcewordcount': [4, 1, 10, 20],
+	  'targetwordcount': [0, 0, 0, 0] }
+	  indicating that the source word count of unit 0 is 4, unit 1 is
+	  1, etc.
+	  and that the target word counts for all units are 0.
+
+2008-05-26 07:54  friedelwolff
+
+	* search/lshtein.py: Remove assert - gives small performance
+	  improvement, and we might end up doing these things with
+	  decorators later
+
+2008-05-23 13:33  dwaynebailey
+
+	* filters/checks.py, filters/helpers.py, filters/prefilters.py,
+	  filters/test_checks.py: Allow proper filtering of accelerators
+	  for test such as spell checking
+	  Adapted filteraccelerators to take an option paramater containing
+	  valid accelerators
+	  Changed multifilter to allow it to take other arguments that it
+	  would pass to the filter function
+	  Bug 395 has been raised to audit the use of filteraccelerators
+	  and perhaps change its behaviour to simply remove all
+	  accelerators not just valid accelerators.
+
+2008-05-22 07:51  dwaynebailey
+
+	* filters/checks.py, filters/decoration.py, filters/prefilters.py,
+	  filters/test_checks.py, filters/test_decoration.py,
+	  lang/common.py, lang/fi.py: Fixes bug 289
+	  Adds the concept of an validaccel list and checks found
+	  accelerators against this list.
+	  By default validaccel is None in which case the old codepath is
+	  followed, languages
+	  must override this setting to get language specific lists of
+	  acceptable characters.
+
+2008-05-15 15:59  friedelwolff
+
+	* misc/dictutils.py, misc/optrecurse.py, misc/quote.py,
+	  misc/xmlwrapper.py: Change spacing convention on inhouse files to
+	  be four spaces instead of two
+
+2008-05-15 15:23  friedelwolff
+
+	* storage/pypo.py: Remove possibility of joining with linebreaks in
+	  unquotefrompo(). Adapt last user to not use it.
+
+2008-05-14 08:50  friedelwolff
+
+	* filters/test_checks.py: Test some Vietnamese quoting issues that
+	  we didn't handle before
+
+2008-05-14 08:45  friedelwolff
+
+	* lang/fr.py: Implement punctuation translation for 'single' and
+	  `weird single' quoting -> French guillemets (« »)
+
+2008-05-14 08:42  friedelwolff
+
+	* lang/test_fr.py: Lots of more tests for French quoting,
+	  espacially 'single' and `weird single' quoting
+
+2008-05-14 08:37  friedelwolff
+
+	* lang/test_vi.py: Test Vietnamese quoting more by including
+	  'single' and `weird single' quoting in the tests
+
+2008-05-12 22:42  dwaynebailey
+
+	* filters/prefilters.py, filters/test_prefilters.py: Add tests for
+	  removekdecomments and assert input is unicode
+
+2008-05-12 10:18  friedelwolff
+
+	* filters/prefilters.py: Simplify filterwordswithpunctuation() -
+	  this fixes the failing unit test
+
+2008-05-12 09:06  friedelwolff
+
+	* storage/ts.py: Mention that the the currently supported .ts
+	  format is not the newest
+
+2008-05-12 09:04  friedelwolff
+
+	* lang/test_vi.py: Update tests to new punctuation spacing rules as
+	  explained by Clytie Siddall
+
+2008-05-12 09:02  friedelwolff
+
+	* lang/af.py, lang/am.py, lang/ar.py, lang/el.py, lang/fa.py,
+	  lang/fr.py, lang/he.py, lang/hy.py, lang/ja.py, lang/km.py,
+	  lang/ko.py, lang/ml.py, lang/ur.py, lang/vi.py, lang/zh.py:
+	  Removed unnecessary declerations of code, fullname, nplurals and
+	  pluralequation in the language modules. Also remove some unused
+	  imports.
+
+2008-05-11 23:53  dwaynebailey
+
+	* filters/decoration.py, filters/test_decoration.py: Add test for
+	  isvalidaccelerator
+
+2008-05-11 23:36  dwaynebailey
+
+	* filters/test_decoration.py: Add tests for getfunction()
+
+2008-05-11 23:28  dwaynebailey
+
+	* filters/test_decoration.py: Test getnumbers function
+
+2008-05-11 23:28  dwaynebailey
+
+	* filters/test_decoration.py: Test all sorts of spaces
+
+2008-05-11 22:43  dwaynebailey
+
+	* filters/checks.py: Spell checking is only in unicode because of
+	  earlier forceunicode so drop unicode checking and adapt message
+	  creation to be all unicode.
+
+2008-05-11 20:08  dwaynebailey
+
+	* filters/checks.py: Remove unicode manipulation from
+	  notranslatewords check. All tests are forced to unicode by
+	  forceunicode function so no asserts have been added.
+
+2008-05-11 20:03  dwaynebailey
+
+	* filters/autocorrect.py, filters/test_autocorrect.py: Remove old
+	  correct() which only did Unicode -> Str manipulations.
+	  Rename simplecorrect() -> correct() and only accept unicode
+	  strings.
+	  Change tests.
+
+2008-05-11 19:57  dwaynebailey
+
+	* filters/prefilters.py, filters/test_prefilters.py: Make
+	  filterwordwithpunctuation only work with Unicode strings
+
+2008-05-09 11:07  friedelwolff
+
+	* lang/vi.py: Rewrite punctuation transformation to not space '?',
+	  reuse the new fr.py code correctly
+
+2008-05-09 11:04  friedelwolff
+
+	* lang/fr.py: Factor out the guillemets transformation into a
+	  separate function for better reuse
+
+2008-05-09 10:45  friedelwolff
+
+	* lang/common.py, lang/factory.py: Move to using objects
+	  instantiated as singletons (per language)
+
+2008-05-09 09:58  friedelwolff
+
+	* storage/statsdb.py: Mark the _caches class variable as private
+
+2008-05-09 08:10  friedelwolff
+
+	* filters/decoration.py: Simplify getnumbers() to only work with
+	  unicode
+
+2008-05-05 14:19  friedelwolff
+
+	* filters/test_checks.py: Add failing test for endpunc in
+	  Vietnamese
+
+2008-05-05 14:18  friedelwolff
+
+	* filters/test_checks.py: Add a failing test for test_singlequoting
+
+2008-05-05 14:01  friedelwolff
+
+	* filters/checks.py: Add some TODO notes to improve the acronyms
+	  test
+
+2008-05-02 09:06  friedelwolff
+
+	* storage/tmx.py: Implement .istranslatable()
+
+2008-05-02 09:05  friedelwolff
+
+	* storage/tmx.py: Implement .getid()
+
+2008-05-02 08:04  friedelwolff
+
+	* convert/pot2po.py: Test that the inputpot actually has units
+	  before using them
+
+2008-05-02 08:03  friedelwolff
+
+	* convert/pot2po.py: Refactor code slightly to make direct use of
+	  previously created stores possible
+
+2008-05-02 07:14  friedelwolff
+
+	* storage/statsdb.py: Fix typo in comment
+
+2008-04-22 14:53  friedelwolff
+
+	* __version__.py: 1.2-alpha2
+
+2008-04-22 14:51  friedelwolff
+
+	* storage/oo.py: Add rules for handling <ref> and <references>
+	  found in OOo 3.0 translations
+
+2008-04-21 11:43  friedelwolff
+
+	* storage/wordfast.py: Fix epydoc type statement
+
+2008-04-18 08:37  dwaynebailey
+
+	* __version__.py: Well we're not really beta ready so lets be a
+	  little more honest and make this alpha.
+
+2008-04-18 08:16  dwaynebailey
+
+	* __version__.py: Up the version number for a release.
+
+2008-04-17 16:02  friedelwolff
+
+	* storage/mo.py: Fix wrongly encoded character in comments
+
+2008-04-14 07:37  dwaynebailey
+
+	* storage/rc.py: Manage -1 named enties properly by using the
+	  source text with spaces escaped with underscore
+
+2008-04-14 07:35  dwaynebailey
+
+	* storage/rc.py: Handle:
+	  * space at end of STRINGTABLE entities
+	  * A L"string" entry
+
+2008-04-14 07:32  dwaynebailey
+
+	* convert/po2rc.py: Add --lang and --sublang options to deal with
+	  the LANGUAGE entry
+
+2008-04-14 07:29  dwaynebailey
+
+	* convert/rc2po.py: Add 'nls' as an input format
+
+2008-04-14 06:15  friedelwolff
+
+	* storage/poheader.py: Ensure that Content-Type and
+	  Content-Transfer-Encoding is always set to sane values after a
+	  call to updateheader()
+
+2008-04-10 07:03  dwaynebailey
+
+	* convert/dtd2po.py, convert/html2po.py, convert/odf2po.py,
+	  convert/oo2po.py, convert/oo2xliff.py, convert/po2dtd.py,
+	  convert/po2html.py, convert/poreplace.py,
+	  convert/test_convert.py, convert/test_dtd2po.py,
+	  convert/test_html2po.py, convert/test_moz2po.py,
+	  convert/test_mozfunny2prop.py, convert/test_odf2po.py,
+	  convert/test_oo2po.py, convert/test_php2po.py,
+	  convert/test_po2dtd.py, convert/test_po2moz.py,
+	  convert/test_pot2po.py, convert/test_prop2po.py,
+	  convert/ts2po.py, convert/txt2po.py, convert/xliff2po.py,
+	  search/lshtein.py, search/match.py, storage/csvl10n.py,
+	  storage/dtd.py, storage/lisa.py, storage/poxliff.py,
+	  storage/pypo.py, storage/test_monolingual.py, storage/test_po.py,
+	  storage/test_pypo.py, storage/test_zipfile.py, storage/ts.py,
+	  tools/test_pocount.py, tools/test_pomerge.py: Fix indentation.
+	  All except misc/ now follow 4 space convention.
+
+2008-04-10 06:57  dwaynebailey
+
+	* convert/test_po2ts.py: Add test for --context option
+
+2008-04-09 12:58  dwaynebailey
+
+	* convert/roundtrip-OOo: Actually download the OOo SDF files in the
+	  roundtrip test.
+
+2008-04-06 19:34  dwaynebailey
+
+	* convert/rc2po.py: Add --charset option to rc2po. Defaults to
+	  cp1252, the default codepage
+	  for English.
+
+2008-04-06 19:31  dwaynebailey
+
+	* convert/po2rc.py: Add --charset output option to allow user to
+	  choose the output encoding, defaults to utf-8
+
+2008-04-06 19:27  dwaynebailey
+
+	* convert/po2rc.py, storage/rc.py: Store the actual match object
+	  with a unit
+	  Convert matches by replacing the value in the match with the
+	  translation, then replacing
+	  the actual match in the original text with the new string.
+	  Implemnt #pragma to ensure that the output rc can be in UTF-8
+
+2008-04-06 19:21  dwaynebailey
+
+	* storage/rc.py: After second language section drop all remaining
+	  blocks.
+
+2008-04-06 19:19  dwaynebailey
+
+	* storage/rc.py: Catch comments within DIALOG item names.
+
+2008-04-06 19:17  dwaynebailey
+
+	* storage/rc.py: Add escping for Python to RC conversion.
+
+2008-04-04 04:33  dwaynebailey
+
+	* convert/po2rc.py: Properly instantiate the rc store.
+
+2008-04-04 04:32  dwaynebailey
+
+	* convert/test_oo2po.py: Test for roundtripping OOo whitespace.
+	  Disabled for now because of some oo class issues.
+
+2008-04-03 06:58  friedelwolff
+
+	* tools/poterminology, tools/poterminology.py: [Contributed by
+	  Alexander Dupuy] poterminology: a terminology extraction tool
+	  with several options
+
+2008-04-02 15:21  dwaynebailey
+
+	* __init__.py: Fix hyperlink
+
+2008-03-28 14:18  dwaynebailey
+
+	* convert/test_po2dtd.py: Add test for bug 351
+
+2008-03-28 12:49  dwaynebailey
+
+	* convert/po2rc, convert/po2rc.py, convert/rc2po, convert/rc2po.py,
+	  storage/rc.py: Add rc2po implementation:
+	  * rc2po works well
+	  * po2rc is not complete (i.e. it doesn't work at all)
+
+2008-03-28 12:01  dwaynebailey
+
+	* convert/po2ini.py: Remove unused import
+
+2008-03-28 03:10  sumpfralle
+
+	* storage/versioncontrol/__init__.py, storage/versioncontrol/hg.py:
+	  added mercurial (hg) versioncontrol support (contributed by
+	  Miklos Vajna)
+
+2008-03-27 13:04  friedelwolff
+
+	* CREDITS: Credit Torsten Martinsen. Remove reference to cvs.
+
+2008-03-27 13:00  friedelwolff
+
+	* convert/po2ts.py: [Contributed by Torsten Martinsen] Add
+	  --context parameter to specify explicit context instead of
+	  obtaining it from the location (#:) comments. See bug 294.
+
+2008-03-27 07:18  friedelwolff
+
+	* README: Rewrite bug reporting section, pointing to the wiki
+
+2008-03-26 09:52  friedelwolff
+
+	* ChangeLog: Update Changelog before release of 1.1.1
+
 2008-03-18 21:26  friedelwolff
 
 	* lang/data.py: Correct plural information for Hungarian
