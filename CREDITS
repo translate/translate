@@ -27,6 +27,7 @@ Lars Kruse: version control, indexing, support, reviews
 Marek Wieckowski: Qt ts file enhancements
 Matt Chisholm: fixes
 Matthias Klose: extra file options for converters
+Miklos Vajna: patches and testing of version control
 Nicolas François: po4a integration, performance
 Ognyan Kulev: testing and fixes
 Pavel Janík: testing
