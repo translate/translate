@@ -19,6 +19,7 @@ except ImportError:
 
 join = os.path.join
 
+PRETTY_NAME = 'Translate Toolkit'
 translateversion = __version__.ver
 
 packagesdir = distutils.sysconfig.get_python_lib()
@@ -128,7 +129,7 @@ class InnoScript:
             compilecommand = _winreg.QueryValue(compile_key, "")
             compile_key.Close()
         except:
-            compilecommand = "compil32.exe"
+            compilecommand = 'compil32.exe "%1"'
         return compilecommand
 
     def chop(self, pathname):
@@ -139,7 +140,7 @@ class InnoScript:
     def create(self, pathname=None):
         """creates the InnoSetup script"""
         if pathname is None:
-          self.pathname = os.path.join(self.dist_dir, self.name + os.extsep + "iss")
+          self.pathname = os.path.join(self.dist_dir, self.name + os.extsep + "iss").replace(' ', '_')
         else:
           self.pathname = pathname
 # See http://www.jrsoftware.org/isfaq.php for more InnoSetup config options.
@@ -209,7 +210,7 @@ class build_installer(build_exe_map):
         install_scripts = self.install_script
         if isinstance(install_scripts, (str, unicode)):
             install_scripts = [install_scripts]
-        script = InnoScript(self.distribution.metadata.name, lib_dir, dist_dir, exe_files, self.lib_files, version=self.distribution.metadata.version, install_scripts=install_scripts)
+        script = InnoScript(PRETTY_NAME, lib_dir, dist_dir, exe_files, self.lib_files, version=self.distribution.metadata.version, install_scripts=install_scripts)
         print "*** creating the inno setup script***"
         script.create()
         print "*** compiling the inno setup script***"
