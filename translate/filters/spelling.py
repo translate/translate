@@ -42,7 +42,7 @@ try:
         if not checkers[lang]:
             return
         spellchecker = checkers[lang]
-        spellchecker.set_text(text)
+        spellchecker.set_text(unicode(text))
         for err in spellchecker:
             yield err.word, err.wordpos, err.suggest()
 
