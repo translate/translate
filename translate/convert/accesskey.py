@@ -54,3 +54,56 @@ def get_label_and_accesskey(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
             accesskey = string[marker_pos]
             break
     return label, accesskey
+
+def combine_label_accesskey(label, accesskey, 
+            accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
+    """Combine a label and and accesskey to form a label+accesskey string
+
+    We place an accesskey marker before the accesskey in the label and this create a string
+    with the two combined e.g. "File" + "F" = "&File"
+
+    @type label: unicode
+    @param label: a label
+    @type accesskey: unicode char
+    @param accesskey: The accesskey
+    @rtype: unicode or None
+    @return: label+accesskey string or None if uncombineable
+    """
+    assert isinstance(label, unicode)
+    assert isinstance(accesskey, unicode)
+    if len(accesskey) == 0:
+        return None
+    searchpos = 0
+    accesskeypos = -1
+    in_entity = False
+    accesskeyaltcasepos = -1
+    while (accesskeypos < 0) and searchpos < len(label):
+        searchchar = label[searchpos]
+        if searchchar == '&':
+            in_entity = True
+        elif searchchar == ';':
+            in_entity = False
+        else:
+            if not in_entity:
+                if searchchar == accesskey.upper():
+                    # always prefer uppercase
+                    accesskeypos = searchpos
+                if searchchar == accesskey.lower():
+                    # take lower case otherwise...
+                    if accesskeyaltcasepos == -1:
+                        # only want to remember first altcasepos
+                        accesskeyaltcasepos = searchpos
+                        # note: we keep on looping through in hope 
+                        # of exact match
+        searchpos += 1
+    # if we didn't find an exact case match, use an alternate one if available
+    if accesskeypos == -1:
+        accesskeypos = accesskeyaltcasepos
+    # now we want to handle whatever we found...
+    if accesskeypos >= 0:
+        string = label[:accesskeypos] + accesskey_marker + label[accesskeypos:]
+        string = string.encode("UTF-8", "replace")
+        return string
+    else:
+        # can't currently mix accesskey if it's not in label
+        return None

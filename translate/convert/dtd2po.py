@@ -27,6 +27,7 @@ You can convert back to .dtd using po2dtd.py"""
 from translate.storage import po
 from translate.storage import dtd
 from translate.misc import quote
+from translate.convert import accesskey as accesskeyfn
 
 class dtd2po:
     def __init__(self, blankmsgstr=False, duplicatestyle="msgctxt"):
@@ -147,41 +148,8 @@ class dtd2po:
         # redo the strings from original dtd...
         label = dtd.unquotefromdtd(labeldtd.definition).decode('UTF-8')
         accesskey = dtd.unquotefromdtd(accesskeydtd.definition).decode('UTF-8')
-        if len(accesskey) == 0:
-            return None
-        # try and put the & in front of the accesskey in the label...
-        # make sure to avoid muddling up &amp;-type strings
-        searchpos = 0
-        accesskeypos = -1
-        inentity = 0
-        accesskeyaltcasepos = -1
-        while (accesskeypos < 0) and searchpos < len(label):
-            searchchar = label[searchpos]
-            if searchchar == '&':
-                inentity = 1
-            elif searchchar == ';':
-                inentity = 0
-            else:
-                if not inentity:
-                    if searchchar == accesskey.upper():
-                        # always prefer uppercase
-                        accesskeypos = searchpos
-                    if searchchar == accesskey.lower():
-                        # take lower case otherwise...
-                        if accesskeyaltcasepos == -1:
-                            # only want to remember first altcasepos
-                            accesskeyaltcasepos = searchpos
-                            # note: we keep on looping through in hope of exact match
-            searchpos += 1
-        # if we didn't find an exact case match, use an alternate one if available
-        if accesskeypos == -1:
-            accesskeypos = accesskeyaltcasepos
-        # now we want to handle whatever we found...
-        if accesskeypos >= 0:
-            label = label[:accesskeypos] + '&' + label[accesskeypos:]
-            label = label.encode("UTF-8", "replace")
-        else:
-            # can't currently mix accesskey if it's not in label
+        label = accesskeyfn.combine_label_accesskey(label, accesskey)
+        if label is None:
             return None
         thepo.source = label
         thepo.target = ""
