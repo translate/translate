@@ -23,7 +23,6 @@
 
 import sys
 from translate.storage import po
-from translate.storage import xliff
 from translate.storage import ical
 
 class ical2po:
