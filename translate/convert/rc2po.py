@@ -30,69 +30,69 @@ class rc2po:
     def __init__(self, charset=None):
         self.charset = charset
 
-    def convertstore(self, thercfile, duplicatestyle="msgctxt"):
+    def convert_store(self, input_store, duplicatestyle="msgctxt"):
         """converts a .rc file to a .po file..."""
-        thetargetfile = po.pofile()
-        targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
-        targetheader.addnote("extracted from %s" % thercfile.filename, "developer")
-        thetargetfile.addunit(targetheader)
-        for rcunit in thercfile.units:
-            pounit = self.convertunit(rcunit, "developer")
-            if pounit is not None:
-                thetargetfile.addunit(pounit)
-        thetargetfile.removeduplicates(duplicatestyle)
-        return thetargetfile
+        output_store = po.pofile()
+        output_header = output_store.makeheader(charset="UTF-8", encoding="8bit")
+        output_header.addnote("extracted from %s" % input_store.filename, "developer")
+        output_store.addunit(output_header)
+        for input_unit in input_store.units:
+            output_unit = self.convert_unit(input_unit, "developer")
+            if output_unit is not None:
+                output_store.addunit(output_unit)
+        output_store.removeduplicates(duplicatestyle)
+        return output_store
 
-    def mergestore(self, origrcfile, translatedrcfile, blankmsgstr=False, duplicatestyle="msgctxt"):
+    def merge_store(self, template_store, input_store, blankmsgstr=False, duplicatestyle="msgctxt"):
         """converts two .rc files to a .po file..."""
-        thetargetfile = po.pofile()
-        targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
-        targetheader.addnote("extracted from %s, %s" % (origrcfile.filename, translatedrcfile.filename), "developer")
-        thetargetfile.addunit(targetheader)
-        translatedrcfile.makeindex()
-        for origrc in origrcfile.units:
-            origpo = self.convertunit(origrc, "developer")
+        output_store = po.pofile()
+        output_header = output_store.makeheader(charset="UTF-8", encoding="8bit")
+        output_header.addnote("extracted from %s, %s" % (template_store.filename, input_store.filename), "developer")
+        output_store.addunit(output_header)
+        input_store.makeindex()
+        for template_unit in template_store.units:
+            origpo = self.convert_unit(template_unit, "developer")
             # try and find a translation of the same name...
-            origrcname = "".join(origrc.getlocations())
-            if origrcname in translatedrcfile.locationindex:
-                translatedrc = translatedrcfile.locationindex[origrcname]
-                translatedpo = self.convertunit(translatedrc, "translator")
+            template_unit_name = "".join(template_unit.getlocations())
+            if template_unit_name in input_store.locationindex:
+                translatedrc = input_store.locationindex[template_unit_name]
+                translatedpo = self.convert_unit(translatedrc, "translator")
             else:
                 translatedpo = None
             # if we have a valid po unit, get the translation and add it...
             if origpo is not None:
                 if translatedpo is not None and not blankmsgstr:
                     origpo.target = translatedpo.source
-                thetargetfile.addunit(origpo)
+                output_store.addunit(origpo)
             elif translatedpo is not None:
                 print >> sys.stderr, "error converting original rc definition %s" % origrc.name
-        thetargetfile.removeduplicates(duplicatestyle)
-        return thetargetfile
+        output_store.removeduplicates(duplicatestyle)
+        return output_store
 
-    def convertunit(self, rcunit, commenttype):
+    def convert_unit(self, input_unit, commenttype):
         """Converts a .rc unit to a .po unit. Returns None if empty
         or not for translation."""
-        if rcunit is None:
+        if input_unit is None:
             return None
         # escape unicode
-        pounit = po.pounit(encoding="UTF-8")
-        pounit.addlocation("".join(rcunit.getlocations()))
-        pounit.source = rcunit.source.decode(self.charset)
-        pounit.target = ""
-        return pounit
+        output_unit = po.pounit(encoding="UTF-8")
+        output_unit.addlocation("".join(input_unit.getlocations()))
+        output_unit.source = input_unit.source.decode(self.charset)
+        output_unit.target = ""
+        return output_unit
 
-def convertrc(inputfile, outputfile, templatefile, pot=False, duplicatestyle="msgctxt", charset=None):
-    """reads in inputfile using rc, converts using rc2po, writes to outputfile"""
-    inputstore = rc.rcfile(inputfile)
+def convertrc(input_file, output_file, template_file, pot=False, duplicatestyle="msgctxt", charset=None):
+    """reads in input_file using rc, converts using rc2po, writes to output_file"""
+    input_store = rc.rcfile(input_file)
     convertor = rc2po(charset=charset)
-    if templatefile is None:
-        outputstore = convertor.convertstore(inputstore, duplicatestyle=duplicatestyle)
+    if template_file is None:
+        output_store = convertor.convert_store(input_store, duplicatestyle=duplicatestyle)
     else:
-        templatestore = rc.rcfile(templatefile)
-        outputstore = convertor.mergestore(templatestore, inputstore, blankmsgstr=pot, duplicatestyle=duplicatestyle)
-    if outputstore.isempty():
+        template_store = rc.rcfile(template_file)
+        output_store = convertor.merge_store(template_store, input_store, blankmsgstr=pot, duplicatestyle=duplicatestyle)
+    if output_store.isempty():
         return 0
-    outputfile.write(str(outputstore))
+    output_file.write(str(output_store))
     return 1
 
 def main(argv=None):
