@@ -25,47 +25,13 @@ DEFAULT_ACCESSKEY_MARKER = "&"
 
 def getlabel(unquotedstr, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
     """retrieve the label from a mixed label+accesskey entity"""
-    if isinstance(unquotedstr, str):
-        unquotedstr = unquotedstr.decode("UTF-8")
-    # mixed labels just need the & taken out
-    # except that &entity; needs to be avoided...
-    amppos = 0
-    while amppos >= 0:
-        amppos = unquotedstr.find(accesskey_marker, amppos)
-        if amppos != -1:
-            amppos += 1
-            semipos = unquotedstr.find(";", amppos)
-            if semipos != -1:
-                if unquotedstr[amppos:semipos].isalnum():
-                    continue
-            # otherwise, cut it out... only the first one need be changed
-            # (see below to see how the accesskey is done)
-            unquotedstr = unquotedstr[:amppos-1] + unquotedstr[amppos:]
-            break
-    return unquotedstr.encode("UTF-8")
+    label, accesskey = get_label_and_accesskey(unquotedstr, accesskey_marker)
+    return label
 
 def getaccesskey(unquotedstr, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
     """retrieve the access key from a mixed label+accesskey entity"""
-    if isinstance(unquotedstr, str):
-        unquotedstr = unquotedstr.decode("UTF-8")
-    # mixed access keys need the key extracted from after the &
-    # but we must avoid proper entities i.e. &gt; etc...
-    amppos = 0
-    while amppos >= 0:
-        amppos = unquotedstr.find(accesskey_marker, amppos)
-        if amppos != -1:
-            amppos += 1
-            semipos = unquotedstr.find(";", amppos)
-            if semipos != -1:
-                if unquotedstr[amppos:semipos].isalnum():
-                    # what we have found is an entity, not a shortcut key...
-                    continue
-            # otherwise, we found the shortcut key
-            return unquotedstr[amppos].encode("UTF-8")
-    # if we didn't find the shortcut key, return an empty string rather than the original string
-    # this will come out as "don't have a translation for this" because the string is not changed...
-    # so the string from the original dtd will be used instead
-    return ""
+    label, accesskey = get_label_and_accesskey(unquotedstr, accesskey_marker)
+    return accesskey
 
 def get_label_and_accesskey(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
     """Extract the label and accesskey form a label+accesskey string
@@ -78,4 +44,20 @@ def get_label_and_accesskey(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
     @type accesskey_marker: Char
     @param accesskey_marker: The character that is used to prefix an access key
     """
-    return getlabel(string, accesskey_marker), getaccesskey(string, accesskey_marker)
+    if isinstance(string, str):
+        string = string.decode("UTF-8")
+    accesskey = ""
+    label = string
+    marker_pos = 0
+    while marker_pos >= 0:
+        marker_pos = string.find(accesskey_marker, marker_pos)
+        if marker_pos != -1:
+            marker_pos += 1
+            semicolon_pos = string.find(";", marker_pos)
+            if semicolon_pos != -1:
+                if string[marker_pos:semicolon_pos].isalnum():
+                    continue
+            label = string[:marker_pos-1] + string[marker_pos:]
+            accesskey = string[marker_pos]
+            break
+    return label.encode("UTF-8"), accesskey.encode("UTF-8")
