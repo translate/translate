@@ -148,7 +148,7 @@ class dtd2po:
         # redo the strings from original dtd...
         label = dtd.unquotefromdtd(labeldtd.definition).decode('UTF-8')
         accesskey = dtd.unquotefromdtd(accesskeydtd.definition).decode('UTF-8')
-        label = accesskeyfn.combine_label_accesskey(label, accesskey)
+        label = accesskeyfn.combine(label, accesskey)
         if label is None:
             return None
         thepo.source = label

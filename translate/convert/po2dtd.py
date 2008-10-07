@@ -85,13 +85,13 @@ def applytranslation(entity, dtdunit, inputunit, mixedentities):
     for labelsuffix in labelsuffixes:
         if entity.endswith(labelsuffix):
             if entity in mixedentities:
-                unquotedstr, akey = accesskey.get_label_and_accesskey(unquotedstr)
+                unquotedstr, akey = accesskey.extract(unquotedstr)
                 break
     else:
         for akeytype in accesskeysuffixes:
             if entity.endswith(akeytype):
                 if entity in mixedentities:
-                    label, unquotedstr = accesskey.get_label_and_accesskey(unquotedstr)
+                    label, unquotedstr = accesskey.extract(unquotedstr)
                     if not unquotedstr:
                         warnings.warn("Could not find accesskey for %s" % entity)
                     else:

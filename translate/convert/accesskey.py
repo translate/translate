@@ -23,7 +23,7 @@
 
 DEFAULT_ACCESSKEY_MARKER = u"&"
 
-def get_label_and_accesskey(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
+def extract(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
     """Extract the label and accesskey form a label+accesskey string
 
     The function will also try to ignore &entities; which would obviously not
@@ -55,7 +55,7 @@ def get_label_and_accesskey(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
             break
     return label, accesskey
 
-def combine_label_accesskey(label, accesskey, 
+def combine(label, accesskey, 
             accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
     """Combine a label and and accesskey to form a label+accesskey string
 
