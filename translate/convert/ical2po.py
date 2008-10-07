@@ -66,7 +66,7 @@ class ical2po:
         output_store.removeduplicates(duplicatestyle)
         return output_store
 
-    def convert_unit(self, input_unit):
+    def convert_unit(self, input_unit, commenttype):
         """Converts a .ini unit to a .po unit. Returns None if empty
         or not for translation."""
         if input_unit is None:
