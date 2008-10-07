@@ -16,3 +16,10 @@ def test_ignore_entities():
     """test that we don't get confused with entities and a & access key marker"""
     assert accesskey.getaccesskey("Set &browserName; as &Default") != "b"
     assert accesskey.getaccesskey("Set &browserName; as &Default") == "D"
+ 
+def test_alternate_accesskey_marker():
+    """check that we can identify the accesskey if the marker is different"""
+    assert accesskey.getlabel("~File", "~") == "File"
+    assert accesskey.getlabel("&File", "~") == "&File"
+    assert accesskey.getaccesskey("~File", "~") == "F"
+    assert accesskey.getaccesskey("&File", "~") == ""

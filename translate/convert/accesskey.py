@@ -21,7 +21,9 @@
 
 """functions used to manipulate access keys in strings"""
 
-def getlabel(unquotedstr):
+DEFAULT_ACCESSKEY_MARKER = "&"
+
+def getlabel(unquotedstr, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
     """retrieve the label from a mixed label+accesskey entity"""
     if isinstance(unquotedstr, str):
         unquotedstr = unquotedstr.decode("UTF-8")
@@ -29,7 +31,7 @@ def getlabel(unquotedstr):
     # except that &entity; needs to be avoided...
     amppos = 0
     while amppos >= 0:
-        amppos = unquotedstr.find("&", amppos)
+        amppos = unquotedstr.find(accesskey_marker, amppos)
         if amppos != -1:
             amppos += 1
             semipos = unquotedstr.find(";", amppos)
@@ -42,7 +44,7 @@ def getlabel(unquotedstr):
             break
     return unquotedstr.encode("UTF-8")
 
-def getaccesskey(unquotedstr):
+def getaccesskey(unquotedstr, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
     """retrieve the access key from a mixed label+accesskey entity"""
     if isinstance(unquotedstr, str):
         unquotedstr = unquotedstr.decode("UTF-8")
@@ -50,7 +52,7 @@ def getaccesskey(unquotedstr):
     # but we must avoid proper entities i.e. &gt; etc...
     amppos = 0
     while amppos >= 0:
-        amppos = unquotedstr.find("&", amppos)
+        amppos = unquotedstr.find(accesskey_marker, amppos)
         if amppos != -1:
             amppos += 1
             semipos = unquotedstr.find(";", amppos)
