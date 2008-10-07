@@ -66,3 +66,16 @@ def getaccesskey(unquotedstr, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
     # this will come out as "don't have a translation for this" because the string is not changed...
     # so the string from the original dtd will be used instead
     return ""
+
+def get_label_and_accesskey(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
+    """Extract the label and accesskey form a label+accesskey string
+
+    The function will also try to ignore &entities; which would obviously not
+    contain accesskeys.
+
+    @type string: Unicode
+    @param string: A string that might contain a label with accesskey marker
+    @type accesskey_marker: Char
+    @param accesskey_marker: The character that is used to prefix an access key
+    """
+    return getlabel(string, accesskey_marker), getaccesskey(string, accesskey_marker)

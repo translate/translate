@@ -12,6 +12,12 @@ def test_getaccesskey():
     assert accesskey.getaccesskey("&File") == "F"
     assert accesskey.getaccesskey("&File") != "File"
 
+def test_get_label_and_accesskey():
+    """test that we can extract the label and accesskey components from an accesskey+label 
+    string"""
+    assert accesskey.get_label_and_accesskey("&File") == ("File", "F")
+    assert accesskey.get_label_and_accesskey("~File", "~") == ("File", "F")
+
 def test_ignore_entities():
     """test that we don't get confused with entities and a & access key marker"""
     assert accesskey.getaccesskey("Set &browserName; as &Default") != "b"
