@@ -23,16 +23,6 @@
 
 DEFAULT_ACCESSKEY_MARKER = u"&"
 
-def getlabel(unquotedstr, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
-    """retrieve the label from a mixed label+accesskey entity"""
-    label, accesskey = get_label_and_accesskey(unquotedstr, accesskey_marker)
-    return label
-
-def getaccesskey(unquotedstr, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
-    """retrieve the access key from a mixed label+accesskey entity"""
-    label, accesskey = get_label_and_accesskey(unquotedstr, accesskey_marker)
-    return accesskey
-
 def get_label_and_accesskey(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
     """Extract the label and accesskey form a label+accesskey string
 
