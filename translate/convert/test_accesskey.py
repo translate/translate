@@ -62,3 +62,8 @@ def test_unicode():
     label, akey = accesskey.get_label_and_accesskey(u"E&ḓiṱ")
     assert label, akey == (u"Eḓiṱ", u"ḓ")
     assert isinstance(label, unicode) and isinstance(akey, unicode)
+
+def test_empty_string():
+    """test that we can handle and empty label+accesskey string"""
+    assert accesskey.get_label_and_accesskey(u"") == (u"", u"")
+    assert accesskey.get_label_and_accesskey(u"", u"~") == (u"", u"")

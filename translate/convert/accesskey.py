@@ -47,6 +47,8 @@ def get_label_and_accesskey(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
     assert isinstance(string, unicode)
     assert isinstance(accesskey_marker, unicode)
     assert len(accesskey_marker) == 1
+    if string == u"":
+        return u"", u""
     accesskey = u""
     label = string
     marker_pos = 0
