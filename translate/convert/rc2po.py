@@ -100,9 +100,9 @@ def main(argv=None):
     formats = {"rc": ("po", convertrc), ("rc", "rc"): ("po", convertrc), 
                "nls": ("po", convertrc), ("nls", "nls"): ("po", convertrc)}
     parser = convert.ConvertOptionParser(formats, usetemplates=True, usepots=True, description=__doc__)
-    defaultcharset="cp1252"
-    parser.add_option("", "--charset", dest="charset", default=defaultcharset,
-        help="charset to use to decode the RC files (default: %s)" % defaultcharset, metavar="CHARSET")
+    DEFAULTCHARSET = "cp1252"
+    parser.add_option("", "--charset", dest="charset", default=DEFAULTCHARSET,
+        help="charset to use to decode the RC files (default: %s)" % DEFAULTCHARSET, metavar="CHARSET")
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.passthrough.append("charset")
