@@ -56,24 +56,6 @@ class oo2po:
             unit.addnote(getattr(translators_comment, subkey), origin="developer")
         return unit
 
-    def makekey(self, ookey):
-        """converts an oo key tuple into a key identifier for the base class file (.po or XLIFF)"""
-        project, sourcefile, resourcetype, groupid, localid, platform = ookey
-        sourcefile = sourcefile.replace('\\','/')
-        if self.long_keys:
-            sourcebase = os.path.join(project, sourcefile)
-        else:
-            sourceparts = sourcefile.split('/')
-            sourcebase = "".join(sourceparts[-1:])
-        if (groupid) == 0 or len(localid) == 0:
-            ooid = groupid + localid
-        else:
-            ooid = groupid + "." + localid
-        if resourcetype:
-            ooid = ooid + "." + resourcetype
-        key = "%s#%s" % (sourcebase, ooid)
-        return oo.normalizefilename(key)
-
     def convertelement(self, theoo):
         """convert an oo element into a list of base units (.po or XLIFF)"""
         if self.sourcelanguage in theoo.languages:
@@ -94,7 +76,7 @@ class oo2po:
             translators_comment = theoo.languages["x-comment"]
         else:
             translators_comment = oo.ooline()
-        key = self.makekey(part1.getkey())
+        key = oo.makekey(part1.getkey(), self.long_keys)
         unitlist = []
         for subkey in ("text", "quickhelptext", "title"):
             unit = self.maketargetunit(part1, part2, translators_comment, key, subkey)

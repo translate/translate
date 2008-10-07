@@ -49,29 +49,11 @@ class reoo:
             self.timestamp_str = None
         self.includefuzzy = includefuzzy
 
-    def makekey(self, ookey):
-        """converts an oo key tuple into a key identifier for the source file"""
-        project, sourcefile, resourcetype, groupid, localid, platform = ookey
-        sourcefile = sourcefile.replace('\\','/')
-        if self.long_keys:
-            sourcebase = os.path.join(project, sourcefile)
-        else:
-            sourceparts = sourcefile.split('/')
-            sourcebase = "".join(sourceparts[-1:])
-        if len(groupid) == 0 or len(localid) == 0:
-            fullid = groupid + localid
-        else:
-            fullid = groupid + "." + localid
-        if resourcetype:
-            fullid = fullid + "." + resourcetype
-        key = "%s#%s" % (sourcebase, fullid)
-        return oo.normalizefilename(key)
-
     def makeindex(self):
         """makes an index of the oo keys that are used in the source file"""
         self.index = {}
         for ookey, theoo in self.o.ookeys.iteritems():
-            sourcekey = self.makekey(ookey)
+            sourcekey = oo.makekey(ookey, self.long_keys)
             self.index[sourcekey] = theoo
 
     def readoo(self, of):

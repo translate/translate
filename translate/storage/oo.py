@@ -65,6 +65,32 @@ def normalizefilename(filename):
     else:
         return filename.translate(unormalizetable)
 
+def makekey(ookey, long_keys):
+    """converts an oo key tuple into a unique identifier
+
+    @param ookey: an oo key
+    @type ookey: tuple
+    @param long_keys: Use long keys
+    @param type: Boolean
+    @rtype: str
+    @return: unique ascii identifier
+    """
+    project, sourcefile, resourcetype, groupid, localid, platform = ookey
+    sourcefile = sourcefile.replace('\\','/')
+    if long_keys:
+        sourcebase = os.path.join(project, sourcefile)
+    else:
+        sourceparts = sourcefile.split('/')
+        sourcebase = "".join(sourceparts[-1:])
+    if len(groupid) == 0 or len(localid) == 0:
+        fullid = groupid + localid
+    else:
+        fullid = groupid + "." + localid
+    if resourcetype:
+        fullid = fullid + "." + resourcetype
+    key = "%s#%s" % (sourcebase, fullid)
+    return normalizefilename(key)
+
 # These are functions that deal with escaping and unescaping of the text fields
 # of the SDF file. These should only be applied to the text column. 
 # The fields quickhelptext and title are assumed to carry no escaping.
