@@ -25,55 +25,12 @@ either done using a template or just using the .po file"""
 from translate.storage import dtd
 from translate.storage import po
 from translate.misc import quote
+from translate.convert import accesskey
 import warnings
 
 # labelsuffixes and accesskeysuffixes are combined to accelerator notation
 labelsuffixes = (".label", ".title")
 accesskeysuffixes = (".accesskey", ".accessKey", ".akey")
-
-def getlabel(unquotedstr):
-    """retrieve the label from a mixed label+accesskey entity"""
-    if isinstance(unquotedstr, str):
-        unquotedstr = unquotedstr.decode("UTF-8")
-    # mixed labels just need the & taken out
-    # except that &entity; needs to be avoided...
-    amppos = 0
-    while amppos >= 0:
-        amppos = unquotedstr.find("&", amppos)
-        if amppos != -1:
-            amppos += 1
-            semipos = unquotedstr.find(";", amppos)
-            if semipos != -1:
-                if unquotedstr[amppos:semipos].isalnum():
-                    continue
-            # otherwise, cut it out... only the first one need be changed
-            # (see below to see how the accesskey is done)
-            unquotedstr = unquotedstr[:amppos-1] + unquotedstr[amppos:]
-            break
-    return unquotedstr.encode("UTF-8")
-
-def getaccesskey(unquotedstr):
-    """retrieve the access key from a mixed label+accesskey entity"""
-    if isinstance(unquotedstr, str):
-        unquotedstr = unquotedstr.decode("UTF-8")
-    # mixed access keys need the key extracted from after the &
-    # but we must avoid proper entities i.e. &gt; etc...
-    amppos = 0
-    while amppos >= 0:
-        amppos = unquotedstr.find("&", amppos)
-        if amppos != -1:
-            amppos += 1
-            semipos = unquotedstr.find(";", amppos)
-            if semipos != -1:
-                if unquotedstr[amppos:semipos].isalnum():
-                    # what we have found is an entity, not a shortcut key...
-                    continue
-            # otherwise, we found the shortcut key
-            return unquotedstr[amppos].encode("UTF-8")
-    # if we didn't find the shortcut key, return an empty string rather than the original string
-    # this will come out as "don't have a translation for this" because the string is not changed...
-    # so the string from the original dtd will be used instead
-    return ""
 
 def removeinvalidamps(entity, unquotedstr):
     """find ampersands that aren't part of an entity definition..."""
@@ -128,13 +85,13 @@ def applytranslation(entity, dtdunit, inputunit, mixedentities):
     for labelsuffix in labelsuffixes:
         if entity.endswith(labelsuffix):
             if entity in mixedentities:
-                unquotedstr = getlabel(unquotedstr)
+                unquotedstr = accesskey.getlabel(unquotedstr)
                 break
     else:
         for akeytype in accesskeysuffixes:
             if entity.endswith(akeytype):
                 if entity in mixedentities:
-                    unquotedstr = getaccesskey(unquotedstr)
+                    unquotedstr = accesskey.getaccesskey(unquotedstr)
                     if not unquotedstr:
                         warnings.warn("Could not find accesskey for %s" % entity)
                     else:
