@@ -21,7 +21,7 @@
 
 """functions used to manipulate access keys in strings"""
 
-DEFAULT_ACCESSKEY_MARKER = "&"
+DEFAULT_ACCESSKEY_MARKER = u"&"
 
 def getlabel(unquotedstr, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
     """retrieve the label from a mixed label+accesskey entity"""
@@ -44,9 +44,10 @@ def get_label_and_accesskey(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
     @type accesskey_marker: Char
     @param accesskey_marker: The character that is used to prefix an access key
     """
-    if isinstance(string, str):
-        string = string.decode("UTF-8")
-    accesskey = ""
+    assert isinstance(string, unicode)
+    assert isinstance(accesskey_marker, unicode)
+    assert len(accesskey_marker) == 1
+    accesskey = u""
     label = string
     marker_pos = 0
     while marker_pos >= 0:
@@ -60,4 +61,4 @@ def get_label_and_accesskey(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
             label = string[:marker_pos-1] + string[marker_pos:]
             accesskey = string[marker_pos]
             break
-    return label.encode("UTF-8"), accesskey.encode("UTF-8")
+    return label, accesskey
