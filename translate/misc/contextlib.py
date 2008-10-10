@@ -64,9 +64,10 @@ class GeneratorContextManager(object):
                 # tell if we get the same exception back
                 value = type()
             try:
-                #self.gen.throw(type, value, traceback)
-                self.gen.next()
-                raise RuntimeError("generator didn't stop after throw()")
+                try:
+                    self.gen.next()
+                except StopIteration:
+                    raise value
             except StopIteration, exc:
                 # Suppress the exception *unless* it's the same exception that
                 # was passed to throw().  This prevents a StopIteration
