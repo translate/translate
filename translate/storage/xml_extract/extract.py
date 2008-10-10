@@ -86,7 +86,7 @@ def _process_placeable(dom_node, state):
     # no translatable is returned. Make a placeable with the name
     # "placeable"
     if len(placeable) == 0:
-        return make_translatable(state, u"placeable", dom_node)
+        return make_translatable(state, u"placeable", dom_node, [])
     # The ideal situation: we got exactly one translateable back
     # when processing this tree.
     elif len(placeable) == 1:
