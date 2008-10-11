@@ -334,7 +334,7 @@ class XLIFFXPlaceable(XLIFFPlaceable):
 def _loadclassdictionary(classDictionary):
     """Replace the classname strings with the actual classes in the dictionary."""
     lisamod = __import__('lisaplaceables', globals(), locals(), 
-                         ['translate.storage.placeables'], -1)
+                         ['translate.storage.placeables'])
     for elem in classDictionary.iteritems():
         classDictionary[elem[0]] = getattr(lisamod, elem[1])
     return None
