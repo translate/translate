@@ -225,7 +225,6 @@ def _make_store_adder(store):
 
 @accepts([Translatable], IsCallable())
 def _walk_translatable_tree(translatables, f):
-    """"""
     for translatable in translatables:
         f(translatable)
         _walk_translatable_tree(translatable.placeables, f)

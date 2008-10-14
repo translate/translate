@@ -32,6 +32,11 @@ class XPathTree(object):
         self.unit = unit
         self.children = {}
 
+    def __eq__(self, other):
+        return isinstance(other, XPathTree) and \
+            self.unit == other.unit and \
+            self.children == other.children
+
 @accepts(unicode)
 def _split_xpath_component(xpath_component):
     """Split an xpath component into a tag-index tuple.
