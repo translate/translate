@@ -168,7 +168,9 @@ def find_translatable_dom_nodes(dom_node, state):
 
 @accepts(base.TranslationUnit, Translatable)
 def _add_location_and_ref_info(unit, translatable):
-    """"""
+    """Add location information to 'unit' which is used to disambiguate
+    different units and to find the position of the source text in the
+    original XML document"""
     unit.addlocation(translatable.xpath)
     if translatable.placeable_id > -1:
         unit.addnote("References: %d" % translatable.placeable_id)
@@ -190,14 +192,19 @@ def _to_string(translatable):
 
 @accepts(base.TranslationStore, Translatable)
 def _add_translatable_to_store(store, translatable):
-    """"""
+    """Construct a new translation unit, set its source and location
+    information and add it to 'store'.
+    """
     unit = store.UnitClass(_to_string(translatable))
     unit = _add_location_and_ref_info(unit, translatable)
     store.addunit(unit)
 
 @accepts(Translatable)
 def _contains_translatable_text(translatable):
-    """"""
+    """Checks whether translatable contains any chunks of text which contain
+    more than whitespace.
+    
+    If not, then there's nothing to translate."""
     for chunk in translatable.source:
         if isinstance(chunk, unicode):
             if chunk.strip() != u"":
