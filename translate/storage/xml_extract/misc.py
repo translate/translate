@@ -20,6 +20,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
+import re
+
 from translate.misc.typecheck import accepts, Self, IsCallable, IsOneOf, Any
 
 @accepts(IsCallable(), Any(), Any(), IsCallable(), vargs=[Any()])
@@ -58,3 +60,16 @@ def compose_mappings(left, right):
         except KeyError:
             pass
     return result_map
+
+tag_pattern = re.compile('{(?P<namespace>(\w|[-:.])*)}(?P<tag>(\w|[-])*)')
+
+def parse_tag(full_tag):
+    """
+    >>> parse_tag('{urn:oasis:names:tc:opendocument:xmlns:office:1.0}document-content')
+    ('urn:oasis:names:tc:opendocument:xmlns:office:1.0', 'document-content')
+    """
+    match = tag_pattern.match(full_tag)
+    if match is not None:
+        return unicode(match.groupdict()['namespace']), unicode(match.groupdict()['tag'])
+    else:
+        raise Exception('Passed an invalid tag')

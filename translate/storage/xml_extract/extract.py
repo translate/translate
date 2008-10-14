@@ -28,6 +28,7 @@ from translate.misc.typecheck.typeclasses import Number
 from translate.misc.contextlib import contextmanager, nested
 from translate.misc.context import with_
 from translate.storage.xml_extract import xpath_breadcrumb
+from translate.storage.xml_extract import misc
 
 class Translatable(object):
     """A node corresponds to a translatable element. A node may
@@ -50,15 +51,14 @@ class Translatable(object):
 class ParseState(object):
     """Maintain constants and variables used during the walking of a
     DOM tree (via the function apply)."""
-    def __init__(self, namespace_table, placeable_table = {}, inline_placeable_table = {}):
-        self.namespace_table = namespace_table
-        self.placeable_table = placeable_table
-        self.inline_placeable_table = inline_placeable_table
+    def __init__(self, no_translate_content_elements, inline_elements = {}):
+        self.no_translate_content_elements = no_translate_content_elements
+        self.inline_elements = inline_elements
         self.placeable_id = 0
         self.level = 0
         self.is_inline = False
         self.xpath_breadcrumb = xpath_breadcrumb.XPathBreadcrumb()
-        self.placeable_name = [u"<top-level>"]
+        self.placeable_name = u"<top-level>"
 
 @accepts(ParseState, unicode)
 def make_translatable(state, placeable_name, dom_node, source):
@@ -125,42 +125,43 @@ def _process_translatable(dom_node, state):
 
 @accepts(etree._Element, ParseState)
 def _process_children(dom_node, state):
+    _namespace, tag = misc.parse_tag(dom_node.tag)
     children = [find_translatable_dom_nodes(child, state) for child in dom_node]
     # Flatten a list of lists into a list of elements
     children = [child for child_list in children for child in child_list]
     if len(children) > 1:
-        intermediate_translatable = make_translatable(state, unicode(dom_node.tag), dom_node, children)
+        intermediate_translatable = make_translatable(state, tag, dom_node, children)
         return [intermediate_translatable]
     else:
         return children
 
 @accepts(etree._Element, ParseState)
 def find_translatable_dom_nodes(dom_node, state):
+    namespace, tag = misc.parse_tag(dom_node.tag)
+
     @contextmanager
     def xpath_set():
-        state.xpath_breadcrumb.start_tag(unicode(dom_node.tag))
+        state.xpath_breadcrumb.start_tag(dom_node.tag)
         yield state.xpath_breadcrumb
         state.xpath_breadcrumb.end_tag()
         
     @contextmanager
     def placeable_set():
-        if dom_node.tag in state.placeable_table:
-            state.placeable_name.append(state.placeable_table[dom_node.tag])
-            yield state.placeable_name
-            state.placeable_name.pop()
-        else:
-            yield state.placeable_name
+        old_placeable_name = state.placeable_name
+        state.placeable_name = tag
+        yield state.placeable_name
+        state.placeable_name = old_placeable_name
             
     @contextmanager
     def inline_set():
         old_inline = state.is_inline
-        if dom_node.tag in state.inline_placeable_table:
+        if (namespace, tag) in state.inline_elements:
             state.is_inline = True
         yield state.is_inline
         state.is_inline = old_inline
       
     def with_block(xpath_breadcrumb, placeable_name, is_inline):
-        if dom_node.tag in state.namespace_table:
+        if (namespace, tag) not in state.no_translate_content_elements:
             return _process_translatable(dom_node, state)
         else:
             return _process_children(dom_node, state)            

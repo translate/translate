@@ -37,7 +37,8 @@ def convertodf(inputfile, outputfile, templates):
         contents = z.read("content.xml")
     except (ValueError, zipfile.BadZipfile):
         contents = open(inputfile, 'r').read()
-    parse_state = extract.ParseState(odf_shared.odf_namespace_table, odf_shared.odf_placables_table, odf_shared.odf_inline_placeables_table)
+    parse_state = extract.ParseState(odf_shared.no_translate_content_elements, 
+                                     odf_shared.inline_elements)
     extract.build_store(cStringIO.StringIO(contents), store, parse_state)
     store.save()
     return True

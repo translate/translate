@@ -51,7 +51,7 @@ def translate_odf(template, input_file):
         return {'content.xml': unit_tree.build_unit_tree(store)}
     
     def translate_dom_trees(unit_trees, dom_trees):
-        make_parse_state = lambda: extract.ParseState(odf_shared.odf_namespace_table, odf_shared.odf_placables_table, odf_shared.odf_inline_placeables_table)
+        make_parse_state = lambda: extract.ParseState(odf_shared.no_translate_content_elements, odf_shared.inline_elements)
         for filename, dom_tree in dom_trees.iteritems():
             file_unit_tree = unit_trees[filename]
             generate.apply_translations(dom_tree.getroot(), file_unit_tree.children.values()[0], generate.replace_dom_text(make_parse_state))
