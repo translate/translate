@@ -179,8 +179,9 @@ def rungrep(inputfile, outputfile, templatefile, checkfilter):
 
 def cmdlineparser():
     formats = {"po":("po", rungrep), "pot":("pot", rungrep), 
-            "xliff":("xliff", rungrep), "xlf":("xlf", rungrep), "xlff":("xlff", rungrep), 
+            "mo":("mo", rungrep), "gmo":("gmo", rungrep), 
             "tmx":("tmx", rungrep),
+            "xliff":("xliff", rungrep), "xlf":("xlf", rungrep), "xlff":("xlff", rungrep), 
             None:("po", rungrep)}
     parser = GrepOptionParser(formats)
     parser.add_option("", "--search", dest="searchparts",
