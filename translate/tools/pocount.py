@@ -156,11 +156,13 @@ Review Messages, Review Source Words"
             self.totals[key] += stats[key]
 
     def handlefile(self, filename):
-        stats = calcstats(filename)
-        if stats:
+        try:
+            stats = calcstats(filename)
             self.updatetotals(stats)
             summarize(filename, stats, self.CSVstyle)
             self.filecount += 1
+        except: # This happens if we have a broken file.
+            print >> sys.stderr, sys.exc_info()[1]
 
     def handlefiles(self, dirname, filenames):
         for filename in filenames:

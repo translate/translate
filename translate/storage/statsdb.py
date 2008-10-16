@@ -105,7 +105,28 @@ class Record(UserDict):
         return result
 
     def as_string_for_db(self):
-      return ",".join([repr(x) for x in self.to_tuple()])
+        return ",".join([repr(x) for x in self.to_tuple()])
+
+def transaction(f):
+    """Modifies f to commit database changes if it executes without exceptions.
+    Otherwise it rolls back the database.
+    
+    ALL publicly accessible methods in StatsCache MUST be decorated with this
+    decorator.
+    """
+    
+    def decorated_f(self, *args, **kwargs):
+        try:
+            result = f(self, *args, **kwargs)
+            self.con.commit()
+            return result
+        except:
+            # If ANY exception is raised, we're left in an
+            # uncertain state and we MUST roll back any changes to avoid getting
+            # stuck in an inconsistent state.
+            self.con.rollback()
+            raise
+    return decorated_f
 
 UNTRANSLATED, TRANSLATED, FUZZY = 0, 1, 2
 def statefordb(unit):
@@ -126,7 +147,7 @@ class FileTotals(object):
             'translatedtargetwords']
 
     def db_keys(self):
-      return ",".join(self.keys)
+        return ",".join(self.keys)
 
     def __init__(self, cur):
         self.cur = cur
@@ -217,6 +238,7 @@ def suggestion_extension():
 def suggestion_filename(filename):
     return filename + suggestion_extension()
 
+# ALL PUBLICLY ACCESSIBLE METHODS MUST BE DECORATED WITH THE transaction DECORATOR.
 class StatsCache(object):
     """An object instantiated as a singleton for each statsfile that provides
     access to the database cache from a pool of StatsCache objects."""
@@ -319,10 +341,9 @@ class StatsCache(object):
 
         self.cur.execute("""CREATE INDEX IF NOT EXISTS uniterrorindex
             ON uniterrors(fileid, configid);""")
+    create = transaction(create)
 
-        self.con.commit()
-
-    def _getfileid(self, filename, check_mod_info=True, store=None, errors_return_empty=False):
+    def _getfileid(self, filename, check_mod_info=True, store=None):
         """Attempt to find the fileid of the given file, if it hasn't been
            updated since the last record update.
 
@@ -336,27 +357,21 @@ class StatsCache(object):
         self.cur.execute("""SELECT fileid, st_mtime, st_size FROM files
                 WHERE path=?;""", (realpath,))
         filerow = self.cur.fetchone()
-        try:
-            mod_info = get_mod_info(realpath)
-            if filerow:
-                fileid = filerow[0]
-                if not check_mod_info:
-                    # Update the mod_info of the file
-                    self.cur.execute("""UPDATE files
-                            SET st_mtime=?, st_size=?
-                            WHERE fileid=?;""", (mod_info[0], mod_info[1], fileid))
-                    return fileid
-                if (filerow[1], filerow[2]) == mod_info:
-                    return fileid
-            # We can only ignore the mod_info if the row already exists:
-            assert check_mod_info
-            store = store or factory.getobject(realpath)
-            return self._cachestore(store, realpath, mod_info)
-        except (base.ParseError, IOError, OSError, AssertionError):
-            if errors_return_empty:
-                return -1
-            else:
-                raise
+        mod_info = get_mod_info(realpath)
+        if filerow:
+            fileid = filerow[0]
+            if not check_mod_info:
+                # Update the mod_info of the file
+                self.cur.execute("""UPDATE files
+                        SET st_mtime=?, st_size=?
+                        WHERE fileid=?;""", (mod_info[0], mod_info[1], fileid))
+                return fileid
+            if (filerow[1], filerow[2]) == mod_info:
+                return fileid
+        # We can only ignore the mod_info if the row already exists:
+        assert check_mod_info
+        store = store or factory.getobject(realpath)
+        return self._cachestore(store, realpath, mod_info)
 
     def _getstoredcheckerconfig(self, checker):
         """See if this checker configuration has been used before."""
@@ -389,7 +404,6 @@ class StatsCache(object):
             values (?, ?, ?, ?, ?, ?, ?, ?);""",
             unitvalues)
         self.file_totals[fileid] = file_totals_record
-        self.con.commit()
         if unitindex:
             return state_strings[statefordb(units[0])]
         return ""
@@ -411,14 +425,8 @@ class StatsCache(object):
     def filetotals(self, filename):
         """Retrieves the statistics for the given file if possible, otherwise
         delegates to cachestore()."""
-        fileid = None
-        if not fileid:
-            try:
-                fileid = self._getfileid(filename)
-            except ValueError, e:
-                print >> sys.stderr, str(e)
-                return {}
-        return self.file_totals[fileid]
+        return self.file_totals[self._getfileid(filename)]
+    filetotals = transaction(filetotals)
 
     def _cacheunitschecks(self, units, fileid, configid, checker, unitindex=None):
         """Helper method for cachestorechecks() and recacheunit()"""
@@ -450,10 +458,9 @@ class StatsCache(object):
             (unitindex, fileid, configid, name, message)
             values (?, ?, ?, ?, ?);""",
             unitvalues)
-        self.con.commit()
         return errornames
 
-    def cachestorechecks(self, fileid, store, checker, configid):
+    def _cachestorechecks(self, fileid, store, checker, configid):
         """Calculates and caches the error statistics of the given store
         unconditionally."""
         # Let's purge all previous failures because they will probably just
@@ -469,7 +476,16 @@ class StatsCache(object):
             FROM     units
             WHERE    fileid=? AND unitid=?
         """, (fileid, unitid))
-        return values.fetchone()
+        result = values.fetchone()
+        if result is not None:
+            return result
+        else:
+            print >> sys.stderr, """WARNING: Database in inconsistent state. 
+            fileid %d and unitid %d have no entries in the table units.""" % (fileid, unitid)
+            # If values.fetchone() is None, then we return an empty list,
+            # to make FileTotals.new_record(*self.get_unit_stats(fileid, unitid))
+            # do the right thing.
+            return []
 
     def recacheunit(self, filename, checker, unit):
         """Recalculate all information for a specific unit. This is necessary
@@ -497,6 +513,7 @@ class StatsCache(object):
             checker.setsuggestionstore(factory.getobject(suggestion_filename(filename), ignore=suggestion_extension()))
         state.extend(self._cacheunitschecks([unit], fileid, configid, checker, unitindex))
         return state
+    recacheunit = transaction(recacheunit)
 
     def _checkerrors(self, filename, fileid, configid, checker, store):
         def geterrors():
@@ -516,7 +533,7 @@ class StatsCache(object):
         store = store or factory.getobject(filename)
         if os.path.exists(suggestion_filename(filename)):
             checker.setsuggestionstore(factory.getobject(suggestion_filename(filename), ignore=suggestion_extension()))
-        self.cachestorechecks(fileid, store, checker, configid)
+        self._cachestorechecks(fileid, store, checker, configid)
         return geterrors()
 
     def _geterrors(self, filename, fileid, configid, checker, store):
@@ -538,15 +555,8 @@ class StatsCache(object):
     def filechecks(self, filename, checker, store=None):
         """Retrieves the error statistics for the given file if possible,
         otherwise delegates to cachestorechecks()."""
-        fileid = None
-        configid = None
-        try:
-            fileid = self._getfileid(filename, store=store)
-            configid = self._get_config_id(fileid, checker)
-        except ValueError, e:
-            print >> sys.stderr, str(e)
-            return emptyfilechecks()
-
+        fileid = self._getfileid(filename, store=store)
+        configid = self._get_config_id(fileid, checker)
         values = self._geterrors(filename, fileid, configid, checker, store)
 
         errors = emptyfilechecks()
@@ -559,6 +569,7 @@ class StatsCache(object):
             errors[checkkey].append(value[1])   #value[1] is the unitindex
 
         return errors
+    filechecks = transaction(filechecks)
 
     def file_fails_test(self, filename, checker, name):
         fileid = self._getfileid(filename)
@@ -570,12 +581,12 @@ class StatsCache(object):
             FROM uniterrors 
             WHERE fileid=? and configid=? and name=?;""", (fileid, configid, name))
         return self.cur.fetchone() is not None
+    file_fails_test = transaction(file_fails_test)
         
     def filestats(self, filename, checker, store=None):
         """Return a dictionary of property names mapping sets of unit
         indices with those properties."""
         stats = emptyfilestats()
-
         stats.update(self.filechecks(filename, checker, store))
         fileid = self._getfileid(filename, store=store)
 
@@ -591,6 +602,7 @@ class StatsCache(object):
             stats["total"].append(value[1])
 
         return stats
+    filestats = transaction(filestats)
 
     def unitstats(self, filename, _lang=None, store=None):
         # For now, lang and store are unused. lang will allow the user to
@@ -617,3 +629,4 @@ class StatsCache(object):
             stats["targetwordcount"].append(targetcount)
 
         return stats
+    unitstats = transaction(unitstats)
