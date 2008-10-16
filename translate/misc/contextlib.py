@@ -50,7 +50,7 @@ class GeneratorContextManager(object):
         except StopIteration:
             raise RuntimeError("generator didn't yield")
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(self, type, value, tb):
         if type is None:
             try:
                 self.gen.next()
@@ -58,7 +58,7 @@ class GeneratorContextManager(object):
                 return
             else:
                 raise RuntimeError("generator didn't stop")
-        else:
+        else:            
             if value is None:
                 # Need to force instantiation so we can reliably
                 # tell if we get the same exception back
@@ -67,23 +67,14 @@ class GeneratorContextManager(object):
                 try:
                     self.gen.next()
                 except StopIteration:
+                    import traceback
+                    traceback.print_exception(type, value, tb)
                     raise value
             except StopIteration, exc:
                 # Suppress the exception *unless* it's the same exception that
                 # was passed to throw().  This prevents a StopIteration
                 # raised inside the "with" statement from being suppressed
                 return exc is not value
-            except:
-                # only re-raise if it's *not* the exception that was
-                # passed to throw(), because __exit__() must not raise
-                # an exception unless __exit__() itself failed.  But throw()
-                # has to raise the exception to signal propagation, so this
-                # fixes the impedance mismatch between the throw() protocol
-                # and the __exit__() protocol.
-                #
-                if sys.exc_info()[1] is not value:
-                    raise
-
 
 def contextmanager(func):
     """@contextmanager decorator.
