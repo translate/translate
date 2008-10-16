@@ -174,7 +174,8 @@ class mofile(base.TranslationStore):
                 target = unit.target
             if unit.target:
                 MESSAGES[source.encode("utf-8")] = target
-        hash_table = array.array("L", [0] * hash_size)
+        # using "I" works for 32- and 64-bit systems, but not for 16-bit!
+        hash_table = array.array("I", [0] * hash_size)
         keys = MESSAGES.keys()
         # the keys are sorted in the .mo file
         keys.sort()
