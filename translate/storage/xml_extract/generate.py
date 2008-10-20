@@ -123,7 +123,7 @@ def _map_source_dom_to_doc_dom(unit_node, source_dom_node):
     XLIFF Source (below)::
         <source>This is text <g> bold text</g> and a footnote<x/></source> 
                              /                                 \________
-                            /                                           \\
+                            /                                           \ 
         <p>This is text<blah>...<span> bold text</span>...</blah> and <note>...</note></p>
     Input XML document used as a template (above)
     
