@@ -70,7 +70,7 @@ def _add_unit_to_tree(node, xpath_components, unit):
     components of xpath_components. When reaching the end of xpath_components,
     set the reference of the node to unit.
     
-    With reference to the tree diagram in build_unit_tree, 
+    With reference to the tree diagram in build_unit_tree::
       
       add_unit_to_tree(node, [('p', 2), ('text', 3), ('body', 2), ('document-content', 1)], unit)
     
@@ -98,20 +98,19 @@ def build_unit_tree(store):
     and where a node contains a unit if a path from the root of the tree to the node
     containing the unit, is equal to the XPath of the unit.
     
-    The tree looks something like this:
-    
-    root
-       `- ('document-content', 1)
-          `- ('body', 2)
-             |- ('text', 1)
-             |  `- ('p', 1)
-             |     `- <reference to a unit>
-             |- ('text', 2)
-             |  `- ('p', 1)
-             |     `- <reference to a unit>
-             `- ('text', 3)
-                `- ('p', 1)
-                   `- <reference to a unit>
+    The tree looks something like this::
+        root
+           `- ('document-content', 1)
+              `- ('body', 2)
+                 |- ('text', 1)
+                 |  `- ('p', 1)
+                 |     `- <reference to a unit>
+                 |- ('text', 2)
+                 |  `- ('p', 1)
+                 |     `- <reference to a unit>
+                 `- ('text', 3)
+                    `- ('p', 1)
+                       `- <reference to a unit>
     """
     tree = XPathTree()
     for unit in store.units:
