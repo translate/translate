@@ -79,7 +79,7 @@ def reduce_dom_tree(f, dom_node, *state):
 
 @accepts(etree._Element, etree._Element)
 def find_dom_root(parent_dom_node, dom_node):
-    """@see find_placeable_dom_tree_roots"""
+    """@see: L{find_placeable_dom_tree_roots}"""
     if dom_node is None or parent_dom_node is None:
         return None
     if dom_node.getparent() == parent_dom_node:
@@ -98,13 +98,13 @@ def find_placeable_dom_tree_roots(unit_node):
     element. However, the span is contained in other tags (which we never process).
     When splicing the template DOM tree (that is, the DOM which comes from 
     the XML document we're using to generate a translated XML document), we'll
-    need to move DOM sub-trees around and we need the roots of these sub-trees.
+    need to move DOM sub-trees around and we need the roots of these sub-trees::
     
-    <p> This is text \/                <- Paragraph containing an inline placeable
-                     <blah>            <- Inline placeable's root (which we want to find)
-                     ...               <- Any number of intermediate DOM nodes
-                     <span> bold text  <- The inline placeable's Translatable 
-                                          holds a reference to this DOM node    
+        <p> This is text \/                <- Paragraph containing an inline placeable
+                         <blah>            <- Inline placeable's root (which we want to find)
+                         ...               <- Any number of intermediate DOM nodes
+                         <span> bold text  <- The inline placeable's Translatable 
+                                              holds a reference to this DOM node    
     """
 
     def set_dom_root_for_unit_node(parent_unit_node, unit_node, dom_tree_roots):
@@ -117,14 +117,14 @@ def _map_source_dom_to_doc_dom(unit_node, source_dom_node):
     """Creating a mapping from the DOM nodes in source_dom_node which correspond to
     placeables, with DOM nodes in the XML document template (this information is obtained
     from unit_node). We are interested in DOM nodes in the XML document template which
-    are the roots of placeables. @see the diagram below, as well as 
-    find_placeable_dom_tree_roots.
+    are the roots of placeables. See the diagram below, as well as 
+    L{find_placeable_dom_tree_roots}.
     
-    XLIFF Source (below)
-    <source>This is text <g> bold text</g> and a footnote<x/></source> 
-                         /                                 \________
-                        /                                           \
-    <p>This is text<blah>...<span> bold text</span>...</blah> and <note>...</note></p>
+    XLIFF Source (below)::
+        <source>This is text <g> bold text</g> and a footnote<x/></source> 
+                             /                                 \________
+                            /                                           \\
+        <p>This is text<blah>...<span> bold text</span>...</blah> and <note>...</note></p>
     Input XML document used as a template (above)
     
     In the above diagram, the XLIFF source DOM node <g> is associated with the XML 
