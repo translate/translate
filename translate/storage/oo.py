@@ -24,7 +24,7 @@ Classes that hold units of .oo files (oounit) or entire files (oofile).
 
 These are specific .oo files for localisation exported by OpenOffice.org - SDF 
 format (previously knows as GSI files). For an overview of the format, see
-http://l10n.openoffice.org/L10N_Framework/Intermediate_file_format.html
+U{http://l10n.openoffice.org/L10N_Framework/Intermediate_file_format.html}
 
 The behaviour in terms of escaping is explained in detail in the programming
 comments.
@@ -71,7 +71,7 @@ def makekey(ookey, long_keys):
     @param ookey: an oo key
     @type ookey: tuple
     @param long_keys: Use long keys
-    @param type: Boolean
+    @type long_keys: Boolean
     @rtype: str
     @return: unique ascii identifier
     """
