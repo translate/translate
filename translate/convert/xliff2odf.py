@@ -71,7 +71,7 @@ def write_odf(template, output_file, dom_trees):
 
     def write_content_to_odf(output_zip, dom_trees):
         for filename, dom_tree in dom_trees.iteritems():
-            output_zip.writestr(filename, etree.tostring(dom_tree))
+            output_zip.writestr(filename, etree.tostring(dom_tree, encoding='UTF-8', xml_declaration=True))
 
     output_zip = copy_odf(template, output_file, dom_trees.keys())
     write_content_to_odf(output_zip, dom_trees)
