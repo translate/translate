@@ -44,7 +44,11 @@ def force_override(method, baseclass):
         raise NotImplementedError("%s does not reimplement %s as required by %s" % (actualclass.__name__, method.__name__, baseclass.__name__))
 
 class ParseError(Exception):
-    pass
+    def __init__(self, inner_exc):
+        self.inner_exc = inner_exc
+
+    def __str__(self):
+        return repr(self.inner_exc)
 
 class TranslationUnit(object):
     """Base class for translation units.

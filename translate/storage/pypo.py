@@ -852,7 +852,7 @@ class pofile(pocommon.pofile):
                             is_decoded = True
                 end = end+1
         except Exception, e:
-            raise base.ParseError()
+            raise base.ParseError(e)
 
     def removeduplicates(self, duplicatestyle="merge"):
         """make sure each msgid is unique ; merge comments etc from duplicates into original"""
