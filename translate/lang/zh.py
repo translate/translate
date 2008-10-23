@@ -45,7 +45,7 @@ class zh(common.Common):
     # The following transformation rules should be mostly useful for all types
     # of Chinese. The comma (,) is not handled here, since it maps to two 
     # different characters, depending on context.
-    # If comma is used as seperation of sentence, then it is converted to a 
+    # If comma is used as seperation of sentence, it should be converted to a 
     # fullwidth comma ("，"). If comma is used as seperation of list items like
     # "apple, orange, grape, .....", "、" is used.
     puncdict = {
