@@ -23,6 +23,7 @@
 from lxml import etree
 
 from translate.storage.placeables import base
+import translate.storage.placeables.misc as placeables_misc
 from translate.storage.xml_extract import misc
 
 def make_empty_replacement_placeable(klass, node):
@@ -52,11 +53,11 @@ def make_placeable(node):
 def extract_chunks(dom_node):
     result = []
     if dom_node.text:
-        result.append(dom_node.text)
+        result.append(placeables_misc.as_unicode(dom_node.text))
     for child_dom_node in dom_node:
         result.append(make_placeable(child_dom_node))
         if child_dom_node.tail:
-            result.append(child_dom_node.tail)
+            result.append(placeables_misc.as_unicode(child_dom_node.tail))
     return result
 
 # ==========================================================
@@ -89,8 +90,9 @@ def end_with_eof(seq):
         yield EOF
 
 def collect_text(text, next, itr):
+    text = placeables_misc.as_unicode(text)
     if isinstance(next, (unicode, str)):
-        return collect_text(text + next, itr.next(), itr)
+        return collect_text(text + placeables_misc.as_unicode(next), itr.next(), itr)
     else:
         return text, next
     
