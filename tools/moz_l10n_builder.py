@@ -250,8 +250,8 @@ def pack_po(lang, buildlang):
 
     print '    %s' % (lang)
     packname = join(popacks, '%s-%s-%s-%s' % (products[targetapp], mozversion, buildlang, timestamp))
-    run(['tar', 'cjf', packname+'.tar.bz2', join(l10ndir, buildlang)])
-    run(['zip', '-qr9', packname+'.zip', join(l10ndir, buildlang)])
+    run(['tar', 'cjf', packname+'.tar.bz2', '--exclude', '.svn', join(l10ndir, buildlang), join(podir, buildlang)])
+    run(['zip', '-qr9', packname+'.zip', join(l10ndir, buildlang), join(podir, buildlang)], '-x', '*.svn*')
 
 def pre_po2moz_hacks(lang, buildlang, debug):
     """Hacks that should be run before running C{po2moz}."""
