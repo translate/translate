@@ -25,7 +25,6 @@
 import re
 
 from translate.storage import base
-from translate.storage.placeables import lisaplaceables
 from translate.lang import data
 try:
     from lxml import etree
@@ -150,11 +149,6 @@ Provisional work is done to make several languages possible."""
         return self.getNodeText(self.getlanguageNode(lang=None, index=0))
     source = property(getsource, setsource)
 
-    def getmarkedsource(self):
-        """Gets original translatable text with the inline elements marked."""
-        return self.getmarkedNode(self.getlanguageNode(lang=None, index=0))
-    marked_source = property(getmarkedsource)
-        
     def settarget(self, text, lang='xx', append=False):
         #XXX: we really need the language - can't really be optional
         """Sets the "target" string (second language), or alternatively appends to the list"""
@@ -183,15 +177,6 @@ Provisional work is done to make several languages possible."""
         return self.getNodeText(node)
     target = property(gettarget, settarget)
 
-    def getmarkedtarget(self):
-        """Gets translated text with the inline elements marked."""
-        if lang:
-            node = self.getlanguageNode(lang=lang)
-        else:
-            node = self.getlanguageNode(lang=None, index=1)
-        return self.getmarkedNode(node)
-    marked_target = property(getmarkedtarget)
-    
     def createlanguageNode(self, lang, text, purpose=None):
         """Returns a xml Element setup with given parameters to represent a 
         single language entry. Has to be overridden."""
@@ -258,18 +243,6 @@ Provisional work is done to make several languages possible."""
         else:
             return getText(languageNode)
 
-    def getmarkedNode(self, node):
-        """Gets node text with inline elements marked."""
-        if node is None:
-            return None
-        # Get the LISA format from class name
-        unit_class = self.__class__.__name__.lower()
-        if unit_class.endswith('unit'):
-            format = unit_class[:-4]  
-        else:
-            format = ""
-        return lisaplaceables.getmarkedcontent(node, format)
-    
     def __str__(self):
         return etree.tostring(self.xmlelement, pretty_print=True, encoding='utf-8')
 

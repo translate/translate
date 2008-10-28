@@ -97,15 +97,6 @@ class TranslationUnit(object):
 
         return self.source == other.source and self.target == other.target
 
-    def getmarkedsource(self):
-        """Returns original translatable text with the inline elements marked.
-        
-        Derived classes must override this method if content markup is allowed.
-        
-        """
-        return self.source
-    marked_source = property(getmarkedsource)
-    
     def settarget(self, target):
         """Sets the target string to the given value."""
 
@@ -125,15 +116,6 @@ class TranslationUnit(object):
             length += sum([len(pluralform) for pluralform in strings[1:]])
         return length
 
-    def getmarkedtarget(self):
-        """Gets translated text with the inline elements marked.
-        
-        Derived classes should override this if content markup is allowed.
-        
-        """
-        return self.target
-    marked_target = property(getmarkedtarget)
-    
     def getid(self):
         """A unique identifier for this unit.
 
