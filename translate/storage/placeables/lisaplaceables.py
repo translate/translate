@@ -131,16 +131,18 @@ def getmarkedcontent(xmlelem, format):
 
 
 #---- LISA Base classes ----
-    
+MASK, REPLACEMENT, PAIRED_DELIMITER = 0, 1, 2
+
 class LISAPlaceable(baseplaceables.Placeable):
     """Base LISA placeable class."""
     # Element info (lowercase). They should be defined in the subclasses
     format = ""
     namespace = ""
     tag = ""
+    type = REPLACEMENT
 #    childrentags = []
        
-    def __init__(self, content, ctype=None, equiv_text=None):
+    def __init__(self, content=None, ctype=None, equiv_text=None):
         """Create a placeable object. 
         
         Note that if all the parameters are B{None}, the inner xmlelement is
@@ -257,50 +259,50 @@ class XLIFFPlaceable(LISAPlaceable):
         xliffplaceable = cls(None, None, None)
         xliffplaceable.xmlelement = element        
         return xliffplaceable
-    
-    createfromxmlElement = classmethod(createfromxmlElement)
-  
+
+    createfromxmlElement = classmethod(createfromxmlElement)  
     
 class XLIFFBPTPlaceable(XLIFFPlaceable):
     """XLIFF's begin paired native code marking placeable (<bpt>)."""
     tag = "bpt"
-
+    type = baseplaceables.MASK
     
 class XLIFFBXPlaceable(XLIFFPlaceable):
     """XLIFF's begin paired native code replacing placeable (<bx>)."""   
     tag = "bx"
     emptycontent = True
-
+    type = baseplaceables.DELIMITER
 
 class XLIFFEPTPlaceable(XLIFFPlaceable):
     """XLIFF's end paired native code marking placeable (<ept>)."""
     tag = "ept"
-    
+    type = baseplaceables.MASK    
 
 class XLIFFEXPlaceable(XLIFFPlaceable):
     """XLIFF's begin paired native code replacing placeable (<ex>)."""   
     tag = "ex"
     emptycontent = True
-    
+    type = baseplaceables.DELIMITER
     
 class XLIFFGPlaceable(XLIFFPlaceable):
     """XLIFF's generic group native code replacing placeable (<g>)."""
     tag = "g"
+    type = baseplaceables.REPLACEMENT
 
-    
 class XLIFFITPlaceable(XLIFFPlaceable):
     """XLIFF's isolated native code marking placeable (<it>)."""    
     tag = "it"
-    
+    type = baseplaceables.DELIMITER    
 
 class XLIFFPHPlaceable(XLIFFPlaceable):
     """XLIFF's generic native code marking placeable (<ph>)."""
     tag = "ph"
-  
+    type = baseplaceables.REPLACEMENT
     
 class XLIFFSubText(XLIFFPlaceable):
     """XLIFF's sub-flow text content inside a sequence of native code <sub>."""    
     tag = "sub"
+    type = baseplaceables.DELIMITER
     
     def __init__(self, content, ctype=None, datatype=None):
         super(XLIFFSubText, self).__init__(content, ctype, None)
@@ -322,21 +324,18 @@ class XLIFFSubText(XLIFFPlaceable):
     
     equiv_text = property(getequiv_text, setequiv_text)
 
-    
 class XLIFFXPlaceable(XLIFFPlaceable):
     """XLIFF's generic native code replacing placeable (<x>)."""
     tag = "x"
     emptycontent = True
-
+    type = baseplaceables.REPLACEMENT
     
 #---- Module initialization ----
 
 def _loadclassdictionary(classDictionary):
     """Replace the classname strings with the actual classes in the dictionary."""
-    lisamod = __import__('lisaplaceables', globals(), locals(), 
-                         ['translate.storage.placeables'])
     for elem in classDictionary.iteritems():
-        classDictionary[elem[0]] = getattr(lisamod, elem[1])
+        classDictionary[elem[0]] = globals()[elem[1]]
     return None
 
 _loadclassdictionary(_classDictionary)

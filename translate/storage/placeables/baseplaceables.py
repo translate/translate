@@ -23,7 +23,9 @@
 """Base classes for inline elements representation."""
 
 #----------------------------------------------------------------------
-        
+
+MASK, REPLACEMENT, DELIMITER = 0, 1, 2
+
 class Placeable(object):
     """Base class for placeables hierarchy.
     
@@ -49,15 +51,21 @@ class Placeable(object):
         that is represented by the placeable (e.g. bolding code, page break).
       - A I{equiv_text} string. This is the equivalent string text of the 
         placeable. Mainly used for lexical purposes (e.g. string comparison).
-        
+
     The I{emptycontent} class attribute indicates if instances of this
     placeable class cannot have content.
+
+    The I{type} class attribute specifies the type of the placeable. Placeables
+    can either 1. mask, 2. replace DOM sub-trees, 3. replace delimiters
+    according to the XLIFF specification. This value can assume one of
+    MASK, REPLACEMENT or DELIMITER.
     
     @group content: *content*
     @group ctype: *ctype*
     @group equiv_text: *equiv_text*
     """
     emptycontent = False
+    type = REPLACEMENT
 
     def __init__(self, content, ctype=None, equiv_text=None):
         self.content = content
