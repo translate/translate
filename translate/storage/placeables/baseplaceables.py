@@ -74,7 +74,7 @@ class Placeable(object):
         @return: Returns True if the supplied Placeable equals this one.       
         """
         if not isinstance(other, Placeable):
-            return false
+            return False
         return self.content == other.content and self.ctype == other.ctype and \
                self.equiv_text == other.equiv_text
     
@@ -83,7 +83,7 @@ class Placeable(object):
           (self.__class__.__name__, str(self.ctype), str(self.equiv_text), str(self.content)) 
 
     def getmarkedcontent(self):
-        return content   
+        return self.content 
     
     markedcontent = property(getmarkedcontent)
     
