@@ -25,6 +25,7 @@
 import re
 
 from translate.storage import base
+from translate.storage.placeables import lisa
 from translate.lang import data
 try:
     from lxml import etree
@@ -136,6 +137,19 @@ Provisional work is done to make several languages possible."""
         """
         return namespaced(self.namespace, name)
 
+    def set_rich_source(self, chunk_seq, sourcelang='en'):
+        languageNodes = self.getlanguageNodes()
+        sourcelanguageNode = self.createlanguageNode(sourcelang, u'', "source")
+        lisa.insert_into_dom(sourcelanguageNode, chunk_seq)
+        if len(languageNodes) > 0:
+            self.xmlelement[0] = sourcelanguageNode
+        else:
+            self.xmlelement.append(sourcelanguageNode)
+
+    def get_rich_source(self):
+        return lisa.extract_chunks(self.getlanguageNode(lang=None, index=0))
+    rich_source = property(get_rich_source, set_rich_source)
+
     def setsource(self, text, sourcelang='en'):
         text = data.forceunicode(text)
         languageNodes = self.getlanguageNodes()
@@ -148,6 +162,29 @@ Provisional work is done to make several languages possible."""
     def getsource(self):
         return self.getNodeText(self.getlanguageNode(lang=None, index=0))
     source = property(getsource, setsource)
+
+    def set_rich_target(self, chunk_seq, lang='xx', append=False):
+        languageNodes = self.getlanguageNodes()
+        assert len(languageNodes) > 0
+        if not chunk_seq is None:
+            languageNode = self.createlanguageNode(lang, u'', "target")
+            lisa.insert_into_dom(languageNode, chunk_seq)
+            if append or len(languageNodes) == 1:
+                self.xmlelement.append(languageNode)
+            else:
+                self.xmlelement.insert(1, languageNode)
+        if not append and len(languageNodes) > 1:
+            self.xmlelement.remove(languageNodes[1])        
+
+    def get_rich_target(self, lang=None):
+        """retrieves the "target" text (second entry), or the entry in the 
+        specified language, if it exists"""
+        if lang:
+            node = self.getlanguageNode(lang=lang)
+        else:
+            node = self.getlanguageNode(lang=None, index=1)
+        return lisa.extract_chunks(node)
+    rich_target = property(get_rich_target, set_rich_target)
 
     def settarget(self, text, lang='xx', append=False):
         #XXX: we really need the language - can't really be optional
