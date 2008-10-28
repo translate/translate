@@ -13,7 +13,7 @@ class TestDTD2PO:
         inputfile = wStringIO.StringIO(dtdsource)
         inputdtd = dtd.dtdfile(inputfile)
         convertor = dtd2po.dtd2po()
-        if not dtdtemplate:
+        if dtdtemplate is None:
             outputpo = convertor.convertstore(inputdtd)
         else:
             templatefile = wStringIO.StringIO(dtdtemplate)
