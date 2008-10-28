@@ -23,3 +23,4 @@
 It contains classes that represent placeables (non-translatable inline 
 elements as native codes and variable markups)"""
 
+from base import *
