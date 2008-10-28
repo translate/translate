@@ -47,10 +47,12 @@ msgstr ""
 "dit bestaan uit ten minste een sin."
 '''
         htmlexpected = '''<body>
-<div>'n Paragraaf is 'n afdeling in 'n geskrewe stuk wat gewoonlik
+<div>
+'n Paragraaf is 'n afdeling in 'n geskrewe stuk wat gewoonlik
 'n spesifieke punt uitlig. Dit begin altyd op 'n nuwe lyn
 (gewoonlik met indentasie) en dit bestaan uit ten minste een
-sin.</div>
+sin.
+</div>
 </body>'''
         assert htmlexpected.replace("\n", " ") in self.converthtml(posource, htmlsource).replace("\n", " ")
 
