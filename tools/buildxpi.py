@@ -75,6 +75,7 @@ def build_xpi(l10nbase, srcdir, outputdir, lang, product):
         # Create new .mozconfig
         content = """
 ac_add_options --disable-compile-environment
+ac_add_options --disable-ogg
 mk_add_options MOZ_OBJDIR=%(builddir)s
 ac_add_options --with-l10n-base=%(l10nbase)s
 ac_add_options --enable-application=%(product)s""" % \
