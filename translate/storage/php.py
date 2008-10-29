@@ -19,9 +19,12 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""classes that hold units of php localisation files (phpunit) or entire files
-(phpfile) these files are used in translating many PHP based applications
+"""classes that hold units of php localisation files L{phpunit} or entire files
+   L{phpfile} these files are used in translating many PHP based applications
 
+   The working of PHP strings and specifically the escaping conventions which
+   differ between single quote (') and double quote (") characters are outlined
+   in the PHP documentation for the U{String type<http://www.php.net/language.types.string>}
 """
 
 from translate.storage import base
