@@ -29,6 +29,7 @@ from translate.misc.contextlib import contextmanager, nested
 from translate.misc.context import with_
 from translate.storage.xml_extract import xpath_breadcrumb
 from translate.storage.xml_extract import misc
+from translate.storage.placeables import X, G
 
 class Translatable(object):
     """A node corresponds to a translatable element. A node may
@@ -178,25 +179,25 @@ def _add_location_and_ref_info(unit, translatable):
     return unit
 
 @accepts(Translatable)
-def _to_string(translatable):
-    """Convert a Translatable to an XLIFF string representation."""
+def _to_placeables(translatable):
     result = []
     for chunk in translatable.source:
         if isinstance(chunk, unicode):
             result.append(chunk)
         else:
             if chunk.is_inline:
-                result.extend([u'<g id="%s">' % chunk.placeable_id, _to_string(chunk), u'</g>'])
+                result.append(G(unicode(chunk.placeable_id), _to_placeables(chunk)))
             else:
-                result.append(u'<x id="%s"/>' % chunk.placeable_id)
-    return u''.join(result)
+                result.append(X(unicode(chunk.placeable_id)))
+    return result
 
 @accepts(base.TranslationStore, Translatable)
 def _add_translatable_to_store(store, translatable):
     """Construct a new translation unit, set its source and location
     information and add it to 'store'.
     """
-    unit = store.UnitClass(_to_string(translatable))
+    unit = store.UnitClass(u'')
+    unit.rich_source = _to_placeables(translatable)
     unit = _add_location_and_ref_info(unit, translatable)
     store.addunit(unit)
 
