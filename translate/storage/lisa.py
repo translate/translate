@@ -137,53 +137,62 @@ Provisional work is done to make several languages possible."""
         """
         return namespaced(self.namespace, name)
 
-    def set_rich_source(self, chunk_seq, sourcelang='en'):
+    def set_source_dom(self, dom_node):
         languageNodes = self.getlanguageNodes()
-        sourcelanguageNode = self.createlanguageNode(sourcelang, u'', "source")
-        lisa.insert_into_dom(sourcelanguageNode, chunk_seq)
         if len(languageNodes) > 0:
-            self.xmlelement[0] = sourcelanguageNode
+            self.xmlelement[0] = dom_node
         else:
-            self.xmlelement.append(sourcelanguageNode)
+            self.xmlelement.append(dom_node)
+    
+    def get_source_dom(self):
+        return self.getlanguageNode(lang=None, index=0)
+    source_dom = property(get_source_dom, set_source_dom)
+
+    def set_rich_source(self, chunk_seq, sourcelang='en'):
+        sourcelanguageNode = self.createlanguageNode(sourcelang, u'', "source")        
+        self.source_dom = lisa.insert_into_dom(sourcelanguageNode, chunk_seq)
 
     def get_rich_source(self):
-        return lisa.extract_chunks(self.getlanguageNode(lang=None, index=0))
+        return lisa.extract_chunks(self.source_dom)
     rich_source = property(get_rich_source, set_rich_source)
 
     def setsource(self, text, sourcelang='en'):
         text = data.forceunicode(text)
-        languageNodes = self.getlanguageNodes()
-        sourcelanguageNode = self.createlanguageNode(sourcelang, text, "source")
-        if len(languageNodes) > 0:
-            self.xmlelement[0] = sourcelanguageNode
-        else:
-            self.xmlelement.append(sourcelanguageNode)
+        self.source_dom = self.createlanguageNode(sourcelang, text, "source")
 
     def getsource(self):
-        return self.getNodeText(self.getlanguageNode(lang=None, index=0))
+        return self.getNodeText(self.source_dom)
     source = property(getsource, setsource)
 
-    def set_rich_target(self, chunk_seq, lang='xx', append=False):
+    def set_target_dom(self, dom_node, append=False):
         languageNodes = self.getlanguageNodes()
         assert len(languageNodes) > 0
+        if dom_node is not None:
+            if append or len(languageNodes) == 1:
+                self.xmlelement.append(dom_node)
+            else:
+                self.xmlelement.insert(1, dom_node)
+        if not append and len(languageNodes) > 1:
+            self.xmlelement.remove(languageNodes[1])
+
+    def get_target_dom(self, lang=None):
+        if lang:
+            return self.getlanguageNode(lang=lang)
+        else:
+            return self.getlanguageNode(lang=None, index=1)
+    target_dom = property(get_target_dom)
+
+    def set_rich_target(self, chunk_seq, lang='xx', append=False):
+        languageNode = None
         if not chunk_seq is None:
             languageNode = self.createlanguageNode(lang, u'', "target")
             lisa.insert_into_dom(languageNode, chunk_seq)
-            if append or len(languageNodes) == 1:
-                self.xmlelement.append(languageNode)
-            else:
-                self.xmlelement.insert(1, languageNode)
-        if not append and len(languageNodes) > 1:
-            self.xmlelement.remove(languageNodes[1])        
+        self.set_target_dom(languageNode, append)
 
     def get_rich_target(self, lang=None):
         """retrieves the "target" text (second entry), or the entry in the 
         specified language, if it exists"""
-        if lang:
-            node = self.getlanguageNode(lang=lang)
-        else:
-            node = self.getlanguageNode(lang=None, index=1)
-        return lisa.extract_chunks(node)
+        return lisa.extract_chunks(self.get_target_dom(lang))
     rich_target = property(get_rich_target, set_rich_target)
 
     def settarget(self, text, lang='xx', append=False):
@@ -193,25 +202,15 @@ Provisional work is done to make several languages possible."""
         #Firstly deal with reinitialising to None or setting to identical string
         if self.gettarget() == text:
             return
-        languageNodes = self.getlanguageNodes()
-        assert len(languageNodes) > 0
+        languageNode = None
         if not text is None:
             languageNode = self.createlanguageNode(lang, text, "target")
-            if append or len(languageNodes) == 1:
-                self.xmlelement.append(languageNode)
-            else:
-                self.xmlelement.insert(1, languageNode)
-        if not append and len(languageNodes) > 1:
-            self.xmlelement.remove(languageNodes[1])
+        self.set_target_dom(languageNode, append)
 
     def gettarget(self, lang=None):
         """retrieves the "target" text (second entry), or the entry in the 
         specified language, if it exists"""
-        if lang:
-            node = self.getlanguageNode(lang=lang)
-        else:
-            node = self.getlanguageNode(lang=None, index=1)
-        return self.getNodeText(node)
+        return self.getNodeText(self.get_target_dom(lang))
     target = property(gettarget, settarget)
 
     def createlanguageNode(self, lang, text, purpose=None):
