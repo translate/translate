@@ -90,7 +90,6 @@ class rephp:
                 postspaceend = len(line[equalspos+1:].lstrip())
                 postspace = line[equalspos+1:equalspos+(postspacestart-postspaceend)+1]
                 self.quotechar = line[equalspos+(postspacestart-postspaceend)+1]
-                print key
                 if self.inputdict.has_key(lookupkey):
                     self.inecho = 0
                     value = php.phpencode(self.inputdict[lookupkey], self.quotechar)
