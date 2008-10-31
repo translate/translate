@@ -5,16 +5,21 @@ from translate.storage import php
 from translate.storage import test_monolingual
 from translate.misc import wStringIO
 
-def test_php_escaping():
-    """Test the helper escaping funtions"""
+def test_php_escaping_single_quote():
+    """Test the helper escaping funtions for 'single quotes'"""
     # Encoding
     assert php.phpencode("'") == "\\'"
-    assert php.phpencode('"', quotechar='"') == '\\"'
     assert php.phpencode("\n") == "\\n"
     # Decoding
     assert php.phpdecode("\\'") == "'"
     assert php.phpdecode('\\"') == '"'
     assert php.phpdecode("\\n") == "\n"
+
+def test_php_escaping_double_quote():
+    """Test the helper escaping funtions for 'double quotes'"""
+    # Encoding
+    assert php.phpencode('"', quotechar='"') == '\\"'
+    # Decoding
 
 class TestPhpUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = php.phpunit
