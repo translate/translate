@@ -26,10 +26,10 @@
       $lang['item'] = "vale";  # Array of values
       $some_entity = "value";  # Named variables
 
-   The parser does not support other array converntions such as::
+   The parser does not support other array conventions such as::
       $lang = array(
          'item1' => 'value1',
-         'item2' => 'value2'
+         'item2' => 'value2',
       );
 
    The working of PHP strings and specifically the escaping conventions which
