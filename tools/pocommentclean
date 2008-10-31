@@ -29,7 +29,7 @@ case $1 in
 			;;
 esac
 
-if [ $# -ne 2 ]; then
+if [ $# -ne 1 ]; then
 	echo "Usage: pocommmentclean [--backup] po-dir"
 	exit 1
 fi
