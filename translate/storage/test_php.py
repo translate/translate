@@ -63,3 +63,17 @@ class TestPhpFile(test_monolingual.TestMonolingualStore):
         phpunit = phpfile.units[0]
         assert phpunit.name == "$lang['mediaselect']"
         assert phpunit.source == "Bestand selectie"
+
+    def test_comment_blocks(self):
+        """check that we don't process name value pairs in comment blocks"""
+        phpsource = """/*
+ * $lang[0] = "Blah";
+ * $lang[1] = "Bluh";
+ */
+$lang[2] = "Yeah";
+"""
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 1
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "$lang[2]"
+        assert phpunit.source == "Yeah"

@@ -150,15 +150,16 @@ class phpfile(base.TranslationStore):
             if commentstartpos != -1:
                 incomment = True
                 if commentendpos != -1:
-                    newunit.addnote(line[commentstartpos+2:commentendpos].strip(), "developer")
+                    newunit.addnote(line[commentstartpos:commentendpos].strip(), "developer")
                     incomment = False
-                if incomment:
-                    newunit.addnote(line[commentstartpos+2:].strip(), "developer")
+                else:
+                    newunit.addnote(line[commentstartpos:].strip(), "developer")
             if commentendpos != -1 and incomment:
-                newunit.addnote(line[:commentendpos].strip(), "developer")
+                newunit.addnote(line[:commentendpos+2].strip(), "developer")
                 incomment = False
-            if commentstartpos == -1 and incomment:
+            if incomment and commentstartpos == -1:
                 newunit.addnote(line.strip(), "developer")
+                continue
             equalpos = line.find("=")
             if equalpos != -1 and not invalue:
                 newunit.addlocation(line[:equalpos].strip().replace(" ", ""))
