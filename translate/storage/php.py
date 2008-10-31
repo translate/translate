@@ -19,8 +19,18 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""classes that hold units of php localisation files L{phpunit} or entire files
-   L{phpfile} these files are used in translating many PHP based applications
+"""classes that hold units of PHP localisation files L{phpunit} or entire files
+   L{phpfile} these files are used in translating many PHP based applications.
+
+   Only PHP files written with these conventtions are supported::
+      $lang['item'] = "vale";  # Array of values
+      $some_entity = "value";  # Named variables
+
+   The parser does not support other array converntions such as::
+      $lang = array(
+         'item1' => 'value1',
+         'item2' => 'value2'
+      );
 
    The working of PHP strings and specifically the escaping conventions which
    differ between single quote (') and double quote (") characters are outlined
