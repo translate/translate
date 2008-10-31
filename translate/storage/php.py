@@ -42,7 +42,16 @@ from translate.misc import quote
 import re
 
 def phpencode(text, quotechar="'"):
-    """convert Python string to PHP escaping"""
+    """convert Python string to PHP escaping
+
+    The encoding is implemented for 
+    U{'single quote'<http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.single>}
+    and U{"double quote"<http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.double>}
+    syntax.
+
+    heredoc and nowdoc are not implemented and it is not certain whether this would 
+    ever be needed for PHP localisation needs.
+    """
     if not text:
         return text
     return text.replace("%s" % quotechar, "\\%s" % quotechar).replace("\n", "\\n")
