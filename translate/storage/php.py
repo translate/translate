@@ -56,7 +56,7 @@ def phpencode(text, quotechar="'"):
         return text
     return text.replace("%s" % quotechar, "\\%s" % quotechar).replace("\n", "\\n")
 
-def phpdecode(text):
+def phpdecode(text, quotechar="'"):
     """convert PHP escaped string to a Python string"""
     if not text:
         return text
@@ -67,6 +67,7 @@ class phpunit(base.TranslationUnit):
     associated"""
     def __init__(self, source=""):
         """construct a blank phpunit"""
+        self.escape_type = None
         super(phpunit, self).__init__(source)
         self.name = ""
         self.value = ""
@@ -75,10 +76,10 @@ class phpunit(base.TranslationUnit):
 
     def setsource(self, source):
         """Sets the source AND the target to be equal"""
-        self.value = phpencode(source)
+        self.value = phpencode(source, self.escape_type)
 
     def getsource(self):
-        return phpdecode(self.value)
+        return phpdecode(self.value, self.escape_type)
     source = property(getsource, setsource)
 
     def settarget(self, target):
@@ -172,6 +173,7 @@ class phpfile(base.TranslationStore):
             while colonpos != -1:
                 if value[colonpos-1] == valuequote:
                     newunit.value = lastvalue + value[:colonpos-1] 
+                    newunit.escape_type = valuequote
                     lastvalue = ""
                     invalue = False
                 if not invalue and colonpos != len(value)-1:
