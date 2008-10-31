@@ -144,7 +144,6 @@ class phpfile(base.TranslationStore):
         incomment = False
         valuequote = "" # either ' or "
         for line in phpsrc.decode(self._encoding).split("\n"):
-            # Assuming /* comments */ are started and stopped on lines
             commentstartpos = line.find("/*")
             commentendpos = line.rfind("*/")            
             if commentstartpos != -1:
