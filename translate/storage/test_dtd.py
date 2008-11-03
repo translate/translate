@@ -110,6 +110,18 @@ class TestDTD(test_monolingual.TestMonolingualStore):
         """checks that an &entity; in the source is retained"""
         dtdsource = '<!ENTITY % realBrandDTD SYSTEM "chrome://branding/locale/brand.dtd">\n%realBrandDTD;\n'
         dtdregen = self.dtdregen(dtdsource)
+        assert dtdsource == dtdregen
+
+        # The following test is identical to the one above, except that the entity is split over two lines.
+        # This is to ensure that a recent bug fixed in dtdunit.parse() is at least partly documented.
+        # The essence of the bug was that after it had read "realBrandDTD", the line index is not reset
+        # before starting to parse the next line. It would then read the next available word (sequence of
+        # alphanum characters) in stead of SYSTEM and then get very confused by not finding an opening ' or
+        # " in the entity, borking the parsing for threst of the file.
+        dtdsource = '<!ENTITY % realBrandDTD\n SYSTEM "chrome://branding/locale/brand.dtd">\n%realBrandDTD;\n'
+        # FIXME: The following line is necessary, because of dtdfile's inability to remember the spacing of
+        # the source DTD file when converting back to DTD.
+        dtdregen = self.dtdregen(dtdsource).replace('realBrandDTD SYSTEM', 'realBrandDTD\n SYSTEM')
         print dtdsource
         print dtdregen
         assert dtdsource == dtdregen
