@@ -211,11 +211,13 @@ class dtdunit(base.TranslationUnit):
                         # remember the start position and the quote character
                         if e == len(line):
                             self.entityhelp = None
+                            e = 0
                             continue
                         elif self.entitypart == "definition":
                             self.entityhelp = (e, line[e])
                             self.instring = 0
                 if self.entitypart == "parameter":
+                    while (e < len(line) and line[e].isspace()): e += 1
                     paramstart = e
                     while (e < len(line) and line[e].isalnum()): e += 1
                     self.entityparameter += line[paramstart:e]
