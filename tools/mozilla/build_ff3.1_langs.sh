@@ -30,7 +30,7 @@ POT_INCLUDES="../README.mozilla-pot"
 POTPACK_DIR="${BUILD_DIR}/potpacks"
 POUPDATED_DIR="${BUILD_DIR}/po-updated"
 LANGPACK_DIR="${BUILD_DIR}/xpi"
-FF_VERSION="3.1b1"
+FF_VERSION="3.1b2"
 
 # Make sure all directories exist
 for dir in ${MOZCENTRAL_DIR} ${L10N_DIR} ${PO_DIR} ${POPACK_DIR} ${PORECOVER_DIR} ${POTPACK_DIR} ${POUPDATED_DIR} ${LANGPACK_DIR}
@@ -41,7 +41,7 @@ done
 L10N_DIR_REL=`echo ${L10N_DIR} | sed "s#${BUILD_DIR}/##"`
 POUPDATED_DIR_REL=`echo ${POUPDATED_DIR} | sed "s#${BUILD_DIR}/##"`
 
-(cd ${MOZCENTRAL_DIR}; hg pull -u; python client.py checkout)
+(cd ${MOZCENTRAL_DIR}; hg pull -u; python client.py checkout --skip-inspector --skip-ldap --skip-chatzilla --skip-venkman)
 
 cd ${L10N_DIR}
 
