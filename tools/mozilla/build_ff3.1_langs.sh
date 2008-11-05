@@ -21,7 +21,7 @@
 BUILD_DIR="/home/walter/mozbuild"
 MOZCENTRAL_DIR="${BUILD_DIR}/mozilla-central" # Change "../mozilla-central" on line 39 too if you change this var
 #HG_LANGS="af ar as be bg bn-IN ca cs da de el en-GB en-ZA es-AR es-ES et eu fa fi fr fy-NL ga-IE gl gu-IN he hi-IN hu hy-AM id is it ja ja-JP-mac ka kn ko ku langs lt lv mk ml mn mr nb-NO ne-NP nl nn-NO nr nso pa-IN pl ro ru rw si sk sl sq sr ss st sv-SE ta te th tn tr ts uk ve xh zh-CN zh-TW zu"
-HG_LANGS="fr"
+HG_LANGS="af"
 L10N_DIR="${BUILD_DIR}/l10n"
 PO_DIR="${BUILD_DIR}/po"
 POPACK_DIR="${BUILD_DIR}/popacks"
@@ -63,6 +63,38 @@ PACKNAME="${POTPACK_DIR}/firefox-${FF_VERSION}-`date +%Y%m%d`"
 tar cjf ${PACKNAME}.tar.bz2 pot en-US ${POT_INCLUDES}
 zip -qr9 ${PACKNAME}.zip pot en-US ${POT_INCLUDES}
 
+# The following functions are used in the loop following it
+
+function copyfile {
+	filename=$1
+	language=$2
+	directory=$(dirname $filename)
+	if [ -f ${L10N_DIR}/en-US/$filename ]; then
+		mkdir -p ${L10N_DIR}/$language/$directory
+		cp -p ${L10N_DIR}/en-US/$filename ${L10N_DIR}/$language/$directory
+	fi
+}
+
+function copyfiletype {
+	filetype=$1
+	language=$2
+	files=$(cd ${L10N_DIR}/en-US; find . -name "$filetype")
+	for file in $files
+	do
+		copyfile $file $language
+	done
+}
+
+function copydir {
+	dir=$1
+	language=$2
+	files=$(cd ${L10N_DIR}/en-US/$dir; find . -type f)
+	for file in $files
+	do
+		copyfile $dir/$file $language
+	done
+}
+
 for lang in ${HG_LANGS}
 do
 	## Recover
@@ -97,6 +129,20 @@ do
 	## Create Mozilla l10n layout from migrated PO files
 	po2moz --progress=none --errorlevel=traceback --exclude=".svn" --exclude=".hg" \
 		-t ${L10N_DIR}/en-US -i ${POUPDATED_DIR}/${lang} -o ${L10N_DIR}/${lang}
+
+	# Copy files not handled by moz2po/po2moz
+	copyfiletype "*.xhtml" ${lang} # Our XHTML and HTML is broken
+	copyfiletype "*.html" ${lang}
+	copyfiletype "*.rdf" ${lang}   # Don't support .rdf files
+	copyfile browser/firefox-l10n.js ${lang}
+	copyfile browser/microsummary-generators/list.txt ${lang}
+	copyfile browser/profile/chrome/userChrome-example.css ${lang}
+	copyfile browser/profile/chrome/userContent-example.css ${lang}
+	copyfile browser/searchplugins/list.txt ${lang}
+	copyfile extensions/reporter/chrome/reporterOverlay.properties ${lang}
+	copyfile toolkit/chrome/global/intl.css ${lang}
+	[ ! -f ${L10N_DIR}/${lang}/browser/profile/bookmarks.html ] && copyfile browser/profile/bookmarks.html ${lang}
+	sed -i "s/en-US/${lang}/g" ${L10N_DIR}/${lang}/browser/profile/bookmarks.html
 	
 	## Create PO pack
 	PACKNAME="${POPACK_DIR}/firefox-${FF_VERSION}-${lang}-`date +%Y%m%d`"
@@ -105,10 +151,6 @@ do
 		tar cjf ${PACKNAME}.tar.bz2 --exclude '.svn' --exclude '.hg' ${L10N_DIR_REL}/${lang} ${POUPDATED_DIR_REL}/${lang}
 		zip -qr9 ${PACKNAME}.zip ${L10N_DIR_REL}/${lang} ${POUPDATED_DIR_REL}/${lang} -x '*.svn*' -x "*.hg*"
 	)
-
-	# Pre-langpack build hacks
-	# This file is empty and therefore not created by po2moz, but is still needed to build a langpack.
-	touch ${L10N_DIR}/${lang}/extensions/reporter/chrome/reporterOverlay.properties 
 
 	## Create XPI langpack
 	buildxpi.py -L ${L10N_DIR} -s ${MOZCENTRAL_DIR} -o ${LANGPACK_DIR} ${lang}
