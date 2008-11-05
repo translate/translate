@@ -33,7 +33,7 @@ LANGPACK_DIR="${BUILD_DIR}/xpi"
 FF_VERSION="3.1b1"
 
 # Make sure all directories exist
-for dir in ${MOZCENTRAL_DIR} ${L10N_DIR} ${PO_DIR} ${POPACK_DIR} ${PORECOVER_DIR} ${POTPACK_DIR} ${POUPDATED_DIR}
+for dir in ${MOZCENTRAL_DIR} ${L10N_DIR} ${PO_DIR} ${POPACK_DIR} ${PORECOVER_DIR} ${POTPACK_DIR} ${POUPDATED_DIR} ${LANGPACK_DIR}
 do
 	[ ! -d ${dir} ] && mkdir -p ${dir}
 done
@@ -79,18 +79,22 @@ do
 	[ -z ${updated} ] && [ -d ${PO_DIR}/${lang}/.hg ] && (cd ${PO_DIR}/${lang}; hg pull -u) && updated="1"
 	[ -z ${updated} ] && [ -d ${PO_DIR}/${lang}/.svn ] && (cd ${PO_DIR}/${lang}; svn up) && updated="1"
 
+	# Copy directory structure while preserving version control metadata
 	rm -rf ${POUPDATED_DIR}/${lang}
 	cp -R ${PO_DIR}/${lang} ${POUPDATED_DIR}
 	find ${POUPDATED_DIR}/${lang} -name '*.po' -exec rm -f {} \;
 
-	# Pre-moz2po hacks
+	## Migrate to new POT files
 	tempdir=`mktemp -d`
 	cp -R ${PO_DIR}/${lang} ${tempdir}/${lang}
 	pomigrate2 --use-compendium --quiet --pot2po ${tempdir}/${lang} ${POUPDATED_DIR}/${lang} ${L10N_DIR}/pot
+
+	# Pre-moz2po hacks
 	find ${POUPDATED_DIR} -name '*.html.po' -o -name '*.xhtml.po' -exec rm -f {} \;
 	[ -d ${L10N_DIR}/${lang} ] && find ${L10N_DIR}/${lang} -name '*.dtd' -o -name '*.properties' -exec rm -f {} \;
 	rm -rf ${tempdir}
 
+	## Create Mozilla l10n layout from migrated PO files
 	po2moz --progress=none --errorlevel=traceback --exclude=".svn" --exclude=".hg" \
 		-t ${L10N_DIR}/en-US -i ${POUPDATED_DIR}/${lang} -o ${L10N_DIR}/${lang}
 	
@@ -103,7 +107,8 @@ do
 	)
 
 	# Pre-langpack build hacks
-	touch ${L10N_DIR}/extensions/reporter/chrome/reporterOverlay.properties
+	# This file is empty and therefore not created by po2moz, but is still needed to build a langpack.
+	touch ${L10N_DIR}/${lang}/extensions/reporter/chrome/reporterOverlay.properties 
 
 	## Create XPI langpack
 	buildxpi.py -L ${L10N_DIR} -s ${MOZCENTRAL_DIR} -o ${LANGPACK_DIR} ${lang}
