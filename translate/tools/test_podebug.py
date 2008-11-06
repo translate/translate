@@ -6,6 +6,7 @@ class TestPODebug:
     debug = podebug.podebug()
 
     def test_ignore_gtk(self):
+        """Test operation of GTK message ignoring"""
         unit = base.TranslationUnit("default:LTR")
         assert self.debug.ignore_gtk(unit) == True
 
