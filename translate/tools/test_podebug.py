@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from translate.tools import podebug
 from translate.storage import base
 
@@ -22,3 +24,7 @@ class TestPODebug:
         """Test the xxx rewrite function"""
         assert self.debug.rewrite_xxx("Test") == "xxxTestxxx"
         assert self.debug.rewrite_xxx("Newline\n") == "xxxNewlinexxx\n"
+
+    def test_rewrite_unicode(self):
+        """Test the unicode rewrite function"""
+        assert self.debug.rewrite_unicode("Test") == u"Ŧḗşŧ"
