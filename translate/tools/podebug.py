@@ -45,6 +45,8 @@ class podebug:
     rewritelist = classmethod(rewritelist)
 
     def rewrite_xxx(self, string):
+        if string.endswith("\n"):
+            return "xxx%sxxx\n" % string[:-1]
         return "xxx%sxxx" % string
 
     def rewrite_en(self, string):
