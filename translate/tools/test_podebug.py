@@ -10,6 +10,14 @@ class TestPODebug:
         unit = base.TranslationUnit("default:LTR")
         assert self.debug.ignore_gtk(unit) == True
 
+    def test_rewrite_blank(self):
+        """Test the blank rewrite function"""
+        assert self.debug.rewrite_blank("Test") == ""
+
+    def test_rewrite_en(self):
+        """Test the en rewrite function"""
+        assert self.debug.rewrite_en("Test") == "Test"
+
     def test_rewrite_xxx(self):
         """Test the xxx rewrite function"""
         assert self.debug.rewrite_xxx("Test") == "xxxTestxxx"
