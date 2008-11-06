@@ -103,8 +103,8 @@ class podebug:
         return [rewrite.replace("ignore_", "") for rewrite in dir(cls) if rewrite.startswith("ignore_")]
     ignorelist = classmethod(ignorelist)
 
-    def ignore_openoffice(self, locations):
-        for location in locations:
+    def ignore_openoffice(self, unit):
+        for location in unit.getlocations():
             if location.startswith("Common.xcu#..Common.View.Localisation"):
                 return True
             elif location.startswith("profile.lng#STR_DIR_MENU_NEW_"):
@@ -113,7 +113,8 @@ class podebug:
                 return True
         return False
 
-    def ignore_mozilla(self, locations):
+    def ignore_mozilla(self, unit):
+        locations = unit.getlocations()
         if len(locations) == 1 and locations[0].lower().endswith(".accesskey"):
             return True
         for location in locations:
@@ -126,9 +127,14 @@ class podebug:
                 return True
         return False
 
+    def ignore_gtk(self, unit):
+        if unit.source == "default:LTR":
+            return True
+        return False
+
     def convertunit(self, unit, prefix):
         if self.ignorefunc:
-            if self.ignorefunc(unit.getlocations()):
+            if self.ignorefunc(unit):
                 return unit
         if self.hash:
             if unit.getlocations():
