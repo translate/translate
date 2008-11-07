@@ -131,6 +131,7 @@ do
 		-t ${L10N_DIR}/en-US -i ${POUPDATED_DIR}/${lang} -o ${L10N_DIR}/${lang}
 
 	# Copy files not handled by moz2po/po2moz
+	copydir browser/os2 ${lang}
 	copyfiletype "*.xhtml" ${lang} # Our XHTML and HTML is broken
 	copyfiletype "*.html" ${lang}
 	copyfiletype "*.rdf" ${lang}   # Don't support .rdf files
