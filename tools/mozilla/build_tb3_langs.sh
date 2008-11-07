@@ -28,10 +28,11 @@ PORECOVER_DIR="${BUILD_DIR}/po-recover"
 POT_INCLUDES="../README.mozilla-pot"
 POTPACK_DIR="${BUILD_DIR}/potpacks"
 POUPDATED_DIR="${BUILD_DIR}/po-updated"
+LANGPACK_DIR="${BUILD_DIR}/xpi"
 TB_VERSION="3.0b1"
 
 # Make sure all directories exist
-for dir in ${COMM_DIR} ${L10N_DIR} ${PO_DIR} ${POPACK_DIR} ${PORECOVER_DIR} ${POTPACK_DIR} ${POUPDATED_DIR}
+for dir in ${COMM_DIR} ${L10N_DIR} ${PO_DIR} ${POPACK_DIR} ${PORECOVER_DIR} ${POTPACK_DIR} ${POUPDATED_DIR} ${LANGPACK_DIR}
 do
 	[ ! -d ${dir} ] && mkdir -p ${dir}
 done
@@ -39,7 +40,7 @@ done
 L10N_DIR_REL=`echo ${L10N_DIR} | sed "s#${BUILD_DIR}/##"`
 POUPDATED_DIR_REL=`echo ${POUPDATED_DIR} | sed "s#${BUILD_DIR}/##"`
 
-(cd ${COMM_DIR}; hg pull -u; python client.py checkout)
+(cd ${COMM_DIR}; hg pull -u; python client.py checkout --skip-inspector --skip-ldap --skip-chatzilla --skip-venkman)
 
 cd ${L10N_DIR}
 
@@ -60,6 +61,37 @@ find pot -name '*.html.pot' -o -name '*.xhtml.pot' -exec rm -f {} \;
 PACKNAME="${POTPACK_DIR}/thunderbird-${TB_VERSION}-`date +%Y%m%d`"
 tar cjf ${PACKNAME}.tar.bz2 pot en-US ${POT_INCLUDES}
 zip -qr9 ${PACKNAME}.zip pot en-US ${POT_INCLUDES}
+# The following functions are used in the loop following it
+
+function copyfile {
+	filename=$1
+	language=$2
+	directory=$(dirname $filename)
+	if [ -f ${L10N_DIR}/en-US/$filename ]; then
+		mkdir -p ${L10N_DIR}/$language/$directory
+		cp -p ${L10N_DIR}/en-US/$filename ${L10N_DIR}/$language/$directory
+	fi
+}
+
+function copyfiletype {
+	filetype=$1
+	language=$2
+	files=$(cd ${L10N_DIR}/en-US; find . -name "$filetype")
+	for file in $files
+	do
+		copyfile $file $language
+	done
+}
+
+function copydir {
+	dir=$1
+	language=$2
+	files=$(cd ${L10N_DIR}/en-US/$dir; find . -type f)
+	for file in $files
+	do
+		copyfile $dir/$file $language
+	done
+}
 
 for lang in ${HG_LANGS}
 do
@@ -77,20 +109,28 @@ do
 	[ -z ${updated} ] && [ -d ${PO_DIR}/${lang}/.hg ] && (cd ${PO_DIR}/${lang}; hg pull -u) && updated="1"
 	[ -z ${updated} ] && [ -d ${PO_DIR}/${lang}/.svn ] && (cd ${PO_DIR}/${lang}; svn up) && updated="1"
 
+	# Copy directory structure while preserving version control metadata
 	rm -rf ${POUPDATED_DIR}/${lang}
 	cp -R ${PO_DIR}/${lang} ${POUPDATED_DIR}
 	find ${POUPDATED_DIR}/${lang} -name '*.po' -exec rm -f {} \;
 
-	# Pre-moz2po hacks
+	## Migrate to new POT files
 	tempdir=`mktemp -d`
 	cp -R ${PO_DIR}/${lang} ${tempdir}/${lang}
 	pomigrate2 --use-compendium --quiet --pot2po ${tempdir}/${lang} ${POUPDATED_DIR}/${lang} ${L10N_DIR}/pot
+	# Pre-moz2po hacks
 	find ${POUPDATED_DIR} -name '*.html.po' -o -name '*.xhtml.po' -exec rm -f {} \;
 	[ -d ${L10N_DIR}/${lang} ] && find ${L10N_DIR}/${lang} -name '*.dtd' -o -name '*.properties' -exec rm -f {} \;
 	rm -rf ${tempdir}
 
+	## Create Mozilla l10n layout from migrated PO files
 	po2moz --progress=none --errorlevel=traceback --exclude=".svn" --exclude=".hg" \
 		-t ${L10N_DIR}/en-US -i ${POUPDATED_DIR}/${lang} -o ${L10N_DIR}/${lang}
+	# Copy files not handled by moz2po/po2moz
+	copydir browser/os2 ${lang}
+	copyfiletype "*.xhtml" ${lang} # Our XHTML and HTML is broken
+	copyfiletype "*.html" ${lang}
+	copyfiletype "*.rdf" ${lang}   # Don't support .rdf files
 	
 	## Create PO pack
 	PACKNAME="${POPACK_DIR}/thunderbird-${TB_VERSION}-${lang}-`date +%Y%m%d`"
@@ -99,4 +139,6 @@ do
 		tar cjf ${PACKNAME}.tar.bz2 --exclude '.svn' --exclude '.hg' ${L10N_DIR_REL}/${lang} ${POUPDATED_DIR_REL}/${lang}
 		zip -qr9 ${PACKNAME}.zip ${L10N_DIR_REL}/${lang} ${POUPDATED_DIR_REL}/${lang} -x '*.svn*' -x "*.hg*"
 	)
+	## Create XPI langpack
+	buildxpi.py -L ${L10N_DIR} -s ${MOZCENTRAL_DIR} -o ${LANGPACK_DIR} ${lang}
 done
