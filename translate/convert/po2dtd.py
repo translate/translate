@@ -28,10 +28,6 @@ from translate.misc import quote
 from translate.convert import accesskey
 import warnings
 
-# labelsuffixes and accesskeysuffixes are combined to accelerator notation
-labelsuffixes = (".label", ".title")
-accesskeysuffixes = (".accesskey", ".accessKey", ".akey")
-
 def removeinvalidamps(entity, unquotedstr):
     """find ampersands that aren't part of an entity definition..."""
     amppos = 0
@@ -64,11 +60,11 @@ def getmixedentities(entities):
     mixedentities = []    # those entities which have a .label and .accesskey combined
     # search for mixed entities...
     for entity in entities:
-        for labelsuffix in labelsuffixes:
+        for labelsuffix in dtd.labelsuffixes:
             if entity.endswith(labelsuffix):
                 entitybase = entity[:entity.rfind(labelsuffix)]
                 # see if there is a matching accesskey, making this a mixed entity
-                for akeytype in accesskeysuffixes:
+                for akeytype in dtd.accesskeysuffixes:
                     if entitybase + akeytype in entities:
                         # add both versions to the list of mixed entities
                         mixedentities += [entity, entitybase+akeytype]
@@ -82,13 +78,13 @@ def applytranslation(entity, dtdunit, inputunit, mixedentities):
     if len(unquotedstr.strip()) == 0:
         return
     # handle mixed entities
-    for labelsuffix in labelsuffixes:
+    for labelsuffix in dtd.labelsuffixes:
         if entity.endswith(labelsuffix):
             if entity in mixedentities:
                 unquotedstr, akey = accesskey.extract(unquotedstr)
                 break
     else:
-        for akeytype in accesskeysuffixes:
+        for akeytype in dtd.accesskeysuffixes:
             if entity.endswith(akeytype):
                 if entity in mixedentities:
                     label, unquotedstr = accesskey.extract(unquotedstr)

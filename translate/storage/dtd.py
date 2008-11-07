@@ -34,6 +34,13 @@ try:
 except ImportError:
     etree = None
 
+labelsuffixes = (".label", ".title")
+"""Label suffixes: entries with this suffix are able to be comibed with accesskeys
+found in in entries ending with L{accesskeysuffixes}"""
+accesskeysuffixes = (".accesskey", ".accessKey", ".akey")
+"""Accesskey Suffixes: entries with this suffix may be combined with labels
+ending in L{labelsuffixes} into accelerator notation"""
+
 def quotefordtd(source):
     if '"' in source:
         if "'" in source:

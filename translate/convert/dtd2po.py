@@ -125,10 +125,6 @@ class dtd2po:
         else:
             return thepo
 
-    # labelsuffixes and accesskeysuffixes are combined to accelerator notation
-    labelsuffixes = (".label", ".title")
-    accesskeysuffixes = (".accesskey", ".accessKey", ".akey")
-
     def convertmixedunit(self, labeldtd, accesskeydtd):
         labelpo = self.convertunit(labeldtd)
         accesskeypo = self.convertunit(accesskeydtd)
@@ -159,12 +155,12 @@ class dtd2po:
         """creates self.mixedentities from the dtd file..."""
         self.mixedentities = {} # those entities which have a .label/.title and .accesskey combined
         for entity in thedtdfile.index.keys():
-            for labelsuffix in self.labelsuffixes:
+            for labelsuffix in dtd.labelsuffixes:
                 if entity.endswith(labelsuffix):
                     entitybase = entity[:entity.rfind(labelsuffix)]
                     # see if there is a matching accesskey in this line, making this a
                     # mixed entity
-                    for akeytype in self.accesskeysuffixes:
+                    for akeytype in dtd.accesskeysuffixes:
                         if thedtdfile.index.has_key(entitybase + akeytype):
                             # add both versions to the list of mixed entities
                             self.mixedentities[entity] = {}
@@ -185,20 +181,20 @@ class dtd2po:
                 # depending on what we come across first, work out the label and the accesskey
                 labeldtd, accesskeydtd = None, None
                 labelentity, accesskeyentity = None, None
-                for labelsuffix in self.labelsuffixes:
+                for labelsuffix in dtd.labelsuffixes:
                     if thedtd.entity.endswith(labelsuffix):
                         entitybase = thedtd.entity[:thedtd.entity.rfind(labelsuffix)]
-                        for akeytype in self.accesskeysuffixes:
+                        for akeytype in dtd.accesskeysuffixes:
                             if thedtdfile.index.has_key(entitybase + akeytype):
                                 labelentity, labeldtd = thedtd.entity, thedtd
                                 accesskeyentity = labelentity[:labelentity.rfind(labelsuffix)]+akeytype
                                 accesskeydtd = thedtdfile.index[accesskeyentity]
                                 break
                 else:
-                    for akeytype in self.accesskeysuffixes:
+                    for akeytype in dtd.accesskeysuffixes:
                         if thedtd.entity.endswith(akeytype):
                             accesskeyentity, accesskeydtd = thedtd.entity, thedtd
-                            for labelsuffix in self.labelsuffixes:
+                            for labelsuffix in dtd.labelsuffixes:
                                 labelentity = accesskeyentity[:accesskeyentity.rfind(akeytype)]+labelsuffix
                                 if thedtdfile.index.has_key(labelentity):
                                     labeldtd = thedtdfile.index[labelentity]
