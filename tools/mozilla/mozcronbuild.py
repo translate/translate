@@ -20,7 +20,7 @@
 
 import os
 
-from tools import moz_l10n_builder
+from tools.mozilla import moz_l10n_builder
 
 
 MOZDIR = os.path.join( os.path.expanduser('~'), 'mozbuild' )
