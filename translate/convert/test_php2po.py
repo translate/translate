@@ -84,7 +84,7 @@ reduce the number of cached connections.';"""
 $lang['prefPanel-smime'] = 'Security';'''
         pofile = self.php2po(phpsource)
         pounit = self.singleelement(pofile)
-        assert pounit.getnotes("developer") == "Comment"
+        assert pounit.getnotes("developer") == "/* Comment"
         # TODO write test for inline comments and check for // comments that precede an entry
 
     def test_emptyentry(self):
@@ -94,7 +94,7 @@ $lang['prefPanel-smime'] = 'Security';'''
         pounit = self.singleelement(pofile)
         assert pounit.getlocations() == ["$lang['credit']"]
         assert pounit.getcontext() == "$lang['credit']"
-        assert "#. comment" in str(pofile)
+        assert "#. /* comment" in str(pofile)
         assert pounit.source == ""
 
     def test_emptyentry_translated(self):
