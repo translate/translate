@@ -428,7 +428,7 @@ msgstr[1] "Koeie"
 
     def test_multiline_obsolete(self):
         """Tests for correct output of mulitline obsolete messages"""
-        posource = '#~ msgid "Old thing\\n"\n#~ "Second old thing"\n#~ msgstr "Ou ding\\n"\n#~ "Tweede ou ding"\n'
+        posource = '#~ msgid ""\n#~ "Old thing\\n"\n#~ "Second old thing"\n#~ msgstr ""\n#~ "Ou ding\\n"\n#~ "Tweede ou ding"\n'
         pofile = self.poparse(posource)
         assert pofile.isempty()
         assert len(pofile.units) == 1
