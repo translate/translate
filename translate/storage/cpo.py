@@ -331,7 +331,7 @@ class pounit(pocommon.pounit):
 
     def addnote(self, text, origin=None, position="append"):
         # ignore empty strings and strings without non-space characters
-        if (not text) or (not text.strip()):
+        if not (text and text.strip()):
             return
         text = data.forceunicode(text)
         oldnotes = self.getnotes(origin)

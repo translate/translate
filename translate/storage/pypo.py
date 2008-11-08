@@ -265,8 +265,8 @@ class pounit(pocommon.pounit):
 
     def addnote(self, text, origin=None, position="append"):
         """This is modeled on the XLIFF method. See xliff.py::xliffunit.addnote"""
-        # We don't want to put in an empty '#' without a real comment:
-        if not text:
+        # ignore empty strings and strings without non-space characters
+        if not (text and text.strip()):
             return
         text = data.forceunicode(text)
         commentlist = self.othercomments
