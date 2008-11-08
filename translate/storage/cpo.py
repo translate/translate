@@ -152,8 +152,8 @@ def escapeforpo(text):
 def quoteforpo(text):
     return pypo.quoteforpo(text)
 
-def unquotefrompo(postr, joinwithlinebreak=False):
-    return pypo.unquotefrompo(postr, joinwithlinebreak)
+def unquotefrompo(postr):
+    return pypo.unquotefrompo(postr)
 
 def encodingToUse(encoding):
     return pypo.encodingToUse(encoding)
