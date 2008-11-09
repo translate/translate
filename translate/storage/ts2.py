@@ -186,8 +186,9 @@ class tsunit(lisa.LISAunit):
             self._settype(None)
 
     def getid(self):
-#        return self._context_node.text + self.source 
-        context_name = self.xmlelement.getparent().find("name").text
+        context_name = self.getcontext()
+        #XXX: context_name is not supposed to be able to be None (the <name> 
+        # tag is compulsary in the <context> tag)
         if context_name is not None:
             return context_name + self.source
         else:
@@ -220,10 +221,6 @@ class tsunit(lisa.LISAunit):
     def isobsolete(self):
         return self._gettype() == "obsolete"
 
-#    def createfromxmlElement(cls, element):
-#        unit = lisa.LISAunit.createfromxmlElement(element)
-#        unit._context_node =
-
 
 class tsfile(lisa.LISAfile):
     """Class representing a XLIFF file store."""
@@ -252,7 +249,7 @@ class tsfile(lisa.LISAfile):
         else:
             self.body = self.document.getroot()
 
-    def createcontext(self, contextname, comment=None):
+    def _createcontext(self, contextname, comment=None):
         """Creates a context node with an optional comment"""
         context = etree.SubElement(self.document.getroot(), self.namespaced(self.bodyNode))
         name = etree.SubElement(context, self.namespaced("name"))
@@ -262,21 +259,18 @@ class tsfile(lisa.LISAfile):
             comment_node.text = comment
         return context
 
-    def getcontextname(self, contextnode):
-        """Returns the name of the given context."""
+    def _getcontextname(self, contextnode):
+        """Returns the name of the given context node."""
         return filenode.find(self.namespaced("name")).text
 
-    def getcontextnames(self):
+    def _getcontextnames(self):
         """Returns all contextnames in this TS file."""
         contextnodes = self.document.findall(self.namespaced("context"))
         contextnames = [self.getcontextname(contextnode) for contextnode in contextnodes]
-        contextnames = filter(None, contextnames)
-        if len(contextnames) == 1 and contextnames[0] == '':
-            contextnames = []
         return contextnames
 
-    def getcontextnode(self, contextname):
-        """Finds the contextnode with the given name."""
+    def _getcontextnode(self, contextname):
+        """Returns the context node with the given name."""
         contextnodes = self.document.findall(self.namespaced("context"))
         for contextnode in contextnodes:
             if self.getcontextname(contextnode) == contextname:
@@ -284,25 +278,26 @@ class tsfile(lisa.LISAfile):
         return None
 
     def addunit(self, unit, new=True, contextname=None, createifmissing=False):
-        """adds the given trans-unit to the last used body node if the contextname has changed it uses the slow method instead (will create the nodes required if asked). Returns success"""
+        """Adds the given unit to the last used body node (current context).
+
+        If the contextname is specified, switch to that context (creating it
+        if allowed by createifmissing)."""
         if self._contextname != contextname:
-            if not self.switchcontext(contextname, createifmissing):
+            if not self._switchcontext(contextname, createifmissing):
                 return None
         super(tsfile, self).addunit(unit, new)
-#        unit._context_node = self.getcontextnode(self._contextname)
 #        lisa.setXMLspace(unit.xmlelement, "preserve")
         return unit
 
-    def switchcontext(self, contextname, createifmissing=False):
+    def _switchcontext(self, contextname, createifmissing=False):
         """Switch the current context to the one named contextname, optionally 
         creating it if it doesn't exist."""
         self._contextname = contextname
-        contextnode = self.getcontextnode(contextname)
+        contextnode = self._getcontextnode(contextname)
         if contextnode is None:
             if not createifmissing:
                 return False
-            contextnode = self.createcontext(contextname)
-            self.document.getroot().append(contextnode)
+            contextnode = self._createcontext(contextname)
 
         self.body = contextnode
         if self.body is None:
@@ -323,6 +318,14 @@ class tsfile(lisa.LISAfile):
             - no XML decleration
             - plain DOCTYPE that lxml seems to ignore
         """
-        return "<!DOCTYPE TS>" + etree.tostring(self.document, pretty_print=True, xml_declaration=False, encoding='utf-8')
+        # A bug in lxml means we have to output the doctype ourselves. For 
+        # more information, see:
+        # http://codespeak.net/pipermail/lxml-dev/2008-October/004112.html
+        # lxml 2.1.2 and 2.0.9 was released before this mail
+        output = etree.tostring(self.document, pretty_print=True, 
+                xml_declaration=False, encoding='utf-8')
+        if not "<!DOCTYPE TS>" in output[:30]:
+            output = "<!DOCTYPE TS>" + output
+        return output
 
 
