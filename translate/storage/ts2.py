@@ -111,9 +111,9 @@ class tsunit(lisa.LISAunit):
         if isinstance(text, multistring) and (len(text.strings) > 1):
             strings = text.strings
             targetnode.set("numerus", "yes")
-        elif self.hasplural():
-            #XXX: str vs unicode?
-#            text = data.forceunicode(text)
+        else:
+            text = data.forceunicode(text)
+        if self.hasplural():
             strings = [text]
         for string in strings:
             numerus = etree.SubElement(targetnode, self.namespaced("numerusform"))
