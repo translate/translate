@@ -255,6 +255,8 @@ class tsfile(lisa.LISAfile):
     def createcontext(self, contextname, comment=None):
         """Creates a context node with an optional comment"""
         context = etree.SubElement(self.document.getroot(), self.namespaced(self.bodyNode))
+        name = etree.SubElement(context, self.namespaced("name"))
+        name.text = contextname
         if comment:
             comment_node = context.SubElement(context, "comment")
             comment_node.text = comment
@@ -299,7 +301,7 @@ class tsfile(lisa.LISAfile):
         if contextnode is None:
             if not createifmissing:
                 return False
-            contextnode = self.createcontextnode(contextname)
+            contextnode = self.createcontext(contextname)
             self.document.getroot().append(contextnode)
 
         self.body = contextnode
