@@ -32,7 +32,7 @@ See U{http://translate.sourceforge.net/wiki/toolkit/index} or U{http://translate
 @group Language Specifications: lang
 @group Search and String Matching: search
 @group Services: services
-@group Miscellaneous: misc source_tree_infrastructure
+@group Miscellaneous: misc source_tree_infrastructure __version__
 
 """
 
