@@ -107,24 +107,6 @@ def test_timezones():
         # Typically "+0430"
         assert poheader.tzstring() == time.strftime("%z")
 
-        os.environ['TZ'] = 'Asia/Tehran'
-        time.tzset()
-        assert time.timezone == -12600
-        # Typically "+0330"
-        assert poheader.tzstring() == time.strftime("%z")
-
-        os.environ['TZ'] = 'Canada/Newfoundland'
-        time.tzset()
-        assert time.timezone == 12600
-        # Typically "-0230"
-        assert poheader.tzstring() == time.strftime("%z")
-
-        os.environ['TZ'] = 'US/Eastern'
-        time.tzset()
-        assert time.timezone == 18000
-        # Typically "-0400"
-        assert poheader.tzstring() == time.strftime("%z")
-
         os.environ['TZ'] = 'Asia/Seoul'
         time.tzset()
         assert time.timezone == -32400
@@ -143,12 +125,6 @@ def test_timezones():
         # Typically "+0100"
         # For some reason python's %z doesn't know about Windhoek DST
         #assert poheader.tzstring() == time.strftime("%z")
-
-        os.environ['TZ'] = 'Egypt'
-        time.tzset()
-        assert time.timezone == -7200
-        # Typically "+0300"
-        assert poheader.tzstring() == time.strftime("%z")
 
         os.environ['TZ'] = 'UTC'
         time.tzset()
