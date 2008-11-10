@@ -27,6 +27,10 @@ Translators<http://doc.trolltech.com/4.3/linguist-translators.html>}:
 .qph Qt Phrase Book Files are human-readable XML files containing standard
 phrases and their translations. These files are created and updated by Qt
 Linguist and may be used by any number of projects and applications.
+
+A DTD to define the format does not seem to exist, but the following U{code
+<http://www.google.com/codesearch?hl=en&q=show:gtsFsbhpVeE:KeGnQG0wDCQ:xOXsNYqccyE&sa=N&ct=rd&cs_p=ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-4.0.0-b1.tar.gz&cs_f=qt-x11-opensource-4.0.0-b1/tools/linguist/linguist/phrase.cpp>} 
+provides the reference implementation for the Qt Linguist product.
 """
 
 from translate.storage import lisa
