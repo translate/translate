@@ -25,5 +25,14 @@ See U{http://translate.sourceforge.net/wiki/toolkit/index} or U{http://translate
 @copyright: 2002-2008 Zuza Software Foundation
 @license: U{GPL <http://www.fsf.org/licensing/licenses/gpl.html>}
 
+@group Localization and Localizable File Formats: storage
+@group Format Converters: convert
+@group Localisation File Checker: filters
+@group Localization File Manipulation Tools: tools
+@group Language Specifications: lang
+@group Search and String Matching: search
+@group Services: services
+@group Miscellaneous: misc source_tree_infrastructure
+
 """
 
