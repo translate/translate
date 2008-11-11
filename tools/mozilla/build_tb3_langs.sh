@@ -28,6 +28,7 @@ PORECOVER_DIR="${BUILD_DIR}/po-recover"
 POT_INCLUDES="../README.mozilla-pot"
 POTPACK_DIR="${BUILD_DIR}/potpacks"
 POUPDATED_DIR="${BUILD_DIR}/po-updated"
+PRODUCT_DIRS="mail other-licenses/branding/thunderbird" # Directories in language repositories to clear before running po2moz
 LANGPACK_DIR="${BUILD_DIR}/xpi"
 TB_VERSION="3.0b1"
 
@@ -44,16 +45,20 @@ POUPDATED_DIR_REL=`echo ${POUPDATED_DIR} | sed "s#${BUILD_DIR}/##"`
 
 cd ${L10N_DIR}
 
-rm -rf en-US pot
-
 # Update all Mercurial-managed languages
 for lang in ${HG_LANGS}
 do
 	[ -d ${lang}/.hg ] && (cd ${lang}; hg pull -u)
 done
 
+rm en-US
+rm -rf pot
+
 # en-US and all languages should be up-to-date now
+[ -d en-US_mail ] && rm -rf en-US_mail
 get_moz_enUS.py -s ../comm-central -d . -p mail -v
+mv en-US{,_mail}
+ln -sf en-US_mail ./en-US
 moz2po --progress=none -P --duplicates=msgctxt --exclude '.hg' en-US pot
 find pot -name '*.html.pot' -o -name '*.xhtml.pot' -exec rm -f {} \;
 
@@ -61,8 +66,8 @@ find pot -name '*.html.pot' -o -name '*.xhtml.pot' -exec rm -f {} \;
 PACKNAME="${POTPACK_DIR}/thunderbird-${TB_VERSION}-`date +%Y%m%d`"
 tar cjf ${PACKNAME}.tar.bz2 pot en-US ${POT_INCLUDES}
 zip -qr9 ${PACKNAME}.zip pot en-US ${POT_INCLUDES}
-# The following functions are used in the loop following it
 
+# The following functions are used in the loop following it
 function copyfile {
 	filename=$1
 	language=$2
@@ -118,19 +123,23 @@ do
 	tempdir=`mktemp -d`
 	cp -R ${PO_DIR}/${lang} ${tempdir}/${lang}
 	pomigrate2 --use-compendium --quiet --pot2po ${tempdir}/${lang} ${POUPDATED_DIR}/${lang} ${L10N_DIR}/pot
-	# Pre-moz2po hacks
-	find ${POUPDATED_DIR} -name '*.html.po' -o -name '*.xhtml.po' -exec rm -f {} \;
-	[ -d ${L10N_DIR}/${lang} ] && find ${L10N_DIR}/${lang} -name '*.dtd' -o -name '*.properties' -exec rm -f {} \;
 	rm -rf ${tempdir}
+
+	# Pre-po2moz hacks
+	lang_product_dirs=
+	for dir in ${PRODUCT_DIRS}; do lang_product_dirs="${lang_product_dirs} ${L10N_DIR}/$lang/$dir"; done
+	[ -d ${L10N_DIR}/${lang} ] && find ${lang_product_dirs} -name '*.dtd' -o -name '*.properties' -exec rm -f {} \;
+	find ${POUPDATED_DIR} -name '*.html.po' -o -name '*.xhtml.po' -exec rm -f {} \;
 
 	## Create Mozilla l10n layout from migrated PO files
 	po2moz --progress=none --errorlevel=traceback --exclude=".svn" --exclude=".hg" \
 		-t ${L10N_DIR}/en-US -i ${POUPDATED_DIR}/${lang} -o ${L10N_DIR}/${lang}
+
 	# Copy files not handled by moz2po/po2moz
-	copydir browser/os2 ${lang}
 	copyfiletype "*.xhtml" ${lang} # Our XHTML and HTML is broken
 	copyfiletype "*.html" ${lang}
 	copyfiletype "*.rdf" ${lang}   # Don't support .rdf files
+	copyfiletype "*.txt" ${lang}
 	
 	## Create PO pack
 	PACKNAME="${POPACK_DIR}/thunderbird-${TB_VERSION}-${lang}-`date +%Y%m%d`"
@@ -139,6 +148,7 @@ do
 		tar cjf ${PACKNAME}.tar.bz2 --exclude '.svn' --exclude '.hg' ${L10N_DIR_REL}/${lang} ${POUPDATED_DIR_REL}/${lang}
 		zip -qr9 ${PACKNAME}.zip ${L10N_DIR_REL}/${lang} ${POUPDATED_DIR_REL}/${lang} -x '*.svn*' -x "*.hg*"
 	)
+
 	## Create XPI langpack
-	buildxpi.py -L ${L10N_DIR} -s ${MOZCENTRAL_DIR} -o ${LANGPACK_DIR} ${lang}
+	buildxpi.py -L ${L10N_DIR} -s ${COMM_DIR} -o ${LANGPACK_DIR} -p mail ${lang}
 done
