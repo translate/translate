@@ -97,7 +97,15 @@ ac_add_options --enable-application=%(product)s""" % \
         if run(['make', 'langpack-%s' % (lang)]):
             raise Exception('Unable to successfully build XPI!')
 
-        xpiglob = glob(os.path.join(builddir, 'dist', 'install', '*.%s.langpack.xpi' % lang))[0]
+        xpiglob = glob(
+            os.path.join(
+                builddir,
+                product == 'mail' and 'mozilla' or '',
+                'dist',
+                'install',
+                '*.%s.langpack.xpi' % lang
+            )
+        )[0]
         move(xpiglob, outputdir)
 
         os.chdir(olddir)
