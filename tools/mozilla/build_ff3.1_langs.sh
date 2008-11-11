@@ -29,6 +29,7 @@ PORECOVER_DIR="${BUILD_DIR}/po-recover"
 POT_INCLUDES="../README.mozilla-pot"
 POTPACK_DIR="${BUILD_DIR}/potpacks"
 POUPDATED_DIR="${BUILD_DIR}/po-updated"
+PRODUCT_DIRS="browser other-licenses/branding/firefox" # Directories in language repositories to clear before running po2moz
 LANGPACK_DIR="${BUILD_DIR}/xpi"
 FF_VERSION="3.1b2"
 
@@ -45,16 +46,20 @@ POUPDATED_DIR_REL=`echo ${POUPDATED_DIR} | sed "s#${BUILD_DIR}/##"`
 
 cd ${L10N_DIR}
 
-rm -rf en-US pot
-
 # Update all Mercurial-managed languages
 for lang in ${HG_LANGS}
 do
 	[ -d ${lang}/.hg ] && (cd ${lang}; hg pull -u)
 done
 
+rm en-US
+rm -rf pot
+
 # en-US and all languages should be up-to-date now
+[ -d en-US_browser ] && rm -rf en-US_browser
 get_moz_enUS.py -s ../mozilla-central -d . -p browser -v
+mv en-US{,_browser}
+ln -sf en-US_browser ./en-US
 moz2po --progress=none -P --duplicates=msgctxt --exclude '.hg' en-US pot
 find pot -name '*.html.pot' -o -name '*.xhtml.pot' -exec rm -f {} \;
 
@@ -64,7 +69,6 @@ tar cjf ${PACKNAME}.tar.bz2 pot en-US ${POT_INCLUDES}
 zip -qr9 ${PACKNAME}.zip pot en-US ${POT_INCLUDES}
 
 # The following functions are used in the loop following it
-
 function copyfile {
 	filename=$1
 	language=$2
@@ -120,11 +124,13 @@ do
 	tempdir=`mktemp -d`
 	cp -R ${PO_DIR}/${lang} ${tempdir}/${lang}
 	pomigrate2 --use-compendium --quiet --pot2po ${tempdir}/${lang} ${POUPDATED_DIR}/${lang} ${L10N_DIR}/pot
-
-	# Pre-moz2po hacks
-	find ${POUPDATED_DIR} -name '*.html.po' -o -name '*.xhtml.po' -exec rm -f {} \;
-	[ -d ${L10N_DIR}/${lang} ] && find ${L10N_DIR}/${lang} -name '*.dtd' -o -name '*.properties' -exec rm -f {} \;
 	rm -rf ${tempdir}
+
+	# Pre-po2moz hacks
+	lang_product_dirs=
+	for dir in ${PRODUCT_DIRS}; do lang_product_dirs="${lang_product_dirs} ${L10N_DIR}/$lang/$dir"; done
+	[ -d ${L10N_DIR}/${lang} ] && find ${lang_product_dirs} -name '*.dtd' -o -name '*.properties' -exec rm -f {} \;
+	find ${POUPDATED_DIR} -name '*.html.po' -o -name '*.xhtml.po' -exec rm -f {} \;
 
 	## Create Mozilla l10n layout from migrated PO files
 	po2moz --progress=none --errorlevel=traceback --exclude=".svn" --exclude=".hg" \
