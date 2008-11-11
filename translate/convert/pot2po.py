@@ -29,21 +29,7 @@ from translate.storage import po
 from translate.storage import factory
 from translate.search import match
 from translate.misc.multistring import multistring
-
-# We don't want to reinitialise the TM each time, so let's store it here.
-tmmatcher = None
-
-def memory(tmfiles, max_candidates=1, min_similarity=75, max_length=1000):
-    """Returns the TM store to use. Only initialises on first call."""
-    global tmmatcher
-    # Only initialise first time
-    if tmmatcher is None:
-        if isinstance(tmfiles, list):
-            tmstore = [factory.getobject(tmfile) for tmfile in tmfiles]
-        else:
-            tmstore = factory.getobject(tmfiles)
-        tmmatcher = match.matcher(tmstore, max_candidates=max_candidates, min_similarity=min_similarity, max_length=max_length)
-    return tmmatcher
+from translate.tools import pretranslate
 
 def convertpot(input_file, output_file, template_file, tm=None, min_similarity=75, fuzzymatching=True, **kwargs):
     input_store = po.pofile(input_file)
@@ -60,6 +46,7 @@ def convert_stores(input_store, template_store, tm=None, min_similarity=75, fuzz
     is returned"""
     input_store.makeindex()
     output_store = po.pofile()
+    
     # header values
     charset = "UTF-8"
     encoding = "8bit"
@@ -71,20 +58,14 @@ def convert_stores(input_store, template_store, tm=None, min_similarity=75, fuzz
     mime_version = None
     plural_forms = None
     kwargs = {}
-    if template_store is not None:
-        fuzzyfilematcher = None
-        if fuzzymatching:
-            for unit in template_store.units:
-                if unit.isobsolete():
-                    unit.resurrect()
-            try:
-                fuzzyfilematcher = match.matcher(template_store, max_candidates=1, min_similarity=min_similarity, max_length=3000, usefuzzy=True)
-                fuzzyfilematcher.addpercentage = False
-            except ValueError:
-                # Probably no usable units
-                pass
 
+    if template_store is not None:
+        for unit in template_store.units:
+            if unit.isobsolete():
+                unit.resurrect()
+                
         template_store.makeindex()
+        
         templateheadervalues = template_store.parseheader()
         for key, value in templateheadervalues.iteritems():
             if key == "Project-Id-Version":
@@ -106,10 +87,19 @@ def convert_stores(input_store, template_store, tm=None, min_similarity=75, fuzz
                 plural_forms = value
             else:
                 kwargs[key] = value
-    fuzzyglobalmatcher = None
-    if fuzzymatching and tm:
-        fuzzyglobalmatcher = memory(tm, max_candidates=1, min_similarity=min_similarity, max_length=1000)
-        fuzzyglobalmatcher.addpercentage = False
+
+    matchers = []
+    if fuzzymatching:
+        if template_store:
+            matcher = match.matcher(template_store, max_candidates=1, min_similarity=min_similarity, max_length=3000, usefuzzy=True)
+            matcher.addpercentage = False
+            matchers.append(matcher)
+            
+        if tm:
+            matcher = pretranslate.memory(tm, max_candidates=1, min_similarity=min_similarity, max_length=1000)
+            matcher.addpercentage = False
+            matchers.append(matcher)
+        
     inputheadervalues = input_store.parseheader()
     for key, value in inputheadervalues.iteritems():
         if key in ("Project-Id-Version", "Last-Translator", "Language-Team", "PO-Revision-Date", "Content-Type", "Content-Transfer-Encoding", "Plural-Forms"):
@@ -121,9 +111,11 @@ def convert_stores(input_store, template_store, tm=None, min_similarity=75, fuzz
             mime_version = value
         else:
             kwargs[key] = value
+            
     output_header = output_store.makeheader(charset=charset, encoding=encoding, project_id_version=project_id_version,
         pot_creation_date=pot_creation_date, po_revision_date=po_revision_date, last_translator=last_translator,
         language_team=language_team, mime_version=mime_version, plural_forms=plural_forms, **kwargs)
+    
     # Get the header comments and fuzziness state
     if template_store is not None and len(template_store.units) > 0:
         if template_store.units[0].isheader():
@@ -134,44 +126,16 @@ def convert_stores(input_store, template_store, tm=None, min_similarity=75, fuzz
             output_header.markfuzzy(template_store.units[0].isfuzzy())
     elif len(input_store.units) > 0 and input_store.units[0].isheader():
         output_header.addnote(input_store.units[0].getnotes())
+        
     output_store.addunit(output_header)
+    
     # Do matching
     for input_unit in input_store.units:
-        if not (input_unit.isheader() or input_unit.isobsolete()):
-            if template_store:
-                possiblematches = []
-                for location in input_unit.getlocations():
-                    template_unit = template_store.locationindex.get(location, None)
-                    if template_unit is not None:
-                        possiblematches.append(template_unit)
-                if len(input_unit.getlocations()) == 0:
-                    template_unit = template_store.findunit(input_unit.source)
-                if template_unit:
-                    possiblematches.append(template_unit)
-                for template_unit in possiblematches:
-                    if input_unit.source == template_unit.source and template_unit.target:
-                        input_unit.merge(template_unit, authoritative=True)
-                        break
-                else:
-                    fuzzycandidates = []
-                    if fuzzyfilematcher:
-                        fuzzycandidates = fuzzyfilematcher.matches(input_unit.source)
-                        if fuzzycandidates:
-                            input_unit.merge(fuzzycandidates[0])
-                            original = template_store.findunit(fuzzycandidates[0].source)
-                            if original:
-                                original.reused = True
-                    if fuzzyglobalmatcher and not fuzzycandidates:
-                        fuzzycandidates = fuzzyglobalmatcher.matches(input_unit.source)
-                        if fuzzycandidates:
-                            input_unit.merge(fuzzycandidates[0])
-            else:
-                if fuzzyglobalmatcher:
-                    fuzzycandidates = fuzzyglobalmatcher.matches(input_unit.source)
-                    if fuzzycandidates:
-                        input_unit.merge(fuzzycandidates[0])
+        if input_unit.istranslatable():
+            input_unit = pretranslate.pretranslate_unit(input_unit, template_store, matchers, mark_reused=True)
+
             if input_unit.hasplural() and len(input_unit.target) == 0:
-                # Let's ensure that we have the correct number of plural forms:
+                # found no translation; Let's ensure that we have the correct number of plural forms:
                 nplurals, plural = output_store.getheaderplural()
                 if nplurals and nplurals.isdigit() and nplurals != '2':
                     input_unit.target = multistring([""]*int(nplurals))
