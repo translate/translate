@@ -294,7 +294,7 @@ class xliffunit(lisa.LISAunit):
         """returns the restype attribute in the trans-unit tag"""
         return self.xmlelement.get("restype")
 
-    def merge(self, otherunit, overwrite=False, comments=True):
+    def merge(self, otherunit, overwrite=False, comments=True, authoritative=False):
         #TODO: consider other attributes like "approved"
         super(xliffunit, self).merge(otherunit, overwrite, comments)
         if self.target:
