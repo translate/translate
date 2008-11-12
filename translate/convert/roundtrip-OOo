@@ -2,7 +2,6 @@
 
 enpodir=en-po
 gsidir=.gsi
-user_agent="Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US; rv:1.9b5) Gecko/2008032620 Firefox/3.0b5"
 
 mkdir -p $gsidir
 
@@ -17,8 +16,6 @@ cd $gsidir
 # Get files from Pavel
 if [ "$1" != "--no-download" ]; then
 	echo "Downloading files:"
-	#wget -N --user-agent="$user_agent" --retr-symlinks ftp://ftp.linux.cz/pub/localization/OpenOffice.org/devel/POT/OpenOffice.org-POT-stable-latest.tar.gz
-	#wget -N --user-agent="$user_agent" --retr-symlinks ftp://ftp.linux.cz/pub/localization/OpenOffice.org/devel/POT/OpenOffice.org-POT-latest.tar.gz
 	curl --remote-time --remote-name ftp://ftp.linux.cz/pub/localization/OpenOffice.org/devel/POT/OpenOffice.org-POT-stable-latest.tar.gz 
 	curl --remote-time --remote-name ftp://ftp.linux.cz/pub/localization/OpenOffice.org/devel/POT/OpenOffice.org-POT-latest.tar.gz 
 fi
