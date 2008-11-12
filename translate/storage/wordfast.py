@@ -90,6 +90,7 @@
 """
 
 import csv
+import sys
 import time
 from translate.storage import base
 
@@ -186,10 +187,14 @@ class WordfastDialect(csv.Dialect):
     delimiter = "\t"
     lineterminator = "\r\n"
     quoting = csv.QUOTE_NONE
-    # We need to define the following 3 items for csv in Python < 2.5
-    doublequote = False
-    skipinitialspace = False
-    escapechar = ''
+    if sys.version_info >= (2, 5, 0):
+        # We need to define the following items for csv in Python < 2.5
+        quoting = csv.QUOTE_MINIMAL   # Wordfast does not quote anything, since we escape
+                                      # \t anyway in _char_to_wf this should not be a problem
+        doublequote = False
+        skipinitialspace = False
+        escapechar = None
+        quotechar ='"'
 csv.register_dialect("wordfast", WordfastDialect)
 
 class WordfastTime(object):
