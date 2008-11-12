@@ -49,6 +49,7 @@ def pretranslate_file(input_file, output_file, template_file, tm=None, min_simil
     template_store = None
     if template_file is not None:
         template_store = factory.getobject(template_file)
+        
     output = pretranslate_store(input_store, template_store, tm, min_similarity, fuzzymatching)
     output_file.write(str(output))
     return 1
@@ -89,7 +90,7 @@ def pretranslate_unit(input_unit, template_store, matchers=None, mark_reused=Fal
     #do fuzzy matching
     if (matching_unit is None or len(matching_unit.target) == 0) and matchers:
         matching_unit = match_fuzzy(input_unit, matchers)
-            
+                    
     if matching_unit and len(matching_unit.target) > 0: 
         input_unit.merge(matching_unit, authoritative=True)
         #FIXME: ugly hack required by pot2po to mark old
@@ -101,20 +102,26 @@ def pretranslate_unit(input_unit, template_store, matchers=None, mark_reused=Fal
 
     return input_unit
 
+def prepare_template_pofile(template_store):
+    """po format specific template preparation logic"""
+    #do we want to consider obsolete translations?
+    for unit in template_store.units:
+        if unit.isobsolete():
+            unit.resurrect()
+
 
 def pretranslate_store(input_store, template_store, tm=None, min_similarity=75, fuzzymatching=True):
     """does the actual pretranslation"""
-
     #preperation
     matchers = []
     #prepare template
     if template_store is not None:
         template_store.makeindex()
-        #do we want to consider obsolete translations?
-        for unit in template_store.units:
-            if unit.isobsolete():
-                unit.resurrect()
-
+        #template preparation based on type
+        prepare_template = "prepare_template_%s" % template_store.__class__.__name__
+        if  globals().has_key(prepare_template):
+            globals()[prepare_template](template_store)
+                
         if fuzzymatching:
             #create template matcher
             #FIXME: max_length hardcoded
