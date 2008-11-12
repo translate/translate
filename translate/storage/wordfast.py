@@ -354,7 +354,7 @@ class WordfastTMFile(base.TranslationStore):
         base.TranslationStore.__init__(self, unitclass=unitclass)
         self.filename = ''
         self.header = WordfastHeader()
-        self._encoding = 'utf-16'
+        self._encoding = 'iso-8859-1'
         if inputfile is not None:
             self.parse(inputfile)
 
