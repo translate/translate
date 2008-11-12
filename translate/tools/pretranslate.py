@@ -85,18 +85,18 @@ def pretranslate_unit(input_unit, template_store, matchers=None, mark_reused=Fal
     #do template matching
     if template_store:
         matching_unit = match_template_id(input_unit, template_store)
-        
-        if matching_unit is not None and len(matching_unit.target) > 0:
-            input_unit.merge(matching_unit, authoritative=True)
 
     #do fuzzy matching
-    if matching_unit is None and matchers:
+    if (matching_unit is None or len(matching_unit.target) == 0) and matchers:
         matching_unit = match_fuzzy(input_unit, matchers)
             
-        if matching_unit and len(matching_unit.target) > 0: 
-            input_unit.merge(matching_unit)
-            if mark_reused:
-                original_unit = template_store.findunit(matching_unit.source)
+    if matching_unit and len(matching_unit.target) > 0: 
+        input_unit.merge(matching_unit, authoritative=True)
+        #FIXME: ugly hack required by pot2po to mark old
+        #translations reused for new file. loops over
+        if mark_reused:
+            original_unit = template_store.findunit(matching_unit.source)
+            if original_unit is not None:
                 original_unit.reused = True
 
     return input_unit
