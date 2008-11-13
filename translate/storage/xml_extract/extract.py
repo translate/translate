@@ -120,7 +120,7 @@ def _process_placeables(dom_node, state):
 @accepts(etree._Element, ParseState)
 def _process_translatable(dom_node, state):
     source = [unicode(dom_node.text or u"")] + _process_placeables(dom_node, state)
-    translatable = make_translatable(state, state.placeable_name[-1], dom_node, source)
+    translatable = make_translatable(state, state.placeable_name, dom_node, source)
     translatable.is_inline = state.is_inline
     return [translatable]
 
