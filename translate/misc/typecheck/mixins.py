@@ -1,5 +1,5 @@
-from typecheck import _TC_NestedError, _TC_TypeError, check_type, Or
-from typecheck import register_type, _TC_Exception
+from translate.misc.typecheck import _TC_NestedError, _TC_TypeError, check_type, Or
+from translate.misc.typecheck import register_type, _TC_Exception
 
 class _TC_IterationError(_TC_NestedError):
     def __init__(self, iteration, value, inner_exception):

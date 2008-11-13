@@ -1,6 +1,6 @@
-from typecheck import CheckType, _TC_TypeError, check_type, Type
-from typecheck import register_type, Or, _TC_Exception, _TC_KeyError
-from typecheck import _TC_LengthError
+from translate.misc.typecheck import CheckType, _TC_TypeError, check_type, Type
+from translate.misc.typecheck import register_type, Or, _TC_Exception, _TC_KeyError
+from translate.misc.typecheck import _TC_LengthError
 
 ### Provide typechecking for the built-in set() class
 ###
