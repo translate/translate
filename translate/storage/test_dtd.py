@@ -19,9 +19,15 @@ def test_roundtrip_quoting():
         print "special: %r\nquoted: %r\nunquoted: %r\n" % (special, quoted_special, unquoted_special)
         assert special == unquoted_special
 
-def test_ampersandwarning():
-    """tests that proper warnings are given if invalid ampersands occur"""
-    simplestring = '''#: simple.warningtest\nmsgid "Simple String"\nmsgstr "Dimpled &Ring"\n'''
+def test_removeinvalidamp():
+    """tests the the removeinvalidamps function"""
+    def tester(actual, expected):
+        assert dtd.removeinvalidamps("test.name", actual) == expected
+    tester("Valid &entity; included", "Valid &entity; included")
+    tester("Valid &entity.name; included", "Valid &entity.name; included")
+    tester("Valid &#1234; included", "Valid &#1234; included")
+    tester("This &amp is broken", "This amp is broken")
+    tester("Mad & &amp &amp;", "Mad  amp &amp;")
     warnings.simplefilter("error")
     assert test.raises(Warning, dtd.removeinvalidamps, "simple.warningtest", "Dimpled &Ring")
 
