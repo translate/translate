@@ -187,7 +187,7 @@ class WordfastDialect(csv.Dialect):
     delimiter = "\t"
     lineterminator = "\r\n"
     quoting = csv.QUOTE_NONE
-    if sys.version_info <= (2, 5, 0):
+    if sys.version_info < (2, 5, 0):
         # We need to define the following items for csv in Python < 2.5
         quoting = csv.QUOTE_MINIMAL   # Wordfast does not quote anything, since we escape
                                       # \t anyway in _char_to_wf this should not be a problem
