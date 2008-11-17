@@ -69,11 +69,8 @@ def applytranslation(entity, dtdunit, inputunit, mixedentities):
                             unquotedstr = unquotedstr.upper()
                         elif original.islower() and unquotedstr.isupper():
                             unquotedstr = unquotedstr.lower()
-    # handle invalid left-over ampersands (usually unneeded access key shortcuts)
-    unquotedstr = dtd.removeinvalidamps(entity, unquotedstr)
-    # finally set the new definition in the dtd, but not if its empty
     if len(unquotedstr) > 0:
-        dtdunit.definition = dtd.quotefordtd(unquotedstr)
+        dtdunit.definition = dtd.quotefordtd(dtd.removeinvalidamps(entity, unquotedstr))
 
 class redtd:
     """this is a convertor class that creates a new dtd based on a template using translations in a po"""
@@ -131,8 +128,7 @@ class po2dtd:
             unquoted = inputunit.target
         else:
             unquoted = inputunit.source
-        unquoted = dtd.removeinvalidamps(dtdunit.entity, unquoted)
-        dtdunit.definition = dtd.quotefordtd(unquoted)
+        dtdunit.definition = dtd.quotefordtd(dtd.removeinvalidamps(dtdunit.entity, unquoted))
 
     def convertunit(self, inputunit):
         dtdunit = dtd.dtdunit()
