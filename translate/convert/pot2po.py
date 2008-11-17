@@ -62,20 +62,20 @@ def convert_stores(input_store, template_store, tm=None, min_similarity=75, fuzz
             matcher = pretranslate.memory(tm, max_candidates=1, min_similarity=min_similarity, max_length=1000)
             matcher.addpercentage = False
             matchers.append(matcher)
-    prepare_merge(input_store, output_store, template_store)
+    _prepare_merge(input_store, output_store, template_store)
 
     #initialize store
-    store_pre_merge(input_store, output_store, template_store)
+    _store_pre_merge(input_store, output_store, template_store)
 
     # Do matching
     for input_unit in input_store.units:
         if input_unit.istranslatable():
             input_unit = pretranslate.pretranslate_unit(input_unit, template_store, matchers, mark_reused=True)
-            unit_post_merge(input_unit, input_store, output_store, template_store)
+            _unit_post_merge(input_unit, input_store, output_store, template_store)
             output_store.addunit(input_unit)
 
     #finalize store
-    store_post_merge(input_store, output_store, template_store)
+    _store_post_merge(input_store, output_store, template_store)
 
     return output_store
 
