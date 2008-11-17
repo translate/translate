@@ -83,12 +83,6 @@ class TestPO2DTD:
         dtdsource = str(dtdfile)
         assert "Good day\nAll" in dtdsource
 
-    def test_ampersandwarning(self):
-        """tests that proper warnings are given if invalid ampersands occur"""
-        simplestring = '''#: simple.warningtest\nmsgid "Simple String"\nmsgstr "Dimpled &Ring"\n'''
-        warnings.simplefilter("error")
-        assert test.raises(Warning, po2dtd.removeinvalidamps, "simple.warningtest", "Dimpled &Ring")
-
     def test_missingaccesskey(self):
         """tests that proper warnings are given if access key is missing"""
         simplepo = '''#: simple.label\n#: simple.accesskey\nmsgid "Simple &String"\nmsgstr "Dimpled Ring"\n'''

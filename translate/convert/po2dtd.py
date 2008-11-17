@@ -28,33 +28,6 @@ from translate.misc import quote
 from translate.convert import accesskey
 import warnings
 
-def removeinvalidamps(entity, unquotedstr):
-    """find ampersands that aren't part of an entity definition..."""
-    amppos = 0
-    invalidamps = []
-    while amppos >= 0:
-        amppos = unquotedstr.find("&", amppos)
-        if amppos != -1:
-            amppos += 1
-            semipos = unquotedstr.find(";", amppos)
-            if semipos != -1:
-                checkentity = unquotedstr[amppos:semipos]
-                if checkentity.replace('.', '').isalnum():
-                    # what we have found is an entity, not a problem...
-                    continue
-                elif checkentity[0] == '#' and checkentity[1:].isalnum():
-                    # what we have found is an entity, not a problem...
-                    continue
-            # otherwise, we found a problem
-            invalidamps.append(amppos-1)
-    if len(invalidamps) > 0:
-        warnings.warn("invalid ampersands in dtd entity %s" % (entity))
-        comp = 0
-        for amppos in invalidamps:
-            unquotedstr = unquotedstr[:amppos-comp] + unquotedstr[amppos-comp+1:]
-            comp += 1
-    return unquotedstr
-
 def getmixedentities(entities):
     """returns a list of mixed .label and .accesskey entities from a list of entities"""
     mixedentities = []    # those entities which have a .label and .accesskey combined
@@ -97,7 +70,7 @@ def applytranslation(entity, dtdunit, inputunit, mixedentities):
                         elif original.islower() and unquotedstr.isupper():
                             unquotedstr = unquotedstr.lower()
     # handle invalid left-over ampersands (usually unneeded access key shortcuts)
-    unquotedstr = removeinvalidamps(entity, unquotedstr)
+    unquotedstr = dtd.removeinvalidamps(entity, unquotedstr)
     # finally set the new definition in the dtd, but not if its empty
     if len(unquotedstr) > 0:
         dtdunit.definition = dtd.quotefordtd(unquotedstr)
@@ -158,7 +131,7 @@ class po2dtd:
             unquoted = inputunit.target
         else:
             unquoted = inputunit.source
-        unquoted = removeinvalidamps(dtdunit.entity, unquoted)
+        unquoted = dtd.removeinvalidamps(dtdunit.entity, unquoted)
         dtdunit.definition = dtd.quotefordtd(unquoted)
 
     def convertunit(self, inputunit):

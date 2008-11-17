@@ -19,6 +19,12 @@ def test_roundtrip_quoting():
         print "special: %r\nquoted: %r\nunquoted: %r\n" % (special, quoted_special, unquoted_special)
         assert special == unquoted_special
 
+def test_ampersandwarning():
+    """tests that proper warnings are given if invalid ampersands occur"""
+    simplestring = '''#: simple.warningtest\nmsgid "Simple String"\nmsgstr "Dimpled &Ring"\n'''
+    warnings.simplefilter("error")
+    assert test.raises(Warning, dtd.removeinvalidamps, "simple.warningtest", "Dimpled &Ring")
+
 class TestDTDUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = dtd.dtdunit
 

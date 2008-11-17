@@ -62,6 +62,47 @@ def unquotefromdtd(source):
     # of course there could also be quote characters within the string; not handled here
     return extracted
 
+def removeinvalidamps(entity, unquotedstr):
+    """Find and remove ampersands that are not part of an entity definition.
+
+    A stray & in a DTD file can break an applications ability to parse the file.  In Mozilla
+    localisation this is very important and these can break the parsing of files used in XUL
+    and thus break interface rendering.  Tracking down the problem is very difficult,
+    thus by removing potential broken & and warning the users we can ensure that the output
+    DTD will always be parsable.
+
+    @type entity: String
+    @param entity: The entity name
+    @type unquotedstr: String
+    @param unquotedstr: The text for the entity
+    @rtype: String
+    @return: String without bad ampersands
+    """
+    amppos = 0
+    invalidamps = []
+    while amppos >= 0:
+        amppos = unquotedstr.find("&", amppos)
+        if amppos != -1:
+            amppos += 1
+            semipos = unquotedstr.find(";", amppos)
+            if semipos != -1:
+                checkentity = unquotedstr[amppos:semipos]
+                if checkentity.replace('.', '').isalnum():
+                    # what we have found is an entity, not a problem...
+                    continue
+                elif checkentity[0] == '#' and checkentity[1:].isalnum():
+                    # what we have found is an entity, not a problem...
+                    continue
+            # otherwise, we found a problem
+            invalidamps.append(amppos-1)
+    if len(invalidamps) > 0:
+        warnings.warn("invalid ampersands in dtd entity %s" % (entity))
+        comp = 0
+        for amppos in invalidamps:
+            unquotedstr = unquotedstr[:amppos-comp] + unquotedstr[amppos-comp+1:]
+            comp += 1
+    return unquotedstr
+
 class dtdunit(base.TranslationUnit):
     """this class represents an entity definition from a dtd file (and possibly associated comments)"""
     def __init__(self, source=""):
