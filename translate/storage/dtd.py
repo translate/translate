@@ -62,7 +62,7 @@ def unquotefromdtd(source):
     # of course there could also be quote characters within the string; not handled here
     return extracted
 
-def removeinvalidamps(entity, unquotedstr):
+def removeinvalidamps(name, value):
     """Find and remove ampersands that are not part of an entity definition.
 
     A stray & in a DTD file can break an applications ability to parse the file.  In Mozilla
@@ -71,37 +71,39 @@ def removeinvalidamps(entity, unquotedstr):
     thus by removing potential broken & and warning the users we can ensure that the output
     DTD will always be parsable.
 
-    @type entity: String
-    @param entity: The entity name
-    @type unquotedstr: String
-    @param unquotedstr: The text for the entity
+    @type name: String
+    @param name: Entity name
+    @type value: String
+    @param value: Entity text value
     @rtype: String
-    @return: String without bad ampersands
+    @return: Entity value without bad ampersands
     """
+    def is_valid_entity_name(name):
+        """Check that supplied L{name} is a valid entity name"""
+        if name.replace('.', '').isalnum():
+            return True
+        elif name[0] == '#' and name[1:].isalnum():
+            return True
+        return False
+
     amppos = 0
-    invalidamps = []
+    invalid_amps = []
     while amppos >= 0:
-        amppos = unquotedstr.find("&", amppos)
+        amppos = value.find("&", amppos)
         if amppos != -1:
             amppos += 1
-            semipos = unquotedstr.find(";", amppos)
+            semipos = value.find(";", amppos)
             if semipos != -1:
-                checkentity = unquotedstr[amppos:semipos]
-                if checkentity.replace('.', '').isalnum():
-                    # what we have found is an entity, not a problem...
+                if is_valid_entity_name(value[amppos:semipos]):
                     continue
-                elif checkentity[0] == '#' and checkentity[1:].isalnum():
-                    # what we have found is an entity, not a problem...
-                    continue
-            # otherwise, we found a problem
-            invalidamps.append(amppos-1)
-    if len(invalidamps) > 0:
-        warnings.warn("invalid ampersands in dtd entity %s" % (entity))
-        comp = 0
-        for amppos in invalidamps:
-            unquotedstr = unquotedstr[:amppos-comp] + unquotedstr[amppos-comp+1:]
-            comp += 1
-    return unquotedstr
+            invalid_amps.append(amppos-1)
+    if len(invalid_amps) > 0:
+        warnings.warn("invalid ampersands in dtd entity %s" % (name))
+        adjustment = 0
+        for amppos in invalid_amps:
+            value = value[:amppos-adjustment] + value[amppos-adjustment+1:]
+            adjustment += 1
+    return value
 
 class dtdunit(base.TranslationUnit):
     """this class represents an entity definition from a dtd file (and possibly associated comments)"""
