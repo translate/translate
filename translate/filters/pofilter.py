@@ -191,6 +191,9 @@ def cmdlineparser():
     parser.add_option("", "--mozilla", dest="filterclass",
         action="store_const", default=None, const=checks.MozillaChecker,
         help="use the standard checks for Mozilla translations")
+    parser.add_option("", "--drupal", dest="filterclass",
+        action="store_const", default=None, const=checks.DrupalChecker,
+        help="use the standard checks for Drupal translations")
     parser.add_option("", "--gnome", dest="filterclass",
         action="store_const", default=None, const=checks.GnomeChecker,
         help="use the standard checks for Gnome translations")

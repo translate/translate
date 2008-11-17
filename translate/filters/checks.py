@@ -1054,6 +1054,19 @@ class MozillaChecker(StandardChecker):
         checkerconfig.update(mozillaconfig)
         StandardChecker.__init__(self, **kwargs)
 
+drupalconfig = CheckerConfig(
+    varmatches = [("%", None), ("@", None)],
+    )
+
+class DrupalChecker(StandardChecker):
+    def __init__(self, **kwargs):
+        checkerconfig = kwargs.get("checkerconfig", None)
+        if checkerconfig is None:
+            checkerconfig = CheckerConfig()
+            kwargs["checkerconfig"] = checkerconfig
+        checkerconfig.update(drupalconfig)
+        StandardChecker.__init__(self, **kwargs)
+
 gnomeconfig = CheckerConfig(
     accelmarkers = ["_"],
     varmatches = [("%", 1), ("$(", ")")],
@@ -1102,7 +1115,8 @@ projectcheckers = {
     "kde": KdeChecker,
     "wx": KdeChecker,
     "gnome": GnomeChecker,
-    "creativecommons": CCLicenseChecker
+    "creativecommons": CCLicenseChecker,
+    "drupal": DrupalChecker,
     }
 
 
