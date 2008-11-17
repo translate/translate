@@ -19,9 +19,18 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""translate.lang is part of the translate package.
+"""lang contains classes that represent languages and provides language specific
+information.
 
-It contains classes that represent languages and provides language specific
-information. All classes inherit from the parent class called common.
+All classes inherit from the parent class called L{common}.  The type of data
+includes:
+  - language codes
+  - language name
+  - plurals
+  - punctuation transformation
+  - etc
+
+@group Common Language Functionality: common data
+@group Languages: *
 """
 

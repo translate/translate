@@ -87,15 +87,15 @@ class Common(object):
     
     0 is not a valid value - it must be overridden.
     Any positive integer is valid (it should probably be between 1 and 6)
-    Also see data.py
+    @see: L{data}
     """
     
     pluralequation = "0"
     """The plural equation for selection of plural forms. 
 
     This is used for PO files to fill into the header.
-    See U{http://www.gnu.org/software/gettext/manual/html_node/gettext_150.html}.
-    Also see data.py
+    @see: U{Gettext manual<http://www.gnu.org/software/gettext/manual/html_node/gettext_150.html#Plural-forms>}
+    @see: L{data}
     """
     # Don't change these defaults of nplurals or pluralequation willy-nilly:
     # some code probably depends on these for unrecognised languages
