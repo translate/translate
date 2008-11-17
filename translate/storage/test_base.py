@@ -6,6 +6,7 @@
 from translate.storage import base
 from py import test
 import os
+import warnings
 
 def test_force_override():
     """Tests that derived classes are not allowed to call certain functions"""
@@ -126,7 +127,7 @@ class TestTranslationUnit:
         actual_notes = unit.getnotes()
         assert actual_notes == expected_notes
 
-class TestTranslationStore:
+class TestTranslationStore(object):
     """Tests a TranslationStore.
     Derived classes can reuse these tests by pointing StoreClass to a derived Store"""
     StoreClass = base.TranslationStore
@@ -136,11 +137,13 @@ class TestTranslationStore:
         self.filename = "%s_%s.test" % (self.__class__.__name__, method.__name__)
         if os.path.exists(self.filename):
             os.remove(self.filename)
+        warnings.resetwarnings()
 
     def teardown_method(self, method):
         """Makes sure that if self.filename was created by the method, it is cleaned up"""
         if os.path.exists(self.filename):
             os.remove(self.filename)
+        warnings.resetwarnings()
 
     def test_create_blank(self):
         """Tests creating a new blank store"""
