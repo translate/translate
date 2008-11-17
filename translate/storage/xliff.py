@@ -299,8 +299,10 @@ class xliffunit(lisa.LISAunit):
         super(xliffunit, self).merge(otherunit, overwrite, comments)
         if self.target:
             self.marktranslated()
-        if otherunit.isfuzzy():
-            self.markfuzzy()
+            if otherunit.isfuzzy():
+                self.markfuzzy()
+            elif otherunit.source == self.source:
+                self.markfuzzy(False)
 
     def correctorigin(self, node, origin):
         """Check against node tag's origin (e.g note or alt-trans)"""
