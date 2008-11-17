@@ -37,7 +37,7 @@ def hasplurals(thing):
 
 class PoXliffUnit(xliff.xliffunit):
     """A class to specifically handle the plural units created from a po file."""
-    def __init__(self, source, empty=False):
+    def __init__(self, source=None, empty=False, encoding="UTF-8"):
         self.units = []
             
         if empty:

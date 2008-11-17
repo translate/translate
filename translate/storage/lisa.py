@@ -105,13 +105,12 @@ Provisional work is done to make several languages possible."""
 
     namespace = None
 
-    def __init__(self, source, empty=False):
+    def __init__(self, source, empty=False, **kwargs):
         """Constructs a unit containing the given source string"""
         if empty:
             return
         self.xmlelement = etree.Element(self.rootNode)
         #add descrip, note, etc.
-
         super(LISAunit, self).__init__(source)
 
     def __eq__(self, other):
@@ -312,6 +311,7 @@ class LISAfile(base.TranslationStore):
             # interfere with the the pretty printing of lxml
             self.parse(self.XMLskeleton.replace("\n", ""))
             self.addheader()
+        self._encoding = "UTF-8"
 
     def addheader(self):
         """Method to be overridden to initialise headers, etc."""
@@ -357,7 +357,7 @@ class LISAfile(base.TranslationStore):
             posrc = xml.read()
             xml = posrc
         self.document = etree.fromstring(xml).getroottree()
-        self.encoding = self.document.docinfo.encoding
+        self._encoding = self.document.docinfo.encoding
         self.initbody()
         assert self.document.getroot().tag == self.namespaced(self.rootNode)
         termEntries = self.body.findall('.//%s' % self.namespaced(self.UnitClass.rootNode))
