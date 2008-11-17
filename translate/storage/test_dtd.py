@@ -3,6 +3,8 @@
 from translate.storage import dtd
 from translate.storage import test_monolingual
 from translate.misc import wStringIO
+import warnings
+from py import test
 
 def test_roundtrip_quoting():
     specials = ['Fish & chips', 'five < six', 'six > five',
@@ -152,7 +154,8 @@ class TestDTD(test_monolingual.TestMonolingualStore):
     def test_missing_quotes(self):
         """test that we fail graacefully when a message without quotes is found (bug #161)"""
         dtdsource = '<!ENTITY bad no quotes">\n<!ENTITY good "correct quotes">\n'
+        warnings.simplefilter("error")
+        assert test.raises(Warning, self.dtdparse, dtdsource)
+        warnings.resetwarnings()
         dtdfile = self.dtdparse(dtdsource)
-        # Check that we raise a correct warning
         assert len(dtdfile.units) == 1
-
