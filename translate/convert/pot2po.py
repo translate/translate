@@ -25,28 +25,145 @@ See: http://translate.sourceforge.net/wiki/toolkit/pot2po for examples and
 usage instructions
 """
 
-from translate.storage import po
 from translate.storage import factory
 from translate.search import match
 from translate.misc.multistring import multistring
 from translate.tools import pretranslate
+from translate.storage import poheader
+
 
 def convertpot(input_file, output_file, template_file, tm=None, min_similarity=75, fuzzymatching=True, **kwargs):
-    input_store = po.pofile(input_file)
+    """Main conversion function"""
+    
+    input_store = factory.getobject(input_file)
     template_store = None
     if template_file is not None:
-        template_store = po.pofile(template_file)
-    outputpo = convert_stores(input_store, template_store, tm, min_similarity, fuzzymatching, **kwargs)
-    output_file.write(str(outputpo))
+        template_store = factory.getobject(template_file)
+    output_store = convert_stores(input_store, template_store, tm, min_similarity, fuzzymatching, **kwargs)
+    output_file.write(str(output_store))
     return 1
 
 def convert_stores(input_store, template_store, tm=None, min_similarity=75, fuzzymatching=True, **kwargs):
-    """Adjusts the header of input_store, returns output_store. If 
-    template_store exists, merge translations from it into output_store which 
-    is returned"""
+    """Actual conversion function, works on stores not files, returns
+    a properly initialized pretranslated output store, with structure
+    based on input_store, metadata based on template_store, migrates
+    old translations from template_store and pretranslating from tm"""
+
+    #prepare for merging
+    output_store = type(input_store)()
+    #create fuzzy matchers to be used by pretrnaslate.pretranslate_unit
+    matchers = []
+    if fuzzymatching:
+        if template_store:
+            matcher = match.matcher(template_store, max_candidates=1, min_similarity=min_similarity, max_length=3000, usefuzzy=True)
+            matcher.addpercentage = False
+            matchers.append(matcher)
+        if tm:
+            matcher = pretranslate.memory(tm, max_candidates=1, min_similarity=min_similarity, max_length=1000)
+            matcher.addpercentage = False
+            matchers.append(matcher)
+    prepare_merge(input_store, output_store, template_store)
+
+    #initialize store
+    store_pre_merge(input_store, output_store, template_store)
+
+    # Do matching
+    for input_unit in input_store.units:
+        if input_unit.istranslatable():
+            input_unit = pretranslate.pretranslate_unit(input_unit, template_store, matchers, mark_reused=True)
+            unit_post_merge(input_unit, input_store, output_store, template_store)
+            output_store.addunit(input_unit)
+
+    #finalize store
+    store_post_merge(input_store, output_store, template_store)
+
+    return output_store
+
+
+##dispatchers
+def _prepare_merge(input_store, output_store, template_store, **kwargs):
+    """prepare stores & TM matchers before merging"""       
+    #dispatch to format specific functions
+    prepare_merge_hook = "_prepare_merge_%s" % input_store.__class__.__name__
+    if  globals().has_key(prepare_merge_hook):
+        globals()[prepare_merge_hook](input_store, output_store, template_store, **kwargs)
+
+    #generate an index so we can search by source string and location later on
     input_store.makeindex()
-    output_store = po.pofile()
+    if template_store:
+        template_store.makeindex()
+
+
+def _store_pre_merge(input_store, output_store, template_store, **kwargs) :
+    """initialize the new file with things like headers and metadata"""
+    #formats that implement poheader interface are a special case
+    if isinstance(input_store, poheader.poheader):
+        _do_poheaders(input_store, output_store, template_store)
+
+    #dispatch to format specific functions
+    store_pre_merge_hook = "_store_pre_merge_%s" % input_store.__class__.__name__
+    if  globals().has_key(store_pre_merge_hook):
+        globals()[store_pre_merge_hook](input_store, output_store, template_store, **kwargs)
+
+
+def _store_post_merge(input_store, output_store, template_store, **kwargs) :
+    """close file after merging all translations, used for adding
+    statistics, obselete messages and similar wrapup tasks"""
+    #dispatch to format specific functions
+    store_post_merge_hook = "_store_post_merge_%s" % input_store.__class__.__name__
+    if  globals().has_key(store_post_merge_hook):
+        globals()[store_post_merge_hook](input_store, output_store, template_store, **kwargs)
+
+def _unit_post_merge(input_unit, input_store, output_store, template_store, **kwargs):
+    """handle any unit level cleanup and situations not handled by the merge()
+    function"""
+    #dispatch to format specific functions
+    unit_post_merge_hook = "_unit_post_merge_%s" % input_unit.__class__.__name__
+    if  globals().has_key(unit_post_merge_hook):
+        globals()[unit_post_merge_hook](input_unit, input_store, output_store, template_store, **kwargs)
     
+
+##format specific functions
+def _prepare_merge_pofile(input_store, output_store, template_store):
+    """po format specific template preparation logic"""
+    #we need to revive obselete units to be able to consider
+    #their translation when matching
+    if template_store:
+        for unit in template_store.units:
+            if unit.isobsolete():
+                unit.resurrect()
+
+
+def _unit_post_merge_pounit(input_unit, input_store, output_store, template_store):
+    """po format specific plural string initializtion logic"""
+    #FIXME: do we want to do that for poxliff also?
+    if input_unit.hasplural() and len(input_unit.target) == 0:
+        # untranslated plural unit; Let's ensure that we have the correct number of plural forms:
+        nplurals, plural = output_store.getheaderplural()
+        if nplurals and nplurals.isdigit() and nplurals != '2':
+            input_unit.target = multistring([""]*int(nplurals))
+
+
+def _store_post_merge_pofile(input_store, output_store, template_store):
+    """po format specific, adds newly obseleted messages to end of store"""
+    #Let's take care of obsoleted messages
+    if template_store:
+        newlyobsoleted = []
+        for unit in template_store.units:
+            if unit.isheader():
+                continue
+            if unit.target and not (input_store.findunit(unit.source) or hasattr(unit, "reused")):
+                #not in .pot, make it obsolete
+                unit.makeobsolete()
+                newlyobsoleted.append(unit)
+            elif unit.isobsolete():
+                output_store.addunit(unit)
+        for unit in newlyobsoleted:
+            output_store.addunit(unit)
+
+
+def _do_poheaders(input_store, output_store, template_store):
+    """adds initialized ph headers to output store"""
     # header values
     charset = "UTF-8"
     encoding = "8bit"
@@ -60,12 +177,6 @@ def convert_stores(input_store, template_store, tm=None, min_similarity=75, fuzz
     kwargs = {}
 
     if template_store is not None:
-        for unit in template_store.units:
-            if unit.isobsolete():
-                unit.resurrect()
-                
-        template_store.makeindex()
-        
         templateheadervalues = template_store.parseheader()
         for key, value in templateheadervalues.iteritems():
             if key == "Project-Id-Version":
@@ -88,18 +199,6 @@ def convert_stores(input_store, template_store, tm=None, min_similarity=75, fuzz
             else:
                 kwargs[key] = value
 
-    matchers = []
-    if fuzzymatching:
-        if template_store:
-            matcher = match.matcher(template_store, max_candidates=1, min_similarity=min_similarity, max_length=3000, usefuzzy=True)
-            matcher.addpercentage = False
-            matchers.append(matcher)
-            
-        if tm:
-            matcher = pretranslate.memory(tm, max_candidates=1, min_similarity=min_similarity, max_length=1000)
-            matcher.addpercentage = False
-            matchers.append(matcher)
-        
     inputheadervalues = input_store.parseheader()
     for key, value in inputheadervalues.iteritems():
         if key in ("Project-Id-Version", "Last-Translator", "Language-Team", "PO-Revision-Date", "Content-Type", "Content-Transfer-Encoding", "Plural-Forms"):
@@ -128,38 +227,13 @@ def convert_stores(input_store, template_store, tm=None, min_similarity=75, fuzz
         output_header.addnote(input_store.units[0].getnotes())
         
     output_store.addunit(output_header)
-    
-    # Do matching
-    for input_unit in input_store.units:
-        if input_unit.istranslatable():
-            input_unit = pretranslate.pretranslate_unit(input_unit, template_store, matchers, mark_reused=True)
 
-            if input_unit.hasplural() and len(input_unit.target) == 0:
-                # found no translation; Let's ensure that we have the correct number of plural forms:
-                nplurals, plural = output_store.getheaderplural()
-                if nplurals and nplurals.isdigit() and nplurals != '2':
-                    input_unit.target = multistring([""]*int(nplurals))
-            output_store.addunit(input_unit)
-
-    #Let's take care of obsoleted messages
-    if template_store:
-        newlyobsoleted = []
-        for unit in template_store.units:
-            if unit.isheader():
-                continue
-            if unit.target and not (input_store.findunit(unit.source) or hasattr(unit, "reused")):
-                #not in .pot, make it obsolete
-                unit.makeobsolete()
-                newlyobsoleted.append(unit)
-            elif unit.isobsolete():
-                output_store.addunit(unit)
-        for unit in newlyobsoleted:
-            output_store.addunit(unit)
-    return output_store
 
 def main(argv=None):
     from translate.convert import convert
-    formats = {"pot": ("po", convertpot), ("pot", "po"): ("po", convertpot)}
+    formats = {"pot": ("po", convertpot), ("pot", "po"): ("po", convertpot),
+               "xlf": ("xlf", convertpot), ("xlf", "xlf"): ("xlf", convertpot),
+            }
     parser = convert.ConvertOptionParser(formats, usepots=True, usetemplates=True, 
         allowmissingtemplate=True, description=__doc__)
     parser.add_option("", "--tm", dest="tm", default=None,

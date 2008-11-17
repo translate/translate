@@ -270,7 +270,8 @@ msgstr "Sertifikate"
         
     def test_merging_obsoleting_messages(self):
         """check that we obsolete messages no longer present in the new file"""
-        potsource = ''
+        #add emtpy msgid line to help factory identify format
+        potsource = 'msgid ""\nmsgstr ""\n'
         posource = '# Some comment\n#. Extracted comment\n#: obsoleteme:10\nmsgid "One"\nmsgstr "Een"\n'
         expected = '# Some comment\n#~ msgid "One"\n#~ msgstr "Een"\n'
         newpo = self.convertpot(potsource, posource)
@@ -280,7 +281,8 @@ msgstr "Sertifikate"
 
     def test_not_obsoleting_empty_messages(self):
         """check that we don't obsolete (and keep) untranslated messages"""
-        potsource = ''
+        #add emtpy msgid line to help factory identify format
+        potsource = 'msgid ""\nmsgstr ""\n'
         posource = '#: obsoleteme:10\nmsgid "One"\nmsgstr ""\n'
         newpo = self.convertpot(potsource, posource)
         print str(newpo)
