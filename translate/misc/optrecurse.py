@@ -248,9 +248,12 @@ class RecursiveOptionParser(optparse.OptionParser, object):
             if not isinstance(outputoptions, tuple) or len(outputoptions) != 2:
                 raise ValueError("output options must be tuples of length 2")
             outputformat, processor = outputoptions
-            if not inputformat in inputformats: inputformats.append(inputformat)
-            if not outputformat in outputformats: outputformats.append(outputformat)
-            if not templateformat in templateformats: templateformats.append(templateformat)
+            if not inputformat in inputformats:
+                inputformats.append(inputformat)
+            if not outputformat in outputformats:
+                outputformats.append(outputformat)
+            if not templateformat in templateformats:
+                templateformats.append(templateformat)
             self.outputoptions[(inputformat, templateformat)] = (outputformat, processor)
         self.inputformats = inputformats
         inputformathelp = self.getformathelp(inputformats)
@@ -644,8 +647,10 @@ class RecursiveOptionParser(optparse.OptionParser, object):
 
     def gettemplatename(self, options, inputname):
         """gets an output filename based on the input filename"""
-        if not self.usetemplates: return None
-        if not inputname or not options.recursivetemplate: return options.template
+        if not self.usetemplates:
+            return None
+        if not inputname or not options.recursivetemplate:
+            return options.template
         inputbase, inputext = self.splitinputext(inputname)
         if options.template:
             for inputext1, templateext1 in options.outputoptions:
@@ -669,7 +674,8 @@ class RecursiveOptionParser(optparse.OptionParser, object):
 
     def getoutputname(self, options, inputname, outputformat):
         """gets an output filename based on the input filename"""
-        if not inputname or not options.recursiveoutput: return options.output
+        if not inputname or not options.recursiveoutput:
+            return options.output
         inputbase, inputext = self.splitinputext(inputname)
         outputname = inputbase
         if outputformat:
