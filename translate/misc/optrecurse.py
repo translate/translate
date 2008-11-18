@@ -627,7 +627,13 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         return inputfiles
 
     def splitext(self, pathname):
-        """splits into name and ext, and removes the extsep"""
+        """Splits L{pathname} into name and ext, and removes the extsep
+    
+        @param pathname: A file path
+        @type pathname: string
+        @return: root, ext
+        @rtype: tuple
+        """
         root, ext = os.path.splitext(pathname)
         ext = ext.replace(os.extsep, "", 1)
         return (root, ext)
