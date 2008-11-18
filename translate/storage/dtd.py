@@ -410,15 +410,3 @@ class dtdfile(base.TranslationStore):
             if not dtd.isnull():
                 self.index[dtd.entity] = dtd
 
-    def rewrap(self):
-        for dtd in self.units:
-            lines = dtd.definition.split("\n")
-            if len(lines) > 1:
-                definition = lines[0]
-                for line in lines[1:]:
-                    if definition[-1:].isspace() or line[:1].isspace():
-                        definition += line
-                    else:
-                        definition += " " + line
-                dtd.definition = definition
-
