@@ -33,7 +33,6 @@ comments.
 
 import os
 import re
-import sys
 from translate.misc import quote
 from translate.misc import wStringIO
 import warnings
@@ -389,7 +388,3 @@ class oomultifile:
         oosubfile.parse(subfilesrc)
         return oosubfile
 
-if __name__ == '__main__':
-    of = oofile()
-    of.parse(sys.stdin.read())
-    sys.stdout.write(str(of))

@@ -26,7 +26,6 @@ from translate.storage import base
 from translate.misc import quote
 
 import re
-import sys
 import warnings
 try:
     from lxml import etree
@@ -422,10 +421,4 @@ class dtdfile(base.TranslationStore):
                     else:
                         definition += " " + line
                 dtd.definition = definition
-
-if __name__ == "__main__":
-    import sys
-    d = dtdfile(sys.stdin)
-    d.rewrap()
-    sys.stdout.write(str(d))
 

@@ -180,11 +180,3 @@ class csvfile(base.TranslationStore):
         csvfile.reset()
         return "".join(csvfile.readlines())
 
-
-if __name__ == '__main__':
-    import sys
-    cf = csvfile()
-    cf.parse(sys.stdin.read())
-    sys.stdout.write(str(cf))
-
-	

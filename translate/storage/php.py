@@ -195,8 +195,3 @@ class phpfile(base.TranslationStore):
             lines.append(str(unit))
         return "".join(lines)
 
-if __name__ == '__main__':
-    import sys
-    pf = phpfile(sys.stdin)
-    sys.stdout.write(str(pf))
-

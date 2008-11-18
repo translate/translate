@@ -951,8 +951,3 @@ class pofile(pocommon.pofile):
             if not (unit.isheader() or unit.isobsolete()):
                 yield unit
 
-if __name__ == '__main__':
-    import sys
-    pf = pofile(sys.stdin)
-    sys.stdout.write(str(pf))
-

@@ -189,8 +189,3 @@ class propfile(base.TranslationStore):
             lines.append(str(unit))
         return "".join(lines)
 
-if __name__ == '__main__':
-    import sys
-    pf = propfile(sys.stdin)
-    sys.stdout.write(str(pf))
-
