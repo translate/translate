@@ -321,7 +321,7 @@ class tsfile(lisa.LISAfile):
         # A bug in lxml means we have to output the doctype ourselves. For 
         # more information, see:
         # http://codespeak.net/pipermail/lxml-dev/2008-October/004112.html
-        # lxml 2.1.2 and 2.0.9 was released before this mail
+        # The problem was fixed in lxml 2.1.3
         output = etree.tostring(self.document, pretty_print=True, 
                 xml_declaration=False, encoding='utf-8')
         if not "<!DOCTYPE TS>" in output[:30]:
