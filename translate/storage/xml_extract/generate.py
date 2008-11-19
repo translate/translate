@@ -69,10 +69,6 @@ def apply_translations(dom_node, unit_node, do_translate):
         # should replace the text in dom_node with the text in unit_node.
         do_translate(dom_node, unit_node.unit)
 
-@accepts(IsCallable(), extract.Translatable, vargs=[Any()])
-def reduce_unit_tree(f, unit_node, *state):
-    return misc.reduce_tree(f, unit_node, unit_node, lambda unit_node: unit_node.placeables, *state)
-
 @accepts(IsCallable(), etree._Element, vargs=[Any()])
 def reduce_dom_tree(f, dom_node, *state):
     return misc.reduce_tree(f, dom_node, dom_node, lambda dom_node: dom_node, *state)
@@ -110,7 +106,7 @@ def find_placeable_dom_tree_roots(unit_node):
     def set_dom_root_for_unit_node(parent_unit_node, unit_node, dom_tree_roots):
             dom_tree_roots[unit_node] = find_dom_root(parent_unit_node.dom_node, unit_node.dom_node)
             return dom_tree_roots
-    return reduce_unit_tree(set_dom_root_for_unit_node, unit_node, {})
+    return extract.reduce_unit_tree(set_dom_root_for_unit_node, unit_node, {})
       
 @accepts(extract.Translatable, etree._Element)
 def _map_source_dom_to_doc_dom(unit_node, source_dom_node):

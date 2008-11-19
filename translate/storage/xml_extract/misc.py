@@ -24,7 +24,7 @@ import re
 
 from translate.misc.typecheck import accepts, Self, IsCallable, IsOneOf, Any
 
-@accepts(IsCallable(), Any(), Any(), IsCallable(), vargs=[Any()])
+@accepts(IsCallable(), Any(), Any(), IsCallable(), state=[Any()])
 def reduce_tree(f, parent_unit_node, unit_node, get_children, *state):
     """Enumerate a tree, applying f to in a pre-order fashion to each node.
     

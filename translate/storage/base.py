@@ -31,6 +31,7 @@ try:
 except:
     import pickle
 from exceptions import NotImplementedError
+from translate.storage.placeables.base import PlaceableId
 
 def force_override(method, baseclass):
     """Forces derived classes to override method."""
@@ -83,6 +84,7 @@ class TranslationUnit(object):
         self.source = source
         self.target = None
         self.notes = ""
+        self.placeable_id = PlaceableId()
         super(TranslationUnit, self).__init__()
 
     def __eq__(self, other):

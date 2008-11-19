@@ -23,7 +23,7 @@
 from lxml import etree
 
 from translate.storage import base
-from translate.misc.typecheck import accepts, Self, IsCallable, IsOneOf, Any
+from translate.misc.typecheck import accepts, Self, IsCallable, IsOneOf, Any, Class
 from translate.misc.typecheck.typeclasses import Number
 from translate.misc.contextlib import contextmanager, nested
 from translate.misc.context import with_
@@ -31,23 +31,30 @@ from translate.storage.xml_extract import xpath_breadcrumb
 from translate.storage.xml_extract import misc
 from translate.storage.placeables import X, G
 
+def Nullable(t):
+    return IsOneOf(t, type(None))
+
+TranslatableClass = Class('Translatable')
+
 class Translatable(object):
     """A node corresponds to a translatable element. A node may
        have children, which correspond to placeables."""
-    @accepts(Self(), Number, unicode)
-    def __init__(self, placeable_id, placeable_name): 
+    @accepts(Self(), unicode, unicode, etree._Element, [IsOneOf(TranslatableClass, unicode)])
+    def __init__(self, placeable_name, xpath, dom_node, source): 
         self.placeable_name = placeable_name
-        self.placeable_id = placeable_id
-        self.placeable_tag_id = 1
-        self.source = []
-        self.xpath = ""
+        self.source = source
+        self.xpath = xpath
         self.is_inline = False
-        self.dom_node = None
+        self.dom_node = dom_node
 
     def _get_placeables(self):
         return [placeable for placeable in self.source if isinstance(placeable, Translatable)]
 
     placeables = property(_get_placeables)
+
+@accepts(IsCallable(), Translatable, state=[Any()])
+def reduce_unit_tree(f, unit_node, *state):
+    return misc.reduce_tree(f, unit_node, unit_node, lambda unit_node: unit_node.placeables, *state)
 
 class ParseState(object):
     """Maintain constants and variables used during the walking of a
@@ -55,29 +62,9 @@ class ParseState(object):
     def __init__(self, no_translate_content_elements, inline_elements = {}):
         self.no_translate_content_elements = no_translate_content_elements
         self.inline_elements = inline_elements
-        self.placeable_id = 0
-        self.level = 0
         self.is_inline = False
         self.xpath_breadcrumb = xpath_breadcrumb.XPathBreadcrumb()
         self.placeable_name = u"<top-level>"
-
-@accepts(ParseState, unicode)
-def make_translatable(state, placeable_name, dom_node, source):
-    """Make a Translatable object. If we are in a placeable (this
-    is true if state.level > 0, then increase state.placeable by 1
-    and return a Translatable with that placeable ID.
-    
-    Otherwise we are processing a top-level element, and we give
-    it a placeable_id of -1."""
-    if state.level > 0:
-        state.placeable_id += 1
-        translatable = Translatable(state.placeable_id, placeable_name)
-    else:
-        translatable = Translatable(-1, placeable_name)
-    translatable.xpath = state.xpath_breadcrumb.xpath
-    translatable.dom_node = dom_node
-    translatable.source = source
-    return translatable
 
 @accepts(etree._Element, ParseState)
 def _process_placeable(dom_node, state):
@@ -87,7 +74,7 @@ def _process_placeable(dom_node, state):
     # no translatable is returned. Make a placeable with the name
     # "placeable"
     if len(placeable) == 0:
-        return make_translatable(state, u"placeable", dom_node, [])
+        return Translatable(u"placeable", state.xpath_breadcrumb.xpath, dom_node, [])
     # The ideal situation: we got exactly one translateable back
     # when processing this tree.
     elif len(placeable) == 1:
@@ -102,25 +89,15 @@ def _process_placeables(dom_node, state):
     useful for directly working with placeables and the latter
     is what will be used to build the final translatable string."""
 
-    @contextmanager
-    def set_level():
-        state.level += 1
-        yield state.level
-        state.level -= 1
-    
-    def with_block(level):
-        source = []
-        for child in dom_node:
-            source.extend([_process_placeable(child, state), unicode(child.tail or u"")])
-        return source
-    # Do the work within a context to ensure that the level is
-    # reset, come what may.
-    return with_(set_level(), with_block)
+    source = []
+    for child in dom_node:
+        source.extend([_process_placeable(child, state), unicode(child.tail or u"")])
+    return source
 
 @accepts(etree._Element, ParseState)
 def _process_translatable(dom_node, state):
     source = [unicode(dom_node.text or u"")] + _process_placeables(dom_node, state)
-    translatable = make_translatable(state, state.placeable_name, dom_node, source)
+    translatable = Translatable(state.placeable_name, state.xpath_breadcrumb.xpath, dom_node, source)
     translatable.is_inline = state.is_inline
     return [translatable]
 
@@ -131,7 +108,7 @@ def _process_children(dom_node, state):
     # Flatten a list of lists into a list of elements
     children = [child for child_list in children for child in child_list]
     if len(children) > 1:
-        intermediate_translatable = make_translatable(state, tag, dom_node, children)
+        intermediate_translatable = Translatable(tag, state.xpath_breadcrumb.xpath, dom_node, children)
         return [intermediate_translatable]
     else:
         return children
@@ -142,7 +119,7 @@ def find_translatable_dom_nodes(dom_node, state):
 
     @contextmanager
     def xpath_set():
-        state.xpath_breadcrumb.start_tag(dom_node.tag)
+        state.xpath_breadcrumb.start_tag(unicode(dom_node.tag))
         yield state.xpath_breadcrumb
         state.xpath_breadcrumb.end_tag()
         
@@ -170,37 +147,44 @@ def find_translatable_dom_nodes(dom_node, state):
             return _process_children(dom_node, state)            
     return with_(nested(xpath_set(), placeable_set(), inline_set()), with_block)
 
-@accepts(base.TranslationUnit, Translatable)
-def _add_location_and_ref_info(unit, translatable):
-    """Add location information to 'unit' which is used to disambiguate
-    different units and to find the position of the source text in the
-    original XML document"""
-    unit.addlocation(translatable.xpath)
-    if translatable.placeable_id > -1:
-        unit.addnote("References: %d" % translatable.placeable_id)
-    return unit
+class IdMaker(object):
+    def __init__(self):
+        self._max_id = 0
+        self._obj_id_map = {}
 
-@accepts(Translatable)
-def _to_placeables(translatable):
+    def get_id(self, obj):
+        if not self.has_id(obj):
+            self._obj_id_map[obj] = self._max_id
+            self._max_id += 1
+        return self._obj_id_map[obj]
+
+    def has_id(self, obj):
+        return obj in self._obj_id_map
+
+@accepts(Nullable(Translatable), Translatable, IdMaker)
+def _to_placeables(parent_translatable, translatable, id_maker):
     result = []
     for chunk in translatable.source:
         if isinstance(chunk, unicode):
             result.append(chunk)
         else:
+            id = unicode(id_maker.get_id(chunk))
             if chunk.is_inline:
-                result.append(G(unicode(chunk.placeable_id), _to_placeables(chunk)))
+                result.append(G(id, _to_placeables(parent_translatable, chunk, id_maker)))
             else:
-                result.append(X(unicode(chunk.placeable_id)))
+                result.append(X(id, xid=chunk.xpath))
     return result
 
-@accepts(base.TranslationStore, Translatable)
-def _add_translatable_to_store(store, translatable):
+@accepts(base.TranslationStore, Nullable(Translatable), Translatable, IdMaker)
+def _add_translatable_to_store(store, parent_translatable, translatable, id_maker):
     """Construct a new translation unit, set its source and location
     information and add it to 'store'.
     """
     unit = store.UnitClass(u'')
-    unit.rich_source = _to_placeables(translatable)
-    unit = _add_location_and_ref_info(unit, translatable)
+    unit.rich_source = _to_placeables(parent_translatable, translatable, id_maker)
+    unit.addlocation(translatable.xpath)
+    if parent_translatable is not None:
+        unit.placeable_id.xid = parent_translatable.xpath
     store.addunit(unit)
 
 @accepts(Translatable)
@@ -219,25 +203,32 @@ def _contains_translatable_text(translatable):
 def _make_store_adder(store):
     """Return a function which, when called with a Translatable will add
     a unit to 'store'. The placeables will represented as strings according
-    to 'placeable_quoter'."""    
-    def add_to_store(translatable):
-        if _contains_translatable_text(translatable) and not translatable.is_inline:
-            _add_translatable_to_store(store, translatable)
-    
+    to 'placeable_quoter'."""
+    id_maker = IdMaker()
+
+    def add_to_store(parent_translatable, translatable, rid):
+        _add_translatable_to_store(store, parent_translatable, translatable, id_maker)
+            
     return add_to_store
 
-@accepts([Translatable], IsCallable())
-def _walk_translatable_tree(translatables, f):
+@accepts([Translatable], IsCallable(), Nullable(Translatable), Number)
+def _walk_translatable_tree(translatables, f, parent_translatable, rid):
     for translatable in translatables:
-        f(translatable)
-        _walk_translatable_tree(translatable.placeables, f)
+        if _contains_translatable_text(translatable) and not translatable.is_inline:
+            rid = rid + 1
+            new_parent_translatable = translatable
+            f(parent_translatable, translatable, rid)
+        else:
+            new_parent_translatable = parent_translatable
 
-@accepts(lambda obj: hasattr(obj, "read"), base.TranslationStore, IsOneOf(IsCallable(), type(None)))
+        _walk_translatable_tree(translatable.placeables, f, new_parent_translatable, rid)
+
+@accepts(lambda obj: hasattr(obj, "read"), base.TranslationStore, ParseState, Nullable(IsCallable()))
 def build_store(odf_file, store, parse_state, store_adder = None):
     """Utility function for loading xml_filename"""    
     store_adder = store_adder or _make_store_adder(store)
     tree = etree.parse(odf_file)
     root = tree.getroot()
     translatables = find_translatable_dom_nodes(root, parse_state)
-    _walk_translatable_tree(translatables, store_adder)
+    _walk_translatable_tree(translatables, store_adder, None, 0)
     return tree
