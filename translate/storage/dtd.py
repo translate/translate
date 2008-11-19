@@ -52,7 +52,8 @@ def quotefordtd(source):
 def unquotefromdtd(source):
     """unquotes a quoted dtd definition"""
     # extract the string, get rid of quoting
-    if len(source) == 0: source = '""'
+    if len(source) == 0:
+        source = '""'
     quotechar = source[0]
     extracted, quotefinished = quote.extractwithoutquotes(source, quotechar, quotechar, allowreentry=False)
     if quotechar == "'" and "&apos;" in extracted:
@@ -175,7 +176,8 @@ class dtdunit(base.TranslationUnit):
                     (comment, dummy) = quote.extract(line, "<!--", "-->", None, 0)
                     if comment.find('LOCALIZATION NOTE') != -1:
                         l = quote.findend(comment,'LOCALIZATION NOTE')
-                        while (comment[l] == ' '): l += 1
+                        while (comment[l] == ' '):
+                            l += 1
                         if comment.find('FILE', l) == l:
                             self.commenttype = "locfile"
                         elif comment.find('BEGIN', l) == l:
@@ -241,17 +243,20 @@ class dtdunit(base.TranslationUnit):
                     self.entitytype = "internal"
                 if self.entitypart == "name":
                     e = 0
-                    while (e < len(line) and line[e].isspace()): e += 1
+                    while (e < len(line) and line[e].isspace()):
+                        e += 1
                     self.entity = ''
                     if (e < len(line) and line[e] == '%'):
                         self.entitytype = "external"
                         self.entityparameter = ""
                         e += 1
-                        while (e < len(line) and line[e].isspace()): e += 1
+                        while (e < len(line) and line[e].isspace()):
+                            e += 1
                     while (e < len(line) and not line[e].isspace()):
                         self.entity += line[e]
                         e += 1
-                    while (e < len(line) and line[e].isspace()): e += 1
+                    while (e < len(line) and line[e].isspace()):
+                        e += 1
                     if self.entity:
                         if self.entitytype == "external":
                             self.entitypart = "parameter"
@@ -268,9 +273,11 @@ class dtdunit(base.TranslationUnit):
                 if self.entitypart == "parameter":
                     while (e < len(line) and line[e].isspace()): e += 1
                     paramstart = e
-                    while (e < len(line) and line[e].isalnum()): e += 1
+                    while (e < len(line) and line[e].isalnum()):
+                        e += 1
                     self.entityparameter += line[paramstart:e]
-                    while (e < len(line) and line[e].isspace()): e += 1
+                    while (e < len(line) and line[e].isspace()):
+                        e += 1
                     line = line[e:]
                     e = 0
                     if not line:
@@ -282,7 +289,8 @@ class dtdunit(base.TranslationUnit):
                 if self.entitypart == "definition":
                     if self.entityhelp is None:
                         e = 0
-                        while (e < len(line) and line[e].isspace()): e += 1
+                        while (e < len(line) and line[e].isspace()):
+                            e += 1
                         if e == len(line):
                             continue
                         self.entityhelp = (e, line[e])
@@ -306,7 +314,8 @@ class dtdunit(base.TranslationUnit):
         if 0:
             for attr in dir(self):
                 r = repr(getattr(self, attr))
-                if len(r) > 60: r = r[:57]+"..."
+                if len(r) > 60:
+                    r = r[:57]+"..."
                 self.comments.append(("comment", "self.%s = %s" % (attr, r) ))
         return linesprocessed
 
@@ -361,7 +370,8 @@ class dtdfile(base.TranslationStore):
         end = 0
         lines = dtdsrc.split("\n")
         while end < len(lines):
-            if (start == end): end += 1
+            if (start == end):
+                end += 1
             foundentity = 0
             while end < len(lines):
                 if end >= len(lines):
