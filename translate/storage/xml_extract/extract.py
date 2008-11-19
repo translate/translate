@@ -59,12 +59,13 @@ def reduce_unit_tree(f, unit_node, *state):
 class ParseState(object):
     """Maintain constants and variables used during the walking of a
     DOM tree (via the function apply)."""
-    def __init__(self, no_translate_content_elements, inline_elements = {}):
+    def __init__(self, no_translate_content_elements, inline_elements = {}, nsmap = {}):
         self.no_translate_content_elements = no_translate_content_elements
         self.inline_elements = inline_elements
         self.is_inline = False
         self.xpath_breadcrumb = xpath_breadcrumb.XPathBreadcrumb()
         self.placeable_name = u"<top-level>"
+        self.nsmap = nsmap
 
 @accepts(etree._Element, ParseState)
 def _process_placeable(dom_node, state):
@@ -113,13 +114,19 @@ def _process_children(dom_node, state):
     else:
         return children
 
+def compact_tag(nsmap, namespace, tag):
+    if namespace in nsmap:
+        return u'%s:%s' % (nsmap[namespace], tag)
+    else:
+        return u'{%s}%s' % (namespace, tag)
+
 @accepts(etree._Element, ParseState)
 def find_translatable_dom_nodes(dom_node, state):
     namespace, tag = misc.parse_tag(dom_node.tag)
 
     @contextmanager
     def xpath_set():
-        state.xpath_breadcrumb.start_tag(unicode(dom_node.tag))
+        state.xpath_breadcrumb.start_tag(compact_tag(state.nsmap, namespace, tag))
         yield state.xpath_breadcrumb
         state.xpath_breadcrumb.end_tag()
         
@@ -223,12 +230,16 @@ def _walk_translatable_tree(translatables, f, parent_translatable, rid):
 
         _walk_translatable_tree(translatable.placeables, f, new_parent_translatable, rid)
 
+def reverse_map(a_map):
+    return dict((value, key) for key, value in a_map.iteritems())
+
 @accepts(lambda obj: hasattr(obj, "read"), base.TranslationStore, ParseState, Nullable(IsCallable()))
 def build_store(odf_file, store, parse_state, store_adder = None):
     """Utility function for loading xml_filename"""    
     store_adder = store_adder or _make_store_adder(store)
     tree = etree.parse(odf_file)
     root = tree.getroot()
+    parse_state.nsmap = reverse_map(root.nsmap)
     translatables = find_translatable_dom_nodes(root, parse_state)
     _walk_translatable_tree(translatables, store_adder, None, 0)
     return tree

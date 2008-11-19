@@ -71,3 +71,20 @@ def test_parse_tag():
     assert (u'urn:oasis:names:tc:opendocument:xmlns:office:1.0', u'document-content') == \
         misc.parse_tag(u'{urn:oasis:names:tc:opendocument:xmlns:office:1.0}document-content')
 
+def test_xml_tag():
+    nsmap_1 = {'office': 'urn:oasis:names:tc:opendocument:xmlns:office:1.0',
+               'style' : 'urn:oasis:names:tc:opendocument:xmlns:style:1.0'}
+
+    assert misc.full_xml_name(nsmap_1, 'office:foo') == '{urn:oasis:names:tc:opendocument:xmlns:office:1.0}foo'
+    assert misc.full_xml_name(nsmap_1, '{urn:oasis:names:tc:opendocument:xmlns:office:1.0}foo') == '{urn:oasis:names:tc:opendocument:xmlns:office:1.0}foo'
+
+    nsmap_2 = { None: 'urn:oasis:names:tc:opendocument:xmlns:office:1.0' }
+
+    assert misc.full_xml_name(nsmap_2, 'foo') == '{urn:oasis:names:tc:opendocument:xmlns:office:1.0}foo'
+    assert misc.full_xml_name(nsmap_2, '{urn:oasis:names:tc:opendocument:xmlns:office:1.0}foo') == '{urn:oasis:names:tc:opendocument:xmlns:office:1.0}foo'
+
+    nsmap_3 = {}
+
+    assert misc.full_xml_name(nsmap_3, 'foo') == 'foo'
+
+

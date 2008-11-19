@@ -53,7 +53,7 @@ def apply_translations(dom_node, unit_node, do_translate):
     for unit_child_index, unit_child in unit_node.children.iteritems():
         tag, index = unit_child_index
         try:
-            dom_child = tag_array[tag][index]
+            dom_child = tag_array[misc.full_xml_name(dom_node.nsmap, tag)][index]
             apply_translations(dom_child, unit_child, do_translate)
         # Raised if tag is not in tag_array. We might want to complain to the
         # user in the future.
