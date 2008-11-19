@@ -388,12 +388,9 @@ class dtdfile(base.TranslationStore):
     def __str__(self):
         """convert to a string. double check that unicode is handled somehow here"""
         source = self.getoutput()
-        if etree is not None:
-            try:
-                dtd = etree.DTD(StringIO.StringIO(re.sub("#expand", "", source)))
-            except etree.DTDParseError:
-                warnings.warn("DTD file '%s' does not validate" % self.filename)
-                return None
+        if not self._valid_store():
+            warnings.warn("DTD file '%s' does not validate" % self.filename)
+            return None
         if isinstance(source, unicode):
             return source.encode(getattr(self, "encoding", "UTF-8"))
         return source
@@ -409,4 +406,20 @@ class dtdfile(base.TranslationStore):
         for dtd in self.units:
             if not dtd.isnull():
                 self.index[dtd.entity] = dtd
+
+    def _valid_store(self):
+        """Validate the store to determine if it is valid
+
+        This uses ElementTree to parse the DTD
+
+        @return: If the store passes validation
+        @rtype: Boolean
+        """ 
+        if etree is not None:
+            try:
+                # #expand is a Mozilla hack and are removed as they are not valid in DTDs
+                dtd = etree.DTD(StringIO.StringIO(re.sub("#expand", "", self.getoutput())))
+            except etree.DTDParseError:
+                return False
+        return True
 
