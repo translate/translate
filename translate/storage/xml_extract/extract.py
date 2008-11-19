@@ -158,6 +158,8 @@ def find_translatable_dom_nodes(dom_node, state):
         old_inline = state.is_inline
         if (namespace, tag) in state.inline_elements:
             state.is_inline = True
+        else:
+            state.is_inline = False
         yield state.is_inline
         state.is_inline = old_inline
       
