@@ -69,7 +69,7 @@ class xliffunit(lisa.LISAunit):
             nodes.extend(sources[- (sourcesl - targetsl):])
         return nodes
 
-    def addalttrans(self, txt, origin=None, lang=None):
+    def addalttrans(self, txt, origin=None, lang=None, sourcetxt=None, matchquality=None):
         """Adds an alt-trans tag and alt-trans components to the unit.
         
         @type txt: String
@@ -83,6 +83,13 @@ class xliffunit(lisa.LISAunit):
         alttrans = etree.SubElement(self.xmlelement, self.namespaced("alt-trans"))
         alttarget = etree.SubElement(alttrans, self.namespaced("target"))
         alttarget.text = txt
+        if sourcetxt:
+            if isinstance(sourcetxt, str):
+                sourcetxt = sourcetxt.decode("utf-8")
+            altsource = etree.SubElement(alttrans, self.namespaced("source"))
+            altsource.text = sourcetxt
+        if matchquality:
+            alttrans.set("match-quality", matchquality)
         if origin:
             alttrans.set("origin", origin)
         if lang:
