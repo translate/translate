@@ -97,8 +97,8 @@ def pretranslate_unit(input_unit, template_store, matchers=None, mark_reused=Fal
         if matching_unit and len(matching_unit.target) > 0:
             #FIXME: should we dispatch here instead of this crude type check
             if isinstance(input_unit, xliff.xliffunit):
-                #FIXME: what about origin and lang?
-                input_unit.addalttrans(matching_unit.target, sourcetxt=matching_unit.source)
+                #FIXME: what about origin, lang and matchquality
+                input_unit.addalttrans(matching_unit.target, origin="fish", sourcetxt=matching_unit.source)
             else:
                 input_unit.merge(matching_unit, authoritative=True)
 
