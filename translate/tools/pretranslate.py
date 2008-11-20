@@ -23,6 +23,7 @@ translation memory and existing translations
 """
 
 from translate.storage import factory
+from translate.storage import xliff
 from translate.search import match
 
 
@@ -82,23 +83,31 @@ def match_fuzzy(input_unit, matchers):
 
 def pretranslate_unit(input_unit, template_store, matchers=None, mark_reused=False) :
     """returns a pretranslated unit, if no translation was found return input unit unchanged"""
+
     matching_unit = None
     #do template matching
     if template_store:
         matching_unit = match_template_id(input_unit, template_store)
 
-    #do fuzzy matching
-    if (matching_unit is None or len(matching_unit.target) == 0) and matchers:
-        matching_unit = match_fuzzy(input_unit, matchers)
-                    
-    if matching_unit and len(matching_unit.target) > 0: 
+    if matching_unit and len(matching_unit.target) > 0:
         input_unit.merge(matching_unit, authoritative=True)
-        #FIXME: ugly hack required by pot2po to mark old
-        #translations reused for new file. loops over
-        if mark_reused:
-            original_unit = template_store.findunit(matching_unit.source)
-            if original_unit is not None:
-                original_unit.reused = True
+    elif matchers:
+        #do fuzzy matching
+        matching_unit = match_fuzzy(input_unit, matchers)
+        if matching_unit and len(matching_unit.target) > 0:
+            #FIXME: should we dispatch here instead of this crude type check
+            if isinstance(input_unit, xliff.xliffunit):
+                #FIXME: what about origin and lang?
+                input_unit.addalttrans(matching_unit.target, sourcetxt=matching_unit.source)
+            else:
+                input_unit.merge(matching_unit, authoritative=True)
+
+    #FIXME: ugly hack required by pot2po to mark old
+    #translations reused for new file. loops over
+    if mark_reused and matching_unit and template_store:
+        original_unit = template_store.findunit(matching_unit.source)
+        if original_unit is not None:
+            original_unit.reused = True
 
     return input_unit
 
