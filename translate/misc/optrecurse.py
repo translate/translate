@@ -135,6 +135,10 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         file.write(self.format_manpage())
 
     def setpsycooption(self):
+        try:
+            import psyco
+        except Exception:
+            return
         psycomodes = ["none", "full", "profile"]
         psycooption = optparse.Option(None, "--psyco", dest="psyco", default=None,
             choices=psycomodes, metavar="MODE",
