@@ -356,7 +356,6 @@ class dtdfile(base.TranslationStore):
     def __init__(self, inputfile=None):
         """construct a dtdfile, optionally reading in from inputfile"""
         base.TranslationStore.__init__(self, unitclass = self.UnitClass)
-        self.units = []
         self.filename = getattr(inputfile, 'name', '')
         if inputfile is not None:
             dtdsrc = inputfile.read()
@@ -364,8 +363,7 @@ class dtdfile(base.TranslationStore):
             self.makeindex()
 
     def parse(self, dtdsrc):
-        """read the source code of a dtd file in and include them as dtdunits in self.units (any existing units are lost)"""
-        self.units = []
+        """read the source code of a dtd file in and include them as dtdunits in self.units"""
         start = 0
         end = 0
         lines = dtdsrc.split("\n")
