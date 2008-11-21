@@ -51,8 +51,6 @@ class php2po:
         outputheader.addnote("extracted from %s, %s" % (templatestore.filename, inputstore.filename), "developer")
         outputstore.addunit(outputheader)
         inputstore.makeindex()
-        # we try and merge the header po with any comments at the start of the properties file
-        appendedheader = 0
         # loop through the original file, looking at units one by one
         for templateunit in templatestore.units:
             outputunit = self.convertunit(templateunit, "developer")
