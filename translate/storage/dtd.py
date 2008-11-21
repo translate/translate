@@ -112,8 +112,8 @@ class dtdunit(base.TranslationUnit):
         super(dtdunit, self).__init__(source)
         self.comments = []
         self.unparsedlines = []
-        self.incomment = 0
-        self.inentity = 0
+        self.incomment = False
+        self.inentity = False
         self.entity = "FakeEntityOnlyForInitialisationAndTesting" 
         self.source = source
 
@@ -170,8 +170,8 @@ class dtdunit(base.TranslationUnit):
             # print "line(%d,%d): " % (self.incomment,self.inentity),line[:-1]
             if not self.incomment:
                 if (line.find('<!--') != -1):
-                    self.incomment = 1
-                    self.continuecomment = 0
+                    self.incomment = True
+                    self.continuecomment = False
                     # now work out the type of comment, and save it (remember we're not in the comment yet)
                     (comment, dummy) = quote.extract(line, "<!--", "-->", None, 0)
                     if comment.find('LOCALIZATION NOTE') != -1:
@@ -226,7 +226,7 @@ class dtdunit(base.TranslationUnit):
             if not self.inentity and not self.incomment:
                 entitypos = line.find('<!ENTITY')
                 if entitypos != -1:
-                    self.inentity = 1
+                    self.inentity = True
                     beforeentity = line[:entitypos].strip()
                     if beforeentity.startswith("#"):
                         self.hashprefix = beforeentity
@@ -269,7 +269,7 @@ class dtdunit(base.TranslationUnit):
                             continue
                         elif self.entitypart == "definition":
                             self.entityhelp = (e, line[e])
-                            self.instring = 0
+                            self.instring = False
                 if self.entitypart == "parameter":
                     while (e < len(line) and line[e].isspace()): e += 1
                     paramstart = e
@@ -285,7 +285,7 @@ class dtdunit(base.TranslationUnit):
                     if line[0] in ('"', "'"):
                         self.entitypart = "definition"
                         self.entityhelp = (e, line[e])
-                        self.instring = 0
+                        self.instring = False
                 if self.entitypart == "definition":
                     if self.entityhelp is None:
                         e = 0
@@ -294,7 +294,7 @@ class dtdunit(base.TranslationUnit):
                         if e == len(line):
                             continue
                         self.entityhelp = (e, line[e])
-                        self.instring = 0
+                        self.instring = False
                     # actually the lines below should remember instring, rather than using it as dummy
                     e = self.entityhelp[0]
                     if (self.entityhelp[1] == "'"):
@@ -307,7 +307,7 @@ class dtdunit(base.TranslationUnit):
                     self.entityhelp = (0, self.entityhelp[1])
                     self.definition += defpart
                     if not self.instring:
-                        self.inentity = 0
+                        self.inentity = False
                         break
 
         # uncomment this line to debug processing
