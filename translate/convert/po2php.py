@@ -39,7 +39,7 @@ class rephp:
 
     def convertstore(self, inputstore, includefuzzy=False):
         self.inmultilinemsgid = False
-        self.inecho = 0
+        self.inecho = False
         self.makestoredict(inputstore, includefuzzy)
         outputlines = []
         for line in self.templatefile.readlines():
@@ -91,13 +91,13 @@ class rephp:
                 postspace = line[equalspos+1:equalspos+(postspacestart-postspaceend)+1]
                 self.quotechar = line[equalspos+(postspacestart-postspaceend)+1]
                 if self.inputdict.has_key(lookupkey):
-                    self.inecho = 0
+                    self.inecho = False
                     value = php.phpencode(self.inputdict[lookupkey], self.quotechar)
                     if isinstance(value, str):
                         value = value.decode('utf8')
                     returnline = key + prespace + "=" + postspace + self.quotechar + value + self.quotechar + ';' + eol
                 else:
-                    self.inecho = 1
+                    self.inecho = True
                     returnline = line+eol
                 # no string termination means carry string on to next line
                 endpos = line.rfind("%s;" % self.quotechar)
