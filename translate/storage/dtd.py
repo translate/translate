@@ -370,12 +370,12 @@ class dtdfile(base.TranslationStore):
         while end < len(lines):
             if (start == end):
                 end += 1
-            foundentity = 0
+            foundentity = False
             while end < len(lines):
                 if end >= len(lines):
                     break
                 if lines[end].find('<!ENTITY') > -1:
-                    foundentity = 1
+                    foundentity = True
                 if foundentity and re.match("[\"']\s*>", lines[end]):
                     end += 1
                     break
