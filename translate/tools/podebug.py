@@ -19,7 +19,7 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""Insert debug messages into XLIFF and Gettex PO localization files
+"""Insert debug messages into XLIFF and Gettext PO localization files
 
 See: http://translate.sourceforge.net/wiki/toolkit/podebug for examples and
 usage instructions
