@@ -38,8 +38,8 @@ class reprop:
 
     def convertstore(self, inputstore, personality, includefuzzy=False):
         self.personality = personality
-        self.inmultilinemsgid = 0
-        self.inecho = 0
+        self.inmultilinemsgid = False
+        self.inecho = False
         self.makestoredict(inputstore, includefuzzy)
         outputlines = []
         for line in self.templatefile.readlines():
@@ -83,7 +83,7 @@ class reprop:
             else:
                 # backslash at end means carry string on to next line
                 if quote.rstripeol(line)[-1:] == '\\':
-                    self.inmultilinemsgid = 1
+                    self.inmultilinemsgid = True
                 # now deal with the current string...
                 key = line[:equalspos].strip()
                 # Calculate space around the equal sign
@@ -92,7 +92,7 @@ class reprop:
                 postspaceend = len(line[equalspos+1:].lstrip())
                 postspace = line[equalspos+1:equalspos+(postspacestart-postspaceend)+1]
                 if self.inputdict.has_key(key):
-                    self.inecho = 0
+                    self.inecho = False
                     value = self.inputdict[key]
                     if isinstance(value, str):
                         value = value.decode('utf8')
@@ -101,7 +101,7 @@ class reprop:
                     else:
                         returnline = key+prespace+"="+postspace+quote.javapropertiesencode(value)+eol
                 else:
-                    self.inecho = 1
+                    self.inecho = True
                     returnline = line+eol
         if isinstance(returnline, unicode):
             returnline = returnline.encode('utf-8')

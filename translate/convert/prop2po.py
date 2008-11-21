@@ -37,7 +37,7 @@ class prop2po:
         targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit", x_accelerator_marker="&")
         targetheader.addnote("extracted from %s" % thepropfile.filename, "developer")
         # we try and merge the header po with any comments at the start of the properties file
-        appendedheader = 0
+        appendedheader = False
         waitingcomments = []
         for propunit in thepropfile.units:
             pounit = self.convertunit(propunit, "developer")
@@ -51,7 +51,7 @@ class prop2po:
                     pounit = targetheader
                 else:
                     thetargetfile.addunit(targetheader)
-                appendedheader = 1
+                appendedheader = True
             if pounit is not None:
                 pounit.addnote("".join(waitingcomments).rstrip(), "developer", position="prepend")
                 waitingcomments = []
@@ -66,7 +66,7 @@ class prop2po:
         targetheader.addnote("extracted from %s, %s" % (origpropfile.filename, translatedpropfile.filename), "developer")
         translatedpropfile.makeindex()
         # we try and merge the header po with any comments at the start of the properties file
-        appendedheader = 0
+        appendedheader = False
         waitingcomments = []
         # loop through the original file, looking at units one by one
         for origprop in origpropfile.units:
@@ -82,7 +82,7 @@ class prop2po:
                     origpo = targetheader
                 else:
                     thetargetfile.addunit(targetheader)
-                appendedheader = 1
+                appendedheader = True
             # try and find a translation of the same name...
             if origprop.name in translatedpropfile.locationindex:
                 translatedprop = translatedpropfile.locationindex[origprop.name]
