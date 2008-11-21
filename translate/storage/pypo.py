@@ -513,11 +513,11 @@ class pounit(pocommon.pounit):
         return len(self.msgid_plural) > 0
 
     def parselines(self, lines):
-        inmsgctxt = 0
-        inmsgid = 0
-        inmsgid_comment = 0
-        inmsgid_plural = 0
-        inmsgstr = 0
+        inmsgctxt = False
+        inmsgid = False
+        inmsgid_comment = False
+        inmsgid_plural = False
+        inmsgstr = False
         msgstr_pluralid = None
         linesprocessed = 0
         for line in lines:
@@ -541,32 +541,32 @@ class pounit(pocommon.pounit):
                 else:
                     self.othercomments.append(line)
             if line.startswith('msgid_plural'):
-                inmsgctxt = 0
-                inmsgid = 0
-                inmsgid_plural = 1
-                inmsgstr = 0
-                inmsgid_comment = 0
+                inmsgctxt = False
+                inmsgid = False
+                inmsgid_plural = True
+                inmsgstr = False
+                inmsgid_comment = False
             elif line.startswith('msgctxt'):
-                inmsgctxt = 1
-                inmsgid = 0
-                inmsgid_plural = 0
-                inmsgstr = 0
-                inmsgid_comment = 0
+                inmsgctxt = True
+                inmsgid = False
+                inmsgid_plural = False
+                inmsgstr = False
+                inmsgid_comment = False
             elif line.startswith('msgid'):
                 # if we just finished a msgstr or msgid_plural, there is probably an 
                 # empty line missing between the units, so let's stop the parsing now.
                 if inmsgstr or inmsgid_plural:
                     break
-                inmsgctxt = 0
-                inmsgid = 1
-                inmsgid_plural = 0
-                inmsgstr = 0
-                inmsgid_comment = 0
+                inmsgctxt = False
+                inmsgid = True
+                inmsgid_plural = False
+                inmsgstr = False
+                inmsgid_comment = False
             elif line.startswith('msgstr'):
-                inmsgctxt = 0
-                inmsgid = 0
-                inmsgid_plural = 0
-                inmsgstr = 1
+                inmsgctxt = False
+                inmsgid = False
+                inmsgid_plural = False
+                inmsgstr = True
                 if line.startswith('msgstr['):
                     msgstr_pluralid = int(line[len('msgstr['):line.find(']')].strip())
                 else:
@@ -578,22 +578,22 @@ class pounit(pocommon.pounit):
                 elif inmsgid:
                     # TODO: improve kde comment detection
                     if extracted.find("_:") != -1:
-                        inmsgid_comment = 1
+                        inmsgid_comment = True
                     if inmsgid_comment:
                         self.msgidcomments.append(extracted)
                     else:
                         self.msgid.append(extracted)
                     if inmsgid_comment and extracted.find("\\n") != -1:
-                        inmsgid_comment = 0
+                        inmsgid_comment = False
                 elif inmsgid_plural:
                     if extracted.find("_:") != -1:
-                        inmsgid_comment = 1
+                        inmsgid_comment = True
                     if inmsgid_comment:
                         self.msgid_pluralcomments.append(extracted)
                     else:
                         self.msgid_plural.append(extracted)
                     if inmsgid_comment and extracted.find("\\n") != -1:
-                        inmsgid_comment = 0
+                        inmsgid_comment = False
                 elif inmsgstr:
                     if msgstr_pluralid is None:
                         self.msgstr.append(extracted)
