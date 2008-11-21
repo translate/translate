@@ -105,3 +105,19 @@ class QphFile(lisa.LISAfile):
         self.namespace = self.document.getroot().nsmap.get(None, None)
         self.body = self.document.getroot() # The root node contains the units
 
+    def __str__(self):
+        """Converts to a string containing the file's XML.
+        
+        We have to override this to ensure mimic the Qt convention:
+            - no XML decleration
+            - plain DOCTYPE that lxml seems to ignore
+        """
+        # A bug in lxml means we have to output the doctype ourselves. For 
+        # more information, see:
+        # http://codespeak.net/pipermail/lxml-dev/2008-October/004112.html
+        # The problem was fixed in lxml 2.1.3
+        output = etree.tostring(self.document, pretty_print=True, 
+                xml_declaration=False, encoding='utf-8')
+        if not "<!DOCTYPE QPH>" in output[:30]:
+            output = "<!DOCTYPE QPH>" + output
+        return output
