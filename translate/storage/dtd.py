@@ -189,6 +189,12 @@ class dtdunit(base.TranslationUnit):
                     else:
                         # plain comment
                         self.commenttype = "comment"
+                #FIXME: bloody entity might share a line with something important
+                elif not self.inentity and re.search("%.*;", line):
+                    # now work out the type of comment, and save it (remember we're not in the comment yet)
+                    self.comments.append(("comment", line))
+                    line = ""
+                    continue
 
             if self.incomment:
                 # some kind of comment
