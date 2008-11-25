@@ -188,6 +188,7 @@ def getobject(storefile, ignore=None):
         store = storeclass.parsefile(storefile)
     else:
         store = storeclass()
+        store.filename = storefilename
     return store
 
 def supported_files():
