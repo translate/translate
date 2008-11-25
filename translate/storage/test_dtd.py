@@ -126,6 +126,13 @@ class TestDTD(test_monolingual.TestMonolingualStore):
         dtdregen = self.dtdregen(dtdsource)
         assert dtdsource == dtdregen
 
+    #test for bug #610
+    def test_entitityreference_order_in_source(self):
+        """checks that an &entity; in the source is retained"""
+        dtdsource = '<!ENTITY % realBrandDTD SYSTEM "chrome://branding/locale/brand.dtd">\n%realBrandDTD;\n<!-- some comment -->\n'
+        dtdregen = self.dtdregen(dtdsource)
+        assert dtdsource == dtdregen
+
         # The following test is identical to the one above, except that the entity is split over two lines.
         # This is to ensure that a recent bug fixed in dtdunit.parse() is at least partly documented.
         # The essence of the bug was that after it had read "realBrandDTD", the line index is not reset
