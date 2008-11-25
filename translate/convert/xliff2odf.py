@@ -33,6 +33,7 @@ from translate.storage.xml_extract import unit_tree
 from translate.storage.xml_extract import extract
 from translate.storage.xml_extract import generate
 from translate.storage import odf_shared
+from translate.storage.xml_name import XmlNamer
 
 def first_child(unit_node):
     return unit_node.children.values()[0]
@@ -40,25 +41,44 @@ def first_child(unit_node):
 def translate_odf(template, input_file):
     def open_odf(filename):
         z = zipfile.ZipFile(filename, 'r')
-        return {'content.xml': z.read("content.xml")}
+        return {'content.xml': z.read("content.xml"),
+                'meta.xml':    z.read("meta.xml"),
+                'styles.xml':  z.read("styles.xml")}
   
     def load_dom_trees(template):
         odf_data = open_odf(template)
         return dict((filename, etree.parse(cStringIO.StringIO(data))) for filename, data in odf_data.iteritems())
     
-    def load_unit_tree(input_file):
+    def load_unit_tree(input_file, dom_trees):
         store = factory.getobject(input_file)
-        return {'content.xml': unit_tree.build_unit_tree(store)}
-    
+        tree = unit_tree.build_unit_tree(store)
+
+        def extract_unit_tree(filename, root_dom_element_name):
+            """Find the subtree in 'tree' which corresponds to the data in XML file 'filename'"""
+            def get_tree():
+                try:
+                    # dom_trees[filename] is an XML document, XmlNamer uses it for its namespace table.
+                    # We use XmlNamer to get the full XML name of 'office:?' where ? is the value of
+                    # root_dom_element_name. This full XML name is then the index we use in tree.children
+                    # to get the tree we want.
+                    return tree.children[XmlNamer(dom_trees[filename]).name('office', root_dom_element_name), 0]
+                except KeyError:
+                    return unit_tree.XPathTree()
+            return (filename, get_tree())
+
+        return dict([extract_unit_tree('content.xml', 'document-content'),
+                     extract_unit_tree('meta.xml',    'document-meta'),
+                     extract_unit_tree('styles.xml',  'document-styles')])
+
     def translate_dom_trees(unit_trees, dom_trees):
         make_parse_state = lambda: extract.ParseState(odf_shared.no_translate_content_elements, odf_shared.inline_elements)
         for filename, dom_tree in dom_trees.iteritems():
             file_unit_tree = unit_trees[filename]
-            generate.apply_translations(dom_tree.getroot(), file_unit_tree.children.values()[0], generate.replace_dom_text(make_parse_state))
+            generate.apply_translations(dom_tree.getroot(), file_unit_tree, generate.replace_dom_text(make_parse_state))
         return dom_trees
 
     dom_trees = load_dom_trees(template)
-    unit_trees = load_unit_tree(input_file)
+    unit_trees = load_unit_tree(input_file, dom_trees)
     return translate_dom_trees(unit_trees, dom_trees)
 
 def write_odf(template, output_file, dom_trees):
