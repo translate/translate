@@ -32,21 +32,15 @@ from translate.storage import factory
 from translate.storage.xml_extract import unit_tree
 from translate.storage.xml_extract import extract
 from translate.storage.xml_extract import generate
-from translate.storage import odf_shared
+from translate.storage import odf_shared, odf_io
 from translate.storage.xml_name import XmlNamer
 
 def first_child(unit_node):
     return unit_node.children.values()[0]
 
 def translate_odf(template, input_file):
-    def open_odf(filename):
-        z = zipfile.ZipFile(filename, 'r')
-        return {'content.xml': z.read("content.xml"),
-                'meta.xml':    z.read("meta.xml"),
-                'styles.xml':  z.read("styles.xml")}
-  
     def load_dom_trees(template):
-        odf_data = open_odf(template)
+        odf_data = odf_io.open_odf(template)
         return dict((filename, etree.parse(cStringIO.StringIO(data))) for filename, data in odf_data.iteritems())
     
     def load_unit_tree(input_file, dom_trees):
@@ -82,18 +76,12 @@ def translate_odf(template, input_file):
     return translate_dom_trees(unit_trees, dom_trees)
 
 def write_odf(template, output_file, dom_trees):
-    def copy_odf(input_file, output_file, exclusion_list):
-        input_zip  = zipfile.ZipFile(input_file,  'r')
-        output_zip = zipfile.ZipFile(output_file, 'w', compression=zipfile.ZIP_DEFLATED)
-        for name in [name for name in input_zip.namelist() if name not in exclusion_list]:
-            output_zip.writestr(name, input_zip.read(name))
-        return output_zip
 
     def write_content_to_odf(output_zip, dom_trees):
         for filename, dom_tree in dom_trees.iteritems():
             output_zip.writestr(filename, etree.tostring(dom_tree, encoding='UTF-8', xml_declaration=True))
 
-    output_zip = copy_odf(template, output_file, dom_trees.keys())
+    output_zip = odf_io.copy_odf(template, output_file, dom_trees.keys())
     write_content_to_odf(output_zip, dom_trees)
 
 def convertxliff(input_file, output_file, template):

@@ -27,6 +27,7 @@ from translate.storage import factory
 
 from translate.misc.contextlib import contextmanager, nested
 from translate.misc.context import with_
+from translate.storage import odf_io
 
 def convertodf(inputfile, outputfile, templates, engine):
     """reads in stdin using fromfileclass, converts using convertorclass,
@@ -40,14 +41,11 @@ def convertodf(inputfile, outputfile, templates, engine):
         from translate.storage.xml_extract import extract
         from translate.storage import odf_shared
 
-        try:
-            z = zipfile.ZipFile(inputfile, 'r')
-            contents = z.read("content.xml")
-        except (ValueError, zipfile.BadZipfile):
-            contents = open(inputfile, 'r').read()
-        parse_state = extract.ParseState(odf_shared.no_translate_content_elements, 
-                                         odf_shared.inline_elements)
-        extract.build_store(cStringIO.StringIO(contents), store, parse_state)
+        contents = odf_io.open_odf(inputfile)
+        for data in contents.values():
+            parse_state = extract.ParseState(odf_shared.no_translate_content_elements, 
+                                             odf_shared.inline_elements)
+            extract.build_store(cStringIO.StringIO(data), store, parse_state)
     
     def itools_implementation(store):
         from itools.handlers import get_handler
