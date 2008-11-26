@@ -92,7 +92,24 @@ def convertxliff(input_file, output_file, template):
 
 def main(argv=None):
     from translate.convert import convert
-    formats = {"xlf": ("odt", convertxliff)}
+    formats = {"xlf": ("odt", convertxliff), # Text
+               "xlf": ("ods", convertxliff), # Spreadsheet
+               "xlf": ("odp", convertxliff), # Presentation
+               "xlf": ("odg", convertxliff), # Drawing
+               "xlf": ("odc", convertxliff), # Chart
+               "xlf": ("odf", convertxliff), # Formula
+               "xlf": ("odi", convertxliff), # Image
+               "xlf": ("odm", convertxliff), # Master Document
+               "xlf": ("ott", convertxliff), # Text template
+               "xlf": ("ots", convertxliff), # Spreadsheet template
+               "xlf": ("otp", convertxliff), # Presentation template
+               "xlf": ("otg", convertxliff), # Drawing template
+               "xlf": ("otc", convertxliff), # Chart template
+               "xlf": ("otf", convertxliff), # Formula template
+               "xlf": ("oti", convertxliff), # Image template
+               "xlf": ("oth", convertxliff), # Web page template
+              }
+
     parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
     parser.run(argv)
 
