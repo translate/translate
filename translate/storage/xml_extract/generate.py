@@ -223,8 +223,11 @@ def replace_dom_text(make_parse_state):
     def action(dom_node, unit):
         """Use the unit's target (or source in the case where there is no translation)
         to update the text in the dom_node and at the tails of its children."""
-        source_dom            = unit.source_dom
-        target_dom            = unit.target_dom or unit.source_dom
+        source_dom = unit.source_dom
+        if unit.target_dom is not None:
+            target_dom = unit.target_dom
+        else:
+            target_dom = unit.source_dom
         # Build a tree of (non-DOM) nodes which correspond to the translatable DOM nodes in 'dom_node'.
         # Pass in a fresh parse_state every time, so as avoid working with stale parse state info.
         unit_node             = extract.find_translatable_dom_nodes(dom_node, make_parse_state())[0]        
