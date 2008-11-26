@@ -23,14 +23,14 @@
 class XmlNamespace(object):
     def __init__(self, namespace):
         self._namespace = namespace
-        
+
     def name(self, tag):
         return "{%s}%s" % (self._namespace, tag)
 
 class XmlNamer(object):
     """Initialize me with a DOM node or a DOM document node (the
-    toplevel node you get when parsing an XML file). The use me
-    to get generate fully qualified XML names.
+    toplevel node you get when parsing an XML file). Then use me
+    to generate fully qualified XML names.
 
     >>> xml = '<office:document-styles xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0"></office>'
     >>> from lxml import etree
