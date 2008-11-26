@@ -33,7 +33,6 @@ from translate.storage.xml_extract import unit_tree
 from translate.storage.xml_extract import extract
 from translate.storage.xml_extract import generate
 from translate.storage import odf_shared, odf_io
-from translate.storage.xml_name import XmlNamer
 
 def first_child(unit_node):
     return unit_node.children.values()[0]
@@ -51,11 +50,7 @@ def translate_odf(template, input_file):
             """Find the subtree in 'tree' which corresponds to the data in XML file 'filename'"""
             def get_tree():
                 try:
-                    # dom_trees[filename] is an XML document, XmlNamer uses it for its namespace table.
-                    # We use XmlNamer to get the full XML name of 'office:?' where ? is the value of
-                    # root_dom_element_name. This full XML name is then the index we use in tree.children
-                    # to get the tree we want.
-                    return tree.children[XmlNamer(dom_trees[filename]).name('office', root_dom_element_name), 0]
+                    return tree.children['office:%s' % root_dom_element_name, 0]
                 except KeyError:
                     return unit_tree.XPathTree()
             return (filename, get_tree())
