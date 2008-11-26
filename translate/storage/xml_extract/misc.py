@@ -74,19 +74,3 @@ def parse_tag(full_tag):
     else:
         raise Exception('Passed an invalid tag')
 
-def full_xml_name(nsmap, tag):
-    match = tag_pattern.match(tag)
-    if match is None:
-        raise Exception('Not a valid tag')
-    parts = match.groupdict()
-    if parts['namespace'] is None:
-        try:
-            namespace_abbrev, tag_name = tag.split(':')
-            return '{%s}%s' % (nsmap[namespace_abbrev], tag_name)
-        except ValueError:
-            try:
-                return '{%s}%s' % (nsmap[None], tag)
-            except KeyError:
-                return tag
-    else:
-        return tag

@@ -28,6 +28,7 @@ from translate.misc.typecheck import accepts, IsCallable, Any
 from translate.storage.xml_extract import misc
 from translate.storage.xml_extract import extract
 from translate.storage.xml_extract import unit_tree
+from translate.storage.xml_name import XmlNamer
 
 @accepts(etree._Element)
 def _get_tag_arrays(dom_node):
@@ -53,7 +54,7 @@ def apply_translations(dom_node, unit_node, do_translate):
     for unit_child_index, unit_child in unit_node.children.iteritems():
         tag, index = unit_child_index
         try:
-            dom_child = tag_array[misc.full_xml_name(dom_node.nsmap, tag)][index]
+            dom_child = tag_array[XmlNamer(dom_node).name(tag)][index]
             apply_translations(dom_child, unit_child, do_translate)
         # Raised if tag is not in tag_array. We might want to complain to the
         # user in the future.

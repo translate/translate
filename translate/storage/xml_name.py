@@ -37,6 +37,8 @@ class XmlNamer(object):
     >>> namer = XmlNamer(etree.fromstring(xml))
     >>> namer.name('office', 'blah')
     {urn:oasis:names:tc:opendocument:xmlns:office:1.0}blah
+    >>> namer.name('office:blah')
+    {urn:oasis:names:tc:opendocument:xmlns:office:1.0}blah
 
     I can also give you XmlNamespace objects if you give me the abbreviated
     namespace name. These are useful if you need to reference a namespace 
@@ -55,7 +57,12 @@ class XmlNamer(object):
         else:
             self.nsmap = dom_node.getroot().nsmap
 
-    def name(self, namespace_shortcut, tag):
+    def name(self, namespace_shortcut, tag=None):
+        # If the user doesn't pass an argument into 'tag'
+        # then namespace_shortcut contains a tag of the form
+        # 'short-namespace:tag'
+        if tag is None:
+            namespace_shortcut, tag = namespace_shortcut.split(':')
         return "{%s}%s" % (self.nsmap[namespace_shortcut], tag)
 
     def namespace(self, namespace_shortcut):
