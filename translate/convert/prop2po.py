@@ -88,6 +88,8 @@ class prop2po:
                 translatedprop = translatedpropfile.locationindex[origprop.name]
                 # Need to check that this comment is not a copy of the developer comments
                 translatedpo = self.convertunit(translatedprop, "translator")
+                if translatedpo is "discard":
+                    continue
             else:
                 translatedpo = None
             # if we have a valid po unit, get the translation and add it...
