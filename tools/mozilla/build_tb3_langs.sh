@@ -17,6 +17,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+##########################################################################
+# NOTE: Documentation regarding (the use of) this script can be found at #
+# http://translate.sourceforge.net/wiki/toolkit/mozilla_l10n_scripts     #
+##########################################################################
+
 BUILD_DIR="/home/walter/mozbuild"
 COMM_DIR="${BUILD_DIR}/comm-central" # Change "../comm-central" on line 35 too if you change this var
 #HG_LANGS="af ar as be bg bn-IN ca cs da de el en-GB en-ZA es-AR es-ES et eu fa fi fr fy-NL ga-IE gl gu-IN he hi-IN hu hy-AM id is it ja ja-JP-mac ka kn ko ku langs lt lv mk ml mn mr nb-NO ne-NP nl nn-NO nr nso pa-IN pl ro ru rw si sk sl sq sr ss st sv-SE ta te th tn tr ts uk ve xh zh-CN zh-TW zu"
@@ -38,6 +43,8 @@ do
 	[ ! -d ${dir} ] && mkdir -p ${dir}
 done
 
+# Compute relative paths of ${L10N_DIR} and ${POUPDATED_DIR}.
+# (This assumes that both directories are sub-directories of ${BUILD_DIR}
 L10N_DIR_REL=`echo ${L10N_DIR} | sed "s#${BUILD_DIR}/##"`
 POUPDATED_DIR_REL=`echo ${POUPDATED_DIR} | sed "s#${BUILD_DIR}/##"`
 
@@ -59,10 +66,12 @@ rm -rf pot
 get_moz_enUS.py -s ../comm-central -d . -p mail -v
 mv en-US{,_mail}
 ln -sf en-US_mail ./en-US
+# CREATE POT FILES FROM en-US
 moz2po --progress=none -P --duplicates=msgctxt --exclude '.hg' en-US pot
 find pot -name '*.html.pot' -o -name '*.xhtml.pot' -exec rm -f {} \;
 
 # Create POT pack
+# Comment out the lines starting with "tar" and/or "zip" to keep from building archives in the specific format(s).
 PACKNAME="${POTPACK_DIR}/thunderbird-${TB_VERSION}-`date +%Y%m%d`"
 tar cjf ${PACKNAME}.tar.bz2 pot en-US ${POT_INCLUDES}
 zip -qr9 ${PACKNAME}.zip pot en-US ${POT_INCLUDES}
@@ -100,12 +109,12 @@ function copydir {
 
 for lang in ${HG_LANGS}
 do
-	## Recover
+	## RECOVER - Recover PO files from existing l10n directory.
+	## Comment out the following "moz2po"-line if recovery should not be done.
 	[ ! -d ${PORECOVER_DIR}/${lang} ] && mkdir -p ${PORECOVER_DIR}/${lang}
 	#moz2po --progress=none --errorlevel=traceback --duplicates=msgctxt --exclude=".#*" --exclude='.hg' \
 	#	-t ${L10N_DIR}/en-US ${L10N_DIR}/${lang} ${PORECOVER_DIR}/${lang}
 
-	## Migrate
 	[ ! -d ${PO_DIR}/${lang} ] && cp -R ${PORECOVER_DIR}/${lang} ${PO_DIR}
 
 	# Try and update existing PO files
@@ -119,7 +128,8 @@ do
 	cp -R ${PO_DIR}/${lang} ${POUPDATED_DIR}
 	find ${POUPDATED_DIR}/${lang} -name '*.po' -exec rm -f {} \;
 
-	## Migrate to new POT files
+	## MIGRATE - Migrate PO files to new POT files.
+	# Comment out the following "pomigrate2"-line if migration should not be done.
 	tempdir=`mktemp -d`
 	cp -R ${PO_DIR}/${lang} ${tempdir}/${lang}
 	pomigrate2 --use-compendium --quiet --pot2po ${tempdir}/${lang} ${POUPDATED_DIR}/${lang} ${L10N_DIR}/pot
@@ -131,7 +141,8 @@ do
 	[ -d ${L10N_DIR}/${lang} ] && find ${lang_product_dirs} -name '*.dtd' -o -name '*.properties' -exec rm -f {} \;
 	find ${POUPDATED_DIR} -name '*.html.po' -o -name '*.xhtml.po' -exec rm -f {} \;
 
-	## Create Mozilla l10n layout from migrated PO files
+	## PO2MOZ - Create Mozilla l10n layout from migrated PO files.
+	# Comment out the "po2moz"-line below to prevent l10n files to be updated to the current PO files.
 	po2moz --progress=none --errorlevel=traceback --exclude=".svn" --exclude=".hg" \
 		-t ${L10N_DIR}/en-US -i ${POUPDATED_DIR}/${lang} -o ${L10N_DIR}/${lang}
 
@@ -141,7 +152,8 @@ do
 	copyfiletype "*.rdf" ${lang}   # Don't support .rdf files
 	copyfiletype "*.txt" ${lang}
 	
-	## Create PO pack
+	## CREATE PO PACK - Create archives of PO files.
+	# Comment out the lines starting with "tar" and/or "zip" to keep from building archives in the specific format(s).
 	PACKNAME="${POPACK_DIR}/thunderbird-${TB_VERSION}-${lang}-`date +%Y%m%d`"
 	(
 		cd ${BUILD_DIR}
@@ -149,6 +161,7 @@ do
 		zip -qr9 ${PACKNAME}.zip ${L10N_DIR_REL}/${lang} ${POUPDATED_DIR_REL}/${lang} -x '*.svn*' -x "*.hg*"
 	)
 
-	## Create XPI langpack
+	## CREATE XPI LANGPACK
+	# Comment out the "buildxpi"-line below if XPI langpacks should not be built.
 	buildxpi.py -L ${L10N_DIR} -s ${COMM_DIR} -o ${LANGPACK_DIR} -p mail ${lang}
 done
