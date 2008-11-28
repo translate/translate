@@ -48,14 +48,16 @@ done
 L10N_DIR_REL=`echo ${L10N_DIR} | sed "s#${BUILD_DIR}/##"`
 POUPDATED_DIR_REL=`echo ${POUPDATED_DIR} | sed "s#${BUILD_DIR}/##"`
 
-(cd ${MOZCENTRAL_DIR}; hg pull -u; python client.py checkout --skip-inspector --skip-ldap --skip-chatzilla --skip-venkman)
+(cd ${MOZCENTRAL_DIR}; hg pull -u; hg update -C; python client.py checkout --skip-inspector --skip-ldap --skip-chatzilla --skip-venkman)
+find ${MOZCENTRAL_DIR} -name '*.org' | xargs rm
 
 cd ${L10N_DIR}
 
 # Update all Mercurial-managed languages
 for lang in ${HG_LANGS}
 do
-	[ -d ${lang}/.hg ] && (cd ${lang}; hg pull -u)
+	[ -d ${lang}/.hg ] && (cd ${lang}; hg pull -u; hg update -C)
+	find ${lang} -name '*.org' | xargs rm
 done
 
 rm en-US
