@@ -39,8 +39,9 @@ except:
 
 class po2html:
     """po2html can take a po file and generate html. best to give it a template file otherwise will just concat msgstrs"""
-    def __init__(self, wrap=None):
+    def __init__(self, wrap=None, usetidy=None):
         self.wrap = wrap
+        self.tidy = tidy and usetidy
 
     def wrapmessage(self, message):
         """rewraps text as required"""
@@ -83,14 +84,14 @@ class po2html:
                 #   see test_po2html.py in line 67
                 htmlresult = htmlresult.replace(msgid, msgstr, 1)
         htmlresult = htmlresult.encode('utf-8')
-        if tidy:
+        if self.tidy:
             htmlresult = str(tidy.parseString(htmlresult))
         return htmlresult
 
-def converthtml(inputfile, outputfile, templatefile, wrap=None, includefuzzy=False):
+def converthtml(inputfile, outputfile, templatefile, wrap=None, includefuzzy=False, usetidy=True):
     """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
     inputstore = po.pofile(inputfile)
-    convertor = po2html(wrap=wrap)
+    convertor = po2html(wrap=wrap, usetidy=usetidy)
     if templatefile is None:
         outputstring = convertor.convertstore(inputstore, includefuzzy)
     else:
@@ -111,6 +112,10 @@ def main(argv=None):
         parser.add_option("-w", "--wrap", dest="wrap", default=None, type="int",
                 help="set number of columns to wrap html at", metavar="WRAP")
         parser.passthrough.append("wrap")
+    if tidy is not None:
+        parser.add_option("", "--notidy", dest="usetidy", default=True,
+                help="disables the use of HTML tidy", action="store_false")
+        parser.passthrough.append("usetidy")
     parser.add_fuzzy_option()
     parser.run(argv)
 
