@@ -31,7 +31,9 @@ try:
 except:
     import pickle
 from exceptions import NotImplementedError
-from translate.storage.placeables.base import PlaceableId
+from translate.storage.placeables.base import PlaceableId, Placeable, as_string
+from translate.misc.typecheck import accepts, Self, IsOneOf
+from translate.misc.multistring import multistring
 
 def force_override(method, baseclass):
     """Forces derived classes to override method."""
@@ -320,6 +322,44 @@ class TranslationUnit(object):
             newunit.addnote(notes)
         return newunit
     buildfromunit = classmethod(buildfromunit)
+
+    def _rich_to_multistring(cls, value):
+        """Convert a placeables representation to a multistring.
+        >>> rich_string = [['a', X('42'), 'b'], ['foo', G('7', ['bar'])]]
+        >>> TranslationUnit._rich_to_multistring(rich_string)
+        multistring('a*b', 'foobar')
+        """
+        return multistring([as_string(chunk_seq) for chunk_seq in value])
+    _rich_to_multistring = classmethod(_rich_to_multistring)
+
+    def _multistring_to_rich(cls, value):
+        """Convert a multistring or unicode to a placeables presentation.
+        >>> TranslationUnit._multistring_to_rich(multistring('a', 'b'))
+        [['a'], ['b']]
+        """
+        if isinstance(value, (unicode, str)):
+            return [[unicode(value)]]
+        else:
+            return [[string] for string in value.strings]
+    _multistring_to_rich = classmethod(_multistring_to_rich)
+
+    @accepts(Self(), [[IsOneOf(Placeable, unicode)]])
+    def _set_rich_source(self, value):
+        self.source = self._rich_to_multistring(value)
+
+    def _get_rich_source(self):
+        return self._multistring_to_rich(self.source)
+
+    rich_source = property(_get_rich_source, _set_rich_source)
+
+    @accepts(Self(), [[IsOneOf(Placeable, unicode)]])
+    def _set_rich_target(self, value):
+        self.target = self._rich_to_multistring(value)
+
+    def _get_rich_target(self):
+        return self._multistring_to_rich(self.target)
+
+    rich_target = property(_get_rich_target, _set_rich_target)
 
 class TranslationStore(object):
     """Base class for stores for multiple translation units of type UnitClass."""

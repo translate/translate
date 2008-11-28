@@ -5,6 +5,7 @@ from translate.storage import po
 from translate.storage import test_base
 from translate.misc import wStringIO
 from translate.misc.multistring import multistring
+from translate.storage.placeables import X, G
 from py.test import raises
 
 def test_roundtrip_quoting():
@@ -129,6 +130,16 @@ class TestPOUnit(test_base.TestTranslationUnit):
         assert not unit.isheader()
         unit.source = u"Goeiemôre"
         assert not unit.isheader()
+
+#     def test_rich_source(self):
+#         unit = self.unit
+#         unit.rich_source = [['a', X('42'), 'c']]
+#         assert unit.rich_source == [[u'a\ufffcc']]
+
+#     def test_rich_target(self):
+#         unit = self.unit
+#         unit.rich_target = [['a', G('42', ['b']), 'c']]
+#         assert unit.rich_target == [['abc']]
 
 class TestPOFile(test_base.TestTranslationStore):
     StoreClass = po.pofile

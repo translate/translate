@@ -195,7 +195,7 @@ def _add_translatable_to_store(store, parent_translatable, translatable, id_make
     information and add it to 'store'.
     """
     unit = store.UnitClass(u'')
-    unit.rich_source = _to_placeables(parent_translatable, translatable, id_maker)
+    unit.rich_source = [_to_placeables(parent_translatable, translatable, id_maker)]
     unit.addlocation(translatable.xpath)
     if parent_translatable is not None:
         unit.placeable_id.xid = parent_translatable.xpath

@@ -147,12 +147,18 @@ Provisional work is done to make several languages possible."""
         return self.getlanguageNode(lang=None, index=0)
     source_dom = property(get_source_dom, set_source_dom)
 
-    def set_rich_source(self, chunk_seq, sourcelang='en'):
+    def _ensure_singular(cls, value):
+        if value is not None and len(value) > 1:
+            raise Exception("XLIFF cannot handle plurals by default")
+    _ensure_singular = classmethod(_ensure_singular)
+
+    def set_rich_source(self, value, sourcelang='en'):
+        self._ensure_singular(value)
         sourcelanguageNode = self.createlanguageNode(sourcelang, u'', "source")        
-        self.source_dom = lisa.insert_into_dom(sourcelanguageNode, chunk_seq)
+        self.source_dom = lisa.insert_into_dom(sourcelanguageNode, value[0])
 
     def get_rich_source(self):
-        return lisa.extract_chunks(self.source_dom)
+        return [lisa.extract_chunks(self.source_dom)]
     rich_source = property(get_rich_source, set_rich_source)
 
     def setsource(self, text, sourcelang='en'):
@@ -181,17 +187,18 @@ Provisional work is done to make several languages possible."""
             return self.getlanguageNode(lang=None, index=1)
     target_dom = property(get_target_dom)
 
-    def set_rich_target(self, chunk_seq, lang='xx', append=False):
+    def set_rich_target(self, value, lang='xx', append=False):
+        self._ensure_singular(value)
         languageNode = None
-        if not chunk_seq is None:
+        if not value is None:
             languageNode = self.createlanguageNode(lang, u'', "target")
-            lisa.insert_into_dom(languageNode, chunk_seq)
+            lisa.insert_into_dom(languageNode, value[0])
         self.set_target_dom(languageNode, append)
 
     def get_rich_target(self, lang=None):
         """retrieves the "target" text (second entry), or the entry in the 
         specified language, if it exists"""
-        return lisa.extract_chunks(self.get_target_dom(lang))
+        return [lisa.extract_chunks(self.get_target_dom(lang))]
     rich_target = property(get_rich_target, set_rich_target)
 
     def settarget(self, text, lang='xx', append=False):
