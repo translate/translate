@@ -20,10 +20,31 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
+"""This module implements basic functionality to support placeables.
+
+A placeable is used to represent things like:
+1. substitutions
+     for example, in ODF, footnotes appear in the ODF xml
+     where they are defined; so if we extract a paragraph with some
+     footnotes, the translator will have a lot of additional XML to with;
+     so we separate the footnotes out into separate translation units and
+     mark their positions in the original text with placeables.
+2. hiding of inline formatting data
+     the translator doesn't want to have to deal with all the weird
+     formatting conventions of wherever the text came from.
+3. marking variables
+     This is an old issue - translators translate variable names which
+     should remain untranslated. We can wrap placeables around variable
+     names to avoid this.
+
+The placeables model follows the XLIFF standard's list of placeables.
+Please refer to the XLIFF specification to get a better understanding.
+"""
+
 __all__ = ['Placeable', 'Bpt', 'Ept', 'X', 'Bx', 'Ex', 'G', 'It', 'Sub', 'Ph']
 
 def as_string(chunk_seq):
-    return u''.join([repr(chunk) for chunk in chunk_seq])
+    return u''.join([unicode(chunk) for chunk in chunk_seq])
     
 class PlaceableId(object):
     def __init__(self, id=None, content=None, xid=None, rid=None):
@@ -45,8 +66,14 @@ class Placeable(PlaceableId):
             return u'\ufffc'
         
     def __repr__(self):
-        return u'<%(tagname)s id=%(id)s />' % {'tagname': self.__class__.__name__, 
-                                               'id': self.id }
+        if self.has_content:
+            return u'<%(tagname)s id=%(id)s>%(content)s</%(tagname)s>' % \
+                {'tagname': self.__class__.__name__,
+                 'id':      self.id,
+                 'content': as_string(self.content)}
+        else:
+            return u'<%(tagname)s id=%(id)s />' % {'tagname': self.__class__.__name__, 
+                                                   'id': self.id }
         
     def __eq__(self, other):
         return self.id        == other.id        and \
