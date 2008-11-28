@@ -26,9 +26,15 @@ usage instructions
 """
 
 from translate.storage import factory
+from translate.misc.rich import map_rich, only_strings
 import os
 import re
 import md5
+
+def add_prefix(prefix, strings):
+    for string in strings:
+        string.insert(0, prefix)
+    return strings
 
 class podebug:
     def __init__(self, format=None, rewritestyle=None, hash=None, ignoreoption=None):
@@ -143,16 +149,10 @@ class podebug:
                 hashable = unit.source
             prefix = md5.new(hashable).hexdigest()[:self.hash] + " "
         if self.rewritefunc:
-            unit.target = self.rewritefunc(unit.source)
+            unit.rich_target = map_rich(only_strings(self.rewritefunc), unit.rich_source)
         elif not unit.istranslated():
-            unit.target = unit.source
-        if unit.hasplural():
-            strings = unit.target.strings
-            for i, string in enumerate(strings):
-                strings[i] = prefix + string
-            unit.target = strings
-        else:
-            unit.target = prefix + unit.target
+            unit.rich_target = unit.rich_source
+        unit.rich_target = add_prefix(prefix, unit.rich_target)
         return unit
 
     def convertstore(self, store):
