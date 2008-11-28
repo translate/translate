@@ -122,6 +122,13 @@ def compact_tag(nsmap, namespace, tag):
 
 @accepts(etree._Element, ParseState)
 def find_translatable_dom_nodes(dom_node, state):
+    # For now, we only want to deal with XML elements.
+    # And we want to avoid processing instructions, which 
+    # are XML elements (in the inheritance hierarchy).
+    if not isinstance(dom_node, etree._Element) or \
+           isinstance(dom_node, etree._ProcessingInstruction):
+        return []
+
     namespace, tag = misc.parse_tag(dom_node.tag)
 
     @contextmanager
