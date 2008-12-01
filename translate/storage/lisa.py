@@ -288,6 +288,15 @@ Provisional work is done to make several languages possible."""
     def __str__(self):
         return etree.tostring(self.xmlelement, pretty_print=True, encoding='utf-8')
 
+    def _set_property(self, name, value):
+        self.xmlelement.attrib[name] = value
+
+    xid = property(lambda self:        self.xmlelement.attrib[self.namespaced('xid')],
+                   lambda self, value: self._set_property(self.namespaced('xid'), value))
+
+    rid = property(lambda self:        self.xmlelement.attrib[self.namespaced('rid')],
+                   lambda self, value: self._set_property(self.namespaced('rid'), value))
+
     def createfromxmlElement(cls, element):
         term = cls(None, empty=True)
         term.xmlelement = element

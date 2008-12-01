@@ -46,17 +46,13 @@ __all__ = ['Placeable', 'Bpt', 'Ept', 'X', 'Bx', 'Ex', 'G', 'It', 'Sub', 'Ph']
 def as_string(chunk_seq):
     return u''.join([unicode(chunk) for chunk in chunk_seq])
     
-class PlaceableId(object):
-    def __init__(self, id=None, content=None, xid=None, rid=None):
-        self.id      = id
-        self.xid     = xid
-        self.rid     = rid
-
-class Placeable(PlaceableId):
+class Placeable(object):
     has_content = True
     
     def __init__(self, id, content=None, xid=None, rid=None):
-        super(Placeable, self).__init__(id, xid, rid)
+        self.id      = id
+        self.xid     = xid
+        self.rid     = rid
         self.content = content
 
     def __unicode__(self):

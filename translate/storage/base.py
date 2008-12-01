@@ -31,7 +31,7 @@ try:
 except:
     import pickle
 from exceptions import NotImplementedError
-from translate.storage.placeables.base import PlaceableId, Placeable, as_string
+from translate.storage.placeables.base import Placeable, as_string
 from translate.misc.typecheck import accepts, Self, IsOneOf
 from translate.misc.multistring import multistring
 
@@ -86,7 +86,6 @@ class TranslationUnit(object):
         self.source = source
         self.target = None
         self.notes = ""
-        self.placeable_id = PlaceableId()
         super(TranslationUnit, self).__init__()
 
     def __eq__(self, other):
@@ -360,6 +359,9 @@ class TranslationUnit(object):
         return self._multistring_to_rich(self.target)
 
     rich_target = property(_get_rich_target, _set_rich_target)
+
+    xid = property(lambda self: None, lambda self, value: None)
+    rid = property(lambda self: None, lambda self, value: None)
 
 class TranslationStore(object):
     """Base class for stores for multiple translation units of type UnitClass."""
