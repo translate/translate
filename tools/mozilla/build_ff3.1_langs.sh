@@ -49,7 +49,7 @@ L10N_DIR_REL=`echo ${L10N_DIR} | sed "s#${BUILD_DIR}/##"`
 POUPDATED_DIR_REL=`echo ${POUPDATED_DIR} | sed "s#${BUILD_DIR}/##"`
 
 (cd ${MOZCENTRAL_DIR}; hg pull -u; hg update -C; python client.py checkout --skip-inspector --skip-ldap --skip-chatzilla --skip-venkman)
-find ${MOZCENTRAL_DIR} -name '*.org' | xargs rm
+find ${MOZCENTRAL_DIR} -name '*.orig' | xargs rm
 
 cd ${L10N_DIR}
 
@@ -57,7 +57,7 @@ cd ${L10N_DIR}
 for lang in ${HG_LANGS}
 do
 	[ -d ${lang}/.hg ] && (cd ${lang}; hg pull -u; hg update -C)
-	find ${lang} -name '*.org' | xargs rm
+	find ${lang} -name '*.orig' | xargs rm
 done
 
 rm en-US
@@ -70,7 +70,7 @@ mv en-US{,_browser}
 ln -sf en-US_browser ./en-US
 # CREATE POT FILES FROM en-US
 moz2po --progress=none -P --duplicates=msgctxt --exclude '.hg' en-US pot
-find pot -name '*.html.pot' -o -name '*.xhtml.pot' -exec rm -f {} \;
+find pot \( -name '*.html.pot' -o -name '*.xhtml.pot' \) -exec rm -f {} \;
 
 # Create POT pack
 # Comment out the lines starting with "tar" and/or "zip" to keep from building archives in the specific format(s).
@@ -140,8 +140,8 @@ do
 	# Pre-po2moz hacks
 	lang_product_dirs=
 	for dir in ${PRODUCT_DIRS}; do lang_product_dirs="${lang_product_dirs} ${L10N_DIR}/$lang/$dir"; done
-	[ -d ${L10N_DIR}/${lang} ] && find ${lang_product_dirs} -name '*.dtd' -o -name '*.properties' -exec rm -f {} \;
-	find ${POUPDATED_DIR} -name '*.html.po' -o -name '*.xhtml.po' -exec rm -f {} \;
+	[ -d ${L10N_DIR}/${lang} ] && find ${lang_product_dirs} \( -name '*.dtd' -o -name '*.properties' \) -exec rm -f {} \;
+	find ${POUPDATED_DIR} \( -name '*.html.po' -o -name '*.xhtml.po' \) -exec rm -f {} \;
 
 	## PO2MOZ - Create Mozilla l10n layout from migrated PO files.
 	# Comment out the "po2moz"-line below to prevent l10n files to be updated to the current PO files.
