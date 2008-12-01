@@ -55,6 +55,7 @@ translatescripts = [apply(join, ('translate', ) + script) for script in
                   ('convert', 'po2tmx'),
                   ('convert', 'po2wordfast'),
                   ('convert', 'csv2tbx'),
+                  ('convert', 'odf2xliff'), ('convert', 'xliff2odf'),
                   ('filters', 'pofilter'),
                   ('tools', 'pocompile'),
                   ('tools', 'poconflicts'),
