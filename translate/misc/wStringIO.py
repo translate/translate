@@ -86,7 +86,7 @@ class StringIO:
         if length is not None:
             r = self.buf.readline(length)
         else:
-            r = self.buf.readline(length)
+            r = self.buf.readline()
         self.pos = self.buf.tell()
         return r
 
