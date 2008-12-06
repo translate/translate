@@ -27,6 +27,7 @@ from translate.lang import factory as lang_factory
 from translate.misc import optrecurse
 from translate.storage import po
 from translate.storage import factory
+from translate.misc import file_discovery
 import os
 import re
 import sys
@@ -358,16 +359,6 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
             termfile.units.append(unit)
         open(options.output, "w").write(str(termfile))
 
-def find_installed_file(filename):
-    root = __file__
-    if os.path.islink(root):
-        root = os.path.realpath(root)
-    filepath = os.path.join( os.path.dirname(os.path.dirname(os.path.abspath(root))), 'share', filename )
-
-    if not os.path.exists(filepath):
-        return None
-    return filepath
-
 def fold_case_option(option, opt_str, value, parser):
     parser.values.ignorecase = False
     parser.values.foldtitle = True
@@ -422,7 +413,7 @@ def main():
     parser.stoprelist = []
     parser.stopfoldtitle = True
     parser.stopignorecase = False
-    parser.defaultstopfile = find_installed_file('stoplist-en')
+    parser.defaultstopfile = file_discovery.get_abs_data_filename('stoplist-en')
     parser.add_option("-S", "--stopword-list", type="string", metavar="STOPFILE", 
         action="callback", callback=parse_stopword_file,
         help="read stopword (term exclusion) list from STOPFILE (default %s)" % parser.defaultstopfile,
