@@ -124,7 +124,7 @@ languages = {
 'tk': ('Turkmen', 2, '(n != 1)'),
 'tr': ('Turkish', 1, '0'),
 'uk': ('Ukrainian', 3, '(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'),
-'vi': ('Vietnamese',1 , '0'),
+'vi': ('Vietnamese', 1, '0'),
 'wa': ('Walloon', 2, '(n > 1)'),
 # Chinese is difficult because the main divide is on script, not really 
 # country. Simplified Chinese is used mostly in China, Singapore and Malaysia.
