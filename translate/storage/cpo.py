@@ -527,9 +527,10 @@ class pofile(pocommon.pofile):
             self._gpo_memory_file = gpo.po_file_create()
             self._gpo_message_iterator = gpo.po_message_iterator(self._gpo_memory_file, None)
 
-    def addunit(self, unit):
-        gpo.po_message_insert(self._gpo_message_iterator, unit._gpo_message)
-        self.units.append(unit)
+    def addunit(self, unit, new=True):
+        if new:
+            gpo.po_message_insert(self._gpo_message_iterator, unit._gpo_message)
+        super(pofile, self).addunit(unit)
 
     def removeduplicates(self, duplicatestyle="merge"):
         """make sure each msgid is unique ; merge comments etc from duplicates into original"""
@@ -662,7 +663,7 @@ class pofile(pocommon.pofile):
         newmessage = gpo.po_next_message(self._gpo_message_iterator)
         while newmessage:
             newunit = pounit(gpo_message=newmessage)
-            self.units.append(newunit)
+            self.addunit(newunit, new=False)
             newmessage = gpo.po_next_message(self._gpo_message_iterator)
         self._free_iterator()
 
