@@ -21,6 +21,8 @@
 #
 
 import zipfile
+from lxml import etree
+from translate.storage.xml_name import XmlNamer
 
 def open_odf(filename):
     z = zipfile.ZipFile(filename, 'r')
@@ -28,10 +30,24 @@ def open_odf(filename):
             'meta.xml':    z.read("meta.xml"),
             'styles.xml':  z.read("styles.xml")}
 
-def copy_odf(input_file, output_file, exclusion_list):
-    input_zip  = zipfile.ZipFile(input_file,  'r')
-    output_zip = zipfile.ZipFile(output_file, 'w', compression=zipfile.ZIP_DEFLATED)
+def copy_odf(input_zip, output_zip, exclusion_list):
     for name in [name for name in input_zip.namelist() if name not in exclusion_list]:
         output_zip.writestr(name, input_zip.read(name))
     return output_zip
 
+def namespaced(nsmap, short_namespace, tag):
+    return '{%s}%s' % (nsmap[short_namespace], tag)
+
+def add_file(output_zip, manifest_data, new_filename, new_data):
+    root = etree.fromstring(manifest_data)
+    namer = XmlNamer(root)
+    namespacer = namer.namespace('manifest')
+    file_entry_tag  = namespacer.name('file-entry')
+    media_type_attr = namespacer.name('media-type')
+    full_path_attr  = namespacer.name('full-path')
+
+    root.append(etree.Element(file_entry_tag, {media_type_attr: 'application/x-xliff+xml',
+                                               full_path_attr: new_filename}))
+    output_zip.writestr(new_filename, new_data)
+    output_zip.writestr('META-INF/manifest.xml', etree.tostring(root, xml_declaration=True, encoding="UTF-8"))
+    return output_zip
