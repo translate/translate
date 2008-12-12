@@ -62,9 +62,6 @@ class TMServer:
         
         candidates = [_unit2dict(candidate) for candidate in self.tmmatcher.matches(uid)]
         candidates = json.dumps(candidates, indent=4)
-        import time
-        import random
-        time.sleep(random.randint(0,5))
         return [candidates]
 
 
