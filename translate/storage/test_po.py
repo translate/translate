@@ -564,6 +564,15 @@ msgstr "omskakel"
         unit = pofile.units[1]
         assert unit.getcontext() == 'Verb. _: The action of changing.'
         assert unit.getnotes() == 'Test comment 2'
+
+    def test_broken_kde_context(self):
+        posource = '''msgid "Broken _: here"
+msgstr "Broken _: here"
+'''
+        pofile = self.poparse(posource)
+        unit = pofile.units[0]
+        assert unit.source == "Broken _: here"
+        assert unit.target == "Broken _: here"
   
     def test_id(self):
         """checks that ids work correctly"""

@@ -577,7 +577,7 @@ class pounit(pocommon.pounit):
                     self.msgctxt.append(extracted)
                 elif inmsgid:
                     # TODO: improve kde comment detection
-                    if extracted.find("_:") != -1:
+                    if extracted.startswith('"_:'):
                         inmsgid_comment = True
                     if inmsgid_comment:
                         self.msgidcomments.append(extracted)
@@ -586,7 +586,7 @@ class pounit(pocommon.pounit):
                     if inmsgid_comment and extracted.find("\\n") != -1:
                         inmsgid_comment = False
                 elif inmsgid_plural:
-                    if extracted.find("_:") != -1:
+                    if extracted.startswith('"_:'):
                         inmsgid_comment = True
                     if inmsgid_comment:
                         self.msgid_pluralcomments.append(extracted)
