@@ -24,6 +24,7 @@ import os.path as path
 import zipfile
 
 from lxml import etree
+import difflib
 
 from translate.storage import factory
 from translate.convert import odf2xliff
@@ -49,6 +50,10 @@ def xliff___eq__(self, other):
 
 factory.classes[u'xlf'].__eq__ = xliff___eq__
 
+def print_diff(store1, store2):
+    for line in difflib.unified_diff(str(store1).split('\n'), str(store2).split('\n')):
+        print line
+
 def test_odf2xliff():
     SOURCE_ODF            = u'test_2.odt'
     REFERENCE_XLF         = u'test_2-test_odf2xliff-reference.xlf'
@@ -59,10 +64,12 @@ def test_odf2xliff():
     
     odf2xliff.main(args(SOURCE_ODF, GENERATED_XLF_TOOLKIT))
     generated_xlf_toolkit = factory.getobject(GENERATED_XLF_TOOLKIT)
+    print_diff(reference_xlf, generated_xlf_toolkit)
     assert reference_xlf == generated_xlf_toolkit
 
     odf2xliff.main(args(SOURCE_ODF, GENERATED_XLF_ITOOLS))
     generated_xlf_itools = factory.getobject(GENERATED_XLF_ITOOLS)
+    print_diff(reference_xlf, generated_xlf_itools)
     assert reference_xlf == generated_xlf_itools
 
 def is_content_file(filename):
@@ -96,6 +103,9 @@ class ODF(object):
                     return False
         return True
 
+    def __str__(self):
+        return self.odf.read('content.xml')
+
 def test_roundtrip():
     SOURCE_ODF    = u'test_2.odt'
     TARGET_XLF    = u'test_2-test_roundtrip.xlf'
@@ -107,6 +117,8 @@ def test_roundtrip():
     
     reference_odf = ODF(REFERENCE_ODF)
     generated_odf = ODF(GENERATED_ODF)
+
+    print_diff(reference_odf, generated_odf)
     assert reference_odf == generated_odf
 
 def teardown_module(module):
