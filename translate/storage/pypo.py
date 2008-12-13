@@ -29,6 +29,8 @@ from translate.misc import textwrap
 from translate.lang import data
 from translate.storage import pocommon, base
 import re
+import cStringIO
+import poparser
 
 lsep = "\n#: "
 """Seperator for #: entries"""
@@ -122,18 +124,8 @@ def encodingToUse(encoding):
 #        return False
 #    return True
 
-"""
-From the GNU gettext manual:
-     WHITE-SPACE
-     #  TRANSLATOR-COMMENTS
-     #. AUTOMATIC-COMMENTS
-     #| PREVIOUS MSGID                 (Gettext 0.16 - check if this is the correct position - not yet implemented)
-     #: REFERENCE...
-     #, FLAG...
-     msgctxt CONTEXT                   (Gettext 0.15)
-     msgid UNTRANSLATED-STRING
-     msgstr TRANSLATED-STRING
-"""
+def is_null(lst):
+    return lst == [] or len(lst) == 1 and lst[0] == '""'
 
 def extractstr(string):
     left = string.find('"')
@@ -411,12 +403,12 @@ class pounit(pocommon.pounit):
 
     def isheader(self):
         #return (self.msgidlen() == 0) and (self.msgstrlen() > 0) and (len(self.msgidcomments) == 0)
-        #rewritten here for performance:
-        return ((self.msgid == [] or self.msgid == ['""']) and 
-                        not (self.msgstr == [] or self.msgstr == ['""']) 
+        #rewritten here for performance:        
+        return (is_null(self.msgid) 
+                        and not is_null(self.msgstr) 
                         and self.msgidcomments == []
-                        and (self.msgctxt == [] or self.msgctxt == ['""'])
-                        and (self.sourcecomments == [] or self.sourcecomments == [""]))
+                        and is_null(self.msgctxt)
+                        and is_null(self.sourcecomments))
 
     def isblank(self):
         if self.isheader() or len(self.msgidcomments):
@@ -512,112 +504,8 @@ class pounit(pocommon.pounit):
         """returns whether this pounit contains plural strings..."""
         return len(self.msgid_plural) > 0
 
-    def parselines(self, lines):
-        inmsgctxt = False
-        inmsgid = False
-        inmsgid_comment = False
-        inmsgid_plural = False
-        inmsgstr = False
-        msgstr_pluralid = None
-        linesprocessed = 0
-        for line in lines:
-            line = line + "\n"
-            linesprocessed += 1
-            if len(line) == 0:
-                continue
-            elif line[0] == '#':
-                if inmsgstr and not line[1] == '~':
-                    # if we're already in the message string, this is from the next element
-                    break
-                if line[1] == '.':
-                    self.automaticcomments.append(line)
-                elif line[1] == ':':
-                    self.sourcecomments.append(line)
-                elif line[1] == ',':
-                    self.typecomments.append(line)
-                elif line[1] == '~':
-                    line = line[3:]
-                    self.obsolete = True
-                else:
-                    self.othercomments.append(line)
-            if line.startswith('msgid_plural'):
-                inmsgctxt = False
-                inmsgid = False
-                inmsgid_plural = True
-                inmsgstr = False
-                inmsgid_comment = False
-            elif line.startswith('msgctxt'):
-                inmsgctxt = True
-                inmsgid = False
-                inmsgid_plural = False
-                inmsgstr = False
-                inmsgid_comment = False
-            elif line.startswith('msgid'):
-                # if we just finished a msgstr or msgid_plural, there is probably an 
-                # empty line missing between the units, so let's stop the parsing now.
-                if inmsgstr or inmsgid_plural:
-                    break
-                inmsgctxt = False
-                inmsgid = True
-                inmsgid_plural = False
-                inmsgstr = False
-                inmsgid_comment = False
-            elif line.startswith('msgstr'):
-                inmsgctxt = False
-                inmsgid = False
-                inmsgid_plural = False
-                inmsgstr = True
-                if line.startswith('msgstr['):
-                    msgstr_pluralid = int(line[len('msgstr['):line.find(']')].strip())
-                else:
-                    msgstr_pluralid = None
-            extracted = extractstr(line)
-            if not extracted is None:
-                if inmsgctxt:
-                    self.msgctxt.append(extracted)
-                elif inmsgid:
-                    # TODO: improve kde comment detection
-                    if extracted.startswith('"_:'):
-                        inmsgid_comment = True
-                    if inmsgid_comment:
-                        self.msgidcomments.append(extracted)
-                    else:
-                        self.msgid.append(extracted)
-                    if inmsgid_comment and extracted.find("\\n") != -1:
-                        inmsgid_comment = False
-                elif inmsgid_plural:
-                    if extracted.startswith('"_:'):
-                        inmsgid_comment = True
-                    if inmsgid_comment:
-                        self.msgid_pluralcomments.append(extracted)
-                    else:
-                        self.msgid_plural.append(extracted)
-                    if inmsgid_comment and extracted.find("\\n") != -1:
-                        inmsgid_comment = False
-                elif inmsgstr:
-                    if msgstr_pluralid is None:
-                        self.msgstr.append(extracted)
-                    else:
-                        if type(self.msgstr) == list:
-                            self.msgstr = {0: self.msgstr}
-                        if msgstr_pluralid not in self.msgstr:
-                            self.msgstr[msgstr_pluralid] = []
-                        self.msgstr[msgstr_pluralid].append(extracted)
-        if self.obsolete:
-            self.makeobsolete()
-        # If this unit is the header, we have to get the encoding to ensure that no
-        # methods are called that need the encoding before we obtained it.
-        if self.isheader():
-            charset = re.search("charset=([^\\s]+)", unquotefrompo(self.msgstr))
-            if charset:
-                self._encoding = encodingToUse(charset.group(1))
-        return linesprocessed
-
     def parse(self, src):
-        if isinstance(src, str):
-            # This has not been decoded yet, so we need to make a plan
-            src = src.decode(self._encoding)
-        return self.parselines(src.split("\n"))
+        return poparser.parse_unit(poparser.ParseState(cStringIO.StringIO(src), pounit), self)
 
     def _getmsgpartstr(self, partname, partlines, partcomments=""):
         if isinstance(partlines, dict):
@@ -695,7 +583,7 @@ class pounit(pocommon.pounit):
             return "".join(lines)
         # if there's no msgid don't do msgid and string, unless we're the header
         # this will also discard any comments other than plain othercomments...
-        if (len(self.msgid) == 0) or ((len(self.msgid) == 1) and (self.msgid[0] == '""')):
+        if is_null(self.msgid):
             if not (self.isheader() or self.msgidcomments or self.sourcecomments):
                 return "".join(lines)
         lines.extend(self.automaticcomments)
@@ -814,43 +702,9 @@ class pofile(pocommon.pofile):
                 self.filename = input.name
             elif not getattr(self, 'filename', ''):
                 self.filename = ''
-            if hasattr(input, "read"):
-                posrc = input.read()
-                input.close()
-                input = posrc
-            # TODO: change this to a proper parser that doesn't do line-by-line madness
-            lines = input.split("\n")
-            start = 0
-            end = 0
-            # make only the first one the header
-            linesprocessed = 0
-            is_decoded = False
-            while end <= len(lines):
-                if (end == len(lines)) or (not lines[end].strip()):  # end of lines or blank line
-                    newpe = self.UnitClass(encoding=self._encoding)
-                    unit_lines = lines[start:end]
-                    # We need to work carefully if we haven't decoded properly yet.
-                    # So let's solve this temporarily until we actually get the
-                    # encoding from the header.
-                    if not is_decoded:
-                        unit_lines = [line.decode('ascii', 'ignore') for line in unit_lines]
-                    linesprocessed = newpe.parselines(unit_lines)
-                    start += linesprocessed
-                    # TODO: find a better way of working out if we actually read anything
-                    if linesprocessed >= 1 and newpe._getoutput():
-                        self.units.append(newpe)
-                        if not is_decoded:
-                            if newpe.isheader(): # If there is a header...
-                                if "Content-Type" in self.parseheader(): # and a Content-Type...
-                                    if self._encoding.lower() != 'charset': # with a valid charset...
-                                        self._encoding = newpe._encoding # then change the encoding
-                                        # otherwise we'll decode using UTF-8
-                            lines = self.decode(lines)
-                            self.units = []
-                            start = 0
-                            end = 0
-                            is_decoded = True
-                end = end+1
+            if isinstance(input, str):
+                input = cStringIO.StringIO(input)
+            poparser.parse_units(poparser.ParseState(input, pounit), self)
         except Exception, e:
             raise base.ParseError(e)
 
