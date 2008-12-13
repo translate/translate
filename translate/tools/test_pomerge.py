@@ -108,7 +108,7 @@ msgstr "blabla"
         """ensure that we do not delete comments in the PO file that are not assocaited with a message block"""
         templatepo = '''# Lonely comment\n\n# Translation comment\nmsgid "Bob"\nmsgstr "Toolmaker"\n'''
         mergepo = '''# Translation comment\nmsgid "Bob"\nmsgstr "Builder"\n'''
-        expectedpo = '''# Lonely comment\n\n# Translation comment\nmsgid "Bob"\nmsgstr "Builder"\n'''
+        expectedpo = '''# Lonely comment\n# Translation comment\nmsgid "Bob"\nmsgstr "Builder"\n'''
         pofile = self.mergestore(templatepo, mergepo)
 #        pounit = self.singleunit(pofile)
         print pofile
@@ -202,7 +202,7 @@ msgstr "Eerste\tTweede"
         # Unassociated comment
         templatepo = '''# Lonely comment\n\n#: location_comment.c:110\nmsgid "Bob"\nmsgstr "Toolmaker"\n'''
         mergepo = '''# Lonely comment\r\n\r\n#: location_comment.c:110\r\nmsgid "Bob"\r\nmsgstr "Builder"\r\n\r\n'''
-        expectedpo = '''# Lonely comment\n\n#: location_comment.c:110\nmsgid "Bob"\nmsgstr "Builder"\n'''
+        expectedpo = '''# Lonely comment\n#: location_comment.c:110\nmsgid "Bob"\nmsgstr "Builder"\n'''
         pofile = self.mergestore(templatepo, mergepo)
         assert str(pofile) == expectedpo
 

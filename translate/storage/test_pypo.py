@@ -236,7 +236,6 @@ class TestPYPOFile(test_po.TestPOFile):
         """tests behaviour of unassociated comments."""
         oldsource = '# old lonesome comment\n\nmsgid "one"\nmsgstr "een"\n'
         oldfile = self.poparse(oldsource)
-        print "__str__", str(oldfile)
-        assert len(oldfile.units) == 2
-        assert str(oldfile).find("# old lonesome comment\n\n") >= 0
-    
+        print str(oldfile)
+        assert len(oldfile.units) == 1
+

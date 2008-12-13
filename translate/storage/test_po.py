@@ -364,6 +364,25 @@ msgstr "tweede"
         assert unit.isobsolete()
         assert str(pofile) == posource
 
+        posource = '''msgid "one"
+msgstr "een"
+
+#, fuzzy
+#~ msgid "File not found."
+#~ msgid_plural "Files not found."
+#~ msgstr[0] "Leer(s) nie gevind nie."
+#~ msgstr[1] "Leer(s) nie gevind nie."
+'''
+        pofile = self.poparse(posource)
+        assert len(pofile.units) == 2
+        unit = pofile.units[1]
+        assert unit.isobsolete()
+
+        assert str(pofile) == posource
+        unit.resurrect()
+        assert unit.hasplural()
+
+
     def test_header_escapes(self):
         pofile = self.StoreClass()
         header = pofile.makeheader(**{"Report-Msgid-Bugs-To": r"http://qa.openoffice.org/issues/enter_bug.cgi?subcomponent=ui&comment=&short_desc=Localization%20issue%20in%20file%3A%20dbaccess\source\core\resource.oo&component=l10n&form_name=enter_issue"})
