@@ -34,6 +34,12 @@ From the GNU gettext manual:
      msgstr TRANSLATED-STRING
 """
 
+isspace = str.isspace
+find = str.find
+rfind = str.rfind
+startswith = str.startswith
+append = list.append
+
 class ParseState(object):
     def __init__(self, input_iterator, UnitClass, decoder = lambda string: string):
         self._input_iterator = input_iterator
@@ -52,7 +58,7 @@ class ParseState(object):
             return current
         try:
             self.next_line = self._input_iterator.next()
-            while not self.eof and self.next_line.isspace():
+            while not self.eof and isspace(self.next_line):
                 self.next_line = self._input_iterator.next()
         except StopIteration:
             self.next_line = ''
@@ -66,16 +72,16 @@ def parse_comment(parse_state, unit):
     next_line = parse_state.next_line
     if len(next_line) > 0 and next_line[0] == '#':
         next_char = next_line[1] 
-        if next_char.isspace():
-            unit.othercomments.append(parse_state.decoder(next_line))
+        if isspace(next_char):
+            append(unit.othercomments, parse_state.decoder(next_line))
         elif next_char == '.':
-            unit.automaticcomments.append(parse_state.decoder(next_line))
+            append(unit.automaticcomments, parse_state.decoder(next_line))
         elif next_char == '|':
             pass
         elif next_char == ':':
-            unit.sourcecomments.append(parse_state.decoder(next_line))
+            append(unit.sourcecomments, parse_state.decoder(next_line))
         elif next_char == ',':
-            unit.typecomments.append(parse_state.decoder(next_line))
+            append(unit.typecomments, parse_state.decoder(next_line))
         elif next_char == '~': 
             # Special case: we refuse to parse obsoletes: they are done
             # elsewhere to ensure we reuse the normal unit parsing code
@@ -97,15 +103,15 @@ def parse_comments(parse_state, unit):
 def read_obsolete_lines(parse_state):
     """Read all the lines belonging to the current unit if obsolete."""
     obsolete_lines = []
-    if parse_state.next_line.startswith('#~ '):
-        obsolete_lines.append(parse_state.read_line()[3:])
+    if startswith(parse_state.next_line, '#~ '):
+        append(obsolete_lines, parse_state.read_line()[3:])
     else:
         return obsolete_lines
     # Be extra careful that we don't start reading into a new unit. We detect
     # that with #~ msgid followed by a space (to ensure msgid_plural works)
     next_line = parse_state.next_line
-    while next_line.startswith('#~ ') and not next_line.startswith('#~ msgid '):
-        obsolete_lines.append(parse_state.read_line()[3:])
+    while startswith(next_line, '#~ ') and not startswith(next_line, '#~ msgid '):
+        append(obsolete_lines, parse_state.read_line()[3:])
         next_line = parse_state.next_line
     return obsolete_lines
 
@@ -120,10 +126,10 @@ def parse_obsolete(parse_state, unit):
 
 def parse_quoted(parse_state, start_pos = 0):
     line  = parse_state.next_line
-    left  = line.find('"', start_pos)
-    if left != start_pos and not line[start_pos:left].isspace():
+    left  = find(line, '"', start_pos)
+    if left != start_pos and not isspace(line[start_pos:left]):
         return None
-    right = line.rfind('"')
+    right = rfind(line, '"')
     if left == right or line[right - 1] == '\\': # If there is no terminating quote 
         return parse_state.read_line()[left:] + '"'
     else: # If we found a terminating quote
@@ -131,8 +137,8 @@ def parse_quoted(parse_state, start_pos = 0):
 
 def parse_msg_comment(parse_state, msg_comment_list, string):
     while string is not None:
-        msg_comment_list.append(parse_state.decoder(string))
-        if string.find('\\n') > -1:
+        append(msg_comment_list, parse_state.decoder(string))
+        if find(string, '\\n') > -1:
             return parse_quoted(parse_state)
         string = parse_quoted(parse_state)
     return None
@@ -140,14 +146,14 @@ def parse_msg_comment(parse_state, msg_comment_list, string):
 def parse_multiple_quoted(parse_state, msg_list, msg_comment_list, first_start_pos=0):
     string = parse_quoted(parse_state, first_start_pos)
     while string is not None:
-        if not string.startswith('"_:'):
-            msg_list.append(parse_state.decoder(string))
+        if not startswith(string, '"_:'):
+            append(msg_list, parse_state.decoder(string))
             string = parse_quoted(parse_state) 
         else:
             string = parse_msg_comment(parse_state, msg_comment_list, string)
 
 def parse_message(parse_state, start_of_string, start_of_string_len, msg_list, msg_comment_list = []):
-    if not parse_state.next_line.startswith(start_of_string):
+    if not startswith(parse_state.next_line, start_of_string):
         return []
     return parse_multiple_quoted(parse_state, msg_list, msg_comment_list, start_of_string_len)
 
@@ -182,7 +188,7 @@ def get_entry(parse_state, right_bracket_pos):
 
 def parse_msgstr_array_entry(parse_state, msgstr_dict):
     line = parse_state.next_line
-    right_bracket_pos = line.find(']', MSGSTR_ARRAY_ENTRY_LEN)
+    right_bracket_pos = find(line, ']', MSGSTR_ARRAY_ENTRY_LEN)
     if right_bracket_pos >= 0:
         entry = get_entry(parse_state, right_bracket_pos)
         if len(entry) > 0:
