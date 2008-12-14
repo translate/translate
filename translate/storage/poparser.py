@@ -39,18 +39,22 @@ find = str.find
 rfind = str.rfind
 startswith = str.startswith
 append = list.append
+decode = str.decode
 
 class ParseState(object):
-    def __init__(self, input_iterator, UnitClass, decoder = lambda string: string):
+    def __init__(self, input_iterator, UnitClass, encoding = None):
         self._input_iterator = input_iterator
         self.next_line = ''
         self.eof = False
-        self.decoder = decoder
+        self.encoding = encoding
         self.read_line()
         self.UnitClass = UnitClass
 
-    def set_encoding(self, encoding):
-        self.decoder = lambda string: str.decode(string, encoding)
+    def decode(self, string):
+        if self.encoding is not None:
+            return decode(string, self.encoding)
+        else:
+            return string
 
     def read_line(self):
         current = self.next_line
@@ -66,22 +70,22 @@ class ParseState(object):
         return current
 
     def new_input(self, _input):
-        return ParseState(_input, self.UnitClass, self.decoder)
+        return ParseState(_input, self.UnitClass, self.encoding)
 
 def parse_comment(parse_state, unit):
     next_line = parse_state.next_line
     if len(next_line) > 0 and next_line[0] == '#':
         next_char = next_line[1] 
         if isspace(next_char):
-            append(unit.othercomments, parse_state.decoder(next_line))
+            append(unit.othercomments, parse_state.decode(next_line))
         elif next_char == '.':
-            append(unit.automaticcomments, parse_state.decoder(next_line))
+            append(unit.automaticcomments, parse_state.decode(next_line))
         elif next_char == '|':
             pass
         elif next_char == ':':
-            append(unit.sourcecomments, parse_state.decoder(next_line))
+            append(unit.sourcecomments, parse_state.decode(next_line))
         elif next_char == ',':
-            append(unit.typecomments, parse_state.decoder(next_line))
+            append(unit.typecomments, parse_state.decode(next_line))
         elif next_char == '~': 
             # Special case: we refuse to parse obsoletes: they are done
             # elsewhere to ensure we reuse the normal unit parsing code
@@ -137,7 +141,7 @@ def parse_quoted(parse_state, start_pos = 0):
 
 def parse_msg_comment(parse_state, msg_comment_list, string):
     while string is not None:
-        append(msg_comment_list, parse_state.decoder(string))
+        append(msg_comment_list, parse_state.decode(string))
         if find(string, '\\n') > -1:
             return parse_quoted(parse_state)
         string = parse_quoted(parse_state)
@@ -147,7 +151,7 @@ def parse_multiple_quoted(parse_state, msg_list, msg_comment_list, first_start_p
     string = parse_quoted(parse_state, first_start_pos)
     while string is not None:
         if not startswith(string, '"_:'):
-            append(msg_list, parse_state.decoder(string))
+            append(msg_list, parse_state.decode(string))
             string = parse_quoted(parse_state) 
         else:
             string = parse_msg_comment(parse_state, msg_comment_list, string)
@@ -244,7 +248,7 @@ def set_encoding(parse_state, store, unit):
         store._encoding = charset.group(1)
     else:
         store._encoding = 'utf-8'
-    parse_state.set_encoding(store._encoding)
+    parse_state.encoding = store._encoding
 
 def decode_list(lst, decode):
     return [decode(item) for item in lst]
@@ -265,7 +269,7 @@ def parse_header(parse_state, store):
     if first_unit is None:
         return None
     set_encoding(parse_state, store, first_unit)
-    decode_header(first_unit, parse_state.decoder)
+    decode_header(first_unit, parse_state.decode)
     return first_unit
 
 def parse_units(parse_state, store):
