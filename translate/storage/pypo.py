@@ -159,8 +159,6 @@ class pounit(pocommon.pounit):
         self.obsoletemsgid_pluralcomments = []
         self.obsoletemsgid_plural = []
         self.obsoletemsgstr = []
-        if source:
-            self.setsource(source)
         pocommon.pounit.__init__(self, source)
 
     def _initallcomments(self, blankall=False):
@@ -202,8 +200,11 @@ class pounit(pocommon.pounit):
             self.msgid = quoteforpo(source[0])
             if len(source) > 1:
                 self.msgid_plural = quoteforpo(source[1])
+            else:
+                self.msgid_plural = []
         else:
             self.msgid = quoteforpo(source)
+            self.msgid_plural = []
     source = property(getsource, setsource)
 
     def gettarget(self):
@@ -218,8 +219,6 @@ class pounit(pocommon.pounit):
         """Sets the msgstr to the given (unescaped) value"""
         if isinstance(target, str):
             target = target.decode(self._encoding)
-        if target == self.target:
-            return
         if self.hasplural():
             if isinstance(target, multistring):
                 target = target.strings
