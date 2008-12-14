@@ -35,23 +35,13 @@ From the GNU gettext manual:
 """
 
 class ParseState(object):
-    def __init__(self, input_iterator, UnitClass, decoder = lambda string: str.decode(string, 'utf-8', 'replace')):
+    def __init__(self, input_iterator, UnitClass, decoder = lambda string: string):
         self._input_iterator = input_iterator
         self.next_line = ''
         self.eof = False
         self.decoder = decoder
-        self._read_callback = lambda line: line
         self.read_line()
         self.UnitClass = UnitClass
-
-    def _set_read_callback(self, read_callback):
-        self._read_callback = read_callback
-        self._read_callback(self.next_line)
-
-    def _del_read_callback(self):
-        self._read_callback = lambda line: None
-
-    read_callback = property(lambda self: self._read_callback, _set_read_callback, _del_read_callback)
 
     def set_encoding(self, encoding):
         self.decoder = lambda string: str.decode(string, encoding)
@@ -64,7 +54,6 @@ class ParseState(object):
             self.next_line = self._input_iterator.next()
             while not self.eof and self.next_line.isspace():
                 self.next_line = self._input_iterator.next()
-            self.read_callback(self.next_line)
         except StopIteration:
             self.next_line = ''
             self.eof = True
@@ -247,23 +236,31 @@ def set_encoding(parse_state, store, unit):
         charset = re.search("charset=([^\\s\\\\n]+)", "".join(unit.msgstr))
     if charset:
         store._encoding = charset.group(1)
-        parse_state.set_encoding(store._encoding)
     else:
         store._encoding = 'utf-8'
+    parse_state.set_encoding(store._encoding)
 
-def get_first_lines(parse_state):
-    first_lines = []
-    parse_state.read_callback = first_lines.append
-    first_unit = parse_unit(parse_state)
-    del parse_state.read_callback
-    return first_lines, first_unit
+def decode_list(lst, decode):
+    return [decode(item) for item in lst]
+
+def decode_header(unit, decode):
+    for attr in ('msgctxt', 'msgid', 'msgid_pluralcomments',
+                 'msgid_plural', 'msgstr', 'obsoletemsgctxt',
+                 'obsoletemsgid', 'obsoletemsgid_pluralcomments',
+                 'obsoletemsgid_plural', 'obsoletemsgstr'):
+        element = getattr(unit, attr)
+        if isinstance(element, list):
+            setattr(unit, attr, decode_list(element, decode))
+        else:
+            setattr(unit, attr, dict([(key, decode_list(value, decode)) for key, value in element.items()]))
 
 def parse_header(parse_state, store):
-    first_lines, first_unit = get_first_lines(parse_state)
+    first_unit = parse_unit(parse_state)
     if first_unit is None:
         return None
     set_encoding(parse_state, store, first_unit)
-    return parse_unit(parse_state.new_input(iter(first_lines)))
+    decode_header(first_unit, parse_state.decoder)
+    return first_unit
 
 def parse_units(parse_state, store):
     unit = parse_header(parse_state, store)
