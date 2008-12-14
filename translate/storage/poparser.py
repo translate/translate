@@ -129,15 +129,15 @@ def parse_obsolete(parse_state, unit):
     return unit
 
 def parse_quoted(parse_state, start_pos = 0):
-    line  = parse_state.next_line
-    left  = find(line, '"', start_pos)
-    if left != start_pos and not isspace(line[start_pos:left]):
-        return None
-    right = rfind(line, '"')
-    if left == right or line[right - 1] == '\\': # If there is no terminating quote 
-        return parse_state.read_line()[left:] + '"'
-    else: # If we found a terminating quote
-        return parse_state.read_line()[left:right+1]
+    line = parse_state.next_line
+    left = find(line, '"', start_pos)
+    if left == start_pos or isspace(line[start_pos:left]):
+        right = rfind(line, '"')
+        if left != right and line[right - 1] != '\\': # If we found a terminating quote
+            return parse_state.read_line()[left:right+1]
+        else: # If there is no terminating quote 
+            return parse_state.read_line()[left:] + '"'
+    return None
 
 def parse_msg_comment(parse_state, msg_comment_list, string):
     while string is not None:
@@ -157,9 +157,8 @@ def parse_multiple_quoted(parse_state, msg_list, msg_comment_list, first_start_p
             string = parse_msg_comment(parse_state, msg_comment_list, string)
 
 def parse_message(parse_state, start_of_string, start_of_string_len, msg_list, msg_comment_list = []):
-    if not startswith(parse_state.next_line, start_of_string):
-        return []
-    return parse_multiple_quoted(parse_state, msg_list, msg_comment_list, start_of_string_len)
+    if startswith(parse_state.next_line, start_of_string):
+        return parse_multiple_quoted(parse_state, msg_list, msg_comment_list, start_of_string_len)
 
 def parse_msgctxt(parse_state, unit):
     parse_message(parse_state, 'msgctxt', 7, unit.msgctxt)
