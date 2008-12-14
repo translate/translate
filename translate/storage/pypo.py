@@ -170,12 +170,16 @@ class pounit(pocommon.pounit):
             self.typecomments = []
             self.msgidcomments = []
             self.obsoletemsgidcomments = []
-        self.allcomments = [self.othercomments, 
-                            self.automaticcomments, 
-                            self.sourcecomments, 
-                            self.typecomments, 
-                            self.msgidcomments,
-                            self.obsoletemsgidcomments]
+
+    def _get_all_comments(self):
+        return [self.othercomments, 
+                self.automaticcomments, 
+                self.sourcecomments, 
+                self.typecomments, 
+                self.msgidcomments,
+                self.obsoletemsgidcomments]
+
+    allcomments = property(_get_all_comments)
 
     def getsource(self):
         """Returns the unescaped msgid"""
