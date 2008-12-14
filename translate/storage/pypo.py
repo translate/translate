@@ -161,7 +161,7 @@ class pounit(pocommon.pounit):
         self.obsoletemsgstr = []
         if source:
             self.setsource(source)
-        super(pounit, self).__init__(source)
+        pocommon.pounit.__init__(self, source)
 
     def _initallcomments(self, blankall=False):
         """Initialises allcomments"""

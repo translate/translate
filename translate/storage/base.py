@@ -86,7 +86,6 @@ class TranslationUnit(object):
         self.source = source
         self.target = None
         self.notes = ""
-        super(TranslationUnit, self).__init__()
 
     def __eq__(self, other):
         """Compares two TranslationUnits.
