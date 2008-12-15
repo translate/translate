@@ -44,8 +44,8 @@ class TMServer:
         
         #initialize url dispatcher
         self.rest = Selector(prefix=prefix)
-        self.rest.add("/unit/{uid}", GET=self.get_unit)
-        #self.rest.add("/unit/{udi}", POST=self.post_unit)
+        self.rest.add("/unit/{uid:any}", GET=self.get_unit)
+        #self.rest.add("/unit/{uid}", POST=self.post_unit)
         #self.rest.add("/unit/{uid}", PUT=self.put_unit)
         #self.rest.add("/unit/{uid}", DELETE=self.delete_unit)
 
@@ -61,8 +61,8 @@ class TMServer:
         uid = unicode(urllib.unquote_plus(uid),"utf-8")
         
         candidates = [_unit2dict(candidate) for candidate in self.tmmatcher.matches(uid)]
-        candidates = json.dumps(candidates, indent=4)
-        return [candidates]
+        response =  json.dumps((uid,candidates), indent=4)
+        return [response]
 
 
 def _unit2dict(unit):
