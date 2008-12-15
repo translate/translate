@@ -67,7 +67,7 @@ def test_php_escaping_double_quote():
     assert php.phpdecode("Line1\r\nLine2") == "Line1\r\nLine2"  # DOS PHP files
     # Encoding - Python -> PHP
     assert php.phpencode("'", quotechar='"') == "'"
-    assert php.phpencode("\n", quotechar='"') == r"\n"       # See table of escaped characters
+    assert php.phpencode("\n", quotechar='"') == "\n"       # See table of escaped characters - we leave newlines unescaped so that we can try best to preserve pretty printing. See bug 588
     assert php.phpencode("\r", quotechar='"') == r"\r"      # See table of escaped characters
     assert php.phpencode("\t", quotechar='"') == r"\t"      # See table of escaped characters
     assert php.phpencode("\v", quotechar='"') == r"\v"      # See table of escaped characters

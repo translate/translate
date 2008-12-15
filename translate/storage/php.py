@@ -55,7 +55,9 @@ def phpencode(text, quotechar="'"):
     if not text:
         return text
     if quotechar == '"':
-        escapes = (("\\", "\\\\"), ("\n", "\\n"), ("\r", "\\r"), ("\t", "\\t"), ("\v", "\\v"), ("\f", "\\f"), ("\\\\$", "\\$"), ('"', '\\"'), ("\\\\", "\\"))
+        # \n may be converted to \\n but we don't.  This allows us to preserve pretty layout that might have appeared in muliline entries
+        # we might lose some "blah\nblah" layouts but that's probably not the most frequent use case. See bug 588
+        escapes = (("\\", "\\\\"), ("\r", "\\r"), ("\t", "\\t"), ("\v", "\\v"), ("\f", "\\f"), ("\\\\$", "\\$"), ('"', '\\"'), ("\\\\", "\\"))
         for a, b in escapes:
             text = text.replace(a, b)
         return text
