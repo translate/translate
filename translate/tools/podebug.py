@@ -226,7 +226,7 @@ def main():
     formats = {"po":("po", convertpo), "pot":("po", convertpo), "xlf":("xlf", convertpo)}
     parser = convert.ConvertOptionParser(formats, description=__doc__)
     # TODO: add documentation on format strings...
-    parser.add_option("-f", "--format", dest="format", default="[%s] ", help="specify format string")
+    parser.add_option("-f", "--format", dest="format", default="", help="specify format string")
     parser.add_option("", "--rewrite", dest="rewritestyle", 
         type="choice", choices=podebug.rewritelist(), metavar="STYLE", help="the translation rewrite style: %s" % ", ".join(podebug.rewritelist()))
     parser.add_option("", "--ignore", dest="ignoreoption", 
