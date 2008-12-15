@@ -61,7 +61,6 @@ class rephp:
         returnline = ""
         # handle multiline msgid if we're in one
         if self.inmultilinemsgid:
-            msgid = quote.rstripeol(line).strip()
             # see if there's more
             endpos = line.rfind("%s;" % self.quotechar)
             # if there was no '; or the quote is escaped, we have to continue
