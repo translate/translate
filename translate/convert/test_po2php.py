@@ -75,6 +75,15 @@ msgstr ""'''
         print phpfile
         assert phpfile == [phpexpected]
 
+    def test_inline_comments(self):
+        """check that we include inline comments from the template.  Bug 590"""
+        posource = '''#: $lang['name']\nmsgid "value"\nmsgstr "waarde"\n'''
+        phptemplate = '''$lang[ 'name' ]  =  'value'; //inline comment\n'''
+        phpexpected = '''$lang[ 'name' ]  =  'waarde'; //inline comment\n'''
+        phpfile = self.merge2php(phptemplate, posource)
+        print phpfile
+        assert phpfile == [phpexpected]
+
 #    def test_merging_propertyless_template(self):
 #        """check that when merging with a template with no property values that we copy the template"""
 #        posource = ""

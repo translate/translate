@@ -89,12 +89,13 @@ class rephp:
                 postspaceend = len(line[equalspos+1:].lstrip())
                 postspace = line[equalspos+1:equalspos+(postspacestart-postspaceend)+1]
                 self.quotechar = line[equalspos+(postspacestart-postspaceend)+1]
+                inlinecomment = line[line.rfind("%s;" % self.quotechar)+2:]
                 if self.inputdict.has_key(lookupkey):
                     self.inecho = False
                     value = php.phpencode(self.inputdict[lookupkey], self.quotechar)
                     if isinstance(value, str):
                         value = value.decode('utf8')
-                    returnline = key + prespace + "=" + postspace + self.quotechar + value + self.quotechar + ';' + eol
+                    returnline = key + prespace + "=" + postspace + self.quotechar + value + self.quotechar + ';' + inlinecomment + eol
                 else:
                     self.inecho = True
                     returnline = line+eol
