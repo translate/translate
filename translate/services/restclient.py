@@ -75,8 +75,8 @@ class RESTClient(object):
 
         def handle_result(self):
             """called after http request is done"""
-            data = json.loads(self.result.getvalue())
-            self.emit("REST-success", data)
+            (id, data) = json.loads(self.result.getvalue())
+            self.emit("REST-success", id, data)
             
             
     def __init__(self):
@@ -121,4 +121,4 @@ class RESTClient(object):
 gobject.signal_new("REST-success", RESTClient.Request,
                    gobject.SIGNAL_RUN_LAST,
                    gobject.TYPE_NONE,
-                   (gobject.TYPE_PYOBJECT, ))
+                   (gobject.TYPE_PYOBJECT, gobject.TYPE_PYOBJECT))
