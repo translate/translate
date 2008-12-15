@@ -54,13 +54,36 @@ def phpencode(text, quotechar="'"):
     """
     if not text:
         return text
-    return text.replace("%s" % quotechar, "\\%s" % quotechar).replace("\n", "\\n")
+    if quotechar == '"':
+        escapes = (("\\", "\\\\"), ("\n", "\\n"), ("\r", "\\r"), ("\t", "\\t"), ("\v", "\\v"), ("\f", "\\f"), ("\\\\$", "\\$"), ('"', '\\"'))
+        for a, b in escapes:
+            text = text.replace(a, b)
+        return text
+    else:
+        return text.replace("%s" % quotechar, "\\%s" % quotechar)
 
 def phpdecode(text, quotechar="'"):
     """convert PHP escaped string to a Python string"""
+    def decode_octal_hex(match):
+        """decode Octal \NNN and Hex values"""
+        if match.groupdict().has_key("octal"):
+            return match.groupdict()['octal'].decode("string_escape")
+        elif match.groupdict().has_key("hex"):
+            return match.groupdict()['hex'].decode("string_escape")
+        else:
+            return match.group
+
     if not text:
         return text
-    return text.replace("\\'", "'").replace('\\"', '"').replace("\\n", "\n")
+    if quotechar == '"':
+        # We do not escape \$ as it is used by variables and we can't roundtrip that item.
+        text = text.replace('\\"', '"').replace("\\\\", "\\")
+        text = text.replace("\\n", "\n").replace("\\r", "\r").replace("\\t", "\t").replace("\\v", "\v").replace("\\f", "\f")
+        text = re.sub(r"(?P<octal>\\[0-7]{1,3})", decode_octal_hex, text)
+        text = re.sub(r"(?P<hex>\\x[0-9A-Fa-f]{1,2})", decode_octal_hex, text)
+    else:
+        text = text.replace("\\'", "'").replace("\\\\", "\\")
+    return text
 
 class phpunit(base.TranslationUnit):
     """a unit of a PHP file i.e. a name and value, and any comments
@@ -186,7 +209,7 @@ class phpfile(base.TranslationStore):
                     newunit = phpunit()
                 colonpos = value.rfind(";", 0, colonpos)
             if invalue:
-                lastvalue = lastvalue + value
+                lastvalue = lastvalue + value + "\n"
 
     def __str__(self):
         """convert the units back to lines"""
