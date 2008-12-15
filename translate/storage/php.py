@@ -55,7 +55,7 @@ def phpencode(text, quotechar="'"):
     if not text:
         return text
     if quotechar == '"':
-        escapes = (("\\", "\\\\"), ("\n", "\\n"), ("\r", "\\r"), ("\t", "\\t"), ("\v", "\\v"), ("\f", "\\f"), ("\\\\$", "\\$"), ('"', '\\"'))
+        escapes = (("\\", "\\\\"), ("\n", "\\n"), ("\r", "\\r"), ("\t", "\\t"), ("\v", "\\v"), ("\f", "\\f"), ("\\\\$", "\\$"), ('"', '\\"'), ("\\\\", "\\"))
         for a, b in escapes:
             text = text.replace(a, b)
         return text
