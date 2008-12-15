@@ -40,6 +40,7 @@ class RESTClient(object):
             self.method = method
             self.data = data
             self.headers = headers
+            self.status = None
 
             # the actual curl request object
             self.curl = pycurl.Curl()
@@ -75,8 +76,19 @@ class RESTClient(object):
 
         def handle_result(self):
             """called after http request is done"""
-            (id, data) = json.loads(self.result.getvalue())
-            self.emit("REST-success", id, data)
+            self.status = self.curl.getinfo(pycurl.HTTP_CODE)
+            
+            #TODO: handle 3xx, throw exception on other codes
+            if self.status >= 200 and self.status < 300:
+                # 2xx indicated success
+                data = json.loads(self.result.getvalue())
+                self.emit("REST-success", self.id, data)
+            elif self.status >= 400 and self.status < 500:
+                # 4xx client error
+                self.emit("REST-client-error", self.id, self.status)
+            elif self.status >= 500 and self.status < 600:
+                # 5xx server error
+                self.emit("REST-server-error", self.id, self.status)
             
             
     def __init__(self):
@@ -118,7 +130,16 @@ class RESTClient(object):
         return True
         
 
+#register the signal
 gobject.signal_new("REST-success", RESTClient.Request,
+                   gobject.SIGNAL_RUN_LAST,
+                   gobject.TYPE_NONE,
+                   (gobject.TYPE_PYOBJECT, gobject.TYPE_PYOBJECT))
+gobject.signal_new("REST-client-error", RESTClient.Request,
+                   gobject.SIGNAL_RUN_LAST,
+                   gobject.TYPE_NONE,
+                   (gobject.TYPE_PYOBJECT, gobject.TYPE_PYOBJECT))
+gobject.signal_new("REST-server-error", RESTClient.Request,
                    gobject.SIGNAL_RUN_LAST,
                    gobject.TYPE_NONE,
                    (gobject.TYPE_PYOBJECT, gobject.TYPE_PYOBJECT))

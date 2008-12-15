@@ -61,7 +61,7 @@ class TMServer:
         uid = unicode(urllib.unquote_plus(uid),"utf-8")
         
         candidates = [_unit2dict(candidate) for candidate in self.tmmatcher.matches(uid)]
-        response =  json.dumps((uid,candidates), indent=4)
+        response =  json.dumps(candidates, indent=4)
         return [response]
 
 
