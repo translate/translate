@@ -106,7 +106,7 @@ class podebug:
         return "".join(map(transpose, string))
 
     def ignorelist(cls):
-        return [rewrite.replace("ignore_", "") for rewrite in dir(cls) if rewrite.startswith("ignore_")]
+        return [ignore.replace("ignore_", "") for ignore in dir(cls) if ignore.startswith("ignore_")]
     ignorelist = classmethod(ignorelist)
 
     def ignore_openoffice(self, unit):
