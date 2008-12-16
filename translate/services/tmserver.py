@@ -18,6 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+"""A translation memory server using REST and JSON."""
+
 import sys
 import urllib
 import re
@@ -25,6 +27,7 @@ from optparse import OptionParser
 import simplejson as json
 from wsgiref.simple_server import make_server
 from selector import Selector, pliant, opliant
+
 from translate.search import match
 from translate.storage import factory
 
@@ -34,14 +37,14 @@ class TMServer:
     rest = None
 
     def __init__(self, tmfiles, max_candidates=3, min_similarity=75, max_length=1000, prefix=""):
-        
+
         #initialize matcher
         if isinstance(tmfiles, list):
             tmstore = [factory.getobject(tmfile) for tmfile in tmfiles]
         else:
-            tmstore = factory.getobject(tmfiles)        
+            tmstore = factory.getobject(tmfiles)
         self.tmmatcher = match.matcher(tmstore, max_candidates=max_candidates, min_similarity=min_similarity, max_length=max_length)
-        
+
         #initialize url dispatcher
         self.rest = Selector(prefix=prefix)
         self.rest.add("/unit/{uid:any}", GET=self.get_unit)
@@ -54,12 +57,11 @@ class TMServer:
         #self.rest.add("/store/{sid}", PUT=self.put_store)
         #self.rest.add("/store/{sid}", DELETE=self.delete_store)
 
-
     @opliant
     def get_unit(self, environ, start_response, uid):
         start_response("200 OK", [('Content-type', 'text/plain')])
         uid = unicode(urllib.unquote_plus(uid),"utf-8")
-        
+
         candidates = [_unit2dict(candidate) for candidate in self.tmmatcher.matches(uid)]
         response =  json.dumps(candidates, indent=4)
         return [response]
@@ -70,17 +72,14 @@ def _unit2dict(unit):
     return {"source": unit.source, "target": unit.target, 
             "quality": _parse_quality(unit.othercomments), "context": unit.getcontext()}
 
-
 def _parse_quality(comments):
     """extracts match quality from po comments"""
     for comment in comments:
         quality = re.search('([0-9]+)%', comment)
         if quality:
             return quality.group(1)
-            
 
-
-def main(argv=None):
+def main():
     parser = OptionParser()
     parser.add_option("-t", "--tm", dest="tmfiles", action="append",
                       help="translaion memory file")
