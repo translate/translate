@@ -26,7 +26,7 @@ import re
 from optparse import OptionParser
 import simplejson as json
 from wsgiref.simple_server import make_server
-from selector import Selector, pliant, opliant
+from translate.misc import selector 
 
 from translate.search import match
 from translate.storage import factory
@@ -43,7 +43,7 @@ class TMServer:
         self.tmmatcher = match.matcher(tmstore, max_candidates=max_candidates, min_similarity=min_similarity, max_length=max_length)
 
         #initialize url dispatcher
-        self.rest = Selector(prefix=prefix)
+        self.rest = selector.Selector(prefix=prefix)
         self.rest.add("/unit/{uid:any}", GET=self.get_unit)
         #self.rest.add("/unit/{uid}", POST=self.post_unit)
         #self.rest.add("/unit/{uid}", PUT=self.put_unit)
@@ -54,7 +54,7 @@ class TMServer:
         #self.rest.add("/store/{sid}", PUT=self.put_store)
         #self.rest.add("/store/{sid}", DELETE=self.delete_store)
 
-    @opliant
+    @selector.opliant
     def get_unit(self, environ, start_response, uid):
         start_response("200 OK", [('Content-type', 'text/plain')])
         uid = unicode(urllib.unquote_plus(uid),"utf-8")
