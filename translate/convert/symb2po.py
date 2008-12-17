@@ -1,25 +1,24 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
-# Copyright 2008 Zuza Software Foundation
-# 
-# This file is part of translate.
 #
-# translate is free software; you can redistribute it and/or modify
+# Copyright 2008 Zuza Software Foundation
+#
+# This file is part of Virtaal.
+#
+# This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
-# translate is distributed in the hope that it will be useful,
+#
+# This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with translate; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""convert .ini files to Gettext PO localization files"""
+"""Convert Symbian localisation files to Gettext PO localization files."""
 
 import sys
 import re
@@ -38,7 +37,7 @@ def read_header_items(ps):
         ps.read_line()
         results[match_chunks['key']] = match_chunks['value']
         match = header_item_re.match(ps.current_line)
-    
+
     match = read_while(ps, identity, lambda line: not line.startswith('*/'))
     ps.read_line()
     return results
