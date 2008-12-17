@@ -107,89 +107,77 @@ def extractcomment(lines):
     "Extracts <!-- > XML comments from lines"
     return extractfromlines(lines, "<!--", "-->", None)
 
-def extractwithoutquotes(source, startdelim, enddelim, escape=None, startinstring=False, includeescapes=True, allowreentry=True):
-    """Extracts a doublequote-delimited string from a string, allowing for backslash-escaping
-    includeescapes can also be a function that takes the whole escaped string and returns the replaced version"""
-    instring = startinstring
-    enteredonce = False
-    lenstart = len(startdelim)
-    lenend = len(enddelim)
-    startdelim_places = find_all(source, startdelim)
-    if startdelim == enddelim:
-        enddelim_places = startdelim_places[:]
+import re
+
+def get_start(source, startdelim, startinstring):
+    if not startinstring:
+        return source.find(startdelim, 0) + len(startdelim)
     else:
-        enddelim_places = find_all(source, enddelim)
+        return 0
+
+def get_next_start(source, startdelim, start_pos, allowreentry):
+    start = source.find(startdelim, start_pos)
+    if start > -1 and allowreentry:
+        return start + len(startdelim)
+    else:
+        return -1
+
+def make_escaper(escape, include_escapes):
+    if callable(include_escapes):
+        return include_escapes
+    elif include_escapes == True:
+        return lambda escape: escape
+    else:
+        return lambda escape: escape[1]
+
+def make_pattern(enddelim, escape):
     if escape is not None:
-        lenescape = len(escape)
-        escape_places = find_all(source, escape)
-        last_escape_pos = -1
-        # filter escaped escapes
-        true_escape = False
-        true_escape_places = []
-        for escape_pos in escape_places:
-            if escape_pos - lenescape in escape_places:
-                true_escape = not true_escape
-            else:
-                true_escape = True
-            if true_escape:
-                true_escape_places.append(escape_pos)
-        startdelim_places = [pos for pos in startdelim_places if pos - lenescape not in true_escape_places]
-        enddelim_places = [pos + lenend for pos in enddelim_places if pos - lenescape not in true_escape_places]
+        return re.compile('(%s|%s)' % (re.escape(enddelim), re.escape(escape)))
     else:
-        enddelim_places = [pos + lenend for pos in enddelim_places]
-    # get a unique sorted list of the significant places in the string
-    significant_places = [0] + startdelim_places + enddelim_places + [len(source)-1]
-    significant_places.sort()
-    extracted = ""
-    lastpos = 0
-    callable_includeescapes = callable(includeescapes)
-    checkescapes = callable_includeescapes or not includeescapes
-    for pos in significant_places:
-        if instring and pos in enddelim_places and lastpos != pos - lenstart:
-            section_start, section_end = lastpos + len(startdelim), pos - len(enddelim)
-            section = source[section_start:section_end]
-            if escape is not None and checkescapes:
-                escape_list = [epos - section_start for epos in true_escape_places if section_start <= epos <= section_end]
-                new_section = ""
-                last_epos = 0
-                for epos in escape_list:
-                    new_section += section[last_epos:epos]
-                    if callable_includeescapes:
-                        replace_escape = includeescapes(section[epos:epos+lenescape+1])
-                        # TODO: deprecate old method of returning boolean from includeescape, by removing this if block
-                        if not isinstance(replace_escape, basestring):
-                            if replace_escape:
-                                replace_escape = section[epos:epos+lenescape+1]
-                            else:
-                                replace_escape = section[epos+lenescape:epos+lenescape+1]
-                        new_section += replace_escape
-                        last_epos = epos + lenescape + 1
-                    else:
-                        last_epos = epos + lenescape
-                section = new_section + section[last_epos:]
-            extracted += section
-            instring = False
-            lastpos = pos
-        if (not instring) and pos in startdelim_places and not (enteredonce and not allowreentry):
-            instring = True
-            enteredonce = True
-            lastpos = pos
-    if instring:
-        section_start = lastpos + len(startdelim)
-        section = source[section_start:]
-        if escape is not None and not includeescapes:
-            escape_list = [epos - section_start for epos in true_escape_places if section_start <= epos]
-            new_section = ""
-            last_epos = 0
-            for epos in escape_list:
-                new_section += section[last_epos:epos]
-                if callable_includeescapes and includeescapes(section[epos:epos+lenescape+1]):
-                    last_epos = epos
-                else:
-                    last_epos = epos + lenescape
-            section = new_section + section[last_epos:]
-        extracted += section
-    return (extracted, instring)
+        return None
+
+def make_read_rest(escape):
+    if escape is None:
+        return quick_read_rest
+    else:
+        return general_read_rest
+
+def quick_read_rest(source, enddelim, escape, escaper, writer, start_pos, pattern):
+    end_pos = source.find(enddelim, start_pos)
+    if end_pos < 0:
+        writer.append(source[start_pos:])
+        return len(source), True
+    else:
+        writer.append(source[start_pos:end_pos])
+        return end_pos + len(enddelim), False
+
+def general_read_rest(source, enddelim, escape, escaper, writer, start_pos, pattern):
+    escape_list = [start_pos]
+    match = pattern.search(source, start_pos)
+    while match is not None:
+        left, right = match.span(0)
+        if source[left] == escape:
+            writer.append(source[start_pos:left])
+            if left < len(source) - 1:
+                writer.append(escaper(source[left:right+1]))
+        else:
+            writer.append(source[start_pos:left])
+            return right, False
+        start_pos = right + 1
+        match = pattern.search(source, start_pos)
+    writer.append(source[start_pos:])
+    return len(source), True
+
+def extractwithoutquotes(source, startdelim, enddelim, escape=None, startinstring=False, includeescapes=True, allowreentry=True):
+    writer          = []
+    start_delim_pos = get_start(source, startdelim, startinstring)
+    escaper         = make_escaper(escape, includeescapes)
+    pattern         = make_pattern(enddelim, escape)
+    read_rest       = make_read_rest(escape)
+    while start_delim_pos > -1:
+        end_delim_pos, in_string = read_rest(source, enddelim, escape, escaper, writer, start_delim_pos, pattern)
+        start_delim_pos = get_next_start(source, startdelim, end_delim_pos, allowreentry)
+    return ''.join(writer), in_string
 
 def escapequotes(source, escapeescapes=0):
     "Returns the same string, with double quotes escaped with backslash"
