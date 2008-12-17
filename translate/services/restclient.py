@@ -20,7 +20,6 @@
 
 import StringIO
 import urllib
-import simplejson as json
 import pycurl
 import gobject
 
@@ -62,7 +61,7 @@ class RESTClient(object):
             else:
                 self.curl.setopt(pycurl.CUSTOMREQUEST, method)
             if data:
-                self.curl.setopt(pycurl.READDATA, json.dumps(data))
+                self.curl.setopt(pycurl.POSTFIELDS, data)
             if headers:
                 self.curl.setopt(pycurl.HTTPHEADER, headers)
 
@@ -87,8 +86,7 @@ class RESTClient(object):
             #TODO: handle 3xx, throw exception on other codes
             if self.status >= 200 and self.status < 300:
                 # 2xx indicated success
-                data = json.loads(self.result.getvalue())
-                self.emit("REST-success", self.id, data)
+                self.emit("REST-success", self.id, self.result.getvalue())
             elif self.status >= 400 and self.status < 500:
                 # 4xx client error
                 self.emit("REST-client-error", self.id, self.status)

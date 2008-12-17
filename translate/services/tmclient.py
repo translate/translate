@@ -20,37 +20,41 @@
 
 from translate.services import restclient
 import os
+import simplejson as json
 
 class TMClient(restclient.RESTClient):
     """CRUD operations for TM units and stores"""
-
+    
     def __init__(self, base_url):
         restclient.RESTClient.__init__(self)
         self.base_url = base_url
-
+                
     def translate_unit(self, unit_source, callback=None):
         request = restclient.RESTClient.Request(
                 self.base_url + "/unit",
                 unit_source, "GET")
         self.add(request)
         if callback:
-            request.connect("REST-success", callback)
+            request.connect("REST-success", 
+                            lambda widget, id, response: callback(widget, id, json.loads(response)))
 
     def add_unit(self, unit, callback=None):
         request = restclient.RESTClient.Request(
                 self.base_url + "/unit",
-                unit['source'], "PUT", unit['target'])
+                unit['source'], "PUT", json.dumps(unit))
         self.add(request)
         if callback:
-            request.connect("REST-success", callback)
+            request.connect("REST-success", 
+                            lambda widget, id, response: callback(widget, id, json.loads(response)))
 
     def update_unit(self, unit, callback=None):
         request = restclient.RESTClient.Request(
                 self.base_url + "/unit",
-                unit['source'], "POST", unit['target'])
+                unit['source'], "POST", json.dumps(unit))
         self.add(request)
         if callback:
-            request.connect("REST-success", callback)
+            request.connect("REST-success", 
+                            lambda widget, id, response: callback(widget, id, json.loads(response)))
 
     def forget_unit(self, unit_source, callback=None):
         request = restclient.RESTClient.Request(
@@ -58,7 +62,8 @@ class TMClient(restclient.RESTClient):
                 unit_source, "DELETE")
         self.add(request)
         if callback:
-            request.connect("REST-success", callback)
+            request.connect("REST-success", 
+                            lambda widget, id, response: callback(widget, id, json.loads(response)))
 
     def get_store_stats(self, store, callback=None):
         request = restclient.RESTClient.Request(
@@ -66,7 +71,8 @@ class TMClient(restclient.RESTClient):
                 store.filename, "GET")
         self.add(request)
         if callback:
-            request.connect("REST-success", callback)
+            request.connect("REST-success", 
+                            lambda widget, id, response: callback(widget, id, json.loads(response)))
 
     def upload_store(self, store, callback=None):
         data = str(store)
@@ -75,7 +81,8 @@ class TMClient(restclient.RESTClient):
                 store.filename, "PUT", data)
         self.add(request)
         if callback:
-            request.connect("REST-success", callback)
+            request.connect("REST-success", 
+                            lambda widget, id, response: callback(widget, id, json.loads(response)))
 
     def add_store(self, store_path, callback=None):
         tmp, store_filename = os.path.split(store_path)
@@ -84,7 +91,8 @@ class TMClient(restclient.RESTClient):
                 store_filename, "POST", store_path)
         self.add(request)
         if callback:
-            request.connect("REST-success", callback)
+            request.connect("REST-success", 
+                            lambda widget, id, response: callback(widget, id, json.loads(response)))
 
     def forget_store(self, store, callback=None):
         request = restclient.RESTClient.Request(
@@ -92,4 +100,5 @@ class TMClient(restclient.RESTClient):
                 store.filename, "DELETE")
         self.add(request)
         if callback:
-            request.connect("REST-success", callback)
+            request.connect("REST-success", 
+                            lambda widget, id, response: callback(widget, id, json.loads(response)))
