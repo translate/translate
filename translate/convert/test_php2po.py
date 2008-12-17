@@ -109,7 +109,13 @@ $lang['prefPanel-smime'] = 'Security';'''
 
     def test_newlines_in_value(self):
         """check that we can carry newlines that appear in the entry value into the PO"""
+        # Single quotes - \n is not a newline
         phpsource = r'''$lang['name'] = 'value1\nvalue2';'''
+        pofile = self.php2po(phpsource)
+        unit = self.singleelement(pofile)
+        assert unit.source == r"value1\nvalue2"
+        # Double quotes - \n is a newline
+        phpsource = r'''$lang['name'] = "value1\nvalue2";'''
         pofile = self.php2po(phpsource)
         unit = self.singleelement(pofile)
         assert unit.source == "value1\nvalue2"
