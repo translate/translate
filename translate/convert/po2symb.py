@@ -24,7 +24,7 @@
 import sys
 from translate.storage import factory
 from translate.storage.pypo import po_escape_map
-from symb_common import *
+from translate.storage.symbian import *
 
 def escape(text):
     for key, val in po_escape_map.iteritems():

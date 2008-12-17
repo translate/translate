@@ -25,7 +25,7 @@ import sys
 import re
 from translate.storage import factory
 from translate.storage.pypo import extractpoline
-from symb_common import *
+from translate.storage.symbian import *
 
 def read_header_items(ps):
     match = read_while(ps, header_item_or_end_re.match, lambda match: match is None)
