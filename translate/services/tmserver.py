@@ -33,9 +33,6 @@ from translate.storage import factory
 
 class TMServer:
     """a RESTful JSON TM server"""
-    tmmatcher = None
-    rest = None
-
     def __init__(self, tmfiles, max_candidates=3, min_similarity=75, max_length=1000, prefix=""):
 
         #initialize matcher

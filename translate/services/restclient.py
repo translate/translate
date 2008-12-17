@@ -46,7 +46,12 @@ class RESTClient(object):
             self.curl = pycurl.Curl()
             self.curl.setopt(pycurl.WRITEFUNCTION, self.result.write)
             self.curl.setopt(pycurl.HEADERFUNCTION, self.result_headers.write)
+            
+            # urllib is stupid, convert unicode to str before encoding url
+            if isinstance(id, unicode):
+                id = id.encode("utf-8")
             self.curl.setopt(pycurl.URL, self.url + "/" + urllib.quote_plus(id))
+
             # let's set the HTTP request method
             if method == 'GET':
                 self.curl.setopt(pycurl.HTTPGET, 1)
@@ -60,8 +65,9 @@ class RESTClient(object):
                 self.curl.setopt(pycurl.READDATA, json.dumps(data))
             if headers:
                 self.curl.setopt(pycurl.HTTPHEADER, headers)
-            #self reference required cause CurlMulti will only return
-            #Curl handles
+
+            # self reference required cause CurlMulti will only return
+            # Curl handles
             self.curl.request = self
 
         # define __hash__ and __eq__ so we can have meaningful sets
