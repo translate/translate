@@ -75,7 +75,7 @@ def build_output(units, template_header, template_dict):
     ignore = set(['r_string_languagegroup_name'])
     header_entries = {
         'Last-Translator': template_header.get('Author', ''),
-        'Language-Team': template_dict['r_string_languagegroup_name']
+        'Language-Team': template_dict.get('r_string_languagegroup_name', '')
         }
     output_store.updateheader(add=True, **header_entries)
     output_store.changeencoding('UTF-8')
