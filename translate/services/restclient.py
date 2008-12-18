@@ -122,13 +122,13 @@ class RESTClient(object):
     def perform(self):
         """main event loop function, non blocking execution of all queued requests"""
         ret, num_handles = self.curl.perform()
+        if ret != pycurl.E_CALL_MULTI_PERFORM and num_handles == 0:
+            self.running = False
         num, completed, failed = self.curl.info_read()
         [self.close_request(com) for com in completed]
         #TODO: handle failed requests
-
-        if ret != pycurl.E_CALL_MULTI_PERFORM and num_handles == 0:
+        if not self.running:
             #we are done with this batch what do we do?
-            self.running = False
             return False
 
         return True
