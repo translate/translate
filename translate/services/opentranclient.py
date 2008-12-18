@@ -18,10 +18,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-from translate.services import restclient
 import os
 import xmlrpclib
 import pycurl
+
+from translate.services import restclient
+from translate.lang import data
 
 class OpenTranClient(restclient.RESTClient):
     """CRUD operations for TM units and stores"""
@@ -30,9 +32,13 @@ class OpenTranClient(restclient.RESTClient):
         restclient.RESTClient.__init__(self)
         self.url = url
         self.target_lang = target_lang
+        #detect supported language
+        self._issupported(target_lang)
+
         self.source_lang = source_lang
         
     def translate_unit(self, unit_source, callback=None):
+        print "target lang", self.target_lang
         if isinstance(unit_source, unicode):
             unit_source = unit_source.encode("utf-8")
 
@@ -46,6 +52,29 @@ class OpenTranClient(restclient.RESTClient):
         if callback:
             request.connect("REST-success", 
                             lambda widget, id, response: callback(widget, id, self.format_suggestions(response)))
+
+
+    def _handle_language(self, request, language, response):
+        (result,), fish = xmlrpclib.loads(response)
+        print "result", result
+        if result:
+            print "found the language", language
+            self.target_lang = language
+        else:
+            lang = data.simplercode(language)
+            print language, "failed moving on to", lang
+            if lang:
+                self._issupported(lang)
+        
+    def _issupported(self, language):
+        print "language", language
+        request_body = xmlrpclib.dumps((language,), "supported")
+        request = restclient.RESTClient.Request(
+            self.url, language, "POST", request_body)
+        request.curl.setopt(pycurl.URL, self.url)
+        request.curl.setopt(pycurl.VERBOSE, 1)
+        self.add(request)
+        request.connect("REST-success", self._handle_language)
 
     def format_suggestions(self, suggestions):
         """clean up open tran suggestion and use the same format as tmserver"""
