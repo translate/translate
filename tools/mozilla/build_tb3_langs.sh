@@ -75,7 +75,7 @@ find pot \( -name '*.html.pot' -o -name '*.xhtml.pot' \) -exec rm -f {} \;
 # Create POT pack
 # Comment out the lines starting with "tar" and/or "zip" to keep from building archives in the specific format(s).
 PACKNAME="${POTPACK_DIR}/thunderbird-${TB_VERSION}-`date +%Y%m%d`"
-tar cjf ${PACKNAME}.tar.bz2 pot en-US ${POT_INCLUDES}
+tar chjf ${PACKNAME}.tar.bz2 pot en-US ${POT_INCLUDES}
 zip -qr9 ${PACKNAME}.zip pot en-US ${POT_INCLUDES}
 
 # The following functions are used in the loop following it
