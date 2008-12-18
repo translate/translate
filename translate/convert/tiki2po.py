@@ -46,7 +46,7 @@ class tiki2po:
 
         # For each lang unit, make the new po unit accordingly
         for unit in thetikifile.units:
-            if not self.includeunused and "unused words" in unit.getlocations():
+            if not self.includeunused and "unused" in unit.getlocations():
                 continue
             newunit = po.pounit()
             newunit.source = unit.source

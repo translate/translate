@@ -65,7 +65,7 @@ class TikiUnit(base.TranslationUnit):
     def __unicode__(self):
         """Returns a string formatted to be inserted into a tiki language.php file."""
         ret = u'"%s" => "%s",' % (self.source, self.target)
-        if self.location == ["untranslated words"]:
+        if self.location == ["untranslated"]:
           ret = u'// ' + ret
         return ret + "\n"
 
@@ -75,7 +75,7 @@ class TikiUnit(base.TranslationUnit):
         
         @param location: Where the string is located in the file.  Must be a valid location.
         """
-        if location in ['unused words', 'untranslated words', 'possibly untranslated words', 'translated words']:
+        if location in ['unused', 'untranslated', 'possiblyuntranslated', 'translated']:
           self.location.append(location)
 
     def getlocations(self):
@@ -106,11 +106,11 @@ class TikiStore(base.TranslationStore):
 
         # Reorder all the units into their groups
         for unit in self.units:
-            if unit.getlocations() == ["unused words"]:
+            if unit.getlocations() == ["unused"]:
                 _unused.append(unit)
-            elif unit.getlocations() == ["untranslated words"]:
+            elif unit.getlocations() == ["untranslated"]:
                 _untranslated.append(unit)
-            elif unit.getlocations() == ["possibly untranslated words"]:
+            elif unit.getlocations() == ["possiblyuntranslated"]:
                 _possiblyuntranslated.append(unit)
             else:
                 _translated.append(unit)
@@ -155,30 +155,30 @@ class TikiStore(base.TranslationStore):
         _split_regex = re.compile(r"^(?:// )?\"(.*)\" => \"(.*)\",$", re.UNICODE)
 
         try:
-            _location = "translated words"
+            _location = "translated"
 
             for line in input:
                 # The tiki file fails to identify each section so we have to look for start and end
                 # points and if we're outside of them we assume the string is translated
                 if line.count("### Start of unused words"):
-                    _location = "unused words"
+                    _location = "unused"
                 elif line.count("### start of untranslated words"):
-                    _location = "untranslated words"
+                    _location = "untranslated"
                 elif line.count("### start of possibly untranslated words"):
-                    _location = "possibly untranslated words"
+                    _location = "possiblyuntranslated"
                 elif line.count("### end of unused words"):
-                    _location = "translated words"
+                    _location = "translated"
                 elif line.count("### end of untranslated words"):
-                    _location = "translated words"
+                    _location = "translated"
                 elif line.count("### end of possibly untranslated words"):
-                    _location = "translated words"
+                    _location = "translated"
 
                 match = _split_regex.match(line)
 
                 if match:
                     unit = self.addsourceunit("".join(match.group(1)))
                     # Untranslated words get an empty msgstr
-                    if not _location == "untranslated words":
+                    if not _location == "untranslated":
                         unit.settarget(match.group(2))
                     unit.addlocation(_location)
         finally:

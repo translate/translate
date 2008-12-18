@@ -42,9 +42,9 @@ class po2tiki:
                 # If a word is "untranslated" but the target isn't empty and isn't the same as the source
                 # it's been translated and we switch it. This is an assumption but should remain true as long
                 # as these scripts are used.
-                if newunit.getlocations() == ["untranslated words"] and unit.source != unit.target and unit.target != "":
+                if newunit.getlocations() == ["untranslated"] and unit.source != unit.target and unit.target != "":
                     newunit.location = []
-                    newunit.addlocation("translated words")
+                    newunit.addlocation("translated")
 
                 thetargetfile.addunit(newunit)
         return thetargetfile

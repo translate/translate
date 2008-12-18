@@ -13,11 +13,11 @@ from translate.misc import wStringIO
 class TestPo2Tiki:
     def test_convertpo(self):
         inputfile = """
-#: translated words
+#: translated
 msgid "zero_source"
 msgstr "zero_target"
 
-#: unused words
+#: unused
 msgid "one_source"
 msgstr "one_target"
         """

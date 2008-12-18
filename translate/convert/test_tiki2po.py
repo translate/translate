@@ -23,7 +23,7 @@ class TestTiki2Po:
 
         output =  outputfile.getvalue()
 
-        assert '#: translated words' in output
+        assert '#: translated' in output
         assert 'msgid "zero_source"' in output
         assert "one_source" not in output
 
@@ -39,9 +39,9 @@ class TestTiki2Po:
 
         output =  outputfile.getvalue()
 
-        assert '#: translated words' in output
+        assert '#: translated' in output
         assert 'msgid "zero_source"' in output
-        assert '#: unused words' in output
+        assert '#: unused' in output
         assert 'msgid "one_source"' in output
 
 

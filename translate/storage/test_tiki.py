@@ -11,8 +11,8 @@ class TestTikiUnit:
         unit = tiki.TikiUnit("one")
         unit.addlocation('blah')
         assert unit.getlocations() == []
-        unit.addlocation('unused words')
-        assert unit.getlocations() == ['unused words']
+        unit.addlocation('unused')
+        assert unit.getlocations() == ['unused']
 
     def test_to_unicode(self):
         unit = tiki.TikiUnit("one")
@@ -21,7 +21,7 @@ class TestTikiUnit:
 
         unit2 = tiki.TikiUnit("one")
         unit2.settarget('two')
-        unit2.addlocation('untranslated words')
+        unit2.addlocation('untranslated')
         assert unicode(unit2) == '// "one" => "two",\n'
 
 class TestTikiStore:
@@ -60,13 +60,13 @@ class TestTikiStore:
         """
         tikifile = tiki.TikiStore(tikisource)
         assert len(tikifile.units) == 7
-        assert tikifile.units[0].location == ["translated words"]
-        assert tikifile.units[1].location == ["unused words"]
-        assert tikifile.units[2].location == ["translated words"]
-        assert tikifile.units[3].location == ["untranslated words"]
-        assert tikifile.units[4].location == ["translated words"]
-        assert tikifile.units[5].location == ["possibly untranslated words"]
-        assert tikifile.units[6].location == ["translated words"]
+        assert tikifile.units[0].location == ["translated"]
+        assert tikifile.units[1].location == ["unused"]
+        assert tikifile.units[2].location == ["translated"]
+        assert tikifile.units[3].location == ["untranslated"]
+        assert tikifile.units[4].location == ["translated"]
+        assert tikifile.units[5].location == ["possiblyuntranslated"]
+        assert tikifile.units[6].location == ["translated"]
 
     def test_parse_ignore_extras(self):
         """Tests that we ignore extraneous lines"""
