@@ -84,6 +84,5 @@ class OpenTranClient(restclient.RESTClient):
             result = {}
             result['target'] = suggestion['text']
             result['source'] = suggestion['projects'][0]['orig_phrase']
-            result['quality'] = "50"
             results.append(result)
         return results
