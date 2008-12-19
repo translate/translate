@@ -29,12 +29,12 @@ from translate.search.lshtein import LevenshteinComparer
 class OpenTranClient(restclient.RESTClient):
     """CRUD operations for TM units and stores"""
 
-    def __init__(self, url, target_lang, source_lang="en", max_candidates=3, min_similarity=75):
+    def __init__(self, url, target_lang, source_lang="en", max_candidates=3, min_similarity=75, max_length=1000):
         restclient.RESTClient.__init__(self)
 
         self.max_candidates = max_candidates
         self.min_similarity = min_similarity
-        self.comparer = LevenshteinComparer()
+        self.comparer = LevenshteinComparer(max_length)
 
         self.url = url
 
@@ -53,7 +53,7 @@ class OpenTranClient(restclient.RESTClient):
             (unit_source, self.source_lang, self.target_lang), "suggest2")
         request = restclient.RESTClient.Request(
                 self.url, unit_source, "POST", request_body)
-        request.curl.setopt(pycurl.VERBOSE, 1)
+        #request.curl.setopt(pycurl.VERBOSE, 1)
         request.curl.setopt(pycurl.URL, self.url)
         self.add(request)
         if callback:
@@ -75,7 +75,7 @@ class OpenTranClient(restclient.RESTClient):
         request = restclient.RESTClient.Request(
             self.url, language, "POST", request_body)
         request.curl.setopt(pycurl.URL, self.url)
-        request.curl.setopt(pycurl.VERBOSE, 1)
+        #request.curl.setopt(pycurl.VERBOSE, 1)
         self.add(request)
         request.connect("REST-success", self._handle_language)
 
