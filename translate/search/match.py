@@ -21,6 +21,8 @@
 
 """Class to perform translation memory matching from a store of translation units"""
 
+import re
+
 from translate.search import lshtein
 from translate.search import terminology
 from translate.storage import base
@@ -209,9 +211,6 @@ class matcher(object):
             newunit = po.pounit(candidate.source)
             newunit.target = candidate.target
             newunit.markfuzzy(candidate.fuzzy)
-            newunit.filepath = candidate.filepath
-            newunit.translator = candidate.translator
-            newunit.date = candidate.date
             candidatenotes = candidate.getnotes().strip()
             if candidatenotes:
                 newunit.addnote(candidatenotes)
@@ -251,3 +250,16 @@ class terminologymatcher(matcher):
         matches = matcher.matches(self, text)
         return matches
 
+
+# utility functions used by virtaal and tmserver to convert matching units in easily marshallable dictionaries
+def unit2dict(unit):
+    """converts a pounit to a simple dict structure for use over the web"""
+    return {"source": unit.source, "target": unit.target, 
+            "quality": _parse_quality(unit.othercomments), "context": unit.getcontext()}
+
+def _parse_quality(comments):
+    """extracts match quality from po comments"""
+    for comment in comments:
+        quality = re.search('([0-9]+)%', comment)
+        if quality:
+            return quality.group(1)

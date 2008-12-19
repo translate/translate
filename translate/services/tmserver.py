@@ -61,7 +61,7 @@ class TMServer:
     def get_suggestions(self, environ, start_response, uid):
         start_response("200 OK", [('Content-type', 'text/plain')])
         uid = unicode(urllib.unquote_plus(uid),"utf-8")
-        candidates = [_unit2dict(candidate) for candidate in self.tmmatcher.matches(uid)]
+        candidates = [match.unit2dict(candidate) for candidate in self.tmmatcher.matches(uid)]
         response =  json.dumps(candidates, indent=4)
         return [response]
     
@@ -120,18 +120,6 @@ class TMServer:
 
         return [response]
 
-
-def _unit2dict(unit):
-    """converts a pounit to a simple dict structure for use over the web"""
-    return {"source": unit.source, "target": unit.target, 
-            "quality": _parse_quality(unit.othercomments), "context": unit.getcontext()}
-
-def _parse_quality(comments):
-    """extracts match quality from po comments"""
-    for comment in comments:
-        quality = re.search('([0-9]+)%', comment)
-        if quality:
-            return quality.group(1)
 
 def main():
     parser = OptionParser()
