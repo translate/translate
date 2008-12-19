@@ -91,7 +91,11 @@ class OpenTranClient(restclient.RESTClient):
         for suggestion in suggestions:
             result = {}
             result['target'] = suggestion['text']
+            if isinstance(result['target'], unicode):
+                result['target'] = result['target'].encode("utf-8")
             result['source'] = suggestion['projects'][0]['orig_phrase']
+            if isinstance(result['source'], unicode):
+                result['source'] = result['source'].encode("utf-8")                
             #open-tran often gives too many results with many which can't really be
             #considered to be suitable for translation memory
             result['quality'] = self.comparer.similarity(id, result['source'], self.min_similarity)
