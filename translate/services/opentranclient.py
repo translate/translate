@@ -24,18 +24,26 @@ import pycurl
 
 from translate.services import restclient
 from translate.lang import data
+from translate.search.lshtein import LevenshteinComparer
 
 class OpenTranClient(restclient.RESTClient):
     """CRUD operations for TM units and stores"""
     
-    def __init__(self, url, target_lang, source_lang="en"):
+    def __init__(self, url, target_lang, source_lang="en", max_candidates=3, min_similarity=75):
         restclient.RESTClient.__init__(self)
+        
+        self.max_candidates = max_candidates
+        self.min_similarity = min_similarity
+        self.comparer = LevenshteinComparer()
+
         self.url = url
+        
+        self.source_lang = source_lang
         self.target_lang = target_lang
         #detect supported language
         self._issupported(target_lang)
 
-        self.source_lang = source_lang
+
         
     def translate_unit(self, unit_source, callback=None):
         print "target lang", self.target_lang
@@ -51,7 +59,7 @@ class OpenTranClient(restclient.RESTClient):
         self.add(request)
         if callback:
             request.connect("REST-success", 
-                            lambda widget, id, response: callback(widget, id, self.format_suggestions(response)))
+                            lambda widget, id, response: callback(widget, id, self.format_suggestions(id, response)))
 
 
     def _handle_language(self, request, language, response):
@@ -76,13 +84,19 @@ class OpenTranClient(restclient.RESTClient):
         self.add(request)
         request.connect("REST-success", self._handle_language)
 
-    def format_suggestions(self, suggestions):
+    def format_suggestions(self, id, response):
         """clean up open tran suggestion and use the same format as tmserver"""
-        (suggestions,), fish = xmlrpclib.loads(suggestions)
+        (suggestions,), fish = xmlrpclib.loads(response)
         results = []
         for suggestion in suggestions:
             result = {}
             result['target'] = suggestion['text']
             result['source'] = suggestion['projects'][0]['orig_phrase']
-            results.append(result)
+            #open-tran often gives too many results with many which can't really be
+            #considered to be suitable for translation memory
+            result['quality'] = self.comparer.similarity(id, result['source'], self.min_similarity)
+            if result['quality'] >= self.min_similarity:
+                results.append(result)
+        results.sort(key=lambda match: match['quality'], reverse=True)
+        results = results[:self.max_candidates]
         return results
