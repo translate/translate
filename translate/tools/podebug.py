@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # 
-# Copyright 2004-2006 Zuza Software Foundation
+# Copyright 2004-2006,2008 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
@@ -29,7 +29,7 @@ from translate.storage import factory
 from translate.misc.rich import map_rich, only_strings
 import os
 import re
-import md5
+from translate.misc import hash
 
 def add_prefix(prefix, strings):
     for string in strings:
@@ -152,7 +152,7 @@ class podebug:
                 hashable = unit.getlocations()[0]
             else:
                 hashable = unit.source
-            prefix = md5.new(hashable).hexdigest()[:self.hash] + " "
+            prefix = hash.md5_f(hashable).hexdigest()[:self.hash] + " "
         if self.rewritefunc:
             unit.rich_target = map_rich(only_strings(self.rewritefunc), unit.rich_source)
         elif not unit.istranslated():

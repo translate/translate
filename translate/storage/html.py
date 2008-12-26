@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2004-2006 Zuza Software Foundation
+# Copyright 2004-2006,2008 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
@@ -69,7 +69,7 @@ class htmlfile(HTMLParser, base.TranslationStore):
 
     def guess_encoding(self, htmlsrc):
         """Returns the encoding of the html text.
-        
+
         We look for 'charset=' within a meta tag to do this.
         """
 
@@ -104,17 +104,17 @@ class htmlfile(HTMLParser, base.TranslationStore):
         strings to help our regexes out.
 
         """
-        
-        import md5 
-       
+
+        from translate.misc import hash
+
         self.phpdict = {}
         result = re.findall('(?s)<\?(.*?)\?>', text)
         for cmd in result:
-            h = md5.new(cmd).hexdigest()
+            h = hash.md5_f(cmd).hexdigest()
             self.phpdict[h] = cmd
             text = text.replace(cmd,h)
         return text
-    
+
     def reintrophp(self, text):
         """Replaces the PHP placeholders in text with the real code"""
         for hash, code in self.phpdict.items():
@@ -136,7 +136,7 @@ class htmlfile(HTMLParser, base.TranslationStore):
 
     def strip_html(self, text):
         """Strip unnecessary html from the text.
-        
+
         HTML tags are deemed unnecessary if it fully encloses the translatable
         text, eg. '<a href="index.html">Home Page</a>'.
 
@@ -252,10 +252,10 @@ class htmlfile(HTMLParser, base.TranslationStore):
     def handle_comment(self, data):
         # we don't do anything with comments
         pass
-    
+
     def handle_pi(self, data):
         self.handle_data("<?%s>" % data)
 
 class POHTMLParser(htmlfile):
     pass
-    
+
