@@ -114,10 +114,6 @@ class matcher(object):
             # in the new po file
             simpleunit.addnote(candidate.getnotes(origin="translator"))
             simpleunit.fuzzy = candidate.isfuzzy()
-            if store:
-                simpleunit.filepath = store.filepath
-                simpleunit.translator = store.translator
-                simpleunit.date = store.date
             self.candidates.units.append(simpleunit)
         if sort:
             self.candidates.units.sort(sourcelencmp)

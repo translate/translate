@@ -380,9 +380,6 @@ class TranslationStore(object):
         """Constructs a blank TranslationStore."""
 
         self.units = []
-        self.filepath = None
-        self.translator = ""
-        self.date = ""
         self.sourcelanguage = None
         self.targetlanguage = None
         if unitclass:
