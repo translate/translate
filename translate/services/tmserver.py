@@ -20,14 +20,12 @@
 
 """A translation memory server using REST and JSON."""
 
-import sys
 import urllib
-import re
 from optparse import OptionParser
 import simplejson as json
 from wsgiref.simple_server import make_server
 
-from translate.misc import selector 
+from translate.misc import selector
 from translate.search import match
 from translate.storage import factory
 from translate.storage import base
@@ -45,7 +43,7 @@ class TMServer:
 
         #initialize url dispatcher
         self.rest = selector.Selector(prefix=prefix)
-        self.rest.add("/unit/{uid:any}", 
+        self.rest.add("/unit/{uid:any}",
                       GET=self.get_suggestions,
                       POST=self.update_unit,
                       PUT=self.add_unit,
@@ -64,7 +62,7 @@ class TMServer:
         candidates = [match.unit2dict(candidate) for candidate in self.tmmatcher.matches(uid)]
         response =  json.dumps(candidates, indent=4)
         return [response]
-    
+
     @selector.opliant
     def add_unit(self, environ, start_response, uid):
         start_response("200 OK", [('Content-type', 'text/plain')])
@@ -75,7 +73,7 @@ class TMServer:
         self.tmmatcher.extendtm(unit)
         return [""]
 
-    @selector.opliant    
+    @selector.opliant
     def update_unit(self, environ, start_response, uid):
         start_response("200 OK", [('Content-type', 'text/plain')])
         uid = unicode(urllib.unquote_plus(uid),"utf-8")
@@ -85,35 +83,35 @@ class TMServer:
         self.tmmatcher.extendtm(unit)
         return [""]
 
-    @selector.opliant    
+    @selector.opliant
     def forget_unit(self, environ, start_response, uid):
         start_response("200 OK", [('Content-type', 'text/plain')])
         uid = unicode(urllib.unquote_plus(uid),"utf-8")
 
         return [response]
 
-    @selector.opliant    
+    @selector.opliant
     def get_store_stats(self, environ, start_response, sid):
         start_response("200 OK", [('Content-type', 'text/plain')])
         sid = unicode(urllib.unquote_plus(sid),"utf-8")
 
         return [response]
 
-    @selector.opliant    
+    @selector.opliant
     def upload_store(self, environ, start_response, sid):
         start_response("200 OK", [('Content-type', 'text/plain')])
         sid = unicode(urllib.unquote_plus(sid),"utf-8")
         data = json.loads(environ['wsgi.input'].read(int(environ['CONTENT_LENGTH'])))
         return [response]
 
-    @selector.opliant    
+    @selector.opliant
     def add_store(self, environ, start_response, sid):
         start_response("200 OK", [('Content-type', 'text/plain')])
         sid = unicode(urllib.unquote_plus(sid),"utf-8")
         data = json.loads(environ['wsgi.input'].read(int(environ['CONTENT_LENGTH'])))
         return [response]
 
-    @selector.opliant    
+    @selector.opliant
     def forget_store(self, environ, start_response, sid):
         start_response("200 OK", [('Content-type', 'text/plain')])
         sid = unicode(urllib.unquote_plus(sid),"utf-8")
@@ -129,7 +127,6 @@ def main():
                       help="adress to bind server to")
     parser.add_option("-p", "--port", dest="port", type="int",
                       help="port to listen on")
-
 
     (options, args) = parser.parse_args()
 
