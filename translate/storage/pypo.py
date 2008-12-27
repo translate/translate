@@ -88,6 +88,7 @@ def quoteforpo(text):
         if len(lines) != 2 or lines[1]:
             polines.extend(['""'])
         for line in lines[:-1]:
+            #TODO: We should only wrap after escaping
             lns = wrapline(line)
             if len(lns) > 0:
                 for ln in lns[:-1]:
@@ -313,13 +314,13 @@ class pounit(pocommon.pounit):
             newpo.obsoletemsgstr = self.obsoletemsgstr[:]
         return newpo
 
-    def msgidlen(self):
+    def _msgidlen(self):
         if self.hasplural():
             return len(unquotefrompo(self.msgid).strip()) + len(unquotefrompo(self.msgid_plural).strip())
         else:
             return len(unquotefrompo(self.msgid).strip())
 
-    def msgstrlen(self):
+    def _msgstrlen(self):
         if isinstance(self.msgstr, dict):
             combinedstr = "\n".join([unquotefrompo(msgstr).strip() for msgstr in self.msgstr.itervalues()])
             return len(combinedstr.strip())
@@ -405,7 +406,7 @@ class pounit(pocommon.pounit):
                 self.markfuzzy()
 
     def isheader(self):
-        #return (self.msgidlen() == 0) and (self.msgstrlen() > 0) and (len(self.msgidcomments) == 0)
+        #return (self._msgidlen() == 0) and (self._msgstrlen() > 0) and (len(self.msgidcomments) == 0)
         #rewritten here for performance:        
         return (is_null(self.msgid) 
                         and not is_null(self.msgstr) 
@@ -416,7 +417,7 @@ class pounit(pocommon.pounit):
     def isblank(self):
         if self.isheader() or len(self.msgidcomments):
             return False
-        if (self.msgidlen() == 0) and (self.msgstrlen() == 0):
+        if (self._msgidlen() == 0) and (self._msgstrlen() == 0):
             return True
         return False
         # TODO: remove:
