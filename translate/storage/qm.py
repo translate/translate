@@ -168,3 +168,6 @@ class qmfile(base.TranslationStore):
                     subsection_name = "Unkown"
                 print >> sys.stderr, "Unimplemented: %s %s" % (subsection, subsection_name)
                 return
+
+    def savefile(self, storefile):
+        raise Exception("Writing of .qm files is not supported yet")
