@@ -89,6 +89,12 @@ class OpenTranClient(restclient.RESTClient):
             if isinstance(result['target'], unicode):
                 result['target'] = result['target'].encode("utf-8")
             result['source'] = suggestion['projects'][0]['orig_phrase']
+            #check for fuzzyness at the 'flag' member:
+            for project in suggestion['projects']:
+                if project['flags'] == 0:
+                    break
+            else:
+                continue
             if isinstance(result['source'], unicode):
                 result['source'] = result['source'].encode("utf-8")
             #open-tran often gives too many results with many which can't really be
