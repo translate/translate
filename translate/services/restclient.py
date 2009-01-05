@@ -22,6 +22,7 @@ import StringIO
 import urllib
 import pycurl
 import gobject
+import logging
 
 class RESTClient(object):
     """Nonblocking client that can handle multiple HTTP REST requests"""
@@ -45,7 +46,7 @@ class RESTClient(object):
             self.curl = pycurl.Curl()
             self.curl.setopt(pycurl.WRITEFUNCTION, self.result.write)
             self.curl.setopt(pycurl.HEADERFUNCTION, self.result_headers.write)
-            
+                        
             # urllib is stupid, convert unicode to str before encoding url
             if isinstance(id, unicode):
                 id = id.encode("utf-8")
@@ -106,6 +107,7 @@ class RESTClient(object):
         self.curl.add_handle(request.curl)
         self.requests.add(request)
         self.run()
+
     
     def run(self):
         """client should not be running when request queue is empty"""
@@ -113,11 +115,17 @@ class RESTClient(object):
         gobject.timeout_add(100, self.perform)
         self.running = True
     
+
     def close_request(self, handle):
         """finalize a successful request"""
         self.curl.remove_handle(handle)
         handle.request.handle_result()
-        self.requests.remove(handle.request)
+        if handle.request in self.requests:
+            self.requests.remove(handle.request)
+        else:
+            #FIXME: this shouldn't happen at all
+            logging.error("attempted to remove non existing request")
+            
 
     def perform(self):
         """main event loop function, non blocking execution of all queued requests"""
@@ -130,7 +138,6 @@ class RESTClient(object):
         if not self.running:
             #we are done with this batch what do we do?
             return False
-
         return True
         
 
