@@ -40,9 +40,9 @@ class OpenTranClient(restclient.RESTClient):
 
         self.source_lang = source_lang
         self.target_lang = target_lang
+        self.lang_supported = False
         #detect supported language
-        self._issupported(target_lang)
-
+        self.lang_negotiate(target_lang)
 
 
     def translate_unit(self, unit_source, callback=None):
@@ -65,12 +65,15 @@ class OpenTranClient(restclient.RESTClient):
         (result,), fish = xmlrpclib.loads(response)
         if result:
             self.target_lang = language
+            self.lang_supported = True
         else:
             lang = data.simplercode(language)
             if lang:
-                self._issupported(lang)
+                self.lang_negotiate(lang)
+            else:
+                self.lang_supported = False
 
-    def _issupported(self, language):
+    def lang_negotiate(self, language):
         request_body = xmlrpclib.dumps((language,), "supported")
         request = restclient.RESTClient.Request(
             self.url, language, "POST", request_body)
