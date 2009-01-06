@@ -222,6 +222,45 @@ class Common(object):
         return text
     punctranslate = classmethod(punctranslate)
 
+    def length_difference(cls, len):
+        """Returns an estimate to a likely change in length relative to an
+        English string of length len."""
+        # This is just a rudimentary heuristic guessing that most translations
+        # will be somewhat longer than the source language
+        expansion_factor = 0
+        code = cls.code
+        while code:
+            expansion_factor = data.expansion_factors.get(cls.code, 0)
+            if expansion_factor:
+                break
+            code = data.simplercode(code)
+        else:
+            expansion_factor = 0.1 # default
+        constant = max(5, int(40*expansion_factor))
+        # The default: return 5 + len/10
+        return constant + int(expansion_factor * len)
+
+    def alter_length(cls, text):
+        """Converts the given string by adding or removing characters as an 
+        estimation of translation length (with English assumed as source 
+        language)."""
+        print text.encode("utf-8")
+        def alter_it(text):
+            l = len(text)
+            if l > 9:
+                extra = cls.length_difference(l)
+                if extra > 0:
+                    text = text[:extra].replace(u'\n', u'') + text
+                else:
+                    text = text[-extra:]
+            return text
+        expanded = []
+        for subtext in text.split("\n\n"):
+            expanded.append(alter_it(subtext))
+        text = "\n\n".join(expanded)
+        print text.encode("utf-8")
+        return text
+
     def character_iter(cls, text):
         """Returns an iterator over the characters in text."""
         #We don't return more than one consecutive whitespace character

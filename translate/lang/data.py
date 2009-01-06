@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # 
-# Copyright 2007 Zuza Software Foundation
+# Copyright 2007-2009 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
@@ -153,6 +153,13 @@ def simplercode(code):
     if underscore >= 0:
         return code[:underscore]
 
+expansion_factors = {
+        'af': 0.1,
+        'ar': -0.09,
+        'es': 0.21,
+        'fr': 0.28,
+        'it': 0.2,
+}
 
 import gettext
 import re
@@ -207,7 +214,7 @@ def gettext_country(langcode):
 
 def normalize(string, normal_form="NFC"):
     """Return a unicode string in its normalized form
-    
+
        @param string: The string to be normalized
        @param normal_form: NFC (default), NFD, NFCK, NFDK
        @return: Normalized string
@@ -226,4 +233,4 @@ def forceunicode(string):
         string = string.decode(encoding)
     string = normalize(string)
     return string
-    
+
