@@ -62,4 +62,6 @@ class zh(common.Common):
         u"% ": u"%",
     }
 
+    length_difference = lambda cls, x: 10 - x/2
+
     ignoretests = ["startcaps", "simplecaps"]
