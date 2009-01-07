@@ -33,7 +33,7 @@ class RESTClient(object):
             gobject.GObject.__init__(self)
             self.result = StringIO.StringIO()
             self.result_headers = StringIO.StringIO()
-            
+
             # do we really need to keep these around?
             self.url = url
             self.id = id
@@ -46,7 +46,7 @@ class RESTClient(object):
             self.curl = pycurl.Curl()
             self.curl.setopt(pycurl.WRITEFUNCTION, self.result.write)
             self.curl.setopt(pycurl.HEADERFUNCTION, self.result_headers.write)
-                        
+
             # urllib is stupid, convert unicode to str before encoding url
             if isinstance(id, unicode):
                 id = id.encode("utf-8")
@@ -83,7 +83,7 @@ class RESTClient(object):
         def handle_result(self):
             """called after http request is done"""
             self.status = self.curl.getinfo(pycurl.HTTP_CODE)
-            
+
             #TODO: handle 3xx, throw exception on other codes
             if self.status >= 200 and self.status < 300:
                 # 2xx indicated success
@@ -94,8 +94,8 @@ class RESTClient(object):
             elif self.status >= 500 and self.status < 600:
                 # 5xx server error
                 self.emit("REST-server-error", self.id, self.status)
-            
-            
+
+
     def __init__(self):
         self.running = False
         self.requests = set()
@@ -108,13 +108,13 @@ class RESTClient(object):
         self.requests.add(request)
         self.run()
 
-    
+
     def run(self):
         """client should not be running when request queue is empty"""
         if self.running: return
         gobject.timeout_add(100, self.perform)
         self.running = True
-    
+
 
     def close_request(self, handle):
         """finalize a successful request"""
@@ -125,7 +125,7 @@ class RESTClient(object):
         else:
             #FIXME: this shouldn't happen at all
             logging.error("attempted to remove non existing request")
-            
+
 
     def perform(self):
         """main event loop function, non blocking execution of all queued requests"""
@@ -139,7 +139,7 @@ class RESTClient(object):
             #we are done with this batch what do we do?
             return False
         return True
-        
+
 
 #register the signal
 gobject.signal_new("REST-success", RESTClient.Request,

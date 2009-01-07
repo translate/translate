@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2006 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -42,7 +42,7 @@ class lookupRequestHandler(SimpleXMLRPCRequestHandler):
     """Sets up the requested file for parsing"""
     #TODO: Parse request to see if tbx/tmx is requested,
     # or perhaps the url can specify the file to be queried
-    
+
 class lookupServer(SimpleXMLRPCServer):
     def __init__(self, addr, storage):
         """Loads the initial tbx file from the given filename"""
@@ -66,8 +66,8 @@ class lookupServer(SimpleXMLRPCServer):
             except Exception, e:
                 print str(e)
                 return ""
-    
-    def internal_lookup(self, message): 
+
+    def internal_lookup(self, message):
         """Could perhaps include some intelligence in future, like case trying with different casing, etc."""
         message = message.strip()
         if message == "":
@@ -79,7 +79,7 @@ class lookupServer(SimpleXMLRPCServer):
         except Exception:
             return None
         return unit
-    
+
     def public_lookup(self, message):
         """Returns the source string of whatever was found. Keep in mind that this might not be what you want."""
         unit = self.internal_lookup(message)
@@ -107,7 +107,7 @@ class lookupServer(SimpleXMLRPCServer):
             score = unit.getnotes()
             original = unit.source
             translation = unit.target
-            
+
             # We might have gotten multistrings, so just convert them for now
             if isinstance(original, multistring):
                 original = unicode(original)
@@ -151,9 +151,9 @@ def main():
                       help="the host to bind to")
     parser.add_option("-p", "--port", dest="port", default=1234,
                       help="the port to listen on")
-    parser.add_option("-l", "--language", dest="targetlanguage", default=None, 
+    parser.add_option("-l", "--language", dest="targetlanguage", default=None,
                       help="set target language code", metavar="LANG")
-    parser.add_option("", "--source-language", dest="sourcelanguage", default='en', 
+    parser.add_option("", "--source-language", dest="sourcelanguage", default='en',
                       help="set source language code", metavar="LANG")
     parser.remove_option("--output")
     parser.remove_option("--exclude")
