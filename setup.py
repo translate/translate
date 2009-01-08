@@ -52,7 +52,6 @@ translatescripts = [apply(join, ('translate', ) + script) for script in
                   ('convert', 'php2po'), ('convert', 'po2php'),
                   ('convert', 'rc2po'), ('convert', 'po2rc'),
                   ('convert', 'xliff2po'), ('convert', 'po2xliff'),
-                  ('convert', 'odf2po'),
                   ('convert', 'po2tmx'),
                   ('convert', 'po2wordfast'),
                   ('convert', 'csv2tbx'),
