@@ -25,21 +25,24 @@ __all__ = ['get_abs_data_filename']
 import sys
 import os
 
-def get_abs_data_filename(path_parts):
+def get_abs_data_filename(path_parts, basedirs=[]):
     """Get the absolute path to the given file- or directory name in the current
-    running application's data directory.
+        running application's data directory.
 
         @type  path_parts: list
         @param path_parts: The path parts that can be joined by os.path.join().
-    """
+        """
 
     if isinstance(path_parts, str):
         path_parts = [path_parts]
 
-    BASE_DIRS = [
+    BASE_DIRS = basedirs + [
         os.path.dirname(unicode(__file__, sys.getfilesystemencoding())),
         os.path.dirname(unicode(sys.executable, sys.getfilesystemencoding()))
     ]
+
+    if 'XDG_DATA_DIRS' in os.environ:
+        BASE_DIRS += os.environ['XDG_DATA_DIRS'].split(os.path.pathsep)
 
     DATA_DIRS = [
         ["..", "share"],
