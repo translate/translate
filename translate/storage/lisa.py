@@ -32,17 +32,11 @@ try:
 except ImportError, e:
     raise ImportError("lxml is not installed. It might be possible to continue without support for XML formats.")
 
+string_xpath = etree.XPath("string()")
+
 def getText(node):
     """joins together the text from all the text nodes in the nodelist and their children"""
-    # node.xpath is very slow, so we only use it if there are children
-    # TODO: consider rewriting by iterating over children
-    if node is not None:    # The etree way of testing for children
-        # Only non-ASCII strings are returned as unicode, so we have to force
-        # the ASCII-only ones to be unicode as well
-        return unicode(node.xpath("string()")) # specific to lxml.etree
-    else:
-        return data.forceunicode(node.text) or u""
-        # if node.text is none, we want to return "" since the tag is there
+    return unicode(string_xpath(node)) # specific to lxml.etree
 
 def _findAllMatches(text, re_obj):
     """generate match objects for all L{re_obj} matches in L{text}."""
@@ -255,7 +249,7 @@ Provisional work is done to make several languages possible."""
 
     def getlanguageNodes(self):
         """Returns a list of all nodes that contain per language information."""
-        return self.xmlelement.findall(self.namespaced(self.languageNode))
+        return list(self.xmlelement.iterchildren(self.namespaced(self.languageNode)))
 
     def getlanguageNode(self, lang=None, index=None):
         """Retrieves a languageNode either by language or by index"""
@@ -278,10 +272,11 @@ Provisional work is done to make several languages possible."""
         if languageNode is None:
             return None
         if self.textNode:
-            terms = languageNode.findall('.//%s' % self.namespaced(self.textNode))
-            if len(terms) == 0:
+            terms = languageNode.iterdescendants(self.namespaced(self.textNode))
+            if terms is None:
                 return None
-            return getText(terms[0])
+            else:
+                return getText(terms.next())
         else:
             return getText(languageNode)
 
@@ -382,10 +377,7 @@ class LISAfile(base.TranslationStore):
         self._encoding = self.document.docinfo.encoding
         self.initbody()
         assert self.document.getroot().tag == self.namespaced(self.rootNode)
-        termEntries = self.body.findall('.//%s' % self.namespaced(self.UnitClass.rootNode))
-        if termEntries is None:
-            return
-        for entry in termEntries:
+        for entry in self.body.iterdescendants(self.namespaced(self.UnitClass.rootNode)):
             term = self.UnitClass.createfromxmlElement(entry)
             self.addunit(term, new=False)
 
