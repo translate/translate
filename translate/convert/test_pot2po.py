@@ -433,11 +433,12 @@ msgstr "Eerste eenheid"
 #~ msgstr "Ou eenheid3"
 """
         newpo = self.convertpot(potsource, posource)
-        assert len(newpo.units) == 4
-        assert newpo.units[0].getcontext() == 'newContext'
+        print newpo
+        assert len(newpo.units) == 5
+        assert newpo.units[1].getcontext() == 'newContext'
         # Search in unit string, because obsolete units can't return a context
-        assert 'msgctxt "context"' in str(newpo.units[1])
-        assert 'msgctxt "context2"' in str(newpo.units[2])
+        assert 'msgctxt "context"' in str(newpo.units[2])
+        assert 'msgctxt "context2"' in str(newpo.units[3])
 
 
 class TestPOT2POCommand(test_convert.TestConvertCommand, TestPOT2PO):

@@ -117,7 +117,7 @@ def read_obsolete_lines(parse_state):
     if startswith(next_line, '#~ msgid') and obsolete_lines[-1].startswith('msgctxt'):
         append(obsolete_lines, parse_state.read_line()[3:])
         next_line = parse_state.next_line
-    while startswith(next_line, '#~ ') and not startswith(next_line, '#~ msgid'):
+    while startswith(next_line, '#~ ') and not (startswith(next_line, '#~ msgid') or startswith(next_line, '#~ msgctxt')):
         append(obsolete_lines, parse_state.read_line()[3:])
         next_line = parse_state.next_line
     return obsolete_lines
