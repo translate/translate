@@ -413,6 +413,33 @@ msgstr ""
         assert newpounit.isfuzzy()
         assert newpounit.hastypecomment("c-format")
 
+    def test_obsolete_msgctxt(self):
+        """Test that obsolete units' msgctxt is preserved."""
+        potsource = 'msgctxt "newContext"\nmsgid "First unit"\nmsgstr ""'
+        posource = """
+msgctxt "newContext"
+msgid "First unit"
+msgstr "Eerste eenheid"
+
+#~ msgctxt "context"
+#~ msgid "Old unit"
+#~ msgstr "Ou eenheid1"
+
+#~ msgctxt "context2"
+#~ msgid "Old unit"
+#~ msgstr "Ou eenheid2"
+
+#~ msgid "Old unit"
+#~ msgstr "Ou eenheid3"
+"""
+        newpo = self.convertpot(potsource, posource)
+        assert len(newpo.units) == 4
+        assert newpo.units[0].getcontext() == 'newContext'
+        # Search in unit string, because obsolete units can't return a context
+        assert 'msgctxt "context"' in str(newpo.units[1])
+        assert 'msgctxt "context2"' in str(newpo.units[2])
+
+
 class TestPOT2POCommand(test_convert.TestConvertCommand, TestPOT2PO):
     """Tests running actual pot2po commands on files"""
     convertmodule = pot2po
