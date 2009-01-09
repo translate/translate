@@ -631,3 +631,22 @@ msgstr[0] ""
         # commented out for conformance to gettext.
 #        assert pofile.units[4].getid() == "tree\0trees"
 
+    def test_non_ascii_header_comments(self):
+        posource = r'''
+# Tëśt þis.
+# Hé Há Hó.
+#. Lêkkør.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2006-02-09 23:33+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8-bit\n"
+
+msgid "a"
+msgstr "b"
+'''        
+        pofile = self.poparse(posource)
+        for line in pofile.units[0].getnotes():
+            assert isinstance(line, unicode)
+        
