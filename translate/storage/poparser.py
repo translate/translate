@@ -114,7 +114,10 @@ def read_obsolete_lines(parse_state):
     # Be extra careful that we don't start reading into a new unit. We detect
     # that with #~ msgid followed by a space (to ensure msgid_plural works)
     next_line = parse_state.next_line
-    while startswith(next_line, '#~ ') and not startswith(next_line, '#~ msgid '):
+    if startswith(next_line, '#~ msgid') and obsolete_lines[-1].startswith('msgctxt'):
+        append(obsolete_lines, parse_state.read_line()[3:])
+        next_line = parse_state.next_line
+    while startswith(next_line, '#~ ') and not startswith(next_line, '#~ msgid'):
         append(obsolete_lines, parse_state.read_line()[3:])
         next_line = parse_state.next_line
     return obsolete_lines
