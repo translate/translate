@@ -350,7 +350,7 @@ class WordfastUnit(base.TranslationUnit):
 
 class WordfastTMFile(base.TranslationStore):
     """A Wordfast translation memory file"""
-    Name = "Wordfast TM file"
+    Name = _("Wordfast TM file")
     Mimetypes  = ["application/x-wordfast"]
     Extensions = ["txt"]
     def __init__(self, inputfile=None, unitclass=WordfastUnit):

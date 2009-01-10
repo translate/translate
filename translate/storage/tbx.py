@@ -47,7 +47,7 @@ Provisional work is done to make several languages possible."""
 class tbxfile(lisa.LISAfile):
     """Class representing a TBX file store."""
     UnitClass = tbxunit
-    Name = "TBX file"
+    Name = _("TBX file")
     Mimetypes  = ["application/x-tbx"]
     Extensions = ["tbx"]
     rootNode = "martif"

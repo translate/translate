@@ -225,7 +225,7 @@ class tsunit(lisa.LISAunit):
 class tsfile(lisa.LISAfile):
     """Class representing a XLIFF file store."""
     UnitClass = tsunit
-    Name = "Qt Linguist Translation File"
+    Name = _("Qt Linguist Translation File")
     Mimetypes  = ["application/x-linguist"]
     Extensions = ["ts"]
     rootNode = "TS"

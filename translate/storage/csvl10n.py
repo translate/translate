@@ -138,7 +138,7 @@ class csvfile(base.TranslationStore):
     """This class represents a .csv file with various lines. 
     The default format contains three columns: comments, source, target"""
     UnitClass = csvunit
-    Name = "Comma Seperated Value"
+    Name = _("Comma Seperated Value")
     Mimetypes  = ['text/comma-separated-values', 'text/csv']
     Extensions = ["csv"]
     def __init__(self, inputfile=None, fieldnames=None):

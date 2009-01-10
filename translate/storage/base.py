@@ -31,6 +31,7 @@ try:
 except:
     import pickle
 from exceptions import NotImplementedError
+import translate.i18n
 from translate.storage.placeables.base import Placeable, as_string
 from translate.misc.typecheck import accepts, Self, IsOneOf
 from translate.misc.multistring import multistring
