@@ -58,8 +58,8 @@ class xliffunit(lisa.LISAunit):
     
     def getlanguageNodes(self):
         """We override this to get source and target nodes."""
-        sources = self.xmlelement.findall('.//%s' % self.namespaced(self.languageNode))
-        targets = self.xmlelement.findall('.//%s' % self.namespaced('target'))
+        sources = list(self.xmlelement.iterdescendants(self.namespaced(self.languageNode)))
+        targets = list(self.xmlelement.iterdescendants(self.namespaced('target')))
         sourcesl = len(sources)
         targetsl = len(targets)
         nodes = []
@@ -99,20 +99,22 @@ class xliffunit(lisa.LISAunit):
         """Returns <alt-trans> for the given origin as a list of units. No 
         origin means all alternatives."""
         translist = []
-        for node in self.xmlelement.findall(".//%s" % self.namespaced("alt-trans")):
+        for node in self.xmlelement.iterdescendants(self.namespaced("alt-trans")):
             if self.correctorigin(node, origin):
                 # We build some mini units that keep the xmlelement. This 
                 # makes it easier to delete it if it is passed back to us.
                 newunit = base.TranslationUnit(self.source)
 
                 # the source tag is optional
-                sourcenode = node.find(".//%s" % self.namespaced("source"))
-                if not sourcenode is None:
-                    newunit.source = lisa.getText(sourcenode)
+                sourcenode = node.iterdescendants(self.namespaced("source"))
+                try:
+                    newunit.source = lisa.getText(sourcenode.next())
+                except StopIteration:
+                    pass
 
                 # must have one or more targets
-                targetnode = node.find(".//%s" % self.namespaced("target"))
-                newunit.target = lisa.getText(targetnode)
+                targetnode = node.iterdescendants(self.namespaced("target"))
+                newunit.target = lisa.getText(targetnode.next())
                 #TODO: support multiple targets better
                 #TODO: support notes in alt-trans
                 newunit.xmlelement = node
@@ -135,7 +137,7 @@ class xliffunit(lisa.LISAunit):
 
     def getnotelist(self, origin=None):
         """Private method that returns the text from notes matching 'origin' or all notes."""
-        notenodes = self.xmlelement.findall(".//%s" % self.namespaced("note"))
+        notenodes = self.xmlelement.iterdescendants(self.namespaced("note"))
         # TODO: consider using xpath to construct initial_list directly
         # or to simply get the correct text from the outset (just remember to
         # check for duplication.
@@ -152,7 +154,7 @@ class xliffunit(lisa.LISAunit):
 
     def removenotes(self):
         """Remove all the translator notes."""
-        notes = self.xmlelement.findall(".//%s" % self.namespaced("note"))
+        notes = self.xmlelement.iterdescendants(self.namespaced("note"))
         for note in notes:
             if self.correctorigin(note, origin="translator"):
                 self.xmlelement.remove(note)
@@ -287,10 +289,10 @@ class xliffunit(lisa.LISAunit):
     def getcontextgroups(self, name):
         """Returns the contexts in the context groups with the specified name"""
         groups = []
-        grouptags = self.xmlelement.findall(".//%s" % self.namespaced("context-group"))
+        grouptags = self.xmlelement.iterdescendants(self.namespaced("context-group"))
         for group in grouptags:
             if group.get("name") == name:
-                contexts = group.findall(".//%s" % self.namespaced("context"))
+                contexts = group.iterdescendants(self.namespaced("context"))
                 pairs = []
                 for context in contexts:
                     pairs.append((context.get("context-type"), lisa.getText(context)))
@@ -345,7 +347,7 @@ class xlifffile(lisa.LISAfile):
         self._messagenum = 0
 
         # Allow the inputfile to override defaults for source and target language.
-        filenode = self.document.find('.//%s' % self.namespaced('file'))
+        filenode = self.document.getroot().iterchildren(self.namespaced('file')).next()
         sourcelanguage = filenode.get('source-language')
         if sourcelanguage:
             self.setsourcelanguage(sourcelanguage)
@@ -355,7 +357,7 @@ class xlifffile(lisa.LISAfile):
 
     def addheader(self):
         """Initialise the file header."""
-        filenode = self.document.find(self.namespaced("file"))
+        filenode = self.document.getroot().iterchildren(self.namespaced("file")).next()
         filenode.set("source-language", self.sourcelanguage)
         if self.targetlanguage:
             filenode.set("target-language", self.targetlanguage)
@@ -383,7 +385,7 @@ class xlifffile(lisa.LISAfile):
 
     def getfilenames(self):
         """returns all filenames in this XLIFF file"""
-        filenodes = self.document.findall(self.namespaced("file"))
+        filenodes = self.document.getroot().iterchildren(self.namespaced("file"))
         filenames = [self.getfilename(filenode) for filenode in filenodes]
         filenames = filter(None, filenames)
         if len(filenames) == 1 and filenames[0] == '':
@@ -392,7 +394,7 @@ class xlifffile(lisa.LISAfile):
 
     def getfilenode(self, filename):
         """finds the filenode with the given name"""
-        filenodes = self.document.findall(self.namespaced("file"))
+        filenodes = self.document.getroot().iterchildren(self.namespaced("file"))
         for filenode in filenodes:
             if self.getfilename(filenode) == filename:
                 return filenode
@@ -428,20 +430,22 @@ class xlifffile(lisa.LISAfile):
     def removedefaultfile(self):
         """We want to remove the default file-tag as soon as possible if we 
         know if still present and empty."""
-        filenodes = self.document.findall(self.namespaced("file"))
+        filenodes = list(self.document.getroot().iterchildren(self.namespaced("file")))
         if len(filenodes) > 1:
             for filenode in filenodes:
                 if filenode.get("original") == "NoName" and \
-                        not filenode.findall(".//%s" % self.namespaced(self.UnitClass.rootNode)):
+                        not list(filenode.iterdescendants(self.namespaced(self.UnitClass.rootNode))):
                     self.document.getroot().remove(filenode)
                 break
 
     def getheadernode(self, filenode, createifmissing=False):
         """finds the header node for the given filenode"""
         # TODO: Deprecated?
-        headernode = list(filenode.find(self.namespaced("header")))
-        if not headernode is None:
-            return headernode
+        headernode = filenode.iterchildren(self.namespaced("header"))
+        try:
+            return headernode.next()
+        except StopIteration:
+            pass
         if not createifmissing:
             return None
         headernode = etree.SubElement(filenode, self.namespaced("header"))
@@ -449,9 +453,11 @@ class xlifffile(lisa.LISAfile):
 
     def getbodynode(self, filenode, createifmissing=False):
         """finds the body node for the given filenode"""
-        bodynode = filenode.find(self.namespaced("body"))
-        if not bodynode is None:
-            return bodynode
+        bodynode = filenode.iterchildren(self.namespaced("body"))
+        try:
+            return bodynode.next()
+        except StopIteration:
+            pass
         if not createifmissing:
             return None
         bodynode = etree.SubElement(filenode, self.namespaced("body"))
@@ -481,7 +487,7 @@ class xlifffile(lisa.LISAfile):
         self.body = self.getbodynode(filenode, createifmissing=createifmissing)
         if self.body is None:
             return False
-        self._messagenum = len(self.body.findall(".//%s" % self.namespaced("trans-unit")))
+        self._messagenum = len(list(self.body.iterdescendants(self.namespaced("trans-unit"))))
         #TODO: was 0 based before - consider
     #    messagenum = len(self.units)
         #TODO: we want to number them consecutively inside a body/file tag
