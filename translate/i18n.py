@@ -24,5 +24,3 @@
 
 import gettext
 gettext.install("translate-toolkit", unicode=1)
-
-_ = gettext.gettext()
