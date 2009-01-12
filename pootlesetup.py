@@ -18,7 +18,7 @@ except ImportError:
 
 join = os.path.join
 
-pootleversion = __version__.ver
+pootleversion = __version__.sver
 
 packagesdir = distutils.sysconfig.get_python_lib()
 sitepackages = packagesdir.replace(sys.prefix + os.sep, '')

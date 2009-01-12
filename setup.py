@@ -20,7 +20,7 @@ except ImportError:
 join = os.path.join
 
 PRETTY_NAME = 'Translate Toolkit'
-translateversion = __version__.ver
+translateversion = __version__.sver
 
 packagesdir = distutils.sysconfig.get_python_lib()
 sitepackages = packagesdir.replace(sys.prefix + os.sep, '')
