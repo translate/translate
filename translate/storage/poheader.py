@@ -92,7 +92,7 @@ class poheader(object):
     This class is a mix-in class and useless on its own. It must be used from all
     classes which represent a po file"""
 
-    x_generator = "Translate Toolkit %s" % __version__.ver
+    x_generator = "Translate Toolkit %s" % __version__.sver
 
     header_order = [
         "Project-Id-Version",

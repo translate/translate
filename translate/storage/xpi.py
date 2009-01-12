@@ -529,7 +529,7 @@ class XpiFile(ZipFileCatcher):
 
 if __name__ == '__main__':
     import optparse
-    optparser = optparse.OptionParser(version="%prog "+__version__.ver)
+    optparser = optparse.OptionParser(version="%prog "+__version__.sver)
     optparser.usage = "%prog [-l|-x] [options] file.xpi"
     optparser.add_option("-l", "--list", help="list files", \
         action="store_true", dest="listfiles", default=False)

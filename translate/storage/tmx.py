@@ -125,7 +125,7 @@ class tmxfile(lisa.LISAfile):
     def addheader(self):
         headernode = self.document.find("//%s" % self.namespaced("header"))
         headernode.set("creationtool", "Translate Toolkit - po2tmx")
-        headernode.set("creationtoolversion", __version__.ver)
+        headernode.set("creationtoolversion", __version__.sver)
         headernode.set("segtype", "sentence")
         headernode.set("o-tmf", "UTF-8")
         headernode.set("adminlang", "en")

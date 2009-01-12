@@ -79,7 +79,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
 
         """
 
-        optparse.OptionParser.__init__(self, version="%prog "+__version__.ver, description=description)
+        optparse.OptionParser.__init__(self, version="%prog "+__version__.sver, description=description)
         self.setmanpageoption()
         self.setprogressoptions()
         self.seterrorleveloptions()
