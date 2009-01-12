@@ -247,7 +247,11 @@ def set_encoding(parse_state, store, unit):
     if isinstance(unit.msgstr, list) and len(unit.msgstr) > 0 and isinstance(unit.msgstr[0], str):
         charset = re.search("charset=([^\\s\\\\n]+)", "".join(unit.msgstr))
     if charset:
-        store._encoding = charset.group(1)
+        encoding = charset.group(1)
+        if encoding != 'CHARSET':
+            store._encoding = encoding
+        else:
+            store._encoding = 'utf-8'
     else:
         store._encoding = 'utf-8'
     parse_state.encoding = store._encoding
