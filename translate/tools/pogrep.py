@@ -190,7 +190,7 @@ class GrepFilter:
 
     def getmatches(self, units):
         if not self.searchstring:
-            return []
+            return [], []
 
         searchstring = self.searchstring
         flags = re.LOCALE | re.MULTILINE | re.UNICODE
