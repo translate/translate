@@ -50,12 +50,16 @@ class GrepMatch(object):
     # ACCESSORS #
     def get_getter(self):
         if self.part == 'target':
-            def getter():
-                return self.unit.target.strings[self.part_n]
+            if self.unit.hasplural():
+                getter = lambda: self.unit.target.strings[self.part_n]
+            else:
+                getter = lambda: self.unit.target
             return getter
         elif self.part == 'source':
-            def getter():
-                return self.unit.source.strings[self.part_n]
+            if self.unit.hasplural():
+                getter = lambda: self.unit.source.strings[self.part_n]
+            else:
+                getter = lambda: self.unit.source
             return getter
         elif self.part == 'notes':
             def getter():
@@ -68,10 +72,14 @@ class GrepMatch(object):
 
     def get_setter(self):
         if self.part == 'target':
-            def setter(value):
-                strings = self.unit.target.strings
-                strings[self.part_n] = value
-                self.unit.target = strings
+            if self.unit.hasplural():
+                def setter(value):
+                    strings = self.unit.target.strings
+                    strings[self.part_n] = value
+                    self.unit.target = strings
+            else:
+                def setter(value):
+                    self.unit.target = value
             return setter
 
     # SPECIAL METHODS #
