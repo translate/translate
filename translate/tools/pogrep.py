@@ -35,8 +35,62 @@ from translate.lang import data
 import re
 import locale
 
+
+class GrepMatch(object):
+    """Just a small data structure that represents a search match."""
+
+    # INITIALIZERS #
+    def __init__(self, unit, part='target', part_n=0, start=0, end=0):
+        self.unit   = unit
+        self.part   = part
+        self.part_n = part_n
+        self.start  = start
+        self.end    = end
+
+    # ACCESSORS #
+    def get_getter(self):
+        if self.part == 'target':
+            def getter():
+                return self.unit.target.strings[self.part_n]
+            return getter
+        elif self.part == 'source':
+            def getter():
+                return self.unit.source.strings[self.part_n]
+            return getter
+        elif self.part == 'notes':
+            def getter():
+                return self.unit.getnotes()[self.part_n]
+            return getter
+        elif self.part == 'locations':
+            def getter():
+                return self.unit.getlocations()[self.part_n]
+            return getter
+
+    def get_setter(self):
+        if self.part == 'target':
+            def setter(value):
+                strings = self.unit.target.strings
+                strings[self.part_n] = value
+                self.unit.target = strings
+            return setter
+
+    # SPECIAL METHODS #
+    def __str__(self):
+        start, end = self.start, self.end
+        if start < 3:
+            start = 3
+        if end > len(self.get_getter()()) - 3:
+            end = len(self.get_getter()()) - 3
+        matchpart = self.get_getter()()[start-2:end+2]
+        return '<GrepMatch "%s" part=%s[%d] start=%d end=%d>' % (matchpart, self.part, self.part_n, self.start, self.end)
+
+    def __repr__(self):
+        return str(self)
+
 class GrepFilter:
-    def __init__(self, searchstring, searchparts, ignorecase=False, useregexp=False, invertmatch=False, accelchar=None, encoding='utf-8', includeheader=False):
+    def __init__(self, searchstring, searchparts, ignorecase=False, useregexp=False,
+            invertmatch=False, accelchar=None, encoding='utf-8', includeheader=False,
+            max_matches=0):
         """builds a checkfilter using the given checker"""
         if isinstance(searchstring, unicode):
             self.searchstring = searchstring
@@ -64,6 +118,7 @@ class GrepFilter:
         self.invertmatch = invertmatch
         self.accelchar = accelchar
         self.includeheader = includeheader
+        self.max_matches = max_matches
 
     def matches(self, teststr):
         if teststr is None:
@@ -124,6 +179,92 @@ class GrepFilter:
             else:
                 thenewfile.units.insert(0, thenewfile.makeheader())
         return thenewfile
+
+    def getmatches(self, units):
+        if not self.searchstring:
+            return []
+
+        searchstring = self.searchstring
+        flags = re.LOCALE | re.MULTILINE | re.UNICODE
+
+        if self.ignorecase:
+            flags |= re.IGNORECASE
+        if not self.useregexp:
+            searchstring = re.escape(searchstring)
+        self.re_search = re.compile(u'(%s)' % (searchstring), flags)
+
+        matches = []
+        indexes = []
+
+        for index, unit in enumerate(units):
+            unit_matches = False
+
+            if self.search_target:
+                part = 'target'
+                part_n = 0
+                if unit.hasplural():
+                    targets = unit.target.strings
+                else:
+                    targets = [unit.target]
+                for target in targets:
+                    target = data.normalize(target)
+                    for matchobj in self.re_search.finditer(target):
+                        matches.append(
+                            GrepMatch(unit, part=part, part_n=part_n, start=matchobj.start(), end=matchobj.end())
+                        )
+                        unit_matches = True
+                    part_n += 1
+
+            if self.search_source:
+                part = 'source'
+                part_n = 0
+                if unit.hasplural():
+                    sources = unit.source.strings
+                else:
+                    sources = [unit.source]
+                for source in sources:
+                    source = data.normalize(source)
+                    for matchobj in self.re_search.finditer(source):
+                        matches.append(
+                            GrepMatch(unit, part=part, part_n=part_n, start=matchobj.start(), end=matchobj.end())
+                        )
+                        unit_matches = True
+                    part_n += 1
+
+            if self.search_notes:
+                part = 'notes'
+                part_n = 0
+                for note in unit.getnotes():
+                    note = data.normalize(note)
+                    for matchobj in self.re_search.finditer(note):
+                        matches.append(
+                            GrepMatch(unit, part=part, part_n=part_n, start=matchobj.start(), end=matchobj.end())
+                        )
+                        unit_matches = True
+                    part_n += 1
+
+            if self.search_locations:
+                part = 'locations'
+                part_n = 0
+                for loc in unit.getlocations():
+                    loc = data.normalize(loc)
+                    for matchobj in self.re_search.finditer(loc):
+                        matches.append(
+                            GrepMatch(unit, part=part, part_n=part_n, start=matchobj.start(), end=matchobj.end())
+                        )
+                        unit_matches = True
+                    part_n += 1
+
+            # A search for a single letter or an all-inclusive regular
+            # expression could give enough results to cause performance
+            # problems. The answer is probably not very useful at this scale.
+            if self.max_matches and len(matches) > self.max_matches:
+                raise Exception("Too many matches found")
+
+            if unit_matches:
+                indexes.append(index)
+
+        return matches, indexes
 
 class GrepOptionParser(optrecurse.RecursiveOptionParser):
     """a specialized Option Parser for the grep tool..."""
