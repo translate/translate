@@ -20,15 +20,13 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 """Module to provide a translation memory database."""
-
-from translate.search.lshtein import LevenshteinComparer
-
-try:
-    from pysqlite2 import dbapi2
-except ImportError:
-    from sqlite3 import dbapi2
 import math
 import time
+import logging
+#logging.root.setLevel(logging.DEBUG)
+from sqlite3 import dbapi2
+
+from translate.search.lshtein import LevenshteinComparer
 
 
 class LanguageError(Exception):
@@ -56,6 +54,8 @@ class TMDB(object):
 
         #FIXME: do we want to do any checks before we initialize the DB?
         self.init_database()
+        self.fulltext = False
+        self.init_fulltext()
         
         self.comparer = LevenshteinComparer(self.max_length)
     
@@ -97,7 +97,53 @@ CREATE UNIQUE INDEX IF NOT EXISTS targets_uniq_idx ON targets (sid, text, lang);
         except:
             self.connection.rollback()
             raise
-        
+
+    def init_fulltext(self):
+        """detects if fts3 fulltext indexing module exists, initializes fulltext table if it does"""
+
+        #HACKISH: no better way to detect fts3 support except trying to construct a dummy table?!
+        try:
+            script = """
+DROP TABLE IF EXISTS test_for_fts3;
+CREATE VIRTUAL TABLE test_for_fts3 USING fts3;
+DROP TABLE test_for_fts3;
+"""
+            self.cursor.executescript(script)
+            logging.debug("fts3 supported")
+            # for some reason CREATE VIRTUAL TABLE doesn't support IF NOT EXISTS syntax
+            # check if fulltext index table exists manually
+            self.cursor.execute("SELECT name FROM sqlite_master WHERE name = 'fulltext'")
+            if self.cursor.fetchone():
+                logging.debug("fulltext table already exists")
+            else:
+                logging.debug("fulltext table not exists, creating")
+                # create fulltext index table, and index all strings in sources
+                script = """
+CREATE VIRTUAL TABLE fulltext USING fts3(text);
+CREATE TRIGGER IF NOT EXISTS sources_insert_trig AFTER INSERT ON sources FOR EACH ROW
+BEGIN
+    INSERT INTO fulltext (docid, text) VALUES (NEW.sid, NEW.text);
+END;
+CREATE TRIGGER IF NOT EXISTS sources_update_trig AFTER UPDATE OF text ON sources FOR EACH ROW
+BEGIN
+    UPDATE fulltext SET text = NEW.text WHERE docid = NEW.sid;
+END;
+CREATE TRIGGER IF NOT EXISTS sources_delete_trig AFTER DELETE ON sources FOR EACH ROW
+BEGIN
+    DELETE FROM fulltext WHERE docid = OLD.sid;
+END;
+INSERT INTO fulltext (docid, text) SELECT sid, text FROM sources;
+"""
+                self.cursor.executescript(script)
+                self.connection.commit()
+                logging.debug("created fulltext table")
+            self.fulltext = True
+                
+        except dbapi2.OperationalError, e:
+            self.fulltext = False
+            logging.debug("failed to initialize fts3 support: " + str(e))
+            
+            
     def add_unit(self, unit, source_lang=None, target_lang=None, commit=True):
         """inserts unit in the database"""
         #TODO: is that really the best way to handle unspecified
@@ -165,11 +211,18 @@ CREATE UNIQUE INDEX IF NOT EXISTS targets_uniq_idx ON targets (sid, text, lang);
             target_langs = ','.join(target_langs)
         minlen = min_levenshtein_length(len(unit_source), self.min_similarity)
         maxlen = max_levenshtein_length(len(unit_source), self.min_similarity, self.max_length)
-        
-        query = """SELECT s.text, t.text , s.context, s.lang, t.lang FROM sources s JOIN targets t ON s.sid = t.sid
-                   WHERE s.lang IN (?) AND t.lang IN (?) 
-                   AND s.length >= ? AND s.length <= ?"""
-        self.cursor.execute(query, (source_langs, target_langs, minlen, maxlen))
+
+        if self.fulltext:
+            query = """SELECT s.text, t.text, s.context, s.lang, t.lang FROM sources s JOIN targets t ON s.sid = t.sid JOIN fulltext f ON s.sid = f.docid
+                       WHERE s.lang IN (?) AND t.lang IN (?) AND s.length BETWEEN ? AND ?
+                       AND fulltext MATCH ?"""
+            search_str = " OR ".join(unit_source.split())
+            self.cursor.execute(query, (source_langs, target_langs, minlen, maxlen, search_str))
+        else:
+            query = """SELECT s.text, t.text, s.context, s.lang, t.lang FROM sources s JOIN targets t ON s.sid = t.sid
+            WHERE s.lang IN (?) AND t.lang IN (?) 
+            AND s.length >= ? AND s.length <= ?"""
+            self.cursor.execute(query, (source_langs, target_langs, minlen, maxlen))
         
         results = []
         for row in self.cursor:
@@ -189,5 +242,3 @@ def min_levenshtein_length(length, min_similarity):
 
 def max_levenshtein_length(length, min_similarity, max_length):
     return math.floor(min(length / (min_similarity/100.0), max_length))
-
-    
