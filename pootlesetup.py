@@ -28,7 +28,21 @@ infofiles = [(join(sitepackages,'Pootle'),
 initfiles = [(join(sitepackages,'Pootle'),[join('Pootle','__init__.py')])]
 
 packages = ["Pootle"]
-subpackages = ["tools"]
+subpackages = [
+  "tools", 
+  "misc", 
+  "auth", 
+  "i18n", 
+  "scripts", 
+  "middleware", 
+  "pootle_app",
+  "pootle_app/views",
+  "pootle_app/views/admin",
+  "pootle_app/views/home",
+  "pootle_app/views/index",
+  "pootle_app/views/language",
+  "pootle_app/views/projects",
+]
 pootlescripts = [join('Pootle', 'PootleServer'), join('Pootle', 'tools', 'updatetm')]
 
 def addsubpackages(subpackages):
