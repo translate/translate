@@ -352,11 +352,11 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
         for entry in singularunits:
             term = self.UnitClass.createfromxmlElement(entry, namespace=self.namespace)
             if nextplural and unicode(term.source) in nextplural.source.strings:
-                self.units.append(nextplural)
+                self.addunit(nextplural, new=False)
                 try:
                     nextplural = pluralunit_iter.next()
                 except StopIteration, i:
                     nextplural = None
             else:
-                self.units.append(term)
+                self.addunit(term, new=False)
 
