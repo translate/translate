@@ -29,21 +29,23 @@ from translate.misc import selector
 from translate.search import match
 from translate.storage import factory
 from translate.storage import base
+from translate.storage import tmdb
 
 class TMServer:
     """a RESTful JSON TM server"""
-    def __init__(self, tmfiles, max_candidates=3, min_similarity=75, max_length=1000, prefix=""):
+    def __init__(self, tmdbfile, tmfiles, max_candidates=3, min_similarity=75, max_length=1000, prefix="", source_lang=None, target_lang=None):
 
-        #initialize matcher
+        self.tmdb = tmdb.TMDB(tmdbfile, max_candidates, min_similarity, max_length)
+
+        #load files into db
         if isinstance(tmfiles, list):
-            tmstore = [factory.getobject(tmfile) for tmfile in tmfiles]
-        else:
-            tmstore = factory.getobject(tmfiles)
-        self.tmmatcher = match.matcher(tmstore, max_candidates=max_candidates, min_similarity=min_similarity, max_length=max_length)
+            [self.tmdb.add_store(factory.getobject(tmfile), source_lang, target_lang) for tmfile in tmfiles]
+        elif tmfiles:
+            self.tmdb.add_store(factory.getobject(tmfiles), source_lang, target_lang)
 
         #initialize url dispatcher
         self.rest = selector.Selector(prefix=prefix)
-        self.rest.add("/unit/{uid:any}",
+        self.rest.add("/{slang}/{tlang}/unit/{uid:any}",
                       GET=self.get_suggestions,
                       POST=self.update_unit,
                       PUT=self.add_unit,
@@ -56,35 +58,36 @@ class TMServer:
         self.rest.add("/store/{sid:any}", DELETE=self.forget_store)
 
     @selector.opliant
-    def get_suggestions(self, environ, start_response, uid):
+    def get_suggestions(self, environ, start_response, uid, slang, tlang):
         start_response("200 OK", [('Content-type', 'text/plain')])
         uid = unicode(urllib.unquote_plus(uid),"utf-8")
-        candidates = [match.unit2dict(candidate) for candidate in self.tmmatcher.matches(uid)]
+        candidates = self.tmdb.translate_unit(uid, slang, tlang)
         response =  json.dumps(candidates, indent=4)
         return [response]
 
     @selector.opliant
-    def add_unit(self, environ, start_response, uid):
+    def add_unit(self, environ, start_response, uid, slang, tlang):
         start_response("200 OK", [('Content-type', 'text/plain')])
         uid = unicode(urllib.unquote_plus(uid),"utf-8")
         data = json.loads(environ['wsgi.input'].read(int(environ['CONTENT_LENGTH'])))
         unit = base.TranslationUnit(data['source'])
         unit.target = data['target']
-        self.tmmatcher.extendtm(unit)
+        self.tmdb.add_unit(unit, slang, tlang)
         return [""]
 
     @selector.opliant
-    def update_unit(self, environ, start_response, uid):
+    def update_unit(self, environ, start_response, uid, slang, tlang):
         start_response("200 OK", [('Content-type', 'text/plain')])
         uid = unicode(urllib.unquote_plus(uid),"utf-8")
         data = json.loads(environ['wsgi.input'].read(int(environ['CONTENT_LENGTH'])))
         unit = base.TranslationUnit(data['source'])
         unit.target = data['target']
-        self.tmmatcher.extendtm(unit)
+        self.tmdb.add_unit(unit, slang, tlang)
         return [""]
 
     @selector.opliant
     def forget_unit(self, environ, start_response, uid):
+        #FIXME: implement me
         start_response("200 OK", [('Content-type', 'text/plain')])
         uid = unicode(urllib.unquote_plus(uid),"utf-8")
 
@@ -92,6 +95,7 @@ class TMServer:
 
     @selector.opliant
     def get_store_stats(self, environ, start_response, sid):
+        #FIXME: implement me
         start_response("200 OK", [('Content-type', 'text/plain')])
         sid = unicode(urllib.unquote_plus(sid),"utf-8")
 
@@ -99,6 +103,7 @@ class TMServer:
 
     @selector.opliant
     def upload_store(self, environ, start_response, sid):
+        #FIXME: implement me
         start_response("200 OK", [('Content-type', 'text/plain')])
         sid = unicode(urllib.unquote_plus(sid),"utf-8")
         data = json.loads(environ['wsgi.input'].read(int(environ['CONTENT_LENGTH'])))
@@ -106,6 +111,7 @@ class TMServer:
 
     @selector.opliant
     def add_store(self, environ, start_response, sid):
+        #FIXME: implement me
         start_response("200 OK", [('Content-type', 'text/plain')])
         sid = unicode(urllib.unquote_plus(sid),"utf-8")
         data = json.loads(environ['wsgi.input'].read(int(environ['CONTENT_LENGTH'])))
@@ -113,6 +119,7 @@ class TMServer:
 
     @selector.opliant
     def forget_store(self, environ, start_response, sid):
+        #FIXME: implement me
         start_response("200 OK", [('Content-type', 'text/plain')])
         sid = unicode(urllib.unquote_plus(sid),"utf-8")
 
@@ -121,8 +128,14 @@ class TMServer:
 
 def main():
     parser = OptionParser()
-    parser.add_option("-t", "--tm", dest="tmfiles", action="append",
-                      help="translaion memory file")
+    parser.add_option("-d", "--tmdb", dest="tmdbfile", default=":memory:",
+                      help="translation memory database")
+    parser.add_option("-f", "--import-translation-file", dest="tmfiles", action="append",
+                      help="translation file to import into the database")
+    parser.add_option("-t", "--import-target-lang", dest="target_lang",
+                      help="target language of translation files")
+    parser.add_option("-s", "--import-source-lang", dest="source_lang",
+                      help="source language of translation files")
     parser.add_option("-b", "--bind", dest="bind",
                       help="adress to bind server to")
     parser.add_option("-p", "--port", dest="port", type="int",
@@ -130,7 +143,7 @@ def main():
 
     (options, args) = parser.parse_args()
 
-    application = TMServer(options.tmfiles, prefix="/tmserver")
+    application = TMServer(options.tmdbfile, options.tmfiles, prefix="/tmserver", source_lang=options.source_lang, target_lang=options.target_lang)
     httpd = make_server(options.bind, options.port, application.rest)
     httpd.serve_forever()
 
