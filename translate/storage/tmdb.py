@@ -23,7 +23,7 @@
 import math
 import time
 import logging
-#logging.root.setLevel(logging.DEBUG)
+logging.root.setLevel(logging.DEBUG)
 from sqlite3 import dbapi2
 
 from translate.search.lshtein import LevenshteinComparer
