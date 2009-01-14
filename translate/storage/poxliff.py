@@ -230,6 +230,9 @@ class PoXliffUnit(xliff.xliffunit):
     def isheader(self):
         return "gettext-domain-header" in (self.getrestype() or "")
 
+    def istranslatable(self):
+        return super(PoXliffUnit, self).istranslatable() and not self.isheader()
+
     def createfromxmlElement(cls, element, namespace=None):
         if element.tag.endswith("trans-unit"):
             object = cls(None, empty=True)
