@@ -240,7 +240,7 @@ class PoXliffUnit(xliff.xliffunit):
         group = cls(None, empty=True)
         group.xmlelement = element
         group.namespace = namespace
-        units = element.findall('.//%s' % group.namespaced('trans-unit'))
+        units = list(element.iterdescendants(group.namespaced('trans-unit')))
         for unit in units:
             subunit = xliff.xliffunit.createfromxmlElement(unit)
             subunit.namespace = namespace
@@ -334,14 +334,15 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
             xml = xmlsrc
         self.document = etree.fromstring(xml).getroottree()
         self.initbody()
-        assert self.document.getroot().tag == self.namespaced(self.rootNode)
-        groups = self.document.findall(".//%s" % self.namespaced("group"))
+        root_node = self.document.getroot()
+        assert root_node.tag == self.namespaced(self.rootNode)
+        groups = root_node.iterdescendants(self.namespaced("group"))
         pluralgroups = filter(ispluralgroup, groups)
-        termEntries = self.body.findall('.//%s' % self.namespaced(self.UnitClass.rootNode))
-        if termEntries is None:
-            return
+        termEntries = root_node.iterdescendants(self.namespaced(self.UnitClass.rootNode))
 
         singularunits = filter(isnonpluralunit, termEntries)
+        if len(singularunits) == 0:
+            return
         pluralunit_iter = pluralunits(pluralgroups)
         try:
             nextplural = pluralunit_iter.next()
