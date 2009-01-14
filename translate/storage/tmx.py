@@ -66,7 +66,7 @@ class tmxunit(lisa.LISAunit):
         """Private method that returns the text from notes.
         
         The origin parameter is ignored.."""
-        note_nodes = self.xmlelement.findall(".//%s" % self.namespaced("note"))
+        note_nodes = self.xmlelement.iterdescendants(self.namespaced("note"))
         note_list = [lisa.getText(note) for note in note_nodes]
 
         return note_list 
@@ -76,7 +76,7 @@ class tmxunit(lisa.LISAunit):
 
     def removenotes(self):
         """Remove all the translator notes."""
-        notes = self.xmlelement.findall(".//%s" % self.namespaced("note"))
+        notes = self.xmlelement.iterdescendants(self.namespaced("note"))
         for note in notes:
             self.xmlelement.remove(note)
 
@@ -123,7 +123,7 @@ class tmxfile(lisa.LISAfile):
 </tmx>'''
     
     def addheader(self):
-        headernode = self.document.find("//%s" % self.namespaced("header"))
+        headernode = self.document.getroot().iterchildren(self.namespaced("header")).next()
         headernode.set("creationtool", "Translate Toolkit - po2tmx")
         headernode.set("creationtoolversion", __version__.sver)
         headernode.set("segtype", "sentence")
@@ -139,9 +139,9 @@ class tmxfile(lisa.LISAfile):
         """addtranslation method for testing old unit tests"""
         unit = self.addsourceunit(source)
         unit.target = translation
-        tuvs = unit.xmlelement.findall('.//%s' % self.namespaced('tuv'))
-        lisa.setXMLlang(tuvs[0], srclang)
-        lisa.setXMLlang(tuvs[1], translang)
+        tuvs = unit.xmlelement.iterdescendants(self.namespaced('tuv'))
+        lisa.setXMLlang(tuvs.next(), srclang)
+        lisa.setXMLlang(tuvs.next(), translang)
 
     def translate(self, sourcetext, sourcelang=None, targetlang=None):
         """method to test old unit tests"""
