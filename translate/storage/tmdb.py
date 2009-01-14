@@ -58,7 +58,9 @@ class TMDB(object):
         self.init_fulltext()
         
         self.comparer = LevenshteinComparer(self.max_length)
-    
+
+        self.preload_db()
+        
     def init_database(self):
         """creates database tables and indices"""
 
@@ -143,7 +145,17 @@ INSERT INTO fulltext (docid, text) SELECT sid, text FROM sources;
             self.fulltext = False
             logging.debug("failed to initialize fts3 support: " + str(e))
             
-            
+    def preload_db(self):
+        """ugly hack to force caching of sqlite db file in memory for improved performance"""
+        if self.fulltext:
+            query = """SELECT COUNT(*) FROM sources s JOIN fulltext f ON s.sid = f.docid JOIN targets t on s.sid = t.sid"""
+        else:
+            query = """SELECT COUNT(*) FROM sources s JOIN targets t on s.sid = t.sid"""
+        self.cursor.execute(query)
+        (numrows,) = self.cursor.fetchone()
+        logging.debug("tmdb has %d records" % numrows)
+        return numrows
+    
     def add_unit(self, unit, source_lang=None, target_lang=None, commit=True):
         """inserts unit in the database"""
         #TODO: is that really the best way to handle unspecified
@@ -203,8 +215,8 @@ INSERT INTO fulltext (docid, text) SELECT sid, text FROM sources;
 
     def translate_unit(self, unit_source, source_langs, target_langs):
         """return TM suggestions for unit_source"""
-        if isinstance(unit_source, unicode):
-            unit_source = unit_source.encode("utf-8")
+        if isinstance(unit_source, str):
+            unit_source = unicode(unit_source, "utf-8")
         if isinstance(source_langs, list):
             source_langs = ','.join(source_langs)
         if isinstance(target_langs, list):
@@ -212,13 +224,16 @@ INSERT INTO fulltext (docid, text) SELECT sid, text FROM sources;
         minlen = min_levenshtein_length(len(unit_source), self.min_similarity)
         maxlen = max_levenshtein_length(len(unit_source), self.min_similarity, self.max_length)
 
-        if self.fulltext:
+        unit_words = unit_source.split()
+        if self.fulltext and len(unit_words) > 3:
+            logging.debug("fulltext matching")
             query = """SELECT s.text, t.text, s.context, s.lang, t.lang FROM sources s JOIN targets t ON s.sid = t.sid JOIN fulltext f ON s.sid = f.docid
                        WHERE s.lang IN (?) AND t.lang IN (?) AND s.length BETWEEN ? AND ?
                        AND fulltext MATCH ?"""
-            search_str = " OR ".join(unit_source.split())
+            search_str = " OR ".join(unit_words)
             self.cursor.execute(query, (source_langs, target_langs, minlen, maxlen, search_str))
         else:
+            logging.debug("nonfulltext matching")
             query = """SELECT s.text, t.text, s.context, s.lang, t.lang FROM sources s JOIN targets t ON s.sid = t.sid
             WHERE s.lang IN (?) AND t.lang IN (?) 
             AND s.length >= ? AND s.length <= ?"""
@@ -227,15 +242,16 @@ INSERT INTO fulltext (docid, text) SELECT sid, text FROM sources;
         results = []
         for row in self.cursor:
             result = {}
-            result['source'] = row[0].encode("utf-8")
-            result['target'] = row[1].encode("utf-8")
-            result['context'] = row[2].encode("utf-8")
+            result['source'] = row[0]
+            result['target'] = row[1]
+            result['context'] = row[2]
             result['quality'] = self.comparer.similarity(unit_source, result['source'], self.min_similarity)
             if result['quality'] >= self.min_similarity:
                 results.append(result)
         results.sort(key=lambda match: match['quality'], reverse=True)
         results = results[:self.max_candidates]
         return results
+    
         
 def min_levenshtein_length(length, min_similarity):
     return math.ceil(max(length * (min_similarity/100.0), 2))
