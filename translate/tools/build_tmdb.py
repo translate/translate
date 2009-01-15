@@ -20,29 +20,19 @@
 
 """Build the TM database."""
 
-from translate.storage import factory
-from translate.storage import tmdb
 import sys
 import os
-
-
-def do_thing(filename, db):
-    try:
-        store = factory.getobject(filename)
-    except ValueError, e:
-        print >> sys.stderr, str(e)
-        return
-    # do something useful with the store and db
-    try:
-        db.add_store(store, "en-US", "ar", commit=False)
-    except Exception, e:
-        print e
-    print "new file:", filename
+from optparse import OptionParser
+from translate.storage import factory
+from translate.storage import tmdb
 
 
 class Builder:
-    def __init__(self, filenames):
-        self.db = tmdb.TMDB("test.db")
+    def __init__(self, tmdbfile, source_lang, target_lang, filenames):
+        self.tmdb = tmdb.TMDB(tmdbfile)
+        self.source_lang = source_lang
+        self.target_lang = target_lang
+        
         for filename in filenames:
             if not os.path.exists(filename):
                 print >> sys.stderr, "cannot process %s: does not exist" % filename
@@ -51,14 +41,22 @@ class Builder:
                 self.handledir(filename)
             else:
                 self.handlefile(filename)
-        self.db.connection.commit()
+        self.tmdb.connection.commit()
+
 
     def handlefile(self, filename):
-#        try:
-        if True:
-            do_thing(filename, self.db)
-#        except: # This happens if we have a broken file.
-#            print >> sys.stderr, sys.exc_info()[1]
+        try:
+            store = factory.getobject(filename)
+        except ValueError, e:
+            print >> sys.stderr, str(e)
+            return
+        # do something useful with the store and db
+        try:
+            self.tmdb.add_store(store, self.source_lang, self.target_lang, commit=False)
+        except Exception, e:
+            print e
+        print "new file:", filename
+
 
     def handlefiles(self, dirname, filenames):
         for filename in filenames:
@@ -67,6 +65,7 @@ class Builder:
                 self.handledir(pathname)
             else:
                 self.handlefile(pathname)
+
 
     def handledir(self, dirname):
         path, name = os.path.split(dirname)
@@ -81,7 +80,16 @@ def main():
         psyco.full()
     except Exception:
         pass
-    Builder(sys.argv[1:])
+    parser = OptionParser()
+    parser.add_option("-d", "--tmdb", dest="tmdbfile",
+                      help="translation memory database file")
+    parser.add_option("-s", "--import-source-lang", dest="source_lang",
+                      help="source language of translation files")
+    parser.add_option("-t", "--import-target-lang", dest="target_lang",
+                      help="target language of translation files")
+    (options, args) = parser.parse_args()
+    
+    Builder(options.tmdbfile, options.source_lang, options.target_lang, args)
 
 if __name__ == '__main__':
     main()
