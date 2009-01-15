@@ -229,7 +229,7 @@ class poheader(object):
         return header.get('Language')
 
     def settargetlanguage(self, lang):
-        if isinstance(lang, basestr) and len(lang) > 1:
+        if isinstance(lang, basestring) and len(lang) > 1:
             self.updateheader(add=True, Language=lang)
 
     def mergeheaders(self, otherstore):
