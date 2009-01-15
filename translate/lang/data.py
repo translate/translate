@@ -136,10 +136,13 @@ languages = {
 
 def simplercode(code):
     """This attempts to simplify the given language code by ignoring country 
-    codes, for example."""
-    # Check http://www.rfc-editor.org/rfc/bcp/bcp47.txt for possible extra issues
-    # http://www.rfc-editor.org/rfc/rfc4646.txt
-    # http://www.w3.org/International/articles/language-tags/
+    codes, for example.
+
+    Check http://www.rfc-editor.org/rfc/bcp/bcp47.txt for possible extra issues
+    http://www.rfc-editor.org/rfc/rfc4646.txt
+    http://www.rfc-editor.org/rfc/rfc4647.txt
+    http://www.w3.org/International/articles/language-tags/
+    """
     if not code:
         return code
 
@@ -152,6 +155,16 @@ def simplercode(code):
     underscore = code.rfind("_")
     if underscore >= 0:
         return code[:underscore]
+
+    # The @ modifier is used for script variants of the same language, like 
+    # sr@Latn or gez_ER@abegede. We need to replace alternative separators
+    # of extended codes to the recommended hyphen (-).
+    normalized = code.replace("_", "-").replace("@", "-").lower()
+    separator = normalized.rfind("-")
+    if modifier >= 0:
+        return code[:separator]
+    return ""
+
 
 expansion_factors = {
         'af': 0.1,
