@@ -21,6 +21,7 @@
 import os
 import xmlrpclib
 import pycurl
+import logging
 
 from translate.services import restclient
 from translate.lang import data
@@ -29,7 +30,7 @@ from translate.search.lshtein import LevenshteinComparer
 class OpenTranClient(restclient.RESTClient):
     """CRUD operations for TM units and stores"""
 
-    def __init__(self, url, target_lang, source_lang="en", max_candidates=3, min_similarity=75, max_length=1000):
+    def __init__(self, url, max_candidates=3, min_similarity=75, max_length=1000):
         restclient.RESTClient.__init__(self)
 
         self.max_candidates = max_candidates
@@ -38,14 +39,13 @@ class OpenTranClient(restclient.RESTClient):
 
         self.url = url
 
-        self.source_lang = source_lang
-        self.target_lang = target_lang
-        self.lang_supported = False
+        self.source_lang = None
+        self.target_lang = None
         #detect supported language
-        self.lang_negotiate(target_lang)
-
 
     def translate_unit(self, unit_source, callback=None):
+        if self.source_lang is None or self.target_lang is None:
+            return
         if isinstance(unit_source, unicode):
             unit_source = unit_source.encode("utf-8")
 
@@ -53,7 +53,6 @@ class OpenTranClient(restclient.RESTClient):
             (unit_source, self.source_lang, self.target_lang), "suggest2")
         request = restclient.RESTClient.Request(
                 self.url, unit_source, "POST", request_body)
-        #request.curl.setopt(pycurl.VERBOSE, 1)
         request.curl.setopt(pycurl.URL, self.url)
         self.add(request)
         if callback:
@@ -61,26 +60,50 @@ class OpenTranClient(restclient.RESTClient):
                             lambda widget, id, response: callback(widget, id, self.format_suggestions(id, response)))
 
 
-    def _handle_language(self, request, language, response):
-        (result,), fish = xmlrpclib.loads(response)
-        if result:
-            self.target_lang = language
-            self.lang_supported = True
-        else:
-            lang = data.simplercode(language)
-            if lang:
-                self.lang_negotiate(lang)
-            else:
-                self.lang_supported = False
-
-    def lang_negotiate(self, language):
+    def lang_negotiate(self, language, callback):
         request_body = xmlrpclib.dumps((language,), "supported")
         request = restclient.RESTClient.Request(
             self.url, language, "POST", request_body)
         request.curl.setopt(pycurl.URL, self.url)
-        #request.curl.setopt(pycurl.VERBOSE, 1)
         self.add(request)
-        request.connect("REST-success", self._handle_language)
+        request.connect("REST-success", callback)
+
+    def set_source_lang(self, language):
+        self.source_lang = None
+        self.lang_negotiate(language, self._handle_source_lang)
+
+    def set_target_lang(self, language):
+        self.target_lang = None
+        self.lang_negotiate(language, self._handle_target_lang)
+
+    def _handle_target_lang(self, request, language, response):
+        (result,), fish = xmlrpclib.loads(response)
+        if result:
+            self.target_lang = language
+            logging.debug("target language %s supported" % language)
+        else:
+            lang = data.simplercode(language)
+            if lang:
+                self.lang_negotiate(lang, self._handle_target_lang)
+            else:
+                # language not supported
+                self.source_lang = None
+                logging.debug("target language %s not supported" % language)
+                
+
+    def _handle_source_lang(self, request, language, response):
+        (result,), fish = xmlrpclib.loads(response)
+        if result:
+            self.source_lang = language
+            logging.debug("source language %s supported" % language)
+        else:
+            lang = data.simplercode(language)
+            if lang:
+                self.lang_negotiate(lang, self._handle_source_lang)
+            else:
+                self.source_lang = None
+                logging.debug("source language %s not supported" % language)
+
 
     def format_suggestions(self, id, response):
         """clean up open tran suggestion and use the same format as tmserver"""
