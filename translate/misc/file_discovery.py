@@ -41,10 +41,15 @@ def get_abs_data_filename(path_parts, basedirs=[]):
         os.path.dirname(unicode(sys.executable, sys.getfilesystemencoding()))
     ]
 
+    # Freedesktop standard
     if 'XDG_DATA_HOME' in os.environ:
         BASE_DIRS += [os.environ['XDG_DATA_HOME']]
     if 'XDG_DATA_DIRS' in os.environ:
         BASE_DIRS += os.environ['XDG_DATA_DIRS'].split(os.path.pathsep)
+
+    # Mac OSX app bundles
+    if 'RESOURCEPATH' in os.environ:
+        BASE_DIRS += os.environ['RESOURCEPATH'].split(os.path.pathsep)
 
     DATA_DIRS = [
         ["..", "share"],
