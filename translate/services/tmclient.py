@@ -29,36 +29,36 @@ class TMClient(restclient.RESTClient):
         restclient.RESTClient.__init__(self)
         self.base_url = base_url
 
-    def translate_unit(self, unit_source, callback=None):
+    def translate_unit(self, unit_source, source_lang, target_lang, callback=None):
         request = restclient.RESTClient.Request(
-                self.base_url + "/unit",
+                self.base_url + "/%s/%s/unit" % (source_lang, target_lang),
                 unit_source, "GET")
         self.add(request)
         if callback:
             request.connect("REST-success",
                             lambda widget, id, response: callback(widget, id, json.loads(response)))
 
-    def add_unit(self, unit, callback=None):
+    def add_unit(self, unit, source_lang, target_lang, callback=None):
         request = restclient.RESTClient.Request(
-                self.base_url + "/unit",
+                self.base_url + "/%s/%s/unit" % (source_lang, target_lang),
                 unit['source'], "PUT", json.dumps(unit))
         self.add(request)
         if callback:
             request.connect("REST-success",
                             lambda widget, id, response: callback(widget, id, json.loads(response)))
 
-    def update_unit(self, unit, callback=None):
+    def update_unit(self, unit, source_lang, target_lang, callback=None):
         request = restclient.RESTClient.Request(
-                self.base_url + "/unit",
+                self.base_url + "/%s/%s/unit" % (source_lang, target_lang),
                 unit['source'], "POST", json.dumps(unit))
         self.add(request)
         if callback:
             request.connect("REST-success",
                             lambda widget, id, response: callback(widget, id, json.loads(response)))
 
-    def forget_unit(self, unit_source, callback=None):
+    def forget_unit(self, unit_source, source_lang, target_lang, callback=None):
         request = restclient.RESTClient.Request(
-                self.base_url + "/unit",
+                self.base_url + "/%s/%s/unit" % (source_lang, target_lang),
                 unit_source, "DELETE")
         self.add(request)
         if callback:
