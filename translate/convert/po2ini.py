@@ -26,9 +26,9 @@ from translate.storage import factory
 from translate.storage import ini
 
 class reini:
-    def __init__(self, templatefile):
+    def __init__(self, templatefile, dialect):
         self.templatefile = templatefile
-        self.templatestore = ini.inifile(templatefile)
+        self.templatestore = ini.inifile(templatefile, dialect=dialect)
         self.inputdict = {}
 
     def convertstore(self, inputstore, includefuzzy=False):
@@ -49,20 +49,26 @@ class reini:
                         inistring = unit.source
                     self.inputdict[location] = inistring
 
-def convertini(inputfile, outputfile, templatefile, includefuzzy=False):
+def convertini(inputfile, outputfile, templatefile, includefuzzy=False, dialect="default"):
     inputstore = factory.getobject(inputfile)
     if templatefile is None:
         raise ValueError("must have template file for ini files")
     else:
-        convertor = reini(templatefile)
+        convertor = reini(templatefile, dialect)
     outputstring = convertor.convertstore(inputstore, includefuzzy)
     outputfile.write(outputstring)
     return 1
 
+def convertisl(inputfile, outputfile, templatefile, includefuzzy=False, dialect="inno"):
+    convertini(inputfile, outputfile, templatefile, includefuzzy=False, dialect=dialect)
+
 def main(argv=None):
     # handle command line options
     from translate.convert import convert
-    formats = {("po", "ini"): ("ini", convertini)}
+    formats = {
+               ("po", "ini"): ("ini", convertini),
+               ("po", "isl"): ("isl", convertisl),
+              }
     parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
     parser.add_fuzzy_option()
     parser.run(argv)

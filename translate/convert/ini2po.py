@@ -78,23 +78,29 @@ class ini2po:
         output_unit.target = ""
         return output_unit
 
-def convertini(input_file, output_file, template_file, pot=False, duplicatestyle="msgctxt"):
+def convertini(input_file, output_file, template_file, pot=False, duplicatestyle="msgctxt", dialect="default"):
     """Reads in L{input_file} using ini, converts using L{ini2po}, writes to L{output_file}"""
-    input_store = ini.inifile(input_file)
+    input_store = ini.inifile(input_file, dialect=dialect)
     convertor = ini2po()
     if template_file is None:
         output_store = convertor.convert_store(input_store, duplicatestyle=duplicatestyle)
     else:
-        template_store = ini.inifile(template_file)
+        template_store = ini.inifile(template_file, dialect=dialect)
         output_store = convertor.merge_store(template_store, input_store, blankmsgstr=pot, duplicatestyle=duplicatestyle)
     if output_store.isempty():
         return 0
     output_file.write(str(output_store))
     return 1
 
+def convertisl(input_file, output_file, template_file, pot=False, duplicatestyle="msgctxt", dialect="inno"):
+    return convertini(input_file, output_file, template_file, pot=False, duplicatestyle="msgctxt", dialect=dialect)
+
 def main(argv=None):
     from translate.convert import convert
-    formats = {"ini": ("po", convertini), ("ini", "ini"): ("po", convertini)}
+    formats = {
+               "ini": ("po", convertini), ("ini", "ini"): ("po", convertini),
+               "isl": ("po", convertisl), ("isl", "isl"): ("po", convertisl),
+              }
     parser = convert.ConvertOptionParser(formats, usetemplates=True, usepots=True, description=__doc__)
     parser.add_duplicates_option()
     parser.passthrough.append("pot")

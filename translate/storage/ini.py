@@ -36,6 +36,32 @@ from translate.misc.ini import INIConfig
 from StringIO import StringIO
 import re
 
+_dialects = {}
+
+def register_dialect(name, dialect):
+    """Register the dialect"""
+    _dialects[name] = dialect
+
+class Dialect(object):
+    """Base class for differentiating dialect options and functions"""
+    pass
+
+class DialectDefault(Dialect):
+    def unescape(self, text):
+        return text
+
+    def escape(self, text):
+        return text
+register_dialect("default", DialectDefault)
+
+class DialectInno(DialectDefault):
+    def unescape(self, text):
+        return text.replace("%n", "\n").replace("%t", "\t")
+
+    def escape(self, text):
+        return text.replace("\t", "%t").replace("\n", "%n")
+register_dialect("inno", DialectInno)
+
 
 class iniunit(base.TranslationUnit):
     """A INI file entry"""
@@ -54,9 +80,10 @@ class iniunit(base.TranslationUnit):
 class inifile(base.TranslationStore):
     """An INI file"""
     UnitClass = iniunit
-    def __init__(self, inputfile=None, unitclass=iniunit):
+    def __init__(self, inputfile=None, unitclass=iniunit, dialect="default"):
         """construct an INI file, optionally reading in from inputfile."""
         self.UnitClass = unitclass
+        self._dialect = _dialects.get(dialect, DialectDefault)()  # fail correctly/use getattr/
         base.TranslationStore.__init__(self, unitclass=unitclass)
         self.units = []
         self.filename = ''
@@ -69,7 +96,7 @@ class inifile(base.TranslationStore):
         for unit in self.units:
             for location in unit.getlocations():
                 match = re.match('\\[(?P<section>.+)\\](?P<entry>.+)', location)
-                _outinifile[match.groupdict()['section']][match.groupdict()['entry']] = unit.target
+                _outinifile[match.groupdict()['section']][match.groupdict()['entry']] = self._dialect.escape(unit.target)
         if _outinifile:
             return str(_outinifile)
         else:
@@ -92,5 +119,5 @@ class inifile(base.TranslationStore):
             self._inifile = INIConfig(file(input), optionxformvalue=None)
         for section in self._inifile:
             for entry in self._inifile[section]:
-                newunit = self.addsourceunit(self._inifile[section][entry])
+                newunit = self.addsourceunit(self._dialect.unescape(self._inifile[section][entry]))
                 newunit.addlocation("[%s]%s" % (section, entry))
