@@ -44,6 +44,9 @@ class RESTClient(object):
 
             # the actual curl request object
             self.curl = pycurl.Curl()
+            if (logging.root.level == logging.DEBUG):
+                self.curl.setopt(pycurl.VERBOSE, 1)
+                
             self.curl.setopt(pycurl.WRITEFUNCTION, self.result.write)
             self.curl.setopt(pycurl.HEADERFUNCTION, self.result_headers.write)
 
