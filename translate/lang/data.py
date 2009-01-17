@@ -23,9 +23,6 @@
 
 import unicodedata
 
-# The key is the language code, which may contain country codes and modifiers.
-# The value is a tuple: (Full name in English, nplurals, plural equation)
-
 languages = {
 'af': ('Afrikaans', 2, '(n != 1)'),
 'ak': ('Akan', 2, 'n > 1'),
@@ -133,6 +130,9 @@ languages = {
 'zh_HK': ('Chinese (Hong Kong)', 1, '0'),
 'zh_TW': ('Chinese (Taiwan)', 1, '0'),
 }
+"""Dictionary of language data.
+The language code is the dictionary key (which may contain country codes and modifiers).
+The value is a tuple: (Full name in English, nplurals, plural equation)"""
 
 def simplercode(code):
     """This attempts to simplify the given language code by ignoring country 
