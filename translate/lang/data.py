@@ -138,10 +138,11 @@ def simplercode(code):
     """This attempts to simplify the given language code by ignoring country 
     codes, for example.
 
-    Check http://www.rfc-editor.org/rfc/bcp/bcp47.txt for possible extra issues
-    http://www.rfc-editor.org/rfc/rfc4646.txt
-    http://www.rfc-editor.org/rfc/rfc4647.txt
-    http://www.w3.org/International/articles/language-tags/
+    @see:
+      - U{http://www.rfc-editor.org/rfc/bcp/bcp47.txt}
+      - U{http://www.rfc-editor.org/rfc/rfc4646.txt}
+      - U{http://www.rfc-editor.org/rfc/rfc4647.txt}
+      - U{http://www.w3.org/International/articles/language-tags/}
     """
     if not code:
         return code
