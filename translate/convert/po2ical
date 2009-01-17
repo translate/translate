@@ -23,5 +23,5 @@
 from translate.convert import po2ical
 
 if __name__ == '__main__':
-  po2ical.main()
+    po2ical.main()
 

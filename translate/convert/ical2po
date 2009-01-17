@@ -23,5 +23,5 @@
 from translate.convert import ical2po
 
 if __name__ == '__main__':
-  ical2po.main()
+    ical2po.main()
 
