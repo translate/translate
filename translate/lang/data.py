@@ -180,7 +180,9 @@ import gettext
 import re
 
 iso639 = {}
+"""ISO 639 language codes"""
 iso3166 = {}
+"""ISO 3166 country codes"""
 
 langcode_re = re.compile("^[a-z]{2,3}([_-][A-Z]{2,3}|)(@[a-zA-Z0-9]+|)$")
 variant_re = re.compile("^[_-][A-Z]{2,3}(@[a-zA-Z0-9]+|)$")
