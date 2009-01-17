@@ -174,6 +174,7 @@ expansion_factors = {
         'fr': 0.28,
         'it': 0.2,
 }
+"""Source to target string length expansion factors."""
 
 import gettext
 import re
