@@ -143,6 +143,11 @@ class podebug:
             return True
         return False
 
+    def ignore_kde(self, unit):
+        if unit.source == "LTR":
+            return True
+        return False
+
     def convertunit(self, unit, prefix):
         if self.ignorefunc:
             if self.ignorefunc(unit):
