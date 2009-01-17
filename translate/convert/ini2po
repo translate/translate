@@ -23,5 +23,5 @@
 from translate.convert import ini2po
 
 if __name__ == '__main__':
-  ini2po.main()
+    ini2po.main()
 

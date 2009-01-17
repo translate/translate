@@ -23,5 +23,5 @@
 from translate.convert import rc2po
 
 if __name__ == '__main__':
-  rc2po.main()
+    rc2po.main()
 

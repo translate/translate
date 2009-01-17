@@ -23,4 +23,4 @@
 from translate.convert import po2tiki
 
 if __name__ == '__main__':
-  po2tiki.main()
+    po2tiki.main()

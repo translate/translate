@@ -23,5 +23,5 @@
 from translate.convert import po2ini
 
 if __name__ == '__main__':
-  po2ini.main()
+    po2ini.main()
 

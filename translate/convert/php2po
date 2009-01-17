@@ -23,8 +23,7 @@
 You can merge translated strings back using po2php"""
 
 from translate.convert import php2po
-from translate.convert import convert
 
 if __name__ == '__main__':
-  php2po.main()
+    php2po.main()
 

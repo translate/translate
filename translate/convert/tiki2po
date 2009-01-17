@@ -23,5 +23,5 @@
 from translate.convert import tiki2po
 
 if __name__ == '__main__':
-  tiki2po.main()
+    tiki2po.main()
 

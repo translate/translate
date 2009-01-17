@@ -23,5 +23,5 @@
 from translate.convert import symb2po
 
 if __name__ == '__main__':
-  symb2po.main()
+    symb2po.main()
 
