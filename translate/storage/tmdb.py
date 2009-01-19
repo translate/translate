@@ -26,6 +26,7 @@ import logging
 from sqlite3 import dbapi2
 
 from translate.search.lshtein import LevenshteinComparer
+from translate.lang import data
 
 
 class LanguageError(Exception):
@@ -169,29 +170,43 @@ INSERT INTO fulltext (docid, text) SELECT sid, text FROM sources;
             raise LanguageError("undefined source language")
         if not target_lang:
             raise LanguageError("undefined target language")
+
         
+        unitdict = {"source" : unit.source,
+                    "target" : unit.target,
+                    "context": unit.getcontext()
+                    }
+        self.add_dict(unitdict, source_lang, target_lang, commit)
+
+        
+    def add_dict(self, unit, source_lang, target_lang, commit=True):
+        """inserts units represented as dictionaries in database"""
+        source_lang = data.normalize(source_lang)
+        target_lang = data.normalize(target_lang)
         try:
             try:
                 self.cursor.execute("INSERT INTO sources (text, context, lang, length) VALUES(?, ?, ?, ?)",
-                                    (unit.source,
-                                     unit.getcontext(),
+                                    (unit["source"],
+                                     unit["context"],
                                      source_lang,
-                                     len(unit.source)))
+                                     len(unit["source"])))
                 sid = self.cursor.lastrowid
             except dbapi2.IntegrityError:
                 # source string already exists in db, run query to find sid
                 self.cursor.execute("SELECT sid FROM sources WHERE text=? AND context=? and lang=?",
-                                    (unit.source,
-                                     unit.getcontext(),
+                                    (unit["source"],
+                                     unit["context"],
                                      source_lang))
                 sid = self.cursor.fetchone()
                 (sid,) = sid
             try:
+                #FIXME: get time info from translation store
+                #FIXME: do we need so store target length?
                 self.cursor.execute("INSERT INTO targets (sid, text, lang, length, time) VALUES (?, ?, ?, ?, ?)",
                                     (sid,
-                                     unit.target,
+                                     unit["target"],
                                      target_lang,
-                                     len(unit.target),
+                                     len(unit["target"]),
                                      int(time.time())))
             except dbapi2.IntegrityError:
                 # target string already exists in db, do nothing
