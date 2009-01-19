@@ -250,8 +250,6 @@ class terminologymatcher(matcher):
 # utility functions used by virtaal and tmserver to convert matching units in easily marshallable dictionaries
 def unit2dict(unit):
     """converts a pounit to a simple dict structure for use over the web"""
-    print unit.getnotes()
-    print unit.othercomments
     return {"source": unit.source, "target": unit.target, 
             "quality": _parse_quality(unit.getnotes()), "context": unit.getcontext()}
 

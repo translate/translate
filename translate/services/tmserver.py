@@ -129,7 +129,7 @@ class TMServer:
 def main():
     parser = OptionParser()
     parser.add_option("-d", "--tmdb", dest="tmdbfile", default=":memory:",
-                      help="translation memory database")
+                      help="translation memory database file")
     parser.add_option("-f", "--import-translation-file", dest="tmfiles", action="append",
                       help="translation file to import into the database")
     parser.add_option("-t", "--import-target-lang", dest="target_lang",
