@@ -160,7 +160,7 @@ def simplercode(code):
     # The @ modifier is used for script variants of the same language, like 
     # sr@Latn or gez_ER@abegede. We need to replace alternative separators
     # of extended codes to the recommended hyphen (-).
-    normalized = normalize(code)
+    normalized = normalize_code(code)
     separator = normalized.rfind("-")
     if modifier >= 0:
         return code[:separator]
@@ -258,6 +258,6 @@ def forceunicode(string):
     return string
 
 
-def normalize(code):
+def normalize_code(code):
     return code.replace("_", "-").replace("@", "-").lower()
 

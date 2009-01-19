@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2008 Zuza Software Foundation
+# Copyright 2009 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -40,11 +40,11 @@ class LanguageError(Exception):
 class TMDB(object):
     _tm_dbs = {}
     def __init__(self, db_file, max_candidates=3, min_similarity=75, max_length=1000):
-        
+
         self.max_candidates = max_candidates
         self.min_similarity = min_similarity
         self.max_length = max_length
-        
+
         # share connections to same database file between different instances
         if not self._tm_dbs.has_key(db_file):
             self._tm_dbs[db_file] = dbapi2.connect(db_file)
@@ -56,11 +56,11 @@ class TMDB(object):
         self.init_database()
         self.fulltext = False
         self.init_fulltext()
-        
+
         self.comparer = LevenshteinComparer(self.max_length)
 
         self.preload_db()
-        
+
     def init_database(self):
         """creates database tables and indices"""
 
@@ -140,11 +140,11 @@ INSERT INTO fulltext (docid, text) SELECT sid, text FROM sources;
                 self.connection.commit()
                 logging.debug("created fulltext table")
             self.fulltext = True
-                
+
         except dbapi2.OperationalError, e:
             self.fulltext = False
             logging.debug("failed to initialize fts3 support: " + str(e))
-            
+
     def preload_db(self):
         """ugly hack to force caching of sqlite db file in memory for improved performance"""
         if self.fulltext:
@@ -155,7 +155,7 @@ INSERT INTO fulltext (docid, text) SELECT sid, text FROM sources;
         (numrows,) = self.cursor.fetchone()
         logging.debug("tmdb has %d records" % numrows)
         return numrows
-    
+
     def add_unit(self, unit, source_lang=None, target_lang=None, commit=True):
         """inserts unit in the database"""
         #TODO: is that really the best way to handle unspecified
@@ -171,18 +171,16 @@ INSERT INTO fulltext (docid, text) SELECT sid, text FROM sources;
         if not target_lang:
             raise LanguageError("undefined target language")
 
-        
         unitdict = {"source" : unit.source,
                     "target" : unit.target,
                     "context": unit.getcontext()
                     }
         self.add_dict(unitdict, source_lang, target_lang, commit)
 
-        
     def add_dict(self, unit, source_lang, target_lang, commit=True):
         """inserts units represented as dictionaries in database"""
-        source_lang = data.normalize(source_lang)
-        target_lang = data.normalize(target_lang)
+        source_lang = data.normalize_code(source_lang)
+        target_lang = data.normalize_code(target_lang)
         try:
             try:
                 self.cursor.execute("INSERT INTO sources (text, context, lang, length) VALUES(?, ?, ?, ?)",
@@ -252,7 +250,7 @@ INSERT INTO fulltext (docid, text) SELECT sid, text FROM sources;
             WHERE s.lang IN (?) AND t.lang IN (?) 
             AND s.length >= ? AND s.length <= ?"""
             self.cursor.execute(query, (source_langs, target_langs, minlen, maxlen))
-        
+
         results = []
         for row in self.cursor:
             result = {}
@@ -265,8 +263,8 @@ INSERT INTO fulltext (docid, text) SELECT sid, text FROM sources;
         results.sort(key=lambda match: match['quality'], reverse=True)
         results = results[:self.max_candidates]
         return results
-    
-        
+
+
 def min_levenshtein_length(length, min_similarity):
     return math.ceil(max(length * (min_similarity/100.0), 2))
 
