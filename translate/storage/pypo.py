@@ -412,7 +412,7 @@ class pounit(pocommon.pounit):
                         and not is_null(self.msgstr) 
                         and self.msgidcomments == []
                         and is_null(self.msgctxt)
-                        and is_null(self.sourcecomments))
+        )
 
     def isblank(self):
         if self.isheader() or len(self.msgidcomments):
@@ -727,7 +727,7 @@ class pofile(pocommon.pofile):
                 msgid = unquotefrompo(thepo.msgidcomments) + unquotefrompo(thepo.msgid)
             else:
                 msgid = unquotefrompo(thepo.msgid)
-            if thepo.isheader():
+            if thepo.isheader() and not thepo.getlocations():
                 # header msgids shouldn't be merged...
                 uniqueunits.append(thepo)
             elif duplicatestyle == "msgid_comment_all":
