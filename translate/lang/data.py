@@ -44,7 +44,7 @@ languages = {
 'dz': ('Dzongkha', 1, '0'),
 'el': ('Greek', 2, '(n != 1)'),
 'en': ('English', 2, '(n != 1)'),
-'en_UK': ('English (United Kingdom)', 2, '(n != 1)'),
+'en_GB': ('English (United Kingdom)', 2, '(n != 1)'),
 'en_ZA': ('English (South Africa)', 2, '(n != 1)'),
 'eo': ('Esperanto', 2, '(n != 1)'),
 'es': ('Spanish', 2, '(n != 1)'),
