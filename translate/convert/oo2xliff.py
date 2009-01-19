@@ -103,7 +103,7 @@ def verifyoptions(options):
     if not options.targetlanguage:
         raise ValueError("You must specify the target language.")
 
-def convertoo(inputfile, outputfile, templates, pot=False, sourcelanguage=None, targetlanguage=None, duplicatestyle="msgid_comment", multifilestyle="single"):
+def convertoo(inputfile, outputfile, templates, pot=False, sourcelanguage=None, targetlanguage=None, duplicatestyle="msgctxt", multifilestyle="single"):
     """reads in stdin using inputstore class, converts using convertorclass, writes to stdout"""
     inputstore = oo.oofile()
     if hasattr(inputfile, "filename"):

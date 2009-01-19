@@ -254,11 +254,11 @@ newlines.</p></body></html>
         self.compareunit(pofile, 4, "Ordered Two")
 
     def test_duplicates(self):
-        """check that we use the default style of msgid_comments to disambiguate duplicate messages"""
+        """check that we use the default style of msgctxt to disambiguate duplicate messages"""
         markup = "<html><head></head><body><p>Duplicate</p><p>Duplicate</p></body></html>"
         pofile = self.html2po(markup)
         self.countunits(pofile, 2)
-        # FIXME change this so that we check that the KDE comment is correctly added
+        # FIXME change this so that we check that the msgctxt is correctly added
         self.compareunit(pofile, 1, "Duplicate")
         self.compareunit(pofile, 2, "Duplicate")
 
