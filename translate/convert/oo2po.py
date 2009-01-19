@@ -87,13 +87,13 @@ class oo2po:
     def convertstore(self, theoofile, duplicatestyle="msgctxt"):
         """converts an entire oo file to a base class format (.po or XLIFF)"""
         thetargetfile = po.pofile()
-        thetargetfile.setsourcelanguage(self.sourcelanguage)
-        thetargetfile.settargetlanguage(self.targetlanguage)
         # create a header for the file
         bug_url = 'http://qa.openoffice.org/issues/enter_bug.cgi' + ('''?subcomponent=ui&comment=&short_desc=Localization issue in file: %(filename)s&component=l10n&form_name=enter_issue''' % {"filename": theoofile.filename}).replace(" ", "%20").replace(":", "%3A")
         targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit", x_accelerator_marker="~", report_msgid_bugs_to=bug_url)
         targetheader.addnote("extracted from %s" % theoofile.filename, "developer")
         thetargetfile.addunit(targetheader)
+        thetargetfile.setsourcelanguage(self.sourcelanguage)
+        thetargetfile.settargetlanguage(self.targetlanguage)
         # go through the oo and convert each element
         for theoo in theoofile.units:
             unitlist = self.convertelement(theoo)
