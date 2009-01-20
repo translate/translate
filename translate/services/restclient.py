@@ -35,8 +35,8 @@ class RESTClient(object):
             self.result_headers = StringIO.StringIO()
 
             # do we really need to keep these around?
-            self.url = url
-            self.id = id
+            self.url = url.encode("utf-8")
+            self.id = id.encode("utf-8")
             self.method = method
             self.data = data
             self.headers = headers
@@ -49,10 +49,6 @@ class RESTClient(object):
                 
             self.curl.setopt(pycurl.WRITEFUNCTION, self.result.write)
             self.curl.setopt(pycurl.HEADERFUNCTION, self.result_headers.write)
-
-            # urllib is stupid, convert unicode to str before encoding url
-            if isinstance(id, unicode):
-                id = id.encode("utf-8")
             self.curl.setopt(pycurl.URL, self.url + "/" + urllib.quote_plus(id))
 
             # let's set the HTTP request method
