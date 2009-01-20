@@ -261,3 +261,14 @@ def forceunicode(string):
 def normalize_code(code):
     return code.replace("_", "-").replace("@", "-").lower()
 
+
+def simplify_to_common(language_code):
+    """Simplify language code to the most commonly used form for the
+    language, stripping country information for languages that tend
+    not to be localized differently for different countries"""
+    simpler = simplercode(language_code)
+    if language_code in languages.keys() or simpler =="":
+        return language_code
+    else:
+        return simplify_to_common(simpler)
+    
