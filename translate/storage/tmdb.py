@@ -146,7 +146,8 @@ INSERT INTO fulltext (docid, text) SELECT sid, text FROM sources;
             logging.debug("failed to initialize fts3 support: " + str(e))
 
     def preload_db(self):
-        """ugly hack to force caching of sqlite db file in memory for improved performance"""
+        """ugly hack to force caching of sqlite db file in memory for
+        improved performance"""
         if self.fulltext:
             query = """SELECT COUNT(*) FROM sources s JOIN fulltext f ON s.sid = f.docid JOIN targets t on s.sid = t.sid"""
         else:
@@ -230,9 +231,16 @@ INSERT INTO fulltext (docid, text) SELECT sid, text FROM sources;
         if isinstance(unit_source, str):
             unit_source = unicode(unit_source, "utf-8")
         if isinstance(source_langs, list):
+            source_langs = [data.normalize_code(lang) for lang in source_langs]
             source_langs = ','.join(source_langs)
+        else:
+            source_langs = data.normalize_code(source_langs)
         if isinstance(target_langs, list):
+            target_langs = [data.normalize_code(lang) for lang in target_langs]
             target_langs = ','.join(target_langs)
+        else:
+            target_langs = data.normalize_code(target_langs)
+        
         minlen = min_levenshtein_length(len(unit_source), self.min_similarity)
         maxlen = max_levenshtein_length(len(unit_source), self.min_similarity, self.max_length)
 

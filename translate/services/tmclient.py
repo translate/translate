@@ -33,8 +33,6 @@ class TMClient(restclient.RESTClient):
 
     def translate_unit(self, unit_source, source_lang, target_lang, callback=None):
         """suggest translations from TM"""
-        source_lang = data.normalize_code(source_lang)
-        target_lang = data.normalize_code(target_lang)
         request = restclient.RESTClient.Request(
                 self.base_url + "/%s/%s/unit" % (source_lang, target_lang),
                 unit_source, "GET")
@@ -44,8 +42,6 @@ class TMClient(restclient.RESTClient):
                             lambda widget, id, response: callback(widget, id, json.loads(response)))
 
     def add_unit(self, unit, source_lang, target_lang, callback=None):
-        source_lang = data.normalize_code(source_lang)
-        target_lang = data.normalize_code(target_lang)
         request = restclient.RESTClient.Request(
                 self.base_url + "/%s/%s/unit" % (source_lang, target_lang),
                 unit['source'], "PUT", json.dumps(unit))
@@ -55,8 +51,6 @@ class TMClient(restclient.RESTClient):
                             lambda widget, id, response: callback(widget, id, json.loads(response)))
 
     def update_unit(self, unit, source_lang, target_lang, callback=None):
-        source_lang = data.normalize_code(source_lang)
-        target_lang = data.normalize_code(target_lang)
         request = restclient.RESTClient.Request(
                 self.base_url + "/%s/%s/unit" % (source_lang, target_lang),
                 unit['source'], "POST", json.dumps(unit))
@@ -66,8 +60,6 @@ class TMClient(restclient.RESTClient):
                             lambda widget, id, response: callback(widget, id, json.loads(response)))
 
     def forget_unit(self, unit_source, source_lang, target_lang, callback=None):
-        source_lang = data.normalize_code(source_lang)
-        target_lang = data.normalize_code(target_lang)
         request = restclient.RESTClient.Request(
                 self.base_url + "/%s/%s/unit" % (source_lang, target_lang),
                 unit_source, "DELETE")
