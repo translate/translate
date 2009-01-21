@@ -220,12 +220,26 @@ INSERT INTO fulltext (docid, text) SELECT sid, text FROM sources;
 
     def add_store(self, store, source_lang, target_lang, commit=True):
         """insert all units in store in database"""
+        count = 0
         for unit in store.units:
             if unit.istranslatable() and unit.istranslated():
                 self.add_unit(unit, source_lang, target_lang, commit=False)
+                count +=1
         if commit:
             self.connection.commit()
+        return count
 
+    def add_list(self, units, source_lang, target_lang, commit=True):
+        """insert all units in list into the database, units are
+        represented as dictionaries"""
+        count = 0
+        for unit in units:
+            self.add_dict(unit, source_lang, target_lang, commit=False)
+            count +=1
+        if commit:
+            self.connection.commit()
+        return count
+    
     def translate_unit(self, unit_source, source_langs, target_langs):
         """return TM suggestions for unit_source"""
         if isinstance(unit_source, str):
