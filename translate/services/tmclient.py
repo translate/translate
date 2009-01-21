@@ -77,21 +77,20 @@ class TMClient(restclient.RESTClient):
             request.connect("REST-success",
                             lambda widget, id, response: callback(widget, id, json.loads(response)))
 
-    def upload_store(self, store, callback=None):
+    def upload_store(self, store, source_lang, target_lang, callback=None):
         data = str(store)
         request = restclient.RESTClient.Request(
-                self.base_url + "/store",
+                self.base_url + "/%s/%s/store" % (source_lang, target_lang),
                 store.filename, "PUT", data)
         self.add(request)
         if callback:
             request.connect("REST-success",
                             lambda widget, id, response: callback(widget, id, json.loads(response)))
 
-    def add_store(self, store_path, callback=None):
-        tmp, store_filename = os.path.split(store_path)
+    def add_store(self, filename, store, source_lang, target_lang, callback=None):
         request = restclient.RESTClient.Request(
-                self.base_url + "/store",
-                store_filename, "POST", store_path)
+                self.base_url + "/%s/%s/store" % (source_lang, target_lang),
+                filename, "POST", json.dumps(store))
         self.add(request)
         if callback:
             request.connect("REST-success",

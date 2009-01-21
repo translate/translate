@@ -21,6 +21,7 @@
 """A translation memory server using REST and JSON."""
 
 import urllib
+import StringIO
 from optparse import OptionParser
 import simplejson as json
 from wsgiref.simple_server import make_server
@@ -46,19 +47,20 @@ class TMServer:
         #initialize url dispatcher
         self.rest = selector.Selector(prefix=prefix)
         self.rest.add("/{slang}/{tlang}/unit/{uid:any}",
-                      GET=self.get_suggestions,
+                      GET=self.translate_unit,
                       POST=self.update_unit,
                       PUT=self.add_unit,
                       DELETE=self.forget_unit
                       )
 
-        self.rest.add("/store/{sid:any}", GET=self.get_store_stats)
-        self.rest.add("/store/{sid:any}", POST=self.add_store)
-        self.rest.add("/store/{sid:any}", PUT=self.upload_store)
-        self.rest.add("/store/{sid:any}", DELETE=self.forget_store)
+        self.rest.add("/{slang}/{tlang}/store/{sid:any}",
+                      GET=self.get_store_stats,
+                      PUT=self.upload_store,
+                      POST=self.add_store,
+                      DELETE=self.forget_store)
 
     @selector.opliant
-    def get_suggestions(self, environ, start_response, uid, slang, tlang):
+    def translate_unit(self, environ, start_response, uid, slang, tlang):
         start_response("200 OK", [('Content-type', 'text/plain')])
         uid = unicode(urllib.unquote_plus(uid),"utf-8")
         candidates = self.tmdb.translate_unit(uid, slang, tlang)
@@ -102,19 +104,23 @@ class TMServer:
         return [response]
 
     @selector.opliant
-    def upload_store(self, environ, start_response, sid):
-        #FIXME: implement me
+    def upload_store(self, environ, start_response, sid, slang, tlang):
+        """add units from uploaded file to tmdb"""
         start_response("200 OK", [('Content-type', 'text/plain')])
-        sid = unicode(urllib.unquote_plus(sid),"utf-8")
-        data = json.loads(environ['wsgi.input'].read(int(environ['CONTENT_LENGTH'])))
+        data = StringIO.StringIO(environ['wsgi.input'].read(int(environ['CONTENT_LENGTH'])))
+        data.name = sid
+        store = factory.getobject(data)
+        count = self.tmdb.add_store(store, slang, tlang)
+        response = "added %d units from %s" % (count, sid)
         return [response]
 
     @selector.opliant
-    def add_store(self, environ, start_response, sid):
-        #FIXME: implement me
+    def add_store(self, environ, start_response, sid, slang, tlang):
+        """add unit from POST data to tmdb"""
         start_response("200 OK", [('Content-type', 'text/plain')])
-        sid = unicode(urllib.unquote_plus(sid),"utf-8")
-        data = json.loads(environ['wsgi.input'].read(int(environ['CONTENT_LENGTH'])))
+        units = json.loads(environ['wsgi.input'].read(int(environ['CONTENT_LENGTH'])))
+        count = self.tmdb.add_list(units, slang, tlang)
+        response = "added %d units from %s" % (count, sid)
         return [response]
 
     @selector.opliant
