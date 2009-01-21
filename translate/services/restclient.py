@@ -61,7 +61,13 @@ class RESTClient(object):
             else:
                 self.curl.setopt(pycurl.CUSTOMREQUEST, method)
             if data:
-                self.curl.setopt(pycurl.POSTFIELDS, data)
+                if method == "PUT":
+                    self.data = StringIO.StringIO(data)
+                    self.curl.setopt(pycurl.READFUNCTION, self.data.read)
+                    self.curl.setopt(pycurl.INFILESIZE, len(self.data.getvalue()))
+                else:
+                    self.curl.setopt(pycurl.POSTFIELDS, self.data)
+                    self.curl.setopt(pycurl.POSTFIELDSIZE, len(self.data))
             if headers:
                 self.curl.setopt(pycurl.HTTPHEADER, headers)
 
