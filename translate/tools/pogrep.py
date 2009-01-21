@@ -95,6 +95,30 @@ class GrepMatch(object):
     def __repr__(self):
         return str(self)
 
+def real_index(string, nfc_index):
+    """Calculate the real index in the unnormalized string that corresponds to
+    the index nfc_index in the normalized string."""
+    length = nfc_index
+    max_length = len(string)
+    while len(data.normalize(string[:length])) <= nfc_index:
+        if length == max_length:
+            return length
+        length += 1
+    return length - 1
+
+
+def find_matches(unit, part, strings, re_search):
+    """Return the GrepFilter objects where re_search matches in strings."""
+    matches = []
+    part_n = 0
+    for string in strings:
+        normalized = data.normalize(string)
+        for matchobj in re_search.finditer(normalized):
+            start = real_index(string, matchobj.start())
+            end = real_index(string, matchobj.end())
+            matches.append(GrepMatch(unit, part=part, part_n=part_n, start=start, end=end))
+    return matches
+
 class GrepFilter:
     def __init__(self, searchstring, searchparts, ignorecase=False, useregexp=False,
             invertmatch=False, accelchar=None, encoding='utf-8', includeheader=False,
@@ -205,63 +229,25 @@ class GrepFilter:
         indexes = []
 
         for index, unit in enumerate(units):
-            unit_matches = False
+            old_length = len(matches)
 
             if self.search_target:
-                part = 'target'
-                part_n = 0
                 if unit.hasplural():
                     targets = unit.target.strings
                 else:
                     targets = [unit.target]
-                for target in targets:
-                    target = data.normalize(target)
-                    for matchobj in self.re_search.finditer(target):
-                        matches.append(
-                            GrepMatch(unit, part=part, part_n=part_n, start=matchobj.start(), end=matchobj.end())
-                        )
-                        unit_matches = True
-                    part_n += 1
-
+                matches.extend(find_matches(unit, 'target', targets, self.re_search))
             if self.search_source:
-                part = 'source'
-                part_n = 0
                 if unit.hasplural():
                     sources = unit.source.strings
                 else:
                     sources = [unit.source]
-                for source in sources:
-                    source = data.normalize(source)
-                    for matchobj in self.re_search.finditer(source):
-                        matches.append(
-                            GrepMatch(unit, part=part, part_n=part_n, start=matchobj.start(), end=matchobj.end())
-                        )
-                        unit_matches = True
-                    part_n += 1
-
+                matches.extend(find_matches(unit, 'source', sources, self.re_search))
             if self.search_notes:
-                part = 'notes'
-                part_n = 0
-                for note in unit.getnotes():
-                    note = data.normalize(note)
-                    for matchobj in self.re_search.finditer(note):
-                        matches.append(
-                            GrepMatch(unit, part=part, part_n=part_n, start=matchobj.start(), end=matchobj.end())
-                        )
-                        unit_matches = True
-                    part_n += 1
+                matches.extend(find_matches(unit, 'notes', unit.getnotes(), self.re_search))
 
             if self.search_locations:
-                part = 'locations'
-                part_n = 0
-                for loc in unit.getlocations():
-                    loc = data.normalize(loc)
-                    for matchobj in self.re_search.finditer(loc):
-                        matches.append(
-                            GrepMatch(unit, part=part, part_n=part_n, start=matchobj.start(), end=matchobj.end())
-                        )
-                        unit_matches = True
-                    part_n += 1
+                matches.extend(find_matches(unit, 'locations', unit.getlocations(), self.re_search))
 
             # A search for a single letter or an all-inclusive regular
             # expression could give enough results to cause performance
@@ -269,7 +255,8 @@ class GrepFilter:
             if self.max_matches and len(matches) > self.max_matches:
                 raise Exception("Too many matches found")
 
-            if unit_matches:
+            if len(matches) > old_length:
+                old_length = len(matches)
                 indexes.append(index)
 
         return matches, indexes
