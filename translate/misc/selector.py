@@ -29,8 +29,12 @@ from itertools import starmap
 from wsgiref.util import shift_path_info
 
 
-from resolver import resolve
-
+try:
+    from resolver import resolve
+except ImportError:
+    # resolver not essential for basic featurs
+    #FIXME: this library is overkill, simplify
+    pass
 
 class MappingFileError(Exception): pass
 
