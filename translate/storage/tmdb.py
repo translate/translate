@@ -23,7 +23,10 @@
 import math
 import time
 import logging
-from sqlite3 import dbapi2
+try:
+    from sqlite3 import dbapi2
+except ImportError:
+    from pysqlite2 import dbapi2
 
 from translate.search.lshtein import LevenshteinComparer
 from translate.lang import data
