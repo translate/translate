@@ -70,7 +70,9 @@ translatescripts = [apply(join, ('translate', ) + script) for script in
                   ('tools', 'poterminology'),
                   ('tools', 'pretranslate'),          
                   ('services', 'lookupclient.py'),
-                  ('services', 'lookupservice')]
+                  ('services', 'lookupservice'),
+                  ('services', 'tmserver'),
+                  ('tools', 'build_tmdb')]
 
 translatebashscripts = [apply(join, ('tools', ) + (script, )) for script in [
                   'pomigrate2', 'pocompendium', 
