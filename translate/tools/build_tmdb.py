@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Build the TM database."""
+"""Import units from translations files into tmdb."""
 
 import sys
 import os
