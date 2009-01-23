@@ -29,7 +29,7 @@ class RESTClient(object):
 
     class Request(gobject.GObject):
         """Single HTTP REST request, blocking if used standalone"""
-        def __init__(self, url, id, method='GET', data=None, headers=None):
+        def __init__(self, url, id, method='GET', data=None, headers=None, callback=None):
             gobject.GObject.__init__(self)
             self.result = StringIO.StringIO()
             self.result_headers = StringIO.StringIO()
@@ -75,15 +75,11 @@ class RESTClient(object):
             # Curl handles
             self.curl.request = self
 
-        # define __hash__ and __eq__ so we can have meaningful sets
-        def __hash__(self):
-            return hash((self.url, self.id, self.method, self.data, self.headers))
-        def __eq__(self, other):
-            return (self.url, self.id, self.method, self.data, self.headers) == (other.url, other.id, other.method, other.data, other.headers)
 
         def perform(self):
             """run the request (blocks)"""
             self.curl.perform()
+
 
         def handle_result(self):
             """called after http request is done"""
@@ -102,7 +98,13 @@ class RESTClient(object):
 
 
     def __init__(self):
+        # state variable used to add and remove dispatcher to gtk
+        # event loop
         self.running = False
+
+        # since pycurl doesn't keep references to requests, requests
+        # get garbage collected before they are done. we need  to keep requests in
+        # a set and detroy them manually
         self.requests = set()
         self.curl = pycurl.CurlMulti()
 
@@ -125,11 +127,7 @@ class RESTClient(object):
         """finalize a successful request"""
         self.curl.remove_handle(handle)
         handle.request.handle_result()
-        if handle.request in self.requests:
-            self.requests.remove(handle.request)
-        else:
-            #FIXME: this shouldn't happen at all
-            logging.error("attempted to remove non existing request")
+        self.requests.remove(handle.request)
 
 
     def perform(self):
