@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from translate.storage import factory
+from translate.storage import xliff
 from translate.filters import pofilter
 from translate.filters import checks
 from translate.misc import wStringIO
@@ -130,6 +131,24 @@ class BaseTestFilter(object):
         self.unit.markreviewneeded()
         filter_result = self.filter(self.translationstore, cmdlineoptions=["--test=isreview"])
         assert filter_result.units[0].isreview()
+
+    def test_notes(self):
+        """tests the optional adding of notes"""
+        # let's make sure we trigger the 'long' and/or 'doubleword' test
+        self.unit.target = u"asdf asdf asdf asdf asdf asdf asdf"
+        filter_result = self.filter(self.translationstore)
+        assert len(filter_result.units) == 1
+        assert filter_result.units[0].geterrors()
+
+        # now we remove the existing error. self.unit is changed since we copy
+        # units - very naughty
+        if isinstance(self.unit, xliff.xliffunit):
+            self.unit.removenotes(origin='pofilter')
+        else:
+            self.unit.removenotes()
+        filter_result = self.filter(self.translationstore, cmdlineoptions=["--nonotes"])
+        assert len(filter_result.units) == 1
+        assert len(filter_result.units[0].geterrors()) == 0
 
     def test_unicode(self):
         """tests that we can handle UTF-8 encoded characters when there is no known header specified encoding"""

@@ -86,7 +86,9 @@ class pocheckfilter:
             if filterresult:
                 if filterresult != autocorrect:
                     for filtername, filtermessage in filterresult.iteritems():
-                        unit.adderror(filtername, filtermessage)
+                        print self.options.addnotes
+                        if self.options.addnotes:
+                            unit.adderror(filtername, filtermessage)
                         if isinstance(filtermessage, checks.SeriousFilterFailure):
                             unit.markfuzzy()
                 newtransfile.addunit(unit)
@@ -180,6 +182,9 @@ def cmdlineparser():
     parser.add_option("", "--header", dest="includeheader",
         action="store_true", default=False,
         help="include a PO header in the output")
+    parser.add_option("", "--nonotes", dest="addnotes",
+        action="store_false", default=True,
+        help="don't add notes about the errors")
     parser.add_option("", "--autocorrect", dest="autocorrect",
         action="store_true", default=False,
         help="output automatic corrections where possible rather than describing issues")
