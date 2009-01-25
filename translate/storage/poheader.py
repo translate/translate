@@ -195,7 +195,8 @@ class poheader(object):
                 headeritems["Content-Transfer-Encoding"] = "8bit"
             headerString = ""
             for key, value in headeritems.items():
-                headerString += "%s: %s\n" % (key, value)
+                if value is not None:
+                    headerString += "%s: %s\n" % (key, value)
             header.target = headerString
             header.markfuzzy(False)    # TODO: check why we do this?
         return header
@@ -226,11 +227,16 @@ class poheader(object):
 
     def gettargetlanguage(self):
         header = self.parseheader()
+        if 'X-Poedit-Language' in header:
+            from translate.lang import poedit
+            language = header.get('X-Poedit-Language')
+            country = header.get('X-Poedit-Country')
+            return poedit.isocode(language, country)
         return header.get('Language')
 
     def settargetlanguage(self, lang):
         if isinstance(lang, basestring) and len(lang) > 1:
-            self.updateheader(add=True, Language=lang)
+            self.updateheader(add=True, Language=lang, X_Poedit_Language=None, X_Poedit_Country=None)
 
     def mergeheaders(self, otherstore):
         """Merges another header with this header.
