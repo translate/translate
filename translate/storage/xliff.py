@@ -312,6 +312,8 @@ class xliffunit(lisa.LISAunit):
                 self.markfuzzy()
             elif otherunit.source == self.source:
                 self.markfuzzy(False)
+        if comments:
+            self.addnote(otherunit.getnotes())
 
     def correctorigin(self, node, origin):
         """Check against node tag's origin (e.g note or alt-trans)"""
