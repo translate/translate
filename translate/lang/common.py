@@ -244,7 +244,6 @@ class Common(object):
         """Converts the given string by adding or removing characters as an 
         estimation of translation length (with English assumed as source 
         language)."""
-        print text.encode("utf-8")
         def alter_it(text):
             l = len(text)
             if l > 9:
@@ -258,7 +257,6 @@ class Common(object):
         for subtext in text.split("\n\n"):
             expanded.append(alter_it(subtext))
         text = "\n\n".join(expanded)
-        print text.encode("utf-8")
         return text
 
     def character_iter(cls, text):
