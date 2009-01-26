@@ -25,7 +25,7 @@ import urllib
 import StringIO
 from optparse import OptionParser
 import simplejson as json
-from wsgiref.simple_server import make_server
+from wsgiref import simple_server 
 
 from translate.misc import selector
 from translate.search import match
@@ -33,7 +33,13 @@ from translate.storage import factory
 from translate.storage import base
 from translate.storage import tmdb
 
-class TMServer:
+class TMServer(object):
+    class RequestHandler(simple_server.WSGIRequestHandler):
+        """custom request handler, disables reverse dns lookup on
+        every request"""
+        def address_string(self):
+            return  self.client_address[0]
+        
     """a RESTful JSON TM server"""
     def __init__(self, tmdbfile, tmfiles, max_candidates=3, min_similarity=75, max_length=1000, prefix="", source_lang=None, target_lang=None):
 
@@ -151,7 +157,7 @@ def main():
     (options, args) = parser.parse_args()
 
     application = TMServer(options.tmdbfile, options.tmfiles, prefix="/tmserver", source_lang=options.source_lang, target_lang=options.target_lang)
-    httpd = make_server(options.bind, options.port, application.rest)
+    httpd = simple_server.make_server(options.bind, options.port, application.rest, handler_class=TMServer.RequestHandler)
     httpd.serve_forever()
 
 
