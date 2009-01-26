@@ -135,6 +135,10 @@ def nested(*managers):
     exits = []
     vars = []
     exc = (None, None, None)
+    # Lambdas are an easy way to create unique objects. We don't want
+    # this to be None, since our answer might actually be None
+    undefined = lambda: 42 
+    result = undefined
 
     try:
         for mgr in managers:
@@ -142,9 +146,14 @@ def nested(*managers):
             enter = mgr.__enter__
             vars.append(enter())
             exits.append(exit)
-        yield vars
+        result = vars
     except:
         exc = sys.exc_info()
+
+    # If nothing has gone wrong, then result contains our return value
+    # and thus it is not equal to 'undefined'. Thus, yield the value.
+    if result != undefined:
+        yield result
 
     while exits:
         exit = exits.pop()
