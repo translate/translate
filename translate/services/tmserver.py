@@ -23,6 +23,7 @@ with clients using JSON over HTTP."""
 
 import urllib
 import StringIO
+import logging
 from optparse import OptionParser
 import simplejson as json
 from wsgiref import simple_server 
@@ -35,10 +36,18 @@ from translate.storage import tmdb
 
 class TMServer(object):
     class RequestHandler(simple_server.WSGIRequestHandler):
-        """custom request handler, disables reverse dns lookup on
-        every request"""
+        """custom request handler, disables some inefficient defaults"""
         def address_string(self):
+            """disable client reverse dns lookup"""
             return  self.client_address[0]
+
+        def log_message(self, format, *args):
+            """log requests using logging instead of printing to
+            stderror"""
+            logging.info("%s - - [%s] %s" %
+                         (self.address_string(),
+                          self.log_date_time_string(),
+                          format%args))
         
     """a RESTful JSON TM server"""
     def __init__(self, tmdbfile, tmfiles, max_candidates=3, min_similarity=75, max_length=1000, prefix="", source_lang=None, target_lang=None):
