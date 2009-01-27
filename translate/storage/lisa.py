@@ -196,16 +196,28 @@ Provisional work is done to make several languages possible."""
     rich_target = property(get_rich_target, set_rich_target)
 
     def settarget(self, text, lang='xx', append=False):
-        #XXX: we really need the language - can't really be optional
+        #XXX: we really need the language - can't really be optional, and we
+        # need to propagate it
         """Sets the "target" string (second language), or alternatively appends to the list"""
         text = data.forceunicode(text)
         #Firstly deal with reinitialising to None or setting to identical string
         if self.gettarget() == text:
             return
-        languageNode = None
+        languageNode = self.get_target_dom(None)
         if not text is None:
-            languageNode = self.createlanguageNode(lang, text, "target")
-        self.set_target_dom(languageNode, append)
+            if languageNode is None:
+                languageNode = self.createlanguageNode(lang, text, "target")
+                self.set_target_dom(languageNode, append)
+            else:
+                if self.textNode:
+                    terms = languageNode.iter(self.namespaced(self.textNode))
+                    try:
+                        languageNode = terms.next()
+                    except StopIteration, e:
+                        pass
+                languageNode.text = text
+        else:
+            self.set_target_dom(None, False)
 
     def gettarget(self, lang=None):
         """retrieves the "target" text (second entry), or the entry in the 
