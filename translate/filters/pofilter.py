@@ -86,7 +86,6 @@ class pocheckfilter:
             if filterresult:
                 if filterresult != autocorrect:
                     for filtername, filtermessage in filterresult.iteritems():
-                        print self.options.addnotes
                         if self.options.addnotes:
                             unit.adderror(filtername, filtermessage)
                         if isinstance(filtermessage, checks.SeriousFilterFailure):
