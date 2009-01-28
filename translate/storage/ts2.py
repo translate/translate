@@ -207,10 +207,10 @@ class tsunit(lisa.LISAunit):
 
     def getlocations(self):
         location = self.xmlelement.find(self.namespaced("location"))
-        if location:
-            return [':'.join([location.get("filename"), location.get("line")])]
-        else:
+        if location is None:
             return []
+        else:
+            return [':'.join([location.get("filename"), location.get("line")])]
 
     def merge(self, otherunit, overwrite=False, comments=True):
         super(tsunit, self).merge(otherunit, overwrite, comments)
