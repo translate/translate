@@ -47,7 +47,7 @@ class Builder:
     def handlefile(self, filename):
         try:
             store = factory.getobject(filename)
-        except ValueError, e:
+        except Exception, e:
             print >> sys.stderr, str(e)
             return
         # do something useful with the store and db

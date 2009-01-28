@@ -75,7 +75,6 @@ CREATE TABLE IF NOT EXISTS sources (
        lang VARCHAR NOT NULL,
        length INTEGER NOT NULL
 );
-CREATE INDEX IF NOT EXISTS sources_text_idx ON sources (text);
 CREATE INDEX IF NOT EXISTS sources_context_idx ON sources (context);
 CREATE INDEX IF NOT EXISTS sources_lang_idx ON sources (lang);
 CREATE INDEX IF NOT EXISTS sources_length_idx ON sources (length);
@@ -86,7 +85,6 @@ CREATE TABLE IF NOT EXISTS targets (
        sid INTEGER NOT NULL,
        text VARCHAR NOT NULL,
        lang VARCHAR NOT NULL,
-       length INTEGER NOT NULL,
        time INTEGER DEFAULT NULL,
        FOREIGN KEY (sid) references sources(sid)
 );
@@ -204,11 +202,10 @@ INSERT INTO fulltext (docid, text) SELECT sid, text FROM sources;
             try:
                 #FIXME: get time info from translation store
                 #FIXME: do we need so store target length?
-                self.cursor.execute("INSERT INTO targets (sid, text, lang, length, time) VALUES (?, ?, ?, ?, ?)",
+                self.cursor.execute("INSERT INTO targets (sid, text, lang, time) VALUES (?, ?, ?, ?)",
                                     (sid,
                                      unit["target"],
                                      target_lang,
-                                     len(unit["target"]),
                                      int(time.time())))
             except dbapi2.IntegrityError:
                 # target string already exists in db, do nothing
