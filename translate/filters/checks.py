@@ -718,7 +718,9 @@ class StandardChecker(TranslationChecker):
         str1 = self.filteraccelerators(self.filtervariables(self.filterwordswithpunctuation(str1)))
         str1 = self.config.lang.punctranslate(str1)
         str2 = self.filteraccelerators(self.filtervariables(self.filterwordswithpunctuation(str2)))
-        return helpers.funcmatch(str1, str2, decoration.puncend, self.config.endpunctuation)
+        str1 = str1.strip()
+        str2 = str2.strip()
+        return helpers.funcmatch(str1, str2, decoration.puncend, self.config.endpunctuation + u":")
 
     def purepunc(self, str1, str2):
         """checks that strings that are purely punctuation are not changed"""
