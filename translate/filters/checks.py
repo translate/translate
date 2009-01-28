@@ -718,8 +718,8 @@ class StandardChecker(TranslationChecker):
         str1 = self.filteraccelerators(self.filtervariables(self.filterwordswithpunctuation(str1)))
         str1 = self.config.lang.punctranslate(str1)
         str2 = self.filteraccelerators(self.filtervariables(self.filterwordswithpunctuation(str2)))
-        str1 = str1.strip()
-        str2 = str2.strip()
+        str1 = str1.rstrip()
+        str2 = str2.rstrip()
         return helpers.funcmatch(str1, str2, decoration.puncend, self.config.endpunctuation + u":")
 
     def purepunc(self, str1, str2):
