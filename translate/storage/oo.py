@@ -130,12 +130,12 @@ def escape_help_text(text):
     """
     text = text.replace("\\", "\\\\")
     for tag in helptagre.findall(text):
-        escapethistag = True
-        if tag in ["<br>", "<h1>", "</h1>", "<img ...>", "<->", "<empty>", "<ref>", "<references>"]:
-            escapethistag = False
-        for skip in ["<font", "<node", "<help_section"]:
-            if tag.startswith(skip):
-                escapethistag = False
+        escapethistag = False
+        for escape_tag in ["ahelp", "link", "item", "emph", "defaultinline", "switchinline", "caseinline", "variable", "bookmark_value", "image", "embedvar", "alt"]:
+            if tag.startswith("<%s" % escape_tag) or tag == "</%s>" % escape_tag:
+                escapethistag = True
+        if tag in ["<br/>", "<help-id-missing/>"]:
+            escapethistag = True
         if escapethistag:
             escaped_tag = ("\\<" + tag[1:-1] + "\\>").replace('"', '\\"')
             text = text.replace(tag, escaped_tag)

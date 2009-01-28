@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 from translate.storage import oo
 from translate.misc import wStringIO
@@ -13,6 +14,15 @@ def test_makekey():
     assert oo.makekey(('project', r'path\to\the\sourcefile.src', 'resourcetype', '', 'LOCAL_ID', 'platform'), False) == "sourcefile.src#LOCAL_ID.resourcetype"
     assert oo.makekey(('project', r'path\to\the\sourcefile.src', '', 'GROUP_ID', 'LOCAL_ID', 'platform'), False) == "sourcefile.src#GROUP_ID.LOCAL_ID"
     assert oo.makekey(('project', r'path\to\the\sourcefile.src', '', 'GROUP_ID', '', 'platform'), False) == "sourcefile.src#GROUP_ID"
+
+def test_escape_help_text():
+    """Check the help text escape function"""
+    assert oo.escape_help_text("If we don't know <tag> we don't <br> escape it") == "If we don't know <tag> we don't <br> escape it"
+    # Bug 694
+    assert oo.escape_help_text("A szó: <nyelv>") == "A szó: <nyelv>"
+    assert oo.escape_help_text("""...következő: "<kiszolgáló> <témakör> <elem>", ahol...""") == """...következő: "<kiszolgáló> <témakör> <elem>", ahol..."""
+    # See bug 694 comments 8-10 not fully resolved.
+    assert oo.escape_help_text(r"...törtjel (\) létrehozásához...") == r"...törtjel (\\) létrehozásához..."
 
 class TestOO:
     def setup_method(self, method):

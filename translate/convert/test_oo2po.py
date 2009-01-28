@@ -82,11 +82,11 @@ class TestOO2PO:
         self.check_roundtrip('strings.src', r'The given command is not a SELECT statement.\nOnly queries are allowed.')
         self.check_roundtrip('source\ui\dlg\AutoControls_tmpl.hrc', r';\t59\t,\t44\t:\t58\t{Tab}\t9\t{Space}\t32')
         self.check_roundtrip('inc_openoffice\windows\msi_languages\Nsis.ulf', r'The installation files must be unpacked and copied to your hard disk in preparation for the installation. After that, the %PRODUCTNAME installation will start automatically.\r\n\r\nClick \'Next\' to continue.')
-        self.check_roundtrip('file.xhp', r'\<asdf\>')
-        self.check_roundtrip('file.xhp', r'\<asdf prop=\"value\"\>')
-        self.check_roundtrip('file.xhp', r'\<asdf prop=\"value\"\>marked up text\</asdf\>')
-        self.check_roundtrip('file.xhp', r'\<asdf prop=\"value>>\"\>')
-        self.check_roundtrip('file.xhp', r'''\<asdf prop=\"value>>\"\>'Next'>> or "<<Previous"\</asdf\>''')
+        self.check_roundtrip('file.xhp', r'\<ahelp\>')
+        self.check_roundtrip('file.xhp', r'\<ahelp prop=\"value\"\>')
+        self.check_roundtrip('file.xhp', r'\<ahelp prop=\"value\"\>marked up text\</ahelp\>')
+        self.check_roundtrip('file.xhp', r'\<ahelp prop=\"value>>\"\>')
+        self.check_roundtrip('file.xhp', r'''\<ahelp prop=\"value>>\"\>'Next'>> or "<<Previous"\</ahelp\>''')
         self.check_roundtrip('address_auto.xhp', r'''example, \<item type=\"literal\"\>'Harry\\'s Bar'.\</item\>''')
 
     def xtest_roundtrip_whitespaceonly(self):
