@@ -43,6 +43,7 @@ in very small files.
 
 from translate.storage import base
 from translate.storage import po
+from translate.storage import poheader
 from translate.misc.multistring import multistring
 import struct
 import array
@@ -121,7 +122,7 @@ class mounit(base.TranslationUnit):
         """Is this message translateable?"""
         return bool(self.source)
 
-class mofile(base.TranslationStore):
+class mofile(base.TranslationStore, poheader.poheader):
     """A class representing a .mo file."""
     UnitClass = mounit
     Name = _("Gettext MO file")
