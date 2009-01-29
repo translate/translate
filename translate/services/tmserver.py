@@ -24,6 +24,7 @@ with clients using JSON over HTTP."""
 import urllib
 import StringIO
 import logging
+import sys
 from optparse import OptionParser
 import simplejson as json
 from wsgiref import simple_server 
@@ -162,8 +163,19 @@ def main():
                       help="adress to bind server to")
     parser.add_option("-p", "--port", dest="port", type="int",
                       help="port to listen on")
+    parser.add_option("--debug", action="store_true", dest="debug", default=False,
+                      help="enable debugging features")
 
     (options, args) = parser.parse_args()
+
+    #setup debugging
+    format = '%(asctime)s %(levelname)s %(message)s'
+    level = options.debug and logging.DEBUG or logging.INFO
+    if options.debug:
+        format = '%(levelname)7s %(module)s.%(funcName)s:%(lineno)d: %(message)s'
+        if sys.version_info[:2] < (2, 5):
+            format = '%(levelname)7s %(module)s [%(filename)s:%(lineno)d]: %(message)s'
+    logging.basicConfig(level=level, format=format)
 
     application = TMServer(options.tmdbfile, options.tmfiles, prefix="/tmserver", source_lang=options.source_lang, target_lang=options.target_lang)
     httpd = simple_server.make_server(options.bind, options.port, application.rest, handler_class=TMServer.RequestHandler)
