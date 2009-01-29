@@ -29,6 +29,7 @@ from translate.misc import textwrap
 from translate.lang import data
 from translate.storage import pocommon, base
 import re
+import copy
 import cStringIO
 import poparser
 
@@ -140,6 +141,9 @@ class pounit(pocommon.pounit):
     # othercomments = []      #   # this is another comment
     # automaticcomments = []  #   #. comment extracted from the source code
     # sourcecomments = []     #   #: sourcefile.xxx:35
+    # prev_msgctxt = []       #   #| The previous values that msgctxt and msgid held
+    # prev_msgid = []         # 
+    # prev_msgid_plural = []  # 
     # typecomments = []       #   #, fuzzy
     # msgidcomments = []      #   _: within msgid
     # msgctxt
@@ -150,6 +154,9 @@ class pounit(pocommon.pounit):
         self._encoding = encodingToUse(encoding)
         self.obsolete = False
         self._initallcomments(blankall=True)
+        self.prev_msgctxt = []
+        self.prev_msgid = []
+        self.prev_msgid_plural = []
         self.msgctxt = []
         self.msgid = []
         self.msgid_pluralcomments = []
@@ -182,35 +189,56 @@ class pounit(pocommon.pounit):
 
     allcomments = property(_get_all_comments)
 
-    def getsource(self):
-        """Returns the unescaped msgid"""
-        multi = multistring(unquotefrompo(self.msgid), self._encoding)
+    def _get_source_vars(self, msgid, msgid_plural):
+        multi = multistring(unquotefrompo(msgid), self._encoding)
         if self.hasplural():
-            pluralform = unquotefrompo(self.msgid_plural)
+            pluralform = unquotefrompo(msgid_plural)
             if isinstance(pluralform, str):
                 pluralform = pluralform.decode(self._encoding)
             multi.strings.append(pluralform)
         return multi
+
+    def _set_source_vars(self, source):
+        msgid = None
+        msgid_plural = None
+        if isinstance(source, str):
+            source = source.decode(self._encoding)
+        if isinstance(source, multistring):
+            source = source.strings
+        if isinstance(source, list):
+            msgid = quoteforpo(source[0])
+            if len(source) > 1:
+                msgid_plural = quoteforpo(source[1])
+            else:
+                msgid_plural = []
+        else:
+            msgid = quoteforpo(source)
+            msgid_plural = []
+        return msgid, msgid_plural
+
+    def getsource(self):
+        """Returns the unescaped msgid"""
+        return self._get_source_vars(self.msgid, self.msgid_plural)
 
     def setsource(self, source):
         """Sets the msgid to the given (unescaped) value.
         
         @param source: an unescaped source string.
         """
-        if isinstance(source, str):
-            source = source.decode(self._encoding)
-        if isinstance(source, multistring):
-            source = source.strings
-        if isinstance(source, list):
-            self.msgid = quoteforpo(source[0])
-            if len(source) > 1:
-                self.msgid_plural = quoteforpo(source[1])
-            else:
-                self.msgid_plural = []
-        else:
-            self.msgid = quoteforpo(source)
-            self.msgid_plural = []
+        self.msgid, self.msgid_plural = self._set_source_vars(source)
     source = property(getsource, setsource)
+
+    def _get_prev_source(self):
+        """Returns the unescaped msgid"""
+        return self._get_source_vars(self.prev_msgid, self.prev_msgid_plural)
+
+    def _set_prev_source(self, source):
+        """Sets the msgid to the given (unescaped) value.
+        
+        @param source: an unescaped source string.
+        """
+        self.prev_msgid, self.prev_msgid_plural = self._set_source_vars(source)
+    prev_source = property(_get_prev_source, _set_prev_source)
 
     def gettarget(self):
         """Returns the unescaped msgstr"""
@@ -287,32 +315,7 @@ class pounit(pocommon.pounit):
         self.othercomments = []
 
     def copy(self):
-        newpo = self.__class__()
-        newpo.othercomments = self.othercomments[:]
-        newpo.automaticcomments = self.automaticcomments[:]
-        newpo.sourcecomments = self.sourcecomments[:]
-        newpo.typecomments = self.typecomments[:]
-        newpo.obsolete = self.obsolete
-        newpo.msgidcomments = self.msgidcomments[:]
-        newpo._initallcomments()
-        newpo.msgctxt = self.msgctxt[:]
-        newpo.msgid = self.msgid[:]
-        newpo.msgid_pluralcomments = self.msgid_pluralcomments[:]
-        newpo.msgid_plural = self.msgid_plural[:]
-        if isinstance(self.msgstr, dict):
-            newpo.msgstr = self.msgstr.copy()
-        else:
-            newpo.msgstr = self.msgstr[:]
-            
-        newpo.obsoletemsgctxt = self.obsoletemsgctxt[:]
-        newpo.obsoletemsgid = self.obsoletemsgid[:]
-        newpo.obsoletemsgid_pluralcomments = self.obsoletemsgid_pluralcomments[:]
-        newpo.obsoletemsgid_plural = self.obsoletemsgid_plural[:]
-        if isinstance(self.obsoletemsgstr, dict):
-            newpo.obsoletemsgstr = self.obsoletemsgstr.copy()
-        else:
-            newpo.obsoletemsgstr = self.obsoletemsgstr[:]
-        return newpo
+        return copy.deepcopy(self)
 
     def _msgidlen(self):
         if self.hasplural():
@@ -568,6 +571,16 @@ class pounit(pocommon.pounit):
 
     def _getoutput(self):
         """return this po element as a string"""
+        def add_prev_msgid_lines(lines, header, var):
+            if len(var) > 0:
+                lines.append("#| %s %s\n" % (header, var[0]))
+                lines.extend("#| %s\n" % line for line in var[1:])
+
+        def add_prev_msgid_info(lines):
+            add_prev_msgid_lines(lines, 'msgctxt', self.prev_msgctxt)
+            add_prev_msgid_lines(lines, 'msgid', self.prev_msgid)
+            add_prev_msgid_lines(lines, 'msgid_plural', self.prev_msgid_plural)
+
         lines = []
         lines.extend(self.othercomments)
         if self.isobsolete():
@@ -592,6 +605,7 @@ class pounit(pocommon.pounit):
                 return "".join(lines)
         lines.extend(self.automaticcomments)
         lines.extend(self.sourcecomments)
+        add_prev_msgid_info(lines)
         lines.extend(self.typecomments)
         if self.msgctxt:
             lines.append(self._getmsgpartstr("msgctxt", self.msgctxt))

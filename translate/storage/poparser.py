@@ -72,6 +72,29 @@ class ParseState(object):
     def new_input(self, _input):
         return ParseState(_input, self.UnitClass, self.encoding)
 
+def read_prevmsgid_lines(parse_state):
+    """Read all the lines belonging starting with #|. These lines contain
+    the previous msgid and msgctxt info. We strip away the leading '#| '
+    and read until we stop seeing #|."""
+    prevmsgid_lines = []
+    next_line = parse_state.next_line
+    while startswith(next_line, '#| '):
+        append(prevmsgid_lines, parse_state.read_line()[3:])
+        next_line = parse_state.next_line
+    return prevmsgid_lines
+
+def parse_prev_msgctxt(parse_state, unit):
+    parse_message(parse_state, 'msgctxt', 7, unit.prev_msgctxt)
+    return len(unit.prev_msgctxt) > 0
+
+def parse_prev_msgid(parse_state, unit):
+    parse_message(parse_state, 'msgid', 5, unit.prev_msgid)
+    return len(unit.prev_msgid) > 0
+
+def parse_prev_msgid_plural(parse_state, unit):
+    parse_message(parse_state, 'msgid_plural', 12, unit.prev_msgid_plural)
+    return len(unit.prev_msgid_plural) > 0
+
 def parse_comment(parse_state, unit):
     next_line = parse_state.next_line
     if len(next_line) > 0 and next_line[0] == '#':
@@ -81,7 +104,17 @@ def parse_comment(parse_state, unit):
         elif next_char == '.':
             append(unit.automaticcomments, parse_state.decode(next_line))
         elif next_char == '|':
-            pass
+            # Read all the lines starting with #|
+            prevmsgid_lines = read_prevmsgid_lines(parse_state)
+            # Create a parse state object that holds these lines
+            ps = parse_state.new_input(iter(prevmsgid_lines))
+            # Parse the msgctxt if any
+            parse_prev_msgctxt(ps, unit)
+            # Parse the msgid if any
+            parse_prev_msgid(ps, unit)
+            # Parse the msgid_plural if any
+            parse_prev_msgid_plural(ps, unit)
+            return parse_state.next_line
         elif next_char == ':':
             append(unit.sourcecomments, parse_state.decode(next_line))
         elif next_char == ',':

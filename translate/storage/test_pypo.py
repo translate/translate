@@ -239,3 +239,54 @@ class TestPYPOFile(test_po.TestPOFile):
         print str(oldfile)
         assert len(oldfile.units) == 1
 
+    def test_prevmsgid_parse(self):
+        """checks that prevmsgid (i.e. #|) is parsed and saved correctly"""
+        posource = r'''msgid ""
+msgstr ""
+"PO-Revision-Date: 2006-02-09 23:33+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8-bit\n"
+
+#| msgid "trea"
+msgid "tree"
+msgstr "boom"
+
+#| msgid "trea"
+#| msgid_plural "treas"
+msgid "tree"
+msgid_plural "trees"
+msgstr[0] "boom"
+msgstr[1] "bome"
+
+#| msgctxt "context 1"
+#| msgid "tast"
+msgctxt "context 1a"
+msgid "test"
+msgstr "toets"
+
+#| msgctxt "context 2"
+#| msgid "tast"
+#| msgid_plural "tasts"
+msgctxt "context 2a"
+msgid "test"
+msgid_plural "tests"
+msgstr[0] "toet"
+msgstr[1] "toetse"
+'''
+
+        pofile = self.poparse(posource)
+
+        assert pofile.units[1].prev_msgctxt == []
+        assert pofile.units[1].prev_source == multistring([u"trea"])
+
+        assert pofile.units[2].prev_msgctxt == []
+        assert pofile.units[2].prev_source == multistring([u"trea", u"treas"])
+
+        assert pofile.units[3].prev_msgctxt == [u'"context 1"']
+        assert pofile.units[3].prev_source == multistring([u"tast"])
+
+        assert pofile.units[4].prev_msgctxt == [u'"context 2"']
+        assert pofile.units[4].prev_source == multistring([u"tast", u"tasts"])
+
+        assert str(pofile) == posource
