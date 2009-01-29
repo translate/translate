@@ -254,9 +254,11 @@ def forceunicode(string):
     if isinstance(string, str):
         encoding = getattr(string, "encoding", "utf-8")
         string = string.decode(encoding)
-    string = normalize(string)
     return string
 
+def normalized_unicode(string):
+    """Forces the string to unicode and does normalization."""
+    return normalize(forceunicode(string))
 
 def normalize_code(code):
     return code.replace("_", "-").replace("@", "-").lower()
