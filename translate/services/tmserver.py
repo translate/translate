@@ -175,6 +175,13 @@ def main():
         format = '%(levelname)7s %(module)s.%(funcName)s:%(lineno)d: %(message)s'
         if sys.version_info[:2] < (2, 5):
             format = '%(levelname)7s %(module)s [%(filename)s:%(lineno)d]: %(message)s'
+    else:
+        try:
+            import psyco
+            psyco.full()
+        except Exception:
+            pass
+
     logging.basicConfig(level=level, format=format)
 
     application = TMServer(options.tmdbfile, options.tmfiles, prefix="/tmserver", source_lang=options.source_lang, target_lang=options.target_lang)
