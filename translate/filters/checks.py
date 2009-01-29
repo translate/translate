@@ -66,6 +66,8 @@ property_re = re.compile(" (\w*)=((\\\\?\".*?\\\\?\")|(\\\\?'.*?\\\\?'))")
 # The whole tag
 tag_re = re.compile("<[^>]+>")
 
+gconf_attribute_re = re.compile('"[a-z_]+?"')
+
 def tagname(string):
     """Returns the name of the XML/HTML tag in string"""
     return tagname_re.match(string).groups(1)[0]
@@ -386,6 +388,7 @@ class TranslationChecker(UnitChecker):
         self.str1 = data.normalized_unicode(unit.source)
         self.str2 = data.normalized_unicode(unit.target)
         self.hasplural = unit.hasplural()
+        self.locations = unit.getlocations()
         return super(TranslationChecker, self).run_filters(unit)
 
 class TeeChecker:
@@ -991,7 +994,7 @@ class StandardChecker(TranslationChecker):
                                     "isreview", "notranslatewords", "musttranslatewords",
                                     "emails", "simpleplurals", "urls", "printf",
                                     "tabs", "newlines", "functions", "options",
-                                    "blank", "nplurals"),
+                                    "blank", "nplurals", "gconf"),
                     "blank":        ("simplecaps", "variables", "startcaps",
                                     "accelerators", "brackets", "endpunc",
                                     "acronyms", "xmltags", "startpunc",
@@ -1001,7 +1004,8 @@ class StandardChecker(TranslationChecker):
                                     "sentencecount", "numbers", "isfuzzy",
                                     "isreview", "notranslatewords", "musttranslatewords",
                                     "emails", "simpleplurals", "urls", "printf",
-                                    "tabs", "newlines", "functions", "options"),
+                                    "tabs", "newlines", "functions", "options",
+                                    "gconf"),
                     "credits":      ("simplecaps", "variables", "startcaps",
                                     "accelerators", "brackets", "endpunc",
                                     "acronyms", "xmltags", "startpunc",
@@ -1083,6 +1087,17 @@ class GnomeChecker(StandardChecker):
             kwargs["checkerconfig"] = checkerconfig
         checkerconfig.update(gnomeconfig)
         StandardChecker.__init__(self, **kwargs)
+
+    def gconf(self, str1, str2):
+        """Checks if we have any gconf config settings translated."""
+        for location in self.locations:
+            if location.find('schemas.in') != -1:
+                gconf_attributes = gconf_attribute_re.findall(str1)
+                #stopwords = [word for word in words1 if word in self.config.notranslatewords and word not in words2]
+                stopwords = [word for word in gconf_attributes if word[1:-1] not in str2]
+                if stopwords:
+                    raise FilterFailure(u"do not translate gconf attribute: %s" % (u", ".join(stopwords)))
+        return True
 
 kdeconfig = CheckerConfig(
     accelmarkers = ["&"],
