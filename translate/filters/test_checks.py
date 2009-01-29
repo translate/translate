@@ -4,7 +4,7 @@ from translate.lang import data
 from translate.storage import po 
 
 def strprep(str1, str2, message=None):
-    return data.forceunicode(str1), data.forceunicode(str2), data.forceunicode(message)
+    return data.normalized_unicode(str1), data.normalized_unicode(str2), data.normalized_unicode(message)
 
 def passes(filterfunction, str1, str2):
     """returns whether the given strings pass on the given test, handling FilterFailures"""

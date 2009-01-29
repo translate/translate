@@ -153,15 +153,15 @@ class CheckerConfig(object):
         self.updatetargetlanguage(targetlanguage)
         self.sourcelang = factory.getlanguage('en')
         # Inits with default values
-        self.punctuation = self._init_default(data.forceunicode(punctuation),  self.lang.punctuation)
-        self.endpunctuation = self._init_default(data.forceunicode(endpunctuation), self.lang.sentenceend)
+        self.punctuation = self._init_default(data.normalized_unicode(punctuation),  self.lang.punctuation)
+        self.endpunctuation = self._init_default(data.normalized_unicode(endpunctuation), self.lang.sentenceend)
         self.ignoretags = self._init_default(ignoretags, common_ignoretags)
         self.canchangetags = self._init_default(canchangetags, common_canchangetags)
         # Other data
         # TODO: allow user configuration of untranslatable words
-        self.notranslatewords = dict.fromkeys([data.forceunicode(key) for key in self._init_list(notranslatewords)])
-        self.musttranslatewords = dict.fromkeys([data.forceunicode(key) for key in self._init_list(musttranslatewords)])
-        validchars = data.forceunicode(validchars)
+        self.notranslatewords = dict.fromkeys([data.normalized_unicode(key) for key in self._init_list(notranslatewords)])
+        self.musttranslatewords = dict.fromkeys([data.normalized_unicode(key) for key in self._init_list(musttranslatewords)])
+        validchars = data.normalized_unicode(validchars)
         self.validcharsmap = {}
         self.updatevalidchars(validchars)
 
@@ -208,7 +208,7 @@ class CheckerConfig(object):
         """updates the map that eliminates valid characters"""
         if validchars is None:
             return True
-        validcharsmap = dict([(ord(validchar), None) for validchar in data.forceunicode(validchars)])
+        validcharsmap = dict([(ord(validchar), None) for validchar in data.normalized_unicode(validchars)])
         self.validcharsmap.update(validcharsmap)
 
     def updatetargetlanguage(self, langcode):
@@ -383,8 +383,8 @@ class TranslationChecker(UnitChecker):
     def run_filters(self, unit):
         """Do some optimisation by caching some data of the unit for the benefit 
         of run_test()."""
-        self.str1 = data.forceunicode(unit.source)
-        self.str2 = data.forceunicode(unit.target)
+        self.str1 = data.normalized_unicode(unit.source)
+        self.str2 = data.normalized_unicode(unit.target)
         self.hasplural = unit.hasplural()
         return super(TranslationChecker, self).run_filters(unit)
 
@@ -1157,8 +1157,8 @@ class StandardUnitChecker(UnitChecker):
 def runtests(str1, str2, ignorelist=()):
     """verifies that the tests pass for a pair of strings"""
     from translate.storage import base
-    str1 = data.forceunicode(str1)
-    str2 = data.forceunicode(str2)
+    str1 = data.normalized_unicode(str1)
+    str2 = data.normalized_unicode(str2)
     unit = base.TranslationUnit(str1)
     unit.target = str2
     checker = StandardChecker(excludefilters=ignorelist)
