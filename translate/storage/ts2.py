@@ -249,6 +249,23 @@ class tsfile(lisa.LISAfile):
         else:
             self.body = self.document.getroot()
 
+    def gettargetlanguage(self):
+        """Get the target language for this .ts file.
+
+        @return: ISO code e.g. af, fr, pt_BR
+        @rtype: String
+        """
+        return self.body.get('language')
+
+    def settargetlanguage(self, targetlanguage):
+        """Set the target language for this .ts file to L{targetlanguage}.
+
+        @param targetlanguage: ISO code e.g. af, fr, pt_BR
+        @type targetlanguage: String
+        """
+        if targetlanguage:
+            self.body.set('language', targetlanguage)
+
     def _createcontext(self, contextname, comment=None):
         """Creates a context node with an optional comment"""
         context = etree.SubElement(self.document.getroot(), self.namespaced(self.bodyNode))
