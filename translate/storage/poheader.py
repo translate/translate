@@ -261,8 +261,7 @@ class poheader(object):
         self.updateheader(**retain)
 
     def updatecontributor(self, name, email=None):
-        """Add contribution comments
-        """
+        """Add contribution comments if necessary."""
         header = self.header()
         if not header:
             return
@@ -294,7 +293,7 @@ class poheader(object):
         year = time.strftime("%Y")
         contribexists = False
         for line in contriblines:
-            if name in line and (email is None or email in line):
+            if name in line and year in line and (email is None or email in line):
                 contribexists = True
                 break
         if not contribexists:
