@@ -120,7 +120,6 @@ DROP TABLE test_for_fts3;
                 # create fulltext index table, and index all strings in sources
                 script= """
 CREATE VIRTUAL TABLE fulltext USING fts3(text);
-INSERT INTO fulltext (docid, text) SELECT sid, text FROM sources;
 """
                 logging.debug("fulltext table not exists, creating")
                 self.cursor.executescript(script)
@@ -130,6 +129,7 @@ INSERT INTO fulltext (docid, text) SELECT sid, text FROM sources;
                 
             # create triggers that would sync sources table with fulltext index
             script = """
+INSERT INTO fulltext (rowid, text) SELECT sid, text FROM sources WHERE sid NOT IN (SELECT rowid FROM fulltext);
 CREATE TRIGGER IF NOT EXISTS sources_insert_trig AFTER INSERT ON sources FOR EACH ROW
 BEGIN
     INSERT INTO fulltext (docid, text) VALUES (NEW.sid, NEW.text);
@@ -150,13 +150,13 @@ END;
 
         except dbapi2.OperationalError, e:
             self.fulltext = False
+            logging.debug("failed to initialize fts3 support: " + str(e))
             script = """
 DROP TRIGGER IF EXISTS sources_insert_trig;
 DROP TRIGGER IF EXISTS sources_update_trig;
 DROP TRIGGER IF EXISTS sources_delete_trig;
 """
             self.cursor.executescript(script)
-            logging.debug("failed to initialize fts3 support: " + str(e))
 
     def preload_db(self):
         """ugly hack to force caching of sqlite db file in memory for
