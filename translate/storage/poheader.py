@@ -292,10 +292,16 @@ class poheader(object):
 
         year = time.strftime("%Y")
         contribexists = False
-        for line in contriblines:
-            if name in line and year in line and (email is None or email in line):
-                contribexists = True
-                break
+        for i in range(len(contriblines)):
+            line = contriblines[i]
+            if name in line and (email is None or email in line):
+                if year in line:
+                    contribexists = True
+                    break
+                else:
+                    #The contributor is there, but not for this year
+                    contriblines[i] = "%s,%s" % (line, year)
+
         if not contribexists:
             # Add a new contributor
             if email:
