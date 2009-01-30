@@ -116,13 +116,20 @@ DROP TABLE test_for_fts3;
             # for some reason CREATE VIRTUAL TABLE doesn't support IF NOT EXISTS syntax
             # check if fulltext index table exists manually
             self.cursor.execute("SELECT name FROM sqlite_master WHERE name = 'fulltext'")
-            if self.cursor.fetchone():
-                logging.debug("fulltext table already exists")
-            else:
-                logging.debug("fulltext table not exists, creating")
+            if not self.cursor.fetchone():
                 # create fulltext index table, and index all strings in sources
-                script = """
+                script= """
 CREATE VIRTUAL TABLE fulltext USING fts3(text);
+INSERT INTO fulltext (docid, text) SELECT sid, text FROM sources;
+"""
+                logging.debug("fulltext table not exists, creating")
+                self.cursor.executescript(script)
+                logging.debug("created fulltext table")
+            else:
+                logging.debug("fulltext table already exists")
+                
+            # create triggers that would sync sources table with fulltext index
+            script = """
 CREATE TRIGGER IF NOT EXISTS sources_insert_trig AFTER INSERT ON sources FOR EACH ROW
 BEGIN
     INSERT INTO fulltext (docid, text) VALUES (NEW.sid, NEW.text);
@@ -135,15 +142,20 @@ CREATE TRIGGER IF NOT EXISTS sources_delete_trig AFTER DELETE ON sources FOR EAC
 BEGIN
     DELETE FROM fulltext WHERE docid = OLD.sid;
 END;
-INSERT INTO fulltext (docid, text) SELECT sid, text FROM sources;
 """
-                self.cursor.executescript(script)
-                self.connection.commit()
-                logging.debug("created fulltext table")
+            self.cursor.executescript(script)
+            self.connection.commit()
+            logging.debug("created fulltext triggers")
             self.fulltext = True
 
         except dbapi2.OperationalError, e:
             self.fulltext = False
+            script = """
+DROP TRIGGER IF EXISTS sources_insert_trig;
+DROP TRIGGER IF EXISTS sources_update_trig;
+DROP TRIGGER IF EXISTS sources_delete_trig;
+"""
+            self.cursor.executescript(script)
             logging.debug("failed to initialize fts3 support: " + str(e))
 
     def preload_db(self):
