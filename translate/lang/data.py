@@ -147,25 +147,13 @@ def simplercode(code):
     if not code:
         return code
 
-    # The @ modifier is used for script variants of the same language, like 
-    # sr@Latn or gez_ER@abegede
-    modifier = code.rfind("@")
-    if modifier >= 0:
-        return code[:modifier]
-
-    underscore = code.rfind("_")
-    if underscore >= 0:
-        return code[:underscore]
-
-    # The @ modifier is used for script variants of the same language, like 
-    # sr@Latn or gez_ER@abegede. We need to replace alternative separators
-    # of extended codes to the recommended hyphen (-).
     normalized = normalize_code(code)
-    separator = normalized.rfind("-")
-    if modifier >= 0:
+    separator = normalized.rfind('-')
+    if separator >= 0:
         return code[:separator]
-    return ""
-
+    else:
+        return ""
+    
 
 expansion_factors = {
         'af': 0.1,
@@ -264,12 +252,12 @@ def normalize_code(code):
     return code.replace("_", "-").replace("@", "-").lower()
 
 
-def simplify_to_common(language_code):
+def simplify_to_common(language_code, languages=languages):
     """Simplify language code to the most commonly used form for the
     language, stripping country information for languages that tend
     not to be localized differently for different countries"""
     simpler = simplercode(language_code)
-    if language_code in languages.keys() or simpler =="":
+    if normalize_code(language_code) in [normalize_code(key) for key in languages.keys()] or simpler =="":
         return language_code
     else:
         return simplify_to_common(simpler)
