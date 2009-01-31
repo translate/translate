@@ -184,10 +184,11 @@ def languagematch(languagecode, otherlanguagecode):
 
 dialect_name_re = re.compile(r"([^(\s]+)\s*\(([^)]+)\)")
 
-def tr_lang(langcode):
+def tr_lang(langcode=None):
     """Gives a function that can translate a language name, even in the form::
            "language (country)"
-       into the language with iso code langcode."""
+       into the language with iso code langcode, or the system language if no
+       language is specified."""
     langfunc = gettext_lang(langcode)
     countryfunc = gettext_country(langcode)
 
@@ -201,19 +202,27 @@ def tr_lang(langcode):
 
     return handlelanguage
 
-def gettext_lang(langcode):
-    """Returns a gettext function to translate language names into the given 
-    language."""
+def gettext_lang(langcode=None):
+    """Returns a gettext function to translate language names into the given
+    language, or the system language if no language is specified."""
     if not langcode in iso639:
-        t = gettext.translation('iso_639', languages=[langcode], fallback=True)
+        if not langcode:
+            langcode = ""
+            t = gettext.translation('iso_639', fallback=True)
+        else:
+            t = gettext.translation('iso_639', languages=[langcode], fallback=True)
         iso639[langcode] = t.ugettext
     return iso639[langcode]
 
-def gettext_country(langcode):
-    """Returns a gettext function to translate country names into the given 
-    language."""
+def gettext_country(langcode=None):
+    """Returns a gettext function to translate country names into the given
+    language, or the system language if no language is specified."""
     if not langcode in iso3166:
-        t = gettext.translation('iso_3166', languages=[langcode], fallback=True)
+        if not langcode:
+            langcode = ""
+            t = gettext.translation('iso_3166', fallback=True)
+        else:
+            t = gettext.translation('iso_3166', languages=[langcode], fallback=True)
         iso3166[langcode] = t.ugettext
     return iso3166[langcode]
 
