@@ -103,23 +103,30 @@ class tsunit(lisa.LISAunit):
     source = property(getsource, lisa.LISAunit.setsource)
 
     def settarget(self, text):
+        # This is a fairly destructive implementation. Don't assume that this
+        # is necessarily correct in all regards, but it does deal with a lot of
+        # cases. It is hard to deal with plurals, since 
         #Firstly deal with reinitialising to None or setting to identical string
         if self.gettarget() == text:
             return
-        targetnode = self._gettargetnode()
         strings = []
-        if isinstance(text, multistring) and (len(text.strings) > 1):
+        if isinstance(text, multistring):
             strings = text.strings
-            targetnode.set("numerus", "yes")
+        elif isinstance(text, list):
+            strings = text
         else:
-            text = data.forceunicode(text)
-        if self.hasplural():
             strings = [text]
-        for string in strings:
-            numerus = etree.SubElement(targetnode, self.namespaced("numerusform"))
-            numerus.text = string
+        targetnode = self._gettargetnode()
+        type = targetnode.get("type")
+        targetnode.clear()
+        if type:
+            targetnode.set("type", type)
+        if self.hasplural():
+            for string in strings:
+                numerus = etree.SubElement(targetnode, self.namespaced("numerusform"))
+                numerus.text = data.forceunicode(string) or u""
         else:
-            targetnode.text = text
+            targetnode.text = data.forceunicode(text) or u""
 
     def gettarget(self):
         targetnode = self._gettargetnode()
@@ -128,7 +135,7 @@ class tsunit(lisa.LISAunit):
             return None
         if self.hasplural():
             numerus_nodes = targetnode.findall(self.namespaced("numerusform"))
-            return multistring([node.text for node in numerus_nodes])
+            return multistring([node.text or u"" for node in numerus_nodes])
         else:
             return data.forceunicode(targetnode.text) or u""
     target = property(gettarget, settarget)
@@ -178,7 +185,7 @@ class tsunit(lisa.LISAunit):
 
     def isfuzzy(self):
         return self._gettype() == "unfinished"
-                
+
     def markfuzzy(self, value=True):
         if value:
             self._settype("unfinished")
