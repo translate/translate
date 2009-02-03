@@ -46,6 +46,7 @@ def guillemets(text):
             text = re.sub("(.|^)'([^']+)'", convertquotation, text)
         if singlecount == text.count(u'`'):
             text = re.sub("(.|^)`([^']+)'", convertquotation, text)
+    text = re.sub(u'(.|^)“([^”]+)”', convertquotation, text)
     return text
 
 class fr(common.Common):

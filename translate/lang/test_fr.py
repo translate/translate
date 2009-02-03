@@ -23,6 +23,7 @@ def test_punctranslate():
     assert language.punctranslate(u'Watch the " mark') == u'Watch the " mark'
     assert language.punctranslate(u"Watch the ' mark") == u"Watch the ' mark"
     assert language.punctranslate(u"Watch the ` mark") == u"Watch the ` mark"
+    assert language.punctranslate(u'Watch the “mark”') == u"Watch the « mark »"
     assert language.punctranslate(u'The <a href="info">user</a> "root"?') == u'The <a href="info">user</a> « root » ?'
     assert language.punctranslate(u"The <a href='info'>user</a> 'root'?") == u"The <a href='info'>user</a> « root » ?"
     #Broken because we test for equal number of ` and ' in the string
