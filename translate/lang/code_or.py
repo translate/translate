@@ -30,10 +30,6 @@ from translate.lang import common
 
 class code_or(common.Common):
     """This class represents Oriya."""
-    code = "or"
-    fullname = "Oriya"
-    nplurals = 2
-    pluralequation = "(n != 1)"
 
     sentenceend = u"।!?…"
 
