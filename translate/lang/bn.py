@@ -24,9 +24,25 @@
 For more information, see U{http://en.wikipedia.org/wiki/Bengali_language}
 """
 
+import re
+
 from translate.lang import common
 
 class bn(common.Common):
     """This class represents Bengali."""
+
+    sentenceend = u"।!?…"
+
+    sentencere = re.compile(r"""(?s)    #make . also match newlines
+                            .*?         #anything, but match non-greedy
+                            [%s]        #the puntuation for sentence ending
+                            \s+         #the spacing after the puntuation
+                            (?=[^a-z\d])#lookahead that next part starts with caps
+                            """ % sentenceend, re.VERBOSE)
+
+    puncdict = {
+        u". ": u"। ",
+        u".\n": u"।\n",
+    }
 
     ignoretests = ["startcaps", "simplecaps"]
