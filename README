@@ -76,7 +76,7 @@ or 2.3, please first check that the error also occurs in 2.4 or 2.5 before
 reporting it as a bug.
 
 The package lxml is needed for XML file processing. Version 1.3.4 and upwards 
-should work. Alpha versions of lxml 2.0.0 have been tested.
+should work, but lxml 2.1.0 or later is recommended.
 http://codespeak.net/lxml/
 
 The package lxml has dependencies on libxml2 and libxslt. Please check the lxml
