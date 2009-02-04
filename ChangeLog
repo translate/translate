@@ -1,3 +1,3187 @@
+2009-02-04 14:46  friedelwolff
+
+	* README: Mention more recent version of lxml that should be better
+
+2009-02-04 13:01  friedelwolff
+
+	* __version__.py: Version 1.3.0
+
+2009-02-04 11:29  friedelwolff
+
+	* lang/bn.py: Data for proper sentence endings, sentencere and
+	  puncdict. We should now do punctranslate correctly for Bengali.
+
+2009-02-04 11:28  friedelwolff
+
+	* lang/code_or.py: Remove unnecessary data members that are filled
+	  in by the factory
+
+2009-02-04 11:21  friedelwolff
+
+	* lang/code_or.py, lang/test_or.py: Only replace full stop with
+	  space or newline with the DEVANAGARI DANDA. This should avoid
+	  problems with numbers, code, etc. Needs more testing, though.
+
+2009-02-04 11:20  friedelwolff
+
+	* lang/common.py: Small cleanup to ensure we are using unicode
+	  strings, and strip space on the end of we are replacing
+	  punctuation at the end of strings and our transformation might
+	  have added a space
+
+2009-02-03 15:41  friedelwolff
+
+	* lang/fr.py, lang/test_fr.py: Support fancy (curly) quotes when
+	  translating punctuation for French
+
+2009-02-02 13:30  friedelwolff
+
+	* storage/ts2.py: Rewrite settarget to take loads of things into
+	  account. This mostly fixes bug 774.
+
+2009-01-31 18:30  friedelwolff
+
+	* lang/data.py: Make the gettext_lang() function use the system
+	  locale if none is given as paramter
+
+2009-01-30 18:13  alaaosh
+
+	* storage/tmdb.py: how many corners does this thing have
+
+2009-01-30 17:41  alaaosh
+
+	* storage/tmdb.py: handle the weird situation where a db
+	  initialized with fts3 support is
+	  opened without fts3 support
+
+2009-01-30 17:23  friedelwolff
+
+	* __version__.py: Version 1.3-rc1
+
+2009-01-30 16:48  alaaosh
+
+	* lang/data.py: simpler more correct simplercode
+	  simplify_to_common takes an optional language list/dict now
+
+2009-01-30 11:04  friedelwolff
+
+	* storage/poheader.py: Only add the current year if the contributor
+	  is already listed for earlier years
+
+2009-01-30 10:55  friedelwolff
+
+	* storage/poheader.py: In .upatecontributor(), also test if we have
+	  the current year listed in the contributor comments
+
+2009-01-29 18:35  dwaynebailey
+
+	* filters/checks.py: Gconf test. Gconf settings should not be
+	  translated. Test is enabled only with --gnome.
+	  Fixed bug 781
+
+2009-01-29 16:48  winterstream
+
+	* storage/poparser.py, storage/pypo.py, storage/test_pypo.py: Added
+	  the functionality to deal with previous msgid info (i.e.
+	  everything appearing in #| comments).
+	  
+	  There are three new member variables in the pypo unit class:
+	  prev_msgctxt, prev_msgid and prev_msgid_plural.
+	  
+	  The previous msgid and msgid_plural can be set via prev_source.
+	  
+	  The prev_source and source properties use the same code which
+	  was factored out from getsource and setsource (used by the
+	  source property).
+
+2009-01-29 16:32  dwaynebailey
+
+	* storage/ts2.py: Add target language support. Fixes bug 789
+
+2009-01-29 15:08  alaaosh
+
+	* services/tmserver.py: add psyco support
+
+2009-01-29 15:01  friedelwolff
+
+	* storage/mo.py: The .mo class also implements poheader. This
+	  ensures that we can read language and other headers correctly
+	  from mo files.
+
+2009-01-29 14:29  alaaosh
+
+	* services/opentranclient.py, services/restclient.py,
+	  services/tmclient.py: move gtk dependant client code to virtaal,
+	  need to create simple
+	  example tmclient in toolkit
+
+2009-01-29 13:52  alaaosh
+
+	* services/tmserver.py: add --debug command line option
+
+2009-01-29 09:33  friedelwolff
+
+	* filters/test_checks.py: Test that startpunc handles the inverted
+	  Spanish question mark correctly
+
+2009-01-29 08:42  dupuy
+
+	* lang/es.py: language class for Spanish suppresses only bogus
+	  pofilter startpunc gripes
+
+2009-01-29 08:07  friedelwolff
+
+	* filters/checks.py, filters/test_checks.py: Adapt to the new API
+	  where forcing to unicode doesn't normalize. Call
+	  data.normalized_unicode() instead
+
+2009-01-29 08:05  friedelwolff
+
+	* lang/data.py: Don't automatically normalize when coercing to
+	  unicode. Provide the normalized_unicode() function for that
+	  purpose.
+
+2009-01-28 22:08  friedelwolff
+
+	* filters/checks.py: Only strip on the right for the endpunc test
+
+2009-01-28 21:48  friedelwolff
+
+	* filters/checks.py: Also test for colon (:) in puncend, and strip
+	  spaces to ensure that we test punctuation even if the message is
+	  spaced
+
+2009-01-28 21:11  friedelwolff
+
+	* filters/pofilter.py: Remove debug statement
+
+2009-01-28 20:30  friedelwolff
+
+	* storage/ts2.py: Rewrite .getlocations() to avoid lxml warning of
+	  deprecated API
+
+2009-01-28 14:20  alaaosh
+
+	* storage/tmdb.py, tools/build_tmdb.py: cleanup
+
+2009-01-28 13:34  dwaynebailey
+
+	* tools/podebug.py: ignore_kde function appears twice.
+
+2009-01-28 04:34  dwaynebailey
+
+	* convert/test_oo2po.py, storage/oo.py, storage/test_oo.py: Convert
+	  OOo help escaping, resolves bug 694
+	  
+	  Previously we escaped all of OOo help tags except tags that we
+	  identified as unescaped. This caused problems where translators
+	  introduced new 'tags' in their transations.
+	  
+	  We now don't escape anything unless it is on our list of tags
+	  that should be escaped. A translator who uses one of these tags,
+	  which could be a valid word in their language, will still suffer.
+	  But that is unlikely to happen and can be worked around.
+
+2009-01-27 14:42  friedelwolff
+
+	* storage/lisa.py: In .settaret(), try at all cost to not replace
+	  the whole targetNode. This keeps extra XML stuff around that we
+	  might not be aware of. This fixes bug 751.
+
+2009-01-27 14:33  friedelwolff
+
+	* lang/ar.py: Don't translate the Arabic percentage sign as part of
+	  punctuation translation - it is likely to cause too much problems
+	  with variables
+
+2009-01-26 10:11  winterstream
+
+	* misc/contextlib.py: contextlib.py still contained a 'yield'
+	  inside a try: except: clause,
+	  which is invalid in Python 2.4. The yield was moved out of this
+	  clause.
+
+2009-01-26 09:49  winterstream
+
+	* storage/xliff.py: When merging XLIFF files, comments weren't
+	  merged. This patch fixes the
+	  problem.
+
+2009-01-26 09:48  alaaosh
+
+	* services/tmserver.py: log to logging.info instead of stderror
+
+2009-01-26 09:11  alaaosh
+
+	* services/tmserver.py: disable reverse dns lookup on every request
+
+2009-01-26 08:38  winterstream
+
+	* convert/oo2xliff.py: When converting from OpenOffice.org SDF
+	  files to XLIFF files we should
+	  not indiscriminately mark the units in the generated XLIFF files
+	  as
+	  "approved".
+	  
+	  This simple fix will mark a unit as approved (or "non-fuzzy" in
+	  the
+	  terminology of the toolkit) if the target string is not empty.
+	  Otherwise
+	  it is marked as non-approved (or "fuzzy" in the terminology of
+	  the
+	  toolkit).
+
+2009-01-26 07:56  friedelwolff
+
+	* lang/common.py: Remove debug print statements
+
+2009-01-25 17:20  dwaynebailey
+
+	* lang/poedit.py, lang/test_poedit.py, storage/poheader.py: Add
+	  support for Poedit X-Poedit-Language markers. This will lookup
+	  the correct ISO code based
+	  on the Poedit language name. The code will also cleanup PO
+	  headers to use the correct
+	  'Language' entry and drop the old X-Poedit-Language and
+	  X-Poedit-Country tags.
+	  
+	  This fixes bug 737.
+
+2009-01-24 17:37  friedelwolff
+
+	* filters/pofilter.py, filters/test_pofilter.py: Add the --nonotes
+	  parameter to pofilter so that the addition of notes can be
+	  supressed. This fixes bug 745
+
+2009-01-24 17:36  friedelwolff
+
+	* storage/xliff.py: Add an API to remove comments from a specific
+	  origin
+
+2009-01-24 07:52  friedelwolff
+
+	* lang/data.py: Change several language names to align well with
+	  iso-codes. This gives slightly clumsy names when it is
+	  untranslated, but gives reasonable coverage for those languages
+	  with translations. There are still some where we are not aligned,
+	  and probably won't be since the untranslated forms are ugly (fy,
+	  el, km, nb, nn, nso)
+
+2009-01-23 10:45  alaaosh
+
+	* services/restclient.py: we where being too smart for our own
+	  good. restclient is unable to
+	  make efficiency decisions about duplicate requests since it
+	  doesn't
+	  know anything about who's connected to it's own signals.
+	  
+	  queue management should be done in virtaal.
+
+2009-01-22 15:45  friedelwolff
+
+	* __version__.py: Version 1.3beta1
+
+2009-01-22 11:13  alaaosh
+
+	* misc/selector.py: don't fail when resolver module is missing, not
+	  required for tmserver
+
+2009-01-22 10:20  alaaosh
+
+	* services/tmserver, services/tmserver.py, tools/build_tmdb,
+	  tools/build_tmdb.py: when in windows ...
+
+2009-01-22 08:29  friedelwolff
+
+	* storage/tmdb.py: Fall back to the older sqlite module in case
+	  we're running on Python 2.4
+
+2009-01-21 14:50  alaaosh
+
+	* services/tmclient.py, services/tmserver.py: implemented add store
+	  functionality (POST and PUT methods for /store urls)
+
+2009-01-21 14:48  alaaosh
+
+	* services/restclient.py: One does not simply walk into cURL It's
+	  black gates are guarded by
+	  more than just orcs. There is evil there that does not sleep.
+	  
+	  fixed POST and PUT requests.
+
+2009-01-21 14:44  alaaosh
+
+	* storage/tmdb.py: added add_list method to add list of dictionary
+	  units to tmdb
+	  add_list and add_store now return a count of translated units
+	  (should
+	  replace that with an actual count of newly added units)
+
+2009-01-21 14:05  friedelwolff
+
+	* tools/pogrep.py: Refactor common parts of the matches() code.
+	  Provide correct start and end indexes in the original string,
+	  considering that it was never normalised.
+
+2009-01-20 10:53  alaaosh
+
+	* lang/data.py: added simply_to_common function, useful for
+	  stripping extra
+	  information from language codes when not needed.
+
+2009-01-20 09:05  alaaosh
+
+	* services/tmclient.py, storage/tmdb.py: do language code
+	  normalization as late as possible
+
+2009-01-20 09:02  alaaosh
+
+	* services/restclient.py: make sure url is in utf-8, fixes bug #706
+
+2009-01-19 21:20  friedelwolff
+
+	* lang/data.py, services/tmclient.py, storage/tmdb.py: Rename new
+	  .normalize() to .normalize_code() to avoid name clash and rename
+	  all users. Tests should now be restored.
+
+2009-01-19 19:18  dwaynebailey
+
+	* lang/data.py: United Kingdom iso3166 code is GB not UK
+
+2009-01-19 16:38  alaaosh
+
+	* services/tmclient.py: normalize language codes before creating
+	  requests
+
+2009-01-19 16:34  alaaosh
+
+	* storage/tmdb.py: now we can save units represented as
+	  dictionaires.
+	  also normalize language before insertion
+
+2009-01-19 16:30  alaaosh
+
+	* lang/data.py: seperate normalization of language code in it's own
+	  function
+
+2009-01-19 15:18  friedelwolff
+
+	* storage/pypo.py: pounit.isheader() should not return false just
+	  because we have locations. This fixes bug 629.
+
+2009-01-19 15:08  friedelwolff
+
+	* convert/convert.py, convert/html2po.py, convert/mozfunny2prop.py,
+	  convert/oo2xliff.py, convert/test_html2po.py: Remove --duplicates
+	  styles from the converters: msgid_comment, keep,
+	  msgid_comment_all. This is part of fixing 663.
+
+2009-01-19 13:48  friedelwolff
+
+	* convert/oo2po.py: Only set the source and target language after
+	  we have a valid header, otherwise we might add a second
+
+2009-01-19 13:07  dwaynebailey
+
+	* lang/data.py: Expand forceunicode docstring
+
+2009-01-19 08:51  alaaosh
+
+	* search/match.py, services/tmserver.py, storage/tmdb.py: committed
+	  debug code by mistake
+
+2009-01-17 17:39  dwaynebailey
+
+	* lang/data.py: Document language and country codes dictionaries.
+
+2009-01-17 17:31  dwaynebailey
+
+	* lang/data.py: Add variable comment
+
+2009-01-17 17:28  dwaynebailey
+
+	* lang/data.py: Move comment to an epydoc description for the
+	  dictionary.
+
+2009-01-17 17:23  dwaynebailey
+
+	* lang/data.py: Fix docstring. I think maybe I need to give some
+	  epydoc lessons.
+
+2009-01-17 10:49  dwaynebailey
+
+	* convert/csv2po, convert/html2po, convert/ini2po, convert/moz2po,
+	  convert/oo2po, convert/php2po, convert/po2csv, convert/po2html,
+	  convert/po2ini, convert/po2moz, convert/po2oo, convert/po2php,
+	  convert/po2prop, convert/po2rc, convert/po2symb, convert/po2tiki,
+	  convert/po2tmx, convert/po2ts, convert/po2txt, convert/po2xliff,
+	  convert/pot2po, convert/prop2po, convert/rc2po, convert/symb2po,
+	  convert/tiki2po, convert/ts2po, convert/txt2po, convert/xliff2po:
+	  Fix indents, remove unneeded import
+
+2009-01-17 10:28  dwaynebailey
+
+	* convert/ical2po, convert/po2ical: Fix indentation
+
+2009-01-17 10:00  dwaynebailey
+
+	* tools/podebug.py: Ignore 'LTR' config for KDE files. Even though
+	  we don't check the actual filename (its only present in
+	  kdelibs(4).po
+	  it should be OK).
+
+2009-01-16 15:51  alaaosh
+
+	* search/match.py: use getnotes() instead of .othercomments, fixes
+	  #660
+
+2009-01-16 14:24  alaaosh
+
+	* services/opentranclient.py: make it possible to change languages
+	  in the middle of a session
+	  clean up language negotiation
+
+2009-01-16 14:23  alaaosh
+
+	* services/tmclient.py: tmserver is language aware now
+
+2009-01-16 14:19  alaaosh
+
+	* services/restclient.py: make curl verbose when logging level is
+	  DEBUG
+
+2009-01-16 14:08  friedelwolff
+
+	* misc/file_discovery.py: Add the RESOURCEPATH from the mac app
+	  bundle to the BASE_DIRS where we search for data
+
+2009-01-16 09:55  dwaynebailey
+
+	* convert/ini2po.py, convert/po2ini.py, storage/ini.py: Add
+	  Innosetup support
+
+2009-01-15 19:27  walter_l
+
+	* storage/pocommon.py: Swap the parent classes of pofile to make
+	  sure that the right settargetlanguage() is used.
+
+2009-01-15 19:26  walter_l
+
+	* storage/poheader.py: "basestr" -> "basestring"
+
+2009-01-15 16:32  alaaosh
+
+	* tools/build_tmdb.py: clean up, nothing is hardcoded now
+
+2009-01-15 15:36  friedelwolff
+
+	* lang/data.py: Handle hyphen (-) underscore (_) and at-sign (@) as
+	  delimiters in .simplercode()
+
+2009-01-14 16:49  alaaosh
+
+	* storage/tmdb.py: don't do full text matching on small strings
+
+2009-01-14 14:59  friedelwolff
+
+	* storage/tmx.py: Replace lxml.etree calls with faster parts of the
+	  API
+
+2009-01-14 14:45  alaaosh
+
+	* services/tmserver.py: migrate server to tmdb backend
+
+2009-01-14 14:43  alaaosh
+
+	* lang/ar.py: acronyms are transliterated in arabic
+
+2009-01-14 14:36  friedelwolff
+
+	* storage/poxliff.py: Implement .istranslatable() to ensure that
+	  headers are not considered translatable by our tools. The general
+	  XLIFF implementation doesn't work since the PO representation
+	  guide prescribes that PO headers should be translatable in the
+	  XLIFF file. Now at least Virtaal won't give it to users.
+
+2009-01-14 14:30  friedelwolff
+
+	* storage/poxliff.py: Use the proper inherrited .addunit() so that
+	  ._store is correct. This fixes bug 696.
+
+2009-01-14 12:31  friedelwolff
+
+	* storage/poxliff.py: Replace lxml.etree calls with faster parts of
+	  the API
+
+2009-01-14 08:39  alaaosh
+
+	* tools/build_tmdb.py: build tmdb out of translation files
+
+2009-01-14 08:15  alaaosh
+
+	* storage/tm_db.py, storage/tmdb.py: tmdb.py is a better name
+
+2009-01-13 16:08  alaaosh
+
+	* storage/tm_db.py: full text indexing support
+
+2009-01-13 15:28  walter_l
+
+	* tools/pogrep.py: Also return empty list for indexes if the there
+	  is no search to perform.
+
+2009-01-13 15:09  walter_l
+
+	* tools/pogrep.py: Check if a unit has plurals before assuming its
+	  source(s) and target(s) have a "strings" attribute.
+	  This is part of the fix for bug 693.
+
+2009-01-13 13:48  walter_l
+
+	* tools/pogrep.py: virtaal.modes.searchmode.SearchMatch ->
+	  translate.tools.pogrep.GrepMatch
+	  virtaal.modes.searchmode.SearchMode.get_matches() ->
+	  translate.tools.pogrep.GrepFilter.getmatches()
+
+2009-01-13 08:49  walter_l
+
+	* misc/file_discovery.py: Prefer $XDG_DATA_HOME if available.
+
+2009-01-12 16:03  winterstream
+
+	* storage/poparser.py: Oops. With no space after "msgid" in the
+	  startswith function, we'd
+	  also get x.startswith('msgid') == True if x == 'msgid_plural',
+	  which
+	  is not what we want.
+	  
+	  The fix is just to add spaces after "msgid".
+
+2009-01-12 15:56  winterstream
+
+	* storage/poparser.py: The new PO parser broke if it saw CHARSET as
+	  the encoding of POT
+	  files. It now assumes that such files are UTF-8 encoded.
+
+2009-01-12 15:49  walter_l
+
+	* misc/optrecurse.py, storage/poheader.py, storage/tmx.py,
+	  storage/xpi.py: Use __version__.sver in stead of __version__.ver.
+
+2009-01-12 15:00  walter_l
+
+	* __init__.py, __version__.py: __version__.ver -> __version__.sver
+	  + __version__.ver = (1, 2, 1)
+	  + License header for __version__.py
+	  Updated header for __init__.py
+
+2009-01-12 11:56  alaaosh
+
+	* storage/tm_db.py: new much simpler implementation
+
+2009-01-12 06:00  dwaynebailey
+
+	* i18n.py: gettext.install define _ so we don't need to redefine.
+
+2009-01-10 15:28  dwaynebailey
+
+	* i18n.py, po/POTFILES.in, storage/base.py, storage/csvl10n.py,
+	  storage/mo.py, storage/pocommon.py, storage/qm.py,
+	  storage/qph.py, storage/tbx.py, storage/tmx.py, storage/ts2.py,
+	  storage/wordfast.py, storage/xliff.py: Introduce some
+	  localisation framework. Make all bilingual format description
+	  localisable.
+
+2009-01-10 14:10  dwaynebailey
+
+	* po, po/Makevars, po/POTFILES.in, po/POTFILES.skip: Put structure
+	  in place for localisation of toolkit files.
+
+2009-01-10 14:09  friedelwolff
+
+	* storage/xliff.py: Use better lxml APIs for speedup
+
+2009-01-10 12:18  friedelwolff
+
+	* misc/setup.py: Remove the installer for the old C CSV library
+	  that was removed earlier
+
+2009-01-09 14:40  winterstream
+
+	* convert/test_pot2po.py, storage/poparser.py: After we've read the
+	  optional msgctxt and the msgid when doing
+	  obsolete parsing, then we should terminate the parsing of the
+	  current obsolete unit when we see either a msgctxt or a msgid,
+	  since either means that we've hit a new obsolete unit.
+	  
+	  Also fixed the unit test case that tests this functionality.
+
+2009-01-09 14:30  winterstream
+
+	* storage/poparser.py: Our parser didn't deal with msgctxt in
+	  obsolete units properly, due
+	  to the fact that we bailed if we saw a msgid when parsing an
+	  obsolete;
+	  of course, one would see a msgid directly after a msgctxt...
+
+2009-01-09 14:16  walter_l
+
+	* convert/test_pot2po.py: +Test for preservation of msgctxt values
+	  in obsolete units.
+
+2009-01-09 10:06  walter_l
+
+	* storage/poparser.py: Ensure that all header fields are decoded.
+
+2009-01-09 09:58  winterstream
+
+	* storage/test_po.py: Turns out that our new parser forgets to
+	  decode header comments.
+	  So if you're calling getnotes() on the header, you get a
+	  UnicodeDecodeError.
+	  
+	  A fix is in the pipeline, but for now we have a test to trigger
+	  the error.
+
+2009-01-08 21:54  friedelwolff
+
+	* storage/lisa.py: Massive optimisation of lisa class by using
+	  better lxml methods. Some operations are running at less than 40%
+	  of previous time. XLIFF and possibly other child classes still to
+	  be done for possible small extra gain.
+
+2009-01-08 10:38  walter_l
+
+	* misc/file_discovery.py: Updated get_abs_data_filename() to allow
+	  directories to be specified as well as using XDG_DATA_DIRS.
+
+2009-01-07 14:17  walter_l
+
+	* services/__init__.py, services/lookupclient.py,
+	  services/lookupservice.py, services/restclient.py,
+	  services/tmclient.py: Removed unnecessary trailing whitespace.
+
+2009-01-06 20:57  friedelwolff
+
+	* lang/zh.py: Provide a slightly different length estimation
+	  heuristic for Chinese
+
+2009-01-06 20:55  friedelwolff
+
+	* lang/common.py, lang/data.py: Provide a method for a language
+	  object .alter_length() to return a string optionally made longer
+	  or shorter to use in length estimations when leaving space in the
+	  GUI. This uses a basic heuristic using constants defined in
+	  data::expansion_factors, although the length difference can be
+	  redefined per language to use a different heuristic.
+
+2009-01-06 14:56  alaaosh
+
+	* services/opentranclient.py: don't query opentran till we
+	  negotiate a supported language, fixes #635
+
+2009-01-06 07:49  winterstream
+
+	* misc/quote.py: Reverted misc/quote.py. This was supposed to be
+	  experimental code, but
+	  it seems to have slipped in anyway.
+
+2009-01-05 15:10  alaaosh
+
+	* services/restclient.py: hack to fix 636 doesn't really fix it,
+	  but logs instead of barfing. we
+	  need to know when and why certain requests get deleted twice.
+
+2009-01-05 07:43  friedelwolff
+
+	* services/opentranclient.py: Check for fuzzyness at the 'flag'
+	  value - we really don't want to suggest fuzzy translations
+
+2009-01-02 18:15  friedelwolff
+
+	* storage/qm.py: Raise an exception when somebody tries to write
+	  out a QM file. This sort of fixes bug 516.
+
+2008-12-30 14:04  friedelwolff
+
+	* storage/tm_db.py: rough first version of a tm db optimised for
+	  reading
+
+2008-12-27 19:41  friedelwolff
+
+	* services/tmserver.py: Remove unused imports and clean up
+	  whitespace
+
+2008-12-27 19:36  friedelwolff
+
+	* search/match.py, storage/base.py: Remove some unused attributes
+	  that weren't being used anywhere
+
+2008-12-27 13:26  friedelwolff
+
+	* storage/pypo.py: Privatise .msgidlen() and .msgstrlen() - can't
+	  we get rid of these?
+
+2008-12-26 14:24  friedelwolff
+
+	* misc/hash.py, storage/html.py, tools/podebug.py: [Contributed by
+	  Leonardo Ferreira Fontenelle] Provide a wrapper for the md5
+	  library that is located in different places in different versions
+	  of Python. Use this rather to avoid deprecation warnings. This
+	  fixes bug 634.
+
+2008-12-19 14:55  alaaosh
+
+	* services/opentranclient.py: commented out debugging output
+
+2008-12-19 14:53  alaaosh
+
+	* search/match.py, services/tmserver.py: move unit2dict to
+	  search.match
+
+2008-12-19 12:53  walter_l
+
+	* services/opentranclient.py: Removed prints and trailing
+	  whitespace.
+
+2008-12-19 09:03  alaaosh
+
+	* services/opentranclient.py: something stinks in the state of
+	  unicode
+
+2008-12-19 08:21  alaaosh
+
+	* services/opentranclient.py: move quality calculation and result
+	  filtering code from virtaal
+
+2008-12-18 23:53  clouserw
+
+	* convert/po2tiki.py, convert/test_po2tiki.py,
+	  convert/test_tiki2po.py, convert/tiki2po.py,
+	  storage/test_tiki.py, storage/tiki.py: po's addlocations()
+	  appears to split on spaces. Fixing tiki2po to use location names
+	  with no spaces.
+
+2008-12-18 21:35  friedelwolff
+
+	* services/opentranclient.py: Don't assign a bogus quality - let
+	  the consumer decide what to do with it
+
+2008-12-18 17:19  alaaosh
+
+	* services/tmserver.py: getting closer to update tm features
+
+2008-12-18 17:18  alaaosh
+
+	* services/opentranclient.py: negotiate target language
+
+2008-12-18 17:15  alaaosh
+
+	* services/restclient.py: better handling of running state to allow
+	  recursive non blocking requests
+
+2008-12-17 16:40  alaaosh
+
+	* services/opentranclient.py: first attempts at opentran client
+	  used by virtaal
+
+2008-12-17 14:22  alaaosh
+
+	* services/tmserver.py: switch to own copy of selector
+
+2008-12-17 14:21  alaaosh
+
+	* misc/selector.py: match multiline urls
+
+2008-12-17 14:20  alaaosh
+
+	* misc/selector.py: use by tmserver
+
+2008-12-17 11:13  friedelwolff
+
+	* tests/odf_xliff/test_odf_xliff.py: Factor out file name constats
+	  and do proper module cleanup. Minor whitespace cleanup.
+
+2008-12-17 11:09  alaaosh
+
+	* services/restclient.py, services/tmclient.py: move json code to
+	  tmclient, make restclient more generic
+
+2008-12-17 10:15  friedelwolff
+
+	* convert/po2symb, convert/po2symb.py, convert/symb2po,
+	  convert/symb2po.py: Clean up license headers, copyright dates,
+	  whitespace and some docstrings
+
+2008-12-17 09:12  alaaosh
+
+	* services/restclient.py, services/tmserver.py: urllib barfs on
+	  unicode, fixes #631
+
+2008-12-17 08:55  winterstream
+
+	* convert/symb2po.py: This broke when calling symb2po without a
+	  template, since
+	  template_dict['r_string_languagegroup_name'] would raise
+	  a key error. This is now fixed.
+
+2008-12-17 08:53  friedelwolff
+
+	* convert/symb_common.py: Remove moved module symb_common
+
+2008-12-17 08:52  friedelwolff
+
+	* convert/po2symb.py, convert/symb2po.py, storage/symbian.py: Move
+	  the symb_common module to storage/symbian, since it mostly deals
+	  with the format
+
+2008-12-17 08:43  dwaynebailey
+
+	* convert/test_php2po.py: Fix newline test to follow new escaping
+	  rules.
+
+2008-12-17 08:35  winterstream
+
+	* convert/po2symb, convert/po2symb.py, convert/symb2po,
+	  convert/symb2po.py, convert/symb_common.py: Added basic
+	  converters to convert from Symbian-like translation formats
+	  to PO and vice versa. The format is heavily biased towards the
+	  way that
+	  the Buddycloud translation files look.
+
+2008-12-17 08:33  winterstream
+
+	* misc/quote.py: Replace the old horrid extractwithoutquotes with a
+	  more maintainable version.
+
+2008-12-16 16:15  friedelwolff
+
+	* services/tmserver.py: +Docstring. -unused variables. Whitespace
+	  cleanup.
+
+2008-12-15 18:29  clouserw
+
+	* convert/po2tiki, convert/po2tiki.py, convert/test_po2tiki.py,
+	  convert/test_tiki2po.py, convert/tiki2po, convert/tiki2po.py,
+	  storage/test_tiki.py, storage/tiki.py: Import tiki2po
+
+2008-12-15 17:59  dwaynebailey
+
+	* tools/podebug.py: Drop default format string.
+
+2008-12-15 15:32  dwaynebailey
+
+	* tools/podebug.py: Add ignore rules for KDE
+
+2008-12-15 14:55  friedelwolff
+
+	* convert/test_odf2po.py: Another removal of obsolete ODF support.
+	  (bug 608)
+
+2008-12-15 14:54  friedelwolff
+
+	* convert/odf2po, convert/odf2po.py, storage/odf.py,
+	  storage/test_odf.py: Remove obsolete ODF support. This closes bug
+	  608.
+
+2008-12-15 14:44  dwaynebailey
+
+	* convert/po2php.py, convert/test_po2php.py: Preserve inline
+	  comments in the PHP file. Fixes bug 590.
+
+2008-12-15 14:37  dwaynebailey
+
+	* convert/po2php.py: Remove unused variable
+
+2008-12-15 10:45  alaaosh
+
+	* services/restclient.py, services/tmserver.py: handle http errors
+
+2008-12-15 10:25  dwaynebailey
+
+	* tools/podebug.py: s/rewrite/ignore/
+
+2008-12-15 10:11  alaaosh
+
+	* services/restclient.py: lost commit
+
+2008-12-15 09:40  dwaynebailey
+
+	* storage/php.py, storage/test_php.py: Don't back convert real \n
+	  to \\n
+	  This allows us to, as best we can, preserve layout of multiline
+	  entries.
+
+2008-12-15 09:21  dwaynebailey
+
+	* storage/php.py, storage/test_php.py: Fix bug 589 and escaped \'
+	  character in a double quote string.
+
+2008-12-15 08:51  dwaynebailey
+
+	* storage/php.py, storage/test_php.py: Implement full escaping
+	  functionality for PHP. We now treat single and double
+	  quote escaping differently as PHP does. The tests all pass but
+	  this has not
+	  been widely tested on files in the field.
+	  
+	  This solves most, if not all, of bug 593
+
+2008-12-15 08:46  alaaosh
+
+	* services/tmserver.py: no more 404s on punctuation
+
+2008-12-14 18:46  winterstream
+
+	* storage/pypo.py: Making allcomments a property saves us yet
+	  another few cycles.
+
+2008-12-14 18:45  winterstream
+
+	* storage/pypo.py, storage/test_pypo.py: First, having
+	  
+	  if target == self.target:
+	  
+	  in gettarget slows things down enormously, since self.target is
+	  not that cheap.
+	  
+	  When I removed this, I uncovered a bug in a test. That's fixed
+	  now.
+	  
+	  This also pointed to a bit of incompleteness in setsource, which
+	  is now fixed.
+	  
+	  Finally, we don't have to call settarget in the constructor,
+	  since the base
+	  class does it.
+
+2008-12-14 18:44  winterstream
+
+	* storage/base.py, storage/pypo.py: Suprisingly, not using super,
+	  makes a tangible speed difference.
+
+2008-12-14 18:43  winterstream
+
+	* storage/poparser.py: Optimized a few if clauses so that common
+	  cases are in the if part.
+
+2008-12-14 13:31  winterstream
+
+	* storage/poparser.py: Make the decode process more C-like, since
+	  we want to use this
+	  with Cython.
+
+2008-12-14 13:30  winterstream
+
+	* storage/poparser.py: Avoid looking up methods dynamically every
+	  time.
+	  
+	  The string and list methods we constantly use are stored
+	  at the top of the file in variables. This speeds up
+	  processing somewhat.
+
+2008-12-14 13:29  winterstream
+
+	* storage/poparser.py: The readcallback added a lot of unnecessary
+	  overhead and
+	  we only used it to build a buffer when reading the first
+	  unit, so that we could reparse the buffer. But why don't
+	  we just read the first unit as a str and then decode all
+	  fields in the unit when we get to know the encoding?
+
+2008-12-13 12:07  friedelwolff
+
+	* storage/poparser.py, storage/pypo.py: Replace the old PO parser
+	  with a cleaner one by Wynand. This should make maintenance and
+	  optimisation easier.
+
+2008-12-13 11:57  friedelwolff
+
+	* storage/test_po.py, storage/test_pypo.py, tools/test_pomerge.py:
+	  Some more tests for PO parsing. We don't want to keep lonely
+	  comments disassociated anymore. They are joined with the
+	  following unit like gettext does.
+
+2008-12-13 07:33  friedelwolff
+
+	* storage/lisa.py: Ask lxml not to convert CDATA to raw XML (only
+	  available from lxml 2.1.0). This fixes bug 458.
+
+2008-12-13 04:50  friedelwolff
+
+	* misc/textwrap.py: Let % be a wrapping character as well. This
+	  brings our PO wrapping closer to gettext and closes bug 622.
+
+2008-12-12 19:17  winterstream
+
+	* convert/xliff2odf.py, storage/odf_io.py: Modified xliff2odf to
+	  embed the XLIFF file in the output ODF container.
+
+2008-12-12 17:11  clouserw
+
+	* convert/test_convert.py: Fix bug 624; tests fail if psyco library
+	  doesn't exist
+
+2008-12-12 15:58  friedelwolff
+
+	* tests/odf_xliff/test_odf_xliff.py: Printing a unified diff when
+	  comparing files
+
+2008-12-12 15:17  alaaosh
+
+	* services/tmserver.py: random delay was only needed for testing
+
+2008-12-12 15:15  alaaosh
+
+	* services/restclient.py, services/tmclient.py,
+	  services/tmserver.py: CRUD REST and all that jazz
+
+2008-12-12 10:56  friedelwolff
+
+	* storage/pypo.py, storage/test_po.py: Only allow KDE style (msgid)
+	  comments right at the start of a line next to the quote
+	  character. This fixes bug 625.
+
+2008-12-12 10:46  friedelwolff
+
+	* storage/cpo.py: Handle addunit more carefully to ensure we call
+	  the base class' .addunit
+
+2008-12-11 15:33  dwaynebailey
+
+	* lang/data.py: Minor: simple layout fix in list
+
+2008-12-11 15:31  dwaynebailey
+
+	* lang/data.py: Add a number of plural forms from
+	  http://translate.sourceforge.net/wiki/l10n/pluralforms
+
+2008-12-06 11:41  dupuy
+
+	* misc/file_discovery.py, tools/poterminology.py: propagate
+	  winterstream's r9062 changes to poterminology from 1.2 branch to
+	  trunk
+	  
+	  winterstream * r9062 /src/branches/Pootle-toolkit-1.2/translate/
+	  (misc/file_discovery.py tools/poterminology.py):
+	  find_installed_file doesn't work under all conditions. So I moved
+	  get_abs_data_filename from virtaal into the toolkit.
+	  get_abs_data_filename works correctly for all our current cases.
+
+2008-12-04 06:50  clouserw
+
+	* misc/wStringIO.py: Fix TypeError; bug 623
+
+2008-12-01 13:23  winterstream
+
+	* misc/contextlib.py: Modified contextlib.py so that a yield won't
+	  appear inside a try,
+	  finally clause.
+	  
+	  This is a limitation of Python 2.4 and we had to make similar
+	  changes to
+	  contextlib.py before to accomodate Python 2.4.
+	  
+	  For this reason also there are some limits as to what can be done
+	  with
+	  context blocks in Python 2.4.
+
+2008-12-01 12:39  friedelwolff
+
+	* lang/te.py: Add basic module for Telugu (te) to disable
+	  capitalisation checks
+
+2008-12-01 10:39  friedelwolff
+
+	* lang/bn.py: Add basic module for Bengali (bn) to disable
+	  capitalisation checks
+
+2008-12-01 10:06  winterstream
+
+	* storage/xml_extract/extract.py: Oops, forgot to update the code
+	  in extract.py, so that it won't
+	  use unit.placeable_id.
+	  
+	  Now xid assignments should work.
+
+2008-12-01 09:52  winterstream
+
+	* storage/base.py, storage/lisa.py, storage/placeables/base.py: The
+	  idea of having a separated PlaceableId structure for
+	  units, which would contain and xid and rid, was not going
+	  to work well.
+	  
+	  Now, xid and rid are properties of the unit classes which
+	  do nothing unless overridden.
+
+2008-11-28 14:24  winterstream
+
+	* misc/rich.py, tools/podebug.py: Modified podebug to work with
+	  rich sources and targets.
+	  
+	  It will now respect placeables in XLIFF files.
+
+2008-11-28 13:12  winterstream
+
+	* storage/base.py, storage/lisa.py, storage/test_po.py,
+	  storage/test_xliff.py, storage/xml_extract/extract.py: Most
+	  importantly, moved the rich source and text functionality
+	  into the unit bass class.
+	  
+	  This prompted the need for plurals, something which wasn't taken
+	  into account before. Now the rich sources and targets are lists
+	  of
+	  lists of chunks.
+	  
+	  Thus
+	  [['a', X('42')] <- First string
+	  ['foo', G('43', 'baz')]] <- Second string
+
+2008-11-28 13:11  winterstream
+
+	* storage/xml_extract/extract.py: Added a bit of ad-hoc guard code
+	  to find_translatable_dom_nodes
+	  to ensure that we avoid processing things like XML processing
+	  instructions.
+
+2008-11-28 13:10  winterstream
+
+	* storage/placeables/base.py: Fixed the __repr__ and __unicode__
+	  conversions for placeables and
+	  added comments.
+
+2008-11-28 07:20  friedelwolff
+
+	* convert/po2html.py: add an option to optionally not use tidy if
+	  installed
+
+2008-11-27 09:45  friedelwolff
+
+	* convert/prop2po.py: Properly handle 'discard' units (with
+	  DONT_TRANSLATE comments). This fixes bug 619.
+
+2008-11-26 14:31  friedelwolff
+
+	* storage/xml_name.py: Fix a few typos
+
+2008-11-26 13:54  winterstream
+
+	* storage/xml_extract/generate.py, storage/xml_extract/misc.py,
+	  storage/xml_extract/test_misc.py, storage/xml_name.py: Replaced
+	  full_xml_name with XmlNamer (which does the same task).
+
+2008-11-26 13:53  winterstream
+
+	* convert/xliff2odf.py: The XPathTree produced by
+	  unit_tree.build_unit_tree contains
+	  XML names using shortcut names (such as
+	  'office:document-content').
+	  XmlNamer returns fully qualified XML names, so obviously it
+	  won't work where we're trying to reference the short names.
+
+2008-11-26 13:52  winterstream
+
+	* storage/xml_extract/generate.py: Python warned me about
+	  
+	  unit.target_dom or unit.source_dom
+	  
+	  And rightfully so, since it's bad style. Replaced this with an
+	  if block.
+
+2008-11-26 10:22  winterstream
+
+	* storage/xml_extract/misc.py: XML namespaces can include URLs,
+	  which means that the regular
+	  expression for parsing them must accept the "/" character.
+
+2008-11-26 09:57  winterstream
+
+	* convert/xliff2odf.py: Added other ODF filetypes to xliff2odf.
+
+2008-11-26 09:52  winterstream
+
+	* convert/odf2xliff.py, convert/xliff2odf.py, storage/odf_io.py:
+	  Modified odf2xliff to use meta.xml and styles.xml in
+	  addition to content.xml when extracting translatable
+	  strings.
+	  
+	  Moved some ODF routines into odf_io.py.
+
+2008-11-25 17:13  winterstream
+
+	* convert/xliff2odf.py, storage/xml_name.py: Modified xliff2odf to
+	  work not only on content.xml, but also
+	  meta.xml and styles.xml.
+	  
+	  Added the XmlNamer class to make working with fully qualified
+	  XML names a bit less of a pain.
+
+2008-11-25 08:38  alaaosh
+
+	* storage/test_dtd.py: test for bug #610
+
+2008-11-25 08:04  friedelwolff
+
+	* storage/factory.py: If we are creating a new store, keep the
+	  filename so that store.save() will work correctly later on
+
+2008-11-24 16:38  alaaosh
+
+	* storage/dtd.py: fixed bug #610 HACKISH
+
+2008-11-24 08:46  friedelwolff
+
+	* misc/optrecurse.py: Play safe to ensure we test correctly for
+	  psyco's presence even if the module doesn't exist
+
+2008-11-21 22:24  dwaynebailey
+
+	* convert/po2php.py: Refactor: 1/0 -> True/False
+
+2008-11-21 22:24  dwaynebailey
+
+	* convert/php2po.py: Remove remnant of header preservation code.
+
+2008-11-21 22:21  dwaynebailey
+
+	* convert/po2prop.py, convert/prop2po.py: Refactor: 1/0 ->
+	  True/False
+
+2008-11-21 22:15  dwaynebailey
+
+	* storage/pypo.py: Rafactor: 1/0 -> True/False
+
+2008-11-21 21:53  dwaynebailey
+
+	* storage/dtd.py: Refactor: 1/0 -> True/False
+
+2008-11-21 21:43  dwaynebailey
+
+	* storage/dtd.py: Refactor: change 1/0 to True/False
+
+2008-11-21 21:40  dwaynebailey
+
+	* storage/dtd.py: Refactor. remove continual redifining of
+	  self.units which is already defined in base.py
+
+2008-11-21 15:20  friedelwolff
+
+	* storage/qph.py: Ensure we output QPH files like Qt Linguist does
+	  it, always with a <!DOCTYPE QPH>. This is a similar workaround
+	  used in the new ts class to work around a bug in lxml that was
+	  fixed in lxml 2.1.3
+
+2008-11-21 13:41  friedelwolff
+
+	* misc/optrecurse.py: Don't add psyco options if psyco is not
+	  installed. This closes bug 606.
+
+2008-11-21 12:16  dwaynebailey
+
+	* tools/podebug.py: Spelling fix
+
+2008-11-20 15:25  alaaosh
+
+	* tools/pretranslate.py: fill origin attribute when adding
+	  alt-trans
+
+2008-11-20 10:18  alaaosh
+
+	* tools/pretranslate.py: when in xliff do as the xliffians do nad
+	  add fuzzy matches to alt-trans
+
+2008-11-20 10:12  alaaosh
+
+	* storage/xliff.py: addalttrans should support adding source tags
+	  and match-quality attributes
+
+2008-11-19 20:52  dwaynebailey
+
+	* storage/dtd.py: Refactor, place functions on seperate lines.
+
+2008-11-19 20:48  dwaynebailey
+
+	* storage/dtd.py: Refactor DTD validation into its own method.
+
+2008-11-19 16:56  winterstream
+
+	* storage/xml_extract/extract.py, storage/xml_extract/generate.py,
+	  storage/xml_extract/misc.py, storage/xml_extract/test_misc.py:
+	  Use the XML namespace table to create shorter X-Paths for XLIFF
+	  ids.
+
+2008-11-19 16:55  winterstream
+
+	* storage/base.py, storage/placeables/base.py,
+	  storage/xml_extract/extract.py, storage/xml_extract/generate.py,
+	  storage/xml_extract/misc.py: Sorry for the intertwined changes,
+	  but it was hard to separate them.
+	  
+	  1. Fixed type declarations
+	  2. Removed unnecessary bookkeeping code, like the 'level' member
+	  in
+	  the ParseState structure.
+	  3. Moved reduce_unit_tree to extract.py (so it can be close to
+	  Translatable class)
+	  4. Removed make_translatable (since it is unnecessary)
+	  5. ID values for placeables are now computed while walking the
+	  Translatable tree, thanks to the IdMaker class.
+
+2008-11-19 16:54  winterstream
+
+	* storage/xml_extract/extract.py: If we see a tag which is not in
+	  our inline namespace,
+	  then we should assume that it is not inline (this sounds
+	  obvious here, but you'll have to trust me that it's a
+	  bit more subtle than that).
+
+2008-11-18 18:44  dwaynebailey
+
+	* storage/dtd.py: Remove unused rewrap function
+
+2008-11-18 18:27  dwaynebailey
+
+	* storage/csvl10n.py, storage/dtd.py, storage/oo.py,
+	  storage/php.py, storage/properties.py, storage/pypo.py: Remove
+	  various __main__. They where originally intended to allow quick
+	  testing of the
+	  storage format. BUt nobody uses them and they're not maintained.
+	  So lets rather
+	  drop them.
+
+2008-11-18 17:54  dwaynebailey
+
+	* misc/optrecurse.py, misc/test_optrecurse.py: Document fn
+	  splitext. Add optrecurse test file and test slitext fDocument fn.
+
+2008-11-18 17:34  dwaynebailey
+
+	* doc/epydoc-config.ini, doc/gen_api_docs.sh: Add scripts and
+	  config to generate epydoc documentation
+
+2008-11-18 07:57  friedelwolff
+
+	* storage/ts2.py: Update comment about lxml versions having a
+	  problem outputting the doctype
+
+2008-11-17 19:47  dwaynebailey
+
+	* misc/optrecurse.py: Refactor, move multiple functions on a line
+	  to seperate lines.
+
+2008-11-17 19:40  dwaynebailey
+
+	* convert/po2dtd.py: Consolidate calls to removeinvalidamps
+
+2008-11-17 19:39  dwaynebailey
+
+	* storage/dtd.py: Refactor removeinvalidamp
+
+2008-11-17 19:37  dwaynebailey
+
+	* storage/test_dtd.py: Flesh out tests for removeinvalidamp
+
+2008-11-17 19:36  dwaynebailey
+
+	* convert/po2dtd.py, convert/test_po2dtd.py, storage/dtd.py,
+	  storage/test_dtd.py: Move fn removeinvalidamps from po2dtd into
+	  dtd storage class.
+
+2008-11-17 19:27  dwaynebailey
+
+	* storage/test_dtd.py: Test to see that we raise a warning when we
+	  have broken DTD entries.
+
+2008-11-17 19:26  dwaynebailey
+
+	* storage/test_base.py: Enable exception testing through warnings
+	  to be reset during teardown and setup of storage tests.
+
+2008-11-17 19:18  dwaynebailey
+
+	* lang/__init__.py, lang/common.py: Cleanup lang module
+	  documentation
+
+2008-11-17 13:07  alaaosh
+
+	* storage/xliff.py: merged units with matching source should be
+	  marked unfuzzy
+
+2008-11-17 12:58  alaaosh
+
+	* convert/pot2po.py: never commit before testing (mistyped function
+	  names)
+
+2008-11-17 11:02  alaaosh
+
+	* convert/pot2po.py, convert/test_pot2po.py: refactored pot2po, now
+	  supports multiple formats
+
+2008-11-17 10:38  alaaosh
+
+	* storage/lisa.py, storage/pocommon.py, storage/poheader.py,
+	  storage/poxliff.py: makeheader should live in poheader instead of
+	  pocommon to work with poxliff
+
+2008-11-17 10:32  alaaosh
+
+	* filters/checks.py, filters/pofilter.py: add drupal support
+
+2008-11-17 07:41  dwaynebailey
+
+	* storage/wordfast.py: There are more embarrassing things I am
+	  sure.
+
+2008-11-13 15:05  winterstream
+
+	* storage/xml_extract/extract.py: placeable_name was changed from
+	  an array to a string, but this one
+	  site still assumed it was an array. This should be fixed now.
+
+2008-11-13 15:04  winterstream
+
+	* misc/typecheck/mixins.py, misc/typecheck/sets.py: Converted
+	  relative imports in the typecheck package to
+	  fully qualified imports.
+
+2008-11-13 13:51  dwaynebailey
+
+	* storage/wordfast.py: Um... logic crock - back to programmer
+	  school.
+
+2008-11-13 06:48  friedelwolff
+
+	* lang/kn.py: New class for Kannada (kn) to disable capitalisation
+	  checks
+
+2008-11-12 17:48  dwaynebailey
+
+	* storage/wordfast.py: Adapt dialect description to correct
+	  problems with csv pre Python 2.5. We retain
+	  2.5 behaviour and only adjust on older version, so that we can
+	  protect most
+	  users from potential brokenness.
+
+2008-11-12 15:34  alaaosh
+
+	* tools/pretranslate.py: now works with xliff
+
+2008-11-12 14:37  dwaynebailey
+
+	* storage/wordfast.py: Default to using Latin1 instead of UTF-16.
+	  We had the problem that in po2wordfast we always produce UTF-16
+	  files.
+	  This was because the wordfast files where initiated to be utf-16
+	  (we only did the right thing if we parsed an
+	  existing wordfast file).
+	  
+	  We do proper detection of the need for UTF-16 in __str__, so
+	  rather use Latin1 as the default.
+
+2008-11-12 08:10  alaaosh
+
+	* storage/xliff.py: make xliffunit.merge() match pounit.merge()
+
+2008-11-12 07:54  alaaosh
+
+	* tools/pretranslate.py: fixes #602 still ugly coupling between
+	  pot2po and pretranslate
+
+2008-11-12 06:21  dwaynebailey
+
+	* convert/roundtrip-OOo: Remove all traces of wget
+
+2008-11-11 10:29  alaaosh
+
+	* convert/pot2po.py, tools/pretranslate, tools/pretranslate.py,
+	  tools/test_pretranslate.py: split pretranslation code from pot2po
+
+2008-11-11 04:08  dwaynebailey
+
+	* storage/test_wordfast.py: Fix epydoc by using raw string
+
+2008-11-10 17:26  dwaynebailey
+
+	* storage/qph.py: Provide a refence to the Qt Linguist implemention
+	  of .qph, its thebest thing short of a valid DTD.
+
+2008-11-10 14:09  friedelwolff
+
+	* storage/test_poheader.py: Remove failing timezone tests (DST
+	  settings probably changed)
+
+2008-11-10 07:57  dwaynebailey
+
+	* convert/__init__.py: Add epydoc groups for clarity
+
+2008-11-10 07:55  dwaynebailey
+
+	* storage/__init__.py: Add epydoc groups for clarity.
+
+2008-11-10 07:53  dwaynebailey
+
+	* __init__.py: Add __version__ to the Misc. group
+
+2008-11-10 07:49  dwaynebailey
+
+	* __init__.py: Add epydoc groups to make it easier to distinguish
+	  between various modules.
+
+2008-11-09 14:18  friedelwolff
+
+	* storage/ts2.py: Privatise several methods, remove dead code and
+	  add some comments
+
+2008-11-09 13:19  friedelwolff
+
+	* storage/ts2.py: Properly create the name tag of a new context
+
+2008-11-09 13:17  friedelwolff
+
+	* storage/ts2.py: temporarily fix a non-unicode assignment test
+
+2008-11-09 13:12  friedelwolff
+
+	* storage/qph.py: Somewhat simplify qph - a simple implementation
+	  for a simple format
+
+2008-11-08 10:14  friedelwolff
+
+	* storage/cpo.py, storage/pypo.py: Align behaviour of addnote for
+	  both PO implementations: we don't add comments unless there are
+	  non-spacing characters.
+
+2008-11-08 10:04  friedelwolff
+
+	* storage/test_po.py: Rewrite posource of obsolete units to the way
+	  that it should actually be output (pypo maintains it either way,
+	  but cpo doesn't)
+
+2008-11-08 09:55  friedelwolff
+
+	* storage/cpo.py: Don't pass obsolete parameter to unquotefrompo
+	  (removed in r7417)
+
+2008-11-07 15:45  dwaynebailey
+
+	* convert/dtd2po.py, convert/po2dtd.py, storage/dtd.py: Move
+	  labelsuffixes and accesskeysuffixes to dtd.py
+
+2008-11-07 09:11  dwaynebailey
+
+	* convert/test_php2po.py: Don't do fancy comment manipulation. This
+	  aligns the test with the
+	  changes to allow us to take multiline comments from PHP files.
+
+2008-11-06 15:00  dwaynebailey
+
+	* convert/roundtrip-OOo: Lets do XLIFF also
+
+2008-11-06 14:30  dwaynebailey
+
+	* convert/roundtrip-OOo: Lots of cleanups and make it use curl not
+	  wget
+
+2008-11-06 10:45  dwaynebailey
+
+	* storage/placeables, storage/xml_extract: Ignore *.pyc
+
+2008-11-06 09:38  dwaynebailey
+
+	* tools/test_podebug.py: Add a swedish chef rewrite test. Mostly to
+	  ensure it
+	  continues to work.
+
+2008-11-06 09:34  dwaynebailey
+
+	* tools/test_podebug.py: Add test for unicode rewrite function
+
+2008-11-06 09:32  dwaynebailey
+
+	* tools/test_podebug.py: Add tests for blank and en rewrite rules
+
+2008-11-06 09:27  dwaynebailey
+
+	* tools/test_podebug.py: Add comments to ignore_gtk test
+
+2008-11-06 09:26  dwaynebailey
+
+	* tools/test_podebug.py: Add tests for xxx rewrite style
+
+2008-11-06 09:14  dwaynebailey
+
+	* tools/test_podebug.py: Add a test for ignoring certain GTK
+	  messages.
+
+2008-11-06 07:00  dwaynebailey
+
+	* tools/podebug.py: Add gtk as a type of application. Pass whole
+	  units to
+	  the application ignore function.
+
+2008-11-06 06:51  dwaynebailey
+
+	* tools/podebug.py: Protect line endings. Could probably be better
+	  abstracted but good enough for now.
+
+2008-11-03 14:03  walter_l
+
+	* storage/test_dtd.py: Augmented
+	  TestDTD.test_entitityreference_in_source() with a test for bug
+	  597.
+
+2008-11-03 14:03  walter_l
+
+	* storage/dtd.py: Fixed a bug where multi-line external parameter
+	  entities cause the rest of the .dtd file to be parsed
+	  incorrectly.
+
+2008-10-31 14:37  dwaynebailey
+
+	* storage/php.py: We canhandle block comments now
+
+2008-10-31 14:36  dwaynebailey
+
+	* storage/php.py, storage/test_php.py: Correctly ignore block
+	  comments fixes bug 587
+
+2008-10-31 14:27  dwaynebailey
+
+	* storage/test_php.py: Split the escaping tests into a single and
+	  double quote version
+
+2008-10-31 14:26  dwaynebailey
+
+	* storage/php.py: Store the escape type in the phpunit
+
+2008-10-31 13:48  dwaynebailey
+
+	* storage/php.py: Add documentation for the escaping rule reference
+	  in the PHP encode and decode functions.
+
+2008-10-31 12:52  dwaynebailey
+
+	* storage/php.py: Fix typo
+
+2008-10-31 12:50  dwaynebailey
+
+	* storage/php.py: Improve PHP documentation
+
+2008-10-30 13:29  winterstream
+
+	* storage/xml_extract/generate.py: Modified xliff2odf to make use
+	  of the newly exposed source_dom
+	  and target_dom properties of LISA units.
+	  
+	  This means that we're quite far to supporting placeables
+	  properly.
+
+2008-10-29 16:52  winterstream
+
+	* storage/xml_extract/extract.py: Added proper placeable support in
+	  the ODF->XLIFF direction
+	  (i.e. for odf2xliff).
+
+2008-10-29 16:51  winterstream
+
+	* storage/lisa.py: Refactored source and target accessors in
+	  lisa.py so that common
+	  functionality is maintained in get_source_dom, set_source_dom,
+	  get_target_dom and set_target_dom.
+	  
+	  This was done, since we are going to use these accessors to
+	  restructure
+	  a template (such as an ODF file) in accordance with how
+	  placeables
+	  differ between the source and target.
+
+2008-10-29 06:55  dwaynebailey
+
+	* convert/po2php.py: Remove debug output.
+
+2008-10-29 06:53  dwaynebailey
+
+	* storage/php.py: Improve documentation after research for bug 589
+
+2008-10-28 15:58  winterstream
+
+	* storage/placeables/misc.py: Forgot to add this file earlier.
+	  Sorry!
+
+2008-10-28 15:36  winterstream
+
+	* convert/test_po2html.py: Fixed another test. The expected output
+	  was incorrectly specified.
+
+2008-10-28 15:01  winterstream
+
+	* convert/test_dtd2po.py: Fixed a test which was taking the wrong
+	  code path because
+	  not ''
+	  as well as
+	  not None
+	  evaluate to True.
+
+2008-10-28 14:42  winterstream
+
+	* storage/test_xml_extract.py: Removed a dead file which was
+	  related to very old xml extraction code
+	  (which has long since moved into the sub-package "xml_extract").
+
+2008-10-28 14:39  winterstream
+
+	* storage/lisa.py: Forgot to add the rich_source and rich_target
+	  accessors for the LISA
+	  store types.
+
+2008-10-28 14:39  winterstream
+
+	* storage/placeables/lisa.py, storage/placeables/test_lisa.py:
+	  Fixed some str/unicode interaction bugs and added a utility
+	  function
+	  to convert strings to unicode correctly.
+
+2008-10-28 14:38  winterstream
+
+	* storage/base.py, storage/lisa.py,
+	  storage/placeables/baseplaceables.py,
+	  storage/placeables/chunk.py,
+	  storage/placeables/lisaplaceables.py,
+	  storage/placeables/test_baseplaceables.py,
+	  storage/placeables/test_chunk.py,
+	  storage/placeables/test_lisaplaceables.py: Removed the majority
+	  of Enrique's placeables support, since it
+	  seems likely that we'll approach this problem slightly
+	  differently.
+
+2008-10-28 10:28  winterstream
+
+	* storage/placeables/__init__.py, storage/placeables/base.py,
+	  storage/placeables/lisa.py, storage/placeables/test_lisa.py,
+	  storage/test_xliff.py: In the process of replacing placeables
+	  support for the toolkit.
+	  
+	  The toolkit's placeable support is based on XLIFF's placeables.
+	  There are structures defined for all of the XLIFF placeables.
+	  
+	  The support is currently limited. We don't properly support
+	  marked content yet. We also don't enforce constraints such
+	  as that <sub> tags cannot be children of <g> tags. This will
+	  all follow in the future.
+	  
+	  This patch includes placeable support for the LISA store types.
+	  The accessors get_rich_source and set_rich_source are used to
+	  set the source of a unit with placeables. Likewise the
+	  accessors get_rich_target and set_rich_target are used to
+	  access the target of a unit.
+	  
+	  See the unit tests for how these should be used.
+
+2008-10-28 10:27  winterstream
+
+	* storage/xml_extract/misc.py: Fixed the tag regex to deal with
+	  cases where no namespace is
+	  specified.
+
+2008-10-28 10:26  winterstream
+
+	* storage/placeables/baseplaceables.py,
+	  storage/placeables/chunk.py,
+	  storage/placeables/lisaplaceables.py,
+	  storage/placeables/test_chunk.py: 1. Added the class attribute
+	  'type' which is used to distinguish
+	  between placeables. We use the XLIFF specification's
+	  characterization
+	  of different types of placeables (see the comments in the code).
+	  2. Added a chunk list type which will be used to set placeables
+	  for units.
+	  Units should also return chunk types through the attributes
+	  marked_source and marked_target.
+	  3. Added some tests for the chunk type.
+
+2008-10-28 10:18  winterstream
+
+	* storage/placeables/baseplaceables.py: Fixed source errors in the
+	  placeables base class.
+
+2008-10-23 17:00  friedelwolff
+
+	* lang/zh.py: Reword to make it clearer that we don't yet support
+	  translating commas
+
+2008-10-21 11:38  winterstream
+
+	* storage/base.py, storage/pypo.py: Let ParseError take an inner
+	  exception, so that we'll be able to
+	  know what caused the ParseError.
+
+2008-10-20 20:09  dwaynebailey
+
+	* storage/xml_extract/generate.py: Fix escaped backslash in
+	  docstring
+
+2008-10-20 20:08  dwaynebailey
+
+	* storage/xml_extract/generate.py: Fix docstrings
+
+2008-10-20 19:57  dwaynebailey
+
+	* storage/xml_extract/unit_tree.py: Fix docstrings
+
+2008-10-20 19:51  dwaynebailey
+
+	* storage/oo.py: Fix docstrings
+
+2008-10-20 15:33  winterstream
+
+	* convert/xliff2odf.py, tests/odf_xliff/test_odf_xliff.py: Fixed
+	  the round-trip ODF-XLIFF test.
+	  
+	  The ODF type encapsulates an ODF file. It defines equality on
+	  such files
+	  for the purposes of unit testing.
+
+2008-10-19 23:38  dwaynebailey
+
+	* storage/test_rc.py: Add basic rest for escaping.
+
+2008-10-16 12:40  winterstream
+
+	* storage/statsdb.py, tools/pocount.py: Fixed possible stats
+	  database inconsistency problems. Also modified
+	  statsdb never to catch any exceptions. The user code must handle
+	  exceptions.
+	  
+	  In the previous code, if an error occurred before a database
+	  commit
+	  was issued, then a next database commit would pull in possibly
+	  inconsistent changes from the previous failed call.
+	  
+	  To ensure consistency, the database MUST be rolled back if ANY
+	  exception, whatsoever is raised in the database code. Why?
+	  Because
+	  it's impossible to know whether the database state is consistent
+	  at the point when an exception is thrown.
+	  
+	  The transaction decorator will ensure a database commit if
+	  a decorated function executes without problems. Otherwise (if
+	  an exception occured), it will roll back the database and
+	  reraise the exception.
+	  
+	  Also note that pocount now handles exceptions from statsdb.
+
+2008-10-16 12:39  winterstream
+
+	* tests/odf_xliff/test_2-test_odf2xliff-reference.xlf,
+	  tests/odf_xliff/test_odf_xliff.py: Added some functional tests to
+	  test odf2xliff and xliff2odf using
+	  both the translate toolkit and itools as their engines.
+
+2008-10-16 12:37  winterstream
+
+	* convert/odf2xliff.py, misc/contextlib.py: Integrated a patch from
+	  David Versmisse (from Itaapy) to use itools
+	  as the ODF extraction engine.
+	  
+	  Now a user can convert a document from ODF to XLIFF using either
+	  itools or the translate toolkit using the flag --engine=itools
+	  or --engine=toolkit.
+
+2008-10-16 08:22  dupuy
+
+	* .: svn:ignore of various links and directories for cleaner svn
+	  status output
+
+2008-10-16 08:15  dupuy
+
+	* storage/mo.py: fix for bug 575 on 64-bit systems
+
+2008-10-15 17:20  dwaynebailey
+
+	* tools/podebug.py: Allow .pot files as input and drop the -P
+	  option since we won't ever want .pot output. [Friedel Wolff's
+	  patch]
+	  Closes bug #573
+
+2008-10-15 17:17  dwaynebailey
+
+	* tools/pogrep.py: Add .mo files for grepping and sort file types
+
+2008-10-14 15:54  winterstream
+
+	* storage/xml_extract/extract.py, storage/xml_extract/test_misc.py,
+	  storage/xml_extract/test_unit_tree.py,
+	  storage/xml_extract/test_xpath_breadcrumb.py,
+	  storage/xml_extract/unit_tree.py: Added quite a few unit tests
+	  for the XML extraction code.
+
+2008-10-14 12:24  winterstream
+
+	* convert/odf2xliff.py, convert/xliff2odf.py,
+	  storage/odf_shared.py, storage/xml_extract/extract.py,
+	  storage/xml_extract/misc.py, tests/odf_xliff/test_2.odt: Modified
+	  storage/odf_shared.py to attempt first to import itools and to
+	  use
+	  its ODF information. Failing that, it falls back to a copy of the
+	  itools
+	  information in storage/odf_shared.py (which may be out of date).
+	  
+	  The important change is that we initially listed the tags in
+	  which we
+	  were interested, whereas itools lists tags that should be
+	  ignored.
+	  
+	  Due to integration of the code with itools, the specification
+	  mechanism
+	  has also been simplified. We only have a table of tags we reject
+	  and a
+	  table of inline placeables.
+
+2008-10-14 12:21  winterstream
+
+	* storage/xml_extract/extract.py: Added additional comments to
+	  extract.py.
+
+2008-10-13 08:48  winterstream
+
+	* storage/xml_extract/generate.py: Added more comments to the code.
+	  More to follow.
+
+2008-10-11 15:18  friedelwolff
+
+	* storage/placeables/lisaplaceables.py: Ommit optional parameter
+	  for compatibility with python 2.3 and 2.4
+
+2008-10-11 06:16  dwaynebailey
+
+	* convert/odf2xliff.py: Add all OpenDocument filetypes for
+	  conversion to XLIFF
+
+2008-10-10 17:11  winterstream
+
+	* storage/xml_extract/extract.py: Added a missing functional call
+	  parameter.
+
+2008-10-10 17:10  winterstream
+
+	* misc/contextlib.py: Further modify contextlib for Python 2.4. If
+	  an exception occurs in
+	  body(), then we first finish off the generator (which is our
+	  context
+	  manager) and then raise the exception again.
+
+2008-10-10 08:51  winterstream
+
+	* convert/record.py: Removed unused module.
+
+2008-10-10 08:50  winterstream
+
+	* convert/odf2xliff, convert/odf2xliff.py, convert/record.py,
+	  convert/xliff2odf, convert/xliff2odf.py, misc/context.py,
+	  misc/contextlib.py, misc/typecheck, misc/typecheck/__init__.py,
+	  misc/typecheck/doctest_support.py, misc/typecheck/mixins.py,
+	  misc/typecheck/sets.py, misc/typecheck/typeclasses.py,
+	  storage/base.py, storage/lisa.py, storage/odf_shared.py,
+	  storage/placeables, storage/placeables/__init__.py,
+	  storage/placeables/baseplaceables.py,
+	  storage/placeables/lisaplaceables.py,
+	  storage/placeables/test_baseplaceables.py,
+	  storage/placeables/test_lisaplaceables.py,
+	  storage/test_xml_extract.py, storage/xml_extract,
+	  storage/xml_extract/__init__.py, storage/xml_extract/extract.py,
+	  storage/xml_extract/generate.py, storage/xml_extract/misc.py,
+	  storage/xml_extract/unit_tree.py,
+	  storage/xml_extract/xpath_breadcrumb.py, tests/odf_xliff,
+	  tests/odf_xliff/test_1.odt, tests/odf_xliff/test_2.odt: Merged in
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8734
+	  
+	  Squashed commit of the following:
+	  
+	  commit a20def7ba7b82e5d71318f4c95604bed6526470b
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Fri Oct 10 08:40:11 2008 +0000
+	  
+	  Merged in
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/trunk/translate@8722
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8734
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit c8ec4ef169fda66e446dbad86228e67ac8b612cb
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Thu Oct 9 15:26:39 2008 +0000
+	  
+	  Fixed an incorrect type annotation.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8733
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 50f57ec89effac0e5fd23ce59a89dac39809c695
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Thu Oct 9 15:23:21 2008 +0000
+	  
+	  A big reorganization of the xml_extract functionality into a
+	  package call xml_extract.
+	  
+	  This should help to reduce the mental overload that was induced
+	  by the previous file.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8732
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 2427db87a62239dc2bca3e3bb024a27d6a206dda
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Thu Oct 9 15:22:05 2008 +0000
+	  
+	  This is a rather massive commit.
+	  
+	  The code includes cleanups, as well as a mechanism to reorder
+	  placeables in an arbitrary fashion.
+	  
+	  The next step is to break this into a package and to add
+	  comments,
+	  since the code is very dense.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8731
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit e3cb6153c1d3b8c95ecf00dd27e7e126c37c7909
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Thu Oct 9 15:20:59 2008 +0000
+	  
+	  Made the behaviour of apply_translations post-fix. This is so
+	  ensure that
+	  child nodes are processed before parent nodes.
+	  
+	  Why?
+	  
+	  Because we might re-order the child nodes (depending on whether
+	  the
+	  translator re-ordered placeables) and therefore we must FIRST
+	  deal with children, since we use XPath-like identifiers to find
+	  children.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8730
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 7c435527f8dfcce309f75e06e856936c7d42010e
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Thu Oct 9 15:20:09 2008 +0000
+	  
+	  Moved more ODF specific code out of xml_extract.py
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8729
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 134e118ee4fba73496a4b082ee58cbc85a1d6979
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Thu Oct 9 15:19:19 2008 +0000
+	  
+	  Moved code from xliff2odf to xml_extract.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8728
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 6208bc6b4a69febf2a1de0389c0e4d72543eefd5
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Oct 7 07:42:05 2008 +0000
+	  
+	  Generators in Python 2.4 don't have the "throw" method, which
+	  makes
+	  contextlib break. We just naively call next() to ask the
+	  generator
+	  to finish its work.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8691
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit a6bbb8a25aa6bd1fbf3cc7fc4d59d950f73cb168
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Oct 7 07:41:10 2008 +0000
+	  
+	  Initial support for inline translatables.
+	  
+	  Removed the placeables member from Translatable.
+	  This is derived from self.source via _get_placeables.
+	  
+	  Sprinkled code with references to things like
+	  inline_placeable_table which contains info on which
+	  tags are inline.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8690
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 91eaff16ebb084680bde2a1d1dc0d567267cc20b
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Fri Oct 3 13:37:04 2008 +0000
+	  
+	  Fixed a silly logic error (used a "not" where I should not
+	  have).
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8663
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit a76ed0144a002290eb29d23933d01199650031e0
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Fri Oct 3 13:36:04 2008 +0000
+	  
+	  Added type annotations and updated string constants to unicode,
+	  so
+	  that they wouldn't trigger type errors.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8662
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 224fd4250a32357c5b4af80877ee416fc6c73bf1
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Fri Oct 3 13:35:03 2008 +0000
+	  
+	  Fixed an import which broke due to the integration of the type
+	  checker with
+	  the toolkit.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8661
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit ca0b38566c9900f768fdf125070226af3bd6d86b
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Fri Oct 3 13:34:05 2008 +0000
+	  
+	  Merged
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/typecheck@8656.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8660
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 1c52e8dfc06cd21597d358f4d4eca365ba7f5a55
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Fri Oct 3 08:43:22 2008 +0000
+	  
+	  Merged in
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/typecheck@8651.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8654
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 2b0a87b7edf67dc1ca719dbdd63c1f0033917cc3
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Fri Oct 3 08:41:41 2008 +0000
+	  
+	  Merged in r8648 from
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/trunk/translate/
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8653
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 91680dad131806541b925bdb6a54491685388e45
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Fri Oct 3 08:40:12 2008 +0000
+	  
+	  Applied Enrique's latest patch from
+	  http://bugs.locamotion.org/attachment.cgi?id=211 for
+	  placeables support.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8652
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 48265495f577912ca8b06ab9ad0c3e4a0c1d7756
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Thu Oct 2 12:50:14 2008 +0000
+	  
+	  A wee bit of refactoring to make the code clearer :).
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8624
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 751c98ce090221b8e152c3eddcd08a8ceeb8cc2a
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Thu Oct 2 11:44:16 2008 +0000
+	  
+	  Pilfered Python 2.5's contextlib which simplifies the context
+	  quite nicely and should make it easier to upgrade our code
+	  to Python 2.5+ in the future.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8620
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit b826557ac29b2449b6c278f754b087d9f2fb18c2
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Thu Oct 2 11:03:45 2008 +0000
+	  
+	  Moved the context manager to a sensible place. Also fixed the
+	  broken
+	  import in xml_extract.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8619
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 38276c2cb128d0d659be4e1993d34ed5164e0cf2
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Thu Oct 2 08:23:02 2008 +0000
+	  
+	  Merged in r8580 from
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/trunk/translate/
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8609
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit a21e3bffa5efb52f569d2e134c64aea098b5bdae
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Thu Oct 2 07:54:35 2008 +0000
+	  
+	  Created scripts to call odf2xliff and xliff2odf.
+	  
+	  Moved the ODF-XLIFF machinery to the storage package. Updated
+	  import statements to reflect this.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8605
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 8d8f5ccb981b84cd89fc4ed6b9c8ce2551412a80
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Wed Oct 1 16:58:09 2008 +0000
+	  
+	  Use deflate compression for the generated zip file. OpenOffice
+	  expects this.
+	  
+	  Also, the first child of the unit tree matches the root of the
+	  XML DOM tree.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8597
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit b74578085639fe2ab66d71b66753693127b01c76
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Wed Oct 1 14:19:56 2008 +0000
+	  
+	  This is a first pass at xliff2odf. It produces incorrect output
+	  for translated XML files.
+	  
+	  It also lacks comments. These are scheduled for the next commit.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8592
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 2636d3aede6dca604d8de83af762a3a111f5e3dc
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Mon Sep 29 17:22:03 2008 +0000
+	  
+	  Added a test file for use in the ODF-XLIFF functional tests.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8538
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 4df78b8c7ecd2ec746d3d1a7c28aa88eb5ecf300
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Mon Sep 29 17:20:21 2008 +0000
+	  
+	  Added the first utility for converting from ODF to XLIFF. It
+	  follows a similar pattern to the other conversion utilities.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8535
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit c0f920d924894cdbe77c365127e3999d1588ad82
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Sep 23 14:11:01 2008 +0000
+	  
+	  A lot of comments.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8455
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 8889232349c475e4274bc4053f10693f1f3c808f
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Sep 23 14:09:58 2008 +0000
+	  
+	  replace_dom_text will take apart the translated text in unit,
+	  discover which parts are placeables and which are not, and modify
+	  the text in the dom node, and the tail text of the children of
+	  the
+	  dom node.
+	  
+	  In other words, this is what pulls a translation from a unit and
+	  updates the DOM accordingly.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8453
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit bb2ea84bf876dbc7733d79ec6bef378f6fb764b5
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Sep 23 14:08:55 2008 +0000
+	  
+	  Cosmetic.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8452
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 6156c9a042a98778d946e04a0bed5c86c0420012
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Sep 23 14:07:52 2008 +0000
+	  
+	  Simplified the units test functions to use the convenience
+	  function xml_extract.build_store.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8451
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 5d336df0322a1d67c4c2c02ec25e9e66ab287f5c
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Sep 23 14:06:46 2008 +0000
+	  
+	  Added a utility method to load odf files into stores.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8450
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 314a3d3e58f4b3e1d229abd65fd00fd584a6d21a
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Sep 23 14:05:46 2008 +0000
+	  
+	  Comments + neatification of apply_translations.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8449
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 20e993849a11cd257d9bdc8591d085e58e638dc6
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Sep 23 14:04:41 2008 +0000
+	  
+	  Some comments.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8448
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 112c3b0ac31124f57c59bb2ea479bdd6c6138cd8
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Sep 23 07:23:26 2008 +0000
+	  
+	  Test that a country code doesn't mix up the factory in the case
+	  of special codes (python reserved words)
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8438
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 63429ed8255f0d3aa5e2969e6baeab9bb6de3e61
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Sep 23 07:22:03 2008 +0000
+	  
+	  adding version dependencies for the "author" attribute:
+	  * svn: since v1.5
+	  * bzr: sinve v0.91
+	  * cvs: not supported
+	  * darcs: at least since v1.09 according to changelog (this
+	  version is in debian
+	  stable - thus a check does not seem to be important)
+	  * git: since v1.4.3 (this is way older than the package in debian
+	  stable, thus
+	  a check should not be necessary)
+	  * hg: since v1.0
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8437
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit ea11747f9539e68614b55a90a39ec684dfca9ded
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Sep 23 07:20:16 2008 +0000
+	  
+	  Return an empty string if the unit is untranslated
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8436
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit c53b32a2313acaffa3554387d77a90ab09cc8846
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Sep 23 07:18:54 2008 +0000
+	  
+	  Return an empty string if the translation is empty
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8435
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit debe43a174e0155a5bdb3a4ccf0d1776aac181bd
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Sep 23 07:17:30 2008 +0000
+	  
+	  Manage empty context name
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8434
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit dcb657a3252b9a65f66a7ed04ee47c12d42e49a0
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Sep 23 07:16:10 2008 +0000
+	  
+	  Add .qph - Qt Phrase Book support based on ts2
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8433
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 2f03af4fafd03e68a9273fb5dbea87f8f7ee58ea
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Sep 23 07:14:48 2008 +0000
+	  
+	  Fixes to get plural entries working in virtaal:
+	  * Add list of languages and plural forms, include reference to
+	  source. This might be better placed
+	  in lang/data.py but since it is hard coded for all of Qt this is
+	  probably a better spot.
+	  * Implement getsource: this allows us to force the source into a
+	  multistring, in .ts the source
+	  will always be a single entry never multiple as in PO. With this
+	  the generic hasplural will work
+	  * Add decorators for source and target, seems we get the parent
+	  ones if not added
+	  * Add nplural fuction to find the language and return the number
+	  of plural forms
+	  * Retrieve the nplural value if we are editing a .ts store.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8432
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 5a4efd3775fc38ab8faa2bb16b8f7c4d423c2c29
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Sep 23 07:13:30 2008 +0000
+	  
+	  Add format support for detecting .ts content
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8431
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 5a063bfdc6412d0cb97cbb63c95baeb9aec96f2e
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Sep 23 07:12:13 2008 +0000
+	  
+	  Add support for ts2 as ts
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8430
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 58c39f0bcfb7b83c0ac1365a8395aff8820830e3
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Sep 23 07:11:03 2008 +0000
+	  
+	  Initial support for new Qt linguist (.ts) files
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8429
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 2373f2b9dab3877616742155ac8e13ed2adcc12b
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Sep 23 07:09:59 2008 +0000
+	  
+	  Update copyright dates
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8428
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit e76a60f9c4dd9107f5bb0bd0d1cb23d1d3530775
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Sep 23 07:08:53 2008 +0000
+	  
+	  Remove unused imports
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8427
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 42723f2014b398df159050478fa25ed6b50c660b
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Sep 23 07:07:54 2008 +0000
+	  
+	  s/profile/cProfile/
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8426
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 5da8f4e1e5b96f959d7585eac6cc8449cd017f02
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Sep 23 07:06:58 2008 +0000
+	  
+	  Ensure that we return unicode strings when dealing using
+	  xpath("string()")
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8425
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 042e2165b9cb6c02a4756c4fead15b593695eb1b
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Sep 23 07:05:51 2008 +0000
+	  
+	  Bring in something non-ASCII for better testing
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8424
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 45f75dc753885708ce4934d48c80984d242bb633
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Sep 23 07:04:53 2008 +0000
+	  
+	  Version 1.2.0-rc1
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8423
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit b53b87aba7ec354391b7fb597c0c5935443430ce
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Sep 23 07:04:04 2008 +0000
+	  
+	  quote.extractstr is called very often. The underlying function is
+	  quite heavyweight and adds quite a bit of runtime overhead.
+	  
+	  And yet, all we need is to find the left " (the quote) and the
+	  right
+	  " in a string and to return a string with the quotes intact. This
+	  is done much faster as done in the new little extractstr
+	  implementation
+	  in pypo.py.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8422
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit bfb4098f6561c69330ec21b6151c26411ad8fd84
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Sep 23 07:03:04 2008 +0000
+	  
+	  1. Change the members 'keys' and 'values' in Record to
+	  'record_keys'
+	  and 'record_values', so as to avoid confusion with the methods
+	  named 'keys' and 'values'.
+	  
+	  2. Added the callback compute_derived_values to Record, so that
+	  it
+	  can compute values which are derived from its other values and
+	  keep these up to date. The class FileTotals makes use of this;
+	  the method FileTotals._compute_derived_values computes values for
+	  "total", "totalsourcewords" and "review" from the values
+	  retrieved
+	  from the database.
+	  
+	  3. Renamed OTHER to UNTRANSLATED.
+	  
+	  4. Renamed Record.db_repr to Record.as_string_for_db.
+	  
+	  5. Updated get_unit_stats to retrieve targetwords from the
+	  database,
+	  since FileTotals now also requires this value.
+	  
+	  6. Changed the values stored inside the database.
+	  
+	  7. Bumped up the toolkit build number.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8421
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 8f6193a67174681b92b5acc59ed98c8193866426
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Sep 23 07:01:52 2008 +0000
+	  
+	  If we bump up the toolkit's version number, we delete the current
+	  stats
+	  cache database, if it has an old version number.
+	  
+	  This is not ideal and in the future, we'll probably name stats
+	  cache
+	  database files differently as we change the database layout, so
+	  that
+	  multiple versions of the toolkit software will be able to
+	  coexist.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8420
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 6c99736e34916c367473a3fa2293dd043865e6b4
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Sep 23 07:00:45 2008 +0000
+	  
+	  +Link to wiki in poterminology's docstring (and therefore also
+	  --help text)
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8419
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit cda1ca7719142bef81f967b45a7e9205b2f7beb7
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Sep 23 06:59:39 2008 +0000
+	  
+	  Benchmark the creation of files
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8418
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit e4edca4056435de282154ce4d81686c38813a8a8
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Fri Sep 19 10:53:52 2008 +0000
+	  
+	  Added code that traverses a store and finds all elements in a DOM
+	  tree
+	  which correspond to the units in the store. It then calls the
+	  given
+	  function on a dom_node and unit which match (presumably so that
+	  the
+	  text in the DOM node can be replaced with the translated text in
+	  the
+	  unit.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8368
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 5771dae8666d0715cf486798a2090a7f899a872b
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Fri Sep 19 10:51:19 2008 +0000
+	  
+	  Added a context manager which mimics the with statement found
+	  in the newest Python versions. This ensures that finalization
+	  code is executed, even if something goes wrong within a
+	  with_block.
+	  
+	  Thus, it adds a bit of transactional semantics to the code.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8367
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit fb04e1c760d25661771e21e9db7af0e776cd2654
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Fri Sep 19 10:48:32 2008 +0000
+	  
+	  Only add a translatable to a store if it contains content.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8366
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit d7dfc9ba696e1be123541b99004973def61a1ec7
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Fri Sep 19 10:46:27 2008 +0000
+	  
+	  XLIFF only supports a single location source. We're already using
+	  the
+	  location to store the XPath of dom node from which we got the
+	  translatable
+	  element.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8365
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit d72b99a54f67962a88b0b04635984c2af918afaa
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Wed Sep 17 08:59:56 2008 +0000
+	  
+	  Added a function to add a translatable unit to a store and to
+	  fill in
+	  its location (which is just the XPath of the corresponding
+	  translatable).
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8354
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 4c43d05ce42abf34a2189b691cf58571b071bd6e
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Wed Sep 17 08:58:59 2008 +0000
+	  
+	  Set the placeable ID to -1 for top-level translatable elements.
+	  This is to be able to tell whether an element is top-level or
+	  not.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8353
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 7d708a25afd01f8e82c535e55a46b02c74741c32
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Wed Sep 17 08:58:07 2008 +0000
+	  
+	  The text in .text or .tail of a DOM node can be None. If that is
+	  the case,
+	  we want empty strings.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8352
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 474ac24534726fca9e57dc14c5c50fcfeda4ba1d
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Wed Sep 17 08:57:16 2008 +0000
+	  
+	  Fixed a typo in a member name.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8351
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 2889b2471213130200e21abbe008f60fdcbb5d72
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Sep 16 15:13:21 2008 +0000
+	  
+	  Resurrected XPathBreadcrumb and put it to work in the parse
+	  state.
+	  
+	  It replaces the explicit xpath stack. Instead we call start_tag
+	  and
+	  end_tag. This class takes care of keeping track of the number o
+	  occurrences of a given tag (so that it can give an index to a
+	  tag).
+	  
+	  We now also store the full XPath of a translatable as a string,
+	  which we get from the breadcrumb.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8343
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 76b93e24536e84b3da3a339a604ecd456dbcf0b9
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Sep 16 14:57:16 2008 +0000
+	  
+	  In our code, we always pass a placeable_id and placeable_name. So
+	  simplify this code.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8342
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 111f35bc4fb10903eb760b01285e2197baf9988c
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Sep 16 14:56:21 2008 +0000
+	  
+	  If an XML node contains placeables, then the text appearing after
+	  the placeable is contained in the .tail member of the XML node
+	  representing the root of the placeable. We need to add this text
+	  to build the text for a translatable.
+	  
+	  For the second hunk, we must pass the top of the placeable_name
+	  stack, so that the translatable will know what it is called :).
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8341
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit a69109a7cb1f65d8d09252ccd6d5517c2d82c3ea
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Sep 16 14:55:13 2008 +0000
+	  
+	  Maintain a stack of placeable names in the parse state.
+	  
+	  Recall that a placeable might be a whole nested XML structure. We
+	  might want to use a tag somewhere in the middle of this structure
+	  to name the placeable.
+	  
+	  Thus, when we hit a tag, we check whether it appears in
+	  the placeable_table. If so, we push a name onto the placeable
+	  stack.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8340
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 05c53722817a7cf6fcf58a4141c8875d4a1df21f
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Sep 16 14:53:58 2008 +0000
+	  
+	  Placeables should also be indexed by fully qualified XML tags.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8339
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit fc445b267f45309669dde89f5fe319e8afaed9c2
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Tue Sep 16 12:40:39 2008 +0000
+	  
+	  An attempt to write more imperative code, since Python can be
+	  quite
+	  hostile to functional style programming sometimes.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8338
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit d67fbd553b7f76d4ffe013c7f4a3be2d8cbbfe71
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Mon Sep 15 14:03:26 2008 +0000
+	  
+	  This file is a hangover from a previous effort to integrate our
+	  software directly with itools for XML extraction. I am keeping it
+	  as a reference.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8322
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit abb342dcbabbc6e543ce84cbdb22d08c0a082712
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Mon Sep 15 14:01:56 2008 +0000
+	  
+	  Added a test file to test the xml_extract code. The test file
+	  contains
+	  an embedded XML file which comes from an OpenOffice.org file.
+	  This
+	  file is fed to the XML extraction code along with the
+	  ODF-specific
+	  XML namespace imformation and placable information.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8321
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit ed34166d946ec32ef7f69bb918042984a46e8f6c
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Mon Sep 15 14:00:25 2008 +0000
+	  
+	  This is some fairly dense code to extract XML from an arbitrary
+	  document,
+	  given tables of
+	  1. XML namespaces which should be converted, and
+	  2. XML namespaces which should appear as placables within other
+	  translatable hunks.
+	  
+	  The code works by searching through the DOM tree (the function
+	  apply),
+	  until it hits a translatable tag. Then it calls
+	  process_translatable_tag.
+	  
+	  process_translatable_tag sees whether there are any
+	  sub-translatable
+	  tags in the current translatable tag. An example of this is
+	  footnotes
+	  in OpenOffice.org documents. The XML code for a footnote appears
+	  within
+	  the paragraph tag with which the footnote is associated. Or in
+	  XML:
+	  
+	  <text:p text:style-name="Standard">First. This should
+	  <text:note text:id="ftn0" text:note-class="footnote">
+	  <text:note-citation>1</text:note-citation>
+	  <text:note-body>
+	  <text:p text:style-name="Footnote">Footnote 1</text:p>
+	  </text:note-body>
+	  </text:note>not be segmented. Even with etc. and so.
+	  </text:p>
+	  
+	  We need to treat tags like <text:note> as placables, which means
+	  that
+	  the above should be presented to the translator as something
+	  like:
+	  
+	  First. This should&footnote_1; not be segmented. Even with etc.
+	  and so.
+	  
+	  Note that the entire XML block related to the footnote is
+	  represented
+	  by:
+	  
+	  &footnote_1;
+	  
+	  Thus, process_translatable_tag is responsible for finding any
+	  placables
+	  in the current translatable_tag. If there are any placables, it
+	  should
+	  create placable tags for them (such as &footnote_1;) and
+	  construct a
+	  translatable string containing these placable tags. Then it
+	  proceeds to
+	  deal with the children (that is, the placables) by invoking apply
+	  on them.
+	  
+	  Note that the current implementation uses the Record type, which
+	  provides
+	  immutable records (for stateless programming). Because it is
+	  immutable,
+	  every modification creates a new record.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8320
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 38e8b341e82e738169002c03c01212e8ea0d6fbe
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Mon Sep 15 13:59:05 2008 +0000
+	  
+	  Immutable record type from
+	  http://www.valuedlessons.com/2007/12/immutable-data-in-python-record-or.html
+	  (author's name not found).
+	  
+	  This is useful for stateless code.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8319
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 496cf7f386a9d241c68aaab1b536272bda1b221c
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Mon Sep 15 13:57:38 2008 +0000
+	  
+	  odf_shared.py contains the information needed by the XML parser
+	  to
+	  extract translatables and placables from ODF documents.
+	  
+	  The information is derived from itools, as indicated in the
+	  comments.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8318
+	  54714841-351b-0410-a198-e36a94b762f5
+	  
+	  commit 898f5b2af87c52e66b544c0803ff20f2d84f64da
+	  Author: winterstream
+	  <winterstream@54714841-351b-0410-a198-e36a94b762f5>
+	  Date: Mon Sep 15 12:15:41 2008 +0000
+	  
+	  Finally branched the toolkit for the ODF-XLIFF stuff.
+	  
+	  git-svn-id:
+	  https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate/odf-xliff-first-try@8313
+	  54714841-351b-0410-a198-e36a94b762f5
+
+2008-10-08 19:40  dwaynebailey
+
+	* storage/csvl10n.py, storage/qm.py: Add filetype names for .qm and
+	  our brand of CSV.
+
+2008-10-07 22:47  dwaynebailey
+
+	* convert/ical2po.py, convert/ini2po.py, convert/rc2po.py: Revert
+	  r8712: broke the conversion even though it isn't used. Refactor
+	  at
+	  a later stage.
+
+2008-10-07 22:26  dwaynebailey
+
+	* convert/ical2po.py, convert/ini2po.py: Remove unused xliff import
+
+2008-10-07 22:21  dwaynebailey
+
+	* convert/ical2po.py, convert/ini2po.py, convert/rc2po.py:
+	  commenttype is never used
+
+2008-10-07 21:31  dwaynebailey
+
+	* convert/rc2po.py: CAPITALISE a constant
+
+2008-10-07 21:19  dwaynebailey
+
+	* convert/rc2po.py: Align terminology
+
+2008-10-07 20:36  dwaynebailey
+
+	* convert/ical2po.py, convert/ini2po.py: Align naming
+
+2008-10-07 16:31  dwaynebailey
+
+	* convert/accesskey.py, convert/dtd2po.py, convert/po2dtd.py,
+	  convert/test_accesskey.py: Change accesskey function names to
+	  something more readable:
+	  get_label_and_accesskey => extract
+	  combine_label_accesskey => combine
+
+2008-10-07 16:28  dwaynebailey
+
+	* convert/accesskey.py, convert/dtd2po.py,
+	  convert/test_accesskey.py: Move the accesskey+label combining
+	  functionaity out of dtd2po and into
+	  the generic accesskey module. Adjust dtd2po to use this function.
+	  Include tests for the combining.
+
+2008-10-07 16:22  dwaynebailey
+
+	* convert/accesskey.py, convert/po2dtd.py,
+	  convert/test_accesskey.py: Remove the getlabel and getacceskey
+	  functions. We'd rather use the combined function.
+	  po2dtd.py is adapted with some unused variables, these will
+	  probably disappear as we
+	  refactor that code.
+
+2008-10-07 16:19  dwaynebailey
+
+	* convert/accesskey.py, convert/test_accesskey.py: Deal with the
+	  empty string
+
+2008-10-07 16:18  dwaynebailey
+
+	* convert/accesskey.py, convert/test_accesskey.py: Make everything
+	  Unicode. There are some asserts which should probably be removed
+	  in the future.
+
+2008-10-07 16:16  dwaynebailey
+
+	* convert/accesskey.py: Merge functions from getlabel and
+	  getaccesskey into get_label_and_accesskey. They were mostly
+	  identical anyway.
+
+2008-10-07 16:14  dwaynebailey
+
+	* convert/accesskey.py, convert/test_accesskey.py: Create a
+	  combined function that returns botht the label and accesskey
+
+2008-10-07 16:12  dwaynebailey
+
+	* convert/accesskey.py, convert/test_accesskey.py: Allow the
+	  accesskeyto be specified, also set default to '&'
+
+2008-10-07 16:10  dwaynebailey
+
+	* convert/accesskey.py, convert/po2dtd.py,
+	  convert/test_accesskey.py: Move getlabel and getaccesskey
+	  functions out into its own module. Provide tests. Adjust
+	  po2dtd.py to use the new module.
+
+2008-10-07 16:04  dwaynebailey
+
+	* convert/oo2po.py, convert/oo2xliff.py, convert/po2oo.py,
+	  convert/xliff2oo.py, storage/oo.py, storage/test_oo.py: Move the
+	  4 makekey functions into the storage class. Create a test to
+	  validate that it works.
+
+2008-10-07 15:36  dupuy
+
+	* .cvsignore: ignore generated files
+
+2008-10-07 12:23  friedelwolff
+
+	* convert/pot2po.py: Massive renaming to clarify store vs file.
+	  Also got rid of several PO references.
+
+2008-10-07 12:00  friedelwolff
+
+	* filters/checks.py: Use unicode literals - this provides a small
+	  speedup, and is just good in general
+
+2008-10-06 13:03  friedelwolff
+
+	* ChangeLog: Update ChangeLog before the release of 1.2.0
+
+2008-10-06 12:58  friedelwolff
+
+	* __version__.py: Version 1.2.0
+
 2008-10-06 12:37  friedelwolff
 
 	* CREDITS: Credit Miklos for work on version control
