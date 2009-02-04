@@ -8,6 +8,8 @@ def test_punctranslate():
     language = factory.getlanguage('or')
     assert language.punctranslate(u"Document loaded") == u"Document loaded"
     assert language.punctranslate(u"Document loaded.") == u"Document loaded।"
+    assert language.punctranslate(u"Document loaded.\n") == u"Document loaded।\n"
+    assert language.punctranslate(u"Document loaded...") == u"Document loaded..."
 
 def test_country_code():
     """Tests that we get the correct one even if a country code is attached to

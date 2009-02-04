@@ -45,7 +45,8 @@ class code_or(common.Common):
                             """ % sentenceend, re.VERBOSE)
 
     puncdict = {
-        u".": u"।",
+        u". ": u"। ",
+        u".\n": u"।\n",
     }
 
     ignoretests = ["startcaps", "simplecaps"]
