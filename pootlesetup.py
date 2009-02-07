@@ -36,9 +36,12 @@ subpackages = [
   "legacy", 
   "legacy/jToolkit", 
   "legacy/jToolkit/data", 
+  "legacy/jToolkit/web", 
   "scripts", 
   "middleware", 
   "pootle_app",
+  "pootle_app/management",
+  "pootle_app/management/commands",
   "pootle_app/views",
   "pootle_app/views/admin",
   "pootle_app/views/home",
@@ -214,7 +217,7 @@ def getdatafiles():
   datafiles = initfiles + infofiles
   def listfiles(srcdir):
     return join(sitepackages, srcdir), [join(srcdir, f) for f in os.listdir(srcdir) if os.path.isfile(join(srcdir, f))]
-  pootlefiles = [(join(sitepackages, 'Pootle'), [join('Pootle', 'pootle.prefs'), join('Pootle', 'users.prefs')])]
+  pootlefiles = [(join(sitepackages, 'Pootle'), [join('Pootle', 'pootle.prefs'), join('Pootle', 'users.prefs'), join('Pootle', 'pootle.ini')])]
   pootlefiles.append(listfiles(join('Pootle', 'html')))
   pootlefiles.append(listfiles(join('Pootle', 'html', 'images')))
   pootlefiles.append(listfiles(join('Pootle', 'html', 'js')))
