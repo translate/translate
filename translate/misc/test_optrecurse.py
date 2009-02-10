@@ -3,7 +3,7 @@
 from translate.misc import optrecurse
 import os
 
-class TestRecursiveOptionParser():
+class TestRecursiveOptionParser:
 
     def __init__(self):
         self.parser = optrecurse.RecursiveOptionParser({"txt":("po", None)})
