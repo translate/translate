@@ -165,6 +165,7 @@ expansion_factors = {
 """Source to target string length expansion factors."""
 
 import gettext
+import locale
 import re
 
 iso639 = {}
@@ -208,7 +209,11 @@ def gettext_lang(langcode=None):
     if not langcode in iso639:
         if not langcode:
             langcode = ""
-            t = gettext.translation('iso_639', fallback=True)
+            if os.name == "nt":
+                # On Windows the default locale is not used for some reason
+                t = gettext.translation('iso_639', languages=[locale.getdefaultlocale()[0]], fallback=True)
+            else:
+                t = gettext.translation('iso_639', fallback=True)
         else:
             t = gettext.translation('iso_639', languages=[langcode], fallback=True)
         iso639[langcode] = t.ugettext
@@ -220,7 +225,11 @@ def gettext_country(langcode=None):
     if not langcode in iso3166:
         if not langcode:
             langcode = ""
-            t = gettext.translation('iso_3166', fallback=True)
+            if os.name == "nt":
+                # On Windows the default locale is not used for some reason
+                t = gettext.translation('iso_3166', languages=[locale.getdefaultlocale()[0]], fallback=True)
+            else:
+                t = gettext.translation('iso_3166', fallback=True)
         else:
             t = gettext.translation('iso_3166', languages=[langcode], fallback=True)
         iso3166[langcode] = t.ugettext
