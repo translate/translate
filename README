@@ -126,6 +126,8 @@ The subtitle editing program Gaupol is needed for sub2po and
 po2sub. some unicode encoded files (including most files from
 http://dotsub.com) require latest development version of Gaupol.
 http://home.gna.org/gaupol/
+You will also need the 'Universal Encoding Detector'
+http://chardet.feedparser.org/
 
 The programs have been tested on Linux and Windows.
 
