@@ -105,7 +105,7 @@ msgstr "open any"
     
     def testShorten(self):
         """
-        Test that it returns only the first part of text, seperated by new line and filled with three dots. 
+        Test that it returns only the first part of text, separated by new line and filled with three dots. 
         """
         text = "first line \n second line\n"
         text = self.tableTM.shorten(text)

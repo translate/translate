@@ -70,7 +70,7 @@ class TestPOMerge:
         assert pounit.target == "Dimpled King"
 
     def test_merging_locations(self):
-        """check that locations on seperate lines are output in Gettext form of all on one line"""
+        """check that locations on separate lines are output in Gettext form of all on one line"""
         templatepo = '''#: location.c:1\n#: location.c:2\nmsgid "Simple String"\nmsgstr ""\n'''
         inputpo = '''#: location.c:1\n#: location.c:2\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n'''
         expectedpo = '''#: location.c:1%slocation.c:2\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n''' % po.lsep

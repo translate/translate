@@ -234,7 +234,7 @@ class tableTM(QtGui.QDockWidget):
     
     def shorten(self, text):
         """
-        Return the first part of text, seperated by new line and filled with three dots.
+        Return the first part of text, separated by new line and filled with three dots.
         """
         line = text.find("\n")
         if (line >= 0):

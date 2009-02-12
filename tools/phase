@@ -429,7 +429,7 @@ function reviewpo {
 
 	The format of this file is as follows:
 	Each file with errors is introduced with a line starting with the word 'File:'.  Thereafter
-	the errors appear.  Each error is seperated from the next by a blank line.  They should correspond
+	the errors appear.  Each error is separated from the next by a blank line.  They should correspond
 	to the lines in the CSV file or the messages in the PO file.  Please edit the corrections taking
 	into consideration the comments in this file.
 

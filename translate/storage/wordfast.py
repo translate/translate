@@ -38,7 +38,7 @@
    Implementation
    ==============
    The implementation covers the full requirements of a Wordfast TM file.
-   The files are simple Tab Seperated Value (TSV) files that can be read 
+   The files are simple Tab Separated Value (TSV) files that can be read 
    by Microsoft Excel and other spreadsheet programs.  They use the .txt 
    extension which does make it more difficult to automatically identify 
    such files.
@@ -51,7 +51,7 @@
    are most likely because Microsoft Word is the base editing tool for
    Wordfast.
 
-   The format is tab seperated so We are able to detect UTF-16 vs Latin1 
+   The format is tab separated so we are able to detect UTF-16 vs Latin-1 
    by searching for the occurance of a UTF-16 tab character and then
    continuing with the parsing.
 
