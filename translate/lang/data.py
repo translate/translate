@@ -168,6 +168,7 @@ expansion_factors = {
 import gettext
 import locale
 import re
+import os
 
 iso639 = {}
 """ISO 639 language codes"""
