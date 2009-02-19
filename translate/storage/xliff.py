@@ -385,6 +385,10 @@ class xlifffile(lisa.LISAfile):
         """returns the name of the given file"""
         return filenode.get("original")
 
+    def setfilename(self, filenode, filename):
+        """set the name of the given file"""
+        return filenode.set("original", filename)
+
     def getfilenames(self):
         """returns all filenames in this XLIFF file"""
         filenodes = self.document.getroot().iterchildren(self.namespaced("file"))

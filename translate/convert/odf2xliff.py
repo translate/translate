@@ -70,6 +70,10 @@ def convertodf(inputfile, outputfile, templates, engine):
     @contextmanager
     def store_context():
         store = factory.getobject(outputfile)
+        try:
+            store.setfilename(store.getfilenode('NoName'), inputfile.name)
+        except:
+            print "couldn't set origin filename"
         yield store
         store.save()
 
