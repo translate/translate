@@ -25,7 +25,6 @@ import sys
 
 available = False
 
-# Let us see what is available in our preferred order
 try:
     # Enchant
     from enchant import checker, DictNotFoundError
@@ -47,14 +46,6 @@ try:
             yield err.word, err.wordpos, err.suggest()
 
 except ImportError:
-    try:
-        # jToolkit might be installed and might give access to aspell, for 
-        # example
-        from jToolkit import spellcheck
-        available = True
-        check = spellcheck.check
-    except ImportError:
-
-        def check(text, lang):
-            return []
+    def check(text, lang):
+        return []
 
