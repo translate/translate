@@ -234,6 +234,9 @@ def test_endpunc():
     stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='vi'))
     assert passes(stdchecker.endpunc, "Do you want to delete the XX dialog?", u"Bạn có muốn xoá hộp thoại XX không?")
 
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='fr'))
+    assert passes(stdchecker.endpunc, "Header:", u"En-tête :")
+
 def test_endwhitespace():
     """tests endwhitespace"""
     stdchecker = checks.StandardChecker()
@@ -888,3 +891,10 @@ def test_credits():
     assert fails(gnomechecker.credits, "translator-credits", "Ekke, ekke!") 
     assert passes(gnomechecker.credits, "Your names", "Ekke, ekke!") 
     assert passes(gnomechecker.credits, "ROLES_OF_TRANSLATORS", "Ekke, ekke!") 
+
+def test_gconf():
+    """test GNOME gconf errors"""
+    gnomechecker = checks.GnomeChecker()
+    assert passes(gnomechecker.gconf, 'Blah "gconf_setting"', 'Bleh "gconf_setting"')
+    assert fails(gnomechecker.gconf, 'Blah "gconf_setting"', 'Bleh "gconf_steling"') 
+    
