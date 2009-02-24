@@ -248,6 +248,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
 
+#, fuzzy
 #| msgid "trea"
 msgid "tree"
 msgstr "boom"

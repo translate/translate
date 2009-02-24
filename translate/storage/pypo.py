@@ -605,8 +605,8 @@ class pounit(pocommon.pounit):
                 return "".join(lines)
         lines.extend(self.automaticcomments)
         lines.extend(self.sourcecomments)
-        add_prev_msgid_info(lines)
         lines.extend(self.typecomments)
+        add_prev_msgid_info(lines)
         if self.msgctxt:
             lines.append(self._getmsgpartstr("msgctxt", self.msgctxt))
         lines.append(self._getmsgpartstr("msgid", self.msgid, self.msgidcomments))
