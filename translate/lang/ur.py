@@ -36,7 +36,8 @@ class ur(common.Common):
         u",": u"،",
         u";": u"؛",
         u"?": u"؟",
-        u"%": u"٪",
+        #This causes problems with variables, so commented out for now:
+        #u"%": u"٪",
     }
 
     ignoretests = ["startcaps", "simplecaps"]
