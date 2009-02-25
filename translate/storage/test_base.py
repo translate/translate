@@ -3,7 +3,9 @@
 
 """tests for storage base classes"""
 
+from translate.misc.multistring import multistring
 from translate.storage import base
+from translate.storage.stringelem import strelem
 from py import test
 import os
 import warnings
@@ -126,6 +128,38 @@ class TestTranslationUnit:
         expected_notes = u"Test note 1\nTest note 2\nTest note 3"
         actual_notes = unit.getnotes()
         assert actual_notes == expected_notes
+
+    def test_strelem_get(self):
+        """Basic test for converting from multistrings to StringElem trees."""
+        src_multistring = multistring([
+            u'tėst', u'<b>string</b>'
+        ])
+        unit = self.UnitClass(src_multistring)
+        elems = unit.source_strelem
+        assert len(elems) == 2
+        assert len(elems[0].chunks) == 1
+        assert len(elems[1].chunks) == 3
+
+        assert unicode(elems[0]) == src_multistring.strings[0]
+        assert unicode(elems[1]) == src_multistring.strings[1]
+
+        assert unicode(elems[1].chunks[0]) == u'<b>'
+        assert unicode(elems[1].chunks[1]) == u'string'
+        assert unicode(elems[1].chunks[2]) == u'</b>'
+
+    def test_strelem_set(self):
+        """Basic test for converting from multistrings to StringElem trees."""
+        elems = [
+            strelem.parse(u'Tëst <x>string</x>'),
+            strelem.parse(u'Another test string.'),
+            strelem.parse('A non-Unicode string.')
+        ]
+        unit = self.UnitClass('')
+        unit.source_strelem = elems
+
+        assert unit.source.strings[0] == u'Tëst <x>string</x>'
+        assert unit.source.strings[1] == u'Another test string.'
+        assert unit.source.strings[2] == 'A non-Unicode string.'
 
 class TestTranslationStore(object):
     """Tests a TranslationStore.
