@@ -99,9 +99,7 @@ def parse_comment(parse_state, unit):
     next_line = parse_state.next_line
     if len(next_line) > 0 and next_line[0] == '#':
         next_char = next_line[1] 
-        if isspace(next_char):
-            append(unit.othercomments, parse_state.decode(next_line))
-        elif next_char == '.':
+        if next_char == '.':
             append(unit.automaticcomments, parse_state.decode(next_line))
         elif next_char == '|':
             # Read all the lines starting with #|
@@ -124,7 +122,7 @@ def parse_comment(parse_state, unit):
             # elsewhere to ensure we reuse the normal unit parsing code
             return None
         else:
-            return None
+            append(unit.othercomments, parse_state.decode(next_line))
         return parse_state.read_line()
     else:
         return None
