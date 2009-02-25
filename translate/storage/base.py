@@ -32,6 +32,7 @@ except:
     import pickle
 from exceptions import NotImplementedError
 import translate.i18n
+from translate.storage.stringelem import strelem
 from translate.storage.placeables.base import Placeable, as_string
 from translate.misc.typecheck import accepts, Self, IsOneOf
 from translate.misc.multistring import multistring
@@ -362,6 +363,28 @@ class TranslationUnit(object):
 
     xid = property(lambda self: None, lambda self, value: None)
     rid = property(lambda self: None, lambda self, value: None)
+
+    def _strelem_to_multistring(cls, elem_list):
+        return multistring([unicode(elem) for elem in elem_list])
+    _strelem_to_multistring = classmethod(_strelem_to_multistring)
+
+    def _multistring_to_strelem(cls, mulstring):
+        return [strelem.parse(s) for s in mulstring.strings]
+    _multistring_to_strelem = classmethod(_multistring_to_strelem)
+
+    @accepts(Self(), [[IsOneOf(str, unicode, strelem.StringElem)]])
+    def _set_strelem_source(self, value):
+        self.source = self._strelem_to_multistring(value)
+    def _get_strelem_source(self):
+        return self._multistring_to_strelem(self.source)
+    source_strelem = property(_get_strelem_source, _set_strelem_source)
+
+    @accepts(Self(), [[IsOneOf(str, unicode, strelem.StringElem)]])
+    def _set_strelem_target(self, value):
+        self.target = self._strelem_to_multistring(value)
+    def _get_strelem_target(self):
+        return self._multistring_to_strelem(self.target)
+    target_strelem = property(_get_strelem_target, _set_strelem_target)
 
 class TranslationStore(object):
     """Base class for stores for multiple translation units of type UnitClass."""
