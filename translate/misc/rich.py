@@ -21,15 +21,15 @@
 
 __all__ = ['only_strings', 'map_rich']
 
-from translate.storage.placeables import Placeable
+from translate.storage.placeables import StringElem
 
 def map_content(f, chunk):
-    """If chunk is a Placeable and it has content, we need
+    """If chunk is a StringElem and it has content, we need
     to modify the content as well.
 
     Note that this is NOT a pure function. For that, we would
     need to copy the placeables themselves."""
-    if isinstance(chunk, Placeable):
+    if isinstance(chunk, StringElem):
         if chunk.content is not None:
             chunk.content = map_entry(f, chunk.content)
     return chunk
@@ -44,7 +44,7 @@ def only_strings(f):
     and not Placeables. It's used to decorate the function
     passed to map_rich."""
     def decorated_f(arg):
-        if not isinstance(arg, Placeable):
+        if not isinstance(arg, StringElem):
             return f(arg)
         else:
             return arg

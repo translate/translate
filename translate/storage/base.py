@@ -32,8 +32,7 @@ except:
     import pickle
 from exceptions import NotImplementedError
 import translate.i18n
-from translate.storage.stringelem import strelem
-from translate.storage.placeables.base import Placeable, as_string
+from translate.storage.placeables import StringElem, parse as rich_parse
 from translate.misc.typecheck import accepts, Self, IsOneOf
 from translate.misc.multistring import multistring
 
@@ -323,68 +322,49 @@ class TranslationUnit(object):
         return newunit
     buildfromunit = classmethod(buildfromunit)
 
-    def _rich_to_multistring(cls, value):
-        """Convert a placeables representation to a multistring.
-        >>> rich_string = [['a', X('42'), 'b'], ['foo', G('7', ['bar'])]]
-        >>> TranslationUnit._rich_to_multistring(rich_string)
-        multistring('a*b', 'foobar')
-        """
-        return multistring([as_string(chunk_seq) for chunk_seq in value])
-    _rich_to_multistring = classmethod(_rich_to_multistring)
-
-    def _multistring_to_rich(cls, value):
-        """Convert a multistring or unicode to a placeables presentation.
-        >>> TranslationUnit._multistring_to_rich(multistring('a', 'b'))
-        [['a'], ['b']]
-        """
-        if isinstance(value, (unicode, str)):
-            return [[unicode(value)]]
-        else:
-            return [[string] for string in value.strings]
-    _multistring_to_rich = classmethod(_multistring_to_rich)
-
-    @accepts(Self(), [[IsOneOf(Placeable, unicode)]])
-    def _set_rich_source(self, value):
-        self.source = self._rich_to_multistring(value)
-
-    def _get_rich_source(self):
-        return self._multistring_to_rich(self.source)
-
-    rich_source = property(_get_rich_source, _set_rich_source)
-
-    @accepts(Self(), [[IsOneOf(Placeable, unicode)]])
-    def _set_rich_target(self, value):
-        self.target = self._rich_to_multistring(value)
-
-    def _get_rich_target(self):
-        return self._multistring_to_rich(self.target)
-
-    rich_target = property(_get_rich_target, _set_rich_target)
-
     xid = property(lambda self: None, lambda self, value: None)
     rid = property(lambda self: None, lambda self, value: None)
 
-    def _strelem_to_multistring(cls, elem_list):
+    def _rich_to_multistring(cls, elem_list):
+        """Convert a "rich" string tree to a C{multistring}.
+        >>> from translate.storage.placeables.interfaces import X
+        >>> rich = [StringElem(['foo', X(id='xxx', subelems=[' ']), 'bar'])]
+        >>> TranslationUnit._rich_to_multistring(rich)
+        multistring(u'foo bar')
+        """
         return multistring([unicode(elem) for elem in elem_list])
-    _strelem_to_multistring = classmethod(_strelem_to_multistring)
+    _rich_to_multistring = classmethod(_rich_to_multistring)
 
-    def _multistring_to_strelem(cls, mulstring):
-        return [strelem.parse(s) for s in mulstring.strings]
-    _multistring_to_strelem = classmethod(_multistring_to_strelem)
+    def _multistring_to_rich(cls, mulstring):
+        """Convert a multistring to a list of "rich" string trees.
+        >>> target = multistring([u'foo', u'bar', u'baz'])
+        >>> TranslationUnit._multistring_to_rich(target)
+        [<StringElem([<StringElem([u'foo'])>])>,
+         <StringElem([<StringElem([u'bar'])>])>,
+         <StringElem([<StringElem([u'baz'])>])>]
+        """
+        if isinstance(mulstring, multistring):
+            return [rich_parse(s) for s in mulstring.strings]
+        return [rich_parse(mulstring)]
+    _multistring_to_rich = classmethod(_multistring_to_rich)
 
-    @accepts(Self(), [[IsOneOf(str, unicode, strelem.StringElem)]])
-    def _set_strelem_source(self, value):
-        self.source = self._strelem_to_multistring(value)
-    def _get_strelem_source(self):
-        return self._multistring_to_strelem(self.source)
-    source_strelem = property(_get_strelem_source, _set_strelem_source)
+    @accepts(Self(), [[IsOneOf(str, unicode, StringElem)]])
+    def _set_rich_source(self, value):
+        self.source = self._rich_to_multistring(value)
+    def _get_rich_source(self):
+        return self._multistring_to_rich(self.source)
+    source_rich = property(_get_rich_source, _set_rich_source)
+    """ @see: _rich_to_multistring
+        @see: _multistring_to_rich"""
 
-    @accepts(Self(), [[IsOneOf(str, unicode, strelem.StringElem)]])
-    def _set_strelem_target(self, value):
-        self.target = self._strelem_to_multistring(value)
-    def _get_strelem_target(self):
-        return self._multistring_to_strelem(self.target)
-    target_strelem = property(_get_strelem_target, _set_strelem_target)
+    @accepts(Self(), [[IsOneOf(str, unicode, StringElem)]])
+    def _set_rich_target(self, value):
+        self.target = self._rich_to_multistring(value)
+    def _get_rich_target(self):
+        return self._multistring_to_rich(self.target)
+    target_rich = property(_get_rich_target, _set_rich_target)
+    """ @see: _rich_to_multistring
+        @see: _multistring_to_rich"""
 
 class TranslationStore(object):
     """Base class for stores for multiple translation units of type UnitClass."""

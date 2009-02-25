@@ -3,7 +3,7 @@
 #
 # Copyright 2009 Zuza Software Foundation
 #
-# This file is part of Virtaal.
+# This file is part of the Translate Toolkit.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,39 +18,39 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-import strelem
+from translate.storage.placeables import base, parse
 
 
-class TestStrings:
+class TestStringElem:
     def __init__(self):
         self.ORIGSTR = u'Ģët <a href="http://www.example.com" alt="Ģët &brand;!">&brandLong;</a>'
-        self.elem = strelem.parse(self.ORIGSTR)
+        self.elem = parse(self.ORIGSTR)
 
     def test_parse(self):
         assert unicode(self.elem) == self.ORIGSTR
 
     def test_tree(self):
-        assert len(self.elem.chunks) == 4
-        assert unicode(self.elem.chunks[0]) == u'Ģët '
-        assert unicode(self.elem.chunks[1]) == u'<a href="http://www.example.com" alt="Ģët &brand;!">'
-        assert unicode(self.elem.chunks[2]) == u'&brandLong;'
-        assert unicode(self.elem.chunks[3]) == u'</a>'
+        assert len(self.elem.subelems) == 4
+        assert unicode(self.elem.subelems[0]) == u'Ģët '
+        assert unicode(self.elem.subelems[1]) == u'<a href="http://www.example.com" alt="Ģët &brand;!">'
+        assert unicode(self.elem.subelems[2]) == u'&brandLong;'
+        assert unicode(self.elem.subelems[3]) == u'</a>'
 
-        assert len(self.elem.chunks[0].chunks) == 1 and self.elem.chunks[0].chunks[0] == u'Ģët '
-        assert len(self.elem.chunks[1].chunks) == 3
-        assert len(self.elem.chunks[2].chunks) == 1 and self.elem.chunks[2].chunks[0] == u'&brandLong;'
-        assert len(self.elem.chunks[3].chunks) == 1 and self.elem.chunks[3].chunks[0] == u'</a>'
+        assert len(self.elem.subelems[0].subelems) == 1 and self.elem.subelems[0].subelems[0] == u'Ģët '
+        assert len(self.elem.subelems[1].subelems) == 3
+        assert len(self.elem.subelems[2].subelems) == 1 and self.elem.subelems[2].subelems[0] == u'&brandLong;'
+        assert len(self.elem.subelems[3].subelems) == 1 and self.elem.subelems[3].subelems[0] == u'</a>'
 
-        chunks = self.elem.chunks[1].chunks # That's the "<a href... >" part
-        assert unicode(chunks[0]) == u'<a href="http://www.example.com" '
-        assert unicode(chunks[1]) == u'alt="Ģët &brand;!"'
-        assert unicode(chunks[2]) == u'>'
+        subelems = self.elem.subelems[1].subelems # That's the "<a href... >" part
+        assert unicode(subelems[0]) == u'<a href="http://www.example.com" '
+        assert unicode(subelems[1]) == u'alt="Ģët &brand;!"'
+        assert unicode(subelems[2]) == u'>'
 
-        chunks = self.elem.chunks[1].chunks[1].chunks # The 'alt="Ģët &brand;!"' part
-        assert len(chunks) == 3
-        assert unicode(chunks[0]) == u'alt="Ģët '
-        assert unicode(chunks[1]) == u'&brand;'
-        assert unicode(chunks[2]) == u'!"'
+        subelems = self.elem.subelems[1].subelems[1].subelems # The 'alt="Ģët &brand;!"' part
+        assert len(subelems) == 3
+        assert unicode(subelems[0]) == u'alt="Ģët '
+        assert unicode(subelems[1]) == u'&brand;'
+        assert unicode(subelems[2]) == u'!"'
 
     def test_add(self):
         assert self.elem + ' ' == self.ORIGSTR + ' '
@@ -70,7 +70,7 @@ class TestStrings:
 
     def test_iter(self):
         for chunk in self.elem:
-            assert issubclass(chunk.__class__, strelem.StringElem)
+            assert issubclass(chunk.__class__, base.StringElem)
 
     def test_len(self):
         assert len(self.elem) == len(self.ORIGSTR)
@@ -81,15 +81,15 @@ class TestStrings:
         assert 2 * self.elem == 2 * self.ORIGSTR
 
     def test_flatten(self):
-        assert u''.join(unicode(i) for i in self.elem.flatten()) == self.ORIGSTR
+        assert u''.join([unicode(i) for i in self.elem.flatten()]) == self.ORIGSTR
 
 
 if __name__ == '__main__':
-    test = TestStrings()
+    test = TestStringElem()
     for method in dir(test):
         if method.startswith('test_') and callable(getattr(test, method)):
             getattr(test, method)()
 
     print 'Test string:   %s' % (test.ORIGSTR)
-    print 'Parsed string: %s' % (str(test.elem))
+    print 'Parsed string: %s' % (unicode(test.elem))
     test.elem.print_tree()

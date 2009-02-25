@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2006-2007 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -21,25 +21,25 @@
 #
 
 from lxml import etree
-from translate.storage.placeables import lisa
-from translate.storage.placeables import X, Bx, Ex, G, Bpt, Ept, Ph, It, Sub
+from translate.storage.placeables import lisa, StringElem
+from translate.storage.placeables.xliff import X, G
 
 def test_extract_chunks():
     source = etree.fromstring(u'<source>a<x id="foo[1]/bar[1]/baz[1]"/></source>')
-    chunks = lisa.extract_chunks(source)
-    assert chunks == [u'a', X(u'foo[1]/bar[1]/baz[1]')]
+    elem = lisa.extract_chunks(source)
+    assert elem.subelems == [u'a', X(id=u'foo[1]/bar[1]/baz[1]')]
 
     source = etree.fromstring(u'<source>a<x id="foo[1]/bar[1]/baz[1]"/>é</source>')
-    chunks = lisa.extract_chunks(source)
-    assert chunks == [u'a', X(u'foo[1]/bar[1]/baz[1]'), u'é']
+    elem = lisa.extract_chunks(source)
+    assert elem.subelems == [u'a', X(id=u'foo[1]/bar[1]/baz[1]'), u'é']
 
     source = etree.fromstring(u'<source>a<g id="foo[2]/bar[2]/baz[2]">b<x id="foo[1]/bar[1]/baz[1]"/>c</g>é</source>')
-    chunks = lisa.extract_chunks(source)
-    assert chunks == [u'a', G(u'foo[2]/bar[2]/baz[2]', [u'b', X(id = u'foo[1]/bar[1]/baz[1]'), u'c']), u'é']
+    elem = lisa.extract_chunks(source)
+    assert elem.subelems == [u'a', G(id=u'foo[2]/bar[2]/baz[2]', subelems=[u'b', X(id=u'foo[1]/bar[1]/baz[1]'), u'c']), u'é']
 
 def test_chunk_list():
-    left  = ['a', G('foo[2]/bar[2]/baz[2]', ['b', X(id = 'foo[1]/bar[1]/baz[1]'), 'c']), 'é']
-    right = ['a', G('foo[2]/bar[2]/baz[2]', ['b', X(id = 'foo[1]/bar[1]/baz[1]'), 'c']), 'é']
+    left  = StringElem(['a', G(id='foo[2]/bar[2]/baz[2]', subelems=['b', X(id='foo[1]/bar[1]/baz[1]'), 'c']), 'é'])
+    right = StringElem(['a', G(id='foo[2]/bar[2]/baz[2]', subelems=['b', X(id='foo[1]/bar[1]/baz[1]'), 'c']), 'é'])
     assert left == right
 
 def test_set_insert_into_dom():
@@ -52,23 +52,22 @@ def test_set_insert_into_dom():
     assert etree.tostring(source, encoding = 'UTF-8') == '<source>aé</source>'
 
     source = etree.Element(u'source')
-    lisa.insert_into_dom(source, [X('foo[1]/bar[1]/baz[1]')])
+    lisa.insert_into_dom(source, [X(id='foo[1]/bar[1]/baz[1]')])
     assert etree.tostring(source, encoding = 'UTF-8') == '<source><x id="foo[1]/bar[1]/baz[1]"/></source>'
 
     source = etree.Element(u'source')
-    lisa.insert_into_dom(source, ['a', X('foo[1]/bar[1]/baz[1]')])
+    lisa.insert_into_dom(source, ['a', X(id='foo[1]/bar[1]/baz[1]')])
     assert etree.tostring(source, encoding = 'UTF-8') == '<source>a<x id="foo[1]/bar[1]/baz[1]"/></source>'
-    
+
     source = etree.Element(u'source')
-    lisa.insert_into_dom(source, ['a', X('foo[1]/bar[1]/baz[1]'), 'é'])
+    lisa.insert_into_dom(source, ['a', X(id='foo[1]/bar[1]/baz[1]'), 'é'])
     assert etree.tostring(source, encoding = 'UTF-8') == '<source>a<x id="foo[1]/bar[1]/baz[1]"/>é</source>'
 
     source = etree.Element(u'source')
-    lisa.insert_into_dom(source, ['a', G('foo[2]/bar[2]/baz[2]', ['b', X(id = 'foo[1]/bar[1]/baz[1]'), 'c']), 'é'])
+    lisa.insert_into_dom(source, ['a', G(id='foo[2]/bar[2]/baz[2]', subelems=['b', X(id='foo[1]/bar[1]/baz[1]'), 'c']), 'é'])
     assert etree.tostring(source, encoding = 'UTF-8') == '<source>a<g id="foo[2]/bar[2]/baz[2]">b<x id="foo[1]/bar[1]/baz[1]"/>c</g>é</source>'
 
 if __name__ == '__main__':
     test_chunk_list()
     test_extract_chunks()
     test_set_insert_into_dom()
-    

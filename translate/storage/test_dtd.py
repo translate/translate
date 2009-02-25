@@ -34,6 +34,12 @@ def test_removeinvalidamp():
 class TestDTDUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = dtd.dtdunit
 
+    def test_rich_get(self):
+        pass
+
+    def test_rich_set(self):
+        pass
+
     
 class TestDTD(test_monolingual.TestMonolingualStore):
     StoreClass = dtd.dtdfile

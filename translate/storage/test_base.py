@@ -5,7 +5,7 @@
 
 from translate.misc.multistring import multistring
 from translate.storage import base
-from translate.storage.stringelem import strelem
+from translate.storage.placeables import parse as rich_parse
 from py import test
 import os
 import warnings
@@ -129,37 +129,44 @@ class TestTranslationUnit:
         actual_notes = unit.getnotes()
         assert actual_notes == expected_notes
 
-    def test_strelem_get(self):
+    def test_rich_get(self):
         """Basic test for converting from multistrings to StringElem trees."""
-        src_multistring = multistring([
-            u'tėst', u'<b>string</b>'
-        ])
-        unit = self.UnitClass(src_multistring)
-        elems = unit.source_strelem
-        assert len(elems) == 2
-        assert len(elems[0].chunks) == 1
-        assert len(elems[1].chunks) == 3
+        target_mstr = multistring([u'tėst', u'<b>string</b>'])
+        unit = self.UnitClass(multistring([u'a', u'b']))
+        unit.target = target_mstr
+        elems = unit.target_rich
 
-        assert unicode(elems[0]) == src_multistring.strings[0]
-        assert unicode(elems[1]) == src_multistring.strings[1]
+        if unit.hasplural():
+            assert len(elems) == 2
+            assert len(elems[0].subelems) == 1
+            assert len(elems[1].subelems) == 3
 
-        assert unicode(elems[1].chunks[0]) == u'<b>'
-        assert unicode(elems[1].chunks[1]) == u'string'
-        assert unicode(elems[1].chunks[2]) == u'</b>'
+            assert unicode(elems[0]) == target_mstr.strings[0]
+            assert unicode(elems[1]) == target_mstr.strings[1]
 
-    def test_strelem_set(self):
+            assert unicode(elems[1].subelems[0]) == u'<b>'
+            assert unicode(elems[1].subelems[1]) == u'string'
+            assert unicode(elems[1].subelems[2]) == u'</b>'
+        else:
+            assert len(elems[0].subelems) == 1
+            assert unicode(elems[0]) == target_mstr.strings[0]
+
+    def test_rich_set(self):
         """Basic test for converting from multistrings to StringElem trees."""
         elems = [
-            strelem.parse(u'Tëst <x>string</x>'),
-            strelem.parse(u'Another test string.'),
-            strelem.parse('A non-Unicode string.')
+            rich_parse(u'Tëst <x>string</x>'),
+            rich_parse(u'Another test string.'),
+            rich_parse('A non-Unicode string.')
         ]
-        unit = self.UnitClass('')
-        unit.source_strelem = elems
+        unit = self.UnitClass(multistring([u'a', u'b']))
+        unit.target_rich = elems
 
-        assert unit.source.strings[0] == u'Tëst <x>string</x>'
-        assert unit.source.strings[1] == u'Another test string.'
-        assert unit.source.strings[2] == 'A non-Unicode string.'
+        if unit.hasplural():
+            assert unit.target.strings[0] == u'Tëst <x>string</x>'
+            assert unit.target.strings[1] == u'Another test string.'
+            assert unit.target.strings[2] == 'A non-Unicode string.'
+        else:
+            assert unit.target == u'Tëst <x>string</x>'
 
 class TestTranslationStore(object):
     """Tests a TranslationStore.

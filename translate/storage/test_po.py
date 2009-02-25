@@ -5,7 +5,6 @@ from translate.storage import po
 from translate.storage import test_base
 from translate.misc import wStringIO
 from translate.misc.multistring import multistring
-from translate.storage.placeables import X, G
 from py.test import raises
 
 def test_roundtrip_quoting():

@@ -74,5 +74,6 @@ class TestWFUnit(test_base.TestTranslationUnit):
         unit.target = "Rest"
         assert unit.istranslated()
 
+
 class TestWFFile(test_base.TestTranslationStore):
     StoreClass = wf.WordfastTMFile

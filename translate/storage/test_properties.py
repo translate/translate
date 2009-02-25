@@ -18,6 +18,12 @@ class TestPropUnit(test_monolingual.TestMonolingualUnit):
         """
         pass
 
+    def test_rich_get(self):
+        pass
+
+    def test_rich_set(self):
+        pass
+
 class TestProp(test_monolingual.TestMonolingualStore):
     StoreClass = properties.propfile
     

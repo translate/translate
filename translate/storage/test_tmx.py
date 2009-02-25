@@ -7,6 +7,7 @@ from translate.misc import wStringIO
 class TestTMXUnit(test_base.TestTranslationUnit):
     UnitClass = tmx.tmxunit
 
+
 class TestTMXUnitFromParsedString(TestTMXUnit):
     tmxsource = '''<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE tmx

@@ -14,6 +14,12 @@ class TestMonolingualUnit(test_base.TestTranslationUnit):
     def test_target(self):
         pass
 
+    def test_rich_get(self):
+        pass
+
+    def test_rich_set(self):
+        pass
+
 
 class TestMonolingualStore(test_base.TestTranslationStore):
     StoreClass = base.TranslationStore

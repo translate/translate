@@ -1,132 +1,200 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2008 Zuza Software Foundation
-# 
-# This file is part of translate.
+# Copyright 2008-2009 Zuza Software Foundation
 #
-# translate is free software; you can redistribute it and/or modify
+# This file is part of the Translate Toolkit.
+#
+# This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
-# translate is distributed in the hope that it will be useful,
+#
+# This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with translate; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""This module implements basic functionality to support placeables.
-
-A placeable is used to represent things like:
-1. substitutions
-     for example, in ODF, footnotes appear in the ODF xml
-     where they are defined; so if we extract a paragraph with some
-     footnotes, the translator will have a lot of additional XML to with;
-     so we separate the footnotes out into separate translation units and
-     mark their positions in the original text with placeables.
-2. hiding of inline formatting data
-     the translator doesn't want to have to deal with all the weird
-     formatting conventions of wherever the text came from.
-3. marking variables
-     This is an old issue - translators translate variable names which
-     should remain untranslated. We can wrap placeables around variable
-     names to avoid this.
-
-The placeables model follows the XLIFF standard's list of placeables.
-Please refer to the XLIFF specification to get a better understanding.
+"""
+Contains the base L{StringElem} class that represents a node in a parsed rich-
+string tree. It is the base class of all placeables.
 """
 
-__all__ = ['Placeable', 'Bpt', 'Ept', 'X', 'Bx', 'Ex', 'G', 'It', 'Sub', 'Ph']
+import sys
 
-def as_string(chunk_seq):
-    return u''.join([unicode(chunk) for chunk in chunk_seq])
-    
-class Placeable(object):
-    has_content = True
-    
-    def __init__(self, id, content=None, xid=None, rid=None):
-        self.id      = id
-        self.xid     = xid
-        self.rid     = rid
-        self.content = content
+
+__all__ = ['StringElem']
+
+
+class StringElem(object):
+    """
+    This class represents a sub-tree of a string parsed into a rich structure.
+    It is also the base class of all placeables.
+    """
+
+    subelems = []
+    """The sub-elements that make up this this string."""
+    iseditable = True
+    """Whether this string should be changable by the user. Not used at the moment."""
+    isvisible = True
+    """Whether this string should be visible to the user. Not used at the moment."""
+
+    # INITIALIZERS #
+    def __init__(self, subelems=None, id=None, iseditable=True, isvisible=True, rid=None, xid=None):
+        if subelems is None:
+            subelems = []
+
+        for elem in subelems:
+            if not isinstance(elem, (str, unicode, StringElem)):
+                raise ValueError(elem)
+
+        self.subelems   = subelems
+        self.id         = id
+        self.iseditable = iseditable
+        self.isvisible  = isvisible
+        self.rid        = rid
+        self.xid        = xid
+
+    # SPECIAL METHODS #
+    def __add__(self, rhs):
+        """Emulate the C{unicode} class."""
+        return unicode(self) + rhs
+
+    def __contains__(self, item):
+        """Emulate the C{unicode} class."""
+        return item in unicode(self)
+
+    def __eq__(self, rhs):
+        """@returns: C{True} if (and only if) all members as well as sub-trees
+            are equal. False otherwise."""
+        if not isinstance(rhs, StringElem):
+            return False
+
+        return  self.id            == rhs.id            and \
+                self.iseditable    == rhs.iseditable    and \
+                self.isvisible     == rhs.isvisible     and \
+                self.rid           == rhs.rid           and \
+                self.xid           == rhs.xid           and \
+                len(self.subelems) == len(rhs.subelems) and \
+                not [i for i in range(len(self.subelems)) if self.subelems[i] != rhs.subelems[i]]
+
+    def __ge__(self, rhs):
+        """Emulate the C{unicode} class."""
+        return unicode(self) >= rhs
+
+    def __getitem__(self, i):
+        """Emulate the C{unicode} class."""
+        return unicode(self)[i]
+
+    def __getslice__(self, i, j):
+        """Emulate the C{unicode} class."""
+        return unicode(self)[i:j]
+
+    def __gt__(self, rhs):
+        """Emulate the C{unicode} class."""
+        return unicode(self) > rhs
+
+    def __iter__(self):
+        """Create an iterator of this element's sub-elements."""
+        for elem in self.subelems:
+            yield elem
+
+    def __le__(self, rhs):
+        """Emulate the C{unicode} class."""
+        return unicode(self) <= rhs
+
+    def __len__(self):
+        """Emulate the C{unicode} class."""
+        return len(unicode(self))
+
+    def __lt__(self, rhs):
+        """Emulate the C{unicode} class."""
+        return unicode(self) < rhs
+
+    def __mul__(self, rhs):
+        """Emulate the C{unicode} class."""
+        return unicode(self) * rhs
+
+    def __ne__(self, rhs):
+        return not self.__eq__(rhs)
+
+    def __radd__(self, lhs):
+        """Emulate the C{unicode} class."""
+        return self + lhs
+
+    def __rmul__(self, lhs):
+        """Emulate the C{unicode} class."""
+        return self * lhs
+
+    def __repr__(self):
+        elemstr = ', '.join([repr(elem) for elem in self.subelems])
+        return '<%(class)s(%(id)s%(rid)s%(xid)s[%(subs)s])>' % {
+            'class': self.__class__.__name__,
+            'id':  self.id  is not None and 'id="%s" '  % (self.id) or '',
+            'rid': self.rid is not None and 'rid="%s" ' % (self.rid) or '',
+            'xid': self.xid is not None and 'xid="%s" ' % (self.xid) or '',
+            'subs': elemstr
+        }
+
+    def __str__(self):
+        if not self.isvisible:
+            return ''
+        return ''.join([str(elem) for elem in self.subelems])
 
     def __unicode__(self):
-        if self.has_content:
-            return as_string(self.content)
-        else:
-            return u'\ufffc'
-        
-    def __repr__(self):
-        if self.has_content:
-            return u'<%(tagname)s id=%(id)s>%(content)s</%(tagname)s>' % \
-                {'tagname': self.__class__.__name__,
-                 'id':      self.id,
-                 'content': as_string(self.content)}
-        else:
-            return u'<%(tagname)s id=%(id)s />' % {'tagname': self.__class__.__name__, 
-                                                   'id': self.id }
-        
-    def __eq__(self, other):
-        return self.id        == other.id        and \
-               self.content   == other.content   and \
-               self.xid       == other.xid       and \
-               self.rid       == other.rid       and \
-               self.__class__ == other.__class__
+        if not self.isvisible:
+            return u''
+        return u''.join([unicode(elem) for elem in self.subelems])
 
-class Delimiter(object):
-    pass
+    # METHODS #
+    def encode(self, encoding=sys.getdefaultencoding()):
+        """More C{unicode} class emulation."""
+        return unicode(self).encode(encoding)
 
-class PairedDelimiter(object):
-    pass
+    def flatten(self):
+        """Flatten the tree by returning a depth-first traversal over the tree."""
+        subelems = []
+        for elem in self.subelems:
+            if not isinstance(elem, StringElem):
+                continue
 
-class MaskingPlaceable(Placeable):
-    def __init__(self, id, content, masked_code):
-        raise NotImplementedError
+            if len(elem.subelems) > 1:
+                subelems.extend(elem.flatten())
+            else:
+                subelems.append(elem)
+        return subelems
 
-class Bpt(MaskingPlaceable, PairedDelimiter):
-    pass
+    @classmethod
+    def parse(cls, pstr):
+        """Parse an instance of this class from the start of the given string.
+            This method should be implemented by any sub-class that wants to
+            parseable by L{translate.storage.placeables.parse}.
 
-class Ept(MaskingPlaceable, PairedDelimiter):
-    pass
+            @type  pstr: unicode
+            @param pstr: The string to parse into an instance of this class.
+            @returns: An instance of the current class, or C{None} if the
+                string not parseable by this class."""
+        return cls(pstr)
 
-class Ph(MaskingPlaceable):
-    pass
+    def print_tree(self, indent=0):
+        """Print the tree from the current instance's point in an indented
+            manner."""
+        indent_prefix = " " * indent * 2
+        print "%s%s [%s]" % (indent_prefix, self.__class__.__name__, unicode(self))
+        for elem in self.subelems:
+            if isinstance(elem, StringElem):
+                elem.print_tree(indent+1)
+            else:
+                print '%s%s[%s]' % (indent_prefix, indent_prefix, elem)
 
-class It(MaskingPlaceable, Delimiter):
-    pass
-        
-class ReplacementPlaceable(Placeable):
-    pass
+    def transform(self, *args, **kwargs):
+        """Transform the sub-tree according to some class-specific needs.
+            This method should be either overridden in implementing sub-classes
+            or dynamically replaced by specific applications.
 
-class G(ReplacementPlaceable):
-    pass
-
-class Bx(ReplacementPlaceable, PairedDelimiter):
-    has_content = False
-
-    def __init__(self, id, xid = None):
-        ReplacementPlaceable.__init__(self, id, content = None, xid = xid)
-
-class Ex(ReplacementPlaceable, PairedDelimiter):
-    has_content = False
-
-    def __init__(self, id, xid = None):
-        ReplacementPlaceable.__init__(self, id, content = None, xid = xid)
-
-class X(ReplacementPlaceable, Delimiter):
-    has_content = False
-
-    def __init__(self, id, xid = None):
-        ReplacementPlaceable.__init__(self, id, content = None, xid = xid)
-
-class SubflowPlaceable(Placeable):
-    pass
-
-class Sub(SubflowPlaceable):
-    pass
-
+            @returns: The transformed Unicode string representing the sub-tree.
+            """
+        return u''.join([elem.translate(*args, **kwargs) for elem in self.subelems])
