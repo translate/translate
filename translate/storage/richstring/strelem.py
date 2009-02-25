@@ -91,17 +91,35 @@ class StringElem(unicode):
     def __str__(self):
         if not self.isvisible:
             return ''
-        return ''.join([str(chunk) for chunk in self.chunks])
+        return ''.join([unicode(chunk).encode('utf-8') for chunk in self.chunks])
 
     def __unicode__(self):
         if not self.isvisible:
             return u''
-        return u''.join([str(chunk).decode('utf-8') for chunk in self.chunks])
+        return u''.join([unicode(chunk) for chunk in self.chunks])
 
     # METHODS #
     def flatten(self):
         """Flatten the tree by returning a depth-first search over the tree."""
-        pass
+        chunks = []
+        for chunk in self.chunks:
+            if not isinstance(chunk, StringElem):
+                continue
+
+            if len(chunk.chunks) > 1:
+                chunks.extend(chunk.flatten())
+            else:
+                chunks.append(chunk)
+        return chunks
+
+    @classmethod
+    def parse(cls, pstr):
+        """Parse an instance of this class from the start of the given string.
+            @type  pstr: unicode
+            @param pstr: The string to parse into an instance of this class.
+            @returns: An instance of the current class, or C{None} if the
+                string not parseable by this class."""
+        return cls(pstr)
 
     def print_tree(self, indent=0):
         """Print the tree from the current instance's point in an indented
@@ -119,22 +137,87 @@ class StringElem(unicode):
 
 
 class GenericPlaceable(StringElem):
+    parse = None
     def __init__(self, *args):
         super(GenericPlaceable, self).__init__(iseditable=False, *args)
 
 
 class InvisiblePlaceable(StringElem):
+    parse = None
     def __init__(self, *args):
         super(InvisiblePlaceable, self).__init__(iseditable=False, isvisible=False, *args)
 
 
 class AltAttrPlaceable(GenericPlaceable):
-    pass
+    @classmethod
+    def parse(cls, pstr):
+        """@see: StringElem.parse"""
+        if pstr.startswith('alt="') and pstr.find('"', 5) > 0:
+            return cls(pstr[:pstr.find('"', 5)+1])
+        return None
 
 
 class XMLElementPlaceable(GenericPlaceable):
-    pass
+    @classmethod
+    def parse(cls, pstr):
+        """@see: StringElem.parse"""
+        if pstr.startswith('&') and pstr.index(';') > 0:
+            return cls(pstr[:pstr.index(';')+1])
+        return None
 
 
 class XMLTagPlaceable(GenericPlaceable):
-    pass
+    @classmethod
+    def parse(cls, pstr):
+        """@see: StringElem.parse"""
+        if pstr.startswith('<') and pstr.index('>') > 0:
+            bracket_count = 0
+            for i in range(len(pstr)):
+                if pstr[i] == '>':
+                    i += 1
+                    bracket_count -= 1
+                elif pstr[i] == '<':
+                    bracket_count += 1
+                if bracket_count == 0:
+                    break
+            if i <= len(pstr):
+                return cls(pstr[:i])
+            return None
+
+
+parsers = []
+for local in locals().values():
+    if hasattr(local, '__bases__') and issubclass(local, StringElem) and local is not StringElem and local.parse is not None:
+        parsers.append(local.parse)
+
+def parse(parsable_string, parse_funcs=parsers, i=0):
+    elements = []
+    last_used = 0
+    while i < len(parsable_string):
+        elem_parsed = False
+
+        for parser in parse_funcs:
+            elem = parser(parsable_string[i:])
+            if unicode(elem) == parsable_string:
+                return elem
+            if elem is not None:
+                elem_parsed = True
+                if parsable_string[last_used:i]:
+                    elements.append(StringElem(parsable_string[last_used:i]))
+
+                subtree = parse(unicode(elem), i=1)
+                if len(subtree.chunks) > 1:
+                    elem.chunks = subtree.chunks
+                elements.append(elem)
+
+                i += len(elem)
+                last_used = i
+                break
+
+        if not elem_parsed:
+            i += 1
+
+    if last_used < len(parsable_string):
+        elements.append(StringElem(parsable_string[last_used:]))
+
+    return StringElem(*elements)
