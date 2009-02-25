@@ -18,8 +18,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+import sys
 
-class StringElem(unicode):
+
+class StringElem(object):
     chunks = []
     """The sub-elements that make up this this string."""
     iseditable = True
@@ -37,11 +39,6 @@ class StringElem(unicode):
 
         self.iseditable = kwargs.get('iseditable', True)
         self.isvisible = kwargs.get('isvisible', True)
-
-    def __new__(cls, *args, **kwargs):
-        # This is necessary to override str.__new__(), which can't handle extra parameters
-        instance = super(StringElem, cls).__new__(cls)
-        return instance
 
     # SPECIAL METHODS #
     def __add__(self, rhs):
@@ -91,7 +88,7 @@ class StringElem(unicode):
     def __str__(self):
         if not self.isvisible:
             return ''
-        return ''.join([unicode(chunk).encode('utf-8') for chunk in self.chunks])
+        return ''.join([chunk for chunk in self.chunks])
 
     def __unicode__(self):
         if not self.isvisible:
@@ -99,6 +96,9 @@ class StringElem(unicode):
         return u''.join([unicode(chunk) for chunk in self.chunks])
 
     # METHODS #
+    def encode(self, encoding=sys.getdefaultencoding()):
+        return unicode(self).encode(encoding)
+
     def flatten(self):
         """Flatten the tree by returning a depth-first search over the tree."""
         chunks = []
