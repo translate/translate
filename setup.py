@@ -29,10 +29,22 @@ infofiles = [(join(sitepackages,'translate'),
              [join('translate',filename) for filename in 'ChangeLog', 'COPYING', 'LICENSE', 'README'])]
 initfiles = [(join(sitepackages,'translate'),[join('translate','__init__.py')])]
 
-subpackages = ["convert", "misc", "storage", join("storage", "versioncontrol"), 
-        join("storage", "xml_extract"), join("storage", "placeables"),
-        "filters", "tools", "services", "search", join("search", "indexing"), 
-        "lang", join("misc", "typecheck")]
+subpackages = [
+        "convert",
+        "filters",
+        "lang",
+        "misc",
+        join("misc", "typecheck"),
+        "storage",
+        join("storage", "placeables"),
+        join("storage", "richstring"),
+        join("storage", "versioncontrol"),
+        join("storage", "xml_extract"),
+        "search",
+        join("search", "indexing"),
+        "services",
+        "tools",
+        ]
 # TODO: elementtree doesn't work in sdist, fix this
 packages = ["translate"]
 
