@@ -23,50 +23,73 @@ import strelem
 
 class TestStrings:
     def __init__(self):
-        self.origstr = u'Ģët <a href="http://www.example.com" alt="Ģët &brand;!">&brandLong;</a>'
-        self.richstr = strelem.parse(self.origstr)
+        self.ORIGSTR = u'Ģët <a href="http://www.example.com" alt="Ģët &brand;!">&brandLong;</a>'
+        self.elem = strelem.parse(self.ORIGSTR)
 
     def test_parse(self):
-        assert unicode(self.richstr) == self.origstr
+        assert unicode(self.elem) == self.ORIGSTR
+
+    def test_tree(self):
+        assert len(self.elem.chunks) == 4
+        assert unicode(self.elem.chunks[0]) == u'Ģët '
+        assert unicode(self.elem.chunks[1]) == u'<a href="http://www.example.com" alt="Ģët &brand;!">'
+        assert unicode(self.elem.chunks[2]) == u'&brandLong;'
+        assert unicode(self.elem.chunks[3]) == u'</a>'
+
+        assert len(self.elem.chunks[0].chunks) == 1 and self.elem.chunks[0].chunks[0] == u'Ģët '
+        assert len(self.elem.chunks[1].chunks) == 3
+        assert len(self.elem.chunks[2].chunks) == 1 and self.elem.chunks[2].chunks[0] == u'&brandLong;'
+        assert len(self.elem.chunks[3].chunks) == 1 and self.elem.chunks[3].chunks[0] == u'</a>'
+
+        chunks = self.elem.chunks[1].chunks # That's the "<a href... >" part
+        assert unicode(chunks[0]) == u'<a href="http://www.example.com" '
+        assert unicode(chunks[1]) == u'alt="Ģët &brand;!"'
+        assert unicode(chunks[2]) == u'>'
+
+        chunks = self.elem.chunks[1].chunks[1].chunks # The 'alt="Ģët &brand;!"' part
+        assert len(chunks) == 3
+        assert unicode(chunks[0]) == u'alt="Ģët '
+        assert unicode(chunks[1]) == u'&brand;'
+        assert unicode(chunks[2]) == u'!"'
 
     def test_add(self):
-        assert self.richstr + ' ' == self.origstr + ' '
-        # ... and __radd__()... doesn't work
-        #assert ' ' + self.richstr == ' ' + self.origstr
+        assert self.elem + ' ' == self.ORIGSTR + ' '
+        # ... and __radd__() ... doesn't work
+        #assert ' ' + self.elem == ' ' + self.ORIGSTR
 
     def test_contains(self):
-        assert 'href' in self.richstr
-        assert u'hrȩf' not in self.richstr
+        assert 'href' in self.elem
+        assert u'hrȩf' not in self.elem
 
     def test_getitem(self):
-        assert self.richstr[0] == u'Ģ'
-        assert self.richstr[2] == 't'
+        assert self.elem[0] == u'Ģ'
+        assert self.elem[2] == 't'
 
     def test_getslice(self):
-        assert self.richstr[0:3] == u'Ģët'
+        assert self.elem[0:3] == u'Ģët'
 
     def test_iter(self):
-        for chunk in self.richstr:
+        for chunk in self.elem:
             assert issubclass(chunk.__class__, strelem.StringElem)
 
     def test_len(self):
-        assert len(self.richstr) == len(self.origstr)
+        assert len(self.elem) == len(self.ORIGSTR)
 
     def test_mul(self):
-        assert self.richstr * 2 == self.origstr * 2
+        assert self.elem * 2 == self.ORIGSTR * 2
         # ... and __rmul__()
-        assert 2 * self.richstr == 2 * self.origstr
+        assert 2 * self.elem == 2 * self.ORIGSTR
 
     def test_flatten(self):
-        assert u''.join(unicode(i) for i in self.richstr.flatten()) == self.origstr
+        assert u''.join(unicode(i) for i in self.elem.flatten()) == self.ORIGSTR
 
 
 if __name__ == '__main__':
-    test = origstrings()
+    test = TestStrings()
     for method in dir(test):
         if method.startswith('test_') and callable(getattr(test, method)):
             getattr(test, method)()
 
-    print 'Test string:   %s' % (test.origstr)
-    print 'Parsed string: %s' % (str(test.richstr))
-    test.richstr.print_tree()
+    print 'Test string:   %s' % (test.ORIGSTR)
+    print 'Parsed string: %s' % (str(test.elem))
+    test.elem.print_tree()
