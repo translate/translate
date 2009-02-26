@@ -154,6 +154,19 @@ class StringElem(object):
         """More C{unicode} class emulation."""
         return unicode(self).encode(encoding)
 
+    def elem_at_offset(self, offset):
+        """Get the C{StringElem} in the tree that contains the string rendered
+            at the given offset."""
+        if offset < 0 or offset > len(self):
+            return None
+
+        length = 0
+        for elem in self.flatten():
+            elem_len = len(elem)
+            if length <= offset < length+elem_len:
+                return elem
+            length += elem_len
+
     def find(self, x):
         """Find sub-string C{x} in this string tree and return the position
             at which it starts."""
@@ -182,6 +195,17 @@ class StringElem(object):
             else:
                 subelems.append(elem)
         return subelems
+
+    def depth_first(self):
+        elems = [self]
+        for sub in self.subelems:
+            if isinstance(sub, StringElem):
+                elems.extend(sub.dfs())
+        return elems
+
+    def iter_depth_first(self):
+        for elem in self.depth_first():
+            yield elem
 
     @classmethod
     def parse(cls, pstr):
