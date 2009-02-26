@@ -154,6 +154,22 @@ class StringElem(object):
         """More C{unicode} class emulation."""
         return unicode(self).encode(encoding)
 
+    def find(self, x):
+        """Find sub-string C{x} in this string tree and return the position
+            at which it starts."""
+        if isinstance(x, basestring):
+            return unicode(self).find(x)
+        if isinstance(x, StringElem):
+            flattened = self.flatten()
+            if x in flattened:
+                index = flattened.index(x)
+                return len(u''.join([unicode(elem) for elem in flattened[:index]]))
+        return -1
+
+    def find_elem_with(self, x):
+        """Find all elements in the current sub-tree containing C{x}."""
+        return [elem for elem in self.flatten() if x in unicode(elem)]
+
     def flatten(self):
         """Flatten the tree by returning a depth-first traversal over the tree."""
         subelems = []
