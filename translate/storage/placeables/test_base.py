@@ -90,9 +90,9 @@ class TestStringElem:
         searchelem = parse('&brand;')
         assert self.elem.find(searchelem) == 46
 
-    def test_find_elem_with(self):
-        assert self.elem.find_elem_with(u'Ģët') == [ StringElem([u'Ģët ']), StringElem([u'alt="Ģët ']) ]
-        assert len(self.elem.find_elem_with('a')) == 5
+    def test_find_elems_with(self):
+        assert self.elem.find_elems_with(u'Ģët') == [ StringElem([u'Ģët ']), StringElem([u'alt="Ģët ']) ]
+        assert len(self.elem.find_elems_with('a')) == 5
 
     def test_flatten(self):
         assert u''.join([unicode(i) for i in self.elem.flatten()]) == self.ORIGSTR

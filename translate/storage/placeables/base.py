@@ -179,12 +179,12 @@ class StringElem(object):
                 return len(u''.join([unicode(elem) for elem in flattened[:index]]))
         return -1
 
-    def find_elem_with(self, x):
+    def find_elems_with(self, x):
         """Find all elements in the current sub-tree containing C{x}."""
         return [elem for elem in self.flatten() if x in unicode(elem)]
 
     def flatten(self):
-        """Flatten the tree by returning a depth-first traversal over the tree."""
+        """Flatten the tree by returning a depth-first search over the tree's leaves."""
         subelems = []
         for elem in self.subelems:
             if not isinstance(elem, StringElem):
