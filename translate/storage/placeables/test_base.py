@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-from translate.storage.placeables import base, parse
+from translate.storage.placeables import parse, StringElem
 
 
 class TestStringElem:
@@ -70,7 +70,7 @@ class TestStringElem:
 
     def test_iter(self):
         for chunk in self.elem:
-            assert issubclass(chunk.__class__, base.StringElem)
+            assert issubclass(chunk.__class__, StringElem)
 
     def test_len(self):
         assert len(self.elem) == len(self.ORIGSTR)
@@ -79,6 +79,16 @@ class TestStringElem:
         assert self.elem * 2 == self.ORIGSTR * 2
         # ... and __rmul__()
         assert 2 * self.elem == 2 * self.ORIGSTR
+
+    def test_find(self):
+        assert self.elem.find('example') == 24
+        assert self.elem.find(u'example') == 24
+        searchelem = parse('&brand;')
+        assert self.elem.find(searchelem) == 46
+
+    def test_find_elem_with(self):
+        assert self.elem.find_elem_with(u'Ģët') == [ StringElem([u'Ģët ']), StringElem([u'alt="Ģët ']) ]
+        assert len(self.elem.find_elem_with('a')) == 5
 
     def test_flatten(self):
         assert u''.join([unicode(i) for i in self.elem.flatten()]) == self.ORIGSTR
