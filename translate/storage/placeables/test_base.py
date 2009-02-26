@@ -80,6 +80,10 @@ class TestStringElem:
         # ... and __rmul__()
         assert 2 * self.elem == 2 * self.ORIGSTR
 
+    def test_elem_at_offset(self):
+        assert self.elem.elem_at_offset(0) is self.elem.subelems[0]
+        assert self.elem.elem_at_offset(self.elem.find('!')) is self.elem.subelems[1].subelems[1].subelems[2]
+
     def test_find(self):
         assert self.elem.find('example') == 24
         assert self.elem.find(u'example') == 24
