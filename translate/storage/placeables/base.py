@@ -152,6 +152,14 @@ class StringElem(object):
         """More C{unicode} class emulation."""
         return unicode(self).encode(encoding)
 
+    def elem_offset(self, elem):
+        """Find the offset of C{elem} in the current tree."""
+        flattened = self.flatten()
+        if not elem in flattened:
+            return -1
+
+        return len(u''.join([unicode(e) for e in flattened[:flattened.index(elem)]]))
+
     def elem_at_offset(self, offset):
         """Get the C{StringElem} in the tree that contains the string rendered
             at the given offset."""
@@ -164,6 +172,7 @@ class StringElem(object):
             if length <= offset < length+elem_len:
                 return elem
             length += elem_len
+        return elem
 
     def find(self, x):
         """Find sub-string C{x} in this string tree and return the position
@@ -175,7 +184,7 @@ class StringElem(object):
             if x in flattened:
                 index = flattened.index(x)
                 return len(u''.join([unicode(elem) for elem in flattened[:index]]))
-        return -1
+        return None
 
     def find_elems_with(self, x):
         """Find all elements in the current sub-tree containing C{x}."""
