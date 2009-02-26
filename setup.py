@@ -37,7 +37,6 @@ subpackages = [
         join("misc", "typecheck"),
         "storage",
         join("storage", "placeables"),
-        join("storage", "richstring"),
         join("storage", "versioncontrol"),
         join("storage", "xml_extract"),
         "search",
