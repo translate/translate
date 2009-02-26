@@ -43,7 +43,7 @@ class StringElem(object):
     """Whether this string should be visible to the user. Not used at the moment."""
 
     # INITIALIZERS #
-    def __init__(self, subelems=None, id=None, iseditable=True, isvisible=True, rid=None, xid=None):
+    def __init__(self, subelems=None, id=None, rid=None, xid=None):
         if subelems is None:
             subelems = []
 
@@ -53,8 +53,6 @@ class StringElem(object):
 
         self.subelems   = subelems
         self.id         = id
-        self.iseditable = iseditable
-        self.isvisible  = isvisible
         self.rid        = rid
         self.xid        = xid
 

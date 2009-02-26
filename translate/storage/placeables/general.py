@@ -47,6 +47,8 @@ class AltAttrPlaceable(StringElem):
 class XMLEntityPlaceable(StringElem):
     """Placeable handling XML entities (C{&xxxxx;}-style entities)."""
 
+    iseditable = False
+
     @classmethod
     def parse(cls, pstr):
         """Creates a new C{XMLEntityPlaceable} from the sub-string at the
@@ -71,6 +73,8 @@ class XMLEntityPlaceable(StringElem):
 
 class XMLTagPlaceable(StringElem):
     """Placeable handling XML tags."""
+
+    iseditable = False
 
     @classmethod
     def parse(cls, pstr):
