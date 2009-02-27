@@ -211,8 +211,16 @@ class Common(object):
 #        TODO: look at po::escapeforpo() for performance idea
         if not text:
             return text
+        ellipses_end = text.endswith(u"...")
+        if ellipses_end:
+            text = text[:-3]
         for source, target in cls.puncdict.iteritems():
             text = text.replace(source, target)
+        if ellipses_end:
+            if u"..." in cls.puncdict:
+                text += cls.puncdict[u"..."]
+            else:
+                text += "..."
         # Let's account for cases where a punctuation symbol plus a space is 
         # replaced, but the space won't exist at the end of a message.
         # As a simple improvement for messages ending in ellipses (...), we
