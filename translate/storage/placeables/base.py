@@ -207,7 +207,7 @@ class StringElem(object):
         elems = [self]
         for sub in self.subelems:
             if isinstance(sub, StringElem):
-                elems.extend(sub.dfs())
+                elems.extend(sub.depth_first())
         return elems
 
     def iter_depth_first(self):
