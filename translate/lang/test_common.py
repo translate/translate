@@ -45,6 +45,9 @@ def test_sentences():
     assert sentences == [u"Apples, bananas, etc.", u"Next part"]
     sentences = language.sentences(u"No font for displaying text in encoding '%s' found,\nbut an alternative encoding '%s' is available.\nDo you want to use this encoding (otherwise you will have to choose another one)?")
     assert sentences == [u"No font for displaying text in encoding '%s' found,\nbut an alternative encoding '%s' is available.", u"Do you want to use this encoding (otherwise you will have to choose another one)?"]
+    # Test that a newline at the end won't confuse us
+    sentences = language.sentences(u"The first sentence. The second sentence.\n")
+    assert sentences == [u"The first sentence.", u"The second sentence."]
 
 def test_capsstart():
     """Tests that the indefinite article ('n) doesn't confuse startcaps()."""
