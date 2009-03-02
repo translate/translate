@@ -31,10 +31,11 @@ import os
 import re
 from translate.misc import hash
 
-def add_prefix(prefix, strings):
-    for string in strings:
-        string.insert(0, prefix)
-    return strings
+def add_prefix(prefix, stringelems):
+    for stringelem in stringelems:
+        for string in stringelem.flatten():
+            string.subelems[0].insert(0, prefix)
+    return stringelems
 
 class podebug:
     def __init__(self, format=None, rewritestyle=None, hash=None, ignoreoption=None):
