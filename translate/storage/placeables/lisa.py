@@ -26,7 +26,11 @@ from translate.storage.xml_extract import misc
 
 
 def make_empty_replacement_placeable(klass, node):
-    return klass(id=node.attrib[u'id'])
+    try:
+        return klass(id=node.attrib[u'id'])
+    except KeyError:
+        pass
+    retur klass()
 
 def make_g_placeable(klass, node):
     return klass(id=node.attrib[u'id'], subelems=extract_chunks(node).subelems)
