@@ -353,7 +353,7 @@ class TranslationUnit(object):
         self.source = self._rich_to_multistring(value)
     def _get_rich_source(self):
         return self._multistring_to_rich(self.source)
-    source_rich = property(_get_rich_source, _set_rich_source)
+    rich_source = property(_get_rich_source, _set_rich_source)
     """ @see: _rich_to_multistring
         @see: _multistring_to_rich"""
 
@@ -362,7 +362,7 @@ class TranslationUnit(object):
         self.target = self._rich_to_multistring(value)
     def _get_rich_target(self):
         return self._multistring_to_rich(self.target)
-    target_rich = property(_get_rich_target, _set_rich_target)
+    rich_target = property(_get_rich_target, _set_rich_target)
     """ @see: _rich_to_multistring
         @see: _multistring_to_rich"""
 
