@@ -180,10 +180,7 @@ class StringElem(object):
         if isinstance(x, basestring):
             return unicode(self).find(x)
         if isinstance(x, StringElem):
-            flattened = self.flatten()
-            if x in flattened:
-                index = flattened.index(x)
-                return len(u''.join([unicode(elem) for elem in flattened[:index]]))
+            return unicode(self).find(unicode(x))
         return None
 
     def find_elems_with(self, x):
