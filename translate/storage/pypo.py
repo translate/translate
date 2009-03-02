@@ -150,6 +150,10 @@ class pounit(pocommon.pounit):
     # msgid = []
     # msgstr = []
 
+    # Our homegrown way to indicate what must be copied in a shallow
+    # fashion
+    __shallow__ = ['_store']
+
     def __init__(self, source=None, encoding="UTF-8"):
         self._encoding = encodingToUse(encoding)
         self.obsolete = False
@@ -313,6 +317,25 @@ class pounit(pocommon.pounit):
     def removenotes(self):
         """Remove all the translator's notes (other comments)"""
         self.othercomments = []
+
+    def __deepcopy__(self, memo={}):
+        # Make an instance to serve as the copy
+        new_unit = self.__class__()
+        # We'll be testing membership frequently, so make a set from
+        # self.__shallow__
+        shallow = set(self.__shallow__)
+        # Make deep copies of all members which are not in shallow
+        for key, value in self.__dict__.iteritems():
+            if key not in shallow:
+                setattr(new_unit, key, copy.deepcopy(value))
+        # Make shallow copies of all members which are in shallow
+        for key in set(shallow):
+            setattr(new_unit, key, getattr(self, key))
+        # Mark memo with ourself, so that we won't get deep copied
+        # again
+        memo[id(self)] = self
+        # Return our copied unit
+        return new_unit
 
     def copy(self):
         return copy.deepcopy(self)
