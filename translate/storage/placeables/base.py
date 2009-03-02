@@ -167,6 +167,7 @@ class StringElem(object):
             return None
 
         length = 0
+        elem = None
         for elem in self.flatten():
             elem_len = len(elem)
             if length <= offset < length+elem_len:
