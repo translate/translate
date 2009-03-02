@@ -197,6 +197,10 @@ class Common(object):
             pass
         return language
 
+    def __deepcopy__(self, memo={}):
+        memo[id(self)] = self
+        return self
+
     def __repr__(self):
         """Give a simple string representation without address information to 
         be able to store it in text for comparison later."""
