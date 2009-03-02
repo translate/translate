@@ -30,7 +30,7 @@ def make_empty_replacement_placeable(klass, node):
         return klass(id=node.attrib[u'id'])
     except KeyError:
         pass
-    retur klass()
+    return klass()
 
 def make_g_placeable(klass, node):
     return klass(id=node.attrib[u'id'], subelems=extract_chunks(node).subelems)
