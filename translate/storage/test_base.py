@@ -134,7 +134,7 @@ class TestTranslationUnit:
         target_mstr = multistring([u'tėst', u'<b>string</b>'])
         unit = self.UnitClass(multistring([u'a', u'b']))
         unit.target = target_mstr
-        elems = unit.target_rich
+        elems = unit.rich_target
 
         if unit.hasplural():
             assert len(elems) == 2
@@ -159,7 +159,7 @@ class TestTranslationUnit:
             rich_parse('A non-Unicode string.')
         ]
         unit = self.UnitClass(multistring([u'a', u'b']))
-        unit.target_rich = elems
+        unit.rich_target = elems
 
         if unit.hasplural():
             assert unit.target.strings[0] == u'Tëst <x>string</x>'
