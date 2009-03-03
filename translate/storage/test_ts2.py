@@ -1,11 +1,46 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# Copyright 2008-2009 Zuza Software Foundation
+#
+# This file is part of the Translate Toolkit.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+from translate.misc.multistring import multistring
 from translate.storage import ts2 as ts
 from translate.storage import test_base
+from translate.storage.placeables import parse as rich_parse
+from translate.storage.placeables import xliff
+
 
 class TestTSUnit(test_base.TestTranslationUnit):
     UnitClass = ts.tsunit
 
+    def test_rich_set(self):
+        """Basic test for converting from multistrings to StringElem trees."""
+        elems = [
+            rich_parse(u'<x>strïng</x>'),
+            rich_parse(u'<g>Another test string</g>.'),
+            rich_parse('<ph>A non-Unicode string.</ph>')
+        ]
+        unit = self.UnitClass(multistring([u'a', u'b']))
+        unit.rich_target = elems
+
+        assert unit.target.strings[0] == u'<x>strïng</x>'
+        assert unit.target.strings[1] == u'<g>Another test string.</g>'
+        assert unit.target.strings[2] == '<ph>A non-Unicode string.</ph>'
 
 class TestTSfile(test_base.TestTranslationStore):
     StoreClass = ts.tsfile
