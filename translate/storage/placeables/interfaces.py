@@ -72,21 +72,21 @@ class G(ReplacementPlaceable):
 class Bx(ReplacementPlaceable, PairedDelimiter):
     has_content = False
 
-    def __init__(self, id, xid=None):
+    def __init__(self, id=None, xid=None):
         ReplacementPlaceable.__init__(self, id=id, xid=xid)
 
 
 class Ex(ReplacementPlaceable, PairedDelimiter):
     has_content = False
 
-    def __init__(self, id, xid=None):
+    def __init__(self, id=None, xid=None):
         ReplacementPlaceable.__init__(self, id=id, xid=xid)
 
 
 class X(ReplacementPlaceable, Delimiter):
     has_content = False
 
-    def __init__(self, id, xid=None):
+    def __init__(self, id=None, xid=None):
         ReplacementPlaceable.__init__(self, id=id, xid=xid)
 
 
