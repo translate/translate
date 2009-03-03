@@ -30,8 +30,8 @@ def map_content(f, chunk):
     Note that this is NOT a pure function. For that, we would
     need to copy the placeables themselves."""
     if isinstance(chunk, StringElem):
-        if chunk.content is not None:
-            chunk.content = map_entry(f, chunk.content)
+        if chunk.subelems is not None:
+            chunk.subelems = map_entry(f, chunk.subelems)
     return chunk
 
 def map_entry(f, chunk_seq):
