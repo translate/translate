@@ -294,7 +294,7 @@ class TranslationUnit(object):
         """Do basic format agnostic merging."""
 
         if self.target == "" or overwrite:
-            self.target = otherunit.target
+            self.rich_target = otherunit.rich_target
 
     def unit_iter(self):
         """Iterator that only returns this unit."""
