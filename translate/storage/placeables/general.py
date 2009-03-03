@@ -23,6 +23,8 @@ Contains general placeable implementations. That is placeables that does not
 fit into any other sub-category.
 """
 
+import re
+
 __all__ = ['AltAttrPlaceable', 'XMLEntityPlaceable', 'XMLTagPlaceable']
 
 from translate.storage.placeables.base import StringElem
@@ -55,8 +57,9 @@ class XMLEntityPlaceable(StringElem):
             beginning of C{pstr} that starts with C{&} up to the first C{;}.
 
             @see: StringElem.parse"""
-        if pstr.startswith('&') and pstr.index(';') > 0:
-            return cls([pstr[:pstr.index(';')+1]])
+        match = re.search('^&\S+;', pstr)
+        if match:
+            return cls([pstr[:match.end()+1]])
         return None
 
 
