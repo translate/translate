@@ -45,37 +45,37 @@ class XLIFFPlaceable(object):
         }
 
 
-class Bpt(interfaces.Bpt, XLIFFPlaceable):
+class Bpt(XLIFFPlaceable, interfaces.Bpt):
     pass
 
 
-class Ept(interfaces.Ept, XLIFFPlaceable):
+class Ept(XLIFFPlaceable, interfaces.Ept):
     pass
 
 
-class Ph(interfaces.Ph, XLIFFPlaceable):
+class Ph(XLIFFPlaceable, interfaces.Ph):
     pass
 
 
-class It(interfaces.It, XLIFFPlaceable):
+class It(XLIFFPlaceable, interfaces.It):
     pass
 
 
-class G(interfaces.G, XLIFFPlaceable):
+class G(XLIFFPlaceable, interfaces.G):
     pass
 
 
-class Bx(interfaces.Bx, XLIFFPlaceable):
+class Bx(XLIFFPlaceable, interfaces.Bx):
     pass
 
 
-class Ex(interfaces.Ex, XLIFFPlaceable):
+class Ex(XLIFFPlaceable, interfaces.Ex):
     pass
 
 
-class X(interfaces.X, XLIFFPlaceable):
+class X(XLIFFPlaceable, interfaces.X):
     pass
 
 
-class Sub(interfaces.Sub, XLIFFPlaceable):
+class Sub(XLIFFPlaceable, interfaces.Sub):
     pass
