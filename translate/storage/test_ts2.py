@@ -18,11 +18,24 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+from lxml import etree
+
 from translate.misc.multistring import multistring
 from translate.storage import ts2 as ts
 from translate.storage import test_base
-from translate.storage.placeables import parse as rich_parse
+from translate.storage.placeables import parse
 from translate.storage.placeables import xliff
+from translate.storage.placeables.lisa import extract_chunks
+
+
+xliffparsers = []
+for attrname in dir(xliff):
+    attr = getattr(xliff, attrname)
+    if  type(attr) is type and attrname not in ('XLIFFPlaceable') and hasattr(attr, 'parse') and attr.parse is not None:
+        xliffparsers.append(attr.parse)
+
+def rich_parse(s):
+    return parse(s, xliffparsers)
 
 
 class TestTSUnit(test_base.TestTranslationUnit):
@@ -31,9 +44,9 @@ class TestTSUnit(test_base.TestTranslationUnit):
     def test_rich_set(self):
         """Basic test for converting from multistrings to StringElem trees."""
         elems = [
-            rich_parse(u'<x>strïng</x>'),
-            rich_parse(u'<g>Another test string</g>.'),
-            rich_parse('<ph>A non-Unicode string.</ph>')
+            extract_chunks(etree.fromstring(u'<g><x id="fish"/>strïng</g>')),
+            extract_chunks(etree.fromstring(u'<g>Another test string</g>')),
+            extract_chunks(etree.fromstring('<ph>A non-Unicode string.</ph>'))
         ]
         unit = self.UnitClass(multistring([u'a', u'b']))
         unit.rich_target = elems
