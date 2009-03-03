@@ -141,13 +141,7 @@ Provisional work is done to make several languages possible."""
         return self.getlanguageNode(lang=None, index=0)
     source_dom = property(get_source_dom, set_source_dom)
 
-    def _ensure_singular(cls, value):
-        if value is not None and len(value) > 1:
-            raise Exception("XLIFF cannot handle plurals by default")
-    _ensure_singular = classmethod(_ensure_singular)
-
     def set_rich_source(self, value, sourcelang='en'):
-        self._ensure_singular(value)
         sourcelanguageNode = self.createlanguageNode(sourcelang, u'', "source")        
         self.source_dom = lisa.insert_into_dom(sourcelanguageNode, value[0])
 
@@ -182,7 +176,6 @@ Provisional work is done to make several languages possible."""
     target_dom = property(get_target_dom)
 
     def set_rich_target(self, value, lang='xx', append=False):
-        self._ensure_singular(value)
         languageNode = None
         if not value is None:
             languageNode = self.createlanguageNode(lang, u'', "target")
