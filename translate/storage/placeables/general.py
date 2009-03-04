@@ -82,7 +82,7 @@ class XMLTagPlaceable(StringElem):
     @classmethod
     def parse(cls, pstr):
         """@see: StringElem.parse"""
-        if pstr.startswith('<') and pstr.index('>') > 0:
+        if pstr.startswith('<') and pstr.find('>') > 0:
             bracket_count = 0
             for i in range(len(pstr)):
                 if pstr[i] == '>':
