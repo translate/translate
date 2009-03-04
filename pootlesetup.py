@@ -48,6 +48,7 @@ subpackages = [
   "pootle_app/views/index",
   "pootle_app/views/language",
   "pootle_app/views/projects",
+  "pootle_app/views/common",
 ]
 pootlescripts = [join('Pootle', 'PootleServer'), join('Pootle', 'tools', 'updatetm')]
 
