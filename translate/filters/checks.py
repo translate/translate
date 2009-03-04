@@ -757,6 +757,8 @@ class StandardChecker(TranslationChecker):
 
     def sentencecount(self, str1, str2):
         """checks that the number of sentences in both strings match"""
+        str1 = self.filteraccelerators(str1)
+        str2 = self.filteraccelerators(str2)
         sentences1 = len(self.config.sourcelang.sentences(str1))
         sentences2 = len(self.config.lang.sentences(str2))
         if not sentences1 == sentences2:
