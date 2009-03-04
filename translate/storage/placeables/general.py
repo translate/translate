@@ -59,7 +59,7 @@ class XMLEntityPlaceable(StringElem):
             @see: StringElem.parse"""
         match = re.search('^&\S+;', pstr)
         if match:
-            return cls([pstr[:match.end()+1]])
+            return cls([pstr[:match.end()]])
         return None
 
 
