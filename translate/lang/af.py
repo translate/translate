@@ -38,7 +38,7 @@ class af(common.Common):
                             .*?         #anything, but match non-greedy
                             [%s]        #the puntuation for sentence ending
                             \s+         #the spacing after the puntuation
-                            (?='n\s[A-Z\d]|[^'a-z]|'[^n])
+                            (?='n\s[A-Z]|[^'a-z\d]|'[^n])
                             #lookahead that next part starts with caps or 'n followed by caps
                             """ % sentenceend, re.VERBOSE)
 
