@@ -47,7 +47,7 @@ class af(common.Common):
         match = articlere.search(text, 0, 20)
         if match:
             #construct a list of non-apostrophe punctuation:
-            nonapos = "".join(cls.punctuation.split("'"))
+            nonapos = u"".join(cls.punctuation.split(u"'"))
             stripped = text.lstrip().lstrip(nonapos)
             match = articlere.match(stripped)
             if match:

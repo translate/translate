@@ -224,7 +224,7 @@ class Common(object):
             if u"..." in cls.puncdict:
                 text += cls.puncdict[u"..."]
             else:
-                text += "..."
+                text += u"..."
         # Let's account for cases where a punctuation symbol plus a space is 
         # replaced, but the space won't exist at the end of a message.
         # As a simple improvement for messages ending in ellipses (...), we
@@ -266,9 +266,9 @@ class Common(object):
                     text = text[-extra:]
             return text
         expanded = []
-        for subtext in text.split("\n\n"):
+        for subtext in text.split(u"\n\n"):
             expanded.append(alter_it(subtext))
-        text = "\n\n".join(expanded)
+        text = u"\n\n".join(expanded)
         return text
 
     def character_iter(cls, text):
@@ -316,7 +316,7 @@ class Common(object):
         if strip: remainder = remainder.strip()
         if remainder: yield remainder
     sentence_iter = classmethod(sentence_iter)
-            
+
     def sentences(cls, text, strip=True):
         """Returns a list of senteces in text."""
         return [s for s in cls.sentence_iter(text, strip=strip)]
