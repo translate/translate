@@ -3,7 +3,7 @@
 from translate.storage import xliff
 from translate.storage import test_base
 from translate.storage.placeables import StringElem
-from translate.storage.placeables.placeables import X, G
+from translate.storage.placeables.xliff import X, G
 
 class TestXLIFFUnit(test_base.TestTranslationUnit):
     UnitClass = xliff.xliffunit
