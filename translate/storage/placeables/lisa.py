@@ -62,6 +62,8 @@ def as_unicode(string):
         return unicode(string.decode('utf-8'))
 
 def extract_chunks(dom_node):
+    if isinstance(dom_node, basestring):
+        dom_node = etree.fromstring(dom_node)
     result = StringElem()
     if dom_node.text:
         result.subelems.append(as_unicode(dom_node.text))
