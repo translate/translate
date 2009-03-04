@@ -25,7 +25,7 @@ fit into any other sub-category.
 
 import re
 
-__all__ = ['AltAttrPlaceable', 'XMLEntityPlaceable', 'XMLTagPlaceable']
+__all__ = ['AltAttrPlaceable', 'XMLEntityPlaceable', 'XMLTagPlaceable', 'parsers']
 
 from translate.storage.placeables.base import StringElem
 
@@ -95,3 +95,5 @@ class XMLTagPlaceable(StringElem):
             if i <= len(pstr):
                 return cls([pstr[:i]])
             return None
+
+parsers = [AltAttrPlaceable.parse, XMLEntityPlaceable.parse, XMLTagPlaceable.parse]

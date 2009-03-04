@@ -23,35 +23,27 @@ Contains the C{parse} function that parses normal strings into StringElem-
 based "rich" string element trees.
 """
 
-from translate.storage.placeables import placeables, StringElem
+from translate.storage.placeables import base, StringElem
 
 
-default_parsers = []
-for attr in dir(placeables):
-    pclass = getattr(placeables, attr)
-    if  hasattr(pclass, '__bases__')   and \
-        issubclass(pclass, StringElem) and \
-        pclass       is not StringElem and \
-        pclass.parse is not None:
-        default_parsers.append(pclass.parse)
-
-def parse(parsable_string, parse_funcs=default_parsers, i=0):
+def parse(parsable_string, parse_funcs, i=0):
     """Parse the given string into a tree of string elements.
 
-        @type  parsable_string: unicode
-        @param parsable_string: The string to parse. Preferably in Unicode.
-        @type  parse_funcs: list
-        @param parse_funcs: A list of functions that meet the following
-            cirteria:
-            * Takes a single string parameter
-            * Parses only at the beginning of the string
-            * Returns a L{StringElem} (or sub-class) instance that represents
-                exactly the sub-string parsed by the function.
-            * Returns C{None} if the parser could not find a parseable sub-
-                string at the start of the given string.
+    @type  parsable_string: unicode
+    @param parsable_string: The string to parse. Preferably in Unicode.
+    @type  parse_funcs: list
+    @param parse_funcs: A list of functions that meet the following
+        cirteria:
+        * Takes a single string parameter
+        * Parses only at the beginning of the string
+        * Returns a L{StringElem} (or sub-class) instance that represents
+            exactly the sub-string parsed by the function.
+        * Returns C{None} if the parser could not find a parseable sub-
+            string at the start of the given string.
 
-            These functions are ideally the sub-class implementations of
-            C{StringElem.parse}."""
+        These functions are ideally the sub-class implementations of
+        C{StringElem.parse}.
+    """
     elements = []
     last_used = 0
     while i < len(parsable_string):
@@ -66,7 +58,7 @@ def parse(parsable_string, parse_funcs=default_parsers, i=0):
                 if parsable_string[last_used:i]:
                     elements.append(StringElem([parsable_string[last_used:i]]))
 
-                subtree = parse(unicode(elem), i=1)
+                subtree = parse(unicode(elem), parse_funcs, i=1)
                 if len(subtree.subelems) > 1:
                     elem.subelems = subtree.subelems
                 elements.append(elem)

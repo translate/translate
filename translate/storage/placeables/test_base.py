@@ -18,13 +18,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-from translate.storage.placeables import parse, StringElem
+from translate.storage.placeables import general, parse, StringElem
 
 
 class TestStringElem:
     def __init__(self):
         self.ORIGSTR = u'Ģët <a href="http://www.example.com" alt="Ģët &brand;!">&brandLong;</a>'
-        self.elem = parse(self.ORIGSTR)
+        self.elem = parse(self.ORIGSTR, general.parsers)
 
     def test_parse(self):
         assert unicode(self.elem) == self.ORIGSTR
@@ -87,7 +87,7 @@ class TestStringElem:
     def test_find(self):
         assert self.elem.find('example') == 24
         assert self.elem.find(u'example') == 24
-        searchelem = parse('&brand;')
+        searchelem = parse('&brand;', general.parsers)
         assert self.elem.find(searchelem) == 46
 
     def test_find_elems_with(self):
