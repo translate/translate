@@ -20,8 +20,7 @@
 
 from lxml import etree
 
-from translate.storage.placeables import placeables
-from translate.storage.placeables.base import StringElem
+from translate.storage.placeables import base, xliff, StringElem
 from translate.storage.xml_extract import misc
 
 
@@ -39,15 +38,15 @@ def not_yet_implemented(klass, node):
     raise NotImplementedError
 
 _class_dictionary = {
-    u'bpt': (placeables.Bpt, not_yet_implemented),
-    u'bx' : (placeables.Bx,  make_empty_replacement_placeable),
-    u'ept': (placeables.Ept, not_yet_implemented),
-    u'ex' : (placeables.Ex,  make_empty_replacement_placeable),
-    u'g'  : (placeables.G,   make_g_placeable),
-    u'it' : (placeables.It,  not_yet_implemented),
-    u'ph' : (placeables.Ph,  not_yet_implemented),
-    u'sub': (placeables.Sub, not_yet_implemented),
-    u'x'  : (placeables.X,   make_empty_replacement_placeable)
+    u'bpt': (xliff.Bpt, not_yet_implemented),
+    u'bx' : (xliff.Bx,  make_empty_replacement_placeable),
+    u'ept': (xliff.Ept, not_yet_implemented),
+    u'ex' : (xliff.Ex,  make_empty_replacement_placeable),
+    u'g'  : (xliff.G,   make_g_placeable),
+    u'it' : (xliff.It,  not_yet_implemented),
+    u'ph' : (xliff.Ph,  not_yet_implemented),
+    u'sub': (xliff.Sub, not_yet_implemented),
+    u'x'  : (xliff.X,   make_empty_replacement_placeable)
 }
 
 def make_placeable(node):
@@ -86,15 +85,15 @@ def placeable_as_dom_node(placeable, tagname):
     return dom_node
 
 _placeable_dictionary = {
-    placeables.Bpt: lambda placeable: placeable_as_dom_node(placeable, 'bpt'),
-    placeables.Bx : lambda placeable: placeable_as_dom_node(placeable, 'bx'),
-    placeables.Ept: lambda placeable: placeable_as_dom_node(placeable, 'ept'),
-    placeables.Ex : lambda placeable: placeable_as_dom_node(placeable, 'ex'),
-    placeables.G  : lambda placeable: placeable_as_dom_node(placeable, 'g'),
-    placeables.It : lambda placeable: placeable_as_dom_node(placeable, 'it'),
-    placeables.Ph : lambda placeable: placeable_as_dom_node(placeable, 'ph'),
-    placeables.Sub: lambda placeable: placeable_as_dom_node(placeable, 'sub'),
-    placeables.X  : lambda placeable: placeable_as_dom_node(placeable, 'x')
+    xliff.Bpt: lambda placeable: placeable_as_dom_node(placeable, 'bpt'),
+    xliff.Bx : lambda placeable: placeable_as_dom_node(placeable, 'bx'),
+    xliff.Ept: lambda placeable: placeable_as_dom_node(placeable, 'ept'),
+    xliff.Ex : lambda placeable: placeable_as_dom_node(placeable, 'ex'),
+    xliff.G  : lambda placeable: placeable_as_dom_node(placeable, 'g'),
+    xliff.It : lambda placeable: placeable_as_dom_node(placeable, 'it'),
+    xliff.Ph : lambda placeable: placeable_as_dom_node(placeable, 'ph'),
+    xliff.Sub: lambda placeable: placeable_as_dom_node(placeable, 'sub'),
+    xliff.X  : lambda placeable: placeable_as_dom_node(placeable, 'x')
 }
 
 class EOF: pass
