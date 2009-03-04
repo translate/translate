@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2006-2007 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -87,8 +87,10 @@ def namespaced(namespace, name):
         return name
 
 class LISAunit(base.TranslationUnit):
-    """A single unit in the file. 
-Provisional work is done to make several languages possible."""
+    """
+    A single unit in the file.  Provisional work is done to make several
+    languages possible.
+    """
 
     #The name of the root element of this unit type:(termEntry, tu, trans-unit)
     rootNode = ""
@@ -136,13 +138,13 @@ Provisional work is done to make several languages possible."""
             self.xmlelement[0] = dom_node
         else:
             self.xmlelement.append(dom_node)
-    
+
     def get_source_dom(self):
         return self.getlanguageNode(lang=None, index=0)
     source_dom = property(get_source_dom, set_source_dom)
 
     def set_rich_source(self, value, sourcelang='en'):
-        sourcelanguageNode = self.createlanguageNode(sourcelang, u'', "source")        
+        sourcelanguageNode = self.createlanguageNode(sourcelang, u'', "source")
         self.source_dom = lisa.insert_into_dom(sourcelanguageNode, value[0])
 
     def get_rich_source(self):
@@ -183,7 +185,7 @@ Provisional work is done to make several languages possible."""
         self.set_target_dom(languageNode, append)
 
     def get_rich_target(self, lang=None):
-        """retrieves the "target" text (second entry), or the entry in the 
+        """retrieves the "target" text (second entry), or the entry in the
         specified language, if it exists"""
         return [lisa.extract_chunks(self.get_target_dom(lang))]
     rich_target = property(get_rich_target, set_rich_target)
@@ -213,13 +215,13 @@ Provisional work is done to make several languages possible."""
             self.set_target_dom(None, False)
 
     def gettarget(self, lang=None):
-        """retrieves the "target" text (second entry), or the entry in the 
+        """retrieves the "target" text (second entry), or the entry in the
         specified language, if it exists"""
         return self.getNodeText(self.get_target_dom(lang))
     target = property(gettarget, settarget)
 
     def createlanguageNode(self, lang, text, purpose=None):
-        """Returns a xml Element setup with given parameters to represent a 
+        """Returns a xml Element setup with given parameters to represent a
         single language entry. Has to be overridden."""
         return None
 
@@ -373,7 +375,7 @@ class LISAfile(base.TranslationStore):
             posrc = xml.read()
             xml = posrc
         if etree.LXML_VERSION > (2, 1, 0):
-            #Since version 2.1.0 we can pass the strip_cdata parameter to 
+            #Since version 2.1.0 we can pass the strip_cdata parameter to
             #indicate that we don't want cdata to be converted to raw XML
             parser = etree.XMLParser(strip_cdata=False)
         else:
