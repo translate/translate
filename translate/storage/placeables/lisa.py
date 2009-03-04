@@ -93,7 +93,16 @@ _placeable_dictionary = {
     xliff.It : lambda placeable: placeable_as_dom_node(placeable, 'it'),
     xliff.Ph : lambda placeable: placeable_as_dom_node(placeable, 'ph'),
     xliff.Sub: lambda placeable: placeable_as_dom_node(placeable, 'sub'),
-    xliff.X  : lambda placeable: placeable_as_dom_node(placeable, 'x')
+    xliff.X  : lambda placeable: placeable_as_dom_node(placeable, 'x'),
+    base.Bpt:  lambda placeable: placeable_as_dom_node(placeable, 'bpt'),
+    base.Bx :  lambda placeable: placeable_as_dom_node(placeable, 'bx'),
+    base.Ept:  lambda placeable: placeable_as_dom_node(placeable, 'ept'),
+    base.Ex :  lambda placeable: placeable_as_dom_node(placeable, 'ex'),
+    base.G  :  lambda placeable: placeable_as_dom_node(placeable, 'g'),
+    base.It :  lambda placeable: placeable_as_dom_node(placeable, 'it'),
+    base.Ph :  lambda placeable: placeable_as_dom_node(placeable, 'ph'),
+    base.Sub:  lambda placeable: placeable_as_dom_node(placeable, 'sub'),
+    base.X  :  lambda placeable: placeable_as_dom_node(placeable, 'x')
 }
 
 class EOF: pass
