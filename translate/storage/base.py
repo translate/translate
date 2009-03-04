@@ -325,20 +325,20 @@ class TranslationUnit(object):
     xid = property(lambda self: None, lambda self, value: None)
     rid = property(lambda self: None, lambda self, value: None)
 
-    def _rich_to_multistring(cls, elem_list):
+    def rich_to_multistring(cls, elem_list):
         """Convert a "rich" string tree to a C{multistring}.
         >>> from translate.storage.placeables.interfaces import X
         >>> rich = [StringElem(['foo', X(id='xxx', subelems=[' ']), 'bar'])]
-        >>> TranslationUnit._rich_to_multistring(rich)
+        >>> TranslationUnit.rich_to_multistring(rich)
         multistring(u'foo bar')
         """
         return multistring([unicode(elem) for elem in elem_list])
-    _rich_to_multistring = classmethod(_rich_to_multistring)
+    rich_to_multistring = classmethod(rich_to_multistring)
 
-    def _multistring_to_rich(cls, mulstring):
+    def multistring_to_rich(cls, mulstring):
         """Convert a multistring to a list of "rich" string trees.
         >>> target = multistring([u'foo', u'bar', u'baz'])
-        >>> TranslationUnit._multistring_to_rich(target)
+        >>> TranslationUnit.multistring_to_rich(target)
         [<StringElem([<StringElem([u'foo'])>])>,
          <StringElem([<StringElem([u'bar'])>])>,
          <StringElem([<StringElem([u'baz'])>])>]
@@ -346,7 +346,7 @@ class TranslationUnit(object):
         if isinstance(mulstring, multistring):
             return [rich_parse(s) for s in mulstring.strings]
         return [rich_parse(mulstring)]
-    _multistring_to_rich = classmethod(_multistring_to_rich)
+    multistring_to_rich = classmethod(multistring_to_rich)
 
     @accepts(Self(), [[IsOneOf(str, unicode, StringElem)]])
     def _set_rich_source(self, value):
