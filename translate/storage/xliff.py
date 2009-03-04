@@ -25,6 +25,7 @@
 The official recommendation is to use the extention .xlf for XLIFF files.
 """
 
+from translate.misc.multistring import multistring
 from translate.storage import base
 from translate.storage import lisa
 from lxml import etree
@@ -325,6 +326,25 @@ class xliffunit(lisa.LISAunit):
             return True
         else:
             return False
+
+    def multistring_to_rich(self, mstr):
+        """Override L{TranslationUnit.multistring_to_rich} which is used by the
+            C{rich_source} and C{rich_target} properties."""
+        strings = mstr
+        if isinstance(mstr, multistring):
+            strings = mstr.strings
+        elif isinstance(mstr, basestring):
+            strings = [mstr]
+
+        return [extract_chunks(s) for s in strings]
+    multistring_to_rich = classmethod(multistring_to_rich)
+
+    def rich_to_multistring(self, elem_list):
+        """Override L{TranslationUnit.rich_to_multistring} which is used by the
+            C{rich_source} and C{rich_target} properties."""
+        return multistring([unicode(elem) for elem in elem_list])
+    rich_to_multistring = classmethod(rich_to_multistring)
+
 
 class xlifffile(lisa.LISAfile):
     """Class representing a XLIFF file store."""
