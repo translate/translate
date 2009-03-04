@@ -350,21 +350,21 @@ class TranslationUnit(object):
 
     @accepts(Self(), [[IsOneOf(str, unicode, StringElem)]])
     def _set_rich_source(self, value):
-        self.source = self._rich_to_multistring(value)
+        self.source = self.rich_to_multistring(value)
     def _get_rich_source(self):
-        return self._multistring_to_rich(self.source)
+        return self.multistring_to_rich(self.source)
     rich_source = property(_get_rich_source, _set_rich_source)
-    """ @see: _rich_to_multistring
-        @see: _multistring_to_rich"""
+    """ @see: rich_to_multistring
+        @see: multistring_to_rich"""
 
     @accepts(Self(), [[IsOneOf(str, unicode, StringElem)]])
     def _set_rich_target(self, value):
-        self.target = self._rich_to_multistring(value)
+        self.target = self.rich_to_multistring(value)
     def _get_rich_target(self):
-        return self._multistring_to_rich(self.target)
+        return self.multistring_to_rich(self.target)
     rich_target = property(_get_rich_target, _set_rich_target)
-    """ @see: _rich_to_multistring
-        @see: _multistring_to_rich"""
+    """ @see: rich_to_multistring
+        @see: multistring_to_rich"""
 
 class TranslationStore(object):
     """Base class for stores for multiple translation units of type UnitClass."""
