@@ -31,7 +31,7 @@ except:
     import pickle
 from exceptions import NotImplementedError
 import translate.i18n
-from translate.storage.placeables import StringElem, parse as rich_parse
+from translate.storage.placeables import StringElem, general, parse as rich_parse
 from translate.misc.typecheck import accepts, Self, IsOneOf
 from translate.misc.multistring import multistring
 
@@ -84,12 +84,17 @@ class TranslationUnit(object):
     @group Errors: *error*
     """
 
+    rich_parsers = general.parsers
+    """A list of functions to use for parsing a string into a rich string tree."""
+
     def __init__(self, source):
         """Constructs a TranslationUnit containing the given source string."""
+        self.notes = ""
         self._store = None
         self.source = source
-        self.target = None
-        self.notes = ""
+        self._target = None
+        self._rich_source = None
+        self._rich_target = None
 
     def __eq__(self, other):
         """Compares two TranslationUnits.
@@ -101,9 +106,43 @@ class TranslationUnit(object):
         """
         return self.source == other.source and self.target == other.target
 
+    def setsource(self, source):
+        """Sets the source string to the given value."""
+        self._rich_source = None
+        self._source = source
+    source = property(lambda self: self._source, setsource)
+
     def settarget(self, target):
         """Sets the target string to the given value."""
-        self.target = target
+        self._rich_target = None
+        self._target = target
+    target = property(lambda self: self._target, settarget)
+
+    def _get_rich_source(self):
+        if self._rich_source is None:
+            self._rich_source = self.multistring_to_rich(self.source)
+        return self._rich_source
+    def _set_rich_source(self, value):
+        if not hasattr(value, '__iter__'):
+            raise ValueError('value must be iterable')
+        self._rich_source = list(value)
+        self.source = self.rich_to_multistring(value)
+    rich_source = property(_get_rich_source, _set_rich_source)
+    """ @see: rich_to_multistring
+        @see: multistring_to_rich"""
+
+    def _get_rich_target(self):
+        if self._rich_target is None:
+            self._rich_target = self.multistring_to_rich(self.target)
+        return self._rich_target
+    def _set_rich_target(self, value):
+        if not hasattr(value, '__iter__'):
+            raise ValueError('value must be iterable')
+        self._rich_target = list(value)
+        self.target = self.rich_to_multistring(value)
+    rich_target = property(_get_rich_target, _set_rich_target)
+    """ @see: rich_to_multistring
+        @see: multistring_to_rich"""
 
     def gettargetlen(self):
         """Returns the length of the target string.
@@ -318,27 +357,9 @@ class TranslationUnit(object):
          <StringElem([<StringElem([u'baz'])>])>]
         """
         if isinstance(mulstring, multistring):
-            return [rich_parse(s) for s in mulstring.strings]
+            return [rich_parse(s, cls.rich_parsers) for s in mulstring.strings]
         return [rich_parse(mulstring)]
     multistring_to_rich = classmethod(multistring_to_rich)
-
-    @accepts(Self(), [[IsOneOf(str, unicode, StringElem)]])
-    def _set_rich_source(self, value):
-        self.source = self.rich_to_multistring(value)
-    def _get_rich_source(self):
-        return self.multistring_to_rich(self.source)
-    rich_source = property(_get_rich_source, _set_rich_source)
-    """ @see: rich_to_multistring
-        @see: multistring_to_rich"""
-
-    @accepts(Self(), [[IsOneOf(str, unicode, StringElem)]])
-    def _set_rich_target(self, value):
-        self.target = self.rich_to_multistring(value)
-    def _get_rich_target(self):
-        return self.multistring_to_rich(self.target)
-    rich_target = property(_get_rich_target, _set_rich_target)
-    """ @see: rich_to_multistring
-        @see: multistring_to_rich"""
 
 
 class TranslationStore(object):
