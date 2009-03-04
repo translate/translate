@@ -48,6 +48,8 @@ def test_sentences():
     # Test that a newline at the end won't confuse us
     sentences = language.sentences(u"The first sentence. The second sentence.\n")
     assert sentences == [u"The first sentence.", u"The second sentence."]
+    sentences = language.sentences(u"P.O. box")
+    assert sentences == [u"P.O. box"]
 
 def test_capsstart():
     """Tests that the indefinite article ('n) doesn't confuse startcaps()."""
