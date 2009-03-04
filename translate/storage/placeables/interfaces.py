@@ -18,9 +18,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""This file contains abstract interfaces for placeable implementations."""
+"""
+This file contains abstract (semantic) interfaces for placeable implementations.
+"""
 
-from base import StringElem
+from strelem import StringElem
 
 
 class InvisiblePlaceable(StringElem):
@@ -39,56 +41,9 @@ class SubflowPlaceable(StringElem):
     parse = None
 
 
-# Delimiters #
 class Delimiter(object):
     pass
 
 
 class PairedDelimiter(object):
-    pass
-
-
-# Basic placeable types.
-class Bpt(MaskingPlaceable, PairedDelimiter):
-    pass
-
-
-class Ept(MaskingPlaceable, PairedDelimiter):
-    pass
-
-
-class Ph(MaskingPlaceable):
-    pass
-
-
-class It(MaskingPlaceable, Delimiter):
-    pass
-
-
-class G(ReplacementPlaceable):
-    pass
-
-
-class Bx(ReplacementPlaceable, PairedDelimiter):
-    has_content = False
-
-    def __init__(self, id=None, xid=None):
-        ReplacementPlaceable.__init__(self, id=id, xid=xid)
-
-
-class Ex(ReplacementPlaceable, PairedDelimiter):
-    has_content = False
-
-    def __init__(self, id=None, xid=None):
-        ReplacementPlaceable.__init__(self, id=id, xid=xid)
-
-
-class X(ReplacementPlaceable, Delimiter):
-    has_content = False
-
-    def __init__(self, id=None, xid=None):
-        ReplacementPlaceable.__init__(self, id=id, xid=xid)
-
-
-class Sub(SubflowPlaceable):
     pass
