@@ -1,23 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
-# Copyright 2006-2008 Zuza Software Foundation
-# 
-# This file is part of translate.
 #
-# translate is free software; you can redistribute it and/or modify
+# Copyright 2006-2009 Zuza Software Foundation
+#
+# This file is part of the Translate Toolkit.
+#
+# This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
-# translate is distributed in the hope that it will be useful,
+#
+# This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with translate; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 """Base classes for storage interfaces.
 
@@ -45,7 +44,11 @@ def force_override(method, baseclass):
     else:
         actualclass = method.im_class
     if actualclass != baseclass:
-        raise NotImplementedError("%s does not reimplement %s as required by %s" % (actualclass.__name__, method.__name__, baseclass.__name__))
+        raise NotImplementedError(
+            "%s does not reimplement %s as required by %s" % \
+            (actualclass.__name__, method.__name__, baseclass.__name__)
+        )
+
 
 class ParseError(Exception):
     def __init__(self, inner_exc):
@@ -54,9 +57,10 @@ class ParseError(Exception):
     def __str__(self):
         return repr(self.inner_exc)
 
+
 class TranslationUnit(object):
     """Base class for translation units.
-    
+
     Our concept of a I{translation unit} is influenced heavily by XLIFF:
     U{http://www.oasis-open.org/committees/xliff/documents/xliff-specification.htm}
 
@@ -82,7 +86,6 @@ class TranslationUnit(object):
 
     def __init__(self, source):
         """Constructs a TranslationUnit containing the given source string."""
-
         self._store = None
         self.source = source
         self.target = None
@@ -90,29 +93,24 @@ class TranslationUnit(object):
 
     def __eq__(self, other):
         """Compares two TranslationUnits.
-        
+
         @type other: L{TranslationUnit}
         @param other: Another L{TranslationUnit}
         @rtype: Boolean
         @return: Returns True if the supplied TranslationUnit equals this unit.
-        
         """
-
         return self.source == other.source and self.target == other.target
 
     def settarget(self, target):
         """Sets the target string to the given value."""
-
         self.target = target
 
     def gettargetlen(self):
         """Returns the length of the target string.
-        
+
         @note: Plural forms might be combined.
         @rtype: Integer
-        
         """
-
         length = len(self.target or "")
         strings = getattr(self.target, "strings", [])
         if strings:
@@ -132,31 +130,26 @@ class TranslationUnit(object):
 
     def getlocations(self):
         """A list of source code locations.
-        
+
         @note: Shouldn't be implemented if the format doesn't support it.
         @rtype: List
-        
         """
-
         return []
-    
+
     def addlocation(self, location):
         """Add one location to the list of locations.
-        
+
         @note: Shouldn't be implemented if the format doesn't support it.
-        
         """
         pass
 
     def addlocations(self, location):
         """Add a location or a list of locations.
-        
+
         @note: Most classes shouldn't need to implement this,
                but should rather implement L{addlocation()}.
         @warning: This method might be removed in future.
-        
         """
-
         if isinstance(location, list):
             for item in location:
                 self.addlocation(item)
@@ -166,19 +159,18 @@ class TranslationUnit(object):
     def getcontext(self):
         """Get the message context."""
         return ""
-    
+
     def getnotes(self, origin=None):
         """Returns all notes about this unit.
-        
+
         It will probably be freeform text or something reasonable that can be
         synthesised by the format.
         It should not include location comments (see L{getlocations()}).
-        
         """
         return getattr(self, "notes", "")
 
     def addnote(self, text, origin=None):
-        """Adds a note (comment). 
+        """Adds a note (comment).
 
         @type text: string
         @param text: Usually just a sentence or two.
@@ -187,7 +179,6 @@ class TranslationUnit(object):
                        Origin can be one of the following text strings:
                          - 'translator'
                          - 'developer', 'programmer', 'source code' (synonyms)
-
         """
         if getattr(self, "notes", None):
             self.notes += '\n'+text
@@ -196,49 +187,40 @@ class TranslationUnit(object):
 
     def removenotes(self):
         """Remove all the translator's notes."""
-
         self.notes = u''
 
     def adderror(self, errorname, errortext):
         """Adds an error message to this unit.
-        
-          @type errorname: string
-          @param errorname: A single word to id the error.
-          @type errortext: string
-          @param errortext: The text describing the error.
-        
-        """
 
+        @type errorname: string
+        @param errorname: A single word to id the error.
+        @type errortext: string
+        @param errortext: The text describing the error.
+        """
         pass
 
     def geterrors(self):
         """Get all error messages.
-        
-        @rtype: Dictionary
-        
-        """
 
+        @rtype: Dictionary
+        """
         return {}
 
     def markreviewneeded(self, needsreview=True, explanation=None):
         """Marks the unit to indicate whether it needs review.
-        
+
         @keyword needsreview: Defaults to True.
         @keyword explanation: Adds an optional explanation as a note.
-        
         """
-
         pass
 
     def istranslated(self):
         """Indicates whether this unit is translated.
-        
+
         This should be used rather than deducing it from .target,
         to ensure that other classes can implement more functionality
         (as XLIFF does).
-        
         """
-
         return bool(self.target) and not self.isfuzzy()
 
     def istranslatable(self):
@@ -251,7 +233,6 @@ class TranslationUnit(object):
 
     def isfuzzy(self):
         """Indicates whether this unit is fuzzy."""
-
         return False
 
     def markfuzzy(self, value=True):
@@ -260,27 +241,22 @@ class TranslationUnit(object):
 
     def isheader(self):
         """Indicates whether this unit is a header."""
-
         return False
 
     def isreview(self):
         """Indicates whether this unit needs review."""
         return False
 
-
     def isblank(self):
         """Used to see if this unit has no source or target string.
-        
+
         @note: This is probably used more to find translatable units,
         and we might want to move in that direction rather and get rid of this.
-        
         """
-
         return not (self.source or self.target)
 
     def hasplural(self):
         """Tells whether or not this specific unit has plural strings."""
-
         #TODO: Reconsider
         return False
 
@@ -292,7 +268,6 @@ class TranslationUnit(object):
 
     def merge(self, otherunit, overwrite=False, comments=True):
         """Do basic format agnostic merging."""
-
         if self.target == "" or overwrite:
             self.rich_target = otherunit.rich_target
 
@@ -305,19 +280,18 @@ class TranslationUnit(object):
         return [self]
 
     def buildfromunit(cls, unit):
-        """Build a native unit from a foreign unit, preserving as much  
+        """Build a native unit from a foreign unit, preserving as much
         information as possible."""
-
         if type(unit) == cls and hasattr(unit, "copy") and callable(unit.copy):
             return unit.copy()
         newunit = cls(unit.source)
         newunit.target = unit.target
         newunit.markfuzzy(unit.isfuzzy())
         locations = unit.getlocations()
-        if locations: 
+        if locations:
             newunit.addlocations(locations)
         notes = unit.getnotes()
-        if notes: 
+        if notes:
             newunit.addnote(notes)
         return newunit
     buildfromunit = classmethod(buildfromunit)
@@ -366,6 +340,7 @@ class TranslationUnit(object):
     """ @see: rich_to_multistring
         @see: multistring_to_rich"""
 
+
 class TranslationStore(object):
     """Base class for stores for multiple translation units of type UnitClass."""
 
@@ -382,7 +357,6 @@ class TranslationStore(object):
 
     def __init__(self, unitclass=None):
         """Constructs a blank TranslationStore."""
-
         self.units = []
         self.sourcelanguage = None
         self.targetlanguage = None
@@ -409,35 +383,30 @@ class TranslationStore(object):
 
     def addunit(self, unit):
         """Appends the given unit to the object's list of units.
-        
+
         This method should always be used rather than trying to modify the
         list manually.
 
         @type unit: L{TranslationUnit}
         @param unit: The unit that will be added.
-        
         """
         unit._store = self
         self.units.append(unit)
 
     def addsourceunit(self, source):
         """Adds and returns a new unit with the given source string.
-        
+
         @rtype: L{TranslationUnit}
-
         """
-
         unit = self.UnitClass(source)
         self.addunit(unit)
         return unit
 
     def findunit(self, source):
         """Finds the unit with the given source string.
-        
+
         @rtype: L{TranslationUnit} or None
-
         """
-
         if len(getattr(self, "sourceindex", [])):
             if source in self.sourceindex:
                 return self.sourceindex[source]
@@ -449,11 +418,9 @@ class TranslationStore(object):
 
     def translate(self, source):
         """Returns the translated string for a given source string.
-        
+
         @rtype: String or None
-
         """
-
         unit = self.findunit(source)
         if unit and unit.target:
             return unit.target
@@ -462,7 +429,6 @@ class TranslationStore(object):
 
     def makeindex(self):
         """Indexes the items in this store. At least .sourceindex should be usefull."""
-
         self.locationindex = {}
         self.sourceindex = {}
         for unit in self.units:
@@ -480,7 +446,6 @@ class TranslationStore(object):
 
     def __str__(self):
         """Converts to a string representation that can be parsed back using L{parsestring()}."""
-
         # We can't pickle fileobj if it is there, so let's hide it for a while.
         fileobj = getattr(self, "fileobj", None)
         self.fileobj = None
@@ -490,7 +455,6 @@ class TranslationStore(object):
 
     def isempty(self):
         """Returns True if the object doesn't contain any translation units."""
-
         if len(self.units) == 0:
             return True
         for unit in self.units:
@@ -499,7 +463,7 @@ class TranslationStore(object):
         return True
 
     def _assignname(self):
-        """Tries to work out what the name of the filesystem file is and 
+        """Tries to work out what the name of the filesystem file is and
         assigns it to .filename."""
         fileobj = getattr(self, "fileobj", None)
         if fileobj:
@@ -552,7 +516,6 @@ class TranslationStore(object):
 
     def parsefile(cls, storefile):
         """Reads the given file (or opens the given filename) and parses back to an object."""
-
         mode = 'r'
         if cls._binary:
             mode = 'rb'
@@ -570,4 +533,3 @@ class TranslationStore(object):
         newstore._assignname()
         return newstore
     parsefile = classmethod(parsefile)
-
