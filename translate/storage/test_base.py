@@ -22,7 +22,7 @@
 
 from translate.misc.multistring import multistring
 from translate.storage import base
-from translate.storage.placeables import parse as rich_parse
+from translate.storage.placeables import general, parse as rich_parse
 from py import test
 import os
 import warnings
@@ -171,9 +171,9 @@ class TestTranslationUnit:
     def test_rich_set(self):
         """Basic test for converting from multistrings to StringElem trees."""
         elems = [
-            rich_parse(u'Tëst <x>string</x>'),
-            rich_parse(u'Another test string.'),
-            rich_parse('A non-Unicode string.')
+            rich_parse(u'Tëst <x>string</x>', general.parsers),
+            rich_parse(u'Another test string.', general.parsers),
+            rich_parse('A non-Unicode string.', general.parsers)
         ]
         unit = self.UnitClass(multistring([u'a', u'b']))
         unit.rich_target = elems
