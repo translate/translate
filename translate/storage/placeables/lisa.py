@@ -23,6 +23,9 @@ from lxml import etree
 from translate.storage.placeables import base, xliff, StringElem
 from translate.storage.xml_extract import misc
 
+__all__ = ['extract_chunks', 'insert_into_dom']
+# Use the above functions as entry points into this module. The rest are used by these functions.
+
 
 def make_empty_replacement_placeable(klass, node):
     try:
