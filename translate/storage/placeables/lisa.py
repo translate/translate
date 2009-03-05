@@ -60,6 +60,8 @@ def make_placeable(node):
 def as_unicode(string):
     if isinstance(string, unicode):
         return string
+    elif isinstance(string, StringElem):
+        return unicode(string)
     else:
         return unicode(string.decode('utf-8'))
 
