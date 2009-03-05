@@ -21,8 +21,9 @@
 """Contains XLIFF-specific placeables."""
 
 from translate.storage.placeables import base
+from translate.storage.placeables.strelem import StringElem
 
-__all__ = ['Bpt', 'Ept', 'X', 'Bx', 'Ex', 'G', 'It', 'Sub', 'Ph', 'parsers']
+__all__ = ['Bpt', 'Ept', 'X', 'Bx', 'Ex', 'G', 'It', 'Sub', 'Ph', 'parsers', 'to_xliff_placeables']
 
 
 def xliff__unicode__(self):
@@ -76,6 +77,30 @@ class X(base.X):
 
 class Sub(base.Sub):
     __unicode__ = xliff__unicode__
+
+
+def to_xliff_placeables(tree):
+    if not isinstance(tree, StringElem):
+        return tree
+
+    newtree = None
+
+    for baseclass in [base.Bpt, base.Ept, base.Ph, base.It, base.G, base.Bx, base.Ex, base.X, base.Sub]:
+        if isinstance(tree, baseclass):
+            newtree = baseclass()
+
+    if newtree is None:
+        newtree = tree.__class__()
+
+    newtree.id = tree.id
+    newtree.rid = tree.rid
+    newtree.xid = tree.xid
+    newtree.subelems = []
+
+    for subtree in tree.subelems:
+        newtree.subelems.append(to_xliff_placeables(subtree))
+
+    return newtree
 
 
 parsers = []

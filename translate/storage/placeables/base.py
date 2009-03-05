@@ -27,7 +27,7 @@ from strelem import StringElem
 from interfaces import *
 
 
-__all__ = ['Bpt', 'Ept', 'Ph', 'It', 'G', 'Bx', 'Ex', 'X', 'Sub']
+__all__ = ['Bpt', 'Ept', 'Ph', 'It', 'G', 'Bx', 'Ex', 'X', 'Sub', 'to_base_placeables']
 
 
 # Basic placeable types.
@@ -74,3 +74,27 @@ class X(ReplacementPlaceable, Delimiter):
 
 class Sub(SubflowPlaceable):
     pass
+
+
+def to_base_placeables(tree):
+    if not isinstance(tree, StringElem):
+        return tree
+
+    base_class = [klass for klass in tree.__class__.__bases__ \
+                  if klass in [Bpt, Ept, Ph, It, G, Bx, Ex, X, Sub]]
+
+    if not base_class:
+        base_class = tree.__class__
+    else:
+        base_class = base_class[0]
+
+    newtree = base_class()
+    newtree.id = tree.id
+    newtree.rid = tree.rid
+    newtree.xid = tree.xid
+    newtree.subelems = []
+
+    for subtree in tree.subelems:
+        newtree.subelems.append(to_base_placeables(subtree))
+
+    return newtree

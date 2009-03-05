@@ -25,12 +25,12 @@ fit into any other sub-category.
 
 import re
 
-__all__ = ['AltAttrPlaceable', 'XMLEntityPlaceable', 'XMLTagPlaceable', 'parsers']
+__all__ = ['AltAttrPlaceable', 'XMLEntityPlaceable', 'XMLTagPlaceable', 'parsers', 'to_general_placeables']
 
-from translate.storage.placeables.base import StringElem
+from translate.storage.placeables.base import G, Ph, StringElem
 
 
-class AltAttrPlaceable(StringElem):
+class AltAttrPlaceable(G):
     """Placeable for the "alt=..." attributes inside XML tags."""
 
     @classmethod
@@ -46,7 +46,7 @@ class AltAttrPlaceable(StringElem):
         return None
 
 
-class XMLEntityPlaceable(StringElem):
+class XMLEntityPlaceable(Ph):
     """Placeable handling XML entities (C{&xxxxx;}-style entities)."""
 
     iseditable = False
@@ -74,7 +74,7 @@ class XMLEntityPlaceable(StringElem):
 #                return placeable
 
 
-class XMLTagPlaceable(StringElem):
+class XMLTagPlaceable(Ph):
     """Placeable handling XML tags."""
 
     iseditable = False
@@ -95,5 +95,30 @@ class XMLTagPlaceable(StringElem):
             if i <= len(pstr):
                 return cls([pstr[:i]])
             return None
+
+def to_general_placeables(tree, classmap={G: (AltAttrPlaceable,), Ph: (XMLEntityPlaceable, XMLTagPlaceable)}):
+    if not isinstance(tree, StringElem):
+        return tree
+
+    newtree = None
+
+    for baseclass, gclasslist in classmap.items():
+        if isinstance(tree, baseclass):
+            gclass = [c for c in gclasslist if c.parse(unicode(tree))]
+            if gclass:
+                newtree = gclass[0]()
+
+    if newtree is None:
+        newtree = tree.__class__()
+
+    newtree.id = tree.id
+    newtree.rid = tree.rid
+    newtree.xid = tree.xid
+    newtree.subelems = []
+
+    for subtree in tree.subelems:
+        newtree.subelems.append(to_general_placeables(subtree))
+
+    return newtree
 
 parsers = [AltAttrPlaceable.parse, XMLEntityPlaceable.parse, XMLTagPlaceable.parse]
