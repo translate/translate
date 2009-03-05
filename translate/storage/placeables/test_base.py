@@ -18,12 +18,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-from translate.storage.placeables import general, parse, StringElem
+from translate.storage.placeables import base, general, parse, xliff, StringElem
 
 
 class TestStringElem:
+    ORIGSTR = u'Ģët <a href="http://www.example.com" alt="Ģët &brand;!">&brandLong;</a>'
+
     def __init__(self):
-        self.ORIGSTR = u'Ģët <a href="http://www.example.com" alt="Ģët &brand;!">&brandLong;</a>'
         self.elem = parse(self.ORIGSTR, general.parsers)
 
     def test_parse(self):
@@ -98,12 +99,38 @@ class TestStringElem:
         assert u''.join([unicode(i) for i in self.elem.flatten()]) == self.ORIGSTR
 
 
-if __name__ == '__main__':
-    test = TestStringElem()
-    for method in dir(test):
-        if method.startswith('test_') and callable(getattr(test, method)):
-            getattr(test, method)()
+class TestConverters:
+    def __init__(self):
+        self.elem = parse(TestStringElem.ORIGSTR, general.parsers)
 
-    print 'Test string:   %s' % (test.ORIGSTR)
-    print 'Parsed string: %s' % (unicode(test.elem))
+    def test_to_base_placeables(self):
+        basetree = base.to_base_placeables(self.elem)
+        # The following asserts say that, even though tree and newtree represent the same string
+        # (the unicode() results are the same), they are composed of different classes (and so
+        # their repr()s are different
+        assert unicode(self.elem) == unicode(basetree)
+        assert repr(self.elem) != repr(basetree)
+
+    def test_to_general_placeables(self):
+        basetree = base.to_base_placeables(self.elem)
+        gentree = general.to_general_placeables(basetree)
+        assert gentree == self.elem
+
+    def test_to_xliff_placeables(self):
+        basetree = base.to_base_placeables(self.elem)
+        xliff_from_base = xliff.to_xliff_placeables(basetree)
+        assert unicode(xliff_from_base) == unicode(self.elem)
+        assert repr(xliff_from_base) != unicode(self.elem)
+
+        xliff_from_gen = xliff.to_xliff_placeables(self.elem)
+        assert unicode(xliff_from_gen) == unicode(self.elem)
+        assert repr(xliff_from_gen) != unicode(self.elem)
+
+
+if __name__ == '__main__':
+    for test in [TestStringElem(), TestConverters()]:
+        for method in dir(test):
+            if method.startswith('test_') and callable(getattr(test, method)):
+                getattr(test, method)()
+
     test.elem.print_tree()
