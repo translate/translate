@@ -137,7 +137,7 @@ class StringElem(object):
     def __str__(self):
         if not self.isvisible:
             return ''
-        return ''.join([str(elem) for elem in self.subelems])
+        return ''.join([unicode(elem).encode('utf-8') for elem in self.subelems])
 
     def __unicode__(self):
         if not self.isvisible:
