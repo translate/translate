@@ -23,6 +23,9 @@
 
 import unicodedata
 
+from translate.storage.placeables import StringElem
+
+
 languages = {
 'af': ('Afrikaans', 2, '(n != 1)'),
 'ak': ('Akan', 2, 'n > 1'),
@@ -262,6 +265,8 @@ def forceunicode(string):
     if isinstance(string, str):
         encoding = getattr(string, "encoding", "utf-8")
         string = string.decode(encoding)
+    elif isinstance(string, StringElem):
+        string = unicode(string)
     return string
 
 def normalized_unicode(string):
