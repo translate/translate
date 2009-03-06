@@ -110,47 +110,32 @@ _placeable_dictionary = {
     base.X  :  lambda placeable: placeable_as_dom_node(placeable, 'x')
 }
 
-class EOF: pass
-
-def end_with_eof(seq):
-    for item in seq:
-        yield item
-    while True:
-        yield EOF
-
-def collect_text(text, next, itr):
-    text = as_unicode(text)
-    if isinstance(next, (unicode, str)):
-        return collect_text(text + as_unicode(next), itr.next(), itr)
+def xml_append_string(node, string):
+    if not len(node):
+        if not node.text:
+            node.text = unicode(string)
+        else:
+            node.text += unicode(string)
     else:
-        return text, next
+        node.getchildren()[-1].tail = unicode(string)
+    return node
 
-def get_placeable(result, next, itr):
-    if isinstance(next, StringElem):
-        return next, itr.next()
+def strelem_to_xml(parent_node, elem):
+    if isinstance(elem, (str, unicode)):
+        return xml_append_string(parent_node, elem)
+    if not isinstance(elem, StringElem):
+        return parent_node
+
+    if elem.isleaf():
+        return xml_append_string(parent_node, elem)
+
+    if elem.__class__ in _placeable_dictionary:
+        node = _placeable_dictionary[elem.__class__](elem)
+        parent_node.append(node)
     else:
-        return result, next
+        node = parent_node
 
-def process_placeable(placeable, next, chunk_seq):
-    """Get all text appearing after """
-    text, next          = collect_text(u'', next, chunk_seq)
-    child_dom_node      = _placeable_dictionary[placeable.__class__](placeable)
-    child_dom_node.tail = text
-    if placeable.subelems is not None:
-        strelem_to_xml(child_dom_node, placeable.subelems)
-    return child_dom_node, next
+    for sub in elem.subelems:
+        strelem_to_xml(node, sub)
 
-def strelem_to_xml(dom_node, chunk_seq):
-    """Enumerate the elements of chunk_seq, adding text and placeable
-    nodes to dom_node."""
-
-    chunk_seq = end_with_eof(chunk_seq)
-    dom_node.text, next = collect_text(u'', chunk_seq.next(), chunk_seq)
-    if dom_node.text == u'':
-        dom_node.text = None
-    while next != EOF:
-        placeable, next = get_placeable(None, next, chunk_seq)
-        if placeable is not None:
-            child_dom_node, next = process_placeable(placeable, next, chunk_seq)
-            dom_node.append(child_dom_node)
-    return dom_node
+    return parent_node
