@@ -85,9 +85,20 @@ def to_xliff_placeables(tree):
 
     newtree = None
 
-    for baseclass in [base.Bpt, base.Ept, base.Ph, base.It, base.G, base.Bx, base.Ex, base.X, base.Sub]:
+    classmap = {
+        base.Bpt: Bpt,
+        base.Ept: Ept,
+        base.Ph:  Ph,
+        base.It:  It,
+        base.G:   G,
+        base.Bx:  Bx,
+        base.Ex:  Ex,
+        base.X:   X,
+        base.Sub: Sub
+    }
+    for baseclass, xliffclass in classmap.items():
         if isinstance(tree, baseclass):
-            newtree = baseclass()
+            newtree = xliffclass()
 
     if newtree is None:
         newtree = tree.__class__()
