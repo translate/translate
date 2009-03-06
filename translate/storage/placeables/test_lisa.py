@@ -24,17 +24,17 @@ from lxml import etree
 from translate.storage.placeables import lisa, StringElem
 from translate.storage.placeables.xliff import X, G
 
-def test_extract_chunks():
+def test_xml_to_strelem():
     source = etree.fromstring(u'<source>a<x id="foo[1]/bar[1]/baz[1]"/></source>')
-    elem = lisa.extract_chunks(source)
+    elem = lisa.xml_to_strelem(source)
     assert elem.subelems == [u'a', X(id=u'foo[1]/bar[1]/baz[1]')]
 
     source = etree.fromstring(u'<source>a<x id="foo[1]/bar[1]/baz[1]"/>é</source>')
-    elem = lisa.extract_chunks(source)
+    elem = lisa.xml_to_strelem(source)
     assert elem.subelems == [u'a', X(id=u'foo[1]/bar[1]/baz[1]'), u'é']
 
     source = etree.fromstring(u'<source>a<g id="foo[2]/bar[2]/baz[2]">b<x id="foo[1]/bar[1]/baz[1]"/>c</g>é</source>')
-    elem = lisa.extract_chunks(source)
+    elem = lisa.xml_to_strelem(source)
     assert elem.subelems == [u'a', G(id=u'foo[2]/bar[2]/baz[2]', subelems=[u'b', X(id=u'foo[1]/bar[1]/baz[1]'), u'c']), u'é']
 
 def test_chunk_list():
@@ -42,32 +42,32 @@ def test_chunk_list():
     right = StringElem(['a', G(id='foo[2]/bar[2]/baz[2]', subelems=['b', X(id='foo[1]/bar[1]/baz[1]'), 'c']), 'é'])
     assert left == right
 
-def test_set_insert_into_dom():
+def test_set_strelem_to_xml():
     source = etree.Element(u'source')
-    lisa.insert_into_dom(source, ['a'])
+    lisa.strelem_to_xml(source, ['a'])
     assert etree.tostring(source, encoding = 'UTF-8') == '<source>a</source>'
 
     source = etree.Element(u'source')
-    lisa.insert_into_dom(source, ['a', 'é'])
+    lisa.strelem_to_xml(source, ['a', 'é'])
     assert etree.tostring(source, encoding = 'UTF-8') == '<source>aé</source>'
 
     source = etree.Element(u'source')
-    lisa.insert_into_dom(source, [X(id='foo[1]/bar[1]/baz[1]')])
+    lisa.strelem_to_xml(source, [X(id='foo[1]/bar[1]/baz[1]')])
     assert etree.tostring(source, encoding = 'UTF-8') == '<source><x id="foo[1]/bar[1]/baz[1]"/></source>'
 
     source = etree.Element(u'source')
-    lisa.insert_into_dom(source, ['a', X(id='foo[1]/bar[1]/baz[1]')])
+    lisa.strelem_to_xml(source, ['a', X(id='foo[1]/bar[1]/baz[1]')])
     assert etree.tostring(source, encoding = 'UTF-8') == '<source>a<x id="foo[1]/bar[1]/baz[1]"/></source>'
 
     source = etree.Element(u'source')
-    lisa.insert_into_dom(source, ['a', X(id='foo[1]/bar[1]/baz[1]'), 'é'])
+    lisa.strelem_to_xml(source, ['a', X(id='foo[1]/bar[1]/baz[1]'), 'é'])
     assert etree.tostring(source, encoding = 'UTF-8') == '<source>a<x id="foo[1]/bar[1]/baz[1]"/>é</source>'
 
     source = etree.Element(u'source')
-    lisa.insert_into_dom(source, ['a', G(id='foo[2]/bar[2]/baz[2]', subelems=['b', X(id='foo[1]/bar[1]/baz[1]'), 'c']), 'é'])
+    lisa.strelem_to_xml(source, ['a', G(id='foo[2]/bar[2]/baz[2]', subelems=['b', X(id='foo[1]/bar[1]/baz[1]'), 'c']), 'é'])
     assert etree.tostring(source, encoding = 'UTF-8') == '<source>a<g id="foo[2]/bar[2]/baz[2]">b<x id="foo[1]/bar[1]/baz[1]"/>c</g>é</source>'
 
 if __name__ == '__main__':
     test_chunk_list()
-    test_extract_chunks()
-    test_set_insert_into_dom()
+    test_xml_to_strelem()
+    test_set_strelem_to_xml()

@@ -25,7 +25,7 @@ from translate.storage import ts2 as ts
 from translate.storage import test_base
 from translate.storage.placeables import parse
 from translate.storage.placeables import xliff
-from translate.storage.placeables.lisa import extract_chunks
+from translate.storage.placeables.lisa import xml_to_strelem
 
 
 xliffparsers = []
@@ -44,9 +44,9 @@ class TestTSUnit(test_base.TestTranslationUnit):
     def test_rich_set(self):
         """Basic test for converting from multistrings to StringElem trees."""
         elems = [
-            extract_chunks(etree.fromstring(u'<g><x id="fish"/>strïng</g>')),
-            extract_chunks(etree.fromstring(u'<g>Another test string</g>')),
-            extract_chunks(etree.fromstring('<ph>A non-Unicode string.</ph>'))
+            xml_to_strelem(etree.fromstring(u'<g><x id="fish"/>strïng</g>')),
+            xml_to_strelem(etree.fromstring(u'<g>Another test string</g>')),
+            xml_to_strelem(etree.fromstring('<ph>A non-Unicode string.</ph>'))
         ]
         unit = self.UnitClass(multistring([u'a', u'b']))
         unit.rich_target = elems

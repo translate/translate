@@ -23,7 +23,7 @@ from lxml import etree
 from translate.storage.placeables import base, xliff, StringElem
 from translate.storage.xml_extract import misc
 
-__all__ = ['extract_chunks', 'insert_into_dom']
+__all__ = ['xml_to_strelem', 'strelem_to_xml']
 # Use the above functions as entry points into this module. The rest are used by these functions.
 
 
@@ -35,7 +35,7 @@ def make_empty_replacement_placeable(klass, node):
     return klass()
 
 def make_g_placeable(klass, node):
-    return klass(id=node.attrib[u'id'], subelems=extract_chunks(node).subelems)
+    return klass(id=node.attrib[u'id'], subelems=xml_to_strelem(node).subelems)
 
 def not_yet_implemented(klass, node):
     raise NotImplementedError
@@ -65,7 +65,7 @@ def as_unicode(string):
     else:
         return unicode(string.decode('utf-8'))
 
-def extract_chunks(dom_node):
+def xml_to_strelem(dom_node):
     if isinstance(dom_node, basestring):
         dom_node = etree.fromstring(dom_node)
     result = StringElem()
@@ -137,10 +137,10 @@ def process_placeable(placeable, next, chunk_seq):
     child_dom_node      = _placeable_dictionary[placeable.__class__](placeable)
     child_dom_node.tail = text
     if placeable.subelems is not None:
-        insert_into_dom(child_dom_node, placeable.subelems)
+        strelem_to_xml(child_dom_node, placeable.subelems)
     return child_dom_node, next
 
-def insert_into_dom(dom_node, chunk_seq):
+def strelem_to_xml(dom_node, chunk_seq):
     """Enumerate the elements of chunk_seq, adding text and placeable
     nodes to dom_node."""
 

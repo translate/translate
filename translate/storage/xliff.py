@@ -25,10 +25,11 @@
 The official recommendation is to use the extention .xlf for XLIFF files.
 """
 
-from translate.misc.multistring import multistring
-from translate.storage import base
-from translate.storage import lisa
 from lxml import etree
+
+from translate.misc.multistring import multistring
+from translate.storage import base, lisa
+from translate.storage.placeables.lisa import xml_to_strelem
 
 # TODO: handle translation types
 
@@ -336,7 +337,7 @@ class xliffunit(lisa.LISAunit):
         elif isinstance(mstr, basestring):
             strings = [mstr]
 
-        return [extract_chunks(s) for s in strings]
+        return [xml_to_strelem(s) for s in strings]
     multistring_to_rich = classmethod(multistring_to_rich)
 
     def rich_to_multistring(self, elem_list):
