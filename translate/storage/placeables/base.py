@@ -32,23 +32,23 @@ __all__ = ['Bpt', 'Ept', 'Ph', 'It', 'G', 'Bx', 'Ex', 'X', 'Sub', 'to_base_place
 
 # Basic placeable types.
 class Bpt(MaskingPlaceable, PairedDelimiter):
-    pass
+    has_content = True
 
 
 class Ept(MaskingPlaceable, PairedDelimiter):
-    pass
+    has_content = True
 
 
 class Ph(MaskingPlaceable):
-    pass
+    has_content = True
 
 
 class It(MaskingPlaceable, Delimiter):
-    pass
+    has_content = True
 
 
 class G(ReplacementPlaceable):
-    pass
+    has_content = True
 
 
 class Bx(ReplacementPlaceable, PairedDelimiter):
@@ -73,7 +73,7 @@ class X(ReplacementPlaceable, Delimiter):
 
 
 class Sub(SubflowPlaceable):
-    pass
+    has_content = True
 
 
 def to_base_placeables(tree):
