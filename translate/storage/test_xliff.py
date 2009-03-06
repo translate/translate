@@ -7,7 +7,7 @@ from translate.storage.placeables.xliff import X, G
 
 class TestXLIFFUnit(test_base.TestTranslationUnit):
     UnitClass = xliff.xliffunit
-   
+
     def test_isfuzzy(self):
         """The default behaviour for XLIFF is different, so we adapt the test
         from test_base.py"""
@@ -85,11 +85,11 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         x_placeable = source_dom_node[0]
 
         assert source_dom_node.text == 'foo'
-        
+
         assert x_placeable.tag == u'x'
         assert x_placeable.attrib['id'] == 'bar'
         assert x_placeable.tail == 'baz'
-        
+
         assert xliffunit.rich_source == [StringElem(['foo', X(id='bar'), 'baz'])]
 
         # Test 2
@@ -99,17 +99,17 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         nested_g_placeable = g_placeable[0]
 
         assert source_dom_node.text == u'foobaz'
-        
+
         assert g_placeable.tag == u'g'
         assert g_placeable.text is None
         assert g_placeable.attrib[u'id'] == u'oof'
-        assert g_placeable.tail == u''
-        
+        assert g_placeable.tail is None
+
         assert nested_g_placeable.tag == u'g'
         assert nested_g_placeable.text == u'barrab'
         assert nested_g_placeable.attrib[u'id'] == u'zab'
-        assert nested_g_placeable.tail == u''
-        
+        assert nested_g_placeable.tail is None
+
         rich_source = xliffunit.rich_source
         assert rich_source == [StringElem(['foobaz', G(id='oof', subelems=[G(id='zab', subelems=['barrab'])])])]
 
@@ -121,7 +121,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         xliffunit.set_rich_target([StringElem(['foo', X(id='bar'), 'baz'])], 'fr')
         target_dom_node = xliffunit.getlanguageNode(None, 1)
         x_placeable = target_dom_node[0]
-        
+
         assert target_dom_node.text == 'foo'
         assert x_placeable.tag == u'x'
         assert x_placeable.attrib['id'] == 'bar'
@@ -134,18 +134,18 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         nested_g_placeable = g_placeable[0]
 
         assert target_dom_node.text == u'foobaz'
-        
+
         assert g_placeable.tag == u'g'
         print 'g_placeable.text: %s (%s)' % (g_placeable.text, type(g_placeable.text))
         assert g_placeable.text is None
         assert g_placeable.attrib[u'id'] == u'oof'
-        assert g_placeable.tail == u''
-        
+        assert g_placeable.tail is None
+
         assert nested_g_placeable.tag == u'g'
         assert nested_g_placeable.text == u'barrab'
         assert nested_g_placeable.attrib[u'id'] == u'zab'
-        assert nested_g_placeable.tail == u''
-        
+        assert nested_g_placeable.tail is None
+
         assert xliffunit.rich_target == [StringElem(['foobaz', G(id='oof', subelems=[G(id='zab', subelems=['barrab'])])])]
 
     def test_source(self):
@@ -156,7 +156,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         print str(xlifffile)
         assert newfile.findunit("Concept") is None
         assert newfile.findunit("Term") is not None
-    
+
     def test_target(self):
         xlifffile = xliff.xlifffile()
         xliffunit = xlifffile.addsourceunit("Concept")
@@ -169,16 +169,16 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         xlifffile = xliff.xlifffile(sourcelanguage="xh")
         xmltext = str(xlifffile)
         print xmltext
-        assert xmltext.find('source-language="xh"')> 0  
+        assert xmltext.find('source-language="xh"')> 0
         #TODO: test that it also works for new files.
 
     def test_targetlanguage(self):
         xlifffile = xliff.xlifffile(sourcelanguage="zu", targetlanguage="af")
         xmltext = str(xlifffile)
         print xmltext
-        assert xmltext.find('source-language="zu"')> 0  
-        assert xmltext.find('target-language="af"')> 0  
-            
+        assert xmltext.find('source-language="zu"')> 0
+        assert xmltext.find('target-language="af"')> 0
+
     def test_notes(self):
         xlifffile = xliff.xlifffile()
         unit = xlifffile.addsourceunit("Concept")
