@@ -145,6 +145,13 @@ class StringElem(object):
         return u''.join([unicode(elem) for elem in self.subelems])
 
     # METHODS #
+    def depth_first(self):
+        elems = [self]
+        for sub in self.subelems:
+            if isinstance(sub, StringElem):
+                elems.extend(sub.depth_first())
+        return elems
+
     def encode(self, encoding=sys.getdefaultencoding()):
         """More C{unicode} class emulation."""
         return unicode(self).encode(encoding)
@@ -198,12 +205,21 @@ class StringElem(object):
                 subelems.append(elem)
         return subelems
 
-    def depth_first(self):
-        elems = [self]
-        for sub in self.subelems:
-            if isinstance(sub, StringElem):
-                elems.extend(sub.depth_first())
-        return elems
+    def isleaf(self):
+        """
+        Whether or not this instance is a leaf node in the C{StringElem} tree.
+
+        A node is a leaf node if it is a C{StringElem} (not a sub-class) and
+        contains only sub-elements of type C{str} or C{unicode}.
+
+        @rtype: bool
+        """
+        if self.__class__ is not StringElem:
+            return False
+        for e in self.subelems:
+            if not isinstance(e, (str, unicode)):
+                return False
+        return True
 
     def iter_depth_first(self):
         for elem in self.depth_first():
