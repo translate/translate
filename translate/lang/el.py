@@ -40,9 +40,17 @@ class el(common.Common):
                             \s+         #the spacing after the puntuation
                             (?=[^a-z\d])#lookahead that next part starts with caps
                             """ % sentenceend, re.VERBOSE)
-    
+
     puncdict = {
         u"?": u";",
         u";": u"·",
     }
 
+    # Valid latin characters for use as accelerators
+    valid_latin_accel = u"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+
+    # Valid greek characters for use as accelerators (accented characters and "ς" omitted)
+    valid_greek_accel = u"αβγδεζηθικλμνξοπρστυφχψωΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ"
+
+    # Valid accelerators
+    validaccel =  u"".join([valid_latin_accel, valid_greek_accel])
