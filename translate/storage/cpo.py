@@ -174,6 +174,8 @@ def get_libgettextpo_version():
 
 class pounit(pocommon.pounit):
     def __init__(self, source=None, encoding='utf-8', gpo_message=None):
+        self._rich_source = None
+        self._rich_target = None
         self._encoding = encoding
         if not gpo_message:
             self._gpo_message = gpo.po_message_create()

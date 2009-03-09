@@ -48,7 +48,7 @@ class TestCPOUnit(test_po.TestPOUnit):
         unit.target = "Boom"
         # FIXME: currently assigning the target to the same as the first string won't change anything
         # we need to verify that this is the desired behaviour...
-        assert unit.target.strings == ["Boom", "Bome"]
+        assert unit.target.strings[0] == "Boom"
         unit.target = "Een Boom"
         assert unit.target.strings == ["Een Boom"]
 
