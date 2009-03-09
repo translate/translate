@@ -53,4 +53,5 @@ def only_strings(f):
 def map_rich(f, rich_string):
     """Return a new list of chunk sequences, where each chunk
     sequence has f applied to it."""
-    return [map_entry(f, entry) for entry in rich_string]
+    mapped = [map_entry(f, entry) for entry in rich_string]
+    return [m for m in mapped if m != []]
