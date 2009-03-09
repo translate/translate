@@ -148,6 +148,10 @@ class TranslationUnit(object):
     def _set_rich_source(self, value):
         if not hasattr(value, '__iter__'):
             raise ValueError('value must be iterable')
+        if len(value) < 1:
+            raise ValueError('value must have at least one element.')
+        if not isinstance(value[0], StringElem):
+            raise ValueError('value[0] must be of type StringElem.')
         self._rich_source = list(value)
         self.source = self.rich_to_multistring(value)
     rich_source = property(_get_rich_source, _set_rich_source)
@@ -161,6 +165,10 @@ class TranslationUnit(object):
     def _set_rich_target(self, value):
         if not hasattr(value, '__iter__'):
             raise ValueError('value must be iterable')
+        if len(value) < 1:
+            raise ValueError('value must have at least one element.')
+        if not isinstance(value[0], StringElem):
+            raise ValueError('value[0] must be of type StringElem.')
         self._rich_target = list(value)
         self.target = self.rich_to_multistring(value)
     rich_target = property(_get_rich_target, _set_rich_target)
