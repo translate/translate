@@ -29,7 +29,7 @@ from translate.misc.contextlib import contextmanager, nested
 from translate.misc.context import with_
 from translate.storage.xml_extract import xpath_breadcrumb
 from translate.storage.xml_extract import misc
-from translate.storage.placeables.placeables import X, G
+from translate.storage.placeables.base import X, G
 
 def Nullable(t):
     return IsOneOf(t, type(None))
