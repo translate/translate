@@ -41,20 +41,6 @@ def rich_parse(s):
 class TestTSUnit(test_base.TestTranslationUnit):
     UnitClass = ts.tsunit
 
-    def test_rich_set(self):
-        """Basic test for converting from multistrings to StringElem trees."""
-        elems = [
-            xml_to_strelem(etree.fromstring(u'<g><x id="fish"/>strïng</g>')),
-            xml_to_strelem(etree.fromstring(u'<g>Another test string</g>')),
-            xml_to_strelem(etree.fromstring('<ph>A non-Unicode string.</ph>'))
-        ]
-        unit = self.UnitClass(multistring([u'a', u'b']))
-        unit.rich_target = elems
-
-        assert unit.target.strings[0] == u'<x>strïng</x>'
-        assert unit.target.strings[1] == u'<g>Another test string.</g>'
-        assert unit.target.strings[2] == '<ph>A non-Unicode string.</ph>'
-
 class TestTSfile(test_base.TestTranslationStore):
     StoreClass = ts.tsfile
     def test_basic(self):

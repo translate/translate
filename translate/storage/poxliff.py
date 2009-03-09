@@ -23,9 +23,8 @@
 """An xliff file specifically suited for handling the po representation of 
 xliff. """
 
-from translate.storage import xliff
-from translate.storage import lisa 
-from translate.storage import poheader
+from translate.storage import base, lisa, poheader, xliff
+from translate.storage.placeables import general
 from translate.misc.multistring import multistring
 from lxml import etree
 import re
@@ -37,7 +36,12 @@ def hasplurals(thing):
 
 class PoXliffUnit(xliff.xliffunit):
     """A class to specifically handle the plural units created from a po file."""
+
+    rich_parsers = general.parsers
+
     def __init__(self, source=None, empty=False, encoding="UTF-8"):
+        self._rich_source = None
+        self._rich_target = None
         self.units = []
             
         if empty:
@@ -89,11 +93,15 @@ class PoXliffUnit(xliff.xliffunit):
                 self.xmlelement.append(newunit.xmlelement)
             self.target = target
 
+    multistring_to_rich = base.TranslationUnit.multistring_to_rich
+    rich_to_multistring = base.TranslationUnit.rich_to_multistring
+
     def getsource(self):
         strings = [super(PoXliffUnit, self).getsource()]
         strings.extend([unit.source for unit in self.units[1:]])
         return multistring(strings)
     source = property(getsource, setsource)
+    rich_source = property(base.TranslationUnit._get_rich_source, base.TranslationUnit._set_rich_source)
     
     def settarget(self, text, lang='xx', append=False):
         if self.gettarget() == text:
@@ -131,6 +139,7 @@ class PoXliffUnit(xliff.xliffunit):
             return super(PoXliffUnit, self).gettarget()
 
     target = property(gettarget, settarget)
+    rich_target = property(base.TranslationUnit._get_rich_target, base.TranslationUnit._set_rich_target)
 
     def addnote(self, text, origin=None):
         """Add a note specifically in a "note" tag"""

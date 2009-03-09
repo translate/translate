@@ -32,7 +32,8 @@ U{Specification of the valid variable entries <http://doc.trolltech.com/4.3/qstr
 U{2 <http://doc.trolltech.com/4.3/qstring.html#arg-2>}
 """
 
-from translate.storage import lisa
+from translate.storage import base, lisa
+from translate.storage.placeables import general, StringElem
 from translate.misc.multistring import multistring
 from translate.lang import data
 from lxml import etree
@@ -65,6 +66,7 @@ class tsunit(lisa.LISAunit):
     languageNode = "source"
     textNode = ""
     namespace = ''
+    rich_parsers = general.parsers
 
     def createlanguageNode(self, lang, text, purpose):
         """Returns an xml Element setup with given parameters."""
@@ -99,6 +101,7 @@ class tsunit(lisa.LISAunit):
         else:
             return data.forceunicode(sourcenode.text)
     source = property(getsource, lisa.LISAunit.setsource)
+    rich_source = property(base.TranslationUnit._get_rich_source, base.TranslationUnit._set_rich_source)
 
     def settarget(self, text):
         # This is a fairly destructive implementation. Don't assume that this
@@ -119,7 +122,8 @@ class tsunit(lisa.LISAunit):
         targetnode.clear()
         if type:
             targetnode.set("type", type)
-        if self.hasplural():
+        if self.hasplural() or len(strings) > 1:
+            self.xmlelement.set("numerus", "yes")
             for string in strings:
                 numerus = etree.SubElement(targetnode, self.namespaced("numerusform"))
                 numerus.text = data.forceunicode(string) or u""
@@ -137,6 +141,7 @@ class tsunit(lisa.LISAunit):
         else:
             return data.forceunicode(targetnode.text) or u""
     target = property(gettarget, settarget)
+    rich_target = property(base.TranslationUnit._get_rich_target, base.TranslationUnit._set_rich_target)
 
     def hasplural(self):
         return self.xmlelement.get("numerus") == "yes"
@@ -166,7 +171,10 @@ class tsunit(lisa.LISAunit):
 
     def _gettype(self):
         """Returns the type of this translation."""
-        return self._gettargetnode().get("type")
+        targetnode = self._gettargetnode()
+        if targetnode:
+            return targetnode.get("type")
+        return None
 
     def _settype(self, value=None):
         """Set the type of this translation."""
