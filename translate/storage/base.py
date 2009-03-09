@@ -106,6 +106,29 @@ class TranslationUnit(object):
         """
         return self.source == other.source and self.target == other.target
 
+    def rich_to_multistring(cls, elem_list):
+        """Convert a "rich" string tree to a C{multistring}.
+        >>> from translate.storage.placeables.interfaces import X
+        >>> rich = [StringElem(['foo', X(id='xxx', subelems=[' ']), 'bar'])]
+        >>> TranslationUnit.rich_to_multistring(rich)
+        multistring(u'foo bar')
+        """
+        return multistring([unicode(elem) for elem in elem_list])
+    rich_to_multistring = classmethod(rich_to_multistring)
+
+    def multistring_to_rich(cls, mulstring):
+        """Convert a multistring to a list of "rich" string trees.
+        >>> target = multistring([u'foo', u'bar', u'baz'])
+        >>> TranslationUnit.multistring_to_rich(target)
+        [<StringElem([<StringElem([u'foo'])>])>,
+         <StringElem([<StringElem([u'bar'])>])>,
+         <StringElem([<StringElem([u'baz'])>])>]
+        """
+        if isinstance(mulstring, multistring):
+            return [rich_parse(s, cls.rich_parsers) for s in mulstring.strings]
+        return [rich_parse(mulstring)]
+    multistring_to_rich = classmethod(multistring_to_rich)
+
     def setsource(self, source):
         """Sets the source string to the given value."""
         self._rich_source = None
@@ -337,29 +360,6 @@ class TranslationUnit(object):
 
     xid = property(lambda self: None, lambda self, value: None)
     rid = property(lambda self: None, lambda self, value: None)
-
-    def rich_to_multistring(cls, elem_list):
-        """Convert a "rich" string tree to a C{multistring}.
-        >>> from translate.storage.placeables.interfaces import X
-        >>> rich = [StringElem(['foo', X(id='xxx', subelems=[' ']), 'bar'])]
-        >>> TranslationUnit.rich_to_multistring(rich)
-        multistring(u'foo bar')
-        """
-        return multistring([unicode(elem) for elem in elem_list])
-    rich_to_multistring = classmethod(rich_to_multistring)
-
-    def multistring_to_rich(cls, mulstring):
-        """Convert a multistring to a list of "rich" string trees.
-        >>> target = multistring([u'foo', u'bar', u'baz'])
-        >>> TranslationUnit.multistring_to_rich(target)
-        [<StringElem([<StringElem([u'foo'])>])>,
-         <StringElem([<StringElem([u'bar'])>])>,
-         <StringElem([<StringElem([u'baz'])>])>]
-        """
-        if isinstance(mulstring, multistring):
-            return [rich_parse(s, cls.rich_parsers) for s in mulstring.strings]
-        return [rich_parse(mulstring)]
-    multistring_to_rich = classmethod(multistring_to_rich)
 
 
 class TranslationStore(object):
