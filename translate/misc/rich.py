@@ -1,43 +1,41 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # 
-# Copyright 2008 Zuza Software Foundation
-# 
-# This file is part of translate.
+# Copyright 2008-2009 Zuza Software Foundation
 #
-# translate is free software; you can redistribute it and/or modify
+# This file is part of the Translate Toolkit.
+#
+# This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
-# translate is distributed in the hope that it will be useful,
+#
+# This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with translate; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 __all__ = ['only_strings', 'map_rich']
 
 from translate.storage.placeables import StringElem
 
-def map_content(f, chunk):
-    """If chunk is a StringElem and it has content, we need
+def map_content(f, elem):
+    """If C{elem} is a StringElem and it has content, we need
     to modify the content as well.
 
     Note that this is NOT a pure function. For that, we would
     need to copy the placeables themselves."""
-    if isinstance(chunk, StringElem):
-        if chunk.subelems is not None:
-            chunk.subelems = map_entry(f, chunk.subelems)
-    return chunk
+    if isinstance(elem, StringElem) and elem.subelems:
+        elem.subelems = map_entry(f, elem.subelems)
+    return elem
 
-def map_entry(f, chunk_seq):
-    """Transform every chunk in chunk_seq with the function f,
+def map_entry(f, elem):
+    """Transform every sub-element in C{elem} with the function f,
     including the inner content of any placeables."""
-    return [f(map_content(f, chunk)) for chunk in chunk_seq]
+    return [f(map_content(f, sub)) for sub in elem]
 
 def only_strings(f):
     """A decorator to ensure that f is only applied to strings
