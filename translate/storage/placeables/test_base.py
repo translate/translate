@@ -119,12 +119,15 @@ class TestConverters:
     def test_to_xliff_placeables(self):
         basetree = base.to_base_placeables(self.elem)
         xliff_from_base = xliff.to_xliff_placeables(basetree)
-        assert unicode(xliff_from_base) == unicode(self.elem)
-        assert repr(xliff_from_base) != unicode(self.elem)
+        assert unicode(xliff_from_base) != unicode(self.elem)
+        assert repr(xliff_from_base) != repr(self.elem)
 
         xliff_from_gen = xliff.to_xliff_placeables(self.elem)
-        assert unicode(xliff_from_gen) == unicode(self.elem)
-        assert repr(xliff_from_gen) != unicode(self.elem)
+        assert unicode(xliff_from_gen) != unicode(self.elem)
+        assert repr(xliff_from_gen) != repr(self.elem)
+
+        assert unicode(xliff_from_base) == unicode(xliff_from_gen)
+        assert repr(xliff_from_base) == repr(xliff_from_gen)
 
 
 if __name__ == '__main__':
