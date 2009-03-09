@@ -304,7 +304,7 @@ class WordfastUnit(base.TranslationUnit):
     dict = property(getdict, setdict)
 
     def _get_source_or_target(self, key):
-        if self._dict[key] is None:
+        if self._dict.get(key, None) is None:
             return None
         elif self._dict[key]:
             return _wf_to_char(self._dict[key]).decode('utf-8')
