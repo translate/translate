@@ -158,7 +158,7 @@ class podebug:
         if self.rewritefunc:
             rewritten = map_rich(only_strings(self.rewritefunc), unit.rich_source)
             if rewritten:
-                unit.rich_target = rewritten
+                unit.rich_target = rewritten[0]
         elif not unit.istranslated():
             unit.rich_target = unit.rich_source
         unit.rich_target = add_prefix(prefix, unit.rich_target)
