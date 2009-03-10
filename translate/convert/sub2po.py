@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # 
-# Copyright 2007 Zuza Software Foundation
+# Copyright 2008-2009 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
@@ -39,7 +39,7 @@ def convert_store(input_store, duplicatestyle="msgctxt"):
     return output_store
 
 def merge_store(template_store, input_store, blankmsgstr=False, duplicatestyle="msgctxt"):
-    """converts two iCal files to a .po file..."""
+    """converts two subtitle files to a .po file..."""
     output_store = po.pofile()
     output_header = output_store.makeheader(charset="UTF-8", encoding="8bit")
     output_header.addnote("extracted from %s, %s" % (template_store.filename, input_store.filename), "developer")
@@ -60,7 +60,7 @@ def merge_store(template_store, input_store, blankmsgstr=False, duplicatestyle="
                 origpo.target = translatedpo.source
             output_store.addunit(origpo)
         elif translatedpo is not None:
-            print >> sys.stderr, "error converting original iCal definition %s" % origini.name
+            print >> sys.stderr, "error converting original subtitle definition %s" % origini.name
     output_store.removeduplicates(duplicatestyle)
     return output_store
 
