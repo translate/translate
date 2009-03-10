@@ -76,14 +76,18 @@ or 2.3, please first check that the error also occurs in 2.4 or 2.5 before
 reporting it as a bug.
 
 The package lxml is needed for XML file processing. Version 1.3.4 and upwards 
-should work, but lxml 2.1.0 or later is recommended.
+should work, but lxml 2.1.0 or later is strongly recommended.
 http://codespeak.net/lxml/
 Depending on your platform, the easiest way to install might be through your
-system's package management. Alternatively you can try 
- easy_install lxml
+system's package management. Alternatively you can try
+  easy_install lxml
 which should install the newest version from the web. See the easy_install
 documentation for more details on how to force installation of a certain
 version, or to specify upgrade options, etc.
+
+For Mac OSX, the following pages might be of help:
+http://codespeak.net/lxml/build.html#providing-newer-library-versions-on-mac-os-x
+http://codespeak.net/lxml/installation.html#macos-x
 
 The package lxml has dependencies on libxml2 and libxslt. Please check the lxml
 site for the recommended versions of these libraries if you need to install
