@@ -81,6 +81,10 @@ class TestStringElem:
         # ... and __rmul__()
         assert 2 * self.elem == 2 * self.ORIGSTR
 
+    def test_elem_offset(self):
+        assert self.elem.elem_offset(self.elem.subelems[0]) == 0
+        assert self.elem.elem_offset(self.elem.subelems[1].subelems[0]) == 4
+
     def test_elem_at_offset(self):
         assert self.elem.elem_at_offset(0) is self.elem.subelems[0]
         assert self.elem.elem_at_offset(self.elem.find('!')) is self.elem.subelems[1].subelems[1].subelems[2]
@@ -97,6 +101,10 @@ class TestStringElem:
 
     def test_flatten(self):
         assert u''.join([unicode(i) for i in self.elem.flatten()]) == self.ORIGSTR
+
+    def test_isleaf(self):
+        assert self.elem.subelems[0].isleaf()
+        assert not self.elem.subelems[1].isleaf()
 
 
 class TestConverters:
