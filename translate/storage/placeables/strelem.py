@@ -157,12 +157,15 @@ class StringElem(object):
         return unicode(self).encode(encoding)
 
     def elem_offset(self, elem):
-        """Find the offset of C{elem} in the current tree."""
-        flattened = self.flatten()
-        if not elem in flattened:
-            return -1
-
-        return len(u''.join([unicode(e) for e in flattened[:flattened.index(elem)]]))
+        """Find the offset of C{elem} in the current tree.
+            @returns: The string index where element C{e} starts, or -1 if C{e}
+                was not found."""
+        i = 0
+        for e in self.flatten():
+            if e is elem:
+                return i
+            i += len(e)
+        return -1
 
     def elem_at_offset(self, offset):
         """Get the C{StringElem} in the tree that contains the string rendered
