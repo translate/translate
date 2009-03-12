@@ -206,6 +206,8 @@ class StringElem(object):
                 subelems.extend(elem.flatten())
             else:
                 subelems.append(elem)
+        if not subelems:
+            subelems = [self]
         return subelems
 
     def isleaf(self):
