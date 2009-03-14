@@ -46,10 +46,25 @@ class AltAttrPlaceable(G):
         return None
 
 
+class FormattingPlaceable(Ph):
+    """Placeable representing string formatting variables."""
+
+    iseditable = False
+    regex = re.compile(r"^%[\-\+0\s\#]{0,1}(\d+){0,1}(\.\d+){0,1}[hlI]{0,1}[cCdiouxXeEfgGnpsS]{1}")
+
+    @classmethod
+    def parse(cls, pstr):
+        match = cls.regex.search(pstr)
+        if match:
+            return cls([pstr[:match.end()]])
+        return None
+
+
 class XMLEntityPlaceable(Ph):
     """Placeable handling XML entities (C{&xxxxx;}-style entities)."""
 
     iseditable = False
+    regex = re.compile(r'^&\S+;')
 
     @classmethod
     def parse(cls, pstr):
@@ -57,7 +72,7 @@ class XMLEntityPlaceable(Ph):
             beginning of C{pstr} that starts with C{&} up to the first C{;}.
 
             @see: StringElem.parse"""
-        match = re.search('^&\S+;', pstr)
+        match = cls.regex.search(pstr)
         if match:
             return cls([pstr[:match.end()]])
         return None
@@ -121,4 +136,9 @@ def to_general_placeables(tree, classmap={G: (AltAttrPlaceable,), Ph: (XMLEntity
 
     return newtree
 
-parsers = [AltAttrPlaceable.parse, XMLEntityPlaceable.parse, XMLTagPlaceable.parse]
+parsers = [
+    AltAttrPlaceable.parse,
+    FormattingPlaceable.parse,
+    XMLEntityPlaceable.parse,
+    XMLTagPlaceable.parse
+]
