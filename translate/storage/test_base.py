@@ -155,17 +155,17 @@ class TestTranslationUnit:
 
         if unit.hasplural():
             assert len(elems) == 2
-            assert len(elems[0].subelems) == 1
-            assert len(elems[1].subelems) == 3
+            assert len(elems[0].sub) == 1
+            assert len(elems[1].sub) == 3
 
             assert unicode(elems[0]) == target_mstr.strings[0]
             assert unicode(elems[1]) == target_mstr.strings[1]
 
-            assert unicode(elems[1].subelems[0]) == u'<b>'
-            assert unicode(elems[1].subelems[1]) == u'string'
-            assert unicode(elems[1].subelems[2]) == u'</b>'
+            assert unicode(elems[1].sub[0]) == u'<b>'
+            assert unicode(elems[1].sub[1]) == u'string'
+            assert unicode(elems[1].sub[2]) == u'</b>'
         else:
-            assert len(elems[0].subelems) == 1
+            assert len(elems[0].sub) == 1
             assert unicode(elems[0]) == target_mstr.strings[0]
 
     def test_rich_set(self):

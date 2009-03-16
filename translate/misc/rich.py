@@ -28,8 +28,8 @@ def map_content(f, elem):
 
     Note that this is NOT a pure function. For that, we would
     need to copy the placeables themselves."""
-    if isinstance(elem, StringElem) and elem.subelems:
-        elem.subelems = map_entry(f, elem.subelems)
+    if isinstance(elem, StringElem) and elem.sub:
+        elem.sub = map_entry(f, elem.sub)
     return elem
 
 def map_entry(f, elem):

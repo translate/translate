@@ -31,27 +31,27 @@ class TestStringElem:
         assert unicode(self.elem) == self.ORIGSTR
 
     def test_tree(self):
-        assert len(self.elem.subelems) == 4
-        assert unicode(self.elem.subelems[0]) == u'Ģët '
-        assert unicode(self.elem.subelems[1]) == u'<a href="http://www.example.com" alt="Ģët &brand;!">'
-        assert unicode(self.elem.subelems[2]) == u'&brandLong;'
-        assert unicode(self.elem.subelems[3]) == u'</a>'
+        assert len(self.elem.sub) == 4
+        assert unicode(self.elem.sub[0]) == u'Ģët '
+        assert unicode(self.elem.sub[1]) == u'<a href="http://www.example.com" alt="Ģët &brand;!">'
+        assert unicode(self.elem.sub[2]) == u'&brandLong;'
+        assert unicode(self.elem.sub[3]) == u'</a>'
 
-        assert len(self.elem.subelems[0].subelems) == 1 and self.elem.subelems[0].subelems[0] == u'Ģët '
-        assert len(self.elem.subelems[1].subelems) == 3
-        assert len(self.elem.subelems[2].subelems) == 1 and self.elem.subelems[2].subelems[0] == u'&brandLong;'
-        assert len(self.elem.subelems[3].subelems) == 1 and self.elem.subelems[3].subelems[0] == u'</a>'
+        assert len(self.elem.sub[0].sub) == 1 and self.elem.sub[0].sub[0] == u'Ģët '
+        assert len(self.elem.sub[1].sub) == 3
+        assert len(self.elem.sub[2].sub) == 1 and self.elem.sub[2].sub[0] == u'&brandLong;'
+        assert len(self.elem.sub[3].sub) == 1 and self.elem.sub[3].sub[0] == u'</a>'
 
-        subelems = self.elem.subelems[1].subelems # That's the "<a href... >" part
-        assert unicode(subelems[0]) == u'<a href="http://www.example.com" '
-        assert unicode(subelems[1]) == u'alt="Ģët &brand;!"'
-        assert unicode(subelems[2]) == u'>'
+        sub = self.elem.sub[1].sub # That's the "<a href... >" part
+        assert unicode(sub[0]) == u'<a href="http://www.example.com" '
+        assert unicode(sub[1]) == u'alt="Ģët &brand;!"'
+        assert unicode(sub[2]) == u'>'
 
-        subelems = self.elem.subelems[1].subelems[1].subelems # The 'alt="Ģët &brand;!"' part
-        assert len(subelems) == 3
-        assert unicode(subelems[0]) == u'alt="Ģët '
-        assert unicode(subelems[1]) == u'&brand;'
-        assert unicode(subelems[2]) == u'!"'
+        sub = self.elem.sub[1].sub[1].sub # The 'alt="Ģët &brand;!"' part
+        assert len(sub) == 3
+        assert unicode(sub[0]) == u'alt="Ģët '
+        assert unicode(sub[1]) == u'&brand;'
+        assert unicode(sub[2]) == u'!"'
 
     def test_add(self):
         assert self.elem + ' ' == self.ORIGSTR + ' '
@@ -82,12 +82,12 @@ class TestStringElem:
         assert 2 * self.elem == 2 * self.ORIGSTR
 
     def test_elem_offset(self):
-        assert self.elem.elem_offset(self.elem.subelems[0]) == 0
-        assert self.elem.elem_offset(self.elem.subelems[1].subelems[0]) == 4
+        assert self.elem.elem_offset(self.elem.sub[0]) == 0
+        assert self.elem.elem_offset(self.elem.sub[1].sub[0]) == 4
 
     def test_elem_at_offset(self):
-        assert self.elem.elem_at_offset(0) is self.elem.subelems[0]
-        assert self.elem.elem_at_offset(self.elem.find('!')) is self.elem.subelems[1].subelems[1].subelems[2]
+        assert self.elem.elem_at_offset(0) is self.elem.sub[0]
+        assert self.elem.elem_at_offset(self.elem.find('!')) is self.elem.sub[1].sub[1].sub[2]
 
     def test_find(self):
         assert self.elem.find('example') == 24
@@ -103,8 +103,8 @@ class TestStringElem:
         assert u''.join([unicode(i) for i in self.elem.flatten()]) == self.ORIGSTR
 
     def test_isleaf(self):
-        assert self.elem.subelems[0].isleaf()
-        assert not self.elem.subelems[1].isleaf()
+        assert self.elem.sub[0].isleaf()
+        assert not self.elem.sub[1].isleaf()
 
 
 class TestConverters:

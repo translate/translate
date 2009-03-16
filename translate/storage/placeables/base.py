@@ -92,9 +92,9 @@ def to_base_placeables(tree):
     newtree.id = tree.id
     newtree.rid = tree.rid
     newtree.xid = tree.xid
-    newtree.subelems = []
+    newtree.sub = []
 
-    for subtree in tree.subelems:
-        newtree.subelems.append(to_base_placeables(subtree))
+    for subtree in tree.sub:
+        newtree.sub.append(to_base_placeables(subtree))
 
     return newtree

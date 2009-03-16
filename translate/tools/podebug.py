@@ -34,8 +34,8 @@ from translate.misc import hash
 def add_prefix(prefix, stringelems):
     for stringelem in stringelems:
         for string in stringelem.flatten():
-            if len(string.subelems) > 0:
-                string.subelems[0].insert(0, prefix)
+            if len(string.sub) > 0:
+                string.sub[0].insert(0, prefix)
     return stringelems
 
 class podebug:

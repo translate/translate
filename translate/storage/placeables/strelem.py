@@ -32,7 +32,7 @@ class StringElem(object):
     It is also the base class of all placeables.
     """
 
-    subelems = []
+    sub = []
     """The sub-elements that make up this this string."""
     iseditable = True
     """Whether this string should be changable by the user. Not used at the moment."""
@@ -40,18 +40,18 @@ class StringElem(object):
     """Whether this string should be visible to the user. Not used at the moment."""
 
     # INITIALIZERS #
-    def __init__(self, subelems=None, id=None, rid=None, xid=None):
-        if subelems is None:
-            subelems = []
+    def __init__(self, sub=None, id=None, rid=None, xid=None):
+        if sub is None:
+            sub = []
 
-        for elem in subelems:
+        for elem in sub:
             if not isinstance(elem, (str, unicode, StringElem)):
                 raise ValueError(elem)
 
-        self.subelems   = subelems
-        self.id         = id
-        self.rid        = rid
-        self.xid        = xid
+        self.sub   = sub
+        self.id    = id
+        self.rid   = rid
+        self.xid   = xid
 
     # SPECIAL METHODS #
     def __add__(self, rhs):
@@ -73,8 +73,8 @@ class StringElem(object):
                 self.isvisible     == rhs.isvisible     and \
                 self.rid           == rhs.rid           and \
                 self.xid           == rhs.xid           and \
-                len(self.subelems) == len(rhs.subelems) and \
-                not [i for i in range(len(self.subelems)) if self.subelems[i] != rhs.subelems[i]]
+                len(self.sub) == len(rhs.sub) and \
+                not [i for i in range(len(self.sub)) if self.sub[i] != rhs.sub[i]]
 
     def __ge__(self, rhs):
         """Emulate the C{unicode} class."""
@@ -94,7 +94,7 @@ class StringElem(object):
 
     def __iter__(self):
         """Create an iterator of this element's sub-elements."""
-        for elem in self.subelems:
+        for elem in self.sub:
             yield elem
 
     def __le__(self, rhs):
@@ -125,7 +125,7 @@ class StringElem(object):
         return self * lhs
 
     def __repr__(self):
-        elemstr = ', '.join([repr(elem) for elem in self.subelems])
+        elemstr = ', '.join([repr(elem) for elem in self.sub])
         return '<%(class)s(%(id)s%(rid)s%(xid)s[%(subs)s])>' % {
             'class': self.__class__.__name__,
             'id':  self.id  is not None and 'id="%s" '  % (self.id) or '',
@@ -137,17 +137,17 @@ class StringElem(object):
     def __str__(self):
         if not self.isvisible:
             return ''
-        return ''.join([unicode(elem).encode('utf-8') for elem in self.subelems])
+        return ''.join([unicode(elem).encode('utf-8') for elem in self.sub])
 
     def __unicode__(self):
         if not self.isvisible:
             return u''
-        return u''.join([unicode(elem) for elem in self.subelems])
+        return u''.join([unicode(elem) for elem in self.sub])
 
     # METHODS #
     def depth_first(self):
         elems = [self]
-        for sub in self.subelems:
+        for sub in self.sub:
             if isinstance(sub, StringElem):
                 elems.extend(sub.depth_first())
         return elems
@@ -197,18 +197,18 @@ class StringElem(object):
 
     def flatten(self):
         """Flatten the tree by returning a depth-first search over the tree's leaves."""
-        subelems = []
-        for elem in self.subelems:
+        sub = []
+        for elem in self.sub:
             if not isinstance(elem, StringElem):
                 continue
 
-            if len(elem.subelems) > 1:
-                subelems.extend(elem.flatten())
+            if len(elem.sub) > 1:
+                sub.extend(elem.flatten())
             else:
-                subelems.append(elem)
-        if not subelems:
-            subelems = [self]
-        return subelems
+                sub.append(elem)
+        if not sub:
+            sub = [self]
+        return sub
 
     def isleaf(self):
         """
@@ -221,7 +221,7 @@ class StringElem(object):
         """
         if self.__class__ is not StringElem:
             return False
-        for e in self.subelems:
+        for e in self.sub:
             if not isinstance(e, (str, unicode)):
                 return False
         return True
@@ -247,7 +247,7 @@ class StringElem(object):
             manner."""
         indent_prefix = " " * indent * 2
         print "%s%s [%s]" % (indent_prefix, self.__class__.__name__, unicode(self))
-        for elem in self.subelems:
+        for elem in self.sub:
             if isinstance(elem, StringElem):
                 elem.print_tree(indent+1)
             else:
@@ -260,4 +260,4 @@ class StringElem(object):
 
             @returns: The transformed Unicode string representing the sub-tree.
             """
-        return u''.join([elem.translate(*args, **kwargs) for elem in self.subelems])
+        return u''.join([elem.translate(*args, **kwargs) for elem in self.sub])

@@ -109,7 +109,7 @@ class TranslationUnit(object):
     def rich_to_multistring(cls, elem_list):
         """Convert a "rich" string tree to a C{multistring}.
         >>> from translate.storage.placeables.interfaces import X
-        >>> rich = [StringElem(['foo', X(id='xxx', subelems=[' ']), 'bar'])]
+        >>> rich = [StringElem(['foo', X(id='xxx', sub=[' ']), 'bar'])]
         >>> TranslationUnit.rich_to_multistring(rich)
         multistring(u'foo bar')
         """

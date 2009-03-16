@@ -35,7 +35,7 @@ def make_empty_replacement_placeable(klass, node):
     return klass()
 
 def make_g_placeable(klass, node):
-    return klass(id=node.attrib[u'id'], subelems=xml_to_strelem(node).subelems)
+    return klass(id=node.attrib[u'id'], sub=xml_to_strelem(node).sub)
 
 def not_yet_implemented(klass, node):
     raise NotImplementedError
@@ -70,11 +70,11 @@ def xml_to_strelem(dom_node):
         dom_node = etree.fromstring(dom_node)
     result = StringElem()
     if dom_node.text:
-        result.subelems.append(as_unicode(dom_node.text))
+        result.sub.append(as_unicode(dom_node.text))
     for child_dom_node in dom_node:
-        result.subelems.append(make_placeable(child_dom_node))
+        result.sub.append(make_placeable(child_dom_node))
         if child_dom_node.tail:
-            result.subelems.append(as_unicode(child_dom_node.tail))
+            result.sub.append(as_unicode(child_dom_node.tail))
     return result
 
 # ==========================================================
@@ -135,7 +135,7 @@ def strelem_to_xml(parent_node, elem):
     else:
         node = parent_node
 
-    for sub in elem.subelems:
+    for sub in elem.sub:
         strelem_to_xml(node, sub)
 
     return parent_node

@@ -93,7 +93,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert xliffunit.rich_source == [StringElem(['foo', X(id='bar'), 'baz'])]
 
         # Test 2
-        xliffunit.rich_source = [StringElem(['foo', 'baz', G(id='oof', subelems=[G(id='zab', subelems=['bar', 'rab'])])])]
+        xliffunit.rich_source = [StringElem(['foo', 'baz', G(id='oof', sub=[G(id='zab', sub=['bar', 'rab'])])])]
         source_dom_node = xliffunit.getlanguageNode(None, 0)
         g_placeable = source_dom_node[0]
         nested_g_placeable = g_placeable[0]
@@ -111,7 +111,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert nested_g_placeable.tail is None
 
         rich_source = xliffunit.rich_source
-        assert rich_source == [StringElem(['foobaz', G(id='oof', subelems=[G(id='zab', subelems=['barrab'])])])]
+        assert rich_source == [StringElem(['foobaz', G(id='oof', sub=[G(id='zab', sub=['barrab'])])])]
 
     def test_rich_target(self):
         xlifffile = xliff.xlifffile()
@@ -128,7 +128,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert x_placeable.tail == 'baz'
 
         # Test 2
-        xliffunit.set_rich_target([StringElem(['foo', 'baz', G(id='oof', subelems=[G(id='zab', subelems=['bar', 'rab'])])])], 'fr')
+        xliffunit.set_rich_target([StringElem(['foo', 'baz', G(id='oof', sub=[G(id='zab', sub=['bar', 'rab'])])])], 'fr')
         target_dom_node = xliffunit.getlanguageNode(None, 1)
         g_placeable = target_dom_node[0]
         nested_g_placeable = g_placeable[0]
@@ -146,7 +146,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert nested_g_placeable.attrib[u'id'] == u'zab'
         assert nested_g_placeable.tail is None
 
-        assert xliffunit.rich_target == [StringElem(['foobaz', G(id='oof', subelems=[G(id='zab', subelems=['barrab'])])])]
+        assert xliffunit.rich_target == [StringElem(['foobaz', G(id='oof', sub=[G(id='zab', sub=['barrab'])])])]
 
     def test_source(self):
         xlifffile = xliff.xlifffile()

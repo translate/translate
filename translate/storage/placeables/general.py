@@ -129,10 +129,10 @@ def to_general_placeables(tree, classmap={G: (AltAttrPlaceable,), Ph: (XMLEntity
     newtree.id = tree.id
     newtree.rid = tree.rid
     newtree.xid = tree.xid
-    newtree.subelems = []
+    newtree.sub = []
 
-    for subtree in tree.subelems:
-        newtree.subelems.append(to_general_placeables(subtree))
+    for subtree in tree.sub:
+        newtree.sub.append(to_general_placeables(subtree))
 
     return newtree
 

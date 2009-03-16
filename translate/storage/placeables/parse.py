@@ -59,8 +59,8 @@ def parse(parsable_string, parse_funcs, i=0):
                     elements.append(StringElem([parsable_string[last_used:i]]))
 
                 subtree = parse(unicode(elem), parse_funcs, i=1)
-                if len(subtree.subelems) > 1:
-                    elem.subelems = subtree.subelems
+                if len(subtree.sub) > 1:
+                    elem.sub = subtree.sub
                 elements.append(elem)
 
                 i += len(elem)

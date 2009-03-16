@@ -28,12 +28,12 @@ __all__ = ['Bpt', 'Ept', 'X', 'Bx', 'Ex', 'G', 'It', 'Sub', 'Ph', 'parsers', 'to
 
 def xliff__unicode__(self):
     if hasattr(self, 'has_content') and self.has_content:
-        return u'<%(tag)s%(id)s%(rid)s%(xid)s>%(subelems)s</%(tag)s>' % {
+        return u'<%(tag)s%(id)s%(rid)s%(xid)s>%(sub)s</%(tag)s>' % {
             'tag': self.__class__.__name__.lower(),
             'id':  self.id  and ' id="%s"'  % (self.id)  or '',
             'rid': self.rid and ' rid="%s"' % (self.rid) or '',
             'xid': self.xid and ' xid="%s"' % (self.xid) or '',
-            'subelems': u''.join([unicode(s) for s in self.subelems])
+            'sub': u''.join([unicode(s) for s in self.sub])
         }
     return u'<%(tag)s%(id)s%(rid)s%(xid)s/>' % {
         'tag': self.__class__.__name__.lower(),
@@ -106,10 +106,10 @@ def to_xliff_placeables(tree):
     newtree.id = tree.id
     newtree.rid = tree.rid
     newtree.xid = tree.xid
-    newtree.subelems = []
+    newtree.sub = []
 
-    for subtree in tree.subelems:
-        newtree.subelems.append(to_xliff_placeables(subtree))
+    for subtree in tree.sub:
+        newtree.sub.append(to_xliff_placeables(subtree))
 
     return newtree
 
