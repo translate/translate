@@ -219,8 +219,6 @@ class StringElem(object):
 
         @rtype: bool
         """
-        if self.__class__ is not StringElem:
-            return False
         for e in self.sub:
             if not isinstance(e, (str, unicode)):
                 return False
