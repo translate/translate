@@ -26,51 +26,27 @@ based "rich" string element trees.
 from translate.storage.placeables import base, StringElem
 
 
-def parse(parsable_string, parse_funcs, i=0):
-    """Parse the given string into a tree of string elements.
+def parse(tree, parse_funcs):
+    if isinstance(tree, (str, unicode)):
+        tree = StringElem([tree])
+    if not parse_funcs:
+        return tree
+    leaves = [elem for elem in tree.depth_first() if elem.isleaf()]
+    print leaves
+    parse_func = parse_funcs[0]
 
-    @type  parsable_string: unicode
-    @param parsable_string: The string to parse. Preferably in Unicode.
-    @type  parse_funcs: list
-    @param parse_funcs: A list of functions that meet the following
-        cirteria:
-        * Takes a single string parameter
-        * Parses only at the beginning of the string
-        * Returns a L{StringElem} (or sub-class) instance that represents
-            exactly the sub-string parsed by the function.
-        * Returns C{None} if the parser could not find a parseable sub-
-            string at the start of the given string.
+    for leaf in leaves:
+        subleaves = parse_func(unicode(leaf))
+        if subleaves is not None:
+            leaf.sub = subleaves
+        parse(leaf, [f for f in parse_funcs if f is not parse_func])
 
-        These functions are ideally the sub-class implementations of
-        C{StringElem.parse}.
-    """
-    elements = []
-    last_used = 0
-    while i < len(parsable_string):
-        elem_parsed = False
-
-        for parser in parse_funcs:
-            elem = parser(parsable_string[i:])
-            if unicode(elem) == parsable_string:
-                return elem
-            if elem is not None:
-                elem_parsed = True
-                if parsable_string[last_used:i]:
-                    elements.append(StringElem([parsable_string[last_used:i]]))
-
-                subtree = parse(unicode(elem), parse_funcs, i=1)
-                if len(subtree.sub) > 1:
-                    elem.sub = subtree.sub
-                elements.append(elem)
-
-                i += len(elem)
-                last_used = i
-                break
-
-        if not elem_parsed:
-            i += 1
-
-    if last_used < len(parsable_string):
-        elements.append(StringElem([parsable_string[last_used:]]))
-
-    return StringElem(elements)
+        if len(leaf.sub) == 1 and \
+                leaf.__class__ is StringElem and \
+                leaf.sub[0].__class__ is not StringElem and \
+                isinstance(leaf.sub[0], StringElem):
+            parent = tree.get_parent_elem(leaf)
+            if parent is not None:
+                leafindex = parent.sub.index(leaf)
+                parent.sub[leafindex] = leaf.sub[0]
+    return tree
