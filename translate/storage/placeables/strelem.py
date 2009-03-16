@@ -210,6 +210,17 @@ class StringElem(object):
             sub = [self]
         return sub
 
+    def get_parent_elem(self, child):
+        """Searches the current sub-tree for and returns the parent of the
+            C{child} element."""
+        for elem in self.depth_first():
+            if not isinstance(elem, StringElem):
+                continue
+            for sub in elem.sub:
+                if sub is child:
+                    return elem
+        return None
+
     def isleaf(self):
         """
         Whether or not this instance is a leaf node in the C{StringElem} tree.
