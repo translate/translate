@@ -35,7 +35,10 @@ class reical:
         self.makestoredict(inputstore, includefuzzy)
         for unit in self.templatestore.units:
             for location in unit.getlocations():
-                unit.target = self.inputdict[location]
+                if self.inputdict.has_key(location):
+                    unit.target = self.inputdict[location]
+                else:
+                    unit.target = unit.source
         return str(self.templatestore)
 
     def makestoredict(self, store, includefuzzy=False):
