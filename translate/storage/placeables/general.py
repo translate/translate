@@ -30,52 +30,46 @@ __all__ = ['AltAttrPlaceable', 'XMLEntityPlaceable', 'XMLTagPlaceable', 'parsers
 from translate.storage.placeables.base import G, Ph, StringElem
 
 
+def regex_parse(cls, pstr):
+    """A parser method to extract placeables from a string based on a regular
+        expression. Use this function as the C{@parse()} method of a placeable
+        class."""
+    if cls.regex is None:
+        return None
+    matches = []
+    oldend = 0
+    for match in cls.regex.finditer(pstr):
+        start, end = match.start(), match.end()
+        if oldend != start:
+            matches.append(StringElem([pstr[oldend:start]]))
+        matches.append(cls([pstr[start:end]]))
+        oldend = end
+    if oldend != len(pstr) and matches:
+        matches.append(StringElem([pstr[oldend:]]))
+    return matches or None
+
+
 class AltAttrPlaceable(G):
     """Placeable for the "alt=..." attributes inside XML tags."""
 
-    @classmethod
-    def parse(cls, pstr):
-        """Creates an C{AltAttrPlaceable} from C{pstr} if it starts with
-            C{alt="}, up to the next occurance of C{"}.
-
-            @returns: A new C{AltAttrPlaceable} if C{pstr} starts with a valid
-                occurance of an alt attribute. C{None} otherwise.
-            @see: StringElem.parse"""
-        if pstr.startswith('alt="') and pstr.find('"', 5) > 0:
-            return cls([pstr[:pstr.find('"', 5)+1]])
-        return None
+    regex = re.compile(r'alt=".*?"')
+    parse = classmethod(regex_parse)
 
 
 class FormattingPlaceable(Ph):
     """Placeable representing string formatting variables."""
 
     iseditable = False
-    regex = re.compile(r"^%[\-\+0\s\#]{0,1}(\d+){0,1}(\.\d+){0,1}[hlI]{0,1}[cCdiouxXeEfgGnpsS]{1}")
-
-    @classmethod
-    def parse(cls, pstr):
-        match = cls.regex.search(pstr)
-        if match:
-            return cls([pstr[:match.end()]])
-        return None
+    regex = re.compile(r"%[\-\+0\s\#]{0,1}(\d+){0,1}(\.\d+){0,1}[hlI]{0,1}[cCdiouxXeEfgGnpsS]{1}")
+    parse = classmethod(regex_parse)
 
 
 class XMLEntityPlaceable(Ph):
     """Placeable handling XML entities (C{&xxxxx;}-style entities)."""
 
     iseditable = False
-    regex = re.compile(r'^&\S+;')
-
-    @classmethod
-    def parse(cls, pstr):
-        """Creates a new C{XMLEntityPlaceable} from the sub-string at the
-            beginning of C{pstr} that starts with C{&} up to the first C{;}.
-
-            @see: StringElem.parse"""
-        match = cls.regex.search(pstr)
-        if match:
-            return cls([pstr[:match.end()]])
-        return None
+    regex = re.compile(r'&\S+?;')
+    parse = classmethod(regex_parse)
 
 
 # Not there yet...
@@ -93,23 +87,9 @@ class XMLTagPlaceable(Ph):
     """Placeable handling XML tags."""
 
     iseditable = False
+    regex = re.compile(r'<(\w+)(\s(\w*=".*?")?)*>|</(\w+)>')
+    parse = classmethod(regex_parse)
 
-    @classmethod
-    def parse(cls, pstr):
-        """@see: StringElem.parse"""
-        if pstr.startswith('<') and pstr.find('>') > 0:
-            bracket_count = 0
-            for i in range(len(pstr)):
-                if pstr[i] == '>':
-                    i += 1
-                    bracket_count -= 1
-                elif pstr[i] == '<':
-                    bracket_count += 1
-                if bracket_count == 0:
-                    break
-            if i <= len(pstr):
-                return cls([pstr[:i]])
-            return None
 
 def to_general_placeables(tree, classmap={G: (AltAttrPlaceable,), Ph: (XMLEntityPlaceable, XMLTagPlaceable)}):
     if not isinstance(tree, StringElem):
