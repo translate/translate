@@ -117,8 +117,8 @@ def to_general_placeables(tree, classmap={G: (AltAttrPlaceable,), Ph: (XMLEntity
     return newtree
 
 parsers = [
+    XMLTagPlaceable.parse,
     AltAttrPlaceable.parse,
-    FormattingPlaceable.parse,
     XMLEntityPlaceable.parse,
-    XMLTagPlaceable.parse
+    FormattingPlaceable.parse,
 ]
