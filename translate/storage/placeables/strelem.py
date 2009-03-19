@@ -262,11 +262,17 @@ class StringElem(object):
             else:
                 print '%s%s[%s]' % (indent_prefix, indent_prefix, elem)
 
-    def transform(self, *args, **kwargs):
+    def translate(self):
         """Transform the sub-tree according to some class-specific needs.
             This method should be either overridden in implementing sub-classes
             or dynamically replaced by specific applications.
 
             @returns: The transformed Unicode string representing the sub-tree.
             """
-        return u''.join([elem.translate(*args, **kwargs) for elem in self.sub])
+        trans = u''
+        for elem in self.sub:
+            if isinstance(elem, StringElem):
+                trans += elem.translate()
+            else:
+                trans += unicode(elem)
+        return trans
