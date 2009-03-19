@@ -42,8 +42,8 @@ class TerminologyComparer:
     def __init__(self, max_len=500):
         self.MAX_LEN = max_len
 
-    def similarity(self, a, b, stoppercentage=40):
-        """Returns the match quality of term C{b} in the text C{a}"""
+    def similarity(self, text, term, stoppercentage=40):
+        """Returns the match quality of C{term} in the C{text}"""
         # We could segment the words, but mostly it will give less ideal
         # results, since we'll miss plurals, etc. Then we also can't search for
         # multiword terms, such as "Free Software". Ideally we should use a
@@ -55,17 +55,18 @@ class TerminologyComparer:
         # many false positives.
 
         # First remove a possible disambiguating bracket at the end
-        b = re.sub("\s+\(.*\)\s*$", "", b)
+        term = re.sub("\s+\(.*\)\s*$", "", term)
+        text = text[:self.MAX_LEN]
 
-        if len(b) <= 2:
+        if len(term) <= 2:
             return 0
 
-        pos = a[:self.MAX_LEN].find(b)
+        pos = text.find(term)
         if pos >= 0:
-            return 100 - pos * 10 / len(a[:self.MAX_LEN])
+            return 100 - pos * 10 / len(text)
 
         for ignorepattern in ignorepatterns:
-            newb = re.sub(ignorepattern[0], ignorepattern[1], b)
-            if newb in a[:self.MAX_LEN]:
+            newb = re.sub(ignorepattern[0], ignorepattern[1], term)
+            if newb in text:
                 return 80
         return 0
