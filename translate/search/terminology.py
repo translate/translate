@@ -40,6 +40,7 @@ ignorepatterns = [
 
 class TerminologyComparer:
     def __init__(self, max_len=500):
+        self.match_info = {}
         self.MAX_LEN = max_len
 
     def similarity(self, text, term, stoppercentage=40):
@@ -63,10 +64,16 @@ class TerminologyComparer:
 
         pos = text.find(term)
         if pos >= 0:
+            self.match_info[term] = { 'pos': pos }
             return 100 - pos * 10 / len(text)
 
         for ignorepattern in ignorepatterns:
-            newb = re.sub(ignorepattern[0], ignorepattern[1], term)
-            if newb in text:
+            newterm = re.sub(ignorepattern[0], ignorepattern[1], term)
+            if newterm in text:
+                self.match_info[term] = {
+                    'pos': text.find(newterm),
+                    'newterm': newterm,
+                    'newtermlen': len(newterm),
+                }
                 return 80
         return 0
