@@ -224,6 +224,7 @@ class terminologymatcher(matcher):
             comparer = terminology.TerminologyComparer(max_length)
         matcher.__init__(self, store, max_candidates, min_similarity=10, max_length=max_length, comparer=comparer)
         self.addpercentage = False
+        self.match_info = {}
 
     def inittm(self, store):
         """Normal initialisation, but convert all source strings to lower case"""
@@ -246,7 +247,11 @@ class terminologymatcher(matcher):
         """Normal matching after converting text to lower case. Then replace
         with the original unit to retain comments, etc."""
         text = text.lower()
+        if hasattr(self.comparer, 'match_info'):
+            self.comparer.match_info = {}
         matches = matcher.matches(self, text)
+        if hasattr(self.comparer, 'match_info'):
+            self.match_info = dict([(u.source, self.comparer.match_info[u.source]) for u in matches])
         return matches
 
 
