@@ -29,7 +29,7 @@ from translate.misc.contextlib import contextmanager, nested
 from translate.misc.context import with_
 from translate.storage.xml_extract import xpath_breadcrumb
 from translate.storage.xml_extract import misc
-from translate.storage.placeables.base import X, G
+from translate.storage.placeables import xliff, StringElem
 
 def Nullable(t):
     return IsOneOf(t, type(None))
@@ -184,9 +184,9 @@ def _to_placeables(parent_translatable, translatable, id_maker):
         else:
             id = unicode(id_maker.get_id(chunk))
             if chunk.is_inline:
-                result.append(G(id, _to_placeables(parent_translatable, chunk, id_maker)))
+                result.append(xliff.G(sub=_to_placeables(parent_translatable, chunk, id_maker), id=id))
             else:
-                result.append(X(id, xid=chunk.xpath))
+                result.append(xliff.X(id=id, xid=chunk.xpath))
     return result
 
 @accepts(base.TranslationStore, Nullable(Translatable), Translatable, IdMaker)
@@ -195,7 +195,7 @@ def _add_translatable_to_store(store, parent_translatable, translatable, id_make
     information and add it to 'store'.
     """
     unit = store.UnitClass(u'')
-    unit.rich_source = [_to_placeables(parent_translatable, translatable, id_maker)]
+    unit.rich_source = [StringElem(_to_placeables(parent_translatable, translatable, id_maker))]
     unit.addlocation(translatable.xpath)
     if parent_translatable is not None:
         unit.xid = parent_translatable.xpath
