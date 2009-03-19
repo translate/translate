@@ -176,7 +176,7 @@ def _do_poheaders(input_store, output_store, template_store):
     plural_forms = None
     kwargs = {}
 
-    if template_store is not None:
+    if template_store is not None and isinstance(template_store, poheader.poheader):
         templateheadervalues = template_store.parseheader()
         for key, value in templateheadervalues.iteritems():
             if key == "Project-Id-Version":
