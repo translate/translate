@@ -65,8 +65,8 @@ def parse(tree, parse_funcs):
         # turn has a single unicode sub-element, equal to the original StringElem's.
         # Simbolically it does StringElem([StringElemSubClass(['foo'])]) ->  StringElemSubClass(['foo'])
         if len(leaf.sub) == 1 and \
-                leaf.__class__ is StringElem and \
-                leaf.sub[0].__class__ is not StringElem and \
+                type(leaf) is StringElem and \
+                type(leaf.sub[0]) is not StringElem and \
                 isinstance(leaf.sub[0], StringElem):
             parent = tree.get_parent_elem(leaf)
             if parent is not None:
