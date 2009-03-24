@@ -53,6 +53,8 @@ def parse(tree, parse_funcs):
     parse_func = parse_funcs[0]
 
     for leaf in leaves:
+        if not unicode(leaf):
+            continue
         subleaves = parse_func(unicode(leaf))
         if subleaves is not None:
             leaf.sub = subleaves
