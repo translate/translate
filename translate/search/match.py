@@ -248,7 +248,7 @@ class terminologymatcher(matcher):
         text = text.lower()
         if hasattr(self.comparer, 'match_info'):
             self.comparer.match_info = {}
-        matches = matcher.matches(self, text)
+        matches = [u for u in self.candidates.units if self.comparer.similarity(text, u.source, self.MIN_SIMILARITY)]
         if hasattr(self.comparer, 'match_info'):
             self.match_info = dict([(u.source, self.comparer.match_info[u.source]) for u in matches])
         return matches
