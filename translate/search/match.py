@@ -69,7 +69,7 @@ class matcher(object):
                 return True
         return False
 
-    def inittm(self, stores):
+    def inittm(self, stores, reverse=False):
         """Initialises the memory for later use. We use simple base units for
         speedup."""
         self.existingunits = {}
@@ -79,7 +79,7 @@ class matcher(object):
             stores = [stores]
         for store in stores:
             self.extendtm(store.units, store=store, sort=False)
-        self.candidates.units.sort(sourcelencmp)
+        self.candidates.units.sort(sourcelencmp, reverse=reverse)
         # print "TM initialised with %d candidates (%d to %d characters long)" % \
         #        (len(self.candidates.units), len(self.candidates.units[0].source), len(self.candidates.units[-1].source))
 
@@ -228,8 +228,7 @@ class terminologymatcher(matcher):
 
     def inittm(self, store):
         """Normal initialisation, but convert all source strings to lower case"""
-        matcher.inittm(self, store)
-        self.candidates.units = [x for x in reversed(self.candidates.units)]
+        matcher.inittm(self, store, reverse=True)
         for unit in self.candidates.units:
             unit.source = unit.source.lower()
 
