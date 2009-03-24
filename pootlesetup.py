@@ -40,15 +40,19 @@ subpackages = [
   "scripts", 
   "middleware", 
   "pootle_app",
+  "pootle_app/lib",
   "pootle_app/management",
   "pootle_app/management/commands",
+  "pootle_app/models",
+  "pootle_app/templates",
   "pootle_app/views",
   "pootle_app/views/admin",
+  "pootle_app/views/common",
   "pootle_app/views/home",
   "pootle_app/views/index",
   "pootle_app/views/language",
+  "pootle_app/views/profile",
   "pootle_app/views/projects",
-  "pootle_app/views/common",
 ]
 pootlescripts = [join('Pootle', 'PootleServer'), join('Pootle', 'tools', 'updatetm')]
 
