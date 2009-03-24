@@ -1,5 +1,6 @@
-#!/bin/bash
+#!/bin/bash -e
 #
+# Copyright 2009 João Miguel Neves <joao.neves@intraneia.com>
 # Copyright 2008 Zuza Software Foundation
 #
 # This file is part of Virtaal.
@@ -22,7 +23,7 @@
 # http://translate.sourceforge.net/wiki/toolkit/mozilla_l10n_scripts     #
 ##########################################################################
 
-BUILD_DIR="/home/walter/mozbuild"
+BUILD_DIR="/path/to/build_root"
 MOZCENTRAL_DIR="${BUILD_DIR}/mozilla-central" # Change "../mozilla-central" on line 39 too if you change this var
 #HG_LANGS="af ar as be bg bn-IN ca cs da de el en-GB en-ZA es-AR es-ES et eu fa fi fr fy-NL ga-IE gl gu-IN he hi-IN hu hy-AM id is it ja ja-JP-mac ka kn ko ku langs lt lv mk ml mn mr nb-NO ne-NP nl nn-NO nr nso pa-IN pl ro ru rw si sk sl sq sr ss st sv-SE ta te th tn tr ts uk ve xh zh-CN zh-TW zu"
 HG_LANGS="af"
@@ -35,7 +36,14 @@ POTPACK_DIR="${BUILD_DIR}/potpacks"
 POUPDATED_DIR="${BUILD_DIR}/po-updated"
 PRODUCT_DIRS="browser other-licenses/branding/firefox" # Directories in language repositories to clear before running po2moz
 LANGPACK_DIR="${BUILD_DIR}/xpi"
-FF_VERSION="3.1b2"
+FF_VERSION="3.5b4"
+
+# Include current dir in path (for buildxpi and others)
+CURDIR=`dirname $0`
+if [ x"$CURDIR" == x ] || [ x"$CURDIR" == x. ]; then
+    CURDIR=`pwd`
+fi
+PATH=${CURDIR}:${PATH}
 
 # Make sure all directories exist
 for dir in ${MOZCENTRAL_DIR} ${L10N_DIR} ${PO_DIR} ${POPACK_DIR} ${PORECOVER_DIR} ${POTPACK_DIR} ${POUPDATED_DIR} ${LANGPACK_DIR}
@@ -48,8 +56,8 @@ done
 L10N_DIR_REL=`echo ${L10N_DIR} | sed "s#${BUILD_DIR}/##"`
 POUPDATED_DIR_REL=`echo ${POUPDATED_DIR} | sed "s#${BUILD_DIR}/##"`
 
-(cd ${MOZCENTRAL_DIR}; hg pull -u; hg update -C; python client.py checkout --skip-inspector --skip-ldap --skip-chatzilla --skip-venkman)
-find ${MOZCENTRAL_DIR} -name '*.orig' | xargs rm
+(cd ${MOZCENTRAL_DIR}; hg pull -u; hg update -C)
+(find ${MOZCENTRAL_DIR} -name '*.orig' | xargs rm) || /bin/true
 
 cd ${L10N_DIR}
 
@@ -57,7 +65,7 @@ cd ${L10N_DIR}
 for lang in ${HG_LANGS}
 do
 	[ -d ${lang}/.hg ] && (cd ${lang}; hg pull -u; hg update -C)
-	find ${lang} -name '*.orig' | xargs rm
+	(find ${lang} -name '*.orig' | xargs rm) || /bin/true
 done
 
 rm en-US
@@ -114,8 +122,8 @@ do
 	## RECOVER - Recover PO files from existing l10n directory.
 	## Comment out the following "moz2po"-line if recovery should not be done.
 	[ ! -d ${PORECOVER_DIR}/${lang} ] && mkdir -p ${PORECOVER_DIR}/${lang}
-	#moz2po --progress=none --errorlevel=traceback --duplicates=msgctxt --exclude=".#*" --exclude='.hg' \
-	#	-t ${L10N_DIR}/en-US ${L10N_DIR}/${lang} ${PORECOVER_DIR}/${lang}
+	moz2po --progress=none --errorlevel=traceback --duplicates=msgctxt --exclude=".#*" --exclude='.hg' \
+		-t ${L10N_DIR}/en-US ${L10N_DIR}/${lang} ${PORECOVER_DIR}/${lang}
 
 	[ ! -d ${PO_DIR}/${lang} ] && cp -R ${PORECOVER_DIR}/${lang} ${PO_DIR}
 
@@ -145,8 +153,8 @@ do
 
 	## PO2MOZ - Create Mozilla l10n layout from migrated PO files.
 	# Comment out the "po2moz"-line below to prevent l10n files to be updated to the current PO files.
-	po2moz --progress=none --errorlevel=traceback --exclude=".svn" --exclude=".hg" \
-		-t ${L10N_DIR}/en-US -i ${POUPDATED_DIR}/${lang} -o ${L10N_DIR}/${lang}
+	#po2moz --progress=none --errorlevel=traceback --exclude=".svn" --exclude=".hg" \
+	#	-t ${L10N_DIR}/en-US -i ${POUPDATED_DIR}/${lang} -o ${L10N_DIR}/${lang}
 
 	# Copy files not handled by moz2po/po2moz
 	copydir browser/os2 ${lang}
@@ -161,7 +169,7 @@ do
 	copyfile extensions/reporter/chrome/reporterOverlay.properties ${lang}
 	copyfile toolkit/chrome/global/intl.css ${lang}
 	[ ! -f ${L10N_DIR}/${lang}/browser/profile/bookmarks.html ] && copyfile browser/profile/bookmarks.html ${lang}
-	sed -i "s/en-US/${lang}/g" ${L10N_DIR}/${lang}/browser/profile/bookmarks.html
+	sed -i "s/en-US/${lang}/g" ${L10N_DIR}/${lang}/browser/profile/bookmarks.html || /bin/true
 	
 	## CREATE PO PACK - Create archives of PO files.
 	# Comment out the lines starting with "tar" and/or "zip" to keep from building archives in the specific format(s).
@@ -174,5 +182,5 @@ do
 
 	## CREATE XPI LANGPACK
 	# Comment out the "buildxpi"-line below if XPI langpacks should not be built.
-	buildxpi.py -L ${L10N_DIR} -s ${MOZCENTRAL_DIR} -o ${LANGPACK_DIR} ${lang}
+	#buildxpi.py -L ${L10N_DIR} -s ${MOZCENTRAL_DIR} -o ${LANGPACK_DIR} ${lang}
 done
