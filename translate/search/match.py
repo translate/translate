@@ -246,11 +246,14 @@ class terminologymatcher(matcher):
         """Normal matching after converting text to lower case. Then replace
         with the original unit to retain comments, etc."""
         text = text.lower()
-        if hasattr(self.comparer, 'match_info'):
-            self.comparer.match_info = {}
-        matches = [u for u in self.candidates.units if self.comparer.similarity(text, u.source, self.MIN_SIMILARITY)]
-        if hasattr(self.comparer, 'match_info'):
-            self.match_info = dict([(u.source, self.comparer.match_info[u.source]) for u in matches])
+        self.comparer.match_info = {}
+        matches = []
+        for cand in self.candidates.units:
+            if self.comparer.similarity(text, cand.source, self.MIN_SIMILARITY) and \
+                    cand.source in self.comparer.match_info:
+                matches.append(cand)
+        matches = [u for u in self.candidates.units if self.comparer.similarity(text, u.source, self.MIN_SIMILARITY) and u.source in self.comparer.match_info]
+        self.match_info = dict([(u.source, self.comparer.match_info[u.source]) for u in matches])
         return matches
 
 
