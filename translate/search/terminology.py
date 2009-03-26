@@ -37,6 +37,7 @@ ignorepatterns = [
 ]
 
 #TODO: compile regexes
+context_re = re.compile("\s+\(.*\)\s*$")
 
 class TerminologyComparer:
     def __init__(self, max_len=500):
@@ -56,7 +57,7 @@ class TerminologyComparer:
         # many false positives.
 
         # First remove a possible disambiguating bracket at the end
-        term = re.sub("\s+\(.*\)\s*$", "", term)
+        term = context_re.sub("", term)
         text = text[:self.MAX_LEN]
 
         if len(term) <= 2:
