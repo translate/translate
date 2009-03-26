@@ -89,7 +89,7 @@ class qmfile(base.TranslationStore):
             input.close()
             input = qmsrc
         if len(input) < 16:
-            raise ValueError("This is not a .qm file: file empty or to small")
+            raise ValueError("This is not a .qm file: file empty or too small")
         magic = struct.unpack(">4L", input[:16])
         if magic != QM_MAGIC_NUMBER:
             raise ValueError("This is not a .qm file: invalid magic number")
