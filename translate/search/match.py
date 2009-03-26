@@ -252,7 +252,6 @@ class terminologymatcher(matcher):
             if self.comparer.similarity(text, cand.source, self.MIN_SIMILARITY) and \
                     cand.source in self.comparer.match_info:
                 matches.append(cand)
-        matches = [u for u in self.candidates.units if self.comparer.similarity(text, u.source, self.MIN_SIMILARITY) and u.source in self.comparer.match_info]
         self.match_info = dict([(u.source, self.comparer.match_info[u.source]) for u in matches])
         return matches
 
