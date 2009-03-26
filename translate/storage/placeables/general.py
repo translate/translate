@@ -64,6 +64,14 @@ class FormattingPlaceable(Ph):
     parse = classmethod(regex_parse)
 
 
+class PunctuationPlaceable(Ph):
+    """Placeable handling punctuation."""
+
+    iseditable = False
+    regex = re.compile(r'[\(\)\[\]\{\}\,\.\-\!\:\;\'\"]+')
+    parse = classmethod(regex_parse)
+
+
 class XMLEntityPlaceable(Ph):
     """Placeable handling XML entities (C{&xxxxx;}-style entities)."""
 
@@ -121,4 +129,5 @@ parsers = [
     AltAttrPlaceable.parse,
     XMLEntityPlaceable.parse,
     FormattingPlaceable.parse,
+    PunctuationPlaceable.parse,
 ]
