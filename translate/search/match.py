@@ -242,6 +242,11 @@ class terminologymatcher(matcher):
         # gave a file with normal (long) translations
         return 30
 
+    def usable(self, unit):
+        """Returns whether this translation unit is usable for terminology."""
+        l = len(terminology.context_re.sub("", unit.source))
+        return l <= self.MAX_LENGTH and l >= self.getstartlength(None, None)
+
     def matches(self, text):
         """Normal matching after converting text to lower case. Then replace
         with the original unit to retain comments, etc."""
