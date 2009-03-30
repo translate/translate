@@ -68,9 +68,16 @@ class TerminologyPlaceable(base.Ph):
             if lastend < info['pos']:
                 parts.append(StringElem([pstr[lastend:info['pos']]]))
 
-            term_placeable = cls([pstr[info['pos']:end]])
-            term_placeable.translations.append(match.target)
+            term_string = pstr[info['pos']:end]
+            term_placeable = cls([term_string])
             parts.append(term_placeable)
+
+            # Get translations for the placeable
+            # FIXME: Is this the best way to go?
+            for m in matches:
+                if term_string in m.source:
+                    term_placeable.translations.append(m.target)
+
             lastend = end
         if lastend != len(pstr):
             parts.append(StringElem([pstr[lastend:]]))
