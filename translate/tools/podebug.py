@@ -35,7 +35,7 @@ def add_prefix(prefix, stringelems):
     for stringelem in stringelems:
         for string in stringelem.flatten():
             if len(string.sub) > 0:
-                string.sub[0].insert(0, prefix)
+                string.sub[0] = prefix + string.sub[0]
     return stringelems
 
 class podebug:
