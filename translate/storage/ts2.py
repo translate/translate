@@ -172,7 +172,7 @@ class tsunit(lisa.LISAunit):
     def _gettype(self):
         """Returns the type of this translation."""
         targetnode = self._gettargetnode()
-        if targetnode:
+        if targetnode is not None:
             return targetnode.get("type")
         return None
 
