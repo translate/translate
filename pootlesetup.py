@@ -4,7 +4,7 @@ from distutils.core import setup, Extension, Distribution, Command
 import distutils.sysconfig
 import sys
 import os.path
-from Pootle import __version__
+from Pootle.pootle_app import __version__
 from Pootle import __doc__
 try:
   import py2exe
@@ -27,32 +27,13 @@ infofiles = [(join(sitepackages,'Pootle'),
              [join('Pootle',filename) for filename in 'ChangeLog', 'COPYING', 'LICENSE', 'README'])]
 initfiles = [(join(sitepackages,'Pootle'),[join('Pootle','__init__.py')])]
 
-packages = ["Pootle"]
-subpackages = [
-  "tools", 
-  "misc", 
-  "auth", 
-  "i18n", 
-  "legacy", 
-  "legacy/jToolkit", 
-  "legacy/jToolkit/data", 
-  "legacy/jToolkit/web", 
-  "scripts", 
-  "middleware", 
-  "pootle_app",
-  "pootle_app/lib",
-  "pootle_app/management",
-  "pootle_app/management/commands",
-  "pootle_app/models",
-  "pootle_app/templates",
-  "pootle_app/views",
-  "pootle_app/views/admin",
-  "pootle_app/views/common",
-  "pootle_app/views/home",
-  "pootle_app/views/index",
-  "pootle_app/views/language",
-  "pootle_app/views/profile",
-  "pootle_app/views/projects",
+packages = [
+  "Pootle.tools", 
+  "Pootle.auth", 
+  "Pootle.i18n", 
+  "Pootle.scripts", 
+  "Pootle.middleware", 
+  "Pootle.pootle_app",
 ]
 pootlescripts = [join('Pootle', 'PootleServer'), join('Pootle', 'tools', 'updatetm')]
 
@@ -229,7 +210,6 @@ def getdatafiles():
   pootlefiles.append(listfiles(join('Pootle', 'html', 'js', 'jquery')))
   pootlefiles.append(listfiles(join('Pootle', 'html', 'doc')))
   pootlefiles.append(listfiles(join('Pootle', 'html', 'doc', 'en')))
-  pootlefiles.append(listfiles(join('Pootle', 'templates')))
   basedir, pootlelangs, files = os.walk(join('Pootle', 'po', 'pootle')).next()
   for dir in pootlelangs:
     pootlefiles.append(listfiles(join('Pootle', 'po', 'pootle', dir)))
@@ -328,7 +308,7 @@ def standardsetup(name, version, custompackages=[], customdatafiles=[]):
     manifest_in.close()
   except IOError, e:
     print >> sys.stderr, "warning: could not recreate MANIFEST.in, continuing anyway. Error was %s" % e
-  addsubpackages(subpackages)
+  #addsubpackages(subpackages)
   datafiles = getdatafiles()
   ext_modules = []
   dosetup(name, version, packages + custompackages, datafiles + customdatafiles, pootlescripts, ext_modules)
