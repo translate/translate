@@ -244,6 +244,8 @@ class terminologymatcher(matcher):
 
     def usable(self, unit):
         """Returns whether this translation unit is usable for terminology."""
+        if not unit.istranslated():
+            return False
         l = len(terminology.context_re.sub("", unit.source))
         return l <= self.MAX_LENGTH and l >= self.getstartlength(None, None)
 
