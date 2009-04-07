@@ -65,6 +65,7 @@ translatescripts = [apply(join, ('translate', ) + script) for script in
                   ('convert', 'xliff2po'), ('convert', 'po2xliff'),
                   ('convert', 'sub2po'), ('convert', 'po2sub'),
                   ('convert', 'symb2po'), ('convert', 'po2symb'),
+                  ('convert', 'sub2po'), ('convert', 'po2sub'),
                   ('convert', 'po2tmx'),
                   ('convert', 'po2wordfast'),
                   ('convert', 'csv2tbx'),
