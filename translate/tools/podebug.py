@@ -30,6 +30,7 @@ import re
 
 from translate.misc import hash
 from translate.storage import factory
+from translate.storage.placeables import StringElem
 
 
 def add_prefix(prefix, stringelems):
@@ -55,11 +56,25 @@ class podebug:
     rewritelist = classmethod(rewritelist)
 
     def rewrite_xxx(self, string):
+        if not isinstance(string, StringElem):
+            string = StringElem([string])
         string.sub.insert(0, 'xxx')
-        string.sub.append('xxx')
+        if unicode(string).endswith('\n'):
+            # Try and remove the last character from the tree
+            try:
+                lastnode = string.flatten()[-1]
+                if isinstance(lastnode.sub[-1], (str, unicode)):
+                    lastnode.sub[-1] = lastnode.sub[-1].rstrip('\n')
+            except Exception:
+                pass
+            string.sub.append('xxx\n')
+        else:
+            string.sub.append('xxx')
         return string
 
     def rewrite_en(self, string):
+        if not isinstance(string, StringElem):
+            string = StringElem([string])
         return string
 
     def rewrite_blank(self, string):
@@ -67,6 +82,8 @@ class podebug:
 
     def rewrite_chef(self, string):
         """Rewrite using Mock Swedish as made famous by Monty Python"""
+        if not isinstance(string, StringElem):
+            string = StringElem([string])
         # From Dive into Python which itself got it elsewhere http://www.renderx.com/demos/examples/diveintopython.pdf
         subs = (
                (r'a([nu])', r'u\1'),
@@ -102,6 +119,8 @@ class podebug:
     REWRITE_UNICODE_MAP = u"ȦƁƇḒḖƑƓĦĪĴĶĿḾȠǾƤɊŘŞŦŬṼẆẊẎẐ" + u"[\\]^_`" + u"ȧƀƈḓḗƒɠħīĵķŀḿƞǿƥɋřşŧŭṽẇẋẏẑ"
     def rewrite_unicode(self, string):
         """Convert to Unicode characters that look like the source string"""
+        if not isinstance(string, StringElem):
+            string = StringElem([string])
         def transpose(char):
             loc = ord(char)-65
             if loc < 0 or loc > 56:
