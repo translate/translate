@@ -72,11 +72,12 @@ class StringElem(object):
         if not isinstance(rhs, StringElem):
             return False
 
-        return  self.id            == rhs.id            and \
-                self.iseditable    == rhs.iseditable    and \
-                self.isvisible     == rhs.isvisible     and \
-                self.rid           == rhs.rid           and \
-                self.xid           == rhs.xid           and \
+        return  self.id             == rhs.id             and \
+                self.iseditable     == rhs.iseditable     and \
+                self.istranslatable == rhs.istranslatable and \
+                self.isvisible      == rhs.isvisible      and \
+                self.rid            == rhs.rid            and \
+                self.xid            == rhs.xid            and \
                 len(self.sub) == len(rhs.sub) and \
                 not [i for i in range(len(self.sub)) if self.sub[i] != rhs.sub[i]]
 
