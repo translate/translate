@@ -41,6 +41,7 @@ class Ept(MaskingPlaceable, PairedDelimiter):
 
 class Ph(MaskingPlaceable):
     has_content = True
+    istranslatable = False
 
 
 class It(MaskingPlaceable, Delimiter):
@@ -53,6 +54,7 @@ class G(ReplacementPlaceable):
 
 class Bx(ReplacementPlaceable, PairedDelimiter):
     has_content = False
+    istranslatable = False
 
     def __init__(self, id=None, xid=None):
         ReplacementPlaceable.__init__(self, id=id, xid=xid)
@@ -60,6 +62,7 @@ class Bx(ReplacementPlaceable, PairedDelimiter):
 
 class Ex(ReplacementPlaceable, PairedDelimiter):
     has_content = False
+    istranslatable = False
 
     def __init__(self, id=None, xid=None):
         ReplacementPlaceable.__init__(self, id=id, xid=xid)
@@ -67,6 +70,7 @@ class Ex(ReplacementPlaceable, PairedDelimiter):
 
 class X(ReplacementPlaceable, Delimiter):
     has_content = False
+    istranslatable = False
 
     def __init__(self, id=None, xid=None):
         ReplacementPlaceable.__init__(self, id=id, xid=xid)
