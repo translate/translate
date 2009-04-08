@@ -106,6 +106,7 @@ languages = {
 'pa': ('Panjabi; Punjabi', 2, '(n != 1)'),
 'pap': ('Papiamento', 2, '(n != 1)'),
 'pl': ('Polish', 3, '(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'),
+'ps': ('Pushto; Pashto', 1, '(n != 1)'),
 'pt': ('Portuguese', 2, '(n != 1)'),
 'pt_BR': ('Portuguese (Brazil)', 2, '(n > 1)'),
 'ro': ('Romanian', 3, '(n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2);'),
@@ -277,14 +278,13 @@ def normalized_unicode(string):
 def normalize_code(code):
     return code.replace("_", "-").replace("@", "-").lower()
 
-
 def simplify_to_common(language_code, languages=languages):
     """Simplify language code to the most commonly used form for the
     language, stripping country information for languages that tend
     not to be localized differently for different countries"""
     simpler = simplercode(language_code)
-    if normalize_code(language_code) in [normalize_code(key) for key in languages.keys()] or simpler =="":
+    if normalize_code(language_code) in [normalize_code(key) for key in languages.keys()] or simpler == "":
         return language_code
     else:
         return simplify_to_common(simpler)
-    
+
