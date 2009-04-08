@@ -25,11 +25,12 @@ See: http://translate.sourceforge.net/wiki/toolkit/podebug for examples and
 usage instructions
 """
 
-from translate.storage import factory
-from translate.misc.rich import map_rich, only_strings
 import os
 import re
+
 from translate.misc import hash
+from translate.storage import factory
+
 
 def add_prefix(prefix, stringelems):
     for stringelem in stringelems:
@@ -37,6 +38,7 @@ def add_prefix(prefix, stringelems):
             if len(string.sub) > 0:
                 string.sub[0] = prefix + string.sub[0]
     return stringelems
+
 
 class podebug:
     def __init__(self, format=None, rewritestyle=None, hash=None, ignoreoption=None):
@@ -53,15 +55,15 @@ class podebug:
     rewritelist = classmethod(rewritelist)
 
     def rewrite_xxx(self, string):
-        if string.endswith("\n"):
-            return "xxx%sxxx\n" % string[:-1]
-        return "xxx%sxxx" % string
+        string.sub.insert(0, 'xxx')
+        string.sub.append('xxx')
+        return string
 
     def rewrite_en(self, string):
         return string
 
     def rewrite_blank(self, string):
-        return ""
+        return StringElem([""])
 
     def rewrite_chef(self, string):
         """Rewrite using Mock Swedish as made famous by Monty Python"""
@@ -94,7 +96,7 @@ class podebug:
                (r'W', r'W'),
                (r'([a-z])[.]', r'\1. Bork Bork Bork!'))
         for a, b in subs:
-            string = re.sub(a, b, string)
+            string.apply_to_strings(lambda s: re.sub(a, b, s))
         return string
 
     REWRITE_UNICODE_MAP = u"ȦƁƇḒḖƑƓĦĪĴĶĿḾȠǾƤɊŘŞŦŬṼẆẊẎẐ" + u"[\\]^_`" + u"ȧƀƈḓḗƒɠħīĵķŀḿƞǿƥɋřşŧŭṽẇẋẏẑ"
@@ -105,7 +107,10 @@ class podebug:
             if loc < 0 or loc > 56:
                 return char
             return self.REWRITE_UNICODE_MAP[loc]
-        return "".join(map(transpose, string))
+        def transformer(s):
+            return ''.join([transpose(c) for c in s])
+        string.apply_to_strings(transformer)
+        return string
 
     def ignorelist(cls):
         return [ignore.replace("ignore_", "") for ignore in dir(cls) if ignore.startswith("ignore_")]
@@ -156,9 +161,9 @@ class podebug:
                 hashable = unit.source
             prefix = hash.md5_f(hashable).hexdigest()[:self.hash] + " "
         if self.rewritefunc:
-            rewritten = map_rich(only_strings(self.rewritefunc), unit.rich_source)
+            rewritten = [self.rewritefunc(string) for string in unit.rich_source]
             if rewritten:
-                unit.rich_target = rewritten[0]
+                unit.rich_target = rewritten
         elif not unit.istranslated():
             unit.rich_target = unit.rich_source
         unit.rich_target = add_prefix(prefix, unit.rich_target)
