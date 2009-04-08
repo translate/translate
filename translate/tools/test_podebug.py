@@ -14,20 +14,20 @@ class TestPODebug:
 
     def test_rewrite_blank(self):
         """Test the blank rewrite function"""
-        assert self.debug.rewrite_blank("Test") == ""
+        assert str(self.debug.rewrite_blank("Test")) == ""
 
     def test_rewrite_en(self):
         """Test the en rewrite function"""
-        assert self.debug.rewrite_en("Test") == "Test"
+        assert str(self.debug.rewrite_en("Test")) == "Test"
 
     def test_rewrite_xxx(self):
         """Test the xxx rewrite function"""
-        assert self.debug.rewrite_xxx("Test") == "xxxTestxxx"
-        assert self.debug.rewrite_xxx("Newline\n") == "xxxNewlinexxx\n"
+        assert str(self.debug.rewrite_xxx("Test")) == "xxxTestxxx"
+        assert str(self.debug.rewrite_xxx("Newline\n")) == "xxxNewlinexxx\n"
 
     def test_rewrite_unicode(self):
         """Test the unicode rewrite function"""
-        assert self.debug.rewrite_unicode("Test") == u"Ŧḗşŧ"
+        assert unicode(self.debug.rewrite_unicode("Test")) == u"Ŧḗşŧ"
 
     def test_rewrite_chef(self):
         """Test the chef rewrite function
@@ -35,4 +35,4 @@ class TestPODebug:
         This is not realy critical to test but a simple tests ensures
         that it stays working.
         """
-        assert self.debug.rewrite_chef("Mock Swedish test you muppet") == "Mock Swedish test yooo mooppet"
+        assert str(self.debug.rewrite_chef("Mock Swedish test you muppet")) == "Mock Swedish test yooo mooppet"
