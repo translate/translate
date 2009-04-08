@@ -145,6 +145,15 @@ class StringElem(object):
         return u''.join([unicode(elem) for elem in self.sub])
 
     # METHODS #
+    def apply_to_strings(self, f):
+        """Apply C{f} to all actual strings in the tree.
+            @param f: Must take one (str or unicode) argument and return a
+                string or unicode."""
+        for elem in self.flatten():
+            for i in range(len(elem.sub)):
+                if isinstance(elem.sub[i], basestring):
+                    elem.sub[i] = f(elem.sub[i])
+
     def depth_first(self):
         elems = [self]
         for sub in self.sub:
