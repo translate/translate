@@ -34,8 +34,12 @@ class StringElem(object):
 
     sub = []
     """The sub-elements that make up this this string."""
+    has_content = True
+    """Whether this string can have sub-elements."""
     iseditable = True
     """Whether this string should be changable by the user. Not used at the moment."""
+    istranslatable = True
+    """Whether this string is translatable into other languages."""
     isvisible = True
     """Whether this string should be visible to the user. Not used at the moment."""
 
