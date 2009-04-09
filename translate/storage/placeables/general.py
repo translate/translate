@@ -99,7 +99,7 @@ class XMLTagPlaceable(Ph):
     parse = classmethod(regex_parse)
 
 
-def to_general_placeables(tree, classmap={G: (AltAttrPlaceable,), Ph: (XMLEntityPlaceable, XMLTagPlaceable)}):
+def to_general_placeables(tree, classmap={G: (AltAttrPlaceable,), Ph: (XMLEntityPlaceable, XMLTagPlaceable, PunctuationPlaceable)}):
     if not isinstance(tree, StringElem):
         return tree
 
