@@ -32,6 +32,8 @@ class StringElem(object):
     It is also the base class of all placeables.
     """
 
+    renderer = None
+    """An optional function that returns the Unicode representation of the string."""
     sub = []
     """The sub-elements that make up this this string."""
     has_content = True
@@ -145,6 +147,8 @@ class StringElem(object):
         return ''.join([unicode(elem).encode('utf-8') for elem in self.sub])
 
     def __unicode__(self):
+        if callable(self.renderer):
+            return self.renderer(self)
         if not self.isvisible:
             return u''
         return u''.join([unicode(elem) for elem in self.sub])
