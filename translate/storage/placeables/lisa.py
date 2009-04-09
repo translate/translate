@@ -117,7 +117,10 @@ def xml_append_string(node, string):
         else:
             node.text += unicode(string)
     else:
-        node.getchildren()[-1].tail = unicode(string)
+        lastchild = node.getchildren()[-1]
+        if lastchild.tail is None:
+            lastchild.tail = ''
+        lastchild.tail += unicode(string)
     return node
 
 def strelem_to_xml(parent_node, elem):
