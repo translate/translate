@@ -26,57 +26,40 @@ from translate.storage.placeables.strelem import StringElem
 __all__ = ['Bpt', 'Ept', 'X', 'Bx', 'Ex', 'G', 'It', 'Sub', 'Ph', 'parsers', 'to_xliff_placeables']
 
 
-def xliff__unicode__(self):
-    if hasattr(self, 'has_content') and self.has_content:
-        return u'<%(tag)s%(id)s%(rid)s%(xid)s>%(sub)s</%(tag)s>' % {
-            'tag': self.__class__.__name__.lower(),
-            'id':  self.id  and ' id="%s"'  % (self.id)  or '',
-            'rid': self.rid and ' rid="%s"' % (self.rid) or '',
-            'xid': self.xid and ' xid="%s"' % (self.xid) or '',
-            'sub': u''.join([unicode(s) for s in self.sub])
-        }
-    return u'<%(tag)s%(id)s%(rid)s%(xid)s/>' % {
-        'tag': self.__class__.__name__.lower(),
-        'id':  self.id  and ' id="%s"'  % (self.id)  or '',
-        'rid': self.rid and ' rid="%s"' % (self.rid) or '',
-        'xid': self.xid and ' xid="%s"' % (self.xid) or ''
-    }
-
-
 class Bpt(base.Bpt):
-    __unicode__ = xliff__unicode__
+    pass
 
 
 class Ept(base.Ept):
-    __unicode__ = xliff__unicode__
+    pass
 
 
 class Ph(base.Ph):
-    __unicode__ = xliff__unicode__
+    pass
 
 
 class It(base.It):
-    __unicode__ = xliff__unicode__
+    pass
 
 
 class G(base.G):
-    __unicode__ = xliff__unicode__
+    pass
 
 
 class Bx(base.Bx):
-    __unicode__ = xliff__unicode__
+    pass
 
 
 class Ex(base.Ex):
-    __unicode__ = xliff__unicode__
+    pass
 
 
 class X(base.X):
-    __unicode__ = xliff__unicode__
+    pass
 
 
 class Sub(base.Sub):
-    __unicode__ = xliff__unicode__
+    pass
 
 
 def to_xliff_placeables(tree):
