@@ -29,7 +29,10 @@ __all__ = ['xml_to_strelem', 'strelem_to_xml']
 
 def make_empty_replacement_placeable(klass, node):
     try:
-        return klass(id=node.attrib[u'id'])
+        pl = klass(id=node.attrib[u'id'])
+        pl.rid = node.attrib.get('rid', None)
+        pl.xid = node.attrib.get('xid', None)
+        return pl
     except KeyError:
         pass
     return klass()
