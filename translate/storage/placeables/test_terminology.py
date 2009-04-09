@@ -53,11 +53,11 @@ msgstr "lêernaam"
         assert isinstance(tree.sub[0], general.XMLTagPlaceable)
         assert isinstance(tree.sub[2], general.XMLTagPlaceable)
 
-        term = tree.sub[3].sub[1]
+        term = tree.sub[3].sub[0].sub[1]
 
         assert isinstance(term, TerminologyPlaceable)
         assert unicode(term) == self.term_po.getunits()[2].source
-        assert term.transform() == unicode(self.term_po.getunits()[2].target)
+        assert term.translate() == unicode(self.term_po.getunits()[2].target)
 
 
 if __name__ == '__main__':

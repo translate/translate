@@ -39,7 +39,7 @@ class TestStringElem:
 
         assert len(self.elem.sub[0].sub) == 1 and self.elem.sub[0].sub[0] == u'Ģët '
         assert len(self.elem.sub[1].sub) == 3
-        assert len(self.elem.sub[2].sub) == 1 and self.elem.sub[2].sub[0] == u'&brandLong;'
+        assert len(self.elem.sub[2].sub) == 2 and unicode(self.elem.sub[2]) == u'&brandLong;'
         assert len(self.elem.sub[3].sub) == 1 and self.elem.sub[3].sub[0] == u'</a>'
 
         sub = self.elem.sub[1].sub # That's the "<a href... >" part
@@ -83,7 +83,7 @@ class TestStringElem:
 
     def test_elem_offset(self):
         assert self.elem.elem_offset(self.elem.sub[0]) == 0
-        assert self.elem.elem_offset(self.elem.sub[1].sub[0]) == 4
+        assert self.elem.elem_offset(self.elem.sub[1].sub[0].sub[0]) == 4
 
     def test_elem_at_offset(self):
         assert self.elem.elem_at_offset(0) is self.elem.sub[0]
@@ -96,8 +96,8 @@ class TestStringElem:
         assert self.elem.find(searchelem) == 46
 
     def test_find_elems_with(self):
-        assert self.elem.find_elems_with(u'Ģët') == [ StringElem([u'Ģët ']), StringElem([u'alt="Ģët ']) ]
-        assert len(self.elem.find_elems_with('a')) == 5
+        assert self.elem.find_elems_with(u'Ģët') == [ StringElem([u'Ģët ']), StringElem([u'Ģët ']) ]
+        assert len(self.elem.find_elems_with('a')) == 6
 
     def test_flatten(self):
         assert u''.join([unicode(i) for i in self.elem.flatten()]) == self.ORIGSTR
