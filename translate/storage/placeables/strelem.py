@@ -159,6 +159,17 @@ class StringElem(object):
                 if isinstance(elem.sub[i], basestring):
                     elem.sub[i] = f(elem.sub[i])
 
+    def copy(self):
+        """Returns a copy of the sub-tree.
+            This should be overridden in sub-classes with more data."""
+        cp = self.__class__(id=self.id, xid=self.xid, rid=self.rid)
+        for sub in self.sub:
+            if isinstance(sub, StringElem):
+                cp.sub.append(sub.copy())
+            else:
+                cp.sub.append(sub.__class__(sub))
+        return cp
+
     def depth_first(self):
         elems = [self]
         for sub in self.sub:
