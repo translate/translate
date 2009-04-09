@@ -72,7 +72,7 @@ class X(ReplacementPlaceable, Delimiter):
     has_content = False
     istranslatable = False
 
-    def __init__(self, id=None, xid=None):
+    def __init__(self, id=None, xid=None, **kwargs):
         ReplacementPlaceable.__init__(self, id=id, xid=xid)
 
 
