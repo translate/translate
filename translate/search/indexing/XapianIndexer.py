@@ -36,7 +36,7 @@ __revision__ = "$Id$"
 # xapian module hangs apache under mod_python
 # detect if running under apache and fail immediatly
 import sys
-if '_apache' in sys.modules:
+if 'apache' in sys.modules or '_apache' in sys.modules:
     raise ImportError("Running under mod_python, can't load xapian")
 
 import CommonIndexer
