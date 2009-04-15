@@ -165,7 +165,9 @@ class StringElem(object):
 
     def copy(self):
         """Returns a copy of the sub-tree.
-            This should be overridden in sub-classes with more data."""
+            This should be overridden in sub-classes with more data.
+
+            NOTE: C{self.renderer} is B{not} copied."""
         cp = self.__class__(id=self.id, xid=self.xid, rid=self.rid)
         for sub in self.sub:
             if isinstance(sub, StringElem):
