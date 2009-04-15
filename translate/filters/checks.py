@@ -1062,6 +1062,13 @@ class MozillaChecker(StandardChecker):
         checkerconfig.update(mozillaconfig)
         StandardChecker.__init__(self, **kwargs)
 
+    def credits(self, str1, str2):
+        """Checks if we have any gconf config settings translated."""
+        for location in self.locations:
+            if location in ['MOZ_LANGPACK_CONTRIBUTORS', 'credit.translation']:
+                return False
+        return True
+
 drupalconfig = CheckerConfig(
     varmatches = [("%", None), ("@", None)],
     )
