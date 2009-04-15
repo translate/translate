@@ -64,7 +64,7 @@ cd ${L10N_DIR}
 # Update all Mercurial-managed languages
 for lang in ${HG_LANGS}
 do
-	[ -d ${lang}/.hg ] && (cd ${lang}; hg pull -u; hg update -C)
+	[ -d ${lang}/.hg ] && (cd ${lang}; hg revert --all -r default; hg pull -u; hg update -C)
 	(find ${lang} -name '*.orig' | xargs rm) || /bin/true
 done
 
@@ -110,11 +110,13 @@ function copyfiletype {
 function copydir {
 	dir=$1
 	language=$2
-	files=$(cd ${L10N_DIR}/en-US/$dir; find . -type f)
-	for file in $files
-	do
-		copyfile $dir/$file $language
-	done
+	if [ -d ${L10N_DIR}/en-US/$dir ]; then
+		files=$(cd ${L10N_DIR}/en-US/$dir && find . -type f)
+		for file in $files
+		do
+			copyfile $dir/$file $language
+		done
+	fi
 }
 
 for lang in ${HG_LANGS}
