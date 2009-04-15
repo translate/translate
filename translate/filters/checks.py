@@ -1063,7 +1063,7 @@ class MozillaChecker(StandardChecker):
         StandardChecker.__init__(self, **kwargs)
 
     def credits(self, str1, str2):
-        """Checks if we have any gconf config settings translated."""
+        """checks for messages containing translation credits instead of normal translations."""
         for location in self.locations:
             if location in ['MOZ_LANGPACK_CONTRIBUTORS', 'credit.translation']:
                 return False
