@@ -229,12 +229,13 @@ class StringElem(object):
         sub = []
         for elem in self.sub:
             if not isinstance(elem, StringElem):
+                sub.append(elem)
                 continue
 
-            if len(elem.sub) > 1:
-                sub.extend(elem.flatten())
-            else:
+            if elem.isleaf() or elem.renderer is not None:
                 sub.append(elem)
+            else:
+                sub.extend(elem.flatten())
         if not sub:
             sub = [self]
         return sub
