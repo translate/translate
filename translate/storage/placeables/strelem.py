@@ -189,13 +189,18 @@ class StringElem(object):
 
     def elem_offset(self, elem):
         """Find the offset of C{elem} in the current tree.
+            This cannot be reliably used if C{self.renderer} is used and even
+            less so if the rendering function renders the string differently
+            upon different calls. In Virtaal the C{StringElemGUI.index()} method
+            is used as replacement for this one.
             @returns: The string index where element C{e} starts, or -1 if C{e}
                 was not found."""
-        i = 0
-        for e in self.flatten():
-            if e is elem:
-                return i
-            i += len(e)
+        offset = 0
+        for e in self.depth_first():
+            if e is elem or (isinstance(e, (str, unicode)) and elem == e):
+                return offset
+            if isinstance(e, (str, unicode)) or (isinstance(e, StringElem) and e.isleaf()):
+                offset += len(e)
         return -1
 
     def elem_at_offset(self, offset):
