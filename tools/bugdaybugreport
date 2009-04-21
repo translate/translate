@@ -21,7 +21,7 @@ wget 'http://bugs.locamotion.org/buglist.cgi?query_format=specific&order=relevan
 sed -i 's#href="\([^:]*\)"#href="http://bugs.locamotion.org/\1"#g' testlogs/${bugfile}
 scp -p testlogs/${bugfile} ${dest}/$bugfile
 
-for f in ~/.gaim/logs/irc/*@irc.freenode.net/\#pootle.chat/${dateiso}*
+for f in ~/.purple/logs/irc/*@irc.freenode.net/\#pootle.chat/${dateiso}*
   do
     rsync --copy-links --perms --times --compress --rsh=ssh "$f" ${dest}/irc-log-`basename "$f"`
   done
