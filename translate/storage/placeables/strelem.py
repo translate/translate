@@ -181,6 +181,8 @@ class StringElem(object):
         for sub in self.sub:
             if isinstance(sub, StringElem):
                 elems.extend(sub.depth_first())
+            elif isinstance(sub, (str, unicode)):
+                elems.append(sub)
         return elems
 
     def encode(self, encoding=sys.getdefaultencoding()):
