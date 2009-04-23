@@ -97,6 +97,7 @@ languages = {
 'ms': ('Malay', 1, '0'),
 'mt': ('Maltese', 4, '(n==1 ? 0 : n==0 || ( n%100>1 && n%100<11) ? 1 : (n%100>10 && n%100<20 ) ? 2 : 3)'),
 'nah': ('Nahuatl languages', 2, '(n != 1)'),
+'nap': ('Neapolitan', 2, '(n != 1)'),
 'nb': ('Norwegian Bokmal', 2, '(n != 1)'),
 'ne': ('Nepali', 2, '(n != 1)'),
 'nl': ('Dutch; Flemish', 2, '(n != 1)'),
