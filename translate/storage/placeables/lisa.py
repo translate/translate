@@ -69,6 +69,8 @@ def as_unicode(string):
         return unicode(string.decode('utf-8'))
 
 def xml_to_strelem(dom_node):
+    if dom_node is None:
+        return StringElem()
     if isinstance(dom_node, basestring):
         dom_node = etree.fromstring(dom_node)
     result = StringElem()
