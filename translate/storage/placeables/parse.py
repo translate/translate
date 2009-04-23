@@ -49,15 +49,22 @@ def parse(tree, parse_funcs):
         tree = StringElem([tree])
     if not parse_funcs:
         return tree
-    leaves = [elem for elem in tree.depth_first() if elem.isleaf()]
+
     parse_func = parse_funcs[0]
 
-    for leaf in leaves:
+    for leaf in tree.flatten():
         if not unicode(leaf):
             continue
         subleaves = parse_func(unicode(leaf))
         if subleaves is not None:
-            leaf.sub = subleaves
+            if isinstance(leaf, (str, unicode)):
+                parent = tree.get_parent_elem(leaf)
+                if parent is not None:
+                    leafindex = parent.sub.index(leaf)
+                    parent.sub[leafindex] = StringElem(subleaves)
+                    leaf = parent.sub[leafindex]
+            else:
+                leaf.sub = subleaves
         parse(leaf, parse_funcs[1:])
 
         # The rest of this block handles the case in which a StringElem was created by a previous
@@ -66,9 +73,9 @@ def parse(tree, parse_funcs):
         # (unicode) sub-element to a StringElem with a single StringElemSubClass element which, in
         # turn has a single unicode sub-element, equal to the original StringElem's.
         # Simbolically it does StringElem([StringElemSubClass(['foo'])]) ->  StringElemSubClass(['foo'])
-        if len(leaf.sub) == 1 and \
-                type(leaf) is StringElem and \
+        if type(leaf) is StringElem and \
                 type(leaf.sub[0]) is not StringElem and \
+                len(leaf.sub) == 1 and \
                 isinstance(leaf.sub[0], StringElem):
             parent = tree.get_parent_elem(leaf)
             if parent is not None:
