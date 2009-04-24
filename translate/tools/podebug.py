@@ -56,7 +56,7 @@ class podebug:
 
     def rewrite_xxx(self, string):
         if not isinstance(string, StringElem):
-            string = StringElem([string])
+            string = StringElem(string)
         string.sub.insert(0, 'xxx')
         if unicode(string).endswith('\n'):
             # Try and remove the last character from the tree
@@ -73,16 +73,16 @@ class podebug:
 
     def rewrite_en(self, string):
         if not isinstance(string, StringElem):
-            string = StringElem([string])
+            string = StringElem(string)
         return string
 
     def rewrite_blank(self, string):
-        return StringElem([""])
+        return StringElem("")
 
     def rewrite_chef(self, string):
         """Rewrite using Mock Swedish as made famous by Monty Python"""
         if not isinstance(string, StringElem):
-            string = StringElem([string])
+            string = StringElem(string)
         # From Dive into Python which itself got it elsewhere http://www.renderx.com/demos/examples/diveintopython.pdf
         subs = (
                (r'a([nu])', r'u\1'),
@@ -119,7 +119,7 @@ class podebug:
     def rewrite_unicode(self, string):
         """Convert to Unicode characters that look like the source string"""
         if not isinstance(string, StringElem):
-            string = StringElem([string])
+            string = StringElem(string)
         def transpose(char):
             loc = ord(char)-65
             if loc < 0 or loc > 56:

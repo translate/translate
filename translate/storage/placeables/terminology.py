@@ -66,7 +66,7 @@ class TerminologyPlaceable(base.Ph):
                 end = info['pos'] + info['newtermlen']
 
             if lastend < info['pos']:
-                parts.append(StringElem([pstr[lastend:info['pos']]]))
+                parts.append(StringElem(pstr[lastend:info['pos']]))
 
             term_string = pstr[info['pos']:end]
             term_placeable = cls([term_string])
@@ -80,7 +80,7 @@ class TerminologyPlaceable(base.Ph):
 
             lastend = end
         if lastend != len(pstr):
-            parts.append(StringElem([pstr[lastend:]]))
+            parts.append(StringElem(pstr[lastend:]))
 
         return parts or None
 

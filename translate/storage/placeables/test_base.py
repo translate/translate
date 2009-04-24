@@ -96,7 +96,7 @@ class TestStringElem:
         assert self.elem.find(searchelem) == 46
 
     def test_find_elems_with(self):
-        assert self.elem.find_elems_with(u'Ģët') == [ StringElem([u'Ģët ']), StringElem([u'Ģët ']) ]
+        assert self.elem.find_elems_with(u'Ģët') == [ StringElem(u'Ģët '), StringElem(u'Ģët ') ]
         assert len(self.elem.find_elems_with('a')) == 6
 
     def test_flatten(self):

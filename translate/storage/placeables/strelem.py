@@ -49,6 +49,8 @@ class StringElem(object):
     def __init__(self, sub=None, id=None, rid=None, xid=None):
         if sub is None:
             sub = []
+        if isinstance(sub, (str, unicode, StringElem)):
+            sub = [sub]
 
         for elem in sub:
             if not isinstance(elem, (str, unicode, StringElem)):

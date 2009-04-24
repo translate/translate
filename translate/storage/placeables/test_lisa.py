@@ -44,7 +44,7 @@ def test_chunk_list():
 
 def test_set_strelem_to_xml():
     source = etree.Element(u'source')
-    lisa.strelem_to_xml(source, StringElem(['a']))
+    lisa.strelem_to_xml(source, StringElem('a'))
     assert etree.tostring(source, encoding = 'UTF-8') == '<source>a</source>'
 
     source = etree.Element(u'source')
@@ -52,7 +52,7 @@ def test_set_strelem_to_xml():
     assert etree.tostring(source, encoding = 'UTF-8') == '<source>aé</source>'
 
     source = etree.Element(u'source')
-    lisa.strelem_to_xml(source, StringElem([X(id='foo[1]/bar[1]/baz[1]')]))
+    lisa.strelem_to_xml(source, StringElem(X(id='foo[1]/bar[1]/baz[1]')))
     assert etree.tostring(source, encoding = 'UTF-8') == '<source><x id="foo[1]/bar[1]/baz[1]"/></source>'
 
     source = etree.Element(u'source')

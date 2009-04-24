@@ -41,11 +41,11 @@ def regex_parse(cls, pstr):
     for match in cls.regex.finditer(pstr):
         start, end = match.start(), match.end()
         if oldend != start:
-            matches.append(StringElem([pstr[oldend:start]]))
+            matches.append(StringElem(pstr[oldend:start]))
         matches.append(cls([pstr[start:end]]))
         oldend = end
     if oldend != len(pstr) and matches:
-        matches.append(StringElem([pstr[oldend:]]))
+        matches.append(StringElem(pstr[oldend:]))
     return matches or None
 
 
