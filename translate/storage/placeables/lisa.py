@@ -75,11 +75,12 @@ def xml_to_strelem(dom_node):
         dom_node = etree.fromstring(dom_node)
     result = StringElem()
     if dom_node.text:
-        result.sub.append(as_unicode(dom_node.text))
+        result.sub.append(StringElem(as_unicode(dom_node.text)))
     for child_dom_node in dom_node:
         result.sub.append(make_placeable(child_dom_node))
         if child_dom_node.tail:
-            result.sub.append(as_unicode(child_dom_node.tail))
+            result.sub.append(StringElem(as_unicode(child_dom_node.tail)))
+    result.prune()
     return result
 
 # ==========================================================

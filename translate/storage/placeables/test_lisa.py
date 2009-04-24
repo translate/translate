@@ -27,15 +27,15 @@ from translate.storage.placeables.xliff import X, G
 def test_xml_to_strelem():
     source = etree.fromstring(u'<source>a<x id="foo[1]/bar[1]/baz[1]"/></source>')
     elem = lisa.xml_to_strelem(source)
-    assert elem.sub == [u'a', X(id=u'foo[1]/bar[1]/baz[1]')]
+    assert elem.sub == [ StringElem(u'a'), X(id=u'foo[1]/bar[1]/baz[1]') ]
 
     source = etree.fromstring(u'<source>a<x id="foo[1]/bar[1]/baz[1]"/>é</source>')
     elem = lisa.xml_to_strelem(source)
-    assert elem.sub == [u'a', X(id=u'foo[1]/bar[1]/baz[1]'), u'é']
+    assert elem.sub == [ StringElem(u'a'), X(id=u'foo[1]/bar[1]/baz[1]'), StringElem(u'é') ]
 
     source = etree.fromstring(u'<source>a<g id="foo[2]/bar[2]/baz[2]">b<x id="foo[1]/bar[1]/baz[1]"/>c</g>é</source>')
     elem = lisa.xml_to_strelem(source)
-    assert elem.sub == [u'a', G(id=u'foo[2]/bar[2]/baz[2]', sub=[u'b', X(id=u'foo[1]/bar[1]/baz[1]'), u'c']), u'é']
+    assert elem.sub == [ StringElem(u'a'), G(id=u'foo[2]/bar[2]/baz[2]', sub=[StringElem(u'b'), X(id=u'foo[1]/bar[1]/baz[1]'), StringElem(u'c')]), StringElem(u'é') ]
 
 def test_chunk_list():
     left  = StringElem(['a', G(id='foo[2]/bar[2]/baz[2]', sub=['b', X(id='foo[1]/bar[1]/baz[1]'), 'c']), 'é'])

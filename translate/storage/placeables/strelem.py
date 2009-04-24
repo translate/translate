@@ -181,10 +181,12 @@ class StringElem(object):
     def depth_first(self):
         elems = [self]
         for sub in self.sub:
-            if isinstance(sub, StringElem):
-                elems.extend(sub.depth_first())
-            elif isinstance(sub, (str, unicode)):
+            if not isinstance(sub, StringElem):
+                continue
+            if sub.isleaf():
                 elems.append(sub)
+            else:
+                elems.extend(sub.depth_first())
         return elems
 
     def encode(self, encoding=sys.getdefaultencoding()):
@@ -201,9 +203,15 @@ class StringElem(object):
                 was not found."""
         offset = 0
         for e in self.depth_first():
-            if e is elem or (isinstance(e, (str, unicode)) and elem == e):
+            if e is elem:
                 return offset
-            if isinstance(e, (str, unicode)) or (isinstance(e, StringElem) and e.isleaf()):
+            if e.isleaf():
+                leafoffset = 0
+                for s in e.sub:
+                    if unicode(s) == unicode(elem):
+                        return offset + leafoffset
+                    else:
+                        leafoffset += len(unicode(s))
                 offset += len(e)
         return -1
 
@@ -237,19 +245,7 @@ class StringElem(object):
 
     def flatten(self):
         """Flatten the tree by returning a depth-first search over the tree's leaves."""
-        sub = []
-        for elem in self.sub:
-            if not isinstance(elem, StringElem):
-                sub.append(elem)
-                continue
-
-            if elem.isleaf() or elem.renderer is not None:
-                sub.append(elem)
-            else:
-                sub.extend(elem.flatten())
-        if not sub:
-            sub = [self]
-        return sub
+        return [elem for elem in self.depth_first() if elem.isleaf()]
 
     def get_parent_elem(self, child):
         """Searches the current sub-tree for and returns the parent of the

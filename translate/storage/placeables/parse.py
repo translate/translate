@@ -46,7 +46,7 @@ def parse(tree, parse_funcs):
             C{StringElem}s which, together, form the original string. If nothing
             could be parsed, it should return C{None}."""
     if isinstance(tree, (str, unicode)):
-        tree = StringElem([tree])
+        tree = StringElem(tree)
     if not parse_funcs:
         return tree
 
@@ -55,30 +55,24 @@ def parse(tree, parse_funcs):
     for leaf in tree.flatten():
         if not unicode(leaf):
             continue
+
         subleaves = parse_func(unicode(leaf))
         if subleaves is not None:
             if isinstance(leaf, (str, unicode)):
                 parent = tree.get_parent_elem(leaf)
                 if parent is not None:
-                    leafindex = parent.sub.index(leaf)
-                    parent.sub[leafindex] = StringElem(subleaves)
-                    leaf = parent.sub[leafindex]
+                    if len(parent.sub) == 1:
+                        parent.sub = subleaves
+                        leaf = parent
+                    else:
+                        leafindex = parent.sub.index(leaf)
+                        parent.sub[leafindex] = StringElem(subleaves)
+                        leaf = parent.sub[leafindex]
             else:
                 leaf.sub = subleaves
+
         parse(leaf, parse_funcs[1:])
 
-        # The rest of this block handles the case in which a StringElem was created by a previous
-        # parsing function and a later one added a StringElem sub-class as a child which consumes
-        # the whole string. That means that the leaf was changed from a StringElem with a single
-        # (unicode) sub-element to a StringElem with a single StringElemSubClass element which, in
-        # turn has a single unicode sub-element, equal to the original StringElem's.
-        # Simbolically it does StringElem([StringElemSubClass(['foo'])]) ->  StringElemSubClass(['foo'])
-        if type(leaf) is StringElem and \
-                type(leaf.sub[0]) is not StringElem and \
-                len(leaf.sub) == 1 and \
-                isinstance(leaf.sub[0], StringElem):
-            parent = tree.get_parent_elem(leaf)
-            if parent is not None:
-                leafindex = parent.sub.index(leaf)
-                parent.sub[leafindex] = leaf.sub[0]
+    if isinstance(leaf, StringElem):
+        leaf.prune()
     return tree
