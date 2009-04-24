@@ -303,6 +303,23 @@ class StringElem(object):
             else:
                 print '%s%s[%s]' % (indent_prefix, indent_prefix, elem)
 
+    def prune(self):
+        """Remove unnecessary nodes not make the tree optimal."""
+        for elem in self.depth_first():
+            if len(elem.sub) == 1:
+                child = elem.sub[0]
+                # Symbolically: X->StringElem(leaf) => X(leaf)
+                #   (where X is any sub-class of StringElem, but not StringElem)
+                if type(child) is StringElem and child.isleaf():
+                    elem.sub = child.sub
+
+                # Symbolically: StringElem->X(leaf) => X(leaf)
+                #   (where X is any sub-class of StringElem, but not StringElem)
+                if type(elem) is StringElem and isinstance(child, StringElem) and type(child) is not StringElem:
+                    parent = self.get_parent_elem(elem)
+                    if parent is not None:
+                        parent.sub[parent.sub.index(elem)] = child
+
     def translate(self):
         """Transform the sub-tree according to some class-specific needs.
             This method should be either overridden in implementing sub-classes
