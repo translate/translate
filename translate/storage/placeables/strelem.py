@@ -247,6 +247,12 @@ class StringElem(object):
         """Flatten the tree by returning a depth-first search over the tree's leaves."""
         return [elem for elem in self.depth_first() if elem.isleaf()]
 
+    def get_ancestor_where(self, child, criteria):
+        parent = self.get_parent_elem(child)
+        if parent is None or criteria(parent):
+            return parent
+        return self.get_ancestor_where(parent, criteria)
+
     def get_parent_elem(self, child):
         """Searches the current sub-tree for and returns the parent of the
             C{child} element."""
