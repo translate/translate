@@ -102,6 +102,27 @@ class TestStringElem:
     def test_flatten(self):
         assert u''.join([unicode(i) for i in self.elem.flatten()]) == self.ORIGSTR
 
+    def test_insert(self):
+        # Test inserting at the beginning
+        elem = self.elem.copy()
+        elem.insert(0, 'xxx')
+        assert unicode(elem.sub[0]) == 'xxx' + unicode(self.elem.sub[0])
+
+        # Test inserting at the end
+        elem = self.elem.copy()
+        elem.insert(len(elem) + 1, 'xxx')
+        assert elem.flatten()[-1] == StringElem('xxx')
+
+        # Test inserting in the middle of an existing string
+        elem = self.elem.copy()
+        elem.insert(2, 'xxx')
+        assert unicode(elem.sub[0]) == u'Ģëxxxt '
+
+        # Test inserting between elements
+        elem = self.elem.copy()
+        elem.insert(56, 'xxx')
+        assert unicode(elem)[56:59] == u'xxx'
+
     def test_isleaf(self):
         assert self.elem.sub[0].isleaf()
         assert not self.elem.sub[1].isleaf()
