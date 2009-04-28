@@ -264,6 +264,91 @@ class StringElem(object):
                     return elem
         return None
 
+    def insert(self, offset, text):
+        """Insert the given text at the specified offset of this string-tree's
+            string (Unicode) representation."""
+        if offset < 0 or offset > len(self) + 1:
+            raise IndexError
+
+        # There are 4 general cases (including specific cases) where text can be inserted:
+        # 1) At the beginning of the string (self)
+        # 1.1) self.sub[0] is editable
+        # 1.2) self.sub[0] is not editable
+        # 2) At the end of the string (self)
+        # 2.1) self.flatten()[-1] is editable
+        # 2.2) self.flatten()[-1] is not editable
+        # 3) In the middle of a node
+        # 4) Between two nodes
+        # 4.1) Neither of the nodes are editable
+        # 4.2) Both nodes are editable
+        # 4.3) Node at offset-1 is editable, node at offset is not
+        # 4.4) Node at offset is editable, node at offset-1 is not
+
+        oelem = self.elem_at_offset(offset)
+
+        # Case 1 #
+        if offset == 0:
+            # 1.1 #
+            if oelem.iseditable:
+                if oelem.isleaf():
+                    oelem.sub.insert(0, unicode(text))
+                else:
+                    oelem.sub.insert(0, StringElem(text))
+            # 1.2 #
+            else:
+                oparent = self.get_ancestor_where(oelem, lambda x: x.iseditable)
+                if oparent is not None:
+                    oparent.sub.insert(0, StringElem(text))
+            return
+
+        # Case 2 #
+        if offset == len(self) + 1:
+            last = self.flatten()[-1]
+            # 2.1 #
+            if last.iseditable:
+                # last must be a leaf, because flatten() only returns leaves.
+                # That's why unicode(text) is inserted
+                last.sub.append(unicode(text))
+            # 2.2 #
+            else:
+                parent = self.get_ancestor_where(last, lambda x: x.iseditable)
+                parent.sub.append(StringElem(text))
+            return
+
+        before = self.elem_at_offset(offset-1)
+
+        # Case 3 #
+        if oelem is before:
+            if oelem.iseditable:
+                eoffset = offset - self.elem_offset(oelem)
+                if oelem.isleaf():
+                    s = unicode(oelem) # Collapse all sibling strings into one
+                    oelem.sub = [s[:eoffset] + unicode(text) + s[eoffset:]]
+                else:
+                    oelem.insert(eoffset, text)
+            return
+
+        # And the only case left: Case 4 #
+        # 4.1 #
+        if not before.iseditable and not oelem.iseditable:
+            # Neither are editable, so we add it as a sibling (to the right) of before
+            bparent = self.get_parent_elem(before)
+            # bparent cannot be a leaf (because it has before as a child), so we
+            # insert the text as StringElem(text)
+            bindex = bparent.sub.index(before)
+            bparent.sub.insert(bindex + 1, StringElem(text))
+
+        elif before.iseditable and oelem.iseditable:
+            before.insert(len(before)+1, text) # Reinterpret as a case 2
+
+        # 4.3 #
+        elif before.iseditable and not oelem.iseditable:
+            before.insert(len(before)+1, text) # Reinterpret as a case 2
+
+        # 4.4 #
+        elif not before.iseditable and oelem.iseditable:
+            oelem.insert(0, text) # Reinterpret as a case 1
+
     def isleaf(self):
         """
         Whether or not this instance is a leaf node in the C{StringElem} tree.
