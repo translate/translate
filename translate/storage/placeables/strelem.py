@@ -178,6 +178,82 @@ class StringElem(object):
                 cp.sub.append(sub.__class__(sub))
         return cp
 
+    def delete_elem(self, elem):
+        parent = self.get_parent_elem(elem)
+        if parent is None:
+            raise ElementNotFoundError
+        parent.sub.remove(elem)
+
+    def delete_range(self, start_index, end_index):
+        """Delete the text in the range given by the string-indexes
+            C{start_index} and C{end_index}.
+            Partial nodes will only be removed if they are editable."""
+        if start_index == end_index:
+            return
+        if start_index > end_index:
+            raise IndexError('start_index > end_index')
+        if start_index < 0 or start_index > len(self):
+            raise IndexError('start_index')
+        if end_index < 1 or end_index > len(self) + 1:
+            raise IndexError('end_index')
+
+        start = self.get_index_data(start_index)
+        if isinstance(start['elem'], tuple):
+            # If {start} is "between" elements, we use the one on the "right"
+            start['elem']   = start['elem'][-1]
+            start['offset'] = start['offset'][-1]
+        end = self.get_index_data(end_index)
+        if isinstance(end['elem'], tuple):
+            # If {end} is "between" elements, we use the one on the "left"
+            end['elem']   = end['elem'][0]
+            end['offset'] = end['offset'][0]
+        assert start['elem'].isleaf() and end['elem'].isleaf()
+
+        # Ranges can be one of 3 types:
+        # 1) An entire element.
+        # 2) Restricted to a single element.
+        # 3) Spans multiple elements (start- and ending elements are not the same).
+
+        # Case 1 #
+        if start['offset'] == 0 and end['offset'] == len(start['elem']):
+            parent = self.get_parent_elem(start['elem'])
+            parent.sub.remove(start['elem'])
+            self.prune()
+            return
+
+        # Case 2 #
+        if start['elem'] is end['elem'] and start['elem'].iseditable:
+            # XXX: This might not have the expected result if start['elem'] is a StringElem sub-class instance.
+            newstr = u''.join(start['elem'].sub)
+            newstr = newstr[:start['offset']] + newstr[end['offset']:]
+            start['elem'].sub = [newstr]
+            self.prune()
+            return
+
+        # Case 3 #
+        range_nodes = self.depth_first()
+        range_nodes = range_nodes[range_nodes.index(start['elem']):range_nodes.index(end['elem'])+1]
+        assert range_nodes[0] is start['elem'] and range_nodes[-1] is end['elem']
+
+        delete_nodes = []
+        marked_nodes = [] # Contains nodes that have been marked for deletion (directly or inderectly (via parent)).
+        for node in range_nodes[1:-1]:
+            if node in marked_nodes:
+                continue
+            subtree = node.depth_first()
+            if end['elem'] not in subtree:
+                delete_nodes.append(node)
+                marked_nodes.extend(subtree) # "subtree" includes "node"
+
+        for node in delete_nodes:
+            self.delete_elem(node)
+        self.prune()
+
+        if start['elem'].iseditable:
+            start['elem'].sub = [ u''.join(start['elem'].sub)[:start['offset']] ]
+        if end['elem'].iseditable:
+            end['elem'].sub = [ u''.join(end['elem'].sub)[end['offset']:] ]
+
     def depth_first(self):
         elems = [self]
         for sub in self.sub:
@@ -252,6 +328,26 @@ class StringElem(object):
         if parent is None or criteria(parent):
             return parent
         return self.get_ancestor_where(parent, criteria)
+
+    def get_index_data(self, index):
+        """Get info about the specified range in the tree.
+            @returns: A dictionary with the following items:
+                * I{elem}: The element in which C{index} resides.
+                * I{index}: Copy of the C{index} parameter
+                * I{offset}: The offset of C{index} into C{'elem'}."""
+        info = {
+            'elem':  self.elem_at_offset(index),
+            'index': index,
+        }
+        info['offset'] = info['index'] - self.elem_offset(info['elem'])
+
+        # Check if there "index" is actually between elements
+        leftelem = self.elem_at_offset(index - 1)
+        if leftelem is not None and leftelem is not info['elem']:
+            info['elem'] = (leftelem, info['elem'])
+            info['offset'] = (len(leftelem), 0)
+
+        return info
 
     def get_parent_elem(self, child):
         """Searches the current sub-tree for and returns the parent of the
