@@ -216,9 +216,12 @@ class StringElem(object):
 
         # Case 1 #
         if start['offset'] == 0 and end['offset'] == len(start['elem']):
-            parent = self.get_parent_elem(start['elem'])
-            parent.sub.remove(start['elem'])
-            self.prune()
+            if start['elem'] is self:
+                self.sub = []
+            else:
+                parent = self.get_parent_elem(start['elem'])
+                parent.sub.remove(start['elem'])
+                self.prune()
             return unicode(start['elem'])
 
         # Case 2 #
