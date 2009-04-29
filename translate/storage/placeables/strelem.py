@@ -510,6 +510,13 @@ class StringElem(object):
                     if parent is not None:
                         parent.sub[parent.sub.index(elem)] = child
 
+            for i in reversed(range(len(elem.sub))):
+                # Remove empty StringElem nodes
+                # (but not StringElem sub-class instances, because they might contain important (non-rendered) data.
+                if type(elem.sub[i]) is StringElem and len(elem.sub[i]) == 0:
+                    del elem.sub[i]
+                    continue
+
     def translate(self):
         """Transform the sub-tree according to some class-specific needs.
             This method should be either overridden in implementing sub-classes
