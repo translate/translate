@@ -460,8 +460,15 @@ class StringElem(object):
         return True
 
     def iter_depth_first(self):
-        for elem in self.depth_first():
-            yield elem
+        yield self
+        for sub in self.sub:
+            if not isinstance(sub, StringElem):
+                continue
+            if sub.isleaf():
+                yield sub
+            else:
+                for node in sub.iter_depth_first():
+                    yield node
 
     @classmethod
     def parse(cls, pstr):
