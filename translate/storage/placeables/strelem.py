@@ -189,7 +189,7 @@ class StringElem(object):
             C{start_index} and C{end_index}.
             Partial nodes will only be removed if they are editable."""
         if start_index == end_index:
-            return
+            return ''
         if start_index > end_index:
             raise IndexError('start_index > end_index')
         if start_index < 0 or start_index > len(self):
@@ -219,16 +219,17 @@ class StringElem(object):
             parent = self.get_parent_elem(start['elem'])
             parent.sub.remove(start['elem'])
             self.prune()
-            return
+            return unicode(start['elem'])
 
         # Case 2 #
         if start['elem'] is end['elem'] and start['elem'].iseditable:
             # XXX: This might not have the expected result if start['elem'] is a StringElem sub-class instance.
             newstr = u''.join(start['elem'].sub)
+            delstr = newstr[start['offset']:end['offset']]
             newstr = newstr[:start['offset']] + newstr[end['offset']:]
             start['elem'].sub = [newstr]
             self.prune()
-            return
+            return delstr
 
         # Case 3 #
         range_nodes = self.depth_first()
@@ -245,14 +246,20 @@ class StringElem(object):
                 delete_nodes.append(node)
                 marked_nodes.extend(subtree) # "subtree" includes "node"
 
+        delstr = u''
         for node in delete_nodes:
             self.delete_elem(node)
+            delstr += unicode(node)
         self.prune()
 
         if start['elem'].iseditable:
+            delstr = u''.join(start['elem'].sub)[start['offset']:] + delstr
             start['elem'].sub = [ u''.join(start['elem'].sub)[:start['offset']] ]
         if end['elem'].iseditable:
+            delstr += u''.join(end['elem'].sub)[:end['offset']]
             end['elem'].sub = [ u''.join(end['elem'].sub)[end['offset']:] ]
+
+        return delstr
 
     def depth_first(self):
         elems = [self]
