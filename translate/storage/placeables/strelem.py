@@ -405,6 +405,8 @@ class StringElem(object):
                 oparent = self.get_ancestor_where(oelem, lambda x: x.iseditable)
                 if oparent is not None:
                     oparent.sub.insert(0, StringElem(text))
+                else:
+                    self.sub.insert(0, StringElem(text))
             return
 
         # Case 2 #
