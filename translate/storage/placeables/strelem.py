@@ -278,7 +278,7 @@ class StringElem(object):
             @returns: The string index where element C{e} starts, or -1 if C{e}
                 was not found."""
         offset = 0
-        for e in self.depth_first():
+        for e in self.iter_depth_first():
             if e is elem:
                 return offset
             if e.isleaf():
@@ -321,7 +321,7 @@ class StringElem(object):
 
     def flatten(self):
         """Flatten the tree by returning a depth-first search over the tree's leaves."""
-        return [elem for elem in self.depth_first() if elem.isleaf()]
+        return [elem for elem in self.iter_depth_first() if elem.isleaf()]
 
     def get_ancestor_where(self, child, criteria):
         parent = self.get_parent_elem(child)
@@ -352,7 +352,7 @@ class StringElem(object):
     def get_parent_elem(self, child):
         """Searches the current sub-tree for and returns the parent of the
             C{child} element."""
-        for elem in self.depth_first():
+        for elem in self.iter_depth_first():
             if not isinstance(elem, StringElem):
                 continue
             for sub in elem.sub:
@@ -495,7 +495,7 @@ class StringElem(object):
 
     def prune(self):
         """Remove unnecessary nodes not make the tree optimal."""
-        for elem in self.depth_first():
+        for elem in self.iter_depth_first():
             if len(elem.sub) == 1:
                 child = elem.sub[0]
                 # Symbolically: X->StringElem(leaf) => X(leaf)
