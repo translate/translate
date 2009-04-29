@@ -254,6 +254,7 @@ class pounit(pocommon.pounit):
 
     def settarget(self, target):
         """Sets the msgstr to the given (unescaped) value"""
+        self._rich_target = None
         if isinstance(target, str):
             target = target.decode(self._encoding)
         if self.hasplural():
