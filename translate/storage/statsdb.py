@@ -344,14 +344,10 @@ class StatsCache(object):
     create = transaction(create)
 
     def _getfileid(self, filename, check_mod_info=True, store=None):
-        """Attempt to find the fileid of the given file, if it hasn't been
-           updated since the last record update.
+        """return fileid representing the given file in the statscache.
 
-           None is returned if either the file's record is not found, or if it is
-           not up to date.
-
-           @param filename: the filename to retrieve the id for
-           @rtype: String or None
+        if file not in cache or has been updated since last record
+        update, recalculate stats.
         """
         realpath = os.path.realpath(filename)
         self.cur.execute("""SELECT fileid, st_mtime, st_size FROM files
@@ -422,10 +418,10 @@ class StatsCache(object):
         self._cacheunitstats(store.units, fileid)
         return fileid
 
-    def filetotals(self, filename):
+    def filetotals(self, filename, store=None):
         """Retrieves the statistics for the given file if possible, otherwise
         delegates to cachestore()."""
-        return self.file_totals[self._getfileid(filename)]
+        return self.file_totals[self._getfileid(filename, store=store)]
     filetotals = transaction(filetotals)
 
     def _cacheunitschecks(self, units, fileid, configid, checker, unitindex=None):
@@ -582,25 +578,32 @@ class StatsCache(object):
             WHERE fileid=? and configid=? and name=?;""", (fileid, configid, name))
         return self.cur.fetchone() is not None
     file_fails_test = transaction(file_fails_test)
-        
-    def filestats(self, filename, checker, store=None):
-        """Return a dictionary of property names mapping sets of unit
-        indices with those properties."""
-        stats = emptyfilestats()
-        stats.update(self.filechecks(filename, checker, store))
-        fileid = self._getfileid(filename, store=store)
 
+    def filestatestats(self, filename, store=None):
+        """Return a dictionary of unit stats mapping sets of unit
+        undices with those states"""
+        stats = emptyfilestats()
+        fileid = self._getfileid(filename, store=store)
+                
         self.cur.execute("""SELECT
             state,
             unitindex
             FROM units WHERE fileid=?
             ORDER BY unitindex;""", (fileid,))
-
         values = self.cur.fetchall()
+        
         for value in values:
             stats[state_strings[value[0]]].append(value[1])
             stats["total"].append(value[1])
 
+        return stats
+
+    def filestats(self, filename, checker, store=None):
+        """Return a dictionary of property names mapping sets of unit
+        indices with those properties."""
+        stats = emptyfilestats()
+        stats.update(self.filechecks(filename, checker, store))
+        stats.update(self.filestatestats(filename, store))
         return stats
     filestats = transaction(filestats)
 
