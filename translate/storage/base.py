@@ -438,11 +438,30 @@ class TranslationStore(object):
         """
         if len(getattr(self, "sourceindex", [])):
             if source in self.sourceindex:
-                return self.sourceindex[source]
+                return self.sourceindex[source][0]
         else:
             for unit in self.units:
                 if unit.source == source:
                     return unit
+        return None
+
+
+    def findunits(self, source):
+        """Finds the unit with the given source string.
+
+        @rtype: L{TranslationUnit} or None
+        """
+        if len(getattr(self, "sourceindex", [])):
+            if source in self.sourceindex:
+                return self.sourceindex[source]
+        else:
+            #FIXME: maybe we should generate index here instead since
+            #we'll scan all units anyway
+            result = []
+            for unit in self.units:
+                if unit.source == source:
+                    result.append(unit)
+            return result
         return None
 
     def translate(self, source):
@@ -462,10 +481,10 @@ class TranslationStore(object):
         self.sourceindex = {}
         for unit in self.units:
             # Do we need to test if unit.source exists?
-            self.sourceindex[unit.source] = unit
-            if unit.hasplural():
-                for nounform in unit.source.strings[1:]:
-                    self.sourceindex[nounform] = unit
+            for source in unit.source.strings:
+                if not source in self.sourceindex:
+                    self.sourceindex[source] = []
+                self.sourceindex[source].append(unit)
             for location in unit.getlocations():
                 if location in self.locationindex:
                     # if sources aren't unique, don't use them
