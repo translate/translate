@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2007 Zuza Software Foundation
+# Copyright 2007-2009 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -110,11 +110,11 @@ class Record(UserDict):
 def transaction(f):
     """Modifies f to commit database changes if it executes without exceptions.
     Otherwise it rolls back the database.
-    
+
     ALL publicly accessible methods in StatsCache MUST be decorated with this
     decorator.
     """
-    
+
     def decorated_f(self, *args, **kwargs):
         try:
             result = f(self, *args, **kwargs)
@@ -171,12 +171,12 @@ class FileTotals(object):
             if state_for_db is TRANSLATED:
                 record['translated'] = 1
                 record['translatedsourcewords'] = sourcewords
-                record['translatedtargetwords'] = targetwords                
+                record['translatedtargetwords'] = targetwords
             elif state_for_db is FUZZY:
                 record['fuzzy'] = 1
                 record['fuzzysourcewords'] = sourcewords
         return record
-        
+
     new_record = classmethod(new_record)
 
     def _compute_derived_values(cls, record):
@@ -254,7 +254,7 @@ class StatsCache(object):
             def connect(cache):
                 cache.con = dbapi2.connect(statsfile)
                 cache.cur = cache.con.cursor()
-            
+
             def clear_old_data(cache):
                 try:
                     cache.cur.execute("""SELECT toolkitbuild FROM files""")
@@ -268,7 +268,7 @@ class StatsCache(object):
                     return False
                 except dbapi2.OperationalError:
                     return False
-            
+
             cache = cls._caches[statsfile] = object.__new__(cls)
             connect(cache)
             if clear_old_data(cache):
@@ -293,11 +293,11 @@ class StatsCache(object):
         # First see if a cache for this file already exists:
         if statsfile in cls._caches:
             return cls._caches[statsfile]
-        # No existing cache. Let's build a new one and keep a copy        
+        # No existing cache. Let's build a new one and keep a copy
         return make_database(statsfile)
 
     def create(self):
-        """Create all tables and indexes."""        
+        """Create all tables and indexes."""
         self.file_totals = FileTotals(self.cur)
 
         self.cur.execute("""CREATE TABLE IF NOT EXISTS files(
@@ -523,7 +523,7 @@ class StatsCache(object):
         first, cur = geterrors()
         if first is not None:
             return first, cur
-        
+
         # This could happen if we haven't done the checks before, or the
         # file changed, or we are using a different configuration
         store = store or factory.getobject(filename)
@@ -584,14 +584,14 @@ class StatsCache(object):
         undices with those states"""
         stats = emptyfilestats()
         fileid = self._getfileid(filename, store=store)
-                
+
         self.cur.execute("""SELECT
             state,
             unitindex
             FROM units WHERE fileid=?
             ORDER BY unitindex;""", (fileid,))
         values = self.cur.fetchall()
-        
+
         for value in values:
             stats[state_strings[value[0]]].append(value[1])
             stats["total"].append(value[1])
