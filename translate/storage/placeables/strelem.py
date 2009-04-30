@@ -222,7 +222,11 @@ class StringElem(object):
             return remstr
 
         # Case 2 #
-        if start['offset'] == 0 and end['offset'] == len(start['elem']):
+        if start['elem'] is end['elem'] and start['offset'] == 0 and end['offset'] == len(start['elem']):
+            if start['elem'] is self:
+                remstr = unicode(self)
+                self.sub = []
+                return remstr
             remstr = unicode(start['elem'])
             parent = self.get_parent_elem(start['elem'])
             parent.sub.remove(start['elem'])
