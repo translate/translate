@@ -499,7 +499,7 @@ class TranslationStore(object):
 
     def __setstate__(self, dict):
         self.__dict__.update(dict)
-        if self.filename:
+        if getattr(self, "filename", False):
             self.fileobj=open(self.filename)
         
     def __str__(self):
