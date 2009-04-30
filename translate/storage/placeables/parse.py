@@ -58,7 +58,9 @@ def parse(tree, parse_funcs):
 
         subleaves = parse_func(unicode(leaf))
         if subleaves is not None:
-            if isinstance(leaf, (str, unicode)):
+            if len(subleaves) == 1 and type(leaf) is type(subleaves[0]) and leaf == subleaves[0]:
+                pass
+            elif isinstance(leaf, (str, unicode)):
                 parent = tree.get_parent_elem(leaf)
                 if parent is not None:
                     if len(parent.sub) == 1:
