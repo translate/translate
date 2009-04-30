@@ -297,6 +297,12 @@ class StringElem(object):
             if e is elem:
                 return offset
             if e.isleaf():
+                offset += len(e)
+
+        # If we can't find the same instance element, settle for one that looks like it
+        offset = 0
+        for e in self.iter_depth_first():
+            if e.isleaf():
                 leafoffset = 0
                 for s in e.sub:
                     if unicode(s) == unicode(elem):
