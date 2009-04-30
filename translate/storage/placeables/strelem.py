@@ -210,21 +210,26 @@ class StringElem(object):
         assert start['elem'].isleaf() and end['elem'].isleaf()
 
         # Ranges can be one of 3 types:
-        # 1) An entire element.
-        # 2) Restricted to a single element.
-        # 3) Spans multiple elements (start- and ending elements are not the same).
+        # 1) The entire string.
+        # 2) An entire element.
+        # 3) Restricted to a single element.
+        # 4) Spans multiple elements (start- and ending elements are not the same).
 
         # Case 1 #
-        if start['offset'] == 0 and end['offset'] == len(start['elem']):
-            if start['elem'] is self:
-                self.sub = []
-            else:
-                parent = self.get_parent_elem(start['elem'])
-                parent.sub.remove(start['elem'])
-                self.prune()
-            return unicode(start['elem'])
+        if start_index == 0 and end_index == len(self):
+            remstr = unicode(self)
+            self.sub = []
+            return remstr
 
         # Case 2 #
+        if start['offset'] == 0 and end['offset'] == len(start['elem']):
+            remstr = unicode(start['elem'])
+            parent = self.get_parent_elem(start['elem'])
+            parent.sub.remove(start['elem'])
+            self.prune()
+            return remstr
+
+        # Case 3 #
         if start['elem'] is end['elem'] and start['elem'].iseditable:
             # XXX: This might not have the expected result if start['elem'] is a StringElem sub-class instance.
             newstr = u''.join(start['elem'].sub)
@@ -234,7 +239,7 @@ class StringElem(object):
             self.prune()
             return delstr
 
-        # Case 3 #
+        # Case 4 #
         range_nodes = self.depth_first()
         range_nodes = range_nodes[range_nodes.index(start['elem']):range_nodes.index(end['elem'])+1]
         assert range_nodes[0] is start['elem'] and range_nodes[-1] is end['elem']
