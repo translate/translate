@@ -472,7 +472,17 @@ class TranslationStore(object):
                     self.locationindex[location] = None
                 else:
                     self.locationindex[location] = unit
+                    
+    def __getstate__(self):
+        odict = self.__dict__.copy()
+        odict['fileobj'] = None
+        return odict
 
+    def __setstate__(self, dict):
+        self.__dict__.update(dict)
+        if self.filename:
+            self.fileobj=open(self.filename)
+        
     def __str__(self):
         """Converts to a string representation that can be parsed back using L{parsestring()}."""
         # We can't pickle fileobj if it is there, so let's hide it for a while.
