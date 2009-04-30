@@ -491,7 +491,7 @@ class StatsCache(object):
         This method assumes that everything was up to date before (file totals,
         checks, checker config, etc."""
         fileid = self._getfileid(filename, check_mod_info=False)
-        configid = self._getstoredcheckerconfig(checker)
+        configid = self._get_config_id(fileid, checker)
         unitid = unit.getid()
         # get the unit index
         totals_without_unit = self.file_totals[fileid] - \
