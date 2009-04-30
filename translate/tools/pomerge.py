@@ -47,9 +47,7 @@ def mergestores(store1, store2, mergeblanks, mergecomments):
         entities = unit2.getlocations()
         if len(entities) == 0:
             source = unit2.source
-            unit1 = None
-            if source in store1.sourceindex:
-                unit1 = store1.sourceindex[source]
+            unit1 = store1.findunit(source)
             if unit1 is None:
                 sys.stderr.write(str(unit2) + "\n")
             else:
@@ -64,11 +62,10 @@ def mergestores(store1, store2, mergeblanks, mergecomments):
             if store2.locationindex.has_key(entity):
                 if store2.locationindex[entity] is None:
                     unit1 = None
-            # if locationindex was not unique, use the sourceindex
+            # if locationindex was not unique, use the source index
             if unit1 is None:
                 source = unit2.source
-                if source in store1.sourceindex:
-                    unit1 = store1.sourceindex[source]
+                unit1 = store1.findunit(source)
             # check if we found a matching po element
             if unit1 is None:
                 print >> sys.stderr, "# the following po element was not found"
