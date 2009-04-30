@@ -383,7 +383,9 @@ class TranslationStore(object):
     """A list of file extentions associated with this store type"""
     _binary = False
     """Indicates whether a file should be accessed as a binary file."""
-
+    suggestions_in_format = False
+    """Indicates if format can store suggestions and alternative translation for a unit"""
+    
     def __init__(self, unitclass=None):
         """Constructs a blank TranslationStore."""
         self.units = []

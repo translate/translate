@@ -363,7 +363,9 @@ class xlifffile(lisa.LISAfile):
 </file>
 </xliff>'''
     namespace = 'urn:oasis:names:tc:xliff:document:1.1'
-
+    suggestions_in_format = True
+    """xliff units have alttrans tags which can be used to store suggestions"""
+    
     def __init__(self, *args, **kwargs):
         lisa.LISAfile.__init__(self, *args, **kwargs)
         self._filename = "NoName"
