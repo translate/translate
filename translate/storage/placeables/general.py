@@ -103,17 +103,6 @@ class XMLEntityPlaceable(Ph):
     parse = classmethod(regex_parse)
 
 
-# Not there yet...
-#class TerminologyPlaceable(StringElem):
-#    @classmethod
-#    def parse(cls, pstr):
-#        for word in self.terminology:
-#            if pstr.startswith(word):
-#                placeable = cls([pstr[:len(word)]])
-#                placeable.translate = lambda: self.terminology[word]
-#                return placeable
-
-
 class XMLTagPlaceable(Ph):
     """Placeable handling XML tags."""
 
