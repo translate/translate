@@ -76,7 +76,7 @@ class UrlPlaceable(Ph):
 class FilePlaceable(Ph):
     """Placeable handling file locations."""
 
-    regex = re.compile("(~/|/|\\./)([-A-Za-z0-9_\\$\\.\\+\\!\\*\\(\\),;:@&=\\?/~\\#\\%]|\\\\)+"),
+    regex = re.compile("(~/|/|\\./)([-A-Za-z0-9_\\$\\.\\+\\!\\*\\(\\),;:@&=\\?/~\\#\\%]|\\\\)+")
     parse = classmethod(regex_parse)
 
 
