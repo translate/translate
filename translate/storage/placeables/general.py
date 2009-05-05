@@ -64,6 +64,29 @@ class FormattingPlaceable(Ph):
     parse = classmethod(regex_parse)
 
 
+class UrlPlaceable(Ph):
+    """Placeable handling URI."""
+
+    regex = re.compile(r"([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}|(((news|telnet|nttp|file|http|ftp|https)://)|(www|ftp)[-A-Za-z0-9]*\\.)[-A-Za-z0-9\\.]+)(:[0-9]*)?")
+    # This one ismore complex and handles trailing paths, ideally these should be combined.
+    #regex = re.compile(r"([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}|(((news|telnet|nttp|file|http|ftp|https)://)|(www|ftp)[-A-Za-z0-9]*\\.)[-A-Za-z0-9\\.]+)(:[0-9]*)?/[-A-Za-z0-9_\\$\\.\\+\\!\\*\\(\\),;:@&=\\?/~\\#\\%]*[^]'\\.}>\\),\\\"]")
+    parse = classmethod(regex_parse)
+
+
+class FilePlaceable(Ph):
+    """Placeable handling file locations."""
+
+    regex = re.compile("(~/|/|\\./)([-A-Za-z0-9_\\$\\.\\+\\!\\*\\(\\),;:@&=\\?/~\\#\\%]|\\\\)+"),
+    parse = classmethod(regex_parse)
+
+
+class EmailPlaceable(Ph):
+    """Placeable handling emails."""
+
+    regex = re.compile("((mailto:)|)[-A-Za-z0-9\\.]+@[-A-Za-z0-9\\.]+")
+    parse = classmethod(regex_parse)
+
+
 class PunctuationPlaceable(Ph):
     """Placeable handling punctuation."""
 
@@ -99,7 +122,7 @@ class XMLTagPlaceable(Ph):
     parse = classmethod(regex_parse)
 
 
-def to_general_placeables(tree, classmap={G: (AltAttrPlaceable,), Ph: (XMLEntityPlaceable, XMLTagPlaceable, PunctuationPlaceable)}):
+def to_general_placeables(tree, classmap={G: (AltAttrPlaceable,), Ph: (XMLEntityPlaceable, XMLTagPlaceable, UrlPlaceable, FilePlaceable, EmailPlaceable, PunctuationPlaceable)}):
     if not isinstance(tree, StringElem):
         return tree
 
@@ -129,5 +152,8 @@ parsers = [
     AltAttrPlaceable.parse,
     XMLEntityPlaceable.parse,
     FormattingPlaceable.parse,
+    UrlPlaceable.parse,
+    FilePlaceable.parse,
+    EmailPlaceable.parse,
     PunctuationPlaceable.parse,
 ]
