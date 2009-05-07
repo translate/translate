@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # 
-# Copyright 2002-2008 Zuza Software Foundation
+# Copyright 2002-2009 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
@@ -65,11 +65,9 @@ def applytranslation(entity, dtdunit, inputunit, mixedentities):
                         warnings.warn("Could not find accesskey for %s" % entity)
                     else:
                         original = dtd.unquotefromdtd(dtdunit.definition)
-                        # We will make the case the same as the original for
-                        # the sake of diffs, but we really shouldn't, since
-                        # case actually matters if both upper and lower case
-                        # forms of a letter exists in the string. We should
-                        # eventually remove this and use unquotedstr as is.
+                        # For the sake of diffs we keep the case of the
+                        # accesskey the same if we know the translation didn't
+                        # change. Casing matters in XUL.
                         if unquotedstr == dtdunit.source and original.lower() == unquotedstr.lower():
                             if original.isupper():
                                 unquotedstr = unquotedstr.upper()
@@ -127,7 +125,7 @@ class po2dtd:
         if msgidcomment:
             locnote = quote.unstripcomment("LOCALIZATION NOTE ("+dtdunit.entity+"): "+msgidcomment)
             dtdunit.comments.append(("locnote", locnote))
-             
+
 
     def convertstrings(self, inputunit, dtdunit):
         if inputunit.istranslated():
