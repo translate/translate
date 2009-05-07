@@ -92,6 +92,13 @@ class TestPO2DTD:
 
     def test_accesskeycase(self):
         """tests that access keys come out with the same case as the original, regardless"""
+        # TODO: Review the correctness of this, since case can matter.
+
+        # This affects diffs in an untranslated round trip (the English should
+        # remain unchanged). However, this means that we might incorrectly
+        # associate the accelerator with an upper/lower case variant of the
+        # chosen key if it happens to be present in the translation. Perhaps
+        # we should only change case if it is the same key as the source text.
         simplepo_template = '''#: simple.label\n#: simple.accesskey\nmsgid "Simple &%s"\nmsgstr "Dimpled &%s"\n'''
         simpledtd_template = '''<!ENTITY simple.label "Simple %s">\n<!ENTITY simple.accesskey "%s">'''
         # we test each combination of label case and accelerator case
