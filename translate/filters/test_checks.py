@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from translate.filters import checks
 from translate.lang import data
-from translate.storage import po 
+from translate.storage import po
 
 def strprep(str1, str2, message=None):
     return data.normalized_unicode(str1), data.normalized_unicode(str2), data.normalized_unicode(message)
@@ -81,37 +81,37 @@ def test_messages():
     assert fails(stdchecker.validchars, "Some unexpected characters", "©", "invalid chars: '©' (\\u00a9)")
     stdchecker = checks.StandardChecker()
     assert fails_serious(stdchecker.escapes, r"A tab", r"'n Ṱab\t", r"""escapes in original () don't match escapes in translation ('Ṱab\t')""")
-    
+
 def test_accelerators():
     """tests accelerators"""
     stdchecker = checks.StandardChecker(checks.CheckerConfig(accelmarkers="&"))
-    assert passes(stdchecker.accelerators, "&File", "&Fayile") 
-    assert fails(stdchecker.accelerators, "&File", "Fayile") 
-    assert fails(stdchecker.accelerators, "File", "&Fayile") 
-    assert passes(stdchecker.accelerators, "Mail && News", "Pos en Nuus") 
-    assert fails(stdchecker.accelerators, "Mail &amp; News", "Pos en Nuus") 
+    assert passes(stdchecker.accelerators, "&File", "&Fayile")
+    assert fails(stdchecker.accelerators, "&File", "Fayile")
+    assert fails(stdchecker.accelerators, "File", "&Fayile")
+    assert passes(stdchecker.accelerators, "Mail && News", "Pos en Nuus")
+    assert fails(stdchecker.accelerators, "Mail &amp; News", "Pos en Nuus")
     assert passes(stdchecker.accelerators, "&Allow", u'&\ufeb2\ufee3\ufe8e\ufea3')
-    assert fails(stdchecker.accelerators, "Open &File", "Vula& Ifayile") 
+    assert fails(stdchecker.accelerators, "Open &File", "Vula& Ifayile")
     kdechecker = checks.KdeChecker()
-    assert passes(kdechecker.accelerators, "&File", "&Fayile") 
-    assert fails(kdechecker.accelerators, "&File", "Fayile") 
-    assert fails(kdechecker.accelerators, "File", "&Fayile") 
+    assert passes(kdechecker.accelerators, "&File", "&Fayile")
+    assert fails(kdechecker.accelerators, "&File", "Fayile")
+    assert fails(kdechecker.accelerators, "File", "&Fayile")
     gnomechecker = checks.GnomeChecker()
-    assert passes(gnomechecker.accelerators, "_File", "_Fayile") 
-    assert fails(gnomechecker.accelerators, "_File", "Fayile") 
-    assert fails(gnomechecker.accelerators, "File", "_Fayile") 
-    assert fails(gnomechecker.accelerators, "_File", "_Fayil_e") 
+    assert passes(gnomechecker.accelerators, "_File", "_Fayile")
+    assert fails(gnomechecker.accelerators, "_File", "Fayile")
+    assert fails(gnomechecker.accelerators, "File", "_Fayile")
+    assert fails(gnomechecker.accelerators, "_File", "_Fayil_e")
     mozillachecker = checks.MozillaChecker()
-    assert passes(mozillachecker.accelerators, "&File", "&Fayile") 
-    assert fails_serious(mozillachecker.accelerators, "&File", "Fayile") 
-    assert fails_serious(mozillachecker.accelerators, "File", "&Fayile") 
-    assert passes(mozillachecker.accelerators, "Mail &amp; News", "Pos en Nuus") 
-    assert fails_serious(mozillachecker.accelerators, "Mail &amp; News", "Pos en &Nuus") 
-    assert fails_serious(mozillachecker.accelerators, "&File", "Fayile") 
+    assert passes(mozillachecker.accelerators, "&File", "&Fayile")
+    assert fails_serious(mozillachecker.accelerators, "&File", "Fayile")
+    assert fails_serious(mozillachecker.accelerators, "File", "&Fayile")
+    assert passes(mozillachecker.accelerators, "Mail &amp; News", "Pos en Nuus")
+    assert fails_serious(mozillachecker.accelerators, "Mail &amp; News", "Pos en &Nuus")
+    assert fails_serious(mozillachecker.accelerators, "&File", "Fayile")
     ooochecker = checks.OpenOfficeChecker()
-    assert passes(ooochecker.accelerators, "~File", "~Fayile") 
-    assert fails(ooochecker.accelerators, "~File", "Fayile") 
-    assert fails(ooochecker.accelerators, "File", "~Fayile") 
+    assert passes(ooochecker.accelerators, "~File", "~Fayile")
+    assert fails(ooochecker.accelerators, "~File", "Fayile")
+    assert fails(ooochecker.accelerators, "File", "~Fayile")
 
     # We don't want an accelerator for letters with a diacritic
     assert fails(ooochecker.accelerators, "F~ile", "L~êer")
@@ -130,7 +130,6 @@ def xtest_acceleratedvariables():
     ooochecker = checks.OpenOfficeChecker()
     assert fails(ooochecker.acceleratedvariables, "%PRODUCTNAME% ~Options", "~%PRODUCTNAME% Ikhetho")
     assert passes(ooochecker.acceleratedvariables, "%PRODUCTNAME% ~Options", "%PRODUCTNAME% ~Ikhetho")
-    
 
 def test_acronyms():
     """tests acronyms"""
@@ -186,10 +185,10 @@ def test_doublequoting():
     assert fails(frchecker.doublequoting, "Do \"this\"", "Do \"this\"")
     assert passes(frchecker.doublequoting, "Do \"this\"", "Do « this »")
     assert fails(frchecker.doublequoting, "Do \"this\"", "Do « this » « this »")
-    
+
     vichecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="vi"))
     assert passes(vichecker.doublequoting, 'Save "File"', u"Lưu « Tập tin »")
-    
+
 def test_doublespacing():
     """tests double spacing"""
     stdchecker = checks.StandardChecker()
@@ -296,7 +295,7 @@ def test_filepaths():
     stdchecker = checks.StandardChecker()
     assert passes(stdchecker.filepaths, "%s to the file /etc/hosts on your system.", "%s na die leer /etc/hosts op jou systeem.")
     assert fails(stdchecker.filepaths, "%s to the file /etc/hosts on your system.", "%s na die leer /etc/gasheer op jou systeem.")
-    
+
 def test_kdecomments():
     """tests kdecomments"""
     stdchecker = checks.StandardChecker()
@@ -613,21 +612,21 @@ def test_startwhitespace():
 def test_unchanged():
     """tests unchanged entries"""
     stdchecker = checks.StandardChecker(checks.CheckerConfig(accelmarkers="&"))
-    assert fails(stdchecker.unchanged, "Unchanged", "Unchanged") 
-    assert fails(stdchecker.unchanged, "&Unchanged", "Un&changed") 
-    assert passes(stdchecker.unchanged, "Unchanged", "Changed") 
-    assert passes(stdchecker.unchanged, "1234", "1234") 
+    assert fails(stdchecker.unchanged, "Unchanged", "Unchanged")
+    assert fails(stdchecker.unchanged, "&Unchanged", "Un&changed")
+    assert passes(stdchecker.unchanged, "Unchanged", "Changed")
+    assert passes(stdchecker.unchanged, "1234", "1234")
     assert passes(stdchecker.unchanged, "2×2", "2×2") # bug 178, description item 14
-    assert passes(stdchecker.unchanged, "I", "I") 
+    assert passes(stdchecker.unchanged, "I", "I")
     assert passes(stdchecker.unchanged, "   ", "   ")  # bug 178, description item 5
     assert passes(stdchecker.unchanged, "???", "???")  # bug 178, description item 15
     assert passes(stdchecker.unchanged, "&ACRONYM", "&ACRONYM") # bug 178, description item 7
     assert passes(stdchecker.unchanged, "F1", "F1") # bug 178, description item 20
     # Variable only and variable plus punctuation messages should be ignored
     mozillachecker = checks.MozillaChecker()
-    assert passes(mozillachecker.unchanged, "$ProgramName$", "$ProgramName$") 
+    assert passes(mozillachecker.unchanged, "$ProgramName$", "$ProgramName$")
     assert passes(mozillachecker.unchanged, "$file$ : $dir$", "$file$ : $dir$") # bug 178, description item 13
-    assert fails(mozillachecker.unchanged, "$file$ in $dir$", "$file$ in $dir$") 
+    assert fails(mozillachecker.unchanged, "$file$ in $dir$", "$file$ in $dir$")
     # Don't translate words should be ignored
     stdchecker = checks.StandardChecker(checks.CheckerConfig(notranslatewords=["Mozilla"]))
     assert passes(stdchecker.unchanged, "Mozilla", "Mozilla") # bug 178, description item 10
@@ -874,27 +873,27 @@ def test_nplurals():
 def test_credits():
     """tests credits"""
     stdchecker = checks.StandardChecker()
-    assert passes(stdchecker.credits, "File", "iFayile") 
-    assert passes(stdchecker.credits, "&File", "&Fayile") 
-    assert passes(stdchecker.credits, "translator-credits", "Ekke, ekke!") 
-    assert passes(stdchecker.credits, "Your names", "Ekke, ekke!") 
-    assert passes(stdchecker.credits, "ROLES_OF_TRANSLATORS", "Ekke, ekke!") 
+    assert passes(stdchecker.credits, "File", "iFayile")
+    assert passes(stdchecker.credits, "&File", "&Fayile")
+    assert passes(stdchecker.credits, "translator-credits", "Ekke, ekke!")
+    assert passes(stdchecker.credits, "Your names", "Ekke, ekke!")
+    assert passes(stdchecker.credits, "ROLES_OF_TRANSLATORS", "Ekke, ekke!")
     kdechecker = checks.KdeChecker()
-    assert passes(kdechecker.credits, "File", "iFayile") 
-    assert passes(kdechecker.credits, "&File", "&Fayile") 
-    assert passes(kdechecker.credits, "translator-credits", "Ekke, ekke!") 
-    assert fails(kdechecker.credits, "Your names", "Ekke, ekke!") 
-    assert fails(kdechecker.credits, "ROLES_OF_TRANSLATORS", "Ekke, ekke!") 
+    assert passes(kdechecker.credits, "File", "iFayile")
+    assert passes(kdechecker.credits, "&File", "&Fayile")
+    assert passes(kdechecker.credits, "translator-credits", "Ekke, ekke!")
+    assert fails(kdechecker.credits, "Your names", "Ekke, ekke!")
+    assert fails(kdechecker.credits, "ROLES_OF_TRANSLATORS", "Ekke, ekke!")
     gnomechecker = checks.GnomeChecker()
-    assert passes(gnomechecker.credits, "File", "iFayile") 
-    assert passes(gnomechecker.credits, "&File", "&Fayile") 
-    assert fails(gnomechecker.credits, "translator-credits", "Ekke, ekke!") 
-    assert passes(gnomechecker.credits, "Your names", "Ekke, ekke!") 
-    assert passes(gnomechecker.credits, "ROLES_OF_TRANSLATORS", "Ekke, ekke!") 
+    assert passes(gnomechecker.credits, "File", "iFayile")
+    assert passes(gnomechecker.credits, "&File", "&Fayile")
+    assert fails(gnomechecker.credits, "translator-credits", "Ekke, ekke!")
+    assert passes(gnomechecker.credits, "Your names", "Ekke, ekke!")
+    assert passes(gnomechecker.credits, "ROLES_OF_TRANSLATORS", "Ekke, ekke!")
 
 def test_gconf():
     """test GNOME gconf errors"""
     gnomechecker = checks.GnomeChecker()
     assert passes(gnomechecker.gconf, 'Blah "gconf_setting"', 'Bleh "gconf_setting"')
-    assert fails(gnomechecker.gconf, 'Blah "gconf_setting"', 'Bleh "gconf_steling"') 
-    
+    assert fails(gnomechecker.gconf, 'Blah "gconf_setting"', 'Bleh "gconf_steling"')
+
