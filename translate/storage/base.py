@@ -483,10 +483,16 @@ class TranslationStore(object):
         self.sourceindex = {}
         for unit in self.units:
             # Do we need to test if unit.source exists?
-            for source in unit.source.strings:
-                if not source in self.sourceindex:
-                    self.sourceindex[source] = []
-                self.sourceindex[source].append(unit)
+            if unit.hasplural():
+                for source in unit.source.strings:
+                    if not source in self.sourceindex:
+                        self.sourceindex[source] = []
+                    self.sourceindex[source].append(unit)
+            else:
+                if not unit.source in self.sourceindex:
+                    self.sourceindex[unit.source] = []
+                self.sourceindex[unit.source].append(unit)
+                
             for location in unit.getlocations():
                 if location in self.locationindex:
                     # if sources aren't unique, don't use them
