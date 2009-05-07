@@ -24,7 +24,7 @@
 DEFAULT_ACCESSKEY_MARKER = u"&"
 
 def extract(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
-    """Extract the label and accesskey form a label+accesskey string
+    """Extract the label and accesskey from a label+accesskey string
 
     The function will also try to ignore &entities; which would obviously not
     contain accesskeys.
@@ -59,8 +59,8 @@ def combine(label, accesskey,
             accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
     """Combine a label and and accesskey to form a label+accesskey string
 
-    We place an accesskey marker before the accesskey in the label and this create a string
-    with the two combined e.g. "File" + "F" = "&File"
+    We place an accesskey marker before the accesskey in the label and this creates a 
+    string with the two combined e.g. "File" + "F" = "&File"
 
     @type label: unicode
     @param label: a label
