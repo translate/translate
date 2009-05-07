@@ -79,8 +79,8 @@ class pocheckfilter:
         Return value:
             - A new translation store object with the results of the filter included."""
         newtransfile = type(transfile)()
-        newtransfile.setsourcelanguage(transfile.sourcelanguage)
-        newtransfile.settargetlanguage(transfile.targetlanguage)
+        if self.options.includeheader and newtransfile.units > 0:
+            newtransfile.addunit(transfile.header())
         for unit in transfile.units:
             filterresult = self.filterunit(unit)
             if filterresult:
@@ -91,9 +91,6 @@ class pocheckfilter:
                         if isinstance(filtermessage, checks.SeriousFilterFailure):
                             unit.markfuzzy()
                 newtransfile.addunit(unit)
-        if self.options.includeheader and newtransfile.units > 0:
-            newtransfile.units.insert(0, newtransfile.makeheader())
-            newtransfile.changeencoding("UTF-8")
         return newtransfile
 
 class FilterOptionParser(optrecurse.RecursiveOptionParser):
