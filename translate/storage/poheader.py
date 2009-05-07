@@ -1,23 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
-# Copyright 2002-2006 Zuza Software Foundation
-# 
-# This file is part of translate.
 #
-# translate is free software; you can redistribute it and/or modify
+# Copyright 2002-2009 Zuza Software Foundation
+#
+# This file is part of the Translate Toolkit.
+#
+# This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
-# translate is distributed in the hope that it will be useful,
+#
+# This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with translate; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 """class that handles all header functions for a header in a po file"""
 
@@ -29,8 +28,8 @@ import time
 author_re = re.compile(r".*<\S+@\S+>.*\d{4,4}")
 
 def parseheaderstring(input):
-    """Parses an input string with the definition of a PO header and returns 
-    the interpreted values as a dictionary"""
+    """Parses an input string with the definition of a PO header and returns
+    the interpreted values as a dictionary."""
     headervalues = dictutils.ordereddict()
     for line in input.split("\n"):
         if not line or ":" not in line:
@@ -42,7 +41,9 @@ def parseheaderstring(input):
     return headervalues
 
 def tzstring():
-    """Returns the timezone as a string in the format [+-]0000, eg +0200."""
+    """Returns the timezone as a string in the format [+-]0000, eg +0200.
+
+    @rtype: str"""
     if time.daylight:
         tzoffset = time.altzone
     else:
@@ -55,8 +56,8 @@ def tzstring():
     return tz
 
 def update(existing, add=False, **kwargs):
-    """Update an existing header dictionary with the values in kwargs, adding new values 
-    only if add is true. 
+    """Update an existing header dictionary with the values in kwargs, adding new values
+    only if add is true.
 
     @return: Updated dictionary of header entries
     @rtype: dict
@@ -109,11 +110,23 @@ class poheader(object):
         "X-Generator",
         ]
 
+    def makeheaderdict(self,
+            charset="CHARSET",
+            encoding="ENCODING",
+            project_id_version=None,
+            pot_creation_date=None,
+            po_revision_date=None,
+            last_translator=None,
+            language_team=None,
+            mime_version=None,
+            plural_forms=None,
+            report_msgid_bugs_to=None,
+            **kwargs):
+        """Create a header dictionary with useful defaults.
 
-    def makeheaderdict(self, charset="CHARSET", encoding="ENCODING", project_id_version=None, pot_creation_date=None, po_revision_date=None, last_translator=None, language_team=None, mime_version=None, plural_forms=None, report_msgid_bugs_to=None, **kwargs):
-        """create a header for the given filename. arguments are specially handled, kwargs added as key: value
         pot_creation_date can be None (current date) or a value (datetime or string)
-        po_revision_date can be None (form), False (=pot_creation_date), True (=now), or a value (datetime or string)
+        po_revision_date can be None (form), False (=pot_creation_date), True (=now),
+        or a value (datetime or string)
 
         @return: Dictionary with the header items
         @rtype: dict
@@ -170,16 +183,17 @@ class poheader(object):
             return None
 
     def parseheader(self):
-        """Parses the PO header and returns 
-        the interpreted values as a dictionary"""
+        """Parses the PO header and returns the interpreted values as a
+        dictionary."""
         header = self.header()
         if not header:
             return {}
         return parseheaderstring(header.target)
 
     def updateheader(self, add=False, **kwargs):
-        """Updates the fields in the PO style header. 
-        This will create a header if add == True"""
+        """Updates the fields in the PO style header.
+
+        This will create a header if add == True."""
         header = self.header()
         if not header:
             # FIXME: does not work for xliff files yet
@@ -202,7 +216,7 @@ class poheader(object):
         return header
 
     def getheaderplural(self):
-        """returns the nplural and plural values from the header"""
+        """Returns the nplural and plural values from the header."""
         header = self.parseheader()
         pluralformvalue = header.get('Plural-Forms', None)
         if pluralformvalue is None:
@@ -220,12 +234,15 @@ class poheader(object):
         return nplural, plural
 
     def updateheaderplural(self, nplurals, plural):
-        """update the Plural-Form PO header"""
+        """Update the Plural-Form PO header."""
         if isinstance(nplurals, basestring):
             nplurals = int(nplurals)
         self.updateheader(add=True, Plural_Forms = "nplurals=%d; plural=%s;" % (nplurals, plural) )
 
     def gettargetlanguage(self):
+        """Return the target language if specified in the header.
+
+        Some attempt at understanding Poedit's custom headers is done."""
         header = self.parseheader()
         if 'X-Poedit-Language' in header:
             from translate.lang import poedit
@@ -235,16 +252,22 @@ class poheader(object):
         return header.get('Language')
 
     def settargetlanguage(self, lang):
+        """Set the target language in the header.
+
+        This removes any custom Poedit headers if they exist.
+
+        @param lang: the new target language code
+        @type lang: str
+        """
         if isinstance(lang, basestring) and len(lang) > 1:
             self.updateheader(add=True, Language=lang, X_Poedit_Language=None, X_Poedit_Country=None)
 
     def mergeheaders(self, otherstore):
         """Merges another header with this header.
-        
+
         This header is assumed to be the template.
-        
+
         @type otherstore: L{base.TranslationStore}
-        
         """
 
         newvalues = otherstore.parseheader()
@@ -314,14 +337,11 @@ class poheader(object):
         header.addnote("\n".join(contriblines))
         header.addnote("\n".join(postlines))
 
-
     def makeheader(self, **kwargs):
-        """create a header for the given filename. arguments are specially handled, kwargs added as key: value
-        pot_creation_date can be None (current date) or a value (datetime or string)
-        po_revision_date can be None (form), False (=pot_creation_date), True (=now), or a value (datetime or string)"""
+        """Create a header for the given filename.
 
+        Check .makeheaderdict() for information on parameters."""
         headerpo = self.UnitClass(encoding=self._encoding)
-            
         headerpo.markfuzzy()
         headerpo.source = ""
         headeritems = self.makeheaderdict(**kwargs)
