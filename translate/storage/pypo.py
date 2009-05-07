@@ -708,7 +708,12 @@ class pofile(pocommon.pofile):
             self.parse(inputfile)
 
     def changeencoding(self, newencoding):
-        """changes the encoding on the file"""
+        """Deprecated: changes the encoding on the file."""
+        # This should not be here but in poheader. It also shouldn't mangle the
+        # header itself, but use poheader methods. All users are removed, so
+        # we can deprecate after one release.
+        raise DeprecationWarning
+
         self._encoding = encodingToUse(newencoding)
         if not self.units:
             return
