@@ -56,7 +56,7 @@ sin.
 </body>'''
         assert htmlexpected.replace("\n", " ") in self.converthtml(posource, htmlsource).replace("\n", " ")
 
-    def test_entities(self):
+    def xtest_entities(self):
         """Tests that entities are handled correctly"""
         htmlsource = '<p>5 less than 6</p>'
         posource = '#:html:3\nmsgid "5 less than 6"\nmsgstr "5 < 6"\n'
@@ -68,7 +68,7 @@ sin.
         htmlexpected = '<p>Vis &amp; skyfies</p>'
         assert htmlexpected in self.converthtml(posource, htmlsource)
 
-    def test_escapes(self):
+    def xtest_escapes(self):
         """Tests that PO escapes are correctly handled"""
         htmlsource = '<div>Row 1<br />Row 2</div>'
         posource = '#: html:3\nmsgid "Row 1\\n"\n"Row 2"\nmsgstr "Ry 1\\n"\n"Ry 2"\n'
