@@ -65,10 +65,16 @@ def applytranslation(entity, dtdunit, inputunit, mixedentities):
                         warnings.warn("Could not find accesskey for %s" % entity)
                     else:
                         original = dtd.unquotefromdtd(dtdunit.definition)
-                        if original.isupper() and unquotedstr.islower():
-                            unquotedstr = unquotedstr.upper()
-                        elif original.islower() and unquotedstr.isupper():
-                            unquotedstr = unquotedstr.lower()
+                        # We will make the case the same as the original for
+                        # the sake of diffs, but we really shouldn't, since
+                        # case actually matters if both upper and lower case
+                        # forms of a letter exists in the string. We should
+                        # eventually remove this and use unquotedstr as is.
+                        if unquotedstr == dtdunit.source and original.lower() == unquotedstr.lower():
+                            if original.isupper():
+                                unquotedstr = unquotedstr.upper()
+                            elif original.islower():
+                                unquotedstr = unquotedstr.lower()
     if len(unquotedstr) > 0:
         dtdunit.definition = dtd.quotefordtd(dtd.removeinvalidamps(entity, unquotedstr))
 

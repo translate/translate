@@ -92,25 +92,27 @@ class TestPO2DTD:
 
     def test_accesskeycase(self):
         """tests that access keys come out with the same case as the original, regardless"""
-        # TODO: Review the correctness of this, since case can matter.
-
-        # This affects diffs in an untranslated round trip (the English should
-        # remain unchanged). However, this means that we might incorrectly
-        # associate the accelerator with an upper/lower case variant of the
-        # chosen key if it happens to be present in the translation. Perhaps
-        # we should only change case if it is the same key as the source text.
-        simplepo_template = '''#: simple.label\n#: simple.accesskey\nmsgid "Simple &%s"\nmsgstr "Dimpled &%s"\n'''
+        simplepo_template = '''#: simple.label\n#: simple.accesskey\nmsgid "%s"\nmsgstr "%s"\n'''
         simpledtd_template = '''<!ENTITY simple.label "Simple %s">\n<!ENTITY simple.accesskey "%s">'''
-        # we test each combination of label case and accelerator case
-        for srcword in ("String", "string"):
-            for destword in ("Ring", "ring"):
-                for srcaccel, destaccel in ("SR", "sr"):
-                    simplepo = simplepo_template % (srcword, destword)
-                    simpledtd = simpledtd_template % (srcword, srcaccel)
-                    dtdfile = self.merge2dtd(simpledtd, simplepo)
-                    dtdfile.makeindex()
-                    accel = dtd.unquotefromdtd(dtdfile.index["simple.accesskey"].definition)
-                    assert accel == destaccel
+        possibilities = [
+                #(en label, en akey, en po, af po, af label, expected af akey)
+                ("Sis", "S", "&Sis", "&Sies", "Sies", "S"),
+                ("Sis", "s", "Si&s", "&Sies", "Sies", "S"),
+                ("Sis", "S", "&Sis", "Sie&s", "Sies", "s"),
+                ("Sis", "s", "Si&s", "Sie&s", "Sies", "s"),
+                # untranslated strings should have the casing of the source
+                ("Sis", "S", "&Sis", "", "Sis", "S"),
+                ("Sis", "s", "Si&s", "", "Sis", "s"),
+                ("Suck", "S", "&Suck", "", "Suck", "S"),
+                ("Suck", "s", "&Suck", "", "Suck", "s"),
+                ]
+        for (en_label, en_akey, po_source, po_target, target_label, target_akey) in possibilities:
+            simplepo = simplepo_template % (po_source, po_target)
+            simpledtd = simpledtd_template % (en_label, en_akey)
+            dtdfile = self.merge2dtd(simpledtd, simplepo)
+            dtdfile.makeindex()
+            accel = dtd.unquotefromdtd(dtdfile.index["simple.accesskey"].definition)
+            assert accel == target_akey
 
     def test_accesskey_types(self):
         """tests that we can detect the various styles of accesskey"""
