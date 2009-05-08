@@ -191,7 +191,11 @@ class GenericRevisionControlSystem:
           - the absolute path of the RCS object
           - the relative path of the RCS object based on the directory above
         """
-        rcs_obj_dir = os.path.dirname(os.path.abspath(rcs_obj))
+        if os.path.isdir(os.path.abspath(rcs_obj)):
+            rcs_obj_dir = os.path.abspath(rcs_obj)
+        else:
+            rcs_obj_dir = os.path.dirname(os.path.abspath(rcs_obj))
+            
         if os.path.isdir(os.path.join(rcs_obj_dir, self.RCS_METADIR)):
             # is there a metadir next to the rcs_obj?
             # (for Subversion, CVS, ...)
