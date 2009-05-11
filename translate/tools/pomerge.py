@@ -127,9 +127,9 @@ def main():
                 ("xlf", "po"): pooutput, ("xlf", "pot"): pooutput,
                 ("xlf", "xlf"): xliffoutput, ("po", "xlf"): xliffoutput}
     mergeblanksoption = convert.optparse.Option("", "--mergeblanks", dest="mergeblanks",
-        action="store", default="yes", help="whether to overwrite existing translations with blank translations (yes/no)")
+        action="store", default="yes", help="whether to overwrite existing translations with blank translations (yes/no). Default is yes.")
     mergecommentsoption = convert.optparse.Option("", "--mergecomments", dest="mergecomments",
-        action="store", default="yes", help="whether to merge comments as well as translations (yes/no)")
+        action="store", default="yes", help="whether to merge comments as well as translations (yes/no). Default is yes.")
     parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
     parser.add_option(mergeblanksoption)
     parser.passthrough.append("mergeblanks")
