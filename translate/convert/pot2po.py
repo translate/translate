@@ -53,6 +53,7 @@ def convert_stores(input_store, template_store, tm=None, min_similarity=75, fuzz
     output_store = type(input_store)()
     #create fuzzy matchers to be used by pretranslate.pretranslate_unit
     matchers = []
+    _prepare_merge(input_store, output_store, template_store)
     if fuzzymatching:
         if template_store:
             matcher = match.matcher(template_store, max_candidates=1, min_similarity=min_similarity, max_length=3000, usefuzzy=True)
@@ -62,7 +63,6 @@ def convert_stores(input_store, template_store, tm=None, min_similarity=75, fuzz
             matcher = pretranslate.memory(tm, max_candidates=1, min_similarity=min_similarity, max_length=1000)
             matcher.addpercentage = False
             matchers.append(matcher)
-    _prepare_merge(input_store, output_store, template_store)
 
     #initialize store
     _store_pre_merge(input_store, output_store, template_store)
