@@ -56,6 +56,32 @@ class AltAttrPlaceable(G):
     parse = classmethod(regex_parse)
 
 
+class NumberPlaceable(Ph):
+    """Placeable for numbers."""
+
+    regex = re.compile(r"[0-9]*([\.,][0-9]+)?")
+    parse = classmethod(regex_parse)
+
+
+class PythonFormattingPlaceable(Ph):
+    """Placeable representing a Python string formatting variable.
+
+    Implemented following Python documentation on L{String Formatting Operations<http://www.python.org/doc/2.2.1/lib/typesseq-strings.html>}"""
+
+    iseditable = False
+    # Need to correctly define a python identifier.
+    regex = re.compile(r"""(?x)
+                       %                     # Start of formatting specifier
+                       (%|                   # No argument converted %% creates a %
+                       (\([a-z_]+\)){0,1}    # Mapping key value (optional) 
+                       [\-\+0\s\#]{0,1}      # Conversion flags (optional)
+                       (\d+|\*){0,1}         # Minimum field width (optional)
+                       (\.(\d+|\*)){0,1}     # Precision (optional)
+                       [hlL]{0,1}            # Length modifier (optional)
+                       [diouxXeEfFgGcrs]{1}) # Conversion type""")
+    parse = classmethod(regex_parse)
+
+
 class FormattingPlaceable(Ph):
     """Placeable representing string formatting variables."""
 
@@ -111,7 +137,7 @@ class XMLTagPlaceable(Ph):
     parse = classmethod(regex_parse)
 
 
-def to_general_placeables(tree, classmap={G: (AltAttrPlaceable,), Ph: (XMLEntityPlaceable, XMLTagPlaceable, UrlPlaceable, FilePlaceable, EmailPlaceable, PunctuationPlaceable)}):
+def to_general_placeables(tree, classmap={G: (AltAttrPlaceable,), Ph: (NumberPlaceable, XMLEntityPlaceable, XMLTagPlaceable, UrlPlaceable, FilePlaceable, EmailPlaceable, PunctuationPlaceable)}):
     if not isinstance(tree, StringElem):
         return tree
 
@@ -139,7 +165,9 @@ def to_general_placeables(tree, classmap={G: (AltAttrPlaceable,), Ph: (XMLEntity
 parsers = [
     XMLTagPlaceable.parse,
     AltAttrPlaceable.parse,
+    NumberPlaceable.parse,
     XMLEntityPlaceable.parse,
+    PythonFormattingPlaceable.parse,
     FormattingPlaceable.parse,
     UrlPlaceable.parse,
     FilePlaceable.parse,
