@@ -43,7 +43,7 @@ def memory(tmfiles, max_candidates=1, min_similarity=75, max_length=1000):
 
 
 def pretranslate_file(input_file, output_file, template_file, tm=None, min_similarity=75, fuzzymatching=True):
-    """pretranslate any factory supported file with old translations and translation memory"""
+    """Pretranslate any factory supported file with old translations and translation memory."""
     input_store = factory.getobject(input_file)
     template_store = None
     if template_file is not None:
@@ -55,7 +55,7 @@ def pretranslate_file(input_file, output_file, template_file, tm=None, min_simil
 
 
 def match_template_id(input_unit, template_store):
-    """returns a matching unit from a template"""
+    """Returns a matching unit from a template."""
     #since oo2po and moz2po use location as unique identifiers for strings
     #we match against location first, then check for matching source strings
     #FIXME: this makes absolutely no sense for other po files
@@ -72,7 +72,7 @@ def match_template_id(input_unit, template_store):
 
 
 def match_fuzzy(input_unit, matchers):
-    """returns a fuzzy match from a queue of matchers"""
+    """Return a fuzzy match from a queue of matchers."""
     for matcher in matchers:
         fuzzycandidates = matcher.matches(input_unit.source)
         if fuzzycandidates:
@@ -80,7 +80,7 @@ def match_fuzzy(input_unit, matchers):
 
 
 def pretranslate_unit(input_unit, template_store, matchers=None, mark_reused=False) :
-    """returns a pretranslated unit, if no translation was found return input unit unchanged"""
+    """Pretranslate a unit or return unchanged if no translation was found."""
 
     matching_unit = None
     #do template matching
@@ -110,14 +110,14 @@ def pretranslate_unit(input_unit, template_store, matchers=None, mark_reused=Fal
     return input_unit
 
 def prepare_template_pofile(template_store):
-    """po format specific template preparation logic"""
+    """PO format specific template preparation logic."""
     #do we want to consider obsolete translations?
     for unit in template_store.units:
         if unit.isobsolete():
             unit.resurrect()
 
 def pretranslate_store(input_store, template_store, tm=None, min_similarity=75, fuzzymatching=True):
-    """does the actual pretranslation"""
+    """Do the actual pretranslation of a whole store."""
     #preperation
     matchers = []
     #prepare template
