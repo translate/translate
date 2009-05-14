@@ -64,7 +64,7 @@ def match_template_id (input_unit, template_store):
     for location in input_unit.getlocations():
         matching_unit = template_store.locationindex.get(location, None)
         #do we really want to discard units with matching locations but no matching source?
-        if matching_unit is not None and matching_unit.source == input_unit.source and len(matching_unit.target) > 0:
+        if matching_unit is not None and matching_unit.source == input_unit.source and matching_unit.istranslated():
             return matching_unit
         else:
             #if no match by location information search for identical source strings
@@ -89,12 +89,12 @@ def pretranslate_unit(input_unit, template_store, matchers=None, mark_reused=Fal
     if template_store:
         matching_unit = match_template_id(input_unit, template_store)
 
-    if matching_unit and len(matching_unit.target) > 0:
+    if matching_unit and matching_unit.istranslated() > 0:
         input_unit.merge(matching_unit, authoritative=True)
     elif matchers:
         #do fuzzy matching
         matching_unit = match_fuzzy(input_unit, matchers)
-        if matching_unit and len(matching_unit.target) > 0:
+        if matching_unit and matching_unit.istranslated() > 0:
             #FIXME: should we dispatch here instead of this crude type check
             if isinstance(input_unit, xliff.xliffunit):
                 #FIXME: what about origin, lang and matchquality
