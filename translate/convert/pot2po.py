@@ -1,28 +1,28 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
-# Copyright 2004-2007 Zuza Software Foundation
-# 
+#
+# Copyright 2004-2009 Zuza Software Foundation
+#
 # This file is part of translate.
 #
-# translate is free software; you can redistribute it and/or modify
+# This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
-# translate is distributed in the hope that it will be useful,
+#
+# This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with translate; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""convert Gettext PO templates (.pot) to PO localization files, preserving existing translations
+"""Convert template files (like .pot or template .xlf files) translation files,
+preserving existing translations.
 
-See: http://translate.sourceforge.net/wiki/toolkit/pot2po for examples and 
-usage instructions
+See: http://translate.sourceforge.net/wiki/toolkit/pot2po for examples and
+usage instructions.
 """
 
 from translate.storage import factory
@@ -34,7 +34,7 @@ from translate.storage import poheader
 
 def convertpot(input_file, output_file, template_file, tm=None, min_similarity=75, fuzzymatching=True, **kwargs):
     """Main conversion function"""
-    
+
     input_store = factory.getobject(input_file)
     template_store = None
     if template_file is not None:
@@ -51,7 +51,7 @@ def convert_stores(input_store, template_store, tm=None, min_similarity=75, fuzz
 
     #prepare for merging
     output_store = type(input_store)()
-    #create fuzzy matchers to be used by pretrnaslate.pretranslate_unit
+    #create fuzzy matchers to be used by pretranslate.pretranslate_unit
     matchers = []
     if fuzzymatching:
         if template_store:
@@ -82,7 +82,7 @@ def convert_stores(input_store, template_store, tm=None, min_similarity=75, fuzz
 
 ##dispatchers
 def _prepare_merge(input_store, output_store, template_store, **kwargs):
-    """prepare stores & TM matchers before merging"""       
+    """Prepare stores & TM matchers before merging."""
     #dispatch to format specific functions
     prepare_merge_hook = "_prepare_merge_%s" % input_store.__class__.__name__
     if  globals().has_key(prepare_merge_hook):
@@ -95,7 +95,7 @@ def _prepare_merge(input_store, output_store, template_store, **kwargs):
 
 
 def _store_pre_merge(input_store, output_store, template_store, **kwargs) :
-    """initialize the new file with things like headers and metadata"""
+    """Initialize the new file with things like headers and metadata."""
     #formats that implement poheader interface are a special case
     if isinstance(input_store, poheader.poheader):
         _do_poheaders(input_store, output_store, template_store)
@@ -107,25 +107,25 @@ def _store_pre_merge(input_store, output_store, template_store, **kwargs) :
 
 
 def _store_post_merge(input_store, output_store, template_store, **kwargs) :
-    """close file after merging all translations, used for adding
-    statistics, obselete messages and similar wrapup tasks"""
+    """Close file after merging all translations, used for adding
+    statistics, obselete messages and similar wrapup tasks."""
     #dispatch to format specific functions
     store_post_merge_hook = "_store_post_merge_%s" % input_store.__class__.__name__
     if  globals().has_key(store_post_merge_hook):
         globals()[store_post_merge_hook](input_store, output_store, template_store, **kwargs)
 
 def _unit_post_merge(input_unit, input_store, output_store, template_store, **kwargs):
-    """handle any unit level cleanup and situations not handled by the merge()
-    function"""
+    """Handle any unit level cleanup and situations not handled by the merge()
+    function."""
     #dispatch to format specific functions
     unit_post_merge_hook = "_unit_post_merge_%s" % input_unit.__class__.__name__
     if  globals().has_key(unit_post_merge_hook):
         globals()[unit_post_merge_hook](input_unit, input_store, output_store, template_store, **kwargs)
-    
+
 
 ##format specific functions
 def _prepare_merge_pofile(input_store, output_store, template_store):
-    """po format specific template preparation logic"""
+    """PO format specific template preparation logic."""
     #we need to revive obselete units to be able to consider
     #their translation when matching
     if template_store:
@@ -135,7 +135,7 @@ def _prepare_merge_pofile(input_store, output_store, template_store):
 
 
 def _unit_post_merge_pounit(input_unit, input_store, output_store, template_store):
-    """po format specific plural string initializtion logic"""
+    """PO format specific plural string initializtion logic."""
     #FIXME: do we want to do that for poxliff also?
     if input_unit.hasplural() and len(input_unit.target) == 0:
         # untranslated plural unit; Let's ensure that we have the correct number of plural forms:
@@ -145,7 +145,7 @@ def _unit_post_merge_pounit(input_unit, input_store, output_store, template_stor
 
 
 def _store_post_merge_pofile(input_store, output_store, template_store):
-    """po format specific, adds newly obseleted messages to end of store"""
+    """PO format specific: adds newly obseleted messages to end of store."""
     #Let's take care of obsoleted messages
     if template_store:
         newlyobsoleted = []
@@ -163,7 +163,7 @@ def _store_post_merge_pofile(input_store, output_store, template_store):
 
 
 def _do_poheaders(input_store, output_store, template_store):
-    """adds initialized ph headers to output store"""
+    """Adds initialized PO headers to output store."""
     # header values
     charset = "UTF-8"
     encoding = "8bit"
@@ -210,11 +210,11 @@ def _do_poheaders(input_store, output_store, template_store):
             mime_version = value
         else:
             kwargs[key] = value
-            
+
     output_header = output_store.makeheader(charset=charset, encoding=encoding, project_id_version=project_id_version,
         pot_creation_date=pot_creation_date, po_revision_date=po_revision_date, last_translator=last_translator,
         language_team=language_team, mime_version=mime_version, plural_forms=plural_forms, **kwargs)
-    
+
     # Get the header comments and fuzziness state
     if template_store is not None and len(template_store.units) > 0:
         if template_store.units[0].isheader():
@@ -225,7 +225,7 @@ def _do_poheaders(input_store, output_store, template_store):
             output_header.markfuzzy(template_store.units[0].isfuzzy())
     elif len(input_store.units) > 0 and input_store.units[0].isheader():
         output_header.addnote(input_store.units[0].getnotes())
-        
+
     output_store.addunit(output_header)
 
 
