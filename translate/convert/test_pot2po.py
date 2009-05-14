@@ -394,7 +394,7 @@ msgstr ""
         print newpo
         newpounit = self.singleunit(newpo)
         assert str(newpounit) == poexpected
-        
+
     def test_merging_typecomments(self):
         """Test that we can merge with typecomments"""
         potsource = '''#: file.c:1\n#, c-format\nmsgid "%d pipes"\nmsgstr ""\n''' 
@@ -439,6 +439,69 @@ msgstr "Eerste eenheid"
         # Search in unit string, because obsolete units can't return a context
         assert 'msgctxt "context"' in str(newpo.units[2])
         assert 'msgctxt "context2"' in str(newpo.units[3])
+
+    def test_small_strings(self):
+        """Test that units with small source strings are not incorrectly
+        populated by means of fuzzy matching."""
+        potsource = r'''#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: new@example.com\n"
+"POT-Creation-Date: 2006-11-11 11:11+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"X-Generator: Translate Toolkit 0.10rc2\n"
+
+#: new_disassociated_mozilla_accesskey
+msgid "R"
+msgstr ""
+'''
+        posource = r'''msgid ""
+msgstr ""
+"Project-Id-Version: Pootle 0.10\n"
+"Report-Msgid-Bugs-To: old@example.com\n"
+"POT-Creation-Date: 2006-01-01 01:01+0100\n"
+"PO-Revision-Date: 2006-09-09 09:09+0900\n"
+"Last-Translator: Joe Translate <joe@example.com>\n"
+"Language-Team: Pig Latin <piglatin@example.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Translate Toolkit 0.9\n"
+
+#: old_disassociated_mozilla_accesskey
+msgid "R"
+msgstr "S"
+'''
+        expected = r'''msgid ""
+msgstr ""
+"Project-Id-Version: Pootle 0.10\n"
+"Report-Msgid-Bugs-To: new@example.com\n"
+"POT-Creation-Date: 2006-11-11 11:11+0000\n"
+"PO-Revision-Date: 2006-09-09 09:09+0900\n"
+"Last-Translator: Joe Translate <joe@example.com>\n"
+"Language-Team: Pig Latin <piglatin@example.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Translate Toolkit 0.10rc2\n"
+
+#: new_disassociated_mozilla_accesskey
+msgid "R"
+msgstr ""
+'''
+        newpo = self.convertpot(potsource, posource)
+        print 'Output:\n%s' % newpo
+        print 'Expected:\n%s' % expected
+        assert str(newpo) == expected
 
 
 class TestPOT2POCommand(test_convert.TestConvertCommand, TestPOT2PO):
