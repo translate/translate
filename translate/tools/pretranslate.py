@@ -64,11 +64,8 @@ def match_template_id(input_unit, template_store):
         #do we really want to discard units with matching locations but no matching source?
         if matching_unit is not None and matching_unit.source == input_unit.source and matching_unit.gettargetlen() > 0:
             return matching_unit
-        else:
-            #if no match by location information, search for identical source strings
-            #FIXME: need a better method for matching strings, we don't take context into account
-            #FIXME: need a better test for when not to use location info for matching
-            return template_store.findunit(input_unit.source)
+    #TODO: use proper identifiers as the default case and special case for
+    # Mozilla and OOo PO files
 
 
 def match_fuzzy(input_unit, matchers):
