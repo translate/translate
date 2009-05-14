@@ -348,6 +348,11 @@ class StatsCache(object):
 
         if file not in cache or has been updated since last record
         update, recalculate stats.
+
+        optional argument store can be used to avoid unnessecary
+        reparsing of already loaded translation files.
+
+        store can be a TranslationFile object or a callback that returns one.
         """
         realpath = os.path.realpath(filename)
         self.cur.execute("""SELECT fileid, st_mtime, st_size FROM files
@@ -366,7 +371,11 @@ class StatsCache(object):
                 return fileid
         # We can only ignore the mod_info if the row already exists:
         assert check_mod_info
-        store = store or factory.getobject(realpath)
+        if callable(store):
+            store = store()
+        else:
+            store = store or factory.getobject(realpath)
+            
         return self._cachestore(store, realpath, mod_info)
 
     def _getstoredcheckerconfig(self, checker):
@@ -526,7 +535,11 @@ class StatsCache(object):
 
         # This could happen if we haven't done the checks before, or the
         # file changed, or we are using a different configuration
-        store = store or factory.getobject(filename)
+        if callable(store):
+            store = store()
+        else:
+            store = store or factory.getobject(filename)
+            
         if os.path.exists(suggestion_filename(filename)):
             checker.setsuggestionstore(factory.getobject(suggestion_filename(filename), ignore=suggestion_extension()))
         self._cachestorechecks(fileid, store, checker, configid)
