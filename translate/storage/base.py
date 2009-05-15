@@ -84,7 +84,7 @@ class TranslationUnit(object):
     @group Errors: *error*
     """
 
-    rich_parsers = general.parsers
+    rich_parsers = []
     """A list of functions to use for parsing a string into a rich string tree."""
 
     def __init__(self, source):
