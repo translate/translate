@@ -508,7 +508,6 @@ class StandardChecker(TranslationChecker):
         else:
             return True
 
-
     def singlequoting(self, str1, str2):
         """checks whether singlequoting is consistent between the two strings"""
         str1 = self.filterwordswithpunctuation(self.filteraccelerators(self.filtervariables(str1)))
@@ -522,7 +521,7 @@ class StandardChecker(TranslationChecker):
         str1 = self.config.lang.punctranslate(str1)
         str2 = self.filteraccelerators(self.filtervariables(str2))
         str2 = self.filterxml(str2)
-        return helpers.countsmatch(str1, str2, (u'"', u'""', u'\\"', u"«", u"»"))
+        return helpers.countsmatch(str1, str2, (u'"', u'""', u'\\"', u"«", u"»", u"“", u"”"))
 
     def doublespacing(self, str1, str2):
         """checks for bad double-spaces by comparing to original"""
