@@ -52,6 +52,9 @@ def parse(tree, parse_funcs):
     parse_func = parse_funcs[0]
 
     for leaf in tree.flatten():
+        if not leaf.iseditable:
+            continue
+
         unileaf = unicode(leaf)
         if not unileaf:
             continue
