@@ -6,7 +6,7 @@
 dest=.odf
 
 mkdir -p $dest
-unzip -q -o $1 -d $dest
+unzip -q -o "$1" -d $dest
 tidy -raw -indent -modify -quiet -xml $dest/content.xml
 tidy -raw -indent -modify -quiet -xml $dest/styles.xml
 vim -o $dest/content.xml $dest/styles.xml
