@@ -521,7 +521,7 @@ class StringElem(object):
                 print '%s%s[%s]' % (indent_prefix, indent_prefix, elem)
 
     def prune(self):
-        """Remove unnecessary nodes not make the tree optimal."""
+        """Remove unnecessary nodes to make the tree optimal."""
         for elem in self.iter_depth_first():
             if len(elem.sub) == 1:
                 child = elem.sub[0]
