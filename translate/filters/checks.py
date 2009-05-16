@@ -698,14 +698,10 @@ class StandardChecker(TranslationChecker):
 
     def startwhitespace(self, str1, str2):
         """checks whether whitespace at the beginning of the strings matches"""
-        str1 = self.filteraccelerators(self.filtervariables(str1))
-        str2 = self.filteraccelerators(self.filtervariables(str2))
         return helpers.funcmatch(str1, str2, decoration.spacestart)
 
     def endwhitespace(self, str1, str2):
         """checks whether whitespace at the end of the strings matches"""
-        str1 = self.filteraccelerators(self.filtervariables(str1))
-        str2 = self.filteraccelerators(self.filtervariables(str2))
         return helpers.funcmatch(str1, str2, decoration.spaceend)
 
     def startpunc(self, str1, str2):
