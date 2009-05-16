@@ -107,6 +107,7 @@ languages = {
 'pa': ('Panjabi; Punjabi', 2, '(n != 1)'),
 'pap': ('Papiamento', 2, '(n != 1)'),
 'pl': ('Polish', 3, '(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'),
+'pms': ('Piemontese', 1, '(n != 1)'),
 'ps': ('Pushto; Pashto', 1, '(n != 1)'),
 'pt': ('Portuguese', 2, '(n != 1)'),
 'pt_BR': ('Portuguese (Brazil)', 2, '(n > 1)'),
@@ -194,7 +195,7 @@ def languagematch(languagecode, otherlanguagecode):
 dialect_name_re = re.compile(r"(.+)\s\(([^)]+)\)$")
 
 def tr_lang(langcode=None):
-    """Gives a function that can translate a language name, even in the form::
+    """Gives a function that can translate a language name, even in the form:
            "language (country)"
        into the language with iso code langcode, or the system language if no
        language is specified."""
