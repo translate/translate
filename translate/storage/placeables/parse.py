@@ -25,7 +25,6 @@ based "rich" string element trees.
 
 from translate.storage.placeables import base, StringElem
 
-
 def parse(tree, parse_funcs):
     """Parse placeables from the given string or sub-tree by using the
         parsing functions provided.
@@ -53,10 +52,11 @@ def parse(tree, parse_funcs):
     parse_func = parse_funcs[0]
 
     for leaf in tree.flatten():
-        if not unicode(leaf):
+        unileaf = unicode(leaf)
+        if not unileaf:
             continue
 
-        subleaves = parse_func(unicode(leaf))
+        subleaves = parse_func(unileaf)
         if subleaves is not None:
             if len(subleaves) == 1 and type(leaf) is type(subleaves[0]) and leaf == subleaves[0]:
                 pass
