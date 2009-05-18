@@ -131,9 +131,7 @@ class XMLEntityPlaceable(Ph):
     """Placeable handling XML entities (C{&xxxxx;}-style entities)."""
 
     iseditable = False
-    regex = re.compile(r'&\S+?;')
-    # TODO: Perhaps this should be non-greedy (stopping at first ;). Is
-    # anything except ASCII alloweable?
+    regex = re.compile(r'&[a-zA-Z][a-zA-Z0-9\.-]+?;')
     parse = classmethod(regex_parse)
 
 
