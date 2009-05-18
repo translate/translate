@@ -242,6 +242,10 @@ def test_endwhitespace():
     assert passes(stdchecker.endwhitespace, "A setence. ", "I'm correct. ")
     assert fails(stdchecker.endwhitespace, "A setence. ", "'I'm incorrect.")
 
+    zh_checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='zh'))
+    # This should pass since the space is not needed in Chinese
+    assert passes(zh_checker.endwhitespace, "Init. Limit: ", "起始时间限制：")
+
 def test_escapes():
     """tests escapes"""
     stdchecker = checks.StandardChecker()

@@ -702,6 +702,7 @@ class StandardChecker(TranslationChecker):
 
     def endwhitespace(self, str1, str2):
         """checks whether whitespace at the end of the strings matches"""
+        str1 = self.config.lang.punctranslate(str1)
         return helpers.funcmatch(str1, str2, decoration.spaceend)
 
     def startpunc(self, str1, str2):
