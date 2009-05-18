@@ -196,10 +196,9 @@ class poheader(object):
         This will create a header if add == True."""
         header = self.header()
         if not header:
-            # FIXME: does not work for xliff files yet
-            if add and callable(getattr(self, "makeheader", None)):
+            if add:
                 header = self.makeheader(**kwargs)
-                self.units.insert(0, header)
+                self.addunit(header)
         else:
             headeritems = update(self.parseheader(), add, **kwargs)
             keys = headeritems.keys()
