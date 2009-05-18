@@ -129,6 +129,13 @@ class XMLEntityPlaceable(Ph):
     parse = classmethod(regex_parse)
 
 
+class CapsPlaceable(Ph):
+    """Placeable handling long all-caps strings."""
+
+    iseditable = True
+    regex = re.compile(r'\b[A-Z][A-Z/-:*0-9]{2,}\b')
+    parse = classmethod(regex_parse)
+
 class XMLTagPlaceable(Ph):
     """Placeable handling XML tags."""
 
@@ -172,5 +179,6 @@ parsers = [
     UrlPlaceable.parse,
     FilePlaceable.parse,
     EmailPlaceable.parse,
+    CapsPlaceable.parse,
     PunctuationPlaceable.parse,
 ]
