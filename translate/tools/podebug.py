@@ -130,6 +130,34 @@ class podebug:
         string.apply_to_strings(transformer)
         return string
 
+    REWRITE_FLIPPED_MAP = u"¡„#$%⅋,()⁎+´-·/012Ɛᔭ59Ƚ86:;<=>?@" + \
+            u"∀ԐↃᗡƎℲ⅁HIſӼ⅂WNOԀÒᴚS⊥∩ɅＭX⅄Z" + u"[\\]ᵥ_," + \
+            u"ɐqɔpǝɟƃɥıɾʞʅɯuodbɹsʇnʌʍxʎz"
+        # Brackets should be swapped if the string will be reversed in memory.
+        # If a right-to-left override is used, the brackets should be
+        # unchanged.
+        #Some alternatives:
+        # D: ᗡ◖
+        # K: Ж⋊Ӽ
+        # @: Ҩ - Seems only related in Dejavu Sans
+        # Q: Ὄ Ό Ὀ Ὃ Ὄ Ṑ Ò Ỏ
+        # _: ‾ - left out for now for the sake of GTK accelerators
+    def rewrite_flipped(self, string):
+        """Convert the string to look flipped upside down."""
+        if not isinstance(string, StringElem):
+            string = StringElem(string)
+        def transpose(char):
+            loc = ord(char)-33
+            if loc < 0 or loc > 89:
+                return char
+            return self.REWRITE_FLIPPED_MAP[loc]
+        def transformer(s):
+            return u"\u202e" + u''.join([transpose(c) for c in s])
+            # To reverse instead of using the RTL override:
+            #return u''.join(reversed([transpose(c) for c in s]))
+        string.apply_to_strings(transformer)
+        return string
+
     def ignorelist(cls):
         return [ignore.replace("ignore_", "") for ignore in dir(cls) if ignore.startswith("ignore_")]
     ignorelist = classmethod(ignorelist)
