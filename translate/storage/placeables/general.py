@@ -131,7 +131,10 @@ class XMLEntityPlaceable(Ph):
     """Placeable handling XML entities (C{&xxxxx;}-style entities)."""
 
     iseditable = False
-    regex = re.compile(r'&[a-zA-Z][a-zA-Z0-9\.-]+?;')
+    regex = re.compile(r'''&(
+        ([a-zA-Z][a-zA-Z0-9\.-]*)            #named entity
+         |([#](\d{1,5}|x[a-fA-F0-9]{1,5})+)  #numeric entity
+        );''', re.VERBOSE)
     parse = classmethod(regex_parse)
 
 
@@ -185,8 +188,8 @@ def to_general_placeables(tree, classmap={G: (AltAttrPlaceable,), Ph: (NumberPla
 parsers = [
     XMLTagPlaceable.parse,
     AltAttrPlaceable.parse,
-    NumberPlaceable.parse,
     XMLEntityPlaceable.parse,
+    NumberPlaceable.parse,
     PythonFormattingPlaceable.parse,
     FormattingPlaceable.parse,
     UrlPlaceable.parse,
