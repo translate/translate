@@ -145,12 +145,14 @@ class CapsPlaceable(Ph):
     regex = re.compile(r'\b[A-Z][A-Z/-:*0-9]{2,}\b')
     parse = classmethod(regex_parse)
 
+
 class CamelCasePlaceable(Ph):
     """Placeable handling camel case strings."""
 
     iseditable = True
     regex = re.compile(r'\w+[A-Z]\w+')
     parse = classmethod(regex_parse)
+
 
 class XMLTagPlaceable(Ph):
     """Placeable handling XML tags."""
