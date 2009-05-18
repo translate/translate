@@ -124,7 +124,8 @@ def transaction(f):
             # If ANY exception is raised, we're left in an
             # uncertain state and we MUST roll back any changes to avoid getting
             # stuck in an inconsistent state.
-            self.con.rollback()
+            if self.con:
+                self.con.rollback()
             raise
     return decorated_f
 
