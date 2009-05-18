@@ -110,9 +110,6 @@ http://psyco.sourceforge.net/
 The python wrapper to htmltidy is needed for po2html.
 http://utidylib.berlios.de/
 
-The package iniparse is necessary for ini2po and po2ini.
-http://code.google.com/p/iniparse/
-
 The python-Levenshtein package will improve performance for fuzzy matching if
 it is available. This can improve the performance of pot2po, for example.  It 
 is optional and no functionality is lost if it is not installed, only speed.
@@ -130,12 +127,12 @@ Alternatively, it is also available from
 http://packages.debian.org/unstable/source/iso-codes
 
 The package vobject is needed for ical2po and po2ical.  Versions from
-0.6.0 have been tested, 0.6.5 is required to fix a Lotus Notes related
-calendars.
+0.6.0 have been tested, 0.6.5 is required to fix an issue related to
+Lotus Notes calendars.
 http://vobject.skyhouseconsulting.com/
 
 The subtitle editing program Gaupol is needed for sub2po and
-po2sub. some unicode encoded files (including most files from
+po2sub. Some Unicode encoded files (including most files from
 http://dotsub.com) require latest development version of Gaupol.
 http://home.gna.org/gaupol/
 You will also need the 'Universal Encoding Detector'
