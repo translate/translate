@@ -49,9 +49,15 @@ class TestPODebug:
         """Test the unicode rewrite function"""
         assert unicode(self.debug.rewrite_unicode("Test")) == u"Ŧḗşŧ"
 
+    def test_rewrite_flipped(self):
+        """Test the unicode rewrite function"""
+        assert unicode(self.debug.rewrite_flipped("Test")) == u"\u202e⊥ǝsʇ"
+        #alternative with reversed string and no RTL override:
+        #assert unicode(self.debug.rewrite_flipped("Test")) == u"ʇsǝ⊥"
+
     def test_rewrite_chef(self):
         """Test the chef rewrite function
-        
+
         This is not realy critical to test but a simple tests ensures
         that it stays working.
         """
