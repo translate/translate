@@ -38,13 +38,13 @@ def parse(tree, parse_funcs):
         set of leaves with the used parsing function removed from
         C{parse_funcs}.
 
-        @type  tree: str|unicode|StringElem
+        @type  tree: unicode|StringElem
         @param tree: The string or string element sub-tree to parse.
         @type  parse_funcs: A list of parsing functions. It must take exactly
             one argument (a C{unicode} string to parse) and return a list of
             C{StringElem}s which, together, form the original string. If nothing
             could be parsed, it should return C{None}."""
-    if isinstance(tree, (str, unicode)):
+    if isinstance(tree, unicode):
         tree = StringElem(tree)
     if not parse_funcs:
         return tree
@@ -63,7 +63,7 @@ def parse(tree, parse_funcs):
         if subleaves is not None:
             if len(subleaves) == 1 and type(leaf) is type(subleaves[0]) and leaf == subleaves[0]:
                 pass
-            elif isinstance(leaf, (str, unicode)):
+            elif isinstance(leaf, unicode):
                 parent = tree.get_parent_elem(leaf)
                 if parent is not None:
                     if len(parent.sub) == 1:
