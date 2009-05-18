@@ -229,7 +229,8 @@ class Common(object):
         # replaced, but the space won't exist at the end of a message.
         # As a simple improvement for messages ending in ellipses (...), we
         # test that the last character is different from the second last
-        if (text[-1] + u" " in cls.puncdict) and (text[-2] != text[-1]):
+        # This is only relevant if the string has two characters or more
+        if (text[-1] + u" " in cls.puncdict) and (len(text) < 2 or text[-2] != text[-1]):
             text = text[:-1] + cls.puncdict[text[-1] + u" "].rstrip()
         return text
     punctranslate = classmethod(punctranslate)

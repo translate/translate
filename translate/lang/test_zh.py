@@ -9,6 +9,8 @@ def test_punctranslate():
     assert language.punctranslate(u"abc efg") == u"abc efg"
     assert language.punctranslate(u"abc efg.") == u"abc efg。"
     assert language.punctranslate(u"(abc efg).") == u"(abc efg)。"
+    assert language.punctranslate(u"(abc efg). hijk") == u"(abc efg)。hijk"
+    assert language.punctranslate(u".") == u"。"
     assert language.punctranslate(u"abc efg...") == u"abc efg..."
 
 def test_sentences():
