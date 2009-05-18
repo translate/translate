@@ -110,6 +110,8 @@ class EmailPlaceable(Ph):
     """Placeable handling emails."""
 
     regex = re.compile("((mailto:)|)[-A-Za-z0-9\\.]+@[-A-Za-z0-9\\.]+")
+    #TODO: better check for domain name
+    # What about internationalised domain names? ;-)
     parse = classmethod(regex_parse)
 
 
@@ -126,6 +128,8 @@ class XMLEntityPlaceable(Ph):
 
     iseditable = False
     regex = re.compile(r'&\S+?;')
+    # TODO: Perhaps this should be non-greedy (stopping at first ;). Is
+    # anything except ASCII alloweable?
     parse = classmethod(regex_parse)
 
 
