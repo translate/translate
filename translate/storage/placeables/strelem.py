@@ -217,12 +217,23 @@ class StringElem(object):
 
         # Case 1 #
         if start_index == 0 and end_index == len(self):
+            #logging.debug('Case 1: [%s]' % (unicode(self)))
             remstr = unicode(self)
             self.sub = []
             return remstr
 
         # Case 2 #
         if start['elem'] is end['elem'] and start['offset'] == 0 and end['offset'] == len(start['elem']):
+            ##### FOR DEBUGGING #####
+            #s = ''
+            #for e in self.flatten():
+            #    if e is start['elem']:
+            #        s += '[' + unicode(e) + ']'
+            #    else:
+            #        s += unicode(e)
+            #logging.debug('Case 2: %s' % (s))
+            #########################
+
             if start['elem'] is self:
                 remstr = unicode(self)
                 self.sub = []
@@ -235,6 +246,20 @@ class StringElem(object):
 
         # Case 3 #
         if start['elem'] is end['elem'] and start['elem'].iseditable:
+            ##### FOR DEBUGGING #####
+            #s = ''
+            #for e in self.flatten():
+            #    if e is start['elem']:
+            #        s += '%s[%s]%s' % (
+            #            e[:start['offset']],
+            #            e[start['offset']:end['offset']],
+            #            e[end['offset']:]
+            #        )
+            #    else:
+            #        s += unicode(e)
+            #logging.debug('Case 3: %s' % (s))
+            #########################
+
             # XXX: This might not have the expected result if start['elem'] is a StringElem sub-class instance.
             newstr = u''.join(start['elem'].sub)
             delstr = newstr[start['offset']:end['offset']]
@@ -257,6 +282,18 @@ class StringElem(object):
             if end['elem'] not in subtree:
                 delete_nodes.append(node)
                 marked_nodes.extend(subtree) # "subtree" includes "node"
+
+        ##### FOR DEBUGGING #####
+        #s = ''
+        #for e in self.flatten():
+        #    if e is start['elem']:
+        #        s += '%s[%s' % (e[:start['offset']], e[start['offset']:])
+        #    elif e is end['elem']:
+        #        s += '%s]%s' % (e[:end['offset']], e[end['offset']:])
+        #    else:
+        #        s += unicode(e)
+        #logging.debug('Case 4: %s' % (s))
+        #########################
 
         delstr = u''
         for node in delete_nodes:
