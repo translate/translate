@@ -102,7 +102,11 @@ class UrlPlaceable(Ph):
 class FilePlaceable(Ph):
     """Placeable handling file locations."""
 
-    regex = re.compile("(~/|/|\\./)([-A-Za-z0-9_\\$\\.\\+\\!\\*\\(\\),;:@&=\\?/~\\#\\%]|\\\\)+")
+    regex = re.compile(r"(~/|/|\./)([-A-Za-z0-9_\$\.\+\!\*\(\),;:@&=\?/~\#\%]|\\){3,}")
+    #TODO: Handle Windows drive letters. Some common Windows paths won't be
+    # handled correctly while note allowing spaces, such as
+    #     "C:\Documents and Settings"
+    #     "C:\Program Files"
     parse = classmethod(regex_parse)
 
 
