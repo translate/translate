@@ -113,7 +113,7 @@ class FilePlaceable(Ph):
 class EmailPlaceable(Ph):
     """Placeable handling emails."""
 
-    regex = re.compile(r"((mailto:)|)[A-Za-z0-9]+[-a-z-A-Z0-9._%]*@(([-A-Za-z0-9]+)\.)+[a-zA-Z]{2,4}")
+    regex = re.compile(r"((mailto:)|)[A-Za-z0-9]+[-a-zA-Z0-9._%]*@(([-A-Za-z0-9]+)\.)+[a-zA-Z]{2,4}")
     # TODO: What about internationalised domain names? ;-)
     parse = classmethod(regex_parse)
 
