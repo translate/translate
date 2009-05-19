@@ -477,29 +477,65 @@ class TranslationStore(object):
         else:
             return None
 
+    def remove_unit_from_index(self, unit):
+        """Remove a unit from source and locaton indexes"""
+        def remove_unit(source):
+            if source in self.sourceindex:
+                try:
+                    self.sourceindex[source].remove(unit)
+                    if len(self.sourceindex[source]) == 0:
+                        del(self.sourceindex[source])
+                except ValueError:
+                    pass
+
+        if unit.hasplural():
+            for source in unit.source.strings:
+                remove_unit(source)
+        else:
+            remove_unit(unit.source)
+
+        for location in unit.getlocations():
+            if location in self.locationindex and self.locationindex[location] is not None \
+                   and self.locationindex[location] == unit:
+                del(self.locationindex[location])
+                
+                                           
+    def add_unit_to_index(self, unit):
+        """Add a unit to source and location idexes"""
+        def insert_unit(source):
+            if not source in self.sourceindex:
+                self.sourceindex[source] = [unit]
+            else:
+                self.sourceindex[source].append(unit)
+                
+        if unit.hasplural():
+            for source in unit.source.strings:
+                insert_unit(source)
+        else:
+            insert_unit(unit.source)
+
+        for location in unit.getlocations():
+            if location in self.locationindex:
+                # if sources aren't unique, don't use them
+                #FIXME: maybe better store a list of units like sourceindex
+                self.locationindex[location] = None
+            else:
+                self.locationindex[location] = unit
+
     def makeindex(self):
         """Indexes the items in this store. At least .sourceindex should be usefull."""
         self.locationindex = {}
         self.sourceindex = {}
         for unit in self.units:
             # Do we need to test if unit.source exists?
-            if unit.hasplural():
-                for source in unit.source.strings:
-                    if not source in self.sourceindex:
-                        self.sourceindex[source] = []
-                    self.sourceindex[source].append(unit)
-            else:
-                if not unit.source in self.sourceindex:
-                    self.sourceindex[unit.source] = []
-                self.sourceindex[unit.source].append(unit)
-                
-            for location in unit.getlocations():
-                if location in self.locationindex:
-                    # if sources aren't unique, don't use them
-                    self.locationindex[location] = None
-                else:
-                    self.locationindex[location] = unit
-                    
+            self.add_unit_to_index(unit)
+
+    def require_index(self):
+        """make sure source index exists"""
+        if not hasattr(self, "sourceindex"):
+            self.makeindex()
+
+            
     def __getstate__(self):
         odict = self.__dict__.copy()
         odict['fileobj'] = None
