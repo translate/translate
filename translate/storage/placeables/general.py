@@ -149,7 +149,7 @@ class CamelCasePlaceable(Ph):
     """Placeable handling camel case strings."""
 
     iseditable = True
-    regex = re.compile(r'\w+[A-Z]\w+')
+    regex = re.compile(r'[a-zA-Z]+[A-Z][a-zA-Z0-9]+')
     parse = classmethod(regex_parse)
 
 
