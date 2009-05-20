@@ -575,9 +575,9 @@ class StringElem(object):
                         parent.sub[parent.sub.index(elem)] = child
 
             for i in reversed(range(len(elem.sub))):
-                # Remove empty StringElem nodes
+                # Remove empty strings or StringElem nodes
                 # (but not StringElem sub-class instances, because they might contain important (non-rendered) data.
-                if type(elem.sub[i]) is StringElem and len(elem.sub[i]) == 0:
+                if type(elem.sub[i]) in (StringElem, str, unicode) and len(elem.sub[i]) == 0:
                     del elem.sub[i]
                     continue
 
