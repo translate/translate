@@ -567,6 +567,10 @@ class StringElem(object):
                 if type(child) is StringElem and child.isleaf():
                     elem.sub = child.sub
 
+                # Symbolically: StringElem->StringElem2->(leaves) => StringElem->(leaves)
+                if type(elem) is StringElem and type(child) is StringElem:
+                    elem.sub = child.sub
+
                 # Symbolically: StringElem->X(leaf) => X(leaf)
                 #   (where X is any sub-class of StringElem, but not StringElem)
                 if type(elem) is StringElem and isinstance(child, StringElem) and type(child) is not StringElem:
