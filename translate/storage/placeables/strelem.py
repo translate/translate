@@ -209,6 +209,8 @@ class StringElem(object):
             end['offset'] = end['offset'][0]
         assert start['elem'].isleaf() and end['elem'].isleaf()
 
+        #logging.debug('FROM %s TO %s' % (start, end))
+
         # Ranges can be one of 3 types:
         # 1) The entire string.
         # 2) An entire element.
@@ -218,9 +220,9 @@ class StringElem(object):
         # Case 1 #
         if start_index == 0 and end_index == len(self):
             #logging.debug('Case 1: [%s]' % (unicode(self)))
-            remstr = unicode(self)
+            removed = self.copy()
             self.sub = []
-            return remstr
+            return removed, None
 
         # Case 2 #
         if start['elem'] is end['elem'] and start['offset'] == 0 and end['offset'] == len(start['elem']):
@@ -235,14 +237,14 @@ class StringElem(object):
             #########################
 
             if start['elem'] is self:
-                remstr = unicode(self)
+                removed = self.copy()
                 self.sub = []
-                return remstr
-            remstr = unicode(start['elem'])
+                return removed
+            removed = start['elem'].copy()
             parent = self.get_parent_elem(start['elem'])
             parent.sub.remove(start['elem'])
             self.prune()
-            return remstr
+            return removed, parent
 
         # Case 3 #
         if start['elem'] is end['elem'] and start['elem'].iseditable:
@@ -262,16 +264,17 @@ class StringElem(object):
 
             # XXX: This might not have the expected result if start['elem'] is a StringElem sub-class instance.
             newstr = u''.join(start['elem'].sub)
-            delstr = newstr[start['offset']:end['offset']]
+            removed = StringElem(newstr[start['offset']:end['offset']])
+            parent = self.get_parent_elem(start['elem'])
             newstr = newstr[:start['offset']] + newstr[end['offset']:]
             start['elem'].sub = [newstr]
             self.prune()
-            return delstr
+            return removed, parent
 
         # Case 4 #
         range_nodes = self.depth_first()
         range_nodes = range_nodes[range_nodes.index(start['elem']):range_nodes.index(end['elem'])+1]
-        assert range_nodes[0] is start['elem'] and range_nodes[-1] is end['elem']
+        #assert range_nodes[0] is start['elem'] and range_nodes[-1] is end['elem']
 
         delete_nodes = []
         marked_nodes = [] # Contains nodes that have been marked for deletion (directly or inderectly (via parent)).
@@ -295,20 +298,17 @@ class StringElem(object):
         #logging.debug('Case 4: %s' % (s))
         #########################
 
-        delstr = u''
+        removed = self.copy()
         for node in delete_nodes:
             self.delete_elem(node)
-            delstr += unicode(node)
         self.prune()
 
         if start['elem'].iseditable:
-            delstr = u''.join(start['elem'].sub)[start['offset']:] + delstr
             start['elem'].sub = [ u''.join(start['elem'].sub)[:start['offset']] ]
         if end['elem'].iseditable:
-            delstr += u''.join(end['elem'].sub)[:end['offset']]
             end['elem'].sub = [ u''.join(end['elem'].sub)[end['offset']:] ]
 
-        return delstr
+        return removed, None
 
     def depth_first(self):
         elems = [self]
