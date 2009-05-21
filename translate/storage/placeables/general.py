@@ -122,7 +122,7 @@ class PunctuationPlaceable(Ph):
     """Placeable handling punctuation."""
 
     iseditable = False
-    regex = re.compile(ur'[™℃℉©®£¥°±‘’‚‛“”„‟ ]+') #last space is NBSP
+    regex = re.compile(ur'[™℃℉©®£¥°±‘’‚‛“”„‟…—– ]+') #last space is NBSP
     parse = classmethod(regex_parse)
 
 
