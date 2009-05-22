@@ -187,7 +187,10 @@ class StringElem(object):
     def delete_range(self, start_index, end_index):
         """Delete the text in the range given by the string-indexes
             C{start_index} and C{end_index}.
-            Partial nodes will only be removed if they are editable."""
+            Partial nodes will only be removed if they are editable.
+            @returns: A C{StringElem} representing the removed sub-string as
+                well as the parent node from which it was deleted. C{None} is
+                returned for the parent value if the root was deleted."""
         if start_index == end_index:
             return StringElem(), self
         if start_index > end_index:
