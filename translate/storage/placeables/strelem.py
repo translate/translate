@@ -588,6 +588,22 @@ class StringElem(object):
                     del elem.sub[i]
                     continue
 
+    # TODO: Write unit test for this method
+    def remove_type(self, ptype):
+        """Replace nodes with type C{ptype} with base C{StringElem}s, containing
+            the same sub-elements. This is only applicable to elements below the
+            element tree root node."""
+        for elem in self.iter_depth_first():
+            if type(elem) is ptype:
+                parent = self.get_parent_elem(elem)
+                pindex = parent.sub.index(elem)
+                parent.sub[pindex] = StringElem(
+                    sub=elem.sub,
+                    id=elem.id,
+                    xid=elem.xid,
+                    rid=elem.rid
+                )
+
     def translate(self):
         """Transform the sub-tree according to some class-specific needs.
             This method should be either overridden in implementing sub-classes
