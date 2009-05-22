@@ -189,7 +189,7 @@ class StringElem(object):
             C{start_index} and C{end_index}.
             Partial nodes will only be removed if they are editable."""
         if start_index == end_index:
-            return ''
+            return StringElem(), self
         if start_index > end_index:
             raise IndexError('start_index > end_index')
         if start_index < 0 or start_index > len(self):
@@ -239,7 +239,7 @@ class StringElem(object):
             if start['elem'] is self:
                 removed = self.copy()
                 self.sub = []
-                return removed
+                return removed, None
             removed = start['elem'].copy()
             parent = self.get_parent_elem(start['elem'])
             parent.sub.remove(start['elem'])
