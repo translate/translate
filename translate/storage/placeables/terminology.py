@@ -83,6 +83,9 @@ class TerminologyPlaceable(base.Ph):
                 if info['pos'] == m_info['pos'] and end == m_end:
                     term_placeable.translations.append(m.target)
 
+            # remove duplicates:
+            term_placeable.translations = list(set(term_placeable.translations))
+
             lastend = end
         if lastend != len(pstr):
             parts.append(StringElem(pstr[lastend:]))
