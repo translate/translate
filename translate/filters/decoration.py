@@ -88,6 +88,8 @@ def isvalidaccelerator(accelerator, acceptlist=None):
     else:
         # Old code path - ensures that we don't get a large number of regressions
         accelerator = accelerator.replace("_","")
+        if accelerator in u"-?":
+            return True
         if not accelerator.isalnum():
             return False
 
