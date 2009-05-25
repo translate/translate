@@ -103,6 +103,7 @@ def test_accelerators():
     assert fails(gnomechecker.accelerators, "_File", "_Fayil_e")
     mozillachecker = checks.MozillaChecker()
     assert passes(mozillachecker.accelerators, "&File", "&Fayile")
+    assert passes(mozillachecker.accelerators, "Warn me if this will disable any of my add&-ons", "&Waarsku my as dit enige van my byvoegings sal deaktiveer")
     assert fails_serious(mozillachecker.accelerators, "&File", "Fayile")
     assert fails_serious(mozillachecker.accelerators, "File", "&Fayile")
     assert passes(mozillachecker.accelerators, "Mail &amp; News", "Pos en Nuus")
