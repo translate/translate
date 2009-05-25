@@ -190,7 +190,6 @@ parsers = [
     XMLTagPlaceable.parse,
     AltAttrPlaceable.parse,
     XMLEntityPlaceable.parse,
-    NumberPlaceable.parse,
     PythonFormattingPlaceable.parse,
     FormattingPlaceable.parse,
     UrlPlaceable.parse,
@@ -199,4 +198,5 @@ parsers = [
     CapsPlaceable.parse,
     CamelCasePlaceable.parse,
     PunctuationPlaceable.parse,
+    NumberPlaceable.parse,
 ]
