@@ -50,6 +50,8 @@ def test_sentences():
     assert sentences == [u"The first sentence.", u"The second sentence."]
     sentences = language.sentences(u"P.O. box")
     assert sentences == [u"P.O. box"]
+    sentences = language.sentences(u"Doen dit d.m.v. koeie.")
+    assert sentences == [u"Doen dit d.m.v. koeie."]
 
 def test_capsstart():
     """Tests that the indefinite article ('n) doesn't confuse startcaps()."""
