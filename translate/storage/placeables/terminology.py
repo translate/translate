@@ -73,9 +73,14 @@ class TerminologyPlaceable(base.Ph):
             parts.append(term_placeable)
 
             # Get translations for the placeable
-            # FIXME: Is this the best way to go?
             for m in matches:
-                if term_string in m.source:
+                m_info = match_info[m.source]
+                m_end = m_info['pos']
+                if 'newtermlen' in m_info:
+                    m_end += m_info['newtermlen']
+                else:
+                    m_end += len(m.source)
+                if info['pos'] == m_info['pos'] and end == m_end:
                     term_placeable.translations.append(m.target)
 
             lastend = end
