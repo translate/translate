@@ -1,24 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2006-2007 Zuza Software Foundation
+# Copyright 2006-2009 Zuza Software Foundation
 #
-# This file is part of translate.
+# This file is part of the Translate Toolkit.
 #
-# translate is free software; you can redistribute it and/or modify
+# This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 #
-# translate is distributed in the hope that it will be useful,
+# This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with translate; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 """Parent class for LISA standards (TMX, TBX, XLIFF)"""
 
@@ -33,10 +31,15 @@ except ImportError, e:
     raise ImportError("lxml is not installed. It might be possible to continue without support for XML formats.")
 
 string_xpath = etree.XPath("string()")
+string_xpath_normalized = etree.XPath("normalize-space()")
 
 def getText(node):
     """joins together the text from all the text nodes in the nodelist and their children"""
     return unicode(string_xpath(node)) # specific to lxml.etree
+#    if getXMLspace(node) == "preserve":
+#        return unicode(string_xpath(node)) # specific to lxml.etree
+#    else:
+#        return unicode(string_xpath_normalized(node)) # specific to lxml.etree
 
 def _findAllMatches(text, re_obj):
     """generate match objects for all L{re_obj} matches in L{text}."""
@@ -48,6 +51,7 @@ def _findAllMatches(text, re_obj):
         yield m
         start = m.end()
 
+#TODO: we can now do better with our proper placeables support
 placeholders = ['(%[diouxXeEfFgGcrs])', r'(\\+.?)', '(%[0-9]$lx)', '(%[0-9]\$[a-z])', '(<.+?>)']
 re_placeholders = [re.compile(ph) for ph in placeholders]
 def _getPhMatches(text):
@@ -63,12 +67,16 @@ def _getPhMatches(text):
 XML_NS = 'http://www.w3.org/XML/1998/namespace'
 
 def getXMLlang(node):
-    """Sets the xml:lang attribute on node"""
+    """Gets the xml:lang attribute on node"""
     return node.get("{%s}lang" % XML_NS)
 
 def setXMLlang(node, lang):
     """Sets the xml:lang attribute on node"""
     node.set("{%s}lang" % XML_NS, lang)
+
+def getXMLspace(node):
+    """Gets the xml:space attribute on node"""
+    return node.get("{%s}space" % XML_NS)
 
 def setXMLspace(node, value):
     """Sets the xml:space attribute on node"""
