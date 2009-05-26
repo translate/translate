@@ -56,6 +56,14 @@ class AltAttrPlaceable(G):
     parse = classmethod(regex_parse)
 
 
+class NewlinePlaceable(Ph):
+    """Matches new-lines."""
+
+    iseditable = False
+    regex = re.compile(r'\n')
+    parse = classmethod(regex_parse)
+
+
 class NumberPlaceable(Ph):
     """Placeable for numbers."""
 
@@ -187,6 +195,7 @@ def to_general_placeables(tree, classmap={G: (AltAttrPlaceable,), Ph: (NumberPla
     return newtree
 
 parsers = [
+    NewlinePlaceable.parse,
     XMLTagPlaceable.parse,
     AltAttrPlaceable.parse,
     XMLEntityPlaceable.parse,
