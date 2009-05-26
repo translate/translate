@@ -435,6 +435,11 @@ class StringElem(object):
         if not isinstance(text, StringElem):
             raise ValueError('text must be of type StringElem')
 
+        def checkleaf(elem, text):
+            if elem.isleaf() and type(text) is StringElem and text.isleaf():
+                return unicode(text)
+            return text
+
         # There are 4 general cases (including specific cases) where text can be inserted:
         # 1) At the beginning of the string (self)
         # 1.1) self.sub[0] is editable
@@ -460,9 +465,9 @@ class StringElem(object):
             else:
                 oparent = self.get_ancestor_where(oelem, lambda x: x.iseditable)
                 if oparent is not None:
-                    oparent.sub.insert(0, text)
+                    oparent.sub.insert(0, checkleaf(oparent, text))
                 else:
-                    self.sub.insert(0, text)
+                    self.sub.insert(0, checkleaf(self, text))
             return
 
         # Case 2 #
@@ -471,13 +476,13 @@ class StringElem(object):
             # 2.1 #
             if last.iseditable:
                 # last must be a leaf, because flatten() only returns leaves.
-                last.sub.append(text)
+                last.sub.append(checkleaf(last, text))
             # 2.2 #
             else:
                 parent = self.get_ancestor_where(last, lambda x: x.iseditable)
                 if parent is None:
                     parent = self
-                parent.sub.append(text)
+                parent.sub.append(checkleaf(parent, text))
             return
 
         before = self.elem_at_offset(offset-1)
@@ -488,7 +493,12 @@ class StringElem(object):
                 eoffset = offset - self.elem_offset(oelem)
                 if oelem.isleaf():
                     s = unicode(oelem) # Collapse all sibling strings into one
-                    oelem.sub = [StringElem(s[:eoffset]), text, StringElem(s[eoffset:])]
+                    head = s[:eoffset]
+                    tail = s[eoffset:]
+                    if type(text) is StringElem and text.isleaf():
+                        oelem.sub = [head + unicode(text) + tail]
+                    else:
+                        oelem.sub = [StringElem(head), text, StringElem(tail)]
                 else:
                     oelem.insert(eoffset, text)
             return
@@ -503,6 +513,7 @@ class StringElem(object):
             bindex = bparent.sub.index(before)
             bparent.sub.insert(bindex + 1, text)
 
+        # 4.2 #
         elif before.iseditable and oelem.iseditable:
             before.insert(len(before)+1, text) # Reinterpret as a case 2
 
