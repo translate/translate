@@ -613,10 +613,4 @@ class StringElem(object):
 
             @returns: The transformed Unicode string representing the sub-tree.
             """
-        trans = u''
-        for elem in self.sub:
-            if isinstance(elem, StringElem):
-                trans += elem.translate()
-            else:
-                trans += unicode(elem)
-        return trans
+        return self.copy()
