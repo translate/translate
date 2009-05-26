@@ -429,7 +429,11 @@ class StringElem(object):
         """Insert the given text at the specified offset of this string-tree's
             string (Unicode) representation."""
         if offset < 0 or offset > len(self) + 1:
-            raise IndexError
+            raise IndexError('Index out of range: %d' % (offset))
+        if isinstance(text, (str, unicode)):
+            text = StringElem(text)
+        if not isinstance(text, StringElem):
+            raise ValueError('text must be of type StringElem')
 
         # There are 4 general cases (including specific cases) where text can be inserted:
         # 1) At the beginning of the string (self)
@@ -451,31 +455,29 @@ class StringElem(object):
         if offset == 0:
             # 1.1 #
             if oelem.iseditable:
-                if oelem.isleaf():
-                    oelem.sub.insert(0, unicode(text))
-                else:
-                    oelem.sub.insert(0, StringElem(text))
+                oelem.sub.insert(0, text)
             # 1.2 #
             else:
                 oparent = self.get_ancestor_where(oelem, lambda x: x.iseditable)
                 if oparent is not None:
-                    oparent.sub.insert(0, StringElem(text))
+                    oparent.sub.insert(0, text)
                 else:
-                    self.sub.insert(0, StringElem(text))
+                    self.sub.insert(0, text)
             return
 
         # Case 2 #
-        if offset == len(self) + 1:
+        if offset >= len(self):
             last = self.flatten()[-1]
             # 2.1 #
             if last.iseditable:
                 # last must be a leaf, because flatten() only returns leaves.
-                # That's why unicode(text) is inserted
-                last.sub.append(unicode(text))
+                last.sub.append(text)
             # 2.2 #
             else:
                 parent = self.get_ancestor_where(last, lambda x: x.iseditable)
-                parent.sub.append(StringElem(text))
+                if parent is None:
+                    parent = self
+                parent.sub.append(text)
             return
 
         before = self.elem_at_offset(offset-1)
@@ -486,7 +488,7 @@ class StringElem(object):
                 eoffset = offset - self.elem_offset(oelem)
                 if oelem.isleaf():
                     s = unicode(oelem) # Collapse all sibling strings into one
-                    oelem.sub = [s[:eoffset] + unicode(text) + s[eoffset:]]
+                    oelem.sub = [StringElem(s[:eoffset]), text, StringElem(s[eoffset:])]
                 else:
                     oelem.insert(eoffset, text)
             return
@@ -499,7 +501,7 @@ class StringElem(object):
             # bparent cannot be a leaf (because it has before as a child), so we
             # insert the text as StringElem(text)
             bindex = bparent.sub.index(before)
-            bparent.sub.insert(bindex + 1, StringElem(text))
+            bparent.sub.insert(bindex + 1, text)
 
         elif before.iseditable and oelem.iseditable:
             before.insert(len(before)+1, text) # Reinterpret as a case 2
