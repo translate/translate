@@ -467,16 +467,20 @@ class StringElem(object):
             # 1.1 #
             if oelem.iseditable:
                 #logging.debug('Case 1.1')
-                oelem.sub.insert(0, text)
+                oelem.sub.insert(0, checkleaf(oelem, text))
+                oelem.prune()
+                return True
             # 1.2 #
             else:
                 #logging.debug('Case 1.2')
                 oparent = self.get_ancestor_where(oelem, lambda x: x.iseditable)
                 if oparent is not None:
                     oparent.sub.insert(0, checkleaf(oparent, text))
+                    return True
                 else:
                     self.sub.insert(0, checkleaf(self, text))
-            return
+                    return True
+            return False
 
         # Case 2 #
         if offset >= len(self):
@@ -486,6 +490,7 @@ class StringElem(object):
                 #logging.debug('Case 2.1')
                 # last must be a leaf, because flatten() only returns leaves.
                 last.sub.append(checkleaf(last, text))
+                return True
             # 2.2 #
             else:
                 #logging.debug('Case 2.2')
@@ -493,7 +498,8 @@ class StringElem(object):
                 if parent is None:
                     parent = self
                 parent.sub.append(checkleaf(parent, text))
-            return
+                return True
+            return False
 
         before = self.elem_at_offset(offset-1)
 
@@ -510,9 +516,10 @@ class StringElem(object):
                         oelem.sub = [head + unicode(text) + tail]
                     else:
                         oelem.sub = [StringElem(head), text, StringElem(tail)]
+                    return True
                 else:
-                    oelem.insert(eoffset, text)
-            return
+                    return oelem.insert(eoffset, text)
+            return False
 
         # And the only case left: Case 4 #
         # 4.1 #
@@ -524,21 +531,24 @@ class StringElem(object):
             # insert the text as StringElem(text)
             bindex = bparent.sub.index(before)
             bparent.sub.insert(bindex + 1, text)
+            return True
 
         # 4.2 #
         elif before.iseditable and oelem.iseditable:
             #logging.debug('Case 4.2')
-            before.insert(len(before)+1, text) # Reinterpret as a case 2
+            return before.insert(len(before)+1, text) # Reinterpret as a case 2
 
         # 4.3 #
         elif before.iseditable and not oelem.iseditable:
             #logging.debug('Case 4.3')
-            before.insert(len(before)+1, text) # Reinterpret as a case 2
+            return before.insert(len(before)+1, text) # Reinterpret as a case 2
 
         # 4.4 #
         elif not before.iseditable and oelem.iseditable:
             #logging.debug('Case 4.4')
-            oelem.insert(0, text) # Reinterpret as a case 1
+            return oelem.insert(0, text) # Reinterpret as a case 1
+
+        return False
 
     def isleaf(self):
         """
