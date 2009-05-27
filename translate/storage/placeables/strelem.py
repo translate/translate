@@ -607,6 +607,9 @@ class StringElem(object):
                     del elem.sub[i]
                     continue
 
+                if type(elem.sub[i]) in (str, unicode) and not elem.isleaf():
+                    elem.sub[i] = StringElem(elem.sub[i])
+
     # TODO: Write unit test for this method
     def remove_type(self, ptype):
         """Replace nodes with type C{ptype} with base C{StringElem}s, containing
