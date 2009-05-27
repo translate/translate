@@ -1,30 +1,35 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # 
-# Copyright 2005, 2006 Zuza Software Foundation
+# Copyright 2005, 2006, 2009 Zuza Software Foundation
 # 
-# This file is part of translate.
+# This file is part of the Translate Toolkit.
 #
-# translate is free software; you can redistribute it and/or modify
+# This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
-# translate is distributed in the hope that it will be useful,
+#
+# This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with translate; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""a set of autocorrect functions that make resolving common problems more automatic..."""
+"""A set of autocorrect functions that fix common punctuation and space problems automatically"""
 
 from translate.filters import decoration
 
 def correct(msgid, msgstr):
-    """runs a set of easy automatic corrections"""
+    """Runs a set of easy and automatic corrections
+
+    Current corrections include:
+      - Ellipses - align target to use source form of ellipses (either three dots or the Unicode ellipses characters)
+      - Missing whitespace and start or end of the target
+      - Missing punction (.:?) at the end of the target
+    """
     assert isinstance(msgid, unicode)
     assert isinstance(msgstr, unicode)
     if msgstr == "":
