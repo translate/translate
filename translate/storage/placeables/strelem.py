@@ -245,7 +245,13 @@ class StringElem(object):
                 return removed, None
             removed = start['elem'].copy()
             parent = self.get_parent_elem(start['elem'])
-            parent.sub.remove(start['elem'])
+
+            childn = 0
+            for child in parent.sub:
+                if child is start['elem']:
+                    break
+                childn += 1
+            parent.sub[childn:childn+1] = []
             self.prune()
             return removed, parent
 
