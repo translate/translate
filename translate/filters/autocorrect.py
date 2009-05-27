@@ -31,6 +31,8 @@ def correct(msgid, msgstr):
         return msgstr
     if "..." in msgid and u"…" in msgstr:
         return msgstr.replace(u"…", "...")
+    if u"…" in msgid and "..." in msgstr:
+        return msgstr.replace("...", u"…")
     if decoration.spacestart(msgid) != decoration.spacestart(msgstr) or decoration.spaceend(msgid) != decoration.spaceend(msgstr):
         return decoration.spacestart(msgid) + msgstr.strip() + decoration.spaceend(msgid)
     punctuation = (".", ":", ". ", ": ", "?")
