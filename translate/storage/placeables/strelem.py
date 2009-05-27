@@ -600,6 +600,10 @@ class StringElem(object):
                     if parent is not None:
                         parent.sub[parent.sub.index(elem)] = child
 
+            if type(elem) is StringElem and elem.isleaf():
+                # Collapse all strings in this leaf into one string.
+                elem.sub = [u''.join(elem.sub)]
+
             for i in reversed(range(len(elem.sub))):
                 # Remove empty strings or StringElem nodes
                 # (but not StringElem sub-class instances, because they might contain important (non-rendered) data.
