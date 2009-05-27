@@ -466,9 +466,11 @@ class StringElem(object):
         if offset == 0:
             # 1.1 #
             if oelem.iseditable:
+                #logging.debug('Case 1.1')
                 oelem.sub.insert(0, text)
             # 1.2 #
             else:
+                #logging.debug('Case 1.2')
                 oparent = self.get_ancestor_where(oelem, lambda x: x.iseditable)
                 if oparent is not None:
                     oparent.sub.insert(0, checkleaf(oparent, text))
@@ -481,10 +483,12 @@ class StringElem(object):
             last = self.flatten()[-1]
             # 2.1 #
             if last.iseditable:
+                #logging.debug('Case 2.1')
                 # last must be a leaf, because flatten() only returns leaves.
                 last.sub.append(checkleaf(last, text))
             # 2.2 #
             else:
+                #logging.debug('Case 2.2')
                 parent = self.get_ancestor_where(last, lambda x: x.iseditable)
                 if parent is None:
                     parent = self
@@ -496,6 +500,7 @@ class StringElem(object):
         # Case 3 #
         if oelem is before:
             if oelem.iseditable:
+                #logging.debug('Case 3')
                 eoffset = offset - self.elem_offset(oelem)
                 if oelem.isleaf():
                     s = unicode(oelem) # Collapse all sibling strings into one
@@ -512,6 +517,7 @@ class StringElem(object):
         # And the only case left: Case 4 #
         # 4.1 #
         if not before.iseditable and not oelem.iseditable:
+            #logging.debug('Case 4.1')
             # Neither are editable, so we add it as a sibling (to the right) of before
             bparent = self.get_parent_elem(before)
             # bparent cannot be a leaf (because it has before as a child), so we
@@ -521,14 +527,17 @@ class StringElem(object):
 
         # 4.2 #
         elif before.iseditable and oelem.iseditable:
+            #logging.debug('Case 4.2')
             before.insert(len(before)+1, text) # Reinterpret as a case 2
 
         # 4.3 #
         elif before.iseditable and not oelem.iseditable:
+            #logging.debug('Case 4.3')
             before.insert(len(before)+1, text) # Reinterpret as a case 2
 
         # 4.4 #
         elif not before.iseditable and oelem.iseditable:
+            #logging.debug('Case 4.4')
             oelem.insert(0, text) # Reinterpret as a case 1
 
     def isleaf(self):
