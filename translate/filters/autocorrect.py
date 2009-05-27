@@ -22,7 +22,7 @@
 
 from translate.filters import decoration
 
-def correct(msgid, msgstr):
+def correct(source, target):
     """Runs a set of easy and automatic corrections
 
     Current corrections include:
@@ -30,25 +30,25 @@ def correct(msgid, msgstr):
       - Missing whitespace and start or end of the target
       - Missing punction (.:?) at the end of the target
     """
-    assert isinstance(msgid, unicode)
-    assert isinstance(msgstr, unicode)
-    if msgstr == "":
-        return msgstr
-    if "..." in msgid and u"…" in msgstr:
-        return msgstr.replace(u"…", "...")
-    if u"…" in msgid and "..." in msgstr:
-        return msgstr.replace("...", u"…")
-    if decoration.spacestart(msgid) != decoration.spacestart(msgstr) or decoration.spaceend(msgid) != decoration.spaceend(msgstr):
-        return decoration.spacestart(msgid) + msgstr.strip() + decoration.spaceend(msgid)
+    assert isinstance(source, unicode)
+    assert isinstance(target, unicode)
+    if target == "":
+        return target
+    if "..." in source and u"…" in target:
+        return target.replace(u"…", "...")
+    if u"…" in source and "..." in target:
+        return target.replace("...", u"…")
+    if decoration.spacestart(source) != decoration.spacestart(target) or decoration.spaceend(source) != decoration.spaceend(target):
+        return decoration.spacestart(source) + target.strip() + decoration.spaceend(source)
     punctuation = (".", ":", ". ", ": ", "?")
-    puncendid = decoration.puncend(msgid, punctuation)
-    puncendstr = decoration.puncend(msgstr, punctuation)
+    puncendid = decoration.puncend(source, punctuation)
+    puncendstr = decoration.puncend(target, punctuation)
     if puncendid != puncendstr:
         if not puncendstr:
-            return msgstr + puncendid
-    if msgid[:1].isalpha() and msgstr[:1].isalpha():
-        if msgid[:1].isupper() and msgstr[:1].islower():
-            return msgstr[:1].upper() + msgstr[1:]
-        elif msgid[:1].islower() and msgstr[:1].isupper():
-            return msgstr[:1].lower() + msgstr[1:]
+            return target + puncendid
+    if source[:1].isalpha() and target[:1].isalpha():
+        if source[:1].isupper() and target[:1].islower():
+            return target[:1].upper() + target[1:]
+        elif source[:1].islower() and target[:1].isupper():
+            return target[:1].lower() + target[1:]
     return None
