@@ -178,7 +178,7 @@ class OptionPlaceable(Ph):
     """Placeble handling command line options e.g. --help"""
 
     regex = re.compile(r'''(?x)
-                      (
+                      \B(             # Empty string at the start of a non-word, ensures [space]-
                         -[a-zA-Z]|    # Single letter options: -i, -I
                         --[a-z\-]+    # Word options: --help
                       )\b''')
