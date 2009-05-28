@@ -130,6 +130,8 @@ class PunctuationPlaceable(Ph):
     """Placeable handling punctuation."""
 
     iseditable = False
+    # FIXME this should really be a list created as being the inverse of what is available on the 
+    # translators keyboard.  Or easily expanded by their configuration.
     regex = re.compile(ur'[™℃℉©®£¥°±‘’‚‛“”„‟…—– ]+') #last space is NBSP
     parse = classmethod(regex_parse)
 
