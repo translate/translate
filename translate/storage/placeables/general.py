@@ -174,7 +174,19 @@ class XMLTagPlaceable(Ph):
     parse = classmethod(regex_parse)
 
 
-def to_general_placeables(tree, classmap={G: (AltAttrPlaceable,), Ph: (NumberPlaceable, XMLEntityPlaceable, XMLTagPlaceable, UrlPlaceable, FilePlaceable, EmailPlaceable, PunctuationPlaceable)}):
+class OptionPlaceable(Ph):
+    """Placeble handling command line options e.g. --help"""
+
+    regex = re.compile(r'''(?x)
+                      (
+                        -[a-zA-Z]|    # Single letter options: -i, -I
+                        --[a-z\-]+    # Word options: --help
+                      )\b''')
+    #regex = re.compile(r'''(-[a-zA-Z]|--[-a-z]+)\b''')
+    parse = classmethod(regex_parse)
+
+
+def to_general_placeables(tree, classmap={G: (AltAttrPlaceable,), Ph: (NumberPlaceable, XMLEntityPlaceable, XMLTagPlaceable, UrlPlaceable, FilePlaceable, EmailPlaceable, OptionPlaceable, PunctuationPlaceable)}):
     if not isinstance(tree, StringElem):
         return tree
 
@@ -211,6 +223,7 @@ parsers = [
     EmailPlaceable.parse,
     CapsPlaceable.parse,
     CamelCasePlaceable.parse,
+    OptionPlaceable.parse,
     PunctuationPlaceable.parse,
     NumberPlaceable.parse,
 ]
