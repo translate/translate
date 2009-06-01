@@ -289,7 +289,15 @@ class StringElem(object):
 
         # Case 4 #
         range_nodes = self.depth_first()
-        range_nodes = range_nodes[range_nodes.index(start['elem']):range_nodes.index(end['elem'])+1]
+        startidx = 0
+        endidx = -1
+        for i in range(len(range_nodes)):
+            if range_nodes[i] is start['elem']:
+                startidx = i
+            elif range_nodes[i] is end['elem']:
+                endidx = i
+                break
+        range_nodes = range_nodes[startidx:endidx+1]
         #assert range_nodes[0] is start['elem'] and range_nodes[-1] is end['elem']
 
         delete_nodes = []
