@@ -62,6 +62,8 @@ class matcher(object):
         source = unit.source
         target = unit.target
         if source and target and (self.usefuzzy or not unit.isfuzzy()):
+            if len(source) < 2:
+                return False
             if source in self.existingunits and self.existingunits[source] == target:
                 return False
             else:
