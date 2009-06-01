@@ -300,14 +300,12 @@ class StringElem(object):
         range_nodes = range_nodes[startidx:endidx+1]
         #assert range_nodes[0] is start['elem'] and range_nodes[-1] is end['elem']
 
-        delete_nodes = []
         marked_nodes = [] # Contains nodes that have been marked for deletion (directly or inderectly (via parent)).
         for node in range_nodes[1:-1]:
             if node in marked_nodes:
                 continue
             subtree = node.depth_first()
             if end['elem'] not in subtree:
-                delete_nodes.append(node)
                 marked_nodes.extend(subtree) # "subtree" includes "node"
 
         ##### FOR DEBUGGING #####
@@ -323,7 +321,7 @@ class StringElem(object):
         #########################
 
         removed = self.copy()
-        for node in delete_nodes:
+        for node in marked_nodes:
             self.delete_elem(node)
         self.prune()
 
