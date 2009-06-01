@@ -69,10 +69,13 @@ class TerminologyComparer:
             return 100 - pos * 10 / len(text)
 
         for ignorepattern in ignorepatterns:
-            newterm = re.sub(ignorepattern[0], ignorepattern[1], term)
-            if newterm in text:
+            (newterm, occurrences) = re.subn(ignorepattern[0], ignorepattern[1], term)
+            if not occurrences:
+                continue
+            pos = text.find(newterm)
+            if pos >= 0:
                 self.match_info[term] = {
-                    'pos': text.find(newterm),
+                    'pos': pos,
                     'newterm': newterm,
                     'newtermlen': len(newterm),
                 }
