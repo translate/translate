@@ -306,7 +306,7 @@ class StringElem(object):
                 continue
             subtree = node.depth_first()
             if end['elem'] not in subtree:
-                marked_nodes.extend(subtree) # "subtree" includes "node"
+                marked_nodes.extend(subtree) # "subtree" does not include "node"
 
         ##### FOR DEBUGGING #####
         #s = ''
