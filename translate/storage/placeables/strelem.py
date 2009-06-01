@@ -321,13 +321,23 @@ class StringElem(object):
         #########################
 
         removed = self.copy()
+
+        # Save offsets before we start changing the tree
+        start_offset = self.elem_offset(start['elem'])
+        end_offset = self.elem_offset(end['elem'])
+
         for node in marked_nodes:
             self.delete_elem(node)
         self.prune()
 
-        if start['elem'].iseditable:
+        if start_offset == start['index']:
+            self.delete_elem(start['elem'])
+        elif start['elem'].iseditable:
             start['elem'].sub = [ u''.join(start['elem'].sub)[:start['offset']] ]
-        if end['elem'].iseditable:
+
+        if end_offset + len(end['elem']) == end['index']:
+            self.delete_elem(end['elem'])
+        elif end['elem'].iseditable:
             end['elem'].sub = [ u''.join(end['elem'].sub)[end['offset']:] ]
 
         return removed, None
