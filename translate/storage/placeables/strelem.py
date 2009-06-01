@@ -182,7 +182,14 @@ class StringElem(object):
         parent = self.get_parent_elem(elem)
         if parent is None:
             raise ElementNotFoundError
-        parent.sub.remove(elem)
+        subidx = -1
+        for i in range(len(parent.sub)):
+            if parent.sub[i] is elem:
+                subidx = i
+                break
+        if subidx < 0:
+            raise ElementNotFoundError
+        del parent.sub[subidx]
 
     def delete_range(self, start_index, end_index):
         """Delete the text in the range given by the string-indexes
