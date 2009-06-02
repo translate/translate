@@ -1,28 +1,27 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
-# Copyright 2004-2008 Zuza Software Foundation
-# 
-# This file is part of translate.
 #
-# translate is free software; you can redistribute it and/or modify
+# Copyright 2004-2008 Zuza Software Foundation
+#
+# This file is part of Virtaal.
+#
+# This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
-# translate is distributed in the hope that it will be useful,
+#
+# This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with translate; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""classes that hold units of PHP localisation files L{phpunit} or entire files
-   L{phpfile} these files are used in translating many PHP based applications.
+"""Classes that hold units of PHP localisation files L{phpunit} or entire files
+   L{phpfile}. These files are used in translating many PHP based applications.
 
-   Only PHP files written with these conventtions are supported::
+   Only PHP files written with these conventions are supported::
       $lang['item'] = "vale";  # Array of values
       $some_entity = "value";  # Named variables
 
@@ -38,7 +37,6 @@
 """
 
 from translate.storage import base
-from translate.misc import quote
 import re
 
 def phpencode(text, quotechar="'"):
@@ -143,11 +141,11 @@ class phpunit(base.TranslationUnit):
         self._comments = []
 
     def isblank(self):
-        """returns whether this is a blank element, containing only comments..."""
+        """Returns whether this is a blank element, containing only comments."""
         return not (self.name or self.value)
 
 class phpfile(base.TranslationStore):
-    """this class represents a php file, made up of phpunits"""
+    """This class represents a PHP file, made up of phpunits"""
     UnitClass = phpunit
     def __init__(self, inputfile=None, encoding='utf-8'):
         """construct a phpfile, optionally reading in from inputfile"""
@@ -160,7 +158,7 @@ class phpfile(base.TranslationStore):
             self.parse(phpsrc)
 
     def parse(self, phpsrc):
-        """read the source of a php file in and include them as units"""
+        """Read the source of a PHP file in and include them as units"""
         newunit = phpunit()
         lastvalue = ""
         value = ""
@@ -170,7 +168,7 @@ class phpfile(base.TranslationStore):
         valuequote = "" # either ' or "
         for line in phpsrc.decode(self._encoding).split("\n"):
             commentstartpos = line.find("/*")
-            commentendpos = line.rfind("*/")            
+            commentendpos = line.rfind("*/")
             if commentstartpos != -1:
                 incomment = True
                 if commentendpos != -1:
@@ -204,7 +202,7 @@ class phpfile(base.TranslationStore):
                 if not invalue and colonpos != len(value)-1:
                     commentinlinepos = value.find("//", colonpos)
                     if commentinlinepos != -1:
-                        newunit.addnote(value[commentinlinepos+2:].strip(), "developer") 
+                        newunit.addnote(value[commentinlinepos+2:].strip(), "developer")
                 if not invalue:
                     self.addunit(newunit)
                     value = ""
@@ -214,7 +212,7 @@ class phpfile(base.TranslationStore):
                 lastvalue = lastvalue + value + "\n"
 
     def __str__(self):
-        """convert the units back to lines"""
+        """Convert the units back to lines."""
         lines = []
         for unit in self.units:
             lines.append(str(unit))
