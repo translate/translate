@@ -67,7 +67,7 @@ class NewlinePlaceable(Ph):
 class NumberPlaceable(Ph):
     """Placeable for numbers."""
 
-    regex = re.compile(r"[0-9]+([.,][0-9]+)*")
+    regex = re.compile(ur"[0-9]+([\u00a0.,][0-9]+)*")
     parse = classmethod(regex_parse)
 
 
