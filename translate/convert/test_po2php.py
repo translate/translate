@@ -84,6 +84,18 @@ msgstr ""'''
         print phpfile
         assert phpfile == [phpexpected]
 
+    def test_named_variables(self):
+        """check that we convert correctly if using named variables."""
+        posource = '''#: $dictYear
+msgid "Year"
+msgstr "Jaar"
+'''
+        phptemplate = '''$dictYear = 'Year';\n'''
+        phpexpected = '''$dictYear = 'Jaar';\n'''
+        phpfile = self.merge2php(phptemplate, posource)
+        print phpfile
+        assert phpfile == [phpexpected]
+
 #    def test_merging_propertyless_template(self):
 #        """check that when merging with a template with no property values that we copy the template"""
 #        posource = ""

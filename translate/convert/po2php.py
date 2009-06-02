@@ -84,7 +84,7 @@ class rephp:
                 key = line[:equalspos].strip()
                 lookupkey = key.replace(" ", "")
                 # Calculate space around the equal sign
-                prespace = line.lstrip()[line.lstrip().find(']')+1:equalspos]
+                prespace = line[len(line[:equalspos].rstrip()):equalspos]
                 postspacestart = len(line[equalspos+1:])
                 postspaceend = len(line[equalspos+1:].lstrip())
                 postspace = line[equalspos+1:equalspos+(postspacestart-postspaceend)+1]
