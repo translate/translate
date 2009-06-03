@@ -101,9 +101,15 @@ class FormattingPlaceable(Ph):
 class UrlPlaceable(Ph):
     """Placeable handling URI."""
 
-    regex = re.compile(r"([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}|(((news|telnet|nttp|file|http|ftp|https)://)|(www|ftp)[-A-Za-z0-9]*\\.)[-A-Za-z0-9\\.]+)(:[0-9]*)?")
-    # This one ismore complex and handles trailing paths, ideally these should be combined.
-    #regex = re.compile(r"([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}|(((news|telnet|nttp|file|http|ftp|https)://)|(www|ftp)[-A-Za-z0-9]*\\.)[-A-Za-z0-9\\.]+)(:[0-9]*)?/[-A-Za-z0-9_\\$\\.\\+\\!\\*\\(\\),;:@&=\\?/~\\#\\%]*[^]'\\.}>\\),\\\"]")
+    regex = re.compile(r"""
+    ((((news|nttp|file|https?|ftp|irc)://)       # has to start with a protocol
+    |((www|ftp)[-A-Za-z0-9]*\.))                 # or www... or ftp... hostname
+    ([-A-Za-z0-9]+(\.[-A-Za-z0-9]+)*)            # hostname
+    |(\d{1,3}(\.\d{1,3}){3,3}))                  # or IP address
+    (:[0-9]{1,5})?                               # optional port
+    (/[-A-Za-z0-9_\$\.\+\!\*\(\),;:@&=\?/~\#\%]*)?     # optional trailing path
+    (?=$|\s|([]'}>\),\"]))
+    """, re.VERBOSE)
     parse = classmethod(regex_parse)
 
 
