@@ -169,7 +169,7 @@ class CamelCasePlaceable(Ph):
 
 
 class SpacesPlaceable(Ph):
-    """Placeable handling long all-caps strings."""
+    """Placeable handling unusual spaces in strings."""
 
     iseditable = True
     regex = re.compile(r"""(?m)  #Multiline expression
