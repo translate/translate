@@ -168,6 +168,18 @@ class CamelCasePlaceable(Ph):
     parse = classmethod(regex_parse)
 
 
+class SpacesPlaceable(Ph):
+    """Placeable handling long all-caps strings."""
+
+    iseditable = True
+    regex = re.compile(r"""(?m)  #Multiline expression
+        [ ]{2,}|     #More than two consecutive
+        ^[ ]+|       #At start of a line
+        [ ]+$        #At end of line""", re.VERBOSE)
+
+    parse = classmethod(regex_parse)
+
+
 class XMLTagPlaceable(Ph):
     """Placeable handling XML tags."""
 
