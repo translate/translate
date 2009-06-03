@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2008 Zuza Software Foundation
+# Copyright 2008-2009 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -173,7 +173,7 @@ def main():
 
     #setup debugging
     format = '%(asctime)s %(levelname)s %(message)s'
-    level = options.debug and logging.DEBUG or logging.INFO
+    level = options.debug and logging.DEBUG or logging.WARNING
     if options.debug:
         format = '%(levelname)7s %(module)s.%(funcName)s:%(lineno)d: %(message)s'
         if sys.version_info[:2] < (2, 5):
