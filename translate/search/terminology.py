@@ -20,25 +20,6 @@
 
 """A class that does terminology matching"""
 
-import re
-
-# We don't want to miss certain forms of words that only change a little
-# at the end. Now we are tying this code to English, but it should serve
-# us well. For example "category" should be found in "categories",
-# "copy" should be found in "copied"
-#
-# The tuples define a regular expression to search for, and what with
-# what it should be replaced.
-ignorepatterns = [
-    ("y\s*$", "ie"),          #category/categories, identify/identifies, apply/applied
-    ("[\s-]*", ""),           #down time / downtime, pre-order / preorder
-    ("-", " "),               #pre-order / pre order
-    (" ", "-"),               #pre order / pre-order
-]
-
-#TODO: compile regexes
-context_re = re.compile("\s+\(.*\)\s*$")
-
 class TerminologyComparer:
     def __init__(self, max_len=500):
         self.match_info = {}
@@ -56,28 +37,10 @@ class TerminologyComparer:
         # in the word "format", for example. A word like "at" will trigger too
         # many false positives.
 
-        # First remove a possible disambiguating bracket at the end
-        term = context_re.sub("", term)
         text = text[:self.MAX_LEN]
-
-        if len(term) <= 2:
-            return 0
 
         pos = text.find(term)
         if pos >= 0:
             self.match_info[term] = { 'pos': pos }
-            return 100 - pos * 10 / len(text)
-
-        for ignorepattern in ignorepatterns:
-            (newterm, occurrences) = re.subn(ignorepattern[0], ignorepattern[1], term)
-            if not occurrences:
-                continue
-            pos = text.find(newterm)
-            if pos >= 0:
-                self.match_info[term] = {
-                    'pos': pos,
-                    'newterm': newterm,
-                    'newtermlen': len(newterm),
-                }
-                return 80
+            return 100
         return 0

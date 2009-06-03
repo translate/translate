@@ -219,6 +219,22 @@ class matcher(object):
         return units
 
 
+# We don't want to miss certain forms of words that only change a little
+# at the end. Now we are tying this code to English, but it should serve
+# us well. For example "category" should be found in "categories",
+# "copy" should be found in "copied"
+#
+# The tuples define a regular expression to search for, and with what it
+# should be replaced.
+ignorepatterns = [
+    ("y\s*$", "ie"),          #category/categories, identify/identifies, apply/applied
+    ("[\s-]*", ""),           #down time / downtime, pre-order / preorder
+    ("-", " "),               #pre-order / pre order
+    (" ", "-"),               #pre order / pre-order
+]
+
+context_re = re.compile("\s+\(.*\)\s*$")
+
 class terminologymatcher(matcher):
     """A matcher with settings specifically for terminology matching"""
     def __init__(self, store, max_candidates=10, min_similarity=75, max_length=500, comparer=None):
@@ -231,8 +247,22 @@ class terminologymatcher(matcher):
     def inittm(self, store):
         """Normal initialisation, but convert all source strings to lower case"""
         matcher.inittm(self, store, reverse=True)
+        extras = []
         for unit in self.candidates.units:
-            unit.source = unit.source.lower()
+            source = unit.source = context_re.sub("", unit.source).lower()
+            for ignorepattern in ignorepatterns:
+                (newterm, occurrences) = re.subn(ignorepattern[0], ignorepattern[1], source)
+                if occurrences:
+                    new_unit = type(unit).buildfromunit(unit)
+                    new_unit.source = newterm
+                    # We mark it fuzzy to indicate that it isn't pristine
+                    unit.markfuzzy()
+                    extras.append(new_unit)
+        if extras:
+            # We don't sort, so that the altered forms are at the back and
+            # considered last.
+            self.extendtm(extras, sort=False)
+        self.candidates.units.sort(sourcelencmp, reverse=True)
 
     def getstartlength(self, min_similarity, text):
         # Let's number false matches by not working with terms of two
@@ -248,20 +278,21 @@ class terminologymatcher(matcher):
         """Returns whether this translation unit is usable for terminology."""
         if not unit.istranslated():
             return False
-        l = len(terminology.context_re.sub("", unit.source))
+        l = len(context_re.sub("", unit.source))
         return l <= self.MAX_LENGTH and l >= self.getstartlength(None, None)
 
     def matches(self, text):
         """Normal matching after converting text to lower case. Then replace
         with the original unit to retain comments, etc."""
         text = text.lower()
-        self.comparer.match_info = {}
+        comparer = self.comparer
+        comparer.match_info = {}
         matches = []
         for cand in self.candidates.units:
-            if self.comparer.similarity(text, cand.source, self.MIN_SIMILARITY) and \
-                    cand.source in self.comparer.match_info:
+            source = cand.source
+            if comparer.similarity(text, source, self.MIN_SIMILARITY):
+                self.match_info[source] = {'pos': comparer.match_info[source]['pos']}
                 matches.append(cand)
-        self.match_info = dict([(u.source, self.comparer.match_info[u.source]) for u in matches])
         return matches
 
 
