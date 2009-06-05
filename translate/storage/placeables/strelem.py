@@ -513,6 +513,7 @@ class StringElem(object):
                 #logging.debug('Case 2.1')
                 # last must be a leaf, because flatten() only returns leaves.
                 last.sub.append(checkleaf(last, text))
+                last.prune()
                 return True
             # 2.2 #
             else:
