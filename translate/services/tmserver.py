@@ -46,7 +46,7 @@ class TMServer(object):
 
         def log_message(self, format, *args):
             """Log requests using logging instead of printing to
-            stderror,"""
+            stderror."""
             logging.info("%s - - [%s] %s" %
                          (self.address_string(),
                           self.log_date_time_string(),
