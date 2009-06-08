@@ -61,6 +61,8 @@ class StringElem(object):
         self.rid   = rid
         self.xid   = xid
 
+        self.prune()
+
     # SPECIAL METHODS #
     def __add__(self, rhs):
         """Emulate the C{unicode} class."""
