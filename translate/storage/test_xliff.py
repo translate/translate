@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from translate.storage import xliff
+from translate.storage import xliff, lisa
 from translate.storage import test_base
 from translate.storage.placeables import StringElem
 from translate.storage.placeables.xliff import X, G
@@ -257,6 +257,57 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         unit.markfuzzy(True)
         assert 'approved="no"' in str(unit)
         #assert unit.isfuzzy()
+
+    def test_xml_space(self):
+        """Test for the correct handling of xml:space attributes."""
+        xlfsource = self.skeleton \
+          % '''<trans-unit id="1" xml:space="preserve">
+                   <source> File  1 </source>
+               </trans-unit>'''
+        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        assert xlifffile.units[0].source == " File  1 "
+        root_node = xlifffile.document.getroot()
+        lisa.setXMLspace(root_node, "preserve")
+        assert xlifffile.units[0].source == " File  1 "
+        lisa.setXMLspace(root_node, "default")
+        assert xlifffile.units[0].source == " File  1 "
+
+        xlfsource = self.skeleton \
+          % '''<trans-unit id="1" xml:space="default">
+                   <source> File  1 </source>
+               </trans-unit>'''
+        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        assert xlifffile.units[0].source == "File 1"
+        root_node = xlifffile.document.getroot()
+        lisa.setXMLspace(root_node, "preserve")
+        assert xlifffile.units[0].source == "File 1"
+        lisa.setXMLspace(root_node, "default")
+        assert xlifffile.units[0].source == "File 1"
+
+        xlfsource = self.skeleton \
+          % '''<trans-unit id="1">
+                   <source> File  1 </source>
+               </trans-unit>'''
+        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        assert xlifffile.units[0].source == "File 1"
+        root_node = xlifffile.document.getroot()
+        lisa.setXMLspace(root_node, "preserve")
+        assert xlifffile.units[0].source == " File  1 "
+        lisa.setXMLspace(root_node, "default")
+        assert xlifffile.units[0].source == "File 1"
+
+        xlfsource = self.skeleton \
+          % '''<trans-unit id="1">
+                   <source> File  1
+</source>
+               </trans-unit>'''
+        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        assert xlifffile.units[0].source == "File 1"
+        root_node = xlifffile.document.getroot()
+        lisa.setXMLspace(root_node, "preserve")
+        assert xlifffile.units[0].source == " File  1\n"
+        lisa.setXMLspace(root_node, "default")
+        assert xlifffile.units[0].source == "File 1"
 
     def test_parsing(self):
         xlfsource = self.skeleton \
