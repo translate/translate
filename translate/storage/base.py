@@ -559,7 +559,7 @@ class TranslationStore(object):
         if len(self.units) == 0:
             return True
         for unit in self.units:
-            if not (unit.isblank() or unit.isheader()):
+            if unit.istranslatable():
                 return False
         return True
 
