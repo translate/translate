@@ -85,3 +85,42 @@ class TestMatch:
         candidates.sort()
         assert candidates == ["computer", "file"]
 
+    def test_brackets(self):
+        """Tests that brackets at the end of a term are ignored"""
+        csvfile = self.buildcsv(["file (noun)", "ISP (Internet Service Provider)"])
+        matcher = match.terminologymatcher(csvfile)
+        candidates = self.candidatestrings(matcher.matches("Open File"))
+        assert candidates == ["file"]
+        candidates = self.candidatestrings(matcher.matches("Contact your ISP"))
+        assert candidates == ["ISP"]
+
+    def test_past_tences(self):
+        """Tests matching of some past tenses"""
+        csvfile = self.buildcsv(["submit", "certify"])
+        matcher = match.terminologymatcher(csvfile)
+        candidates = self.candidatestrings(matcher.matches("The bug was submitted"))
+        assert candidates == ["submit"]
+        candidates = self.candidatestrings(matcher.matches("The site is certified"))
+
+    def test_space_mismatch(self):
+        """Tests that we can match with some spacing mismatch"""
+        csvfile = self.buildcsv(["down time"])
+        matcher = match.terminologymatcher(csvfile)
+        candidates = self.candidatestrings(matcher.matches("%d minutes downtime"))
+        assert candidates == ["downtime"]
+
+    def test_hyphen_mismatch(self):
+        """Tests that we can match with some spacing mismatch"""
+        csvfile = self.buildcsv(["pre-order"])
+        matcher = match.terminologymatcher(csvfile)
+        candidates = self.candidatestrings(matcher.matches("You can preorder"))
+        assert candidates == ["preorder"]
+        candidates = self.candidatestrings(matcher.matches("You can pre order"))
+        assert candidates == ["pre order"]
+
+        csvfile = self.buildcsv(["pre order"])
+        matcher = match.terminologymatcher(csvfile)
+        candidates = self.candidatestrings(matcher.matches("You can preorder"))
+        assert candidates == ["preorder"]
+        candidates = self.candidatestrings(matcher.matches("You can pre order"))
+        assert candidates == ["pre order"]
