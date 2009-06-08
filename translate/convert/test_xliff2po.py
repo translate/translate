@@ -80,6 +80,24 @@ it</note>
         assert pofile.translate("nonsense") == "matlhapolosa"
         assert pofile.translate("bla") is None
         unit = pofile.units[0]
+        assert unit.getnotes("translator") == "Couldn't do it"
+        potext = str(pofile)
+        assert potext.index("# Couldn't do it\n") >= 0
+
+        minixlf = self.xliffskeleton % '''<trans-unit xml:space="preserve">
+        <source>nonsense</source>
+        <target>matlhapolosa</target>
+        <context-group name="po-entry" purpose="information">
+            <context context-type="x-po-trancomment">Couldn't do
+it</context>
+        </context-group>
+        <note from="po-translator">Couldn't do
+it</note>
+</trans-unit>'''
+        pofile = self.xliff2po(minixlf)
+        assert pofile.translate("nonsense") == "matlhapolosa"
+        assert pofile.translate("bla") is None
+        unit = pofile.units[0]
         assert unit.getnotes("translator") == "Couldn't do\nit"
         potext = str(pofile)
         assert potext.index("# Couldn't do\n# it\n") >= 0
@@ -87,6 +105,24 @@ it</note>
     def test_autocomment(self):
         """Tests automatic comments"""
         minixlf = self.xliffskeleton % '''<trans-unit>
+        <source>nonsense</source>
+        <target>matlhapolosa</target>
+        <context-group name="po-entry" purpose="information">
+            <context context-type="x-po-autocomment">Note that this is
+garbage</context>
+        </context-group>
+        <note from="developer">Note that this is
+garbage</note>
+</trans-unit>'''
+        pofile = self.xliff2po(minixlf)
+        assert pofile.translate("nonsense") == "matlhapolosa"
+        assert pofile.translate("bla") is None
+        unit = pofile.units[0]
+        assert unit.getnotes("developer") == "Note that this is garbage"
+        potext = str(pofile)
+        assert potext.index("#. Note that this is garbage\n") >= 0
+
+        minixlf = self.xliffskeleton % '''<trans-unit xml:space="preserve">
         <source>nonsense</source>
         <target>matlhapolosa</target>
         <context-group name="po-entry" purpose="information">
