@@ -34,24 +34,24 @@ class TestPODebug:
 
     def test_rewrite_blank(self):
         """Test the blank rewrite function"""
-        assert str(self.debug.rewrite_blank("Test")) == ""
+        assert str(self.debug.rewrite_blank(u"Test")) == u""
 
     def test_rewrite_en(self):
         """Test the en rewrite function"""
-        assert str(self.debug.rewrite_en("Test")) == "Test"
+        assert str(self.debug.rewrite_en(u"Test")) == u"Test"
 
     def test_rewrite_xxx(self):
         """Test the xxx rewrite function"""
-        assert str(self.debug.rewrite_xxx("Test")) == "xxxTestxxx"
-        assert str(self.debug.rewrite_xxx("Newline\n")) == "xxxNewlinexxx\n"
+        assert str(self.debug.rewrite_xxx(u"Test")) == u"xxxTestxxx"
+        assert str(self.debug.rewrite_xxx(u"Newline\n")) == u"xxxNewlinexxx\n"
 
     def test_rewrite_unicode(self):
         """Test the unicode rewrite function"""
-        assert unicode(self.debug.rewrite_unicode("Test")) == u"Ŧḗşŧ"
+        assert unicode(self.debug.rewrite_unicode(u"Test")) == u"Ŧḗşŧ"
 
     def test_rewrite_flipped(self):
         """Test the unicode rewrite function"""
-        assert unicode(self.debug.rewrite_flipped("Test")) == u"\u202e⊥ǝsʇ"
+        assert unicode(self.debug.rewrite_flipped(u"Test")) == u"\u202e⊥ǝsʇ"
         #alternative with reversed string and no RTL override:
         #assert unicode(self.debug.rewrite_flipped("Test")) == u"ʇsǝ⊥"
 
@@ -61,7 +61,7 @@ class TestPODebug:
         This is not realy critical to test but a simple tests ensures
         that it stays working.
         """
-        assert str(self.debug.rewrite_chef("Mock Swedish test you muppet")) == "Mock Swedish test yooo mooppet"
+        assert str(self.debug.rewrite_chef(u"Mock Swedish test you muppet")) == u"Mock Swedish test yooo mooppet"
 
     def test_xliff_rewrite(self):
         debug = podebug.podebug(rewritestyle='xxx')
@@ -71,4 +71,6 @@ class TestPODebug:
         out_unit = xliff_out.units[0]
 
         assert in_unit.source == out_unit.source
-        assert str(out_unit.target) == 'xxx%sxxx' % (str(in_unit.source))
+        print out_unit.target
+        print str(xliff_out)
+        assert out_unit.target == u'xxx%sxxx' % (in_unit.source)
