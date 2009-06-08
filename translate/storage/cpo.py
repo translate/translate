@@ -470,10 +470,9 @@ class pounit(pocommon.pounit):
         if not text:
             text = gpo.po_message_msgid(self._gpo_message)
         if text:
-            msgidcomment = re.search("_: (.*)\n", text)
-            if msgidcomment:
-                return msgidcomment.group(1).decode(self._encoding)
+            return pocommon.extract_msgid_comment(text)
         return u""
+
     def setmsgidcomment(self, msgidcomment):
         if msgidcomment:
             newsource = "_: " + msgidcomment + "\n" + self.source
