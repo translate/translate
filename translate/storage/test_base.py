@@ -24,6 +24,7 @@ from translate.misc.multistring import multistring
 from translate.storage import base
 from translate.storage.placeables import general, parse as rich_parse
 from py import test
+from __builtin__ import AssertionError
 import os
 import warnings
 
@@ -173,7 +174,6 @@ class TestTranslationUnit:
         elems = [
             rich_parse(u'Tëst <x>string</x>', general.parsers),
             rich_parse(u'Another test string.', general.parsers),
-            rich_parse('A non-Unicode string.', general.parsers)
         ]
         unit = self.UnitClass(multistring([u'a', u'b']))
         unit.rich_target = elems
@@ -181,7 +181,6 @@ class TestTranslationUnit:
         if unit.hasplural():
             assert unit.target.strings[0] == u'Tëst <x>string</x>'
             assert unit.target.strings[1] == u'Another test string.'
-            assert unit.target.strings[2] == 'A non-Unicode string.'
         else:
             assert unit.target == u'Tëst <x>string</x>'
 
