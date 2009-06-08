@@ -129,6 +129,8 @@ gpo.po_message_prev_msgctxt.restype = STRING
 gpo.po_message_prev_msgid.restype = STRING
 gpo.po_message_prev_msgid_plural.restype = STRING
 gpo.po_message_is_format.restype = c_int
+gpo.po_message_is_format.argtypes = [c_int, STRING]
+gpo.po_message_set_format.argtypes = [c_int, STRING, c_int]
 gpo.po_message_msgctxt.restype = STRING
 gpo.po_message_msgid.restype = STRING
 gpo.po_message_msgid_plural.restype = STRING
@@ -423,6 +425,9 @@ class pounit(pocommon.pounit):
 
     def hastypecomment(self, typecomment):
         return gpo.po_message_is_format(self._gpo_message, typecomment)
+
+    def settypecomment(self, typecomment, present=True):
+        gpo.po_message_set_format(self._gpo_message, typecomment, present)
 
     def hasmarkedcomment(self, commentmarker):
         commentmarker = "(%s)" % commentmarker
