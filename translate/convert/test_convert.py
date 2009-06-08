@@ -5,11 +5,17 @@ from translate.convert import convert
 import os
 import sys
 from py import test
+try:
+    import psyco
+except Exception:
+    psyco = None
 
 class TestConvertCommand:
     """Tests running actual commands on files"""
     convertmodule = convert
-    defaultoptions = {"progress": "none", "psyco": "none"}
+    defaultoptions = {"progress": "none"}
+    if psyco:
+        defaultoptions["psyco"] = "none"
 
     def setup_method(self, method):
         """creates a clean test directory for the given method"""
@@ -117,11 +123,8 @@ class TestConvertCommand:
         options = self.help_check(options, "-h, --help")
         options = self.help_check(options, "--manpage")
         options = self.help_check(options, "--errorlevel=ERRORLEVEL")
-        try:
-            import psyco
+        if psyco:
             options = self.help_check(options, "--psyco=MODE")
-        except Exception:
-            pass
         options = self.help_check(options, "-i INPUT, --input=INPUT")
         options = self.help_check(options, "-x EXCLUDE, --exclude=EXCLUDE")
         options = self.help_check(options, "-o OUTPUT, --output=OUTPUT")
