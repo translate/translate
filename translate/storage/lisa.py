@@ -30,16 +30,19 @@ try:
 except ImportError, e:
     raise ImportError("lxml is not installed. It might be possible to continue without support for XML formats.")
 
+#xml_preserve_ancestors = etree.XPath("ancestor-or-self::*[attribute::xml:space='preserve']")
+xml_preserve_ancestors = etree.XPath("ancestor-or-self::*/attribute::xml:space")
 string_xpath = etree.XPath("string()")
 string_xpath_normalized = etree.XPath("normalize-space()")
 
 def getText(node):
     """joins together the text from all the text nodes in the nodelist and their children"""
-    return unicode(string_xpath(node)) # specific to lxml.etree
-#    if getXMLspace(node) == "preserve":
-#        return unicode(string_xpath(node)) # specific to lxml.etree
-#    else:
-#        return unicode(string_xpath_normalized(node)) # specific to lxml.etree
+    xml_preserves = xml_preserve_ancestors(node)
+    if xml_preserves and xml_preserves[-1] == "preserve":
+        return unicode(string_xpath(node)) # specific to lxml.etree
+    else:
+        return unicode(string_xpath_normalized(node)) # specific to lxml.etree
+
 
 def _findAllMatches(text, re_obj):
     """generate match objects for all L{re_obj} matches in L{text}."""
