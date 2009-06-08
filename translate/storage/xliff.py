@@ -1,24 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2005-2007 Zuza Software Foundation
-# 
-# This file is part of translate.
+# Copyright 2005-2009 Zuza Software Foundation
 #
-# translate is free software; you can redistribute it and/or modify
+# This file is part of the Translate Toolkit.
+#
+# This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
-# translate is distributed in the hope that it will be useful,
+#
+# This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with translate; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 """Module for handling XLIFF files for translation.
 
@@ -57,7 +55,7 @@ class xliffunit(lisa.LISAunit):
 #        self.createPHnodes(langset, text)
         langset.text = text
         return langset
-    
+
     def getlanguageNodes(self):
         """We override this to get source and target nodes."""
         sources = list(self.xmlelement.iterdescendants(self.namespaced(self.languageNode)))
@@ -73,7 +71,7 @@ class xliffunit(lisa.LISAunit):
 
     def addalttrans(self, txt, origin=None, lang=None, sourcetxt=None, matchquality=None):
         """Adds an alt-trans tag and alt-trans components to the unit.
-        
+
         @type txt: String
         @param txt: Alternative translation of the source text.
         """
@@ -211,7 +209,7 @@ class xliffunit(lisa.LISAunit):
 #                (targetnode.get("state-qualifier") == "fuzzy-match" or \
 #                targetnode.get("state") == "needs-review-translation")
         return not self.isapproved()
-                
+
     def markfuzzy(self, value=True):
         if value:
             self.markapproved(False)
@@ -300,7 +298,7 @@ class xliffunit(lisa.LISAunit):
                     pairs.append((context.get("context-type"), lisa.getText(context)))
                 groups.append(pairs) #not extend
         return groups
-        
+
     def getrestype(self):
         """returns the restype attribute in the trans-unit tag"""
         return self.xmlelement.get("restype")
@@ -365,7 +363,7 @@ class xlifffile(lisa.LISAfile):
     namespace = 'urn:oasis:names:tc:xliff:document:1.1'
     suggestions_in_format = True
     """xliff units have alttrans tags which can be used to store suggestions"""
-    
+
     def __init__(self, *args, **kwargs):
         lisa.LISAfile.__init__(self, *args, **kwargs)
         self._filename = "NoName"
@@ -523,7 +521,7 @@ class xlifffile(lisa.LISAfile):
         #instead of globally in the whole XLIFF file, but using len(self.units)
         #will be much faster
         return True
-    
+
     def creategroup(self, filename="NoName", createifmissing=False, restype=None):
         """adds a group tag into the specified file"""
         if self._filename != filename:
@@ -533,7 +531,7 @@ class xlifffile(lisa.LISAfile):
         if restype:
             group.set("restype", restype)
         return group
-        
+
     def __str__(self):
         self.removedefaultfile()
         return super(xlifffile, self).__str__()
@@ -550,4 +548,3 @@ class xlifffile(lisa.LISAfile):
                 xliff = poxliff.PoXliffFile.parsestring(storestring)
         return xliff
     parsestring = classmethod(parsestring)
-
