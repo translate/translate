@@ -543,10 +543,12 @@ class pounit(pocommon.pounit):
                 newunit.addnote(notes, "translator")
             if unit.isobsolete():
                 newunit.makeobsolete()
-#            newunit.markfuzzy(unit.isfuzzy())
-            for tc in ['fuzzy', 'python-format', 'c-format', 'php-format']:
+            newunit.markfuzzy(unit.isfuzzy())
+            for tc in ['python-format', 'c-format', 'php-format']:
                 if unit.hastypecomment(tc):
                     newunit.settypecomment(tc)
+                    # We assume/guess/hope that there will only be one
+                    break
             return newunit
         else:
             return base.buildfromunit(unit)
