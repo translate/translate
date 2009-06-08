@@ -58,18 +58,18 @@ class podebug:
     def rewrite_xxx(self, string):
         if not isinstance(string, StringElem):
             string = StringElem(string)
-        string.sub.insert(0, 'xxx')
-        if unicode(string).endswith('\n'):
+        string.sub.insert(0, u'xxx')
+        if unicode(string).endswith(u'\n'):
             # Try and remove the last character from the tree
             try:
                 lastnode = string.flatten()[-1]
-                if isinstance(lastnode.sub[-1], (str, unicode)):
-                    lastnode.sub[-1] = lastnode.sub[-1].rstrip('\n')
-            except Exception:
+                if isinstance(lastnode.sub[-1], unicode):
+                    lastnode.sub[-1] = lastnode.sub[-1].rstrip(u'\n')
+            except IndexError:
                 pass
-            string.sub.append('xxx\n')
+            string.sub.append(u'xxx\n')
         else:
-            string.sub.append('xxx')
+            string.sub.append(u'xxx')
         return string
 
     def rewrite_en(self, string):
@@ -78,7 +78,7 @@ class podebug:
         return string
 
     def rewrite_blank(self, string):
-        return StringElem("")
+        return StringElem(u"")
 
     def rewrite_chef(self, string):
         """Rewrite using Mock Swedish as made famous by Monty Python"""
