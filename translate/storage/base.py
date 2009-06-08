@@ -21,7 +21,7 @@
 """Base classes for storage interfaces.
 
 @organization: Zuza Software Foundation
-@copyright: 2006-2007 Zuza Software Foundation
+@copyright: 2006-2009 Zuza Software Foundation
 @license: U{GPL <http://www.fsf.org/licensing/licenses/gpl.html>}
 """
 
@@ -127,7 +127,6 @@ class TranslationUnit(object):
         if isinstance(mulstring, multistring):
             return [rich_parse(s, cls.rich_parsers) for s in mulstring.strings]
         return [rich_parse(mulstring, cls.rich_parsers)]
-    multistring_to_rich = classmethod(multistring_to_rich)
 
     def setsource(self, source):
         """Sets the source string to the given value."""
@@ -385,7 +384,7 @@ class TranslationStore(object):
     """Indicates whether a file should be accessed as a binary file."""
     suggestions_in_format = False
     """Indicates if format can store suggestions and alternative translation for a unit"""
-    
+
     def __init__(self, unitclass=None):
         """Constructs a blank TranslationStore."""
         self.units = []
@@ -545,7 +544,7 @@ class TranslationStore(object):
         self.__dict__.update(dict)
         if getattr(self, "filename", False):
             self.fileobj=open(self.filename)
-        
+
     def __str__(self):
         """Converts to a string representation that can be parsed back using L{parsestring()}."""
         # We can't pickle fileobj if it is there, so let's hide it for a while.
