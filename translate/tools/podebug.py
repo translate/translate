@@ -248,7 +248,7 @@ class podebug:
                     formatted = formatted[:int(length)]
             prefix = prefix.replace(formatstr, formatted)
         for unit in store.units:
-            if unit.isheader() or unit.isblank():
+            if not unit.istranslatable():
                 continue
             unit = self.convertunit(unit, prefix)
         return store
