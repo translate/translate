@@ -29,7 +29,8 @@ import re
 
 from translate.misc import hash
 from translate.storage import factory
-from translate.storage.placeables import StringElem
+from translate.storage.placeables import StringElem, general
+from translate.storage.placeables import parse as rich_parse
 
 
 def add_prefix(prefix, stringelems):
@@ -206,8 +207,11 @@ class podebug:
             else:
                 hashable = unit.source
             prefix = hash.md5_f(hashable).hexdigest()[:self.hash] + " "
+        rich_source = unit.rich_source
+        if not isinstance(rich_source, StringElem):
+            rich_source = [rich_parse(string, general.parsers) for string in rich_source]
         if self.rewritefunc:
-            rewritten = [self.rewritefunc(string) for string in unit.rich_source]
+            rewritten = [self.rewritefunc(string) for string in rich_source]
             if rewritten:
                 unit.rich_target = rewritten
         elif not unit.istranslated():
