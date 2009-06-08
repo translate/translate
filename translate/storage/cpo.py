@@ -518,6 +518,40 @@ class pounit(pocommon.pounit):
             msgidcomment = self._extract_msgidcomments()
             return msgidcomment
 
+    def buildfromunit(cls, unit):
+        """Build a native unit from a foreign unit, preserving as much
+        information as possible."""
+        if type(unit) == cls and hasattr(unit, "copy") and callable(unit.copy):
+            return unit.copy()
+        elif isinstance(unit, pocommon.pounit):
+            newunit = cls(unit.source)
+            newunit.target = unit.target
+            #context
+            newunit.msgidcomment = unit._extract_msgidcomments()
+            context = unit.getcontext()
+            if not newunit.msgidcomment and context:
+                gpo.po_message_set_msgctxt(newunit._gpo_message, context)
+
+            locations = unit.getlocations()
+            if locations:
+                newunit.addlocations(locations)
+            notes = unit.getnotes("developer")
+            if notes:
+                newunit.addnote(notes, "developer")
+            notes = unit.getnotes("translator")
+            if notes:
+                newunit.addnote(notes, "translator")
+            if unit.isobsolete():
+                newunit.makeobsolete()
+#            newunit.markfuzzy(unit.isfuzzy())
+            for tc in ['fuzzy', 'python-format', 'c-format', 'php-format']:
+                if unit.hastypecomment(tc):
+                    newunit.settypecomment(tc)
+            return newunit
+        else:
+            return base.buildfromunit(unit)
+    buildfromunit = classmethod(buildfromunit)
+
 class pofile(pocommon.pofile):
     UnitClass = pounit
     def __init__(self, inputfile=None, encoding=None, unitclass=pounit):
