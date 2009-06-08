@@ -41,6 +41,13 @@ class xliffunit(lisa.LISAunit):
 
     #TODO: id and all the trans-unit level stuff
 
+    def __init__(self, source, empty=False, **kwargs):
+        """Override the constructor to set xml:space="preserve"."""
+        if empty:
+            return
+        super(xliffunit, self).__init__(source, empty, **kwargs)
+        lisa.setXMLspace(self.xmlelement, "preserve")
+
     def createlanguageNode(self, lang, text, purpose):
         """Returns an xml Element setup with given parameters."""
 
@@ -81,6 +88,7 @@ class xliffunit(lisa.LISAunit):
         if isinstance(txt, str):
             txt = txt.decode("utf-8")
         alttrans = etree.SubElement(self.xmlelement, self.namespaced("alt-trans"))
+        lisa.setXMLspace(alttrans, "preserve")
         alttarget = etree.SubElement(alttrans, self.namespaced("target"))
         alttarget.text = txt
         if sourcetxt:
