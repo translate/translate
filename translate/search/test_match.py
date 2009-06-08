@@ -92,7 +92,9 @@ class TestMatch:
         candidates = self.candidatestrings(matcher.matches("Open File"))
         assert candidates == ["file"]
         candidates = self.candidatestrings(matcher.matches("Contact your ISP"))
-        assert candidates == ["ISP"]
+        # we lowercase everything - that is why we get it back differerntly.
+        # we don't change the target text, though
+        assert candidates == ["isp"]
 
     def test_past_tences(self):
         """Tests matching of some past tenses"""
