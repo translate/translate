@@ -24,7 +24,7 @@ from translate.storage import poheader
 
 import re
 
-msgid_comment_re = re.compile("_: (.*)\n") #should this be non-greedy?
+msgid_comment_re = re.compile("_: (.*?)\n")
 
 def extract_msgid_comment(text):
     """The one definitive way to extract a msgid comment out of an unescaped
