@@ -258,11 +258,11 @@ class terminologymatcher(matcher):
                     # We mark it fuzzy to indicate that it isn't pristine
                     unit.markfuzzy()
                     extras.append(new_unit)
+        self.candidates.units.sort(sourcelencmp, reverse=True)
         if extras:
             # We don't sort, so that the altered forms are at the back and
             # considered last.
             self.extendtm(extras, sort=False)
-        self.candidates.units.sort(sourcelencmp, reverse=True)
 
     def getstartlength(self, min_similarity, text):
         # Let's number false matches by not working with terms of two
