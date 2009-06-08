@@ -80,7 +80,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         xliffunit = xlifffile.addsourceunit(u'')
 
         # Test 1
-        xliffunit.rich_source = [StringElem(['foo', X(id='bar'), 'baz'])]
+        xliffunit.rich_source = [StringElem([u'foo', X(id='bar'), u'baz'])]
         source_dom_node = xliffunit.getlanguageNode(None, 0)
         x_placeable = source_dom_node[0]
 
@@ -90,10 +90,12 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert x_placeable.attrib['id'] == 'bar'
         assert x_placeable.tail == 'baz'
 
-        assert xliffunit.rich_source == [StringElem(['foo', X(id='bar'), 'baz'])]
+        xliffunit.rich_source[0].print_tree(2)
+        print xliffunit.rich_source
+        assert xliffunit.rich_source == [StringElem([StringElem(u'foo'), X(id='bar'), StringElem(u'baz')])]
 
         # Test 2
-        xliffunit.rich_source = [StringElem(['foo', 'baz', G(id='oof', sub=[G(id='zab', sub=['bar', 'rab'])])])]
+        xliffunit.rich_source = [StringElem([u'foo', u'baz', G(id='oof', sub=[G(id='zab', sub=[u'bar', u'rab'])])])]
         source_dom_node = xliffunit.getlanguageNode(None, 0)
         g_placeable = source_dom_node[0]
         nested_g_placeable = g_placeable[0]
@@ -111,14 +113,15 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert nested_g_placeable.tail is None
 
         rich_source = xliffunit.rich_source
-        assert rich_source == [StringElem(['foobaz', G(id='oof', sub=[G(id='zab', sub=['barrab'])])])]
+        rich_source[0].print_tree(2)
+        assert rich_source == [StringElem([u'foobaz', G(id='oof', sub=[G(id='zab', sub=[u'barrab'])])])]
 
     def test_rich_target(self):
         xlifffile = xliff.xlifffile()
         xliffunit = xlifffile.addsourceunit(u'')
 
         # Test 1
-        xliffunit.set_rich_target([StringElem(['foo', X(id='bar'), 'baz'])], 'fr')
+        xliffunit.set_rich_target([StringElem([u'foo', X(id='bar'), u'baz'])], u'fr')
         target_dom_node = xliffunit.getlanguageNode(None, 1)
         x_placeable = target_dom_node[0]
 
@@ -128,7 +131,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert x_placeable.tail == 'baz'
 
         # Test 2
-        xliffunit.set_rich_target([StringElem(['foo', 'baz', G(id='oof', sub=[G(id='zab', sub=['bar', 'rab'])])])], 'fr')
+        xliffunit.set_rich_target([StringElem([u'foo', u'baz', G(id='oof', sub=[G(id='zab', sub=[u'bar', u'rab'])])])], u'fr')
         target_dom_node = xliffunit.getlanguageNode(None, 1)
         g_placeable = target_dom_node[0]
         nested_g_placeable = g_placeable[0]
@@ -146,7 +149,8 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert nested_g_placeable.attrib[u'id'] == u'zab'
         assert nested_g_placeable.tail is None
 
-        assert xliffunit.rich_target == [StringElem(['foobaz', G(id='oof', sub=[G(id='zab', sub=['barrab'])])])]
+        xliffunit.rich_target[0].print_tree(2)
+        assert xliffunit.rich_target == [StringElem([u'foobaz', G(id='oof', sub=[G(id='zab', sub=[u'barrab'])])])]
 
     def test_source(self):
         xlifffile = xliff.xlifffile()
