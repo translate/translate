@@ -1,23 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
-# Copyright 2002-2007 Zuza Software Foundation
-# 
-# This file is part of translate.
 #
-# translate is free software; you can redistribute it and/or modify
+# Copyright 2002-2009 Zuza Software Foundation
+#
+# This file is part of the Translate Toolkit.
+#
+# This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
-# translate is distributed in the hope that it will be useful,
+#
+# This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with translate; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 """classes that hold units of .po files (pounit) or entire files (pofile)
 gettext-style .po (or .pot) files are used in translations for KDE et al (see kbabel)"""
@@ -43,7 +42,7 @@ po_escape_map = dict([(value, key) for (key, value) in po_unescape_map.items()])
 
 def escapeforpo(line):
     """Escapes a line for po format. assumes no \n occurs in the line.
-    
+
     @param line: unescaped text
     """
     special_locations = []
@@ -104,7 +103,7 @@ def quoteforpo(text):
 
 def extractpoline(line):
     """Remove quote and unescape line from po file.
-     
+
     @param line: a quoted line from a po file (msgid or msgstr)
     """
     extracted = quote.extractwithoutquotes(line, '"', '"', '\\', includeescapes=unescapehandler)[0]
@@ -184,10 +183,10 @@ class pounit(pocommon.pounit):
             self.obsoletemsgidcomments = []
 
     def _get_all_comments(self):
-        return [self.othercomments, 
-                self.automaticcomments, 
-                self.sourcecomments, 
-                self.typecomments, 
+        return [self.othercomments,
+                self.automaticcomments,
+                self.sourcecomments,
+                self.typecomments,
                 self.msgidcomments,
                 self.obsoletemsgidcomments]
 
@@ -226,7 +225,7 @@ class pounit(pocommon.pounit):
 
     def setsource(self, source):
         """Sets the msgid to the given (unescaped) value.
-        
+
         @param source: an unescaped source string.
         """
         self.msgid, self.msgid_plural = self._set_source_vars(source)
@@ -238,7 +237,7 @@ class pounit(pocommon.pounit):
 
     def _set_prev_source(self, source):
         """Sets the msgid to the given (unescaped) value.
-        
+
         @param source: an unescaped source string.
         """
         self.prev_msgid, self.prev_msgid_plural = self._set_source_vars(source)
@@ -314,7 +313,7 @@ class pounit(pocommon.pounit):
                 self.automaticcomments = newcomments
             else:
                 self.othercomments = newcomments
-        
+
     def removenotes(self):
         """Remove all the translator's notes (other comments)"""
         self.othercomments = []
@@ -359,7 +358,6 @@ class pounit(pocommon.pounit):
 
         Overwrite non-blank self.msgstr only if overwrite is True
         merge comments only if comments is True
-        
         """
 
         def mergelists(list1, list2, split=False):
@@ -371,7 +369,6 @@ class pounit(pocommon.pounit):
                 for position, item in enumerate(list2):
                     if isinstance(item, str):
                         list2[position] = item.decode("utf-8")
-                        
             #Determine the newline style of list1
             lineend = ""
             if list1 and list1[0]:
@@ -382,7 +379,7 @@ class pounit(pocommon.pounit):
                     lineend = ""
             else:
                 lineend = "\n"
-            
+
             #Split if directed to do so:
             if split:
                 splitlist1 = []
@@ -434,9 +431,9 @@ class pounit(pocommon.pounit):
 
     def isheader(self):
         #return (self._msgidlen() == 0) and (self._msgstrlen() > 0) and (len(self.msgidcomments) == 0)
-        #rewritten here for performance:        
-        return (is_null(self.msgid) 
-                        and not is_null(self.msgstr) 
+        #rewritten here for performance:
+        return (is_null(self.msgid)
+                        and not is_null(self.msgstr)
                         and self.msgidcomments == []
                         and is_null(self.msgctxt)
         )
@@ -664,10 +661,8 @@ class pounit(pocommon.pounit):
 
     def _extract_msgidcomments(self, text=None):
         """Extract KDE style msgid comments from the unit.
-        
         @rtype: String
         @return: Returns the extracted msgidcomments found in this unit's msgid.
-        
         """
 
         if not text:
@@ -851,4 +846,3 @@ class pofile(pocommon.pofile):
         for unit in self.units:
             if not (unit.isheader() or unit.isobsolete()):
                 yield unit
-
