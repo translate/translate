@@ -1,24 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2005-2007 Zuza Software Foundation
-# 
-# This file is part of translate.
+# Copyright 2005-2009 Zuza Software Foundation
 #
-# translate is free software; you can redistribute it and/or modify
+# This file is part of the Translate Toolkit.
+#
+# This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
-# translate is distributed in the hope that it will be useful,
+#
+# This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with translate; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 """module for parsing TMX translation memeory files"""
 
@@ -32,7 +30,7 @@ class tmxunit(lisa.LISAunit):
     rootNode = "tu"
     languageNode = "tuv"
     textNode = "seg"
-                   
+
     def createlanguageNode(self, lang, text, purpose):
         """returns a langset xml Element setup with given parameters"""
         if isinstance(text, str):
@@ -44,8 +42,8 @@ class tmxunit(lisa.LISAunit):
         return langset
 
     def getid(self):
-        """Returns the identifier for this unit. The optional tuid property is 
-        used if available, otherwise we inherit .getid(). Note that the tuid 
+        """Returns the identifier for this unit. The optional tuid property is
+        used if available, otherwise we inherit .getid(). Note that the tuid
         property is only mandated to be unique from TMX 2.0."""
         id = self.xmlelement.get("tuid", "")
         return id or super(tmxunit, self).getid()
@@ -55,21 +53,21 @@ class tmxunit(lisa.LISAunit):
 
     def addnote(self, text, origin=None):
         """Add a note specifically in a "note" tag.
-        
+
         The origin parameter is ignored"""
         if isinstance(text, str):
             text = text.decode("utf-8")
         note = etree.SubElement(self.xmlelement, self.namespaced("note"))
         note.text = text.strip()
- 
+
     def getnotelist(self, origin=None):
         """Private method that returns the text from notes.
-        
+
         The origin parameter is ignored.."""
         note_nodes = self.xmlelement.iterdescendants(self.namespaced("note"))
         note_list = [lisa.getText(note) for note in note_nodes]
 
-        return note_list 
+        return note_list
 
     def getnotes(self, origin=None):
         return '\n'.join(self.getnotelist(origin=origin))
@@ -99,7 +97,7 @@ class tmxunit(lisa.LISAunit):
     def copy(self):
         """Make a copy of the translation unit.
 
-        We don't want to make a deep copy - this could duplicate the whole XML 
+        We don't want to make a deep copy - this could duplicate the whole XML
         tree. For now we just serialise and reparse the unit's XML."""
         #TODO: check performance
         new_unit = self.__class__(None, empty=True)
@@ -121,7 +119,7 @@ class tmxfile(lisa.LISAfile):
 <header></header>
 <body></body>
 </tmx>'''
-    
+
     def addheader(self):
         headernode = self.document.getroot().iterchildren(self.namespaced("header")).next()
         headernode.set("creationtool", "Translate Toolkit - po2tmx")
@@ -146,4 +144,3 @@ class tmxfile(lisa.LISAfile):
     def translate(self, sourcetext, sourcelang=None, targetlang=None):
         """method to test old unit tests"""
         return getattr(self.findunit(sourcetext), "target", None)
-
