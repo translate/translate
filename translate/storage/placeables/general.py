@@ -67,6 +67,7 @@ class NewlinePlaceable(Ph):
 class NumberPlaceable(Ph):
     """Placeable for numbers."""
 
+    istranslatable = False
     regex = re.compile(ur"[0-9]+([\u00a0.,][0-9]+)*")
     parse = classmethod(regex_parse)
 
@@ -101,6 +102,7 @@ class FormattingPlaceable(Ph):
 class UrlPlaceable(Ph):
     """Placeable handling URI."""
 
+    istranslatable = False
     regex = re.compile(r"""
     ((((news|nttp|file|https?|ftp|irc)://)       # has to start with a protocol
     |((www|ftp)[-A-Za-z0-9]*\.))                 # or www... or ftp... hostname
@@ -116,6 +118,7 @@ class UrlPlaceable(Ph):
 class FilePlaceable(Ph):
     """Placeable handling file locations."""
 
+    istranslatable = False
     regex = re.compile(r"(~/|/|\./)([-A-Za-z0-9_\$\.\+\!\*\(\),;:@&=\?/~\#\%]|\\){3,}")
     #TODO: Handle Windows drive letters. Some common Windows paths won't be
     # handled correctly while note allowing spaces, such as
@@ -127,6 +130,7 @@ class FilePlaceable(Ph):
 class EmailPlaceable(Ph):
     """Placeable handling emails."""
 
+    istranslatable = False
     regex = re.compile(r"((mailto:)|)[A-Za-z0-9]+[-a-zA-Z0-9._%]*@(([-A-Za-z0-9]+)\.)+[a-zA-Z]{2,4}")
     # TODO: What about internationalised domain names? ;-)
     parse = classmethod(regex_parse)
@@ -178,6 +182,7 @@ class SpacesPlaceable(Ph):
     """Placeable handling unusual spaces in strings."""
 
     iseditable = True
+    istranslatable = False
     regex = re.compile(r"""(?m)  #Multiline expression
         [ ]{2,}|     #More than two consecutive
         ^[ ]+|       #At start of a line
@@ -197,6 +202,7 @@ class XMLTagPlaceable(Ph):
 class OptionPlaceable(Ph):
     """Placeble handling command line options e.g. --help"""
 
+    istranslatable = False
     regex = re.compile(r'''(?x)
                       \B(             # Empty string at the start of a non-word, ensures [space]-
                         -[a-zA-Z]|    # Single letter options: -i, -I
