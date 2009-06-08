@@ -228,7 +228,7 @@ class matcher(object):
 # should be replaced.
 ignorepatterns = [
     ("y\s*$", "ie"),          #category/categories, identify/identifies, apply/applied
-    ("[\s-]*", ""),           #down time / downtime, pre-order / preorder
+    ("[\s-]+", ""),           #down time / downtime, pre-order / preorder
     ("-", " "),               #pre-order / pre order
     (" ", "-"),               #pre order / pre-order
 ]
