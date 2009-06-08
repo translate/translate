@@ -187,12 +187,6 @@ class pounit(pocommon.pounit):
         elif gpo_message:
             self._gpo_message = gpo_message
 
-    def setmsgidcomment(self, msgidcomment):
-        if msgidcomment:
-            newsource = "_: " + msgidcomment + "\n" + self.source
-            self.source = newsource
-    msgidcomment = property(None, setmsgidcomment)
-
     def setmsgid_plural(self, msgid_plural): 
         if isinstance(msgid_plural, list):
             msgid_plural = "".join(msgid_plural)
@@ -480,6 +474,11 @@ class pounit(pocommon.pounit):
             if msgidcomment:
                 return msgidcomment.group(1).decode(self._encoding)
         return u""
+    def setmsgidcomment(self, msgidcomment):
+        if msgidcomment:
+            newsource = "_: " + msgidcomment + "\n" + self.source
+            self.source = newsource
+    msgidcomment = property(_extract_msgidcomments, setmsgidcomment)
 
     def __str__(self):
         pf = pofile()
