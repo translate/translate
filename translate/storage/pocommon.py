@@ -22,6 +22,21 @@
 from translate.storage import base
 from translate.storage import poheader
 
+import re
+
+msgid_comment_re = re.compile("_: (.*)\n") #should this be non-greedy?
+
+def extract_msgid_comment(text):
+    """The one definitive way to extract a msgid comment out of an unescaped
+    unicode string that might contain it.
+
+    @rtype: unicode"""
+    msgidcomment = msgid_comment_re.match(text)
+    if msgidcomment:
+        return msgidcomment.group(1)
+    return u""
+
+
 class pounit(base.TranslationUnit):
 
     def adderror(self, errorname, errortext):
