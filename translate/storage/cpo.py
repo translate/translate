@@ -205,15 +205,15 @@ class pounit(pocommon.pounit):
                     return u""
             else:
                 return text
-        singular = remove_msgid_comments(gpo.po_message_msgid(self._gpo_message))
+        singular = remove_msgid_comments(gpo.po_message_msgid(self._gpo_message).decode(self._encoding))
         if singular:
-            multi = multistring(singular, self._encoding)
             if self.hasplural():
-                pluralform = gpo.po_message_msgid_plural(self._gpo_message)
-                if isinstance(pluralform, str):
-                    pluralform = pluralform.decode(self._encoding)
+                multi = multistring(singular, self._encoding)
+                pluralform = gpo.po_message_msgid_plural(self._gpo_message).decode(self._encoding)
                 multi.strings.append(pluralform)
-            return multi
+                return multi
+            else:
+                return singular
         else:
             return u""
 
@@ -223,9 +223,9 @@ class pounit(pocommon.pounit):
         if isinstance(source, unicode):
             source = source.encode(self._encoding)
         if isinstance(source, list):
-            gpo.po_message_set_msgid(self._gpo_message, str(source[0]))
+            gpo.po_message_set_msgid(self._gpo_message, source[0].encode(self._encoding))
             if len(source) > 1:
-                gpo.po_message_set_msgid_plural(self._gpo_message, str(source[1]))
+                gpo.po_message_set_msgid_plural(self._gpo_message, source[1].encode(self._encoding))
         else:
             gpo.po_message_set_msgid(self._gpo_message, source)
             gpo.po_message_set_msgid_plural(self._gpo_message, None)
@@ -238,7 +238,7 @@ class pounit(pocommon.pounit):
             nplural = 0
             plural = gpo.po_message_msgstr_plural(self._gpo_message, nplural)
             while plural:
-                plurals.append(plural)
+                plurals.append(plural.decode(self._encoding))
                 nplural += 1
                 plural = gpo.po_message_msgstr_plural(self._gpo_message, nplural)
             if plurals:
@@ -246,7 +246,7 @@ class pounit(pocommon.pounit):
             else:
                 multi = multistring(u"")
         else:
-            multi = multistring(gpo.po_message_msgstr(self._gpo_message) or u"", encoding=self._encoding)
+            multi = (gpo.po_message_msgstr(self._gpo_message) or "").decode(self._encoding)
         return multi
 
     def settarget(self, target):
@@ -512,10 +512,10 @@ class pounit(pocommon.pounit):
 
     def getcontext(self):
         msgctxt = gpo.po_message_msgctxt(self._gpo_message)
-        msgidcomment = self._extract_msgidcomments()
         if msgctxt:
-            return msgctxt + msgidcomment
+            return msgctxt.decode(self._encoding)
         else:
+            msgidcomment = self._extract_msgidcomments()
             return msgidcomment
 
 class pofile(pocommon.pofile):
