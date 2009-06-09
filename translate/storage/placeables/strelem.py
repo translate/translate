@@ -229,14 +229,14 @@ class StringElem(object):
         # 3) Restricted to a single element.
         # 4) Spans multiple elements (start- and ending elements are not the same).
 
-        # Case 1 #
+        # Case 1: Entire string #
         if start_index == 0 and end_index == len(self):
             #logging.debug('Case 1: [%s]' % (unicode(self)))
             removed = self.copy()
             self.sub = []
             return removed, None
 
-        # Case 2 #
+        # Case 2: An entire element #
         if start['elem'] is end['elem'] and start['offset'] == 0 and end['offset'] == len(start['elem']):
             ##### FOR DEBUGGING #####
             #s = ''
@@ -264,7 +264,7 @@ class StringElem(object):
             self.prune()
             return removed, parent
 
-        # Case 3 #
+        # Case 3: Within a single element #
         if start['elem'] is end['elem'] and start['elem'].iseditable:
             ##### FOR DEBUGGING #####
             #s = ''
@@ -289,7 +289,7 @@ class StringElem(object):
             self.prune()
             return removed, parent
 
-        # Case 4 #
+        # Case 4: Across multiple elements #
         range_nodes = self.depth_first()
         startidx = 0
         endidx = -1
