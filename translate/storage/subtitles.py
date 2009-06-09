@@ -34,7 +34,7 @@ import chardet
 class SubtitleUnit(base.TranslationUnit):
     """A subtitle entry that is translatable"""
 
-    def __init__(self, source=None, encoding="UTF-8"):
+    def __init__(self, source=None, encoding="utf-8"):
         self._start = None
         self._end = None
         if source:
@@ -54,7 +54,7 @@ class SubtitleFile(base.TranslationStore):
         self.units = []
         self.filename = ''
         self._subtitlefile = None
-        self._encoding = 'utf_8'
+        self._encoding = 'utf-8'
         if inputfile is not None:
             self.parse(inputfile)
 
@@ -78,7 +78,7 @@ class SubtitleFile(base.TranslationStore):
         elif not getattr(self, 'filename', ''):
             self.filename = ''
         input.close()
-        self._encoding = gaupol.encodings.detect(self.filename)
+        #self._encoding = gaupol.encodings.detect(self.filename)
         self._format = gaupol.FormatDeterminer().determine(self.filename, self._encoding)
         self._subtitlefile = gaupol.files.new(self._format, self.filename, self._encoding)
         for subtitle in self._subtitlefile.read():
