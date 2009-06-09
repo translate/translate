@@ -283,8 +283,10 @@ class StringElem(object):
             # XXX: This might not have the expected result if start['elem'] is a StringElem sub-class instance.
             newstr = u''.join(start['elem'].sub)
             removed = StringElem(newstr[start['offset']:end['offset']])
-            parent = self.get_parent_elem(start['elem'])
             newstr = newstr[:start['offset']] + newstr[end['offset']:]
+            parent = self.get_parent_elem(start['elem'])
+            if parent is None and start['elem'] is self:
+                parent = self
             start['elem'].sub = [newstr]
             self.prune()
             return removed, parent
