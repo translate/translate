@@ -42,7 +42,7 @@ class SubtitleUnit(base.TranslationUnit):
         super(SubtitleUnit, self).__init__(source)
 
     def getlocations(self):
-        return ["%s --> %s" % (self._start, self._end)]
+        return ["%s-->%s" % (self._start, self._end)]
 
 class SubtitleFile(base.TranslationStore):
     """A subtitle file"""
