@@ -203,11 +203,11 @@ class StringElem(object):
         if start_index == end_index:
             return StringElem(), self
         if start_index > end_index:
-            raise IndexError('start_index > end_index')
+            raise IndexError('start_index > end_index: %d > %d' % (start_index, end_index))
         if start_index < 0 or start_index > len(self):
-            raise IndexError('start_index')
+            raise IndexError('start_index: %d' % (start_index))
         if end_index < 1 or end_index > len(self) + 1:
-            raise IndexError('end_index')
+            raise IndexError('end_index: %d' % (end_index))
 
         start = self.get_index_data(start_index)
         if isinstance(start['elem'], tuple):
