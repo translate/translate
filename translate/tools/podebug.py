@@ -51,6 +51,13 @@ class podebug:
         self.ignorefunc = getattr(self, "ignore_%s" % ignoreoption, None)
         self.hash = hash
 
+    def apply_to_translatables(self, string, func):
+        """Applies func to all translatable strings in string."""
+        leaves = string.flatten()
+        for leave in leaves:
+            if leave.istranslatable:
+                leave.apply_to_strings(func)
+
     def rewritelist(cls):
         return [rewrite.replace("rewrite_", "") for rewrite in dir(cls) if rewrite.startswith("rewrite_")]
     rewritelist = classmethod(rewritelist)
@@ -113,7 +120,7 @@ class podebug:
                (r'W', r'W'),
                (r'([a-z])[.]', r'\1. Bork Bork Bork!'))
         for a, b in subs:
-            string.apply_to_strings(lambda s: re.sub(a, b, s))
+            self.apply_to_translatables(string, lambda s: re.sub(a, b, s))
         return string
 
     REWRITE_UNICODE_MAP = u"ȦƁƇḒḖƑƓĦĪĴĶĿḾȠǾƤɊŘŞŦŬṼẆẊẎẐ" + u"[\\]^_`" + u"ȧƀƈḓḗƒɠħīĵķŀḿƞǿƥɋřşŧŭṽẇẋẏẑ"
@@ -128,7 +135,7 @@ class podebug:
             return self.REWRITE_UNICODE_MAP[loc]
         def transformer(s):
             return ''.join([transpose(c) for c in s])
-        string.apply_to_strings(transformer)
+        self.apply_to_translatables(string, transformer)
         return string
 
     REWRITE_FLIPPED_MAP = u"¡„#$%⅋,()⁎+´-·/012Ɛᔭ59Ƚ86:;<=>?@" + \
@@ -156,7 +163,7 @@ class podebug:
             return u"\u202e" + u''.join([transpose(c) for c in s])
             # To reverse instead of using the RTL override:
             #return u''.join(reversed([transpose(c) for c in s]))
-        string.apply_to_strings(transformer)
+        self.apply_to_strings(string, transformer)
         return string
 
     def ignorelist(cls):
