@@ -27,6 +27,11 @@
    and U{example <http://www.exampledepot.com/egs/java.util/Props.html>} give some
    good references to the .properties specification.
 
+   Properties file may also hold Java
+   U{MessageFormat<http://java.sun.com/j2se/1.4.2/docs/api/java/text/MessageFormat.html>} 
+   messages.  No special handling is provided in this storage class for MessageFormat,
+   but this may be implemented in future.
+
    Implementation
    ==============
    A simple summary of what is permissible follows.
