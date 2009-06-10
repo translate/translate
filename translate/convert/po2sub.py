@@ -35,7 +35,10 @@ class resub:
         self._makestoredict(inputstore, includefuzzy)
         for unit in self.templatestore.units:
             for location in unit.getlocations():
-                unit.target = self._inputdict[location]
+                if location in self._inputdict:
+                    unit.target = self._inputdict[location]
+                else:
+                    unit.target = unit.source
         return str(self.templatestore)
 
     def _makestoredict(self, store, includefuzzy=False):
