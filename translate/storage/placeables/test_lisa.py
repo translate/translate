@@ -38,13 +38,13 @@ def test_xml_to_strelem():
     assert elem.sub == [ StringElem(u'a'), G(id=u'foo[2]/bar[2]/baz[2]', sub=[StringElem(u'b'), X(id=u'foo[1]/bar[1]/baz[1]'), StringElem(u'c')]), StringElem(u'é') ]
 
 def test_chunk_list():
-    left  = StringElem(['a', G(id='foo[2]/bar[2]/baz[2]', sub=['b', X(id='foo[1]/bar[1]/baz[1]'), 'c']), 'é'])
-    right = StringElem(['a', G(id='foo[2]/bar[2]/baz[2]', sub=['b', X(id='foo[1]/bar[1]/baz[1]'), 'c']), 'é'])
+    left  = StringElem([u'a', G(id='foo[2]/bar[2]/baz[2]', sub=[u'b', X(id='foo[1]/bar[1]/baz[1]'), u'c']), u'é'])
+    right = StringElem([u'a', G(id='foo[2]/bar[2]/baz[2]', sub=[u'b', X(id='foo[1]/bar[1]/baz[1]'), u'c']), u'é'])
     assert left == right
 
 def test_set_strelem_to_xml():
     source = etree.Element(u'source')
-    lisa.strelem_to_xml(source, StringElem('a'))
+    lisa.strelem_to_xml(source, StringElem(u'a'))
     assert etree.tostring(source, encoding = 'UTF-8') == '<source>a</source>'
 
     source = etree.Element(u'source')
@@ -56,15 +56,15 @@ def test_set_strelem_to_xml():
     assert etree.tostring(source, encoding = 'UTF-8') == '<source><x id="foo[1]/bar[1]/baz[1]"/></source>'
 
     source = etree.Element(u'source')
-    lisa.strelem_to_xml(source, StringElem(['a', X(id='foo[1]/bar[1]/baz[1]')]))
+    lisa.strelem_to_xml(source, StringElem([u'a', X(id='foo[1]/bar[1]/baz[1]')]))
     assert etree.tostring(source, encoding = 'UTF-8') == '<source>a<x id="foo[1]/bar[1]/baz[1]"/></source>'
 
     source = etree.Element(u'source')
-    lisa.strelem_to_xml(source, StringElem(['a', X(id='foo[1]/bar[1]/baz[1]'), u'é']))
+    lisa.strelem_to_xml(source, StringElem([u'a', X(id='foo[1]/bar[1]/baz[1]'), u'é']))
     assert etree.tostring(source, encoding = 'UTF-8') == '<source>a<x id="foo[1]/bar[1]/baz[1]"/>é</source>'
 
     source = etree.Element(u'source')
-    lisa.strelem_to_xml(source, StringElem(['a', G(id='foo[2]/bar[2]/baz[2]', sub=['b', X(id='foo[1]/bar[1]/baz[1]'), 'c']), u'é']))
+    lisa.strelem_to_xml(source, StringElem([u'a', G(id='foo[2]/bar[2]/baz[2]', sub=[u'b', X(id='foo[1]/bar[1]/baz[1]'), u'c']), u'é']))
     assert etree.tostring(source, encoding = 'UTF-8') == '<source>a<g id="foo[2]/bar[2]/baz[2]">b<x id="foo[1]/bar[1]/baz[1]"/>c</g>é</source>'
 
 if __name__ == '__main__':
