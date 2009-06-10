@@ -91,6 +91,31 @@ class PythonFormattingPlaceable(Ph):
     parse = classmethod(regex_parse)
 
 
+class JavaMessageFormatPlaceable(Ph):
+    """Placeable represrnting a Java MessageFormat formatting variable.
+
+    Implemented according o the Java U{MessageFormat 
+    documentation<http://java.sun.com/j2se/1.4.2/docs/api/java/text/MessageFormat.html>}.
+
+    Information about custom formats::
+      - number - U{DecimalFormat<http://java.sun.com/j2se/1.4.2/docs/api/java/text/DecimalFormat.html>}
+      - date/time - U{SimpleDateFormat<http://java.sun.com/j2se/1.4.2/docs/api/java/text/SimpleDateFormat.html>}
+      - choice - U{ChoiceFormat<http://java.sun.com/j2se/1.4.2/docs/api/java/text/ChoiceFormat.html>}
+    """
+
+    iseditable = False  # TODO Technically incorrect as you need to change things in a choice entry
+    regex = re.compile(r"""(?x)
+                      {                      # Start of MessageFormat
+                      [0-9]+                 # Number, positive array reference
+                      (,\s*                  # FormatType (optional) one of number,date,time,choice
+                        (number(,\s*(integer|currency|percent|[-0#.,E;%\u2030\u00a4']+)?)?|  # number FormatStyle (optional)
+                         (date|time)(,\s*(short|medium|long|full|.+?))?|      # date/time FormatStyle (optional)
+                         choice,([^{]+({.+})?)+)?  # choice with format, format required
+                      )?                     # END: (optional) FormatType
+                      }                      # END: MessageFormat""")
+    parse = classmethod(regex_parse)
+
+
 class FormattingPlaceable(Ph):
     """Placeable representing string formatting variables."""
 
@@ -243,6 +268,7 @@ parsers = [
     AltAttrPlaceable.parse,
     XMLEntityPlaceable.parse,
     PythonFormattingPlaceable.parse,
+    JavaMessageFormatPlaceable.parse,
     FormattingPlaceable.parse,
     UrlPlaceable.parse,
     FilePlaceable.parse,
