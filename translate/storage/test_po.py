@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from translate.storage import po
+from translate.storage import pypo
 from translate.storage import test_base
 from translate.misc import wStringIO
 from translate.misc.multistring import multistring
@@ -14,8 +15,8 @@ def test_roundtrip_quoting():
                 '\n', '\t', '\r', 
                 '\\n', '\\t', '\\r', '\\"', '\r\n', '\\r\\n', '\\']
     for special in specials:
-        quoted_special = po.quoteforpo(special)
-        unquoted_special = po.unquotefrompo(quoted_special)
+        quoted_special = pypo.quoteforpo(special)
+        unquoted_special = pypo.unquotefrompo(quoted_special)
         print "special: %r\nquoted: %r\nunquoted: %r\n" % (special, quoted_special, unquoted_special)
         assert special == unquoted_special
 
@@ -89,17 +90,15 @@ class TestPOUnit(test_base.TestTranslationUnit):
         # plain text, no plural test
         unit = self.UnitClass("Tree")
         unit.target = "ki"
-        assert unit.target.strings == ["ki"]
-        assert unit.source.strings == ["Tree"]
         assert unit.hasplural() == False
-        
+
         # plural test with multistring
         unit.setsource(["Tree", "Trees"])
         assert unit.source.strings == ["Tree", "Trees"]
         assert unit.hasplural()
         unit.target = multistring(["ki", "ni ki"])
         assert unit.target.strings == ["ki", "ni ki"]
-        
+
         # test of msgid with no plural and msgstr with plural
         unit = self.UnitClass("Tree")
         assert raises(ValueError, unit.settarget, [u"ki", u"ni ki"])
@@ -377,6 +376,7 @@ msgstr "een"
         unit = pofile.units[1]
         assert unit.isobsolete()
 
+        print str(pofile)
         assert str(pofile) == posource
         unit.resurrect()
         assert unit.hasplural()
