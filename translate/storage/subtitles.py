@@ -78,7 +78,9 @@ class SubtitleFile(base.TranslationStore):
         elif not getattr(self, 'filename', ''):
             self.filename = ''
         input.close()
-        #self._encoding = gaupol.encodings.detect(self.filename)
+        self._encoding = gaupol.encodings.detect(self.filename)
+        if self._encoding == 'ascii':
+            self._encoding = 'utf-8'
         self._format = gaupol.FormatDeterminer().determine(self.filename, self._encoding)
         self._subtitlefile = gaupol.files.new(self._format, self.filename, self._encoding)
         for subtitle in self._subtitlefile.read():
