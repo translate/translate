@@ -88,6 +88,7 @@ class TestDTD2PO:
         pofile = self.dtd2po(dtdsource)
         pounit = self.singleelement(pofile)
         assert "credit.translation" in str(pounit)
+        assert 'msgctxt "credit.translation"' in str(pounit)
 
     def test_emptyentity_translated(self):
         """checks that if we translate an empty entity it makes it into the PO, bug 101"""

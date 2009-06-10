@@ -140,6 +140,7 @@ do=translate me
         pounit = self.singleelement(pofile)
         assert pounit.getlocations() == ["credit"]
         assert pounit.getcontext() == "credit"
+        assert 'msgctxt "credit"' in str(pounit)
         assert "#. # comment" in str(pofile)
         assert pounit.source == ""
 
