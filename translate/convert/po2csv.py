@@ -42,8 +42,8 @@ class po2csv:
             return None
         else:
             csvunit.comment = self.convertcomments(inputunit)
-            csvunit.source = inputunit.source.strings[0]
-            csvunit.target = inputunit.target.strings[0]
+            csvunit.source = inputunit.source
+            csvunit.target = inputunit.target
         return csvunit
 
     def convertplurals(self, inputunit):
