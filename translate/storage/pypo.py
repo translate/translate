@@ -442,7 +442,7 @@ class pounit(pocommon.pounit):
     def isblank(self):
         if self.isheader() or len(self.msgidcomments):
             return False
-        if (self._msgidlen() == 0) and (self._msgstrlen() == 0):
+        if (self._msgidlen() == 0) and (self._msgstrlen() == 0) and (is_null(self.msgctxt)):
             return True
         return False
         # TODO: remove:

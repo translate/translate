@@ -415,7 +415,7 @@ class pounit(pocommon.pounit):
         return self.getid() == "" and len(self.target) > 0
 
     def isblank(self):
-        return len(self.source) == 0 and len(self.target) == 0
+        return len(self.source) == len(self.target) == len(self.getcontext()) == 0
 
     def hastypecomment(self, typecomment):
         return gpo.po_message_is_format(self._gpo_message, typecomment)
