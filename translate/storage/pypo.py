@@ -369,6 +369,7 @@ class pounit(pocommon.pounit):
                 for position, item in enumerate(list2):
                     if isinstance(item, str):
                         list2[position] = item.decode("utf-8")
+
             #Determine the newline style of list1
             lineend = ""
             if list1 and list1[0]:
@@ -661,6 +662,7 @@ class pounit(pocommon.pounit):
 
     def _extract_msgidcomments(self, text=None):
         """Extract KDE style msgid comments from the unit.
+
         @rtype: String
         @return: Returns the extracted msgidcomments found in this unit's msgid.
         """
@@ -752,51 +754,36 @@ class pofile(pocommon.pofile):
 
     def removeduplicates(self, duplicatestyle="merge"):
         """make sure each msgid is unique ; merge comments etc from duplicates into original"""
-        msgiddict = {}
+        # TODO: can we handle consecutive calls to removeduplicates()? What
+        # about files already containing msgctxt? - test
+        id_dict = {}
         uniqueunits = []
-        # we sometimes need to keep track of what has been marked
-        # TODO: this is using a list as the pos aren't hashable, but this is slow...
+        # TODO: this is using a list as the pos aren't hashable, but this is slow.
+        # probably not used frequently enough to worry about it, though.
         markedpos = []
         def addcomment(thepo):
             thepo.msgidcomments.append('"_: %s\\n"' % " ".join(thepo.getlocations()))
             markedpos.append(thepo)
         for thepo in self.units:
-            if duplicatestyle.startswith("msgid_comment"):
-                msgid = unquotefrompo(thepo.msgidcomments) + unquotefrompo(thepo.msgid)
-            else:
-                msgid = unquotefrompo(thepo.msgid)
-            if thepo.isheader() and not thepo.getlocations():
-                # header msgids shouldn't be merged...
-                uniqueunits.append(thepo)
-            elif duplicatestyle == "msgid_comment_all":
-                addcomment(thepo)
-                uniqueunits.append(thepo)
-            elif msgid in msgiddict:
+            id = thepo.getid()
+            if id in id_dict:
                 if duplicatestyle == "merge":
-                    if msgid:
-                        msgiddict[msgid].merge(thepo)
+                    if id:
+                        id_dict[id].merge(thepo)
                     else:
                         addcomment(thepo)
                         uniqueunits.append(thepo)
-                elif duplicatestyle == "keep":
-                    uniqueunits.append(thepo)
-                elif duplicatestyle == "msgid_comment":
-                    origpo = msgiddict[msgid]
-                    if origpo not in markedpos:
-                        addcomment(origpo)
-                    addcomment(thepo)
-                    uniqueunits.append(thepo)
                 elif duplicatestyle == "msgctxt":
-                    origpo = msgiddict[msgid]
+                    origpo = id_dict[id]
                     if origpo not in markedpos:
                         origpo.msgctxt.append('"%s"' % " ".join(origpo.getlocations()))
                         markedpos.append(thepo)
                     thepo.msgctxt.append('"%s"' % " ".join(thepo.getlocations()))
                     uniqueunits.append(thepo)
             else:
-                if not msgid and duplicatestyle != "keep":
+                if not id and duplicatestyle == "merge":
                     addcomment(thepo)
-                msgiddict[msgid] = thepo
+                id_dict[id] = thepo
                 uniqueunits.append(thepo)
         self.units = uniqueunits
 
