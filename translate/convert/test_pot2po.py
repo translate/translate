@@ -133,8 +133,8 @@ msgstr[1] "%d handleidings."
         potsource = '''#: location.c:1\nmsgid ""\n"_: location.c:1\\n"\n"Source"\nmsgstr ""\n\n''' + \
                     '''#: location.c:10\nmsgid ""\n"_: location.c:10\\n"\n"Source"\nmsgstr ""\n'''
         posource = '''#: location.c:1\n#: location.c:10\nmsgid "Source"\nmsgstr "Target"\n\n'''
-        poexpected1 = '''#: location.c:1\nmsgid ""\n"_: location.c:1\\n"\n"Source"\nmsgstr "Target"\n'''
-        poexpected2 = '''#: location.c:10\nmsgid ""\n"_: location.c:10\\n"\n"Source"\nmsgstr "Target"\n'''
+        poexpected1 = '''#: location.c:1\n#, fuzzy\nmsgid ""\n"_: location.c:1\\n"\n"Source"\nmsgstr "Target"\n'''
+        poexpected2 = '''#: location.c:10\n#, fuzzy\nmsgid ""\n"_: location.c:10\\n"\n"Source"\nmsgstr "Target"\n'''
         newpo = self.convertpot(potsource, posource)
         print "Expected:\n", poexpected1, "Actual:\n", newpo.units[1]
         assert str(newpo.units[1]) == poexpected1
@@ -250,6 +250,7 @@ msgid ""
 msgstr "Sertifikate"
 '''
         expected = r'''#: pref.certs.title
+#, fuzzy
 msgid ""
 "_: pref.certs.title\n"
 "Certificates"
@@ -323,11 +324,11 @@ msgstr "Sertifikate"
 
     def test_merging_resurect_obsolete_messages_into_msgidcomment(self):
         """check that we can reuse old obsolete messages even if the recipient has a msgidcomment"""
-        potsource = '''#: resurect1.c\nmsgid ""\n"_: resurect1.c\\n"\n"About"\nmsgstr ""\n\n''' + \
+        potsource = '''#: resurect1.c\nmsgid "About"\nmsgstr ""\n\n''' + \
                     '''#: resurect2.c\nmsgid ""\n"_: resurect2.c\\n"\n"About"\nmsgstr ""\n'''
         posource = '''#~ msgid "About"\n#~ msgstr "Omtrent"\n'''
-        expected1 = '''#: resurect1.c\nmsgid ""\n"_: resurect1.c\\n"\n"About"\nmsgstr "Omtrent"\n'''
-        expected2 = '''#: resurect2.c\nmsgid ""\n"_: resurect2.c\\n"\n"About"\nmsgstr "Omtrent"\n'''
+        expected1 = '''#: resurect1.c\nmsgid "About"\nmsgstr "Omtrent"\n'''
+        expected2 = '''#: resurect2.c\n#, fuzzy\nmsgid ""\n"_: resurect2.c\\n"\n"About"\nmsgstr "Omtrent"\n'''
         newpo = self.convertpot(potsource, posource)
         print newpo
         assert len(newpo.units) == 3
