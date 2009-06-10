@@ -4,7 +4,7 @@ from translate.tools import podebug
 from translate.storage import base, po, xliff
 
 PO_DOC = """
-msgid "This is a test, hooray."
+msgid "This is a %s test, hooray."
 msgstr ""
 """
 
@@ -62,6 +62,19 @@ class TestPODebug:
         that it stays working.
         """
         assert str(self.debug.rewrite_chef(u"Mock Swedish test you muppet")) == u"Mock Swedish test yooo mooppet"
+
+    def test_po_variables(self):
+        debug = podebug.podebug(rewritestyle='unicode')
+        po_out = debug.convertstore(self.postore)
+
+        in_unit = self.postore.units[0]
+        out_unit = po_out.units[0]
+
+        assert in_unit.source == out_unit.source
+        print out_unit.target
+        print str(po_out)
+        rewrite_func = self.debug.rewrite_unicode
+        assert out_unit.target == u"%s%%s%s" % (rewrite_func(u'This is a '), rewrite_func(u' test, hooray.'))
 
     def test_xliff_rewrite(self):
         debug = podebug.podebug(rewritestyle='xxx')
