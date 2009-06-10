@@ -34,7 +34,7 @@ class TestHTML2PO:
         """helper to validate a PO message"""
         if not pofile.units[0].isheader():
             unitnumber = unitnumber - 1
-        print 'unit source: ' + str(pofile.units[unitnumber].source) + '|'
+        print 'unit source: ' + pofile.units[unitnumber].source.encode('utf-8') + '|'
         print 'expected: ' + expected.encode('utf-8') + '|'
         assert unicode(pofile.units[unitnumber].source) == unicode(expected)
 
