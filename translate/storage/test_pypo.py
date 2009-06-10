@@ -176,31 +176,6 @@ class TestPYPOFile(test_po.TestPOFile):
         assert pypo.unquotefrompo(pofile.units[0].msgidcomments) == "_: source1\n"
         assert pypo.unquotefrompo(pofile.units[1].msgidcomments) == "_: source2\n"
 
-    def test_msgid_comment(self):
-        """checks that when adding msgid_comments we place them on a newline"""
-        posource = '#: source0\nmsgid "Same"\nmsgstr ""\n\n#: source1\nmsgid "Same"\nmsgstr ""\n'
-        pofile = self.poparse(posource)
-        assert len(pofile.units) == 2
-        pofile.removeduplicates("msgid_comment")
-        assert len(pofile.units) == 2
-        assert pypo.unquotefrompo(pofile.units[0].msgidcomments) == "_: source0\n"
-        assert pypo.unquotefrompo(pofile.units[1].msgidcomments) == "_: source1\n"
-        # Now lets check for formating
-        for i in (0, 1):
-            expected = '''#: source%d\nmsgid ""\n"_: source%d\\n"\n"Same"\nmsgstr ""\n''' % (i, i)
-            assert pofile.units[i].__str__() == expected
-
-    def test_keep_blanks(self):
-        """checks that keeping keeps blanks and doesn't add msgid_comments"""
-        posource = '#: source1\nmsgid ""\nmsgstr ""\n\n#: source2\nmsgid ""\nmsgstr ""\n'
-        pofile = self.poparse(posource)
-        assert len(pofile.units) == 2
-        pofile.removeduplicates("keep")
-        assert len(pofile.units) == 2
-        # check we don't add msgidcomments
-        assert pypo.unquotefrompo(pofile.units[0].msgidcomments) == ""
-        assert pypo.unquotefrompo(pofile.units[1].msgidcomments) == ""
-
     def test_output_str_unicode(self):
         """checks that we can str(element) which is in unicode"""
         posource = u'''#: nb\nmsgid "Norwegian Bokm\xe5l"\nmsgstr ""\n'''
