@@ -623,7 +623,7 @@ class pounit(pocommon.pounit):
         # if there's no msgid don't do msgid and string, unless we're the header
         # this will also discard any comments other than plain othercomments...
         if is_null(self.msgid):
-            if not (self.isheader() or self.msgidcomments or self.sourcecomments):
+            if not (self.isheader() or self.getcontext() or self.sourcecomments):
                 return "".join(lines)
         lines.extend(self.automaticcomments)
         lines.extend(self.sourcecomments)
