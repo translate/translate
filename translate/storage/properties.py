@@ -100,6 +100,30 @@ def find_delimeter(line):
             return (" ", delimeters[" "])
     return (mindelimeter, minpos)
 
+def is_line_continuation(line):
+    """Determine whether L{line} has a line continuation marker.
+
+    .properties files can be terminated with a backslash (\\) indicating
+    that the 'value' continues on the next line.  Continuation is only 
+    valid if there are an odd number of backslashses (an even number
+    would result in a set of N/2 slashes not an escape)
+
+    @param line: A properties line
+    @type line: str
+    @return: Does L{line} end with a line continuation
+    @rtype: Boolean
+    """
+    pos = -1
+    count = 0
+    if len(line) == 0:
+        return False
+    # Count the slashes from the end of the line. Ensure we don't
+    # go into infinite loop.
+    while len(line) >= -pos and line[pos:][0] == "\\":
+        pos -= 1
+        count += 1
+    return (count % 2) == 1  # Odd is a line continuation, even is not
+
 
 class propunit(base.TranslationUnit):
     """an element of a properties file i.e. a name and value, and any comments
@@ -192,7 +216,7 @@ class propfile(base.TranslationStore):
             if inmultilinevalue:
                 newunit.value += line.lstrip()
                 # see if there's more
-                inmultilinevalue = (newunit.value[-1:] == '\\')
+                inmultilinevalue = is_line_continuation(newunit.value)
                 # if we're still waiting for more...
                 if inmultilinevalue:
                     # strip the backslash
@@ -221,7 +245,7 @@ class propfile(base.TranslationStore):
                     newunit.name = line[:delimeter_pos].strip()
                     newunit.value = line[delimeter_pos+1:].lstrip()
                     # backslash at end means carry string on to next line
-                    if newunit.value[-1:] == '\\':
+                    if is_line_continuation(newunit.value):
                         inmultilinevalue = True
                         newunit.value = newunit.value[:-1]
                     else:

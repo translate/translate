@@ -24,6 +24,14 @@ def test_find_delimeter_pos_escapes():
     assert properties.find_delimeter("key\   value") == (' ', 5)
     assert properties.find_delimeter("key\ key\ key\: = value") == ('=', 16)
 
+def test_is_line_continuation():
+    assert properties.is_line_continuation("") == False
+    assert properties.is_line_continuation("some text") == False
+    assert properties.is_line_continuation("""some text\\""") == True
+    assert properties.is_line_continuation("""some text\\\\""") == False  # Escaped \
+    assert properties.is_line_continuation("""some text\\\\\\""") == True  # Odd num. \ is line continuation
+    assert properties.is_line_continuation("""\\\\\\""") == True
+
 class TestPropUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = properties.propunit
 
