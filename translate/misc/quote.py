@@ -267,12 +267,12 @@ propertyescapes = {
     # escapes that are self-escaping
     "\\": "\\", "'": "'", '"': '"',
     # control characters that we keep
-    "b": "\b", "f": "\f", "t": "\t", "n": "\n", "v": "\v", "a": "\a"
+    "f": "\f", "n": "\n", "r": "\r", "t": "\t",
     }
 
 controlchars = {
     # the reverse of the above...
-    "\b": "\\b", "\f": "\\f", "\t": "\\t", "\n": "\\n", "\v": "\\v"
+    "\f": "\\f", "\n": "\\n", "\r": "\\r", "\t": "\\t"
     }
 
 def escapecontrols(source):
@@ -352,7 +352,7 @@ def mozillapropertiesdecode(source):
             output += unicodedata.lookup(name)
             s = e + 1
         else:
-            output += "\\" + c
+            output += c # Drop any \ that we don't specifically handle
     return output
 
 def quotestr(source, escapeescapes=0):
