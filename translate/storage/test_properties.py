@@ -119,3 +119,16 @@ class TestProp(test_monolingual.TestMonolingualStore):
             assert propunit.name == "key"
             assert propunit.source == "value"
 
+    def test_comments(self):
+        """checks that we handle # and ! comments"""
+        markers = ['#', '!']
+        for comment_marker in markers:
+            propsource = '''%s A comment
+key=value
+''' % comment_marker
+            propfile = self.propparse(propsource)
+            print repr(propsource)
+            print "Comment marker: '%s'" % comment_marker
+            assert len(propfile.units) == 1
+            propunit = propfile.units[0]
+            assert propunit.comments == ['%s A comment\n' % comment_marker]

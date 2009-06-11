@@ -226,7 +226,7 @@ class propfile(base.TranslationStore):
                     self.addunit(newunit)
                     newunit = propunit()
             # otherwise, this could be a comment
-            elif line.strip()[:1] == '#':
+            elif line.strip()[:1] in ('#', '!'):
                 # add a comment
                 line = quote.escapecontrols(line)
                 newunit.comments.append(line+"\n")
