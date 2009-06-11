@@ -157,7 +157,6 @@ class propunit(base.TranslationUnit):
 
     def getsource(self):
         value = quote.mozillapropertiesdecode(self.value)
-        value = value.lstrip(" ")
 
         value = re.sub("\\\\ ", " ", value)
         return value
