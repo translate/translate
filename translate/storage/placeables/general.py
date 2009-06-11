@@ -75,14 +75,15 @@ class NumberPlaceable(Ph):
 class PythonFormattingPlaceable(Ph):
     """Placeable representing a Python string formatting variable.
 
-    Implemented following Python documentation on L{String Formatting Operations<http://www.python.org/doc/2.2.1/lib/typesseq-strings.html>}"""
+    Implemented following Python documentation on
+    L{String Formatting Operations<http://www.python.org/doc/2.2.1/lib/typesseq-strings.html>}"""
 
     iseditable = False
     # Need to correctly define a python identifier.
     regex = re.compile(r"""(?x)
                        %                     # Start of formatting specifier
                        (%|                   # No argument converted %% creates a %
-                       (\([a-z_]+\)){0,1}    # Mapping key value (optional) 
+                       (\([a-z_]+\)){0,1}    # Mapping key value (optional)
                        [\-\+0\s\#]{0,1}      # Conversion flags (optional)
                        (\d+|\*){0,1}         # Minimum field width (optional)
                        (\.(\d+|\*)){0,1}     # Precision (optional)
@@ -92,9 +93,9 @@ class PythonFormattingPlaceable(Ph):
 
 
 class JavaMessageFormatPlaceable(Ph):
-    """Placeable represrnting a Java MessageFormat formatting variable.
+    """Placeable representing a Java MessageFormat formatting variable.
 
-    Implemented according o the Java U{MessageFormat 
+    Implemented according to the Java U{MessageFormat 
     documentation<http://java.sun.com/j2se/1.4.2/docs/api/java/text/MessageFormat.html>}.
 
     Information about custom formats::
@@ -103,16 +104,17 @@ class JavaMessageFormatPlaceable(Ph):
       - choice - U{ChoiceFormat<http://java.sun.com/j2se/1.4.2/docs/api/java/text/ChoiceFormat.html>}
     """
 
-    iseditable = False  # TODO Technically incorrect as you need to change things in a choice entry
+    iseditable = False  # TODO: Technically incorrect as you need to change
+    # things in a choice entry
     regex = re.compile(r"""(?x)
-                      {                      # Start of MessageFormat
-                      [0-9]+                 # Number, positive array reference
-                      (,\s*                  # FormatType (optional) one of number,date,time,choice
-                        (number(,\s*(integer|currency|percent|[-0#.,E;%\u2030\u00a4']+)?)?|  # number FormatStyle (optional)
-                         (date|time)(,\s*(short|medium|long|full|.+?))?|      # date/time FormatStyle (optional)
-                         choice,([^{]+({.+})?)+)?  # choice with format, format required
-                      )?                     # END: (optional) FormatType
-                      }                      # END: MessageFormat""")
+      {                      # Start of MessageFormat
+      [0-9]+                 # Number, positive array reference
+      (,\s*                  # FormatType (optional) one of number,date,time,choice
+        (number(,\s*(integer|currency|percent|[-0#.,E;%\u2030\u00a4']+)?)?|  # number FormatStyle (optional)
+         (date|time)(,\s*(short|medium|long|full|.+?))?|                  # date/time FormatStyle (optional)
+         choice,([^{]+({.+})?)+)?                                      # choice with format, format required
+      )?                     # END: (optional) FormatType
+      }                      # END: MessageFormat""")
     parse = classmethod(regex_parse)
 
 
@@ -165,8 +167,9 @@ class PunctuationPlaceable(Ph):
     """Placeable handling punctuation."""
 
     iseditable = False
-    # FIXME this should really be a list created as being the inverse of what is available on the 
-    # translators keyboard.  Or easily expanded by their configuration.
+    # FIXME this should really be a list created as being the inverse of what
+    # is available on the translators keyboard.  Or easily expanded by their
+    # configuration.
     regex = re.compile(ur'[™℃℉©®£¥°±‘’‚‛“”„‟…—– ]+') #last space is NBSP
     parse = classmethod(regex_parse)
 
@@ -237,7 +240,19 @@ class OptionPlaceable(Ph):
     parse = classmethod(regex_parse)
 
 
-def to_general_placeables(tree, classmap={G: (AltAttrPlaceable,), Ph: (NumberPlaceable, XMLEntityPlaceable, XMLTagPlaceable, UrlPlaceable, FilePlaceable, EmailPlaceable, OptionPlaceable, PunctuationPlaceable)}):
+def to_general_placeables(tree, classmap={
+        G:      (AltAttrPlaceable,),
+        Ph:     (
+            NumberPlaceable,
+            XMLEntityPlaceable,
+            XMLTagPlaceable,
+            UrlPlaceable,
+            FilePlaceable,
+            EmailPlaceable,
+            OptionPlaceable,
+            PunctuationPlaceable,
+                )
+        }):
     if not isinstance(tree, StringElem):
         return tree
 
