@@ -98,3 +98,16 @@ class TestProp(test_monolingual.TestMonolingualStore):
         assert propunit.name == "whitespace"
         assert propunit.source == "Start"
      
+    def test_key_value_delimeters_simple(self):
+        """test that we can handle colon, equals and space delimeter
+        between key and value.  We don't test any space removal or escaping"""
+        delimeters = [":", "=", " "]
+        for delimeter in delimeters:
+            propsource = "key%svalue" % delimeter
+            print "source: '%s'\ndelimeter: '%s'" % (propsource, delimeter)
+            propfile = self.propparse(propsource)
+            assert len(propfile.units) == 1
+            propunit = propfile.units[0]
+            assert propunit.name == "key"
+            assert propunit.source == "value"
+

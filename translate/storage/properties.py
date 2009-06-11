@@ -109,6 +109,7 @@ class propunit(base.TranslationUnit):
         super(propunit, self).__init__(source)
         self.name = ""
         self.value = ""
+        self.delimeter = ""
         self.comments = []
         self.source = source
 
@@ -151,7 +152,7 @@ class propunit(base.TranslationUnit):
         else:
             if "\\u" in self.value:
                 self.value = quote.mozillapropertiesencode(quote.mozillapropertiesdecode(self.value))
-            return "".join(self.comments + ["%s=%s\n" % (self.name, self.value)])
+            return "".join(self.comments + ["%s%s%s\n" % (self.name, self.delimeter, self.value)])
 
     def getlocations(self):
         return [self.name]
@@ -211,14 +212,14 @@ class propfile(base.TranslationStore):
                     self.addunit(newunit)
                     newunit = propunit()
             else:
-                equalspos = line.find('=')
-                # if no equals, just ignore it
-                if equalspos == -1:
+                delimeter_char, delimeter_pos = find_delimeter(line)
+                if delimeter_pos == -1:
                     continue
                 # otherwise, this is a definition
                 else:
-                    newunit.name = line[:equalspos].strip()
-                    newunit.value = line[equalspos+1:].lstrip()
+                    newunit.delimeter = delimeter_char
+                    newunit.name = line[:delimeter_pos].strip()
+                    newunit.value = line[delimeter_pos+1:].lstrip()
                     # backslash at end means carry string on to next line
                     if newunit.value[-1:] == '\\':
                         inmultilinevalue = True
