@@ -243,3 +243,21 @@ msgstr ""
     assert nplural == "3"
     assert plural == "(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)"
 ##    TODO: add the same test for PoXliffFile
+
+def test_updatecontributor():
+    """Test that we can update contributor information in the header comments."""
+    posource = r'''msgid ""
+msgstr ""
+"MIME-Version: 1.0"
+'''
+    pofile = poparse(posource)
+    pofile.updatecontributor("Grasvreter")
+    assert "# Grasvreter, 20" in str(pofile)
+
+    pofile.updatecontributor("Koeivreter", "monster@grasveld.moe")
+    assert "# Koeivreter <monster@grasveld.moe>, 20" in str(pofile)
+
+    pofile.header().addnote("Khaled Hosny <khaledhosny@domain.org>, 2006, 2007, 2008.")
+    pofile.updatecontributor("Khaled Hosny", "khaledhosny@domain.org")
+    print str(pofile)
+    assert "# Khaled Hosny <khaledhosny@domain.org>, 2006, 2007, 2008, 2009" in str(pofile)
