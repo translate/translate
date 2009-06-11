@@ -414,6 +414,95 @@ msgstr ""
         assert newpounit.isfuzzy()
         assert newpounit.hastypecomment("c-format")
 
+    def test_msgctxt(self):
+        """Test that msgctxt is migrated correctly"""
+        potsource = """
+#: something.h:5
+msgctxt "context1"
+msgid "text"
+msgstr ""
+
+#: something.h:6
+msgctxt "context2"
+msgid "text"
+msgstr ""
+"""
+        posource = """
+#: something.h:3
+msgctxt "context0"
+msgid "text"
+msgstr "teks"
+
+#: something.h:4
+msgctxt "context1"
+msgid "text"
+msgstr "sms"
+"""
+        poexpected = """
+#: something.h:5
+msgctxt "context1"
+msgid "text"
+msgstr "sms"
+
+#: something.h:6
+#, fuzzy
+msgctxt "context2"
+msgid "text"
+msgstr "teks"
+"""
+        newpo = self.convertpot(potsource, posource)
+        print newpo
+        assert poexpected in str(newpo)
+
+    def test_empty_msgid(self):
+        """Test that we handle empty msgids correctly."""
+        #TODO: this test will fail if we don't have the gettext location
+        # comment in the pot file
+        potsource = '#: file:1\nmsgctxt "bla"\nmsgid ""\nmsgstr ""\n'
+        posource = r"""
+msgid ""
+"Project-Id-Version: Pootle 0.10\n"
+msgstr ""
+
+msgctxt "bla"
+msgid ""
+msgstr "trans"
+"""
+        newpo = self.convertpot(potsource, posource)
+        print newpo
+        assert len(newpo.units) == 2
+        assert newpo.units[0].isheader()
+        unit = newpo.units[1]
+        assert unit.source == u""
+        assert unit.getid() == u"bla\04"
+        assert unit.target == "trans"
+        assert not unit.isfuzzy()
+
+    def test_migrate_msgidcomment_to_msgctxt(self):
+        """Test that we migrate correctly from msgidcomments to msgctxt.
+
+        This is needed for our move away from using msgidcomments for mozilla."""
+        potsource = 'msgctxt "bla"\nmsgid ""\nmsgstr ""'
+        posource = r"""
+msgid ""
+"Project-Id-Version: Pootle 0.10\n"
+msgstr ""
+
+#: bla
+msgid ""
+"_: bla\n"
+msgstr "trans"
+"""
+        newpo = self.convertpot(potsource, posource)
+        print newpo
+        assert len(newpo.units) == 2
+        assert newpo.units[0].isheader()
+        unit = newpo.units[1]
+        assert unit.source == u""
+        assert unit.getid() == u"bla\04"
+        assert unit.target == "trans"
+        assert not unit.isfuzzy()
+
     def test_obsolete_msgctxt(self):
         """Test that obsolete units' msgctxt is preserved."""
         potsource = 'msgctxt "newContext"\nmsgid "First unit"\nmsgstr ""'
