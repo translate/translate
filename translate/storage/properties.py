@@ -58,6 +58,49 @@ import re
 
 eol = "\n"
 
+def find_delimeter(line):
+    """Find the type and position of the delimeter in a property line.
+
+    Property files can be delimeted by "=", ":" or whitespace (space for now).
+    We find the position of each delimeter, then find the one that appears 
+    first.
+
+    @param line: A properties line
+    @type line: str
+    @return: Delimeter character and offset within L{line}
+    @rtype: Tuple (Delimeter char, Offset Integer)
+    """
+    delimeters = {"=": -1, ":": -1, " ": -1}
+    # Find the position of each delimeter type
+    for delimeter, pos in delimeters.iteritems():
+        prewhitespace = len(line) - len(line.lstrip())
+        pos = line.find(delimeter,prewhitespace+1)
+        while pos != -1:
+            if delimeters[delimeter] == -1 and line[pos-1] != "\\":
+                delimeters[delimeter] = pos
+                break
+            pos = line.find(delimeter,pos+1)
+    # Find the first "=" or ":" delimeter
+    mindelimeter = None
+    minpos = -1
+    for delimeter, pos in delimeters.iteritems():
+        if pos == -1 or delimeter == " ":
+            continue
+        if minpos == -1 or pos < minpos:
+            minpos = pos
+            mindelimeter = delimeter
+    if mindelimeter is None and delimeters[" "] != -1:
+        # Use space delimeter if we found nothing else
+        return (" ", delimeters[" "])
+    if mindelimeter is not None and delimeters[" "] < delimeters[mindelimeter]:
+        # If space delimeter occurs earlier then ":" or "=" then it is the 
+        # delimeter only if there are non-whitespace characters between it and
+        # the other detected delimeter.
+        if len(line[delimeters[" "]:delimeters[mindelimeter]].strip()) > 0:
+            return (" ", delimeters[" "])
+    return (mindelimeter, minpos)
+
+
 class propunit(base.TranslationUnit):
     """an element of a properties file i.e. a name and value, and any comments
     associated"""

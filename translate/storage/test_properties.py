@@ -5,6 +5,25 @@ from translate.storage import properties
 from translate.storage import test_monolingual
 from translate.misc import wStringIO
 
+def test_find_delimeter_pos_simple():
+    assert properties.find_delimeter("key=value") == ('=', 3)
+    assert properties.find_delimeter("key:value") == (':', 3)
+    assert properties.find_delimeter("key value") == (' ', 3)
+
+def test_find_delimeter_pos_whitespace():
+    assert properties.find_delimeter("key = value") == ('=', 4)
+    assert properties.find_delimeter("key : value") == (':', 4)
+    assert properties.find_delimeter("key   value") == (' ', 3)
+    assert properties.find_delimeter("key key = value") == (' ', 3)
+    assert properties.find_delimeter("key value value") == (' ', 3)
+    assert properties.find_delimeter(" key = value") == ('=', 5)
+
+def test_find_delimeter_pos_escapes():
+    assert properties.find_delimeter("key\:=value") == ('=', 5)
+    assert properties.find_delimeter("key\=: value") == (':', 5)
+    assert properties.find_delimeter("key\   value") == (' ', 5)
+    assert properties.find_delimeter("key\ key\ key\: = value") == ('=', 16)
+
 class TestPropUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = properties.propunit
 
