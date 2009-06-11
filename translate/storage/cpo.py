@@ -378,7 +378,6 @@ class pounit(pocommon.pounit):
 
         Overwrite non-blank self.msgstr only if overwrite is True
         merge comments only if comments is True
-        
         """
 
         if not isinstance(otherpo, pounit):
@@ -398,7 +397,7 @@ class pounit(pocommon.pounit):
             if self._extract_msgidcomments(otherpo.target):
                 otherpo.target = otherpo.target.replace('_: ' + otherpo._extract_msgidcomments()+ '\n', '')
             self.target = otherpo.target
-            if self.source != otherpo.source:
+            if self.source != otherpo.source or self.getcontext() != otherpo.getcontext():
                 self.markfuzzy()
             else:
                 self.markfuzzy(otherpo.isfuzzy())
