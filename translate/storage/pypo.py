@@ -776,9 +776,9 @@ class pofile(pocommon.pofile):
                 elif duplicatestyle == "msgctxt":
                     origpo = id_dict[id]
                     if origpo not in markedpos:
-                        origpo.msgctxt.append('"%s"' % " ".join(origpo.getlocations()))
+                        origpo.msgctxt.append('"%s"' % escapeforpo(" ".join(origpo.getlocations())))
                         markedpos.append(thepo)
-                    thepo.msgctxt.append('"%s"' % " ".join(thepo.getlocations()))
+                    thepo.msgctxt.append('"%s"' % escapeforpo(" ".join(thepo.getlocations())))
                     uniqueunits.append(thepo)
             else:
                 if not id and duplicatestyle == "merge":
