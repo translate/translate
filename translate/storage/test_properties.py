@@ -32,6 +32,14 @@ def test_is_line_continuation():
     assert properties.is_line_continuation("""some text\\\\\\""") == True  # Odd num. \ is line continuation
     assert properties.is_line_continuation("""\\\\\\""") == True
 
+def test_key_strip():
+    assert properties.key_strip("key") == "key"
+    assert properties.key_strip(" key") == "key"
+    assert properties.key_strip("\ key") == "\ key"
+    assert properties.key_strip("key ") == "key"
+    assert properties.key_strip("key\ ") == "key\ "
+
+
 class TestPropUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = properties.propunit
 
@@ -98,13 +106,19 @@ class TestProp(test_monolingual.TestMonolingualStore):
         propregen = self.propregen(propsource)
         assert propsource + '\n' == propregen
 
-    def test_whitespace_removal(self):
+    def test_whitespace_handling(self):
         """check that we remove extra whitespace around property"""
-        propsource = '''  whitespace  =  Start \n'''
-        propfile = self.propparse(propsource)
-        propunit = propfile.units[0]
-        assert propunit.name == "whitespace"
-        assert propunit.source == "Start"
+        whitespaces = (('key = value', 'key', 'value'),      # Standard for baseline
+                       (' key =  value', 'key', 'value'),    # Extra \s before key and value
+                       ('\ key\ = value', '\ key\ ', 'value'), # extra space at start and end of key
+                       ('key = \ value ', 'key', ' value '), # extra space at start end end of value
+                      )
+        for propsource, key, value in whitespaces:
+            propfile = self.propparse(propsource)
+            propunit = propfile.units[0]
+            print repr(propsource), repr(propunit.name), repr(propunit.source)
+            assert propunit.name == key
+            assert propunit.source == value
      
     def test_key_value_delimeters_simple(self):
         """test that we can handle colon, equals and space delimeter

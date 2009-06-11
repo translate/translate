@@ -124,6 +124,20 @@ def is_line_continuation(line):
         count += 1
     return (count % 2) == 1  # Odd is a line continuation, even is not
 
+def key_strip(key):
+    """Cleanup whitespace found around a key
+
+    @param key: A properties key
+    @type key: str
+    @return: Key without any uneeded whitespace
+    @rtype: str
+    """
+    newkey = key.rstrip()
+    # If line now end in \ we put back the whitespace that was escaped
+    if newkey[-1:] == "\\":
+        newkey += key[len(newkey):len(newkey)+1]
+    return newkey.lstrip()
+
 
 class propunit(base.TranslationUnit):
     """an element of a properties file i.e. a name and value, and any comments
@@ -144,9 +158,6 @@ class propunit(base.TranslationUnit):
     def getsource(self):
         value = quote.mozillapropertiesdecode(self.value)
         value = value.lstrip(" ")
-        rstriped = value.rstrip(" ")
-        if rstriped and rstriped[-1] != "\\":
-            value = rstriped
 
         value = re.sub("\\\\ ", " ", value)
         return value
@@ -242,7 +253,7 @@ class propfile(base.TranslationStore):
                 # otherwise, this is a definition
                 else:
                     newunit.delimeter = delimeter_char
-                    newunit.name = line[:delimeter_pos].strip()
+                    newunit.name = key_strip(line[:delimeter_pos])
                     newunit.value = line[delimeter_pos+1:].lstrip()
                     # backslash at end means carry string on to next line
                     if is_line_continuation(newunit.value):
