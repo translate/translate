@@ -164,14 +164,17 @@ class TestPOFile(test_base.TestTranslationStore):
         print oldunit
         return str(oldunit)
 
-    def test_translatable(self):
-        """Checks that an empty msgid with msgctxt is seen as translatable."""
+    def test_context_only(self):
+        """Checks that an empty msgid with msgctxt is handled correctly."""
         posource = '''msgctxt "CONTEXT"
 msgid ""
 msgstr ""
 '''
         pofile = self.poparse(posource)
         assert pofile.units[0].istranslatable()
+        assert not pofile.units[0].isheader()
+        # we were not generating output for thse at some stage
+        assert str(pofile)
 
     def test_simpleentry(self):
         """checks that a simple po entry is parsed correctly"""
