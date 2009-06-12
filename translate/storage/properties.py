@@ -74,7 +74,7 @@ def find_delimeter(line):
     # Find the position of each delimeter type
     for delimeter, pos in delimeters.iteritems():
         prewhitespace = len(line) - len(line.lstrip())
-        pos = line.find(delimeter,prewhitespace+1)
+        pos = line.find(delimeter,prewhitespace)
         while pos != -1:
             if delimeters[delimeter] == -1 and line[pos-1] != "\\":
                 delimeters[delimeter] = pos
