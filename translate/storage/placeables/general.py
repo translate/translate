@@ -76,7 +76,7 @@ class PythonFormattingPlaceable(Ph):
     """Placeable representing a Python string formatting variable.
 
     Implemented following Python documentation on
-    L{String Formatting Operations<http://www.python.org/doc/2.2.1/lib/typesseq-strings.html>}"""
+    L{String Formatting Operations<http://docs.python.org/library/stdtypes.html#string-formatting-operations>}"""
 
     iseditable = False
     # Need to correctly define a python identifier.
