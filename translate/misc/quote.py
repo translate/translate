@@ -119,6 +119,7 @@ def extractwithoutquotes(source, startdelim, enddelim, escape=None, startinstrin
         enddelim_places = startdelim_places[:]
     else:
         enddelim_places = find_all(source, enddelim)
+    #hell slow because it is called far too often
     if escape is not None:
         lenescape = len(escape)
         escape_places = find_all(source, escape)
@@ -272,6 +273,7 @@ propertyescapes = {
 
 controlchars = {
     # the reverse of the above...
+    "\\": "\\\\",
     "\f": "\\f", "\n": "\\n", "\r": "\\r", "\t": "\\t"
     }
 
