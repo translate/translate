@@ -147,7 +147,7 @@ class propunit(base.TranslationUnit):
         super(propunit, self).__init__(source)
         self.name = ""
         self.value = ""
-        self.delimeter = ""
+        self.delimeter = "="
         self.comments = []
         self.source = source
 
