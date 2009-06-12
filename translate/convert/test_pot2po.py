@@ -482,7 +482,7 @@ msgstr "trans"
         """Test that we migrate correctly from msgidcomments to msgctxt.
 
         This is needed for our move away from using msgidcomments for mozilla."""
-        potsource = 'msgctxt "bla"\nmsgid ""\nmsgstr ""'
+        potsource = '#: bla\nmsgctxt "bla"\nmsgid ""\nmsgstr ""'
         posource = r"""
 msgid ""
 "Project-Id-Version: Pootle 0.10\n"
