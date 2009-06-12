@@ -9,6 +9,7 @@ def test_find_delimeter_pos_simple():
     assert properties.find_delimeter("key=value") == ('=', 3)
     assert properties.find_delimeter("key:value") == (':', 3)
     assert properties.find_delimeter("key value") == (' ', 3)
+    assert properties.find_delimeter("= value") == ('=', 0)
 
 def test_find_delimeter_pos_whitespace():
     assert properties.find_delimeter("key = value") == ('=', 4)
