@@ -329,7 +329,7 @@ class poheader(object):
                     #The contributor is there, but not for this year
                     if line[-1] == '.':
                         line = line[:-1]
-                    contriblines[i] = "%s, %s" % (line, year)
+                    contriblines[i] = "%s, %s." % (line, year)
 
         if not contribexists:
             # Add a new contributor
