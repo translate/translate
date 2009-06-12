@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2008 Zuza Software Foundation
+# Copyright 2008-2009 Zuza Software Foundation
 #
 # This file is part of the Translate Toolkit.
 #
@@ -20,8 +20,6 @@
 
 """Convert Symbian localisation files to Gettext PO localization files."""
 
-import sys
-import re
 from translate.storage import factory
 from translate.storage.pypo import extractpoline
 from translate.storage.symbian import *
@@ -74,8 +72,7 @@ def build_output(units, template_header, template_dict):
     ignore = set(['r_string_languagegroup_name'])
     header_entries = {
         'Last-Translator': template_header.get('Author', ''),
-        'Language-Team': template_dict.get('r_string_languagegroup_name', '')
-        'Language-Team': template_dict.get('r_string_languagegroup_name', '')
+        'Language-Team': template_dict.get('r_string_languagegroup_name', ''),
         'Content-Transfer-Encoding': '8bit',
         'Content-Type': 'text/plain; charset=UTF-8',
         }
