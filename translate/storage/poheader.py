@@ -334,9 +334,9 @@ class poheader(object):
         if not contribexists:
             # Add a new contributor
             if email:
-                contriblines.append("%s <%s>, %s" % (name, email, year))
+                contriblines.append("%s <%s>, %s." % (name, email, year))
             else:
-                contriblines.append("%s, %s" % (name, year))
+                contriblines.append("%s, %s." % (name, year))
 
         header.removenotes()
         header.addnote("\n".join(prelines))

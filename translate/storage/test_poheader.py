@@ -260,4 +260,4 @@ msgstr ""
     pofile.header().addnote("Khaled Hosny <khaledhosny@domain.org>, 2006, 2007, 2008.")
     pofile.updatecontributor("Khaled Hosny", "khaledhosny@domain.org")
     print str(pofile)
-    assert "# Khaled Hosny <khaledhosny@domain.org>, 2006, 2007, 2008, 2009." in str(pofile)
+    assert "# Khaled Hosny <khaledhosny@domain.org>, 2006, 2007, 2008, %s." % time.strftime("%Y") in str(pofile)
