@@ -586,7 +586,10 @@ class pofile(pocommon.pofile):
             markedpos.append(thepo)
         for thepo in self.units:
             id = thepo.getid()
-            if id in id_dict:
+            if thepo.isheader() and not thepo.getlocations():
+                # header msgids shouldn't be merged...
+                uniqueunits.append(thepo)
+            elif id in id_dict:
                 if duplicatestyle == "merge":
                     if id:
                         id_dict[id].merge(thepo)
@@ -601,8 +604,11 @@ class pofile(pocommon.pofile):
                     gpo.po_message_set_msgctxt(thepo._gpo_message, " ".join(thepo.getlocations()))
                     uniqueunits.append(thepo)
             else:
-                if not id and duplicatestyle == "merge":
-                    addcomment(thepo)
+                if not id:
+                    if duplicatestyle == "merge":
+                        addcomment(thepo)
+                    else:
+                        gpo.po_message_set_msgctxt(thepo._gpo_message, " ".join(thepo.getlocations()))
                 id_dict[id] = thepo
                 uniqueunits.append(thepo)
         new_gpo_memory_file = gpo.po_file_create()
