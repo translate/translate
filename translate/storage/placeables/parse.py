@@ -78,6 +78,6 @@ def parse(tree, parse_funcs):
 
         parse(leaf, parse_funcs[1:])
 
-    if isinstance(leaf, StringElem):
-        leaf.prune()
+        if isinstance(leaf, StringElem):
+            leaf.prune()
     return tree
