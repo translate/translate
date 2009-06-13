@@ -163,7 +163,7 @@ class podebug:
             return u"\u202e" + u''.join([transpose(c) for c in s])
             # To reverse instead of using the RTL override:
             #return u''.join(reversed([transpose(c) for c in s]))
-        self.apply_to_strings(string, transformer)
+        self.apply_to_translatables(string, transformer)
         return string
 
     def ignorelist(cls):
