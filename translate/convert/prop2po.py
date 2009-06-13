@@ -31,10 +31,14 @@ from translate.storage import properties
 
 class prop2po:
     """convert a .properties file to a .po file for handling the translation..."""
-    def convertstore(self, thepropfile, duplicatestyle="msgctxt"):
+    def convertstore(self, thepropfile, personality, duplicatestyle="msgctxt"):
         """converts a .properties file to a .po file..."""
+        self.personality = personality
         thetargetfile = po.pofile()
-        targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit", x_accelerator_marker="&")
+        if self.personality == "mozilla":
+            targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit", x_accelerator_marker="&")
+        else:
+            targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
         targetheader.addnote("extracted from %s" % thepropfile.filename, "developer")
         # we try and merge the header po with any comments at the start of the properties file
         appendedheader = False
@@ -59,10 +63,14 @@ class prop2po:
         thetargetfile.removeduplicates(duplicatestyle)
         return thetargetfile
 
-    def mergestore(self, origpropfile, translatedpropfile, blankmsgstr=False, duplicatestyle="msgctxt"):
+    def mergestore(self, origpropfile, translatedpropfile, personality, blankmsgstr=False, duplicatestyle="msgctxt"):
         """converts two .properties files to a .po file..."""
+        self.personality = personality
         thetargetfile = po.pofile()
-        targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
+        if self.personality == "mozilla":
+            targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit", x_accelerator_marker="&")
+        else:
+            targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
         targetheader.addnote("extracted from %s, %s" % (origpropfile.filename, translatedpropfile.filename), "developer")
         translatedpropfile.makeindex()
         # we try and merge the header po with any comments at the start of the properties file
@@ -124,15 +132,19 @@ class prop2po:
         pounit.target = ""
         return pounit
 
-def convertprop(inputfile, outputfile, templatefile, pot=False, duplicatestyle="msgctxt"):
+def convertmozillaprop(inputfile, outputfile, templatefile, pot=False, duplicatestyle="msgctxt"):
+    """Mozilla specific convertor function"""
+    return convertprop(inputfile, outputfile, templatefile, personality="mozilla", pot=pot, duplicatestyle=duplicatestyle)
+
+def convertprop(inputfile, outputfile, templatefile, personality, pot=False, duplicatestyle="msgctxt"):
     """reads in inputfile using properties, converts using prop2po, writes to outputfile"""
     inputstore = properties.propfile(inputfile)
     convertor = prop2po()
     if templatefile is None:
-        outputstore = convertor.convertstore(inputstore, duplicatestyle=duplicatestyle)
+        outputstore = convertor.convertstore(inputstore, personality, duplicatestyle=duplicatestyle)
     else:
         templatestore = properties.propfile(templatefile)
-        outputstore = convertor.mergestore(templatestore, inputstore, blankmsgstr=pot, duplicatestyle=duplicatestyle)
+        outputstore = convertor.mergestore(templatestore, inputstore, personality, blankmsgstr=pot, duplicatestyle=duplicatestyle)
     if outputstore.isempty():
         return 0
     outputfile.write(str(outputstore))
@@ -142,8 +154,12 @@ def main(argv=None):
     from translate.convert import convert
     formats = {"properties": ("po", convertprop), ("properties", "properties"): ("po", convertprop)}
     parser = convert.ConvertOptionParser(formats, usetemplates=True, usepots=True, description=__doc__)
+    parser.add_option("", "--personality", dest="personality", default="java", type="choice",
+            choices=["java", "mozilla"],
+            help="set the input behaviour: java (default), mozilla", metavar="TYPE")
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
+    parser.passthrough.append("personality")
     parser.run(argv)
 
 if __name__ == '__main__':
