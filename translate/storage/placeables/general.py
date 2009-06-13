@@ -72,6 +72,29 @@ class NumberPlaceable(Ph):
     parse = classmethod(regex_parse)
 
 
+class QtFormattingPlaceable(Ph):
+    """Placeable representing a Qt string formatting variable.
+
+    Implemented following Qt documentation on
+    L{QString::arg<http://doc.trolltech.com/4.5/qstring.html#arg>} where
+    the placeables are refered to as 'place markers'
+
+    Notes::
+      - Place markers can be reordered
+      - Place markers may be repeated
+      - 'L' use a localised representation e.g. in a number
+      - %% some in the wild to escape real %, not documented (not in regex)
+    """
+    iseditable = False
+    regex = re.compile(r"""(?x)
+                       %                 # Start of a place marker
+                       L?                # The sequence is replaced with a localized representation (optional)
+                       [1-9]\d{0,1}      # Place marker numbers must be in the range 1 to 99.
+                       (?=([^\d]|$))     # Double check that we aren't matching %100+ (non consuming match)
+                       """)
+    parse = classmethod(regex_parse)
+
+
 class PythonFormattingPlaceable(Ph):
     """Placeable representing a Python string formatting variable.
 
@@ -282,6 +305,7 @@ parsers = [
     XMLTagPlaceable.parse,
     AltAttrPlaceable.parse,
     XMLEntityPlaceable.parse,
+    QtFormattingPlaceable.parse,
     PythonFormattingPlaceable.parse,
     JavaMessageFormatPlaceable.parse,
     FormattingPlaceable.parse,
