@@ -115,6 +115,8 @@ class LISAunit(base.TranslationUnit):
     def __init__(self, source, empty=False, **kwargs):
         """Constructs a unit containing the given source string"""
         if empty:
+            self._rich_source = None
+            self._rich_target = None
             return
         self.xmlelement = etree.Element(self.rootNode)
         #add descrip, note, etc.
