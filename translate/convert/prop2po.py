@@ -31,7 +31,7 @@ from translate.storage import properties
 
 class prop2po:
     """convert a .properties file to a .po file for handling the translation..."""
-    def convertstore(self, thepropfile, personality, duplicatestyle="msgctxt"):
+    def convertstore(self, thepropfile, personality="java", duplicatestyle="msgctxt"):
         """converts a .properties file to a .po file..."""
         self.personality = personality
         thetargetfile = po.pofile()
@@ -63,7 +63,7 @@ class prop2po:
         thetargetfile.removeduplicates(duplicatestyle)
         return thetargetfile
 
-    def mergestore(self, origpropfile, translatedpropfile, personality, blankmsgstr=False, duplicatestyle="msgctxt"):
+    def mergestore(self, origpropfile, translatedpropfile, personality="java", blankmsgstr=False, duplicatestyle="msgctxt"):
         """converts two .properties files to a .po file..."""
         self.personality = personality
         thetargetfile = po.pofile()
@@ -136,7 +136,7 @@ def convertmozillaprop(inputfile, outputfile, templatefile, pot=False, duplicate
     """Mozilla specific convertor function"""
     return convertprop(inputfile, outputfile, templatefile, personality="mozilla", pot=pot, duplicatestyle=duplicatestyle)
 
-def convertprop(inputfile, outputfile, templatefile, personality, pot=False, duplicatestyle="msgctxt"):
+def convertprop(inputfile, outputfile, templatefile, personality="java", pot=False, duplicatestyle="msgctxt"):
     """reads in inputfile using properties, converts using prop2po, writes to outputfile"""
     inputstore = properties.propfile(inputfile)
     convertor = prop2po()
