@@ -1013,7 +1013,14 @@ class StandardChecker(TranslationChecker):
                                     "emails", "simpleplurals", "urls", "printf",
                                     "tabs", "newlines", "functions", "options"),
                    "purepunc":      ("startcaps", "options"),
-                   "startcaps":     ("simplecaps",),
+                   # This is causing some problems since Python 2.6, as
+                   # startcaps is now seen as an important one to always execute
+                   # and could now be done before it is blocked by a failing
+                   # "untranslated" or "blank" test. This is probably happening
+                   # due to slightly different implementation of the internal
+                   # dict handling since Python 2.6. We should never have relied
+                   # on this ordering anyway.
+                   #"startcaps":     ("simplecaps",),
                    "endwhitespace": ("endpunc",),
                    "startwhitespace":("startpunc",),
                    "unchanged":     ("doublewords",), 
