@@ -102,7 +102,7 @@ languages = {
 'ne': ('Nepali', 2, '(n != 1)'),
 'nl': ('Dutch; Flemish', 2, '(n != 1)'),
 'nn': ('Norwegian Nynorsk', 2, '(n != 1)'),
-'nso': ('Northern Sotho', 2, '(n > 1)'),
+'nso': ('Pedi; Sepedi; Northern Sotho', 2, '(n > 1)'),
 'or': ('Oriya', 2, '(n != 1)'),
 'pa': ('Panjabi; Punjabi', 2, '(n != 1)'),
 'pap': ('Papiamento', 2, '(n != 1)'),
