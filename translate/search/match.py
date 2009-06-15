@@ -34,13 +34,6 @@ def sourcelen(unit):
     """Returns the length of the source string"""
     return len(unit.source)
 
-def sourcelencmp(x, y):
-    """Compares using sourcelen"""
-    # This is mostly useful for Python 2.3
-    xlen = sourcelen(x)
-    ylen = sourcelen(y)
-    return cmp(xlen, ylen)
-
 
 class matcher(object):
     """A class that will do matching and store configuration for the matching process"""
@@ -81,7 +74,7 @@ class matcher(object):
             stores = [stores]
         for store in stores:
             self.extendtm(store.units, store=store, sort=False)
-        self.candidates.units.sort(sourcelencmp, reverse=reverse)
+        self.candidates.units.sort(key=sourcelen, reverse=reverse)
         # print "TM initialised with %d candidates (%d to %d characters long)" % \
         #        (len(self.candidates.units), len(self.candidates.units[0].source), len(self.candidates.units[-1].source))
 
@@ -119,7 +112,7 @@ class matcher(object):
             simpleunit.fuzzy = candidate.isfuzzy()
             self.candidates.units.append(simpleunit)
         if sort:
-            self.candidates.units.sort(sourcelencmp)
+            self.candidates.units.sort(key=sourcelen)
 
     def setparameters(self, max_candidates=10, min_similarity=75, max_length=70):
         """Sets the parameters without reinitialising the tm. If a parameter
@@ -195,9 +188,7 @@ class matcher(object):
             return score != 0
         bestcandidates = filter(notzero, bestcandidates)
         #Sort for use as a general list, and reverse so the best one is at index 0
-        bestcandidates.sort()
-        # We reverse as separate step for compatibility with Python 2.3
-        bestcandidates.reverse()
+        bestcandidates.sort(reverse=True)
         return self.buildunits(bestcandidates)
 
     def buildunits(self, candidates):
@@ -258,7 +249,7 @@ class terminologymatcher(matcher):
                     # We mark it fuzzy to indicate that it isn't pristine
                     unit.markfuzzy()
                     extras.append(new_unit)
-        self.candidates.units.sort(sourcelencmp, reverse=True)
+        self.candidates.units.sort(key=sourcelen, reverse=True)
         if extras:
             # We don't sort, so that the altered forms are at the back and
             # considered last.
