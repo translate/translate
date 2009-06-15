@@ -124,6 +124,8 @@ class LISAunit(base.TranslationUnit):
 
     def __eq__(self, other):
         """Compares two units"""
+        if not isinstance(other, LISAunit):
+             return super(LISAunit, self).__eq__(other)
         languageNodes = self.getlanguageNodes()
         otherlanguageNodes = other.getlanguageNodes()
         if len(languageNodes) != len(otherlanguageNodes):
