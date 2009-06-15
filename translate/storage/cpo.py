@@ -635,11 +635,13 @@ class pofile(pocommon.pofile):
         outputstring = ""
         if self._gpo_memory_file:
             obsolete_workaround()
-            f = tempfile.NamedTemporaryFile(prefix='translate', suffix='.po')
-            self._gpo_memory_file = gpo.po_file_write_v2(self._gpo_memory_file, f.name, xerror_handler)
-            f.seek(0)
+            f, fname = tempfile.mkstemp(prefix='translate', suffix='.po')
+            os.close(f)
+            self._gpo_memory_file = gpo.po_file_write_v2(self._gpo_memory_file, fname, xerror_handler)
+            f = open(fname)
             outputstring = f.read()
             f.close()
+            os.remove(fname)
         return outputstring
 
     def isempty(self):
