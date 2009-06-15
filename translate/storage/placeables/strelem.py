@@ -619,12 +619,12 @@ class StringElem(object):
         """Print the tree from the current instance's point in an indented
             manner."""
         indent_prefix = " " * indent * 2
-        print "%s%s [%s]" % (indent_prefix, self.__class__.__name__, unicode(self))
+        print (u"%s%s [%s]" % (indent_prefix, self.__class__.__name__, unicode(self))).encode('utf-8')
         for elem in self.sub:
             if isinstance(elem, StringElem):
                 elem.print_tree(indent+1)
             else:
-                print '%s%s[%s]' % (indent_prefix, indent_prefix, elem)
+                print (u'%s%s[%s]' % (indent_prefix, indent_prefix, elem)).encode('utf-8')
 
     def prune(self):
         """Remove unnecessary nodes to make the tree optimal."""
