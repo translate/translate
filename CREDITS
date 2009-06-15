@@ -21,6 +21,7 @@ Filip Miletic: fixes for unicode problems
 Fredrik Corneliusson: xliff work
 Friedel Wolff: bug fixes, development
 Geoffrey Hutchison: better Qt .ts support
+Ivan Masár: improvements to pocount
 Javier Sola: documentation
 Kaloian Doganov: improvement of po2html
 Lars Kruse: version control, indexing, support, reviews
