@@ -40,6 +40,9 @@ def add_prefix(prefix, stringelems):
                 string.sub[0] = prefix + string.sub[0]
     return stringelems
 
+podebug_parsers = general.parsers
+podebug_parsers.remove(general.CapsPlaceable.parse)
+podebug_parsers.remove(general.CamelCasePlaceable.parse)
 
 class podebug:
     def __init__(self, format=None, rewritestyle=None, hash=None, ignoreoption=None):
@@ -224,7 +227,7 @@ class podebug:
             prefix = hash.md5_f(hashable).hexdigest()[:self.hash] + " "
         rich_source = unit.rich_source
         if not isinstance(rich_source, StringElem):
-            rich_source = [rich_parse(string, general.parsers) for string in rich_source]
+            rich_source = [rich_parse(string, podebug_parsers) for string in rich_source]
         if self.rewritefunc:
             rewritten = [self.rewritefunc(string) for string in rich_source]
             if rewritten:
