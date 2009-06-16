@@ -62,10 +62,12 @@ class podebug:
         return [rewrite.replace("rewrite_", "") for rewrite in dir(cls) if rewrite.startswith("rewrite_")]
     rewritelist = classmethod(rewritelist)
 
-    def rewrite_xxx(self, string):
+    def _rewrite_prepend_append(self, string, prepend, append=None):
+        if append is None:
+            append = prepend
         if not isinstance(string, StringElem):
             string = StringElem(string)
-        string.sub.insert(0, u'xxx')
+        string.sub.insert(0, prepend)
         if unicode(string).endswith(u'\n'):
             # Try and remove the last character from the tree
             try:
@@ -74,10 +76,16 @@ class podebug:
                     lastnode.sub[-1] = lastnode.sub[-1].rstrip(u'\n')
             except IndexError:
                 pass
-            string.sub.append(u'xxx\n')
+            string.sub.append(append + u'\n')
         else:
-            string.sub.append(u'xxx')
+            string.sub.append(append)
         return string
+
+    def rewrite_xxx(self, string):
+        return self._rewrite_prepend_append(string, u"xxx")
+
+    def rewrite_bracket(self, string):
+        return self._rewrite_prepend_append(string, u"[", u"]")
 
     def rewrite_en(self, string):
         if not isinstance(string, StringElem):

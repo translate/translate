@@ -45,6 +45,11 @@ class TestPODebug:
         assert str(self.debug.rewrite_xxx(u"Test")) == u"xxxTestxxx"
         assert str(self.debug.rewrite_xxx(u"Newline\n")) == u"xxxNewlinexxx\n"
 
+    def test_rewrite_bracket(self):
+        """Test the bracket rewrite function"""
+        assert str(self.debug.rewrite_bracket(u"Test")) == u"[Test]"
+        assert str(self.debug.rewrite_bracket(u"Newline\n")) == u"[Newline]\n"
+
     def test_rewrite_unicode(self):
         """Test the unicode rewrite function"""
         assert unicode(self.debug.rewrite_unicode(u"Test")) == u"Ŧḗşŧ"
