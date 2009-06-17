@@ -186,7 +186,7 @@ Some help in writing useful bug reports are mentioned here:
   http://translate.sourceforge.net/wiki/developers/reporting_bugs
 
 Documentation
------------
+-------------
 Please read our documentation online at 
   http://translate.sourceforge.net/wiki/toolkit/index
 There they are constantly being updated. Please feel free to contribute new 
@@ -242,6 +242,6 @@ posegment - Break a PO or XLIFF files into sentence segments, useful
             for creating a segmented translation memory.
 poswap    - uses a translation of another language that you would rather use 
             than English as source language
-poterminology - analise PO or POT files to build a list of frequently occuring
+poterminology - analyse PO or POT files to build a list of frequently occurring
                 words and phrases
 
