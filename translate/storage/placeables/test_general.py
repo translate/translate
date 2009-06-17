@@ -38,3 +38,8 @@ def test_placeable_space():
 def test_placeable_punctuation():
     assert general.PunctuationPlaceable.parse(u'These, are not. Special: punctuation; marks! Or are "they"?') is None
     assert general.PunctuationPlaceable.parse(u'Downloading…')[1] == general.PunctuationPlaceable([u'…'])
+
+def test_placeable_xml_entity():
+    assert general.XMLEntityPlaceable.parse(u'&brandShortName;')[0] == general.XMLEntityPlaceable([u'&brandShortName;'])
+    assert general.XMLEntityPlaceable.parse(u'&#1234;')[0] == general.XMLEntityPlaceable([u'&#1234;'])
+    assert general.XMLEntityPlaceable.parse(u'&xDEAD;')[0] == general.XMLEntityPlaceable([u'&xDEAD;'])
