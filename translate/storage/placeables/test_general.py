@@ -34,3 +34,7 @@ def test_placeable_space():
     assert general.SpacesPlaceable.parse(u' Space at start')[0] == general.SpacesPlaceable([u' '])
     assert general.SpacesPlaceable.parse(u'Space at end ')[1] == general.SpacesPlaceable([u' '])
     assert general.SpacesPlaceable.parse(u'Double  space')[1] == general.SpacesPlaceable([u'  '])
+
+def test_placeable_punctuation():
+    assert general.PunctuationPlaceable.parse(u'These, are not. Special: punctuation; marks! Or are "they"?') is None
+    assert general.PunctuationPlaceable.parse(u'Downloading…')[1] == general.PunctuationPlaceable([u'…'])
