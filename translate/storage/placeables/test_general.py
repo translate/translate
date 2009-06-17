@@ -43,3 +43,7 @@ def test_placeable_xml_entity():
     assert general.XMLEntityPlaceable.parse(u'&brandShortName;')[0] == general.XMLEntityPlaceable([u'&brandShortName;'])
     assert general.XMLEntityPlaceable.parse(u'&#1234;')[0] == general.XMLEntityPlaceable([u'&#1234;'])
     assert general.XMLEntityPlaceable.parse(u'&xDEAD;')[0] == general.XMLEntityPlaceable([u'&xDEAD;'])
+
+def test_placeable_option():
+    assert general.OptionPlaceable.parse(u'Type --help for this help')[1] == general.OptionPlaceable([u'--help'])
+    assert general.OptionPlaceable.parse(u'Short -S ones also')[1] == general.OptionPlaceable([u'-S'])
