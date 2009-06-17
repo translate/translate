@@ -68,7 +68,7 @@ class NumberPlaceable(Ph):
     """Placeable for numbers."""
 
     istranslatable = False
-    regex = re.compile(ur"[0-9]+([\u00a0.,][0-9]+)*")
+    regex = re.compile(ur"[-+]?[0-9]+([\u00a0.,][0-9]+)*")
     parse = classmethod(regex_parse)
 
 
