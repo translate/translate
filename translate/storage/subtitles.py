@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # 
-# Copyright 2008 Zuza Software Foundation
+# Copyright 2008-2009 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
@@ -21,7 +21,7 @@
 
 """Class that manages subtitle files for translation
 
-   This class makes use of the subtitle functionality of L{gaupol} 
+   This class makes use of the subtitle functionality of L{gaupol}
    @see: gaupo/agents/open.py::open_main
 
    a patch to gaupol is required to open utf-8 files successfully
@@ -29,7 +29,6 @@
 from translate.storage import base
 from StringIO import StringIO
 import gaupol
-import chardet
 
 class SubtitleUnit(base.TranslationUnit):
     """A subtitle entry that is translatable"""
@@ -69,7 +68,7 @@ class SubtitleFile(base.TranslationStore):
         output = StringIO()
         self._subtitlefile.write_to_file(subtitles, gaupol.documents.MAIN, output)
         return output.getvalue().encode(self._subtitlefile.encoding)
-        
+
 
     def parse(self, input):
         """parse the given file"""
