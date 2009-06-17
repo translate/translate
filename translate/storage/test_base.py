@@ -150,6 +150,7 @@ class TestTranslationUnit:
         """Basic test for converting from multistrings to StringElem trees."""
         target_mstr = multistring([u'tėst', u'<b>string</b>'])
         unit = self.UnitClass(multistring([u'a', u'b']))
+        unit.rich_parsers = general.parsers
         unit.target = target_mstr
         elems = unit.rich_target
 
