@@ -82,7 +82,12 @@ def convertodf(inputfile, outputfile, templates, engine):
             translate_toolkit_implementation(store)
         else:
             itools_implementation(store)
-    
+
+    # Since the convertoptionsparser will give us an open file, we risk that
+    # it could have been opened in non-binary mode on Windows, and then we'll
+    # have problems, so let's make sure we have what we want.
+    inputfile.close()
+    inputfile = file(inputfile.name, mode='rb')
     with_(store_context(), with_block)
     return True
 

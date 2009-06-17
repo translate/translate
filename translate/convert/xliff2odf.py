@@ -66,6 +66,11 @@ def translate_odf(template, input_file):
             generate.apply_translations(dom_tree.getroot(), file_unit_tree, generate.replace_dom_text(make_parse_state))
         return dom_trees
 
+    # Since the convertoptionsparser will give us an open file, we risk that
+    # it could have been opened in non-binary mode on Windows, and then we'll
+    # have problems, so let's make sure we have what we want.
+    template.close()
+    template = file(template.name, mode='rb')
     dom_trees = load_dom_trees(template)
     unit_trees = load_unit_tree(input_file, dom_trees)
     return translate_dom_trees(unit_trees, dom_trees)
@@ -75,6 +80,11 @@ def write_odf(xlf_data, template, output_file, dom_trees):
         for filename, dom_tree in dom_trees.iteritems():
             output_zip.writestr(filename, etree.tostring(dom_tree, encoding='UTF-8', xml_declaration=True))
 
+    # Since the convertoptionsparser will give us an open file, we risk that
+    # it could have been opened in non-binary mode on Windows, and then we'll
+    # have problems, so let's make sure we have what we want.
+    template.close()
+    template = file(template.name, mode='rb')
     template_zip = zipfile.ZipFile(template,  'r')
     output_zip   = zipfile.ZipFile(output_file, 'w', compression=zipfile.ZIP_DEFLATED)
     output_zip   = odf_io.copy_odf(template_zip, output_zip, dom_trees.keys() + ['META-INF/manifest.xml'])
@@ -86,6 +96,7 @@ def convertxliff(input_file, output_file, template):
     xlf_data = input_file.read()
     dom_trees = translate_odf(template, cStringIO.StringIO(xlf_data))
     write_odf(xlf_data, template, output_file, dom_trees)
+    output_file.close()
     return True
 
 def main(argv=None):
