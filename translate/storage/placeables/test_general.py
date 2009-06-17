@@ -17,3 +17,8 @@ def test_placeable_newline():
 
 def test_placeable_alt_attr():
     assert general.AltAttrPlaceable.parse(u'Click on the <img src="image.jpg" alt="Image">')[1] == general.AltAttrPlaceable([u'alt="Image"'])
+
+def test_placeable_qt_formatting():
+    assert general.QtFormattingPlaceable.parse(u'One %1 %99 %L1 are all valid')[1] == general.QtFormattingPlaceable([u'%1'])
+    assert general.QtFormattingPlaceable.parse(u'One %1 %99 %L1 are all valid')[3] == general.QtFormattingPlaceable([u'%99'])
+    assert general.QtFormattingPlaceable.parse(u'One %1 %99 %L1 are all valid')[5] == general.QtFormattingPlaceable([u'%L1'])
