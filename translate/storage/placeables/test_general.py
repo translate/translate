@@ -29,3 +29,8 @@ def test_placeable_camelcase():
     assert general.CamelCasePlaceable.parse(u'DokuWiki')[0] == general.CamelCasePlaceable([u'DokuWiki'])
     assert general.CamelCasePlaceable.parse(u'_Bug') is None
     assert general.CamelCasePlaceable.parse(u'NOTCAMEL') is None
+
+def test_placeable_space():
+    assert general.SpacesPlaceable.parse(u' Space at start')[0] == general.SpacesPlaceable([u' '])
+    assert general.SpacesPlaceable.parse(u'Space at end ')[1] == general.SpacesPlaceable([u' '])
+    assert general.SpacesPlaceable.parse(u'Double  space')[1] == general.SpacesPlaceable([u'  '])
