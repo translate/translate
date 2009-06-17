@@ -22,3 +22,10 @@ def test_placeable_qt_formatting():
     assert general.QtFormattingPlaceable.parse(u'One %1 %99 %L1 are all valid')[1] == general.QtFormattingPlaceable([u'%1'])
     assert general.QtFormattingPlaceable.parse(u'One %1 %99 %L1 are all valid')[3] == general.QtFormattingPlaceable([u'%99'])
     assert general.QtFormattingPlaceable.parse(u'One %1 %99 %L1 are all valid')[5] == general.QtFormattingPlaceable([u'%L1'])
+
+def test_placeable_camelcase():
+    assert general.CamelCasePlaceable.parse(u'CamelCase')[0] == general.CamelCasePlaceable([u'CamelCase'])
+    assert general.CamelCasePlaceable.parse(u'iPod')[0] == general.CamelCasePlaceable([u'iPod'])
+    assert general.CamelCasePlaceable.parse(u'DokuWiki')[0] == general.CamelCasePlaceable([u'DokuWiki'])
+    assert general.CamelCasePlaceable.parse(u'_Bug') is None
+    assert general.CamelCasePlaceable.parse(u'NOTCAMEL') is None
