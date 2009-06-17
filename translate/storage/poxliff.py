@@ -1,27 +1,28 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2006-2007 Zuza Software Foundation
-# 
-# This file is part of translate.
+# Copyright 2006-2009 Zuza Software Foundation
 #
-# translate is free software; you can redistribute it and/or modify
+# This file is part of the Translate Toolkit.
+#
+# This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
-# translate is distributed in the hope that it will be useful,
+#
+# This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with translate; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""An xliff file specifically suited for handling the po representation of 
-xliff. """
+"""XLIFF classes specifically suited for handling the PO representation in
+XLIFF.
+
+This way the API supports plurals as if it was a PO file, for example.
+"""
 
 from translate.storage import base, lisa, poheader, xliff
 from translate.storage.placeables import general
@@ -43,7 +44,7 @@ class PoXliffUnit(xliff.xliffunit):
         self._rich_source = None
         self._rich_target = None
         self.units = []
-            
+
         if empty:
             return
 
@@ -102,7 +103,7 @@ class PoXliffUnit(xliff.xliffunit):
         return multistring(strings)
     source = property(getsource, setsource)
     rich_source = property(base.TranslationUnit._get_rich_source, base.TranslationUnit._set_rich_source)
-    
+
     def settarget(self, text, lang='xx', append=False):
         if self.gettarget() == text:
             return
@@ -124,7 +125,7 @@ class PoXliffUnit(xliff.xliffunit):
             targets = text.strings + [""] * (sourcel - targetl)
         else:
             targets = text.strings
-        
+
         for i in range(len(self.units)):
             self.units[i].target = targets[i]
 
@@ -222,8 +223,8 @@ class PoXliffUnit(xliff.xliffunit):
             for (type, text) in commentpairs:
                 comments.append(text)
         return "\n".join(comments)
-    
-    def gettranslatorcomments(self):       
+
+    def gettranslatorcomments(self):
         """Returns the translator comments (x-po-trancomment), which corresponds
         to the # style po comments."""
         def hastrancomment((type, text)):
@@ -317,7 +318,7 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
                 pluralnum += 1
                 group.append(unit.xmlelement)
                 self.units.append(unit)
-        
+
         return self.units[-pluralnum]
 
     def parse(self, xml):
@@ -326,10 +327,10 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
         def ispluralgroup(node):
             """determines whether the xml node refers to a getttext plural"""
             return node.get("restype") == "x-gettext-plurals"
-        
+
         def isnonpluralunit(node):
             """determindes whether the xml node contains a plural like id.
-            
+
             We want to filter out all the plural nodes, except the very first
             one in each group.
             """
@@ -338,7 +339,7 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
         def pluralunits(pluralgroups):
             for pluralgroup in pluralgroups:
                 yield self.UnitClass.createfromxmlElement(pluralgroup, namespace=self.namespace)
-        
+
         self.filename = getattr(xml, 'name', '')
         if hasattr(xml, "read"):
             xml.seek(0)
