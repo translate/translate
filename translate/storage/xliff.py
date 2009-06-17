@@ -27,6 +27,7 @@ from lxml import etree
 
 from translate.misc.multistring import multistring
 from translate.storage import base, lisa
+from translate.storage.lisa import getXMLspace
 from translate.storage.placeables.lisa import xml_to_strelem
 
 # TODO: handle translation types
@@ -38,6 +39,8 @@ class xliffunit(lisa.LISAunit):
     languageNode = "source"
     textNode = ""
     namespace = 'urn:oasis:names:tc:xliff:document:1.1'
+
+    _default_xml_space = "default"
 
     #TODO: id and all the trans-unit level stuff
 
@@ -116,13 +119,13 @@ class xliffunit(lisa.LISAunit):
                 # the source tag is optional
                 sourcenode = node.iterdescendants(self.namespaced("source"))
                 try:
-                    newunit.source = lisa.getText(sourcenode.next())
+                    newunit.source = lisa.getText(sourcenode.next(), getXMLspace(node, self._default_xml_space))
                 except StopIteration:
                     pass
 
                 # must have one or more targets
                 targetnode = node.iterdescendants(self.namespaced("target"))
-                newunit.target = lisa.getText(targetnode.next())
+                newunit.target = lisa.getText(targetnode.next(), getXMLspace(node, self._default_xml_space))
                 #TODO: support multiple targets better
                 #TODO: support notes in alt-trans
                 newunit.xmlelement = node
@@ -149,13 +152,13 @@ class xliffunit(lisa.LISAunit):
         # TODO: consider using xpath to construct initial_list directly
         # or to simply get the correct text from the outset (just remember to
         # check for duplication.
-        initial_list = [lisa.getText(note) for note in notenodes if self.correctorigin(note, origin)]
+        initial_list = [lisa.getText(note, getXMLspace(self.xmlelement, self._default_xml_space)) for note in notenodes if self.correctorigin(note, origin)]
 
         # Remove duplicate entries from list:
         dictset = {}
         notelist = [dictset.setdefault(note, note) for note in initial_list if note not in dictset]
 
-        return notelist 
+        return notelist
 
     def getnotes(self, origin=None):
         return '\n'.join(self.getnotelist(origin=origin))
@@ -298,12 +301,13 @@ class xliffunit(lisa.LISAunit):
         """Returns the contexts in the context groups with the specified name"""
         groups = []
         grouptags = self.xmlelement.iterdescendants(self.namespaced("context-group"))
+        #TODO: conbine name in query
         for group in grouptags:
             if group.get("name") == name:
                 contexts = group.iterdescendants(self.namespaced("context"))
                 pairs = []
                 for context in contexts:
-                    pairs.append((context.get("context-type"), lisa.getText(context)))
+                    pairs.append((context.get("context-type"), lisa.getText(context, getXMLspace(self.xmlelement, self._default_xml_space))))
                 groups.append(pairs) #not extend
         return groups
 
@@ -506,7 +510,6 @@ class xlifffile(lisa.LISAfile):
         unit = super(xlifffile, self).addsourceunit(source)
         self._messagenum += 1
         unit.setid("%d" % self._messagenum)
-        lisa.setXMLspace(unit.xmlelement, "preserve")
         return unit
 
     def switchfile(self, filename, createifmissing=False):

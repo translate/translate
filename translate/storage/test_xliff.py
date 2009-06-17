@@ -292,11 +292,12 @@ class TestXLIFFfile(test_base.TestTranslationStore):
           % '''<trans-unit id="1">
                    <source> File  1 </source>
                </trans-unit>'''
+        # we currently always normalize as default behaviour for xliff
         xlifffile = xliff.xlifffile.parsestring(xlfsource)
         assert xlifffile.units[0].source == "File 1"
         root_node = xlifffile.document.getroot()
         lisa.setXMLspace(root_node, "preserve")
-        assert xlifffile.units[0].source == " File  1 "
+        assert xlifffile.units[0].source == "File 1"
         lisa.setXMLspace(root_node, "default")
         assert xlifffile.units[0].source == "File 1"
 
@@ -305,11 +306,12 @@ class TestXLIFFfile(test_base.TestTranslationStore):
                    <source> File  1
 </source>
                </trans-unit>'''
+        # we currently always normalize as default behaviour for xliff
         xlifffile = xliff.xlifffile.parsestring(xlfsource)
         assert xlifffile.units[0].source == "File 1"
         root_node = xlifffile.document.getroot()
         lisa.setXMLspace(root_node, "preserve")
-        assert xlifffile.units[0].source == " File  1\n"
+        assert xlifffile.units[0].source == "File 1"
         lisa.setXMLspace(root_node, "default")
         assert xlifffile.units[0].source == "File 1"
 

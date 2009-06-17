@@ -35,13 +35,24 @@ xml_preserve_ancestors = etree.XPath("ancestor-or-self::*/attribute::xml:space")
 string_xpath = etree.XPath("string()")
 string_xpath_normalized = etree.XPath("normalize-space()")
 
-def getText(node):
-    """joins together the text from all the text nodes in the nodelist and their children"""
-    xml_preserves = xml_preserve_ancestors(node)
-    if xml_preserves and xml_preserves[-1] == "preserve":
-        return unicode(string_xpath(node)) # specific to lxml.etree
-    else:
+def getText(node, xml_space="preserve"):
+    """Extracts the plain text content out of the given node.
+
+    This method checks the xml:space attribute of the given node, and takes
+    an optional default to use in case nothing is specified in this node."""
+    xml_space = getXMLspace(node, xml_space)
+    if xml_space == "default":
         return unicode(string_xpath_normalized(node)) # specific to lxml.etree
+    else:
+        return unicode(string_xpath(node)) # specific to lxml.etree
+
+    # If we want to normalise space and only preserve it when the directive
+    # xml:space="preserve" is given in node or in parents, consider this code:
+    #xml_preserves = xml_preserve_ancestors(node)
+    #if xml_preserves and xml_preserves[-1] == "preserve":
+    #    return unicode(string_xpath(node)) # specific to lxml.etree
+    #else:
+    #    return unicode(string_xpath_normalized(node)) # specific to lxml.etree
 
 
 def _findAllMatches(text, re_obj):
@@ -77,9 +88,12 @@ def setXMLlang(node, lang):
     """Sets the xml:lang attribute on node"""
     node.set("{%s}lang" % XML_NS, lang)
 
-def getXMLspace(node):
+def getXMLspace(node, default=None):
     """Gets the xml:space attribute on node"""
-    return node.get("{%s}space" % XML_NS)
+    value = node.get("{%s}space" % XML_NS)
+    if value is None:
+        value = default
+    return value
 
 def setXMLspace(node, value):
     """Sets the xml:space attribute on node"""
@@ -111,6 +125,10 @@ class LISAunit(base.TranslationUnit):
     textNode = ""
 
     namespace = None
+    _default_xml_space = "preserve"
+    """The default handling of spacing in the absense of an xml:space attribute.
+
+    This is mostly for correcting XLIFF behaviour."""
 
     def __init__(self, source, empty=False, **kwargs):
         """Constructs a unit containing the given source string"""
@@ -131,8 +149,8 @@ class LISAunit(base.TranslationUnit):
         if len(languageNodes) != len(otherlanguageNodes):
             return False
         for i in range(len(languageNodes)):
-            mytext = self.getNodeText(languageNodes[i])
-            othertext = other.getNodeText(otherlanguageNodes[i])
+            mytext = self.getNodeText(languageNodes[i], getXMLspace(self.xmlelement, self._default_xml_space))
+            othertext = other.getNodeText(otherlanguageNodes[i], getXMLspace(self.xmlelement, self._default_xml_space))
             if mytext != othertext:
                 #TODO:^ maybe we want to take children and notes into account
                 return False
@@ -171,7 +189,7 @@ class LISAunit(base.TranslationUnit):
         self.source_dom = self.createlanguageNode(sourcelang, text, "source")
 
     def getsource(self):
-        return self.getNodeText(self.source_dom)
+        return self.getNodeText(self.source_dom, getXMLspace(self.xmlelement, self._default_xml_space))
     source = property(getsource, setsource)
 
     def set_target_dom(self, dom_node, append=False):
@@ -232,7 +250,7 @@ class LISAunit(base.TranslationUnit):
     def gettarget(self, lang=None):
         """retrieves the "target" text (second entry), or the entry in the
         specified language, if it exists"""
-        return self.getNodeText(self.get_target_dom(lang))
+        return self.getNodeText(self.get_target_dom(lang), getXMLspace(self.xmlelement, self._default_xml_space))
     target = property(gettarget, settarget)
 
     def createlanguageNode(self, lang, text, purpose=None):
@@ -289,7 +307,7 @@ class LISAunit(base.TranslationUnit):
                 return languageNodes[index]
         return None
 
-    def getNodeText(self, languageNode):
+    def getNodeText(self, languageNode, xml_space="preserve"):
         """Retrieves the term from the given languageNode"""
         if languageNode is None:
             return None
@@ -298,9 +316,9 @@ class LISAunit(base.TranslationUnit):
             if terms is None:
                 return None
             else:
-                return getText(terms.next())
+                return getText(terms.next(), xml_space)
         else:
-            return getText(languageNode)
+            return getText(languageNode, xml_space)
 
     def __str__(self):
         return etree.tostring(self.xmlelement, pretty_print=True, encoding='utf-8')

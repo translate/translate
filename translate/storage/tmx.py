@@ -38,6 +38,8 @@ class tmxunit(lisa.LISAunit):
         langset = etree.Element(self.languageNode)
         lisa.setXMLlang(langset, lang)
         seg = etree.SubElement(langset, self.textNode)
+        # implied by the standard:
+        # lisa.setXMLspace(seg, "preserve")
         seg.text = text
         return langset
 
