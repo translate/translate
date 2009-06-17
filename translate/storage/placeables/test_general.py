@@ -47,3 +47,5 @@ def test_placeable_xml_entity():
 def test_placeable_option():
     assert general.OptionPlaceable.parse(u'Type --help for this help')[1] == general.OptionPlaceable([u'--help'])
     assert general.OptionPlaceable.parse(u'Short -S ones also')[1] == general.OptionPlaceable([u'-S'])
+
+# TODO: PythonFormattingPlaceable, JavaMessageFormatPlaceable, FormattingPlaceable (printf), UrlPlaceable, FilePlaceable, EmailPlaceable, CapsPlaceable, XMLTagPlaceable
