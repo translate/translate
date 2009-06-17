@@ -28,7 +28,7 @@ from lxml import etree
 from translate.misc.multistring import multistring
 from translate.storage import base, lisa
 from translate.storage.lisa import getXMLspace
-from translate.storage.placeables.lisa import xml_to_strelem
+from translate.storage.placeables.lisa import xml_to_strelem, strelem_to_xml
 
 # TODO: handle translation types
 
@@ -78,6 +78,27 @@ class xliffunit(lisa.LISAunit):
         if sourcesl > targetsl:
             nodes.extend(sources[- (sourcesl - targetsl):])
         return nodes
+
+    def set_rich_source(self, value, sourcelang='en'):
+        sourcelanguageNode = self.createlanguageNode(sourcelang, u'', "source")
+        self.source_dom = strelem_to_xml(sourcelanguageNode, value[0])
+
+    def get_rich_source(self):
+        return [xml_to_strelem(self.source_dom)]
+    rich_source = property(get_rich_source, set_rich_source)
+
+    def set_rich_target(self, value, lang='xx', append=False):
+        languageNode = None
+        if not value is None:
+            languageNode = self.createlanguageNode(lang, u'', "target")
+            strelem_to_xml(languageNode, value[0])
+        self.set_target_dom(languageNode, append)
+
+    def get_rich_target(self, lang=None):
+        """retrieves the "target" text (second entry), or the entry in the
+        specified language, if it exists"""
+        return [xml_to_strelem(self.get_target_dom(lang))]
+    rich_target = property(get_rich_target, set_rich_target)
 
     def addalttrans(self, txt, origin=None, lang=None, sourcetxt=None, matchquality=None):
         """Adds an alt-trans tag and alt-trans components to the unit.
