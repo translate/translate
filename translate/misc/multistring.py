@@ -37,9 +37,9 @@ class multistring(autoencode.autoencode):
         return newstring
 
     def __init__(self, *args, **kwargs):
-        super(multistring, self).__init__(*args, **kwargs)
+        super(multistring, self).__init__()
         if not hasattr(self, "strings"):
-            self.strings = []    
+            self.strings = []
 
     def __cmp__(self, otherstring):
         if isinstance(otherstring, multistring):
