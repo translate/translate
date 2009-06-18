@@ -23,6 +23,7 @@
 import math
 import time
 import logging
+import re
 try:
     from sqlite3 import dbapi2
 except ImportError:
@@ -31,6 +32,8 @@ except ImportError:
 from translate.search.lshtein import LevenshteinComparer
 from translate.lang import data
 
+
+STRIP_REGEXP = re.compile("\W", re.UNICODE)
 
 class LanguageError(Exception):
     def __init__(self, value):
@@ -270,7 +273,11 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
         minlen = min_levenshtein_length(len(unit_source), self.min_similarity)
         maxlen = max_levenshtein_length(len(unit_source), self.min_similarity, self.max_length)
 
-        unit_words = unit_source.split()
+        # split source into words, remove punctuation and special
+        # chars, keep words that are at least 3 chars long
+        unit_words = STRIP_REGEXP.sub(' ', unit_source).split()
+        unit_words = filter(lambda word: len(word) > 2, unit_words)
+
         if self.fulltext and len(unit_words) > 3:
             logging.debug("fulltext matching")
             query = """SELECT s.text, t.text, s.context, s.lang, t.lang FROM sources s JOIN targets t ON s.sid = t.sid JOIN fulltext f ON s.sid = f.docid
