@@ -283,15 +283,17 @@ def escapecontrols(source):
         source = source.replace(key, value)
     return source
 
-def mozillapropertiesdecode(source):
-    """decodes source from the escaped-unicode encoding used by mozilla .properties files"""
+def propertiesdecode(source, encoding):
+    """Decodes source from the escaped-unicode encoding used by .properties files.
+
+    Java uses Latin1 by default, and Mozilla uses UTF-8 by default."""
     # since the .decode("unicode-escape") routine decodes everything, and we don't want to
     # we reimplemented the algorithm from Python Objects/unicode.c in Python here
     # and modified it to retain escaped control characters
     output = u""
     s = 0
     if isinstance(source, str):
-        source = source.decode("utf-8")
+        source = source.decode(encoding)
     def unichr2(i):
         """Returns a Unicode string of one character with ordinal 32 <= i, otherwise an escaped control character"""
         if 32 <= i:

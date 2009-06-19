@@ -138,12 +138,12 @@ def convertmozillaprop(inputfile, outputfile, templatefile, pot=False, duplicate
 
 def convertprop(inputfile, outputfile, templatefile, personality="java", pot=False, duplicatestyle="msgctxt"):
     """reads in inputfile using properties, converts using prop2po, writes to outputfile"""
-    inputstore = properties.propfile(inputfile)
+    inputstore = properties.propfile(inputfile, personality)
     convertor = prop2po()
     if templatefile is None:
         outputstore = convertor.convertstore(inputstore, personality, duplicatestyle=duplicatestyle)
     else:
-        templatestore = properties.propfile(templatefile)
+        templatestore = properties.propfile(templatefile, personality)
         outputstore = convertor.mergestore(templatestore, inputstore, personality, blankmsgstr=pot, duplicatestyle=duplicatestyle)
     if outputstore.isempty():
         return 0

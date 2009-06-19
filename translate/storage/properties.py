@@ -138,12 +138,14 @@ def key_strip(key):
         newkey += key[len(newkey):len(newkey)+1]
     return newkey.lstrip()
 
+default_encoding = {"java": "latin1", "mozilla": "utf-8"}
 
 class propunit(base.TranslationUnit):
     """an element of a properties file i.e. a name and value, and any comments
     associated"""
-    def __init__(self, source=""):
+    def __init__(self, source="", personality="java"):
         """construct a blank propunit"""
+        self.personality = personality
         super(propunit, self).__init__(source)
         self.name = ""
         self.value = ""
@@ -153,10 +155,13 @@ class propunit(base.TranslationUnit):
 
     def setsource(self, source):
         """Sets the source AND the target to be equal"""
-        self.value = quote.mozillapropertiesencode(source or "")
+        if self.personality == "mozilla":
+            self.value = quote.mozillapropertiesencode(source or "")
+        else:
+            self.value = quote.javapropertiesencode(source or "")
 
     def getsource(self):
-        value = quote.mozillapropertiesdecode(self.value)
+        value = quote.propertiesdecode(self.value, default_encoding[self.personality])
 
         value = re.sub("\\\\ ", " ", value)
         return value
@@ -184,8 +189,8 @@ class propunit(base.TranslationUnit):
         if self.isblank():
             return "".join(self.comments + ["\n"])
         else:
-            if "\\u" in self.value:
-                self.value = quote.mozillapropertiesencode(quote.mozillapropertiesdecode(self.value))
+            if "\\u" in self.value and self.personality == "mozilla":
+                self.value = quote.mozillapropertiesencode(self.source)
             return "".join(self.comments + ["%s%s%s\n" % (self.name, self.delimeter, self.value)])
 
     def getlocations(self):
@@ -207,18 +212,18 @@ class propunit(base.TranslationUnit):
 class propfile(base.TranslationStore):
     """this class represents a .properties file, made up of propunits"""
     UnitClass = propunit
-    def __init__(self, inputfile=None):
+    def __init__(self, inputfile=None, personality="java"):
         """construct a propfile, optionally reading in from inputfile"""
         super(propfile, self).__init__(unitclass = self.UnitClass)
         self.filename = getattr(inputfile, 'name', '')
         if inputfile is not None:
             propsrc = inputfile.read()
             inputfile.close()
-            self.parse(propsrc)
+            self.parse(propsrc, personality)
 
-    def parse(self, propsrc):
+    def parse(self, propsrc, personality="java"):
         """read the source of a properties file in and include them as units"""
-        newunit = propunit()
+        newunit = propunit("", personality)
         inmultilinevalue = False
         for line in propsrc.split("\n"):
             # handle multiline value if we're in one

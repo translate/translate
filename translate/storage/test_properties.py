@@ -63,10 +63,10 @@ class TestPropUnit(test_monolingual.TestMonolingualUnit):
 class TestProp(test_monolingual.TestMonolingualStore):
     StoreClass = properties.propfile
     
-    def propparse(self, propsource):
+    def propparse(self, propsource, personality="java"):
         """helper that parses properties source without requiring files"""
         dummyfile = wStringIO.StringIO(propsource)
-        propfile = properties.propfile(dummyfile)
+        propfile = properties.propfile(dummyfile, personality)
         return propfile
 
     def propregen(self, propsource):
@@ -92,7 +92,7 @@ class TestProp(test_monolingual.TestMonolingualStore):
         """check that escapes unicode is converted properly"""
         propsource = "unicode=\u0411\u0416\u0419\u0428"
         messagevalue = u'\u0411\u0416\u0419\u0428'.encode("UTF-8")
-        propfile = self.propparse(propsource)
+        propfile = self.propparse(propsource, personality="mozilla")
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
         assert propunit.name == "unicode"
@@ -147,3 +147,11 @@ key=value
             assert len(propfile.units) == 1
             propunit = propfile.units[0]
             assert propunit.comments == ['%s A comment\n' % comment_marker]
+
+    def test_latin1(self):
+        """checks that we handle non-escaped latin1 text"""
+        prop_source = u"key=valú".encode('latin1')
+        prop_store = self.propparse(prop_source)
+        assert len(prop_store.units) == 1
+        unit = prop_store.units[0]
+        assert unit.source == u"valú"
