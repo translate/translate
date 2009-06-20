@@ -21,7 +21,7 @@
 """Insert debug messages into XLIFF and Gettext PO localization files
 
 See: http://translate.sourceforge.net/wiki/toolkit/podebug for examples and
-usage instructions
+usage instructions.
 """
 
 import os
@@ -102,7 +102,8 @@ class podebug:
         """Rewrite using Mock Swedish as made famous by Monty Python"""
         if not isinstance(string, StringElem):
             string = StringElem(string)
-        # From Dive into Python which itself got it elsewhere http://www.renderx.com/demos/examples/diveintopython.pdf
+        # From Dive into Python which itself got it elsewhere
+        # http://www.renderx.com/demos/examples/diveintopython.pdf
         subs = (
                (r'a([nu])', r'u\1'),
                (r'A([nu])', r'U\1'),
@@ -199,7 +200,7 @@ class podebug:
             if location.endswith(".height") or location.endswith(".width") or \
                     location.endswith(".macWidth") or location.endswith(".unixWidth"):
                 return True
-            if location == "brandShortName" or location == "brandFullName" or location == "vendorShortName":
+            if location in ["brandShortName", "brandFullName", "vendorShortName"]:
                 return True
             if location.lower().endswith(".commandkey") or location.endswith(".key"):
                 return True
@@ -288,7 +289,7 @@ class podebug:
         return dirshrunk + baseshrunk
 
 def convertpo(inputfile, outputfile, templatefile, format=None, rewritestyle=None, hash=None, ignoreoption=None):
-    """reads in inputfile using po, changes to have debug strings, writes to outputfile"""
+    """Reads in inputfile, changes it to have debug strings, writes to outputfile."""
     # note that templatefile is not used, but it is required by the converter...
     inputstore = factory.getobject(inputfile)
     if inputstore.isempty():
@@ -303,12 +304,16 @@ def main():
     formats = {"po":("po", convertpo), "pot":("po", convertpo), "xlf":("xlf", convertpo)}
     parser = convert.ConvertOptionParser(formats, description=__doc__)
     # TODO: add documentation on format strings...
-    parser.add_option("-f", "--format", dest="format", default="", help="specify format string")
-    parser.add_option("", "--rewrite", dest="rewritestyle", 
-        type="choice", choices=podebug.rewritelist(), metavar="STYLE", help="the translation rewrite style: %s" % ", ".join(podebug.rewritelist()))
-    parser.add_option("", "--ignore", dest="ignoreoption", 
-        type="choice", choices=podebug.ignorelist(), metavar="APPLICATION", help="apply tagging ignore rules for the given application: %s" % ", ".join(podebug.ignorelist()))
-    parser.add_option("", "--hash", dest="hash", metavar="LENGTH", type="int", help="add an md5 hash to translations")
+    parser.add_option("-f", "--format", dest="format", default="",
+        help="specify format string")
+    parser.add_option("", "--rewrite", dest="rewritestyle",
+        type="choice", choices=podebug.rewritelist(), metavar="STYLE",
+        help="the translation rewrite style: %s" % ", ".join(podebug.rewritelist()))
+    parser.add_option("", "--ignore", dest="ignoreoption",
+        type="choice", choices=podebug.ignorelist(), metavar="APPLICATION",
+        help="apply tagging ignore rules for the given application: %s" % ", ".join(podebug.ignorelist()))
+    parser.add_option("", "--hash", dest="hash", metavar="LENGTH", type="int",
+        help="add an md5 hash to translations")
     parser.passthrough.append("format")
     parser.passthrough.append("rewritestyle")
     parser.passthrough.append("ignoreoption")
