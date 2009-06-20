@@ -162,10 +162,10 @@ def main():
                       help="target language of translation files")
     parser.add_option("-s", "--import-source-lang", dest="source_lang",
                       help="source language of translation files")
-    parser.add_option("-b", "--bind", dest="bind",
-                      help="adress to bind server to")
-    parser.add_option("-p", "--port", dest="port", type="int",
-                      help="port to listen on")
+    parser.add_option("-b", "--bind", dest="bind", default="localhost",
+                      help="adress to bind server to (default: localhost)")
+    parser.add_option("-p", "--port", dest="port", type="int", default=8888,
+                      help="port to listen on (default: 8888)")
     parser.add_option("--debug", action="store_true", dest="debug", default=False,
                       help="enable debugging features")
 
