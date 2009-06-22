@@ -1,29 +1,27 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2002-2006 Zuza Software Foundation
-# 
-# This file is part of translate.
+# Copyright 2002-2009 Zuza Software Foundation
 #
-# translate is free software; you can redistribute it and/or modify
+# This file is part of Virtaal.
+#
+# This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
-# translate is distributed in the hope that it will be useful,
+#
+# This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with translate; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""convert XLIFF localization files to Gettext PO localization files
+"""Convert XLIFF localization files to Gettext PO localization files.
 
-see: http://translate.sourceforge.net/wiki/toolkit/xliff2po for examples and 
-usage instructions
+see: http://translate.sourceforge.net/wiki/toolkit/xliff2po for examples and
+usage instructions.
 """
 
 from translate.storage import po
@@ -65,7 +63,7 @@ class xliff2po:
         return thepo
 
     def convertstore(self, inputfile):
-        """converts a .xliff file to .po format"""
+        """Converts a .xliff file to .po format"""
         # XXX: The inputfile is converted to string because Pootle supplies
         # XXX: a PootleFile object as input which cannot be sent to PoXliffFile.
         # XXX: The better way would be to have a consistent conversion API.
@@ -94,4 +92,3 @@ def main(argv=None):
     formats = {"xlf":("po", convertxliff)}
     parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
     parser.run(argv)
-
