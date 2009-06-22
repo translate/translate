@@ -45,14 +45,14 @@ class xliff2po:
         #Location comments
         locations = transunit.getlocations()
         if locations:
-            thepo.addlocation("%s" % " ".join(locations))
+            thepo.addlocations(locations)
 
         #NOTE: Supporting both <context> and <note> tags in xliff files for comments
         #Translator comments
         trancomments = transunit.getnotes("translator")
         if trancomments:
             thepo.addnote(trancomments, origin="translator")
-        
+
         #Automatic and Developer comments
         autocomments = transunit.getnotes("developer")
         if autocomments:
@@ -61,7 +61,7 @@ class xliff2po:
         #See 5.6.1 of the spec. We should not check fuzzyness, but approved attribute
         if transunit.isfuzzy():
             thepo.markfuzzy(True)
-        
+
         return thepo
 
     def convertstore(self, inputfile):
