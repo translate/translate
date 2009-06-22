@@ -242,7 +242,7 @@ def htmlentitydecode(source):
 
 def javapropertiesencode(source):
     """encodes source in the escaped-unicode encoding used by Java .properties files"""
-    output = ""
+    output = u""
     for char in source:
         charnum = ord(char)
         if char in controlchars:
@@ -250,12 +250,12 @@ def javapropertiesencode(source):
         elif 0 <= charnum < 128:
             output += str(char)
         else:
-            output += "\\u%04X" % charnum
+            output += u"\\u%04X" % charnum
     return output
 
 def mozillapropertiesencode(source):
     """encodes source in the escaped-unicode encoding used by Mozilla .properties files"""
-    output = ""
+    output = u""
     for char in source:
         charnum = ord(char)
         if char in controlchars:
@@ -283,7 +283,7 @@ def escapecontrols(source):
         source = source.replace(key, value)
     return source
 
-def propertiesdecode(source, encoding):
+def propertiesdecode(source):
     """Decodes source from the escaped-unicode encoding used by .properties files.
 
     Java uses Latin1 by default, and Mozilla uses UTF-8 by default."""

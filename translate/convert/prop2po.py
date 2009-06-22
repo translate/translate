@@ -104,7 +104,7 @@ class prop2po:
             if origpo is not None:
                 if translatedpo is not None and not blankmsgstr:
                     origpo.target = translatedpo.source
-                origpo.addnote("".join(waitingcomments).rstrip(), "developer", position="prepend")
+                origpo.addnote(u"".join(waitingcomments).rstrip(), "developer", position="prepend")
                 waitingcomments = []
                 thetargetfile.addunit(origpo)
             elif translatedpo is not None:
@@ -123,13 +123,13 @@ class prop2po:
             for comment in propunit.comments:
                 if "DONT_TRANSLATE" in comment:
                     return "discard"
-            pounit.addnote("".join(propunit.comments).rstrip(), commenttype)
+            pounit.addnote(u"".join(propunit.getnotes()).rstrip(), commenttype)
         # TODO: handle multiline msgid
         if propunit.isblank():
             return None
         pounit.addlocation(propunit.name)
         pounit.source = propunit.source
-        pounit.target = ""
+        pounit.target = u""
         return pounit
 
 def convertmozillaprop(inputfile, outputfile, templatefile, pot=False, duplicatestyle="msgctxt"):

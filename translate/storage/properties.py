@@ -51,6 +51,7 @@
 
 from translate.storage import base
 from translate.misc import quote
+from translate.lang import data
 import re
 
 # the rstripeols convert dos <-> unix nicely as well
@@ -148,22 +149,22 @@ class propunit(base.TranslationUnit):
         self.personality = personality
         super(propunit, self).__init__(source)
         self.name = ""
-        self.value = ""
-        self.delimeter = "="
+        self.value = u""
+        self.delimeter = u"="
         self.comments = []
         self.source = source
 
     def setsource(self, source):
         """Sets the source AND the target to be equal"""
+        source = data.forceunicode(source)
         if self.personality == "mozilla":
-            self.value = quote.mozillapropertiesencode(source or "")
+            self.value = quote.mozillapropertiesencode(source or u"")
         else:
-            self.value = quote.javapropertiesencode(source or "")
+            self.value = quote.javapropertiesencode(source or u"")
 
     def getsource(self):
-        value = quote.propertiesdecode(self.value, default_encoding[self.personality])
-
-        value = re.sub("\\\\ ", " ", value)
+        value = quote.propertiesdecode(self.value)
+        value = re.sub(u"\\\\ ", u" ", value)
         return value
 
     source = property(getsource, setsource)
@@ -181,26 +182,27 @@ class propunit(base.TranslationUnit):
         """convert to a string. double check that unicode is handled somehow here"""
         source = self.getoutput()
         if isinstance(source, unicode):
-            return source.encode(getattr(self, "encoding", "UTF-8"))
+            return source.encode(default_encoding[self.personality])
         return source
 
     def getoutput(self):
         """convert the element back into formatted lines for a .properties file"""
         if self.isblank():
-            return "".join(self.comments + ["\n"])
+            return u"".join(self.comments + [u"\n"])
         else:
             if "\\u" in self.value and self.personality == "mozilla":
                 self.value = quote.mozillapropertiesencode(self.source)
-            return "".join(self.comments + ["%s%s%s\n" % (self.name, self.delimeter, self.value)])
+            return "".join(self.comments + [u"%s%s%s\n" % (self.name, self.delimeter, self.value)])
 
     def getlocations(self):
         return [self.name]
 
     def addnote(self, note, origin=None):
+        note = data.forceunicode(note)
         self.comments.append(note)
 
     def getnotes(self, origin=None):
-        return '\n'.join(self.comments)
+        return u'\n'.join(self.comments)
 
     def removenotes(self):
         self.comments = []
@@ -225,7 +227,11 @@ class propfile(base.TranslationStore):
         """read the source of a properties file in and include them as units"""
         newunit = propunit("", personality)
         inmultilinevalue = False
-        for line in propsrc.split("\n"):
+        if personality == "mozilla":
+            propsrc = unicode(propsrc, 'utf-8')
+        else:
+            propsrc = unicode(propsrc, 'latin1')
+        for line in propsrc.split(u"\n"):
             # handle multiline value if we're in one
             line = quote.rstripeol(line)
             if inmultilinevalue:
@@ -241,10 +247,10 @@ class propfile(base.TranslationStore):
                     self.addunit(newunit)
                     newunit = propunit()
             # otherwise, this could be a comment
-            elif line.strip()[:1] in ('#', '!'):
+            elif line.strip()[:1] in (u'#', u'!'):
                 # add a comment
                 line = quote.escapecontrols(line)
-                newunit.comments.append(line+"\n")
+                newunit.comments.append(line+u"\n")
             elif not line.strip():
                 # this is a blank line...
                 if str(newunit).strip():
