@@ -37,6 +37,9 @@ def sourcelen(unit):
 
 class matcher(object):
     """A class that will do matching and store configuration for the matching process"""
+
+    sort_reverse = False
+
     def __init__(self, store, max_candidates=10, min_similarity=75, max_length=70, comparer=None, usefuzzy=False):
         """max_candidates is the maximum number of candidates that should be assembled,
         min_similarity is the minimum similarity that must be attained to be included in
@@ -67,6 +70,7 @@ class matcher(object):
     def inittm(self, stores, reverse=False):
         """Initialises the memory for later use. We use simple base units for
         speedup."""
+        # reverse is deprectated - just use self.sort_reverse
         self.existingunits = {}
         self.candidates = base.TranslationStore()
 
@@ -74,7 +78,7 @@ class matcher(object):
             stores = [stores]
         for store in stores:
             self.extendtm(store.units, store=store, sort=False)
-        self.candidates.units.sort(key=sourcelen, reverse=reverse)
+        self.candidates.units.sort(key=sourcelen, reverse=self.sort_reverse)
         # print "TM initialised with %d candidates (%d to %d characters long)" % \
         #        (len(self.candidates.units), len(self.candidates.units[0].source), len(self.candidates.units[-1].source))
 
@@ -112,7 +116,7 @@ class matcher(object):
             simpleunit.fuzzy = candidate.isfuzzy()
             self.candidates.units.append(simpleunit)
         if sort:
-            self.candidates.units.sort(key=sourcelen)
+            self.candidates.units.sort(key=sourcelen, reverse=self.sort_reverse)
 
     def setparameters(self, max_candidates=10, min_similarity=75, max_length=70):
         """Sets the parameters without reinitialising the tm. If a parameter
@@ -228,6 +232,9 @@ context_re = re.compile("\s+\(.*\)\s*$")
 
 class terminologymatcher(matcher):
     """A matcher with settings specifically for terminology matching"""
+
+    sort_reverse = True
+
     def __init__(self, store, max_candidates=10, min_similarity=75, max_length=500, comparer=None):
         if comparer is None:
             comparer = terminology.TerminologyComparer(max_length)
@@ -237,7 +244,7 @@ class terminologymatcher(matcher):
 
     def inittm(self, store):
         """Normal initialisation, but convert all source strings to lower case"""
-        matcher.inittm(self, store, reverse=True)
+        matcher.inittm(self, store)
         extras = []
         for unit in self.candidates.units:
             source = unit.source = context_re.sub("", unit.source).lower()
@@ -249,7 +256,7 @@ class terminologymatcher(matcher):
                     # We mark it fuzzy to indicate that it isn't pristine
                     unit.markfuzzy()
                     extras.append(new_unit)
-        self.candidates.units.sort(key=sourcelen, reverse=True)
+        self.candidates.units.sort(key=sourcelen, reverse=self.sort_reverse)
         if extras:
             # We don't sort, so that the altered forms are at the back and
             # considered last.
