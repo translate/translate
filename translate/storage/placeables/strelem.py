@@ -478,8 +478,6 @@ class StringElem(object):
         # 1.1) self.sub[0] is editable
         # 1.2) self.sub[0] is not editable
         # 2) At the end of the string (self)
-        # 2.1) self.flatten()[-1] is editable
-        # 2.2) self.flatten()[-1] is not editable
         # 3) In the middle of a node
         # 4) Between two nodes
         # 4.1) Neither of the nodes are editable
@@ -511,23 +509,13 @@ class StringElem(object):
 
         # Case 2 #
         if offset >= len(self):
+            #logging.debug('Case 2')
             last = self.flatten()[-1]
-            # 2.1 #
-            if last.iseditable:
-                #logging.debug('Case 2.1')
-                # last must be a leaf, because flatten() only returns leaves.
-                last.sub.append(checkleaf(last, text))
-                last.prune()
-                return True
-            # 2.2 #
-            else:
-                #logging.debug('Case 2.2')
-                parent = self.get_ancestor_where(last, lambda x: x.iseditable)
-                if parent is None:
-                    parent = self
-                parent.sub.append(checkleaf(parent, text))
-                return True
-            return False
+            parent = self.get_ancestor_where(last, lambda x: x.iseditable)
+            if parent is None:
+                parent = self
+            parent.sub.append(checkleaf(parent, text))
+            return True
 
         before = self.elem_at_offset(offset-1)
 
