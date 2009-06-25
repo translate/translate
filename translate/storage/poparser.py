@@ -190,7 +190,9 @@ def parse_multiple_quoted(parse_state, msg_list, msg_comment_list, first_start_p
         else:
             string = parse_msg_comment(parse_state, msg_comment_list, string)
 
-def parse_message(parse_state, start_of_string, start_of_string_len, msg_list, msg_comment_list = []):
+def parse_message(parse_state, start_of_string, start_of_string_len, msg_list, msg_comment_list=None):
+    if msg_comment_list is None:
+        msg_comment_list = []
     if startswith(parse_state.next_line, start_of_string):
         return parse_multiple_quoted(parse_state, msg_list, msg_comment_list, start_of_string_len)
 
