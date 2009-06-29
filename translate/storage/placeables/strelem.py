@@ -649,6 +649,22 @@ class StringElem(object):
                 if type(elem.sub[i]) in (str, unicode) and not elem.isleaf():
                     elem.sub[i] = StringElem(elem.sub[i])
 
+            # Merge sibling StringElem leaves
+            if not elem.isleaf():
+                changed = True
+                while changed:
+                    changed = False
+
+                    for i in range(len(elem.sub)-1):
+                        lsub = elem.sub[i]
+                        rsub = elem.sub[i+1]
+
+                        if type(lsub) is StringElem and type(rsub) is StringElem:
+                            lsub.sub.extend(rsub.sub)
+                            del elem.sub[i+1]
+                            changed = True
+                            break
+
     # TODO: Write unit test for this method
     def remove_type(self, ptype):
         """Replace nodes with type C{ptype} with base C{StringElem}s, containing
