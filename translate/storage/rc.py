@@ -1,26 +1,25 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
-# Copyright 2004-2006, 2008 Zuza Software Foundation
-# 
-# This file is part of translate.
 #
-# translate is free software; you can redistribute it and/or modify
+# Copyright 2004-2006,2008-2009 Zuza Software Foundation
+#
+# This file is part of the Translate Toolkit.
+#
+# This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
-# translate is distributed in the hope that it will be useful,
+#
+# This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with translate; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""classes that hold units of .rc files (rcunit) or entire files
-(rcfile) these files are used in translating Windows Resources
+"""Classes that hold units of .rc files (rcunit) or entire files
+(rcfile) used in translating Windows Resources.
 
 @note: This implementation is based mostly on observing WINE .rc files,
 these should mimic other non-WINE .rc files.
@@ -40,16 +39,16 @@ def escape_to_python(string):
     return pystring
 
 def escape_to_rc(string):
-    """escape a given Python string into a valid .rc string"""
+    """Escape a given Python string into a valid .rc string."""
     rcstring = re.sub("\\\\", "\\\\\\\\", string)
     rcstring = re.sub("\t", "\\\\t", rcstring)
     rcstring = re.sub("\n", "\\\\n", rcstring)
     return rcstring
 
 class rcunit(base.TranslationUnit):
-    """a unit of an rc file"""
+    """A unit of an rc file"""
     def __init__(self, source=""):
-        """construct a blank rcunit"""
+        """Construct a blank rcunit."""
         super(rcunit, self).__init__(source)
         self.name = ""
         self._value = ""
@@ -75,14 +74,14 @@ class rcunit(base.TranslationUnit):
     target = property(gettarget, settarget)
 
     def __str__(self):
-        """convert to a string. double check that unicode is handled somehow here"""
+        """Convert to a string. Double check that unicode is handled somehow here."""
         source = self.getoutput()
         if isinstance(source, unicode):
             return source.encode(getattr(self, "encoding", "UTF-8"))
         return source
 
     def getoutput(self):
-        """convert the element back into formatted lines for a .rc file"""
+        """Convert the element back into formatted lines for a .rc file."""
         if self.isblank():
             return "".join(self.comments + ["\n"])
         else:
@@ -101,14 +100,14 @@ class rcunit(base.TranslationUnit):
         self.comments = []
 
     def isblank(self):
-        """returns whether this is a blank element, containing only comments..."""
+        """Returns whether this is a blank element, containing only comments."""
         return not (self.name or self.value)
 
 class rcfile(base.TranslationStore):
-    """this class represents a .rc file, made up of rcunits"""
+    """This class represents a .rc file, made up of rcunits."""
     UnitClass = rcunit
     def __init__(self, inputfile=None):
-        """construct an rcfile, optionally reading in from inputfile"""
+        """Construct an rcfile, optionally reading in from inputfile."""
         super(rcfile, self).__init__(unitclass = self.UnitClass)
         self.filename = getattr(inputfile, 'name', '')
         if inputfile is not None:
@@ -117,7 +116,7 @@ class rcfile(base.TranslationStore):
             self.parse(rcsrc)
 
     def parse(self, rcsrc):
-        """read the source of a .rc file in and include them as units"""
+        """Read the source of a .rc file in and include them as units."""
         BLOCKS_RE = re.compile("""
                          (?:
                          LANGUAGE\s+[^\n]*|                              # Language details
@@ -214,8 +213,7 @@ class rcfile(base.TranslationStore):
                         newunit.name = "MENU.%s.%s.%s" % (menuname, type, name)
                     newunit.match = match 
                     self.addunit(newunit)
-         
+
     def __str__(self):
         """convert the units back to lines"""
         return "".join(self.blocks)
-
