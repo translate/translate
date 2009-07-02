@@ -43,21 +43,34 @@ def make_g_placeable(klass, node):
 def not_yet_implemented(klass, node):
     raise NotImplementedError
 
+def make_unknown(klass, node):
+    assert klass is xliff.UnknownXML
+
+    sub = xml_to_strelem(node).sub
+    id =  node.get('id',  None)
+    rid = node.get('rid', None)
+    xid = node.get('xid', None)
+
+    return klass(sub=sub, id=id, rid=rid, xid=xid, xml_node=node)
+
 _class_dictionary = {
-    u'bpt': (xliff.Bpt, not_yet_implemented),
+    #u'bpt': (xliff.Bpt, not_yet_implemented),
     u'bx' : (xliff.Bx,  make_empty_replacement_placeable),
-    u'ept': (xliff.Ept, not_yet_implemented),
+    #u'ept': (xliff.Ept, not_yet_implemented),
     u'ex' : (xliff.Ex,  make_empty_replacement_placeable),
     u'g'  : (xliff.G,   make_g_placeable),
-    u'it' : (xliff.It,  not_yet_implemented),
-    u'ph' : (xliff.Ph,  not_yet_implemented),
-    u'sub': (xliff.Sub, not_yet_implemented),
+    #u'it' : (xliff.It,  not_yet_implemented),
+    #u'ph' : (xliff.Ph,  not_yet_implemented),
+    #u'sub': (xliff.Sub, not_yet_implemented),
     u'x'  : (xliff.X,   make_empty_replacement_placeable)
 }
 
 def make_placeable(node):
     _namespace, tag = misc.parse_tag(node.tag)
-    klass, maker = _class_dictionary[tag]
+    if tag in _class_dictionary:
+        klass, maker = _class_dictionary[tag]
+    else:
+        klass, maker = xliff.UnknownXML, make_unknown
     return maker(klass, node)
 
 def as_unicode(string):
@@ -95,6 +108,18 @@ def placeable_as_dom_node(placeable, tagname):
         dom_node.attrib['rid'] = placeable.rid
     return dom_node
 
+def unknown_placeable_as_dom_node(placeable):
+    assert type(placeable) is xliff.UnknownXML
+
+    from copy import copy
+    node = copy(placeable.xml_node)
+    for i in range(len(node)):
+        del node[0]
+    node.tail = None
+    node.text = None
+
+    return node
+
 _placeable_dictionary = {
     xliff.Bpt: lambda placeable: placeable_as_dom_node(placeable, 'bpt'),
     xliff.Bx : lambda placeable: placeable_as_dom_node(placeable, 'bx'),
@@ -105,6 +130,7 @@ _placeable_dictionary = {
     xliff.Ph : lambda placeable: placeable_as_dom_node(placeable, 'ph'),
     xliff.Sub: lambda placeable: placeable_as_dom_node(placeable, 'sub'),
     xliff.X  : lambda placeable: placeable_as_dom_node(placeable, 'x'),
+    xliff.UnknownXML: unknown_placeable_as_dom_node,
     base.Bpt:  lambda placeable: placeable_as_dom_node(placeable, 'bpt'),
     base.Bx :  lambda placeable: placeable_as_dom_node(placeable, 'bx'),
     base.Ept:  lambda placeable: placeable_as_dom_node(placeable, 'ept'),
