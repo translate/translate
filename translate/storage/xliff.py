@@ -84,6 +84,10 @@ class xliffunit(lisa.LISAunit):
         self.source_dom = strelem_to_xml(sourcelanguageNode, value[0])
 
     def get_rich_source(self):
+        #rsrc = xml_to_strelem(self.source_dom)
+        #logging.debug('rich source: %s' % (repr(rsrc)))
+        #from dubulib.debug.misc import print_stack_funcs
+        #print_stack_funcs()
         return [xml_to_strelem(self.source_dom)]
     rich_source = property(get_rich_source, set_rich_source)
 
