@@ -198,7 +198,7 @@ class rcfile(base.TranslationStore):
             if re.match("[0-9A-Z_]+\s+MENU", block) is not None:
                 menuname = re.match("(?P<menuname>[0-9A-Z_]+)\s+MENU", block).groupdict()["menuname"]
                 #print "menu: %s" % menuname
-                for match in DIALOG_RE.finditer(block):
+                for match in MENU_RE.finditer(block):
                     if not match.groupdict()['value']:
                         continue
                     type = match.groupdict()['type']
