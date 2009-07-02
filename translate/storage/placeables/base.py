@@ -56,7 +56,8 @@ class Bx(ReplacementPlaceable, PairedDelimiter):
     has_content = False
     istranslatable = False
 
-    def __init__(self, id=None, xid=None):
+    def __init__(self, id=None, xid=None, **kwargs):
+        # kwargs is ignored
         ReplacementPlaceable.__init__(self, id=id, xid=xid)
 
 
@@ -64,7 +65,8 @@ class Ex(ReplacementPlaceable, PairedDelimiter):
     has_content = False
     istranslatable = False
 
-    def __init__(self, id=None, xid=None):
+    def __init__(self, id=None, xid=None, **kwargs):
+        # kwargs is ignored
         ReplacementPlaceable.__init__(self, id=id, xid=xid)
 
 
