@@ -26,32 +26,9 @@ from translate.storage import base
 from translate.lang import data
 try:
     from lxml import etree
+    from translate.misc.xml_helpers import *
 except ImportError, e:
     raise ImportError("lxml is not installed. It might be possible to continue without support for XML formats.")
-
-#xml_preserve_ancestors = etree.XPath("ancestor-or-self::*[attribute::xml:space='preserve']")
-xml_preserve_ancestors = etree.XPath("ancestor-or-self::*/attribute::xml:space")
-string_xpath = etree.XPath("string()")
-string_xpath_normalized = etree.XPath("normalize-space()")
-
-def getText(node, xml_space="preserve"):
-    """Extracts the plain text content out of the given node.
-
-    This method checks the xml:space attribute of the given node, and takes
-    an optional default to use in case nothing is specified in this node."""
-    xml_space = getXMLspace(node, xml_space)
-    if xml_space == "default":
-        return unicode(string_xpath_normalized(node)) # specific to lxml.etree
-    else:
-        return unicode(string_xpath(node)) # specific to lxml.etree
-
-    # If we want to normalise space and only preserve it when the directive
-    # xml:space="preserve" is given in node or in parents, consider this code:
-    #xml_preserves = xml_preserve_ancestors(node)
-    #if xml_preserves and xml_preserves[-1] == "preserve":
-    #    return unicode(string_xpath(node)) # specific to lxml.etree
-    #else:
-    #    return unicode(string_xpath_normalized(node)) # specific to lxml.etree
 
 
 def _findAllMatches(text, re_obj):
@@ -77,38 +54,6 @@ def _getPhMatches(text):
     matches.sort(lambda a, b: cmp(a.start(), b.start()))
     return matches
 
-XML_NS = 'http://www.w3.org/XML/1998/namespace'
-
-def getXMLlang(node):
-    """Gets the xml:lang attribute on node"""
-    return node.get("{%s}lang" % XML_NS)
-
-def setXMLlang(node, lang):
-    """Sets the xml:lang attribute on node"""
-    node.set("{%s}lang" % XML_NS, lang)
-
-def getXMLspace(node, default=None):
-    """Gets the xml:space attribute on node"""
-    value = node.get("{%s}space" % XML_NS)
-    if value is None:
-        value = default
-    return value
-
-def setXMLspace(node, value):
-    """Sets the xml:space attribute on node"""
-    node.set("{%s}space" % XML_NS, value)
-
-def namespaced(namespace, name):
-    """Returns name in Clark notation within the given namespace.
-
-       For example namespaced("source") in an XLIFF document might return::
-           {urn:oasis:names:tc:xliff:document:1.1}source
-       This is needed throughout lxml.
-    """
-    if namespace:
-        return "{%s}%s" % (namespace, name)
-    else:
-        return name
 
 class LISAunit(base.TranslationUnit):
     """
