@@ -604,14 +604,19 @@ class StringElem(object):
                 string not parseable by this class."""
         return cls(pstr)
 
-    def print_tree(self, indent=0):
+    def print_tree(self, indent=0, verbose=False):
         """Print the tree from the current instance's point in an indented
             manner."""
         indent_prefix = " " * indent * 2
-        print (u"%s%s [%s]" % (indent_prefix, self.__class__.__name__, unicode(self))).encode('utf-8')
+        out = (u"%s%s [%s]" % (indent_prefix, self.__class__.__name__, unicode(self))).encode('utf-8')
+        if verbose:
+            out += u' ' + repr(self)
+
+        print out
+
         for elem in self.sub:
             if isinstance(elem, StringElem):
-                elem.print_tree(indent+1)
+                elem.print_tree(indent+1, verbose=verbose)
             else:
                 print (u'%s%s[%s]' % (indent_prefix, indent_prefix, elem)).encode('utf-8')
 
