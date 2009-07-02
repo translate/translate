@@ -23,7 +23,7 @@
 from translate.storage.placeables import base
 from translate.storage.placeables.strelem import StringElem
 
-__all__ = ['Bpt', 'Ept', 'X', 'Bx', 'Ex', 'G', 'It', 'Sub', 'Ph', 'parsers', 'to_xliff_placeables']
+__all__ = ['Bpt', 'Ept', 'X', 'Bx', 'Ex', 'G', 'It', 'Sub', 'Ph', 'UnknownXML', 'parsers', 'to_xliff_placeables']
 
 
 class Bpt(base.Bpt):
@@ -60,6 +60,60 @@ class X(base.X):
 
 class Sub(base.Sub):
     pass
+
+
+class UnknownXML(StringElem):
+    """Placeable for unrecognized or umimplemented XML nodes. It's main
+        purpose is to preserve all associated XML data."""
+    iseditable = True
+
+    # INITIALIZERS #
+    def __init__(self, sub=None, id=None, rid=None, xid=None, xml_node=None):
+        super(UnknownXML, self).__init__(sub=sub, id=id, rid=rid, xid=xid)
+        if xml_node is None:
+            raise ValueError('xml_node must be a lxml node')
+        self.xml_node = xml_node
+
+        if sub:
+            self.has_content = True
+
+
+    # SPECIAL METHODS #
+    def __repr__(self):
+        """String representation of the sub-tree with the current node as the
+            root.
+
+            Copied from L{StringElem.__repr__), but includes C{self.xml_node.tag}."""
+        tag = self.xml_node.tag
+        if tag.startswith('{'):
+            tag = tag[tag.index('}')+1:]
+
+        elemstr = ', '.join([repr(elem) for elem in self.sub])
+
+        return '<%(class)s{%(tag)s}(%(id)s%(rid)s%(xid)s[%(subs)s])>' % {
+            'class': self.__class__.__name__,
+            'tag': tag,
+            'id':  self.id  is not None and 'id="%s" '  % (self.id) or '',
+            'rid': self.rid is not None and 'rid="%s" ' % (self.rid) or '',
+            'xid': self.xid is not None and 'xid="%s" ' % (self.xid) or '',
+            'subs': elemstr
+        }
+
+
+    # METHODS #
+    def copy(self):
+        """Returns a copy of the sub-tree.
+            This should be overridden in sub-classes with more data.
+
+            NOTE: C{self.renderer} is B{not} copied."""
+        from copy import copy
+        cp = self.__class__(id=self.id, rid=self.rid, xid=self.xid, xml_node=copy(self.xml_node))
+        for sub in self.sub:
+            if isinstance(sub, StringElem):
+                cp.sub.append(sub.copy())
+            else:
+                cp.sub.append(sub.__class__(sub))
+        return cp
 
 
 def to_xliff_placeables(tree):
