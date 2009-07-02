@@ -22,7 +22,7 @@
 
 from lxml import etree
 from translate.storage.placeables import lisa, StringElem
-from translate.storage.placeables.xliff import X, G
+from translate.storage.placeables.xliff import Bx, Ex, G, UnknownXML, X
 
 def test_xml_to_strelem():
     source = etree.fromstring(u'<source>a<x id="foo[1]/bar[1]/baz[1]"/></source>')
@@ -67,7 +67,55 @@ def test_set_strelem_to_xml():
     lisa.strelem_to_xml(source, StringElem([u'a', G(id='foo[2]/bar[2]/baz[2]', sub=[u'b', X(id='foo[1]/bar[1]/baz[1]'), u'c']), u'é']))
     assert etree.tostring(source, encoding = 'UTF-8') == '<source>a<g id="foo[2]/bar[2]/baz[2]">b<x id="foo[1]/bar[1]/baz[1]"/>c</g>é</source>'
 
+def test_unknown_xml_placeable():
+    # The XML below is (modified) from the official XLIFF example file Sample_AlmostEverything_1.2_strict.xlf
+    source = etree.fromstring(u"""<source xml:lang="en-us">Text <g id="_1_ski_040">g</g>TEXT<bpt id="_1_ski_139">bpt<sub>sub</sub>
+               </bpt>TEXT<ept id="_1_ski_238">ept</ept>TEXT<ph id="_1_ski_337"/>TEXT<it id="_1_ski_436" pos="open">it</it>TEXT<mrk mtype="x-test">mrk</mrk>
+               <x id="_1_ski_535"/>TEXT<bx id="_1_ski_634"/>TEXT<ex id="_1_ski_733"/>TEXT.</source>""")
+    elem = lisa.xml_to_strelem(source)
+
+    from copy import copy
+    custom = StringElem([
+        StringElem(u'Text '),
+        G(u'g', id='_1_ski_040'),
+        StringElem(u'TEXT'),
+        UnknownXML(
+            [
+                StringElem(u'bpt'),
+                UnknownXML(u'sub', xml_node=copy(source[1][0])),
+                StringElem(u'\n               ')
+            ],
+            id='_1_ski_139',
+            xml_node=copy(source[3])
+        ),
+        StringElem(u'TEXT'),
+        UnknownXML(u'ept', id=u'_1_ski_238', xml_node=copy(source[2])),
+        StringElem(u'TEXT'),
+        UnknownXML(id='_1_ski_337', xml_node=copy(source[3])), # ph-tag
+        StringElem(u'TEXT'),
+        UnknownXML(u'it', id='_1_ski_436', xml_node=copy(source[4])),
+        StringElem(u'TEXT'),
+        UnknownXML(u'mrk', xml_node=copy(source[5])),
+        StringElem(u'\n               '),
+        X(id='_1_ski_535'),
+        StringElem(u'TEXT'),
+        Bx(id='_1_ski_634'),
+        StringElem(u'TEXT'),
+        Ex(id='_1_ski_733'),
+        StringElem(u'TEXT.')
+    ])
+    assert elem == custom
+
+    xml = copy(source)
+    for i in range(len(xml)):
+        del xml[0]
+    xml.text = None
+    xml.tail = None
+    lisa.strelem_to_xml(xml, elem)
+    assert etree.tostring(xml) == etree.tostring(source)
+
 if __name__ == '__main__':
     test_chunk_list()
     test_xml_to_strelem()
     test_set_strelem_to_xml()
+    test_unknown_xml_placeable()
