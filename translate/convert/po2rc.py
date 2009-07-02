@@ -1,36 +1,31 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
-# Copyright 2002-2006 Zuza Software Foundation
-# 
-# This file is part of translate.
 #
-# translate is free software; you can redistribute it and/or modify
+# Copyright 2002-2006,2008-2009 Zuza Software Foundation
+#
+# This file is part of the Translate Toolkit.
+#
+# This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
-# translate is distributed in the hope that it will be useful,
+#
+# This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with translate; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+"""Convert Gettext PO localization files back to Windows Resource (.rc) files
 
-"""convert Gettext PO localization files to Windows Resource (.rc) files
-
-see: http://translate.sourceforge.net/wiki/toolkit/po2rc for examples and 
-usage instructions
+See: http://translate.sourceforge.net/wiki/toolkit/po2rc for examples and
+usage instructions.
 """
 
-from translate.misc import quote
 from translate.storage import po
 from translate.storage import rc
-
-eol = "\n"
 
 class rerc:
     def __init__(self, templatefile, charset="utf-8", lang=None, sublang=None):
@@ -111,4 +106,3 @@ def main(argv=None):
 
 if __name__ == '__main__':
     main()
-
