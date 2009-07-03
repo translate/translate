@@ -605,6 +605,17 @@ class StringElem(object):
                     if filter(node):
                         yield node
 
+    def map(self, f, filter=None):
+        """Apply C{f} to all nodes for which C{filter} returned C{True} (optional)."""
+        if filter is not None and not callable(filter):
+            raise ValueError('filter is not callable or None')
+        if filter is None:
+            filter = lambda e: True
+
+        for elem in self.depth_first():
+            if filter(elem):
+                f(elem)
+
     @classmethod
     def parse(cls, pstr):
         """Parse an instance of this class from the start of the given string.
