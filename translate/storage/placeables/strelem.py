@@ -347,12 +347,18 @@ class StringElem(object):
 
         return removed, None
 
-    def depth_first(self):
-        elems = [self]
+    def depth_first(self, filter=None):
+        """Returns a list of the nodes in the tree in depth-first order."""
+        if filter is None or not callable(filter):
+            filter = lambda e: True
+        elems = []
+        if filter(self):
+            elems.append(self)
+
         for sub in self.sub:
             if not isinstance(sub, StringElem):
                 continue
-            if sub.isleaf():
+            if sub.isleaf() and filter(sub):
                 elems.append(sub)
             else:
                 elems.extend(sub.depth_first())
@@ -418,9 +424,11 @@ class StringElem(object):
         """Find all elements in the current sub-tree containing C{x}."""
         return [elem for elem in self.flatten() if x in unicode(elem)]
 
-    def flatten(self):
+    def flatten(self, filter=None):
         """Flatten the tree by returning a depth-first search over the tree's leaves."""
-        return [elem for elem in self.iter_depth_first() if elem.isleaf()]
+        if filter is None or not callable(filter):
+            filter = lambda e: True
+        return [elem for elem in self.iter_depth_first(lambda e: e.isleaf() and filter(e))]
 
     def get_ancestor_where(self, child, criteria):
         parent = self.get_parent_elem(child)
@@ -581,16 +589,21 @@ class StringElem(object):
                 return False
         return True
 
-    def iter_depth_first(self):
-        yield self
+    def iter_depth_first(self, filter=None):
+        """Iterate through the nodes in the tree in dept-first order."""
+        if filter is None or not callable(filter):
+            filter = lambda e: True
+        if filter(self):
+            yield self
         for sub in self.sub:
             if not isinstance(sub, StringElem):
                 continue
-            if sub.isleaf():
+            if sub.isleaf() and filter(sub):
                 yield sub
             else:
                 for node in sub.iter_depth_first():
-                    yield node
+                    if filter(node):
+                        yield node
 
     @classmethod
     def parse(cls, pstr):
