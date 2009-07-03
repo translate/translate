@@ -80,8 +80,17 @@ class xliffunit(lisa.LISAunit):
         return nodes
 
     def set_rich_source(self, value, sourcelang='en'):
-        sourcelanguageNode = self.createlanguageNode(sourcelang, u'', "source")
-        self.source_dom = strelem_to_xml(sourcelanguageNode, value[0])
+        sourcelanguageNode = self.get_source_dom()
+        if sourcelanguageNode is None:
+            sourcelanguageNode = self.createlanguageNode(sourcelang, u'', "source")
+            self.set_source_dom(sourcelanguageNode)
+
+        # Clear sourcelanguageNode first
+        for i in range(len(sourcelanguageNode)):
+            del sourcelanguageNode[0]
+        sourcelanguageNode.text = None
+
+        strelem_to_xml(sourcelanguageNode, value[0])
 
     def get_rich_source(self):
         #rsrc = xml_to_strelem(self.source_dom)
@@ -92,11 +101,21 @@ class xliffunit(lisa.LISAunit):
     rich_source = property(get_rich_source, set_rich_source)
 
     def set_rich_target(self, value, lang='xx', append=False):
-        languageNode = None
-        if not value is None:
+        if value is None:
+            self.set_target_dom(self.createlanguageNode(lang, u'', "target"))
+            return
+
+        languageNode = self.get_target_dom()
+        if languageNode is None:
             languageNode = self.createlanguageNode(lang, u'', "target")
-            strelem_to_xml(languageNode, value[0])
-        self.set_target_dom(languageNode, append)
+            self.set_target_dom(languageNode, append)
+
+        # Clear languageNode first
+        for i in range(len(languageNode)):
+            del languageNode[0]
+        languageNode.text = None
+
+        strelem_to_xml(languageNode, value[0])
 
     def get_rich_target(self, lang=None):
         """retrieves the "target" text (second entry), or the entry in the
