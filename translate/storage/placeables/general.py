@@ -60,6 +60,7 @@ class NewlinePlaceable(Ph):
     """Matches new-lines."""
 
     iseditable = False
+    istranslatable = False
     regex = re.compile(r'\n')
     parse = classmethod(regex_parse)
 
@@ -86,6 +87,7 @@ class QtFormattingPlaceable(Ph):
       - %% some in the wild to escape real %, not documented (not in regex)
     """
     iseditable = False
+    istranslatable = False
     regex = re.compile(r"""(?x)
                        %                 # Start of a place marker
                        L?                # The sequence is replaced with a localized representation (optional)
@@ -102,6 +104,7 @@ class PythonFormattingPlaceable(Ph):
     L{String Formatting Operations<http://docs.python.org/library/stdtypes.html#string-formatting-operations>}"""
 
     iseditable = False
+    istranslatable = False
     # Need to correctly define a python identifier.
     regex = re.compile(r"""(?x)
                        %                     # Start of formatting specifier
@@ -128,6 +131,7 @@ class JavaMessageFormatPlaceable(Ph):
     """
 
     iseditable = False  # TODO: Technically incorrect as you need to change
+    istranslatable = False
     # things in a choice entry
     regex = re.compile(r"""(?x)
       {                      # Start of MessageFormat
@@ -145,6 +149,7 @@ class FormattingPlaceable(Ph):
     """Placeable representing string formatting variables."""
 
     iseditable = False
+    istranslatable = False
     regex = re.compile(r"%[\-\+0\s\#]{0,1}(\d+){0,1}(\.\d+){0,1}[hlI]{0,1}[cCdiouxXeEfgGnpsS]{1}")
     parse = classmethod(regex_parse)
 
@@ -190,6 +195,7 @@ class PunctuationPlaceable(Ph):
     """Placeable handling punctuation."""
 
     iseditable = False
+    istranslatable = False
     # FIXME this should really be a list created as being the inverse of what
     # is available on the translators keyboard.  Or easily expanded by their
     # configuration.
@@ -201,6 +207,7 @@ class XMLEntityPlaceable(Ph):
     """Placeable handling XML entities (C{&xxxxx;}-style entities)."""
 
     iseditable = False
+    istranslatable = False
     regex = re.compile(r'''&(
         ([a-zA-Z][a-zA-Z0-9\.-]*)            #named entity
          |([#](\d{1,5}|x[a-fA-F0-9]{1,5})+)  #numeric entity
@@ -246,6 +253,7 @@ class XMLTagPlaceable(Ph):
     """Placeable handling XML tags."""
 
     iseditable = False
+    istranslatable = False
     regex = re.compile(r'<(\w+)(\s(\w*=".*?")?)*>|</(\w+)>')
     parse = classmethod(regex_parse)
 
