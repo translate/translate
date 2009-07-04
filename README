@@ -224,6 +224,7 @@ pot2po   - PO file initialiser
 csv2tbx  - Create TBX (TermBase eXchange) files from Comma Separated Value (CSV) files
 ini2po   - convert .ini files to to PO
 ical2po  - Convert iCalendar files (*.ics) to PO
+sub2po   - Convert many subtitle files to PO
 
 * Tools (Quality Assurance)
 pofilter - run any of the 40+ checks on your PO files
