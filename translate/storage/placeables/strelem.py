@@ -26,6 +26,10 @@ string tree. It is the base class of all placeables.
 import sys
 
 
+class ElementNotFoundError(ValueError):
+    pass
+
+
 class StringElem(object):
     """
     This class represents a sub-tree of a string parsed into a rich structure.
@@ -187,14 +191,14 @@ class StringElem(object):
             return
         parent = self.get_parent_elem(elem)
         if parent is None:
-            raise ElementNotFoundError
+            raise ElementNotFoundError(repr(elem))
         subidx = -1
         for i in range(len(parent.sub)):
             if parent.sub[i] is elem:
                 subidx = i
                 break
         if subidx < 0:
-            raise ElementNotFoundError
+            raise ElementNotFoundError(repr(elem))
         del parent.sub[subidx]
 
     def delete_range(self, start_index, end_index):
