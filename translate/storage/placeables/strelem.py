@@ -182,6 +182,9 @@ class StringElem(object):
         return cp
 
     def delete_elem(self, elem):
+        if elem is self:
+            self.sub = []
+            return
         parent = self.get_parent_elem(elem)
         if parent is None:
             raise ElementNotFoundError
