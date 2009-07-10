@@ -21,6 +21,8 @@
 
 """functions used to manipulate access keys in strings"""
 
+from translate.storage.placeables.general import XMLEntityPlaceable
+
 DEFAULT_ACCESSKEY_MARKER = u"&"
 
 def extract(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
@@ -46,10 +48,8 @@ def extract(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
         marker_pos = string.find(accesskey_marker, marker_pos)
         if marker_pos != -1:
             marker_pos += 1
-            semicolon_pos = string.find(";", marker_pos)
-            if semicolon_pos != -1:
-                if string[marker_pos:semicolon_pos].isalnum():
-                    continue
+            if accesskey_marker == '&' and XMLEntityPlaceable.regex.match(string[marker_pos-1:]):
+                continue
             label = string[:marker_pos-1] + string[marker_pos:]
             accesskey = string[marker_pos]
             break

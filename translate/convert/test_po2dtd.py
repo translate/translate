@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 from translate.convert import po2dtd
 from translate.convert import dtd2po
@@ -132,6 +133,18 @@ class TestPO2DTD:
         dtdfile = self.po2dtd(simplestring)
         dtdsource = str(dtdfile)
         assert "Dimpled Ring" in dtdsource
+
+        po_snippet = r'''#: searchIntegration.label
+#: searchIntegration.accesskey
+msgid "Allow &searchIntegration.engineName; to &search messages"
+msgstr "&searchIntegration.engineName; &ileti aramasına izin ver"
+'''
+        dtd_snippet = r'''<!ENTITY searchIntegration.accesskey      "s">
+<!ENTITY searchIntegration.label       "Allow &searchIntegration.engineName; to search messages">'''
+        dtdfile = self.merge2dtd(dtd_snippet, po_snippet)
+        dtdsource = str(dtdfile)
+        print dtdsource
+        assert '"&searchIntegration.engineName; ileti aramasına izin ver"' in dtdsource
 
     def test_entities_two(self):
         """test the error ouput when we find two entities"""
