@@ -25,6 +25,7 @@ format. While converters haven't been updated to use this module, we retain
 both.
 
 U{TS file format 4.3<http://doc.trolltech.com/4.3/linguist-ts-file-format.html>}, 
+U{http://doc.trolltech.com/4.5/linguist-ts-file-format.html>},
 U{Example<http://svn.ez.no/svn/ezcomponents/trunk/Translation/docs/linguist-format.txt>}, 
 U{Plurals forms<http://www.koders.com/cpp/fidE7B7E83C54B9036EB7FA0F27BC56BCCFC4B9DF34.aspx#L200>}
 
