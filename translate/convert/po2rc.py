@@ -54,7 +54,7 @@ class rerc:
                     rcstring = unit.target
                     if len(rcstring.strip()) == 0:
                         rcstring = unit.source
-                    self.inputdict[location] = rc.escape_to_rc(rcstring)
+                    self.inputdict[location] = rc.escape_to_rc(rcstring).encode(self.charset)
 
     def convertblock(self, block):
         newblock = block
