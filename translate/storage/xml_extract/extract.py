@@ -1,24 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2002-2006 Zuza Software Foundation
-# 
-# This file is part of translate.
+# Copyright 2008-2009 Zuza Software Foundation
 #
-# translate is free software; you can redistribute it and/or modify
+# This file is part of the Translate Toolkit.
+#
+# This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
-# translate is distributed in the hope that it will be useful,
+#
+# This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with translate; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 from lxml import etree
 
@@ -40,7 +38,7 @@ class Translatable(object):
     """A node corresponds to a translatable element. A node may
        have children, which correspond to placeables."""
     @accepts(Self(), unicode, unicode, etree._Element, [IsOneOf(TranslatableClass, unicode)])
-    def __init__(self, placeable_name, xpath, dom_node, source): 
+    def __init__(self, placeable_name, xpath, dom_node, source):
         self.placeable_name = placeable_name
         self.source = source
         self.xpath = xpath
@@ -123,7 +121,7 @@ def compact_tag(nsmap, namespace, tag):
 @accepts(etree._Element, ParseState)
 def find_translatable_dom_nodes(dom_node, state):
     # For now, we only want to deal with XML elements.
-    # And we want to avoid processing instructions, which 
+    # And we want to avoid processing instructions, which
     # are XML elements (in the inheritance hierarchy).
     if not isinstance(dom_node, etree._Element) or \
            isinstance(dom_node, etree._ProcessingInstruction):
@@ -136,14 +134,14 @@ def find_translatable_dom_nodes(dom_node, state):
         state.xpath_breadcrumb.start_tag(compact_tag(state.nsmap, namespace, tag))
         yield state.xpath_breadcrumb
         state.xpath_breadcrumb.end_tag()
-        
+
     @contextmanager
     def placeable_set():
         old_placeable_name = state.placeable_name
         state.placeable_name = tag
         yield state.placeable_name
         state.placeable_name = old_placeable_name
-            
+
     @contextmanager
     def inline_set():
         old_inline = state.is_inline
@@ -153,12 +151,12 @@ def find_translatable_dom_nodes(dom_node, state):
             state.is_inline = False
         yield state.is_inline
         state.is_inline = old_inline
-      
+
     def with_block(xpath_breadcrumb, placeable_name, is_inline):
         if (namespace, tag) not in state.no_translate_content_elements:
             return _process_translatable(dom_node, state)
         else:
-            return _process_children(dom_node, state)            
+            return _process_children(dom_node, state)
     return with_(nested(xpath_set(), placeable_set(), inline_set()), with_block)
 
 class IdMaker(object):
@@ -203,7 +201,7 @@ def _add_translatable_to_store(store, parent_translatable, translatable, id_make
 def _contains_translatable_text(translatable):
     """Checks whether translatable contains any chunks of text which contain
     more than whitespace.
-    
+
     If not, then there's nothing to translate."""
     for chunk in translatable.source:
         if isinstance(chunk, unicode):
@@ -220,7 +218,7 @@ def _make_store_adder(store):
 
     def add_to_store(parent_translatable, translatable, rid):
         _add_translatable_to_store(store, parent_translatable, translatable, id_maker)
-            
+
     return add_to_store
 
 @accepts([Translatable], IsCallable(), Nullable(Translatable), Number)
@@ -240,7 +238,7 @@ def reverse_map(a_map):
 
 @accepts(lambda obj: hasattr(obj, "read"), base.TranslationStore, ParseState, Nullable(IsCallable()))
 def build_store(odf_file, store, parse_state, store_adder = None):
-    """Utility function for loading xml_filename"""    
+    """Utility function for loading xml_filename"""
     store_adder = store_adder or _make_store_adder(store)
     tree = etree.parse(odf_file)
     root = tree.getroot()
