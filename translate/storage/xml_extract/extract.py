@@ -197,8 +197,6 @@ def _add_translatable_to_store(store, parent_translatable, translatable, id_make
     unit = store.UnitClass(u'')
     unit.rich_source = [StringElem(_to_placeables(parent_translatable, translatable, id_maker))]
     unit.addlocation(translatable.xpath)
-    if parent_translatable is not None:
-        unit.xid = parent_translatable.xpath
     store.addunit(unit)
 
 @accepts(Translatable)
