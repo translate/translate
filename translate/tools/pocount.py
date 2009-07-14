@@ -1,23 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
-# Copyright 2003-2007 Zuza Software Foundation
-# 
-# This file is part of translate.
 #
-# translate is free software; you can redistribute it and/or modify
+# Copyright 2003-2009 Zuza Software Foundation
+#
+# This file is part of the Translate Toolkit.
+#
+# This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
-# translate is distributed in the hope that it will be useful,
+#
+# This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with translate; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 """Create string and word counts for supported localization files including:
 XLIFF, TMX, Gettex PO and MO, Qt .ts and .qm, Wordfast TM, etc
@@ -99,7 +98,7 @@ def summarize(title, stats, style=style_full, indent=8, incomplete_only=False):
             return denominator*100/devisor
 
     if incomplete_only and (stats["total"] == stats["translated"]):
-	return 1
+        return 1
 
     if (style == style_csv):
         print "%s, " % title,
@@ -246,7 +245,8 @@ def main():
 
     (options, args) = parser.parse_args()
 
-    if (options.incomplete_only == None): options.incomplete_only = False
+    if (options.incomplete_only == None):
+        options.incomplete_only = False
 
     if (options.style_full and options.style_csv) or \
        (options.style_full and options.style_short_strings) or \
@@ -257,11 +257,15 @@ def main():
         parser.error("options --full, --csv, --short-strings and --short-words are mutually exclusive")
         sys.exit(2)
 
-    style = default_style	# default output style
-    if options.style_csv: style = style_csv
-    if options.style_full: style = style_full
-    if options.style_short_strings: style = style_short_strings
-    if options.style_short_words: style = style_short_words
+    style = default_style   # default output style
+    if options.style_csv:
+        style = style_csv
+    if options.style_full:
+        style = style_full
+    if options.style_short_strings:
+        style = style_short_strings
+    if options.style_short_words:
+        style = style_short_words
 
     try:
         import psyco
