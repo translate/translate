@@ -89,7 +89,7 @@ def summarize(title, stats, style=style_full, indent=8, incomplete_only=False):
       indent - indentation of the 2nd column (length of longest filename)
       incomplete_only - omit fully translated files
     Return value:
-      1 if file is not completely translated
+      1 if counting incomplete files (incomplete_only=True) and the file is completely translated
       0 otherwise
     """
     def percent(denominator, devisor):
@@ -169,7 +169,7 @@ class summarizer:
         self.longestfilename = 0
         self.style = style
         self.incomplete_only = incomplete_only
-        self.incomplete_count = 0
+        self.complete_count = 0
 
         if (self.style == style_csv):
             print "Filename, Translated Messages, Translated Source Words, Translated \
@@ -191,7 +191,7 @@ Review Messages, Review Source Words"
         if self.filecount > 1 and (self.style == style_full):
             if self.incomplete_only:
                 summarize("TOTAL (incomplete only):", self.totals, incomplete_only=True)
-                print "File count (incomplete):   %5d" % (self.incomplete_count)
+                print "File count (incomplete):   %5d" % (self.filecount - self.complete_count)
             else:
                 summarize("TOTAL:", self.totals, incomplete_only=False)
             print "File count:   %5d" % (self.filecount)
@@ -208,7 +208,7 @@ Review Messages, Review Source Words"
         try:
             stats = calcstats(filename)
             self.updatetotals(stats)
-            self.incomplete_count += summarize(filename, stats, self.style, self.longestfilename, self.incomplete_only)
+            self.complete_count += summarize(filename, stats, self.style, self.longestfilename, self.incomplete_only)
             self.filecount += 1
         except: # This happens if we have a broken file.
             print >> sys.stderr, sys.exc_info()[1]
