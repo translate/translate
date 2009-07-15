@@ -425,7 +425,9 @@ class xlifffile(lisa.LISAfile):
         self._filename = "NoName"
         self._messagenum = 0
 
-        # Allow the inputfile to override defaults for source and target language.
+
+    def initbody(self):
+        super(xlifffile, self).initbody()
         filenode = self.document.getroot().iterchildren(self.namespaced('file')).next()
         sourcelanguage = filenode.get('source-language')
         if sourcelanguage:
