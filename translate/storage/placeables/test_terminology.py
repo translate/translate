@@ -53,7 +53,8 @@ msgstr "lêernaam"
         assert isinstance(tree.sub[0], general.XMLTagPlaceable)
         assert isinstance(tree.sub[2], general.XMLTagPlaceable)
 
-        term = tree.sub[3].sub[0].sub[1]
+        tree.print_tree()
+        term = tree.sub[3].sub[1]
 
         assert isinstance(term, TerminologyPlaceable)
         assert unicode(term) == self.term_po.getunits()[2].source
