@@ -275,8 +275,6 @@ class LISAfile(base.TranslationStore):
 
     def __init__(self, inputfile=None, sourcelanguage='en', targetlanguage=None, unitclass=None):
         super(LISAfile, self).__init__(unitclass=unitclass)
-        self.setsourcelanguage(sourcelanguage)
-        self.settargetlanguage(targetlanguage)
         if inputfile is not None:
             self.parse(inputfile)
             assert self.document.getroot().tag == self.namespaced(self.rootNode)
@@ -284,6 +282,8 @@ class LISAfile(base.TranslationStore):
             # We strip out newlines to ensure that spaces in the skeleton doesn't
             # interfere with the the pretty printing of lxml
             self.parse(self.XMLskeleton.replace("\n", ""))
+            self.setsourcelanguage(sourcelanguage)
+            self.settargetlanguage(targetlanguage)
             self.addheader()
         self._encoding = "UTF-8"
 
