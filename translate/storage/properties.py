@@ -201,7 +201,7 @@ class propunit(base.TranslationUnit):
         self.comments.append(note)
 
     def getnotes(self, origin=None):
-        return u''.join(self.comments)
+        return u'\n'.join(self.comments)
 
     def removenotes(self):
         self.comments = []
@@ -248,7 +248,7 @@ class propfile(base.TranslationStore):
             # otherwise, this could be a comment
             elif line.strip()[:1] in (u'#', u'!'):
                 # add a comment
-                newunit.comments.append(line+u"\n")
+                newunit.comments.append(line)
             elif not line.strip():
                 # this is a blank line...
                 if str(newunit).strip():

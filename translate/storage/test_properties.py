@@ -102,7 +102,7 @@ class TestProp(test_monolingual.TestMonolingualStore):
         assert "\\u" not in regensource
 
     def test_newlines_startend(self):
-        """check that we preserver \n that appear at start and end of properties"""
+        """check that we preserve \n that appear at start and end of properties"""
         propsource = "newlines=\\ntext\\n"
         propregen = self.propregen(propsource)
         assert propsource + '\n' == propregen
@@ -146,7 +146,7 @@ key=value
             print "Comment marker: '%s'" % comment_marker
             assert len(propfile.units) == 1
             propunit = propfile.units[0]
-            assert propunit.comments == ['%s A comment\n' % comment_marker]
+            assert propunit.comments == ['%s A comment' % comment_marker]
 
     def test_latin1(self):
         """checks that we handle non-escaped latin1 text"""
