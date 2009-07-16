@@ -171,7 +171,6 @@ class propunit(base.TranslationUnit):
 
     def settarget(self, target):
         """Note: this also sets the .source attribute!"""
-        # TODO: shouldn't this just call the .source property? no quoting done here...
         self.source = target
 
     def gettarget(self):
@@ -202,7 +201,7 @@ class propunit(base.TranslationUnit):
         self.comments.append(note)
 
     def getnotes(self, origin=None):
-        return u'\n'.join(self.comments)
+        return u''.join(self.comments)
 
     def removenotes(self):
         self.comments = []
@@ -249,7 +248,6 @@ class propfile(base.TranslationStore):
             # otherwise, this could be a comment
             elif line.strip()[:1] in (u'#', u'!'):
                 # add a comment
-                line = quote.escapecontrols(line)
                 newunit.comments.append(line+u"\n")
             elif not line.strip():
                 # this is a blank line...
