@@ -22,7 +22,7 @@
 # http://translate.sourceforge.net/wiki/toolkit/mozilla_l10n_scripts     #
 ##########################################################################
 
-BUILD_DIR="/home/walter/mozbuild"
+BUILD_DIR="/path/to/buid/root"
 COMM_DIR="${BUILD_DIR}/comm-central" # Change "../comm-central" on line 35 too if you change this var
 #HG_LANGS="af ar as be bg bn-IN ca cs da de el en-GB en-ZA es-AR es-ES et eu fa fi fr fy-NL ga-IE gl gu-IN he hi-IN hu hy-AM id is it ja ja-JP-mac ka kn ko ku langs lt lv mk ml mn mr nb-NO ne-NP nl nn-NO nr nso pa-IN pl ro ru rw si sk sl sq sr ss st sv-SE ta te th tn tr ts uk ve xh zh-CN zh-TW zu"
 HG_LANGS="af"
@@ -35,7 +35,15 @@ POTPACK_DIR="${BUILD_DIR}/potpacks"
 POUPDATED_DIR="${BUILD_DIR}/po-updated"
 PRODUCT_DIRS="mail editor other-licenses/branding/thunderbird" # Directories in language repositories to clear before running po2moz
 LANGPACK_DIR="${BUILD_DIR}/xpi"
-TB_VERSION="3.0b1"
+TB_VERSION="3.0b3"
+
+
+# Include current dir in path (for buildxpi and others)
+CURDIR=`dirname $0`
+if [ x"${CURDIR}" == x ] || [ x"${CURDIR}" == x. ]; then
+	CURDIR=`pwd`
+fi
+PATH=${CURDIR}:${PATH}
 
 # Make sure all directories exist
 for dir in ${COMM_DIR} ${L10N_DIR} ${PO_DIR} ${POPACK_DIR} ${PORECOVER_DIR} ${POTPACK_DIR} ${POUPDATED_DIR} ${LANGPACK_DIR}
@@ -48,16 +56,16 @@ done
 L10N_DIR_REL=`echo ${L10N_DIR} | sed "s#${BUILD_DIR}/##"`
 POUPDATED_DIR_REL=`echo ${POUPDATED_DIR} | sed "s#${BUILD_DIR}/##"`
 
-(cd ${COMM_DIR}; hg pull -u; hg update -C; python client.py checkout --skip-inspector --skip-ldap --skip-chatzilla --skip-venkman)
-find ${MOZCENTRAL_DIR} -name '*.orig' | xargs rm
+(cd ${COMM_DIR}; hg pull -u; hg update -C)
+(find ${COMM_DIR} -name '*.orig' | xargs rm) || /bin/true
 
 cd ${L10N_DIR}
 
 # Update all Mercurial-managed languages
 for lang in ${HG_LANGS}
 do
-	[ -d ${lang}/.hg ] && (cd ${lang}; hg pull -u; hg update -C)
-	find ${lang} -name '*.orig' | xargs rm
+	[ -d ${lang}/.hg ] && (cd ${lang}; hg revert --all -r default; hg pull -u; hg update -C)
+	(find ${lang} -name '*.orig' | xargs rm) || /bin/true
 done
 
 rm en-US
@@ -102,11 +110,13 @@ function copyfiletype {
 function copydir {
 	dir=$1
 	language=$2
-	files=$(cd ${L10N_DIR}/en-US/$dir; find . -type f)
-	for file in $files
-	do
-		copyfile $dir/$file $language
-	done
+	if [ -d ${L10N_DIR}/en-US/$dir ]; then
+		files=$(cd ${L10N_DIR}/en-US/$dir; find . -type f)
+		for file in $files
+		do
+			copyfile $dir/$file $language
+		done
+	fi
 }
 
 for lang in ${HG_LANGS}
@@ -165,5 +175,5 @@ do
 
 	## CREATE XPI LANGPACK
 	# Comment out the "buildxpi"-line below if XPI langpacks should not be built.
-	buildxpi.py -L ${L10N_DIR} -s ${COMM_DIR} -o ${LANGPACK_DIR} -p mail ${lang}
+	#buildxpi.py -L ${L10N_DIR} -s ${COMM_DIR} -o ${LANGPACK_DIR} -p mail ${lang}
 done
