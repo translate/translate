@@ -167,9 +167,9 @@ def parse_quoted(parse_state, start_pos = 0):
     left = find(line, '"', start_pos)
     if left == start_pos or isspace(line[start_pos:left]):
         right = rfind(line, '"')
-        if left != right and line[right - 1] != '\\': # If we found a terminating quote
+        if left != right:
             return parse_state.read_line()[left:right+1]
-        else: # If there is no terminating quote 
+        else: # If there is no terminating quote
             return parse_state.read_line()[left:] + '"'
     return None
 
