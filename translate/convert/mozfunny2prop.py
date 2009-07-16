@@ -102,7 +102,7 @@ def inc2po(inputfile, outputfile, templatefile, encoding=None, pot=False, duplic
         templatepropfile = StringIO("".join(templateproplines))
     else:
         templatepropfile = None
-    return prop2po.convertprop(inputpropfile, outputfile, templatepropfile, pot=pot, duplicatestyle=duplicatestyle)
+    return prop2po.convertprop(inputpropfile, outputfile, templatepropfile, personality="mozilla", pot=pot, duplicatestyle=duplicatestyle)
 
 def it2po(inputfile, outputfile, templatefile, encoding="cp1252", pot=False, duplicatestyle="msgctxt"):
     """wraps prop2po but converts input/template files to properties first"""
@@ -115,7 +115,7 @@ def it2po(inputfile, outputfile, templatefile, encoding="cp1252", pot=False, dup
         templatepropfile = StringIO("".join(templateproplines))
     else:
         templatepropfile = None
-    return prop2po.convertprop(inputpropfile, outputfile, templatepropfile, pot=pot, duplicatestyle=duplicatestyle)
+    return prop2po.convertprop(inputpropfile, outputfile, templatepropfile, personality="mozilla", pot=pot, duplicatestyle=duplicatestyle)
 
 def ini2po(inputfile, outputfile, templatefile, encoding="UTF-8", pot=False, duplicatestyle="msgctxt"):
     return it2po(inputfile=inputfile, outputfile=outputfile, templatefile=templatefile, encoding=encoding, pot=pot, duplicatestyle=duplicatestyle)

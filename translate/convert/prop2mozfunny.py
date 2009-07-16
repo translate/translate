@@ -79,7 +79,7 @@ def prop2funny(src, itencoding="cp1252"):
         lines = lines[1:]
     if not (waspseudoprops ^ wasdefines):
         raise ValueError("could not determine file type as pseudo-properties or defines file")
-    pf = properties.propfile()
+    pf = properties.propfile(personality="mozilla")
     pf.parse("\n".join(lines))
     if wasdefines:
         for line in prop2inc(pf):
@@ -100,7 +100,7 @@ def po2inc(inputfile, outputfile, templatefile, encoding=None, includefuzzy=Fals
     result = po2prop.convertmozillaprop(inputfile, outputpropfile, templatepropfile, includefuzzy=includefuzzy)
     if result:
         outputpropfile.seek(0)
-        pf = properties.propfile(outputpropfile)
+        pf = properties.propfile(outputpropfile, personality="mozilla")
         outputlines = prop2inc(pf)
         outputfile.writelines(outputlines)
     return result
@@ -117,7 +117,7 @@ def po2it(inputfile, outputfile, templatefile, encoding="cp1252", includefuzzy=F
     result = po2prop.convertmozillaprop(inputfile, outputpropfile, templatepropfile, includefuzzy=includefuzzy)
     if result:
         outputpropfile.seek(0)
-        pf = properties.propfile(outputpropfile)
+        pf = properties.propfile(outputpropfile, personality="mozilla")
         outputlines = prop2it(pf)
         for line in outputlines:
             line = line.decode("utf-8").encode(encoding)
