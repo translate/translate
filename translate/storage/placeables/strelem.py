@@ -50,7 +50,7 @@ class StringElem(object):
     """Whether this string should be visible to the user. Not used at the moment."""
 
     # INITIALIZERS #
-    def __init__(self, sub=None, id=None, rid=None, xid=None):
+    def __init__(self, sub=None, id=None, rid=None, xid=None, **kwargs):
         if sub is None:
             sub = []
         if isinstance(sub, (unicode, StringElem)):
@@ -64,6 +64,11 @@ class StringElem(object):
         self.id    = id
         self.rid   = rid
         self.xid   = xid
+
+        for key, value in kwargs.items():
+            if hasattr(self, key):
+                raise ValueError('attribute already exists: %s' % (key))
+            setattr(self, key, value)
 
         self.prune()
 

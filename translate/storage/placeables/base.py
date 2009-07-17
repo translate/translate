@@ -58,7 +58,7 @@ class Bx(ReplacementPlaceable, PairedDelimiter):
 
     def __init__(self, id=None, xid=None, **kwargs):
         # kwargs is ignored
-        ReplacementPlaceable.__init__(self, id=id, xid=xid)
+        ReplacementPlaceable.__init__(self, id=id, xid=xid, **kwargs)
 
 
 class Ex(ReplacementPlaceable, PairedDelimiter):
@@ -67,7 +67,7 @@ class Ex(ReplacementPlaceable, PairedDelimiter):
 
     def __init__(self, id=None, xid=None, **kwargs):
         # kwargs is ignored
-        ReplacementPlaceable.__init__(self, id=id, xid=xid)
+        ReplacementPlaceable.__init__(self, id=id, xid=xid, **kwargs)
 
 
 class X(ReplacementPlaceable, Delimiter):
@@ -75,7 +75,7 @@ class X(ReplacementPlaceable, Delimiter):
     istranslatable = False
 
     def __init__(self, id=None, xid=None, **kwargs):
-        ReplacementPlaceable.__init__(self, id=id, xid=xid)
+        ReplacementPlaceable.__init__(self, id=id, xid=xid, **kwargs)
 
 
 class Sub(SubflowPlaceable):
