@@ -100,7 +100,6 @@ class PoXliffUnit(xliff.xliffunit):
         strings.extend([unit.source for unit in self.units[1:]])
         return multistring(strings)
     source = property(getsource, setsource)
-    rich_source = property(base.TranslationUnit._get_rich_source, base.TranslationUnit._set_rich_source)
 
     def settarget(self, text, lang='xx', append=False):
         if self.gettarget() == text:
@@ -138,7 +137,6 @@ class PoXliffUnit(xliff.xliffunit):
             return super(PoXliffUnit, self).gettarget()
 
     target = property(gettarget, settarget)
-    rich_target = property(base.TranslationUnit._get_rich_target, base.TranslationUnit._set_rich_target)
 
     def addnote(self, text, origin=None):
         """Add a note specifically in a "note" tag"""
