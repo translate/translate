@@ -29,16 +29,22 @@ __all__ = ['xml_to_strelem', 'strelem_to_xml']
 
 def make_empty_replacement_placeable(klass, node):
     try:
-        pl = klass(id=node.attrib[u'id'])
-        pl.rid = node.attrib.get('rid', None)
-        pl.xid = node.attrib.get('xid', None)
-        return pl
+        return klass(
+            id=node.attrib[u'id'],
+            rid=node.attrib.get('rid', None),
+            xid=node.attrib.get('xid', None),
+            xml_attrib=node.attrib
+        )
     except KeyError:
         pass
     return klass()
 
 def make_g_placeable(klass, node):
-    return klass(id=node.attrib[u'id'], sub=xml_to_strelem(node).sub)
+    return klass(
+        id=node.attrib[u'id'],
+        sub=xml_to_strelem(node).sub,
+        xml_attrib=node.attrib
+    )
 
 def not_yet_implemented(klass, node):
     raise NotImplementedError
@@ -106,6 +112,11 @@ def placeable_as_dom_node(placeable, tagname):
         dom_node.attrib['xid'] = placeable.xid
     if placeable.rid is not None:
         dom_node.attrib['rid'] = placeable.rid
+
+    if hasattr(placeable, 'xml_attrib'):
+        for attrib, value in placeable.xml_attrib.items():
+            dom_node.set(attrib, value)
+
     return dom_node
 
 def unknown_placeable_as_dom_node(placeable):
