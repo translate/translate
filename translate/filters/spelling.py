@@ -27,14 +27,17 @@ available = False
 
 try:
     # Enchant
-    from enchant import checker, DictNotFoundError
+    from enchant import checker, DictNotFoundError, Error as EnchantError
     available = True
     checkers = {}
     def check(text, lang):
         if not lang in checkers:
             try:
                 checkers[lang] = checker.SpellChecker(lang)
-            except DictNotFoundError, e:
+                # some versions only report an error when checking something
+                checkers[lang].check('')
+            except EnchantError, e:
+                # sometimes this is raised instead of DictNotFoundError
                 print >> sys.stderr, str(e)
                 checkers[lang] = None
 
