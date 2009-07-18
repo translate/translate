@@ -186,12 +186,15 @@ class propunit(base.TranslationUnit):
 
     def getoutput(self):
         """convert the element back into formatted lines for a .properties file"""
+        notes = self.getnotes()
+        if notes:
+            notes += u"\n"
         if self.isblank():
-            return u"".join(self.comments + [u"\n"])
+            return notes
         else:
             if "\\u" in self.value and self.personality == "mozilla":
                 self.value = quote.mozillapropertiesencode(self.source)
-            return "".join(self.comments + [u"%s%s%s\n" % (self.name, self.delimeter, self.value)])
+            return u"%s%s%s%s\n" % (notes, self.name, self.delimeter, self.value)
 
     def getlocations(self):
         return [self.name]
