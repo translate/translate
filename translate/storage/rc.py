@@ -27,7 +27,6 @@ these should mimic other non-WINE .rc files.
 
 from translate.storage import base
 import re
-import sys
 
 def escape_to_python(string):
     """escape a given .rc string into a valid Python string"""
@@ -174,12 +173,12 @@ class rcfile(base.TranslationStore):
 
             if block.startswith("STRINGTABLE"):
                 #print "stringtable:\n %s------\n" % block
-                for match in STRINGTABLE_RE.finditer(block): 
+                for match in STRINGTABLE_RE.finditer(block):
                     if not match.groupdict()['value']:
                         continue
                     newunit = rcunit(escape_to_python(match.groupdict()['value']))
                     newunit.name = "STRINGTABLE." + match.groupdict()['name']
-                    newunit.match = match 
+                    newunit.match = match
                     self.addunit(newunit)
             if block.startswith("/*"):  # Comments
                 #print "comment"
@@ -202,7 +201,7 @@ class rcfile(base.TranslationStore):
                         newunit.name = "%s.%s.%s.%s" % (dialogtype, dialogname, type, value.replace(" ", "_"))
                     else:
                         newunit.name = "%s.%s.%s.%s" % (dialogtype, dialogname, type, name)
-                    newunit.match = match 
+                    newunit.match = match
                     self.addunit(newunit)
             if re.match("[0-9A-Z_]+\s+MENU", block) is not None:
                 menuname = re.match("(?P<menuname>[0-9A-Z_]+)\s+MENU", block).groupdict()["menuname"]
@@ -220,7 +219,7 @@ class rcfile(base.TranslationStore):
                         newunit.name = "MENU.%s.%s.%s" % (menuname, type, value.replace(" ", "_"))
                     else:
                         newunit.name = "MENU.%s.%s.%s" % (menuname, type, name)
-                    newunit.match = match 
+                    newunit.match = match
                     self.addunit(newunit)
 
     def __str__(self):

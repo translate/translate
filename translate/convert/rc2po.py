@@ -1,23 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
-# Copyright 2007-2008 Zuza Software Foundation
-# 
-# This file is part of translate.
 #
-# translate is free software; you can redistribute it and/or modify
+# Copyright 2007-2009 Zuza Software Foundation
+#
+# This file is part of the Translate Toolkit.
+#
+# This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
-# translate is distributed in the hope that it will be useful,
+#
+# This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with translate; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 """convert .rc files to Gettext PO localization files"""
 
@@ -26,7 +25,7 @@ from translate.storage import po
 from translate.storage import rc
 
 class rc2po:
-    """convert a .rc file to a .po file for handling the translation..."""
+    """Convert a .rc file to a .po file for handling the translation."""
     def __init__(self, charset=None):
         self.charset = charset
 
@@ -97,7 +96,7 @@ def convertrc(input_file, output_file, template_file, pot=False, duplicatestyle=
 
 def main(argv=None):
     from translate.convert import convert
-    formats = {"rc": ("po", convertrc), ("rc", "rc"): ("po", convertrc), 
+    formats = {"rc": ("po", convertrc), ("rc", "rc"): ("po", convertrc),
                "nls": ("po", convertrc), ("nls", "nls"): ("po", convertrc)}
     parser = convert.ConvertOptionParser(formats, usetemplates=True, usepots=True, description=__doc__)
     DEFAULTCHARSET = "cp1252"
@@ -118,4 +117,3 @@ def main(argv=None):
 
 if __name__ == '__main__':
     main()
-
