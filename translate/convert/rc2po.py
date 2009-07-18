@@ -81,14 +81,14 @@ class rc2po:
         output_unit.target = ""
         return output_unit
 
-def convertrc(input_file, output_file, template_file, pot=False, duplicatestyle="msgctxt", charset=None):
+def convertrc(input_file, output_file, template_file, pot=False, duplicatestyle="msgctxt", charset=None, lang=None, sublang=None):
     """reads in input_file using rc, converts using rc2po, writes to output_file"""
-    input_store = rc.rcfile(input_file)
+    input_store = rc.rcfile(input_file, lang, sublang)
     convertor = rc2po(charset=charset)
     if template_file is None:
         output_store = convertor.convert_store(input_store, duplicatestyle=duplicatestyle)
     else:
-        template_store = rc.rcfile(template_file)
+        template_store = rc.rcfile(template_file, lang, sublang)
         output_store = convertor.merge_store(template_store, input_store, blankmsgstr=pot, duplicatestyle=duplicatestyle)
     if output_store.isempty():
         return 0
@@ -103,9 +103,17 @@ def main(argv=None):
     DEFAULTCHARSET = "cp1252"
     parser.add_option("", "--charset", dest="charset", default=DEFAULTCHARSET,
         help="charset to use to decode the RC files (default: %s)" % DEFAULTCHARSET, metavar="CHARSET")
+    DEFAULTLANG = "LANG_ENGLISH"
+    parser.add_option("-l", "--lang", dest="lang", default=DEFAULTLANG,
+        help="LANG entry (default: %s)" % DEFAULTLANG, metavar="LANG")
+    DEFAULTSUBLANG = "SUBLANG_DEFAULT"
+    parser.add_option("", "--sublang", dest="sublang", default=DEFAULTSUBLANG,
+        help="SUBLANG entry (default: %s)" % DEFAULTSUBLANG, metavar="SUBLANG")
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.passthrough.append("charset")
+    parser.passthrough.append("lang")
+    parser.passthrough.append("sublang")
     parser.run(argv)
 
 if __name__ == '__main__':

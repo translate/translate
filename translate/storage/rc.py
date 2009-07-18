@@ -106,10 +106,12 @@ class rcunit(base.TranslationUnit):
 class rcfile(base.TranslationStore):
     """This class represents a .rc file, made up of rcunits."""
     UnitClass = rcunit
-    def __init__(self, inputfile=None):
+    def __init__(self, inputfile=None, lang=None, sublang=None):
         """Construct an rcfile, optionally reading in from inputfile."""
         super(rcfile, self).__init__(unitclass = self.UnitClass)
         self.filename = getattr(inputfile, 'name', '')
+        self.lang = lang
+        self.sublang = sublang
         if inputfile is not None:
             rcsrc = inputfile.read()
             inputfile.close()
@@ -149,12 +151,27 @@ class rcfile(base.TranslationStore):
                          (?:\s*,?\s*)?
                          (?P<name>[^\s]+).*?[\n]
                          """, re.DOTALL + re.VERBOSE)
-        languagesection = False
 
+        processsection = False
         self.blocks = BLOCKS_RE.findall(rcsrc)
-
         for blocknum, block in enumerate(self.blocks):
             #print block.split("\n")[0]
+            processblock = None
+            if block.startswith("LANGUAGE"):
+                if self.lang == None or self.sublang == None or re.match("LANGUAGE\s+%s,\s*%s\s*$" % (self.lang, self.sublang), block) is not None:
+                    processsection = True
+                else:
+                    processsection = False
+            else:
+                if re.match(".+LANGUAGE\s+[0-9A-Za-z_]+,\s*[0-9A-Za-z_]+\s*[\n]", block, re.DOTALL) is not None:
+                    if re.match(".+LANGUAGE\s+%s,\s*%s\s*[\n]" % (self.lang, self.sublang), block, re.DOTALL) is not None:
+                        processblock = True
+                    else:
+                        processblock = False
+
+            if not (processblock == True or (processsection == True and processblock != False)):
+                continue
+
             if block.startswith("STRINGTABLE"):
                 #print "stringtable:\n %s------\n" % block
                 for match in STRINGTABLE_RE.finditer(block): 
@@ -164,14 +181,6 @@ class rcfile(base.TranslationStore):
                     newunit.name = "STRINGTABLE." + match.groupdict()['name']
                     newunit.match = match 
                     self.addunit(newunit)
-            if block.startswith("LANGUAGE"):
-                #print "language"
-                if not languagesection:
-                    languagesection = True
-                else:
-                    print >> sys.stderr, "Can only process one language section"
-                    self.blocks = self.blocks[:blocknum]
-                    break
             if block.startswith("/*"):  # Comments
                 #print "comment"
                 pass
