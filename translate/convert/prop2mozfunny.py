@@ -56,11 +56,11 @@ def prop2it(pf):
             if comment.startswith("# converted from") and "pseudo-properties" in comment:
                 pass
             elif comment.startswith("# section: "):
-                yield comment.replace("# section: ", "", 1)
+                yield comment.replace("# section: ", "", 1) + "\n"
             else:
-                yield comment.replace("#", ";", 1)
+                yield comment.replace("#", ";", 1) + "\n"
         if unit.isblank():
-            yield "\n"
+            yield ""
         else:
             definition = "%s=%s\n" % (unit.name, unit.value)
             if isinstance(definition, unicode):
