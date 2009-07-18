@@ -21,6 +21,7 @@ Filip Miletic: fixes for unicode problems
 Fredrik Corneliusson: xliff work
 Friedel Wolff: bug fixes, development
 Geoffrey Hutchison: better Qt .ts support
+Grégory Journé: better .rc support
 Ivan Masár: improvements to pocount
 Javier Sola: documentation
 Kaloian Doganov: improvement of po2html
@@ -32,6 +33,7 @@ Miklos Vajna: patches and testing of version control
 Nicolas François: po4a integration, performance
 Ognyan Kulev: testing and fixes
 Pavel Janík: testing
+Rail Aliev (Раиль Алиев): testing, converters, podebug
 Thomas Fogwill: portal code
 Tom Cato Amundsen: patch to enable pogrep to search anywhere in the PO unit
 Torsten Martinsen: patches to po2ts
