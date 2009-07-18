@@ -244,7 +244,7 @@ class propfile(base.TranslationStore):
                 if not inmultilinevalue:
                     # we're finished, add it to the list...
                     self.addunit(newunit)
-                    newunit = propunit()
+                    newunit = propunit("", personality)
             # otherwise, this could be a comment
             elif line.strip()[:1] in (u'#', u'!'):
                 # add a comment
@@ -253,7 +253,7 @@ class propfile(base.TranslationStore):
                 # this is a blank line...
                 if str(newunit).strip():
                     self.addunit(newunit)
-                    newunit = propunit()
+                    newunit = propunit("", personality)
             else:
                 delimeter_char, delimeter_pos = find_delimeter(line)
                 if delimeter_pos == -1:
@@ -269,7 +269,7 @@ class propfile(base.TranslationStore):
                         newunit.value = newunit.value[:-1]
                     else:
                         self.addunit(newunit)
-                        newunit = propunit()
+                        newunit = propunit("", personality)
         # see if there is a leftover one...
         if inmultilinevalue or len(newunit.comments) > 0:
             self.addunit(newunit)
