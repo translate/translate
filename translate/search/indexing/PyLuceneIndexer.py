@@ -30,7 +30,7 @@ __revision__ = "$Id$"
 
 import CommonIndexer
 # TODO: replace this dependency on the jToolkit
-import jToolkit.glock
+#import jToolkit.glock
 import tempfile
 import re
 import os
@@ -122,10 +122,10 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         # create a lock for the database directory - to be used later
         lockname = os.path.join(tempfile.gettempdir(),
                 re.sub("\W", "_", self.location))
-        self.dir_lock = jToolkit.glock.GlobalLock(lockname)
+        #self.dir_lock = jToolkit.glock.GlobalLock(lockname)
         # windows file locking seems inconsistent, so we try 10 times
         numtries = 0
-        self.dir_lock.acquire(blocking=True)
+        #self.dir_lock.acquire(blocking=True)
         # read "self.reader", "self.indexVersion" and "self.searcher"
         try:
             while numtries < 10:
@@ -144,8 +144,8 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
                 # locking failed for 10 times
                 raise OSError("Indexer: failed to lock index database" \
                         + " (%s)" % lock_error_msg)
-        finally:
-            self.dir_lock.release()
+        #finally:
+        #    self.dir_lock.release()
         # initialize the searcher and the reader
         self._index_refresh()
 
@@ -417,7 +417,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         exclusive lock
         """
         if not self._writer_is_open():
-            self.dir_lock.acquire()
+            #self.dir_lock.acquire()
             self.writer = PyLucene.IndexWriter(self.location, self.pyl_analyzer,
                     False)
             # "setMaxFieldLength" is available since PyLucene v2
@@ -433,7 +433,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
             self.writer.close()
             self.writer = None
         # make sure that the lock is removed
-        self.dir_lock.forcerelease()
+        #self.dir_lock.forcerelease()
 
     def _writer_is_open(self):
         """check if the indexing write access is currently open"""
@@ -441,12 +441,12 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
 
     def _index_refresh(self):
         """re-read the indexer database"""
-        try:
-            self.dir_lock.acquire(blocking=False)
-        except jToolkit.glock.GlobalLockError, e:
+        #try:
+            #self.dir_lock.acquire(blocking=False)
+        #except jToolkit.glock.GlobalLockError, e:
             # if this fails the index is being rewritten, so we continue with
             # our old version
-            return
+        #    return
         try:
             if self.reader is None or self.searcher is None:
                 self.reader = PyLucene.IndexReader.open(self.location)
@@ -462,7 +462,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
             # TODO: add some debugging output?
             #self.errorhandler.logerror("Error attempting to read index - try reindexing: "+str(e))
             pass
-        self.dir_lock.release()
+        #self.dir_lock.release()
 
 
 
