@@ -40,14 +40,14 @@ import time
 # remember the type of the detected package (compiled with jcc (>=v2.3) or
 # with gcj (<=v2.2)
 try:
-	import PyLucene
-        _COMPILER = 'gcj'
+    import PyLucene
+    _COMPILER = 'gcj'
 except ImportError:
-	# if this fails, then there is no pylucene installed
-	import lucene
-	PyLucene = lucene
-	PyLucene.initVM(PyLucene.CLASSPATH)
-        _COMPILER = 'jcc'
+    # if this fails, then there is no pylucene installed
+    import lucene
+    PyLucene = lucene
+    PyLucene.initVM(PyLucene.CLASSPATH)
+    _COMPILER = 'jcc'
 
 
 UNNAMED_FIELD_NAME = "FieldWithoutAName"
@@ -132,19 +132,20 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
                 try:
                     self.reader = PyLucene.IndexReader.open(self.location)
                     self.indexVersion = self.reader.getCurrentVersion(
-                            self.location)
+                        self.location)
                     self.searcher = PyLucene.IndexSearcher(self.reader)
                     break
                 except PyLucene.JavaError, e:
                     # store error message for possible later re-raise (below)
                     lock_error_msg = e
                     time.sleep(0.01)
-                numtries += 1
+                    numtries += 1
             else:
                 # locking failed for 10 times
                 raise OSError("Indexer: failed to lock index database" \
-                        + " (%s)" % lock_error_msg)
-        #finally:
+                              + " (%s)" % lock_error_msg)
+        finally:
+            pass
         #    self.dir_lock.release()
         # initialize the searcher and the reader
         self._index_refresh()
