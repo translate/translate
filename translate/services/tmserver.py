@@ -166,6 +166,12 @@ def main():
                       help="adress to bind server to (default: localhost)")
     parser.add_option("-p", "--port", dest="port", type="int", default=8888,
                       help="port to listen on (default: 8888)")
+    parser.add_option("--max-candidates", dest="max_candidates", type="int", default=3,
+                      help="Maximum number of candidates")
+    parser.add_option("--min-similarity", dest="min_similarity", type="int", default=75,
+                      help="minimum similarity")
+    parser.add_option("--max-length", dest="max_length", type="int", default=1000,
+                      help="Maxmimum string length")
     parser.add_option("--debug", action="store_true", dest="debug", default=False,
                       help="enable debugging features")
 
@@ -187,8 +193,9 @@ def main():
 
     logging.basicConfig(level=level, format=format)
 
-    application = TMServer(options.tmdbfile, options.tmfiles, prefix="/tmserver",
-            source_lang=options.source_lang, target_lang=options.target_lang)
+    application = TMServer(options.tmdbfile, options.tmfiles, max_candidates=options.max_candidates,
+                           min_similarity=options.min_similarity, max_length=options.max_length,
+                           prefix="/tmserver", source_lang=options.source_lang, target_lang=options.target_lang)
     httpd = simple_server.make_server(options.bind, options.port,
             application.rest, handler_class=TMServer.RequestHandler)
     httpd.serve_forever()
