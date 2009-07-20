@@ -303,6 +303,7 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
                 results.append(result)
         results.sort(key=lambda match: match['quality'], reverse=True)
         results = results[:self.max_candidates]
+        logging.debug("results: %s", unicode(results))
         return results
 
 
