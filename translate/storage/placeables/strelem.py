@@ -262,20 +262,13 @@ class StringElem(object):
             #logging.debug('Case 2: %s' % (s))
             #########################
 
-            if start['elem'] is self:
+            if start['elem'] is self and self.__class__ is StringElem:
                 removed = self.copy()
                 self.sub = []
                 return removed, None
-            removed = start['elem'].copy()
-            parent = self.get_parent_elem(start['elem'])
-
-            childn = 0
-            for child in parent.sub:
-                if child is start['elem']:
-                    break
-                childn += 1
-            parent.sub[childn:childn+1] = []
-            self.prune()
+            removed = list(start['elem'].sub)
+            parent = start['elem']
+            parent.sub = []
             return removed, parent
 
         # Case 3: Within a single element #
