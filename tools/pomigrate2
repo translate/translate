@@ -126,7 +126,10 @@ done
 
 if [ "$option_use_compendium" != "" ]; then
 	echo "** Creating compendium from old files... **"
-	compendium=`mktemp tmp.XXXXXXXXXX.po`
+	compendium=`mktemp tmp.compendium.XXXXXXXXXX`
+	# Move and rename to work around inability of mktemp TEMPLATE to end on anything but X's
+        mv $compendium ${compendium}.po
+        compendium=${compendium}.po
 	`dirname $0`/pocompendium --correct $compendium -d $old
 	option_use_compendium=" --compendium=$compendium "
 	option_pot2po_use_compendium=" --tm=$compendium "
