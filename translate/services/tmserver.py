@@ -82,7 +82,6 @@ class TMServer(object):
     @selector.opliant
     def translate_unit(self, environ, start_response, uid, slang, tlang):
         start_response("200 OK", [('Content-type', 'text/plain')])
-        uid = unicode(urllib.unquote_plus(uid), "utf-8")
         candidates = self.tmdb.translate_unit(uid, slang, tlang)
         logging.debug("candidates: %s", unicode(candidates))
         response =  json.dumps(candidates, indent=4)
