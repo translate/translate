@@ -58,6 +58,7 @@ class rephp:
                     self.inputdict[location] = inputstring
 
     def convertline(self, line):
+        line = unicode(line, 'utf-8')
         returnline = ""
         # handle multiline msgid if we're in one
         if self.inmultilinemsgid:
