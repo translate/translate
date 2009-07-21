@@ -72,6 +72,7 @@ class Ex(ReplacementPlaceable, PairedDelimiter):
 
 class X(ReplacementPlaceable, Delimiter):
     has_content = False
+    iseditable = False
     istranslatable = False
 
     def __init__(self, id=None, xid=None, **kwargs):
