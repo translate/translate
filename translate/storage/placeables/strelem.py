@@ -23,6 +23,7 @@ Contains the base L{StringElem} class that represents a node in a parsed rich-
 string tree. It is the base class of all placeables.
 """
 
+import logging
 import sys
 
 
@@ -585,6 +586,103 @@ class StringElem(object):
             #logging.debug('Case 4.4')
             return oelem.insert(0, text) # Reinterpret as a case 1
 
+        return False
+
+    def insert_between(self, left, right, text):
+        """Insert the given text between the two parameter C{StringElem}s."""
+        if not isinstance(left, StringElem) and left is not None:
+            raise ValueError('"left" is not a StringElem or None')
+        if not isinstance(right, StringElem) and right is not None:
+            raise ValueError('"right" is not a StringElem or None')
+        if left is right:
+            if left.sub:
+                # This is an error because the cursor cannot be inside an element ("left is right"),
+                # if it has any other content. If an element has content, it will be at least directly
+                # left or directly right of the current cursor position.
+                raise ValueError('"left" and "right" refer to the same element and is not empty.')
+            if not left.iseditable:
+                return False
+        if isinstance(text, unicode):
+            text = StringElem(text)
+
+        if left is right:
+            #logging.debug('left%s.sub.append(%s)' % (repr(left), repr(text)))
+            left.sub.append(text)
+            return True
+        # XXX: The "in" keyword is *not* used below, because the "in" tests
+        # with __eq__ and not "is", as we do below. Testing for identity is
+        # intentional and required.
+
+        if left is None:
+            if self is right:
+                #logging.debug('self%s.sub.insert(0, %s)' % (repr(self), repr(text)))
+                self.sub.insert(0, text)
+                return True
+            parent = self.get_parent_elem(right)
+            if parent is not None:
+                #logging.debug('parent%s.sub.insert(0, %s)' % (repr(parent), repr(text)))
+                parent.sub.insert(0, text)
+                return True
+            return False
+
+        if right is None:
+            if self is left:
+                #logging.debug('self%s.sub.append(%s)' % (repr(self), repr(text)))
+                self.sub.append(text)
+                return True
+            parent = self.get_parent_elem(left)
+            if parent is not None:
+                #logging.debug('parent%s.sub.append(%s)' % (repr(parent), repr(text)))
+                parent.sub.append(text)
+                return True
+            return False
+
+        # The following two blocks handle the cases where one element
+        # "surrounds" another as its parent. In that way the parent would be
+        # "left" of its first child, like in the first case.
+        ischild = False
+        for sub in left.sub:
+            if right is sub:
+                ischild = True
+                break
+        if ischild:
+            #logging.debug('left%s.sub.insert(0, %s)' % (repr(left), repr(text)))
+            left.sub.insert(0, text)
+            return True
+
+        ischild = False
+        for sub in right.sub:
+            if left is sub:
+                ischild = True
+                break
+        if ischild:
+            #logging.debug('right%s.sub.append(%s)' % (repr(right), repr(text)))
+            right.sub.append(text)
+            return True
+
+        parent = self.get_parent_elem(left)
+        if parent.iseditable:
+            idx = 1
+            for child in parent.sub:
+                if child is left:
+                    break
+                idx += 1
+            #logging.debug('parent%s.sub.insert(%d, %s)' % (repr(parent), idx, repr(text)))
+            parent.sub.insert(idx, text)
+            return True
+
+        parent = self.get_parent_elem(right)
+        if parent.iseditable:
+            idx = 0
+            for child in parent.sub:
+                if child is right:
+                    break
+                idx += 1
+            #logging.debug('parent%s.sub.insert(%d, %s)' % (repr(parent), idx, repr(text)))
+            parent.sub.insert(0, text)
+            return True
+
+        logging.debug('Could not insert between %s and %s... odd.' % (repr(left), repr(right)))
         return False
 
     def isleaf(self):
