@@ -20,6 +20,7 @@
 
 from lxml import etree
 
+from translate.misc.xml_helpers import *
 from translate.storage.placeables import base, xliff, StringElem
 from translate.storage.xml_extract import misc
 
@@ -27,7 +28,7 @@ __all__ = ['xml_to_strelem', 'strelem_to_xml']
 # Use the above functions as entry points into this module. The rest are used by these functions.
 
 
-def make_empty_replacement_placeable(klass, node):
+def make_empty_replacement_placeable(klass, node, xml_space="preserve"):
     try:
         return klass(
             id=node.attrib[u'id'],
@@ -39,20 +40,20 @@ def make_empty_replacement_placeable(klass, node):
         pass
     return klass()
 
-def make_g_placeable(klass, node):
+def make_g_placeable(klass, node, xml_space="default"):
     return klass(
         id=node.attrib[u'id'],
-        sub=xml_to_strelem(node).sub,
+        sub=xml_to_strelem(node, xml_space).sub,
         xml_attrib=node.attrib
     )
 
-def not_yet_implemented(klass, node):
+def not_yet_implemented(klass, node, xml_space="preserve"):
     raise NotImplementedError
 
-def make_unknown(klass, node):
+def make_unknown(klass, node, xml_space="preserve"):
     assert klass is xliff.UnknownXML
 
-    sub = xml_to_strelem(node).sub
+    sub = xml_to_strelem(node, xml_space).sub
     id =  node.get('id',  None)
     rid = node.get('rid', None)
     xid = node.get('xid', None)
@@ -71,13 +72,13 @@ _class_dictionary = {
     u'x'  : (xliff.X,   make_empty_replacement_placeable)
 }
 
-def make_placeable(node):
+def make_placeable(node, xml_space):
     _namespace, tag = misc.parse_tag(node.tag)
     if tag in _class_dictionary:
         klass, maker = _class_dictionary[tag]
     else:
         klass, maker = xliff.UnknownXML, make_unknown
-    return maker(klass, node)
+    return maker(klass, node, xml_space)
 
 def as_unicode(string):
     if isinstance(string, unicode):
@@ -87,18 +88,36 @@ def as_unicode(string):
     else:
         return unicode(string.decode('utf-8'))
 
-def xml_to_strelem(dom_node):
+def text_snippet(node, xml_space="preserve"):
+    """Returns node's text with space normalisation applied if requested in
+    the node, or in xml_space."""
+    xml_space = getXMLspace(node, xml_space)
+    text = as_unicode(node.text)
+    if xml_space == "default":
+        text = normalize_space(text)
+    return text
+
+def tail_snippet(node, xml_space="preserve"):
+    """Returns node's tail with space normalisation applied if requested in
+    the node, or in xml_space."""
+    xml_space = getXMLspace(node.getparent(), xml_space)
+    text = as_unicode(node.tail)
+    if xml_space == "default":
+        text = normalize_space(text)
+    return text
+
+def xml_to_strelem(dom_node, xml_space="preserve"):
     if dom_node is None:
         return StringElem()
     if isinstance(dom_node, basestring):
         dom_node = etree.fromstring(dom_node)
     result = StringElem()
     if dom_node.text:
-        result.sub.append(StringElem(as_unicode(dom_node.text)))
+        result.sub.append(StringElem(text_snippet(dom_node, xml_space)))
     for child_dom_node in dom_node:
-        result.sub.append(make_placeable(child_dom_node))
+        result.sub.append(make_placeable(child_dom_node, xml_space))
         if child_dom_node.tail:
-            result.sub.append(StringElem(as_unicode(child_dom_node.tail)))
+            result.sub.append(StringElem(tail_snippet(child_dom_node, xml_space)))
     result.prune()
     return result
 

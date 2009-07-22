@@ -26,6 +26,7 @@ The official recommendation is to use the extention .xlf for XLIFF files.
 from lxml import etree
 
 from translate.misc.multistring import multistring
+from translate.misc.xml_helpers import *
 from translate.storage import base, lisa
 from translate.storage.lisa import getXMLspace
 from translate.storage.placeables.lisa import xml_to_strelem, strelem_to_xml
@@ -97,7 +98,7 @@ class xliffunit(lisa.LISAunit):
         #logging.debug('rich source: %s' % (repr(rsrc)))
         #from dubulib.debug.misc import print_stack_funcs
         #print_stack_funcs()
-        return [xml_to_strelem(self.source_dom)]
+        return [xml_to_strelem(self.source_dom, getXMLspace(self.xmlelement, self._default_xml_space))]
     rich_source = property(get_rich_source, set_rich_source)
 
     def set_rich_target(self, value, lang='xx', append=False):
@@ -120,7 +121,7 @@ class xliffunit(lisa.LISAunit):
     def get_rich_target(self, lang=None):
         """retrieves the "target" text (second entry), or the entry in the
         specified language, if it exists"""
-        return [xml_to_strelem(self.get_target_dom(lang))]
+        return [xml_to_strelem(self.get_target_dom(lang), getXMLspace(self.xmlelement, self._default_xml_space))]
     rich_target = property(get_rich_target, set_rich_target)
 
     def addalttrans(self, txt, origin=None, lang=None, sourcetxt=None, matchquality=None):

@@ -20,6 +20,7 @@
 
 """Helper functions for working with XML."""
 
+import re
 from lxml import etree
 
 # some useful xpath expressions
@@ -87,3 +88,10 @@ def namespaced(namespace, name):
         return "{%s}%s" % (namespace, name)
     else:
         return name
+
+MULTIWHITESPACE_RE = re.compile(r"[\n\r\t ]{2,}", re.MULTILINE)
+
+def normalize_space(text):
+    """Normalize the given text for implimentation of xml:space="default"."""
+    text = MULTIWHITESPACE_RE.sub(u" ", text).strip()
+    return text
