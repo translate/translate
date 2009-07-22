@@ -627,6 +627,9 @@ def test_unchanged():
     assert passes(stdchecker.unchanged, "???", "???")  # bug 178, description item 15
     assert passes(stdchecker.unchanged, "&ACRONYM", "&ACRONYM") # bug 178, description item 7
     assert passes(stdchecker.unchanged, "F1", "F1") # bug 178, description item 20
+    assert fails(stdchecker.unchanged, "Two words", "Two words")
+    gnomechecker = checks.GnomeChecker()
+    assert fails(gnomechecker.unchanged, "Entity references, such as &amp; and &#169;", "Entity references, such as &amp; and &#169;")
     # Variable only and variable plus punctuation messages should be ignored
     mozillachecker = checks.MozillaChecker()
     assert passes(mozillachecker.unchanged, "$ProgramName$", "$ProgramName$")

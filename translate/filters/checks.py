@@ -454,7 +454,10 @@ class StandardChecker(TranslationChecker):
         str2 = self.removevariables(self.filteraccelerators(str2)).strip()
         if len(str1) < 2:
             return True
-        if str1.isupper() and str1 == str2:
+        # If the whole string is upperase, or nothing in the string can go
+        # towards uppercase, let's assume there is nothing translatable
+        # TODO: reconsider
+        if (str1.isupper() or str1.upper() == str1) and str1 == str2:
             return True
         if self.config.notranslatewords:
             words1 = str1.split()
@@ -463,7 +466,9 @@ class StandardChecker(TranslationChecker):
             #   if len(words1) == 1 and words1[0] in self.config.notranslatewords:
             #why do we only test for one notranslate word?
                 return True
-        if str1.isalpha() and str1.lower() == str2.lower():
+        # we could also check for things like str1.isnumeric(), but the test
+        # above (str1.upper() == str1) makes this unnecessary
+        if str1.lower() == str2.lower():
             raise FilterFailure(u"please translate")
         return True
 
