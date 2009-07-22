@@ -31,7 +31,7 @@ Provisional work is done to make several languages possible."""
     rootNode = "termEntry"
     languageNode = "langSet"
     textNode = "term"
-                   
+
     def createlanguageNode(self, lang, text, purpose):
         """returns a langset xml Element setup with given parameters"""
         if isinstance(text, str):
@@ -47,7 +47,7 @@ Provisional work is done to make several languages possible."""
 class tbxfile(lisa.LISAfile):
     """Class representing a TBX file store."""
     UnitClass = tbxunit
-    Name = _("TBX file")
+    Name = _("TBX Glossary")
     Mimetypes  = ["application/x-tbx"]
     Extensions = ["tbx"]
     rootNode = "martif"

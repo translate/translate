@@ -110,7 +110,7 @@ class tmxunit(lisa.LISAunit):
 class tmxfile(lisa.LISAfile):
     """Class representing a TMX file store."""
     UnitClass = tmxunit
-    Name = _("TMX file")
+    Name = _("TMX Translation Memory")
     Mimetypes  = ["application/x-tmx"]
     Extensions = ["tmx"]
     rootNode = "tmx"
