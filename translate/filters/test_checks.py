@@ -628,6 +628,8 @@ def test_unchanged():
     assert passes(stdchecker.unchanged, "&ACRONYM", "&ACRONYM") # bug 178, description item 7
     assert passes(stdchecker.unchanged, "F1", "F1") # bug 178, description item 20
     assert fails(stdchecker.unchanged, "Two words", "Two words")
+    #TODO: this still fails
+#    assert passes(stdchecker.unchanged, "NOMINAL", "NOMİNAL")
     gnomechecker = checks.GnomeChecker()
     assert fails(gnomechecker.unchanged, "Entity references, such as &amp; and &#169;", "Entity references, such as &amp; and &#169;")
     # Variable only and variable plus punctuation messages should be ignored
@@ -635,6 +637,7 @@ def test_unchanged():
     assert passes(mozillachecker.unchanged, "$ProgramName$", "$ProgramName$")
     assert passes(mozillachecker.unchanged, "$file$ : $dir$", "$file$ : $dir$") # bug 178, description item 13
     assert fails(mozillachecker.unchanged, "$file$ in $dir$", "$file$ in $dir$")
+    assert passes(mozillachecker.unchanged, "&brandShortName;", "&brandShortName;")
     # Don't translate words should be ignored
     stdchecker = checks.StandardChecker(checks.CheckerConfig(notranslatewords=["Mozilla"]))
     assert passes(stdchecker.unchanged, "Mozilla", "Mozilla") # bug 178, description item 10

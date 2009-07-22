@@ -450,8 +450,8 @@ class StandardChecker(TranslationChecker):
 
     def unchanged(self, str1, str2):
         """checks whether a translation is basically identical to the original string"""
-        str1 = self.removevariables(self.filteraccelerators(str1)).strip()
-        str2 = self.removevariables(self.filteraccelerators(str2)).strip()
+        str1 = self.filteraccelerators(self.removevariables(str1)).strip()
+        str2 = self.filteraccelerators(self.removevariables(str2)).strip()
         if len(str1) < 2:
             return True
         # If the whole string is upperase, or nothing in the string can go
