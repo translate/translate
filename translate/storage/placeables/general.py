@@ -229,8 +229,9 @@ class CamelCasePlaceable(Ph):
     iseditable = True
     regex = re.compile(r'''(?x)
             \b(
-               [a-z]+[A-Z]|         #Not that strict if we start with lower
-               [A-Z]+[a-z]+[A-Z]    #One capital at the start is not enough
+               [a-z]+[A-Z]|         #Not that strict if we start with lower (iPod)
+               [A-Z]+[a-z]+[A-Z]|   #One capital at the start is not enough (OpenTran)
+               [A-Z]{2,}[a-z]       #Two capitals at the start is enough    (KBabel)
             )[a-zA-Z0-9]*           #Let's allow any final lower/upper/digit
             \b''')
     parse = classmethod(regex_parse)

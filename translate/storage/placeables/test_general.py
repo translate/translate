@@ -27,6 +27,7 @@ def test_placeable_camelcase():
     assert general.CamelCasePlaceable.parse(u'CamelCase')[0] == general.CamelCasePlaceable([u'CamelCase'])
     assert general.CamelCasePlaceable.parse(u'iPod')[0] == general.CamelCasePlaceable([u'iPod'])
     assert general.CamelCasePlaceable.parse(u'DokuWiki')[0] == general.CamelCasePlaceable([u'DokuWiki'])
+    assert general.CamelCasePlaceable.parse(u'KBabel')[0] == general.CamelCasePlaceable([u'KBabel'])
     assert general.CamelCasePlaceable.parse(u'_Bug') is None
     assert general.CamelCasePlaceable.parse(u'NOTCAMEL') is None
 
