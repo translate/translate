@@ -89,9 +89,26 @@ def namespaced(namespace, name):
     else:
         return name
 
-MULTIWHITESPACE_RE = re.compile(r"[\n\r\t ]{2,}", re.MULTILINE)
+MULTIWHITESPACE_PATTERN = r"[\n\r\t ]+"
+MULTIWHITESPACE_RE = re.compile(MULTIWHITESPACE_PATTERN, re.MULTILINE)
 
 def normalize_space(text):
     """Normalize the given text for implimentation of xml:space="default"."""
-    text = MULTIWHITESPACE_RE.sub(u" ", text).strip()
+    text = MULTIWHITESPACE_RE.sub(u" ", text)
     return text
+
+def normalize_xml_space(node, remove_start=False):
+    if node.text:
+        node.text = normalize_space(node.text)
+        if remove_start and node.text[0] == u" ":
+            node.text = node.text.lstrip()
+            remove_start = False
+        if len(node.text) > 0 and node.text.endswith(u" "):
+            remove_start = True
+        if len(node) == 0:
+            node.text = node.text.rstrip()
+    if node.tail:
+        node.tail = normalize_space(node.tail)
+
+    for child in node:
+        normalize_xml_space(child, remove_start)
