@@ -41,7 +41,7 @@ def test_xml_space():
     source = etree.fromstring(u'<source xml:space="default"> a <x id="foo[1]/bar[1]/baz[1]"/> </source>')
     elem = lisa.xml_to_strelem(source)
     print elem.sub
-    assert elem.sub == [ StringElem(u'a'), X(id=u'foo[1]/bar[1]/baz[1]') ]
+    assert elem.sub == [ StringElem(u'a '), X(id=u'foo[1]/bar[1]/baz[1]'), StringElem(u' ')]
 
 def test_chunk_list():
     left  = StringElem([u'a', G(id='foo[2]/bar[2]/baz[2]', sub=[u'b', X(id='foo[1]/bar[1]/baz[1]'), u'c']), u'é'])

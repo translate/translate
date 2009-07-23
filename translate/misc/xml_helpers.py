@@ -97,7 +97,12 @@ def normalize_space(text):
     text = MULTIWHITESPACE_RE.sub(u" ", text)
     return text
 
-def normalize_xml_space(node, remove_start=False):
+def normalize_xml_space(node, xml_space, remove_start=False):
+    """normalize spaces following the nodes xml:space, or alternatively the 
+    given xml_space parameter."""
+    xml_space = getXMLspace(node) or xml_space
+    if xml_space == 'preserve':
+        return
     if node.text:
         node.text = normalize_space(node.text)
         if remove_start and node.text[0] == u" ":

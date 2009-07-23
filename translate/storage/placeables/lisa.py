@@ -93,8 +93,7 @@ def xml_to_strelem(dom_node, xml_space="preserve"):
         return StringElem()
     if isinstance(dom_node, basestring):
         dom_node = etree.fromstring(dom_node)
-    if xml_space != 'preserve':
-        normalize_xml_space(dom_node, remove_start=True)
+    normalize_xml_space(dom_node, xml_space, remove_start=True)
     result = StringElem()
     if dom_node.text:
         result.sub.append(StringElem(unicode(dom_node.text)))
