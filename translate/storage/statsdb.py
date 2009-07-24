@@ -3,21 +3,21 @@
 #
 # Copyright 2007-2009 Zuza Software Foundation
 #
-# This file is part of translate.
+# This file is part of Virtaal.
 #
-# translate is free software; you can redistribute it and/or modify
+# This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 #
-# translate is distributed in the hope that it will be useful,
+# This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with translate; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# along with this program; if not, see <http://www.gnu.org/licenses/>.
+
 from UserDict import UserDict
 
 """Module to provide a cache of statistics in a database.
@@ -28,7 +28,7 @@ from UserDict import UserDict
 """
 
 from translate import __version__ as toolkitversion
-from translate.storage import factory, base
+from translate.storage import factory
 from translate.misc.multistring import multistring
 from translate.lang.common import Common
 
@@ -376,7 +376,7 @@ class StatsCache(object):
             store = store()
         else:
             store = store or factory.getobject(realpath)
-            
+
         return self._cachestore(store, realpath, mod_info)
 
     def _getstoredcheckerconfig(self, checker):
@@ -540,7 +540,7 @@ class StatsCache(object):
             store = store()
         else:
             store = store or factory.getobject(filename)
-            
+
         if os.path.exists(suggestion_filename(filename)):
             checker.setsuggestionstore(factory.getobject(suggestion_filename(filename), ignore=suggestion_extension()))
         self._cachestorechecks(fileid, store, checker, configid)
@@ -595,7 +595,7 @@ class StatsCache(object):
 
     def filestatestats(self, filename, store=None):
         """Return a dictionary of unit stats mapping sets of unit
-        undices with those states"""
+        indices with those states"""
         stats = emptyfilestats()
         fileid = self._getfileid(filename, store=store)
 
