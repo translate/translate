@@ -213,11 +213,13 @@ def _build_translated_dom(dom_node, target_node, target_dom_to_doc_dom):
 
 @accepts(IsCallable())
 def replace_dom_text(make_parse_state):
-    """Return a function
-      action: etree_Element x base.TranslationUnit -> None
-    which takes a dom_node and a translation unit. The dom_node is rearranged
-    according to rearrangement of placeables in unit.target (relative to their
-    positions in unit.source).
+    """Return a function::
+
+          action: etree_Element x base.TranslationUnit -> None
+
+      which takes a dom_node and a translation unit. The dom_node is rearranged
+      according to rearrangement of placeables in unit.target (relative to their
+      positions in unit.source).
     """
     
     @accepts(etree._Element, base.TranslationUnit)
