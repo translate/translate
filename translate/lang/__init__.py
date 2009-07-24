@@ -30,7 +30,7 @@ includes:
   - punctuation transformation
   - etc
 
-@group Common Language Functionality: common data poedit identify
+@group Common Language Functionality: common data poedit identify factory
 @group Languages: *
 """
 
