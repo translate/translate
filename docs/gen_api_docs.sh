@@ -8,8 +8,8 @@
 # to sourceforge.
 #
 # You should also have a setup in .ssh/config that defines
-# sftranslate as your sourceforge account for the translate
-# project.
+# $sfaccount with your sourceforge shell login details for 
+# the translate project.
 #
 # EPYDOC
 # ======
@@ -17,7 +17,10 @@
 # and: http://epydoc.sourceforge.net/fields.html#fields
 
 outputdir=apidocs/
+sfaccount=sftranslate-shell
 
 rm -rf $outputdir
 epydoc --config=epydoc-config.ini
-rsync -az -e ssh --delete $outputdir sftranslate:htdocs/doc/api
+# Create a new shell account and update the API docs
+ssh $sfaccount create
+rsync -azv -e ssh --delete $outputdir $sfaccount:translate/htdocs/doc/api
