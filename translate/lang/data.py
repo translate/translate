@@ -195,10 +195,8 @@ def languagematch(languagecode, otherlanguagecode):
 dialect_name_re = re.compile(r"(.+)\s\(([^)]+)\)$")
 
 def tr_lang(langcode=None):
-    """Gives a function that can translate a language name, even in the form:
-           "language (country)"
-       into the language with iso code langcode, or the system language if no
-       language is specified."""
+    """Gives a function that can translate a language name, even in the form C{"language (country)"},
+       into the language with iso code langcode, or the system language if no language is specified."""
     langfunc = gettext_lang(langcode)
     countryfunc = gettext_country(langcode)
 
