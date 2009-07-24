@@ -22,16 +22,21 @@
 This module implements basic functionality to support placeables.
 
 A placeable is used to represent things like:
-1. Substitutions
+  1. Substitutions
+
      For example, in ODF, footnotes appear in the ODF XML
      where they are defined; so if we extract a paragraph with some
      footnotes, the translator will have a lot of additional XML to with;
      so we separate the footnotes out into separate translation units and
      mark their positions in the original text with placeables.
-2. Hiding of inline formatting data
+
+  2. Hiding of inline formatting data
+
      The translator doesn't want to have to deal with all the weird
      formatting conventions of wherever the text came from.
-3. Marking variables
+
+  3. Marking variables
+
      This is an old issue - translators translate variable names which
      should remain untranslated. We can wrap placeables around variable
      names to avoid this.
