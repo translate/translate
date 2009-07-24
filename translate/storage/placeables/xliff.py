@@ -83,7 +83,7 @@ class UnknownXML(StringElem):
         """String representation of the sub-tree with the current node as the
             root.
 
-            Copied from L{StringElem.__repr__), but includes C{self.xml_node.tag}."""
+            Copied from L{StringElem.__repr__}, but includes C{self.xml_node.tag}."""
         tag = self.xml_node.tag
         if tag.startswith('{'):
             tag = tag[tag.index('}')+1:]
