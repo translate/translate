@@ -108,7 +108,7 @@ class LanguageIdentifier(object):
         """Identify the language of a translation store
 
         @param store: Store to be identified
-        @type text: L{TranslationStore <sorage.base.TranslatonStore>}
+        @type store: L{TranslationStore <storage.base.TranslatonStore>}
         @param sample_length: The amount of text to be analysed
         @type sample_length: Int
         @return: list of language codes
