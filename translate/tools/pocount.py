@@ -82,14 +82,15 @@ def calcstats(filename):
 def summarize(title, stats, style=style_full, indent=8, incomplete_only=False):
     """
     Print summary for a .po file in specified format.
-    Arguments:
-      title - name of .po file
-      stats - array with translation statistics for the file specified
-      indent - indentation of the 2nd column (length of longest filename)
-      incomplete_only - omit fully translated files
-    Return value:
-      1 if counting incomplete files (incomplete_only=True) and the file is completely translated
-      0 otherwise
+
+    @param title: name of .po file
+    @param stats: array with translation statistics for the file specified
+    @param indent: indentation of the 2nd column (length of longest filename)
+    @param incomplete_only: omit fully translated files
+    @type incomplete_only: Boolean
+    @rtype: Boolean
+    @return: 1 if counting incomplete files (incomplete_only=True) and the 
+    file is completely translated, 0 otherwise
     """
     def percent(denominator, devisor):
         if devisor == 0:
