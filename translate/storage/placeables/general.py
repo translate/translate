@@ -80,7 +80,7 @@ class QtFormattingPlaceable(Ph):
     U{QString::arg<http://doc.trolltech.com/4.5/qstring.html#arg>} where
     the placeables are refered to as 'place markers'
 
-    Notes::
+    Notes:
       - Place markers can be reordered
       - Place markers may be repeated
       - 'L' use a localised representation e.g. in a number
