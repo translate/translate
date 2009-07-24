@@ -22,14 +22,14 @@
 """translate.storage is part of the translate package
 It contains classes that represent various storage formats for localization
 
-@group Primary Localisation: xliff pypo cpo pocommon po poheader base factory
+@group Primary Localisation: xliff pypo cpo pocommon po poheader poparser base factory
 @group Bilingual: ts2 ts oo lisa tmx tbx wordfast qph poxliff
-@group Monolingual: dtd properties ini rc ical csvl10n html php txt subtitles
+@group Monolingual: dtd properties ini rc ical csvl10n html php txt subtitles symbian tiki
 @group OpenDocument Format: xml_extract odf*
 @group Binary: qm mo
 @group Version Control: versioncontrol
 @group Placeables: placeables
 @group Other file processing: directory xpi zip statsdb statistics
-@group Other: benchmark
+@group Other: benchmark tmdb xml_name
 """
 
