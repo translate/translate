@@ -77,7 +77,7 @@ class QtFormattingPlaceable(Ph):
     """Placeable representing a Qt string formatting variable.
 
     Implemented following Qt documentation on
-    L{QString::arg<http://doc.trolltech.com/4.5/qstring.html#arg>} where
+    U{QString::arg<http://doc.trolltech.com/4.5/qstring.html#arg>} where
     the placeables are refered to as 'place markers'
 
     Notes::
@@ -101,7 +101,7 @@ class PythonFormattingPlaceable(Ph):
     """Placeable representing a Python string formatting variable.
 
     Implemented following Python documentation on
-    L{String Formatting Operations<http://docs.python.org/library/stdtypes.html#string-formatting-operations>}"""
+    U{String Formatting Operations<http://docs.python.org/library/stdtypes.html#string-formatting-operations>}"""
 
     iseditable = False
     istranslatable = False
