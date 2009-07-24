@@ -10,6 +10,11 @@
 # You should also have a setup in .ssh/config that defines
 # sftranslate as your sourceforge account for the translate
 # project.
+#
+# EPYDOC
+# ======
+# See: http://epydoc.sourceforge.net/manual-epytext.html
+# and: http://epydoc.sourceforge.net/fields.html#fields
 
 outputdir=apidocs/
 
