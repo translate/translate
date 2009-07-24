@@ -124,7 +124,7 @@ class JavaMessageFormatPlaceable(Ph):
     Implemented according to the Java U{MessageFormat 
     documentation<http://java.sun.com/j2se/1.4.2/docs/api/java/text/MessageFormat.html>}.
 
-    Information about custom formats::
+    Information about custom formats:
       - number - U{DecimalFormat<http://java.sun.com/j2se/1.4.2/docs/api/java/text/DecimalFormat.html>}
       - date/time - U{SimpleDateFormat<http://java.sun.com/j2se/1.4.2/docs/api/java/text/SimpleDateFormat.html>}
       - choice - U{ChoiceFormat<http://java.sun.com/j2se/1.4.2/docs/api/java/text/ChoiceFormat.html>}
