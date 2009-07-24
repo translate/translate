@@ -21,7 +21,7 @@
 
 """Class that manages TikiWiki files for translation.  Tiki files are <strike>ugly and
 inconsistent</strike> formatted as a single large PHP array with several special 
-sections identified by comments.  Example current as of 2008-12-01:
+sections identified by comments.  Example current as of 2008-12-01::
 
   <?php
     // Many comments at the top
@@ -29,15 +29,15 @@ sections identified by comments.  Example current as of 2008-12-01:
     // ### Start of unused words
     "aaa" => "zzz",
     // ### end of unused words
-
+    
     // ### start of untranslated words
     // "bbb" => "yyy",
     // ### end of untranslated words
-
+    
     // ### start of possibly untranslated words
     "ccc" => "xxx",
     // ### end of possibly untranslated words
-
+    
     "ddd" => "www",
     "###end###"=>"###end###");
   ?>
@@ -45,8 +45,8 @@ sections identified by comments.  Example current as of 2008-12-01:
 In addition there are several auto-generated //-style comments scattered through the 
 page and array, some of which matter when being parsed.
 
-This has all been gleaned from the source
-U{<http://tikiwiki.svn.sourceforge.net/viewvc/tikiwiki/trunk/get_strings.php?view=markup>}.
+This has all been gleaned from the 
+U{TikiWiki source<http://tikiwiki.svn.sourceforge.net/viewvc/tikiwiki/trunk/get_strings.php?view=markup>}.
 As far as I know no detailed documentation exists for the tiki language.php files.
 
 """
