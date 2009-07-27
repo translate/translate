@@ -137,13 +137,13 @@ class xliffunit(lisa.LISAunit):
             txt = txt.decode("utf-8")
         alttrans = etree.SubElement(self.xmlelement, self.namespaced("alt-trans"))
         lisa.setXMLspace(alttrans, "preserve")
-        alttarget = etree.SubElement(alttrans, self.namespaced("target"))
-        alttarget.text = txt
         if sourcetxt:
             if isinstance(sourcetxt, str):
                 sourcetxt = sourcetxt.decode("utf-8")
             altsource = etree.SubElement(alttrans, self.namespaced("source"))
             altsource.text = sourcetxt
+        alttarget = etree.SubElement(alttrans, self.namespaced("target"))
+        alttarget.text = txt
         if matchquality:
             alttrans.set("match-quality", matchquality)
         if origin:

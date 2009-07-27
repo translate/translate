@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from lxml import etree
+
 from translate.storage import xliff, lisa
 from translate.storage import test_base
 from translate.storage.placeables import StringElem
@@ -237,6 +239,16 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert len(alternatives) == 2
         assert alternatives[0].target == "ginmi"
         assert alternatives[1].target == "shikenki"
+
+        #clean up:
+        alternatives = unit.getalttrans()
+        for alt in alternatives:
+            unit.delalttrans(alt)
+        unit.addalttrans("targetx", sourcetxt="sourcex")
+        # test that the source node is before the target node:
+        alt = unit.getalttrans()[0]
+        format = etree.tostring(alt.xmlelement)
+        assert format.find("<source") < format.find("<target")
 
     def test_fuzzy(self):
         xlifffile = xliff.xlifffile()
