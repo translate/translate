@@ -263,6 +263,7 @@ class StatsCache(object):
                     # If the database is empty, we have no idea whether its layout
                     # is correct, so we might as well delete it.
                     if val is None or val[0] < toolkitversion.build:
+                        cache.con.close()
                         del cache
                         os.unlink(statsfile)
                         return True
