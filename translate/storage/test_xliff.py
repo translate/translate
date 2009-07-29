@@ -226,6 +226,8 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert alternatives[0].target == "ginmi"
         assert alternatives[1].target == "shikenki"
 
+        assert not unit.target
+
         unit.addalttrans("Tasting", origin="bob", lang="eng")
         alternatives = unit.getalttrans()
         assert alternatives[2].target == "Tasting"
