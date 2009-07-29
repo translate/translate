@@ -73,6 +73,13 @@ class PoXliffUnit(xliff.xliffunit):
                 return self.source == other.source and self.target == other.target
         return False
 
+#XXX: We don't return language nodes correctly at the moment
+#    def getlanguageNodes(self):
+#        if not self.hasplural():
+#            return super(PoXliffUnit, self).getlanguageNodes()
+#        else:
+#            return self.units[0].getlanguageNodes()
+
     def setsource(self, source, sourcelang="en"):
 #        TODO: consider changing from plural to singular, etc.
         if not hasplurals(source):
@@ -92,8 +99,12 @@ class PoXliffUnit(xliff.xliffunit):
                 self.xmlelement.append(newunit.xmlelement)
             self.target = target
 
+    # We don't support any rich strings yet
     multistring_to_rich = base.TranslationUnit.multistring_to_rich
     rich_to_multistring = base.TranslationUnit.rich_to_multistring
+
+    rich_source = base.TranslationUnit.rich_source
+    rich_target = base.TranslationUnit.rich_target
 
     def getsource(self):
         if not self.hasplural():
