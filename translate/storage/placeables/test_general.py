@@ -49,4 +49,8 @@ def test_placeable_option():
     assert general.OptionPlaceable.parse(u'Type --help for this help')[1] == general.OptionPlaceable([u'--help'])
     assert general.OptionPlaceable.parse(u'Short -S ones also')[1] == general.OptionPlaceable([u'-S'])
 
-# TODO: PythonFormattingPlaceable, JavaMessageFormatPlaceable, FormattingPlaceable (printf), UrlPlaceable, FilePlaceable, EmailPlaceable, CapsPlaceable, XMLTagPlaceable
+def test_placeable_file():
+    assert general.FilePlaceable.parse(u'Store in /home/user')[1] == general.OptionPlaceable([u'/home/user'])
+    assert general.FilePlaceable.parse(u'Store in ~/Download directory')[1] == general.OptionPlaceable([u'~/Download'])
+
+# TODO: PythonFormattingPlaceable, JavaMessageFormatPlaceable, FormattingPlaceable (printf), UrlPlaceable, EmailPlaceable, CapsPlaceable, XMLTagPlaceable
