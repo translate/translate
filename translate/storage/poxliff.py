@@ -96,9 +96,12 @@ class PoXliffUnit(xliff.xliffunit):
     rich_to_multistring = base.TranslationUnit.rich_to_multistring
 
     def getsource(self):
-        strings = [super(PoXliffUnit, self).getsource()]
-        strings.extend([unit.source for unit in self.units[1:]])
-        return multistring(strings)
+        if not self.hasplural():
+            return super(PoXliffUnit, self).getsource()
+        else:
+            strings = []
+            strings.extend([unit.source for unit in self.units])
+            return multistring(strings)
     source = property(getsource, setsource)
 
     def settarget(self, text, lang='xx', append=False):
@@ -360,7 +363,7 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
 
         for entry in singularunits:
             term = self.UnitClass.createfromxmlElement(entry, namespace=self.namespace)
-            if nextplural and unicode(term.source) in nextplural.source.strings:
+            if nextplural and unicode(term.getid()) == ("%s[0]" % nextplural.getid()):
                 self.addunit(nextplural, new=False)
                 try:
                     nextplural = pluralunit_iter.next()

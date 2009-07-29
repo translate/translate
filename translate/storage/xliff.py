@@ -69,15 +69,18 @@ class xliffunit(lisa.LISAunit):
 
     def getlanguageNodes(self):
         """We override this to get source and target nodes."""
-        sources = list(self.xmlelement.iterdescendants(self.namespaced(self.languageNode)))
-        targets = list(self.xmlelement.iterdescendants(self.namespaced('target')))
-        sourcesl = len(sources)
-        targetsl = len(targets)
+        source = None
+        target = None
         nodes = []
-        for pair in zip(sources, targets):
-            nodes.extend(list(pair))
-        if sourcesl > targetsl:
-            nodes.extend(sources[- (sourcesl - targetsl):])
+        try:
+            source = self.xmlelement.iterchildren(self.namespaced(self.languageNode)).next()
+            target = self.xmlelement.iterchildren(self.namespaced('target')).next()
+            nodes = [source, target]
+        except StopIteration:
+            if source is not None:
+                nodes.append(source)
+            if not target is None:
+                nodes.append(target)
         return nodes
 
     def set_rich_source(self, value, sourcelang='en'):
