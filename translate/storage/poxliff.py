@@ -82,6 +82,7 @@ class PoXliffUnit(xliff.xliffunit):
 
     def setsource(self, source, sourcelang="en"):
 #        TODO: consider changing from plural to singular, etc.
+        self._rich_source = None
         if not hasplurals(source):
             super(PoXliffUnit, self).setsource(source, sourcelang)
         else:
@@ -116,6 +117,7 @@ class PoXliffUnit(xliff.xliffunit):
     source = property(getsource, setsource)
 
     def settarget(self, text, lang='xx', append=False):
+        self._rich_target = None
         if self.gettarget() == text:
             return
         if not self.hasplural():
