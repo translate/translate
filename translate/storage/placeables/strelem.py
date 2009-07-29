@@ -339,7 +339,6 @@ class StringElem(object):
 
         for node in marked_nodes:
             self.delete_elem(node)
-        self.prune()
 
         if start_offset == start['index']:
             self.delete_elem(start['elem'])
@@ -351,6 +350,7 @@ class StringElem(object):
         elif end['elem'].iseditable:
             end['elem'].sub = [ u''.join(end['elem'].sub)[end['offset']:] ]
 
+        self.prune()
         return removed, None
 
     def depth_first(self, filter=None):
