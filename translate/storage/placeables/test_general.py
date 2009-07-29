@@ -50,7 +50,11 @@ def test_placeable_option():
     assert general.OptionPlaceable.parse(u'Short -S ones also')[1] == general.OptionPlaceable([u'-S'])
 
 def test_placeable_file():
-    assert general.FilePlaceable.parse(u'Store in /home/user')[1] == general.OptionPlaceable([u'/home/user'])
-    assert general.FilePlaceable.parse(u'Store in ~/Download directory')[1] == general.OptionPlaceable([u'~/Download'])
+    assert general.FilePlaceable.parse(u'Store in /home/user')[1] == general.FilePlaceable([u'/home/user'])
+    assert general.FilePlaceable.parse(u'Store in ~/Download directory')[1] == general.FilePlaceable([u'~/Download'])
 
-# TODO: PythonFormattingPlaceable, JavaMessageFormatPlaceable, FormattingPlaceable (printf), UrlPlaceable, EmailPlaceable, CapsPlaceable, XMLTagPlaceable
+def test_placeable_email():
+    assert general.EmailPlaceable.parse(u'Send email to info@example.com')[1] == general.EmailPlaceable([u'info@example.com'])
+    assert general.EmailPlaceable.parse(u'Send email to mailto:info@example.com')[1] == general.EmailPlaceable([u'mailto:info@example.com'])
+
+# TODO: PythonFormattingPlaceable, JavaMessageFormatPlaceable, FormattingPlaceable (printf), UrlPlaceable, CapsPlaceable, XMLTagPlaceable
