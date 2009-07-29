@@ -188,7 +188,7 @@ garbage</note>
         
     def test_plurals(self):
         """Tests fuzzyness"""
-        minixlf = self.xliffskeleton % '''<group restype="x-gettext-plurals">
+        minixlf = self.xliffskeleton % '''<group id="1" restype="x-gettext-plurals">
         <trans-unit id="1[0]" xml:space="preserve">
             <source>cow</source>
             <target>inkomo</target>
