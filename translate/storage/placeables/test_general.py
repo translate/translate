@@ -57,4 +57,9 @@ def test_placeable_email():
     assert general.EmailPlaceable.parse(u'Send email to info@example.com')[1] == general.EmailPlaceable([u'info@example.com'])
     assert general.EmailPlaceable.parse(u'Send email to mailto:info@example.com')[1] == general.EmailPlaceable([u'mailto:info@example.com'])
 
-# TODO: PythonFormattingPlaceable, JavaMessageFormatPlaceable, FormattingPlaceable (printf), UrlPlaceable, CapsPlaceable, XMLTagPlaceable
+def test_placeable_caps():
+    assert general.CapsPlaceable.parse(u'Use the HTML page')[1] == general.CapsPlaceable([u'HTML'])
+    assert general.CapsPlaceable.parse(u'I am') is None
+    assert general.CapsPlaceable.parse(u'Use the A4 paper') is None
+
+# TODO: PythonFormattingPlaceable, JavaMessageFormatPlaceable, FormattingPlaceable (printf), UrlPlaceable, XMLTagPlaceable
