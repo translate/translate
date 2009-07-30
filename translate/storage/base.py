@@ -339,7 +339,7 @@ class TranslationUnit(object):
 
     def merge(self, otherunit, overwrite=False, comments=True):
         """Do basic format agnostic merging."""
-        if self.target == "" or overwrite:
+        if not self.target or overwrite:
             self.rich_target = otherunit.rich_target
 
     def unit_iter(self):
