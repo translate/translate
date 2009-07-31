@@ -94,43 +94,47 @@ class TestStringElem:
     def test_delete_range_case1(self):
         # Case 1: Entire string #
         elem = self.elem.copy()
-        deleted, parent = elem.delete_range(0, len(elem))
+        deleted, parent, offset = elem.delete_range(0, len(elem))
         assert deleted == self.elem
-        assert parent is None
+        assert parent is None and offset is None
 
     def test_delete_range_case2(self):
         # Case 2: An entire element #
         elem = self.elem.copy()
         offset = elem.elem_offset(elem.sub[2])
-        deleted, parent = elem.delete_range(offset, offset+len(elem.sub[2]))
-        assert deleted == self.elem.sub[2].sub
-        assert parent is elem.sub[2]
+        deleted, parent, offset = elem.delete_range(offset, offset+len(elem.sub[2]))
+        assert deleted == self.elem.sub[2]
+        assert parent is elem
+        assert offset == len(elem.sub[0]) + len(elem.sub[1])
 
     def test_delete_range_case3(self):
         # Case 3: Within a single element #
         elem = self.elem.copy()
-        deleted, parent = elem.delete_range(1, 2)
+        deleted, parent, offset = elem.delete_range(1, 2)
         assert deleted == StringElem(u'ë')
         assert parent is elem
+        assert offset == 1
 
     def test_delete_range_case4(self):
         # Case 4: Across multiple elements #
         elem = self.elem.copy()
         # Delete the last two elements
-        deleted, parent = elem.delete_range(elem.elem_offset(elem.sub[2]), len(elem))
+        deleted, parent, offset = elem.delete_range(elem.elem_offset(elem.sub[2]), len(elem))
         assert deleted == self.elem
+        assert parent is None
+        assert offset is None
         assert len(elem.sub) == 2
         assert unicode(elem) == u'Ģët <a href="http://www.example.com" alt="Ģët &brand;!">'
-        assert parent is None
 
         # A separate test case where the delete range include elements between
         # the start- and end elements.
         origelem = parse(u'foo %s bar', general.parsers)
         elem = origelem.copy()
         assert len(elem.sub) == 3
-        deleted, parent = elem.delete_range(3, 7)
+        deleted, parent, offset = elem.delete_range(3, 7)
         assert deleted == origelem
         assert parent is None
+        assert offset is None
         assert unicode(elem) == 'foobar'
 
     def test_insert(self):
