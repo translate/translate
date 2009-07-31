@@ -20,7 +20,6 @@ docdir=`dirname $0`
 outputdir=$docdir/api/
 
 rm -rf $outputdir
-echo epydoc --config=$docdir/epydoc-config.ini --output=$outputdir
 epydoc --config=$docdir/epydoc-config.ini --output=$outputdir
 
 
