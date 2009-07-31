@@ -45,6 +45,12 @@ def test_placeable_xml_entity():
     assert general.XMLEntityPlaceable.parse(u'&#1234;')[0] == general.XMLEntityPlaceable([u'&#1234;'])
     assert general.XMLEntityPlaceable.parse(u'&xDEAD;')[0] == general.XMLEntityPlaceable([u'&xDEAD;'])
 
+def test_placeable_xml_tag():
+    assert general.XMLTagPlaceable.parse(u'<a>koei</a>')[0] == general.XMLTagPlaceable([u'<a>'])
+    assert general.XMLTagPlaceable.parse(u'<a>koei</a>')[2] == general.XMLTagPlaceable([u'</a>'])
+    assert general.XMLTagPlaceable.parse(u'<img src="koei.jpg" />')[0] == general.XMLTagPlaceable([u'<img src="koei.jpg" />'])
+    assert general.XMLTagPlaceable.parse(u'<img src="http://translate.org.za/blogs/friedel/sites/translate.org.za.blogs.friedel/files/virtaal-7f_help.png" alt="Virtaal met lêernaam-pseudovertaling" style="border: 1px dotted grey;" />')[0] == general.XMLTagPlaceable([u'<img src="http://translate.org.za/blogs/friedel/sites/translate.org.za.blogs.friedel/files/virtaal-7f_help.png" alt="Virtaal met lêernaam-pseudovertaling" style="border: 1px dotted grey;" />'])
+
 def test_placeable_option():
     assert general.OptionPlaceable.parse(u'Type --help for this help')[1] == general.OptionPlaceable([u'--help'])
     assert general.OptionPlaceable.parse(u'Short -S ones also')[1] == general.OptionPlaceable([u'-S'])
@@ -61,5 +67,7 @@ def test_placeable_caps():
     assert general.CapsPlaceable.parse(u'Use the HTML page')[1] == general.CapsPlaceable([u'HTML'])
     assert general.CapsPlaceable.parse(u'I am') is None
     assert general.CapsPlaceable.parse(u'Use the A4 paper') is None
+#    assert general.CapsPlaceable.parse(u'In GTK+') == general.CapsPlaceable([u'GTK+'])
+#    assert general.CapsPlaceable.parse(u'GNOME-stuff') == general.CapsPlaceable([u'GNOME'])
 
 # TODO: PythonFormattingPlaceable, JavaMessageFormatPlaceable, FormattingPlaceable (printf), UrlPlaceable, XMLTagPlaceable
