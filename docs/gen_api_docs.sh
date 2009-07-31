@@ -21,6 +21,10 @@ sfaccount=sftranslate-shell
 
 rm -rf $outputdir
 epydoc --config=epydoc-config.ini
-# Create a new shell account and update the API docs
-ssh $sfaccount create
-rsync -azv -e ssh --delete $outputdir $sfaccount:translate/htdocs/doc/api
+
+
+##To get the new documentation on SourceForge,
+##create a new shell account and update the API docs
+
+#ssh $sfaccount create
+#rsync -azv -e ssh --delete $outputdir $sfaccount:translate/htdocs/doc/api
