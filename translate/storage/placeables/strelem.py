@@ -214,11 +214,14 @@ class StringElem(object):
         """Delete the text in the range given by the string-indexes
             C{start_index} and C{end_index}.
             Partial nodes will only be removed if they are editable.
-            @returns: A C{StringElem} representing the removed sub-string as
-                well as the parent node from which it was deleted. C{None} is
-                returned for the parent value if the root was deleted."""
+            @returns: A C{StringElem} representing the removed sub-string, the
+                parent node from which it was deleted as well as the offset at
+                which it was deleted from. C{None} is returned for the parent
+                value if the root was deleted. If the parent and offset values
+                are not C{None}, C{parent.insert(offset, deleted)} effectively
+                undoes the delete."""
         if start_index == end_index:
-            return StringElem(), self
+            return StringElem(), self, 0
         if start_index > end_index:
             raise IndexError('start_index > end_index: %d > %d' % (start_index, end_index))
         if start_index < 0 or start_index > len(self):
@@ -251,7 +254,7 @@ class StringElem(object):
             #logging.debug('Case 1: [%s]' % (unicode(self)))
             removed = self.copy()
             self.sub = []
-            return removed, None
+            return removed, None, None
 
         # Case 2: An entire element #
         if start['elem'] is end['elem'] and start['offset'] == 0 and end['offset'] == len(start['elem']) or \
@@ -269,11 +272,12 @@ class StringElem(object):
             if start['elem'] is self and self.__class__ is StringElem:
                 removed = self.copy()
                 self.sub = []
-                return removed, None
-            removed = list(start['elem'].sub)
-            parent = start['elem']
-            parent.sub = []
-            return removed, parent
+                return removed, None, None
+            removed = start['elem'].copy()
+            parent = self.get_parent_elem(start['elem'])
+            offset = parent.elem_offset(start['elem'])
+            parent.sub.remove(start['elem'])
+            return removed, parent, offset
 
         # Case 3: Within a single element #
         if start['elem'] is end['elem'] and start['elem'].iseditable:
@@ -300,7 +304,7 @@ class StringElem(object):
                 parent = self
             start['elem'].sub = [newstr]
             self.prune()
-            return removed, parent
+            return removed, start['elem'], start['offset']
 
         # Case 4: Across multiple elements #
         range_nodes = self.depth_first()
@@ -355,7 +359,7 @@ class StringElem(object):
             end['elem'].sub = [ u''.join(end['elem'].sub)[end['offset']:] ]
 
         self.prune()
-        return removed, None
+        return removed, None, None
 
     def depth_first(self, filter=None):
         """Returns a list of the nodes in the tree in depth-first order."""
