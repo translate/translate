@@ -45,6 +45,9 @@ class StringElem(object):
     """Whether this string can have sub-elements."""
     iseditable = True
     """Whether this string should be changable by the user. Not used at the moment."""
+    isfragile = False
+    """Whether this element should be deleted in its entirety when partially
+        deleted. Only checked when C{iseditable = False}"""
     istranslatable = True
     """Whether this string is translatable into other languages."""
     isvisible = True
@@ -251,7 +254,8 @@ class StringElem(object):
             return removed, None
 
         # Case 2: An entire element #
-        if start['elem'] is end['elem'] and start['offset'] == 0 and end['offset'] == len(start['elem']):
+        if start['elem'] is end['elem'] and start['offset'] == 0 and end['offset'] == len(start['elem']) or \
+                (not start['elem'].iseditable and start['elem'].isfragile):
             ##### FOR DEBUGGING #####
             #s = ''
             #for e in self.flatten():
@@ -340,12 +344,12 @@ class StringElem(object):
         for node in marked_nodes:
             self.delete_elem(node)
 
-        if start_offset == start['index']:
+        if start_offset == start['index'] or (not start['elem'].iseditable and start['elem'].isfragile):
             self.delete_elem(start['elem'])
         elif start['elem'].iseditable:
             start['elem'].sub = [ u''.join(start['elem'].sub)[:start['offset']] ]
 
-        if end_offset + len(end['elem']) == end['index']:
+        if end_offset + len(end['elem']) == end['index'] or (not end['elem'].iseditable and end['elem'].isfragile):
             self.delete_elem(end['elem'])
         elif end['elem'].iseditable:
             end['elem'].sub = [ u''.join(end['elem'].sub)[end['offset']:] ]
