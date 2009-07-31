@@ -16,15 +16,17 @@
 # See: http://epydoc.sourceforge.net/manual-epytext.html
 # and: http://epydoc.sourceforge.net/fields.html#fields
 
-outputdir=apidocs/
-sfaccount=sftranslate-shell
+docdir=`dirname $0`
+outputdir=$docdir/api/
 
 rm -rf $outputdir
-epydoc --config=epydoc-config.ini
+echo epydoc --config=$docdir/epydoc-config.ini --output=$outputdir
+epydoc --config=$docdir/epydoc-config.ini --output=$outputdir
 
 
 ##To get the new documentation on SourceForge,
 ##create a new shell account and update the API docs
 
+sfaccount=sftranslate-shell
 #ssh $sfaccount create
 #rsync -azv -e ssh --delete $outputdir $sfaccount:translate/htdocs/doc/api
