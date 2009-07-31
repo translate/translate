@@ -60,6 +60,7 @@ class NewlinePlaceable(Ph):
     """Matches new-lines."""
 
     iseditable = False
+    isfragile = True
     istranslatable = False
     regex = re.compile(r'\n')
     parse = classmethod(regex_parse)
