@@ -152,6 +152,21 @@ def test_accelerators():
     # Bug 289: accept accented accelerator characters
     afchecker = checks.StandardChecker(checks.CheckerConfig(accelmarkers="&", targetlanguage="fi"))
     assert passes(afchecker.accelerators, "&Reload Frame", "P&äivitä kehys")
+
+    trchecker = checks.StandardChecker(checks.CheckerConfig(accelmarkers="&", targetlanguage="tr"))
+    assert passes(trchecker.accelerators, "&Download", "&İndir")
+    assert passes(trchecker.accelerators, "&Business", "İ&ş")
+    assert passes(trchecker.accelerators, "&Remove", "Kald&ır")
+    assert passes(trchecker.accelerators, "&Three", "&Üç")
+    assert passes(trchecker.accelerators, "&Three", "Ü&ç")
+    assert passes(trchecker.accelerators, "&Before", "&Önce")
+    assert passes(trchecker.accelerators, "Fo&ur", "D&ört")
+    assert passes(trchecker.accelerators, "Mo&dern", "Ça&ğdaş")
+    assert passes(trchecker.accelerators, "Mo&dern", "&Çağdaş")
+    assert passes(trchecker.accelerators, "&February", "&Şubat")
+    assert passes(trchecker.accelerators, "P&lain", "D&üz")
+    assert passes(trchecker.accelerators, "GAR&DEN", "BA&Ğ")
+
     # Problems:
     # Accelerator before variable - see test_acceleratedvariables
 
