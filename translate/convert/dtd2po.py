@@ -29,6 +29,15 @@ from translate.storage import dtd
 from translate.misc import quote
 from translate.convert import accesskey as accesskeyfn
 
+def is_css_entity(entity):
+    """Says if the given entity is likely to contain CSS that should not be 
+    translated."""
+    if '.' in entity:
+        prefix, suffix = entity.rsplit('.', 1)
+        if suffix in ["height", "width", "unixWidth", "macWidth", "size"] or suffix.startswith("style"):
+            return True
+    return False
+
 class dtd2po:
     def __init__(self, blankmsgstr=False, duplicatestyle="msgctxt"):
         self.currentgroup = None
@@ -56,7 +65,7 @@ class dtd2po:
         # handle group stuff
         if self.currentgroup is not None:
             thepo.addnote(quote.stripcomment(self.currentgroup), origin="translator")
-        if entity.endswith(".height") or entity.endswith(".width") or entity.endswith(".size"):
+        if is_css_entity(entity):
             thepo.addnote("Do not translate this.  Only change the numeric values if you need this dialogue box to appear bigger", origin="developer")
 
     def convertstrings(self, thedtd, thepo):

@@ -31,6 +31,7 @@ from translate.misc import hash
 from translate.storage import factory
 from translate.storage.placeables import StringElem, general
 from translate.storage.placeables import parse as rich_parse
+from translate.convert import dtd2po
 
 
 def add_prefix(prefix, stringelems):
@@ -196,8 +197,7 @@ class podebug:
         if len(locations) == 1 and locations[0].lower().endswith(".accesskey"):
             return True
         for location in locations:
-            if location.endswith(".height") or location.endswith(".width") or \
-                    location.endswith(".macWidth") or location.endswith(".unixWidth"):
+            if dtd2po.is_css_entity(location):
                 return True
             if location in ["brandShortName", "brandFullName", "vendorShortName"]:
                 return True
