@@ -45,14 +45,13 @@ podebug_parsers.remove(general.CapsPlaceable.parse)
 podebug_parsers.remove(general.CamelCasePlaceable.parse)
 
 class podebug:
-    def __init__(self, format=None, rewritestyle=None, hash=None, ignoreoption=None):
+    def __init__(self, format=None, rewritestyle=None, ignoreoption=None):
         if format is None:
             self.format = ""
         else:
             self.format = format
         self.rewritefunc = getattr(self, "rewrite_%s" % rewritestyle, None)
         self.ignorefunc = getattr(self, "ignore_%s" % ignoreoption, None)
-        self.hash = hash
 
     def apply_to_translatables(self, string, func):
         """Applies func to all translatable strings in string."""
@@ -220,12 +219,12 @@ class podebug:
         if self.ignorefunc:
             if self.ignorefunc(unit):
                 return unit
-        if self.hash:
+        if prefix.find("@hash_placeholder@") != -1:
             if unit.getlocations():
                 hashable = unit.getlocations()[0]
             else:
                 hashable = unit.source
-            prefix = hash.md5_f(hashable).hexdigest()[:self.hash] + " "
+            prefix = prefix.replace("@hash_placeholder@", hash.md5_f(hashable).hexdigest()[:self.hash_len])
         rich_source = unit.rich_source
         if not isinstance(rich_source, StringElem):
             rich_source = [rich_parse(string, podebug_parsers) for string in rich_source]
@@ -241,7 +240,7 @@ class podebug:
     def convertstore(self, store):
         filename = self.shrinkfilename(store.filename)
         prefix = self.format
-        for formatstr in re.findall("%[0-9c]*[sfFbBd]", self.format):
+        for formatstr in re.findall("%[0-9c]*[sfFbBdh]", self.format):
             if formatstr.endswith("s"):
                 formatted = self.shrinkfilename(store.filename)
             elif formatstr.endswith("f"):
@@ -256,10 +255,16 @@ class podebug:
                 formatted = os.path.basename(store.filename)
             elif formatstr.endswith("d"):
                 formatted = os.path.dirname(store.filename)
+            elif formatstr.endswith("h"):
+                try:
+                    self.hash_len = int(filter(str.isdigit, formatstr[1:-1]))
+                except ValueError:
+                    self.hash_len = 4
+                formatted = "@hash_placeholder@"
             else:
                 continue
             formatoptions = formatstr[1:-1]
-            if formatoptions:
+            if formatoptions and not formatstr.endswith("h"):
                 if "c" in formatoptions and formatted:
                     formatted = formatted[0] + filter(lambda x: x.lower() not in "aeiou", formatted[1:])
                 length = filter(str.isdigit, formatoptions)
@@ -288,13 +293,13 @@ class podebug:
             baseshrunk = baseshrunk[:baseshrunk.find(".")]
         return dirshrunk + baseshrunk
 
-def convertpo(inputfile, outputfile, templatefile, format=None, rewritestyle=None, hash=None, ignoreoption=None):
+def convertpo(inputfile, outputfile, templatefile, format=None, rewritestyle=None, ignoreoption=None):
     """Reads in inputfile, changes it to have debug strings, writes to outputfile."""
     # note that templatefile is not used, but it is required by the converter...
     inputstore = factory.getobject(inputfile)
     if inputstore.isempty():
         return 0
-    convertor = podebug(format=format, rewritestyle=rewritestyle, hash=hash, ignoreoption=ignoreoption)
+    convertor = podebug(format=format, rewritestyle=rewritestyle, ignoreoption=ignoreoption)
     outputstore = convertor.convertstore(inputstore)
     outputfile.write(str(outputstore))
     return 1
@@ -312,12 +317,9 @@ def main():
     parser.add_option("", "--ignore", dest="ignoreoption",
         type="choice", choices=podebug.ignorelist(), metavar="APPLICATION",
         help="apply tagging ignore rules for the given application: %s" % ", ".join(podebug.ignorelist()))
-    parser.add_option("", "--hash", dest="hash", metavar="LENGTH", type="int",
-        help="add an md5 hash to translations")
     parser.passthrough.append("format")
     parser.passthrough.append("rewritestyle")
     parser.passthrough.append("ignoreoption")
-    parser.passthrough.append("hash")
     parser.run()
 
 
