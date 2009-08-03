@@ -348,15 +348,16 @@ class StringElem(object):
         for node in marked_nodes:
             self.delete_elem(node)
 
-        if start_offset == start['index'] or (not start['elem'].iseditable and start['elem'].isfragile):
-            self.delete_elem(start['elem'])
-        elif start['elem'].iseditable:
-            start['elem'].sub = [ u''.join(start['elem'].sub)[:start['offset']] ]
+        if start['elem'] is not end['elem']:
+            if start_offset == start['index'] or (not start['elem'].iseditable and start['elem'].isfragile):
+                self.delete_elem(start['elem'])
+            elif start['elem'].iseditable:
+                start['elem'].sub = [ u''.join(start['elem'].sub)[:start['offset']] ]
 
-        if end_offset + len(end['elem']) == end['index'] or (not end['elem'].iseditable and end['elem'].isfragile):
-            self.delete_elem(end['elem'])
-        elif end['elem'].iseditable:
-            end['elem'].sub = [ u''.join(end['elem'].sub)[end['offset']:] ]
+            if end_offset + len(end['elem']) == end['index'] or (not end['elem'].iseditable and end['elem'].isfragile):
+                self.delete_elem(end['elem'])
+            elif end['elem'].iseditable:
+                end['elem'].sub = [ u''.join(end['elem'].sub)[end['offset']:] ]
 
         self.prune()
         return removed, None, None
