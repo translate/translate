@@ -1,3 +1,3054 @@
+2009-08-03 16:11  walter_l
+
+	* storage/placeables/strelem.py: StringElem.delete_range(): Only
+	  delete start- and end elements in case 4 if they are not the same
+	  element.
+
+2009-08-03 15:30  friedelwolff
+
+	* convert/dtd2po.py, tools/podebug.py: Give warnings for all
+	  entities that are likely to contain CSS. Factor out and reuse in
+	  podebug. This fixes bug 1093.
+
+2009-08-03 14:18  arail
+
+	* tools/podebug.py, tools/test_podebug.py: Use "%h" as a format
+	  string for hashes, drop --hash=int parameter. Add some test
+	  cases.
+
+2009-07-31 15:23  walter_l
+
+	* storage/placeables/base.py, storage/placeables/general.py: Set
+	  isfragile flags for placeables with base.X as a sub-class as well
+	  as NewlinePlaceables.
+
+2009-07-31 15:22  walter_l
+
+	* storage/placeables/test_base.py: Updated tests to reflect recent
+	  changes to StringElem.
+
+2009-07-31 15:20  walter_l
+
+	* storage/placeables/strelem.py: StringElem.delete_range(): Now
+	  returns 3 values: the deleted string, the parent from which it
+	  was deleted and the offset into the parent where the sub-string
+	  was.
+
+2009-07-31 15:19  walter_l
+
+	* storage/placeables/strelem.py: StringElem: Added the "isfragile"
+	  flag
+
+2009-07-31 15:14  friedelwolff
+
+	* doc/gen_api_docs.sh: Remove some debugging output
+
+2009-07-31 14:29  friedelwolff
+
+	* doc/epydoc-config.ini, doc/gen_api_docs.sh: Enable the script to
+	  be run from outside its own directory. Don't specify the output
+	  directory in the config, so that the script can specify it (since
+	  it is better aware of where we are)
+
+2009-07-31 14:12  friedelwolff
+
+	* __version__.py: Version 1.4.0-rc2
+
+2009-07-31 14:10  friedelwolff
+
+	* doc/gen_api_docs.sh: Comment out the part that pushes the
+	  documentation to SF - we don't want to do this each time
+
+2009-07-31 13:27  friedelwolff
+
+	* storage/placeables/general.py,
+	  storage/placeables/test_general.py: Recognise self closing tags.
+	  +Tests for XMLTagPlaceable
+
+2009-07-30 10:24  friedelwolff
+
+	* storage/base.py: Handle None targets in merge() just in case
+
+2009-07-29 17:02  dwaynebailey
+
+	* storage/placeables/test_general.py: Add CapsPlaceable test
+
+2009-07-29 16:54  dwaynebailey
+
+	* storage/placeables/test_general.py: Add EmailPlaceable tests. Fix
+	  classes in FilePlaceable test.
+
+2009-07-29 16:48  dwaynebailey
+
+	* storage/placeables/test_general.py: Add a test for FilePlaceable
+
+2009-07-29 16:26  friedelwolff
+
+	* storage/test_xliff.py: Test that alt-trans doesn't interfere with
+	  the real .target anymore
+
+2009-07-29 16:20  friedelwolff
+
+	* storage/poxliff.py: Correctly invalidate ._rich_source and
+	  ._rich_target so that base.rich_* work correctly (since we don't
+	  inherit .setsource and .settarget)
+
+2009-07-29 16:08  friedelwolff
+
+	* storage/poxliff.py: Disable rich string functionality for
+	  poxliff. +TODO note.
+
+2009-07-29 16:04  walter_l
+
+	* storage/placeables/strelem.py: StringElem.delete_range(): Move
+	  premature prune() to a safe place.
+	  This fixes case 4 deletions where there are actually elements
+	  between the start- and end elements.
+
+2009-07-29 16:03  walter_l
+
+	* storage/placeables/test_base.py: Added tests for
+	  StringElem.delete_range().
+
+2009-07-29 16:02  walter_l
+
+	* storage/placeables/test_base.py: Fix tests to reflect current
+	  state of the toolkit.
+
+2009-07-29 15:11  friedelwolff
+
+	* storage/poxliff.py, storage/xliff.py: .getlanguageNodes() could
+	  return results from alt-trans, which is not what we want. This
+	  does the correct thing, might be slightly faster, but needed an
+	  update for poxliff which depended on the old behaviour. Now we
+	  match plurals based on id for extra goodness.
+
+2009-07-29 15:09  friedelwolff
+
+	* convert/test_xliff2po.py: Add an explicit id to the plural group
+	  in the test as it should have. Upcoming code will depend on this.
+
+2009-07-27 12:55  friedelwolff
+
+	* storage/statsdb.py: Close the connection before unlinking the
+	  file. This should fix bug 1068.
+
+2009-07-27 11:13  friedelwolff
+
+	* storage/test_xliff.py, storage/xliff.py: Put the (optional)
+	  source before the target. This fixes bug 1072.
+
+2009-07-24 18:49  dwaynebailey
+
+	* doc/gen_api_docs.sh: - Create a SF shell login before tryong to
+	  rsync
+	  - rsync to the correct directory
+	  - put ssh login alias into a variable
+
+2009-07-24 18:22  dwaynebailey
+
+	* doc/gen_api_docs.sh: Add some links to the epydoc manuals
+
+2009-07-24 18:19  dwaynebailey
+
+	* lang/identify.py: EPYDOC: typo
+
+2009-07-24 18:08  dwaynebailey
+
+	* lang/__init__.py: Add 'factory' module to common language
+	  functionality group
+
+2009-07-24 17:55  dwaynebailey
+
+	* lang/__init__.py: Add poedit and identify modules to common
+	  language functionality group
+
+2009-07-24 17:46  dwaynebailey
+
+	* lang/identify.py: typo
+
+2009-07-24 17:43  dwaynebailey
+
+	* lang/data.py: Better layout for tr_lang comment
+
+2009-07-24 17:29  dwaynebailey
+
+	* storage/placeables/general.py: Use single colon to ensure we have
+	  a list
+
+2009-07-24 17:25  dwaynebailey
+
+	* storage/placeables/general.py: Use single colon to ensure we have
+	  a list
+
+2009-07-24 17:21  dwaynebailey
+
+	* storage/__init__.py: Categorise some new storage modules
+
+2009-07-24 17:11  dwaynebailey
+
+	* convert/__init__.py: Add a number of new converters to the
+	  Monolingual group
+
+2009-07-24 16:41  dwaynebailey
+
+	* storage/xml_extract/generate.py: Epydoc: think this is what we
+	  need.
+
+2009-07-24 16:35  dwaynebailey
+
+	* storage/placeables/general.py: These are URLs not
+	  cross-references
+
+2009-07-24 16:30  dwaynebailey
+
+	* storage/placeables/__init__.py: Make list epydoc compliant
+
+2009-07-24 16:22  dwaynebailey
+
+	* storage/tiki.py: Make the PHP section literal text. Fix the URL
+	  to the TikiWiki source.
+
+2009-07-24 16:07  dwaynebailey
+
+	* storage/base.py: Convert into a proper doctest
+
+2009-07-24 15:50  dwaynebailey
+
+	* tools/pocount.py: Convert into proper epydoc paramater syntax.
+
+2009-07-24 15:09  friedelwolff
+
+	* storage/statsdb.py: Clean up license header, whitespace,
+	  docstring typo
+
+2009-07-24 11:43  friedelwolff
+
+	* storage/richstring: Remove empty directory
+
+2009-07-24 11:40  friedelwolff
+
+	* storage/placeables/xliff.py: Fix minor epydoc syntax error
+
+2009-07-23 18:24  friedelwolff
+
+	* misc/xml_helpers.py, storage/placeables/lisa.py,
+	  storage/placeables/test_lisa.py: Allow a node to still override
+	  with xml:space at the last moment
+
+2009-07-23 18:10  friedelwolff
+
+	* storage/placeables/general.py,
+	  storage/placeables/test_general.py: Accept a word with two
+	  initial capital letters as CamelCase. +Examples, +test
+
+2009-07-23 14:15  walter_l
+
+	* storage/placeables/lisa.py: Use
+	  translate.misc.xml_helpers.normalize_xml_space() in stead of
+	  text_snippet() and tail_snippet().
+
+2009-07-23 14:13  walter_l
+
+	* misc/xml_helpers.py: Added normalize_xml_space(); replaces
+	  text_snippet() and tail_snippet() from
+	  translate.storage.placeables.lisa.
+
+2009-07-22 15:45  arail
+
+	* convert/moz2po.py, convert/po2moz.py: Don't convert HTML/XHTML
+	  files used in Mozilla. (Closes: #1061)
+
+2009-07-22 15:34  friedelwolff
+
+	* lang/de.py: Initial support for German (de). For now this just
+	  disables the simplecaps test.
+
+2009-07-22 15:29  friedelwolff
+
+	* storage/qph.py, storage/tbx.py, storage/tmx.py,
+	  storage/wordfast.py, storage/xliff.py: Align the names of the
+	  file types with those in Virtaal's MIME type registration. This
+	  is a temporary work-around for bug 612.
+
+2009-07-22 15:28  arail
+
+	* convert/po2moz.py: Don't compare int and str. (Closes: #1062)
+
+2009-07-22 15:26  friedelwolff
+
+	* __version__.py: version 1.4.0-rc1
+
+2009-07-22 15:19  friedelwolff
+
+	* misc/xml_helpers.py, storage/placeables/lisa.py,
+	  storage/placeables/test_lisa.py, storage/xliff.py: Support
+	  xml:space correctly for XLIFF placeables. Some sane values are
+	  guessed for the default behaviour. This is the last major
+	  outstanding piece of bug 1017.
+
+2009-07-22 15:05  friedelwolff
+
+	* filters/checks.py, filters/test_checks.py: Correctly remove
+	  variables before accelerators in unchanged(). +Test
+
+2009-07-22 13:59  friedelwolff
+
+	* filters/checks.py, filters/test_checks.py: Check more thoroughly
+	  for unchanged strings. We were not catching multi-word unchanged
+	  strings. This fixes bug 1059, although more thought might be
+	  needed in this area. [Contributed by Rail Aliev]
+
+2009-07-21 16:07  friedelwolff
+
+	* convert/po2php.py: Decode the line before processing. This fixes
+	  bug 1057.
+
+2009-07-21 15:33  alaaosh
+
+	* services/tmserver.py: selector already unquotes urls for us
+
+2009-07-21 14:00  walter_l
+
+	* storage/placeables/strelem.py: StringElem.delete_range(): Don't
+	  delete entire nodes in case 2, but only its children.
+
+2009-07-21 10:38  walter_l
+
+	* storage/placeables/strelem.py: StringElem: Added insert_between()
+	  - Handles insertion of string on string- or placeable boundries.
+
+2009-07-21 10:38  walter_l
+
+	* storage/placeables/base.py: placeables.base.X: Make it not
+	  editable, as it should be
+
+2009-07-21 08:32  friedelwolff
+
+	* storage/xml_extract/misc.py: Clean up copyright header,
+	  whitespace
+
+2009-07-20 01:59  alaaosh
+
+	* services/tmserver.py, storage/tmdb.py: properly quote and unquote
+	  source strings in urls.
+	  
+	  log results when in debug mode.
+	  
+	  this should finally fix #991 however virtaal fails to display
+	  some results despite tmserver returning them.
+
+2009-07-19 23:59  alaaosh
+
+	* search/indexing/PyLuceneIndexer.py: tabs vs spaces cute, real
+	  cute
+
+2009-07-19 02:56  alaaosh
+
+	* services/tmserver.py: add min-similarity max-candidates and
+	  max-length options
+
+2009-07-19 02:55  alaaosh
+
+	* search/indexing/PyLuceneIndexer.py: disable file locking
+	  
+	  assumption is lucene is taking care of locking for us, needs more
+	  testing and verification
+
+2009-07-18 09:46  friedelwolff
+
+	* storage/properties.py: Support multiline comments better
+
+2009-07-18 09:44  friedelwolff
+
+	* storage/properties.py: Pass personality to propunit in all cases.
+	  Bug 1056 [contributed by Rail Aliev]
+
+2009-07-18 09:36  friedelwolff
+
+	* convert/rc2po.py, storage/rc.py: Cleanups to the copyright
+	  header, whitespace, docstrings. No functional change.
+
+2009-07-18 09:33  friedelwolff
+
+	* convert/rc2po.py, storage/rc.py: Support for multiple language
+	  sections in RC files. Bug 1014. [Contributed by Grégory Journé]
+
+2009-07-18 09:23  friedelwolff
+
+	* CREDITS: Credit Rail and Grégory
+
+2009-07-18 09:06  friedelwolff
+
+	* convert/prop2mozfunny.py: Now that properties' comments are
+	  stored without newlines, we have to generate lines for .it files
+	  with newlines attached to comments. This fixes the issue with
+	  .ini files in bug 1053. [Reported by Rail Aliev].
+
+2009-07-17 16:34  friedelwolff
+
+	* filters/spelling.py: Some versions of enchant don't raise
+	  DictNotFoundError as it should, so we rather check some text that
+	  might trigger a general enchant exception
+
+2009-07-17 10:56  walter_l
+
+	* storage/placeables/lisa.py: Save the XML attributes for
+	  placeables created from XML nodes.
+	  This fixes bug 1033.
+
+2009-07-17 10:55  walter_l
+
+	* storage/placeables/base.py, storage/placeables/strelem.py,
+	  storage/placeables/xliff.py: Make all placeables accept arbitrary
+	  keyword arguments. If it reaches StringElem.__inti__(), they will
+	  be assigned to the object as attributes.
+
+2009-07-17 10:54  walter_l
+
+	* storage/poxliff.py: PoXliffUnit: Inherit rich_source and
+	  rich_target from xliff.xliffunit in stead of using
+	  TranslationUnit's.
+
+2009-07-16 20:16  friedelwolff
+
+	* storage/properties.py, storage/test_properties.py: Don't store
+	  newlines for comments, but join with a newline in .getnotes()
+
+2009-07-16 14:43  friedelwolff
+
+	* convert/prop2mozfunny.py: Remove last remnant of
+	  mozfunny2prop.encodepropline()
+
+2009-07-16 14:16  friedelwolff
+
+	* convert/mozfunny2prop.py: Remove calls to encode each propline -
+	  this caused double escaping of newlines in at least .ini files.
+	  This fixes bug 1044.
+
+2009-07-16 14:15  friedelwolff
+
+	* storage/properties.py: Don'e escape controls on comment lines,
+	  they are escaped enough. This fixes a regression since toolkit
+	  1.3. Comment diffs are gone now compared to 1.2
+
+2009-07-16 14:12  friedelwolff
+
+	* storage/poparser.py: Don't try and get too fancy with guessing
+	  escaped quotes on line end. These are considered invalid by
+	  gettext anyway. This fixes bug 960. [With contributions by
+	  Sayamindu Dasgupta]
+
+2009-07-16 10:45  friedelwolff
+
+	* convert/mozfunny2prop.py, convert/prop2mozfunny.py: specify the
+	  mozilla personality for property stores used in the mozfunny
+	  converters. This fixes bug 1025. [Contributed by Rail Aliev]
+
+2009-07-15 12:04  friedelwolff
+
+	* storage/placeables/test_terminology.py: Update to new strelem
+	  layout
+
+2009-07-15 09:19  friedelwolff
+
+	* storage/xliff.py: Initialise the languages in .initbody() after
+	  parsing. This fixes bug 1042.
+
+2009-07-15 09:11  friedelwolff
+
+	* storage/lisa.py: Only set the languages from parameters if we are
+	  initialising from a skeleton
+
+2009-07-15 08:19  friedelwolff
+
+	* storage/base.py: Provide a basic implementation of
+	  getsourcelanguage() and gettargetlanguage(), since users expect
+	  this to be here
+
+2009-07-14 09:22  friedelwolff
+
+	* tools/pocount.py: Update license header, fix some stray tabs,
+	  remove single-line 'if' statements
+
+2009-07-14 08:59  friedelwolff
+
+	* tools/pocount.py: [Contributed by Ivan Masár] Correctly count
+	  incomplete files. See bug 825 for more details.
+
+2009-07-13 16:40  friedelwolff
+
+	* storage/xml_extract/extract.py: Clean up license block,
+	  whitespace
+
+2009-07-13 16:13  friedelwolff
+
+	* storage/xml_extract/extract.py: Don't set the xid attribute on
+	  the unit. This fixes bug 1011, reported by Yves Savourel.
+
+2009-07-13 12:59  walter_l
+
+	* storage/poxliff.py: PoXliffUnit.__eq__(): Removed check that
+	  would result in units without plurals to always be equal to any
+	  other unit.
+
+2009-07-10 12:13  friedelwolff
+
+	* storage/ts2.py: +URL for newer file format
+
+2009-07-10 12:08  friedelwolff
+
+	* convert/po2rc.py: [Contributed by Grégory Journé] Encode string
+	  according to given charset. This fixes bug 864.
+
+2009-07-10 07:24  friedelwolff
+
+	* convert/accesskey.py, convert/test_po2dtd.py: Properly detect XML
+	  entities by reusing the regex from placeables to ensure that we
+	  don't strip the initial & thinking it is an accelerator. +Test.
+	  This fixes bug 1022.
+
+2009-07-07 09:50  walter_l
+
+	* storage/placeables/strelem.py: Define ElementNotFoundError - used
+	  in StringElem.delete_elem().
+
+2009-07-07 09:49  walter_l
+
+	* storage/placeables/strelem.py: StringElem.delete_elem(): Handle
+	  the special case where the current element is the one to delete.
+	  In that case just delete all sub-elements.
+
+2009-07-04 09:11  dwaynebailey
+
+	* README: Add sub2po to README
+
+2009-07-03 16:40  walter_l
+
+	* storage/xliff.py: xliffunit.set_rich_*(): Don't recreate the XML
+	  node every time. XML attributes are now preserved.
+
+2009-07-03 14:59  walter_l
+
+	* tools/podebug.py: podebug.apply_to_translatables(): Use the new
+	  StringElem.map().
+
+2009-07-03 14:58  walter_l
+
+	* storage/placeables/general.py: Add correct value for
+	  "istranslatable" in general placeables classes.
+
+2009-07-03 14:58  walter_l
+
+	* storage/placeables/strelem.py: +StringElem.map(): An easy way to
+	  apply a function to all nodes in the tree (optionally filtered).
+
+2009-07-03 14:57  walter_l
+
+	* storage/placeables/strelem.py: StringElem: Added (optional)
+	  filter functions to methods that collect nodes from the tree.
+
+2009-07-02 16:10  friedelwolff
+
+	* misc/xml_helpers.py, storage/lisa.py: Move xml_helpers out of the
+	  storage module to a separate misc module - they are just general
+	  xml helpers anyway
+
+2009-07-02 11:52  walter_l
+
+	* storage/placeables/base.py: Bx and Ex classes should ignore extra
+	  keyword arguments, like "rid" given in StringElem.copy().
+
+2009-07-02 11:52  walter_l
+
+	* storage/placeables/lisa.py: Added support for converting between
+	  XML and UnknownXML. Tags not yet implemented are now also handled
+	  as UnkownXML placeables.
+
+2009-07-02 11:51  walter_l
+
+	* storage/placeables/strelem.py: StringElem.print_tree(): Added
+	  parameter to make output more verbose (adds repr(self) to the
+	  output).
+
+2009-07-02 11:50  walter_l
+
+	* storage/placeables/test_lisa.py: Added test for UnknownXML
+	  placeable as used in XLIFF.
+
+2009-07-02 11:49  walter_l
+
+	* storage/placeables/xliff.py: Added UnknownXML class: Handles
+	  unknown XML tags in XLIFF documents.
+
+2009-07-02 11:49  walter_l
+
+	* storage/placeables/strelem.py, storage/xliff.py: Added (commented
+	  out) debugging statements.
+
+2009-07-02 08:24  friedelwolff
+
+	* convert/po2rc.py: Clean up license block, whitespace, unused
+	  imports.
+
+2009-07-02 08:13  friedelwolff
+
+	* storage/rc.py: [Reported by Grégory Journé] Use the correct RE in
+	  the menu section. This closes bug 1010.
+
+2009-07-02 08:10  friedelwolff
+
+	* storage/rc.py: Clean up license block, whitespace, docstrings. No
+	  functional change.
+
+2009-06-29 16:26  friedelwolff
+
+	* misc/file_discovery.py: Don't use a list as default parameter -
+	  it will be reused
+
+2009-06-29 14:07  walter_l
+
+	* storage/placeables/strelem.py: StringElem.prune(): Added code to
+	  merge sibling StringElem leaves.
+
+2009-06-25 13:01  friedelwolff
+
+	* storage/poparser.py: Don't use a list as default paramter value,
+	  as it will get reused
+
+2009-06-25 10:46  friedelwolff
+
+	* storage/placeables/parse.py: Only decend into translatable
+	  placeables. Should reconsider later.
+
+2009-06-23 15:58  walter_l
+
+	* storage/placeables/strelem.py: StringElem.insert(): Simplify case
+	  2 to be equivalent to be only case 2.2, ie. always insert _after_
+	  the last element. StringElem.prune() should take care of the
+	  rest.
+
+2009-06-22 13:17  friedelwolff
+
+	* convert/xliff2po.py: Cleanup copyright header and some
+	  docstrings. No functional change.
+
+2009-06-22 13:13  friedelwolff
+
+	* convert/xliff2po.py: Cleaner API use for locations
+
+2009-06-22 13:05  friedelwolff
+
+	* search/match.py: Let each matcher specify the sorting direction
+	  to ensure that all sorting can be correct. This solves the issue
+	  with newer, longer terms added in Virtaal not being recognised
+	  since the shorter ones are matched first.
+
+2009-06-22 12:09  friedelwolff
+
+	* convert/prop2po.py, misc/quote.py, storage/properties.py: Several
+	  small updates relating to encoding, notably for non-ascii latin1
+	  comments in Java .properties. This fixes bug 486.
+
+2009-06-20 19:30  friedelwolff
+
+	* tools/podebug.py: Reflow, reformat and slightly rewrite for
+	  readibility
+
+2009-06-20 09:49  friedelwolff
+
+	* services/tmserver.py: Provide some default bind options to
+	  tmserver
+
+2009-06-19 13:58  friedelwolff
+
+	* __version__.py: Version 1.4.0-beta1
+
+2009-06-19 06:07  friedelwolff
+
+	* convert/prop2po.py, misc/quote.py, storage/properties.py,
+	  storage/test_properties.py: Support the personality in the
+	  properties classes and use that to support java properties
+	  encoded in latin1
+
+2009-06-18 02:04  alaaosh
+
+	* services/tmserver.py: double unquoting was causing problems, no
+	  need for plus unquoting since tmdb now strips away non
+	  alphanumeric charachters anyway
+	  
+	  fixes #991
+
+2009-06-18 02:03  alaaosh
+
+	* storage/tmdb.py: cleanup unitwords before attempting fulltext
+	  indexing
+	  
+	  note that fulltext indexer has it's own set of quoting problems
+	  that dbapi2's automagic escaping won't avoid
+	  
+	  we should look into stop words and normalization one day
+	  
+	  fixes #989
+
+2009-06-17 21:05  dwaynebailey
+
+	* storage/placeables/test_general.py: Add TODO for Placeable test
+	  that are missing
+
+2009-06-17 20:56  dwaynebailey
+
+	* storage/placeables/test_general.py: Add the OptionPlaceable tests
+
+2009-06-17 20:51  dwaynebailey
+
+	* storage/placeables/test_general.py: Add XML Entity Placeable
+	  tests
+
+2009-06-17 20:47  dwaynebailey
+
+	* storage/placeables/test_general.py: Add PunctuationPlaceable
+	  tests
+
+2009-06-17 20:37  dwaynebailey
+
+	* storage/placeables/test_general.py: Add test for SpacesPlaceable
+
+2009-06-17 20:31  dwaynebailey
+
+	* storage/placeables/test_general.py: Add CamelCasePlaceable tests
+
+2009-06-17 20:13  dwaynebailey
+
+	* storage/placeables/test_general.py: Add tests for Qt Formatted
+	  variables.
+
+2009-06-17 20:09  dwaynebailey
+
+	* storage/placeables/test_general.py: Add tests the show different
+	  decimal and group seperators: point, comma and non-breaking space
+
+2009-06-17 20:03  dwaynebailey
+
+	* storage/placeables/test_general.py: Add test for Alt Attr
+	  placeable
+
+2009-06-17 19:56  dwaynebailey
+
+	* storage/placeables/test_general.py: Add test for newline
+
+2009-06-17 19:52  dwaynebailey
+
+	* storage/placeables/general.py,
+	  storage/placeables/test_general.py: Add tests for placeables.
+	  Improve number placeable to allow for a preceding sign +/-
+
+2009-06-17 19:38  friedelwolff
+
+	* storage/test_base.py: Assign some parsers so we can have some
+	  rich structure to test with
+
+2009-06-17 15:15  friedelwolff
+
+	* convert/odf2xliff.py, convert/xliff2odf.py: Since
+	  convertoptionsparser already opens the files for us, it is not
+	  opened in binary, and we get errors on Windows. So let's reopen
+	  it ourselves. This should re-fix bug 816.
+
+2009-06-17 15:11  friedelwolff
+
+	* storage/odf_io.py: No need to open the file in binary mode - the
+	  library will do it for us (as long as the file isn't already
+	  open)
+
+2009-06-17 15:06  friedelwolff
+
+	* storage/lisa.py, storage/xliff.py: Move rich string handling from
+	  lisa to xliff while it is the only format for which we support it
+
+2009-06-17 14:01  friedelwolff
+
+	* storage/poxliff.py: Clean up whitespace and copyright header. No
+	  functional change.
+
+2009-06-17 13:53  friedelwolff
+
+	* storage/lisa.py, storage/test_xliff.py, storage/tmx.py,
+	  storage/xliff.py: An attempt at a more interoperable
+	  implementation of the handling of xml:space, with particular aim
+	  at interoperability with XLIFF files that don't use
+	  xml:space="preserve". This is likely a bit of a performance hit -
+	  need to see how badly we regress on large files.
+
+2009-06-17 12:19  dwaynebailey
+
+	* README: Layout and spelling fixes
+
+2009-06-17 11:07  friedelwolff
+
+	* storage/subtitles.py: Update copyright dates, cleanup whitespace
+	  and unused import. No functional change.
+
+2009-06-17 11:05  friedelwolff
+
+	* misc/multistring.py: Fix DeprecationWarning in Python 2.6 about
+	  'object.__init__() takes no parameters'
+
+2009-06-16 08:45  friedelwolff
+
+	* tools/podebug.py: Don't ignore CapsPlaceable and
+	  CamelCasePlaceable in podebug - we want to translate these as
+	  well
+
+2009-06-16 06:54  dwaynebailey
+
+	* tools/podebug.py, tools/test_podebug.py: Add a bracket podebug
+	  rewrite style. Which will surround strings with [ and ]
+
+2009-06-15 20:51  friedelwolff
+
+	* storage/cpo.py: Rewrite temporary file handling to work on
+	  Windows. We can't use the output of NamedTemporaryFile while it
+	  is still open, otherwise we get an access violation on Windows.
+
+2009-06-15 13:21  friedelwolff
+
+	* storage/lisa.py: First test for a usable type before we do in
+	  detail __eq__ on a unit
+
+2009-06-15 13:20  dwaynebailey
+
+	* CREDITS: Credit Ivan Masár for the pocount improvements
+
+2009-06-15 13:18  dwaynebailey
+
+	* tools/pocount.py: Add patches from bug 825 that adds:
+	  - --short-words, --short-strings (more compact output)
+	  - --incomplete (only count incomplete files)
+
+2009-06-15 13:07  friedelwolff
+
+	* storage/lisa.py: Ensure we initialise ._rich_source and
+	  ._rich_target if we bypass the constructor. This fixes bug 994.
+
+2009-06-15 11:10  dwaynebailey
+
+	* convert/prop2po.py: Default to using Java personality throughout
+	  prop2po
+
+2009-06-15 11:07  dwaynebailey
+
+	* convert/test_prop2po.py: Add --personality commandline options to
+	  the --help test.
+
+2009-06-15 11:02  friedelwolff
+
+	* filters/checks.py: Temporarily disable the startcaps->simplecaps
+	  precondition, since it is causing lots of false positives since
+	  Python 2.6.
+
+2009-06-15 10:57  friedelwolff
+
+	* search/match.py: Finally move to Python 2.4 APIs for more
+	  efficient sorting. This breaks compatibility with Python 2.3, but
+	  gives a nice speedup with later versions.
+
+2009-06-15 10:38  dwaynebailey
+
+	* lang/data.py: Align nso name with ISO639
+
+2009-06-15 10:35  friedelwolff
+
+	* storage/placeables/strelem.py: Work correctly with string
+	  elements that will all be unicode strings. This only affects
+	  debug code.
+
+2009-06-15 10:33  friedelwolff
+
+	* tools/pretranslate.py: Use the defaul gettext migration strategy
+	  if no location comments exist. The Mozilla and OOo matching will
+	  now only happen for units with locations not containing a colon
+	  (:)
+
+2009-06-13 20:46  friedelwolff
+
+	* storage/placeables/parse.py: Don't just prune the last leaf after
+	  the for loop - do it inside for each
+
+2009-06-13 17:07  dwaynebailey
+
+	* convert/moz2po.py, convert/prop2po.py: Add ability to give
+	  prop2po a personality: Java or Mozilla.
+	  Doesn't do much at the moment, just adds the X-Accelerator header
+	  if
+	  called with --personality=mozilla. Adapted moz2po to do the right
+	  thing.
+	  This should allow us to handle Latin1 vs UTF-8 in the future.
+
+2009-06-13 15:44  dwaynebailey
+
+	* storage/placeables/general.py: Implement a format matcher for Qt
+	  variables (should also work for KDE4).
+
+2009-06-13 08:57  friedelwolff
+
+	* tools/podebug.py: Fix typo/thinko
+
+2009-06-12 14:41  friedelwolff
+
+	* storage/properties.py: Use '=' as the default delimiter for
+	  properties files
+
+2009-06-12 14:41  friedelwolff
+
+	* storage/properties.py: Correct calculation of starting position
+	  of significant line content
+
+2009-06-12 14:38  friedelwolff
+
+	* storage/test_properties.py: Test for support for property with
+	  zero-length key
+
+2009-06-12 13:39  friedelwolff
+
+	* misc/quote.py: Escape the slash character when outputting to
+	  properties
+
+2009-06-12 13:29  friedelwolff
+
+	* storage/cpo.py, storage/pypo.py: Fix a minor bug that might have
+	  caused us to not have headers in the output of oo2po and similar
+	  tools
+
+2009-06-12 12:55  friedelwolff
+
+	* convert/test_pot2po.py: Provide a location comment in the
+	  test_migrate_msgidcomment_to_msgctxt() test - which realistically
+	  is what upcoming mozilla translations will need to work with
+	  migrating from msgid comments to msgctxct
+
+2009-06-12 10:50  dwaynebailey
+
+	* storage/placeables/general.py: Better link to the Python string
+	  formatting documentation
+
+2009-06-12 08:33  friedelwolff
+
+	* convert/symb2po.py: -syntax error. -unused imports
+
+2009-06-12 07:31  dwaynebailey
+
+	* storage: Ignore *.class
+
+2009-06-12 07:26  dwaynebailey
+
+	* storage/debug.properties: Add a simple example debug.properties
+	  file
+
+2009-06-12 07:18  dwaynebailey
+
+	* storage/properties.java: Add a Java .properties file testing
+	  program
+
+2009-06-12 06:30  friedelwolff
+
+	* storage/poheader.py, storage/test_poheader.py: Update the test to
+	  be time independent, and make sure we always end a contributor
+	  line with a fullstop.
+
+2009-06-12 06:23  friedelwolff
+
+	* storage/poheader.py, storage/test_poheader.py: Extend the test to
+	  test for correct handling of full stop in a contributor line.
+	  This closes the reopened bug 985.
+
+2009-06-11 21:26  friedelwolff
+
+	* storage/poheader.py, storage/test_poheader.py: Test for updating
+	  copyright comments in the header, and fix a case that wasn't
+	  handled correctly. This fixes bug 985.
+
+2009-06-11 15:09  dwaynebailey
+
+	* storage/pypo.py: Ensure we escape values that we put into msgctxt
+
+2009-06-11 13:40  dwaynebailey
+
+	* storage/properties.py: We shouldn't strip space from the
+	  beginnging of a value since if it got in its significant.
+
+2009-06-11 13:38  dwaynebailey
+
+	* misc/quote.py: Reduce escapes to the ones supported by
+	  .properties files: fnrt
+	  Drop all other backslashes
+
+2009-06-11 13:13  dwaynebailey
+
+	* convert/test_prop2po.py, storage/properties.py,
+	  storage/test_properties.py: Implement proper .properties
+	  whitespace handling. Add fn key_strip
+	  to strip and handle whitespace in the key. Remove strippig
+	  functionality
+	  from 'value'. Adjust tests as needed.
+
+2009-06-11 12:48  dwaynebailey
+
+	* storage/properties.py, storage/test_properties.py: Allow # or !
+	  for comments. Add tests to test for the different types.
+
+2009-06-11 12:32  dwaynebailey
+
+	* storage/properties.py, storage/test_properties.py: Add
+	  is_line_continuation function to do the correct thing with line
+	  continuation characters.
+	  Use the function in the parser.
+
+2009-06-11 12:00  dwaynebailey
+
+	* storage/properties.py, storage/test_properties.py: Use
+	  find_delimeter instead of the simple check for "=" to
+	  seperate key from value. Add test to check the three variants.
+
+2009-06-11 11:53  dwaynebailey
+
+	* storage/properties.py, storage/test_properties.py: Add
+	  find_delimeter function and tests. We can now find the delimeter:
+	  =, : or space in a properties line.
+
+2009-06-11 11:41  friedelwolff
+
+	* storage/placeables/general.py: Reflow some lines for better
+	  readability
+
+2009-06-11 07:33  friedelwolff
+
+	* storage/cpo.py: [port of r11488 to cpo] if the source or the
+	  context change, merging should cause the unit to go fuzzy
+
+2009-06-11 06:54  friedelwolff
+
+	* storage/pypo.py: if the source or the context change, merging
+	  should cause the unit to go fuzzy
+
+2009-06-11 06:52  friedelwolff
+
+	* convert/test_pot2po.py: +some tests to verify correct merging
+	  behaviour with changing contexts, empty msgid with
+	  context/msgidcomments, etc.
+
+2009-06-11 06:48  friedelwolff
+
+	* storage/pypo.py: Test for the presence of any context to
+	  determine of the unit should generate output
+
+2009-06-11 06:43  friedelwolff
+
+	* storage/test_po.py: Test more for correct handling of context
+	  only units
+
+2009-06-10 14:44  friedelwolff
+
+	* storage/cpo.py, storage/pypo.py, storage/test_po.py: Mark
+	  messages with no source but having msgctxt as translatable. +test
+
+2009-06-10 14:41  friedelwolff
+
+	* storage/test_po.py: Use quoting functions from pypo where they
+	  belong. Don't assume multistrings for singular units.
+
+2009-06-10 14:30  friedelwolff
+
+	* tools/podebug.py: Carefully only apply transformation functions
+	  to translatable string elements. Now podebug should be far, far
+	  more useful for debugging things containing XML, variables, etc.
+
+2009-06-10 14:29  friedelwolff
+
+	* tools/test_podebug.py: Test that we leave variables alone in the
+	  unicode transformation
+
+2009-06-10 13:53  friedelwolff
+
+	* convert/test_pot2po.py: We should go fuzzy if context changed in
+	  the pot file. Change tests to reflect that.
+
+2009-06-10 13:34  friedelwolff
+
+	* tools/pretranslate.py: Follow different matching strategies for
+	  different PO files: standard gettext files, vs. files generated
+	  with moz2po and oo2po. This fixes bug 982.
+
+2009-06-10 13:00  alaaosh
+
+	* storage/subtitles.py: use utf-8 whenever you detect ascii
+	  encoding.
+	  
+	  this still doesn't solve the problem of input encoding being
+	  totally different from template encoding when converting.
+
+2009-06-10 12:57  dwaynebailey
+
+	* storage/placeables/general.py: Add Java MessageFormat placeable
+
+2009-06-10 12:33  alaaosh
+
+	* convert/po2sub.py: put source text if no target is found
+	  (untranslated or fuzzy units)
+
+2009-06-10 11:45  friedelwolff
+
+	* convert/test_dtd2po.py, convert/test_prop2po.py: Test
+	  specifically for the presence of msgctxt in the output in the
+	  case of empty source strings
+
+2009-06-10 11:17  friedelwolff
+
+	* convert/po2csv.py: Don't use assume a multistring and .strings
+	  unless we know it is a plural unit
+
+2009-06-10 11:14  friedelwolff
+
+	* convert/test_html2po.py: Don't convert to string without encoding
+	  - doesn't work for non-ascii anyway
+
+2009-06-10 11:10  friedelwolff
+
+	* storage/cpo.py: [port r11457 to cpo] Get rid of 'msgid_comment',
+	  'msgid_comment_all' and 'keep' merging styles for removing
+	  duplicates.
+
+2009-06-10 10:51  friedelwolff
+
+	* storage/pypo.py: Get rid of 'msgid_comment', 'msgid_comment_all'
+	  and 'keep' merging styles for removing duplicates. Call me
+	  'Killer'.
+
+2009-06-10 10:46  friedelwolff
+
+	* storage/test_pypo.py: Remove tests for 'msgid_comment' and 'keep'
+	  merge styles
+
+2009-06-10 09:33  friedelwolff
+
+	* storage/placeables/test_lisa.py: Make all literals unicode
+	  strings - this way the API doesn't need to accept them silently
+	  and hide errors
+
+2009-06-10 09:26  dwaynebailey
+
+	* storage/properties.py: Add link to Java MessageFormat
+	  documentation
+
+2009-06-10 09:19  dwaynebailey
+
+	* storage/properties.py: Fix ref to external documentation
+
+2009-06-09 15:30  walter_l
+
+	* storage/placeables/strelem.py: StringElem.delete_range(): Case 3
+	  didn't work as expected for simple strings (no placeables).
+
+2009-06-09 15:29  walter_l
+
+	* storage/placeables/strelem.py: StringElem.delete_range(): More
+	  descriptive comments
+
+2009-06-09 13:04  alaaosh
+
+	* storage/subtitles.py: encoding conversion doesn't work properly,
+	  disable for now.
+
+2009-06-09 13:03  alaaosh
+
+	* storage/subtitles.py: don't use spaces when converting timestamps
+	  to locations
+
+2009-06-09 12:55  walter_l
+
+	* storage/placeables/strelem.py: StringElem.__init__(): Don't
+	  accept str children, only unicode.
+
+2009-06-09 12:53  walter_l
+
+	* storage/placeables/strelem.py: StringElem.delete_range(): Provide
+	  index information on IndexErrors.
+
+2009-06-08 16:28  friedelwolff
+
+	* convert/test_xliff2po.py: Adapt tests to the fact that we handle
+	  xml:preserve correctly, and test for both 'preserve' and the
+	  default
+
+2009-06-08 16:21  friedelwolff
+
+	* convert/test_convert.py: Only do psyco handling in the test if it
+	  is installed
+
+2009-06-08 15:57  friedelwolff
+
+	* storage/cpo.py: Don't handle fuzzy as a typecomment -
+	  libgettextpo doesn't, so we need to handle fuzzy as a separate
+	  attribute. Let's break out early while searching for a type
+	  comment as a cheap shot at optimisation.
+
+2009-06-08 15:36  friedelwolff
+
+	* storage/base.py: Rather use .istranslatable() in store.isempty()
+	  since it is really what we mean. This will allow formats to
+	  override this in a more meaninful way.
+
+2009-06-08 15:34  friedelwolff
+
+	* storage/base.py: multistring_to_rich() should not be a
+	  classmethod - this way we can set parsers for each instance as we
+	  need
+
+2009-06-08 15:22  friedelwolff
+
+	* storage/test_xliff.py: Only use unicode literals for strings - we
+	  don't want the api to accept the rest anyway
+
+2009-06-08 14:30  friedelwolff
+
+	* search/test_match.py: Adapt test to take into account that we
+	  work with lower case strings in matching, and therfore also in
+	  the resulting source we get back
+
+2009-06-08 14:26  friedelwolff
+
+	* search/test_match.py, search/test_terminology.py: Move
+	  terminology changes to test_match, since the code they are
+	  testing moved there. Rewrite to reflect the change.
+
+2009-06-08 14:17  friedelwolff
+
+	* search/match.py: Sort by length before appending alternate forms.
+	  This way the alternate forms will always have lower priority
+
+2009-06-08 14:15  friedelwolff
+
+	* search/match.py: Ensure that at least one space or hyphen exists
+	  before substituting
+
+2009-06-08 13:21  friedelwolff
+
+	* tools/podebug.py: Handle all literals as unicode strings
+
+2009-06-08 13:13  friedelwolff
+
+	* tools/podebug.py: Rather use unit.istranslatable() than trying to
+	  guess what is needed
+
+2009-06-08 13:11  friedelwolff
+
+	* tools/podebug.py: Generate rich strings for formats that don't
+	  support them, and use that to avoid changing XML, variables, etc.
+
+2009-06-08 12:39  friedelwolff
+
+	* tools/test_podebug.py: only use unicodes in testing - we don't
+	  want to support working with str
+
+2009-06-08 11:17  friedelwolff
+
+	* storage/placeables/strelem.py: Prune the element after creation
+	  to ensure it is in the correct presentation. This should simplify
+	  tests a bit.
+
+2009-06-08 11:10  friedelwolff
+
+	* storage/xliff.py: set xml:space properly for new units we create
+	  as well as alttrans units
+
+2009-06-08 11:02  friedelwolff
+
+	* storage/pocommon.py: Search for the end of msgid comments in a
+	  non-greedy way
+
+2009-06-08 11:02  friedelwolff
+
+	* storage/test_base.py: Remove unused import
+
+2009-06-08 10:42  friedelwolff
+
+	* storage/test_base.py: We don't want parsing to work for
+	  non-unicode strings, so let's not test for it
+
+2009-06-08 07:56  friedelwolff
+
+	* storage/tmx.py: Clean up whitespace and license header. No
+	  functional change
+
+2009-06-08 07:47  friedelwolff
+
+	* storage/lisa.py: Correctly handle xml:space attributes, whereever
+	  they might have been specified up in the xml tree. This might be
+	  a bit of a performance hit, but this gives us long awaited
+	  correct handling of whitespace in XLIFF, etc.
+
+2009-06-08 07:45  friedelwolff
+
+	* storage/test_xliff.py: Test for the correct handling of xml:space
+	  attributes
+
+2009-06-08 07:21  friedelwolff
+
+	* storage/xliff.py: Clean up whitespace and license header. No
+	  functional change
+
+2009-06-08 07:15  friedelwolff
+
+	* storage/pypo.py: Clean up whitespace and license header. No
+	  functional change
+
+2009-06-08 07:09  friedelwolff
+
+	* storage/cpo.py: Impliment a first version of buildfromunit() that
+	  can actually usefully instantiate itself from a another pounit
+
+2009-06-08 07:07  friedelwolff
+
+	* storage/cpo.py: Always decode the strings obtained from
+	  libgettextpo instead of relying on autoencode through
+	  multistring. Minor optimisations by using unicodes where
+	  multistrings are not necessary
+
+2009-06-08 07:02  friedelwolff
+
+	* storage/cpo.py: Use pocommon.extract_msgid_comment() instead of
+	  custom code
+
+2009-06-08 07:00  friedelwolff
+
+	* storage/cpo.py: Use setmsgidcomment() as a setter for the
+	  msgidcomment property
+
+2009-06-08 06:58  friedelwolff
+
+	* storage/cpo.py: Impliment settypecomment() and give proper
+	  argtypes for +gpo.po_message_is_format()
+
+2009-06-08 06:54  friedelwolff
+
+	* storage/pocommon.py: Provide a central method for extracting
+	  msgid comments
+
+2009-06-08 06:50  friedelwolff
+
+	* storage/placeables/general.py: Mark some placeable types as
+	  untranslatable for when we want to use this information
+
+2009-06-05 15:47  walter_l
+
+	* storage/placeables/strelem.py: StringElem.insert(): Prune the
+	  element in which the insert happened.
+
+2009-06-05 14:06  friedelwolff
+
+	* services/tmserver.py: Typo in docstring
+
+2009-06-03 15:45  friedelwolff
+
+	* storage/placeables/general.py: Better regular expression for
+	  UrlPlaceable. Now we support full URLs with trailing paths.
+
+2009-06-03 14:49  dwaynebailey
+
+	* storage/placeables/general.py: Fix docstring
+
+2009-06-03 12:30  friedelwolff
+
+	* storage/placeables/general.py: Placeable for fancy spaces -
+	  currently unused
+
+2009-06-03 12:07  friedelwolff
+
+	* search/match.py, search/terminology.py: Rewrite the terminology
+	  matcher to do more processing during initialisation to speed up
+	  matching, especially in the face of alternatives. More todo in
+	  this area.
+
+2009-06-03 10:02  friedelwolff
+
+	* services/tmserver.py: Only use logging on level WARNING by
+	  default, this way normal operation shouldn't give much output
+
+2009-06-03 10:00  friedelwolff
+
+	* services/tmserver.py: Cosmetic changes: docstrings, wrapping,
+	  spacing, unused import
+
+2009-06-03 04:36  dwaynebailey
+
+	* convert/po2symb.py, convert/symb2po.py, tools/build_tmdb.py:
+	  s/Virtaal/Translate Toolkit/
+
+2009-06-03 04:32  dwaynebailey
+
+	* storage/php.py: s/Virtaal/Translate Toolkit/
+
+2009-06-02 21:41  friedelwolff
+
+	* storage/php.py: Cosmetic changes to comments, docstrings. Update
+	  copyright header. No functional change.
+
+2009-06-02 21:39  friedelwolff
+
+	* convert/po2php.py, convert/test_po2php.py: A broken testcase and
+	  a fix
+
+2009-06-02 16:29  dwaynebailey
+
+	* storage/placeables/general.py: Add nbsp as a delimter
+
+2009-06-02 16:28  dwaynebailey
+
+	* storage/placeables/general.py: Allow multiple groups not just
+	  decimal seperator
+
+2009-06-01 16:06  walter_l
+
+	* storage/placeables/strelem.py: Small cosmetic (comment) change.
+
+2009-06-01 16:05  walter_l
+
+	* storage/placeables/strelem.py: StringElem.delete_range(): Delete
+	  the whole start- or end element if necessary.
+
+2009-06-01 16:03  walter_l
+
+	* storage/placeables/strelem.py: StringElem.delete_range(): Remove
+	  unused delete_nodes list.
+
+2009-06-01 16:02  walter_l
+
+	* storage/placeables/strelem.py: StringElem.delete_range(): (Case
+	  4) Find the indexes of the start and end nodes by identity and
+	  not value (ie. don't use list.index).
+
+2009-06-01 16:01  walter_l
+
+	* storage/placeables/strelem.py: StringElem.delete_elem(): Remove
+	  the element based on identity and not (equal) value.
+
+2009-06-01 15:51  friedelwolff
+
+	* search/match.py: Never use units with single character source
+	  strings for TM. This handles the issue where we were getting
+	  '100% matches' for disassociated accesskeys in Mozilla
+	  translations in new units when using a compendium.
+
+2009-06-01 15:45  friedelwolff
+
+	* search/terminology.py: Minor optimisation of existing terminology
+	  matching algorythm
+
+2009-05-28 05:55  dwaynebailey
+
+	* storage/placeables/general.py: Add a FIXME for the punctuation
+	  placeable.
+
+2009-05-28 05:53  dwaynebailey
+
+	* storage/placeables/general.py: Use \B to ensure that we have
+	  space before the dashes. Prevents word--word from being selected.
+
+2009-05-28 05:04  dwaynebailey
+
+	* storage/placeables/general.py: Add an Options placeable for
+	  --help, -h, -I
+
+2009-05-27 16:25  walter_l
+
+	* storage/placeables/strelem.py: StringElem.insert(): Return True
+	  if the insert was completed successfully, False otherwise.
+
+2009-05-27 16:24  walter_l
+
+	* storage/placeables/strelem.py: StringElem.insert(): Added
+	  (commented out) debugging messages.
+
+2009-05-27 16:24  walter_l
+
+	* storage/placeables/strelem.py: StringElem.prune(): Collapse
+	  leaves' children into a single string.
+
+2009-05-27 16:23  walter_l
+
+	* storage/placeables/strelem.py: StringElem.prune(): Convert stray
+	  unicode or str nodes in the tree to StringElem leaves.
+
+2009-05-27 16:22  walter_l
+
+	* storage/placeables/strelem.py: StringElem.delete_range():
+	  list.remove() finds the element to remove via __eq__. This means
+	  that if two placeables that look the same are present, the first
+	  one will always be removed before the second.
+
+2009-05-27 14:12  dwaynebailey
+
+	* filters/autocorrect.py: Fix terminology msgid->source
+	  msgstr->target
+
+2009-05-27 13:57  dwaynebailey
+
+	* filters/autocorrect.py: Update header. Add more detailed
+	  docstrings
+
+2009-05-27 13:52  dwaynebailey
+
+	* filters/autocorrect.py: Allow ellipses to be corrected in either
+	  direction i.e. to follow the pattern of the source text.
+
+2009-05-26 15:12  friedelwolff
+
+	* storage/placeables/general.py: New regular expression for
+	  CamelCase placeable that doesn't match all uppercase strings
+
+2009-05-26 10:36  walter_l
+
+	* storage/placeables/strelem.py: StringElem.insert(): Improvements
+	  to avoid inserting unnecessary new leaves.
+
+2009-05-26 10:09  walter_l
+
+	* storage/placeables/strelem.py: StringElem.translate(): Return a
+	  copy of the current tree by default.
+
+2009-05-26 10:08  walter_l
+
+	* storage/placeables/strelem.py: StringElem.insert(): Use a
+	  StringElem in stead of a normal string.
+
+2009-05-26 10:07  walter_l
+
+	* storage/placeables/general.py: + NewlinePlaceable
+
+2009-05-25 10:38  friedelwolff
+
+	* filters/test_checks.py: Test for an accelerated hyphen (-) as
+	  spotted in Firefox
+
+2009-05-25 10:36  friedelwolff
+
+	* filters/decoration.py: Allow hyphen (-) and question mark (?) as
+	  accelerators, since it does actually occur in the wild
+
+2009-05-25 10:33  friedelwolff
+
+	* lang/test_common.py: Further test for sentece segmentation
+
+2009-05-25 10:31  friedelwolff
+
+	* storage/placeables/general.py: Move the number placeable to the
+	  lowest priority. This ensures that a term such as 'MP3' is
+	  matched as a caps placeable. This should also avoid matching
+	  numbers inside URLs, e-mail addresses, format specifiers, etc.
+
+2009-05-25 10:29  friedelwolff
+
+	* storage/placeables/general.py: Escape the '-' in the regular
+	  expression. We now correctly match a term such as 'D-BUS' as a
+	  caps placeable
+
+2009-05-25 10:24  friedelwolff
+
+	* storage/placeables/terminology.py: Remove duplicate translations
+	  for terminology placeable
+
+2009-05-25 10:22  friedelwolff
+
+	* storage/placeables/terminology.py: Find all terminology matches
+	  for the current placeable by comparing positions and lengths,
+	  since term_string could look different to m.source due to case
+	  changes, hyphenation, or other morphological changes
+
+2009-05-25 10:14  friedelwolff
+
+	* storage/lisa.py: Some helper methods that we might need in
+	  future, license updates, typo, TODO, etc. No functional change.
+
+2009-05-22 09:17  walter_l
+
+	* storage/placeables/strelem.py: StringElem: Added remove_type()
+	  method. It replaces elements of the given types with StringElem
+	  nodes.
+
+2009-05-22 09:16  walter_l
+
+	* storage/placeables/strelem.py: Documented return value.
+
+2009-05-22 09:15  walter_l
+
+	* storage/placeables/strelem.py: StringElem.delete_range(): Fixed
+	  returns.
+
+2009-05-21 13:36  dwaynebailey
+
+	* storage/placeables/general.py: Add some other exotic characters
+	  found in the Translate.org.za corpus of translations. Including
+	  em dash, en dash and those three dots whose name I always forget
+
+2009-05-20 14:40  friedelwolff
+
+	* storage/placeables/general.py: Only recognise unusual punctuation
+	  marks as placeables
+
+2009-05-20 14:37  friedelwolff
+
+	* storage/placeables/general.py: Hopefully more accurate CamelCase
+	  placeable
+
+2009-05-20 14:24  walter_l
+
+	* storage/placeables/strelem.py: StringElem.prune(): Added
+	  optimisation: "# Symbolically: StringElem->StringElem2->(leaves)
+	  => StringElem->(leaves)"
+
+2009-05-20 14:23  walter_l
+
+	* storage/placeables/strelem.py: StringElem.prune(): Also remove
+	  empty strings (as apposed to StringElems only).
+
+2009-05-20 14:21  walter_l
+
+	* storage/placeables/strelem.py: StringElem.delete_range(): In
+	  stead of returning the deleted sub-string, return a StringElem
+	  including the parent that contained it (None for root).
+
+2009-05-19 11:22  alaaosh
+
+	* storage/base.py: add useful methods for interacting with source
+	  index
+
+2009-05-19 08:31  dwaynebailey
+
+	* storage/placeables/general.py: Remove misplaced dash (-) in regex
+
+2009-05-18 17:08  walter_l
+
+	* storage/placeables/strelem.py: StringElem.delete_range(): Added
+	  nice (commented out) debugging output: "foo[bar]baz" if "bar" is
+	  to be deleted from "foobarbaz".
+
+2009-05-18 17:07  walter_l
+
+	* storage/placeables/parse.py: The important parse() function no
+	  longer accepts plain strings as arguments.
+
+2009-05-18 13:57  dwaynebailey
+
+	* storage/placeables/general.py: Remove TODO - we are now checking
+	  better for TLDs
+
+2009-05-18 13:16  dwaynebailey
+
+	* storage/placeables/general.py: Improvement to the email
+	  detection. Has some intellegence to ensure that emails have a TLD
+	  of some sort.
+
+2009-05-18 12:00  friedelwolff
+
+	* storage/poheader.py: Partially revert r11124 - we need the header
+	  at the start of .units. More work needed here.
+
+2009-05-18 11:46  walter_l
+
+	* storage/placeables/general.py: Fix spacing as per PEP8.
+
+2009-05-18 10:15  friedelwolff
+
+	* README: Partially revert r11129 - we do still depend on iniparse
+
+2009-05-18 09:26  friedelwolff
+
+	* storage/placeables/general.py: Also handle numeric entities, and
+	  ensure that we look for XML entities before numbers.
+
+2009-05-18 08:48  friedelwolff
+
+	* storage/placeables/general.py: Regex for XML entity is already
+	  non-greedy. Instead of allowing all non-space characters in the
+	  name (\S) we should match a much smaller set - valid SGML names.
+
+2009-05-18 07:44  friedelwolff
+
+	* storage/placeables/general.py: Rewrite FilePaceable regex as a
+	  raw string, and demand at least three characters in filename.
+	  +Some notes.
+
+2009-05-18 07:39  friedelwolff
+
+	* storage/placeables/general.py: Important TODOs with existing
+	  regular expressions. We need to have this perfect :-)
+
+2009-05-18 07:33  friedelwolff
+
+	* storage/placeables/general.py: +CamelCasePlaceble
+
+2009-05-18 07:31  friedelwolff
+
+	* storage/placeables/general.py: +CapsPlaceable
+
+2009-05-18 07:27  friedelwolff
+
+	* filters/checks.py, filters/test_checks.py: Translate the
+	  punctuation before checking endwhitespace. This gives opportunity
+	  to remove trailing spaces in languages using fullwidth
+	  punctuation without extra spacing. Test with Chinese example.
+
+2009-05-18 07:23  friedelwolff
+
+	* README: Remove the obsolete note of requiring iniparse. Other
+	  minor typos.
+
+2009-05-18 07:21  friedelwolff
+
+	* lang/data.py: Fix typos for Piemontese and Pashto: nplurals 1->2
+
+2009-05-18 07:20  friedelwolff
+
+	* lang/common.py, lang/test_zh.py: Fix a bug where a single
+	  character string like '.' will be transformed (for example in
+	  Chinese), and we want to test for the second last character. Add
+	  a test for this case in Chinese.
+
+2009-05-18 07:14  friedelwolff
+
+	* storage/statsdb.py: Be extra careful with the rollback to see if
+	  we even have a connection. This hopefully fixes bug 832.
+
+2009-05-18 07:12  friedelwolff
+
+	* storage/ini.py: Fix license block, whitespace, copyright dates
+
+2009-05-18 07:07  friedelwolff
+
+	* storage/poheader.py: Fix .updateheader() to use .addunit().
+	  Should now work for POXLIFF.
+
+2009-05-18 07:04  friedelwolff
+
+	* tools/test_podebug.py: Basic test for flipped rewrite style
+
+2009-05-18 06:49  friedelwolff
+
+	* tools/podebug.py: New rewrite style: flipped
+
+2009-05-16 21:29  friedelwolff
+
+	* filters/checks.py: Limit the number of spelling suggestions to 5
+	  in the case where something like aspell gives back 20
+
+2009-05-16 21:20  friedelwolff
+
+	* filters/checks.py: Don't strip accelerators and variables when
+	  checking whitespace
+
+2009-05-16 21:19  friedelwolff
+
+	* filters/checks.py: Also check fancy (curly) quotation marks in
+	  the doublequoting check
+
+2009-05-16 12:42  friedelwolff
+
+	* storage/placeables/parse.py: If a leaf is not editable, don't
+	  bother to look for further placeables inside
+
+2009-05-16 12:41  friedelwolff
+
+	* storage/placeables/parse.py: only force the leaf to unicode once,
+	  in case it is expensive
+
+2009-05-16 12:29  friedelwolff
+
+	* storage/placeables/strelem.py: typo in docstring
+
+2009-05-16 11:02  friedelwolff
+
+	* lang/data.py: +Piemontese (pms)
+
+2009-05-16 05:47  dwaynebailey
+
+	* convert/odfxml: Catch a corner case of files with spaces that
+	  aren't escaped.
+
+2009-05-15 08:51  walter_l
+
+	* storage/placeables/general.py: Doh! Don't match empty strings as
+	  numbers.
+
+2009-05-15 08:50  walter_l
+
+	* storage/base.py: Use an empty list as the default list of
+	  placeables parsers to use in TranslateUnit.
+
+2009-05-14 15:19  friedelwolff
+
+	* convert/pot2po.py: Call _prepare_merge before we instantiate the
+	  fuzzy matchers - otherwise resurrecting obsolete entries has no
+	  effect. This (with previous commits) fixes bug 928.
+
+2009-05-14 15:18  friedelwolff
+
+	* tools/pretranslate.py: Don't match on 100% if location comments
+	  differ - the matchers will do that. We'll need to work out when
+	  to use locations and when to use the gettext IDs. (part of fixing
+	  bug 928)
+
+2009-05-14 15:15  friedelwolff
+
+	* convert/test_pot2po.py: Test units with small source strings are
+	  not incorrectly populated by means of fuzzy matching
+
+2009-05-14 13:36  friedelwolff
+
+	* convert/pot2po.py: Clean up docstrings, typos, whitespace
+
+2009-05-14 13:24  friedelwolff
+
+	* tools/pretranslate.py: Clean up docstrings, typos, whitespace
+
+2009-05-14 13:22  friedelwolff
+
+	* tools/pretranslate.py: Clean up docstrings, typos, whitespace
+
+2009-05-14 12:29  walter_l
+
+	* storage/placeables/general.py: + NumberPlaceable,
+	  PythonFormattingPlaceable: Thanks, Dwayne. :)
+
+2009-05-14 02:19  alaaosh
+
+	* tools/pretranslate.py: oops still unfamiliar with api, I blame
+	  home affairs.
+	  
+	  istranslated returns False for fuzzies, is gettargetlen() to test
+	  for existence of target instead
+
+2009-05-14 01:49  alaaosh
+
+	* tools/pretranslate.py: replace test for target length, with
+	  unit.istranslated
+	  
+	  code written before I got familiar with API
+
+2009-05-14 01:48  alaaosh
+
+	* storage/statsdb.py: add ability to pass store as callback in
+	  statsdb. callback returns a TranslationStore.
+	  
+	  in pootle this allows Store stats to be accessed without
+	  unnecessary parsing file,
+	  at the same time if statsdb needs to parse the file it is still
+	  stored in pootle's storecache
+
+2009-05-13 19:03  dwaynebailey
+
+	* lang/identify.py: Language identification module that uses
+	  libtextcat
+
+2009-05-11 13:51  friedelwolff
+
+	* tools/pomerge.py: Mention default value for --mergeblanks and
+	  --mergecomments. Part of addressing bug 953.
+
+2009-05-08 16:19  alaaosh
+
+	* storage/versioncontrol/__init__.py: RCS detection b0rked for
+	  dirs.
+	  search for metadir as sibling when testing files and as child
+	  when testing directories
+
+2009-05-07 21:39  dwaynebailey
+
+	* convert/accesskey.py: Minor cleanups in docstrings
+
+2009-05-07 15:15  friedelwolff
+
+	* convert/po2dtd.py: Update comment to reflect newest changes
+
+2009-05-07 14:02  friedelwolff
+
+	* convert/po2dtd.py, convert/test_po2dtd.py: Only change the case
+	  of the accesskey if the translation is unchanged from the source
+	  text, otherwise keep it exactly as we obtain it from the
+	  translation. This fixes some rare cases where generated
+	  accesskeys might have shifted between upper/lower case variants
+	  during po2dtd.
+
+2009-05-07 10:38  friedelwolff
+
+	* convert/test_po2dtd.py: Add TODO note to test_accesskeycase
+
+2009-05-07 10:33  friedelwolff
+
+	* convert/test_po2html.py: Mask out unimportant tests that are
+	  unlikely to get any attention soon
+
+2009-05-07 10:03  friedelwolff
+
+	* storage/pypo.py: Mark .changeencoding() as deprecated. No users
+	  left.
+
+2009-05-07 09:58  friedelwolff
+
+	* convert/symb2po.py: Remove last call in the toolkit to
+	  postore.changeencoding(). We probably want something in poheader
+	  to rather do this, or alter the behaviour of .updateheader().
+
+2009-05-07 09:45  friedelwolff
+
+	* storage/poheader.py: White space cleanup, line lengths,
+	  docstrings, copyright notice. No code change.
+
+2009-05-07 08:58  alaaosh
+
+	* storage/base.py: after all this time turns out I didn't
+	  understand how plurals work.
+	  added check for hasplural before looping over strings.
+	  I still think all units should have a strings list though :-(
+
+2009-05-07 08:37  friedelwolff
+
+	* filters/test_checks.py: White space cleanup
+
+2009-05-07 08:22  friedelwolff
+
+	* filters/pofilter.py: If the user asks for a header, take over the
+	  one from the original file (probably not cpo safe). This fixes
+	  the second part of bug 950
+
+2009-05-05 14:09  walter_l
+
+	* storage/placeables/general.py: Removed superfluous comma that
+	  caused very bad things to happen. My cat is dead. :(
+
+2009-05-05 14:07  walter_l
+
+	* storage/placeables/general.py: Removed commented out class
+	  TerminologyPlaceable, because it lives in terminology.py.
+
+2009-05-05 12:58  walter_l
+
+	* storage/placeables/general.py: + UrlPlaceable
+	  + FilePlaceable
+	  + EmailPlaceable
+	  Written by Dwayne.
+
+2009-04-30 16:04  walter_l
+
+	* storage/placeables/strelem.py: StringElem.delete_range():
+	  Apparently case 1 is sometimes disguised as case 2.
+	  (Case 1 and 2 is explained in a comment above the patched area of
+	  the file.)
+
+2009-04-30 16:03  walter_l
+
+	* storage/placeables/strelem.py: StringElem.elem_offset(): First
+	  finish looking for the same instance (parameter) element, before
+	  searching for its string-equivalent.
+
+2009-04-30 13:29  friedelwolff
+
+	* storage/statsdb.py: Update copyright date. Whitespace cleanup.
+
+2009-04-30 13:10  walter_l
+
+	* storage/placeables/parse.py: Ensure that, if the same parsing
+	  function occurs multiple times, a parsed placeable is not parsed
+	  again, creating an identical sub-node.
+
+2009-04-30 13:09  walter_l
+
+	* storage/placeables/strelem.py: Added another case in
+	  StringElem.delete_range(): Deleting the entire current string
+	  (self).
+
+2009-04-30 02:01  alaaosh
+
+	* storage/statsdb.py: use get_config_id instead of
+	  _getstoredcheckerconfig just in case a different checker is
+	  required for recaching unit stats
+
+2009-04-30 01:57  alaaosh
+
+	* storage/base.py, storage/xliff.py: add suggestions_in_format
+	  property
+
+2009-04-30 01:53  alaaosh
+
+	* storage/base.py: don't access self.filename directly sometimes it
+	  doesn't exist
+
+2009-04-30 01:50  alaaosh
+
+	* storage/base.py: makeindex now keeps track of multiple units with
+	  the same source
+	  sourceindex is a mapping of source strings and lists now
+	  findunit returns the first unit from the list, use findunits if
+	  you want the whole list
+
+2009-04-30 01:48  alaaosh
+
+	* tools/pomerge.py: use findunit instead of directly accessing
+	  sourceindex
+
+2009-04-30 01:28  alaaosh
+
+	* storage/statsdb.py: split unit state stats is a separate function
+	  filestatestats
+
+2009-04-30 01:26  alaaosh
+
+	* storage/base.py: make most translation stores serializable
+	  (libxml based stores are not)
+
+2009-04-29 15:55  walter_l
+
+	* storage/placeables/strelem.py: If we couldn't find an ancestor to
+	  insert the text into, use self.
+
+2009-04-29 15:54  walter_l
+
+	* storage/pypo.py: Make sure that pypo also invalidates cached
+	  self._rich_target in settarget().
+
+2009-04-29 15:20  walter_l
+
+	* storage/placeables/strelem.py: Handle the special case where the
+	  element to delete is self (the root).
+
+2009-04-29 15:20  walter_l
+
+	* storage/placeables/strelem.py: Make StringElem.delete_range()
+	  return the deleted string.
+
+2009-04-29 14:28  walter_l
+
+	* storage/placeables/strelem.py: Have StringElem.prune() also
+	  delete empty elements.
+
+2009-04-29 14:27  walter_l
+
+	* storage/placeables/strelem.py: Use iter_depth_first() in stead of
+	  depth_first() where possible.
+
+2009-04-29 14:26  walter_l
+
+	* storage/placeables/strelem.py: Make StringElem.iter_depth_first()
+	  actually act like an iterator.
+
+2009-04-29 14:25  walter_l
+
+	* storage/placeables/strelem.py: + StringElem.delete_range() -
+	  Delete elements and/or sub-strings in the tree between given
+	  indices.
+	  + StringElem.delete_elem() - Used by delete_range()
+	  + StringElem.get_index_data() - Used by delete_range()
+
+2009-04-28 16:31  walter_l
+
+	* storage/placeables/test_base.py: + TestStringElem.test_insert() -
+	  Basic tests for StringElem.insert().
+
+2009-04-28 16:30  walter_l
+
+	* storage/placeables/strelem.py: + StringElem.insert(offset, text)
+	  - Insert the given text (unicode or StringElem - str if you
+	  *have* to) into the tree.
+	  The method tries to select the best possible node to insert the
+	  text at.
+
+2009-04-28 16:29  walter_l
+
+	* storage/placeables/strelem.py: +
+	  StringElem.get_ancestor_where(elem, f) - Find an ancestor of elem
+	  for which f(ancestor) returns True.
+
+2009-04-24 16:05  walter_l
+
+	* storage/placeables/lisa.py, storage/placeables/parse.py,
+	  storage/placeables/strelem.py, storage/placeables/test_lisa.py:
+	  To make a long story short: Leaves in StringElem trees have gone
+	  back to being defined
+	  as "a StringElem (not sub-class) node containing only str or
+	  unicode children". It caused
+	  a lot of breakage in other code that needed to be fixed.
+
+2009-04-24 16:04  walter_l
+
+	* storage/placeables/strelem.py: + StringElem.prune(): Remove
+	  unnecessary nodes from the tree.
+
+2009-04-24 16:03  walter_l
+
+	* storage/placeables/general.py, storage/placeables/strelem.py,
+	  storage/placeables/terminology.py,
+	  storage/placeables/test_base.py, storage/placeables/test_lisa.py,
+	  tools/podebug.py: StringElem's first argument containing the new
+	  node's children need not be a list anymore; it is automatically
+	  put in a list if necessary.
+	  A lot of other code was also updated to reflect this change and
+	  make the code a bit cleaner as a result.
+
+2009-04-23 13:16  walter_l
+
+	* storage/placeables/lisa.py: Handle non-existent DOM nodes (like
+	  when there is no <target> tag in a XLIFF file).
+
+2009-04-23 10:58  walter_l
+
+	* storage/placeables/parse.py: Improve the main placeables parsing
+	  function to support normal strings (str and unicode) as leaves.
+
+2009-04-23 08:45  friedelwolff
+
+	* lang/data.py: Plural information for Neapolitan (nap)
+
+2009-04-21 08:22  walter_l
+
+	* storage/placeables/strelem.py: Make StringElem.depth_first()
+	  include leaves of type str or unicode.
+
+2009-04-21 08:21  walter_l
+
+	* storage/placeables/strelem.py: Reimplemented
+	  StringElem.elem_offset() to take str or unicode leaves into
+	  account.
+
+2009-04-15 16:03  dwaynebailey
+
+	* filters/checks.py: Fix docstring
+
+2009-04-15 15:35  walter_l
+
+	* storage/placeables/strelem.py: Updated StringElem.copy()'s
+	  doc-string.
+
+2009-04-15 15:34  walter_l
+
+	* storage/placeables/strelem.py: Use StringElem.isleaf() in
+	  StringElem.flatten() to determine if children should be added to
+	  the flattened list.
+
+2009-04-15 13:56  friedelwolff
+
+	* filters/checks.py: Add a 'credits' check for the Mozilla checker
+
+2009-04-09 15:50  walter_l
+
+	* storage/placeables/strelem.py: + StringElem.renderer - An
+	  optional, external function to create the Unicode representation
+	  of a node/tree.
+
+2009-04-09 15:49  walter_l
+
+	* storage/placeables/xliff.py: Removed the __unicode__ method from
+	  XLIFF placeables, because the XML representations should be done
+	  by the stores, not StringElem tree.
+
+2009-04-09 14:40  alaaosh
+
+	* search/indexing/XapianIndexer.py: under mod_wsgi check for apache
+	  instead of _apache, and all of this
+	  because GIL sucks
+
+2009-04-09 13:30  walter_l
+
+	* storage/placeables/lisa.py: Handle rid's and xid's for "empty"
+	  (non-paired) placeables (like <x/>).
+
+2009-04-09 11:26  walter_l
+
+	* storage/placeables/general.py: Add PunctuationPlaceable to the
+	  list of possible conversions for general.Ph placeables.
+
+2009-04-09 11:25  walter_l
+
+	* storage/placeables/test_base.py,
+	  storage/placeables/test_terminology.py: The recently-added
+	  PunctuationPlaceable caused test data to change. Tests are now
+	  updated to reflect the changes.
+
+2009-04-09 10:38  walter_l
+
+	* tools/test_podebug.py: Added XLIFF test and required scaffolding.
+
+2009-04-09 10:38  walter_l
+
+	* storage/placeables/base.py: Ignore unsupported arguments (like
+	  rid used in StringElem.__init__()).
+
+2009-04-09 10:37  walter_l
+
+	* storage/placeables/lisa.py: Make sure that more than one string
+	  can be appended to the tail of an existing XML node.
+
+2009-04-09 10:36  walter_l
+
+	* storage/placeables/strelem.py: + StringElem.copy() - Returns a
+	  deep copy of the tree.
+
+2009-04-09 10:36  walter_l
+
+	* tools/podebug.py: Fix up license header.
+
+2009-04-08 13:31  walter_l
+
+	* tools/podebug.py: * Allow the rewrite functions to accept strings
+	  as well as StringElems.
+	  * Fix rewrite_xxx() to move trailing \n's.
+
+2009-04-08 13:30  walter_l
+
+	* tools/test_podebug.py: Updated tests to accept StringElem objects
+	  as return values from the rewrite functions.
+
+2009-04-08 13:29  walter_l
+
+	* storage/placeables/base.py: Updated flags of placeable types in
+	  translate/storage/placeables/base.py.
+
+2009-04-08 13:28  walter_l
+
+	* storage/placeables/strelem.py: Updated StringElem.__eq__()
+
+2009-04-08 13:26  walter_l
+
+	* storage/placeables/strelem.py: + StringElem.istranslatable and
+	  StringElem.has_content flags
+
+2009-04-08 10:23  walter_l
+
+	* tools/podebug.py: Fixed podebug's rewrite functions and usage to
+	  work correctly with rich_source and rich_target.
+
+2009-04-08 10:22  walter_l
+
+	* misc/rich.py: - translate/misc/rich.py - Contained confusing and
+	  obsolete code from the pre-StringElem era.
+
+2009-04-08 10:21  walter_l
+
+	* storage/placeables/strelem.py: + StringElem.apply_to_string() -
+	  Apply a function to all strings in the tree.
+
+2009-04-08 10:20  friedelwolff
+
+	* lang/data.py: Add Pashto (ps) plural information. Minor
+	  whitespace cleanup.
+
+2009-04-07 15:46  walter_l
+
+	* tools/podebug.py: multistring and unicode strings don't have an
+	  insert() method, so we should use a more generic method to add a
+	  prefix.
+
+2009-04-07 13:04  friedelwolff
+
+	* storage/odf_io.py: Open the ZIP file as a binary file for the
+	  sake of Windows. This should fix bug 816.
+
+2009-04-07 09:56  friedelwolff
+
+	* storage/ts2.py: Use the more modern lxml API that is more
+	  readible and less error prone
+
+2009-04-07 08:54  friedelwolff
+
+	* search/match.py: Only consider translated units as usable
+
+2009-04-07 08:12  alaaosh
+
+	* search/indexing/XapianIndexer.py: don't import xapian bindings
+	  when running under mod_python to avoid
+	  deadlocks
+
+2009-03-30 15:27  walter_l
+
+	* storage/placeables/terminology.py: Make sure that all matches
+	  containing the currently parsed term is added as translations to
+	  the current placeable.
+
+2009-03-26 19:40  friedelwolff
+
+	* lang/data.py: Add Lao from the wiki
+
+2009-03-26 14:48  friedelwolff
+
+	* storage/qm.py: Fix typo
+
+2009-03-26 14:47  friedelwolff
+
+	* search/match.py: Supply a usable() method to filter out units
+	  that are too short or too long
+
+2009-03-26 14:46  friedelwolff
+
+	* search/terminology.py: Compile the regular expression and make it
+	  avaible at module level
+
+2009-03-26 14:45  friedelwolff
+
+	* search/test_terminology.py: A test for an extra long term
+
+2009-03-26 09:17  walter_l
+
+	* storage/placeables/general.py: + Support punctuation as
+	  placeables. The usefulness of this still needs to be (dis)proven.
+
+2009-03-26 09:15  walter_l
+
+	* search/match.py: Forgot to remove the list comprehension that was
+	  replaced by a for-loop. :/
+
+2009-03-25 14:11  walter_l
+
+	* search/match.py: Improved terminologymatcher.matches() a bit.
+
+2009-03-24 15:45  walter_l
+
+	* search/match.py: Use a simpler list comprehension for the
+	  terminology matcher in stead of the bulky matcher.matches().
+
+2009-03-24 15:41  walter_l
+
+	* storage/placeables/parse.py: Don't try and parse leaves with no
+	  content.
+
+2009-03-24 15:37  walter_l
+
+	* search/match.py: Make the sorting done by matcher.inittm()
+	  reversable.
+
+2009-03-19 16:06  walter_l
+
+	* storage/placeables/terminology.py,
+	  storage/placeables/test_terminology.py: + TerminologyPlaceable
+	  and its parser.
+	  + A simple test for TerminologyPlaceable.
+
+2009-03-19 16:05  walter_l
+
+	* search/match.py: Collect terminologycomparer.match_info in
+	  terminologymatcher.match_info.
+
+2009-03-19 16:05  walter_l
+
+	* search/match.py: For the terminology matcher, we need the
+	  candidates in reversed size-sorted order (longest first).
+
+2009-03-19 16:04  walter_l
+
+	* search/terminology.py: + TerminologyComparer.match_info dict. It
+	  holds more information about matches found.
+	  It's kind of hackish, because it needs to be clear manually, but
+	  at least it doesn't change
+	  the API. :/
+
+2009-03-19 16:03  walter_l
+
+	* storage/placeables/strelem.py: rename StringElem.transform() to
+	  StringElem.translate() and give it a new implementation.
+
+2009-03-19 14:05  walter_l
+
+	* storage/xml_extract/extract.py: Migrate
+	  storage/xml_extract/extract.py completely to the new way of
+	  handling rich string structures and placeables.
+
+2009-03-19 14:03  walter_l
+
+	* search/terminology.py: Use more descriptive variable names.
+
+2009-03-19 13:59  walter_l
+
+	* search/match.py, search/terminology.py: Cosmetic changes.
+
+2009-03-19 13:56  walter_l
+
+	* storage/placeables/lisa.py: StringElem.isleaf() no longer returns
+	  True only for StringElem leaves, so we have to check for that
+	  ourselves.
+
+2009-03-19 13:53  walter_l
+
+	* storage/placeables/parse.py: Test using type(x) in stead of
+	  x.__class__.
+
+2009-03-19 13:52  walter_l
+
+	* storage/placeables/parse.py: Documented the important parse()
+	  function.
+
+2009-03-19 13:11  alaaosh
+
+	* convert/pot2po.py: don't assume template_store supports poheader
+	  just because input_store
+	  supports it.
+	  
+	  never assume cause when u ASSUME you make an ASS of U and ME
+
+2009-03-16 19:02  dwaynebailey
+
+	* convert/po2ical.py: Correctly handle a situation where the .ics
+	  has content that is not present in the PO file.
+
+2009-03-16 16:34  walter_l
+
+	* storage/placeables/general.py: With the new parser the order of
+	  the parsing functions used is a lot more important. Hence this
+	  reordering.
+
+2009-03-16 16:33  walter_l
+
+	* storage/placeables/general.py: Factored out a generic parse
+	  method that uses a class's specified regex to parse instances of
+	  it from a string.
+
+2009-03-16 16:31  walter_l
+
+	* storage/placeables/parse.py: Replaced the main placeables'
+	  parse() with a more effective version.
+
+2009-03-16 16:30  walter_l
+
+	* storage/placeables/strelem.py: + StringElem.get_parent_elem() -
+	  Finds a given node's parent node in the current tree.
+
+2009-03-16 16:28  walter_l
+
+	* storage/placeables/strelem.py: isleaf() should also return True
+	  for StringElem sub-classes that only contain str|unicode
+	  children.
+
+2009-03-16 13:40  walter_l
+
+	* misc/rich.py, storage/base.py, storage/placeables/base.py,
+	  storage/placeables/general.py, storage/placeables/lisa.py,
+	  storage/placeables/parse.py, storage/placeables/strelem.py,
+	  storage/placeables/test_base.py, storage/placeables/test_lisa.py,
+	  storage/placeables/xliff.py, storage/test_base.py,
+	  storage/test_xliff.py, tools/podebug.py: s/subelems/sub/g
+
+2009-03-14 22:47  walter_l
+
+	* storage/placeables/general.py: + FormattingPlaceable - Matches
+	  printf-style formatting specifiers
+	  * Compile regex for XMLEntityPlaceable only once.
+
+2009-03-12 15:55  walter_l
+
+	* storage/placeables/strelem.py: Fix StringElem.flatten() to also
+	  work if the string tree is only one node that of is a StringElem
+	  sub-class.
+
+2009-03-11 15:41  walter_l
+
+	* storage/placeables/test_base.py: Added tests for
+	  StringElem.elem_offset() and StringElem.isleaf()
+
+2009-03-11 15:41  walter_l
+
+	* storage/placeables/strelem.py: Reimplemented elem_offset() to use
+	  identity testing ("is") in stead of equality testing ("==").
+
+2009-03-10 09:47  friedelwolff
+
+	* tools/posegment.py: -unused imports, +some notes. Updated license
+	  block and corrected copyright date.
+
+2009-03-10 09:42  friedelwolff
+
+	* convert/po2sub.py, convert/sub2po.py: Clean up some docstrings,
+	  copyright dates, error message
+
+2009-03-10 09:31  friedelwolff
+
+	* README: More notes on lxml and OSX
+
+2009-03-10 08:44  walter_l
+
+	* tools/podebug.py: Minor fix for podebug.
+
+2009-03-10 06:54  friedelwolff
+
+	* README: More detail on lxml options. Also mention easy_install.
+
+2009-03-09 16:10  walter_l
+
+	* storage/xml_extract/extract.py: Fix placeables import.
+
+2009-03-09 16:09  walter_l
+
+	* storage/cpo.py, storage/test_cpo.py: Fix cpo unit tests.
+
+2009-03-09 16:08  walter_l
+
+	* storage/poxliff.py, storage/test_ts2.py, storage/ts2.py: Fix ts2
+	  and poxliff so that its tests pass.
+
+2009-03-09 16:07  walter_l
+
+	* storage/base.py: Specify the mandatory second paramter of
+	  storage.placeables.parse().
+
+2009-03-09 16:06  walter_l
+
+	* storage/base.py: Test input to _set_rich_{source,target}() more
+	  thoroughly.
+
+2009-03-09 16:05  walter_l
+
+	* storage/wordfast.py: Prevent KeyErrors in conditional by using
+	  default (None).
+
+2009-03-09 10:49  walter_l
+
+	* storage/base.py: Move rich_to_multistring() and
+	  multistring_to_rich() closer to where they're used.
+
+2009-03-09 10:49  walter_l
+
+	* misc/rich.py: Updated license block and chunk to StringElem
+	  terminology.
+
+2009-03-09 10:44  walter_l
+
+	* misc/rich.py, tools/podebug.py: Only apply changes from rewrite
+	  function if there are results to apply.
+
+2009-03-09 10:42  walter_l
+
+	* storage/placeables/test_base.py: Fixed test_to_xliff_placeables()
+
+2009-03-07 19:53  friedelwolff
+
+	* lang/el.py: [Contributed by Thanos Lefteris] Valid accelerators
+	  for Greek (el). This closes bug 891.
+
+2009-03-06 15:54  walter_l
+
+	* storage/placeables/lisa.py: Define a simple parser for XLIFF
+	  placeables.
+
+2009-03-06 15:53  walter_l
+
+	* storage/placeables/base.py: Set default value (True) for the
+	  has_content attribute of XLIFF placeable classes.
+	  This fixes the conversion to XML strings by xliff__unicode__().
+
+2009-03-06 15:51  walter_l
+
+	* storage/placeables/xliff.py: Fix to_xliff_placeables(). It
+	  generated instances from base.* in stead of xliff.*.
+
+2009-03-06 15:50  walter_l
+
+	* storage/test_xliff.py: Minor corrections and cleanup in XLIFF
+	  tests.
+
+2009-03-06 15:49  walter_l
+
+	* storage/placeables/test_lisa.py: Updated parameters to
+	  placeables.lisa.strelem_to_xml() - lists converted to StringElem.
+
+2009-03-06 15:48  walter_l
+
+	* storage/placeables/lisa.py: Reimplemented strelem_to_xml() which
+	  obsoletes the get_placeable(), collect_text() and end_with_eof()
+	  functions.
+
+2009-03-06 15:47  walter_l
+
+	* storage/placeables/strelem.py: + StringElem.isleaf()
+
+2009-03-06 10:48  friedelwolff
+
+	* lang/data.py: Tweak the dialect_name_re somewhat to handle more
+	  cases better. Now 'Spanish; Castilian (Argentina) can be handled,
+	  for example
+
+2009-03-06 09:39  walter_l
+
+	* storage/lisa.py, storage/placeables/lisa.py,
+	  storage/placeables/test_lisa.py, storage/test_ts2.py,
+	  storage/xliff.py: storage.placeables.lisa.extract_chunks ->
+	  storage.placeables.lisa.xml_to_strelem
+	  storage.placeables.lisa.insert_into_dom ->
+	  storage.placeables.lisa.strelem_to_xml
+
+2009-03-05 15:16  walter_l
+
+	* storage/placeables/test_base.py: + Tests for placeable
+	  converters.
+
+2009-03-05 15:16  walter_l
+
+	* storage/placeables/base.py, storage/placeables/general.py,
+	  storage/placeables/xliff.py: * Classes in
+	  storage.placeables.general now inherit from proper base classes.
+	  * Added conversion functions to the different "sets" of
+	  placeables.
+
+2009-03-05 15:15  walter_l
+
+	* storage/placeables/strelem.py: Make StringElem.__str__() more
+	  reliable by encoding from __unicode__()'s output.
+
+2009-03-05 15:14  walter_l
+
+	* storage/placeables/lisa.py: Support for StringElem in
+	  storage.placeables.lisa.as_unicode().
+
+2009-03-05 15:13  walter_l
+
+	* storage/placeables/lisa.py: Document the entry-point functions in
+	  storage.placeables.lisa.
+
+2009-03-05 15:12  walter_l
+
+	* lang/data.py: Add support for StringElem in
+	  translate.lang.data.forceunicode().
+
+2009-03-04 16:07  walter_l
+
+	* storage/lisa.py: Minor cosmetic changes.
+
+2009-03-04 15:47  walter_l
+
+	* storage/test_xliff.py: Fix import in test_xliff.py
+
+2009-03-04 15:46  walter_l
+
+	* storage/test_base.py: Update test_base.py to reflect some of the
+	  recent changes.
+
+2009-03-04 15:45  walter_l
+
+	* storage/base.py: Added caching of rich string trees. source and
+	  target are now properties and not attributes.
+	  Added the rich_parsers class variable to be able to customize the
+	  way string trees are parsed.
+
+2009-03-04 15:13  walter_l
+
+	* storage/placeables/general.py: XMLEntityPlaceable.parse(): s/+1//
+	  It causes the parser to consume one character too many.
+
+2009-03-04 15:12  walter_l
+
+	* storage/placeables/general.py: Use unicode.find() in stead of
+	  unicode.index() which raises a ValueError if the sub-string was
+	  not found.
+
+2009-03-04 15:11  walter_l
+
+	* storage/placeables/lisa.py: Process placeables from the base and
+	  xliff sub-modules when converting it to XML.
+
+2009-03-04 15:10  walter_l
+
+	* storage/placeables/lisa.py:
+	  s/placeables.<classname>/xliff.<classname>/ because placeables.py
+	  is no more.
+
+2009-03-04 15:10  walter_l
+
+	* storage/placeables/general.py, storage/placeables/parse.py,
+	  storage/placeables/test_base.py: * Make the "parser_funcs"
+	  parameter of parse() non-optional.
+	  * Added a "parsers" list to specific sub-modules to provide easy
+	  access to parser functions for that module.
+	  * Updated the test to use general.parsers for the aforementioned
+	  parameter.
+
+2009-03-04 15:09  walter_l
+
+	* storage/placeables/__init__.py, storage/placeables/base.py,
+	  storage/placeables/interfaces.py,
+	  storage/placeables/placeables.py, storage/placeables/strelem.py,
+	  storage/placeables/xliff.py: Restructured the storage.placeables
+	  module:
+	  * StringElem was moved to strelem.py.
+	  * interfaces.py now only contain the semantic interfaces.
+	  * These interfaces are sub-classed by the base placeables in
+	  base.py
+	  * placeables.py is removed
+
+2009-03-04 14:37  friedelwolff
+
+	* filters/checks.py: Filter out accelerators before counting
+	  sentences. This improves our sentence segmentation slightly.
+
+2009-03-04 13:56  friedelwolff
+
+	* lang/af.py, lang/common.py: Cleanup more string literals to be
+	  unicode strings
+
+2009-03-04 13:53  friedelwolff
+
+	* lang/af.py: Don't handle a number as a sentence start - this
+	  aligns better with what we do in common (for English). This
+	  affects the sentences test in pofilter.
+
+2009-03-04 13:52  friedelwolff
+
+	* lang/test_common.py: Test another case for sentence segmentation
+
+2009-03-04 13:39  walter_l
+
+	* storage/base.py: Cosmetic changes.
+
+2009-03-04 13:38  walter_l
+
+	* storage/base.py: s/_multistring_to_rich/multistring_to_rich/
+	  s/_rich_to_multistring/rich_to_multistring/
+	  ... again
+
+2009-03-04 13:18  walter_l
+
+	* storage/xliff.py: Implemented multistring_to_rich() and
+	  rich_to_multistring() in an XLIFF-specific way.
+
+2009-03-04 13:17  walter_l
+
+	* storage/base.py: s/_multistring_to_rich/multistring_to_rich/
+	  s/_rich_to_multistring/rich_to_multistring/
+
+2009-03-04 13:12  walter_l
+
+	* storage/placeables/lisa.py: Have
+	  translate.storage.placeables.lisa.extract_chunks() accept a
+	  string as parameter too.
+
+2009-03-03 13:39  alaaosh
+
+	* storage/base.py: merge on rich target instead of target
+
+2009-03-03 13:33  alaaosh
+
+	* tools/podebug.py: not sure what is going on here, but testing for
+	  length of subelems
+	  seems safe
+
+2009-03-03 13:25  alaaosh
+
+	* misc/rich.py: renamed .content to .subelems
+
+2009-03-03 13:18  alaaosh
+
+	* storage/placeables/general.py: use regexp when matching xml
+	  entities, otherwise we barf on strings
+	  with & that are not part of entities
+
+2009-03-03 13:15  alaaosh
+
+	* storage/placeables/interfaces.py: should be possible to construct
+	  placeable classes with no argumentsg
+
+2009-03-03 10:47  walter_l
+
+	* storage/test_ts2.py: Updated test_ts2.py, although it's not
+	  completely done yet.
+
+2009-03-03 10:46  walter_l
+
+	* storage/placeables/xliff.py: Swap parent classes for XLIFF
+	  placeables.
+
+2009-03-03 10:46  walter_l
+
+	* storage/lisa.py: -
+	  translate.storage.lisa.LISAunit._ensure_singular()
+
+2009-03-03 10:45  walter_l
+
+	* storage/test_ts2.py: Use valid XML strings to test ts2 with.
+
+2009-03-03 10:43  walter_l
+
+	* storage/test_base.py, storage/ts2.py: Fixed license blocks.
+
+2009-03-03 07:02  friedelwolff
+
+	* storage/test_base.py: Rename that went unnoticed in r10307
+
+2009-03-02 16:20  dwaynebailey
+
+	* storage/placeables/lisa.py: Fix typo
+
+2009-03-02 16:06  walter_l
+
+	* storage/placeables/base.py: Avoid "reference before assignment"
+	  error by providing a default value.
+
+2009-03-02 15:22  walter_l
+
+	* storage/placeables/lisa.py: Make "id" attributes of empty
+	  replaceable classes optional.
+
+2009-03-02 14:15  walter_l
+
+	* storage/base.py: s/(source|target)_rich/rich_(source|target)/
+
+2009-03-02 14:13  walter_l
+
+	* tools/podebug.py: Fixed translate.tools.podebug.add_prefix() to
+	  be StringElem-aware.
+
+2009-03-02 13:55  winterstream
+
+	* storage/pypo.py: When deepcopying a unit, we don't want the
+	  reference _store to
+	  be deep copied (since otherwise, we copy the entire store every
+	  time deepcopy a unit).
+	  
+	  We use the __shallow__ class variable to indicate which members
+	  should always be copied in a shallow manner.
+
+2009-03-02 13:49  winterstream
+
+	* lang/common.py: When deep copying a singleton, we just want the
+	  singleton itself returned.
+
+2009-03-02 10:54  walter_l
+
+	* storage/placeables/base.py: Reimplemented StringElem.find() to
+	  use unicode.find(). It works much better now.
+
+2009-02-27 15:58  walter_l
+
+	* storage/placeables/base.py: Fixed method name.
+
+2009-02-27 08:58  friedelwolff
+
+	* lang/ne.py, lang/test_ne.py: Initial support for Nepali (ne).
+	  This is mostly to handle the spaced full stop and question mark
+	  correctly, but probably needs more attention.
+
+2009-02-27 08:54  friedelwolff
+
+	* lang/common.py: Add special code to hopefully handle properly
+	  with ellipses for once and for all. Too many three character
+	  ellipses are still out in the wild, so we have to handle this
+	  properly.
+
+2009-02-27 08:51  friedelwolff
+
+	* lang/test_common.py: Extra test for segmentation among newlines
+
+2009-02-26 15:14  walter_l
+
+	* storage/placeables/base.py: + StringElem.elem_offset()
+	  + Minor updates
+
+2009-02-26 15:13  walter_l
+
+	* storage/placeables/base.py, storage/placeables/general.py: Make
+	  XMLEntityPlaceable and XMLTagPlaceable non-editable.
+
+2009-02-26 14:00  walter_l
+
+	* storage/placeables/base.py, storage/placeables/test_base.py:
+	  s/find_elem_with/find_elems_with/
+
+2009-02-26 13:58  walter_l
+
+	* storage/placeables/test_base.py: + test_elem_at_iter() - Testing
+	  for StringElem.elem_at_iter()
+
+2009-02-26 13:57  walter_l
+
+	* storage/placeables/base.py: + elem_at_offset(), depth_first(),
+	  iter_depth_first() for the StringElem class.
+
+2009-02-26 11:12  walter_l
+
+	* storage/placeables/test_base.py: + Tests for find() and
+	  find_elem_with() methods in StringElem.
+
+2009-02-26 11:08  walter_l
+
+	* storage/placeables/base.py: + find() and find_elem_with() methods
+	  in StringElem.
+
+2009-02-26 08:24  walter_l
+
+	* storage/stringelem: Delete empty storage/stringelem dir.
+
+2009-02-25 16:39  walter_l
+
+	* misc/rich.py, storage/base.py, storage/placeables/__init__.py,
+	  storage/placeables/base.py, storage/placeables/general.py,
+	  storage/placeables/interfaces.py, storage/placeables/lisa.py,
+	  storage/placeables/misc.py, storage/placeables/parse.py,
+	  storage/placeables/placeables.py,
+	  storage/placeables/test_base.py, storage/placeables/test_lisa.py,
+	  storage/placeables/xliff.py, storage/stringelem/__init__.py,
+	  storage/stringelem/strelem.py,
+	  storage/stringelem/test_strelem.py, storage/test_base.py,
+	  storage/test_dtd.py, storage/test_monolingual.py,
+	  storage/test_po.py, storage/test_properties.py,
+	  storage/test_tmx.py, storage/test_wordfast.py,
+	  storage/test_xliff.py, storage/xml_extract/extract.py: * A huge
+	  lot of changes to merge the StringElem class into
+	  storage.placeables.base.Placeable.
+	  * Imports were updated all over the translate.storage module to
+	  use the new layout.
+	  * Tests were added and updated to use the new placeables and
+	  their layout.
+
+2009-02-25 16:10  walter_l
+
+	* storage/test_base.py: + Tests for TranslationUnit's new
+	  source_strelem and target_strelem properties.
+
+2009-02-25 16:01  walter_l
+
+	* storage/stringelem/strelem.py: Change StringElem to be
+	  unicode-like in stead of a unicode. The main reason for this is
+	  that we need the StringElem trees to be mutable.
+	  There are other reasons. This also meant that we have to provide
+	  our own encode() method for StringElem.
+
+2009-02-25 15:51  walter_l
+
+	* storage/base.py: + TranslationUnit.source_strelem property
+	  + TranslationUnit.target_strelem property
+
+2009-02-25 15:41  walter_l
+
+	* storage/stringelem/__init__.py: + stringelem/__init__.py
+
+2009-02-25 14:59  walter_l
+
+	* storage/stringelem/test_strelem.py: * Some refactoring of
+	  variable names in the test
+	  + test_tree() which tests each part of the tree for the correct
+	  content.
+
+2009-02-25 14:51  walter_l
+
+	* storage/richstring/strelem.py,
+	  storage/richstring/test_strelem.py, storage/stringelem,
+	  storage/stringelem/strelem.py,
+	  storage/stringelem/test_strelem.py: storage/richstring ->
+	  storage/stringelem
+
+2009-02-25 14:39  walter_l
+
+	* storage/richstring/test_strelem.py: + Some tests for StringElem
+	  trees.
+
+2009-02-25 14:31  walter_l
+
+	* storage/richstring/strelem.py: * More consistent use of unicode()
+	  * Implemented StringElem.flatten()
+	  * Added parsing class methods as well as parser() function to use
+	  them.
+
+2009-02-25 14:21  walter_l
+
+	* storage/richstring, storage/richstring/strelem.py: + StringElem
+	  base class and basic implementations.
+
+2009-02-25 08:44  friedelwolff
+
+	* storage/poparser.py: If any unexpected character is obtained
+	  after a #, accept the comment as translator (other) comment.
+	  Reported by Sayamindu Dasgupta. This commit fixes bug 867.
+
+2009-02-24 19:35  friedelwolff
+
+	* storage/pypo.py, storage/test_pypo.py: Previous msgid and previos
+	  msgid_plural should come after type comments. +Test.
+
+2009-02-24 07:36  friedelwolff
+
+	* lang/fa.py, lang/ur.py: Avoid problems when punctranslate alters
+	  a %x style variable to the Arabic percent sign
+
+2009-02-23 16:51  dwaynebailey
+
+	* filters/test_checks.py: Add a French punctuation test. Add gconf
+	  test_ that I forgot to add with the gconf test implementation.
+
+2009-02-20 09:44  murgilduta
+
+	* filters/spelling.py: Since we are phasing it out, we don't want
+	  to try to import jToolkit's spellcheching module anymore.
+
+2009-02-19 07:01  winterstream
+
+	* convert/odf2xliff.py, storage/xliff.py: [Contributed by Nick
+	  Shaforostoff]
+	  
+	  This little patch implements storing template name in <file
+	  original="">
+	  attribute.
+	  
+	  Logged in bug 851
+	  (http://bugs.locamotion.org/show_bug.cgi?id=851).
+
+2009-02-12 20:49  dwaynebailey
+
+	* README: Note about chardet
+
+2009-02-12 16:59  dupuy
+
+	* lang/common.py, storage/csvl10n.py, storage/wordfast.py,
+	  tools/test_pomerge.py: spelling fix: seperate->separate
+	  (user-visible and comments; variables/methods left misspelled)
+
+2009-02-12 15:50  alaaosh
+
+	* README, convert/po2sub, convert/po2sub.py, convert/sub2po,
+	  convert/sub2po.py, storage/subtitles.py: We can now convert
+	  subtitle formats support by Gaupol
+
+2009-02-12 08:45  friedelwolff
+
+	* lang/data.py: Add missing import
+
+2009-02-12 08:36  friedelwolff
+
+	* lang/data.py: Add Bengali (India) (bn_IN) that usually has its
+	  own team
+
+2009-02-12 08:30  friedelwolff
+
+	* lang/data.py: On Windows a normal call to gettext.translation
+	  seems to invoke the 'C' locale - obviously what somebody using a
+	  cross-platform programming language would want. So we rather hack
+	  around it by using locale.getdefaultlocale() which we will
+	  probably eventually regret. This at least gives us translated
+	  language names in Virtaal.
+
+2009-02-10 21:54  nekral
+
+	* misc/test_optrecurse.py: TestRecursiveOptionParser has no base
+	  class. Remove unneeded parenthesis.
+
+2009-02-09 13:26  alaaosh
+
+	* lang/data.py: fixing arabic plural form, can't believe that
+	  slipped by me until now
+
+2009-02-05 08:55  winterstream
+
+	* convert/po2web2py, convert/po2web2py.py, convert/web2py2po,
+	  convert/web2py2po.py: [Contributed by Dominic König
+	  (dominic@nursix.org)]
+	  
+	  Convertors to convert between PO and web2py's translation format.
+
+2009-02-04 15:35  friedelwolff
+
+	* ChangeLog: Update ChangeLog before release of version 1.3.0
+
 2009-02-04 14:46  friedelwolff
 
 	* README: Mention more recent version of lxml that should be better
