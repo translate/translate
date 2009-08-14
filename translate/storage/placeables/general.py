@@ -202,8 +202,8 @@ class PunctuationPlaceable(Ph):
     # configuration.
     regex = re.compile(ur'''([™©®]|          # Marks
                              [℃℉°]|          # Degree related
-                             [±πθ×÷−√∞∆Σ]|   # Maths
-                             [‘’‚‛“”„‟]|     # Quote characters
+                             [±πθ×÷−√∞∆Σ′″]| # Maths
+                             [‘’ʼ‚‛“”„‟]|    # Quote characters
                              [£¥]|           # Currencies
                              …|              # U2026 - horizontal ellipsis
                              —|              # U2014 - em dash
