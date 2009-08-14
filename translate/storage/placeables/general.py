@@ -200,7 +200,16 @@ class PunctuationPlaceable(Ph):
     # FIXME this should really be a list created as being the inverse of what
     # is available on the translators keyboard.  Or easily expanded by their
     # configuration.
-    regex = re.compile(ur'[™℃℉©®£¥°±‘’‚‛“”„‟…—– ]+') #last space is NBSP
+    regex = re.compile(ur'''([™©®]|      # Marks
+                             [℃℉°]|      # Degree related
+                             [±]|        # Maths
+                             [‘’‚‛“”„‟]| # Quote characters
+                             [£¥]|       # Currencies
+                             …|          # U2026 - horizontal ellipsis
+                             —|          # U2014 - em dash
+                             –|          # U2013 - en dash
+                             [ ]         # U202F - narrow no-break space
+                            )+''', re.VERBOSE)
     parse = classmethod(regex_parse)
 
 
