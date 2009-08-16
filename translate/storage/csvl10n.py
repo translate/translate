@@ -118,9 +118,12 @@ class csvunit(base.TranslationUnit):
         self.comment = cedict.get('comment', '').decode('utf-8')
         self.source = cedict.get('source', '').decode('utf-8')
         self.target = cedict.get('target', '').decode('utf-8')
-        if self.comment is None: self.comment = ''
-        if self.source is None: self.source = ''
-        if self.target is None: self.target = ''
+        if self.comment is None:
+            self.comment = ''
+        if self.source is None:
+            self.source = ''
+        if self.target is None:
+            self.target = ''
         self.source, self.target = self.remove_spreadsheet_escapes(self.source, self.target)
 
     def todict(self, encoding='utf-8'):

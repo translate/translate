@@ -115,7 +115,8 @@ def unquotefrompo(postr):
 def encodingToUse(encoding):
     """Tests whether the given encoding is known in the python runtime, or returns utf-8.
     This function is used to ensure that a valid encoding is always used."""
-    if encoding == "CHARSET" or encoding == None: return 'utf-8'
+    if encoding == "CHARSET" or encoding == None:
+        return 'utf-8'
     return encoding
 #    if encoding is None: return False
 #    return True
@@ -720,9 +721,11 @@ class pofile(pocommon.pofile):
         charsetline = None
         headerstr = unquotefrompo(header.msgstr)
         for line in headerstr.split("\n"):
-            if not ":" in line: continue
+            if not ":" in line:
+                continue
             key, value = line.strip().split(":", 1)
-            if key.strip() != "Content-Type": continue
+            if key.strip() != "Content-Type":
+                continue
             charsetline = line
         if charsetline is None:
             headerstr += "Content-Type: text/plain; charset=%s" % self._encoding
@@ -808,7 +811,8 @@ class pofile(pocommon.pofile):
             lines.append(unitsrc)
         lines = "".join(self.encode(lines)).rstrip()
         #After the last pounit we will have \n\n and we only want to end in \n:
-        if lines: lines += "\n"
+        if lines:
+            lines += "\n"
         return lines
 
     def encode(self, lines):
