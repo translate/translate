@@ -121,7 +121,7 @@ DROP TABLE test_for_fts3;
             self.cursor.execute("SELECT name FROM sqlite_master WHERE name = 'fulltext'")
             if not self.cursor.fetchone():
                 # create fulltext index table, and index all strings in sources
-                script= """
+                script = """
 CREATE VIRTUAL TABLE fulltext USING fts3(text);
 """
                 logging.debug("fulltext table not exists, creating")
@@ -239,7 +239,7 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
         for unit in store.units:
             if unit.istranslatable() and unit.istranslated():
                 self.add_unit(unit, source_lang, target_lang, commit=False)
-                count +=1
+                count += 1
         if commit:
             self.connection.commit()
         return count
@@ -250,7 +250,7 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
         count = 0
         for unit in units:
             self.add_dict(unit, source_lang, target_lang, commit=False)
-            count +=1
+            count += 1
         if commit:
             self.connection.commit()
         return count
