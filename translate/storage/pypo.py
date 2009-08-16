@@ -261,7 +261,7 @@ class pounit(pocommon.pounit):
                 target = target.strings
             elif isinstance(target, basestring):
                 target = [target]
-        elif isinstance(target,(dict, list)):
+        elif isinstance(target, (dict, list)):
             if len(target) == 1:
                 target = target[0]
             else:

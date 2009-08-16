@@ -112,7 +112,7 @@ class htmlfile(HTMLParser, base.TranslationStore):
         for cmd in result:
             h = hash.md5_f(cmd).hexdigest()
             self.phpdict[h] = cmd
-            text = text.replace(cmd,h)
+            text = text.replace(cmd, h)
         return text
 
     def reintrophp(self, text):

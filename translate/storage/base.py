@@ -553,7 +553,7 @@ class TranslationStore(object):
     def __setstate__(self, dict):
         self.__dict__.update(dict)
         if getattr(self, "filename", False):
-            self.fileobj=open(self.filename)
+            self.fileobj = open(self.filename)
 
     def __str__(self):
         """Converts to a string representation that can be parsed back using L{parsestring()}."""
