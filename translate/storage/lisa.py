@@ -37,7 +37,8 @@ def _findAllMatches(text, re_obj):
     max = len(text)
     while start < max:
         m = re_obj.search(text, start)
-        if not m: break
+        if not m:
+            break
         yield m
         start = m.end()
 

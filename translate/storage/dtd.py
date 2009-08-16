@@ -277,7 +277,8 @@ class dtdunit(base.TranslationUnit):
                             self.entityhelp = (e, line[e])
                             self.instring = False
                 if self.entitypart == "parameter":
-                    while (e < len(line) and line[e].isspace()): e += 1
+                    while (e < len(line) and line[e].isspace()):
+                        e += 1
                     paramstart = e
                     while (e < len(line) and line[e].isalnum()):
                         e += 1
