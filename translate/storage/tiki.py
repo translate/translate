@@ -66,7 +66,7 @@ class TikiUnit(base.TranslationUnit):
         """Returns a string formatted to be inserted into a tiki language.php file."""
         ret = u'"%s" => "%s",' % (self.source, self.target)
         if self.location == ["untranslated"]:
-          ret = u'// ' + ret
+            ret = u'// ' + ret
         return ret + "\n"
 
     def addlocation(self, location):
@@ -76,7 +76,7 @@ class TikiUnit(base.TranslationUnit):
         @param location: Where the string is located in the file.  Must be a valid location.
         """
         if location in ['unused', 'untranslated', 'possiblyuntranslated', 'translated']:
-          self.location.append(location)
+            self.location.append(location)
 
     def getlocations(self):
         """Returns the a list of the location(s) of the string."""
