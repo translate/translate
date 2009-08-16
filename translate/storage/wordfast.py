@@ -194,7 +194,7 @@ class WordfastDialect(csv.Dialect):
         doublequote = False
         skipinitialspace = False
         escapechar = None
-        quotechar ='"'
+        quotechar = '"'
 csv.register_dialect("wordfast", WordfastDialect)
 
 class WordfastTime(object):
