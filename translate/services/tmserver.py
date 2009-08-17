@@ -90,7 +90,7 @@ class TMServer(object):
     @selector.opliant
     def add_unit(self, environ, start_response, uid, slang, tlang):
         start_response("200 OK", [('Content-type', 'text/plain')])
-        uid = unicode(urllib.unquote_plus(uid), "utf-8")
+        #uid = unicode(urllib.unquote_plus(uid), "utf-8")
         data = json.loads(environ['wsgi.input'].read(int(environ['CONTENT_LENGTH'])))
         unit = base.TranslationUnit(data['source'])
         unit.target = data['target']
@@ -100,7 +100,7 @@ class TMServer(object):
     @selector.opliant
     def update_unit(self, environ, start_response, uid, slang, tlang):
         start_response("200 OK", [('Content-type', 'text/plain')])
-        uid = unicode(urllib.unquote_plus(uid), "utf-8")
+        #uid = unicode(urllib.unquote_plus(uid), "utf-8")
         data = json.loads(environ['wsgi.input'].read(int(environ['CONTENT_LENGTH'])))
         unit = base.TranslationUnit(data['source'])
         unit.target = data['target']
@@ -111,7 +111,7 @@ class TMServer(object):
     def forget_unit(self, environ, start_response, uid):
         #FIXME: implement me
         start_response("200 OK", [('Content-type', 'text/plain')])
-        uid = unicode(urllib.unquote_plus(uid), "utf-8")
+        #uid = unicode(urllib.unquote_plus(uid), "utf-8")
 
         return [response]
 
@@ -119,7 +119,7 @@ class TMServer(object):
     def get_store_stats(self, environ, start_response, sid):
         #FIXME: implement me
         start_response("200 OK", [('Content-type', 'text/plain')])
-        sid = unicode(urllib.unquote_plus(sid), "utf-8")
+        #sid = unicode(urllib.unquote_plus(sid), "utf-8")
 
         return [response]
 
@@ -147,7 +147,7 @@ class TMServer(object):
     def forget_store(self, environ, start_response, sid):
         #FIXME: implement me
         start_response("200 OK", [('Content-type', 'text/plain')])
-        sid = unicode(urllib.unquote_plus(sid), "utf-8")
+        #sid = unicode(urllib.unquote_plus(sid), "utf-8")
 
         return [response]
 
