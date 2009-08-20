@@ -55,6 +55,16 @@ class TestPOGrep:
         poresult = self.pogrep(posource, "test", ["--search=comment"])
         assert poresult == ""
 
+    def test_simplegrep_locations_with_comment_enabled(self):
+        """grep for a string in "locations", while also "comment" is checked
+        see http://bugs.locamotion.org/show_bug.cgi?id=1036
+        """
+        posource = '# (review) comment\n#: test.c\nmsgid "test"\nmsgstr "rest"\n'
+        poresult = self.pogrep(posource, "test", ["--search=comment", "--search=locations"])
+        assert poresult == posource
+        poresult = self.pogrep(posource, "rest", ["--search=comment", "--search=locations"])
+        assert poresult == ""
+
     def test_unicode_message_searchstring(self):
         """check that we can grep unicode messages and use unicode search strings"""
         poascii = '# comment\n#: test.c\nmsgid "test"\nmsgstr "rest"\n'
