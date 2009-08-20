@@ -192,9 +192,11 @@ class GrepFilter:
                     return True
 
         if self.search_notes:
-            return self.matches(unit.getnotes())
+            if self.matches(unit.getnotes()):
+                return True
         if self.search_locations:
-            return self.matches(u" ".join(unit.getlocations()))
+            if self.matches(u" ".join(unit.getlocations())):
+                return True
         return False
 
     def filterfile(self, thefile):
