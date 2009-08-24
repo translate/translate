@@ -448,8 +448,10 @@ msgstr[1] "Koeie"
         print pofile
         unit = pofile.units[0]
         assert not unit.isobsolete()
+        assert unit.istranslatable()
         unit.makeobsolete()
         assert unit.isobsolete()
+        assert not unit.istranslatable()
         print pofile
         assert str(unit) == poexpected
 

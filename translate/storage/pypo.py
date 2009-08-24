@@ -477,7 +477,7 @@ class pounit(pocommon.pounit):
         return super(pounit, self).istranslated() and not self.isobsolete()
 
     def istranslatable(self):
-        return not (self.isheader() or self.isblank())
+        return not (self.isheader() or self.isblank() or self.isobsolete())
 
     def isfuzzy(self):
         return self.hastypecomment("fuzzy")
