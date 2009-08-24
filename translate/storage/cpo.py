@@ -257,7 +257,7 @@ class pounit(pocommon.pounit):
             elif isinstance(target, basestring):
                 target = [target]
         # for non-plurals: check number of items in 'target'
-        elif isinstance(target,(dict, list)):
+        elif isinstance(target, (dict, list)):
             if len(target) == 1:
                 target = target[0]
             else:
