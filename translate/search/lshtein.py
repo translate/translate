@@ -1,22 +1,22 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
-# Copyright 2006-2007 Zuza Software Foundation
-# 
+#
+# Copyright 2006-2009 Zuza Software Foundation
+#
 # This file is part of translate.
 #
-# translate is free software; you can redistribute it and/or modify
+# This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
-# translate is distributed in the hope that it will be useful,
+#
+# This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with translate; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 """A class to calculate a similarity based on the Levenshtein 
 distance. See http://en.wikipedia.org/wiki/Levenshtein_distance.
@@ -53,13 +53,13 @@ def python_distance(a, b, stopvalue=-1):
         #that can be attained in the end if the strings are identical further
         if least > stopvalue:
             return least
-    
+
     return current[l1]
 
 def native_distance(a, b, stopvalue=0):
     """Same as python_distance in functionality. This uses the fast C 
     version if we detected it earlier.
-    
+
     Note that this does not support arbitrary sequence types, but only 
     string types."""
     return Levenshtein.distance(a, b)
@@ -87,7 +87,7 @@ class LevenshteinComparer:
 #        else:
 #            similarity *= 2
 #            measurements += 1
-#            
+#
 #        wrd_a = segment.words(a)
 #        wrd_b = segment.words(b)
 #        if len(wrd_a) + len(wrd_b) > 2:
@@ -111,7 +111,7 @@ class LevenshteinComparer:
                  unattainable. See the use of the variable stopvalue.
                - Implementation uses memory O(min(len(a), len(b))
                - Excecution time is O(len(a)*len(b))
-    """
+        """
         l1, l2 = len(a), len(b)
         if l1 == 0 or l2 == 0:
             return 0
@@ -119,7 +119,7 @@ class LevenshteinComparer:
         if l1 > l2:
             l1, l2 = l2, l1
             a, b = b, a
-            
+
         #maxsimilarity is the maximum similarity that can be attained as constrained
         #by the difference in string length
         maxsimilarity = 100 - 100.0*abs(l1 - l2)/l2
@@ -136,13 +136,13 @@ class LevenshteinComparer:
                 a = a[:self.MAX_LEN]
                 l1 = self.MAX_LEN
                 penalty += 7
-        
+
         #The actual value in the array that would represent a giveup situation:
         stopvalue = math.ceil((100.0 - stoppercentage)/100 * l2)
         dist = distance(a, b, stopvalue)
         if dist > stopvalue:
             return stoppercentage - 1.0
-        
+
         #If MAX_LEN came into play, we consider the calculated distance to be 
         #representative of the distance between the whole, untrimmed strings
         if dist != 0:
@@ -154,4 +154,3 @@ if __name__ == "__main__":
     from sys import argv
     comparer = LevenshteinComparer()
     print "Similarity:\n%s" % comparer.similarity(argv[1], argv[2], 50)
-

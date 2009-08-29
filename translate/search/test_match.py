@@ -18,7 +18,7 @@ class TestMatch:
             unit = csvfile.addsourceunit(source)
             unit.target = target
         return csvfile
-            
+
     def test_matching(self):
         """Test basic matching"""
         csvfile = self.buildcsv(["hand", "asdf", "fdas", "haas", "pond"])
