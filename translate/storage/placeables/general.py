@@ -229,7 +229,7 @@ class CapsPlaceable(Ph):
     """Placeable handling long all-caps strings."""
 
     iseditable = True
-    regex = re.compile(r'\b[A-Z][A-Z/\-:*0-9]{2,}\b')
+    regex = re.compile(r'\b[A-Z][A-Z_/\-:*0-9]{2,}\b[+]?')
     parse = classmethod(regex_parse)
 
 

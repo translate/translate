@@ -67,7 +67,8 @@ def test_placeable_caps():
     assert general.CapsPlaceable.parse(u'Use the HTML page')[1] == general.CapsPlaceable([u'HTML'])
     assert general.CapsPlaceable.parse(u'I am') is None
     assert general.CapsPlaceable.parse(u'Use the A4 paper') is None
-#    assert general.CapsPlaceable.parse(u'In GTK+') == general.CapsPlaceable([u'GTK+'])
-#    assert general.CapsPlaceable.parse(u'GNOME-stuff') == general.CapsPlaceable([u'GNOME'])
+    assert general.CapsPlaceable.parse(u'In GTK+')[1] == general.CapsPlaceable([u'GTK+'])
+#    assert general.CapsPlaceable.parse(u'GNOME-stuff')[0] == general.CapsPlaceable([u'GNOME'])
+    assert general.CapsPlaceable.parse(u'with XDG_USER_DIRS')[1] == general.CapsPlaceable([u'XDG_USER_DIRS'])
 
 # TODO: PythonFormattingPlaceable, JavaMessageFormatPlaceable, FormattingPlaceable (printf), UrlPlaceable, XMLTagPlaceable
