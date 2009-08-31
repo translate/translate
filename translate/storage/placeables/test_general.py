@@ -71,4 +71,26 @@ def test_placeable_caps():
 #    assert general.CapsPlaceable.parse(u'GNOME-stuff')[0] == general.CapsPlaceable([u'GNOME'])
     assert general.CapsPlaceable.parse(u'with XDG_USER_DIRS')[1] == general.CapsPlaceable([u'XDG_USER_DIRS'])
 
-# TODO: PythonFormattingPlaceable, JavaMessageFormatPlaceable, FormattingPlaceable (printf), UrlPlaceable, XMLTagPlaceable
+def test_placeable_formatting():
+    fp = general.FormattingPlaceable
+    assert fp.parse(u'There were %d cows')[1] == fp([u'%d'])
+    assert fp.parse(u'There were %Id cows')[1] == fp([u'%Id'])
+    assert fp.parse(u'There were %d %s')[3] == fp([u'%s'])
+    assert fp.parse(u'%1$s was kicked by %2$s')[0] == fp([u'%1$s'])
+    assert fp.parse(u'There were %Id cows')[1] == fp([u'%Id'])
+    assert fp.parse(u'There were % d cows')[1] == fp([u'% d'])
+    #only a real space is allowed as formatting flag
+    assert fp.parse(u'There were %\u00a0d cows') is None
+    assert fp.parse(u"There were %'f cows")[1] == fp([u"%'f"])
+    assert fp.parse(u"There were %#x cows")[1] == fp([u"%#x"])
+
+    #field width
+    assert fp.parse(u'There were %3d cows')[1] == fp([u'%3d'])
+    assert fp.parse(u'There were %33d cows')[1] == fp([u'%33d'])
+    assert fp.parse(u'There were %*d cows')[1] == fp([u'%*d'])
+
+    #numbered variables
+    assert fp.parse(u'There were %1$d cows')[1] == fp([u'%1$d'])
+
+
+# TODO: PythonFormattingPlaceable, JavaMessageFormatPlaceable, UrlPlaceable, XMLTagPlaceable

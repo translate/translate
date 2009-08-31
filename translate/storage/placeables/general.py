@@ -149,16 +149,18 @@ class JavaMessageFormatPlaceable(Ph):
 class FormattingPlaceable(Ph):
     """Placeable representing string formatting variables."""
     #For more information, see  man 3 printf
+    #We probably don't want to support absolutely everything
 
     iseditable = False
     istranslatable = False
     regex = re.compile(r"""
         %                         # introduction
-        [\-\+0\s\#]{0,1}          # optional flag
-        (\d+){0,1}                # field width
-        (\.\d+){0,1}              # precision
-        [hlI]{0,1}                # length
-        [cCdiouxXeEfgGnpsS]{1}    # conversion specifier
+        (\d+\$)?                  # selection of non-next variable (reordering)
+        [\-\+0 \#'I]?             # optional flag
+        ((\d+)|[*])?              # field width
+        (\.\d+)?                  # precision
+        [hlI]?                    # length
+        [cCdiouxXeEfgGnpsS]       # conversion specifier
         """, re.VERBOSE)
     parse = classmethod(regex_parse)
 
