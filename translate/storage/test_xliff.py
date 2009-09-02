@@ -249,8 +249,15 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         unit.addalttrans("targetx", sourcetxt="sourcex")
         # test that the source node is before the target node:
         alt = unit.getalttrans()[0]
-        format = etree.tostring(alt.xmlelement)
-        assert format.find("<source") < format.find("<target")
+        altformat = etree.tostring(alt.xmlelement)
+        print altformat
+        assert altformat.find("<source") < altformat.find("<target")
+
+        # test that a new target is still before alt-trans (bug 1098)
+        unit.target = u"newester target"
+        unitformat = str(unit)
+        print unitformat
+        assert unitformat.find("<source") < unitformat.find("<target") < unitformat.find("<alt-trans")
 
     def test_fuzzy(self):
         xlifffile = xliff.xlifffile()

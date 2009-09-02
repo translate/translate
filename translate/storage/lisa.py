@@ -133,7 +133,7 @@ class LISAunit(base.TranslationUnit):
         languageNodes = self.getlanguageNodes()
         assert len(languageNodes) > 0
         if dom_node is not None:
-            if append or len(languageNodes) == 1:
+            if append or len(languageNodes) == 0:
                 self.xmlelement.append(dom_node)
             else:
                 self.xmlelement.insert(1, dom_node)
