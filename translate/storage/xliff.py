@@ -425,13 +425,19 @@ class xlifffile(lisa.LISAfile):
     """xliff units have alttrans tags which can be used to store suggestions"""
 
     def __init__(self, *args, **kwargs):
+        self._filename = None
         lisa.LISAfile.__init__(self, *args, **kwargs)
-        self._filename = "NoName"
         self._messagenum = 0
 
 
     def initbody(self):
-        super(xlifffile, self).initbody()
+        self.namespace = self.document.getroot().nsmap.get(None, None)
+
+        if self._filename:
+            self.body = self.getcontextnode(self._filename)
+        else:
+            self.body = self.document.getroot()
+
         filenode = self.document.getroot().iterchildren(self.namespaced('file')).next()
         sourcelanguage = filenode.get('source-language')
         if sourcelanguage:
