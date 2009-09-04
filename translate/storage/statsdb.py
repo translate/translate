@@ -300,6 +300,7 @@ class StatsCache(object):
         # No existing cache. Let's build a new one and keep a copy
         return make_database(statsfile)
 
+    @transaction
     def create(self):
         """Create all tables and indexes."""
         self.file_totals = FileTotals(self.cur)
@@ -345,8 +346,8 @@ class StatsCache(object):
 
         self.cur.execute("""CREATE INDEX IF NOT EXISTS uniterrorindex
             ON uniterrors(fileid, configid);""")
-    create = transaction(create)
 
+    @transaction
     def _getfileid(self, filename, check_mod_info=True, store=None):
         """return fileid representing the given file in the statscache.
 
@@ -381,7 +382,7 @@ class StatsCache(object):
             store = store or factory.getobject(realpath)
 
         return self._cachestore(store, realpath, mod_info)
-
+    
     def _getstoredcheckerconfig(self, checker):
         """See if this checker configuration has been used before."""
         config = str(checker.config.__dict__)
@@ -393,6 +394,7 @@ class StatsCache(object):
         else:
             return configrow[0]
 
+    @transaction
     def _cacheunitstats(self, units, fileid, unitindex=None, file_totals_record=FileTotals.new_record()):
         """Cache the statistics for the supplied unit(s)."""
         unitvalues = []
@@ -417,6 +419,7 @@ class StatsCache(object):
             return state_strings[statefordb(units[0])]
         return ""
 
+    @transaction
     def _cachestore(self, store, realpath, mod_info):
         """Calculates and caches the statistics of the given store
         unconditionally."""
@@ -435,8 +438,8 @@ class StatsCache(object):
         """Retrieves the statistics for the given file if possible, otherwise
         delegates to cachestore()."""
         return self.file_totals[self._getfileid(filename, store=store)]
-    filetotals = transaction(filetotals)
 
+    @transaction
     def _cacheunitschecks(self, units, fileid, configid, checker, unitindex=None):
         """Helper method for cachestorechecks() and recacheunit()"""
         # We always want to store one dummy error to know that we have actually
@@ -469,6 +472,7 @@ class StatsCache(object):
             unitvalues)
         return errornames
 
+    @transaction
     def _cachestorechecks(self, fileid, store, checker, configid):
         """Calculates and caches the error statistics of the given store
         unconditionally."""
@@ -496,6 +500,7 @@ class StatsCache(object):
             # do the right thing.
             return []
 
+    @transaction
     def recacheunit(self, filename, checker, unit):
         """Recalculate all information for a specific unit. This is necessary
         for updating all statistics when a translation of a unit took place,
@@ -522,7 +527,6 @@ class StatsCache(object):
             checker.setsuggestionstore(factory.getobject(suggestion_filename(filename), ignore=suggestion_extension()))
         state.extend(self._cacheunitschecks([unit], fileid, configid, checker, unitindex))
         return state
-    recacheunit = transaction(recacheunit)
 
     def _checkerrors(self, filename, fileid, configid, checker, store):
         def geterrors():
@@ -556,6 +560,7 @@ class StatsCache(object):
         result.extend(cur.fetchall())
         return result
 
+    @transaction
     def _get_config_id(self, fileid, checker):
         configid = self._getstoredcheckerconfig(checker)
         if configid:
@@ -582,7 +587,6 @@ class StatsCache(object):
             errors[checkkey].append(value[1])   #value[1] is the unitindex
 
         return errors
-    filechecks = transaction(filechecks)
 
     def file_fails_test(self, filename, checker, name):
         fileid = self._getfileid(filename)
@@ -594,7 +598,6 @@ class StatsCache(object):
             FROM uniterrors 
             WHERE fileid=? and configid=? and name=?;""", (fileid, configid, name))
         return self.cur.fetchone() is not None
-    file_fails_test = transaction(file_fails_test)
 
     def filestatestats(self, filename, store=None):
         """Return a dictionary of unit stats mapping sets of unit
@@ -622,7 +625,6 @@ class StatsCache(object):
         stats.update(self.filechecks(filename, checker, store))
         stats.update(self.filestatestats(filename, store))
         return stats
-    filestats = transaction(filestats)
 
     def unitstats(self, filename, _lang=None, store=None):
         # For now, lang and store are unused. lang will allow the user to
@@ -649,4 +651,3 @@ class StatsCache(object):
             stats["targetwordcount"].append(targetcount)
 
         return stats
-    unitstats = transaction(unitstats)
