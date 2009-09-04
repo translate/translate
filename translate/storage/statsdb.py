@@ -40,6 +40,7 @@ import os.path
 import re
 import sys
 import stat
+import thread
 
 kdepluralre = re.compile("^_n: ")
 brtagre = re.compile("<br\s*?/?>")
@@ -251,6 +252,7 @@ class StatsCache(object):
     """The current cursor"""
 
     def __new__(cls, statsfile=None):
+        current_thread = thread.get_ident()
         def make_database(statsfile):
             def connect(cache):
                 cache.con = dbapi2.connect(statsfile)
@@ -270,8 +272,8 @@ class StatsCache(object):
                     return False
                 except dbapi2.OperationalError:
                     return False
-
-            cache = cls._caches[statsfile] = object.__new__(cls)
+            
+            cache = cls._caches.setdefault(current_thread, {})[statsfile] = object.__new__(cls)
             connect(cache)
             if clear_old_data(cache):
                 connect(cache)
@@ -293,8 +295,8 @@ class StatsCache(object):
         else:
             statsfile = os.path.realpath(statsfile)
         # First see if a cache for this file already exists:
-        if statsfile in cls._caches:
-            return cls._caches[statsfile]
+        if current_thread in cls._caches and statsfile in cls._caches[current_thread]:
+            return cls._caches[current_thread][statsfile]
         # No existing cache. Let's build a new one and keep a copy
         return make_database(statsfile)
 
