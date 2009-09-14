@@ -304,7 +304,7 @@ if [ -z $SKIP_POT ]; then
 	fi
 fi
 
-[ -n $SKIP_LANGS ] && exit 0
+[ -z $SKIP_LANGS ] || exit 0
 
 # Update language l10n files
 for l in $LANGS; do
