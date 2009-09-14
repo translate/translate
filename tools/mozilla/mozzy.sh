@@ -39,6 +39,10 @@ function usage() {
 	echo "                                  --moz-product=mobile"
 	echo "                                  --src-dir=mobile"
 	echo "                                  --src-repo-url=http://hg.mozilla.org/mobile-browser/"
+	echo "   --gecko-ver=<version>    - The Gecko version to build. Equivalent to (replace %VER% with given value):"
+	echo "                                  --l10n-repo-url=http://hg.mozilla.org/releases/l10n-mozilla-%VER%"
+	echo "                                  --src-dir=mozilla-%VER%"
+	echo "                                  --src-repo-url=http://hg.mozilla.org/releases/mozilla-%VER%"
 	echo "   --l10n-dir=<dir>         - The directory where Mozilla l10n files live (default: $L10N_DIR)"
 	echo "   --l10n-repo-url=<url>    - The base URL (without language code) of Mozilla l10n repositories (default: $L10N_BASE_URL)"
 	echo "   --lang-po-url=<url>      - The URL where a tarball of language PO files should be downloaded from (default: $POOTLE_URL)"
@@ -84,6 +88,11 @@ do
 			SOURCE_URL="http://hg.mozilla.org/mobile-browser/"
 			shift
 			;;
+		--gecko-ver=*)
+			GECKO_VERSION=$(echo $1 | sed 's/\-\-gecko\-ver=//')
+			L10N_BASE_URL="http://hg.mozilla.org/releases/l10n-mozilla-$GECKO_VERSION"
+			SOURCE_DIR="mozilla-$GECKO_VERSION"
+			SOURCE_URL="http://hg.mozilla.org/releases/mozilla-$GECKO_VERSION"
 		--l10n-dir=*)
 			L10N_DIR=$(echo $1 | sed 's/\-\-l10n\-dir=//')
 			shift
@@ -229,7 +238,7 @@ update_po() {
 	po_updated_dir=po-updated/$lang
 
 	# Update from VCS
-    [ -d $po_dir/.hg ]  && (cd $po_dir && hg revert --all -r default --no-backup && hg pull -u && hg update -C )
+    [ -d $po_dir/.hg ]  && (cd $po_dir && hg revert --all -r default --no-backup && hg pull -u && hg update -C)
     [ -d $po_dir/.svn ] && (cd $po_dir && svn up)
     
     rm -rf $po_updated_dir
