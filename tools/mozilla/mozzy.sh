@@ -284,7 +284,7 @@ if [ -z $SKIP_EN ]; then
 	debuglog "Extracting en-US for product \"$PRODUCT\" from $SOURCE_DIR"
 	srcdir=$SOURCE_DIR
 	#[ $PRODUCT = 'fennec' ] && srcdir=""
-	get_moz_enUS.py -s $srcdir -d . -p "" -v
+	get_moz_enUS.py -s $srcdir -d . -p "$PRODUCT" -v
 
 	if [ -d en-US.old ]; then
 		diff en-US{,.old}
@@ -304,7 +304,7 @@ if [ -z $SKIP_POT ]; then
 	fi
 fi
 
-[ -n $SKIP_LANGS ] || exit 0
+[ -n $SKIP_LANGS ] && exit 0
 
 # Update language l10n files
 for l in $LANGS; do
