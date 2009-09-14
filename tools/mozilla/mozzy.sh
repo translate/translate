@@ -18,7 +18,9 @@ PRODUCT="browser"
 L10N_BASE_URL="http://hg.mozilla.org/releases/l10n-mozilla-$GECKO_VERSION"
 L10N_DIR="l10n"
 LANGPACK_DIR="xpi"
-POOTLE_URL="http://pootle.locamotion.org/archives/firefox/firefox-%LANG%.tar.bz2"
+PO_URL_HG=
+PO_URL_HTTP="http://pootle.locamotion.org/archives/firefox/firefox-%LANG%.tar.bz2"
+PO_URL_SVN=
 SOURCE_DIR="mozilla-$GECKO_VERSION"
 #SOURCE_URL="http://hg.mozilla.org/mozilla-central"
 SOURCE_URL="http://hg.mozilla.org/releases/mozilla-$GECKO_VERSION"
@@ -45,7 +47,11 @@ function usage() {
 	echo "                                  --src-repo-url=http://hg.mozilla.org/releases/mozilla-%VER%"
 	echo "   --l10n-dir=<dir>         - The directory where Mozilla l10n files live (default: $L10N_DIR)"
 	echo "   --l10n-repo-url=<url>    - The base URL (without language code) of Mozilla l10n repositories (default: $L10N_BASE_URL)"
-	echo "   --lang-po-url=<url>      - The URL where a tarball of language PO files should be downloaded from (default: $POOTLE_URL)"
+	echo "   --lang-po-hg=<url>       - The Mercurial repository URL where language PO files should be checked out from"
+	echo "                              (%LANG% is replaced with the language code)"
+	echo "   --lang-po-http=<url>     - The URL where a tarball of language PO files should be downloaded from (default: $PO_URL_HTTP)"
+	echo "                              (%LANG% is replaced with the language code)"
+	echo "   --lang-po-svn=<url>      - The Subversion repository URL where language PO files should be checked out from"
 	echo "                              (%LANG% is replaced with the language code)"
 	echo "   --langs=aa[,bb[,cc]]     - Handle specified languages (default: $LANGS)"
 	echo "   --moz-product=<prod>     - The Mozilla product name (default: $PRODUCT)"
@@ -82,7 +88,7 @@ do
 		--fennec)
 			L10N_DIR="l10n-central"
 			L10N_BASE_URL="http://hg.mozilla.org/l10n-central/"
-			POOTLE_URL="http://pootle.locamotion.org/archives/fennec/fennec-%LANG%.tar.bz2"
+			PO_URL_HTTP="http://pootle.locamotion.org/archives/fennec/fennec-%LANG%.tar.bz2"
 			PRODUCT="mobile"
 			SOURCE_DIR="mobile"
 			SOURCE_URL="http://hg.mozilla.org/mobile-browser/"
@@ -101,8 +107,16 @@ do
 			L10N_BASE_URL=$(echo $1 | sed 's/\-\-l10n\-repo\-url=//')
 			shift
 			;;
-		--lang-po-url=*)
-			POOTLE_URL=$(echo $1 | sed 's/\-\-lang\-po\-url=//')
+		--lang-po-hg=*)
+			PO_URL_HG=$(echo $1 | sed 's/\-\-lang\-po\-hg=//')
+			shift
+			;;
+		--lang-po-http=*)
+			PO_URL_HTTP=$(echo $1 | sed 's/\-\-lang\-po\-http=//')
+			shift
+			;;
+		--lang-po-svn=*)
+			PO_URL_SVN=$(echo $1 | sed 's/\-\-lang\-po\-svn=//')
 			shift
 			;;
 		--langs=*)
@@ -219,15 +233,32 @@ update_hg() {
 
 get_po_files() {
 	lang=$1
-	if [ ! -d po/$lang ]; then
-		wget_url=$(echo $POOTLE_URL | sed "s/%LANG%/$lang/g")
-		debuglog "Getting PO files from Pootle server: $wget_url"
+	if [ -d po/$lang ]; then
+		debuglog "Language directory exists: po/$lang. Moving to po/$lang.$!."
+		if [ -d po/$lang.$! ]; then
+			debuglog "Backup language directory exists: $po/$lang.$1. Deleting it."
+			rm -rm po/$lang.$1
+		fi
+		mv po/${lang} po/$lang.$!
+	fi
+
+	if [ -n $PO_URL_HTTP ]; then
+		wget_url=$(echo $PO_URL_HTTP | sed "s/%LANG%/$lang/g")
+		debuglog "Getting PO files from HTTP server: $wget_url"
 		wget $wget_url -O po/$lang.tar.bz2
 		if [ $? != 0 ]; then
 			echo "Failed to get PO files for language $lang from $wget_url"
 			return
 		fi
 		(cd po; tar xf $lang.tar.bz2)
+	elif [ -n $PO_URL_SVN ]; then
+		svn_url=$(echo $PO_URL_SVN | sed "s/%LANG%/$lang/g")
+		debuglog "Checking out PO files from Subversion repository: $svn_url"
+		(cd po; svn checkout $svn_url $lang)
+	elif [ -n $PO_URL_HG ]; then
+		hg_url=$(echo $PO_URL_HG | sed "s/%LANG%/$lang/g")
+		debuglog "Cloning PO files from Mercurial repository: $hg_url"
+		(cd po; hg clone $hg_url $lang)
 	fi
 }
 
