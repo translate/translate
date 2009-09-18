@@ -27,7 +27,7 @@ SOURCE_URL="http://hg.mozilla.org/releases/mozilla-$GECKO_VERSION"
 VERBOSE=1
 
 debuglog() {
-	[ -n $VERBOSE ] && echo ">>> $*"
+	[[ x$VERBOSE != x ]] && echo ">>> $*"
 }
 
 function usage() {
@@ -229,7 +229,7 @@ update_hg() {
 		hg clone $url $dir || hgfailed=1
     fi
 
-	[ -n $hgfailed ] && mkdir -p $dir
+	[[ x$hgfailed != x ]] && mkdir -p $dir
 }
 
 get_po_files() {
@@ -247,7 +247,7 @@ get_po_files() {
 		mv po/${lang} po/$lang.$!
 	fi
 
-	if [ -n $PO_URL_HTTP ]; then
+	if [[ x$PO_URL_HTTP != x ]]; then
 		wget_url=$(echo $PO_URL_HTTP | sed "s/%LANG%/$lang/g")
 		debuglog "Getting PO files from HTTP server: $wget_url"
 		wget $wget_url -O po/$lang.tar.bz2
@@ -256,11 +256,11 @@ get_po_files() {
 			return
 		fi
 		(cd po; tar xf $lang.tar.bz2)
-	elif [ -n $PO_URL_SVN ]; then
+	elif [[ x$PO_URL_SVN != x ]]; then
 		svn_url=$(echo $PO_URL_SVN | sed "s/%LANG%/$lang/g")
 		debuglog "Checking out PO files from Subversion repository: $svn_url"
 		(cd po; svn checkout $svn_url $lang)
-	elif [ -n $PO_URL_HG ]; then
+	elif [[ x$PO_URL_HG != x ]]; then
 		hg_url=$(echo $PO_URL_HG | sed "s/%LANG%/$lang/g")
 		debuglog "Cloning PO files from Mercurial repository: $hg_url"
 		(cd po; hg clone $hg_url $lang)
@@ -315,13 +315,13 @@ build_xpi() {
 
 
 ##### MAIN START #####
-if [ -z $SKIP_SRC_PULL ]; then
+if [[ x$SKIP_SRC_PULL == x ]]; then
 	# Update source repository
 	update_hg $SOURCE_URL $SOURCE_DIR
 fi
 
 enUSchanged=
-if [ -z $SKIP_EN ]; then
+if [[ x$SKIP_EN == x ]]; then
 	# Get en-US files
 	if [ -d en-US ]; then
 		mv en-US{,.old}
@@ -338,9 +338,9 @@ if [ -z $SKIP_EN ]; then
 	fi
 fi
 
-if [ -z $SKIP_POT ]; then
+if [[ x$SKIP_POT == x ]]; then
 	# Generate POT files
-	if [ -n $enUSchanged ]; then
+	if [[ x$enUSchanged != x ]]; then
 		if [ -d pot ]; then
 			rm -rf pot
 		fi
@@ -349,20 +349,20 @@ if [ -z $SKIP_POT ]; then
 	fi
 fi
 
-[ -z $SKIP_LANGS ] || exit 0
+[[ x$SKIP_LANGS == x ]] || exit 0
 
 # Update language l10n files
 for l in $LANGS; do
 	debuglog "<language name=$l>"
-	[ -z $SKIP_LANG_MOZGEN ] && update_hg $L10N_BASE_URL/$l $L10N_DIR/$l
+	[[ x$SKIP_LANG_MOZGEN == x ]] && update_hg $L10N_BASE_URL/$l $L10N_DIR/$l
 	#FIXME: The following should be done by moz2po, ie. moz2po should copy files from
 	#       the en-US that is not present in the translation.
 	[ ! -d "$L10N_DIR/$l" ] && mkdir -p $L10N_DIR/$l && cp -R en-US/* $L10N_DIR/$l
-	[ -z $SKIP_LANG_GETPO ] && get_po_files $l
+	[[ x$SKIP_LANG_GETPO == x ]]  && get_po_files $l
 	[ ! -d po/$l ] && "!!! Skipping language $l" && continue
-	[ -z $SKIP_LANG_UPDATE_PO -a -n $enUSchanged ] && update_po $l
-	[ -z $SKIP_LANG_MOZGEN ] && merge_back $l
-	[ -z $SKIP_LANG_XPI ] && build_xpi $l
+	[[ x$SKIP_LANG_UPDATE_PO == x && x$enUSchanged != x ]] && update_po $l
+	[[ x$SKIP_LANG_MOZGEN == x ]] && merge_back $l
+	[[ x$SKIP_LANG_XPI == x ]]    && build_xpi $l
 	debuglog "</language>"
 done
 ######################
