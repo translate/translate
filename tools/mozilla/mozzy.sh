@@ -237,8 +237,8 @@ get_po_files() {
 	if [ -d po/$lang ]; then
 		debuglog "Language directory exists: po/$lang. Moving to po/$lang.$!."
 		if [ -d po/$lang.$! ]; then
-			debuglog "Backup language directory exists: $po/$lang.$1. Deleting it."
-			rm -rm po/$lang.$1
+			debuglog "Backup language directory exists: $po/$lang.$!. Deleting it."
+			rm -rm po/$lang.$!
 		fi
 		mv po/${lang} po/$lang.$!
 	fi
