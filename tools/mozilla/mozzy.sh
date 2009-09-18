@@ -19,7 +19,7 @@ L10N_BASE_URL="http://hg.mozilla.org/releases/l10n-mozilla-$GECKO_VERSION"
 L10N_DIR="l10n"
 LANGPACK_DIR="xpi"
 PO_URL_HG=
-PO_URL_HTTP="http://pootle.locamotion.org/archives/firefox/firefox-%LANG%.tar.bz2"
+PO_URL_HTTP=
 PO_URL_SVN=
 SOURCE_DIR="mozilla-$GECKO_VERSION"
 #SOURCE_URL="http://hg.mozilla.org/mozilla-central"
@@ -49,7 +49,7 @@ function usage() {
 	echo "   --l10n-repo-url=<url>    - The base URL (without language code) of Mozilla l10n repositories (default: $L10N_BASE_URL)"
 	echo "   --lang-po-hg=<url>       - The Mercurial repository URL where language PO files should be checked out from"
 	echo "                              (%LANG% is replaced with the language code)"
-	echo "   --lang-po-http=<url>     - The URL where a tarball of language PO files should be downloaded from (default: $PO_URL_HTTP)"
+	echo "   --lang-po-http=<url>     - The URL where a tarball of language PO files should be downloaded from"
 	echo "                              (%LANG% is replaced with the language code)"
 	echo "   --lang-po-svn=<url>      - The Subversion repository URL where language PO files should be checked out from"
 	echo "                              (%LANG% is replaced with the language code)"
@@ -234,6 +234,10 @@ update_hg() {
 
 get_po_files() {
 	lang=$1
+	if [[ x$PO_URL_HG == x && x$PO_URL_HTTP == x && x$PO_URL_SVN == x ]]; then
+		return
+	fi
+
 	if [ -d po/$lang ]; then
 		debuglog "Language directory exists: po/$lang. Moving to po/$lang.$!."
 		if [ -d po/$lang.$! ]; then
