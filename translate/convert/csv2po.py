@@ -155,7 +155,7 @@ class csv2po:
                 # ignore typical header strings...
                 mightbeheader = False
                 if [item.strip().lower() for item in csvunit.comment, csvunit.source, csvunit.target] == \
-                        ["comment", "original", "translation"]:
+                        ["location", "source", "target"]:
                     continue
                 if len(csvunit.comment.strip()) == 0 and csvunit.source.find("Content-Type:") != -1:
                     continue
@@ -189,7 +189,7 @@ def main(argv=None):
     parser.add_option("", "--charset", dest="charset", default=None,
         help="set charset to decode from csv files", metavar="CHARSET")
     parser.add_option("", "--columnorder", dest="columnorder", default=None,
-        help="specify the order and position of columns (source,source,target)")
+        help="specify the order and position of columns (location,source,target)")
     parser.add_duplicates_option()
     parser.passthrough.append("charset")
     parser.passthrough.append("columnorder")

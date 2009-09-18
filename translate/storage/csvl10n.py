@@ -115,7 +115,7 @@ class csvunit(base.TranslationUnit):
         return source, target
 
     def fromdict(self, cedict):
-        self.comment = cedict.get('comment', '').decode('utf-8')
+        self.comment = cedict.get('location', '').decode('utf-8')
         self.source = cedict.get('source', '').decode('utf-8')
         self.target = cedict.get('target', '').decode('utf-8')
         if self.comment is None:
@@ -135,11 +135,11 @@ class csvunit(base.TranslationUnit):
             source = source.encode(encoding)
         if isinstance(target, unicode):
             target = target.encode(encoding)
-        return {'comment':comment, 'source': source, 'target': target}
+        return {'location':comment, 'source': source, 'target': target}
 
 class csvfile(base.TranslationStore):
     """This class represents a .csv file with various lines. 
-    The default format contains three columns: comments, source, target"""
+    The default format contains three columns: location, source, target"""
     UnitClass = csvunit
     Name = _("Comma Separated Value")
     Mimetypes  = ['text/comma-separated-values', 'text/csv']
@@ -148,7 +148,7 @@ class csvfile(base.TranslationStore):
         base.TranslationStore.__init__(self, unitclass = self.UnitClass)
         self.units = []
         if fieldnames is None:
-            self.fieldnames = ['comment', 'source', 'target']
+            self.fieldnames = ['location', 'source', 'target']
         else:
             if isinstance(fieldnames, basestring):
                 fieldnames = [fieldname.strip() for fieldname in fieldnames.split(",")]

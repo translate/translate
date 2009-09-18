@@ -35,9 +35,9 @@ class po2csv:
     def convertunit(self, inputunit):
         csvunit = csvl10n.csvunit()
         if inputunit.isheader():
-            csvunit.comment = "comment"
-            csvunit.source = "original"
-            csvunit.target = "translation"
+            csvunit.comment = "location"
+            csvunit.source = "source"
+            csvunit.target = "target"
         elif inputunit.isblank():
             return None
         else:
@@ -81,7 +81,7 @@ def main(argv=None):
     formats = {"po":("csv", convertcsv)}
     parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
     parser.add_option("", "--columnorder", dest="columnorder", default=None,
-        help="specify the order and position of columns (comment,source,target)")
+        help="specify the order and position of columns (location,source,target)")
     parser.passthrough.append("columnorder")
     parser.run(argv)
 
