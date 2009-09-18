@@ -354,7 +354,7 @@ fi
 # Update language l10n files
 for l in $LANGS; do
 	debuglog "<language name=$l>"
-	[[ x$SKIP_LANG_MOZGEN == x ]] && update_hg $L10N_BASE_URL/$l $L10N_DIR/$l
+	[[ x$SKIP_LANG_PULL == x ]]   && update_hg $L10N_BASE_URL/$l $L10N_DIR/$l
 	#FIXME: The following should be done by moz2po, ie. moz2po should copy files from
 	#       the en-US that is not present in the translation.
 	[ ! -d "$L10N_DIR/$l" ] && mkdir -p $L10N_DIR/$l && cp -R en-US/* $L10N_DIR/$l
