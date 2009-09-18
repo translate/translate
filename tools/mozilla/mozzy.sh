@@ -99,6 +99,7 @@ do
 			L10N_BASE_URL="http://hg.mozilla.org/releases/l10n-mozilla-$GECKO_VERSION"
 			SOURCE_DIR="mozilla-$GECKO_VERSION"
 			SOURCE_URL="http://hg.mozilla.org/releases/mozilla-$GECKO_VERSION"
+			;;
 		--l10n-dir=*)
 			L10N_DIR=$(echo $1 | sed 's/\-\-l10n\-dir=//')
 			shift
