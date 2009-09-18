@@ -100,6 +100,7 @@ def main(argv=None):
     formats = {
                "ini": ("po", convertini), ("ini", "ini"): ("po", convertini),
                "isl": ("po", convertisl), ("isl", "isl"): ("po", convertisl),
+               "iss": ("po", convertisl), ("iss", "iss"): ("po", convertisl),
               }
     parser = convert.ConvertOptionParser(formats, usetemplates=True, usepots=True, description=__doc__)
     parser.add_duplicates_option()
