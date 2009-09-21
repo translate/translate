@@ -473,20 +473,11 @@ class pounit(pocommon.pounit):
                 typecomments = map(lambda tcline: re.sub("\\b%s\\b[ \t,]*" % typecomment, "", tcline), self.typecomments)
                 self.typecomments = filter(lambda tcline: tcline.strip() != "#,", typecomments)
 
-    def istranslated(self):
-        return super(pounit, self).istranslated() and not self.isobsolete()
-
-    def istranslatable(self):
-        return not (self.isheader() or self.isblank() or self.isobsolete())
-
     def isfuzzy(self):
         return self.hastypecomment("fuzzy")
 
     def markfuzzy(self, present=True):
         self.settypecomment("fuzzy", present)
-
-    def isreview(self):
-        return self.hastypecomment("review") or self.hasmarkedcomment("review") or self.hasmarkedcomment("pofilter")
 
     def isobsolete(self):
         return self.obsolete

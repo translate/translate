@@ -76,6 +76,16 @@ class pounit(base.TranslationUnit):
             self.removenotes()
             self.addnote(newnotes, origin="translator")
 
+    def istranslated(self):
+        return super(pounit, self).istranslated() and not self.isobsolete()
+
+    def istranslatable(self):
+        return not (self.isheader() or self.isblank() or self.isobsolete())
+
+    def isreview(self):
+        return self.hasmarkedcomment("review") or self.hasmarkedcomment("pofilter")
+
+
 class pofile(poheader.poheader, base.TranslationStore):
     Name = _("Gettext PO file")
     Mimetypes  = ["text/x-gettext-catalog", "text/x-gettext-translation", "text/x-po", "text/x-pot"]

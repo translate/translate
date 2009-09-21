@@ -429,20 +429,11 @@ class pounit(pocommon.pounit):
                 return True
         return False
 
-    def istranslated(self):
-        return super(pounit, self).istranslated() and not self.isobsolete()
-
-    def istranslatable(self):
-        return not (self.isheader() or self.isblank() or self.isobsolete())
-
     def isfuzzy(self):
         return gpo.po_message_is_fuzzy(self._gpo_message)
 
     def markfuzzy(self, present=True):
         gpo.po_message_set_fuzzy(self._gpo_message, present)
-
-    def isreview(self):
-        return self.hasmarkedcomment("review") or self.hasmarkedcomment("pofilter")
 
     def isobsolete(self):
         return gpo.po_message_is_obsolete(self._gpo_message)
