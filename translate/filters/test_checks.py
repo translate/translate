@@ -209,6 +209,9 @@ def test_doublewords():
     # Double variables are not an error
     stdchecker = checks.StandardChecker(checks.CheckerConfig(varmatches=[("%", 1)]))
     assert passes(stdchecker.doublewords, "%s %s installation", "tsenyo ya %s %s")
+    # In some language certain double words are not errors
+    st_checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="st"))
+    assert passes(st_checker.doublewords, "Color to draw the name of a message you sent.", "Mmala wa ho taka bitso la molaetsa oo o o rometseng.")
 
 def test_endpunc():
     """tests endpunc"""

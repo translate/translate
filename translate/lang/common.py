@@ -175,6 +175,10 @@ class Common(object):
     but normally they would be at least precomposed characters. All characters,
     lower and upper, are included in the list."""
 
+    validdoublewords = []
+    """Some languages allow double words in certain cases.  This is a dictionary
+    of such words."""
+
     def __new__(cls, code):
         """This returns the language class for the given code, following a 
         singleton like approach (only one object per language)."""
