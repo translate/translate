@@ -212,6 +212,8 @@ def test_doublewords():
     # In some language certain double words are not errors
     st_checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="st"))
     assert passes(st_checker.doublewords, "Color to draw the name of a message you sent.", "Mmala wa ho taka bitso la molaetsa oo o o rometseng.")
+    assert passes(st_checker.doublewords, "Ten men", "Banna ba ba leshome")
+    assert passes(st_checker.doublewords, "Give SARS the tax", "Lekgetho le le fe SARS")
 
 def test_endpunc():
     """tests endpunc"""
