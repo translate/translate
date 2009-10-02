@@ -68,7 +68,8 @@ try:
     import Levenshtein as Levenshtein
     distance = native_distance
 except Exception:
-    print >> sys.stderr, "Python-Levenshtein not found. Continuing with built-in (slower) fuzzy matching."
+    import logging
+    logging.warning("Python-Levenshtein not found. Continuing with built-in (slower) fuzzy matching.")
     distance = python_distance
 
 class LevenshteinComparer:
