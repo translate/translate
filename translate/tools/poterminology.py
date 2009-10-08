@@ -70,6 +70,8 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
             self.error("You cannot use both -u/--update and -o/--output")
         if args:
             self.error("You have used an invalid combination of -i/--input, -o/--output, -u/--update and freestanding args")
+        if not options.input:
+            self.error("No input file or directory was specified")
         if isinstance(options.input, list) and len(options.input) == 1:
             options.input = options.input[0]
             if options.inputmin == None:
