@@ -1,23 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
-# Copyright 2007 Zuza Software Foundation
-# 
-# This file is part of translate.
 #
-# translate is free software; you can redistribute it and/or modify
+# Copyright 2007-2009 Zuza Software Foundation
+#
+# This file is part of the Translate Toolkit.
+#
+# This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
-# translate is distributed in the hope that it will be useful,
+#
+# This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with translate; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 """This module represents French language.
 
@@ -40,7 +39,7 @@ def guillemets(text):
     # probably not safe to convert them.
     if text.count(u'"') % 2 == 0:
         text = re.sub('(.|^)"([^"]+)"', convertquotation, text)
-    singlecount = text.count(u"'") 
+    singlecount = text.count(u"'")
     if singlecount:
         if singlecount % 2 == 0:
             text = re.sub("(.|^)'([^']+)'", convertquotation, text)
@@ -51,6 +50,8 @@ def guillemets(text):
 
 class fr(common.Common):
     """This class represents French."""
+
+    validaccel = u"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890" + u"éÉ"
 
     # According to http://french.about.com/library/writing/bl-punctuation.htm, 
     # in French, a space is required both before and after all two- (or more) 
@@ -63,7 +64,7 @@ class fr(common.Common):
 
     def punctranslate(cls, text):
         """Implement some extra features for quotation marks.
-        
+
         Known shortcomings:
             - % and $ are not touched yet for fear of variables
             - Double spaces might be introduced
