@@ -328,7 +328,7 @@ build_xpi() {
 	lang=$1
 	debuglog "<buildxpi lang=$lang>"
 	if [ -d $L10N_DIR/$lang ]; then
-		buildxpi.py -L $L10N_DIR -s $SOURCE_DIR -o $LANGPACK_DIR $lang || true
+		buildxpi.py -d -L $L10N_DIR -s $SOURCE_DIR -o $LANGPACK_DIR $lang || true
 	else
 		echo "Could not find l10n directory: $L10N_DIR/$lang"
 	fi
