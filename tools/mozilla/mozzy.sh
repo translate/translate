@@ -61,6 +61,7 @@ function usage() {
 	echo "   --skip-lang-mozgen       - Don't generate Mozilla l10n files from updated PO files"
 	echo "   --skip-lang-pull         - Don't pull Mozilla l10n files from Mozilla repositories"
 	echo "   --skip-lang-update       - Don't update the language's PO files from its VCS"
+	echo "   --skip-lang-update-po    - Don't update PO files to current POT files"
 	echo "   --skip-lang-xpi          - Don't build language packs"
 	echo "   --skip-langs             - Skip processing of individual languages"
 	echo "   --skip-pot               - Don't create POT files (it should already exist)"
@@ -212,26 +213,26 @@ do
 done
 
 ##### FUNCTIONS #####
-hgfailed=
 update_hg() {
-    url=$1
-    dir=$2
+	url=$1
+	dir=$2
 	hgfailed=
-    if [ -d $dir -a -d $dir/.hg ]; then
+	if [ -d $dir -a -d $dir/.hg ]; then
 		debuglog "Updating repository: $dir"
-		pushd $dir 
+		pushd $dir > /dev/null
 		hg revert --all -r default --no-backup
-		hg pull -u 
+		hg pull -u
 		hg update -C
-		popd
-    else
+		popd > /dev/null
+	else
+		[ -d $dir ] && rm -rf $dir
 		debuglog "Cloning repository $url to $dir"
 		mkdir -p $dir
 		rmdir $dir
 		hg clone $url $dir || hgfailed=1
-    fi
+	fi
 
-	[[ x$hgfailed != x ]] && mkdir -p $dir
+	true
 }
 
 get_po_files() {
@@ -291,29 +292,31 @@ get_po_files() {
 }
 
 update_po() {
-    lang=$1
+	lang=$1
 	debuglog "<update_po lang=$lang>"
-    po_dir=po/$lang
+	po_dir=po/$lang
 	po_updated_dir=po-updated/$lang
 
 	# Update from VCS
-    [ -d $po_dir/.hg ]  && (cd $po_dir && hg revert --all -r default --no-backup && hg pull -u && hg update -C)
-    [ -d $po_dir/.svn ] && (cd $po_dir && svn up)
-    
-    rm -rf $po_updated_dir
-    # Preserve VCS metadata
-    cp -R $po_dir $po_updated_dir
-    find $po_updated_dir -name '*.po' -exec rm -f '{}' \;
-    
-    tempdir=`mktemp -d`
-    cp -R $po_dir $tempdir
-    pomigrate2 --use-compendium --quiet --pot2po $tempdir $po_updated_dir pot
-    rm -rf $tempdir
+	[ -d $po_dir/.hg ]  && (cd $po_dir && hg revert --all -r default --no-backup && hg pull -u && hg update -C)
+	[ -d $po_dir/.svn ] && (cd $po_dir && svn up)
+
+	rm -rf $po_updated_dir
+	# Preserve VCS metadata
+	cp -R $po_dir $po_updated_dir
+	find $po_updated_dir -name '*.po' -exec rm -f '{}' \;
+
+	if [[ x$SKIP_LANG_UPDATE_PO == x ]]; then
+		tempdir=`mktemp -d`
+		cp -R $po_dir $tempdir
+		pomigrate2 --use-compendium --quiet --pot2po $tempdir $po_updated_dir pot
+		rm -rf $tempdir
+	fi
 	debuglog "</update_po lang=$lang>"
 }
 
 merge_back() {
-    lang=$1
+	lang=$1
 	debuglog "<merge_back lang=$lang>"
 	if [ -d po-updated/$lang ]; then
 		po2moz --progress=none --errorlevel=traceback --exclude=".svn" --exclude=".hg*" \
@@ -346,17 +349,17 @@ fi
 enUSchanged=
 if [[ x$SKIP_EN == x ]]; then
 	# Get en-US files
-	if [ -d en-US ]; then
-		mv en-US{,.old}
-	fi
+	[ -d en-US.old ] && rm -rf en-US.old
+	[ -d en-US ] && mv en-US{,.old}
+
 	debuglog "Extracting en-US for product \"$PRODUCT\" from $SOURCE_DIR"
 	srcdir=$SOURCE_DIR
 	#[ $PRODUCT = 'fennec' ] && srcdir=""
 	get_moz_enUS.py -s $srcdir -d . -p "$PRODUCT" -v
 
 	if [ -d en-US.old ]; then
-		diff en-US{,.old}
-		[ $? != 0 ] && enUSchanged=1
+		diff en-US{,.old} > /dev/null
+		[ $? != 0 ] && echo "en-US changed" && enUSchanged=1
 		rm -rf en-US.old
 	fi
 fi
@@ -377,13 +380,14 @@ fi
 # Update language l10n files
 for l in $LANGS; do
 	debuglog "<language name=$l>"
-	[[ x$SKIP_LANG_PULL == x ]]   && update_hg $L10N_BASE_URL/$l $L10N_DIR/$l
+	[[ x$SKIP_LANG_PULL == x ]] && update_hg $L10N_BASE_URL/$l $L10N_DIR/$l
+	[ ! -d "$L10N_DIR/$l" ] && cp -R en-US "$L10N_DIR/$l"
 	#FIXME: The following should be done by moz2po, ie. moz2po should copy files from
 	#       the en-US that is not present in the translation.
 	[ ! -d "$L10N_DIR/$l" ] && mkdir -p $L10N_DIR/$l && cp -R en-US/* $L10N_DIR/$l
-	[[ x$SKIP_LANG_GETPO == x ]]  && get_po_files $l
-	[ ! -d po/$l ] && "!!! Skipping language $l" && continue
-	[[ x$SKIP_LANG_UPDATE_PO == x && x$enUSchanged != x ]] && update_po $l
+	[[ x$SKIP_LANG_GETPO == x ]] && get_po_files $l
+	[ ! -d po/$l ] && echo "!!! Skipping language $l" && continue
+	[[ x$SKIP_LANG_UPDATE == x && x$enUSchanged == x ]] && update_po $l
 	[[ x$SKIP_LANG_MOZGEN == x ]] && merge_back $l
 	[[ x$SKIP_LANG_XPI == x ]]    && build_xpi $l
 	debuglog "</language>"
