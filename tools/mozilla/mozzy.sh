@@ -240,12 +240,12 @@ get_po_files() {
 	fi
 
 	if [ -d po/$lang ]; then
-		debuglog "Language directory exists: po/$lang. Moving to po/$lang.$!."
-		if [ -d po/$lang.$! ]; then
-			debuglog "Backup language directory exists: $po/$lang.$!. Deleting it."
-			rm -rm po/$lang.$!
+		debuglog "Language directory exists: po/$lang. Moving to po/$lang.$$."
+		if [ -d po/$lang.$$ ]; then
+			debuglog "Backup language directory exists: po/$lang.$$. Deleting it."
+			rm -rm po/$lang.$$
 		fi
-		mv po/${lang} po/$lang.$!
+		mv po/${lang} po/$lang.$$
 	fi
 
 	if [[ x$PO_URL_HTTP != x ]]; then
