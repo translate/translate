@@ -18,6 +18,7 @@ PRODUCT="browser"
 L10N_BASE_URL="http://hg.mozilla.org/releases/l10n-mozilla-$GECKO_VERSION"
 L10N_DIR="l10n"
 LANGPACK_DIR="xpi"
+PHASEDIRS="config1 config2 configx install lang mac never notnb other security unix user1 user2 user3 user4 win"
 PO_URL_HG=
 PO_URL_HTTP=
 PO_URL_SVN=
@@ -256,7 +257,28 @@ get_po_files() {
 			echo "Failed to get PO files for language $lang from $wget_url"
 			return
 		fi
-		(cd po; tar xf $lang.tar.bz2)
+
+		pushd po > /dev/null
+		tar xf $lang.tar.bz2
+
+		# Check if the PO files are split up into phases
+		phased=1
+		for phase in $PHASEDIRS; do
+			if [ ! -d $lang/$phase ]; then
+				phased=
+				break
+			fi
+		done
+
+		# If it is split up into phases, copy all files to $lang/
+		if [ -n $phased ]; then
+			for phase in $PHASEDIRS; do
+				cp -R $lang/$phase/* $lang
+				rm -rf $lang/$phase
+			done
+		fi
+
+		popd > /dev/null
 	elif [[ x$PO_URL_SVN != x ]]; then
 		svn_url=$(echo $PO_URL_SVN | sed "s/%LANG%/$lang/g")
 		debuglog "Checking out PO files from Subversion repository: $svn_url"
