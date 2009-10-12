@@ -61,7 +61,7 @@ def run(cmd, expected_status=0, stdout=None, stderr=None, shell=False):
         print '!!! "%s" returned unexpected status %d' % (' '.join(cmd), cmd_status)
     return cmd_status
 
-def build_xpi(l10nbase, srcdir, outputdir, lang, product):
+def build_xpi(l10nbase, srcdir, outputdir, lang, product, delete_dest=False):
     # Backup existing .mozconfig if it exists
     backup_name = ''
     if os.path.exists(MOZCONFIG):
@@ -106,6 +106,11 @@ ac_add_options --enable-application=%(product)s""" % \
                 '*.%s.langpack.xpi' % lang
             )
         )[0]
+        if delete_dest:
+            filename = os.path.split(xpiglob)[1]
+            destfile = os.path.join(outputdir, filename)
+            if os.path.isfile(destfile):
+                os.unlink(destfile)
         move(xpiglob, outputdir)
 
         os.chdir(olddir)
@@ -148,6 +153,13 @@ def create_option_parser():
         default='mozilla',
         help='The directory containing the Mozilla l10n sources.'
     )
+    p.add_option(
+        '-d', '--delete-dest',
+        dest='delete_dest',
+        action='store_true',
+        default=False,
+        help='Delete output XPI if it already exists.'
+    )
 
     p.add_option(
         '-v', '--verbose',
@@ -172,5 +184,6 @@ if __name__ == '__main__':
         srcdir=os.path.abspath(options.srcdir),
         outputdir=os.path.abspath(options.outputdir),
         lang=args[0],
-        product=options.mozproduct
+        product=options.mozproduct,
+        delete_dest=options.delete_dest
     )
