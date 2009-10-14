@@ -86,6 +86,8 @@ def write_odf(xlf_data, template, output_file, dom_trees):
     template.close()
     template = file(template.name, mode='rb')
     template_zip = zipfile.ZipFile(template,  'r')
+    output_file.close()
+    output_file = file(output_file.name, mode='wb')
     output_zip   = zipfile.ZipFile(output_file, 'w', compression=zipfile.ZIP_DEFLATED)
     output_zip   = odf_io.copy_odf(template_zip, output_zip, dom_trees.keys() + ['META-INF/manifest.xml'])
     output_zip   = odf_io.add_file(output_zip, template_zip.read('META-INF/manifest.xml'), 'translation.xlf', xlf_data)
