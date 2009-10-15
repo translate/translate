@@ -28,7 +28,7 @@ class TestCSV2PO:
 
     def test_simpleentity(self):
         """checks that a simple csv entry definition converts properly to a po entry"""
-        csvheader = 'comment,original,translation\n'
+        csvheader = 'location,source,target\n'
         csvsource = 'intl.charset.default,ISO-8859-1,UTF-16'
         # Headerless
         pofile = self.csv2po(csvsource)
@@ -104,7 +104,7 @@ wat lank aanhou"
 
     def test_kdecomment(self):
         """checks that we can merge into KDE comment entries"""
-        csvsource = '''comment,original,translation
+        csvsource = '''location,source,target
 simple.c,Source,Target'''
         potsource = r'''#: simple.c
 msgid "_: KDE comment\n"
