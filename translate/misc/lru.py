@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2008 Zuza Software Foundation
+# Copyright 2009 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -18,8 +18,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-#!/usr/bin/env python
-
 from collections import deque
 from weakref import WeakValueDictionary
 import gc
@@ -31,14 +29,13 @@ class LRUCachingDict(WeakValueDictionary):
     cullsize is the fraction of items that will be discarded when
     maxsize is reached.
     """
-    
+
     def __init__(self, maxsize, cullsize=2, *args, **kwargs):
         self.cullsize = max(2, cullsize)
         self.maxsize = max(cullsize, maxsize)
         self.queue = deque()
         WeakValueDictionary.__init__(self, *args, **kwargs)
 
-                      
     def __setitem__(self, key, value):
         # check boundaries to minimiza duplicate references
         while len(self.queue) and self.queue[0][0] == key:
@@ -61,7 +58,6 @@ class LRUCachingDict(WeakValueDictionary):
                 while gc.collect() > 0:
                     pass
 
-
     def __getitem__(self, key):
         value = WeakValueDictionary.__getitem__(self, key)
         # check boundaries to minimiza duplicate references
@@ -70,10 +66,10 @@ class LRUCachingDict(WeakValueDictionary):
             # to right
             self.queue.popleft()
 
-        # only append if item is not at right end of queu
+        # only append if item is not at right end of queue
         if not (len(self.queue) and self.queue[-1][0] == key):
             self.queue.append((key, value))
-            
+
         return value
 
     def __delitem__(self, key):
@@ -88,17 +84,15 @@ class LRUCachingDict(WeakValueDictionary):
             # item at right end of queue pop it since it'll be
             # appended again
             self.queue.pop()
-        
+
         return WeakValueDictionary.__delitem__(self, key)
-        
 
     def clear(self):
         self.queue.clear()
         return WeakValueDictionary.clear(self)
 
-
     def setdefault(self, key, default):
         if key not in self:
             self[key]=default
-            
+
         return self[key]
