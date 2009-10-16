@@ -329,6 +329,7 @@ def to_general_placeables(tree, classmap={
 
     return newtree
 
+# The order of these parsers are very important
 parsers = [
     NewlinePlaceable.parse,
     XMLTagPlaceable.parse,
@@ -338,9 +339,8 @@ parsers = [
     JavaMessageFormatPlaceable.parse,
     FormattingPlaceable.parse,
     # The Qt variables can consume the %1 in %1$s which will mask a printf
-    # placeable, so it has to come later. We can uncomment as soon as we can
-    # break the string freeze in Virtaal.
-#    QtFormattingPlaceable.parse,
+    # placeable, so it has to come later.
+    QtFormattingPlaceable.parse,
     UrlPlaceable.parse,
     FilePlaceable.parse,
     EmailPlaceable.parse,
