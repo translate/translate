@@ -30,6 +30,7 @@ __revision__ = "$Id$"
 import CommonIndexer
 import os
 import shutil
+import logging
 
 """ TODO for indexing engines:
     * get rid of jToolkit.glock dependency
@@ -171,7 +172,7 @@ def get_indexer(basedir, preference=None):
         # the database does not exist yet or we did not find an appropriate
         # class that can handle it - so we remove the whole base directory
         shutil.rmtree(basedir, ignore_errors=True)
-        print "Deleting invalid indexing directory '%s'" % basedir
+        logging.info("Deleting invalid indexing directory '%s'", basedir)
     # the database does not exist or it was deleted (see above)
     # we choose the first available indexing engine
     return preferred_indexers[0](basedir)
