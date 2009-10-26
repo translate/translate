@@ -32,7 +32,7 @@ class Builder:
         self.tmdb = tmdb.TMDB(tmdbfile)
         self.source_lang = source_lang
         self.target_lang = target_lang
-        
+
         for filename in filenames:
             if not os.path.exists(filename):
                 print >> sys.stderr, "cannot process %s: does not exist" % filename
@@ -42,7 +42,6 @@ class Builder:
             else:
                 self.handlefile(filename)
         self.tmdb.connection.commit()
-
 
     def handlefile(self, filename):
         try:
@@ -55,8 +54,7 @@ class Builder:
             self.tmdb.add_store(store, self.source_lang, self.target_lang, commit=False)
         except Exception, e:
             print e
-        print "new file:", filename
-
+        print "File added:", filename
 
     def handlefiles(self, dirname, filenames):
         for filename in filenames:
@@ -66,13 +64,13 @@ class Builder:
             else:
                 self.handlefile(pathname)
 
-
     def handledir(self, dirname):
         path, name = os.path.split(dirname)
         if name in ["CVS", ".svn", "_darcs", ".git", ".hg", ".bzr"]:
             return
         entries = os.listdir(dirname)
         self.handlefiles(dirname, entries)
+
 
 def main():
     try:
@@ -81,14 +79,20 @@ def main():
     except Exception:
         pass
     parser = OptionParser()
-    parser.add_option("-d", "--tmdb", dest="tmdbfile",
-                      help="translation memory database file")
-    parser.add_option("-s", "--import-source-lang", dest="source_lang",
-                      help="source language of translation files")
-    parser.add_option("-t", "--import-target-lang", dest="target_lang",
-                      help="target language of translation files")
+    parser.add_option(
+        "-d", "--tmdb", dest="tmdbfile",
+        help="translation memory database file"
+    )
+    parser.add_option(
+        "-s", "--import-source-lang", dest="source_lang",
+        help="source language of translation files"
+    )
+    parser.add_option(
+        "-t", "--import-target-lang", dest="target_lang",
+        help="target language of translation files"
+    )
     (options, args) = parser.parse_args()
-    
+
     Builder(options.tmdbfile, options.source_lang, options.target_lang, args)
 
 if __name__ == '__main__':
