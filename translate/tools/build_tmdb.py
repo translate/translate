@@ -78,14 +78,14 @@ def main():
         psyco.full()
     except Exception:
         pass
-    parser = OptionParser()
+    parser = OptionParser(usage="%prog [options] <input files>")
     parser.add_option(
-        "-d", "--tmdb", dest="tmdbfile",
-        help="translation memory database file"
+        "-d", "--tmdb", dest="tmdb_file", default="tm.db",
+        help="translation memory database file (default: tm.db)"
     )
     parser.add_option(
-        "-s", "--import-source-lang", dest="source_lang",
-        help="source language of translation files"
+        "-s", "--import-source-lang", dest="source_lang", default="en",
+        help="source language of translation files (defalut: en)"
     )
     parser.add_option(
         "-t", "--import-target-lang", dest="target_lang",
@@ -93,7 +93,13 @@ def main():
     )
     (options, args) = parser.parse_args()
 
-    Builder(options.tmdbfile, options.source_lang, options.target_lang, args)
+    if not options.target_lang:
+        parser.error('No target language specified.')
+
+    if len(args) < 1:
+        parser.error('No input file(s) specified.')
+
+    Builder(options.tmdb_file, options.source_lang, options.target_lang, args)
 
 if __name__ == '__main__':
     main()
