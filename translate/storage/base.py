@@ -397,7 +397,7 @@ class TranslationStore(object):
         super(TranslationStore, self).__init__()
 
     def getsourcelanguage(self):
-        """Gets the target language for this store"""
+        """Gets the source language for this store"""
         return self.sourcelanguage
 
     def setsourcelanguage(self, sourcelanguage):
