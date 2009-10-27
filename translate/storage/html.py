@@ -58,6 +58,7 @@ class htmlfile(HTMLParser, base.TranslationStore):
         self.filename = getattr(inputfile, 'name', None) 
         self.currentblock = ""
         self.currentblocknum = 0
+        self.currentcomment = ""
         self.currenttag = None
         self.includeuntaggeddata = includeuntaggeddata
         HTMLParser.__init__(self)
@@ -133,6 +134,7 @@ class htmlfile(HTMLParser, base.TranslationStore):
             self.currentblocknum += 1
             unit = self.addsourceunit(text)
             unit.addlocation("%s:%d" % (self.filename, self.currentblocknum))
+            unit.addnote(self.currentcomment)
 
     def strip_html(self, text):
         """Strip unnecessary html from the text.
@@ -201,11 +203,13 @@ class htmlfile(HTMLParser, base.TranslationStore):
     def startblock(self, tag):
         self.addhtmlblock(self.currentblock)
         self.currentblock = ""
+        self.currentcomment = ""
         self.currenttag = tag
 
     def endblock(self):
         self.addhtmlblock(self.currentblock)
         self.currentblock = ""
+        self.currentcomment = ""
         self.currenttag = None
 
     def handle_starttag(self, tag, attrs):
@@ -250,8 +254,11 @@ class htmlfile(HTMLParser, base.TranslationStore):
         self.handle_data("&%s;" % name)
 
     def handle_comment(self, data):
-        # we don't do anything with comments
-        pass
+        # we can place comments above the msgid as translator comments!
+        if self.currentcomment == "":
+            self.currentcomment = data
+        else:
+            self.currentcomment += '\n' + data
 
     def handle_pi(self, data):
         self.handle_data("<?%s>" % data)

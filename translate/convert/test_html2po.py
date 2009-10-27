@@ -6,11 +6,11 @@ from translate.convert import test_convert
 from translate.misc import wStringIO
 
 class TestHTML2PO:
-    def html2po(self, markup):
+    def html2po(self, markup, includeuntagged=False, duplicatestyle="msgctxt", keepcomments=False):
         """Helper to convert html to po without a file."""
         inputfile = wStringIO.StringIO(markup)
         convertor = html2po.html2po()
-        outputpo = convertor.convertfile(inputfile, "test", False, False)
+        outputpo = convertor.convertfile(inputfile, "test", False, includeuntagged, duplicatestyle, keepcomments)
         return outputpo
 
     def po2html(self, posource, htmltemplate):
@@ -408,6 +408,13 @@ ghi ?>'''
         pofile.units[0].target = innertrans # Register the translation in the PO file
         htmlresult = self.po2html(pofile, htmlsource)
         assert htmlresult == transsource
+    
+    def test_comments(self):
+        """Test that HTML comments are converted to translator notes in output"""
+        pofile = self.html2po('<!-- comment outside block --><p><!-- a comment -->A paragraph<!-- with another comment -->.</p>', keepcomments=True)
+        self.compareunit(pofile, 1, 'A paragraph.')
+        notes = pofile.getunits()[0].getnotes()
+        assert unicode(notes) == ' a comment \n with another comment '
 
 class TestHTML2POCommand(test_convert.TestConvertCommand, TestHTML2PO):
     """Tests running actual html2po commands on files"""
@@ -419,4 +426,5 @@ class TestHTML2POCommand(test_convert.TestConvertCommand, TestHTML2PO):
         options = test_convert.TestConvertCommand.test_help(self)
         options = self.help_check(options, "-P, --pot")
         options = self.help_check(options, "--duplicates=DUPLICATESTYLE")
+        options = self.help_check(options, "--keepcomments")
         options = self.help_check(options, "-u, --untagged", last=True)

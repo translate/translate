@@ -30,7 +30,7 @@ from translate.storage import po
 from translate.storage import html
 
 class html2po:
-    def convertfile(self, inputfile, filename, includeheader, includeuntagged=False, duplicatestyle="msgctxt"):
+    def convertfile(self, inputfile, filename, includeheader, includeuntagged=False, duplicatestyle="msgctxt", keepcomments=False):
         """converts a html file to .po format"""
         thetargetfile = po.pofile()
         htmlparser = html.htmlfile(includeuntaggeddata=includeuntagged, inputfile=inputfile)
@@ -40,15 +40,17 @@ class html2po:
         for htmlunit in htmlparser.units:
             thepo = thetargetfile.addsourceunit(htmlunit.source)
             thepo.addlocations(htmlunit.getlocations())
+            if keepcomments:
+                thepo.addnote(htmlunit.getnotes(), "developer")
         thetargetfile.removeduplicates(duplicatestyle)
         return thetargetfile
 
-def converthtml(inputfile, outputfile, templates, includeuntagged=False, pot=False, duplicatestyle="msgctxt"):
+def converthtml(inputfile, outputfile, templates, includeuntagged=False, pot=False, duplicatestyle="msgctxt", keepcomments=False):
     """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
     convertor = html2po()
     outputfilepos = outputfile.tell()
     includeheader = outputfilepos == 0
-    outputstore = convertor.convertfile(inputfile, getattr(inputfile, "name", "unknown"), includeheader, includeuntagged, duplicatestyle=duplicatestyle)
+    outputstore = convertor.convertfile(inputfile, getattr(inputfile, "name", "unknown"), includeheader, includeuntagged, duplicatestyle=duplicatestyle, keepcomments=keepcomments)
     outputfile.write(str(outputstore))
     return 1
 
@@ -62,6 +64,9 @@ def main(argv=None):
     parser.add_option("-u", "--untagged", dest="includeuntagged", default=False, action="store_true",
             help="include untagged sections")
     parser.passthrough.append("includeuntagged")
+    parser.add_option("--keepcomments", dest="keepcomments", default=False, action="store_true",
+            help="preserve html comments as translation notes in the output")
+    parser.passthrough.append("keepcomments")
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.run(argv)
