@@ -442,9 +442,14 @@ class TranslationStore(object):
         self.addunit(unit)
         return unit
 
+    def findid(self, id):
+        """find unit with matching id by checking id_index"""
+        self.require_index()
+        return self.id_index.get(id, None)
+    
     def findunit(self, source):
         """Finds the unit with the given source string.
-
+    
         @rtype: L{TranslationUnit} or None
         """
         if len(getattr(self, "sourceindex", [])):
@@ -511,6 +516,8 @@ class TranslationStore(object):
                                            
     def add_unit_to_index(self, unit):
         """Add a unit to source and location idexes"""
+        self.id_index[unit.getid()] = unit
+            
         def insert_unit(source):
             if not source in self.sourceindex:
                 self.sourceindex[source] = [unit]
@@ -535,6 +542,7 @@ class TranslationStore(object):
         """Indexes the items in this store. At least .sourceindex should be usefull."""
         self.locationindex = {}
         self.sourceindex = {}
+        self.id_index = {}
         for unit in self.units:
             # Do we need to test if unit.source exists?
             if unit.istranslatable():
@@ -545,7 +553,7 @@ class TranslationStore(object):
         if not hasattr(self, "sourceindex"):
             self.makeindex()
 
-            
+
     def __getstate__(self):
         odict = self.__dict__.copy()
         odict['fileobj'] = None
