@@ -229,6 +229,39 @@ msgstr "&searchIntegration.engineName; &ileti aramasına izin ver"
         print dtdfile
         assert str(dtdfile) == dtdtemplate % "Teks"
 
+    def test_duplicates(self):
+        """test that we convert duplicates back correctly to their respective entries."""
+        posource = r'''#: bookmarksMenu.label bookmarksMenu.accesskey
+msgctxt "bookmarksMenu.label bookmarksMenu.accesskey"
+msgid "&Bookmarks"
+msgstr "Dipu&kutshwayo"
+
+#: bookmarksItem.title
+msgctxt "bookmarksItem.title
+msgid "Bookmarks"
+msgstr "Dipukutshwayo"
+
+#: bookmarksButton.label
+msgctxt "bookmarksButton.label"
+msgid "Bookmarks"
+msgstr "Dipukutshwayo"
+'''
+        dtdtemplate = r'''<!ENTITY bookmarksMenu.label "Bookmarks">
+<!ENTITY bookmarksMenu.accesskey "B">
+<!ENTITY bookmarksItem.title "Bookmarks">
+<!ENTITY bookmarksButton.label "Bookmarks">
+'''
+        dtdexpected = r'''<!ENTITY bookmarksMenu.label "Dipukutshwayo">
+<!ENTITY bookmarksMenu.accesskey "k">
+<!ENTITY bookmarksItem.title "Dipukutshwayo">
+<!ENTITY bookmarksButton.label "Dipukutshwayo">
+'''
+        dtdfile = self.merge2dtd(dtdtemplate, posource)
+        print dtdfile
+        assert str(dtdfile) == dtdexpected
+
+
+
 class TestPO2DTDCommand(test_convert.TestConvertCommand, TestPO2DTD):
     """Tests running actual po2dtd commands on files"""
     convertmodule = po2dtd
