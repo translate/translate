@@ -234,32 +234,31 @@ msgstr "&searchIntegration.engineName; &ileti aramasına izin ver"
         posource = r'''#: bookmarksMenu.label bookmarksMenu.accesskey
 msgctxt "bookmarksMenu.label bookmarksMenu.accesskey"
 msgid "&Bookmarks"
-msgstr "Dipu&kutshwayo"
+msgstr "Dipu&kutshwayo1"
 
 #: bookmarksItem.title
 msgctxt "bookmarksItem.title
 msgid "Bookmarks"
-msgstr "Dipukutshwayo"
+msgstr "Dipukutshwayo2"
 
 #: bookmarksButton.label
 msgctxt "bookmarksButton.label"
 msgid "Bookmarks"
-msgstr "Dipukutshwayo"
+msgstr "Dipukutshwayo3"
 '''
         dtdtemplate = r'''<!ENTITY bookmarksMenu.label "Bookmarks">
 <!ENTITY bookmarksMenu.accesskey "B">
 <!ENTITY bookmarksItem.title "Bookmarks">
 <!ENTITY bookmarksButton.label "Bookmarks">
 '''
-        dtdexpected = r'''<!ENTITY bookmarksMenu.label "Dipukutshwayo">
+        dtdexpected = r'''<!ENTITY bookmarksMenu.label "Dipukutshwayo1">
 <!ENTITY bookmarksMenu.accesskey "k">
-<!ENTITY bookmarksItem.title "Dipukutshwayo">
-<!ENTITY bookmarksButton.label "Dipukutshwayo">
+<!ENTITY bookmarksItem.title "Dipukutshwayo2">
+<!ENTITY bookmarksButton.label "Dipukutshwayo3">
 '''
         dtdfile = self.merge2dtd(dtdtemplate, posource)
         print dtdfile
         assert str(dtdfile) == dtdexpected
-
 
 
 class TestPO2DTDCommand(test_convert.TestConvertCommand, TestPO2DTD):
