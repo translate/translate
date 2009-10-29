@@ -537,7 +537,8 @@ class TranslationStore(object):
         self.sourceindex = {}
         for unit in self.units:
             # Do we need to test if unit.source exists?
-            self.add_unit_to_index(unit)
+            if unit.istranslatable():
+                self.add_unit_to_index(unit)
 
     def require_index(self):
         """make sure source index exists"""
