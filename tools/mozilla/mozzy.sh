@@ -350,7 +350,7 @@ enUSchanged=
 if [[ x$SKIP_EN == x ]]; then
 	# Get en-US files
 	[ -d en-US.old ] && rm -rf en-US.old
-	[ -d en-US ] && mv en-US{,.old}
+	[ -d en-US ] && mv en-US{,.old} || enUSchanged=1
 
 	debuglog "Extracting en-US for product \"$PRODUCT\" from $SOURCE_DIR"
 	srcdir=$SOURCE_DIR
@@ -372,6 +372,8 @@ if [[ x$SKIP_POT == x ]]; then
 		fi
 		debuglog "Generating POT files from en-US"
 		moz2po --progress=none -P --duplicates=msgctxt en-US pot
+	else
+		debuglog "No changes in en-US. POT generation skipped."
 	fi
 fi
 
