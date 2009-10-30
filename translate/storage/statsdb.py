@@ -494,7 +494,7 @@ class StatsCache(object):
             return result
         else:
             print >> sys.stderr, """WARNING: Database in inconsistent state. 
-            fileid %d and unitid %d have no entries in the table units.""" % (fileid, unitid)
+            fileid %d and unitid %s have no entries in the table units.""" % (fileid, unitid)
             # If values.fetchone() is None, then we return an empty list,
             # to make FileTotals.new_record(*self.get_unit_stats(fileid, unitid))
             # do the right thing.
