@@ -280,6 +280,8 @@ class UnitChecker(object):
     def setsuggestionstore(self, store):
         """Sets the filename that a checker should use for evaluating suggestions."""
         self.suggestion_store = store
+        if self.suggestion_store:
+            self.suggestion_store.require_index()
 
     def filtervariables(self, str1):
         """filter out variables from str1"""
@@ -1178,8 +1180,7 @@ class StandardUnitChecker(UnitChecker):
         self.suggestion_store = getattr(self, 'suggestion_store', None)
         suggestions = []
         if self.suggestion_store:
-            source = unit.source
-            suggestions = [unit for unit in self.suggestion_store.units if unit.source == source]
+            suggestions = self.suggestion_store.findunits(unit.source)
         elif xliff and isinstance(unit, xliff.xliffunit):
             # TODO: we probably want to filter them somehow
             suggestions = unit.getalttrans()
