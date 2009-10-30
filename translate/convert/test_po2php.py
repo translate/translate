@@ -46,7 +46,7 @@ class TestPO2Php:
 
     def test_merging_blank_entries(self):
         """check that we can correctly merge entries that are blank in the template"""
-        posource = '''#: accesskey-accept
+        posource = r'''#: accesskey-accept
 msgid ""
 "_: accesskey-accept\n"
 ""

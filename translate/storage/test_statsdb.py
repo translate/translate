@@ -11,7 +11,7 @@ from translate.misc import wStringIO
 from translate.filters import checks
 import warnings
 
-fr_terminology_extract = """
+fr_terminology_extract = r"""
 msgid ""
 msgstr ""
 "Project-Id-Version: GnomeGlossary\n"
@@ -32,7 +32,7 @@ msgid "abort"
 msgstr "annuler"
 """
 
-jtoolkit_extract = """
+jtoolkit_extract = r"""
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
