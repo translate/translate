@@ -108,7 +108,7 @@ def _store_pre_merge(input_store, output_store, template_store, **kwargs) :
 
 def _store_post_merge(input_store, output_store, template_store, **kwargs) :
     """Close file after merging all translations, used for adding
-    statistics, obselete messages and similar wrapup tasks."""
+    statistics, obsolete messages and similar wrapup tasks."""
     #dispatch to format specific functions
     store_post_merge_hook = "_store_post_merge_%s" % input_store.__class__.__name__
     if  globals().has_key(store_post_merge_hook):
@@ -126,7 +126,7 @@ def _unit_post_merge(input_unit, input_store, output_store, template_store, **kw
 ##format specific functions
 def _prepare_merge_pofile(input_store, output_store, template_store):
     """PO format specific template preparation logic."""
-    #we need to revive obselete units to be able to consider
+    #we need to revive obsolete units to be able to consider
     #their translation when matching
     if template_store:
         for unit in template_store.units:
@@ -145,7 +145,7 @@ def _unit_post_merge_pounit(input_unit, input_store, output_store, template_stor
 
 
 def _store_post_merge_pofile(input_store, output_store, template_store):
-    """PO format specific: adds newly obseleted messages to end of store."""
+    """PO format specific: adds newly obsoleted messages to end of store."""
     #Let's take care of obsoleted messages
     if template_store:
         newlyobsoleted = []
