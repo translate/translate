@@ -663,6 +663,14 @@ class pounit(pocommon.pounit):
             text = unquotefrompo(self.msgidcomments)
         return text.split('\n')[0].replace('_: ', '', 1)
 
+    def setmsgidcomment(self, msgidcomment):
+        if msgidcomment:
+            self.msgidcomments = ['"_: %s\\n"' % msgidcomment]
+        else:
+            self.msgidcomments = []
+
+    msgidcomment = property(_extract_msgidcomments, setmsgidcomment)
+    
     def getcontext(self):
         """Get the message context."""
         return unquotefrompo(self.msgctxt) + self._extract_msgidcomments()
