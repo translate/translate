@@ -380,6 +380,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         @type docid: int
         """
         self.reader.deleteDocument(docid)
+        self.reader.flush()
         # TODO: check the performance impact of calling "refresh" for each id
         self._index_refresh()
 
