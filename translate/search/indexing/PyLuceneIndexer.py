@@ -432,6 +432,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
     def _writer_close(self):
         """close indexing write access and remove the database lock"""
         if self._writer_is_open():
+            self.writer.commit()
             self.writer.close()
             self.writer = None
         # make sure that the lock is removed
