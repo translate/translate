@@ -26,7 +26,10 @@ import StringIO
 import logging
 import sys
 from optparse import OptionParser
-import simplejson as json
+try:
+    import json #available since Python 2.6
+except ImportError:
+    import simplejson as json #API compatible with the json module
 from wsgiref import simple_server
 
 from translate.misc import selector
