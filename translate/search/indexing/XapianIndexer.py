@@ -33,11 +33,20 @@ It is not completely working, but it should give you a good start.
 
 __revision__ = "$Id$"
 
-# xapian module hangs apache under mod_python
-# detect if running under apache and fail immediatly
+# xapian module versions before 1.0.13 hangs apache under mod_python
 import sys
+import re
+import subprocess
+# detect if running under apache
 if 'apache' in sys.modules or '_apache' in sys.modules:
-    raise ImportError("Running under mod_python, can't load xapian")
+    # even checking xapian version leads to deadlock under apache, must figure version from command line
+    try:
+        command = subprocess.Popen(['xapian-check', '--version'], stdout=subprocess.PIPE)
+        stdout, stderr = command.communicate()
+        if re.match('.*([0-9]+\.[0-9]+\.[0-9]+).*', stdout).groups()[0] < '1.0.13':
+            raise ImportError("Running under apache, can't load xapain")
+    except:
+        raise ImportError("Running under apache, can't load xapian")
 
 import CommonIndexer
 import xapian
