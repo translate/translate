@@ -24,6 +24,8 @@ import math
 import time
 import logging
 import re
+import threading
+
 try:
     from sqlite3 import dbapi2
 except ImportError:
@@ -51,12 +53,11 @@ class TMDB(object):
         self.min_similarity = min_similarity
         self.max_length = max_length
 
+        self.db_file = db_file
         # share connections to same database file between different instances
-        if not self._tm_dbs.has_key(db_file):
-            self._tm_dbs[db_file] = dbapi2.connect(db_file)
-
-        self.connection = self._tm_dbs[db_file]
-        self.cursor = self.connection.cursor()
+        if db_file not in self._tm_dbs:
+            self._tm_dbs[db_file] = {}
+        self._tm_db = self._tm_dbs[db_file]
 
         #FIXME: do we want to do any checks before we initialize the DB?
         self.init_database()
@@ -67,6 +68,18 @@ class TMDB(object):
 
         self.preload_db()
 
+    def _get_connection(self, index):
+        current_thread = threading.current_thread()
+        if current_thread not in self._tm_db:
+            connection = dbapi2.connect(self.db_file)
+            cursor = connection.cursor()
+            self._tm_db[current_thread] = (connection, cursor)
+        return self._tm_db[current_thread][index]
+    
+    connection = property(lambda self: self._get_connection(0))
+    cursor = property(lambda self: self._get_connection(1))
+
+    
     def init_database(self):
         """creates database tables and indices"""
 
