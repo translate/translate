@@ -33,27 +33,13 @@ except ImportError:
 from wsgiref import simple_server
 
 from translate.misc import selector
+from translate.misc import wsgi
 from translate.storage import factory
 from translate.storage import base
 from translate.storage import tmdb
 
 class TMServer(object):
     """A RESTful JSON TM server."""
-
-    class RequestHandler(simple_server.WSGIRequestHandler):
-        """Custom request handler, disables some inefficient defaults"""
-
-        def address_string(self):
-            """Disable client reverse dns lookup."""
-            return  self.client_address[0]
-
-        def log_message(self, format, *args):
-            """Log requests using logging instead of printing to
-            stderror."""
-            logging.info("%s - - [%s] %s" %
-                         (self.address_string(),
-                          self.log_date_time_string(),
-                          format % args))
 
     def __init__(self, tmdbfile, tmfiles, max_candidates=3, min_similarity=75,
             max_length=1000, prefix="", source_lang=None, target_lang=None):
@@ -199,11 +185,8 @@ def main():
     application = TMServer(options.tmdbfile, options.tmfiles, max_candidates=options.max_candidates,
                            min_similarity=options.min_similarity, max_length=options.max_length,
                            prefix="/tmserver", source_lang=options.source_lang, target_lang=options.target_lang)
-    httpd = simple_server.make_server(options.bind, options.port,
-            application.rest, handler_class=TMServer.RequestHandler)
-    httpd.serve_forever()
+    wsgi.launch_server(options.bind, options.port, application.rest)
 
 
 if __name__ == '__main__':
     main()
-
