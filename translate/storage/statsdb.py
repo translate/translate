@@ -374,8 +374,8 @@ class StatsCache(object):
                 return fileid
             if (filerow[1], filerow[2]) == mod_info:
                 return fileid
-        # We can only ignore the mod_info if the row already exists:
-        assert check_mod_info
+
+        # file wasn't in db at all, lets recache it
         if callable(store):
             store = store()
         else:
