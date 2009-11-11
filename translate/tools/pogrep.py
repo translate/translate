@@ -112,6 +112,8 @@ def find_matches(unit, part, strings, re_search):
     matches = []
     part_n = 0
     for string in strings:
+        if not string:
+            continue
         normalized = data.normalize(string)
         for matchobj in re_search.finditer(normalized):
             start = real_index(string, matchobj.start())
