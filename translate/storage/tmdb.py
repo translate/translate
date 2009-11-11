@@ -69,7 +69,7 @@ class TMDB(object):
         self.preload_db()
 
     def _get_connection(self, index):
-        current_thread = threading.current_thread()
+        current_thread = threading.currentThread()
         if current_thread not in self._tm_db:
             connection = dbapi2.connect(self.db_file)
             cursor = connection.cursor()
