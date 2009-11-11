@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2009 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # This program is free software; you can redistribute it and/or modify
@@ -18,107 +18,113 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""This module contains functions for identifying languages based on language models.
-
-   It wraps U{libtextcat<http://software.wise-guys.nl/libtextcat/>} to get the language
-   identification functionality.
-
-   To use first create an instance of I{LanguageIdentifier} and then use the methods 
-   I{identify} or I{identify_store} to detect the language in a string or in a translation
-   store respectively.
+"""
+This module contains functions for identifying languages based on language
+models.
 """
 
-from ctypes import *
-import ctypes.util
+from os import extsep, path
 
-from translate.lang.data import *
+from translate.misc.file_discovery import get_abs_data_filename
+from translate.storage.base import TranslationStore
 
-# Load libtextcat
-textcat = None
-# 'textcat' is recognised on Unix, while only 'libtextcat' is recognised on
-# windows. Therefore we test both.
-names = ['textcat', 'libtextcat']
-for name in names:
-    lib_location = ctypes.util.find_library(name)
-    if lib_location:
-        textcat = cdll.LoadLibrary(lib_location)
-        if textcat:
-            break
-else:
-    # Now we are getting desperate, so let's guess a unix type DLL that might 
-    # be in LD_LIBRARY_PATH or loaded with LD_PRELOAD
-    try:
-        textcat = cdll.LoadLibrary('libtextcat.so')
-    except OSError, e:
-        raise ImportError("textcat library not found")
+from ngram import NGram
 
-# Original initialisation
-textcat.textcat_Init.argtypes = [c_char_p]
-textcat.textcat_Init.retype = c_int
-
-# Initialisation used in OpenOffice.org modification which allows the models to be in a different directory
-textcat.special_textcat_Init.argtypes = [c_char_p, c_char_p]
-textcat.special_textcat_Init.restype = c_int
-
-# Cleans up textcat
-textcat.textcat_Done.argtypes = [c_int]
-
-# Perform language guessing
-textcat.textcat_Classify.argtypes = [c_int, c_char_p, c_int]
-textcat.textcat_Classify.restype = c_char_p
 
 class LanguageIdentifier(object):
+    MODEL_DIR = get_abs_data_filename('langmodels')
+    """The directory containing the ngram language model files."""
+    CONF_FILE = 'fpdb.conf'
+    """
+    The name of the file that contains language name-code pairs
+    (relative to C{MODEL_DIR}).
+    """
 
-    def __init__(self, config, model_dir):
-        """
-        @param config: path to .conf for textcat
-        @type config: String
-        @param model_dir: path to language models
-        @type model_dir: String
-        """
-        if textcat is None:
+    def __init__(self, model_dir=None, conf_file=None):
+        if model_dir is None:
+            model_dir = self.MODEL_DIR
+        if not path.isdir(model_dir):
+            raise ValueError('Directory does not exist: %s' % (model_dir))
+
+        if conf_file is None:
+            conf_file = self.CONF_FILE
+        conf_file = path.abspath(path.join(model_dir, conf_file))
+        if not path.isfile(conf_file):
+            raise ValueError('File does not exist: %s' % (conf_file))
+
+        self._load_config(conf_file)
+        self.ngram = NGram(model_dir)
+
+    def _load_config(self, conf_file):
+        """Load the mapping of language names to language codes as given in the
+            configuration file."""
+        lines = open(conf_file).read().splitlines()
+        self._lang_codes = {}
+        for line in lines:
+            parts = line.split()
+            if not parts or line.startswith('#'):
+                continue # Skip comment- and empty lines
+            lname, lcode = parts[0], parts[1]
+
+            lname = path.split(lname)[-1] # Make sure lname is not prefixed by directory names
+            if extsep in lname:
+                lname = lname[:lname.rindex(extsep)] # Remove extension if it has
+
+            # Remove trailing '[_-]-utf8' from code
+            if lcode.endswith('-utf8'):
+                lcode = lcode[:-len('-utf8')]
+            if lcode.endswith('-') or lcode.endswith('_'):
+                lcode = lcode[:-1]
+
+            self._lang_codes[lname] = lcode
+
+    def identify_lang(self, text):
+        """Identify the language of the text in the given string."""
+        if not text:
             return None
-        self._handle = textcat.special_textcat_Init(config, model_dir)
+        result = self.ngram.classify(text)
+        if result in self._lang_codes:
+            result = self._lang_codes[result]
+        return result
 
-    lang_list_re = re.compile("\[(.+?)\]+")
+    def identify_source_lang(self, instore):
+        """Identify the source language of the given translation store or
+            units.
 
-    def _lang_result_to_list(self, lang_result):
-        """Converts a text result of '[lang][lang]' into a Python list of language codes"""
-        if lang_result in ('SHORT', 'UNKNOWN'):
-            return []
-        return self.lang_list_re.findall(lang_result)
+            @type  instore: C{TranslationStore} or list or tuple of
+                C{TranslationUnit}s.
+            @param instore: The translation store to extract source text from.
+            @returns: The identified language's code or C{None} if the language
+                could not be identified."""
+        if not isinstance(instore, (TranslationStore, list, tuple)):
+            return None
 
-    def identify(self, text, sample_length=None):
-        """Identify the language in I{text} by sampling I{sample_length}
+        text = ''
+        for unit in instore:
+            if unit.source:
+                text += unit.source + ' '
 
-        @param text: Text to be identified
-        @type text: String
-        @param sample_length: The amount of I{text} to be analysed
-        @type sample_length: Int
-        @return: list of language codes
-        """
-        if sample_length is None or sample_length > len(text):
-            sample_length = len(text)
-        if isinstance(text, unicode):
-            text = text.encode('utf-8')
-        matches = self._lang_result_to_list(textcat.textcat_Classify(self._handle, text, sample_length))
-        return [(simplify_to_common(match, languages), 0.8) for match in matches]
+        if not text:
+            return None
+        return self.identify_lang(text)
 
-    def identify_store(self, store, sample_length=None):
-        """Identify the language of a translation store
+    def identify_target_lang(self, instore):
+        """Identify the target language of the given translation store or
+            units.
 
-        @param store: Store to be identified
-        @type store: L{TranslationStore <storage.base.TranslationStore>}
-        @param sample_length: The amount of text to be analysed
-        @type sample_length: Int
-        @return: list of language codes
-        """
-        text = ""
-        for unit in store.units:
-            text = text + unit.target
-            if sample_length is not None and len(text) >= sample:
-                break
-        return self.identify(text, sample_length)
+            @type  instore: C{TranslationStore} or list or tuple of
+                C{TranslationUnit}s.
+            @param instore: The translation store to extract target text from.
+            @returns: The identified language's code or C{None} if the language
+                could not be identified."""
+        if not isinstance(instore, (TranslationStore, list, tuple)):
+            return None
 
-    def __del__(self):
-        textcat.textcat_Done(self._handle)
+        text = ''
+        for unit in instore:
+            if unit.target:
+                text += unit.target + ' '
+
+        if not text:
+            return None
+        return self.identify_lang(text)
