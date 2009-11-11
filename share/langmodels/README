@@ -1,0 +1,20 @@
+Arabic (ar): No frequencies
+Belarus (be): No frequencies
+Chinese (zh): No frequencies
+Croatian (hr): Possibly broken
+Esperanto (eo): Possibly broken
+Japanese (jp): No frequencies
+Latvian (lv): Possible orthography issues
+Lithuanian (lt): Division signs
+Middle Frisian (??): Applicable?
+Mingo (??): What is this?
+Polish (pl): Incorrect encoding?
+Romanian (ro): Missing non-ASCII characters. Incorrect encoding?
+Serbian@latin: Language code needs Cyrillic model as well
+Turkish (tr): Missing non-ASCII characters.
+Ukrainian (uk): No frequencies
+Vietnamese (vi): Encoding issues in model
+
+
+Classified incorrectly:
+* Norwegian (no): Classified as Danish
