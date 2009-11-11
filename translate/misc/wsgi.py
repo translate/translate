@@ -53,7 +53,7 @@ def launch_server_wsgiref(host, port, app):
 
 def launch_server_django(host, port, app):
     """use django's development server, only works for django apps"""
-    if not 'DJANGO_SETTINGS_MODULE' not in os.environ:
+    if 'DJANGO_SETTINGS_MODULE' not in os.environ:
         raise ImportError("no django settings module specified")
 
     from django.core.servers.basehttp import  run
