@@ -120,8 +120,10 @@ languages = {
 'so': ('Somali', 2, '(n != 1)'),
 'sq': ('Albanian', 2, '(n != 1)'),
 'sr': ('Serbian', 3, '(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'),
+'st': ('Sotho, Southern', 2, '(n != 1)'),
 'su': ('Sundanese', 1, '0'),
 'sv': ('Swedish', 2, '(n != 1)'),
+'sw': ('Swahili', 2, '(n != 1)'),
 'ta': ('Tamil', 2, '(n != 1)'),
 'te': ('Telugu', 2, '(n != 1)'),
 'tg': ('Tajik', 2, '(n != 1)'),
@@ -138,6 +140,7 @@ languages = {
 'zh_CN': ('Chinese (China)', 1, '0'),
 'zh_HK': ('Chinese (Hong Kong)', 1, '0'),
 'zh_TW': ('Chinese (Taiwan)', 1, '0'),
+'zu': ('Zulu', 2, '(n != 1)'),
 }
 """Dictionary of language data.
 The language code is the dictionary key (which may contain country codes and modifiers).
