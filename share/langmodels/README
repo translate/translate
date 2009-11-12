@@ -1,3 +1,12 @@
+This directory contains data files that serve as language models for language
+recognition. They are in the format used by libtextcat and obtained from the
+current openoffice.org-common Ubuntu package. You might find them in your
+installation in a place like
+    basis3.1/share/fingerprint/
+
+Note that several files were removed due to incorrect encodings or other
+problems. Here is a summary of some issues encountered:
+
 Arabic (ar): No frequencies
 Belarus (be): No frequencies
 Chinese (zh): No frequencies
