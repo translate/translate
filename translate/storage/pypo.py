@@ -685,9 +685,9 @@ class pounit(pocommon.pounit):
 #        id = '\0'.join(self.source.strings)
         id = self.source
         if self.msgidcomments:
-            id = "_: %s\n%s" % (context, id)
+            id = u"_: %s\n%s" % (context, id)
         elif context:
-            id = "%s\04%s" % (context, id)
+            id = u"%s\04%s" % (context, id)
         return id
 
 class pofile(pocommon.pofile):

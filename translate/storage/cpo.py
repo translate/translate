@@ -298,7 +298,7 @@ class pounit(pocommon.pounit):
     def getid(self):
         """The unique identifier for this unit according to the convensions in
         .mo files."""
-        id = gpo.po_message_msgid(self._gpo_message)
+        id = gpo.po_message_msgid(self._gpo_message).decode(self._encoding)
         # Gettext does not consider the plural to determine duplicates, only 
         # the msgid. For generation of .mo files, we might want to use this
         # code to generate the entry for the hash table, but for now, it is 
@@ -308,8 +308,8 @@ class pounit(pocommon.pounit):
 #            id = '%s\0%s' % (id, plural)
         context = gpo.po_message_msgctxt(self._gpo_message)
         if context:
-            id = "%s\04%s" % (context, id)
-        return id or ""
+            id = u"%s\04%s" % (context.decode(self._encoding), id)
+        return id or u""
 
     def getnotes(self, origin=None):
         if origin == None:
