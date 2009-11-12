@@ -662,4 +662,20 @@ msgstr "b"
         pofile = self.poparse(posource)
         for line in pofile.units[0].getnotes():
             assert isinstance(line, unicode)
-        
+
+    def test_final_slash(self):
+        """Test that \ as last character is correcly interpreted (bug 960)."""
+        posource = r'''
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\n"
+
+#: System-Support,Project>>decideAboutCreatingBlank:
+msgid "I cannot locate the project\\"
+msgstr "プロジェクトが見つかりませんでした"
+'''
+        pofile1 = self.poparse(posource)
+        print pofile1.units[1].source
+        pofile2 = self.poparse(str(pofile1))
+        print str(pofile2)
+        assert str(pofile1) == str(pofile2)
