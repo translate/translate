@@ -693,6 +693,7 @@ class pounit(pocommon.pounit):
 class pofile(pocommon.pofile):
     """A .po file containing various units"""
     UnitClass = pounit
+
     def __init__(self, inputfile=None, encoding=None, unitclass=pounit):
         """Construct a pofile, optionally reading in from inputfile.
         encoding can be specified but otherwise will be read from the PO header"""

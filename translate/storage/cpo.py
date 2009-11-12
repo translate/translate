@@ -495,7 +495,7 @@ class pounit(pocommon.pounit):
             parts = loc.split(":")
             file = parts[0]
             if len(parts) == 2:
-                line = int(parts[1])
+                line = int(parts[1] or "0")
             else:
                 line = -1
             gpo.po_message_add_filepos(self._gpo_message, file, line)
