@@ -1080,7 +1080,7 @@ class MozillaChecker(StandardChecker):
         return True
 
 drupalconfig = CheckerConfig(
-    varmatches = [("%", None), ("@", None)],
+    varmatches = [("%", None), ("@", None), ("!", None)],
     )
 
 class DrupalChecker(StandardChecker):
