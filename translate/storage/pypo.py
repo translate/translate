@@ -451,12 +451,12 @@ class pounit(pocommon.pounit):
         # return len(self.source.strip()) == 0
 
     def hastypecomment(self, typecomment):
-        """check whether the given type comment is present"""
+        """Check whether the given type comment is present"""
         # check for word boundaries properly by using a regular expression...
         return sum(map(lambda tcline: len(re.findall("\\b%s\\b" % typecomment, tcline)), self.typecomments)) != 0
 
     def hasmarkedcomment(self, commentmarker):
-        """check whether the given comment marker is present as # (commentmarker) ..."""
+        """Check whether the given comment marker is present as # (commentmarker) ..."""
         commentmarker = "(%s)" % commentmarker
         for comment in self.othercomments:
             if comment.replace("#", "", 1).strip().startswith(commentmarker):
@@ -464,7 +464,7 @@ class pounit(pocommon.pounit):
         return False
 
     def settypecomment(self, typecomment, present=True):
-        """alters whether a given typecomment is present"""
+        """Alters whether a given typecomment is present"""
         if self.hastypecomment(typecomment) != present:
             if present:
                 self.typecomments.append("#, %s\n" % typecomment)
@@ -691,10 +691,10 @@ class pounit(pocommon.pounit):
         return id
 
 class pofile(pocommon.pofile):
-    """this represents a .po file containing various units"""
+    """A .po file containing various units"""
     UnitClass = pounit
     def __init__(self, inputfile=None, encoding=None, unitclass=pounit):
-        """construct a pofile, optionally reading in from inputfile.
+        """Construct a pofile, optionally reading in from inputfile.
         encoding can be specified but otherwise will be read from the PO header"""
         self.UnitClass = unitclass
         pocommon.pofile.__init__(self, unitclass=unitclass)
@@ -742,7 +742,7 @@ class pofile(pocommon.pofile):
         header.msgstr = quoteforpo(headerstr)
 
     def parse(self, input):
-        """parses the given file or file source string"""
+        """Parses the given file or file source string."""
         try:
             if hasattr(input, 'name'):
                 self.filename = input.name
@@ -755,7 +755,7 @@ class pofile(pocommon.pofile):
             raise base.ParseError(e)
 
     def removeduplicates(self, duplicatestyle="merge"):
-        """make sure each msgid is unique ; merge comments etc from duplicates into original"""
+        """Make sure each msgid is unique ; merge comments etc from duplicates into original"""
         # TODO: can we handle consecutive calls to removeduplicates()? What
         # about files already containing msgctxt? - test
         id_dict = {}
@@ -796,7 +796,7 @@ class pofile(pocommon.pofile):
         self.units = uniqueunits
 
     def __str__(self):
-        """convert to a string. double check that unicode is handled somehow here"""
+        """Convert to a string. double check that unicode is handled somehow here"""
         output = self._getoutput()
         if isinstance(output, unicode):
             return output.encode(getattr(self, "encoding", "UTF-8"))
