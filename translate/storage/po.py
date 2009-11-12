@@ -27,15 +27,18 @@ uses Gettext's libgettextpo for high parsing speed.  Otherise the local
 Python based parser is used (slower but very well tested)"""
 
 import os
-import sys
+import logging
 
 if os.getenv('USECPO'):
     if os.getenv('USECPO') == "1":
-        print >> sys.stderr, "Using cPO"
+        logging.info("Using cPO")
         from cpo import *
+    elif os.getenv('USECPO') == "2":
+        logging.info("Using new cPO")
+        print "Using fPO"
+        from fpo import *
     else:
-        print >> sys.stderr, "Using Python PO"
+        logging.info("Using Python PO")
         from pypo import *
 else:
     from pypo import *
-
