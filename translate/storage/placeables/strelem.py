@@ -318,13 +318,15 @@ class StringElem(object):
                 break
         range_nodes = range_nodes[startidx:endidx+1]
         #assert range_nodes[0] is start['elem'] and range_nodes[-1] is end['elem']
+        #logging.debug("Nodes in delete range: %s" % (str(range_nodes)))
 
         marked_nodes = [] # Contains nodes that have been marked for deletion (directly or inderectly (via parent)).
         for node in range_nodes[1:-1]:
-            if node in marked_nodes:
+            if [n for n in marked_nodes if n is node]:
                 continue
             subtree = node.depth_first()
             if not [e for e in subtree if e is end['elem']]:
+                #logging.debug("Marking node: %s" % (subtree))
                 marked_nodes.extend(subtree) # "subtree" does not include "node"
 
         ##### FOR DEBUGGING #####
