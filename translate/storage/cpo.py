@@ -451,22 +451,19 @@ class pounit(pocommon.pounit):
 
     def _extract_msgidcomments(self, text=None):
         """Extract KDE style msgid comments from the unit.
-        
+
         @rtype: String
         @return: Returns the extracted msgidcomments found in this unit's msgid.
-        
         """
-    
         if not text:
-            text = gpo.po_message_msgid(self._gpo_message)
+            text = gpo.po_message_msgid(self._gpo_message).decode(self._encoding)
         if text:
             return pocommon.extract_msgid_comment(text)
         return u""
 
     def setmsgidcomment(self, msgidcomment):
         if msgidcomment:
-            newsource = "_: " + msgidcomment + "\n" + self.source
-            self.source = newsource
+            self.source = u"_: %s\n%s" (msgidcomment, self.source)
     msgidcomment = property(_extract_msgidcomments, setmsgidcomment)
 
     def __str__(self):
