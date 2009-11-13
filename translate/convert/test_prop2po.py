@@ -116,6 +116,22 @@ prefPanel-smime=Security'''
         pounit = self.singleelement(pofile)
         assert pounit.getnotes("developer") == "# Comment"
 
+    def test_multiline_comments(self):
+        """test to ensure that we handle multiline comments well"""
+        propsource = '''# Comment
+# commenty 2
+
+## @name GENERIC_ERROR
+## @loc none
+prefPanel-smime=
+'''
+        pofile = self.prop2po(propsource)
+        print str(pofile)
+        #header comments:
+        assert "#. # Comment\n#. # commenty 2" in str(pofile)
+        pounit = self.singleelement(pofile)
+        assert pounit.getnotes("developer") == "## @name GENERIC_ERROR\n## @loc none"
+
     def wtest_folding_accesskeys(self):
         """check that we can fold various accesskeys into their associated label (bug #115)"""
         propsource = r'''cmd_addEngine = Add Engines...

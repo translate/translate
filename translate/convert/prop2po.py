@@ -57,7 +57,7 @@ class prop2po:
                     thetargetfile.addunit(targetheader)
                 appendedheader = True
             if pounit is not None:
-                pounit.addnote("".join(waitingcomments).rstrip(), "developer", position="prepend")
+                pounit.addnote("\n".join(waitingcomments).rstrip(), "developer", position="prepend")
                 waitingcomments = []
                 thetargetfile.addunit(pounit)
         thetargetfile.removeduplicates(duplicatestyle)
