@@ -686,7 +686,7 @@ class pofile(pocommon.pofile):
         self._gpo_message_iterator = gpo.po_message_iterator(self._gpo_memory_file, None)
         newmessage = gpo.po_next_message(self._gpo_message_iterator)
         while newmessage:
-            newunit = pounit(gpo_message=newmessage)
+            newunit = pounit(gpo_message=newmessage, encoding=self._encoding)
             self.addunit(newunit, new=False)
             newmessage = gpo.po_next_message(self._gpo_message_iterator)
         self._free_iterator()
