@@ -30,11 +30,10 @@ directly, but can be used once cpo has been established to work."""
 
 from translate.misc.multistring import multistring
 from translate.lang import data
-from translate.storage import pocommon, base
+from translate.storage import pocommon, base, cpo
 import re
 import copy
 import cStringIO
-import cpo
 
 lsep = " "
 """Seperator for #: entries"""
