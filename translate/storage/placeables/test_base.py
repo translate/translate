@@ -112,7 +112,7 @@ class TestStringElem:
         elem = self.elem.copy()
         deleted, parent, offset = elem.delete_range(1, 2)
         assert deleted == StringElem(u'ë')
-        assert parent is elem
+        assert parent is elem.sub[0]
         assert offset == 1
 
     def test_delete_range_case4(self):
