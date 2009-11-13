@@ -373,6 +373,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         @param docid: the document ID to be deleted
         @type docid: int
         """
+        self._delete_stale_lock()
         self.reader.deleteDocument(docid)
         self.reader.flush()
         # TODO: check the performance impact of calling "refresh" for each id
@@ -408,11 +409,26 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
             result.append(fields)
         return result
 
+    def _delete_stale_lock(self):
+        if self.reader.isLocked(self.location):
+            #HACKISH: there is a lock but Lucene api can't tell us how old it
+            # is, will have to check the filesystem
+            try:
+                # in try block just in case lock disappears on us while testing it
+                stat = os.stat(os.path.join(self.location, 'write.lock'))
+                age = (time.time() - stat.st_mtime) / 60
+                if age > 15:
+                    logging.warning("stale lock found in %s, removing.", self.location)
+                    self.reader.unlock(self.reader.directory())
+            except:
+                pass
+    
     def _writer_open(self):
         """open write access for the indexing database and acquire an
         exclusive lock
         """
         if not self._writer_is_open():
+            self._delete_stale_lock()
             self.writer = PyLucene.IndexWriter(self.location, self.pyl_analyzer,
                     False)
             # "setMaxFieldLength" is available since PyLucene v2
