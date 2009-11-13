@@ -346,7 +346,10 @@ class StringElem(object):
         end_offset = self.elem_offset(end['elem'])
 
         for node in marked_nodes:
-            self.delete_elem(node)
+            try:
+                self.delete_elem(node)
+            except ElementNotFoundError, e:
+                pass
 
         if start['elem'] is not end['elem']:
             if start_offset == start['index'] or (not start['elem'].iseditable and start['elem'].isfragile):
