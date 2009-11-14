@@ -286,11 +286,15 @@ class terminologymatcher(matcher):
         comparer = self.comparer
         comparer.match_info = {}
         matches = []
+        targets = set()
         for cand in self.candidates.units:
-            source = cand.source
+            if cand.target in targets:
+                continue
+            source = cand.source            
             if comparer.similarity(text, source, self.MIN_SIMILARITY):
                 self.match_info[source] = {'pos': comparer.match_info[source]['pos']}
                 matches.append(cand)
+                targets.add(cand.target)
         return matches
 
 
