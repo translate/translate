@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2008 Zuza Software Foundation
+# Copyright 2008-2009 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
@@ -21,7 +21,7 @@
 #
 
 """
-interface to the xapian indexing engine for the translate toolkit
+Interface to the Xapian indexing engine for the Translate Toolkit
 
 Xapian v1.0 or higher is supported.
 
@@ -36,9 +36,9 @@ __revision__ = "$Id$"
 # xapian module versions before 1.0.13 hangs apache under mod_python
 import sys
 import re
-import subprocess
 # detect if running under apache
 if 'apache' in sys.modules or '_apache' in sys.modules:
+    import subprocess
     # even checking xapian version leads to deadlock under apache, must figure version from command line
     try:
         command = subprocess.Popen(['xapian-check', '--version'], stdout=subprocess.PIPE)
@@ -51,7 +51,6 @@ if 'apache' in sys.modules or '_apache' in sys.modules:
 import CommonIndexer
 import xapian
 import os
-import re
 
 
 def is_available():
@@ -139,7 +138,7 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         """generate a query based on an existing query object
 
         basically this function should just create a copy of the original
-        
+
         @param query: the original query object
         @type query: xapian.Query
         @return: the resulting query object
@@ -249,7 +248,7 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         @rtype: xapian.Document
         """
         return xapian.Document()
-    
+
     def _add_plain_term(self, document, term, tokenize=True):
         """add a term to a document
 
@@ -324,7 +323,7 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
 
     def get_query_result(self, query):
         """return an object containing the results of a query
-        
+
         @param query: a pre-compiled xapian query
         @type query: xapian.Query
         @return: an object that allows access to the results
@@ -430,7 +429,7 @@ def _truncate_term_length(term, taken=0):
 
 def _extract_fieldvalues(match, (result, fieldnames)):
     """add a dict of field values to a list
-    
+
     usually this function should be used together with '_walk_matches'
     for traversing a list of matches
     @param match: a single match object
@@ -457,4 +456,3 @@ def _extract_fieldvalues(match, (result, fieldnames)):
             else:
                 item_fields[fname] = [value]
     result.append(item_fields)
-
