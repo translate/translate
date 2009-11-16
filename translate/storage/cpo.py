@@ -463,7 +463,7 @@ class pounit(pocommon.pounit):
 
     def setmsgidcomment(self, msgidcomment):
         if msgidcomment:
-            self.source = u"_: %s\n%s" (msgidcomment, self.source)
+            self.source = u"_: %s\n%s" % (msgidcomment, self.source)
     msgidcomment = property(_extract_msgidcomments, setmsgidcomment)
 
     def __str__(self):
