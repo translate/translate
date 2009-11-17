@@ -52,7 +52,7 @@ class LRUCachingDict(WeakValueDictionary):
         WeakValueDictionary.__setitem__(self, key, value)
 
         if len(self) > self.maxsize:
-            while len(self) > (self.maxsize - self.maxsize / self.cullsize):
+            while len(self.queue) and len(self) > (self.maxsize - self.maxsize / self.cullsize):
                 # maximum cache size exceeded, remove an old item
                 self.queue.popleft()
                 while gc.collect() > 0:
