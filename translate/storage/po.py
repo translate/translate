@@ -20,11 +20,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 """A class loader that will load C or Python implementations of the PO class
-depending on the use_implementation variable
+depending on the USECPO variable.
 
-Use the environment variable USECPO to choose the C implementation which
+Use the environment variable USECPO=2 (or 1) to choose the C implementation which
 uses Gettext's libgettextpo for high parsing speed.  Otherise the local 
-Python based parser is used (slower but very well tested)"""
+Python based parser is used (slower but very well tested)."""
 
 import os
 import logging
@@ -35,7 +35,6 @@ if os.getenv('USECPO'):
         from cpo import *
     elif os.getenv('USECPO') == "2":
         logging.info("Using new cPO")
-        print "Using fPO"
         from fpo import *
     else:
         logging.info("Using Python PO")
