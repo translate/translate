@@ -48,20 +48,38 @@ class LRUCachingDict(WeakValueDictionary):
             # appended again
             self.queue.pop()
 
+        if len(self) >= self.maxsize:
+            # maximum cache size exceeded, cull old items
+            #
+            # note queue is the real cache but its size is boundless
+            # since it might have duplicate references.
+            #
+            # don't bother culling if queue is smaller than weakref,
+            # this means there are too many references outside the
+            # cache, culling won't free much memory (if any).
+            while len(self) >= self.maxsize <= len(self.queue):
+                cullsize = max(int(len(self.queue) / self.cullsize), 2)
+                try:
+                    for i in range(cullsize):
+                        self.queue.popleft()                        
+                except IndexError:
+                    # queue is empty, bail out.
+                    break
+                finally:
+                    # call garbage collecter manually since objects
+                    # with circular references take some time to get
+                    # collected
+                    for i in range(5):
+                        if gc.collect() == 0:
+                            break
         self.queue.append((key, value))
         WeakValueDictionary.__setitem__(self, key, value)
 
-        if len(self) > self.maxsize:
-            while len(self.queue) and len(self) > (self.maxsize - self.maxsize / self.cullsize):
-                # maximum cache size exceeded, remove an old item
-                self.queue.popleft()
-                while gc.collect() > 0:
-                    pass
-
+    
     def __getitem__(self, key):
         value = WeakValueDictionary.__getitem__(self, key)
         # check boundaries to minimiza duplicate references
-        while len(self.queue) > 1 and self.queue[0][0] == key:
+        while len(self.queue) > 0  and self.queue[0][0] == key:
             # item at left end of queue pop it since it'll be appended
             # to right
             self.queue.popleft()
