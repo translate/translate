@@ -359,7 +359,7 @@ class pounit(pocommon.pounit):
                     newlines.append(" " + line)
                 else:
                     newlines.append(line)
-            newnotes = "\n".join(newlines)
+            newnotes = "\n".join(newlines).encode(self._encoding)
             if origin in ["programmer", "developer", "source code"]:
                 gpo.po_message_set_extracted_comments(self._gpo_message, newnotes)
             else:
