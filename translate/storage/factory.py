@@ -33,6 +33,7 @@ import sys
 from translate.storage import base
 from translate.storage import csvl10n
 from translate.storage import mo
+from translate.storage import omegat
 from translate.storage import po
 from translate.storage import qm
 from translate.storage import wordfast
@@ -57,6 +58,7 @@ except ImportError, e:
 
 classes = {
            "csv": csvl10n.csvfile, 
+           "tab": omegat.OmegaTFileTab, "utf8": omegat.OmegaTFile,
            "po": po.pofile, "pot": po.pofile, 
            "mo": mo.mofile, "gmo": mo.mofile, 
            "qm": qm.qmfile, 
@@ -198,14 +200,16 @@ def supported_files():
     @rtype: list
     """
 
-    supported = []
-    processed = []
+    supported = {}
     for supported_class in classes.itervalues():
         name = getattr(supported_class, "Name", None)
-        if name is None or name in processed:
+        if name is None:
             continue
-        processed.append(name)
         extensions = getattr(supported_class, "Extensions", None)
         mimetypes = getattr(supported_class, "Mimetypes", None)
-        supported.extend([(name, extensions, mimetypes)])
-    return supported
+        if not supported.has_key(name):
+            supported[name] = (extensions, mimetypes)
+        else:
+            supported[name][0].extend(extensions)
+            supported[name][1].extend(mimetypes)
+    return [(name, ext_mime[0], ext_mime[1]) for name, ext_mime in supported.iteritems()]
