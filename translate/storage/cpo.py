@@ -538,7 +538,7 @@ class pounit(pocommon.pounit):
                     break
             return newunit
         else:
-            return base.buildfromunit(unit)
+            return base.TranslationUnit.buildfromunit(unit)
     buildfromunit = classmethod(buildfromunit)
 
 class pofile(pocommon.pofile):
