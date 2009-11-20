@@ -99,7 +99,7 @@ class LanguageIdentifier(object):
         if not isinstance(instore, (TranslationStore, list, tuple)):
             return None
 
-        text = u' '.join(unit.source for unit in instore[:50] if unit.source)
+        text = u' '.join(unit.source for unit in instore[:50] if unit.istranslatable() and unit.source)
         if not text:
             return None
         return self.identify_lang(text)
@@ -116,7 +116,7 @@ class LanguageIdentifier(object):
         if not isinstance(instore, (TranslationStore, list, tuple)):
             return None
 
-        text = u' '.join(unit.target for unit in instore[:200] if unit.target)
+        text = u' '.join(unit.target for unit in instore[:200] if unit.istranslatable() and unit.target)
         if not text:
             return None
         return self.identify_lang(text)
