@@ -3,7 +3,7 @@
 #
 # Copyright 2007-2009 Zuza Software Foundation
 #
-# This file is part of Virtaal.
+# This file is part of the Translate Toolkit.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-from UserDict import UserDict
 
 """Module to provide a cache of statistics in a database.
 
@@ -26,6 +25,8 @@ from UserDict import UserDict
 @copyright: 2007 Zuza Software Foundation
 @license: U{GPL <http://www.fsf.org/licensing/licenses/gpl.html>}
 """
+
+from UserDict import UserDict
 
 from translate import __version__ as toolkitversion
 from translate.storage import factory
