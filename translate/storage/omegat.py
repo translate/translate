@@ -88,7 +88,7 @@ class OmegaTUnit(base.TranslationUnit):
         self._dict = newdict
     dict = property(getdict, setdict)
 
-    def _get_source_or_target(self, key):
+    def _get_field(self, key):
         if self._dict.get(key, None) is None:
             return None
         elif self._dict[key]:
@@ -96,7 +96,7 @@ class OmegaTUnit(base.TranslationUnit):
         else:
             return ""
 
-    def _set_source_or_target(self, key, newvalue):
+    def _set_field(self, key, newvalue):
         if newvalue is None:
             self._dict[key] = None
         if isinstance(newvalue, unicode):
@@ -105,20 +105,20 @@ class OmegaTUnit(base.TranslationUnit):
             self._dict[key] = newvalue
 
     def getnotes(self, origin=None):
-        return self._get_source_or_target('comment')
+        return self._get_field('comment')
 
     def getsource(self):
-        return self._get_source_or_target('source')
+        return self._get_field('source')
 
     def setsource(self, newsource):
-        return self._set_source_or_target('source', newsource)
+        return self._set_field('source', newsource)
     source = property(getsource, setsource)
 
     def gettarget(self):
-        return self._get_source_or_target('target')
+        return self._get_field('target')
 
     def settarget(self, newtarget):
-        return self._set_source_or_target('target', newtarget)
+        return self._set_field('target', newtarget)
     target = property(gettarget, settarget)
 
     def settargetlang(self, newlang):
