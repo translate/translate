@@ -111,6 +111,7 @@ class OmegaTUnit(base.TranslationUnit):
         return self._get_field('source')
 
     def setsource(self, newsource):
+        self._rich_source = None
         return self._set_field('source', newsource)
     source = property(getsource, setsource)
 
@@ -118,6 +119,7 @@ class OmegaTUnit(base.TranslationUnit):
         return self._get_field('target')
 
     def settarget(self, newtarget):
+        self._rich_target = None
         return self._set_field('target', newtarget)
     target = property(gettarget, settarget)
 
