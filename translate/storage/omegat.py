@@ -89,7 +89,7 @@ class OmegaTUnit(base.TranslationUnit):
     dict = property(getdict, setdict)
 
     def _get_field(self, key):
-        if self._dict.get(key, None) is None:
+        if key not in self._dict:
             return None
         elif self._dict[key]:
             return self._dict[key].decode('utf-8')
@@ -129,8 +129,6 @@ class OmegaTUnit(base.TranslationUnit):
         return str(self._dict)
 
     def istranslated(self):
-        if not self._dict.get('source', None):
-            return False
         return bool(self._dict.get('target', None))
 
 
