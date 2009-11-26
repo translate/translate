@@ -64,14 +64,15 @@ class LRUCachingDict(WeakValueDictionary):
                         self.queue.popleft()                        
                 except IndexError:
                     # queue is empty, bail out.
+                    #FIXME: should we force garbage collection here too?
                     break
-                finally:
-                    # call garbage collecter manually since objects
-                    # with circular references take some time to get
-                    # collected
-                    for i in range(5):
-                        if gc.collect() == 0:
-                            break
+                
+                # call garbage collecter manually since objects
+                # with circular references take some time to get
+                # collected
+                for i in range(5):
+                    if gc.collect() == 0:
+                        break
         self.queue.append((key, value))
         WeakValueDictionary.__setitem__(self, key, value)
 
