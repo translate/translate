@@ -273,7 +273,7 @@ class SpacesPlaceable(Ph):
 class XMLTagPlaceable(Ph):
     """Placeable handling XML tags."""
 
-    iseditable = False
+    iseditable = True
     istranslatable = False
     regex = re.compile(r'<(\w+)(\s(\w*=".*?")?)*/?>|</(\w+)>')
     parse = classmethod(regex_parse)
