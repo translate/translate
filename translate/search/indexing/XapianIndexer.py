@@ -36,16 +36,21 @@ __revision__ = "$Id$"
 # xapian module versions before 1.0.13 hangs apache under mod_python
 import sys
 import re
+
 # detect if running under apache
 if 'apache' in sys.modules or '_apache' in sys.modules:
+    def _str2version(version):
+        return [int(i) for i in version.split('.')]
+    
     import subprocess
     # even checking xapian version leads to deadlock under apache, must figure version from command line
     try:
         command = subprocess.Popen(['xapian-check', '--version'], stdout=subprocess.PIPE)
         stdout, stderr = command.communicate()
-        if re.match('.*([0-9]+\.[0-9]+\.[0-9]+).*', stdout).groups()[0] < '1.0.13':
+        if _str2version(re.match('.*([0-9]+\.[0-9]+\.[0-9]+).*', stdout).groups()[0]) < [1, 0, 13]:
             raise ImportError("Running under apache, can't load xapain")
     except:
+        #FIXME: report is xapian-check command is missing?
         raise ImportError("Running under apache, can't load xapian")
 
 import CommonIndexer
