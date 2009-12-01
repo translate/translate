@@ -96,6 +96,28 @@ msgstr "Jaar"
         print phpfile
         assert phpfile == [phpexpected]
 
+    def test_multiline(self):
+        """Check that we convert multiline strings correctly.
+
+        Bug 1296."""
+        posource = r'''#: $string['upgradesure']
+msgid ""
+"Your Moodle files have been changed, and you are\n"
+"about to automatically upgrade your server to this version:\n"
+"<p><b>$a</b></p>\n"
+"<p>Once you do this you can not go back again.</p>\n"
+"<p>Are you sure you want to upgrade this server to this version?</p>"
+msgstr ""
+'''
+        phptemplate = '''$string['upgradesure'] = 'Your Moodle files have been changed, and you are
+about to automatically upgrade your server to this version:
+<p><b>$a</b></p>
+<p>Once you do this you can not go back again.</p>
+<p>Are you sure you want to upgrade this server to this version?</p>';\n'''
+        phpfile = self.merge2php(phptemplate, posource)
+        print phpfile[0]
+        assert phpfile[0] == phptemplate
+
 #    def test_merging_propertyless_template(self):
 #        """check that when merging with a template with no property values that we copy the template"""
 #        posource = ""
