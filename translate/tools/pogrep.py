@@ -110,15 +110,14 @@ def real_index(string, nfc_index):
 def find_matches(unit, part, strings, re_search):
     """Return the GrepFilter objects where re_search matches in strings."""
     matches = []
-    part_n = 0
-    for string in strings:
+    for n, string in enumerate(strings):
         if not string:
             continue
         normalized = data.normalize(string)
         for matchobj in re_search.finditer(normalized):
             start = real_index(string, matchobj.start())
             end = real_index(string, matchobj.end())
-            matches.append(GrepMatch(unit, part=part, part_n=part_n, start=start, end=end))
+            matches.append(GrepMatch(unit, part=part, part_n=n, start=start, end=end))
     return matches
 
 class GrepFilter:
