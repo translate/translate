@@ -97,6 +97,15 @@ $lang['prefPanel-smime'] = 'Security';'''
         assert "#. /* comment" in str(pofile)
         assert pounit.source == ""
 
+    def test_hash_comment_with_equals(self):
+        """Check that a # comment with = in it doesn't confuse us. Bug 1298."""
+        phpsource = '''# inside alt= stuffies\n$variable = 'stringy';'''
+        pofile = self.php2po(phpsource)
+        pounit = self.singleelement(pofile)
+        assert pounit.getlocations() == ["$variable"]
+        assert "#. # inside alt= stuffies" in str(pofile)
+        assert pounit.source == "stringy"
+
     def test_emptyentry_translated(self):
         """checks that if we translate an empty definition it makes it into the PO"""
         phptemplate = '''$lang['credit'] = '';'''

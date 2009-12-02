@@ -183,6 +183,11 @@ class phpfile(base.TranslationStore):
                 newunit.addnote(line.strip(), "developer")
                 continue
             equalpos = line.find("=")
+            hashpos = line.find("#")
+            if 0 <= hashpos < equalpos:
+                # Assume that this is a '#' comment line
+                newunit.addnote(line.strip(), "developer")
+                continue
             if equalpos != -1 and not invalue:
                 newunit.addlocation(line[:equalpos].strip().replace(" ", ""))
                 value = line[equalpos+1:].lstrip()[1:]

@@ -76,8 +76,12 @@ class rephp:
         else:
             line = quote.rstripeol(line)
             equalspos = line.find('=')
+            hashpos = line.find("#")
             # if no equals, just repeat it
             if equalspos == -1:
+                returnline = quote.rstripeol(line)+eol
+            elif 0 <= hashpos < equalspos:
+                # Assume that this is a '#' comment line
                 returnline = quote.rstripeol(line)+eol
             # otherwise, this is a definition
             else:

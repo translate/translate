@@ -118,6 +118,18 @@ about to automatically upgrade your server to this version:
         print phpfile[0]
         assert phpfile[0] == phptemplate
 
+    def test_hash_comment(self):
+        """check that we convert # comments correctly."""
+        posource = '''#: $variable
+msgid "stringy"
+msgstr "stringetjie"
+'''
+        phptemplate = '''# inside alt= stuffies\n$variable = 'stringy';\n'''
+        phpexpected = '''# inside alt= stuffies\n$variable = 'stringetjie';\n'''
+        phpfile = self.merge2php(phptemplate, posource)
+        print phpfile
+        assert "".join(phpfile) == phpexpected
+
 #    def test_merging_propertyless_template(self):
 #        """check that when merging with a template with no property values that we copy the template"""
 #        posource = ""
