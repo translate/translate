@@ -188,6 +188,13 @@ class TestXLIFFfile(test_base.TestTranslationStore):
     def test_notes(self):
         xlifffile = xliff.xlifffile()
         unit = xlifffile.addsourceunit("Concept")
+        # We don't want to add unnecessary notes
+        assert not "note" in str(xlifffile)
+        unit.addnote(None)
+        assert not "note" in str(xlifffile)
+        unit.addnote("")
+        assert not "note" in str(xlifffile)
+
         unit.addnote("Please buy bread")
         assert unit.getnotes() == "Please buy bread"
         notenodes = unit.xmlelement.findall(".//%s" % unit.namespaced("note"))
