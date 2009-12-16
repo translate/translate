@@ -25,6 +25,7 @@ import urllib
 import StringIO
 import logging
 import sys
+from cgi import parse_qs
 from optparse import OptionParser
 try:
     import json #available since Python 2.6
@@ -73,7 +74,13 @@ class TMServer(object):
         start_response("200 OK", [('Content-type', 'text/plain')])
         candidates = self.tmdb.translate_unit(uid, slang, tlang)
         logging.debug("candidates: %s", unicode(candidates))
-        response =  json.dumps(candidates, indent=4)
+        response = json.dumps(candidates, indent=4)
+        params = parse_qs(environ.get('QUERY_STRING', ''))
+        try:
+            callback = params.get('callback', [])[0]
+            response = "%s(%s)" % (callback, response)
+        except IndexError:
+            pass
         return [response]
 
     @selector.opliant
