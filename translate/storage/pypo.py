@@ -300,6 +300,7 @@ class pounit(pocommon.pounit):
         text = data.forceunicode(text)
         commentlist = self.othercomments
         linestart = "# "
+        autocomments = False
         if origin in ["programmer", "developer", "source code"]:
             autocomments = True
             commentlist = self.automaticcomments
