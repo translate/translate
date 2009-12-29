@@ -310,6 +310,14 @@ class TranslationUnit(object):
         """Marks the unit as fuzzy or not."""
         pass
 
+    def isobsolete(self):
+        """indicate whether a unit is obsolete"""
+        return False
+
+    def makeobsolete(self):
+        """Make a unit obsolete"""
+        pass
+
     def isheader(self):
         """Indicates whether this unit is a header."""
         return False
