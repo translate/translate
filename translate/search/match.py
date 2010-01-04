@@ -74,7 +74,7 @@ class matcher(object):
         self.existingunits = {}
         self.candidates = base.TranslationStore()
 
-        if not isinstance(stores, list):
+        if isinstance(stores, base.TranslationStore):
             stores = [stores]
         for store in stores:
             self.extendtm(store.units, store=store, sort=False)
@@ -92,7 +92,7 @@ class matcher(object):
         sorting of the candidates list. This should probably only be used in
         inittm().
         """
-        if not isinstance(units, list):
+        if isinstance(units, base.TranslationUnit):
             units = [units]
         candidates = filter(self.usable, units)
         for candidate in candidates:
