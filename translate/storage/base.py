@@ -561,6 +561,10 @@ class TranslationStore(object):
         if not hasattr(self, "sourceindex"):
             self.makeindex()
 
+    def getids(self):
+        """return a list of unit ids"""
+        self.require_index()
+        return self.id_index.keys()
 
     def __getstate__(self):
         odict = self.__dict__.copy()
