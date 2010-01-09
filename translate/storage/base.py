@@ -454,10 +454,10 @@ class TranslationStore(object):
         """find unit with matching id by checking id_index"""
         self.require_index()
         return self.id_index.get(id, None)
-    
+
     def findunit(self, source):
         """Finds the unit with the given source string.
-    
+
         @rtype: L{TranslationUnit} or None
         """
         if len(getattr(self, "sourceindex", [])):
@@ -471,7 +471,7 @@ class TranslationStore(object):
 
 
     def findunits(self, source):
-        """Finds the unit with the given source string.
+        """Finds the units with the given source string.
 
         @rtype: L{TranslationUnit} or None
         """
@@ -520,18 +520,18 @@ class TranslationStore(object):
             if location in self.locationindex and self.locationindex[location] is not None \
                    and self.locationindex[location] == unit:
                 del(self.locationindex[location])
-                
-                                           
+
+
     def add_unit_to_index(self, unit):
         """Add a unit to source and location idexes"""
         self.id_index[unit.getid()] = unit
-            
+
         def insert_unit(source):
             if not source in self.sourceindex:
                 self.sourceindex[source] = [unit]
             else:
                 self.sourceindex[source].append(unit)
-                
+
         if unit.hasplural():
             for source in unit.source.strings:
                 insert_unit(source)
