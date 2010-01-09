@@ -551,8 +551,8 @@ class TranslationStore(object):
         self.locationindex = {}
         self.sourceindex = {}
         self.id_index = {}
-        for unit in self.units:
-            # Do we need to test if unit.source exists?
+        for index, unit in enumerate(self.units):
+            unit.index = index
             if unit.istranslatable():
                 self.add_unit_to_index(unit)
 
