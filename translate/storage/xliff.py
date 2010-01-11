@@ -187,12 +187,14 @@ class xliffunit(lisa.LISAunit):
 
     def addnote(self, text, origin=None):
         """Add a note specifically in a "note" tag"""
+        if text:
+            text = text.strip()
         if not text:
             return
         if isinstance(text, str):
             text = text.decode("utf-8")
         note = etree.SubElement(self.xmlelement, self.namespaced("note"))
-        note.text = text.strip()
+        note.text = text
         if origin:
             note.set("from", origin)
 
