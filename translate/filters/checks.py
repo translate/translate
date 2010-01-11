@@ -138,7 +138,7 @@ class SeriousFilterFailure(FilterFailure):
 #indicates that the value of the attribute must be taken into account.
 common_ignoretags = [(None, "xml-lang", None)]
 common_canchangetags = [("img", "alt", None), (None, "title", None)]
-# Actually the title tag is only allowed on div, span, a, body, h1-h6, address
+# Actually the title tag is allowed on many tags in HTML (but probably not all)
 
 class CheckerConfig(object):
     """object representing the configuration of a checker"""
