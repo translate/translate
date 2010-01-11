@@ -781,6 +781,8 @@ def test_xmltags():
     assert passes(stdchecker.xmltags, "Click <img src=\"img.jpg\">here</img>", "Klik <img src=\"img.jpg\">hier</img>")
     assert fails(stdchecker.xmltags, "Click <img src=\"image.jpg\">here</img>", "Klik <img src=\"prent.jpg\">hier</img>")
     assert passes(stdchecker.xmltags, "Click <img src=\"img.jpg\" alt=\"picture\">here</img>", "Klik <img src=\"img.jpg\" alt=\"prentjie\">hier</img>")
+    assert passes(stdchecker.xmltags, "Click <a title=\"tip\">here</a>", "Klik <a title=\"wenk\">hier</a>")
+    assert passes(stdchecker.xmltags, "Click <div title=\"tip\">here</div>", "Klik <div title=\"wenk\">hier</div>")
     assert passes(stdchecker.xmltags, "Start with the &lt;start&gt; tag", "Begin met die &lt;begin&gt;")
 
     assert fails(stdchecker.xmltags, "Click <a href=\"page.html\">", "Klik <a hverw=\"page.html\">")
