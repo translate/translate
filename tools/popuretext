@@ -63,3 +63,5 @@ do
 	fi |
 	sed "/^\(Project-Id-Version:\|Report-Msgid-Bugs-To:\|POT-Creation-Date:\|PO-Revision-Date:\|Last-Translator:\|Language-Team:\|MIME-Version:\|Content-Type:\|Content-Transfer-Encoding:\|Plural-Forms:\|X-Generator:\|X-Accelerator-Marker:\)/d" >> $textfile
 done
+
+rm -rf $tempdir
