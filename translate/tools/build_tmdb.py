@@ -85,7 +85,7 @@ def main():
     )
     parser.add_option(
         "-s", "--import-source-lang", dest="source_lang", default="en",
-        help="source language of translation files (defalut: en)"
+        help="source language of translation files (default: en)"
     )
     parser.add_option(
         "-t", "--import-target-lang", dest="target_lang",
