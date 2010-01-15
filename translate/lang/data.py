@@ -32,6 +32,7 @@ languages = {
 'am': ('Amharic', 2, 'n > 1'),
 'ar': ('Arabic', 6, 'n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5'),
 'arn': ('Mapudungun; Mapuche', 2, 'n > 1'),
+'ast': ('Asturian', 2, 'n != 1'),  #iso-codes has "Asturian; Bable; Leonese; Asturleonese"
 'az': ('Azerbaijani', 2, '(n != 1)'),
 'be': ('Belarusian', 3, 'n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2'),
 'bg': ('Bulgarian', 2, '(n != 1)'),
