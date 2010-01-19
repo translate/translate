@@ -12,6 +12,8 @@ def test_sentences():
     assert sentences == [u"Wat?", "'n Fout?"]
     sentences = language.sentences(u"Dit sal a.g.v. 'n fout gebeur.")
     assert sentences == [u"Dit sal a.g.v. 'n fout gebeur."]
+#    sentences = language.sentences(u"Dit gebeur. 1234")
+#    assert sentences == [u"Dit gebeur.", "1234"]
 
 def test_capsstart():
     """Tests that the indefinite article ('n) doesn't confuse startcaps()."""

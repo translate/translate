@@ -42,6 +42,7 @@ languages = {
 'br': ('Breton', 2, 'n > 1'),
 'bs': ('Bosnian', 3, 'n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2'),
 'ca': ('Catalan; Valencian', 2, '(n != 1)'),
+'ca@valencia': ('Catalan (Valencia)', 2, '(n != 1)'),
 'cs': ('Czech', 3, '(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2'),
 'csb': ('Kashubian', 3, 'n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2'),
 'cy': ('Welsh', 2, '(n==2) ? 1 : 0'),
