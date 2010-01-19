@@ -105,6 +105,7 @@ languages = {
 'nl': ('Dutch; Flemish', 2, '(n != 1)'),
 'nn': ('Norwegian Nynorsk', 2, '(n != 1)'),
 'nso': ('Pedi; Sepedi; Northern Sotho', 2, '(n > 1)'),
+'oc': ('Occitan', 2, '(n > 1)'), #iso-codes has "Occitan (post 1500)"
 'or': ('Oriya', 2, '(n != 1)'),
 'pa': ('Panjabi; Punjabi', 2, '(n != 1)'),
 'pap': ('Papiamento', 2, '(n != 1)'),
