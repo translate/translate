@@ -229,7 +229,7 @@ def languagematch(languagecode, otherlanguagecode):
     return languagecode == otherlanguagecode or \
       (otherlanguagecode.startswith(languagecode) and variant_re.match(otherlanguagecode[len(languagecode):]))
 
-dialect_name_re = re.compile(r"(.+)\s\(([^)]+)\)$")
+dialect_name_re = re.compile(r"(.+)\s\(([^)\d]+)\)$")
 
 def tr_lang(langcode=None):
     """Gives a function that can translate a language name, even in the form C{"language (country)"},
