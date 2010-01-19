@@ -120,12 +120,3 @@ class LanguageIdentifier(object):
         if not text:
             return None
         return self.identify_lang(text)
-
-if __name__ == "__main__":
-    from sys import argv
-    from os import path
-    script_dir = path.abspath(path.dirname(argv[0]))
-    identifier = LanguageIdentifier(path.join(script_dir, '..', 'share', 'langmodels'))
-    import locale
-    encoding = locale.getpreferredencoding()
-    print "Language detected:", identifier.identify_lang(argv[1].decode(encoding))
