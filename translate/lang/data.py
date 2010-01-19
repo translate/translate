@@ -32,7 +32,7 @@ languages = {
 'am': ('Amharic', 2, 'n > 1'),
 'ar': ('Arabic', 6, 'n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5'),
 'arn': ('Mapudungun; Mapuche', 2, 'n > 1'),
-'ast': ('Asturian', 2, 'n != 1'),  #iso-codes has "Asturian; Bable; Leonese; Asturleonese"
+'ast': ('Asturian; Bable; Leonese; Asturleonese', 2, 'n != 1'),
 'az': ('Azerbaijani', 2, '(n != 1)'),
 'be': ('Belarusian', 3, 'n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2'),
 'bg': ('Bulgarian', 2, '(n != 1)'),
@@ -48,7 +48,7 @@ languages = {
 'da': ('Danish', 2, '(n != 1)'),
 'de': ('German', 2, '(n != 1)'),
 'dz': ('Dzongkha', 1, '0'),
-'el': ('Greek', 2, '(n != 1)'),
+'el': ('Greek, Modern (1453-)', 2, '(n != 1)'),
 'en': ('English', 2, '(n != 1)'),
 'en_GB': ('English (United Kingdom)', 2, '(n != 1)'),
 'en_ZA': ('English (South Africa)', 2, '(n != 1)'),
@@ -79,7 +79,7 @@ languages = {
 'ja': ('Japanese', 1, '0'),
 'jv': ('Javanese', 2, '(n != 1)'),
 'ka': ('Georgian', 1, '0'),
-'km': ('Khmer', 1, '0'),
+'km': ('Central Khmer', 1, '0'),
 'kn': ('Kannada', 2, '(n != 1)'),
 'ko': ('Korean', 1, '0'),
 'ku': ('Kurdish', 2, '(n != 1)'),
@@ -100,12 +100,12 @@ languages = {
 'mt': ('Maltese', 4, '(n==1 ? 0 : n==0 || ( n%100>1 && n%100<11) ? 1 : (n%100>10 && n%100<20 ) ? 2 : 3)'),
 'nah': ('Nahuatl languages', 2, '(n != 1)'),
 'nap': ('Neapolitan', 2, '(n != 1)'),
-'nb': ('Norwegian Bokmal', 2, '(n != 1)'),
+'nb': (u'Bokmål, Norwegian; Norwegian Bokmål', 2, '(n != 1)'),
 'ne': ('Nepali', 2, '(n != 1)'),
 'nl': ('Dutch; Flemish', 2, '(n != 1)'),
-'nn': ('Norwegian Nynorsk', 2, '(n != 1)'),
+'nn': ('Norwegian Nynorsk; Nynorsk, Norwegian', 2, '(n != 1)'),
 'nso': ('Pedi; Sepedi; Northern Sotho', 2, '(n > 1)'),
-'oc': ('Occitan', 2, '(n > 1)'), #iso-codes has "Occitan (post 1500)"
+'oc': ('Occitan (post 1500)', 2, '(n > 1)'),
 'or': ('Oriya', 2, '(n != 1)'),
 'pa': ('Panjabi; Punjabi', 2, '(n != 1)'),
 'pap': ('Papiamento', 2, '(n != 1)'),
@@ -146,7 +146,38 @@ languages = {
 }
 """Dictionary of language data.
 The language code is the dictionary key (which may contain country codes and modifiers).
-The value is a tuple: (Full name in English, nplurals, plural equation)"""
+The value is a tuple: (Full name in English from iso-codes, nplurals, plural equation).
+
+Note that the English names should not be used in user facing places - it
+should always be passed through the function returned from tr_lang(), or at
+least passed through _fix_language_name()."""
+
+_fixed_names = {
+        u"Asturian; Bable; Leonese; Asturleonese": u"Asturian",
+        u"Bokmål, Norwegian; Norwegian Bokmål": u"Norwegian Bokmål",
+        u"Catalan; Valencian": u"Catalan",
+        u"Central Khmer": u"Khmer",
+        u"Chichewa; Chewa; Nyanja": u"Chewa; Nyanja",
+        u"Divehi; Dhivehi; Maldivian": u"Divehi",
+        u"Dutch; Flemish": u"Dutch",
+        u"Filipino; Pilipino": u"Filipino",
+        u"Greek, Modern (1453-)": u"Greek",
+        u"Kirghiz; Kyrgyz": u"Kirghiz",
+        u"Klingon; tlhIngan-Hol": u"Klingon",
+        u"Limburgan; Limburger; Limburgish": u"Limburgish",
+        u"Low German; Low Saxon; German, Low; Saxon, Low": u"Low German",
+        u"Luxembourgish; Letzeburgesch": u"Luxembourgish",
+        u"Ndebele, South; South Ndebele": u"Southern Ndebele",
+        u"Norwegian Nynorsk; Nynorsk, Norwegian": u"Norwegian Nynorsk",
+        u"Occitan (post 1500)": u"Occitan",
+        u"Panjabi; Punjabi": u"Punjabi",
+        u"Pedi; Sepedi; Northern Sotho": u"Northern Sotho",
+        u"Pushto; Pashto": u"Pashto",
+        u"Sinhala; Sinhalese": u"Sinhala",
+        u"Sotho, Southern": u"Sotho",
+        u"Spanish; Castilian": u"Spanish",
+        u"Uighur; Uyghur": u"Uighur",
+}
 
 def simplercode(code):
     """This attempts to simplify the given language code by ignoring country 
@@ -210,11 +241,18 @@ def tr_lang(langcode=None):
         match = dialect_name_re.match(name)
         if match:
             language, country = match.groups()
-            return u"%s (%s)" % (langfunc(language), countryfunc(country))
+            return u"%s (%s)" % (_fix_language_name(langfunc(language)), countryfunc(country))
         else:
-            return langfunc(name)
+            return _fix_language_name(langfunc(name))
 
     return handlelanguage
+
+def _fix_language_name(name):
+    """Identify and replace some unsightly names present in iso-codes.
+
+    If the name is present in _fixed_names we assume it is untranslated and
+    we replace it with a more usable rendering."""
+    return _fixed_names.get(name, name)
 
 def gettext_lang(langcode=None):
     """Returns a gettext function to translate language names into the given
