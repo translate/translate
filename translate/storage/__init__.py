@@ -24,7 +24,7 @@ It contains classes that represent various storage formats for localization
 
 @group Primary Localisation: xliff pypo cpo pocommon po poheader poparser base factory
 @group Bilingual: ts2 ts oo lisa tmx tbx wordfast qph poxliff
-@group Monolingual: dtd properties ini rc ical csvl10n html php txt subtitles symbian tiki
+@group Monolingual: dtd properties ini rc ical csvl10n html php txt subtitles symbian tiki skype
 @group OpenDocument Format: xml_extract odf*
 @group Binary: qm mo
 @group Version Control: versioncontrol

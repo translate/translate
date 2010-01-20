@@ -96,6 +96,10 @@ msgstr ""'''
         propfile = self.merge2prop(proptemplate, posource, personality="mozilla")
         print propfile
         assert propfile == [propexpectedmozilla]
+        propexpectedskype = '''prop  =  ṽḁḽṻḝ\n'''
+        propfile = self.merge2prop(proptemplate, posource, personality="skype")
+        print propfile
+        assert propfile == [propexpectedskype]
 
 class TestPO2PropCommand(test_convert.TestConvertCommand, TestPO2Prop):
     """Tests running actual po2prop commands on files"""

@@ -35,7 +35,7 @@ class prop2po:
         """converts a .properties file to a .po file..."""
         self.personality = personality
         thetargetfile = po.pofile()
-        if self.personality == "mozilla":
+        if self.personality == "mozilla" or self.personality == "skype":
             targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit", x_accelerator_marker="&")
         else:
             targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
@@ -67,7 +67,7 @@ class prop2po:
         """converts two .properties files to a .po file..."""
         self.personality = personality
         thetargetfile = po.pofile()
-        if self.personality == "mozilla":
+        if self.personality == "mozilla" or self.personality == "skype":
             targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit", x_accelerator_marker="&")
         else:
             targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
@@ -152,11 +152,14 @@ def convertprop(inputfile, outputfile, templatefile, personality="java", pot=Fal
 
 def main(argv=None):
     from translate.convert import convert
-    formats = {"properties": ("po", convertprop), ("properties", "properties"): ("po", convertprop)}
+    formats = {"properties": ("po", convertprop), 
+               ("properties", "properties"): ("po", convertprop),
+               "lang": ("po", convertprop),
+               ("lang", "lang"): ("po", convertprop),}
     parser = convert.ConvertOptionParser(formats, usetemplates=True, usepots=True, description=__doc__)
     parser.add_option("", "--personality", dest="personality", default="java", type="choice",
-            choices=["java", "mozilla"],
-            help="set the input behaviour: java (default), mozilla", metavar="TYPE")
+            choices=["java", "mozilla", "skype"],
+            help="set the input behaviour: java (default), mozilla, skype", metavar="TYPE")
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.passthrough.append("personality")

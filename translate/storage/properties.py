@@ -139,7 +139,7 @@ def key_strip(key):
         newkey += key[len(newkey):len(newkey)+1]
     return newkey.lstrip()
 
-default_encoding = {"java": "latin1", "mozilla": "utf-8"}
+default_encoding = {"java": "latin1", "mozilla": "utf-8", "skype": "utf-16"}
 
 class propunit(base.TranslationUnit):
     """an element of a properties file i.e. a name and value, and any comments
@@ -157,7 +157,7 @@ class propunit(base.TranslationUnit):
     def setsource(self, source):
         """Sets the source AND the target to be equal"""
         source = data.forceunicode(source)
-        if self.personality == "mozilla":
+        if self.personality == "mozilla" or self.personality == "skype":
             self.value = quote.mozillapropertiesencode(source or u"")
         else:
             self.value = quote.javapropertiesencode(source or u"")
@@ -229,10 +229,7 @@ class propfile(base.TranslationStore):
         """read the source of a properties file in and include them as units"""
         newunit = propunit("", personality)
         inmultilinevalue = False
-        if personality == "mozilla":
-            propsrc = unicode(propsrc, 'utf-8')
-        else:
-            propsrc = unicode(propsrc, 'latin1')
+        propsrc = unicode(propsrc, default_encoding[personality])
         for line in propsrc.split(u"\n"):
             # handle multiline value if we're in one
             line = quote.rstripeol(line)

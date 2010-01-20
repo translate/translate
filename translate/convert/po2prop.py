@@ -96,7 +96,7 @@ class reprop:
                     value = self.inputdict[key]
                     if isinstance(value, str):
                         value = value.decode('utf8')
-                    if self.personality == "mozilla":
+                    if self.personality == "mozilla" or self.personality == "skype":
                         returnline = key+prespace+"="+postspace+quote.mozillapropertiesencode(value)+eol
                     else:
                         returnline = key+prespace+"="+postspace+quote.javapropertiesencode(value)+eol
@@ -125,11 +125,12 @@ def convertprop(inputfile, outputfile, templatefile, personality, includefuzzy=F
 def main(argv=None):
     # handle command line options
     from translate.convert import convert
-    formats = {("po", "properties"): ("properties", convertprop)}
+    formats = {("po", "properties"): ("properties", convertprop),
+               ("po", "lang"): ("lang", convertprop),}
     parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
     parser.add_option("", "--personality", dest="personality", default="java", type="choice",
-            choices=["java", "mozilla"],
-            help="set the output behaviour: java (default), mozilla", metavar="TYPE")
+            choices=["java", "mozilla", "skype"],
+            help="set the output behaviour: java (default), mozilla, skype", metavar="TYPE")
     parser.add_fuzzy_option()
     parser.passthrough.append("personality")
     parser.run(argv)

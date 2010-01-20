@@ -17,7 +17,7 @@ Dan Schafer (Mozilla): improvements to html2po
 David Farning: testing
 David Fraser: main development
 Dwayne Bailey: added tests, checks in pofilter, some helpful bash scripts, testing
-Filip Miletic: fixes for unicode problems
+Filip Miletic: fixes for unicode problems, skype conversion
 Fredrik Corneliusson: xliff work
 Friedel Wolff: bug fixes, development
 Geoffrey Hutchison: better Qt .ts support
