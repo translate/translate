@@ -7,7 +7,7 @@ def test_getlanguage():
     """Tests that a basic call to getlanguage() works."""
     kmlanguage = factory.getlanguage('km')
     assert kmlanguage.code == 'km'
-    assert kmlanguage.fullname == 'Khmer'
+    assert kmlanguage.fullname == 'Central Khmer'
     
     # Test a non-exisint code
     language = factory.getlanguage('zz')
