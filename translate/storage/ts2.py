@@ -208,6 +208,12 @@ class tsunit(lisa.LISAunit):
         else:
             return self.source
 
+    def istranslatable(self):
+        # Found a file in the wild with no context and an empty source. This
+        # served as a header, so let's classify this as not translatable.
+        # http://bibletime.svn.sourceforge.net/viewvc/bibletime/trunk/bibletime/i18n/messages/bibletime_ui.ts
+        return bool(self.getid())
+
     def getcontext(self):
         return self.xmlelement.getparent().find("name").text
 
