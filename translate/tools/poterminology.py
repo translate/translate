@@ -35,7 +35,8 @@ from translate.misc import file_discovery
 
 def create_termunit(term, unit, targets, locations, sourcenotes, transnotes, filecounts):
     termunit = po.pounit(term)
-    termunit.merge(unit, overwrite=False, comments=False)
+    if unit is not None:
+        termunit.merge(unit, overwrite=False, comments=False)
     if len(targets.keys()) > 1:
         txt = '; '.join(["%s {%s}" % (target, ', '.join(files))
                          for target, files in targets.iteritems()])
@@ -248,7 +249,7 @@ class TerminologyExtractor(object):
             transnotes = set()
             targets = {}
             fullmsg = False
-            bestunit = translations[-1][2]
+            bestunit = None
             for source, target, unit, filename in translations:
                 sources.add(source)
                 filecounts[filename] = filecounts.setdefault(filename, 0) + 1
@@ -271,7 +272,7 @@ class TerminologyExtractor(object):
                 for loc in unit.getlocations():
                     locations.add(locre.sub("", loc))
 
-            numsources = len(sources) * len(term.split())
+            numsources = len(sources)
             numfiles = len(filecounts)
             numlocs = len(locations)
             if numfiles < inputmin or numlocs < locmin:
