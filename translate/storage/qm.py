@@ -37,6 +37,10 @@ implement the hashing algorithm (which seems to be identical to the Gettext hash
 Gettext it seems that the hash is required, but that has not been validated.
 @todo: The code can parse files correctly.  But it could be cleaned up to be more readable, especially 
 the part that breaks the file into sections.
+
+U{http://qt.gitorious.org/+kde-developers/qt/kde-qt/blobs/master/tools/linguist/shared/qm.cpp}
+U{Plural information<http://qt.gitorious.org/+kde-developers/qt/kde-qt/blobs/master/tools/linguist/shared/numerus.cpp>}
+U{QLocale languages<http://docs.huihoo.com/qt/4.5/qlocale.html#Language-enum>}
 """
 
 from translate.storage import base
