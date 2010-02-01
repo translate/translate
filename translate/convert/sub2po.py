@@ -23,7 +23,6 @@
 
 import sys
 from translate.storage import po
-from translate.storage import subtitles
 
 def convert_store(input_store, duplicatestyle="msgctxt"):
     """converts a subtitle file to a .po file..."""
@@ -79,6 +78,7 @@ def convert_unit(input_unit, commenttype):
 
 def convertsub(input_file, output_file, template_file=None, pot=False, duplicatestyle="msgctxt"):
     """Reads in L{input_file} using translate.subtitles, converts using L{sub2po}, writes to L{output_file}"""
+    from translate.storage import subtitles
     input_store = subtitles.SubtitleFile(input_file)
     if template_file is None:
         output_store = convert_store(input_store, duplicatestyle=duplicatestyle)

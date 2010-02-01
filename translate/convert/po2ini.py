@@ -23,10 +23,10 @@
 """convert Gettext PO localization files to .ini files"""
 
 from translate.storage import factory
-from translate.storage import ini
 
 class reini:
     def __init__(self, templatefile, dialect):
+        from translate.storage import ini
         self.templatefile = templatefile
         self.templatestore = ini.inifile(templatefile, dialect=dialect)
         self.inputdict = {}

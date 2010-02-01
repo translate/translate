@@ -23,10 +23,10 @@
 """Convert Gettext PO localization files to subtitle files"""
 
 from translate.storage import factory
-from translate.storage import subtitles
 
 class resub:
     def __init__(self, templatefile):
+        from translate.storage import subtitles
         self.templatefile = templatefile
         self.templatestore = subtitles.SubtitleFile(templatefile)
         self._inputdict = {}
