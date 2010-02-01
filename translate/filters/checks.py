@@ -388,8 +388,8 @@ class TranslationChecker(UnitChecker):
     def run_filters(self, unit):
         """Do some optimisation by caching some data of the unit for the benefit 
         of run_test()."""
-        self.str1 = data.normalized_unicode(unit.source)
-        self.str2 = data.normalized_unicode(unit.target)
+        self.str1 = data.normalized_unicode(unit.source) or u""
+        self.str2 = data.normalized_unicode(unit.target) or u""
         self.hasplural = unit.hasplural()
         self.locations = unit.getlocations()
         return super(TranslationChecker, self).run_filters(unit)
