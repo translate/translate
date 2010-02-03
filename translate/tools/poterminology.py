@@ -232,9 +232,7 @@ class TerminologyExtractor(object):
                             skips -= 1
                         self.addphrases(words, skips, translation)
 
-    def extract_terms(self, create_termunit=create_termunit,
-                      inputmin=1, fullmsgmin=1, substrmin=2, locmin=2,
-                      sortorders=[ "frequency", "dictionary", "length" ]):
+    def extract_terms(self, create_termunit=create_termunit, inputmin=1, fullmsgmin=1, substrmin=2, locmin=2):
         terms = {}
         locre = re.compile(r":[0-9]+$")
         print >> sys.stderr, ("%d terms from %d units" %
@@ -289,9 +287,12 @@ class TerminologyExtractor(object):
                 locations.append("(poterminology) %d more locations"
                                      % (numlocs - locmax))
 
-            termunit = create_termunit(term, bestunit, targets, locations,
-                                       sourcenotes, transnotes, filecounts)
+            termunit = create_termunit(term, bestunit, targets, locations, sourcenotes, transnotes, filecounts)
             terms[term] = ((10 * numfiles) + numsources, termunit)
+        return terms
+
+    def filter_terms(self, terms, sortorders=[ "frequency", "dictionary", "length" ]):
+        """reduce subphrases from extracted terms"""
         # reduce subphrase
         termlist = terms.keys()
         print >> sys.stderr, "%d terms after thresholding" % len(termlist)
@@ -435,8 +436,9 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
         """saves the generated terminology glossary"""
         termfile = po.pofile()
         print >> sys.stderr, ("scanned %d files" % self.files)
-        termitems = self.extractor.extract_terms(inputmin=options.inputmin, fullmsgmin=options.fullmsgmin,
-                                   substrmin=options.substrmin, locmin=options.locmin, sortorders=options.sortorders)
+        terms = self.extractor.extract_terms(inputmin=options.inputmin, fullmsgmin=options.fullmsgmin,
+                                   substrmin=options.substrmin, locmin=options.locmin)
+        termitems = self.extractor.filter_terms(terms, sortorders=options.sortorders)
         for count, unit in termitems:
             termfile.units.append(unit)
         open(options.output, "w").write(str(termfile))
