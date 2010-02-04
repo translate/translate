@@ -237,7 +237,7 @@ class tsunit(lisa.LISAunit):
         else:
             return [':'.join([location.get("filename"), location.get("line")])]
 
-    def merge(self, otherunit, overwrite=False, comments=True):
+    def merge(self, otherunit, overwrite=False, comments=True, authoritative=False):
         super(tsunit, self).merge(otherunit, overwrite, comments)
         #TODO: check if this is necessary:
         if otherunit.isfuzzy():

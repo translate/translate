@@ -345,7 +345,7 @@ class TranslationUnit(object):
     def gettargetlanguage(self):
         return getattr(self._store, "targetlanguage", None)
 
-    def merge(self, otherunit, overwrite=False, comments=True):
+    def merge(self, otherunit, overwrite=False, comments=True, authoritative=False):
         """Do basic format agnostic merging."""
         if not self.target or overwrite:
             self.rich_target = otherunit.rich_target
