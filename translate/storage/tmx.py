@@ -53,7 +53,7 @@ class tmxunit(lisa.LISAunit):
     def istranslatable(self):
         return bool(self.source)
 
-    def addnote(self, text, origin=None):
+    def addnote(self, text, origin=None, position="append"):
         """Add a note specifically in a "note" tag.
 
         The origin parameter is ignored"""

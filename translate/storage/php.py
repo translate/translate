@@ -131,7 +131,7 @@ class phpunit(base.TranslationUnit):
     def getlocations(self):
         return [self.name]
 
-    def addnote(self, note, origin=None):
+    def addnote(self, text, origin=None, position="append"):
         self._comments.append(note)
 
     def getnotes(self, origin=None):

@@ -63,7 +63,7 @@ class QphUnit(lisa.LISAunit):
             return not node is None
         return filter(not_none, [self._getsourcenode(), self._gettargetnode()])
 
-    def addnote(self, text, origin=None):
+    def addnote(self, text, origin=None, position="append"):
         """Add a note specifically in a "definition" tag"""
         assert isinstance(text, unicode)
         current_notes = self.getnotes(origin)

@@ -240,7 +240,7 @@ class TranslationUnit(object):
         """
         return getattr(self, "notes", "")
 
-    def addnote(self, text, origin=None):
+    def addnote(self, text, origin=None, position="append"):
         """Adds a note (comment).
 
         @type text: string

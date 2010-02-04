@@ -199,7 +199,7 @@ class propunit(base.TranslationUnit):
     def getlocations(self):
         return [self.name]
 
-    def addnote(self, note, origin=None):
+    def addnote(self, text, origin=None, position="append"):
         note = data.forceunicode(note)
         self.comments.append(note)
 

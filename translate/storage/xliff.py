@@ -185,7 +185,7 @@ class xliffunit(lisa.LISAunit):
         """Removes the supplied alternative from the list of alt-trans tags"""
         self.xmlelement.remove(alternative.xmlelement)
 
-    def addnote(self, text, origin=None):
+    def addnote(self, text, origin=None, position="append"):
         """Add a note specifically in a "note" tag"""
         if text:
             text = text.strip()

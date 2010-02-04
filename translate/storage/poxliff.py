@@ -154,7 +154,7 @@ class PoXliffUnit(xliff.xliffunit):
 
     target = property(gettarget, settarget)
 
-    def addnote(self, text, origin=None):
+    def addnote(self, text, origin=None, position="append"):
         """Add a note specifically in a "note" tag"""
         if isinstance(text, str):
             text = text.decode("utf-8")

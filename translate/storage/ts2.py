@@ -147,7 +147,7 @@ class tsunit(lisa.LISAunit):
     def hasplural(self):
         return self.xmlelement.get("numerus") == "yes"
 
-    def addnote(self, text, origin=None):
+    def addnote(self, text, origin=None, position="append"):
         """Add a note specifically in a "comment" tag"""
         if isinstance(text, str):
             text = text.decode("utf-8")
