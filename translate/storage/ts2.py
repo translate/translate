@@ -34,7 +34,7 @@ U{2 <http://doc.trolltech.com/4.3/qstring.html#arg-2>}
 """
 
 from translate.storage import base, lisa
-from translate.storage.placeables import general, StringElem
+from translate.storage.placeables import general
 from translate.misc.multistring import multistring
 from translate.lang import data
 from lxml import etree
@@ -84,10 +84,10 @@ class tsunit(lisa.LISAunit):
 
     def _getsourcenode(self):
         return self.xmlelement.find(self.namespaced(self.languageNode))
-    
+
     def _gettargetnode(self):
         return self.xmlelement.find(self.namespaced("translation"))
-    
+
     def getlanguageNodes(self):
         """We override this to get source and target nodes."""
         def not_none(node):
@@ -217,11 +217,14 @@ class tsunit(lisa.LISAunit):
         return bool(self.getid()) and not self.isobsolete()
 
     def getcontext(self):
-        return self.xmlelement.getparent().find("name").text
+        context = self.xmlelement.getparent().find("name")
+        if context is None:
+            return None
+        return context.text
 
     def addlocation(self, location):
         if isinstance(location, str):
-            text = text.decode("utf-8")
+            location = location.decode("utf-8")
         location = etree.SubElement(self.xmlelement, self.namespaced("location"))
         filename, line = location.split(':', 1)
         location.set("filename", filename)
@@ -300,7 +303,7 @@ class tsfile(lisa.LISAfile):
 
     def _getcontextname(self, contextnode):
         """Returns the name of the given context node."""
-        return filenode.find(self.namespaced("name")).text
+        return contextnode.find(self.namespaced("name")).text
 
     def _getcontextnames(self):
         """Returns all contextnames in this TS file."""
@@ -312,15 +315,18 @@ class tsfile(lisa.LISAfile):
         """Returns the context node with the given name."""
         contextnodes = self.document.findall(self.namespaced("context"))
         for contextnode in contextnodes:
-            if self.getcontextname(contextnode) == contextname:
+            if self._getcontextname(contextnode) == contextname:
                 return contextnode
         return None
 
-    def addunit(self, unit, new=True, contextname=None, createifmissing=False):
+    def addunit(self, unit, new=True, contextname=None, createifmissing=True):
         """Adds the given unit to the last used body node (current context).
 
         If the contextname is specified, switch to that context (creating it
         if allowed by createifmissing)."""
+        if contextname is None:
+            contextname = unit.getcontext()
+
         if self._contextname != contextname:
             if not self._switchcontext(contextname, createifmissing):
                 return None
@@ -329,7 +335,7 @@ class tsfile(lisa.LISAfile):
         return unit
 
     def _switchcontext(self, contextname, createifmissing=False):
-        """Switch the current context to the one named contextname, optionally 
+        """Switch the current context to the one named contextname, optionally
         creating it if it doesn't exist."""
         self._contextname = contextname
         contextnode = self._getcontextnode(contextname)
@@ -352,16 +358,16 @@ class tsfile(lisa.LISAfile):
 
     def __str__(self):
         """Converts to a string containing the file's XML.
-        
+
         We have to override this to ensure mimic the Qt convention:
             - no XML decleration
             - plain DOCTYPE that lxml seems to ignore
         """
-        # A bug in lxml means we have to output the doctype ourselves. For 
+        # A bug in lxml means we have to output the doctype ourselves. For
         # more information, see:
         # http://codespeak.net/pipermail/lxml-dev/2008-October/004112.html
         # The problem was fixed in lxml 2.1.3
-        output = etree.tostring(self.document, pretty_print=True, 
+        output = etree.tostring(self.document, pretty_print=True,
                 xml_declaration=False, encoding='utf-8')
         if not "<!DOCTYPE TS>" in output[:30]:
             output = "<!DOCTYPE TS>" + output
