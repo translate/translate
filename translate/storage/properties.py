@@ -213,6 +213,8 @@ class propunit(base.TranslationUnit):
         """returns whether this is a blank element, containing only comments..."""
         return not (self.name or self.value)
 
+    def istranslatable(self):
+        return self.isblank()
 class propfile(base.TranslationStore):
     """this class represents a .properties file, made up of propunits"""
     UnitClass = propunit
