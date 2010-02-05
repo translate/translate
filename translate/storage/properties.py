@@ -215,6 +215,10 @@ class propunit(base.TranslationUnit):
 
     def istranslatable(self):
         return self.isblank()
+    
+    def getid(self):
+        return self.name
+
 class propfile(base.TranslationStore):
     """this class represents a .properties file, made up of propunits"""
     UnitClass = propunit
