@@ -200,8 +200,8 @@ class propunit(base.TranslationUnit):
         return [self.name]
 
     def addnote(self, text, origin=None, position="append"):
-        note = data.forceunicode(note)
-        self.comments.append(note)
+        text = data.forceunicode(text)
+        self.comments.append(text)
 
     def getnotes(self, origin=None):
         return u'\n'.join(self.comments)
