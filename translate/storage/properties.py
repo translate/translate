@@ -204,7 +204,10 @@ class propunit(base.TranslationUnit):
         self.comments.append(text)
 
     def getnotes(self, origin=None):
-        return u'\n'.join(self.comments)
+        if origin in ['programmer', 'developer', 'source code', None]:
+            return u'\n'.join(self.comments)
+        else:
+            return ''
 
     def removenotes(self):
         self.comments = []
