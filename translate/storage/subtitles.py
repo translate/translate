@@ -43,6 +43,12 @@ class SubtitleUnit(base.TranslationUnit):
             self.source = source
         super(SubtitleUnit, self).__init__(source)
 
+    def getnotes(self, origin=None):
+        if origin in ['programmer', 'developer', 'source code']:
+            return "visible for %d seconds" % self._duration
+        else:
+            return ''
+
     def getlocations(self):
         return ["%s-->%s" % (self._start, self._end)]
 
@@ -82,8 +88,7 @@ class SubtitleFile(base.TranslationStore):
             newunit = self.addsourceunit(subtitle.main_text)
             newunit._start = subtitle.start
             newunit._end =  subtitle.end
-            newunit.addnote("visible for %d seconds" % subtitle.duration_seconds, "developer")
-            #FIXME: add location based on start?
+            newunit._duration = subtitle.duration_seconds
 
     def _parsefile(self, storefile):
         if hasattr(storefile, 'name'):
