@@ -226,7 +226,7 @@ class propunit(base.TranslationUnit):
         return not (self.name or self.value)
 
     def istranslatable(self):
-        return not self.isblank()
+        return bool(self.name)
 
     def getid(self):
         return self.name
