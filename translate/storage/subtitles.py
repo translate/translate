@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2008-2009 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -26,9 +26,12 @@
 
    a patch to gaupol is required to open utf-8 files successfully
 """
-from translate.storage import base
+
 from StringIO import StringIO
+
 import gaupol
+
+from translate.storage import base
 
 class SubtitleUnit(base.TranslationUnit):
     """A subtitle entry that is translatable"""
@@ -51,11 +54,11 @@ class SubtitleFile(base.TranslationStore):
         self.UnitClass = unitclass
         base.TranslationStore.__init__(self, unitclass=unitclass)
         self.units = []
-        self.filename = ''
+        self.filename = None
         self._subtitlefile = None
         self._encoding = 'utf-8'
         if inputfile is not None:
-            self.parse(inputfile)
+            self._parsefile(inputfile)
 
     def __str__(self):
         subtitles = []
@@ -69,14 +72,7 @@ class SubtitleFile(base.TranslationStore):
         self._subtitlefile.write_to_file(subtitles, gaupol.documents.MAIN, output)
         return output.getvalue().encode(self._subtitlefile.encoding)
 
-
-    def parse(self, input):
-        """parse the given file"""
-        if hasattr(input, 'name'):
-            self.filename = input.name
-        elif not getattr(self, 'filename', ''):
-            self.filename = ''
-        input.close()
+    def _parse(self):
         self._encoding = gaupol.encodings.detect(self.filename)
         if self._encoding == 'ascii':
             self._encoding = 'utf-8'
@@ -87,3 +83,34 @@ class SubtitleFile(base.TranslationStore):
             newunit._start = subtitle.start
             newunit._end =  subtitle.end
             newunit.addnote("visible for %d seconds" % subtitle.duration_seconds, "developer")
+            #FIXME: add location based on start?
+
+    def _parsefile(self, storefile):
+        if hasattr(storefile, 'name'):
+            self.filename = storefile.name
+            storefile.close()
+        elif hasattr(storefile, 'filename'):
+            self.filename = storefile.filename
+            storefile.close()
+        elif isinstance(storefile, basestring):
+            self.filename = storefile
+        if self.filename:
+            self._parse()
+
+    @classmethod
+    def parsefile(cls, storefile):
+        """parse the given file"""
+        newstore = cls()
+        newstore._parsefile(storefile)
+        return newstore
+
+    @classmethod
+    def parsestring(cls, storestring):
+        # Gaupol does not allow parsing from strings
+
+        #FIXME: maybe we can write to a temporary file?
+        raise NotImplementedError
+
+    def parse(self, data):
+        # Gaupol does not allow parsing from strings
+        raise NotImplementedError
