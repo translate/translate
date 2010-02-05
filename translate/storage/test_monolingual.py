@@ -33,3 +33,19 @@ class TestMonolingualStore(test_base.TestTranslationStore):
     def test_nonascii(self):
         pass
 
+
+    def check_equality(self, store1, store2):
+        """asserts that store1 and store2 are the same"""
+        assert len(store1.units) == len(store2.units)
+        for n, store1unit in enumerate(store1.units):
+            store2unit = store2.units[n]
+            match = str(store1unit) == str(store2unit)
+            if not match:
+                print "match failed between elements %d of %d" % (n+1, len(store1.units))
+                print "store1:"
+                print str(store1)
+                print "store2:"
+                print str(store2)
+                print "store1.units[%d].__dict__:" % n, store1unit.__dict__
+                print "store2.units[%d].__dict__:" % n, store2unit.__dict__
+                assert str(store1unit) == str(store2unit)
