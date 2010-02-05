@@ -52,6 +52,9 @@ class SubtitleUnit(base.TranslationUnit):
     def getlocations(self):
         return ["%s-->%s" % (self._start, self._end)]
 
+    def getid(self):
+        return self.getlocations()[0]
+
 class SubtitleFile(base.TranslationStore):
     """A subtitle file"""
     UnitClass = SubtitleUnit
