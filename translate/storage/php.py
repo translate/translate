@@ -132,7 +132,7 @@ class phpunit(base.TranslationUnit):
         return [self.name]
 
     def addnote(self, text, origin=None, position="append"):
-        self._comments.append(note)
+        self._comments.append(text)
 
     def getnotes(self, origin=None):
         return '\n'.join(self._comments)
