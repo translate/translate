@@ -140,7 +140,7 @@ def _getname(storefile):
         storefilename = storefile
     return storefilename
 
-def getclass(storefile, ignore=None):
+def getclass(storefile, ignore=None, classes=classes, hiddenclasses=hiddenclasses):
     """Factory that returns the applicable class for the type of file presented.
     Specify ignore to ignore some part at the back of the name (like .gz). """
     storefilename = _getname(storefile)
@@ -165,7 +165,7 @@ def getclass(storefile, ignore=None):
         raise ValueError("Unknown filetype (%s)" % storefilename)
     return storeclass
 
-def getobject(storefile, ignore=None):
+def getobject(storefile, ignore=None, classes=classes, hiddenclasses=hiddenclasses):
     """Factory that returns a usable object for the type of file presented.
 
     @type storefile: file or str
@@ -181,7 +181,7 @@ def getobject(storefile, ignore=None):
             from translate.storage import directory
             return directory.Directory(storefile)
     storefilename = _getname(storefile)
-    storeclass = getclass(storefile, ignore)
+    storeclass = getclass(storefile, ignore, classes=classes, hiddenclasses=hiddenclasses)
     if os.path.exists(storefilename) or not getattr(storefile, "closed", True):
         name, ext = os.path.splitext(storefilename)
         ext = ext[len(os.path.extsep):].lower()
