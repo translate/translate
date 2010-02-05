@@ -200,7 +200,10 @@ class propunit(base.TranslationUnit):
         else:
             if "\\u" in self.value and self.personality == "mozilla":
                 self.value = quote.mozillapropertiesencode(self.source)
-            return u"%s%s%s%s\n" % (notes, self.name, self.delimeter, self.value)
+            if "\\u" in self.translation and self.personality == "mozilla":
+                self.translation = quote.mozillapropertiesencode(self.translation)
+            value = self.translation or self.value
+            return u"%s%s%s%s\n" % (notes, self.name, self.delimeter, value)
 
     def getlocations(self):
         return [self.name]
