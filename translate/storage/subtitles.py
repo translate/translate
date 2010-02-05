@@ -44,7 +44,7 @@ class SubtitleUnit(base.TranslationUnit):
         super(SubtitleUnit, self).__init__(source)
 
     def getnotes(self, origin=None):
-        if origin in ['programmer', 'developer', 'source code']:
+        if origin in ['programmer', 'developer', 'source code', None]:
             return "visible for %d seconds" % self._duration
         else:
             return ''
