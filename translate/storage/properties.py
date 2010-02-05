@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2004-2006 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -21,7 +21,7 @@
 
 """classes that hold units of .properties files (propunit) or entire files
    (propfile) these files are used in translating Mozilla and other software
-   
+
    The following U{.properties file
    description<http://java.sun.com/j2se/1.4.2/docs/api/java/util/Properties.html#load(java.io.InputStream)>}
    and U{example <http://www.exampledepot.com/egs/java.util/Props.html>} give some
@@ -35,11 +35,11 @@
    Implementation
    ==============
    A simple summary of what is permissible follows.
-   
+
    Comments::
      # a comment
      ! a comment
-       
+
    Name and Value pairs::
      # Note that the b and c are escaped for epydoc rendering
      a = a string
@@ -150,12 +150,12 @@ class propunit(base.TranslationUnit):
         super(propunit, self).__init__(source)
         self.name = ""
         self.value = u""
+        self.translation = u""
         self.delimeter = u"="
         self.comments = []
         self.source = source
 
     def setsource(self, source):
-        """Sets the source AND the target to be equal"""
         source = data.forceunicode(source)
         if self.personality == "mozilla" or self.personality == "skype":
             self.value = quote.mozillapropertiesencode(source or u"")
@@ -170,11 +170,17 @@ class propunit(base.TranslationUnit):
     source = property(getsource, setsource)
 
     def settarget(self, target):
-        """Note: this also sets the .source attribute!"""
-        self.source = target
+        target = data.forceunicode(target)
+        if self.personality == "mozilla" or self.personality == "skype":
+            self.translation = quote.mozillapropertiesencode(target or u"")
+        else:
+            self.translation = quote.javapropertiesencode(target or u"")
 
     def gettarget(self):
-        return self.source
+        translation = quote.propertiesdecode(self.translation)
+        translation = re.sub(u"\\\\ ", u" ", translation)
+        return translation
+
     target = property(gettarget, settarget)
 
     def __str__(self):
