@@ -256,7 +256,7 @@ msgstr[1] "Kóeie"
         unit = pofile.units[0]
         assert isinstance(unit.source, multistring)
         assert isinstance(unit.source.strings[1], unicode)
-        
+
 
     def wtest_kde_plurals(self):
         """Tests kde-style plurals. (Bug: 191)"""
@@ -396,8 +396,7 @@ msgstr "een"
 
     def test_header_escapes(self):
         pofile = self.StoreClass()
-        header = pofile.makeheader(**{"Report-Msgid-Bugs-To": r"http://qa.openoffice.org/issues/enter_bug.cgi?subcomponent=ui&comment=&short_desc=Localization%20issue%20in%20file%3A%20dbaccess\source\core\resource.oo&component=l10n&form_name=enter_issue"})
-        pofile.addunit(header)
+        pofile.updateheader(add=True, **{"Report-Msgid-Bugs-To": r"http://qa.openoffice.org/issues/enter_bug.cgi?subcomponent=ui&comment=&short_desc=Localization%20issue%20in%20file%3A%20dbaccess\source\core\resource.oo&component=l10n&form_name=enter_issue"})
         filecontents = str(pofile)
         print filecontents
         # We need to make sure that the \r didn't get misrepresented as a 
@@ -439,7 +438,7 @@ msgstr[1] "Koeie"
         print pofile
         assert str(unit) == poexpected
 
-        
+
     def test_makeobsolete_msgctxt(self):
         """Tests making a unit with msgctxt obsolete"""
         posource = '#: test.c\nmsgctxt "Context"\nmsgid "test"\nmsgstr "rest"\n'
@@ -565,11 +564,11 @@ msgstr "omskakel"
         unit = pofile.units[1]
         assert unit.getcontext() == 'Verb. Converting from "something" to "something else".'
         assert unit.getnotes() == 'Test quotes'
-        
+
         unit = pofile.units[2]
         assert unit.getcontext() == 'Verb.\nConverting from "something" to "something else".'
         assert unit.getnotes() == 'Test quotes, newlines and multiline.'
- 
+
     def test_kde_context(self):
         """Tests that kde-style msgid comments can be retrieved via getcontext()."""
         posource = '''# Test comment
@@ -605,7 +604,7 @@ msgstr "Broken _: here"
         unit = pofile.units[0]
         assert unit.source == "Broken _: here"
         assert unit.target == "Broken _: here"
-  
+
     def test_id(self):
         """checks that ids work correctly"""
         posource = r'''
@@ -638,9 +637,9 @@ msgstr[0] ""
         assert pofile.units[1].getid() == "plant"
         assert pofile.units[2].getid() == "_: Noun\nconvert"
         assert pofile.units[3].getid() == "verb\04convert"
-        # Gettext does not consider the plural to determine duplicates, only 
+        # Gettext does not consider the plural to determine duplicates, only
         # the msgid. For generation of .mo files, we might want to use this
-        # code to generate the entry for the hash table, but for now, it is 
+        # code to generate the entry for the hash table, but for now, it is
         # commented out for conformance to gettext.
 #        assert pofile.units[4].getid() == "tree\0trees"
 
@@ -658,7 +657,7 @@ msgstr ""
 
 msgid "a"
 msgstr "b"
-'''        
+'''
         pofile = self.poparse(posource)
         for line in pofile.units[0].getnotes():
             assert isinstance(line, unicode)
