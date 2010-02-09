@@ -27,6 +27,10 @@ from py import test
 import os
 import warnings
 
+def headerless_len(units):
+    """return count of translatable (non header) units"""
+    return len(filter(lambda x: x.istranslatable(), units))
+
 def test_force_override():
     """Tests that derived classes are not allowed to call certain functions"""
     class BaseClass:
@@ -56,7 +60,7 @@ class TestTranslationUnit:
 
     def test_isfuzzy(self):
         """Test that we can call isfuzzy() on a unit.
-        
+
         The default return value for isfuzzy() should be False.
         """
         assert not self.unit.isfuzzy()
@@ -205,7 +209,7 @@ class TestTranslationStore(object):
     def test_create_blank(self):
         """Tests creating a new blank store"""
         store = self.StoreClass()
-        assert len(store.units) == 0
+        assert headerless_len(store.units) == 0
 
     def test_add(self):
         """Tests adding a new unit with a source string"""
@@ -213,7 +217,7 @@ class TestTranslationStore(object):
         unit = store.addsourceunit("Test String")
         print str(unit)
         print str(store)
-        assert len(store.units) == 1
+        assert headerless_len(store.units) == 1
         assert unit.source == "Test String"
 
     def test_find(self):
@@ -243,12 +247,12 @@ class TestTranslationStore(object):
 
     def check_equality(self, store1, store2):
         """asserts that store1 and store2 are the same"""
-        assert len(store1.units) == len(store2.units)
+        assert headerless_len(store1.units) == headerless_len(store2.units)
         for n, store1unit in enumerate(store1.units):
             store2unit = store2.units[n]
             match = store1unit == store2unit
             if not match:
-                print "match failed between elements %d of %d" % (n+1, len(store1.units))
+                print "match failed between elements %d of %d" % (n+1, headerless_len(store1.units))
                 print "store1:"
                 print str(store1)
                 print "store2:"
