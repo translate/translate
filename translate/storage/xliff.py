@@ -442,20 +442,21 @@ class xlifffile(lisa.LISAfile):
         else:
             self.body = self.document.getroot()
 
-        filenode = self.document.getroot().iterchildren(self.namespaced('file')).next()
-        sourcelanguage = filenode.get('source-language')
-        if sourcelanguage:
-            self.setsourcelanguage(sourcelanguage)
-        targetlanguage = filenode.get('target-language')
-        if targetlanguage:
-            self.settargetlanguage(targetlanguage)
+        #filenode = self.document.getroot().iterchildren(self.namespaced('file')).next()
+        #sourcelanguage = filenode.get('source-language')
+        #if sourcelanguage:
+        #    self.setsourcelanguage(sourcelanguage)
+        #targetlanguage = filenode.get('target-language')
+        #if targetlanguage:
+        #    self.settargetlanguage(targetlanguage)
 
     def addheader(self):
         """Initialise the file header."""
-        filenode = self.document.getroot().iterchildren(self.namespaced("file")).next()
-        filenode.set("source-language", self.sourcelanguage)
-        if self.targetlanguage:
-            filenode.set("target-language", self.targetlanguage)
+        pass
+        #filenode = self.document.getroot().iterchildren(self.namespaced("file")).next()
+        #filenode.set("source-language", self.sourcelanguage)
+        #if self.targetlanguage:
+        #    filenode.set("target-language", self.targetlanguage)
 
     def createfilenode(self, filename, sourcelanguage=None, targetlanguage=None, datatype='plaintext'):
         """creates a filenode with the given filename. All parameters are needed
@@ -498,6 +499,28 @@ class xlifffile(lisa.LISAfile):
             if self.getfilename(filenode) == filename:
                 return filenode
         return None
+
+    def setsourcelanguage(self, language):
+        if not language:
+            return
+        filenode = self.document.getroot().iterchildren(self.namespaced('file')).next()
+        filenode.set("source-language", language)
+        self.sourcelanguage = language
+
+    def getsourcelanguage(self):
+        filenode = self.document.getroot().iterchildren(self.namespaced('file')).next()
+        filenode.get("source-language")
+
+    def settargetlanguage(self, language):
+        if not language:
+            return
+        filenode = self.document.getroot().iterchildren(self.namespaced('file')).next()
+        filenode.set("target-language", language)
+        self.targetlanguage = language
+
+    def gettargetlanguage(self):
+        filenode = self.document.getroot().iterchildren(self.namespaced('file')).next()
+        filenode.get("target-language")
 
     def getdatatype(self, filename=None):
         """Returns the datatype of the stored file. If no filename is given,
