@@ -27,6 +27,7 @@ from translate.misc import quote
 from translate.misc import textwrap
 from translate.lang import data
 from translate.storage import pocommon, base
+from translate.storage.pocommon import encodingToUse
 import re
 import copy
 import cStringIO
@@ -111,20 +112,6 @@ def extractpoline(line):
 
 def unquotefrompo(postr):
     return u"".join([extractpoline(line) for line in postr])
-
-def encodingToUse(encoding):
-    """Tests whether the given encoding is known in the python runtime, or returns utf-8.
-    This function is used to ensure that a valid encoding is always used."""
-    if encoding == "CHARSET" or encoding == None:
-        return 'utf-8'
-    return encoding
-#    if encoding is None: return False
-#    return True
-#    try:
-#        tuple = codecs.lookup(encoding)
-#    except LookupError:
-#        return False
-#    return True
 
 def is_null(lst):
     return lst == [] or len(lst) == 1 and lst[0] == '""'

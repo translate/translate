@@ -32,6 +32,7 @@ package for the public API of the library.
 
 from translate.misc.multistring import multistring
 from translate.storage import pocommon
+from translate.storage.pocommon import encodingToUse
 from translate.misc import quote
 from translate.lang import data
 from ctypes import *
@@ -156,9 +157,6 @@ def quoteforpo(text):
 
 def unquotefrompo(postr):
     return pypo.unquotefrompo(postr)
-
-def encodingToUse(encoding):
-    return pypo.encodingToUse(encoding)
 
 def get_libgettextpo_version():
     """Returns the libgettextpo version

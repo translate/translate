@@ -86,6 +86,20 @@ class pounit(base.TranslationUnit):
         return self.hasmarkedcomment("review") or self.hasmarkedcomment("pofilter")
 
 
+def encodingToUse(encoding):
+    """Tests whether the given encoding is known in the python runtime, or returns utf-8.
+    This function is used to ensure that a valid encoding is always used."""
+    if encoding == "CHARSET" or encoding == None:
+        return 'utf-8'
+    return encoding
+#    if encoding is None: return False
+#    return True
+#    try:
+#        tuple = codecs.lookup(encoding)
+#    except LookupError:
+#        return False
+#    return True
+
 class pofile(poheader.poheader, base.TranslationStore):
     Name = _("Gettext PO file")
     Mimetypes  = ["text/x-gettext-catalog", "text/x-gettext-translation", "text/x-po", "text/x-pot"]

@@ -31,6 +31,7 @@ directly, but can be used once cpo has been established to work."""
 from translate.misc.multistring import multistring
 from translate.lang import data
 from translate.storage import pocommon, base, cpo
+from translate.storage.pocommon import encodingToUse
 import re
 import copy
 import cStringIO
@@ -43,13 +44,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 '''
-
-def encodingToUse(encoding):
-    """Tests whether the given encoding is known in the python runtime, or returns utf-8.
-    This function is used to ensure that a valid encoding is always used."""
-    if encoding == "CHARSET" or encoding == None:
-        return 'utf-8'
-    return encoding
 
 class pounit(pocommon.pounit):
     # othercomments = []      #   # this is another comment
