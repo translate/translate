@@ -109,6 +109,11 @@ class poheader(object):
         "Plural-Forms",
         "X-Generator",
         ]
+    def init_headers(self, charset='utf-8'):
+        """sets default values for po headers"""
+        #FIXME: we need to allow at least setting target language, pluralforms and generator
+        headerdict = self.makeheaderdict(charset=charset, encoding='8bit')
+        self.updateheader(add=True, **headerdict)
 
     def makeheaderdict(self,
             charset="CHARSET",
