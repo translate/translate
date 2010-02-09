@@ -112,4 +112,6 @@ class pofile(poheader.poheader, base.TranslationStore):
         self._encoding = encodingToUse(encoding)
         if inputfile is not None:
             self.parse(inputfile)
+        else:
+            self.init_headers()
 

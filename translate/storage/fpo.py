@@ -480,6 +480,7 @@ class pofile(pocommon.pofile):
 #            if isinstance(input, str) and '"Content-Type: text/plain; charset=' not in input[:200]:
 #                input = basic_header + input
 #                tmp_header_added = True
+            self.units = []
             self._cpo_store = cpo.pofile(input)
             self._build_self_from_cpo()
             del self._cpo_store

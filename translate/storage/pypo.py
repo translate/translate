@@ -728,6 +728,8 @@ class pofile(pocommon.pofile):
                 self.filename = ''
             if isinstance(input, str):
                 input = cStringIO.StringIO(input)
+            # clear units to get rid of automatically generated headers before parsing
+            self.units = []
             poparser.parse_units(poparser.ParseState(input, pounit), self)
         except Exception, e:
             raise base.ParseError(e)
