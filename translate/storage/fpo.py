@@ -409,17 +409,6 @@ class pofile(pocommon.pofile):
     """A .po file containing various units"""
     UnitClass = pounit
 
-    def __init__(self, inputfile=None, encoding=None, unitclass=pounit):
-        """Construct a pofile, optionally reading in from inputfile.
-        encoding can be specified but otherwise will be read from the PO header"""
-        self.UnitClass = unitclass
-        pocommon.pofile.__init__(self, unitclass=unitclass)
-        self.units = []
-        self.filename = ''
-        self._encoding = encodingToUse(encoding)
-        if inputfile is not None:
-            self.parse(inputfile)
-
     def changeencoding(self, newencoding):
         """Deprecated: changes the encoding on the file."""
         # This should not be here but in poheader. It also shouldn't mangle the

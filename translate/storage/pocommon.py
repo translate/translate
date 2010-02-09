@@ -105,3 +105,11 @@ class pofile(poheader.poheader, base.TranslationStore):
     Mimetypes  = ["text/x-gettext-catalog", "text/x-gettext-translation", "text/x-po", "text/x-pot"]
     Extensions = ["po", "pot"]
 
+    def __init__(self, inputfile=None, encoding=None):
+        super(pofile, self).__init__(unitclass=self.UnitClass)
+        self.units = []
+        self.filename = ''
+        self._encoding = encodingToUse(encoding)
+        if inputfile is not None:
+            self.parse(inputfile)
+

@@ -542,14 +542,10 @@ class pounit(pocommon.pounit):
 class pofile(pocommon.pofile):
     UnitClass = pounit
     def __init__(self, inputfile=None, encoding=None, unitclass=pounit):
-        self.UnitClass = unitclass
-        pocommon.pofile.__init__(self, unitclass=unitclass)
         self._gpo_memory_file = None
         self._gpo_message_iterator = None
-        self._encoding = encodingToUse(encoding)
-        if inputfile is not None:
-            self.parse(inputfile)
-        else:
+        super(pofile, self).__init__(inputfile=inputfile, encoding=encoding)
+        if inputfile is None:
             self._gpo_memory_file = gpo.po_file_create()
             self._gpo_message_iterator = gpo.po_message_iterator(self._gpo_memory_file, None)
 
