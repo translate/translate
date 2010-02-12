@@ -201,7 +201,7 @@ class propunit(base.TranslationUnit):
             if "\\u" in self.value and self.personality == "mozilla":
                 self.value = quote.mozillapropertiesencode(self.source)
             if "\\u" in self.translation and self.personality == "mozilla":
-                self.translation = quote.mozillapropertiesencode(self.translation)
+                self.translation = quote.mozillapropertiesencode(self.target)
             value = self.translation or self.value
             return u"%s%s%s%s\n" % (notes, self.name, self.delimeter, value)
 
