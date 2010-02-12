@@ -29,7 +29,7 @@ import warnings
 
 def headerless_len(units):
     """return count of translatable (non header) units"""
-    return len(filter(lambda x: x.istranslatable(), units))
+    return len(filter(lambda x: not x.isheader(), units))
 
 def test_force_override():
     """Tests that derived classes are not allowed to call certain functions"""
