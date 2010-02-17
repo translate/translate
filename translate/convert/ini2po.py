@@ -61,7 +61,7 @@ class ini2po:
                     origpo.target = translatedpo.source
                 output_store.addunit(origpo)
             elif translatedpo is not None:
-                print >> sys.stderr, "error converting original ini definition %s" % origini.name
+                print >> sys.stderr, "error converting original ini definition %s" % origpo.name
         output_store.removeduplicates(duplicatestyle)
         return output_store
 
