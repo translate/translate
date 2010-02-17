@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2002-2006 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -21,7 +21,7 @@
 
 """convert PHP localization files to Gettext PO localization files
 
-See: http://translate.sourceforge.net/wiki/toolkit/php2po for examples and 
+See: http://translate.sourceforge.net/wiki/toolkit/php2po for examples and
 usage instructions
 """
 
@@ -34,9 +34,9 @@ class php2po:
     def convertstore(self, inputstore, duplicatestyle="msgctxt"):
         """converts a .php file to a .po file..."""
         outputstore = po.pofile()
-        outputheader = outputstore.makeheader(charset="UTF-8", encoding="8bit")
+        outputheader = outputstore.init_headers(charset="UTF-8", encoding="8bit")
         outputheader.addnote("extracted from %s" % inputstore.filename, "developer")
-        outputstore.addunit(outputheader)
+
         for inputunit in inputstore.units:
             outputunit = self.convertunit(inputunit, "developer")
             if outputunit is not None:
@@ -47,9 +47,9 @@ class php2po:
     def mergestore(self, templatestore, inputstore, blankmsgstr=False, duplicatestyle="msgctxt"):
         """converts two .properties files to a .po file..."""
         outputstore = po.pofile()
-        outputheader = outputstore.makeheader(charset="UTF-8", encoding="8bit")
+        outputheader = outputstore.init_headers(charset="UTF-8", encoding="8bit")
         outputheader.addnote("extracted from %s, %s" % (templatestore.filename, inputstore.filename), "developer")
-        outputstore.addunit(outputheader)
+
         inputstore.makeindex()
         # loop through the original file, looking at units one by one
         for templateunit in templatestore.units:

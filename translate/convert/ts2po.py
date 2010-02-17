@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2004-2006 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -22,7 +22,7 @@
 
 """convert Qt Linguist (.ts) files to Gettext PO localization files
 
-See: http://translate.sourceforge.net/wiki/toolkit/ts2po for examples and 
+See: http://translate.sourceforge.net/wiki/toolkit/ts2po for examples and
 usage instructions
 """
 
@@ -54,8 +54,8 @@ class ts2po:
         """converts a .ts file to .po format"""
         tsfile = ts.QtTsParser(inputfile)
         thetargetfile = po.pofile()
-        targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
-        thetargetfile.addunit(targetheader)
+        targetheader = thetargetfile.init_headers(charset="UTF-8", encoding="8bit")
+
         for contextname, messages in tsfile.iteritems():
             messagenum = 0
             for message in messages:

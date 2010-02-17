@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2002-2006 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 """script to convert a mozilla .dtd UTF-8 localization format to a
-gettext .po localization file using the po and dtd modules, and the 
+gettext .po localization file using the po and dtd modules, and the
 dtd2po convertor class which is in this module
 You can convert back to .dtd using po2dtd.py"""
 
@@ -30,7 +30,7 @@ from translate.misc import quote
 from translate.convert import accesskey as accesskeyfn
 
 def is_css_entity(entity):
-    """Says if the given entity is likely to contain CSS that should not be 
+    """Says if the given entity is likely to contain CSS that should not be
     translated."""
     if '.' in entity:
         prefix, suffix = entity.rsplit('.', 1)
@@ -228,9 +228,9 @@ class dtd2po:
 
     def convertstore(self, thedtdfile):
         thetargetfile = po.pofile()
-        targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit", x_accelerator_marker="&")
+        targetheader = thetargetfile.init_headers(charset="UTF-8", encoding="8bit", x_accelerator_marker="&")
         targetheader.addnote("extracted from %s" % thedtdfile.filename, "developer")
-        thetargetfile.addunit(targetheader)
+
         thedtdfile.makeindex()
         self.findmixedentities(thedtdfile)
         # go through the dtd and convert each unit
@@ -245,9 +245,9 @@ class dtd2po:
 
     def mergestore(self, origdtdfile, translateddtdfile):
         thetargetfile = po.pofile()
-        targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
+        targetheader = thetargetfile.init_headers(charset="UTF-8", encoding="8bit")
         targetheader.addnote("extracted from %s, %s" % (origdtdfile.filename, translateddtdfile.filename), "developer")
-        thetargetfile.addunit(targetheader)
+
         origdtdfile.makeindex()
         self.findmixedentities(origdtdfile)
         translateddtdfile.makeindex()

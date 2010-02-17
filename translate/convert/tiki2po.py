@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2008 Mozilla Corporation, Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -21,7 +21,6 @@
 
 """ Convert TikiWiki's language.php files to GetText PO files. """
 
-import re
 import sys
 from translate.storage import tiki
 from translate.storage import po
@@ -41,8 +40,7 @@ class tiki2po:
         thetargetfile = po.pofile()
 
         # Set up the header
-        targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
-        thetargetfile.addunit(targetheader)
+        targetheader = thetargetfile.init_headers(charset="UTF-8", encoding="8bit")
 
         # For each lang unit, make the new po unit accordingly
         for unit in thetikifile.units:

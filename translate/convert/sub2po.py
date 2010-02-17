@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2008-2009 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -27,9 +27,9 @@ from translate.storage import po
 def convert_store(input_store, duplicatestyle="msgctxt"):
     """converts a subtitle file to a .po file..."""
     output_store = po.pofile()
-    output_header = output_store.makeheader(charset="UTF-8", encoding="8bit")
+    output_header = output_store.init_headers(charset="UTF-8", encoding="8bit")
     output_header.addnote("extracted from %s" % input_store.filename, "developer")
-    output_store.addunit(output_header)
+
     for input_unit in input_store.units:
         output_unit = convert_unit(input_unit, "developer")
         if output_unit is not None:
@@ -40,9 +40,9 @@ def convert_store(input_store, duplicatestyle="msgctxt"):
 def merge_store(template_store, input_store, blankmsgstr=False, duplicatestyle="msgctxt"):
     """converts two subtitle files to a .po file..."""
     output_store = po.pofile()
-    output_header = output_store.makeheader(charset="UTF-8", encoding="8bit")
+    output_header = output_store.init_headers(charset="UTF-8", encoding="8bit")
     output_header.addnote("extracted from %s, %s" % (template_store.filename, input_store.filename), "developer")
-    output_store.addunit(output_header)
+
     input_store.makeindex()
     for template_unit in template_store.units:
         origpo = convert_unit(template_unit, "developer")

@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2007 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -30,9 +30,8 @@ class ical2po:
     def convert_store(self, input_store, duplicatestyle="msgctxt"):
         """converts a iCal file to a .po file..."""
         output_store = po.pofile()
-        output_header = output_store.makeheader(charset="UTF-8", encoding="8bit")
+        output_header = output_store.init_headers(charset="UTF-8", encoding="8bit")
         output_header.addnote("extracted from %s" % input_store.filename, "developer")
-        output_store.addunit(output_header)
         for input_unit in input_store.units:
             output_unit = self.convert_unit(input_unit, "developer")
             if output_unit is not None:
@@ -43,9 +42,9 @@ class ical2po:
     def merge_store(self, template_store, input_store, blankmsgstr=False, duplicatestyle="msgctxt"):
         """converts two iCal files to a .po file..."""
         output_store = po.pofile()
-        output_header = output_store.makeheader(charset="UTF-8", encoding="8bit")
+        output_header = output_store.init_headers(charset="UTF-8", encoding="8bit")
         output_header.addnote("extracted from %s, %s" % (template_store.filename, input_store.filename), "developer")
-        output_store.addunit(output_header)
+
         input_store.makeindex()
         for template_unit in template_store.units:
             origpo = self.convert_unit(template_unit, "developer")

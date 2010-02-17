@@ -23,7 +23,6 @@
 
 """convert web2py translation dictionaries (.py) to GNU/gettext PO files"""
 
-import sys
 from translate.storage import po
 
 class web2py2po:
@@ -39,10 +38,8 @@ class web2py2po:
 
     def convertstore(self, mydict):
 
-        targetheader = self.mypofile.makeheader(charset="UTF-8", encoding="8bit")
+        targetheader = self.mypofile.init_headers(charset="UTF-8", encoding="8bit")
         targetheader.addnote("extracted from web2py", "developer")
-
-        self.mypofile.addunit(targetheader)
 
         for source_str in mydict.keys():
             target_str = mydict[source_str]
