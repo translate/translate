@@ -6,6 +6,7 @@ from translate.convert import test_convert
 from translate.misc import wStringIO
 from translate.storage import po
 from translate.storage import csvl10n
+from translate.storage.test_base import headerless_len, first_translatable
 
 class TestPO2CSV:
     def po2csv(self, posource):
@@ -31,8 +32,8 @@ class TestPO2CSV:
 
     def singleelement(self, storage):
         """checks that the pofile contains a single non-header element, and returns it"""
-        assert len(storage.units) == 1
-        return storage.units[0]
+        assert headerless_len(storage.units) == 1
+        return first_translatable(storage)
 
     def test_simpleentity(self):
         """checks that a simple csv entry definition converts properly to a po entry"""
@@ -122,7 +123,7 @@ msgstr "Vind\\Opsies"
         csvfile = self.po2csv(minipo)
         assert csvfile.findunit("Source") is not None
         assert csvfile.findunit("Source").target == ""
-        assert len(csvfile.units) == 1
+        assert headerless_len(csvfile.units) == 1
 
     def test_kdecomments(self):
         """test that we don't carry KDE comments to CSV"""

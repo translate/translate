@@ -202,11 +202,11 @@ newlines.</p></body></html>
         self.check_null('''<html><head></head><body><table><tr><td><img src="bob.png"></td></tr></table></body></html>''')
         self.check_null('''<html><head></head><body><table><tr><td>&nbsp;</td></tr></table></body></html>''')
         self.check_null('''<html><head></head><body><table><tr><td><strong></strong></td></tr></table></body></html>''')
-        
+
     def test_address(self):
         """Test to see if the address element is extracted"""
         self.check_single("<body><address>My address</address></body>", "My address")
-         
+
     def test_headings(self):
         """Test to see if the h* elements are extracted"""
         markup = "<html><head></head><body><h1>Heading One</h1><h2>Heading Two</h2><h3>Heading Three</h3><h4>Heading Four</h4><h5>Heading Five</h5><h6>Heading Six</h6></body></html>"
@@ -230,11 +230,11 @@ newlines.</p></body></html>
         self.compareunit(pofile, 4, "Heading Four")
         self.compareunit(pofile, 5, "Heading Five")
         self.compareunit(pofile, 6, "Heading Six")
-        
+
     def test_dt(self):
         """Test to see if the definition list title (dt) element is extracted"""
         self.check_single("<html><head></head><body><dl><dt>Definition List Item Title</dt></dl></body></html>", "Definition List Item Title")
-        
+
     def test_dd(self):
         """Test to see if the definition list description (dd) element is extracted"""
         self.check_single("<html><head></head><body><dl><dd>Definition List Item Description</dd></dl></body></html>", "Definition List Item Description")
@@ -359,8 +359,8 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
         self.compareunit(pofile, 3, u'Home Page')
 
         # Translate and convert back:
-        pofile.units[1].target = 'Projekte'
-        pofile.units[2].target = 'Tuisblad'
+        pofile.units[2].target = 'Projekte'
+        pofile.units[3].target = 'Tuisblad'
         htmlresult = self.po2html(str(pofile), htmlsource).replace('\n', ' ').replace('= "', '="').replace('> <', '><')
         snippet = '<td width="96%"><strong><font class="headingwhite">Projekte</font></strong></td>'
         assert snippet in htmlresult
@@ -372,10 +372,10 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
 
         # A simple string 
         self.check_phpsnippet('''<?=$phpvariable?>''')
-        
+
         # Contains HTML tag charcters (< and >)
         self.check_phpsnippet('''<?=($a < $b ? $foo : ($b > c ? $bar : $cat))?>''')
-        
+
         # Make sure basically any symbol can be handled
         self.check_phpsnippet(''' <? asdfghjkl qwertyuiop 1234567890!@#$%^&*()-=_+[]\{}|;':",./<>? ?> ''')
 
@@ -396,19 +396,19 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
         php1 = '''<? abc
 def
 ghi ?>'''
-        
+
         # Scatter the php strings throughout the file, and show what the translation should be
         innertext = '<a href="'+php1+'/site.html">Body text</a> and some '+php1+' more text '+php1+php1
         innertrans = '<a href="'+php1+'/site.html">Texte de corps</a> et encore de '+php1+' plus de texte '+php1+php1
-    
-        htmlsource = '<html><head></head><body><p>'+innertext+'</p></body></html>' # Current html file 
+
+        htmlsource = '<html><head></head><body><p>'+innertext+'</p></body></html>' # Current html file
         transsource = '<html><head></head><body><p>'+innertrans+'</p></body></html>' # Expected translation
-         
+
         pofile = self.html2po(htmlsource)
-        pofile.units[0].target = innertrans # Register the translation in the PO file
+        pofile.units[1].target = innertrans # Register the translation in the PO file
         htmlresult = self.po2html(pofile, htmlsource)
         assert htmlresult == transsource
-    
+
     def test_comments(self):
         """Test that HTML comments are converted to translator notes in output"""
         pofile = self.html2po('<!-- comment outside block --><p><!-- a comment -->A paragraph<!-- with another comment -->.</p>', keepcomments=True)

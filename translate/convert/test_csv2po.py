@@ -5,6 +5,7 @@ from translate.convert import test_convert
 from translate.misc import wStringIO
 from translate.storage import po
 from translate.storage import csvl10n
+from translate.storage.test_base import headerless_len, first_translatable
 
 class TestCSV2PO:
     def csv2po(self, csvsource, template=None):
@@ -23,8 +24,8 @@ class TestCSV2PO:
     def singleelement(self, storage):
         """checks that the pofile contains a single non-header element, and returns it"""
         print str(storage)
-        assert len(storage.units) == 1
-        return storage.units[0]
+        assert headerless_len(storage.units) == 1
+        return first_translatable(storage)
 
     def test_simpleentity(self):
         """checks that a simple csv entry definition converts properly to a po entry"""
@@ -84,7 +85,7 @@ wat lank aanhou"
         csvfile = csvl10n.csvfile(wStringIO.StringIO(minicsv))
         print str(csvfile)
         pofile = self.csv2po(minicsv)
-        unit = pofile.units[0]
+        unit = first_translatable(pofile)
         assert unit.source == 'Hello "Everyone"'
         assert pofile.findunit('Hello "Everyone"').target == 'Good day "All"'
         print str(pofile)
@@ -100,7 +101,7 @@ wat lank aanhou"
         pofile = self.csv2po(minicsv)
         assert pofile.findunit("Source") is not None
         assert pofile.findunit("Source").target == ""
-        assert len(pofile.units) == 1
+        assert headerless_len(pofile.units) == 1
 
     def test_kdecomment(self):
         """checks that we can merge into KDE comment entries"""

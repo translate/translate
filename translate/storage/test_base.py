@@ -31,6 +31,13 @@ def headerless_len(units):
     """return count of translatable (non header) units"""
     return len(filter(lambda x: not x.isheader(), units))
 
+def first_translatable(store):
+    """returns first translatable unit, skipping header if present"""
+    if store.units[0].isheader() and len(store.units) > 1:
+        return store.units[1]
+    else:
+        return store.units[0]
+
 def test_force_override():
     """Tests that derived classes are not allowed to call certain functions"""
     class BaseClass:

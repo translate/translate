@@ -3,7 +3,7 @@
 
 from translate.convert import mozfunny2prop
 from translate.misc import wStringIO
-from translate.storage import po
+from translate.storage import po 
 
 class TestInc2PO:
     def inc2po(self, incsource, inctemplate=None):
