@@ -32,6 +32,7 @@ from translate.storage import factory
 from translate.filters import checks
 from translate.filters import autocorrect
 from translate.misc import optrecurse
+
 import os
 
 class pocheckfilter:
@@ -80,7 +81,7 @@ class pocheckfilter:
             - A new translation store object with the results of the filter included."""
         newtransfile = type(transfile)()
         if self.options.includeheader and newtransfile.units > 0:
-            newtransfile.addunit(transfile.header())
+            newtransfile.update_header(add=True, **transfile.parseheader())
         for unit in transfile.units:
             filterresult = self.filterunit(unit)
             if filterresult:
