@@ -211,22 +211,28 @@ def _do_poheaders(input_store, output_store, template_store):
         else:
             kwargs[key] = value
 
-    output_header = output_store.makeheader(charset=charset, encoding=encoding, project_id_version=project_id_version,
+    output_header = output_store.init_headers(charset=charset, encoding=encoding, project_id_version=project_id_version,
         pot_creation_date=pot_creation_date, po_revision_date=po_revision_date, last_translator=last_translator,
         language_team=language_team, mime_version=mime_version, plural_forms=plural_forms, **kwargs)
 
     # Get the header comments and fuzziness state
-    if template_store is not None and len(template_store.units) > 0:
-        if template_store.units[0].isheader():
-            if template_store.units[0].getnotes("translator"):
-                output_header.addnote(template_store.units[0].getnotes("translator"), "translator")
-            if input_store.units[0].getnotes("developer"):
-                output_header.addnote(input_store.units[0].getnotes("developer"), "developer")
-            output_header.markfuzzy(template_store.units[0].isfuzzy())
-    elif len(input_store.units) > 0 and input_store.units[0].isheader():
-        output_header.addnote(input_store.units[0].getnotes())
 
-    output_store.addunit(output_header)
+    # initial values from pot file
+    input_header = input_store.header()
+    if input_header is not None:
+        if input_header.getnotes("developer"):
+            output_header.addnote(input_header.getnotes("developer"), origin="developer", position="replace")
+        if input_header.getnotes("translator"):
+            output_header.addnote(input_header.getnotes("translator"), origin="translator", position="replace")
+        output_header.markfuzzy(input_header.isfuzzy())
+
+    # override some values from input file
+    if template_store is not None:
+        template_header = template_store.header()
+        if template_header is not None:
+            if template_header.getnotes("translator"):
+                output_header.addnote(template_header.getnotes("translator"), "translator")
+            output_header.markfuzzy(template_header.isfuzzy())
 
 
 def main(argv=None):
