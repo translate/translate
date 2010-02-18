@@ -3,6 +3,7 @@
 
 from translate.storage import po
 from translate.storage import xliff
+from translate.storage.test_base import first_translatable, headerless_len
 from translate.tools import pogrep
 from translate.misc import wStringIO
 
@@ -27,33 +28,33 @@ class TestPOGrep:
         """grep for a string in the source"""
         posource = '#: test.c\nmsgid "test"\nmsgstr "rest"\n'
         poresult = self.pogrep(posource, "test", ["--search=msgid"])
-        assert poresult == posource
+        assert poresult.index(posource) >= 0
         poresult = self.pogrep(posource, "rest", ["--search=msgid"])
-        assert poresult == ""
+        assert headerless_len(po.pofile(poresult).units) == 0
 
     def test_simplegrep_msgstr(self):
         """grep for a string in the target"""
         posource = '#: test.c\nmsgid "test"\nmsgstr "rest"\n'
         poresult = self.pogrep(posource, "rest", ["--search=msgstr"])
-        assert poresult == posource
+        assert poresult.index(posource) >= 0
         poresult = self.pogrep(posource, "test", ["--search=msgstr"])
-        assert poresult == ""
+        assert headerless_len(po.pofile(poresult).units) == 0
 
     def test_simplegrep_locations(self):
         """grep for a string in the location comments"""
         posource = '#: test.c\nmsgid "test"\nmsgstr "rest"\n'
         poresult = self.pogrep(posource, "test.c", ["--search=locations"])
-        assert poresult == posource
+        assert poresult.index(posource) >= 0
         poresult = self.pogrep(posource, "rest.c", ["--search=locations"])
-        assert poresult == ""
+        assert headerless_len(po.pofile(poresult).units) == 0
 
     def test_simplegrep_comments(self):
         """grep for a string in the comments"""
         posource = '# (review) comment\n#: test.c\nmsgid "test"\nmsgstr "rest"\n'
         poresult = self.pogrep(posource, "review", ["--search=comment"])
-        assert poresult == posource
+        assert poresult.index(posource) >= 0
         poresult = self.pogrep(posource, "test", ["--search=comment"])
-        assert poresult == ""
+        assert headerless_len(po.pofile(poresult).units) == 0
 
     def test_simplegrep_locations_with_comment_enabled(self):
         """grep for a string in "locations", while also "comment" is checked
@@ -61,9 +62,9 @@ class TestPOGrep:
         """
         posource = '# (review) comment\n#: test.c\nmsgid "test"\nmsgstr "rest"\n'
         poresult = self.pogrep(posource, "test", ["--search=comment", "--search=locations"])
-        assert poresult == posource
+        assert poresult.index(posource) >= 0
         poresult = self.pogrep(posource, "rest", ["--search=comment", "--search=locations"])
-        assert poresult == ""
+        assert headerless_len(po.pofile(poresult).units) == 0
 
     def test_unicode_message_searchstring(self):
         """check that we can grep unicode messages and use unicode search strings"""
@@ -77,7 +78,7 @@ class TestPOGrep:
                                          (pounicode, queryunicode, pounicode)]:
             print "Source:\n%s\nSearch: %s\n" % (source, search)
             poresult = self.pogrep(source, search)
-            assert poresult == expected
+            assert poresult.index(expected) >= 0
 
     def test_unicode_message_regex_searchstring(self):
         """check that we can grep unicode messages and use unicode regex search strings"""
@@ -91,7 +92,7 @@ class TestPOGrep:
                                          (pounicode, queryunicode, pounicode)]:
             print "Source:\n%s\nSearch: %s\n" % (source, search)
             poresult = self.pogrep(source, search, ["--regexp"])
-            assert poresult == expected
+            assert poresult.index(expected) >= 0
 
     def test_unicode_normalise(self):
         """check that we normlise unicode strings before comparing"""
@@ -108,7 +109,7 @@ class TestPOGrep:
                 for search_letter in letters:
                     print search_letter.encode('utf-8')
                     poresult = self.pogrep(source, search_letter)
-                    assert poresult == source.encode('utf-8')
+                    assert poresult.index(source.encode('utf-8')) >= 0
 
 class TestXLiffGrep:
     xliff_skeleton = '''<?xml version="1.0" ?>
@@ -145,8 +146,8 @@ class TestXLiffGrep:
         xliff_text = self.xliff_text
         xliff_file = self.xliff_parse(xliff_text)
         xliff_result = self.xliff_parse(self.xliff_grep(xliff_text, "rêd"))
-        assert xliff_result.units[0].getsource() == u"rêd"
-        assert xliff_result.units[0].gettarget() == u"rooi"
+        assert first_translatable(xliff_result).getsource() == u"rêd"
+        assert first_translatable(xliff_result).gettarget() == u"rooi"
 
         xliff_result = self.xliff_parse(self.xliff_grep(xliff_text, "unavailable string"))
         assert xliff_result.isempty()
