@@ -505,22 +505,22 @@ class xlifffile(lisa.LISAfile):
             return
         filenode = self.document.getroot().iterchildren(self.namespaced('file')).next()
         filenode.set("source-language", language)
-        self.sourcelanguage = language
 
     def getsourcelanguage(self):
         filenode = self.document.getroot().iterchildren(self.namespaced('file')).next()
         return filenode.get("source-language")
+    sourcelanguage = property(getsourcelanguage, setsourcelanguage)
 
     def settargetlanguage(self, language):
         if not language:
             return
         filenode = self.document.getroot().iterchildren(self.namespaced('file')).next()
         filenode.set("target-language", language)
-        self.targetlanguage = language
 
     def gettargetlanguage(self):
         filenode = self.document.getroot().iterchildren(self.namespaced('file')).next()
         return filenode.get("target-language")
+    targetlanguage = property(gettargetlanguage, settargetlanguage)
 
     def getdatatype(self, filename=None):
         """Returns the datatype of the stored file. If no filename is given,
