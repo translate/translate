@@ -2,6 +2,7 @@
 
 from translate.convert import xliff2po
 from translate.misc import wStringIO
+from translate.storage.test_base import headerless_len, first_translatable
 
 class TestXLIFF2PO:
     xliffskeleton = '''<?xml version="1.0" ?>
@@ -22,20 +23,20 @@ class TestXLIFF2PO:
         print type(outputpo)
         print str(outputpo)
         return outputpo
-	
+
     def test_minimal(self):
         minixlf = self.xliffskeleton % '''<trans-unit>
         <source>red</source>
         <target>rooi</target>
       </trans-unit>'''
         pofile = self.xliff2po(minixlf)
-        assert len(pofile.units) == 1
+        assert headerless_len(pofile.units) == 1
         assert pofile.translate("red") == "rooi"
         assert pofile.translate("bla") is None
- 
+
     def test_basic(self):
         headertext = '''Project-Id-Version: program 2.1-branch
-Report-Msgid-Bugs-To: 
+Report-Msgid-Bugs-To:
 POT-Creation-Date: 2006-01-09 07:15+0100
 PO-Revision-Date: 2004-03-30 17:02+0200
 Last-Translator: Zuza Software Foundation &lt;xxx@translate.org.za>
@@ -79,7 +80,7 @@ it</note>
         pofile = self.xliff2po(minixlf)
         assert pofile.translate("nonsense") == "matlhapolosa"
         assert pofile.translate("bla") is None
-        unit = pofile.units[0]
+        unit = first_translatable(pofile)
         assert unit.getnotes("translator") == "Couldn't do it"
         potext = str(pofile)
         assert potext.index("# Couldn't do it\n") >= 0
@@ -97,7 +98,7 @@ it</note>
         pofile = self.xliff2po(minixlf)
         assert pofile.translate("nonsense") == "matlhapolosa"
         assert pofile.translate("bla") is None
-        unit = pofile.units[0]
+        unit = first_translatable(pofile)
         assert unit.getnotes("translator") == "Couldn't do\nit"
         potext = str(pofile)
         assert potext.index("# Couldn't do\n# it\n") >= 0
@@ -117,7 +118,7 @@ garbage</note>
         pofile = self.xliff2po(minixlf)
         assert pofile.translate("nonsense") == "matlhapolosa"
         assert pofile.translate("bla") is None
-        unit = pofile.units[0]
+        unit = first_translatable(pofile)
         assert unit.getnotes("developer") == "Note that this is garbage"
         potext = str(pofile)
         assert potext.index("#. Note that this is garbage\n") >= 0
@@ -135,7 +136,7 @@ garbage</note>
         pofile = self.xliff2po(minixlf)
         assert pofile.translate("nonsense") == "matlhapolosa"
         assert pofile.translate("bla") is None
-        unit = pofile.units[0]
+        unit = first_translatable(pofile)
         assert unit.getnotes("developer") == "Note that this is\ngarbage"
         potext = str(pofile)
         assert potext.index("#. Note that this is\n#. garbage\n") >= 0
@@ -156,7 +157,7 @@ garbage</note>
         pofile = self.xliff2po(minixlf)
         assert pofile.translate("nonsense") == "matlhapolosa"
         assert pofile.translate("bla") is None
-        unit = pofile.units[0]
+        unit = first_translatable(pofile)
         locations = unit.getlocations()
         assert len(locations) == 2
         assert "example.c:123" in locations
@@ -180,12 +181,12 @@ garbage</note>
         assert pofile.translate("verb") == "lediri"
         assert pofile.translate("book") is None
         assert pofile.translate("bla") is None
-        assert len(pofile.units) == 3
+        assert headerless_len(pofile.units) == 3
         #TODO: decide if this one should be fuzzy:
         #assert pofile.units[0].isfuzzy()
-        assert not pofile.units[1].isfuzzy()
-        assert pofile.units[2].isfuzzy()
-        
+        assert not pofile.units[2].isfuzzy()
+        assert pofile.units[3].isfuzzy()
+
     def test_plurals(self):
         """Tests fuzzyness"""
         minixlf = self.xliffskeleton % '''<group id="1" restype="x-gettext-plurals">
@@ -201,7 +202,7 @@ garbage</note>
         pofile = self.xliff2po(minixlf)
         print str(pofile)
         potext = str(pofile)
-        assert len(pofile.units) == 1
+        assert headerless_len(pofile.units) == 1
         assert potext.index('msgid_plural "cows"')
         assert potext.index('msgstr[0] "inkomo"')
         assert potext.index('msgstr[1] "iinkomo"')
