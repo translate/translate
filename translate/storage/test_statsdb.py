@@ -86,10 +86,10 @@ class TestStatsDb:
     def remove_dirs(self, path):
         if os.path.exists(path):
             rm_rf(path)
-    
+
     def get_test_path(self, method):
         return os.path.realpath("%s_%s" % (self.__class__.__name__, method.__name__))
-    
+
     def setup_method(self, method):
         """Allocates a unique self.filename for the method, making sure it doesn't exist"""
         self.path = self.get_test_path(method)
@@ -107,12 +107,6 @@ class TestStatsDb:
         f = factory.getobject(filename)
         return f, cache
 
-    def test_getfileid_recache_uncached_unit(self):
-        """checks that a simple oo entry is parsed correctly"""
-        checker = checks.UnitChecker()
-        f, cache = self.setup_file_and_db()
-        py.test.raises(AssertionError, cache.recacheunit, f.filename, checker, f.units[1])
-        
     def test_getfileid_recache_cached_unit(self):
         """checks that a simple oo entry is parsed correctly"""
         checker = checks.UnitChecker()
@@ -125,7 +119,7 @@ class TestStatsDb:
         f, cache = self.setup_file_and_db(jtoolkit_extract)
         u = cache.unitstats(f.filename)
         assert u['sourcewordcount'] == [3, 8, 11, 2, 9, 3]
-        
+
     def test_filestats(self):
         f, cache = self.setup_file_and_db(jtoolkit_extract)
         s = cache.filestats(f.filename, checks.UnitChecker())
@@ -139,15 +133,15 @@ class TestStatsDb:
             SELECT fileid, st_mtime, st_size FROM files
             WHERE path=?;""", (os.path.realpath(filename),))
         return cache.cur.fetchone()
-        
+
     def test_if_cached_after_filestats(self):
         f, cache = self.setup_file_and_db(jtoolkit_extract)
-        cache.filestats(f.filename, checks.UnitChecker()) 
+        cache.filestats(f.filename, checks.UnitChecker())
         assert self.make_file_and_return_id(cache, f.filename) != None
 
     def test_if_cached_after_unitstats(self):
         f, cache = self.setup_file_and_db(jtoolkit_extract)
-        cache.unitstats(f.filename, checks.UnitChecker()) 
+        cache.unitstats(f.filename, checks.UnitChecker())
         assert self.make_file_and_return_id(cache, f.filename) != None
 
     def test_singletonness(self):
