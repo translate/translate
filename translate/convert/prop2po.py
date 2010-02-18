@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2002-2006 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -21,7 +21,7 @@
 
 """convert Java/Mozilla .properties files to Gettext PO localization files
 
-See: http://translate.sourceforge.net/wiki/toolkit/prop2po for examples and 
+See: http://translate.sourceforge.net/wiki/toolkit/prop2po for examples and
 usage instructions
 """
 
@@ -36,9 +36,9 @@ class prop2po:
         self.personality = personality
         thetargetfile = po.pofile()
         if self.personality == "mozilla" or self.personality == "skype":
-            targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit", x_accelerator_marker="&")
+            targetheader = thetargetfile.init_headers(charset="UTF-8", encoding="8bit", x_accelerator_marker="&")
         else:
-            targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
+            targetheader = thetargetfile.init_headers(charset="UTF-8", encoding="8bit")
         targetheader.addnote("extracted from %s" % thepropfile.filename, "developer")
         # we try and merge the header po with any comments at the start of the properties file
         appendedheader = False
@@ -52,9 +52,9 @@ class prop2po:
                 continue
             if not appendedheader:
                 if propunit.isblank():
-                    pounit = targetheader
-                else:
-                    thetargetfile.addunit(targetheader)
+                    targetheader.addnote("\n".join(waitingcomments).rstrip(), "developer", position="prepend")
+                    waitingcomments = []
+                    pounit = None
                 appendedheader = True
             if pounit is not None:
                 pounit.addnote("\n".join(waitingcomments).rstrip(), "developer", position="prepend")
@@ -68,9 +68,9 @@ class prop2po:
         self.personality = personality
         thetargetfile = po.pofile()
         if self.personality == "mozilla" or self.personality == "skype":
-            targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit", x_accelerator_marker="&")
+            targetheader = thetargetfile.init_headers(charset="UTF-8", encoding="8bit", x_accelerator_marker="&")
         else:
-            targetheader = thetargetfile.makeheader(charset="UTF-8", encoding="8bit")
+            targetheader = thetargetfile.init_headers(charset="UTF-8", encoding="8bit")
         targetheader.addnote("extracted from %s, %s" % (origpropfile.filename, translatedpropfile.filename), "developer")
         translatedpropfile.makeindex()
         # we try and merge the header po with any comments at the start of the properties file
@@ -87,9 +87,9 @@ class prop2po:
             # handle the header case specially...
             if not appendedheader:
                 if origprop.isblank():
-                    origpo = targetheader
-                else:
-                    thetargetfile.addunit(targetheader)
+                    targetheader.addnote(u"".join(waitingcomments).rstrip(), "developer", position="prepend")
+                    waitingcomments = []
+                    origpo = None
                 appendedheader = True
             # try and find a translation of the same name...
             if origprop.name in translatedpropfile.locationindex:
