@@ -106,6 +106,15 @@ class TranslationUnit(object):
         """
         return self.source == other.source and self.target == other.target
 
+    def __str__(self):
+        """Converts to a string representation that can be parsed back using L{parsestring()}."""
+        # no point in pickling store object, so let's hide it for a while.
+        store = getattr(self, "_store", None)
+        self._store = None
+        dump = pickle.dumps(self)
+        self._store = store
+        return dump
+
     def rich_to_multistring(cls, elem_list):
         """Convert a "rich" string tree to a C{multistring}:
 
