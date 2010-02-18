@@ -209,14 +209,17 @@ class propunit(base.TranslationUnit):
         return [self.name]
 
     def addnote(self, text, origin=None, position="append"):
-        text = data.forceunicode(text)
-        self.comments.append(text)
+        if origin in ['programmer', 'developer', 'source code', None]:
+            text = data.forceunicode(text)
+            self.comments.append(text)
+        else:
+            return super(propunit, self).addnote(text, origin=origin, position=position)
 
     def getnotes(self, origin=None):
         if origin in ['programmer', 'developer', 'source code', None]:
             return u'\n'.join(self.comments)
         else:
-            return ''
+            return super(propunit, self).getnotes(origin)
 
     def removenotes(self):
         self.comments = []
