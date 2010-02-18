@@ -217,7 +217,10 @@ class tsunit(lisa.LISAunit):
         return bool(self.getid()) and not self.isobsolete()
 
     def getcontext(self):
-        context = self.xmlelement.getparent().find("name")
+        parent =  self.xmlelement.getparent()
+        if parent is None:
+            return None
+        context = parent.find("name")
         if context is None:
             return None
         return context.text
