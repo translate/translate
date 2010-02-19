@@ -65,7 +65,7 @@ class SubtitleFile(base.TranslationStore):
         self.units = []
         self.filename = None
         self._subtitlefile = None
-        self._encoding = 'utf-8'
+        self._encoding = 'utf_8'
         if inputfile is not None:
             self._parsefile(inputfile)
 
@@ -122,3 +122,56 @@ class SubtitleFile(base.TranslationStore):
     def parse(self, data):
         # Gaupol does not allow parsing from strings
         raise NotImplementedError
+
+
+############# format specific classes ###################
+
+# the generic SubtitleFile can adapt to any format, but only the
+# specilized classes can be used to construct a new file
+
+from gaupol.files import MicroDVD, SubStationAlpha, AdvSubStationAlpha, SubRip
+from gaupol.newlines import newlines
+class SubRipFile(SubtitleFile):
+    """specialized class for SubRipFile's only"""
+    Name = _("SubRip subtitles file")
+    Extensions = ['srt']
+    def __init__(self, *args, **kwargs):
+        super(SubRipFile, self).__init__(*args, **kwargs)
+        if self._subtitlefile is None:
+            self._subtitlefile = SubRip(self.filename or '', self._encoding)
+        if self._subtitlefile.newline is None:
+            self._subtitlefile.newline = newlines.UNIX
+
+class MicroDVDFile(SubtitleFile):
+    """specialized class for SubRipFile's only"""
+    Name = _("MicroDVD subtitles file")
+    Extensions = ['sub']
+    def __init__(self, *args, **kwargs):
+        super(SubRipFile, self).__init__(*args, **kwargs)
+        if self._subtitlefile is None:
+            self._subtitlefile = MicroDVD(self.filename or '', self._encoding)
+        if self._subtitlefile.newline is None:
+            self._subtitlefile.newline = newlines.UNIX
+
+class AdvSubStationAlphaFile(SubtitleFile):
+    """specialized class for SubRipFile's only"""
+    Name = _("Advanced Substation Alpha subtitles file")
+    Extensions = ['ass']
+    def __init__(self, *args, **kwargs):
+        super(SubRipFile, self).__init__(*args, **kwargs)
+        if self._subtitlefile is None:
+            self._subtitlefile = AdvSubStationAlpha(self.filename or '', self._encoding)
+        if self._subtitlefile.newline is None:
+            self._subtitlefile.newline = newlines.UNIX
+
+class SubStationAlphaFile(SubtitleFile):
+    """specialized class for SubRipFile's only"""
+    Name = _("Substation Alpha subtitles file")
+    Extensions = ['ssa']
+    def __init__(self, *args, **kwargs):
+        super(SubRipFile, self).__init__(*args, **kwargs)
+        if self._subtitlefile is None:
+            self._subtitlefile = SubStationAlpha(self.filename or '', self._encoding)
+        if self._subtitlefile.newline is None:
+            self._subtitlefile.newline = newlines.UNIX
+
