@@ -32,13 +32,13 @@ from translate.tools import pretranslate
 from translate.storage import poheader
 
 
-def convertpot(input_file, output_file, template_file, tm=None, min_similarity=75, fuzzymatching=True, **kwargs):
+def convertpot(input_file, output_file, template_file, tm=None, min_similarity=75, fuzzymatching=True, classes=factory.classes, **kwargs):
     """Main conversion function"""
 
-    input_store = factory.getobject(input_file)
+    input_store = factory.getobject(input_file, classes=classes)
     template_store = None
     if template_file is not None:
-        template_store = factory.getobject(template_file)
+        template_store = factory.getobject(template_file, classes=classes)
     output_store = convert_stores(input_store, template_store, tm, min_similarity, fuzzymatching, **kwargs)
     output_file.write(str(output_store))
     return 1
