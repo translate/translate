@@ -94,6 +94,7 @@ class phpunit(base.TranslationUnit):
         super(phpunit, self).__init__(source)
         self.name = ""
         self.value = ""
+        self.translation = ""
         self._comments = []
         self.source = source
 
@@ -106,12 +107,10 @@ class phpunit(base.TranslationUnit):
     source = property(getsource, setsource)
 
     def settarget(self, target):
-        """Note: this also sets the .source attribute!"""
-        # TODO: shouldn't this just call the .source property? no quoting done here...
-        self.source = target
+        self.translation = phpencode(target, self.escape_type)
 
     def gettarget(self):
-        return self.source
+        return phpdecode(self.translation, self.escape_type)
     target = property(gettarget, settarget)
 
     def __str__(self):
@@ -123,7 +122,7 @@ class phpunit(base.TranslationUnit):
 
     def getoutput(self):
         """convert the unit back into formatted lines for a php file"""
-        return "".join(self._comments + ["%s='%s';\n" % (self.name, self.value)])
+        return "".join(self._comments + ["%s='%s';\n" % (self.name, self.translation or self.value)])
 
     def addlocation(self, location):
         self.name = location
@@ -132,10 +131,19 @@ class phpunit(base.TranslationUnit):
         return [self.name]
 
     def addnote(self, text, origin=None, position="append"):
-        self._comments.append(text)
+        if origin in ['programmer', 'developer', 'source code', None]:
+            if position == "append":
+                self._comments.append(text)
+            else:
+                self._comments = [text]
+        else:
+            return super(phpunit, self).addnote(text, origin=origin, position=position)
 
     def getnotes(self, origin=None):
-        return '\n'.join(self._comments)
+        if origin in ['programmer', 'developer', 'source code', None]:
+            return '\n'.join(self._comments)
+        else:
+            return super(phpunit, self).getnotes(origin)
 
     def removenotes(self):
         self._comments = []
@@ -143,6 +151,9 @@ class phpunit(base.TranslationUnit):
     def isblank(self):
         """Returns whether this is a blank element, containing only comments."""
         return not (self.name or self.value)
+
+    def getid(self):
+        return self.name
 
 class phpfile(base.TranslationStore):
     """This class represents a PHP file, made up of phpunits"""
