@@ -208,6 +208,13 @@ class TranslationUnit(object):
         """
         return self.source
 
+    def setid(self, value):
+        """Sets the unique identified for this unit.
+
+        only implemented if format allows ids independant from other
+        unit properties like source or context"""
+        pass
+
     def getlocations(self):
         """A list of source code locations.
 
@@ -239,6 +246,10 @@ class TranslationUnit(object):
     def getcontext(self):
         """Get the message context."""
         return ""
+
+    def setcontext(self, context):
+        """Set the message context"""
+        pass
 
     def getnotes(self, origin=None):
         """Returns all notes about this unit.
