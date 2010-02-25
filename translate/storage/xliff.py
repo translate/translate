@@ -433,30 +433,18 @@ class xlifffile(lisa.LISAfile):
         lisa.LISAfile.__init__(self, *args, **kwargs)
         self._messagenum = 0
 
-
     def initbody(self):
         self.namespace = self.document.getroot().nsmap.get(None, None)
 
         if self._filename:
-            self.body = self.getcontextnode(self._filename)
+            filenode = self.getfilenode(self._filename, createifmissing=True)
         else:
-            self.body = self.document.getroot()
-
-        #filenode = self.document.getroot().iterchildren(self.namespaced('file')).next()
-        #sourcelanguage = filenode.get('source-language')
-        #if sourcelanguage:
-        #    self.setsourcelanguage(sourcelanguage)
-        #targetlanguage = filenode.get('target-language')
-        #if targetlanguage:
-        #    self.settargetlanguage(targetlanguage)
+            filenode = self.document.getroot().iterchildren(self.namespaced('file')).next()
+        self.body = self.getbodynode(filenode, createifmissing=True)
 
     def addheader(self):
         """Initialise the file header."""
         pass
-        #filenode = self.document.getroot().iterchildren(self.namespaced("file")).next()
-        #filenode.set("source-language", self.sourcelanguage)
-        #if self.targetlanguage:
-        #    filenode.set("target-language", self.targetlanguage)
 
     def createfilenode(self, filename, sourcelanguage=None, targetlanguage=None, datatype='plaintext'):
         """creates a filenode with the given filename. All parameters
