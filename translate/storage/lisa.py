@@ -81,7 +81,7 @@ class LISAunit(base.TranslationUnit):
             self._rich_source = None
             self._rich_target = None
             return
-        self.xmlelement = etree.Element(self.rootNode)
+        self.xmlelement = etree.Element(self.namespaced(self.rootNode))
         #add descrip, note, etc.
         super(LISAunit, self).__init__(source)
 
@@ -202,7 +202,7 @@ class LISAunit(base.TranslationUnit):
             if pretext:
                 lasttag.tail = pretext
             #ph node
-            phnode = etree.SubElement(parent, "ph")
+            phnode = etree.SubElement(parent, self.namespaced("ph"))
             phnode.set("id", str(i+1))
             phnode.text = m.group()
             lasttag = phnode
