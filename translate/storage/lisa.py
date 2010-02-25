@@ -341,7 +341,7 @@ class LISAfile(base.TranslationStore):
         self._encoding = self.document.docinfo.encoding
         self.initbody()
         assert self.document.getroot().tag == self.namespaced(self.rootNode)
-        for entry in self.body.iterdescendants(self.namespaced(self.UnitClass.rootNode)):
+        for entry in self.document.getroot().iterdescendants(self.namespaced(self.UnitClass.rootNode)):
             term = self.UnitClass.createfromxmlElement(entry)
             self.addunit(term, new=False)
 
