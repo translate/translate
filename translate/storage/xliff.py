@@ -459,13 +459,22 @@ class xlifffile(lisa.LISAfile):
         #    filenode.set("target-language", self.targetlanguage)
 
     def createfilenode(self, filename, sourcelanguage=None, targetlanguage=None, datatype='plaintext'):
-        """creates a filenode with the given filename. All parameters are needed
-        for XLIFF compliance."""
-        self.removedefaultfile()
+        """creates a filenode with the given filename. All parameters
+        are needed for XLIFF compliance."""
         if sourcelanguage is None:
             sourcelanguage = self.sourcelanguage
         if targetlanguage is None:
             targetlanguage = self.targetlanguage
+
+        # find the default NoName file tag and use it instead of creating a new one
+        for filenode in self.document.getroot().iterchildren(self.namespaced("file")):
+            if filenode.get("original") == "NoName":
+                filenode.set("original", filename)
+                filenode.set("source-language", sourcelanguage)
+                if targetlanguage:
+                    filenode.set("target-language", targetlanguage)
+                return filenode
+
         filenode = etree.Element(self.namespaced("file"))
         filenode.set("original", filename)
         filenode.set("source-language", sourcelanguage)
@@ -589,7 +598,9 @@ class xlifffile(lisa.LISAfile):
         return bodynode
 
     def addsourceunit(self, source, filename="NoName", createifmissing=False):
-        """adds the given trans-unit to the last used body node if the filename has changed it uses the slow method instead (will create the nodes required if asked). Returns success"""
+        """adds the given trans-unit to the last used body node if the
+        filename has changed it uses the slow method instead (will
+        create the nodes required if asked). Returns success"""
         if self._filename != filename:
             if not self.switchfile(filename, createifmissing):
                 return None
