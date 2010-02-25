@@ -492,12 +492,15 @@ class xlifffile(lisa.LISAfile):
             filenames = []
         return filenames
 
-    def getfilenode(self, filename):
+    def getfilenode(self, filename, createifmissing=False):
         """finds the filenode with the given name"""
         filenodes = self.document.getroot().iterchildren(self.namespaced("file"))
         for filenode in filenodes:
             if self.getfilename(filenode) == filename:
                 return filenode
+        if createifmissing:
+            filenode = self.createfilenode(filename)
+            return filenode
         return None
 
     def setsourcelanguage(self, language):
