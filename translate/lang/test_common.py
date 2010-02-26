@@ -54,7 +54,7 @@ def test_sentences():
     assert sentences == [u"Doen dit d.m.v. koeie."]
 
 def test_capsstart():
-    """Tests that the indefinite article ('n) doesn't confuse startcaps()."""
+    """Tests for basic sane behaviour in startcaps()."""
     language = common.Common
     assert language.capsstart("Open cow file")
     assert language.capsstart("'Open' cow file")
