@@ -43,6 +43,9 @@ class es(common.Common):
             first = firstmatch.group()
         # remove trailing whitespace
         first = first.strip()
+        # protect against incorrectly handling an empty string
+        if not first:
+            return text
         if first[-1] == '?':
             text = u"¿" + text
         elif first[-1] == '!':
