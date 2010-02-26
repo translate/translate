@@ -17,6 +17,9 @@ def test_punctranslate():
 def test_sentences():
     """Tests basic functionality of sentence segmentation."""
     language = factory.getlanguage('zh')
+    sentences = language.sentences(u"")
+    assert sentences == []
+
     sentences = language.sentences(u"這個用戶名稱已經存在。現在會寄一封信給已登記的電郵地址。\n")
     assert sentences == [u"這個用戶名稱已經存在。", u"現在會寄一封信給已登記的電郵地址。"]
 

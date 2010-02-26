@@ -150,4 +150,5 @@ class TestLanguageIdentifier(object):
         self.langident = LanguageIdentifier()
 
     def test_identify_lang(self):
+        assert self.langident.identify_lang('') == None
         assert self.langident.identify_lang(TEXT) == 'de'

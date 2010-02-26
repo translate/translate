@@ -15,6 +15,8 @@ def test_punctranslate():
 def test_sentences():
     """Tests basic functionality of sentence segmentation."""
     language = factory.getlanguage('el')
+    sentences = language.sentences(u"")
+    assert sentences == []
+
     sentences = language.sentences(u"Θέλετε να αποθηκεύσετε το παιχνίδι σας; (Θα σβησθούν οι Αυτόματες-Αποθηκεύσεις)")
     assert sentences == [u"Θέλετε να αποθηκεύσετε το παιχνίδι σας;", u"(Θα σβησθούν οι Αυτόματες-Αποθηκεύσεις)"]
-

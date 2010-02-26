@@ -16,6 +16,7 @@ def test_sentences():
 def test_capsstart():
     """Tests that the indefinite article ('n) doesn't confuse startcaps()."""
     language = factory.getlanguage('af')
+    assert not language.capsstart("")
     assert language.capsstart("Koeie kraam koeie")
     assert language.capsstart("'Koeie' kraam koeie")
     assert not language.capsstart("koeie kraam koeie")

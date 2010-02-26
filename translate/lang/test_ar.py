@@ -14,6 +14,9 @@ def test_punctranslate():
 def test_sentences():
     """Tests basic functionality of sentence segmentation."""
     language = factory.getlanguage('ar')
+    sentences = language.sentences(u"")
+    assert sentences == []
+
     sentences = language.sentences(u"يوجد بالفعل مجلد بالإسم \"%s\". أترغب في استبداله؟")
     print sentences
     assert sentences == [u"يوجد بالفعل مجلد بالإسم \"%s\".", u"أترغب في استبداله؟"]

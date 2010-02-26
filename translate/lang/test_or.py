@@ -21,6 +21,9 @@ def test_country_code():
 def test_sentences():
     """Tests basic functionality of sentence segmentation."""
     language = factory.getlanguage('or')
+    sentences = language.sentences(u"")
+    assert sentences == []
+
     sentences = language.sentences(u"ଗୋଟିଏ ଚାବିକୁ ଆଲୋକପାତ କରିବା ପାଇଁ ମାଉସ ସୂଚକକୁ ତାହା ଉପରକୁ ଘୁଞ୍ଚାନ୍ତୁ। ଚୟନ କରିବା ପାଇଁ ଗୋଟିଏ ସୁଇଚକୁ ଦବାନ୍ତୁ।")
     assert sentences == [u"ଗୋଟିଏ ଚାବିକୁ ଆଲୋକପାତ କରିବା ପାଇଁ ମାଉସ ସୂଚକକୁ ତାହା ଉପରକୁ ଘୁଞ୍ଚାନ୍ତୁ।", u"ଚୟନ କରିବା ପାଇଁ ଗୋଟିଏ ସୁଇଚକୁ ଦବାନ୍ତୁ।"]
 

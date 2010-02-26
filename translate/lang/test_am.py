@@ -16,7 +16,9 @@ def test_punctranslate():
 def test_sentences():
     """Tests basic functionality of sentence segmentation."""
     language = factory.getlanguage('am')
+    sentences = language.sentences(u"")
+    assert sentences == []
+
     sentences = language.sentences(u"ለምልክቱ መግቢያ የተለየ መለያ። ይህ የሚጠቅመው የታሪኩን ዝርዝር ለማስቀመጥ ነው።")
     print sentences
     assert sentences == [u"ለምልክቱ መግቢያ የተለየ መለያ።", u"ይህ የሚጠቅመው የታሪኩን ዝርዝር ለማስቀመጥ ነው።"]
-

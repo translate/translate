@@ -6,8 +6,11 @@ from translate.lang import common
 def test_words():
     """Tests basic functionality of word segmentation."""
     language = common.Common
-    words = language.words(u"Test sentence.")
-    assert words == [u"Test", u"sentence"]
+    words = language.words(u"")
+    assert words == []
+
+    words = language.words(u"test sentence.")
+    assert words == [u"test", u"sentence"]
 
     # Let's test Khmer with zero width space (\u200b)
     words = language.words(u"ផ្ដល់​យោបល់")
@@ -25,6 +28,9 @@ def test_words():
 def test_sentences():
     """Tests basic functionality of sentence segmentation."""
     language = common.Common
+    # Check that we correctly handle an empty string:
+    sentences = language.sentences(u"")
+
     sentences = language.sentences(u"This is a sentence.")
     assert sentences == [u"This is a sentence."]
     sentences = language.sentences(u"This is a sentence")
@@ -60,4 +66,5 @@ def test_capsstart():
     assert language.capsstart("'Open' cow file")
     assert not language.capsstart("open cow file")
     assert not language.capsstart(":")
+    assert not language.capsstart("")
 

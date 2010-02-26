@@ -20,7 +20,9 @@ def test_punctranslate():
 def test_sentences():
     """Tests basic functionality of sentence segmentation."""
     language = factory.getlanguage('es')
+    sentences = language.sentences(u"")
+    assert sentences == []
+
     sentences = language.sentences(u"El archivo <b>%1</b> ha sido modificado. ¿Desea guardarlo?")
     print sentences
     assert sentences == [u"El archivo <b>%1</b> ha sido modificado.", u"¿Desea guardarlo?"]
-
