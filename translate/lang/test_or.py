@@ -6,6 +6,7 @@ from translate.lang import factory
 def test_punctranslate():
     """Tests that we can translate punctuation."""
     language = factory.getlanguage('or')
+    assert language.punctranslate(u"") == u""
     assert language.punctranslate(u"Document loaded") == u"Document loaded"
     assert language.punctranslate(u"Document loaded.") == u"Document loaded।"
     assert language.punctranslate(u"Document loaded.\n") == u"Document loaded।\n"
