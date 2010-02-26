@@ -190,6 +190,11 @@ def test_doublequoting():
     vichecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="vi"))
     assert passes(vichecker.doublequoting, 'Save "File"', u"Lưu « Tập tin »")
 
+    # Had a small exception with such a case:
+    eschecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="es"))
+    assert passes(eschecker.doublequoting, "<![CDATA[ Enter the name of the Windows workgroup that this server should appear in. ]]>",
+            "<![CDATA[ Ingrese el nombre del grupo de trabajo de Windows en el que debe aparecer este servidor. ]]>")
+
 def test_doublespacing():
     """tests double spacing"""
     stdchecker = checks.StandardChecker()
