@@ -331,16 +331,16 @@ class pounit(pocommon.pounit):
 
     def _msgidlen(self):
         if self.hasplural():
-            return len(unquotefrompo(self.msgid).strip()) + len(unquotefrompo(self.msgid_plural).strip())
+            return len(unquotefrompo(self.msgid)) + len(unquotefrompo(self.msgid_plural))
         else:
-            return len(unquotefrompo(self.msgid).strip())
+            return len(unquotefrompo(self.msgid))
 
     def _msgstrlen(self):
         if isinstance(self.msgstr, dict):
-            combinedstr = "\n".join([unquotefrompo(msgstr).strip() for msgstr in self.msgstr.itervalues()])
-            return len(combinedstr.strip())
+            combinedstr = "\n".join([unquotefrompo(msgstr) for msgstr in self.msgstr.itervalues()])
+            return len(combinedstr)
         else:
-            return len(unquotefrompo(self.msgstr).strip())
+            return len(unquotefrompo(self.msgstr))
 
     def merge(self, otherpo, overwrite=False, comments=True, authoritative=False):
         """Merges the otherpo (with the same msgid) into this one.

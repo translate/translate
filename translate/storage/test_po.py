@@ -27,6 +27,9 @@ class TestPOUnit(test_base.TestTranslationUnit):
         unit = self.UnitClass("Message")
         assert unit.istranslatable()
 
+        unit.source = " "
+        assert unit.istranslatable()
+
         unit.source = ""
         assert not unit.istranslatable()
         # simulate a header

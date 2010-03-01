@@ -186,15 +186,15 @@ class pounit(pocommon.pounit):
 
     def _msgidlen(self):
         if self.hasplural():
-            len("".join([string.strip() for string in self.source.strings]))
+            len("".join([string for string in self.source.strings]))
         else:
-            return len(self.source.strip())
+            return len(self.source)
 
     def _msgstrlen(self):
         if self.hasplural():
-            len("".join([string.strip() for string in self.target.strings]))
+            len("".join([string for string in self.target.strings]))
         else:
-            return len(self.target.strip())
+            return len(self.target)
 
     def merge(self, otherpo, overwrite=False, comments=True, authoritative=False):
         """Merges the otherpo (with the same msgid) into this one.
