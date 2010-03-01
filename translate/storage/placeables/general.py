@@ -275,7 +275,7 @@ class XMLTagPlaceable(Ph):
 
     iseditable = True
     istranslatable = False
-    regex = re.compile(r'<(\w+)(\s(\w+=".*?")?)*/?>|</(\w+)>')
+    regex = re.compile(r'<([\w:]+)(\s([\w:]+=".*?")?)*/?>|</(\w+)>')
     parse = classmethod(regex_parse)
 
 
