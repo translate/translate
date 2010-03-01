@@ -49,6 +49,10 @@ def test_placeable_xml_tag():
     assert general.XMLTagPlaceable.parse(u'<a>koei</a>')[0] == general.XMLTagPlaceable([u'<a>'])
     assert general.XMLTagPlaceable.parse(u'<a>koei</a>')[2] == general.XMLTagPlaceable([u'</a>'])
     assert general.XMLTagPlaceable.parse(u'<img src="koei.jpg" />')[0] == general.XMLTagPlaceable([u'<img src="koei.jpg" />'])
+    # We don't want this to be recognised, so we test for None - not sure if that is a stable assumption
+    assert general.XMLTagPlaceable.parse(u'<important word>') is None
+    assert general.XMLTagPlaceable.parse(u'<img ="koei.jpg" />') is None
+    assert general.XMLTagPlaceable.parse(u'<img "koei.jpg" />') is None
     assert general.XMLTagPlaceable.parse(u'<img src="http://translate.org.za/blogs/friedel/sites/translate.org.za.blogs.friedel/files/virtaal-7f_help.png" alt="Virtaal met lêernaam-pseudovertaling" style="border: 1px dotted grey;" />')[0] == general.XMLTagPlaceable([u'<img src="http://translate.org.za/blogs/friedel/sites/translate.org.za.blogs.friedel/files/virtaal-7f_help.png" alt="Virtaal met lêernaam-pseudovertaling" style="border: 1px dotted grey;" />'])
 
 def test_placeable_option():
