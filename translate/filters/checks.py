@@ -722,9 +722,9 @@ class StandardChecker(TranslationChecker):
 
     def endpunc(self, str1, str2):
         """checks whether punctuation at the end of the strings match"""
-        str1 = self.filteraccelerators(self.filtervariables(self.filterwordswithpunctuation(str1)))
+        str1 = self.filtervariables(str1)
         str1 = self.config.lang.punctranslate(str1)
-        str2 = self.filteraccelerators(self.filtervariables(self.filterwordswithpunctuation(str2)))
+        str2 = self.filtervariables(str2)
         str1 = str1.rstrip()
         str2 = str2.rstrip()
         return helpers.funcmatch(str1, str2, decoration.puncend, self.config.endpunctuation + u":")
