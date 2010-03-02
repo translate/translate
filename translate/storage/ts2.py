@@ -152,23 +152,46 @@ class tsunit(lisa.LISAunit):
         if isinstance(text, str):
             text = text.decode("utf-8")
         current_notes = self.getnotes(origin)
-        self.removenotes()
-        note = etree.SubElement(self.xmlelement, self.namespaced("comment"))
-        note.text = "\n".join(filter(None, [current_notes, text.strip()]))
+        self.removenotes(origin)
+        if origin in ["programmer", "developer", "source code"]:
+            note = etree.SubElement(self.xmlelement, self.namespaced("extracomment"))
+        else:
+            note = etree.SubElement(self.xmlelement, self.namespaced("translatorcomment"))
+        if position == "append":
+            note.text = "\n".join(filter(None, [current_notes, text.strip()]))
+        else:
+            note.text = text.strip()
 
     def getnotes(self, origin=None):
         #TODO: consider only responding when origin has certain values
-        notenode = self.xmlelement.find(self.namespaced("comment"))
-        comment = ''
-        if not notenode is None:
-            comment = notenode.text
-        return comment
+        comments = []
+        if origin in ["programmer", "developer", "source code", None]:
+            notenode = self.xmlelement.find(self.namespaced("comment"))
+            if notenode is not None:
+                comments.append(notenode.text)
+            notenode = self.xmlelement.find(self.namespaced("extracomment"))
+            if notenode is not None:
+                comments.append(notenode.text)
+        if origin in ["translator", None]:
+            notenode = self.xmlelement.find(self.namespaced("translatorcomment"))
+            if notenode is not None:
+                comments.append(notenode.text)
+        return '\n'.join(comments)
 
-    def removenotes(self):
+    def removenotes(self, origin=None):
         """Remove all the translator notes."""
-        note = self.xmlelement.find(self.namespaced("comment"))
-        if not note is None:
-            self.xmlelement.remove(note)
+        if origin in ["programmer", "developer", "source code", None]:
+            note = self.xmlelement.find(self.namespaced("comment"))
+            if not note is None:
+                self.xmlelement.remove(note)
+            note = self.xmlelement.find(self.namespaced("extracomment"))
+            if not note is None:
+                self.xmlelement.remove(note)
+        if origin in ["translator", None]:
+            note = self.xmlelement.find(self.namespaced("translatorcomment"))
+            if not note is None:
+                self.xmlelement.remove(note)
+
 
     def _gettype(self):
         """Returns the type of this translation."""
