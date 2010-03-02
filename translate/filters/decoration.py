@@ -52,11 +52,15 @@ def puncstart(str1, punctuation):
 
 def puncend(str1, punctuation):
     """returns all the punctuation from the end of the string"""
-    newstring = ""
+    # An implementation with regular expressions was slightly slower.
+
+    newstring = u""
     for n in range(len(str1)):
         c = str1[-1-n]
-        if c not in punctuation and not c.isspace(): return newstring
-        else: newstring = c + newstring
+        if c in punctuation or c.isspace():
+            newstring = c + newstring
+        else:
+            break
     return newstring
 
 def ispurepunctuation(str1):
