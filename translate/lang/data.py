@@ -30,7 +30,7 @@ languages = {
 'af': (u'Afrikaans', 2, '(n != 1)'),
 'ak': (u'Akan', 2, 'n > 1'),
 'am': (u'Amharic', 2, 'n > 1'),
-'ar': (u'Arabic', 6, 'n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5'),
+'ar': (u'Arabic', 6, 'n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5'),
 'arn': (u'Mapudungun; Mapuche', 2, 'n > 1'),
 'ast': (u'Asturian; Bable; Leonese; Asturleonese', 2, 'n != 1'),
 'az': (u'Azerbaijani', 2, '(n != 1)'),
