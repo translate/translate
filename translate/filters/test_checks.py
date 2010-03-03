@@ -616,9 +616,15 @@ def test_startpunc():
     assert fails(stdchecker.startpunc, " << Previous", "Wrong")
     assert fails(stdchecker.startpunc, "Question", u"\u2026Wrong")
 
+    assert passes(stdchecker.startpunc, "<fish>hello</fish> world", "world <fish>hello</fish>")
+
     # The inverted Spanish question mark should be accepted
     stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='es'))
     assert passes(stdchecker.startpunc, "Do you want to reload the file?", u"¿Quiere recargar el archivo?")
+
+    # The Afrikaans indefinite article should be accepted
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='af'))
+    assert passes(stdchecker.startpunc, "A human?", u"'n Mens?")
 
 def test_startwhitespace():
     """tests startwhitespace"""

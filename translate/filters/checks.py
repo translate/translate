@@ -718,9 +718,9 @@ class StandardChecker(TranslationChecker):
 
     def startpunc(self, str1, str2):
         """checks whether punctuation at the beginning of the strings match"""
-        str1 = self.filteraccelerators(self.filtervariables(self.filterwordswithpunctuation(str1)))
+        str1 = self.filterxml(self.filteraccelerators(self.filtervariables(self.filterwordswithpunctuation(str1))))
         str1 = self.config.lang.punctranslate(str1)
-        str2 = self.filteraccelerators(self.filtervariables(self.filterwordswithpunctuation(str2)))
+        str2 = self.filterxml(self.filteraccelerators(self.filtervariables(self.filterwordswithpunctuation(str2))))
         return helpers.funcmatch(str1, str2, decoration.puncstart, self.config.punctuation)
 
     def endpunc(self, str1, str2):
