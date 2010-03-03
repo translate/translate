@@ -337,6 +337,8 @@ msgstr "POT-Creation-Date: 2006-03-08 17:30+0200\n"
         posource = 'msgid "thing\nmsgstr "ding"\nmsgid "Second thing"\nmsgstr "Tweede ding"\n'
         pofile = self.poparse(posource)
         assert len(pofile.units) == 2
+        print `pofile.units[0].source`
+        assert pofile.units[0].source == u"thing"
 
     def test_malformed_obsolete_units(self):
         """Test that we handle malformed obsolete units reasonably."""
@@ -678,6 +680,27 @@ msgstr "プロジェクトが見つかりませんでした"
 '''
         pofile1 = self.poparse(posource)
         print pofile1.units[1].source
+        assert pofile1.units[1].source == u"I cannot locate the project\\"
         pofile2 = self.poparse(str(pofile1))
+        print str(pofile2)
+        assert str(pofile1) == str(pofile2)
+
+    def test_unfinished_lines(self):
+        """Test that we reasonably handle lines with a single quote."""
+        posource = r'''
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\n"
+
+msgid "I cannot locate the project\\"
+msgstr "start thing dingis fish"
+"
+"
+'''
+        pofile1 = self.poparse(posource)
+        print `pofile1.units[1].target`
+        assert pofile1.units[1].target == u"start thing dingis fish"
+        pofile2 = self.poparse(str(pofile1))
+        assert pofile2.units[1].target == u"start thing dingis fish"
         print str(pofile2)
         assert str(pofile1) == str(pofile2)
