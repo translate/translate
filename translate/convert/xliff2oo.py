@@ -172,7 +172,6 @@ class oofilteroptions:
     excludefilters = {}
     includefuzzy = False
     includereview = False
-    includeheader = False
     autocorrect = False
 
 options = oofilteroptions()
