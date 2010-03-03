@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2009 Mozilla Corporation, Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -29,14 +29,14 @@ from translate.misc.multistring import multistring
 class phppo2pypo:
     def convertstore(self, inputstore):
         """Converts a given .po file (PHP Format) to a Python format .po file, the difference being
-            how variable substitutions work.  PHP uses a %1$s format, and Python uses 
+            how variable substitutions work.  PHP uses a %1$s format, and Python uses
             a {0} format (zero indexed).  This method will convert, e.g.:
                 I have %2$s apples and %1$s oranges
                     to
                 I have {1} apples and {0} oranges
             This method ignores strings with %s as both languages will recognize that.
         """
-        thetargetfile = po.pofile()
+        thetargetfile = po.pofile(inputfile="")
 
         for unit in inputstore.units:
             newunit = self.convertunit(unit)
