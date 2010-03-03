@@ -360,7 +360,9 @@ class StatsCache(object):
 
         store can be a TranslationFile object or a callback that returns one.
         """
-        realpath = unicode(os.path.realpath(filename), sys.getfilesystemencoding())
+        if isinstance(filename, str):
+            filename = unicode(filename, sys.getfilesystemencoding())
+        realpath = os.path.realpath(filename)
         self.cur.execute("""SELECT fileid, st_mtime, st_size FROM files
                 WHERE path=?;""", (realpath,))
         filerow = self.cur.fetchone()
