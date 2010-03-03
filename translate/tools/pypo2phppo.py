@@ -60,7 +60,10 @@ class pypo2phppo:
 
         for index, string in enumerate(strings):
             strings[index] = re.sub('\{(\d)\}', lambda x: "%%%d$s" % (int(x.group(1))+1), string)
-        return strings[0] if len(strings) == 1 else strings
+        if len(strings) == 1:
+            return strings[0]
+        else:
+            return strings
 
 def convertpy2php(inputfile, outputfile, template=None):
     """Converts from Python .po to PHP .po
