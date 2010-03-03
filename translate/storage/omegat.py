@@ -136,9 +136,7 @@ class OmegaTUnit(base.TranslationUnit):
 
 class OmegaTFile(base.TranslationStore):
     """An OmegaT translation memory file"""
-    # FIXME: uncomment this when we next open from string freeze
-    #Name = _("OmegaT Glossary")
-    Name = None
+    Name = _("OmegaT Glossary")
     Mimetypes  = ["application/x-omegat-glossary"]
     Extensions = ["utf8"]
     def __init__(self, inputfile=None, unitclass=OmegaTUnit):
