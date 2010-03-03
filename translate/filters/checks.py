@@ -519,6 +519,7 @@ class StandardChecker(TranslationChecker):
     def singlequoting(self, str1, str2):
         """checks whether singlequoting is consistent between the two strings"""
         str1 = self.filterwordswithpunctuation(self.filteraccelerators(self.filtervariables(str1)))
+        str1 = self.config.lang.punctranslate(str1)
         str2 = self.filterwordswithpunctuation(self.filteraccelerators(self.filtervariables(str2)))
         return helpers.countsmatch(str1, str2, (u"'", u"''", u"\\'"))
 
