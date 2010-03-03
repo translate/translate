@@ -44,10 +44,12 @@ def spaceend(str1):
 
 def puncstart(str1, punctuation):
     """returns all the punctuation from the start of the string"""
-    newstring = ""
+    newstring = u""
     for c in str1:
-        if c not in punctuation and not c.isspace(): return newstring
-        else: newstring += c
+        if c in punctuation or c.isspace():
+            newstring += c
+        else:
+            break
     return newstring
 
 def puncend(str1, punctuation):
