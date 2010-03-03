@@ -29,6 +29,7 @@ for full descriptions of all tests
 """
 
 from translate.storage import factory
+from translate.storage.poheader import poheader
 from translate.filters import checks
 from translate.filters import autocorrect
 from translate.misc import optrecurse
@@ -37,7 +38,7 @@ import os
 
 class pocheckfilter:
     def __init__(self, options, checkerclasses=None, checkerconfig=None):
-        # excludefilters={}, limitfilters=None, includeheader=False, includefuzzy=True, includereview=True, autocorrect=False):
+        # excludefilters={}, limitfilters=None, includefuzzy=True, includereview=True, autocorrect=False):
         """builds a checkfilter using the given checker (a list is allowed too)"""
         if checkerclasses is None:
             checkerclasses = [checks.StandardChecker, checks.StandardUnitChecker]
@@ -80,8 +81,8 @@ class pocheckfilter:
         Return value:
             - A new translation store object with the results of the filter included."""
         newtransfile = type(transfile)()
-        if self.options.includeheader and newtransfile.units > 0:
-            newtransfile.update_header(add=True, **transfile.parseheader())
+        newtransfile.setsourcelanguage(transfile.sourcelanguage)
+        newtransfile.settargetlanguage(transfile.targetlanguage)
         for unit in transfile.units:
             filterresult = self.filterunit(unit)
             if filterresult:
@@ -92,6 +93,8 @@ class pocheckfilter:
                         if isinstance(filtermessage, checks.SeriousFilterFailure):
                             unit.markfuzzy()
                 newtransfile.addunit(unit)
+        if isinstance(newtransfile, poheader):
+            newtransfile.updateheader(add=True, **transfile.parseheader())
         return newtransfile
 
 class FilterOptionParser(optrecurse.RecursiveOptionParser):
@@ -176,9 +179,6 @@ def cmdlineparser():
     parser.add_option("", "--nofuzzy", dest="includefuzzy",
         action="store_false", default=True,
         help="exclude units marked fuzzy")
-    parser.add_option("", "--header", dest="includeheader",
-        action="store_true", default=False,
-        help="include a PO header in the output")
     parser.add_option("", "--nonotes", dest="addnotes",
         action="store_false", default=True,
         help="don't add notes about the errors")

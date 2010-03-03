@@ -29,6 +29,7 @@ usage instructions
 """
 
 from translate.storage import factory
+from translate.storage.poheader import poheader
 from translate.misc import optrecurse
 from translate.misc.multistring import multistring
 from translate.lang import data
@@ -122,7 +123,7 @@ def find_matches(unit, part, strings, re_search):
 
 class GrepFilter:
     def __init__(self, searchstring, searchparts, ignorecase=False, useregexp=False,
-            invertmatch=False, accelchar=None, encoding='utf-8', includeheader=False,
+            invertmatch=False, accelchar=None, encoding='utf-8',
             max_matches=0):
         """builds a checkfilter using the given checker"""
         if isinstance(searchstring, unicode):
@@ -150,7 +151,6 @@ class GrepFilter:
             self.searchpattern = re.compile(self.searchstring)
         self.invertmatch = invertmatch
         self.accelchar = accelchar
-        self.includeheader = includeheader
         self.max_matches = max_matches
 
     def matches(self, teststr):
@@ -208,11 +208,9 @@ class GrepFilter:
         for unit in thefile.units:
             if self.filterunit(unit):
                 thenewfile.addunit(unit)
-        if self.includeheader and thenewfile.units > 0:
-            if thefile.units[0].isheader():
-                thenewfile.units.insert(0, thefile.units[0])
-            else:
-                thenewfile.units.insert(0, thenewfile.makeheader())
+
+        if isinstance(thenewfile, poheader):
+            thenewfile.updateheader(add=True, **thefile.parseheader())
         return thenewfile
 
     def getmatches(self, units):
@@ -303,7 +301,7 @@ class GrepOptionParser(optrecurse.RecursiveOptionParser):
         (options, args) = self.parse_args()
         options.inputformats = self.inputformats
         options.outputoptions = self.outputoptions
-        options.checkfilter = GrepFilter(options.searchstring, options.searchparts, options.ignorecase, options.useregexp, options.invertmatch, options.accelchar, locale.getpreferredencoding(), options.includeheader)
+        options.checkfilter = GrepFilter(options.searchstring, options.searchparts, options.ignorecase, options.useregexp, options.invertmatch, options.accelchar, locale.getpreferredencoding())
         self.usepsyco(options)
         self.recursiveprocess(options)
 
@@ -335,9 +333,6 @@ def cmdlineparser():
     parser.add_option("", "--accelerator", dest="accelchar",
         action="store", type="choice", choices=["&", "_", "~"],
         metavar="ACCELERATOR", help="ignores the given accelerator when matching")
-    parser.add_option("", "--header", dest="includeheader",
-        action="store_true", default=False,
-        help="include a PO header in the output")
     parser.set_usage()
     parser.passthrough.append('checkfilter')
     parser.description = __doc__
