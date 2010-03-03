@@ -27,19 +27,23 @@ from translate.lang import data
 
 def spacestart(str1):
     """returns all the whitespace from the start of the string"""
-    newstring = ""
+    newstring = u""
     for c in str1:
-        if not c.isspace(): return newstring
-        else: newstring += c
+        if c.isspace():
+            newstring += c
+        else:
+            break
     return newstring
 
 def spaceend(str1):
     """returns all the whitespace from the end of the string"""
-    newstring = ""
+    newstring = u""
     for n in range(len(str1)):
         c = str1[-1-n]
-        if not c.isspace(): return newstring
-        else: newstring = c + newstring
+        if c.isspace():
+            newstring = c + newstring
+        else:
+            break
     return newstring
 
 def puncstart(str1, punctuation):
