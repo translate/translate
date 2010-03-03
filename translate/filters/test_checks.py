@@ -246,6 +246,7 @@ def test_endpunc():
 
     stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='fr'))
     assert passes(stdchecker.endpunc, "Header:", u"En-tête :")
+    assert passes(stdchecker.endpunc, "Header:", u"En-tête\u00a0:")
 
 def test_endwhitespace():
     """tests endwhitespace"""
@@ -461,6 +462,7 @@ def test_puncspacing():
     # Some languages have padded puntuation marks
     frchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="fr"))
     assert passes(frchecker.puncspacing, "Do \"this\"", "Do « this »")
+    assert passes(frchecker.puncspacing, u"Do \"this\"", u"Do «\u00a0this\u00a0»")
     assert fails(frchecker.puncspacing, "Do \"this\"", "Do «this»")
 
 def test_purepunc():

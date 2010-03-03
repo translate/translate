@@ -61,7 +61,7 @@ def puncend(str1, punctuation):
             newstring = c + newstring
         else:
             break
-    return newstring
+    return newstring.replace(u"\u00a0", u" ")
 
 def ispurepunctuation(str1):
     """checks whether the string is entirely punctuation"""

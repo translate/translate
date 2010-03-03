@@ -539,11 +539,14 @@ class StandardChecker(TranslationChecker):
 
     def puncspacing(self, str1, str2):
         """checks for bad spacing after punctuation"""
-        if str1.find(u" ") == -1:
-            return True
+        # Convert all nbsp to space, and just check spaces. Useful intermediate step to stricter nbsp checking?
         str1 = self.filteraccelerators(self.filtervariables(str1))
         str1 = self.config.lang.punctranslate(str1)
+        str1 = str1.replace(u"\u00a0", u" ")
+        if str1.find(u" ") == -1:
+            return True
         str2 = self.filteraccelerators(self.filtervariables(str2))
+        str2 = str2.replace(u"\u00a0", u" ")
         for puncchar in self.config.punctuation:
             plaincount1 = str1.count(puncchar)
             plaincount2 = str2.count(puncchar)
