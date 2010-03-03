@@ -30,7 +30,7 @@ class TestPO2XLIFF:
         assert xliff.translate("bla") is None
  
     def test_basic(self):
-        minipo = """# Afrikaans translation of program ABC
+        minipo = r"""# Afrikaans translation of program ABC
 #
 msgid ""
 msgstr ""
@@ -72,7 +72,6 @@ msgstr "Eerste deel "
         print str(xliff)
         assert xliff.translate('First part and extra') == 'Eerste deel en ekstra'
 
-        
     def test_escapednewlines(self):
         """Test the escaping of newlines"""
         minipo = r'''msgid "First line\nSecond line"
@@ -199,7 +198,7 @@ msgstr "kunye"
 #, fuzzy
 msgid ""
 msgstr ""
-"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 '''
         xliff = self.po2xliff(minipo)
         print "The generated xml:"
@@ -207,7 +206,7 @@ msgstr ""
         print xmltext
         assert len(xliff.units) == 1
         unit = xliff.units[0]
-        assert unit.source == unit.target == "MIME-Version: 1.0\n"
+        assert unit.source == unit.target == "Content-Type: text/plain; charset=UTF-8\n"
         assert unit.xmlelement.get("restype") == "x-gettext-domain-header"
         assert unit.xmlelement.get("approved") != "yes"
         assert unit.xmlelement.get("{%s}space" % lisa.XML_NS) == "preserve"

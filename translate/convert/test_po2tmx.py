@@ -18,7 +18,7 @@ class TestPO2TMX:
         return outputfile.tmxfile
 
     def test_basic(self):
-        minipo = """# Afrikaans translation of program ABC
+        minipo = r"""# Afrikaans translation of program ABC
 #
 msgid ""
 msgstr ""
