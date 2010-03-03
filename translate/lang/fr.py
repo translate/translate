@@ -41,10 +41,10 @@ def guillemets(text):
         text = re.sub('(.|^)"([^"]+)"', convertquotation, text)
     singlecount = text.count(u"'")
     if singlecount:
-        if singlecount % 2 == 0:
-            text = re.sub("(.|^)'([^']+)'", convertquotation, text)
         if singlecount == text.count(u'`'):
             text = re.sub("(.|^)`([^']+)'", convertquotation, text)
+        elif singlecount % 2 == 0:
+            text = re.sub("(.|^)'([^']+)'", convertquotation, text)
     text = re.sub(u'(.|^)“([^”]+)”', convertquotation, text)
     return text
 

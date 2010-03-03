@@ -31,6 +31,8 @@ def test_punctranslate():
     #assert language.punctranslate(u"The <a href='info'>user</a> `root'?") == u"The <a href='info'>user</a> «\u00a0root\u00a0»\u00a0?"
     assert language.punctranslate(u"The <a href='http://koeie'>user</a>") == u"The <a href='http://koeie'>user</a>"
 
+    assert language.punctranslate(u"Copying `%s' to `%s'") == u"Copying «\u00a0%s\u00a0» to «\u00a0%s\u00a0»"
+
 def test_sentences():
     """Tests basic functionality of sentence segmentation."""
     language = factory.getlanguage('fr')
