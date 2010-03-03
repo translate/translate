@@ -169,8 +169,10 @@ def parse_quoted(parse_state, start_pos = 0):
         right = rfind(line, '"')
         if left != right:
             return parse_state.read_line()[left:right+1]
-        else: # If there is no terminating quote
-            return parse_state.read_line()[left:] + '"'
+        else:
+            # There is no terminating quote, so we append an extra quote, but
+            # we also ignore the newline at the end (therefore the -1)
+            return parse_state.read_line()[left:-1] + '"'
     return None
 
 def parse_msg_comment(parse_state, msg_comment_list, string):
