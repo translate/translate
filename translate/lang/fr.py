@@ -33,7 +33,7 @@ def guillemets(text):
         # <a href="something">
         if prefix == u"=":
             return match.group(0)
-        return u"%s« %s »" % (prefix, match.group(2))
+        return u"%s«\u00a0%s\u00a0»" % (prefix, match.group(2)) #\u00a0 is NBSP
 
     # Check that there is an even number of double quotes, otherwise it is
     # probably not safe to convert them.
@@ -58,7 +58,7 @@ class fr(common.Common):
     # part punctuation marks and symbols, including : ; « » ! ? % $ # etc.
     puncdict = {}
     for c in u":;!?#":
-        puncdict[c] = u" %s" % c
+        puncdict[c] = u"\u00a0%s" % c
     # TODO: consider adding % and $, but think about the consequences of how 
     # they could be part of variables
 
@@ -72,6 +72,6 @@ class fr(common.Common):
         text = super(cls, cls).punctranslate(text)
         # We might get problems where we got a space in URIs such as
         # http ://
-        text = text.replace(u" ://", "://")
+        text = text.replace(u"\u00a0://", "://")
         return guillemets(text)
     punctranslate = classmethod(punctranslate)
