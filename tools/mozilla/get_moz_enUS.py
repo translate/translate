@@ -123,4 +123,7 @@ if __name__ == '__main__':
         print "%s -s %s -d %s -p %s -v %s" % (__file__, srccheckout, l10ncheckout, product,
                 options.deletedest and '--delete-dest' or '')
     product_ini = os.path.join(srccheckout, product, 'locales', 'l10n.ini')
+    if not os.path.isfile(product_ini):
+        # Done for Fennec
+        product_ini = os.path.join(srccheckout, 'locales', 'l10n.ini')
     process_l10n_ini(product_ini)
