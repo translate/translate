@@ -202,12 +202,12 @@ class tsunit(lisa.LISAunit):
 
     def _settype(self, value=None):
         """Set the type of this translation."""
-        if value is None and self._gettype:
+        if value:
+            self._gettargetnode().set("type", value)
+        elif self._gettype():
             # lxml recommends against using .attrib, but there seems to be no
             # other way
             self._gettargetnode().attrib.pop("type")
-        else:
-            self._gettargetnode().set("type", value)
 
     def isreview(self):
         """States whether this unit needs to be reviewed"""
