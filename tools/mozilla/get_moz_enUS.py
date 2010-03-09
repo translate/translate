@@ -54,7 +54,11 @@ def process_l10n_ini(inifile):
 
     try:
         for include in l10n.options('includes'):
-            process_l10n_ini(os.path.join( l10n_ini_path, l10n.get('general', 'depth'), l10n.get('includes', include) ))
+            include_ini = os.path.join(
+                l10n_ini_path, l10n.get('general', 'depth'), l10n.get('includes', include)
+            )
+            if os.path.isfile(include_ini):
+                process_l10n_ini(include_ini)
     except TypeError:
         pass
     except NoSectionError:
