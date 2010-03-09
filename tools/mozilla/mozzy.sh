@@ -194,6 +194,7 @@ do
 			shift
 			;;
 		-*|--*)
+			echo "Unknown option: $1"
 			usage
 			;;
 		*)
