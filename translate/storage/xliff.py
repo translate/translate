@@ -187,6 +187,9 @@ class xliffunit(lisa.LISAunit):
 
     def addnote(self, text, origin=None, position="append"):
         """Add a note specifically in a "note" tag"""
+        if position != "append":
+            self.removenotes(origin=origin)
+
         if text:
             text = text.strip()
         if not text:

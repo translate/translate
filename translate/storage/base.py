@@ -271,7 +271,7 @@ class TranslationUnit(object):
                          - 'translator'
                          - 'developer', 'programmer', 'source code' (synonyms)
         """
-        if getattr(self, "notes", None):
+        if position == "append" and getattr(self, "notes", None):
             self.notes += '\n'+text
         else:
             self.notes = text

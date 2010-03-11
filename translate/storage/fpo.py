@@ -147,16 +147,16 @@ class pounit(pocommon.pounit):
             commentlist = self.automaticcomments
         if text.endswith(u'\n'):
             text = text[:-1]
-        text = text.split(u"\n")
+        newcomments = text.split(u"\n")
         if position == "append":
-            commentlist.extend(text)
+            newcomments = commentlist + newcomments
+        elif position == "prepend":
+            newcomments = newcomments + commentlist
+
+        if autocomments:
+            self.automaticcomments = newcomments
         else:
-            newcomments = text
-            newcomments.extend(commentlist)
-            if autocomments:
-                self.automaticcomments = newcomments
-            else:
-                self.othercomments = newcomments
+            self.othercomments = newcomments
 
     def removenotes(self):
         """Remove all the translator's notes (other comments)"""
