@@ -319,7 +319,17 @@ class xliffunit(lisa.LISAunit):
         self.xmlelement.set("id", id)
 
     def getid(self):
-        return self.xmlelement.get("id") or ""
+        uid = ""
+        try:
+            filename = self.xmlelement.iterancestors(self.namespaced('file')).next().get('original')
+            if filename:
+                uid = filename + '::'
+        except StopIteration:
+            # unit has no proper file ancestor, probably newly created
+            pass
+
+        uid += self.xmlelement.get("id") or ""
+        return uid
 
     def addlocation(self, location):
         self.setid(location)
