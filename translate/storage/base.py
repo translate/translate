@@ -578,10 +578,10 @@ class TranslationStore(object):
 
     def require_index(self):
         """make sure source index exists"""
-        if not hasattr(self, "sourceindex"):
+        if not hasattr(self, "id_index"):
             self.makeindex()
 
-    def getids(self):
+    def getids(self, filename=None):
         """return a list of unit ids"""
         self.require_index()
         return self.id_index.keys()

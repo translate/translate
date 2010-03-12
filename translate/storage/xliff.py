@@ -513,6 +513,17 @@ class xlifffile(lisa.LISAfile):
             return filenode
         return None
 
+    def getids(self, filename=None):
+        if not filename:
+            return super(xlifffile, self).getids()
+
+        self.id_index = {}
+        prefix = filename + '::'
+        units = (unit for unit in self.units if unit.getid().startswith(prefix))
+        for index, unit in enumerate(units):
+            self.id_index[unit.getid()[len(prefix):]] = unit
+        return self.id_index.keys()
+
     def setsourcelanguage(self, language):
         if not language:
             return
