@@ -251,17 +251,26 @@ class tsunit(lisa.LISAunit):
     def addlocation(self, location):
         if isinstance(location, str):
             location = location.decode("utf-8")
-        location = etree.SubElement(self.xmlelement, self.namespaced("location"))
-        filename, line = location.split(':', 1)
-        location.set("filename", filename)
-        location.set("line", line or "")
+        newlocation = etree.SubElement(self.xmlelement, self.namespaced("location"))
+        try:
+            filename, line = location.split(':', 1)
+        except ValueError:
+            filename = location
+            line = None
+        newlocation.set("filename", filename)
+        if line is not None:
+            newlocation.set("line", line)
 
     def getlocations(self):
-        location = self.xmlelement.find(self.namespaced("location"))
-        if location is None:
-            return []
-        else:
-            return [':'.join([location.get("filename"), location.get("line")])]
+        location_tags = self.xmlelement.iterfind(self.namespaced("location"))
+        locations = []
+        for location_tag in location_tags:
+            location = location_tag.get("filename")
+            line = location_tag.get("line")
+            if line is not None:
+                location += ':' + line
+            locations.append(location)
+        return locations
 
     def merge(self, otherunit, overwrite=False, comments=True, authoritative=False):
         super(tsunit, self).merge(otherunit, overwrite, comments)
