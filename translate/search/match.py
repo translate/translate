@@ -268,9 +268,9 @@ class terminologymatcher(matcher):
         return 3
 
     def getstoplength(self, min_similarity, text):
-        # Let's ignore terms with more than 30 characters. Perhaps someone
+        # Let's ignore terms with more than 50 characters. Perhaps someone
         # gave a file with normal (long) translations
-        return 30
+        return 50
 
     def usable(self, unit):
         """Returns whether this translation unit is usable for terminology."""
