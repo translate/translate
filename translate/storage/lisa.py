@@ -122,6 +122,8 @@ class LISAunit(base.TranslationUnit):
     source_dom = property(get_source_dom, set_source_dom)
 
     def setsource(self, text, sourcelang='en'):
+        if self._rich_source is not None:
+            self._rich_source = None
         text = data.forceunicode(text)
         self.source_dom = self.createlanguageNode(sourcelang, text, "source")
 
@@ -148,9 +150,11 @@ class LISAunit(base.TranslationUnit):
     target_dom = property(get_target_dom)
 
     def settarget(self, text, lang='xx', append=False):
+        """Sets the "target" string (second language), or alternatively appends to the list"""
         #XXX: we really need the language - can't really be optional, and we
         # need to propagate it
-        """Sets the "target" string (second language), or alternatively appends to the list"""
+        if self._rich_target is not None:
+            self._rich_target = None
         text = data.forceunicode(text)
         #Firstly deal with reinitialising to None or setting to identical string
         if self.gettarget() == text:
