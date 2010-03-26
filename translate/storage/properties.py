@@ -156,6 +156,7 @@ class propunit(base.TranslationUnit):
         self.source = source
 
     def setsource(self, source):
+        self._rich_source = None
         source = data.forceunicode(source)
         if self.personality == "mozilla" or self.personality == "skype":
             self.value = quote.mozillapropertiesencode(source or u"")
@@ -170,6 +171,7 @@ class propunit(base.TranslationUnit):
     source = property(getsource, setsource)
 
     def settarget(self, target):
+        self._rich_target = None
         target = data.forceunicode(target)
         if self.personality == "mozilla" or self.personality == "skype":
             self.translation = quote.mozillapropertiesencode(target or u"")

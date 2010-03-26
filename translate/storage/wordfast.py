@@ -325,6 +325,7 @@ class WordfastUnit(base.TranslationUnit):
         return self._get_source_or_target('source')
 
     def setsource(self, newsource):
+        self._rich_source = None
         return self._set_source_or_target('source', newsource)
     source = property(getsource, setsource)
 
@@ -332,6 +333,7 @@ class WordfastUnit(base.TranslationUnit):
         return self._get_source_or_target('target')
 
     def settarget(self, newtarget):
+        self._rich_target = None
         return self._set_source_or_target('target', newtarget)
     target = property(gettarget, settarget)
 

@@ -57,6 +57,7 @@ class rcunit(base.TranslationUnit):
 
     def setsource(self, source):
         """Sets the source AND the target to be equal"""
+        self._rich_source = None
         self._value = source or ""
 
     def getsource(self):
@@ -66,6 +67,7 @@ class rcunit(base.TranslationUnit):
 
     def settarget(self, target):
         """Note: this also sets the .source attribute!"""
+        self._rich_target = None
         self.source = target
 
     def gettarget(self):

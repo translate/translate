@@ -216,6 +216,7 @@ class pounit(pocommon.pounit):
 
         @param source: an unescaped source string.
         """
+        self._rich_source = None
         self.msgid, self.msgid_plural = self._set_source_vars(source)
     source = property(getsource, setsource)
 

@@ -109,6 +109,7 @@ class tsunit(lisa.LISAunit):
         # is necessarily correct in all regards, but it does deal with a lot of
         # cases. It is hard to deal with plurals, since 
         #Firstly deal with reinitialising to None or setting to identical string
+        self._rich_target = None
         if self.gettarget() == text:
             return
         strings = []

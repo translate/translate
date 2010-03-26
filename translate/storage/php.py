@@ -100,6 +100,7 @@ class phpunit(base.TranslationUnit):
 
     def setsource(self, source):
         """Sets the source AND the target to be equal"""
+        self._rich_source = None
         self.value = phpencode(source, self.escape_type)
 
     def getsource(self):
@@ -107,6 +108,7 @@ class phpunit(base.TranslationUnit):
     source = property(getsource, setsource)
 
     def settarget(self, target):
+        self._rich_target = None
         self.translation = phpencode(target, self.escape_type)
 
     def gettarget(self):

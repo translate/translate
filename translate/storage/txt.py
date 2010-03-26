@@ -71,6 +71,7 @@ class TxtUnit(base.TranslationUnit):
         """Sets the definition to the quoted value of source"""
         if isinstance(source, str):
             source = source.decode(self.encoding)
+        self._rich_source = None
         self._source = source
 
     def getsource(self):
@@ -80,6 +81,7 @@ class TxtUnit(base.TranslationUnit):
 
     def settarget(self, target):
         """Sets the definition to the quoted value of target"""
+        self._rich_target = None
         self.source = target
 
     def gettarget(self):

@@ -121,6 +121,7 @@ class dtdunit(base.TranslationUnit):
     def setsource(self, source):
         """Sets the definition to the quoted value of source"""
         self.definition = quotefordtd(source)
+        self._rich_source = None
 
     def getsource(self):
         """gets the unquoted source string"""
@@ -132,6 +133,7 @@ class dtdunit(base.TranslationUnit):
         if target is None:
             target = ""
         self.definition = quotefordtd(target)
+        self._rich_target = None
 
     def gettarget(self):
         """gets the unquoted target string"""
