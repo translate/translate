@@ -32,12 +32,12 @@ import logging
 if os.getenv('USECPO'):
     if os.getenv('USECPO') == "1":
         logging.info("Using cPO")
-        from cpo import *
+        from translate.storage.cpo import *
     elif os.getenv('USECPO') == "2":
         logging.info("Using new cPO")
-        from fpo import *
+        from translate.storage.fpo import *
     else:
         logging.info("Using Python PO")
-        from pypo import *
+        from translate.storage.pypo import *
 else:
-    from pypo import *
+    from translate.storage.pypo import *
