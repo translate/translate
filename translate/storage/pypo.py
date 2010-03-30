@@ -26,12 +26,11 @@ from translate.misc.multistring import multistring
 from translate.misc import quote
 from translate.misc import textwrap
 from translate.lang import data
-from translate.storage import pocommon, base
+from translate.storage import pocommon, base, poparser
 from translate.storage.pocommon import encodingToUse
 import re
 import copy
 import cStringIO
-import poparser
 
 lsep = "\n#: "
 """Seperator for #: entries"""
