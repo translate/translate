@@ -323,8 +323,8 @@ class tsfile(lisa.LISAfile):
         @return: ISO code e.g. af, fr, pt_BR
         @rtype: String
         """
-        lang = data.normalize(self.header.get('sourcelanguage', "en"))
-        if lang = 'en-us':
+        lang = data.normalize_code(self.header.get('sourcelanguage', "en"))
+        if lang == 'en-us':
             return 'en'
         return lang
 
@@ -334,7 +334,7 @@ class tsfile(lisa.LISAfile):
         @return: ISO code e.g. af, fr, pt_BR
         @rtype: String
         """
-        return data.normalize(self.header.get('language'))
+        return data.normalize_code(self.header.get('language'))
 
     def settargetlanguage(self, targetlanguage):
         """Set the target language for this .ts file to L{targetlanguage}.

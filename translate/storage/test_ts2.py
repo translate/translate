@@ -71,4 +71,16 @@ class TestTSfile(test_base.TestTranslationStore):
         newfile = ts.tsfile.parsestring(str(tsfile))
         print str(tsfile)
         assert newfile.findunit("Concept").target == "Konsep"
-		
+
+    def test_language(self):
+        """Check that we can get and set language and sourcelanguage in the header"""
+        tsstr = '''<!DOCTYPE TS>
+<TS version="2.0" language="fr" sourcelanguage="en_US">
+</TS>
+'''
+        tsfile = ts.tsfile.parsestring(tsstr)
+        assert tsfile.gettargetlanguage() == 'fr'
+        # We convert en_US to en
+        assert tsfile.getsourcelanguage() == 'en'
+        tsfile.settargetlanguage('pt_BR')
+        assert 'pt_BR' in str(tsfile)
