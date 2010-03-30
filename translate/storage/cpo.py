@@ -35,7 +35,8 @@ from translate.storage import pocommon
 from translate.storage import pypo
 from translate.storage.pocommon import encodingToUse
 from translate.lang import data
-from ctypes import *
+from ctypes import c_int, c_uint, c_char_p, c_long, CFUNCTYPE, POINTER
+from ctypes import Structure, cdll
 import ctypes.util
 try:
     import cStringIO as StringIO
