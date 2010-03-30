@@ -32,8 +32,8 @@ package for the public API of the library.
 
 from translate.misc.multistring import multistring
 from translate.storage import pocommon
+from translate.storage import pypo
 from translate.storage.pocommon import encodingToUse
-from translate.misc import quote
 from translate.lang import data
 from ctypes import *
 import ctypes.util
@@ -42,7 +42,6 @@ try:
 except ImportError:
     import StringIO
 import os
-import pypo
 import re
 import sys
 import tempfile
