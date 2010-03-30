@@ -305,6 +305,7 @@ class tsfile(lisa.LISAfile):
     def initbody(self):
         """Initialises self.body."""
         self.namespace = self.document.getroot().nsmap.get(None, None)
+        self.header = self.document.getroot()
         if self._contextname:
             self.body = self.getcontextnode(self._contextname)
         else:
@@ -316,7 +317,7 @@ class tsfile(lisa.LISAfile):
         @return: ISO code e.g. af, fr, pt_BR
         @rtype: String
         """
-        return self.body.get('language')
+        return self.header.get('language')
 
     def settargetlanguage(self, targetlanguage):
         """Set the target language for this .ts file to L{targetlanguage}.
@@ -325,7 +326,7 @@ class tsfile(lisa.LISAfile):
         @type targetlanguage: String
         """
         if targetlanguage:
-            self.body.set('language', targetlanguage)
+            self.header.set('language', targetlanguage)
 
     def _createcontext(self, contextname, comment=None):
         """Creates a context node with an optional comment"""
@@ -386,7 +387,7 @@ class tsfile(lisa.LISAfile):
         return True
 
     def nplural(self):
-        lang = self.body.get("language")
+        lang = self.header.get("language")
         if NPLURALS.has_key(lang):
             return NPLURALS[lang]
         else:
