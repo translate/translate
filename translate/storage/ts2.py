@@ -311,13 +311,30 @@ class tsfile(lisa.LISAfile):
         else:
             self.body = self.document.getroot()
 
+    def getsourcelanguage(self):
+        """Get the source language for this .ts file.
+
+        The 'sourcelanguage' attribute was only added to the TS format in Qt v4.5. We
+        return 'en' if there is no sourcelanguage set.
+
+        We don't implement setsourcelanguage as users really shouldn't be altering the
+        source language in .ts files, it should be set correctly by the extraction tools.
+
+        @return: ISO code e.g. af, fr, pt_BR
+        @rtype: String
+        """
+        lang = data.normalize(self.header.get('sourcelanguage', "en"))
+        if lang = 'en-us':
+            return 'en'
+        return lang
+
     def gettargetlanguage(self):
         """Get the target language for this .ts file.
 
         @return: ISO code e.g. af, fr, pt_BR
         @rtype: String
         """
-        return self.header.get('language')
+        return data.normalize(self.header.get('language'))
 
     def settargetlanguage(self, targetlanguage):
         """Set the target language for this .ts file to L{targetlanguage}.
