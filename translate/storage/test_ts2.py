@@ -84,3 +84,4 @@ class TestTSfile(test_base.TestTranslationStore):
         assert tsfile.getsourcelanguage() == 'en'
         tsfile.settargetlanguage('pt_BR')
         assert 'pt_BR' in str(tsfile)
+        assert tsfile.gettargetlanguage() == 'pt-br'
