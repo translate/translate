@@ -22,7 +22,6 @@
 """ Convert PHP format .po files to Python format .po files """
 
 import re
-import sys
 from translate.storage import po
 from translate.misc.multistring import multistring
 
@@ -84,7 +83,7 @@ def main(argv=None):
     """Converts PHP .po files to Python .po files."""
     from translate.convert import convert
 
-    formats = {"po":("po",convertphp2py)}
+    formats = {"po":("po", convertphp2py)}
     parser = convert.ConvertOptionParser(formats, description=__doc__)
     parser.run(argv)
 
