@@ -70,10 +70,12 @@ class XMLWrapper:
             self.attrib[key] = value
     def getchild(self, searchtag, tagclass=None):
         """get a child with the given tag name"""
-        if tagclass is None: tagclass = XMLWrapper
+        if tagclass is None:
+            tagclass = XMLWrapper
         for childobj in self.obj.getiterator():
             # getiterator() includes self...
-            if childobj == self.obj: continue
+            if childobj == self.obj:
+                continue
             childns, childtag = splitnamespace(childobj.tag)
             if childtag == searchtag:
                 child = tagclass(childobj)
@@ -81,11 +83,13 @@ class XMLWrapper:
         raise KeyError("could not find child with tag %r" % searchtag)
     def getchildren(self, searchtag, tagclass=None, excludetags=[]):
         """get all children with the given tag name"""
-        if tagclass is None: tagclass = XMLWrapper
+        if tagclass is None:
+            tagclass = XMLWrapper
         childobjects = []
         for childobj in self.obj.getiterator():
             # getiterator() includes self...
-            if childobj == self.obj: continue
+            if childobj == self.obj:
+                continue
             childns, childtag = splitnamespace(childobj.tag)
             if childtag == searchtag:
                 childobjects.append(childobj)
@@ -98,12 +102,14 @@ class XMLWrapper:
         return ElementTree.tostring(self.obj, encoding)
     def getplaintext(self, excludetags=[]):
         text = ""
-        if self.obj.text != None: text += self.obj.text
+        if self.obj.text != None:
+            text += self.obj.text
         for child in self.obj._children:
             simplechild = XMLWrapper(child)
             if simplechild.tag not in excludetags:
                 text += simplechild.getplaintext(excludetags)
-        if self.obj.tail != None: text += self.obj.tail
+        if self.obj.tail != None:
+            text += self.obj.tail
         return text
     def getvalues(self, searchtag):
         """get some contained values..."""
