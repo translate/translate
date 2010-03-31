@@ -82,6 +82,9 @@ class pounit(base.TranslationUnit):
     def istranslatable(self):
         return not (self.isheader() or self.isblank() or self.isobsolete())
 
+    def hasmarkedcomment(self, commentmarker):
+        raise NotImplementedError
+
     def isreview(self):
         return self.hasmarkedcomment("review") or self.hasmarkedcomment("pofilter")
 
@@ -101,7 +104,7 @@ def encodingToUse(encoding):
 #    return True
 
 class pofile(poheader.poheader, base.TranslationStore):
-    Name = _("Gettext PO file")
+    Name = _("Gettext PO file") # pylint: disable-msg=E0602
     Mimetypes  = ["text/x-gettext-catalog", "text/x-gettext-translation", "text/x-po", "text/x-pot"]
     Extensions = ["po", "pot"]
 
