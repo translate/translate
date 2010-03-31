@@ -256,6 +256,7 @@ class Common(object):
         constant = max(5, int(40*expansion_factor))
         # The default: return 5 + len/10
         return constant + int(expansion_factor * len)
+    length_difference = classmethod(length_difference)
 
     def alter_length(cls, text):
         """Converts the given string by adding or removing characters as an 
@@ -275,6 +276,7 @@ class Common(object):
             expanded.append(alter_it(subtext))
         text = u"\n\n".join(expanded)
         return text
+    alter_length = classmethod(alter_length)
 
     def character_iter(cls, text):
         """Returns an iterator over the characters in text."""
