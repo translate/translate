@@ -29,12 +29,12 @@ usage instructions
 from translate.storage import po
 try:
     import textwrap
-except:
+except ImportError:
     textwrap = None
 
 try:
     import tidy
-except:
+except ImportError:
     tidy = None
 
 class po2html:
