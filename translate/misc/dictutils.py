@@ -158,7 +158,7 @@ class ordereddict(dict):
         k = self.order.pop()
         v = self[k]
         del self[k]
-        return (k,v)
+        return (k, v)
 
     def pop(self, key):
         """remove entry from dict and internal list"""
