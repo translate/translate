@@ -26,7 +26,6 @@ See: http://translate.sourceforge.net/wiki/toolkit/oo2po for examples and
 usage instructions
 """
 
-import os
 import sys
 from translate.storage import po
 from translate.storage import oo
