@@ -315,11 +315,15 @@ class Common(object):
         for item in iter:
             lastmatch = item.end()
             sentence = item.group()
-            if strip: sentence = sentence.strip()
-            if sentence: yield sentence
+            if strip:
+                sentence = sentence.strip()
+            if sentence:
+                yield sentence
         remainder = text[lastmatch:]
-        if strip: remainder = remainder.strip()
-        if remainder: yield remainder
+        if strip:
+            remainder = remainder.strip()
+        if remainder:
+            yield remainder
     sentence_iter = classmethod(sentence_iter)
 
     def sentences(cls, text, strip=True):
