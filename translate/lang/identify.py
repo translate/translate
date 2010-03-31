@@ -27,8 +27,7 @@ from os import extsep, path
 
 from translate.misc.file_discovery import get_abs_data_filename
 from translate.storage.base import TranslationStore
-
-from ngram import NGram
+from translate.lang.ngram import NGram
 
 
 class LanguageIdentifier(object):
@@ -52,6 +51,7 @@ class LanguageIdentifier(object):
         if not path.isfile(conf_file):
             raise ValueError('File does not exist: %s' % (conf_file))
 
+        self._lang_codes = {}
         self._load_config(conf_file)
         self.ngram = NGram(model_dir)
 
@@ -59,7 +59,6 @@ class LanguageIdentifier(object):
         """Load the mapping of language names to language codes as given in the
             configuration file."""
         lines = open(conf_file).read().splitlines()
-        self._lang_codes = {}
         for line in lines:
             parts = line.split()
             if not parts or line.startswith('#'):
@@ -123,7 +122,6 @@ class LanguageIdentifier(object):
 
 if __name__ == "__main__":
     from sys import argv
-    from os import path
     script_dir = path.abspath(path.dirname(argv[0]))
     identifier = LanguageIdentifier(path.join(script_dir, '..', 'share', 'langmodels'))
     import locale
