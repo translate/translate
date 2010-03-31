@@ -64,15 +64,15 @@ def writexml_helper(self, writer, indent="", addindent="", newl=""):
         if haveText:
           writer.write(">")
           for node in self.childNodes:
-              node.writexml(writer,"","","")
-          writer.write("</%s>%s" % (self.tagName,newl))
+              node.writexml(writer, "", "", "")
+          writer.write("</%s>%s" % (self.tagName, newl))
         else:
           # This is the normal case that we do with pretty layout
           writer.write(">%s"%(newl))
           for node in self.childNodes:
               if node.nodeType != self.TEXT_NODE:
-                  node.writexml(writer,indent+addindent,addindent,newl)
-          writer.write("%s</%s>%s" % (indent,self.tagName,newl))
+                  node.writexml(writer, indent+addindent, addindent, newl)
+          writer.write("%s</%s>%s" % (indent, self.tagName, newl))
     else:
         writer.write("/>%s"%(newl))
 
