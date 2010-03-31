@@ -126,7 +126,7 @@ class TranslationUnit(object):
         return multistring([unicode(elem) for elem in elem_list])
     rich_to_multistring = classmethod(rich_to_multistring)
 
-    def multistring_to_rich(cls, mulstring):
+    def multistring_to_rich(self, mulstring):
         """Convert a multistring to a list of "rich" string trees:
 
            >>> target = multistring([u'foo', u'bar', u'baz'])
@@ -136,8 +136,8 @@ class TranslationUnit(object):
             <StringElem([<StringElem([u'baz'])>])>]
         """
         if isinstance(mulstring, multistring):
-            return [rich_parse(s, cls.rich_parsers) for s in mulstring.strings]
-        return [rich_parse(mulstring, cls.rich_parsers)]
+            return [rich_parse(s, self.rich_parsers) for s in mulstring.strings]
+        return [rich_parse(mulstring, self.rich_parsers)]
 
     def setsource(self, source):
         """Sets the source string to the given value."""
