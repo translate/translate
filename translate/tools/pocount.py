@@ -112,14 +112,14 @@ def summarize(title, stats, style=style_full, indent=8, incomplete_only=False):
         print
     elif (style == style_short_strings):
         spaces = " "*(indent - len(title))
-        print "%s%s strings: total: %d\t| %dt\t%df\t%du\t| %d%%t\t%d%%f\t%d%%u" % (title, spaces,\
+        print "%s%s strings: total: %d\t| %dt\t%df\t%du\t| %d%%t\t%d%%f\t%d%%u" % (title, spaces, \
               stats["total"], stats["translated"], stats["fuzzy"], stats["untranslated"], \
               percent(stats["translated"], stats["total"]), \
               percent(stats["fuzzy"], stats["total"]), \
               percent(stats["untranslated"], stats["total"]))
     elif (style == style_short_words):
         spaces = " "*(indent - len(title))
-        print "%s%s source words: total: %d\t| %dt\t%df\t%du\t| %d%%t\t%d%%f\t%d%%u" % (title, spaces,\
+        print "%s%s source words: total: %d\t| %dt\t%df\t%du\t| %d%%t\t%d%%f\t%d%%u" % (title, spaces, \
               stats["totalsourcewords"], stats["translatedsourcewords"], stats["fuzzysourcewords"], stats["untranslatedsourcewords"], \
               percent(stats["translatedsourcewords"], stats["totalsourcewords"]), \
               percent(stats["fuzzysourcewords"], stats["totalsourcewords"]), \
