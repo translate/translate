@@ -29,7 +29,7 @@ usage instructions
 from translate.storage import factory
 try:
     import textwrap
-except:
+except ImportError:
     textwrap = None
 
 class po2txt:
