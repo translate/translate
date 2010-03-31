@@ -21,7 +21,7 @@
 """A translation memory server using tmdb for storage, communicates
 with clients using JSON over HTTP."""
 
-import urllib
+#import urllib
 import StringIO
 import logging
 import sys
