@@ -62,17 +62,17 @@ def writexml_helper(self, writer, indent="", addindent="", newl=""):
                 haveText = True
                 break
         if haveText:
-          writer.write(">")
-          for node in self.childNodes:
-              node.writexml(writer, "", "", "")
-          writer.write("</%s>%s" % (self.tagName, newl))
+            writer.write(">")
+            for node in self.childNodes:
+                node.writexml(writer, "", "", "")
+            writer.write("</%s>%s" % (self.tagName, newl))
         else:
-          # This is the normal case that we do with pretty layout
-          writer.write(">%s"%(newl))
-          for node in self.childNodes:
-              if node.nodeType != self.TEXT_NODE:
-                  node.writexml(writer, indent+addindent, addindent, newl)
-          writer.write("%s</%s>%s" % (indent, self.tagName, newl))
+            # This is the normal case that we do with pretty layout
+            writer.write(">%s"%(newl))
+            for node in self.childNodes:
+                if node.nodeType != self.TEXT_NODE:
+                    node.writexml(writer, indent+addindent, addindent, newl)
+            writer.write("%s</%s>%s" % (indent, self.tagName, newl))
     else:
         writer.write("/>%s"%(newl))
 
@@ -101,160 +101,160 @@ def searchElementsByTagName_helper(parent, name, onlysearch):
                 yield node
 
 def getFirstElementByTagName(node, name):
-  results = node.yieldElementsByTagName(name)
+    results = node.yieldElementsByTagName(name)
 #  if isinstance(results, list):
 #    if len(results) == 0:
 #      return None
 #    else:
 #      return results[0]
-  try:
-    result = results.next()
-    return result
-  except StopIteration:
-    return None
+    try:
+        result = results.next()
+        return result
+    except StopIteration:
+        return None
 
 def getnodetext(node):
-  """returns the node's text by iterating through the child nodes"""
-  if node is None: return ""
-  return "".join([t.data for t in node.childNodes if t.nodeType == t.TEXT_NODE])
+    """returns the node's text by iterating through the child nodes"""
+    if node is None: return ""
+    return "".join([t.data for t in node.childNodes if t.nodeType == t.TEXT_NODE])
 
 # various modifications to minidom classes to add functionality we like
 
 class DOMImplementation(minidom.DOMImplementation):
-  def _create_document(self):
-    return Document()
+    def _create_document(self):
+        return Document()
 
 class Element(minidom.Element):
-  def yieldElementsByTagName(self, name):
-    return getElementsByTagName_helper(self, name)
-  def searchElementsByTagName(self, name, onlysearch):
-    return searchElementsByTagName_helper(self, name, onlysearch)
-  def writexml(self, writer, indent, addindent, newl):
-    return writexml_helper(self, writer, indent, addindent, newl)
+    def yieldElementsByTagName(self, name):
+        return getElementsByTagName_helper(self, name)
+    def searchElementsByTagName(self, name, onlysearch):
+        return searchElementsByTagName_helper(self, name, onlysearch)
+    def writexml(self, writer, indent, addindent, newl):
+        return writexml_helper(self, writer, indent, addindent, newl)
 
 class Document(minidom.Document):
-  implementation = DOMImplementation()
-  def yieldElementsByTagName(self, name):
-    return getElementsByTagName_helper(self, name)
-  def searchElementsByTagName(self, name, onlysearch):
-    return searchElementsByTagName_helper(self, name, onlysearch)
-  def createElement(self, tagName):
-    e = Element(tagName)
-    e.ownerDocument = self
-    return e
-  def createElementNS(self, namespaceURI, qualifiedName):
-    prefix, localName = _nssplit(qualifiedName)
-    e = Element(qualifiedName, namespaceURI, prefix)
-    e.ownerDocument = self
-    return e
+    implementation = DOMImplementation()
+    def yieldElementsByTagName(self, name):
+        return getElementsByTagName_helper(self, name)
+    def searchElementsByTagName(self, name, onlysearch):
+        return searchElementsByTagName_helper(self, name, onlysearch)
+    def createElement(self, tagName):
+        e = Element(tagName)
+        e.ownerDocument = self
+        return e
+    def createElementNS(self, namespaceURI, qualifiedName):
+        prefix, localName = _nssplit(qualifiedName)
+        e = Element(qualifiedName, namespaceURI, prefix)
+        e.ownerDocument = self
+        return e
 
 theDOMImplementation = DOMImplementation()
 
 # an ExpatBuilder that allows us to use the above modifications
 
 class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
-  def reset(self):
-    """Free all data structures used during DOM construction."""
-    self.document = theDOMImplementation.createDocument(
-      expatbuilder.EMPTY_NAMESPACE, None, None)
-    self.curNode = self.document
-    self._elem_info = self.document._elem_info
-    self._cdata = False
-    self._initNamespaces()
+    def reset(self):
+        """Free all data structures used during DOM construction."""
+        self.document = theDOMImplementation.createDocument(
+          expatbuilder.EMPTY_NAMESPACE, None, None)
+        self.curNode = self.document
+        self._elem_info = self.document._elem_info
+        self._cdata = False
+        self._initNamespaces()
 
-  def start_element_handler(self, name, attributes):
-    # all we want to do is construct our own Element instead of minidom.Element
-    # unfortunately the only way to do this is to copy this whole function from expatbuilder.py
-    if ' ' in name:
-      uri, localname, prefix, qname = expatbuilder._parse_ns_name(self, name)
-    else:
-      uri = expatbuilder.EMPTY_NAMESPACE
-      qname = name
-      localname = None
-      prefix = expatbuilder.EMPTY_PREFIX
-    node = Element(qname, uri, prefix, localname)
-    node.ownerDocument = self.document
-    expatbuilder._append_child(self.curNode, node)
-    self.curNode = node
-
-    if self._ns_ordered_prefixes:
-      for prefix, uri in self._ns_ordered_prefixes:
-        if prefix:
-          a = minidom.Attr(expatbuilder._intern(self, 'xmlns:' + prefix),
-                   expatbuilder.XMLNS_NAMESPACE, prefix, "xmlns")
+    def start_element_handler(self, name, attributes):
+        # all we want to do is construct our own Element instead of minidom.Element
+        # unfortunately the only way to do this is to copy this whole function from expatbuilder.py
+        if ' ' in name:
+            uri, localname, prefix, qname = expatbuilder._parse_ns_name(self, name)
         else:
-          a = minidom.Attr("xmlns", expatbuilder.XMLNS_NAMESPACE,
-                   "xmlns", expatbuilder.EMPTY_PREFIX)
-        d = a.childNodes[0].__dict__
-        d['data'] = d['nodeValue'] = uri
-        d = a.__dict__
-        d['value'] = d['nodeValue'] = uri
-        d['ownerDocument'] = self.document
-        expatbuilder._set_attribute_node(node, a)
-      del self._ns_ordered_prefixes[:]
+            uri = expatbuilder.EMPTY_NAMESPACE
+            qname = name
+            localname = None
+            prefix = expatbuilder.EMPTY_PREFIX
+        node = Element(qname, uri, prefix, localname)
+        node.ownerDocument = self.document
+        expatbuilder._append_child(self.curNode, node)
+        self.curNode = node
 
-    if attributes:
-      _attrs = node._attrs
-      _attrsNS = node._attrsNS
-      for i in range(0, len(attributes), 2):
-        aname = attributes[i]
-        value = attributes[i+1]
-        if ' ' in aname:
-          uri, localname, prefix, qname = expatbuilder._parse_ns_name(self, aname)
-          a = minidom.Attr(qname, uri, localname, prefix)
-          _attrs[qname] = a
-          _attrsNS[(uri, localname)] = a
-        else:
-          a = minidom.Attr(aname, expatbuilder.EMPTY_NAMESPACE,
-                   aname, expatbuilder.EMPTY_PREFIX)
-          _attrs[aname] = a
-          _attrsNS[(expatbuilder.EMPTY_NAMESPACE, aname)] = a
-        d = a.childNodes[0].__dict__
-        d['data'] = d['nodeValue'] = value
-        d = a.__dict__
-        d['ownerDocument'] = self.document
-        d['value'] = d['nodeValue'] = value
-        d['ownerElement'] = node
+        if self._ns_ordered_prefixes:
+            for prefix, uri in self._ns_ordered_prefixes:
+                if prefix:
+                    a = minidom.Attr(expatbuilder._intern(self, 'xmlns:' + prefix),
+                             expatbuilder.XMLNS_NAMESPACE, prefix, "xmlns")
+                else:
+                    a = minidom.Attr("xmlns", expatbuilder.XMLNS_NAMESPACE,
+                             "xmlns", expatbuilder.EMPTY_PREFIX)
+                d = a.childNodes[0].__dict__
+                d['data'] = d['nodeValue'] = uri
+                d = a.__dict__
+                d['value'] = d['nodeValue'] = uri
+                d['ownerDocument'] = self.document
+                expatbuilder._set_attribute_node(node, a)
+            del self._ns_ordered_prefixes[:]
 
-  if __debug__:
-    # This only adds some asserts to the original
-    # end_element_handler(), so we only define this when -O is not
-    # used.  If changing one, be sure to check the other to see if
-    # it needs to be changed as well.
-    #
-    def end_element_handler(self, name):
-      curNode = self.curNode
-      if ' ' in name:
-        uri, localname, prefix, qname = expatbuilder._parse_ns_name(self, name)
-        assert (curNode.namespaceURI == uri
-            and curNode.localName == localname
-            and curNode.prefix == prefix), \
-            "element stack messed up! (namespace)"
-      else:
-        assert curNode.nodeName == name, \
-             "element stack messed up - bad nodeName"
-        assert curNode.namespaceURI == expatbuilder.EMPTY_NAMESPACE, \
-             "element stack messed up - bad namespaceURI"
-      self.curNode = curNode.parentNode
-      self._finish_end_element(curNode)
+        if attributes:
+            _attrs = node._attrs
+            _attrsNS = node._attrsNS
+            for i in range(0, len(attributes), 2):
+                aname = attributes[i]
+                value = attributes[i+1]
+                if ' ' in aname:
+                    uri, localname, prefix, qname = expatbuilder._parse_ns_name(self, aname)
+                    a = minidom.Attr(qname, uri, localname, prefix)
+                    _attrs[qname] = a
+                    _attrsNS[(uri, localname)] = a
+                else:
+                    a = minidom.Attr(aname, expatbuilder.EMPTY_NAMESPACE,
+                             aname, expatbuilder.EMPTY_PREFIX)
+                    _attrs[aname] = a
+                    _attrsNS[(expatbuilder.EMPTY_NAMESPACE, aname)] = a
+                d = a.childNodes[0].__dict__
+                d['data'] = d['nodeValue'] = value
+                d = a.__dict__
+                d['ownerDocument'] = self.document
+                d['value'] = d['nodeValue'] = value
+                d['ownerElement'] = node
+
+    if __debug__:
+        # This only adds some asserts to the original
+        # end_element_handler(), so we only define this when -O is not
+        # used.  If changing one, be sure to check the other to see if
+        # it needs to be changed as well.
+        #
+        def end_element_handler(self, name):
+            curNode = self.curNode
+            if ' ' in name:
+                uri, localname, prefix, qname = expatbuilder._parse_ns_name(self, name)
+                assert (curNode.namespaceURI == uri
+                    and curNode.localName == localname
+                    and curNode.prefix == prefix), \
+                    "element stack messed up! (namespace)"
+            else:
+                assert curNode.nodeName == name, \
+                     "element stack messed up - bad nodeName"
+                assert curNode.namespaceURI == expatbuilder.EMPTY_NAMESPACE, \
+                     "element stack messed up - bad namespaceURI"
+            self.curNode = curNode.parentNode
+            self._finish_end_element(curNode)
 
 # parser methods that use our modified xml classes
 
 def parse(file, parser=None, bufsize=None):
-  """Parse a file into a DOM by filename or file object."""
-  builder = ExpatBuilderNS()
-  if isinstance(file, basestring):
-    fp = open(file, 'rb')
-    try:
-      result = builder.parseFile(fp)
-    finally:
-      fp.close()
-  else:
-    result = builder.parseFile(file)
-  return result
+    """Parse a file into a DOM by filename or file object."""
+    builder = ExpatBuilderNS()
+    if isinstance(file, basestring):
+        fp = open(file, 'rb')
+        try:
+            result = builder.parseFile(fp)
+        finally:
+            fp.close()
+    else:
+        result = builder.parseFile(file)
+    return result
 
 def parseString(string, parser=None):
-  """Parse a file into a DOM from a string."""
-  builder = ExpatBuilderNS()
-  return builder.parseString(string)
+    """Parse a file into a DOM from a string."""
+    builder = ExpatBuilderNS()
+    return builder.parseString(string)
 
