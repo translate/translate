@@ -20,7 +20,7 @@
 
 from lxml import etree
 
-from translate.misc.xml_helpers import *
+from translate.misc.xml_helpers import normalize_xml_space
 from translate.storage.placeables import base, xliff, StringElem
 from translate.storage.xml_extract import misc
 
