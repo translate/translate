@@ -44,7 +44,7 @@ class po2pydict:
         
         str_obj.write('{\n')
         for source_str in mydict:
-            str_obj.write("%s:%s,\n" % (repr(str(source_str)),repr(str(mydict[source_str]))))
+            str_obj.write("%s:%s,\n" % (repr(str(source_str)), repr(str(mydict[source_str]))))
         str_obj.write('}\n')
         str_obj.seek(0)
         return str_obj
