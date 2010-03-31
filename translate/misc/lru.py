@@ -112,6 +112,6 @@ class LRUCachingDict(WeakValueDictionary):
 
     def setdefault(self, key, default):
         if key not in self:
-            self[key]=default
+            self[key] = default
 
         return self[key]
