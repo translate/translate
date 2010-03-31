@@ -43,9 +43,7 @@
 
 import csv
 import locale
-import os.path
 import sys
-import time
 from translate.storage import base
 
 OMEGAT_FIELDNAMES = ["source", "target", "comment"]
