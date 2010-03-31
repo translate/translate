@@ -5,7 +5,7 @@ from translate.convert import po2tmx
 from translate.convert import test_convert
 from translate.misc import wStringIO
 from translate.storage import tmx
-from translate.storage import lisa
+from translate.misc.xml_helpers import XML_NS
 
 class TestPO2TMX:
 
@@ -66,7 +66,7 @@ msgstr "Toepassings"
         print str(tmx)
         tuv = tmx.document.findall(".//%s" % tmx.namespaced("tuv"))[1]
         #tag[0] will be the source, we want the target tuv
-        assert tuv.get("{%s}lang" % lisa.XML_NS) == "xh"
+        assert tuv.get("{%s}lang" % XML_NS) == "xh"
         
     def test_multiline(self):
         """Test multiline po entry"""
