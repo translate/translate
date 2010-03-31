@@ -462,7 +462,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
                 self.reader = PyLucene.IndexReader.open(self.location)
                 self.searcher = PyLucene.IndexSearcher(self.reader)
                 self.index_version = self.reader.getCurrentVersion(self.location)
-        except PyLucene.JavaError,e:
+        except PyLucene.JavaError, e:
             # TODO: add some debugging output?
             #self.errorhandler.logerror("Error attempting to read index - try reindexing: "+str(e))
             pass
@@ -503,16 +503,16 @@ class PyLuceneHits(CommonIndexer.CommonEnquire):
         return (stop-start, self.enquire.length(), result)
 
 def _occur(required, prohibited):
-       if required == True and prohibited == False:
-           return PyLucene.BooleanClause.Occur.MUST
-       elif required == False and prohibited == False:
-           return PyLucene.BooleanClause.Occur.SHOULD
-       elif required == False and prohibited == True:
-           return PyLucene.BooleanClause.Occur.MUST_NOT
-       else:
-           # It is an error to specify a clause as both required
-           # and prohibited
-           return None
+    if required == True and prohibited == False:
+        return PyLucene.BooleanClause.Occur.MUST
+    elif required == False and prohibited == False:
+        return PyLucene.BooleanClause.Occur.SHOULD
+    elif required == False and prohibited == True:
+        return PyLucene.BooleanClause.Occur.MUST_NOT
+    else:
+        # It is an error to specify a clause as both required
+        # and prohibited
+        return None
 
 def _get_pylucene_version():
     """get the installed pylucene version
