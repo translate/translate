@@ -60,7 +60,7 @@ def splitnamespace(fulltag):
 
 class XMLWrapper:
     """simple wrapper for xml objects"""
-    def __init__(self,obj):
+    def __init__(self, obj):
         """construct object from the elementtree item"""
         self.obj = obj
         self.namespace, self.tag = splitnamespace(self.obj.tag)
