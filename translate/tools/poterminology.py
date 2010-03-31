@@ -144,7 +144,7 @@ class TerminologyExtractor(object):
 
     def stopword(self, word, defaultset=frozenset()):
         """return stoplist frozenset for input word"""
-        return self.stopwords.get(self.stopmap(word),defaultset)
+        return self.stopwords.get(self.stopmap(word), defaultset)
 
     def addphrases(self, words, skips, translation, partials=True):
         """adds (sub)phrases with non-skipwords and more than one word"""
