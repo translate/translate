@@ -143,9 +143,9 @@ class mofile(base.TranslationStore, poheader.poheader):
         def add_to_hash_table(string, i):
             V = hashpjw(string)
             S = hash_size <= 2 and 3 or hash_size # Taken from gettext-0.17:gettext-tools/src/write-mo.c:408-409
-            hash_cursor = V % S;
-            orig_hash_cursor = hash_cursor;
-            increment = 1 + (V % (S - 2));
+            hash_cursor = V % S
+            orig_hash_cursor = hash_cursor
+            increment = 1 + (V % (S - 2))
             while True:
                 index = hash_table[hash_cursor]
                 if (index == 0):
