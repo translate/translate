@@ -261,11 +261,15 @@ class UnitChecker(object):
         if excludefilters is None:
             excludefilters = {}
         for functionname in limitfilters:
-            if functionname in excludefilters: continue
-            if functionname in self.helperfunctions: continue
-            if functionname == "errorhandler": continue
+            if functionname in excludefilters:
+                continue
+            if functionname in self.helperfunctions:
+                continue
+            if functionname == "errorhandler":
+                continue
             filterfunction = getattr(self, functionname, None)
-            if not callable(filterfunction): continue
+            if not callable(filterfunction):
+                continue
             filters[functionname] = filterfunction
         return filters
 
