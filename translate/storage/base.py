@@ -138,7 +138,6 @@ class TranslationUnit(object):
         if isinstance(mulstring, multistring):
             return [rich_parse(s, cls.rich_parsers) for s in mulstring.strings]
         return [rich_parse(mulstring, cls.rich_parsers)]
-    multistring_to_rich = classmethod(multistring_to_rich)
 
     def setsource(self, source):
         """Sets the source string to the given value."""
