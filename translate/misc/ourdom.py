@@ -115,7 +115,8 @@ def getFirstElementByTagName(node, name):
 
 def getnodetext(node):
     """returns the node's text by iterating through the child nodes"""
-    if node is None: return ""
+    if node is None:
+        return ""
     return "".join([t.data for t in node.childNodes if t.nodeType == t.TEXT_NODE])
 
 # various modifications to minidom classes to add functionality we like
