@@ -59,9 +59,12 @@ class pocheckfilter:
 
     def filterunit(self, unit):
         """runs filters on an element"""
-        if unit.isheader(): return []
-        if not self.options.includefuzzy and unit.isfuzzy(): return []
-        if not self.options.includereview and unit.isreview(): return []
+        if unit.isheader():
+            return []
+        if not self.options.includefuzzy and unit.isfuzzy():
+            return []
+        if not self.options.includereview and unit.isreview():
+            return []
         failures = self.checker.run_filters(unit)
         if failures and self.options.autocorrect:
             # we can't get away with bad unquoting / requoting if we're going to change the result...
