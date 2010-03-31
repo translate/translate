@@ -30,8 +30,6 @@ usage instructions
 
 import sys
 from translate.storage import factory
-from translate.storage import po
-from translate.storage import xliff 
 from translate.storage.poheader import poheader
 
 def mergestores(store1, store2, mergeblanks, mergecomments):
@@ -73,7 +71,8 @@ def mergestores(store1, store2, mergeblanks, mergecomments):
             else:
                 if not mergeblanks:
                     target = unit2.target
-                    if len(target.strip()) == 0: continue
+                    if len(target.strip()) == 0:
+                        continue
                 # finally set the new definition in unit1
                 unit1.merge(unit2, overwrite=True, comments=mergecomments)
     return store1
