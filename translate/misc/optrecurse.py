@@ -54,7 +54,7 @@ class ManHelpFormatter (optparse.HelpFormatter):
         """Return a comma-separated list of option strings & metavariables."""
         if option.takes_value():
             metavar = option.metavar or option.dest.upper()
-            metavar = '\\fI%s\\fP'%metavar
+            metavar = '\\fI%s\\fP' % metavar
             short_opts = [sopt + metavar for sopt in option._short_opts]
             long_opts = [lopt + "\\fR=\\fP" + metavar for lopt in option._long_opts]
         else:
@@ -66,7 +66,7 @@ class ManHelpFormatter (optparse.HelpFormatter):
         else:
             opts = long_opts + short_opts
 
-        return '\\fB%s\\fP'%("\\fR, \\fP".join(opts))
+        return '\\fB%s\\fP' % ("\\fR, \\fP".join(opts))
 
 class RecursiveOptionParser(optparse.OptionParser, object):
     """A specialized Option Parser for recursing through directories."""
