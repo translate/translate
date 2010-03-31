@@ -21,7 +21,6 @@
 
 """convert Comma-Separated Value (.csv) files to a TermBase eXchange (.tbx) glossary file"""
 
-from translate.misc import sparse
 from translate.storage import tbx
 from translate.storage import csvl10n
 
