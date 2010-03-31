@@ -48,7 +48,8 @@ def _commonprefix(itemlist):
     def cp(a, b):
         l = min(len(a), len(b))
         for n in range(l):
-            if a[n] != b[n]: return a[:n]
+            if a[n] != b[n]:
+                return a[:n]
         return a[:l]
     if itemlist:
         return reduce(cp, itemlist)
@@ -186,8 +187,10 @@ class XpiFile(ZipFileCatcher):
                 elif region != jarname:
                     region = 0
             for filename in jarfile.namelist():
-                if filename.endswith('/'): continue
-                if not self.islocfile(filename) and not self.includenonloc: continue
+                if filename.endswith('/'):
+                    continue
+                if not self.islocfile(filename) and not self.includenonloc:
+                    continue
                 parts = filename.split('/')[:-1]
                 treepoint = dirstructure
                 for partnum in range(len(parts)):
@@ -242,7 +245,8 @@ class XpiFile(ZipFileCatcher):
         for jarfilename, jarfile in self.iterjars():
             jarprefixes[jarfilename] = ""
             for filename in jarfile.namelist():
-                if filename.endswith('/'): continue
+                if filename.endswith('/'):
+                    continue
                 if filename in uniquenames:
                     jarprefixes[jarfilename] = True
                     jarprefixes[uniquenames[filename]] = True
@@ -479,8 +483,10 @@ class XpiFile(ZipFileCatcher):
                 inputstream.close()
                 outputstream.close()
         other.close()
-        if newmode is None: newmode = self.mode
-        if newmode == "w": newmode = "a"
+        if newmode is None:
+            newmode = self.mode
+        if newmode == "w":
+            newmode = "a"
         other = XpiFile(newfilename, newmode)
         other.setlangreg(newlocale, newregion)
         return other
@@ -489,15 +495,19 @@ class XpiFile(ZipFileCatcher):
         """iterates through all the localization files with the common prefix stripped and a jarfile name added if neccessary"""
         if includenonjars:
             for filename in self.namelist():
-                if filename.endswith('/') and not includedirs: continue
-                if not self.islocfile(filename) and not self.includenonloc: continue
+                if filename.endswith('/') and not includedirs:
+                    continue
+                if not self.islocfile(filename) and not self.includenonloc:
+                    continue
                 if not filename.lower().endswith(".jar"):
                     yield self.jartoospath(None, filename)
         for jarfilename, jarfile in self.iterjars():
             for filename in jarfile.namelist():
                 if filename.endswith('/'):
-                    if not includedirs: continue
-                if not self.islocfile(filename) and not self.includenonloc: continue
+                    if not includedirs:
+                        continue
+                if not self.islocfile(filename) and not self.includenonloc:
+                    continue
                 yield self.jartoospath(jarfilename, filename)
 
     # the following methods are required by translate.convert.ArchiveConvertOptionParser #
