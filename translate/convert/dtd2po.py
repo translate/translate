@@ -106,7 +106,8 @@ class dtd2po:
                 typeend = quote.findend(locnote,'LOCALIZATION NOTE')
                 # parse the id
                 idstart = locnote.find('(', typeend)
-                if idstart == -1: continue
+                if idstart == -1:
+                    continue
                 idend = locnote.find(')', idstart+1)
                 entity = locnote[idstart+1:idend].strip()
                 # parse the actual note
