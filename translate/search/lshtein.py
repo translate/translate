@@ -27,7 +27,6 @@ http://trific.ath.cx/python/levenshtein/
 """
 
 import math
-import sys
 
 def python_distance(a, b, stopvalue=-1):
     """Calculates the distance for use in similarity calculation. Python
