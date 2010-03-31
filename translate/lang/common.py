@@ -313,8 +313,7 @@ class Common(object):
         """Returns an iterator over the sentences in text."""
         lastmatch = 0
         text = text or ""
-        iter = cls.sentencere.finditer(text)
-        for item in iter:
+        for item in cls.sentencere.finditer(text):
             lastmatch = item.end()
             sentence = item.group()
             if strip:
