@@ -226,7 +226,7 @@ variant_re = re.compile("^[_-][A-Z]{2,3}(@[a-zA-Z0-9]+|)$")
 def languagematch(languagecode, otherlanguagecode):
     """matches a languagecode to another, ignoring regions in the second"""
     if languagecode is None:
-      return langcode_re.match(otherlanguagecode)
+        return langcode_re.match(otherlanguagecode)
     return languagecode == otherlanguagecode or \
       (otherlanguagecode.startswith(languagecode) and variant_re.match(otherlanguagecode[len(languagecode):]))
 
