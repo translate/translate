@@ -46,6 +46,7 @@ def test_open_office_to_xliff():
     assert call(['oo2xliff', 'en-US.sdf', '-l', 'fr', 'fr']) == 0
     for filepath in find_files('fr', '.xlf'):
         assert xmllint(filepath)
+    cleardir('fr')
 
 def test_po_to_xliff():
     OUTPUT = 'af-pootle.xlf'
@@ -53,5 +54,16 @@ def test_po_to_xliff():
     assert xmllint(OUTPUT)
 
 def teardown_module(module):
-    # TODO: Add code to remove the automatically generated files
     pass
+
+def cleardir(testdir):
+    """removes the test directory"""
+    if os.path.exists(testdir):
+        for dirpath, subdirs, filenames in os.walk(testdir, topdown=False):
+            for name in filenames:
+                os.remove(os.path.join(dirpath, name))
+            for name in subdirs:
+                os.rmdir(os.path.join(dirpath, name))
+    if os.path.exists(testdir):
+        os.rmdir(testdir)
+    assert not os.path.exists(testdir)
