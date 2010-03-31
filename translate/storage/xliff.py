@@ -664,7 +664,7 @@ class xlifffile(lisa.LISAfile):
             if ("gettext-domain-header" in (header.getrestype() or "") \
                     or xliff.getdatatype() == "po") \
                     and cls.__name__.lower() != "poxlifffile":
-                import poxliff
+                from translate.storage import poxliff
                 xliff = poxliff.PoXliffFile.parsestring(storestring)
         return xliff
     parsestring = classmethod(parsestring)
