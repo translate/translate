@@ -27,7 +27,7 @@ from lxml import etree
 xml_preserve_ancestors = etree.XPath("ancestor-or-self::*[attribute::xml:space='preserve']")
 """All ancestors with xml:space='preserve'"""
 
-xml_space_ancestors= etree.XPath("ancestor-or-self::*/attribute::xml:space")
+xml_space_ancestors = etree.XPath("ancestor-or-self::*/attribute::xml:space")
 """All xml:space attributes in the ancestors"""
 
 string_xpath = etree.XPath("string()")
