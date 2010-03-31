@@ -172,7 +172,8 @@ class GrepFilter:
 
     def filterunit(self, unit):
         """runs filters on an element"""
-        if unit.isheader(): return []
+        if unit.isheader():
+            return []
 
         if self.search_source:
             if isinstance(unit.source, multistring):
