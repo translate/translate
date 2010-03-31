@@ -23,7 +23,8 @@
 
 def generalupper(str):
     """this uses the object's upper method - works with string and unicode"""
-    if str is None: return str
+    if str is None:
+        return str
     return str.upper()
 
 class cidict(dict):
@@ -103,7 +104,8 @@ class ordereddict(dict):
     def __setitem__(self, key, value):
         alreadypresent = key in self
         result = dict.__setitem__(self, key, value)
-        if not alreadypresent: self.order.append(key)
+        if not alreadypresent:
+            self.order.append(key)
         return result
 
     def update(self, updatedict):
@@ -114,7 +116,8 @@ class ordereddict(dict):
     def __delitem__(self, key):
         alreadypresent = key in self
         result = dict.__delitem__(self, key)
-        if alreadypresent: del self.order[self.order.index(key)]
+        if alreadypresent:
+            del self.order[self.order.index(key)]
         return result
 
     def copy(self):
