@@ -27,7 +27,7 @@
 
 try:
     import cPickle as pickle
-except:
+except ImportError:
     import pickle
 from exceptions import NotImplementedError
 import translate.i18n
