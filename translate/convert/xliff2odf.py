@@ -24,7 +24,6 @@
 
 import cStringIO
 import zipfile
-import re
 
 import lxml.etree as etree
 
