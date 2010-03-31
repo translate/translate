@@ -87,9 +87,11 @@ class SimpleParser:
                     instring, laststart, endstringchar = 0, pos, ''
             if not instring:
                 if char in self.quotechars:
-                    if pos > laststart: tokens.append(text[laststart:pos])
+                    if pos > laststart:
+                        tokens.append(text[laststart:pos])
                     instring, laststart, endstringchar, gotclose = 1, pos, self.endquotechars[char], 0
-        if laststart < len(text): tokens.append(text[laststart:])
+        if laststart < len(text):
+            tokens.append(text[laststart:])
         return tokens
 
     def keeptogether(self, text):
@@ -102,7 +104,8 @@ class SimpleParser:
 
     def separatetokens(self, text, tokenlist = None):
         """this separates out tokens in tokenlist from whitespace etc"""
-        if self.keeptogether(text): return [text]
+        if self.keeptogether(text):
+            return [text]
         if tokenlist is None:
             tokenlist = self.defaulttokenlist
         # loop through and put tokens into a list
@@ -115,18 +118,22 @@ class SimpleParser:
             for token in tokenlist:
                 lentoken = len(token)
                 if text[pos:pos+lentoken] == token:
-                    if laststart < pos: tokens.append(text[laststart:pos])
+                    if laststart < pos:
+                        tokens.append(text[laststart:pos])
                     tokens.append(token)
                     pos += lentoken
                     foundtoken, laststart = 1, pos
                     break
-            if not foundtoken: pos += 1
-        if laststart < lentext: tokens.append(text[laststart:])
+            if not foundtoken:
+                pos += 1
+        if laststart < lentext:
+            tokens.append(text[laststart:])
         return tokens
 
     def removewhitespace(self, text):
         """this removes whitespace but lets it separate things out into separate tokens"""
-        if self.keeptogether(text): return [text]
+        if self.keeptogether(text):
+            return [text]
         # loop through and put tokens into a list
         tokens = []
         pos = 0
@@ -136,11 +143,13 @@ class SimpleParser:
             char = text[pos]
             if inwhitespace:
                 if char not in self.whitespacechars:
-                    if laststart < pos and self.includewhitespacetokens: tokens.append(text[laststart:pos])
+                    if laststart < pos and self.includewhitespacetokens:
+                        tokens.append(text[laststart:pos])
                     inwhitespace, laststart = 0, pos
             else:
                 if char in self.whitespacechars:
-                    if laststart < pos: tokens.append(text[laststart:pos])
+                    if laststart < pos:
+                        tokens.append(text[laststart:pos])
                     inwhitespace, laststart = 1, pos
         if laststart < len(text) and (not inwhitespace or self.includewhitespacetokens):
             tokens.append(text[laststart:])
