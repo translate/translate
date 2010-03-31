@@ -105,8 +105,8 @@ def find_placeable_dom_tree_roots(unit_node):
     """
 
     def set_dom_root_for_unit_node(parent_unit_node, unit_node, dom_tree_roots):
-            dom_tree_roots[unit_node] = find_dom_root(parent_unit_node.dom_node, unit_node.dom_node)
-            return dom_tree_roots
+        dom_tree_roots[unit_node] = find_dom_root(parent_unit_node.dom_node, unit_node.dom_node)
+        return dom_tree_roots
     return extract.reduce_unit_tree(set_dom_root_for_unit_node, unit_node, {})
       
 @accepts(extract.Translatable, etree._Element)
