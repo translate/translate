@@ -95,7 +95,8 @@ def extractfromlines(lines, startdelim, enddelim, escape):
     for line in lines:
         (string, instring) = extract(line, startdelim, enddelim, escape, instring)
         result += string
-        if not instring: break
+        if not instring:
+            break
     return result
 
 def extractstr(source):
@@ -318,9 +319,11 @@ def propertiesdecode(source):
             continue
         c = source[s]
         s += 1
-        if c == '\n': pass
+        if c == '\n':
+            pass
         # propertyescapes lookups
-        elif c in propertyescapes: output += propertyescapes[c]
+        elif c in propertyescapes:
+            output += propertyescapes[c]
         # \uXXXX escapes
         # \UXXXX escapes
         elif c in "uU":
