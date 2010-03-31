@@ -122,7 +122,8 @@ def findaccelerators(str1, accelmarker, acceptlist=None):
             currentpos += len(accelmarker)
             # we assume accelerators are single characters
             accelend = currentpos + 1
-            if accelend > len(str1): break
+            if accelend > len(str1):
+                break
             accelerator = str1[currentpos:accelend]
             currentpos = accelend
             if isvalidaccelerator(accelerator, acceptlist):
@@ -148,19 +149,22 @@ def findmarkedvariables(str1, startmarker, endmarker, ignorelist=[]):
                     if not (str1[n].isalnum() or str1[n] == '_'):
                         endmatch = n
                         break
-                if currentpos == endmatch: endmatch = len(str1)
+                if currentpos == endmatch:
+                    endmatch = len(str1)
                 if currentpos < endmatch:
                     variable = str1[currentpos:endmatch]
                 currentpos = endmatch
             elif type(endmarker) == int:
                 # setting endmarker to an int means it is a fixed-length variable string (usually endmarker==1)
                 endmatch = currentpos + endmarker
-                if endmatch > len(str1): break
+                if endmatch > len(str1):
+                    break
                 variable = str1[currentpos:endmatch]
                 currentpos = endmatch
             else:
                 endmatch = str1.find(endmarker, currentpos)
-                if endmatch == -1: break
+                if endmatch == -1:
+                    break
                 # search backwards in case there's an intervening startmarker (if not it's OK)...
                 start2 = str1.rfind(startmarker, currentpos, endmatch)
                 if start2 != -1:
