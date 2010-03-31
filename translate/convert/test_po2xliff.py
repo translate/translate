@@ -3,7 +3,7 @@
 from translate.convert import po2xliff
 from translate.storage import po
 from translate.storage import poxliff
-from translate.storage import lisa
+from translate.misc.xml_helpers import XML_NS, getText
 
 class TestPO2XLIFF:
 
@@ -125,7 +125,7 @@ msgstr "Gebruik \\\"."
         """Returns all the information in the context nodes as a list of tuples
         of (type, text)"""
         contexts = node.findall(".//{%s}context" % namespace)
-        return [(context.get("context-type"), lisa.getText(context)) for context in contexts]
+        return [(context.get("context-type"), getText(context)) for context in contexts]
 
     def test_locationcomments(self):
         minipo = r'''#: file.c:123 asdf.c
@@ -209,7 +209,7 @@ msgstr ""
         assert unit.source == unit.target == "Content-Type: text/plain; charset=UTF-8\n"
         assert unit.xmlelement.get("restype") == "x-gettext-domain-header"
         assert unit.xmlelement.get("approved") != "yes"
-        assert unit.xmlelement.get("{%s}space" % lisa.XML_NS) == "preserve"
+        assert unit.xmlelement.get("{%s}space" % XML_NS) == "preserve"
         assert unit.getnotes("po-translator") == "Pulana  Translation for bla\nHallo Ma!"
 
     def test_fuzzy(self):
