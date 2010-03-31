@@ -403,7 +403,7 @@ class xliffunit(lisa.LISAunit):
         else:
             return False
 
-    def multistring_to_rich(self, mstr):
+    def multistring_to_rich(cls, mstr):
         """Override L{TranslationUnit.multistring_to_rich} which is used by the
             C{rich_source} and C{rich_target} properties."""
         strings = mstr
@@ -415,7 +415,7 @@ class xliffunit(lisa.LISAunit):
         return [xml_to_strelem(s) for s in strings]
     multistring_to_rich = classmethod(multistring_to_rich)
 
-    def rich_to_multistring(self, elem_list):
+    def rich_to_multistring(cls, elem_list):
         """Override L{TranslationUnit.rich_to_multistring} which is used by the
             C{rich_source} and C{rich_target} properties."""
         return multistring([unicode(elem) for elem in elem_list])
