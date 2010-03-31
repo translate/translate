@@ -192,7 +192,8 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
 
     def isrecursive(self, fileoption, filepurpose='input'):
         """checks if fileoption is a recursive file"""
-        if self.isarchive(fileoption, filepurpose): return True
+        if self.isarchive(fileoption, filepurpose):
+            return True
         return super(ArchiveConvertOptionParser, self).isrecursive(fileoption, filepurpose)
 
     def isarchive(self, fileoption, filepurpose='input'):
