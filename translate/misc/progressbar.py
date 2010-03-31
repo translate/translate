@@ -30,6 +30,7 @@ class DotsProgressBar:
 
     def show(self, verbosemessage):
         """show a dot for progress :-)"""
+        # pylint: disable-msg=W0613
         self.stderr.write('.')
         self.stderr.flush()
 
@@ -64,8 +65,10 @@ class ProgressBar:
 
     def __str__(self):
         """produces the string representing the progress bar"""
-        if self.amount < self.min: self.amount = self.min
-        if self.amount > self.max: self.amount = self.max
+        if self.amount < self.min:
+            self.amount = self.min
+        if self.amount > self.max:
+            self.amount = self.max
 
         # Figure out the new percent done, round to an integer
         diffFromMin = float(self.amount - self.min)
@@ -84,6 +87,7 @@ class ProgressBar:
 
     def show(self, verbosemessage):
         """displays the progress bar"""
+        # pylint: disable-msg=W0613
         print self
 
 class MessageProgressBar(ProgressBar):
@@ -136,6 +140,6 @@ def test(progressbar):
         time.sleep(0.2)
 
 if __name__ == '__main__':
-    p = HashProgressBar(0,100,50)
+    p = HashProgressBar(0, 100, 50)
     test(p)
 
