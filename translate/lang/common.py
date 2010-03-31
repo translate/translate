@@ -239,9 +239,9 @@ class Common(object):
         return text
     punctranslate = classmethod(punctranslate)
 
-    def length_difference(cls, len):
+    def length_difference(cls, length):
         """Returns an estimate to a likely change in length relative to an
-        English string of length len."""
+        English string of length length."""
         # This is just a rudimentary heuristic guessing that most translations
         # will be somewhat longer than the source language
         expansion_factor = 0
@@ -254,8 +254,8 @@ class Common(object):
         else:
             expansion_factor = 0.1 # default
         constant = max(5, int(40*expansion_factor))
-        # The default: return 5 + len/10
-        return constant + int(expansion_factor * len)
+        # The default: return 5 + length/10
+        return constant + int(expansion_factor * length)
     length_difference = classmethod(length_difference)
 
     def alter_length(cls, text):
