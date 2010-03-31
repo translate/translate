@@ -27,10 +27,10 @@ each tokenizing function takes a string as input and returns a list of tokens
 def stringeval(text):
     """takes away repeated quotes (escapes) and returns the string represented by the text"""
     stringchar = text[0]
-    if text[-1] != stringchar or stringchar not in ("'",'"'):
+    if text[-1] != stringchar or stringchar not in ("'", '"'):
         # scratch your head
         raise ValueError, "error parsing escaped string: %r" % text
-    return text[1:-1].replace(stringchar+stringchar,stringchar)
+    return text[1:-1].replace(stringchar+stringchar, stringchar)
 
 def stringquote(text):
     """escapes quotes as neccessary and returns a string representing the text"""
@@ -65,7 +65,7 @@ class SimpleParser:
         self.includewhitespacetokens = includewhitespacetokens
         self.standardtokenizers = [self.stringtokenize, self.removewhitespace, self.separatetokens]
         self.quotechars = ('"', "'")
-        self.endquotechars = {'"':'"',"'":"'"}
+        self.endquotechars = {'"':'"', "'":"'"}
         self.stringescaping = 1
 
     def stringtokenize(self, text):
