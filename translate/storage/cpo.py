@@ -38,10 +38,6 @@ from translate.lang import data
 from ctypes import c_int, c_uint, c_char_p, c_long, CFUNCTYPE, POINTER
 from ctypes import Structure, cdll
 import ctypes.util
-try:
-    import cStringIO as StringIO
-except ImportError:
-    import StringIO
 import os
 import re
 import sys
