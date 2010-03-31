@@ -25,7 +25,6 @@ it could also be used for Asturian, Galician, or Catalan.
 """
 
 from translate.lang import common
-import re
 
 class es(common.Common):
     """This class represents Spanish."""
