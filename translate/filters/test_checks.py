@@ -925,6 +925,11 @@ def test_credits():
 def test_gconf():
     """test GNOME gconf errors"""
     gnomechecker = checks.GnomeChecker()
+    # Let's cheat a bit and prepare the checker as the run_filters() method
+    # would do by adding locations needed by the gconf test
+    gnomechecker.locations = []
+    assert passes(gnomechecker.gconf, 'Blah "gconf_setting"', 'Bleh "gconf_setting"')
+    assert passes(gnomechecker.gconf, 'Blah "gconf_setting"', 'Bleh "gconf_steling"')
+    gnomechecker.locations = ['file.schemas.in.h:24']
     assert passes(gnomechecker.gconf, 'Blah "gconf_setting"', 'Bleh "gconf_setting"')
     assert fails(gnomechecker.gconf, 'Blah "gconf_setting"', 'Bleh "gconf_steling"')
-
