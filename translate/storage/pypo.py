@@ -295,9 +295,9 @@ class pounit(pocommon.pounit):
         text = text.split("\n")
         newcomments = [linestart + line + "\n" for line in text]
         if position == "append":
-             newcomments = commentlist + newcomments
+            newcomments = commentlist + newcomments
         elif position == "prepend":
-             newcomments = newcomments + commentlist
+            newcomments = newcomments + commentlist
 
         if autocomments:
             self.automaticcomments = newcomments
