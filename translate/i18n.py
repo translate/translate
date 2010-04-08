@@ -23,4 +23,6 @@
 """
 
 import gettext
-gettext.install("translate-toolkit", unicode=1)
+import __builtin__
+if not '_' in __builtin__.__dict__:
+    gettext.install("translate-toolkit", unicode=1)
