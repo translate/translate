@@ -81,6 +81,8 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         @param create_allowed: create the database, if necessary; default: True
         @type create_allowed: bool
         """
+        jvm = PyLucene.getVMEnv()
+        jvm.attachCurrentThread()
         super(PyLuceneDatabase, self).__init__(basedir, analyzer=analyzer,
                 create_allowed=create_allowed)
         self.pyl_analyzer = PyLucene.StandardAnalyzer()
