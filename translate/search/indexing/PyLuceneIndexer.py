@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2008 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -29,10 +29,10 @@ take a look at PyLuceneIndexer1.py for the PyLucene v1.x interface
 __revision__ = "$Id$"
 
 import CommonIndexer
-import tempfile
 import re
 import os
 import time
+import logging
 
 # try to import the PyLucene package (with the two possible names)
 # remember the type of the detected package (compiled with jcc (>=v2.3) or
@@ -171,7 +171,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         """generate a query based on an existing query object
 
         basically this function should just create a copy of the original
-        
+
         @param query: the original query object
         @type query: PyLucene.Query
         @return: resulting query object
@@ -280,7 +280,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         @rtype: PyLucene.Document
         """
         return PyLucene.Document()
-    
+
     def _add_plain_term(self, document, term, tokenize=True):
         """add a term to a document
 
@@ -359,7 +359,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
 
     def get_query_result(self, query):
         """return an object containing the results of a query
-        
+
         @param query: a pre-compiled query
         @type query: a query object of the real implementation
         @return: an object that allows access to the results
@@ -422,7 +422,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
                     self.reader.unlock(self.reader.directory())
             except:
                 pass
-    
+
     def _writer_open(self):
         """open write access for the indexing database and acquire an
         exclusive lock
