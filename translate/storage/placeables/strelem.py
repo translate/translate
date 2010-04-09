@@ -276,7 +276,12 @@ class StringElem(object):
             removed = start['elem'].copy()
             parent = self.get_parent_elem(start['elem'])
             offset = parent.elem_offset(start['elem'])
-            parent.sub.remove(start['elem'])
+            # Filter out start['elem'] below with a list comprehension in stead
+            # of using parent.sub.remove(), becase list.remove() tests value
+            # and not identity, which is what we want here. This ensures that
+            # start['elem'] is removed and not the first element that is equal
+            # to it.
+            parent.sub = [i for i in parent.sub if i is not start['elem']]
             return removed, parent, offset
 
         # Case 3: Within a single element #
