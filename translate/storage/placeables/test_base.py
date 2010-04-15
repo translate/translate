@@ -24,7 +24,7 @@ from translate.storage.placeables import base, general, parse, xliff, StringElem
 class TestStringElem:
     ORIGSTR = u'Ģët <a href="http://www.example.com" alt="Ģët &brand;!">&brandLong;</a>'
 
-    def __init__(self):
+    def setup_method(self, method):
         self.elem = parse(self.ORIGSTR, general.parsers)
 
     def test_parse(self):
@@ -171,7 +171,7 @@ class TestStringElem:
 
 
 class TestConverters:
-    def __init__(self):
+    def setup_method(self, method):
         self.elem = parse(TestStringElem.ORIGSTR, general.parsers)
 
     def test_to_base_placeables(self):
