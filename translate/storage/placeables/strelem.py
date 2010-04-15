@@ -768,6 +768,7 @@ class StringElem(object):
 
     def prune(self):
         """Remove unnecessary nodes to make the tree optimal."""
+        changed = False
         for elem in self.iter_depth_first():
             if len(elem.sub) == 1:
                 child = elem.sub[0]
@@ -779,6 +780,7 @@ class StringElem(object):
                 # Symbolically: StringElem->StringElem2->(leaves) => StringElem->(leaves)
                 if type(elem) is StringElem and type(child) is StringElem:
                     elem.sub = child.sub
+                    changed = True
 
                 # Symbolically: StringElem->X(leaf) => X(leaf)
                 #   (where X is any sub-class of StringElem, but not StringElem)
@@ -786,6 +788,7 @@ class StringElem(object):
                     parent = self.get_parent_elem(elem)
                     if parent is not None:
                         parent.sub[parent.sub.index(elem)] = child
+                        changed = True
 
             if type(elem) is StringElem and elem.isleaf():
                 # Collapse all strings in this leaf into one string.
@@ -800,22 +803,30 @@ class StringElem(object):
 
                 if type(elem.sub[i]) in (str, unicode) and not elem.isleaf():
                     elem.sub[i] = StringElem(elem.sub[i])
+                    changed = True
 
             # Merge sibling StringElem leaves
             if not elem.isleaf():
-                changed = True
-                while changed:
-                    changed = False
+                leafchanged = True
+                while leafchanged:
+                    leafchanged = False
 
                     for i in range(len(elem.sub)-1):
                         lsub = elem.sub[i]
                         rsub = elem.sub[i+1]
 
                         if type(lsub) is StringElem and type(rsub) is StringElem:
+                            changed = True
                             lsub.sub.extend(rsub.sub)
                             del elem.sub[i+1]
-                            changed = True
+                            leafchanged = True
                             break
+
+        # If any changes were made, call prune() again to make sure that
+        # changes made later does not create situations fixed by earlier
+        # checks.
+        if changed:
+            self.prune()
 
     # TODO: Write unit test for this method
     def remove_type(self, ptype):
