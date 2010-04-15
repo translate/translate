@@ -162,6 +162,13 @@ class TestStringElem:
         for child in self.elem.sub:
             assert child.isleaf()
 
+    def test_prune(self):
+        elem = StringElem(u'foo')
+        child = StringElem(u'bar')
+        elem.sub.append(child)
+        elem.prune()
+        assert elem == StringElem(u'foobar')
+
 
 class TestConverters:
     def __init__(self):
