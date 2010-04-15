@@ -142,6 +142,7 @@ class pounit(pocommon.pounit):
             return
         text = data.forceunicode(text)
         commentlist = self.othercomments
+        autocomments = False
         if origin in ["programmer", "developer", "source code"]:
             autocomments = True
             commentlist = self.automaticcomments
