@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from translate.lang import factory
+from translate.lang import af
 
 def test_sentences():
     """Tests basic functionality of sentence segmentation."""
@@ -26,3 +27,10 @@ def test_capsstart():
     assert not language.capsstart("'n koei kraam koeie")
     assert language.capsstart("\n\n'n Koei kraam koeie")
 
+def test_transliterate_cyrillic():
+    def trans(text):
+        print "Orig: %s" % text
+        trans = af.tranliterate_cyrillic(text)    
+        print "Trans: %s" % trans
+        return trans
+    assert trans(u"Борис Николаевич Ельцин") == u"Boris Nikolajewitj Jeltsin"
