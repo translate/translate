@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os, time
+import os
+import time
+
 from translate.storage import po
 from translate.storage import poxliff
 from translate.storage import poheader
