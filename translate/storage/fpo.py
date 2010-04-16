@@ -128,7 +128,7 @@ class pounit(pocommon.pounit):
             comments = u"\n".join(self.othercomments)
             comments += u"\n".join(self.automaticcomments)
         elif origin == "translator":
-            comments = u"\n".join (self.othercomments)
+            comments = u"\n".join(self.othercomments)
         elif origin in ["programmer", "developer", "source code"]:
             comments = u"\n".join(self.automaticcomments)
         else:
