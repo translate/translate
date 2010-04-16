@@ -90,7 +90,7 @@ class SubtitleFile(base.TranslationStore):
         for subtitle in self._subtitlefile.read():
             newunit = self.addsourceunit(subtitle.main_text)
             newunit._start = subtitle.start
-            newunit._end =  subtitle.end
+            newunit._end = subtitle.end
             newunit._duration = subtitle.duration_seconds
 
     def _parsefile(self, storefile):
