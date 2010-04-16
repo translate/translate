@@ -35,6 +35,7 @@ from translate.storage.placeables import StringElem, general, parse as rich_pars
 from translate.misc.typecheck import accepts, Self, IsOneOf
 from translate.misc.multistring import multistring
 
+
 def force_override(method, baseclass):
     """Forces derived classes to override method."""
 
@@ -51,6 +52,7 @@ def force_override(method, baseclass):
 
 
 class ParseError(Exception):
+
     def __init__(self, inner_exc):
         self.inner_exc = inner_exc
 
@@ -155,6 +157,7 @@ class TranslationUnit(object):
         if self._rich_source is None:
             self._rich_source = self.multistring_to_rich(self.source)
         return self._rich_source
+
     def _set_rich_source(self, value):
         if not hasattr(value, '__iter__'):
             raise ValueError('value must be iterable')
@@ -172,6 +175,7 @@ class TranslationUnit(object):
         if self._rich_target is None:
             self._rich_target = self.multistring_to_rich(self.target)
         return self._rich_target
+
     def _set_rich_target(self, value):
         if not hasattr(value, '__iter__'):
             raise ValueError('value must be iterable')
@@ -272,7 +276,7 @@ class TranslationUnit(object):
                          - 'developer', 'programmer', 'source code' (synonyms)
         """
         if position == "append" and getattr(self, "notes", None):
-            self.notes += '\n'+text
+            self.notes += '\n' + text
         else:
             self.notes = text
 
@@ -489,7 +493,6 @@ class TranslationStore(object):
                     return unit
         return None
 
-
     def findunits(self, source):
         """Finds the units with the given source string.
 
@@ -521,6 +524,7 @@ class TranslationStore(object):
 
     def remove_unit_from_index(self, unit):
         """Remove a unit from source and locaton indexes"""
+
         def remove_unit(source):
             if source in self.sourceindex:
                 try:
@@ -540,7 +544,6 @@ class TranslationStore(object):
             if location in self.locationindex and self.locationindex[location] is not None \
                    and self.locationindex[location] == unit:
                 del(self.locationindex[location])
-
 
     def add_unit_to_index(self, unit):
         """Add a unit to source and location idexes"""
