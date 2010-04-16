@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2002-2007 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -48,6 +48,7 @@ lsep = " "
 
 STRING = c_char_p
 
+
 # Structures
 class po_message(Structure):
     _fields_ = []
@@ -62,6 +63,7 @@ class po_xerror_handler(Structure):
     _fields_ = [('xerror', xerror_prototype),
                 ('xerror2', xerror2_prototype)]
 
+
 class po_error_handler(Structure):
     _fields_ = [
     ('error', CFUNCTYPE(None, c_int, c_int, STRING)),
@@ -70,17 +72,18 @@ class po_error_handler(Structure):
     ('multiline_error', CFUNCTYPE(None, STRING, STRING)),
 ]
 
+
 # Callback functions for po_xerror_handler
 def xerror_cb(severity, message, filename, lineno, column, multilint_p, message_text):
     print >> sys.stderr, "xerror_cb", severity, message, filename, lineno, column, multilint_p, message_text
     if severity >= 1:
         raise ValueError(message_text)
 
+
 def xerror2_cb(severity, message1, filename1, lineno1, column1, multiline_p1, message_text1, message2, filename2, lineno2, column2, multiline_p2, message_text2):
     print >> sys.stderr, "xerror2_cb", severity, message1, filename1, lineno1, column1, multiline_p1, message_text1, message2, filename2, lineno2, column2, multiline_p2, message_text2
     if severity >= 1:
         raise ValueError(message_text1)
-
 
 
 # Load libgettextpo
@@ -95,7 +98,7 @@ for name in names:
         if gpo:
             break
 else:
-    # Now we are getting desperate, so let's guess a unix type DLL that might 
+    # Now we are getting desperate, so let's guess a unix type DLL that might
     # be in LD_LIBRARY_PATH or loaded with LD_PRELOAD
     try:
         gpo = cdll.LoadLibrary('libgettextpo.so')
@@ -145,14 +148,18 @@ xerror_handler = po_xerror_handler()
 xerror_handler.xerror = xerror_prototype(xerror_cb)
 xerror_handler.xerror2 = xerror2_prototype(xerror2_cb)
 
+
 def escapeforpo(text):
     return pypo.escapeforpo(text)
+
 
 def quoteforpo(text):
     return pypo.quoteforpo(text)
 
+
 def unquotefrompo(postr):
     return pypo.unquotefrompo(postr)
+
 
 def get_libgettextpo_version():
     """Returns the libgettextpo version
@@ -169,6 +176,7 @@ def get_libgettextpo_version():
 
 
 class pounit(pocommon.pounit):
+
     def __init__(self, source=None, encoding='utf-8', gpo_message=None):
         self._rich_source = None
         self._rich_target = None
@@ -181,13 +189,14 @@ class pounit(pocommon.pounit):
         elif gpo_message:
             self._gpo_message = gpo_message
 
-    def setmsgid_plural(self, msgid_plural): 
+    def setmsgid_plural(self, msgid_plural):
         if isinstance(msgid_plural, list):
             msgid_plural = "".join(msgid_plural)
         gpo.po_message_set_msgid_plural(self._gpo_message, msgid_plural)
     msgid_plural = property(None, setmsgid_plural)
 
     def getsource(self):
+
         def remove_msgid_comments(text):
             if not text:
                 return text
@@ -223,7 +232,6 @@ class pounit(pocommon.pounit):
         else:
             gpo.po_message_set_msgid(self._gpo_message, source)
             gpo.po_message_set_msgid_plural(self._gpo_message, None)
-            
     source = property(getsource, setsource)
 
     def gettarget(self):
@@ -293,9 +301,9 @@ class pounit(pocommon.pounit):
         """The unique identifier for this unit according to the convensions in
         .mo files."""
         id = (gpo.po_message_msgid(self._gpo_message) or "").decode(self._encoding)
-        # Gettext does not consider the plural to determine duplicates, only 
+        # Gettext does not consider the plural to determine duplicates, only
         # the msgid. For generation of .mo files, we might want to use this
-        # code to generate the entry for the hash table, but for now, it is 
+        # code to generate the entry for the hash table, but for now, it is
         # commented out for conformance to gettext.
 #        plural = gpo.po_message_msgid_plural(self._gpo_message)
 #        if not plural is None:
@@ -389,7 +397,7 @@ class pounit(pocommon.pounit):
         if not self.istranslated() or overwrite:
             # Remove kde-style comments from the translation (if any).
             if self._extract_msgidcomments(otherpo.target):
-                otherpo.target = otherpo.target.replace('_: ' + otherpo._extract_msgidcomments()+ '\n', '')
+                otherpo.target = otherpo.target.replace('_: ' + otherpo._extract_msgidcomments() + '\n', '')
             self.target = otherpo.target
             if self.source != otherpo.source or self.getcontext() != otherpo.getcontext():
                 self.markfuzzy()
@@ -535,8 +543,10 @@ class pounit(pocommon.pounit):
             return base.TranslationUnit.buildfromunit(unit)
     buildfromunit = classmethod(buildfromunit)
 
+
 class pofile(pocommon.pofile):
     UnitClass = pounit
+
     def __init__(self, inputfile=None, encoding=None, unitclass=pounit):
         self._gpo_memory_file = None
         self._gpo_message_iterator = None
@@ -600,7 +610,7 @@ class pofile(pocommon.pofile):
 
     def __str__(self):
         def obsolete_workaround():
-            # Remove all items that are not output by msgmerge when a unit is obsolete.  This is a work 
+            # Remove all items that are not output by msgmerge when a unit is obsolete.  This is a work
             # around for bug in libgettextpo
             # FIXME Do version test in case they fix this bug
             for unit in self.units:
