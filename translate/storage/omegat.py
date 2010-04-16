@@ -188,7 +188,7 @@ class OmegaTFile(base.TranslationStore):
             return decoded.encode('utf-8')
 
 class OmegaTFileTab(OmegaTFile):
-    """An OmegT translation memory file in the default system encoding"""
+    """An OmegaT translation memory file in the default system encoding"""
     # FIXME: uncomment this when we next open from string freeze
     #Name = _("OmegaT Glossary")
     Name = None
