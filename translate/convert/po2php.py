@@ -40,6 +40,10 @@ class rephp:
     def convertstore(self, inputstore, includefuzzy=False):
         self.inmultilinemsgid = False
         self.inecho = False
+        self.inarray = False
+        self.equaldel = "="
+        self.enddel = ";"
+        self.prename = ""
         self.makestoredict(inputstore, includefuzzy)
         outputlines = []
         for line in self.templatefile.readlines():
@@ -63,7 +67,7 @@ class rephp:
         # handle multiline msgid if we're in one
         if self.inmultilinemsgid:
             # see if there's more
-            endpos = line.rfind("%s;" % self.quotechar)
+            endpos = line.rfind("%s%s" % (self.quotechar, self.enddel))
             # if there was no '; or the quote is escaped, we have to continue
             if endpos >= 0 and line[endpos-1] != '\\':
                 self.inmultilinemsgid = False
@@ -73,9 +77,21 @@ class rephp:
         # otherwise, this could be a comment
         elif line.strip()[:2] == '//' or line.strip()[:2] == '/*':
             returnline = quote.rstripeol(line)+eol
+        elif line.find('array(') != -1:
+            self.inarray = True
+            self.prename = line[:line.find('=')].strip() + "->"
+            self.equaldel = "=>"
+            self.enddel = ","
+            returnline = quote.rstripeol(line)+eol
+        elif self.inarray and line.find(');') != -1:
+            self.inarray = False
+            self.equaldel = "="
+            self.enddel= ";"
+            self.prename = ""
+            returnline = quote.rstripeol(line)+eol
         else:
             line = quote.rstripeol(line)
-            equalspos = line.find('=')
+            equalspos = line.find(self.equaldel)
             hashpos = line.find("#")
             # if no equals, just repeat it
             if equalspos == -1:
@@ -86,15 +102,15 @@ class rephp:
             # otherwise, this is a definition
             else:
                 # now deal with the current string...
-                key = line[:equalspos].strip()
-                lookupkey = key.replace(" ", "")
+                key = line[:equalspos].rstrip()
+                lookupkey = self.prename + key.lstrip().replace(" ", "")
                 # Calculate space around the equal sign
                 prespace = line[len(line[:equalspos].rstrip()):equalspos]
-                postspacestart = len(line[equalspos+1:])
-                postspaceend = len(line[equalspos+1:].lstrip())
-                postspace = line[equalspos+1:equalspos+(postspacestart-postspaceend)+1]
-                self.quotechar = line[equalspos+(postspacestart-postspaceend)+1]
-                inlinecomment_pos = line.rfind("%s;" % self.quotechar)
+                postspacestart = len(line[equalspos+len(self.equaldel):])
+                postspaceend = len(line[equalspos+len(self.equaldel):].lstrip())
+                postspace = line[equalspos+len(self.equaldel):equalspos+(postspacestart-postspaceend)+len(self.equaldel)]
+                self.quotechar = line[equalspos+(postspacestart-postspaceend)+len(self.equaldel)]
+                inlinecomment_pos = line.rfind("%s%s" % (self.quotechar, self.enddel))
                 if inlinecomment_pos > -1:
                     inlinecomment = line[inlinecomment_pos+2:]
                 else:
@@ -104,12 +120,12 @@ class rephp:
                     value = php.phpencode(self.inputdict[lookupkey], self.quotechar)
                     if isinstance(value, str):
                         value = value.decode('utf8')
-                    returnline = key + prespace + "=" + postspace + self.quotechar + value + self.quotechar + ';' + inlinecomment + eol
+                    returnline = key + prespace + self.equaldel + postspace + self.quotechar + value + self.quotechar + self.enddel + inlinecomment + eol
                 else:
                     self.inecho = True
                     returnline = line+eol
                 # no string termination means carry string on to next line
-                endpos = line.rfind("%s;" % self.quotechar)
+                endpos = line.rfind("%s%s" % (self.quotechar, self.enddel))
                 # if there was no '; or the quote is escaped, we have to continue
                 if endpos == -1 or line[endpos-1] == '\\':
                     self.inmultilinemsgid = True

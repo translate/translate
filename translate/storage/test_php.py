@@ -145,3 +145,16 @@ $lang[2] = "Yeah";
             phpunit = phpfile.units[0]
             assert phpunit.name == "$lang['multiline']"
             assert phpunit.source == "Line1%sLine2" % lineending
+
+    def test_parsing_arrays(self):
+        """parse the array syntax"""
+        phpsource = '''$lang = array(
+         'item1' => 'value1',
+         'item2' => 'value2',
+      );'''
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 2
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "$lang->'item1'"
+        assert phpunit.source == "value1"
+

@@ -178,7 +178,11 @@ class phpfile(base.TranslationStore):
         comment = []
         invalue = False
         incomment = False
+        inarray = False
         valuequote = "" # either ' or "
+        equaldel = "="
+        enddel = ";"
+        prename = ""
         for line in phpsrc.decode(self._encoding).split("\n"):
             commentstartpos = line.find("/*")
             commentendpos = line.rfind("*/")
@@ -195,22 +199,34 @@ class phpfile(base.TranslationStore):
             if incomment and commentstartpos == -1:
                 newunit.addnote(line.strip(), "developer")
                 continue
-            equalpos = line.find("=")
+            if line.find('array(') != -1:
+                equaldel = "=>"
+                enddel = ","
+                inarray = True
+                prename = line[:line.find('=')].strip() + "->"
+                continue
+            if inarray and line.find(');') != -1:
+                equaldel = "="
+                enddel = ";"
+                inarray= False
+                continue
+            equalpos = line.find(equaldel)
             hashpos = line.find("#")
             if 0 <= hashpos < equalpos:
                 # Assume that this is a '#' comment line
                 newunit.addnote(line.strip(), "developer")
                 continue
             if equalpos != -1 and not invalue:
-                newunit.addlocation(line[:equalpos].strip().replace(" ", ""))
-                value = line[equalpos+1:].lstrip()[1:]
-                valuequote = line[equalpos+1:].lstrip()[0]
+                newunit.addlocation(prename + line[:equalpos].strip().replace(" ", ""))
+                value = line[equalpos+len(equaldel):].lstrip()[1:]
+                valuequote = line[equalpos+len(equaldel):].lstrip()[0]
                 lastvalue = ""
                 invalue = True
+                print newunit.name, newunit.value
             else:
                 if invalue:
                     value = line
-            colonpos = value.rfind(";")
+            colonpos = value.rfind(enddel)
             while colonpos != -1:
                 if value[colonpos-1] == valuequote:
                     newunit.value = lastvalue + value[:colonpos-1] 
@@ -225,7 +241,7 @@ class phpfile(base.TranslationStore):
                     self.addunit(newunit)
                     value = ""
                     newunit = phpunit()
-                colonpos = value.rfind(";", 0, colonpos)
+                colonpos = value.rfind(enddel, 0, colonpos)
             if invalue:
                 lastvalue = lastvalue + value + "\n"
 

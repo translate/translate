@@ -130,6 +130,15 @@ msgstr "stringetjie"
         print phpfile
         assert "".join(phpfile) == phpexpected
 
+    def test_arrays(self):
+        """check that we can handle arrays"""
+        posource = '''#: $lang->'name'\nmsgid "value"\nmsgstr "waarde"\n'''
+        phptemplate = '''$lang = array(\n    'name' => 'value',\n);\n'''
+        phpexpected = '''$lang = array(\n    'name' => 'waarde',\n);\n'''
+        phpfile = self.merge2php(phptemplate, posource)
+        print phpfile
+        assert "".join(phpfile) == phpexpected
+
 #    def test_merging_propertyless_template(self):
 #        """check that when merging with a template with no property values that we copy the template"""
 #        posource = ""
