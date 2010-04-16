@@ -27,7 +27,8 @@ class TestDirectory(object):
                     os.remove(os.path.join(dirpath, name))
                 for name in subdirs:
                     os.rmdir(os.path.join(dirpath, name))
-        if os.path.exists(dirname): os.rmdir(dirname)
+        if os.path.exists(dirname):
+            os.rmdir(dirname)
         assert not os.path.exists(dirname)
 
     def touchfiles(self, dir, filenames, content=None):
