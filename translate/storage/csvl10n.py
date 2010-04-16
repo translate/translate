@@ -28,6 +28,7 @@ import csv
 from translate.misc import sparse
 from translate.storage import base
 
+
 class SimpleDictReader:
     def __init__(self, fileobj, fieldnames):
         self.fieldnames = fieldnames
@@ -88,6 +89,7 @@ class SimpleDictReader:
                 values[self.fieldnames[fieldnum]] = fields[fieldnum]
         return values
 
+
 class csvunit(base.TranslationUnit):
     spreadsheetescapes = [("+", "\\+"), ("-", "\\-"), ("=", "\\="), ("'", "\\'")]
     def __init__(self, source=None):
@@ -135,17 +137,17 @@ class csvunit(base.TranslationUnit):
             source = source.encode(encoding)
         if isinstance(target, unicode):
             target = target.encode(encoding)
-        return {'location':comment, 'source': source, 'target': target}
+        return {'location': comment, 'source': source, 'target': target}
 
 class csvfile(base.TranslationStore):
     """This class represents a .csv file with various lines. 
     The default format contains three columns: location, source, target"""
     UnitClass = csvunit
     Name = _("Comma Separated Value")
-    Mimetypes  = ['text/comma-separated-values', 'text/csv']
+    Mimetypes = ['text/comma-separated-values', 'text/csv']
     Extensions = ["csv"]
     def __init__(self, inputfile=None, fieldnames=None):
-        base.TranslationStore.__init__(self, unitclass = self.UnitClass)
+        base.TranslationStore.__init__(self, unitclass=self.UnitClass)
         self.units = []
         if fieldnames is None:
             self.fieldnames = ['location', 'source', 'target']
@@ -182,4 +184,3 @@ class csvfile(base.TranslationStore):
             writer.writerow(cedict)
         csvfile.reset()
         return "".join(csvfile.readlines())
-
