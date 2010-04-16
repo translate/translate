@@ -45,7 +45,7 @@ class TestPOUnit(test_base.TestTranslationUnit):
     def test_adding_empty_note(self):
         unit = self.UnitClass("bla")
         assert not '#' in str(unit)
-        for empty_string in [ "", " ", "\t", "\n" ]:
+        for empty_string in ["", " ", "\t", "\n"]:
             unit.addnote(empty_string)
             assert not '#' in str(unit)
 
