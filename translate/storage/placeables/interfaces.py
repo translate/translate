@@ -22,7 +22,7 @@
 This file contains abstract (semantic) interfaces for placeable implementations.
 """
 
-from strelem import StringElem
+from translate.storage.placeables.strelem import StringElem
 
 
 class InvisiblePlaceable(StringElem):
