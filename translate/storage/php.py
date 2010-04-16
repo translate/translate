@@ -222,7 +222,6 @@ class phpfile(base.TranslationStore):
                 valuequote = line[equalpos+len(equaldel):].lstrip()[0]
                 lastvalue = ""
                 invalue = True
-                print newunit.name, newunit.value
             else:
                 if invalue:
                     value = line
