@@ -52,7 +52,6 @@ def extract(source, startdelim, enddelim, escape=None, startinstring=False, allo
     if escape is not None:
         lenescape = len(escape)
         escape_places = find_all(source, escape)
-        last_escape_pos = -1
         # filter escaped escapes
         true_escape = False
         true_escape_places = []
@@ -109,7 +108,6 @@ def extractwithoutquotes(source, startdelim, enddelim, escape=None, startinstrin
     if escape is not None:
         lenescape = len(escape)
         escape_places = find_all(source, escape)
-        last_escape_pos = -1
         # filter escaped escapes
         true_escape = False
         true_escape_places = []
@@ -243,7 +241,6 @@ def mozillapropertiesencode(source):
     """encodes source in the escaped-unicode encoding used by Mozilla .properties files"""
     output = u""
     for char in source:
-        charnum = ord(char)
         if char in controlchars:
             output += controlchars[char]
         else:
