@@ -88,17 +88,6 @@ def extract(source, startdelim, enddelim, escape=None, startinstring=False, allo
         extracted += source[lastpos:]
     return (extracted, instring)
 
-def extractfromlines(lines, startdelim, enddelim, escape):
-    """Calls extract over multiple lines, remembering whether in the string or not"""
-    result = ""
-    instring = 0
-    for line in lines:
-        (string, instring) = extract(line, startdelim, enddelim, escape, instring)
-        result += string
-        if not instring:
-            break
-    return result
-
 def extractstr(source):
     "Extracts a doublequote-delimited string from a string, allowing for backslash-escaping"
     (string, instring) = extract(source, '"', '"', '\\')
