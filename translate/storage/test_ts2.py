@@ -72,6 +72,17 @@ class TestTSfile(test_base.TestTranslationStore):
         print str(tsfile)
         assert newfile.findunit("Concept").target == "Konsep"
 
+    def test_plurals(self):
+        """Test basic plurals"""
+        tsfile = ts.tsfile()
+        tsunit = tsfile.addsourceunit("File(s)")
+        tsunit.target = [u"Leêr", u"Leêrs"]
+        newfile = ts.tsfile.parsestring(str(tsfile))
+        print str(tsfile)
+        checkunit = newfile.findunit("File(s)")
+        assert checkunit.target == [u"Leêr", u"Leêrs"]
+        assert checkunit.haspural()
+
     def test_language(self):
         """Check that we can get and set language and sourcelanguage in the header"""
         tsstr = '''<!DOCTYPE TS>
