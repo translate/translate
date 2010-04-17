@@ -88,7 +88,6 @@ class ZipFileExt(ZipFile, object):
         """Write the ending records (without neccessarily closing the file)"""
         if self.mode in ("w", "a"):             # write ending records
             count = 0
-            current_offset = self.fp.tell()
             pos1 = self.fp.tell()
             for zinfo in self.filelist:         # write central directory
                 count = count + 1
