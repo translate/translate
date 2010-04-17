@@ -68,3 +68,9 @@ def test_capsstart():
     assert not language.capsstart(":")
     assert not language.capsstart("")
 
+def test_punctranslate():
+    """Test the basic punctranslate function"""
+    language = common.Common
+    assert not language.punctranslate(u"A...") == u"A…"
+    language.puncdict = {u"...": u"…"}
+    assert language.punctranslate(u"A...") == u"A…"
