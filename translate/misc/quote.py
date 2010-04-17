@@ -104,10 +104,6 @@ def extractstr(source):
     (string, instring) = extract(source, '"', '"', '\\')
     return string
 
-def extractcomment(lines):
-    "Extracts <!-- > XML comments from lines"
-    return extractfromlines(lines, "<!--", "-->", None)
-
 def extractwithoutquotes(source, startdelim, enddelim, escape=None, startinstring=False, includeescapes=True, allowreentry=True):
     """Extracts a doublequote-delimited string from a string, allowing for backslash-escaping
     includeescapes can also be a function that takes the whole escaped string and returns the replaced version"""
