@@ -108,8 +108,10 @@ class tsunit(lisa.LISAunit):
     def settarget(self, text):
         # This is a fairly destructive implementation. Don't assume that this
         # is necessarily correct in all regards, but it does deal with a lot of
-        # cases. It is hard to deal with plurals, since
-        #Firstly deal with reinitialising to None or setting to identical string
+        # cases. It is hard to deal with plurals.
+        #
+        # Firstly deal with reinitialising to None or setting to identical
+        # string.
         self._rich_target = None
         if self.gettarget() == text:
             return
@@ -314,11 +316,12 @@ class tsfile(lisa.LISAfile):
     def getsourcelanguage(self):
         """Get the source language for this .ts file.
 
-        The 'sourcelanguage' attribute was only added to the TS format in Qt v4.5. We
-        return 'en' if there is no sourcelanguage set.
+        The 'sourcelanguage' attribute was only added to the TS format in
+        Qt v4.5. We return 'en' if there is no sourcelanguage set.
 
-        We don't implement setsourcelanguage as users really shouldn't be altering the
-        source language in .ts files, it should be set correctly by the extraction tools.
+        We don't implement setsourcelanguage as users really shouldn't be
+        altering the source language in .ts files, it should be set correctly
+        by the extraction tools.
 
         @return: ISO code e.g. af, fr, pt_BR
         @rtype: String
