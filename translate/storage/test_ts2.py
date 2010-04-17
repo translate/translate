@@ -81,7 +81,7 @@ class TestTSfile(test_base.TestTranslationStore):
         print str(tsfile)
         checkunit = newfile.findunit("File(s)")
         assert checkunit.target == [u"Leêr", u"Leêrs"]
-        assert checkunit.haspural()
+        assert checkunit.hasplural()
 
     def test_language(self):
         """Check that we can get and set language and sourcelanguage in the header"""
