@@ -422,7 +422,7 @@ class tsfile(lisa.LISAfile):
         # http://codespeak.net/pipermail/lxml-dev/2008-October/004112.html
         # The problem was fixed in lxml 2.1.3
         output = etree.tostring(self.document, pretty_print=True,
-                xml_declaration=False, encoding='utf-8')
+                                xml_declaration=False, encoding='utf-8')
         if not "<!DOCTYPE TS>" in output[:30]:
             output = "<!DOCTYPE TS>" + output
         return output
