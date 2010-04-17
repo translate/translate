@@ -176,7 +176,6 @@ class phpfile(base.TranslationStore):
         newunit = phpunit()
         lastvalue = ""
         value = ""
-        comment = []
         invalue = False
         incomment = False
         inarray = False
@@ -209,7 +208,7 @@ class phpfile(base.TranslationStore):
             if inarray and line.find(');') != -1:
                 equaldel = "="
                 enddel = ";"
-                inarray= False
+                inarray = False
                 continue
             equalpos = line.find(equaldel)
             hashpos = line.find("#")
