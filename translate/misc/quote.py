@@ -407,15 +407,3 @@ def makeutf8(d):
         if type(value) == int:
             d[key] = unichr(value).encode('utf8')
     return d
-
-def testcase():
-    x = ' "this" " is " "a" " test!" '
-    print extract(x, '"', '"', None)
-    print extract(x, '"', '"', '!')
-    print extractwithoutquotes(x, '"', '"', None)
-    print extractwithoutquotes(x, '"', '"', '!')
-    print extractwithoutquotes(x, '"', '"', '!', includeescapes=False)
-
-if __name__ == '__main__':
-    testcase()
-
