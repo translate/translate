@@ -36,14 +36,15 @@ class rephp:
     def __init__(self, templatefile):
         self.templatefile = templatefile
         self.inputdict = {}
-
-    def convertstore(self, inputstore, includefuzzy=False):
         self.inmultilinemsgid = False
         self.inecho = False
         self.inarray = False
         self.equaldel = "="
         self.enddel = ";"
         self.prename = ""
+        self.quotechar = ""
+
+    def convertstore(self, inputstore, includefuzzy=False):
         self.makestoredict(inputstore, includefuzzy)
         outputlines = []
         for line in self.templatefile.readlines():
@@ -86,7 +87,7 @@ class rephp:
         elif self.inarray and line.find(');') != -1:
             self.inarray = False
             self.equaldel = "="
-            self.enddel= ";"
+            self.enddel = ";"
             self.prename = ""
             returnline = quote.rstripeol(line)+eol
         else:
