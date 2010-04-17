@@ -60,7 +60,7 @@ def convertini(inputfile, outputfile, templatefile, includefuzzy=False, dialect=
     return 1
 
 def convertisl(inputfile, outputfile, templatefile, includefuzzy=False, dialect="inno"):
-    convertini(inputfile, outputfile, templatefile, includefuzzy=False, dialect=dialect)
+    convertini(inputfile, outputfile, templatefile, includefuzzy, dialect)
 
 def main(argv=None):
     # handle command line options
