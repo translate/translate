@@ -18,6 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+"""Tests for Qt Linguist storage class"""
+
 from lxml import etree
 
 from translate.misc.multistring import multistring
@@ -31,7 +33,10 @@ from translate.storage.placeables.lisa import xml_to_strelem
 xliffparsers = []
 for attrname in dir(xliff):
     attr = getattr(xliff, attrname)
-    if  type(attr) is type and attrname not in ('XLIFFPlaceable') and hasattr(attr, 'parse') and attr.parse is not None:
+    if type(attr) is type and \
+       attrname not in ('XLIFFPlaceable') and \
+       hasattr(attr, 'parse') and \
+       attr.parse is not None:
         xliffparsers.append(attr.parse)
 
 def rich_parse(s):
@@ -84,7 +89,8 @@ class TestTSfile(test_base.TestTranslationStore):
         assert checkunit.hasplural()
 
     def test_language(self):
-        """Check that we can get and set language and sourcelanguage in the header"""
+        """Check that we can get and set language and sourcelanguage
+        in the header"""
         tsstr = '''<!DOCTYPE TS>
 <TS version="2.0" language="fr" sourcelanguage="en_US">
 </TS>

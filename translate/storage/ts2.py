@@ -20,16 +20,16 @@
 
 """Module for handling Qt linguist (.ts) files.
 
-This will eventually replace the older ts.py which only supports the older 
-format. While converters haven't been updated to use this module, we retain 
+This will eventually replace the older ts.py which only supports the older
+format. While converters haven't been updated to use this module, we retain
 both.
 
-U{TS file format 4.3<http://doc.trolltech.com/4.3/linguist-ts-file-format.html>}, 
+U{TS file format 4.3<http://doc.trolltech.com/4.3/linguist-ts-file-format.html>},
 U{4.5<http://doc.trolltech.com/4.5/linguist-ts-file-format.html>},
-U{Example<http://svn.ez.no/svn/ezcomponents/trunk/Translation/docs/linguist-format.txt>}, 
+U{Example<http://svn.ez.no/svn/ezcomponents/trunk/Translation/docs/linguist-format.txt>},
 U{Plurals forms<http://www.koders.com/cpp/fidE7B7E83C54B9036EB7FA0F27BC56BCCFC4B9DF34.aspx#L200>}
 
-U{Specification of the valid variable entries <http://doc.trolltech.com/4.3/qstring.html#arg>}, 
+U{Specification of the valid variable entries <http://doc.trolltech.com/4.3/qstring.html#arg>},
 U{2 <http://doc.trolltech.com/4.3/qstring.html#arg-2>}
 """
 
@@ -59,6 +59,7 @@ NPLURALS = {
 'cy': 5,
 'ar': 6,
 }
+
 
 class tsunit(lisa.LISAunit):
     """A single term in the xliff file."""
@@ -107,7 +108,7 @@ class tsunit(lisa.LISAunit):
     def settarget(self, text):
         # This is a fairly destructive implementation. Don't assume that this
         # is necessarily correct in all regards, but it does deal with a lot of
-        # cases. It is hard to deal with plurals, since 
+        # cases. It is hard to deal with plurals, since
         #Firstly deal with reinitialising to None or setting to identical string
         self._rich_target = None
         if self.gettarget() == text:
@@ -193,7 +194,6 @@ class tsunit(lisa.LISAunit):
             if not note is None:
                 self.xmlelement.remove(note)
 
-
     def _gettype(self):
         """Returns the type of this translation."""
         targetnode = self._gettargetnode()
@@ -225,7 +225,7 @@ class tsunit(lisa.LISAunit):
 
     def getid(self):
         context_name = self.getcontext()
-        #XXX: context_name is not supposed to be able to be None (the <name> 
+        #XXX: context_name is not supposed to be able to be None (the <name>
         # tag is compulsary in the <context> tag)
         if context_name is not None:
             return context_name + self.source
@@ -241,7 +241,7 @@ class tsunit(lisa.LISAunit):
         return bool(self.getid()) and not self.isobsolete()
 
     def getcontext(self):
-        parent =  self.xmlelement.getparent()
+        parent = self.xmlelement.getparent()
         if parent is None:
             return None
         context = parent.find("name")
@@ -287,7 +287,7 @@ class tsfile(lisa.LISAfile):
     """Class representing a XLIFF file store."""
     UnitClass = tsunit
     Name = _("Qt Linguist Translation File")
-    Mimetypes  = ["application/x-linguist"]
+    Mimetypes = ["application/x-linguist"]
     Extensions = ["ts"]
     rootNode = "TS"
     # We will switch out .body to fit with the context we are working on
@@ -426,5 +426,3 @@ class tsfile(lisa.LISAfile):
         if not "<!DOCTYPE TS>" in output[:30]:
             output = "<!DOCTYPE TS>" + output
         return output
-
-
