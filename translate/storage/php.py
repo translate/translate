@@ -24,15 +24,16 @@
    Only PHP files written with these conventions are supported::
       $lang['item'] = "vale";  # Array of values
       $some_entity = "value";  # Named variables
-
-   The parser does not support other array conventions such as::
       $lang = array(
          'item1' => 'value1',
          'item2' => 'value2',
       );
 
+   Nested arrays are not supported::
+      $lang = array(array('key' => 'value'));
+
    The working of PHP strings and specifically the escaping conventions which
-   differ between single quote (') and double quote (") characters are outlined
+   differ between single quote (') and double quote (") characters are implemented as outlined
    in the PHP documentation for the U{String type<http://www.php.net/language.types.string>}
 """
 
