@@ -3,6 +3,15 @@
 
 from translate.lang import common
 
+def test_characters():
+    """Test the basic characters segmentation"""
+    language = common.Common
+    assert language.characters(u"") == []
+    assert language.characters(u"Four") == [u"F", u"o", u"u", u"r"]
+    assert language.characters(u"A B") == [u"A", u" ", u"B"]
+    # Spaces are compacted, source has 2 returned has only one
+    assert language.characters(u"A  B") == [u"A", u" ", u"B"]
+
 def test_words():
     """Tests basic functionality of word segmentation."""
     language = common.Common
