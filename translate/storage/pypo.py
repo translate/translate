@@ -683,43 +683,6 @@ class pofile(pocommon.pofile):
     """A .po file containing various units"""
     UnitClass = pounit
 
-    def changeencoding(self, newencoding):
-        """Deprecated: changes the encoding on the file."""
-        # This should not be here but in poheader. It also shouldn't mangle the
-        # header itself, but use poheader methods. All users are removed, so
-        # we can deprecate after one release.
-        raise DeprecationWarning
-
-        self._encoding = encodingToUse(newencoding)
-        if not self.units:
-            return
-        header = self.header()
-        if not header or header.isblank():
-            return
-        charsetline = None
-        headerstr = unquotefrompo(header.msgstr)
-        for line in headerstr.split("\n"):
-            if not ":" in line:
-                continue
-            key, value = line.strip().split(":", 1)
-            if key.strip() != "Content-Type":
-                continue
-            charsetline = line
-        if charsetline is None:
-            headerstr += "Content-Type: text/plain; charset=%s" % self._encoding
-        else:
-            charset = re.search("charset=([^ ]*)", charsetline)
-            if charset is None:
-                newcharsetline = charsetline
-                if not newcharsetline.strip().endswith(";"):
-                    newcharsetline += ";"
-                newcharsetline += " charset=%s" % self._encoding
-            else:
-                charset = charset.group(1)
-                newcharsetline = charsetline.replace("charset=%s" % charset, "charset=%s" % self._encoding, 1)
-            headerstr = headerstr.replace(charsetline, newcharsetline, 1)
-        header.msgstr = quoteforpo(headerstr)
-
     def parse(self, input):
         """Parses the given file or file source string."""
         try:
