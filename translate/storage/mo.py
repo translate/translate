@@ -9,7 +9,7 @@
 #   Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006 Python Software Foundation.
 #   All rights reserved.
 #   original license: Python Software Foundation (version 2)
-# 
+#
 #
 # This file is part of translate.
 #
@@ -17,7 +17,7 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -34,29 +34,32 @@ The coding of .mo files was produced from U{Gettext documentation
 <http://www.gnu.org/software/gettext/manual/gettext.html#MO-Files>},
 Pythons msgfmt.py and by observing and testing existing .mo files in the wild.
 
-The hash algorithm is implemented for MO files, this should result in 
+The hash algorithm is implemented for MO files, this should result in
 faster access of the MO file.  The hash is optional for Gettext
 and is not needed for reading or writing MO files, in this implementation
 it is always on and does produce sometimes different results to Gettext
 in very small files.
 """
 
-from translate.storage import base
-from translate.storage import po
-from translate.storage import poheader
-from translate.misc.multistring import multistring
 import struct
 import array
 import re
 
+from translate.storage import base
+from translate.storage import po
+from translate.storage import poheader
+from translate.misc.multistring import multistring
+
 MO_MAGIC_NUMBER = 0x950412deL
+
 
 def mounpack(filename='messages.mo'):
     """Helper to unpack Gettext MO files into a Python string"""
     f = open(filename)
     s = f.read()
-    print "\\x%02x"*len(s) % tuple(map(ord, s))
+    print "\\x%02x" * len(s) % tuple(map(ord, s))
     f.close()
+
 
 def my_swap4(result):
     c0 = (result >> 0) & 0xff
@@ -65,6 +68,7 @@ def my_swap4(result):
     c3 = (result >> 24) & 0xff
 
     return (c0 << 24) | (c1 << 16) | (c2 << 8) | c3
+
 
 def hashpjw(str_param):
     HASHWORDBITS = 32
@@ -80,8 +84,10 @@ def hashpjw(str_param):
             hval = hval ^ g
     return hval
 
+
 def get_next_prime_number(start):
     # find the smallest prime number that is greater or equal "start"
+
     def is_prime(num):
         # special small numbers
         if (num < 2) or (num == 4):
@@ -89,7 +95,7 @@ def get_next_prime_number(start):
         if (num == 2) or (num == 3):
             return True
         # check for numbers > 4
-        for divider in range(2, num/2):
+        for divider in range(2, num / 2):
             if num % divider == 0:
                 return False
         return True
@@ -102,6 +108,7 @@ def get_next_prime_number(start):
 
 class mounit(base.TranslationUnit):
     """A class representing a .mo translation message."""
+
     def __init__(self, source=None):
         self.msgctxt = []
         self.msgidcomments = []
@@ -122,11 +129,12 @@ class mounit(base.TranslationUnit):
         """Is this message translateable?"""
         return bool(self.source)
 
+
 class mofile(base.TranslationStore, poheader.poheader):
     """A class representing a .mo file."""
     UnitClass = mounit
     Name = _("Gettext MO file")
-    Mimetypes  = ["application/x-gettext-catalog", "application/x-mo"]
+    Mimetypes = ["application/x-gettext-catalog", "application/x-mo"]
     Extensions = ["mo", "gmo"]
     _binary = True
 
@@ -140,9 +148,11 @@ class mofile(base.TranslationStore, poheader.poheader):
     def __str__(self):
         """Output a string representation of the MO data file"""
         # check the header of this file for the copyright note of this function
+
         def add_to_hash_table(string, i):
             V = hashpjw(string)
-            S = hash_size <= 2 and 3 or hash_size # Taken from gettext-0.17:gettext-tools/src/write-mo.c:408-409
+            # Taken from gettext-0.17:gettext-tools/src/write-mo.c:408-409
+            S = hash_size <= 2 and 3 or hash_size
             hash_cursor = V % S
             orig_hash_cursor = hash_cursor
             increment = 1 + (V % (S - 2))
@@ -164,7 +174,8 @@ class mofile(base.TranslationStore, poheader.poheader):
         MESSAGES = {}
         for unit in self.units:
             if isinstance(unit.source, multistring):
-                source = "".join(unit.msgidcomments) + "\0".join(unit.source.strings)
+                source = "".join(unit.msgidcomments) + \
+                         "\0".join(unit.source.strings)
             else:
                 source = "".join(unit.msgidcomments) + unit.source
             if unit.msgctxt:
@@ -183,11 +194,11 @@ class mofile(base.TranslationStore, poheader.poheader):
         offsets = []
         ids = strs = ''
         for i, id in enumerate(keys):
-            # For each string, we need size and file offset.  Each string is NUL
-            # terminated; the NUL does not count into the size.
+            # For each string, we need size and file offset.  Each string is
+            # NUL terminated; the NUL does not count into the size.
             # TODO: We don't do any encoding detection from the PO Header
             add_to_hash_table(id, i)
-            string = MESSAGES[id] # id is already encoded for use as a dictionary key
+            string = MESSAGES[id] # id already encoded for use as dictionary key
             if isinstance(string, unicode):
                 string = string.encode('utf-8')
             offsets.append((len(ids), len(id), len(strs), len(string)))
@@ -195,7 +206,7 @@ class mofile(base.TranslationStore, poheader.poheader):
             strs = strs + string + '\0'
         output = ''
         # The header is 7 32-bit unsigned integers
-        keystart = 7*4+16*len(keys)+hash_size*4
+        keystart = 7 * 4 + 16 * len(keys) + hash_size * 4
         # and the values start after the keys
         valuestart = keystart + len(ids)
         koffsets = []
@@ -203,16 +214,17 @@ class mofile(base.TranslationStore, poheader.poheader):
         # The string table first has the list of keys, then the list of values.
         # Each entry has first the size of the string, then the file offset.
         for o1, l1, o2, l2 in offsets:
-            koffsets = koffsets + [l1, o1+keystart]
-            voffsets = voffsets + [l2, o2+valuestart]
+            koffsets = koffsets + [l1, o1 + keystart]
+            voffsets = voffsets + [l2, o2 + valuestart]
         offsets = koffsets + voffsets
         output = struct.pack("Iiiiiii",
                              MO_MAGIC_NUMBER,   # Magic
                              0,                 # Version
                              len(keys),         # # of entries
-                             7*4,               # start of key index
-                             7*4+len(keys)*8,   # start of value index
-                             hash_size, 7*4+2*(len(keys)*8))              # size and offset of hash table
+                             7 * 4,             # start of key index
+                             7 * 4 + len(keys) * 8, # start of value index
+                             hash_size,         # size of hash table
+                             7 * 4 + 2 * (len(keys) * 8)) # offset of hash table
         # additional data is not necessary for empty mo files
         if (len(keys) > 0):
             output = output + array.array("i", offsets).tostring()
@@ -239,26 +251,33 @@ class mofile(base.TranslationStore, poheader.poheader):
             endian = ">"
         else:
             raise ValueError("This is not an MO file")
-        magic, version, lenkeys, startkey, startvalue, sizehash, offsethash = struct.unpack("%sLiiiiii" % endian, input[:(7*4)])
+        magic, version, lenkeys, startkey, \
+        startvalue, sizehash, offsethash = struct.unpack("%sLiiiiii" % endian,
+                                                         input[:(7 * 4)])
         if version > 1:
-            raise ValueError("Unable to process MO files with versions > 1.  This is a %d version MO file" % version)
+            raise ValueError("Unable to process MO files with versions > 1.  \
+                             This is a %d version MO file" % version)
         encoding = 'UTF-8'
         for i in range(lenkeys):
-            nextkey = startkey+(i*2*4)
-            nextvalue = startvalue+(i*2*4)
-            klength, koffset = struct.unpack("%sii" % endian, input[nextkey:nextkey+(2*4)])
-            vlength, voffset = struct.unpack("%sii" % endian, input[nextvalue:nextvalue+(2*4)])
-            source = input[koffset:koffset+klength]
+            nextkey = startkey + (i * 2 * 4)
+            nextvalue = startvalue + (i * 2 * 4)
+            klength, koffset = struct.unpack("%sii" % endian,
+                                             input[nextkey:nextkey + (2 * 4)])
+            vlength, voffset = struct.unpack("%sii" % endian,
+                                             input[nextvalue:nextvalue + (2 * 4)])
+            source = input[koffset:koffset + klength]
             context = None
             if "\x04" in source:
                 context, source = source.split("\x04")
             # Still need to handle KDE comments
             source = multistring(source.split("\0"), encoding=encoding)
             if source == "":
-                charset = re.search("charset=([^\\s]+)", input[voffset:voffset+vlength])
+                charset = re.search("charset=([^\\s]+)",
+                                    input[voffset:voffset + vlength])
                 if charset:
                     encoding = po.encodingToUse(charset.group(1))
-            target = multistring(input[voffset:voffset+vlength].split("\0"), encoding=encoding)
+            target = multistring(input[voffset:voffset + vlength].split("\0"),
+                                 encoding=encoding)
             newunit = mounit(source)
             newunit.settarget(target)
             if context is not None:
