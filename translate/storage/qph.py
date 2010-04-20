@@ -33,8 +33,10 @@ A DTD to define the format does not seem to exist, but the following U{code
 provides the reference implementation for the Qt Linguist product.
 """
 
-from translate.storage import lisa
 from lxml import etree
+
+from translate.storage import lisa
+from translate.lang import data
 
 class QphUnit(lisa.LISAunit):
     """A single term in the qph file."""
@@ -103,7 +105,40 @@ class QphFile(lisa.LISAfile):
     def initbody(self):
         """Initialises self.body so it never needs to be retrieved from the XML again."""
         self.namespace = self.document.getroot().nsmap.get(None, None)
+        self.header = self.document.getroot()
         self.body = self.document.getroot() # The root node contains the units
+
+    def getsourcelanguage(self):
+        """Get the source language for this .qph file.
+
+        We don't implement setsourcelanguage as users really shouldn't be
+        altering the source language in .qph files, it should be set correctly
+        by the extraction tools.
+
+        @return: ISO code e.g. af, fr, pt_BR
+        @rtype: String
+        """
+        lang = data.normalize_code(self.header.get('sourcelanguage', "en"))
+        if lang == 'en-us':
+            return 'en'
+        return lang
+
+    def gettargetlanguage(self):
+        """Get the target language for this .qph file.
+
+        @return: ISO code e.g. af, fr, pt_BR
+        @rtype: String
+        """
+        return data.normalize_code(self.header.get('language'))
+
+    def settargetlanguage(self, targetlanguage):
+        """Set the target language for this .qph file to L{targetlanguage}.
+
+        @param targetlanguage: ISO code e.g. af, fr, pt_BR
+        @type targetlanguage: String
+        """
+        if targetlanguage:
+            self.header.set('language', targetlanguage)
 
     def __str__(self):
         """Converts to a string containing the file's XML.

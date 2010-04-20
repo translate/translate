@@ -140,9 +140,9 @@ class TestTranslationUnit:
         """Tests that all subclasses of the base behaves consistently with regards to notes."""
         unit = self.unit
 
-        unit.addnote("Test note 1", origin="translator")
-        unit.addnote("Test note 2", origin="translator")
-        unit.addnote("Test note 3", origin="translator")
+        unit.addnote(u"Test note 1", origin="translator")
+        unit.addnote(u"Test note 2", origin="translator")
+        unit.addnote(u"Test note 3", origin="translator")
         expected_notes = u"Test note 1\nTest note 2\nTest note 3"
         actual_notes = unit.getnotes(origin="translator")
         assert actual_notes == expected_notes
@@ -150,9 +150,9 @@ class TestTranslationUnit:
         # Test with no origin.
         unit.removenotes()
         assert not unit.getnotes()
-        unit.addnote("Test note 1")
-        unit.addnote("Test note 2")
-        unit.addnote("Test note 3")
+        unit.addnote(u"Test note 1")
+        unit.addnote(u"Test note 2")
+        unit.addnote(u"Test note 3")
         expected_notes = u"Test note 1\nTest note 2\nTest note 3"
         actual_notes = unit.getnotes()
         assert actual_notes == expected_notes
