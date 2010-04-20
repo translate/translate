@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2008 Zuza Software Foundation
-# 
+# Copyright 2008, 2010 Zuza Software Foundation
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -29,7 +29,7 @@ phrases and their translations. These files are created and updated by Qt
 Linguist and may be used by any number of projects and applications.
 
 A DTD to define the format does not seem to exist, but the following U{code
-<http://www.google.com/codesearch?hl=en&q=show:gtsFsbhpVeE:KeGnQG0wDCQ:xOXsNYqccyE&sa=N&ct=rd&cs_p=ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-4.0.0-b1.tar.gz&cs_f=qt-x11-opensource-4.0.0-b1/tools/linguist/linguist/phrase.cpp>} 
+<http://www.google.com/codesearch?hl=en&q=show:gtsFsbhpVeE:KeGnQG0wDCQ:xOXsNYqccyE&sa=N&ct=rd&cs_p=ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-4.0.0-b1.tar.gz&cs_f=qt-x11-opensource-4.0.0-b1/tools/linguist/linguist/phrase.cpp>}
 provides the reference implementation for the Qt Linguist product.
 """
 
@@ -37,6 +37,7 @@ from lxml import etree
 
 from translate.storage import lisa
 from translate.lang import data
+
 
 class QphUnit(lisa.LISAunit):
     """A single term in the qph file."""
@@ -55,14 +56,16 @@ class QphUnit(lisa.LISAunit):
 
     def _getsourcenode(self):
         return self.xmlelement.find(self.namespaced(self.languageNode))
-    
+
     def _gettargetnode(self):
         return self.xmlelement.find(self.namespaced("target"))
-    
+
     def getlanguageNodes(self):
         """We override this to get source and target nodes."""
+
         def not_none(node):
             return not node is None
+
         return filter(not_none, [self._getsourcenode(), self._gettargetnode()])
 
     def addnote(self, text, origin=None, position="append"):
@@ -92,7 +95,7 @@ class QphFile(lisa.LISAfile):
     """Class representing a QPH file store."""
     UnitClass = QphUnit
     Name = _("Qt Phrase Book")
-    Mimetypes  = ["application/x-qph"]
+    Mimetypes = ["application/x-qph"]
     Extensions = ["qph"]
     rootNode = "QPH"
     bodyNode = "QPH"
@@ -103,7 +106,8 @@ class QphFile(lisa.LISAfile):
     namespace = ''
 
     def initbody(self):
-        """Initialises self.body so it never needs to be retrieved from the XML again."""
+        """Initialises self.body so it never needs to be retrieved from the
+        XML again."""
         self.namespace = self.document.getroot().nsmap.get(None, None)
         self.header = self.document.getroot()
         self.body = self.document.getroot() # The root node contains the units
@@ -142,17 +146,17 @@ class QphFile(lisa.LISAfile):
 
     def __str__(self):
         """Converts to a string containing the file's XML.
-        
+
         We have to override this to ensure mimic the Qt convention:
             - no XML decleration
             - plain DOCTYPE that lxml seems to ignore
         """
-        # A bug in lxml means we have to output the doctype ourselves. For 
+        # A bug in lxml means we have to output the doctype ourselves. For
         # more information, see:
         # http://codespeak.net/pipermail/lxml-dev/2008-October/004112.html
         # The problem was fixed in lxml 2.1.3
-        output = etree.tostring(self.document, pretty_print=True, 
-                xml_declaration=False, encoding='utf-8')
+        output = etree.tostring(self.document, pretty_print=True,
+                                xml_declaration=False, encoding='utf-8')
         if not "<!DOCTYPE QPH>" in output[:30]:
             output = "<!DOCTYPE QPH>" + output
         return output
