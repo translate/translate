@@ -22,6 +22,10 @@
 
 from translate.filters import decoration
 
+from translate.misc.typecheck import accepts, returns
+
+@accepts(unicode, unicode)
+#@returns(IsOneOf(unicode, None))
 def correct(source, target):
     """Runs a set of easy and automatic corrections
 
@@ -30,8 +34,6 @@ def correct(source, target):
       - Missing whitespace and start or end of the target
       - Missing punction (.:?) at the end of the target
     """
-    assert isinstance(source, unicode)
-    assert isinstance(target, unicode)
     if target == "":
         return target
     if "..." in source and u"…" in target:
