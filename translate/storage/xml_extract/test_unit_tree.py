@@ -26,7 +26,7 @@ from translate.storage import factory
 # _split_xpath_component
 
 def test__split_xpath_component():
-    assert ('some-tag', 0) == unit_tree._split_xpath_component('some-tag[0]')
+    assert (u'some-tag', 0) == unit_tree._split_xpath_component(u'some-tag[0]')
 
 # _split_xpath
 
