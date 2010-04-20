@@ -92,13 +92,19 @@ class TestTSfile(test_base.TestTranslationStore):
         """Check that we can get and set language and sourcelanguage
         in the header"""
         tsstr = '''<!DOCTYPE TS>
-<TS version="2.0" language="fr" sourcelanguage="en_US">
+<TS version="2.0" language="fr" sourcelanguage="de">
 </TS>
 '''
         tsfile = ts.tsfile.parsestring(tsstr)
         assert tsfile.gettargetlanguage() == 'fr'
-        # We convert en_US to en
-        assert tsfile.getsourcelanguage() == 'en'
+        assert tsfile.getsourcelanguage() == 'de'
         tsfile.settargetlanguage('pt_BR')
         assert 'pt_BR' in str(tsfile)
         assert tsfile.gettargetlanguage() == 'pt-br'
+        # We convert en_US to en
+        tsstr = '''<!DOCTYPE TS>
+<TS version="2.0" language="fr" sourcelanguage="en_US">
+</TS>
+'''
+        tsfile = ts.tsfile.parsestring(tsstr)
+        assert tsfile.getsourcelanguage() == 'en'

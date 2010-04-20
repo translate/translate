@@ -80,13 +80,19 @@ class TestQphFile(test_base.TestTranslationStore):
         """Check that we can get and set language and sourcelanguage
         in the header"""
         qphstr = '''<!DOCTYPE QPH>
-<QPH language="fr" sourcelanguage="en_US">
+<QPH language="fr" sourcelanguage="de">
 </QPH>
 '''
         qphfile = qph.QphFile.parsestring(qphstr)
         assert qphfile.gettargetlanguage() == 'fr'
-        # We convert en_US to en
-        assert qphfile.getsourcelanguage() == 'en'
+        assert qphfile.getsourcelanguage() == 'de'
         qphfile.settargetlanguage('pt_BR')
         assert 'pt_BR' in str(qphfile)
         assert qphfile.gettargetlanguage() == 'pt-br'
+        # We convert en_US to en
+        qphstr = '''<!DOCTYPE QPH>
+<QPH language="fr" sourcelanguage="en_US">
+</QPH>
+'''
+        qphfile = qph.QphFile.parsestring(qphstr)
+        assert qphfile.getsourcelanguage() == 'en'
