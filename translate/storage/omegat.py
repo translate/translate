@@ -189,9 +189,7 @@ class OmegaTFile(base.TranslationStore):
 
 class OmegaTFileTab(OmegaTFile):
     """An OmegaT translation memory file in the default system encoding"""
-    # FIXME: uncomment this when we next open from string freeze
-    #Name = _("OmegaT Glossary")
-    Name = None
+    Name = _("OmegaT Glossary")
     Mimetypes  = ["application/x-omegat-glossary"]
     Extensions = ["tab"]
 
