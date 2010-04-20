@@ -15,9 +15,14 @@ class TestAutocorrect:
         print corrected
         assert corrected == expected
 
+    def test_empty_target(self):
+        """test that we do nothing with an empty target"""
+        self.correct(u"String...", u"", u"")
+
     def test_correct_ellipsis(self):
-        """test that we convert single ... to three dots"""
-        self.correct(u"String...", u"String…", u"String...")
+        """test that we convert single … or ... to match source and target"""
+        self.correct(u"String...", u"Translated…", u"Translated...")
+        self.correct(u"String…", u"Translated...", u"Translated…")
 
     def test_correct_spacestart_spaceend(self):
         """test that we can correct leading and trailing space errors"""
@@ -38,3 +43,7 @@ class TestAutocorrect:
         self.correct(u"Simple string.", u"Dimpled ring", u"Dimpled ring.")
         #self.correct(u"Simple string. ", u"Dimpled ring", u"Dimpled ring. ")
         self.correct(u"Simple string?", u"Dimpled ring", u"Dimpled ring?")
+
+    def test_nothing_to_do(self):
+        """test that when nothing changes we return None"""
+        self.correct(u"Some text", u"A translation", None)
