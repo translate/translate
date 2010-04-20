@@ -255,6 +255,7 @@ def _fix_language_name(name):
     we replace it with a more usable rendering."""
     return _fixed_names.get(name, name)
 
+
 def gettext_lang(langcode=None):
     """Returns a gettext function to translate language names into the given
     language, or the system language if no language is specified."""
@@ -291,7 +292,7 @@ def normalize(string, normal_form="NFC"):
     """Return a unicode string in its normalized form
 
        @param string: The string to be normalized
-       @param normal_form: NFC (default), NFD, NFCK, NFDK
+       @param normal_form: NFC (default), NFD, NFKC, NFKD
        @return: Normalized string
     """
     if string is None:
