@@ -77,7 +77,7 @@ class svn(GenericRevisionControlSystem):
         if message:
             command.extend(["-m", message])
         # the "--with-revprop" argument is support since svn v1.5
-        if author and (get_version() >= (1,5)):
+        if author and (get_version() >= (1, 5)):
             command.extend(["--with-revprop", "translate:author=%s" % author])
         # the location is the last argument
         command.append(self.location_abs)
