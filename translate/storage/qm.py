@@ -22,54 +22,61 @@
 
 """Module for parsing Qt .qm files
 
-@note: based on documentation from Gettext's .qm implementation (see write-qt.c) and on observation
-of the output of lrelease.
-@note: Certain deprecated section tags are not implemented.  These will break and print out
-the missing tag.  They are easy to implement and should follow the structure in 03 
-(Translation).  We could find no examples that use these so we'd rather leave it 
-unimplemented until we actually have test data.
-@note: Many .qm files are unable to be parsed as they do not have the source text.  We assume
-that since they use a hash table to lookup the data there is actually no need for the 
-source text.  It seems however that in Qt4's lrelease all data is included in the resultant .qm
-file.
-@todo: We can only parse, not create, a .qm file.  The main issue is that we need to 
-implement the hashing algorithm (which seems to be identical to the Gettext hash algorithm).  Unlike
-Gettext it seems that the hash is required, but that has not been validated.
-@todo: The code can parse files correctly.  But it could be cleaned up to be more readable, especially 
-the part that breaks the file into sections.
+@note: based on documentation from Gettext's .qm implementation
+(see write-qt.c) and on observation of the output of lrelease.
+@note: Certain deprecated section tags are not implemented.  These will break
+and print out the missing tag.  They are easy to implement and should follow
+the structure in 03 (Translation).  We could find no examples that use these
+so we'd rather leave it unimplemented until we actually have test data.
+@note: Many .qm files are unable to be parsed as they do not have the source
+text.  We assume that since they use a hash table to lookup the data there is
+actually no need for the source text.  It seems however that in Qt4's lrelease
+all data is included in the resultant .qm file.
+@todo: We can only parse, not create, a .qm file.  The main issue is that we
+need to implement the hashing algorithm (which seems to be identical to the
+Gettext hash algorithm).  Unlike Gettext it seems that the hash is required,
+but that has not been validated.
+@todo: The code can parse files correctly.  But it could be cleaned up to be
+more readable, especially the part that breaks the file into sections.
 
 U{http://qt.gitorious.org/+kde-developers/qt/kde-qt/blobs/master/tools/linguist/shared/qm.cpp}
 U{Plural information<http://qt.gitorious.org/+kde-developers/qt/kde-qt/blobs/master/tools/linguist/shared/numerus.cpp>}
 U{QLocale languages<http://docs.huihoo.com/qt/4.5/qlocale.html#Language-enum>}
 """
 
-from translate.storage import base
-from translate.misc.multistring import multistring
 import codecs
 import struct
 import sys
 
+from translate.storage import base
+from translate.misc.multistring import multistring
+
 QM_MAGIC_NUMBER = (0x3CB86418L, 0xCAEF9C95L, 0xCD211CBFL, 0x60A1BDDDL)
+
 
 def qmunpack(qmfile='messages.mo'):
     """Helper to unpack Qt .qm files into a Python string"""
     f = open(qmfile)
     s = f.read()
-    print "\\x%02x"*len(s) % tuple(map(ord, s))
+    print "\\x%02x" * len(s) % tuple(map(ord, s))
     f.close()
+
 
 class qmunit(base.TranslationUnit):
     """A class representing a .qm translation message."""
+
     def __init__(self, source=None):
         super(qmunit, self).__init__(source)
+
 
 class qmfile(base.TranslationStore):
     """A class representing a .qm file."""
     UnitClass = qmunit
     Name = _("Qt .qm file")
-    Mimetypes  = ["application/x-qm"]
+    Mimetypes = ["application/x-qm"]
     Extensions = ["qm"]
     _binary = True
+
     def __init__(self, inputfile=None, unitclass=qmunit):
         self.UnitClass = unitclass
         base.TranslationStore.__init__(self, unitclass=unitclass)
@@ -100,30 +107,30 @@ class qmfile(base.TranslationStore):
         startsection = 16
         sectionheader = 5
         while startsection < len(input):
-            section_type, length = struct.unpack(">bL", input[startsection:startsection+sectionheader])
+            section_type, length = struct.unpack(">bL", input[startsection:startsection + sectionheader])
             if section_type == 0x42:
                 #print "Section: hash"
                 hashash = True
-                hash_start = startsection+sectionheader
-                hash_data = struct.unpack(">%db" % length, input[startsection+sectionheader:startsection+sectionheader+length])
+                hash_start = startsection + sectionheader
+                hash_data = struct.unpack(">%db" % length, input[startsection + sectionheader:startsection + sectionheader + length])
             elif section_type == 0x69:
                 #print "Section: messages"
                 hasmessages = True
-                messages_start = startsection+sectionheader
-                messages_data = struct.unpack(">%db" % length, input[startsection+sectionheader:startsection+sectionheader+length])
+                messages_start = startsection + sectionheader
+                messages_data = struct.unpack(">%db" % length, input[startsection + sectionheader:startsection + sectionheader + length])
             elif section_type == 0x2f:
                 #print "Section: contexts"
                 hascontexts = True
-                contexts_start = startsection+sectionheader
-                contexts_data = struct.unpack(">%db" % length, input[startsection+sectionheader:startsection+sectionheader+length])
-            startsection = startsection+sectionheader+length
+                contexts_start = startsection + sectionheader
+                contexts_data = struct.unpack(">%db" % length, input[startsection + sectionheader:startsection + sectionheader + length])
+            startsection = startsection + sectionheader + length
         pos = messages_start
         source = target = None
         while pos < messages_start + len(messages_data):
-            subsection, = struct.unpack(">b", input[pos:pos+1])
+            subsection, = struct.unpack(">b", input[pos:pos + 1])
             if subsection == 0x01: # End
                 #print "End"
-                pos = pos+1
+                pos = pos + 1
                 if not source is None and not target is None:
                     newunit = self.addsourceunit(source)
                     newunit.target = target
@@ -132,37 +139,38 @@ class qmfile(base.TranslationStore):
                     raise ValueError("Old .qm format with no source defined")
                 continue
             #print pos, subsection
-            pos = pos+1
-            length, = struct.unpack(">l", input[pos:pos+4])
+            pos = pos + 1
+            length, = struct.unpack(">l", input[pos:pos + 4])
             if subsection == 0x03: # Translation
                 if length != -1:
-                    raw, = struct.unpack(">%ds" % length, input[pos+4:pos+4+length])
+                    raw, = struct.unpack(">%ds" % length,
+                                         input[pos + 4:pos + 4 + length])
                     string, templen = codecs.utf_16_be_decode(raw)
                     if target:
                         target.strings.append(string)
                     else:
                         target = multistring(string)
-                    pos = pos+4+length
+                    pos = pos + 4 + length
                 else:
                     target = ""
-                    pos = pos+4
+                    pos = pos + 4
                 #print "Translation: %s" % target.encode('utf-8')
             elif subsection == 0x06: # SourceText
-                source = input[pos+4:pos+4+length].decode('iso-8859-1')
+                source = input[pos + 4:pos + 4 + length].decode('iso-8859-1')
                 #print "SourceText: %s" % source
-                pos = pos+4+length
+                pos = pos + 4 + length
             elif subsection == 0x07: # Context
-                context = input[pos+4:pos+4+length].decode('iso-8859-1')
+                context = input[pos + 4:pos + 4 + length].decode('iso-8859-1')
                 #print "Context: %s" % context
-                pos = pos+4+length
+                pos = pos + 4 + length
             elif subsection == 0x08: # Disambiguating-comment
-                comment = input[pos+4:pos+4+length]
+                comment = input[pos + 4:pos + 4 + length]
                 #print "Disambiguating-comment: %s" % comment
-                pos = pos+4+length
+                pos = pos + 4 + length
             elif subsection == 0x05: # hash
-                hash = input[pos:pos+4]
+                hash = input[pos:pos + 4]
                 #print "Hash: %s" % hash
-                pos = pos+4
+                pos = pos + 4
             else:
                 if subsection == 0x02: # SourceText16
                     subsection_name = "SourceText16"
@@ -170,7 +178,8 @@ class qmfile(base.TranslationStore):
                     subsection_name = "Context16"
                 else:
                     subsection_name = "Unkown"
-                print >> sys.stderr, "Unimplemented: %s %s" % (subsection, subsection_name)
+                print >> sys.stderr, "Unimplemented: %s %s" % \
+                                     (subsection, subsection_name)
                 return
 
     def savefile(self, storefile):
