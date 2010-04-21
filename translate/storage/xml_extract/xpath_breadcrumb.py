@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-from translate.misc.typecheck import accepts, Self, IsCallable, IsOneOf, Any
+from translate.misc.typecheck import accepts, Self
 
 class XPathBreadcrumb(object):
     """A class which is used to build XPath-like paths as a DOM tree is
