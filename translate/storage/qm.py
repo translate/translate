@@ -54,9 +54,9 @@ from translate.misc.multistring import multistring
 QM_MAGIC_NUMBER = (0x3CB86418L, 0xCAEF9C95L, 0xCD211CBFL, 0x60A1BDDDL)
 
 
-def qmunpack(qmfile='messages.mo'):
+def qmunpack(file_='messages.qm'):
     """Helper to unpack Qt .qm files into a Python string"""
-    f = open(qmfile)
+    f = open(file_)
     s = f.read()
     print "\\x%02x" * len(s) % tuple(map(ord, s))
     f.close()
