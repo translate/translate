@@ -231,7 +231,7 @@ def _do_poheaders(input_store, output_store, template_store):
         template_header = template_store.header()
         if template_header is not None:
             if template_header.getnotes("translator"):
-                output_header.addnote(template_header.getnotes("translator"), "translator")
+                output_header.addnote(template_header.getnotes("translator"), "translator", position="replace")
             output_header.markfuzzy(template_header.isfuzzy())
 
 
