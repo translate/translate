@@ -25,6 +25,8 @@ of delimiters"""
 import logging
 import htmlentitydefs
 
+from translate.misc.typecheck import accepts
+
 
 def find_all(searchin, substr):
     """Returns a list of locations where substr occurs in searchin
@@ -93,14 +95,6 @@ def extract(source, startdelim, enddelim,
     if instring:
         extracted += source[lastpos:]
     return (extracted, instring)
-
-
-def extractstr(source):
-    """Extracts a doublequote-delimited string from a string, allowing for
-    backslash-escaping.
-    """
-    (string, instring) = extract(source, '"', '"', '\\')
-    return string
 
 
 def extractwithoutquotes(source, startdelim, enddelim, escape=None,
@@ -294,6 +288,7 @@ def escapecontrols(source):
     return source
 
 
+@accepts(unicode)
 def propertiesdecode(source):
     """Decodes source from the escaped-unicode encoding used by .properties
     files.
@@ -405,16 +400,6 @@ def singlequotestr(source):
     return "'" + escapesinglequotes(source) + "'"
 
 
-def eitherquotestr(source):
-    """Returns a singlequote- or doublequote-delimited string, depending on
-    what quotes it contains.
-    """
-    if '"' in source:
-        return singlequotestr(source)
-    else:
-        return quotestr(source)
-
-
 def findend(string, substring):
     s = string.find(substring)
     if s != -1:
@@ -438,20 +423,3 @@ def stripcomment(comment, startstring="<!--", endstring="-->"):
 
 def unstripcomment(comment, startstring="<!-- ", endstring=" -->\n"):
     return startstring + comment.strip() + endstring
-
-
-def encodewithdict(unencoded, encodedict):
-    """encodes certain characters in the string using an encode dictionary"""
-    encoded = unencoded
-    for key, value in encodedict.iteritems():
-        if key in encoded:
-            encoded = encoded.replace(key, value)
-    return encoded
-
-
-def makeutf8(d):
-    """convert numbers to utf8 codes in the values of a dictionary"""
-    for key, value in d.items():
-        if type(value) == int:
-            d[key] = unichr(value).encode('utf8')
-    return d
