@@ -23,7 +23,7 @@
 from lxml import etree
 
 from translate.storage import base
-from translate.misc.typecheck import accepts, Self, IsCallable, IsOneOf, Any
+from translate.misc.typecheck import accepts, Self
 from translate.misc.typecheck.typeclasses import Number
 
 class XPathTree(object):

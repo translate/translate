@@ -20,7 +20,7 @@
 
 import re
 
-from translate.misc.typecheck import accepts, Self, IsCallable, IsOneOf, Any
+from translate.misc.typecheck import accepts, IsCallable, Any
 
 @accepts(IsCallable(), Any(), Any(), IsCallable(), state=[Any()])
 def reduce_tree(f, parent_unit_node, unit_node, get_children, *state):
