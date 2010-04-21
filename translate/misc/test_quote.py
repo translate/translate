@@ -68,10 +68,19 @@ class TestQuote:
         list = ['One', 'Two']
         assert quote.quotestr(list) == '"One"\n"Two"'
 
-    def test_htmlencoding(self):
-        """test that we can encode and decode HTML entities"""
-        raw_encoded = [(u"€", "&euro;"), (u"©", "&copy;"), (u'"', "&quot;")]
-        for raw, encoded in raw_encoded:
-            assert quote.htmlentityencode(raw) == encoded
-            assert quote.htmlentitydecode(encoded) == raw
+    def _html_encoding_helper(self, pairs):
+        for from_, to in pairs:
+            assert quote.htmlentityencode(from_) == to
+            assert quote.htmlentitydecode(to) == from_
 
+    def test_htmlencoding(self):
+        """test that we can encode and decode simple HTML entities"""
+        raw_encoded = [(u"€", "&euro;"), (u"©", "&copy;"), (u'"', "&quot;")]
+        self._html_encoding_helper(raw_encoded)
+
+    def test_htmlencoding_passthrough(self):
+        """test that we can encode and decode things that look like HTML entities but aren't"""
+        raw_encoded = [(u"copy", "quot"),      # Raw text should have nothing done to it.
+                       (u"&copy ", "&copy "),  # Doesn't end in ; so no an entity
+                      ]
+        self._html_encoding_helper(raw_encoded)
