@@ -47,9 +47,9 @@ class xliffunit(lisa.LISAunit):
 
     def __init__(self, source, empty=False, **kwargs):
         """Override the constructor to set xml:space="preserve"."""
+        super(xliffunit, self).__init__(source, empty, **kwargs)
         if empty:
             return
-        super(xliffunit, self).__init__(source, empty, **kwargs)
         lisa.setXMLspace(self.xmlelement, "preserve")
 
     def createlanguageNode(self, lang, text, purpose):
