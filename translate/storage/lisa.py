@@ -113,7 +113,7 @@ class LISAunit(base.TranslationUnit):
     def set_source_dom(self, dom_node):
         languageNodes = self.getlanguageNodes()
         if len(languageNodes) > 0:
-            self.xmlelement[0] = dom_node
+            self.xmlelement.replace(languageNodes[0], dom_node)
         else:
             self.xmlelement.append(dom_node)
 
