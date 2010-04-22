@@ -166,7 +166,9 @@ class TranslationUnit(object):
         if not isinstance(value[0], StringElem):
             raise ValueError('value[0] must be of type StringElem.')
         self._rich_source = list(value)
-        self.source = self.rich_to_multistring(value)
+        multi = self.rich_to_multistring(value)
+        if self.source != multi:
+            self.source = multi
     rich_source = property(_get_rich_source, _set_rich_source)
     """ @see: rich_to_multistring
         @see: multistring_to_rich"""
