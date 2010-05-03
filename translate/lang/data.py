@@ -116,6 +116,7 @@ languages = {
 'ps': (u'Pushto; Pashto', 2, '(n != 1)'),
 'pt': (u'Portuguese', 2, '(n != 1)'),
 'pt_BR': (u'Portuguese (Brazil)', 2, '(n > 1)'),
+'rm': (u'Romansh', 2, '(n != 1)'),
 'ro': (u'Romanian', 3, '(n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2);'),
 'ru': (u'Russian', 3, '(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'),
 'sco': (u'Scots', 2, '(n != 1)'),
