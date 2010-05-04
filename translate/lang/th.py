@@ -24,8 +24,6 @@
 For more information, see U{http://en.wikipedia.org/wiki/Thai_language}
 """
 
-import re
-
 from translate.lang import common
 
 class th(common.Common):
