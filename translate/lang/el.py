@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2007 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -27,6 +27,7 @@ For more information, see U{http://en.wikipedia.org/wiki/Greek_language}
 import re
 
 from translate.lang import common
+
 
 class el(common.Common):
     """This class represents Greek."""
@@ -47,10 +48,14 @@ class el(common.Common):
     }
 
     # Valid latin characters for use as accelerators
-    valid_latin_accel = u"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+    valid_latin_accel = u"abcdefghijklmnopqrstuvwxyz" + \
+                        u"ABCDEFGHIJKLMNOPQRSTUVWXYZ" + \
+                        u"1234567890"
 
-    # Valid greek characters for use as accelerators (accented characters and "ς" omitted)
-    valid_greek_accel = u"αβγδεζηθικλμνξοπρστυφχψωΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ"
+    # Valid greek characters for use as accelerators (accented characters
+    # and "ς" omitted)
+    valid_greek_accel = u"αβγδεζηθικλμνξοπρστυφχψω" + \
+                        u"ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ"
 
     # Valid accelerators
-    validaccel =  u"".join([valid_latin_accel, valid_greek_accel])
+    validaccel = u"".join([valid_latin_accel, valid_greek_accel])

@@ -26,7 +26,9 @@ For more information, see U{http://en.wikipedia.org/wiki/French_language}
 from translate.lang import common
 import re
 
+
 def guillemets(text):
+
     def convertquotation(match):
         prefix = match.group(1)
         # Let's see that we didn't perhaps match an XML tag property like
@@ -48,18 +50,21 @@ def guillemets(text):
     text = re.sub(u'(.|^)“([^”]+)”', convertquotation, text)
     return text
 
+
 class fr(common.Common):
     """This class represents French."""
 
-    validaccel = u"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890" + u"éÉ"
+    validaccel = u"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" + \
+                 u"1234567890" + \
+                 u"éÉ"
 
-    # According to http://french.about.com/library/writing/bl-punctuation.htm, 
-    # in French, a space is required both before and after all two- (or more) 
+    # According to http://french.about.com/library/writing/bl-punctuation.htm,
+    # in French, a space is required both before and after all two- (or more)
     # part punctuation marks and symbols, including : ; « » ! ? % $ # etc.
     puncdict = {}
     for c in u":;!?#":
         puncdict[c] = u"\u00a0%s" % c
-    # TODO: consider adding % and $, but think about the consequences of how 
+    # TODO: consider adding % and $, but think about the consequences of how
     # they could be part of variables
 
     def punctranslate(cls, text):

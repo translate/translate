@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2007 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -29,10 +29,12 @@ import re
 
 articlere = re.compile(r"'n\b")
 
+
 class af(common.Common):
     """This class represents Afrikaans."""
 
-    punctuation = u"".join([common.Common.commonpunc, common.Common.quotes, common.Common.miscpunc])
+    punctuation = u"".join([common.Common.commonpunc, common.Common.quotes,
+                            common.Common.miscpunc])
     sentenceend = u".!?…"
     sentencere = re.compile(r"""(?s)    #make . also match newlines
                             .*?         #anything, but match non-greedy
@@ -57,14 +59,14 @@ class af(common.Common):
 
 cyr2lat = {
    u"А": "A", u"а": "a",
-   u"Б": "B", u"б": "b", 
+   u"Б": "B", u"б": "b",
    u"В": "W", u"в": "w",  # Different if at the end of a syllable see rule 2.
    u"Г": "G", u"г": "g",  # see rule 3 and 4
    u"Д": "D", u"д": "d",
    u"ДЖ": "Dj", u"дж": "dj",
    u"Е": "Je", u"е": "je", # Sometimes e need to check when/why see rule 5.
    u"Ё": "Jo", u"ё": "jo", # see rule 6
-   u"ЕЙ": "Ei", u"ей": "ei", 
+   u"ЕЙ": "Ei", u"ей": "ei",
    u"Ж": "Zj", u"ж": "zj",
    u"З": "Z", u"з": "z",
    u"И": "I", u"и": "i",
@@ -95,6 +97,7 @@ cyr2lat = {
 """Mapping of Cyrillic to Latin letters for transliteration in Afrikaans"""
 
 cyr_vowels = u"аеёиоуыэюя"
+
 
 def tranliterate_cyrillic(text):
     """Convert Cyrillic text to Latin according to the AWS transliteration rules."""

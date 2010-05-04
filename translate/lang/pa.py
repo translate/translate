@@ -27,16 +27,18 @@ import re
 
 from translate.lang import common
 
+
 class pa(common.Common):
     """This class represents Punjabi."""
 
     sentenceend = u"।!?…"
 
-    sentencere = re.compile(r"""(?s)    #make . also match newlines
-                            .*?         #anything, but match non-greedy
-                            [%s]        #the puntuation for sentence ending
-                            \s+         #the spacing after the puntuation
-                            (?=[^a-z\d])#lookahead that next part starts with caps
+    sentencere = re.compile(r"""(?s)    # make . also match newlines
+                            .*?         # anything, but match non-greedy
+                            [%s]        # the puntuation for sentence ending
+                            \s+         # the spacing after the puntuation
+                            (?=[^a-z\d])# lookahead that next part starts with
+                                        # caps
                             """ % sentenceend, re.VERBOSE)
 
     puncdict = {

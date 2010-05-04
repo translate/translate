@@ -25,6 +25,7 @@ For more information, see U{http://en.wikipedia.org/wiki/Sinhala_language}
 
 from translate.lang import common
 
+
 class si(common.Common):
     """This class represents Sinhala."""
 

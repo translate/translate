@@ -25,7 +25,10 @@ For more information, see U{http://en.wikipedia.org/wiki/Swedish_language}
 
 from translate.lang import common
 
+
 class sv(common.Common):
     """This class represents Swedish."""
 
-    validaccel = u"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890" + u"åäöÅÄÖ"
+    validaccel = u"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" + \
+                 u"1234567890" + \
+                 u"åäöÅÄÖ"

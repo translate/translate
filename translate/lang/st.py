@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2009 Zuza Software Foundation
 #
 # This file is part of the Translate Toolkit.
@@ -22,6 +22,7 @@
 """
 
 from translate.lang import common
+
 
 class st(common.Common):
     """This class represents Southern Sotho."""

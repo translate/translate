@@ -25,6 +25,7 @@ For more information, see U{http://en.wikipedia.org/wiki/German_language}
 
 from translate.lang import common
 
+
 class de(common.Common):
     """This class represents German."""
 
