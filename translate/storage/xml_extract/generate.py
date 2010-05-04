@@ -48,7 +48,7 @@ def _get_tag_arrays(dom_node):
         child_dict[child.tag].append(child)
     return child_dict
 
-@accepts(etree._Element, unit_tree.XPathTree, extract.Translatable, IsCallable())
+@accepts(etree._Element, unit_tree.XPathTree, IsCallable())
 def apply_translations(dom_node, unit_node, do_translate):
     tag_array = _get_tag_arrays(dom_node)
     for unit_child_index, unit_child in unit_node.children.iteritems():
