@@ -118,6 +118,8 @@ def _guessextention(storefile):
         extention = 'txt'
     elif '<!DOCTYPE TS>' in start:
         extention = 'ts'
+    elif '<tmx ' in start:
+        extention = 'tmx'
     else:
         raise ValueError("Failed to guess file type.")
     storefile.seek(0)
