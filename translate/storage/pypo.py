@@ -456,7 +456,11 @@ class pounit(pocommon.pounit):
         """Alters whether a given typecomment is present"""
         if self.hastypecomment(typecomment) != present:
             if present:
-                self.typecomments.append("#, %s\n" % typecomment)
+                if len(self.typecomments):
+                    # There is already a comment, so we have to add onto it
+                    self.typecomments[0] = "%s, %s\n" % (self.typecomments[0][:-1], typecomment)
+                else:
+                    self.typecomments.append("#, %s\n" % typecomment)
             else:
                 # this should handle word boundaries properly ...
                 typecomments = map(lambda tcline: re.sub("\\b%s\\b[ \t,]*" % typecomment, "", tcline), self.typecomments)

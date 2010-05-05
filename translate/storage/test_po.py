@@ -44,6 +44,7 @@ class TestPOUnit(test_base.TestTranslationUnit):
 
     def test_adding_empty_note(self):
         unit = self.UnitClass("bla")
+        print str(unit)
         assert not '#' in str(unit)
         for empty_string in ["", " ", "\t", "\n"]:
             unit.addnote(empty_string)
@@ -308,12 +309,16 @@ msgstr "POT-Creation-Date: 2006-03-08 17:30+0200\n"
 
         posource = '#, fuzzy, python-format\nmsgid "ball"\nmsgstr "bal"\n'
         expectednonfuzzy = '#, python-format\nmsgid "ball"\nmsgstr "bal"\n'
+        expectedfuzzyagain = '#, python-format, fuzzy\nmsgid "ball"\nmsgstr "bal"\n'
         pofile = self.poparse(posource)
         print pofile
         assert pofile.units[0].isfuzzy()
         pofile.units[0].markfuzzy(False)
         assert not pofile.units[0].isfuzzy()
         assert str(pofile) == expectednonfuzzy
+        pofile.units[0].markfuzzy()
+        print str(pofile)
+        assert str(pofile) == expectedfuzzyagain or str(pofile) == posource
 
     def xtest_makeobsolete_untranslated(self):
         """Tests making an untranslated unit obsolete"""
@@ -394,6 +399,7 @@ msgstr "een"
         assert unit.isobsolete()
 
         print str(pofile)
+        # Doesn't work with CPO if obsolete units are mixed with non-obsolete units
         assert str(pofile) == posource
         unit.resurrect()
         assert unit.hasplural()
