@@ -131,7 +131,7 @@ class mounit(base.TranslationUnit):
         return bool(self.source)
 
 
-class mofile(base.TranslationStore, poheader.poheader):
+class mofile(poheader.poheader, base.TranslationStore):
     """A class representing a .mo file."""
     UnitClass = mounit
     Name = _("Gettext MO file")

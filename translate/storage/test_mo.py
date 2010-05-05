@@ -117,6 +117,12 @@ class TestMOFile(test_base.TestTranslationStore):
         test_base.TestTranslationStore.teardown_method(self, method)
         self.remove_po_and_mo()
 
+    def test_language(self):
+        """Test that we can return the target language correctly."""
+        store = self.StoreClass()
+        store.updateheader(add=True, Language="zu")
+        assert store.gettargetlanguage() == "zu"
+
     def test_output(self):
         for posource in posources:
             print "PO source file"
