@@ -51,21 +51,25 @@ OMEGAT_FIELDNAMES = ["source", "target", "comment"]
 
 
 class OmegaTDialect(csv.Dialect):
-    """Describe the properties of an OmegaT generated TAB-delimited glossary file."""
+    """Describe the properties of an OmegaT generated TAB-delimited glossary
+    file."""
     delimiter = "\t"
     lineterminator = "\r\n"
     quoting = csv.QUOTE_NONE
     if sys.version_info < (2, 5, 0):
         # We need to define the following items for csv in Python < 2.5
-        quoting = csv.QUOTE_MINIMAL   # OmegaT does not quote anything FIXME So why MINIMAL?
+        # OmegaT does not quote anything FIXME So why MINIMAL?
+        quoting = csv.QUOTE_MINIMAL
         doublequote = False
         skipinitialspace = False
         escapechar = None
         quotechar = '"'
 csv.register_dialect("omegat", OmegaTDialect)
 
+
 class OmegaTUnit(base.TranslationUnit):
     """An OmegaT glossary unit"""
+
     def __init__(self, source=None):
         self._dict = {}
         if source:
@@ -135,10 +139,12 @@ class OmegaTUnit(base.TranslationUnit):
 class OmegaTFile(base.TranslationStore):
     """An OmegaT glossary file"""
     Name = _("OmegaT Glossary")
-    Mimetypes  = ["application/x-omegat-glossary"]
+    Mimetypes = ["application/x-omegat-glossary"]
     Extensions = ["utf8"]
+
     def __init__(self, inputfile=None, unitclass=OmegaTUnit):
-        """Construct an OmegaT glossary, optionally reading in from inputfile."""
+        """Construct an OmegaT glossary, optionally reading in from
+        inputfile."""
         self.UnitClass = unitclass
         base.TranslationStore.__init__(self, unitclass=unitclass)
         self.filename = ''
@@ -164,7 +170,8 @@ class OmegaTFile(base.TranslationStore):
             input = input.decode(self._encoding).encode('utf-8')
         except:
             raise ValueError("OmegaT files are either UTF-8 encoded or use the default system encoding")
-        lines = csv.DictReader(input.split("\n"), fieldnames=OMEGAT_FIELDNAMES, dialect="omegat")
+        lines = csv.DictReader(input.split("\n"), fieldnames=OMEGAT_FIELDNAMES,
+                               dialect="omegat")
         for line in lines:
             newunit = OmegaTUnit()
             newunit.dict = line
@@ -172,7 +179,8 @@ class OmegaTFile(base.TranslationStore):
 
     def __str__(self):
         output = csv.StringIO()
-        writer = csv.DictWriter(output, fieldnames=OMEGAT_FIELDNAMES, dialect="omegat")
+        writer = csv.DictWriter(output, fieldnames=OMEGAT_FIELDNAMES,
+                                dialect="omegat")
         unit_count = 0
         for unit in self.units:
             if unit.istranslated():
@@ -187,10 +195,11 @@ class OmegaTFile(base.TranslationStore):
         except UnicodeEncodeError:
             return decoded.encode('utf-8')
 
+
 class OmegaTFileTab(OmegaTFile):
     """An OmegaT glossary file in the default system encoding"""
     Name = _("OmegaT Glossary")
-    Mimetypes  = ["application/x-omegat-glossary"]
+    Mimetypes = ["application/x-omegat-glossary"]
     Extensions = ["tab"]
 
     def _get_encoding(self):
