@@ -51,7 +51,7 @@ OMEGAT_FIELDNAMES = ["source", "target", "comment"]
 
 
 class OmegaTDialect(csv.Dialect):
-    """Describe the properties of an OmegaT generated TAB-delimited file."""
+    """Describe the properties of an OmegaT generated TAB-delimited glossary file."""
     delimiter = "\t"
     lineterminator = "\r\n"
     quoting = csv.QUOTE_NONE
@@ -65,7 +65,7 @@ class OmegaTDialect(csv.Dialect):
 csv.register_dialect("omegat", OmegaTDialect)
 
 class OmegaTUnit(base.TranslationUnit):
-    """An OmegaT translation memory unit"""
+    """An OmegaT glossary unit"""
     def __init__(self, source=None):
         self._dict = {}
         if source:
@@ -133,7 +133,7 @@ class OmegaTUnit(base.TranslationUnit):
 
 
 class OmegaTFile(base.TranslationStore):
-    """An OmegaT translation memory file"""
+    """An OmegaT glossary file"""
     Name = _("OmegaT Glossary")
     Mimetypes  = ["application/x-omegat-glossary"]
     Extensions = ["utf8"]
@@ -188,7 +188,7 @@ class OmegaTFile(base.TranslationStore):
             return decoded.encode('utf-8')
 
 class OmegaTFileTab(OmegaTFile):
-    """An OmegaT translation memory file in the default system encoding"""
+    """An OmegaT glossary file in the default system encoding"""
     Name = _("OmegaT Glossary")
     Mimetypes  = ["application/x-omegat-glossary"]
     Extensions = ["tab"]
