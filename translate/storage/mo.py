@@ -109,7 +109,8 @@ def get_next_prime_number(start):
 class mounit(base.TranslationUnit):
     """A class representing a .mo translation message."""
 
-    def __init__(self, source=None):
+    def __init__(self, source=None, encoding=None):
+        #Since the units are really dumb, we ignore encoding for now
         self.msgctxt = []
         self.msgidcomments = []
         super(mounit, self).__init__(source)
@@ -142,6 +143,7 @@ class mofile(base.TranslationStore, poheader.poheader):
         self.UnitClass = unitclass
         base.TranslationStore.__init__(self, unitclass=unitclass)
         self.filename = ''
+        self._encoding = "UTF-8"
         if inputfile is not None:
             self.parsestring(inputfile)
 
@@ -257,7 +259,6 @@ class mofile(base.TranslationStore, poheader.poheader):
         if version > 1:
             raise ValueError("Unable to process MO files with versions > 1.  \
                              This is a %d version MO file" % version)
-        encoding = 'UTF-8'
         for i in range(lenkeys):
             nextkey = startkey + (i * 2 * 4)
             nextvalue = startvalue + (i * 2 * 4)
@@ -270,14 +271,14 @@ class mofile(base.TranslationStore, poheader.poheader):
             if "\x04" in source:
                 context, source = source.split("\x04")
             # Still need to handle KDE comments
-            source = multistring(source.split("\0"), encoding=encoding)
+            source = multistring(source.split("\0"), encoding=self._encoding)
             if source == "":
                 charset = re.search("charset=([^\\s]+)",
                                     input[voffset:voffset + vlength])
                 if charset:
-                    encoding = po.encodingToUse(charset.group(1))
+                    self._encoding = po.encodingToUse(charset.group(1))
             target = multistring(input[voffset:voffset + vlength].split("\0"),
-                                 encoding=encoding)
+                                 encoding=self._encoding)
             newunit = mounit(source)
             newunit.settarget(target)
             if context is not None:
