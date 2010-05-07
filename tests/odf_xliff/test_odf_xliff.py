@@ -87,28 +87,33 @@ class ODF(object):
         return self.odf.read(filename)
 
     def _get_doc_root(self, filename):
-        return etree.tostring(etree.fromstring(self._get_data(filename)), encoding="UTF-8")
+        return etree.tostring(etree.fromstring(self._get_data(filename)), pretty_print=True)
 
     def __eq__(self, other):
         if other == None:
             return False
-        l1 = set(zi.filename for zi in self.odf.infolist())
-        l2 = set(zi.filename for zi in other.odf.infolist())
+        l1 = sorted(zi.filename for zi in self.odf.infolist())
+        l2 = sorted(zi.filename for zi in other.odf.infolist())
         if l1 != l2:
+            print "File lists don't match:"
+            print l1
+            print l2
             return False
         for filename in l1:
             if is_content_file(filename):
                 l = self._get_doc_root(filename)
                 r = other._get_doc_root(filename)
-                if self._get_doc_root(filename) != other._get_doc_root(filename):
+                if l != r:
+                    print "difference for file named", filename
                     return False
             else:
                 if self._get_data(filename) != other._get_data(filename):
+                    print "difference for file named", filename
                     return False
         return True
 
     def __str__(self):
-        return self.odf.read('content.xml')
+        return self._get_doc_root('content.xml')
 
 def test_roundtrip():
 
