@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2002-2006 Zuza Software Foundation
+# Copyright 2008-2010 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
@@ -22,7 +22,7 @@
 
 from lxml import etree
 
-from translate.storage import base
+from translate.storage import base, xliff
 from translate.misc.typecheck import accepts, Self, IsOneOf
 from translate.misc.typecheck.typeclasses import Number
 
@@ -59,7 +59,9 @@ def _split_xpath(xpath):
     
     The list is reversed so that it can be used as a stack, where the top of the stack is
     the first component.
-    """    
+    """
+    if xliff.ID_SEPARATOR in xpath:
+        xpath = xpath.split(xliff.ID_SEPARATOR)[-1]
     components = xpath.split(u'/')
     components = [_split_xpath_component(component) for component in components]
     return list(reversed(components))

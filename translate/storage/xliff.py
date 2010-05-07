@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2005-2009 Zuza Software Foundation
+# Copyright 2005-2010 Zuza Software Foundation
 #
 # This file is part of the Translate Toolkit.
 #
@@ -32,6 +32,8 @@ from translate.storage.lisa import getXMLspace
 from translate.storage.placeables.lisa import xml_to_strelem, strelem_to_xml
 
 # TODO: handle translation types
+
+ID_SEPARATOR = u"\04"
 
 class xliffunit(lisa.LISAunit):
     """A single term in the xliff file."""
@@ -326,7 +328,7 @@ class xliffunit(lisa.LISAunit):
         try:
             filename = self.xmlelement.iterancestors(self.namespaced('file')).next().get('original')
             if filename:
-                uid = filename + '::'
+                uid = filename + ID_SEPARATOR
         except StopIteration:
             # unit has no proper file ancestor, probably newly created
             pass
