@@ -25,6 +25,7 @@ import lxml.etree as etree
 from translate.storage import base
 
 from translate.misc.typecheck import accepts, IsCallable, Any
+from translate.misc.typecheck.typeclasses import Number
 from translate.storage.xml_extract import misc
 from translate.storage.xml_extract import extract
 from translate.storage.xml_extract import unit_tree
@@ -70,7 +71,7 @@ def apply_translations(dom_node, unit_node, do_translate):
         # should replace the text in dom_node with the text in unit_node.
         do_translate(dom_node, unit_node.unit)
 
-@accepts(IsCallable(), etree._Element, vargs=[Any()])
+@accepts(IsCallable(), etree._Element, state=[Number])
 def reduce_dom_tree(f, dom_node, *state):
     return misc.reduce_tree(f, dom_node, dom_node, lambda dom_node: dom_node, *state)
 
