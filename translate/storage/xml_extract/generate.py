@@ -24,7 +24,7 @@ import lxml.etree as etree
 
 from translate.storage import base
 
-from translate.misc.typecheck import accepts, IsCallable, Any
+from translate.misc.typecheck import accepts, IsCallable
 from translate.misc.typecheck.typeclasses import Number
 from translate.storage.xml_extract import misc
 from translate.storage.xml_extract import extract
