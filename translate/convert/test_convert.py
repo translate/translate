@@ -77,11 +77,14 @@ class TestConvertCommand:
         """creates the given file in the testdirectory with the given contents"""
         testfile = self.open_testfile(filename, "w")
         testfile.write(contents)
+        testfile.close()
 
     def read_testfile(self, filename):
         """reads the given file in the testdirectory and returns the contents"""
         testfile = open(self.get_testfilename(filename))
-        return testfile.read()
+        content = testfile.read()
+        testfile.close()
+        return content
 
     def help_check(self, options, option, last=False):
         """check that a help string occurs and remove it"""
