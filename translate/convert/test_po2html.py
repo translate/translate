@@ -91,4 +91,9 @@ class TestPO2HtmlCommand(test_convert.TestConvertCommand, TestPO2Html):
         options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
         options = self.help_check(options, "-w WRAP, --wrap=WRAP")
         options = self.help_check(options, "--fuzzy")
+        try:
+            import tidy
+            options = self.help_check(options, "--notidy")
+        except ImportException, e:
+            pass
         options = self.help_check(options, "--nofuzzy", last=True)
