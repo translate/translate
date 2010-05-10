@@ -32,7 +32,7 @@ def getlanguage(code):
     @param code: The ISO 639 language code
     """
     if code:
-        code = code.replace("-", "_").replace("@", "_")
+        code = code.replace("-", "_").replace("@", "_").lower()
     try:
         try:
             if code is None:
