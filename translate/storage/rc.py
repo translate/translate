@@ -46,7 +46,7 @@ def escape_to_rc(string):
 
 class rcunit(base.TranslationUnit):
     """A unit of an rc file"""
-    def __init__(self, source=""):
+    def __init__(self, source="", encoding="cp1252"):
         """Construct a blank rcunit."""
         super(rcunit, self).__init__(source)
         self.name = ""
@@ -54,6 +54,7 @@ class rcunit(base.TranslationUnit):
         self.comments = []
         self.source = source
         self.match = None
+        self.encoding = encoding
 
     def setsource(self, source):
         """Sets the source AND the target to be equal"""
@@ -107,14 +108,15 @@ class rcunit(base.TranslationUnit):
 class rcfile(base.TranslationStore):
     """This class represents a .rc file, made up of rcunits."""
     UnitClass = rcunit
-    def __init__(self, inputfile=None, lang=None, sublang=None):
+    def __init__(self, inputfile=None, lang=None, sublang=None, encoding="cp1252"):
         """Construct an rcfile, optionally reading in from inputfile."""
+        self.encoding = encoding
         super(rcfile, self).__init__(unitclass = self.UnitClass)
         self.filename = getattr(inputfile, 'name', '')
         self.lang = lang
         self.sublang = sublang
         if inputfile is not None:
-            rcsrc = inputfile.read()
+            rcsrc = inputfile.read().decode(encoding)
             inputfile.close()
             self.parse(rcsrc)
 

@@ -30,7 +30,7 @@ from translate.storage import rc
 class rerc:
     def __init__(self, templatefile, charset="utf-8", lang=None, sublang=None):
         self.templatefile = templatefile
-        self.templatestore = rc.rcfile(templatefile)
+        self.templatestore = rc.rcfile(templatefile, encoding=charset)
         self.inputdict = {}
         self.charset = charset
         self.lang = lang

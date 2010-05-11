@@ -26,8 +26,6 @@ from translate.storage import rc
 
 class rc2po:
     """Convert a .rc file to a .po file for handling the translation."""
-    def __init__(self, charset=None):
-        self.charset = charset
 
     def convert_store(self, input_store, duplicatestyle="msgctxt"):
         """converts a .rc file to a .po file..."""
@@ -74,18 +72,18 @@ class rc2po:
         # escape unicode
         output_unit = po.pounit(encoding="UTF-8")
         output_unit.addlocation("".join(input_unit.getlocations()))
-        output_unit.source = input_unit.source.decode(self.charset)
+        output_unit.source = input_unit.source
         output_unit.target = ""
         return output_unit
 
 def convertrc(input_file, output_file, template_file, pot=False, duplicatestyle="msgctxt", charset=None, lang=None, sublang=None):
     """reads in input_file using rc, converts using rc2po, writes to output_file"""
-    input_store = rc.rcfile(input_file, lang, sublang)
-    convertor = rc2po(charset=charset)
+    input_store = rc.rcfile(input_file, lang, sublang, encoding=charset)
+    convertor = rc2po()
     if template_file is None:
         output_store = convertor.convert_store(input_store, duplicatestyle=duplicatestyle)
     else:
-        template_store = rc.rcfile(template_file, lang, sublang)
+        template_store = rc.rcfile(template_file, lang, sublang, encoding=charset)
         output_store = convertor.merge_store(template_store, input_store, blankmsgstr=pot, duplicatestyle=duplicatestyle)
     if output_store.isempty():
         return 0
