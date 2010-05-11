@@ -23,7 +23,8 @@ the header of a Gettext PO file."""
 
 import re
 
-from translate.misc.typecheck import accepts, returns
+from translate.misc.typecheck import accepts, returns, IsOneOf
+from translate.misc.typecheck.typeclasses import String
 
 __all__ = ['LANG_TEAM_CONTACT_SNIPPETS', 'guess_language']
 
@@ -58,7 +59,8 @@ LANG_TEAM_CONTACT_SNIPPETS = {
     "bs": ("lokal@linux.org.ba", "lokal@lugbih.org", ),
     "ca": ("@softcatala.org",),
     "crh": ("tilde-birlik-tercime@lists.sourceforge.net", ),
-    "cs": ("fedora-cs-list@redhat.com", "cs-users@lists.fedoraproject.org", "debian-l10n-czech@lists.debian.org", "kde-czech-apps@lists.sourceforge.net", "kde-czech-apps@lists.sf.net", "translations.cs@gnupg.cz"),
+    "cs": ("fedora-cs-list@redhat.com", "cs-users@lists.fedoraproject.org", "debian-l10n-czech@lists.debian.org",
+           "kde-czech-apps@lists.sourceforge.net", "kde-czech-apps@lists.sf.net", "translations.cs@gnupg.cz"),
     "cy": ("gnome-cy@lists.linux.org.uk", "gnome-cy@pengwyn.linux.org.uk", "gnome-cy@www.linux.org", "gnome-cy@www.linux.org.uk", "cy@pengwyn.linux.org.uk", ),
     "da": ("dansk@dansk-gruppen.dk", "dansk@klid.dk", "sslug-locale@sslug.dk", ),
     "de": ("gnome-de@gnome.org", "debian-l10n-german@lists.debian.org", ),
@@ -73,7 +75,8 @@ LANG_TEAM_CONTACT_SNIPPETS = {
     "et": ("gnome-et@linux.ee", "kde-et@linux.ee", "linux-ee@lists.eenet.ee", "linux-et@lists.eenet.ee", "et-gnome@linux.ee", "linux-ee@eenet.ee", ),
     "eu": ("debian-l10n-basque@lists.debian.org", "debian-l10n-eu@lists.debian.org", "itzulpena@euskalgnu.org", "gnome@euskalgnu.org", "librezale@librezale.org", "linux-eu@chanae.alphanet.ch", ),
     "fa": ("farsi@lists.sharif.edu", "Farsiweb.info", ),
-    "fi": ("debian-l10n-finnish@lists.debian.org", "gnome-fi-laatu@lists.sourceforge.net", "laatu@lokalisointi.org", "lokalisointi-laatu@linux-aktivaattori.org", "laatu@gnome.fi", "yast-trans-fi@kotoistaminen.novell.fi", ),
+    "fi": ("debian-l10n-finnish@lists.debian.org", "gnome-fi-laatu@lists.sourceforge.net", "laatu@lokalisointi.org",
+           "lokalisointi-laatu@linux-aktivaattori.org", "laatu@gnome.fi", "yast-trans-fi@kotoistaminen.novell.fi", ),
     "fr": ("debian-l10n-french@lists.debian.org", "gnomefr@traduc.org", "kde-francophone@kde.org", "traduc@traduc.org", "pgsql-fr-generale@postgresql.org", "rpm-fr@livna.org", ),
     "ga": ("gaeilge-gnulinux@lists.sourceforge.net", "gaeilge-a@listserv.heanet.ie", ),
     "gl": ("trasno@ceu.fi.udc.es", "gnome@g11n.net", "gpul-traduccion@ceu.fi.udc.es", "proxecto@trasno.net", "trasno@gpul.org", ),
@@ -91,7 +94,8 @@ LANG_TEAM_CONTACT_SNIPPETS = {
     "kk": ("kk_KZ@googlegroups.com", ),
     "km": ("@khmeros.info", ),
     "kn": ("debian-l10n-kannada@lists.debian.org", ),
-    "ko": ("gnome-kr-hackers@list.kldp.net", "gnome-kr-hackers@lists.kldp.net", "gnome-kr-translation@lists.kldp.net", "pgsql-kr@postgresql.or.kr", "hangul-hackers@lists.kldp.net", "debian-l10n-korean@lists.debian.org", "gnome-kr-translation@lists.sourceforge.net", ),
+    "ko": ("gnome-kr-hackers@list.kldp.net", "gnome-kr-hackers@lists.kldp.net", "gnome-kr-translation@lists.kldp.net", "pgsql-kr@postgresql.or.kr",
+           "hangul-hackers@lists.kldp.net", "debian-l10n-korean@lists.debian.org", "gnome-kr-translation@lists.sourceforge.net", ),
     "ks": ("ks-gnome-trans-commits@lists.code.indlinux.net", ),
     "ku": ("gnu-ku-wergerandin@lists.sourceforge.net", ),
     "ky": ("i18n-team-ky-kyrgyz@lists.sourceforge.net", "ky-li@mail.ru", ),
@@ -117,7 +121,8 @@ LANG_TEAM_CONTACT_SNIPPETS = {
     "pl": ("gnomepl@aviary.pl", "debian-l10n-polish@lists.debian.org", "gnome-l10n@lists.aviary.pl", "translators@gnomepl.org", ),
     "ps": ("pathanisation@googelgroups.com", ),
     "pt": ("fedora-trans-pt@redhat.org", "gnome_pt@yahoogroups.com", "traduz@debianpt.org", "traduz@debian.pt", ),
-    "pt_BR": ("gnome-l10n-br@listas.cipsga.org.br", "gnome-pt_br-list@gnome.org", "fedora-docs-br@redhat.com", "fedora-trans-pt-br@redhat.com", "ldp-br@bazar.conectiva.com.br", "pgbr-dev@postgresql.org.br", "pgbr-dev@listas.postgresql.org.br", "debian-l10n-portuguese@lists.debian.org", ),
+    "pt_BR": ("gnome-l10n-br@listas.cipsga.org.br", "gnome-pt_br-list@gnome.org", "fedora-docs-br@redhat.com", "fedora-trans-pt-br@redhat.com",
+              "ldp-br@bazar.conectiva.com.br", "pgbr-dev@postgresql.org.br", "pgbr-dev@listas.postgresql.org.br", "debian-l10n-portuguese@lists.debian.org", ),
     "ro": ("fedora-ro@googlegroups.com", "gnomero-list@lists.sourceforge.net", "debian-l10n-romanian@lists.debian.org", ),
     "ru": ("pgsql-rus@yahoogroups.com", "debian-l10n-russian@lists.debian.org", "gnupg-ru@gnupg.org", ),
     "sk": ("sk-i18n@lists.linux.sk", "kde-sk@linux.sk", ),
@@ -327,7 +332,7 @@ def _snippet_guesser(snippets_dict, string, filter_=_nofilter):
 
 
 @accepts(unicode)
-@returns(str, type(None))
+@returns(IsOneOf(String, type(None)))
 def guess_language(team_string):
     """Gueses the language of a PO file based on the Language-Team entry"""
 
