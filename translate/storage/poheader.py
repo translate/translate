@@ -250,16 +250,27 @@ class poheader(object):
         self.updateheader(add=True, Plural_Forms="nplurals=%d; plural=%s;" % (nplurals, plural) )
 
     def gettargetlanguage(self):
-        """Return the target language if specified in the header.
+        """Return the target language based on information in the header.
 
-        Some attempt at understanding Poedit's custom headers is done."""
+        The target language is determined in the following sequence:
+          1. Use the 'Language' entry in the header.
+          2. Poedit's custom headers.
+          3. Analysing the 'Language-Team' entry.
+        """
         header = self.parseheader()
+        print header
+        lang = header.get('Language', None)
+        if lang is not None:
+            return lang
         if 'X-Poedit-Language' in header:
             from translate.lang import poedit
             language = header.get('X-Poedit-Language')
             country = header.get('X-Poedit-Country')
             return poedit.isocode(language, country)
-        return header.get('Language')
+        if 'Language-Team' in header:
+            from translate.lang.team import guess_language
+            return guess_language(header.get('Language-Team'))
+        return None
 
     def settargetlanguage(self, lang):
         """Set the target language in the header.

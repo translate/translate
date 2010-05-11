@@ -9,6 +9,7 @@ from translate.storage import poxliff
 from translate.storage import poheader
 from translate.misc.dictutils import ordereddict
 from translate.misc import wStringIO
+from translate.lang.team import guess_language
 
 
 def test_parseheaderstring():
@@ -263,3 +264,25 @@ msgstr ""
     pofile.updatecontributor("Khaled Hosny", "khaledhosny@domain.org")
     print str(pofile)
     assert "# Khaled Hosny <khaledhosny@domain.org>, 2006, 2007, 2008, %s." % time.strftime("%Y") in str(pofile)
+
+def test_language():
+    """Test that we can get a language from the relevant headers."""
+    posource = r'''msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+'''
+
+    pofile = poparse(posource)
+    assert pofile.gettargetlanguage() == None
+
+    posource += '"Language-Team: translate-discuss-af@lists.sourceforge.net\\n"\n'
+    pofile = poparse(posource)
+    assert pofile.gettargetlanguage() == 'af'
+
+    posource += '"X-Poedit-Language: German\\n"\n'
+    pofile = poparse(posource)
+    assert pofile.gettargetlanguage() == 'de'
+
+    posource += '"Language: fr_CA\\n"\n'
+    pofile = poparse(posource)
+    assert pofile.gettargetlanguage() == 'fr_CA'
