@@ -258,7 +258,6 @@ class poheader(object):
           3. Analysing the 'Language-Team' entry.
         """
         header = self.parseheader()
-        print header
         lang = header.get('Language', None)
         if lang is not None:
             return lang
