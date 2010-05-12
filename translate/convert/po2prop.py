@@ -76,7 +76,6 @@ class reprop:
             returnline = quote.rstripeol(line)+eol
         else:
             line = quote.rstripeol(line)
-            equalspos = line.find('=')
             delimiter_char, delimiter_pos = find_delimiter(line)
             # if no delimiter, just repeat it
             if delimiter_pos == -1:
