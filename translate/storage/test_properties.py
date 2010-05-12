@@ -5,25 +5,25 @@ from translate.storage import properties
 from translate.storage import test_monolingual
 from translate.misc import wStringIO
 
-def test_find_delimeter_pos_simple():
-    assert properties.find_delimeter("key=value") == ('=', 3)
-    assert properties.find_delimeter("key:value") == (':', 3)
-    assert properties.find_delimeter("key value") == (' ', 3)
-    assert properties.find_delimeter("= value") == ('=', 0)
+def test_find_delimiter_pos_simple():
+    assert properties.find_delimiter("key=value") == ('=', 3)
+    assert properties.find_delimiter("key:value") == (':', 3)
+    assert properties.find_delimiter("key value") == (' ', 3)
+    assert properties.find_delimiter("= value") == ('=', 0)
 
-def test_find_delimeter_pos_whitespace():
-    assert properties.find_delimeter("key = value") == ('=', 4)
-    assert properties.find_delimeter("key : value") == (':', 4)
-    assert properties.find_delimeter("key   value") == (' ', 3)
-    assert properties.find_delimeter("key key = value") == (' ', 3)
-    assert properties.find_delimeter("key value value") == (' ', 3)
-    assert properties.find_delimeter(" key = value") == ('=', 5)
+def test_find_delimiter_pos_whitespace():
+    assert properties.find_delimiter("key = value") == ('=', 4)
+    assert properties.find_delimiter("key : value") == (':', 4)
+    assert properties.find_delimiter("key   value") == (' ', 3)
+    assert properties.find_delimiter("key key = value") == (' ', 3)
+    assert properties.find_delimiter("key value value") == (' ', 3)
+    assert properties.find_delimiter(" key = value") == ('=', 5)
 
-def test_find_delimeter_pos_escapes():
-    assert properties.find_delimeter("key\:=value") == ('=', 5)
-    assert properties.find_delimeter("key\=: value") == (':', 5)
-    assert properties.find_delimeter("key\   value") == (' ', 5)
-    assert properties.find_delimeter("key\ key\ key\: = value") == ('=', 16)
+def test_find_delimiter_pos_escapes():
+    assert properties.find_delimiter("key\:=value") == ('=', 5)
+    assert properties.find_delimiter("key\=: value") == (':', 5)
+    assert properties.find_delimiter("key\   value") == (' ', 5)
+    assert properties.find_delimiter("key\ key\ key\: = value") == ('=', 16)
 
 def test_is_line_continuation():
     assert properties.is_line_continuation("") == False
@@ -121,13 +121,13 @@ class TestProp(test_monolingual.TestMonolingualStore):
             assert propunit.name == key
             assert propunit.source == value
      
-    def test_key_value_delimeters_simple(self):
-        """test that we can handle colon, equals and space delimeter
+    def test_key_value_delimiters_simple(self):
+        """test that we can handle colon, equals and space delimiter
         between key and value.  We don't test any space removal or escaping"""
-        delimeters = [":", "=", " "]
-        for delimeter in delimeters:
-            propsource = "key%svalue" % delimeter
-            print "source: '%s'\ndelimeter: '%s'" % (propsource, delimeter)
+        delimiters = [":", "=", " "]
+        for delimiter in delimiters:
+            propsource = "key%svalue" % delimiter
+            print "source: '%s'\ndelimiter: '%s'" % (propsource, delimiter)
             propfile = self.propparse(propsource)
             assert len(propfile.units) == 1
             propunit = propfile.units[0]

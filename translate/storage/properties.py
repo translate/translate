@@ -59,47 +59,54 @@ import re
 
 eol = "\n"
 
-def find_delimeter(line):
-    """Find the type and position of the delimeter in a property line.
+def find_delimiter(line):
+    """Find the type and position of the delimiter in a property line.
 
     Property files can be delimeted by "=", ":" or whitespace (space for now).
-    We find the position of each delimeter, then find the one that appears 
+    We find the position of each delimiter, then find the one that appears 
     first.
 
     @param line: A properties line
     @type line: str
-    @return: Delimeter character and offset within L{line}
-    @rtype: Tuple (Delimeter char, Offset Integer)
+    @return: delimiter character and offset within L{line}
+    @rtype: Tuple (delimiter char, Offset Integer)
     """
-    delimeters = {"=": -1, ":": -1, " ": -1}
-    # Find the position of each delimeter type
-    for delimeter, pos in delimeters.iteritems():
+    delimiters = {"=": -1, ":": -1, " ": -1}
+    # Find the position of each delimiter type
+    for delimiter, pos in delimiters.iteritems():
         prewhitespace = len(line) - len(line.lstrip())
-        pos = line.find(delimeter, prewhitespace)
+        pos = line.find(delimiter, prewhitespace)
         while pos != -1:
-            if delimeters[delimeter] == -1 and line[pos-1] != "\\":
-                delimeters[delimeter] = pos
+            if delimiters[delimiter] == -1 and line[pos-1] != "\\":
+                delimiters[delimiter] = pos
                 break
-            pos = line.find(delimeter, pos+1)
-    # Find the first "=" or ":" delimeter
-    mindelimeter = None
+            pos = line.find(delimiter, pos+1)
+    # Find the first "=" or ":" delimiter
+    mindelimiter = None
     minpos = -1
-    for delimeter, pos in delimeters.iteritems():
-        if pos == -1 or delimeter == " ":
+    for delimiter, pos in delimiters.iteritems():
+        if pos == -1 or delimiter == " ":
             continue
         if minpos == -1 or pos < minpos:
             minpos = pos
-            mindelimeter = delimeter
-    if mindelimeter is None and delimeters[" "] != -1:
-        # Use space delimeter if we found nothing else
-        return (" ", delimeters[" "])
-    if mindelimeter is not None and delimeters[" "] < delimeters[mindelimeter]:
-        # If space delimeter occurs earlier then ":" or "=" then it is the 
-        # delimeter only if there are non-whitespace characters between it and
-        # the other detected delimeter.
-        if len(line[delimeters[" "]:delimeters[mindelimeter]].strip()) > 0:
-            return (" ", delimeters[" "])
-    return (mindelimeter, minpos)
+            mindelimiter = delimiter
+    if mindelimiter is None and delimiters[" "] != -1:
+        # Use space delimiter if we found nothing else
+        return (" ", delimiters[" "])
+    if mindelimiter is not None and delimiters[" "] < delimiters[mindelimiter]:
+        # If space delimiter occurs earlier then ":" or "=" then it is the 
+        # delimiter only if there are non-whitespace characters between it and
+        # the other detected delimiter.
+        if len(line[delimiters[" "]:delimiters[mindelimiter]].strip()) > 0:
+            return (" ", delimiters[" "])
+    return (mindelimiter, minpos)
+
+def find_delimeter(line):
+    """Spelling error that is kept around for in case someone relies on it.
+
+    Deprecated."""
+    raise DeprecationWarning
+    return find_delimiter(line)
 
 def is_line_continuation(line):
     """Determine whether L{line} has a line continuation marker.
@@ -151,7 +158,7 @@ class propunit(base.TranslationUnit):
         self.name = ""
         self.value = u""
         self.translation = u""
-        self.delimeter = u"="
+        self.delimiter = u"="
         self.comments = []
         self.source = source
 
@@ -205,7 +212,7 @@ class propunit(base.TranslationUnit):
             if "\\u" in self.translation and self.personality == "mozilla":
                 self.translation = quote.mozillapropertiesencode(self.target)
             value = self.translation or self.value
-            return u"%s%s%s%s\n" % (notes, self.name, self.delimeter, value)
+            return u"%s%s%s%s\n" % (notes, self.name, self.delimiter, value)
 
     def getlocations(self):
         return [self.name]
@@ -278,14 +285,14 @@ class propfile(base.TranslationStore):
                     self.addunit(newunit)
                     newunit = propunit("", personality)
             else:
-                delimeter_char, delimeter_pos = find_delimeter(line)
-                if delimeter_pos == -1:
+                delimiter_char, delimiter_pos = find_delimiter(line)
+                if delimiter_pos == -1:
                     continue
                 # otherwise, this is a definition
                 else:
-                    newunit.delimeter = delimeter_char
-                    newunit.name = key_strip(line[:delimeter_pos])
-                    newunit.value = line[delimeter_pos+1:].lstrip()
+                    newunit.delimiter = delimiter_char
+                    newunit.name = key_strip(line[:delimiter_pos])
+                    newunit.value = line[delimiter_pos+1:].lstrip()
                     # backslash at end means carry string on to next line
                     if is_line_continuation(newunit.value):
                         inmultilinevalue = True
