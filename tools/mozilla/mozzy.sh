@@ -11,7 +11,7 @@ do
 done
 
 CWD=$(pwd)
-GECKO_VERSION="1.9.1"
+GECKO_VERSION="1.9.2"
 LANGS="xx"
 PRODUCT="browser"
 #L10N_BASE_URL="http://hg.mozilla.org/l10n-central"
