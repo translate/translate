@@ -84,6 +84,17 @@ msgstr ""'''
         print propfile
         assert propfile == [propexpected]
 
+    def test_delimiters(self):
+        """test that we handle different delimiters."""
+        posource = '''#: prop\nmsgid "value"\nmsgstr "translated"\n'''
+        proptemplate = '''prop %s value\n'''
+        propexpected = '''prop %s translated\n'''
+        for delim in ['=', ':', '']:
+            print "testing '%s' as delimiter" % delim
+            propfile = self.merge2prop(proptemplate % delim, posource)
+            print propfile
+            assert propfile == [propexpected % delim]
+
     def test_personalities(self):
         """test that we output correctly for Java and Mozilla style property files.  Mozilla uses Unicode, while Java uses escaped Unicode"""
         posource = '''#: prop\nmsgid "value"\nmsgstr "ṽḁḽṻḝ"\n'''
