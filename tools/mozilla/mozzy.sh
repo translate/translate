@@ -319,12 +319,12 @@ update_po() {
 merge_back() {
 	lang=$1
 	debuglog "<merge_back lang=$lang>"
-	if [ -d po-updated/$lang ]; then
-		po2moz --progress=none --errorlevel=traceback --exclude=".svn" --exclude=".hg*" \
-			-t en-US -i po-updated/$lang -o $L10N_DIR/$lang
-	else
-		echo "Could not file updated PO directory: $(pwd)/po-updated/$lang"
+	if [ ! -d po-updated/$lang ]; then
+		mkdir -p po-updated/$lang
+		echo "Could not find updated PO directory: $(pwd)/po-updated/$lang. Creating it..."
 	fi
+	po2moz --progress=none --errorlevel=traceback --exclude=".svn" --exclude=".hg*" \
+		-t en-US -i po-updated/$lang -o $L10N_DIR/$lang
 	debuglog "</merge_back lang=$lang>"
 }
 
