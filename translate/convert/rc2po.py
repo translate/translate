@@ -60,7 +60,7 @@ class rc2po:
                     origpo.target = translatedpo.source
                 output_store.addunit(origpo)
             elif translatedpo is not None:
-                print >> sys.stderr, "error converting original rc definition %s" % origrc.name
+                print >> sys.stderr, "error converting original rc definition %s" % template_unit.name
         output_store.removeduplicates(duplicatestyle)
         return output_store
 
