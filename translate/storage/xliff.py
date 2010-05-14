@@ -34,7 +34,12 @@ from translate.storage.placeables.lisa import xml_to_strelem, strelem_to_xml
 # TODO: handle translation types
 
 ID_SEPARATOR = u"\04"
-
+# ID_SEPARATOR is commonly used through toolkit to generate compound
+# unit ids (for instance to concatenate msgctxt and msgid in po), but
+# \04 is an illegal char in XML 1.0, ID_SEPARATOR_SAFE will be used
+# instead when converting between xliff and other toolkit supported
+# formats
+ID_SEPARATOR_SAFE = u"__%04__"
 class xliffunit(lisa.LISAunit):
     """A single term in the xliff file."""
 
@@ -321,7 +326,8 @@ class xliffunit(lisa.LISAunit):
         targetnode.set("state", "translated")
 
     def setid(self, id):
-        self.xmlelement.set("id", id)
+        # sanitize id in case ID_SEPERATOR is present
+        self.xmlelement.set("id", id.replace(ID_SEPARATOR, ID_SEPARATOR_SAFE))
 
     def getid(self):
         uid = ""
@@ -332,8 +338,8 @@ class xliffunit(lisa.LISAunit):
         except StopIteration:
             # unit has no proper file ancestor, probably newly created
             pass
-
-        uid += self.xmlelement.get("id") or ""
+        # hide the fact that we sanitize ID_SEPERATOR
+        uid += (self.xmlelement.get("id") or "").replace(ID_SEPARATOR_SAFE, ID_SEPARATOR)
         return uid
 
     def addlocation(self, location):
