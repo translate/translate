@@ -43,6 +43,7 @@ class BundleProject(Project):
     def from_project(cls, proj, fname=None):
         if fname is None:
             fname = 'bundle.zip'
+
         bundle = BundleProject(fname)
         for fn in proj.sourcefiles:
             bundle.append_sourcefile(proj.get_file(fn))
@@ -51,6 +52,8 @@ class BundleProject(Project):
         for fn in proj.targetfiles:
             bundle.append_targetfile(proj.get_file(fn))
         bundle.settings = proj.settings.copy()
+        bundle.save()
+        return bundle
 
 
     # ACCESSORS #
