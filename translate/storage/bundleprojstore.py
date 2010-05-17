@@ -42,7 +42,8 @@ class BundleProjectStore(ProjectStore):
         if os.path.isfile(fname):
             self.load(fname)
         else:
-            self.zip = ZipFileExt(fname, 'w')
+            self.zip = ZipFileExt(fname, 'a')
+            self.save()
 
     def __del__(self):
         self.cleanup()
