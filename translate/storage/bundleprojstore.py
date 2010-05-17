@@ -83,7 +83,7 @@ class BundleProjectStore(ProjectStore):
             # Extract the file to a temporary file
             zfile = self.zip.open(fname)
             tempfname = os.path.split(fname)[-1]
-            tempfd, tempfname = tempfile.mkstemp(prefix=tempfname)
+            tempfd, tempfname = tempfile.mkstemp(suffix=tempfname)
             os.close(tempfd)
             outputfile = open(tempfname, 'w').write(zfile.read())
             retfile = open(tempfname)
