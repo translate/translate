@@ -128,9 +128,8 @@ class BundleProjectStore(ProjectStore):
             fname = None
         if fname:
             return fname
-        for tempfile in self.tempfiles:
-            if tempfile.name == realfname:
-                return self.tempfiles[tempfile]
+        if realfname in self.tempfiles:
+            return self.tempfiles[realfname]
         raise ValueError('Real file not in project store: %s' % (realfname))
 
     def load(self, zipname):
