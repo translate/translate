@@ -214,6 +214,15 @@ class ProjectStore(object):
     def save(self, *args, **kwargs):
         pass
 
+    def update_file(self, pfname, infile):
+        """Remove the project file with name C{pfname} and add the contents
+            from C{infile} to the project under the same file name.
+
+            @returns: the results from L{self.append_file}."""
+        ftype = self.get_filename_type(pfname)
+        self.remove_file(pfname)
+        return self.append_file(infile, pfname, ftype)
+
     def _fix_type_filename(self, ftype, fname):
         """Strip the path from the filename and prepend the correct prefix."""
         path, fname = os.path.split(fname)
