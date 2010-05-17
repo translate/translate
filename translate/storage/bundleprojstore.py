@@ -72,6 +72,9 @@ class BundleProjectStore(ProjectStore):
     def append_file(self, afile, fname, ftype='trans'):
         """Append the given file to the project with the given filename, marked
             to be of type C{ftype} ('src', 'trans', 'tgt')."""
+        if fname in self.zip.namelist():
+            raise ValueError("File already in bundle archive: %s" % (fname))
+
         afile, fname = super(BundleProjectStore, self).append_file(afile, fname, ftype)
 
         if hasattr(afile, 'seek'):
