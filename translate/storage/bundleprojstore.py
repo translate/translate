@@ -104,7 +104,6 @@ class BundleProjectStore(ProjectStore):
                     self._files[fname] = None
 
     def save(self):
-        import tempfile
         from StringIO import StringIO
 
         io = StringIO()
