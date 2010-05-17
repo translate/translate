@@ -75,18 +75,13 @@ class BundleProjectStore(ProjectStore):
     # METHODS #
     def get_file(self, fname):
         retfile = None
-        try:
-            retfile = super(BundleProjectStore, self).get_file(fname)
-        except FileNotInProjectError:
-            pass
-
-        if fname in self.zip.namelist():
+        if fname in self._files or fname in self.zip.namelist():
             # Extract the file to a temporary file
             zfile = self.zip.open(fname)
             tempfname = os.path.split(fname)[-1]
             tempfd, tempfname = tempfile.mkstemp(suffix=tempfname)
             os.close(tempfd)
-            outputfile = open(tempfname, 'w').write(zfile.read())
+            open(tempfname, 'w').write(zfile.read())
             retfile = open(tempfname)
 
         if not retfile:
