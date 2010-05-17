@@ -22,6 +22,7 @@ import os
 import tempfile
 from zipfile import ZipFile
 
+from translate.misc.zipfileext import ZipFileExt
 from translate.storage.projstore import *
 
 __all__ = ['BundleProjectStore', 'InvalidBundleError']
@@ -40,7 +41,7 @@ class BundleProjectStore(ProjectStore):
         if os.path.isfile(fname):
             self.load(fname)
         else:
-            self.zip = ZipFile(fname, 'w')
+            self.zip = ZipFileExt(fname, 'w')
 
     @classmethod
     def from_project(cls, proj, fname=None):
@@ -93,7 +94,7 @@ class BundleProjectStore(ProjectStore):
         return retfile
 
     def load(self, zipname):
-        self.zip = ZipFile(zipname, mode='a')
+        self.zip = ZipFileExt(zipname, mode='a')
         self._load_settings()
 
         append_section = {
@@ -112,7 +113,7 @@ class BundleProjectStore(ProjectStore):
         from StringIO import StringIO
 
         io = StringIO()
-        newzip = ZipFile(io, mode='w')
+        newzip = ZipFileExt(io, mode='w')
         newzip.writestr('project.xtp', self._generate_settings())
         for fname in self._sourcefiles + self._transfiles + self._targetfiles:
             newzip.writestr(fname, self.get_file(fname).read())
@@ -128,7 +129,7 @@ class BundleProjectStore(ProjectStore):
         # XXX: The following overwrites the original zip file. Is this correct behaviour?
         zfname = self.zip.filename
         os.rename(newzipfname, zfname)
-        self.zip = ZipFile(zfname, mode='a')
+        self.zip = ZipFileExt(zfname, mode='a')
 
     def _load_settings(self):
         if 'project.xtp' not in self.zip.namelist():
