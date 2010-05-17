@@ -120,6 +120,19 @@ class BundleProjectStore(ProjectStore):
             raise FileNotInProjectError(fname)
         return retfile
 
+    def get_proj_filename(self, realfname):
+        """Try and find a project file name for the given real file name."""
+        try:
+            fname = super(BundleProjectStore, self).get_proj_filename(realfname)
+        except ValueError, ve:
+            fname = None
+        if fname:
+            return fname
+        for tempfile in self.tempfiles:
+            if tempfile.name == realfname:
+                return self.tempfiles[tempfile]
+        raise ValueError('Real file not in project store: %s' % (realfname))
+
     def load(self, zipname):
         self.zip = ZipFileExt(zipname, mode='a')
         self._load_settings()

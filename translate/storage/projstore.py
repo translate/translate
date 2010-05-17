@@ -208,6 +208,13 @@ class ProjectStore(object):
                 return ftype
         raise FileNotInProjectError(fname)
 
+    def get_proj_filename(self, realfname):
+        """Try and find a project file name for the given real file name."""
+        for fname in self._files:
+            if fname == realfname or self._files[fname] == realfname:
+                return fname
+        raise ValueError('Real file not in project store: %s' % (realfname))
+
     def load(self, *args, **kwargs):
         pass
 

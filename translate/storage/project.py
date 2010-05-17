@@ -61,13 +61,6 @@ class Project(object):
         """Proxy for C{ProjectStore.get_file()}."""
         return self.store.get_file(fname)
 
-    def get_proj_filename(self, realfname):
-        """Try and find a project file name for the given real file name."""
-        for fname in self.store._files:
-            if fname == realfname or self.store._files[fname] == realfname:
-                return fname
-        raise ValueError('Real file not in project store: %s' % (realfname))
-
     def get_real_filename(self, projfname):
         """Try and find a real file name for the given project file name."""
         projfile = self.get_file(projfname)
@@ -130,3 +123,7 @@ class Project(object):
         self._convert_map[input_fname] = output_fname
 
         return outputfile, output_fname
+
+    def get_proj_filename(self, realfname):
+        """Proxy to C{self.store.get_proj_filename()}."""
+        return self.store.get_proj_filename(realfname)
