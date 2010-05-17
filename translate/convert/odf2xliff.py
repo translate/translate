@@ -29,7 +29,7 @@ from translate.misc.contextlib import contextmanager
 from translate.misc.context import with_
 from translate.storage import odf_io
 
-def convertodf(inputfile, outputfile, templates, engine):
+def convertodf(inputfile, outputfile, templates, engine='toolkit'):
     """reads in stdin using fromfileclass, converts using convertorclass,
        writes to stdout
     """
