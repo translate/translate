@@ -36,13 +36,13 @@ class Project(object):
     def __init__(self, projstore=None):
         if projstore is None:
             projstore = ProjectStore()
-        self.projstore = projstore
+        self.store = projstore
         self._convert_map = {} # Mapping of input file to the file it was converted to
 
 
     # METHODS #
     def add_source(self, srcfile, src_fname=None):
-        return self.projstore.append_sourcefile(srcfile, src_fname)
+        return self.store.append_sourcefile(srcfile, src_fname)
 
     def add_source_convert(self, srcfile, src_fname=None, convert_options=None, extension=None):
         """Convenience method that calls L{add_source} and L{convert_forward}
@@ -55,16 +55,16 @@ class Project(object):
         """Export the file with the specified filename to the given destination.
             This method will raise L{FileNotInProjectError} via the call to
             L{ProjectStore.get_file()} if C{fname} is not found in the project."""
-        open(destfname, 'w').write(self.projstore.get_file(fname).read())
+        open(destfname, 'w').write(self.store.get_file(fname).read())
 
     def get_file(self, fname):
         """Proxy for C{ProjectStore.get_file()}."""
-        return self.projstore.get_file(fname)
+        return self.store.get_file(fname)
 
     def get_proj_filename(self, realfname):
         """Try and find a project file name for the given real file name."""
-        for fname in self.projstore._files:
-            if fname == realfname or self.projstore._files[fname] == realfname:
+        for fname in self.store._files:
+            if fname == realfname or self.store._files[fname] == realfname:
                 return fname
         raise ValueError('Real file not in project store: %s' % (realfname))
 
@@ -90,7 +90,7 @@ class Project(object):
             convert_options = {}
 
         inputfile = self.get_file(input_fname)
-        input_type = self.projstore.get_filename_type(input_fname)
+        input_type = self.store.get_filename_type(input_fname)
 
         if input_type == 'tgt':
             raise ValueError('Cannot convert a target document further: %s' % (input_fname))
@@ -125,8 +125,8 @@ class Project(object):
 
         os.rename(converted_file.name, output_fname)
 
-        output_type = self.projstore.TYPE_INFO['next_type'][input_type]
-        outputfile, output_fname = self.projstore.append_file(output_fname, None, ftype=output_type)
+        output_type = self.store.TYPE_INFO['next_type'][input_type]
+        outputfile, output_fname = self.store.append_file(output_fname, None, ftype=output_type)
         self._convert_map[input_fname] = output_fname
 
         return outputfile, output_fname
