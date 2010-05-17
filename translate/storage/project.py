@@ -69,11 +69,27 @@ class Project(object):
         if input_type == 'tgt':
             raise ValueError('Cannot convert a target document further: %s' % (input_fname))
 
-        # Get template, if applicable
-        if template is None and input_type == 'trans' and input_fname in self.store.convert_map.values():
-            for templ_fname in self.store.convert_map:
-                if self.store.convert_map[templ_fname] == input_fname:
-                    template = self.get_file(templ_fname)
+        templ_fname = None
+        if isinstance(template, basestring):
+            template, templ_fname = self.get_file(template)
+
+        if template and not templ_fname:
+            templ_fname = template.name
+
+        # Check if we can determine a template from the conversion map
+        if template is None:
+            convert_map = self.store.convert_map
+            if input_fname in convert_map:
+                templ_fname = convert_map[input_fname][1]
+                template = self.get_file(templ_fname)
+            elif input_type == 'trans':
+                # inputfile is a translatable file, so it needed to be converted
+                # from some input document. Let's try and use that document as a
+                # template for this conversion.
+                for in_name, (out_name, tmpl_name) in self.store.convert_map.items():
+                    if input_fname == out_name:
+                        template, templ_fname = self.get_file(in_name), in_name
+                        break
 
         # Populate the options dict with the options we can detect
         options = dict(in_fname=input_fname)
@@ -101,7 +117,7 @@ class Project(object):
 
         output_type = self.store.TYPE_INFO['next_type'][input_type]
         outputfile, output_fname = self.store.append_file(output_fname, None, ftype=output_type)
-        self.store.convert_map[input_fname] = output_fname
+        self.store.convert_map[input_fname] = (output_fname, templ_fname)
 
         return outputfile, output_fname
 

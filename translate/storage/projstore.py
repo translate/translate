@@ -45,6 +45,10 @@ class ProjectStore(object):
         self.convert_map   = {}
         # The above map maps the conversion of input files (keys) to its output
         # file and template used (2-tuple). All values are project file names.
+        # eg. convert_map = {
+        #    'sources/doc.odt':   ('trans/doc.odt.xlf', None),
+        #    'trans/doc.odt.xlf': ('targets/doc.odt', 'sources/doc.odt')
+        #}
 
         # The following dict groups together sets of mappings from a file
         # "type" string ("src", "tgt" or "trans") to various other values
