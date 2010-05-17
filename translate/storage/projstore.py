@@ -113,6 +113,8 @@ class ProjectStore(object):
 
     # METHODS #
     def append_file(self, afile, fname, ftype='trans'):
+        """Append the given file to the project with the given filename, marked
+            to be of type C{ftype} ('src', 'trans', 'tgt')."""
         if not ftype in self.TYPE_INFO['f_prefix']:
             raise ValueError('Invalid file type: %s' % (ftype))
 
@@ -160,6 +162,9 @@ class ProjectStore(object):
         return self.append_file(afile, fname, ftype='trans')
 
     def remove_file(self, fname, ftype=None):
+        """Remove the file with the given project name from the project.
+            If the file type ('src', 'trans' or 'tgt') is not given, it is
+            guessed."""
         if fname not in self._files:
             raise FileNotInProjectError(fname)
         if not ftype:
@@ -217,6 +222,7 @@ class ProjectStore(object):
         return rfile
 
     def get_filename_type(self, fname):
+        """Get the type of file ('src', 'trans', 'tgt') with the given name."""
         for ftype in self.TYPE_INFO['lists']:
             if fname in self.TYPE_INFO['lists'][ftype]:
                 return ftype
@@ -230,9 +236,11 @@ class ProjectStore(object):
         raise ValueError('Real file not in project store: %s' % (realfname))
 
     def load(self, *args, **kwargs):
+        """Load the project in some way. Undefined for this (base) class."""
         pass
 
     def save(self, *args, **kwargs):
+        """Save the project in some way. Undefined for this (base) class."""
         pass
 
     def update_file(self, pfname, infile):
@@ -313,6 +321,9 @@ class ProjectStore(object):
         return etree.tostring(xml, pretty_print=True)
 
     def _load_settings(self, settingsxml):
+        """Load project settings from the given XML string.
+            C{settingsxml} is parsed into a DOM tree (L{lxml.etree.fromstring})
+            which is then inspected."""
         settings = {}
         xml = etree.fromstring(settingsxml)
 
