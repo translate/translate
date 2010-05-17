@@ -100,14 +100,21 @@ class BundleProjectStore(ProjectStore):
     def get_file(self, fname):
         retfile = None
         if fname in self._files or fname in self.zip.namelist():
-            # Extract the file to a temporary file
-            zfile = self.zip.open(fname)
-            tempfname = os.path.split(fname)[-1]
-            tempfd, tempfname = tempfile.mkstemp(suffix=tempfname)
-            os.close(tempfd)
-            open(tempfname, 'w').write(zfile.read())
+            # Check if the file has not already been extracted to a temp file
+            tempfname = [tfn for tfn in self.tempfiles if self.tempfiles[tfn] == fname]
+            if tempfname and os.path.isfile(tempfname[0]):
+                tempfname = tempfname[0]
+            else:
+                tempfname = ''
+            if not tempfname:
+                # Extract the file to a temporary file
+                zfile = self.zip.open(fname)
+                tempfname = os.path.split(fname)[-1]
+                tempfd, tempfname = tempfile.mkstemp(suffix=tempfname)
+                os.close(tempfd)
+                open(tempfname, 'w').write(zfile.read())
             retfile = open(tempfname)
-            self.tempfiles[retfile] = fname
+            self.tempfiles[tempfname] = fname
 
         if not retfile:
             raise FileNotInProjectError(fname)
