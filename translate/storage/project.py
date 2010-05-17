@@ -60,6 +60,9 @@ class Project(object):
             projstore = ProjectStore()
         self.store = projstore
 
+    def __del__(self):
+        if self.store:
+            del self.store
 
     # METHODS #
     def add_source(self, srcfile, src_fname=None):
