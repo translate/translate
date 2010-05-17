@@ -22,7 +22,6 @@ import os
 import tempfile
 from zipfile import ZipFile
 
-from translate.misc.zipfileext import ZipFileExt
 from translate.storage.projstore import *
 
 __all__ = ['BundleProjectStore', 'InvalidBundleError']
@@ -42,12 +41,14 @@ class BundleProjectStore(ProjectStore):
         if os.path.isfile(fname):
             self.load(fname)
         else:
-            self.zip = ZipFileExt(fname, 'a')
+            self.zip = ZipFile(fname, 'w')
             self.save()
+            self.zip.close()
+            self.zip = ZipFile(fname, 'a')
 
     def __del__(self):
-        self.cleanup()
         super(BundleProjectStore, self).__del__()
+        self.cleanup()
 
 
     # CLASS METHODS #
@@ -87,21 +88,13 @@ class BundleProjectStore(ProjectStore):
     def remove_file(self, fname, ftype=None):
         """Remove the file with the given project name from the project."""
         super(BundleProjectStore, self).remove_file(fname, ftype)
-        if fname in self.zip.namelist():
-            self.zip.delete(fname)
+        self._zip_delete([fname])
 
     def cleanup(self):
-        """Clean up our mess - update project files from temporary files."""
-        deleted = []
-        for tempfname in self.tempfiles:
-            tmp = open(tempfname)
-            self.update_file(self.tempfiles[tempfname], tmp)
-            if not tmp.closed:
-                tmp.close()
+        """Clean up our mess: remove temporary files."""
+        for tempfname in self._tempfiles:
             os.unlink(tempfname)
-            deleted.append(tempfname)
-        for delfname in deleted:
-            del self.tempfiles[delfname]
+        self._tempfiles = {}
 
     def get_file(self, fname):
         """Retrieve a project file (source, translation or target file) from the
@@ -142,7 +135,7 @@ class BundleProjectStore(ProjectStore):
 
     def load(self, zipname):
         """Load the bundle project from the zip file of the given name."""
-        self.zip = ZipFileExt(zipname, mode='a')
+        self.zip = ZipFile(zipname, mode='a')
         self._load_settings()
 
         append_section = {
@@ -158,26 +151,23 @@ class BundleProjectStore(ProjectStore):
 
     def save(self):
         """Save all project files to the bundle zip file."""
-        from StringIO import StringIO
+        self._update_from_tempfiles()
 
-        io = StringIO()
-        newzip = ZipFileExt(io, mode='a')
+        project_files = self._sourcefiles + self._transfiles + self._targetfiles
+        newzip = self._create_temp_zipfile()
+
+        # Write project file for the new zip bundle
         newzip.writestr('project.xtp', self._generate_settings())
-        for fname in self._sourcefiles + self._transfiles + self._targetfiles:
+        # Copy project files from project to the new zip file
+        for fname in project_files:
             newzip.writestr(fname, self.get_file(fname).read())
-        newzip.close()
-        self.zip.close()
+        # Copy any extra (non-project) files from the current zip
+        for fname in self.zip.namelist():
+            if fname in project_files or fname == 'project.xtp':
+                continue
+            newzip.writestr(fname, self.zip.read(fname))
 
-        # Save the contents of the zip file (io) to a temp file
-        newzipfd, newzipfname = tempfile.mkstemp(prefix='translate_bundle')
-        io.seek(0)
-        os.write(newzipfd, io.read())
-        os.close(newzipfd)
-
-        # XXX: The following overwrites the original zip file. Is this correct behaviour?
-        zfname = self.zip.filename
-        os.rename(newzipfname, zfname)
-        self.zip = ZipFileExt(zfname, mode='a')
+        self._replace_project_zip(newzip)
 
     def _load_settings(self):
         """Grab the project.xtp file from the zip file and load it."""
