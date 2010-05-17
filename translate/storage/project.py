@@ -84,10 +84,9 @@ class Project(object):
             @type  input_fname: basestring
             @param input_fname: The project name of the file to convert
             @type  convert_options: dict (optional)
-            @param convert_options: Passed as-is to C{translate.convert.
+            @param convert_options: Passed as-is to
+                                    C{translate.convert.factory.convert()}.
             @returns 2-tuple: the converted file object and it's project name."""
-        if convert_options is None:
-            convert_options = {}
 
         inputfile = self.get_file(input_fname)
         input_type = self.store.get_filename_type(input_fname)
