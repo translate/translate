@@ -343,6 +343,8 @@ class ProjectStore(object):
                 # settings['transfiles']
                 in_found, out_found, templ_found = False, False, False
                 for section in ('sources', 'transfiles', 'targets'):
+                    if section not in settings:
+                        continue
                     if in_fname in settings[section]:
                         in_found = True
                     if out_fname in settings[section]:
