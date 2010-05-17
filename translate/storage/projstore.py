@@ -316,6 +316,7 @@ class ProjectStore(object):
         settings = {}
         xml = etree.fromstring(settingsxml)
 
+        # Load files in project
         for section in ('sources', 'targets', 'transfiles'):
             groupnode = xml.find(section)
             if groupnode is None:
@@ -325,10 +326,37 @@ class ProjectStore(object):
             for fnode in groupnode.getchildren():
                 settings[section].append(fnode.text)
 
+        conversions_el = xml.find('conversions')
+        if conversions_el is not None:
+            self.convert_map = {}
+            for conv_el in conversions_el.iterchildren():
+                in_fname, out_fname, templ_fname = None, None, None
+                for child_el in conv_el.iterchildren():
+                    if child_el.tag == 'input':
+                        in_fname = child_el.text
+                    elif child_el.tag == 'output':
+                        out_fname = child_el.text
+                    elif child_el.tag == 'template':
+                        templ_fname = child_el.text
+                # Make sure that in_fname and out_fname exist in
+                # settings['sources'], settings['targets'] or
+                # settings['transfiles']
+                in_found, out_found, templ_found = False, False, False
+                for section in ('sources', 'transfiles', 'targets'):
+                    if in_fname in settings[section]:
+                        in_found = True
+                    if out_fname in settings[section]:
+                        out_found = True
+                    if templ_fname and templ_fname in settings[section]:
+                        templ_found = True
+                if in_found and out_found and (not templ_fname or templ_found):
+                    self.convert_map[in_fname] = (out_fname, templ_fname)
+
+        # Load options
         groupnode = xml.find('options')
         if groupnode is not None:
             settings['options'] = {}
-            for opt in groupnode.getchildren():
+            for opt in groupnode.iterchildren():
                 settings['options'][opt.attrib['name']] = opt.text
 
         self.settings = settings
