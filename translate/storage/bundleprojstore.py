@@ -86,15 +86,16 @@ class BundleProjectStore(ProjectStore):
 
     def cleanup(self):
         """Clean up our mess - update project files from temporary files."""
-        for tmp in self.tempfiles:
+        deleted = []
+        for tempfname in self.tempfiles:
+            tmp = open(tempfname)
+            self.update_file(self.tempfiles[tempfname], tmp)
             if not tmp.closed:
                 tmp.close()
-            if os.path.isfile(tmp.name):
-                tmp = open(tmp.name)
-                self.update_file(self.tempfiles[tmp], tmp)
-                if not tmp.closed:
-                    tmp.close()
-                os.unlink(tmp.name)
+            os.unlink(tempfname)
+            deleted.append(tempfname)
+        for delfname in deleted:
+            del self.tempfiles[delfname]
 
     def get_file(self, fname):
         retfile = None
