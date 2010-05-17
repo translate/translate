@@ -186,7 +186,7 @@ def convert(inputfile, template=None, options=None, convert_options=None):
     #      security features are being utilised.
     tempfd, tempfname = tempfile.mkstemp(prefix='ttk_convert', suffix=os.extsep+out_ext)
     os.close(tempfd)
-    outputfile = open(tempfname)
+    outputfile = open(tempfname, 'w')
 
     if convert_options is None:
         convert_options = {}
