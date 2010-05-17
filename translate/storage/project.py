@@ -51,24 +51,6 @@ class Project(object):
         transfile, transfname = self.convert_forward(srcfname, convert_options=convert_options)
         return srcfile, srcfname, transfile, transfname
 
-    def export_file(self, fname, destfname):
-        """Export the file with the specified filename to the given destination.
-            This method will raise L{FileNotInProjectError} via the call to
-            L{ProjectStore.get_file()} if C{fname} is not found in the project."""
-        open(destfname, 'w').write(self.store.get_file(fname).read())
-
-    def get_file(self, fname):
-        """Proxy for C{ProjectStore.get_file()}."""
-        return self.store.get_file(fname)
-
-    def get_real_filename(self, projfname):
-        """Try and find a real file name for the given project file name."""
-        projfile = self.get_file(projfname)
-        rfname = getattr(projfile, 'name', getattr(projfile, 'filename', None))
-        if rfname is None:
-            raise ValueError('Project file has no real file: %s' % (projfname))
-        return rfname
-
     def convert_forward(self, input_fname, template=None, output_fname=None, append_output_ext=True, convert_options=None):
         """Convert the given input file to the next type in the process:
             Source document (eg. ODT) -> Translation file (eg. XLIFF) ->
@@ -124,6 +106,24 @@ class Project(object):
 
         return outputfile, output_fname
 
+    def export_file(self, fname, destfname):
+        """Export the file with the specified filename to the given destination.
+            This method will raise L{FileNotInProjectError} via the call to
+            L{ProjectStore.get_file()} if C{fname} is not found in the project."""
+        open(destfname, 'w').write(self.store.get_file(fname).read())
+
+    def get_file(self, fname):
+        """Proxy for C{ProjectStore.get_file()}."""
+        return self.store.get_file(fname)
+
     def get_proj_filename(self, realfname):
         """Proxy to C{self.store.get_proj_filename()}."""
         return self.store.get_proj_filename(realfname)
+
+    def get_real_filename(self, projfname):
+        """Try and find a real file name for the given project file name."""
+        projfile = self.get_file(projfname)
+        rfname = getattr(projfile, 'name', getattr(projfile, 'filename', None))
+        if rfname is None:
+            raise ValueError('Project file has no real file: %s' % (projfname))
+        return rfname
