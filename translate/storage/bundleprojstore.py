@@ -109,7 +109,8 @@ class BundleProjectStore(ProjectStore):
     def cleanup(self):
         """Clean up our mess: remove temporary files."""
         for tempfname in self._tempfiles:
-            os.unlink(tempfname)
+            if os.path.isfile(tempfname):
+                os.unlink(tempfname)
         self._tempfiles = {}
 
     def get_file(self, fname):
