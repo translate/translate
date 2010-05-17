@@ -73,6 +73,9 @@ class Project(object):
             }
         }
 
+    def __del__(self):
+        self.save()
+
 
     # ACCESSORS #
     def _get_sourcefiles(self):
