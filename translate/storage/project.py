@@ -29,6 +29,9 @@ __all__ = ['Project']
 
 
 # FIXME: Isn't there a better place for this function?
+# XXX: Make sure that all extensions supported in translate.convert.factory
+#      that are not 3 letters long are added to the first "if" statement in
+#      split_extensions() below.
 def split_extensions(filename):
     """Split the given filename into a name and extensions part.
         The extensions part is defined by any sequence of extensions, where an
