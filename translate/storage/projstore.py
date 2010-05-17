@@ -93,6 +93,18 @@ class ProjectStore(object):
         return tuple(self._transfiles)
     transfiles = property(_get_transfiles)
 
+
+    # SPECIAL METHODS #
+    def __in__(self, lhs):
+        """@returns C{True} if C{lhs} is a file name or file object in the project store."""
+        return  lhs in self._sourcefiles or \
+                lhs in self._targetfiles or \
+                lhs in self._transfiles or \
+                lhs in self._files or \
+                lhs in self._files.values()
+
+
+    # METHODS #
     def append_file(self, afile, fname, ftype='trans'):
         if not ftype in self.TYPE_INFO['f_prefix']:
             raise ValueError('Invalid file type: %s' % (ftype))
@@ -140,16 +152,7 @@ class ProjectStore(object):
     def append_transfile(self, afile, fname=None):
         return self.append_file(afile, fname, ftype='trans')
 
-    def remove_sourcefile(self, fname):
-        self._remove_file(fname, ftype='src')
-
-    def remove_targetfile(self, fname):
-        self._remove_file(fname, ftype='tgt')
-
-    def remove_transfile(self, fname):
-        self._remove_file(fname, ftype='trans')
-
-    def _remove_file(self, fname, ftype='trans'):
+    def remove_file(self, fname, ftype=None):
         if fname not in self._files:
             raise FileNotInProjectError(fname)
         self.TYPE_INFO['lists'][ftype].remove(fname)
@@ -157,18 +160,15 @@ class ProjectStore(object):
             self._files[fname].close()
         del self._files[fname]
 
+    def remove_sourcefile(self, fname):
+        self.remove_file(fname, ftype='src')
 
-    # SPECIAL METHODS #
-    def __in__(self, lhs):
-        """@returns C{True} if C{lhs} is a file name or file object in the project store."""
-        return  lhs in self._sourcefiles or \
-                lhs in self._targetfiles or \
-                lhs in self._transfiles or \
-                lhs in self._files or \
-                lhs in self._files.values()
+    def remove_targetfile(self, fname):
+        self.remove_file(fname, ftype='tgt')
 
+    def remove_transfile(self, fname):
+        self.remove_file(fname, ftype='trans')
 
-    # METHODS #
     def get_file(self, fname, mode='rb'):
         """Retrieve the file with the given name from the project store.
 
