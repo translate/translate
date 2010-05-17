@@ -116,8 +116,8 @@ class Project(object):
                         template, templ_fname = self.get_file(in_name), in_name
                         break
 
-        # Populate the options dict with the options we can detect
-        options = dict(in_fname=input_fname)
+        # Populate the conv_options dict with the options we can detect
+        conv_options = dict(in_fname=input_fname)
 
         if input_fname in self.store.convert_map:
             out_name, tmpl_name = self.store.convert_map[input_fname]
@@ -127,7 +127,7 @@ class Project(object):
         converted_file, converted_ext = convert_factory.convert(
             inputfile,
             template=template,
-            options=options,
+            options=conv_options,
             convert_options=convert_options
         )
 
