@@ -31,14 +31,14 @@ __all__ = ['Project']
 # FIXME: Isn't there a better place for this function?
 def split_extensions(filename):
     """Split the given filename into a name and extensions part.
-        The extensions part is defined by any sequence of extensions, where
-        an extension is a 3-letter, .-separated string or "po". If the file name
-        consists entirely out of extensions, the first part is assumed to be the
-        file name and the rest extensions."""
+        The extensions part is defined by any sequence of extensions, where an
+        extension is a 3-letter, .-separated string or one of "po" or
+        "properties". If the file name consists entirely out of extensions, the
+        first part is assumed to be the file name and the rest extensions."""
     filename_parts = filename.split(os.extsep)
     extensions = []
     for part in reversed(filename_parts):
-        if len(part) != 3 and part != 'po':
+        if len(part) != 3 and part not in ('po', 'properties'):
             break
         extensions.append(part)
     if not extensions:
