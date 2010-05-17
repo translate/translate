@@ -152,7 +152,7 @@ class BundleProjectStore(ProjectStore):
         from StringIO import StringIO
 
         io = StringIO()
-        newzip = ZipFileExt(io, mode='w')
+        newzip = ZipFileExt(io, mode='a')
         newzip.writestr('project.xtp', self._generate_settings())
         for fname in self._sourcefiles + self._transfiles + self._targetfiles:
             newzip.writestr(fname, self.get_file(fname).read())
