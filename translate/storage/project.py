@@ -37,7 +37,6 @@ class Project(object):
         if projstore is None:
             projstore = ProjectStore()
         self.store = projstore
-        self._convert_map = {} # Mapping of input file to the file it was converted to
 
 
     # METHODS #
@@ -71,9 +70,9 @@ class Project(object):
             raise ValueError('Cannot convert a target document further: %s' % (input_fname))
 
         # Get template, if applicable
-        if template is None and input_type == 'trans' and input_fname in self._convert_map.values():
-            for templ_fname in self._convert_map:
-                if self._convert_map[templ_fname] == input_fname:
+        if template is None and input_type == 'trans' and input_fname in self.store.convert_map.values():
+            for templ_fname in self.store.convert_map:
+                if self.store.convert_map[templ_fname] == input_fname:
                     template = self.get_file(templ_fname)
 
         # Populate the options dict with the options we can detect
@@ -102,7 +101,7 @@ class Project(object):
 
         output_type = self.store.TYPE_INFO['next_type'][input_type]
         outputfile, output_fname = self.store.append_file(output_fname, None, ftype=output_type)
-        self._convert_map[input_fname] = output_fname
+        self.store.convert_map[input_fname] = output_fname
 
         return outputfile, output_fname
 
