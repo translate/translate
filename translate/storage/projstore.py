@@ -276,6 +276,30 @@ class ProjectStore(object):
                 target_el.append(tgt_el)
             xml.append(target_el)
 
+        # Add conversion mappings
+        if self.convert_map:
+            conversions_el = etree.Element('conversions')
+            for in_fname, (out_fname, templ_fname) in self.convert_map.iteritems():
+                if in_fname not in self._files or out_fname not in self._files:
+                    continue
+                conv_el = etree.Element('conv')
+
+                input_el = etree.Element('input')
+                input_el.text = in_fname
+                conv_el.append(input_el)
+
+                output_el = etree.Element('output')
+                output_el.text = out_fname
+                conv_el.append(output_el)
+
+                if templ_fname:
+                    templ_el = etree.Element('template')
+                    templ_el.text = templ_fname
+                    conv_el.append(templ_el)
+
+                conversions_el.append(conv_el)
+            xml.append(conversions_el)
+
         # Add options to settings
         if 'options' in self.settings:
             options_el = etree.Element('options')
