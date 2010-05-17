@@ -19,6 +19,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 import os
+import tempfile
 from zipfile import ZipFile
 
 from translate.storage.project import *
@@ -69,6 +70,26 @@ class BundleProject(Project):
 
 
     # METHODS #
+    def get_file(self, fname):
+        retfile = None
+        try:
+            retfile = super(BundleProject, self).get_file(fname)
+        except FileNotInProjectError:
+            pass
+
+        if fname in self.zip.namelist():
+            # Extract the file to a temporary file
+            zfile = self.zip.open(fname)
+            tempfname = os.path.split(fname)[-1]
+            tempfd, tempfname = tempfile.mkstemp(prefix=tempfname)
+            os.close(tempfd)
+            outputfile = open(tempfname, 'w').write(zfile.read())
+            retfile = open(tempfname)
+
+        if not retfile:
+            raise FileNotInProjectError(fname)
+        return retfile
+
     def load(self, zipname):
         self.zip = ZipFile(zipname, mode='a')
         self._load_settings()
@@ -111,17 +132,3 @@ class BundleProject(Project):
         if 'project.xvp' not in self.zip.namelist():
             raise InvalidBundleError('Not a Virtaal project bundle')
         super(BundleProject, self)._load_settings(self.zip.open('project.xvp').read())
-
-    def get_file(self, fname):
-        retfile = None
-        try:
-            retfile = super(BundleProject, self).get_file(fname)
-        except FileNotInProjectError:
-            pass
-
-        if fname in self.zip.namelist():
-            retfile = self.zip.open(fname)
-
-        if not retfile:
-            raise FileNotInProjectError(fname)
-        return retfile
