@@ -19,262 +19,114 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 import os
-from lxml import etree
-from StringIO import StringIO
+import shutil
 
-__all__ = ['FileExistsInProjectError', 'FileNotInProjectError', 'Project']
+from translate.convert import factory as convert_factory
 
+from projstore import ProjectStore
 
-class FileExistsInProjectError(Exception):
-    pass
-
-class FileNotInProjectError(Exception):
-    pass
+__all__ = ['Project']
 
 
 class Project(object):
-    """Interface providing basic project functionality."""
+    """Manages a project store as well as the processes involved in a project
+        workflow."""
 
     # INITIALIZERS #
-    def __init__(self):
-        self._files        = {}
-        self._sourcefiles  = []
-        self._targetfiles  = []
-        self._transfiles   = []
-        self.settings      = {}
-
-        # The following dict groups together sets of mappings from a file
-        # "type" string ("src", "tgt" or "trans") to various other values
-        # or objects.
-        self.TYPE_INFO = {
-            # type => prefix for new files
-            'f_prefix': {
-                'src':   'sources/',
-                'tgt':   'targets/',
-                'trans': 'trans/'
-            },
-            # type => list containing filenames for that type
-            'lists': {
-                'src':   self._sourcefiles,
-                'tgt':   self._targetfiles,
-                'trans': self._transfiles,
-            },
-            # type => next type in process: src => trans => tgt
-            'next_type': {
-                'src':   'trans',
-                'trans': 'tgt',
-                'tgt':   None,
-            },
-            # type => name of the sub-section in the settings file/dict
-            'settings': {
-                'src':   'sources',
-                'tgt':   'targets',
-                'trans': 'transfiles',
-            }
-        }
-
-    def __del__(self):
-        self.save()
-
-
-    # ACCESSORS #
-    def _get_sourcefiles(self):
-        """Read-only access to C{self._sourcefiles}."""
-        return tuple(self._sourcefiles)
-    sourcefiles = property(_get_sourcefiles)
-
-    def _get_targetfiles(self):
-        """Read-only access to C{self._targetfiles}."""
-        return tuple(self._targetfiles)
-    targetfiles = property(_get_targetfiles)
-
-    def _get_transfiles(self):
-        """Read-only access to C{self._transfiles}."""
-        return tuple(self._transfiles)
-    transfiles = property(_get_transfiles)
-
-    def append_file(self, afile, fname, ftype='trans'):
-        if not ftype in self.TYPE_INFO['f_prefix']:
-            raise ValueError('Invalid file type: %s' % (ftype))
-
-        if isinstance(afile, basestring) and os.path.isfile(afile) and not fname:
-            # Try and use afile as the file name
-            fname, afile = afile, open(afile)
-
-        # Check if we can get an real file name
-        realfname = fname
-        if realfname is None or not os.path.isfile(realfname):
-            realfname = getattr(afile, 'name', None)
-        if realfname is None or not os.path.isfile(realfname):
-            realfname = getattr(afile, 'filename', None)
-        if realfname is None or not os.path.isfile(realfname):
-            realfname = None
-
-        # Try to get the file name from the file object, if it was not given:
-        if not fname:
-            fname = getattr(afile, 'name', None)
-        if not fname:
-            fname = getattr(afile, 'filename', None)
-
-        fname = self._fix_type_filename(ftype, fname)
-
-        if not fname:
-            raise ValueError('Could not deduce file name and none given')
-        if fname in self._files:
-            raise FileExistsInProjectError(fname)
-
-        if os.path.isfile(realfname):
-            self._files[fname] = realfname
-        else:
-            self._files[fname] = afile
-        self.TYPE_INFO['lists'][ftype].append(fname)
-
-        return afile, fname
-
-    def append_sourcefile(self, afile, fname=None):
-        return self.append_file(afile, fname, ftype='src')
-
-    def append_targetfile(self, afile, fname=None):
-        return self.append_file(afile, fname, ftype='tgt')
-
-    def append_transfile(self, afile, fname=None):
-        return self.append_file(afile, fname, ftype='trans')
-
-    def remove_sourcefile(self, fname):
-        self._remove_file(fname, ftype='src')
-
-    def remove_targetfile(self, fname):
-        self._remove_file(fname, ftype='tgt')
-
-    def remove_transfile(self, fname):
-        self._remove_file(fname, ftype='trans')
-
-    def _remove_file(self, fname, ftype='trans'):
-        if fname not in self._files:
-            raise FileNotInProjectError(fname)
-        self.TYPE_INFO['lists'][ftype].remove(fname)
-        if self._files[fname] and hasattr(self._files[fname], 'close'):
-            self._files[fname].close()
-        del self._files[fname]
-
-
-    # SPECIAL METHODS #
-    def __in__(self, lhs):
-        """@returns C{True} if C{lhs} is a file name or file object in the project."""
-        return  lhs in self._sourcefiles or \
-                lhs in self._targetfiles or \
-                lhs in self._transfiles or \
-                lhs in self._files or \
-                lhs in self._files.values()
+    def __init__(self, projstore=None):
+        if projstore is None:
+            projstore = ProjectStore()
+        self.projstore = projstore
+        self._convert_map = {} # Mapping of input file to the file it was converted to
 
 
     # METHODS #
-    def get_file(self, fname, mode='rb'):
-        """Retrieve the file with the given name from the project.
+    def add_source(self, srcfile, src_fname=None):
+        return self.projstore.append_sourcefile(srcfile, src_fname)
 
-            The file is looked up in the C{self._files} dictionary. The values
-            in this dictionary may be C{None}, to indicate that the file is not
-            cacheable and needs to be retrieved in a special way. This special
-            way must be defined in this method of sub-classes. The value may
-            also be a string, which indicates that it is a real file accessible
-            via C{open()}.
+    def add_source_convert(self, srcfile, src_fname=None, convert_options=None, extension=None):
+        """Convenience method that calls L{add_source} and L{convert_forward}
+            and returns the results from both."""
+        srcfile, srcfname = self.add_source(srcfile, src_fname)
+        transfile, transfname = self.convert_forward(srcfname, convert_options=convert_options)
+        return srcfile, srcfname, transfile, transfname
 
-            @type  mode: str
-            @param mode: The mode in which to re-open the file (if it is closed)
-            @see BundleProject.get_file"""
-        if fname not in self._files:
-            raise FileNotInProjectError(fname)
+    def export_file(self, fname, destfname):
+        """Export the file with the specified filename to the given destination.
+            This method will raise L{FileNotInProjectError} via the call to
+            L{ProjectStore.get_file()} if C{fname} is not found in the project."""
+        open(destfname, 'w').write(self.projstore.get_file(fname).read())
 
-        rfile = self._files[fname]
-        if isinstance(rfile, basestring):
-            rfile = open(rfile, 'rb')
-        # Check that the file is actually open
-        if getattr(rfile, 'closed', False):
-            rfname = fname
-            if not os.path.isfile(rfname):
-                rfname = getattr(rfile, 'name', None)
-            if not rfile or not os.path.isfile(rfname):
-                rfname = getattr(rfile, 'filename', None)
-            if not rfile or not os.path.isfile(rfname):
-                raise IOError('Could not locate file: %s (%s)' % (rfile, fname))
-            rfile = open(rfname, mode)
-            self._files[fname] = rfile
+    def get_file(self, fname):
+        """Proxy for C{ProjectStore.get_file()}."""
+        return self.projstore.get_file(fname)
 
-        return rfile
+    def get_proj_filename(self, realfname):
+        """Try and find a project file name for the given real file name."""
+        for fname in self.projstore._files:
+            if fname == realfname or self.projstore._files[fname] == realfname:
+                return fname
+        raise ValueError('Real file not in project store: %s' % (realfname))
 
-    def get_filename_type(self, fname):
-        for ftype in self.TYPE_INFO['lists']:
-            if fname in self.TYPE_INFO['lists'][ftype]:
-                return ftype
-        raise FileNotInProjectError(fname)
+    def get_real_filename(self, projfname):
+        """Try and find a real file name for the given project file name."""
+        projfile = self.get_file(projfname)
+        rfname = getattr(projfile, 'name', getattr(projfile, 'filename', None))
+        if rfname is None:
+            raise ValueError('Project file has no real file: %s' % (projfname))
+        return rfname
 
-    def load(self, *args, **kwargs):
-        pass
+    def convert_forward(self, input_fname, template=None, output_fname=None, append_output_ext=True, convert_options=None):
+        """Convert the given input file to the next type in the process:
+            Source document (eg. ODT) -> Translation file (eg. XLIFF) ->
+            Translated document (eg. ODT).
 
-    def save(self, *args, **kwargs):
-        pass
+            @type  input_fname: basestring
+            @param input_fname: The project name of the file to convert
+            @type  convert_options: dict (optional)
+            @param convert_options: Passed as-is to C{translate.convert.
+            @returns 2-tuple: the converted file object and it's project name."""
+        if convert_options is None:
+            convert_options = {}
 
-    def _fix_type_filename(self, ftype, fname):
-        """Strip the path from the filename and prepend the correct prefix."""
-        path, fname = os.path.split(fname)
-        return self.TYPE_INFO['f_prefix'][ftype] + fname
+        inputfile = self.get_file(input_fname)
+        input_type = self.projstore.get_filename_type(input_fname)
 
-    def _generate_settings(self):
-        """@returns A XML string that represents the current settings."""
-        xml = etree.Element('translationproject')
+        if input_type == 'tgt':
+            raise ValueError('Cannot convert a target document further: %s' % (input_fname))
 
-        # Add file names to settings XML
-        if self._sourcefiles:
-            sources_el = etree.Element('sources')
-            for fname in self._sourcefiles:
-                src_el = etree.Element('filename')
-                src_el.text = fname
-                sources_el.append(src_el)
-            xml.append(sources_el)
-        if self._transfiles:
-            transfiles_el = etree.Element('transfiles')
-            for fname in self._transfiles:
-                trans_el = etree.Element('filename')
-                trans_el.text = fname
-                transfiles_el.append(trans_el)
-            xml.append(transfiles_el)
-        if self._targetfiles:
-            target_el = etree.Element('targets')
-            for fname in self._targetfiles:
-                tgt_el = etree.Element('filename')
-                tgt_el.text = fname
-                target_el.append(tgt_el)
-            xml.append(target_el)
+        # Get template, if applicable
+        if template is None and input_type == 'trans' and input_fname in self._convert_map.values():
+            for templ_fname in self._convert_map:
+                if self._convert_map[templ_fname] == input_fname:
+                    template = self.get_file(templ_fname)
 
-        # Add options to settings
-        if 'options' in self.settings:
-            options_el = etree.Element('options')
-            for option, value in self.settings['options'].items():
-                opt_el = etree.Element('option')
-                opt_el.attrib['name'] = option
-                opt_el.text = value
-                options_el.append(opt_el)
-            xml.append(options_el)
+        # Populate the options dict with the options we can detect
+        options = dict(in_fname=input_fname)
 
-        return etree.tostring(xml, pretty_print=True)
+        converted_file, converted_ext = convert_factory.convert(
+            inputfile,
+            template=template,
+            options=options,
+            convert_options=convert_options
+        )
 
-    def _load_settings(self, settingsxml):
-        settings = {}
-        xml = etree.fromstring(settingsxml)
+        # Determine the file name and path where the output should be moved.
+        if not output_fname:
+            _dir, fname = os.path.split(input_fname)
+            dir = ''
+            if hasattr(inputfile, 'name'):
+                dir, _fn = os.path.split(inputfile.name)
+            else:
+                dir = os.getcwd()
+            output_fname = os.path.join(dir, fname)
+        if append_output_ext:
+            output_fname += os.extsep + converted_ext
 
-        for section in ('sources', 'targets', 'transfiles'):
-            groupnode = xml.find(section)
-            if groupnode is None:
-                continue
+        os.rename(converted_file.name, output_fname)
 
-            settings[section] = []
-            for fnode in groupnode.getchildren():
-                settings[section].append(fnode.text)
+        output_type = self.projstore.TYPE_INFO['next_type'][input_type]
+        outputfile, output_fname = self.projstore.append_file(output_fname, None, ftype=output_type)
+        self._convert_map[input_fname] = output_fname
 
-        groupnode = xml.find('options')
-        if groupnode is not None:
-            settings['options'] = {}
-            for opt in groupnode.getchildren():
-                settings['options'][opt.attrib['name']] = opt.text
-
-        self.settings = settings
+        return outputfile, output_fname

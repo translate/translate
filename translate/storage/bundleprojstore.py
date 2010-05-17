@@ -22,19 +22,21 @@ import os
 import tempfile
 from zipfile import ZipFile
 
-from translate.storage.project import *
+from translate.storage.projstore import *
+
+__all__ = ['BundleProjectStore', 'InvalidBundleError']
 
 
 class InvalidBundleError(Exception):
     pass
 
 
-class BundleProject(Project):
-    """Represents a Toolkit project bundle (zip archive)."""
+class BundleProjectStore(ProjectStore):
+    """Represents a translate project bundle (zip archive)."""
 
     # INITIALIZERS #
     def __init__(self, fname):
-        super(BundleProject, self).__init__()
+        super(BundleProjectStore, self).__init__()
         if os.path.isfile(fname):
             self.load(fname)
         else:
@@ -45,7 +47,7 @@ class BundleProject(Project):
         if fname is None:
             fname = 'bundle.zip'
 
-        bundle = BundleProject(fname)
+        bundle = BundleProjectStore(fname)
         for fn in proj.sourcefiles:
             bundle.append_sourcefile(proj.get_file(fn))
         for fn in proj.transfiles:
@@ -59,7 +61,7 @@ class BundleProject(Project):
 
     # ACCESSORS #
     def append_file(self, afile, fname, ftype='trans'):
-        afile, fname = super(BundleProject, self).append_file(afile, fname, ftype)
+        afile, fname = super(BundleProjectStore, self).append_file(afile, fname, ftype)
 
         if hasattr(afile, 'seek'):
             afile.seek(0)
@@ -73,7 +75,7 @@ class BundleProject(Project):
     def get_file(self, fname):
         retfile = None
         try:
-            retfile = super(BundleProject, self).get_file(fname)
+            retfile = super(BundleProjectStore, self).get_file(fname)
         except FileNotInProjectError:
             pass
 
@@ -111,7 +113,7 @@ class BundleProject(Project):
 
         io = StringIO()
         newzip = ZipFile(io, mode='w')
-        newzip.writestr('project.xvp', self._generate_settings())
+        newzip.writestr('project.xtp', self._generate_settings())
         for fname in self._sourcefiles + self._transfiles + self._targetfiles:
             newzip.writestr(fname, self.get_file(fname).read())
         newzip.close()
@@ -129,6 +131,6 @@ class BundleProject(Project):
         self.zip = ZipFile(zfname, mode='a')
 
     def _load_settings(self):
-        if 'project.xvp' not in self.zip.namelist():
-            raise InvalidBundleError('Not a Virtaal project bundle')
-        super(BundleProject, self)._load_settings(self.zip.open('project.xvp').read())
+        if 'project.xtp' not in self.zip.namelist():
+            raise InvalidBundleError('Not a translate project bundle')
+        super(BundleProjectStore, self)._load_settings(self.zip.open('project.xtp').read())
