@@ -112,7 +112,7 @@ def convertmozillaprop(inputfile, outputfile, templatefile, includefuzzy=False):
     """Mozilla specific convertor function"""
     return convertprop(inputfile, outputfile, templatefile, personality="mozilla", includefuzzy=includefuzzy)
 
-def convertprop(inputfile, outputfile, templatefile, personality, includefuzzy=False):
+def convertprop(inputfile, outputfile, templatefile, personality="java", includefuzzy=False):
     inputstore = po.pofile(inputfile)
     if templatefile is None:
         raise ValueError("must have template file for properties files")
