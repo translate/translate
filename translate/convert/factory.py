@@ -23,13 +23,13 @@
 import os
 import tempfile
 
-from translate.convert import odf2xliff, xliff2odf
+from translate.convert import prop2po, po2prop, odf2xliff, xliff2odf
 
 
 __all__ = ['converters', 'convertfile', 'UnknownExtensionError', 'UnsupportedConversionError']
 
 converters = {}
-for module in (odf2xliff, xliff2odf):
+for module in (prop2po, po2prop, odf2xliff, xliff2odf):
     if not hasattr(module, 'formats'):
         continue
     for extension in module.formats:
