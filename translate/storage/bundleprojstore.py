@@ -80,7 +80,7 @@ class BundleProjectStore(ProjectStore):
         return self.get_file(fname), fname
 
     def remove_file(self, fname, ftype=None):
-        super(BundleProjectStore).remove_file(fname, ftype)
+        super(BundleProjectStore, self).remove_file(fname, ftype)
         if fname in self.zip.namelist():
             self.zip.delete(fname)
 
