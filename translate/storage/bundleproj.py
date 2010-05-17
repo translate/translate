@@ -34,7 +34,10 @@ class BundleProject(Project):
     # INITIALIZERS #
     def __init__(self, fname):
         super(BundleProject, self).__init__()
-        self.load(fname)
+        if os.path.isfile(fname):
+            self.load(fname)
+        else:
+            self.zip = ZipFile(fname, 'w')
 
     @classmethod
     def from_project(cls, proj, fname=None):
