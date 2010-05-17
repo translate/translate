@@ -41,6 +41,7 @@ class Project(object):
 
     # METHODS #
     def add_source(self, srcfile, src_fname=None):
+        """Proxy for C{self.store.append_sourcefile()}."""
         return self.store.append_sourcefile(srcfile, src_fname)
 
     def add_source_convert(self, srcfile, src_fname=None, convert_options=None, extension=None):
@@ -128,11 +129,11 @@ class Project(object):
         open(destfname, 'w').write(self.store.get_file(fname).read())
 
     def get_file(self, fname):
-        """Proxy for C{ProjectStore.get_file()}."""
+        """Proxy for C{self.store.get_file()}."""
         return self.store.get_file(fname)
 
     def get_proj_filename(self, realfname):
-        """Proxy to C{self.store.get_proj_filename()}."""
+        """Proxy for C{self.store.get_proj_filename()}."""
         return self.store.get_proj_filename(realfname)
 
     def get_real_filename(self, projfname):
@@ -143,6 +144,14 @@ class Project(object):
             raise ValueError('Project file has no real file: %s' % (projfname))
         return rfname
 
+    def remove_file(self, projfname, ftype=None):
+        """Proxy for C{self.store.remove_file()}."""
+        self.store.remove_file(projfname, ftype)
+
+    def save(self):
+        """Proxy for C{self.store.save()}."""
+        self.store.save()
+
     def update_file(self, proj_fname, infile):
-        """Proxy to C{self.store.update_file()}."""
+        """Proxy for C{self.store.update_file()}."""
         self.store.update_file(proj_fname, infile)
