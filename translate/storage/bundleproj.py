@@ -65,6 +65,7 @@ class BundleProject(Project):
         self.zip.writestr(fname, afile.read())
         self._files[fname] = None # Clear the cached file object to force the
                                   # file to be read from the zip file.
+        return self.get_file(fname), fname
 
 
     # METHODS #
