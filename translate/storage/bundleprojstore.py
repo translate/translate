@@ -38,11 +38,18 @@ class BundleProjectStore(ProjectStore):
     # INITIALIZERS #
     def __init__(self, fname):
         super(BundleProjectStore, self).__init__()
+        self.tempfiles = {}
         if os.path.isfile(fname):
             self.load(fname)
         else:
             self.zip = ZipFileExt(fname, 'w')
 
+    def __del__(self):
+        self.cleanup()
+        super(BundleProjectStore, self).__del__()
+
+
+    # CLASS METHODS #
     @classmethod
     def from_project(cls, proj, fname=None):
         if fname is None:
@@ -60,7 +67,7 @@ class BundleProjectStore(ProjectStore):
         return bundle
 
 
-    # ACCESSORS #
+    # METHODS #
     def append_file(self, afile, fname, ftype='trans'):
         afile, fname = super(BundleProjectStore, self).append_file(afile, fname, ftype)
 
@@ -71,8 +78,23 @@ class BundleProjectStore(ProjectStore):
                                   # file to be read from the zip file.
         return self.get_file(fname), fname
 
+    def remove_file(self, fname, ftype=None):
+        super(BundleProjectStore).remove_file(fname, ftype)
+        if fname in self.zip.namelist():
+            self.zip.delete(fname)
 
-    # METHODS #
+    def cleanup(self):
+        """Clean up our mess - update project files from temporary files."""
+        for tmp in self.tempfiles:
+            if not tmp.closed:
+                tmp.close()
+            if os.path.isfile(tmp.name):
+                tmp = open(tmp.name)
+                self.update_file(self.tempfiles[tmp], tmp)
+                if not tmp.closed:
+                    tmp.close()
+                os.unlink(tmp.name)
+
     def get_file(self, fname):
         retfile = None
         if fname in self._files or fname in self.zip.namelist():
@@ -83,6 +105,7 @@ class BundleProjectStore(ProjectStore):
             os.close(tempfd)
             open(tempfname, 'w').write(zfile.read())
             retfile = open(tempfname)
+            self.tempfiles[retfile] = fname
 
         if not retfile:
             raise FileNotInProjectError(fname)
