@@ -173,3 +173,52 @@ class BundleProjectStore(ProjectStore):
         if 'project.xtp' not in self.zip.namelist():
             raise InvalidBundleError('Not a translate project bundle')
         super(BundleProjectStore, self)._load_settings(self.zip.open('project.xtp').read())
+
+    def _create_temp_zipfile(self):
+        """Create a new zip file with a temporary file name (with mode 'w')."""
+        newzipfd, newzipfname = tempfile.mkstemp(prefix='translate_bundle', suffix='.zip')
+        os.close(newzipfd)
+        return ZipFile(newzipfname, 'w')
+
+    def _replace_project_zip(self, zfile):
+        """Replace the currently used zip file (C{self.zip}) with the given zip
+            file. Basically, C{os.rename(zfile.filename, self.zip.filename)}."""
+        if not zfile.fp.closed:
+            zfile.close()
+        if not self.zip.fp.closed:
+            self.zip.close()
+        os.rename(zfile.filename, self.zip.filename)
+        self.zip = ZipFile(self.zip.filename, mode='a')
+
+    def _update_from_tempfiles(self):
+        """Update project files from temporary files."""
+        for tempfname in self._tempfiles:
+            tmp = open(tempfname)
+            self.update_file(self._tempfiles[tempfname], tmp)
+            if not tmp.closed:
+                tmp.close()
+
+    def _zip_delete(self, fnames):
+        """Delete the files with the given names from the zip file (C{self.zip})."""
+        # Sanity checking
+        if not isinstance(fnames, (list, tuple)):
+            raise ValueError("fnames must be list or tuple: %s" % (fnames))
+        if not self.zip:
+            raise ValueError("No zip file to work on")
+        zippedfiles = self.zip.namelist()
+        for fn in fnames:
+            if fn not in zippedfiles:
+                raise KeyError("File not in zip archive: %s" % (fn))
+
+        newzip = self._create_temp_zipfile()
+        newzip.writestr('project.xtp', self._generate_settings())
+
+        for fname in zippedfiles:
+            # Copy all files from self.zip that are not project.xtp (already
+            # in the new zip file) or in fnames (they are to be removed, after
+            # all.
+            if fname in fnames or fname == 'project.xtp':
+                continue
+            newzip.writestr(fname, self.zip.read(fname))
+
+        self._replace_project_zip(newzip)
