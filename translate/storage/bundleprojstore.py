@@ -70,6 +70,8 @@ class BundleProjectStore(ProjectStore):
 
     # METHODS #
     def append_file(self, afile, fname, ftype='trans'):
+        """Append the given file to the project with the given filename, marked
+            to be of type C{ftype} ('src', 'trans', 'tgt')."""
         afile, fname = super(BundleProjectStore, self).append_file(afile, fname, ftype)
 
         if hasattr(afile, 'seek'):
@@ -80,6 +82,7 @@ class BundleProjectStore(ProjectStore):
         return self.get_file(fname), fname
 
     def remove_file(self, fname, ftype=None):
+        """Remove the file with the given project name from the project."""
         super(BundleProjectStore, self).remove_file(fname, ftype)
         if fname in self.zip.namelist():
             self.zip.delete(fname)
@@ -98,6 +101,8 @@ class BundleProjectStore(ProjectStore):
             del self.tempfiles[delfname]
 
     def get_file(self, fname):
+        """Retrieve a project file (source, translation or target file) from the
+            project archive."""
         retfile = None
         if fname in self._files or fname in self.zip.namelist():
             # Check if the file has not already been extracted to a temp file
@@ -133,6 +138,7 @@ class BundleProjectStore(ProjectStore):
         raise ValueError('Real file not in project store: %s' % (realfname))
 
     def load(self, zipname):
+        """Load the bundle project from the zip file of the given name."""
         self.zip = ZipFileExt(zipname, mode='a')
         self._load_settings()
 
@@ -148,6 +154,7 @@ class BundleProjectStore(ProjectStore):
                     self._files[fname] = None
 
     def save(self):
+        """Save all project files to the bundle zip file."""
         from StringIO import StringIO
 
         io = StringIO()
@@ -170,6 +177,7 @@ class BundleProjectStore(ProjectStore):
         self.zip = ZipFileExt(zfname, mode='a')
 
     def _load_settings(self):
+        """Grab the project.xtp file from the zip file and load it."""
         if 'project.xtp' not in self.zip.namelist():
             raise InvalidBundleError('Not a translate project bundle')
         super(BundleProjectStore, self)._load_settings(self.zip.open('project.xtp').read())
