@@ -155,6 +155,13 @@ class ProjectStore(object):
     def remove_file(self, fname, ftype=None):
         if fname not in self._files:
             raise FileNotInProjectError(fname)
+        if not ftype:
+            # Guess file type (source/trans/target)
+            for ft, prefix in self.TYPE_INFO['f_prefix'].items():
+                if fname.startswith(prefix):
+                    ftype = ft
+                    break
+
         self.TYPE_INFO['lists'][ftype].remove(fname)
         if self._files[fname] and hasattr(self._files[fname], 'close'):
             self._files[fname].close()
