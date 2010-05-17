@@ -113,12 +113,12 @@ class Project(object):
         if not fname:
             fname = getattr(afile, 'filename', None)
 
+        fname = self._fix_type_filename(ftype, fname)
+
         if not fname:
             raise ValueError('Could not deduce file name and none given')
         if fname in self._files:
             raise FileExistsInProjectError(fname)
-
-        fname = self._fix_type_filename(ftype, fname)
 
         if os.path.isfile(realfname):
             self._files[fname] = realfname
