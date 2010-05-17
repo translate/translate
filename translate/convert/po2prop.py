@@ -123,11 +123,14 @@ def convertprop(inputfile, outputfile, templatefile, personality, includefuzzy=F
     outputfile.writelines(outputproplines)
     return 1
 
+formats = {
+    ("po", "properties"): ("properties", convertprop),
+    ("po", "lang"):       ("lang",       convertprop),
+}
+
 def main(argv=None):
     # handle command line options
     from translate.convert import convert
-    formats = {("po", "properties"): ("properties", convertprop),
-               ("po", "lang"): ("lang", convertprop),}
     parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
     parser.add_option("", "--personality", dest="personality", default="java", type="choice",
             choices=["java", "mozilla", "skype"],

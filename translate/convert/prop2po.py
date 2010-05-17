@@ -150,12 +150,15 @@ def convertprop(inputfile, outputfile, templatefile, personality="java", pot=Fal
     outputfile.write(str(outputstore))
     return 1
 
+formats = {
+    "properties":                 ("po", convertprop),
+    ("properties", "properties"): ("po", convertprop),
+    "lang":                       ("po", convertprop),
+    ("lang", "lang"):             ("po", convertprop),
+}
+
 def main(argv=None):
     from translate.convert import convert
-    formats = {"properties": ("po", convertprop), 
-               ("properties", "properties"): ("po", convertprop),
-               "lang": ("po", convertprop),
-               ("lang", "lang"): ("po", convertprop),}
     parser = convert.ConvertOptionParser(formats, usetemplates=True, usepots=True, description=__doc__)
     parser.add_option("", "--personality", dest="personality", default="java", type="choice",
             choices=["java", "mozilla", "skype"],
