@@ -130,14 +130,35 @@ class Project(object):
         # Determine the file name and path where the output should be moved.
         if not output_fname:
             _dir, fname = os.path.split(input_fname)
-            dir = ''
+            directory = ''
             if hasattr(inputfile, 'name'):
-                dir, _fn = os.path.split(inputfile.name)
+                # Prefer to put it in the same directory as the input file
+                directory, _fn = os.path.split(inputfile.name)
             else:
-                dir = os.getcwd()
-            output_fname = os.path.join(dir, fname)
-        if append_output_ext:
-            output_fname += os.extsep + converted_ext
+                # Otherwise put it in the current working directory
+                directory = os.getcwd()
+            output_fname = os.path.join(directory, fname)
+        output_fname, output_ext = split_extensions(output_fname)
+        output_ext_parts = output_ext.split(os.extsep)
+
+        # Add the output suffix, if supplied
+        if 'output_suffix' in options:
+            output_fname += options['output_suffix']
+
+        # Check if we are in the situation where the output has an extension
+        # of, for example, .odt.xlf.odt. If so, we want to change that to only
+        # .odt.
+        if len(output_ext_parts) >= 2 and output_ext_parts[-2] == converted_ext:
+            output_ext_parts = output_ext_parts[:-1]
+        else:
+            output_ext_parts.append(converted_ext)
+        output_fname += os.extsep.join([''] + output_ext_parts)
+
+        if os.path.isfile(output_fname):
+            # If the output file already exist, we can't assume that it's safe
+            # to overwrite it.
+            os.unlink(converted_file.name)
+            raise IOError("Output file already exists: %s" % (output_fname))
 
         os.rename(converted_file.name, output_fname)
 
