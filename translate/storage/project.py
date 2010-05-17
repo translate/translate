@@ -73,10 +73,7 @@ class Project(object):
         transfile, transfname = self.convert_forward(srcfname, convert_options=convert_options)
         return srcfile, srcfname, transfile, transfname
 
-    def convert_forward(self,
-            input_fname, template=None, output_fname=None,
-            overwrite_output=True, append_output_ext=True, convert_options=None
-        ):
+    def convert_forward(self, input_fname, template=None, output_fname=None, **options):
         """Convert the given input file to the next type in the process:
             Source document (eg. ODT) -> Translation file (eg. XLIFF) ->
             Translated document (eg. ODT).
@@ -87,7 +84,6 @@ class Project(object):
             @param convert_options: Passed as-is to
                                     C{translate.convert.factory.convert()}.
             @returns 2-tuple: the converted file object and it's project name."""
-
         inputfile = self.get_file(input_fname)
         input_type = self.store.get_filename_type(input_fname)
 
@@ -121,14 +117,14 @@ class Project(object):
 
         if input_fname in self.store.convert_map:
             out_name, tmpl_name = self.store.convert_map[input_fname]
-            if out_name in self.store._files and overwrite_output:
+            if out_name in self.store._files and options.get('overwrite_output', True):
                 self.remove_file(out_name)
 
         converted_file, converted_ext = convert_factory.convert(
             inputfile,
             template=template,
             options=conv_options,
-            convert_options=convert_options
+            convert_options=options.get('convert_options', None)
         )
 
         # Determine the file name and path where the output should be moved.
