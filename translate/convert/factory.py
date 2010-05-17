@@ -129,7 +129,8 @@ def convert(inputfile, template=None, options=None, convert_options=None):
             - templ_fname: File name of the template file; used only to
               determine the template file extension (format).
         @returns: a 2-tuple: The new output file (in a temporary directory) and
-                  the extension (format) of the output file."""
+                  the extension (format) of the output file. The caller is
+                  responsible for deleting the (temporary) output file."""
     in_ext, out_ext, templ_ext = None, None, None
 
     # Get extensions from options
