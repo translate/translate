@@ -51,7 +51,10 @@ class Project(object):
         transfile, transfname = self.convert_forward(srcfname, convert_options=convert_options)
         return srcfile, srcfname, transfile, transfname
 
-    def convert_forward(self, input_fname, template=None, output_fname=None, append_output_ext=True, convert_options=None):
+    def convert_forward(self,
+            input_fname, template=None, output_fname=None,
+            overwrite_output=True, append_output_ext=True, convert_options=None
+        ):
         """Convert the given input file to the next type in the process:
             Source document (eg. ODT) -> Translation file (eg. XLIFF) ->
             Translated document (eg. ODT).
@@ -94,6 +97,11 @@ class Project(object):
 
         # Populate the options dict with the options we can detect
         options = dict(in_fname=input_fname)
+
+        if input_fname in self.store.convert_map:
+            out_name, tmpl_name = self.store.convert_map[input_fname]
+            if out_name in self.store._files and overwrite_output:
+                self.remove_file(out_name)
 
         converted_file, converted_ext = convert_factory.convert(
             inputfile,
