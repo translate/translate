@@ -38,7 +38,7 @@ class BundleProjectStore(ProjectStore):
     # INITIALIZERS #
     def __init__(self, fname):
         super(BundleProjectStore, self).__init__()
-        self.tempfiles = {}
+        self._tempfiles = {}
         if os.path.isfile(fname):
             self.load(fname)
         else:
@@ -101,7 +101,7 @@ class BundleProjectStore(ProjectStore):
         retfile = None
         if fname in self._files or fname in self.zip.namelist():
             # Check if the file has not already been extracted to a temp file
-            tempfname = [tfn for tfn in self.tempfiles if self.tempfiles[tfn] == fname]
+            tempfname = [tfn for tfn in self._tempfiles if self._tempfiles[tfn] == fname]
             if tempfname and os.path.isfile(tempfname[0]):
                 tempfname = tempfname[0]
             else:
@@ -114,7 +114,7 @@ class BundleProjectStore(ProjectStore):
                 os.close(tempfd)
                 open(tempfname, 'w').write(zfile.read())
             retfile = open(tempfname)
-            self.tempfiles[tempfname] = fname
+            self._tempfiles[tempfname] = fname
 
         if not retfile:
             raise FileNotInProjectError(fname)
@@ -128,8 +128,8 @@ class BundleProjectStore(ProjectStore):
             fname = None
         if fname:
             return fname
-        if realfname in self.tempfiles:
-            return self.tempfiles[realfname]
+        if realfname in self._tempfiles:
+            return self._tempfiles[realfname]
         raise ValueError('Real file not in project store: %s' % (realfname))
 
     def load(self, zipname):
