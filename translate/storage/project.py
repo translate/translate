@@ -127,3 +127,7 @@ class Project(object):
         if rfname is None:
             raise ValueError('Project file has no real file: %s' % (projfname))
         return rfname
+
+    def update_file(self, proj_fname, infile):
+        """Proxy to C{self.store.update_file()}."""
+        self.store.update_file(proj_fname, infile)
