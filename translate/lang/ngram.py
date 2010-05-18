@@ -28,7 +28,9 @@ import re
 
 nb_ngrams = 400
 
+
 class _NGram:
+
     def __init__(self, arg={}):
         if isinstance(arg, basestring):
             self.addText(arg)
@@ -50,16 +52,16 @@ class _NGram:
         words = text.split(' ')
 
         for word in words:
-            word = '_'+word+'_'
+            word = '_' + word + '_'
             size = len(word)
             for i in xrange(size):
                 for s in (1, 2, 3, 4):
-                    sub = word[i:i+s]
+                    sub = word[i:i + s]
                     if not ngrams.has_key(sub):
                         ngrams[sub] = 0
                     ngrams[sub] += 1
 
-                    if i+s >= size:
+                    if i + s >= size:
                         break
         self.ngrams = ngrams
         return self
@@ -99,10 +101,12 @@ class _NGram:
 import os
 import glob
 
+
 class NGram:
+
     def __init__(self, folder, ext='.lm'):
         self.ngrams = dict()
-        folder = os.path.join(folder, '*'+ext)
+        folder = os.path.join(folder, '*' + ext)
         size = len(ext)
         count = 0
 
@@ -121,7 +125,8 @@ class NGram:
                         try:
                             ngrams[parts[0]] = i
                         except IndexError:
-                            pass # Line probably only contained spaces, if anything
+                            # Line probably only contained spaces, if anything
+                            pass
                     else:
                         ngrams[parts[0]] = int(parts[1])
                     i -= 1
@@ -148,21 +153,23 @@ class NGram:
                 min = d
                 r = lang
 
-        if min > 0.8 * (nb_ngrams**2):
+        if min > 0.8 * (nb_ngrams ** 2):
             r = ''
         return r
 
+
 class Generate:
+
     def __init__(self, folder, ext='.txt'):
         self.ngrams = dict()
-        folder = os.path.join(folder, '*'+ext)
+        folder = os.path.join(folder, '*' + ext)
         size = len(ext)
 
         for fname in glob.glob(os.path.normcase(folder)):
             lang = os.path.split(fname)[-1][:-size]
             n = _NGram()
 
-            file = open(fname,'r')
+            file = open(fname, 'r')
             for line in file.readlines():
                 n.addText(line)
             file.close()
@@ -172,7 +179,7 @@ class Generate:
 
     def save(self, folder, ext='.lm'):
         for lang in self.ngrams.keys():
-            fname = os.path.join(folder, lang+ext)
+            fname = os.path.join(folder, lang + ext)
             file = open(fname, 'w')
             for v, k in self.ngrams[lang].sorted():
                 file.write("%s\t %d\n" % (k, v))
