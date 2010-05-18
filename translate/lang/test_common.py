@@ -90,3 +90,7 @@ def test_length_difference():
     assert common.Common.length_difference(10) == 6
     assert common.Common.length_difference(100) == 15
     assert common.Common.length_difference(300) == 35
+
+def test_alter_length():
+    """Test that we create the correct length by adding or removing characters"""
+    assert common.Common.alter_length("One two three") == "One twOne two three"
