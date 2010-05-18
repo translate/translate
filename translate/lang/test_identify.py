@@ -3,6 +3,7 @@
 
 from identify import LanguageIdentifier
 from py.test import raises
+from translate.storage.base import TranslationUnit
 
 
 TEXT = """
@@ -145,6 +146,17 @@ bringen, ohne sie dem Diktat versöhnender
 und in den Karnevalvereinen -
 """
 
+TEXT_LIST = [u"""
+Ästhetik des "Erhabenen" herangezogen.
+kostete (hinzu kommen über 6 630 tote""",
+u"""O3 steht für Ozon; es wird in der
+NO2 sind wesentlich am "sauren Regen"
+Ethik hängt eng mit einer Dauerkrise der""",
+u"""Serumwerk GmbH Dresden, Postfach
+,Hundeschläger' für die Dezimierung der
+Momente ihrer Erfahrung".
+zusammen.
+"""]
 
 class TestLanguageIdentifier(object):
     def setup_class(self):
@@ -153,6 +165,13 @@ class TestLanguageIdentifier(object):
     def test_identify_lang(self):
         assert self.langident.identify_lang('') == None
         assert self.langident.identify_lang(TEXT) == 'de'
+
+    def test_identify_store(self):
+        langlist = [TranslationUnit(string) for string in TEXT_LIST] 
+        assert self.langident.identify_source_lang(langlist) == 'de'
+        for i, unit in enumerate(langlist):
+            unit.target = TEXT_LIST[i]
+        assert self.langident.identify_target_lang(langlist) == 'de'
 
     def test_bad_init_data(self):
         """Test __init__ with bad conf files and data dirs"""
