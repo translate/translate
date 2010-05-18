@@ -83,3 +83,10 @@ def test_punctranslate():
     assert not language.punctranslate(u"A...") == u"A…"
     language.puncdict = {u"...": u"…"}
     assert language.punctranslate(u"A...") == u"A…"
+
+def test_length_difference():
+    """Test the heuristics of the length difference function"""
+    # Expansion with no code
+    assert common.Common.length_difference(10) == 6
+    assert common.Common.length_difference(100) == 15
+    assert common.Common.length_difference(300) == 35
