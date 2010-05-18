@@ -2,6 +2,7 @@
 # -*- coding: UTF-8 -*-
 
 from identify import LanguageIdentifier
+from py.test import raises
 
 
 TEXT = """
@@ -152,3 +153,8 @@ class TestLanguageIdentifier(object):
     def test_identify_lang(self):
         assert self.langident.identify_lang('') == None
         assert self.langident.identify_lang(TEXT) == 'de'
+
+    def test_bad_init_data(self):
+        """Test __init__ with bad conf files and data dirs"""
+        assert raises(ValueError, LanguageIdentifier, model_dir='missing')
+        assert raises(ValueError, LanguageIdentifier, conf_file='missing')
