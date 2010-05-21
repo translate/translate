@@ -36,6 +36,32 @@ class LRUCachingDict(WeakValueDictionary):
         self.queue = deque()
         WeakValueDictionary.__init__(self, *args, **kwargs)
 
+    def cull(self):
+        """free memory by deleting old items from cache"""
+        # maximum cache size exceeded, cull old items
+        #
+        # note queue is the real cache but its size is boundless
+        # since it might have duplicate references.
+        #
+        # don't bother culling if queue is smaller than weakref,
+        # this means there are too many references outside the
+        # cache, culling won't free much memory (if any).
+        while len(self) >= self.maxsize <= len(self.queue):
+            cullsize = max(int(len(self.queue) / self.cullsize), 2)
+            try:
+                for i in range(cullsize):
+                    self.queue.popleft()
+            except IndexError:
+                # queue is empty, bail out.
+                #FIXME: should we force garbage collection here too?
+                break
+
+            # call garbage collecter manually since objects
+            # with circular references take some time to get
+            # collected
+            for i in xrange(5):
+                gc.collect()
+
     def __setitem__(self, key, value):
         # check boundaries to minimiza duplicate references
         while len(self.queue) and self.queue[0][0] == key:
@@ -49,34 +75,11 @@ class LRUCachingDict(WeakValueDictionary):
             self.queue.pop()
 
         if len(self) >= self.maxsize:
-            # maximum cache size exceeded, cull old items
-            #
-            # note queue is the real cache but its size is boundless
-            # since it might have duplicate references.
-            #
-            # don't bother culling if queue is smaller than weakref,
-            # this means there are too many references outside the
-            # cache, culling won't free much memory (if any).
-            while len(self) >= self.maxsize <= len(self.queue):
-                cullsize = max(int(len(self.queue) / self.cullsize), 2)
-                try:
-                    for i in range(cullsize):
-                        self.queue.popleft()                        
-                except IndexError:
-                    # queue is empty, bail out.
-                    #FIXME: should we force garbage collection here too?
-                    break
-                
-                # call garbage collecter manually since objects
-                # with circular references take some time to get
-                # collected
-                for i in range(5):
-                    if gc.collect() == 0:
-                        break
+            self.cull()
+
         self.queue.append((key, value))
         WeakValueDictionary.__setitem__(self, key, value)
 
-    
     def __getitem__(self, key):
         value = WeakValueDictionary.__getitem__(self, key)
         # check boundaries to minimiza duplicate references
