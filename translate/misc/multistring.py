@@ -54,7 +54,7 @@ class multistring(autoencode.autoencode):
             return cmp(unicode(self), otherstring)
         elif isinstance(otherstring, str):
             return cmp(str(self), otherstring)
-        elif isinstance(otherstring, list):
+        elif isinstance(otherstring, list) and otherstring:
             return cmp(self, multistring(otherstring))
         else:
             return cmp(type(self), type(otherstring))
