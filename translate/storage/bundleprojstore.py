@@ -75,8 +75,10 @@ class BundleProjectStore(ProjectStore):
                                 deleted after appending, if possible.
             NOTE: For this implementation, the appended file will be deleted
                   from disk if C{delete_orig} is C{True}."""
-        if fname in self.zip.namelist():
+        if fname and fname in self.zip.namelist():
             raise ValueError("File already in bundle archive: %s" % (fname))
+        if not fname and isinstance(afile, basestring) and afile in self.zip.namelist():
+            raise ValueError("File already in bundle archive: %s" % (afile))
 
         afile, fname = super(BundleProjectStore, self).append_file(afile, fname, ftype)
 

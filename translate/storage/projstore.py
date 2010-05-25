@@ -137,7 +137,7 @@ class ProjectStore(object):
             realfname = getattr(afile, 'name', None)
         if realfname is None or not os.path.isfile(realfname):
             realfname = getattr(afile, 'filename', None)
-        if realfname is None or not os.path.isfile(realfname):
+        if not realfname or not os.path.isfile(realfname):
             realfname = None
 
         # Try to get the file name from the file object, if it was not given:
@@ -153,7 +153,7 @@ class ProjectStore(object):
         if fname in self._files:
             raise FileExistsInProjectError(fname)
 
-        if os.path.isfile(realfname):
+        if realfname is not None and os.path.isfile(realfname):
             self._files[fname] = realfname
         else:
             self._files[fname] = afile
