@@ -46,10 +46,6 @@ class BundleProjectStore(ProjectStore):
             self.zip.close()
             self.zip = ZipFile(fname, 'a')
 
-    def __del__(self):
-        super(BundleProjectStore, self).__del__()
-        self.cleanup()
-
 
     # CLASS METHODS #
     @classmethod
@@ -105,6 +101,11 @@ class BundleProjectStore(ProjectStore):
         """Remove the file with the given project name from the project."""
         super(BundleProjectStore, self).remove_file(fname, ftype)
         self._zip_delete([fname])
+
+    def close(self):
+        super(BundleProjectStore, self).close()
+        self.cleanup()
+        self.zip.close()
 
     def cleanup(self):
         """Clean up our mess: remove temporary files."""

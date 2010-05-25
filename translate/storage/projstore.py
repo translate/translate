@@ -81,7 +81,10 @@ class ProjectStore(object):
         }
 
     def __del__(self):
-        self.save()
+        try:
+            self.close()
+        except Exception:
+            pass
 
 
     # ACCESSORS #
@@ -187,6 +190,9 @@ class ProjectStore(object):
 
     def remove_transfile(self, fname):
         self.remove_file(fname, ftype='trans')
+
+    def close(self):
+        self.save()
 
     def get_file(self, fname, mode='rb'):
         """Retrieve the file with the given name from the project store.
