@@ -165,12 +165,15 @@ class BundleProjectStore(ProjectStore):
         """Save all project files to the bundle zip file."""
         self._update_from_tempfiles()
 
-        project_files = self._sourcefiles + self._transfiles + self._targetfiles
-        newzip = self._create_temp_zipfile()
+        if filename:
+            newzip = ZipFile(filename, 'w')
+        else:
+            newzip = self._create_temp_zipfile()
 
         # Write project file for the new zip bundle
         newzip.writestr('project.xtp', self._generate_settings())
         # Copy project files from project to the new zip file
+        project_files = self._sourcefiles + self._transfiles + self._targetfiles
         for fname in project_files:
             newzip.writestr(fname, self.get_file(fname).read())
         # Copy any extra (non-project) files from the current zip
