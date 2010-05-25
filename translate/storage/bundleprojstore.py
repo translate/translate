@@ -161,7 +161,7 @@ class BundleProjectStore(ProjectStore):
                     append_section[section](fname)
                     self._files[fname] = None
 
-    def save(self):
+    def save(self, filename=None):
         """Save all project files to the bundle zip file."""
         self._update_from_tempfiles()
 

@@ -206,9 +206,9 @@ class Project(object):
         """Proxy for C{self.store.remove_file()}."""
         self.store.remove_file(projfname, ftype)
 
-    def save(self):
+    def save(self, filename=None):
         """Proxy for C{self.store.save()}."""
-        self.store.save()
+        self.store.save(filename)
 
     def update_file(self, proj_fname, infile):
         """Proxy for C{self.store.update_file()}."""

@@ -251,7 +251,7 @@ class ProjectStore(object):
         """Load the project in some way. Undefined for this (base) class."""
         pass
 
-    def save(self, *args, **kwargs):
+    def save(self, filename=None, *args, **kwargs):
         """Save the project in some way. Undefined for this (base) class."""
         pass
 
