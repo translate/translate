@@ -262,7 +262,7 @@ class ProjectStore(object):
             @returns: the results from L{self.append_file}."""
         ftype = self.get_filename_type(pfname)
         self.remove_file(pfname)
-        return self.append_file(infile, pfname, ftype)
+        self.append_file(infile, pfname, ftype)
 
     def _fix_type_filename(self, ftype, fname):
         """Strip the path from the filename and prepend the correct prefix."""
