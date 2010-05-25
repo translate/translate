@@ -38,7 +38,7 @@ class BundleProjectStore(ProjectStore):
     def __init__(self, fname):
         super(BundleProjectStore, self).__init__()
         self._tempfiles = {}
-        if os.path.isfile(fname):
+        if fname and os.path.isfile(fname):
             self.load(fname)
         else:
             self.zip = ZipFile(fname, 'w')
