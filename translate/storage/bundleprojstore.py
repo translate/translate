@@ -81,12 +81,7 @@ class BundleProjectStore(ProjectStore):
             raise ValueError("File already in bundle archive: %s" % (afile))
 
         afile, fname = super(BundleProjectStore, self).append_file(afile, fname, ftype)
-
-        if hasattr(afile, 'seek'):
-            afile.seek(0)
-        self.zip.writestr(fname, afile.read())
-        self._files[fname] = None # Clear the cached file object to force the
-                                  # file to be read from the zip file.
+        self._zip_add(fname, afile)
 
         if delete_orig and hasattr(afile, 'name') and afile.name not in self._tempfiles:
             try:
@@ -215,6 +210,14 @@ class BundleProjectStore(ProjectStore):
             self.update_file(self._tempfiles[tempfname], tmp)
             if not tmp.closed:
                 tmp.close()
+
+    def _zip_add(self, pfname, infile):
+        """Add the contents of C{infile} to the zip with file name C{pfname}."""
+        if hasattr(infile, 'seek'):
+            infile.seek(0)
+        self.zip.writestr(pfname, infile.read())
+        self._files[pfname] = None # Clear the cached file object to force the
+                                  # file to be read from the zip file.
 
     def _zip_delete(self, fnames):
         """Delete the files with the given names from the zip file (C{self.zip})."""
