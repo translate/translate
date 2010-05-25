@@ -184,6 +184,20 @@ class BundleProjectStore(ProjectStore):
 
         self._replace_project_zip(newzip)
 
+    def update_file(self, pfname, infile):
+        """Updates the file with the given project file name with the contents
+            of C{infile}.
+
+            @returns: the results from L{self.append_file}."""
+        if pfname not in self._files:
+            raise FileNotInProjectError(pfname)
+
+        if pfname not in self.zip.namelist():
+            return super(BundleProjectStore, self).update_file(pfname, infile)
+
+        self._zip_delete([pfname])
+        self._zip_add(pfname, infile)
+
     def _load_settings(self):
         """Grab the project.xtp file from the zip file and load it."""
         if 'project.xtp' not in self.zip.namelist():
