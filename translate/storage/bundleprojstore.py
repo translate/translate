@@ -66,13 +66,15 @@ class BundleProjectStore(ProjectStore):
 
 
     # METHODS #
-    def append_file(self, afile, fname, ftype='trans'):
+    def append_file(self, afile, fname, ftype='trans', delete_orig=False):
         """Append the given file to the project with the given filename, marked
             to be of type C{ftype} ('src', 'trans', 'tgt').
 
+            @param delete_orig: If C{True}, as set by
+                                L{project.convert_forward()}, C{afile} is
+                                deleted after appending, if possible.
             NOTE: For this implementation, the appended file will be deleted
-                  from disk if it is a target file (C{ftype='tgt'}, output
-                  document."""
+                  from disk if C{delete_orig} is C{True}."""
         if fname in self.zip.namelist():
             raise ValueError("File already in bundle archive: %s" % (fname))
 
@@ -84,12 +86,7 @@ class BundleProjectStore(ProjectStore):
         self._files[fname] = None # Clear the cached file object to force the
                                   # file to be read from the zip file.
 
-        # XXX: The block below deletes the given file from disk if it is a
-        #      target (output) file. This is because target files should really
-        #      only be the product of a conversion and should not be appended
-        #      by the user. If it was part of a conversion, we can delete it
-        #      after adding it to the bundle archive.
-        if ftype == 'tgt' and hasattr(afile, 'name') and afile.name not in self._tempfiles:
+        if delete_orig and hasattr(afile, 'name') and afile.name not in self._tempfiles:
             try:
                 os.unlink(afile.name)
             except Exception:

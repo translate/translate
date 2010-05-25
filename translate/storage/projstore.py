@@ -115,9 +115,15 @@ class ProjectStore(object):
 
 
     # METHODS #
-    def append_file(self, afile, fname, ftype='trans'):
+    def append_file(self, afile, fname, ftype='trans', delete_orig=False):
         """Append the given file to the project with the given filename, marked
-            to be of type C{ftype} ('src', 'trans', 'tgt')."""
+            to be of type C{ftype} ('src', 'trans', 'tgt').
+
+            @type  delete_orig: bool
+            @param delete_orig: Whether or not the original (given) file should
+                                be deleted after being appended. This is set to
+                                C{True} by L{project.convert_forward()}. Not
+                                used in this class."""
         if not ftype in self.TYPE_INFO['f_prefix']:
             raise ValueError('Invalid file type: %s' % (ftype))
 
