@@ -79,6 +79,10 @@ class Project(object):
         transfile, transfname = self.convert_forward(srcfname, convert_options=convert_options)
         return srcfile, srcfname, transfile, transfname
 
+    def close(self):
+        """Proxy for C{self.store.close()}."""
+        self.store.close()
+
     def convert_forward(self, input_fname, template=None, output_fname=None, **options):
         """Convert the given input file to the next type in the process:
             Source document (eg. ODT) -> Translation file (eg. XLIFF) ->
