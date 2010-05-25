@@ -20,11 +20,15 @@
 
 """Serves as single import for all project-related classes."""
 
-from project import Project
+from project import Project, split_extensions
 from projstore import ProjectStore, FileExistsInProjectError, FileNotInProjectError
 from bundleprojstore import BundleProjectStore, InvalidBundleError
 
 __all__ = [
-    'Project', 'ProjectStore', 'BundleProjectStore', 'FileExistsInProjectError',
-    'FileNotInProjectError', 'InvalidBundleError'
+    # Classes
+    'Project', 'ProjectStore', 'BundleProjectStore',
+    # Exceptions
+    'FileExistsInProjectError', 'FileNotInProjectError', 'InvalidBundleError',
+    # Functions
+    'split_extensions',
 ]
