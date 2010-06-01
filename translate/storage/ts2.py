@@ -270,8 +270,11 @@ class tsunit(lisa.LISAunit):
         for location_tag in location_tags:
             location = location_tag.get("filename")
             line = location_tag.get("line")
-            if line is not None:
-                location += ':' + line
+            if line:
+                if location:
+                    location += ':' + line
+                else:
+                    location = line
             locations.append(location)
         return locations
 

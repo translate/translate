@@ -108,3 +108,30 @@ class TestTSfile(test_base.TestTranslationStore):
 '''
         tsfile = ts.tsfile.parsestring(tsstr)
         assert tsfile.getsourcelanguage() == 'en'
+
+
+    def test_locations(self):
+        """test that locations work well"""
+        tsstr = '''<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0" language="hu">
+<context>
+    <name>MainWindow</name>
+    <message>
+        <location filename="../tools/qtconfig/mainwindow.cpp" line="+202"/>
+        <source>Desktop Settings (Default)</source>
+        <translation>Asztali beállítások (Alapértelmezett)</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Choose style and palette based on your desktop settings.</source>
+        <translation>Stílus és paletta alapú kiválasztása az asztali beállításokban.</translation>
+    </message>
+</context>
+</TS>
+'''
+        tsfile = ts.tsfile.parsestring(tsstr)
+        assert len(tsfile.units) == 2
+        assert tsfile.units[0].getlocations() == ['../tools/qtconfig/mainwindow.cpp:+202']
+        assert tsfile.units[1].getlocations() == ['+5']
+
