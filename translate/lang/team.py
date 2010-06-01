@@ -29,7 +29,7 @@ from translate.misc.typecheck.typeclasses import String
 __all__ = ['LANG_TEAM_CONTACT_SNIPPETS', 'guess_language']
 
 LANG_TEAM_REGEX = (
-   ("@li.org", "([a-z_A-Z]{2,})@li.org", ["LL", "XX"]),
+   ("@li.org", "([a-z_A-Z]{2,})@li.org", ["LL", "XX", "TEAM"]),
    ("translation-team", "translation-team-([a-z_A-Z]+)@lists.sourceforge.net", None),
    ("fedora-trans", "fedora-trans-([a-z_A-Z]+)@redhat.com", ["list"]),
    ("ubuntu-l10n", "ubuntu-l10n-([a-z_A-Z]+)@lists.ubuntu.com", None),
@@ -85,7 +85,7 @@ LANG_TEAM_CONTACT_SNIPPETS = {
     "hi": ("indlinux-hindi-gnome@lists.sourceforge.net", "indlinux-hindi@lists.sourceforge.net", ),
     "hr": ("translator-shop.org", "lokalizacija@linux.hr", ),
     "hu": ("debian-l10n-hungarian@lists.debian.org", "gnome@fsf.hu", "gnome@gnome.hu", "magyar@lists.linux.hu", ),
-    "id": ("@id.gnome.org", "@gnome.linux.or.id", "mdk-id@yahoogroups.com", "linux.or.id"),
+    "id": ("@id.gnome.org", "@gnome.linux.or.id", "mdk-id@yahoogroups.com", "linux.or.id", "gnome@i15n.org"),
     "io": ("gnome-ido@lists.mterry.name", ),
     "is": ("gnome@techattack.nu", "kde-isl@mmedia.is", "kde-isl@molar.is", ),
     "it": ("debian-l10n-italian@lists.debian.org", "traduzioni@itpug.org", "fedora-trans-it@redhat.com", "tp@lists.linux.it", ),
