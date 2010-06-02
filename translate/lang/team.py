@@ -188,7 +188,7 @@ LANG_TEAM_LANGUAGE_SNIPPETS = {
     "fur": ("Friulian", ),
     "ga": ("Irish", ),
     "gez": ("Geez", ),
-    "gl": ("Galego", "Galician", ),
+    "gl": ("Galego", "Galician", "Gallegan", "gl_ES", ),
     "gu": ("Gujarati", ),
     "haw": ("Hawaiian", ),
     "he": ("Hebrew", ),
