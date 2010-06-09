@@ -81,6 +81,7 @@ languages = {
 'ja': (u'Japanese', 1, '0'),
 'jv': (u'Javanese', 2, '(n != 1)'),
 'ka': (u'Georgian', 1, '0'),
+'kk': (u'Kazakh', 1, '0'),
 'km': (u'Central Khmer', 1, '0'),
 'kn': (u'Kannada', 2, '(n != 1)'),
 'ko': (u'Korean', 1, '0'),
