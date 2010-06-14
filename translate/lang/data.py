@@ -257,8 +257,18 @@ def _fix_language_name(name):
     """Identify and replace some unsightly names present in iso-codes.
 
     If the name is present in _fixed_names we assume it is untranslated and
-    we replace it with a more usable rendering."""
-    return _fixed_names.get(name, name)
+    we replace it with a more usable rendering.  If the remaining part is long
+    and includes a semi-colon, we only take the text up to the semi-colon to
+    keep things neat."""
+    if name in _fixed_names:
+        return _fixed_names[name]
+    elif len(name) > 11:
+        # These constants are somewhat arbitrary, but testing with the Japanese
+        # translation of ISO codes suggests these as the upper bounds.
+        split_point = name[5:].find(u';')
+        if split_point >= 0:
+            return name[:5+split_point]
+    return name
 
 
 def gettext_lang(langcode=None):

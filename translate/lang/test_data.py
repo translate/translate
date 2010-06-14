@@ -30,3 +30,10 @@ def test_simplify_to_common():
     assert data.simplify_to_common("af_ZA") == "af"
     assert data.simplify_to_common("pt_PT") == "pt"
     assert data.simplify_to_common("pt_BR") == "pt_BR"
+
+def test_language_names():
+    _ = data.tr_lang('en_US')
+    assert _(u"Bokmål, Norwegian; Norwegian Bokmål") == u"Norwegian Bokmål"
+    assert _(u"Spanish; Castillian") == u"Spanish"
+    assert _(u"Mapudungun; Mapuche") == u"Mapudungun"
+
