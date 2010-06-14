@@ -230,7 +230,7 @@ class Common(object):
             else:
                 text += u"..."
         # Let's account for cases where a punctuation symbol plus a space is 
-        # replaced, but the space won't exist at the end of a message.
+        # replaced, but the space won't exist at the end of the source message.
         # As a simple improvement for messages ending in ellipses (...), we
         # test that the last character is different from the second last
         # This is only relevant if the string has two characters or more
