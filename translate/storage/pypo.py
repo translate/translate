@@ -265,6 +265,22 @@ class pounit(pocommon.pounit):
             self.msgstr = quoteforpo(target)
     target = property(gettarget, settarget)
 
+    def getalttrans(self):
+        """Return a list of alternate units.
+
+        Previous msgid and current msgstr is combined to form a single
+        alternative unit."""
+        prev_source = self.prev_source
+        if prev_source and self.isfuzzy():
+            unit = type(self)(prev_source)
+            unit.target = self.target
+            # Already released versions of Virtaal (0.6.x) only supported XLIFF
+            # alternatives, and expect .xmlelement.get().
+            # This can be removed soon:
+            unit.xmlelement = dict()
+            return [unit]
+        return []
+
     def getnotes(self, origin=None):
         """Return comments based on origin value (programmer, developer, source code and translator)"""
         if origin == None:
