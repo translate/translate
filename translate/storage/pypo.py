@@ -567,7 +567,7 @@ class pounit(pocommon.pounit):
     def _encodeifneccessary(self, output):
         """encodes unicode strings and returns other strings unchanged"""
         if isinstance(output, unicode):
-            encoding = encodingToUse(getattr(self, "encoding", "UTF-8"))
+            encoding = encodingToUse(getattr(self, "_encoding", "UTF-8"))
             return output.encode(encoding)
         return output
 
@@ -603,25 +603,23 @@ class pounit(pocommon.pounit):
                 # We need to account for a multiline msgid or msgstr here
                 obsoletelines[index] = obsoleteline.replace('\n"', '\n#~ "')
             lines.extend(obsoletelines)
-            lines = [self._encodeifneccessary(line) for line in lines]
-            return "".join(lines)
+            return u"".join(lines)
         # if there's no msgid don't do msgid and string, unless we're the header
         # this will also discard any comments other than plain othercomments...
         if is_null(self.msgid):
             if not (self.isheader() or self.getcontext() or self.sourcecomments):
-                return "".join(lines)
+                return u"".join(lines)
         lines.extend(self.automaticcomments)
         lines.extend(self.sourcecomments)
         lines.extend(self.typecomments)
         add_prev_msgid_info(lines)
         if self.msgctxt:
-            lines.append(self._getmsgpartstr("msgctxt", self.msgctxt))
-        lines.append(self._getmsgpartstr("msgid", self.msgid, self.msgidcomments))
+            lines.append(self._getmsgpartstr(u"msgctxt", self.msgctxt))
+        lines.append(self._getmsgpartstr(u"msgid", self.msgid, self.msgidcomments))
         if self.msgid_plural or self.msgid_pluralcomments:
-            lines.append(self._getmsgpartstr("msgid_plural", self.msgid_plural, self.msgid_pluralcomments))
-        lines.append(self._getmsgpartstr("msgstr", self.msgstr))
-        lines = [self._encodeifneccessary(line) for line in lines]
-        postr = "".join(lines)
+            lines.append(self._getmsgpartstr(u"msgid_plural", self.msgid_plural, self.msgid_pluralcomments))
+        lines.append(self._getmsgpartstr(u"msgstr", self.msgstr))
+        postr = u"".join(lines)
         return postr
 
     def getlocations(self):
@@ -747,19 +745,19 @@ class pofile(pocommon.pofile):
         """Convert to a string. double check that unicode is handled somehow here"""
         output = self._getoutput()
         if isinstance(output, unicode):
-            return output.encode(getattr(self, "encoding", "UTF-8"))
+            return output.encode(getattr(self, "_encoding", "UTF-8"))
         return output
 
     def _getoutput(self):
         """convert the units back to lines"""
         lines = []
         for unit in self.units:
-            unitsrc = str(unit) + "\n"
+            unitsrc = unit._getoutput() + u"\n"
             lines.append(unitsrc)
-        lines = "".join(self.encode(lines)).rstrip()
+        lines = u"".join(lines).rstrip()
         #After the last pounit we will have \n\n and we only want to end in \n:
         if lines:
-            lines += "\n"
+            lines += u"\n"
         return lines
 
     def encode(self, lines):
