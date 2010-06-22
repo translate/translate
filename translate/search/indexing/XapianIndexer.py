@@ -56,7 +56,8 @@ if 'apache' in sys.modules or '_apache' in sys.modules or 'mod_wsgi' in sys.modu
 import CommonIndexer
 import xapian
 import os
-
+import time
+import logging
 
 def is_available():
     return xapian.major_version() > 0
@@ -96,6 +97,11 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         super(XapianDatabase, self).__init__(basedir, analyzer=analyzer,
                 create_allowed=create_allowed)
         if os.path.exists(self.location):
+            lock = os.path.join(self.location, 'flintlock')
+            if os.path.exists(lock) and (time.time() - os.path.getmtime(lock)) / (60 * 60) >= 1:
+                logging.warning("deleting stale xapian lock (%s)", lock)
+                os.remove(lock)
+
             # try to open an existing database
             try:
                 self.database = xapian.WritableDatabase(self.location,
