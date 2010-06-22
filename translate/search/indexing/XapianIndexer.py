@@ -41,7 +41,7 @@ import re
 if 'apache' in sys.modules or '_apache' in sys.modules or 'mod_wsgi' in sys.modules:
     def _str2version(version):
         return [int(i) for i in version.split('.')]
-    
+
     import subprocess
     # even checking xapian version leads to deadlock under apache, must figure version from command line
     try:
@@ -130,6 +130,9 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
             except xapian.DatabaseOpeningError, err_msg:
                 raise OSError("Indexer: failed to open or create a xapian " \
                         + "database (%s): %s" % (self.location, err_msg))
+
+    def __del__(self):
+        self.database = None
 
     def flush(self, optimize=False):
         """force to write the current changes to disk immediately
