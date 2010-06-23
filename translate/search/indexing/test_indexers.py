@@ -87,6 +87,7 @@ def create_example_content(database):
     database.index_document({"fname2": "foo-bar.po"})
     # add a list of terms for a keyword
     database.index_document({"multiple": ["foo", "bar"]})
+    database.flush()
     assert _get_number_of_docs(database) == 10
 
 def test_create_database():
@@ -373,7 +374,7 @@ def test_multiple_terms():
 
 def show_database(database):
     """print the complete database - for debugging purposes"""
-    if hasattr(database, "database"):
+    if database.INDEX_DIRECTORY_NAME == "xapian":
         _show_database_xapian(database)
     else:
         _show_database_pylucene(database)
@@ -387,12 +388,12 @@ def _show_database_pylucene(database):
 
 def _show_database_xapian(database):
     import xapian
-    doccount = database.database.get_doccount()
-    max_doc_index = database.database.get_lastdocid()
+    doccount = database.reader.get_doccount()
+    max_doc_index = database.reader.get_lastdocid()
     print "Database overview: %d items up to index %d" % (doccount, max_doc_index)
     for index in range(1, max_doc_index+1):
         try:
-            document = database.database.get_document(index)
+            document = database.reader.get_document(index)
         except xapian.DocNotFoundError:
             continue
         # print the document's terms and their positions
@@ -402,9 +403,9 @@ def _show_database_xapian(database):
 
 
 def _get_number_of_docs(database):
-    if hasattr(database, "database"):
+    if database.INDEX_DIRECTORY_NAME == "xapian":
         # xapian
-        return database.database.get_lastdocid()
+        return database.reader.get_doccount()
     else:
         # pylucene
         database.flush()
