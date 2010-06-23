@@ -21,6 +21,7 @@
 
 from translate.storage import base
 from translate.storage import poheader
+from translate.storage.workflow import StateEnum as state
 
 import re
 
@@ -38,6 +39,17 @@ def extract_msgid_comment(text):
 
 
 class pounit(base.TranslationUnit):
+    S_OBSOLETE     = state.OBSOLETE
+    S_UNTRANSLATED = state.EMPTY
+    S_FUZZY        = state.NEEDS_WORK
+    S_TRANSLATED   = state.UNREVIEWED
+
+    STATE = {
+        S_OBSOLETE:     (state.OBSOLETE,   state.EMPTY),
+        S_UNTRANSLATED: (state.EMPTY,      state.NEEDS_WORK),
+        S_FUZZY:        (state.NEEDS_WORK, state.UNREVIEWED),
+        S_TRANSLATED:   (state.UNREVIEWED, state.MAX),
+    }
 
     def adderror(self, errorname, errortext):
         """Adds an error message to this unit."""
