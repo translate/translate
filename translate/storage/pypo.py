@@ -483,10 +483,19 @@ class pounit(pocommon.pounit):
                 self.typecomments = filter(lambda tcline: tcline.strip() != "#,", typecomments)
 
     def isfuzzy(self):
-        return self.hastypecomment("fuzzy")
+        state_isfuzzy = self.STATE[self.S_FUZZY][0] <= self.get_state_n() < self.STATE[self.S_FUZZY][1]
+        if self.hastypecomment('fuzzy') != state_isfuzzy:
+            raise ValueError('Inconsistent fuzzy state')
+        return super(pounit, self).isfuzzy()
 
-    def markfuzzy(self, present=True):
+    def _domarkfuzzy(self, present=True):
         self.settypecomment("fuzzy", present)
+
+    def infer_state(self):
+        if self.obsolete:
+            self.makeobsolete()
+        else:
+            self.markfuzzy(self.hastypecomment('fuzzy'))
 
     def isobsolete(self):
         return self.obsolete
@@ -696,6 +705,7 @@ class pounit(pocommon.pounit):
         elif context:
             id = u"%s\04%s" % (context, id)
         return id
+
 
 class pofile(pocommon.pofile):
     """A .po file containing various units"""

@@ -100,6 +100,25 @@ class pounit(base.TranslationUnit):
     def isreview(self):
         return self.hasmarkedcomment("review") or self.hasmarkedcomment("pofilter")
 
+    def isfuzzy(self):
+        return self.STATE[self.S_FUZZY][0] <= self.get_state_n() < self.STATE[self.S_FUZZY][1]
+
+    def markfuzzy(self, present=True):
+        if present:
+            self.set_state_n(self.STATE[self.S_FUZZY][0])
+        elif self.gettarget():
+            self.set_state_n(self.STATE[self.S_TRANSLATED][0])
+        else:
+            self.set_state_n(self.STATE[self.S_UNTRANSLATED][0])
+
+    def _domarkfuzzy(self, present=True):
+        raise NotImplementedError()
+
+    def set_state_n(self, value):
+        super(pounit, self).set_state_n(value)
+        isfuzzy = self.STATE[self.S_FUZZY][0] <= value < self.STATE[self.S_FUZZY][1]
+        self._domarkfuzzy(isfuzzy) # Implementation specific fuzzy-marking
+
 
 def encodingToUse(encoding):
     """Tests whether the given encoding is known in the python runtime, or returns utf-8.

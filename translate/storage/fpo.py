@@ -292,9 +292,11 @@ class pounit(pocommon.pounit):
         return not (self.isheader() or self.isblank() or self.obsolete)
 
     def isfuzzy(self):
-        return self.hastypecomment("fuzzy")
+        if self.hastypecomment('fuzzy') != self.STATE['fuzzy'][0] <= self.get_state_n() < self.state['fuzzy'][1]:
+            raise ValueError('Inconsistent fuzzy state')
+        return super(pounit, self).isfuzzy()
 
-    def markfuzzy(self, present=True):
+    def _domarkfuzzy(self, present=True):
         self.settypecomment("fuzzy", present)
 
     def isobsolete(self):
