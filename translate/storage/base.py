@@ -32,6 +32,7 @@ except ImportError:
 from exceptions import NotImplementedError
 import translate.i18n
 from translate.storage.placeables import StringElem, general, parse as rich_parse
+from translate.storage.workflow import StateEnum as states
 from translate.misc.typecheck import accepts, Self, IsOneOf
 from translate.misc.multistring import multistring
 
@@ -52,13 +53,11 @@ def force_override(method, baseclass):
 
 
 class ParseError(Exception):
-
     def __init__(self, inner_exc):
         self.inner_exc = inner_exc
 
     def __str__(self):
         return repr(self.inner_exc)
-
 
 class TranslationUnit(object):
     """Base class for translation units.
@@ -89,6 +88,36 @@ class TranslationUnit(object):
     rich_parsers = []
     """A list of functions to use for parsing a string into a rich string tree."""
 
+    # State constants
+    S_OBSOLETE =     states.OBSOLETE
+    S_EMPTY =        states.EMPTY
+    S_NEEDS_WORK =   states.NEEDS_WORK
+    S_REJECTED =     states.REJECTED
+    S_NEEDS_REVIEW = states.NEEDS_REVIEW
+    S_UNREVIEWED =   states.UNREVIEWED
+    S_FINAL =        states.FINAL
+
+    STATE = {
+        S_OBSOLETE:     (states.OBSOLETE,     states.EMPTY),
+        S_EMPTY:        (states.EMPTY,        states.NEEDS_WORK),
+        S_NEEDS_WORK:   (states.NEEDS_WORK,   states.REJECTED),
+        S_REJECTED:     (states.REJECTED,     states.NEEDS_REVIEW),
+        S_NEEDS_REVIEW: (states.NEEDS_REVIEW, states.UNREVIEWED),
+        S_UNREVIEWED:   (states.UNREVIEWED,   states.FINAL),
+        S_FINAL:        (states.FINAL,        states.MAX),
+    }
+    """
+    Default supported states:
+        * obsolete: The unit is not to be used.
+        * empty: The unit has not been translated before.
+        * needs work: Some translation has been done, but is not complete.
+        * rejected: The unit has been reviewed, but was rejected.
+        * needs review: The unit has been translated, but review was requested.
+        * unreviewed: The unit has been translated, but not reviewed.
+        * final: The unit is translated, reviewed and accepted.
+    """
+
+
     def __init__(self, source):
         """Constructs a TranslationUnit containing the given source string."""
         self.notes = ""
@@ -97,6 +126,7 @@ class TranslationUnit(object):
         self._target = None
         self._rich_source = None
         self._rich_target = None
+        self._state_n = 0
 
     def __eq__(self, other):
         """Compares two TranslationUnits.
@@ -403,6 +433,25 @@ class TranslationUnit(object):
 
     xid = property(lambda self: None, lambda self, value: None)
     rid = property(lambda self: None, lambda self, value: None)
+
+    def get_state_id(self, n=None):
+        if n is None:
+            n = self._state_n
+        for state_id, state_range in self.STATE.iteritems():
+            if state_range[0] <= n < state_range[1]:
+                return n
+        raise ValueError('No state containing value %s' % (n))
+
+    def get_state_n(self):
+        return self._state_n
+
+    def set_state_n(self, value):
+        self._state_n = value
+
+    def infer_state(self):
+        """Empty method that should be overridden in sub-classes to infer the
+            current state(_n) of the unit from its current state."""
+        pass
 
 
 class TranslationStore(object):
