@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2008-2009 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -96,20 +96,16 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         # call the __init__ function of our parent
         super(XapianDatabase, self).__init__(basedir, analyzer=analyzer,
                 create_allowed=create_allowed)
+        self.reader = None
+        self.writer = None
         if os.path.exists(self.location):
-            lock = os.path.join(self.location, 'flintlock')
-            if os.path.exists(lock) and (time.time() - os.path.getmtime(lock)) / (60 * 60) >= 1:
-                logging.warning("deleting stale xapian lock (%s)", lock)
-                os.remove(lock)
-
             # try to open an existing database
             try:
-                self.database = xapian.WritableDatabase(self.location,
-                    xapian.DB_OPEN)
+                self.reader = xapian.Database(self.location)
             except xapian.DatabaseOpeningError, err_msg:
                 raise ValueError("Indexer: failed to open xapian database " \
                         + "(%s) - maybe it is not a xapian database: %s" \
-                        % (self.location, err_msg))
+                        % (self.location, str(err_msg)))
         else:
             # create a new database
             if not create_allowed:
@@ -123,16 +119,18 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
             except IOError, err_msg:
                 raise OSError("Indexer: failed to create the parent " \
                         + "directory (%s) of the indexing database: %s" \
-                        % (parent_path, err_msg))
+                        % (parent_path, str(err_msg)))
             try:
-                self.database = xapian.WritableDatabase(self.location,
+                self.writer = xapian.WritableDatabase(self.location,
                         xapian.DB_CREATE_OR_OPEN)
+                self.flush()
             except xapian.DatabaseOpeningError, err_msg:
                 raise OSError("Indexer: failed to open or create a xapian " \
-                        + "database (%s): %s" % (self.location, err_msg))
+                        + "database (%s): %s" % (self.location, str(err_msg)))
 
     def __del__(self):
-        self.database = None
+        self.reader = None
+        self._writer_close()
 
     def flush(self, optimize=False):
         """force to write the current changes to disk immediately
@@ -141,12 +139,9 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         @type optimize: bool
         """
         # write changes to disk (only if database is read-write)
-        if (isinstance(self.database, xapian.WritableDatabase)):
-            self.database.flush()
-        # free the database to remove locks - this is a xapian-specific issue
-        self.database = None
-        # reopen it as read-only
-        self._prepare_database()
+        if self._writer_is_open():
+            self._writer_close()
+        self._index_refresh()
 
     def _create_query_for_query(self, query):
         """generate a query based on an existing query object
@@ -184,7 +179,7 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         @rtype: xapian.Query
         """
         qp = xapian.QueryParser()
-        qp.set_database(self.database)
+        qp.set_database(self.reader)
         if require_all:
             qp.set_default_op(xapian.Query.OP_AND)
         else:
@@ -228,7 +223,7 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
             return xapian.Query("%s%s" % (field.upper(), value))
         # other queries need a parser object
         qp = xapian.QueryParser()
-        qp.set_database(self.database)
+        qp.set_database(self.reader)
         if (analyzer & self.ANALYZER_PARTIAL > 0):
             # partial matching
             match_flags = xapian.QueryParser.FLAG_PARTIAL
@@ -307,8 +302,8 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         @type document: xapian.Document
         """
         # open the database for writing
-        self._prepare_database(writable=True)
-        self.database.add_document(document)
+        self._writer_open()
+        self.writer.add_document(document)
 
     def begin_transaction(self):
         """begin a transaction
@@ -316,24 +311,24 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         Xapian supports transactions to group multiple database modifications.
         This avoids intermediate flushing and therefore increases performance.
         """
-        self._prepare_database(writable=True)
-        self.database.begin_transaction()
+        self._writer_open()
+        self.writer.begin_transaction()
 
     def cancel_transaction(self):
         """cancel an ongoing transaction
 
         no changes since the last execution of 'begin_transcation' are written
         """
-        self._prepare_database(writable=True)
-        self.database.cancel_transaction()
+        self.writer.cancel_transaction()
+        self._writer_close()
 
     def commit_transaction(self):
         """submit the changes of an ongoing transaction
 
         all changes since the last execution of 'begin_transaction' are written
         """
-        self._prepare_database(writable=True)
-        self.database.commit_transaction()
+        self.writer.commit_transaction()
+        self._writer_close()
 
     def get_query_result(self, query):
         """return an object containing the results of a query
@@ -343,7 +338,7 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         @return: an object that allows access to the results
         @rtype: XapianIndexer.CommonEnquire
         """
-        enquire = xapian.Enquire(self.database)
+        enquire = xapian.Enquire(self.reader)
         enquire.set_query(query)
         return XapianEnquire(enquire)
 
@@ -354,9 +349,9 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         @type docid: int
         """
         # open the database for writing
-        self._prepare_database(writable=True)
+        self._writer_open()
         try:
-            self.database.delete_document(docid)
+            self.writer.delete_document(docid)
             return True
         except xapian.DocNotFoundError:
             return False
@@ -378,21 +373,46 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         self._walk_matches(query, _extract_fieldvalues, (result, fieldnames))
         return result
 
-    def _prepare_database(self, writable=False):
-        """reopen the database as read-only or as writable if necessary
+    def _delete_stale_lock(self):
+        if not self._writer_is_open():
+            lockfile = os.path.join(self.location, 'flintlock')
+            if os.path.exists(lockfile) and (time.time() - os.path.getmtime(lockfile)) / 60 > 15:
+                logging.warning("stale lock found in %s, removing.", self.location)
+                os.remove(lockfile)
 
-        this fixes a xapian specific issue regarding open locks for
-        writable databases
+    def _writer_open(self):
+        """open write access for the indexing database and acquire an exclusive lock"""
+        if not self._writer_is_open():
+            self._delete_stale_lock()
+            try:
+                self.writer = xapian.WritableDatabase(self.location, xapian.DB_OPEN)
+            except xapian.DatabaseOpeningError, err_msg:
 
-        @param writable: True for opening a writable database
-        @type writable: bool
-        """
-        if writable and (not isinstance(self.database,
-                xapian.WritableDatabase)):
-            self.database = xapian.WritableDatabase(self.location,
-                    xapian.DB_OPEN)
-        elif not writable and (not isinstance(self.database, xapian.Database)):
-            self.database = xapian.Database(self.location)
+                raise ValueError("Indexer: failed to open xapian database " \
+                                 + "(%s) - maybe it is not a xapian database: %s" \
+                                 % (self.location, str(err_msg)))
+
+    def _writer_close(self):
+        """close indexing write access and remove database lock"""
+        if self._writer_is_open():
+            self.writer.flush()
+            self.writer = None
+
+    def _writer_is_open(self):
+        """check if the indexing write access is currently open"""
+        return not self.writer is None
+
+    def _index_refresh(self):
+        """re-read the indexer database"""
+        try:
+            if self.reader is None:
+                self.reader = xapian.Database(self.location)
+            else:
+                self.reader.reopen()
+        except xapian.DatabaseOpeningError, err_msg:
+            raise ValueError("Indexer: failed to open xapian database " \
+                             + "(%s) - maybe it is not a xapian database: %s" \
+                             % (self.location, str(err_msg)))
 
 
 class XapianEnquire(CommonIndexer.CommonEnquire):
