@@ -188,6 +188,7 @@ class pounit(pocommon.pounit):
             self.target = ""
         elif gpo_message:
             self._gpo_message = gpo_message
+        self._state_n = 0
 
     def setmsgid_plural(self, msgid_plural):
         if isinstance(msgid_plural, list):
