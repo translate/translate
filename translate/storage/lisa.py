@@ -80,6 +80,7 @@ class LISAunit(base.TranslationUnit):
         self._rich_source = None
         self._rich_target = None
         if empty:
+            self._state_n = 0
             return
         self.xmlelement = etree.Element(self.namespaced(self.rootNode))
         #add descrip, note, etc.
