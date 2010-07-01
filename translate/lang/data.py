@@ -337,6 +337,8 @@ def normalized_unicode(string):
     return normalize(forceunicode(string))
 
 def normalize_code(code):
+    if not code:
+        return code
     return code.replace("_", "-").replace("@", "-").lower()
 
 def simplify_to_common(language_code, languages=languages):
