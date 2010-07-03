@@ -139,7 +139,7 @@ class qmfile(base.TranslationStore):
         pos = messages_start
         source = target = None
         while pos < messages_start + len(messages_data):
-            subsection, = struct.unpack(">b", input[pos:pos + 1])
+            subsection, = struct.unpack(">B", input[pos:pos + 1])
             if subsection == 0x01: # End
                 #print "End"
                 pos = pos + 1
