@@ -893,7 +893,7 @@ class StandardChecker(TranslationChecker):
         """checks for repeated words in the translation"""
         lastword = ""
         without_newlines = "\n".join(str2.split("\n"))
-        words = self.filteraccelerators(self.removevariables(without_newlines)).replace(u".", u"").lower().split()
+        words = self.filteraccelerators(self.removevariables(self.filterxml(without_newlines))).replace(u".", u"").lower().split()
         for word in words:
             if word == lastword and word not in self.config.lang.validdoublewords:
                 raise FilterFailure(u"The word '%s' is repeated" % word)
