@@ -106,23 +106,35 @@ class qmfile(base.TranslationStore):
             raise ValueError("This is not a .qm file: invalid magic number")
         startsection = 16
         sectionheader = 5
+
+        def section_debug(name, section_type, startsection, length):
+            print "Section: %s (type: %#x, offset: %#x, length: %d)" % (name, section_type, startsection, length)
+            return
+
         while startsection < len(input):
-            section_type, length = struct.unpack(">bL", input[startsection:startsection + sectionheader])
+            section_type, length = struct.unpack(">BL", input[startsection:startsection + sectionheader])
             if section_type == 0x42:
-                #print "Section: hash"
+                #section_debug("Hash", section_type, startsection, length)
                 hashash = True
                 hash_start = startsection + sectionheader
                 hash_data = struct.unpack(">%db" % length, input[startsection + sectionheader:startsection + sectionheader + length])
             elif section_type == 0x69:
-                #print "Section: messages"
+                #section_debug("Messages", section_type, startsection, length)
                 hasmessages = True
                 messages_start = startsection + sectionheader
                 messages_data = struct.unpack(">%db" % length, input[startsection + sectionheader:startsection + sectionheader + length])
             elif section_type == 0x2f:
-                #print "Section: contexts"
+                #section_debug("Contexts", section_type, startsection, length)
                 hascontexts = True
                 contexts_start = startsection + sectionheader
                 contexts_data = struct.unpack(">%db" % length, input[startsection + sectionheader:startsection + sectionheader + length])
+            elif section_type == 0x88:
+                #section_debug("NumerusRules", section_type, startsection, length)
+                hasnumerusrules = True
+                numerusrules_start = startsection + sectionheader
+                numerusrules_data = struct.unpack(">%db" % length, input[startsection + sectionheader:startsection + sectionheader + length])
+            else:
+                section_debug("Unkown", section_type, startsection, length)
             startsection = startsection + sectionheader + length
         pos = messages_start
         source = target = None
