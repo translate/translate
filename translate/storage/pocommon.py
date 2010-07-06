@@ -65,7 +65,7 @@ class pounit(base.TranslationUnit):
         for note in notes:
             if '(pofilter) ' in note:
                 error = note.replace('(pofilter) ', '')
-                errorname, errortext = error.split(': ')
+                errorname, errortext = error.split(': ', 1)
                 errordict[errorname] = errortext
         return errordict
 
