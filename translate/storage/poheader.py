@@ -204,12 +204,7 @@ class poheader(object):
         if not header:
             if add:
                 header = self.makeheader(**kwargs)
-                # we should be using .addunit() or some equivalent in case the
-                # unit needs to refer back to the store, etc. This might be
-                # subtly broken for POXLIFF, since we don't dupliate the code
-                # from lisa::addunit().
-                header._store = self
-                self.units.insert(0, header)
+                self._insert_header(header)
         else:
             headeritems = update(self.parseheader(), add, **kwargs)
             keys = headeritems.keys()
@@ -224,6 +219,14 @@ class poheader(object):
             header.target = headerString
             header.markfuzzy(False)    # TODO: check why we do this?
         return header
+
+    def _insert_header(self, header):
+        # we should be using .addunit() or some equivalent in case the
+        # unit needs to refer back to the store, etc. This might be
+        # subtly broken for POXLIFF, since we don't dupliate the code
+        # from lisa::addunit().
+        header._store = self
+        self.units.insert(0, header)
 
     def getheaderplural(self):
         """Returns the nplural and plural values from the header."""

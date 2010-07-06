@@ -290,6 +290,12 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
         # one. PO files will probably be one language
         return super(PoXliffFile, self).createfilenode(filename, sourcelanguage=self.sourcelanguage, datatype="po")
 
+    def _insert_header(self, header):
+        header.xmlelement.set("restype", "x-gettext-domain-header")
+        header.xmlelement.set("approved", "no")
+        lisa.setXMLspace(header.xmlelement, "preserve")
+        self.addunit(header)
+
     def addheaderunit(self, target, filename):
         unit = self.addsourceunit(target, filename, True)
         unit.target = target
