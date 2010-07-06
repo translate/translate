@@ -171,14 +171,14 @@ class tsunit(lisa.LISAunit):
         comments = []
         if origin in ["programmer", "developer", "source code", None]:
             notenode = self.xmlelement.find(self.namespaced("comment"))
-            if notenode is not None:
+            if notenode is not None and notenode.text is not None:
                 comments.append(notenode.text)
             notenode = self.xmlelement.find(self.namespaced("extracomment"))
-            if notenode is not None:
+            if notenode is not None and notenode.text is not None:
                 comments.append(notenode.text)
         if origin in ["translator", None]:
             notenode = self.xmlelement.find(self.namespaced("translatorcomment"))
-            if notenode is not None:
+            if notenode is not None and notenode.text is not None:
                 comments.append(notenode.text)
         return '\n'.join(comments)
 
