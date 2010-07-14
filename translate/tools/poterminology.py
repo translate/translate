@@ -291,7 +291,7 @@ class TerminologyExtractor(object):
             terms[term] = ((10 * numfiles) + numsources, termunit)
         return terms
 
-    def filter_terms(self, terms, sortorders=[ "frequency", "dictionary", "length" ]):
+    def filter_terms(self, terms, nonstopmin=1, sortorders=[ "frequency", "dictionary", "length" ]):
         """reduce subphrases from extracted terms"""
         # reduce subphrase
         termlist = terms.keys()
@@ -299,6 +299,10 @@ class TerminologyExtractor(object):
         termlist.sort(lambda x, y: cmp(len(x), len(y)))
         for term in termlist:
             words = term.split()
+            nonstop = [word for word in words if not self.stopword(word)]
+            if len(nonstop) < nonstopmin and  len(nonstop) != len(words):
+                del terms[term]
+                continue
             if len(words) <= 2:
                 continue
             while len(words) > 2:
@@ -438,7 +442,7 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
         print >> sys.stderr, ("scanned %d files" % self.files)
         terms = self.extractor.extract_terms(inputmin=options.inputmin, fullmsgmin=options.fullmsgmin,
                                    substrmin=options.substrmin, locmin=options.locmin)
-        termitems = self.extractor.filter_terms(terms, sortorders=options.sortorders)
+        termitems = self.extractor.filter_terms(terms, nonstopmin=options.nonstopmin, sortorders=options.sortorders)
         for count, unit in termitems:
             termfile.units.append(unit)
         open(options.output, "w").write(str(termfile))
@@ -474,6 +478,8 @@ def main():
 
     parser.add_option("-t", "--term-words", type="int", dest="termlength", default="3",
         help="generate terms of up to LENGTH words (default 3)", metavar="LENGTH")
+    parser.add_option("", "--nonstop-needed", type="int", dest="nonstopmin", default="1",
+        help="omit terms with less than MIN nonstop words (default 1)", metavar="MIN")
     parser.add_option("", "--inputs-needed", type="int", dest="inputmin",
         help="omit terms appearing in less than MIN input files (default 2, or 1 if only one input file)", metavar="MIN")
     parser.add_option("", "--fullmsg-needed", type="int", dest="fullmsgmin", default="1",
