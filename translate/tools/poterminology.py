@@ -273,7 +273,7 @@ class TerminologyExtractor(object):
             numsources = len(sources)
             numfiles = len(filecounts)
             numlocs = len(locations)
-            if numfiles < inputmin or numlocs < locmin:
+            if numfiles < inputmin or 0 < numlocs < locmin:
                 continue
             if fullmsg:
                 if numsources < fullmsgmin:
