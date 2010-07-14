@@ -454,6 +454,8 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         """recurse through directories and process files"""
         if self.isrecursive(options.input, 'input') and getattr(options, "allowrecursiveinput", True):
             if not self.isrecursive(options.output, 'output'):
+                if not options.output:
+                    self.error(optparse.OptionValueError("No output directory given"))
                 try:
                     self.warning("Output directory does not exist. Attempting to create")
                     os.mkdir(options.output)
