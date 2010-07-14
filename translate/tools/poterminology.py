@@ -170,8 +170,6 @@ class TerminologyExtractor(object):
             self.units += 1
             if unit.isheader():
                 continue
-            if unit.hasplural():
-                continue
             if not self.invert:
                 source = self.clean(unit.source)
                 target = self.clean(unit.target)
