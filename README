@@ -123,7 +123,7 @@ names using the iso-codes package. It can even translate names in the format
   Language (Country)
 such as
   English (South Africa)
-This is used by Pootle 1.0 and later. If the package is not installed, the 
+This is used by Pootle and Virtaal. If the package is not installed, the 
 language names will simply appear in English. It is therefore recommended you 
 install the iso-codes package for your distribution, but it is optional.
 Alternatively, it is also available from
@@ -138,7 +138,7 @@ The subtitle editing program Gaupol is needed for sub2po and
 po2sub. Some Unicode encoded files (including most files from
 http://dotsub.com) require latest development version of Gaupol.
 http://home.gna.org/gaupol/
-You will also need the 'Universal Encoding Detector'
+Gaupol might need the 'Universal Encoding Detector'
 http://chardet.feedparser.org/
 
 The programs have been tested on Linux and Windows.
