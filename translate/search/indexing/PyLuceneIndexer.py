@@ -376,6 +376,8 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         @type docid: int
         """
         self._delete_stale_lock()
+        if self._writer_is_open():
+            self._writer_close()
         self.reader.deleteDocument(docid)
         self.reader.flush()
         # TODO: check the performance impact of calling "refresh" for each id
