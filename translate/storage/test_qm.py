@@ -7,11 +7,11 @@ from translate.storage import qm
 from py import test
 
 
-class TestOtUnit(test_base.TestTranslationUnit):
+class TestQtUnit(test_base.TestTranslationUnit):
     UnitClass = qm.qmunit
 
 
-class TestOtFile(test_base.TestTranslationStore):
+class TestQtFile(test_base.TestTranslationStore):
     StoreClass = qm.qmfile
 
     def test_parse(self):
