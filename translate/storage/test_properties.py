@@ -155,3 +155,46 @@ key=value
         assert len(prop_store.units) == 1
         unit = prop_store.units[0]
         assert unit.source == u"valú"
+
+    def test_fullspec_delimiters(self):
+        """test the full definiation as found in Java docs"""
+        proplist = ['Truth = Beauty\n', '       Truth:Beauty', 'Truth                  :Beauty', 'Truth        Beauty']
+        for propsource in proplist:
+            propfile = self.propparse(propsource)
+            propunit = propfile.units[0]
+            print propunit
+            assert propunit.name == "Truth"
+            assert propunit.source == "Beauty"
+
+    def xtest_fullspec_escaped_key(self):
+        """Escaped delimeters can be in the key"""
+        prop_source = u"\:\="
+        prop_store = self.propparse(prop_source)
+        assert len(prop_store.units) == 1
+        unit = prop_store.units[0]
+        print unit
+        assert unit.name == u":="
+
+    def test_fullspec_line_continuation(self):
+        """Whitespace delimiter and pre whitespace in line continuation are dropped"""
+        prop_source = ur"""fruits                           apple, banana, pear, \
+                                  cantaloupe, watermelon, \
+                                  kiwi, mango
+"""
+        prop_store = self.propparse(prop_source)
+        assert len(prop_store.units) == 1
+        unit = prop_store.units[0]
+        print unit
+        assert properties.find_delimiter(prop_source) == (' ', 6)
+        assert unit.name == u"fruits"
+        assert unit.source == u"apple, banana, pear, cantaloupe, watermelon, kiwi, mango"
+
+    def xtest_fullspec_key_without_value(self):
+        """A key can have no value in which case the value is the empty string"""
+        prop_source = u"cheeses"
+        prop_store = self.propparse(prop_source)
+        assert len(prop_store.units) == 1
+        unit = prop_store.units[0]
+        print unit
+        assert unit.name == u"cheeses"
+        assert unit.source == u""
