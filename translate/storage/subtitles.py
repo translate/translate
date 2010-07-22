@@ -28,6 +28,8 @@
 """
 
 from StringIO import StringIO
+import tempfile
+import os
 
 import gaupol
 
@@ -102,8 +104,11 @@ class SubtitleFile(base.TranslationStore):
             storefile.close()
         elif isinstance(storefile, basestring):
             self.filename = storefile
-        if self.filename:
+
+        if self.filename and os.path.exists(self.filename):
             self._parse()
+        else:
+            self.parse(storefile.read())
 
     @classmethod
     def parsefile(cls, storefile):
@@ -112,16 +117,17 @@ class SubtitleFile(base.TranslationStore):
         newstore._parsefile(storefile)
         return newstore
 
-    @classmethod
-    def parsestring(cls, storestring):
-        # Gaupol does not allow parsing from strings
-
-        #FIXME: maybe we can write to a temporary file?
-        raise NotImplementedError
-
-    def parse(self, data):
-        # Gaupol does not allow parsing from strings
-        raise NotImplementedError
+    def parse(self, input):
+        if isinstance(input, basestring):
+            # Gaupol does not allow parsing from strings
+            tmpfile, tmpfilename = tempfile.mkstemp(suffix=self.filename)
+            tmpfile = open(tmpfilename, 'w')
+            tmpfile.write(input)
+            tmpfile.close()
+            self._parsefile(tmpfilename)
+            os.remove(tmpfilename)
+        else:
+            self._parsefile(input)
 
 
 ############# format specific classes ###################
