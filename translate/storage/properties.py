@@ -285,15 +285,15 @@ class propfile(base.TranslationStore):
                     self.addunit(newunit)
                     newunit = propunit("", personality)
             else:
-                delimiter_char, delimiter_pos = find_delimiter(line)
+                newunit.delimiter, delimiter_pos = find_delimiter(line)
                 if delimiter_pos == -1:
-                    continue
-                # otherwise, this is a definition
+                    newunit.name = key_strip(line)
+                    newunit.value = u""
+                    self.addunit(newunit)
+                    newunit = propunit("", personality)
                 else:
-                    newunit.delimiter = delimiter_char
                     newunit.name = key_strip(line[:delimiter_pos])
                     newunit.value = line[delimiter_pos+1:].lstrip()
-                    # backslash at end means carry string on to next line
                     if is_line_continuation(newunit.value):
                         inmultilinevalue = True
                         newunit.value = newunit.value[:-1]

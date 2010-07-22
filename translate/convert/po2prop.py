@@ -77,33 +77,31 @@ class reprop:
         else:
             line = quote.rstripeol(line)
             delimiter_char, delimiter_pos = find_delimiter(line)
-            # if no delimiter, just repeat it
+            if quote.rstripeol(line)[-1:] == '\\':
+                self.inmultilinemsgid = True
             if delimiter_pos == -1:
-                returnline = quote.rstripeol(line)+eol
-            # otherwise, this is a definition
+                key = line.strip()
+                delimiter = " = "
             else:
-                # backslash at end means carry string on to next line
-                if quote.rstripeol(line)[-1:] == '\\':
-                    self.inmultilinemsgid = True
-                # now deal with the current string...
                 key = line[:delimiter_pos].strip()
                 # Calculate space around the equal sign
                 prespace = line.lstrip()[line.lstrip().find(' '):delimiter_pos]
                 postspacestart = len(line[delimiter_pos+1:])
                 postspaceend = len(line[delimiter_pos+1:].lstrip())
                 postspace = line[delimiter_pos+1:delimiter_pos+(postspacestart-postspaceend)+1]
-                if self.inputdict.has_key(key):
-                    self.inecho = False
-                    value = self.inputdict[key]
-                    if isinstance(value, str):
-                        value = value.decode('utf8')
-                    if self.personality == "mozilla" or self.personality == "skype":
-                        returnline = key+prespace+delimiter_char+postspace+quote.mozillapropertiesencode(value)+eol
-                    else:
-                        returnline = key+prespace+delimiter_char+postspace+quote.javapropertiesencode(value)+eol
+                delimiter = prespace + delimiter_char + postspace
+            if self.inputdict.has_key(key):
+                self.inecho = False
+                value = self.inputdict[key]
+                if isinstance(value, str):
+                    value = value.decode('utf8')
+                if self.personality == "mozilla" or self.personality == "skype":
+                    returnline = key + delimiter + quote.mozillapropertiesencode(value)+eol
                 else:
-                    self.inecho = True
-                    returnline = line+eol
+                    returnline = key + delimiter + quote.javapropertiesencode(value)+eol
+            else:
+                self.inecho = True
+                returnline = line+eol
         if isinstance(returnline, unicode):
             returnline = returnline.encode('utf-8')
         return returnline

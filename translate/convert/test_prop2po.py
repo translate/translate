@@ -151,26 +151,28 @@ do=translate me
 
     def test_emptyproperty(self):
         """checks that empty property definitions survive into po file, bug 15"""
-        propsource = '# comment\ncredit='
-        pofile = self.prop2po(propsource)
-        pounit = self.singleelement(pofile)
-        assert pounit.getlocations() == ["credit"]
-        assert pounit.getcontext() == "credit"
-        assert 'msgctxt "credit"' in str(pounit)
-        assert "#. # comment" in str(pofile)
-        assert pounit.source == ""
+        for delimiter in ["=", ""]:
+            propsource = '# comment\ncredit%s' % delimiter
+            pofile = self.prop2po(propsource)
+            pounit = self.singleelement(pofile)
+            assert pounit.getlocations() == ["credit"]
+            assert pounit.getcontext() == "credit"
+            assert 'msgctxt "credit"' in str(pounit)
+            assert "#. # comment" in str(pofile)
+            assert pounit.source == ""
 
     def test_emptyproperty_translated(self):
         """checks that if we translate an empty property it makes it into the PO"""
-        proptemplate = 'credit='
-        propsource = 'credit=Translators Names'
-        pofile = self.prop2po(propsource, proptemplate)
-        pounit = self.singleelement(pofile)
-        assert pounit.getlocations() == ["credit"]
-        # FIXME we don't seem to get a _: comment but we should
-        #assert pounit.getcontext() == "credit"
-        assert pounit.source == ""
-        assert pounit.target == "Translators Names"
+        for delimiter in ["=", ""]:
+            proptemplate = 'credit%s' % delimiter
+            propsource = 'credit=Translators Names'
+            pofile = self.prop2po(propsource, proptemplate)
+            pounit = self.singleelement(pofile)
+            assert pounit.getlocations() == ["credit"]
+            # FIXME we don't seem to get a _: comment but we should
+            #assert pounit.getcontext() == "credit"
+            assert pounit.source == ""
+            assert pounit.target == "Translators Names"
 
     def test_newlines_in_value(self):
         """check that we can carry newlines that appear in the property value into the PO"""

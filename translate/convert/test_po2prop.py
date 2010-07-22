@@ -95,6 +95,15 @@ msgstr ""'''
             print propfile
             assert propfile == [propexpected % delim]
 
+    def test_empty_value(self):
+        """test that we handle an value in the template"""
+        posource = '''#: key\nmsgid ""\nmsgstr "translated"\n'''
+        proptemplate = '''key\n'''
+        propexpected = '''key = translated\n'''
+        propfile = self.merge2prop(proptemplate, posource)
+        print propfile
+        assert propfile == [propexpected]
+
     def test_personalities(self):
         """test that we output correctly for Java and Mozilla style property files.  Mozilla uses Unicode, while Java uses escaped Unicode"""
         posource = '''#: prop\nmsgid "value"\nmsgstr "ṽḁḽṻḝ"\n'''
