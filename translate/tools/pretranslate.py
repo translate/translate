@@ -62,11 +62,8 @@ def match_template_id(input_unit, template_store):
     locations = input_unit.getlocations()
     if not locations or ":" in locations[0]:
         # do normal gettext-like matching
-        matching_units = template_store.findunits(input_unit.source)
-        if matching_units:
-            for unit in matching_units:
-                if unit.getcontext() == input_unit.getcontext():
-                    return unit
+        matching_unit = template_store.findid(input_unit.getid())
+        return matching_unit
 
     else:
         #since oo2po and moz2po use location as unique identifiers for strings
