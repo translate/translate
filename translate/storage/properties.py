@@ -205,7 +205,7 @@ class propunit(base.TranslationUnit):
         if notes:
             notes += u"\n"
         if self.isblank():
-            return notes
+            return notes + u"\n"
         else:
             if "\\u" in self.value and self.personality == "mozilla":
                 self.value = quote.mozillapropertiesencode(self.source)
