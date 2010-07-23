@@ -243,6 +243,9 @@ class propunit(base.TranslationUnit):
     def getid(self):
         return self.name
 
+    def setid(self, value):
+        self.name = value
+
 class propfile(base.TranslationStore):
     """this class represents a .properties file, made up of propunits"""
     UnitClass = propunit
