@@ -69,10 +69,12 @@ def convert_stores(input_store, template_store, tm=None, min_similarity=75, fuzz
 
     # Do matching
     for input_unit in input_store.units:
+        if input_unit.isheader():
+            continue
         if input_unit.istranslatable():
             input_unit = pretranslate.pretranslate_unit(input_unit, template_store, matchers, mark_reused=True)
             _unit_post_merge(input_unit, input_store, output_store, template_store)
-            output_store.addunit(input_unit)
+        output_store.addunit(input_unit)
 
     #finalize store
     _store_post_merge(input_store, output_store, template_store)
