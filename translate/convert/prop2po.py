@@ -29,18 +29,27 @@ import sys
 from translate.storage import po
 from translate.storage import properties
 
+
 class prop2po:
-    """convert a .properties file to a .po file for handling the translation..."""
-    def convertstore(self, thepropfile, personality="java", duplicatestyle="msgctxt"):
+    """convert a .properties file to a .po file for handling the
+    translation."""
+
+    def convertstore(self, thepropfile, personality="java",
+                     duplicatestyle="msgctxt"):
         """converts a .properties file to a .po file..."""
         self.personality = personality
         thetargetfile = po.pofile()
         if self.personality == "mozilla" or self.personality == "skype":
-            targetheader = thetargetfile.init_headers(charset="UTF-8", encoding="8bit", x_accelerator_marker="&")
+            targetheader = thetargetfile.init_headers(charset="UTF-8",
+                                                      encoding="8bit",
+                                                      x_accelerator_marker="&")
         else:
-            targetheader = thetargetfile.init_headers(charset="UTF-8", encoding="8bit")
-        targetheader.addnote("extracted from %s" % thepropfile.filename, "developer")
-        # we try and merge the header po with any comments at the start of the properties file
+            targetheader = thetargetfile.init_headers(charset="UTF-8",
+                                                      encoding="8bit")
+        targetheader.addnote("extracted from %s" % thepropfile.filename,
+                             "developer")
+        # we try and merge the header po with any comments at the start of the
+        # properties file
         appendedheader = False
         waitingcomments = []
         for propunit in thepropfile.units:
@@ -52,28 +61,36 @@ class prop2po:
                 continue
             if not appendedheader:
                 if propunit.isblank():
-                    targetheader.addnote("\n".join(waitingcomments).rstrip(), "developer", position="prepend")
+                    targetheader.addnote("\n".join(waitingcomments).rstrip(),
+                                         "developer", position="prepend")
                     waitingcomments = []
                     pounit = None
                 appendedheader = True
             if pounit is not None:
-                pounit.addnote("\n".join(waitingcomments).rstrip(), "developer", position="prepend")
+                pounit.addnote("\n".join(waitingcomments).rstrip(),
+                               "developer", position="prepend")
                 waitingcomments = []
                 thetargetfile.addunit(pounit)
         thetargetfile.removeduplicates(duplicatestyle)
         return thetargetfile
 
-    def mergestore(self, origpropfile, translatedpropfile, personality="java", blankmsgstr=False, duplicatestyle="msgctxt"):
+    def mergestore(self, origpropfile, translatedpropfile, personality="java",
+                   blankmsgstr=False, duplicatestyle="msgctxt"):
         """converts two .properties files to a .po file..."""
         self.personality = personality
         thetargetfile = po.pofile()
         if self.personality == "mozilla" or self.personality == "skype":
-            targetheader = thetargetfile.init_headers(charset="UTF-8", encoding="8bit", x_accelerator_marker="&")
+            targetheader = thetargetfile.init_headers(charset="UTF-8",
+                                                      encoding="8bit",
+                                                      x_accelerator_marker="&")
         else:
-            targetheader = thetargetfile.init_headers(charset="UTF-8", encoding="8bit")
-        targetheader.addnote("extracted from %s, %s" % (origpropfile.filename, translatedpropfile.filename), "developer")
+            targetheader = thetargetfile.init_headers(charset="UTF-8",
+                                                      encoding="8bit")
+        targetheader.addnote("extracted from %s, %s" % (origpropfile.filename, translatedpropfile.filename),
+                             "developer")
         translatedpropfile.makeindex()
-        # we try and merge the header po with any comments at the start of the properties file
+        # we try and merge the header po with any comments at the start of
+        # the properties file
         appendedheader = False
         waitingcomments = []
         # loop through the original file, looking at units one by one
@@ -87,14 +104,16 @@ class prop2po:
             # handle the header case specially...
             if not appendedheader:
                 if origprop.isblank():
-                    targetheader.addnote(u"".join(waitingcomments).rstrip(), "developer", position="prepend")
+                    targetheader.addnote(u"".join(waitingcomments).rstrip(),
+                                         "developer", position="prepend")
                     waitingcomments = []
                     origpo = None
                 appendedheader = True
             # try and find a translation of the same name...
             if origprop.name in translatedpropfile.locationindex:
                 translatedprop = translatedpropfile.locationindex[origprop.name]
-                # Need to check that this comment is not a copy of the developer comments
+                # Need to check that this comment is not a copy of the
+                # developer comments
                 translatedpo = self.convertunit(translatedprop, "translator")
                 if translatedpo is "discard":
                     continue
@@ -104,7 +123,8 @@ class prop2po:
             if origpo is not None:
                 if translatedpo is not None and not blankmsgstr:
                     origpo.target = translatedpo.source
-                origpo.addnote(u"".join(waitingcomments).rstrip(), "developer", position="prepend")
+                origpo.addnote(u"".join(waitingcomments).rstrip(),
+                               "developer", position="prepend")
                 waitingcomments = []
                 thetargetfile.addunit(origpo)
             elif translatedpo is not None:
@@ -132,37 +152,51 @@ class prop2po:
         pounit.target = u""
         return pounit
 
-def convertmozillaprop(inputfile, outputfile, templatefile, pot=False, duplicatestyle="msgctxt"):
-    """Mozilla specific convertor function"""
-    return convertprop(inputfile, outputfile, templatefile, personality="mozilla", pot=pot, duplicatestyle=duplicatestyle)
 
-def convertprop(inputfile, outputfile, templatefile, personality="java", pot=False, duplicatestyle="msgctxt"):
-    """reads in inputfile using properties, converts using prop2po, writes to outputfile"""
+def convertmozillaprop(inputfile, outputfile, templatefile, pot=False,
+                       duplicatestyle="msgctxt"):
+    """Mozilla specific convertor function"""
+    return convertprop(inputfile, outputfile, templatefile,
+                       personality="mozilla", pot=pot,
+                       duplicatestyle=duplicatestyle)
+
+
+def convertprop(inputfile, outputfile, templatefile, personality="java",
+                pot=False, duplicatestyle="msgctxt"):
+    """reads in inputfile using properties, converts using prop2po, writes
+    to outputfile"""
     inputstore = properties.propfile(inputfile, personality)
     convertor = prop2po()
     if templatefile is None:
-        outputstore = convertor.convertstore(inputstore, personality, duplicatestyle=duplicatestyle)
+        outputstore = convertor.convertstore(inputstore, personality,
+                                             duplicatestyle=duplicatestyle)
     else:
         templatestore = properties.propfile(templatefile, personality)
-        outputstore = convertor.mergestore(templatestore, inputstore, personality, blankmsgstr=pot, duplicatestyle=duplicatestyle)
+        outputstore = convertor.mergestore(templatestore, inputstore,
+                                           personality, blankmsgstr=pot,
+                                           duplicatestyle=duplicatestyle)
     if outputstore.isempty():
         return 0
     outputfile.write(str(outputstore))
     return 1
 
 formats = {
-    "properties":                 ("po", convertprop),
+    "properties": ("po", convertprop),
     ("properties", "properties"): ("po", convertprop),
-    "lang":                       ("po", convertprop),
-    ("lang", "lang"):             ("po", convertprop),
+    "lang": ("po", convertprop),
+    ("lang", "lang"): ("po", convertprop),
 }
+
 
 def main(argv=None):
     from translate.convert import convert
-    parser = convert.ConvertOptionParser(formats, usetemplates=True, usepots=True, description=__doc__)
-    parser.add_option("", "--personality", dest="personality", default="java", type="choice",
-            choices=["java", "mozilla", "skype"],
-            help="set the input behaviour: java (default), mozilla, skype", metavar="TYPE")
+    parser = convert.ConvertOptionParser(formats, usetemplates=True,
+                                         usepots=True,
+                                         description=__doc__)
+    parser.add_option("", "--personality", dest="personality", default="java",
+            type="choice", choices=["java", "mozilla", "skype"],
+            help="set the input behaviour: java (default), mozilla, skype",
+            metavar="TYPE")
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.passthrough.append("personality")
@@ -170,4 +204,3 @@ def main(argv=None):
 
 if __name__ == '__main__':
     main()
-

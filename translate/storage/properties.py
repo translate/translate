@@ -24,13 +24,13 @@
 
    The following U{.properties file
    description<http://java.sun.com/j2se/1.4.2/docs/api/java/util/Properties.html#load(java.io.InputStream)>}
-   and U{example <http://www.exampledepot.com/egs/java.util/Props.html>} give some
-   good references to the .properties specification.
+   and U{example <http://www.exampledepot.com/egs/java.util/Props.html>} give
+   some good references to the .properties specification.
 
    Properties file may also hold Java
-   U{MessageFormat<http://java.sun.com/j2se/1.4.2/docs/api/java/text/MessageFormat.html>} 
-   messages.  No special handling is provided in this storage class for MessageFormat,
-   but this may be implemented in future.
+   U{MessageFormat<http://java.sun.com/j2se/1.4.2/docs/api/java/text/MessageFormat.html>}
+   messages.  No special handling is provided in this storage class for
+   MessageFormat, but this may be implemented in future.
 
    Implementation
    ==============
@@ -59,11 +59,12 @@ import re
 
 eol = "\n"
 
+
 def find_delimiter(line):
     """Find the type and position of the delimiter in a property line.
 
     Property files can be delimeted by "=", ":" or whitespace (space for now).
-    We find the position of each delimiter, then find the one that appears 
+    We find the position of each delimiter, then find the one that appears
     first.
 
     @param line: A properties line
@@ -80,7 +81,7 @@ def find_delimiter(line):
             if delimiters[delimiter] == -1 and line[pos-1] != "\\":
                 delimiters[delimiter] = pos
                 break
-            pos = line.find(delimiter, pos+1)
+            pos = line.find(delimiter, pos + 1)
     # Find the first "=" or ":" delimiter
     mindelimiter = None
     minpos = -1
@@ -94,12 +95,13 @@ def find_delimiter(line):
         # Use space delimiter if we found nothing else
         return (" ", delimiters[" "])
     if mindelimiter is not None and delimiters[" "] < delimiters[mindelimiter]:
-        # If space delimiter occurs earlier then ":" or "=" then it is the 
+        # If space delimiter occurs earlier then ":" or "=" then it is the
         # delimiter only if there are non-whitespace characters between it and
         # the other detected delimiter.
         if len(line[delimiters[" "]:delimiters[mindelimiter]].strip()) > 0:
             return (" ", delimiters[" "])
     return (mindelimiter, minpos)
+
 
 def find_delimeter(line):
     """Spelling error that is kept around for in case someone relies on it.
@@ -108,11 +110,12 @@ def find_delimeter(line):
     raise DeprecationWarning
     return find_delimiter(line)
 
+
 def is_line_continuation(line):
     """Determine whether L{line} has a line continuation marker.
 
     .properties files can be terminated with a backslash (\\) indicating
-    that the 'value' continues on the next line.  Continuation is only 
+    that the 'value' continues on the next line.  Continuation is only
     valid if there are an odd number of backslashses (an even number
     would result in a set of N/2 slashes not an escape)
 
@@ -132,6 +135,7 @@ def is_line_continuation(line):
         count += 1
     return (count % 2) == 1  # Odd is a line continuation, even is not
 
+
 def key_strip(key):
     """Cleanup whitespace found around a key
 
@@ -148,9 +152,11 @@ def key_strip(key):
 
 default_encoding = {"java": "latin1", "mozilla": "utf-8", "skype": "utf-16"}
 
+
 class propunit(base.TranslationUnit):
     """an element of a properties file i.e. a name and value, and any comments
     associated"""
+
     def __init__(self, source="", personality="java"):
         """construct a blank propunit"""
         self.personality = personality
@@ -193,14 +199,16 @@ class propunit(base.TranslationUnit):
     target = property(gettarget, settarget)
 
     def __str__(self):
-        """convert to a string. double check that unicode is handled somehow here"""
+        """convert to a string. double check that unicode is handled somehow
+        here"""
         source = self.getoutput()
         if isinstance(source, unicode):
             return source.encode(default_encoding[self.personality])
         return source
 
     def getoutput(self):
-        """convert the element back into formatted lines for a .properties file"""
+        """convert the element back into formatted lines for a .properties
+        file"""
         notes = self.getnotes()
         if notes:
             notes += u"\n"
@@ -222,7 +230,8 @@ class propunit(base.TranslationUnit):
             text = data.forceunicode(text)
             self.comments.append(text)
         else:
-            return super(propunit, self).addnote(text, origin=origin, position=position)
+            return super(propunit, self).addnote(text, origin=origin,
+                                                 position=position)
 
     def getnotes(self, origin=None):
         if origin in ['programmer', 'developer', 'source code', None]:
@@ -234,7 +243,8 @@ class propunit(base.TranslationUnit):
         self.comments = []
 
     def isblank(self):
-        """returns whether this is a blank element, containing only comments..."""
+        """returns whether this is a blank element, containing only
+        comments."""
         return not (self.name or self.value)
 
     def istranslatable(self):
@@ -246,12 +256,14 @@ class propunit(base.TranslationUnit):
     def setid(self, value):
         self.name = value
 
+
 class propfile(base.TranslationStore):
     """this class represents a .properties file, made up of propunits"""
     UnitClass = propunit
+
     def __init__(self, inputfile=None, personality="java"):
         """construct a propfile, optionally reading in from inputfile"""
-        super(propfile, self).__init__(unitclass = self.UnitClass)
+        super(propfile, self).__init__(unitclass=self.UnitClass)
         self.filename = getattr(inputfile, 'name', '')
         if inputfile is not None:
             propsrc = inputfile.read()
@@ -313,4 +325,3 @@ class propfile(base.TranslationStore):
         for unit in self.units:
             lines.append(str(unit))
         return "".join(lines)
-

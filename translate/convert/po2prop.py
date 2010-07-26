@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2002-2006 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -22,7 +22,7 @@
 
 """convert Gettext PO localization files to Java/Mozilla .properties files
 
-see: http://translate.sourceforge.net/wiki/toolkit/po2prop for examples and 
+see: http://translate.sourceforge.net/wiki/toolkit/po2prop for examples and
 usage instructions
 """
 
@@ -32,7 +32,9 @@ from translate.storage.properties import find_delimiter
 
 eol = "\n"
 
+
 class reprop:
+
     def __init__(self, templatefile):
         self.templatefile = templatefile
         self.inputdict = {}
@@ -55,8 +57,8 @@ class reprop:
                 # there may be more than one entity due to msguniq merge
                 for entity in unit.getlocations():
                     propstring = unit.target
-                    
-                    # NOTE: triple-space as a string means leave it empty (special signal)
+                    # NOTE: triple-space as a string means leave it
+                    # empty (special signal)
                     if len(propstring.strip()) == 0 and propstring != "   ":
                         propstring = unit.source
                     self.inputdict[entity] = propstring
@@ -90,53 +92,61 @@ class reprop:
                 postspaceend = len(line[delimiter_pos+1:].lstrip())
                 postspace = line[delimiter_pos+1:delimiter_pos+(postspacestart-postspaceend)+1]
                 delimiter = prespace + delimiter_char + postspace
-            if self.inputdict.has_key(key):
+            if key in self.inputdict:
                 self.inecho = False
                 value = self.inputdict[key]
                 if isinstance(value, str):
                     value = value.decode('utf8')
                 if self.personality == "mozilla" or self.personality == "skype":
-                    returnline = key + delimiter + quote.mozillapropertiesencode(value)+eol
+                    returnline = key + delimiter + quote.mozillapropertiesencode(value) + eol
                 else:
-                    returnline = key + delimiter + quote.javapropertiesencode(value)+eol
+                    returnline = key + delimiter + quote.javapropertiesencode(value) + eol
             else:
                 self.inecho = True
-                returnline = line+eol
+                returnline = line + eol
         if isinstance(returnline, unicode):
             returnline = returnline.encode('utf-8')
         return returnline
 
-def convertmozillaprop(inputfile, outputfile, templatefile, includefuzzy=False):
-    """Mozilla specific convertor function"""
-    return convertprop(inputfile, outputfile, templatefile, personality="mozilla", includefuzzy=includefuzzy)
 
-def convertprop(inputfile, outputfile, templatefile, personality="java", includefuzzy=False):
+def convertmozillaprop(inputfile, outputfile, templatefile,
+                       includefuzzy=False):
+    """Mozilla specific convertor function"""
+    return convertprop(inputfile, outputfile, templatefile,
+                       personality="mozilla", includefuzzy=includefuzzy)
+
+
+def convertprop(inputfile, outputfile, templatefile, personality="java",
+                includefuzzy=False):
     inputstore = po.pofile(inputfile)
     if templatefile is None:
         raise ValueError("must have template file for properties files")
         # convertor = po2prop()
     else:
         convertor = reprop(templatefile)
-    outputproplines = convertor.convertstore(inputstore, personality, includefuzzy)
+    outputproplines = convertor.convertstore(inputstore, personality,
+                                             includefuzzy)
     outputfile.writelines(outputproplines)
     return 1
 
 formats = {
     ("po", "properties"): ("properties", convertprop),
-    ("po", "lang"):       ("lang",       convertprop),
+    ("po", "lang"): ("lang", convertprop),
 }
+
 
 def main(argv=None):
     # handle command line options
     from translate.convert import convert
-    parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
-    parser.add_option("", "--personality", dest="personality", default="java", type="choice",
-            choices=["java", "mozilla", "skype"],
-            help="set the output behaviour: java (default), mozilla, skype", metavar="TYPE")
+    parser = convert.ConvertOptionParser(formats, usetemplates=True,
+                                         description=__doc__)
+    parser.add_option("", "--personality", dest="personality", default="java",
+            type="choice", choices=["java", "mozilla", "skype"],
+            help="set the output behaviour: java (default), mozilla, skype",
+            metavar="TYPE")
     parser.add_fuzzy_option()
     parser.passthrough.append("personality")
     parser.run(argv)
 
 if __name__ == '__main__':
     main()
-
