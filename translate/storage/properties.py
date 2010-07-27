@@ -51,7 +51,7 @@
 
 from translate.storage import base
 from translate.misc import quote
-from translate.misc.typecheck import accepts, returns, Self, IsOneOf
+from translate.misc.typecheck import accepts, returns, IsOneOf
 from translate.lang import data
 import re
 
