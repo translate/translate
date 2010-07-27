@@ -6,24 +6,24 @@ from translate.storage import test_monolingual
 from translate.misc import wStringIO
 
 def test_find_delimiter_pos_simple():
-    assert properties._find_delimiter("key=value", ["=", ":", " "]) == ('=', 3)
-    assert properties._find_delimiter("key:value", ["=", ":", " "]) == (':', 3)
-    assert properties._find_delimiter("key value", ["=", ":", " "]) == (' ', 3)
-    assert properties._find_delimiter("= value", ["=", ":", " "]) == ('=', 0)
+    assert properties._find_delimiter(u"key=value", [u"=", u":", u" "]) == ('=', 3)
+    assert properties._find_delimiter(u"key:value", [u"=", u":", u" "]) == (':', 3)
+    assert properties._find_delimiter(u"key value", [u"=", u":", u" "]) == (' ', 3)
+    assert properties._find_delimiter(u"= value", [u"=", u":", u" "]) == ('=', 0)
 
 def test_find_delimiter_pos_whitespace():
-    assert properties._find_delimiter("key = value", ["=", ":", " "]) == ('=', 4)
-    assert properties._find_delimiter("key : value", ["=", ":", " "]) == (':', 4)
-    assert properties._find_delimiter("key   value", ["=", ":", " "]) == (' ', 3)
-    assert properties._find_delimiter("key key = value", ["=", ":", " "]) == (' ', 3)
-    assert properties._find_delimiter("key value value", ["=", ":", " "]) == (' ', 3)
-    assert properties._find_delimiter(" key = value", ["=", ":", " "]) == ('=', 5)
+    assert properties._find_delimiter(u"key = value", [u"=", u":", u" "]) == ('=', 4)
+    assert properties._find_delimiter(u"key : value", [u"=", u":", u" "]) == (':', 4)
+    assert properties._find_delimiter(u"key   value", [u"=", u":", u" "]) == (' ', 3)
+    assert properties._find_delimiter(u"key key = value", [u"=", u":", u" "]) == (' ', 3)
+    assert properties._find_delimiter(u"key value value", [u"=", u":", u" "]) == (' ', 3)
+    assert properties._find_delimiter(u" key = value", [u"=", u":", u" "]) == ('=', 5)
 
 def test_find_delimiter_pos_escapes():
-    assert properties._find_delimiter("key\:=value", ["=", ":", " "]) == ('=', 5)
-    assert properties._find_delimiter("key\=: value", ["=", ":", " "]) == (':', 5)
-    assert properties._find_delimiter("key\   value", ["=", ":", " "]) == (' ', 5)
-    assert properties._find_delimiter("key\ key\ key\: = value", ["=", ":", " "]) == ('=', 16)
+    assert properties._find_delimiter(u"key\:=value", [u"=", u":", u" "]) == ('=', 5)
+    assert properties._find_delimiter(u"key\=: value", [u"=", u":", u" "]) == (':', 5)
+    assert properties._find_delimiter(u"key\   value", [u"=", u":", u" "]) == (' ', 5)
+    assert properties._find_delimiter(u"key\ key\ key\: = value", [u"=", u":", u" "]) == ('=', 16)
 
 def test_is_line_continuation():
     assert properties.is_line_continuation("") == False
@@ -186,7 +186,7 @@ key=value
         assert len(prop_store.units) == 1
         unit = prop_store.units[0]
         print unit
-        assert properties._find_delimiter(prop_source, ["=", ":", " "]) == (' ', 6)
+        assert properties._find_delimiter(prop_source, [u"=", u":", u" "]) == (' ', 6)
         assert unit.name == u"fruits"
         assert unit.source == u"apple, banana, pear, cantaloupe, watermelon, kiwi, mango"
 

@@ -51,6 +51,7 @@
 
 from translate.storage import base
 from translate.misc import quote
+from translate.misc.typecheck import accepts, returns, Self, IsOneOf
 from translate.lang import data
 import re
 
@@ -60,6 +61,8 @@ import re
 eol = "\n"
 
 
+@accepts(unicode, [unicode])
+@returns(IsOneOf(type(None),unicode), int)
 def _find_delimiter(line, delimiters):
     """Find the type and position of the delimiter in a property line.
 
@@ -83,7 +86,7 @@ def _find_delimiter(line, delimiters):
         prewhitespace = len(line) - len(line.lstrip())
         pos = line.find(delimiter, prewhitespace)
         while pos != -1:
-            if delimiters[delimiter] == -1 and line[pos-1] != "\\":
+            if delimiters[delimiter] == -1 and line[pos-1] != u"\\":
                 delimiters[delimiter] = pos
                 break
             pos = line.find(delimiter, pos + 1)
@@ -91,20 +94,20 @@ def _find_delimiter(line, delimiters):
     mindelimiter = None
     minpos = -1
     for delimiter, pos in delimiters.iteritems():
-        if pos == -1 or delimiter == " ":
+        if pos == -1 or delimiter == u" ":
             continue
         if minpos == -1 or pos < minpos:
             minpos = pos
             mindelimiter = delimiter
-    if mindelimiter is None and delimiters.get(" ", -1) != -1:
+    if mindelimiter is None and delimiters.get(u" ", -1) != -1:
         # Use space delimiter if we found nothing else
-        return (" ", delimiters[" "])
+        return (u" ", delimiters[" "])
     if mindelimiter is not None and u" " in delimiters and delimiters[u" "] < delimiters[mindelimiter]:
         # If space delimiter occurs earlier than ":" or "=" then it is the
         # delimiter only if there are non-whitespace characters between it and
         # the other detected delimiter.
-        if len(line[delimiters[" "]:delimiters[mindelimiter]].strip()) > 0:
-            return (" ", delimiters[" "])
+        if len(line[delimiters[u" "]:delimiters[mindelimiter]].strip()) > 0:
+            return (u" ", delimiters[u" "])
     return (mindelimiter, minpos)
 
 
