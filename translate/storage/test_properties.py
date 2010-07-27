@@ -29,8 +29,8 @@ def test_find_delimiter_pos_escapes():
 
 def test_find_delimiter_deprecated_fn():
     """Test that the deprecated function still actually works"""
-    #assert properties.find_delimeter(u"key=value")
-    assert test.raises(DeprecationWarning, 'properties.find_delimeter(u"key=value")')
+    assert properties.find_delimeter(u"key=value")
+    #assert test.raises(DeprecationWarning, 'properties.find_delimeter(u"key=value")')
 
 def test_is_line_continuation():
     assert properties.is_line_continuation(u"") == False

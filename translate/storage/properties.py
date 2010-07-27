@@ -54,6 +54,7 @@ from translate.misc import quote
 from translate.misc.typecheck import accepts, returns, IsOneOf
 from translate.lang import data
 import re
+import warnings
 
 # the rstripeols convert dos <-> unix nicely as well
 # output will be appropriate for the platform
@@ -115,7 +116,7 @@ def find_delimeter(line):
     """Spelling error that is kept around for in case someone relies on it.
 
     Deprecated."""
-    raise DeprecationWarning
+    warnings.warn("deprecated use Dialect.find_delimiter instead", DeprecationWarning)
     return _find_delimiter(line, DialectJava.delimiters)
 
 
