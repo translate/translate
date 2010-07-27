@@ -35,7 +35,7 @@ eol = "\n"
 
 class reprop:
 
-    def __init__(self, templatefile, personality, encoding):
+    def __init__(self, templatefile, personality, encoding=None):
         self.personality = properties.get_dialect(personality)
         self.encoding = encoding
         if self.encoding is None:

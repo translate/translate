@@ -21,8 +21,8 @@ class TestPO2Prop:
         inputpo = po.pofile(inputfile)
         templatefile = wStringIO.StringIO(propsource)
         #templateprop = properties.propfile(templatefile)
-        convertor = po2prop.reprop(templatefile)
-        outputprop = convertor.convertstore(inputpo, personality=personality)
+        convertor = po2prop.reprop(templatefile, personality=personality)
+        outputprop = convertor.convertstore(inputpo)
         print outputprop
         return outputprop
 
