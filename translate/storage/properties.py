@@ -63,7 +63,7 @@ eol = "\n"
 
 
 @accepts(unicode, [unicode])
-@returns(IsOneOf(type(None),unicode), int)
+@returns(IsOneOf(type(None), unicode), int)
 def _find_delimiter(line, delimiters):
     """Find the type and position of the delimiter in a property line.
 
@@ -165,6 +165,7 @@ def _key_strip(key):
 
 dialects = {}
 default_dialect = "java"
+
 
 def register_dialect(dialect):
     dialects[dialect.name] = dialect
