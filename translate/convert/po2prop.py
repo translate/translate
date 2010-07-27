@@ -35,18 +35,21 @@ eol = "\n"
 
 class reprop:
 
-    def __init__(self, templatefile):
+    def __init__(self, templatefile, personality, encoding):
+        self.personality = properties.get_dialect(personality)
+        self.encoding = encoding
+        if self.encoding is None:
+            self.encoding = self.personality.default_encoding
         self.templatefile = templatefile
         self.inputdict = {}
 
-    def convertstore(self, inputstore, personality, includefuzzy=False):
-        self.personality = properties.get_dialect(personality)
+    def convertstore(self, inputstore, includefuzzy=False):
         self.inmultilinemsgid = False
         self.inecho = False
         self.makestoredict(inputstore, includefuzzy)
         outputlines = []
         # Readlines doesn't work for UTF-16, we read() and splitlines(keepends) instead
-        content = self.templatefile.read().decode(self.personality.default_encoding)
+        content = self.templatefile.read().decode(self.encoding)
         for line in content.splitlines(True):
             outputstr = self.convertline(line)
             outputlines.append(outputstr)
@@ -113,15 +116,16 @@ class reprop:
                 self.inecho = True
                 returnline = line + eol
         assert isinstance(returnline, unicode)
-        returnline = returnline.encode(self.personality.default_encoding)
+        returnline = returnline.encode(self.encoding)
         return returnline
 
 
 def convertstrings(inputfile, outputfile, templatefile, personality="strings",
-                       includefuzzy=False):
+                       includefuzzy=False, encoding=None):
     """.strings specific convertor function"""
     return convertprop(inputfile, outputfile, templatefile,
-                       personality="strings", includefuzzy=includefuzzy)
+                       personality="strings", includefuzzy=includefuzzy,
+                       encoding=encoding)
 
 
 def convertmozillaprop(inputfile, outputfile, templatefile,
@@ -132,15 +136,14 @@ def convertmozillaprop(inputfile, outputfile, templatefile,
 
 
 def convertprop(inputfile, outputfile, templatefile, personality="java",
-                includefuzzy=False):
+                includefuzzy=False, encoding=None):
     inputstore = po.pofile(inputfile)
     if templatefile is None:
         raise ValueError("must have template file for properties files")
         # convertor = po2prop()
     else:
-        convertor = reprop(templatefile)
-    outputproplines = convertor.convertstore(inputstore, personality,
-                                             includefuzzy)
+        convertor = reprop(templatefile, personality, encoding)
+    outputproplines = convertor.convertstore(inputstore, includefuzzy)
     outputfile.writelines(outputproplines)
     return 1
 
@@ -163,8 +166,12 @@ def main(argv=None):
                  (", ".join(properties.dialects.iterkeys()),
                   properties.default_dialect),
             metavar="TYPE")
+    parser.add_option("", "--encoding", dest="encoding", default=None,
+            help="override the encoding set by the personality",
+            metavar="ENCODING")
     parser.add_fuzzy_option()
     parser.passthrough.append("personality")
+    parser.passthrough.append("encoding")
     parser.run(argv)
 
 if __name__ == '__main__':

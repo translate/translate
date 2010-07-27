@@ -234,7 +234,6 @@ register_dialect(DialectSkype)
 class DialectStrings(Dialect):
     name = "strings"
     default_encoding = "utf-16"
-    #default_encoding = "utf-8"
     delimiters = [u"="]
     pair_terminator = u";"
     key_wrap_char = u'"'
