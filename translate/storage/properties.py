@@ -116,7 +116,7 @@ def find_delimeter(line):
 
     Deprecated."""
     raise DeprecationWarning
-    return _find_delimiter(line)
+    return _find_delimiter(line, DialectJava.delimiters)
 
 
 @accepts(unicode)

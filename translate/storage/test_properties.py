@@ -5,6 +5,8 @@ from translate.storage import properties
 from translate.storage import test_monolingual
 from translate.misc import wStringIO
 
+from py import test
+
 def test_find_delimiter_pos_simple():
     assert properties._find_delimiter(u"key=value", [u"=", u":", u" "]) == ('=', 3)
     assert properties._find_delimiter(u"key:value", [u"=", u":", u" "]) == (':', 3)
@@ -24,6 +26,11 @@ def test_find_delimiter_pos_escapes():
     assert properties._find_delimiter(u"key\=: value", [u"=", u":", u" "]) == (':', 5)
     assert properties._find_delimiter(u"key\   value", [u"=", u":", u" "]) == (' ', 5)
     assert properties._find_delimiter(u"key\ key\ key\: = value", [u"=", u":", u" "]) == ('=', 16)
+
+def test_find_delimiter_deprecated_fn():
+    """Test that the deprecated function still actually works"""
+    #assert properties.find_delimeter(u"key=value")
+    assert test.raises(DeprecationWarning, 'properties.find_delimeter(u"key=value")')
 
 def test_is_line_continuation():
     assert properties.is_line_continuation(u"") == False
