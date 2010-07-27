@@ -314,9 +314,8 @@ class propunit(base.TranslationUnit):
         """convert to a string. double check that unicode is handled somehow
         here"""
         source = self.getoutput()
-        if isinstance(source, unicode):
-            return source.encode(self.personality.default_encoding)
-        return source
+        assert isinstance(source, unicode)
+        return source.encode(self.personality.default_encoding)
 
     def getoutput(self):
         """convert the element back into formatted lines for a .properties
