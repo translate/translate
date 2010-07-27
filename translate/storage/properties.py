@@ -257,6 +257,10 @@ class DialectStrings(Dialect):
             newvalue += value[len(newvalue):len(newvalue)+1]
         return newvalue.lstrip().lstrip('"')
     value_strip = classmethod(value_strip)
+
+    def encode(self, string):
+        return quote.escapequotes(string)
+    encode = classmethod(encode)
 register_dialect(DialectStrings)
 
 
