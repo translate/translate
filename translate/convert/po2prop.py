@@ -117,7 +117,7 @@ class reprop:
         return returnline
 
 
-def convertstrings(inputfile, outputfile, templatefile,
+def convertstrings(inputfile, outputfile, templatefile, personality="strings",
                        includefuzzy=False):
     """.strings specific convertor function"""
     return convertprop(inputfile, outputfile, templatefile,
