@@ -153,8 +153,8 @@ class prop2po:
         return pounit
 
 
-def convertstrings(inputfile, outputfile, templatefile, pot=False,
-                   duplicatestyle="msgctxt", encoding=None):
+def convertstrings(inputfile, outputfile, templatefile, personality="strings",
+                   pot=False, duplicatestyle="msgctxt", encoding=None):
     """.strings specific convertor function"""
     return convertprop(inputfile, outputfile, templatefile,
                        personality="strings", pot=pot,
