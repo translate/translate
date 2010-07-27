@@ -667,7 +667,7 @@ class pounit(pocommon.pounit):
         for sourcecomment in self.sourcecomments:
             locations += quote.rstripeol(sourcecomment)[3:].split()
         for i, loc in enumerate(locations):
-           locations[i] = urllib.unquote_plus(loc)
+            locations[i] = urllib.unquote_plus(loc)
         return locations
 
     def addlocation(self, location):
