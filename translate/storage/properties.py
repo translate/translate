@@ -232,7 +232,7 @@ class DialectSkype(Dialect):
     default_encoding = "utf-16"
     delimiters = [u"="]
 
-    def encode(self, string):
+    def encode(cls, string):
         return quote.mozillapropertiesencode(string or u"")
     encode = classmethod(encode)
 register_dialect(DialectSkype)
@@ -264,7 +264,7 @@ class DialectStrings(Dialect):
         return newvalue.lstrip().lstrip('"')
     value_strip = classmethod(value_strip)
 
-    def encode(self, string):
+    def encode(cls, string):
         return quote.escapequotes(string)
     encode = classmethod(encode)
 register_dialect(DialectStrings)
