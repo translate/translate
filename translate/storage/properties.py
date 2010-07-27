@@ -146,6 +146,8 @@ def is_line_continuation(line):
     return (count % 2) == 1  # Odd is a line continuation, even is not
 
 
+@accepts(unicode)
+@returns(unicode)
 def _key_strip(key):
     """Cleanup whitespace found around a key
 

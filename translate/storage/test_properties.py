@@ -34,11 +34,11 @@ def test_is_line_continuation():
     assert properties.is_line_continuation(u"""\\\\\\""") == True
 
 def test_key_strip():
-    assert properties._key_strip("key") == "key"
-    assert properties._key_strip(" key") == "key"
-    assert properties._key_strip("\ key") == "\ key"
-    assert properties._key_strip("key ") == "key"
-    assert properties._key_strip("key\ ") == "key\ "
+    assert properties._key_strip(u"key") == "key"
+    assert properties._key_strip(u" key") == "key"
+    assert properties._key_strip(u"\ key") == "\ key"
+    assert properties._key_strip(u"key ") == "key"
+    assert properties._key_strip(u"key\ ") == "key\ "
 
 
 class TestPropUnit(test_monolingual.TestMonolingualUnit):
