@@ -42,6 +42,18 @@ class TestPOUnit(test_base.TestTranslationUnit):
         unit.makeobsolete()
         assert not unit.istranslatable()
 
+    def test_locations(self):
+        """Tests that we can add and retrieve error messages for a unit."""
+        def locations_helper(location):
+            unit = self.UnitClass()
+            assert len(unit.getlocations()) == 0
+            unit.addlocation(location)
+            assert len(unit.getlocations()) == 1
+            assert unit.getlocations() == [location]
+        locations_helper("key")
+        locations_helper("file.c:100")
+        locations_helper("I am a key")
+
     def test_adding_empty_note(self):
         unit = self.UnitClass("bla")
         print str(unit)

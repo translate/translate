@@ -42,6 +42,7 @@ import os
 import re
 import sys
 import tempfile
+import urllib
 
 lsep = " "
 """Seperator for #: entries"""
@@ -488,20 +489,21 @@ class pounit(pocommon.pounit):
                 locstring = locname
             else:
                 locstring = locname + ":" + str(locline)
-            locations.append(locstring)
+            locations.append(urllib.unquote_plus(locstring))
             i += 1
             location = gpo.po_message_filepos(self._gpo_message, i)
         return locations
 
     def addlocation(self, location):
-        for loc in location.split():
-            parts = loc.split(":")
-            file = parts[0]
-            if len(parts) == 2:
-                line = int(parts[1] or "0")
-            else:
-                line = -1
-            gpo.po_message_add_filepos(self._gpo_message, file, line)
+        if location.find(" ") != -1:
+            location = urllib.quote_plus(location)
+        parts = location.split(":")
+        file = parts[0]
+        if len(parts) == 2:
+            line = int(parts[1] or "0")
+        else:
+            line = -1
+        gpo.po_message_add_filepos(self._gpo_message, file, line)
 
     def getcontext(self):
         msgctxt = gpo.po_message_msgctxt(self._gpo_message)

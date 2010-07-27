@@ -63,7 +63,7 @@ wat lank aanhou"
 '''
         pofile = self.csv2po(minicsv)
         unit = self.singleelement(pofile)
-        assert unit.getlocations() == ['Random', 'comment', 'with', 'continuation']
+        assert unit.getlocations() == ['Random comment\nwith continuation']
         assert unit.source == "Original text"
         print unit.target
         assert unit.target == "Langdradige teks\nwat lank aanhou"
