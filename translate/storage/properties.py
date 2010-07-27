@@ -119,6 +119,8 @@ def find_delimeter(line):
     return _find_delimiter(line)
 
 
+@accepts(unicode)
+@returns(bool)
 def is_line_continuation(line):
     """Determine whether L{line} has a line continuation marker.
 

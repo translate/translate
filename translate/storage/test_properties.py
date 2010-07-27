@@ -26,12 +26,12 @@ def test_find_delimiter_pos_escapes():
     assert properties._find_delimiter(u"key\ key\ key\: = value", [u"=", u":", u" "]) == ('=', 16)
 
 def test_is_line_continuation():
-    assert properties.is_line_continuation("") == False
-    assert properties.is_line_continuation("some text") == False
-    assert properties.is_line_continuation("""some text\\""") == True
-    assert properties.is_line_continuation("""some text\\\\""") == False  # Escaped \
-    assert properties.is_line_continuation("""some text\\\\\\""") == True  # Odd num. \ is line continuation
-    assert properties.is_line_continuation("""\\\\\\""") == True
+    assert properties.is_line_continuation(u"") == False
+    assert properties.is_line_continuation(u"some text") == False
+    assert properties.is_line_continuation(u"""some text\\""") == True
+    assert properties.is_line_continuation(u"""some text\\\\""") == False  # Escaped \
+    assert properties.is_line_continuation(u"""some text\\\\\\""") == True  # Odd num. \ is line continuation
+    assert properties.is_line_continuation(u"""\\\\\\""") == True
 
 def test_key_strip():
     assert properties._key_strip("key") == "key"
