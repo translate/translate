@@ -153,6 +153,14 @@ class prop2po:
         return pounit
 
 
+def convertstrings(inputfile, outputfile, templatefile, pot=False,
+                   duplicatestyle="msgctxt", encoding=None):
+    """.strings specific convertor function"""
+    return convertprop(inputfile, outputfile, templatefile,
+                       personality="strings", pot=pot,
+                       duplicatestyle=duplicatestyle, encoding=encoding)
+
+
 def convertmozillaprop(inputfile, outputfile, templatefile, pot=False,
                        duplicatestyle="msgctxt"):
     """Mozilla specific convertor function"""
@@ -162,16 +170,16 @@ def convertmozillaprop(inputfile, outputfile, templatefile, pot=False,
 
 
 def convertprop(inputfile, outputfile, templatefile, personality="java",
-                pot=False, duplicatestyle="msgctxt"):
+                pot=False, duplicatestyle="msgctxt", encoding=None):
     """reads in inputfile using properties, converts using prop2po, writes
     to outputfile"""
-    inputstore = properties.propfile(inputfile, personality)
+    inputstore = properties.propfile(inputfile, personality, encoding)
     convertor = prop2po()
     if templatefile is None:
         outputstore = convertor.convertstore(inputstore, personality,
                                              duplicatestyle=duplicatestyle)
     else:
-        templatestore = properties.propfile(templatefile, personality)
+        templatestore = properties.propfile(templatefile, personality, encoding)
         outputstore = convertor.mergestore(templatestore, inputstore,
                                            personality, blankmsgstr=pot,
                                            duplicatestyle=duplicatestyle)
@@ -185,6 +193,8 @@ formats = {
     ("properties", "properties"): ("po", convertprop),
     "lang": ("po", convertprop),
     ("lang", "lang"): ("po", convertprop),
+    "strings": ("po", convertstrings),
+    ("strings", "strings"): ("po", convertstrings),
 }
 
 
@@ -193,13 +203,21 @@ def main(argv=None):
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          usepots=True,
                                          description=__doc__)
-    parser.add_option("", "--personality", dest="personality", default="java",
-            type="choice", choices=["java", "mozilla", "skype"],
-            help="set the input behaviour: java (default), mozilla, skype",
+    parser.add_option("", "--personality", dest="personality",
+            default=properties.default_dialect,
+            type="choice",
+            choices=properties.dialects.keys(),
+            help="override the input file format: %s (for .properties files, default: %s)" %
+                 (", ".join(properties.dialects.iterkeys()),
+                  properties.default_dialect),
             metavar="TYPE")
+    parser.add_option("", "--encoding", dest="encoding", default=None,
+            help="override the encoding set by the personality",
+            metavar="ENCODING")
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.passthrough.append("personality")
+    parser.passthrough.append("encoding")
     parser.run(argv)
 
 if __name__ == '__main__':

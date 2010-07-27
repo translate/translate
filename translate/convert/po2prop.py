@@ -28,7 +28,7 @@ usage instructions
 
 from translate.misc import quote
 from translate.storage import po
-from translate.storage.properties import find_delimiter
+from translate.storage import properties
 
 eol = "\n"
 
@@ -40,12 +40,14 @@ class reprop:
         self.inputdict = {}
 
     def convertstore(self, inputstore, personality, includefuzzy=False):
-        self.personality = personality
+        self.personality = properties.get_dialect(personality)
         self.inmultilinemsgid = False
         self.inecho = False
         self.makestoredict(inputstore, includefuzzy)
         outputlines = []
-        for line in self.templatefile.readlines():
+        # Readlines doesn't work for UTF-16, we read() and splitlines(keepends) instead
+        content = self.templatefile.read().decode(self.personality.default_encoding)
+        for line in content.splitlines(True):
             outputstr = self.convertline(line)
             outputlines.append(outputstr)
         return outputlines
@@ -64,7 +66,7 @@ class reprop:
                     self.inputdict[entity] = propstring
 
     def convertline(self, line):
-        returnline = ""
+        returnline = u""
         # handle multiline msgid if we're in one
         if self.inmultilinemsgid:
             msgid = quote.rstripeol(line).strip()
@@ -78,16 +80,16 @@ class reprop:
             returnline = quote.rstripeol(line)+eol
         else:
             line = quote.rstripeol(line)
-            delimiter_char, delimiter_pos = find_delimiter(line)
+            delimiter_char, delimiter_pos = self.personality.find_delimiter(line)
             if quote.rstripeol(line)[-1:] == '\\':
                 self.inmultilinemsgid = True
             if delimiter_pos == -1:
-                key = line.strip()
-                delimiter = " = "
+                key = self.personality.key_strip(line)
+                delimiter = " %s " % self.personality.delimiters[0]
             else:
-                key = line[:delimiter_pos].strip()
+                key = self.personality.key_strip(line[:delimiter_pos])
                 # Calculate space around the equal sign
-                prespace = line.lstrip()[line.lstrip().find(' '):delimiter_pos]
+                prespace = line[line.find(' ', len(key)):delimiter_pos]
                 postspacestart = len(line[delimiter_pos+1:])
                 postspaceend = len(line[delimiter_pos+1:].lstrip())
                 postspace = line[delimiter_pos+1:delimiter_pos+(postspacestart-postspaceend)+1]
@@ -95,18 +97,31 @@ class reprop:
             if key in self.inputdict:
                 self.inecho = False
                 value = self.inputdict[key]
-                if isinstance(value, str):
-                    value = value.decode('utf8')
-                if self.personality == "mozilla" or self.personality == "skype":
-                    returnline = key + delimiter + quote.mozillapropertiesencode(value) + eol
-                else:
-                    returnline = key + delimiter + quote.javapropertiesencode(value) + eol
+                assert isinstance(value, unicode)
+                returnline = "%(key)s%(del)s%(value)s%(term)s%(eol)s" % \
+                     {"key": "%s%s%s" % (self.personality.key_wrap_char,
+                                         key,
+                                         self.personality.key_wrap_char),
+                      "del": delimiter,
+                      "value": "%s%s%s" % (self.personality.value_wrap_char,
+                                           self.personality.encode(value),
+                                           self.personality.value_wrap_char),
+                      "term": self.personality.pair_terminator,
+                      "eol": eol,
+                     }
             else:
                 self.inecho = True
                 returnline = line + eol
-        if isinstance(returnline, unicode):
-            returnline = returnline.encode('utf-8')
+        assert isinstance(returnline, unicode)
+        returnline = returnline.encode(self.personality.default_encoding)
         return returnline
+
+
+def convertstrings(inputfile, outputfile, templatefile,
+                       includefuzzy=False):
+    """.strings specific convertor function"""
+    return convertprop(inputfile, outputfile, templatefile,
+                       personality="strings", includefuzzy=includefuzzy)
 
 
 def convertmozillaprop(inputfile, outputfile, templatefile,
@@ -132,6 +147,7 @@ def convertprop(inputfile, outputfile, templatefile, personality="java",
 formats = {
     ("po", "properties"): ("properties", convertprop),
     ("po", "lang"): ("lang", convertprop),
+    ("po", "strings"): ("strings", convertstrings),
 }
 
 
@@ -140,9 +156,12 @@ def main(argv=None):
     from translate.convert import convert
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          description=__doc__)
-    parser.add_option("", "--personality", dest="personality", default="java",
-            type="choice", choices=["java", "mozilla", "skype"],
-            help="set the output behaviour: java (default), mozilla, skype",
+    parser.add_option("", "--personality", dest="personality",
+            default=properties.default_dialect, type="choice",
+            choices=properties.dialects.keys(),
+            help="override the input file format: %s (for .properties files, default: %s)" %
+                 (", ".join(properties.dialects.iterkeys()),
+                  properties.default_dialect),
             metavar="TYPE")
     parser.add_fuzzy_option()
     parser.passthrough.append("personality")

@@ -106,19 +106,24 @@ msgstr ""'''
 
     def test_personalities(self):
         """test that we output correctly for Java and Mozilla style property files.  Mozilla uses Unicode, while Java uses escaped Unicode"""
-        posource = '''#: prop\nmsgid "value"\nmsgstr "ṽḁḽṻḝ"\n'''
-        proptemplate = '''prop  =  value\n'''
-        propexpectedjava = '''prop  =  \\u1E7D\\u1E01\\u1E3D\\u1E7B\\u1E1D\n'''
+        posource = u'''#: prop\nmsgid "value"\nmsgstr "ṽḁḽṻḝ"\n'''
+        proptemplate = u'''prop  =  value\n'''
+        propexpectedjava = u'''prop  =  \\u1E7D\\u1E01\\u1E3D\\u1E7B\\u1E1D\n'''
         propfile = self.merge2prop(proptemplate, posource)
         print propfile
+        print "-----"
         assert propfile == [propexpectedjava]
-        propexpectedmozilla = '''prop  =  ṽḁḽṻḝ\n'''
+        propexpectedmozilla = u'''prop  =  ṽḁḽṻḝ\n'''.encode('utf-8')
         propfile = self.merge2prop(proptemplate, posource, personality="mozilla")
         print propfile
+        print "-----"
         assert propfile == [propexpectedmozilla]
-        propexpectedskype = '''prop  =  ṽḁḽṻḝ\n'''
+        propexpectedskype = u'''prop  =  ṽḁḽṻḝ\n'''.encode('utf-16')
+        proptemplate = u'''prop  =  value\n'''.encode('utf-16')
+        print repr(proptemplate)
         propfile = self.merge2prop(proptemplate, posource, personality="skype")
         print propfile
+        print "-----"
         assert propfile == [propexpectedskype]
 
 class TestPO2PropCommand(test_convert.TestConvertCommand, TestPO2Prop):

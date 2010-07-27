@@ -60,7 +60,7 @@ import re
 eol = "\n"
 
 
-def find_delimiter(line):
+def _find_delimiter(line, delimiters):
     """Find the type and position of the delimiter in a property line.
 
     Property files can be delimeted by "=", ":" or whitespace (space for now).
@@ -69,10 +69,15 @@ def find_delimiter(line):
 
     @param line: A properties line
     @type line: str
+    @param delimiters: valid delimiters
+    @type delimiters: list
     @return: delimiter character and offset within L{line}
     @rtype: Tuple (delimiter char, Offset Integer)
     """
-    delimiters = {"=": -1, ":": -1, " ": -1}
+    delimiter_dict = {}
+    for delimiter in delimiters:
+        delimiter_dict[delimiter] = -1
+    delimiters = delimiter_dict
     # Find the position of each delimiter type
     for delimiter, pos in delimiters.iteritems():
         prewhitespace = len(line) - len(line.lstrip())
@@ -82,7 +87,7 @@ def find_delimiter(line):
                 delimiters[delimiter] = pos
                 break
             pos = line.find(delimiter, pos + 1)
-    # Find the first "=" or ":" delimiter
+    # Find the first delimiter
     mindelimiter = None
     minpos = -1
     for delimiter, pos in delimiters.iteritems():
@@ -91,11 +96,11 @@ def find_delimiter(line):
         if minpos == -1 or pos < minpos:
             minpos = pos
             mindelimiter = delimiter
-    if mindelimiter is None and delimiters[" "] != -1:
+    if mindelimiter is None and delimiters.get(" ", -1) != -1:
         # Use space delimiter if we found nothing else
         return (" ", delimiters[" "])
-    if mindelimiter is not None and delimiters[" "] < delimiters[mindelimiter]:
-        # If space delimiter occurs earlier then ":" or "=" then it is the
+    if mindelimiter is not None and u" " in delimiters and delimiters[u" "] < delimiters[mindelimiter]:
+        # If space delimiter occurs earlier than ":" or "=" then it is the
         # delimiter only if there are non-whitespace characters between it and
         # the other detected delimiter.
         if len(line[delimiters[" "]:delimiters[mindelimiter]].strip()) > 0:
@@ -108,7 +113,7 @@ def find_delimeter(line):
 
     Deprecated."""
     raise DeprecationWarning
-    return find_delimiter(line)
+    return _find_delimiter(line)
 
 
 def is_line_continuation(line):
@@ -136,7 +141,7 @@ def is_line_continuation(line):
     return (count % 2) == 1  # Odd is a line continuation, even is not
 
 
-def key_strip(key):
+def _key_strip(key):
     """Cleanup whitespace found around a key
 
     @param key: A properties key
@@ -150,7 +155,109 @@ def key_strip(key):
         newkey += key[len(newkey):len(newkey)+1]
     return newkey.lstrip()
 
-default_encoding = {"java": "latin1", "mozilla": "utf-8", "skype": "utf-16"}
+dialects = {}
+default_dialect = "java"
+
+def register_dialect(dialect):
+    dialects[dialect.name] = dialect
+
+
+def get_dialect(dialect=default_dialect):
+    return dialects.get(dialect)
+
+
+class Dialect(object):
+    """Settings for the various behaviours in key=value files."""
+    name = None
+    default_encoding = None
+    delimiters = None
+    pair_terminator = u""
+    key_wrap_char = u""
+    value_wrap_char = u""
+
+    def encode(cls, string):
+        """Encode the string"""
+        return quote.javapropertiesencode(string or u"")
+    encode = classmethod(encode)
+
+    def find_delimiter(cls, line):
+        """Find the delimeter"""
+        return _find_delimiter(line, cls.delimiters)
+    find_delimiter = classmethod(find_delimiter)
+
+    def key_strip(cls, key):
+        """Strip uneeded characters from the key"""
+        return _key_strip(key)
+    key_strip = classmethod(key_strip)
+
+    def value_strip(cls, value):
+        """Strip uneeded characters from the value"""
+        return value.lstrip()
+    value_strip = classmethod(value_strip)
+
+
+class DialectJava(Dialect):
+    name = "java"
+    default_encoding = "latin1"
+    delimiters = [u"=", u":", u" "]
+register_dialect(DialectJava)
+
+
+class DialectFlex(DialectJava):
+    name = "flex"
+    default_encoding = "utf-8"
+register_dialect(DialectFlex)
+
+
+class DialectMozilla(Dialect):
+    name = "mozilla"
+    default_encoding = "utf-8"
+    delimiters = [u"="]
+
+    def encode(cls, string):
+        return quote.mozillapropertiesencode(string or u"")
+    encode = classmethod(encode)
+register_dialect(DialectMozilla)
+
+
+class DialectSkype(Dialect):
+    name = "skype"
+    default_encoding = "utf-16"
+    delimiters = [u"="]
+
+    def encode(self, string):
+        return quote.mozillapropertiesencode(string or u"")
+    encode = classmethod(encode)
+register_dialect(DialectSkype)
+
+
+class DialectStrings(Dialect):
+    name = "strings"
+    default_encoding = "utf-16"
+    #default_encoding = "utf-8"
+    delimiters = [u"="]
+    pair_terminator = u";"
+    key_wrap_char = u'"'
+    value_wrap_char = u'"'
+
+    def key_strip(cls, key):
+        """Strip uneeded characters from the key"""
+        newkey = key.rstrip().rstrip('"')
+        # If line now end in \ we put back the char that was escaped
+        if newkey[-1:] == "\\":
+            newkey += key[len(newkey):len(newkey)+1]
+        return newkey.lstrip().lstrip('"')
+    key_strip = classmethod(key_strip)
+
+    def value_strip(cls, value):
+        """Strip uneeded characters from the value"""
+        newvalue = value.rstrip().rstrip(';').rstrip('"')
+        # If line now end in \ we put back the char that was escaped
+        if newvalue[-1:] == "\\":
+            newvalue += value[len(newvalue):len(newvalue)+1]
+        return newvalue.lstrip().lstrip('"')
+    value_strip = classmethod(value_strip)
+register_dialect(DialectStrings)
 
 
 class propunit(base.TranslationUnit):
@@ -159,9 +266,9 @@ class propunit(base.TranslationUnit):
 
     def __init__(self, source="", personality="java"):
         """construct a blank propunit"""
-        self.personality = personality
+        self.personality = get_dialect(personality)
         super(propunit, self).__init__(source)
-        self.name = ""
+        self.name = u""
         self.value = u""
         self.translation = u""
         self.delimiter = u"="
@@ -171,10 +278,7 @@ class propunit(base.TranslationUnit):
     def setsource(self, source):
         self._rich_source = None
         source = data.forceunicode(source)
-        if self.personality == "mozilla" or self.personality == "skype":
-            self.value = quote.mozillapropertiesencode(source or u"")
-        else:
-            self.value = quote.javapropertiesencode(source or u"")
+        self.value = self.personality.encode(source or u"")
 
     def getsource(self):
         value = quote.propertiesdecode(self.value)
@@ -186,10 +290,7 @@ class propunit(base.TranslationUnit):
     def settarget(self, target):
         self._rich_target = None
         target = data.forceunicode(target)
-        if self.personality == "mozilla" or self.personality == "skype":
-            self.translation = quote.mozillapropertiesencode(target or u"")
-        else:
-            self.translation = quote.javapropertiesencode(target or u"")
+        self.translation = self.personality.encode(target or u"")
 
     def gettarget(self):
         translation = quote.propertiesdecode(self.translation)
@@ -203,7 +304,7 @@ class propunit(base.TranslationUnit):
         here"""
         source = self.getoutput()
         if isinstance(source, unicode):
-            return source.encode(default_encoding[self.personality])
+            return source.encode(self.personality.default_encoding)
         return source
 
     def getoutput(self):
@@ -215,12 +316,13 @@ class propunit(base.TranslationUnit):
         if self.isblank():
             return notes + u"\n"
         else:
-            if "\\u" in self.value and self.personality == "mozilla":
-                self.value = quote.mozillapropertiesencode(self.source)
-            if "\\u" in self.translation and self.personality == "mozilla":
-                self.translation = quote.mozillapropertiesencode(self.target)
+            self.value = self.personality.encode(self.source)
+            self.translation = self.personality.encode(self.target)
             value = self.translation or self.value
-            return u"%s%s%s%s\n" % (notes, self.name, self.delimiter, value)
+            return u"%(notes)s%(key)s%(del)s%(value)s\n" % {"notes": notes,
+                                                            "key": self.name,
+                                                            "del": self.delimiter,
+                                                            "value": value}
 
     def getlocations(self):
         return [self.name]
@@ -261,9 +363,11 @@ class propfile(base.TranslationStore):
     """this class represents a .properties file, made up of propunits"""
     UnitClass = propunit
 
-    def __init__(self, inputfile=None, personality="java"):
+    def __init__(self, inputfile=None, personality="java", encoding=None):
         """construct a propfile, optionally reading in from inputfile"""
         super(propfile, self).__init__(unitclass=self.UnitClass)
+        self.personality = get_dialect(personality)
+        self.encoding = encoding
         self.filename = getattr(inputfile, 'name', '')
         if inputfile is not None:
             propsrc = inputfile.read()
@@ -272,9 +376,13 @@ class propfile(base.TranslationStore):
 
     def parse(self, propsrc, personality="java"):
         """read the source of a properties file in and include them as units"""
-        newunit = propunit("", personality)
+        personality = get_dialect(personality)
+        newunit = propunit("", personality.name)
         inmultilinevalue = False
-        propsrc = unicode(propsrc, default_encoding[personality])
+        if self.encoding is not None:
+            propsrc = unicode(propsrc, self.encoding)
+        else:
+            propsrc = unicode(propsrc, personality.default_encoding)
         for line in propsrc.split(u"\n"):
             # handle multiline value if we're in one
             line = quote.rstripeol(line)
@@ -289,32 +397,34 @@ class propfile(base.TranslationStore):
                 if not inmultilinevalue:
                     # we're finished, add it to the list...
                     self.addunit(newunit)
-                    newunit = propunit("", personality)
+                    newunit = propunit("", personality.name)
             # otherwise, this could be a comment
-            elif line.strip()[:1] in (u'#', u'!'):
+            # FIXME handle /* */ in a more reliable way
+            # FIXME handle // inline comments
+            elif line.strip()[:1] in (u'#', u'!') or line.strip()[:2] in (u"/*", u"//") or line.strip()[:-2] == "*/":
                 # add a comment
                 newunit.comments.append(line)
             elif not line.strip():
                 # this is a blank line...
                 if str(newunit).strip():
                     self.addunit(newunit)
-                    newunit = propunit("", personality)
+                    newunit = propunit("", personality.name)
             else:
-                newunit.delimiter, delimiter_pos = find_delimiter(line)
+                newunit.delimiter, delimiter_pos = personality.find_delimiter(line)
                 if delimiter_pos == -1:
-                    newunit.name = key_strip(line)
+                    newunit.name = personality.key_strip(line)
                     newunit.value = u""
                     self.addunit(newunit)
-                    newunit = propunit("", personality)
+                    newunit = propunit("", personality.name)
                 else:
-                    newunit.name = key_strip(line[:delimiter_pos])
-                    newunit.value = line[delimiter_pos+1:].lstrip()
-                    if is_line_continuation(newunit.value):
+                    newunit.name = personality.key_strip(line[:delimiter_pos])
+                    if is_line_continuation(line[delimiter_pos+1:].lstrip()):
                         inmultilinevalue = True
-                        newunit.value = newunit.value[:-1]
+                        newunit.value = line[delimiter_pos+1:].lstrip()[:-1]
                     else:
+                        newunit.value = personality.value_strip(line[delimiter_pos+1:])
                         self.addunit(newunit)
-                        newunit = propunit("", personality)
+                        newunit = propunit("", personality.name)
         # see if there is a leftover one...
         if inmultilinevalue or len(newunit.comments) > 0:
             self.addunit(newunit)
