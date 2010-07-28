@@ -30,25 +30,21 @@ class reini:
         self.inputstore = inputstore
         self.templatefile = templatefile
         self.templatestore = ini.inifile(templatefile, dialect=dialect)
-        self.inputdict = {}
 
     def convertstore(self, includefuzzy=False):
-        self.makestoredict(self.inputstore, includefuzzy)
+        self.includefuzzy = includefuzzy
+        self.inputstore.makeindex()
         for unit in self.templatestore.units:
             for location in unit.getlocations():
-                unit.target = self.inputdict.get(location, unit.source)
+                if location in self.inputstore.locationindex:
+                    inputunit = self.inputstore.locationindex[location]
+                    if inputunit.isfuzzy() and not self.includefuzzy:
+                        unit.target = unit.source
+                    else:
+                        unit.target = inputunit.target 
+                else:
+                    unit.target = unit.source
         return str(self.templatestore)
-
-    def makestoredict(self, store, includefuzzy=False):
-        # make a dictionary of the translations
-        for unit in store.units:
-            if includefuzzy or not unit.isfuzzy():
-                # there may be more than one 'key' due to msguniq merge
-                for location in unit.getlocations():
-                    value = unit.target
-                    if len(value.strip()) == 0:
-                        value = unit.source
-                    self.inputdict[location] = value
 
 def convertini(inputfile, outputfile, templatefile, includefuzzy=False, dialect="default"):
     inputstore = factory.getobject(inputfile)
