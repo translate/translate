@@ -35,18 +35,19 @@ eol = "\n"
 
 class reprop:
 
-    def __init__(self, templatefile, personality, encoding=None):
+    def __init__(self, templatefile, inputstore, personality, encoding=None):
+        self.templatefile = templatefile
+        self.inputstore = inputstore
         self.personality = properties.get_dialect(personality)
         self.encoding = encoding
         if self.encoding is None:
             self.encoding = self.personality.default_encoding
-        self.templatefile = templatefile
-        self.inputdict = {}
 
-    def convertstore(self, inputstore, includefuzzy=False):
+    def convertstore(self, includefuzzy=False):
+        self.includefuzzy = includefuzzy
         self.inmultilinemsgid = False
         self.inecho = False
-        self.makestoredict(inputstore, includefuzzy)
+        self.inputstore.makeindex()
         outputlines = []
         # Readlines doesn't work for UTF-16, we read() and splitlines(keepends) instead
         content = self.templatefile.read().decode(self.encoding)
@@ -54,17 +55,6 @@ class reprop:
             outputstr = self.convertline(line)
             outputlines.append(outputstr)
         return outputlines
-
-    def makestoredict(self, store, includefuzzy=False):
-        # make a dictionary of the translations
-        for unit in store.units:
-            if includefuzzy or not unit.isfuzzy():
-                # there may be more than one 'key' due to msguniq merge
-                for location in unit.getlocations():
-                    value = unit.target
-                    if len(value.strip()) == 0:
-                        value = unit.source
-                    self.inputdict[location] = value
 
     def convertline(self, line):
         returnline = u""
@@ -95,9 +85,13 @@ class reprop:
                 postspaceend = len(line[delimiter_pos+1:].lstrip())
                 postspace = line[delimiter_pos+1:delimiter_pos+(postspacestart-postspaceend)+1]
                 delimiter = prespace + delimiter_char + postspace
-            if key in self.inputdict:
+            if key in self.inputstore.locationindex:
+                unit = self.inputstore.locationindex[key]
+                if unit.isfuzzy() and not self.includefuzzy:
+                    value = unit.source
+                else:
+                    value = unit.target
                 self.inecho = False
-                value = self.inputdict[key]
                 assert isinstance(value, unicode)
                 returnline = "%(key)s%(del)s%(value)s%(term)s%(eol)s" % \
                      {"key": "%s%s%s" % (self.personality.key_wrap_char,
@@ -140,8 +134,8 @@ def convertprop(inputfile, outputfile, templatefile, personality="java",
         raise ValueError("must have template file for properties files")
         # convertor = po2prop()
     else:
-        convertor = reprop(templatefile, personality, encoding)
-    outputproplines = convertor.convertstore(inputstore, includefuzzy)
+        convertor = reprop(templatefile, inputstore, personality, encoding)
+    outputproplines = convertor.convertstore(includefuzzy)
     outputfile.writelines(outputproplines)
     return 1
 

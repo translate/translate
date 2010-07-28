@@ -21,8 +21,8 @@ class TestPO2Prop:
         inputpo = po.pofile(inputfile)
         templatefile = wStringIO.StringIO(propsource)
         #templateprop = properties.propfile(templatefile)
-        convertor = po2prop.reprop(templatefile, personality=personality)
-        outputprop = convertor.convertstore(inputpo)
+        convertor = po2prop.reprop(templatefile, inputpo, personality=personality)
+        outputprop = convertor.convertstore()
         print outputprop
         return outputprop
 
@@ -97,7 +97,11 @@ msgstr ""'''
 
     def test_empty_value(self):
         """test that we handle an value in the template"""
-        posource = '''#: key\nmsgid ""\nmsgstr "translated"\n'''
+        posource = '''#: key
+msgctxt "key"
+msgid ""
+msgstr "translated"
+'''
         proptemplate = '''key\n'''
         propexpected = '''key = translated\n'''
         propfile = self.merge2prop(proptemplate, posource)
