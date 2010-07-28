@@ -32,28 +32,21 @@ class resub:
         self.templatefile = templatefile
         self.templatestore = subtitles.SubtitleFile(templatefile)
         self.inputstore = inputstore
-        self.inputdict = {}
 
     def convertstore(self, includefuzzy=False):
-        self.makestoredict(self.inputstore, includefuzzy)
+        self.includefuzzy = includefuzzy
+        self.inputstore.makeindex()
         for unit in self.templatestore.units:
             for location in unit.getlocations():
-                if location in self.inputdict:
-                    unit.target = self.inputdict[location]
+                if location in self.inputstore.locationindex:
+                    inputunit = self.inputstore.locationindex[location]
+                    if inputunit.isfuzzy() and not self.includefuzzy:
+                        unit.target = unit.source
+                    else:
+                        unit.target = inputunit.target 
                 else:
                     unit.target = unit.source
         return str(self.templatestore)
-
-    def makestoredict(self, store, includefuzzy=False):
-        # make a dictionary of the translations
-        for unit in store.units:
-            if includefuzzy or not unit.isfuzzy():
-                # there may be more than one entity due to msguniq merge
-                for location in unit.getlocations():
-                    substring = unit.target
-                    if len(substring.strip()) == 0:
-                        substring = unit.source
-                    self.inputdict[location] = substring
 
 
 def convertsub(inputfile, outputfile, templatefile, includefuzzy=False):
