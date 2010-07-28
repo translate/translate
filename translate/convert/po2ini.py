@@ -36,7 +36,7 @@ class reini:
         self.makestoredict(self.inputstore, includefuzzy)
         for unit in self.templatestore.units:
             for location in unit.getlocations():
-                unit.target = self.inputdict[location]
+                unit.target = self.inputdict.get(location, unit.source)
         return str(self.templatestore)
 
     def makestoredict(self, store, includefuzzy=False):
