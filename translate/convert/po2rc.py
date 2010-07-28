@@ -27,7 +27,9 @@ usage instructions.
 from translate.storage import po
 from translate.storage import rc
 
+
 class rerc:
+
     def __init__(self, templatefile, charset="utf-8", lang=None, sublang=None):
         self.templatefile = templatefile
         self.templatestore = rc.rcfile(templatefile, encoding=charset)
@@ -64,15 +66,18 @@ class rerc:
             return "LANGUAGE %s, %s" % (self.lang, self.sublang)
         for unit in self.templatestore.units:
             location = unit.getlocations()[0]
-            if self.inputdict.has_key(location):
+            if location in self.inputdict:
                 if self.inputdict[location] != unit.match.groupdict()['value']:
-                    newmatch = unit.match.group().replace(unit.match.groupdict()['value'], self.inputdict[location])
+                    newmatch = unit.match.group().replace(unit.match.groupdict()['value'],
+                                                          self.inputdict[location])
                     newblock = newblock.replace(unit.match.group(), newmatch)
         if isinstance(newblock, unicode):
             newblock = newblock.encode(self.charset)
         return newblock
 
-def convertrc(inputfile, outputfile, templatefile, includefuzzy=False, charset=None, lang=None, sublang=None):
+
+def convertrc(inputfile, outputfile, templatefile, includefuzzy=False,
+              charset=None, lang=None, sublang=None):
     inputstore = po.pofile(inputfile)
     if not lang:
         raise ValueError("must specify a target language")
@@ -85,14 +90,17 @@ def convertrc(inputfile, outputfile, templatefile, includefuzzy=False, charset=N
     outputfile.writelines(outputrclines)
     return 1
 
+
 def main(argv=None):
     # handle command line options
     from translate.convert import convert
     formats = {("po", "rc"): ("rc", convertrc)}
-    parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
+    parser = convert.ConvertOptionParser(formats, usetemplates=True,
+                                         description=__doc__)
     defaultcharset = "utf-8"
     parser.add_option("", "--charset", dest="charset", default=defaultcharset,
-        help="charset to use to decode the RC files (default: %s)" % defaultcharset, metavar="CHARSET")
+        help="charset to use to decode the RC files (default: %s)" % defaultcharset,
+        metavar="CHARSET")
     parser.add_option("-l", "--lang", dest="lang", default=None,
         help="LANG entry", metavar="LANG")
     defaultsublang = "SUBLANG_DEFAULT"
