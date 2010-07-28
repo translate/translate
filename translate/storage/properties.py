@@ -19,8 +19,32 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""classes that hold units of .properties files (propunit) or entire files
-   (propfile) these files are used in translating Mozilla and other software
+"""Classes that hold units of .properties, and similar, files that are used in
+   translating Java, Mozilla, MacOS and other software.
+
+   The L{propfile} class is a monolingual class with L{propunit} providing unit
+   level access.  
+
+   The .properties store has become a general key value pair class with
+   L{Dialect} providing the ability to change the behaviour of the parsing
+   and handling of the various dialects.
+
+   Currently we support::
+     * Java .properties
+     * Mozilla .properties
+     * Adobe Flex files
+     * MacOS X .strings files
+     * Skype .lang files
+
+ 
+   Dialects
+   ========
+   The following provides references and descriptions of the various dialects supported::
+
+   Java
+   ----
+   Java .properties are supported completely except for the ability to drop
+   pairs that are not translated.
 
    The following U{.properties file
    description<http://java.sun.com/j2se/1.4.2/docs/api/java/util/Properties.html#load(java.io.InputStream)>}
@@ -32,21 +56,59 @@
    messages.  No special handling is provided in this storage class for
    MessageFormat, but this may be implemented in future.
 
+   All delimiter types, comments, line continuations and spaces handling in
+   delimeters are supported.
+
+   Mozilla
+   -------
+   Mozilla files use '=' as a delimiter, are UTF-8 encoded and thus don't need \\u
+   escaping.  Any \\U values will be converted to correct Unicode characters.
+`
+   Strings
+   -------
+   Mac OS X strings files are implemented using 
+   U{these<http://developer.apple.com/mac/library/documentation/MacOSX/Conceptual/BPInternational/Articles/StringsFiles.html>}
+   U{two<http://developer.apple.com/mac/library/documentation/Cocoa/Conceptual/LoadingResources/Strings/Strings.html>}
+   articles as references.
+
+   Flex
+   ----
+   Adobe Flex files seem to be normal .properties files but in UTF-8 just like
+   Mozilla files. This
+   U{page<http://livedocs.adobe.com/flex/3/html/help.html?content=l10n_3.html>}
+   provides the information used to implement the dialect.
+
+   Skype
+   -----
+   Skype .lang files seem to be UTF-16 encoded .properties files.
+
    Implementation
    ==============
+ 
    A simple summary of what is permissible follows.
 
-   Comments::
+   Comments supported::
      # a comment
      ! a comment
+     // a comment (only at the beginning of a line)
+     /* a comment (not across multiple lines) */
 
    Name and Value pairs::
+     # Delimiters
+     key = value
+     key : value
+     key value
+
+     # Space in key and around value
+     \ key\ = \ value
+
      # Note that the b and c are escaped for epydoc rendering
-     a = a string
-     d.e.f = another string
      b = a string with escape sequences \\t \\n \\r \\\\ \\" \\' \\ (space) \u0123
      c = a string with a continuation line \\
          continuation line
+
+     # .strings specific
+     "key" = "value";
 """
 
 from translate.storage import base
