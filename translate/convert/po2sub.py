@@ -66,6 +66,8 @@ def main(argv=None):
     formats = {
          ("po", "srt"): ("srt", convertsub),
          ("po", "sub"): ("sub", convertsub),
+         ("po", "ssa"): ("ssa", convertsub),
+         ("po", "ass"): ("ass", convertsub),
     }
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          description=__doc__)
