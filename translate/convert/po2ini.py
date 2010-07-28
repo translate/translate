@@ -25,14 +25,15 @@
 from translate.storage import factory
 
 class reini:
-    def __init__(self, templatefile, dialect):
+    def __init__(self, templatefile, inputstore, dialect="default"):
         from translate.storage import ini
+        self.inputstore = inputstore
         self.templatefile = templatefile
         self.templatestore = ini.inifile(templatefile, dialect=dialect)
         self.inputdict = {}
 
-    def convertstore(self, inputstore, includefuzzy=False):
-        self.makestoredict(inputstore, includefuzzy)
+    def convertstore(self, includefuzzy=False):
+        self.makestoredict(self.inputstore, includefuzzy)
         for unit in self.templatestore.units:
             for location in unit.getlocations():
                 unit.target = self.inputdict[location]
@@ -54,8 +55,8 @@ def convertini(inputfile, outputfile, templatefile, includefuzzy=False, dialect=
     if templatefile is None:
         raise ValueError("must have template file for ini files")
     else:
-        convertor = reini(templatefile, dialect)
-    outputstring = convertor.convertstore(inputstore, includefuzzy)
+        convertor = reini(templatefile, inputstore, dialect)
+    outputstring = convertor.convertstore(includefuzzy)
     outputfile.write(outputstring)
     return 1
 
