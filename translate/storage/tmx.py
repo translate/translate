@@ -83,7 +83,9 @@ class tmxunit(lisa.LISAunit):
     def adderror(self, errorname, errortext):
         """Adds an error message to this unit."""
         #TODO: consider factoring out: some duplication between XLIFF and TMX
-        text = errorname + ': ' + errortext
+        text = errorname
+        if errortext:
+            text += ': ' + errortext
         self.addnote(text, origin="pofilter")
 
     def geterrors(self):
