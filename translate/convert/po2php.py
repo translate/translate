@@ -35,8 +35,9 @@ eol = "\n"
 
 class rephp:
 
-    def __init__(self, templatefile):
+    def __init__(self, templatefile, inputstore):
         self.templatefile = templatefile
+        self.inputstore = inputstore
         self.inputdict = {}
         self.inmultilinemsgid = False
         self.inecho = False
@@ -46,8 +47,8 @@ class rephp:
         self.prename = ""
         self.quotechar = ""
 
-    def convertstore(self, inputstore, includefuzzy=False):
-        self.makestoredict(inputstore, includefuzzy)
+    def convertstore(self, includefuzzy=False):
+        self.makestoredict(self.inputstore, includefuzzy)
         outputlines = []
         for line in self.templatefile.readlines():
             outputstr = self.convertline(line)
@@ -153,8 +154,8 @@ def convertphp(inputfile, outputfile, templatefile, includefuzzy=False):
         raise ValueError("must have template file for php files")
         # convertor = po2php()
     else:
-        convertor = rephp(templatefile)
-    outputphplines = convertor.convertstore(inputstore, includefuzzy)
+        convertor = rephp(templatefile, inputstore)
+    outputphplines = convertor.convertstore(includefuzzy)
     outputfile.writelines(outputphplines)
     return 1
 

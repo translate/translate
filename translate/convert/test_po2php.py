@@ -21,8 +21,8 @@ class TestPO2Php:
         inputpo = po.pofile(inputfile)
         templatefile = wStringIO.StringIO(phpsource)
         #templatephp = php.phpfile(templatefile)
-        convertor = po2php.rephp(templatefile)
-        outputphp = convertor.convertstore(inputpo)
+        convertor = po2php.rephp(templatefile, inputpo)
+        outputphp = convertor.convertstore()
         print outputphp
         return outputphp
 
