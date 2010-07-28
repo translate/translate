@@ -451,17 +451,16 @@ class propfile(base.TranslationStore):
         if inputfile is not None:
             propsrc = inputfile.read()
             inputfile.close()
-            self.parse(propsrc, personality)
+            self.parse(propsrc)
 
-    def parse(self, propsrc, personality="java"):
+    def parse(self, propsrc):
         """read the source of a properties file in and include them as units"""
-        personality = get_dialect(personality)
-        newunit = propunit("", personality.name)
+        newunit = propunit("", self.personality.name)
         inmultilinevalue = False
         if self.encoding is not None:
             propsrc = unicode(propsrc, self.encoding)
         else:
-            propsrc = unicode(propsrc, personality.default_encoding)
+            propsrc = unicode(propsrc, self.personality.default_encoding)
         for line in propsrc.split(u"\n"):
             # handle multiline value if we're in one
             line = quote.rstripeol(line)
@@ -476,7 +475,7 @@ class propfile(base.TranslationStore):
                 if not inmultilinevalue:
                     # we're finished, add it to the list...
                     self.addunit(newunit)
-                    newunit = propunit("", personality.name)
+                    newunit = propunit("", self.personality.name)
             # otherwise, this could be a comment
             # FIXME handle /* */ in a more reliable way
             # FIXME handle // inline comments
@@ -487,23 +486,23 @@ class propfile(base.TranslationStore):
                 # this is a blank line...
                 if str(newunit).strip():
                     self.addunit(newunit)
-                    newunit = propunit("", personality.name)
+                    newunit = propunit("", self.personality.name)
             else:
-                newunit.delimiter, delimiter_pos = personality.find_delimiter(line)
+                newunit.delimiter, delimiter_pos = self.personality.find_delimiter(line)
                 if delimiter_pos == -1:
-                    newunit.name = personality.key_strip(line)
+                    newunit.name = self.personality.key_strip(line)
                     newunit.value = u""
                     self.addunit(newunit)
-                    newunit = propunit("", personality.name)
+                    newunit = propunit("", self.personality.name)
                 else:
-                    newunit.name = personality.key_strip(line[:delimiter_pos])
+                    newunit.name = self.personality.key_strip(line[:delimiter_pos])
                     if is_line_continuation(line[delimiter_pos+1:].lstrip()):
                         inmultilinevalue = True
                         newunit.value = line[delimiter_pos+1:].lstrip()[:-1]
                     else:
-                        newunit.value = personality.value_strip(line[delimiter_pos+1:])
+                        newunit.value = self.personality.value_strip(line[delimiter_pos+1:])
                         self.addunit(newunit)
-                        newunit = propunit("", personality.name)
+                        newunit = propunit("", self.personality.name)
         # see if there is a leftover one...
         if inmultilinevalue or len(newunit.comments) > 0:
             self.addunit(newunit)
