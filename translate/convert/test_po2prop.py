@@ -35,6 +35,15 @@ class TestPO2Prop:
         print propfile
         assert propfile == [propexpected]
 
+    def test_merging_untranslated(self):
+        """check the simplest case of merging an untranslated unit"""
+        posource = '''#: prop\nmsgid "value"\nmsgstr ""\n'''
+        proptemplate = '''prop=value\n'''
+        propexpected = proptemplate
+        propfile = self.merge2prop(proptemplate, posource)
+        print propfile
+        assert propfile == [propexpected]
+
     def test_hard_newlines_preserved(self):
         """check that we preserver hard coded newlines at the start and end of sentence"""
         posource = '''#: prop\nmsgid "\\nvalue\\n\\n"\nmsgstr "\\nwaarde\\n\\n"\n'''

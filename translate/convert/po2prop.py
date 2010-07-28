@@ -87,7 +87,7 @@ class reprop:
                 delimiter = prespace + delimiter_char + postspace
             if key in self.inputstore.locationindex:
                 unit = self.inputstore.locationindex[key]
-                if unit.isfuzzy() and not self.includefuzzy:
+                if unit.isfuzzy() and not self.includefuzzy or len(unit.target) == 0:
                     value = unit.source
                 else:
                     value = unit.target
