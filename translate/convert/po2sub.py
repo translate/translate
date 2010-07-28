@@ -27,14 +27,15 @@ from translate.storage import factory
 
 class resub:
 
-    def __init__(self, templatefile):
+    def __init__(self, templatefile, inputstore):
         from translate.storage import subtitles
         self.templatefile = templatefile
         self.templatestore = subtitles.SubtitleFile(templatefile)
+        self.inputstore = inputstore
         self.inputdict = {}
 
-    def convertstore(self, inputstore, includefuzzy=False):
-        self.makestoredict(inputstore, includefuzzy)
+    def convertstore(self, includefuzzy=False):
+        self.makestoredict(self.inputstore, includefuzzy)
         for unit in self.templatestore.units:
             for location in unit.getlocations():
                 if location in self.inputdict:
@@ -60,8 +61,8 @@ def convertsub(inputfile, outputfile, templatefile, includefuzzy=False):
     if templatefile is None:
         raise ValueError("must have template file for subtitle files")
     else:
-        convertor = resub(templatefile)
-    outputstring = convertor.convertstore(inputstore, includefuzzy)
+        convertor = resub(templatefile, inputstore)
+    outputstring = convertor.convertstore(includefuzzy)
     outputfile.write(outputstring)
     return 1
 
