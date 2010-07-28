@@ -26,12 +26,13 @@ from translate.storage import factory
 from translate.storage import ical
 
 class reical:
-    def __init__(self, templatefile):
+    def __init__(self, templatefile, inputstore):
         self.templatefile = templatefile
         self.templatestore = ical.icalfile(templatefile)
+        self.inputstore = inputstore
         self.inputdict = {}
 
-    def convertstore(self, inputstore, includefuzzy=False):
+    def convertstore(self, includefuzzy=False):
         self.makestoredict(inputstore, includefuzzy)
         for unit in self.templatestore.units:
             for location in unit.getlocations():
@@ -57,8 +58,8 @@ def convertical(inputfile, outputfile, templatefile, includefuzzy=False):
     if templatefile is None:
         raise ValueError("must have template file for iCal files")
     else:
-        convertor = reical(templatefile)
-    outputstring = convertor.convertstore(inputstore, includefuzzy)
+        convertor = reical(templatefile, inputstore)
+    outputstring = convertor.convertstore(includefuzzy)
     outputfile.write(outputstring)
     return 1
 
