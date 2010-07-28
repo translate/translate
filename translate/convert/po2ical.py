@@ -33,7 +33,7 @@ class reical:
         self.inputdict = {}
 
     def convertstore(self, includefuzzy=False):
-        self.makestoredict(inputstore, includefuzzy)
+        self.makestoredict(self.inputstore, includefuzzy)
         for unit in self.templatestore.units:
             for location in unit.getlocations():
                 if self.inputdict.has_key(location):
