@@ -30,7 +30,6 @@ class reical:
         self.templatefile = templatefile
         self.templatestore = ical.icalfile(templatefile)
         self.inputstore = inputstore
-        self.inputdict = {}
 
     def convertstore(self, includefuzzy=False):
         self.includefuzzy = includefuzzy
