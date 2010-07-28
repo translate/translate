@@ -27,9 +27,9 @@ from translate.storage import factory
 class reini:
     def __init__(self, templatefile, inputstore, dialect="default"):
         from translate.storage import ini
-        self.inputstore = inputstore
         self.templatefile = templatefile
         self.templatestore = ini.inifile(templatefile, dialect=dialect)
+        self.inputstore = inputstore
 
     def convertstore(self, includefuzzy=False):
         self.includefuzzy = includefuzzy
