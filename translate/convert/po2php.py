@@ -48,22 +48,13 @@ class rephp:
         self.quotechar = ""
 
     def convertstore(self, includefuzzy=False):
-        self.makestoredict(self.inputstore, includefuzzy)
+        self.includefuzzy = includefuzzy
+        self.inputstore.makeindex()
         outputlines = []
         for line in self.templatefile.readlines():
             outputstr = self.convertline(line)
             outputlines.append(outputstr)
         return outputlines
-
-    def makestoredict(self, store, includefuzzy=False):
-        '''make a dictionary of the translations'''
-        for unit in store.units:
-            if includefuzzy or not unit.isfuzzy():
-                for location in unit.getlocations():
-                    inputstring = unit.target
-                    if len(inputstring.strip()) == 0:
-                        inputstring = unit.source
-                    self.inputdict[location] = inputstring
 
     def convertline(self, line):
         line = unicode(line, 'utf-8')
@@ -120,10 +111,14 @@ class rephp:
                     inlinecomment = line[inlinecomment_pos+2:]
                 else:
                     inlinecomment = ""
-                if lookupkey in self.inputdict:
+                if lookupkey in self.inputstore.locationindex:
+                    unit = self.inputstore.locationindex[lookupkey]
+                    if (unit.isfuzzy() and not self.includefuzzy) or len(unit.target) == 0:
+                        value = unit.source
+                    else:
+                        value = unit.target
+                    value = php.phpencode(value, self.quotechar)
                     self.inecho = False
-                    value = php.phpencode(self.inputdict[lookupkey],
-                                          self.quotechar)
                     if isinstance(value, str):
                         value = value.decode('utf8')
                     returnline = "%(key)s%(pre)s%(del)s%(post)s%(quote)s%(value)s%(quote)s%(enddel)s%(comment)s%(eol)s" % {
