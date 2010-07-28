@@ -76,10 +76,15 @@ class TestProp2PO:
         pounit = self.singleelement(pofile)
         assert pounit.source == "This setence will keep its 4 spaces at the end.    "
         
-        propsource = r"SPACE_AT_END_NO_TRIM=This setence will keep its 4 spaces at the end.\\    "
+        propsource = r"SPACE_AT_END_NO_TRIM=This setence will keep its 4 spaces at the end.\    "
         pofile = self.prop2po(propsource)
         pounit = self.singleelement(pofile)
         assert pounit.source == "This setence will keep its 4 spaces at the end.    "
+
+        propsource = r"SPACE_AT_END_NO_TRIM2=This setence will keep its 4 spaces at the end.\\    "
+        pofile = self.prop2po(propsource)
+        pounit = self.singleelement(pofile)
+        assert pounit.source == "This setence will keep its 4 spaces at the end.\    "
 
     def test_tab_at_start_of_value(self):
         """check that tabs in a property are ignored where appropriate"""

@@ -362,7 +362,6 @@ class propunit(base.TranslationUnit):
 
     def getsource(self):
         value = quote.propertiesdecode(self.value)
-        value = re.sub(u"\\\\ ", u" ", value)
         return value
 
     source = property(getsource, setsource)

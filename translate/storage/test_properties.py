@@ -66,16 +66,6 @@ def test_key_strip():
 class TestPropUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = properties.propunit
 
-    def test_difficult_escapes(self):
-        """It doesn't seem that properties files can store double backslashes.
-        
-        We are disabling the double-backslash tests for now.
-        If we are mistaken in the above assumption, we need to fix getsource()
-        and setsource() and delete this test override.
-        
-        """
-        pass
-
     def test_rich_get(self):
         pass
 
