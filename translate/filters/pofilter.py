@@ -36,6 +36,32 @@ from translate.misc import optrecurse
 
 import os
 
+def build_checkerconfig(options):
+    """Prepare the checker config from the given options.  This is mainly
+    factored out for the sake of unit tests."""
+    checkerconfig = checks.CheckerConfig(targetlanguage=options.targetlanguage)
+    if options.notranslatefile:
+        options.notranslatefile = os.path.expanduser(options.notranslatefile)
+        if not os.path.exists(options.notranslatefile):
+            self.error("notranslatefile %r does not exist" % options.notranslatefile)
+        notranslatewords = [line.strip() for line in open(options.notranslatefile).readlines()]
+        notranslatewords = dict.fromkeys([key for key in notranslatewords])
+        checkerconfig.notranslatewords.update(notranslatewords)
+    if options.musttranslatefile:
+        options.musttranslatefile = os.path.expanduser(options.musttranslatefile)
+        if not os.path.exists(options.musttranslatefile):
+            self.error("musttranslatefile %r does not exist" % options.musttranslatefile)
+        musttranslatewords = [line.strip() for line in open(options.musttranslatefile).readlines()]
+        musttranslatewords = dict.fromkeys([key for key in musttranslatewords])
+        checkerconfig.musttranslatewords.update(musttranslatewords)
+    if options.validcharsfile:
+        options.validcharsfile = os.path.expanduser(options.validcharsfile)
+        if not os.path.exists(options.validcharsfile):
+            self.error("validcharsfile %r does not exist" % options.validcharsfile)
+        validchars = open(options.validcharsfile).read()
+        checkerconfig.updatevalidchars(validchars)
+    return checkerconfig
+
 class pocheckfilter:
     def __init__(self, options, checkerclasses=None, checkerconfig=None):
         # excludefilters={}, limitfilters=None, includefuzzy=True, includereview=True, autocorrect=False):
@@ -122,27 +148,7 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
             checkerclasses = [checks.StandardChecker, checks.StandardUnitChecker]
         else:
             checkerclasses = [options.filterclass, checks.StandardUnitChecker]
-        checkerconfig = checks.CheckerConfig(targetlanguage=options.targetlanguage)
-        if options.notranslatefile:
-            options.notranslatefile = os.path.expanduser(options.notranslatefile)
-            if not os.path.exists(options.notranslatefile):
-                self.error("notranslatefile %r does not exist" % options.notranslatefile)
-            notranslatewords = [line.strip() for line in open(options.notranslatefile).readlines()]
-            notranslatewords = dict.fromkeys([key for key in notranslatewords])
-            checkerconfig.notranslatewords.update(notranslatewords)
-        if options.musttranslatefile:
-            options.musttranslatefile = os.path.expanduser(options.musttranslatefile)
-            if not os.path.exists(options.musttranslatefile):
-                self.error("musttranslatefile %r does not exist" % options.musttranslatefile)
-            musttranslatewords = [line.strip() for line in open(options.musttranslatefile).readlines()]
-            musttranslatewords = dict.fromkeys([key for key in musttranslatewords])
-            checkerconfig.musttranslatewords.update(musttranslatewords)
-        if options.validcharsfile:
-            options.validcharsfile = os.path.expanduser(options.validcharsfile)
-            if not os.path.exists(options.validcharsfile):
-                self.error("validcharsfile %r does not exist" % options.validcharsfile)
-            validchars = open(options.validcharsfile).read()
-            checkerconfig.updatevalidchars(validchars)
+        checkerconfig = build_checkerconfig(options)
         options.checkfilter = pocheckfilter(options, checkerclasses, checkerconfig)
         if not options.checkfilter.checker.combinedfilters:
             self.error("No valid filters were specified")
