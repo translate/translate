@@ -95,8 +95,8 @@ def main(argv=None):
     formats = {
           "srt": ("po", convertsub), ("srt", "srt"): ("po", convertsub),
           "sub": ("po", convertsub), ("sub", "sub"): ("po", convertsub),
-          "ssa": ("po", convertssa), ("ssa", "ssa"): ("po", convertsub),
-          "ass": ("po", convertass), ("ass", "ass"): ("po", convertsub),
+          "ssa": ("po", convertsub), ("ssa", "ssa"): ("po", convertsub),
+          "ass": ("po", convertsub), ("ass", "ass"): ("po", convertsub),
     }
     parser = convert.ConvertOptionParser(formats, usetemplates=True, usepots=True, description=__doc__)
     parser.add_duplicates_option()
