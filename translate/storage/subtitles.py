@@ -120,7 +120,10 @@ class SubtitleFile(base.TranslationStore):
     def parse(self, input):
         if isinstance(input, basestring):
             # Gaupol does not allow parsing from strings
-            tmpfile, tmpfilename = tempfile.mkstemp(suffix=self.filename)
+            if self.filename:
+                tmpfile, tmpfilename = tempfile.mkstemp(suffix=self.filename)
+            else:
+                tmpfile, tmpfilename = tempfile.mkstemp()
             tmpfile = open(tmpfilename, 'w')
             tmpfile.write(input)
             tmpfile.close()
