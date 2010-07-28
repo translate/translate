@@ -107,6 +107,12 @@
      c = a string with a continuation line \\
          continuation line
 
+     # Special cases
+     # key with no value
+     key
+     # value no key (extractable in prop2po but not mergeable in po2prop)
+     =value
+
      # .strings specific
      "key" = "value";
 """
