@@ -38,7 +38,6 @@ class rephp:
     def __init__(self, templatefile, inputstore):
         self.templatefile = templatefile
         self.inputstore = inputstore
-        self.inputdict = {}
         self.inmultilinemsgid = False
         self.inecho = False
         self.inarray = False
