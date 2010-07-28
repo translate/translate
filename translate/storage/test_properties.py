@@ -8,20 +8,35 @@ from translate.misc import wStringIO
 from py import test
 
 def test_find_delimiter_pos_simple():
+    """Simple tests to find the various delimiters"""
     assert properties._find_delimiter(u"key=value", [u"=", u":", u" "]) == ('=', 3)
     assert properties._find_delimiter(u"key:value", [u"=", u":", u" "]) == (':', 3)
     assert properties._find_delimiter(u"key value", [u"=", u":", u" "]) == (' ', 3)
+    # NOTE this is valid in Java properties, the key is then the empty string
     assert properties._find_delimiter(u"= value", [u"=", u":", u" "]) == ('=', 0)
 
+def test_find_delimiter_pos_multiple():
+    """Find delimiters when multiple potential delimietes are involved"""
+    assert properties._find_delimiter(u"key=value:value", [u"=", u":", u" "]) == ('=', 3)
+    assert properties._find_delimiter(u"key:value=value", [u"=", u":", u" "]) == (':', 3)
+    assert properties._find_delimiter(u"key value=value", [u"=", u":", u" "]) == (' ', 3)
+
+def test_find_delimiter_pos_none():
+    """Find delimiters when there isn't one"""
+    assert properties._find_delimiter(u"key", [u"=", u":", u" "]) == (None, -1)
+    assert properties._find_delimiter(u"key\=\:\ ", [u"=", u":", u" "]) == (None, -1)
+
 def test_find_delimiter_pos_whitespace():
+    """Find delimiters when whitespace is involved"""
     assert properties._find_delimiter(u"key = value", [u"=", u":", u" "]) == ('=', 4)
     assert properties._find_delimiter(u"key : value", [u"=", u":", u" "]) == (':', 4)
     assert properties._find_delimiter(u"key   value", [u"=", u":", u" "]) == (' ', 3)
-    assert properties._find_delimiter(u"key key = value", [u"=", u":", u" "]) == (' ', 3)
+    assert properties._find_delimiter(u"key value = value", [u"=", u":", u" "]) == (' ', 3)
     assert properties._find_delimiter(u"key value value", [u"=", u":", u" "]) == (' ', 3)
     assert properties._find_delimiter(u" key = value", [u"=", u":", u" "]) == ('=', 5)
 
 def test_find_delimiter_pos_escapes():
+    """Find delimiters when potential earlier delimiters are escaped"""
     assert properties._find_delimiter(u"key\:=value", [u"=", u":", u" "]) == ('=', 5)
     assert properties._find_delimiter(u"key\=: value", [u"=", u":", u" "]) == (':', 5)
     assert properties._find_delimiter(u"key\   value", [u"=", u":", u" "]) == (' ', 5)
@@ -29,7 +44,7 @@ def test_find_delimiter_pos_escapes():
 
 def test_find_delimiter_deprecated_fn():
     """Test that the deprecated function still actually works"""
-    assert properties.find_delimeter(u"key=value")
+    assert properties.find_delimeter(u"key=value") == ('=', 3)
     #assert test.raises(DeprecationWarning, 'properties.find_delimeter(u"key=value")')
 
 def test_is_line_continuation():
