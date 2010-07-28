@@ -45,12 +45,12 @@ class reical:
         # make a dictionary of the translations
         for unit in store.units:
             if includefuzzy or not unit.isfuzzy():
-                # there may be more than one entity due to msguniq merge
+                # there may be more than one 'key' due to msguniq merge
                 for location in unit.getlocations():
-                    inistring = unit.target
-                    if len(inistring.strip()) == 0:
-                        inistring = unit.source
-                    self.inputdict[location] = inistring
+                    value = unit.target
+                    if len(value.strip()) == 0:
+                        value = unit.source
+                    self.inputdict[location] = value
 
 def convertical(inputfile, outputfile, templatefile, includefuzzy=False):
     inputstore = factory.getobject(inputfile)

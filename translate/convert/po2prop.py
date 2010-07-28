@@ -59,14 +59,12 @@ class reprop:
         # make a dictionary of the translations
         for unit in store.units:
             if includefuzzy or not unit.isfuzzy():
-                # there may be more than one entity due to msguniq merge
-                for entity in unit.getlocations():
-                    propstring = unit.target
-                    # NOTE: triple-space as a string means leave it
-                    # empty (special signal)
-                    if len(propstring.strip()) == 0 and propstring != "   ":
-                        propstring = unit.source
-                    self.inputdict[entity] = propstring
+                # there may be more than one 'key' due to msguniq merge
+                for location in unit.getlocations():
+                    value = unit.target
+                    if len(value.strip()) == 0:
+                        value = unit.source
+                    self.inputdict[location] = value
 
     def convertline(self, line):
         returnline = u""
