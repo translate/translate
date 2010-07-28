@@ -92,7 +92,10 @@ def convertsub(input_file, output_file, template_file=None, pot=False, duplicate
 
 def main(argv=None):
     from translate.convert import convert
-    formats = {"srt": ("po", convertsub), ("srt", "srt"): ("po", convertsub)}
+    formats = {
+          "srt": ("po", convertsub), ("srt", "srt"): ("po", convertsub),
+          "sub": ("po", convertsub), ("sub", "sub"): ("po", convertsub),
+    }
     parser = convert.ConvertOptionParser(formats, usetemplates=True, usepots=True, description=__doc__)
     parser.add_duplicates_option()
     parser.passthrough.append("pot")

@@ -70,7 +70,10 @@ def convertsub(inputfile, outputfile, templatefile, includefuzzy=False):
 def main(argv=None):
     # handle command line options
     from translate.convert import convert
-    formats = {("po", "srt"): ("srt", convertsub)}
+    formats = {
+         ("po", "srt"): ("srt", convertsub),
+         ("po", "sub"): ("sub", convertsub),
+    }
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          description=__doc__)
     parser.add_fuzzy_option()
