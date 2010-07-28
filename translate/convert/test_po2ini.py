@@ -6,43 +6,42 @@ from translate.convert import test_convert
 from translate.misc import wStringIO
 from translate.storage import po
 
-class TestPO2Prop:
+class TestPO2Ini:
     def po2ini(self, posource):
-        """helper that converts po source to .properties source without requiring files"""
+        """helper that converts po source to .ini source without requiring files"""
         inputfile = wStringIO.StringIO(posource)
         inputpo = po.pofile(inputfile)
         convertor = po2ini.reini()
-        outputprop = convertor.convertstore(inputpo)
-        return outputprop
+        outputini = convertor.convertstore(inputpo)
+        return outputini
 
-    def merge2ini(self, propsource, posource, dialect="default"):
-        """helper that merges po translations to .properties source without requiring files"""
+    def merge2ini(self, inisource, posource, dialect="default"):
+        """helper that merges po translations to .ini source without requiring files"""
         inputfile = wStringIO.StringIO(posource)
         inputpo = po.pofile(inputfile)
-        templatefile = wStringIO.StringIO(propsource)
-        #templateprop = properties.propfile(templatefile)
+        templatefile = wStringIO.StringIO(inisource)
         convertor = po2ini.reini(templatefile, inputpo, dialect=dialect)
-        outputprop = convertor.convertstore()
-        print outputprop
-        return outputprop
+        outputini = convertor.convertstore()
+        print outputini
+        return outputini
 
     def test_merging_simple(self):
         """check the simplest case of merging a translation"""
         posource = '''#: [section]prop\nmsgid "value"\nmsgstr "waarde"\n'''
-        proptemplate = '''[section]\nprop=value\n'''
-        propexpected = '''[section]\nprop=waarde\n'''
-        propfile = self.merge2ini(proptemplate, posource)
-        print propfile
-        assert propfile == propexpected
+        initemplate = '''[section]\nprop=value\n'''
+        iniexpected = '''[section]\nprop=waarde\n'''
+        inifile = self.merge2ini(initemplate, posource)
+        print inifile
+        assert inifile == iniexpected
 
     def test_space_preservation(self):
-        """check that we preserve any spacing in properties files when merging"""
+        """check that we preserve any spacing in ini files when merging"""
         posource = '''#: [section]prop\nmsgid "value"\nmsgstr "waarde"\n'''
-        proptemplate = '''[section]\nprop  =  value\n'''
-        propexpected = '''[section]\nprop  =  waarde\n'''
-        propfile = self.merge2ini(proptemplate, posource)
-        print propfile
-        assert propfile == propexpected
+        initemplate = '''[section]\nprop  =  value\n'''
+        iniexpected = '''[section]\nprop  =  waarde\n'''
+        inifile = self.merge2ini(initemplate, posource)
+        print inifile
+        assert inifile == iniexpected
 
     def test_merging_blank_entries(self):
         """check that we can correctly merge entries that are blank in the template"""
@@ -51,29 +50,29 @@ msgid ""
 "_: accesskey-accept\n"
 ""
 msgstr ""'''
-        proptemplate = '[section]\naccesskey-accept=\n'
-        propexpected = '[section]\naccesskey-accept=\n'
-        propfile = self.merge2ini(proptemplate, posource)
-        print propfile
-        assert propfile == propexpected
+        initemplate = '[section]\naccesskey-accept=\n'
+        iniexpected = '[section]\naccesskey-accept=\n'
+        inifile = self.merge2ini(initemplate, posource)
+        print inifile
+        assert inifile == iniexpected
 
     def test_merging_fuzzy(self):
         """check merging a fuzzy translation"""
         posource = '''#: [section]prop\n#, fuzzy\nmsgid "value"\nmsgstr "waarde"\n'''
-        proptemplate = '''[section]\nprop=value\n'''
-        propexpected = '''[section]\nprop=value\n'''
-        propfile = self.merge2ini(proptemplate, posource)
-        print propfile
-        assert propfile == propexpected
+        initemplate = '''[section]\nprop=value\n'''
+        iniexpected = '''[section]\nprop=value\n'''
+        inifile = self.merge2ini(initemplate, posource)
+        print inifile
+        assert inifile == iniexpected
 
     def test_merging_propertyless_template(self):
-        """check that when merging with a template with no property values that we copy the template"""
+        """check that when merging with a template with no ini values that we copy the template"""
         posource = ""
-        proptemplate = "# A comment\n"
-        propexpected = proptemplate
-        propfile = self.merge2ini(proptemplate, posource)
-        print propfile
-        assert propfile == propexpected
+        initemplate = "# A comment\n"
+        iniexpected = initemplate
+        inifile = self.merge2ini(initemplate, posource)
+        print inifile
+        assert inifile == iniexpected
 
     def test_empty_value(self):
         """test that we handle an value in translation that is missing in the template"""
@@ -82,11 +81,11 @@ msgctxt "key"
 msgid ""
 msgstr "translated"
 '''
-        proptemplate = '''[section]\nkey =\n'''
-        propexpected = '''[section]\nkey =translated\n'''
-        propfile = self.merge2ini(proptemplate, posource)
-        print propfile
-        assert propfile == propexpected
+        initemplate = '''[section]\nkey =\n'''
+        iniexpected = '''[section]\nkey =translated\n'''
+        inifile = self.merge2ini(initemplate, posource)
+        print inifile
+        assert inifile == iniexpected
 
     def xtest_dialects_inno(self):
         # FIXME we have some encoding issues with this test
@@ -95,13 +94,13 @@ msgstr "translated"
 msgid "value\tvalue2\n"
 msgstr "ṽḁḽṻḝ\tṽḁḽṻḝ2\n"
 '''
-        proptemplate = u'''[section]\nprop  =  value%tvalue%n\n'''
-        propexpected = u'''[section]\nprop  =  ṽḁḽṻḝ%tṽḁḽṻḝ2%n'''
-        propfile = self.merge2ini(proptemplate, posource, "inno")
-        print propfile
-        assert propfile == propexpected
+        initemplate = u'''[section]\nprop  =  value%tvalue%n\n'''
+        iniexpected = u'''[section]\nprop  =  ṽḁḽṻḝ%tṽḁḽṻḝ2%n'''
+        inifile = self.merge2ini(initemplate, posource, "inno")
+        print inifile
+        assert inifile == iniexpected
 
-class TestPO2PropCommand(test_convert.TestConvertCommand, TestPO2Prop):
+class TestPO2IniCommand(test_convert.TestConvertCommand, TestPO2Ini):
     """Tests running actual po2ini commands on files"""
     convertmodule = po2ini
     defaultoptions = {"progress": "none"}
