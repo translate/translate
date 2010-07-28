@@ -369,6 +369,11 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         """
         return PyLuceneHits(self.searcher.search(query))
 
+    def delete_doc(self, ident):
+        super(PyLuceneDatabase, self).delete_doc(ident)
+        self.reader.flush()
+        self._index_refresh()
+
     def delete_document_by_id(self, docid):
         """delete a specified document
 
@@ -379,9 +384,6 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         if self._writer_is_open():
             self._writer_close()
         self.reader.deleteDocument(docid)
-        self.reader.flush()
-        # TODO: check the performance impact of calling "refresh" for each id
-        self._index_refresh()
 
     def search(self, query, fieldnames):
         """return a list of the contents of specified fields for all matches of
