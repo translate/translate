@@ -29,19 +29,19 @@ class resub:
         from translate.storage import subtitles
         self.templatefile = templatefile
         self.templatestore = subtitles.SubtitleFile(templatefile)
-        self._inputdict = {}
+        self.inputdict = {}
 
     def convertstore(self, inputstore, includefuzzy=False):
-        self._makestoredict(inputstore, includefuzzy)
+        self.makestoredict(inputstore, includefuzzy)
         for unit in self.templatestore.units:
             for location in unit.getlocations():
-                if location in self._inputdict:
-                    unit.target = self._inputdict[location]
+                if location in self.inputdict:
+                    unit.target = self.inputdict[location]
                 else:
                     unit.target = unit.source
         return str(self.templatestore)
 
-    def _makestoredict(self, store, includefuzzy=False):
+    def makestoredict(self, store, includefuzzy=False):
         # make a dictionary of the translations
         for unit in store.units:
             if includefuzzy or not unit.isfuzzy():
@@ -50,7 +50,7 @@ class resub:
                     substring = unit.target
                     if len(substring.strip()) == 0:
                         substring = unit.source
-                    self._inputdict[location] = substring
+                    self.inputdict[location] = substring
 
 def convertsub(inputfile, outputfile, templatefile, includefuzzy=False):
     inputstore = factory.getobject(inputfile)
