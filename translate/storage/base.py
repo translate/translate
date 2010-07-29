@@ -48,16 +48,17 @@ def force_override(method, baseclass):
     if actualclass != baseclass:
         raise NotImplementedError(
             "%s does not reimplement %s as required by %s" % \
-            (actualclass.__name__, method.__name__, baseclass.__name__)
-        )
+            (actualclass.__name__, method.__name__, baseclass.__name__))
 
 
 class ParseError(Exception):
+
     def __init__(self, inner_exc):
         self.inner_exc = inner_exc
 
     def __str__(self):
         return repr(self.inner_exc)
+
 
 class TranslationUnit(object):
     """Base class for translation units.
@@ -65,18 +66,19 @@ class TranslationUnit(object):
     Our concept of a I{translation unit} is influenced heavily by XLIFF:
     U{http://www.oasis-open.org/committees/xliff/documents/xliff-specification.htm}
 
-    As such most of the method- and variable names borrows from XLIFF terminology.
+    As such most of the method- and variable names borrows from XLIFF
+    terminology.
 
     A translation unit consists of the following:
       - A I{source} string. This is the original translatable text.
       - A I{target} string. This is the translation of the I{source}.
       - Zero or more I{notes} on the unit. Notes would typically be some
-        comments from a translator on the unit, or some comments originating from
-        the source code.
+        comments from a translator on the unit, or some comments originating
+        from the source code.
       - Zero or more I{locations}. Locations indicate where in the original
         source code this unit came from.
-      - Zero or more I{errors}. Some tools (eg. L{pofilter <filters.pofilter>}) can run checks on
-        translations and produce error messages.
+      - Zero or more I{errors}. Some tools (eg. L{pofilter<filters.pofilter>})
+        can run checks on translations and produce error messages.
 
     @group Source: *source*
     @group Target: *target*
@@ -86,7 +88,8 @@ class TranslationUnit(object):
     """
 
     rich_parsers = []
-    """A list of functions to use for parsing a string into a rich string tree."""
+    """A list of functions to use for parsing a string into a rich string
+    tree."""
 
     # State constants
     S_OBSOLETE =     states.OBSOLETE
@@ -117,7 +120,6 @@ class TranslationUnit(object):
         * final: The unit is translated, reviewed and accepted.
     """
 
-
     def __init__(self, source):
         """Constructs a TranslationUnit containing the given source string."""
         self.notes = ""
@@ -139,7 +141,8 @@ class TranslationUnit(object):
         return self.source == other.source and self.target == other.target
 
     def __str__(self):
-        """Converts to a string representation that can be parsed back using L{parsestring()}."""
+        """Converts to a string representation that can be parsed back using
+        L{parsestring()}."""
         # no point in pickling store object, so let's hide it for a while.
         store = getattr(self, "_store", None)
         self._store = None
@@ -401,7 +404,8 @@ class TranslationUnit(object):
     def gettargetlanguage(self):
         return getattr(self._store, "targetlanguage", None)
 
-    def merge(self, otherunit, overwrite=False, comments=True, authoritative=False):
+    def merge(self, otherunit, overwrite=False, comments=True,
+              authoritative=False):
         """Do basic format agnostic merging."""
         if not self.target or overwrite:
             self.rich_target = otherunit.rich_target
@@ -455,7 +459,8 @@ class TranslationUnit(object):
 
 
 class TranslationStore(object):
-    """Base class for stores for multiple translation units of type UnitClass."""
+    """Base class for stores for multiple translation units of type
+    UnitClass."""
 
     UnitClass = TranslationUnit
     """The class of units that will be instantiated and used by this class"""
@@ -468,7 +473,8 @@ class TranslationStore(object):
     _binary = False
     """Indicates whether a file should be accessed as a binary file."""
     suggestions_in_format = False
-    """Indicates if format can store suggestions and alternative translation for a unit"""
+    """Indicates if format can store suggestions and alternative translation
+    for a unit"""
 
     def __init__(self, unitclass=None):
         """Constructs a blank TranslationStore."""
@@ -592,7 +598,8 @@ class TranslationStore(object):
             remove_unit(unit.source)
 
         for location in unit.getlocations():
-            if location in self.locationindex and self.locationindex[location] is not None \
+            if location in self.locationindex \
+                   and self.locationindex[location] is not None \
                    and self.locationindex[location] == unit:
                 del(self.locationindex[location])
 
@@ -621,7 +628,8 @@ class TranslationStore(object):
                 self.locationindex[location] = unit
 
     def makeindex(self):
-        """Indexes the items in this store. At least .sourceindex should be usefull."""
+        """Indexes the items in this store. At least .sourceindex should be
+        usefull."""
         self.locationindex = {}
         self.sourceindex = {}
         self.id_index = {}
@@ -651,7 +659,8 @@ class TranslationStore(object):
             self.fileobj = open(self.filename)
 
     def __str__(self):
-        """Converts to a string representation that can be parsed back using L{parsestring()}."""
+        """Converts to a string representation that can be parsed back using
+        L{parsestring()}."""
         # We can't pickle fileobj if it is there, so let's hide it for a while.
         fileobj = getattr(self, "fileobj", None)
         self.fileobj = None
@@ -673,7 +682,8 @@ class TranslationStore(object):
         assigns it to .filename."""
         fileobj = getattr(self, "fileobj", None)
         if fileobj:
-            filename = getattr(fileobj, "name", getattr(fileobj, "filename", None))
+            filename = getattr(fileobj, "name",
+                               getattr(fileobj, "filename", None))
             if filename:
                 self.filename = filename
 
@@ -703,7 +713,8 @@ class TranslationStore(object):
         storefile.close()
 
     def save(self):
-        """Save to the file that data was originally read from, if available."""
+        """Save to the file that data was originally read from, if
+        available."""
         fileobj = getattr(self, "fileobj", None)
         mode = 'w'
         if self._binary:
@@ -714,14 +725,16 @@ class TranslationStore(object):
                 fileobj = file(filename, mode)
         else:
             fileobj.close()
-            filename = getattr(fileobj, "name", getattr(fileobj, "filename", None))
+            filename = getattr(fileobj, "name",
+                               getattr(fileobj, "filename", None))
             if not filename:
                 raise ValueError("No file or filename to save to")
             fileobj = fileobj.__class__(filename, mode)
         self.savefile(fileobj)
 
     def parsefile(cls, storefile):
-        """Reads the given file (or opens the given filename) and parses back to an object."""
+        """Reads the given file (or opens the given filename) and parses back
+        to an object."""
         mode = 'r'
         if cls._binary:
             mode = 'rb'
