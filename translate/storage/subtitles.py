@@ -31,7 +31,24 @@ from StringIO import StringIO
 import tempfile
 import os
 
-import gaupol
+try:
+    from aeidon import Subtitle
+    from aeidon import documents
+    from aeidon.encodings import detect
+    from aeidon.util import detect_format as determine
+    from aeidon.files import new
+    from aeidon.files import MicroDVD, SubStationAlpha, AdvSubStationAlpha, SubRip
+    from aeidon import newlines
+except ImportError:
+    from gaupol.subtitle import Subtitle
+    from gaupol import documents
+    from gaupol.encodings import detect
+    from gaupol import FormatDeterminer
+    _determiner = FormatDeterminer()
+    determine = _determiner.determine
+    from gaupol.files import new
+    from gaupol.files import MicroDVD, SubStationAlpha, AdvSubStationAlpha, SubRip
+    from gaupol.newlines import newlines
 
 from translate.storage import base
 
@@ -74,21 +91,21 @@ class SubtitleFile(base.TranslationStore):
     def __str__(self):
         subtitles = []
         for unit in self.units:
-            subtitle = gaupol.subtitle.Subtitle()
+            subtitle = Subtitle()
             subtitle.main_text = unit.target or unit.source
             subtitle.start = unit._start
             subtitle.end = unit._end
             subtitles.append(subtitle)
         output = StringIO()
-        self._subtitlefile.write_to_file(subtitles, gaupol.documents.MAIN, output)
+        self._subtitlefile.write_to_file(subtitles, documents.MAIN, output)
         return output.getvalue().encode(self._subtitlefile.encoding)
 
     def _parse(self):
-        self._encoding = gaupol.encodings.detect(self.filename)
+        self._encoding = detect(self.filename)
         if self._encoding == 'ascii':
             self._encoding = 'utf_8'
-        self._format = gaupol.FormatDeterminer().determine(self.filename, self._encoding)
-        self._subtitlefile = gaupol.files.new(self._format, self.filename, self._encoding)
+        self._format = determine(self.filename, self._encoding)
+        self._subtitlefile = new(self._format, self.filename, self._encoding)
         for subtitle in self._subtitlefile.read():
             newunit = self.addsourceunit(subtitle.main_text)
             newunit._start = subtitle.start
@@ -138,8 +155,6 @@ class SubtitleFile(base.TranslationStore):
 # the generic SubtitleFile can adapt to any format, but only the
 # specilized classes can be used to construct a new file
 
-from gaupol.files import MicroDVD, SubStationAlpha, AdvSubStationAlpha, SubRip
-from gaupol.newlines import newlines
 class SubRipFile(SubtitleFile):
     """specialized class for SubRipFile's only"""
     Name = _("SubRip subtitles file")
