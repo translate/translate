@@ -75,10 +75,10 @@ class TestPropUnit(test_monolingual.TestMonolingualUnit):
 class TestProp(test_monolingual.TestMonolingualStore):
     StoreClass = properties.propfile
     
-    def propparse(self, propsource, personality="java"):
+    def propparse(self, propsource, personality="java", encoding=None):
         """helper that parses properties source without requiring files"""
         dummyfile = wStringIO.StringIO(propsource)
-        propfile = properties.propfile(dummyfile, personality)
+        propfile = properties.propfile(dummyfile, personality, encoding)
         return propfile
 
     def propregen(self, propsource):
@@ -232,3 +232,12 @@ key=value
         assert propunit.name == u'key'
         assert propunit.source.encode('utf-8') == u'value'
         assert propunit.getnotes() == u"/* Comment */\n// Comment"
+
+    def test_override_encoding(self):
+        """test that we can override the encoding of a properties file"""
+        propsource = u"key = value".encode("cp1252")
+        propfile = self.propparse(propsource, personality="strings", encoding="cp1252")
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == u'key'
+        assert propunit.source == u'value'
