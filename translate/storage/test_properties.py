@@ -241,3 +241,13 @@ key=value
         propunit = propfile.units[0]
         assert propunit.name == u'key'
         assert propunit.source == u'value'
+
+    def test_trailing_comments(self):
+        """test that we handle non-unit data at the end of a file"""
+        propsource = u"key = value\n# END"
+        propfile = self.propparse(propsource)
+        assert len(propfile.units) == 2
+        propunit = propfile.units[1]
+        assert propunit.name == u''
+        assert propunit.source == u''
+        assert propunit.getnotes() == u"# END"
