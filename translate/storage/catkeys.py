@@ -108,7 +108,7 @@ csv.register_dialect("catkeys", CatkeysDialect)
 class CatkeysHeader(object):
     """A catkeys translation memory header"""
     def __init__(self, header=None):
-        self._header_dict = []
+        self._header_dict = {}
         if not header:
             self.header = self._create_default_header()
         elif isinstance(header, dict):
@@ -258,9 +258,8 @@ class CatkeysFile(base.TranslationStore):
 
     def __str__(self):
         output = csv.StringIO()
-        header_output = csv.StringIO()
         writer = csv.DictWriter(output, fieldnames=FIELDNAMES, dialect="catkeys")
+        writer.writerow(self.header._header_dict)
         for unit in self.units:
             writer.writerow(unit.dict)
-        decoded = "".join(header_output.readlines() + output.readlines()).decode('utf-8')
-        return decoded.encode(self._encoding)
+        return output.getvalue()
