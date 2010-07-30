@@ -512,3 +512,11 @@ class propfile(base.TranslationStore):
         for unit in self.units:
             lines.append(str(unit))
         return "".join(lines)
+
+
+class stringsfile(propfile):
+    Name = _("OS X Strings")
+    Extensions = ['strings']
+    def __init__(self, *args, **kwargs):
+        kwargs['personality'] = "strings"
+        super(stringsfile, self).__init__(*args, **kwargs)
