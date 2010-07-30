@@ -37,6 +37,7 @@ from translate.storage import omegat
 from translate.storage import po
 from translate.storage import qm
 from translate.storage import wordfast
+from translate.storage import catkeys
 #Let's try to import the XML formats carefully. They might fail if the user
 #doesn't have lxml installed. Let's try to continue gracefully, but print an 
 #informative warning.
@@ -63,6 +64,7 @@ classes = {
            "mo": mo.mofile, "gmo": mo.mofile, 
            "qm": qm.qmfile, 
            "_wftm": wordfast.WordfastTMFile,
+           "catkeys": catkeys.CatkeysFile,
           }
 """Dictionary of file extensions and their associated class.  
 

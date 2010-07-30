@@ -30,6 +30,7 @@ from translate.search import match
 from translate.misc.multistring import multistring
 from translate.tools import pretranslate
 from translate.storage import poheader
+from translate.storage import catkeys
 
 
 def convertpot(input_file, output_file, template_file, tm=None, min_similarity=75, fuzzymatching=True, classes=factory.classes, **kwargs):
@@ -101,6 +102,8 @@ def _store_pre_merge(input_store, output_store, template_store, **kwargs) :
     #formats that implement poheader interface are a special case
     if isinstance(input_store, poheader.poheader):
         _do_poheaders(input_store, output_store, template_store)
+    elif isinstance(input_store, catkeys.CatkeysFile):
+        output_store.header = input_store.header
 
     #dispatch to format specific functions
     store_pre_merge_hook = "_store_pre_merge_%s" % input_store.__class__.__name__
@@ -241,6 +244,7 @@ def main(argv=None):
     from translate.convert import convert
     formats = {"pot": ("po", convertpot), ("pot", "po"): ("po", convertpot),
                "xlf": ("xlf", convertpot), ("xlf", "xlf"): ("xlf", convertpot),
+               "catkeys": ("catkeys", convertpot), ("catkeys", "catkeys"): ("catkeys", convertpot),
             }
     parser = convert.ConvertOptionParser(formats, usepots=True, usetemplates=True, 
         allowmissingtemplate=True, description=__doc__)
