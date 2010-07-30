@@ -56,7 +56,6 @@
 
 import csv
 import sys
-import time
 from translate.storage import base
 from translate.lang.data import tr_lang
 
@@ -122,7 +121,7 @@ class CatkeysHeader(object):
 
     def settargetlang(self, newlang):
         """Set a human readable target language"""
-        self._header_dict['language'] = tr_lang(en)(newlang)
+        self._header_dict['language'] = tr_lang('en')(newlang)
     targetlang = property(None, settargetlang)
 
 class CatkeysUnit(base.TranslationUnit):
@@ -263,6 +262,5 @@ class CatkeysFile(base.TranslationStore):
         writer = csv.DictWriter(output, fieldnames=FIELDNAMES, dialect="catkeys")
         for unit in self.units:
             writer.writerow(unit.dict)
-        header_output.reset()
         decoded = "".join(header_output.readlines() + output.readlines()).decode('utf-8')
         return decoded.encode(self._encoding)
