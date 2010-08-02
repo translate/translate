@@ -43,6 +43,7 @@ class PoXliffUnit(xliff.xliffunit):
     def __init__(self, source=None, empty=False, encoding="UTF-8"):
         self._rich_source = None
         self._rich_target = None
+        self._state_n = 0
         self.units = []
 
         if empty:
