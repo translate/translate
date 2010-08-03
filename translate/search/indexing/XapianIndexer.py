@@ -143,6 +143,13 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
             self._writer_close()
         self._index_refresh()
 
+    def make_query(self, *args, **kwargs):
+        try:
+            return super(XapianDatabase, self).make_query(*args, **kwargs)
+        except xapian.DatabaseModifiedError:
+            self._index_refresh()
+            return super(XapianDatabase, self).make_query(*args, **kwargs)
+
     def _create_query_for_query(self, query):
         """generate a query based on an existing query object
 
