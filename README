@@ -134,9 +134,9 @@ The package vobject is needed for ical2po and po2ical.  Versions from
 Lotus Notes calendars.
 http://vobject.skyhouseconsulting.com/
 
-The subtitle editing program Gaupol is needed for sub2po and
-po2sub. Some Unicode encoded files (including most files from
-http://dotsub.com) require latest development version of Gaupol.
+The aeidon package (or Gaupol if aeidon is not available) is needed for sub2po
+and po2sub. Some Unicode encoded files (including most files from
+http://dotsub.com) require version 0.14 or later.
 http://home.gna.org/gaupol/
 Gaupol might need the 'Universal Encoding Detector'
 http://chardet.feedparser.org/
