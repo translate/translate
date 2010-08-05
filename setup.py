@@ -83,8 +83,6 @@ translatescripts = [apply(join, ('translate', ) + script) for script in
                   ('tools', 'poclean'),
                   ('tools', 'poterminology'),
                   ('tools', 'pretranslate'),
-                  ('services', 'lookupclient.py'),
-                  ('services', 'lookupservice'),
                   ('services', 'tmserver'),
                   ('tools', 'build_tmdb')]
 
