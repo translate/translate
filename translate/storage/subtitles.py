@@ -101,16 +101,19 @@ class SubtitleFile(base.TranslationStore):
         return output.getvalue().encode(self._subtitlefile.encoding)
 
     def _parse(self):
-        self._encoding = detect(self.filename)
-        if self._encoding == 'ascii':
-            self._encoding = 'utf_8'
-        self._format = determine(self.filename, self._encoding)
-        self._subtitlefile = new(self._format, self.filename, self._encoding)
-        for subtitle in self._subtitlefile.read():
-            newunit = self.addsourceunit(subtitle.main_text)
-            newunit._start = subtitle.start
-            newunit._end = subtitle.end
-            newunit._duration = subtitle.duration_seconds
+        try:
+            self._encoding = detect(self.filename)
+            if self._encoding == 'ascii':
+                self._encoding = 'utf_8'
+            self._format = determine(self.filename, self._encoding)
+            self._subtitlefile = new(self._format, self.filename, self._encoding)
+            for subtitle in self._subtitlefile.read():
+                newunit = self.addsourceunit(subtitle.main_text)
+                newunit._start = subtitle.start
+                newunit._end = subtitle.end
+                newunit._duration = subtitle.duration_seconds
+        except Exception, e:
+            raise base.ParseError(e)
 
     def _parsefile(self, storefile):
         if hasattr(storefile, 'name'):
