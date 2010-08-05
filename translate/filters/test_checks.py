@@ -803,6 +803,7 @@ def test_xmltags():
 
     assert fails(stdchecker.xmltags, "Click <a href=\"page.html\">", "Klik <a hverw=\"page.html\">")
     assert passes(stdchecker.xmltags, "Click <a xml-lang=\"en\" href=\"page.html\">", "Klik <a xml-lang=\"af\" href=\"page.html\">")
+    assert passes(stdchecker.xmltags, "Click <div lang=\"en\" dir=\"ltr\">", "Klik <div lang=\"ar\" dir=\"rtl\">")
     assert fails(stdchecker.xmltags, "Click <a href=\"page.html\" target=\"koei\">", "Klik <a href=\"page.html\">")
     assert fails(stdchecker.xmltags, "<b>Current Translation</b>", "<b>Traducción Actual:<b>")
     assert passes(stdchecker.xmltags, "<Error>", "<Fout>")
