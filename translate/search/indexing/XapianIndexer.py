@@ -377,7 +377,11 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         result = []
         if isinstance(fieldnames, basestring):
             fieldnames = [fieldnames]
-        self._walk_matches(query, _extract_fieldvalues, (result, fieldnames))
+        try:
+            self._walk_matches(query, _extract_fieldvalues, (result, fieldnames))
+        except xapian.DatabaseModifiedError:
+            self._index_refresh()
+            self._walk_matches(query, _extract_fieldvalues, (result, fieldnames))
         return result
 
     def _delete_stale_lock(self):
