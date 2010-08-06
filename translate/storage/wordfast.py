@@ -1,27 +1,26 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
-# Copyright 2007 Zuza Software Foundation
-# 
-# This file is part of translate.
 #
-# translate is free software; you can redistribute it and/or modify
+# Copyright 2007-2010 Zuza Software Foundation
+#
+# This file is part of the Translate Toolkit.
+#
+# This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
-# translate is distributed in the hope that it will be useful,
+#
+# This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with translate; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 """Manage the Wordfast Translation Memory format
 
-   Wordfast TM format is the Translation Memory format used by the 
+   Wordfast TM format is the Translation Memory format used by the
    U{Wordfast<http://www.wordfast.net/>} computer aided translation tool.
 
    It is a bilingual base class derived format with L{WordfastTMFile}
@@ -30,7 +29,7 @@
    Wordfast tools
    ==============
    Wordfast is a computer aided translation tool.  It is an application
-   built on top of Microsoft Word and is implemented as a rather 
+   built on top of Microsoft Word and is implemented as a rather
    sophisticated set of macros.  Understanding that helps us understand
    many of the seemingly strange choices around this format including:
    encoding, escaping and file naming.
@@ -38,9 +37,9 @@
    Implementation
    ==============
    The implementation covers the full requirements of a Wordfast TM file.
-   The files are simple Tab Separated Value (TSV) files that can be read 
-   by Microsoft Excel and other spreadsheet programs.  They use the .txt 
-   extension which does make it more difficult to automatically identify 
+   The files are simple Tab Separated Value (TSV) files that can be read
+   by Microsoft Excel and other spreadsheet programs.  They use the .txt
+   extension which does make it more difficult to automatically identify
    such files.
 
    The dialect of the TSV files is specified by L{WordfastDialect}.
@@ -51,21 +50,21 @@
    are most likely because Microsoft Word is the base editing tool for
    Wordfast.
 
-   The format is tab separated so we are able to detect UTF-16 vs Latin-1 
+   The format is tab separated so we are able to detect UTF-16 vs Latin-1
    by searching for the occurance of a UTF-16 tab character and then
    continuing with the parsing.
 
    Timestamps
    ----------
    L{WordfastTime} allows for the correct management of the Wordfast
-   YYYYMMDD~HHMMSS timestamps.  However, timestamps on individual units are 
+   YYYYMMDD~HHMMSS timestamps.  However, timestamps on individual units are
    not updated when edited.
 
    Header
    ------
-   L{WordfastHeader} provides header management support.  The header 
+   L{WordfastHeader} provides header management support.  The header
    functionality is fully implemented through observing the behaviour of the
-   files in real use cases, input from the Wordfast programmers and 
+   files in real use cases, input from the Wordfast programmers and
    public documentation.
 
    Escaping
@@ -74,13 +73,13 @@
      1. Placeable: bold, formating, etc.  These are left as is and ignored.
         It is up to the editor and future placeable implementation to manage
         these.
-     2. Escapes: items that may confuse Excel or translators are 
+     2. Escapes: items that may confuse Excel or translators are
         escaped as &'XX;. These are fully implemented and are converted to
         and from Unicode.  By observing behaviour and reading documentation
         we where able to observe all possible escapes. Unfortunately the
         escaping differs slightly between Windows and Mac version.  This
         might cause errors in future.
-   Functions allow for L{conversion to Unicode<_wf_to_char>} and L{back to 
+   Functions allow for L{conversion to Unicode<_wf_to_char>} and L{back to
    Wordfast escapes<_char_to_wf>}.
 
    Extended Attributes
@@ -117,10 +116,10 @@ WF_FIELDNAMES_HEADER_DEFAULTS = {
 "attr4list": "" }
 """Default or minimum header entries for a Wordfast file"""
 
-# TODO Needs validation.  The following need to be checked against a WF TM file to ensure 
-# that the correct Unicode values have been chosen for the characters. For now these look
-# correct and have been taken from Windows CP1252 and Macintosh code points found for
-# the respective character sets on Linux.
+# TODO Needs validation.  The following need to be checked against a WF TM file
+# to ensure that the correct Unicode values have been chosen for the characters.
+# For now these look correct and have been taken from Windows CP1252 and
+# Macintosh code points found for the respective character sets on Linux.
 WF_ESCAPE_MAP = (
               ("&'26;", u"\u0026"), # & - Ampersand (must be first to prevent escaping of escapes)
               ("&'82;", u"\u201A"), # ‚ - Single low-9 quotation mark
@@ -155,7 +154,8 @@ WF_ESCAPE_MAP = (
               ("&'E2;", u"\u201A"), # ‚ - Single low-9 quotation mark
               ("&'E3;", u"\u201E"), # „ - Double low-9 quotation mark
               # Other markers
-              #("&'B;", u"\n"), # Soft-break - XXX creates a problem with roundtripping could also be represented by \u2028
+              #("&'B;", u"\n"), # Soft-break - XXX creates a problem with roundtripping
+                                # could also be represented by \u2028
              )
 """Mapping of Wordfast &'XX; escapes to correct Unicode characters"""
 
@@ -164,8 +164,8 @@ TAB_UTF16 = "\x00\x09"
 
 def _char_to_wf(string):
     """Char -> Wordfast &'XX; escapes
-    
-       Full roundtripping is not possible because of the escaping of NEWLINE \\n 
+
+       Full roundtripping is not possible because of the escaping of NEWLINE \\n
        and TAB \\t"""
     # FIXME there is no platform check to ensure that we use Mac encodings when running on a Mac
     if string:
@@ -189,8 +189,8 @@ class WordfastDialect(csv.Dialect):
     quoting = csv.QUOTE_NONE
     if sys.version_info < (2, 5, 0):
         # We need to define the following items for csv in Python < 2.5
-        quoting = csv.QUOTE_MINIMAL   # Wordfast does not quote anything, since we escape
-                                      # \t anyway in _char_to_wf this should not be a problem
+        quoting = csv.QUOTE_MINIMAL # Wordfast does not quote anything, since we escape
+                                    # \t anyway in _char_to_wf this should not be a problem
         doublequote = False
         skipinitialspace = False
         escapechar = None
@@ -383,9 +383,13 @@ class WordfastTMFile(base.TranslationStore):
             input = input.decode(self._encoding).encode('utf-8')
         except:
             raise ValueError("Wordfast files are either UTF-16 (UCS2) or ISO-8859-1 encoded")
-        for header in csv.DictReader(input.split("\n")[:1], fieldnames=WF_FIELDNAMES_HEADER, dialect="wordfast"):
+        for header in csv.DictReader(input.split("\n")[:1],
+                                    fieldnames=WF_FIELDNAMES_HEADER,
+                                    dialect="wordfast"):
             self.header = WordfastHeader(header)
-        lines = csv.DictReader(input.split("\n")[1:], fieldnames=WF_FIELDNAMES, dialect="wordfast")
+        lines = csv.DictReader(input.split("\n")[1:],
+                                fieldnames=WF_FIELDNAMES,
+                                dialect="wordfast")
         for line in lines:
             newunit = WordfastUnit()
             newunit.dict = line
@@ -404,7 +408,9 @@ class WordfastTMFile(base.TranslationStore):
             return ""
         output.reset()
         self.header.tucount = unit_count
-        outheader = csv.DictWriter(header_output, fieldnames=WF_FIELDNAMES_HEADER, dialect="wordfast")
+        outheader = csv.DictWriter(header_output,
+                                    fieldnames=WF_FIELDNAMES_HEADER,
+                                    dialect="wordfast")
         outheader.writerow(self.header.header)
         header_output.reset()
         decoded = "".join(header_output.readlines() + output.readlines()).decode('utf-8')
@@ -412,5 +418,3 @@ class WordfastTMFile(base.TranslationStore):
             return decoded.encode(self._encoding)
         except UnicodeEncodeError:
             return decoded.encode('utf-16')
-        
-
