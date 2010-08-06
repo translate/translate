@@ -399,10 +399,10 @@ class TranslationUnit(object):
         return False
 
     def getsourcelanguage(self):
-        return getattr(self._store, "sourcelanguage", "en")
+        return self._store.getsourcelanguage()
 
     def gettargetlanguage(self):
-        return getattr(self._store, "targetlanguage", None)
+        return self._store.gettargetlanguage()
 
     def merge(self, otherunit, overwrite=False, comments=True,
               authoritative=False):
