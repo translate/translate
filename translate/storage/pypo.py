@@ -612,21 +612,22 @@ class pounit(pocommon.pounit):
 
     def _getoutput(self):
         """return this po element as a string"""
-        def add_prev_msgid_lines(lines, header, var):
+        def add_prev_msgid_lines(lines, prefix, header, var):
             if len(var) > 0:
-                lines.append("#| %s %s\n" % (header, var[0]))
-                lines.extend("#| %s\n" % line for line in var[1:])
+                lines.append("%s %s %s\n" % (prefix, header, var[0]))
+                lines.extend("%s %s\n" % (prefix, line) for line in var[1:])
 
-        def add_prev_msgid_info(lines):
-            add_prev_msgid_lines(lines, 'msgctxt', self.prev_msgctxt)
-            add_prev_msgid_lines(lines, 'msgid', self.prev_msgid)
-            add_prev_msgid_lines(lines, 'msgid_plural', self.prev_msgid_plural)
+        def add_prev_msgid_info(lines, prefix):
+            add_prev_msgid_lines(lines, prefix, 'msgctxt', self.prev_msgctxt)
+            add_prev_msgid_lines(lines, prefix, 'msgid', self.prev_msgid)
+            add_prev_msgid_lines(lines, prefix, 'msgid_plural', self.prev_msgid_plural)
 
         lines = []
         lines.extend(self.othercomments)
         if self.isobsolete():
             lines.extend(self.typecomments)
             obsoletelines = []
+            add_prev_msgid_info(obsoletelines, prefix="#~|")
             if self.obsoletemsgctxt:
                 obsoletelines.append(self._getmsgpartstr("#~ msgctxt", self.obsoletemsgctxt))
             obsoletelines.append(self._getmsgpartstr("#~ msgid", self.obsoletemsgid, self.obsoletemsgidcomments))
@@ -646,7 +647,7 @@ class pounit(pocommon.pounit):
         lines.extend(self.automaticcomments)
         lines.extend(self.sourcecomments)
         lines.extend(self.typecomments)
-        add_prev_msgid_info(lines)
+        add_prev_msgid_info(lines, prefix="#|")
         if self.msgctxt:
             lines.append(self._getmsgpartstr(u"msgctxt", self.msgctxt))
         lines.append(self._getmsgpartstr(u"msgid", self.msgid, self.msgidcomments))

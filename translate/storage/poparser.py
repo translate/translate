@@ -78,8 +78,11 @@ def read_prevmsgid_lines(parse_state):
     and read until we stop seeing #|."""
     prevmsgid_lines = []
     next_line = parse_state.next_line
-    while startswith(next_line, '#| '):
-        append(prevmsgid_lines, parse_state.read_line()[3:])
+    while startswith(next_line, '#| ') or startswith(next_line, '| '):
+        content = parse_state.read_line()
+        prefix_len = content.index('| ')
+        content = content[prefix_len+2:]
+        append(prevmsgid_lines, content)
         next_line = parse_state.next_line
     return prevmsgid_lines
 
@@ -96,12 +99,12 @@ def parse_prev_msgid_plural(parse_state, unit):
     return len(unit.prev_msgid_plural) > 0
 
 def parse_comment(parse_state, unit):
-    next_line = parse_state.next_line
-    if len(next_line) > 0 and next_line[0] == '#':
+    next_line = parse_state.next_line.lstrip()
+    if len(next_line) > 0 and next_line[0] in ('#', '|'):
         next_char = next_line[1] 
         if next_char == '.':
             append(unit.automaticcomments, parse_state.decode(next_line))
-        elif next_char == '|':
+        elif next_line[0] == '|' or next_char == '|':
             # Read all the lines starting with #|
             prevmsgid_lines = read_prevmsgid_lines(parse_state)
             # Create a parse state object that holds these lines
@@ -138,19 +141,19 @@ def parse_comments(parse_state, unit):
 def read_obsolete_lines(parse_state):
     """Read all the lines belonging to the current unit if obsolete."""
     obsolete_lines = []
-    if startswith(parse_state.next_line, '#~ '):
-        append(obsolete_lines, parse_state.read_line()[3:])
-    else:
-        return obsolete_lines
-    # Be extra careful that we don't start reading into a new unit. We detect
-    # that with #~ msgid followed by a space (to ensure msgid_plural works)
     next_line = parse_state.next_line
-    if startswith(next_line, '#~ msgid ') and obsolete_lines[-1].startswith('msgctxt'):
-        append(obsolete_lines, parse_state.read_line()[3:])
+    while startswith(next_line, '#~'):
+        content = parse_state.read_line()[2:].lstrip()
+        append(obsolete_lines, content)
         next_line = parse_state.next_line
-    while startswith(next_line, '#~ ') and not (startswith(next_line, '#~ msgid ') or startswith(next_line, '#~ msgctxt')):
-        append(obsolete_lines, parse_state.read_line()[3:])
-        next_line = parse_state.next_line
+        if startswith(content, 'msgstr'):
+            # now we saw a msgstr, so we need to become more conservative to
+            # avoid parsing into the following unit
+            while startswith(next_line, '#~ "') or startswith(next_line, '#~ msgstr'):
+                content = parse_state.read_line()[3:]
+                append(obsolete_lines, content)
+                next_line = parse_state.next_line
+            break
     return obsolete_lines
 
 def parse_obsolete(parse_state, unit):

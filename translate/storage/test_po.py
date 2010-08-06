@@ -416,6 +416,39 @@ msgstr "een"
         unit.resurrect()
         assert unit.hasplural()
 
+    def test_obsolete_with_prev_msgid(self):
+        """Tests that obsolete messages work"""
+        # Bug 1429
+        posource = r'''msgid ""
+msgstr ""
+"PO-Revision-Date: 2006-02-09 23:33+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8-bit\n"
+
+msgid "one"
+msgstr "een"
+
+#, fuzzy
+#~| msgid ""
+#~| "You cannot read anything except web pages with\n"
+#~| "this plugin, sorry."
+#~ msgid "You cannot read anything except web pages with this plugin, sorry."
+#~ msgstr ""
+#~ "Mit diesem Modul können leider ausschließlich Webseiten vorgelesen werden."
+'''
+        pofile = self.poparse(posource)
+        assert len(pofile.units) == 3
+        unit = pofile.units[2]
+        print str(unit)
+        assert unit.isobsolete()
+        assert not unit.istranslatable()
+
+        print posource
+        print str(pofile)
+        # Doesn't work with CPO if obsolete units are mixed with non-obsolete units
+        assert str(pofile) == posource
+
 
     def test_header_escapes(self):
         pofile = self.StoreClass()
