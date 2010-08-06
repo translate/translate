@@ -164,10 +164,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
                 if optimize:
                     self.writer.optimize()
             finally:
-                # close the database even if optimizing failed
-                self._writer_close()
-        # the reader/searcher needs an update, too
-        self._index_refresh()
+                self.writer.flush()
 
     def _create_query_for_query(self, query):
         """generate a query based on an existing query object
