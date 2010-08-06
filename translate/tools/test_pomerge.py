@@ -6,6 +6,17 @@ from translate.storage import factory
 from translate.storage import po
 from translate.storage import xliff 
 from translate.misc import wStringIO
+from py import test
+
+def test_str2bool():
+    """test the str2bool function"""
+    assert pomerge.str2bool("yes")
+    assert pomerge.str2bool("true")
+    assert pomerge.str2bool("1")
+    assert not pomerge.str2bool("no")
+    assert not pomerge.str2bool("false")
+    assert not pomerge.str2bool("0")
+    test.raises(ValueError, pomerge.str2bool, "2")
 
 class TestPOMerge:
     xliffskeleton = '''<?xml version="1.0" ?>
