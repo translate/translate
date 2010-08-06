@@ -75,9 +75,11 @@ def calcstats_old(filename):
                                 stats["untranslatedsourcewords"]
     return stats
 
+
 def calcstats(filename):
     statscache = statsdb.StatsCache()
     return statscache.filetotals(filename)
+
 
 def summarize(title, stats, style=style_full, indent=8, incomplete_only=False):
     """
@@ -89,14 +91,15 @@ def summarize(title, stats, style=style_full, indent=8, incomplete_only=False):
     @param incomplete_only: omit fully translated files
     @type incomplete_only: Boolean
     @rtype: Boolean
-    @return: 1 if counting incomplete files (incomplete_only=True) and the 
+    @return: 1 if counting incomplete files (incomplete_only=True) and the
     file is completely translated, 0 otherwise
     """
+
     def percent(denominator, devisor):
         if devisor == 0:
             return 0
         else:
-            return denominator*100/devisor
+            return denominator * 100 / devisor
 
     if incomplete_only and (stats["total"] == stats["translated"]):
         return 1
@@ -111,14 +114,14 @@ def summarize(title, stats, style=style_full, indent=8, incomplete_only=False):
             print ", %d, %d" % (stats["review"], stats["reviewsourdcewords"]),
         print
     elif (style == style_short_strings):
-        spaces = " "*(indent - len(title))
+        spaces = " " * (indent - len(title))
         print "%s%s strings: total: %d\t| %dt\t%df\t%du\t| %d%%t\t%d%%f\t%d%%u" % (title, spaces, \
               stats["total"], stats["translated"], stats["fuzzy"], stats["untranslated"], \
               percent(stats["translated"], stats["total"]), \
               percent(stats["fuzzy"], stats["total"]), \
               percent(stats["untranslated"], stats["total"]))
     elif (style == style_short_words):
-        spaces = " "*(indent - len(title))
+        spaces = " " * (indent - len(title))
         print "%s%s source words: total: %d\t| %dt\t%df\t%du\t| %d%%t\t%d%%f\t%d%%u" % (title, spaces, \
               stats["totalsourcewords"], stats["translatedsourcewords"], stats["fuzzysourcewords"], stats["untranslatedsourcewords"], \
               percent(stats["translatedsourcewords"], stats["totalsourcewords"]), \
@@ -153,16 +156,21 @@ def summarize(title, stats, style=style_full, indent=8, incomplete_only=False):
         print
     return 0
 
+
 def fuzzymessages(units):
     return filter(lambda unit: unit.isfuzzy() and unit.target, units)
+
 
 def translatedmessages(units):
     return filter(lambda unit: unit.istranslated(), units)
 
+
 def untranslatedmessages(units):
     return filter(lambda unit: not (unit.istranslated() or unit.isfuzzy()) and unit.source, units)
 
+
 class summarizer:
+
     def __init__(self, filenames, style=default_style, incomplete_only=False):
         self.totals = {}
         self.filecount = 0
@@ -190,7 +198,8 @@ Review Messages, Review Source Words"
                 self.handlefile(filename)
         if self.filecount > 1 and (self.style == style_full):
             if self.incomplete_only:
-                summarize("TOTAL (incomplete only):", self.totals, incomplete_only=True)
+                summarize("TOTAL (incomplete only):", self.totals,
+                incomplete_only=True)
                 print "File count (incomplete):   %5d" % (self.filecount - self.complete_count)
             else:
                 summarize("TOTAL:", self.totals, incomplete_only=False)
@@ -200,7 +209,7 @@ Review Messages, Review Source Words"
     def updatetotals(self, stats):
         """Update self.totals with the statistics in stats."""
         for key in stats.keys():
-            if not self.totals.has_key(key):
+            if not key in self.totals:
                 self.totals[key] = 0
             self.totals[key] += stats[key]
 
@@ -208,7 +217,9 @@ Review Messages, Review Source Words"
         try:
             stats = calcstats(filename)
             self.updatetotals(stats)
-            self.complete_count += summarize(filename, stats, self.style, self.longestfilename, self.incomplete_only)
+            self.complete_count += summarize(filename, stats, self.style,
+                                             self.longestfilename,
+                                             self.incomplete_only)
             self.filecount += 1
         except: # This happens if we have a broken file.
             print >> sys.stderr, sys.exc_info()[1]
@@ -228,20 +239,27 @@ Review Messages, Review Source Words"
         entries = os.listdir(dirname)
         self.handlefiles(dirname, entries)
 
+
 def main():
     parser = OptionParser(usage="usage: %prog [options] po-files")
-    parser.add_option("--incomplete", action="store_const", const = True, dest = "incomplete_only",
+    parser.add_option("--incomplete", action="store_const", const=True,
+                      dest="incomplete_only",
                       help="skip 100% translated files.")
     # options controlling output format:
-    parser.add_option("--full", action="store_const", const = style_csv, dest = "style_full",
+    parser.add_option("--full", action="store_const", const=style_csv,
+                      dest="style_full",
                       help="(default) statistics in full, verbose format")
-    parser.add_option("--csv", action="store_const", const = style_csv, dest = "style_csv",
+    parser.add_option("--csv", action="store_const", const=style_csv,
+                      dest="style_csv",
                       help="statistics in CSV format")
-    parser.add_option("--short", action="store_const", const = style_csv, dest = "style_short_strings",
+    parser.add_option("--short", action="store_const", const=style_csv,
+                      dest="style_short_strings",
                       help="same as --short-strings")
-    parser.add_option("--short-strings", action="store_const", const = style_csv, dest = "style_short_strings",
+    parser.add_option("--short-strings", action="store_const",
+                      const=style_csv, dest="style_short_strings",
                       help="statistics of strings in short format - one line per file")
-    parser.add_option("--short-words", action="store_const", const = style_csv, dest = "style_short_words",
+    parser.add_option("--short-words", action="store_const",
+                      const=style_csv, dest="style_short_words",
                       help="statistics of words in short format - one line per file")
 
     (options, args) = parser.parse_args()
