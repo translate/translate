@@ -96,24 +96,27 @@ from translate.storage import base
 WF_TIMEFORMAT = "%Y%m%d~%H%M%S"
 """Time format used by Wordfast"""
 
-WF_FIELDNAMES_HEADER = ["date", "userlist", "tucount", "src-lang", "version", "target-lang", "license", "attr1list", "attr2list", "attr3list", "attr4list", "attr5list"]
+WF_FIELDNAMES_HEADER = ["date", "userlist", "tucount", "src-lang", "version",
+                        "target-lang", "license", "attr1list", "attr2list",
+                        "attr3list", "attr4list", "attr5list"]
 """Field names for the Wordfast header"""
 
-WF_FIELDNAMES = ["date", "user", "reuse", "src-lang", "source", "target-lang", "target", "attr1", "attr2", "attr3", "attr4"]
+WF_FIELDNAMES = ["date", "user", "reuse", "src-lang", "source", "target-lang",
+                 "target", "attr1", "attr2", "attr3", "attr4"]
 """Field names for a Wordfast TU"""
 
 WF_FIELDNAMES_HEADER_DEFAULTS = {
-"date": "%19000101~121212", 
-"userlist": "%User ID,TT,TT Translate-Toolkit", 
-"tucount": "%TU=00000001", 
-"src-lang": "%EN-US", 
-"version": "%Wordfast TM v.5.51w9/00", 
-"target-lang": "", 
-"license": "%---00000001", 
-"attr1list": "", 
-"attr2list": "", 
-"attr3list": "", 
-"attr4list": "" }
+"date": "%19000101~121212",
+"userlist": "%User ID,TT,TT Translate-Toolkit",
+"tucount": "%TU=00000001",
+"src-lang": "%EN-US",
+"version": "%Wordfast TM v.5.51w9/00",
+"target-lang": "",
+"license": "%---00000001",
+"attr1list": "",
+"attr2list": "",
+"attr3list": "",
+"attr4list": ""}
 """Default or minimum header entries for a Wordfast file"""
 
 # TODO Needs validation.  The following need to be checked against a WF TM file
@@ -121,7 +124,8 @@ WF_FIELDNAMES_HEADER_DEFAULTS = {
 # For now these look correct and have been taken from Windows CP1252 and
 # Macintosh code points found for the respective character sets on Linux.
 WF_ESCAPE_MAP = (
-              ("&'26;", u"\u0026"), # & - Ampersand (must be first to prevent escaping of escapes)
+              ("&'26;", u"\u0026"), # & - Ampersand (must be first to prevent
+                                    #     escaping of escapes)
               ("&'82;", u"\u201A"), # ‚ - Single low-9 quotation mark
               ("&'85;", u"\u2026"), # … - Elippsis
               ("&'91;", u"\u2018"), # ‘ - left single quotation mark
@@ -154,25 +158,29 @@ WF_ESCAPE_MAP = (
               ("&'E2;", u"\u201A"), # ‚ - Single low-9 quotation mark
               ("&'E3;", u"\u201E"), # „ - Double low-9 quotation mark
               # Other markers
-              #("&'B;", u"\n"), # Soft-break - XXX creates a problem with roundtripping
-                                # could also be represented by \u2028
+              #("&'B;", u"\n"), # Soft-break - XXX creates a problem with
+                                # roundtripping could also be represented
+                                # by \u2028
              )
 """Mapping of Wordfast &'XX; escapes to correct Unicode characters"""
 
 TAB_UTF16 = "\x00\x09"
 """The tab \\t character as it would appear in UTF-16 encoding"""
 
+
 def _char_to_wf(string):
     """Char -> Wordfast &'XX; escapes
 
-       Full roundtripping is not possible because of the escaping of NEWLINE \\n
-       and TAB \\t"""
-    # FIXME there is no platform check to ensure that we use Mac encodings when running on a Mac
+       Full roundtripping is not possible because of the escaping of
+       NEWLINE \\n and TAB \\t"""
+    # FIXME there is no platform check to ensure that we use Mac encodings
+    # when running on a Mac
     if string:
         for code, char in WF_ESCAPE_MAP:
             string = string.replace(char.encode('utf-8'), code)
         string = string.replace("\n", "\\n").replace("\t", "\\t")
     return string
+
 
 def _wf_to_char(string):
     """Wordfast &'XX; escapes -> Char"""
@@ -182,6 +190,7 @@ def _wf_to_char(string):
         string = string.replace("\\n", "\n").replace("\\t", "\t")
     return string
 
+
 class WordfastDialect(csv.Dialect):
     """Describe the properties of a Wordfast generated TAB-delimited file."""
     delimiter = "\t"
@@ -189,16 +198,19 @@ class WordfastDialect(csv.Dialect):
     quoting = csv.QUOTE_NONE
     if sys.version_info < (2, 5, 0):
         # We need to define the following items for csv in Python < 2.5
-        quoting = csv.QUOTE_MINIMAL # Wordfast does not quote anything, since we escape
-                                    # \t anyway in _char_to_wf this should not be a problem
+        quoting = csv.QUOTE_MINIMAL # Wordfast does not quote anything, since
+                                    # we escape \t anyway in _char_to_wf this
+                                    # should not be a problem
         doublequote = False
         skipinitialspace = False
         escapechar = None
         quotechar = '"'
 csv.register_dialect("wordfast", WordfastDialect)
 
+
 class WordfastTime(object):
     """Manages time stamps in the Wordfast format of YYYYMMDD~hhmmss"""
+
     def __init__(self, newtime=None):
         self._time = None
         if not newtime:
@@ -230,7 +242,7 @@ class WordfastTime(object):
 
     def set_time(self, newtime):
         """Set the time_struct object
-        
+
         @param newtime: a new time object
         @type newtime: time.time_struct
         """
@@ -246,8 +258,10 @@ class WordfastTime(object):
         else:
             return self.timestring
 
+
 class WordfastHeader(object):
     """A wordfast translation memory header"""
+
     def __init__(self, header=None):
         self._header_dict = []
         if not header:
@@ -256,7 +270,8 @@ class WordfastHeader(object):
             self.header = header
 
     def _create_default_header(self):
-        """Create a default Wordfast header with the date set to the current time"""
+        """Create a default Wordfast header with the date set to the current
+        time"""
         defaultheader = WF_FIELDNAMES_HEADER_DEFAULTS
         defaultheader['date'] = '%%%s' % WordfastTime(time.localtime()).timestring
         return defaultheader
@@ -277,8 +292,10 @@ class WordfastHeader(object):
         self._header_dict['tucount'] = '%%TU=%08d' % count
     tucount = property(None, settucount)
 
+
 class WordfastUnit(base.TranslationUnit):
     """A Wordfast translation memory unit"""
+
     def __init__(self, source=None):
         self._dict = {}
         if source:
@@ -353,8 +370,9 @@ class WordfastUnit(base.TranslationUnit):
 class WordfastTMFile(base.TranslationStore):
     """A Wordfast translation memory file"""
     Name = _("Wordfast Translation Memory")
-    Mimetypes  = ["application/x-wordfast"]
+    Mimetypes = ["application/x-wordfast"]
     Extensions = ["txt"]
+
     def __init__(self, inputfile=None, unitclass=WordfastUnit):
         """construct a Wordfast TM, optionally reading in from inputfile."""
         self.UnitClass = unitclass
@@ -398,7 +416,8 @@ class WordfastTMFile(base.TranslationStore):
     def __str__(self):
         output = csv.StringIO()
         header_output = csv.StringIO()
-        writer = csv.DictWriter(output, fieldnames=WF_FIELDNAMES, dialect="wordfast")
+        writer = csv.DictWriter(output, fieldnames=WF_FIELDNAMES,
+                                dialect="wordfast")
         unit_count = 0
         for unit in self.units:
             if unit.istranslated():
