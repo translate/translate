@@ -569,6 +569,14 @@ class pofile(pocommon.pofile):
             gpo.po_message_insert(self._gpo_message_iterator, unit._gpo_message)
         super(pofile, self).addunit(unit)
 
+    def _insert_header(self, header):
+        header._store = self
+        self.units.insert(0, header)
+        new_gpo_message_iterator = gpo.po_message_iterator(self._gpo_memory_file, None)
+        gpo.po_message_insert(new_gpo_message_iterator, header._gpo_message)
+        gpo.po_message_iterator_free(new_gpo_message_iterator)
+        new_gpo_message_iterator = None
+
     def removeduplicates(self, duplicatestyle="merge"):
         """make sure each msgid is unique ; merge comments etc from duplicates into original"""
         # TODO: can we handle consecutive calls to removeduplicates()? What
