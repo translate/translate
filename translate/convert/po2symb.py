@@ -20,7 +20,6 @@
 
 """convert Gettext PO localization files to Symbian translation files."""
 
-import sys
 from translate.storage import factory
 from translate.storage.pypo import po_escape_map
 from translate.storage.symbian import *
