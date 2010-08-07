@@ -186,7 +186,7 @@ msgstr "blabla"
         # The strings below contains the tab character, not spaces.
         templatepo = '''msgid "First	Second"\nmsgstr ""\n\n'''
         mergepo = '''msgid "First	Second"\nmsgstr "Eerste	Tweede"\n'''
-        expectedpo = r'''imsgid "First\tSecond"
+        expectedpo = r'''msgid "First\tSecond"
 msgstr "Eerste\tTweede"
 '''
         pofile = self.mergestore(templatepo, mergepo)
