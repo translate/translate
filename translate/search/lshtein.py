@@ -66,7 +66,7 @@ def native_distance(a, b, stopvalue=0):
 try:
     import Levenshtein as Levenshtein
     distance = native_distance
-except Exception:
+except ImportError:
     import logging
     logging.warning("Python-Levenshtein not found. Continuing with built-in (slower) fuzzy matching.")
     distance = python_distance
