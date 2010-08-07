@@ -33,7 +33,8 @@ class TestPOMerge:
         templatefile = wStringIO.StringIO(templatesource)
         inputfile = wStringIO.StringIO(inputsource)
         outputfile = wStringIO.StringIO()
-        assert pomerge.mergestore(inputfile, outputfile, templatefile)
+        assert pomerge.mergestore(inputfile, outputfile, templatefile,
+                                  mergeblanks="no", mergecomments="yes")
         outputpostring = outputfile.getvalue()
         outputpofile = po.pofile(outputpostring)
         return outputpofile
@@ -43,7 +44,8 @@ class TestPOMerge:
         templatefile = wStringIO.StringIO(templatesource)
         inputfile = wStringIO.StringIO(inputsource)
         outputfile = wStringIO.StringIO()
-        assert pomerge.mergestore(inputfile, outputfile, templatefile)
+        assert pomerge.mergestore(inputfile, outputfile, templatefile,
+                                  mergeblanks="no", mergecomments="yes")
         outputxliffstring = outputfile.getvalue()
         print "Generated XML:"
         print outputxliffstring
@@ -100,7 +102,7 @@ msgstr "Dimpled Ring"'''
         print pofile
         assert str(pofile) == expectedpo
 
-    def test_unit_missing_in_template(self):
+    def test_unit_missing_in_template_with_locations(self):
         """If the unit is missing in the template we should raise an error"""
         templatepo = '''#: location.c:1
 msgid "Simple String"
@@ -109,10 +111,27 @@ msgstr ""'''
 msgid "Simple String"
 msgstr "Dimpled Ring"
 
+#: location.c:1
 msgid "Extra string"
 msgstr "Perplexa ring"'''
         expectedpo = '''#: location.c:1
 msgid "Simple String"
+msgstr "Dimpled Ring"
+'''
+        pofile = self.mergestore(templatepo, inputpo)
+        print pofile
+        assert str(pofile) == expectedpo
+
+    def test_unit_missing_in_template_no_locations(self):
+        """If the unit is missing in the template we should raise an error"""
+        templatepo = '''msgid "Simple String"
+msgstr ""'''
+        inputpo = '''msgid "Simple String"
+msgstr "Dimpled Ring"
+
+msgid "Extra string"
+msgstr "Perplexa ring"'''
+        expectedpo = '''msgid "Simple String"
 msgstr "Dimpled Ring"
 '''
         pofile = self.mergestore(templatepo, inputpo)
