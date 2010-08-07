@@ -71,6 +71,17 @@ class TestPOMerge:
         assert pounit.source == "Simple String"
         assert pounit.target == "Dimpled Ring"
 
+    def test_simplemerge_no_locations(self):
+        """checks that a simple po entry merges OK"""
+        templatepo = '''msgid "Simple String"
+msgstr ""'''
+        inputpo = '''msgid "Simple String"
+msgstr "Dimpled Ring"'''
+        pofile = self.mergestore(templatepo, inputpo)
+        pounit = self.singleunit(pofile)
+        assert pounit.source == "Simple String"
+        assert pounit.target == "Dimpled Ring"
+
     def test_replacemerge(self):
         """checks that a simple po entry merges OK"""
         templatepo = '''#: simple.test\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n'''
