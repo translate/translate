@@ -28,24 +28,28 @@ class TestPOMerge:
   </file>
 </xliff>'''
 
-    def mergestore(self, templatesource, inputsource):
+    def mergestore(self, templatesource, inputsource, mergeblanks="yes",
+                   mergecomments="yes"):
         """merges the sources of the given files and returns a new pofile object"""
         templatefile = wStringIO.StringIO(templatesource)
         inputfile = wStringIO.StringIO(inputsource)
         outputfile = wStringIO.StringIO()
         assert pomerge.mergestore(inputfile, outputfile, templatefile,
-                                  mergeblanks="no", mergecomments="yes")
+                                  mergeblanks=mergeblanks,
+                                  mergecomments=mergecomments)
         outputpostring = outputfile.getvalue()
         outputpofile = po.pofile(outputpostring)
         return outputpofile
 
-    def mergexliff(self, templatesource, inputsource):
+    def mergexliff(self, templatesource, inputsource, mergeblanks="yes",
+                   mergecomments="yes"):
         """merges the sources of the given files and returns a new xlifffile object"""
         templatefile = wStringIO.StringIO(templatesource)
         inputfile = wStringIO.StringIO(inputsource)
         outputfile = wStringIO.StringIO()
         assert pomerge.mergestore(inputfile, outputfile, templatefile,
-                                  mergeblanks="no", mergecomments="yes")
+                                  mergeblanks=mergeblanks,
+                                  mergecomments=mergecomments)
         outputxliffstring = outputfile.getvalue()
         print "Generated XML:"
         print outputxliffstring
@@ -92,6 +96,19 @@ msgstr "Dimpled Ring"'''
         pounit = self.singleunit(pofile)
         assert pounit.source == "Simple String"
         assert pounit.target == "Dimpled King"
+
+    def test_merging_blanks(self):
+        """By default we will merge blanks, but we can also override that"""
+        templatepo = '''#: simple.test\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n'''
+        inputpo = '''#: simple.test\nmsgid "Simple String"\nmsgstr ""\n'''
+        pofile = self.mergestore(templatepo, inputpo)
+        pounit = self.singleunit(pofile)
+        assert pounit.source == "Simple String"
+        assert pounit.target == ""
+        pofile = self.mergestore(templatepo, inputpo, mergeblanks="no")
+        pounit = self.singleunit(pofile)
+        assert pounit.source == "Simple String"
+        assert pounit.target == "Dimpled Ring"
 
     def test_merging_locations(self):
         """check that locations on separate lines are output in Gettext form of all on one line"""
