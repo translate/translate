@@ -28,7 +28,7 @@ See: http://translate.sourceforge.net/wiki/toolkit/pomerge for examples and
 usage instructions
 """
 
-import sys
+import logging
 from translate.storage import factory
 from translate.storage.poheader import poheader
 
@@ -40,42 +40,18 @@ def mergestores(store1, store2, mergeblanks, mergecomments):
         if unit2.isheader():
             if isinstance(store1, poheader):
                 store1.mergeheaders(store2)
-            # Skip header units
             continue
-        # there may be more than one entity due to msguniq merge
-        entities = unit2.getlocations()
-        if len(entities) == 0:
-            source = unit2.source
-            unit1 = store1.findunit(source)
-            if unit1 is None:
-                sys.stderr.write(str(unit2) + "\n")
-            else:
-                # finally set the new definition in unit1
-                unit1.merge(unit2, overwrite=True)
-        for entity in entities:
-            unit1 = None
-            if entity in store1.locationindex:
-                # now we need to replace the definition of entity with msgstr
-                unit1 = store1.locationindex[entity] # find the other po
-            # check if this is a duplicate in store2...
-            if entity in store2.locationindex:
-                if store2.locationindex[entity] is None:
-                    unit1 = None
-            # if locationindex was not unique, use the source index
-            if unit1 is None:
-                source = unit2.source
-                unit1 = store1.findunit(source)
-            # check if we found a matching po element
-            if unit1 is None:
-                print >> sys.stderr, "# the following po element was not found"
-                sys.stderr.write(str(unit2) + "\n")
-            else:
-                if not mergeblanks:
-                    target = unit2.target
-                    if len(target.strip()) == 0:
-                        continue
-                # finally set the new definition in unit1
-                unit1.merge(unit2, overwrite=True, comments=mergecomments)
+        unit1 = store1.findid(unit2.getid())
+        if unit1 is None:
+            unit1 = store1.findunit(unit2.source)
+        if unit1 is None:
+            logging.error("The template does not contain the following unit:\n%s",
+                          str(unit2)) 
+        else:
+            if not mergeblanks:
+                if len(unit2.target.strip()) == 0:
+                    continue
+            unit1.merge(unit2, overwrite=True, comments=mergecomments)
     return store1
 
 
@@ -112,8 +88,6 @@ def mergestore(inputfile, outputfile, templatefile, mergeblanks="no",
         templatestore = type(inputstore)()
     else:
         templatestore = factory.getobject(templatefile)
-    templatestore.makeindex()
-    inputstore.makeindex()
     outputstore = mergestores(templatestore, inputstore, mergeblanks,
                               mergecomments)
     if outputstore.isempty():
