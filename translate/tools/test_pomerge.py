@@ -68,6 +68,17 @@ class TestPOMerge:
         assert self.countunits(pofile) == 1
         return pofile.units[-1]
 
+    def test_mergesore_bad_data(self):
+        """Test that we catch bad options sent to mergestore"""
+        templatefile = wStringIO.StringIO("")
+        inputfile = wStringIO.StringIO("")
+        outputfile = wStringIO.StringIO()
+        test.raises(ValueError, pomerge.mergestore, inputfile, outputfile, templatefile,
+                    mergeblanks="yay")
+        test.raises(ValueError, pomerge.mergestore, inputfile, outputfile, templatefile,
+                    mergecomments="yay")
+        
+
     def test_simplemerge(self):
         """checks that a simple po entry merges OK"""
         templatepo = '''#: simple.test\nmsgid "Simple String"\nmsgstr ""\n'''
