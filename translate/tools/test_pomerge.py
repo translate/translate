@@ -78,7 +78,6 @@ class TestPOMerge:
         test.raises(ValueError, pomerge.mergestore, inputfile, outputfile, templatefile,
                     mergecomments="yay")
         
-
     def test_simplemerge(self):
         """checks that a simple po entry merges OK"""
         templatepo = '''#: simple.test\nmsgid "Simple String"\nmsgstr ""\n'''
@@ -450,6 +449,36 @@ msgstr ""
 msgid "Simple String"
 msgstr "Dimpled Ring"
 '''
+        pofile = self.mergestore(templatepo, mergepo)
+        print "Expected:\n%s\n---\nMerged:\n%s\n---" % (expectedpo, str(pofile))
+        assert str(pofile) == expectedpo
+
+    def test_merging_different_locations(self):
+        """Test when merging units that are unchanged except for changed
+        locations that we don't go fuzzy (bug 1583)"""
+        
+        templatepo = r'''#: sentinelheadline
+msgctxt "sentinelheadline"
+msgid "DESTROY SENTINELS"
+msgstr "ZERSTÖRE WACHPOSTEN"
+
+#: sentinelheadline1
+msgctxt "sentinelheadline1"
+msgid "DESTROY SENTINELS"
+msgstr "ZERSTÖRE WACHPOSTEN"
+'''
+        mergepo = r'''#: sentinelheadline
+#: sentinelheadline1
+msgctxt "sentinelheadline"
+msgid "DESTROY SENTINELS"
+msgstr "ZERSTÖRE WACHPOSTEN"
+
+#: sentinelheadline1
+msgctxt "sentinelheadline1"
+msgid "DESTROY SENTINELS"
+msgstr "ZERSTÖRE WACHPOSTEN"
+'''
+        expectedpo = mergepo
         pofile = self.mergestore(templatepo, mergepo)
         print "Expected:\n%s\n---\nMerged:\n%s\n---" % (expectedpo, str(pofile))
         assert str(pofile) == expectedpo
