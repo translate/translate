@@ -89,6 +89,25 @@ class TestPOMerge:
         print pofile
         assert str(pofile) == expectedpo
 
+    def test_unit_missing_in_template(self):
+        """If the unit is missing in the template we should raise an error"""
+        templatepo = '''#: location.c:1
+msgid "Simple String"
+msgstr ""'''
+        inputpo = '''#: location.c:1
+msgid "Simple String"
+msgstr "Dimpled Ring"
+
+msgid "Extra string"
+msgstr "Perplexa ring"'''
+        expectedpo = '''#: location.c:1
+msgid "Simple String"
+msgstr "Dimpled Ring"
+'''
+        pofile = self.mergestore(templatepo, inputpo)
+        print pofile
+        assert str(pofile) == expectedpo
+
     def test_reflowed_source_comments(self):
         """ensure that we don't duplicate source comments (locations) if they have been reflowed"""
         templatepo = '''#: newMenu.label\n#: newMenu.accesskey\nmsgid "&New"\nmsgstr ""\n'''
