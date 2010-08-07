@@ -26,7 +26,6 @@ The official recommendation is to use the extention .xlf for XLIFF files.
 from lxml import etree
 
 from translate.misc.multistring import multistring
-from translate.misc.xml_helpers import *
 from translate.storage import base, lisa
 from translate.storage.lisa import getXMLspace
 from translate.storage.placeables.lisa import xml_to_strelem, strelem_to_xml
