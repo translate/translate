@@ -165,12 +165,15 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         @param optimize: should the index be optimized if possible?
         @type optimize: bool
         """
-        if self._writer_is_open():
-            try:
-                if optimize:
-                    self.writer.optimize()
-            finally:
-                self.writer.flush()
+        keep_open = self._writer_is_open()
+        self._writer_open()
+        try:
+            if optimize:
+                self.writer.optimize()
+        finally:
+            self.writer.flush()
+        if not keep_open:
+            self._writer_close()
 
     def _create_query_for_query(self, query):
         """generate a query based on an existing query object
