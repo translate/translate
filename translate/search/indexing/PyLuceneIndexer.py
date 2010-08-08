@@ -149,6 +149,12 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
     def __del__(self):
         """remove lock and close writer after loosing the last reference"""
         self._writer_close()
+        if self.reader is not None:
+            self.reader.close()
+            self.reader = None
+        if self.searcher is not None:
+            self.searcher.close()
+            self.searcher = None
 
     def flush(self, optimize=False):
         """flush the content of the database - to force changes to be written
