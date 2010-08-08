@@ -59,6 +59,9 @@ class TestPODebug:
         assert unicode(self.debug.rewrite_flipped(u"Test")) == u"\u202e⊥ǝsʇ"
         #alternative with reversed string and no RTL override:
         #assert unicode(self.debug.rewrite_flipped("Test")) == u"ʇsǝ⊥"
+        # Chars < ! and > z are returned as is
+        assert unicode(self.debug.rewrite_flipped(u" ")) == u"\u202e "
+        assert unicode(self.debug.rewrite_flipped(u"©")) == u"\u202e©"
 
     def test_rewrite_chef(self):
         """Test the chef rewrite function
