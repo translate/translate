@@ -253,12 +253,11 @@ class mofile(poheader.poheader, base.TranslationStore):
             endian = ">"
         else:
             raise ValueError("This is not an MO file")
-        magic, version, lenkeys, startkey, \
-        startvalue, sizehash, offsethash = struct.unpack("%sLiiiiii" % endian,
+        magic, version_maj, version_min, lenkeys, startkey, \
+        startvalue, sizehash, offsethash = struct.unpack("%sLHHiiiii" % endian,
                                                          input[:(7 * 4)])
-        if version > 1:
-            raise ValueError("Unable to process MO files with versions > 1.  \
-                             This is a %d version MO file" % version)
+        if version_maj >= 1:
+            raise ValueError("""Unable to process version %d.%d MO files""" % (version_maj, version_min))
         for i in range(lenkeys):
             nextkey = startkey + (i * 2 * 4)
             nextvalue = startvalue + (i * 2 * 4)
