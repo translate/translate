@@ -88,13 +88,16 @@ def phpdecode(text, quotechar="'"):
     if quotechar == '"':
         # We do not escape \$ as it is used by variables and we can't
         # roundtrip that item.
-        text = text.replace('\\"', '"').replace("\\\\", "\\")
-        text = text.replace("\\n", "\n").replace("\\r", "\r").replace("\\t", "\t").replace("\\v", "\v").replace("\\f", "\f")
+        escapes = [('\\"', '"'), ("\\\\", "\\"), ("\\n", "\n"), ("\\r", "\r"),
+                   ("\\t", "\t"), ("\\v", "\v"), ("\\f", "\f"),
+                  ]
+        for a, b in escapes:
+            text = text.replace(a, b)
         text = re.sub(r"(?P<octal>\\[0-7]{1,3})", decode_octal_hex, text)
         text = re.sub(r"(?P<hex>\\x[0-9A-Fa-f]{1,2})", decode_octal_hex, text)
+        return text
     else:
-        text = text.replace("\\'", "'").replace("\\\\", "\\")
-    return text
+        return text.replace("\\'", "'").replace("\\\\", "\\")
 
 
 class phpunit(base.TranslationUnit):
