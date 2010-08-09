@@ -33,43 +33,52 @@
       $lang = array(array('key' => 'value'));
 
    The working of PHP strings and specifically the escaping conventions which
-   differ between single quote (') and double quote (") characters are implemented as outlined
-   in the PHP documentation for the U{String type<http://www.php.net/language.types.string>}
+   differ between single quote (') and double quote (") characters are
+   implemented as outlined in the PHP documentation for the
+   U{String type<http://www.php.net/language.types.string>}
 """
 
 from translate.storage import base
 import re
 
+
 def phpencode(text, quotechar="'"):
     """convert Python string to PHP escaping
 
-    The encoding is implemented for 
+    The encoding is implemented for
     U{'single quote'<http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.single>}
     and U{"double quote"<http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.double>}
     syntax.
 
-    heredoc and nowdoc are not implemented and it is not certain whether this would 
-    ever be needed for PHP localisation needs.
+    heredoc and nowdoc are not implemented and it is not certain whether this
+    would ever be needed for PHP localisation needs.
     """
     if not text:
         return text
     if quotechar == '"':
-        # \n may be converted to \\n but we don't.  This allows us to preserve pretty layout that might have appeared in muliline entries
-        # we might lose some "blah\nblah" layouts but that's probably not the most frequent use case. See bug 588
-        escapes = (("\\", "\\\\"), ("\r", "\\r"), ("\t", "\\t"), ("\v", "\\v"), ("\f", "\\f"), ("\\\\$", "\\$"), ('"', '\\"'), ("\\\\", "\\"))
+        # \n may be converted to \\n but we don't.  This allows us to preserve
+        # pretty layout that might have appeared in muliline entries we might
+        # lose some "blah\nblah" layouts but that's probably not the most
+        # frequent use case. See bug 588
+        escapes = [("\\", "\\\\"), ("\r", "\\r"), ("\t", "\\t"),
+                   ("\v", "\\v"), ("\f", "\\f"), ("\\\\$", "\\$"),
+                   ('"', '\\"'), ("\\\\", "\\"),
+                  ]
         for a, b in escapes:
             text = text.replace(a, b)
         return text
     else:
         return text.replace("%s" % quotechar, "\\%s" % quotechar)
 
+
 def phpdecode(text, quotechar="'"):
     """convert PHP escaped string to a Python string"""
+
     def decode_octal_hex(match):
         """decode Octal \NNN and Hex values"""
-        if match.groupdict().has_key("octal"):
+        if "octal" in match.groupdict():
             return match.groupdict()['octal'].decode("string_escape")
-        elif match.groupdict().has_key("hex"):
+        elif "hex" in match.groupdict():
             return match.groupdict()['hex'].decode("string_escape")
         else:
             return match.group
@@ -77,7 +86,8 @@ def phpdecode(text, quotechar="'"):
     if not text:
         return text
     if quotechar == '"':
-        # We do not escape \$ as it is used by variables and we can't roundtrip that item.
+        # We do not escape \$ as it is used by variables and we can't
+        # roundtrip that item.
         text = text.replace('\\"', '"').replace("\\\\", "\\")
         text = text.replace("\\n", "\n").replace("\\r", "\r").replace("\\t", "\t").replace("\\v", "\v").replace("\\f", "\f")
         text = re.sub(r"(?P<octal>\\[0-7]{1,3})", decode_octal_hex, text)
@@ -86,9 +96,11 @@ def phpdecode(text, quotechar="'"):
         text = text.replace("\\'", "'").replace("\\\\", "\\")
     return text
 
+
 class phpunit(base.TranslationUnit):
     """a unit of a PHP file i.e. a name and value, and any comments
     associated"""
+
     def __init__(self, source=""):
         """construct a blank phpunit"""
         self.escape_type = None
@@ -117,7 +129,8 @@ class phpunit(base.TranslationUnit):
     target = property(gettarget, settarget)
 
     def __str__(self):
-        """convert to a string. double check that unicode is handled somehow here"""
+        """convert to a string. double check that unicode is handled somehow
+        here"""
         source = self.getoutput()
         if isinstance(source, unicode):
             return source.encode(getattr(self, "encoding", "UTF-8"))
@@ -140,7 +153,8 @@ class phpunit(base.TranslationUnit):
             else:
                 self._comments = [text]
         else:
-            return super(phpunit, self).addnote(text, origin=origin, position=position)
+            return super(phpunit, self).addnote(text, origin=origin,
+                                                position=position)
 
     def getnotes(self, origin=None):
         if origin in ['programmer', 'developer', 'source code', None]:
@@ -152,18 +166,21 @@ class phpunit(base.TranslationUnit):
         self._comments = []
 
     def isblank(self):
-        """Returns whether this is a blank element, containing only comments."""
+        """Returns whether this is a blank element, containing only comments.
+        """
         return not (self.name or self.value)
 
     def getid(self):
         return self.name
 
+
 class phpfile(base.TranslationStore):
     """This class represents a PHP file, made up of phpunits"""
     UnitClass = phpunit
+
     def __init__(self, inputfile=None, encoding='utf-8'):
         """construct a phpfile, optionally reading in from inputfile"""
-        super(phpfile, self).__init__(unitclass = self.UnitClass)
+        super(phpfile, self).__init__(unitclass=self.UnitClass)
         self.filename = getattr(inputfile, 'name', '')
         self._encoding = encoding
         if inputfile is not None:
@@ -189,10 +206,12 @@ class phpfile(base.TranslationStore):
             if commentstartpos != -1:
                 incomment = True
                 if commentendpos != -1:
-                    newunit.addnote(line[commentstartpos:commentendpos].strip(), "developer")
+                    newunit.addnote(line[commentstartpos:commentendpos].strip(),
+                                    "developer")
                     incomment = False
                 else:
-                    newunit.addnote(line[commentstartpos:].strip(), "developer")
+                    newunit.addnote(line[commentstartpos:].strip(),
+                                    "developer")
             if commentendpos != -1 and incomment:
                 newunit.addnote(line[:commentendpos+2].strip(), "developer")
                 incomment = False
@@ -228,14 +247,15 @@ class phpfile(base.TranslationStore):
             colonpos = value.rfind(enddel)
             while colonpos != -1:
                 if value[colonpos-1] == valuequote:
-                    newunit.value = lastvalue + value[:colonpos-1] 
+                    newunit.value = lastvalue + value[:colonpos-1]
                     newunit.escape_type = valuequote
                     lastvalue = ""
                     invalue = False
                 if not invalue and colonpos != len(value)-1:
                     commentinlinepos = value.find("//", colonpos)
                     if commentinlinepos != -1:
-                        newunit.addnote(value[commentinlinepos+2:].strip(), "developer")
+                        newunit.addnote(value[commentinlinepos+2:].strip(),
+                                        "developer")
                 if not invalue:
                     self.addunit(newunit)
                     value = ""
@@ -250,4 +270,3 @@ class phpfile(base.TranslationStore):
         for unit in self.units:
             lines.append(str(unit))
         return "".join(lines)
-
