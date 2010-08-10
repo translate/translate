@@ -408,7 +408,8 @@ def _get_number_of_docs(database):
         return database.reader.get_doccount()
     else:
         # pylucene
-        database.flush()
+        database._writer_close()
+        database._index_refresh()
         return database.reader.numDocs()
 
 def get_engine_name(database):
