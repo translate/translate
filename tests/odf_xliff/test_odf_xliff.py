@@ -34,7 +34,13 @@ def setup_module(module):
     os.chdir(path.dirname(__file__))
 
 def args(src, tgt, **kwargs):
-    arg_list = [u'--errorlevel=traceback', src, tgt]
+    arg_list = []
+    try:
+        import psyco
+        arg_list.append(u'--psyco=none')
+    except ImportError, e:
+        pass
+    arg_list.extend([u'--errorlevel=traceback', src, tgt])
     for flag, value in kwargs.iteritems():
         value = unicode(value)
         if len(flag) == 1:
