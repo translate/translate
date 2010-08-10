@@ -352,6 +352,8 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
 
         See 'start_transaction' for details.
         """
+        if self._writer_is_open():
+            self.writer.abort()
         self._writer_close()
 
     def commit_transaction(self):
