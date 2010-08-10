@@ -114,6 +114,14 @@ class pounit(base.TranslationUnit):
         else:
             self.set_state_n(self.STATE[self.S_UNTRANSLATED][0])
 
+    def makeobsolete(self):
+        self.set_state_n(self.STATE[self.S_OBSOLETE][0])
+
+    def resurrect(self):
+        self.set_state_n(self.STATE[self.S_TRANSLATED][0])
+        if not self.gettarget():
+            self.set_state_n(self.STATE[self.S_UNTRANSLATED][0])
+
     def _domarkfuzzy(self, present=True):
         raise NotImplementedError()
 
