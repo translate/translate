@@ -445,17 +445,14 @@ class pounit(pocommon.pounit):
                 return True
         return False
 
-    def isfuzzy(self):
-        state_is_fuzzy = self.STATE[self.S_FUZZY][0] <= self.get_state_n() < self.state[self.S_FUZZY][1]
-        if gpo.po_message_is_fuzzy(self._gpo_message) != state_is_fuzzy:
-            raise ValueError('Inconsistent fuzzy state')
-        return super(pounit, self).isfuzzy()
+    #def isfuzzy(self):
+    #    state_is_fuzzy = self.STATE[self.S_FUZZY][0] <= self.get_state_n() < self.STATE[self.S_FUZZY][1]
+    #    if gpo.po_message_is_fuzzy(self._gpo_message) != state_is_fuzzy:
+    #        raise ValueError('Inconsistent fuzzy state')
+    #    return super(pounit, self).isfuzzy()
 
     def _domarkfuzzy(self, present=True):
         gpo.po_message_set_fuzzy(self._gpo_message, present)
-
-    def isobsolete(self):
-        return gpo.po_message_is_obsolete(self._gpo_message)
 
     def makeobsolete(self):
         # FIXME: libgettexpo currently does not reset other data, we probably want to do that
