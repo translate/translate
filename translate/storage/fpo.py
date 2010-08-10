@@ -386,9 +386,9 @@ class pounit(pocommon.pounit):
             notes = unit.getnotes("translator")
             if notes:
                 newunit.addnote(notes, "translator")
+            newunit.markfuzzy(unit.isfuzzy())
             if unit.isobsolete():
                 newunit.makeobsolete()
-            newunit.markfuzzy(unit.isfuzzy())
             for tc in ['python-format', 'c-format', 'php-format']:
                 if unit.hastypecomment(tc):
                     newunit.settypecomment(tc)
