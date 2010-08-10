@@ -191,6 +191,18 @@ class pounit(pocommon.pounit):
             self._gpo_message = gpo_message
         self._state_n = 0
 
+    def infer_state(self):
+        #FIXME: do obsolete
+        if gpo.po_message_is_obsolete(self._gpo_message):
+            self.set_state_n(self.STATE[self.S_OBSOLETE][0])
+        elif gpo.po_message_is_fuzzy(self._gpo_message):
+            self.set_state_n(self.STATE[self.S_FUZZY][0])
+        elif self.gettarget():
+            self.set_state_n(self.STATE[self.S_TRANSLATED][0])
+        else:
+            self.set_state_n(self.STATE[self.S_UNTRANSLATED][0])
+
+
     def setmsgid_plural(self, msgid_plural):
         if isinstance(msgid_plural, list):
             msgid_plural = "".join(msgid_plural)
