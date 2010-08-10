@@ -189,7 +189,7 @@ class pounit(pocommon.pounit):
             self.target = ""
         elif gpo_message:
             self._gpo_message = gpo_message
-        self._state_n = 0
+        self.infer_state()
 
     def infer_state(self):
         #FIXME: do obsolete
@@ -461,9 +461,11 @@ class pounit(pocommon.pounit):
         # FIXME: libgettexpo currently does not reset other data, we probably want to do that
         # but a better solution would be for libgettextpo to output correct data on serialisation
         gpo.po_message_set_obsolete(self._gpo_message, True)
+        self.infer_state()
 
     def resurrect(self):
         gpo.po_message_set_obsolete(self._gpo_message, False)
+        self.infer_state()
 
     def hasplural(self):
         return gpo.po_message_msgid_plural(self._gpo_message) is not None
