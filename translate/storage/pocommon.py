@@ -100,6 +100,9 @@ class pounit(base.TranslationUnit):
     def isreview(self):
         return self.hasmarkedcomment("review") or self.hasmarkedcomment("pofilter")
 
+    def isobsolete(self):
+        return self.STATE[self.S_OBSOLETE][0] <= self.get_state_n() < self.STATE[self.S_OBSOLETE][1]
+
     def isfuzzy(self):
         return self.STATE[self.S_FUZZY][0] <= self.get_state_n() < self.STATE[self.S_FUZZY][1]
 
