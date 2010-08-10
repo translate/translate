@@ -297,7 +297,7 @@ class pounit(pocommon.pounit):
         return super(pounit, self).isfuzzy()
 
     def _domarkfuzzy(self, present=True):
-        self.settypecomment("fuzzy", present)
+        pass
 
     def isobsolete(self):
         return self.obsolete
