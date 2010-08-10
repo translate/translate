@@ -31,7 +31,7 @@ package for the public API of the library.
 """
 
 from translate.misc.multistring import multistring
-from translate.storage import pocommon
+from translate.storage import base, pocommon
 from translate.storage import pypo
 from translate.storage.pocommon import encodingToUse
 from translate.lang import data
