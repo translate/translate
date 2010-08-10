@@ -65,7 +65,6 @@ class pounit(pocommon.pounit):
     def __init__(self, source=None, encoding="UTF-8"):
         pocommon.pounit.__init__(self, source)
         self._encoding = encodingToUse(encoding)
-        self.obsolete = False
         self._initallcomments(blankall=True)
         self._msgctxt = u""
 
@@ -291,26 +290,14 @@ class pounit(pocommon.pounit):
     def istranslatable(self):
         return not (self.isheader() or self.isblank() or self.isobsolete())
 
-    def isfuzzy(self):
-        if self.hastypecomment('fuzzy') != self.STATE[self.S_FUZZY][0] <= self.get_state_n() < self.state[self.S_FUZZY][1]:
-            raise ValueError('Inconsistent fuzzy state')
-        return super(pounit, self).isfuzzy()
-
     def _domarkfuzzy(self, present=True):
         pass
 
-    def isobsolete(self):
-        return self.obsolete
-
     def makeobsolete(self):
         """Makes this unit obsolete"""
-        self.obsolete = True
         self.sourcecomments = []
         self.automaticcomments = []
-
-    def resurrect(self):
-        """Makes an obsolete unit normal"""
-        self.obsolete = False
+        super(pounit, self).makeobsolete()
 
     def hasplural(self):
         """returns whether this pounit contains plural strings..."""
