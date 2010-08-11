@@ -485,7 +485,7 @@ class pounit(pocommon.pounit):
     msgidcomment = property(_extract_msgidcomments, setmsgidcomment)
 
     def __str__(self):
-        pf = pofile()
+        pf = pofile(noheader=True)
         pf.addunit(self)
         return str(pf)
 
@@ -564,7 +564,7 @@ class pounit(pocommon.pounit):
 class pofile(pocommon.pofile):
     UnitClass = pounit
 
-    def __init__(self, inputfile=None, encoding=None, unitclass=pounit):
+    def __init__(self, inputfile=None, encoding=None, unitclass=pounit, noheader=False):
         self._gpo_memory_file = None
         self._gpo_message_iterator = None
         self.units = []
@@ -572,6 +572,8 @@ class pofile(pocommon.pofile):
         if inputfile is None:
             self._gpo_memory_file = gpo.po_file_create()
             self._gpo_message_iterator = gpo.po_message_iterator(self._gpo_memory_file, None)
+            if not noheader:
+                self.init_headers()
         else:
             super(pofile, self).__init__(inputfile=inputfile, encoding=encoding)
 
