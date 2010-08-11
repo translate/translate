@@ -195,7 +195,7 @@ newlines.</p></body></html>
 
     def test_table_empty(self):
         """Test that we ignore tables that are empty.
-        
+
         A table is deemed empty if it has no translatable content.
         """
 
@@ -413,7 +413,7 @@ ghi ?>'''
         """Test that HTML comments are converted to translator notes in output"""
         pofile = self.html2po('<!-- comment outside block --><p><!-- a comment -->A paragraph<!-- with another comment -->.</p>', keepcomments=True)
         self.compareunit(pofile, 1, 'A paragraph.')
-        notes = pofile.getunits()[0].getnotes()
+        notes = pofile.getunits()[-1].getnotes()
         assert unicode(notes) == ' a comment \n with another comment '
 
 class TestHTML2POCommand(test_convert.TestConvertCommand, TestHTML2PO):
