@@ -25,7 +25,7 @@ of delimiters"""
 import logging
 import htmlentitydefs
 
-from translate.misc.typecheck import accepts
+from translate.misc.typecheck import accepts, returns
 
 
 def find_all(searchin, substr):
@@ -200,18 +200,22 @@ def escapesinglequotes(source):
     return source.replace("'", "''")
 
 
+@accepts(unicode)
+@returns(unicode)
 def htmlentityencode(source):
     """encodes source using HTML entities e.g. © -> &copy;"""
-    output = ""
+    output = u""
     for char in source:
         charnum = ord(char)
         if charnum in htmlentitydefs.codepoint2name:
-            output += "&%s;" % htmlentitydefs.codepoint2name[charnum]
+            output += u"&%s;" % htmlentitydefs.codepoint2name[charnum]
         else:
             output += str(char)
     return output
 
 
+@accepts(unicode)
+@returns(unicode)
 def htmlentitydecode(source):
     """decodes source using HTML entities e.g. &copy; -> ©"""
     output = u""
@@ -239,6 +243,8 @@ def htmlentitydecode(source):
     return output
 
 
+@accepts(unicode)
+@returns(unicode)
 def javapropertiesencode(source):
     """Encodes source in the escaped-unicode encoding used by Java
     .properties files
@@ -255,6 +261,8 @@ def javapropertiesencode(source):
     return output
 
 
+@accepts(unicode)
+@returns(unicode)
 def mozillapropertiesencode(source):
     """Encodes source in the escaped-unicode encoding used by Mozilla
     .properties files.
@@ -289,6 +297,7 @@ def escapecontrols(source):
 
 
 @accepts(unicode)
+@returns(unicode)
 def propertiesdecode(source):
     """Decodes source from the escaped-unicode encoding used by .properties
     files.

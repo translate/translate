@@ -80,6 +80,13 @@ class TestQuote:
 
     def test_htmlencoding_passthrough(self):
         """test that we can encode and decode things that look like HTML entities but aren't"""
-        raw_encoded = [(u"copy quot", "copy quot"),      # Raw text should have nothing done to it.
+        raw_encoded = [(u"copy quot", u"copy quot"),      # Raw text should have nothing done to it.
                       ]
         self._html_encoding_helper(raw_encoded)
+
+    def test_htmlencoding(self):
+        """tests to give us full coverage"""
+        for encoded, real in [(u"Some &; text", u"Some &; text"),
+                              (u"&copy ", u"&copy "),
+                             ]:
+            assert quote.htmlentitydecode(encoded) == real
