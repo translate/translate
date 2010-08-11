@@ -126,7 +126,10 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
         options.inputformats = self.filterinputformats(options)
         options.outputoptions = self.filteroutputoptions(options)
         self.usepsyco(options)
-        self.verifyoptions(options)
+        try:
+            self.verifyoptions(options)
+        except Exception, e:
+            self.error(str(e))
         self.recursiveprocess(options)
 
 def copyinput(inputfile, outputfile, templatefile, **kwargs):
