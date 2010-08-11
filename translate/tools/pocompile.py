@@ -26,7 +26,6 @@ usage instructions
 """
 
 from translate.storage import factory
-from translate.storage import po
 from translate.storage import mo
 from translate.misc.multistring import multistring
 
