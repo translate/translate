@@ -10,7 +10,7 @@ class TestHTML2PO:
         """Helper to convert html to po without a file."""
         inputfile = wStringIO.StringIO(markup)
         convertor = html2po.html2po()
-        outputpo = convertor.convertfile(inputfile, "test", False, includeuntagged, duplicatestyle, keepcomments)
+        outputpo = convertor.convertfile(inputfile, "test", True, includeuntagged, duplicatestyle, keepcomments)
         return outputpo
 
     def po2html(self, posource, htmltemplate):
