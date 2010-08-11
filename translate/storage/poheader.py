@@ -366,9 +366,8 @@ class poheader(object):
         """Create a header for the given filename.
 
         Check .makeheaderdict() for information on parameters."""
-        headerpo = self.UnitClass(encoding=self._encoding)
+        headerpo = self.UnitClass("", encoding=self._encoding)
         headerpo.markfuzzy()
-        headerpo.source = ""
         headeritems = self.makeheaderdict(**kwargs)
         headervalue = ""
         for (key, value) in headeritems.items():
