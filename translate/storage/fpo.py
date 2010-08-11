@@ -205,6 +205,15 @@ class pounit(pocommon.pounit):
         """
 
         def mergelists(list1, list2, split=False):
+            #Determine the newline style of list2
+            lineend = ""
+            if list2 and list2[0]:
+                for candidate in ["\n", "\r", "\n\r"]:
+                    if list2[0].endswith(candidate):
+                        lineend = candidate
+                if not lineend:
+                    lineend = ""
+
             #Split if directed to do so:
             if split:
                 splitlist1 = []
@@ -218,6 +227,7 @@ class pounit(pocommon.pounit):
                 #Normal merge, but conform to list1 newline style
                 if list1 != list2:
                     for item in list2:
+                        item = item.rstrip(lineend)
                         # avoid duplicate comment lines (this might cause some problems)
                         if item not in list1 or len(item) < 5:
                             list1.append(item)
