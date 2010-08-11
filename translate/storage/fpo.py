@@ -205,6 +205,15 @@ class pounit(pocommon.pounit):
         """
 
         def mergelists(list1, list2, split=False):
+            #decode where necessary
+            if unicode in [type(item) for item in list2] + [type(item) for item in list1]:
+                for position, item in enumerate(list1):
+                    if isinstance(item, str):
+                        list1[position] = item.decode("utf-8")
+                for position, item in enumerate(list2):
+                    if isinstance(item, str):
+                        list2[position] = item.decode("utf-8")
+
             #Determine the newline style of list2
             lineend = ""
             if list2 and list2[0]:
