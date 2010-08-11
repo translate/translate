@@ -368,6 +368,10 @@ class pounit(pocommon.pounit):
         """Get the message context."""
         return self._msgctxt + self.msgidcomment
 
+    def setcontext(self, context):
+        context = data.forceunicode(context or u"")
+        self._msgctxt = context
+
     def getid(self):
         """Returns a unique identifier for this unit."""
         context = self.getcontext()

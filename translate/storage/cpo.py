@@ -524,6 +524,10 @@ class pounit(pocommon.pounit):
             msgidcomment = self._extract_msgidcomments()
             return msgidcomment
 
+    def setcontext(self, context):
+        context = data.forceunicode(context)
+        gpo.po_message_set_msgctxt(self._gpo_message, context)
+
     def buildfromunit(cls, unit):
         """Build a native unit from a foreign unit, preserving as much
         information as possible."""
