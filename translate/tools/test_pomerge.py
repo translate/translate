@@ -457,8 +457,14 @@ msgstr "Dimpled Ring"
     def test_merging_different_locations(self):
         """Test when merging units that are unchanged except for changed
         locations that we don't go fuzzy (bug 1583)"""
-        
-        templatepo = r'''#: sentinelheadline
+
+        templatepo = r'''#, fuzzy
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: sentinelheadline
 msgctxt "sentinelheadline"
 msgid "DESTROY SENTINELS"
 msgstr "ZERSTÖRE WACHPOSTEN"
@@ -468,7 +474,12 @@ msgctxt "sentinelheadline1"
 msgid "DESTROY SENTINELS"
 msgstr "ZERSTÖRE WACHPOSTEN"
 '''
-        mergepo = r'''#: sentinelheadline
+        mergepo = r'''msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: sentinelheadline
 #: sentinelheadline1
 msgctxt "sentinelheadline"
 msgid "DESTROY SENTINELS"
@@ -479,7 +490,23 @@ msgctxt "sentinelheadline1"
 msgid "DESTROY SENTINELS"
 msgstr "ZERSTÖRE WACHPOSTEN"
 '''
+        expectedpo2 = r'''msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: sentinelheadline sentinelheadline1
+msgctxt "sentinelheadline"
+msgid "DESTROY SENTINELS"
+msgstr "ZERSTÖRE WACHPOSTEN"
+
+#: sentinelheadline1
+msgctxt "sentinelheadline1"
+msgid "DESTROY SENTINELS"
+msgstr "ZERSTÖRE WACHPOSTEN"
+'''
+
         expectedpo = mergepo
         pofile = self.mergestore(templatepo, mergepo)
         print "Expected:\n%s\n---\nMerged:\n%s\n---" % (expectedpo, str(pofile))
-        assert str(pofile) == expectedpo
+        assert str(pofile) == expectedpo or str(pofile) == expectedpo2
