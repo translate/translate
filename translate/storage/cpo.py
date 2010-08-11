@@ -222,11 +222,11 @@ class pounit(pocommon.pounit):
                     return u""
             else:
                 return text
-        singular = remove_msgid_comments(gpo.po_message_msgid(self._gpo_message).decode(self._encoding))
+        singular = remove_msgid_comments((gpo.po_message_msgid(self._gpo_message) or "").decode(self._encoding))
         if singular:
             if self.hasplural():
                 multi = multistring(singular, self._encoding)
-                pluralform = gpo.po_message_msgid_plural(self._gpo_message).decode(self._encoding)
+                pluralform = (gpo.po_message_msgid_plural(self._gpo_message) or "").decode(self._encoding)
                 multi.strings.append(pluralform)
                 return multi
             else:
@@ -474,7 +474,7 @@ class pounit(pocommon.pounit):
         @return: Returns the extracted msgidcomments found in this unit's msgid.
         """
         if not text:
-            text = gpo.po_message_msgid(self._gpo_message).decode(self._encoding)
+            text = (gpo.po_message_msgid(self._gpo_message) or "").decode(self._encoding)
         if text:
             return pocommon.extract_msgid_comment(text)
         return u""
