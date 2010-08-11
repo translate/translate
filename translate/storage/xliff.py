@@ -347,7 +347,10 @@ class xliffunit(lisa.LISAunit):
         self.setid(location)
 
     def getlocations(self):
-        return [self.getid()]
+        id_attr = self.xmlelement.get("id")
+        if id_attr:
+            return [id_attr]
+        return []
 
     def createcontextgroup(self, name, contexts=None, purpose=None):
         """Add the context group to the trans-unit with contexts a list with
