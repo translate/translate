@@ -310,8 +310,6 @@ def propertiesdecode(source):
     """
     output = u""
     s = 0
-    if isinstance(source, str):
-        source = source.decode(encoding)
 
     def unichr2(i):
         """Returns a Unicode string of one character with ordinal 32 <= i,

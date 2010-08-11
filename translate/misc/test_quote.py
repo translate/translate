@@ -52,6 +52,24 @@ def test_extractwithoutquotes_passfunc():
     """tests the extractwithoutquotes function with a function for includeescapes as a parameter"""
     assert quote.extractwithoutquotes("<test \\r \\n \\t \\\\>", "<", ">", "\\", 0, isnewlineortabescape) == ("test r \\n \\t \\", False)
 
+class TestEncoding:
+
+    def test_javepropertiesencode(self):
+        assert quote.javapropertiesencode(u"abc") == u"abc"
+        assert quote.javapropertiesencode(u"abcḓ") == "abc\u1E13"
+        assert quote.javapropertiesencode(u"abc\n") == u"abc\\n"
+
+    def test_mozillapropertiesencode(self):
+        assert quote.mozillapropertiesencode(u"abc") == u"abc"
+        assert quote.mozillapropertiesencode(u"abcḓ") == u"abcḓ"
+        assert quote.mozillapropertiesencode(u"abc\n") == u"abc\\n"
+
+    def test_propertiesdecode(self):
+        assert quote.propertiesdecode(u"abc") == u"abc"
+        assert quote.propertiesdecode(u"abc\u1e13") == u"abcḓ"
+        assert quote.propertiesdecode(u"abc\u1E13") == u"abcḓ"
+        assert quote.propertiesdecode(u"abc\N{LEFT CURLY BRACKET}") == u"abc{"
+
 class TestQuote:
 
     def test_mozilla_control_escapes(self):
