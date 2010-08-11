@@ -339,7 +339,7 @@ class pounit(pocommon.pounit):
             raise ValueError("Comment type not valid")
 
         if comments and get_libgettextpo_version() < (0, 17, 0):
-            comments = "\n".join([line.strip() for line in comments.split("\n")])
+            comments = "\n".join([line for line in comments.split("\n")])
         # Let's drop the last newline
         return comments[:-1].decode(self._encoding)
 
@@ -357,7 +357,7 @@ class pounit(pocommon.pounit):
                 if oldnotes != text:
                     oldnoteslist = oldnotes.split("\n")
                     for newline in text.split("\n"):
-                        newline = newline.rstrip()
+                        #newline = newline.rstrip()
                         # avoid duplicate comment lines (this might cause some problems)
                         if newline not in oldnotes or len(newline) < 5:
                             oldnoteslist.append(newline)
@@ -365,7 +365,7 @@ class pounit(pocommon.pounit):
             else:
                 newnotes = text + '\n' + oldnotes
         else:
-            newnotes = "\n".join([line.rstrip() for line in text.split("\n")])
+            newnotes = "\n".join([line for line in text.split("\n")])
 
         if newnotes:
             newlines = []
