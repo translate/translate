@@ -357,7 +357,7 @@ class pounit(pocommon.pounit):
                 if oldnotes != text:
                     oldnoteslist = oldnotes.split("\n")
                     for newline in text.split("\n"):
-                        #newline = newline.rstrip()
+                        newline = newline.rstrip("\r")
                         # avoid duplicate comment lines (this might cause some problems)
                         if newline not in oldnotes or len(newline) < 5:
                             oldnoteslist.append(newline)
@@ -365,7 +365,7 @@ class pounit(pocommon.pounit):
             else:
                 newnotes = text + '\n' + oldnotes
         else:
-            newnotes = "\n".join([line for line in text.split("\n")])
+            newnotes = "\n".join([line.rstrip("\r") for line in text.split("\n")])
 
         if newnotes:
             newlines = []
