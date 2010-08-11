@@ -568,6 +568,8 @@ class pofile(pocommon.pofile):
         self._gpo_memory_file = None
         self._gpo_message_iterator = None
         self.units = []
+        self.sourcelanguage = None
+        self.targetlanguage = None
         self._encoding = 'utf-8'
         if inputfile is None:
             self._gpo_memory_file = gpo.po_file_create()
