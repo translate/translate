@@ -28,6 +28,10 @@ usage instructions
 from translate.storage import factory
 from translate.storage import po
 from translate.storage import mo
+from translate.misc.multistring import multistring
+
+def _do_msgidcomment(string):
+    return u"_: %s\n" % string
 
 class POCompile:
 
@@ -40,10 +44,14 @@ class POCompile:
                     mounit.source = ""
                 else:
                     mounit.source = unit.source
-                    if hasattr(unit, "msgidcomments"):
-                        mounit.source.strings[0] = po.unquotefrompo(unit.msgidcomments) + mounit.source.strings[0]
-                    if hasattr(unit, "msgctxt"):
-                        mounit.msgctxt = po.unquotefrompo(unit.msgctxt)
+                    context = unit.getcontext()
+                    if unit.msgidcomment:
+                        if mounit.hasplural():
+                            mounit.source = multistring(_do_msgidcomment(unit.msgidcomment) + mounit.source, *mounit.source.strings[1:])
+                        else:
+                            mounit.source = _do_msgidcomment(unit.msgidcomment) + mounit.source
+                    elif context:
+                        mounit.msgctxt = [context]
                 mounit.target = unit.target
                 outputfile.addunit(mounit)
         return str(outputfile)
