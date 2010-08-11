@@ -52,6 +52,9 @@ def test_extractwithoutquotes_passfunc():
     """tests the extractwithoutquotes function with a function for includeescapes as a parameter"""
     assert quote.extractwithoutquotes("<test \\r \\n \\t \\\\>", "<", ">", "\\", 0, isnewlineortabescape) == ("test r \\n \\t \\", False)
 
+def test_stripcomment():
+    assert quote.stripcomment("<!-- Comment -->") == "Comment"
+
 
 class TestEncoding:
 
@@ -65,11 +68,19 @@ class TestEncoding:
         assert quote.mozillapropertiesencode(u"abcḓ") == u"abcḓ"
         assert quote.mozillapropertiesencode(u"abc\n") == u"abc\\n"
 
+    def test_mozilla_control_escapes(self):
+        """test that we do \uNNNN escapes for certain control characters instead of converting to UTF-8 characters"""
+        prefix, suffix = "bling", "blang"
+        for control in (u"\u0005", u"\u0006", u"\u0007", u"\u0011"):
+            string = prefix + control + suffix
+            assert quote.escapecontrols(string) == string
+
     def test_propertiesdecode(self):
         assert quote.propertiesdecode(u"abc") == u"abc"
         assert quote.propertiesdecode(u"abc\u1e13") == u"abcḓ"
         assert quote.propertiesdecode(u"abc\u1E13") == u"abcḓ"
         assert quote.propertiesdecode(u"abc\N{LEFT CURLY BRACKET}") == u"abc{"
+        assert quote.propertiesdecode(u"abc\\") == u"abc\\"
 
     def _html_encoding_helper(self, pairs):
         for from_, to in pairs:
@@ -97,13 +108,6 @@ class TestEncoding:
 
 
 class TestQuote:
-
-    def test_mozilla_control_escapes(self):
-        """test that we do \uNNNN escapes for certain control characters instead of converting to UTF-8 characters"""
-        prefix, suffix = "bling", "blang"
-        for control in (u"\u0005", u"\u0006", u"\u0007", u"\u0011"):
-            string = prefix + control + suffix
-            assert quote.escapecontrols(string) == string
 
     def test_quote_wrapping(self):
         """test that we can wrap strings in double quotes"""
