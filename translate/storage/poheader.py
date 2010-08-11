@@ -294,16 +294,9 @@ class poheader(object):
         """
 
         newvalues = otherstore.parseheader()
-        retain = {
-                "Project_Id_Version": newvalues['Project-Id-Version'],
-                "PO_Revision_Date"  : newvalues['PO-Revision-Date'],
-                "Last_Translator"   : newvalues['Last-Translator'],
-                "Language_Team"     : newvalues['Language-Team'],
-        }
-        # not necessarily there:
-        plurals = newvalues.get('Plural-Forms', None)
-        if plurals:
-            retain['Plural-Forms'] = plurals
+        retain_list = ("Project-Id-Version", "PO-Revision-Date", "Last-Translator",
+                       "Language-Team", "Plural-Forms")
+        retain = dict((key, newvalues[key]) for key in retain_list if key in newvalues)
         self.updateheader(**retain)
 
     def updatecontributor(self, name, email=None):
