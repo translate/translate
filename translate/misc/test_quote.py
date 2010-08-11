@@ -52,6 +52,7 @@ def test_extractwithoutquotes_passfunc():
     """tests the extractwithoutquotes function with a function for includeescapes as a parameter"""
     assert quote.extractwithoutquotes("<test \\r \\n \\t \\\\>", "<", ">", "\\", 0, isnewlineortabescape) == ("test r \\n \\t \\", False)
 
+
 class TestEncoding:
 
     def test_javepropertiesencode(self):
@@ -70,6 +71,31 @@ class TestEncoding:
         assert quote.propertiesdecode(u"abc\u1E13") == u"abcḓ"
         assert quote.propertiesdecode(u"abc\N{LEFT CURLY BRACKET}") == u"abc{"
 
+    def _html_encoding_helper(self, pairs):
+        for from_, to in pairs:
+            assert quote.htmlentityencode(from_) == to
+            assert quote.htmlentitydecode(to) == from_
+
+    def test_htmlencoding(self):
+        """test that we can encode and decode simple HTML entities"""
+        raw_encoded = [(u"€", u"&euro;"), (u"©", u"&copy;"), (u'"', u"&quot;")]
+        self._html_encoding_helper(raw_encoded)
+
+    def test_htmlencoding_passthrough(self):
+        """test that we can encode and decode things that look like HTML entities but aren't"""
+        raw_encoded = [(u"copy quot", u"copy quot"),      # Raw text should have nothing done to it.
+                      ]
+        self._html_encoding_helper(raw_encoded)
+
+    def test_htmlencoding_nonentities(self):
+        """tests to give us full coverage"""
+        for encoded, real in [(u"Some &; text", u"Some &; text"),
+                              (u"&copy ", u"&copy "),
+                              (u"&rogerrabbit;", u"&rogerrabbit;"),
+                             ]:
+            assert quote.htmlentitydecode(encoded) == real
+
+
 class TestQuote:
 
     def test_mozilla_control_escapes(self):
@@ -85,26 +111,3 @@ class TestQuote:
         assert quote.quotestr(string) == '"A string"'
         list = ['One', 'Two']
         assert quote.quotestr(list) == '"One"\n"Two"'
-
-    def _html_encoding_helper(self, pairs):
-        for from_, to in pairs:
-            assert quote.htmlentityencode(from_) == to
-            assert quote.htmlentitydecode(to) == from_
-
-    def test_htmlencoding(self):
-        """test that we can encode and decode simple HTML entities"""
-        raw_encoded = [(u"€", "&euro;"), (u"©", "&copy;"), (u'"', "&quot;")]
-        self._html_encoding_helper(raw_encoded)
-
-    def test_htmlencoding_passthrough(self):
-        """test that we can encode and decode things that look like HTML entities but aren't"""
-        raw_encoded = [(u"copy quot", u"copy quot"),      # Raw text should have nothing done to it.
-                      ]
-        self._html_encoding_helper(raw_encoded)
-
-    def test_htmlencoding(self):
-        """tests to give us full coverage"""
-        for encoded, real in [(u"Some &; text", u"Some &; text"),
-                              (u"&copy ", u"&copy "),
-                             ]:
-            assert quote.htmlentitydecode(encoded) == real
