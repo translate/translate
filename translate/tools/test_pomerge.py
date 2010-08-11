@@ -213,9 +213,10 @@ msgstr "blabla"
         templatepo = '''msgid ""\n"Simple string\\n"\nmsgstr ""\n'''
         mergepo = '''msgid ""\n"Simple string\\n"\nmsgstr ""\n"Dimpled ring\\n"\n'''
         expectedpo = '''msgid ""\n"Simple string\\n"\nmsgstr "Dimpled ring\\n"\n'''
+        expectedpo2 = '''msgid "Simple string\\n"\nmsgstr "Dimpled ring\\n"\n'''
         pofile = self.mergestore(templatepo, mergepo)
         print "Expected:\n%s\n\nMerged:\n%s" % (expectedpo, str(pofile))
-        assert str(pofile) == expectedpo
+        assert str(pofile) == expectedpo or str(pofile) == expectedpo2
 
     def test_preserve_format_minor_start_and_end_of_sentence_changes(self):
         """Test that we are not too fussy about large diffs for simple changes at the start or end of a sentence"""
