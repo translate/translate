@@ -132,8 +132,11 @@ class tsunit(lisa.LISAunit):
             for string in strings:
                 numerus = etree.SubElement(targetnode, self.namespaced("numerusform"))
                 numerus.text = data.forceunicode(string) or u""
+                # manual, nasty pretty printing. See bug 1420.
+                numerus.tail = u"\n        "
         else:
             targetnode.text = data.forceunicode(text) or u""
+            targetnode.tail = u"\n    "
 
     def gettarget(self):
         targetnode = self._gettargetnode()
