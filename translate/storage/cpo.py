@@ -35,7 +35,7 @@ from translate.storage import base, pocommon
 from translate.storage import pypo
 from translate.storage.pocommon import encodingToUse
 from translate.lang import data
-from ctypes import c_int, c_uint, c_char_p, c_long, CFUNCTYPE, POINTER
+from ctypes import c_size_t, c_int, c_uint, c_char_p, c_long, CFUNCTYPE, POINTER
 from ctypes import Structure, cdll
 import ctypes.util
 import os
@@ -121,7 +121,7 @@ gpo.po_header_field.argtypes = [STRING, STRING]
 gpo.po_filepos_file.restype = STRING
 gpo.po_message_filepos.restype = c_int
 gpo.po_message_filepos.argtypes = [c_int, c_int]
-gpo.po_message_add_filepos.argtypes = [c_int, STRING, c_int]
+gpo.po_message_add_filepos.argtypes = [c_int, STRING, c_size_t]
 
 # Message (get methods)
 gpo.po_message_comments.restype = STRING
