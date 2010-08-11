@@ -43,11 +43,17 @@ class phppo2pypo:
         return thetargetfile
 
     def convertunit(self, unit):
-        unit.automaticcomments = self.convertstrings(unit.automaticcomments)
-        unit.othercomments = self.convertstrings(unit.othercomments)
+        developer_notes = unit.getnotes(origin="developer")
+        translator_notes = unit.getnotes(origin="translator")
+        unit.removenotes()
+        unit.addnote(self.convertstrings(developer_notes))
+        unit.addnote(self.convertstrings(translator_notes))
         unit.source = self.convertstrings(unit.source)
         unit.target = self.convertstrings(unit.target)
         return unit
+
+    def convertstring(self, input):
+        return re.sub('%(\d)\$s', lambda x: "{%d}" % (int(x.group(1))-1), input)
 
     def convertstrings(self, input):
         if isinstance(input, multistring):
@@ -55,14 +61,10 @@ class phppo2pypo:
         elif isinstance(input, list):
             strings = input
         else:
-            strings = [input]
-
+            return self.convertstring(input)
         for index, string in enumerate(strings):
             strings[index] = re.sub('%(\d)\$s', lambda x: "{%d}" % (int(x.group(1))-1), string)
-        if len(strings) == 1:
-            return strings[0]
-        else:
-            return strings
+        return multistring(strings)
 
 def convertphp2py(inputfile, outputfile, template=None):
     """Converts from PHP .po format to Python .po format
