@@ -110,8 +110,8 @@ class pocheckfilter:
         Return value:
             - A new translation store object with the results of the filter included."""
         newtransfile = type(transfile)()
-        newtransfile.setsourcelanguage(transfile.sourcelanguage)
-        newtransfile.settargetlanguage(transfile.targetlanguage)
+        newtransfile.setsourcelanguage(transfile.getsourcelanguage())
+        newtransfile.settargetlanguage(transfile.gettargetlanguage())
         for unit in transfile.units:
             filterresult = self.filterunit(unit)
             if filterresult:
