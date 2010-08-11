@@ -453,7 +453,7 @@ class pofile(pocommon.pofile):
 
         A user must ensure that self._cpo_store does not exist, and should
         delete it after using it."""
-        self._cpo_store = cpo.pofile()
+        self._cpo_store = cpo.pofile(noheader=True)
         for unit in self.units:
             if not unit.isblank():
                 self._cpo_store.addunit(cpo.pofile.UnitClass.buildfromunit(unit))
@@ -474,7 +474,7 @@ class pofile(pocommon.pofile):
 #                input = basic_header + input
 #                tmp_header_added = True
             self.units = []
-            self._cpo_store = cpo.pofile(input)
+            self._cpo_store = cpo.pofile(input, noheader=True)
             self._build_self_from_cpo()
             del self._cpo_store
             if tmp_header_added:
@@ -525,7 +525,7 @@ class pofile(pocommon.pofile):
 
     def __str__(self):
         """Convert to a string. double check that unicode is handled somehow here"""
-        self._cpo_store = cpo.pofile(encoding=self._encoding)
+        self._cpo_store = cpo.pofile(encoding=self._encoding, noheader=True)
         self._build_cpo_from_self()
         output = str(self._cpo_store)
         del self._cpo_store
