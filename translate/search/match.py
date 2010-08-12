@@ -294,7 +294,7 @@ class terminologymatcher(matcher):
             if comparer.similarity(text, source, self.MIN_SIMILARITY):
                 self.match_info[source] = {'pos': comparer.match_info[source]['pos']}
                 matches.append(cand)
-                known.add((cand.source, cand.target))
+                known.add((source, cand.target))
         return matches
 
 
