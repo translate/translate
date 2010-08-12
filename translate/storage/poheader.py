@@ -27,6 +27,14 @@ import time
 
 author_re = re.compile(r".*<\S+@\S+>.*\d{4,4}")
 
+default_header = {
+    "Project-Id-Version": "PACKAGE VERSION",
+    "PO-Revision-Date": "YEAR-MO-DA HO:MI+ZONE",
+    "Last-Translator": "FULL NAME <EMAIL@ADDRESS>",
+    "Language-Team": "LANGUAGE <LL@li.org>",
+    "Plural-Forms": "nplurals=INTEGER; plural=EXPRESSION;",
+    }
+
 def parseheaderstring(input):
     """Parses an input string with the definition of a PO header and returns
     the interpreted values as a dictionary."""
@@ -296,7 +304,7 @@ class poheader(object):
         newvalues = otherstore.parseheader()
         retain_list = ("Project-Id-Version", "PO-Revision-Date", "Last-Translator",
                        "Language-Team", "Plural-Forms")
-        retain = dict((key, newvalues[key]) for key in retain_list if key in newvalues)
+        retain = dict((key, newvalues[key]) for key in retain_list if newvalues.get(key, None) and newvalues[key] != default_header.get(key, None))
         self.updateheader(**retain)
 
     def updatecontributor(self, name, email=None):
