@@ -134,7 +134,7 @@ class TestMOFile(test_base.TestTranslationStore):
             out_file.close()
 
             subprocess.call(['msgfmt', PO_FILE, '-o', MO_MSGFMT])
-            subprocess.call(['pocompile', PO_FILE, MO_POCOMPILE])
+            subprocess.call(['pocompile', '--errorlevel=traceback', PO_FILE, MO_POCOMPILE])
 
             store = factory.getobject(StringIO.StringIO(posource))
             if store.isempty() and not os.path.exists(MO_POCOMPILE):
