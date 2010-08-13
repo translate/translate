@@ -108,7 +108,6 @@ class reprop:
                 self.inecho = True
                 returnline = line + eol
         assert isinstance(returnline, unicode)
-        returnline = returnline.encode(self.encoding)
         return returnline
 
 
@@ -136,7 +135,12 @@ def convertprop(inputfile, outputfile, templatefile, personality="java",
     else:
         convertor = reprop(templatefile, inputstore, personality, encoding)
     outputproplines = convertor.convertstore(includefuzzy)
-    outputfile.writelines(outputproplines)
+    if encoding is None:
+        encoding = properties.get_dialect(personality).default_encoding
+    if encoding is not None:
+        outputfile.write("".join(outputproplines).encode(encoding))
+    else:
+        outputfile.writelines(outputproplines)
     return 1
 
 formats = {
