@@ -246,7 +246,7 @@ def get_dialect(dialect=default_dialect):
 class Dialect(object):
     """Settings for the various behaviours in key=value files."""
     name = None
-    default_encoding = None
+    default_encoding = 'iso-8859-1'
     delimiters = None
     pair_terminator = u""
     key_wrap_char = u""
@@ -275,7 +275,7 @@ class Dialect(object):
 
 class DialectJava(Dialect):
     name = "java"
-    default_encoding = "latin1"
+    default_encoding = "iso-8859-1"
     delimiters = [u"=", u":", u" "]
 register_dialect(DialectJava)
 
@@ -335,7 +335,7 @@ class DialectStrings(Dialect):
     value_strip = classmethod(value_strip)
 
     def encode(cls, string):
-        return string.replace('"', '\\"').replace("\n", r"\n")
+        return string.replace('"', '\\"').replace("\n", r"\n").replace("\t", r"\t")
     encode = classmethod(encode)
 register_dialect(DialectStrings)
 

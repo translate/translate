@@ -33,7 +33,7 @@ class TestPO2Prop:
         propexpected = '''prop=waarde\n'''
         propfile = self.merge2prop(proptemplate, posource)
         print propfile
-        assert propfile == [propexpected]
+        assert propfile == propexpected
 
     def test_merging_untranslated(self):
         """check the simplest case of merging an untranslated unit"""
@@ -42,7 +42,7 @@ class TestPO2Prop:
         propexpected = proptemplate
         propfile = self.merge2prop(proptemplate, posource)
         print propfile
-        assert propfile == [propexpected]
+        assert propfile == propexpected
 
     def test_hard_newlines_preserved(self):
         """check that we preserver hard coded newlines at the start and end of sentence"""
@@ -51,7 +51,7 @@ class TestPO2Prop:
         propexpected = '''prop=\\nwaarde\\n\\n\n'''
         propfile = self.merge2prop(proptemplate, posource)
         print propfile
-        assert propfile == [propexpected]
+        assert propfile == propexpected
 
     def test_space_preservation(self):
         """check that we preserve any spacing in properties files when merging"""
@@ -60,7 +60,7 @@ class TestPO2Prop:
         propexpected = '''prop  =  waarde\n'''
         propfile = self.merge2prop(proptemplate, posource)
         print propfile
-        assert propfile == [propexpected]
+        assert propfile == propexpected
 
     def test_merging_blank_entries(self):
         """check that we can correctly merge entries that are blank in the template"""
@@ -73,7 +73,7 @@ msgstr ""'''
         propexpected = 'accesskey-accept=\n'
         propfile = self.merge2prop(proptemplate, posource)
         print propfile
-        assert propfile == [propexpected]
+        assert propfile == propexpected
 
     def test_merging_fuzzy(self):
         """check merging a fuzzy translation"""
@@ -82,7 +82,7 @@ msgstr ""'''
         propexpected = '''prop=value\n'''
         propfile = self.merge2prop(proptemplate, posource)
         print propfile
-        assert propfile == [propexpected]
+        assert propfile == propexpected
 
     def test_merging_propertyless_template(self):
         """check that when merging with a template with no property values that we copy the template"""
@@ -91,7 +91,7 @@ msgstr ""'''
         propexpected = proptemplate
         propfile = self.merge2prop(proptemplate, posource)
         print propfile
-        assert propfile == [propexpected]
+        assert propfile == propexpected
 
     def test_delimiters(self):
         """test that we handle different delimiters."""
@@ -102,7 +102,7 @@ msgstr ""'''
             print "testing '%s' as delimiter" % delim
             propfile = self.merge2prop(proptemplate % delim, posource)
             print propfile
-            assert propfile == [propexpected % delim]
+            assert propfile == propexpected % delim
 
     def test_empty_value(self):
         """test that we handle an value in the template"""
@@ -115,7 +115,7 @@ msgstr "translated"
         propexpected = '''key = translated\n'''
         propfile = self.merge2prop(proptemplate, posource)
         print propfile
-        assert propfile == [propexpected]
+        assert propfile == propexpected
 
     def test_personalities(self):
         """test that we output correctly for Java and Mozilla style property files.  Mozilla uses Unicode, while Java uses escaped Unicode"""
@@ -123,21 +123,21 @@ msgstr "translated"
         proptemplate = u'''prop  =  value\n'''
         propexpectedjava = u'''prop  =  \\u1E7D\\u1E01\\u1E3D\\u1E7B\\u1E1D\n'''
         propfile = self.merge2prop(proptemplate, posource)
-        assert propfile == [propexpectedjava]
+        assert propfile == propexpectedjava
 
         propexpectedmozilla = u'''prop  =  ṽḁḽṻḝ\n'''.encode('utf-8')
         propfile = self.merge2prop(proptemplate, posource, personality="mozilla")
-        assert propfile == [propexpectedmozilla]
+        assert propfile == propexpectedmozilla
 
         proptemplate = u'''prop  =  value\n'''.encode('utf-16')
         propexpectedskype = u'''prop  =  ṽḁḽṻḝ\n'''.encode('utf-16')
         propfile = self.merge2prop(proptemplate, posource, personality="skype")
-        assert propfile == [propexpectedskype]
+        assert propfile == propexpectedskype
 
-        proptemplate = u'''"key" = "value";\n'''.encode('utf-16')
-        propexpectedstrings = u'''"key" = "ṽḁḽṻḝ";\n'''.encode('utf-16')
+        proptemplate = u'''"prop" = "value";\n'''.encode('utf-16')
+        propexpectedstrings = u'''"prop" = "ṽḁḽṻḝ";\n'''.encode('utf-16')
         propfile = self.merge2prop(proptemplate, posource, personality="strings")
-        assert propfile == [propexpectedstrings]
+        assert propfile == propexpectedstrings
 
 class TestPO2PropCommand(test_convert.TestConvertCommand, TestPO2Prop):
     """Tests running actual po2prop commands on files"""

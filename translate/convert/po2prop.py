@@ -54,7 +54,7 @@ class reprop:
         for line in content.splitlines(True):
             outputstr = self.convertline(line)
             outputlines.append(outputstr)
-        return outputlines
+        return u"".join(outputlines).encode(self.encoding)
 
     def convertline(self, line):
         returnline = u""
@@ -134,13 +134,8 @@ def convertprop(inputfile, outputfile, templatefile, personality="java",
         # convertor = po2prop()
     else:
         convertor = reprop(templatefile, inputstore, personality, encoding)
-    outputproplines = convertor.convertstore(includefuzzy)
-    if encoding is None:
-        encoding = properties.get_dialect(personality).default_encoding
-    if encoding is not None:
-        outputfile.write("".join(outputproplines).encode(encoding))
-    else:
-        outputfile.writelines(outputproplines)
+    outputprop = convertor.convertstore(includefuzzy)
+    outputfile.write(outputprop)
     return 1
 
 formats = {
