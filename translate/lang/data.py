@@ -139,6 +139,7 @@ languages = {
 'tk': (u'Turkmen', 2, '(n != 1)'),
 'tr': (u'Turkish', 1, '0'),
 'tt': (u'Tatar', 1, '0'),
+'ug': (u'Uighur; Uyghur', 1, '0'),
 'uk': (u'Ukrainian', 3, '(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'),
 'vi': (u'Vietnamese', 1, '0'),
 'wa': (u'Walloon', 2, '(n > 1)'),
