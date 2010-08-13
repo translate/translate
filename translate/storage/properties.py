@@ -335,7 +335,7 @@ class DialectStrings(Dialect):
     value_strip = classmethod(value_strip)
 
     def encode(cls, string):
-        return quote.escapequotes(string)
+        return string.replace('"', '\\"').replace("\n", r"\n")
     encode = classmethod(encode)
 register_dialect(DialectStrings)
 

@@ -221,6 +221,16 @@ key=value
         assert propunit.name == ur'I am a \"key\"'
         assert propunit.source.encode('utf-8') == u'I am a "value"'
 
+    def test_mac_strings_newlines(self):
+        """test newlines \n within a strings files"""
+        propsource = ur'''"key" = "value\nvalue";'''.encode('utf-16')
+        propfile = self.propparse(propsource, personality="strings")
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == u'key'
+        assert propunit.source.encode('utf-8') == u'value\nvalue'
+        assert propfile.personality.encode(propunit.source) == ur'value\nvalue'
+
     def test_mac_strings_comments(self):
         """test .string comment types"""
         propsource = ur'''/* Comment */
