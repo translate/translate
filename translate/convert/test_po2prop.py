@@ -123,21 +123,21 @@ msgstr "translated"
         proptemplate = u'''prop  =  value\n'''
         propexpectedjava = u'''prop  =  \\u1E7D\\u1E01\\u1E3D\\u1E7B\\u1E1D\n'''
         propfile = self.merge2prop(proptemplate, posource)
-        print propfile
-        print "-----"
         assert propfile == [propexpectedjava]
+
         propexpectedmozilla = u'''prop  =  ṽḁḽṻḝ\n'''.encode('utf-8')
         propfile = self.merge2prop(proptemplate, posource, personality="mozilla")
-        print propfile
-        print "-----"
         assert propfile == [propexpectedmozilla]
-        propexpectedskype = u'''prop  =  ṽḁḽṻḝ\n'''.encode('utf-16')
+
         proptemplate = u'''prop  =  value\n'''.encode('utf-16')
-        print repr(proptemplate)
+        propexpectedskype = u'''prop  =  ṽḁḽṻḝ\n'''.encode('utf-16')
         propfile = self.merge2prop(proptemplate, posource, personality="skype")
-        print propfile
-        print "-----"
         assert propfile == [propexpectedskype]
+
+        proptemplate = u'''"key" = "value";\n'''.encode('utf-16')
+        propexpectedstrings = u'''"key" = "ṽḁḽṻḝ";\n'''.encode('utf-16')
+        propfile = self.merge2prop(proptemplate, posource, personality="strings")
+        assert propfile == [propexpectedstrings]
 
 class TestPO2PropCommand(test_convert.TestConvertCommand, TestPO2Prop):
     """Tests running actual po2prop commands on files"""
