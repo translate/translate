@@ -36,6 +36,7 @@ state values correspond to similar states. For example state 0 should be
 define similar states.
 """
 
+
 class StateEnum:
     """Only contains the constants for default states."""
     MIN          = -128
@@ -50,6 +51,7 @@ class StateEnum:
 
 
 class State(object):
+
     def __init__(self, name, enter_action=None, leave_action=None):
         self.name = name
         self.enter_action = enter_action
@@ -73,6 +75,7 @@ class State(object):
 
 
 class UnitState(State):
+
     def __init__(self, name, state_value):
         self.state_value = state_value
         super(UnitState, self).__init__(name, self._enter)
@@ -84,17 +87,26 @@ class UnitState(State):
         unit.set_state_n(self.state_value)
 
 
-class WorkflowError(Exception): pass
+class WorkflowError(Exception):
+    pass
 
-class NoInitialStateError(WorkflowError): pass
 
-class TransitionError(WorkflowError): pass
+class NoInitialStateError(WorkflowError):
+    pass
+
+
+class TransitionError(WorkflowError):
+    pass
+
 
 class InvalidStateObjectError(WorkflowError):
+
     def __init__(self, obj):
         super(InvalidStateObjectError, self).__init__('Invalid state object: %s' % (obj))
 
+
 class StateNotInWorkflowError(Exception):
+
     def __init__(self, state):
         super(StateNotInWorkflowError, self).__init__(
             'State not in workflow: %s' % (state)
