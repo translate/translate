@@ -397,7 +397,11 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         """
         if self._writer_is_open():
             self._writer_close()
-        self.reader.deleteDocument(docid)
+        try:
+            self.reader.deleteDocument(docid)
+        except PyLucene.JavaError:
+            self._index_refresh()
+            self.reader.deleteDocument(docid)
 
     def search(self, query, fieldnames):
         """return a list of the contents of specified fields for all matches of
