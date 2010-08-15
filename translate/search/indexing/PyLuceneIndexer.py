@@ -178,7 +178,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
     def make_query(self, *args, **kwargs):
         jvm = PyLucene.getVMEnv()
         jvm.attachCurrentThread()
-        super(PyLuceneDatabase, self).make_query(*args, **kwargs)
+        return super(PyLuceneDatabase, self).make_query(*args, **kwargs)
 
     def _create_query_for_query(self, query):
         """generate a query based on an existing query object
