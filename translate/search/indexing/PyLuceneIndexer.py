@@ -175,6 +175,11 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         if not keep_open:
             self._writer_close()
 
+    def make_query(self, *args, **kwargs):
+        jvm = PyLucene.getVMEnv()
+        jvm.attachCurrentThread()
+        super(PyLuceneDatabase, self).make_query(*args, **kwargs)
+
     def _create_query_for_query(self, query):
         """generate a query based on an existing query object
 
@@ -342,6 +347,8 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         access in order to remove the exclusive lock from the database
         directory.
         """
+        jvm = PyLucene.getVMEnv()
+        jvm.attachCurrentThread()
         self._writer_open()
 
     def cancel_transaction(self):
