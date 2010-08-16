@@ -359,7 +359,7 @@ class TranslationUnit(object):
         This should be used to distinguish real units for translation from
         header, obsolete, binary or other blank units.
         """
-        return True
+        return bool(self.source)
 
     def isfuzzy(self):
         """Indicates whether this unit is fuzzy."""
