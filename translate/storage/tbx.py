@@ -40,6 +40,8 @@ Provisional work is done to make several languages possible."""
         lisa.setXMLlang(langset, lang)
         tig = etree.SubElement(langset, "tig") # or ntig with termGrp inside
         term = etree.SubElement(tig, self.textNode)
+        # probably not what we want:
+        # lisa.setXMLspace(term, "preserve")
         term.text = text
         return langset
 
@@ -57,7 +59,7 @@ class tbxfile(lisa.LISAfile):
 <martif type="TBX">
 <martifHeader>
 <fileDesc>
-<sourceDesc><p>Translate Toolkit - csv2tbx</p></sourceDesc>
+<sourceDesc><p>Translate Toolkit</p></sourceDesc>
 </fileDesc>
 </martifHeader>
 <text><body></body></text>
