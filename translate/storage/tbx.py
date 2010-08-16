@@ -1,24 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2006-2007 Zuza Software Foundation
-# 
-# This file is part of translate.
+# Copyright 2006-2010 Zuza Software Foundation
 #
-# translate is free software; you can redistribute it and/or modify
+# This file is part of the Translate Toolkit.
+#
+# This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
-# translate is distributed in the hope that it will be useful,
+#
+# This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with translate; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+# along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 """module for handling TBX glossary files"""
 
@@ -44,6 +42,10 @@ Provisional work is done to make several languages possible."""
         # lisa.setXMLspace(term, "preserve")
         term.text = text
         return langset
+
+    def getid(self):
+        # The id attribute is optional
+        return self.xmlelement.get("id") or self.source
 
 
 class tbxfile(lisa.LISAfile):
