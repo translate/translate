@@ -35,6 +35,15 @@ def sourcelen(unit):
     return len(unit.source)
 
 
+def _sort_matches(matches, match_info):
+    def _matches_cmp(x, y):
+        # This function will sort a list of matches according to the match's starting
+        # position, putting the one with the longer source text first, if two are the same.
+        c = cmp(match_info[x.source]['pos'], match_info[y.source]['pos'])
+        return c and c or cmp(len(y.source), len(x.source))
+    matches.sort(_matches_cmp)
+
+
 class matcher(object):
     """A class that will do matching and store configuration for the matching process"""
 
@@ -285,6 +294,7 @@ class terminologymatcher(matcher):
         text = text.lower()
         comparer = self.comparer
         comparer.match_info = {}
+        match_info = {}
         matches = []
         known = set()
         for cand in self.candidates.units:
@@ -292,10 +302,39 @@ class terminologymatcher(matcher):
             if (source, cand.target) in known:
                 continue
             if comparer.similarity(text, source, self.MIN_SIMILARITY):
-                self.match_info[source] = {'pos': comparer.match_info[source]['pos']}
+                match_info[source] = {'pos': comparer.match_info[source]['pos']}
                 matches.append(cand)
                 known.add((source, cand.target))
-        return matches
+
+        final_matches = []
+        lastend = 0
+        _sort_matches(matches, match_info)
+        for match in matches:
+            start_pos = match_info[match.source]['pos']
+            if start_pos < lastend:
+                continue
+            end = start_pos + len(match.source)
+
+            final_matches.append(match)
+
+            # Get translations for the placeable
+            for m in matches:
+                if m is match:
+                    continue
+                m_info = match_info[m.source]
+                m_end = m_info['pos']
+                if m_end > start_pos:
+                    # we past valid possibilities in the list
+                    break
+                m_end += len(m.source)
+                if start_pos == m_info['pos'] and end == m_end:
+                    # another match for the same term
+                    final_matches.append(m)
+
+            lastend = end
+        if final_matches:
+            self.match_info = match_info
+        return final_matches
 
 
 # utility functions used by virtaal and tmserver to convert matching units in easily marshallable dictionaries
