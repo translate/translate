@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2008-2009 Zuza Software Foundation
+# Copyright 2008-2010 Zuza Software Foundation
 #
 # This file is part of the Translate Toolkit.
 #
@@ -23,7 +23,7 @@
 See U{http://translate.sourceforge.net/wiki/toolkit/index} or U{http://translate.org.za} for more information.
 
 @organization: Zuza Software Foundation
-@copyright: 2002-2009 Zuza Software Foundation
+@copyright: 2002-2010 Zuza Software Foundation
 @license: U{GPL <http://www.fsf.org/licensing/licenses/gpl.html>}
 
 @group Localization and Localizable File Formats: storage
