@@ -325,7 +325,7 @@ class TranslateDistribution(Distribution):
     py2exeoptions = {}
     py2exeoptions["packages"] = ["translate", "encodings"]
     py2exeoptions["compressed"] = True
-    py2exeoptions["excludes"] = ["PyLucene", "Tkconstants", "Tkinter", "tcl",
+    py2exeoptions["excludes"] = ["PyLucene", "Tkconstants", "Tkinter", "tcl", "enchant", #We need to do more to support spell checking on Windows
             # strange things unnecessarily included with some versions of pyenchant:
             "win32ui", "_win32sysloader", "win32pipe", "py2exe", "win32com", "pywin", "isapi", "_tkinter", "win32api",
     ]
