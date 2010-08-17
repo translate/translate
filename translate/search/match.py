@@ -236,6 +236,7 @@ ignorepatterns = [
     ("-", " "),               #pre-order / pre order
     (" ", "-"),               #pre order / pre-order
 ]
+ignorepatterns_re = [(re.compile(a), b) for (a, b) in ignorepatterns]
 
 context_re = re.compile("\s+\(.*\)\s*$")
 
@@ -257,8 +258,8 @@ class terminologymatcher(matcher):
         extras = []
         for unit in self.candidates.units:
             source = unit.source = context_re.sub("", unit.source).lower()
-            for ignorepattern in ignorepatterns:
-                (newterm, occurrences) = re.subn(ignorepattern[0], ignorepattern[1], source)
+            for ignorepattern_re, replacement in ignorepatterns_re:
+                (newterm, occurrences) = ignorepattern_re.subn(replacement, source)
                 if occurrences:
                     new_unit = type(unit).buildfromunit(unit)
                     new_unit.source = newterm
