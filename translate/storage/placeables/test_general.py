@@ -55,6 +55,8 @@ def test_placeable_xml_tag():
     assert general.XMLTagPlaceable.parse(u'<img "koei.jpg" />') is None
     assert general.XMLTagPlaceable.parse(u'<span xml:space="preserve">')[0] == general.XMLTagPlaceable([u'<span xml:space="preserve">'])
     assert general.XMLTagPlaceable.parse(u'<img src="http://translate.org.za/blogs/friedel/sites/translate.org.za.blogs.friedel/files/virtaal-7f_help.png" alt="Virtaal met lêernaam-pseudovertaling" style="border: 1px dotted grey;" />')[0] == general.XMLTagPlaceable([u'<img src="http://translate.org.za/blogs/friedel/sites/translate.org.za.blogs.friedel/files/virtaal-7f_help.png" alt="Virtaal met lêernaam-pseudovertaling" style="border: 1px dotted grey;" />'])
+    # Bug 933
+    assert general.XMLTagPlaceable.parse(u'This entry expires in %days% days. Would you like to <a href="%href%?PHPSESSID=5d59c559cf4eb9f1d278918271fbe68a" title="Renew this Entry Now">Renew this Entry Now</a> ?')[1] == general.XMLTagPlaceable([u'<a href="%href%?PHPSESSID=5d59c559cf4eb9f1d278918271fbe68a" title="Renew this Entry Now">'])
 
 def test_placeable_option():
     assert general.OptionPlaceable.parse(u'Type --help for this help')[1] == general.OptionPlaceable([u'--help'])
