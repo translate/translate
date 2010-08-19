@@ -316,7 +316,7 @@ class DialectStrings(Dialect):
     pair_terminator = u";"
     key_wrap_char = u'"'
     value_wrap_char = u'"'
-    drop_comments = ["/* No comment provided by engineer. */",]
+    drop_comments = ["/* No comment provided by engineer. */"]
 
     def key_strip(cls, key):
         """Strip uneeded characters from the key"""
