@@ -251,6 +251,7 @@ class Dialect(object):
     pair_terminator = u""
     key_wrap_char = u""
     value_wrap_char = u""
+    drop_comments = []
 
     def encode(cls, string):
         """Encode the string"""
@@ -315,6 +316,7 @@ class DialectStrings(Dialect):
     pair_terminator = u";"
     key_wrap_char = u'"'
     value_wrap_char = u'"'
+    drop_comments = ["/* No comment provided by engineer. */",]
 
     def key_strip(cls, key):
         """Strip uneeded characters from the key"""
@@ -480,7 +482,8 @@ class propfile(base.TranslationStore):
             # FIXME handle // inline comments
             elif line.strip()[:1] in (u'#', u'!') or line.strip()[:2] in (u"/*", u"//") or line.strip()[:-2] == "*/":
                 # add a comment
-                newunit.comments.append(line)
+                if line not in self.personality.drop_comments:
+                    newunit.comments.append(line)
             elif not line.strip():
                 # this is a blank line...
                 if str(newunit).strip():

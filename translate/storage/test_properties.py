@@ -243,6 +243,17 @@ key=value
         assert propunit.source.encode('utf-8') == u'value'
         assert propunit.getnotes() == u"/* Comment */\n// Comment"
 
+    def test_mac_strings_comments_dropping(self):
+        """.string generic (and unuseful) comments should be dropped"""
+        propsource = ur'''/* No comment provided by engineer. */
+"key" = "value";'''.encode('utf-16')
+        propfile = self.propparse(propsource, personality="strings")
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == u'key'
+        assert propunit.source.encode('utf-8') == u'value'
+        assert propunit.getnotes() == u""
+
     def test_override_encoding(self):
         """test that we can override the encoding of a properties file"""
         propsource = u"key = value".encode("cp1252")
