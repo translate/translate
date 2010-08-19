@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2002-2006 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -31,6 +31,7 @@ try:
 except ImportError:
     from StringIO import StringIO
 
+
 class ManPageOption(optparse.Option, object):
     ACTIONS = optparse.Option.ACTIONS + ("manpage",)
 
@@ -39,10 +40,13 @@ class ManPageOption(optparse.Option, object):
         if action == "manpage":
             parser.print_manpage()
             sys.exit(0)
-        return super(ManPageOption, self).take_action(action, dest, opt, value, values, parser)
+        return super(ManPageOption, self).take_action(action, dest, opt, value,
+                                                      values, parser)
 
-class ManHelpFormatter (optparse.HelpFormatter):
-    def __init__ (self,
+
+class ManHelpFormatter(optparse.HelpFormatter):
+
+    def __init__(self,
             indent_increment=0,
             max_help_position=0,
             width=80,
@@ -50,7 +54,7 @@ class ManHelpFormatter (optparse.HelpFormatter):
         optparse.HelpFormatter.__init__(
             self, indent_increment, max_help_position, width, short_first)
 
-    def format_option_strings (self, option):
+    def format_option_strings(self, option):
         """Return a comma-separated list of option strings & metavariables."""
         if option.takes_value():
             metavar = option.metavar or option.dest.upper()
@@ -68,18 +72,22 @@ class ManHelpFormatter (optparse.HelpFormatter):
 
         return '\\fB%s\\fP' % ("\\fR, \\fP".join(opts))
 
+
 class RecursiveOptionParser(optparse.OptionParser, object):
     """A specialized Option Parser for recursing through directories."""
 
-    def __init__(self, formats, usetemplates=False, allowmissingtemplate=False, description=None):
+    def __init__(self, formats, usetemplates=False, allowmissingtemplate=False,
+                 description=None):
         """Construct the specialized Option Parser.
 
         @type formats: Dictionary
-        @param formats: See L{setformats()} for an explanation of the formats parameter.
+        @param formats: See L{setformats()} for an explanation of the formats
+        parameter.
 
         """
 
-        optparse.OptionParser.__init__(self, version="%prog "+__version__.sver, description=description)
+        optparse.OptionParser.__init__(self, version="%prog " + __version__.sver,
+                                       description=description)
         self.setmanpageoption()
         self.setprogressoptions()
         self.seterrorleveloptions()
@@ -92,8 +100,10 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         return os.path.basename(sys.argv[0])
 
     def setmanpageoption(self):
-        """creates a manpage option that allows the optionparser to generate a manpage"""
-        manpageoption = ManPageOption(None, "--manpage", dest="manpage", default=False, action="manpage",
+        """creates a manpage option that allows the optionparser to generate a
+        manpage"""
+        manpageoption = ManPageOption(None, "--manpage", dest="manpage",
+                                      default=False, action="manpage",
             help="output a manpage based on the help")
         self.define_option(manpageoption)
 
@@ -108,10 +118,11 @@ class RecursiveOptionParser(optparse.OptionParser, object):
             formatToolkit(self.version),
             formatToolkit(self.version)))
         result.append('.SH NAME\n')
-        result.append('%s \\- %s\n' % (self.get_prog_name(), self.description.split('\n\n')[0]))
+        result.append('%s \\- %s\n' % (self.get_prog_name(),
+                                       self.description.split('\n\n')[0]))
         result.append('.SH SYNOPSIS\n')
         result.append('.PP\n')
-        usage  = "\\fB%prog "
+        usage = "\\fB%prog "
         usage += " ".join([self.getusageman(option) for option in self.option_list])
         usage += "\\fP"
         result.append('%s\n' % formatprog(usage))
@@ -124,8 +135,8 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         result.append('.PP\n')
         for option in self.option_list:
             result.append('.TP\n')
-            result.append('%s\n'%option)
-            result.append('%s\n'%option.help)
+            result.append('%s\n' % option)
+            result.append('%s\n' % option.help)
         return "".join(result)
 
     def print_manpage(self, file=None):
@@ -140,13 +151,14 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         except Exception:
             return
         psycomodes = ["none", "full", "profile"]
-        psycooption = optparse.Option(None, "--psyco", dest="psyco", default=None,
-            choices=psycomodes, metavar="MODE",
+        psycooption = optparse.Option(None, "--psyco", dest="psyco",
+            default=None, choices=psycomodes, metavar="MODE",
             help="use psyco to speed up the operation, modes: %s" % (", ".join(psycomodes)))
         self.define_option(psycooption)
 
     def usepsyco(self, options):
-        # options.psyco == None means the default, which is "full", but don't give a warning...
+        # options.psyco == None means the default, which is "full", but don't
+        #                       give a warning...
         # options.psyco == "none" means don't use psyco at all...
         if getattr(options, "psyco", "none") == "none":
             return
@@ -167,7 +179,8 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         psyco.cannotcompile(encodings.search_function)
 
     def set_usage(self, usage=None):
-        """sets the usage string - if usage not given, uses getusagestring for each option"""
+        """sets the usage string - if usage not given, uses getusagestring for
+        each option"""
         if usage is None:
             self.usage = "%prog " + " ".join([self.getusagestring(option) for option in self.option_list])
         else:
@@ -177,7 +190,8 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         """Print a warning message incorporating 'msg' to stderr and exit."""
         if options:
             if options.errorlevel == "traceback":
-                errorinfo = "\n".join(traceback.format_exception(exc_info[0], exc_info[1], exc_info[2]))
+                errorinfo = "\n".join(traceback.format_exception(exc_info[0],
+                                      exc_info[1], exc_info[2]))
             elif options.errorlevel == "exception":
                 errorinfo = "\n".join(traceback.format_exception_only(exc_info[0], exc_info[1]))
             elif options.errorlevel == "message":
@@ -213,7 +227,8 @@ class RecursiveOptionParser(optparse.OptionParser, object):
             return "\\fR[\\fP%s\\fR]\\fP" % optionstring
 
     def define_option(self, option):
-        """defines the given option, replacing an existing one of the same short name if neccessary..."""
+        """defines the given option, replacing an existing one of the same short
+        name if neccessary..."""
         for short_opt in option._short_opts:
             if self.has_option(short_opt):
                 self.remove_option(short_opt)
@@ -227,11 +242,13 @@ class RecursiveOptionParser(optparse.OptionParser, object):
 
         @type formats: Dictionary
         @param formats: The dictionary I{keys} should be:
-            - single strings (or 1-tuples) containing an input format (if not usetemplates)
-            - tuples containing an input format and template format (if usetemplates)
+            - single strings (or 1-tuples) containing an input format (if not
+              usetemplates)
+            - tuples containing an input format and template format (if
+              usetemplates)
             - formats can be None to indicate what to do with standard input
-        The dictionary I{values} should be tuples of outputformat (string) and processor method.
-        
+        The dictionary I{values} should be tuples of outputformat (string) and
+        processor method.
         """
 
         inputformats = []
@@ -261,17 +278,20 @@ class RecursiveOptionParser(optparse.OptionParser, object):
             self.outputoptions[(inputformat, templateformat)] = (outputformat, processor)
         self.inputformats = inputformats
         inputformathelp = self.getformathelp(inputformats)
-        inputoption = optparse.Option("-i", "--input", dest="input", default=None, metavar="INPUT",
+        inputoption = optparse.Option("-i", "--input", dest="input",
+                default=None, metavar="INPUT",
                 help="read from INPUT in %s" % (inputformathelp))
         inputoption.optionalswitch = True
         inputoption.required = True
         self.define_option(inputoption)
-        excludeoption = optparse.Option("-x", "--exclude", dest="exclude", action="append",
-                type="string", default=["CVS", ".svn", "_darcs", ".git", ".hg", ".bzr"], metavar="EXCLUDE",
+        excludeoption = optparse.Option("-x", "--exclude", dest="exclude",
+                action="append", type="string", metavar="EXCLUDE",
+                default=["CVS", ".svn", "_darcs", ".git", ".hg", ".bzr"],
                 help="exclude names matching EXCLUDE from input paths")
         self.define_option(excludeoption)
         outputformathelp = self.getformathelp(outputformats)
-        outputoption = optparse.Option("-o", "--output", dest="output", default=None, metavar="OUTPUT",
+        outputoption = optparse.Option("-o", "--output", dest="output",
+                default=None, metavar="OUTPUT",
                 help="write to OUTPUT in %s" % (outputformathelp))
         outputoption.optionalswitch = True
         outputoption.required = True
@@ -279,7 +299,8 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         if self.usetemplates:
             self.templateformats = templateformats
             templateformathelp = self.getformathelp(self.templateformats)
-            templateoption = optparse.Option("-t", "--template", dest="template", default=None, metavar="TEMPLATE",
+            templateoption = optparse.Option("-t", "--template",
+                dest="template", default=None, metavar="TEMPLATE",
                 help="read from TEMPLATE in %s" % (templateformathelp))
             self.define_option(templateoption)
 
@@ -290,18 +311,20 @@ class RecursiveOptionParser(optparse.OptionParser, object):
                 "bar": progressbar.HashProgressBar,
                 "dots": progressbar.DotsProgressBar,
                 "names": progressbar.MessageProgressBar,
-                "verbose": progressbar.VerboseProgressBar
+                "verbose": progressbar.VerboseProgressBar,
         }
-        progressoption = optparse.Option(None, "--progress", dest="progress", default="bar",
-                choices = self.progresstypes.keys(), metavar="PROGRESS",
+        progressoption = optparse.Option(None, "--progress", dest="progress",
+                default="bar",
+                choices=self.progresstypes.keys(), metavar="PROGRESS",
                 help="show progress as: %s" % (", ".join(self.progresstypes)))
         self.define_option(progressoption)
 
     def seterrorleveloptions(self):
         """sets the errorlevel options"""
         self.errorleveltypes = ["none", "message", "exception", "traceback"]
-        errorleveloption = optparse.Option(None, "--errorlevel", dest="errorlevel", default="message",
-                choices = self.errorleveltypes, metavar="ERRORLEVEL",
+        errorleveloption = optparse.Option(None, "--errorlevel",
+                dest="errorlevel", default="message",
+                choices=self.errorleveltypes, metavar="ERRORLEVEL",
                 help="show errorlevel as: %s" % (", ".join(self.errorleveltypes)))
         self.define_option(errorleveloption)
 
@@ -326,9 +349,11 @@ class RecursiveOptionParser(optparse.OptionParser, object):
             return os.path.isdir(fileoption)
 
     def parse_args(self, args=None, values=None):
-        """parses the command line options, handling implicit input/output args"""
+        """parses the command line options, handling implicit input/output
+        args"""
         (options, args) = super(RecursiveOptionParser, self).parse_args(args, values)
-        # some intelligent as to what reasonable people might give on the command line
+        # some intelligent as to what reasonable people might give on the
+        # command line
         if args and not options.input:
             if len(args) > 1:
                 options.input = args[:-1]
@@ -442,9 +467,11 @@ class RecursiveOptionParser(optparse.OptionParser, object):
             return None
 
     def run(self):
-        """parses the arguments, and runs recursiveprocess with the resulting options..."""
+        """parses the arguments, and runs recursiveprocess with the resulting
+        options..."""
         (options, args) = self.parse_args()
-        # this is so derived classes can modify the inputformats etc based on the options
+        # this is so derived classes can modify the inputformats etc based on
+        # the options
         options.inputformats = self.inputformats
         options.outputoptions = self.outputoptions
         self.usepsyco(options)
@@ -477,8 +504,8 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         for inputpath in inputfiles:
             try:
                 templatepath = self.gettemplatename(options, inputpath)
-                # If we have a recursive template, but the template doesn't have this
-                # input file, let's drop it.
+                # If we have a recursive template, but the template doesn't
+                # have this input file, let's drop it.
                 if options.recursivetemplate and templatepath is None and not self.allowmissingtemplate:
                     self.warning("No template at %s. Skipping %s." % (templatepath, inputpath))
                     continue
@@ -495,7 +522,9 @@ class RecursiveOptionParser(optparse.OptionParser, object):
                 self.warning("Couldn't handle input file %s" % inputpath, options, sys.exc_info())
                 continue
             try:
-                success = self.processfile(fileprocessor, options, fullinputpath, fulloutputpath, fulltemplatepath)
+                success = self.processfile(fileprocessor, options,
+                                           fullinputpath, fulloutputpath,
+                                           fulltemplatepath)
             except Exception, error:
                 if isinstance(error, KeyboardInterrupt):
                     raise
@@ -537,7 +566,8 @@ class RecursiveOptionParser(optparse.OptionParser, object):
                 self.warning("missing template file %s" % fulltemplatepath)
         return None
 
-    def processfile(self, fileprocessor, options, fullinputpath, fulloutputpath, fulltemplatepath):
+    def processfile(self, fileprocessor, options, fullinputpath,
+                    fulloutputpath, fulltemplatepath):
         """process an individual file"""
         inputfile = self.openinputfile(options, fullinputpath)
         if fulloutputpath and fulloutputpath in (fullinputpath, fulltemplatepath):
@@ -548,7 +578,8 @@ class RecursiveOptionParser(optparse.OptionParser, object):
             tempoutput = False
         templatefile = self.opentemplatefile(options, fulltemplatepath)
         passthroughoptions = self.getpassthroughoptions(options)
-        if fileprocessor(inputfile, outputfile, templatefile, **passthroughoptions):
+        if fileprocessor(inputfile, outputfile, templatefile,
+                         **passthroughoptions):
             if tempoutput:
                 self.warning("writing to temporary output...")
                 self.finalizetempoutputfile(options, outputfile, fulloutputpath)
@@ -577,7 +608,8 @@ class RecursiveOptionParser(optparse.OptionParser, object):
                 os.mkdir(currentpath)
 
     def checkoutputsubdir(self, options, subdir):
-        """checks to see if subdir under options.output needs to be created, creates if neccessary"""
+        """checks to see if subdir under options.output needs to be created,
+        creates if neccessary"""
         fullpath = os.path.join(options.output, subdir)
         if not os.path.isdir(fullpath):
             self.mkdir(options.output, subdir)
@@ -598,8 +630,8 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         for inputfile in options.input:
             if self.isexcluded(options, inputfile):
                 continue
-            if inputfile.startswith(commondir+os.sep):
-                inputfiles.append(inputfile.replace(commondir+os.sep, "", 1))
+            if inputfile.startswith(commondir + os.sep):
+                inputfiles.append(inputfile.replace(commondir + os.sep, "", 1))
             else:
                 inputfiles.append(inputfile.replace(commondir, "", 1))
         options.input = commondir
@@ -634,7 +666,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
 
     def splitext(self, pathname):
         """Splits L{pathname} into name and ext, and removes the extsep
-    
+
         @param pathname: A file path
         @type pathname: string
         @return: root, ext
@@ -698,4 +730,3 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         """checks if this is a valid input filename"""
         inputbase, inputext = self.splitinputext(inputname)
         return (inputext in options.inputformats) or ("*" in options.inputformats)
-
