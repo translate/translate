@@ -84,7 +84,7 @@ def match_fuzzy(input_unit, matchers):
             return fuzzycandidates[0]
 
 
-def pretranslate_unit(input_unit, template_store, matchers=None, mark_reused=False) :
+def pretranslate_unit(input_unit, template_store, matchers=None, mark_reused=False):
     """Pretranslate a unit or return unchanged if no translation was found."""
 
     matching_unit = None
