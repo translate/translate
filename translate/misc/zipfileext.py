@@ -28,7 +28,7 @@ class ZipFileExt(ZipFile, object):
     def delete(self, name):
         """Delete the file from the archive. If it appears multiple
         times only the first instance will be deleted."""
-        for i in range (0, len(self.filelist)):
+        for i in range(0, len(self.filelist)):
             if self.filelist[i].filename == name:
                 if self.debug:
                     print "Removing", name
@@ -62,7 +62,7 @@ class ZipFileExt(ZipFile, object):
                 # Remove file from central directory.
                 del self.filelist[i]
                 # Adjust the remaining offsets in the central directory.
-                for j in range (i, len(self.filelist)):
+                for j in range(i, len(self.filelist)):
                     if self.filelist[j].header_offset > deleted_offset:
                         self.filelist[j].header_offset -= deleted_size
                     # "file_offset" is only available in python up to 2.4

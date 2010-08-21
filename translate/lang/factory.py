@@ -36,7 +36,7 @@ def getlanguage(code):
     try:
         try:
             if code is None:
-                raise ImportError ("Can't determine language code")
+                raise ImportError("Can't determine language code")
             exec("from translate.lang import %s" % code)
             exec("langclass = %s.%s" % (code, code))
             return langclass(code)
