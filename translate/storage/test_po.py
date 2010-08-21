@@ -442,11 +442,11 @@ msgstr "een"
         unit = pofile.units[2]
         print str(unit)
         assert unit.isobsolete()
+        assert unit.isfuzzy()
         assert not unit.istranslatable()
 
         print posource
         print str(pofile)
-        # Doesn't work with CPO if obsolete units are mixed with non-obsolete units
         assert str(pofile) == posource
 
 
