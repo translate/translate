@@ -93,10 +93,10 @@ class TerminologyExtractor(object):
 
     def parse_stopword_file(self):
 
-        actions = { '+': frozenset(), ':': frozenset(['skip']),
-                    '<': frozenset(['phrase']), '=': frozenset(['word']),
-                    '>': frozenset(['word','skip']),
-                    '@': frozenset(['word','phrase']) }
+        actions = {'+': frozenset(), ':': frozenset(['skip']),
+                   '<': frozenset(['phrase']), '=': frozenset(['word']),
+                   '>': frozenset(['word','skip']),
+                   '@': frozenset(['word','phrase']) }
 
         stopfile = open(self.stopfile, "r")
         line = 0
@@ -289,7 +289,7 @@ class TerminologyExtractor(object):
             terms[term] = ((10 * numfiles) + numsources, termunit)
         return terms
 
-    def filter_terms(self, terms, nonstopmin=1, sortorders=[ "frequency", "dictionary", "length" ]):
+    def filter_terms(self, terms, nonstopmin=1, sortorders=["frequency", "dictionary", "length" ]):
         """reduce subphrases from extracted terms"""
         # reduce subphrase
         termlist = terms.keys()
@@ -487,7 +487,7 @@ def main():
     parser.add_option("", "--locs-needed", type="int", dest="locmin", default="2",
         help="omit terms appearing in less than MIN different original source files (default 2)", metavar="MIN")
 
-    sortorders_default = [ "frequency", "dictionary", "length" ]
+    sortorders_default = ["frequency", "dictionary", "length" ]
     parser.add_option("", "--sort", dest="sortorders", action="append",
         type="choice", choices=sortorders_default, metavar="ORDER", default=sortorders_default,
         help="output sort order(s): %s (default is all orders in the above priority)" % ', '.join(sortorders_default))

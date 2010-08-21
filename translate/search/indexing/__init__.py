@@ -115,7 +115,7 @@ def _sort_indexers_by_preference(indexer_classes, pref_order):
     # go through all preferred items and move the matching indexers to 'result'
     for choice in pref_order:
         # find matching indexers
-        matches = [ indexer for indexer in avail_indexers
+        matches = [indexer for indexer in avail_indexers
                 if get_indexer_name(indexer) == choice ]
         # move all matching items to the 'result' queue
         for match_item in matches:
