@@ -57,7 +57,7 @@ class _NGram:
             for i in xrange(size):
                 for s in (1, 2, 3, 4):
                     sub = word[i:i + s]
-                    if not ngrams.has_key(sub):
+                    if not sub in ngrams:
                         ngrams[sub] = 0
                     ngrams[sub] += 1
 
@@ -91,7 +91,7 @@ class _NGram:
         d = 0
         ngrams = ngram.ngrams
         for k in self.ngrams.keys():
-            if ngrams.has_key(k):
+            if k in ngrams:
                 d += abs(ngrams[k] - self.ngrams[k])
             else:
                 d += nb_ngrams

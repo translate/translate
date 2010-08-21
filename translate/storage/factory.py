@@ -211,7 +211,7 @@ def supported_files():
             continue
         extensions = getattr(supported_class, "Extensions", None)
         mimetypes = getattr(supported_class, "Mimetypes", None)
-        if not supported.has_key(name):
+        if not name in supported:
             supported[name] = (extensions, mimetypes)
         else:
             supported[name][0].extend(extensions)

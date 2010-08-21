@@ -79,13 +79,13 @@ def update(existing, add=False, **kwargs):
         fixedargs[key] = value
     removed = []
     for key in poheader.header_order:
-        if existing.has_key(key):
+        if key in existing:
             if key in fixedargs:
                 headerargs[key] = fixedargs.pop(key)
             else:
                 headerargs[key] = existing[key]
             removed.append(key)
-        elif add and fixedargs.has_key(key):
+        elif add and key in fixedargs:
             headerargs[key] = fixedargs.pop(key)
     for key, value in existing.iteritems():
         if not key in removed:

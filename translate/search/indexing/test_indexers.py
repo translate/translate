@@ -339,11 +339,11 @@ def test_searching():
     r_search1 = new_db.search(q_search1, ["fname2", None])
     assert len(r_search1) == 1
     dict_search1 = r_search1[0]
-    assert dict_search1.has_key("fname2") and \
+    assert "fname2" in dict_search1 and \
             (dict_search1["fname2"] == ["foo_field2"])
     # a stupid way for checking, if the second field list is also correct
     # (without caring for the order of the list)
-    assert dict_search1.has_key(None)
+    assert None in dict_search1
     # TODO: for now PyLucene cares for case, while xapian doesn't - FIXME
     list_search1_sorted = [item.lower() for item in dict_search1[None]]
     list_search1_sorted.sort()

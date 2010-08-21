@@ -532,7 +532,7 @@ class CommonDatabase(object):
             return dict(self.field_analyzers)
         # one field is requested
         if isinstance(fieldnames, (str, unicode)):
-            if self.field_analyzers.has_key(fieldnames):
+            if fieldnames in self.field_analyzers:
                 return self.field_analyzers[fieldnames]
             else:
                 return self.analyzer

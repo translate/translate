@@ -171,7 +171,7 @@ class dtd2po:
                     # see if there is a matching accesskey in this line, making this a
                     # mixed entity
                     for akeytype in dtd.accesskeysuffixes:
-                        if thedtdfile.index.has_key(entitybase + akeytype):
+                        if (entitybase + akeytype) in thedtdfile.index:
                             # add both versions to the list of mixed entities
                             self.mixedentities[entity] = {}
                             self.mixedentities[entitybase+akeytype] = {}
@@ -195,7 +195,7 @@ class dtd2po:
                     if thedtd.entity.endswith(labelsuffix):
                         entitybase = thedtd.entity[:thedtd.entity.rfind(labelsuffix)]
                         for akeytype in dtd.accesskeysuffixes:
-                            if thedtdfile.index.has_key(entitybase + akeytype):
+                            if (entitybase + akeytype) in thedtdfile.index:
                                 labelentity, labeldtd = thedtd.entity, thedtd
                                 accesskeyentity = labelentity[:labelentity.rfind(labelsuffix)]+akeytype
                                 accesskeydtd = thedtdfile.index[accesskeyentity]
@@ -206,7 +206,7 @@ class dtd2po:
                             accesskeyentity, accesskeydtd = thedtd.entity, thedtd
                             for labelsuffix in dtd.labelsuffixes:
                                 labelentity = accesskeyentity[:accesskeyentity.rfind(akeytype)]+labelsuffix
-                                if thedtdfile.index.has_key(labelentity):
+                                if labelentity in thedtdfile.index:
                                     labeldtd = thedtdfile.index[labelentity]
                                     break
                             else:

@@ -103,7 +103,7 @@ def test_timezones():
     pofile = po.pofile()
 
     # The following will only work on Unix because of tzset() and %z
-    if time.__dict__.has_key('tzset'):
+    if 'tzset' in time.__dict__:
         os.environ['TZ'] = 'Asia/Kabul'
         time.tzset()
         assert time.timezone == -16200

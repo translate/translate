@@ -414,7 +414,7 @@ class tsfile(lisa.LISAfile):
 
     def nplural(self):
         lang = self.header.get("language")
-        if NPLURALS.has_key(lang):
+        if lang in NPLURALS:
             return NPLURALS[lang]
         else:
             return 1

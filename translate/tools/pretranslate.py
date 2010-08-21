@@ -130,7 +130,7 @@ def pretranslate_store(input_store, template_store, tm=None, min_similarity=75, 
         template_store.makeindex()
         #template preparation based on type
         prepare_template = "prepare_template_%s" % template_store.__class__.__name__
-        if  globals().has_key(prepare_template):
+        if prepare_template in globals():
             globals()[prepare_template](template_store)
 
         if fuzzymatching:

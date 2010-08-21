@@ -77,7 +77,7 @@ class reoo:
             # this is to handle using / instead of \ in the sourcefile...
             key = key.replace('\\', '/')
             key = oo.normalizefilename(key)
-            if self.index.has_key(key):
+            if key in self.index:
                 # now we need to replace the definition of entity with msgstr
                 theoo = self.index[key] # find the oo
                 self.applytranslation(key, subkey, theoo, unit)

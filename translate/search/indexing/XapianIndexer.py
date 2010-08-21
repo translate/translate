@@ -496,7 +496,7 @@ def _extract_fieldvalues(match, (result, fieldnames)):
             else:
                 continue
             # we found a matching field/term
-            if item_fields.has_key(fname):
+            if fname in item_fields:
                 item_fields[fname].append(value)
             else:
                 item_fields[fname] = [value]

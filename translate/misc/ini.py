@@ -550,7 +550,7 @@ class INIConfig(config.ConfigNamespace):
                         cur_section_name = self._sectionxform(cur_section.name)
                     else:
                         cur_section_name = cur_section.name
-                    if not self._sections.has_key(cur_section_name):
+                    if cur_section_name not in self._sections:
                         self._sections[cur_section_name] = \
                                 INISection(cur_section, defaults=self._defaults,
                                            optionxformsource=self)
