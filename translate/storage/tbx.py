@@ -70,4 +70,3 @@ class tbxfile(lisa.LISAfile):
     def addheader(self):
         """Initialise headers with TBX specific things."""
         lisa.setXMLlang(self.document.getroot(), self.sourcelanguage)
-

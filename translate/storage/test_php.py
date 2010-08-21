@@ -157,4 +157,3 @@ $lang[2] = "Yeah";
         phpunit = phpfile.units[0]
         assert phpunit.name == "$lang->'item1'"
         assert phpunit.source == "value1"
-

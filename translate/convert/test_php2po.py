@@ -148,4 +148,3 @@ class TestPhp2POCommand(test_convert.TestConvertCommand, TestPhp2PO):
         options = self.help_check(options, "-P, --pot")
         options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
         options = self.help_check(options, "--duplicates=DUPLICATESTYLE", last=True)
-

@@ -193,5 +193,3 @@ class SimpleParser:
     def raiseerror(self, message, tokennum):
         """raises a ParserError"""
         raise ParserError(self, message, tokennum)
-
-

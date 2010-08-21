@@ -68,4 +68,3 @@ class Directory:
                     self.filedata.append((dirname, fname))
                     
         path.walk(self.dir, addfile, None)
-

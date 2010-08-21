@@ -79,4 +79,3 @@ class TestPOCount:
     # Do we correctly identify a translated yet blank message?
 
     # Need to test that we can differentiate between fuzzy, translated and untranslated
-

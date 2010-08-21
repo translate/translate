@@ -215,4 +215,3 @@ class TestProp2POCommand(test_convert.TestConvertCommand, TestProp2PO):
         options = self.help_check(options, "--personality=TYPE")
         options = self.help_check(options, "--encoding=ENCODING")
         options = self.help_check(options, "--duplicates=DUPLICATESTYLE", last=True)
-

@@ -67,4 +67,3 @@ class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2XLIFF):
         self.create_testfile("simple.oo", oosource)
         self.run_command("simple.oo", "simple.xlf", lang="ku", multifile="onefile")
         assert os.path.isfile(self.get_testfilename("simple.xlf"))
-

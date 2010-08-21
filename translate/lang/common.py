@@ -337,4 +337,3 @@ class Common(object):
         stripped = text.lstrip().lstrip(cls.punctuation)
         return stripped and stripped[0].isupper()
     capsstart = classmethod(capsstart)
-

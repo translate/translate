@@ -85,5 +85,3 @@ def launch_server(host, port, app):
             break
         except ImportError:
             pass
-
-            

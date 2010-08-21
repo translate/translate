@@ -554,4 +554,3 @@ def _get_pylucene_version():
 
 def _escape_term_value(text):
     return re.sub("\*", "", text)
-

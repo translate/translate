@@ -161,4 +161,3 @@ class TestZipfile:
             raise TestFailed("expected calling .testzip on a closed ZipFile"
                              " to raise a RuntimeError")
         del data, zipf
-

@@ -576,4 +576,3 @@ if __name__ == '__main__':
             inputstream = xpifile.openinputstream(jarfilename, filename)
             outputstream.write(inputstream.read())
             outputstream.close()
-

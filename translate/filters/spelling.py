@@ -51,4 +51,3 @@ try:
 except ImportError:
     def check(text, lang):
         return []
-

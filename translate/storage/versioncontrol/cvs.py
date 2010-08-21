@@ -154,4 +154,3 @@ class cvs(GenericRevisionControlSystem):
                 if cvsentryparts[5].startswith("T"):
                     return cvsentryparts[5][1:].strip()
         return None
-

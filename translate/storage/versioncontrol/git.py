@@ -106,4 +106,3 @@ class git(GenericRevisionControlSystem):
             raise IOError("[GIT] 'show' failed for ('%s', %s): %s" \
                     % (self.root_dir, self.location_rel, error))
         return output
-

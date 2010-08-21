@@ -135,4 +135,3 @@ def filterwordswithpunctuation(str1):
         return newstr1
     else:
         return str1
-

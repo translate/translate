@@ -151,5 +151,3 @@ class TestXLiffGrep:
 
         xliff_result = self.xliff_parse(self.xliff_grep(xliff_text, "unavailable string"))
         assert xliff_result.isempty()
-
-

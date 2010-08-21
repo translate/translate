@@ -50,4 +50,3 @@ class TestInc2PO:
         pounit = self.singleelement(pofile)
         assert pounit.getlocations() == ["MOZ_LANGPACK_CONTRIBUTORS"]
         assert "Joe Solon" in pounit.source
-

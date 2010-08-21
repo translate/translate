@@ -224,4 +224,3 @@ sd	source\ui\animations\CustomAnimationSchemesPane.src	0	checkbox	DLG_CUSTOMANIM
         pofile = self.target_filetype(self.open_testfile("simple.po"))
         assert len(pofile.units) == 2
         assert pofile.units[1].target == u"Aperçu automatique"
-

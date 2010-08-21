@@ -7,4 +7,3 @@ class TestTerminology:
         """Tests basic functionality"""
         termmatcher = terminology.TerminologyComparer()
         assert termmatcher.similarity("Open the file", "file") > 75
-

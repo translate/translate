@@ -482,4 +482,3 @@ if __name__ == "__main__":
         # TODO: add test for transaction handling
         # TODO: add test for multiple engine/database handling in "get_indexer"
     clean_database()
-

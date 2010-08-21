@@ -107,4 +107,3 @@ class hg(GenericRevisionControlSystem):
             raise IOError("[Mercurial] Error running '%s': %s" \
                     % (command, error))
         return output
-

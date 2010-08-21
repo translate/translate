@@ -148,4 +148,3 @@ class QtTsParser:
         """clean up the document if required"""
         if hasattr(self, "document"):
             self.document.unlink()
-

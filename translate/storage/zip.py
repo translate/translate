@@ -57,4 +57,3 @@ class ZIPFile(directory.Directory):
         for completename in self.archive.namelist():
             dir, name = path.split(completename)
             self.filedata.append((dir, name))
-

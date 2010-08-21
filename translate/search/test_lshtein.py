@@ -31,4 +31,3 @@ class TestLevenshtein:
         #since the sentence is long it might be chopped and report higher.
         assert levenshtein.similarity(sentence, sentence[0:62], 0) > 25
         assert levenshtein.similarity(sentence, sentence[0:62], 0) < 50
-

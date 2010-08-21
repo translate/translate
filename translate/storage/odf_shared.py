@@ -184,4 +184,3 @@ try:
     
 except:
     define_tables()
-

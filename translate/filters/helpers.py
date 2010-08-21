@@ -64,4 +64,3 @@ def multifiltertestmethod(testmethod, strfilters):
     filteredmethod.__doc__ = testmethod.__doc__
     filteredmethod.name = getattr(testmethod, 'name', testmethod.__name__)
     return filteredmethod
-

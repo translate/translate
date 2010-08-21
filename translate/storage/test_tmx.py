@@ -73,4 +73,3 @@ class TestTMXfile(test_base.TestTranslationStore):
         assert tmxfile.translate('Five < ten') == 'Vyf < tien'
         assert xmltext.index('Five &lt; ten')
         assert xmltext.find('Five < ten') == -1
-

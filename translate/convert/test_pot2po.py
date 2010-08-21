@@ -606,4 +606,3 @@ class TestPOT2POCommand(test_convert.TestConvertCommand, TestPOT2PO):
         options = self.help_check(options, "--tm")
         options = self.help_check(options, "-s MIN_SIMILARITY, --similarity=MIN_SIMILARITY")
         options = self.help_check(options, "--nofuzzymatching", last=True)
-

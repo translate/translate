@@ -133,4 +133,3 @@ class TestConvertCommand:
         options = self.help_check(options, "-x EXCLUDE, --exclude=EXCLUDE")
         options = self.help_check(options, "-o OUTPUT, --output=OUTPUT")
         return options
-

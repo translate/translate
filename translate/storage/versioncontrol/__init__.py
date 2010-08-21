@@ -388,4 +388,3 @@ if __name__ == "__main__":
         # print the names of locally available version control systems
         for rcs in get_available_version_control_systems():
             print rcs
-

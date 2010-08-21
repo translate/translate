@@ -100,4 +100,3 @@ class bzr(GenericRevisionControlSystem):
             raise IOError("[BZR] cat failed for '%s': %s" \
                     % (self.location_abs, error))
         return output
-

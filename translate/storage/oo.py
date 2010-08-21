@@ -387,4 +387,3 @@ class oomultifile:
         oosubfile.filename = subfile
         oosubfile.parse(subfilesrc)
         return oosubfile
-

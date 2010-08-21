@@ -201,4 +201,3 @@ class SubStationAlphaFile(SubtitleFile):
             self._subtitlefile = SubStationAlpha(self.filename or '', self._encoding)
         if self._subtitlefile.newline is None:
             self._subtitlefile.newline = newlines.UNIX
-

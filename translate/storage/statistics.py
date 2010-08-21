@@ -201,5 +201,3 @@ class Statistics(object):
                     self.classification[classname].remove(item)
                 self.classification[classname].sort()
 #        self.savestats()
-
-

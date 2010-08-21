@@ -179,4 +179,3 @@ class TestPO2OOCommand(test_convert.TestConvertCommand, TestPO2OO):
         self.create_testfile("input.oo", ootemplate)
         self.run_command("input", "output.oo", template="input.oo", language=language, keeptimestamp=True)
         return self.read_testfile("output.oo")
-

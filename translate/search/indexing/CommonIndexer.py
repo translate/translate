@@ -597,4 +597,3 @@ class CommonEnquire(object):
         """
         (returned, estimate_count, matches) = self.get_matches(0, 1)
         return estimate_count
-

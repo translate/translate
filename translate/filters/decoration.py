@@ -255,5 +255,3 @@ def countaccelerators(accelmarker, acceptlist=None):
         acclocs, badlocs = findaccelerators(str1, accelmarker, acceptlist)
         return len(acclocs), len(badlocs)
     return countmarkedaccelerators
-
-

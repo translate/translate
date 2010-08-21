@@ -159,4 +159,3 @@ class pofile(poheader.poheader, base.TranslationStore):
             self.parse(inputfile)
         else:
             self.init_headers()
-

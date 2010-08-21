@@ -54,4 +54,3 @@ class StdIOWrapper:
             raise ValueError, "I/O operation on closed file"
         self.stream.writelines(lines)
         self.pos += len("".join(lines))
-

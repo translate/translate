@@ -97,4 +97,3 @@ class svn(GenericRevisionControlSystem):
         if exitcode != 0:
             raise IOError("[SVN] Subversion error running '%s': %s" % (command, error))
         return output
-

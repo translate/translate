@@ -258,4 +258,3 @@ def parseString(string, parser=None):
     """Parse a file into a DOM from a string."""
     builder = ExpatBuilderNS()
     return builder.parseString(string)
-

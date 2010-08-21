@@ -153,4 +153,3 @@ class CatchStringOutput(StringIO, object):
         """use this method to force the closing of the stream if it isn't closed yet"""
         if not self.closed:
             self.close()
-

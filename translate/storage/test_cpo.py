@@ -179,4 +179,3 @@ class TestCPOFile(test_po.TestPOFile):
         print "__str__", str(oldfile)
         assert len(oldfile.units) == 1
         assert str(oldfile).find("# old lonesome comment\nmsgid") >= 0
-    

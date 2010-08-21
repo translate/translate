@@ -56,4 +56,3 @@ class autoencode(unicode):
             return super(autoencode, self).__str__()
         else:
             return self.encode(self.encoding)
-

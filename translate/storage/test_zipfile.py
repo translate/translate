@@ -147,4 +147,3 @@ class TestZipFiles:
         # and report that the first file in the archive was corrupt.
         assert test.raises(RuntimeError, zipf.testzip)
         del data, zipf
-

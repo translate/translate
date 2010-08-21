@@ -372,4 +372,3 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
 def main(argv=None):
     parser = ArchiveConvertOptionParser({}, description=__doc__)
     parser.run(argv)
-

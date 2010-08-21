@@ -133,4 +133,3 @@ def BuildTree(xmlstring):
 
 def MakeElement(tag, attrib={}, **extraargs):
     return ElementTree.Element(tag, attrib, **extraargs)
-

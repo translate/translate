@@ -391,4 +391,3 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
                     nextplural = None
             else:
                 self.addunit(term, new=False)
-

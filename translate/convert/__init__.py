@@ -28,4 +28,3 @@ It contains code to convert between different storage formats for localizations
 @group Support: accesskey convert
 @group Other: poreplace
 """
-

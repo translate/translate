@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#
-# Copyright 2002-2006 Zuza Software Foundation
+# 
+# Copyright 2002, 2003 Zuza Software Foundation
 # 
 # This file is part of translate.
 #
@@ -18,31 +18,5 @@
 # You should have received a copy of the GNU General Public License
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
 
-import xpath_breadcrumb
-
-def test_breadcrumb():
-    xb = xpath_breadcrumb.XPathBreadcrumb()
-    assert xb.xpath == u''
-
-    xb.start_tag(u'a')
-    assert xb.xpath == u'a[0]'
-
-    xb.start_tag(u'b')
-    assert xb.xpath == u'a[0]/b[0]'
-    xb.end_tag()
-
-    assert xb.xpath == u'a[0]'
-
-    xb.start_tag(u'b')
-    assert xb.xpath == u'a[0]/b[1]'
-    xb.end_tag()
-
-    assert xb.xpath == u'a[0]'
-    xb.end_tag()
-
-    assert xb.xpath == u''
-
-    xb.start_tag(u'a')
-    assert xb.xpath == u'a[1]'
+"""Filters that can be used on translations..."""

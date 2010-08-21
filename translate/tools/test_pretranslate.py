@@ -248,4 +248,3 @@ class TestPretranslateCommand(test_convert.TestConvertCommand, TestPretranslate)
         options = self.help_check(options, "--tm")
         options = self.help_check(options, "-s MIN_SIMILARITY, --similarity=MIN_SIMILARITY")
         options = self.help_check(options, "--nofuzzymatching", last=True)
-

@@ -25,4 +25,3 @@ def test_sentences():
     sentences = language.sentences(u"أترغب في استبداله؟ يوجد بالفعل مجلد بالإسم \"%s\".")
     print sentences
     assert sentences == [u"أترغب في استبداله؟", u"يوجد بالفعل مجلد بالإسم \"%s\"."]
-

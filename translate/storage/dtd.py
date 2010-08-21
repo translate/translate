@@ -439,4 +439,3 @@ class dtdfile(base.TranslationStore):
             except etree.DTDParseError:
                 return False
         return True
-

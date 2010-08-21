@@ -351,4 +351,3 @@ def simplify_to_common(language_code, languages=languages):
         return language_code
     else:
         return simplify_to_common(simpler)
-

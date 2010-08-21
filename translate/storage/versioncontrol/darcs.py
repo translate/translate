@@ -94,4 +94,3 @@ class darcs(GenericRevisionControlSystem):
             raise IOError("[Darcs] error reading original file '%s': %s" % \
                     (filename, error))
         return output
-

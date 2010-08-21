@@ -142,4 +142,3 @@ class TestPO2CSVCommand(test_convert.TestConvertCommand, TestPO2CSV):
         options = test_convert.TestConvertCommand.test_help(self)
         options = self.help_check(options, "-P, --pot")
         options = self.help_check(options, "--columnorder=COLUMNORDER", last=True)
-

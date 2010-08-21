@@ -207,4 +207,3 @@ class PyLuceneDatabase(PyLuceneIndexer.PyLuceneDatabase):
         """
         super(PyLuceneIndexer1, self)._writer_open_()
         self.writer.maxFieldLength = PyLuceneIndexer.MAX_FIELD_SIZE
-

@@ -266,4 +266,3 @@ class htmlfile(HTMLParser, base.TranslationStore):
 
 class POHTMLParser(htmlfile):
     pass
-

@@ -292,4 +292,3 @@ msgstr ""
         assert xliff.units[1].isapproved()
         assert xliff.units[2].xmlelement.get("approved") != "yes"
         assert not xliff.units[2].isapproved()
-

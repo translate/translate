@@ -112,4 +112,3 @@ class ZipFileExt(ZipFile, object):
                      0, 0, count, count, pos2 - pos1, pos1, 0)
             self.fp.write(endrec)
             self.fp.seek(pos1)
-
