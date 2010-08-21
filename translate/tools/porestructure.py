@@ -26,7 +26,8 @@ See: http://translate.sourceforge.net/wiki/toolkit/porestructure for examples an
 usage instructions
 """
 
-import sys, os
+import os
+import sys
 from translate.storage import po
 from translate.misc import optrecurse
 

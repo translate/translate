@@ -1,5 +1,9 @@
 import zlib # implied prerequisite
-import zipfile, os, StringIO, tempfile
+import zipfile
+import os
+import StringIO
+import tempfile
+
 try:
     from test.test_support import TestFailed
 except ImportError:

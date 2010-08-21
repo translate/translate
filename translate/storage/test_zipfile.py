@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 import zlib # implied prerequisite
-import zipfile, os, StringIO, tempfile
+import zipfile
+import os
+import StringIO
+import tempfile
 from test.test_support import TestFailed
 from py import test
 from translate.misc import zipfileext
