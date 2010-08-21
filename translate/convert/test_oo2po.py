@@ -89,9 +89,8 @@ class TestOO2PO:
         self.check_roundtrip('file.xhp', r'''\<ahelp prop=\"value>>\"\>'Next'>> or "<<Previous"\</ahelp\>''')
         self.check_roundtrip('address_auto.xhp', r'''example, \<item type=\"literal\"\>'Harry\\'s Bar'.\</item\>''')
 
-    def xtest_roundtrip_whitespaceonly(self):
+    def test_roundtrip_whitespaceonly(self):
         """check items that are only special instances of whitespce"""
-        # FIXME We can't roundtrip this yet because of some problems in the oo class handling
         self.check_roundtrip('choose_chart_type.xhp', r' ')
         self.check_roundtrip('choose_chart_type.xhp', '\xc2\xa0')
 
