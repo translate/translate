@@ -19,7 +19,7 @@ def test_roundtrip_quoting():
         print "special: %r\nquoted: %r\nunquoted: %r\n" % (special, quoted_special, unquoted_special)
         assert special == unquoted_special
 
-def test_removeinvalidamp():
+def test_removeinvalidamp(recwarn):
     """tests the the removeinvalidamps function"""
     def tester(actual, expected):
         assert dtd.removeinvalidamps("test.name", actual) == expected
@@ -28,8 +28,8 @@ def test_removeinvalidamp():
     tester("Valid &#1234; included", "Valid &#1234; included")
     tester("This &amp is broken", "This amp is broken")
     tester("Mad & &amp &amp;", "Mad  amp &amp;")
-    warnings.simplefilter("error")
-    assert test.raises(Warning, dtd.removeinvalidamps, "simple.warningtest", "Dimpled &Ring")
+    dtd.removeinvalidamps("simple.warningtest", "Dimpled &Ring")
+    assert recwarn.pop(UserWarning)
 
 class TestDTDUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = dtd.dtdunit
@@ -176,11 +176,9 @@ class TestDTD(test_monolingual.TestMonolingualStore):
         assert dtdunit.definition == '"bananas for sale"'
         assert str(dtdfile) == '<!ENTITY test.me "bananas for sale">\n'
 
-    def test_missing_quotes(self):
+    def test_missing_quotes(self, recwarn):
         """test that we fail graacefully when a message without quotes is found (bug #161)"""
         dtdsource = '<!ENTITY bad no quotes">\n<!ENTITY good "correct quotes">\n'
-        warnings.simplefilter("error")
-        assert test.raises(Warning, self.dtdparse, dtdsource)
-        warnings.resetwarnings()
         dtdfile = self.dtdparse(dtdsource)
         assert len(dtdfile.units) == 1
+        assert recwarn.pop(Warning)
