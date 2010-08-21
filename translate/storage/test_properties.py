@@ -6,6 +6,7 @@ from translate.storage import test_monolingual
 from translate.misc import wStringIO
 
 from py import test
+from py.test import deprecated_call
 
 def test_find_delimiter_pos_simple():
     """Simple tests to find the various delimiters"""
@@ -45,7 +46,7 @@ def test_find_delimiter_pos_escapes():
 def test_find_delimiter_deprecated_fn():
     """Test that the deprecated function still actually works"""
     assert properties.find_delimeter(u"key=value") == ('=', 3)
-    #assert test.raises(DeprecationWarning, 'properties.find_delimeter(u"key=value")')
+    deprecated_call(properties.find_delimeter, u"key=value")
 
 def test_is_line_continuation():
     assert properties.is_line_continuation(u"") == False
