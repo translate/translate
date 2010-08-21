@@ -111,7 +111,7 @@ class rcfile(base.TranslationStore):
     def __init__(self, inputfile=None, lang=None, sublang=None, encoding="cp1252"):
         """Construct an rcfile, optionally reading in from inputfile."""
         self.encoding = encoding
-        super(rcfile, self).__init__(unitclass = self.UnitClass)
+        super(rcfile, self).__init__(unitclass=self.UnitClass)
         self.filename = getattr(inputfile, 'name', '')
         self.lang = lang
         self.sublang = sublang

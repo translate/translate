@@ -102,7 +102,7 @@ class SimpleParser:
         """checks whether a token is a string token"""
         return text[:1] in self.quotechars
 
-    def separatetokens(self, text, tokenlist = None):
+    def separatetokens(self, text, tokenlist=None):
         """this separates out tokens in tokenlist from whitespace etc"""
         if self.keeptogether(text):
             return [text]

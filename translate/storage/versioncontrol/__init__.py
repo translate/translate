@@ -84,11 +84,11 @@ try:
         """
         # ok - we use "subprocess"
         try:
-            proc = subprocess.Popen(args = command,
-                    stdout = subprocess.PIPE,
-                    stderr = subprocess.PIPE,
-                    stdin = subprocess.PIPE,
-                    cwd = cwd)
+            proc = subprocess.Popen(args=command,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    stdin=subprocess.PIPE,
+                    cwd=cwd)
             (output, error) = proc.communicate()
             ret = proc.returncode
             return ret, output, error
@@ -316,8 +316,8 @@ def get_versioned_object(
     # if 'location' is a symlink, then we should try the original file
     if follow_symlinks and os.path.islink(location):
         return get_versioned_object(os.path.realpath(location),
-                versioning_systems = versioning_systems,
-                follow_symlinks = False)
+                versioning_systems=versioning_systems,
+                follow_symlinks=False)
     # if everything fails:
     raise IOError("Could not find version control information: %s" % location)
 

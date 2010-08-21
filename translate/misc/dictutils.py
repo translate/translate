@@ -28,7 +28,7 @@ def generalupper(str):
     return str.upper()
 
 class cidict(dict):
-    def __init__(self, fromdict = None):
+    def __init__(self, fromdict=None):
         """constructs the cidict, optionally using another dict to do so"""
         if fromdict is not None:
             self.update(fromdict)

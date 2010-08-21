@@ -57,7 +57,7 @@ def reduce_unit_tree(f, unit_node, *state):
 class ParseState(object):
     """Maintain constants and variables used during the walking of a
     DOM tree (via the function apply)."""
-    def __init__(self, no_translate_content_elements, inline_elements = {}, nsmap = {}):
+    def __init__(self, no_translate_content_elements, inline_elements={}, nsmap={}):
         self.no_translate_content_elements = no_translate_content_elements
         self.inline_elements = inline_elements
         self.is_inline = False
@@ -237,7 +237,7 @@ def reverse_map(a_map):
     return dict((value, key) for key, value in a_map.iteritems())
 
 @accepts(lambda obj: hasattr(obj, "read"), base.TranslationStore, ParseState, Nullable(IsCallable()))
-def build_store(odf_file, store, parse_state, store_adder = None):
+def build_store(odf_file, store, parse_state, store_adder=None):
     """Utility function for loading xml_filename"""
     store_adder = store_adder or _make_store_adder(store)
     tree = etree.parse(odf_file)

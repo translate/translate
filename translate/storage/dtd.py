@@ -364,7 +364,7 @@ class dtdfile(base.TranslationStore):
     UnitClass = dtdunit
     def __init__(self, inputfile=None):
         """construct a dtdfile, optionally reading in from inputfile"""
-        base.TranslationStore.__init__(self, unitclass = self.UnitClass)
+        base.TranslationStore.__init__(self, unitclass=self.UnitClass)
         self.filename = getattr(inputfile, 'name', '')
         if inputfile is not None:
             dtdsrc = inputfile.read()

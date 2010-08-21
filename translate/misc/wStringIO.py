@@ -24,7 +24,7 @@
 import cStringIO
 
 class StringIO:
-    def __init__(self, buf = ''):
+    def __init__(self, buf=''):
         if not isinstance(buf, (str, unicode)):
             buf = str(buf)
         if isinstance(buf, unicode):
@@ -59,7 +59,7 @@ class StringIO:
             raise ValueError, "I/O operation on closed file"
         return False
 
-    def seek(self, pos, mode = 0):
+    def seek(self, pos, mode=0):
         if self.closed:
             raise ValueError, "I/O operation on closed file"
         self.buf.seek(pos, mode)
@@ -70,7 +70,7 @@ class StringIO:
             raise ValueError, "I/O operation on closed file"
         return self.pos
 
-    def read(self, n = None):
+    def read(self, n=None):
         if self.closed:
             raise ValueError, "I/O operation on closed file"
         if n == None:

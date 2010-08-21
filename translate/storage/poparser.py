@@ -42,7 +42,7 @@ append = list.append
 decode = str.decode
 
 class ParseState(object):
-    def __init__(self, input_iterator, UnitClass, encoding = None):
+    def __init__(self, input_iterator, UnitClass, encoding=None):
         self._input_iterator = input_iterator
         self.next_line = ''
         self.eof = False
@@ -165,7 +165,7 @@ def parse_obsolete(parse_state, unit):
         unit.makeobsolete()
     return unit
 
-def parse_quoted(parse_state, start_pos = 0):
+def parse_quoted(parse_state, start_pos=0):
     line = parse_state.next_line
     left = find(line, '"', start_pos)
     if left == start_pos or isspace(line[start_pos:left]):

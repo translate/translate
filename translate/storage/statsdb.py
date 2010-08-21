@@ -81,7 +81,7 @@ def wordsinunit(unit):
     return sourcewords, targetwords
 
 class Record(UserDict):
-    def __init__(self, record_keys, record_values=None, compute_derived_values = lambda x: x):
+    def __init__(self, record_keys, record_values=None, compute_derived_values=lambda x: x):
         if record_values == None:
             record_values = (0 for _i in record_keys)
         self.record_keys = record_keys
@@ -166,7 +166,7 @@ class FileTotals(object):
                 translatedtargetwords   INTEGER NOT NULL);""")
 
     def new_record(cls, state_for_db=None, sourcewords=None, targetwords=None):
-        record = Record(cls.keys, compute_derived_values = cls._compute_derived_values)
+        record = Record(cls.keys, compute_derived_values=cls._compute_derived_values)
         if state_for_db is not None:
             if state_for_db is UNTRANSLATED:
                 record['untranslated'] = 1

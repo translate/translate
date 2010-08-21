@@ -51,27 +51,27 @@ def test_chunk_list():
 def test_set_strelem_to_xml():
     source = etree.Element(u'source')
     lisa.strelem_to_xml(source, StringElem(u'a'))
-    assert etree.tostring(source, encoding = 'UTF-8') == '<source>a</source>'
+    assert etree.tostring(source, encoding='UTF-8') == '<source>a</source>'
 
     source = etree.Element(u'source')
     lisa.strelem_to_xml(source, StringElem([u'a', u'é']))
-    assert etree.tostring(source, encoding = 'UTF-8') == '<source>aé</source>'
+    assert etree.tostring(source, encoding='UTF-8') == '<source>aé</source>'
 
     source = etree.Element(u'source')
     lisa.strelem_to_xml(source, StringElem(X(id='foo[1]/bar[1]/baz[1]')))
-    assert etree.tostring(source, encoding = 'UTF-8') == '<source><x id="foo[1]/bar[1]/baz[1]"/></source>'
+    assert etree.tostring(source, encoding='UTF-8') == '<source><x id="foo[1]/bar[1]/baz[1]"/></source>'
 
     source = etree.Element(u'source')
     lisa.strelem_to_xml(source, StringElem([u'a', X(id='foo[1]/bar[1]/baz[1]')]))
-    assert etree.tostring(source, encoding = 'UTF-8') == '<source>a<x id="foo[1]/bar[1]/baz[1]"/></source>'
+    assert etree.tostring(source, encoding='UTF-8') == '<source>a<x id="foo[1]/bar[1]/baz[1]"/></source>'
 
     source = etree.Element(u'source')
     lisa.strelem_to_xml(source, StringElem([u'a', X(id='foo[1]/bar[1]/baz[1]'), u'é']))
-    assert etree.tostring(source, encoding = 'UTF-8') == '<source>a<x id="foo[1]/bar[1]/baz[1]"/>é</source>'
+    assert etree.tostring(source, encoding='UTF-8') == '<source>a<x id="foo[1]/bar[1]/baz[1]"/>é</source>'
 
     source = etree.Element(u'source')
     lisa.strelem_to_xml(source, StringElem([u'a', G(id='foo[2]/bar[2]/baz[2]', sub=[u'b', X(id='foo[1]/bar[1]/baz[1]'), u'c']), u'é']))
-    assert etree.tostring(source, encoding = 'UTF-8') == '<source>a<g id="foo[2]/bar[2]/baz[2]">b<x id="foo[1]/bar[1]/baz[1]"/>c</g>é</source>'
+    assert etree.tostring(source, encoding='UTF-8') == '<source>a<g id="foo[2]/bar[2]/baz[2]">b<x id="foo[1]/bar[1]/baz[1]"/>c</g>é</source>'
 
 def test_unknown_xml_placeable():
     # The XML below is (modified) from the official XLIFF example file Sample_AlmostEverything_1.2_strict.xlf

@@ -463,7 +463,7 @@ def main():
                       help="read stopword (term exclusion) list from STOPFILE (default %s)" %
                       file_discovery.get_abs_data_filename('stoplist-en'))
 
-    parser.set_defaults(foldtitle = True, ignorecase = False)
+    parser.set_defaults(foldtitle=True, ignorecase=False)
     parser.add_option("-F", "--fold-titlecase", callback=fold_case_option,
         action="callback", help="fold \"Title Case\" to lowercase (default)")
     parser.add_option("-C", "--preserve-case", callback=preserve_case_option,
