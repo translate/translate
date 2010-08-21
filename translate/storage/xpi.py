@@ -256,7 +256,7 @@ class XpiFile(ZipFileCatcher):
             if hasconflicts:
                 shortjarfilename = os.path.split(jarfilename)[1]
                 shortjarfilename = os.path.splitext(shortjarfilename)[0]
-                jarprefixes[jarfilename] = shortjarfilename+'/'
+                jarprefixes[jarfilename] = shortjarfilename + '/'
         # this is a clever trick that will e.g. remove zu- from zu-win, zu-mac, zu-unix
         commonjarprefix = _commonprefix([prefix for prefix in jarprefixes.itervalues() if prefix])
         if commonjarprefix:
@@ -322,7 +322,7 @@ class XpiFile(ZipFileCatcher):
         """converts a filename from within a jarfile to an os-style filepath"""
         if jarfilename:
             jarprefix = self.jarprefixes[jarfilename]
-            return self.ziptoospath(jarprefix+self.mapfilename(filename))
+            return self.ziptoospath(jarprefix + self.mapfilename(filename))
         else:
             return self.ziptoospath(os.path.join("package", self.mapxpifilename(filename)))
 
@@ -539,7 +539,7 @@ class XpiFile(ZipFileCatcher):
 
 if __name__ == '__main__':
     import optparse
-    optparser = optparse.OptionParser(version="%prog "+__version__.sver)
+    optparser = optparse.OptionParser(version="%prog " + __version__.sver)
     optparser.usage = "%prog [-l|-x] [options] file.xpi"
     optparser.add_option("-l", "--list", help="list files", \
         action="store_true", dest="listfiles", default=False)

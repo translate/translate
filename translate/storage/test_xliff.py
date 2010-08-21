@@ -175,15 +175,15 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         xlifffile = xliff.xlifffile(sourcelanguage="xh")
         xmltext = str(xlifffile)
         print xmltext
-        assert xmltext.find('source-language="xh"')> 0
+        assert xmltext.find('source-language="xh"') > 0
         #TODO: test that it also works for new files.
 
     def test_targetlanguage(self):
         xlifffile = xliff.xlifffile(sourcelanguage="zu", targetlanguage="af")
         xmltext = str(xlifffile)
         print xmltext
-        assert xmltext.find('source-language="zu"')> 0
-        assert xmltext.find('target-language="af"')> 0
+        assert xmltext.find('source-language="zu"') > 0
+        assert xmltext.find('target-language="af"') > 0
 
     def test_notes(self):
         xlifffile = xliff.xlifffile()

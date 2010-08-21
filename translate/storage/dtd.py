@@ -324,7 +324,7 @@ class dtdunit(base.TranslationUnit):
             for attr in dir(self):
                 r = repr(getattr(self, attr))
                 if len(r) > 60:
-                    r = r[:57]+"..."
+                    r = r[:57] + "..."
                 self.comments.append(("comment", "self.%s = %s" % (attr, r) ))
         return linesprocessed
 
@@ -349,14 +349,14 @@ class dtdunit(base.TranslationUnit):
         # for n in self.locnotes: yield n
         if len(self.entity) > 0:
             if getattr(self, 'entitytype', None) == 'external':
-                entityline = '<!ENTITY % '+self.entity+' '+self.entityparameter+' '+self.definition+'>'
+                entityline = '<!ENTITY % ' + self.entity + ' ' + self.entityparameter + ' ' + self.definition+'>'
             else:
-                entityline = '<!ENTITY '+self.entity+' '+self.definition+'>'
+                entityline = '<!ENTITY ' + self.entity + ' ' + self.definition + '>'
             if getattr(self, 'hashprefix', None):
                 entityline = self.hashprefix + " " + entityline
             if isinstance(entityline, unicode):
                 entityline = entityline.encode('UTF-8')
-            lines.append(entityline+'\n')
+            lines.append(entityline + '\n')
         return "".join(lines)
 
 class dtdfile(base.TranslationStore):

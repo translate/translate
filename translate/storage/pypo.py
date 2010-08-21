@@ -56,7 +56,7 @@ def escapeforpo(line):
     for location in special_locations:
         escaped_line += line[last_location:location]
         escaped_line += po_escape_map[line[location:location+1]]
-        last_location = location+1
+        last_location = location + 1
     escaped_line += line[last_location:]
     return escaped_line
 
@@ -424,7 +424,7 @@ class pounit(pocommon.pounit):
         if not self.istranslated() or overwrite:
             # Remove kde-style comments from the translation (if any).
             if self._extract_msgidcomments(otherpo.target):
-                otherpo.target = otherpo.target.replace('_: ' + otherpo._extract_msgidcomments()+ '\n', '')
+                otherpo.target = otherpo.target.replace('_: ' + otherpo._extract_msgidcomments() + '\n', '')
             self.target = otherpo.target
             if self.source != otherpo.source or self.getcontext() != otherpo.getcontext():
                 self.markfuzzy()

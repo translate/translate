@@ -391,7 +391,7 @@ def _show_database_xapian(database):
     doccount = database.reader.get_doccount()
     max_doc_index = database.reader.get_lastdocid()
     print "Database overview: %d items up to index %d" % (doccount, max_doc_index)
-    for index in range(1, max_doc_index+1):
+    for index in range(1, max_doc_index + 1):
         try:
             document = database.reader.get_document(index)
         except xapian.DocNotFoundError:

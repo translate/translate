@@ -256,7 +256,7 @@ class pounit(pocommon.pounit):
         if not self.istranslated() or overwrite:
             # Remove kde-style comments from the translation (if any). XXX - remove
             if pocommon.extract_msgid_comment(otherpo.target):
-                otherpo.target = otherpo.target.replace('_: ' + otherpo._extract_msgidcomments()+ '\n', '')
+                otherpo.target = otherpo.target.replace('_: ' + otherpo._extract_msgidcomments() + '\n', '')
             self.target = otherpo.target
             if self.source != otherpo.source or self.getcontext() != otherpo.getcontext():
                 self.markfuzzy()

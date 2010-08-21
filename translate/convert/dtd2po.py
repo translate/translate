@@ -197,7 +197,7 @@ class dtd2po:
                         for akeytype in dtd.accesskeysuffixes:
                             if (entitybase + akeytype) in thedtdfile.index:
                                 labelentity, labeldtd = thedtd.entity, thedtd
-                                accesskeyentity = labelentity[:labelentity.rfind(labelsuffix)]+akeytype
+                                accesskeyentity = labelentity[:labelentity.rfind(labelsuffix)] + akeytype
                                 accesskeydtd = thedtdfile.index[accesskeyentity]
                                 break
                 else:
@@ -205,7 +205,7 @@ class dtd2po:
                         if thedtd.entity.endswith(akeytype):
                             accesskeyentity, accesskeydtd = thedtd.entity, thedtd
                             for labelsuffix in dtd.labelsuffixes:
-                                labelentity = accesskeyentity[:accesskeyentity.rfind(akeytype)]+labelsuffix
+                                labelentity = accesskeyentity[:accesskeyentity.rfind(akeytype)] + labelsuffix
                                 if labelentity in thedtdfile.index:
                                     labeldtd = thedtdfile.index[labelentity]
                                     break

@@ -54,11 +54,11 @@ class CommonDatabase(object):
     ANALYZER_EXACT = 0
     """exact matching: the query string must equal the whole term string"""
 
-    ANALYZER_PARTIAL = 1<<1
+    ANALYZER_PARTIAL = 1 << 1
     """partial matching: a document matches, even if the query string only
     matches the beginning of the term value."""
 
-    ANALYZER_TOKENIZE = 1<<2
+    ANALYZER_TOKENIZE = 1 << 2
     """tokenize terms and queries automatically"""
 
     ANALYZER_DEFAULT = ANALYZER_TOKENIZE | ANALYZER_PARTIAL

@@ -35,13 +35,13 @@ class TestZipFiles:
 
     def zipTest(self, f, compression, srccontents):
         zip = zipfile.ZipFile(f, "w", compression)   # Create the ZIP archive
-        zip.write(self.srcname, "another"+os.extsep+"name")
+        zip.write(self.srcname, "another" + os.extsep + "name")
         zip.write(self.srcname, self.srcname)
         zip.close()
     
         zip = zipfile.ZipFile(f, "r", compression)   # Read the ZIP archive
         readData2 = zip.read(self.srcname)
-        readData1 = zip.read("another"+os.extsep+"name")
+        readData1 = zip.read("another" + os.extsep + "name")
         zip.close()
     
         if readData1 != srccontents or readData2 != srccontents:
@@ -49,8 +49,8 @@ class TestZipFiles:
 
     def deleteTest(self, f, compression, srccontents):
         zip = zipfile.ZipFile(f, "w", compression)   # Create the ZIP archive
-        othername = "another"+os.extsep+"name"
-        finalname = "adifferent"+os.extsep+"name"
+        othername = "another" + os.extsep + "name"
+        finalname = "adifferent" + os.extsep + "name"
         leftname, deletenames = othername, [self.srcname, finalname]
         zip.write(self.srcname, self.srcname)
         zip.write(self.srcname, othername)

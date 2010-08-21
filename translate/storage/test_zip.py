@@ -63,7 +63,7 @@ class TestZIPFile(object):
         
         d = zip.ZIPFile(self.testzip)
         filenames = [name for dir, name in d.getfiles()]
-        assert filenames == files*2
+        assert filenames == files * 2
 
     def test_getunits(self):
         """Tests basic functionality."""

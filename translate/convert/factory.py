@@ -188,7 +188,7 @@ def convert(inputfile, template=None, options=None, convert_options=None):
     #      issues when being closed (and deleted) by the rest of the toolkit
     #      (eg. TranslationStore.savefile()). Therefore none of mkstemp()'s
     #      security features are being utilised.
-    tempfd, tempfname = tempfile.mkstemp(prefix='ttk_convert', suffix=os.extsep+out_ext)
+    tempfd, tempfname = tempfile.mkstemp(prefix='ttk_convert', suffix=os.extsep + out_ext)
     os.close(tempfd)
     outputfile = open(tempfname, 'w')
 

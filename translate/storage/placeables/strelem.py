@@ -586,12 +586,12 @@ class StringElem(object):
         # 4.2 #
         elif before.iseditable and oelem.iseditable:
             #logging.debug('Case 4.2')
-            return before.insert(len(before)+1, text) # Reinterpret as a case 2
+            return before.insert(len(before) + 1, text) # Reinterpret as a case 2
 
         # 4.3 #
         elif before.iseditable and not oelem.iseditable:
             #logging.debug('Case 4.3')
-            return before.insert(len(before)+1, text) # Reinterpret as a case 2
+            return before.insert(len(before) + 1, text) # Reinterpret as a case 2
 
         # 4.4 #
         elif not before.iseditable and oelem.iseditable:
@@ -762,7 +762,7 @@ class StringElem(object):
 
         for elem in self.sub:
             if isinstance(elem, StringElem):
-                elem.print_tree(indent+1, verbose=verbose)
+                elem.print_tree(indent + 1, verbose=verbose)
             else:
                 print (u'%s%s[%s]' % (indent_prefix, indent_prefix, elem)).encode('utf-8')
 

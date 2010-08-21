@@ -102,7 +102,7 @@ class TestStringElem:
         # Case 2: An entire element #
         elem = self.elem.copy()
         offset = elem.elem_offset(elem.sub[2])
-        deleted, parent, offset = elem.delete_range(offset, offset+len(elem.sub[2]))
+        deleted, parent, offset = elem.delete_range(offset, offset + len(elem.sub[2]))
         assert deleted == self.elem.sub[2]
         assert parent is elem
         assert offset == len(elem.sub[0]) + len(elem.sub[1])
