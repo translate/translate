@@ -443,8 +443,7 @@ class pounit(pocommon.pounit):
         return (is_null(self.msgid)
                         and not is_null(self.msgstr)
                         and self.msgidcomments == []
-                        and is_null(self.msgctxt)
-        )
+                        and is_null(self.msgctxt))
 
     def isblank(self):
         if self.isheader() or len(self.msgidcomments):

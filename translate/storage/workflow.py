@@ -109,8 +109,7 @@ class StateNotInWorkflowError(Exception):
 
     def __init__(self, state):
         super(StateNotInWorkflowError, self).__init__(
-            'State not in workflow: %s' % (state)
-        )
+            'State not in workflow: %s' % (state))
 
 
 class Workflow(object):

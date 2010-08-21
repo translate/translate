@@ -107,7 +107,7 @@ def filtervariables(startmarker, endmarker, varfilter):
 
 # a list of special words with punctuation 
 # all apostrophes in the middle of the word are handled already
-wordswithpunctuation = ["'n","'t" # Afrikaans
+wordswithpunctuation = ["'n", "'t", # Afrikaans
                        ]
 # map all the words to their non-punctified equivalent
 wordswithpunctuation = dict([(word, filter(str.isalnum, word)) for word in wordswithpunctuation])

@@ -60,8 +60,7 @@ class TMServer(object):
                       GET=self.translate_unit,
                       POST=self.update_unit,
                       PUT=self.add_unit,
-                      DELETE=self.forget_unit
-                      )
+                      DELETE=self.forget_unit)
 
         self.rest.add("/{slang}/{tlang}/store/{sid:any}",
                       GET=self.get_store_stats,

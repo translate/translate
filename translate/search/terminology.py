@@ -41,6 +41,6 @@ class TerminologyComparer:
 
         pos = text.find(term)
         if pos >= 0:
-            self.match_info[term] = {'pos': pos }
+            self.match_info[term] = {'pos': pos}
             return 100
         return 0

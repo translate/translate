@@ -285,7 +285,7 @@ propertyescapes = {
 controlchars = {
     # the reverse of the above...
     "\\": "\\\\",
-    "\f": "\\f", "\n": "\\n", "\r": "\\r", "\t": "\\t"
+    "\f": "\\f", "\n": "\\n", "\r": "\\r", "\t": "\\t",
     }
 
 

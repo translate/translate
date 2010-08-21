@@ -58,7 +58,7 @@ class ProjectStore(object):
             'f_prefix': {
                 'src':   'sources/',
                 'tgt':   'targets/',
-                'trans': 'trans/'
+                'trans': 'trans/',
             },
             # type => list containing filenames for that type
             'lists': {

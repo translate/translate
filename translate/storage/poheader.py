@@ -258,7 +258,7 @@ class poheader(object):
         """Update the Plural-Form PO header."""
         if isinstance(nplurals, basestring):
             nplurals = int(nplurals)
-        self.updateheader(add=True, Plural_Forms="nplurals=%d; plural=%s;" % (nplurals, plural) )
+        self.updateheader(add=True, Plural_Forms="nplurals=%d; plural=%s;" % (nplurals, plural))
 
     def gettargetlanguage(self):
         """Return the target language based on information in the header.

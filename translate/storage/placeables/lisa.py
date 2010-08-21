@@ -34,7 +34,7 @@ def make_empty_replacement_placeable(klass, node, xml_space="preserve"):
             id=node.attrib[u'id'],
             rid=node.attrib.get('rid', None),
             xid=node.attrib.get('xid', None),
-            xml_attrib=node.attrib
+            xml_attrib=node.attrib,
         )
     except KeyError:
         pass
@@ -44,7 +44,7 @@ def make_g_placeable(klass, node, xml_space="default"):
     return klass(
         id=node.attrib[u'id'],
         sub=xml_to_strelem(node, xml_space).sub,
-        xml_attrib=node.attrib
+        xml_attrib=node.attrib,
     )
 
 def not_yet_implemented(klass, node, xml_space="preserve"):
@@ -69,7 +69,7 @@ _class_dictionary = {
     #u'it' : (xliff.It,  not_yet_implemented),
     #u'ph' : (xliff.Ph,  not_yet_implemented),
     #u'sub': (xliff.Sub, not_yet_implemented),
-    u'x'  : (xliff.X,   make_empty_replacement_placeable)
+    u'x'  : (xliff.X,   make_empty_replacement_placeable),
 }
 
 def make_placeable(node, xml_space):
@@ -152,7 +152,7 @@ _placeable_dictionary = {
     base.It :  lambda placeable: placeable_as_dom_node(placeable, 'it'),
     base.Ph :  lambda placeable: placeable_as_dom_node(placeable, 'ph'),
     base.Sub:  lambda placeable: placeable_as_dom_node(placeable, 'sub'),
-    base.X  :  lambda placeable: placeable_as_dom_node(placeable, 'x')
+    base.X  :  lambda placeable: placeable_as_dom_node(placeable, 'x'),
 }
 
 def xml_append_string(node, string):

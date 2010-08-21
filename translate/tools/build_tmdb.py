@@ -81,16 +81,13 @@ def main():
     parser = OptionParser(usage="%prog [options] <input files>")
     parser.add_option(
         "-d", "--tmdb", dest="tmdb_file", default="tm.db",
-        help="translation memory database file (default: tm.db)"
-    )
+        help="translation memory database file (default: tm.db)")
     parser.add_option(
         "-s", "--import-source-lang", dest="source_lang", default="en",
-        help="source language of translation files (default: en)"
-    )
+        help="source language of translation files (default: en)")
     parser.add_option(
         "-t", "--import-target-lang", dest="target_lang",
-        help="target language of translation files"
-    )
+        help="target language of translation files")
     (options, args) = parser.parse_args()
 
     if not options.target_lang:

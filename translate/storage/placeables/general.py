@@ -303,7 +303,7 @@ def to_general_placeables(tree, classmap={
             EmailPlaceable,
             OptionPlaceable,
             PunctuationPlaceable,
-                )
+                ),
         }):
     if not isinstance(tree, StringElem):
         return tree

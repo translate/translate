@@ -33,7 +33,7 @@ DATABASE = "tmp-index"
 default_engine = "" 
 
 # order of tests to be done
-ORDER_OF_TESTS = ["XapianIndexer", "PyLuceneIndexer", "PyLuceneIndexer1" ]
+ORDER_OF_TESTS = ["XapianIndexer", "PyLuceneIndexer", "PyLuceneIndexer1"]
 
 
 def _get_indexer(location):
@@ -76,7 +76,7 @@ def create_example_content(database):
     database.index_document({"fname1": "foo_field1", "fname2": "foo_field2"})
     database.index_document({"fname1": "bar_field1", "fname2": "foo_field2",
             None: ["HELO", "foo"]})
-    database.index_document({None: "med" })
+    database.index_document({None: "med"})
     # for tokenizing tests
     database.set_field_analyzers({
             "fname1": database.ANALYZER_PARTIAL | database.ANALYZER_TOKENIZE,

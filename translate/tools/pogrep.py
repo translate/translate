@@ -323,7 +323,7 @@ def cmdlineparser():
             None:("po", rungrep)}
     parser = GrepOptionParser(formats)
     parser.add_option("", "--search", dest="searchparts",
-        action="append", type="choice", choices=["source", "target", "notes", "locations", "msgid", "msgstr", "comment" ],
+        action="append", type="choice", choices=["source", "target", "notes", "locations", "msgid", "msgstr", "comment"],
         metavar="SEARCHPARTS", help="searches the given parts (source, target, notes and locations)")
     parser.add_option("-I", "--ignore-case", dest="ignorecase",
         action="store_true", default=False, help="ignore case distinctions")

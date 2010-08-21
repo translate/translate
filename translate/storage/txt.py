@@ -45,7 +45,7 @@ flavours = {
 "dokuwiki": dokuwiki,
 "mediawiki": mediawiki,
 None: [],
-"plain": []
+"plain": [],
 }
 
 class TxtUnit(base.TranslationUnit):

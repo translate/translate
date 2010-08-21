@@ -325,7 +325,7 @@ class dtdunit(base.TranslationUnit):
                 r = repr(getattr(self, attr))
                 if len(r) > 60:
                     r = r[:57] + "..."
-                self.comments.append(("comment", "self.%s = %s" % (attr, r) ))
+                self.comments.append(("comment", "self.%s = %s" % (attr, r)))
         return linesprocessed
 
     def __str__(self):

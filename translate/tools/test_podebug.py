@@ -119,7 +119,7 @@ msgstr "Test msgstr 3"
             podebug.podebug(format="%f %F %b %B %d %s "),
             podebug.podebug(format="%3f %4F %5b %6B %7d %8s "),
             podebug.podebug(format="%cf %cF %cb %cB %cd %cs "),
-            podebug.podebug(format="%3cf %4cF %5cb %6cB %7cd %8cs ")
+            podebug.podebug(format="%3cf %4cF %5cb %6cB %7cd %8cs "),
             )
         results = ["85a9 Test msgstr 1", "a15d Test msgstr 2", "6398 Test msgstr 3",
                    "85a917.Test msgstr 1", "a15d71.Test msgstr 2", "639898.Test msgstr 3",

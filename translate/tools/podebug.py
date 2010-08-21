@@ -58,8 +58,7 @@ class podebug:
         """Applies func to all translatable strings in string."""
         string.map(
             lambda e: e.apply_to_strings(func),
-            lambda e: e.isleaf() and e.istranslatable
-        )
+            lambda e: e.isleaf() and e.istranslatable)
 
     def rewritelist(cls):
         return [rewrite.replace("rewrite_", "") for rewrite in dir(cls) if rewrite.startswith("rewrite_")]

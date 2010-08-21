@@ -27,15 +27,15 @@ from translate.storage.placeables.xliff import Bx, Ex, G, UnknownXML, X
 def test_xml_to_strelem():
     source = etree.fromstring(u'<source>a<x id="foo[1]/bar[1]/baz[1]"/></source>')
     elem = lisa.xml_to_strelem(source)
-    assert elem.sub == [StringElem(u'a'), X(id=u'foo[1]/bar[1]/baz[1]') ]
+    assert elem.sub == [StringElem(u'a'), X(id=u'foo[1]/bar[1]/baz[1]')]
 
     source = etree.fromstring(u'<source>a<x id="foo[1]/bar[1]/baz[1]"/>é</source>')
     elem = lisa.xml_to_strelem(source)
-    assert elem.sub == [StringElem(u'a'), X(id=u'foo[1]/bar[1]/baz[1]'), StringElem(u'é') ]
+    assert elem.sub == [StringElem(u'a'), X(id=u'foo[1]/bar[1]/baz[1]'), StringElem(u'é')]
 
     source = etree.fromstring(u'<source>a<g id="foo[2]/bar[2]/baz[2]">b<x id="foo[1]/bar[1]/baz[1]"/>c</g>é</source>')
     elem = lisa.xml_to_strelem(source)
-    assert elem.sub == [StringElem(u'a'), G(id=u'foo[2]/bar[2]/baz[2]', sub=[StringElem(u'b'), X(id=u'foo[1]/bar[1]/baz[1]'), StringElem(u'c')]), StringElem(u'é') ]
+    assert elem.sub == [StringElem(u'a'), G(id=u'foo[2]/bar[2]/baz[2]', sub=[StringElem(u'b'), X(id=u'foo[1]/bar[1]/baz[1]'), StringElem(u'c')]), StringElem(u'é')]
 
 def test_xml_space():
     source = etree.fromstring(u'<source xml:space="default"> a <x id="foo[1]/bar[1]/baz[1]"/> </source>')
@@ -89,11 +89,10 @@ def test_unknown_xml_placeable():
             [
                 StringElem(u'bpt'),
                 UnknownXML(u'sub', xml_node=copy(source[1][0])),
-                StringElem(u'\n               ')
+                StringElem(u'\n               '),
             ],
             id='_1_ski_139',
-            xml_node=copy(source[3])
-        ),
+            xml_node=copy(source[3])),
         StringElem(u'TEXT'),
         UnknownXML(u'ept', id=u'_1_ski_238', xml_node=copy(source[2])),
         StringElem(u'TEXT'),

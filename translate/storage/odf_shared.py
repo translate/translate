@@ -172,7 +172,7 @@ def define_tables():
         #(svg_uri, 'desc')
     
         # From translate
-        (text_uri, 'tracked-changes')
+        (text_uri, 'tracked-changes'),
         ]
 
     globals()['inline_elements'] = inline_elements

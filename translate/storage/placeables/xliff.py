@@ -96,7 +96,7 @@ class UnknownXML(StringElem):
             'id':  self.id  is not None and 'id="%s" '  % (self.id) or '',
             'rid': self.rid is not None and 'rid="%s" ' % (self.rid) or '',
             'xid': self.xid is not None and 'xid="%s" ' % (self.xid) or '',
-            'subs': elemstr
+            'subs': elemstr,
         }
 
 
@@ -131,7 +131,7 @@ def to_xliff_placeables(tree):
         base.Bx:  Bx,
         base.Ex:  Ex,
         base.X:   X,
-        base.Sub: Sub
+        base.Sub: Sub,
     }
     for baseclass, xliffclass in classmap.items():
         if isinstance(tree, baseclass):

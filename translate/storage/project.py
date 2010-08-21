@@ -134,8 +134,7 @@ class Project(object):
             inputfile,
             template=template,
             options=conv_options,
-            convert_options=options.get('convert_options', None)
-        )
+            convert_options=options.get('convert_options', None))
 
         # Determine the file name and path where the output should be moved.
         if not output_fname:
@@ -174,8 +173,7 @@ class Project(object):
 
         output_type = self.store.TYPE_INFO['next_type'][input_type]
         outputfile, output_fname = self.store.append_file(
-            output_fname, None, ftype=output_type, delete_orig=True
-        )
+            output_fname, None, ftype=output_type, delete_orig=True)
         self.store.convert_map[input_fname] = (output_fname, templ_fname)
 
         return outputfile, output_fname

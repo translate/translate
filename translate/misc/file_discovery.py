@@ -40,7 +40,7 @@ def get_abs_data_filename(path_parts, basedirs=None):
 
     BASE_DIRS = basedirs + [
         os.path.dirname(unicode(__file__, sys.getfilesystemencoding())),
-        os.path.dirname(unicode(sys.executable, sys.getfilesystemencoding()))
+        os.path.dirname(unicode(sys.executable, sys.getfilesystemencoding())),
     ]
 
     # Freedesktop standard
@@ -55,7 +55,7 @@ def get_abs_data_filename(path_parts, basedirs=None):
 
     DATA_DIRS = [
         ["..", "share"],
-        ["share"]
+        ["share"],
     ]
 
     for basepath, data_dir in ((x, y) for x in BASE_DIRS for y in DATA_DIRS):

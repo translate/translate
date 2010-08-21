@@ -155,7 +155,7 @@ class StringElem(object):
             'id':  self.id  is not None and 'id="%s" '  % (self.id) or '',
             'rid': self.rid is not None and 'rid="%s" ' % (self.rid) or '',
             'xid': self.xid is not None and 'xid="%s" ' % (self.xid) or '',
-            'subs': elemstr
+            'subs': elemstr,
         }
 
     def __str__(self):
@@ -362,12 +362,12 @@ class StringElem(object):
             if start_offset == start['index'] or (not start['elem'].iseditable and start['elem'].isfragile):
                 self.delete_elem(start['elem'])
             elif start['elem'].iseditable:
-                start['elem'].sub = [u''.join(start['elem'].sub)[:start['offset']] ]
+                start['elem'].sub = [u''.join(start['elem'].sub)[:start['offset']]]
 
             if end_offset + len(end['elem']) == end['index'] or (not end['elem'].iseditable and end['elem'].isfragile):
                 self.delete_elem(end['elem'])
             elif end['elem'].iseditable:
-                end['elem'].sub = [u''.join(end['elem'].sub)[end['offset']:] ]
+                end['elem'].sub = [u''.join(end['elem'].sub)[end['offset']:]]
 
         self.prune()
         return removed, None, None
@@ -841,7 +841,7 @@ class StringElem(object):
                     sub=elem.sub,
                     id=elem.id,
                     xid=elem.xid,
-                    rid=elem.rid
+                    rid=elem.rid,
                 )
 
     def translate(self):
