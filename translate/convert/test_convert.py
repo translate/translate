@@ -37,7 +37,8 @@ class TestConvertCommand:
                     os.remove(os.path.join(dirpath, name))
                 for name in subdirs:
                     os.rmdir(os.path.join(dirpath, name))
-        if os.path.exists(self.testdir): os.rmdir(self.testdir)
+        if os.path.exists(self.testdir):
+            os.rmdir(self.testdir)
         assert not os.path.exists(self.testdir)
 
     def run_command(self, *argv, **kwargs):
