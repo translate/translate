@@ -371,7 +371,6 @@ def hasversioning(item):
         return False
 
 
-    
 if __name__ == "__main__":
     import sys
     filenames = sys.argv[1:]
