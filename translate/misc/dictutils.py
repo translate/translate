@@ -38,7 +38,7 @@ class cidict(dict):
 
     def __getitem__(self, key):
         if type(key) != str and type(key) != unicode:
-            raise TypeError, "cidict can only have str or unicode as key (got %r)" % type(key)
+            raise TypeError("cidict can only have str or unicode as key (got %r)" % type(key))
         for akey in self.iterkeys():
             if akey.lower() == key.lower():
                 return dict.__getitem__(self, akey)
@@ -46,7 +46,7 @@ class cidict(dict):
 
     def __setitem__(self, key, value):
         if type(key) != str and type(key) != unicode:
-            raise TypeError, "cidict can only have str or unicode as key (got %r)" % type(key)
+            raise TypeError("cidict can only have str or unicode as key (got %r)" % type(key))
         for akey in self.iterkeys():
             if akey.lower() == key.lower():
                 return dict.__setitem__(self, akey, value)
@@ -59,7 +59,7 @@ class cidict(dict):
 
     def __delitem__(self, key):
         if type(key) != str and type(key) != unicode:
-            raise TypeError, "cidict can only have str or unicode as key (got %r)" % type(key)
+            raise TypeError("cidict can only have str or unicode as key (got %r)" % type(key))
         for akey in self.iterkeys():
             if akey.lower() == key.lower():
                 return dict.__delitem__(self, akey)
@@ -67,7 +67,7 @@ class cidict(dict):
 
     def __contains__(self, key):
         if type(key) != str and type(key) != unicode:
-            raise TypeError, "cidict can only have str or unicode as key (got %r)" % type(key)
+            raise TypeError("cidict can only have str or unicode as key (got %r)" % type(key))
         for akey in self.iterkeys():
             if akey.lower() == key.lower():
                 return 1

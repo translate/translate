@@ -58,23 +58,23 @@ class StringIO:
 
     def isatty(self):
         if self.closed:
-            raise ValueError, "I/O operation on closed file"
+            raise ValueError("I/O operation on closed file")
         return False
 
     def seek(self, pos, mode=0):
         if self.closed:
-            raise ValueError, "I/O operation on closed file"
+            raise ValueError("I/O operation on closed file")
         self.buf.seek(pos, mode)
         self.pos = self.buf.tell()
 
     def tell(self):
         if self.closed:
-            raise ValueError, "I/O operation on closed file"
+            raise ValueError("I/O operation on closed file")
         return self.pos
 
     def read(self, n=None):
         if self.closed:
-            raise ValueError, "I/O operation on closed file"
+            raise ValueError("I/O operation on closed file")
         if n == None:
             r = self.buf.read()
         else:
@@ -84,7 +84,7 @@ class StringIO:
 
     def readline(self, length=None):
         if self.closed:
-            raise ValueError, "I/O operation on closed file"
+            raise ValueError("I/O operation on closed file")
         if length is not None:
             r = self.buf.readline(length)
         else:
@@ -94,14 +94,14 @@ class StringIO:
 
     def readlines(self):
         if self.closed:
-            raise ValueError, "I/O operation on closed file"
+            raise ValueError("I/O operation on closed file")
         lines = self.buf.readlines()
         self.pos = self.buf.tell()
         return lines
 
     def truncate(self, size=None):
         if self.closed:
-            raise ValueError, "I/O operation on closed file"
+            raise ValueError("I/O operation on closed file")
         self.buf.truncate(size)
         self.pos = self.buf.tell()
         self.buf.seek(0, 2)
@@ -110,7 +110,7 @@ class StringIO:
 
     def write(self, s):
         if self.closed:
-            raise ValueError, "I/O operation on closed file"
+            raise ValueError("I/O operation on closed file")
         origpos = self.buf.tell()
         self.buf.write(s)
         self.pos = self.buf.tell()
@@ -121,7 +121,7 @@ class StringIO:
 
     def writelines(self, lines):
         if self.closed:
-            raise ValueError, "I/O operation on closed file"
+            raise ValueError("I/O operation on closed file")
         self.buf.writelines(lines)
         self.pos = self.buf.tell()
         self.buf.seek(0, 2)
@@ -130,12 +130,12 @@ class StringIO:
 
     def flush(self):
         if self.closed:
-            raise ValueError, "I/O operation on closed file"
+            raise ValueError("I/O operation on closed file")
         self.buf.flush()
 
     def getvalue(self):
         if self.closed:
-            raise ValueError, "I/O operation on closed file"
+            raise ValueError("I/O operation on closed file")
         return self.buf.getvalue()
 
 

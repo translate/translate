@@ -33,7 +33,7 @@ def zipTest(srcname, f, compression, srccontents):
     zip.close()
 
     if readData1 != srccontents or readData2 != srccontents:
-        raise TestFailed, "Written data doesn't equal read data."
+        raise TestFailed("Written data doesn't equal read data.")
 
 
 def deleteTest(srcname, f, compression, srccontents):
@@ -57,9 +57,9 @@ def deleteTest(srcname, f, compression, srccontents):
     zip.close()
 
     if testfailed:
-        raise TestFailed, "zip file didn't pass test"
+        raise TestFailed("zip file didn't pass test")
     if readData != srccontents:
-        raise TestFailed, "Written data doesn't equal read data."
+        raise TestFailed("Written data doesn't equal read data.")
 
 
 class TestZipfile:

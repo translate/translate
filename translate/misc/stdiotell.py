@@ -38,21 +38,21 @@ class StdIOWrapper:
             self.stream.close()
 
     def seek(self, pos, mode=0):
-        raise ValueError, "I/O operation on closed file"
+        raise ValueError("I/O operation on closed file")
 
     def tell(self):
         if self.closed:
-            raise ValueError, "I/O operation on closed file"
+            raise ValueError("I/O operation on closed file")
         return self.pos
 
     def write(self, s):
         if self.closed:
-            raise ValueError, "I/O operation on closed file"
+            raise ValueError("I/O operation on closed file")
         self.stream.write(s)
         self.pos += len(s)
 
     def writelines(self, lines):
         if self.closed:
-            raise ValueError, "I/O operation on closed file"
+            raise ValueError("I/O operation on closed file")
         self.stream.writelines(lines)
         self.pos += len("".join(lines))

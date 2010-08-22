@@ -59,8 +59,7 @@ def convertodf(inputfile, outputfile, templates, engine='toolkit'):
         try:
             get_units = handler.get_units
         except AttributeError:
-            message = 'error: the file "%s" could not be processed'
-            raise AttributeError, message % filename
+            raise AttributeError('error: the file "%s" could not be processed' % filename)
 
         # Make the XLIFF file
         for source, context, line in get_units():

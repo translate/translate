@@ -30,7 +30,7 @@ def stringeval(text):
     stringchar = text[0]
     if text[-1] != stringchar or stringchar not in ("'", '"'):
         # scratch your head
-        raise ValueError, "error parsing escaped string: %r" % text
+        raise ValueError("error parsing escaped string: %r" % text)
     return text[1:-1].replace(stringchar+stringchar, stringchar)
 
 
