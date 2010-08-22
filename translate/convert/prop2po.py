@@ -26,6 +26,7 @@ usage instructions
 """
 
 import sys
+
 from translate.storage import po
 from translate.storage import properties
 

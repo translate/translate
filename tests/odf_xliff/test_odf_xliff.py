@@ -19,16 +19,16 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+import difflib
 import os
 import os.path as path
 import zipfile
 
 from lxml import etree
-import difflib
 
-from translate.storage import factory
 from translate.convert import odf2xliff
 from translate.convert import xliff2odf
+from translate.storage import factory
 
 
 def setup_module(module):

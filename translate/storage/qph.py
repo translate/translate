@@ -35,11 +35,10 @@ provides the reference implementation for the Qt Linguist product.
 
 from lxml import etree
 
-from translate.storage import lisa
 from translate.lang import data
-
 from translate.misc.typecheck import accepts, Self, IsOneOf
 from translate.misc.typecheck.typeclasses import String
+from translate.storage import lisa
 
 
 class QphUnit(lisa.LISAunit):

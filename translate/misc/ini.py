@@ -42,8 +42,9 @@ Example:
 # Backward-compatiable with ConfigParser
 
 import re
-from iniparse import config
 from sets import Set
+
+from iniparse import config
 from ConfigParser import DEFAULTSECT, ParsingError, MissingSectionHeaderError
 
 class LineType(object):

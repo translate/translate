@@ -25,11 +25,12 @@ See: http://translate.sourceforge.net/wiki/toolkit/pocount for examples and
 usage instructions
 """
 
+from optparse import OptionParser
+import os
+import sys
+
 from translate.storage import factory
 from translate.storage import statsdb
-from optparse import OptionParser
-import sys
-import os
 
 # define style constants
 style_full, style_csv, style_short_strings, style_short_words = range(4)

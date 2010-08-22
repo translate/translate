@@ -19,11 +19,9 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 import os
-import shutil
 
 from translate.convert import factory as convert_factory
-
-from projstore import ProjectStore
+from translate.storage.projstore import ProjectStore
 
 __all__ = ['Project']
 

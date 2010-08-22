@@ -24,8 +24,9 @@
 For more information, see U{http://en.wikipedia.org/wiki/Japanese_language}
 """
 
-from translate.lang import common
 import re
+
+from translate.lang import common
 
 
 class ja(common.Common):

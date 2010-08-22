@@ -5,8 +5,8 @@
 # These test classes should be used as super class of test classes for the
 # classes that doesn't support the target property
 
-from translate.storage import test_base
 from translate.storage import base
+from translate.storage import test_base
 
 
 class TestMonolingualUnit(test_base.TestTranslationUnit):

@@ -33,11 +33,12 @@ U{Specification of the valid variable entries <http://doc.trolltech.com/4.3/qstr
 U{2 <http://doc.trolltech.com/4.3/qstring.html#arg-2>}
 """
 
+from lxml import etree
+
+from translate.lang import data
+from translate.misc.multistring import multistring
 from translate.storage import base, lisa
 from translate.storage.placeables import general
-from translate.misc.multistring import multistring
-from translate.lang import data
-from lxml import etree
 
 # TODO: handle translation types
 

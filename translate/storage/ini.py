@@ -30,10 +30,11 @@ a = a string
 b : a string
 """
 
-from translate.storage import base
-from translate.misc.ini import INIConfig
-from StringIO import StringIO
 import re
+from StringIO import StringIO
+
+from translate.misc.ini import INIConfig
+from translate.storage import base
 
 _dialects = {}
 

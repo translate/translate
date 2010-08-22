@@ -26,8 +26,8 @@ Use the environment variable USECPO=2 (or 1) to choose the C implementation whic
 uses Gettext's libgettextpo for high parsing speed.  Otherise the local
 Python based parser is used (slower but very well tested)."""
 
-import os
 import logging
+import os
 
 if os.getenv('USECPO'):
     if os.getenv('USECPO') == "1":

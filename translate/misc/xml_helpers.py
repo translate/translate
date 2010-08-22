@@ -21,6 +21,7 @@
 """Helper functions for working with XML."""
 
 import re
+
 from lxml import etree
 
 # some useful xpath expressions

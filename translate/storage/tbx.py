@@ -20,8 +20,9 @@
 
 """module for handling TBX glossary files"""
 
-from translate.storage import lisa
 from lxml import etree
+
+from translate.storage import lisa
 
 
 class tbxunit(lisa.LISAunit):

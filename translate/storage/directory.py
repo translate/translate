@@ -26,8 +26,9 @@
 
 #TODO: consider also providing directories as we currently provide files
 
-from translate.storage import factory
 from os import path
+
+from translate.storage import factory
 
 
 class Directory:

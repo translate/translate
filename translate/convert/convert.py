@@ -22,13 +22,14 @@
 """Handles converting of files between formats (used by translate.convert tools)"""
 
 import os.path
-from translate.misc import optrecurse
 # don't import optparse ourselves, get the version from optrecurse
 optparse = optrecurse.optparse
 try:
     from cStringIO import StringIO
 except ImportError:
     from StringIO import StringIO
+
+from translate.misc import optrecurse
 
 
 class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):

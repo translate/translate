@@ -20,9 +20,10 @@
 
 """Import units from translations files into tmdb."""
 
-import sys
 import os
 from optparse import OptionParser
+import sys
+
 from translate.storage import factory
 from translate.storage import tmdb
 

@@ -21,9 +21,9 @@
 from StringIO import StringIO
 
 from translate.search.match import terminologymatcher
-from translate.storage.pypo import pofile
 from translate.storage.placeables import base, general, parse, StringElem
 from translate.storage.placeables.terminology import parsers as term_parsers, TerminologyPlaceable
+from translate.storage.pypo import pofile
 
 
 class TestTerminologyPlaceable:

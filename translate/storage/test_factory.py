@@ -1,17 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from translate.storage import factory
-from translate.storage.directory import Directory
-from translate.misc import wStringIO
-
-from gzip import GzipFile
 try:
     # bz2 is not available on python 2.3
     from bz2 import BZ2File
 except ImportError:
     BZ2File = None
+from gzip import GzipFile
 import os
+
+from translate.misc import wStringIO
+from translate.storage import factory
+from translate.storage.directory import Directory
 
 
 def classname(filename):

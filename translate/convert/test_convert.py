@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from translate.convert import convert
 import os
 import sys
-from py import test
+
 try:
     import psyco
 except Exception:
     psyco = None
+from py import test
+
+from translate.convert import convert
 
 
 class TestConvertCommand:

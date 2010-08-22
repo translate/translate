@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from translate.storage import properties
-from translate.storage import test_monolingual
-from translate.misc import wStringIO
-
 from py import test
 from py.test import deprecated_call
+
+from translate.misc import wStringIO
+from translate.storage import properties
+from translate.storage import test_monolingual
 
 
 def test_find_delimiter_pos_simple():

@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
+import os.path
 import StringIO
 import subprocess
-import os.path
 
-from translate.storage import test_base
-from translate.storage import mo
 from translate.storage import factory
+from translate.storage import mo
+from translate.storage import test_base
 
 
 class TestMOUnit(test_base.TestTranslationUnit):

@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from translate.storage import test_po
-from translate.storage import pypo
-from translate.misc.multistring import multistring
-from translate.misc import wStringIO
 from py.test import raises
+
+from translate.misc import wStringIO
+from translate.misc.multistring import multistring
+from translate.storage import pypo
+from translate.storage import test_po
 
 
 class TestPYPOUnit(test_po.TestPOUnit):

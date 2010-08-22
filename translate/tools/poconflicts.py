@@ -25,11 +25,12 @@ See: http://translate.sourceforge.net/wiki/toolkit/poconflicts for examples and
 usage instructions
 """
 
+import sys
+import os
+
 from translate.storage import factory
 from translate.storage import po
 from translate.misc import optrecurse
-import sys
-import os
 
 
 class ConflictOptionParser(optrecurse.RecursiveOptionParser):

@@ -21,8 +21,9 @@
 
 import os
 import os.path as path
-from subprocess import call
+
 from lxml import etree
+from subprocess import call
 
 schema = None
 

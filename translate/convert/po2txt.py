@@ -26,11 +26,12 @@ see: http://translate.sourceforge.net/wiki/toolkit/po2txt for examples and
 usage instructions
 """
 
-from translate.storage import factory
 try:
     import textwrap
 except ImportError:
     textwrap = None
+
+from translate.storage import factory
 
 
 class po2txt:

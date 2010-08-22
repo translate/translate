@@ -24,11 +24,12 @@ XLIFF.
 This way the API supports plurals as if it was a PO file, for example.
 """
 
-from translate.storage import base, lisa, poheader, xliff
-from translate.storage.placeables import general
-from translate.misc.multistring import multistring
 from lxml import etree
 import re
+
+from translate.misc.multistring import multistring
+from translate.storage import base, lisa, poheader, xliff
+from translate.storage.placeables import general
 
 
 def hasplurals(thing):

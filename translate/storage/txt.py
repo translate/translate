@@ -28,8 +28,9 @@ Supported formats are
   - MediaWiki
 """
 
-from translate.storage import base
 import re
+
+from translate.storage import base
 
 dokuwiki = []
 dokuwiki.append(("Dokuwiki heading", re.compile(r"( ?={2,6}[\s]*)(.+)"), re.compile("([\s]*={2,6}[\s]*)$")))

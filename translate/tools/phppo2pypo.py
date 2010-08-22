@@ -22,6 +22,7 @@
 """ Convert PHP format .po files to Python format .po files """
 
 import re
+
 from translate.storage import po
 from translate.misc.multistring import multistring
 

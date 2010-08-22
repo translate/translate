@@ -23,8 +23,9 @@
 """module for parsing html files for translation"""
 
 import re
-from translate.storage import base
 from HTMLParser import HTMLParser
+
+from translate.storage import base
 
 
 class htmlunit(base.TranslationUnit):

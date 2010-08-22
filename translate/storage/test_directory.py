@@ -2,8 +2,9 @@
 
 """Tests for the directory module"""
 
-from translate.storage import directory
 import os
+
+from translate.storage import directory
 
 
 class TestDirectory(object):

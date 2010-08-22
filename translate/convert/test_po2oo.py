@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 
+import os
+import warnings
+
 from translate.convert import po2oo
 from translate.convert import oo2po
 from translate.convert import test_convert
 from translate.misc import wStringIO
 from translate.storage import po
-import warnings
-import os
 
 
 class TestPO2OO:

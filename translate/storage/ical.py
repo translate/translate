@@ -54,10 +54,12 @@
    it is possible to expand this format to understand those if needed.
 
 """
-from translate.storage import base
-from StringIO import StringIO
 import re
+from StringIO import StringIO
+
 import vobject
+
+from translate.storage import base
 
 
 class icalunit(base.TranslationUnit):

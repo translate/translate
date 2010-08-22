@@ -27,9 +27,9 @@
    a patch to gaupol is required to open utf-8 files successfully
 """
 
+import os
 from StringIO import StringIO
 import tempfile
-import os
 
 try:
     from aeidon import Subtitle

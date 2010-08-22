@@ -26,6 +26,7 @@ User documentation: http://translate.sourceforge.net/wiki/toolkit/oo2po
 """
 
 import sys
+
 from translate.storage import xliff
 from translate.storage import oo
 

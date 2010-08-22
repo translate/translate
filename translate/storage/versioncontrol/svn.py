@@ -20,8 +20,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-from translate.storage.versioncontrol import run_command
 from translate.storage.versioncontrol import GenericRevisionControlSystem
+from translate.storage.versioncontrol import run_command
 
 
 def is_available():

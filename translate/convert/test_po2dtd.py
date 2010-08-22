@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import warnings
+
+from py import test
+
 from translate.convert import po2dtd
 from translate.convert import dtd2po
 from translate.convert import test_convert
 from translate.misc import wStringIO
 from translate.storage import po
 from translate.storage import dtd
-from py import test
-import warnings
 
 
 class TestPO2DTD:

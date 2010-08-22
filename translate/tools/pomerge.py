@@ -29,6 +29,7 @@ usage instructions
 """
 
 import logging
+
 from translate.storage import factory
 from translate.storage.poheader import poheader
 

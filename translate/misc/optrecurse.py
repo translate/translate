@@ -24,12 +24,13 @@ import os.path
 import fnmatch
 import traceback
 import optparse
-from translate.misc import progressbar
-from translate import __version__
 try:
     from cStringIO import StringIO
 except ImportError:
     from StringIO import StringIO
+
+from translate.misc import progressbar
+from translate import __version__
 
 
 class ManPageOption(optparse.Option, object):

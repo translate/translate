@@ -21,11 +21,12 @@
 #
 
 
-import __init__ as indexing
-import CommonIndexer
 import os
 import sys
 import shutil
+
+import __init__ as indexing
+import CommonIndexer
 
 DATABASE = "tmp-index"
 

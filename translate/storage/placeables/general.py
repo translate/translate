@@ -25,9 +25,9 @@ fit into any other sub-category.
 
 import re
 
-__all__ = ['AltAttrPlaceable', 'XMLEntityPlaceable', 'XMLTagPlaceable', 'parsers', 'to_general_placeables']
-
 from translate.storage.placeables.base import G, Ph, StringElem
+
+__all__ = ['AltAttrPlaceable', 'XMLEntityPlaceable', 'XMLTagPlaceable', 'parsers', 'to_general_placeables']
 
 
 def regex_parse(cls, pstr):

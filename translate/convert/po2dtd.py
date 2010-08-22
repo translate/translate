@@ -22,11 +22,12 @@
 """script that converts a .po file to a UTF-8 encoded .dtd file as used by mozilla
 either done using a template or just using the .po file"""
 
+import warnings
+
 from translate.storage import dtd
 from translate.storage import po
 from translate.misc import quote
 from translate.convert import accesskey
-import warnings
 
 
 def getmixedentities(entities):

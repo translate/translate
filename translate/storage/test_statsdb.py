@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-from translate import storage
 
 import os
 import os.path
+import warnings
 
 import py.test
 
+from translate import storage
 from translate.storage import statsdb, factory
 from translate.misc import wStringIO
 from translate.filters import checks
-import warnings
 
 fr_terminology_extract = r"""
 msgid ""

@@ -41,14 +41,14 @@ it is always on and does produce sometimes different results to Gettext
 in very small files.
 """
 
-import struct
 import array
 import re
+import struct
 
+from translate.misc.multistring import multistring
 from translate.storage import base
 from translate.storage import po
 from translate.storage import poheader
-from translate.misc.multistring import multistring
 
 MO_MAGIC_NUMBER = 0x950412deL
 

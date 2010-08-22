@@ -57,8 +57,9 @@
      - Direction (rtl or ltr)
 """
 
-from translate.lang import data
 import re
+
+from translate.lang import data
 
 
 class Common(object):

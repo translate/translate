@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
-from translate.misc import optrecurse
 import os
+
+from translate.misc import optrecurse
 
 
 class TestRecursiveOptionParser:

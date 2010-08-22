@@ -24,9 +24,10 @@
 from __future__ import generators
 import zipfile
 import os.path
-from translate import __version__
 import StringIO
 import re
+
+from translate import __version__
 
 # we have some enhancements to zipfile in a file called zipfileext
 # hopefully they will be included in a future version of python

@@ -24,8 +24,9 @@
 For more information, see U{http://en.wikipedia.org/wiki/Afrikaans_language}
 """
 
-from translate.lang import common
 import re
+
+from translate.lang import common
 
 articlere = re.compile(r"'n\b")
 

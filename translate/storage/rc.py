@@ -25,8 +25,9 @@
 these should mimic other non-WINE .rc files.
 """
 
-from translate.storage import base
 import re
+
+from translate.storage import base
 
 
 def escape_to_python(string):

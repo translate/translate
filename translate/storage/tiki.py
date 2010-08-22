@@ -51,10 +51,11 @@ As far as I know no detailed documentation exists for the tiki language.php file
 
 """
 
-from translate.storage import base
-from translate.misc import wStringIO
-import re
 import datetime
+import re
+
+from translate.misc import wStringIO
+from translate.storage import base
 
 
 class TikiUnit(base.TranslationUnit):

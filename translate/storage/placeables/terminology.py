@@ -22,9 +22,9 @@
 Contains the placeable that represents a terminology term.
 """
 
-__all__ = ['TerminologyPlaceable', 'parsers']
-
 from translate.storage.placeables import base, StringElem
+
+__all__ = ['TerminologyPlaceable', 'parsers']
 
 
 class TerminologyPlaceable(base.Ph):

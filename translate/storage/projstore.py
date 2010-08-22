@@ -19,8 +19,10 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 import os
-from lxml import etree
 from StringIO import StringIO
+
+from lxml import etree
+
 
 __all__ = ['FileExistsInProjectError', 'FileNotInProjectError', 'ProjectStore']
 

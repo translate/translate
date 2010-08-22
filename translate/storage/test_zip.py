@@ -2,10 +2,11 @@
 
 """Tests for the zip storage module"""
 
-from translate.storage import directory
-from translate.storage import zip
 import os
 from zipfile import ZipFile
+
+from translate.storage import directory
+from translate.storage import zip
 
 
 class TestZIPFile(object):

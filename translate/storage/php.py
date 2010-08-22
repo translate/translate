@@ -38,8 +38,9 @@
    U{String type<http://www.php.net/language.types.string>}
 """
 
-from translate.storage import base
 import re
+
+from translate.storage import base
 
 
 def phpencode(text, quotechar="'"):

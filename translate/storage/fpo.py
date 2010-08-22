@@ -28,14 +28,15 @@ directly, but can be used once cpo has been established to work."""
 # - previous msgid and msgctxt
 # - accept only unicodes everywhere
 
-from translate.misc.multistring import multistring
-from translate.lang import data
-from translate.storage import pocommon, base, cpo, poparser
-from translate.storage.pocommon import encodingToUse
 import re
 import copy
 import cStringIO
 import urllib
+
+from translate.lang import data
+from translate.misc.multistring import multistring
+from translate.storage import pocommon, base, cpo, poparser
+from translate.storage.pocommon import encodingToUse
 
 lsep = " "
 """Seperator for #: entries"""

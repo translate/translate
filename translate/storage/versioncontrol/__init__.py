@@ -30,8 +30,8 @@
      - maybe implement some caching for 'get_versioned_object' - check profiler
 """
 
-import re
 import os
+import re
 
 DEFAULT_RCS = ["svn", "cvs", "darcs", "git", "bzr", "hg"]
 """the names of all supported revision control systems

@@ -22,6 +22,7 @@
 """ Convert .po files to TikiWiki's language.php files. """
 
 import sys
+
 from translate.storage import tiki
 from translate.storage import po
 

@@ -56,8 +56,9 @@
 
 import csv
 import sys
-from translate.storage import base
+
 from translate.lang.data import tr_lang
+from translate.storage import base
 
 FIELDNAMES_HEADER = ["version", "language", "mimetype", "checksum"]
 """Field names for the catkeys header"""

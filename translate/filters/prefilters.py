@@ -22,9 +22,10 @@
 """This is a set of string filters that strings can be passed through before
 certain tests."""
 
+import re
+
 from translate.filters import decoration
 from translate.misc import quote
-import re
 
 
 def removekdecomments(str1):

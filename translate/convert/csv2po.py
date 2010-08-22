@@ -26,6 +26,7 @@ usage instructions
 """
 
 import sys
+
 from translate.misc import sparse
 from translate.storage import po
 from translate.storage import csvl10n

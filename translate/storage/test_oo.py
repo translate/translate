@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from translate.storage import oo
-from translate.misc import wStringIO
 import warnings
+
+from translate.misc import wStringIO
+from translate.storage import oo
 
 
 def test_makekey():

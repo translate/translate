@@ -117,12 +117,13 @@
      "key" = "value";
 """
 
-from translate.storage import base
-from translate.misc import quote
-from translate.misc.typecheck import accepts, returns, IsOneOf
-from translate.lang import data
 import re
 import warnings
+
+from translate.lang import data
+from translate.misc import quote
+from translate.misc.typecheck import accepts, returns, IsOneOf
+from translate.storage import base
 
 # the rstripeols convert dos <-> unix nicely as well
 # output will be appropriate for the platform

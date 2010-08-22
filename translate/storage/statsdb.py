@@ -26,13 +26,6 @@
 @license: U{GPL <http://www.fsf.org/licensing/licenses/gpl.html>}
 """
 
-from UserDict import UserDict
-
-from translate import __version__ as toolkitversion
-from translate.storage import factory
-from translate.misc.multistring import multistring
-from translate.lang.common import Common
-
 try:
     from sqlite3 import dbapi2
 except ImportError:
@@ -42,6 +35,12 @@ import re
 import sys
 import stat
 import thread
+from UserDict import UserDict
+
+from translate import __version__ as toolkitversion
+from translate.lang.common import Common
+from translate.misc.multistring import multistring
+from translate.storage import factory
 
 kdepluralre = re.compile("^_n: ")
 brtagre = re.compile("<br\s*?/?>")

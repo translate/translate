@@ -28,7 +28,6 @@ take a look at PyLuceneIndexer1.py for the PyLucene v1.x interface
 
 __revision__ = "$Id$"
 
-import CommonIndexer
 import re
 import os
 import time
@@ -46,6 +45,8 @@ except ImportError:
     PyLucene = lucene
     PyLucene.initVM(PyLucene.CLASSPATH)
     _COMPILER = 'jcc'
+
+import CommonIndexer
 
 
 UNNAMED_FIELD_NAME = "FieldWithoutAName"

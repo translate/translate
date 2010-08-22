@@ -23,8 +23,9 @@
 For more information, see U{http://en.wikipedia.org/wiki/French_language}
 """
 
-from translate.lang import common
 import re
+
+from translate.lang import common
 
 
 def guillemets(text):

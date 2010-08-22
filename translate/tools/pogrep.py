@@ -28,13 +28,14 @@ See: http://translate.sourceforge.net/wiki/toolkit/pogrep for examples and
 usage instructions
 """
 
+import re
+import locale
+
 from translate.storage import factory
 from translate.storage.poheader import poheader
 from translate.misc import optrecurse
 from translate.misc.multistring import multistring
 from translate.lang import data
-import re
-import locale
 
 
 class GrepMatch(object):

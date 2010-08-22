@@ -23,10 +23,10 @@
 # Requires: git
 #
 
-
-from translate.storage.versioncontrol import run_command
-from translate.storage.versioncontrol import GenericRevisionControlSystem
 import os
+
+from translate.storage.versioncontrol import GenericRevisionControlSystem
+from translate.storage.versioncontrol import run_command
 
 
 def is_available():

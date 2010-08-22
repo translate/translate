@@ -27,10 +27,11 @@ interface for differrent indexing engines for the translate toolkit
 
 __revision__ = "$Id$"
 
-import CommonIndexer
 import os
 import shutil
 import logging
+
+import CommonIndexer
 
 """ TODO for indexing engines:
     * get rid of jToolkit.glock dependency

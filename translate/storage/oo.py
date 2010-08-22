@@ -33,9 +33,10 @@ comments.
 
 import os
 import re
+import warnings
+
 from translate.misc import quote
 from translate.misc import wStringIO
-import warnings
 
 # File normalisation
 

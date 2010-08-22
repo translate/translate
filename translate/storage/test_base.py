@@ -20,12 +20,14 @@
 
 """tests for storage base classes"""
 
+import os
+import warnings
+
+from py import test
+
 from translate.misc.multistring import multistring
 from translate.storage import base
 from translate.storage.placeables import general, parse as rich_parse
-from py import test
-import os
-import warnings
 
 
 def headerless_len(units):

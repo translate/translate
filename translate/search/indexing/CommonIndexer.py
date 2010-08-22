@@ -24,8 +24,9 @@
 base class for interfaces to indexing engines for pootle
 """
 
-import translate.lang.data
 import os
+
+import translate.lang.data
 
 __revision__ = "$Id$"
 

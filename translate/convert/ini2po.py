@@ -22,6 +22,7 @@
 """convert .ini files to Gettext PO localization files"""
 
 import sys
+
 from translate.storage import po
 
 

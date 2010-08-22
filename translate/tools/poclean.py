@@ -26,9 +26,10 @@ This does not convert an RTF file to PO/XLIFF, but produces the target file
 with only the target text in from a text version of the RTF.
 """
 
+import re
+
 from translate.storage import factory
 from translate.misc.multistring import multistring
-import re
 
 tw4winre = re.compile(r"\{0>.*?<\}\d{1,3}\{>(.*?)<0\}", re.M | re.S)
 

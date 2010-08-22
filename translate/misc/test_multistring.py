@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 
+from py import test
+
 from translate.misc import multistring
 from translate.misc import test_autoencode
-from py import test
 
 
 class TestMultistring(test_autoencode.TestAutoencode):

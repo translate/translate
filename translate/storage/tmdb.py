@@ -20,12 +20,12 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 """Module to provide a translation memory database."""
-import math
-import time
+
 import logging
+import math
 import re
 import threading
-
+import time
 try:
     from sqlite3 import dbapi2
 except ImportError:

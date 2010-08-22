@@ -26,6 +26,7 @@ usage instructions
 """
 
 import os.path
+
 from translate.convert import po2dtd
 from translate.convert import po2prop
 from translate.convert import prop2mozfunny

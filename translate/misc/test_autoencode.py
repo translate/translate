@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
-from translate.misc import autoencode
 from py import test
+
+from translate.misc import autoencode
 
 
 class TestAutoencode:

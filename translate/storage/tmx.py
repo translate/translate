@@ -20,10 +20,10 @@
 
 """module for parsing TMX translation memeory files"""
 
-from translate.storage import lisa
 from lxml import etree
 
 from translate import __version__
+from translate.storage import lisa
 
 
 class tmxunit(lisa.LISAunit):

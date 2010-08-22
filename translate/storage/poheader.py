@@ -20,10 +20,11 @@
 
 """class that handles all header functions for a header in a po file"""
 
-from translate.misc import dictutils
-from translate import __version__
 import re
 import time
+
+from translate import __version__
+from translate.misc import dictutils
 
 author_re = re.compile(r".*<\S+@\S+>.*\d{4,4}")
 

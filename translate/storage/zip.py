@@ -28,11 +28,12 @@
 
 #TODO: refactor with existing zip code (xpi.py, etc.)
 
+from os import path
+from zipfile import ZipFile
+
 from translate.storage import factory
 from translate.storage import directory
 from translate.misc import wStringIO
-from os import path
-from zipfile import ZipFile
 
 
 class ZIPFile(directory.Directory):

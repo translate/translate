@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from py import test
+
 from translate.tools import pomerge
 from translate.storage import factory
 from translate.storage import po
 from translate.storage import xliff
 from translate.misc import wStringIO
-from py import test
 
 
 def test_str2bool():

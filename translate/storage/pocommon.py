@@ -19,11 +19,11 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+import re
+
 from translate.storage import base
 from translate.storage import poheader
 from translate.storage.workflow import StateEnum as state
-
-import re
 
 msgid_comment_re = re.compile("_: (.*?)\n")
 

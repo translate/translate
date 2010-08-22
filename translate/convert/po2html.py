@@ -26,16 +26,16 @@ see: http://translate.sourceforge.net/wiki/toolkit/po2html for examples and
 usage instructions
 """
 
-from translate.storage import po
 try:
     import textwrap
 except ImportError:
     textwrap = None
-
 try:
     import tidy
 except ImportError:
     tidy = None
+
+from translate.storage import po
 
 
 class po2html:

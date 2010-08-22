@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from py import test
+
 from translate.storage import test_base
 from translate.storage import qm
-
-from py import test
 
 
 class TestQtUnit(test_base.TestTranslationUnit):

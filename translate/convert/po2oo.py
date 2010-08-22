@@ -26,14 +26,15 @@ see: http://translate.sourceforge.net/wiki/toolkit/po2oo for examples and
 usage instructions
 """
 
-import sys
 import os
+import sys
+import time
+
 from translate.storage import oo
 from translate.storage import factory
 from translate.filters import pofilter
 from translate.filters import checks
 from translate.filters import autocorrect
-import time
 
 
 class reoo:

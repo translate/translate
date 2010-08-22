@@ -22,6 +22,7 @@
 """convert iCal files to Gettext PO localization files"""
 
 import sys
+
 from translate.storage import po
 from translate.storage import ical
 

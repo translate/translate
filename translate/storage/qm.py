@@ -48,8 +48,8 @@ import codecs
 import struct
 import sys
 
-from translate.storage import base
 from translate.misc.multistring import multistring
+from translate.storage import base
 
 QM_MAGIC_NUMBER = (0x3CB86418L, 0xCAEF9C95L, 0xCD211CBFL, 0x60A1BDDDL)
 

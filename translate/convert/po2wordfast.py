@@ -26,11 +26,12 @@ see: http://translate.sourceforge.net/wiki/toolkit/po2wordfast for examples and
 usage instructions
 """
 
+import os
+
 from translate.storage import po
 from translate.storage import wordfast
 from translate.convert import convert
 from translate.misc import wStringIO
-import os
 
 
 class po2wordfast:

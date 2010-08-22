@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
+from translate.misc import wStringIO
 from translate.storage import txt
 from translate.storage import test_monolingual
-from translate.misc import wStringIO
 
 
 class TestTxtUnit(test_monolingual.TestMonolingualUnit):

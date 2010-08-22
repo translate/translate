@@ -30,6 +30,8 @@ When adding a new test here, please document and explain the behaviour on the
 U{wiki <http://translate.sourceforge.net/wiki/toolkit/pofilter_tests>}.
 """
 
+import re
+
 from translate.filters import helpers
 from translate.filters import decoration
 from translate.filters import prefilters
@@ -47,7 +49,6 @@ except ImportError, e:
 # already tried to import it unsuccessfully, so let's make 100% sure:
 if not hasattr(xliff, "xliffunit"):
     xliff = None
-import re
 
 # These are some regular expressions that are compiled for use in some tests
 

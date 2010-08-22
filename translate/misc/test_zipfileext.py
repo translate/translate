@@ -9,6 +9,7 @@ try:
 except ImportError:
     class TestFailed(Exception):
         pass
+
 from translate.misc import zipfileext
 
 BrokenStringIO = StringIO.StringIO

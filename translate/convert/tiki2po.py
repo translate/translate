@@ -22,6 +22,7 @@
 """ Convert TikiWiki's language.php files to GetText PO files. """
 
 import sys
+
 from translate.storage import tiki
 from translate.storage import po
 

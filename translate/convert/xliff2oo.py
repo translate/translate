@@ -22,14 +22,15 @@
 
 """convert XLIFF localization files to an OpenOffice.org (SDF) localization file"""
 
-import sys
 import os
+import sys
+import time
+
 from translate.storage import oo
 from translate.storage import factory
 from translate.filters import pofilter
 from translate.filters import checks
 from translate.filters import autocorrect
-import time
 
 
 class reoo:

@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 
+import warnings
+
+from py import test
+
+from translate.misc import wStringIO
 from translate.storage import dtd
 from translate.storage import test_monolingual
-from translate.misc import wStringIO
-import warnings
-from py import test
 
 
 def test_roundtrip_quoting():

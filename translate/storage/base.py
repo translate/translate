@@ -30,11 +30,12 @@ try:
 except ImportError:
     import pickle
 from exceptions import NotImplementedError
+
 import translate.i18n
+from translate.misc.multistring import multistring
+from translate.misc.typecheck import accepts, Self, IsOneOf
 from translate.storage.placeables import StringElem, general, parse as rich_parse
 from translate.storage.workflow import StateEnum as states
-from translate.misc.typecheck import accepts, Self, IsOneOf
-from translate.misc.multistring import multistring
 
 
 def force_override(method, baseclass):

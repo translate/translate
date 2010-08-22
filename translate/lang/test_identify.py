@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-from identify import LanguageIdentifier
 from py.test import raises
+
+from translate.lang.identify import LanguageIdentifier
 from translate.storage.base import TranslationUnit
 
 

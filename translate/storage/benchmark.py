@@ -18,12 +18,13 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-from translate.storage import factory
-import os
 import cProfile
+import os
 import pstats
 import random
 import sys
+
+from translate.storage import factory
 
 
 class TranslateBenchmarker:
