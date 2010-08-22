@@ -8,6 +8,7 @@ import warnings
 
 
 class TestPretranslate:
+
     def setup_method(self, method):
         warnings.resetwarnings()
 

@@ -43,6 +43,7 @@ class TestWFUnit(test_base.TestTranslationUnit):
 
     def test_wordfast_escaping(self):
         """Check handling of &'NN; style escaping"""
+
         def compare(real, escaped):
             unit = self.UnitClass(real)
             print real.encode('utf-8'), unit.source.encode('utf-8')

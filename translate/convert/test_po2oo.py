@@ -10,6 +10,7 @@ import os
 
 
 class TestPO2OO:
+
     def setup_method(self, method):
         warnings.resetwarnings()
 

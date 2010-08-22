@@ -51,6 +51,7 @@ None: [],
 
 class TxtUnit(base.TranslationUnit):
     """This class represents a block of text from a text file"""
+
     def __init__(self, source="", encoding="utf-8"):
         """Construct the txtunit"""
         self.encoding = encoding
@@ -100,6 +101,7 @@ class TxtUnit(base.TranslationUnit):
 class TxtFile(base.TranslationStore):
     """This class represents a text file, made up of txtunits"""
     UnitClass = TxtUnit
+
     def __init__(self, inputfile=None, flavour=None, encoding="utf-8"):
         base.TranslationStore.__init__(self, unitclass=self.UnitClass)
         self.filename = getattr(inputfile, 'name', '')

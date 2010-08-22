@@ -31,6 +31,7 @@ from translate.storage import poxliff
 
 
 class po2xliff:
+
     def convertunit(self, outputstore, inputunit, filename):
         """creates a transunit node"""
         source = inputunit.source

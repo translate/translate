@@ -39,6 +39,7 @@ for module in (prop2po, po2prop, odf2xliff, xliff2odf):
 
 
 class UnknownExtensionError(Exception):
+
     def __init__(self, afile):
         self.file = afile
 
@@ -50,6 +51,7 @@ class UnknownExtensionError(Exception):
 
 
 class UnsupportedConversionError(Exception):
+
     def __init__(self, in_ext=None, out_ext=None, templ_ext=None):
         self.in_ext = in_ext
         self.out_ext = out_ext

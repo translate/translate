@@ -34,6 +34,7 @@ import os
 
 
 class po2tmx:
+
     def convertfile(self, inputfile, sourcelanguage='en', targetlanguage=None):
         """converts a .po file to TMX file"""
         # TODO: This seems to not be used... remove it
@@ -67,6 +68,7 @@ def convertpo(inputfile, outputfile, templatefile, sourcelanguage='en', targetla
 
 
 class tmxmultifile:
+
     def __init__(self, filename, mode=None):
         """initialises tmxmultifile from a seekable inputfile or writable outputfile"""
         self.filename = filename
@@ -83,6 +85,7 @@ class tmxmultifile:
 
     def openoutputfile(self, subfile):
         """returns a pseudo-file object for the given subfile"""
+
         def onclose(contents):
             pass
         outputfile = wStringIO.CatchStringOutput(onclose)
@@ -92,6 +95,7 @@ class tmxmultifile:
 
 
 class TmxOptionParser(convert.ArchiveConvertOptionParser):
+
     def recursiveprocess(self, options):
         if not options.targetlanguage:
             raise ValueError("You must specify the target language")

@@ -39,6 +39,7 @@ STRIP_REGEXP = re.compile("\W", re.UNICODE)
 
 
 class LanguageError(Exception):
+
     def __init__(self, value):
         self.value = value
 
@@ -48,6 +49,7 @@ class LanguageError(Exception):
 
 class TMDB(object):
     _tm_dbs = {}
+
     def __init__(self, db_file, max_candidates=3, min_similarity=75, max_length=1000):
 
         self.max_candidates = max_candidates
@@ -79,7 +81,6 @@ class TMDB(object):
 
     connection = property(lambda self: self._get_connection(0))
     cursor = property(lambda self: self._get_connection(1))
-
 
     def init_database(self):
         """creates database tables and indices"""

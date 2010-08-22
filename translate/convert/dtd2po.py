@@ -41,6 +41,7 @@ def is_css_entity(entity):
 
 
 class dtd2po:
+
     def __init__(self, blankmsgstr=False, duplicatestyle="msgctxt"):
         self.currentgroup = None
         self.blankmsgstr = blankmsgstr

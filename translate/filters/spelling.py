@@ -30,6 +30,7 @@ try:
     from enchant import checker, DictNotFoundError, Error as EnchantError
     available = True
     checkers = {}
+
     def check(text, lang):
         if not lang in checkers:
             try:
@@ -49,5 +50,6 @@ try:
             yield err.word, err.wordpos, err.suggest()
 
 except ImportError:
+
     def check(text, lang):
         return []

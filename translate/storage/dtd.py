@@ -81,6 +81,7 @@ def removeinvalidamps(name, value):
     @rtype: String
     @return: Entity value without bad ampersands
     """
+
     def is_valid_entity_name(name):
         """Check that supplied L{name} is a valid entity name"""
         if name.replace('.', '').isalnum():
@@ -111,6 +112,7 @@ def removeinvalidamps(name, value):
 
 class dtdunit(base.TranslationUnit):
     """this class represents an entity definition from a dtd file (and possibly associated comments)"""
+
     def __init__(self, source=""):
         """construct the dtdunit, prepare it for parsing"""
         super(dtdunit, self).__init__(source)
@@ -367,6 +369,7 @@ class dtdunit(base.TranslationUnit):
 class dtdfile(base.TranslationStore):
     """this class represents a .dtd file, made up of dtdunits"""
     UnitClass = dtdunit
+
     def __init__(self, inputfile=None):
         """construct a dtdfile, optionally reading in from inputfile"""
         base.TranslationStore.__init__(self, unitclass=self.UnitClass)

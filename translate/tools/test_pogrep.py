@@ -9,6 +9,7 @@ from translate.misc import wStringIO
 
 
 class TestPOGrep:
+
     def poparse(self, posource):
         """helper that parses po source without requiring files"""
         dummyfile = wStringIO.StringIO(posource)

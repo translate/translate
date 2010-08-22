@@ -28,6 +28,7 @@ def launch_server_wsgiref(host, port, app):
     """use python's builtin simple_server, this is a last resort since
     it doesn't support concurrency at all"""
     from wsgiref import simple_server
+
     class CustomRequestHandler(simple_server.WSGIRequestHandler):
         """Custom request handler, disables some inefficient defaults"""
 

@@ -28,6 +28,7 @@ def givefile(filename, content):
 
 
 class BaseTestFactory:
+
     def setup_method(self, method):
         """sets up a test directory"""
         self.testdir = "%s_testdir" % (self.__class__.__name__)

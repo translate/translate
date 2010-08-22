@@ -81,6 +81,7 @@ def applytranslation(entity, dtdunit, inputunit, mixedentities):
 
 class redtd:
     """this is a convertor class that creates a new dtd based on a template using translations in a po"""
+
     def __init__(self, dtdfile):
         self.dtdfile = dtdfile
 
@@ -104,6 +105,7 @@ class redtd:
 
 class po2dtd:
     """this is a convertor class that creates a new dtd file based on a po file without a template"""
+
     def convertcomments(self, inputunit, dtdunit):
         entities = inputunit.getlocations()
         if len(entities) > 1:
@@ -129,7 +131,6 @@ class po2dtd:
         if msgidcomment:
             locnote = quote.unstripcomment("LOCALIZATION NOTE ("+dtdunit.entity+"): "+msgidcomment)
             dtdunit.comments.append(("locnote", locnote))
-
 
     def convertstrings(self, inputunit, dtdunit):
         if inputunit.istranslated():

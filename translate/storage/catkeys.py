@@ -110,6 +110,7 @@ csv.register_dialect("catkeys", CatkeysDialect)
 
 class CatkeysHeader(object):
     """A catkeys translation memory header"""
+
     def __init__(self, header=None):
         self._header_dict = {}
         if not header:
@@ -130,6 +131,7 @@ class CatkeysHeader(object):
 
 class CatkeysUnit(base.TranslationUnit):
     """A catkeys translation memory unit"""
+
     def __init__(self, source=None):
         self._dict = {}
         if source:
@@ -232,6 +234,7 @@ class CatkeysFile(base.TranslationStore):
     Name = _("Haiku catkeys file")
     Mimetypes  = ["application/x-catkeys"]
     Extensions = ["catkeys"]
+
     def __init__(self, inputfile=None, unitclass=CatkeysUnit):
         """Construct a catkeys store, optionally reading in from inputfile."""
         self.UnitClass = unitclass

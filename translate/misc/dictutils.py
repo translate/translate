@@ -30,6 +30,7 @@ def generalupper(str):
 
 
 class cidict(dict):
+
     def __init__(self, fromdict=None):
         """constructs the cidict, optionally using another dict to do so"""
         if fromdict is not None:
@@ -84,6 +85,7 @@ class cidict(dict):
 
 class ordereddict(dict):
     """a dictionary which remembers its keys in the order in which they were given"""
+
     def __init__(self, *args):
         if len(args) == 0:
             super(ordereddict, self).__init__()

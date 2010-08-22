@@ -113,6 +113,7 @@ class StateNotInWorkflowError(Exception):
 
 
 class Workflow(object):
+
     # INITIALISERS #
     def __init__(self, wf_obj=None):
         self._current_state = None

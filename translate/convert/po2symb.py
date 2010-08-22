@@ -61,6 +61,7 @@ def parse(ps, header_replacements, body_replacements):
 
 def line_saver(charset):
     result = []
+
     def save_line(line):
         result.append(line.encode(charset))
     return result, save_line

@@ -59,6 +59,7 @@ def create_termunit(term, unit, targets, locations, sourcenotes, transnotes, fil
 
 
 class TerminologyExtractor(object):
+
     def __init__(self, foldtitle=True, ignorecase=False, accelchars="", termlength=3,
                  sourcelanguage="en", invert=False, stopfile=None):
         self.foldtitle = foldtitle

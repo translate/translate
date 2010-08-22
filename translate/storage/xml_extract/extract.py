@@ -39,6 +39,7 @@ TranslatableClass = Class('Translatable')
 class Translatable(object):
     """A node corresponds to a translatable element. A node may
        have children, which correspond to placeables."""
+
     @accepts(Self(), unicode, unicode, etree._Element, [IsOneOf(TranslatableClass, unicode)])
     def __init__(self, placeable_name, xpath, dom_node, source):
         self.placeable_name = placeable_name
@@ -61,6 +62,7 @@ def reduce_unit_tree(f, unit_node, *state):
 class ParseState(object):
     """Maintain constants and variables used during the walking of a
     DOM tree (via the function apply)."""
+
     def __init__(self, no_translate_content_elements, inline_elements={}, nsmap={}):
         self.no_translate_content_elements = no_translate_content_elements
         self.inline_elements = inline_elements
@@ -171,6 +173,7 @@ def find_translatable_dom_nodes(dom_node, state):
 
 
 class IdMaker(object):
+
     def __init__(self):
         self._max_id = 0
         self._obj_id_map = {}

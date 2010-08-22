@@ -263,6 +263,7 @@ class Common(object):
         """Converts the given string by adding or removing characters as an
         estimation of translation length (with English assumed as source
         language)."""
+
         def alter_it(text):
             l = len(text)
             if l > 9:

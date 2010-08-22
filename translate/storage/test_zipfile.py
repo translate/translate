@@ -11,6 +11,7 @@ from translate.misc import zipfileext
 
 BrokenStringIO = StringIO.StringIO
 class FixedStringIO(BrokenStringIO):
+
     def truncate(self, size=None):
         BrokenStringIO.truncate(self, size)
         self.len = len(self.buf)
@@ -24,6 +25,7 @@ zipfile.ZipFile = zipfileext.ZipFileExt
 
 
 class TestZipFiles:
+
     def setup_method(self, method):
         self.srcname = "%s-%s%stmp" % (self.__class__.__name__, method.__name__, os.extsep)
         self.zipname = "%s-%s%szip" % (self.__class__.__name__, method.__name__, os.extsep)

@@ -26,6 +26,7 @@ from translate.storage import factory
 
 
 class reini:
+
     def __init__(self, templatefile, inputstore, dialect="default"):
         from translate.storage import ini
         self.templatefile = templatefile

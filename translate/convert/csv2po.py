@@ -49,6 +49,7 @@ def simplify(string):
 
 class csv2po:
     """a class that takes translations from a .csv file and puts them in a .po file"""
+
     def __init__(self, templatepo=None, charset=None, duplicatestyle="keep"):
         """construct the converter..."""
         self.pofile = templatepo

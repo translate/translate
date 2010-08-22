@@ -30,6 +30,7 @@ from translate.misc import wStringIO
 
 
 class xliff2po:
+
     def converttransunit(self, transunit):
         """makes a pounit from the given transunit"""
         thepo = po.pounit()

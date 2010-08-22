@@ -50,6 +50,7 @@ class TestTSUnit(test_base.TestTranslationUnit):
 
 class TestTSfile(test_base.TestTranslationStore):
     StoreClass = ts.tsfile
+
     def test_basic(self):
         tsfile = ts.tsfile()
         assert tsfile.units == []
@@ -110,7 +111,6 @@ class TestTSfile(test_base.TestTranslationStore):
 '''
         tsfile = ts.tsfile.parsestring(tsstr)
         assert tsfile.getsourcelanguage() == 'en'
-
 
     def test_locations(self):
         """test that locations work well"""

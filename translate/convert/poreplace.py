@@ -27,6 +27,7 @@ from translate.storage import po
 
 
 class poreplace:
+
     def convertstring(self, postr):
         """does the conversion required on the given string (nothing in this case)"""
         return postr

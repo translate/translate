@@ -28,6 +28,7 @@ def test_escape_help_text():
 
 
 class TestOO:
+
     def setup_method(self, method):
         warnings.resetwarnings()
 

@@ -33,6 +33,7 @@ import time
 
 
 class reoo:
+
     def __init__(self, templatefile, languages=None, timestamp=None, includefuzzy=False, long_keys=False, filteraction="exclude"):
         """construct a reoo converter for the specified languages (timestamp=0 means leave unchanged)"""
         # languages is a pair of language ids
@@ -147,6 +148,7 @@ def getmtime(filename):
 
 
 class oocheckfilter(pofilter.pocheckfilter):
+
     def validelement(self, unit, filename, filteraction):
         """Returns whether or not to use unit in conversion. (filename is just for error reporting)"""
         if filteraction == "none":

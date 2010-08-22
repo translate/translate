@@ -27,6 +27,7 @@ from translate.misc.multistring import multistring
 
 
 class phppo2pypo:
+
     def convertstore(self, inputstore):
         """Converts a given .po file (PHP Format) to a Python format .po file, the difference being
             how variable substitutions work.  PHP uses a %1$s format, and Python uses

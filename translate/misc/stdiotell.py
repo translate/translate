@@ -23,6 +23,7 @@
 
 
 class StdIOWrapper:
+
     def __init__(self, stream):
         self.stream = stream
         self.pos = 0

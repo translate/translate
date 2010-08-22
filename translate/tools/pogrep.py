@@ -63,10 +63,12 @@ class GrepMatch(object):
                 getter = lambda: self.unit.source
             return getter
         elif self.part == 'notes':
+
             def getter():
                 return self.unit.getnotes()[self.part_n]
             return getter
         elif self.part == 'locations':
+
             def getter():
                 return self.unit.getlocations()[self.part_n]
             return getter
@@ -74,11 +76,13 @@ class GrepMatch(object):
     def get_setter(self):
         if self.part == 'target':
             if self.unit.hasplural():
+
                 def setter(value):
                     strings = self.unit.target.strings
                     strings[self.part_n] = value
                     self.unit.target = strings
             else:
+
                 def setter(value):
                     self.unit.target = value
             return setter
@@ -124,6 +128,7 @@ def find_matches(unit, part, strings, re_search):
 
 
 class GrepFilter:
+
     def __init__(self, searchstring, searchparts, ignorecase=False, useregexp=False,
             invertmatch=False, accelchar=None, encoding='utf-8',
             max_matches=0):
@@ -268,6 +273,7 @@ class GrepFilter:
 
 class GrepOptionParser(optrecurse.RecursiveOptionParser):
     """a specialized Option Parser for the grep tool..."""
+
     def parse_args(self, args=None, values=None):
         """parses the command line options, handling implicit input/output args"""
         (options, args) = optrecurse.optparse.OptionParser.parse_args(self, args, values)

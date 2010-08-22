@@ -33,6 +33,7 @@ from translate.storage import oo
 
 
 class oo2xliff:
+
     def __init__(self, sourcelanguage, targetlanguage, blankmsgstr=False, long_keys=False):
         """construct an oo2xliff converter for the specified languages"""
         self.sourcelanguage = sourcelanguage

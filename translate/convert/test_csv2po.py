@@ -9,6 +9,7 @@ from translate.storage.test_base import headerless_len, first_translatable
 
 
 class TestCSV2PO:
+
     def csv2po(self, csvsource, template=None):
         """helper that converts csv source to po source without requiring files"""
         inputfile = wStringIO.StringIO(csvsource)

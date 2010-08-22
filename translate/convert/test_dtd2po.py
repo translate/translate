@@ -9,6 +9,7 @@ from translate.storage import dtd
 
 
 class TestDTD2PO:
+
     def dtd2po(self, dtdsource, dtdtemplate=None):
         """helper that converts dtd source to po source without requiring files"""
         inputfile = wStringIO.StringIO(dtdsource)

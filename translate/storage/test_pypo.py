@@ -145,6 +145,7 @@ msgstr ""
 
 class TestPYPOFile(test_po.TestPOFile):
     StoreClass = pypo.pofile
+
     def test_combine_msgidcomments(self):
         """checks that we don't get duplicate msgid comments"""
         posource = 'msgid "test me"\nmsgstr ""'

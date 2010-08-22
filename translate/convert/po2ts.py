@@ -31,6 +31,7 @@ from translate.storage import ts
 
 
 class po2ts:
+
     def convertstore(self, inputstore, templatefile=None, context=None):
         """converts a .po file to .ts format (using a template .ts file if given)"""
         if templatefile is None:

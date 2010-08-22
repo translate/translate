@@ -59,6 +59,7 @@ import datetime
 
 class TikiUnit(base.TranslationUnit):
     """A tiki unit entry."""
+
     def __init__(self, source=None, encoding="UTF-8"):
         self.location = []
         super(TikiUnit, self).__init__(source)
@@ -86,6 +87,7 @@ class TikiUnit(base.TranslationUnit):
 
 class TikiStore(base.TranslationStore):
     """Represents a tiki language.php file."""
+
     def __init__(self, inputfile=None):
         """If an inputfile is specified it will be parsed.
 

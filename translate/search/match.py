@@ -36,6 +36,7 @@ def sourcelen(unit):
 
 
 def _sort_matches(matches, match_info):
+
     def _matches_cmp(x, y):
         # This function will sort a list of matches according to the match's starting
         # position, putting the one with the longer source text first, if two are the same.

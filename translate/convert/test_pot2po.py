@@ -8,6 +8,7 @@ import warnings
 
 
 class TestPOT2PO:
+
     def setup_method(self, method):
         warnings.resetwarnings()
 

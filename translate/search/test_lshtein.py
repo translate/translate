@@ -3,6 +3,7 @@ from translate.search import lshtein
 
 class TestLevenshtein:
     """Test whether Levenshtein distance calculations are correct"""
+
     def test_basic_distance(self):
         """Tests distance correctness with a few basic values"""
         levenshtein = lshtein.LevenshteinComparer()

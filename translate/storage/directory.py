@@ -32,6 +32,7 @@ from os import path
 
 class Directory:
     """This class represents a directory."""
+
     def __init__(self, dir=None):
         self.dir = dir
         self.filedata = []
@@ -63,6 +64,7 @@ class Directory:
     def scanfiles(self):
         """Populate the internal file data."""
         self.filedata = []
+
         def addfile(arg, dirname, fnames):
             for fname in fnames:
                 if path.isfile(path.join(dirname, fname)):

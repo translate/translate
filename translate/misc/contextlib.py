@@ -106,6 +106,7 @@ def contextmanager(func):
             <cleanup>
 
     """
+
     def helper(*args, **kwds):
         return GeneratorContextManager(func(*args, **kwds))
     try:
@@ -188,9 +189,12 @@ class closing(object):
             f.close()
 
     """
+
     def __init__(self, thing):
         self.thing = thing
+
     def __enter__(self):
         return self.thing
+
     def __exit__(self, *exc_info):
         self.thing.close()

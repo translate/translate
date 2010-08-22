@@ -47,6 +47,7 @@ def stringquote(text):
 
 class ParserError(ValueError):
     """Intelligent parser error"""
+
     def __init__(self, parser, message, tokennum):
         """takes a message and the number of the token that caused the error"""
         tokenpos = parser.findtokenpos(tokennum)
@@ -59,6 +60,7 @@ class ParserError(ValueError):
 
 class SimpleParser:
     """this is a simple parser"""
+
     def __init__(self, defaulttokenlist=None, whitespacechars=" \t\r\n", includewhitespacetokens=0):
         if defaulttokenlist is None:
             self.defaulttokenlist = ['<=', '>=', '==', '!=', '+=', '-=', '*=', '/=', '<>']

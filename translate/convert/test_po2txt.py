@@ -7,6 +7,7 @@ from translate.misc import wStringIO
 
 
 class TestPO2Txt:
+
     def po2txt(self, posource, txttemplate=None):
         """helper that converts po source to txt source without requiring files"""
         inputfile = wStringIO.StringIO(posource)

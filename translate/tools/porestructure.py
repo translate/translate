@@ -34,6 +34,7 @@ from translate.misc import optrecurse
 
 class SplitOptionParser(optrecurse.RecursiveOptionParser):
     """a specialized Option Parser for posplit"""
+
     def parse_args(self, args=None, values=None):
         """parses the command line options, handling implicit input/output args"""
         (options, args) = optrecurse.RecursiveOptionParser.parse_args(self, args, values)

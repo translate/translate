@@ -34,7 +34,6 @@ class TestMonolingualStore(test_base.TestTranslationStore):
     def test_nonascii(self):
         pass
 
-
     def check_equality(self, store1, store2):
         """asserts that store1 and store2 are the same"""
         assert len(store1.units) == len(store2.units)

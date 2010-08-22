@@ -49,6 +49,7 @@ def escape_to_rc(string):
 
 class rcunit(base.TranslationUnit):
     """A unit of an rc file"""
+
     def __init__(self, source="", encoding="cp1252"):
         """Construct a blank rcunit."""
         super(rcunit, self).__init__(source)
@@ -112,6 +113,7 @@ class rcunit(base.TranslationUnit):
 class rcfile(base.TranslationStore):
     """This class represents a .rc file, made up of rcunits."""
     UnitClass = rcunit
+
     def __init__(self, inputfile=None, lang=None, sublang=None, encoding="cp1252"):
         """Construct an rcfile, optionally reading in from inputfile."""
         self.encoding = encoding

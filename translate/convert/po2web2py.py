@@ -27,6 +27,7 @@ from translate.storage import factory
 
 
 class po2pydict:
+
     def __init__(self):
         return
 

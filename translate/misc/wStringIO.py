@@ -25,6 +25,7 @@ import cStringIO
 
 
 class StringIO:
+
     def __init__(self, buf=''):
         if not isinstance(buf, (str, unicode)):
             buf = str(buf)
@@ -140,6 +141,7 @@ class StringIO:
 
 class CatchStringOutput(StringIO, object):
     """catches the output before it is closed and sends it to an onclose method"""
+
     def __init__(self, onclose):
         """Set up the output stream, and remember a method to call on closing"""
         StringIO.__init__(self)

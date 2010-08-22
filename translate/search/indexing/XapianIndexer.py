@@ -39,6 +39,7 @@ import re
 
 # detect if running under apache
 if 'apache' in sys.modules or '_apache' in sys.modules or 'mod_wsgi' in sys.modules:
+
     def _str2version(version):
         return [int(i) for i in version.split('.')]
 

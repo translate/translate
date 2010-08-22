@@ -30,6 +30,7 @@ from translate.storage import base
 
 
 class SimpleDictReader:
+
     def __init__(self, fileobj, fieldnames):
         self.fieldnames = fieldnames
         self.contents = fileobj.read()
@@ -92,6 +93,7 @@ class SimpleDictReader:
 
 class csvunit(base.TranslationUnit):
     spreadsheetescapes = [("+", "\\+"), ("-", "\\-"), ("=", "\\="), ("'", "\\'")]
+
     def __init__(self, source=None):
         super(csvunit, self).__init__(source)
         self.comment = ""
@@ -147,6 +149,7 @@ class csvfile(base.TranslationStore):
     Name = _("Comma Separated Value")
     Mimetypes = ['text/comma-separated-values', 'text/csv']
     Extensions = ["csv"]
+
     def __init__(self, inputfile=None, fieldnames=None):
         base.TranslationStore.__init__(self, unitclass=self.UnitClass)
         self.units = []

@@ -76,6 +76,7 @@ class TestCPOUnit(test_po.TestPOUnit):
 
 class TestCPOFile(test_po.TestPOFile):
     StoreClass = cpo.pofile
+
     def test_msgidcomments(self):
         """checks that we handle msgid comments"""
         posource = 'msgid "test me"\nmsgstr ""'

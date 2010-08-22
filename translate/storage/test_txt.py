@@ -11,6 +11,7 @@ class TestTxtUnit(test_monolingual.TestMonolingualUnit):
 
 class TestTxtFile(test_monolingual.TestMonolingualStore):
     StoreClass = txt.TxtFile
+
     def txtparse(self, txtsource):
         """helper that parses txt source without requiring files"""
         dummyfile = wStringIO.StringIO(txtsource)

@@ -40,6 +40,7 @@ except ImportError:
 
 class po2html:
     """po2html can take a po file and generate html. best to give it a template file otherwise will just concat msgstrs"""
+
     def __init__(self, wrap=None, usetidy=None):
         self.wrap = wrap
         self.tidy = tidy and usetidy

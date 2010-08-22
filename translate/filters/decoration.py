@@ -191,6 +191,7 @@ def findmarkedvariables(str1, startmarker, endmarker, ignorelist=[]):
 
 def getaccelerators(accelmarker, acceptlist=None):
     """returns a function that gets a list of accelerators marked using accelmarker"""
+
     def getmarkedaccelerators(str1):
         """returns all the accelerators in str1 marked with a given marker"""
         acclocs, badlocs = findaccelerators(str1, accelmarker, acceptlist)
@@ -202,6 +203,7 @@ def getaccelerators(accelmarker, acceptlist=None):
 
 def getvariables(startmarker, endmarker):
     """returns a function that gets a list of variables marked using startmarker and endmarker"""
+
     def getmarkedvariables(str1):
         """returns all the variables in str1 marked with a given marker"""
         varlocs = findmarkedvariables(str1, startmarker, endmarker)
@@ -265,6 +267,7 @@ def geturls(str1):
 
 def countaccelerators(accelmarker, acceptlist=None):
     """returns a function that counts the number of accelerators marked with the given marker"""
+
     def countmarkedaccelerators(str1):
         """returns all the variables in str1 marked with a given marker"""
         acclocs, badlocs = findaccelerators(str1, accelmarker, acceptlist)

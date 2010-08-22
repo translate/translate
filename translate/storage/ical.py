@@ -62,6 +62,7 @@ import vobject
 
 class icalunit(base.TranslationUnit):
     """An ical entry that is translatable"""
+
     def __init__(self, source=None, encoding="UTF-8"):
         self.location = ""
         if source:
@@ -78,6 +79,7 @@ class icalunit(base.TranslationUnit):
 class icalfile(base.TranslationStore):
     """An ical file"""
     UnitClass = icalunit
+
     def __init__(self, inputfile=None, unitclass=icalunit):
         """construct an ical file, optionally reading in from inputfile."""
         self.UnitClass = unitclass

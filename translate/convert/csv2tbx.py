@@ -27,6 +27,7 @@ from translate.storage import csvl10n
 
 class csv2tbx:
     """a class that takes translations from a .csv file and puts them in a .tbx file"""
+
     def __init__(self, charset=None):
         """construct the converter..."""
         self.charset = charset

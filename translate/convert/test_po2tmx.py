@@ -80,7 +80,6 @@ msgstr "Eerste deel "
         print str(tmx)
         assert tmx.translate('First part and extra') == 'Eerste deel en ekstra'
 
-
     def test_escapednewlines(self):
         """Test the escaping of newlines"""
         minipo = r'''msgid "First line\nSecond line"

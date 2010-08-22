@@ -520,6 +520,7 @@ class propfile(base.TranslationStore):
 class stringsfile(propfile):
     Name = _("OS X Strings")
     Extensions = ['strings']
+
     def __init__(self, *args, **kwargs):
         kwargs['personality'] = "strings"
         super(stringsfile, self).__init__(*args, **kwargs)

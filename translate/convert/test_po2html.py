@@ -6,6 +6,7 @@ from translate.misc import wStringIO
 
 
 class TestPO2Html:
+
     def converthtml(self, posource, htmltemplate):
         """helper to exercise the command line function"""
         inputfile = wStringIO.StringIO(posource)

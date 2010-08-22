@@ -30,6 +30,7 @@ from translate.storage import csvl10n
 
 
 class po2csv:
+
     def convertcomments(self, inputunit):
         return " ".join(inputunit.getlocations())
 

@@ -27,6 +27,7 @@ from translate.storage import po
 
 class ini2po:
     """convert a .ini file to a .po file for handling the translation..."""
+
     def convert_store(self, input_store, duplicatestyle="msgctxt"):
         """converts a .ini file to a .po file..."""
         output_store = po.pofile()

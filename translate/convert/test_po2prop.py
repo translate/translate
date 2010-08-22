@@ -8,6 +8,7 @@ from translate.storage import po
 
 
 class TestPO2Prop:
+
     def po2prop(self, posource):
         """helper that converts po source to .properties source without requiring files"""
         inputfile = wStringIO.StringIO(posource)

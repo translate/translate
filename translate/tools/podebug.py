@@ -47,6 +47,7 @@ podebug_parsers.remove(general.CamelCasePlaceable.parse)
 
 
 class podebug:
+
     def __init__(self, format=None, rewritestyle=None, ignoreoption=None):
         if format is None:
             self.format = ""
@@ -136,15 +137,18 @@ class podebug:
         return string
 
     REWRITE_UNICODE_MAP = u"ȦƁƇḒḖƑƓĦĪĴĶĿḾȠǾƤɊŘŞŦŬṼẆẊẎẐ" + u"[\\]^_`" + u"ȧƀƈḓḗƒɠħīĵķŀḿƞǿƥɋřşŧŭṽẇẋẏẑ"
+
     def rewrite_unicode(self, string):
         """Convert to Unicode characters that look like the source string"""
         if not isinstance(string, StringElem):
             string = StringElem(string)
+
         def transpose(char):
             loc = ord(char)-65
             if loc < 0 or loc > 56:
                 return char
             return self.REWRITE_UNICODE_MAP[loc]
+
         def transformer(s):
             return ''.join([transpose(c) for c in s])
         self.apply_to_translatables(string, transformer)
@@ -162,15 +166,18 @@ class podebug:
         # @: Ҩ - Seems only related in Dejavu Sans
         # Q: Ὄ Ό Ὀ Ὃ Ὄ Ṑ Ò Ỏ
         # _: ‾ - left out for now for the sake of GTK accelerators
+
     def rewrite_flipped(self, string):
         """Convert the string to look flipped upside down."""
         if not isinstance(string, StringElem):
             string = StringElem(string)
+
         def transpose(char):
             loc = ord(char)-33
             if loc < 0 or loc > 89:
                 return char
             return self.REWRITE_FLIPPED_MAP[loc]
+
         def transformer(s):
             return u"\u202e" + u''.join([transpose(c) for c in s])
             # To reverse instead of using the RTL override:

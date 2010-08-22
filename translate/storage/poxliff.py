@@ -229,6 +229,7 @@ class PoXliffUnit(xliff.xliffunit):
     def getautomaticcomments(self):
         """Returns the automatic comments (x-po-autocomment), which corresponds
         to the #. style po comments."""
+
         def hasautocomment((type, text)):
             return type == "x-po-autocomment"
         groups = self.getcontextgroups("po-entry")
@@ -242,6 +243,7 @@ class PoXliffUnit(xliff.xliffunit):
     def gettranslatorcomments(self):
         """Returns the translator comments (x-po-trancomment), which corresponds
         to the # style po comments."""
+
         def hastrancomment((type, text)):
             return type == "x-po-trancomment"
         groups = self.getcontextgroups("po-entry")
@@ -283,6 +285,7 @@ class PoXliffUnit(xliff.xliffunit):
 class PoXliffFile(xliff.xlifffile, poheader.poheader):
     """a file for the po variant of Xliff files"""
     UnitClass = PoXliffUnit
+
     def __init__(self, *args, **kwargs):
         if not "sourcelanguage" in kwargs:
             kwargs["sourcelanguage"] = "en-US"
@@ -345,6 +348,7 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
     def parse(self, xml):
         """Populates this object from the given xml string"""
         #TODO: Make more robust
+
         def ispluralgroup(node):
             """determines whether the xml node refers to a getttext plural"""
             return node.get("restype") == "x-gettext-plurals"

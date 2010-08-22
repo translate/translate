@@ -32,6 +32,7 @@ from translate.storage import ts
 
 
 class ts2po:
+
     def __init__(self, duplicatestyle="msgctxt"):
         self.duplicatestyle = duplicatestyle
 

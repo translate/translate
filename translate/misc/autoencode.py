@@ -24,6 +24,7 @@ and uses this when converting to a string."""
 
 
 class autoencode(unicode):
+
     def __new__(newtype, string=u"", encoding=None, errors=None):
         if isinstance(string, unicode):
             if errors is None:

@@ -27,6 +27,7 @@ from translate.storage import ical
 
 
 class reical:
+
     def __init__(self, templatefile, inputstore):
         self.templatefile = templatefile
         self.templatestore = ical.icalfile(templatefile)

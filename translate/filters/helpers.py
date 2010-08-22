@@ -51,6 +51,7 @@ def filtercount(str1, func):
 
 def filtertestmethod(testmethod, strfilter):
     """returns a version of the testmethod that operates on filtered strings using strfilter"""
+
     def filteredmethod(str1, str2):
         return testmethod(strfilter(str1), strfilter(str2))
     filteredmethod.__doc__ = testmethod.__doc__
@@ -67,6 +68,7 @@ def multifilter(str1, strfilters, *args):
 
 def multifiltertestmethod(testmethod, strfilters):
     """returns a version of the testmethod that operates on filtered strings using strfilter"""
+
     def filteredmethod(str1, str2):
         return testmethod(multifilter(str1, strfilters), multifilter(str2, strfilters))
     filteredmethod.__doc__ = testmethod.__doc__

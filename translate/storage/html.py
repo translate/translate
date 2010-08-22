@@ -29,6 +29,7 @@ from HTMLParser import HTMLParser
 
 class htmlunit(base.TranslationUnit):
     """A unit of translatable/localisable HTML content"""
+
     def __init__(self, source=None):
         self.locations = []
         self.setsource(source)

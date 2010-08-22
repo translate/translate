@@ -33,6 +33,7 @@ except ImportError:
 
 class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
     """a specialized Option Parser for convertor tools..."""
+
     def __init__(self, formats, usetemplates=False, usepots=False, allowmissingtemplate=False, description=None):
         """construct the specialized Option Parser"""
         optrecurse.RecursiveOptionParser.__init__(self, formats, usetemplates,
@@ -148,6 +149,7 @@ def copytemplate(inputfile, outputfile, templatefile, **kwargs):
 
 class Replacer:
     """an object that knows how to replace strings in files"""
+
     def __init__(self, searchstring, replacestring):
         self.searchstring = searchstring
         self.replacestring = replacestring
@@ -186,6 +188,7 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
     """ConvertOptionParser that can handle recursing into single archive files.
     archiveformats maps extension to class. if the extension doesn't matter, it can be None.
     if the extension is only valid for input/output/template, it can be given as (extension, filepurpose)"""
+
     def __init__(self, formats, usetemplates=False, usepots=False, description=None, archiveformats=None):
         if archiveformats is None:
             self.archiveformats = {}

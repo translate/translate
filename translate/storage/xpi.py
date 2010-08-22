@@ -38,6 +38,7 @@ from translate.misc import wStringIO
 # this is a fix to the StringIO in Python 2.3.3
 # submitted as patch 951915 on sourceforge
 class FixedStringIO(wStringIO.StringIO):
+
     def truncate(self, size=None):
         StringIO.StringIO.truncate(self, size)
         self.len = len(self.buf)
@@ -47,6 +48,7 @@ NamedStringOutput = wStringIO.StringIO
 
 
 def _commonprefix(itemlist):
+
     def cp(a, b):
         l = min(len(a), len(b))
         for n in range(l):
@@ -60,6 +62,7 @@ def _commonprefix(itemlist):
 
 
 def rememberchanged(self, method):
+
     def changed(*args, **kwargs):
         self.changed = True
         method(*args, **kwargs)
@@ -68,6 +71,7 @@ def rememberchanged(self, method):
 
 class CatchPotentialOutput(NamedStringInput, object):
     """catches output if there has been, before closing"""
+
     def __init__(self, contents, onclose):
         """Set up the output stream, and remember a method to call on closing"""
         NamedStringInput.__init__(self, contents)
@@ -99,6 +103,7 @@ class CatchPotentialOutput(NamedStringInput, object):
 
 class ZipFileCatcher(ZipFileBase, object):
     """a ZipFile that calls any methods its instructed to before closing (useful for catching stream output)"""
+
     def __init__(self, *args, **kwargs):
         """initialize the ZipFileCatcher"""
         # storing oldclose as attribute, since if close is called from __del__ it has no access to external variables
@@ -137,6 +142,7 @@ class ZipFileCatcher(ZipFileBase, object):
 
 
 class XpiFile(ZipFileCatcher):
+
     def __init__(self, *args, **kwargs):
         """sets up the xpi file"""
         self.includenonloc = kwargs.get("includenonloc", True)
@@ -375,6 +381,7 @@ class XpiFile(ZipFileCatcher):
         """opens a file (possibly inside a jarfile as a StringIO"""
         if jarfilename is None:
             contents = self.read(filename)
+
             def onclose(contents):
                 if contents != self.read(filename):
                     self.overwritestr(filename, contents)
@@ -392,6 +399,7 @@ class XpiFile(ZipFileCatcher):
     def openoutputstream(self, jarfilename, filename):
         """opens a file for writing (possibly inside a jarfile as a StringIO"""
         if jarfilename is None:
+
             def onclose(contents):
                 self.overwritestr(filename, contents)
         else:
@@ -402,6 +410,7 @@ class XpiFile(ZipFileCatcher):
                 jarfile = ZipFileCatcher(jarstream, "w")
                 self.jarfiles[jarfilename] = jarfile
                 self.addcatcher(jarstream.slam)
+
             def onclose(contents):
                 jarfile.overwritestr(filename, contents)
         outputstream = wStringIO.CatchStringOutput(onclose)

@@ -12,6 +12,7 @@ from translate.misc import wStringIO
 
 
 class TestPyPo2PhpPo:
+
     def test_single_po(self):
         inputfile = """
 # This user comment refers to: {0}

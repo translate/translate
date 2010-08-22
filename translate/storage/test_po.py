@@ -24,6 +24,7 @@ def test_roundtrip_quoting():
 
 class TestPOUnit(test_base.TestTranslationUnit):
     UnitClass = po.pounit
+
     def test_istranslatable(self):
         """Tests for the correct behaviour of istranslatable()."""
         unit = self.UnitClass("Message")
@@ -46,6 +47,7 @@ class TestPOUnit(test_base.TestTranslationUnit):
 
     def test_locations(self):
         """Tests that we can add and retrieve error messages for a unit."""
+
         def locations_helper(location):
             unit = self.UnitClass()
             assert len(unit.getlocations()) == 0
@@ -160,6 +162,7 @@ class TestPOUnit(test_base.TestTranslationUnit):
 
 class TestPOFile(test_base.TestTranslationStore):
     StoreClass = po.pofile
+
     def poparse(self, posource):
         """helper that parses po source without requiring files"""
         dummyfile = wStringIO.StringIO(posource)
@@ -275,7 +278,6 @@ msgstr[1] "Kóeie"
         unit = pofile.units[0]
         assert isinstance(unit.source, multistring)
         assert isinstance(unit.source.strings[1], unicode)
-
 
     def wtest_kde_plurals(self):
         """Tests kde-style plurals. (Bug: 191)"""
@@ -452,7 +454,6 @@ msgstr "een"
         print str(pofile)
         assert str(pofile) == posource
 
-
     def test_header_escapes(self):
         pofile = self.StoreClass()
         pofile.updateheader(add=True, **{"Report-Msgid-Bugs-To": r"http://qa.openoffice.org/issues/enter_bug.cgi?subcomponent=ui&comment=&short_desc=Localization%20issue%20in%20file%3A%20dbaccess\source\core\resource.oo&component=l10n&form_name=enter_issue"})
@@ -496,7 +497,6 @@ msgstr[1] "Koeie"
         assert unit.isobsolete()
         print pofile
         assert str(unit) == poexpected
-
 
     def test_makeobsolete_msgctxt(self):
         """Tests making a unit with msgctxt obsolete"""

@@ -98,7 +98,6 @@ class pounit(pocommon.pounit):
             self._source = multistring(source)
     source = property(getsource, setsource)
 
-
     def gettarget(self):
         """Returns the unescaped msgstr"""
         return self._target
@@ -486,7 +485,6 @@ class pofile(pocommon.pofile):
             #only add a temporary header
             self._cpo_store.makeheader(charset="utf-8", encoding="8bit")
 
-
     def parse(self, input):
         """Parses the given file or file source string."""
         try:
@@ -516,6 +514,7 @@ class pofile(pocommon.pofile):
         # TODO: this is using a list as the pos aren't hashable, but this is slow.
         # probably not used frequently enough to worry about it, though.
         markedpos = []
+
         def addcomment(thepo):
             thepo.msgidcomment = " ".join(thepo.getlocations())
             markedpos.append(thepo)

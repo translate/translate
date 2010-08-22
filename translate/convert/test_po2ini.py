@@ -8,6 +8,7 @@ from translate.storage import po
 
 
 class TestPO2Ini:
+
     def po2ini(self, posource):
         """helper that converts po source to .ini source without requiring files"""
         inputfile = wStringIO.StringIO(posource)

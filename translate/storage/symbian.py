@@ -32,6 +32,7 @@ def identity(x):
 
 
 class ParseState(object):
+
     def __init__(self, f, charset, read_hook=identity):
         self.f = f
         self.charset = charset

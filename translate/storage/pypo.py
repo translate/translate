@@ -619,6 +619,7 @@ class pounit(pocommon.pounit):
 
     def _getoutput(self):
         """return this po element as a string"""
+
         def add_prev_msgid_lines(lines, prefix, header, var):
             if len(var) > 0:
                 lines.append("%s %s %s\n" % (prefix, header, var[0]))
@@ -760,6 +761,7 @@ class pofile(pocommon.pofile):
         # TODO: this is using a list as the pos aren't hashable, but this is slow.
         # probably not used frequently enough to worry about it, though.
         markedpos = []
+
         def addcomment(thepo):
             thepo.msgidcomments.append('"_: %s\\n"' % " ".join(thepo.getlocations()))
             markedpos.append(thepo)

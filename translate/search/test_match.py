@@ -4,6 +4,7 @@ from translate.storage import csvl10n
 
 class TestMatch:
     """Test the matching class"""
+
     def candidatestrings(self, units):
         """returns only the candidate strings out of the list with (score, string) tuples"""
         return [unit.source for unit in units]

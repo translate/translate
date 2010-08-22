@@ -31,6 +31,7 @@ from translate.storage import html
 
 
 class html2po:
+
     def convertfile(self, inputfile, filename, includeheader, includeuntagged=False, duplicatestyle="msgctxt", keepcomments=False):
         """converts a html file to .po format"""
         thetargetfile = po.pofile()

@@ -73,6 +73,7 @@ class XPathBreadcrumb(object):
         self._tagtally.pop()
 
     def _get_xpath(self):
+
         def str_component(component):
             tag, pos = component
             return u"%s[%d]" % (tag, pos)

@@ -43,6 +43,7 @@ decode = str.decode
 
 
 class ParseState(object):
+
     def __init__(self, input_iterator, UnitClass, encoding=None):
         self._input_iterator = input_iterator
         self.next_line = ''

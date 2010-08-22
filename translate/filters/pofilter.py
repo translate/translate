@@ -65,6 +65,7 @@ def build_checkerconfig(options):
 
 
 class pocheckfilter:
+
     def __init__(self, options, checkerclasses=None, checkerconfig=None):
         # excludefilters={}, limitfilters=None, includefuzzy=True, includereview=True, autocorrect=False):
         """builds a checkfilter using the given checker (a list is allowed too)"""
@@ -130,6 +131,7 @@ class pocheckfilter:
 
 class FilterOptionParser(optrecurse.RecursiveOptionParser):
     """a specialized Option Parser for filter tools..."""
+
     def __init__(self, formats):
         """construct the specialized Option Parser"""
         optrecurse.RecursiveOptionParser.__init__(self, formats)

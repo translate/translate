@@ -75,6 +75,7 @@ except ImportError:
 
 
 class LevenshteinComparer:
+
     def __init__(self, max_len=200):
         self.MAX_LEN = max_len
 

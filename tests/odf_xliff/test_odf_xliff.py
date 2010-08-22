@@ -93,6 +93,7 @@ def is_content_file(filename):
 
 
 class ODF(object):
+
     def __init__(self, filename):
         self.odf = zipfile.ZipFile(filename)
 

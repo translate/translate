@@ -34,6 +34,7 @@ import os
 
 class ConflictOptionParser(optrecurse.RecursiveOptionParser):
     """a specialized Option Parser for the conflict tool..."""
+
     def parse_args(self, args=None, values=None):
         """parses the command line options, handling implicit input/output args"""
         (options, args) = optrecurse.optparse.OptionParser.parse_args(self, args, values)

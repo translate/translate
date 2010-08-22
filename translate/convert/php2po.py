@@ -32,6 +32,7 @@ from translate.storage import php
 
 class php2po:
     """convert a .php file to a .po file for handling the translation..."""
+
     def convertstore(self, inputstore, duplicatestyle="msgctxt"):
         """converts a .php file to a .po file..."""
         outputstore = po.pofile()

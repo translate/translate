@@ -7,6 +7,7 @@ from translate.misc import wStringIO
 
 
 class TestTS2PO:
+
     def ts2po(self, tssource):
         converter = ts2po.ts2po()
         tsfile = wStringIO.StringIO(tssource)

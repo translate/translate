@@ -8,6 +8,7 @@ from translate.storage import tiki
 
 
 class TestTikiUnit:
+
     def test_locations(self):
         unit = tiki.TikiUnit("one")
         unit.addlocation('blah')
@@ -27,6 +28,7 @@ class TestTikiUnit:
 
 
 class TestTikiStore:
+
     def test_parse_simple(self):
         tikisource = r'"Top authors" => "Top autoren",'
         tikifile = tiki.TikiStore(tikisource)

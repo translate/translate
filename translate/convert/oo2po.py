@@ -34,6 +34,7 @@ from translate.storage import oo
 
 
 class oo2po:
+
     def __init__(self, sourcelanguage, targetlanguage, blankmsgstr=False, long_keys=False):
         """construct an oo2po converter for the specified languages"""
         self.sourcelanguage = sourcelanguage

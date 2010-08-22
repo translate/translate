@@ -34,6 +34,7 @@ import os
 
 
 class po2wordfast:
+
     def convertfiles(self, inputfile, wffile, sourcelanguage='en', targetlanguage=None):
         """converts a .po file (possibly many) to a Wordfast TM file"""
         inputstore = po.pofile(inputfile)
@@ -56,6 +57,7 @@ def convertpo(inputfile, outputfile, templatefile, sourcelanguage='en', targetla
 
 
 class wfmultifile:
+
     def __init__(self, filename, mode=None):
         """initialises wfmultifile from a seekable inputfile or writable outputfile"""
         self.filename = filename
@@ -70,6 +72,7 @@ class wfmultifile:
 
     def openoutputfile(self, subfile):
         """returns a pseudo-file object for the given subfile"""
+
         def onclose(contents):
             pass
         outputfile = wStringIO.CatchStringOutput(onclose)
@@ -79,6 +82,7 @@ class wfmultifile:
 
 
 class WfOptionParser(convert.ArchiveConvertOptionParser):
+
     def recursiveprocess(self, options):
         if not options.targetlanguage:
             raise ValueError("You must specify the target language")

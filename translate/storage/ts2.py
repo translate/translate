@@ -91,6 +91,7 @@ class tsunit(lisa.LISAunit):
 
     def getlanguageNodes(self):
         """We override this to get source and target nodes."""
+
         def not_none(node):
             return not node is None
         return filter(not_none, [self._getsourcenode(), self._gettargetnode()])

@@ -27,6 +27,7 @@ from translate.storage import po
 
 
 class po2tiki:
+
     def convertstore(self, thepofile):
         """Converts a given (parsed) po file to a tiki file.
 

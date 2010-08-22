@@ -84,6 +84,7 @@ def main():
 
 class DirDiffer:
     """generates diffs between directories"""
+
     def __init__(self, fromdir, todir, options):
         """constructs a comparison between the two dirs using the given options"""
         self.fromdir = fromdir
@@ -134,6 +135,7 @@ class DirDiffer:
 
 class FileDiffer:
     """generates diffs between files"""
+
     def __init__(self, fromfile, tofile, options):
         """constructs a comparison between the two files using the given options"""
         self.fromfile = fromfile

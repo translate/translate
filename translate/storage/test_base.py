@@ -43,16 +43,21 @@ def first_translatable(store):
 
 def test_force_override():
     """Tests that derived classes are not allowed to call certain functions"""
+
     class BaseClass:
+
         def test(self):
             base.force_override(self.test, BaseClass)
             return True
+
         def classtest(cls):
             base.force_override(cls.classtest, BaseClass)
             return True
         classtest = classmethod(classtest)
+
     class DerivedClass(BaseClass):
         pass
+
     baseobject = BaseClass()
     assert baseobject.test()
     assert baseobject.classtest()

@@ -28,6 +28,7 @@ from translate.storage import ical
 
 class ical2po:
     """convert a iCal file to a .po file for handling the translation..."""
+
     def convert_store(self, input_store, duplicatestyle="msgctxt"):
         """converts a iCal file to a .po file..."""
         output_store = po.pofile()

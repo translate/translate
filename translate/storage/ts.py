@@ -37,6 +37,7 @@ from translate.misc import ourdom
 class QtTsParser:
     contextancestors = dict.fromkeys(["TS"])
     messageancestors = dict.fromkeys(["TS", "context"])
+
     def __init__(self, inputfile=None):
         """make a new QtTsParser, reading from the given inputfile if required"""
         self.filename = getattr(inputfile, "filename", None)

@@ -12,6 +12,7 @@ from translate.misc import wStringIO
 
 
 class TestPo2Tiki:
+
     def test_convertpo(self):
         inputfile = """
 #: translated

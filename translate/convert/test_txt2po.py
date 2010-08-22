@@ -7,6 +7,7 @@ from translate.storage import txt
 
 
 class TestTxt2PO:
+
     def txt2po(self, txtsource, template=None):
         """helper that converts txt source to po source without requiring files"""
         inputfile = wStringIO.StringIO(txtsource)
@@ -61,6 +62,7 @@ helped to bridge the digital divide to a limited extent.'''
 
 
 class TestDoku2po:
+
     def doku2po(self, txtsource, template=None):
         """helper that converts dokuwiki source to po source without requiring files."""
         inputfile = wStringIO.StringIO(txtsource)

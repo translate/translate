@@ -28,6 +28,7 @@ from translate.storage import tmdb
 
 
 class Builder:
+
     def __init__(self, tmdbfile, source_lang, target_lang, filenames):
         self.tmdb = tmdb.TMDB(tmdbfile)
         self.source_lang = source_lang

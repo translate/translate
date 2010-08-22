@@ -120,6 +120,7 @@ class poheader(object):
         "Plural-Forms",
         "X-Generator",
         ]
+
     def init_headers(self, charset='utf-8', encoding='8bit', **kwargs):
         """sets default values for po headers"""
         #FIXME: we need to allow at least setting target language, pluralforms and generator

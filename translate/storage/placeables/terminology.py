@@ -50,6 +50,7 @@ class TerminologyPlaceable(base.Ph):
             match_info.update(matcher.match_info)
 
         lastend = 0
+
         def sort_matches(x, y):
             # This function will sort a list of matches according to the match's starting
             # position, putting the one with the longer source text first, if two are the same.

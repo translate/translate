@@ -49,10 +49,12 @@ for i in map(chr, range(256)):
 
 
 class unormalizechar(dict):
+
     def __init__(self, normalchars):
         self.normalchars = {}
         for char in normalchars:
             self.normalchars[ord(char)] = char
+
     def __getitem__(self, key):
         return self.normalchars.get(key, u"_")
 
@@ -162,6 +164,7 @@ def encode_if_needed_utf8(text):
 
 class ooline(object):
     """this represents one line, one translation in an .oo file"""
+
     def __init__(self, parts=None):
         """construct an ooline from its parts"""
         if parts is None:
@@ -227,6 +230,7 @@ class ooline(object):
 
 class oounit:
     """this represents a number of translations of a resource"""
+
     def __init__(self):
         """construct the oounit"""
         self.languages = {}
@@ -249,6 +253,7 @@ class oounit:
 class oofile:
     """this represents an entire .oo file"""
     UnitClass = oounit
+
     def __init__(self, input=None):
         """constructs the oofile"""
         self.oolines = []
@@ -308,6 +313,7 @@ class oofile:
 
 class oomultifile:
     """this takes a huge GSI file and represents it as multiple smaller files..."""
+
     def __init__(self, filename, mode=None, multifilestyle="single"):
         """initialises oomultifile from a seekable inputfile or writable outputfile"""
         self.filename = filename
@@ -384,6 +390,7 @@ class oomultifile:
 
     def openoutputfile(self, subfile):
         """returns a pseudo-file object for the given subfile"""
+
         def onclose(contents):
             self.multifile.write(contents)
             self.multifile.flush()

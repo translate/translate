@@ -28,6 +28,7 @@ from translate.misc.typecheck.typeclasses import Number
 
 
 class XPathTree(object):
+
     @accepts(Self(), IsOneOf(base.TranslationUnit, type(None)))
     def __init__(self, unit=None):
         self.unit = unit

@@ -84,6 +84,7 @@ def wordsinunit(unit):
 
 
 class Record(UserDict):
+
     def __init__(self, record_keys, record_values=None, compute_derived_values=lambda x: x):
         if record_values == None:
             record_values = (0 for _i in record_keys)
@@ -272,7 +273,9 @@ class StatsCache(object):
 
     def __new__(cls, statsfile=None):
         current_thread = thread.get_ident()
+
         def make_database(statsfile):
+
             def connect(cache):
                 cache.con = dbapi2.connect(statsfile)
                 cache.cur = cache.con.cursor()
@@ -550,6 +553,7 @@ class StatsCache(object):
         return state
 
     def _checkerrors(self, filename, fileid, configid, checker, store):
+
         def geterrors():
             self.cur.execute("""SELECT
                 name,

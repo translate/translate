@@ -79,6 +79,7 @@ class SubtitleUnit(base.TranslationUnit):
 class SubtitleFile(base.TranslationStore):
     """A subtitle file"""
     UnitClass = SubtitleUnit
+
     def __init__(self, inputfile=None, unitclass=UnitClass):
         """construct an Subtitle file, optionally reading in from inputfile."""
         self.UnitClass = unitclass
@@ -165,6 +166,7 @@ class SubRipFile(SubtitleFile):
     """specialized class for SubRipFile's only"""
     Name = _("SubRip subtitles file")
     Extensions = ['srt']
+
     def __init__(self, *args, **kwargs):
         super(SubRipFile, self).__init__(*args, **kwargs)
         if self._subtitlefile is None:
@@ -177,6 +179,7 @@ class MicroDVDFile(SubtitleFile):
     """specialized class for SubRipFile's only"""
     Name = _("MicroDVD subtitles file")
     Extensions = ['sub']
+
     def __init__(self, *args, **kwargs):
         super(SubRipFile, self).__init__(*args, **kwargs)
         if self._subtitlefile is None:
@@ -189,6 +192,7 @@ class AdvSubStationAlphaFile(SubtitleFile):
     """specialized class for SubRipFile's only"""
     Name = _("Advanced Substation Alpha subtitles file")
     Extensions = ['ass']
+
     def __init__(self, *args, **kwargs):
         super(SubRipFile, self).__init__(*args, **kwargs)
         if self._subtitlefile is None:
@@ -201,6 +205,7 @@ class SubStationAlphaFile(SubtitleFile):
     """specialized class for SubRipFile's only"""
     Name = _("Substation Alpha subtitles file")
     Extensions = ['ssa']
+
     def __init__(self, *args, **kwargs):
         super(SubRipFile, self).__init__(*args, **kwargs)
         if self._subtitlefile is None:

@@ -9,6 +9,7 @@ from translate.storage import php
 
 
 class TestPhp2PO:
+
     def php2po(self, phpsource, phptemplate=None):
         """helper that converts .phperties source to po source without requiring files"""
         inputfile = wStringIO.StringIO(phpsource)

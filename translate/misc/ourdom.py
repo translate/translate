@@ -128,29 +128,37 @@ def getnodetext(node):
 
 
 class DOMImplementation(minidom.DOMImplementation):
+
     def _create_document(self):
         return Document()
 
 
 class Element(minidom.Element):
+
     def yieldElementsByTagName(self, name):
         return getElementsByTagName_helper(self, name)
+
     def searchElementsByTagName(self, name, onlysearch):
         return searchElementsByTagName_helper(self, name, onlysearch)
+
     def writexml(self, writer, indent, addindent, newl):
         return writexml_helper(self, writer, indent, addindent, newl)
 
 
 class Document(minidom.Document):
     implementation = DOMImplementation()
+
     def yieldElementsByTagName(self, name):
         return getElementsByTagName_helper(self, name)
+
     def searchElementsByTagName(self, name, onlysearch):
         return searchElementsByTagName_helper(self, name, onlysearch)
+
     def createElement(self, tagName):
         e = Element(tagName)
         e.ownerDocument = self
         return e
+
     def createElementNS(self, namespaceURI, qualifiedName):
         prefix, localName = _nssplit(qualifiedName)
         e = Element(qualifiedName, namespaceURI, prefix)
@@ -163,6 +171,7 @@ theDOMImplementation = DOMImplementation()
 
 
 class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
+
     def reset(self):
         """Free all data structures used during DOM construction."""
         self.document = theDOMImplementation.createDocument(
@@ -231,7 +240,7 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
         # end_element_handler(), so we only define this when -O is not
         # used.  If changing one, be sure to check the other to see if
         # it needs to be changed as well.
-        #
+
         def end_element_handler(self, name):
             curNode = self.curNode
             if ' ' in name:

@@ -12,6 +12,7 @@ from translate.misc import wStringIO
 
 
 class TestTiki2Po:
+
     def test_converttiki_defaults(self):
         inputfile = """
 "zero_source" => "zero_target",

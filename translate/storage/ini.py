@@ -49,6 +49,7 @@ class Dialect(object):
 
 
 class DialectDefault(Dialect):
+
     def unescape(self, text):
         return text
 
@@ -58,6 +59,7 @@ register_dialect("default", DialectDefault)
 
 
 class DialectInno(DialectDefault):
+
     def unescape(self, text):
         return text.replace("%n", "\n").replace("%t", "\t")
 
@@ -68,6 +70,7 @@ register_dialect("inno", DialectInno)
 
 class iniunit(base.TranslationUnit):
     """A INI file entry"""
+
     def __init__(self, source=None, encoding="UTF-8"):
         self.location = ""
         if source:
@@ -84,6 +87,7 @@ class iniunit(base.TranslationUnit):
 class inifile(base.TranslationStore):
     """An INI file"""
     UnitClass = iniunit
+
     def __init__(self, inputfile=None, unitclass=iniunit, dialect="default"):
         """construct an INI file, optionally reading in from inputfile."""
         self.UnitClass = unitclass

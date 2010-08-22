@@ -35,6 +35,7 @@ except ImportError:
 
 class po2txt:
     """po2txt can take a po file and generate txt. best to give it a template file otherwise will just concat msgstrs"""
+
     def __init__(self, wrap=None):
         self.wrap = wrap
 

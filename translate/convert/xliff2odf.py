@@ -39,6 +39,7 @@ def first_child(unit_node):
 
 
 def translate_odf(template, input_file):
+
     def load_dom_trees(template):
         odf_data = odf_io.open_odf(template)
         return dict((filename, etree.parse(cStringIO.StringIO(data))) for filename, data in odf_data.iteritems())
@@ -49,6 +50,7 @@ def translate_odf(template, input_file):
 
         def extract_unit_tree(filename, root_dom_element_name):
             """Find the subtree in 'tree' which corresponds to the data in XML file 'filename'"""
+
             def get_tree():
                 try:
                     return tree.children['office:%s' % root_dom_element_name, 0]
@@ -78,6 +80,7 @@ def translate_odf(template, input_file):
 
 
 def write_odf(xlf_data, template, output_file, dom_trees):
+
     def write_content_to_odf(output_zip, dom_trees):
         for filename, dom_tree in dom_trees.iteritems():
             output_zip.writestr(filename, etree.tostring(dom_tree, encoding='UTF-8', xml_declaration=True))

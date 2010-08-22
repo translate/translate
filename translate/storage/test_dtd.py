@@ -23,6 +23,7 @@ def test_roundtrip_quoting():
 
 def test_removeinvalidamp(recwarn):
     """tests the the removeinvalidamps function"""
+
     def tester(actual, expected):
         assert dtd.removeinvalidamps("test.name", actual) == expected
     tester("Valid &entity; included", "Valid &entity; included")
@@ -46,6 +47,7 @@ class TestDTDUnit(test_monolingual.TestMonolingualUnit):
 
 class TestDTD(test_monolingual.TestMonolingualStore):
     StoreClass = dtd.dtdfile
+
     def dtdparse(self, dtdsource):
         """helper that parses dtd source without requiring files"""
         dummyfile = wStringIO.StringIO(dtdsource)

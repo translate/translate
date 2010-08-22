@@ -85,6 +85,7 @@ def rm_rf(path):
 
 
 class TestStatsDb:
+
     def remove_dirs(self, path):
         if os.path.exists(path):
             rm_rf(path)

@@ -6,6 +6,7 @@ from translate.storage import statsdb
 
 
 class TestPOCount:
+
     def count(self, source, expectedsource, target=None, expectedtarget=None):
         """simple helper to check the respective word counts"""
         poelement = po.pounit(source)

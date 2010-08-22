@@ -171,6 +171,7 @@ class TestStringElem:
 
 
 class TestConverters:
+
     def setup_method(self, method):
         self.elem = parse(TestStringElem.ORIGSTR, general.parsers)
 

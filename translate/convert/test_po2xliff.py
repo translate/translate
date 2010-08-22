@@ -171,7 +171,6 @@ msgstr "kunye"
 
         assert xliff.units[0].getnotes("translator") == "Translate?\nHow?"
 
-
     def test_automaticcomments(self):
         minipo = r'''#. Don't translate.
 #. Please

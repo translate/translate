@@ -202,7 +202,6 @@ class pounit(pocommon.pounit):
         else:
             self.set_state_n(self.STATE[self.S_UNTRANSLATED][0])
 
-
     def setmsgid_plural(self, msgid_plural):
         if isinstance(msgid_plural, list):
             msgid_plural = "".join(msgid_plural)
@@ -606,6 +605,7 @@ class pofile(pocommon.pofile):
         # TODO: this is using a list as the pos aren't hashable, but this is slow.
         # probably not used frequently enough to worry about it, though.
         markedpos = []
+
         def addcomment(thepo):
             thepo.msgidcomment = " ".join(thepo.getlocations())
             markedpos.append(thepo)
@@ -646,6 +646,7 @@ class pofile(pocommon.pofile):
         self.units = uniqueunits
 
     def __str__(self):
+
         def obsolete_workaround():
             # Remove all items that are not output by msgmerge when a unit is obsolete.  This is a work
             # around for bug in libgettextpo

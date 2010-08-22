@@ -458,6 +458,7 @@ class CommonDatabase(object):
         # no documents deleted so far ...
         remove_list = []
         # delete all resulting documents step by step
+
         def add_docid_to_list(match):
             """collect every document ID"""
             remove_list.append(match["docid"])

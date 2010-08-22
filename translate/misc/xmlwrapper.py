@@ -33,6 +33,7 @@ basicfixtag = ElementTree.fixtag
 
 def makefixtagproc(namespacemap):
     """this constructs an alternative fixtag procedure that will use appropriate names for namespaces..."""
+
     def fixtag(tag, namespaces):
         """given a decorated tag (of the form {uri}tag), return prefixed tag and namespace declaration, if any"""
         if isinstance(tag, ElementTree.QName):
@@ -63,6 +64,7 @@ def splitnamespace(fulltag):
 
 class XMLWrapper:
     """simple wrapper for xml objects"""
+
     def __init__(self, obj):
         """construct object from the elementtree item"""
         self.obj = obj
@@ -71,6 +73,7 @@ class XMLWrapper:
         for fullkey, value in self.obj.attrib.iteritems():
             namespace, key = splitnamespace(fullkey)
             self.attrib[key] = value
+
     def getchild(self, searchtag, tagclass=None):
         """get a child with the given tag name"""
         if tagclass is None:
@@ -84,6 +87,7 @@ class XMLWrapper:
                 child = tagclass(childobj)
                 return child
         raise KeyError("could not find child with tag %r" % searchtag)
+
     def getchildren(self, searchtag, tagclass=None, excludetags=[]):
         """get all children with the given tag name"""
         if tagclass is None:
@@ -98,11 +102,14 @@ class XMLWrapper:
                 childobjects.append(childobj)
         children = [tagclass(childobj) for childobj in childobjects]
         return children
+
     def gettext(self, searchtag):
         """get some contained text"""
         return self.getchild(searchtag).obj.text
+
     def getxml(self, encoding=None):
         return ElementTree.tostring(self.obj, encoding)
+
     def getplaintext(self, excludetags=[]):
         text = ""
         if self.obj.text != None:
@@ -114,16 +121,20 @@ class XMLWrapper:
         if self.obj.tail != None:
             text += self.obj.tail
         return text
+
     def getvalues(self, searchtag):
         """get some contained values..."""
         values = [child.obj.text for child in self.getchildren(searchtag)]
         return values
+
     def __repr__(self):
         """return a representation of the object"""
         return self.tag+':'+repr(self.__dict__)
+
     def getattr(self, attrname):
         """gets an attribute of the tag"""
         return self.attrib[attrname]
+
     def write(self, file, encoding="UTF-8"):
         """writes the object as XML to a file..."""
         e = ElementTree.ElementTree(self.obj)

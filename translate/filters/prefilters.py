@@ -54,6 +54,7 @@ def filteraccelerators(accelmarker):
         accelmarkerlen = 0
     else:
         accelmarkerlen = len(accelmarker)
+
     def filtermarkedaccelerators(str1, acceptlist=None):
         """modifies the accelerators in str1 marked with a given marker, using a given filter"""
         acclocs, badlocs = decoration.findaccelerators(str1, accelmarker, acceptlist)
