@@ -46,9 +46,9 @@ Please refer to the XLIFF specification to get a better understanding.
 """
 
 from translate.storage.placeables import base, interfaces, general, xliff
-from translate.storage.placeable.base import *
-from translate.storage.placeable.base import __all__ as all_your_base
-from translate.storage.placeable.parse import parse
-from translate.storage.placeable.strelem import StringElem
+from translate.storage.placeables.base import *
+from translate.storage.placeables.base import __all__ as all_your_base
+from translate.storage.placeables.parse import parse
+from translate.storage.placeables.strelem import StringElem
 
 __all__ = ['base', 'interfaces', 'general', 'parse', 'StringElem', 'xliff'] + all_your_base
