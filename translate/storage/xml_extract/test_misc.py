@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2002-2006 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -38,7 +38,9 @@ test_tree_2 = (1,
 def get_children(node):
     return node[1]
 
+
 def test_reduce_tree():
+
     def concatenate(parent_node, node, string):
         return string + node[0]
 
@@ -59,10 +61,12 @@ right_mapping = {u'a': -1, u'b': -2, u'd': -4, u'e': -5, u'f': -6}
 
 composed_mapping = {1: -1, 2: -2, 4: -4, 5: -5}
 
+
 def test_compose_mappings():
     assert composed_mapping == misc.compose_mappings(left_mapping, right_mapping)
 
 # parse_tag
+
 
 def test_parse_tag():
     assert (u'some-urn', u'some-tag') == \
@@ -70,4 +74,3 @@ def test_parse_tag():
 
     assert (u'urn:oasis:names:tc:opendocument:xmlns:office:1.0', u'document-content') == \
         misc.parse_tag(u'{urn:oasis:names:tc:opendocument:xmlns:office:1.0}document-content')
-

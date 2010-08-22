@@ -22,6 +22,7 @@ import re
 
 from translate.misc.typecheck import accepts, IsCallable, Any
 
+
 @accepts(IsCallable(), Any(), Any(), IsCallable(), state=[Any()])
 def reduce_tree(f, parent_unit_node, unit_node, get_children, *state):
     """Enumerate a tree, applying f to in a pre-order fashion to each node.
@@ -35,6 +36,7 @@ def reduce_tree(f, parent_unit_node, unit_node, get_children, *state):
     state is used by f to modify state information relating to whatever f does
     to the tree.
     """
+
     def as_tuple(x):
         if isinstance(x, tuple):
             return x
@@ -45,6 +47,7 @@ def reduce_tree(f, parent_unit_node, unit_node, get_children, *state):
     for child_unit_node in get_children(unit_node):
         state = reduce_tree(f, unit_node, child_unit_node, get_children, *as_tuple(state))
     return state
+
 
 def compose_mappings(left, right):
     """Given two mappings left: A -> B and right: B -> C, create a
@@ -60,6 +63,7 @@ def compose_mappings(left, right):
     return result_map
 
 tag_pattern = re.compile('({(?P<namespace>(\w|[-:./])*)})?(?P<tag>(\w|[-])*)')
+
 
 def parse_tag(full_tag):
     """
