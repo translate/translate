@@ -32,7 +32,7 @@ class po2pydict:
     def convertstore(self, inputstore, includefuzzy):
         from StringIO import StringIO
         str_obj = StringIO()
-        
+
         mydict = dict()
         for unit in inputstore.units:
             if unit.isheader():
@@ -41,7 +41,7 @@ class po2pydict:
                 mydict[unit.source] = unit.target
             else:
                 mydict[unit.source] = '*** ' + unit.source
-        
+
         str_obj.write('{\n')
         for source_str in mydict:
             str_obj.write("%s:%s,\n" % (repr(str(source_str)), repr(str(mydict[source_str]))))

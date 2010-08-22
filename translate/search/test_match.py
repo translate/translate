@@ -28,10 +28,10 @@ class TestMatch:
         assert candidates == ["hand", "pond"]
         message = "Ek skop die bal"
         csvfile = self.buildcsv(
-            ["Hy skop die bal", 
-            message, 
-            "Jannie skop die bal", 
-            "Ek skop die balle", 
+            ["Hy skop die bal",
+            message,
+            "Jannie skop die bal",
+            "Ek skop die balle",
             "Niemand skop die bal nie"])
         matcher = match.matcher(csvfile)
         candidates = self.candidatestrings(matcher.matches(message))
@@ -51,11 +51,11 @@ class TestMatch:
         assert candidates == ["hand", "pond"]
         message = "Ek skop die bal"
         csvfile1 = self.buildcsv(
-            ["Hy skop die bal", 
-            message, 
+            ["Hy skop die bal",
+            message,
             "Jannie skop die bal"])
         csvfile2 = self.buildcsv(
-            ["Ek skop die balle", 
+            ["Ek skop die balle",
             "Niemand skop die bal nie"])
         matcher = match.matcher([csvfile1, csvfile2])
         candidates = self.candidatestrings(matcher.matches(message))

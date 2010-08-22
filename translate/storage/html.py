@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2004-2006,2008 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -56,7 +56,7 @@ class htmlfile(HTMLParser, base.TranslationStore):
 
     def __init__(self, includeuntaggeddata=None, inputfile=None):
         self.units = []
-        self.filename = getattr(inputfile, 'name', None) 
+        self.filename = getattr(inputfile, 'name', None)
         self.currentblock = ""
         self.currentblocknum = 0
         self.currentcomment = ""
@@ -120,7 +120,7 @@ class htmlfile(HTMLParser, base.TranslationStore):
     def reintrophp(self, text):
         """Replaces the PHP placeholders in text with the real code"""
         for hash, code in self.phpdict.items():
-            text = text.replace(hash, code) 
+            text = text.replace(hash, code)
         return text
 
     def parse(self, htmlsrc):
@@ -151,7 +151,7 @@ class htmlfile(HTMLParser, base.TranslationStore):
         # If all that is left is PHP, return ""
         result = re.findall('(?s)^<\?.*?\?>$', text)
         if len(result) == 1:
-            return "" 
+            return ""
 
         # These two patterns are the same; the first one is more concise...
         #pattern = '(?s)^<[^?>](?:(?:[^>]|(?:<\?.*?\?>))*[^?>])?>(.*)</.*[^?]>$'
@@ -161,16 +161,16 @@ class htmlfile(HTMLParser, base.TranslationStore):
         (?:
           (?:
             [^>]    # Anything that's not a > is valid tag material
-              |     
+              |
             (?:<\?.*?\?>) # Matches <? foo ?> lazily; PHP is valid
-          )*        # Repeat over valid tag material 
+          )*        # Repeat over valid tag material
           [^?>]     # If we have > 1 char, the last char can't be ? or >
-        )?          # The repeated chars are optional, so that <a>, <p> work 
+        )?          # The repeated chars are optional, so that <a>, <p> work
         >           # Match ending > of opening tag
 
         (.*)        # Match actual contents of tag
 
-        </.*[^?]>   # Match ending tag; can't end with ?> and must be >=1 char 
+        </.*[^?]>   # Match ending tag; can't end with ?> and must be >=1 char
         $           # Match end of line
         ''', re.VERBOSE)
         result = re.findall(pattern, text)
@@ -238,7 +238,7 @@ class htmlfile(HTMLParser, base.TranslationStore):
     def handle_endtag(self, tag):
         if tag == self.currenttag:
             self.endblock()
-        elif self.currenttag is not None: 
+        elif self.currenttag is not None:
             self.currentblock += '</%s>' % tag
 
     def handle_data(self, data):

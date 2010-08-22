@@ -1,14 +1,14 @@
 #!/usr/bin/env python
-# 
+#
 # Copyright 2004-2007 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -20,7 +20,7 @@
 
 """Perform quality checks on Gettext PO, XLIFF and TMX localization files
 
-Snippet files whenever a test fails.  These can be examined, corrected and 
+Snippet files whenever a test fails.  These can be examined, corrected and
 merged back into the originals using pomerge
 
 See: http://translate.sourceforge.net/wiki/toolkit/pofilter for examples and
@@ -169,8 +169,8 @@ def runfilter(inputfile, outputfile, templatefile, checkfilter=None):
     return 1
 
 def cmdlineparser():
-    formats = {"po": ("po", runfilter), "pot": ("pot", runfilter), 
-            "xliff": ("xliff", runfilter), "xlf": ("xlf", runfilter), 
+    formats = {"po": ("po", runfilter), "pot": ("pot", runfilter),
+            "xliff": ("xliff", runfilter), "xlf": ("xlf", runfilter),
             "tmx": ("tmx", runfilter),
             None: ("po", runfilter)}
 

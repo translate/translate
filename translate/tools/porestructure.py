@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2005, 2006 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -19,7 +19,7 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""Restructure Gettxt PO files produced by poconflicts into the original 
+"""Restructure Gettxt PO files produced by poconflicts into the original
 directory tree for merging using pomerge
 
 See: http://translate.sourceforge.net/wiki/toolkit/porestructure for examples and
@@ -39,7 +39,7 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
         if not options.output:
             self.error("Output file is rquired")
         return (options, args)
- 
+
     def set_usage(self, usage=None):
         """sets the usage string - if usage not given, uses getusagestring for each option"""
         if usage is None:

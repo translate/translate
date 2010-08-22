@@ -39,7 +39,7 @@ class TestMultistring(test_autoencode.TestAutoencode):
 
         result = result.replace("\n", "\\n")
         assert result == t([u"abcd\\nf", u"d\\nf"])
-        
+
         result = result.replace("\\n", "\n")
         assert result == t([u"abcd\nf", u"d\nf"])
 

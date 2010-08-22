@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2009 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -214,7 +214,7 @@ def isocode(language, country=None):
       - X-Poedit-Language
       - X-Poedit-Country
 
-    This function converts the supplied language name into the required ISO 639 
+    This function converts the supplied language name into the required ISO 639
     code. If needed, in the case of L{dialects}, the country name is used
     to create an xx_YY style dialect code.
 

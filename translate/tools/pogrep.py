@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2002-2008 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -21,7 +21,7 @@
 
 """Grep XLIFF, Gettext PO and TMX localization files
 
-Matches are output to snippet files of the same type which can then be reviewed 
+Matches are output to snippet files of the same type which can then be reviewed
 and later merged using pomerge
 
 See: http://translate.sourceforge.net/wiki/toolkit/pogrep for examples and
@@ -316,10 +316,10 @@ def rungrep(inputfile, outputfile, templatefile, checkfilter):
     return True
 
 def cmdlineparser():
-    formats = {"po": ("po", rungrep), "pot": ("pot", rungrep), 
-            "mo": ("mo", rungrep), "gmo": ("gmo", rungrep), 
+    formats = {"po": ("po", rungrep), "pot": ("pot", rungrep),
+            "mo": ("mo", rungrep), "gmo": ("gmo", rungrep),
             "tmx": ("tmx", rungrep),
-            "xliff": ("xliff", rungrep), "xlf": ("xlf", rungrep), "xlff": ("xlff", rungrep), 
+            "xliff": ("xliff", rungrep), "xlf": ("xlf", rungrep), "xlff": ("xlff", rungrep),
             None: ("po", rungrep)}
     parser = GrepOptionParser(formats)
     parser.add_option("", "--search", dest="searchparts",

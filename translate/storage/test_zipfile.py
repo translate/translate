@@ -38,12 +38,12 @@ class TestZipFiles:
         zip.write(self.srcname, "another" + os.extsep + "name")
         zip.write(self.srcname, self.srcname)
         zip.close()
-    
+
         zip = zipfile.ZipFile(f, "r", compression)   # Read the ZIP archive
         readData2 = zip.read(self.srcname)
         readData1 = zip.read("another" + os.extsep + "name")
         zip.close()
-    
+
         if readData1 != srccontents or readData2 != srccontents:
             raise TestFailed("Written data doesn't equal read data.")
 
@@ -56,21 +56,21 @@ class TestZipFiles:
         zip.write(self.srcname, othername)
         zip.write(self.srcname, finalname)
         zip.close()
-    
+
         zip = zipfile.ZipFile(f, "a", compression)   # Modify the ZIP archive
         try:
             for deletename in deletenames:
                 zip.delete(deletename)
         finally:
             zip.close()
-    
+
         zip = zipfile.ZipFile(f, "r", compression)   # Read the ZIP archive
         try:
             testfailed = zip.testzip()
             readData = zip.read(leftname)
         finally:
             zip.close()
-    
+
         assert not testfailed
         assert readData == srccontents
 
@@ -79,14 +79,14 @@ class TestZipFiles:
         for i in range(0, 1000):
             fp.write("Test of zipfile line %d.\n" % i)
         fp.close()
-        
+
         fp = open(self.srcname, "rb")
         writtenData = fp.read()
         fp.close()
-        
+
         for file in (self.zipname, tempfile.TemporaryFile(), StringIO.StringIO()):
             self.zipTest(file, zipfile.ZIP_STORED, writtenData)
-        
+
         for file in (self.zipname, tempfile.TemporaryFile(), StringIO.StringIO()):
             self.zipTest(file, zipfile.ZIP_DEFLATED, writtenData)
 
@@ -95,15 +95,15 @@ class TestZipFiles:
         for i in range(0, 1000):
             fp.write("Test of zipfile line %d.\n" % i)
         fp.close()
-        
+
         fp = open(self.srcname, "rb")
         writtenData = fp.read()
         fp.close()
-        
+
         self.deleteTest(self.zipname, zipfile.ZIP_STORED, writtenData)
         self.deleteTest(tempfile.TemporaryFile(), zipfile.ZIP_STORED, writtenData)
         self.deleteTest(StringIO.StringIO(), zipfile.ZIP_STORED, writtenData)
-        
+
         self.deleteTest(self.zipname, zipfile.ZIP_DEFLATED, writtenData)
         self.deleteTest(tempfile.TemporaryFile(), zipfile.ZIP_DEFLATED, writtenData)
         self.deleteTest(StringIO.StringIO(), zipfile.ZIP_DEFLATED, writtenData)

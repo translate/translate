@@ -75,11 +75,11 @@ class TMDB(object):
             cursor = connection.cursor()
             self._tm_db[current_thread] = (connection, cursor)
         return self._tm_db[current_thread][index]
-    
+
     connection = property(lambda self: self._get_connection(0))
     cursor = property(lambda self: self._get_connection(1))
 
-    
+
     def init_database(self):
         """creates database tables and indices"""
 
@@ -142,7 +142,7 @@ CREATE VIRTUAL TABLE fulltext USING fts3(text);
                 logging.debug("created fulltext table")
             else:
                 logging.debug("fulltext table already exists")
-                
+
             # create triggers that would sync sources table with fulltext index
             script = """
 INSERT INTO fulltext (rowid, text) SELECT sid, text FROM sources WHERE sid NOT IN (SELECT rowid FROM fulltext);
@@ -267,7 +267,7 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
         if commit:
             self.connection.commit()
         return count
-    
+
     def translate_unit(self, unit_source, source_langs, target_langs):
         """return TM suggestions for unit_source"""
         if isinstance(unit_source, str):
@@ -282,7 +282,7 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
             target_langs = ','.join(target_langs)
         else:
             target_langs = data.normalize_code(target_langs)
-        
+
         minlen = min_levenshtein_length(len(unit_source), self.min_similarity)
         maxlen = max_levenshtein_length(len(unit_source), self.min_similarity, self.max_length)
 
@@ -301,7 +301,7 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
         else:
             logging.debug("nonfulltext matching")
             query = """SELECT s.text, t.text, s.context, s.lang, t.lang FROM sources s JOIN targets t ON s.sid = t.sid
-            WHERE s.lang IN (?) AND t.lang IN (?) 
+            WHERE s.lang IN (?) AND t.lang IN (?)
             AND s.length >= ? AND s.length <= ?"""
             self.cursor.execute(query, (source_langs, target_langs, minlen, maxlen))
 

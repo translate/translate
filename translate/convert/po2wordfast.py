@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2005-2007 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -22,7 +22,7 @@
 
 """convert Gettext PO localization files to a Wordfast translation memory file
 
-see: http://translate.sourceforge.net/wiki/toolkit/po2wordfast for examples and 
+see: http://translate.sourceforge.net/wiki/toolkit/po2wordfast for examples and
 usage instructions
 """
 
@@ -88,9 +88,9 @@ def main(argv=None):
     formats = {"po": ("txt", convertpo), ("po", "txt"): ("txt", convertpo)}
     archiveformats = {(None, "output"): wfmultifile, (None, "template"): wfmultifile}
     parser = WfOptionParser(formats, usepots=False, usetemplates=False, description=__doc__, archiveformats=archiveformats)
-    parser.add_option("-l", "--language", dest="targetlanguage", default=None, 
+    parser.add_option("-l", "--language", dest="targetlanguage", default=None,
                       help="set target language code (e.g. af-ZA) [required]", metavar="LANG")
-    parser.add_option("", "--source-language", dest="sourcelanguage", default='en', 
+    parser.add_option("", "--source-language", dest="sourcelanguage", default='en',
                       help="set source language code (default: en)", metavar="LANG")
     parser.passthrough.append("sourcelanguage")
     parser.passthrough.append("targetlanguage")

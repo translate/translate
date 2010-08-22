@@ -122,7 +122,7 @@ class PythonFormattingPlaceable(Ph):
 class JavaMessageFormatPlaceable(Ph):
     """Placeable representing a Java MessageFormat formatting variable.
 
-    Implemented according to the Java U{MessageFormat 
+    Implemented according to the Java U{MessageFormat
     documentation<http://java.sun.com/j2se/1.4.2/docs/api/java/text/MessageFormat.html>}.
 
     Information about custom formats:

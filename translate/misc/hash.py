@@ -18,8 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""This module contains some temporary glue to make us work with md5 hashes on 
-old and new versions of Python. The function md5_f() wraps whatever is 
+"""This module contains some temporary glue to make us work with md5 hashes on
+old and new versions of Python. The function md5_f() wraps whatever is
 available."""
 
 try:

@@ -82,7 +82,7 @@ def main():
     parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
     parser.add_option("-l", "--language", dest="targetlanguage", default=None,
             help="the target language code", metavar="LANG")
-    parser.add_option("", "--source-language", dest="sourcelanguage", default=None, 
+    parser.add_option("", "--source-language", dest="sourcelanguage", default=None,
             help="the source language code (default 'en')", metavar="LANG")
     parser.passthrough.append("sourcelanguage")
     parser.passthrough.append("targetlanguage")

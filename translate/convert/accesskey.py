@@ -55,11 +55,11 @@ def extract(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
             break
     return label, accesskey
 
-def combine(label, accesskey, 
+def combine(label, accesskey,
             accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
     """Combine a label and and accesskey to form a label+accesskey string
 
-    We place an accesskey marker before the accesskey in the label and this creates a 
+    We place an accesskey marker before the accesskey in the label and this creates a
     string with the two combined e.g. "File" + "F" = "&File"
 
     @type label: unicode
@@ -93,7 +93,7 @@ def combine(label, accesskey,
                     if accesskeyaltcasepos == -1:
                         # only want to remember first altcasepos
                         accesskeyaltcasepos = searchpos
-                        # note: we keep on looping through in hope 
+                        # note: we keep on looping through in hope
                         # of exact match
         searchpos += 1
     # if we didn't find an exact case match, use an alternate one if available

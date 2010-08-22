@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2007-2008 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -35,12 +35,12 @@
      - VEVENT component: SUMMARY, DESCRIPTION, COMMENT and LOCATION properties
 
    While other items could be localised this is not seen as important until use
-   cases arise.  In such a case simply adjusting the component.name and 
+   cases arise.  In such a case simply adjusting the component.name and
    property.name lists to include these will allow expanded localisation.
 
    LANGUAGE Attribute
    ------------------
-   While the iCalendar format allows items to have a language attribute this is 
+   While the iCalendar format allows items to have a language attribute this is
    not used. The reason being that for most of the items that we localise they
    are only allowed to occur zero or once.  Thus 'summary' would ideally
    be present in multiple languages in one file, the format does not allow
@@ -48,7 +48,7 @@
    of a single multilingual iCalendar file.
 
    Future Format Support
-   ===================== 
+   =====================
    As this format used U{vobject<http://vobject.skyhouseconsulting.com/>} which
    supports various formats including U{vCard<http://en.wikipedia.org/wiki/VCard>}
    it is possible to expand this format to understand those if needed.
@@ -100,7 +100,7 @@ class icalfile(base.TranslationStore):
                     for property in component.getChildren():
                         if property.name == match.groupdict()['property']:
                             property.value = unit.target
-                            
+
         if _outicalfile:
             return str(_outicalfile.serialize())
         else:

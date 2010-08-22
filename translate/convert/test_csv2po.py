@@ -48,7 +48,7 @@ intl.charset.default,ISO-8859-1,UTF-16'''
         potsource = '''#: intl.charset.default
 msgid "ISO-8859-1"
 msgstr ""
-''' 
+'''
         pofile = self.csv2po(csvsource, potsource)
         pounit = self.singleelement(pofile)
         assert pounit.getlocations() == ['intl.charset.default']
@@ -111,7 +111,7 @@ simple.c,Source,Target'''
 msgid "_: KDE comment\n"
 "Source"
 msgstr ""
-''' 
+'''
         pofile = self.csv2po(csvsource, potsource)
         pounit = self.singleelement(pofile)
         assert pounit._extract_msgidcomments() == 'KDE comment'

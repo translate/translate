@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2005, 2006 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -128,7 +128,7 @@ class DirDiffer:
                 outfile.write("Only in %s: %s\n" % (self.fromdir, difffile))
             elif to_ok:
                 outfile.write("Only in %s: %s\n" % (self.todir, difffile))
-                
+
 class FileDiffer:
     """generates diffs between files"""
     def __init__(self, fromfile, tofile, options):
@@ -222,14 +222,14 @@ class FileDiffer:
         for tag, i1, i2, j1, j2 in group:
             from_lines.extend(self.from_lines[i1:i2])
         return from_lines
-    
+
     def get_to_lines(self, group):
         """returns the lines referred to by group, from the tofile"""
         to_lines = []
         for tag, i1, i2, j1, j2 in group:
             to_lines.extend(self.to_lines[j1:j2])
         return to_lines
-    
+
     def unified_diff(self, group):
         """takes the group of opcodes and generates a unified diff line by line"""
         i1, i2, j1, j2 = group[0][1], group[-1][2], group[0][3], group[-1][4]

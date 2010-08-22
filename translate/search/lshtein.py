@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""A class to calculate a similarity based on the Levenshtein 
+"""A class to calculate a similarity based on the Levenshtein
 distance. See http://en.wikipedia.org/wiki/Levenshtein_distance.
 
 If available, the python-Levenshtein package will be used which will provide
@@ -56,10 +56,10 @@ def python_distance(a, b, stopvalue=-1):
     return current[l1]
 
 def native_distance(a, b, stopvalue=0):
-    """Same as python_distance in functionality. This uses the fast C 
+    """Same as python_distance in functionality. This uses the fast C
     version if we detected it earlier.
 
-    Note that this does not support arbitrary sequence types, but only 
+    Note that this does not support arbitrary sequence types, but only
     string types."""
     return Levenshtein.distance(a, b)
 
@@ -105,7 +105,7 @@ class LevenshteinComparer:
                  at the end will therefore seem to match better than they should. See the
                  use of the variable penalty to lessen the effect of this.
                - Strings with widely different lengths give the opportunity for shortcut.
-                 This is by definition of the Levenshtein distance: the distance will be 
+                 This is by definition of the Levenshtein distance: the distance will be
                  at least as much as the difference in string length.
                - Calculation is stopped as soon as a similarity of stoppercentage becomes
                  unattainable. See the use of the variable stopvalue.
@@ -143,7 +143,7 @@ class LevenshteinComparer:
         if dist > stopvalue:
             return stoppercentage - 1.0
 
-        #If MAX_LEN came into play, we consider the calculated distance to be 
+        #If MAX_LEN came into play, we consider the calculated distance to be
         #representative of the distance between the whole, untrimmed strings
         if dist != 0:
             penalty = 0

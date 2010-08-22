@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2002-2008 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -22,7 +22,7 @@
 """
 Classes that hold units of .oo files (oounit) or entire files (oofile).
 
-These are specific .oo files for localisation exported by OpenOffice.org - SDF 
+These are specific .oo files for localisation exported by OpenOffice.org - SDF
 format (previously knows as GSI files). For an overview of the format, see
 U{http://l10n.openoffice.org/L10N_Framework/Intermediate_file_format.html}
 
@@ -91,18 +91,18 @@ def makekey(ookey, long_keys):
     return normalizefilename(key)
 
 # These are functions that deal with escaping and unescaping of the text fields
-# of the SDF file. These should only be applied to the text column. 
+# of the SDF file. These should only be applied to the text column.
 # The fields quickhelptext and title are assumed to carry no escaping.
-# 
-# The escaping of all strings except those coming from .xhp (helpcontent2) 
+#
+# The escaping of all strings except those coming from .xhp (helpcontent2)
 # sourcefiles work as follows:
 #   (newline)         ->  \n
 #   (carriage return) ->  \r
 #   (tab)             ->  \t
 # Backslash characters (\) and single quotes (') are not consistently escaped,
 # and are therefore left as they are.
-# 
-# For strings coming from .xhp (helpcontent2) sourcefiles the following 
+#
+# For strings coming from .xhp (helpcontent2) sourcefiles the following
 # characters are escaped inside XML tags only:
 #   <  ->  \<  when used with lowercase tagnames (with some exceptions)
 #   >  ->  \>  when used with lowercase tagnames (with some exceptions)
@@ -113,7 +113,7 @@ def makekey(ookey, long_keys):
 def escape_text(text):
     """Escapes SDF text to be suitable for unit consumption."""
     return text.replace("\n", "\\n").replace("\t", "\\t").replace("\r", "\\r")
-    
+
 def unescape_text(text):
     """Unescapes SDF text to be suitable for unit consumption."""
     return text.replace("\\\\", "\a").replace("\\n", "\n").replace("\\t", "\t").\
@@ -124,8 +124,8 @@ helptagre = re.compile('''<[/]??[a-z_\-]+?(?:| +[a-z]+?=".*?") *[/]??>''')
 def escape_help_text(text):
     """Escapes the help text as it would be in an SDF file.
 
-    <, >, " are only escaped in <[[:lower:]]> tags. Some HTML tags make it in in 
-    lowercase so those are dealt with. Some OpenOffice.org help tags are not 
+    <, >, " are only escaped in <[[:lower:]]> tags. Some HTML tags make it in in
+    lowercase so those are dealt with. Some OpenOffice.org help tags are not
     escaped.
     """
     text = text.replace("\\", "\\\\")
@@ -184,7 +184,7 @@ class ooline(object):
         """return a list of parts in this line"""
         return (self.project, self.sourcefile, self.dummy, self.resourcetype,
                 self.groupid, self.localid, self.helpid, self.platform,
-                self.width, self.languageid, self._text, self.helptext, 
+                self.width, self.languageid, self._text, self.helptext,
                 self.quickhelptext, self.title, self.timestamp)
 
     def gettext(self):
@@ -193,7 +193,7 @@ class ooline(object):
             return unescape_help_text(self._text)
         else:
             return unescape_text(self._text)
-        
+
     def settext(self, text):
         """Sets the text column and handle escaping."""
         if self.sourcefile.endswith(".xhp"):

@@ -87,8 +87,8 @@ This is a wiki page.
 
     def test_bullets(self):
         """Tests that we can convert some basic things."""
-        dokusource = """  * This is a fact. 
-  * This is a fact. 
+        dokusource = """  * This is a fact.
+  * This is a fact.
 """
         poresult = self.doku2po(dokusource)
         assert poresult.units[0].isheader()
@@ -98,7 +98,7 @@ This is a wiki page.
 
     def test_numbers(self):
         """Tests that we can convert some basic things."""
-        dokusource = """  - This is an item. 
+        dokusource = """  - This is an item.
   - This is an item.
 """
         poresult = self.doku2po(dokusource)
@@ -106,10 +106,10 @@ This is a wiki page.
         assert len(poresult.units) == 3
         assert poresult.units[1].source == "This is an item."
         assert poresult.units[2].source == "This is an item."
-    
+
     def test_spacing(self):
         """Tests that we can convert some basic things."""
-        dokusource = """ =====         Heading  ===== 
+        dokusource = """ =====         Heading  =====
   * This is an item.
     * This is a subitem.
         * This is a tabbed item.

@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2004-2006 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -22,7 +22,7 @@
 
 """convert Gettext PO localization files to HTML files
 
-see: http://translate.sourceforge.net/wiki/toolkit/po2html for examples and 
+see: http://translate.sourceforge.net/wiki/toolkit/po2html for examples and
 usage instructions
 """
 
@@ -60,7 +60,7 @@ class po2html:
             else:
                 htmlresult += self.wrapmessage(inputunit.source) + "\n" + "\n"
         return htmlresult.encode('utf-8')
- 
+
     def mergestore(self, inputstore, templatetext, includefuzzy):
         """converts a file to .po format"""
         htmlresult = templatetext.replace("\n", " ")

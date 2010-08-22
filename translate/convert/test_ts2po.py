@@ -32,7 +32,7 @@ class TestTS2PO:
         assert pofile.units[1].target == ""
         assert pofile.units[1].getlocations()[0].startswith("MainWindowBase")
         assert not pofile.units[1].isfuzzy()
-        
+
     def test_basic(self):
         """tests basic conversion"""
         tssource = '''<!DOCTYPE TS><TS>
@@ -82,7 +82,7 @@ new line</source>
 new line</translation>
     </message>
 </context>
-</TS> 
+</TS>
 '''
         pofile = self.ts2po(tssource)
         assert len(pofile.units) == 2

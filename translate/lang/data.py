@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2007-2009 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -143,7 +143,7 @@ languages = {
 'uk': (u'Ukrainian', 3, '(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'),
 'vi': (u'Vietnamese', 1, '0'),
 'wa': (u'Walloon', 2, '(n > 1)'),
-# Chinese is difficult because the main divide is on script, not really 
+# Chinese is difficult because the main divide is on script, not really
 # country. Simplified Chinese is used mostly in China, Singapore and Malaysia.
 # Traditional Chinese is used mostly in Hong Kong, Taiwan and Macau.
 'zh_CN': (u'Chinese (China)', 1, '0'),
@@ -187,7 +187,7 @@ _fixed_names = {
 }
 
 def simplercode(code):
-    """This attempts to simplify the given language code by ignoring country 
+    """This attempts to simplify the given language code by ignoring country
     codes, for example.
 
     @see:
@@ -205,7 +205,7 @@ def simplercode(code):
         return code[:separator]
     else:
         return ""
-    
+
 
 expansion_factors = {
         'af': 0.1,

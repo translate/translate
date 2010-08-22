@@ -18,24 +18,24 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-"""Test the various functions for combining and extracting accesskeys and 
+"""Test the various functions for combining and extracting accesskeys and
 labels"""
 
 from translate.convert import accesskey
 
 def test_get_label_and_accesskey():
-    """test that we can extract the label and accesskey components from an 
+    """test that we can extract the label and accesskey components from an
     accesskey+label string"""
     assert accesskey.extract(u"&File") == (u"File", u"F")
     assert accesskey.extract(u"~File", u"~") == (u"File", u"F")
     assert accesskey.extract(u"~File", u"~") == (u"File", u"F")
 
 def test_ignore_entities():
-    """test that we don't get confused with entities and a & access key 
+    """test that we don't get confused with entities and a & access key
     marker"""
     assert accesskey.extract(u"Set &browserName; as &Default") != (u"Set &browserName; as &Default", u"b")
     assert accesskey.extract(u"Set &browserName; as &Default") == (u"Set &browserName; as Default", u"D")
- 
+
 def test_alternate_accesskey_marker():
     """check that we can identify the accesskey if the marker is different"""
     assert accesskey.extract(u"~File", u"~") == (u"File", u"F")
@@ -56,7 +56,7 @@ def test_empty_string():
     assert accesskey.extract(u"", u"~") == (u"", u"")
 
 def test_combine_label_accesskey():
-    """test that we can combine accesskey and label to create a label+accesskey 
+    """test that we can combine accesskey and label to create a label+accesskey
     string"""
     assert accesskey.combine(u"File", u"F") == u"&File"
     assert accesskey.combine(u"File", u"F", u"~") == u"~File"

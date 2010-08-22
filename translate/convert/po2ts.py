@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2004-2006 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -22,7 +22,7 @@
 
 """convert Gettext PO localization files to Qt Linguist (.ts) files
 
-see: http://translate.sourceforge.net/wiki/toolkit/po2ts for examples and 
+see: http://translate.sourceforge.net/wiki/toolkit/po2ts for examples and
 usage instructions
 """
 
@@ -32,7 +32,7 @@ from translate.storage import ts
 class po2ts:
     def convertstore(self, inputstore, templatefile=None, context=None):
         """converts a .po file to .ts format (using a template .ts file if given)"""
-        if templatefile is None: 
+        if templatefile is None:
             tsfile = ts.QtTsParser()
         else:
             tsfile = ts.QtTsParser(templatefile)
@@ -46,7 +46,7 @@ class po2ts:
             if not inputunit.istranslated():
                 transtype = "unfinished"
             elif inputunit.getnotes("developer") == "(obsolete)":
-                transtype = "obsolete" 
+                transtype = "obsolete"
             if isinstance(source, str):
                 source = source.decode("utf-8")
             if isinstance(translation, str):

@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2004-2008 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -80,7 +80,7 @@ def varnone(variable, startmarker, endmarker):
     return ""
 
 def filtervariables(startmarker, endmarker, varfilter):
-    """returns a function that filters variables marked using startmarker and 
+    """returns a function that filters variables marked using startmarker and
     endmarker in strings"""
     if startmarker is None:
         startmarkerlen = 0
@@ -105,7 +105,7 @@ def filtervariables(startmarker, endmarker, varfilter):
         return fstr1
     return filtermarkedvariables
 
-# a list of special words with punctuation 
+# a list of special words with punctuation
 # all apostrophes in the middle of the word are handled already
 wordswithpunctuation = ["'n", "'t", # Afrikaans
                        ]
@@ -113,7 +113,7 @@ wordswithpunctuation = ["'n", "'t", # Afrikaans
 wordswithpunctuation = dict([(word, filter(str.isalnum, word)) for word in wordswithpunctuation])
 
 def filterwordswithpunctuation(str1):
-    """goes through a list of known words that have punctuation and removes the 
+    """goes through a list of known words that have punctuation and removes the
     punctuation from them"""
     assert isinstance(str1, unicode)
     occurrences = []

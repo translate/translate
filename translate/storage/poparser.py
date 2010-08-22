@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2002-2007 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -101,7 +101,7 @@ def parse_prev_msgid_plural(parse_state, unit):
 def parse_comment(parse_state, unit):
     next_line = parse_state.next_line.lstrip()
     if len(next_line) > 0 and next_line[0] in ('#', '|'):
-        next_char = next_line[1] 
+        next_char = next_line[1]
         if next_char == '.':
             append(unit.automaticcomments, parse_state.decode(next_line))
         elif next_line[0] == '|' or next_char == '|':
@@ -120,7 +120,7 @@ def parse_comment(parse_state, unit):
             append(unit.sourcecomments, parse_state.decode(next_line))
         elif next_char == ',':
             append(unit.typecomments, parse_state.decode(next_line))
-        elif next_char == '~': 
+        elif next_char == '~':
             # Special case: we refuse to parse obsoletes: they are done
             # elsewhere to ensure we reuse the normal unit parsing code
             return None
@@ -191,7 +191,7 @@ def parse_multiple_quoted(parse_state, msg_list, msg_comment_list, first_start_p
     while string is not None:
         if not startswith(string, '"_:'):
             append(msg_list, parse_state.decode(string))
-            string = parse_quoted(parse_state) 
+            string = parse_quoted(parse_state)
         else:
             string = parse_msg_comment(parse_state, msg_comment_list, string)
 

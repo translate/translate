@@ -75,7 +75,7 @@ class TestPropUnit(test_monolingual.TestMonolingualUnit):
 
 class TestProp(test_monolingual.TestMonolingualStore):
     StoreClass = properties.propfile
-    
+
     def propparse(self, propsource, personality="java", encoding=None):
         """helper that parses properties source without requiring files"""
         dummyfile = wStringIO.StringIO(propsource)
@@ -133,7 +133,7 @@ class TestProp(test_monolingual.TestMonolingualStore):
             print repr(propsource), repr(propunit.name), repr(propunit.source)
             assert propunit.name == key
             assert propunit.source == value
-     
+
     def test_key_value_delimiters_simple(self):
         """test that we can handle colon, equals and space delimiter
         between key and value.  We don't test any space removal or escaping"""

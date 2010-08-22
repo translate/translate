@@ -96,7 +96,7 @@ class TestCPOFile(test_po.TestPOFile):
 #        assert len(pofile.units) == 2
 #        assert str(pofile.units[0]).count("source1") == 2
 #        assert str(pofile.units[1]).count("source2") == 2
-  
+
 #    def test_merge_blanks(self):
 #        """checks that merging adds msgid_comments to blanks"""
 #        posource = '#: source1\nmsgid ""\nmsgstr ""\n\n#: source2\nmsgid ""\nmsgstr ""\n'

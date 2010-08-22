@@ -43,10 +43,10 @@ def convertodf(inputfile, outputfile, templates, engine='toolkit'):
 
         contents = odf_io.open_odf(inputfile)
         for data in contents.values():
-            parse_state = extract.ParseState(odf_shared.no_translate_content_elements, 
+            parse_state = extract.ParseState(odf_shared.no_translate_content_elements,
                                              odf_shared.inline_elements)
             extract.build_store(cStringIO.StringIO(data), store, parse_state)
-    
+
     def itools_implementation(store):
         from itools.handlers import get_handler
         from itools.gettext.po import encode_source

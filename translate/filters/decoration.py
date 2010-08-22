@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2004-2008 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -103,7 +103,7 @@ def isvalidaccelerator(accelerator, acceptlist=None):
         if not accelerator.isalnum():
             return False
 
-        # We don't want to have accelerators on characters with diacritics, so let's 
+        # We don't want to have accelerators on characters with diacritics, so let's
         # see if the character can decompose.
         decomposition = unicodedata.decomposition(accelerator)
         # Next we strip out any extra information like <this>
@@ -233,7 +233,7 @@ def getnumbers(str1):
     return numbers
 
 def getfunctions(str1, punctuation):
-    """returns the functions() that are in a string, while ignoring the trailing 
+    """returns the functions() that are in a string, while ignoring the trailing
     punctuation in the given parameter"""
     punctuation = punctuation.replace("(", "").replace(")", "")
     return [word.rstrip(punctuation) for word in str1.split() if word.rstrip(punctuation).endswith("()")]

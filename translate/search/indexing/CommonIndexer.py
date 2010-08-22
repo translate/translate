@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2008 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -66,7 +66,7 @@ class CommonDatabase(object):
 
     QUERY_TYPE = None
     """override this with the query class of the implementation"""
-    
+
     INDEX_DIRECTORY_NAME = None
     """override this with a string to be used as the name of the indexing
     directory/file in the filesystem
@@ -193,7 +193,7 @@ class CommonDatabase(object):
         """generate a query based on an existing query object
 
         basically this function should just create a copy of the original
-        
+
         @param query: the original query object
         @type query: xapian.Query
         @return: the resulting query object
@@ -317,7 +317,7 @@ class CommonDatabase(object):
         """
         raise NotImplementedError("Incomplete indexer implementation: " \
                 + "'_create_empty_document' is missing")
-    
+
     def _add_plain_term(self, document, term, tokenize=True):
         """add a term to a document
 
@@ -387,7 +387,7 @@ class CommonDatabase(object):
 
     def get_query_result(self, query):
         """return an object containing the results of a query
-        
+
         @param query: a pre-compiled query
         @type query: a query object of the real implementation
         @return: an object that allows access to the results
@@ -450,7 +450,7 @@ class CommonDatabase(object):
             # assume a query object (with 'AND')
             query = self.make_query(ident_list, require_all=True)
         else:
-            # invalid element type in list (not necessarily caught in the 
+            # invalid element type in list (not necessarily caught in the
             # lines above)
             raise TypeError("description of documents to-be-deleted is not " \
                     + "supported: list of %s" % type(ident_list[0]))

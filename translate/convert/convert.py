@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2004-2006 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -34,7 +34,7 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
     """a specialized Option Parser for convertor tools..."""
     def __init__(self, formats, usetemplates=False, usepots=False, allowmissingtemplate=False, description=None):
         """construct the specialized Option Parser"""
-        optrecurse.RecursiveOptionParser.__init__(self, formats, usetemplates, 
+        optrecurse.RecursiveOptionParser.__init__(self, formats, usetemplates,
                 allowmissingtemplate=allowmissingtemplate, description=description)
         self.usepots = usepots
         self.setpotoption()

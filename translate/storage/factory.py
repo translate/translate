@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2006 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -39,7 +39,7 @@ from translate.storage import qm
 from translate.storage import wordfast
 from translate.storage import catkeys
 #Let's try to import the XML formats carefully. They might fail if the user
-#doesn't have lxml installed. Let's try to continue gracefully, but print an 
+#doesn't have lxml installed. Let's try to continue gracefully, but print an
 #informative warning.
 try:
     #Although poxliff is unused in this module, it is referenced in test_factory
@@ -58,15 +58,15 @@ except ImportError, e:
 #TODO: Monolingual formats (with template?)
 
 classes = {
-           "csv": csvl10n.csvfile, 
+           "csv": csvl10n.csvfile,
            "tab": omegat.OmegaTFileTab, "utf8": omegat.OmegaTFile,
-           "po": po.pofile, "pot": po.pofile, 
-           "mo": mo.mofile, "gmo": mo.mofile, 
-           "qm": qm.qmfile, 
+           "po": po.pofile, "pot": po.pofile,
+           "mo": mo.mofile, "gmo": mo.mofile,
+           "qm": qm.qmfile,
            "_wftm": wordfast.WordfastTMFile,
            "catkeys": catkeys.CatkeysFile,
           }
-"""Dictionary of file extensions and their associated class.  
+"""Dictionary of file extensions and their associated class.
 
 _ext is a pseudo extension, that is their is no real extension by that name."""
 
@@ -74,7 +74,7 @@ if support_xml:
     classes.update({
            "qph": qph.QphFile,
            "tbx": tbx.tbxfile,
-           "tmx": tmx.tmxfile, 
+           "tmx": tmx.tmxfile,
            "ts": ts.tsfile,
            "xliff": xliff.xlifffile, "xlf": xliff.xlifffile,
     })

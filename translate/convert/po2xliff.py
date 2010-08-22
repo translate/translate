@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2005, 2006 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -22,7 +22,7 @@
 
 """convert Gettext PO localization files to XLIFF localization files
 
-see: http://translate.sourceforge.net/wiki/toolkit/po2xliff for examples and 
+see: http://translate.sourceforge.net/wiki/toolkit/po2xliff for examples and
 usage instructions
 """
 
@@ -45,17 +45,17 @@ class po2xliff:
                 unit.markfuzzy(inputunit.isfuzzy())
             else:
                 unit.markapproved(False)
-            
+
             #Handle #: location comments
             for location in inputunit.getlocations():
                 unit.createcontextgroup("po-reference", self.contextlist(location), purpose="location")
-            
+
             #Handle #. automatic comments
             comment = inputunit.getnotes("developer")
             if comment:
                 unit.createcontextgroup("po-entry", [("x-po-autocomment", comment)], purpose="information")
                 unit.addnote(comment, origin="developer")
-        
+
             #TODO: x-format, etc.
 
 
@@ -64,7 +64,7 @@ class po2xliff:
         if comment:
             unit.createcontextgroup("po-entry", [("x-po-trancomment", comment)], purpose="information")
             unit.addnote(comment, origin="po-translator")
-            
+
         return unit
 
     def contextlist(self, location):
@@ -77,10 +77,10 @@ class po2xliff:
         if linenumber:
             contexts.append(("linenumber", linenumber))
         return contexts
-        
+
     def convertstore(self, inputstore, templatefile=None, **kwargs):
         """converts a .po file to .xlf format"""
-        if templatefile is None: 
+        if templatefile is None:
             outputstore = poxliff.PoXliffFile(**kwargs)
         else:
             outputstore = poxliff.PoXliffFile(templatefile, **kwargs)

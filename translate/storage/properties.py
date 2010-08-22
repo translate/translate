@@ -23,7 +23,7 @@
    translating Java, Mozilla, MacOS and other software.
 
    The L{propfile} class is a monolingual class with L{propunit} providing unit
-   level access.  
+   level access.
 
    The .properties store has become a general key value pair class with
    L{Dialect} providing the ability to change the behaviour of the parsing
@@ -36,7 +36,7 @@
      * MacOS X .strings files
      * Skype .lang files
 
- 
+
    Dialects
    ========
    The following provides references and descriptions of the various dialects supported::
@@ -66,7 +66,7 @@
 `
    Strings
    -------
-   Mac OS X strings files are implemented using 
+   Mac OS X strings files are implemented using
    U{these<http://developer.apple.com/mac/library/documentation/MacOSX/Conceptual/BPInternational/Articles/StringsFiles.html>}
    U{two<http://developer.apple.com/mac/library/documentation/Cocoa/Conceptual/LoadingResources/Strings/Strings.html>}
    articles as references.
@@ -84,7 +84,7 @@
 
    Implementation
    ==============
- 
+
    A simple summary of what is permissible follows.
 
    Comments supported::

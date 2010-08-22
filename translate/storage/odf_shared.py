@@ -32,23 +32,23 @@ def define_tables():
     presentation_uri = 'urn:oasis:names:tc:opendocument:xmlns:presentation:1.0'
     text_uri = 'urn:oasis:names:tc:opendocument:xmlns:text:1.0'
     svg_uri = 'urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0'
-    
+
     inline_elements = [
         (text_uri, 'page-count'),
         (text_uri, 'page-number'),
-    
+
         (text_uri, 'a'),
         (text_uri, 'line-break'),
         (text_uri, 'ruby-base'),
         (text_uri, 's'),
         (text_uri, 'span'),
         (text_uri, 'tab')]
-    
+
     no_translate_content_elements = [
-    
+
         # Config
         (config_uri, 'config-item'),
-    
+
         # Dublin core
         (dc_uri, 'creator'),
         (dc_uri, 'date'),
@@ -56,11 +56,11 @@ def define_tables():
         (dc_uri, 'language'),
         #(dc_uri, 'subject'),
         #(dc_uri, 'title'),
-    
+
         # Form
         (form_uri, 'item'),
         (form_uri, 'option'),
-    
+
         # Meta
         (meta_uri, 'creation-date'),
         (meta_uri, 'date-string'),
@@ -72,20 +72,20 @@ def define_tables():
         (meta_uri, 'printed-by'),
         (meta_uri, 'print-date'),
         (meta_uri, 'user-defined'),
-    
+
         # Number
         (number_uri, 'currency-symbol'),
         (number_uri, 'embedded-text'),
         (number_uri, 'text'),
-    
+
         # Office
         (office_uri, 'binary-data'),
-    
+
         # Presentation
         (presentation_uri, 'date-time-decl'),
         #(presentation_uri, 'footer-decl'),
         #(presentation_uri, 'header-decl'),
-    
+
         # Text
         (text_uri, 'author-initials'),
         (text_uri, 'author-name'),
@@ -166,11 +166,11 @@ def define_tables():
         (text_uri, 'variable-input'),
         (text_uri, 'variable-set'),
         (text_uri, 'word-count'),
-    
+
         # SVG
         #(svg_uri, 'title'),
         #(svg_uri, 'desc')
-    
+
         # From translate
         (text_uri, 'tracked-changes'),
         ]
@@ -181,6 +181,6 @@ def define_tables():
 try:
     from itools.odf.schema import inline_elements
     from itools.odf.schema import no_translate_content_elements
-    
+
 except:
     define_tables()

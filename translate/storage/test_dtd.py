@@ -8,7 +8,7 @@ from py import test
 
 def test_roundtrip_quoting():
     specials = ['Fish & chips', 'five < six', 'six > five',
-                'Use &nbsp;', 'Use &amp;nbsp;' 
+                'Use &nbsp;', 'Use &amp;nbsp;'
                 'A "solution"', "skop 'n bal", '"""', "'''",
                 '\n', '\t', '\r',
                 'Escape at end \\',
@@ -40,7 +40,7 @@ class TestDTDUnit(test_monolingual.TestMonolingualUnit):
     def test_rich_set(self):
         pass
 
-    
+
 class TestDTD(test_monolingual.TestMonolingualStore):
     StoreClass = dtd.dtdfile
     def dtdparse(self, dtdsource):

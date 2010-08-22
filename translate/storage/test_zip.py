@@ -60,7 +60,7 @@ class TestZIPFile(object):
         self.touchfiles(self.testzip, files)
         self.mkdir("bla")
         self.touchfiles(os.path.join(self.testzip, "bla"), files, last=True)
-        
+
         d = zip.ZIPFile(self.testzip)
         filenames = [name for dir, name in d.getfiles()]
         assert filenames == files * 2

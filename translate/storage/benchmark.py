@@ -99,7 +99,7 @@ if __name__ == "__main__":
       # (5, 10, 10, 10, 10),
       # (5, 10, 100, 20, 20),
       # (10, 20, 100, 10, 10),
-      # (10, 20, 100, 10, 10),   
+      # (10, 20, 100, 10, 10),
       # (100, 2, 140, 3, 3),  # OpenOffice.org approximate ratios
       ]:
         benchmarker = TranslateBenchmarker("BenchmarkDir", storeclass)

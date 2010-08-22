@@ -6,7 +6,7 @@ from translate.misc.multistring import multistring
 
 class TestPOXLIFFUnit(test_xliff.TestXLIFFUnit):
     UnitClass = poxliff.PoXliffUnit
-   
+
     def test_plurals(self):
         """Tests that plurals are handled correctly."""
         unit = self.UnitClass(multistring(["Cow", "Cows"]))

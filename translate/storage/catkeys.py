@@ -32,8 +32,8 @@
    ==============
    The implementation covers the full requirements of a catkeys file. The
    files are simple Tab Separated Value (TSV) files that can be read
-   by Microsoft Excel and other spreadsheet programs. They use the .txt 
-   extension which does make it more difficult to automatically identify 
+   by Microsoft Excel and other spreadsheet programs. They use the .txt
+   extension which does make it more difficult to automatically identify
    such files.
 
    The dialect of the TSV files is specified by L{CatkeysDialect}.

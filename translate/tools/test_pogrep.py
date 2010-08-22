@@ -72,7 +72,7 @@ class TestPOGrep:
         pounicode = '# comment\n#: test.c\nmsgid "test"\nmsgstr "rešṱ"\n'
         queryascii = 'rest'
         queryunicode = 'rešṱ'
-        for source, search, expected in [(poascii, queryascii, poascii), 
+        for source, search, expected in [(poascii, queryascii, poascii),
                                          (poascii, queryunicode, ''),
                                          (pounicode, queryascii, ''),
                                          (pounicode, queryunicode, pounicode)]:
@@ -86,7 +86,7 @@ class TestPOGrep:
         pounicode = '# comment\n#: test.c\nmsgid "test"\nmsgstr "rešṱ"\n'
         queryascii = 'rest'
         queryunicode = 'rešṱ'
-        for source, search, expected in [(poascii, queryascii, poascii), 
+        for source, search, expected in [(poascii, queryascii, poascii),
                                          (poascii, queryunicode, ''),
                                          (pounicode, queryascii, ''),
                                          (pounicode, queryunicode, pounicode)]:

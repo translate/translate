@@ -43,7 +43,7 @@ class resub:
                     if inputunit.isfuzzy() and not self.includefuzzy:
                         unit.target = unit.source
                     else:
-                        unit.target = inputunit.target 
+                        unit.target = inputunit.target
                 else:
                     unit.target = unit.source
         return str(self.templatestore)

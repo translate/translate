@@ -13,15 +13,15 @@ def test_php_escaping_single_quote():
     """
     # Decoding - PHP -> Python
     assert php.phpdecode(r"\'") == r"'"     # To specify a literal single quote, escape it with a backslash (\).
-    assert php.phpdecode(r'"') == r'"'  
+    assert php.phpdecode(r'"') == r'"'
     assert php.phpdecode(r"\\'") == r"\'"   # To specify a literal backslash before a single quote, or at the end of the string, double it (\\)
     assert php.phpdecode(r"\x") == r"\x"    # Note that attempting to escape any other character will print the backslash too.
-    assert php.phpdecode(r'\t') == r'\t'  
-    assert php.phpdecode(r'\n') == r'\n'  
+    assert php.phpdecode(r'\t') == r'\t'
+    assert php.phpdecode(r'\n') == r'\n'
     assert php.phpdecode(r"this is a simple string") == r"this is a simple string"
-    assert php.phpdecode("""You can also have embedded newlines in 
+    assert php.phpdecode("""You can also have embedded newlines in
 strings this way as it is
-okay to do""") == """You can also have embedded newlines in 
+okay to do""") == """You can also have embedded newlines in
 strings this way as it is
 okay to do"""
     assert php.phpdecode(r"This will not expand: \n a newline") == r"This will not expand: \n a newline"
@@ -35,7 +35,7 @@ okay to do"""
     assert php.phpencode(r"'") == r"\'"     # To specify a literal single quote, escape it with a backslash (\).
     assert php.phpencode(r"\'") == r"\\'"   # To specify a literal backslash before a single quote, or at the end of the string, double it (\\)
     assert php.phpencode(r'"') == r'"'
-    assert php.phpencode(r"\x") == r"\x"    # Note that attempting to escape any other character will print the backslash too. 
+    assert php.phpencode(r"\x") == r"\x"    # Note that attempting to escape any other character will print the backslash too.
     assert php.phpencode(r"\t") == r"\t"
     assert php.phpencode(r"\n") == r"\n"
     assert php.phpencode(r"""String with
@@ -86,7 +86,7 @@ class TestPhpUnit(test_monolingual.TestMonolingualUnit):
 
 class TestPhpFile(test_monolingual.TestMonolingualStore):
     StoreClass = php.phpfile
-    
+
     def phpparse(self, phpsource):
         """helper that parses php source without requiring files"""
         dummyfile = wStringIO.StringIO(phpsource)

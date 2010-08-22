@@ -273,7 +273,7 @@ class StatsCache(object):
                     return False
                 except dbapi2.OperationalError:
                     return False
-            
+
             cache = cls._caches.setdefault(current_thread, {})[statsfile] = object.__new__(cls)
             connect(cache)
             if clear_old_data(cache):
@@ -385,7 +385,7 @@ class StatsCache(object):
             store = store or factory.getobject(realpath)
 
         return self._cachestore(store, realpath, mod_info)
-    
+
     def _getstoredcheckerconfig(self, checker):
         """See if this checker configuration has been used before."""
         config = str(checker.config.__dict__)
@@ -496,7 +496,7 @@ class StatsCache(object):
         if result is not None:
             return result
         else:
-            print >> sys.stderr, """WARNING: Database in inconsistent state. 
+            print >> sys.stderr, """WARNING: Database in inconsistent state.
             fileid %d and unitid %s have no entries in the table units.""" % (fileid, unitid)
             # If values.fetchone() is None, then we return an empty list,
             # to make FileTotals.new_record(*self.get_unit_stats(fileid, unitid))
@@ -593,12 +593,12 @@ class StatsCache(object):
 
     def file_fails_test(self, filename, checker, name):
         fileid = self._getfileid(filename)
-        configid = self._get_config_id(fileid, checker) 
+        configid = self._get_config_id(fileid, checker)
         self._checkerrors(filename, fileid, configid, checker, None)
         self.cur.execute("""SELECT
             name,
             unitindex
-            FROM uniterrors 
+            FROM uniterrors
             WHERE fileid=? and configid=? and name=?;""", (fileid, configid, name))
         return self.cur.fetchone() is not None
 

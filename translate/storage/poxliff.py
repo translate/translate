@@ -287,7 +287,7 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
         xliff.xlifffile.__init__(self, *args, **kwargs)
 
     def createfilenode(self, filename, sourcelanguage="en-US", datatype="po"):
-        # Let's ignore the sourcelanguage parameter opting for the internal 
+        # Let's ignore the sourcelanguage parameter opting for the internal
         # one. PO files will probably be one language
         return super(PoXliffFile, self).createfilenode(filename, sourcelanguage=self.sourcelanguage, datatype="po")
 

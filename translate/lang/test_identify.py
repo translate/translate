@@ -167,7 +167,7 @@ class TestLanguageIdentifier(object):
         assert self.langident.identify_lang(TEXT) == 'de'
 
     def test_identify_store(self):
-        langlist = [TranslationUnit(string) for string in TEXT_LIST] 
+        langlist = [TranslationUnit(string) for string in TEXT_LIST]
         assert self.langident.identify_source_lang(langlist) == 'de'
         for i, unit in enumerate(langlist):
             unit.target = TEXT_LIST[i]

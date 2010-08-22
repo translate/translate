@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2004-2006 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -28,7 +28,7 @@ from translate.storage import oo
 from translate.storage import factory
 from translate.filters import pofilter
 from translate.filters import checks
-from translate.filters import autocorrect 
+from translate.filters import autocorrect
 import time
 
 class reoo:
@@ -204,9 +204,9 @@ def main(argv=None):
     # always treat the input as an archive unless it is a directory
     archiveformats = {(None, "output"): oo.oomultifile, (None, "template"): oo.oomultifile}
     parser = convert.ArchiveConvertOptionParser(formats, usetemplates=True, description=__doc__, archiveformats=archiveformats)
-    parser.add_option("-l", "--language", dest="targetlanguage", default=None, 
+    parser.add_option("-l", "--language", dest="targetlanguage", default=None,
             help="set target language code (e.g. af-ZA) [required]", metavar="LANG")
-    parser.add_option("", "--source-language", dest="sourcelanguage", default=None, 
+    parser.add_option("", "--source-language", dest="sourcelanguage", default=None,
             help="set source language code (default en-US)", metavar="LANG")
     parser.add_option("-T", "--keeptimestamp", dest="timestamp", default=None, action="store_const", const=0,
             help="don't change the timestamps of the strings")

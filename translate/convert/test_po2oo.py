@@ -91,7 +91,7 @@ class TestPO2OO:
     def xtest_roundtrip_spaces(self):
         # FIXME: this test fails because the resultant PO file returns as po.isempty since .isblank returns true
         # which is caused by isblankmsgtr returning True.  Its a complete mess which would mean unravelling lots
-        # of yuch in pypo.  Until we have time to do that unravelling we're diabling this test.  You can reenable 
+        # of yuch in pypo.  Until we have time to do that unravelling we're diabling this test.  You can reenable
         # once we've fixed that.
         """checks that (escaped) quotes in strings make it through a oo->po->oo roundtrip"""
         self.check_roundtrip(" ")
@@ -119,7 +119,7 @@ class TestPO2OO:
 
     def test_helpcontent_escapes(self):
         """test to ensure that we convert helpcontent escapes correctly"""
-        # Note how this test specifically uses incorrect spacing in the 
+        # Note how this test specifically uses incorrect spacing in the
         # translation. The extra space before 'hid' and an extra space before
         # the closing tag should not confuse us.
         oosource = r'helpcontent2	source\text\shared\3dsettings_toolbar.xhp	0	help	par_idN1056A				0	en-US	\<ahelp hid=\".\"\>The 3D-Settings toolbar controls properties of selected 3D objects.\</ahelp\>				2002-02-02 02:02:02' + '\r\n'
@@ -140,7 +140,7 @@ msgstr ""
     def test_helpcontent_escapes2(self):
         """test to ensure that we convert helpcontent escapes correctly"""
         oosource = r'helpcontent2	source\text\scalc\05\empty_cells.xhp	0	help	par_id2629474				0	en-US	A1: <empty>				2002-02-02 02:02:02' + '\r\n'
-        posource = r'''#: empty_cells.xhp#par_id2629474.help.text 
+        posource = r'''#: empty_cells.xhp#par_id2629474.help.text
 msgid "A1: <empty>"
 msgstr "Aa1: <empty>"
 '''

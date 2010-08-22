@@ -71,8 +71,8 @@ class TestPhp2PO:
 
     def test_multiline(self):
         """checks that multiline enties can be parsed"""
-        phpsource = r"""$lang['5093'] = 'Unable to connect to your IMAP server. You may have exceeded the maximum number 
-of connections to this server. If so, use the Advanced IMAP Server Settings dialog to 
+        phpsource = r"""$lang['5093'] = 'Unable to connect to your IMAP server. You may have exceeded the maximum number
+of connections to this server. If so, use the Advanced IMAP Server Settings dialog to
 reduce the number of cached connections.';"""
         pofile = self.php2po(phpsource)
         print repr(pofile.units[1].target)

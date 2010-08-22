@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2007 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -43,7 +43,7 @@ class Directory:
             yield filetuple
 
     def getfiles(self):
-        """Returns a list of (dir, filename) tuples for all the file names in 
+        """Returns a list of (dir, filename) tuples for all the file names in
         this directory."""
         return [filetuple for filetuple in self.file_iter()]
 
@@ -66,5 +66,5 @@ class Directory:
             for fname in fnames:
                 if path.isfile(path.join(dirname, fname)):
                     self.filedata.append((dirname, fname))
-                    
+
         path.walk(self.dir, addfile, None)

@@ -80,14 +80,14 @@ class TestZipfile:
         for i in range(0, 1000):
             fp.write("Test of zipfile line %d.\n" % i)
         fp.close()
-        
+
         fp = open(self.srcname, "rb")
         writtenData = fp.read()
         fp.close()
-        
+
         for file in (self.zipname, tempfile.TemporaryFile(), StringIO.StringIO()):
             zipTest(self.srcname, file, zipfile.ZIP_STORED, writtenData)
-        
+
         for file in (self.zipname, tempfile.TemporaryFile(), StringIO.StringIO()):
             zipTest(self.srcname, file, zipfile.ZIP_DEFLATED, writtenData)
 
@@ -96,14 +96,14 @@ class TestZipfile:
         for i in range(0, 1000):
             fp.write("Test of zipfile line %d.\n" % i)
         fp.close()
-        
+
         fp = open(self.srcname, "rb")
         writtenData = fp.read()
         fp.close()
-        
+
         for file in (self.zipname, tempfile.TemporaryFile(), StringIO.StringIO()):
             deleteTest(self.srcname, file, zipfile.ZIP_STORED, writtenData)
-        
+
         for file in (self.zipname, tempfile.TemporaryFile(), StringIO.StringIO()):
             deleteTest(self.srcname, file, zipfile.ZIP_DEFLATED, writtenData)
 

@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2003-2006 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -21,7 +21,7 @@
 
 """convert Comma-Separated Value (.csv) files to Gettext PO localization files
 
-See: http://translate.sourceforge.net/wiki/toolkit/csv2po for examples and 
+See: http://translate.sourceforge.net/wiki/toolkit/csv2po for examples and
 usage instructions
 """
 
@@ -183,7 +183,7 @@ def convertcsv(inputfile, outputfile, templatefile, charset=None, columnorder=No
 
 def main(argv=None):
     from translate.convert import convert
-    formats = {("csv", "po"): ("po", convertcsv), ("csv", "pot"): ("po", convertcsv), 
+    formats = {("csv", "po"): ("po", convertcsv), ("csv", "pot"): ("po", convertcsv),
             ("csv", None): ("po", convertcsv)}
     parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
     parser.add_option("", "--charset", dest="charset", default=None,

@@ -19,7 +19,7 @@ class TestPO2XLIFF:
         assert len(xliff.units) == 1
         unit = xliff.units[0]
         return unit
- 
+
     def test_minimal(self):
         minipo = '''msgid "red"\nmsgstr "rooi"\n'''
         xliff = self.po2xliff(minipo)
@@ -28,7 +28,7 @@ class TestPO2XLIFF:
         assert len(xliff.units) == 1
         assert xliff.translate("red") == "rooi"
         assert xliff.translate("bla") is None
- 
+
     def test_basic(self):
         minipo = r"""# Afrikaans translation of program ABC
 #
@@ -240,7 +240,7 @@ msgstr[1] "iinkomo"
         print xmltext
         assert len(xliff.units) == 1
         assert xliff.translate("cow") == "inkomo"
-        
+
     def test_funny_plurals(self):
         minipo = r'''msgid "cow"
 msgid_plural "cows"
@@ -262,7 +262,7 @@ msgstr "Uno"
         xliff = self.po2xliff(minipo, "af", "es")
         assert xliff.sourcelanguage == "af"
         assert xliff.targetlanguage == "es"
-        
+
     def test_variables(self):
         minipo = r'''msgid "%s%s%s%s has made %s his or her buddy%s%s"
 msgstr "%s%s%s%s het %s sy/haar vriend/vriendin gemaak%s%s"'''

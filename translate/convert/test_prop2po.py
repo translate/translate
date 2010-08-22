@@ -65,17 +65,17 @@ class TestProp2PO:
         pofile = self.prop2po(propsource)
         pounit = self.singleelement(pofile)
         assert pounit.source == "This setence has a tab at the end.\t"
-        
+
         propsource = r"SPACE_THEN_TAB_AT_END=This setence has a space then tab at the end. \t"
         pofile = self.prop2po(propsource)
         pounit = self.singleelement(pofile)
         assert pounit.source == "This setence has a space then tab at the end. \t"
-        
+
         propsource = r"SPACE_AT_END=This setence will keep its 4 spaces at the end.    "
         pofile = self.prop2po(propsource)
         pounit = self.singleelement(pofile)
         assert pounit.source == "This setence will keep its 4 spaces at the end.    "
-        
+
         propsource = r"SPACE_AT_END_NO_TRIM=This setence will keep its 4 spaces at the end.\    "
         pofile = self.prop2po(propsource)
         pounit = self.singleelement(pofile)

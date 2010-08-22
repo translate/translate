@@ -34,7 +34,7 @@ class TestOO2PO:
 
     def roundtripstring(self, filename, entitystring):
         """Convert the supplied string as part of an OpenOffice.org GSI file to po and back.
-        
+
         Return the string once it has been through all the conversions."""
 
         ootemplate = r'helpcontent2	%s	0	help	par_id3150670 35				0	en-US	%s				2002-02-02 02:02:02'
@@ -74,9 +74,9 @@ class TestOO2PO:
         pounit = self.singleelement(pofile)
         poelementsrc = str(pounit)
         print poelementsrc
-        assert "Newline \n Newline" in pounit.source 
-        assert "Tab \t Tab" in pounit.source 
-        assert "CR \r CR" in pounit.source 
+        assert "Newline \n Newline" in pounit.source
+        assert "Tab \t Tab" in pounit.source
+        assert "CR \r CR" in pounit.source
 
     def test_roundtrip_escape(self):
         self.check_roundtrip('strings.src', r'The given command is not a SELECT statement.\nOnly queries are allowed.')

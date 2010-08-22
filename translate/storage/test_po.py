@@ -9,10 +9,10 @@ from translate.misc.multistring import multistring
 from py.test import raises
 
 def test_roundtrip_quoting():
-    specials = ['Fish & chips', 'five < six', 'six > five', 
-                'Use &nbsp;', 'Use &amp;nbsp;' 
-                'A "solution"', "skop 'n bal", '"""', "'''", 
-                '\n', '\t', '\r', 
+    specials = ['Fish & chips', 'five < six', 'six > five',
+                'Use &nbsp;', 'Use &amp;nbsp;'
+                'A "solution"', "skop 'n bal", '"""', "'''",
+                '\n', '\t', '\r',
                 '\\n', '\\t', '\\r', '\\"', '\r\n', '\\r\\n', '\\']
     for special in specials:
         quoted_special = pypo.quoteforpo(special)
@@ -455,7 +455,7 @@ msgstr "een"
         pofile.updateheader(add=True, **{"Report-Msgid-Bugs-To": r"http://qa.openoffice.org/issues/enter_bug.cgi?subcomponent=ui&comment=&short_desc=Localization%20issue%20in%20file%3A%20dbaccess\source\core\resource.oo&component=l10n&form_name=enter_issue"})
         filecontents = str(pofile)
         print filecontents
-        # We need to make sure that the \r didn't get misrepresented as a 
+        # We need to make sure that the \r didn't get misrepresented as a
         # carriage return, but as a slash (escaped) followed by a normal 'r'
         assert r'\source\core\resource' in pofile.header().target
         assert r're\\resource' in filecontents

@@ -230,7 +230,7 @@ class CheckerConfig(object):
         self.validcharsmap.update(validcharsmap)
 
     def updatetargetlanguage(self, langcode):
-        """Updates the target language in the config to the given target 
+        """Updates the target language in the config to the given target
         language"""
         self.lang = factory.getlanguage(langcode)
 
@@ -358,7 +358,7 @@ class UnitChecker(object):
             if functionname in ignores:
                 continue
             filterfunction = getattr(self, functionname, None)
-            # this filterfunction may only be defined on another checker if 
+            # this filterfunction may only be defined on another checker if
             # using TeeChecker
             if filterfunction is None:
                 continue
@@ -1052,7 +1052,7 @@ class StandardChecker(TranslationChecker):
                                     "accelerators", "brackets", "endpunc",
                                     "acronyms", "xmltags", "startpunc",
                                     "endwhitespace", "startwhitespace",
-                                    "escapes", "doublequoting", "singlequoting", 
+                                    "escapes", "doublequoting", "singlequoting",
                                     "filepaths", "purepunc", "doublespacing",
                                     "sentencecount", "numbers", "isfuzzy",
                                     "isreview", "notranslatewords", "musttranslatewords",
@@ -1063,7 +1063,7 @@ class StandardChecker(TranslationChecker):
                                     "accelerators", "brackets", "endpunc",
                                     "acronyms", "xmltags", "startpunc",
                                     "endwhitespace", "startwhitespace",
-                                    "escapes", "doublequoting", "singlequoting", 
+                                    "escapes", "doublequoting", "singlequoting",
                                     "filepaths", "purepunc", "doublespacing",
                                     "sentencecount", "numbers", "isfuzzy",
                                     "isreview", "notranslatewords", "musttranslatewords",
@@ -1073,7 +1073,7 @@ class StandardChecker(TranslationChecker):
                     "credits":      ("simplecaps", "variables", "startcaps",
                                     "accelerators", "brackets", "endpunc",
                                     "acronyms", "xmltags", "startpunc",
-                                    "escapes", "doublequoting", "singlequoting", 
+                                    "escapes", "doublequoting", "singlequoting",
                                     "filepaths", "doublespacing",
                                     "sentencecount", "numbers",
                                     "emails", "simpleplurals", "urls", "printf",

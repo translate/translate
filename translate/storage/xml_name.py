@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2008 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -41,7 +41,7 @@ class XmlNamer(object):
     {urn:oasis:names:tc:opendocument:xmlns:office:1.0}blah
 
     I can also give you XmlNamespace objects if you give me the abbreviated
-    namespace name. These are useful if you need to reference a namespace 
+    namespace name. These are useful if you need to reference a namespace
     continuously.
 
     >>> office_ns = name.namespace('office')

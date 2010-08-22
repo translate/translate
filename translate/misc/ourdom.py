@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2004-2007 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -22,9 +22,9 @@
 
 """module that provides modified DOM functionality for our needs
 
-Note that users of ourdom should ensure that no code might still use classes 
-directly from minidom, like minidom.Element, minidom.Document or methods such 
-as minidom.parseString, since the functionality provided here will not be in 
+Note that users of ourdom should ensure that no code might still use classes
+directly from minidom, like minidom.Element, minidom.Document or methods such
+as minidom.parseString, since the functionality provided here will not be in
 those objects.
 """
 
@@ -50,11 +50,11 @@ def writexml_helper(self, writer, indent="", addindent="", newl=""):
         minidom._write_data(writer, attrs[a_name].value)
         writer.write("\"")
     if self.childNodes:
-        # We need to write text nodes without newline and indentation, so 
-        # we handle them differently. Note that we here assume that "empty" 
-        # text nodes can be done away with (see the strip()). Note also that 
-        # nested tags in a text node (like ph tags in xliff) should also not 
-        # have newlines and indentation or an extra newline, since that will 
+        # We need to write text nodes without newline and indentation, so
+        # we handle them differently. Note that we here assume that "empty"
+        # text nodes can be done away with (see the strip()). Note also that
+        # nested tags in a text node (like ph tags in xliff) should also not
+        # have newlines and indentation or an extra newline, since that will
         # alter the text node.
         haveText = False
         for childNode in self.childNodes:
@@ -79,7 +79,7 @@ def writexml_helper(self, writer, indent="", addindent="", newl=""):
 def getElementsByTagName_helper(parent, name, dummy=None):
     """A reimplementation of getElementsByTagName as an iterator.
 
-    Note that this is not compatible with getElementsByTagName that returns a 
+    Note that this is not compatible with getElementsByTagName that returns a
     list, therefore, the class below exposes this through yieldElementsByTagName"""
 
     for node in parent.childNodes:

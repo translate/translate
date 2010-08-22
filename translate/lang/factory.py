@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2007 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -43,7 +43,7 @@ def getlanguage(code):
         except SyntaxError, e:
             # Someone is probably trying to import a language of which the code
             # is a reserved word in python (like Icelandic (is) / Oriya (or))
-            # The convention to handle these is to have it in a file like  
+            # The convention to handle these is to have it in a file like
             # code_is, for example.
             exec("from translate.lang import %s%s" % (prefix, code))
             exec("langclass = %s%s.%s%s" % (prefix, code, prefix, code))

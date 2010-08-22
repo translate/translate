@@ -61,8 +61,8 @@ class xliffunit(lisa.LISAunit):
     def createlanguageNode(self, lang, text, purpose):
         """Returns an xml Element setup with given parameters."""
 
-        #TODO: for now we do source, but we have to test if it is target, perhaps 
-        # with parameter. Alternatively, we can use lang, if supplied, since an xliff 
+        #TODO: for now we do source, but we have to test if it is target, perhaps
+        # with parameter. Alternatively, we can use lang, if supplied, since an xliff
         #file has to conform to the bilingual nature promised by the header.
         assert purpose
         langset = etree.Element(self.namespaced(purpose))
@@ -140,7 +140,7 @@ class xliffunit(lisa.LISAunit):
         @param txt: Alternative translation of the source text.
         """
 
-        #TODO: support adding a source tag ad match quality attribute.  At 
+        #TODO: support adding a source tag ad match quality attribute.  At
         # the source tag is needed to inject fuzzy matches from a TM.
         if isinstance(txt, str):
             txt = txt.decode("utf-8")
@@ -161,12 +161,12 @@ class xliffunit(lisa.LISAunit):
             lisa.setXMLlang(alttrans, lang)
 
     def getalttrans(self, origin=None):
-        """Returns <alt-trans> for the given origin as a list of units. No 
+        """Returns <alt-trans> for the given origin as a list of units. No
         origin means all alternatives."""
         translist = []
         for node in self.xmlelement.iterdescendants(self.namespaced("alt-trans")):
             if self.correctorigin(node, origin):
-                # We build some mini units that keep the xmlelement. This 
+                # We build some mini units that keep the xmlelement. This
                 # makes it easier to delete it if it is passed back to us.
                 newunit = base.TranslationUnit(self.source)
 
@@ -586,7 +586,7 @@ class xlifffile(lisa.LISAfile):
         return None
 
     def removedefaultfile(self):
-        """We want to remove the default file-tag as soon as possible if we 
+        """We want to remove the default file-tag as soon as possible if we
         know if still present and empty."""
         filenodes = list(self.document.getroot().iterchildren(self.namespaced("file")))
         if len(filenodes) > 1:

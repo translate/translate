@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2004-2006 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -22,7 +22,7 @@
 
 """convert Gettext PO localization files to plain text (.txt) files
 
-see: http://translate.sourceforge.net/wiki/toolkit/po2txt for examples and 
+see: http://translate.sourceforge.net/wiki/toolkit/po2txt for examples and
 usage instructions
 """
 
@@ -54,7 +54,7 @@ class po2txt:
             else:
                 txtresult += self.wrapmessage(unit.source) + "\n" + "\n"
         return txtresult.rstrip()
- 
+
     def mergestore(self, inputstore, templatetext, includefuzzy):
         """converts a file to txt format"""
         txtresult = templatetext

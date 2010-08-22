@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2004-2008 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -22,8 +22,8 @@
 """This module manages interaction with version control systems.
 
    To implement support for a new version control system, inherit the class
-   GenericRevisionControlSystem. 
-   
+   GenericRevisionControlSystem.
+
    TODO:
      - add authentication handling
      - 'commitdirectory' should do a single commit instead of one for each file
@@ -138,7 +138,7 @@ class GenericRevisionControlSystem:
 
     Always inherit from this class to implement another RC interface.
 
-    At least the two attributes "RCS_METADIR" and "SCAN_PARENTS" must be 
+    At least the two attributes "RCS_METADIR" and "SCAN_PARENTS" must be
     overriden by all implementations that derive from this class.
 
     By default, all implementations can rely on the following attributes:
@@ -156,7 +156,7 @@ class GenericRevisionControlSystem:
     SCAN_PARENTS = None
     """whether to check the parent directories for the metadata directory of
     the RCS working copy
-    
+
     some revision control systems store their metadata directory only
     in the base of the working copy (e.g. bzr, GIT and Darcs)
     use "True" for these RCS
@@ -168,7 +168,7 @@ class GenericRevisionControlSystem:
 
     def __init__(self, location):
         """find the relevant information about this RCS object
-        
+
         The IOError exception indicates that the specified object (file or
         directory) is not controlled by the given version control system.
         """
@@ -195,7 +195,7 @@ class GenericRevisionControlSystem:
             rcs_obj_dir = os.path.abspath(rcs_obj)
         else:
             rcs_obj_dir = os.path.dirname(os.path.abspath(rcs_obj))
-            
+
         if os.path.isdir(os.path.join(rcs_obj_dir, self.RCS_METADIR)):
             # is there a metadir next to the rcs_obj?
             # (for Subversion, CVS, ...)
@@ -209,7 +209,7 @@ class GenericRevisionControlSystem:
         else:
             # no RCS metadata found
             return None
-    
+
     def _find_rcs_in_parent_directories(self, rcs_obj):
         """Try to find the metadata directory in all parent directories"""
         # first: resolve possible symlinks
@@ -240,7 +240,7 @@ class GenericRevisionControlSystem:
         else:
             # this should never happen
             return None
-        
+
     def _self_check(self):
         """Check if all necessary attributes are defined
 
@@ -256,7 +256,7 @@ class GenericRevisionControlSystem:
         # we do not check for implemented functions - they raise
         # NotImplementedError exceptions anyway
         return True
-                    
+
     def getcleanfile(self, revision=None):
         """Dummy to be overridden by real implementations"""
         raise NotImplementedError("Incomplete RCS interface implementation:" \
@@ -284,7 +284,7 @@ def get_versioned_objects_recursive(
     rcs_objs = []
     if versioning_systems is None:
         versioning_systems = DEFAULT_RCS
-    
+
     def scan_directory(arg, dirname, fnames):
         for fname in fnames:
             full_fname = os.path.join(dirname, fname)

@@ -246,7 +246,7 @@ def main(argv=None):
                "xlf": ("xlf", convertpot), ("xlf", "xlf"): ("xlf", convertpot),
                "catkeys": ("catkeys", convertpot), ("catkeys", "catkeys"): ("catkeys", convertpot),
             }
-    parser = convert.ConvertOptionParser(formats, usepots=True, usetemplates=True, 
+    parser = convert.ConvertOptionParser(formats, usepots=True, usetemplates=True,
         allowmissingtemplate=True, description=__doc__)
     parser.add_option("", "--tm", dest="tm", default=None,
         help="The file to use as translation memory when fuzzy matching")
@@ -255,7 +255,7 @@ def main(argv=None):
     parser.add_option("-s", "--similarity", dest="min_similarity", default=defaultsimilarity,
         type="float", help="The minimum similarity for inclusion (default: %d%%)" % defaultsimilarity)
     parser.passthrough.append("min_similarity")
-    parser.add_option("--nofuzzymatching", dest="fuzzymatching", action="store_false", 
+    parser.add_option("--nofuzzymatching", dest="fuzzymatching", action="store_false",
         default=True, help="Disable fuzzy matching")
     parser.passthrough.append("fuzzymatching")
     parser.run(argv)

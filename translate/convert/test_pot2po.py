@@ -128,7 +128,7 @@ msgstr[1] "%d handleidings."
         assert str(self.singleunit(newpo)) == poexpected
 
     def test_merging_location_ambiguous_with_disambiguous(self):
-        """test that when we have a PO in ambiguous (Gettext form) and merge with disamabiguous (KDE comment form) 
+        """test that when we have a PO in ambiguous (Gettext form) and merge with disamabiguous (KDE comment form)
         that we don't duplicate the location #: comments"""
         potsource = '''#: location.c:1\nmsgid ""\n"_: location.c:1\\n"\n"Source"\nmsgstr ""\n\n''' + \
                     '''#: location.c:10\nmsgid ""\n"_: location.c:10\\n"\n"Source"\nmsgstr ""\n'''
@@ -262,13 +262,13 @@ msgstr "Sertifikate"
 
     def test_merging_plurals(self):
         """ensure that we can merge plural messages"""
-        potsource = '''msgid "One"\nmsgid_plural "Two"\nmsgstr[0] ""\nmsgstr[1] ""\n''' 
+        potsource = '''msgid "One"\nmsgid_plural "Two"\nmsgstr[0] ""\nmsgstr[1] ""\n'''
         posource = '''msgid "One"\nmsgid_plural "Two"\nmsgstr[0] "Een"\nmsgstr[1] "Twee"\nmsgstr[2] "Drie"\n'''
         newpo = self.convertpot(potsource, posource)
         print newpo
         newpounit = self.singleunit(newpo)
         assert str(newpounit) == posource
-        
+
     def test_merging_obsoleting_messages(self):
         """check that we obsolete messages no longer present in the new file"""
         #add emtpy msgid line to help factory identify format
@@ -388,7 +388,7 @@ msgstr ""
 
     def test_merging_comments(self):
         """Test that we can merge comments correctly"""
-        potsource = '''#. Don't do it!\n#: file.py:1\nmsgid "One"\nmsgstr ""\n''' 
+        potsource = '''#. Don't do it!\n#: file.py:1\nmsgid "One"\nmsgstr ""\n'''
         posource = '''#. Don't do it!\n#: file.py:2\nmsgid "One"\nmsgstr "Een"\n'''
         poexpected = '''#. Don't do it!\n#: file.py:1\nmsgid "One"\nmsgstr "Een"\n'''
         newpo = self.convertpot(potsource, posource)
@@ -398,7 +398,7 @@ msgstr ""
 
     def test_merging_typecomments(self):
         """Test that we can merge with typecomments"""
-        potsource = '''#: file.c:1\n#, c-format\nmsgid "%d pipes"\nmsgstr ""\n''' 
+        potsource = '''#: file.c:1\n#, c-format\nmsgid "%d pipes"\nmsgstr ""\n'''
         posource = '''#: file.c:2\nmsgid "%d pipes"\nmsgstr "%d pype"\n'''
         poexpected = '''#: file.c:1\n#, c-format\nmsgid "%d pipes"\nmsgstr "%d pype"\n'''
         newpo = self.convertpot(potsource, posource)
@@ -406,7 +406,7 @@ msgstr ""
         print newpounit
         assert str(newpounit) == poexpected
 
-        potsource = '''#: file.c:1\n#, c-format\nmsgid "%d computers"\nmsgstr ""\n''' 
+        potsource = '''#: file.c:1\n#, c-format\nmsgid "%d computers"\nmsgstr ""\n'''
         posource = '''#: file.c:2\n#, c-format\nmsgid "%s computers "\nmsgstr "%s-rekenaars"\n'''
         poexpected = '''#: file.c:1\n#, fuzzy, c-format\nmsgid "%d computers"\nmsgstr "%s-rekenaars"\n'''
         newpo = self.convertpot(potsource, posource)

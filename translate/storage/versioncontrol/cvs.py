@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2004-2007 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -38,9 +38,9 @@ class cvs(GenericRevisionControlSystem):
 
     def _readfile(self, cvsroot, path, revision=None):
         """
-        Read a single file from the CVS repository without checking out a full 
+        Read a single file from the CVS repository without checking out a full
         working directory.
-        
+
         @param cvsroot: the CVSROOT for the repository
         @param path: path to the file relative to cvs root
         @param revision: revision or tag to get (retrieves from HEAD if None)
@@ -106,7 +106,7 @@ class cvs(GenericRevisionControlSystem):
 
     def commit(self, message=None, author=None):
         """Commits the file and supplies the given commit message if present
-        
+
         the 'author' parameter is not suitable for CVS, thus it is ignored
         """
         working_dir = os.path.dirname(self.location_abs)
@@ -140,7 +140,7 @@ class cvs(GenericRevisionControlSystem):
         return None
 
     def _getcvstag(self, cvsentries):
-        """Returns the sticky tag the file was checked out with by looking in 
+        """Returns the sticky tag the file was checked out with by looking in
         the lines of cvsentries.
         """
         filename = os.path.basename(self.location_abs)

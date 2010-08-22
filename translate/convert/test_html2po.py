@@ -332,16 +332,16 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
 <body>
 <table width="100%"  border="0" cellpadding="0" cellspacing="0">
   <tr align="left" valign="top">
-    <td width="150" height="556"> 
+    <td width="150" height="556">
       <table width="157" height="100%" border="0" cellspacing="0" id="leftmenubg-color">
       <tr>
-          <td align="left" valign="top" height="555"> 
+          <td align="left" valign="top" height="555">
             <table width="100%" border="0" cellspacing="0" cellpadding="2">
-              <tr align="left" valign="top" bgcolor="#660000"> 
+              <tr align="left" valign="top" bgcolor="#660000">
                 <td width="4%"><strong></strong></td>
                 <td width="96%"><strong><font class="headingwhite">Projects</font></strong></td>
               </tr>
-              <tr align="left" valign="top"> 
+              <tr align="left" valign="top">
                 <td valign="middle" width="4%"><img src="images/arrow.gif" width="8" height="8"></td>
                 <td width="96%"><a href="index.html">Home Page</a></td>
               </tr>
@@ -370,7 +370,7 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
     def test_php(self):
         """Test that PHP snippets don't interfere"""
 
-        # A simple string 
+        # A simple string
         self.check_phpsnippet('''<?=$phpvariable?>''')
 
         # Contains HTML tag charcters (< and >)
@@ -381,7 +381,7 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
 
     def test_multiple_php(self):
         """Test multiple PHP snippets in a string to make sure they get restored properly"""
-        php1 = '''<?=$phpvariable?>''' 
+        php1 = '''<?=$phpvariable?>'''
         php2 = '''<?=($a < $b ? $foo : ($b > c ? $bar : $cat))?>'''
         php3 = '''<? asdfghjklqwertyuiop1234567890!@#$%^&*()-=_+[]\{}|;':",./<>? ?>'''
 

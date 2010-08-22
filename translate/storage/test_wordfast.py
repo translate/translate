@@ -19,13 +19,13 @@ class TestWFTime(object):
         assert wftime.time == None
         wftime.time = (1999, 3, 27)
         wftime.timestring = "19990327~000000"
-        
+
 class TestWFUnit(test_base.TestTranslationUnit):
     UnitClass = wf.WordfastUnit
 
     def test_difficult_escapes(self):
         r"""Wordfast files need to perform magic with escapes.
-        
+
            Wordfast does not accept line breaks in its TM (even though they would be
            valid in CSV) thus we turn \\n into \n and reimplement the base class test but
            eliminate a few of the actual tests.

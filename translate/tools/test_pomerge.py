@@ -4,7 +4,7 @@
 from translate.tools import pomerge
 from translate.storage import factory
 from translate.storage import po
-from translate.storage import xliff 
+from translate.storage import xliff
 from translate.misc import wStringIO
 from py import test
 
@@ -77,7 +77,7 @@ class TestPOMerge:
                     mergeblanks="yay")
         test.raises(ValueError, pomerge.mergestore, inputfile, outputfile, templatefile,
                     mergecomments="yay")
-        
+
     def test_simplemerge(self):
         """checks that a simple po entry merges OK"""
         templatepo = '''#: simple.test\nmsgid "Simple String"\nmsgstr ""\n'''
@@ -327,7 +327,7 @@ msgstr "Eerste\tTweede"
         unit = xlifffile.units[0]
         assert unit.source == "red"
         assert unit.target == "rooi"
-        
+
     def test_xliff_into_po(self):
         templatepo = '# my comment\nmsgid "red"\nmsgstr ""'
         mergexliff = self.xliffskeleton % '''<trans-unit>
@@ -347,7 +347,7 @@ msgstr "Eerste\tTweede"
         pofile = self.mergestore(templatepo, mergepo)
         print "Expected:\n%s\n\nMerged:\n%s" % (expectedpo, str(pofile))
         assert str(pofile) == expectedpo
-        
+
         # Translated kde comment.
         mergepo = '''msgid "_: KDE comment\\n"\n"File"\nmsgstr "_: KDE kommentaar\\n"\n"Ifayile"\n\n'''
         print "Expected:\n%s\n\nMerged:\n%s" % (expectedpo, str(pofile))

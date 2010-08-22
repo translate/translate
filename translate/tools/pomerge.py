@@ -46,7 +46,7 @@ def mergestores(store1, store2, mergeblanks, mergecomments):
             unit1 = store1.findunit(unit2.source)
         if unit1 is None:
             logging.error("The template does not contain the following unit:\n%s",
-                          str(unit2)) 
+                          str(unit2))
         else:
             if not mergeblanks:
                 if len(unit2.target.strip()) == 0:

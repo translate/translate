@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2002-2006 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 # The file was copied from the Python 2.5 source.
 #
@@ -10,7 +10,7 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -25,7 +25,7 @@
 # In Python 2.5+, if an exception is thrown in a 'with' statement
 # which uses a generator-based context manager (that is, a
 # context manager created by decorating a generator with
-# @contextmanager), the exception will be propagated to the 
+# @contextmanager), the exception will be propagated to the
 # generator via the .throw method of the generator.
 #
 # This does not exist in Python 2.4. Thus, we just naively finish
@@ -58,7 +58,7 @@ class GeneratorContextManager(object):
                 return
             else:
                 raise RuntimeError("generator didn't stop")
-        else:            
+        else:
             if value is None:
                 # Need to force instantiation so we can reliably
                 # tell if we get the same exception back
@@ -137,7 +137,7 @@ def nested(*managers):
     exc = (None, None, None)
     # Lambdas are an easy way to create unique objects. We don't want
     # this to be None, since our answer might actually be None
-    undefined = lambda: 42 
+    undefined = lambda: 42
     result = undefined
 
     try:

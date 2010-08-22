@@ -89,7 +89,7 @@ class TestConvertCommand:
 
     def help_check(self, options, option, last=False):
         """check that a help string occurs and remove it"""
-        assert option in options 
+        assert option in options
         newoptions = []
         for line in options.splitlines():
             if option in line or not line.lstrip().startswith("-"):
@@ -115,8 +115,8 @@ class TestConvertCommand:
         # the convertsummary might be wrapped. this will probably unwrap it
         assert convertsummary in help_string.replace("\n", " ")
         usageline = help_string[:help_string.find("\n")]
-        # Different versions of optparse might contain either upper or 
-        # lowercase versions of 'Usage:' and 'Options:', so we need to take 
+        # Different versions of optparse might contain either upper or
+        # lowercase versions of 'Usage:' and 'Options:', so we need to take
         # that into account
         assert (usageline.startswith("Usage: ") or usageline.startswith("usage: ")) \
             and "[--version] [-h|--help]" in usageline

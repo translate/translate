@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2003-2008 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -22,7 +22,7 @@
 
 """convert an OpenOffice.org (SDF) localization file to Gettext PO localization files
 
-See: http://translate.sourceforge.net/wiki/toolkit/oo2po for examples and 
+See: http://translate.sourceforge.net/wiki/toolkit/oo2po for examples and
 usage instructions
 """
 
@@ -139,7 +139,7 @@ def main(argv=None):
     parser = convert.ArchiveConvertOptionParser(formats, usepots=True, description=__doc__, archiveformats=archiveformats)
     parser.add_option("-l", "--language", dest="targetlanguage", default=None,
             help="set target language to extract from oo file (e.g. af-ZA)", metavar="LANG")
-    parser.add_option("", "--source-language", dest="sourcelanguage", default=None, 
+    parser.add_option("", "--source-language", dest="sourcelanguage", default=None,
             help="set source language code (default en-US)", metavar="LANG")
     parser.add_option("", "--nonrecursiveinput", dest="allowrecursiveinput", default=True, action="store_false", help="don't treat the input oo as a recursive store")
     parser.add_duplicates_option()

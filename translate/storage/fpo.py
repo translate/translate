@@ -51,8 +51,8 @@ class pounit(pocommon.pounit):
     # automaticcomments = []  #   #. comment extracted from the source code
     # sourcecomments = []     #   #: sourcefile.xxx:35
     # prev_msgctxt = []       #   #| The previous values that msgctxt and msgid held
-    # prev_msgid = []         # 
-    # prev_msgid_plural = []  # 
+    # prev_msgid = []         #
+    # prev_msgid_plural = []  #
     # typecomments = []       #   #, fuzzy
     # msgidcomment = u""      #   _: within msgid
     # msgctxt
@@ -375,9 +375,9 @@ class pounit(pocommon.pounit):
     def getid(self):
         """Returns a unique identifier for this unit."""
         context = self.getcontext()
-        # Gettext does not consider the plural to determine duplicates, only 
+        # Gettext does not consider the plural to determine duplicates, only
         # the msgid. For generation of .mo files, we might want to use this
-        # code to generate the entry for the hash table, but for now, it is 
+        # code to generate the entry for the hash table, but for now, it is
         # commented out for conformance to gettext.
 #        id = '\0'.join(self.source.strings)
         id = self.source

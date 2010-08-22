@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2007 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -29,11 +29,11 @@
 from translate import lang
 from translate.lang import factory
 
-# calling classifyunits() in the constructor is probably not ideal. 
+# calling classifyunits() in the constructor is probably not ideal.
 # idea: have a property for .classification that calls it if necessary
 
 # If we add units or change translations, statistics are out of date
-# Compare with modules/Status.py in pootling that uses a bitmask to 
+# Compare with modules/Status.py in pootling that uses a bitmask to
 # filter units
 
 # Add support for reading and writing Pootle style .stats files
@@ -48,7 +48,7 @@ class Statistics(object):
         self.targetlanguage = targetlanguage
         self.language = lang.factory.getlanguage(self.sourcelanguage)
 #        self.init_checker(checkerstyle)
-        
+
         self.classification = {}
 
     def init_checker(self, checkerstyle=None):
@@ -128,7 +128,7 @@ class Statistics(object):
 
     def classifyunit(self, unit):
         """Returns a list of the classes that the unit belongs to.
-        
+
         @param unit: the unit to classify
         """
         classes = ["total"]
@@ -152,7 +152,7 @@ class Statistics(object):
 
     def classifyunits(self):
         """Makes a dictionary of which units fall into which classifications.
-        
+
         This method iterates over all units.
         """
         self.classification = {}
@@ -184,7 +184,7 @@ class Statistics(object):
 
     def reclassifyunit(self, item):
         """Updates the classification of a unit in self.classification.
-        
+
         @param item: an integer that is an index in .getunits().
         """
         unit = self.getunits()[item]

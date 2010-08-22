@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2007-2008 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -29,19 +29,19 @@
        - Number of plurals (nplurals)
        - Plural equation
      - pofilter tests to ignore
-   
+
    Segmentation
    ------------
      - characters
      - words
      - sentences
-   
+
    TODOs and Ideas for possible features
    =====================================
      - Language-Team information
      - Segmentation
        - phrases
-   
+
    Punctuation
    -----------
      - End of sentence
@@ -50,7 +50,7 @@
      - Quotes
        - single
        - double
-   
+
      - Valid characters
      - Accelerator characters
      - Special characters
@@ -62,11 +62,11 @@ import re
 
 class Common(object):
     """This class is the common parent class for all language classes."""
-    
+
     code = ""
-    """The ISO 639 language code, possibly with a country specifier or other 
+    """The ISO 639 language code, possibly with a country specifier or other
     modifier.
-    
+
     Examples::
         km
         pt_BR
@@ -76,22 +76,22 @@ class Common(object):
     fullname = ""
     """The full (English) name of this language.
 
-       Dialect codes should have the form of 
+       Dialect codes should have the form of
          - Khmer
          - Portugese (Brazil)
          - TODO: sr_YU@Latn?
     """
-    
+
     nplurals = 0
     """The number of plural forms of this language.
-    
+
     0 is not a valid value - it must be overridden.
     Any positive integer is valid (it should probably be between 1 and 6)
     @see: L{data}
     """
-    
+
     pluralequation = "0"
-    """The plural equation for selection of plural forms. 
+    """The plural equation for selection of plural forms.
 
     This is used for PO files to fill into the header.
     @see: U{Gettext manual<http://www.gnu.org/software/gettext/manual/html_node/gettext_150.html#Plural-forms>}
@@ -99,28 +99,28 @@ class Common(object):
     """
     # Don't change these defaults of nplurals or pluralequation willy-nilly:
     # some code probably depends on these for unrecognised languages
-    
+
     listseperator = u", "
-    """This string is used to separate lists of textual elements. Most 
+    """This string is used to separate lists of textual elements. Most
     languages probably can stick with the default comma, but Arabic and some
     Asian languages might want to override this."""
-    
+
     commonpunc = u".,;:!?-@#$%^*_()[]{}/\\'`\"<>"
-    """These punctuation marks are common in English and most languages that 
+    """These punctuation marks are common in English and most languages that
     use latin script."""
 
     quotes = u"‘’‛“”„‟′″‴‵‶‷‹›«»"
     """These are different quotation marks used by various languages."""
 
     invertedpunc = u"¿¡"
-    """Inveted punctuation sometimes used at the beginning of sentences in 
+    """Inveted punctuation sometimes used at the beginning of sentences in
     Spanish, Asturian, Galician, and Catalan."""
 
     rtlpunc = u"،؟؛÷"
     """These punctuation marks are used by Arabic and Persian, for example."""
 
     CJKpunc = u"。、，；！？「」『』【】"
-    """These punctuation marks are used in certain circumstances with CJK 
+    """These punctuation marks are used in certain circumstances with CJK
     languages."""
 
     indicpunc = u"।॥॰"
@@ -134,18 +134,18 @@ class Common(object):
 
     punctuation = u"".join([commonpunc, quotes, invertedpunc, rtlpunc, CJKpunc,\
             indicpunc, ethiopicpunc, miscpunc])
-    """We include many types of punctuation here, simply since this is only 
-    meant to determine if something is punctuation. Hopefully we catch some 
-    languages which might not be represented with modules. Most languages won't 
+    """We include many types of punctuation here, simply since this is only
+    meant to determine if something is punctuation. Hopefully we catch some
+    languages which might not be represented with modules. Most languages won't
     need to override this."""
 
     sentenceend = u".!?…։؟।。！？።"
-    """These marks can indicate a sentence end. Once again we try to account 
+    """These marks can indicate a sentence end. Once again we try to account
     for many languages. Most langauges won't need to override this."""
 
-    #The following tries to account for a lot of things. For the best idea of 
-    #what works, see test_common.py. We try to ignore abbreviations, for 
-    #example, by checking that the following sentence doesn't start with lower 
+    #The following tries to account for a lot of things. For the best idea of
+    #what works, see test_common.py. We try to ignore abbreviations, for
+    #example, by checking that the following sentence doesn't start with lower
     #case or numbers.
     sentencere = re.compile(r"""(?s)    #make . also match newlines
                             .*?         #anything, but match non-greedy
@@ -153,9 +153,9 @@ class Common(object):
                             \s+         #the spacing after the puntuation
                             (?=[^a-z\d])#lookahead that next part starts with caps
                             """ % sentenceend, re.VERBOSE)
-    
+
     puncdict = {}
-    """A dictionary of punctuation transformation rules that can be used by 
+    """A dictionary of punctuation transformation rules that can be used by
     punctranslate()."""
 
     ignoretests = []
@@ -169,8 +169,8 @@ class Common(object):
     _languages = {}
 
     validaccel = None
-    """Characters that can be used as accelerators (access keys) i.e. Alt+X 
-    where X is the accelerator.  These can include combining diacritics as 
+    """Characters that can be used as accelerators (access keys) i.e. Alt+X
+    where X is the accelerator.  These can include combining diacritics as
     long as they are accessible from the users keyboard in a single keystroke,
     but normally they would be at least precomposed characters. All characters,
     lower and upper, are included in the list."""
@@ -180,7 +180,7 @@ class Common(object):
     of such words."""
 
     def __new__(cls, code):
-        """This returns the language class for the given code, following a 
+        """This returns the language class for the given code, following a
         singleton like approach (only one object per language)."""
         code = code or ""
         # First see if a language object for this code already exists
@@ -206,7 +206,7 @@ class Common(object):
         return self
 
     def __repr__(self):
-        """Give a simple string representation without address information to 
+        """Give a simple string representation without address information to
         be able to store it in text for comparison later."""
         detail = ""
         if self.code:
@@ -214,7 +214,7 @@ class Common(object):
         return "<class 'translate.lang.common.Common%s'>" % detail
 
     def punctranslate(cls, text):
-        """Converts the punctuation in a string according to the rules of the 
+        """Converts the punctuation in a string according to the rules of the
         language."""
 #        TODO: look at po::escapeforpo() for performance idea
         if not text:
@@ -229,7 +229,7 @@ class Common(object):
                 text += cls.puncdict[u"..."]
             else:
                 text += u"..."
-        # Let's account for cases where a punctuation symbol plus a space is 
+        # Let's account for cases where a punctuation symbol plus a space is
         # replaced, but the space won't exist at the end of the source message.
         # As a simple improvement for messages ending in ellipses (...), we
         # test that the last character is different from the second last
@@ -259,8 +259,8 @@ class Common(object):
     length_difference = classmethod(length_difference)
 
     def alter_length(cls, text):
-        """Converts the given string by adding or removing characters as an 
-        estimation of translation length (with English assumed as source 
+        """Converts the given string by adding or removing characters as an
+        estimation of translation length (with English assumed as source
         language)."""
         def alter_it(text):
             l = len(text)

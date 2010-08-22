@@ -64,7 +64,7 @@ class TestDirectory(object):
         self.touchfiles(self.testdir, files)
         self.mkdir("bla")
         self.touchfiles(os.path.join(self.testdir, "bla"), files)
-        
+
         d = directory.Directory(self.testdir)
         filenames = [name for dirname, name in d.getfiles()]
         filenames.sort()

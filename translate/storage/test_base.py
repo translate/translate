@@ -109,13 +109,13 @@ class TestTranslationUnit:
         assert unit.target == ""
 
     def test_escapes(self):
-        """Test all sorts of characters that might go wrong in a quoting and 
+        """Test all sorts of characters that might go wrong in a quoting and
         escaping roundtrip."""
         unit = self.unit
         specials = ['Fish & chips', 'five < six', 'six > five', 'five &lt; six',
                     'Use &nbsp;', 'Use &amp;nbsp;', 'Use &amp;amp;nbsp;',
                     'A "solution"', "skop 'n bal", '"""', "'''", u'µ',
-                    '\n', '\t', '\r', '\r\n', '\\r', '\\', '\\\r'] 
+                    '\n', '\t', '\r', '\r\n', '\\r', '\\', '\\\r']
         for special in specials:
             unit.source = special
             print "unit.source:", repr(unit.source)
@@ -123,7 +123,7 @@ class TestTranslationUnit:
             assert unit.source == special
 
     def test_difficult_escapes(self):
-        """Test difficult characters that might go wrong in a quoting and 
+        """Test difficult characters that might go wrong in a quoting and
         escaping roundtrip."""
 
         unit = self.unit

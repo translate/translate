@@ -67,7 +67,7 @@ def poxliffparse(posource):
 
 def check_po_date(datestring):
     """Check the validity of a PO date.
-    
+
     The datestring must be in the format: 2007-06-08 10:08+0200
     """
 
@@ -143,7 +143,7 @@ def test_header_blank():
         header = pofile.header()
         assert header.isheader()
         assert not header.isblank()
-    
+
         headeritems = pofile.parseheader()
         assert headeritems["Project-Id-Version"] == "PACKAGE VERSION"
         assert headeritems["Report-Msgid-Bugs-To"] == ""
@@ -155,8 +155,8 @@ def test_header_blank():
         assert headeritems["Content-Type"] == "text/plain; charset=UTF-8"
         assert headeritems["Content-Transfer-Encoding"] == "8bit"
         assert headeritems["Plural-Forms"] == "nplurals=INTEGER; plural=EXPRESSION;"
-    
-    
+
+
     """test header functionality"""
     posource = r'''# other comment\n
 msgid ""
@@ -179,9 +179,9 @@ msgstr ""
 ##
 ##    poxliffsource = r'''<?xml version="1.0" encoding="utf-8"?>
 ##<xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
-## 
+##
 ##<file datatype="po" original="test.po" source-language="en-US"><body><trans-unit approved="no" id="1" restype="x-gettext-domain-header" xml:space="preserve"><source>Project-Id-Version: PACKAGE VERSION
-##Report-Msgid-Bugs-To: 
+##Report-Msgid-Bugs-To:
 ##POT-Creation-Date: 2006-03-08 17:30+0200
 ##PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE
 ##Last-Translator: FULL NAME <ph id="1">&lt;EMAIL@ADDRESS&gt;</ph>
@@ -191,7 +191,7 @@ msgstr ""
 ##Content-Transfer-Encoding: 8bit
 ##Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;
 ##</source><target>Project-Id-Version: PACKAGE VERSION
-##Report-Msgid-Bugs-To: 
+##Report-Msgid-Bugs-To:
 ##POT-Creation-Date: 2006-03-08 17:30+0200
 ##PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE
 ##Last-Translator: FULL NAME <ph id="1">&lt;EMAIL@ADDRESS&gt;</ph>

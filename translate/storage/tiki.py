@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright 2008 Mozilla Corporation, Zuza Software Foundation
 #
 # This file is part of translate.
@@ -9,7 +9,7 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 """Class that manages TikiWiki files for translation.  Tiki files are <strike>ugly and
-inconsistent</strike> formatted as a single large PHP array with several special 
+inconsistent</strike> formatted as a single large PHP array with several special
 sections identified by comments.  Example current as of 2008-12-01::
 
   <?php
@@ -42,10 +42,10 @@ sections identified by comments.  Example current as of 2008-12-01::
     "###end###"=>"###end###");
   ?>
 
-In addition there are several auto-generated //-style comments scattered through the 
+In addition there are several auto-generated //-style comments scattered through the
 page and array, some of which matter when being parsed.
 
-This has all been gleaned from the 
+This has all been gleaned from the
 U{TikiWiki source<http://tikiwiki.svn.sourceforge.net/viewvc/tikiwiki/trunk/get_strings.php?view=markup>}.
 As far as I know no detailed documentation exists for the tiki language.php files.
 
@@ -72,7 +72,7 @@ class TikiUnit(base.TranslationUnit):
     def addlocation(self, location):
         """Location is defined by the comments in the file. This function will only
         set valid locations.
-        
+
         @param location: Where the string is located in the file.  Must be a valid location.
         """
         if location in ['unused', 'untranslated', 'possiblyuntranslated', 'translated']:
@@ -143,7 +143,7 @@ class TikiStore(base.TranslationStore):
 
     def parse(self, input):
         """Parse the given input into source units.
-        
+
         @param input: the source, either a string or filehandle
         """
         if hasattr(input, "name"):

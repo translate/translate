@@ -197,7 +197,7 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
             match_flags = xapian.QueryParser.FLAG_PARTIAL
             return qp.parse_query(text, match_flags)
         elif analyzer == self.ANALYZER_EXACT:
-            # exact matching - 
+            # exact matching -
             return xapian.Query(text)
         else:
             # everything else (not partial and not exact)

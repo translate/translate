@@ -283,7 +283,7 @@ Some other text
         assert pofile.units[2].target == "M"
 
     def test_changed_labels_and_accelerators(self):
-        """test to ensure that when the template changes an entity name we can still manage the accelerators""" 
+        """test to ensure that when the template changes an entity name we can still manage the accelerators"""
         dtdtemplate = '''<!ENTITY  managecerts.caption      "Manage Certificates">
 <!ENTITY  managecerts.text         "Use the Certificate Manager to manage your personal certificates, as well as those of other people and certificate authorities.">
 <!ENTITY  managecerts.button       "Manage Certificates...">

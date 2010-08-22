@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2005, 2006 Zuza Software Foundation
-# 
+#
 # This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # translate is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -22,7 +22,7 @@
 
 """convert Gettext PO localization files to a TMX (Translation Memory eXchange) file
 
-see: http://translate.sourceforge.net/wiki/toolkit/po2tmx for examples and 
+see: http://translate.sourceforge.net/wiki/toolkit/po2tmx for examples and
 usage instructions
 """
 
@@ -45,7 +45,7 @@ class po2tmx:
             # TODO place source location in comments
             tmxfile.addtranslation(source, sourcelanguage, translation, targetlanguage)
         return str(tmxfile)
-    
+
     def convertfiles(self, inputfile, tmxfile, sourcelanguage='en', targetlanguage=None):
         """converts a .po file (possibly many) to TMX file"""
         inputstore = po.pofile(inputfile)
@@ -101,9 +101,9 @@ def main(argv=None):
     formats = {"po": ("tmx", convertpo), ("po", "tmx"): ("tmx", convertpo)}
     archiveformats = {(None, "output"): tmxmultifile, (None, "template"): tmxmultifile}
     parser = TmxOptionParser(formats, usepots=False, usetemplates=False, description=__doc__, archiveformats=archiveformats)
-    parser.add_option("-l", "--language", dest="targetlanguage", default=None, 
+    parser.add_option("-l", "--language", dest="targetlanguage", default=None,
             help="set target language code (e.g. af-ZA) [required]", metavar="LANG")
-    parser.add_option("", "--source-language", dest="sourcelanguage", default='en', 
+    parser.add_option("", "--source-language", dest="sourcelanguage", default='en',
             help="set source language code (default: en)", metavar="LANG")
     parser.passthrough.append("sourcelanguage")
     parser.passthrough.append("targetlanguage")

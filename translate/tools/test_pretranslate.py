@@ -21,7 +21,7 @@ class TestPretranslate:
         else:
             template_file = None
         output_file = wStringIO.StringIO()
-        
+
         pretranslate.pretranslate_file(input_file, output_file, template_file)
         output_file.seek(0)
         return po.pofile(output_file.read())
@@ -34,7 +34,7 @@ class TestPretranslate:
         else:
             print pofile.units[0]
             return pofile.units[0]
-        
+
     def test_pretranslatepo_blank(self):
         """checks that the pretranslatepo function is working for a simple file initialisation"""
         input_source = '''#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n''' % po.lsep
@@ -193,13 +193,13 @@ msgstr "36em"
 
     def test_merging_plurals(self):
         """ensure that we can merge plural messages"""
-        input_source = '''msgid "One"\nmsgid_plural "Two"\nmsgstr[0] ""\nmsgstr[1] ""\n''' 
+        input_source = '''msgid "One"\nmsgid_plural "Two"\nmsgstr[0] ""\nmsgstr[1] ""\n'''
         template_source = '''msgid "One"\nmsgid_plural "Two"\nmsgstr[0] "Een"\nmsgstr[1] "Twee"\nmsgstr[2] "Drie"\n'''
         newpo = self.pretranslatepo(input_source, template_source)
         print newpo
         newpounit = self.singleunit(newpo)
         assert str(newpounit) == template_source
-        
+
     def test_merging_resurect_obsolete_messages(self):
         """check that we can reuse old obsolete messages if the message comes back"""
         input_source = '''#: resurect.c\nmsgid "&About"\nmsgstr ""\n'''
@@ -211,17 +211,17 @@ msgstr "36em"
 
     def test_merging_comments(self):
         """Test that we can merge comments correctly"""
-        input_source = '''#. Don't do it!\n#: file.py:1\nmsgid "One"\nmsgstr ""\n''' 
+        input_source = '''#. Don't do it!\n#: file.py:1\nmsgid "One"\nmsgstr ""\n'''
         template_source = '''#. Don't do it!\n#: file.py:2\nmsgid "One"\nmsgstr "Een"\n'''
         poexpected = '''#. Don't do it!\n#: file.py:1\nmsgid "One"\nmsgstr "Een"\n'''
         newpo = self.pretranslatepo(input_source, template_source)
         print newpo
         newpounit = self.singleunit(newpo)
         assert str(newpounit) == poexpected
-        
+
     def test_merging_typecomments(self):
         """Test that we can merge with typecomments"""
-        input_source = '''#: file.c:1\n#, c-format\nmsgid "%d pipes"\nmsgstr ""\n''' 
+        input_source = '''#: file.c:1\n#, c-format\nmsgid "%d pipes"\nmsgstr ""\n'''
         template_source = '''#: file.c:2\nmsgid "%d pipes"\nmsgstr "%d pype"\n'''
         poexpected = '''#: file.c:1\n#, c-format\nmsgid "%d pipes"\nmsgstr "%d pype"\n'''
         newpo = self.pretranslatepo(input_source, template_source)
@@ -229,7 +229,7 @@ msgstr "36em"
         print newpounit
         assert str(newpounit) == poexpected
 
-        input_source = '''#: file.c:1\n#, c-format\nmsgid "%d computers"\nmsgstr ""\n''' 
+        input_source = '''#: file.c:1\n#, c-format\nmsgid "%d computers"\nmsgstr ""\n'''
         template_source = '''#: file.c:2\n#, c-format\nmsgid "%s computers "\nmsgstr "%s-rekenaars"\n'''
         poexpected = '''#: file.c:1\n#, fuzzy, c-format\nmsgid "%d computers"\nmsgstr "%s-rekenaars"\n'''
         newpo = self.pretranslatepo(input_source, template_source)

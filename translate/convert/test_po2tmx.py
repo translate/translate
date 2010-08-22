@@ -58,7 +58,7 @@ msgstr "Toepassings"
         print str(tmx)
         header = tmx.document.find("header")
         assert header.get("srclang") == "xh"
-        
+
     def test_targetlanguage(self):
         minipo = 'msgid "String"\nmsgstr "String"\n'
         tmx = self.po2tmx(minipo, targetlanguage="xh")
@@ -67,7 +67,7 @@ msgstr "Toepassings"
         tuv = tmx.document.findall(".//%s" % tmx.namespaced("tuv"))[1]
         #tag[0] will be the source, we want the target tuv
         assert tuv.get("{%s}lang" % XML_NS) == "xh"
-        
+
     def test_multiline(self):
         """Test multiline po entry"""
         minipo = r'''msgid "First part "
@@ -79,7 +79,7 @@ msgstr "Eerste deel "
         print str(tmx)
         assert tmx.translate('First part and extra') == 'Eerste deel en ekstra'
 
-        
+
     def test_escapednewlines(self):
         """Test the escaping of newlines"""
         minipo = r'''msgid "First line\nSecond line"
