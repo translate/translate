@@ -95,8 +95,8 @@ class TerminologyExtractor(object):
 
         actions = {'+': frozenset(), ':': frozenset(['skip']),
                    '<': frozenset(['phrase']), '=': frozenset(['word']),
-                   '>': frozenset(['word','skip']),
-                   '@': frozenset(['word','phrase'])}
+                   '>': frozenset(['word', 'skip']),
+                   '@': frozenset(['word', 'phrase'])}
 
         stopfile = open(self.stopfile, "r")
         line = 0
@@ -164,7 +164,7 @@ class TerminologyExtractor(object):
 
     def processunits(self, units, fullinputpath):
         sourcelang = lang_factory.getlanguage(self.sourcelanguage)
-        rematchignore = frozenset(('word','phrase'))
+        rematchignore = frozenset(('word', 'phrase'))
         defaultignore = frozenset()
         for unit in units:
             self.units += 1
@@ -410,7 +410,7 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
             else:
                 inputfiles = [options.input]
         if os.path.isdir(options.output):
-            options.output = os.path.join(options.output,"pootle-terminology.pot")
+            options.output = os.path.join(options.output, "pootle-terminology.pot")
 
         self.initprogressbar(inputfiles, options)
         for inputpath in inputfiles:
@@ -453,7 +453,7 @@ def preserve_case_option(option, opt_str, value, parser):
     parser.values.ignorecase = parser.values.foldtitle = False
 
 def main():
-    formats = {"po":("po", None), "pot": ("pot", None), None:("po", None)}
+    formats = {"po": ("po", None), "pot": ("pot", None), None: ("po", None)}
     parser = TerminologyOptionParser(formats)
 
     parser.add_option("-u", "--update", type="string", dest="update",

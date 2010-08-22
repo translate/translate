@@ -64,7 +64,7 @@ def runclean(inputfile, outputfile, templatefile):
 
 def main():
     from translate.convert import convert
-    formats = {"po":("po", runclean), "xlf":("xlf", runclean), None:("po", runclean)}
+    formats = {"po": ("po", runclean), "xlf": ("xlf", runclean), None: ("po", runclean)}
     parser = convert.ConvertOptionParser(formats, usetemplates=False, description=__doc__)
     parser.run()
 

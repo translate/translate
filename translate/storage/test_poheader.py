@@ -37,7 +37,7 @@ def test_update():
     assert len(d) == 1
     assert d['Test'] == 'hello'
     # do we really update ?
-    d = poheader.update({'Test':'hello'}, add=True, Test='World')
+    d = poheader.update({'Test': 'hello'}, add=True, Test='World')
     assert len(d) == 1
     assert d['Test'] == 'World'
     # does key rewrite work ?

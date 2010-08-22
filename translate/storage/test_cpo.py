@@ -23,7 +23,7 @@ class TestCPOUnit(test_po.TestPOUnit):
         assert unit.target.strings == ["Koei", "Koeie"]
         assert unit.target == "Koei"
 
-        unit.target = {0:"Koei", 3:"Koeie"}
+        unit.target = {0: "Koei", 3: "Koeie"}
         assert isinstance(unit.target, multistring)
         assert unit.target.strings == ["Koei", "Koeie"]
         assert unit.target == "Koei"

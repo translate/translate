@@ -133,7 +133,7 @@ def convertoo(inputfile, outputfile, templates, pot=False, sourcelanguage=None, 
 
 def main(argv=None):
     from translate.convert import convert
-    formats = {"oo":("xlf", convertoo), "sdf":("xlf", convertoo)}
+    formats = {"oo": ("xlf", convertoo), "sdf": ("xlf", convertoo)}
     # always treat the input as an archive unless it is a directory
     archiveformats = {(None, "input"): oo.oomultifile}
     parser = convert.ArchiveConvertOptionParser(formats, usepots=False, description=__doc__, archiveformats=archiveformats)

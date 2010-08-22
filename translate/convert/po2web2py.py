@@ -61,7 +61,7 @@ def main(argv=None):
     from translate.misc import stdiotell
     import sys
     sys.stdout = stdiotell.StdIOWrapper(sys.stdout)
-    formats = {("po", "py"):("py", convertpy), ("po"):("py", convertpy)}
+    formats = {("po", "py"): ("py", convertpy), ("po"): ("py", convertpy)}
     parser = convert.ConvertOptionParser(formats, usetemplates=False, description=__doc__)
     parser.add_fuzzy_option()
     parser.run(argv)

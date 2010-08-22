@@ -75,7 +75,7 @@ def makekey(ookey, long_keys):
     @return: unique ascii identifier
     """
     project, sourcefile, resourcetype, groupid, localid, platform = ookey
-    sourcefile = sourcefile.replace('\\','/')
+    sourcefile = sourcefile.replace('\\', '/')
     if long_keys:
         sourcebase = os.path.join(project, sourcefile)
     else:

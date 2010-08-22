@@ -51,10 +51,10 @@ class dtd2po:
         for commenttype, comment in thedtd.comments:
             # handle groups
             if (commenttype == "locgroupstart"):
-                groupcomment = comment.replace('BEGIN','GROUP')
+                groupcomment = comment.replace('BEGIN', 'GROUP')
                 self.currentgroup = groupcomment
             elif (commenttype == "locgroupend"):
-                groupcomment = comment.replace('END','GROUP')
+                groupcomment = comment.replace('END', 'GROUP')
                 self.currentgroup = None
             # handle automatic comment
             if commenttype == "automaticcomment":
@@ -103,7 +103,7 @@ class dtd2po:
             # if this is a localization note
             if commenttype == 'locnote':
                 # parse the locnote into the entity and the actual note
-                typeend = quote.findend(locnote,'LOCALIZATION NOTE')
+                typeend = quote.findend(locnote, 'LOCALIZATION NOTE')
                 # parse the id
                 idstart = locnote.find('(', typeend)
                 if idstart == -1:

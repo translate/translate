@@ -177,7 +177,7 @@ class dtdunit(base.TranslationUnit):
                     # now work out the type of comment, and save it (remember we're not in the comment yet)
                     (comment, dummy) = quote.extract(line, "<!--", "-->", None, 0)
                     if comment.find('LOCALIZATION NOTE') != -1:
-                        l = quote.findend(comment,'LOCALIZATION NOTE')
+                        l = quote.findend(comment, 'LOCALIZATION NOTE')
                         while (comment[l] == ' '):
                             l += 1
                         if comment.find('FILE', l) == l:
@@ -245,7 +245,7 @@ class dtdunit(base.TranslationUnit):
             if self.inentity:
                 if self.entitypart == "start":
                     # the entity definition
-                    e = quote.findend(line,'<!ENTITY')
+                    e = quote.findend(line, '<!ENTITY')
                     line = line[e:]
                     self.entitypart = "name"
                     self.entitytype = "internal"

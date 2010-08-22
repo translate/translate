@@ -145,7 +145,7 @@ class XpiFile(ZipFileCatcher):
         self.findlangreg()
         self.jarprefixes = self.findjarprefixes()
         self.reverseprefixes = dict([
-            (prefix,jarfilename) for jarfilename, prefix in self.jarprefixes.iteritems() if prefix])
+            (prefix, jarfilename) for jarfilename, prefix in self.jarprefixes.iteritems() if prefix])
         self.reverseprefixes["package/"] = None
 
     def iterjars(self):

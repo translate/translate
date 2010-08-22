@@ -305,7 +305,7 @@ def convertpo(inputfile, outputfile, templatefile, format=None, rewritestyle=Non
 
 def main():
     from translate.convert import convert
-    formats = {"po":("po", convertpo), "pot":("po", convertpo), "xlf":("xlf", convertpo)}
+    formats = {"po": ("po", convertpo), "pot": ("po", convertpo), "xlf": ("xlf", convertpo)}
     parser = convert.ConvertOptionParser(formats, description=__doc__)
     # TODO: add documentation on format strings...
     parser.add_option("-f", "--format", dest="format", default="",

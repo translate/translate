@@ -104,7 +104,7 @@ class po2dtd:
         entities = inputunit.getlocations()
         if len(entities) > 1:
             # don't yet handle multiple entities
-            dtdunit.comments.append(("conversionnote",'<!-- CONVERSION NOTE - multiple entities -->\n'))
+            dtdunit.comments.append(("conversionnote", '<!-- CONVERSION NOTE - multiple entities -->\n'))
             dtdunit.entity = entities[0]
         elif len(entities) == 1:
             dtdunit.entity = entities[0]

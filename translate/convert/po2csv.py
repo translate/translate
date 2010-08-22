@@ -78,7 +78,7 @@ def convertcsv(inputfile, outputfile, templatefile, columnorder=None):
 
 def main(argv=None):
     from translate.convert import convert
-    formats = {"po":("csv", convertcsv)}
+    formats = {"po": ("csv", convertcsv)}
     parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
     parser.add_option("", "--columnorder", dest="columnorder", default=None,
         help="specify the order and position of columns (location,source,target)")

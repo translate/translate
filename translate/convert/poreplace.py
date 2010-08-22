@@ -52,7 +52,7 @@ def main(converterclass, argv=None):
     # handle command line options
     from translate.convert import convert
     replacer = converterclass()
-    formats = {"po":("po", replacer.convertpo), "pot":("pot", replacer.convertpo)}
+    formats = {"po": ("po", replacer.convertpo), "pot": ("pot", replacer.convertpo)}
     parser = convert.ConvertOptionParser(formats, usepots=True)
     parser.run(argv)
 

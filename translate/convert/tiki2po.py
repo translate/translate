@@ -77,7 +77,7 @@ def main(argv=None):
     from translate.misc import stdiotell
     sys.stdout = stdiotell.StdIOWrapper(sys.stdout)
 
-    formats = {"php":("po", converttiki)}
+    formats = {"php": ("po", converttiki)}
 
     parser = convert.ConvertOptionParser(formats, description=__doc__)
     parser.add_option("", "--include-unused", dest="includeunused", action="store_true", default=False, help="Include strings in the unused section")

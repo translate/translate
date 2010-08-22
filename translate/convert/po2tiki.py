@@ -70,7 +70,7 @@ def main(argv=None):
     from translate.misc import stdiotell
     sys.stdout = stdiotell.StdIOWrapper(sys.stdout)
 
-    formats = {"po":("tiki", convertpo)}
+    formats = {"po": ("tiki", convertpo)}
 
     parser = convert.ConvertOptionParser(formats, description=__doc__)
     parser.run(argv)

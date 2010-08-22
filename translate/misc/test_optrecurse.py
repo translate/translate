@@ -6,7 +6,7 @@ import os
 class TestRecursiveOptionParser:
 
     def __init__(self):
-        self.parser = optrecurse.RecursiveOptionParser({"txt":("po", None)})
+        self.parser = optrecurse.RecursiveOptionParser({"txt": ("po", None)})
 
     def test_splitext(self):
         """test the L{optrecurse.splitext} function"""

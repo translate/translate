@@ -180,7 +180,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
             open(fulloutputpath, "w").write(str(conflictfile))
 
 def main():
-    formats = {"po":("po", None), None:("po", None)}
+    formats = {"po": ("po", None), None: ("po", None)}
     parser = ConflictOptionParser(formats)
     parser.add_option("-I", "--ignore-case", dest="ignorecase",
         action="store_true", default=False, help="ignore case distinctions")

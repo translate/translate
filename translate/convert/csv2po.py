@@ -36,7 +36,7 @@ def replacestrings(source, *pairs):
     return source
 
 def quotecsvstr(source):
-    return '"' + replacestrings(source, ('\\"','"'), ('"','\\"'), ("\\\\'", "\\'"), ('\\\\n', '\\n')) + '"'
+    return '"' + replacestrings(source, ('\\"', '"'), ('"', '\\"'), ("\\\\'", "\\'"), ('\\\\n', '\\n')) + '"'
 
 def simplify(string):
     return filter(type(string).isalnum, string)

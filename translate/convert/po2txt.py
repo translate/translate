@@ -87,7 +87,7 @@ def main(argv=None):
     from translate.misc import stdiotell
     import sys
     sys.stdout = stdiotell.StdIOWrapper(sys.stdout)
-    formats = {("po", "txt"):("txt", converttxt), ("po"):("txt", converttxt), ("xlf", "txt"):("txt", converttxt), ("xlf"):("txt", converttxt)}
+    formats = {("po", "txt"): ("txt", converttxt), ("po"): ("txt", converttxt), ("xlf", "txt"): ("txt", converttxt), ("xlf"): ("txt", converttxt)}
     parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
     parser.add_option("", "--encoding", dest="encoding", default='utf-8', type="string",
             help="The encoding of the template file (default: UTF-8)")

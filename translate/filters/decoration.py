@@ -97,7 +97,7 @@ def isvalidaccelerator(accelerator, acceptlist=None):
         return False
     else:
         # Old code path - ensures that we don't get a large number of regressions
-        accelerator = accelerator.replace("_","")
+        accelerator = accelerator.replace("_", "")
         if accelerator in u"-?":
             return True
         if not accelerator.isalnum():
@@ -176,7 +176,7 @@ def findmarkedvariables(str1, startmarker, endmarker, ignorelist=[]):
                 variable = str1[currentpos:endmatch]
                 currentpos = endmatch + len(endmarker)
             if variable is not None and variable not in ignorelist:
-                if not variable or variable.replace("_","").replace(".","").isalnum():
+                if not variable or variable.replace("_", "").replace(".", "").isalnum():
                     variables.append((startmatch, variable))
     return variables
 

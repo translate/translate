@@ -86,7 +86,7 @@ def main(argv=None):
     """Converts from Python .po to PHP .po"""
     from translate.convert import convert
 
-    formats = {"po":("po", convertpy2php)}
+    formats = {"po": ("po", convertpy2php)}
     parser = convert.ConvertOptionParser(formats, description=__doc__)
     parser.run(argv)
 

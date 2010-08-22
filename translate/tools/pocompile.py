@@ -72,7 +72,7 @@ def convertmo(inputfile, outputfile, templatefile, includefuzzy=False):
 
 def main():
     from translate.convert import convert
-    formats = {"po":("mo", convertmo), "xlf":("mo", convertmo)}
+    formats = {"po": ("mo", convertmo), "xlf": ("mo", convertmo)}
     parser = convert.ConvertOptionParser(formats, usepots=False, description=__doc__)
     parser.add_fuzzy_option()
     parser.run()

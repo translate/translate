@@ -80,7 +80,7 @@ def convertts(inputfile, outputfile, templates, duplicatestyle="msgctxt"):
 
 def main(argv=None):
     from translate.convert import convert
-    formats = {"ts":("po", convertts)}
+    formats = {"ts": ("po", convertts)}
     parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
     parser.add_duplicates_option()
     parser.run(argv)

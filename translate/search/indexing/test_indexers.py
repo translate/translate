@@ -141,16 +141,16 @@ def test_partial_text_matching():
     # this query should return three matches (disabled partial matching)
     q_plain_partial1 = new_db.make_query("bar",
             analyzer=(new_db.analyzer ^ new_db.ANALYZER_PARTIAL))
-    r_plain_partial1 = new_db.get_query_result(q_plain_partial1).get_matches(0,10)
+    r_plain_partial1 = new_db.get_query_result(q_plain_partial1).get_matches(0, 10)
     assert r_plain_partial1[0] == 2
     # this query should return three matches (wildcard works)
     q_plain_partial2 = new_db.make_query("bar", analyzer=new_db.ANALYZER_PARTIAL)
-    r_plain_partial2 = new_db.get_query_result(q_plain_partial2).get_matches(0,10)
+    r_plain_partial2 = new_db.get_query_result(q_plain_partial2).get_matches(0, 10)
     assert r_plain_partial2[0] == 3
     # return two matches (the wildcard is ignored without PARTIAL)
     q_plain_partial3 = new_db.make_query("bar*",
             analyzer=(new_db.analyzer ^ new_db.ANALYZER_PARTIAL))
-    r_plain_partial3 = new_db.get_query_result(q_plain_partial3).get_matches(0,10)
+    r_plain_partial3 = new_db.get_query_result(q_plain_partial3).get_matches(0, 10)
     assert r_plain_partial3[0] == 2
     # partial matching at the start of the string
     # TODO: enable this as soon, as partial matching works at the beginning of text
@@ -172,27 +172,27 @@ def test_field_matching():
     create_example_content(new_db)
     # do a field search with a tuple argument
     q_field1 = new_db.make_query(("fname1", "foo_field1"))
-    r_field1 = new_db.get_query_result(q_field1).get_matches(0,10)
+    r_field1 = new_db.get_query_result(q_field1).get_matches(0, 10)
     assert r_field1[0] == 1
     # do a field search with a dict argument
-    q_field2 = new_db.make_query({"fname1":"bar_field1"})
-    r_field2 = new_db.get_query_result(q_field2).get_matches(0,10)
+    q_field2 = new_db.make_query({"fname1": "bar_field1"})
+    r_field2 = new_db.get_query_result(q_field2).get_matches(0, 10)
     assert r_field2[0] == 1
     # do an incomplete field search with a dict argument - should fail
-    q_field3 = new_db.make_query({"fname2":"foo_field"})
-    r_field3 = new_db.get_query_result(q_field3).get_matches(0,10)
+    q_field3 = new_db.make_query({"fname2": "foo_field"})
+    r_field3 = new_db.get_query_result(q_field3).get_matches(0, 10)
     assert r_field3[0] == 0
     # do an AND field search with a dict argument
-    q_field4 = new_db.make_query({"fname1":"foo_field1", "fname2":"foo_field2"}, require_all=True)
-    r_field4 = new_db.get_query_result(q_field4).get_matches(0,10)
+    q_field4 = new_db.make_query({"fname1": "foo_field1", "fname2": "foo_field2"}, require_all=True)
+    r_field4 = new_db.get_query_result(q_field4).get_matches(0, 10)
     assert r_field4[0] == 1
     # do an OR field search with a dict argument
-    q_field5 = new_db.make_query({"fname1":"foo_field1", "fname2":"foo_field2"}, require_all=False)
-    r_field5 = new_db.get_query_result(q_field5).get_matches(0,10)
+    q_field5 = new_db.make_query({"fname1": "foo_field1", "fname2": "foo_field2"}, require_all=False)
+    r_field5 = new_db.get_query_result(q_field5).get_matches(0, 10)
     assert r_field5[0] == 2
     # do an incomplete field search with a partial field analyzer
-    q_field6 = new_db.make_query({"fname1":"foo_field"}, analyzer=new_db.ANALYZER_PARTIAL)
-    r_field6 = new_db.get_query_result(q_field6).get_matches(0,10)
+    q_field6 = new_db.make_query({"fname1": "foo_field"}, analyzer=new_db.ANALYZER_PARTIAL)
+    r_field6 = new_db.get_query_result(q_field6).get_matches(0, 10)
     assert r_field6[0] == 1
     # clean up
     clean_database()
@@ -205,22 +205,22 @@ def test_field_analyzers():
     new_db = _get_indexer(DATABASE)
     create_example_content(new_db)
     # do an incomplete field search with partial analyzer (configured for this field)
-    q_field1 = new_db.make_query({"fname1":"bar_field"})
-    r_field1 = new_db.get_query_result(q_field1).get_matches(0,10)
+    q_field1 = new_db.make_query({"fname1": "bar_field"})
+    r_field1 = new_db.get_query_result(q_field1).get_matches(0, 10)
     assert r_field1[0] == 1
     # check the get/set field analyzer functions
     old_analyzer = new_db.get_field_analyzers("fname1")
-    new_db.set_field_analyzers({"fname1":new_db.ANALYZER_EXACT})
+    new_db.set_field_analyzers({"fname1": new_db.ANALYZER_EXACT})
     assert new_db.get_field_analyzers("fname1") == new_db.ANALYZER_EXACT
-    new_db.set_field_analyzers({"fname1":new_db.ANALYZER_PARTIAL})
+    new_db.set_field_analyzers({"fname1": new_db.ANALYZER_PARTIAL})
     assert new_db.get_field_analyzers("fname1") == new_db.ANALYZER_PARTIAL
     # restore previous setting
-    new_db.set_field_analyzers({"fname1":old_analyzer})
+    new_db.set_field_analyzers({"fname1": old_analyzer})
     # check if ANALYZER_TOKENIZE is the default
     assert (new_db.get_field_analyzers("thisFieldDoesNotExist") & new_db.ANALYZER_TOKENIZE) > 0
     # do an incomplete field search - now we use the partial analyzer
-    q_field2 = new_db.make_query({"fname1":"bar_field"}, analyzer=new_db.ANALYZER_PARTIAL)
-    r_field2 = new_db.get_query_result(q_field2).get_matches(0,10)
+    q_field2 = new_db.make_query({"fname1": "bar_field"}, analyzer=new_db.ANALYZER_PARTIAL)
+    r_field2 = new_db.get_query_result(q_field2).get_matches(0, 10)
     assert r_field2[0] == 1
     # clean up
     clean_database()
@@ -235,17 +235,17 @@ def test_and_queries():
     # do an AND query (partial matching disabled)
     q_and1 = new_db.make_query("foo bar",
             analyzer=(new_db.analyzer ^ new_db.ANALYZER_PARTIAL))
-    r_and1 = new_db.get_query_result(q_and1).get_matches(0,10)
+    r_and1 = new_db.get_query_result(q_and1).get_matches(0, 10)
     assert r_and1[0] == 2
     # do the same AND query in a different way
     q_and2 = new_db.make_query(["foo", "bar"],
             analyzer=(new_db.analyzer ^ new_db.ANALYZER_PARTIAL))
-    r_and2 = new_db.get_query_result(q_and2).get_matches(0,10)
+    r_and2 = new_db.get_query_result(q_and2).get_matches(0, 10)
     assert r_and2[0] == 2
     # do an AND query without results
     q_and3 = new_db.make_query(["HELO", "bar", "med"],
             analyzer=(new_db.analyzer ^ new_db.ANALYZER_PARTIAL))
-    r_and3 = new_db.get_query_result(q_and3).get_matches(0,10)
+    r_and3 = new_db.get_query_result(q_and3).get_matches(0, 10)
     assert r_and3[0] == 0
     # clean up
     clean_database()
@@ -259,15 +259,15 @@ def test_or_queries():
     create_example_content(new_db)
     # do an OR query
     q_or1 = new_db.make_query("foo bar", require_all=False)
-    r_or1 = new_db.get_query_result(q_or1).get_matches(0,10)
+    r_or1 = new_db.get_query_result(q_or1).get_matches(0, 10)
     assert r_or1[0] == 4
     # do the same or query in a different way
     q_or2 = new_db.make_query(["foo", "bar"], require_all=False)
-    r_or2 = new_db.get_query_result(q_or2).get_matches(0,10)
+    r_or2 = new_db.get_query_result(q_or2).get_matches(0, 10)
     assert r_or2[0] == r_or1[0]
     # do an OR query with lots of results
     q_or3 = new_db.make_query(["HELO", "bar", "med"], require_all=False)
-    r_or3 = new_db.get_query_result(q_or3).get_matches(0,10)
+    r_or3 = new_db.get_query_result(q_or3).get_matches(0, 10)
     assert r_or3[0] == 5
     # clean up
     clean_database()
@@ -282,20 +282,20 @@ def test_lower_upper_case():
     # use upper case search terms for lower case indexed terms
     q_case1 = new_db.make_query("BAR",
             analyzer=(new_db.analyzer ^ new_db.ANALYZER_PARTIAL))
-    r_case1 = new_db.get_query_result(q_case1).get_matches(0,10)
+    r_case1 = new_db.get_query_result(q_case1).get_matches(0, 10)
     assert r_case1[0] == 2
     # use lower case search terms for upper case indexed terms
     q_case2 = new_db.make_query("helo")
-    r_case2 = new_db.get_query_result(q_case2).get_matches(0,10)
+    r_case2 = new_db.get_query_result(q_case2).get_matches(0, 10)
     assert r_case2[0] == 3
     # use lower case search terms for lower case indexed terms
     q_case3 = new_db.make_query("bar",
             analyzer=(new_db.analyzer ^ new_db.ANALYZER_PARTIAL))
-    r_case3 = new_db.get_query_result(q_case3).get_matches(0,10)
+    r_case3 = new_db.get_query_result(q_case3).get_matches(0, 10)
     assert r_case3[0] == 2
     # use upper case search terms for upper case indexed terms
     q_case4 = new_db.make_query("HELO")
-    r_case4 = new_db.get_query_result(q_case4).get_matches(0,10)
+    r_case4 = new_db.get_query_result(q_case4).get_matches(0, 10)
     assert r_case4[0] == 3
     # clean up
     clean_database()
@@ -309,20 +309,20 @@ def test_tokenizing():
     create_example_content(new_db)
     # check if the plain term was tokenized
     q_token1 = new_db.make_query("rfv")
-    r_token1 = new_db.get_query_result(q_token1).get_matches(0,10)
+    r_token1 = new_db.get_query_result(q_token1).get_matches(0, 10)
     assert r_token1[0] == 2
     # check if the field term was tokenized
-    q_token2 = new_db.make_query({"fname1":"wsx"})
-    r_token2 = new_db.get_query_result(q_token2).get_matches(0,10)
+    q_token2 = new_db.make_query({"fname1": "wsx"})
+    r_token2 = new_db.get_query_result(q_token2).get_matches(0, 10)
     assert r_token2[0] == 1
     # check that the other field term was not tokenized
-    q_token3 = new_db.make_query({"fname2":"wsx"})
-    r_token3 = new_db.get_query_result(q_token3).get_matches(0,10)
+    q_token3 = new_db.make_query({"fname2": "wsx"})
+    r_token3 = new_db.get_query_result(q_token3).get_matches(0, 10)
     assert r_token3[0] == 0
     # check that the other field term was not tokenized
-    q_token4 = new_db.make_query({"fname2":"foo-bar.po"})
+    q_token4 = new_db.make_query({"fname2": "foo-bar.po"})
     #q_token4 = new_db.make_query("poo-foo.po")
-    r_token4 = new_db.get_query_result(q_token4).get_matches(0,10)
+    r_token4 = new_db.get_query_result(q_token4).get_matches(0, 10)
     # problem can be fixed by adding "TOKENIZE" to the field before populating the database -> this essentially splits the document term into pieces
     assert r_token4[0] == 1
     # clean up
@@ -362,11 +362,11 @@ def test_multiple_terms():
     # check for the first item ("foo")
     q_multiple1 = new_db.make_query({"multiple": "f"},
             analyzer=new_db.ANALYZER_PARTIAL)
-    r_multiple1 = new_db.get_query_result(q_multiple1).get_matches(0,10)
+    r_multiple1 = new_db.get_query_result(q_multiple1).get_matches(0, 10)
     assert r_multiple1[0] == 1
     # check for the second item ("bar")
     q_multiple2 = new_db.make_query({"multiple": "bar"})
-    r_multiple2 = new_db.get_query_result(q_multiple2).get_matches(0,10)
+    r_multiple2 = new_db.get_query_result(q_multiple2).get_matches(0, 10)
     assert r_multiple2[0] == 1
     # clean up
     clean_database()

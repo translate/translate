@@ -65,7 +65,7 @@ class SimpleParser:
         self.includewhitespacetokens = includewhitespacetokens
         self.standardtokenizers = [self.stringtokenize, self.removewhitespace, self.separatetokens]
         self.quotechars = ('"', "'")
-        self.endquotechars = {'"':'"', "'":"'"}
+        self.endquotechars = {'"': '"', "'": "'"}
         self.stringescaping = 1
 
     def stringtokenize(self, text):
