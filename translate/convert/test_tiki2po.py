@@ -21,7 +21,7 @@ class TestTiki2Po:
         outputfile = wStringIO.StringIO()
         tiki2po.converttiki(inputfile, outputfile)
 
-        output =  outputfile.getvalue()
+        output = outputfile.getvalue()
 
         assert '#: translated' in output
         assert 'msgid "zero_source"' in output
@@ -37,7 +37,7 @@ class TestTiki2Po:
         outputfile = wStringIO.StringIO()
         tiki2po.converttiki(inputfile, outputfile, includeunused=True)
 
-        output =  outputfile.getvalue()
+        output = outputfile.getvalue()
 
         assert '#: translated' in output
         assert 'msgid "zero_source"' in output

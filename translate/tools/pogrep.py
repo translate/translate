@@ -136,7 +136,7 @@ class GrepFilter:
             # which has a new meaning now.
             self.search_source = ('source' in searchparts) or ('msgid' in searchparts)
             self.search_target = ('target' in searchparts) or ('msgstr' in searchparts)
-            self.search_notes =  ('notes' in searchparts) or ('comment' in searchparts)
+            self.search_notes = ('notes' in searchparts) or ('comment' in searchparts)
             self.search_locations = 'locations' in searchparts
         else:
             self.search_source = True

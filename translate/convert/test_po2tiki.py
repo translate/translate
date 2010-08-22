@@ -24,7 +24,7 @@ msgstr "one_target"
         outputfile = wStringIO.StringIO()
         po2tiki.convertpo(inputfile, outputfile)
 
-        output =  outputfile.getvalue()
+        output = outputfile.getvalue()
 
         assert '"one_source" => "one_target",' in output
         assert '"zero_source" => "zero_target",' in output

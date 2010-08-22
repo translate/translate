@@ -54,7 +54,7 @@ def make_unknown(klass, node, xml_space="preserve"):
     assert klass is xliff.UnknownXML
 
     sub = xml_to_strelem(node, xml_space).sub
-    id =  node.get('id',  None)
+    id = node.get('id',  None)
     rid = node.get('rid', None)
     xid = node.get('xid', None)
 

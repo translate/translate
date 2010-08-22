@@ -114,7 +114,7 @@ class TestPhpFile(test_monolingual.TestMonolingualStore):
 
     def test_spaces_in_name(self):
         """check that spaces in the array name doesn't throw us off"""
-        phpsource =  """$lang[ 'mediaselect' ] = 'Bestand selectie';"""
+        phpsource = """$lang[ 'mediaselect' ] = 'Bestand selectie';"""
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 1
         phpunit = phpfile.units[0]

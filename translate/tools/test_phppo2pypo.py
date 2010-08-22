@@ -42,7 +42,7 @@ msgstr[1] "I have %1$s apples"
         """
         outputfile = wStringIO.StringIO()
         phppo2pypo.convertphp2py(inputfile, outputfile)
-        output =  outputfile.getvalue()
+        output = outputfile.getvalue()
 
         assert 'msgid "I have {0} apple"' in output
         assert 'msgid_plural "I have {0} apples"' in output
