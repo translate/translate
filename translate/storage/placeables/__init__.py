@@ -45,7 +45,7 @@ The placeables model follows the XLIFF standard's list of placeables.
 Please refer to the XLIFF specification to get a better understanding.
 """
 
-from translate.storage.placebles import base, interfaces, general, xliff
+from translate.storage.placeables import base, interfaces, general, xliff
 from translate.storage.placeable.base import *
 from translate.storage.placeable.base import __all__ as all_your_base
 from translate.storage.placeable.parse import parse
