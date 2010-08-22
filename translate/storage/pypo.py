@@ -21,11 +21,11 @@
 """classes that hold units of .po files (pounit) or entire files (pofile)
 gettext-style .po (or .pot) files are used in translations for KDE et al (see kbabel)"""
 
+from __future__ import generators
 import copy
 import cStringIO
 import re
 import urllib
-from __future__ import generators
 
 from translate.lang import data
 from translate.misc.multistring import multistring
