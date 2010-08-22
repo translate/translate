@@ -57,7 +57,7 @@ def make_unknown(klass, node, xml_space="preserve"):
     assert klass is xliff.UnknownXML
 
     sub = xml_to_strelem(node, xml_space).sub
-    id = node.get('id',  None)
+    id = node.get('id', None)
     rid = node.get('rid', None)
     xid = node.get('xid', None)
 
@@ -65,14 +65,14 @@ def make_unknown(klass, node, xml_space="preserve"):
 
 _class_dictionary = {
     #u'bpt': (xliff.Bpt, not_yet_implemented),
-    u'bx': (xliff.Bx,  make_empty_replacement_placeable),
+    u'bx': (xliff.Bx, make_empty_replacement_placeable),
     #u'ept': (xliff.Ept, not_yet_implemented),
-    u'ex': (xliff.Ex,  make_empty_replacement_placeable),
-    u'g': (xliff.G,   make_g_placeable),
-    #u'it': (xliff.It,  not_yet_implemented),
-    #u'ph': (xliff.Ph,  not_yet_implemented),
+    u'ex': (xliff.Ex, make_empty_replacement_placeable),
+    u'g': (xliff.G, make_g_placeable),
+    #u'it': (xliff.It, not_yet_implemented),
+    #u'ph': (xliff.Ph, not_yet_implemented),
     #u'sub': (xliff.Sub, not_yet_implemented),
-    u'x': (xliff.X,   make_empty_replacement_placeable),
+    u'x': (xliff.X, make_empty_replacement_placeable),
 }
 
 
@@ -152,15 +152,15 @@ _placeable_dictionary = {
     xliff.Sub: lambda placeable: placeable_as_dom_node(placeable, 'sub'),
     xliff.X: lambda placeable: placeable_as_dom_node(placeable, 'x'),
     xliff.UnknownXML: unknown_placeable_as_dom_node,
-    base.Bpt:  lambda placeable: placeable_as_dom_node(placeable, 'bpt'),
-    base.Bx:  lambda placeable: placeable_as_dom_node(placeable, 'bx'),
-    base.Ept:  lambda placeable: placeable_as_dom_node(placeable, 'ept'),
-    base.Ex:  lambda placeable: placeable_as_dom_node(placeable, 'ex'),
-    base.G:  lambda placeable: placeable_as_dom_node(placeable, 'g'),
-    base.It:  lambda placeable: placeable_as_dom_node(placeable, 'it'),
-    base.Ph:  lambda placeable: placeable_as_dom_node(placeable, 'ph'),
-    base.Sub:  lambda placeable: placeable_as_dom_node(placeable, 'sub'),
-    base.X:  lambda placeable: placeable_as_dom_node(placeable, 'x'),
+    base.Bpt: lambda placeable: placeable_as_dom_node(placeable, 'bpt'),
+    base.Bx: lambda placeable: placeable_as_dom_node(placeable, 'bx'),
+    base.Ept: lambda placeable: placeable_as_dom_node(placeable, 'ept'),
+    base.Ex: lambda placeable: placeable_as_dom_node(placeable, 'ex'),
+    base.G: lambda placeable: placeable_as_dom_node(placeable, 'g'),
+    base.It: lambda placeable: placeable_as_dom_node(placeable, 'it'),
+    base.Ph: lambda placeable: placeable_as_dom_node(placeable, 'ph'),
+    base.Sub: lambda placeable: placeable_as_dom_node(placeable, 'sub'),
+    base.X: lambda placeable: placeable_as_dom_node(placeable, 'x'),
 }
 
 

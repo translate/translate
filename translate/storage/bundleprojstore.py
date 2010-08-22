@@ -159,8 +159,8 @@ class BundleProjectStore(ProjectStore):
         self._load_settings()
 
         append_section = {
-            'sources':    self._sourcefiles.append,
-            'targets':    self._targetfiles.append,
+            'sources': self._sourcefiles.append,
+            'targets': self._targetfiles.append,
             'transfiles': self._transfiles.append,
         }
         for section in ('sources', 'targets', 'transfiles'):

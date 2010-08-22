@@ -125,12 +125,12 @@ def to_xliff_placeables(tree):
     classmap = {
         base.Bpt: Bpt,
         base.Ept: Ept,
-        base.Ph:  Ph,
-        base.It:  It,
-        base.G:   G,
-        base.Bx:  Bx,
-        base.Ex:  Ex,
-        base.X:   X,
+        base.Ph: Ph,
+        base.It: It,
+        base.G: G,
+        base.Bx: Bx,
+        base.Ex: Ex,
+        base.X: X,
         base.Sub: Sub,
     }
     for baseclass, xliffclass in classmap.items():

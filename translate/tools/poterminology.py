@@ -126,7 +126,7 @@ class TerminologyExtractor(object):
                     self.stopwords[stopline[1:-1]] = actions[stoptype]
         except KeyError, character:
             logging.warning("%s line %d - bad stopword entry starts with", (self.stopfile, line))
-            logging.warning("%s line %d all lines after error ignored",  (self.stopfile, line + 1))
+            logging.warning("%s line %d all lines after error ignored", (self.stopfile, line + 1))
         stopfile.close()
 
     def clean(self, string):

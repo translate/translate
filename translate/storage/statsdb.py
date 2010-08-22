@@ -218,7 +218,7 @@ class FileTotals(object):
         self.cur.execute("""
             DELETE FROM filetotals
             WHERE fileid=?;
-        """,  (fileid,))
+        """, (fileid,))
 
 
 def emptyfiletotals():

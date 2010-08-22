@@ -59,8 +59,8 @@ def translate_odf(template, input_file):
             return (filename, get_tree())
 
         return dict([extract_unit_tree('content.xml', 'document-content'),
-                     extract_unit_tree('meta.xml',    'document-meta'),
-                     extract_unit_tree('styles.xml',  'document-styles')])
+                     extract_unit_tree('meta.xml', 'document-meta'),
+                     extract_unit_tree('styles.xml', 'document-styles')])
 
     def translate_dom_trees(unit_trees, dom_trees):
         make_parse_state = lambda: extract.ParseState(odf_shared.no_translate_content_elements, odf_shared.inline_elements)
@@ -90,7 +90,7 @@ def write_odf(xlf_data, template, output_file, dom_trees):
     # have problems, so let's make sure we have what we want.
     template.close()
     template = file(template.name, mode='rb')
-    template_zip = zipfile.ZipFile(template,  'r')
+    template_zip = zipfile.ZipFile(template, 'r')
     output_file.close()
     output_file = file(output_file.name, mode='wb')
     output_zip = zipfile.ZipFile(output_file, 'w', compression=zipfile.ZIP_DEFLATED)

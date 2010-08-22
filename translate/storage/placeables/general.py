@@ -293,17 +293,16 @@ class OptionPlaceable(Ph):
 
 
 def to_general_placeables(tree, classmap={
-        G:      (AltAttrPlaceable,),
-        Ph:     (
-            NumberPlaceable,
-            XMLEntityPlaceable,
-            XMLTagPlaceable,
-            UrlPlaceable,
-            FilePlaceable,
-            EmailPlaceable,
-            OptionPlaceable,
-            PunctuationPlaceable,
-                ),
+        G: (AltAttrPlaceable,),
+        Ph: (NumberPlaceable,
+             XMLEntityPlaceable,
+             XMLTagPlaceable,
+             UrlPlaceable,
+             FilePlaceable,
+             EmailPlaceable,
+             OptionPlaceable,
+             PunctuationPlaceable,
+            ),
         }):
     if not isinstance(tree, StringElem):
         return tree

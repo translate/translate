@@ -28,8 +28,8 @@ from translate.storage.xml_name import XmlNamer
 def open_odf(filename):
     z = zipfile.ZipFile(filename, 'r')
     return {'content.xml': z.read("content.xml"),
-            'meta.xml':    z.read("meta.xml"),
-            'styles.xml':  z.read("styles.xml")}
+            'meta.xml': z.read("meta.xml"),
+            'styles.xml': z.read("styles.xml")}
 
 
 def copy_odf(input_zip, output_zip, exclusion_list):

@@ -46,7 +46,7 @@ def launch_server_wsgiref(host, port, app):
             """Log requests using logging instead of printing to
             stderror."""
             logging.info("%s - - [%s] %s",
-                         self.address_string(),  self.log_date_time_string(), format % args)
+                         self.address_string(), self.log_date_time_string(), format % args)
 
     server = simple_server.make_server(host, port, app, handler_class=CustomRequestHandler)
     logging.info("Starting wsgiref server, listening on port %s", port)

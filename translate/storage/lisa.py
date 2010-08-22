@@ -274,10 +274,10 @@ class LISAunit(base.TranslationUnit):
     def _set_property(self, name, value):
         self.xmlelement.attrib[name] = value
 
-    xid = property(lambda self:        self.xmlelement.attrib[self.namespaced('xid')],
+    xid = property(lambda self: self.xmlelement.attrib[self.namespaced('xid')],
                    lambda self, value: self._set_property(self.namespaced('xid'), value))
 
-    rid = property(lambda self:        self.xmlelement.attrib[self.namespaced('rid')],
+    rid = property(lambda self: self.xmlelement.attrib[self.namespaced('rid')],
                    lambda self, value: self._set_property(self.namespaced('rid'), value))
 
     def createfromxmlElement(cls, element):

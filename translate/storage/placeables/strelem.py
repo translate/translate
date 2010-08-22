@@ -468,7 +468,7 @@ class StringElem(object):
                 * I{index}: Copy of the C{index} parameter
                 * I{offset}: The offset of C{index} into C{'elem'}."""
         info = {
-            'elem':  self.elem_at_offset(index),
+            'elem': self.elem_at_offset(index),
             'index': index,
         }
         info['offset'] = info['index'] - self.elem_offset(info['elem'])

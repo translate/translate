@@ -54,10 +54,10 @@ def test_reduce_tree():
 
 # compose_mappings
 
-left_mapping     = {1:    u'a', 2:    u'b', 3: u'c', 4: u'd',  5: u'e'}
-right_mapping    = {u'a': -1,   u'b': -2,            u'd': -4, u'e': -5, u'f': -6}
+left_mapping = {1: u'a', 2: u'b', 3: u'c', 4: u'd', 5: u'e'}
+right_mapping = {u'a': -1, u'b': -2, u'd': -4, u'e': -5, u'f': -6}
 
-composed_mapping = {1: -1,      2: -2,               4: -4,    5: -5}
+composed_mapping = {1: -1, 2: -2, 4: -4, 5: -5}
 
 def test_compose_mappings():
     assert composed_mapping == misc.compose_mappings(left_mapping, right_mapping)

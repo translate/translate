@@ -92,22 +92,22 @@ class TranslationUnit(object):
     tree."""
 
     # State constants
-    S_OBSOLETE =     states.OBSOLETE
-    S_EMPTY =        states.EMPTY
-    S_NEEDS_WORK =   states.NEEDS_WORK
-    S_REJECTED =     states.REJECTED
+    S_OBSOLETE = states.OBSOLETE
+    S_EMPTY = states.EMPTY
+    S_NEEDS_WORK = states.NEEDS_WORK
+    S_REJECTED = states.REJECTED
     S_NEEDS_REVIEW = states.NEEDS_REVIEW
-    S_UNREVIEWED =   states.UNREVIEWED
-    S_FINAL =        states.FINAL
+    S_UNREVIEWED = states.UNREVIEWED
+    S_FINAL = states.FINAL
 
     STATE = {
-        S_OBSOLETE:     (states.OBSOLETE,     states.EMPTY),
-        S_EMPTY:        (states.EMPTY,        states.NEEDS_WORK),
-        S_NEEDS_WORK:   (states.NEEDS_WORK,   states.REJECTED),
-        S_REJECTED:     (states.REJECTED,     states.NEEDS_REVIEW),
+        S_OBSOLETE: (states.OBSOLETE, states.EMPTY),
+        S_EMPTY: (states.EMPTY, states.NEEDS_WORK),
+        S_NEEDS_WORK: (states.NEEDS_WORK, states.REJECTED),
+        S_REJECTED: (states.REJECTED, states.NEEDS_REVIEW),
         S_NEEDS_REVIEW: (states.NEEDS_REVIEW, states.UNREVIEWED),
-        S_UNREVIEWED:   (states.UNREVIEWED,   states.FINAL),
-        S_FINAL:        (states.FINAL,        states.MAX),
+        S_UNREVIEWED: (states.UNREVIEWED, states.FINAL),
+        S_FINAL: (states.FINAL, states.MAX),
     }
     """
     Default supported states:
