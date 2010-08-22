@@ -24,6 +24,7 @@ import sys
 from translate.storage import po
 from translate.storage import rc
 
+
 class rc2po:
     """Convert a .rc file to a .po file for handling the translation."""
 
@@ -76,6 +77,7 @@ class rc2po:
         output_unit.target = ""
         return output_unit
 
+
 def convertrc(input_file, output_file, template_file, pot=False, duplicatestyle="msgctxt", charset=None, lang=None, sublang=None):
     """reads in input_file using rc, converts using rc2po, writes to output_file"""
     input_store = rc.rcfile(input_file, lang, sublang, encoding=charset)
@@ -89,6 +91,7 @@ def convertrc(input_file, output_file, template_file, pot=False, duplicatestyle=
         return 0
     output_file.write(str(output_store))
     return 1
+
 
 def main(argv=None):
     from translate.convert import convert
@@ -110,6 +113,7 @@ def main(argv=None):
     parser.passthrough.append("lang")
     parser.passthrough.append("sublang")
     parser.run(argv)
+
 
 if __name__ == '__main__':
     main()

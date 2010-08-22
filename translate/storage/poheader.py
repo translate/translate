@@ -35,6 +35,7 @@ default_header = {
     "Plural-Forms": "nplurals=INTEGER; plural=EXPRESSION;",
     }
 
+
 def parseheaderstring(input):
     """Parses an input string with the definition of a PO header and returns
     the interpreted values as a dictionary."""
@@ -47,6 +48,7 @@ def parseheaderstring(input):
         key = str(key.strip())
         headervalues[key] = value.strip()
     return headervalues
+
 
 def tzstring():
     """Returns the timezone as a string in the format [+-]0000, eg +0200.
@@ -62,6 +64,7 @@ def tzstring():
         hours *= -1
     tz = str("%+d" % hours).zfill(3) + str(minutes).zfill(2)
     return tz
+
 
 def update(existing, add=False, **kwargs):
     """Update an existing header dictionary with the values in kwargs, adding new values

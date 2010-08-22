@@ -37,6 +37,7 @@ try:
 except ImportError:
     tidy = None
 
+
 class po2html:
     """po2html can take a po file and generate html. best to give it a template file otherwise will just concat msgstrs"""
     def __init__(self, wrap=None, usetidy=None):
@@ -88,6 +89,7 @@ class po2html:
             htmlresult = str(tidy.parseString(htmlresult))
         return htmlresult
 
+
 def converthtml(inputfile, outputfile, templatefile, wrap=None, includefuzzy=False, usetidy=True):
     """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
     inputstore = po.pofile(inputfile)
@@ -100,6 +102,7 @@ def converthtml(inputfile, outputfile, templatefile, wrap=None, includefuzzy=Fal
     outputfilepos = outputfile.tell()
     outputfile.write(outputstring)
     return 1
+
 
 def main(argv=None):
     from translate.convert import convert

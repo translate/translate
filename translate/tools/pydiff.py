@@ -30,6 +30,7 @@ import fnmatch
 
 lineterm = "\n"
 
+
 def main():
     """main program for pydiff"""
     usage = "usage: %prog [options] fromfile tofile"
@@ -80,6 +81,7 @@ def main():
             differ = FileDiffer(fromfile, tofile, options)
     differ.writediff(sys.stdout)
 
+
 class DirDiffer:
     """generates diffs between directories"""
     def __init__(self, fromdir, todir, options):
@@ -128,6 +130,7 @@ class DirDiffer:
                 outfile.write("Only in %s: %s\n" % (self.fromdir, difffile))
             elif to_ok:
                 outfile.write("Only in %s: %s\n" % (self.todir, difffile))
+
 
 class FileDiffer:
     """generates diffs between files"""
@@ -245,6 +248,7 @@ class FileDiffer:
             if tag == 'replace' or tag == 'insert':
                 for line in self.to_lines[j1:j2]:
                     yield '+' + line
+
 
 if __name__ == "__main__":
     main()

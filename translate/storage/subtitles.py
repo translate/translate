@@ -52,6 +52,7 @@ except ImportError:
 
 from translate.storage import base
 
+
 class SubtitleUnit(base.TranslationUnit):
     """A subtitle entry that is translatable"""
 
@@ -73,6 +74,7 @@ class SubtitleUnit(base.TranslationUnit):
 
     def getid(self):
         return self.getlocations()[0]
+
 
 class SubtitleFile(base.TranslationStore):
     """A subtitle file"""
@@ -158,6 +160,7 @@ class SubtitleFile(base.TranslationStore):
 # the generic SubtitleFile can adapt to any format, but only the
 # specilized classes can be used to construct a new file
 
+
 class SubRipFile(SubtitleFile):
     """specialized class for SubRipFile's only"""
     Name = _("SubRip subtitles file")
@@ -168,6 +171,7 @@ class SubRipFile(SubtitleFile):
             self._subtitlefile = SubRip(self.filename or '', self._encoding)
         if self._subtitlefile.newline is None:
             self._subtitlefile.newline = newlines.UNIX
+
 
 class MicroDVDFile(SubtitleFile):
     """specialized class for SubRipFile's only"""
@@ -180,6 +184,7 @@ class MicroDVDFile(SubtitleFile):
         if self._subtitlefile.newline is None:
             self._subtitlefile.newline = newlines.UNIX
 
+
 class AdvSubStationAlphaFile(SubtitleFile):
     """specialized class for SubRipFile's only"""
     Name = _("Advanced Substation Alpha subtitles file")
@@ -190,6 +195,7 @@ class AdvSubStationAlphaFile(SubtitleFile):
             self._subtitlefile = AdvSubStationAlpha(self.filename or '', self._encoding)
         if self._subtitlefile.newline is None:
             self._subtitlefile.newline = newlines.UNIX
+
 
 class SubStationAlphaFile(SubtitleFile):
     """specialized class for SubRipFile's only"""

@@ -28,6 +28,7 @@ from translate.misc import quote
 from translate.convert import accesskey
 import warnings
 
+
 def getmixedentities(entities):
     """returns a list of mixed .label and .accesskey entities from a list of entities"""
     mixedentities = []    # those entities which have a .label and .accesskey combined
@@ -42,6 +43,7 @@ def getmixedentities(entities):
                         # add both versions to the list of mixed entities
                         mixedentities += [entity, entitybase+akeytype]
     return mixedentities
+
 
 def applytranslation(entity, dtdunit, inputunit, mixedentities):
     """applies the translation for entity in the po unit to the dtd unit"""
@@ -76,6 +78,7 @@ def applytranslation(entity, dtdunit, inputunit, mixedentities):
     if len(unquotedstr) > 0:
         dtdunit.definition = dtd.quotefordtd(dtd.removeinvalidamps(entity, unquotedstr))
 
+
 class redtd:
     """this is a convertor class that creates a new dtd based on a template using translations in a po"""
     def __init__(self, dtdfile):
@@ -97,6 +100,7 @@ class redtd:
                 # now we need to replace the definition of entity with msgstr
                 dtdunit = self.dtdfile.index[entity] # find the dtd
                 applytranslation(entity, dtdunit, inunit, mixedentities)
+
 
 class po2dtd:
     """this is a convertor class that creates a new dtd file based on a po file without a template"""
@@ -150,6 +154,7 @@ class po2dtd:
                     outputstore.addunit(dtdunit)
         return outputstore
 
+
 def convertdtd(inputfile, outputfile, templatefile, includefuzzy=False):
     inputstore = po.pofile(inputfile)
     if templatefile is None:
@@ -161,6 +166,7 @@ def convertdtd(inputfile, outputfile, templatefile, includefuzzy=False):
     outputfile.write(str(outputstore))
     return 1
 
+
 def main(argv=None):
     # handle command line options
     from translate.convert import convert
@@ -168,6 +174,7 @@ def main(argv=None):
     parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
     parser.add_fuzzy_option()
     parser.run(argv)
+
 
 if __name__ == '__main__':
     main()

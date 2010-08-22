@@ -7,6 +7,7 @@ from translate.storage.test_base import first_translatable, headerless_len
 from translate.tools import pogrep
 from translate.misc import wStringIO
 
+
 class TestPOGrep:
     def poparse(self, posource):
         """helper that parses po source without requiring files"""
@@ -110,6 +111,7 @@ class TestPOGrep:
                     print search_letter.encode('utf-8')
                     poresult = self.pogrep(source, search_letter)
                     assert poresult.index(source.encode('utf-8')) >= 0
+
 
 class TestXLiffGrep:
     xliff_skeleton = '''<?xml version="1.0" ?>

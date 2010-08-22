@@ -1,5 +1,6 @@
 from translate.storage import rc
 
+
 def test_escaping():
     """test escaping Windows Resource files to Python strings"""
     assert rc.escape_to_python('''First line \

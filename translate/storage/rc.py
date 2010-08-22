@@ -28,6 +28,7 @@ these should mimic other non-WINE .rc files.
 from translate.storage import base
 import re
 
+
 def escape_to_python(string):
     """escape a given .rc string into a valid Python string"""
     pystring = re.sub('"\s*\\\\\n\s*"', "", string)   # xxx"\n"xxx line continuation
@@ -37,12 +38,14 @@ def escape_to_python(string):
     pystring = re.sub("\\\\\\\\", "\\\\", pystring)   # Convert escape backslash to a real escaped backslash
     return pystring
 
+
 def escape_to_rc(string):
     """Escape a given Python string into a valid .rc string."""
     rcstring = re.sub("\\\\", "\\\\\\\\", string)
     rcstring = re.sub("\t", "\\\\t", rcstring)
     rcstring = re.sub("\n", "\\\\n", rcstring)
     return rcstring
+
 
 class rcunit(base.TranslationUnit):
     """A unit of an rc file"""
@@ -104,6 +107,7 @@ class rcunit(base.TranslationUnit):
     def isblank(self):
         """Returns whether this is a blank element, containing only comments."""
         return not (self.name or self.value)
+
 
 class rcfile(base.TranslationStore):
     """This class represents a .rc file, made up of rcunits."""

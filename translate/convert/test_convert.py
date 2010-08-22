@@ -10,6 +10,7 @@ try:
 except Exception:
     psyco = None
 
+
 class TestConvertCommand:
     """Tests running actual commands on files"""
     convertmodule = convert

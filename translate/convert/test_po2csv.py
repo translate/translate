@@ -8,6 +8,7 @@ from translate.storage import po
 from translate.storage import csvl10n
 from translate.storage.test_base import headerless_len, first_translatable
 
+
 class TestPO2CSV:
     def po2csv(self, posource):
         """helper that converts po source to csv source without requiring files"""
@@ -132,6 +133,7 @@ msgstr "Vind\\Opsies"
         unit = self.singleelement(csvfile)
         assert unit.source == "Same"
         assert unit.target == "Same"
+
 
 class TestPO2CSVCommand(test_convert.TestConvertCommand, TestPO2CSV):
     """Tests running actual po2csv commands on files"""

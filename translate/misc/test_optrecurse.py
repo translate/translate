@@ -3,6 +3,7 @@
 from translate.misc import optrecurse
 import os
 
+
 class TestRecursiveOptionParser:
 
     def __init__(self):

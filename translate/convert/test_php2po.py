@@ -7,6 +7,7 @@ from translate.misc import wStringIO
 from translate.storage import po
 from translate.storage import php
 
+
 class TestPhp2PO:
     def php2po(self, phpsource, phptemplate=None):
         """helper that converts .phperties source to po source without requiring files"""
@@ -136,6 +137,7 @@ $lang['prefPanel-smime'] = 'Security';'''
         pofile = self.php2po(phpsource, phptemplate)
         pounit = self.singleelement(pofile)
         assert pounit.getlocations() == ["$lang['credit']"]
+
 
 class TestPhp2POCommand(test_convert.TestConvertCommand, TestPhp2PO):
     """Tests running actual php2po commands on files"""

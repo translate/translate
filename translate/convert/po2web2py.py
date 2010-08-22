@@ -25,6 +25,7 @@
 
 from translate.storage import factory
 
+
 class po2pydict:
     def __init__(self):
         return
@@ -49,12 +50,14 @@ class po2pydict:
         str_obj.seek(0)
         return str_obj
 
+
 def convertpy(inputfile, outputfile, templatefile=None, includefuzzy=False):
     inputstore = factory.getobject(inputfile)
     convertor = po2pydict()
     outputstring = convertor.convertstore(inputstore, includefuzzy)
     outputfile.write(outputstring.read())
     return 1
+
 
 def main(argv=None):
     from translate.convert import convert
@@ -65,6 +68,7 @@ def main(argv=None):
     parser = convert.ConvertOptionParser(formats, usetemplates=False, description=__doc__)
     parser.add_fuzzy_option()
     parser.run(argv)
+
 
 if __name__ == '__main__':
     main()

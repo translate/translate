@@ -22,6 +22,7 @@ from collections import deque
 from weakref import WeakValueDictionary
 import gc
 
+
 class LRUCachingDict(WeakValueDictionary):
     """Caching dictionary like object that discards the least recently
     used objects when number of cached items exceeds maxsize.

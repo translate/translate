@@ -29,6 +29,7 @@
 from translate.storage import factory
 from os import path
 
+
 class Directory:
     """This class represents a directory."""
     def __init__(self, dir=None):

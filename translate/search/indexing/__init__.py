@@ -39,6 +39,7 @@ import logging
     * do unittests for PyLucene v1.x
     """
 
+
 def _get_available_indexers():
     """get a list of the available supported indexing engines
 
@@ -91,6 +92,7 @@ def _get_available_indexers():
                 # 'element' is not a class
                 continue
     return result
+
 
 def _sort_indexers_by_preference(indexer_classes, pref_order):
     """sort a given list of indexer classes according to the given order

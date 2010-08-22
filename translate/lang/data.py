@@ -186,6 +186,7 @@ _fixed_names = {
         u"Uighur; Uyghur": u"Uighur",
 }
 
+
 def simplercode(code):
     """This attempts to simplify the given language code by ignoring country
     codes, for example.
@@ -229,6 +230,7 @@ iso3166 = {}
 langcode_re = re.compile("^[a-z]{2,3}([_-][A-Z]{2,3}|)(@[a-zA-Z0-9]+|)$")
 variant_re = re.compile("^[_-][A-Z]{2,3}(@[a-zA-Z0-9]+|)$")
 
+
 def languagematch(languagecode, otherlanguagecode):
     """matches a languagecode to another, ignoring regions in the second"""
     if languagecode is None:
@@ -237,6 +239,7 @@ def languagematch(languagecode, otherlanguagecode):
       (otherlanguagecode.startswith(languagecode) and variant_re.match(otherlanguagecode[len(languagecode):]))
 
 dialect_name_re = re.compile(r"(.+)\s\(([^)\d]+)\)$")
+
 
 def tr_lang(langcode=None):
     """Gives a function that can translate a language name, even in the form C{"language (country)"},
@@ -253,6 +256,7 @@ def tr_lang(langcode=None):
             return _fix_language_name(langfunc(name))
 
     return handlelanguage
+
 
 def _fix_language_name(name):
     """Identify and replace some unsightly names present in iso-codes.
@@ -288,6 +292,7 @@ def gettext_lang(langcode=None):
         iso639[langcode] = t.ugettext
     return iso639[langcode]
 
+
 def gettext_country(langcode=None):
     """Returns a gettext function to translate country names into the given
     language, or the system language if no language is specified."""
@@ -304,6 +309,7 @@ def gettext_country(langcode=None):
         iso3166[langcode] = t.ugettext
     return iso3166[langcode]
 
+
 def normalize(string, normal_form="NFC"):
     """Return a unicode string in its normalized form
 
@@ -315,6 +321,7 @@ def normalize(string, normal_form="NFC"):
         return None
     else:
         return unicodedata.normalize(normal_form, string)
+
 
 def forceunicode(string):
     """Ensures that the string is in unicode.
@@ -333,14 +340,17 @@ def forceunicode(string):
         string = unicode(string)
     return string
 
+
 def normalized_unicode(string):
     """Forces the string to unicode and does normalization."""
     return normalize(forceunicode(string))
+
 
 def normalize_code(code):
     if not code:
         return code
     return code.replace("_", "-").replace("@", "-").lower()
+
 
 def simplify_to_common(language_code, languages=languages):
     """Simplify language code to the most commonly used form for the

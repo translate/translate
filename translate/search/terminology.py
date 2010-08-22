@@ -20,6 +20,7 @@
 
 """A class that does terminology matching"""
 
+
 class TerminologyComparer:
     def __init__(self, max_len=500):
         self.match_info = {}

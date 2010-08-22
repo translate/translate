@@ -37,13 +37,16 @@ import re
 
 _dialects = {}
 
+
 def register_dialect(name, dialect):
     """Register the dialect"""
     _dialects[name] = dialect
 
+
 class Dialect(object):
     """Base class for differentiating dialect options and functions"""
     pass
+
 
 class DialectDefault(Dialect):
     def unescape(self, text):
@@ -52,6 +55,7 @@ class DialectDefault(Dialect):
     def escape(self, text):
         return text
 register_dialect("default", DialectDefault)
+
 
 class DialectInno(DialectDefault):
     def unescape(self, text):
@@ -75,6 +79,7 @@ class iniunit(base.TranslationUnit):
 
     def getlocations(self):
         return [self.location]
+
 
 class inifile(base.TranslationStore):
     """An INI file"""

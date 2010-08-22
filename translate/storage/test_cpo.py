@@ -7,6 +7,7 @@ from translate.misc.multistring import multistring
 from translate.misc import wStringIO
 from py.test import raises
 
+
 class TestCPOUnit(test_po.TestPOUnit):
     UnitClass = cpo.pounit
 
@@ -71,6 +72,7 @@ class TestCPOUnit(test_po.TestPOUnit):
         unit = self.UnitClass("File")
         unit.addnote("# Double commented comment")
         assert unit.getnotes() == "# Double commented comment"
+
 
 class TestCPOFile(test_po.TestPOFile):
     StoreClass = cpo.pofile

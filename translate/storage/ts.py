@@ -33,6 +33,7 @@ U{2 <http://doc.trolltech.com/4.3/qstring.html#arg-2>}
 
 from translate.misc import ourdom
 
+
 class QtTsParser:
     contextancestors = dict.fromkeys(["TS"])
     messageancestors = dict.fromkeys(["TS", "context"])

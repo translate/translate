@@ -3,6 +3,7 @@
 from translate.misc import autoencode
 from py import test
 
+
 class TestAutoencode:
     type2test = autoencode.autoencode
 

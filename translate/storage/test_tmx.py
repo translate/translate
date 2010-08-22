@@ -4,6 +4,7 @@ from translate.storage import tmx
 from translate.storage import test_base
 from translate.misc import wStringIO
 
+
 class TestTMXUnit(test_base.TestTranslationUnit):
     UnitClass = tmx.tmxunit
 
@@ -26,6 +27,7 @@ class TestTMXUnitFromParsedString(TestTMXUnit):
     def setup_method(self, method):
         store = tmx.tmxfile.parsestring(self.tmxsource)
         self.unit = store.units[0]
+
 
 class TestTMXfile(test_base.TestTranslationStore):
     StoreClass = tmx.tmxfile

@@ -8,6 +8,7 @@ from translate.misc import wStringIO
 from py import test
 from py.test import deprecated_call
 
+
 def test_find_delimiter_pos_simple():
     """Simple tests to find the various delimiters"""
     assert properties._find_delimiter(u"key=value", [u"=", u":", u" "]) == ('=', 3)
@@ -16,16 +17,19 @@ def test_find_delimiter_pos_simple():
     # NOTE this is valid in Java properties, the key is then the empty string
     assert properties._find_delimiter(u"= value", [u"=", u":", u" "]) == ('=', 0)
 
+
 def test_find_delimiter_pos_multiple():
     """Find delimiters when multiple potential delimietes are involved"""
     assert properties._find_delimiter(u"key=value:value", [u"=", u":", u" "]) == ('=', 3)
     assert properties._find_delimiter(u"key:value=value", [u"=", u":", u" "]) == (':', 3)
     assert properties._find_delimiter(u"key value=value", [u"=", u":", u" "]) == (' ', 3)
 
+
 def test_find_delimiter_pos_none():
     """Find delimiters when there isn't one"""
     assert properties._find_delimiter(u"key", [u"=", u":", u" "]) == (None, -1)
     assert properties._find_delimiter(u"key\=\:\ ", [u"=", u":", u" "]) == (None, -1)
+
 
 def test_find_delimiter_pos_whitespace():
     """Find delimiters when whitespace is involved"""
@@ -36,6 +40,7 @@ def test_find_delimiter_pos_whitespace():
     assert properties._find_delimiter(u"key value value", [u"=", u":", u" "]) == (' ', 3)
     assert properties._find_delimiter(u" key = value", [u"=", u":", u" "]) == ('=', 5)
 
+
 def test_find_delimiter_pos_escapes():
     """Find delimiters when potential earlier delimiters are escaped"""
     assert properties._find_delimiter(u"key\:=value", [u"=", u":", u" "]) == ('=', 5)
@@ -43,10 +48,12 @@ def test_find_delimiter_pos_escapes():
     assert properties._find_delimiter(u"key\   value", [u"=", u":", u" "]) == (' ', 5)
     assert properties._find_delimiter(u"key\ key\ key\: = value", [u"=", u":", u" "]) == ('=', 16)
 
+
 def test_find_delimiter_deprecated_fn():
     """Test that the deprecated function still actually works"""
     assert properties.find_delimeter(u"key=value") == ('=', 3)
     deprecated_call(properties.find_delimeter, u"key=value")
+
 
 def test_is_line_continuation():
     assert properties.is_line_continuation(u"") == False
@@ -55,6 +62,7 @@ def test_is_line_continuation():
     assert properties.is_line_continuation(u"""some text\\\\""") == False  # Escaped \
     assert properties.is_line_continuation(u"""some text\\\\\\""") == True  # Odd num. \ is line continuation
     assert properties.is_line_continuation(u"""\\\\\\""") == True
+
 
 def test_key_strip():
     assert properties._key_strip(u"key") == "key"
@@ -72,6 +80,7 @@ class TestPropUnit(test_monolingual.TestMonolingualUnit):
 
     def test_rich_set(self):
         pass
+
 
 class TestProp(test_monolingual.TestMonolingualStore):
     StoreClass = properties.propfile

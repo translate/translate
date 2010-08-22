@@ -23,6 +23,7 @@
 from translate.storage import lisa
 from lxml import etree
 
+
 class tbxunit(lisa.LISAunit):
     """A single term in the TBX file.
 Provisional work is done to make several languages possible."""

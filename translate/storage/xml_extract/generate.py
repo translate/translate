@@ -31,6 +31,7 @@ from translate.storage.xml_extract import extract
 from translate.storage.xml_extract import unit_tree
 from translate.storage.xml_name import XmlNamer
 
+
 @accepts(etree._Element)
 def _get_tag_arrays(dom_node):
     """Return a dictionary indexed by child tag names, where each tag is associated with an array
@@ -48,6 +49,7 @@ def _get_tag_arrays(dom_node):
             child_dict[child.tag] = []
         child_dict[child.tag].append(child)
     return child_dict
+
 
 @accepts(etree._Element, unit_tree.XPathTree, IsCallable())
 def apply_translations(dom_node, unit_node, do_translate):
@@ -71,9 +73,11 @@ def apply_translations(dom_node, unit_node, do_translate):
         # should replace the text in dom_node with the text in unit_node.
         do_translate(dom_node, unit_node.unit)
 
+
 @accepts(IsCallable(), etree._Element, state=[Number])
 def reduce_dom_tree(f, dom_node, *state):
     return misc.reduce_tree(f, dom_node, dom_node, lambda dom_node: dom_node, *state)
+
 
 @accepts(etree._Element, etree._Element)
 def find_dom_root(parent_dom_node, dom_node):
@@ -86,6 +90,7 @@ def find_dom_root(parent_dom_node, dom_node):
         return None
     else:
         return find_dom_root(parent_dom_node, dom_node.getparent())
+
 
 @accepts(extract.Translatable)
 def find_placeable_dom_tree_roots(unit_node):
@@ -109,6 +114,7 @@ def find_placeable_dom_tree_roots(unit_node):
         dom_tree_roots[unit_node] = find_dom_root(parent_unit_node.dom_node, unit_node.dom_node)
         return dom_tree_roots
     return extract.reduce_unit_tree(set_dom_root_for_unit_node, unit_node, {})
+
 
 @accepts(extract.Translatable, etree._Element)
 def _map_source_dom_to_doc_dom(unit_node, source_dom_node):
@@ -139,6 +145,7 @@ def _map_source_dom_to_doc_dom(unit_node, source_dom_node):
 
     loop(unit_node, source_dom_node)
     return source_dom_to_doc_dom
+
 
 @accepts(etree._Element, etree._Element)
 def _map_target_dom_to_source_dom(source_dom_node, target_dom_node):
@@ -177,10 +184,12 @@ def _map_target_dom_to_source_dom(source_dom_node, target_dom_node):
     # 3. If so, associate this source DOM node with the target DOM node.
     return reduce_dom_tree(map_target_dom_to_source_dom_aux, source_dom_node, {})
 
+
 def _build_target_dom_to_doc_dom(unit_node, source_dom, target_dom):
     source_dom_to_doc_dom    = _map_source_dom_to_doc_dom(unit_node, source_dom)
     target_dom_to_source_dom = _map_target_dom_to_source_dom(source_dom, target_dom)
     return misc.compose_mappings(target_dom_to_source_dom, source_dom_to_doc_dom)
+
 
 @accepts(etree._Element, {etree._Element: etree._Element})
 def _get_translated_node(target_node, target_dom_to_doc_dom):
@@ -189,6 +198,7 @@ def _get_translated_node(target_node, target_dom_to_doc_dom):
     dom_node = target_dom_to_doc_dom[target_node]
     dom_node.tail = target_node.tail
     return dom_node
+
 
 @accepts(etree._Element, etree._Element, {etree._Element: etree._Element})
 def _build_translated_dom(dom_node, target_node, target_dom_to_doc_dom):
@@ -211,6 +221,7 @@ def _build_translated_dom(dom_node, target_node, target_dom_to_doc_dom):
     # dom_node and target_node.
     for dom_child, target_child in zip(dom_node, target_node):
         _build_translated_dom(dom_child, target_child, target_dom_to_doc_dom)
+
 
 @accepts(IsCallable())
 def replace_dom_text(make_parse_state):

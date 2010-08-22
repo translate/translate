@@ -25,6 +25,7 @@ import string
 from translate.convert import prop2po
 from translate.misc.wStringIO import StringIO
 
+
 def inc2prop(lines):
     """convert a .inc file with #defines in it to a properties file"""
     yield "# converted from #defines file\n"
@@ -56,6 +57,7 @@ def inc2prop(lines):
                 yield "# "
             yield line
 
+
 def it2prop(lines, encoding="cp1252"):
     """convert a pseudo-properties .it file to a conventional properties file"""
     yield "# converted from pseudo-properties .it file\n"
@@ -72,6 +74,7 @@ def it2prop(lines, encoding="cp1252"):
         else:
             yield line
 
+
 def funny2prop(lines, itencoding="cp1252"):
     hashstarts = len([line for line in lines if line.startswith("#")])
     if hashstarts:
@@ -80,6 +83,7 @@ def funny2prop(lines, itencoding="cp1252"):
     else:
         for line in it2prop(lines, encoding=itencoding):
             yield line
+
 
 def inc2po(inputfile, outputfile, templatefile, encoding=None, pot=False, duplicatestyle="msgctxt"):
     """wraps prop2po but converts input/template files to properties first"""
@@ -94,6 +98,7 @@ def inc2po(inputfile, outputfile, templatefile, encoding=None, pot=False, duplic
         templatepropfile = None
     return prop2po.convertprop(inputpropfile, outputfile, templatepropfile, personality="mozilla", pot=pot, duplicatestyle=duplicatestyle)
 
+
 def it2po(inputfile, outputfile, templatefile, encoding="cp1252", pot=False, duplicatestyle="msgctxt"):
     """wraps prop2po but converts input/template files to properties first"""
     inputlines = inputfile.readlines()
@@ -107,14 +112,17 @@ def it2po(inputfile, outputfile, templatefile, encoding="cp1252", pot=False, dup
         templatepropfile = None
     return prop2po.convertprop(inputpropfile, outputfile, templatepropfile, personality="mozilla", pot=pot, duplicatestyle=duplicatestyle)
 
+
 def ini2po(inputfile, outputfile, templatefile, encoding="UTF-8", pot=False, duplicatestyle="msgctxt"):
     return it2po(inputfile=inputfile, outputfile=outputfile, templatefile=templatefile, encoding=encoding, pot=pot, duplicatestyle=duplicatestyle)
+
 
 def main(argv=None):
     import sys
     lines = sys.stdin.readlines()
     for line in funny2prop(lines):
         sys.stdout.write(line)
+
 
 if __name__ == "__main__":
     main()

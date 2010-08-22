@@ -21,11 +21,13 @@
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+
 def generalupper(str):
     """this uses the object's upper method - works with string and unicode"""
     if str is None:
         return str
     return str.upper()
+
 
 class cidict(dict):
     def __init__(self, fromdict=None):
@@ -78,6 +80,7 @@ class cidict(dict):
             return self[key]
         else:
             return default
+
 
 class ordereddict(dict):
     """a dictionary which remembers its keys in the order in which they were given"""

@@ -4,6 +4,7 @@
 from translate.storage import test_base
 from translate.storage import wordfast as wf
 
+
 class TestWFTime(object):
 
     def test_timestring(self):
@@ -19,6 +20,7 @@ class TestWFTime(object):
         assert wftime.time == None
         wftime.time = (1999, 3, 27)
         wftime.timestring = "19990327~000000"
+
 
 class TestWFUnit(test_base.TestTranslationUnit):
     UnitClass = wf.WordfastUnit

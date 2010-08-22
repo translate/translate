@@ -25,6 +25,7 @@ import re
 from translate.storage import po
 from translate.misc.multistring import multistring
 
+
 class pypo2phppo:
     def convertstore(self, inputstore):
         """Converts a given .po file (Python Format) to a PHP format .po file, the difference being
@@ -67,6 +68,7 @@ class pypo2phppo:
             strings[index] = re.sub('\{(\d)\}', lambda x: "%%%d$s" % (int(x.group(1))+1), string)
         return strings
 
+
 def convertpy2php(inputfile, outputfile, template=None):
     """Converts from Python .po to PHP .po
 
@@ -82,6 +84,7 @@ def convertpy2php(inputfile, outputfile, template=None):
     outputfile.write(str(outputstore))
     return True
 
+
 def main(argv=None):
     """Converts from Python .po to PHP .po"""
     from translate.convert import convert
@@ -89,6 +92,7 @@ def main(argv=None):
     formats = {"po": ("po", convertpy2php)}
     parser = convert.ConvertOptionParser(formats, description=__doc__)
     parser.run(argv)
+
 
 if __name__ == '__main__':
     main()

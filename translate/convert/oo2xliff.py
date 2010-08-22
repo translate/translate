@@ -31,6 +31,7 @@ from translate.storage import oo
 
 # TODO: support using one GSI file as template, another as input (for when English is in one and translation in another)
 
+
 class oo2xliff:
     def __init__(self, sourcelanguage, targetlanguage, blankmsgstr=False, long_keys=False):
         """construct an oo2xliff converter for the specified languages"""
@@ -100,10 +101,12 @@ class oo2xliff:
                 thetargetfile.addunit(unit)
         return thetargetfile
 
+
 def verifyoptions(options):
     """verifies the commandline options"""
     if not options.targetlanguage:
         raise ValueError("You must specify the target language.")
+
 
 def convertoo(inputfile, outputfile, templates, pot=False, sourcelanguage=None, targetlanguage=None, duplicatestyle="msgctxt", multifilestyle="single"):
     """reads in stdin using inputstore class, converts using convertorclass, writes to stdout"""
@@ -131,6 +134,7 @@ def convertoo(inputfile, outputfile, templates, pot=False, sourcelanguage=None, 
     outputfile.write(str(outputstore))
     return 1
 
+
 def main(argv=None):
     from translate.convert import convert
     formats = {"oo": ("xlf", convertoo), "sdf": ("xlf", convertoo)}
@@ -148,6 +152,7 @@ def main(argv=None):
     parser.passthrough.append("targetlanguage")
     parser.verifyoptions = verifyoptions
     parser.run(argv)
+
 
 if __name__ == '__main__':
     main()

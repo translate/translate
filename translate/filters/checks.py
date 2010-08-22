@@ -1110,6 +1110,7 @@ openofficeconfig = CheckerConfig(
     canchangetags=[("link", "name", None)],
     )
 
+
 class OpenOfficeChecker(StandardChecker):
 
     def __init__(self, **kwargs):
@@ -1126,6 +1127,7 @@ mozillaconfig = CheckerConfig(
                 ("#", 1), ("${", "}"), ("$(^", ")")],
     criticaltests=["accelerators"],
     )
+
 
 class MozillaChecker(StandardChecker):
 
@@ -1149,6 +1151,7 @@ drupalconfig = CheckerConfig(
     varmatches=[("%", None), ("@", None), ("!", None)],
     )
 
+
 class DrupalChecker(StandardChecker):
 
     def __init__(self, **kwargs):
@@ -1164,6 +1167,7 @@ gnomeconfig = CheckerConfig(
     varmatches=[("%", 1), ("$(", ")")],
     credit_sources=[u"translator-credits"],
     )
+
 
 class GnomeChecker(StandardChecker):
 
@@ -1192,6 +1196,7 @@ kdeconfig = CheckerConfig(
     credit_sources=[u"Your names", u"Your emails", u"ROLES_OF_TRANSLATORS"],
     )
 
+
 class KdeChecker(StandardChecker):
 
     def __init__(self, **kwargs):
@@ -1205,6 +1210,7 @@ class KdeChecker(StandardChecker):
         StandardChecker.__init__(self, **kwargs)
 
 cclicenseconfig = CheckerConfig(varmatches=[("@", "@")])
+
 
 class CCLicenseChecker(StandardChecker):
 
@@ -1283,6 +1289,7 @@ def batchruntests(pairs):
             passed += 1
     print
     print "total: %d/%d pairs passed" % (passed, numpairs)
+
 
 if __name__ == '__main__':
     testset = [(r"simple", r"somple"),

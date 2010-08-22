@@ -38,6 +38,7 @@ usage instructions
 from translate.storage import po
 from translate.convert import convert
 
+
 def swapdir(store):
     """Swap the source and target of each unit."""
     for unit in store.units:
@@ -47,6 +48,7 @@ def swapdir(store):
             unit.target = unit.source
         else:
             unit.source, unit.target = unit.target, unit.source
+
 
 def convertpo(inputpofile, outputpotfile, template, reverse=False):
     """reads in inputpofile, removes the header, writes to outputpotfile."""
@@ -86,6 +88,7 @@ def convertpo(inputpofile, outputpotfile, template, reverse=False):
     outputpotfile.write(str(inputpo))
     return 1
 
+
 def main(argv=None):
     formats = {("po", "po"): ("po", convertpo), ("po", "pot"): ("po", convertpo), "po": ("po", convertpo)}
     parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
@@ -93,6 +96,7 @@ def main(argv=None):
                     help="reverse the process of intermediate language conversion")
     parser.passthrough.append("reverse")
     parser.run(argv)
+
 
 if __name__ == '__main__':
     main()

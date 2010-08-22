@@ -6,6 +6,7 @@ from translate.misc import wStringIO
 from translate.storage import po
 import warnings
 
+
 class TestPretranslate:
     def setup_method(self, method):
         warnings.resetwarnings()
@@ -236,6 +237,7 @@ msgstr "36em"
         newpounit = self.singleunit(newpo)
         assert newpounit.isfuzzy()
         assert newpounit.hastypecomment("c-format")
+
 
 class TestPretranslateCommand(test_convert.TestConvertCommand, TestPretranslate):
     """Tests running actual pretranslate commands on files"""

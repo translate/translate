@@ -25,6 +25,7 @@ __all__ = ['get_abs_data_filename']
 import sys
 import os
 
+
 def get_abs_data_filename(path_parts, basedirs=None):
     """Get the absolute path to the given file- or directory name in the current
         running application's data directory.

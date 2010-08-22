@@ -29,6 +29,7 @@ def is_available():
     exitcode, output, error = run_command(["hg", "--version"])
     return exitcode == 0
 
+
 def get_version():
     """return a tuple of (major, minor) for the installed bazaar client"""
     import re

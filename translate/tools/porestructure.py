@@ -31,6 +31,7 @@ import sys
 from translate.storage import po
 from translate.misc import optrecurse
 
+
 class SplitOptionParser(optrecurse.RecursiveOptionParser):
     """a specialized Option Parser for posplit"""
     def parse_args(self, args=None, values=None):
@@ -104,6 +105,7 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
                     outputpofile.units.append(pounit)   #TODO:perhaps check to see if it's already there...
                     outputfile = open(fulloutputpath, 'w')
                     outputfile.write(str(outputpofile))
+
 
 def main():
     #outputfile extentions will actually be determined by the comments in the po files

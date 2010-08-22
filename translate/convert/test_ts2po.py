@@ -5,6 +5,7 @@ from translate.convert import ts2po
 from translate.convert import test_convert
 from translate.misc import wStringIO
 
+
 class TestTS2PO:
     def ts2po(self, tssource):
         converter = ts2po.ts2po()
@@ -106,6 +107,7 @@ new line</translation>
         assert pofile.units[1].getnotes("developer") == "(obsolete)"
         # Test that we aren't following the old style
         assert "_ OBSOLETE" not in pofile.units[1].getnotes()
+
 
 class TestTS2POCommand(test_convert.TestConvertCommand, TestTS2PO):
     """Tests running actual ts2po commands on files"""

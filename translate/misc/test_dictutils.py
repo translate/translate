@@ -8,11 +8,13 @@ def test_add():
     d[2] = 3
     assert len(d.order) == 1
 
+
 def test_delete():
     d = dictutils.ordereddict()
     d[2] = 3
     del d[2]
     assert len(d.order) == 0
+
 
 def test_pop():
     d = dictutils.ordereddict()

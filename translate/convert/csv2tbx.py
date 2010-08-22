@@ -24,6 +24,7 @@
 from translate.storage import tbx
 from translate.storage import csvl10n
 
+
 class csv2tbx:
     """a class that takes translations from a .csv file and puts them in a .tbx file"""
     def __init__(self, charset=None):
@@ -48,6 +49,7 @@ class csv2tbx:
             self.tbxfile.addunit(term)
         return self.tbxfile
 
+
 def convertcsv(inputfile, outputfile, templatefile, charset=None, columnorder=None):
     """reads in inputfile using csvl10n, converts using csv2tbx, writes to outputfile"""
     inputstore = csvl10n.csvfile(inputfile, fieldnames=columnorder)
@@ -57,6 +59,7 @@ def convertcsv(inputfile, outputfile, templatefile, charset=None, columnorder=No
         return 0
     outputfile.write(str(outputstore))
     return 1
+
 
 def main():
     from translate.convert import convert

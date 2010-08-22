@@ -139,6 +139,7 @@ class csvunit(base.TranslationUnit):
             target = target.encode(encoding)
         return {'location': comment, 'source': source, 'target': target}
 
+
 class csvfile(base.TranslationStore):
     """This class represents a .csv file with various lines.
     The default format contains three columns: location, source, target"""

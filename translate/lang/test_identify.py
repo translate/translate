@@ -158,6 +158,7 @@ Momente ihrer Erfahrung".
 zusammen.
 """]
 
+
 class TestLanguageIdentifier(object):
     def setup_class(self):
         self.langident = LanguageIdentifier()

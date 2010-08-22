@@ -275,6 +275,7 @@ LANG_TEAM_LANGUAGE_SNIPPETS = {
 """Language codes with snippets of language names, including English, native
 spelling and varients, that can be used to uniquely identify the language"""
 
+
 def _regex_guesser(prefilter, regex, string, postfilter=None):
     """Use regular expressions to extract the language team
 
@@ -302,6 +303,7 @@ def _regex_guesser(prefilter, regex, string, postfilter=None):
         if regex_lang and regex_lang != 'en':
             return regex_lang
     return None
+
 
 def _nofilter(text):
     """Return the supplied text unchanged"""

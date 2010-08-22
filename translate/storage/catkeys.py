@@ -79,10 +79,12 @@ _escape_map = dict([(value, key) for (key, value) in _unescape_map.items()])
 # current implementation is just based on something simple that will work with
 # investaged files.  The only escapes found were "\n", "\t", "\\n"
 
+
 def _escape(string):
     if string:
         string = string.replace(r"\n", r"\\n").replace("\n", "\\n").replace("\t", "\\t")
     return string
+
 
 def _unescape(string):
     if string:
@@ -105,6 +107,7 @@ class CatkeysDialect(csv.Dialect):
         quotechar = '"'
 csv.register_dialect("catkeys", CatkeysDialect)
 
+
 class CatkeysHeader(object):
     """A catkeys translation memory header"""
     def __init__(self, header=None):
@@ -123,6 +126,7 @@ class CatkeysHeader(object):
         """Set a human readable target language"""
         self._header_dict['language'] = tr_lang('en')(newlang)
     targetlang = property(None, settargetlang)
+
 
 class CatkeysUnit(base.TranslationUnit):
     """A catkeys translation memory unit"""

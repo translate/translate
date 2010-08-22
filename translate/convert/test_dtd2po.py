@@ -7,6 +7,7 @@ from translate.misc import wStringIO
 from translate.storage import po
 from translate.storage import dtd
 
+
 class TestDTD2PO:
     def dtd2po(self, dtdsource, dtdtemplate=None):
         """helper that converts dtd source to po source without requiring files"""
@@ -351,6 +352,7 @@ Some other text
         pofile = self.dtd2po(dtdsource, dtdtemplate)
         print pofile
         assert self.countelements(pofile) == 0
+
 
 class TestDTD2POCommand(test_convert.TestConvertCommand, TestDTD2PO):
     """Tests running actual dtd2po commands on files"""

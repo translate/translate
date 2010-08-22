@@ -3,6 +3,7 @@
 
 from translate.filters import autocorrect
 
+
 class TestAutocorrect:
 
     def correct(self, msgid, msgstr, expected):

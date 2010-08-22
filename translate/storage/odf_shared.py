@@ -20,6 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
+
 def define_tables():
     # Copied from git commit 96b9f1419453d8079dd1631c329f04d6e005baae from
     # git://hforge.org/itools.git

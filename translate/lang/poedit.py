@@ -207,6 +207,7 @@ dialects = {
 }
 """Language dialects based on ISO 3166 country names, 'None' is the default fallback"""
 
+
 def isocode(language, country=None):
     """Returns a language code for the given Poedit language name.
 

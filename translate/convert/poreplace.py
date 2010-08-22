@@ -25,6 +25,7 @@
 
 from translate.storage import po
 
+
 class poreplace:
     def convertstring(self, postr):
         """does the conversion required on the given string (nothing in this case)"""
@@ -48,6 +49,7 @@ class poreplace:
         outputfile.write(str(outputstore))
         return 1
 
+
 def main(converterclass, argv=None):
     # handle command line options
     from translate.convert import convert
@@ -55,6 +57,7 @@ def main(converterclass, argv=None):
     formats = {"po": ("po", replacer.convertpo), "pot": ("pot", replacer.convertpo)}
     parser = convert.ConvertOptionParser(formats, usepots=True)
     parser.run(argv)
+
 
 if __name__ == '__main__':
     main(poreplace)

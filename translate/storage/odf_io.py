@@ -24,19 +24,23 @@ import zipfile
 from lxml import etree
 from translate.storage.xml_name import XmlNamer
 
+
 def open_odf(filename):
     z = zipfile.ZipFile(filename, 'r')
     return {'content.xml': z.read("content.xml"),
             'meta.xml':    z.read("meta.xml"),
             'styles.xml':  z.read("styles.xml")}
 
+
 def copy_odf(input_zip, output_zip, exclusion_list):
     for name in [name for name in input_zip.namelist() if name not in exclusion_list]:
         output_zip.writestr(name, input_zip.read(name))
     return output_zip
 
+
 def namespaced(nsmap, short_namespace, tag):
     return '{%s}%s' % (nsmap[short_namespace], tag)
+
 
 def add_file(output_zip, manifest_data, new_filename, new_data):
     root = etree.fromstring(manifest_data)

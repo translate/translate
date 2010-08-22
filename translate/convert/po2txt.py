@@ -32,6 +32,7 @@ try:
 except ImportError:
     textwrap = None
 
+
 class po2txt:
     """po2txt can take a po file and generate txt. best to give it a template file otherwise will just concat msgstrs"""
     def __init__(self, wrap=None):
@@ -70,6 +71,7 @@ class po2txt:
                     txtresult = txtresult.replace(txtsource, txttarget)
         return txtresult
 
+
 def converttxt(inputfile, outputfile, templatefile, wrap=None, includefuzzy=False, encoding='utf-8'):
     """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
     inputstore = factory.getobject(inputfile)
@@ -81,6 +83,7 @@ def converttxt(inputfile, outputfile, templatefile, wrap=None, includefuzzy=Fals
         outputstring = convertor.mergestore(inputstore, templatestring, includefuzzy)
     outputfile.write(outputstring.encode('utf-8'))
     return 1
+
 
 def main(argv=None):
     from translate.convert import convert

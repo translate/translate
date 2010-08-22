@@ -525,6 +525,7 @@ class PyLuceneHits(CommonIndexer.CommonEnquire):
             result.append(item)
         return (stop-start, self.enquire.length(), result)
 
+
 def _occur(required, prohibited):
     if required == True and prohibited == False:
         return PyLucene.BooleanClause.Occur.MUST
@@ -536,6 +537,7 @@ def _occur(required, prohibited):
         # It is an error to specify a clause as both required
         # and prohibited
         return None
+
 
 def _get_pylucene_version():
     """get the installed pylucene version

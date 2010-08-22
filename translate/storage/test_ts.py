@@ -2,6 +2,7 @@
 
 from translate.storage import ts
 
+
 class TestTS:
     def test_construct(self):
         tsfile = ts.QtTsParser()

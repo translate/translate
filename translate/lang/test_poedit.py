@@ -1,5 +1,6 @@
 from translate.lang.poedit import isocode
 
+
 def test_isocode():
     """Test the isocode function"""
     # Standard lookup

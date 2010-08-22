@@ -6,6 +6,7 @@ from translate.convert import test_convert
 from translate.misc import wStringIO
 from translate.storage import po
 
+
 class TestPO2Prop:
     def po2prop(self, posource):
         """helper that converts po source to .properties source without requiring files"""
@@ -138,6 +139,7 @@ msgstr "translated"
         propexpectedstrings = u'''"prop" = "ṽḁḽṻḝ";\n'''.encode('utf-16')
         propfile = self.merge2prop(proptemplate, posource, personality="strings")
         assert propfile == propexpectedstrings
+
 
 class TestPO2PropCommand(test_convert.TestConvertCommand, TestPO2Prop):
     """Tests running actual po2prop commands on files"""

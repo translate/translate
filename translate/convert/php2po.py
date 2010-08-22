@@ -29,6 +29,7 @@ import sys
 from translate.storage import po
 from translate.storage import php
 
+
 class php2po:
     """convert a .php file to a .po file for handling the translation..."""
     def convertstore(self, inputstore, duplicatestyle="msgctxt"):
@@ -80,6 +81,7 @@ class php2po:
         outputunit.target = ""
         return outputunit
 
+
 def convertphp(inputfile, outputfile, templatefile, pot=False, duplicatestyle="msgctxt"):
     """reads in inputfile using php, converts using php2po, writes to outputfile"""
     inputstore = php.phpfile(inputfile)
@@ -94,6 +96,7 @@ def convertphp(inputfile, outputfile, templatefile, pot=False, duplicatestyle="m
     outputfile.write(str(outputstore))
     return 1
 
+
 def main(argv=None):
     from translate.convert import convert
     formats = {"php": ("po", convertphp), ("php", "php"): ("po", convertphp)}
@@ -101,6 +104,7 @@ def main(argv=None):
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.run(argv)
+
 
 if __name__ == '__main__':
     main()

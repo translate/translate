@@ -40,6 +40,7 @@ from translate.lang import factory
 
 # Consider providing quickstats
 
+
 class Statistics(object):
     """Manages statistics for storage objects."""
 

@@ -30,6 +30,7 @@ usage instructions
 from translate.storage import po
 from translate.storage import ts
 
+
 class ts2po:
     def __init__(self, duplicatestyle="msgctxt"):
         self.duplicatestyle = duplicatestyle
@@ -69,6 +70,7 @@ class ts2po:
         thetargetfile.removeduplicates(self.duplicatestyle)
         return thetargetfile
 
+
 def convertts(inputfile, outputfile, templates, duplicatestyle="msgctxt"):
     """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
     convertor = ts2po(duplicatestyle=duplicatestyle)
@@ -77,6 +79,7 @@ def convertts(inputfile, outputfile, templates, duplicatestyle="msgctxt"):
         return 0
     outputfile.write(str(outputstore))
     return 1
+
 
 def main(argv=None):
     from translate.convert import convert

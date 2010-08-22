@@ -25,6 +25,7 @@ based "rich" string element trees.
 
 from translate.storage.placeables import base, StringElem
 
+
 def parse(tree, parse_funcs):
     """Parse placeables from the given string or sub-tree by using the
         parsing functions provided.

@@ -24,6 +24,7 @@
 
 from translate.storage import factory
 
+
 class reini:
     def __init__(self, templatefile, inputstore, dialect="default"):
         from translate.storage import ini
@@ -46,6 +47,7 @@ class reini:
                     unit.target = unit.source
         return str(self.templatestore)
 
+
 def convertini(inputfile, outputfile, templatefile, includefuzzy=False, dialect="default"):
     inputstore = factory.getobject(inputfile)
     if templatefile is None:
@@ -56,8 +58,10 @@ def convertini(inputfile, outputfile, templatefile, includefuzzy=False, dialect=
     outputfile.write(outputstring)
     return 1
 
+
 def convertisl(inputfile, outputfile, templatefile, includefuzzy=False, dialect="inno"):
     convertini(inputfile, outputfile, templatefile, includefuzzy, dialect)
+
 
 def main(argv=None):
     # handle command line options
@@ -69,6 +73,7 @@ def main(argv=None):
     parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
     parser.add_fuzzy_option()
     parser.run(argv)
+
 
 if __name__ == '__main__':
     main()

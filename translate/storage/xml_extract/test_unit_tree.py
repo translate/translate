@@ -25,16 +25,19 @@ from translate.storage import factory
 
 # _split_xpath_component
 
+
 def test__split_xpath_component():
     assert (u'some-tag', 0) == unit_tree._split_xpath_component(u'some-tag[0]')
 
 # _split_xpath
+
 
 def test__split_xpath():
     assert [(u'p', 4), (u'text', 3), (u'body', 2), (u'document-content', 1)] == \
         unit_tree._split_xpath(u'document-content[1]/body[2]/text[3]/p[4]')
 
 # _add_unit_to_tree
+
 
 def make_tree_1(unit):
     root = unit_tree.XPathTree()
@@ -56,6 +59,7 @@ def make_tree_1(unit):
 
     return root
 
+
 def make_tree_2(unit_1, unit_2):
     root = make_tree_1(unit_1)
     node = root.children[u'document-content', 1]
@@ -72,6 +76,7 @@ def make_tree_2(unit_1, unit_2):
     node.unit = unit_2
 
     return root
+
 
 def test__add_unit_to_tree():
     xliff_file = factory.classes[u'xlf']()

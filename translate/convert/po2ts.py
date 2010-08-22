@@ -29,6 +29,7 @@ usage instructions
 from translate.storage import po
 from translate.storage import ts
 
+
 class po2ts:
     def convertstore(self, inputstore, templatefile=None, context=None):
         """converts a .po file to .ts format (using a template .ts file if given)"""
@@ -62,6 +63,7 @@ class po2ts:
                 tsfile.addtranslation(contextname, source, translation, comment, transtype, createifmissing=True)
         return tsfile.getxml()
 
+
 def convertpo(inputfile, outputfile, templatefile, context):
     """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
     inputstore = po.pofile(inputfile)
@@ -71,6 +73,7 @@ def convertpo(inputfile, outputfile, templatefile, context):
     outputstring = convertor.convertstore(inputstore, templatefile, context)
     outputfile.write(outputstring)
     return 1
+
 
 def main(argv=None):
     from translate.convert import convert

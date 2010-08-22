@@ -32,6 +32,7 @@ from translate.convert import convert
 from translate.misc import wStringIO
 import os
 
+
 class po2tmx:
     def convertfile(self, inputfile, sourcelanguage='en', targetlanguage=None):
         """converts a .po file to TMX file"""
@@ -57,11 +58,13 @@ class po2tmx:
             # TODO place source location in comments
             tmxfile.addtranslation(source, sourcelanguage, translation, targetlanguage)
 
+
 def convertpo(inputfile, outputfile, templatefile, sourcelanguage='en', targetlanguage=None):
     """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
     convertor = po2tmx()
     convertor.convertfiles(inputfile, outputfile.tmxfile, sourcelanguage, targetlanguage)
     return 1
+
 
 class tmxmultifile:
     def __init__(self, filename, mode=None):
@@ -96,6 +99,7 @@ class TmxOptionParser(convert.ArchiveConvertOptionParser):
         self.output = open(options.output, 'w')
         options.outputarchive.tmxfile.setsourcelanguage(options.sourcelanguage)
         self.output.write(str(options.outputarchive.tmxfile))
+
 
 def main(argv=None):
     formats = {"po": ("tmx", convertpo), ("po", "tmx"): ("tmx", convertpo)}

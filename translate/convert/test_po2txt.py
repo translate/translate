@@ -5,6 +5,7 @@ from translate.convert import po2txt
 from translate.convert import test_convert
 from translate.misc import wStringIO
 
+
 class TestPO2Txt:
     def po2txt(self, posource, txttemplate=None):
         """helper that converts po source to txt source without requiring files"""
@@ -44,6 +45,7 @@ class TestPO2Txt:
         posource = '#, fuzzy\nmsgid "Heading"\nmsgstr "Opskrif"\n\nmsgid "Body text"\nmsgstr "Lyfteks"\n'
         assert self.po2txt(posource) == "Heading\n\nLyfteks"
         assert self.po2txt(posource, txttemplate) == "Heading\n\nLyfteks"
+
 
 class TestPO2TxtCommand(test_convert.TestConvertCommand, TestPO2Txt):
     """Tests running actual po2txt commands on files"""

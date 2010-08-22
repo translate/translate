@@ -1,5 +1,6 @@
 from translate.search import terminology
 
+
 class TestTerminology:
     """Test terminology matching"""
 

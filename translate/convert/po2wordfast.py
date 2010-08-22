@@ -32,6 +32,7 @@ from translate.convert import convert
 from translate.misc import wStringIO
 import os
 
+
 class po2wordfast:
     def convertfiles(self, inputfile, wffile, sourcelanguage='en', targetlanguage=None):
         """converts a .po file (possibly many) to a Wordfast TM file"""
@@ -45,12 +46,14 @@ class po2wordfast:
             newunit.target = target
             newunit.targetlang = targetlanguage
 
+
 def convertpo(inputfile, outputfile, templatefile, sourcelanguage='en', targetlanguage=None):
     """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
     convertor = po2wordfast()
     outputfile.wffile.header.targetlang = targetlanguage
     convertor.convertfiles(inputfile, outputfile.wffile, sourcelanguage, targetlanguage)
     return 1
+
 
 class wfmultifile:
     def __init__(self, filename, mode=None):
@@ -83,6 +86,7 @@ class WfOptionParser(convert.ArchiveConvertOptionParser):
         self.output = open(options.output, 'w')
         #options.outputarchive.wffile.setsourcelanguage(options.sourcelanguage)
         self.output.write(str(options.outputarchive.wffile))
+
 
 def main(argv=None):
     formats = {"po": ("txt", convertpo), ("po", "txt"): ("txt", convertpo)}

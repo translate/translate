@@ -4,6 +4,7 @@ from translate.convert import xliff2po
 from translate.misc import wStringIO
 from translate.storage.test_base import headerless_len, first_translatable
 
+
 class TestXLIFF2PO:
     xliffskeleton = '''<?xml version="1.0" ?>
 <xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">

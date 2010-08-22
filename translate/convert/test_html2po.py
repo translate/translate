@@ -5,6 +5,7 @@ from translate.convert import po2html
 from translate.convert import test_convert
 from translate.misc import wStringIO
 
+
 class TestHTML2PO:
     def html2po(self, markup, includeuntagged=False, duplicatestyle="msgctxt", keepcomments=False):
         """Helper to convert html to po without a file."""
@@ -415,6 +416,7 @@ ghi ?>'''
         self.compareunit(pofile, 1, 'A paragraph.')
         notes = pofile.getunits()[-1].getnotes()
         assert unicode(notes) == ' a comment \n with another comment '
+
 
 class TestHTML2POCommand(test_convert.TestConvertCommand, TestHTML2PO):
     """Tests running actual html2po commands on files"""

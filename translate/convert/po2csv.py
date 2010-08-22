@@ -28,6 +28,7 @@ usage instructions
 from translate.storage import po
 from translate.storage import csvl10n
 
+
 class po2csv:
     def convertcomments(self, inputunit):
         return " ".join(inputunit.getlocations())
@@ -65,6 +66,7 @@ class po2csv:
                     outputstore.addunit(outputunit)
         return outputstore
 
+
 def convertcsv(inputfile, outputfile, templatefile, columnorder=None):
     """reads in inputfile using po, converts using po2csv, writes to outputfile"""
     # note that templatefile is not used, but it is required by the converter...
@@ -75,6 +77,7 @@ def convertcsv(inputfile, outputfile, templatefile, columnorder=None):
     outputstore = convertor.convertstore(inputstore, columnorder)
     outputfile.write(str(outputstore))
     return 1
+
 
 def main(argv=None):
     from translate.convert import convert

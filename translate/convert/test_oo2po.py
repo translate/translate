@@ -10,6 +10,7 @@ from translate.storage.poheader import poheader
 from translate.storage import oo
 import os
 
+
 class TestOO2PO:
     target_filetype = po.pofile
     conversion_module = oo2po
@@ -157,6 +158,7 @@ class TestOO2PO:
             titleunit = units[2]
             assert titleunit.source == "Title"
             assert titleunit.getnotes("developer") == ""
+
 
 class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2PO):
     """Tests running actual oo2po commands on files"""

@@ -24,6 +24,7 @@ each tokenizing function takes a string as input and returns a list of tokens
 # along with translate; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+
 def stringeval(text):
     """takes away repeated quotes (escapes) and returns the string represented by the text"""
     stringchar = text[0]
@@ -31,6 +32,7 @@ def stringeval(text):
         # scratch your head
         raise ValueError, "error parsing escaped string: %r" % text
     return text[1:-1].replace(stringchar+stringchar, stringchar)
+
 
 def stringquote(text):
     """escapes quotes as neccessary and returns a string representing the text"""
@@ -42,6 +44,7 @@ def stringquote(text):
     else:
         return "'" + text + "'"
 
+
 class ParserError(ValueError):
     """Intelligent parser error"""
     def __init__(self, parser, message, tokennum):
@@ -52,6 +55,7 @@ class ParserError(ValueError):
             (message, line, charpos, parser.tokens[tokennum]))
         self.parser = parser
         self.tokennum = tokennum
+
 
 class SimpleParser:
     """this is a simple parser"""

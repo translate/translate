@@ -3,6 +3,7 @@
 from translate.convert import prop2mozfunny
 from translate.misc import wStringIO
 
+
 class TestPO2Prop:
     def merge2inc(self, incsource, posource):
         """helper that merges po translations to .inc source without requiring files"""

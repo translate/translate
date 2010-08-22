@@ -33,6 +33,7 @@ import re
 from translate.misc import zipfileext
 ZipFileBase = zipfileext.ZipFileExt
 
+
 from translate.misc import wStringIO
 # this is a fix to the StringIO in Python 2.3.3
 # submitted as patch 951915 on sourceforge
@@ -43,6 +44,7 @@ class FixedStringIO(wStringIO.StringIO):
 
 NamedStringInput = wStringIO.StringIO
 NamedStringOutput = wStringIO.StringIO
+
 
 def _commonprefix(itemlist):
     def cp(a, b):
@@ -56,11 +58,13 @@ def _commonprefix(itemlist):
     else:
         return ''
 
+
 def rememberchanged(self, method):
     def changed(*args, **kwargs):
         self.changed = True
         method(*args, **kwargs)
     return changed
+
 
 class CatchPotentialOutput(NamedStringInput, object):
     """catches output if there has been, before closing"""
@@ -91,6 +95,7 @@ class CatchPotentialOutput(NamedStringInput, object):
         """use this method to force the closing of the stream if it isn't closed yet"""
         if not self.closed:
             self.close()
+
 
 class ZipFileCatcher(ZipFileBase, object):
     """a ZipFile that calls any methods its instructed to before closing (useful for catching stream output)"""
@@ -129,6 +134,7 @@ class ZipFileCatcher(ZipFileBase, object):
             self.delete(filename)
         self.writestr(zinfo_or_arcname, bytes)
         self.writeendrec()
+
 
 class XpiFile(ZipFileCatcher):
     def __init__(self, *args, **kwargs):
@@ -536,6 +542,7 @@ class XpiFile(ZipFileCatcher):
         except IndexError:
             return None
         return self.openoutputstream(jarfilename, filename)
+
 
 if __name__ == '__main__':
     import optparse

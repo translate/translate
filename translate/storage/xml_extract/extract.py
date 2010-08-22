@@ -29,10 +29,12 @@ from translate.storage.xml_extract import xpath_breadcrumb
 from translate.storage.xml_extract import misc
 from translate.storage.placeables import xliff, StringElem
 
+
 def Nullable(t):
     return IsOneOf(t, type(None))
 
 TranslatableClass = Class('Translatable')
+
 
 class Translatable(object):
     """A node corresponds to a translatable element. A node may
@@ -50,9 +52,11 @@ class Translatable(object):
 
     placeables = property(_get_placeables)
 
+
 @accepts(IsCallable(), Translatable, state=[Any()])
 def reduce_unit_tree(f, unit_node, *state):
     return misc.reduce_tree(f, unit_node, unit_node, lambda unit_node: unit_node.placeables, *state)
+
 
 class ParseState(object):
     """Maintain constants and variables used during the walking of a
@@ -64,6 +68,7 @@ class ParseState(object):
         self.xpath_breadcrumb = xpath_breadcrumb.XPathBreadcrumb()
         self.placeable_name = u"<top-level>"
         self.nsmap = nsmap
+
 
 @accepts(etree._Element, ParseState)
 def _process_placeable(dom_node, state):
@@ -81,6 +86,7 @@ def _process_placeable(dom_node, state):
     else:
         raise Exception("BUG: find_translatable_dom_nodes should never return more than a single translatable")
 
+
 @accepts(etree._Element, ParseState)
 def _process_placeables(dom_node, state):
     """Return a list of placeables and list with
@@ -93,12 +99,14 @@ def _process_placeables(dom_node, state):
         source.extend([_process_placeable(child, state), unicode(child.tail or u"")])
     return source
 
+
 @accepts(etree._Element, ParseState)
 def _process_translatable(dom_node, state):
     source = [unicode(dom_node.text or u"")] + _process_placeables(dom_node, state)
     translatable = Translatable(state.placeable_name, state.xpath_breadcrumb.xpath, dom_node, source)
     translatable.is_inline = state.is_inline
     return [translatable]
+
 
 @accepts(etree._Element, ParseState)
 def _process_children(dom_node, state):
@@ -112,11 +120,13 @@ def _process_children(dom_node, state):
     else:
         return children
 
+
 def compact_tag(nsmap, namespace, tag):
     if namespace in nsmap:
         return u'%s:%s' % (nsmap[namespace], tag)
     else:
         return u'{%s}%s' % (namespace, tag)
+
 
 @accepts(etree._Element, ParseState)
 def find_translatable_dom_nodes(dom_node, state):
@@ -159,6 +169,7 @@ def find_translatable_dom_nodes(dom_node, state):
             return _process_children(dom_node, state)
     return with_(nested(xpath_set(), placeable_set(), inline_set()), with_block)
 
+
 class IdMaker(object):
     def __init__(self):
         self._max_id = 0
@@ -172,6 +183,7 @@ class IdMaker(object):
 
     def has_id(self, obj):
         return obj in self._obj_id_map
+
 
 @accepts(Nullable(Translatable), Translatable, IdMaker)
 def _to_placeables(parent_translatable, translatable, id_maker):
@@ -187,6 +199,7 @@ def _to_placeables(parent_translatable, translatable, id_maker):
                 result.append(xliff.X(id=id, xid=chunk.xpath))
     return result
 
+
 @accepts(base.TranslationStore, Nullable(Translatable), Translatable, IdMaker)
 def _add_translatable_to_store(store, parent_translatable, translatable, id_maker):
     """Construct a new translation unit, set its source and location
@@ -196,6 +209,7 @@ def _add_translatable_to_store(store, parent_translatable, translatable, id_make
     unit.rich_source = [StringElem(_to_placeables(parent_translatable, translatable, id_maker))]
     unit.addlocation(translatable.xpath)
     store.addunit(unit)
+
 
 @accepts(Translatable)
 def _contains_translatable_text(translatable):
@@ -209,6 +223,7 @@ def _contains_translatable_text(translatable):
                 return True
     return False
 
+
 @accepts(base.TranslationStore)
 def _make_store_adder(store):
     """Return a function which, when called with a Translatable will add
@@ -220,6 +235,7 @@ def _make_store_adder(store):
         _add_translatable_to_store(store, parent_translatable, translatable, id_maker)
 
     return add_to_store
+
 
 @accepts([Translatable], IsCallable(), Nullable(Translatable), Number)
 def _walk_translatable_tree(translatables, f, parent_translatable, rid):
@@ -233,8 +249,10 @@ def _walk_translatable_tree(translatables, f, parent_translatable, rid):
 
         _walk_translatable_tree(translatable.placeables, f, new_parent_translatable, rid)
 
+
 def reverse_map(a_map):
     return dict((value, key) for key, value in a_map.iteritems())
+
 
 @accepts(lambda obj: hasattr(obj, "read"), base.TranslationStore, ParseState, Nullable(IsCallable()))
 def build_store(odf_file, store, parse_state, store_adder=None):

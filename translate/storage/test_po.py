@@ -8,6 +8,7 @@ from translate.misc import wStringIO
 from translate.misc.multistring import multistring
 from py.test import raises
 
+
 def test_roundtrip_quoting():
     specials = ['Fish & chips', 'five < six', 'six > five',
                 'Use &nbsp;', 'Use &amp;nbsp;'
@@ -19,6 +20,7 @@ def test_roundtrip_quoting():
         unquoted_special = pypo.unquotefrompo(quoted_special)
         print "special: %r\nquoted: %r\nunquoted: %r\n" % (special, quoted_special, unquoted_special)
         assert special == unquoted_special
+
 
 class TestPOUnit(test_base.TestTranslationUnit):
     UnitClass = po.pounit
@@ -154,6 +156,7 @@ class TestPOUnit(test_base.TestTranslationUnit):
 #         unit = self.unit
 #         unit.rich_target = [['a', G('42', ['b']), 'c']]
 #         assert unit.rich_target == [['abc']]
+
 
 class TestPOFile(test_base.TestTranslationStore):
     StoreClass = po.pofile

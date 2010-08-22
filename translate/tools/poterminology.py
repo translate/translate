@@ -33,6 +33,7 @@ from translate.storage import po
 from translate.storage import factory
 from translate.misc import file_discovery
 
+
 def create_termunit(term, unit, targets, locations, sourcenotes, transnotes, filecounts):
     termunit = po.pounit(term)
     if unit is not None:
@@ -55,6 +56,7 @@ def create_termunit(term, unit, targets, locations, sourcenotes, transnotes, fil
     for filename, count in filecounts.iteritems():
         termunit.addnote("(poterminology) %s (%d)\n" % (filename, count), 'translator')
     return termunit
+
 
 class TerminologyExtractor(object):
     def __init__(self, foldtitle=True, ignorecase=False, accelchars="", termlength=3,
@@ -445,12 +447,15 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
             termfile.units.append(unit)
         open(options.output, "w").write(str(termfile))
 
+
 def fold_case_option(option, opt_str, value, parser):
     parser.values.ignorecase = False
     parser.values.foldtitle = True
 
+
 def preserve_case_option(option, opt_str, value, parser):
     parser.values.ignorecase = parser.values.foldtitle = False
+
 
 def main():
     formats = {"po": ("po", None), "pot": ("pot", None), None: ("po", None)}

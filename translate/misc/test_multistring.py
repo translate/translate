@@ -4,6 +4,7 @@ from translate.misc import multistring
 from translate.misc import test_autoencode
 from py import test
 
+
 class TestMultistring(test_autoencode.TestAutoencode):
     type2test = multistring.multistring
 

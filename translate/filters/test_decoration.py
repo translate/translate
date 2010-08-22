@@ -4,6 +4,7 @@
 
 from translate.filters import decoration
 
+
 def test_spacestart():
     """test operation of spacestart()"""
     assert decoration.spacestart("  Start") == "  "
@@ -14,6 +15,7 @@ def test_spacestart():
     assert decoration.spacestart(u"\u200bStart") == u"\u200b"
     # Some exotic spaces
     assert decoration.spacestart(u"\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200aStart") == u"\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a"
+
 
 def test_isvalidaccelerator():
     """test the isvalidaccelerator() function"""
@@ -26,6 +28,7 @@ def test_isvalidaccelerator():
     assert decoration.isvalidaccelerator(u"a", u"aeiou") == True
     assert decoration.isvalidaccelerator(u"ḽ", u"ḓṱḽṋṅ") == True
     assert decoration.isvalidaccelerator(u"a", u"ḓṱḽṋṅ") == False
+
 
 def test_find_marked_variables():
     """check that we cna identify variables correctly, first value is start location, i
@@ -43,6 +46,7 @@ def test_find_marked_variables():
     variables = decoration.findmarkedvariables("The &variable.variable; string", "&", ";")
     assert variables == [(4, "variable.variable")]
 
+
 def test_getnumbers():
     """test operation of getnumbers()"""
     assert decoration.getnumbers(u"") == []
@@ -54,6 +58,7 @@ def test_getnumbers():
     #assert decoration.getnumbers(u"R5,99") == ["5.99"]
     #assert decoration.getnumbers(u"1\u00a0000,99") == ["1000.99"]
     assert decoration.getnumbers(u"36°") == [u"36°"]
+
 
 def test_getfunctions():
     """test operation of getfunctions()"""

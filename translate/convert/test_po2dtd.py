@@ -10,6 +10,7 @@ from translate.storage import dtd
 from py import test
 import warnings
 
+
 class TestPO2DTD:
     def setup_method(self, method):
         warnings.resetwarnings()

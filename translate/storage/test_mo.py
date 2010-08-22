@@ -8,6 +8,7 @@ from translate.storage import test_base
 from translate.storage import mo
 from translate.storage import factory
 
+
 class TestMOUnit(test_base.TestTranslationUnit):
     UnitClass = mo.mounit
 
@@ -95,6 +96,7 @@ msgid "tree"
 msgid_plural "trees"
 msgstr[0] ""
 ''']
+
 
 class TestMOFile(test_base.TestTranslationStore):
     StoreClass = mo.mofile

@@ -6,6 +6,7 @@ from translate.convert import test_convert
 from translate.misc import wStringIO
 from translate.storage import po
 
+
 class TestPO2Ini:
     def po2ini(self, posource):
         """helper that converts po source to .ini source without requiring files"""
@@ -99,6 +100,7 @@ msgstr "ṽḁḽṻḝ\tṽḁḽṻḝ2\n"
         inifile = self.merge2ini(initemplate, posource, "inno")
         print inifile
         assert inifile == iniexpected
+
 
 class TestPO2IniCommand(test_convert.TestConvertCommand, TestPO2Ini):
     """Tests running actual po2ini commands on files"""

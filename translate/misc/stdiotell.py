@@ -21,6 +21,7 @@
 
 """A wrapper for sys.stdout etc that provides tell() for current position"""
 
+
 class StdIOWrapper:
     def __init__(self, stream):
         self.stream = stream

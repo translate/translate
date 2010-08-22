@@ -45,6 +45,7 @@ podebug_parsers = general.parsers
 podebug_parsers.remove(general.CapsPlaceable.parse)
 podebug_parsers.remove(general.CamelCasePlaceable.parse)
 
+
 class podebug:
     def __init__(self, format=None, rewritestyle=None, ignoreoption=None):
         if format is None:
@@ -292,6 +293,7 @@ class podebug:
             baseshrunk = baseshrunk[:baseshrunk.find(".")]
         return dirshrunk + baseshrunk
 
+
 def convertpo(inputfile, outputfile, templatefile, format=None, rewritestyle=None, ignoreoption=None):
     """Reads in inputfile, changes it to have debug strings, writes to outputfile."""
     # note that templatefile is not used, but it is required by the converter...
@@ -302,6 +304,7 @@ def convertpo(inputfile, outputfile, templatefile, format=None, rewritestyle=Non
     outputstore = convertor.convertstore(inputstore)
     outputfile.write(str(outputstore))
     return 1
+
 
 def main():
     from translate.convert import convert

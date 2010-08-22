@@ -24,6 +24,7 @@
 import sys
 from translate.storage import po
 
+
 class ini2po:
     """convert a .ini file to a .po file for handling the translation..."""
     def convert_store(self, input_store, duplicatestyle="msgctxt"):
@@ -77,6 +78,7 @@ class ini2po:
         output_unit.target = ""
         return output_unit
 
+
 def convertini(input_file, output_file, template_file, pot=False, duplicatestyle="msgctxt", dialect="default"):
     """Reads in L{input_file} using ini, converts using L{ini2po}, writes to L{output_file}"""
     from translate.storage import ini
@@ -92,8 +94,10 @@ def convertini(input_file, output_file, template_file, pot=False, duplicatestyle
     output_file.write(str(output_store))
     return 1
 
+
 def convertisl(input_file, output_file, template_file, pot=False, duplicatestyle="msgctxt", dialect="inno"):
     return convertini(input_file, output_file, template_file, pot=False, duplicatestyle="msgctxt", dialect=dialect)
+
 
 def main(argv=None):
     from translate.convert import convert
@@ -106,6 +110,7 @@ def main(argv=None):
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.run(argv)
+
 
 if __name__ == '__main__':
     main()

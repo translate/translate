@@ -30,6 +30,7 @@ from xml.parsers import expat
 
 basicfixtag = ElementTree.fixtag
 
+
 def makefixtagproc(namespacemap):
     """this constructs an alternative fixtag procedure that will use appropriate names for namespaces..."""
     def fixtag(tag, namespaces):
@@ -50,6 +51,7 @@ def makefixtagproc(namespacemap):
         return "%s:%s" % (prefix, tag), xmlns
     return fixtag
 
+
 def splitnamespace(fulltag):
     if '{' in fulltag:
         namespace = fulltag[fulltag.find('{'):fulltag.find('}')+1]
@@ -57,6 +59,7 @@ def splitnamespace(fulltag):
         namespace = ""
     tag = fulltag.replace(namespace, "", 1)
     return namespace, tag
+
 
 class XMLWrapper:
     """simple wrapper for xml objects"""
@@ -126,10 +129,12 @@ class XMLWrapper:
         e = ElementTree.ElementTree(self.obj)
         e.write(file, encoding)
 
+
 def BuildTree(xmlstring):
     parser = ElementTree.XMLTreeBuilder()
     parser.feed(xmlstring)
     return parser.close()
+
 
 def MakeElement(tag, attrib={}, **extraargs):
     return ElementTree.Element(tag, attrib, **extraargs)

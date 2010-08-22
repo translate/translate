@@ -27,6 +27,7 @@ usage instructions
 from translate.storage import factory
 from translate.lang import factory as lang_factory
 
+
 class segment:
 
     def __init__(self, sourcelang, targetlang, stripspaces=True):
@@ -63,6 +64,7 @@ class segment:
                 tostore.addunit(newunit)
         return tostore
 
+
 def segmentfile(inputfile, outputfile, templatefile, sourcelanguage="en", targetlanguage=None, stripspaces=True):
     """reads in inputfile, segments it then, writes to outputfile"""
     # note that templatefile is not used, but it is required by the converter...
@@ -75,6 +77,7 @@ def segmentfile(inputfile, outputfile, templatefile, sourcelanguage="en", target
     outputstore = convertor.convertstore(inputstore)
     outputfile.write(str(outputstore))
     return 1
+
 
 def main():
     from translate.convert import convert

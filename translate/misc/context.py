@@ -22,6 +22,7 @@
 
 import sys
 
+
 def with_(mgr, body):
     """A function to mimic the with statement introduced in Python 2.5
 

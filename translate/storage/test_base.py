@@ -27,9 +27,11 @@ from py import test
 import os
 import warnings
 
+
 def headerless_len(units):
     """return count of translatable (non header) units"""
     return len(filter(lambda x: not x.isheader(), units))
+
 
 def first_translatable(store):
     """returns first translatable unit, skipping header if present"""
@@ -37,6 +39,7 @@ def first_translatable(store):
         return store.units[1]
     else:
         return store.units[0]
+
 
 def test_force_override():
     """Tests that derived classes are not allowed to call certain functions"""
@@ -56,6 +59,7 @@ def test_force_override():
     derivedobject = DerivedClass()
     assert test.raises(NotImplementedError, derivedobject.test)
     assert test.raises(NotImplementedError, derivedobject.classtest)
+
 
 class TestTranslationUnit:
     """Tests a TranslationUnit.
@@ -194,6 +198,7 @@ class TestTranslationUnit:
             assert unit.target.strings[1] == u'Another test string.'
         else:
             assert unit.target == u'Tëst <x>string</x>'
+
 
 class TestTranslationStore(object):
     """Tests a TranslationStore.

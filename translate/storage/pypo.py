@@ -41,6 +41,7 @@ lsep = "\n#: "
 po_unescape_map = {"\\r": "\r", "\\t": "\t", '\\"': '"', '\\n': '\n', '\\\\': '\\'}
 po_escape_map = dict([(value, key) for (key, value) in po_unescape_map.items()])
 
+
 def escapeforpo(line):
     """Escapes a line for po format. assumes no \n occurs in the line.
 
@@ -60,9 +61,10 @@ def escapeforpo(line):
     escaped_line += line[last_location:]
     return escaped_line
 
-def unescapehandler(escape):
 
+def unescapehandler(escape):
     return po_unescape_map.get(escape, escape)
+
 
 def wrapline(line):
     """Wrap text for po files."""
@@ -78,6 +80,7 @@ def wrapline(line):
                 # Append a space to the previous line:
                 wrappedlines[index] += ' '
     return wrappedlines
+
 
 def quoteforpo(text):
     """quotes the given text for a PO file, returning quoted and escaped lines"""
@@ -102,6 +105,7 @@ def quoteforpo(text):
         polines.extend(['"' + escapeforpo(line) + '"' for line in wrapline(lines[-1])])
     return polines
 
+
 def extractpoline(line):
     """Remove quote and unescape line from po file.
 
@@ -110,11 +114,14 @@ def extractpoline(line):
     extracted = quote.extractwithoutquotes(line, '"', '"', '\\', includeescapes=unescapehandler)[0]
     return extracted
 
+
 def unquotefrompo(postr):
     return u"".join([extractpoline(line) for line in postr])
 
+
 def is_null(lst):
     return lst == [] or len(lst) == 1 and lst[0] == '""'
+
 
 def extractstr(string):
     left = string.find('"')
@@ -123,6 +130,7 @@ def extractstr(string):
         return string[left:right+1]
     else:
         return string[left:] + '"'
+
 
 class pounit(pocommon.pounit):
     # othercomments = []      #   # this is another comment

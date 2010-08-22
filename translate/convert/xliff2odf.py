@@ -33,8 +33,10 @@ from translate.storage.xml_extract import extract
 from translate.storage.xml_extract import generate
 from translate.storage import odf_shared, odf_io
 
+
 def first_child(unit_node):
     return unit_node.children.values()[0]
+
 
 def translate_odf(template, input_file):
     def load_dom_trees(template):
@@ -74,6 +76,7 @@ def translate_odf(template, input_file):
     unit_trees = load_unit_tree(input_file, dom_trees)
     return translate_dom_trees(unit_trees, dom_trees)
 
+
 def write_odf(xlf_data, template, output_file, dom_trees):
     def write_content_to_odf(output_zip, dom_trees):
         for filename, dom_tree in dom_trees.iteritems():
@@ -95,6 +98,7 @@ def write_odf(xlf_data, template, output_file, dom_trees):
 #    output_zip   = odf_io.add_file(output_zip, template_zip.read('META-INF/manifest.xml'), 'translation.xlf', xlf_data)
     output_zip   = odf_io.copy_odf(template_zip, output_zip, dom_trees.keys())
     write_content_to_odf(output_zip, dom_trees)
+
 
 def convertxliff(input_file, output_file, template):
     """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
@@ -123,11 +127,13 @@ formats = {
     ('xlf', 'oth'): ("oth", convertxliff), # Web page template
 }
 
+
 def main(argv=None):
     from translate.convert import convert
 
     parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
     parser.run(argv)
+
 
 if __name__ == '__main__':
     main()

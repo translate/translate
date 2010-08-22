@@ -8,6 +8,7 @@
 from translate.storage import test_base
 from translate.storage import base
 
+
 class TestMonolingualUnit(test_base.TestTranslationUnit):
     UnitClass = base.TranslationUnit
 

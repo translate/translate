@@ -48,6 +48,7 @@ None: [],
 "plain": [],
 }
 
+
 class TxtUnit(base.TranslationUnit):
     """This class represents a block of text from a text file"""
     def __init__(self, source="", encoding="utf-8"):
@@ -94,6 +95,7 @@ class TxtUnit(base.TranslationUnit):
 
     def getlocations(self):
         return self.location
+
 
 class TxtFile(base.TranslationStore):
     """This class represents a text file, made up of txtunits"""

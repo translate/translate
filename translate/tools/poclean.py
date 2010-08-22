@@ -32,6 +32,7 @@ import re
 
 tw4winre = re.compile(r"\{0>.*?<\}\d{1,3}\{>(.*?)<0\}", re.M | re.S)
 
+
 def cleanunit(unit):
     """cleans the targets in the given unit"""
     if isinstance(unit.target, multistring):
@@ -46,11 +47,13 @@ def cleanunit(unit):
     else:
         unit.target = strings
 
+
 def cleanfile(thefile):
     """cleans the given file"""
     for unit in thefile.units:
         cleanunit(unit)
     return thefile
+
 
 def runclean(inputfile, outputfile, templatefile):
     """reads in inputfile, cleans, writes to outputfile"""
@@ -62,11 +65,13 @@ def runclean(inputfile, outputfile, templatefile):
     outputfile.write(str(fromfile))
     return True
 
+
 def main():
     from translate.convert import convert
     formats = {"po": ("po", runclean), "xlf": ("xlf", runclean), None: ("po", runclean)}
     parser = convert.ConvertOptionParser(formats, usetemplates=False, description=__doc__)
     parser.run()
+
 
 if __name__ == '__main__':
     main()

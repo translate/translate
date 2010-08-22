@@ -20,6 +20,7 @@ XLIFF_DOC = """<?xml version='1.0' encoding='utf-8'?>
 </xliff>
 """
 
+
 class TestPODebug:
     debug = podebug.podebug()
 

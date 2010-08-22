@@ -26,6 +26,7 @@ import re
 from translate.storage import base
 from HTMLParser import HTMLParser
 
+
 class htmlunit(base.TranslationUnit):
     """A unit of translatable/localisable HTML content"""
     def __init__(self, source=None):
@@ -263,6 +264,7 @@ class htmlfile(HTMLParser, base.TranslationStore):
 
     def handle_pi(self, data):
         self.handle_data("<?%s>" % data)
+
 
 class POHTMLParser(htmlfile):
     pass

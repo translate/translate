@@ -27,6 +27,7 @@ import re
 
 msgid_comment_re = re.compile("_: (.*?)\n")
 
+
 def extract_msgid_comment(text):
     """The one definitive way to extract a msgid comment out of an unescaped
     unicode string that might contain it.
@@ -144,6 +145,7 @@ def encodingToUse(encoding):
 #    except LookupError:
 #        return False
 #    return True
+
 
 class pofile(poheader.poheader, base.TranslationStore):
     Name = _("Gettext PO file") # pylint: disable-msg=E0602

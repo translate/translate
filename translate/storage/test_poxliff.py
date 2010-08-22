@@ -4,6 +4,7 @@ from translate.storage import poxliff
 from translate.storage import test_xliff
 from translate.misc.multistring import multistring
 
+
 class TestPOXLIFFUnit(test_xliff.TestXLIFFUnit):
     UnitClass = poxliff.PoXliffUnit
 
@@ -43,6 +44,7 @@ class TestPOXLIFFUnit(test_xliff.TestXLIFFUnit):
         unit.target = ["utshani", "uutshani", "uuutshani"]
         assert unit.getid() == "20"
         assert unit.units[1].getid() == "20[1]"
+
 
 class TestPOXLIFFfile(test_xliff.TestXLIFFfile):
     StoreClass = poxliff.PoXliffFile

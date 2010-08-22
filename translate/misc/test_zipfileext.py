@@ -19,6 +19,7 @@ class FixedStringIO(BrokenStringIO):
 
 StringIO.StringIO = FixedStringIO
 
+
 def zipTest(srcname, f, compression, srccontents):
     zip = zipfileext.ZipFileExt(f, "w", compression)   # Create the ZIP archive
     zip.write(srcname, "another"+os.extsep+"name")
@@ -32,6 +33,7 @@ def zipTest(srcname, f, compression, srccontents):
 
     if readData1 != srccontents or readData2 != srccontents:
         raise TestFailed, "Written data doesn't equal read data."
+
 
 def deleteTest(srcname, f, compression, srccontents):
     zip = zipfileext.ZipFileExt(f, "w", compression)   # Create the ZIP archive
@@ -57,6 +59,7 @@ def deleteTest(srcname, f, compression, srccontents):
         raise TestFailed, "zip file didn't pass test"
     if readData != srccontents:
         raise TestFailed, "Written data doesn't equal read data."
+
 
 class TestZipfile:
 

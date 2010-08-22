@@ -30,6 +30,7 @@ try:
 except ImportError:
     from StringIO import StringIO
 
+
 class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
     """a specialized Option Parser for convertor tools..."""
     def __init__(self, formats, usetemplates=False, usepots=False, allowmissingtemplate=False, description=None):
@@ -132,15 +133,18 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
             self.error(str(e))
         self.recursiveprocess(options)
 
+
 def copyinput(inputfile, outputfile, templatefile, **kwargs):
     """copies the input file to the output file"""
     outputfile.write(inputfile.read())
     return True
 
+
 def copytemplate(inputfile, outputfile, templatefile, **kwargs):
     """copies the template file to the output file"""
     outputfile.write(templatefile.read())
     return True
+
 
 class Replacer:
     """an object that knows how to replace strings in files"""
@@ -176,6 +180,7 @@ class Replacer:
 #   * requires an archivefile.openinputfile method that takes the pathname
 # - openarchiveoutputfile: returns an open output file from the archive, given the path
 #   * requires an archivefile.openoutputfile method that takes the pathname
+
 
 class ArchiveConvertOptionParser(ConvertOptionParser):
     """ConvertOptionParser that can handle recursing into single archive files.
@@ -368,6 +373,7 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
                 return False
         else:
             return super(ArchiveConvertOptionParser, self).processfile(fileprocessor, options, fullinputpath, fulloutputpath, fulltemplatepath)
+
 
 def main(argv=None):
     parser = ArchiveConvertOptionParser({}, description=__doc__)

@@ -26,6 +26,7 @@ from translate.lang import data
 
 prefix = "code_"
 
+
 def getlanguage(code):
     """This returns a language class.
 

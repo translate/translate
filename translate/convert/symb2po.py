@@ -24,6 +24,7 @@ from translate.storage import factory
 from translate.storage.pypo import extractpoline
 from translate.storage.symbian import *
 
+
 def read_header_items(ps):
     match = read_while(ps, header_item_or_end_re.match, lambda match: match is None)
     if match.groupdict()['end_comment'] is not None:
@@ -40,6 +41,7 @@ def read_header_items(ps):
     ps.read_line()
     return results
 
+
 def parse(ps):
     header = read_header_items(ps)
     units = []
@@ -55,10 +57,12 @@ def parse(ps):
         pass
     return header, units
 
+
 def read_symbian(f):
     lines = list(f)
     charset = read_charset(lines)
     return parse(ParseState(iter(lines), charset))
+
 
 def get_template_dict(template_file):
     if template_file is not None:
@@ -66,6 +70,7 @@ def get_template_dict(template_file):
         return template_header, dict(template_units)
     else:
         return {}, {}
+
 
 def build_output(units, template_header, template_dict):
     output_store = factory.classes['po']()
@@ -86,6 +91,7 @@ def build_output(units, template_header, template_dict):
         output_store.addunit(unit)
     return output_store
 
+
 def convert_symbian(input_file, output_file, template_file, pot=False, duplicatestyle="msgctxt"):
     header, units = read_symbian(input_file)
     template_header, template_dict = get_template_dict(template_file)
@@ -97,6 +103,7 @@ def convert_symbian(input_file, output_file, template_file, pot=False, duplicate
         output_file.write(str(output_store))
         return 1
 
+
 def main(argv=None):
     from translate.convert import convert
     formats = {"r01": ("po", convert_symbian)}
@@ -104,6 +111,7 @@ def main(argv=None):
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.run(argv)
+
 
 if __name__ == '__main__':
     main()

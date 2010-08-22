@@ -39,6 +39,8 @@ ID_SEPARATOR = u"\04"
 # instead when converting between xliff and other toolkit supported
 # formats
 ID_SEPARATOR_SAFE = u"__%04__"
+
+
 class xliffunit(lisa.LISAunit):
     """A single term in the xliff file."""
 

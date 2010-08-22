@@ -3,6 +3,7 @@
 
 from translate.lang import factory
 
+
 def test_punctranslate():
     """Tests that we can translate punctuation."""
     language = factory.getlanguage('es')
@@ -16,6 +17,7 @@ def test_punctranslate():
     assert language.punctranslate(u"Abc efg? Hij.") == u"¿Abc efg? Hij."
     assert language.punctranslate(u"Abc efg! Hij.") == u"¡Abc efg! Hij."
     #TODO: we should be doing better, but at the only we only support the first sentence
+
 
 def test_sentences():
     """Tests basic functionality of sentence segmentation."""

@@ -23,6 +23,7 @@
 
 from zipfile import ZipFile, struct, structCentralDir, stringCentralDir, structEndArchive, stringEndArchive
 
+
 class ZipFileExt(ZipFile, object):
     """a ZipFile that can handle replacing objects"""
     def delete(self, name):

@@ -37,6 +37,7 @@ from translate.lang import data
 
 STRIP_REGEXP = re.compile("\W", re.UNICODE)
 
+
 class LanguageError(Exception):
     def __init__(self, value):
         self.value = value
@@ -322,6 +323,7 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
 
 def min_levenshtein_length(length, min_similarity):
     return math.ceil(max(length * (min_similarity/100.0), 2))
+
 
 def max_levenshtein_length(length, min_similarity, max_length):
     return math.floor(min(length / (min_similarity/100.0), max_length))

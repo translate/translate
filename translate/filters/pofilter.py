@@ -36,6 +36,7 @@ from translate.misc import optrecurse
 
 import os
 
+
 def build_checkerconfig(options):
     """Prepare the checker config from the given options.  This is mainly
     factored out for the sake of unit tests."""
@@ -61,6 +62,7 @@ def build_checkerconfig(options):
         validchars = open(options.validcharsfile).read()
         checkerconfig.updatevalidchars(validchars)
     return checkerconfig
+
 
 class pocheckfilter:
     def __init__(self, options, checkerclasses=None, checkerconfig=None):
@@ -125,6 +127,7 @@ class pocheckfilter:
             newtransfile.updateheader(add=True, **transfile.parseheader())
         return newtransfile
 
+
 class FilterOptionParser(optrecurse.RecursiveOptionParser):
     """a specialized Option Parser for filter tools..."""
     def __init__(self, formats):
@@ -159,6 +162,7 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
         else:
             self.recursiveprocess(options)
 
+
 def runfilter(inputfile, outputfile, templatefile, checkfilter=None):
     """reads in inputfile, filters using checkfilter, writes to outputfile"""
     fromfile = factory.getobject(inputfile)
@@ -167,6 +171,7 @@ def runfilter(inputfile, outputfile, templatefile, checkfilter=None):
         return 0
     outputfile.write(str(tofile))
     return 1
+
 
 def cmdlineparser():
     formats = {"po": ("po", runfilter), "pot": ("pot", runfilter),
@@ -232,9 +237,11 @@ def cmdlineparser():
     parser.description = __doc__
     return parser
 
+
 def main():
     parser = cmdlineparser()
     parser.run()
+
 
 if __name__ == '__main__':
     main()

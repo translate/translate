@@ -25,6 +25,7 @@ from lxml import etree
 
 from translate import __version__
 
+
 class tmxunit(lisa.LISAunit):
     """A single unit in the TMX file."""
     rootNode = "tu"

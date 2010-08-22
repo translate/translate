@@ -24,6 +24,7 @@ from translate.filters import decoration
 
 from translate.misc.typecheck import accepts, returns
 
+
 @accepts(unicode, unicode)
 @returns(IsOneOf(unicode, type(None)))
 def correct(source, target):

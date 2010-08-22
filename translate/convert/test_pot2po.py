@@ -6,6 +6,7 @@ from translate.misc import wStringIO
 from translate.storage import po
 import warnings
 
+
 class TestPOT2PO:
     def setup_method(self, method):
         warnings.resetwarnings()

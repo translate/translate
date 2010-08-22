@@ -13,16 +13,19 @@ except ImportError:
     BZ2File = None
 import os
 
+
 def classname(filename):
     """returns the classname to ease testing"""
     classinstance = factory.getclass(filename)
     return str(classinstance.__name__).lower()
+
 
 def givefile(filename, content):
     """returns a file dummy object with the given content"""
     file = wStringIO.StringIO(content)
     file.name = filename
     return file
+
 
 class BaseTestFactory:
     def setup_method(self, method):
@@ -123,10 +126,12 @@ class BaseTestFactory:
         object = factory.getobject(self.testdir)
         assert isinstance(object, Directory)
 
+
 class TestPOFactory(BaseTestFactory):
     expected_instance = factory.po.pofile
     filename = 'dummy.po'
     file_content = '''#: test.c\nmsgid "test"\nmsgstr "rest"\n'''
+
 
 class TestXliffFactory(BaseTestFactory):
     expected_instance = factory.xliff.xlifffile
@@ -143,6 +148,7 @@ class TestXliffFactory(BaseTestFactory):
 </file>
 </xliff>'''
 
+
 class TestPOXliffFactory(BaseTestFactory):
     expected_instance = factory.poxliff.PoXliffFile
     filename = 'dummy.xliff'
@@ -158,6 +164,7 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 </target>
 </trans-unit></body></file></xliff>'''
+
 
 class TestWordfastFactory(BaseTestFactory):
     expected_instance = factory.wordfast.WordfastTMFile

@@ -22,6 +22,7 @@
 
 import xpath_breadcrumb
 
+
 def test_breadcrumb():
     xb = xpath_breadcrumb.XPathBreadcrumb()
     assert xb.xpath == u''

@@ -25,6 +25,7 @@
 from translate.storage import factory
 from translate.storage import ical
 
+
 class reical:
     def __init__(self, templatefile, inputstore):
         self.templatefile = templatefile
@@ -57,6 +58,7 @@ def convertical(inputfile, outputfile, templatefile, includefuzzy=False):
     outputfile.write(outputstring)
     return 1
 
+
 def main(argv=None):
     # handle command line options
     from translate.convert import convert
@@ -64,6 +66,7 @@ def main(argv=None):
     parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
     parser.add_fuzzy_option()
     parser.run(argv)
+
 
 if __name__ == '__main__':
     main()

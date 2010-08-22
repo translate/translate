@@ -36,6 +36,7 @@ string_xpath = etree.XPath("string()")
 string_xpath_normalized = etree.XPath("normalize-space()")
 """Return a (space) normalized string in the node subtree"""
 
+
 def getText(node, xml_space="preserve"):
     """Extracts the plain text content out of the given node.
 
@@ -58,13 +59,16 @@ def getText(node, xml_space="preserve"):
 
 XML_NS = 'http://www.w3.org/XML/1998/namespace'
 
+
 def getXMLlang(node):
     """Gets the xml:lang attribute on node"""
     return node.get("{%s}lang" % XML_NS)
 
+
 def setXMLlang(node, lang):
     """Sets the xml:lang attribute on node"""
     node.set("{%s}lang" % XML_NS, lang)
+
 
 def getXMLspace(node, default=None):
     """Gets the xml:space attribute on node"""
@@ -73,9 +77,11 @@ def getXMLspace(node, default=None):
         value = default
     return value
 
+
 def setXMLspace(node, value):
     """Sets the xml:space attribute on node"""
     node.set("{%s}space" % XML_NS, value)
+
 
 def namespaced(namespace, name):
     """Returns name in Clark notation within the given namespace.
@@ -92,10 +98,12 @@ def namespaced(namespace, name):
 MULTIWHITESPACE_PATTERN = r"[\n\r\t ]+"
 MULTIWHITESPACE_RE = re.compile(MULTIWHITESPACE_PATTERN, re.MULTILINE)
 
+
 def normalize_space(text):
     """Normalize the given text for implimentation of xml:space="default"."""
     text = MULTIWHITESPACE_RE.sub(u" ", text)
     return text
+
 
 def normalize_xml_space(node, xml_space, remove_start=False):
     """normalize spaces following the nodes xml:space, or alternatively the

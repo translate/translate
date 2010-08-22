@@ -29,6 +29,7 @@ usage instructions
 from translate.storage import po
 from translate.storage import html
 
+
 class html2po:
     def convertfile(self, inputfile, filename, includeheader, includeuntagged=False, duplicatestyle="msgctxt", keepcomments=False):
         """converts a html file to .po format"""
@@ -44,6 +45,7 @@ class html2po:
         thetargetfile.removeduplicates(duplicatestyle)
         return thetargetfile
 
+
 def converthtml(inputfile, outputfile, templates, includeuntagged=False, pot=False, duplicatestyle="msgctxt", keepcomments=False):
     """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
     convertor = html2po()
@@ -52,6 +54,7 @@ def converthtml(inputfile, outputfile, templates, includeuntagged=False, pot=Fal
     outputstore = convertor.convertfile(inputfile, getattr(inputfile, "name", "unknown"), includeheader, includeuntagged, duplicatestyle=duplicatestyle, keepcomments=keepcomments)
     outputfile.write(str(outputstore))
     return 1
+
 
 def main(argv=None):
     from translate.convert import convert

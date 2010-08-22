@@ -28,6 +28,7 @@ __all__ = ['FileExistsInProjectError', 'FileNotInProjectError', 'ProjectStore']
 class FileExistsInProjectError(Exception):
     pass
 
+
 class FileNotInProjectError(Exception):
     pass
 

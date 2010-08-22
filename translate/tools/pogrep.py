@@ -96,6 +96,7 @@ class GrepMatch(object):
     def __repr__(self):
         return str(self)
 
+
 def real_index(string, nfc_index):
     """Calculate the real index in the unnormalized string that corresponds to
     the index nfc_index in the normalized string."""
@@ -120,6 +121,7 @@ def find_matches(unit, part, strings, re_search):
             end = real_index(string, matchobj.end())
             matches.append(GrepMatch(unit, part=part, part_n=n, start=start, end=end))
     return matches
+
 
 class GrepFilter:
     def __init__(self, searchstring, searchparts, ignorecase=False, useregexp=False,
@@ -263,6 +265,7 @@ class GrepFilter:
 
         return matches, indexes
 
+
 class GrepOptionParser(optrecurse.RecursiveOptionParser):
     """a specialized Option Parser for the grep tool..."""
     def parse_args(self, args=None, values=None):
@@ -306,6 +309,7 @@ class GrepOptionParser(optrecurse.RecursiveOptionParser):
         self.usepsyco(options)
         self.recursiveprocess(options)
 
+
 def rungrep(inputfile, outputfile, templatefile, checkfilter):
     """reads in inputfile, filters using checkfilter, writes to outputfile"""
     fromfile = factory.getobject(inputfile)
@@ -314,6 +318,7 @@ def rungrep(inputfile, outputfile, templatefile, checkfilter):
         return False
     outputfile.write(str(tofile))
     return True
+
 
 def cmdlineparser():
     formats = {"po": ("po", rungrep), "pot": ("pot", rungrep),
@@ -339,9 +344,11 @@ def cmdlineparser():
     parser.description = __doc__
     return parser
 
+
 def main():
     parser = cmdlineparser()
     parser.run()
+
 
 if __name__ == '__main__':
     main()

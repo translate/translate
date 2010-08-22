@@ -76,11 +76,13 @@ msgid ", please confirm login"
 msgstr ""
 """
 
+
 def rm_rf(path):
     for dirpath, _, filenames in os.walk(path):
         for filename in filenames:
             os.remove(os.path.join(dirpath, filename))
     os.removedirs(path)
+
 
 class TestStatsDb:
     def remove_dirs(self, path):

@@ -22,6 +22,7 @@
 
 from translate.misc.typecheck import accepts, Self
 
+
 class XPathBreadcrumb(object):
     """A class which is used to build XPath-like paths as a DOM tree is
     walked. It keeps track of the number of times which it has seen

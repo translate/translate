@@ -3,6 +3,7 @@
 
 from translate.lang import common
 
+
 def test_characters():
     """Test the basic characters segmentation"""
     language = common.Common
@@ -11,6 +12,7 @@ def test_characters():
     assert language.characters(u"A B") == [u"A", u" ", u"B"]
     # Spaces are compacted, source has 2 returned has only one
     assert language.characters(u"A  B") == [u"A", u" ", u"B"]
+
 
 def test_words():
     """Tests basic functionality of word segmentation."""
@@ -33,6 +35,7 @@ def test_words():
 
     words = language.words(u"Don’t send e-mail!")
     assert words == [u"Don’t", u"send", u"e-mail"]
+
 
 def test_sentences():
     """Tests basic functionality of sentence segmentation."""
@@ -68,6 +71,7 @@ def test_sentences():
     sentences = language.sentences(u"Doen dit d.m.v. koeie.")
     assert sentences == [u"Doen dit d.m.v. koeie."]
 
+
 def test_capsstart():
     """Tests for basic sane behaviour in startcaps()."""
     language = common.Common
@@ -77,6 +81,7 @@ def test_capsstart():
     assert not language.capsstart(":")
     assert not language.capsstart("")
 
+
 def test_punctranslate():
     """Test the basic punctranslate function"""
     language = common.Common
@@ -84,12 +89,14 @@ def test_punctranslate():
     language.puncdict = {u"...": u"…"}
     assert language.punctranslate(u"A...") == u"A…"
 
+
 def test_length_difference():
     """Test the heuristics of the length difference function"""
     # Expansion with no code
     assert common.Common.length_difference(10) == 6
     assert common.Common.length_difference(100) == 15
     assert common.Common.length_difference(300) == 35
+
 
 def test_alter_length():
     """Test that we create the correct length by adding or removing characters"""

@@ -3,6 +3,7 @@
 
 from translate.misc import quote
 
+
 def test_find_all():
     """tests the find_all function"""
     assert quote.find_all("", "a") == []
@@ -12,6 +13,7 @@ def test_find_all():
     assert quote.find_all("abba", "ba") == [2]
     # check we skip the whole instance
     assert quote.find_all("banana", "ana") == [1]
+
 
 def test_extract():
     """tests the extract function"""
@@ -25,6 +27,7 @@ def test_extract():
     assert quote.extract("<quoted\\>", "<", ">", "\\", 0) == ("<quoted\\>", True)
     assert quote.extract(' -->\n<!ENTITY blah "Some">', "<!--", "-->", None, 1) == (" -->", False)
     assert quote.extract('">\n', '"', '"', None, True) == ('"', False)
+
 
 def test_extractwithoutquotes():
     """tests the extractwithoutquotes function"""
@@ -43,14 +46,17 @@ def test_extractwithoutquotes():
     # escaping of quote char
     assert quote.extractwithoutquotes("<quoted\\>", "<", ">", "\\", 0, False) == ("quoted>", True)
 
+
 def isnewlineortabescape(escape):
     if escape == "\\n" or escape == "\\t":
         return escape
     return escape[-1]
 
+
 def test_extractwithoutquotes_passfunc():
     """tests the extractwithoutquotes function with a function for includeescapes as a parameter"""
     assert quote.extractwithoutquotes("<test \\r \\n \\t \\\\>", "<", ">", "\\", 0, isnewlineortabescape) == ("test r \\n \\t \\", False)
+
 
 def test_stripcomment():
     assert quote.stripcomment("<!-- Comment -->") == "Comment"

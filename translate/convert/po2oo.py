@@ -35,6 +35,7 @@ from translate.filters import checks
 from translate.filters import autocorrect
 import time
 
+
 class reoo:
     def __init__(self, templatefile, languages=None, timestamp=None, includefuzzy=False, long_keys=False, filteraction="exclude"):
         """construct a reoo converter for the specified languages (timestamp=0 means leave unchanged)"""
@@ -142,9 +143,11 @@ class reoo:
         # return the modified oo file object
         return self.o
 
+
 def getmtime(filename):
     import stat
     return time.localtime(os.stat(filename)[stat.ST_MTIME])
+
 
 class oocheckfilter(pofilter.pocheckfilter):
     def validelement(self, unit, filename, filteraction):
@@ -164,6 +167,7 @@ class oocheckfilter(pofilter.pocheckfilter):
                         return not filteraction in ["exclude-all"]
         return True
 
+
 class oofilteroptions:
     error = ['variables', 'xmltags', 'escapes']
     warning = ['blank']
@@ -180,6 +184,7 @@ class oofilteroptions:
 
 options = oofilteroptions()
 filter = oocheckfilter(options, [checks.OpenOfficeChecker, checks.StandardUnitChecker], checks.openofficeconfig)
+
 
 def convertoo(inputfile, outputfile, templatefile, sourcelanguage=None, targetlanguage=None, timestamp=None, includefuzzy=False, multifilestyle="single", filteraction=None):
     inputstore = factory.getobject(inputfile)
@@ -200,6 +205,7 @@ def convertoo(inputfile, outputfile, templatefile, sourcelanguage=None, targetla
     # TODO: check if we need to manually delete missing items
     outputfile.write(str(outputstore))
     return True
+
 
 def main(argv=None):
     from translate.convert import convert
@@ -224,6 +230,7 @@ def main(argv=None):
     parser.passthrough.append("timestamp")
     parser.passthrough.append("filteraction")
     parser.run(argv)
+
 
 if __name__ == '__main__':
     main()

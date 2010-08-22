@@ -56,6 +56,7 @@ from translate.misc import wStringIO
 import re
 import datetime
 
+
 class TikiUnit(base.TranslationUnit):
     """A tiki unit entry."""
     def __init__(self, source=None, encoding="UTF-8"):
@@ -81,6 +82,7 @@ class TikiUnit(base.TranslationUnit):
     def getlocations(self):
         """Returns the a list of the location(s) of the string."""
         return self.location
+
 
 class TikiStore(base.TranslationStore):
     """Represents a tiki language.php file."""

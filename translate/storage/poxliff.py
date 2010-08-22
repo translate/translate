@@ -30,10 +30,12 @@ from translate.misc.multistring import multistring
 from lxml import etree
 import re
 
+
 def hasplurals(thing):
     if not isinstance(thing, multistring):
         return False
     return len(thing.strings) > 1
+
 
 class PoXliffUnit(xliff.xliffunit):
     """A class to specifically handle the plural units created from a po file."""

@@ -74,6 +74,7 @@ class icalunit(base.TranslationUnit):
     def getlocations(self):
         return [self.location]
 
+
 class icalfile(base.TranslationStore):
     """An ical file"""
     UnitClass = icalunit

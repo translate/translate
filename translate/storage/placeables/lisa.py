@@ -40,6 +40,7 @@ def make_empty_replacement_placeable(klass, node, xml_space="preserve"):
         pass
     return klass()
 
+
 def make_g_placeable(klass, node, xml_space="default"):
     return klass(
         id=node.attrib[u'id'],
@@ -47,8 +48,10 @@ def make_g_placeable(klass, node, xml_space="default"):
         xml_attrib=node.attrib,
     )
 
+
 def not_yet_implemented(klass, node, xml_space="preserve"):
     raise NotImplementedError
+
 
 def make_unknown(klass, node, xml_space="preserve"):
     assert klass is xliff.UnknownXML
@@ -72,6 +75,7 @@ _class_dictionary = {
     u'x': (xliff.X,   make_empty_replacement_placeable),
 }
 
+
 def make_placeable(node, xml_space):
     _namespace, tag = misc.parse_tag(node.tag)
     if tag in _class_dictionary:
@@ -80,6 +84,7 @@ def make_placeable(node, xml_space):
         klass, maker = xliff.UnknownXML, make_unknown
     return maker(klass, node, xml_space)
 
+
 def as_unicode(string):
     if isinstance(string, unicode):
         return string
@@ -87,6 +92,7 @@ def as_unicode(string):
         return unicode(string)
     else:
         return unicode(string.decode('utf-8'))
+
 
 def xml_to_strelem(dom_node, xml_space="preserve"):
     if dom_node is None:
@@ -106,6 +112,7 @@ def xml_to_strelem(dom_node, xml_space="preserve"):
 
 # ==========================================================
 
+
 def placeable_as_dom_node(placeable, tagname):
     dom_node = etree.Element(tagname)
     if placeable.id is not None:
@@ -120,6 +127,7 @@ def placeable_as_dom_node(placeable, tagname):
             dom_node.set(attrib, value)
 
     return dom_node
+
 
 def unknown_placeable_as_dom_node(placeable):
     assert type(placeable) is xliff.UnknownXML
@@ -155,6 +163,7 @@ _placeable_dictionary = {
     base.X:  lambda placeable: placeable_as_dom_node(placeable, 'x'),
 }
 
+
 def xml_append_string(node, string):
     if not len(node):
         if not node.text:
@@ -167,6 +176,7 @@ def xml_append_string(node, string):
             lastchild.tail = ''
         lastchild.tail += unicode(string)
     return node
+
 
 def strelem_to_xml(parent_node, elem):
     if isinstance(elem, (str, unicode)):

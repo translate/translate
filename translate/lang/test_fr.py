@@ -3,6 +3,7 @@
 
 from translate.lang import factory
 
+
 def test_punctranslate():
     """Tests that we can translate punctuation."""
     language = factory.getlanguage('fr')
@@ -32,6 +33,7 @@ def test_punctranslate():
     assert language.punctranslate(u"The <a href='http://koeie'>user</a>") == u"The <a href='http://koeie'>user</a>"
 
     assert language.punctranslate(u"Copying `%s' to `%s'") == u"Copying «\u00a0%s\u00a0» to «\u00a0%s\u00a0»"
+
 
 def test_sentences():
     """Tests basic functionality of sentence segmentation."""

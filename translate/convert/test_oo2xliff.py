@@ -10,6 +10,7 @@ from translate.storage import xliff
 from translate.storage import oo
 import os
 
+
 class TestOO2XLIFF(test_oo2po.TestOO2PO):
     target_filetype = xliff.xlifffile
     conversion_module = oo2xliff
@@ -17,6 +18,7 @@ class TestOO2XLIFF(test_oo2po.TestOO2PO):
 
     def test_msgid_bug_error_address(self):
         pass
+
 
 class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2XLIFF):
     """Tests running actual oo2xliff commands on files"""

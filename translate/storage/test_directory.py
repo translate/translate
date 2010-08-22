@@ -5,6 +5,7 @@
 from translate.storage import directory
 import os
 
+
 class TestDirectory(object):
     """a test class to run tests on a test Pootle Server"""
 

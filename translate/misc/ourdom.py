@@ -33,6 +33,7 @@ from xml.dom import expatbuilder
 
 # helper functions we use to do xml the way we want, used by modified classes below
 
+
 def writexml_helper(self, writer, indent="", addindent="", newl=""):
     """A replacement for writexml that formats it like typical XML files.
     Nodes are intendented but text nodes, where whitespace can be significant, are not indented."""
@@ -76,6 +77,7 @@ def writexml_helper(self, writer, indent="", addindent="", newl=""):
     else:
         writer.write("/>%s"%(newl))
 
+
 def getElementsByTagName_helper(parent, name, dummy=None):
     """A reimplementation of getElementsByTagName as an iterator.
 
@@ -90,6 +92,7 @@ def getElementsByTagName_helper(parent, name, dummy=None):
             for othernode in node.getElementsByTagName(name):
                 yield othernode
 
+
 def searchElementsByTagName_helper(parent, name, onlysearch):
     """limits the search to within tags occuring in onlysearch"""
     for node in parent.childNodes:
@@ -99,6 +102,7 @@ def searchElementsByTagName_helper(parent, name, onlysearch):
         if node.nodeType == minidom.Node.ELEMENT_NODE and node.tagName in onlysearch:
             for node in node.searchElementsByTagName(name, onlysearch):
                 yield node
+
 
 def getFirstElementByTagName(node, name):
     results = node.yieldElementsByTagName(name)
@@ -113,6 +117,7 @@ def getFirstElementByTagName(node, name):
     except StopIteration:
         return None
 
+
 def getnodetext(node):
     """returns the node's text by iterating through the child nodes"""
     if node is None:
@@ -121,9 +126,11 @@ def getnodetext(node):
 
 # various modifications to minidom classes to add functionality we like
 
+
 class DOMImplementation(minidom.DOMImplementation):
     def _create_document(self):
         return Document()
+
 
 class Element(minidom.Element):
     def yieldElementsByTagName(self, name):
@@ -132,6 +139,7 @@ class Element(minidom.Element):
         return searchElementsByTagName_helper(self, name, onlysearch)
     def writexml(self, writer, indent, addindent, newl):
         return writexml_helper(self, writer, indent, addindent, newl)
+
 
 class Document(minidom.Document):
     implementation = DOMImplementation()
@@ -152,6 +160,7 @@ class Document(minidom.Document):
 theDOMImplementation = DOMImplementation()
 
 # an ExpatBuilder that allows us to use the above modifications
+
 
 class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
     def reset(self):
@@ -241,6 +250,7 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
 
 # parser methods that use our modified xml classes
 
+
 def parse(file, parser=None, bufsize=None):
     """Parse a file into a DOM by filename or file object."""
     builder = ExpatBuilderNS()
@@ -253,6 +263,7 @@ def parse(file, parser=None, bufsize=None):
     else:
         result = builder.parseFile(file)
     return result
+
 
 def parseString(string, parser=None):
     """Parse a file into a DOM from a string."""

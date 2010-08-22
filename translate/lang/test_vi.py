@@ -3,6 +3,7 @@
 
 from translate.lang import factory
 
+
 def test_punctranslate():
     """Tests that we can translate punctuation."""
     language = factory.getlanguage('vi')
@@ -17,6 +18,7 @@ def test_punctranslate():
     assert language.punctranslate(u'Lưu "Tập tin"') == u"Lưu «\u00a0Tập tin\u00a0»"
     assert language.punctranslate(u"Lưu 'Tập tin'") == u"Lưu «\u00a0Tập tin\u00a0»"
     assert language.punctranslate(u"Lưu `Tập tin'") == u"Lưu «\u00a0Tập tin\u00a0»"
+
 
 def test_sentences():
     """Tests basic functionality of sentence segmentation."""

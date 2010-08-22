@@ -26,6 +26,7 @@ from translate.convert import po2prop
 from translate.convert import mozfunny2prop
 from translate.misc.wStringIO import StringIO
 
+
 def prop2inc(pf):
     """convert a properties file back to a .inc file with #defines in it"""
     # any leftover blanks will not be included at the end
@@ -49,6 +50,7 @@ def prop2inc(pf):
                 yield blank
             yield definition
 
+
 def prop2it(pf):
     """convert a properties file back to a pseudo-properties .it file"""
     for unit in pf.units:
@@ -66,6 +68,7 @@ def prop2it(pf):
             if isinstance(definition, unicode):
                 definition = definition.encode("UTF-8")
             yield definition
+
 
 def prop2funny(src, itencoding="cp1252"):
     lines = src.split("\n")
@@ -88,6 +91,7 @@ def prop2funny(src, itencoding="cp1252"):
         for line in prop2it(pf):
             yield line.decode("utf-8").encode(itencoding) + "\n"
 
+
 def po2inc(inputfile, outputfile, templatefile, encoding=None, includefuzzy=False):
     """wraps po2prop but converts outputfile to properties first"""
     outputpropfile = StringIO()
@@ -104,6 +108,7 @@ def po2inc(inputfile, outputfile, templatefile, encoding=None, includefuzzy=Fals
         outputlines = prop2inc(pf)
         outputfile.writelines(outputlines)
     return result
+
 
 def po2it(inputfile, outputfile, templatefile, encoding="cp1252", includefuzzy=False):
     """wraps po2prop but converts outputfile to properties first"""
@@ -124,9 +129,11 @@ def po2it(inputfile, outputfile, templatefile, encoding="cp1252", includefuzzy=F
             outputfile.write(line)
     return result
 
+
 def po2ini(inputfile, outputfile, templatefile, encoding="UTF-8", includefuzzy=False):
     """wraps po2prop but converts outputfile to properties first using UTF-8 encoding"""
     return po2it(inputfile=inputfile, outputfile=outputfile, templatefile=templatefile, encoding=encoding, includefuzzy=includefuzzy)
+
 
 def main(argv=None):
     import sys
@@ -134,6 +141,7 @@ def main(argv=None):
     src = sys.stdin.read()
     for line in prop2funny(src):
         sys.stdout.write(line)
+
 
 if __name__ == "__main__":
     main()

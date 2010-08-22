@@ -6,6 +6,7 @@ from translate.misc import wStringIO
 import warnings
 from py import test
 
+
 def test_roundtrip_quoting():
     specials = ['Fish & chips', 'five < six', 'six > five',
                 'Use &nbsp;', 'Use &amp;nbsp;'
@@ -19,6 +20,7 @@ def test_roundtrip_quoting():
         print "special: %r\nquoted: %r\nunquoted: %r\n" % (special, quoted_special, unquoted_special)
         assert special == unquoted_special
 
+
 def test_removeinvalidamp(recwarn):
     """tests the the removeinvalidamps function"""
     def tester(actual, expected):
@@ -30,6 +32,7 @@ def test_removeinvalidamp(recwarn):
     tester("Mad & &amp &amp;", "Mad  amp &amp;")
     dtd.removeinvalidamps("simple.warningtest", "Dimpled &Ring")
     assert recwarn.pop(UserWarning)
+
 
 class TestDTDUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = dtd.dtdunit

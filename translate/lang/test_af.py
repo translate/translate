@@ -4,6 +4,7 @@
 from translate.lang import factory
 from translate.lang import af
 
+
 def test_sentences():
     """Tests basic functionality of sentence segmentation."""
     language = factory.getlanguage('af')
@@ -13,6 +14,7 @@ def test_sentences():
     assert sentences == [u"Wat?", "'n Fout?"]
     sentences = language.sentences(u"Dit sal a.g.v. 'n fout gebeur.")
     assert sentences == [u"Dit sal a.g.v. 'n fout gebeur."]
+
 
 def test_capsstart():
     """Tests that the indefinite article ('n) doesn't confuse startcaps()."""
@@ -26,6 +28,7 @@ def test_capsstart():
     assert language.capsstart("'n 'Koei' kraam koeie")
     assert not language.capsstart("'n koei kraam koeie")
     assert language.capsstart("\n\n'n Koei kraam koeie")
+
 
 def test_transliterate_cyrillic():
     def trans(text):

@@ -39,12 +39,14 @@ for attrname in dir(xliff):
        attr.parse is not None:
         xliffparsers.append(attr.parse)
 
+
 def rich_parse(s):
     return parse(s, xliffparsers)
 
 
 class TestTSUnit(test_base.TestTranslationUnit):
     UnitClass = ts.tsunit
+
 
 class TestTSfile(test_base.TestTranslationStore):
     StoreClass = ts.tsfile

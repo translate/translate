@@ -8,6 +8,7 @@ from test.test_support import TestFailed
 from py import test
 from translate.misc import zipfileext
 
+
 BrokenStringIO = StringIO.StringIO
 class FixedStringIO(BrokenStringIO):
     def truncate(self, size=None):
@@ -20,6 +21,7 @@ StringIO.StringIO = FixedStringIO
 # there are extensions in zipfileext to add the delete method etc
 # to test the underlying zipfile module, uncomment the following line:
 zipfile.ZipFile = zipfileext.ZipFileExt
+
 
 class TestZipFiles:
     def setup_method(self, method):

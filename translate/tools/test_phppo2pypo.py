@@ -10,6 +10,7 @@ from translate.storage import po
 from translate.convert import test_convert
 from translate.misc import wStringIO
 
+
 class TestPhpPo2PyPo:
     def test_single_po(self):
         inputfile = """
@@ -48,6 +49,7 @@ msgstr[1] "I have %1$s apples"
         assert 'msgid_plural "I have {0} apples"' in output
         assert 'msgstr[0] "I have {0} apple"' in output
         assert 'msgstr[1] "I have {0} apples"' in output
+
 
 class TestPhpPo2PyPoCommand(test_convert.TestConvertCommand, TestPhpPo2PyPo):
     """Tests running actual phppo2pypo commands on files"""

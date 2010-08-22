@@ -10,6 +10,7 @@ from translate.storage import tiki
 from translate.convert import test_convert
 from translate.misc import wStringIO
 
+
 class TestPo2Tiki:
     def test_convertpo(self):
         inputfile = """

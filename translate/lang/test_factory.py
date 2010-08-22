@@ -3,6 +3,7 @@
 
 from translate.lang import factory
 
+
 def test_getlanguage():
     """Tests that a basic call to getlanguage() works."""
     kmlanguage = factory.getlanguage('km')

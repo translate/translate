@@ -29,6 +29,7 @@ from translate.search import match
 # We don't want to reinitialise the TM each time, so let's store it here.
 tmmatcher = None
 
+
 def memory(tmfiles, max_candidates=1, min_similarity=75, max_length=1000):
     """Returns the TM store to use. Only initialises on first call."""
     global tmmatcher
@@ -114,12 +115,14 @@ def pretranslate_unit(input_unit, template_store, matchers=None, mark_reused=Fal
 
     return input_unit
 
+
 def prepare_template_pofile(template_store):
     """PO format specific template preparation logic."""
     #do we want to consider obsolete translations?
     for unit in template_store.units:
         if unit.isobsolete():
             unit.resurrect()
+
 
 def pretranslate_store(input_store, template_store, tm=None, min_similarity=75, fuzzymatching=True):
     """Do the actual pretranslation of a whole store."""

@@ -40,6 +40,7 @@ accesskeysuffixes = (".accesskey", ".accessKey", ".akey")
 """Accesskey Suffixes: entries with this suffix may be combined with labels
 ending in L{labelsuffixes} into accelerator notation"""
 
+
 def quotefordtd(source):
     if '"' in source:
         if "'" in source:
@@ -48,6 +49,7 @@ def quotefordtd(source):
             return quote.singlequotestr(source)
     else:
         return quote.quotestr(source)
+
 
 def unquotefromdtd(source):
     """unquotes a quoted dtd definition"""
@@ -61,6 +63,7 @@ def unquotefromdtd(source):
     # the quote characters should be the first and last characters in the string
     # of course there could also be quote characters within the string; not handled here
     return extracted
+
 
 def removeinvalidamps(name, value):
     """Find and remove ampersands that are not part of an entity definition.
@@ -104,6 +107,7 @@ def removeinvalidamps(name, value):
             value = value[:amppos-adjustment] + value[amppos-adjustment+1:]
             adjustment += 1
     return value
+
 
 class dtdunit(base.TranslationUnit):
     """this class represents an entity definition from a dtd file (and possibly associated comments)"""
@@ -358,6 +362,7 @@ class dtdunit(base.TranslationUnit):
                 entityline = entityline.encode('UTF-8')
             lines.append(entityline + '\n')
         return "".join(lines)
+
 
 class dtdfile(base.TranslationStore):
     """this class represents a .dtd file, made up of dtdunits"""

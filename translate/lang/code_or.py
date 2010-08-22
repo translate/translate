@@ -28,6 +28,7 @@ import re
 
 from translate.lang import common
 
+
 class code_or(common.Common):
     """This class represents Oriya."""
 

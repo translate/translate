@@ -29,6 +29,7 @@ usage instructions
 from translate.storage import txt
 from translate.storage import po
 
+
 class txt2po:
     def __init__(self, duplicatestyle="msgctxt"):
         self.duplicatestyle = duplicatestyle
@@ -45,6 +46,7 @@ class txt2po:
         thetargetfile.removeduplicates(self.duplicatestyle)
         return thetargetfile
 
+
 def converttxt(inputfile, outputfile, templates, duplicatestyle="msgctxt", encoding="utf-8", flavour=None):
     """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
     inputstore = txt.TxtFile(inputfile, encoding=encoding, flavour=flavour)
@@ -54,6 +56,7 @@ def converttxt(inputfile, outputfile, templates, duplicatestyle="msgctxt", encod
         return 0
     outputfile.write(str(outputstore))
     return 1
+
 
 def main(argv=None):
     from translate.convert import convert

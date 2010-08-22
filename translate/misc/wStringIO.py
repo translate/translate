@@ -23,6 +23,7 @@
 
 import cStringIO
 
+
 class StringIO:
     def __init__(self, buf=''):
         if not isinstance(buf, (str, unicode)):
@@ -135,6 +136,7 @@ class StringIO:
         if self.closed:
             raise ValueError, "I/O operation on closed file"
         return self.buf.getvalue()
+
 
 class CatchStringOutput(StringIO, object):
     """catches the output before it is closed and sends it to an onclose method"""

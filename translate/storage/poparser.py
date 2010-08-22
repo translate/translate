@@ -41,6 +41,7 @@ startswith = str.startswith
 append = list.append
 decode = str.decode
 
+
 class ParseState(object):
     def __init__(self, input_iterator, UnitClass, encoding=None):
         self._input_iterator = input_iterator
@@ -72,6 +73,7 @@ class ParseState(object):
     def new_input(self, _input):
         return ParseState(_input, self.UnitClass, self.encoding)
 
+
 def read_prevmsgid_lines(parse_state):
     """Read all the lines belonging starting with #|. These lines contain
     the previous msgid and msgctxt info. We strip away the leading '#| '
@@ -86,17 +88,21 @@ def read_prevmsgid_lines(parse_state):
         next_line = parse_state.next_line
     return prevmsgid_lines
 
+
 def parse_prev_msgctxt(parse_state, unit):
     parse_message(parse_state, 'msgctxt', 7, unit.prev_msgctxt)
     return len(unit.prev_msgctxt) > 0
+
 
 def parse_prev_msgid(parse_state, unit):
     parse_message(parse_state, 'msgid', 5, unit.prev_msgid)
     return len(unit.prev_msgid) > 0
 
+
 def parse_prev_msgid_plural(parse_state, unit):
     parse_message(parse_state, 'msgid_plural', 12, unit.prev_msgid_plural)
     return len(unit.prev_msgid_plural) > 0
+
 
 def parse_comment(parse_state, unit):
     next_line = parse_state.next_line.lstrip()
@@ -130,6 +136,7 @@ def parse_comment(parse_state, unit):
     else:
         return None
 
+
 def parse_comments(parse_state, unit):
     if not parse_comment(parse_state, unit):
         return None
@@ -137,6 +144,7 @@ def parse_comments(parse_state, unit):
         while parse_comment(parse_state, unit):
             pass
         return True
+
 
 def read_obsolete_lines(parse_state):
     """Read all the lines belonging to the current unit if obsolete."""
@@ -156,6 +164,7 @@ def read_obsolete_lines(parse_state):
             break
     return obsolete_lines
 
+
 def parse_obsolete(parse_state, unit):
     obsolete_lines = read_obsolete_lines(parse_state)
     if obsolete_lines == []:
@@ -164,6 +173,7 @@ def parse_obsolete(parse_state, unit):
     if unit is not None:
         unit.makeobsolete()
     return unit
+
 
 def parse_quoted(parse_state, start_pos=0):
     line = parse_state.next_line
@@ -178,6 +188,7 @@ def parse_quoted(parse_state, start_pos=0):
             return parse_state.read_line()[left:-1] + '"'
     return None
 
+
 def parse_msg_comment(parse_state, msg_comment_list, string):
     while string is not None:
         append(msg_comment_list, parse_state.decode(string))
@@ -185,6 +196,7 @@ def parse_msg_comment(parse_state, msg_comment_list, string):
             return parse_quoted(parse_state)
         string = parse_quoted(parse_state)
     return None
+
 
 def parse_multiple_quoted(parse_state, msg_list, msg_comment_list, first_start_pos=0):
     string = parse_quoted(parse_state, first_start_pos)
@@ -195,23 +207,28 @@ def parse_multiple_quoted(parse_state, msg_list, msg_comment_list, first_start_p
         else:
             string = parse_msg_comment(parse_state, msg_comment_list, string)
 
+
 def parse_message(parse_state, start_of_string, start_of_string_len, msg_list, msg_comment_list=None):
     if msg_comment_list is None:
         msg_comment_list = []
     if startswith(parse_state.next_line, start_of_string):
         return parse_multiple_quoted(parse_state, msg_list, msg_comment_list, start_of_string_len)
 
+
 def parse_msgctxt(parse_state, unit):
     parse_message(parse_state, 'msgctxt', 7, unit.msgctxt)
     return len(unit.msgctxt) > 0
+
 
 def parse_msgid(parse_state, unit):
     parse_message(parse_state, 'msgid', 5, unit.msgid, unit.msgidcomments)
     return len(unit.msgid) > 0 or len(unit.msgidcomments) > 0
 
+
 def parse_msgstr(parse_state, unit):
     parse_message(parse_state, 'msgstr', 6, unit.msgstr)
     return len(unit.msgstr) > 0
+
 
 def parse_msgid_plural(parse_state, unit):
     parse_message(parse_state, 'msgid_plural', 12, unit.msgid_plural, unit.msgid_pluralcomments)
@@ -219,16 +236,19 @@ def parse_msgid_plural(parse_state, unit):
 
 MSGSTR_ARRAY_ENTRY_LEN = len('msgstr[')
 
+
 def add_to_dict(msgstr_dict, line, right_bracket_pos, entry):
     index = int(line[MSGSTR_ARRAY_ENTRY_LEN:right_bracket_pos])
     if index not in msgstr_dict:
         msgstr_dict[index] = []
     msgstr_dict[index].extend(entry)
 
+
 def get_entry(parse_state, right_bracket_pos):
     entry = []
     parse_message(parse_state, 'msgstr[', right_bracket_pos + 1, entry)
     return entry
+
 
 def parse_msgstr_array_entry(parse_state, msgstr_dict):
     line = parse_state.next_line
@@ -243,6 +263,7 @@ def parse_msgstr_array_entry(parse_state, msgstr_dict):
     else:
         return False
 
+
 def parse_msgstr_array(parse_state, unit):
     msgstr_dict = {}
     result = parse_msgstr_array_entry(parse_state, msgstr_dict)
@@ -253,12 +274,14 @@ def parse_msgstr_array(parse_state, unit):
     unit.msgstr = msgstr_dict
     return True
 
+
 def parse_plural(parse_state, unit):
     if parse_msgid_plural(parse_state, unit) and \
        (parse_msgstr_array(parse_state, unit) or parse_msgstr(parse_state, unit)):
         return True
     else:
         return False
+
 
 def parse_msg_entries(parse_state, unit):
     parse_msgctxt(parse_state, unit)
@@ -267,6 +290,7 @@ def parse_msg_entries(parse_state, unit):
         return True
     else:
         return False
+
 
 def parse_unit(parse_state, unit=None):
     unit = unit or parse_state.UnitClass()
@@ -280,6 +304,7 @@ def parse_unit(parse_state, unit=None):
         return unit
     else:
         return None
+
 
 def set_encoding(parse_state, store, unit):
     charset = None
@@ -295,8 +320,10 @@ def set_encoding(parse_state, store, unit):
         store._encoding = 'utf-8'
     parse_state.encoding = store._encoding
 
+
 def decode_list(lst, decode):
     return [decode(item) for item in lst]
+
 
 def decode_header(unit, decode):
     for attr in ('msgctxt', 'msgid', 'msgid_pluralcomments',
@@ -311,6 +338,7 @@ def decode_header(unit, decode):
         else:
             setattr(unit, attr, dict([(key, decode_list(value, decode)) for key, value in element.items()]))
 
+
 def parse_header(parse_state, store):
     first_unit = parse_unit(parse_state)
     if first_unit is None:
@@ -318,6 +346,7 @@ def parse_header(parse_state, store):
     set_encoding(parse_state, store, first_unit)
     decode_header(first_unit, parse_state.decode)
     return first_unit
+
 
 def parse_units(parse_state, store):
     unit = parse_header(parse_state, store)

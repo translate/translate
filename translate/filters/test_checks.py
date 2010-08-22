@@ -3,8 +3,10 @@ from translate.filters import checks
 from translate.lang import data
 from translate.storage import po
 
+
 def strprep(str1, str2, message=None):
     return data.normalized_unicode(str1), data.normalized_unicode(str2), data.normalized_unicode(message)
+
 
 def passes(filterfunction, str1, str2):
     """returns whether the given strings pass on the given test, handling FilterFailures"""
@@ -14,6 +16,7 @@ def passes(filterfunction, str1, str2):
     except checks.FilterFailure, e:
         filterresult = False
     return filterresult
+
 
 def fails(filterfunction, str1, str2, message=None):
     """returns whether the given strings fail on the given test, handling only FilterFailures"""
@@ -30,6 +33,7 @@ def fails(filterfunction, str1, str2, message=None):
         else:
             filterresult = False
     return not filterresult
+
 
 def fails_serious(filterfunction, str1, str2, message=None):
     """returns whether the given strings fail on the given test, handling only SeriousFilterFailures"""
@@ -54,6 +58,7 @@ def test_defaults():
     stdchecker = checks.StandardChecker()
     assert stdchecker.config.varmatches == []
 
+
 def test_construct():
     """tests that the checkers can be constructed"""
     stdchecker = checks.StandardChecker()
@@ -61,6 +66,7 @@ def test_construct():
     ooochecker = checks.OpenOfficeChecker()
     gnomechecker = checks.GnomeChecker()
     kdechecker = checks.KdeChecker()
+
 
 def test_accelerator_markers():
     """test that we have the correct accelerator marker for the various default configs"""
@@ -75,12 +81,14 @@ def test_accelerator_markers():
     kdechecker = checks.KdeChecker()
     assert kdechecker.config.accelmarkers == ["&"]
 
+
 def test_messages():
     """test that our helpers can check for messages and that these error messages can contain Unicode"""
     stdchecker = checks.StandardChecker(checks.CheckerConfig(validchars='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'))
     assert fails(stdchecker.validchars, "Some unexpected characters", "©", "invalid chars: '©' (\\u00a9)")
     stdchecker = checks.StandardChecker()
     assert fails_serious(stdchecker.escapes, r"A tab", r"'n Ṱab\t", r"""escapes in original () don't match escapes in translation ('Ṱab\t')""")
+
 
 def test_accelerators():
     """tests accelerators"""
@@ -122,6 +130,7 @@ def test_accelerators():
     # Problems:
     # Accelerator before variable - see test_acceleratedvariables
 
+
 def xtest_acceleratedvariables():
     """test for accelerated variables"""
     # FIXME: disabled since acceleratedvariables has been removed, but these checks are still needed
@@ -131,6 +140,7 @@ def xtest_acceleratedvariables():
     ooochecker = checks.OpenOfficeChecker()
     assert fails(ooochecker.acceleratedvariables, "%PRODUCTNAME% ~Options", "~%PRODUCTNAME% Ikhetho")
     assert passes(ooochecker.acceleratedvariables, "%PRODUCTNAME% ~Options", "%PRODUCTNAME% ~Ikhetho")
+
 
 def test_acronyms():
     """tests acronyms"""
@@ -148,11 +158,13 @@ def test_acronyms():
     # Test '-W' (bug 283)
     assert passes(stdchecker.acronyms, "%s: option `-W %s' is ambiguous", "%s: opsie '-W %s' is dubbelsinnig")
 
+
 def test_blank():
     """tests blank"""
     stdchecker = checks.StandardChecker()
     assert fails(stdchecker.blank, "Save as", " ")
     assert fails(stdchecker.blank, "_: KDE comment\\n\nSimple string", "  ")
+
 
 def test_brackets():
     """tests brackets"""
@@ -164,6 +176,7 @@ def test_brackets():
     assert fails(stdchecker.brackets, "For ]sic[ numbers", "Vier getalle")
     assert passes(stdchecker.brackets, "{[(", "[({")
 
+
 def test_compendiumconflicts():
     """tests compendiumconflicts"""
     stdchecker = checks.StandardChecker()
@@ -171,6 +184,7 @@ def test_compendiumconflicts():
 Leer nie gestoor gestoor nie\n
 #-#-#-#-# file1.po #-#-#-#-#\n
 Leer nie gestoor""")
+
 
 def test_doublequoting():
     """tests double quotes"""
@@ -195,6 +209,7 @@ def test_doublequoting():
     assert passes(eschecker.doublequoting, "<![CDATA[ Enter the name of the Windows workgroup that this server should appear in. ]]>",
             "<![CDATA[ Ingrese el nombre del grupo de trabajo de Windows en el que debe aparecer este servidor. ]]>")
 
+
 def test_doublespacing():
     """tests double spacing"""
     stdchecker = checks.StandardChecker()
@@ -205,6 +220,7 @@ def test_doublespacing():
     ooochecker = checks.OpenOfficeChecker()
     assert passes(ooochecker.doublespacing, "Execute %PROGRAMNAME Calc", "Blah %PROGRAMNAME Calc")
     assert passes(ooochecker.doublespacing, "Execute %PROGRAMNAME Calc", "Blah % PROGRAMNAME Calc")
+
 
 def test_doublewords():
     """tests doublewords"""
@@ -222,6 +238,7 @@ def test_doublewords():
     assert passes(st_checker.doublewords, "Color to draw the name of a message you sent.", "Mmala wa ho taka bitso la molaetsa oo o o rometseng.")
     assert passes(st_checker.doublewords, "Ten men", "Banna ba ba leshome")
     assert passes(st_checker.doublewords, "Give SARS the tax", "Lekgetho le le fe SARS")
+
 
 def test_endpunc():
     """tests endpunc"""
@@ -251,6 +268,7 @@ def test_endpunc():
     assert passes(stdchecker.endpunc, "Header:", u"En-tête :")
     assert passes(stdchecker.endpunc, "Header:", u"En-tête\u00a0:")
 
+
 def test_endwhitespace():
     """tests endwhitespace"""
     stdchecker = checks.StandardChecker()
@@ -260,6 +278,7 @@ def test_endwhitespace():
     zh_checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='zh'))
     # This should pass since the space is not needed in Chinese
     assert passes(zh_checker.endwhitespace, "Init. Limit: ", "起始时间限制：")
+
 
 def test_escapes():
     """tests escapes"""
@@ -280,6 +299,7 @@ def test_escapes():
     ooochecker = checks.OpenOfficeChecker()
     assert passes(ooochecker.escapes, ",\t44\t;\t59\t:\t58\t{Tab}\t9\t{space}\t32", ",\t44\t;\t59\t:\t58\t{Tab}\t9\t{space}\t32")
 
+
 def test_newlines():
     """tests newlines"""
     stdchecker = checks.StandardChecker()
@@ -298,6 +318,7 @@ def test_newlines():
     ooochecker = checks.OpenOfficeChecker()
     assert fails(ooochecker.newlines, "The arrowhead was modified without saving.\nWould you like to save the arrowhead now?", "Ṱhoho ya musevhe yo khwinifhadzwa hu si na u seiva.Ni khou ṱoda u seiva thoho ya musevhe zwino?")
 
+
 def test_tabs():
     """tests tabs"""
     stdchecker = checks.StandardChecker()
@@ -309,11 +330,13 @@ def test_tabs():
     ooochecker = checks.OpenOfficeChecker()
     assert passes(ooochecker.tabs, ",\t44\t;\t59\t:\t58\t{Tab}\t9\t{space}\t32", ",\t44\t;\t59\t:\t58\t{Tab}\t9\t{space}\t32")
 
+
 def test_filepaths():
     """tests filepaths"""
     stdchecker = checks.StandardChecker()
     assert passes(stdchecker.filepaths, "%s to the file /etc/hosts on your system.", "%s na die leer /etc/hosts op jou systeem.")
     assert fails(stdchecker.filepaths, "%s to the file /etc/hosts on your system.", "%s na die leer /etc/gasheer op jou systeem.")
+
 
 def test_kdecomments():
     """tests kdecomments"""
@@ -325,12 +348,14 @@ A string to translate""", r"""_: Ek is 'n commment\n
 'n String om te vertaal""")
     assert fails(stdchecker.kdecomments, """_: I am a comment\\n\n""", """_: I am a comment\\n\n""")
 
+
 def test_long():
     """tests long messages"""
     stdchecker = checks.StandardChecker()
     assert passes(stdchecker.long, "I am normal", "Ek is ook normaal")
     assert fails(stdchecker.long, "Short.", "Kort.......................................................................................")
     assert fails(stdchecker.long, "a", "bc")
+
 
 def test_musttranslatewords():
     """tests stopwords"""
@@ -360,6 +385,7 @@ def test_musttranslatewords():
     assert passes(stdchecker.musttranslatewords, "Click %OK to start", "Kliek %OK om te begin")
     # Unicode
     assert fails(stdchecker.musttranslatewords, "Click OK", u"Kiḽikani OK")
+
 
 def test_notranslatewords():
     """tests stopwords"""
@@ -394,6 +420,7 @@ def test_notranslatewords():
     stdchecker = checks.StandardChecker(checks.CheckerConfig(notranslatewords=[u"\u1e3cike"]))
     assert passes(stdchecker.notranslatewords, u"You \u1e3cike me", u"Ek \u004c\u032dike jou")
 
+
 def test_numbers():
     """test numbers"""
     stdchecker = checks.StandardChecker()
@@ -417,6 +444,7 @@ def test_numbers():
     # You should be able to reorder numbers
     assert passes(stdchecker.numbers, "40-bit RC2 encryption with RSA and an MD5", "Umbhalo ocashile i-RC2 onamabhithi angu-40 one-RSA ne-MD5")
 
+
 def test_options():
     """tests command line options e.g. --option"""
     stdchecker = checks.StandardChecker()
@@ -428,6 +456,7 @@ def test_options():
     # We don't want just any '--' to trigger this test - the error will be confusing
     assert passes(stdchecker.options, "Hello! -- Hi", "Hallo! &mdash; Haai")
     assert passes(stdchecker.options, "--blank--", "--vide--")
+
 
 def test_printf():
     """tests printf style variables"""
@@ -454,6 +483,7 @@ def test_printf():
     stdchecker.hasplural = 1
     assert passes(stdchecker.printf, "%d plurals", "%.0s plural")
 
+
 def test_puncspacing():
     """tests spacing after punctuation"""
     stdchecker = checks.StandardChecker()
@@ -468,6 +498,7 @@ def test_puncspacing():
     assert passes(frchecker.puncspacing, u"Do \"this\"", u"Do «\u00a0this\u00a0»")
     assert fails(frchecker.puncspacing, "Do \"this\"", "Do «this»")
 
+
 def test_purepunc():
     """tests messages containing only punctuation"""
     stdchecker = checks.StandardChecker()
@@ -478,6 +509,7 @@ def test_purepunc():
     assert fails(stdchecker.purepunc, "'", "Find")
     assert passes(stdchecker.purepunc, "year measurement template|2000", "2000")
 
+
 def test_sentencecount():
     """tests sentencecount messages"""
     stdchecker = checks.StandardChecker()
@@ -486,12 +518,14 @@ def test_sentencecount():
     assert fails(stdchecker.sentencecount, "One. Two. Three.", "Een Twee. Drie.")
     assert passes(stdchecker.sentencecount, "Sentence with i.e. in it.", "Sin met d.w.s. in dit.") # bug 178, description item 8
 
+
 def test_short():
     """tests short messages"""
     stdchecker = checks.StandardChecker()
     assert passes(stdchecker.short, "I am normal", "Ek is ook normaal")
     assert fails(stdchecker.short, "I am a very long sentence", "Ek")
     assert fails(stdchecker.short, "abcde", "c")
+
 
 def test_singlequoting():
     """tests single quotes"""
@@ -525,6 +559,7 @@ def test_singlequoting():
     assert passes(vichecker.singlequoting, "Save 'File'", u"Lưu « Tập tin »")
     assert passes(vichecker.singlequoting, "Save `File'", u"Lưu « Tập tin »")
 
+
 def test_simplecaps():
     """tests simple caps"""
     # Simple caps is a very vauge test so the checks here are mostly for obviously fixable problem
@@ -550,6 +585,7 @@ def test_simplecaps():
     assert passes(ooochecker.simplecaps, "%STAROFFICE Image", "Tshifanyiso tsha %STAROFFICE")
     assert passes(stdchecker.simplecaps, "Flies, flies, everywhere! Ack!", u"Vlieë, oral vlieë! Jig!")
 
+
 def test_spellcheck():
     """tests spell checking"""
     stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="af"))
@@ -565,6 +601,7 @@ def test_spellcheck():
     assert passes(stdchecker.spellcheck, "Mozilla is wonderful", "Mozilla is wonderlik")
     stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="af", notranslatewords=["Mozilla"]))
     assert passes(stdchecker.spellcheck, "Mozilla is wonderful", "Mozilla is wonderlik")
+
 
 def test_startcaps():
     """tests starting capitals"""
@@ -612,6 +649,7 @@ def test_startcaps():
     assert passes(stdchecker.startcaps, "(A cow)", "('n Koei)")
     assert fails(stdchecker.startcaps, "(a cow)", "('n Koei)")
 
+
 def test_startpunc():
     """tests startpunc"""
     stdchecker = checks.StandardChecker()
@@ -629,11 +667,13 @@ def test_startpunc():
     stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='af'))
     assert passes(stdchecker.startpunc, "A human?", u"'n Mens?")
 
+
 def test_startwhitespace():
     """tests startwhitespace"""
     stdchecker = checks.StandardChecker()
     assert passes(stdchecker.startwhitespace, "A setence.", "I'm correct.")
     assert fails(stdchecker.startwhitespace, " A setence.", "I'm incorrect.")
+
 
 def test_unchanged():
     """tests unchanged entries"""
@@ -663,6 +703,7 @@ def test_unchanged():
     stdchecker = checks.StandardChecker(checks.CheckerConfig(notranslatewords=["Mozilla"]))
     assert passes(stdchecker.unchanged, "Mozilla", "Mozilla") # bug 178, description item 10
 
+
 def test_untranslated():
     """tests untranslated entries"""
     stdchecker = checks.StandardChecker()
@@ -670,6 +711,7 @@ def test_untranslated():
     assert passes(stdchecker.untranslated, "I am translated", "Ek is vertaal")
     # KDE comments that make it into translations should not mask untranslated test
     assert fails(stdchecker.untranslated, "_: KDE comment\\n\nI am untranslated", "_: KDE comment\\n\n")
+
 
 def test_validchars():
     """tests valid characters"""
@@ -688,12 +730,14 @@ def test_validchars():
     assert passes(stdchecker.validchars, "This sentence contains valid chars", u"\u1e3c")
     assert passes(stdchecker.validchars, "This sentence contains valid chars", u"\u004c\u032d")
 
+
 def test_variables_kde():
     """tests variables in KDE translations"""
     # GNOME variables
     kdechecker = checks.KdeChecker()
     assert passes(kdechecker.variables, "%d files of type %s saved.", "%d leers van %s tipe gestoor.")
     assert fails_serious(kdechecker.variables, "%d files of type %s saved.", "%s leers van %s tipe gestoor.")
+
 
 def test_variables_gnome():
     """tests variables in GNOME translations"""
@@ -703,6 +747,7 @@ def test_variables_gnome():
     assert fails_serious(gnomechecker.variables, "%d files of type %s saved.", "%s leers van %s tipe gestoor.")
     assert passes(gnomechecker.variables, "Save $(file)", "Stoor $(file)")
     assert fails_serious(gnomechecker.variables, "Save $(file)", "Stoor $(leer)")
+
 
 def test_variables_mozilla():
     """tests variables in Mozilla translations"""
@@ -741,6 +786,7 @@ def test_variables_mozilla():
     # We shouldn't mask variables within variables.  This should highlight &brandShortName as missing and &amp as extra
     assert fails_serious(mozillachecker.variables, "&brandShortName;", "&amp;brandShortName;")
 
+
 def test_variables_openoffice():
     """tests variables in OpenOffice translations"""
     # OpenOffice.org variables
@@ -778,6 +824,7 @@ def test_variables_openoffice():
     # Same variable name twice
     assert fails_serious(ooochecker.variables, r"""Start %PROGRAMNAME% as %PROGRAMNAME%""", "Begin %PROGRAMNAME%")
 
+
 def test_variables_cclicense():
     """Tests variables in Creative Commons translations."""
     checker = checks.CCLicenseChecker()
@@ -788,6 +835,7 @@ def test_variables_cclicense():
     assert passes(checker.variables, "The @license_name_full@ is", "Die @license_name_full@ is")
     assert fails_serious(checker.variables, "The @license_name_full@ is", "Die @iiilicense_name_full@ is")
     assert fails_serious(checker.variables, "A @ccvar@", "'n @ccvertaaldeveranderlike@")
+
 
 def test_xmltags():
     """tests xml tags"""
@@ -811,6 +859,7 @@ def test_xmltags():
     frchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="fr"))
     assert fails(frchecker.xmltags, "Click <a href=\"page.html\">", "Klik <a href=« page.html »>")
 
+
 def test_ooxmltags():
     """Tests the xml tags in OpenOffice.org translations for quality as done in gsicheck"""
     ooochecker = checks.OpenOfficeChecker()
@@ -827,6 +876,7 @@ def test_ooxmltags():
     assert passes(ooochecker.xmltags, "<link name=\"John\">", "<link name=\"Jan\">")
     assert fails(ooochecker.xmltags, "<link name=\"John\">", "<link naam=\"Jan\">")
 
+
 def test_functions():
     """tests to see that funtions() are not translated"""
     stdchecker = checks.StandardChecker()
@@ -841,17 +891,20 @@ def test_functions():
     assert passes(stdchecker.functions, "or domain().", "domain() verwag.")
     assert passes(stdchecker.functions, "Expected url(), url-prefix(), or domain().", "url(), url-prefix() of domain() verwag.")
 
+
 def test_emails():
     """tests to see that email addresses are not translated"""
     stdchecker = checks.StandardChecker()
     assert fails(stdchecker.emails, "blah bob@example.net blah", "blee kobus@voorbeeld.net blee")
     assert passes(stdchecker.emails, "blah bob@example.net blah", "blee bob@example.net blee")
 
+
 def test_urls():
     """tests to see that URLs are not translated"""
     stdchecker = checks.StandardChecker()
     assert fails(stdchecker.urls, "blah http://translate.org.za blah", "blee http://vertaal.org.za blee")
     assert passes(stdchecker.urls, "blah http://translate.org.za blah", "blee http://translate.org.za blee")
+
 
 def test_simpleplurals():
     """test that we can find English style plural(s)"""
@@ -864,6 +917,7 @@ def test_simpleplurals():
     stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='vi'))
     assert passes(stdchecker.simpleplurals, "computer(s)", u"Máy tính")
     assert fails(stdchecker.simpleplurals, "computer(s)", u"Máy tính(s)")
+
 
 def test_nplurals():
     """Test that we can find the wrong number of plural forms. Note that this
@@ -905,6 +959,7 @@ def test_nplurals():
     unit.target = [u"%d ឯកសារ", u"%d lêers"]
     assert not checker.nplurals(unit)
 
+
 def test_credits():
     """tests credits"""
     stdchecker = checks.StandardChecker()
@@ -925,6 +980,7 @@ def test_credits():
     assert fails(gnomechecker.credits, "translator-credits", "Ekke, ekke!")
     assert passes(gnomechecker.credits, "Your names", "Ekke, ekke!")
     assert passes(gnomechecker.credits, "ROLES_OF_TRANSLATORS", "Ekke, ekke!")
+
 
 def test_gconf():
     """test GNOME gconf errors"""

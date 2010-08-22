@@ -24,6 +24,7 @@
 import sys
 from translate.storage import po
 
+
 def convert_store(input_store, duplicatestyle="msgctxt"):
     """converts a subtitle file to a .po file..."""
     output_store = po.pofile()
@@ -36,6 +37,7 @@ def convert_store(input_store, duplicatestyle="msgctxt"):
             output_store.addunit(output_unit)
     output_store.removeduplicates(duplicatestyle)
     return output_store
+
 
 def merge_store(template_store, input_store, blankmsgstr=False, duplicatestyle="msgctxt"):
     """converts two subtitle files to a .po file..."""
@@ -63,6 +65,7 @@ def merge_store(template_store, input_store, blankmsgstr=False, duplicatestyle="
     output_store.removeduplicates(duplicatestyle)
     return output_store
 
+
 def convert_unit(input_unit, commenttype):
     """Converts a subtitle unit to a .po unit. Returns None if empty
     or not for translation."""
@@ -75,6 +78,7 @@ def convert_unit(input_unit, commenttype):
     output_unit.source = input_unit.source
     output_unit.target = ""
     return output_unit
+
 
 def convertsub(input_file, output_file, template_file=None, pot=False, duplicatestyle="msgctxt"):
     """Reads in L{input_file} using translate.subtitles, converts using L{sub2po}, writes to L{output_file}"""
@@ -90,6 +94,7 @@ def convertsub(input_file, output_file, template_file=None, pot=False, duplicate
     output_file.write(str(output_store))
     return 1
 
+
 def main(argv=None):
     from translate.convert import convert
     formats = {
@@ -102,6 +107,7 @@ def main(argv=None):
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.run(argv)
+
 
 if __name__ == '__main__':
     main()

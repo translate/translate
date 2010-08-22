@@ -50,6 +50,7 @@ numberre = re.compile("\\D\\.\\D")
 
 state_strings = {0: "untranslated", 1: "translated", 2: "fuzzy"}
 
+
 def wordcount(string):
     # TODO: po class should understand KDE style plurals
     string = kdepluralre.sub("", string)
@@ -59,6 +60,7 @@ def wordcount(string):
     #TODO: This should still use the correct language to count in the target
     #language
     return len(Common.words(string))
+
 
 def wordsinunit(unit):
     """Counts the words in the unit's source and target, taking plurals into
@@ -79,6 +81,7 @@ def wordsinunit(unit):
     for s in targetstrings:
         targetwords += wordcount(s)
     return sourcewords, targetwords
+
 
 class Record(UserDict):
     def __init__(self, record_keys, record_values=None, compute_derived_values=lambda x: x):
@@ -109,6 +112,7 @@ class Record(UserDict):
     def as_string_for_db(self):
         return ",".join([repr(x) for x in self.to_tuple()])
 
+
 def transaction(f):
     """Modifies f to commit database changes if it executes without exceptions.
     Otherwise it rolls back the database.
@@ -131,7 +135,10 @@ def transaction(f):
             raise
     return decorated_f
 
+
 UNTRANSLATED, TRANSLATED, FUZZY = 0, 1, 2
+
+
 def statefordb(unit):
     """Returns the numeric database state for the unit."""
     if unit.istranslated():
@@ -139,6 +146,7 @@ def statefordb(unit):
     if unit.isfuzzy() and unit.target:
         return FUZZY
     return UNTRANSLATED
+
 
 class FileTotals(object):
     keys = ['translatedsourcewords',
@@ -211,18 +219,23 @@ class FileTotals(object):
             WHERE fileid=?;
         """,  (fileid,))
 
+
 def emptyfiletotals():
     """Returns a dictionary with all statistics initalised to 0."""
     return FileTotals.new_record()
 
+
 def emptyfilechecks():
     return {}
+
 
 def emptyfilestats():
     return {"total": [], "translated": [], "fuzzy": [], "untranslated": []}
 
+
 def emptyunitstats():
     return {"sourcewordcount": [], "targetwordcount": []}
+
 
 # We allow the caller to specify which value to return when errors_return_empty
 # is True. We do this, since Poolte wants None to be returned when it calls
@@ -230,16 +243,21 @@ def emptyunitstats():
 # uses of get_mod_info within this module.
 # TODO: Get rid of empty_return when Pootle code is improved to not require
 #       this.
+
+
 def get_mod_info(file_path):
     file_stat = os.stat(file_path)
     assert not stat.S_ISDIR(file_stat.st_mode)
     return file_stat.st_mtime, file_stat.st_size
 
+
 def suggestion_extension():
     return os.path.extsep + 'pending'
 
+
 def suggestion_filename(filename):
     return filename + suggestion_extension()
+
 
 # ALL PUBLICLY ACCESSIBLE METHODS MUST BE DECORATED WITH THE transaction DECORATOR.
 class StatsCache(object):

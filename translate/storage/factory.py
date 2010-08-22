@@ -85,6 +85,7 @@ decompressclass = {
 if BZ2File:
     decompressclass['bz2'] = BZ2File
 
+
 def _examine_txt(storefile):
     """Determine the true filetype for a .txt file"""
     if isinstance(storefile, basestring) and os.path.exists(storefile):
@@ -108,6 +109,7 @@ def _examine_txt(storefile):
 
 hiddenclasses = {"txt": _examine_txt}
 
+
 def _guessextention(storefile):
     """Guesses the type of a file object by looking at the first few characters.
     The return value is a file extention ."""
@@ -127,9 +129,11 @@ def _guessextention(storefile):
     storefile.seek(0)
     return extention
 
+
 def _getdummyname(storefile):
     """Provides a dummy name for a file object without a name attribute, by guessing the file type."""
     return 'dummy.' + _guessextention(storefile)
+
 
 def _getname(storefile):
     """returns the filename"""
@@ -143,6 +147,7 @@ def _getname(storefile):
     else:
         storefilename = storefile
     return storefilename
+
 
 def getclass(storefile, ignore=None, classes=classes, hiddenclasses=hiddenclasses):
     """Factory that returns the applicable class for the type of file presented.
@@ -168,6 +173,7 @@ def getclass(storefile, ignore=None, classes=classes, hiddenclasses=hiddenclasse
     except KeyError:
         raise ValueError("Unknown filetype (%s)" % storefilename)
     return storeclass
+
 
 def getobject(storefile, ignore=None, classes=classes, hiddenclasses=hiddenclasses):
     """Factory that returns a usable object for the type of file presented.
@@ -196,6 +202,7 @@ def getobject(storefile, ignore=None, classes=classes, hiddenclasses=hiddenclass
         store = storeclass()
         store.filename = storefilename
     return store
+
 
 def supported_files():
     """Returns data about all supported files

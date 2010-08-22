@@ -25,6 +25,7 @@ import re
 import unicodedata
 from translate.lang import data
 
+
 def spacestart(str1):
     """returns all the whitespace from the start of the string"""
     newstring = u""
@@ -34,6 +35,7 @@ def spacestart(str1):
         else:
             break
     return newstring
+
 
 def spaceend(str1):
     """returns all the whitespace from the end of the string"""
@@ -46,6 +48,7 @@ def spaceend(str1):
             break
     return newstring
 
+
 def puncstart(str1, punctuation):
     """returns all the punctuation from the start of the string"""
     newstring = u""
@@ -55,6 +58,7 @@ def puncstart(str1, punctuation):
         else:
             break
     return newstring
+
 
 def puncend(str1, punctuation):
     """returns all the punctuation from the end of the string"""
@@ -69,12 +73,14 @@ def puncend(str1, punctuation):
             break
     return newstring.replace(u"\u00a0", u" ")
 
+
 def ispurepunctuation(str1):
     """checks whether the string is entirely punctuation"""
     for c in str1:
         if c.isalnum():
             return False
     return len(str1)
+
 
 def isvalidaccelerator(accelerator, acceptlist=None):
     """returns whether the given accelerator character is valid
@@ -110,6 +116,7 @@ def isvalidaccelerator(accelerator, acceptlist=None):
         decomposition = re.sub("<[^>]+>", "", decomposition).strip()
         return decomposition.count(" ") == 0
 
+
 def findaccelerators(str1, accelmarker, acceptlist=None):
     """returns all the accelerators and locations in str1 marked with a given marker"""
     accelerators = []
@@ -131,6 +138,7 @@ def findaccelerators(str1, accelmarker, acceptlist=None):
             else:
                 badaccelerators.append((accelstart, accelerator))
     return accelerators, badaccelerators
+
 
 def findmarkedvariables(str1, startmarker, endmarker, ignorelist=[]):
     """returns all the variables and locations in str1 marked with a given marker"""
@@ -180,6 +188,7 @@ def findmarkedvariables(str1, startmarker, endmarker, ignorelist=[]):
                     variables.append((startmatch, variable))
     return variables
 
+
 def getaccelerators(accelmarker, acceptlist=None):
     """returns a function that gets a list of accelerators marked using accelmarker"""
     def getmarkedaccelerators(str1):
@@ -190,6 +199,7 @@ def getaccelerators(accelmarker, acceptlist=None):
         return accelerators, badaccelerators
     return getmarkedaccelerators
 
+
 def getvariables(startmarker, endmarker):
     """returns a function that gets a list of variables marked using startmarker and endmarker"""
     def getmarkedvariables(str1):
@@ -198,6 +208,7 @@ def getvariables(startmarker, endmarker):
         variables = [variable for accelstart, variable in varlocs]
         return variables
     return getmarkedvariables
+
 
 def getnumbers(str1):
     """returns any numbers that are in the string"""
@@ -232,21 +243,25 @@ def getnumbers(str1):
             numbers.append(lastnumber)
     return numbers
 
+
 def getfunctions(str1, punctuation):
     """returns the functions() that are in a string, while ignoring the trailing
     punctuation in the given parameter"""
     punctuation = punctuation.replace("(", "").replace(")", "")
     return [word.rstrip(punctuation) for word in str1.split() if word.rstrip(punctuation).endswith("()")]
 
+
 def getemails(str1):
     """returns the email addresses that are in a string"""
     return re.findall('[\w\.\-]+@[\w\.\-]+', str1)
+
 
 def geturls(str1):
     """returns the URIs in a string"""
     URLPAT = 'https?:[\w/\.:;+\-~\%#\$?=&,()]+|www\.[\w/\.:;+\-~\%#\$?=&,()]+|' +\
             'ftp:[\w/\.:;+\-~\%#?=&,]+'
     return re.findall(URLPAT, str1)
+
 
 def countaccelerators(accelmarker, acceptlist=None):
     """returns a function that counts the number of accelerators marked with the given marker"""

@@ -20,12 +20,14 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
+
 class XmlNamespace(object):
     def __init__(self, namespace):
         self._namespace = namespace
 
     def name(self, tag):
         return "{%s}%s" % (self._namespace, tag)
+
 
 class XmlNamer(object):
     """Initialize me with a DOM node or a DOM document node (the

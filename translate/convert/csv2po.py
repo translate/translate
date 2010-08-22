@@ -30,18 +30,22 @@ from translate.misc import sparse
 from translate.storage import po
 from translate.storage import csvl10n
 
+
 def replacestrings(source, *pairs):
     for orig, new in pairs:
         source = source.replace(orig, new)
     return source
 
+
 def quotecsvstr(source):
     return '"' + replacestrings(source, ('\\"', '"'), ('"', '\\"'), ("\\\\'", "\\'"), ('\\\\n', '\\n')) + '"'
+
 
 def simplify(string):
     return filter(type(string).isalnum, string)
     tokens = sparse.SimpleParser().tokenize(string)
     return " ".join(tokens)
+
 
 class csv2po:
     """a class that takes translations from a .csv file and puts them in a .po file"""
@@ -167,6 +171,7 @@ class csv2po:
         self.pofile.removeduplicates(self.duplicatestyle)
         return self.pofile
 
+
 def convertcsv(inputfile, outputfile, templatefile, charset=None, columnorder=None, duplicatestyle="msgctxt"):
     """reads in inputfile using csvl10n, converts using csv2po, writes to outputfile"""
     inputstore = csvl10n.csvfile(inputfile, fieldnames=columnorder)
@@ -180,6 +185,7 @@ def convertcsv(inputfile, outputfile, templatefile, charset=None, columnorder=No
         return 0
     outputfile.write(str(outputstore))
     return 1
+
 
 def main(argv=None):
     from translate.convert import convert

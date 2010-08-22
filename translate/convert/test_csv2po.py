@@ -7,6 +7,7 @@ from translate.storage import po
 from translate.storage import csvl10n
 from translate.storage.test_base import headerless_len, first_translatable
 
+
 class TestCSV2PO:
     def csv2po(self, csvsource, template=None):
         """helper that converts csv source to po source without requiring files"""
@@ -117,6 +118,7 @@ msgstr ""
         assert pounit._extract_msgidcomments() == 'KDE comment'
         assert pounit.source == "Source"
         assert pounit.target == "Target"
+
 
 class TestCSV2POCommand(test_convert.TestConvertCommand, TestCSV2PO):
     """Tests running actual csv2po commands on files"""

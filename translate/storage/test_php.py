@@ -5,6 +5,7 @@ from translate.storage import php
 from translate.storage import test_monolingual
 from translate.misc import wStringIO
 
+
 def test_php_escaping_single_quote():
     """Test the helper escaping funtions for 'single quotes'
 
@@ -45,6 +46,7 @@ newline"""
     assert php.phpencode(r'''Arnold once said: "I'll be back"''') == r'''Arnold once said: "I\'ll be back"'''
     assert php.phpencode(r'You deleted C:\*.*?') == r"You deleted C:\*.*?"
 
+
 def test_php_escaping_double_quote():
     """Test the helper escaping funtions for 'double quotes'"""
     # Decoding - PHP -> Python
@@ -78,11 +80,13 @@ def test_php_escaping_double_quote():
     assert php.phpencode('"', quotechar='"') == r'\"'
     assert php.phpencode(r"Don't escape me here\'s", quotechar='"') == r"Don't escape me here\'s"  # See bug #589
 
+
 class TestPhpUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = php.phpunit
 
     def test_difficult_escapes(self):
         pass
+
 
 class TestPhpFile(test_monolingual.TestMonolingualStore):
     StoreClass = php.phpfile

@@ -26,8 +26,10 @@ header_item_or_end_re = re.compile('(((?P<key>[^ ]+)(?P<space>[ ]*:[ ]*)(?P<valu
 header_item_re = re.compile('(?P<key>[^ ]+)(?P<space>[ ]*:[ ]*)(?P<value>.*)')
 string_entry_re = re.compile('(?P<start>rls_string[ ]+)(?P<id>[^ ]+)(?P<space>[ ]+)(?P<str>.*)')
 
+
 def identity(x):
     return x
+
 
 class ParseState(object):
     def __init__(self, f, charset, read_hook=identity):
@@ -43,6 +45,7 @@ class ParseState(object):
         self.current_line = self.f.next().decode(self.charset)
         return current_line
 
+
 def read_while(ps, f, test):
     result = f(ps.current_line)
     while test(result):
@@ -50,8 +53,10 @@ def read_while(ps, f, test):
         result = f(ps.current_line)
     return result
 
+
 def eat_whitespace(ps):
     read_while(ps, identity, lambda line: line.strip() == '')
+
 
 def skip_no_translate(ps):
     if ps.current_line.startswith('// DO NOT TRANSLATE'):
@@ -59,6 +64,7 @@ def skip_no_translate(ps):
         read_while(ps, identity, lambda line: not line.startswith('// DO NOT TRANSLATE'))
         ps.read_line()
         eat_whitespace(ps)
+
 
 def read_charset(lines):
     for line in lines:

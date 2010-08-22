@@ -6,6 +6,7 @@
 # Date: 2008-12-01
 from translate.storage import tiki
 
+
 class TestTikiUnit:
     def test_locations(self):
         unit = tiki.TikiUnit("one")
@@ -23,6 +24,7 @@ class TestTikiUnit:
         unit2.settarget('two')
         unit2.addlocation('untranslated')
         assert unicode(unit2) == '// "one" => "two",\n'
+
 
 class TestTikiStore:
     def test_parse_simple(self):

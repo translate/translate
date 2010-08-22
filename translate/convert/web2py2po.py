@@ -25,6 +25,7 @@
 
 from translate.storage import po
 
+
 class web2py2po:
     def __init__(self, pofile=None):
         self.mypofile = pofile
@@ -50,6 +51,7 @@ class web2py2po:
 
         return self.mypofile
 
+
 def convertpy(inputfile, outputfile, encoding="UTF-8"):
 
     new_pofile = po.pofile()
@@ -67,11 +69,13 @@ def convertpy(inputfile, outputfile, encoding="UTF-8"):
     outputfile.write(str(outputstore))
     return 1
 
+
 def main(argv=None):
     from translate.convert import convert
     formats = {("py", "po"): ("po", convertpy), ("py", None): ("po", convertpy)}
     parser = convert.ConvertOptionParser(formats, usetemplates=False, description=__doc__)
     parser.run(argv)
+
 
 if __name__ == '__main__':
     main()

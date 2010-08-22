@@ -49,6 +49,7 @@ def _get_indexer(location):
     """
     return indexing.get_indexer(location, [default_engine])
 
+
 def clean_database():
     """remove an existing database"""
     dbase_dir = os.path.abspath(DATABASE)
@@ -57,6 +58,7 @@ def clean_database():
         return
     # recursively remove the directory
     shutil.rmtree(dbase_dir)
+
 
 def create_example_content(database):
     """add some defined documents to the database
@@ -90,6 +92,7 @@ def create_example_content(database):
     database.flush()
     assert _get_number_of_docs(database) == 10
 
+
 def test_create_database():
     """create a new database from scratch"""
     # clean up everything first
@@ -99,6 +102,7 @@ def test_create_database():
     assert os.path.exists(DATABASE)
     # clean up
     clean_database()
+
 
 def test_open_database():
     """open an existing database"""
@@ -112,6 +116,7 @@ def test_open_database():
     assert isinstance(opened_db, CommonIndexer.CommonDatabase)
     # clean up
     clean_database()
+
 
 def test_make_queries():
     """create a simple query from a plain string"""
@@ -130,6 +135,7 @@ def test_make_queries():
     q_combined_or = new_db.make_query([new_db.make_query("foo"),
         new_db.make_query("bar")], require_all=False)
     assert str(q_combined_or) != str(q_combined_and)
+
 
 def test_partial_text_matching():
     """check if implicit and explicit partial text matching works"""
@@ -197,6 +203,7 @@ def test_field_matching():
     # clean up
     clean_database()
 
+
 def test_field_analyzers():
     """test if we can change the analyzer of specific fields"""
     # clean up everything first
@@ -225,6 +232,7 @@ def test_field_analyzers():
     # clean up
     clean_database()
 
+
 def test_and_queries():
     """test if AND queries work as expected"""
     # clean up everything first
@@ -250,6 +258,7 @@ def test_and_queries():
     # clean up
     clean_database()
 
+
 def test_or_queries():
     """test if OR queries work as expected"""
     # clean up everything first
@@ -271,6 +280,7 @@ def test_or_queries():
     assert r_or3[0] == 5
     # clean up
     clean_database()
+
 
 def test_lower_upper_case():
     """test if case is ignored for queries and for indexed terms"""
@@ -300,6 +310,7 @@ def test_lower_upper_case():
     # clean up
     clean_database()
 
+
 def test_tokenizing():
     """test if the TOKENIZE analyzer field setting is honoured"""
     # clean up everything first
@@ -327,6 +338,7 @@ def test_tokenizing():
     assert r_token4[0] == 1
     # clean up
     clean_database()
+
 
 def test_searching():
     """test if searching (retrieving specified field values) works"""
@@ -386,6 +398,7 @@ def _show_database_pylucene(database):
     for index in range(reader.maxDoc()):
         print reader.document(index).toString().encode("charmap")
 
+
 def _show_database_xapian(database):
     import xapian
     doccount = database.reader.get_doccount()
@@ -412,8 +425,10 @@ def _get_number_of_docs(database):
         database._index_refresh()
         return database.reader.numDocs()
 
+
 def get_engine_name(database):
     return database.__module__
+
 
 def report_whitelisted_success(db, name):
     """ Output a warning message regarding a successful unittest, that was
@@ -423,6 +438,7 @@ def report_whitelisted_success(db, name):
     print "the test '%s' works again for '%s' - please remove the exception" \
             % (name, get_engine_name(db))
 
+
 def report_whitelisted_failure(db, name):
     """ Output a warning message regarding a unittest, that was supposed to fail
     for a specific indexing engine.
@@ -431,6 +447,7 @@ def report_whitelisted_failure(db, name):
     """
     print "the test '%s' fails - as expected for '%s'" % (name,
             get_engine_name(db))
+
 
 def assert_whitelisted(db, assert_value, white_list_engines, name_of_check):
     """ Do an assertion, but ignoring failure for specific indexing engines.

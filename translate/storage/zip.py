@@ -34,6 +34,7 @@ from translate.misc import wStringIO
 from os import path
 from zipfile import ZipFile
 
+
 class ZIPFile(directory.Directory):
     """This class represents a ZIP file like a directory."""
     def __init__(self, filename=None):

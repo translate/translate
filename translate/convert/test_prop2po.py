@@ -7,6 +7,7 @@ from translate.misc import wStringIO
 from translate.storage import po
 from translate.storage import properties
 
+
 class TestProp2PO:
     def prop2po(self, propsource, proptemplate=None):
         """helper that converts .properties source to po source without requiring files"""
@@ -201,6 +202,7 @@ do=translate me
         unit = self.singleelement(pofile)
         assert unit.source == "value"
         assert unit.getnotes("developer") == "# 1st Unassociated comment\n# 2nd Connected comment"
+
 
 class TestProp2POCommand(test_convert.TestConvertCommand, TestProp2PO):
     """Tests running actual prop2po commands on files"""

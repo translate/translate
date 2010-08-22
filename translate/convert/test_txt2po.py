@@ -5,6 +5,7 @@ from translate.convert import test_convert
 from translate.misc import wStringIO
 from translate.storage import txt
 
+
 class TestTxt2PO:
     def txt2po(self, txtsource, template=None):
         """helper that converts txt source to po source without requiring files"""
@@ -57,6 +58,7 @@ helped to bridge the digital divide to a limited extent.'''
         poresult = self.txt2po(txtsource)
         pounit = poresult.units[1]
         assert str(pounit.getsource()) == txtexpected
+
 
 class TestDoku2po:
     def doku2po(self, txtsource, template=None):
@@ -121,6 +123,7 @@ This is a wiki page.
         assert poresult.units[2].source == "This is an item."
         assert poresult.units[3].source == "This is a subitem."
         assert poresult.units[4].source == "This is a tabbed item."
+
 
 class TestTxt2POCommand(test_convert.TestConvertCommand, TestTxt2PO):
     """Tests running actual txt2po commands on files"""

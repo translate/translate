@@ -1,6 +1,7 @@
 from translate.search import match
 from translate.storage import csvl10n
 
+
 class TestMatch:
     """Test the matching class"""
     def candidatestrings(self, units):

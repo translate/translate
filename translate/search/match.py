@@ -240,6 +240,7 @@ ignorepatterns_re = [(re.compile(a), b) for (a, b) in ignorepatterns]
 
 context_re = re.compile("\s+\(.*\)\s*$")
 
+
 class terminologymatcher(matcher):
     """A matcher with settings specifically for terminology matching"""
 
@@ -343,6 +344,7 @@ def unit2dict(unit):
     """converts a pounit to a simple dict structure for use over the web"""
     return {"source": unit.source, "target": unit.target,
             "quality": _parse_quality(unit.getnotes()), "context": unit.getcontext()}
+
 
 def _parse_quality(comment):
     """extracts match quality from po comments"""

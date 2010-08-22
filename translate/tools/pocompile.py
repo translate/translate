@@ -29,8 +29,10 @@ from translate.storage import factory
 from translate.storage import mo
 from translate.misc.multistring import multistring
 
+
 def _do_msgidcomment(string):
     return u"_: %s\n" % string
+
 
 class POCompile:
 
@@ -55,6 +57,7 @@ class POCompile:
                 outputfile.addunit(mounit)
         return str(outputfile)
 
+
 def convertmo(inputfile, outputfile, templatefile, includefuzzy=False):
     """reads in a base class derived inputfile, converts using pocompile, writes to outputfile"""
     # note that templatefile is not used, but it is required by the converter...
@@ -70,12 +73,14 @@ def convertmo(inputfile, outputfile, templatefile, includefuzzy=False):
     outputfile.write(outputmo)
     return 1
 
+
 def main():
     from translate.convert import convert
     formats = {"po": ("mo", convertmo), "xlf": ("mo", convertmo)}
     parser = convert.ConvertOptionParser(formats, usepots=False, description=__doc__)
     parser.add_fuzzy_option()
     parser.run()
+
 
 if __name__ == '__main__':
     main()

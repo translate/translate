@@ -29,6 +29,7 @@ usage instructions
 from translate.storage import po
 from translate.storage import poxliff
 
+
 class po2xliff:
     def convertunit(self, outputstore, inputunit, filename):
         """creates a transunit node"""
@@ -91,6 +92,7 @@ class po2xliff:
             transunitnode = self.convertunit(outputstore, inputunit, filename)
         return str(outputstore)
 
+
 def convertpo(inputfile, outputfile, templatefile):
     """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
     inputstore = po.pofile(inputfile)
@@ -101,11 +103,13 @@ def convertpo(inputfile, outputfile, templatefile):
     outputfile.write(outputstring)
     return 1
 
+
 def main(argv=None):
     from translate.convert import convert
     formats = {"po": ("xlf", convertpo), ("po", "xlf"): ("xlf", convertpo)}
     parser = convert.ConvertOptionParser(formats, usepots=True, usetemplates=True, description=__doc__)
     parser.run(argv)
+
 
 if __name__ == '__main__':
     main()

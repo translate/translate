@@ -59,6 +59,7 @@ import os
 import time
 import logging
 
+
 def is_available():
     return xapian.major_version() > 0
 
@@ -471,6 +472,7 @@ def _truncate_term_length(term, taken=0):
         return term[0:_MAX_TERM_LENGTH - taken - 1]
     else:
         return term
+
 
 def _extract_fieldvalues(match, (result, fieldnames)):
     """add a dict of field values to a list

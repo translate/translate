@@ -24,10 +24,12 @@ from translate.storage import factory
 from translate.storage.pypo import po_escape_map
 from translate.storage.symbian import *
 
+
 def escape(text):
     for key, val in po_escape_map.iteritems():
         text = text.replace(key, val)
     return '"%s"' % text
+
 
 def replace_header_items(ps, replacments):
     match = read_while(ps, header_item_or_end_re.match, lambda match: match is None)
@@ -38,6 +40,7 @@ def replace_header_items(ps, replacments):
             if key in replacments:
                 ps.current_line = match.expand('\g<key>\g<space>%s\n' % replacments[key])
         ps.read_line()
+
 
 def parse(ps, header_replacements, body_replacements):
     replace_header_items(ps, header_replacements)
@@ -55,11 +58,13 @@ def parse(ps, header_replacements, body_replacements):
     except StopIteration:
         pass
 
+
 def line_saver(charset):
     result = []
     def save_line(line):
         result.append(line.encode(charset))
     return result, save_line
+
 
 def write_symbian(f, header_replacements, body_replacements):
     lines = list(f)
@@ -67,6 +72,7 @@ def write_symbian(f, header_replacements, body_replacements):
     result, save_line = line_saver(charset)
     parse(ParseState(iter(lines), charset, save_line), header_replacements, body_replacements)
     return result
+
 
 def build_location_index(store):
     po_header = store.parseheader()
@@ -77,9 +83,11 @@ def build_location_index(store):
     index['r_string_languagegroup_name'] = store.UnitClass(po_header['Language-Team'])
     return index
 
+
 def build_header_index(store):
     po_header = store.parseheader()
     return {'Author': po_header['Last-Translator']}
+
 
 def convert_symbian(input_file, output_file, template_file, pot=False, duplicatestyle="msgctxt"):
     store = factory.getobject(input_file)
@@ -90,6 +98,7 @@ def convert_symbian(input_file, output_file, template_file, pot=False, duplicate
         output_file.write(line)
     return 1
 
+
 def main(argv=None):
     from translate.convert import convert
     formats = {"po": ("r0", convert_symbian)}
@@ -97,6 +106,7 @@ def main(argv=None):
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.run(argv)
+
 
 if __name__ == '__main__':
     main()

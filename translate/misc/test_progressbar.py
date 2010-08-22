@@ -2,6 +2,7 @@
 
 from translate.misc import progressbar
 
+
 def test_hashprogressbar():
     """Test the [###   ] progress bar"""
     bar = progressbar.HashProgressBar()

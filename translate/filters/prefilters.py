@@ -26,6 +26,7 @@ from translate.filters import decoration
 from translate.misc import quote
 import re
 
+
 def removekdecomments(str1):
     """removed kde-style po comments i.e. starting with _: and ending with litteral \\n"""
     assert isinstance(str1, unicode)
@@ -46,6 +47,7 @@ def removekdecomments(str1):
     lines = [lines[linenum] for linenum in range(len(lines)) if linenum not in removelines]
     return "\n".join(lines)
 
+
 def filteraccelerators(accelmarker):
     """returns a function that filters accelerators marked using accelmarker in strings"""
     if accelmarker is None:
@@ -64,6 +66,7 @@ def filteraccelerators(accelmarker):
         return fstr1
     return filtermarkedaccelerators
 
+
 def varname(variable, startmarker, endmarker):
     """a simple variable filter that returns the variable name without the marking punctuation"""
     return variable
@@ -75,9 +78,11 @@ def varname(variable, startmarker, endmarker):
     else:
         return variable[variable.find(startmarker)+len(startmarker):variable.rfind(endmarker)]
 
+
 def varnone(variable, startmarker, endmarker):
     """a simple variable filter that returns an emoty string"""
     return ""
+
 
 def filtervariables(startmarker, endmarker, varfilter):
     """returns a function that filters variables marked using startmarker and
@@ -111,6 +116,7 @@ wordswithpunctuation = ["'n", "'t", # Afrikaans
                        ]
 # map all the words to their non-punctified equivalent
 wordswithpunctuation = dict([(word, filter(str.isalnum, word)) for word in wordswithpunctuation])
+
 
 def filterwordswithpunctuation(str1):
     """goes through a list of known words that have punctuation and removes the

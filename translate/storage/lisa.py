@@ -47,6 +47,8 @@ def _findAllMatches(text, re_obj):
 placeholders = ['(%[diouxXeEfFgGcrs])', r'(\\+.?)',
                 '(%[0-9]$lx)', '(%[0-9]\$[a-z])', '(<.+?>)']
 re_placeholders = [re.compile(ph) for ph in placeholders]
+
+
 def _getPhMatches(text):
     """return list of regexp matchobjects for with all place holders in the
     L{text}"""

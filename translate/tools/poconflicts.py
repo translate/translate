@@ -31,6 +31,7 @@ from translate.misc import optrecurse
 import sys
 import os
 
+
 class ConflictOptionParser(optrecurse.RecursiveOptionParser):
     """a specialized Option Parser for the conflict tool..."""
     def parse_args(self, args=None, values=None):
@@ -178,6 +179,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
                 unit.othercomments.append("# (poconflicts) %s\n" % filename)
                 conflictfile.units.append(unit)
             open(fulloutputpath, "w").write(str(conflictfile))
+
 
 def main():
     formats = {"po": ("po", None), None: ("po", None)}

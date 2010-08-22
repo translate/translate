@@ -28,6 +28,7 @@ from translate.storage import po
 from translate.storage import xliff
 from translate.misc import wStringIO
 
+
 class xliff2po:
     def converttransunit(self, transunit):
         """makes a pounit from the given transunit"""
@@ -86,6 +87,7 @@ class xliff2po:
             thetargetfile.addunit(thepo)
         return thetargetfile
 
+
 def convertxliff(inputfile, outputfile, templates):
     """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
     convertor = xliff2po()
@@ -94,6 +96,7 @@ def convertxliff(inputfile, outputfile, templates):
         return 0
     outputfile.write(str(outputstore))
     return 1
+
 
 def main(argv=None):
     from translate.convert import convert

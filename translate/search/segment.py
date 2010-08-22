@@ -25,6 +25,7 @@
 
 punctuation = u".,;:!?-@#$%^*_()[]{}/\\'\"<>‘’‚‛“”„‟′″‴‵‶‷‹›«»±³¹²°¿©®×£¥"
 
+
 def character_iter(text):
     """Returns an iterator over the characters in text."""
     #We don't return more than one consecutive whitespace character
@@ -36,9 +37,11 @@ def character_iter(text):
         if not (c in punctuation):
             yield c.lower()
 
+
 def characters(text):
     """Returns a list of characters in text."""
     return [c for c in character_iter(text)]
+
 
 def word_iter(text):
     """Returns an iterator over the words in text."""
@@ -46,9 +49,11 @@ def word_iter(text):
     for w in text.split():
         yield w.strip(punctuation).lower()
 
+
 def words(text):
     """Returns a list of words in text."""
     return [w for w in word_iter(text)]
+
 
 def sentence_iter(text):
     """Returns an iterator over the senteces in text."""
@@ -58,6 +63,7 @@ def sentence_iter(text):
     #confusion with abbreviations. And remember Afrikaans "'n" :-)
     for s in text.split(". "):
         yield s.strip()
+
 
 def sentences(text):
     """Returns a list of senteces in text."""

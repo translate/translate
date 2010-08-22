@@ -45,6 +45,7 @@ __CACHED_RCS_CLASSES = {}
 modules) are cached here for faster access.
 """
 
+
 def __get_rcs_class(name):
     if not name in __CACHED_RCS_CLASSES:
         try:
@@ -127,6 +128,7 @@ except ImportError:
         c_stderr.close()
         c_stdin.close()
         return ret, output, error
+
 
 def __shellescape(path):
     """Shell-escape any non-alphanumeric characters."""
@@ -298,6 +300,7 @@ def get_versioned_objects_recursive(
     os.path.walk(location, scan_directory, None)
     return rcs_objs
 
+
 def get_versioned_object(
         location,
         versioning_systems=None,
@@ -321,6 +324,7 @@ def get_versioned_object(
     # if everything fails:
     raise IOError("Could not find version control information: %s" % location)
 
+
 def get_available_version_control_systems():
     """ return the class objects of all locally available version control
     systems
@@ -332,15 +336,19 @@ def get_available_version_control_systems():
             result.append(rcs_class)
     return result
 
+
 # stay compatible to the previous version
 def updatefile(filename):
     return get_versioned_object(filename).update()
 
+
 def getcleanfile(filename, revision=None):
     return get_versioned_object(filename).getcleanfile(revision)
 
+
 def commitfile(filename, message=None, author=None):
     return get_versioned_object(filename).commit(message=message, author=author)
+
 
 def commitdirectory(directory, message=None, author=None):
     """commit all files below the given directory
@@ -352,6 +360,7 @@ def commitdirectory(directory, message=None, author=None):
     for rcs_obj in get_versioned_objects_recursive(directory):
         rcs_obj.commit(message=message, author=author)
 
+
 def updatedirectory(directory):
     """update all files below the given directory
 
@@ -361,6 +370,7 @@ def updatedirectory(directory):
     # should we combine them into one update?
     for rcs_obj in get_versioned_objects_recursive(directory):
         rcs_obj.update()
+
 
 def hasversioning(item):
     try:

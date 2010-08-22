@@ -29,6 +29,7 @@ from translate.storage import dtd
 from translate.misc import quote
 from translate.convert import accesskey as accesskeyfn
 
+
 def is_css_entity(entity):
     """Says if the given entity is likely to contain CSS that should not be
     translated."""
@@ -37,6 +38,7 @@ def is_css_entity(entity):
         if suffix in ["height", "width", "unixWidth", "macWidth", "size"] or suffix.startswith("style"):
             return True
     return False
+
 
 class dtd2po:
     def __init__(self, blankmsgstr=False, duplicatestyle="msgctxt"):
@@ -287,6 +289,7 @@ class dtd2po:
         thetargetfile.removeduplicates(self.duplicatestyle)
         return thetargetfile
 
+
 def convertdtd(inputfile, outputfile, templatefile, pot=False, duplicatestyle="msgctxt"):
     """reads in inputfile and templatefile using dtd, converts using dtd2po, writes to outputfile"""
     inputstore = dtd.dtdfile(inputfile)
@@ -301,6 +304,7 @@ def convertdtd(inputfile, outputfile, templatefile, pot=False, duplicatestyle="m
     outputfile.write(str(outputstore))
     return 1
 
+
 def main(argv=None):
     from translate.convert import convert
     formats = {"dtd": ("po", convertdtd), ("dtd", "dtd"): ("po", convertdtd)}
@@ -308,6 +312,7 @@ def main(argv=None):
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.run(argv)
+
 
 if __name__ == '__main__':
     main()

@@ -25,6 +25,7 @@ import pstats
 import random
 import sys
 
+
 class TranslateBenchmarker:
     """class to aid in benchmarking Translate Toolkit stores"""
     def __init__(self, test_dir, storeclass):

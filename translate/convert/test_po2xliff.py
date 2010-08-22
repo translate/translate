@@ -5,6 +5,7 @@ from translate.storage import po
 from translate.storage import poxliff
 from translate.misc.xml_helpers import XML_NS, getText
 
+
 class TestPO2XLIFF:
 
     def po2xliff(self, posource, sourcelanguage='en', targetlanguage=None):

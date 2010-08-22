@@ -23,6 +23,7 @@
 import logging
 import os
 
+
 def launch_server_wsgiref(host, port, app):
     """use python's builtin simple_server, this is a last resort since
     it doesn't support concurrency at all"""
@@ -76,6 +77,7 @@ def launch_server_cherrypy(host, port, app):
 #FIXME: implement threading http server based on BaseHTTPServer and wsgiref
 
 servers = [launch_server_cherrypy, launch_server_django, launch_server_wsgiref]
+
 
 def launch_server(host, port, app):
     """use the best possible wsgi server"""

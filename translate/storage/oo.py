@@ -47,6 +47,7 @@ for i in map(chr, range(256)):
     else:
         normalizetable += "_"
 
+
 class unormalizechar(dict):
     def __init__(self, normalchars):
         self.normalchars = {}
@@ -57,12 +58,14 @@ class unormalizechar(dict):
 
 unormalizetable = unormalizechar(normalfilenamechars.decode("ascii"))
 
+
 def normalizefilename(filename):
     """converts any non-alphanumeric (standard roman) characters to _"""
     if isinstance(filename, str):
         return filename.translate(normalizetable)
     else:
         return filename.translate(unormalizetable)
+
 
 def makekey(ookey, long_keys):
     """converts an oo key tuple into a unique identifier
@@ -110,9 +113,11 @@ def makekey(ookey, long_keys):
 # The following is consistently escaped in .xhp strings (not only in XML tags):
 #   \  ->  \\
 
+
 def escape_text(text):
     """Escapes SDF text to be suitable for unit consumption."""
     return text.replace("\n", "\\n").replace("\t", "\\t").replace("\r", "\\r")
+
 
 def unescape_text(text):
     """Unescapes SDF text to be suitable for unit consumption."""
@@ -120,6 +125,7 @@ def unescape_text(text):
            replace("\\r", "\r").replace("\a", "\\\\")
 
 helptagre = re.compile('''<[/]??[a-z_\-]+?(?:| +[a-z]+?=".*?") *[/]??>''')
+
 
 def escape_help_text(text):
     """Escapes the help text as it would be in an SDF file.
@@ -141,9 +147,11 @@ def escape_help_text(text):
             text = text.replace(tag, escaped_tag)
     return text
 
+
 def unescape_help_text(text):
     """Unescapes normal text to be suitable for writing to the SDF file."""
     return text.replace(r"\<", "<").replace(r"\>", ">").replace(r'\"', '"').replace(r"\\", "\\")
+
 
 def encode_if_needed_utf8(text):
     """Encode a Unicode string the the specified encoding"""
@@ -216,6 +224,7 @@ class ooline(object):
         return (self.project, self.sourcefile, self.resourcetype, self.groupid,
                 self.localid, self.platform)
 
+
 class oounit:
     """this represents a number of translations of a resource"""
     def __init__(self):
@@ -235,6 +244,7 @@ class oounit:
     def getoutput(self):
         """return the lines in tab-delimited form"""
         return "\r\n".join([str(line) for line in self.lines])
+
 
 class oofile:
     """this represents an entire .oo file"""
@@ -294,6 +304,7 @@ class oofile:
             oeline = str(oe) + "\r\n"
             lines.append(oeline)
         return "".join(lines)
+
 
 class oomultifile:
     """this takes a huge GSI file and represents it as multiple smaller files..."""

@@ -4,6 +4,7 @@ from translate.convert import po2html
 from translate.convert import test_convert
 from translate.misc import wStringIO
 
+
 class TestPO2Html:
     def converthtml(self, posource, htmltemplate):
         """helper to exercise the command line function"""

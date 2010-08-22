@@ -27,6 +27,7 @@ item3: three
     assert d['item2'] == 'two:two'
     assert d['item3'] == 'three'
 
+
 def test_update():
     '''test the update function'''
     # do we really add nothing if add==False ?
@@ -59,11 +60,13 @@ def poparse(posource):
     dummyfile = wStringIO.StringIO(posource)
     return po.pofile(dummyfile)
 
+
 def poxliffparse(posource):
     """helper that parses po source into poxliffFile"""
     poxli = poxliff.PoXliffFile()
     poxli.parse(posource)
     return poxli
+
 
 def check_po_date(datestring):
     """Check the validity of a PO date.
@@ -88,6 +91,7 @@ def check_po_date(datestring):
     # Check that the date can be parsed
     assert type(time.strptime(datestring, date_format)) == time.struct_time
 
+
 def test_po_dates():
     pofile = po.pofile()
     headerdict = pofile.makeheaderdict(po_revision_date=True)
@@ -98,6 +102,7 @@ def test_po_dates():
         po_revision_date=time.localtime())
     check_po_date(headerdict["POT-Creation-Date"])
     check_po_date(headerdict["PO-Revision-Date"])
+
 
 def test_timezones():
     pofile = po.pofile()
@@ -134,6 +139,7 @@ def test_timezones():
         assert time.timezone == 0
         # Typically "+0000"
         assert poheader.tzstring() == time.strftime("%z")
+
 
 def test_header_blank():
 
@@ -227,6 +233,7 @@ msgstr ""
         assert plural == "(n != 1)"
 ##    TODO: add the same test for PoXliffFile
 
+
 def test_plural_equation_across_lines():
     """test that we work if the plural equation spans more than one line"""
     posource = r'''msgid ""
@@ -247,6 +254,7 @@ msgstr ""
     assert plural == "(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)"
 ##    TODO: add the same test for PoXliffFile
 
+
 def test_updatecontributor():
     """Test that we can update contributor information in the header comments."""
     posource = r'''msgid ""
@@ -264,6 +272,7 @@ msgstr ""
     pofile.updatecontributor("Khaled Hosny", "khaledhosny@domain.org")
     print str(pofile)
     assert "# Khaled Hosny <khaledhosny@domain.org>, 2006, 2007, 2008, %s." % time.strftime("%Y") in str(pofile)
+
 
 def test_language():
     """Test that we can get a language from the relevant headers."""

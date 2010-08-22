@@ -24,6 +24,7 @@ from lxml import etree
 from translate.storage.placeables import lisa, StringElem
 from translate.storage.placeables.xliff import Bx, Ex, G, UnknownXML, X
 
+
 def test_xml_to_strelem():
     source = etree.fromstring(u'<source>a<x id="foo[1]/bar[1]/baz[1]"/></source>')
     elem = lisa.xml_to_strelem(source)
@@ -37,16 +38,19 @@ def test_xml_to_strelem():
     elem = lisa.xml_to_strelem(source)
     assert elem.sub == [StringElem(u'a'), G(id=u'foo[2]/bar[2]/baz[2]', sub=[StringElem(u'b'), X(id=u'foo[1]/bar[1]/baz[1]'), StringElem(u'c')]), StringElem(u'é')]
 
+
 def test_xml_space():
     source = etree.fromstring(u'<source xml:space="default"> a <x id="foo[1]/bar[1]/baz[1]"/> </source>')
     elem = lisa.xml_to_strelem(source)
     print elem.sub
     assert elem.sub == [StringElem(u'a '), X(id=u'foo[1]/bar[1]/baz[1]'), StringElem(u' ')]
 
+
 def test_chunk_list():
     left  = StringElem([u'a', G(id='foo[2]/bar[2]/baz[2]', sub=[u'b', X(id='foo[1]/bar[1]/baz[1]'), u'c']), u'é'])
     right = StringElem([u'a', G(id='foo[2]/bar[2]/baz[2]', sub=[u'b', X(id='foo[1]/bar[1]/baz[1]'), u'c']), u'é'])
     assert left == right
+
 
 def test_set_strelem_to_xml():
     source = etree.Element(u'source')
@@ -72,6 +76,7 @@ def test_set_strelem_to_xml():
     source = etree.Element(u'source')
     lisa.strelem_to_xml(source, StringElem([u'a', G(id='foo[2]/bar[2]/baz[2]', sub=[u'b', X(id='foo[1]/bar[1]/baz[1]'), u'c']), u'é']))
     assert etree.tostring(source, encoding='UTF-8') == '<source>a<g id="foo[2]/bar[2]/baz[2]">b<x id="foo[1]/bar[1]/baz[1]"/>c</g>é</source>'
+
 
 def test_unknown_xml_placeable():
     # The XML below is (modified) from the official XLIFF example file Sample_AlmostEverything_1.2_strict.xlf
@@ -118,6 +123,7 @@ def test_unknown_xml_placeable():
     xml.tail = None
     lisa.strelem_to_xml(xml, elem)
     assert etree.tostring(xml) == etree.tostring(source)
+
 
 if __name__ == '__main__':
     test_chunk_list()

@@ -48,6 +48,7 @@ class UnknownExtensionError(Exception):
     def __unicode__(self):
         return unicode(str(self))
 
+
 class UnsupportedConversionError(Exception):
     def __init__(self, in_ext=None, out_ext=None, templ_ext=None):
         self.in_ext = in_ext
@@ -70,6 +71,7 @@ def get_extension(filename):
     if ext == fname:
         return None
     return ext
+
 
 def get_converter(in_ext, out_ext=None, templ_ext=None):
     convert_candidates = None
@@ -99,6 +101,7 @@ def get_converter(in_ext, out_ext=None, templ_ext=None):
         raise UnsupportedConversionError(in_ext, out_ext, templ_ext)
     return convert_fn
 
+
 def get_output_extensions(ext):
     """Compiles a list of possible output extensions for the given input extension."""
     out_exts = []
@@ -110,6 +113,7 @@ def get_output_extensions(ext):
             for out_ext, convert_fn in converters[key]:
                 out_exts.append(out_ext)
     return out_exts
+
 
 def convert(inputfile, template=None, options=None, convert_options=None):
     """Convert the given input file to an appropriate output format, optionally

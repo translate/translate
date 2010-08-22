@@ -8,6 +8,7 @@ from translate.storage import po
 import warnings
 import os
 
+
 class TestPO2OO:
     def setup_method(self, method):
         warnings.resetwarnings()
@@ -149,6 +150,7 @@ msgstr "Aa1: <empty>"
         templatefile = wStringIO.StringIO(oosource)
         assert po2oo.convertoo(inputfile, outputfile, templatefile, targetlanguage="af-ZA")
         assert r"Aa1: <empty>" in outputfile.getvalue()
+
 
 class TestPO2OOCommand(test_convert.TestConvertCommand, TestPO2OO):
     """Tests running actual po2oo commands on files"""

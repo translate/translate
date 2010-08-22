@@ -25,6 +25,7 @@ from translate.storage.placeables.general import XMLEntityPlaceable
 
 DEFAULT_ACCESSKEY_MARKER = u"&"
 
+
 def extract(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
     """Extract the label and accesskey from a label+accesskey string
 
@@ -54,6 +55,7 @@ def extract(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
             accesskey = string[marker_pos]
             break
     return label, accesskey
+
 
 def combine(label, accesskey,
             accesskey_marker=DEFAULT_ACCESSKEY_MARKER):

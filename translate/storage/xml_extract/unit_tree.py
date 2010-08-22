@@ -26,6 +26,7 @@ from translate.storage import base, xliff
 from translate.misc.typecheck import accepts, Self, IsOneOf
 from translate.misc.typecheck.typeclasses import Number
 
+
 class XPathTree(object):
     @accepts(Self(), IsOneOf(base.TranslationUnit, type(None)))
     def __init__(self, unit=None):
@@ -36,6 +37,7 @@ class XPathTree(object):
         return isinstance(other, XPathTree) and \
             self.unit == other.unit and \
             self.children == other.children
+
 
 @accepts(unicode)
 def _split_xpath_component(xpath_component):
@@ -49,6 +51,7 @@ def _split_xpath_component(xpath_component):
     tag   = xpath_component[:lbrac]
     index = int(xpath_component[lbrac+1:rbrac])
     return tag, index
+
 
 @accepts(unicode)
 def _split_xpath(xpath):
@@ -65,6 +68,7 @@ def _split_xpath(xpath):
     components = xpath.split(u'/')
     components = [_split_xpath_component(component) for component in components]
     return list(reversed(components))
+
 
 @accepts(IsOneOf(etree._Element, XPathTree), [(unicode, Number)], base.TranslationUnit)
 def _add_unit_to_tree(node, xpath_components, unit):
@@ -93,6 +97,7 @@ def _add_unit_to_tree(node, xpath_components, unit):
         _add_unit_to_tree(node.children[component], xpath_components, unit)
     else:
         node.unit = unit
+
 
 @accepts(base.TranslationStore)
 def build_unit_tree(store):

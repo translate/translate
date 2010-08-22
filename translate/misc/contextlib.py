@@ -38,6 +38,7 @@ import sys
 
 __all__ = ["contextmanager", "nested", "closing"]
 
+
 class GeneratorContextManager(object):
     """Helper for @contextmanager decorator."""
 
@@ -75,6 +76,7 @@ class GeneratorContextManager(object):
                 # was passed to throw().  This prevents a StopIteration
                 # raised inside the "with" statement from being suppressed
                 return exc is not value
+
 
 def contextmanager(func):
     """@contextmanager decorator.
@@ -167,6 +169,7 @@ def nested(*managers):
         # the right information. Another exception may
         # have been raised and caught by an exit method
         raise exc[0], exc[1], exc[2]
+
 
 class closing(object):
     """Context to automatically close something at the end of a block.

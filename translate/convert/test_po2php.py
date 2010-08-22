@@ -6,6 +6,7 @@ from translate.convert import test_convert
 from translate.misc import wStringIO
 from translate.storage import po
 
+
 class TestPO2Php:
     def po2php(self, posource):
         """helper that converts po source to .php source without requiring files"""
@@ -147,6 +148,7 @@ msgstr "stringetjie"
 #        propfile = self.merge2prop(proptemplate, posource)
 #        print propfile
 #        assert propfile == [propexpected]
+
 
 class TestPO2PhpCommand(test_convert.TestConvertCommand, TestPO2Php):
     """Tests running actual po2php commands on files"""

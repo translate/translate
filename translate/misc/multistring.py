@@ -23,6 +23,7 @@
 
 from translate.misc import autoencode
 
+
 class multistring(autoencode.autoencode):
     def __new__(newtype, string=u"", encoding=None, errors=None):
         if isinstance(string, list):

@@ -4,6 +4,7 @@
 from translate.storage import test_base
 from translate.storage import catkeys
 
+
 class TestCatkeysUnit(test_base.TestTranslationUnit):
     UnitClass = catkeys.CatkeysUnit
 

@@ -28,16 +28,16 @@ from projstore import ProjectStore
 __all__ = ['Project']
 
 
-# FIXME: Isn't there a better place for this function?
-# XXX: Make sure that all extensions supported in translate.convert.factory
-#      that are not 3 letters long are added to the first "if" statement in
-#      split_extensions() below.
 def split_extensions(filename):
     """Split the given filename into a name and extensions part.
         The extensions part is defined by any sequence of extensions, where an
         extension is a 3-letter, .-separated string or one of "po" or
         "properties". If the file name consists entirely out of extensions, the
         first part is assumed to be the file name and the rest extensions."""
+    # FIXME: Isn't there a better place for this function?
+    # XXX: Make sure that all extensions supported in translate.convert.factory
+    #      that are not 3 letters long are added to the first "if" statement in
+    #      split_extensions() below.
     filename_parts = filename.split(os.extsep)
     extensions = []
     for part in reversed(filename_parts):

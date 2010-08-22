@@ -44,6 +44,7 @@ def convertpot(input_file, output_file, template_file, tm=None, min_similarity=7
     output_file.write(str(output_store))
     return 1
 
+
 def convert_stores(input_store, template_store, tm=None, min_similarity=75, fuzzymatching=True, **kwargs):
     """Actual conversion function, works on stores not files, returns
     a properly initialized pretranslated output store, with structure
@@ -118,6 +119,7 @@ def _store_post_merge(input_store, output_store, template_store, **kwargs):
     store_post_merge_hook = "_store_post_merge_%s" % input_store.__class__.__name__
     if store_post_merge_hook in globals():
         globals()[store_post_merge_hook](input_store, output_store, template_store, **kwargs)
+
 
 def _unit_post_merge(input_unit, input_store, output_store, template_store, **kwargs):
     """Handle any unit level cleanup and situations not handled by the merge()

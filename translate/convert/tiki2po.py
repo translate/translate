@@ -25,6 +25,7 @@ import sys
 from translate.storage import tiki
 from translate.storage import po
 
+
 class tiki2po:
     def __init__(self, includeunused=False):
         """
@@ -55,6 +56,7 @@ class tiki2po:
             thetargetfile.addunit(newunit)
         return thetargetfile
 
+
 def converttiki(inputfile, outputfile, template=None, includeunused=False):
     """Converts from tiki file format to po.
 
@@ -71,6 +73,7 @@ def converttiki(inputfile, outputfile, template=None, includeunused=False):
     outputfile.write(str(outputstore))
     return True
 
+
 def main(argv=None):
     """Converts tiki .php files to .po."""
     from translate.convert import convert
@@ -83,6 +86,7 @@ def main(argv=None):
     parser.add_option("", "--include-unused", dest="includeunused", action="store_true", default=False, help="Include strings in the unused section")
     parser.passthrough.append("includeunused")
     parser.run(argv)
+
 
 if __name__ == '__main__':
     main()

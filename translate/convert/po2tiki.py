@@ -25,6 +25,7 @@ import sys
 from translate.storage import tiki
 from translate.storage import po
 
+
 class po2tiki:
     def convertstore(self, thepofile):
         """Converts a given (parsed) po file to a tiki file.
@@ -49,6 +50,7 @@ class po2tiki:
                 thetargetfile.addunit(newunit)
         return thetargetfile
 
+
 def convertpo(inputfile, outputfile, template=None):
     """Converts from po file format to tiki.
 
@@ -64,6 +66,7 @@ def convertpo(inputfile, outputfile, template=None):
     outputfile.write(str(outputstore))
     return True
 
+
 def main(argv=None):
     """Will convert from .po to tiki style .php"""
     from translate.convert import convert
@@ -74,6 +77,7 @@ def main(argv=None):
 
     parser = convert.ConvertOptionParser(formats, description=__doc__)
     parser.run(argv)
+
 
 if __name__ == '__main__':
     main()

@@ -7,6 +7,7 @@ from translate.misc.multistring import multistring
 from translate.misc import wStringIO
 from py.test import raises
 
+
 class TestPYPOUnit(test_po.TestPOUnit):
     UnitClass = pypo.pounit
 
@@ -140,6 +141,7 @@ msgstr ""
         print "Actual:"
         print str(unit)
         assert str(unit) == expected
+
 
 class TestPYPOFile(test_po.TestPOFile):
     StoreClass = pypo.pofile

@@ -60,6 +60,7 @@
 from translate.lang import data
 import re
 
+
 class Common(object):
     """This class is the common parent class for all language classes."""
 
