@@ -39,15 +39,15 @@ define similar states.
 
 class StateEnum:
     """Only contains the constants for default states."""
-    MIN          = -128
-    OBSOLETE     = -100
-    EMPTY        =    0
-    NEEDS_WORK   =   30
-    REJECTED     =   60
-    NEEDS_REVIEW =   80
-    UNREVIEWED   =  100
-    FINAL        =  120
-    MAX          =  127
+    MIN = -128
+    OBSOLETE = -100
+    EMPTY = 0
+    NEEDS_WORK = 30
+    REJECTED = 60
+    NEEDS_REVIEW = 80
+    UNREVIEWED = 100
+    FINAL = 120
+    MAX = 127
 
 
 class State(object):

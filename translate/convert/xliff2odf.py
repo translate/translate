@@ -93,13 +93,13 @@ def write_odf(xlf_data, template, output_file, dom_trees):
     template_zip = zipfile.ZipFile(template,  'r')
     output_file.close()
     output_file = file(output_file.name, mode='wb')
-    output_zip   = zipfile.ZipFile(output_file, 'w', compression=zipfile.ZIP_DEFLATED)
+    output_zip = zipfile.ZipFile(output_file, 'w', compression=zipfile.ZIP_DEFLATED)
     # Let's keep the XLIFF file out of the generated ODF for now. Note the
     # weird handling of the manifest since it can only be written to the ZIP
     # file once.
-#    output_zip   = odf_io.copy_odf(template_zip, output_zip, dom_trees.keys() + ['META-INF/manifest.xml'])
-#    output_zip   = odf_io.add_file(output_zip, template_zip.read('META-INF/manifest.xml'), 'translation.xlf', xlf_data)
-    output_zip   = odf_io.copy_odf(template_zip, output_zip, dom_trees.keys())
+#    output_zip = odf_io.copy_odf(template_zip, output_zip, dom_trees.keys() + ['META-INF/manifest.xml'])
+#    output_zip = odf_io.add_file(output_zip, template_zip.read('META-INF/manifest.xml'), 'translation.xlf', xlf_data)
+    output_zip = odf_io.copy_odf(template_zip, output_zip, dom_trees.keys())
     write_content_to_odf(output_zip, dom_trees)
 
 

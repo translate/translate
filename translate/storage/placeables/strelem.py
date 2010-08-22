@@ -64,10 +64,10 @@ class StringElem(object):
             if not isinstance(elem, (unicode, StringElem)):
                 raise ValueError(elem)
 
-        self.sub   = sub
-        self.id    = id
-        self.rid   = rid
-        self.xid   = xid
+        self.sub = sub
+        self.id = id
+        self.rid = rid
+        self.xid = xid
 
         for key, value in kwargs.items():
             if hasattr(self, key):
@@ -91,12 +91,12 @@ class StringElem(object):
         if not isinstance(rhs, StringElem):
             return False
 
-        return  self.id             == rhs.id             and \
-                self.iseditable     == rhs.iseditable     and \
+        return  self.id == rhs.id and \
+                self.iseditable == rhs.iseditable and \
                 self.istranslatable == rhs.istranslatable and \
-                self.isvisible      == rhs.isvisible      and \
-                self.rid            == rhs.rid            and \
-                self.xid            == rhs.xid            and \
+                self.isvisible == rhs.isvisible and \
+                self.rid == rhs.rid and \
+                self.xid == rhs.xid and \
                 len(self.sub) == len(rhs.sub) and \
                 not [i for i in range(len(self.sub)) if self.sub[i] != rhs.sub[i]]
 
@@ -152,7 +152,7 @@ class StringElem(object):
         elemstr = ', '.join([repr(elem) for elem in self.sub])
         return '<%(class)s(%(id)s%(rid)s%(xid)s[%(subs)s])>' % {
             'class': self.__class__.__name__,
-            'id':  self.id  is not None and 'id="%s" '  % (self.id) or '',
+            'id': self.id  is not None and 'id="%s" ' % (self.id) or '',
             'rid': self.rid is not None and 'rid="%s" ' % (self.rid) or '',
             'xid': self.xid is not None and 'xid="%s" ' % (self.xid) or '',
             'subs': elemstr,
@@ -232,12 +232,12 @@ class StringElem(object):
         start = self.get_index_data(start_index)
         if isinstance(start['elem'], tuple):
             # If {start} is "between" elements, we use the one on the "right"
-            start['elem']   = start['elem'][-1]
+            start['elem'] = start['elem'][-1]
             start['offset'] = start['offset'][-1]
         end = self.get_index_data(end_index)
         if isinstance(end['elem'], tuple):
             # If {end} is "between" elements, we use the one on the "left"
-            end['elem']   = end['elem'][0]
+            end['elem'] = end['elem'][0]
             end['offset'] = end['offset'][0]
         assert start['elem'].isleaf() and end['elem'].isleaf()
 

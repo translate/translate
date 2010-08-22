@@ -46,9 +46,9 @@ def add_file(output_zip, manifest_data, new_filename, new_data):
     root = etree.fromstring(manifest_data)
     namer = XmlNamer(root)
     namespacer = namer.namespace('manifest')
-    file_entry_tag  = namespacer.name('file-entry')
+    file_entry_tag = namespacer.name('file-entry')
     media_type_attr = namespacer.name('media-type')
-    full_path_attr  = namespacer.name('full-path')
+    full_path_attr = namespacer.name('full-path')
 
     root.append(etree.Element(file_entry_tag, {media_type_attr: 'application/x-xliff+xml',
                                                full_path_attr: new_filename}))

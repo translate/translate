@@ -40,16 +40,16 @@ def extract_msgid_comment(text):
 
 
 class pounit(base.TranslationUnit):
-    S_OBSOLETE     = state.OBSOLETE
+    S_OBSOLETE = state.OBSOLETE
     S_UNTRANSLATED = state.EMPTY
-    S_FUZZY        = state.NEEDS_WORK
-    S_TRANSLATED   = state.UNREVIEWED
+    S_FUZZY = state.NEEDS_WORK
+    S_TRANSLATED = state.UNREVIEWED
 
     STATE = {
-        S_OBSOLETE:     (state.OBSOLETE,   state.EMPTY),
-        S_UNTRANSLATED: (state.EMPTY,      state.NEEDS_WORK),
-        S_FUZZY:        (state.NEEDS_WORK, state.UNREVIEWED),
-        S_TRANSLATED:   (state.UNREVIEWED, state.MAX),
+        S_OBSOLETE: (state.OBSOLETE, state.EMPTY),
+        S_UNTRANSLATED: (state.EMPTY, state.NEEDS_WORK),
+        S_FUZZY: (state.NEEDS_WORK, state.UNREVIEWED),
+        S_TRANSLATED: (state.UNREVIEWED, state.MAX),
     }
 
     def adderror(self, errorname, errortext):
@@ -149,7 +149,7 @@ def encodingToUse(encoding):
 
 class pofile(poheader.poheader, base.TranslationStore):
     Name = _("Gettext PO file") # pylint: disable-msg=E0602
-    Mimetypes  = ["text/x-gettext-catalog", "text/x-gettext-translation", "text/x-po", "text/x-pot"]
+    Mimetypes = ["text/x-gettext-catalog", "text/x-gettext-translation", "text/x-po", "text/x-pot"]
     Extensions = ["po", "pot"]
 
     def __init__(self, inputfile=None, encoding=None):

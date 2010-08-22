@@ -186,7 +186,7 @@ def _map_target_dom_to_source_dom(source_dom_node, target_dom_node):
 
 
 def _build_target_dom_to_doc_dom(unit_node, source_dom, target_dom):
-    source_dom_to_doc_dom    = _map_source_dom_to_doc_dom(unit_node, source_dom)
+    source_dom_to_doc_dom = _map_source_dom_to_doc_dom(unit_node, source_dom)
     target_dom_to_source_dom = _map_target_dom_to_source_dom(source_dom, target_dom)
     return misc.compose_mappings(target_dom_to_source_dom, source_dom_to_doc_dom)
 
@@ -245,7 +245,7 @@ def replace_dom_text(make_parse_state):
             target_dom = unit.source_dom
         # Build a tree of (non-DOM) nodes which correspond to the translatable DOM nodes in 'dom_node'.
         # Pass in a fresh parse_state every time, so as avoid working with stale parse state info.
-        unit_node             = extract.find_translatable_dom_nodes(dom_node, make_parse_state())[0]
+        unit_node = extract.find_translatable_dom_nodes(dom_node, make_parse_state())[0]
         target_dom_to_doc_dom = _build_target_dom_to_doc_dom(unit_node, source_dom, target_dom)
         # Before we start reconstructing the sub-tree rooted at dom_node, we must clear out its children
         dom_node[:] = []

@@ -49,7 +49,7 @@ def _split_xpath_component(xpath_component):
     """
     lbrac = xpath_component.rfind(u'[')
     rbrac = xpath_component.rfind(u']')
-    tag   = xpath_component[:lbrac]
+    tag = xpath_component[:lbrac]
     index = int(xpath_component[lbrac+1:rbrac])
     return tag, index
 

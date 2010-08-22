@@ -38,12 +38,12 @@ class ProjectStore(object):
 
     # INITIALIZERS #
     def __init__(self):
-        self._files        = {}
-        self._sourcefiles  = []
-        self._targetfiles  = []
-        self._transfiles   = []
-        self.settings      = {}
-        self.convert_map   = {}
+        self._files = {}
+        self._sourcefiles = []
+        self._targetfiles = []
+        self._transfiles = []
+        self.settings = {}
+        self.convert_map = {}
         # The above map maps the conversion of input files (keys) to its output
         # file and template used (2-tuple). All values are project file names.
         # eg. convert_map = {
@@ -57,26 +57,26 @@ class ProjectStore(object):
         self.TYPE_INFO = {
             # type => prefix for new files
             'f_prefix': {
-                'src':   'sources/',
-                'tgt':   'targets/',
+                'src': 'sources/',
+                'tgt': 'targets/',
                 'trans': 'trans/',
             },
             # type => list containing filenames for that type
             'lists': {
-                'src':   self._sourcefiles,
-                'tgt':   self._targetfiles,
+                'src': self._sourcefiles,
+                'tgt': self._targetfiles,
                 'trans': self._transfiles,
             },
             # type => next type in process: src => trans => tgt
             'next_type': {
-                'src':   'trans',
+                'src': 'trans',
                 'trans': 'tgt',
-                'tgt':   None,
+                'tgt': None,
             },
             # type => name of the sub-section in the settings file/dict
             'settings': {
-                'src':   'sources',
-                'tgt':   'targets',
+                'src': 'sources',
+                'tgt': 'targets',
                 'trans': 'transfiles',
             }
         }

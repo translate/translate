@@ -64,12 +64,12 @@ def print_diff(store1, store2):
     for line in difflib.unified_diff(str(store1).split('\n'), str(store2).split('\n')):
         print line
 
-SOURCE_ODF            = u'test_2.odt'
-REFERENCE_XLF         = u'test_2-test_odf2xliff-reference.xlf'
-GENERATED_XLF_ITOOLS  = u'test_2-test_odf2xliff-itools.xlf'
+SOURCE_ODF = u'test_2.odt'
+REFERENCE_XLF = u'test_2-test_odf2xliff-reference.xlf'
+GENERATED_XLF_ITOOLS = u'test_2-test_odf2xliff-itools.xlf'
 GENERATED_XLF_TOOLKIT = u'test_2-test_odf2xliff-toolkit.xlf'
 
-TARGET_XLF    = u'test_2-test_roundtrip.xlf'
+TARGET_XLF = u'test_2-test_roundtrip.xlf'
 REFERENCE_ODF = u'test_2.odt'
 GENERATED_ODF = u'test_2-test_roundtrip-generated.odt'
 

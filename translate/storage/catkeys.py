@@ -232,7 +232,7 @@ class CatkeysUnit(base.TranslationUnit):
 class CatkeysFile(base.TranslationStore):
     """A catkeys translation memory file"""
     Name = _("Haiku catkeys file")
-    Mimetypes  = ["application/x-catkeys"]
+    Mimetypes = ["application/x-catkeys"]
     Extensions = ["catkeys"]
 
     def __init__(self, inputfile=None, unitclass=CatkeysUnit):

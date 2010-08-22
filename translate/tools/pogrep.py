@@ -42,11 +42,11 @@ class GrepMatch(object):
 
     # INITIALIZERS #
     def __init__(self, unit, part='target', part_n=0, start=0, end=0):
-        self.unit   = unit
-        self.part   = part
+        self.unit = unit
+        self.part = part
         self.part_n = part_n
-        self.start  = start
-        self.end    = end
+        self.start = start
+        self.end = end
 
     # ACCESSORS #
     def get_getter(self):
