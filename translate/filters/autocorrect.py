@@ -22,7 +22,7 @@
 
 from translate.filters import decoration
 
-from translate.misc.typecheck import accepts, returns
+from translate.misc.typecheck import accepts, returns, IsOneOf
 
 
 @accepts(unicode, unicode)
