@@ -45,10 +45,13 @@ The placeables model follows the XLIFF standard's list of placeables.
 Please refer to the XLIFF specification to get a better understanding.
 """
 
-from translate.storage.placeables import base, interfaces, general, xliff
-from translate.storage.placeables.base import *
-from translate.storage.placeables.base import __all__ as all_your_base
-from translate.storage.placeables.parse import parse
-from translate.storage.placeables.strelem import StringElem
+import base
+import interfaces
+import general
+import xliff
+from base import *
+from base import __all__ as all_your_base
+from strelem import StringElem
+from parse import parse
 
 __all__ = ['base', 'interfaces', 'general', 'parse', 'StringElem', 'xliff'] + all_your_base
