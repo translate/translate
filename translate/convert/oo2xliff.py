@@ -26,6 +26,7 @@ User documentation: http://translate.sourceforge.net/wiki/toolkit/oo2po
 """
 
 import sys
+from urllib import urlencode
 
 from translate.storage import xliff
 from translate.storage import oo
@@ -95,7 +96,14 @@ class oo2xliff:
         thetargetfile.setsourcelanguage(self.sourcelanguage)
         thetargetfile.settargetlanguage(self.targetlanguage)
         # create a header for the file
-        bug_url = 'http://qa.openoffice.org/issues/enter_bug.cgi' + ('''?subcomponent=ui&comment=&short_desc=Localization issue in file: %(filename)s&component=l10n&form_name=enter_issue''' % {"filename": theoofile.filename}).replace(" ", "%20").replace(":", "%3A")
+        bug_url = 'http://qa.openoffice.org/issues/enter_bug.cgi?%s' % \
+                  urlencode({"subcomponent": "ui",
+                             "comment": "",
+                             "short_desc": "Localization issue in file: %s" % \
+                                           theoofile.filename,
+                             "component": "l10n",
+                             "form_name": "enter_issue",
+                            })
         # go through the oo and convert each element
         for theoo in theoofile.units:
             unitlist = self.convertelement(theoo)

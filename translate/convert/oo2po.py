@@ -27,6 +27,7 @@ usage instructions
 """
 
 import sys
+from urllib import urlencode
 
 from translate.storage import po
 from translate.storage import oo
@@ -81,7 +82,8 @@ class oo2po:
         key = oo.makekey(part1.getkey(), self.long_keys)
         unitlist = []
         for subkey in ("text", "quickhelptext", "title"):
-            unit = self.maketargetunit(part1, part2, translators_comment, key, subkey)
+            unit = self.maketargetunit(part1, part2, translators_comment,
+                                       key, subkey)
             if unit is not None:
                 unitlist.append(unit)
         return unitlist
@@ -90,9 +92,20 @@ class oo2po:
         """converts an entire oo file to a base class format (.po or XLIFF)"""
         thetargetfile = po.pofile()
         # create a header for the file
-        bug_url = 'http://qa.openoffice.org/issues/enter_bug.cgi' + ('''?subcomponent=ui&comment=&short_desc=Localization issue in file: %(filename)s&component=l10n&form_name=enter_issue''' % {"filename": theoofile.filename}).replace(" ", "%20").replace(":", "%3A")
-        targetheader = thetargetfile.init_headers(charset="UTF-8", encoding="8bit", x_accelerator_marker="~", report_msgid_bugs_to=bug_url)
-        targetheader.addnote("extracted from %s" % theoofile.filename, "developer")
+        bug_url = 'http://qa.openoffice.org/issues/enter_bug.cgi?%s' % \
+                  urlencode({"subcomponent": "ui",
+                             "comment": "",
+                             "short_desc": "Localization issue in file: %s" % \
+                                           theoofile.filename,
+                             "component": "l10n",
+                             "form_name": "enter_issue",
+                            })
+        targetheader = thetargetfile.init_headers(charset="UTF-8",
+                                                  encoding="8bit",
+                                                  x_accelerator_marker="~",
+                                                  report_msgid_bugs_to=bug_url)
+        targetheader.addnote("extracted from %s" % theoofile.filename,
+                             "developer")
         thetargetfile.setsourcelanguage(self.sourcelanguage)
         thetargetfile.settargetlanguage(self.targetlanguage)
         # go through the oo and convert each element
