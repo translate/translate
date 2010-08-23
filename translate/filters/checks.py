@@ -440,7 +440,10 @@ class TeeChecker:
         self.limitfilters = limitfilters
         if checkerclasses is None:
             checkerclasses = [StandardChecker]
-        self.checkers = [checkerclass(checkerconfig=checkerconfig, excludefilters=excludefilters, limitfilters=limitfilters, errorhandler=errorhandler) for checkerclass in checkerclasses]
+        self.checkers = [checkerclass(checkerconfig=checkerconfig,
+                                      excludefilters=excludefilters,
+                                      limitfilters=limitfilters,
+                                      errorhandler=errorhandler) for checkerclass in checkerclasses]
         if languagecode:
             for checker in self.checkers:
                 checker.config.updatetargetlanguage(languagecode)
@@ -541,21 +544,25 @@ class StandardChecker(TranslationChecker):
         if not helpers.countsmatch(str1, str2, (u"\\", u"\\\\")):
             escapes1 = u", ".join([u"'%s'" % word for word in str1.split() if u"\\" in word])
             escapes2 = u", ".join([u"'%s'" % word for word in str2.split() if u"\\" in word])
-            raise SeriousFilterFailure(u"escapes in original (%s) don't match escapes in translation (%s)" % (escapes1, escapes2))
+            raise SeriousFilterFailure(u"escapes in original (%s) don't match "
+                                       "escapes in translation (%s)" %
+                                       (escapes1, escapes2))
         else:
             return True
 
     def newlines(self, str1, str2):
         """checks whether newlines are consistent between the two strings"""
         if not helpers.countsmatch(str1, str2, (u"\n", u"\r")):
-            raise FilterFailure(u"line endings in original don't match line endings in translation")
+            raise FilterFailure(u"line endings in original don't match "
+                                "line endings in translation")
         else:
             return True
 
     def tabs(self, str1, str2):
         """checks whether tabs are consistent between the two strings"""
         if not helpers.countmatch(str1, str2, "\t"):
-            raise SeriousFilterFailure(u"tabs in original don't match tabs in translation")
+            raise SeriousFilterFailure(u"tabs in original don't match "
+                                       "tabs in translation")
         else:
             return True
 
@@ -668,15 +675,22 @@ class StandardChecker(TranslationChecker):
                 continue
             if count1 == 1 and count2 == 0:
                 if countbad2 == 1:
-                    messages.append(u"accelerator %s appears before an invalid accelerator character '%s' (eg. space)" % (accelmarker, bad2[0]))
+                    messages.append(u"accelerator %s appears before an invalid "
+                                    "accelerator character '%s' (eg. space)" %
+                                    (accelmarker, bad2[0]))
                 else:
-                    messages.append(u"accelerator %s is missing from translation" % accelmarker)
+                    messages.append(u"accelerator %s is missing from translation" %
+                                    accelmarker)
             elif count1 == 0:
-                messages.append(u"accelerator %s does not occur in original and should not be in translation" % accelmarker)
+                messages.append(u"accelerator %s does not occur in original "
+                                "and should not be in translation" % accelmarker)
             elif count1 == 1 and count2 > count1:
-                messages.append(u"accelerator %s is repeated in translation" % accelmarker)
+                messages.append(u"accelerator %s is repeated in translation" %
+                                accelmarker)
             else:
-                messages.append(u"accelerator %s occurs %d time(s) in original and %d time(s) in translation" % (accelmarker, count1, count2))
+                messages.append(u"accelerator %s occurs %d time(s) in original "
+                                "and %d time(s) in translation" %
+                                (accelmarker, count1, count2))
         if messages:
             if "accelerators" in self.config.criticaltests:
                 raise SeriousFilterFailure(messages)
@@ -719,7 +733,8 @@ class StandardChecker(TranslationChecker):
             vars2 = varchecker(str2)
             if vars1 != vars2:
                 # we use counts to compare so we can handle multiple variables
-                vars1, vars2 = [var for var in vars1 if vars1.count(var) > vars2.count(var)], [var for var in vars2 if vars1.count(var) < vars2.count(var)]
+                vars1, vars2 = [var for var in vars1 if vars1.count(var) > vars2.count(var)], \
+                               [var for var in vars2 if vars1.count(var) < vars2.count(var)]
                 # filter variable names we've already seen, so they aren't
                 # matched by more than one filter...
                 vars1, vars2 = [var for var in vars1 if var not in varnames1], [var for var in vars2 if var not in varnames2]
@@ -818,7 +833,8 @@ class StandardChecker(TranslationChecker):
         sentences1 = len(self.config.sourcelang.sentences(str1))
         sentences2 = len(self.config.lang.sentences(str2))
         if not sentences1 == sentences2:
-            raise FilterFailure(u"The number of sentences differ: %d versus %d" % (sentences1, sentences2))
+            raise FilterFailure(u"The number of sentences differ: "
+                                "%d versus %d" % (sentences1, sentences2))
         return True
 
     def options(self, str1, str2):
@@ -828,9 +844,12 @@ class StandardChecker(TranslationChecker):
             if word1 != u"--" and word1.startswith(u"--") and word1[-1].isalnum():
                 parts = word1.split(u"=")
                 if not parts[0] in str2:
-                    raise FilterFailure(u"The option %s does not occur or is translated in the translation." % parts[0])
+                    raise FilterFailure(u"The option %s does not occur or is "
+                                        "translated in the translation." % parts[0])
                 if len(parts) > 1 and parts[1] in str2:
-                    raise FilterFailure(u"The parameter %(param)s in option %(option)s is not translated." % {"param": parts[1], "option": parts[0]})
+                    raise FilterFailure(u"The parameter %(param)s in option %(option)s "
+                                        "is not translated." % {"param": parts[1],
+                                                                "option": parts[0]})
         return True
 
     def startcaps(self, str1, str2):
@@ -891,7 +910,8 @@ class StandardChecker(TranslationChecker):
                 if str2.find(word) == -1:
                     acronyms.append(word)
         if acronyms:
-            raise FilterFailure(u"acronyms should not be translated: " + u", ".join(acronyms))
+            raise FilterFailure(u"acronyms should not be translated: %s" %
+                                u", ".join(acronyms))
         return True
 
     def doublewords(self, str1, str2):
@@ -921,7 +941,8 @@ class StandardChecker(TranslationChecker):
         words2 = self.filteraccelerators(str2).split()
         stopwords = [word for word in words1 if word in self.config.notranslatewords and word not in words2]
         if stopwords:
-            raise FilterFailure(u"do not translate: %s" % (u", ".join(stopwords)))
+            raise FilterFailure(u"do not translate: %s" %
+                                (u", ".join(stopwords)))
         return True
 
     def musttranslatewords(self, str1, str2):
@@ -1024,8 +1045,10 @@ class StandardChecker(TranslationChecker):
         if not spelling.available:
             return True
         # TODO: filterxml?
-        str1 = self.filteraccelerators_by_list(self.filtervariables(str1), self.config.sourcelang.validaccel)
-        str2 = self.filteraccelerators_by_list(self.filtervariables(str2), self.config.lang.validaccel)
+        str1 = self.filteraccelerators_by_list(self.filtervariables(str1),
+                                               self.config.sourcelang.validaccel)
+        str2 = self.filteraccelerators_by_list(self.filtervariables(str2),
+                                               self.config.lang.validaccel)
         ignore1 = []
         messages = []
         for word, index, suggestions in spelling.check(str1, lang="en"):
@@ -1038,7 +1061,8 @@ class StandardChecker(TranslationChecker):
             # hack to ignore hyphenisation rules
             if word in suggestions:
                 continue
-            messages.append(u"check spelling of %s (could be %s)" % (word, u" / ".join(suggestions[:5])))
+            messages.append(u"check spelling of %s (could be %s)" %
+                            (word, u" / ".join(suggestions[:5])))
         if messages:
             raise FilterFailure(messages)
         return True
@@ -1049,55 +1073,57 @@ class StandardChecker(TranslationChecker):
         return not str1 in self.config.credit_sources
 
     # If the precondition filter is run and fails then the other tests listed are ignored
-    preconditions = {"untranslated": ("simplecaps", "variables", "startcaps",
-                                      "accelerators", "brackets", "endpunc",
-                                      "acronyms", "xmltags", "startpunc",
-                                      "endwhitespace", "startwhitespace",
-                                      "escapes", "doublequoting", "singlequoting",
-                                      "filepaths", "purepunc", "doublespacing",
-                                      "sentencecount", "numbers", "isfuzzy",
-                                      "isreview", "notranslatewords", "musttranslatewords",
-                                      "emails", "simpleplurals", "urls", "printf",
-                                      "tabs", "newlines", "functions", "options",
-                                      "blank", "nplurals", "gconf"),
-                    "blank": ("simplecaps", "variables", "startcaps",
-                              "accelerators", "brackets", "endpunc",
-                              "acronyms", "xmltags", "startpunc",
-                              "endwhitespace", "startwhitespace",
-                              "escapes", "doublequoting", "singlequoting",
-                              "filepaths", "purepunc", "doublespacing",
-                              "sentencecount", "numbers", "isfuzzy",
-                              "isreview", "notranslatewords", "musttranslatewords",
-                              "emails", "simpleplurals", "urls", "printf",
-                              "tabs", "newlines", "functions", "options",
-                              "gconf"),
-                    "credits": ("simplecaps", "variables", "startcaps",
-                                "accelerators", "brackets", "endpunc",
-                                "acronyms", "xmltags", "startpunc",
-                                "escapes", "doublequoting", "singlequoting",
-                                "filepaths", "doublespacing",
-                                "sentencecount", "numbers",
-                                "emails", "simpleplurals", "urls", "printf",
-                                "tabs", "newlines", "functions", "options"),
-                   "purepunc": ("startcaps", "options"),
-                   # This is causing some problems since Python 2.6, as
-                   # startcaps is now seen as an important one to always execute
-                   # and could now be done before it is blocked by a failing
-                   # "untranslated" or "blank" test. This is probably happening
-                   # due to slightly different implementation of the internal
-                   # dict handling since Python 2.6. We should never have relied
-                   # on this ordering anyway.
-                   #"startcaps": ("simplecaps",),
-                   "endwhitespace": ("endpunc",),
-                   "startwhitespace": ("startpunc",),
-                   "unchanged": ("doublewords",),
-                   "compendiumconflicts": ("accelerators", "brackets", "escapes",
-                                    "numbers", "startpunc", "long", "variables",
-                                    "startcaps", "sentencecount", "simplecaps",
-                                    "doublespacing", "endpunc", "xmltags",
-                                    "startwhitespace", "endwhitespace",
-                                    "singlequoting", "doublequoting",
-                                    "filepaths", "purepunc", "doublewords", "printf")}
+    preconditions = {
+        "untranslated": ("simplecaps", "variables", "startcaps",
+                         "accelerators", "brackets", "endpunc",
+                         "acronyms", "xmltags", "startpunc",
+                         "endwhitespace", "startwhitespace",
+                         "escapes", "doublequoting", "singlequoting",
+                         "filepaths", "purepunc", "doublespacing",
+                         "sentencecount", "numbers", "isfuzzy",
+                         "isreview", "notranslatewords", "musttranslatewords",
+                         "emails", "simpleplurals", "urls", "printf",
+                         "tabs", "newlines", "functions", "options",
+                         "blank", "nplurals", "gconf"),
+          "blank": ("simplecaps", "variables", "startcaps",
+                    "accelerators", "brackets", "endpunc",
+                    "acronyms", "xmltags", "startpunc",
+                    "endwhitespace", "startwhitespace",
+                    "escapes", "doublequoting", "singlequoting",
+                    "filepaths", "purepunc", "doublespacing",
+                    "sentencecount", "numbers", "isfuzzy",
+                    "isreview", "notranslatewords", "musttranslatewords",
+                    "emails", "simpleplurals", "urls", "printf",
+                    "tabs", "newlines", "functions", "options",
+                    "gconf"),
+          "credits": ("simplecaps", "variables", "startcaps",
+                      "accelerators", "brackets", "endpunc",
+                      "acronyms", "xmltags", "startpunc",
+                      "escapes", "doublequoting", "singlequoting",
+                      "filepaths", "doublespacing",
+                      "sentencecount", "numbers",
+                      "emails", "simpleplurals", "urls", "printf",
+                      "tabs", "newlines", "functions", "options"),
+         "purepunc": ("startcaps", "options"),
+         # This is causing some problems since Python 2.6, as
+         # startcaps is now seen as an important one to always execute
+         # and could now be done before it is blocked by a failing
+         # "untranslated" or "blank" test. This is probably happening
+         # due to slightly different implementation of the internal
+         # dict handling since Python 2.6. We should never have relied
+         # on this ordering anyway.
+         #"startcaps": ("simplecaps",),
+         "endwhitespace": ("endpunc",),
+         "startwhitespace": ("startpunc",),
+         "unchanged": ("doublewords",),
+         "compendiumconflicts": ("accelerators", "brackets", "escapes",
+                          "numbers", "startpunc", "long", "variables",
+                          "startcaps", "sentencecount", "simplecaps",
+                          "doublespacing", "endpunc", "xmltags",
+                          "startwhitespace", "endwhitespace",
+                          "singlequoting", "doublequoting",
+                          "filepaths", "purepunc", "doublewords", "printf"),
+         }
 
 # code to actually run the tests (use unittest?)
 
@@ -1188,7 +1214,8 @@ class GnomeChecker(StandardChecker):
                 #stopwords = [word for word in words1 if word in self.config.notranslatewords and word not in words2]
                 stopwords = [word for word in gconf_attributes if word[1:-1] not in str2]
                 if stopwords:
-                    raise FilterFailure(u"do not translate gconf attribute: %s" % (u", ".join(stopwords)))
+                    raise FilterFailure(u"do not translate gconf attribute: %s" %
+                                        (u", ".join(stopwords)))
         return True
 
 kdeconfig = CheckerConfig(
@@ -1278,7 +1305,8 @@ def runtests(str1, str2, ignorelist=()):
     checker = StandardChecker(excludefilters=ignorelist)
     failures = checker.run_filters(unit)
     for test in failures:
-        print "failure: %s: %s\n  %r\n  %r" % (test, failures[test], str1, str2)
+        print "failure: %s: %s\n  %r\n  %r" %
+              (test, failures[test], str1, str2)
     return failures
 
 
@@ -1296,10 +1324,14 @@ if __name__ == '__main__':
     testset = [(r"simple", r"somple"),
             (r"\this equals \that", r"does \this equal \that?"),
             (r"this \'equals\' that", r"this 'equals' that"),
-            (r" start and end! they must match.", r"start and end! they must match."),
-            (r"check for matching %variables marked like %this", r"%this %variable is marked"),
-            (r"check for mismatching %variables marked like %this", r"%that %variable is marked"),
-            (r"check for mismatching %variables% too", r"how many %variable% are marked"),
+            (r" start and end! they must match.",
+             r"start and end! they must match."),
+            (r"check for matching %variables marked like %this",
+             r"%this %variable is marked"),
+            (r"check for mismatching %variables marked like %this",
+             r"%that %variable is marked"),
+            (r"check for mismatching %variables% too",
+             r"how many %variable% are marked"),
             (r"%% %%", r"%%"),
             (r"Row: %1, Column: %2", r"Mothalo: %1, Kholomo: %2"),
             (r"simple lowercase", r"it is all lowercase"),
