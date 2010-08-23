@@ -2,6 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import os
+import urlparse
+try:
+    from urlparse import parse_qs
+except ImportError:
+    from cgi import parse_qs
 
 from translate.convert import oo2po
 from translate.convert import po2oo
@@ -116,10 +121,18 @@ class TestOO2PO:
     def test_msgid_bug_error_address(self):
         """tests the we have the correct url for reporting msgid bugs"""
         oosource = r"wizards	source\formwizard\dbwizres.src	0	string	RID_DB_FORM_WIZARD_START + 19				0	en-US	Newline \n Newline Tab \t Tab CR \r CR				20050924 09:13:58"
-        bug_url = '''http://qa.openoffice.org/issues/enter_bug.cgi''' + ('''?subcomponent=ui&comment=&short_desc=Localization issue in file: &component=l10n&form_name=enter_issue''').replace(" ", "%20").replace(":", "%3A")
         pofile = self.convert(oosource)
         assert pofile.units[0].isheader()
-        assert pofile.parseheader()["Report-Msgid-Bugs-To"] == bug_url
+        assert pofile.parseheader()["Report-Msgid-Bugs-To"]
+        bug_url = urlparse.urlparse(pofile.parseheader()["Report-Msgid-Bugs-To"])
+        print bug_url
+        assert bug_url[:3] == ("http", "qa.openoffice.org", "/issues/enter_bug.cgi")
+        assert parse_qs(bug_url[4], True) == {u'comment': [u''],
+                                                       u'component': [u'l10n'],
+                                                       u'form_name': [u'enter_issue'],
+                                                       u'short_desc': [u'Localization issue in file: '],
+                                                       u'subcomponent': [u'ui'],
+                                                      }
 
     def test_x_comment_inclusion(self):
         """test that we can merge x-comment language entries into comment sections of the PO file"""
