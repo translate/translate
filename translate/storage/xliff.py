@@ -333,7 +333,7 @@ class xliffunit(lisa.LISAunit):
         self.xmlelement.set("id", id.replace(ID_SEPARATOR, ID_SEPARATOR_SAFE))
 
     def getid(self):
-        uid = ""
+        uid = u""
         try:
             filename = self.xmlelement.iterancestors(self.namespaced('file')).next().get('original')
             if filename:
@@ -342,14 +342,14 @@ class xliffunit(lisa.LISAunit):
             # unit has no proper file ancestor, probably newly created
             pass
         # hide the fact that we sanitize ID_SEPERATOR
-        uid += (self.xmlelement.get("id") or "").replace(ID_SEPARATOR_SAFE, ID_SEPARATOR)
+        uid += unicode(self.xmlelement.get("id") or u"").replace(ID_SEPARATOR_SAFE, ID_SEPARATOR)
         return uid
 
     def addlocation(self, location):
         self.setid(location)
 
     def getlocations(self):
-        id_attr = self.xmlelement.get("id")
+        id_attr = unicode(self.xmlelement.get("id") or u"")
         if id_attr:
             return [id_attr]
         return []
