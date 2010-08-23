@@ -1305,7 +1305,7 @@ def runtests(str1, str2, ignorelist=()):
     checker = StandardChecker(excludefilters=ignorelist)
     failures = checker.run_filters(unit)
     for test in failures:
-        print "failure: %s: %s\n  %r\n  %r" %
+        print "failure: %s: %s\n  %r\n  %r" % \
               (test, failures[test], str1, str2)
     return failures
 
