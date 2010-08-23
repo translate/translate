@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from py.test import raises
+from py.test import raises, mark
 
 from translate.misc import wStringIO
 from translate.misc.multistring import multistring
@@ -280,7 +280,8 @@ msgstr[1] "Kóeie"
         assert isinstance(unit.source, multistring)
         assert isinstance(unit.source.strings[1], unicode)
 
-    def wtest_kde_plurals(self):
+    @mark.xfail(reason="Not Implemented")
+    def test_kde_plurals(self):
         """Tests kde-style plurals. (Bug: 191)"""
         posource = '''msgid "_n Singular\n"
 "Plural"
@@ -338,11 +339,13 @@ msgstr "POT-Creation-Date: 2006-03-08 17:30+0200\n"
         print str(pofile)
         assert str(pofile) == expectedfuzzyagain or str(pofile) == posource
 
-    def xtest_makeobsolete_untranslated(self):
+    @mark.xfail(reason="Check differing behviours between pypo and cpo")
+    def test_makeobsolete_untranslated(self):
         """Tests making an untranslated unit obsolete"""
         posource = '#. The automatic one\n#: test.c\nmsgid "test"\nmsgstr ""\n'
         pofile = self.poparse(posource)
         unit = pofile.units[0]
+        print str(pofile)
         assert not unit.isobsolete()
         unit.makeobsolete()
         assert str(unit) == ""

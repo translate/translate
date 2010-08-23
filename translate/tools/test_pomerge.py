@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from py import test
+from py.test import mark
 
 from translate.tools import pomerge
 from translate.storage import factory
@@ -260,7 +261,8 @@ msgstr "blabla"
         print "Expected:\n%s\n\nMerged:\n%s" % (expectedpo, str(pofile))
         assert str(pofile) == expectedpo
 
-    def xtest_escape_tabs(self):
+    @mark.xfail(reason="Not Implemented")
+    def test_escape_tabs(self):
         """Ensure that input tabs are escaped in the output, like gettext does."""
 
         # The strings below contains the tab character, not spaces.

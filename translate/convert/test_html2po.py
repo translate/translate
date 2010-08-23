@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from py.test import mark
+
 from translate.convert import html2po
 from translate.convert import po2html
 from translate.convert import test_convert
@@ -264,12 +266,14 @@ newlines.</p></body></html>
         self.compareunit(pofile, 1, "Duplicate")
         self.compareunit(pofile, 2, "Duplicate")
 
-    def wtest_multiline_reflow(self):
+    @mark.xfail(reason="Not Implemented")
+    def test_multiline_reflow(self):
         """check that we reflow multiline content to make it more readable for translators"""
         self.check_single('''<td valign="middle" width="96%"><font class="headingwhite">South
                   Africa</font></td>''', '''<font class="headingwhite">South Africa</font>''')
 
-    def wtest_nested_tags(self):
+    @mark.xfail(reason="Not Implemented")
+    def test_nested_tags(self):
         """check that we can extract items within nested tags"""
         markup = "<div><p>Extract this</p>And this</div>"
         pofile = self.html2po(markup)

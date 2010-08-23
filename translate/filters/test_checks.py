@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+
+from py.test import mark
+
 from translate.filters import checks
 from translate.lang import data
 from translate.storage import po
@@ -131,7 +134,8 @@ def test_accelerators():
     # Accelerator before variable - see test_acceleratedvariables
 
 
-def xtest_acceleratedvariables():
+@mark.xfail(reason="Accelerated variables needs a better implementation")
+def test_acceleratedvariables():
     """test for accelerated variables"""
     # FIXME: disabled since acceleratedvariables has been removed, but these checks are still needed
     mozillachecker = checks.MozillaChecker()

@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from py.test import mark
+
 from translate.convert import prop2po
 from translate.convert import test_convert
 from translate.misc import wStringIO
@@ -139,7 +141,8 @@ prefPanel-smime=
         pounit = self.singleelement(pofile)
         assert pounit.getnotes("developer") == "## @name GENERIC_ERROR\n## @loc none"
 
-    def wtest_folding_accesskeys(self):
+    @mark.xfail(reason="Not Implemented")
+    def test_folding_accesskeys(self):
         """check that we can fold various accesskeys into their associated label (bug #115)"""
         propsource = r'''cmd_addEngine = Add Engines...
 cmd_addEngine_accesskey = A'''

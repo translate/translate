@@ -3,6 +3,8 @@
 import os
 import warnings
 
+from py.test import mark
+
 from translate.convert import po2oo
 from translate.convert import oo2po
 from translate.convert import test_convert
@@ -91,7 +93,8 @@ class TestPO2OO:
         self.check_roundtrip(r'''"Single-Quote Escape \' "''')
         self.check_roundtrip(r"""'Both Quotes "" '' '""")
 
-    def xtest_roundtrip_spaces(self):
+    @mark.xfail(reason="this test fails because the resultant PO file returns as po.isempty since...")
+    def test_roundtrip_spaces(self):
         # FIXME: this test fails because the resultant PO file returns as po.isempty since .isblank returns true
         # which is caused by isblankmsgtr returning True.  Its a complete mess which would mean unravelling lots
         # of yuch in pypo.  Until we have time to do that unravelling we're diabling this test.  You can reenable

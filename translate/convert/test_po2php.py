@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from py.test import mark
+
 from translate.convert import po2php
 from translate.convert import test_convert
 from translate.misc import wStringIO
@@ -141,14 +143,15 @@ msgstr "stringetjie"
         print phpfile
         assert "".join(phpfile) == phpexpected
 
-#    def test_merging_propertyless_template(self):
-#        """check that when merging with a template with no property values that we copy the template"""
-#        posource = ""
-#        proptemplate = "# A comment\n"
-#        propexpected = proptemplate
-#        propfile = self.merge2prop(proptemplate, posource)
-#        print propfile
-#        assert propfile == [propexpected]
+    @mark.xfail(reason="Need to review if we want this behaviour")
+    def test_merging_propertyless_template(self):
+        """check that when merging with a template with no property values that we copy the template"""
+        posource = ""
+        proptemplate = "# A comment\n"
+        propexpected = proptemplate
+        propfile = self.merge2prop(proptemplate, posource)
+        print propfile
+        assert propfile == [propexpected]
 
 
 class TestPO2PhpCommand(test_convert.TestConvertCommand, TestPO2Php):

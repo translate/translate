@@ -2,6 +2,8 @@
 
 import warnings
 
+from py.test import mark
+
 from translate.convert import pot2po
 from translate.convert import test_convert
 from translate.misc import wStringIO
@@ -103,7 +105,8 @@ msgstr[1] "%d handleidings."
         newpo = self.convertpot(potsource, posource)
         assert str(self.singleunit(newpo)) == poexpected
 
-    def xtest_merging_msgid_change(self):
+    @mark.xfail(reason="Not implemented - review if this is even correct")
+    def test_merging_msgid_change(self):
         """tests that if the msgid changes but the location stays the same that we merge"""
         potsource = '''#: simple.label\n#: simple.accesskey\nmsgid "Its &hard coding a newline.\\n"\nmsgstr ""\n'''
         posource = '''#: simple.label\n#: simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n'''
@@ -143,7 +146,8 @@ msgstr[1] "%d handleidings."
         assert str(newpo.units[1]) == poexpected1
         assert str(newpo.units[2]) == poexpected2
 
-    def wtest_merging_accelerator_changes(self):
+    @mark.xfail(reason="Not Implemented - needs review")
+    def test_merging_accelerator_changes(self):
         """test that a change in the accelerator localtion still allows merging"""
         potsource = '''#: someline.c\nmsgid "A&bout"\nmsgstr ""\n'''
         posource = '''#: someline.c\nmsgid "&About"\nmsgstr "&Info"\n'''
@@ -152,7 +156,8 @@ msgstr[1] "%d handleidings."
         print newpo
         assert str(self.singleunit(newpo)) == poexpected
 
-    def xtest_lines_cut_differently(self):
+    @mark.xfail(reason="Not Implemented - review if this is even correct")
+    def test_lines_cut_differently(self):
         """Checks that the correct formatting is preserved when pot an po lines differ."""
         potsource = '''#: simple.label\nmsgid "Line split "\n"differently"\nmsgstr ""\n'''
         posource = '''#: simple.label\nmsgid "Line"\n" split differently"\nmsgstr "Lyne verskillend gesny"\n'''

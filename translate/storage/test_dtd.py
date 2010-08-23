@@ -3,6 +3,7 @@
 import warnings
 
 from py import test
+from py.test import mark
 
 from translate.misc import wStringIO
 from translate.storage import dtd
@@ -160,7 +161,8 @@ class TestDTD(test_monolingual.TestMonolingualStore):
         print dtdregen
         assert dtdsource == dtdregen
 
-    def wtest_comment_following(self):
+    @mark.xfail(reason="Not Implemented")
+    def test_comment_following(self):
         """check that comments that appear after and entity are not pushed onto another line"""
         dtdsource = '<!ENTITY textZoomEnlargeCmd.commandkey2 "="> <!-- + is above this key on many keyboards -->'
         dtdregen = self.dtdregen(dtdsource)

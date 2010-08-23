@@ -2,6 +2,8 @@
 
 import warnings
 
+from py.test import mark
+
 from translate.tools import pretranslate
 from translate.convert import test_convert
 from translate.misc import wStringIO
@@ -89,7 +91,8 @@ msgstr[1] "%d handleidings."
         newpo = self.pretranslatepo(input_source, template_source)
         assert str(self.singleunit(newpo)) == poexpected
 
-    def xtest_merging_msgid_change(self):
+    @mark.xfail(reason="Not Implemented")
+    def test_merging_msgid_change(self):
         """tests that if the msgid changes but the location stays the same that
         we merge"""
         input_source = '''#: simple.label\n#: simple.accesskey\nmsgid "Its &hard coding a newline.\\n"\nmsgstr ""\n'''
@@ -119,7 +122,8 @@ msgstr[1] "%d handleidings."
         print newpo
         assert str(newpo) == poexpected
 
-    def wtest_merging_accelerator_changes(self):
+    @mark.xfail(reason="Not Implemented")
+    def test_merging_accelerator_changes(self):
         """test that a change in the accelerator localtion still allows
         merging"""
         input_source = '''#: someline.c\nmsgid "A&bout"\nmsgstr ""\n'''
@@ -129,7 +133,8 @@ msgstr[1] "%d handleidings."
         print newpo
         assert str(newpo) == poexpected
 
-    def xtest_lines_cut_differently(self):
+    @mark.xfail(reason="Not Implemented")
+    def test_lines_cut_differently(self):
         """Checks that the correct formatting is preserved when pot an po lines
         differ."""
         input_source = '''#: simple.label\nmsgid "Line split "\n"differently"\nmsgstr ""\n'''

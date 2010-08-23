@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from py.test import mark
+
 from translate.convert import dtd2po
 from translate.convert import test_convert
 from translate.misc import wStringIO
@@ -301,7 +303,8 @@ Some other text
         assert pofile.units[4].source == "M"
         assert pofile.units[4].target == u"ﺩ"
 
-    def wtest_accelerator_keys_not_in_sentence(self):
+    @mark.xfail(reason="Not Implemented")
+    def test_accelerator_keys_not_in_sentence(self):
         """tests to ensure that we can manage accelerator keys that are not part of the transated sentence eg in Chinese"""
         dtdtemplate = '''<!ENTITY useAutoScroll.label             "Use autoscrolling">
 <!ENTITY useAutoScroll.accesskey         "a">'''

@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from py.test import mark
+
 from translate.convert import po2ini
 from translate.convert import test_convert
 from translate.misc import wStringIO
@@ -89,8 +91,8 @@ msgstr "translated"
         print inifile
         assert inifile == iniexpected
 
-    def xtest_dialects_inno(self):
-        # FIXME we have some encoding issues with this test
+    @mark.xfail(reason="We have some encoding issues with this test")
+    def test_dialects_inno(self):
         """test that we output correctly for Inno files."""
         posource = ur'''#: [section]prop
 msgid "value\tvalue2\n"
