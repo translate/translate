@@ -204,7 +204,7 @@ class PoXliffUnit(xliff.xliffunit):
             unit.marktranslated()
 
     def setid(self, id):
-        self.xmlelement.set("id", id)
+        super(PoXliffUnit, self).setid(id)
         if len(self.units) > 1:
             for i in range(len(self.units)):
                 self.units[i].setid("%s[%d]" % (id, i))
