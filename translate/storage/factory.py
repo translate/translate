@@ -77,6 +77,7 @@ if support_xml:
            "tmx": tmx.tmxfile,
            "ts": ts.tsfile,
            "xliff": xliff.xlifffile, "xlf": xliff.xlifffile,
+           "sdlxliff": xliff.xlifffile,
     })
 
 decompressclass = {
