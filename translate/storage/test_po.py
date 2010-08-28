@@ -339,7 +339,7 @@ msgstr "POT-Creation-Date: 2006-03-08 17:30+0200\n"
         print str(pofile)
         assert str(pofile) == expectedfuzzyagain or str(pofile) == posource
 
-    @mark.xfail(reason="Check differing behviours between pypo and cpo")
+    @mark.xfail(reason="Check differing behaviours between pypo and cpo")
     def test_makeobsolete_untranslated(self):
         """Tests making an untranslated unit obsolete"""
         posource = '#. The automatic one\n#: test.c\nmsgid "test"\nmsgstr ""\n'
