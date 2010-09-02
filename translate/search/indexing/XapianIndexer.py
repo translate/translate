@@ -413,7 +413,7 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
 
     def _writer_is_open(self):
         """check if the indexing write access is currently open"""
-        return not self.writer is None
+        return hasattr(self, "writer") and not self.writer is None
 
     def _index_refresh(self):
         """re-read the indexer database"""
