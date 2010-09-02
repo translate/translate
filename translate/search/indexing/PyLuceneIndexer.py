@@ -150,10 +150,10 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
     def __del__(self):
         """remove lock and close writer after loosing the last reference"""
         self._writer_close()
-        if self.reader is not None:
+        if hasattr(self, "reader") and self.reader is not None:
             self.reader.close()
             self.reader = None
-        if self.searcher is not None:
+        if hasattr(self, "searcher") and self.searcher is not None:
             self.searcher.close()
             self.searcher = None
 
@@ -471,7 +471,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
 
     def _writer_is_open(self):
         """check if the indexing write access is currently open"""
-        return not self.writer is None
+        return hasattr(self, "writer") and not self.writer is None
 
     def _index_refresh(self):
         """re-read the indexer database"""
