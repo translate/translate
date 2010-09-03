@@ -149,6 +149,8 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
 
     def __del__(self):
         """remove lock and close writer after loosing the last reference"""
+        jvm = PyLucene.getVMEnv()
+        jvm.attachCurrentThread()
         self._writer_close()
         if hasattr(self, "reader") and self.reader is not None:
             self.reader.close()
