@@ -17,13 +17,13 @@ class TestPO2Prop:
         outputprop = convertor.convertstore(inputpo)
         return outputprop
 
-    def merge2prop(self, propsource, posource, personality="java"):
+    def merge2prop(self, propsource, posource, personality="java", remove_untranslated=False):
         """helper that merges po translations to .properties source without requiring files"""
         inputfile = wStringIO.StringIO(posource)
         inputpo = po.pofile(inputfile)
         templatefile = wStringIO.StringIO(propsource)
         #templateprop = properties.propfile(templatefile)
-        convertor = po2prop.reprop(templatefile, inputpo, personality=personality)
+        convertor = po2prop.reprop(templatefile, inputpo, personality=personality, remove_untranslated=remove_untranslated)
         outputprop = convertor.convertstore()
         print outputprop
         return outputprop
@@ -141,6 +141,44 @@ msgstr "translated"
         propfile = self.merge2prop(proptemplate, posource, personality="strings")
         assert propfile == propexpectedstrings
 
+    def test_merging_untranslated_simple(self):
+        """check merging untranslated entries in two 1) use English 2) drop key, value pair"""
+        posource = '''#: prop\nmsgid "value"\nmsgstr ""\n'''
+        proptemplate = '''prop = value\n'''
+        propfile = self.merge2prop(proptemplate, posource)
+        print propfile
+        assert propfile == proptemplate # We use the existing values
+        propfile = self.merge2prop(proptemplate, posource, remove_untranslated=True)
+        print propfile
+        assert propfile == '' # We drop the key
+
+    def test_merging_untranslated_multiline(self):
+        """check merging untranslated entries with multiline values"""
+        posource = '''#: prop\nmsgid "value1 value2"\nmsgstr ""\n'''
+        proptemplate = '''prop = value1 \
+    value2
+'''
+        propexpected = '''prop = value1 value2\n'''
+        propfile = self.merge2prop(proptemplate, posource)
+        print propfile
+        assert propfile == propexpected # We use the existing values
+        propfile = self.merge2prop(proptemplate, posource, remove_untranslated=True)
+        print propfile
+        assert propfile == '' # We drop the key
+
+    def test_merging_untranslated_comments(self):
+        """check merging untranslated entries with comments"""
+        posource = '''#: prop\nmsgid "value"\nmsgstr ""\n'''
+        proptemplate = '''# A comment\nprop = value\n'''
+        propexpected = '# A comment\nprop = value\n'
+        propfile = self.merge2prop(proptemplate, posource)
+        print propfile
+        assert propfile == propexpected # We use the existing values
+        propfile = self.merge2prop(proptemplate, posource, remove_untranslated=True)
+        print propfile
+        # FIXME ideally we should drop the comment as well as the unit
+        assert propfile == '# A comment\n' # We drop the key
+
 
 class TestPO2PropCommand(test_convert.TestConvertCommand, TestPO2Prop):
     """Tests running actual po2prop commands on files"""
@@ -154,4 +192,5 @@ class TestPO2PropCommand(test_convert.TestConvertCommand, TestPO2Prop):
         options = self.help_check(options, "--fuzzy")
         options = self.help_check(options, "--personality=TYPE")
         options = self.help_check(options, "--encoding=ENCODING")
+        options = self.help_check(options, "--removeuntranslated")
         options = self.help_check(options, "--nofuzzy", last=True)

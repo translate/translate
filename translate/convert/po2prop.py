@@ -30,18 +30,20 @@ from translate.misc import quote
 from translate.storage import po
 from translate.storage import properties
 
-eol = "\n"
+eol = u"\n"
 
 
 class reprop:
 
-    def __init__(self, templatefile, inputstore, personality, encoding=None):
+    def __init__(self, templatefile, inputstore, personality, encoding=None,
+                 remove_untranslated=False):
         self.templatefile = templatefile
         self.inputstore = inputstore
         self.personality = properties.get_dialect(personality)
         self.encoding = encoding
         if self.encoding is None:
             self.encoding = self.personality.default_encoding
+        self.remove_untranslated = remove_untranslated
 
     def convertstore(self, includefuzzy=False):
         self.includefuzzy = includefuzzy
@@ -87,23 +89,28 @@ class reprop:
                 delimiter = prespace + delimiter_char + postspace
             if key in self.inputstore.locationindex:
                 unit = self.inputstore.locationindex[key]
-                if unit.isfuzzy() and not self.includefuzzy or len(unit.target) == 0:
-                    value = unit.source
+                if self.remove_untranslated and (unit.source == unit.target or
+                                                 unit.isfuzzy() or
+                                                 len(unit.target) == 0):
+                    returnline = u""
                 else:
-                    value = unit.target
-                self.inecho = False
-                assert isinstance(value, unicode)
-                returnline = "%(key)s%(del)s%(value)s%(term)s%(eol)s" % \
-                     {"key": "%s%s%s" % (self.personality.key_wrap_char,
-                                         key,
-                                         self.personality.key_wrap_char),
-                      "del": delimiter,
-                      "value": "%s%s%s" % (self.personality.value_wrap_char,
-                                           self.personality.encode(value),
-                                           self.personality.value_wrap_char),
-                      "term": self.personality.pair_terminator,
-                      "eol": eol,
-                     }
+                    if unit.isfuzzy() and not self.includefuzzy or len(unit.target) == 0:
+                        value = unit.source
+                    else:
+                        value = unit.target
+                    self.inecho = False
+                    assert isinstance(value, unicode)
+                    returnline = "%(key)s%(del)s%(value)s%(term)s%(eol)s" % \
+                         {"key": "%s%s%s" % (self.personality.key_wrap_char,
+                                             key,
+                                             self.personality.key_wrap_char),
+                          "del": delimiter,
+                          "value": "%s%s%s" % (self.personality.value_wrap_char,
+                                               self.personality.encode(value),
+                                               self.personality.value_wrap_char),
+                          "term": self.personality.pair_terminator,
+                          "eol": eol,
+                         }
             else:
                 self.inecho = True
                 returnline = line + eol
@@ -112,28 +119,32 @@ class reprop:
 
 
 def convertstrings(inputfile, outputfile, templatefile, personality="strings",
-                       includefuzzy=False, encoding=None):
+                   includefuzzy=False, encoding=None,
+                   remove_untranslated=False):
     """.strings specific convertor function"""
     return convertprop(inputfile, outputfile, templatefile,
                        personality="strings", includefuzzy=includefuzzy,
-                       encoding=encoding)
+                       encoding=encoding,
+                       remove_untranslated=remove_untranslated)
 
 
 def convertmozillaprop(inputfile, outputfile, templatefile,
-                       includefuzzy=False):
+                       includefuzzy=False, remove_untranslated=False):
     """Mozilla specific convertor function"""
     return convertprop(inputfile, outputfile, templatefile,
-                       personality="mozilla", includefuzzy=includefuzzy)
+                       personality="mozilla", includefuzzy=includefuzzy,
+                       remove_untranslated=remove_untranslated)
 
 
 def convertprop(inputfile, outputfile, templatefile, personality="java",
-                includefuzzy=False, encoding=None):
+                includefuzzy=False, encoding=None, remove_untranslated=False):
     inputstore = po.pofile(inputfile)
     if templatefile is None:
         raise ValueError("must have template file for properties files")
         # convertor = po2prop()
     else:
-        convertor = reprop(templatefile, inputstore, personality, encoding)
+        convertor = reprop(templatefile, inputstore, personality, encoding,
+                           remove_untranslated)
     outputprop = convertor.convertstore(includefuzzy)
     outputfile.write(outputprop)
     return 1
@@ -160,9 +171,13 @@ def main(argv=None):
     parser.add_option("", "--encoding", dest="encoding", default=None,
             help="override the encoding set by the personality",
             metavar="ENCODING")
+    parser.add_option("", "--removeuntranslated", dest="remove_untranslated",
+            default=False, action="store_true",
+            help="remove key value from output if it is untranslated")
     parser.add_fuzzy_option()
     parser.passthrough.append("personality")
     parser.passthrough.append("encoding")
+    parser.passthrough.append("remove_untranslated")
     parser.run(argv)
 
 if __name__ == '__main__':
