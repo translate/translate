@@ -295,3 +295,31 @@ msgstr ""
     posource += '"Language: fr_CA\\n"\n'
     pofile = poparse(posource)
     assert pofile.gettargetlanguage() == 'fr_CA'
+
+def test_project():
+    """Test that we can get a project from the relevant headers."""
+    posource = r'''msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+'''
+
+    pofile = poparse(posource)
+    assert pofile.getprojectstyle() == None
+
+    posource += '"X-Accelerator-Marker: ~\\n"\n'
+    pofile = poparse(posource)
+    assert pofile.getprojectstyle() == 'openoffice'
+
+    posource += '"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=system-\\n"\n'
+    pofile = poparse(posource)
+    assert pofile.getprojectstyle() == 'gnome'
+
+    posource += '"X-Project-Style: drupal\\n"\n'
+    pofile = poparse(posource)
+    assert pofile.getprojectstyle() == 'drupal'
+
+    pofile.setprojectstyle('kde')
+    assert pofile.getprojectstyle() == 'kde'
+
+    pofile.setprojectstyle('complete-rubbish')
+    assert pofile.getprojectstyle() == 'kde'

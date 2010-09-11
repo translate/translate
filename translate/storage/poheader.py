@@ -298,6 +298,44 @@ class poheader(object):
         if isinstance(lang, basestring) and len(lang) > 1:
             self.updateheader(add=True, Language=lang, X_Poedit_Language=None, X_Poedit_Country=None)
 
+    def getprojectstyle(self):
+        """Return the project based on information in the header.
+
+        The project is determined in the following sequence:
+          1. Use the 'X-Project-Style' entry in the header.
+          2. Use 'Report-Msgid-Bug-To' entry
+          3. Use the 'X-Accelerator' entry
+          4. Analyse the file itself (not yet implemented)
+        """
+        header = self.parseheader()
+        project = header.get('X-Project-Style', None)
+        if project is not None:
+            return project
+        bug_address = header.get('Report-Msgid-Bugs-To', None)
+        if bug_address is not None:
+           if 'bugzilla.gnome.org' in bug_address:
+               return 'gnome'
+           if 'bugs.kde.org' in bug_address:
+               return 'kde'
+        accelerator = header.get('X-Accelerator-Marker', None)
+        if accelerator is not None:
+            if accelerator == "~":
+                return "openoffice"
+            elif accelerator == "&":
+                return "mozilla"
+        # TODO Call some project guessing code and probably move all of the above there also
+        return None
+
+    def setprojectstyle(self, project_style):
+        """Set the project in the header.
+
+        @param project_style: the new project
+        @type project_style: str
+        """
+        from translate.filters.checks import projectcheckers
+        if project_style in projectcheckers:
+            self.updateheader(add=True, X_Project_Style=project_style)
+
     def mergeheaders(self, otherstore):
         """Merges another header with this header.
 

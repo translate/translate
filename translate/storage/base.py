@@ -502,6 +502,14 @@ class TranslationStore(object):
         """Sets the target language for this store"""
         self.targetlanguage = targetlanguage
 
+    def getprojectstyle(self):
+        """Gets the project type for this store"""
+        return getattr(self, '_project_style', None)
+
+    def setprojectstyle(self, project_style):
+        """Sets the project type for this store"""
+        self._project_style = project_style
+
     def unit_iter(self):
         """Iterator over all the units in this store."""
         for unit in self.units:
