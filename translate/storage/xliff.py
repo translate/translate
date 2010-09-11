@@ -335,20 +335,17 @@ class xliffunit(lisa.LISAunit):
 
     def isreview(self):
         """States whether this unit needs to be reviewed"""
-        targetnode = self.getlanguageNode(lang=None, index=1)
-        return not targetnode is None and \
-                "needs-review" in targetnode.get("state", "")
+        return self.get_state_id() == self.S_NEEDS_REVIEW
 
     def markreviewneeded(self, needsreview=True, explanation=None):
         """Marks the unit to indicate whether it needs review. Adds an optional explanation as a note."""
-        targetnode = self.getlanguageNode(lang=None, index=1)
-        if not targetnode is None:
-            if needsreview:
-                targetnode.set("state", "needs-review-translation")
-                if explanation:
-                    self.addnote(explanation, origin="translator")
-            else:
-                del targetnode.attrib["state"]
+        state_id = self.get_state_id()
+        if needsreview and state_id != self.S_NEEDS_REVIEW:
+            self.set_state_n(self.S_NEEDS_REVIEW)
+            if explanation:
+                self.addnote(explanation, origin="translator")
+        elif not needsreview and state_id < self.S_UNREVIEWED:
+            self.set_state_n(self.S_UNREVIEWED)
 
     def isfuzzy(self):
 #        targetnode = self.getlanguageNode(lang=None, index=1)
@@ -358,18 +355,15 @@ class xliffunit(lisa.LISAunit):
         return not self.isapproved()
 
     def markfuzzy(self, value=True):
+        state_id = self.get_state_id()
         if value:
             self.markapproved(False)
+            if state_id != self.S_NEEDS_TRANSLATION:
+                self.set_state_n(self.S_NEEDS_TRANSLATION)
         else:
             self.markapproved(True)
-        targetnode = self.getlanguageNode(lang=None, index=1)
-        if not targetnode is None:
-            if value:
-                targetnode.set("state", "needs-review-translation")
-            else:
-                for attribute in ["state", "state-qualifier"]:
-                    if attribute in targetnode.attrib:
-                        del targetnode.attrib[attribute]
+            if state_id < self.S_UNREVIEWED:
+                self.set_state_n(self.S_UNREVIEWED)
 
     def settarget(self, text, lang='xx', append=False):
         """Sets the target string to the given value."""
@@ -391,13 +385,9 @@ class xliffunit(lisa.LISAunit):
         return True
 
     def marktranslated(self):
-        targetnode = self.getlanguageNode(lang=None, index=1)
-        if targetnode is None:
-            return
-        if self.isfuzzy() and "state-qualifier" in targetnode.attrib:
-            #TODO: consider
-            del targetnode.attrib["state-qualifier"]
-        targetnode.set("state", "translated")
+        state_id = self.get_state_id()
+        if state_id < self.S_UNREVIEWED:
+            self.set_state_n(self.S_UNREVIEWED)
 
     def setid(self, id):
         # sanitize id in case ID_SEPERATOR is present
