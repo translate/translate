@@ -281,6 +281,47 @@ class xliffunit(lisa.LISAunit):
             errordict[errorname] = errortext
         return errordict
 
+    def get_state_n(self):
+        targetnode = self.getlanguageNode(lang=None, index=1)
+        if targetnode is None:
+            if self.isapproved():
+                return self.S_UNREVIEWED
+            elif self.target:
+                return self.S_NEEDS_TRANSLATION
+            else:
+                return self.S_UNTRANSLATED
+
+        xmlstate = targetnode.get("state", None)
+        state_n = self.statemap.get(xmlstate, self.S_UNTRANSLATED)
+
+        if state_n < self.S_NEEDS_TRANSLATION and self.target:
+            state_n = self.S_NEEDS_TRANSLATION
+
+        if self.isapproved() and state_n < self.S_UNREVIEWED:
+            state_n = self.S_UNREVIEWED
+
+        if not self.isapproved() and state_n > self.S_UNREVIEWED:
+            state_n = self.S_UNREVIEWED
+
+        return  state_n
+
+    def set_state_n(self, value):
+        if value not in self.statemap_r:
+            value = self.get_state_id(value)
+
+        targetnode = self.getlanguageNode(lang=None, index=1)
+
+        #FIXME: handle state qualifiers
+        if value == self.S_UNTRANSLATED:
+            if targetnode is not None and state in targetnode.attrib:
+                del targetnode.attrib["state"]
+        else:
+            if targetnode is not None:
+                xmlstate = self.statemap_r.get(value)
+                targetnode.set("state", xmlstate)
+
+        self.markapproved(value > self.S_NEEDS_REVIEW)
+
     def isapproved(self):
         """States whether this unit is approved."""
         return self.xmlelement.get("approved") == "yes"
