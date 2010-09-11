@@ -29,6 +29,7 @@ from translate.misc.multistring import multistring
 from translate.storage import base, lisa
 from translate.storage.lisa import getXMLspace
 from translate.storage.placeables.lisa import xml_to_strelem, strelem_to_xml
+from translate.storage.workflow import StateEnum as state
 
 # TODO: handle translation types
 
@@ -52,6 +53,35 @@ class xliffunit(lisa.LISAunit):
     _default_xml_space = "default"
 
     #TODO: id and all the trans-unit level stuff
+
+    S_UNTRANSLATED = state.EMPTY
+    S_NEEDS_TRANSLATION = state.NEEDS_WORK
+    S_NEEDS_REVIEW = state.NEEDS_REVIEW
+    S_TRANSLATED = state.UNREVIEWED
+    S_SIGNED_OFF = state.FINAL
+    S_FINAL = state.MAX
+
+    statemap = {"new": S_UNTRANSLATED + 1,
+                "needs-translation": S_NEEDS_TRANSLATION,
+                "needs-adaptation": S_NEEDS_TRANSLATION + 1,
+                "needs-l10n": S_NEEDS_TRANSLATION + 2,
+                "needs-review-translation": S_NEEDS_REVIEW,
+                "needs-review-adaptation": S_NEEDS_REVIEW + 1,
+                "needs-review-l10n": S_NEEDS_REVIEW + 2,
+                "translated": S_TRANSLATED,
+                "signed-off": S_SIGNED_OFF,
+                "final": S_FINAL,
+                }
+
+    statemap_r = dict((i[1], i[0]) for i in statemap.iteritems())
+
+    STATE = {
+        S_UNTRANSLATED: (state.EMPTY, state.NEEDS_WORK),
+        S_NEEDS_TRANSLATION: (state.NEEDS_WORK, state.NEEDS_REVIEW),
+        S_NEEDS_REVIEW: (state.NEEDS_REVIEW, state.UNREVIEWED),
+        S_TRANSLATED: (state.UNREVIEWED, state.FINAL),
+        S_SIGNED_OFF: (state.FINAL, state.MAX),
+    }
 
     def __init__(self, source, empty=False, **kwargs):
         """Override the constructor to set xml:space="preserve"."""
