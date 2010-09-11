@@ -19,6 +19,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 import os
+import shutil
 import tempfile
 from zipfile import ZipFile
 
@@ -225,7 +226,7 @@ class BundleProjectStore(ProjectStore):
             zfile.close()
         if not self.zip.fp.closed:
             self.zip.close()
-        os.rename(zfile.filename, self.zip.filename)
+        shutil.move(zfile.filename, self.zip.filename)
         self.zip = ZipFile(self.zip.filename, mode='a')
 
     def _update_from_tempfiles(self):
