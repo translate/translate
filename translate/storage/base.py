@@ -444,7 +444,7 @@ class TranslationUnit(object):
             n = self._state_n
         for state_id, state_range in self.STATE.iteritems():
             if state_range[0] <= n < state_range[1]:
-                return n
+                return state_id
         raise ValueError('No state containing value %s' % (n))
 
     def get_state_n(self):
