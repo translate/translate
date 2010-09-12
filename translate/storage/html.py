@@ -217,12 +217,12 @@ class htmlfile(HTMLParser, base.TranslationStore):
         self.currenttag = None
 
     def handle_starttag(self, tag, attrs):
-        newblock = 0
+        newblock = False
         if tag in self.markingtags:
-            newblock = 1
+            newblock = True
         for attrname, attrvalue in attrs:
             if attrname in self.markingattrs:
-                newblock = 1
+                newblock = True
             if attrname in self.includeattrs:
                 self.addhtmlblock(attrvalue)
 
