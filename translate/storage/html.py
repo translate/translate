@@ -138,7 +138,7 @@ class htmlfile(HTMLParser, base.TranslationStore):
         if self.has_translatable_content(text):
             self.currentblocknum += 1
             unit = self.addsourceunit(text)
-            unit.addlocation("%s+%s:%d" % (self.filename, ".".join(self.tag_path), self.currentblocknum))
+            unit.addlocation("%s+%s:%d" % (self.filename, ".".join(self.tag_path), self.currentpos))
             unit.addnote(self.currentcomment)
 
     def strip_html(self, text):
@@ -210,12 +210,14 @@ class htmlfile(HTMLParser, base.TranslationStore):
         self.currentblock = ""
         self.currentcomment = ""
         self.currenttag = tag
+        self.currentpos = self.getpos()[0]
 
     def endblock(self):
         self.addhtmlblock(self.currentblock)
         self.currentblock = ""
         self.currentcomment = ""
         self.currenttag = None
+        self.currentpos = -1
 
     def handle_starttag(self, tag, attrs):
         newblock = False
