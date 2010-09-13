@@ -39,7 +39,8 @@ from translate.storage import po
 
 
 class po2html:
-    """po2html can take a po file and generate html. best to give it a template file otherwise will just concat msgstrs"""
+    """po2html can take a po file and generate html. best to give it a
+    template file otherwise will just concat msgstrs"""
 
     def __init__(self, wrap=None, usetidy=None):
         self.wrap = wrap
@@ -69,8 +70,8 @@ class po2html:
         if isinstance(htmlresult, str):
             #TODO: get the correct encoding
             htmlresult = htmlresult.decode('utf-8')
-        # TODO: use the algorithm from html2po to get blocks and translate them individually
-        # rather than using replace
+        # TODO: use the algorithm from html2po to get blocks and translate
+        # them individually rather than using replace
         for inputunit in inputstore.units:
             if inputunit.isheader():
                 continue
@@ -91,15 +92,18 @@ class po2html:
         return htmlresult
 
 
-def converthtml(inputfile, outputfile, templatefile, wrap=None, includefuzzy=False, usetidy=True):
-    """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
+def converthtml(inputfile, outputfile, templatefile, wrap=None,
+                includefuzzy=False, usetidy=True):
+    """reads in stdin using fromfileclass, converts using convertorclass,
+    writes to stdout"""
     inputstore = po.pofile(inputfile)
     convertor = po2html(wrap=wrap, usetidy=usetidy)
     if templatefile is None:
         outputstring = convertor.convertstore(inputstore, includefuzzy)
     else:
         templatestring = templatefile.read()
-        outputstring = convertor.mergestore(inputstore, templatestring, includefuzzy)
+        outputstring = convertor.mergestore(inputstore, templatestring,
+                                            includefuzzy)
     outputfilepos = outputfile.tell()
     outputfile.write(outputstring)
     return 1
@@ -110,11 +114,17 @@ def main(argv=None):
     from translate.misc import stdiotell
     import sys
     sys.stdout = stdiotell.StdIOWrapper(sys.stdout)
-    formats = {("po", "htm"): ("htm", converthtml), ("po", "html"): ("html", converthtml), ("po", "xhtml"): ("xhtml", converthtml), ("po"): ("html", converthtml)}
-    parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
+    formats = {("po", "htm"): ("htm", converthtml),
+               ("po", "html"): ("html", converthtml),
+               ("po", "xhtml"): ("xhtml", converthtml),
+               ("po"): ("html", converthtml),
+              }
+    parser = convert.ConvertOptionParser(formats, usetemplates=True,
+                                         description=__doc__)
     if textwrap is not None:
-        parser.add_option("-w", "--wrap", dest="wrap", default=None, type="int",
-                help="set number of columns to wrap html at", metavar="WRAP")
+        parser.add_option("-w", "--wrap", dest="wrap", default=None,
+                          type="int", metavar="WRAP",
+                          help="set number of columns to wrap html at")
         parser.passthrough.append("wrap")
     if tidy is not None:
         parser.add_option("", "--notidy", dest="usetidy", default=True,
