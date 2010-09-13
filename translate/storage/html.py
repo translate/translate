@@ -64,6 +64,7 @@ class htmlfile(HTMLParser, base.TranslationStore):
         self.currentblocknum = 0
         self.currentcomment = ""
         self.currenttag = None
+        self.currentpos = -1
         self.tag_path = []
         self.includeuntaggeddata = includeuntaggeddata
         HTMLParser.__init__(self)
