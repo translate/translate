@@ -64,6 +64,7 @@ class htmlfile(HTMLParser, base.TranslationStore):
         self.currentblocknum = 0
         self.currentcomment = ""
         self.currenttag = None
+        self.tag_path = []
         self.includeuntaggeddata = includeuntaggeddata
         HTMLParser.__init__(self)
 
@@ -137,7 +138,7 @@ class htmlfile(HTMLParser, base.TranslationStore):
         if self.has_translatable_content(text):
             self.currentblocknum += 1
             unit = self.addsourceunit(text)
-            unit.addlocation("%s:%d" % (self.filename, self.currentblocknum))
+            unit.addlocation("%s+%s:%d" % (self.filename, ".".join(self.tag_path), self.currentblocknum))
             unit.addnote(self.currentcomment)
 
     def strip_html(self, text):
@@ -218,6 +219,7 @@ class htmlfile(HTMLParser, base.TranslationStore):
 
     def handle_starttag(self, tag, attrs):
         newblock = False
+        self.tag_path.append(tag)
         if tag in self.markingtags:
             newblock = True
         for attrname, attrvalue in attrs:
@@ -243,6 +245,7 @@ class htmlfile(HTMLParser, base.TranslationStore):
             self.endblock()
         elif self.currenttag is not None:
             self.currentblock += '</%s>' % tag
+        self.tag_path.pop()
 
     def handle_data(self, data):
         if self.currenttag is not None:
