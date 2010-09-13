@@ -305,7 +305,8 @@ class poheader(object):
           1. Use the 'X-Project-Style' entry in the header.
           2. Use 'Report-Msgid-Bug-To' entry
           3. Use the 'X-Accelerator' entry
-          4. Analyse the file itself (not yet implemented)
+          4. Use the Project ID
+          5. Analyse the file itself (not yet implemented)
         """
         header = self.parseheader()
         project = header.get('X-Project-Style', None)
@@ -323,6 +324,10 @@ class poheader(object):
                 return "openoffice"
             elif accelerator == "&":
                 return "mozilla"
+        project_id = header.get('Project-Id-Version', None)
+        if project_id is not None:
+            if 'gnome' in project_id.lower():
+                return "gnome"
         # TODO Call some project guessing code and probably move all of the above there also
         return None
 
