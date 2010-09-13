@@ -23,6 +23,7 @@
 """module for parsing html files for translation"""
 
 import re
+import htmlentitydefs
 from HTMLParser import HTMLParser
 
 from translate.storage import base
@@ -258,10 +259,15 @@ class htmlfile(HTMLParser, base.TranslationStore):
             self.currentblock += data
 
     def handle_charref(self, name):
-        self.handle_data("&#%s;" % name)
+        """Handle entries in the form &#NNNN; e.g. &#8417;"""
+        self.handle_data(unichr(int(name)))
 
     def handle_entityref(self, name):
-        self.handle_data("&%s;" % name)
+        """Handle named entities of the form &aaaa; e.g. &rsquo;"""
+        if name in ['gt', 'lt', 'amp']:
+            self.handle_data("&%s;" % name)
+        else:
+            self.handle_data(unichr(htmlentitydefs.name2codepoint.get(name, "&%s;" % name)))
 
     def handle_comment(self, data):
         # we can place comments above the msgid as translator comments!
