@@ -32,12 +32,10 @@ from translate.storage import html
 
 class html2po:
 
-    def convertfile(self, inputfile, filename, includeheader, includeuntagged=False, duplicatestyle="msgctxt", keepcomments=False):
+    def convertfile(self, inputfile, filename, includeuntagged=False, duplicatestyle="msgctxt", keepcomments=False):
         """converts a html file to .po format"""
         thetargetfile = po.pofile()
         htmlparser = html.htmlfile(includeuntaggeddata=includeuntagged, inputfile=inputfile)
-        if includeheader:
-            targetheader = thetargetfile.init_headers(charset="UTF-8", encoding="8bit")
         for htmlunit in htmlparser.units:
             thepo = thetargetfile.addsourceunit(htmlunit.source)
             thepo.addlocations(htmlunit.getlocations())
@@ -51,8 +49,7 @@ def converthtml(inputfile, outputfile, templates, includeuntagged=False, pot=Fal
     """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
     convertor = html2po()
     outputfilepos = outputfile.tell()
-    includeheader = outputfilepos == 0
-    outputstore = convertor.convertfile(inputfile, getattr(inputfile, "name", "unknown"), includeheader, includeuntagged, duplicatestyle=duplicatestyle, keepcomments=keepcomments)
+    outputstore = convertor.convertfile(inputfile, getattr(inputfile, "name", "unknown"), includeuntagged, duplicatestyle=duplicatestyle, keepcomments=keepcomments)
     outputfile.write(str(outputstore))
     return 1
 
