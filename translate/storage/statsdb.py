@@ -48,6 +48,15 @@ brtagre = re.compile("<br\s*?/?>")
 xmltagre = re.compile("<[^>]+>")
 numberre = re.compile("\\D\\.\\D")
 
+extended_state_strings = {
+    StateEnum.EMPTY: "empty",
+    StateEnum.NEEDS_WORK: "needs-work",
+    StateEnum.REJECTED: "rejected",
+    StateEnum.NEEDS_REVIEW: "needs-review",
+    StateEnum.UNREVIEWED: "unreviewed",
+    StateEnum.FINAL: "final",
+    }
+
 UNTRANSLATED = StateEnum.EMPTY
 FUZZY = StateEnum.NEEDS_WORK
 TRANSLATED = StateEnum.UNREVIEWED
@@ -350,6 +359,7 @@ class StatsCache(object):
             source VARCHAR NOT NULL,
             target VARCHAR,
             state INTEGER,
+            e_state INTEGER,
             sourcewords INTEGER,
             targetwords INTEGER);""")
 
@@ -436,12 +446,13 @@ class StatsCache(object):
                 unitvalues.append((unit.getid(), fileid, index, \
                                 unit.source, unit.target, \
                                 sourcewords, targetwords, \
-                                statefordb(unit)))
+                                statefordb(unit),
+                                unit.get_state_id()))
                 file_totals_record = file_totals_record + FileTotals.new_record(statefordb(unit), sourcewords, targetwords)
         # XXX: executemany is non-standard
         self.cur.executemany("""INSERT INTO units
-            (unitid, fileid, unitindex, source, target, sourcewords, targetwords, state)
-            values (?, ?, ?, ?, ?, ?, ?, ?);""",
+            (unitid, fileid, unitindex, source, target, sourcewords, targetwords, state, e_state)
+            values (?, ?, ?, ?, ?, ?, ?, ?, ?);""",
             unitvalues)
         self.file_totals[fileid] = file_totals_record
         if unitindex:
