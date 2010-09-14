@@ -151,6 +151,14 @@ def summarize(title, stats, style=style_full, indent=8, incomplete_only=False):
                 (stats["total"], \
                 stats["totalsourcewords"], \
                 stats["translatedtargetwords"])
+        if "extended" in stats:
+            print ""
+            for state, e_stats in stats["extended"].iteritems():
+                print "%s:    %5d (%3d%%) %10d (%3d%%) %15d" % (
+                    state, e_stats["units"],  percent(e_stats["units"], stats["total"]),
+                    e_stats["sourcewords"], percent(e_stats["sourcewords"], stats["totalsourcewords"]),
+                    e_stats["targetwords"])
+
         if stats["review"] > 0:
             print "review:       %5d %17d                    n/a" % \
                     (stats["review"], stats["reviewsourcewords"])
@@ -210,6 +218,9 @@ Review Messages, Review Source Words"
     def updatetotals(self, stats):
         """Update self.totals with the statistics in stats."""
         for key in stats.keys():
+            if key == "extended":
+                #FIXME: calculate extended totals 
+                continue
             if not key in self.totals:
                 self.totals[key] = 0
             self.totals[key] += stats[key]
