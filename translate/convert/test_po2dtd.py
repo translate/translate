@@ -4,6 +4,7 @@
 import warnings
 
 from py import test
+from py.test import mark
 
 from translate.convert import po2dtd
 from translate.convert import dtd2po
@@ -221,6 +222,16 @@ msgstr "&searchIntegration.engineName; &ileti aramasına izin ver"
         dtdtemplate = '<!ENTITY simple.label "First line then\n' + \
           '                                          next lines.">\n'
         dtdexpected = '<!ENTITY simple.label "Eerste lyne en dan volgende lyne.">\n'
+        dtdfile = self.merge2dtd(dtdtemplate, posource)
+        print dtdfile
+        assert str(dtdfile) == dtdexpected
+
+    @mark.xfail(reason="Not Implemented")
+    def test_preserving_spaces(self):
+        """ensure that we preseve spaces between entity and value"""
+        posource = '''#: simple.label\nmsgid "One"\nmsgstr "Een"\n'''
+        dtdtemplate = '<!ENTITY simple.label         "One">\n'
+        dtdexpected = '<!ENTITY simple.label         "Een">\n'
         dtdfile = self.merge2dtd(dtdtemplate, posource)
         print dtdfile
         assert str(dtdfile) == dtdexpected
