@@ -681,12 +681,12 @@ class StatsCache(object):
             stats["total"].append(value[2])
         return stats
 
-    def filestats(self, filename, checker, store=None):
+    def filestats(self, filename, checker, store=None, extended=False):
         """Return a dictionary of property names mapping sets of unit
         indices with those properties."""
         stats = emptyfilestats()
         stats.update(self.filechecks(filename, checker, store))
-        stats.update(self.filestatestats(filename, store))
+        stats.update(self.filestatestats(filename, store, extended=extended))
         return stats
 
     def unitstats(self, filename, _lang=None, store=None):
