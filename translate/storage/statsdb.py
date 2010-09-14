@@ -474,10 +474,28 @@ class StatsCache(object):
         self._cacheunitstats(store.units, fileid)
         return fileid
 
+    def file_extended_totals(self, filename, store=None):
+        stats = {}
+        fileid = self._getfileid(filename, store=store)
+
+        self.cur.execute("""SELECT e_state, COUNT(id), SUM(sourcewords), SUM(targetwords)
+            FROM units WHERE fileid=? GROUP BY e_state""", (fileid,))
+        values = self.cur.fetchall()
+
+        for value in values:
+            stats[extended_state_strings[value[0]]] = {
+                "units": value[1],
+                "sourcewords": value[2],
+                "targetwords": value[3],
+                }
+        return stats
+
     def filetotals(self, filename, store=None):
         """Retrieves the statistics for the given file if possible, otherwise
         delegates to cachestore()."""
-        return self.file_totals[self._getfileid(filename, store=store)]
+        stats = self.file_totals[self._getfileid(filename, store=store)]
+        stats["extended"] = self.file_extended_totals(filename, store=store)
+        return stats
 
     @transaction
     def _cacheunitschecks(self, units, fileid, configid, checker, unitindex=None):
