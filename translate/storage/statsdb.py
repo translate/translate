@@ -41,13 +41,22 @@ from translate import __version__ as toolkitversion
 from translate.lang.common import Common
 from translate.misc.multistring import multistring
 from translate.storage import factory
+from translate.storage.workflow import StateEnum
 
 kdepluralre = re.compile("^_n: ")
 brtagre = re.compile("<br\s*?/?>")
 xmltagre = re.compile("<[^>]+>")
 numberre = re.compile("\\D\\.\\D")
 
-state_strings = {0: "untranslated", 1: "translated", 2: "fuzzy"}
+UNTRANSLATED = StateEnum.EMPTY
+FUZZY = StateEnum.NEEDS_WORK
+TRANSLATED = StateEnum.UNREVIEWED
+
+state_strings = {
+    UNTRANSLATED: "untranslated",
+    FUZZY: "fuzzy",
+    TRANSLATED: "translated",
+}
 
 
 def wordcount(string):
@@ -134,9 +143,6 @@ def transaction(f):
                 self.con.rollback()
             raise
     return decorated_f
-
-
-UNTRANSLATED, TRANSLATED, FUZZY = 0, 1, 2
 
 
 def statefordb(unit):
