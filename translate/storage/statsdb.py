@@ -644,19 +644,20 @@ class StatsCache(object):
         """Return a dictionary of unit stats mapping sets of unit
         indices with those states"""
         stats = emptyfilestats()
+        stats["extended"] = {}
+
         fileid = self._getfileid(filename, store=store)
 
-        self.cur.execute("""SELECT
-            state,
-            unitindex
-            FROM units WHERE fileid=?
-            ORDER BY unitindex;""", (fileid,))
+        self.cur.execute("""SELECT state, e_state, unitindex
+            FROM units WHERE fileid=? ORDER BY unitindex;""", (fileid,))
         values = self.cur.fetchall()
 
         for value in values:
-            stats[state_strings[value[0]]].append(value[1])
-            stats["total"].append(value[1])
-
+            stats[state_strings[value[0]]].append(value[2])
+            if value[1] not in stats["extended"]:
+                stats["extended"][value[1]] = []
+            stats["extended"][value[1]].append(value[2])
+            stats["total"].append(value[2])
         return stats
 
     def filestats(self, filename, checker, store=None):
