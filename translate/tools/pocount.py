@@ -79,7 +79,7 @@ def calcstats_old(filename):
 
 def calcstats(filename):
     statscache = statsdb.StatsCache()
-    return statscache.filetotals(filename)
+    return statscache.filetotals(filename, extended=True)
 
 
 def summarize(title, stats, style=style_full, indent=8, incomplete_only=False):
