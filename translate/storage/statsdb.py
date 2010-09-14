@@ -490,11 +490,12 @@ class StatsCache(object):
                 }
         return stats
 
-    def filetotals(self, filename, store=None):
+    def filetotals(self, filename, store=None, extended=False):
         """Retrieves the statistics for the given file if possible, otherwise
         delegates to cachestore()."""
         stats = self.file_totals[self._getfileid(filename, store=store)]
-        stats["extended"] = self.file_extended_totals(filename, store=store)
+        if extended:
+            stats["extended"] = self.file_extended_totals(filename, store=store)
         return stats
 
     @transaction
@@ -658,11 +659,12 @@ class StatsCache(object):
             WHERE fileid=? and configid=? and name=?;""", (fileid, configid, name))
         return self.cur.fetchone() is not None
 
-    def filestatestats(self, filename, store=None):
+    def filestatestats(self, filename, store=None, extended=False):
         """Return a dictionary of unit stats mapping sets of unit
         indices with those states"""
         stats = emptyfilestats()
-        stats["extended"] = {}
+        if extended:
+            stats["extended"] = {}
 
         fileid = self._getfileid(filename, store=store)
 
@@ -672,9 +674,10 @@ class StatsCache(object):
 
         for value in values:
             stats[state_strings[value[0]]].append(value[2])
-            if value[1] not in stats["extended"]:
-                stats["extended"][value[1]] = []
-            stats["extended"][value[1]].append(value[2])
+            if extended:
+                if value[1] not in stats["extended"]:
+                    stats["extended"][value[1]] = []
+                stats["extended"][value[1]].append(value[2])
             stats["total"].append(value[2])
         return stats
 
