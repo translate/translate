@@ -193,7 +193,7 @@ msgstr "&searchIntegration.engineName; &ileti aramasına izin ver"
         """check that we can handle a \n in the PO file"""
         posource = '''#: simple.label\n#: simple.accesskey\nmsgid "A hard coded newline.\\n"\nmsgstr "Hart gekoeerde nuwe lyne\\n"\n'''
         dtdtemplate = '<!ENTITY  simple.label "A hard coded newline.\n">\n'
-        dtdexpected = '''<!ENTITY simple.label "Hart gekoeerde nuwe lyne\n">\n'''
+        dtdexpected = '''<!ENTITY  simple.label "Hart gekoeerde nuwe lyne\n">\n'''
         dtdfile = self.merge2dtd(dtdtemplate, posource)
         print dtdfile
         assert str(dtdfile) == dtdexpected
@@ -226,12 +226,11 @@ msgstr "&searchIntegration.engineName; &ileti aramasına izin ver"
         print dtdfile
         assert str(dtdfile) == dtdexpected
 
-    @mark.xfail(reason="Not Implemented")
     def test_preserving_spaces(self):
         """ensure that we preseve spaces between entity and value"""
         posource = '''#: simple.label\nmsgid "One"\nmsgstr "Een"\n'''
-        dtdtemplate = '<!ENTITY simple.label         "One">\n'
-        dtdexpected = '<!ENTITY simple.label         "Een">\n'
+        dtdtemplate = '<!ENTITY     simple.label         "One">\n'
+        dtdexpected = '<!ENTITY     simple.label         "Een">\n'
         dtdfile = self.merge2dtd(dtdtemplate, posource)
         print dtdfile
         assert str(dtdfile) == dtdexpected

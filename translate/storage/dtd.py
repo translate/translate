@@ -122,6 +122,8 @@ class dtdunit(base.TranslationUnit):
         self.inentity = False
         self.entity = "FakeEntityOnlyForInitialisationAndTesting"
         self.source = source
+        self.space_pre_entity = ' '
+        self.space_pre_definition = ' '
 
     # Note that source and target are equivalent for monolingual units
     def setsource(self, source):
@@ -256,9 +258,12 @@ class dtdunit(base.TranslationUnit):
                     self.entitypart = "name"
                     self.entitytype = "internal"
                 if self.entitypart == "name":
+                    s = 0
                     e = 0
                     while (e < len(line) and line[e].isspace()):
                         e += 1
+                    self.space_pre_entity = ' ' * (e - s)
+                    s = e
                     self.entity = ''
                     if (e < len(line) and line[e] == '%'):
                         self.entitytype = "external"
@@ -269,8 +274,10 @@ class dtdunit(base.TranslationUnit):
                     while (e < len(line) and not line[e].isspace()):
                         self.entity += line[e]
                         e += 1
+                    s = e
                     while (e < len(line) and line[e].isspace()):
                         e += 1
+                    self.space_pre_definition = ' ' * (e - s)
                     if self.entity:
                         if self.entitytype == "external":
                             self.entitypart = "parameter"
@@ -357,7 +364,7 @@ class dtdunit(base.TranslationUnit):
             if getattr(self, 'entitytype', None) == 'external':
                 entityline = '<!ENTITY % ' + self.entity + ' ' + self.entityparameter + ' ' + self.definition+'>'
             else:
-                entityline = '<!ENTITY ' + self.entity + ' ' + self.definition + '>'
+                entityline = '<!ENTITY' + self.space_pre_entity + self.entity + self.space_pre_definition + self.definition + '>'
             if getattr(self, 'hashprefix', None):
                 entityline = self.hashprefix + " " + entityline
             if isinstance(entityline, unicode):
