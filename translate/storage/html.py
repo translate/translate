@@ -61,13 +61,13 @@ class htmlfile(HTMLParser, base.TranslationStore):
     def __init__(self, includeuntaggeddata=None, inputfile=None):
         self.units = []
         self.filename = getattr(inputfile, 'name', None)
-        self.currentblock = ""
+        self.currentblock = u""
         self.currentblocknum = 0
-        self.currentcomment = ""
+        self.currentcomment = u""
         self.currenttag = None
         self.currentpos = -1
         self.tag_path = []
-        self.filesrc = ""
+        self.filesrc = u""
         self.includeuntaggeddata = includeuntaggeddata
         HTMLParser.__init__(self)
 
@@ -95,7 +95,7 @@ class htmlfile(HTMLParser, base.TranslationStore):
         if charset:
             return htmlsrc.decode(charset)
         else:
-            return htmlsrc
+            return htmlsrc.decode('utf-8')
 
     def phprep(self, text):
         """Replaces all instances of PHP with placeholder tags, and returns
@@ -230,7 +230,7 @@ class htmlfile(HTMLParser, base.TranslationStore):
         for attrname, attrvalue in attrs:
             if attrname in self.markingattrs:
                 newblock = True
-            if attrname in self.includeattrs:
+            if attrname in self.includeattrs and self.currentblock == "":
                 self.addhtmlblock(attrvalue)
 
         if newblock:
@@ -274,14 +274,14 @@ class htmlfile(HTMLParser, base.TranslationStore):
         if name in ['gt', 'lt', 'amp']:
             self.handle_data("&%s;" % name)
         else:
-            self.handle_data(unichr(htmlentitydefs.name2codepoint.get(name, "&%s;" % name)))
+            self.handle_data(unichr(htmlentitydefs.name2codepoint.get(name, u"&%s;" % name)))
 
     def handle_comment(self, data):
         # we can place comments above the msgid as translator comments!
         if self.currentcomment == "":
             self.currentcomment = data
         else:
-            self.currentcomment += '\n' + data
+            self.currentcomment += u'\n' + data
         self.filesrc += data
 
     def handle_pi(self, data):
