@@ -67,6 +67,7 @@ class htmlfile(HTMLParser, base.TranslationStore):
         self.currenttag = None
         self.currentpos = -1
         self.tag_path = []
+        self.filesrc = ""
         self.includeuntaggeddata = includeuntaggeddata
         HTMLParser.__init__(self)
 
@@ -237,6 +238,8 @@ class htmlfile(HTMLParser, base.TranslationStore):
         elif self.currenttag is not None:
             self.currentblock += self.get_starttag_text()
 
+        self.filesrc += "<%(tag)s %(attrs)s>" % {"tag": tag, "attrs": " ".join(['%s="%s"' % pair for pair in attrs])}
+
     def handle_startendtag(self, tag, attrs):
         for attrname, attrvalue in attrs:
             if attrname in self.includeattrs:
@@ -244,12 +247,15 @@ class htmlfile(HTMLParser, base.TranslationStore):
         if self.currenttag is not None:
             self.currentblock += self.get_starttag_text()
 
+        self.filesrc += "<%(tag)s %(attrs)s />" % {"tag": tag, "attrs": " ".join(['%s="%s"' % pair for pair in attrs])}
+
     def handle_endtag(self, tag):
         if tag == self.currenttag:
             self.endblock()
         elif self.currenttag is not None:
             self.currentblock += '</%s>' % tag
         self.tag_path.pop()
+        self.filesrc += "<%(tag)s/>" % {"tag": tag}
 
     def handle_data(self, data):
         if self.currenttag is not None:
@@ -257,6 +263,7 @@ class htmlfile(HTMLParser, base.TranslationStore):
         elif self.includeuntaggeddata:
             self.startblock(None)
             self.currentblock += data
+        self.filesrc += data
 
     def handle_charref(self, name):
         """Handle entries in the form &#NNNN; e.g. &#8417;"""
@@ -275,6 +282,7 @@ class htmlfile(HTMLParser, base.TranslationStore):
             self.currentcomment = data
         else:
             self.currentcomment += '\n' + data
+        self.filesrc += data
 
     def handle_pi(self, data):
         self.handle_data("<?%s>" % data)
