@@ -255,7 +255,7 @@ class htmlfile(HTMLParser, base.TranslationStore):
         elif self.currenttag is not None:
             self.currentblock += '</%s>' % tag
         self.tag_path.pop()
-        self.filesrc += "<%(tag)s/>" % {"tag": tag}
+        self.filesrc += "</%(tag)s>" % {"tag": tag}
 
     def handle_data(self, data):
         if self.currenttag is not None:
