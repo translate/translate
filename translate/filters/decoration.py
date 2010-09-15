@@ -247,11 +247,15 @@ def getnumbers(str1):
     return numbers
 
 
-def getfunctions(str1, punctuation):
+_function_re = re.compile("[\w\.]{3,}\(\)")
+
+def getfunctions(str1):
     """returns the functions() that are in a string, while ignoring the trailing
     punctuation in the given parameter"""
-    punctuation = punctuation.replace("(", "").replace(")", "")
-    return [word.rstrip(punctuation) for word in str1.split() if word.rstrip(punctuation).endswith("()")]
+    if u"()" in str1:
+        return _function_re.findall(str1)
+    else:
+        return []
 
 
 def getemails(str1):
