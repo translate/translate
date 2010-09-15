@@ -602,14 +602,16 @@ class StandardChecker(TranslationChecker):
         str2 = str2.replace(u"\u00a0", u" ")
         for puncchar in self.config.punctuation:
             plaincount1 = str1.count(puncchar)
+            if not plaincount1:
+                continue
             plaincount2 = str2.count(puncchar)
-            if not plaincount1 or plaincount1 != plaincount2:
+            if plaincount1 != plaincount2:
                 continue
             spacecount1 = str1.count(puncchar + u" ")
             spacecount2 = str2.count(puncchar + u" ")
             if spacecount1 != spacecount2:
                 # handle extra spaces that are because of transposed punctuation
-                if str1.endswith(puncchar) != str2.endswith(puncchar) and abs(spacecount1 - spacecount2) == 1:
+                if abs(spacecount1 - spacecount2) == 1 and str1.endswith(puncchar) != str2.endswith(puncchar):
                     continue
                 return False
         return True
