@@ -247,7 +247,13 @@ def getnumbers(str1):
     return numbers
 
 
-_function_re = re.compile("[\w\.]{3,}\(\)")
+_function_re = re.compile(r'''((?:
+    [\w\.]+              # function or module name - any alpha-numeric character, _, or .
+    (?:(?:::|->|\.)\w+)* # (optional) C++ style Class::Method() syntax or pointer->Method() or module.function()
+    \(\)                 # Must close with ()
+)+)
+''', re.VERBOSE)  # shouldn't be locale aware
+    # pam_*_item() IO::String NULL() POE::Component::Client::LDAP->new() POE::Wheel::Null mechanize.UserAgent POSIX::sigaction() window.resizeBy() @fptr()
 
 def getfunctions(str1):
     """returns the functions() that are in a string, while ignoring the trailing

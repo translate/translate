@@ -62,11 +62,13 @@ def test_getnumbers():
 
 def test_getfunctions():
     """test operation of getfunctions()"""
-    punctuation = "().?!"
-    assert decoration.getfunctions(u"", punctuation) == []
-    assert decoration.getfunctions(u"There is no function", punctuation) == []
-    assert decoration.getfunctions(u"Use the getfunction() function.", punctuation) == ["getfunction()"]
-    assert decoration.getfunctions(u"The module.getfunction() method", punctuation) == ["module.getfunction()"]
-    assert decoration.getfunctions(u"The function().function() function", punctuation) == ["function().function()"]
-    assert decoration.getfunctions(u"Deprecated, use function().", punctuation) == ["function()"]
-    assert decoration.getfunctions(u"Deprecated, use function() or other().", punctuation) == ["function()", "other()"]
+    assert decoration.getfunctions(u"") == []
+    assert decoration.getfunctions(u"There is no function") == []
+    assert decoration.getfunctions(u"Use the getfunction() function.") == ["getfunction()"]
+    assert decoration.getfunctions(u"Use the getfunction1() function or the getfunction2() function.") == ["getfunction1()", "getfunction2()"]
+    assert decoration.getfunctions(u"The module.getfunction() method") == ["module.getfunction()"]
+    assert decoration.getfunctions(u"The module->getfunction() method") == ["module->getfunction()"]
+    assert decoration.getfunctions(u"The module::getfunction() method") == ["module::getfunction()"]
+    assert decoration.getfunctions(u"The function().function() function") == ["function().function()"]
+    assert decoration.getfunctions(u"Deprecated, use function().") == ["function()"]
+    assert decoration.getfunctions(u"Deprecated, use function() or other().") == ["function()", "other()"]
