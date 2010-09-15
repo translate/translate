@@ -238,7 +238,10 @@ class htmlfile(HTMLParser, base.TranslationStore):
         elif self.currenttag is not None:
             self.currentblock += self.get_starttag_text()
 
-        self.filesrc += "<%(tag)s %(attrs)s>" % {"tag": tag, "attrs": " ".join(['%s="%s"' % pair for pair in attrs])}
+        if attrs != []:
+            self.filesrc += "<%(tag)s %(attrs)s>" % {"tag": tag, "attrs": " ".join(['%s="%s"' % pair for pair in attrs])}
+        else:
+            self.filesrc += "<%(tag)s>" % {"tag": tag}
 
     def handle_startendtag(self, tag, attrs):
         for attrname, attrvalue in attrs:
@@ -282,7 +285,7 @@ class htmlfile(HTMLParser, base.TranslationStore):
             self.currentcomment = data
         else:
             self.currentcomment += u'\n' + data
-        self.filesrc += data
+        self.filesrc += "<!--%s-->" % data
 
     def handle_pi(self, data):
         self.handle_data("<?%s>" % data)
