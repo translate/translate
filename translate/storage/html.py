@@ -24,9 +24,13 @@
 
 import re
 import htmlentitydefs
-from HTMLParser import HTMLParser
+import HTMLParser
 
 from translate.storage import base
+
+# Override the piclose tag from simple > to ?> otherwise we consume HTML
+# within the processing instructions
+HTMLParser.piclose = re.compile('\?>')
 
 
 class htmlunit(base.TranslationUnit):
@@ -52,7 +56,7 @@ class htmlunit(base.TranslationUnit):
         return self.locations
 
 
-class htmlfile(HTMLParser, base.TranslationStore):
+class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
     UnitClass = htmlunit
     markingtags = ["p", "title", "h1", "h2", "h3", "h4", "h5", "h6", "th", "td", "div", "li", "dt", "dd", "address", "caption"]
     markingattrs = []
@@ -69,7 +73,7 @@ class htmlfile(HTMLParser, base.TranslationStore):
         self.tag_path = []
         self.filesrc = u""
         self.includeuntaggeddata = includeuntaggeddata
-        HTMLParser.__init__(self)
+        HTMLParser.HTMLParser.__init__(self)
 
         if inputfile is not None:
             htmlsrc = inputfile.read()
@@ -97,47 +101,12 @@ class htmlfile(HTMLParser, base.TranslationStore):
         else:
             return htmlsrc.decode('utf-8')
 
-    def phprep(self, text):
-        """Replaces all instances of PHP with placeholder tags, and returns
-        the new text and a dictionary of tags.  The current implementation
-        replaces <?foo?> with <?md5(foo)?>.  The hash => code conversions
-        are stored in self.phpdict for later use in restoring the real PHP.
-
-        The purpose of this is to remove all potential "tag-like" code from
-        inside PHP.  The hash looks nothing like an HTML tag, but the following
-        PHP::
-          $a < $b ? $c : ($d > $e ? $f : $g)
-        looks like it contains an HTML tag::
-          < $b ? $c : ($d >
-        to nearly any regex.  Hence, we replace all contents of PHP with simple
-        strings to help our regexes out.
-
-        """
-
-        from translate.misc import hash
-
-        self.phpdict = {}
-        result = re.findall('(?s)<\?(.*?)\?>', text)
-        for cmd in result:
-            h = hash.md5_f(cmd).hexdigest()
-            self.phpdict[h] = cmd
-            text = text.replace(cmd, h)
-        return text
-
-    def reintrophp(self, text):
-        """Replaces the PHP placeholders in text with the real code"""
-        for hash, code in self.phpdict.items():
-            text = text.replace(hash, code)
-        return text
-
     def parse(self, htmlsrc):
         htmlsrc = self.do_encoding(htmlsrc)
-        htmlsrc = self.phprep(htmlsrc) #Clear out the PHP before parsing
         self.feed(htmlsrc)
 
     def addhtmlblock(self, text):
         text = self.strip_html(text)
-        text = self.reintrophp(text) #Before adding anything, restore PHP
         if self.has_translatable_content(text):
             self.currentblocknum += 1
             unit = self.addsourceunit(text)
@@ -288,7 +257,8 @@ class htmlfile(HTMLParser, base.TranslationStore):
         self.filesrc += "<!--%s-->" % data
 
     def handle_pi(self, data):
-        self.handle_data("<?%s>" % data)
+        print '-----\n%s\n------' % data
+        self.handle_data("<?%s?>" % data)
 
 
 class POHTMLParser(htmlfile):
