@@ -257,7 +257,6 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
         self.filesrc += "<!--%s-->" % data
 
     def handle_pi(self, data):
-        print '-----\n%s\n------' % data
         self.handle_data("<?%s?>" % data)
 
 
