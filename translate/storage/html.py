@@ -214,7 +214,7 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
 
     def handle_startendtag(self, tag, attrs):
         for attrname, attrvalue in attrs:
-            if attrname in self.includeattrs:
+            if attrname in self.includeattrs and self.currentblock == "":
                 self.addhtmlblock(attrvalue)
         if self.currenttag is not None:
             self.currentblock += self.get_starttag_text()
