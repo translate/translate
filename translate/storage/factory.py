@@ -37,6 +37,7 @@ from translate.storage import mo
 from translate.storage import omegat
 from translate.storage import po
 from translate.storage import qm
+from translate.storage import utx
 from translate.storage import wordfast
 #Let's try to import the XML formats carefully. They might fail if the user
 #doesn't have lxml installed. Let's try to continue gracefully, but print an
@@ -63,6 +64,7 @@ classes = {
            "po": po.pofile, "pot": po.pofile,
            "mo": mo.mofile, "gmo": mo.mofile,
            "qm": qm.qmfile,
+           "utx": utx.UtxFile,
            "_wftm": wordfast.WordfastTMFile,
            "catkeys": catkeys.CatkeysFile,
           }
@@ -125,6 +127,8 @@ def _guessextention(storefile):
         extention = 'ts'
     elif '<tmx ' in start:
         extention = 'tmx'
+    elif '#UTX' in start:
+        extention = 'utx'
     else:
         raise ValueError("Failed to guess file type.")
     storefile.seek(0)
