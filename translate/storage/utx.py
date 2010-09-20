@@ -56,6 +56,9 @@ class UtxDialect(csv.Dialect):
     """Describe the properties of an UTX generated TAB-delimited dictionary
     file."""
     delimiter = "\t"
+    # The spec says \r\n but there are older version < 1.0 with just \n
+    # FIXME if we find older specs then lets see if we can support these
+    # differences
     lineterminator = "\r\n"
     quoting = csv.QUOTE_NONE
     if sys.version_info < (2, 5, 0):
@@ -252,7 +255,10 @@ class UtxFile(base.TranslationStore):
             tmsrc = input.read()
             input.close()
             input = tmsrc
-        header_length = self._read_header(input)
+        try:
+            header_length = self._read_header(input)
+        except:
+            raise base.ParseError("Cannot parse header")
         lines = csv.DictReader(input.split(UtxDialect.lineterminator)[header_length:],
                                fieldnames=self._fieldnames,
                                dialect="utx")
