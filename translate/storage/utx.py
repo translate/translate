@@ -48,6 +48,7 @@ The files are UTF-8 encoded with no BOM and CR+LF line terminators.
 
 import csv
 import sys
+import time
 
 from translate.storage import base
 
@@ -182,7 +183,8 @@ class UtxFile(base.TranslationStore):
         base.TranslationStore.__init__(self, unitclass=unitclass)
         self.filename = ''
         self.extension = ''
-        self._fieldnames = []
+        self._fieldnames = ['src', 'tgt', 'src:pos']
+        self._header = {"version": "1.00", "source_language": "en", "date_created": time.strftime("%FT%YZ%z", time.localtime(time.time()))}
         if inputfile is not None:
             self.parse(inputfile)
 
@@ -219,7 +221,7 @@ class UtxFile(base.TranslationStore):
         header = "#UTX-S %(version)s; %(src)s/%(tgt)s; %(date)s" % \
                   {"version": self._header["version"],
                    "src": self._header["source_language"],
-                   "tgt": self._header["target_language"],
+                   "tgt": self._header.get("target_language", ""),
                    "date": self._header["date_created"],
                   }
         items = []
@@ -229,7 +231,8 @@ class UtxFile(base.TranslationStore):
             items.append("%s: %s" % (key, value))
         if len(items):
             items = "; ".join(items)
-            header += "; " + items + UtxDialect.lineterminator
+            header += "; " + items
+        header += UtxDialect.lineterminator
         header += "#" + "\t".join(self._fieldnames) + UtxDialect.lineterminator
         return header
 
