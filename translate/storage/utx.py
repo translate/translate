@@ -184,7 +184,7 @@ class UtxFile(base.TranslationStore):
             self.parse(inputfile)
 
     def _read_header(self, header=None):
-        """Create the UTX file names"""
+        """Read a UTX header"""
         if header is None:
             self._fieldnames = ['src', 'tgt', 'src:pos']
             # FIXME make the header properly
@@ -210,6 +210,25 @@ class UtxFile(base.TranslationStore):
             self._header[key] = value.strip()
         self._fieldnames = header_lines[-1:][0].replace("#", ""). split('\t')
         return len(header_lines)
+
+    def _write_header(self):
+        """Create a UTX header"""
+        header = "#UTX-S %(version)s; %(src)s/%(tgt)s; %(date)s" % \
+                  {"version": self._header["version"],
+                   "src": self._header["source_language"],
+                   "tgt": self._header["target_language"],
+                   "date": self._header["date_created"],
+                  }
+        items = []
+        for key, value in self._header.iteritems():
+            if key in ["version", "source_language", "target_language", "date_created"]:
+                continue
+            items.append("%s: %s" % (key, value))
+        if len(items):
+            items = "; ".join(items)
+            header += "; " + items + UtxDialect.lineterminator
+        header += "#" + "\t".join(self._fieldnames) + UtxDialect.lineterminator
+        return header
 
     def getsourcelanguage(self):
         return self._header.get("source_language", None)
@@ -244,7 +263,7 @@ class UtxFile(base.TranslationStore):
 
     def __str__(self):
         output = csv.StringIO()
-        writer = csv.DictWriter(output, fieldnames=UTX_FIELDNAMES,
+        writer = csv.DictWriter(output, fieldnames=self._fieldnames,
                                 dialect="utx")
         unit_count = 0
         for unit in self.units:
@@ -254,8 +273,4 @@ class UtxFile(base.TranslationStore):
         if unit_count == 0:
             return ""
         output.reset()
-        decoded = "".join(output.readlines()).decode('utf-8')
-        try:
-            return decoded.encode(self._encoding)
-        except UnicodeEncodeError:
-            return decoded.encode('utf-8')
+        return self._write_header() + "".join(output.readlines())
