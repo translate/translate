@@ -33,6 +33,26 @@ from translate.storage import base
 HTMLParser.piclose = re.compile('\?>')
 
 
+strip_html_re = re.compile(r'''
+(?s)^       # We allow newlines, and match start of line
+<[^?>]      # Match start of tag and the first character (not ? or >)
+(?:
+  (?:
+    [^>]    # Anything that's not a > is valid tag material
+      |
+    (?:<\?.*?\?>) # Matches <? foo ?> lazily; PHP is valid
+  )*        # Repeat over valid tag material
+  [^?>]     # If we have > 1 char, the last char can't be ? or >
+)?          # The repeated chars are optional, so that <a>, <p> work
+>           # Match ending > of opening tag
+
+(.*)        # Match actual contents of tag
+
+</.*[^?]>   # Match ending tag; can't end with ?> and must be >=1 char
+$           # Match end of line
+''', re.VERBOSE)
+
+
 def strip_html(text):
     """Strip unnecessary html from the text.
 
@@ -49,30 +69,9 @@ def strip_html(text):
     if len(result) == 1:
         return ""
 
-    # These two patterns are the same; the first one is more concise...
-    #pattern = '(?s)^<[^?>](?:(?:[^>]|(?:<\?.*?\?>))*[^?>])?>(.*)</.*[^?]>$'
-    pattern = re.compile(r'''
-    (?s)^       # We allow newlines, and match start of line
-    <[^?>]      # Match start of tag and the first character (not ? or >)
-    (?:
-      (?:
-        [^>]    # Anything that's not a > is valid tag material
-          |
-        (?:<\?.*?\?>) # Matches <? foo ?> lazily; PHP is valid
-      )*        # Repeat over valid tag material
-      [^?>]     # If we have > 1 char, the last char can't be ? or >
-    )?          # The repeated chars are optional, so that <a>, <p> work
-    >           # Match ending > of opening tag
-
-    (.*)        # Match actual contents of tag
-
-    </.*[^?]>   # Match ending tag; can't end with ?> and must be >=1 char
-    $           # Match end of line
-    ''', re.VERBOSE)
-    result = re.findall(pattern, text)
+    result = re.findall(strip_html_re, text)
     if len(result) == 1:
         text = strip_html(result[0])
-    print text
     return text
 
 
