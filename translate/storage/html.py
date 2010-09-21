@@ -69,7 +69,7 @@ def strip_html(text):
     if len(result) == 1:
         return ""
 
-    result = re.findall(strip_html_re, text)
+    result = strip_html_re.findall(text)
     if len(result) == 1:
         text = strip_html(result[0])
     return text
