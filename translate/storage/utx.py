@@ -100,13 +100,13 @@ class UtxUnit(base.TranslationUnit):
         super(UtxUnit, self).__init__(source)
 
     def getdict(self):
-        """Get the dictionary of values for a OmegaT line"""
+        """Get the dictionary of values for a UTX line"""
         return self._dict
 
     def setdict(self, newdict):
-        """Set the dictionary of values for a OmegaT line
+        """Set the dictionary of values for a UTX line
 
-        @param newdict: a new dictionary with OmegaT line elements
+        @param newdict: a new dictionary with UTX line elements
         @type newdict: Dict
         """
         # TODO First check that the values are OK
@@ -177,7 +177,7 @@ class UtxFile(base.TranslationStore):
     Extensions = ["utx"]
 
     def __init__(self, inputfile=None, unitclass=UtxUnit):
-        """Construct an OmegaT glossary, optionally reading in from
+        """Construct an UTX dictionary, optionally reading in from
         inputfile."""
         self.UnitClass = unitclass
         base.TranslationStore.__init__(self, unitclass=unitclass)
