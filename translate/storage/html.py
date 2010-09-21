@@ -33,6 +33,49 @@ from translate.storage import base
 HTMLParser.piclose = re.compile('\?>')
 
 
+def strip_html(text):
+    """Strip unnecessary html from the text.
+
+    HTML tags are deemed unnecessary if it fully encloses the translatable
+    text, eg. '<a href="index.html">Home Page</a>'.
+
+    HTML tags that occurs within the normal flow of text will not be removed,
+    eg. 'This is a link to the <a href="index.html">Home Page</a>.'
+    """
+    text = text.strip()
+
+    # If all that is left is PHP, return ""
+    result = re.findall('(?s)^<\?.*?\?>$', text)
+    if len(result) == 1:
+        return ""
+
+    # These two patterns are the same; the first one is more concise...
+    #pattern = '(?s)^<[^?>](?:(?:[^>]|(?:<\?.*?\?>))*[^?>])?>(.*)</.*[^?]>$'
+    pattern = re.compile(r'''
+    (?s)^       # We allow newlines, and match start of line
+    <[^?>]      # Match start of tag and the first character (not ? or >)
+    (?:
+      (?:
+        [^>]    # Anything that's not a > is valid tag material
+          |
+        (?:<\?.*?\?>) # Matches <? foo ?> lazily; PHP is valid
+      )*        # Repeat over valid tag material
+      [^?>]     # If we have > 1 char, the last char can't be ? or >
+    )?          # The repeated chars are optional, so that <a>, <p> work
+    >           # Match ending > of opening tag
+
+    (.*)        # Match actual contents of tag
+
+    </.*[^?]>   # Match ending tag; can't end with ?> and must be >=1 char
+    $           # Match end of line
+    ''', re.VERBOSE)
+    result = re.findall(pattern, text)
+    if len(result) == 1:
+        text = strip_html(result[0])
+    print text
+    return text
+
+
 class htmlunit(base.TranslationUnit):
     """A unit of translatable/localisable HTML content"""
 
@@ -106,53 +149,12 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
         self.feed(htmlsrc)
 
     def addhtmlblock(self, text):
-        text = self.strip_html(text)
+        text = strip_html(text)
         if self.has_translatable_content(text):
             self.currentblocknum += 1
             unit = self.addsourceunit(text)
             unit.addlocation("%s+%s:%d" % (self.filename, ".".join(self.tag_path), self.currentpos))
             unit.addnote(self.currentcomment)
-
-    def strip_html(self, text):
-        """Strip unnecessary html from the text.
-
-        HTML tags are deemed unnecessary if it fully encloses the translatable
-        text, eg. '<a href="index.html">Home Page</a>'.
-
-        HTML tags that occurs within the normal flow of text will not be removed,
-        eg. 'This is a link to the <a href="index.html">Home Page</a>.'
-        """
-        text = text.strip()
-
-        # If all that is left is PHP, return ""
-        result = re.findall('(?s)^<\?.*?\?>$', text)
-        if len(result) == 1:
-            return ""
-
-        # These two patterns are the same; the first one is more concise...
-        #pattern = '(?s)^<[^?>](?:(?:[^>]|(?:<\?.*?\?>))*[^?>])?>(.*)</.*[^?]>$'
-        pattern = re.compile(r'''
-        (?s)^       # We allow newlines, and match start of line
-        <[^?>]      # Match start of tag and the first character (not ? or >)
-        (?:
-          (?:
-            [^>]    # Anything that's not a > is valid tag material
-              |
-            (?:<\?.*?\?>) # Matches <? foo ?> lazily; PHP is valid
-          )*        # Repeat over valid tag material
-          [^?>]     # If we have > 1 char, the last char can't be ? or >
-        )?          # The repeated chars are optional, so that <a>, <p> work
-        >           # Match ending > of opening tag
-
-        (.*)        # Match actual contents of tag
-
-        </.*[^?]>   # Match ending tag; can't end with ?> and must be >=1 char
-        $           # Match end of line
-        ''', re.VERBOSE)
-        result = re.findall(pattern, text)
-        if len(result) == 1:
-            text = self.strip_html(result[0])
-        return text
 
     def has_translatable_content(self, text):
         """Check if the supplied HTML snippet has any content that needs to be translated."""

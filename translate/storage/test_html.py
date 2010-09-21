@@ -26,3 +26,7 @@ def test_guess_encoding():
     """Read an encoding header to guess the encoding correctly"""
     h = html.htmlfile()
     h.guess_encoding('''<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=UTF-8">''') == "UTF-8"
+
+def test_strip_html():
+    assert html.strip_html("<a>Something</a>") == "Something"
+    assert html.strip_html("You are <a>Something</a>") == "You are <a>Something</a>"
