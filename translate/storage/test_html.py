@@ -30,3 +30,7 @@ def test_guess_encoding():
 def test_strip_html():
     assert html.strip_html("<a>Something</a>") == "Something"
     assert html.strip_html("You are <a>Something</a>") == "You are <a>Something</a>"
+    assert html.strip_html("<b>You</b> are <a>Something</a>") == "<b>You</b> are <a>Something</a>"
+    assert html.strip_html('<strong><font class="headingwhite">Projects</font></strong>') == "Projects"
+    assert html.strip_html('<a href="<?$var?>">Something</a>') == "Something"
+    assert html.strip_html('<a href="<?=($a < $b ? $foo : ($b > c ? $bar : $cat))?>">Something</a>') == "Something"

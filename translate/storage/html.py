@@ -34,23 +34,19 @@ HTMLParser.piclose = re.compile('\?>')
 
 
 strip_html_re = re.compile(r'''
-(?s)^       # We allow newlines, and match start of line
-<[^?>]      # Match start of tag and the first character (not ? or >)
+^             # Start of the text
+<             # Opening of HTML
+(?P<tag>\S+)  # Tag
 (?:
-  (?:
-    [^>]    # Anything that's not a > is valid tag material
-      |
-    (?:<\?.*?\?>) # Matches <? foo ?> lazily; PHP is valid
-  )*        # Repeat over valid tag material
-  [^?>]     # If we have > 1 char, the last char can't be ? or >
-)?          # The repeated chars are optional, so that <a>, <p> work
->           # Match ending > of opening tag
+(?:\s+\w+\s*=\s*.*)+
+|)
+>             # Closing of tag
 
-(.*)        # Match actual contents of tag
+(.*)          # Contents of tag
 
-</.*[^?]>   # Match ending tag; can't end with ?> and must be >=1 char
-$           # Match end of line
-''', re.VERBOSE)
+</(?P=tag)>   # Ending tag
+$             # End of text
+''', re.VERBOSE | re.DOTALL)
 
 
 def strip_html(text):
@@ -71,7 +67,7 @@ def strip_html(text):
 
     result = strip_html_re.findall(text)
     if len(result) == 1:
-        text = strip_html(result[0])
+        text = strip_html(result[0][1])
     return text
 
 
