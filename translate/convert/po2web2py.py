@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2009 Zuza Software Foundation
+# Copyright 2009-2010 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -42,7 +42,9 @@ class po2pydict:
             if unit.istranslated() or (includefuzzy and unit.isfuzzy()):
                 mydict[unit.source] = unit.target
             else:
-                mydict[unit.source] = '*** ' + unit.source
+                mydict[unit.source] = unit.source
+                # The older convention is to prefix with "*** ":
+                #mydict[unit.source] = '*** ' + unit.source
 
         str_obj.write('{\n')
         for source_str in mydict:

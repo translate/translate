@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2009 Zuza Software Foundation
+# Copyright 2009-2010 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -45,8 +45,12 @@ class web2py2po:
 
         for source_str in mydict.keys():
             target_str = mydict[source_str]
-            if target_str.startswith('*** '):
-                target_str = ''
+            if target_str == source_str:
+                # a convention with new (untranslated) web2py files
+                target_str = u''
+            elif target_str.startswith(u'*** '):
+                # an older convention
+                target_str = u''
             pounit = self.convertunit(source_str, target_str)
             self.mypofile.addunit(pounit)
 
