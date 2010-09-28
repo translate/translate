@@ -243,7 +243,7 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
         elif self.includeuntaggeddata:
             self.startblock(None)
             self.currentblock += data
-        self.filesrc += data
+        self.filesrc += self.callback(data)
 
     def handle_charref(self, name):
         """Handle entries in the form &#NNNN; e.g. &#8417;"""
