@@ -52,18 +52,6 @@ class po2html:
             return message
         return "\n".join([textwrap.fill(line, self.wrap, replace_whitespace=False) for line in message.split("\n")])
 
-    def convertstore(self, inputstore, includefuzzy):
-        """converts a file to .po format"""
-        htmlresult = ""
-        for inputunit in inputstore.units:
-            if inputunit.isheader():
-                continue
-            if includefuzzy or not inputunit.isfuzzy():
-                htmlresult += self.wrapmessage(inputunit.target) + "\n" + "\n"
-            else:
-                htmlresult += self.wrapmessage(inputunit.source) + "\n" + "\n"
-        return htmlresult.encode('utf-8')
-
     def mergestore(self, inputstore, templatetext, includefuzzy):
         """converts a file to .po format"""
         htmlresult = templatetext.replace("\n", " ")
@@ -99,7 +87,7 @@ def converthtml(inputfile, outputfile, templatefile, wrap=None,
     inputstore = po.pofile(inputfile)
     convertor = po2html(wrap=wrap, usetidy=usetidy)
     if templatefile is None:
-        outputstring = convertor.convertstore(inputstore, includefuzzy)
+        raise ValueError("must have template file for HTML files")
     else:
         templatestring = templatefile.read()
         outputstring = convertor.mergestore(inputstore, templatestring,
