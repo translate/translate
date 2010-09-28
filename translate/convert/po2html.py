@@ -26,6 +26,7 @@ see: http://translate.sourceforge.net/wiki/toolkit/po2html for examples and
 usage instructions
 """
 
+from translate.storage import html
 from translate.storage import po
 
 
@@ -33,29 +34,23 @@ class po2html:
     """po2html can take a po file and generate html. best to give it a
     template file otherwise will just concat msgstrs"""
 
+    def lookup(self, string):
+        unit = self.inputstore.sourceindex.get(string, None)
+        if unit is None:
+            return string
+        unit = unit[0]
+        if self.includefuzzy or not unit.isfuzzy():
+            return unit.target
+        else:
+            return string
+
     def mergestore(self, inputstore, templatetext, includefuzzy):
         """converts a file to .po format"""
-        htmlresult = templatetext.replace("\n", " ")
-        if isinstance(htmlresult, str):
-            #TODO: get the correct encoding
-            htmlresult = htmlresult.decode('utf-8')
-        # TODO: use the algorithm from html2po to get blocks and translate
-        # them individually rather than using replace
-        for inputunit in inputstore.units:
-            if inputunit.isheader():
-                continue
-            msgid = inputunit.source
-            msgstr = None
-            if includefuzzy or not inputunit.isfuzzy():
-                msgstr = inputunit.target
-            else:
-                msgstr = inputunit.source
-            if msgstr.strip():
-                # TODO: "msgid" is already html-encoded ("&" -> "&amp;"), while
-                #   "msgstr" is not encoded -> thus the replace fails
-                #   see test_po2html.py in line 67
-                htmlresult = htmlresult.replace(msgid, msgstr, 1)
-        return htmlresult.encode('utf-8')
+        self.inputstore = inputstore
+        self.inputstore.makeindex()
+        self.includefuzzy = includefuzzy
+        output_store = html.htmlfile(inputfile=templatetext, callback=self.lookup)
+        return output_store.filesrc
 
 
 def converthtml(inputfile, outputfile, templatefile, includefuzzy=False):
@@ -66,8 +61,7 @@ def converthtml(inputfile, outputfile, templatefile, includefuzzy=False):
     if templatefile is None:
         raise ValueError("must have template file for HTML files")
     else:
-        templatestring = templatefile.read()
-        outputstring = convertor.mergestore(inputstore, templatestring,
+        outputstring = convertor.mergestore(inputstore, templatefile,
                                             includefuzzy)
     outputfilepos = outputfile.tell()
     outputfile.write(outputstring)

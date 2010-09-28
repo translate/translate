@@ -100,7 +100,7 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
     markingattrs = []
     includeattrs = ["alt", "summary", "standby", "abbr", "content"]
 
-    def __init__(self, includeuntaggeddata=None, inputfile=None):
+    def __init__(self, includeuntaggeddata=None, inputfile=None, callback=None):
         self.units = []
         self.filename = getattr(inputfile, 'name', None)
         self.currentblock = u""
@@ -110,6 +110,10 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
         self.currentpos = -1
         self.tag_path = []
         self.filesrc = u""
+        if callback is None:
+            self.callback = self._simple_callback
+        else:
+            self.callback = callback
         self.includeuntaggeddata = includeuntaggeddata
         HTMLParser.HTMLParser.__init__(self)
 
@@ -117,6 +121,9 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
             htmlsrc = inputfile.read()
             inputfile.close()
             self.parse(htmlsrc)
+
+    def _simple_callback(self, string):
+        return string
 
     def guess_encoding(self, htmlsrc):
         """Returns the encoding of the html text.
@@ -210,9 +217,11 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
             self.filesrc += "<%(tag)s>" % {"tag": tag}
 
     def handle_startendtag(self, tag, attrs):
-        for attrname, attrvalue in attrs:
+        for i, attr in enumerate(attrs):
+            attrname, attrvalue = attr
             if attrname in self.includeattrs and self.currentblock == "":
                 self.addhtmlblock(attrvalue)
+                attrs[i] = (attrname, self.callback(attrvalue))
         if self.currenttag is not None:
             self.currentblock += self.get_starttag_text()
 
