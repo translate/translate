@@ -200,11 +200,13 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
         self.tag_path.append(tag)
         if tag in self.markingtags:
             newblock = True
-        for attrname, attrvalue in attrs:
+        for i, attr in enumerate(attrs):
+            attrname, attrvalue = attr
             if attrname in self.markingattrs:
                 newblock = True
             if attrname in self.includeattrs and self.currentblock == "":
                 self.addhtmlblock(attrvalue)
+                attrs[i] = (attrname, self.callback(attrvalue))
 
         if newblock:
             self.startblock(tag)
