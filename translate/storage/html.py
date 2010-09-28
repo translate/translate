@@ -227,7 +227,10 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
         if self.currenttag is not None:
             self.currentblock += self.get_starttag_text()
 
-        self.filesrc += "<%(tag)s %(attrs)s />" % {"tag": tag, "attrs": " ".join(['%s="%s"' % pair for pair in attrs])}
+        if attrs != []:
+            self.filesrc += "<%(tag)s %(attrs)s />" % {"tag": tag, "attrs": " ".join(['%s="%s"' % pair for pair in attrs])}
+        else:
+            self.filesrc += "<%(tag)s />" % {"tag": tag}
 
     def handle_endtag(self, tag):
         if tag == self.currenttag:
