@@ -26,31 +26,12 @@ see: http://translate.sourceforge.net/wiki/toolkit/po2html for examples and
 usage instructions
 """
 
-try:
-    import textwrap
-except ImportError:
-    textwrap = None
-try:
-    import tidy
-except ImportError:
-    tidy = None
-
 from translate.storage import po
 
 
 class po2html:
     """po2html can take a po file and generate html. best to give it a
     template file otherwise will just concat msgstrs"""
-
-    def __init__(self, wrap=None, usetidy=None):
-        self.wrap = wrap
-        self.tidy = tidy and usetidy
-
-    def wrapmessage(self, message):
-        """rewraps text as required"""
-        if self.wrap is None:
-            return message
-        return "\n".join([textwrap.fill(line, self.wrap, replace_whitespace=False) for line in message.split("\n")])
 
     def mergestore(self, inputstore, templatetext, includefuzzy):
         """converts a file to .po format"""
@@ -66,26 +47,22 @@ class po2html:
             msgid = inputunit.source
             msgstr = None
             if includefuzzy or not inputunit.isfuzzy():
-                msgstr = self.wrapmessage(inputunit.target)
+                msgstr = inputunit.target
             else:
-                msgstr = self.wrapmessage(inputunit.source)
+                msgstr = inputunit.source
             if msgstr.strip():
                 # TODO: "msgid" is already html-encoded ("&" -> "&amp;"), while
                 #   "msgstr" is not encoded -> thus the replace fails
                 #   see test_po2html.py in line 67
                 htmlresult = htmlresult.replace(msgid, msgstr, 1)
-        htmlresult = htmlresult.encode('utf-8')
-        if self.tidy:
-            htmlresult = str(tidy.parseString(htmlresult))
-        return htmlresult
+        return htmlresult.encode('utf-8')
 
 
-def converthtml(inputfile, outputfile, templatefile, wrap=None,
-                includefuzzy=False, usetidy=True):
+def converthtml(inputfile, outputfile, templatefile, includefuzzy=False):
     """reads in stdin using fromfileclass, converts using convertorclass,
     writes to stdout"""
     inputstore = po.pofile(inputfile)
-    convertor = po2html(wrap=wrap, usetidy=usetidy)
+    convertor = po2html()
     if templatefile is None:
         raise ValueError("must have template file for HTML files")
     else:
@@ -109,15 +86,6 @@ def main(argv=None):
               }
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          description=__doc__)
-    if textwrap is not None:
-        parser.add_option("-w", "--wrap", dest="wrap", default=None,
-                          type="int", metavar="WRAP",
-                          help="set number of columns to wrap html at")
-        parser.passthrough.append("wrap")
-    if tidy is not None:
-        parser.add_option("", "--notidy", dest="usetidy", default=True,
-                help="disables the use of HTML tidy", action="store_false")
-        parser.passthrough.append("usetidy")
     parser.add_fuzzy_option()
     parser.run(argv)
 
