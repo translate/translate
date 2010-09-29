@@ -75,9 +75,16 @@ def launch_server_cherrypy(host, port, app):
     except KeyboardInterrupt:
         server.stop()
 
+def launch_server_werkzeug(host, port, app):
+    """use werkzeug's simple multiprocess multithreaded server"""
+    from werkzeug import run_simple
+    logging.info("Starting Werkzeug server, listening on port %s", port)
+    run_simple(host, port, app, threaded=True)
+
+
 #FIXME: implement threading http server based on BaseHTTPServer and wsgiref
 
-servers = [launch_server_cherrypy, launch_server_django, launch_server_wsgiref]
+servers = [launch_server_cherrypy, launch_server_werkzeug, launch_server_django, launch_server_wsgiref]
 
 
 def launch_server(host, port, app):
