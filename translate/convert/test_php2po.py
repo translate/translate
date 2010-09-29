@@ -137,7 +137,7 @@ $lang['prefPanel-smime'] = 'Security';'''
         phpsource = '''$lang[ 'credit' ] = ''n Ding';'''
         pofile = self.php2po(phpsource, phptemplate)
         pounit = self.singleelement(pofile)
-        assert pounit.getlocations() == ["$lang['credit']"]
+        assert pounit.getlocations() == ["$lang[ 'credit' ]"]
 
 
 class TestPhp2POCommand(test_convert.TestConvertCommand, TestPhp2PO):

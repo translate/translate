@@ -122,7 +122,7 @@ class TestPhpFile(test_monolingual.TestMonolingualStore):
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 1
         phpunit = phpfile.units[0]
-        assert phpunit.name == "$lang['mediaselect']"
+        assert phpunit.name == "$lang[ 'mediaselect' ]"
         assert phpunit.source == "Bestand selectie"
 
     def test_comment_blocks(self):
@@ -160,4 +160,16 @@ $lang[2] = "Yeah";
         assert len(phpfile.units) == 2
         phpunit = phpfile.units[0]
         assert phpunit.name == "$lang->'item1'"
+        assert phpunit.source == "value1"
+
+    def test_parsing_arrays_keys_with_spaces(self):
+        """parse the array syntax"""
+        phpsource = '''$lang = array(
+         'item 1' => 'value1',
+         'item 2' => 'value2',
+      );'''
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 2
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "$lang->'item 1'"
         assert phpunit.source == "value1"
