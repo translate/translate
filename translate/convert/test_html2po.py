@@ -266,11 +266,10 @@ newlines.</p></body></html>
         self.compareunit(pofile, 1, "Duplicate")
         self.compareunit(pofile, 2, "Duplicate")
 
-    @mark.xfail(reason="Not Implemented")
     def test_multiline_reflow(self):
         """check that we reflow multiline content to make it more readable for translators"""
         self.check_single('''<td valign="middle" width="96%"><font class="headingwhite">South
-                  Africa</font></td>''', '''<font class="headingwhite">South Africa</font>''')
+                  Africa</font></td>''', '''South Africa''')
 
     @mark.xfail(reason="Not Implemented")
     def test_nested_tags(self):

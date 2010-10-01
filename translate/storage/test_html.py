@@ -34,3 +34,6 @@ def test_strip_html():
     assert html.strip_html('<strong><font class="headingwhite">Projects</font></strong>') == "Projects"
     assert html.strip_html('<a href="<?$var?>">Something</a>') == "Something"
     assert html.strip_html('<a href="<?=($a < $b ? $foo : ($b > c ? $bar : $cat))?>">Something</a>') == "Something"
+
+def test_normalize_html():
+    assert html.normalize_html("<p>Simple  double  spaced</p>") == "<p>Simple double spaced</p>"

@@ -71,6 +71,14 @@ def strip_html(text):
     return text
 
 
+normalize_re = re.compile("\s\s+")
+
+
+def normalize_html(text):
+    """Remove double spaces from HTML snippets"""
+    return normalize_re.sub(" ", text)
+
+
 class htmlunit(base.TranslationUnit):
     """A unit of translatable/localisable HTML content"""
 
@@ -182,14 +190,14 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
 #From here on below, follows the methods of the HTMLParser
 
     def startblock(self, tag):
-        self.addhtmlblock(self.currentblock)
+        self.addhtmlblock(normalize_html(self.currentblock))
         self.currentblock = ""
         self.currentcomment = ""
         self.currenttag = tag
         self.currentpos = self.getpos()[0]
 
     def endblock(self):
-        self.addhtmlblock(self.currentblock)
+        self.addhtmlblock(normalize_html(self.currentblock))
         self.currentblock = ""
         self.currentcomment = ""
         self.currenttag = None
