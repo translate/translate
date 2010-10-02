@@ -163,7 +163,7 @@ $lang[2] = "Yeah";
         assert phpunit.source == "value1"
 
     def test_parsing_arrays_keys_with_spaces(self):
-        """parse the array syntax"""
+        """Ensure that our identifiers can have spaces. Bug #1683"""
         phpsource = '''$lang = array(
          'item 1' => 'value1',
          'item 2' => 'value2',
@@ -173,3 +173,17 @@ $lang[2] = "Yeah";
         phpunit = phpfile.units[0]
         assert phpunit.name == "$lang->'item 1'"
         assert phpunit.source == "value1"
+
+    def test_parsing_arrays_non_textual(self):
+        """Don't break on non-textual data. Bug #1684"""
+        phpsource = '''$lang = array(
+         'item 1' => 'value1',
+         'item 2' => false,
+         'item 3' => 'value3',
+      );'''
+        phpfile = self.phpparse(phpsource)
+        print len(phpfile.units)
+        assert len(phpfile.units) == 2
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "$lang->'item 3'"
+        assert phpunit.source == "value3"
