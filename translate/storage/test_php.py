@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from py.test import mark
+
 from translate.storage import php
 from translate.storage import test_monolingual
 from translate.misc import wStringIO
@@ -187,3 +189,17 @@ $lang[2] = "Yeah";
         phpunit = phpfile.units[1]
         assert phpunit.name == "$lang->'item 3'"
         assert phpunit.source == "value3"
+
+    @mark.xfail(reason="Bug #1685")
+    def test_parsing_arrays_no_trailing_comma(self):
+        """parse the array syntax where we don't have a trailing comma.
+        Bug #1685"""
+        phpsource = '''$lang = array(
+         'item1' => 'value1',
+         'item2' => 'value2'
+      );'''
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 2
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "$lang->'item1'"
+        assert phpunit.source == "value1"
