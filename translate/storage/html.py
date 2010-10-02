@@ -23,7 +23,7 @@
 """module for parsing html files for translation"""
 
 import re
-import htmlentitydefs
+from htmlentitydefs import name2codepoint
 import HTMLParser
 
 from translate.storage import base
@@ -33,20 +33,38 @@ from translate.storage import base
 HTMLParser.piclose = re.compile('\?>')
 
 
+#strip_html_re = re.compile(r'''
+#^             # Start of the text
+#<             # Opening of HTML
+#(?P<tag>\S+)  # Tag
+#(?:
+#(?:\s+\w+\s*=\s*[^>]*)+
+#|)
+#>             # Closing of tag
+#
+#(.*)          # Contents of tag
+#
+#</(?P=tag)>   # Ending tag
+#$             # End of text
+#''', re.VERBOSE | re.DOTALL)
 strip_html_re = re.compile(r'''
-^             # Start of the text
-<             # Opening of HTML
-(?P<tag>\S+)  # Tag
+(?s)^       # We allow newlines, and match start of line
+<[^?>]      # Match start of tag and the first character (not ? or >)
 (?:
-(?:\s+\w+\s*=\s*.*)+
-|)
->             # Closing of tag
+  (?:
+    [^>]    # Anything that's not a > is valid tag material
+      |
+    (?:<\?.*?\?>) # Matches <? foo ?> lazily; PHP is valid
+  )*        # Repeat over valid tag material
+  [^?>]     # If we have > 1 char, the last char can't be ? or >
+)?          # The repeated chars are optional, so that <a>, <p> work
+>           # Match ending > of opening tag
 
-(.*)          # Contents of tag
+(.*)        # Match actual contents of tag
 
-</(?P=tag)>   # Ending tag
-$             # End of text
-''', re.VERBOSE | re.DOTALL)
+</.*[^?]>   # Match ending tag; can't end with ?> and must be >=1 char
+$           # Match end of line
+''', re.VERBOSE)
 
 
 def strip_html(text):
@@ -67,7 +85,8 @@ def strip_html(text):
 
     result = strip_html_re.findall(text)
     if len(result) == 1:
-        text = strip_html(result[0][1])
+        #text = strip_html(result[0][1])
+        text = strip_html(result[0])
     return text
 
 
@@ -79,6 +98,11 @@ def normalize_html(text):
     return normalize_re.sub(" ", text)
 
 
+def safe_escape(html):
+    """Escape &, < and >"""
+    return re.sub("&(?![a-zA-Z0-9]+;)", "&amp;", html).replace("<", "&lt;")
+
+
 class htmlunit(base.TranslationUnit):
     """A unit of translatable/localisable HTML content"""
 
@@ -88,11 +112,11 @@ class htmlunit(base.TranslationUnit):
 
     def getsource(self):
         #TODO: Rethink how clever we should try to be with html entities.
-        return self.text.replace("&amp;", "&").replace("&lt;", "<").replace("\r\n", " ").replace("\n", " ").replace("\r", " ")
+        return self._text.replace("&amp;", "&").replace("&lt;", "<").replace("\r\n", " ").replace("\n", " ").replace("\r", " ")
 
     def setsource(self, source):
         self._rich_source = None
-        self.text = source.replace("&", "&amp;").replace("<", "&lt;")
+        self._text = safe_escape(source)
     source = property(getsource, setsource)
 
     def addlocation(self, location):
@@ -112,12 +136,13 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
         self.units = []
         self.filename = getattr(inputfile, 'name', None)
         self.currentblock = u""
-        self.currentblocknum = 0
         self.currentcomment = u""
         self.currenttag = None
         self.currentpos = -1
         self.tag_path = []
         self.filesrc = u""
+        self.currentsrc = u""
+        self.pidict = {}
         if callback is None:
             self.callback = self._simple_callback
         else:
@@ -154,14 +179,45 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
         else:
             return htmlsrc.decode('utf-8')
 
+    def pi_escape(self, text):
+        """Replaces all instances of process instruction with placeholders, and returns
+        the new text and a dictionary of tags.  The current implementation
+        replaces <?foo?> with <?md5(foo)?>.  The hash => code conversions
+        are stored in self.pidict for later use in restoring the real PHP.
+
+        The purpose of this is to remove all potential "tag-like" code from
+        inside PHP.  The hash looks nothing like an HTML tag, but the following
+        PHP::
+          $a < $b ? $c : ($d > $e ? $f : $g)
+        looks like it contains an HTML tag::
+          < $b ? $c : ($d >
+        to nearly any regex.  Hence, we replace all contents of PHP with simple
+        strings to help our regexes out.
+
+        """
+        result = re.findall('(?s)<\?(.*?)\?>', text)
+        for pi in result:
+            pi_escaped = pi.replace("<", "%lt;").replace(">", "%gt;")
+            self.pidict[pi_escaped] = pi
+            text = text.replace(pi, pi_escaped)
+        return text
+
+    def pi_unescape(self, text):
+        """Replaces the PHP placeholders in text with the real code"""
+        for pi_escaped, pi in self.pidict.items():
+            text = text.replace(pi_escaped, pi)
+        return text
+
     def parse(self, htmlsrc):
         htmlsrc = self.do_encoding(htmlsrc)
+        htmlsrc = self.pi_escape(htmlsrc) #Clear out the PHP before parsing
         self.feed(htmlsrc)
 
     def addhtmlblock(self, text):
         text = strip_html(text)
+        text = self.pi_unescape(text) #Before adding anything, restore PHP
+        text = normalize_html(text)
         if self.has_translatable_content(text):
-            self.currentblocknum += 1
             unit = self.addsourceunit(text)
             unit.addlocation("%s+%s:%d" % (self.filename, ".".join(self.tag_path), self.currentpos))
             unit.addnote(self.currentcomment)
@@ -187,21 +243,45 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
         else:
             return False
 
+    def buildtag(self, tag, attrs=None, startend=False):
+        """Create an HTML tag"""
+        selfclosing = u""
+        if startend:
+            selfclosing = u" /"
+        if attrs != [] and attrs is not None:
+            return u"<%(tag)s %(attrs)s%(selfclosing)s>" % \
+                    {"tag": tag,
+                     "attrs": " ".join(['%s="%s"' % pair for pair in attrs]),
+                     "selfclosing": selfclosing}
+        else:
+            return u"<%(tag)s%(selfclosing)s>" % {"tag": tag,
+                                                  "selfclosing": selfclosing}
+
 #From here on below, follows the methods of the HTMLParser
 
-    def startblock(self, tag):
-        self.addhtmlblock(normalize_html(self.currentblock))
+    def startblock(self, tag, attrs=None):
+        self.addhtmlblock(self.currentblock)
+        if self.callback(normalize_html(strip_html(self.currentsrc))):
+            self.filesrc += self.currentsrc.replace(strip_html(self.currentsrc), self.callback(normalize_html(strip_html(self.currentsrc)).replace("\n", " ")))
+        else:
+            self.filesrc += self.currentsrc
         self.currentblock = ""
         self.currentcomment = ""
         self.currenttag = tag
         self.currentpos = self.getpos()[0]
+        self.currentsrc = self.buildtag(tag, attrs)
 
     def endblock(self):
-        self.addhtmlblock(normalize_html(self.currentblock))
+        self.addhtmlblock(self.currentblock)
+        if self.callback(normalize_html(strip_html(self.currentsrc))) is not None:
+            self.filesrc += self.currentsrc.replace(strip_html(self.currentsrc), self.callback(normalize_html(strip_html(self.currentsrc).replace("\n", " "))))
+        else:
+            self.filesrc += self.currentsrc
         self.currentblock = ""
         self.currentcomment = ""
         self.currenttag = None
         self.currentpos = -1
+        self.currentsrc = ""
 
     def handle_starttag(self, tag, attrs):
         newblock = False
@@ -214,47 +294,49 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
                 newblock = True
             if attrname in self.includeattrs and self.currentblock == "":
                 self.addhtmlblock(attrvalue)
-                attrs[i] = (attrname, self.callback(attrvalue))
+                attrs[i] = (attrname, self.callback(normalize_html(attrvalue).replace("\n", " ")))
 
         if newblock:
-            self.startblock(tag)
+            self.startblock(tag, attrs)
         elif self.currenttag is not None:
             self.currentblock += self.get_starttag_text()
-
-        if attrs != []:
-            self.filesrc += "<%(tag)s %(attrs)s>" % {"tag": tag, "attrs": " ".join(['%s="%s"' % pair for pair in attrs])}
+            self.currentsrc += self.get_starttag_text()
         else:
-            self.filesrc += "<%(tag)s>" % {"tag": tag}
+            self.filesrc += self.buildtag(tag, attrs)
 
     def handle_startendtag(self, tag, attrs):
         for i, attr in enumerate(attrs):
             attrname, attrvalue = attr
             if attrname in self.includeattrs and self.currentblock == "":
                 self.addhtmlblock(attrvalue)
-                attrs[i] = (attrname, self.callback(attrvalue))
+                attrs[i] = (attrname, self.callback(normalize_html(attrvalue).replace("\n", " ")))
         if self.currenttag is not None:
             self.currentblock += self.get_starttag_text()
-
-        if attrs != []:
-            self.filesrc += "<%(tag)s %(attrs)s />" % {"tag": tag, "attrs": " ".join(['%s="%s"' % pair for pair in attrs])}
+            self.currentsrc = self.buildtag(tag, attrs, startend=True)
         else:
-            self.filesrc += "<%(tag)s />" % {"tag": tag}
+            self.filesrc += self.buildtag(tag, attrs, startend=True)
 
     def handle_endtag(self, tag):
         if tag == self.currenttag:
+            self.currentsrc += "</%(tag)s>" % {"tag": tag}
             self.endblock()
         elif self.currenttag is not None:
             self.currentblock += '</%s>' % tag
+            self.currentsrc += '</%s>' % tag
+        else:
+            self.filesrc += '</%s>' % tag
         self.tag_path.pop()
-        self.filesrc += "</%(tag)s>" % {"tag": tag}
 
     def handle_data(self, data):
         if self.currenttag is not None:
             self.currentblock += data
+            self.currentsrc += self.callback(data)
         elif self.includeuntaggeddata:
             self.startblock(None)
             self.currentblock += data
-        self.filesrc += self.callback(data)
+            self.currentsrc += data
+        else:
+            self.filesrc += self.callback(data)
 
     def handle_charref(self, name):
         """Handle entries in the form &#NNNN; e.g. &#8417;"""
@@ -265,7 +347,7 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
         if name in ['gt', 'lt', 'amp']:
             self.handle_data("&%s;" % name)
         else:
-            self.handle_data(unichr(htmlentitydefs.name2codepoint.get(name, u"&%s;" % name)))
+            self.handle_data(unichr(name2codepoint.get(name, u"&%s;" % name)))
 
     def handle_comment(self, data):
         # we can place comments above the msgid as translator comments!
@@ -276,7 +358,7 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
         self.filesrc += "<!--%s-->" % data
 
     def handle_pi(self, data):
-        self.handle_data("<?%s?>" % data)
+        self.handle_data("<?%s?>" % self.pi_unescape(data))
 
 
 class POHTMLParser(htmlfile):

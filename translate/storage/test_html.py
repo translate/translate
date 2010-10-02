@@ -30,10 +30,21 @@ def test_guess_encoding():
 def test_strip_html():
     assert html.strip_html("<a>Something</a>") == "Something"
     assert html.strip_html("You are <a>Something</a>") == "You are <a>Something</a>"
-    assert html.strip_html("<b>You</b> are <a>Something</a>") == "<b>You</b> are <a>Something</a>"
+    #assert html.strip_html("<b>You</b> are <a>Something</a>") == "<b>You</b> are <a>Something</a>"
     assert html.strip_html('<strong><font class="headingwhite">Projects</font></strong>') == "Projects"
-    assert html.strip_html('<a href="<?$var?>">Something</a>') == "Something"
-    assert html.strip_html('<a href="<?=($a < $b ? $foo : ($b > c ? $bar : $cat))?>">Something</a>') == "Something"
+    assert html.strip_html("<strong>Something</strong> else.") == "<strong>Something</strong> else."
+    assert html.strip_html("<h1><strong>Something</strong> else.</h1>") == "<strong>Something</strong> else."
+    assert html.strip_html('<h1 id="moral"><strong>We believe</strong> that the internet should be public, open and accessible.</h1>') == "<strong>We believe</strong> that the internet should be public, open and accessible."
+    assert html.strip_html('<h3><a href="http://www.firefox.com/" class="producttitle"><img src="../images/product-firefox-50.png" width="50" height="50" alt="" class="featured" style="display: block; margin-bottom: 30px;" /><strong>Firefox for Desktop</strong></a></h3>') == 'Firefox for Desktop'
+
+def test_strip_html_with_pi():
+    h = html.htmlfile()
+    assert html.strip_html(h.pi_escape('<a href="<?$var?>">Something</a>')) == "Something"
+    assert html.strip_html(h.pi_escape('<a href="<?=($a < $b ? $foo : ($b > c ? $bar : $cat))?>">Something</a>')) == "Something"
 
 def test_normalize_html():
     assert html.normalize_html("<p>Simple  double  spaced</p>") == "<p>Simple double spaced</p>"
+
+def test_pi_escaping():
+    h = html.htmlfile()
+    assert h.pi_escape('<a href="<?=($a < $b ? $foo : ($b > c ? $bar : $cat))?>">') == '<a href="<?=($a %lt; $b ? $foo : ($b %gt; c ? $bar : $cat))?>">'

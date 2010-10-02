@@ -396,7 +396,6 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
         htmlsource = '<html><head></head><body><p>' + innertext + '</p></body></html>'
         self.check_single(htmlsource, innertext)
 
-    @mark.xfail(reason="Performing major HTML surgery")
     def test_php_multiline(self):
 
         # A multi-line php string to test
