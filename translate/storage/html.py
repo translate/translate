@@ -85,7 +85,6 @@ def strip_html(text):
 
     result = strip_html_re.findall(text)
     if len(result) == 1:
-        print result
         text = strip_html(result[0][1])
     return text
 
