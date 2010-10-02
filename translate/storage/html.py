@@ -49,7 +49,7 @@ HTMLParser.piclose = re.compile('\?>')
 #''', re.VERBOSE | re.DOTALL)
 strip_html_re = re.compile(r'''
 (?s)^       # We allow newlines, and match start of line
-<[^?>]      # Match start of tag and the first character (not ? or >)
+<(?P<tag>[^\s?>]+)      # Match start of tag and the first character (not ? or >)
 (?:
   (?:
     [^>]    # Anything that's not a > is valid tag material
@@ -62,7 +62,7 @@ strip_html_re = re.compile(r'''
 
 (.*)        # Match actual contents of tag
 
-</.*[^?]>   # Match ending tag; can't end with ?> and must be >=1 char
+</(?P=tag)>   # Match ending tag; can't end with ?> and must be >=1 char
 $           # Match end of line
 ''', re.VERBOSE)
 
@@ -85,8 +85,8 @@ def strip_html(text):
 
     result = strip_html_re.findall(text)
     if len(result) == 1:
-        #text = strip_html(result[0][1])
-        text = strip_html(result[0])
+        print result
+        text = strip_html(result[0][1])
     return text
 
 
