@@ -40,3 +40,4 @@ def test_language_names():
     assert _(u"Bokmål, Norwegian; Norwegian Bokmål") == u"Norwegian Bokmål"
     assert _(u"Spanish; Castillian") == u"Spanish"
     assert _(u"Mapudungun; Mapuche") == u"Mapudungun"
+    assert _(u"Interlingua (International Auxiliary Language Association)") == u"Interlingua"
