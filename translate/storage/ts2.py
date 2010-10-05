@@ -231,6 +231,8 @@ class tsunit(lisa.LISAunit):
             self._settype(None)
 
     def getid(self):
+        if self.source is None:
+            return None
         context_name = self.getcontext()
         #XXX: context_name is not supposed to be able to be None (the <name>
         # tag is compulsary in the <context> tag)
