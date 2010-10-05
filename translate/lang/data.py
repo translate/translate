@@ -75,6 +75,7 @@ languages = {
 'hy': (u'Armenian', 1, '0'),
 'hr': (u'Croatian', 3, '(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'),
 'hu': (u'Hungarian', 2, '(n != 1)'),
+'ia': (u"Interlingua (International Auxiliary Language Association)", 2, '(n != 1)'),
 'id': (u'Indonesian', 1, '0'),
 'is': (u'Icelandic', 2, '(n != 1)'),
 'it': (u'Italian', 2, '(n != 1)'),
@@ -169,6 +170,7 @@ _fixed_names = {
         u"Dutch; Flemish": u"Dutch",
         u"Filipino; Pilipino": u"Filipino",
         u"Greek, Modern (1453-)": u"Greek",
+        u"Interlingua (International Auxiliary Language Association)": u"Interlingua",
         u"Kirghiz; Kyrgyz": u"Kirghiz",
         u"Klingon; tlhIngan-Hol": u"Klingon",
         u"Limburgan; Limburger; Limburgish": u"Limburgish",
@@ -238,7 +240,9 @@ def languagematch(languagecode, otherlanguagecode):
     return languagecode == otherlanguagecode or \
       (otherlanguagecode.startswith(languagecode) and variant_re.match(otherlanguagecode[len(languagecode):]))
 
-dialect_name_re = re.compile(r"(.+)\s\(([^)\d]+)\)$")
+dialect_name_re = re.compile(r"(.+)\s\(([^)\d]{,25})\)$")
+# The limit of 25 characters on the country name is so that "Interlingua (...)"
+# (see above) is correctly interpreted.
 
 
 def tr_lang(langcode=None):
