@@ -148,9 +148,11 @@ class JsonFile(base.TranslationStore):
             self.parse(inputfile)
 
     def __str__(self):
-        return json.dumps(self._file, sort_keys=True, indent=4, ensure_ascii=False).encode('utf-8')
+        return json.dumps(self._file, sort_keys=True,
+                          indent=4, ensure_ascii=False).encode('utf-8')
 
-    def _extract_translatables(self, data, stop=None, prev="", name_node=None, name_last_node=None, last_node=None):
+    def _extract_translatables(self, data, stop=None, prev="", name_node=None,
+                               name_last_node=None, last_node=None):
         """Recursive function to extract items from the data files
 
         data - is the current branch to walk down
@@ -162,10 +164,14 @@ class JsonFile(base.TranslationStore):
         usable = {}
         if isinstance(data, dict):
             for k, v in data.iteritems():
-                usable.update(self._extract_translatables(v, stop, "%s.%s" % (prev, k), k, None, data))
+                usable.update(self._extract_translatables(v, stop,
+                                                          "%s.%s" % (prev, k),
+                                                          k, None, data))
         elif isinstance(data, list):
             for i, item in enumerate(data):
-                usable.update(self._extract_translatables(item, stop, "%s[%s]" % (prev, i), i, name_node, data))
+                usable.update(self._extract_translatables(item, stop,
+                                                          "%s[%s]" % (prev, i),
+                                                          i, name_node, data))
         elif isinstance(data, str) or isinstance(data, unicode):
             if (stop is None \
                 or (isinstance(last_node, dict) and name_node in stop) \
@@ -203,7 +209,8 @@ class JsonFile(base.TranslationStore):
         except ValueError, e:
             raise base.ParseError(e.message)
 
-        for k, v in self._extract_translatables(self._file, stop=self._filter).iteritems():
+        for k, v in self._extract_translatables(self._file,
+                                                stop=self._filter).iteritems():
             data, ref, item = v
             unit = self.UnitClass(data, ref, item)
             unit.setid(k)
