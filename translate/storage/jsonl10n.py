@@ -143,27 +143,32 @@ class JsonFile(base.TranslationStore):
     def __str__(self):
         return json.dumps(self._file, sort_keys=True, indent=4, ensure_ascii=False).encode('utf-8')
 
-    def _extract_translatables(self, data, stop=None, prev="", last=None, last_node=None):
+    def _extract_translatables(self, data, stop=None, prev="", name_node=None, name_last_node=None, last_node=None):
         """Recursive function to extract items from the data files
 
-        data is the current branch
-        stop is a list of leaves to extract or None to extract everything
-        prev is the heirchy of the tree at this iteration
-        last is the last node
+        data - is the current branch to walk down
+        stop - is a list of leaves to extract or None to extract everything
+        prev - is the heirchy of the tree at this iteration
+        last - is the name of the last node
+        last_node - the last list or dict
         """
         usable = {}
         if isinstance(data, dict):
             for k, v in data.iteritems():
-                usable.update(self._extract_translatables(v, stop, "%s.%s" % (prev, k), k, data))
+                usable.update(self._extract_translatables(v, stop, "%s.%s" % (prev, k), k, None, data))
         elif isinstance(data, list):
             for i, item in enumerate(data):
-                usable.update(self._extract_translatables(item, stop, "%s[%s]" % (prev, i), i, data))
+                usable.update(self._extract_translatables(item, stop, "%s[%s]" % (prev, i), i, name_node, data))
         elif isinstance(data, str) or isinstance(data, unicode):
-            if (stop is None or last in stop):
-                usable[prev] = (data, last_node, last)
+            if (stop is None \
+                or (isinstance(last_node, dict) and name_node in stop) \
+                or (isinstance(last_node, list) and name_last_node in stop)):
+                usable[prev] = (data, last_node, name_node)
         elif isinstance(data, bool):
-            if (stop is None or last in stop):
-                usable[prev] = (str(data), last_node, last)
+            if (stop is None \
+                or (isinstance(last_node, dict) and name_node in stop) \
+                or (isinstance(last_node, list) and name_last_node in stop)):
+                usable[prev] = (str(data), last_node, name_last_node)
         elif data is None:
             pass
             #usable[prev] = None
