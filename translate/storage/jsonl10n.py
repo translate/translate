@@ -138,7 +138,8 @@ class JsonFile(base.TranslationStore):
             if (stop is None or last in stop):
                 usable[prev] = str(data)
         elif data is None:
-            usable[prev] = None
+            pass
+            #usable[prev] = None
         else:
             raise ValueError("We don't handle these values:\n"
                              "Type: %s\n"
