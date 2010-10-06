@@ -156,7 +156,10 @@ class JsonFile(base.TranslationStore):
             input = inisrc
         if isinstance(input, str):
             input = StringIO(input)
-        self._file = json.load(input)
+        try:
+            self._file = json.load(input)
+        except ValueError, e:
+            raise base.ParseError(e.message)
 
         for k, v in self._extract_translatables(self._file, stop=self._filter).iteritems():
             unit = self.addsourceunit(v)
