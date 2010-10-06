@@ -88,7 +88,7 @@ class JsonUnit(base.TranslationUnit):
             self._ref = ref
         self._item = "only_for_testing"
         if item is not None:
-           self._item = item
+            self._item = item
         if source:
             self.source = source
         super(JsonUnit, self).__init__(source)
