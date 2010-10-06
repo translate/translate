@@ -107,10 +107,17 @@ class JsonUnit(base.TranslationUnit):
             return self._ref[self._item]
 
     def settarget(self, target):
+
+        def change_type(oldvalue, newvalue):
+            if isinstance(oldvalue, bool):
+                newvalue = bool(newvalue)
+            return newvalue
+
         if isinstance(self._ref, list):
-            self._ref[int(self._item)] = target
+            self._ref[int(self._item)] = change_type(self._ref[int(self._item)],
+                                                     target)
         elif isinstance(self._ref, dict):
-            self._ref[self._item] = target
+            self._ref[self._item] = change_type(self._ref[self._item], target)
         else:
             raise ValueError("We don't know how to handle:\n"
                              "Type: %s\n"
@@ -168,7 +175,7 @@ class JsonFile(base.TranslationStore):
             if (stop is None \
                 or (isinstance(last_node, dict) and name_node in stop) \
                 or (isinstance(last_node, list) and name_last_node in stop)):
-                usable[prev] = (str(data), last_node, name_last_node)
+                usable[prev] = (str(data), last_node, name_node)
         elif data is None:
             pass
             #usable[prev] = None
