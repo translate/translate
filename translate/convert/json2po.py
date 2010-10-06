@@ -75,7 +75,7 @@ class ini2po:
             return None
         # escape unicode
         output_unit = po.pounit(encoding="UTF-8")
-        output_unit.addlocation("".join(input_unit.getlocations()))
+        output_unit.addlocation(input_unit.getid())
         output_unit.source = input_unit.source
         output_unit.target = ""
         return output_unit

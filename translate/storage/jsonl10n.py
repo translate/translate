@@ -81,17 +81,50 @@ from translate.storage import base
 class JsonUnit(base.TranslationUnit):
     """A JSON entry"""
 
-    def __init__(self, source=None, encoding="UTF-8"):
-        self.location = ""
+    def __init__(self, source=None, ref=None, item=None, encoding="UTF-8"):
+        self._id = None
+        self._ref = {}
+        if ref is not None:
+            self._ref = ref
+        self._item = "only_for_testing"
+        if item is not None:
+           self._item = item
         if source:
             self.source = source
         super(JsonUnit, self).__init__(source)
 
-    def addlocation(self, location):
-        self.location = location
+    def getsource(self):
+        return self.gettarget()
+
+    def setsource(self, source):
+        self.settarget(source)
+    source = property(getsource, setsource)
+
+    def gettarget(self):
+        if isinstance(self._ref, list):
+            return self._ref[self._item]
+        elif isinstance(self._ref, dict):
+            return self._ref[self._item]
+
+    def settarget(self, target):
+        if isinstance(self._ref, list):
+            self._ref[int(self._item)] = target
+        elif isinstance(self._ref, dict):
+            self._ref[self._item] = target
+        else:
+            raise ValueError("We don't know how to handle:\n"
+                             "Type: %s\n"
+                             "Value: %s" % (type(self._ref), target))
+    target = property(gettarget, settarget)
+
+    def setid(self, value):
+        self._id = value
+
+    def getid(self):
+        return self._id
 
     def getlocations(self):
-        return [self.location]
+        return [self.getid()]
 
 
 class JsonFile(base.TranslationStore):
@@ -103,14 +136,14 @@ class JsonFile(base.TranslationStore):
         base.TranslationStore.__init__(self, unitclass=unitclass)
         self._filter = filter
         self.filename = ''
-        self._file = None
+        self._file = u''
         if inputfile is not None:
             self.parse(inputfile)
 
     def __str__(self):
-        return json.dumps(self._file, sort_keys=True, indent=4)
+        return json.dumps(self._file, sort_keys=True, indent=4, ensure_ascii=False).encode('utf-8')
 
-    def _extract_translatables(self, data, stop=None, prev="", last=None):
+    def _extract_translatables(self, data, stop=None, prev="", last=None, last_node=None):
         """Recursive function to extract items from the data files
 
         data is the current branch
@@ -121,22 +154,16 @@ class JsonFile(base.TranslationStore):
         usable = {}
         if isinstance(data, dict):
             for k, v in data.iteritems():
-                if (stop is None or k in stop) and (isinstance(v, str) or isinstance(v, unicode)):
-                        usable["%s.%s" % (prev, k)] = v
-                else:
-                    usable.update(self._extract_translatables(v, stop, "%s.%s" % (prev, k), k))
+                usable.update(self._extract_translatables(v, stop, "%s.%s" % (prev, k), k, data))
         elif isinstance(data, list):
             for i, item in enumerate(data):
-                if (stop is None or last in stop) and (isinstance(item, str) or isinstance(item, unicode)):
-                        usable["%s[%s]" % (prev, i)] = item
-                else:
-                    usable.update(self._extract_translatables(item, stop, "%s[%s]" % (prev, i), item))
+                usable.update(self._extract_translatables(item, stop, "%s[%s]" % (prev, i), i, data))
         elif isinstance(data, str) or isinstance(data, unicode):
             if (stop is None or last in stop):
-                usable[prev] = data
+                usable[prev] = (data, last_node, last)
         elif isinstance(data, bool):
             if (stop is None or last in stop):
-                usable[prev] = str(data)
+                usable[prev] = (str(data), last_node, last)
         elif data is None:
             pass
             #usable[prev] = None
@@ -165,5 +192,7 @@ class JsonFile(base.TranslationStore):
             raise base.ParseError(e.message)
 
         for k, v in self._extract_translatables(self._file, stop=self._filter).iteritems():
-            unit = self.addsourceunit(v)
-            unit.addlocation(k)
+            data, ref, item = v
+            unit = self.UnitClass(data, ref, item)
+            unit.setid(k)
+            self.addunit(unit)

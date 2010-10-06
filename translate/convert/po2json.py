@@ -37,15 +37,14 @@ class reini:
         self.includefuzzy = includefuzzy
         self.inputstore.makeindex()
         for unit in self.templatestore.units:
-            for location in unit.getlocations():
-                if location in self.inputstore.locationindex:
-                    inputunit = self.inputstore.locationindex[location]
-                    if inputunit.isfuzzy() and not self.includefuzzy:
-                        unit.target = unit.source
-                    else:
-                        unit.source = inputunit.target
-                else:
+            inputunit = self.inputstore.locationindex.get(unit.getid())
+            if inputunit is not None:
+                if inputunit.isfuzzy() and not self.includefuzzy:
                     unit.target = unit.source
+                else:
+                    unit.target = inputunit.target
+            else:
+                unit.target = unit.source
         return str(self.templatestore)
 
 
