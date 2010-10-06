@@ -68,7 +68,6 @@ TODO
 
 """
 
-import re
 from StringIO import StringIO
 try:
     import json as json #available since Python 2.6
