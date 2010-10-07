@@ -37,25 +37,32 @@ def convertpot(input_file, output_file, template_file, tm=None, min_similarity=7
     """Main conversion function"""
 
     input_store = factory.getobject(input_file, classes=classes)
+    try:
+        temp_store = factory.getobject(input_file, classes=classes)
+    except:
+        # StringIO and other file like objects will be closed after parsing
+        temp_store = None
+
     template_store = None
     if template_file is not None:
         template_store = factory.getobject(template_file, classes=classes)
-    output_store = convert_stores(input_store, template_store, tm, min_similarity, fuzzymatching, **kwargs)
+    output_store = convert_stores(input_store, template_store, temp_store, tm, min_similarity, fuzzymatching, **kwargs)
     output_file.write(str(output_store))
     return 1
 
 
-def convert_stores(input_store, template_store, tm=None, min_similarity=75, fuzzymatching=True, **kwargs):
+def convert_stores(input_store, template_store, temp_store=None, tm=None, min_similarity=75, fuzzymatching=True, **kwargs):
     """Actual conversion function, works on stores not files, returns
     a properly initialized pretranslated output store, with structure
     based on input_store, metadata based on template_store, migrates
     old translations from template_store and pretranslating from tm"""
 
-    #prepare for merging
-    output_store = type(input_store)()
+    if temp_store is None:
+        temp_store = input_store
+
     #create fuzzy matchers to be used by pretranslate.pretranslate_unit
     matchers = []
-    _prepare_merge(input_store, output_store, template_store)
+    _prepare_merge(input_store, temp_store, template_store)
     if fuzzymatching:
         if template_store:
             matcher = match.matcher(template_store, max_candidates=1, min_similarity=min_similarity, max_length=3000, usefuzzy=True)
@@ -67,21 +74,18 @@ def convert_stores(input_store, template_store, tm=None, min_similarity=75, fuzz
             matchers.append(matcher)
 
     #initialize store
-    _store_pre_merge(input_store, output_store, template_store)
+    _store_pre_merge(input_store, temp_store, template_store)
 
     # Do matching
-    for input_unit in input_store.units:
-        if input_unit.isheader():
-            continue
+    for input_unit in temp_store.units:
         if input_unit.istranslatable():
             input_unit = pretranslate.pretranslate_unit(input_unit, template_store, matchers, mark_reused=True)
-            _unit_post_merge(input_unit, input_store, output_store, template_store)
-        output_store.addunit(input_unit)
+            _unit_post_merge(input_unit, input_store, temp_store, template_store)
 
     #finalize store
-    _store_post_merge(input_store, output_store, template_store)
+    _store_post_merge(input_store, temp_store, template_store)
 
-    return output_store
+    return temp_store
 
 
 ##dispatchers
@@ -104,13 +108,14 @@ def _store_pre_merge(input_store, output_store, template_store, **kwargs):
     if isinstance(input_store, poheader.poheader):
         _do_poheaders(input_store, output_store, template_store)
     elif isinstance(input_store, catkeys.CatkeysFile):
+        #FIXME: shouldn't we be merging template_store.header instead?
+        #FIXME: also this should be a format specific hook
         output_store.header = input_store.header
 
     #dispatch to format specific functions
     store_pre_merge_hook = "_store_pre_merge_%s" % input_store.__class__.__name__
     if store_pre_merge_hook in globals():
         globals()[store_pre_merge_hook](input_store, output_store, template_store, **kwargs)
-
 
 def _store_post_merge(input_store, output_store, template_store, **kwargs):
     """Close file after merging all translations, used for adding
@@ -223,16 +228,6 @@ def _do_poheaders(input_store, output_store, template_store):
         language_team=language_team, mime_version=mime_version, plural_forms=plural_forms, **kwargs)
 
     # Get the header comments and fuzziness state
-
-    # initial values from pot file
-    input_header = input_store.header()
-    if input_header is not None:
-        if input_header.getnotes("developer"):
-            output_header.addnote(input_header.getnotes("developer"), origin="developer", position="replace")
-        if input_header.getnotes("translator"):
-            output_header.addnote(input_header.getnotes("translator"), origin="translator", position="replace")
-        output_header.markfuzzy(input_header.isfuzzy())
-
     # override some values from input file
     if template_store is not None:
         template_header = template_store.header()
