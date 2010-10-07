@@ -241,6 +241,7 @@ def main(argv=None):
     from translate.convert import convert
     formats = {"pot": ("po", convertpot), ("pot", "po"): ("po", convertpot),
                "xlf": ("xlf", convertpot), ("xlf", "xlf"): ("xlf", convertpot),
+               "ts": ("ts", convertpot), ("ts", "ts"): ("ts", convertpot),
                "catkeys": ("catkeys", convertpot), ("catkeys", "catkeys"): ("catkeys", convertpot),
             }
     parser = convert.ConvertOptionParser(formats, usepots=True, usetemplates=True,
