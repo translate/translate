@@ -325,7 +325,14 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
             self.currentsrc += '</%s>' % tag
         else:
             self.filesrc += '</%s>' % tag
-        self.tag_path.pop()
+        try:
+            popped = self.tag_path.pop()
+            assert tag == popped
+        except (IndexError, AssertionError):
+            if self.currentpos != -1:
+                raise base.ParseError("Mismatched closing tag: line %s" %  self.currentpos)
+            else:
+                raise base.ParseError("Mismatched closing tag")
 
     def handle_data(self, data):
         if self.currenttag is not None:

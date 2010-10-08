@@ -20,6 +20,9 @@
 
 """Tests for the HTML classes"""
 
+from py.test import raises
+
+from translate.storage import base
 from translate.storage import html
 
 def test_guess_encoding():
@@ -49,3 +52,8 @@ def test_normalize_html():
 def test_pi_escaping():
     h = html.htmlfile()
     assert h.pi_escape('<a href="<?=($a < $b ? $foo : ($b > c ? $bar : $cat))?>">') == '<a href="<?=($a %lt; $b ? $foo : ($b %gt; c ? $bar : $cat))?>">'
+
+class TestHTMLParsing:
+
+    def test_mismatched_tags(self):
+        assert raises(base.ParseError, html.htmlfile.parsestring, "<h3><p>Some text<p></h3>")
