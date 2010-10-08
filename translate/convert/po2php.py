@@ -97,7 +97,7 @@ class rephp:
             else:
                 # now deal with the current string...
                 key = line[:equalspos].rstrip()
-                lookupkey = self.prename + key.lstrip().replace(" ", "")
+                lookupkey = self.prename + key.lstrip()
                 # Calculate space around the equal sign
                 prespace = line[len(line[:equalspos].rstrip()):equalspos]
                 postspacestart = len(line[equalspos+len(self.equaldel):])

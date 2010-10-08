@@ -63,7 +63,7 @@ msgstr ""'''
 
     def test_merging_fuzzy(self):
         """check merging a fuzzy translation"""
-        posource = '''#: $lang['name']\n#, fuzzy\nmsgid "value"\nmsgstr "waarde"\n'''
+        posource = '''#: %24lang%5B+%27name%27+%5D\n#, fuzzy\nmsgid "value"\nmsgstr "waarde"\n'''
         phptemplate = '''$lang['name']  =  'value';\n'''
         phpexpected = '''$lang['name']  =  'value';\n'''
         phpfile = self.merge2php(phptemplate, posource)
@@ -72,7 +72,7 @@ msgstr ""'''
 
     def test_locations_with_spaces(self):
         """check that a location with spaces in php but spaces removed in PO is used correctly"""
-        posource = '''#: $lang['name']\nmsgid "value"\nmsgstr "waarde"\n'''
+        posource = '''#: %24lang%5B+%27name%27+%5D\nmsgid "value"\nmsgstr "waarde"\n'''
         phptemplate = '''$lang[ 'name' ]  =  'value';\n'''
         phpexpected = '''$lang[ 'name' ]  =  'waarde';\n'''
         phpfile = self.merge2php(phptemplate, posource)
@@ -81,7 +81,7 @@ msgstr ""'''
 
     def test_inline_comments(self):
         """check that we include inline comments from the template.  Bug 590"""
-        posource = '''#: $lang['name']\nmsgid "value"\nmsgstr "waarde"\n'''
+        posource = '''#: %24lang%5B+%27name%27+%5D\nmsgid "value"\nmsgstr "waarde"\n'''
         phptemplate = '''$lang[ 'name' ]  =  'value'; //inline comment\n'''
         phpexpected = '''$lang[ 'name' ]  =  'waarde'; //inline comment\n'''
         phpfile = self.merge2php(phptemplate, posource)
