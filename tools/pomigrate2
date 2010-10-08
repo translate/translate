@@ -53,7 +53,7 @@ do
 			;;
 		-C=*|--use-compendium=*)
 			option_use_own_compendium="$option_use_own_compendium --compendium=`echo $1 | sed 's/\-C=\|--use-compendium=//'`"
-			option_pot2po_use_own_compendium="$option_use_own_compendium --tm=`echo $1 | sed 's/\-C=\|--tm=//'`"
+			option_pot2po_use_own_compendium="$option_pot2po_use_own_compendium --tm=`echo $1 | sed 's/\-C=\|--tm=//'`"
 			shift
 			;;
 		--no-wrap)
