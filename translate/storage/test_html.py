@@ -25,7 +25,8 @@ from translate.storage import html
 def test_guess_encoding():
     """Read an encoding header to guess the encoding correctly"""
     h = html.htmlfile()
-    h.guess_encoding('''<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=UTF-8">''') == "UTF-8"
+    assert h.guess_encoding('''<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=UTF-8">''') == "UTF-8"
+    assert h.guess_encoding('''<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!-- base href="http://home.online.no/~rut-aane/linux.html" --><link rel="shortcut icon" href="http://home.online.no/~rut-aane/peng16x16a.gif"><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"><meta name="Description" content="Linux newbie stuff and a little about Watching TV under Linux"><meta name="MSSmartTagsPreventParsing" content="TRUE"><meta name="GENERATOR" content="Mozilla/4.7 [en] (X11; I; Linux 2.2.5-15 i586) [Netscape]"><title>Some Linux for beginners</title><style type="text/css">''') == "iso-8859-1"
 
 def test_strip_html():
     assert html.strip_html("<a>Something</a>") == "Something"

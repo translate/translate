@@ -157,14 +157,15 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
     def _simple_callback(self, string):
         return string
 
+    ENCODING_RE = re.compile('''(?i)<meta.*content.*=.*?charset.*?=\s*?([^\s]*)\s*?["']\s*?>''')
+
     def guess_encoding(self, htmlsrc):
         """Returns the encoding of the html text.
 
         We look for 'charset=' within a meta tag to do this.
         """
 
-        pattern = '''(?i)<meta.*content.*=.*charset.*=\\s*([^\\s]*)\\s*["']'''
-        result = re.findall(pattern, htmlsrc)
+        result = self.ENCODING_RE.findall(htmlsrc)
         encoding = None
         if result:
             encoding = result[0]
