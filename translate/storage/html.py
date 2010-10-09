@@ -26,6 +26,7 @@ import re
 from htmlentitydefs import name2codepoint
 import HTMLParser
 
+from translate.storage import base
 from translate.storage.base import ParseError
 
 # Override the piclose tag from simple > to ?> otherwise we consume HTML
@@ -112,7 +113,7 @@ class htmlunit(base.TranslationUnit):
     def getsource(self):
         #TODO: Rethink how clever we should try to be with html entities.
         text = self._text.replace("&amp;", "&").replace("&lt;", "<")
-        text = txt..replace("\r\n", " ").replace("\n", " ").replace("\r", " ")
+        text = text.replace("\r\n", " ").replace("\n", " ").replace("\r", " ")
         return text
 
     def setsource(self, source):
