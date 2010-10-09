@@ -37,6 +37,7 @@ from translate.storage import mo
 from translate.storage import omegat
 from translate.storage import po
 from translate.storage import qm
+from translate.storage import trados
 from translate.storage import utx
 from translate.storage import wordfast
 #Let's try to import the XML formats carefully. They might fail if the user
@@ -66,6 +67,7 @@ classes = {
            "qm": qm.qmfile,
            "utx": utx.UtxFile,
            "_wftm": wordfast.WordfastTMFile,
+           "_trados_txt_tm": trados.TradosTxtTmFile,
            "catkeys": catkeys.CatkeysFile,
           }
 """Dictionary of file extensions and their associated class.
@@ -105,6 +107,8 @@ def _examine_txt(storefile):
     start = start.decode(encoding).encode('utf-8')
     if '%Wordfast TM' in start:
         pseudo_extension = '_wftm'
+    elif '<RTF Preamble>' in start:
+        pseudo_extension = '_trados_txt_tm'
     else:
         raise ValueError("Failed to guess file type.")
     storefile.seek(0)

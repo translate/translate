@@ -141,6 +141,9 @@ http://home.gna.org/gaupol/
 Gaupol might need the 'Universal Encoding Detector'
 http://chardet.feedparser.org/
 
+Trados TXT TM support requires the BeautifulSoup parser
+http://www.crummy.com/software/BeautifulSoup/
+
 The programs have been tested on Linux and Windows.
 
 
