@@ -130,8 +130,9 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
     markingtags = ["p", "title", "h1", "h2", "h3", "h4", "h5", "h6", "th", "td", "div", "li", "dt", "dd", "address", "caption"]
     markingattrs = []
     includeattrs = ["alt", "summary", "standby", "abbr", "content"]
-    SELF_CLOSING_TAGS = ["area", "base", "basefont", "br", "col", "frame",
-                         "hr", "img", "input", "link", "meta", "param"]
+    SELF_CLOSING_TAGS = [u"area", u"base", u"basefont", u"br", u"col",
+                         u"frame", u"hr", u"img", u"input", u"link", u"meta",
+                         u"param"]
     """HTML self-closing tags.  Tags that should be specified as <img /> but might be <img>.
     U{Reference<http://learnwebsitemaking.com/htmlselfclosingtags.html>}"""
 
@@ -289,6 +290,8 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
 
     def handle_starttag(self, tag, attrs):
         newblock = False
+        if self.tag_path != [] and self.tag_path[-1:][0] in self.SELF_CLOSING_TAGS:
+           self.tag_path.pop()
         self.tag_path.append(tag)
         if tag in self.markingtags:
             newblock = True
@@ -331,15 +334,18 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
             self.filesrc += '</%s>' % tag
         try:
             popped = self.tag_path.pop()
-            assert tag == popped
-        except (IndexError, AssertionError):
-            if popped in self.SELF_CLOSING_TAGS:
-                self.tag_path.pop()
+        except IndexError:
+            if self.currentpos != -1:
+                raise base.ParseError("Mismatched tags: no more tags: line %s" %  self.currentpos)
             else:
-                if self.currentpos != -1:
-                    raise base.ParseError("Mismatched closing tag: line %s" %  self.currentpos)
-                else:
-                    raise base.ParseError("Mismatched closing tag")
+                raise base.ParseError("Mismatched tags: no more tags")
+        while popped in self.SELF_CLOSING_TAGS:
+            popped = self.tag_path.pop()
+        if popped != tag:
+            if self.currentpos != -1:
+                raise base.ParseError("Mismatched closing tag: line %s" %  self.currentpos)
+            else:
+                raise base.ParseError("Mismatched closing tag")
 
     def handle_data(self, data):
         if self.currenttag is not None:
