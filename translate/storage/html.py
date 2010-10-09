@@ -130,6 +130,10 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
     markingtags = ["p", "title", "h1", "h2", "h3", "h4", "h5", "h6", "th", "td", "div", "li", "dt", "dd", "address", "caption"]
     markingattrs = []
     includeattrs = ["alt", "summary", "standby", "abbr", "content"]
+    SELF_CLOSING_TAGS = ["area", "base", "basefont", "br", "col", "frame",
+                         "hr", "img", "input", "link", "meta", "param"]
+    """HTML self-closing tags.  Tags that should be specified as <img /> but might be <img>.
+    U{Reference<http://learnwebsitemaking.com/htmlselfclosingtags.html>}"""
 
     def __init__(self, includeuntaggeddata=None, inputfile=None, callback=None):
         self.units = []
@@ -329,10 +333,13 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
             popped = self.tag_path.pop()
             assert tag == popped
         except (IndexError, AssertionError):
-            if self.currentpos != -1:
-                raise base.ParseError("Mismatched closing tag: line %s" %  self.currentpos)
+            if popped in self.SELF_CLOSING_TAGS:
+                self.tag_path.pop()
             else:
-                raise base.ParseError("Mismatched closing tag")
+                if self.currentpos != -1:
+                    raise base.ParseError("Mismatched closing tag: line %s" %  self.currentpos)
+                else:
+                    raise base.ParseError("Mismatched closing tag")
 
     def handle_data(self, data):
         if self.currenttag is not None:

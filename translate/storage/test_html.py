@@ -55,5 +55,12 @@ def test_pi_escaping():
 
 class TestHTMLParsing:
 
+    h = html.htmlfile
+
     def test_mismatched_tags(self):
-        assert raises(base.ParseError, html.htmlfile.parsestring, "<h3><p>Some text<p></h3>")
+        assert raises(base.ParseError, self.h.parsestring, "<h3><p>Some text<p></h3>")
+
+    def test_self_closing_tags(self):
+        h = html.htmlfile()
+        store = h.parsestring("<h3>Some text <img><br><img></h3>")
+        assert len(store.units) == 1
