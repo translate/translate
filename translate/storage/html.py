@@ -362,22 +362,14 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
         try:
             popped = self.tag_path.pop()
         except IndexError:
-            if self.currentpos != -1:
-                raise ParseError("Mismatched tags: no more tags: "
-                                 "line %s" % self.currentpos)
-            else:
-                raise ParseError("Mismatched tags: no more tags")
+            raise ParseError("Mismatched tags: no more tags: line %s" %
+                             self.getpos()[0])
         while popped in self.SELF_CLOSING_TAGS:
             popped = self.tag_path.pop()
         if popped != tag:
-            if self.currentpos != -1:
-                raise ParseError("Mismatched closing tag: "
-                                 "expected '%s' got '%s' at line %s" %
-                                 (popped, tag, self.currentpos))
-            else:
-                raise ParseError("Mismatched closing tag: "
-                                 "expected '%s' got '%s'" %
-                                 (popped, tag))
+            raise ParseError("Mismatched closing tag: "
+                             "expected '%s' got '%s' at line %s" %
+                             (popped, tag, self.getpos()[0]))
 
     def handle_data(self, data):
         if self.currenttag is not None:
