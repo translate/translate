@@ -37,7 +37,6 @@ A Trados file looks like this::
     </TrU>
 """
 
-import StringIO
 import time
 
 # FIXME see if we can't use lxml
@@ -75,15 +74,15 @@ U{<http://msdn.microsoft.com/en-us/library/aa140283%28v=office.10%29.aspx#rtfspe
 
 def unescape(text):
     """Convert Trados text to normal Unicode string"""
-    for escape, char in RTF_ESCAPES.iteritems():
-        text = text.replace(escape, char)
+    for trados_escape, char in RTF_ESCAPES.iteritems():
+        text = text.replace(trados_escape, char)
     return text
 
 
 def escape(text):
     """Convert Unicode string to Trodas escapes"""
-    for escape, char in RTF_ESCAPES.iteritems():
-        text = text.replace(char, escape)
+    for trados_escape, char in RTF_ESCAPES.iteritems():
+        text = text.replace(char, escape_trados)
     return text
 
 
