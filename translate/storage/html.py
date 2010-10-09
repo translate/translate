@@ -343,7 +343,7 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
             popped = self.tag_path.pop()
         if popped != tag:
             if self.currentpos != -1:
-                raise base.ParseError("Mismatched closing tag: expected '%s' got '%s' at line %s" %  (popped, tag, self.currentpos))
+                raise base.ParseError("Mismatched closing tag: expected '%s' got '%s' at line %s" % (popped, tag, self.currentpos))
             else:
                 raise base.ParseError("Mismatched closing tag: expected '%s' got '%s'" % (popped, tag))
 
