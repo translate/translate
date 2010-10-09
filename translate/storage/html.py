@@ -291,7 +291,7 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
     def handle_starttag(self, tag, attrs):
         newblock = False
         if self.tag_path != [] and self.tag_path[-1:][0] in self.SELF_CLOSING_TAGS:
-           self.tag_path.pop()
+            self.tag_path.pop()
         self.tag_path.append(tag)
         if tag in self.markingtags:
             newblock = True
