@@ -26,7 +26,7 @@ import re
 from htmlentitydefs import name2codepoint
 import HTMLParser
 
-from translate.storage import base
+from translate.storage.base import ParseError
 
 # Override the piclose tag from simple > to ?> otherwise we consume HTML
 # within the processing instructions
@@ -49,7 +49,7 @@ HTMLParser.piclose = re.compile('\?>')
 #''', re.VERBOSE | re.DOTALL)
 strip_html_re = re.compile(r'''
 (?s)^       # We allow newlines, and match start of line
-<(?P<tag>[^\s?>]+)      # Match start of tag and the first character (not ? or >)
+<(?P<tag>[^\s?>]+)  # Match start of tag and the first character (not ? or >)
 (?:
   (?:
     [^>]    # Anything that's not a > is valid tag material
@@ -111,7 +111,9 @@ class htmlunit(base.TranslationUnit):
 
     def getsource(self):
         #TODO: Rethink how clever we should try to be with html entities.
-        return self._text.replace("&amp;", "&").replace("&lt;", "<").replace("\r\n", " ").replace("\n", " ").replace("\r", " ")
+        text = self._text.replace("&amp;", "&").replace("&lt;", "<")
+        text = txt..replace("\r\n", " ").replace("\n", " ").replace("\r", " ")
+        return text
 
     def setsource(self, source):
         self._rich_source = None
@@ -127,16 +129,19 @@ class htmlunit(base.TranslationUnit):
 
 class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
     UnitClass = htmlunit
-    markingtags = ["p", "title", "h1", "h2", "h3", "h4", "h5", "h6", "th", "td", "div", "li", "dt", "dd", "address", "caption", "pre"]
+    markingtags = ["p", "title", "h1", "h2", "h3", "h4", "h5", "h6", "th",
+                   "td", "div", "li", "dt", "dd", "address", "caption", "pre"]
     markingattrs = []
     includeattrs = ["alt", "summary", "standby", "abbr", "content"]
     SELF_CLOSING_TAGS = [u"area", u"base", u"basefont", u"br", u"col",
                          u"frame", u"hr", u"img", u"input", u"link", u"meta",
                          u"param"]
-    """HTML self-closing tags.  Tags that should be specified as <img /> but might be <img>.
+    """HTML self-closing tags.  Tags that should be specified as <img /> but
+    might be <img>.
     U{Reference<http://learnwebsitemaking.com/htmlselfclosingtags.html>}"""
 
-    def __init__(self, includeuntaggeddata=None, inputfile=None, callback=None):
+    def __init__(self, includeuntaggeddata=None, inputfile=None,
+                 callback=None):
         self.units = []
         self.filename = getattr(inputfile, 'name', None)
         self.currentblock = u""
@@ -162,7 +167,11 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
     def _simple_callback(self, string):
         return string
 
-    ENCODING_RE = re.compile('''(?i)<meta.*content.*=.*?charset.*?=\s*?([^\s]*)\s*?["']\s*?>''')
+    ENCODING_RE = re.compile('''<meta.*
+                                content.*=.*?charset.*?=\s*?
+                                ([^\s]*)
+                                \s*?["']\s*?>
+                             ''', re.VERBOSE | re.IGNORECASE)
 
     def guess_encoding(self, htmlsrc):
         """Returns the encoding of the html text.
@@ -185,10 +194,11 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
             return htmlsrc.decode('utf-8')
 
     def pi_escape(self, text):
-        """Replaces all instances of process instruction with placeholders, and returns
-        the new text and a dictionary of tags.  The current implementation
-        replaces <?foo?> with <?md5(foo)?>.  The hash => code conversions
-        are stored in self.pidict for later use in restoring the real PHP.
+        """Replaces all instances of process instruction with placeholders,
+        and returns the new text and a dictionary of tags.  The current
+        implementation replaces <?foo?> with <?md5(foo)?>.  The hash => code
+        conversions are stored in self.pidict for later use in restoring the
+        real PHP.
 
         The purpose of this is to remove all potential "tag-like" code from
         inside PHP.  The hash looks nothing like an HTML tag, but the following
@@ -224,11 +234,14 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
         text = normalize_html(text)
         if self.has_translatable_content(text):
             unit = self.addsourceunit(text)
-            unit.addlocation("%s+%s:%d" % (self.filename, ".".join(self.tag_path), self.currentpos))
+            unit.addlocation("%s+%s:%d" %
+                              (self.filename, ".".join(self.tag_path),
+                               self.currentpos))
             unit.addnote(self.currentcomment)
 
     def has_translatable_content(self, text):
-        """Check if the supplied HTML snippet has any content that needs to be translated."""
+        """Check if the supplied HTML snippet has any content that needs to be
+        translated."""
 
         text = text.strip()
         result = re.findall('(?i).*(charset.*=.*)', text)
@@ -267,7 +280,8 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
     def startblock(self, tag, attrs=None):
         self.addhtmlblock(self.currentblock)
         if self.callback(normalize_html(strip_html(self.currentsrc))):
-            self.filesrc += self.currentsrc.replace(strip_html(self.currentsrc), self.callback(normalize_html(strip_html(self.currentsrc)).replace("\n", " ")))
+            self.filesrc += self.currentsrc.replace(strip_html(self.currentsrc),
+                                                    self.callback(normalize_html(strip_html(self.currentsrc)).replace("\n", " ")))
         else:
             self.filesrc += self.currentsrc
         self.currentblock = ""
@@ -279,7 +293,8 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
     def endblock(self):
         self.addhtmlblock(self.currentblock)
         if self.callback(normalize_html(strip_html(self.currentsrc))) is not None:
-            self.filesrc += self.currentsrc.replace(strip_html(self.currentsrc), self.callback(normalize_html(strip_html(self.currentsrc).replace("\n", " "))))
+            self.filesrc += self.currentsrc.replace(strip_html(self.currentsrc),
+                                                    self.callback(normalize_html(strip_html(self.currentsrc).replace("\n", " "))))
         else:
             self.filesrc += self.currentsrc
         self.currentblock = ""
@@ -290,7 +305,8 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
 
     def handle_starttag(self, tag, attrs):
         newblock = False
-        if self.tag_path != [] and self.tag_path[-1:][0] in self.SELF_CLOSING_TAGS:
+        if self.tag_path != [] \
+           and self.tag_path[-1:][0] in self.SELF_CLOSING_TAGS:
             self.tag_path.pop()
         self.tag_path.append(tag)
         if tag in self.markingtags:
@@ -301,7 +317,8 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
                 newblock = True
             if attrname in self.includeattrs and self.currentblock == "":
                 self.addhtmlblock(attrvalue)
-                attrs[i] = (attrname, self.callback(normalize_html(attrvalue).replace("\n", " ")))
+                attrs[i] = (attrname,
+                            self.callback(normalize_html(attrvalue).replace("\n", " ")))
 
         if newblock:
             self.startblock(tag, attrs)
@@ -316,7 +333,8 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
             attrname, attrvalue = attr
             if attrname in self.includeattrs and self.currentblock == "":
                 self.addhtmlblock(attrvalue)
-                attrs[i] = (attrname, self.callback(normalize_html(attrvalue).replace("\n", " ")))
+                attrs[i] = (attrname,
+                            self.callback(normalize_html(attrvalue).replace("\n", " ")))
         if self.currenttag is not None:
             self.currentblock += self.get_starttag_text()
             self.currentsrc += self.buildtag(tag, attrs, startend=True)
@@ -336,16 +354,21 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
             popped = self.tag_path.pop()
         except IndexError:
             if self.currentpos != -1:
-                raise base.ParseError("Mismatched tags: no more tags: line %s" %  self.currentpos)
+                raise ParseError("Mismatched tags: no more tags: "
+                                 "line %s" % self.currentpos)
             else:
-                raise base.ParseError("Mismatched tags: no more tags")
+                raise ParseError("Mismatched tags: no more tags")
         while popped in self.SELF_CLOSING_TAGS:
             popped = self.tag_path.pop()
         if popped != tag:
             if self.currentpos != -1:
-                raise base.ParseError("Mismatched closing tag: expected '%s' got '%s' at line %s" % (popped, tag, self.currentpos))
+                raise ParseError("Mismatched closing tag: "
+                                 "expected '%s' got '%s' at line %s" %
+                                 (popped, tag, self.currentpos))
             else:
-                raise base.ParseError("Mismatched closing tag: expected '%s' got '%s'" % (popped, tag))
+                raise ParseError("Mismatched closing tag: "
+                                 "expected '%s' got '%s'" %
+                                 (popped, tag))
 
     def handle_data(self, data):
         if self.currenttag is not None:
