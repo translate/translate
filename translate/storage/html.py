@@ -130,10 +130,18 @@ class htmlunit(base.TranslationUnit):
 
 class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
     UnitClass = htmlunit
-    markingtags = ["p", "title", "h1", "h2", "h3", "h4", "h5", "h6", "th",
+
+    MARKINGTAGS = ["p", "title", "h1", "h2", "h3", "h4", "h5", "h6", "th",
                    "td", "div", "li", "dt", "dd", "address", "caption", "pre"]
-    markingattrs = []
-    includeattrs = ["alt", "summary", "standby", "abbr", "content"]
+    """Text in these tags that will be extracted from the HTML document"""
+
+    MARKINGATTRS = []
+    """Text from tags with these attributes will be extracted from the HTML
+    document"""
+
+    INCLUDEATTRS = ["alt", "summary", "standby", "abbr", "content"]
+    """Text from these attributes are extracted"""
+
     SELF_CLOSING_TAGS = [u"area", u"base", u"basefont", u"br", u"col",
                          u"frame", u"hr", u"img", u"input", u"link", u"meta",
                          u"param"]
@@ -310,13 +318,13 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
            and self.tag_path[-1:][0] in self.SELF_CLOSING_TAGS:
             self.tag_path.pop()
         self.tag_path.append(tag)
-        if tag in self.markingtags:
+        if tag in self.MARKINGTAGS:
             newblock = True
         for i, attr in enumerate(attrs):
             attrname, attrvalue = attr
-            if attrname in self.markingattrs:
+            if attrname in self.MARKINGATTRS:
                 newblock = True
-            if attrname in self.includeattrs and self.currentblock == "":
+            if attrname in self.INCLUDEATTRS and self.currentblock == "":
                 self.addhtmlblock(attrvalue)
                 attrs[i] = (attrname,
                             self.callback(normalize_html(attrvalue).replace("\n", " ")))
@@ -332,7 +340,7 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
     def handle_startendtag(self, tag, attrs):
         for i, attr in enumerate(attrs):
             attrname, attrvalue = attr
-            if attrname in self.includeattrs and self.currentblock == "":
+            if attrname in self.INCLUDEATTRS and self.currentblock == "":
                 self.addhtmlblock(attrvalue)
                 attrs[i] = (attrname,
                             self.callback(normalize_html(attrvalue).replace("\n", " ")))
