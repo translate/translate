@@ -175,7 +175,7 @@ newlines.</p></body></html>
 
     def test_table_simple(self):
         """Test that we can fully extract a simple table."""
-        markup = '''<html><head></head><body><table><tr><th>Heading One</th><th>Heading Two</th><tr><td>One</td><td>Two</td></tr></table></body></html>'''
+        markup = '''<html><head></head><body><table><tr><th>Heading One</th><th>Heading Two</th></tr><tr><td>One</td><td>Two</td></tr></table></body></html>'''
         pofile = self.html2po(markup)
         self.countunits(pofile, 4)
         self.compareunit(pofile, 1, "Heading One")
@@ -184,7 +184,7 @@ newlines.</p></body></html>
         self.compareunit(pofile, 4, "Two")
 
     def test_table_complex(self):
-        markup = '''<table summary="This is the summary"><caption>A caption</caption><thead><tr><th abbr="Head 1">Heading One</th><th>Heading Two</th></thead><tfoot><tr><td>Foot One</td><td>Foot Two</td></tr></tfoot><tbody><tr><td>One</td><td>Two</td></tr></tbody></table>'''
+        markup = '''<table summary="This is the summary"><caption>A caption</caption><thead><tr><th abbr="Head 1">Heading One</th><th>Heading Two</th></tr></thead><tfoot><tr><td>Foot One</td><td>Foot Two</td></tr></tfoot><tbody><tr><td>One</td><td>Two</td></tr></tbody></table>'''
         pofile = self.html2po(markup)
         self.countunits(pofile, 9)
         self.compareunit(pofile, 1, "This is the summary")
@@ -353,7 +353,9 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
             </table>
           </td>
       </tr>
-    </table></td>
+      </table>
+    </td>
+  </tr>
 </table>
 </body>
 </html>

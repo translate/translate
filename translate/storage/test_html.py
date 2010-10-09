@@ -59,6 +59,10 @@ class TestHTMLParsing:
 
     def test_mismatched_tags(self):
         assert raises(base.ParseError, self.h.parsestring, "<h3><p>Some text<p></h3>")
+        # First <tr> is not closed
+        assert raises(base.ParseError, self.h.parsestring, "<html><head></head><body><table><tr><th>Heading One</th><th>Heading Two</th><tr><td>One</td><td>Two</td></tr></table></body></html>")
+        # <tr> is not closed in <thead>
+        assert raises(base.ParseError, self.h.parsestring, """<table summary="This is the summary"><caption>A caption</caption><thead><tr><th abbr="Head 1">Heading One</th><th>Heading Two</th></thead><tfoot><tr><td>Foot One</td><td>Foot Two</td></tr></tfoot><tbody><tr><td>One</td><td>Two</td></tr></tbody></table>""")
 
     def test_self_closing_tags(self):
         h = html.htmlfile()
