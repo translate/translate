@@ -127,7 +127,7 @@ class htmlunit(base.TranslationUnit):
 
 class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
     UnitClass = htmlunit
-    markingtags = ["p", "title", "h1", "h2", "h3", "h4", "h5", "h6", "th", "td", "div", "li", "dt", "dd", "address", "caption"]
+    markingtags = ["p", "title", "h1", "h2", "h3", "h4", "h5", "h6", "th", "td", "div", "li", "dt", "dd", "address", "caption", "pre"]
     markingattrs = []
     includeattrs = ["alt", "summary", "standby", "abbr", "content"]
     SELF_CLOSING_TAGS = [u"area", u"base", u"basefont", u"br", u"col",
