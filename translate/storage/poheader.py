@@ -282,6 +282,8 @@ class poheader(object):
             language = header.get('X-Poedit-Language')
             country = header.get('X-Poedit-Country')
             return poedit.isocode(language, country)
+        if 'Language-Code' in header: # Used in Plone files
+            return header.get('Language-Code')
         if 'Language-Team' in header:
             from translate.lang.team import guess_language
             return guess_language(header.get('Language-Team'))
