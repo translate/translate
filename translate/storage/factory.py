@@ -37,7 +37,11 @@ from translate.storage import mo
 from translate.storage import omegat
 from translate.storage import po
 from translate.storage import qm
-from translate.storage import trados
+try:
+    # trados uses BeutifulSoup which might not be available
+    from translate.storage import trados
+except ImportError:
+    trados = None
 from translate.storage import utx
 from translate.storage import wordfast
 #Let's try to import the XML formats carefully. They might fail if the user
@@ -67,12 +71,13 @@ classes = {
            "qm": qm.qmfile,
            "utx": utx.UtxFile,
            "_wftm": wordfast.WordfastTMFile,
-           "_trados_txt_tm": trados.TradosTxtTmFile,
            "catkeys": catkeys.CatkeysFile,
           }
 """Dictionary of file extensions and their associated class.
 
 _ext is a pseudo extension, that is their is no real extension by that name."""
+if trados:
+    classes["_trados_txt_tm"] = trados.TradosTxtTmFile
 
 if support_xml:
     classes.update({
