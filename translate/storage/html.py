@@ -34,20 +34,6 @@ from translate.storage.base import ParseError
 HTMLParser.piclose = re.compile('\?>')
 
 
-#strip_html_re = re.compile(r'''
-#^             # Start of the text
-#<             # Opening of HTML
-#(?P<tag>\S+)  # Tag
-#(?:
-#(?:\s+\w+\s*=\s*[^>]*)+
-#|)
-#>             # Closing of tag
-#
-#(.*)          # Contents of tag
-#
-#</(?P=tag)>   # Ending tag
-#$             # End of text
-#''', re.VERBOSE | re.DOTALL)
 strip_html_re = re.compile(r'''
 (?s)^       # We allow newlines, and match start of line
 <(?P<tag>[^\s?>]+)  # Match start of tag and the first character (not ? or >)
