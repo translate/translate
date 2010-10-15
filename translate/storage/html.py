@@ -332,7 +332,7 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
                             self.callback(normalize_html(attrvalue).replace("\n", " ")))
         if self.currenttag is not None:
             self.currentblock += self.get_starttag_text()
-            self.currentsrc += self.buildtag(tag, attrs, startend=True)
+            self.currentsrc += self.get_starttag_text()
         else:
             self.filesrc += self.buildtag(tag, attrs, startend=True)
 
