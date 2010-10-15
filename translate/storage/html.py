@@ -86,6 +86,9 @@ def normalize_html(text):
 
 def safe_escape(html):
     """Escape &, < and >"""
+    # FIXME we need to relook at these.  Escaping to cleanup htmlentity codes
+    # is important but we can't mix "<code>&lt;".  In these cases we should
+    # then abort the escaping
     return re.sub("&(?![a-zA-Z0-9]+;)", "&amp;", html)
 
 
