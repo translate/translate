@@ -39,8 +39,11 @@ A Trados file looks like this::
 
 import time
 
-# FIXME see if we can't use lxml
-from BeautifulSoup import *
+try:
+    # FIXME see if we can't use lxml
+    from BeautifulSoup import *
+except ImportError:
+    raise ImportError("BeautifulSoup is not installed")
 
 from translate.storage import base
 
