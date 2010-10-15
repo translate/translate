@@ -254,9 +254,12 @@ class Dialect(object):
     value_wrap_char = u""
     drop_comments = []
 
-    def encode(cls, string):
+    def encode(cls, string, encoding=None):
         """Encode the string"""
-        return quote.javapropertiesencode(string or u"")
+        #FIXME: dialects are a bad idea, not possible for subclasses to override key methods
+        if encoding != "utf-8":
+            return quote.javapropertiesencode(string or u"")
+        return string or u""
     encode = classmethod(encode)
 
     def find_delimiter(cls, line):
@@ -293,7 +296,7 @@ class DialectMozilla(Dialect):
     default_encoding = "utf-8"
     delimiters = [u"="]
 
-    def encode(cls, string):
+    def encode(cls, string, encoding=None):
         return quote.mozillapropertiesencode(string or u"")
     encode = classmethod(encode)
 register_dialect(DialectMozilla)
@@ -304,7 +307,7 @@ class DialectSkype(Dialect):
     default_encoding = "utf-16"
     delimiters = [u"="]
 
-    def encode(cls, string):
+    def encode(cls, string, encoding=None):
         return quote.mozillapropertiesencode(string or u"")
     encode = classmethod(encode)
 register_dialect(DialectSkype)
@@ -337,7 +340,7 @@ class DialectStrings(Dialect):
         return newvalue.lstrip().lstrip('"')
     value_strip = classmethod(value_strip)
 
-    def encode(cls, string):
+    def encode(cls, string, encoding=None):
         return string.replace('"', '\\"').replace("\n", r"\n").replace("\t", r"\t")
     encode = classmethod(encode)
 register_dialect(DialectStrings)
@@ -361,7 +364,7 @@ class propunit(base.TranslationUnit):
     def setsource(self, source):
         self._rich_source = None
         source = data.forceunicode(source)
-        self.value = self.personality.encode(source or u"")
+        self.value = self.personality.encode(source or u"", self.encoding)
 
     def getsource(self):
         value = quote.propertiesdecode(self.value)
@@ -372,7 +375,7 @@ class propunit(base.TranslationUnit):
     def settarget(self, target):
         self._rich_target = None
         target = data.forceunicode(target)
-        self.translation = self.personality.encode(target or u"")
+        self.translation = self.personality.encode(target or u"", self.encoding)
 
     def gettarget(self):
         translation = quote.propertiesdecode(self.translation)
@@ -404,8 +407,8 @@ class propunit(base.TranslationUnit):
         if self.isblank():
             return notes + u"\n"
         else:
-            self.value = self.personality.encode(self.source)
-            self.translation = self.personality.encode(self.target)
+            self.value = self.personality.encode(self.source, self.encoding)
+            self.translation = self.personality.encode(self.target, self.encoding)
             value = self.translation or self.value
             return u"%(notes)s%(key)s%(del)s%(value)s\n" % {"notes": notes,
                                                             "key": self.name,
