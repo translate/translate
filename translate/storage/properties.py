@@ -381,12 +381,19 @@ class propunit(base.TranslationUnit):
 
     target = property(gettarget, settarget)
 
+    def _get_encoding(self):
+        if self._store:
+            return self._store.encoding
+        else:
+            return self.personality.default_encoding
+    encoding = property(_get_encoding)
+
     def __str__(self):
         """convert to a string. double check that unicode is handled somehow
         here"""
         source = self.getoutput()
         assert isinstance(source, unicode)
-        return source.encode(self.personality.default_encoding)
+        return source.encode(self.encoding)
 
     def getoutput(self):
         """convert the element back into formatted lines for a .properties
